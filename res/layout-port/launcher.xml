@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2007 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+  
+          http://www.apache.org/licenses/LICENSE-2.0
+  
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<com.android.launcher.DragLayer
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
+
+    android:id="@+id/drag_layer"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <!-- The workspace contains 3 screens of cells -->
+    <com.android.launcher.Workspace
+        android:id="@+id/workspace"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+
+        launcher:defaultScreen="1">
+
+        <include layout="@layout/workspace_screen" />
+        <include layout="@layout/workspace_screen" />
+        <include layout="@layout/workspace_screen" />
+
+    </com.android.launcher.Workspace>
+
+    <com.android.internal.widget.SlidingDrawer
+        android:id="@+id/drawer"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+
+        android:topOffset="5px"
+        android:bottomOffset="7px"
+        android:handle="@+id/all_apps"
+        android:content="@+id/content">
+
+        <ImageView
+            android:id="@id/all_apps"
+            android:focusable="true"
+            android:clickable="true"
+            android:scaleType="center"
+            android:src="@drawable/handle_icon"
+            android:background="@drawable/handle"
+            android:layout_width="fill_parent"
+            android:layout_height="56dip" />
+
+        <com.android.launcher.AllAppsGridView
+            android:id="@id/content"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+
+            android:background="@color/grid_dark_background"
+
+            android:scrollbarStyle="outsideInset"
+            android:drawSelectorOnTop="false"
+            android:listSelector="@drawable/grid_selector"
+
+            android:nextFocusLeft="@id/content"
+            android:nextFocusDown="@id/content"
+            android:nextFocusUp="@id/all_apps"
+            android:nextFocusRight="@id/content"
+
+            android:verticalSpacing="10dip"
+            android:numColumns="4" />
+
+    </com.android.internal.widget.SlidingDrawer>
+
+    <com.android.launcher.DeleteZone
+        android:id="@+id/delete_zone"
+        android:layout_width="wrap_content"
+        android:layout_height="49dip"
+
+        android:scaleType="center"
+        android:src="@drawable/ic_delete"
+        android:background="@drawable/delete_zone_selector"
+
+        android:layout_gravity="bottom|center_horizontal"
+        android:visibility="invisible"
+        
+        launcher:direction="horizontal" />
+
+</com.android.launcher.DragLayer>

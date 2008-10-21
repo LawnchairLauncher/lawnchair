@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2008, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.android.launcher"
+          android:sharedUserId="android.uid.shared">
+
+    <permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"
+                android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
+                android:protectionLevel="normal"
+                android:label="@string/permlab_install_shortcut"
+                android:description="@string/permdesc_install_shortcut"/>
+    <permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT"
+                android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
+                android:protectionLevel="normal"
+                android:label="@string/permlab_uninstall_shortcut"
+                android:description="@string/permdesc_uninstall_shortcut"/>    
+
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR"/>
+    <uses-permission android:name="android.permission.GET_TASKS"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER_HINTS" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+
+    <application
+        android:process="android.process.acore"
+        android:label="@string/application_name"
+        android:icon="@drawable/ic_launcher_home">
+
+        <activity android:name="Launcher"
+                android:launchMode="singleTask"
+                android:clearTaskOnLaunch="true"
+                android:stateNotNeeded="true"
+                android:theme="@style/Theme"
+                android:configChanges="mcc|mnc">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.MONKEY" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name="WallpaperChooser"
+            android:label="@string/pick_wallpaper"
+            android:icon="@drawable/ic_launcher_gallery">
+            <intent-filter>
+                <action android:name="android.intent.action.SET_WALLPAPER" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
+        <!-- Enable system-default search mode for any activity in Home -->
+        <meta-data android:name="android.app.default_searchable" android:value="*" />
+
+        <receiver android:name=".InstallShortcutReceiver"
+                android:permission="com.android.launcher.permission.INSTALL_SHORTCUT">
+            <intent-filter>
+                <action android:name="com.android.launcher.action.INSTALL_SHORTCUT" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".UninstallShortcutReceiver"
+                android:permission="com.android.launcher.permission.UNINSTALL_SHORTCUT">
+            <intent-filter>
+                <action android:name="com.android.launcher.action.UNINSTALL_SHORTCUT" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+</manifest>
