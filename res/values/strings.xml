@@ -19,52 +19,66 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- General -->
+    <skip />
     <!-- Application name -->
     <string name="application_name">Home</string>
     <!-- Default folder name -->
     <string name="folder_name">Folder</string>
-    <!-- Unused string -->
-    <string name="all_apps_folder_name">Applications</string>
-    <!-- Unused string -->
-    <string name="delete_name">Delete</string>
     <!-- Title of dialog that appears after user selects Wallpaper from menu -->
     <string name="chooser_wallpaper">Select wallpaper from</string>
     <!-- Button label on Wallpaper Gallery screen; user selects this button to set a specific wallpaper -->
     <string name="wallpaper_instructions">Set wallpaper</string>
     <!-- Option in "Select wallpaper from" dialog box -->
     <string name="pick_wallpaper">Wallpaper gallery</string>
-    <!--Displayed when user selects a shortcut for an app that was uninstalled -->
+    <!-- Displayed when user selects a shortcut for an app that was uninstalled -->
     <string name="activity_not_found">Application is not installed on your phone.</string>
 
     <!-- Folders -->
+    <skip />
     <!-- Label of Folder name field in Rename folder dialog box -->
-    <string name="rename_folder_label">Folder name:</string>
+    <string name="rename_folder_label">Folder name</string>
     <!-- Title of dialog box -->
     <string name="rename_folder_title">Rename folder</string>
-    <!-- Buttons in Rename folder dialog box: -->
+    <!-- Buttons in Rename folder dialog box -->
     <string name="rename_action">OK</string>
+    <!-- Buttons in Rename folder dialog box -->
     <string name="cancel_action">Cancel</string>
 
     <!-- Shortcuts -->
+    <skip />
     <!-- Title of dialog box -->
-    <string name="menu_item_add_item">Add to Home</string>
-    <!-- Options in "Add to Home" dialog box: -->
+    <string name="menu_item_add_item">Add to Home screen</string>
+    <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all apps -->
     <string name="group_applications">Application</string>
+    <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all shortcuts -->
     <string name="group_shortcuts">Shortcut</string>
+    <string name="group_live_folders">Live folder</string>
+    <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all widgets -->
     <string name="group_widgets">Widget</string>
+    <!-- Options in "Add to Home" dialog box; Title of the group containing the list of apps that can set the wallpaper-->
     <string name="group_wallpapers">Wallpaper</string>
+    <!-- Options in "Add to Home" dialog box; Name of the Folder widget-->
     <string name="add_folder">Folder</string>
+    <!-- Options in "Add to Home" dialog box; Name of the Clock widget-->
     <string name="add_clock">Clock</string>
+    <!-- Options in "Add to Home" dialog box; Name of the Picture frame widget-->
     <string name="add_photo_frame">Picture frame</string>
+    <!-- Options in "Add to Home" dialog box; Name of the Google Search widget-->
     <string name="add_search">Search</string>
     <!-- Error message when user has filled a home screen, possibly not used -->
     <string name="out_of_space">No more room on this Home screen.</string>
 
     <!-- Menus items: -->
+    <skip />
+    <!-- Verb, menu item used to add an item on the desktop -->
     <string name="menu_add">Add</string>
+    <!-- Noun, menu item used to set the desktop's wallpaper -->
     <string name="menu_wallpaper">Wallpaper</string>
+    <!-- Verb, menu item used to initiate a Google Search -->
     <string name="menu_search">Search</string>
+    <!-- Noun, menu item used to bring down the notifications shade -->
     <string name="menu_notifications">Notifications</string>
+    <!-- Noun, menu item used to show the system settings -->    
     <string name="menu_settings">Settings</string>
 
     <!-- Permissions: -->
@@ -74,9 +88,18 @@
     <string name="permlab_uninstall_shortcut">uninstall shortcuts</string>
     <string name="permdesc_uninstall_shortcut">Allows an application to remove
         shortcuts without user intervention.</string>
-        
+    <string name="permlab_read_settings">read Home settings and shortcuts</string>
+    <string name="permdesc_read_settings">Allows an application to read the settings and
+        shortcuts in Home.</string>
+    <string name="permlab_write_settings">write Home settings and shortcuts</string>
+    <string name="permdesc_write_settings">Allows an application to change the settings and
+        shortcuts in Home.</string>
+
     <!-- Widgets: -->
-    <string name="go">Search</string>
+    <skip />    
+    <!-- This is the hint text shown in the search widget, before text is entered.
+         This translation SHOULD MATCH the string "search_hint" which is found in 
+         GoogleSearch/res/values/strings.xml -->
     <string name="search_hint">Google Search</string>
         
 </resources>

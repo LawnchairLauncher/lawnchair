@@ -1,7 +1,6 @@
 package com.android.launcher;
 
 import android.content.Context;
-import com.android.internal.provider.Settings;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,8 +30,8 @@ public class UserFolder extends Folder implements DropTarget {
             Object dragInfo) {
         final ItemInfo item = (ItemInfo) dragInfo;
         final int itemType = item.itemType;
-        return (itemType == Settings.Favorites.ITEM_TYPE_APPLICATION || 
-                itemType == Settings.Favorites.ITEM_TYPE_SHORTCUT) && item.container != mInfo.id;
+        return (itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
+                itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) && item.container != mInfo.id;
     }
 
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset, Object dragInfo) {
@@ -52,13 +51,6 @@ public class UserFolder extends Folder implements DropTarget {
     }
 
     @Override
-    public boolean onLongClick(View v) {
-        mLauncher.closeFolder(this);
-        mLauncher.showRenameDialog((UserFolderInfo) mInfo);
-        return true;
-    }
-
-    @Override
     public void onDropCompleted(View target, boolean success) {
         if (success) {
             //noinspection unchecked
@@ -68,10 +60,9 @@ public class UserFolder extends Folder implements DropTarget {
         }
     }
 
-    void bind(UserFolderInfo info) {
-        mInfo = info;
-        setContentAdapter(new ApplicationsAdapter(mContext, info.contents));
-        mCloseButton.setText(info.title);
+    void bind(FolderInfo info) {
+        super.bind(info);
+        setContentAdapter(new ApplicationsAdapter(mContext, ((UserFolderInfo) info).contents));
     }
 
     // When the folder opens, we need to refresh the GridView's selection by

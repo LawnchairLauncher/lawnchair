@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name">"ホーム"</string>
+    <string name="folder_name">"フォルダ"</string>
+    <string name="chooser_wallpaper">"壁紙を選択"</string>
+    <string name="wallpaper_instructions">"壁紙に設定"</string>
+    <string name="pick_wallpaper">"壁紙ギャラリー"</string>
+    <string name="activity_not_found">"アプリケーションがインストールされていません。"</string>
+    <!-- no translation found for rename_folder_label (5646236631298452787) -->
+    <skip />
+    <string name="rename_folder_title">"フォルダ名を変更"</string>
+    <string name="rename_action">"OK"</string>
+    <string name="cancel_action">"キャンセル"</string>
+    <!-- no translation found for menu_item_add_item (6233177331075781114) -->
+    <skip />
+    <string name="group_applications">"アプリケーション"</string>
+    <string name="group_shortcuts">"ショートカット"</string>
+    <!-- no translation found for group_live_folders (3057578584715591220) -->
+    <skip />
+    <string name="group_widgets">"ウィジェット"</string>
+    <string name="group_wallpapers">"壁紙"</string>
+    <string name="add_folder">"フォルダ"</string>
+    <string name="add_clock">"時計"</string>
+    <string name="add_photo_frame">"写真フレーム"</string>
+    <string name="add_search">"検索"</string>
+    <string name="out_of_space">"このホーム画面には空きスペースがありません。"</string>
+    <string name="menu_add">"追加"</string>
+    <string name="menu_wallpaper">"壁紙"</string>
+    <string name="menu_search">"検索"</string>
+    <string name="menu_notifications">"通知"</string>
+    <string name="menu_settings">"設定"</string>
+    <string name="permlab_install_shortcut">"ショートカットのインストール"</string>
+    <string name="permdesc_install_shortcut">"ユーザー操作なしで、ショートカットをアプリケーションで追加できるようにします。"</string>
+    <string name="permlab_uninstall_shortcut">"ショートカットのアンインストール"</string>
+    <string name="permdesc_uninstall_shortcut">"ユーザー操作なしで、ショートカットをアプリケーションで削除できるようにします。"</string>
+    <!-- no translation found for permlab_read_settings (3452408290738106747) -->
+    <skip />
+    <!-- no translation found for permdesc_read_settings (8377434937176025492) -->
+    <skip />
+    <!-- no translation found for permlab_write_settings (1360567537236705628) -->
+    <skip />
+    <!-- no translation found for permdesc_write_settings (1098648778383349818) -->
+    <skip />
+    <string name="search_hint">"Google検索"</string>
+</resources>

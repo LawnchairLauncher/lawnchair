@@ -16,6 +16,7 @@
 
 <com.android.launcher.DragLayer
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
 
     android:id="@+id/drag_layer"
@@ -30,9 +31,9 @@
 
         launcher:defaultScreen="1">
 
-        <include layout="@layout/workspace_screen" />
-        <include layout="@layout/workspace_screen" />
-        <include layout="@layout/workspace_screen" />
+        <include android:id="@+id/cell1" layout="@layout/workspace_screen" />
+        <include android:id="@+id/cell2" layout="@layout/workspace_screen" />
+        <include android:id="@+id/cell3" layout="@layout/workspace_screen" />
 
     </com.android.launcher.Workspace>
 
@@ -42,19 +43,24 @@
         android:layout_height="fill_parent"
 
         android:orientation="horizontal"
-        android:bottomOffset="7px"
-        android:handle="@+id/all_apps"
-        android:content="@+id/content">
-
-        <ImageView
+        androidprv:bottomOffset="7px"
+        androidprv:handle="@+id/all_apps"
+        androidprv:content="@+id/content">
+        
+        <com.android.launcher.HandleView
             android:id="@id/all_apps"
+            android:layout_width="56dip"
+            android:layout_height="fill_parent"
+
+            android:background="@drawable/handle"
+
             android:focusable="true"
             android:clickable="true"
+
             android:scaleType="center"
             android:src="@drawable/handle_icon"
-            android:background="@drawable/handle"
-            android:layout_height="fill_parent"
-            android:layout_width="56dip" />
+
+            launcher:direction="vertical" />
 
         <com.android.launcher.AllAppsGridView
             android:id="@id/content"

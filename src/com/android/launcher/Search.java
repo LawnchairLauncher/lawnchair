@@ -16,13 +16,19 @@
 
 package com.android.launcher;
 
+import java.util.List;
+
 import android.app.ISearchManager;
 import android.app.SearchManager;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.content.res.Resources.NotFoundException;
 import android.database.Cursor;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -43,9 +49,9 @@ import android.view.View.OnKeyListener;
 import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.Filter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SimpleCursorAdapter;
@@ -59,7 +65,7 @@ public class Search extends LinearLayout implements OnClickListener, OnKeyListen
     private final String TAG = "SearchGadget";
 
     private AutoCompleteTextView mSearchText;
-    private Button mGoButton;
+    private ImageButton mGoButton;
     private OnLongClickListener mLongClickListener;
     
     // Support for suggestions
@@ -69,12 +75,14 @@ public class Search extends LinearLayout implements OnClickListener, OnKeyListen
     private Uri mSuggestionData = null;
     private String mSuggestionQuery = null;
     private int mItemSelected = -1;
+    
+    private Rect mTempRect = new Rect();
 
     /**
      * Used to inflate the Workspace from XML.
      *
      * @param context The application's context.
-     * @param attrs The attribtues set containing the Workspace's customization values.
+     * @param attrs The attributes set containing the Workspace's customization values.
      */
     public Search(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -84,7 +92,9 @@ public class Search extends LinearLayout implements OnClickListener, OnKeyListen
      * Implements OnClickListener (for button)
      */
     public void onClick(View v) {
-        query();
+        if (v == mGoButton) {
+            query();
+        }
     }
 
     private void query() {
@@ -92,7 +102,9 @@ public class Search extends LinearLayout implements OnClickListener, OnKeyListen
         if (TextUtils.getTrimmedLength(mSearchText.getText()) == 0) {
             return;
         }
-        sendLaunchIntent(Intent.ACTION_SEARCH, null, query, null, 0, null, mSearchable);
+        Bundle appData = new Bundle();
+        appData.putString(SearchManager.SOURCE, "launcher-widget");
+        sendLaunchIntent(Intent.ACTION_SEARCH, null, query, appData, 0, null, mSearchable);
     }
     
     /**
@@ -254,7 +266,7 @@ public class Search extends LinearLayout implements OnClickListener, OnKeyListen
         mSearchText.setOnKeyListener(this);
         mSearchText.addTextChangedListener(this);
 
-        mGoButton = (Button) findViewById(R.id.go);
+        mGoButton = (ImageButton) findViewById(R.id.search_go_btn);
         mGoButton.setOnClickListener(this);
         mGoButton.setOnKeyListener(this);
         
@@ -296,8 +308,8 @@ public class Search extends LinearLayout implements OnClickListener, OnKeyListen
         
         // attach the suggestions adapter
         mSuggestionsAdapter = new SuggestionsAdapter(mContext, 
-                com.android.internal.R.layout.search_dropdown_item_1line, null,
-                SuggestionsAdapter.ONE_LINE_FROM, SuggestionsAdapter.ONE_LINE_TO, mSearchable);
+                com.android.internal.R.layout.search_dropdown_item_2line, null,
+                SuggestionsAdapter.TWO_LINE_FROM, SuggestionsAdapter.TWO_LINE_TO, mSearchable);
         mSearchText.setAdapter(mSuggestionsAdapter);
     }
     
@@ -432,10 +444,14 @@ public class Search extends LinearLayout implements OnClickListener, OnKeyListen
         
     /**
      * This class provides the filtering-based interface to suggestions providers.
+     * It is hardwired in a couple of places to support GoogleSearch - for example, it supports
+     * two-line suggestions, but it does not support icons.
      */
     private static class SuggestionsAdapter extends SimpleCursorAdapter {
-        public final static String[] ONE_LINE_FROM =   { SearchManager.SUGGEST_COLUMN_TEXT_1 };
-        public final static int[] ONE_LINE_TO =        { com.android.internal.R.id.text1 };
+        public final static String[] TWO_LINE_FROM =    {SearchManager.SUGGEST_COLUMN_TEXT_1,
+                                                         SearchManager.SUGGEST_COLUMN_TEXT_2 };
+        public final static int[] TWO_LINE_TO =         {com.android.internal.R.id.text1, 
+                                                         com.android.internal.R.id.text2};
         
         private final String TAG = "SuggestionsAdapter";
         

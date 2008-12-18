@@ -30,7 +30,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import com.android.internal.provider.Settings;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -40,6 +39,7 @@ import java.util.List;
 import java.util.Comparator;
 import java.lang.ref.WeakReference;
 import java.text.Collator;
+import java.net.URISyntaxException;
 
 /**
  * Maintains in-memory state of the Launcher. It is expected that there should be only one
@@ -58,7 +58,7 @@ public class LauncherModel {
     private boolean mDesktopItemsLoaded;
 
     private ArrayList<ItemInfo> mDesktopItems;
-    private HashMap<Long, UserFolderInfo> mUserFolders;
+    private HashMap<Long, FolderInfo> mFolders;
 
     private ArrayList<ApplicationInfo> mApplications;
     private ApplicationsAdapter mApplicationsAdapter;
@@ -81,13 +81,13 @@ public class LauncherModel {
     /**
      * Loads the list of installed applications in mApplications.
      */
-    void loadApplications(boolean isLaunching, Launcher launcher) {
-        if (isLaunching && mApplicationsLoaded) {
+    void loadApplications(boolean isLaunching, Launcher launcher, boolean localeChanged) {
+        if (isLaunching && mApplicationsLoaded && !localeChanged) {
             mApplicationsAdapter = new ApplicationsAdapter(launcher, mApplications);
             return;
         }
 
-        if (mApplicationsAdapter == null || isLaunching) {
+        if (mApplicationsAdapter == null || isLaunching || localeChanged) {
             mApplicationsAdapter = new ApplicationsAdapter(launcher,
                     mApplications = new ArrayList<ApplicationInfo>(DEFAULT_APPLICATIONS_NUMBER));
         }
@@ -164,7 +164,7 @@ public class LauncherModel {
 
                 action.sort(new Comparator<ApplicationInfo>() {
                     public final int compare(ApplicationInfo a, ApplicationInfo b) {
-                        return sCollator.compare(a.title, b.title);
+                        return sCollator.compare(a.title.toString(), b.title.toString());
                     }
                 });
 
@@ -221,7 +221,7 @@ public class LauncherModel {
      * Loads all of the items on the desktop, in folders, or in the dock.
      * These can be apps, shortcuts or widgets
      */
-    void loadUserItems(boolean isLaunching, Launcher launcher) {
+    void loadUserItems(boolean isLaunching, Launcher launcher, boolean localeChanged) {
         if (isLaunching && mDesktopItems != null && mDesktopItemsLoaded) {
             // We have already loaded our data from the DB
             launcher.onDesktopItemsLoaded();
@@ -240,9 +240,76 @@ public class LauncherModel {
         }
 
         mDesktopItemsLoaded = false;
-        mDesktopItemsLoader = new DesktopItemsLoader(launcher);
+        mDesktopItemsLoader = new DesktopItemsLoader(launcher, localeChanged);
         mDesktopLoader = new Thread(mDesktopItemsLoader, "Desktop Items Loader");
         mDesktopLoader.start();
+    }
+
+    private static void updateShortcutLabels(ContentResolver resolver, PackageManager manager) {
+        final Cursor c = resolver.query(LauncherSettings.Favorites.CONTENT_URI,
+                new String[] { LauncherSettings.Favorites.ID, LauncherSettings.Favorites.TITLE,
+                        LauncherSettings.Favorites.INTENT, LauncherSettings.Favorites.ITEM_TYPE },
+                null, null, null);
+
+        final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ID);
+        final int intentIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.INTENT);
+        final int itemTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
+        final int titleIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.TITLE);
+
+        // boolean changed = false;
+
+        try {
+            while (c.moveToNext()) {
+                try {
+                    if (c.getInt(itemTypeIndex) != LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+                        continue;
+                    }
+
+                    final String intentUri = c.getString(intentIndex);
+                    if (intentUri != null) {
+                        final Intent shortcut = Intent.getIntent(intentUri);
+                        if (Intent.ACTION_MAIN.equals(shortcut.getAction())) {
+                            final ComponentName name = shortcut.getComponent();
+                            if (name != null) {
+                                final ActivityInfo activityInfo = manager.getActivityInfo(name, 0);
+                                final String title = c.getString(titleIndex);
+                                String label = getLabel(manager, activityInfo);
+
+                                if (title == null || !title.equals(label)) {
+                                    final ContentValues values = new ContentValues();
+                                    values.put(LauncherSettings.Favorites.TITLE, label);
+
+                                    resolver.update(LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION,
+                                            values, "_id=?",
+                                            new String[] { String.valueOf(c.getLong(idIndex)) });
+
+                                    // changed = true;
+                                }
+                            }
+                        }
+                    }
+                } catch (URISyntaxException e) {
+                    // Ignore
+                } catch (PackageManager.NameNotFoundException e) {
+                    // Ignore
+                }
+            }
+        } finally {
+            c.close();
+        }
+
+        // if (changed) resolver.notifyChange(Settings.Favorites.CONTENT_URI, null);
+    }
+
+    private static String getLabel(PackageManager manager, ActivityInfo activityInfo) {
+        String label = activityInfo.loadLabel(manager).toString();
+        if (label == null) {
+            label = manager.getApplicationLabel(activityInfo.applicationInfo).toString();
+            if (label == null) {
+                label = activityInfo.name;
+            }
+        }
+        return label;
     }
 
     private class DesktopItemsLoader implements Runnable {
@@ -250,9 +317,11 @@ public class LauncherModel {
         private volatile boolean mRunning;
 
         private final WeakReference<Launcher> mLauncher;
+        private boolean mLocaleChanged;
 
-        DesktopItemsLoader(Launcher launcher) {
+        DesktopItemsLoader(Launcher launcher, boolean localeChanged) {
             mLauncher = new WeakReference<Launcher>(launcher);
+            mLocaleChanged = localeChanged;
         }
 
         void stop() {
@@ -267,54 +336,61 @@ public class LauncherModel {
             mRunning = true;
 
             final Launcher launcher = mLauncher.get();
+            final ContentResolver contentResolver = launcher.getContentResolver();
+            final PackageManager manager = launcher.getPackageManager();
+
+            if (mLocaleChanged) {
+                updateShortcutLabels(contentResolver, manager);
+            }
 
             mDesktopItems = new ArrayList<ItemInfo>();
-            mUserFolders = new HashMap<Long, UserFolderInfo>();
+            mFolders = new HashMap<Long, FolderInfo>();
 
             final ArrayList<ItemInfo> desktopItems = mDesktopItems;
 
-            final Cursor c = launcher.getContentResolver().query(Settings.Favorites.CONTENT_URI,
-                    null, null, null, null);
+            final Cursor c = contentResolver.query(
+                    LauncherSettings.Favorites.CONTENT_URI, null, null, null, null);
 
             try {
-                final int idIndex = c.getColumnIndexOrThrow(Settings.Favorites.ID);
-                final int intentIndex = c.getColumnIndexOrThrow(Settings.Favorites.INTENT);
-                final int titleIndex = c.getColumnIndexOrThrow(Settings.Favorites.TITLE);
-                final int iconTypeIndex = c.getColumnIndexOrThrow(Settings.Favorites.ICON_TYPE);
-                final int iconIndex = c.getColumnIndexOrThrow(Settings.Favorites.ICON);
-                final int iconPackageIndex = c.getColumnIndexOrThrow(Settings.Favorites.ICON_PACKAGE);
-                final int iconResourceIndex = c.getColumnIndexOrThrow(Settings.Favorites.ICON_RESOURCE);
-                final int containerIndex = c.getColumnIndexOrThrow(Settings.Favorites.CONTAINER);
-                final int itemTypeIndex = c.getColumnIndexOrThrow(Settings.Favorites.ITEM_TYPE);
-                final int screenIndex = c.getColumnIndexOrThrow(Settings.Favorites.SCREEN);
-                final int cellXIndex = c.getColumnIndexOrThrow(Settings.Favorites.CELLX);
-                final int cellYIndex = c.getColumnIndexOrThrow(Settings.Favorites.CELLY);
-
-                final PackageManager manager = launcher.getPackageManager();
+                final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ID);
+                final int intentIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.INTENT);
+                final int titleIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.TITLE);
+                final int iconTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_TYPE);
+                final int iconIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON);
+                final int iconPackageIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_PACKAGE);
+                final int iconResourceIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_RESOURCE);
+                final int containerIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CONTAINER);
+                final int itemTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
+                final int screenIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SCREEN);
+                final int cellXIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLX);
+                final int cellYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLY);
+                final int uriIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.URI);
+                final int displayModeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.DISPLAY_MODE);
 
                 ApplicationInfo info;
                 String intentDescription;
                 Widget widgetInfo = null;
                 int container;
+                long id;
+                Intent intent;
 
-                final HashMap<Long, UserFolderInfo> userFolders = mUserFolders;
+                final HashMap<Long, FolderInfo> folders = mFolders;
 
                 while (!mStopped && c.moveToNext()) {
                     try {
                         int itemType = c.getInt(itemTypeIndex);
 
                         switch (itemType) {
-                        case Settings.Favorites.ITEM_TYPE_APPLICATION:
-                        case Settings.Favorites.ITEM_TYPE_SHORTCUT:
+                        case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+                        case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                             intentDescription = c.getString(intentIndex);
-                            Intent intent;
                             try {
                                 intent = Intent.getIntent(intentDescription);
                             } catch (java.net.URISyntaxException e) {
                                 continue;
                             }
 
-                            if (itemType == Settings.Favorites.ITEM_TYPE_APPLICATION) {
+                            if (itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
                                 info = getApplicationInfo(manager, intent);
                             } else {
                                 info = getApplicationInfoShortcut(c, launcher, iconTypeIndex,
@@ -338,22 +414,22 @@ public class LauncherModel {
                                 info.cellY = c.getInt(cellYIndex);
 
                                 switch (container) {
-                                case Settings.Favorites.CONTAINER_DESKTOP:
+                                case LauncherSettings.Favorites.CONTAINER_DESKTOP:
                                     desktopItems.add(info);
                                     break;
                                 default:
                                     // Item is in a user folder
                                     UserFolderInfo folderInfo =
-                                            findOrMakeFolder(userFolders, container);
+                                            findOrMakeUserFolder(folders, container);
                                     folderInfo.add(info);
                                     break;
                                 }
                             }
                             break;
-                        case Settings.Favorites.ITEM_TYPE_USER_FOLDER:
+                        case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
 
-                            long id = c.getLong(idIndex);
-                            UserFolderInfo folderInfo = findOrMakeFolder(userFolders, id);
+                            id = c.getLong(idIndex);
+                            UserFolderInfo folderInfo = findOrMakeUserFolder(folders, id);
 
                             folderInfo.title = c.getString(titleIndex);
 
@@ -365,24 +441,57 @@ public class LauncherModel {
                             folderInfo.cellY = c.getInt(cellYIndex);
 
                             switch (container) {
-                            case Settings.Favorites.CONTAINER_DESKTOP:
-                                desktopItems.add(folderInfo);
-                                break;
-                            default:
-
+                                case LauncherSettings.Favorites.CONTAINER_DESKTOP:
+                                    desktopItems.add(folderInfo);
+                                    break;
                             }
                             break;
-                        case Settings.Favorites.ITEM_TYPE_WIDGET_CLOCK:
-                        case Settings.Favorites.ITEM_TYPE_WIDGET_SEARCH:
-                        case Settings.Favorites.ITEM_TYPE_WIDGET_PHOTO_FRAME:
+                        case LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER:
+
+                            id = c.getLong(idIndex);
+                            LiveFolderInfo liveFolderInfo = findOrMakeLiveFolder(folders, id);
+
+                            intentDescription = c.getString(intentIndex);
+                            intent = null;
+                            if (intentDescription != null) {
+                                try {
+                                    intent = Intent.getIntent(intentDescription);
+                                } catch (java.net.URISyntaxException e) {
+                                    // Ignore, a live folder might not have a base intent
+                                }
+                            }
+
+                            liveFolderInfo.title = c.getString(titleIndex);
+                            liveFolderInfo.id = id;
+                            container = c.getInt(containerIndex);
+                            liveFolderInfo.container = container;
+                            liveFolderInfo.screen = c.getInt(screenIndex);
+                            liveFolderInfo.cellX = c.getInt(cellXIndex);
+                            liveFolderInfo.cellY = c.getInt(cellYIndex);
+                            liveFolderInfo.uri = Uri.parse(c.getString(uriIndex));
+                            liveFolderInfo.baseIntent = intent;
+                            liveFolderInfo.displayMode = c.getInt(displayModeIndex);
+
+                            loadLiveFolderIcon(launcher, c, iconTypeIndex, iconPackageIndex,
+                                    iconResourceIndex, liveFolderInfo);
+
+                            switch (container) {
+                                case LauncherSettings.Favorites.CONTAINER_DESKTOP:
+                                    desktopItems.add(liveFolderInfo);
+                                    break;
+                            }
+                            break;
+                        case LauncherSettings.Favorites.ITEM_TYPE_WIDGET_CLOCK:
+                        case LauncherSettings.Favorites.ITEM_TYPE_WIDGET_SEARCH:
+                        case LauncherSettings.Favorites.ITEM_TYPE_WIDGET_PHOTO_FRAME:
                             switch (itemType) {
-                            case Settings.Favorites.ITEM_TYPE_WIDGET_CLOCK:
+                            case LauncherSettings.Favorites.ITEM_TYPE_WIDGET_CLOCK:
                                 widgetInfo = Widget.makeClock();
                                 break;
-                            case Settings.Favorites.ITEM_TYPE_WIDGET_SEARCH:
+                            case LauncherSettings.Favorites.ITEM_TYPE_WIDGET_SEARCH:
                                 widgetInfo = Widget.makeSearch();
                                 break;
-                            case Settings.Favorites.ITEM_TYPE_WIDGET_PHOTO_FRAME:
+                            case LauncherSettings.Favorites.ITEM_TYPE_WIDGET_PHOTO_FRAME:
                                 widgetInfo = Widget.makePhotoFrame();
                                 byte[] data = c.getBlob(iconIndex);
                                 if (data != null) {
@@ -394,7 +503,7 @@ public class LauncherModel {
 
                             if (widgetInfo != null) {
                                 container = c.getInt(containerIndex);
-                                if (container != Settings.Favorites.CONTAINER_DESKTOP) {
+                                if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
                                     Log.e(Launcher.LOG_TAG, "Widget found where container "
                                             + "!= CONTAINER_DESKTOP -- ignoring!");
                                     continue;
@@ -432,6 +541,33 @@ public class LauncherModel {
         }
     }
 
+    private static void loadLiveFolderIcon(Launcher launcher, Cursor c, int iconTypeIndex,
+            int iconPackageIndex, int iconResourceIndex, LiveFolderInfo liveFolderInfo) {
+
+        int iconType = c.getInt(iconTypeIndex);
+        switch (iconType) {
+            case LauncherSettings.Favorites.ICON_TYPE_RESOURCE:
+                String packageName = c.getString(iconPackageIndex);
+                String resourceName = c.getString(iconResourceIndex);
+                PackageManager packageManager = launcher.getPackageManager();
+                try {
+                    Resources resources = packageManager.getResourcesForApplication(packageName);
+                    final int id = resources.getIdentifier(resourceName, null, null);
+                    liveFolderInfo.icon = resources.getDrawable(id);
+                } catch (Exception e) {
+                    liveFolderInfo.icon =
+                            launcher.getResources().getDrawable(R.drawable.ic_launcher_folder);
+                }
+                liveFolderInfo.iconResource = new Intent.ShortcutIconResource();
+                liveFolderInfo.iconResource.packageName = packageName;
+                liveFolderInfo.iconResource.resourceName = resourceName;
+                break;
+            default:
+                liveFolderInfo.icon =
+                        launcher.getResources().getDrawable(R.drawable.ic_launcher_folder);                                    
+        }
+    }
+
     /**
      * Finds the user folder defined by the specified id.
      *
@@ -439,28 +575,42 @@ public class LauncherModel {
      * 
      * @return A UserFolderInfo if the folder exists or null otherwise.
      */
-    UserFolderInfo findFolderById(long id) {
-        return mUserFolders.get(id);
+    FolderInfo findFolderById(long id) {
+        return mFolders.get(id);
     }
 
-    void addUserFolder(UserFolderInfo info) {
-        mUserFolders.put(info.id, info);
+    void addFolder(FolderInfo info) {
+        mFolders.put(info.id, info);
     }
 
     /**
      * Return an existing UserFolderInfo object if we have encountered this ID previously, or make a
      * new one.
      */
-    private UserFolderInfo findOrMakeFolder(HashMap<Long, UserFolderInfo> userFolders, long id) {
-        UserFolderInfo folderInfo;
+    private UserFolderInfo findOrMakeUserFolder(HashMap<Long, FolderInfo> folders, long id) {
         // See if a placeholder was created for us already
-        folderInfo = userFolders.get(id);
-        if (folderInfo == null) {
+        FolderInfo folderInfo = folders.get(id);
+        if (folderInfo == null || !(folderInfo instanceof UserFolderInfo)) {
             // No placeholder -- create a new instance
             folderInfo = new UserFolderInfo();
-            userFolders.put(id, folderInfo);
+            folders.put(id, folderInfo);
         }
-        return folderInfo;
+        return (UserFolderInfo) folderInfo;
+    }
+
+    /**
+     * Return an existing UserFolderInfo object if we have encountered this ID previously, or make a
+     * new one.
+     */
+    private LiveFolderInfo findOrMakeLiveFolder(HashMap<Long, FolderInfo> folders, long id) {
+        // See if a placeholder was created for us already
+        FolderInfo folderInfo = folders.get(id);
+        if (folderInfo == null || !(folderInfo instanceof LiveFolderInfo)) {
+            // No placeholder -- create a new instance
+            folderInfo = new LiveFolderInfo();
+            folders.put(id, folderInfo);
+        }
+        return (LiveFolderInfo) folderInfo;
     }
 
     /**
@@ -483,8 +633,8 @@ public class LauncherModel {
             for (int i = 0; i < count; i++) {
                 ItemInfo item = desktopItems.get(i);
                 switch (item.itemType) {
-                case Settings.Favorites.ITEM_TYPE_APPLICATION:
-                case Settings.Favorites.ITEM_TYPE_SHORTCUT:
+                case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+                case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                     ((ApplicationInfo)item).icon.setCallback(null);
                 }
             }
@@ -562,7 +712,7 @@ public class LauncherModel {
         if (info.title == null) {
             info.title = "";
         }
-        info.itemType = Settings.Favorites.ITEM_TYPE_APPLICATION;
+        info.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
         return info;
     }
     
@@ -573,11 +723,11 @@ public class LauncherModel {
             int iconTypeIndex, int iconPackageIndex, int iconResourceIndex, int iconIndex) {
 
         final ApplicationInfo info = new ApplicationInfo();
-        info.itemType = Settings.Favorites.ITEM_TYPE_SHORTCUT;
+        info.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
 
         int iconType = c.getInt(iconTypeIndex);
         switch (iconType) {
-            case Settings.Favorites.ICON_TYPE_RESOURCE:
+            case LauncherSettings.Favorites.ICON_TYPE_RESOURCE:
                 String packageName = c.getString(iconPackageIndex);
                 String resourceName = c.getString(iconResourceIndex);
                 PackageManager packageManager = launcher.getPackageManager();
@@ -593,10 +743,11 @@ public class LauncherModel {
                 info.iconResource.resourceName = resourceName;
                 info.customIcon = false;
                 break;
-            case Settings.Favorites.ICON_TYPE_BITMAP:
+            case LauncherSettings.Favorites.ICON_TYPE_BITMAP:
                 byte[] data = c.getBlob(iconIndex);
                 Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                info.icon = new BitmapDrawable(Utilities.createBitmapThumbnail(bitmap, launcher));
+                info.icon = new FastBitmapDrawable(
+                        Utilities.createBitmapThumbnail(bitmap, launcher));
                 info.filtered = true;
                 info.customIcon = true;
                 break;
@@ -621,7 +772,7 @@ public class LauncherModel {
      * @param userFolderInfo
      */
     void removeUserFolder(UserFolderInfo userFolderInfo) {
-        mUserFolders.remove(userFolderInfo.id);
+        mFolders.remove(userFolderInfo.id);
     }
     
     /**
@@ -652,12 +803,12 @@ public class LauncherModel {
         final ContentValues values = new ContentValues();
         final ContentResolver cr = context.getContentResolver();
 
-        values.put(Settings.Favorites.CONTAINER, item.container);
-        values.put(Settings.Favorites.CELLX, item.cellX);
-        values.put(Settings.Favorites.CELLY, item.cellY);
-        values.put(Settings.Favorites.SCREEN, item.screen);
+        values.put(LauncherSettings.Favorites.CONTAINER, item.container);
+        values.put(LauncherSettings.Favorites.CELLX, item.cellX);
+        values.put(LauncherSettings.Favorites.CELLY, item.cellY);
+        values.put(LauncherSettings.Favorites.SCREEN, item.screen);
 
-        cr.update(Settings.Favorites.getContentUri(item.id, false), values, null, null);
+        cr.update(LauncherSettings.Favorites.getContentUri(item.id, false), values, null, null);
     }
 
     /**
@@ -666,7 +817,7 @@ public class LauncherModel {
      */
     static boolean shortcutExists(Context context, String title, Intent intent) {
         final ContentResolver cr = context.getContentResolver();
-        Cursor c = cr.query(Settings.Favorites.CONTENT_URI,
+        Cursor c = cr.query(LauncherSettings.Favorites.CONTENT_URI,
             new String[] { "title", "intent" }, "title=? and intent=?",
             new String[] { title, intent.toURI() }, null);
         boolean result = false;
@@ -678,21 +829,32 @@ public class LauncherModel {
         return result;
     }
 
-    UserFolderInfo getFolderById(Context context, long id) {
+    FolderInfo getFolderById(Context context, long id) {
         final ContentResolver cr = context.getContentResolver();
-        Cursor c = cr.query(Settings.Favorites.CONTENT_URI, null, "_id=? and itemType=?",
-            new String[] { String.valueOf(id),
-                    String.valueOf(Settings.Favorites.ITEM_TYPE_USER_FOLDER) }, null);
+        Cursor c = cr.query(LauncherSettings.Favorites.CONTENT_URI, null,
+                "_id=? and itemType=? or itemType=?",
+                new String[] { String.valueOf(id),
+                        String.valueOf(LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER),
+                        String.valueOf(LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER) }, null);
 
         try {
             if (c.moveToFirst()) {
-                final int titleIndex = c.getColumnIndexOrThrow(Settings.Favorites.TITLE);
-                final int containerIndex = c.getColumnIndexOrThrow(Settings.Favorites.CONTAINER);
-                final int screenIndex = c.getColumnIndexOrThrow(Settings.Favorites.SCREEN);
-                final int cellXIndex = c.getColumnIndexOrThrow(Settings.Favorites.CELLX);
-                final int cellYIndex = c.getColumnIndexOrThrow(Settings.Favorites.CELLY);
+                final int itemTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
+                final int titleIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.TITLE);
+                final int containerIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CONTAINER);
+                final int screenIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SCREEN);
+                final int cellXIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLX);
+                final int cellYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLY);
 
-                UserFolderInfo folderInfo = findOrMakeFolder(mUserFolders, id);
+                FolderInfo folderInfo = null;
+                switch (c.getInt(itemTypeIndex)) {
+                    case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
+                        folderInfo = findOrMakeUserFolder(mFolders, id);
+                        break;
+                    case LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER:
+                        folderInfo = findOrMakeLiveFolder(mFolders, id);
+                        break;
+                }
 
                 folderInfo.title = c.getString(titleIndex);
                 folderInfo.id = id;
@@ -712,18 +874,18 @@ public class LauncherModel {
 
     static Widget getPhotoFrameInfo(Context context, int screen, int cellX, int cellY) {
         final ContentResolver cr = context.getContentResolver();
-        Cursor c = cr.query(Settings.Favorites.CONTENT_URI,
+        Cursor c = cr.query(LauncherSettings.Favorites.CONTENT_URI,
             null, "screen=? and cellX=? and cellY=? and itemType=?",
             new String[] { String.valueOf(screen), String.valueOf(cellX), String.valueOf(cellY),
-                String.valueOf(Settings.Favorites.ITEM_TYPE_WIDGET_PHOTO_FRAME) }, null);
+                String.valueOf(LauncherSettings.Favorites.ITEM_TYPE_WIDGET_PHOTO_FRAME) }, null);
 
         try {
             if (c.moveToFirst()) {
-                final int idIndex = c.getColumnIndexOrThrow(Settings.Favorites.ID);
-                final int containerIndex = c.getColumnIndexOrThrow(Settings.Favorites.CONTAINER);
-                final int screenIndex = c.getColumnIndexOrThrow(Settings.Favorites.SCREEN);
-                final int cellXIndex = c.getColumnIndexOrThrow(Settings.Favorites.CELLX);
-                final int cellYIndex = c.getColumnIndexOrThrow(Settings.Favorites.CELLY);
+                final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ID);
+                final int containerIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CONTAINER);
+                final int screenIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SCREEN);
+                final int cellXIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLX);
+                final int cellYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLY);
 
                 Widget widgetInfo = Widget.makePhotoFrame();
                 widgetInfo.id = c.getLong(idIndex);
@@ -757,8 +919,8 @@ public class LauncherModel {
         
         item.onAddToDatabase(values);
         
-        Uri result = cr.insert(notify ? Settings.Favorites.CONTENT_URI :
-                Settings.Favorites.CONTENT_URI_NO_NOTIFICATION, values);
+        Uri result = cr.insert(notify ? LauncherSettings.Favorites.CONTENT_URI :
+                LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION, values);
 
         if (result != null) {
             item.id = Integer.parseInt(result.getPathSegments().get(1));
@@ -774,7 +936,7 @@ public class LauncherModel {
 
         item.onAddToDatabase(values);
 
-        cr.update(Settings.Favorites.getContentUri(item.id, false), values, null, null);
+        cr.update(LauncherSettings.Favorites.getContentUri(item.id, false), values, null, null);
     }
     
     /**
@@ -785,7 +947,7 @@ public class LauncherModel {
     static void deleteItemFromDatabase(Context context, ItemInfo item) {
         final ContentResolver cr = context.getContentResolver();
 
-        cr.delete(Settings.Favorites.getContentUri(item.id, false), null, null);
+        cr.delete(LauncherSettings.Favorites.getContentUri(item.id, false), null, null);
     }
 
 
@@ -795,8 +957,8 @@ public class LauncherModel {
     static void deleteUserFolderContentsFromDatabase(Context context, UserFolderInfo info) {
         final ContentResolver cr = context.getContentResolver();
 
-        cr.delete(Settings.Favorites.getContentUri(info.id, false), null, null);
-        cr.delete(Settings.Favorites.CONTENT_URI, Settings.Favorites.CONTAINER + "=" + info.id, 
+        cr.delete(LauncherSettings.Favorites.getContentUri(info.id, false), null, null);
+        cr.delete(LauncherSettings.Favorites.CONTENT_URI, LauncherSettings.Favorites.CONTAINER + "=" + info.id,
                 null);
     }
 }

@@ -16,19 +16,14 @@
 
 package com.android.launcher;
 
+import android.app.Application;
+import dalvik.system.VMRuntime;
 
-/**
- * Represents a folder containing shortcuts or apps.
- */
-class FolderInfo extends ItemInfo {
-    
-    /**
-     * Whether this folder has been opened
-     */
-    boolean opened;
+public class LauncherApplication extends Application {
+    @Override
+    public void onCreate() {
+        VMRuntime.getRuntime().setMinimumHeapSize(4 * 1024 * 1024);
 
-    /**
-     * The folder name.
-     */
-    CharSequence title;
+        super.onCreate();
+    }
 }

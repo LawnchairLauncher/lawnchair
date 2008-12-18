@@ -18,7 +18,6 @@ package com.android.launcher;
 
 import android.content.ContentValues;
 import android.graphics.Bitmap;
-import com.android.internal.provider.Settings;
 
 /**
  * Represents one instance of a Launcher widget (clock, search, photo frame).
@@ -31,7 +30,7 @@ class Widget extends ItemInfo {
 
     static Widget makeClock() {
         Widget w = new Widget();
-        w.itemType = Settings.Favorites.ITEM_TYPE_WIDGET_CLOCK;
+        w.itemType = LauncherSettings.Favorites.ITEM_TYPE_WIDGET_CLOCK;
         w.spanX = 2;
         w.spanY = 2;
         w.layoutResource = R.layout.widget_clock;
@@ -40,7 +39,7 @@ class Widget extends ItemInfo {
     
     static Widget makePhotoFrame() {
         Widget w = new Widget();
-        w.itemType = Settings.Favorites.ITEM_TYPE_WIDGET_PHOTO_FRAME;
+        w.itemType = LauncherSettings.Favorites.ITEM_TYPE_WIDGET_PHOTO_FRAME;
         w.spanX = 2;
         w.spanY = 2;
         w.layoutResource = R.layout.widget_photo_frame;
@@ -49,7 +48,7 @@ class Widget extends ItemInfo {
     
     static Widget makeSearch() {
         Widget w = new Widget();
-        w.itemType = Settings.Favorites.ITEM_TYPE_WIDGET_SEARCH;
+        w.itemType = LauncherSettings.Favorites.ITEM_TYPE_WIDGET_SEARCH;
         w.spanX = 4;
         w.spanY = 1;
         w.layoutResource = R.layout.widget_search;

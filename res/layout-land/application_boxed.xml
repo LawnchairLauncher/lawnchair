@@ -15,15 +15,17 @@
 -->
 
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/name"
     android:layout_width="fill_parent"
     android:layout_height="88dip"
 
-    android:paddingTop="6dip"
-    android:paddingBottom="3dip"
+    android:paddingTop="5dip"
+    android:paddingBottom="2dip"
     android:drawablePadding="0dip"
 
     android:textSize="13dip"
     android:maxLines="2"
-    android:ellipsize="end"
+    android:ellipsize="marquee"
+    android:fadingEdge="horizontal"
     android:textColor="@color/bright_text_dark_focused"
     android:gravity="top|center_horizontal" />

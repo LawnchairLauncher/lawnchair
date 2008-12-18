@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name">"Startseite"</string>
+    <string name="folder_name">"Ordner"</string>
+    <string name="chooser_wallpaper">"Hintergrund auswählen"</string>
+    <string name="wallpaper_instructions">"Hintergrund festlegen"</string>
+    <string name="pick_wallpaper">"Galerie"</string>
+    <string name="activity_not_found">"Anwendung ist nicht auf dem Telefon installiert."</string>
+    <!-- no translation found for rename_folder_label (5646236631298452787) -->
+    <skip />
+    <string name="rename_folder_title">"Ordner umbenennen"</string>
+    <string name="rename_action">"OK"</string>
+    <string name="cancel_action">"Abbrechen"</string>
+    <!-- no translation found for menu_item_add_item (6233177331075781114) -->
+    <skip />
+    <string name="group_applications">"Anwendung"</string>
+    <string name="group_shortcuts">"Verknüpfung"</string>
+    <!-- no translation found for group_live_folders (3057578584715591220) -->
+    <skip />
+    <string name="group_widgets">"Widget"</string>
+    <string name="group_wallpapers">"Hintergrund"</string>
+    <string name="add_folder">"Ordner"</string>
+    <string name="add_clock">"Uhr"</string>
+    <string name="add_photo_frame">"Bildrahmen"</string>
+    <string name="add_search">"Suchen"</string>
+    <string name="out_of_space">"Auf der Startseite ist kein Platz mehr vorhanden."</string>
+    <string name="menu_add">"Hinzufügen"</string>
+    <string name="menu_wallpaper">"Hintergrund"</string>
+    <string name="menu_search">"Suchen"</string>
+    <string name="menu_notifications">"Benachrichtigungen"</string>
+    <string name="menu_settings">"Einstellungen"</string>
+    <string name="permlab_install_shortcut">"Verknüpfungen installieren"</string>
+    <string name="permdesc_install_shortcut">"Ermöglicht einer Anwendung das Hinzufügen von Verknüpfungen ohne Eingriff des Benutzers."</string>
+    <string name="permlab_uninstall_shortcut">"Verknüpfungen deinstallieren"</string>
+    <string name="permdesc_uninstall_shortcut">"Ermöglicht einer Anwendung das Entfernen von Verknüpfungen ohne Eingriff des Benutzers."</string>
+    <!-- no translation found for permlab_read_settings (3452408290738106747) -->
+    <skip />
+    <!-- no translation found for permdesc_read_settings (8377434937176025492) -->
+    <skip />
+    <!-- no translation found for permlab_write_settings (1360567537236705628) -->
+    <skip />
+    <!-- no translation found for permdesc_write_settings (1098648778383349818) -->
+    <skip />
+    <string name="search_hint">"Google-Suche"</string>
+</resources>

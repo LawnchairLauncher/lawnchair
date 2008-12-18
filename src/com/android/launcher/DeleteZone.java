@@ -20,7 +20,6 @@ import android.widget.ImageView;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import com.android.internal.provider.Settings;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.view.animation.Animation;
@@ -35,6 +34,8 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
     private static final int TRANSITION_DURATION = 250;
     private static final int ANIMATION_DURATION = 200;
 
+    private final int[] mLocation = new int[2];
+    
     private Launcher mLauncher;
     private boolean mTrashMode;
 
@@ -74,15 +75,16 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
 
     public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset,
             Object dragInfo) {
-        final ItemInfo item = (ItemInfo) dragInfo;
-        // Accept anything except items in the all apps folder
-        return item.container != ItemInfo.NO_ID;
+        return true;
     }
 
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset, Object dragInfo) {
         final ItemInfo item = (ItemInfo) dragInfo;
+
+        if (item.container == -1) return;
+
         final LauncherModel model = Launcher.getModel();
-        if (item.container == Settings.Favorites.CONTAINER_DESKTOP) {
+        if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
             model.removeDesktopItem(item);
         } else {
             if (source instanceof UserFolder) {
@@ -115,7 +117,7 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
 
     public void onDragStart(View v, DragSource source, Object info, int dragAction) {
         final ItemInfo item = (ItemInfo) info;
-        if (item != null && item.container != ItemInfo.NO_ID) {
+        if (item != null) {
             mTrashMode = true;
             createAnimations();
             final int[] location = mLocation;

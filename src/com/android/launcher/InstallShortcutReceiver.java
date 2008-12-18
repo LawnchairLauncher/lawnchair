@@ -21,7 +21,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ContentResolver;
 import android.database.Cursor;
-import com.android.internal.provider.Settings;
 
 public class InstallShortcutReceiver extends BroadcastReceiver {
     private final int[] mCoordinates = new int[2];
@@ -29,6 +28,15 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent data) {
         int screen = Launcher.getScreen();
 
+        if (!installShortcut(context, data, screen)) {
+            // The target screen is full, let's try the other screens
+            for (int i = 0; i < Launcher.SCREEN_COUNT; i++) {
+                if (i != screen && installShortcut(context, data, i)) break;
+            }
+        }
+    }
+
+    private boolean installShortcut(Context context, Intent data, int screen) {
         if (findEmptyCell(context, mCoordinates, screen)) {
             CellLayout.CellInfo cell = new CellLayout.CellInfo();
             cell.cellX = mCoordinates[0];
@@ -48,7 +56,11 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             if (duplicate || !LauncherModel.shortcutExists(context, name, intent)) {
                 Launcher.addShortcut(context, data, cell, true);
             }
+
+            return true;
         }
+
+        return false;
     }
 
     private static boolean findEmptyCell(Context context, int[] xy, int screen) {
@@ -58,14 +70,16 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         boolean[][] occupied = new boolean[xCount][yCount];
 
         final ContentResolver cr = context.getContentResolver();
-        Cursor c = cr.query(Settings.Favorites.CONTENT_URI,
-            new String[] { "cellX", "cellY", "spanX", "spanY" }, "screen=?",
+        Cursor c = cr.query(LauncherSettings.Favorites.CONTENT_URI,
+            new String[] { LauncherSettings.Favorites.CELLX, LauncherSettings.Favorites.CELLY,
+                    LauncherSettings.Favorites.SPANX, LauncherSettings.Favorites.SPANY },
+            LauncherSettings.Favorites.SCREEN + "=?",
             new String[] { String.valueOf(screen) }, null);
 
-        final int cellXIndex = c.getColumnIndexOrThrow(Settings.Favorites.CELLX);
-        final int cellYIndex = c.getColumnIndexOrThrow(Settings.Favorites.CELLY);
-        final int spanXIndex = c.getColumnIndexOrThrow(Settings.Favorites.SPANX);
-        final int spanYIndex = c.getColumnIndexOrThrow(Settings.Favorites.SPANY);
+        final int cellXIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLX);
+        final int cellYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLY);
+        final int spanXIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SPANX);
+        final int spanYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SPANY);
 
         try {
             while (c.moveToNext()) {

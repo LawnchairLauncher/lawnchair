@@ -102,6 +102,7 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
         mGallery = (Gallery) findViewById(R.id.gallery);
         mGallery.setAdapter(new ImageAdapter(this));
         mGallery.setOnItemSelectedListener(this);
+        mGallery.setCallbackDuringFling(false);
         
         Button b = (Button) findViewById(R.id.set);
         b.setOnClickListener(this);

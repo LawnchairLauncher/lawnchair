@@ -17,6 +17,16 @@
 -->
 
 <resources>
+    <!-- Orientation of a widget. -->
+    <attr name="direction">
+        <!-- Vertical widget. -->
+        <enum name="vertical" value="0" />
+        <!-- Horizontal widget. -->
+        <enum name="horizontal" value="1" />
+    </attr>
+
+    <skip />
+
     <!-- Workspace specific attributes. These attributes are used to customize
          the workspace in XML files. -->
     <declare-styleable name="Workspace">
@@ -49,12 +59,14 @@
          a DeleteZone view in XML files. -->
     <declare-styleable name="DeleteZone">
         <!-- Orientation of the delete zone. -->
-        <attr name="direction">
-            <!-- Vertical delete zone. -->
-            <enum name="vertical" value="0" />
-            <!-- Horizontal delete zone. This is the default value. -->
-            <enum name="horizontal" value="1" />
-        </attr>
+        <attr name="direction" />
+    </declare-styleable>
+
+    <!-- HandleView specific attributes. These attributes are used to customize
+         a HandleView view in XML files. -->
+    <declare-styleable name="HandleView">
+        <!-- Orientation of the handle. -->
+        <attr name="direction" />
     </declare-styleable>
 
 </resources>

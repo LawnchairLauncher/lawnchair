@@ -20,9 +20,7 @@ import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import com.android.internal.provider.Settings;
 
 /**
  * Represents a launchable application. An application is made of a name (or title),
@@ -63,7 +61,7 @@ class ApplicationInfo extends ItemInfo {
     Intent.ShortcutIconResource iconResource;
 
     ApplicationInfo() {
-        itemType = Settings.Favorites.ITEM_TYPE_SHORTCUT;
+        itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
     }
     
     public ApplicationInfo(ApplicationInfo info) {
@@ -82,7 +80,7 @@ class ApplicationInfo extends ItemInfo {
 
     /**
      * Creates the application intent based on a component name and various launch flags.
-     * Sets {@link #itemType} to {@link Settings.Favorites#ITEM_TYPE_APPLICATION}.
+     * Sets {@link #itemType} to {@link LauncherSettings.Favorites#ITEM_TYPE_APPLICATION}.
      *
      * @param className the class name of the component representing the intent
      * @param launchFlags the launch flags
@@ -92,7 +90,7 @@ class ApplicationInfo extends ItemInfo {
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
         intent.setComponent(className);
         intent.setFlags(launchFlags);
-        itemType = Settings.Favorites.ITEM_TYPE_APPLICATION;
+        itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
     }
 
     @Override
@@ -100,20 +98,22 @@ class ApplicationInfo extends ItemInfo {
         super.onAddToDatabase(values);
 
         String titleStr = title != null ? title.toString() : null;
-        values.put(Settings.Favorites.TITLE, titleStr);
+        values.put(LauncherSettings.Favorites.TITLE, titleStr);
 
         String uri = intent != null ? intent.toURI() : null;
-        values.put(Settings.Favorites.INTENT, uri);
+        values.put(LauncherSettings.Favorites.INTENT, uri);
 
         if (customIcon) {
-            values.put(Settings.Favorites.ICON_TYPE, Settings.Favorites.ICON_TYPE_BITMAP);
-            Bitmap bitmap = ((BitmapDrawable) icon).getBitmap();
+            values.put(LauncherSettings.Favorites.ICON_TYPE,
+                    LauncherSettings.Favorites.ICON_TYPE_BITMAP);
+            Bitmap bitmap = ((FastBitmapDrawable) icon).getBitmap();
             writeBitmap(values, bitmap);
         } else {
-            values.put(Settings.Favorites.ICON_TYPE, Settings.Favorites.ICON_TYPE_RESOURCE);
+            values.put(LauncherSettings.Favorites.ICON_TYPE,
+                    LauncherSettings.Favorites.ICON_TYPE_RESOURCE);
             if (iconResource != null) {
-                values.put(Settings.Favorites.ICON_PACKAGE, iconResource.packageName);
-                values.put(Settings.Favorites.ICON_RESOURCE, iconResource.resourceName);
+                values.put(LauncherSettings.Favorites.ICON_PACKAGE, iconResource.packageName);
+                values.put(LauncherSettings.Favorites.ICON_RESOURCE, iconResource.resourceName);
             }
         }
     }

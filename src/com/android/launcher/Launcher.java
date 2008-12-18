@@ -29,16 +29,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
-import android.hardware.SensorListener;
-import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -46,15 +45,12 @@ import android.os.IBinder;
 import android.os.Parcelable;
 import android.os.RemoteException;
 import android.os.ServiceManager;
-import android.os.SystemClock;
-import android.os.SystemProperties;
-import android.provider.Contacts;
+import android.provider.*;
 import android.telephony.PhoneNumberUtils;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
-import android.util.Config;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -66,14 +62,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.View.OnLongClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.GridView;
 import android.app.IWallpaperService;
 
-import com.android.internal.provider.Settings;
 import com.android.internal.widget.SlidingDrawer;
 
 import java.lang.ref.WeakReference;
@@ -88,17 +85,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private static final boolean PROFILE_STARTUP = false;
     private static final boolean DEBUG_USER_INTERFACE = false;
 
-    private static final String USE_OPENGL_BY_DEFAULT = "false";
-
     private static final boolean REMOVE_SHORTCUT_ON_PACKAGE_REMOVE = false;    
-
-    // Type: boolean
-    private static final String PROPERTY_USE_OPENGL = "launcher.opengl";
-    // Type: boolean
-    private static final String PROPERTY_USE_SENSORS = "launcher.sensors";
-
-    private static final boolean USE_OPENGL = true;
-    private static final boolean USE_SENSORS = false;
 
     private static final int WALLPAPER_SCREENS_SPAN = 2;
 
@@ -112,15 +99,22 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private static final int REQUEST_CREATE_SHORTCUT = 1;
     private static final int REQUEST_CHOOSE_PHOTO = 2;
     private static final int REQUEST_UPDATE_PHOTO = 3;
+    private static final int REQUEST_CREATE_LIVE_FOLDER = 4;
 
     static final String EXTRA_SHORTCUT_DUPLICATE = "duplicate";
 
+    static final int SCREEN_COUNT = 3;
     static final int DEFAULT_SCREN = 1;
     static final int NUMBER_CELLS_X = 4;
     static final int NUMBER_CELLS_Y = 4;    
 
     private static final int DIALOG_CREATE_SHORTCUT = 1;
     static final int DIALOG_RENAME_FOLDER = 2;    
+
+    private static final String PREFERENCES = "launcher";
+    private static final String KEY_LOCALE = "locale";
+    private static final String KEY_MCC = "mcc";
+    private static final String KEY_MNC = "mnc";
 
     // Type: int
     private static final String RUNTIME_STATE_CURRENT_SCREEN = "launcher.current_screen";
@@ -165,11 +159,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private final BroadcastReceiver mApplicationsReceiver = new ApplicationsIntentReceiver();
     private final ContentObserver mObserver = new FavoritesChangeObserver();
 
-    private final Handler mHandler = new Handler();
     private LayoutInflater mInflater;
-
-    private SensorManager mSensorManager;
-    private SensorHandler mSensorHandler;
 
     private DragLayer mDragLayer;
     private Workspace mWorkspace;
@@ -177,7 +167,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private CellLayout.CellInfo mAddItemCellInfo;
     private CellLayout.CellInfo mMenuAddInfo;
     private final int[] mCellCoordinates = new int[2];
-    private UserFolderInfo mFolderInfo;
+    private FolderInfo mFolderInfo;
 
     private SlidingDrawer mDrawer;
     private TransitionDrawable mHandleIcon;
@@ -192,11 +182,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     private boolean mRestoring;
     private boolean mWaitingForResult;
+    private boolean mLocaleChanged;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        dalvik.system.VMRuntime.getRuntime().setMinimumHeapSize(4 * 1024 * 1024);
-
         super.onCreate(savedInstanceState);
         mInflater = getLayoutInflater();
 
@@ -204,10 +193,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             android.os.Debug.startMethodTracing("/sdcard/launcher");
         }
 
+        checkForLocaleChange();
         setWallpaperDimension();
-
-        enableSensors();
-        enableOpenGL();
 
         if (sModel == null) {
             sModel = new LauncherModel();
@@ -234,6 +221,30 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mDefaultKeySsb = new SpannableStringBuilder();
         Selection.setSelection(mDefaultKeySsb, 0);
     }
+    
+    private void checkForLocaleChange() {
+        final SharedPreferences preferences = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        final Configuration configuration = getResources().getConfiguration();
+
+        final String previousLocale = preferences.getString(KEY_LOCALE, null);
+        final String locale = configuration.locale.toString();
+
+        final int previousMcc = preferences.getInt(KEY_MCC, -1);
+        final int mcc = configuration.mcc;
+
+        final int previousMnc = preferences.getInt(KEY_MNC, -1);
+        final int mnc = configuration.mnc;
+
+        mLocaleChanged = !locale.equals(previousLocale) || mcc != previousMcc || mnc != previousMnc;
+
+        if (mLocaleChanged) {
+            final SharedPreferences.Editor editor = preferences.edit();
+            editor.putString(KEY_LOCALE, locale);
+            editor.putInt(KEY_MCC, mcc);
+            editor.putInt(KEY_MNC, mnc);
+            editor.commit();
+        }
+    }
 
     static int getScreen() {
         synchronized (sLock) {
@@ -248,17 +259,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     }
 
     private void startLoaders() {
-        sModel.loadApplications(true, this);
-        sModel.loadUserItems(true, this);
+        sModel.loadApplications(true, this, mLocaleChanged);
+        sModel.loadUserItems(!mLocaleChanged, this, mLocaleChanged);
         mRestoring = false;
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        // When MMC/MNC changes, so can applications, so we reload them
-        sModel.loadApplications(false, Launcher.this);
     }
 
     private void setWallpaperDimension() {
@@ -277,31 +280,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
     }
 
-    private void enableSensors() {
-        //noinspection PointlessBooleanExpression,ConstantConditions
-        if (USE_SENSORS || "true".equals(SystemProperties.get(PROPERTY_USE_SENSORS, "false"))) {
-            if (Config.LOGD) {
-                Log.d(LOG_TAG, "Launcher activating sensors");
-            }
-            mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-            mSensorHandler = new SensorHandler();
-        }
-    }
-
-    private void enableOpenGL() {
-        //noinspection PointlessBooleanExpression,ConstantConditions
-        if (USE_OPENGL && "true".equals(SystemProperties.get(PROPERTY_USE_OPENGL,
-                USE_OPENGL_BY_DEFAULT))) {
-            if (Config.LOGD) {
-                Log.d(LOG_TAG, "Launcher starting in OpenGL");
-            }
-            //requestWindowFeature(Window.FEATURE_OPENGL);
-            //sOpenGlEnabled = true;
-        } else {
-            sOpenGlEnabled = false;
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && mAddItemCellInfo != null) {
@@ -315,6 +293,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 case REQUEST_UPDATE_PHOTO:
                     completeUpdatePhotoFrame(data, mAddItemCellInfo);
                     break;
+                case REQUEST_CREATE_LIVE_FOLDER:
+                    completeAddLiveFolder(data, mAddItemCellInfo, !mDesktopLocked);
+                    break;
             }
         }
         mWaitingForResult = false;
@@ -327,19 +308,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         if (mRestoring) {
             startLoaders();
         }
-
-        if (mSensorManager != null) {
-            mSensorManager.registerListener(mSensorHandler, SensorManager.SENSOR_ACCELEROMETER);
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        if (mSensorManager != null) {
-            mSensorManager.unregisterListener(mSensorHandler);
-        }
-
-        super.onStop();
     }
 
     @Override
@@ -347,6 +315,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         boolean handled = super.onKeyUp(keyCode, event);
         if (keyCode == KeyEvent.KEYCODE_SEARCH) {
             handled = mWorkspace.snapToSearch();
+            if (handled) closeDrawer(true);
         }
         return handled;
     }
@@ -455,7 +424,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         final DeleteZone deleteZone = (DeleteZone) dragLayer.findViewById(R.id.delete_zone);
 
-        final ImageView handleIcon = (ImageView) drawer.findViewById(R.id.all_apps);
+        final HandleView handleIcon = (HandleView) drawer.findViewById(R.id.all_apps);
+        handleIcon.setLauncher(this);
         mHandleIcon = (TransitionDrawable) handleIcon.getDrawable();
         mHandleIcon.setCrossFadeEnabled(true);
 
@@ -577,7 +547,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         Intent.ShortcutIconResource iconResource = null;
 
         if (bitmap != null) {
-            icon = new BitmapDrawable(Utilities.createBitmapThumbnail(bitmap, context));
+            icon = new FastBitmapDrawable(Utilities.createBitmapThumbnail(bitmap, context));
             filtered = true;
             customIcon = true;
         } else {
@@ -608,7 +578,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         info.customIcon = customIcon;
         info.iconResource = iconResource;
 
-        LauncherModel.addItemToDatabase(context, info, Settings.Favorites.CONTAINER_DESKTOP,
+        LauncherModel.addItemToDatabase(context, info, LauncherSettings.Favorites.CONTAINER_DESKTOP,
                 cellInfo.screen, cellInfo.cellX, cellInfo.cellY, notify);
         return info;
     }
@@ -630,7 +600,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             final int[] xy = mCellCoordinates;
             if (!findSlot(cellInfo, xy, info.spanX, info.spanY)) return;
 
-            LauncherModel.addItemToDatabase(this, info, Settings.Favorites.CONTAINER_DESKTOP,
+            LauncherModel.addItemToDatabase(this, info, LauncherSettings.Favorites.CONTAINER_DESKTOP,
                     mWorkspace.getCurrentScreen(), xy[0], xy[1], false);
 
             if (!mRestoring) {
@@ -746,6 +716,12 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     mWorkspace.moveToDefaultScreen();
                 }
                 closeDrawer();
+                View v = getWindow().peekDecorView();
+                if (v != null && v.getWindowToken() != null) {
+                    InputMethodManager imm = (InputMethodManager)getSystemService(
+                            INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken());
+                }
             } else {
                 closeDrawer(false);
             }
@@ -815,6 +791,16 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     public void startActivityForResult(Intent intent, int requestCode) {
         mWaitingForResult = true;
         super.startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void startSearch(String initialQuery, boolean selectInitialQuery, 
+            Bundle appSearchData, boolean globalSearch) {
+        if (appSearchData == null) {
+            appSearchData = new Bundle();
+            appSearchData.putString(SearchManager.SOURCE, "launcher-search");
+        }
+        super.startSearch(initialQuery, selectInitialQuery, appSearchData, globalSearch);
     }
 
     @Override
@@ -893,6 +879,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         startActivityForResult(intent, REQUEST_CREATE_SHORTCUT);
     }
 
+    void addLiveFolder(Intent intent) {
+        startActivityForResult(intent, REQUEST_CREATE_LIVE_FOLDER);
+    }
+
     void addFolder() {
         UserFolderInfo folderInfo = new UserFolderInfo();
         folderInfo.title = getText(R.string.folder_name);
@@ -900,15 +890,77 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         int cellY = mAddItemCellInfo.cellY;
 
         // Update the model
-        LauncherModel.addItemToDatabase(this, folderInfo, Settings.Favorites.CONTAINER_DESKTOP,
+        LauncherModel.addItemToDatabase(this, folderInfo, LauncherSettings.Favorites.CONTAINER_DESKTOP,
                 mWorkspace.getCurrentScreen(), cellX, cellY, false);
         sModel.addDesktopItem(folderInfo);
-        sModel.addUserFolder(folderInfo);
+        sModel.addFolder(folderInfo);
 
         // Create the view
         FolderIcon newFolder = FolderIcon.fromXml(R.layout.folder_icon, this,
                 (ViewGroup) mWorkspace.getChildAt(mWorkspace.getCurrentScreen()), folderInfo);
         mWorkspace.addInCurrentScreen(newFolder, cellX, cellY, 1, 1);
+    }
+
+    private void completeAddLiveFolder(Intent data, CellLayout.CellInfo cellInfo,
+            boolean insertAtFirst) {
+
+        cellInfo.screen = mWorkspace.getCurrentScreen();
+        final LiveFolderInfo info = addLiveFolder(this, data, cellInfo, false);
+
+        if (!mRestoring) {
+            sModel.addDesktopItem(info);
+
+            final View view = LiveFolderIcon.fromXml(R.layout.live_folder_icon, this,
+                (ViewGroup) mWorkspace.getChildAt(mWorkspace.getCurrentScreen()), info);
+            mWorkspace.addInCurrentScreen(view, cellInfo.cellX, cellInfo.cellY, 1, 1, insertAtFirst);
+        } else if (sModel.isDesktopLoaded()) {
+            sModel.addDesktopItem(info);
+        }
+    }
+
+    static LiveFolderInfo addLiveFolder(Context context, Intent data,
+            CellLayout.CellInfo cellInfo, boolean notify) {
+
+        Intent baseIntent = data.getParcelableExtra(LiveFolders.EXTRA_LIVE_FOLDER_BASE_INTENT);
+        String name = data.getStringExtra(LiveFolders.EXTRA_LIVE_FOLDER_NAME);
+
+        Drawable icon = null;
+        boolean filtered = false;
+        Intent.ShortcutIconResource iconResource = null;
+
+        Parcelable extra = data.getParcelableExtra(LiveFolders.EXTRA_LIVE_FOLDER_ICON);
+        if (extra != null && extra instanceof Intent.ShortcutIconResource) {
+            try {
+                iconResource = (Intent.ShortcutIconResource) extra;
+                final PackageManager packageManager = context.getPackageManager();
+                Resources resources = packageManager.getResourcesForApplication(
+                        iconResource.packageName);
+                final int id = resources.getIdentifier(iconResource.resourceName, null, null);
+                icon = resources.getDrawable(id);
+            } catch (Exception e) {
+                Log.w(LOG_TAG, "Could not load live folder icon: " + extra);
+            }
+        }
+
+        if (icon == null) {
+            icon = context.getResources().getDrawable(R.drawable.ic_launcher_folder);
+        }
+
+        final LiveFolderInfo info = new LiveFolderInfo();
+        info.icon = icon;
+        info.filtered = filtered;
+        info.title = name;
+        info.iconResource = iconResource;
+        info.uri = data.getData();
+        info.baseIntent = baseIntent;
+        info.displayMode = data.getIntExtra(LiveFolders.EXTRA_LIVE_FOLDER_DISPLAY_MODE,
+                LiveFolders.DISPLAY_MODE_GRID);
+
+        LauncherModel.addItemToDatabase(context, info, LauncherSettings.Favorites.CONTAINER_DESKTOP,
+                cellInfo.screen, cellInfo.cellX, cellInfo.cellY, notify);
+        sModel.addFolder(info);
+
+        return info;
     }
 
     void getPhotoForPhotoFrame() {
@@ -935,7 +987,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         if (!findSlot(cellInfo, xy, spanX, spanY)) return;
 
         sModel.addDesktopItem(info);
-        LauncherModel.addItemToDatabase(this, info, Settings.Favorites.CONTAINER_DESKTOP,
+        LauncherModel.addItemToDatabase(this, info, LauncherSettings.Favorites.CONTAINER_DESKTOP,
                 mWorkspace.getCurrentScreen(), xy[0], xy[1], false);
 
         final View view = mInflater.inflate(info.layoutResource, null);
@@ -999,7 +1051,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
      */
     private void registerContentObservers() {
         ContentResolver resolver = getContentResolver();
-        resolver.registerContentObserver(Settings.Favorites.CONTENT_URI, true, mObserver);
+        resolver.registerContentObserver(LauncherSettings.Favorites.CONTENT_URI, true, mObserver);
     }
 
     @Override
@@ -1059,7 +1111,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private void onFavoritesChanged() {
         mDesktopLocked = true;
         mDrawer.lock();
-        sModel.loadUserItems(false, this);
+        sModel.loadUserItems(false, this, false);
     }
 
     void onDesktopItemsLoaded() {
@@ -1074,9 +1126,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             final long[] userFolders = mSavedState.getLongArray(RUNTIME_STATE_USER_FOLDERS);
             if (userFolders != null) {
                 for (long folderId : userFolders) {
-                    final UserFolderInfo info = sModel.findFolderById(folderId);
+                    final FolderInfo info = sModel.findFolderById(folderId);
                     if (info != null) {
-                        openUserFolder(info);
+                        openFolder(info);
                     }
                 }
                 final Folder openFolder = mWorkspace.getOpenFolder();
@@ -1119,17 +1171,25 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         for (int i = 0; i < count; i++) {
             final ItemInfo item = shortcuts.get(i);
             switch (item.itemType) {
-            case Settings.Favorites.ITEM_TYPE_APPLICATION:
-            case Settings.Favorites.ITEM_TYPE_SHORTCUT:
+            case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+            case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                 final View shortcut = createShortcut((ApplicationInfo) item);
                 workspace.addInScreen(shortcut, item.screen, item.cellX, item.cellY, 1, 1,
                         !mDesktopLocked);
                 break;
-            case Settings.Favorites.ITEM_TYPE_USER_FOLDER:
+            case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
                 final FolderIcon newFolder = FolderIcon.fromXml(R.layout.folder_icon, this,
                         (ViewGroup) mWorkspace.getChildAt(mWorkspace.getCurrentScreen()),
                         ((UserFolderInfo) item));
                 workspace.addInScreen(newFolder, item.screen, item.cellX, item.cellY, 1, 1,
+                        !mDesktopLocked);
+                break;
+            case LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER:
+                final FolderIcon newLiveFolder = LiveFolderIcon.fromXml(
+                        R.layout.live_folder_icon, this,
+                        (ViewGroup) mWorkspace.getChildAt(mWorkspace.getCurrentScreen()),
+                        ((LiveFolderInfo) item));
+                workspace.addInScreen(newLiveFolder, item.screen, item.cellX, item.cellY, 1, 1,
                         !mDesktopLocked);
                 break;
             default:
@@ -1148,7 +1208,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         final int screen = workspace.getCurrentScreen();
         View v = inflater.inflate(widget.layoutResource,
                 (ViewGroup) workspace.getChildAt(screen), false);
-        if (widget.itemType == Settings.Favorites.ITEM_TYPE_WIDGET_PHOTO_FRAME) {
+        if (widget.itemType == LauncherSettings.Favorites.ITEM_TYPE_WIDGET_PHOTO_FRAME) {
             ((ImageView)v).setImageBitmap(widget.photo);
         }
         return v;
@@ -1169,8 +1229,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             // Open shortcut
             final Intent intent = ((ApplicationInfo) tag).intent;
             startActivitySafely(intent);
-        } else if (tag instanceof UserFolderInfo) {
-            handleFolderClick((UserFolderInfo) tag);
+        } else if (tag instanceof FolderInfo) {
+            handleFolderClick((FolderInfo) tag);
         }
     }
 
@@ -1188,7 +1248,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             // Close any open folder
             closeFolder();
             // Open the requested folder
-            openUserFolder(folderInfo);
+            openFolder(folderInfo);
         } else {
             // Find the open folder...
             Folder openFolder = mWorkspace.getFolderForTag(folderInfo);
@@ -1201,7 +1261,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     // Close any folder open on the current screen
                     closeFolder();
                     // Pull the folder onto this screen
-                    openUserFolder(folderInfo);
+                    openFolder(folderInfo);
                 }
             }
         }
@@ -1226,14 +1286,22 @@ public final class Launcher extends Activity implements View.OnClickListener, On
      * is animated relative to the specified View. If the View is null, no animation
      * is played.
      *
-     * @param tag The UserFolderInfo describing the folder to open.
+     * @param folderInfo The FolderInfo describing the folder to open.
      */
-    private void openUserFolder(Object tag) {
-        UserFolder openFolder = UserFolder.fromXml(this);
+    private void openFolder(FolderInfo folderInfo) {
+        Folder openFolder;
+
+        if (folderInfo instanceof UserFolderInfo) {
+            openFolder = UserFolder.fromXml(this);
+        } else if (folderInfo instanceof LiveFolderInfo) {
+            openFolder = com.android.launcher.LiveFolder.fromXml(this, folderInfo);
+        } else {
+            return;
+        }
+
         openFolder.setDragger(mDragLayer);
         openFolder.setLauncher(this);
 
-        UserFolderInfo folderInfo = (UserFolderInfo) tag;
         openFolder.bind(folderInfo);
         folderInfo.opened = true;
 
@@ -1299,6 +1367,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         return mWorkspace;
     }
 
+    GridView getApplicationsGrid() {
+        return mAllAppsGrid;
+    }
+
     @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
@@ -1327,7 +1399,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
     }
 
-    void showRenameDialog(UserFolderInfo info) {
+    void showRenameDialog(FolderInfo info) {
         mFolderInfo = info;
         mWaitingForResult = true;
         showDialog(DIALOG_RENAME_FOLDER);
@@ -1384,16 +1456,17 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
                 if (mDesktopLocked) {
                     mDrawer.lock();
-                    sModel.loadUserItems(false, Launcher.this);
+                    sModel.loadUserItems(false, Launcher.this, false);
                 } else {
-                    final FolderIcon folderIcon = (FolderIcon) mWorkspace.getViewForTag(mFolderInfo);
+                    final FolderIcon folderIcon = (FolderIcon)
+                            mWorkspace.getViewForTag(mFolderInfo);
                     if (folderIcon != null) {
                         folderIcon.setText(name);
                         getWorkspace().requestLayout();
                     } else {
                         mDesktopLocked = true;
                         mDrawer.lock();
-                        sModel.loadUserItems(false, Launcher.this);
+                        sModel.loadUserItems(false, Launcher.this, false);
                     }
                 }
             }
@@ -1479,7 +1552,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 removeShortcutsForPackage(intent.getData().getSchemeSpecificPart());
             }
             removeDialog(DIALOG_CREATE_SHORTCUT);
-            sModel.loadApplications(false, Launcher.this);
+            sModel.loadApplications(false, Launcher.this, false);
         }
     }
 
@@ -1488,40 +1561,12 @@ public final class Launcher extends Activity implements View.OnClickListener, On
      */
     private class FavoritesChangeObserver extends ContentObserver {
         public FavoritesChangeObserver() {
-            super(mHandler);
+            super(new Handler());
         }
 
         @Override
         public void onChange(boolean selfChange) {
             onFavoritesChanged();
-        }
-    }
-
-    private class SensorHandler implements SensorListener {
-        private long mLastNegativeShake;
-        private long mLastPositiveShake;
-
-        public void onSensorChanged(int sensor, float[] values) {
-            if (sensor == SensorManager.SENSOR_ACCELEROMETER) {
-                float shake = values[0];
-                if (shake <= -SensorManager.STANDARD_GRAVITY) {
-                    mLastNegativeShake = SystemClock.uptimeMillis();
-                } else if (shake >= SensorManager.STANDARD_GRAVITY) {
-                    mLastPositiveShake = SystemClock.uptimeMillis();
-                }
-
-                final long difference = mLastPositiveShake - mLastNegativeShake;
-                if (difference <= -80 && difference >= -180) {
-                    mWorkspace.scrollLeft();
-                    mLastNegativeShake = mLastPositiveShake = 0;
-                } else if (difference >= 80 && difference <= 180) {
-                    mWorkspace.scrollRight();
-                    mLastNegativeShake = mLastPositiveShake = 0;
-                }
-            }
-        }
-
-        public void onAccuracyChanged(int sensor, int accuracy) {
         }
     }
 

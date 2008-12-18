@@ -17,7 +17,6 @@
 package com.android.launcher;
 
 import android.content.ContentValues;
-import com.android.internal.provider.Settings;
 
 import java.util.ArrayList;
 
@@ -26,17 +25,12 @@ import java.util.ArrayList;
  */
 class UserFolderInfo extends FolderInfo {
     /**
-     * The application name.
-     */
-    CharSequence title;
-
-    /**
      * The apps and shortcuts 
      */
     ArrayList<ApplicationInfo> contents = new ArrayList<ApplicationInfo>();
     
     UserFolderInfo() {
-        itemType = Settings.Favorites.ITEM_TYPE_USER_FOLDER;
+        itemType = LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER;
     }
     
     /**
@@ -60,6 +54,6 @@ class UserFolderInfo extends FolderInfo {
     @Override
     void onAddToDatabase(ContentValues values) { 
         super.onAddToDatabase(values);
-        values.put(Settings.Favorites.TITLE, title.toString());
+        values.put(LauncherSettings.Favorites.TITLE, title.toString());
     }
 }

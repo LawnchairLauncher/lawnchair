@@ -21,9 +21,7 @@ import java.io.IOException;
 
 import android.content.ContentValues;
 import android.graphics.Bitmap;
-import com.android.internal.provider.Settings;
 import android.util.Log;
-
 
 /**
  * Represents an item in the launcher.
@@ -38,18 +36,18 @@ class ItemInfo {
     long id = NO_ID;
     
     /**
-     * One of {@link Settings.Favorites#ITEM_TYPE_APPLICATION},
-     * {@link Settings.Favorites#ITEM_TYPE_SHORTCUT}, 
-     * {@link Settings.Favorites#ITEM_TYPE_USER_FOLDER},
-     * {@link Settings.Favorites#ITEM_TYPE_WIDGET_CLOCK},
-     * {@link Settings.Favorites#ITEM_TYPE_WIDGET_SEARCH} or
-     * {@link Settings.Favorites#ITEM_TYPE_WIDGET_PHOTO_FRAME},
+     * One of {@link LauncherSettings.Favorites#ITEM_TYPE_APPLICATION},
+     * {@link LauncherSettings.Favorites#ITEM_TYPE_SHORTCUT},
+     * {@link LauncherSettings.Favorites#ITEM_TYPE_USER_FOLDER},
+     * {@link LauncherSettings.Favorites#ITEM_TYPE_WIDGET_CLOCK},
+     * {@link LauncherSettings.Favorites#ITEM_TYPE_WIDGET_SEARCH} or
+     * {@link LauncherSettings.Favorites#ITEM_TYPE_WIDGET_PHOTO_FRAME},
      */
     int itemType;
     
     /**
      * The id of the container that holds this item. For the desktop, this will be 
-     * {@link Settings.Favorites#CONTAINER_DESKTOP}. For the all applications folder it 
+     * {@link LauncherSettings.Favorites#CONTAINER_DESKTOP}. For the all applications folder it
      * will be {@link #NO_ID} (since it is not stored in the settings DB). For user folders
      * it will be the id of the folder.
      */
@@ -100,13 +98,13 @@ class ItemInfo {
      * @param values
      */
     void onAddToDatabase(ContentValues values) { 
-        values.put(Settings.Favorites.ITEM_TYPE, itemType);
-        values.put(Settings.Favorites.CONTAINER, container);
-        values.put(Settings.Favorites.SCREEN, screen);
-        values.put(Settings.Favorites.CELLX, cellX);
-        values.put(Settings.Favorites.CELLY, cellY);
-        values.put(Settings.Favorites.SPANX, spanX);
-        values.put(Settings.Favorites.SPANY, spanY);
+        values.put(LauncherSettings.Favorites.ITEM_TYPE, itemType);
+        values.put(LauncherSettings.Favorites.CONTAINER, container);
+        values.put(LauncherSettings.Favorites.SCREEN, screen);
+        values.put(LauncherSettings.Favorites.CELLX, cellX);
+        values.put(LauncherSettings.Favorites.CELLY, cellY);
+        values.put(LauncherSettings.Favorites.SPANX, spanX);
+        values.put(LauncherSettings.Favorites.SPANY, spanY);
     }
 
     static void writeBitmap(ContentValues values, Bitmap bitmap) {
@@ -120,7 +118,7 @@ class ItemInfo {
                 out.flush();
                 out.close();
 
-                values.put(Settings.Favorites.ICON, out.toByteArray());
+                values.put(LauncherSettings.Favorites.ICON, out.toByteArray());
             } catch (IOException e) {
                 Log.w("Favorite", "Could not write icon");
             }

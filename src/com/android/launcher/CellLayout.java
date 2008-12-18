@@ -105,6 +105,17 @@ public class CellLayout extends ViewGroup {
     }
 
     @Override
+    public void addView(View child, int index, ViewGroup.LayoutParams params) {
+        // Generate an id for each view, this assumes we have at most 256x256 cells
+        // per workspace screen
+        final LayoutParams cellParams = (LayoutParams) params;
+        child.setId(((getId() & 0xFF) << 16) |
+                (cellParams.cellX & 0xFF) << 8 | (cellParams.cellY & 0xFF));
+
+        super.addView(child, index, params);
+    }
+
+    @Override
     public void requestChildFocus(View child, View focused) {
         super.requestChildFocus(child, focused);
         if (child != null) {

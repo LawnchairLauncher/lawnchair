@@ -28,6 +28,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.BaseExpandableListAdapter;
 import android.graphics.drawable.Drawable;
+import android.provider.LiveFolders;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,9 +41,11 @@ public final class AddAdapter extends BaseExpandableListAdapter {
     private static final int GROUP_APPLICATIONS = 0;
     private static final int GROUP_SHORTCUTS = 1;
     private static final int GROUP_WIDGETS = 2;
-    private static final int GROUP_WALLPAPERS = 3;
+    private static final int GROUP_LIVE_FOLDERS = 3;
+    private static final int GROUP_WALLPAPERS = 4;
 
     private final Intent mCreateShortcutIntent;
+    private final Intent mCreateLiveFolderIntent;
     private Intent mSetWallpaperIntent;
     private final LayoutInflater mInflater;
     private Launcher mLauncher;
@@ -52,7 +55,7 @@ public final class AddAdapter extends BaseExpandableListAdapter {
      * Abstract class representing one thing that can be added
      */
     public abstract class AddAction implements Runnable {
-        private final Context mContext;
+        protected final Context mContext;
 
         AddAction(Context context) {
             mContext = context;
@@ -110,8 +113,9 @@ public final class AddAdapter extends BaseExpandableListAdapter {
                     mLabel = info.activityInfo.name;
                 }
             }
+
             if (mIcon == null) {
-                mIcon = info.loadIcon(pm);
+                mIcon = Utilities.createIconThumbnail(info.loadIcon(pm), mContext);
             }
 
             text.setText(mLabel);
@@ -126,12 +130,32 @@ public final class AddAdapter extends BaseExpandableListAdapter {
             mLauncher.addShortcut(intent);
         }
     }
-    
+
+    /**
+     * Class representing an action that will create a specific type
+     * of live folder
+     */
+    public class CreateLiveFolderAction extends CreateShortcutAction {
+        CreateLiveFolderAction(Context context, ResolveInfo info) {
+            super(context, info);
+        }
+
+        @Override
+        public void run() {
+            Intent intent = new Intent(mCreateLiveFolderIntent);
+            ActivityInfo activityInfo = mInfo.activityInfo;
+            intent.setComponent(new ComponentName(activityInfo.applicationInfo.packageName,
+                    activityInfo.name));
+            mLauncher.addLiveFolder(intent);
+        }
+    }
+
     /**
      * Class representing an action that will add a folder
      */
     public class CreateFolderAction extends AddAction {
-        
+        private Drawable mIcon;
+
         CreateFolderAction(Context context) {
             super(context);
         }
@@ -140,8 +164,8 @@ public final class AddAdapter extends BaseExpandableListAdapter {
         public void bindView(View view) {
             TextView text = (TextView) view;
             text.setText(R.string.add_folder);
-            text.setCompoundDrawablesWithIntrinsicBounds(getIcon(R.drawable.ic_launcher_folder),
-                    null, null, null);
+            if (mIcon == null) mIcon = getIcon(R.drawable.ic_launcher_folder);
+            text.setCompoundDrawablesWithIntrinsicBounds(mIcon, null, null, null);
         }
 
         public void run() {
@@ -175,6 +199,8 @@ public final class AddAdapter extends BaseExpandableListAdapter {
      * Class representing an action that will add a PhotoFrame
      */
     public class CreatePhotoFrameAction extends AddAction {
+        private Drawable mIcon;
+
         CreatePhotoFrameAction(Context context) {
             super(context);
         }
@@ -183,8 +209,8 @@ public final class AddAdapter extends BaseExpandableListAdapter {
         public void bindView(View view) {
             TextView text = (TextView) view;
             text.setText(R.string.add_photo_frame);
-            Drawable icon = getIcon(R.drawable.ic_launcher_gallery);
-            text.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+            if (mIcon == null) mIcon = getIcon(R.drawable.ic_launcher_gallery);
+            text.setCompoundDrawablesWithIntrinsicBounds(mIcon, null, null, null);
         }
 
         public void run() {
@@ -197,6 +223,8 @@ public final class AddAdapter extends BaseExpandableListAdapter {
      * Class representing an action that will add a Search widget
      */
     public class CreateSearchAction extends AddAction {
+        private Drawable mIcon;
+
         CreateSearchAction(Context context) {
             super(context);
         }
@@ -205,8 +233,8 @@ public final class AddAdapter extends BaseExpandableListAdapter {
         public void bindView(View view) {
             TextView text = (TextView) view;
             text.setText(R.string.add_search);
-            Drawable icon = getIcon(R.drawable.ic_search_gadget);
-            text.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+            if (mIcon == null) mIcon = getIcon(R.drawable.ic_search_gadget);
+            text.setCompoundDrawablesWithIntrinsicBounds(mIcon, null, null, null);
         }
 
         public void run() {
@@ -296,22 +324,27 @@ public final class AddAdapter extends BaseExpandableListAdapter {
         mCreateShortcutIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
         mCreateShortcutIntent.setComponent(null);
 
+        mCreateLiveFolderIntent = new Intent(LiveFolders.ACTION_CREATE_LIVE_FOLDER);
+        mCreateLiveFolderIntent.setComponent(null);
+
         mSetWallpaperIntent = new Intent(Intent.ACTION_SET_WALLPAPER);
         mSetWallpaperIntent.setComponent(null);
 
         mLauncher = launcher;
         mInflater = (LayoutInflater) launcher.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        mGroups = new Group[forFolder ? 2 : 4];
+        mGroups = new Group[forFolder ? 2 : 5];
         final Group[] groups = mGroups;
         groups[GROUP_APPLICATIONS] = new ApplicationsGroup(mLauncher,
                 mLauncher.getString(R.string.group_applications));
         groups[GROUP_SHORTCUTS] = new Group(mLauncher.getString(R.string.group_shortcuts));
+        groups[GROUP_LIVE_FOLDERS] = new Group(mLauncher.getString(R.string.group_live_folders));
 
         if (!forFolder) {
             groups[GROUP_WALLPAPERS] = new Group(mLauncher.getString(R.string.group_wallpapers));
             groups[GROUP_SHORTCUTS].add(new CreateFolderAction(launcher));
             groups[GROUP_WIDGETS] = new Group(mLauncher.getString(R.string.group_widgets));
+
             final Group widgets = groups[GROUP_WIDGETS];
             widgets.add(new CreateClockAction(launcher));
             widgets.add(new CreatePhotoFrameAction(launcher));
@@ -327,6 +360,16 @@ public final class AddAdapter extends BaseExpandableListAdapter {
             for (int i = 0; i < count; i++) {
                 ResolveInfo resolveInfo = list.get(i);
                 shortcuts.add(new CreateShortcutAction(launcher, resolveInfo));
+            }
+        }
+
+        list = findTargetsForIntent(mCreateLiveFolderIntent, packageManager);
+        if (list != null && list.size() > 0) {
+            int count = list.size();
+            final Group shortcuts = groups[GROUP_LIVE_FOLDERS];
+            for (int i = 0; i < count; i++) {
+                ResolveInfo resolveInfo = list.get(i);
+                shortcuts.add(new CreateLiveFolderAction(launcher, resolveInfo));
             }
         }
 

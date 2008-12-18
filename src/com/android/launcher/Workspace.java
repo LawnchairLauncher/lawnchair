@@ -34,8 +34,6 @@ import android.widget.Scroller;
 import android.os.Parcelable;
 import android.os.Parcel;
 
-import com.android.internal.provider.Settings;
-
 import java.util.ArrayList;
 
 /**
@@ -249,7 +247,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
      * @param currentScreen
      */
     void setCurrentScreen(int currentScreen) {
-        mCurrentScreen = Math.max(0, Math.min(currentScreen, getChildCount()));
+        mCurrentScreen = Math.max(0, Math.min(currentScreen, getChildCount() - 1));
         scrollTo(mCurrentScreen * getWidth(), 0);
         invalidate();
     }
@@ -426,7 +424,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             mScrollY = mScroller.getCurrY();
             postInvalidate();
         } else if (mNextScreen != INVALID_SCREEN) {
-            mCurrentScreen = mNextScreen;
+            mCurrentScreen = Math.max(0, Math.min(mNextScreen, getChildCount() - 1));
             Launcher.setScreen(mCurrentScreen);
             mNextScreen = INVALID_SCREEN;
             clearChildrenCache();
@@ -784,6 +782,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     void snapToScreen(int whichScreen) {
         enableChildrenCache();
 
+        whichScreen = Math.max(0, Math.min(whichScreen, getChildCount() - 1));
         boolean changingScreens = whichScreen != mCurrentScreen;
         
         mNextScreen = whichScreen;
@@ -861,7 +860,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                 final ItemInfo info = (ItemInfo)cell.getTag();
                 CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell.getLayoutParams();
                 LauncherModel.moveItemInDatabase(mLauncher, info,
-                        Settings.Favorites.CONTAINER_DESKTOP, mCurrentScreen, lp.cellX, lp.cellY);
+                        LauncherSettings.Favorites.CONTAINER_DESKTOP, mCurrentScreen, lp.cellX, lp.cellY);
             }
         }
     }
@@ -885,8 +884,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         View view;
 
         switch (info.itemType) {
-        case Settings.Favorites.ITEM_TYPE_APPLICATION:
-        case Settings.Favorites.ITEM_TYPE_SHORTCUT:
+        case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+        case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
             if (info.container == NO_ID) {
                 // Came from all apps -- make a copy
                 info = new ApplicationInfo((ApplicationInfo) info);
@@ -894,7 +893,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             view = mLauncher.createShortcut(R.layout.application, cellLayout,
                     (ApplicationInfo) info);
             break;
-        case Settings.Favorites.ITEM_TYPE_USER_FOLDER:
+        case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
             view = FolderIcon.fromXml(R.layout.folder_icon, mLauncher,
                     (ViewGroup) getChildAt(mCurrentScreen), ((UserFolderInfo) info));
             break;
@@ -910,7 +909,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         final LauncherModel model = Launcher.getModel();
         model.addDesktopItem(info);
         LauncherModel.addOrMoveItemInDatabase(mLauncher, info,
-                Settings.Favorites.CONTAINER_DESKTOP, mCurrentScreen, lp.cellX, lp.cellY);
+                LauncherSettings.Favorites.CONTAINER_DESKTOP, mCurrentScreen, lp.cellX, lp.cellY);
     }
 
     public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset,

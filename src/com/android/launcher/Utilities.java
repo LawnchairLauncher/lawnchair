@@ -18,7 +18,6 @@ package com.android.launcher;
 
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.graphics.Canvas;
@@ -97,30 +96,46 @@ final class Utilities {
             painter.setIntrinsicHeight(height);
         }
 
-        if (width > 0 && height > 0 && (width < iconWidth || height < iconHeight)) {
-            final float ratio = (float) iconWidth / iconHeight;
+        if (width > 0 && height > 0) {
+            if (width < iconWidth || height < iconHeight) {
+                final float ratio = (float) iconWidth / iconHeight;
 
-            if (iconWidth > iconHeight) {
-                height = (int) (width / ratio);
-            } else if (iconHeight > iconWidth) {
-                width = (int) (height * ratio);
+                if (iconWidth > iconHeight) {
+                    height = (int) (width / ratio);
+                } else if (iconHeight > iconWidth) {
+                    width = (int) (height * ratio);
+                }
+
+                final Bitmap.Config c = icon.getOpacity() != PixelFormat.OPAQUE ?
+                            Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565;
+                final Bitmap thumb = Bitmap.createBitmap(sIconWidth, sIconHeight, c);
+                final Canvas canvas = sCanvas;
+                canvas.setBitmap(thumb);
+                // Copy the old bounds to restore them later
+                // If we were to do oldBounds = icon.getBounds(),
+                // the call to setBounds() that follows would
+                // change the same instance and we would lose the
+                // old bounds
+                sOldBounds.set(icon.getBounds());
+                final int x = (sIconWidth - width) / 2;
+                final int y = (sIconHeight - height) / 2;
+                icon.setBounds(x, y, x + width, y + height);
+                icon.draw(canvas);
+                icon.setBounds(sOldBounds);
+                icon = new FastBitmapDrawable(thumb);
+            } else if (iconWidth < width && iconHeight < height) {
+                final Bitmap.Config c = Bitmap.Config.ARGB_8888;
+                final Bitmap thumb = Bitmap.createBitmap(sIconWidth, sIconHeight, c);
+                final Canvas canvas = sCanvas;
+                canvas.setBitmap(thumb);
+                sOldBounds.set(icon.getBounds());
+                final int x = (width - iconWidth) / 2;
+                final int y = (height - iconHeight) / 2;
+                icon.setBounds(x, y, x + iconWidth, y + iconHeight);
+                icon.draw(canvas);
+                icon.setBounds(sOldBounds);
+                icon = new FastBitmapDrawable(thumb);
             }
-
-            final Bitmap.Config c = icon.getOpacity() != PixelFormat.OPAQUE ?
-                        Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565;
-            final Bitmap thumb = Bitmap.createBitmap(sIconWidth, sIconHeight, c);
-            final Canvas canvas = sCanvas;
-            canvas.setBitmap(thumb);
-            // Copy the old bounds to restore them later
-            // If we were to do oldBounds = icon.getBounds(),
-            // the call to setBounds() that follows would
-            // change the same instance and we would lose the
-            // old bounds
-            sOldBounds.set(icon.getBounds());
-            icon.setBounds((sIconWidth - width) / 2, (sIconHeight - height) / 2, width, height);
-            icon.draw(canvas);
-            icon.setBounds(sOldBounds);
-            icon = new BitmapDrawable(thumb);
         }
 
         return icon;

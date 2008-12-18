@@ -21,10 +21,10 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.AbsListView;
+import android.widget.ListAdapter;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 
@@ -34,7 +34,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 public class Folder extends LinearLayout implements DragSource, OnItemLongClickListener,
         OnItemClickListener, OnClickListener, View.OnLongClickListener {
 
-    protected GridView mContent;
+    protected AbsListView mContent;
     protected DragController mDragger;
     
     protected Launcher mLauncher;
@@ -64,7 +64,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mContent = (GridView) findViewById(R.id.content);
+        mContent = (AbsListView) findViewById(R.id.content);
         mContent.setOnItemClickListener(this);
         mContent.setOnItemLongClickListener(this);
         
@@ -83,7 +83,9 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     }
 
     public boolean onLongClick(View v) {
-        return false;
+        mLauncher.closeFolder(this);
+        mLauncher.showRenameDialog(mInfo);
+        return true;
     }
 
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -120,7 +122,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
      *
      * @param adapter The list of applications to display in the folder.
      */
-    void setContentAdapter(ArrayAdapter<ApplicationInfo> adapter) {
+    void setContentAdapter(ListAdapter adapter) {
         mContent.setAdapter(adapter);
     }
 
@@ -144,5 +146,10 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     void onClose() {
         final Workspace workspace = mLauncher.getWorkspace();
         workspace.getChildAt(workspace.getCurrentScreen()).requestFocus();
+    }
+
+    void bind(FolderInfo info) {
+        mInfo = info;
+        mCloseButton.setText(info.title);
     }
 }
