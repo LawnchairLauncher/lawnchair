@@ -49,7 +49,7 @@ public class HandleView extends ImageView {
     @Override
     public View focusSearch(int direction) {
         View newFocus = super.focusSearch(direction);
-        if (newFocus == null) {
+        if (newFocus == null && mLauncher.isDrawerDown()) {
             final Workspace workspace = mLauncher.getWorkspace();
             workspace.dispatchUnhandledMove(null, direction);
             return (mOrientation == ORIENTATION_HORIZONTAL && direction == FOCUS_DOWN) ?

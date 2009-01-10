@@ -28,9 +28,9 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.util.Log;
+import android.os.Process;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,7 +45,6 @@ import java.net.URISyntaxException;
  * Maintains in-memory state of the Launcher. It is expected that there should be only one
  * LauncherModel object held in a static. Also provide APIs for updating the database state
  * for the Launcher
- *
  */
 public class LauncherModel {
     private static final int UI_NOTIFICATION_RATE = 4;
@@ -104,6 +103,13 @@ public class LauncherModel {
         }
 
         mApplicationsLoaded = false;
+
+        if (!isLaunching) {
+            startApplicationsLoader(launcher);
+        }
+    }
+
+    private void startApplicationsLoader(Launcher launcher) {
         mApplicationsLoader = new ApplicationsLoader(launcher);
         mLoader = new Thread(mApplicationsLoader, "Applications Loader");
         mLoader.start();
@@ -129,6 +135,8 @@ public class LauncherModel {
 
         public void run() {
             mRunning = true;
+
+            android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
 
             Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
             mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -221,8 +229,11 @@ public class LauncherModel {
      * Loads all of the items on the desktop, in folders, or in the dock.
      * These can be apps, shortcuts or widgets
      */
-    void loadUserItems(boolean isLaunching, Launcher launcher, boolean localeChanged) {
+    void loadUserItems(boolean isLaunching, Launcher launcher, boolean localeChanged,
+            boolean loadApplications) {
+
         if (isLaunching && mDesktopItems != null && mDesktopItemsLoaded) {
+            if (loadApplications) startApplicationsLoader(launcher);
             // We have already loaded our data from the DB
             launcher.onDesktopItemsLoaded();
             return;
@@ -240,7 +251,7 @@ public class LauncherModel {
         }
 
         mDesktopItemsLoaded = false;
-        mDesktopItemsLoader = new DesktopItemsLoader(launcher, localeChanged);
+        mDesktopItemsLoader = new DesktopItemsLoader(launcher, localeChanged, loadApplications);
         mDesktopLoader = new Thread(mDesktopItemsLoader, "Desktop Items Loader");
         mDesktopLoader.start();
     }
@@ -317,9 +328,11 @@ public class LauncherModel {
         private volatile boolean mRunning;
 
         private final WeakReference<Launcher> mLauncher;
-        private boolean mLocaleChanged;
+        private final boolean mLocaleChanged;
+        private final boolean mLoadApplications;
 
-        DesktopItemsLoader(Launcher launcher, boolean localeChanged) {
+        DesktopItemsLoader(Launcher launcher, boolean localeChanged, boolean loadApplications) {
+            mLoadApplications = loadApplications;
             mLauncher = new WeakReference<Launcher>(launcher);
             mLocaleChanged = localeChanged;
         }
@@ -532,6 +545,7 @@ public class LauncherModel {
                         launcher.onDesktopItemsLoaded();
                     }
                 });
+                if (mLoadApplications) startApplicationsLoader(launcher);
             }
 
             if (!mStopped) {

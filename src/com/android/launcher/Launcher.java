@@ -45,6 +45,7 @@ import android.os.IBinder;
 import android.os.Parcelable;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.Message;
 import android.provider.*;
 import android.telephony.PhoneNumberUtils;
 import android.text.Selection;
@@ -260,7 +261,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     private void startLoaders() {
         sModel.loadApplications(true, this, mLocaleChanged);
-        sModel.loadUserItems(!mLocaleChanged, this, mLocaleChanged);
+        sModel.loadUserItems(!mLocaleChanged, this, mLocaleChanged, true);
         mRestoring = false;
     }
 
@@ -812,13 +813,13 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 .setIcon(android.R.drawable.ic_menu_add)
                 .setAlphabeticShortcut('A');
         menu.add(0, MENU_WALLPAPER_SETTINGS, 0, R.string.menu_wallpaper)
-                 .setIcon(R.drawable.ic_menu_gallery)
+                 .setIcon(android.R.drawable.ic_menu_gallery)
                  .setAlphabeticShortcut('W');
         menu.add(0, MENU_SEARCH, 0, R.string.menu_search)
                 .setIcon(android.R.drawable.ic_search_category_default)
                 .setAlphabeticShortcut(SearchManager.MENU_KEY);
         menu.add(0, MENU_NOTIFICATIONS, 0, R.string.menu_notifications)
-                .setIcon(R.drawable.ic_menu_notifications)
+                .setIcon(android.R.drawable.ic_menu_notifications)
                 .setAlphabeticShortcut('N');
 
         final Intent settings = new Intent(android.provider.Settings.ACTION_SETTINGS);
@@ -826,7 +827,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
         menu.add(0, MENU_SETTINGS, 0, R.string.menu_settings)
-                .setIcon(R.drawable.ic_menu_preferences).setAlphabeticShortcut('P')
+                .setIcon(android.R.drawable.ic_menu_preferences).setAlphabeticShortcut('P')
                 .setIntent(settings);
 
         return true;
@@ -1111,7 +1112,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private void onFavoritesChanged() {
         mDesktopLocked = true;
         mDrawer.lock();
-        sModel.loadUserItems(false, this, false);
+        sModel.loadUserItems(false, this, false, false);
     }
 
     void onDesktopItemsLoaded() {
@@ -1119,7 +1120,80 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         bindDesktopItems();
         mAllAppsGrid.setAdapter(Launcher.getModel().getApplicationsAdapter());
+    }
 
+    /**
+     * Refreshes the shortcuts shown on the workspace.
+     */
+    private void bindDesktopItems() {
+        final ArrayList<ItemInfo> shortcuts = sModel.getDesktopItems();
+        if (shortcuts == null) {
+            return;
+        }
+
+        final Workspace workspace = mWorkspace;
+        int count = workspace.getChildCount();
+        for (int i = 0; i < count; i++) {
+            ((ViewGroup) workspace.getChildAt(i)).removeAllViewsInLayout();
+        }
+
+        count = shortcuts.size();
+
+        final DesktopItemsBinder binder = new DesktopItemsBinder(this, shortcuts);
+        binder.obtainMessage(DesktopItemsBinder.MESSAGE_BIND_ITEMS, 0, count).sendToTarget();
+    }
+
+    private void bindItems(Launcher.DesktopItemsBinder binder,
+            ArrayList<ItemInfo> shortcuts, int start, int count) {
+
+        final Workspace workspace = mWorkspace;
+        final boolean desktopLocked = mDesktopLocked;
+
+        final int end = Math.min(start + DesktopItemsBinder.ITEMS_COUNT, count);
+        int i = start;
+
+        for ( ; i < end; i++) {
+            final ItemInfo item = shortcuts.get(i);
+            switch (item.itemType) {
+                case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+                case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                    final View shortcut = createShortcut((ApplicationInfo) item);
+                    workspace.addInScreen(shortcut, item.screen, item.cellX, item.cellY, 1, 1,
+                            !desktopLocked);
+                    break;
+                case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
+                    final FolderIcon newFolder = FolderIcon.fromXml(R.layout.folder_icon, this,
+                            (ViewGroup) workspace.getChildAt(workspace.getCurrentScreen()),
+                            (UserFolderInfo) item);
+                    workspace.addInScreen(newFolder, item.screen, item.cellX, item.cellY, 1, 1,
+                            !desktopLocked);
+                    break;
+                case LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER:
+                    final FolderIcon newLiveFolder = LiveFolderIcon.fromXml(
+                            R.layout.live_folder_icon, this,
+                            (ViewGroup) workspace.getChildAt(workspace.getCurrentScreen()),
+                            (LiveFolderInfo) item);
+                    workspace.addInScreen(newLiveFolder, item.screen, item.cellX, item.cellY, 1, 1,
+                            !desktopLocked);
+                    break;
+                default:
+                    final Widget widget = (Widget) item;
+                    final View view = createWidget(mInflater, widget);
+                    view.setTag(widget);
+                    workspace.addWidget(view, widget, !desktopLocked);
+            }
+        }
+
+        workspace.requestLayout();
+
+        if (end >= count) {
+            finishBindDesktopItems();
+        } else {
+            binder.obtainMessage(DesktopItemsBinder.MESSAGE_BIND_ITEMS, i, count).sendToTarget();
+        }
+    }
+
+    private void finishBindDesktopItems() {
         if (mSavedState != null) {
             mWorkspace.getChildAt(mWorkspace.getCurrentScreen()).requestFocus();
 
@@ -1150,57 +1224,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         mDesktopLocked = false;
         mDrawer.unlock();
-    }
-
-    /**
-     * Refreshes the shortcuts shown on the workspace.
-     */
-    private void bindDesktopItems() {
-        final ArrayList<ItemInfo> shortcuts = sModel.getDesktopItems();
-        if (shortcuts == null) {
-            return;
-        }
-
-        final Workspace workspace = mWorkspace;
-        int count = workspace.getChildCount();
-        for (int i = 0; i < count; i++) {
-            ((ViewGroup) workspace.getChildAt(i)).removeAllViewsInLayout();
-        }
-
-        count = shortcuts.size();
-        for (int i = 0; i < count; i++) {
-            final ItemInfo item = shortcuts.get(i);
-            switch (item.itemType) {
-            case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
-            case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                final View shortcut = createShortcut((ApplicationInfo) item);
-                workspace.addInScreen(shortcut, item.screen, item.cellX, item.cellY, 1, 1,
-                        !mDesktopLocked);
-                break;
-            case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
-                final FolderIcon newFolder = FolderIcon.fromXml(R.layout.folder_icon, this,
-                        (ViewGroup) mWorkspace.getChildAt(mWorkspace.getCurrentScreen()),
-                        ((UserFolderInfo) item));
-                workspace.addInScreen(newFolder, item.screen, item.cellX, item.cellY, 1, 1,
-                        !mDesktopLocked);
-                break;
-            case LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER:
-                final FolderIcon newLiveFolder = LiveFolderIcon.fromXml(
-                        R.layout.live_folder_icon, this,
-                        (ViewGroup) mWorkspace.getChildAt(mWorkspace.getCurrentScreen()),
-                        ((LiveFolderInfo) item));
-                workspace.addInScreen(newLiveFolder, item.screen, item.cellX, item.cellY, 1, 1,
-                        !mDesktopLocked);
-                break;
-            default:
-                final Widget widget = (Widget)item;
-                final View view = createWidget(mInflater, widget);
-                view.setTag(widget);
-                workspace.addWidget(view, widget, !mDesktopLocked);
-            }
-        }
-
-        workspace.requestLayout();
     }
 
     private View createWidget(LayoutInflater inflater, Widget widget) {
@@ -1456,7 +1479,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
                 if (mDesktopLocked) {
                     mDrawer.lock();
-                    sModel.loadUserItems(false, Launcher.this, false);
+                    sModel.loadUserItems(false, Launcher.this, false, false);
                 } else {
                     final FolderIcon folderIcon = (FolderIcon)
                             mWorkspace.getViewForTag(mFolderInfo);
@@ -1466,7 +1489,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     } else {
                         mDesktopLocked = true;
                         mDrawer.lock();
-                        sModel.loadUserItems(false, Launcher.this, false);
+                        sModel.loadUserItems(false, Launcher.this, false, false);
                     }
                 }
             }
@@ -1633,6 +1656,30 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
 
         public void onScrollEnded() {
+        }
+    }
+
+    private static class DesktopItemsBinder extends Handler {
+        static final int MESSAGE_BIND_ITEMS = 0x1;
+        // Number of items to bind in every pass
+        static final int ITEMS_COUNT = 6;
+
+        private final ArrayList<ItemInfo> mShortcuts;
+        private final WeakReference<Launcher> mLauncher;
+
+        DesktopItemsBinder(Launcher launcher, ArrayList<ItemInfo> shortcuts) {
+            mLauncher = new WeakReference<Launcher>(launcher);
+            mShortcuts = shortcuts;
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MESSAGE_BIND_ITEMS:
+                    Launcher launcher = mLauncher.get();
+                    if (launcher != null) launcher.bindItems(this, mShortcuts, msg.arg1, msg.arg2);
+                    break;
+            }
         }
     }
 }
