@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name">"主页"</string>
+    <string name="folder_name">"文件夹"</string>
+    <string name="chooser_wallpaper">"选择壁纸"</string>
+    <string name="wallpaper_instructions">"设置壁纸"</string>
+    <string name="pick_wallpaper">"壁纸图库"</string>
+    <string name="activity_not_found">"您的手机上没有安装应用程序。"</string>
+    <!-- no translation found for rename_folder_label (5646236631298452787) -->
+    <skip />
+    <string name="rename_folder_title">"重命名文件夹"</string>
+    <string name="rename_action">"确定"</string>
+    <string name="cancel_action">"取消"</string>
+    <!-- no translation found for menu_item_add_item (6233177331075781114) -->
+    <skip />
+    <string name="group_applications">"应用程序"</string>
+    <string name="group_shortcuts">"快捷键"</string>
+    <!-- no translation found for group_live_folders (3057578584715591220) -->
+    <skip />
+    <string name="group_widgets">"小工具"</string>
+    <string name="group_wallpapers">"壁纸"</string>
+    <string name="add_folder">"文件夹"</string>
+    <string name="add_clock">"时钟"</string>
+    <string name="add_photo_frame">"相框"</string>
+    <string name="add_search">"搜索"</string>
+    <string name="out_of_space">"该“主页”屏幕上没有多余空间。"</string>
+    <string name="menu_add">"添加"</string>
+    <string name="menu_wallpaper">"壁纸"</string>
+    <string name="menu_search">"搜索"</string>
+    <string name="menu_notifications">"通知"</string>
+    <string name="menu_settings">"设置"</string>
+    <string name="permlab_install_shortcut">"安装快捷键"</string>
+    <string name="permdesc_install_shortcut">"允许应用程序在没有用户介入的情况下添加快捷键。"</string>
+    <string name="permlab_uninstall_shortcut">"卸载快捷键"</string>
+    <string name="permdesc_uninstall_shortcut">"允许应用程序在没有用户介入的情况下删除快捷键。"</string>
+    <!-- no translation found for permlab_read_settings (3452408290738106747) -->
+    <skip />
+    <!-- no translation found for permdesc_read_settings (8377434937176025492) -->
+    <skip />
+    <!-- no translation found for permlab_write_settings (1360567537236705628) -->
+    <skip />
+    <!-- no translation found for permdesc_write_settings (1098648778383349818) -->
+    <skip />
+    <string name="search_hint">"Google 搜索"</string>
+</resources>

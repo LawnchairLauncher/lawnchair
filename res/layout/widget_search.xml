@@ -36,6 +36,7 @@
         android:singleLine="true"
         android:selectAllOnFocus="true"
         android:completionThreshold="1"
+        android:inputType="textAutoComplete|textSearchString"
         />
         
      <ImageButton android:id="@+id/search_go_btn"

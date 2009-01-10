@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name">"Home"</string>
+    <string name="folder_name">"Cartella"</string>
+    <string name="chooser_wallpaper">"Seleziona sfondo da"</string>
+    <string name="wallpaper_instructions">"Imposta sfondo"</string>
+    <string name="pick_wallpaper">"Galleria sfondi"</string>
+    <string name="activity_not_found">"Applicazione non installata sul telefono."</string>
+    <!-- no translation found for rename_folder_label (5646236631298452787) -->
+    <skip />
+    <string name="rename_folder_title">"Rinomina cartella"</string>
+    <string name="rename_action">"OK"</string>
+    <string name="cancel_action">"Annulla"</string>
+    <!-- no translation found for menu_item_add_item (6233177331075781114) -->
+    <skip />
+    <string name="group_applications">"Applicazione"</string>
+    <string name="group_shortcuts">"Collegamento"</string>
+    <!-- no translation found for group_live_folders (3057578584715591220) -->
+    <skip />
+    <string name="group_widgets">"Widget"</string>
+    <string name="group_wallpapers">"Sfondo"</string>
+    <string name="add_folder">"Cartella"</string>
+    <string name="add_clock">"Orologio"</string>
+    <string name="add_photo_frame">"Cornice immagini"</string>
+    <string name="add_search">"Ricerca"</string>
+    <string name="out_of_space">"Spazio nella schermata Home esaurito."</string>
+    <string name="menu_add">"Aggiungi"</string>
+    <string name="menu_wallpaper">"Sfondo"</string>
+    <string name="menu_search">"Cerca"</string>
+    <string name="menu_notifications">"Notifiche"</string>
+    <string name="menu_settings">"Impostazioni"</string>
+    <string name="permlab_install_shortcut">"aggiungere collegamenti"</string>
+    <string name="permdesc_install_shortcut">"Consente a un\'applicazione di aggiungere collegamenti automaticamente."</string>
+    <string name="permlab_uninstall_shortcut">"eliminare collegamenti"</string>
+    <string name="permdesc_uninstall_shortcut">"Consente a un\'applicazione di rimuovere collegamenti automaticamente."</string>
+    <!-- no translation found for permlab_read_settings (3452408290738106747) -->
+    <skip />
+    <!-- no translation found for permdesc_read_settings (8377434937176025492) -->
+    <skip />
+    <!-- no translation found for permlab_write_settings (1360567537236705628) -->
+    <skip />
+    <!-- no translation found for permdesc_write_settings (1098648778383349818) -->
+    <skip />
+    <string name="search_hint">"Ricerca Google"</string>
+</resources>
