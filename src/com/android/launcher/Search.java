@@ -105,6 +105,7 @@ public class Search extends LinearLayout implements OnClickListener, OnKeyListen
         Bundle appData = new Bundle();
         appData.putString(SearchManager.SOURCE, "launcher-widget");
         sendLaunchIntent(Intent.ACTION_SEARCH, null, query, appData, 0, null, mSearchable);
+        clearQuery();
     }
     
     /**
@@ -359,6 +360,7 @@ public class Search extends LinearLayout implements OnClickListener, OnKeyListen
                 String suggestionQuery = mSuggestionQuery;
                 sendLaunchIntent(suggestionAction, suggestionData, suggestionQuery, null,
                                     KeyEvent.KEYCODE_UNKNOWN, null, si);
+                clearQuery();
                 return true;
             }
         }
