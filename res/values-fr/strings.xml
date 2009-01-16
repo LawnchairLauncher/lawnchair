@@ -7,17 +7,14 @@
     <string name="wallpaper_instructions">"Configurer l\'arrière-plan"</string>
     <string name="pick_wallpaper">"Galerie des arrière-plans"</string>
     <string name="activity_not_found">"L\'application n\'est pas installée sur votre téléphone."</string>
-    <!-- no translation found for rename_folder_label (5646236631298452787) -->
-    <skip />
+    <string name="rename_folder_label">"Nom du dossier"</string>
     <string name="rename_folder_title">"Renommer le dossier"</string>
     <string name="rename_action">"OK"</string>
     <string name="cancel_action">"Annuler"</string>
-    <!-- no translation found for menu_item_add_item (6233177331075781114) -->
-    <skip />
+    <string name="menu_item_add_item">"Ajouter à l\'écran d\'accueil"</string>
     <string name="group_applications">"Application"</string>
     <string name="group_shortcuts">"Raccourci"</string>
-    <!-- no translation found for group_live_folders (3057578584715591220) -->
-    <skip />
+    <string name="group_live_folders">"Dossier live"</string>
     <string name="group_widgets">"Widget"</string>
     <string name="group_wallpapers">"Arrière-plan"</string>
     <string name="add_folder">"Dossier"</string>
@@ -34,13 +31,9 @@
     <string name="permdesc_install_shortcut">"Permet à une application d\'ajouter des raccourcis sans l\'intervention de l\'utilisateur."</string>
     <string name="permlab_uninstall_shortcut">"désinstaller les raccourcis"</string>
     <string name="permdesc_uninstall_shortcut">"Permet à une application de supprimer les raccourcis sans l\'intervention de l\'utilisateur."</string>
-    <!-- no translation found for permlab_read_settings (3452408290738106747) -->
-    <skip />
-    <!-- no translation found for permdesc_read_settings (8377434937176025492) -->
-    <skip />
-    <!-- no translation found for permlab_write_settings (1360567537236705628) -->
-    <skip />
-    <!-- no translation found for permdesc_write_settings (1098648778383349818) -->
-    <skip />
+    <string name="permlab_read_settings">"lire les paramètres et les raccourcis de la page d\'accueil"</string>
+    <string name="permdesc_read_settings">"Permet à une application de lire les paramètres et raccourcis de la page d\'accueil."</string>
+    <string name="permlab_write_settings">"écrire les paramètres de la page d\'accueil et des raccourcis"</string>
+    <string name="permdesc_write_settings">"Permet à une application de modifier les paramètres et les raccourcis de la page d\'accueil."</string>
     <string name="search_hint">"Recherche Google"</string>
 </resources>

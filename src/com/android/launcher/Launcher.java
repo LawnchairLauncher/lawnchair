@@ -721,7 +721,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 if (v != null && v.getWindowToken() != null) {
                     InputMethodManager imm = (InputMethodManager)getSystemService(
                             INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(v.getWindowToken());
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 }
             } else {
                 closeDrawer(false);
