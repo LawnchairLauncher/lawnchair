@@ -43,7 +43,7 @@
          android:layout_marginLeft="1dip"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:src="@android:drawable/ic_btn_search"
+         android:src="@*android:drawable/ic_btn_search"
          />
     
 </com.android.launcher.Search>

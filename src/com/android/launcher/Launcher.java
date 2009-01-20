@@ -819,7 +819,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 .setIcon(android.R.drawable.ic_search_category_default)
                 .setAlphabeticShortcut(SearchManager.MENU_KEY);
         menu.add(0, MENU_NOTIFICATIONS, 0, R.string.menu_notifications)
-                .setIcon(android.R.drawable.ic_menu_notifications)
+                .setIcon(com.android.internal.R.drawable.ic_menu_notifications)
                 .setAlphabeticShortcut('N');
 
         final Intent settings = new Intent(android.provider.Settings.ACTION_SETTINGS);

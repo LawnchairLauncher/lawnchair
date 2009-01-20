@@ -32,9 +32,12 @@ import android.widget.ImageView;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.content.res.Resources;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class WallpaperChooser extends Activity implements AdapterView.OnItemSelectedListener,
         OnClickListener {
@@ -55,9 +58,6 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
             R.drawable.wallpaper_grey_small,
             R.drawable.wallpaper_green_small,
             R.drawable.wallpaper_pink_small,
-            R.drawable.wallpaper_dale_chihuly_small,
-            R.drawable.wallpaper_john_maeda_small,
-            R.drawable.wallpaper_marc_ecko_small,
     };
 
     private static final Integer[] IMAGE_IDS = {
@@ -76,9 +76,6 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
             R.drawable.wallpaper_grey,
             R.drawable.wallpaper_green,
             R.drawable.wallpaper_pink,
-            R.drawable.wallpaper_dale_chihuly,
-            R.drawable.wallpaper_john_maeda,
-            R.drawable.wallpaper_marc_ecko,
     };
 
     private Gallery mGallery;
@@ -88,10 +85,15 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
     private BitmapFactory.Options mOptions;
     private Bitmap mBitmap;
 
+    private ArrayList<Integer> mThumbs;
+    private ArrayList<Integer> mImages;
+
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        findWallpapers();
 
         setContentView(R.layout.wallpaper_chooser);
 
@@ -103,11 +105,39 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
         mGallery.setAdapter(new ImageAdapter(this));
         mGallery.setOnItemSelectedListener(this);
         mGallery.setCallbackDuringFling(false);
-        
+
         Button b = (Button) findViewById(R.id.set);
         b.setOnClickListener(this);
 
         mImageView = (ImageView) findViewById(R.id.wallpaper);
+    }
+
+    private void findWallpapers() {
+        mThumbs = new ArrayList<Integer>(THUMB_IDS.length + 4);
+        Collections.addAll(mThumbs, THUMB_IDS);
+
+        mImages = new ArrayList<Integer>(IMAGE_IDS.length + 4);
+        Collections.addAll(mImages, IMAGE_IDS);
+
+        final Resources resources = getResources();
+        final String[] extras = resources.getStringArray(R.array.extra_wallpapers);
+        final String packageName = getApplication().getPackageName();
+
+        final ArrayList<Integer> images = mImages;
+        final ArrayList<Integer> thumbs = mThumbs;
+
+        for (String extra : extras) {
+            int res = resources.getIdentifier(extra, "drawable", packageName);
+            if (res != 0) {
+                final int thumbRes = resources.getIdentifier(extra + "_small",
+                        "drawable", packageName);
+
+                if (thumbRes != 0) {
+                    images.add(res);
+                    thumbs.add(res);
+                }
+            }
+        }
     }
 
     @Override
@@ -144,7 +174,7 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
 
         mIsWallpaperSet = true;
         try {
-            InputStream stream = getResources().openRawResource(IMAGE_IDS[position]);
+            InputStream stream = getResources().openRawResource(mImages.get(position));
             setWallpaper(stream);
             setResult(RESULT_OK);
             finish();
@@ -164,7 +194,7 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
         }
 
         public int getCount() {
-            return THUMB_IDS.length;
+            return mThumbs.size();
         }
 
         public Object getItem(int position) {
@@ -184,7 +214,7 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
                 image = (ImageView) convertView;
             }
 
-            image.setImageResource(THUMB_IDS[position]);
+            image.setImageResource(mThumbs.get(position));
             image.getDrawable().setDither(true);
             return image;
         }
