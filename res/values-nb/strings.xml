@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2009 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name">"Hjem"</string>
+    <string name="folder_name">"Mappe"</string>
+    <string name="chooser_wallpaper">"Velg bakgrunnsbilde fra"</string>
+    <string name="wallpaper_instructions">"Velg bakgrunnsbilde"</string>
+    <string name="pick_wallpaper">"Bildegalleri"</string>
+    <string name="activity_not_found">"Applikasjonen er ikke installert."</string>
+    <string name="rename_folder_label">"Mappenavn"</string>
+    <string name="rename_folder_title">"Gi nytt navn til mappe"</string>
+    <string name="rename_action">"OK"</string>
+    <string name="cancel_action">"Avbryt"</string>
+    <string name="menu_item_add_item">"Legg til skrivebord"</string>
+    <string name="group_applications">"Applikasjon"</string>
+    <string name="group_shortcuts">"Snarvei"</string>
+    <!-- no translation found for group_search (5905328940867162196) -->
+    <skip />
+    <!-- no translation found for group_folder (236213814675135523) -->
+    <skip />
+    <string name="group_live_folders">"Aktiv mappe"</string>
+    <string name="group_widgets">"Skrivebordselement"</string>
+    <!-- no translation found for group_gadgets (7795333306847768497) -->
+    <skip />
+    <string name="group_wallpapers">"Bakgrunnsbilde"</string>
+    <string name="add_folder">"Mappe"</string>
+    <string name="add_clock">"Klokke"</string>
+    <string name="add_photo_frame">"Bilderamme"</string>
+    <string name="add_search">"Søk"</string>
+    <string name="out_of_space">"Ikke nok plass på skrivebordet."</string>
+    <!-- no translation found for title_select_shortcut (2858897527672831763) -->
+    <skip />
+    <!-- no translation found for title_select_live_folder (441136484932944782) -->
+    <skip />
+    <string name="menu_add">"Legg til"</string>
+    <string name="menu_wallpaper">"Bakgrunnsbilde"</string>
+    <string name="menu_search">"Søk"</string>
+    <string name="menu_notifications">"Varslinger"</string>
+    <string name="menu_settings">"Innstillinger"</string>
+    <string name="permlab_install_shortcut">"shortcuts"</string>
+    <string name="permdesc_install_shortcut">"Allows an application to add shortcuts without user intervention."</string>
+    <string name="permlab_uninstall_shortcut">"uninstall shortcuts"</string>
+    <string name="permdesc_uninstall_shortcut">"Allows an application to remove shortcuts without user intervention."</string>
+    <string name="permlab_read_settings">"read Home settings and shortcuts"</string>
+    <string name="permdesc_read_settings">"Allows an application to read the settings and shortcuts in Home."</string>
+    <string name="permlab_write_settings">"write Home settings and shortcuts"</string>
+    <string name="permdesc_write_settings">"Allows an application to change the settings and shortcuts in Home."</string>
+    <string name="search_hint">"Google-søk"</string>
+    <!-- no translation found for gadget_error_text (7654995305187314446) -->
+    <skip />
+</resources>

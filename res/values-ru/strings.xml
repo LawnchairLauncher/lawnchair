@@ -28,14 +28,24 @@
     <string name="menu_item_add_item">"Добавление на главный экран"</string>
     <string name="group_applications">"Приложение"</string>
     <string name="group_shortcuts">"Ярлык"</string>
+    <!-- no translation found for group_search (5905328940867162196) -->
+    <skip />
+    <!-- no translation found for group_folder (236213814675135523) -->
+    <skip />
     <string name="group_live_folders">"Динамическая папка"</string>
     <string name="group_widgets">"Виджет"</string>
+    <!-- no translation found for group_gadgets (7795333306847768497) -->
+    <skip />
     <string name="group_wallpapers">"Фоновый рисунок"</string>
     <string name="add_folder">"Папка"</string>
     <string name="add_clock">"Часы"</string>
     <string name="add_photo_frame">"Рамка для картинки"</string>
     <string name="add_search">"Поиск"</string>
     <string name="out_of_space">"На главном экране больше нет места."</string>
+    <!-- no translation found for title_select_shortcut (2858897527672831763) -->
+    <skip />
+    <!-- no translation found for title_select_live_folder (441136484932944782) -->
+    <skip />
     <string name="menu_add">"Добавить"</string>
     <string name="menu_wallpaper">"Фоновый рисунок"</string>
     <string name="menu_search">"Искать"</string>
@@ -50,4 +60,6 @@
     <string name="permlab_write_settings">"записывать ярлыки и настройки главного экрана"</string>
     <string name="permdesc_write_settings">"Позволяет приложению изменять настройки и ярлыки на главном экране."</string>
     <string name="search_hint">"Поиск Google"</string>
+    <!-- no translation found for gadget_error_text (7654995305187314446) -->
+    <skip />
 </resources>

@@ -272,7 +272,8 @@ public class LauncherModel {
         try {
             while (c.moveToNext()) {
                 try {
-                    if (c.getInt(itemTypeIndex) != LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+                    if (c.getInt(itemTypeIndex) !=
+                            LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
                         continue;
                     }
 
@@ -374,15 +375,19 @@ public class LauncherModel {
                 final int iconResourceIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_RESOURCE);
                 final int containerIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CONTAINER);
                 final int itemTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
+                final int gadgetIdIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.GADGET_ID);
                 final int screenIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SCREEN);
                 final int cellXIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLX);
                 final int cellYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLY);
+                final int spanXIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SPANX);
+                final int spanYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SPANY);
                 final int uriIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.URI);
                 final int displayModeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.DISPLAY_MODE);
 
                 ApplicationInfo info;
                 String intentDescription;
                 Widget widgetInfo = null;
+                LauncherGadgetInfo gadgetInfo = null;
                 int container;
                 long id;
                 Intent intent;
@@ -494,41 +499,44 @@ public class LauncherModel {
                                     break;
                             }
                             break;
-                        case LauncherSettings.Favorites.ITEM_TYPE_WIDGET_CLOCK:
                         case LauncherSettings.Favorites.ITEM_TYPE_WIDGET_SEARCH:
-                        case LauncherSettings.Favorites.ITEM_TYPE_WIDGET_PHOTO_FRAME:
-                            switch (itemType) {
-                            case LauncherSettings.Favorites.ITEM_TYPE_WIDGET_CLOCK:
-                                widgetInfo = Widget.makeClock();
-                                break;
-                            case LauncherSettings.Favorites.ITEM_TYPE_WIDGET_SEARCH:
-                                widgetInfo = Widget.makeSearch();
-                                break;
-                            case LauncherSettings.Favorites.ITEM_TYPE_WIDGET_PHOTO_FRAME:
-                                widgetInfo = Widget.makePhotoFrame();
-                                byte[] data = c.getBlob(iconIndex);
-                                if (data != null) {
-                                    widgetInfo.photo =
-                                            BitmapFactory.decodeByteArray(data, 0, data.length);
-                                }
-                                break;
-                            }
+                            widgetInfo = Widget.makeSearch();
 
-                            if (widgetInfo != null) {
-                                container = c.getInt(containerIndex);
-                                if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                                    Log.e(Launcher.LOG_TAG, "Widget found where container "
-                                            + "!= CONTAINER_DESKTOP -- ignoring!");
-                                    continue;
-                                }
-                                widgetInfo.id = c.getLong(idIndex);
-                                widgetInfo.screen = c.getInt(screenIndex);
-                                widgetInfo.container = container;
-                                widgetInfo.cellX = c.getInt(cellXIndex);
-                                widgetInfo.cellY = c.getInt(cellYIndex);
-
-                                desktopItems.add(widgetInfo);
+                            container = c.getInt(containerIndex);
+                            if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                                Log.e(Launcher.LOG_TAG, "Widget found where container "
+                                        + "!= CONTAINER_DESKTOP  ignoring!");
+                                continue;
                             }
+                            
+                            widgetInfo.id = c.getLong(idIndex);
+                            widgetInfo.screen = c.getInt(screenIndex);
+                            widgetInfo.container = container;
+                            widgetInfo.cellX = c.getInt(cellXIndex);
+                            widgetInfo.cellY = c.getInt(cellYIndex);
+
+                            desktopItems.add(widgetInfo);
+                            break;
+                        case LauncherSettings.Favorites.ITEM_TYPE_GADGET:
+                            // Read all Launcher-specific gadget details
+                            int gadgetId = c.getInt(gadgetIdIndex);
+                            gadgetInfo = new LauncherGadgetInfo(gadgetId);
+                            gadgetInfo.id = c.getLong(idIndex);
+                            gadgetInfo.screen = c.getInt(screenIndex);
+                            gadgetInfo.cellX = c.getInt(cellXIndex);
+                            gadgetInfo.cellY = c.getInt(cellYIndex);
+                            gadgetInfo.spanX = c.getInt(spanXIndex);
+                            gadgetInfo.spanY = c.getInt(spanYIndex);
+
+                            container = c.getInt(containerIndex);
+                            if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                                Log.e(Launcher.LOG_TAG, "Gadget found where container "
+                                        + "!= CONTAINER_DESKTOP -- ignoring!");
+                                continue;
+                            }
+                            gadgetInfo.container = c.getInt(containerIndex);
+                            
+                            desktopItems.add(gadgetInfo);
                             break;
                         }
                     } catch (Exception e) {
@@ -972,7 +980,7 @@ public class LauncherModel {
         final ContentResolver cr = context.getContentResolver();
 
         cr.delete(LauncherSettings.Favorites.getContentUri(info.id, false), null, null);
-        cr.delete(LauncherSettings.Favorites.CONTENT_URI, LauncherSettings.Favorites.CONTAINER + "=" + info.id,
-                null);
+        cr.delete(LauncherSettings.Favorites.CONTENT_URI,
+                LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
     }
 }

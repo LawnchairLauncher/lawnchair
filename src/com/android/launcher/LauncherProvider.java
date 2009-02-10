@@ -29,6 +29,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.util.Log;
 import android.util.Xml;
 import android.net.Uri;
@@ -49,7 +50,8 @@ public class LauncherProvider extends ContentProvider {
     private static final String LOG_TAG = "LauncherSettingsProvider";
 
     private static final String DATABASE_NAME = "launcher.db";
-    private static final int DATABASE_VERSION = 1;
+    
+    private static final int DATABASE_VERSION = 2;
 
     static final String AUTHORITY = "com.android.launcher.settings";
 
@@ -187,6 +189,7 @@ public class LauncherProvider extends ContentProvider {
                     "spanX INTEGER," +
                     "spanY INTEGER," +
                     "itemType INTEGER," +
+                    "gadgetId INTEGER NOT NULL DEFAULT -1," +
                     "isShortcut INTEGER," +
                     "iconType INTEGER," +
                     "iconPackage TEXT," +
@@ -195,6 +198,11 @@ public class LauncherProvider extends ContentProvider {
                     "uri TEXT," +
                     "displayMode INTEGER" +
                     ");");
+
+            // TODO: During first database creation, trigger wipe of any gadgets that
+            // might have been left around during a wipe-data.
+//            GadgetManager gadgetManager = GadgetManager.getInstance(mContext);
+
 
             if (!convertDatabase(db)) {
                 // Populate favorites table with initial favorites
@@ -206,7 +214,7 @@ public class LauncherProvider extends ContentProvider {
             boolean converted = false;
 
             final Uri uri = Uri.parse("content://" + Settings.AUTHORITY +
-                    "/favorites?notify=true");
+                    "/old_favorites?notify=true");
             final ContentResolver resolver = mContext.getContentResolver();
             Cursor cursor = null;
 
@@ -261,6 +269,7 @@ public class LauncherProvider extends ContentProvider {
                 values.put(LauncherSettings.Favorites.ICON_RESOURCE, c.getString(iconResourceIndex));
                 values.put(LauncherSettings.Favorites.CONTAINER, c.getInt(containerIndex));
                 values.put(LauncherSettings.Favorites.ITEM_TYPE, c.getInt(itemTypeIndex));
+                values.put(LauncherSettings.Favorites.GADGET_ID, -1);
                 values.put(LauncherSettings.Favorites.SCREEN, c.getInt(screenIndex));
                 values.put(LauncherSettings.Favorites.CELLX, c.getInt(cellXIndex));
                 values.put(LauncherSettings.Favorites.CELLY, c.getInt(cellYIndex));
@@ -290,11 +299,31 @@ public class LauncherProvider extends ContentProvider {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            Log.w(LOG_TAG, "Upgrading database from version " + oldVersion + " to " +
-                    newVersion + ", which will destroy all old data");
-
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVORITES);
-            onCreate(db);
+            int version = oldVersion;
+            if (version == 1) {
+                // upgrade 1 -> 2 added gadgetId column
+                db.beginTransaction();
+                try {
+                    // TODO: convert any existing widgets for search and clock
+                    // this might involve a FORCE_ADD_GADGET permission in GadgetManager that
+                    // Launcher could then use to add these gadgets without user interaction
+                    db.execSQL("ALTER TABLE favorites " +
+                            "ADD COLUMN gadgetId INTEGER NOT NULL DEFAULT -1;");
+                    db.setTransactionSuccessful();
+                    version = 2;
+                } catch (SQLException ex) {
+                    // Old version remains, which means we wipe old data
+                    Log.e(LOG_TAG, ex.getMessage(), ex);
+                } finally {
+                    db.endTransaction();
+                }
+            }
+            
+            if (version != DATABASE_VERSION) {
+                Log.w(LOG_TAG, "Destroying all old data.");
+                db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVORITES);
+                onCreate(db);
+            }
         }
 
 
@@ -370,20 +399,7 @@ public class LauncherProvider extends ContentProvider {
             } catch (IOException e) {
                 Log.w(LOG_TAG, "Got exception parsing favorites.", e);
             }
-
-            // Add a clock
-            values.clear();
-            values.put(LauncherSettings.Favorites.CONTAINER,
-                    LauncherSettings.Favorites.CONTAINER_DESKTOP);
-            values.put(LauncherSettings.Favorites.ITEM_TYPE,
-                    LauncherSettings.Favorites.ITEM_TYPE_WIDGET_CLOCK);
-            values.put(LauncherSettings.Favorites.SCREEN, 1);
-            values.put(LauncherSettings.Favorites.CELLX, 1);
-            values.put(LauncherSettings.Favorites.CELLY, 0);
-            values.put(LauncherSettings.Favorites.SPANX, 2);
-            values.put(LauncherSettings.Favorites.SPANY, 2);
-            db.insert(TABLE_FAVORITES, null, values);
-
+            
             // Add a search box
             values.clear();
             values.put(LauncherSettings.Favorites.CONTAINER,
@@ -396,6 +412,9 @@ public class LauncherProvider extends ContentProvider {
             values.put(LauncherSettings.Favorites.SPANX, 4);
             values.put(LauncherSettings.Favorites.SPANY, 1);
             db.insert(TABLE_FAVORITES, null, values);
+            
+            // TODO: automatically add clock and search gadget to
+            // default locations.  this might need the FORCE permission mentioned above
 
             return i;
         }

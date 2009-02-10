@@ -28,14 +28,24 @@
     <string name="menu_item_add_item">"ホーム画面に追加"</string>
     <string name="group_applications">"アプリケーション"</string>
     <string name="group_shortcuts">"ショートカット"</string>
+    <!-- no translation found for group_search (5905328940867162196) -->
+    <skip />
+    <!-- no translation found for group_folder (236213814675135523) -->
+    <skip />
     <string name="group_live_folders">"ライブフォルダ"</string>
     <string name="group_widgets">"ウィジェット"</string>
+    <!-- no translation found for group_gadgets (7795333306847768497) -->
+    <skip />
     <string name="group_wallpapers">"壁紙"</string>
     <string name="add_folder">"フォルダ"</string>
     <string name="add_clock">"時計"</string>
     <string name="add_photo_frame">"写真フレーム"</string>
     <string name="add_search">"検索"</string>
     <string name="out_of_space">"このホーム画面には空きスペースがありません。"</string>
+    <!-- no translation found for title_select_shortcut (2858897527672831763) -->
+    <skip />
+    <!-- no translation found for title_select_live_folder (441136484932944782) -->
+    <skip />
     <string name="menu_add">"追加"</string>
     <string name="menu_wallpaper">"壁紙"</string>
     <string name="menu_search">"検索"</string>
@@ -50,4 +60,6 @@
     <string name="permlab_write_settings">"ホームの設定とショートカットの書き込み"</string>
     <string name="permdesc_write_settings">"ホームの設定とショートカットの変更をアプリケーションに許可します。"</string>
     <string name="search_hint">"Google検索"</string>
+    <!-- no translation found for gadget_error_text (7654995305187314446) -->
+    <skip />
 </resources>

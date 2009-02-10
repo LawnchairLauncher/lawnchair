@@ -28,14 +28,24 @@
     <string name="menu_item_add_item">"Ajouter à l\'écran d\'accueil"</string>
     <string name="group_applications">"Application"</string>
     <string name="group_shortcuts">"Raccourci"</string>
+    <!-- no translation found for group_search (5905328940867162196) -->
+    <skip />
+    <!-- no translation found for group_folder (236213814675135523) -->
+    <skip />
     <string name="group_live_folders">"Dossier live"</string>
     <string name="group_widgets">"Widget"</string>
+    <!-- no translation found for group_gadgets (7795333306847768497) -->
+    <skip />
     <string name="group_wallpapers">"Arrière-plan"</string>
     <string name="add_folder">"Dossier"</string>
     <string name="add_clock">"Horloge"</string>
     <string name="add_photo_frame">"Cadre d\'image"</string>
     <string name="add_search">"Rechercher"</string>
     <string name="out_of_space">"Plus d\'espace libre sur l\'écran Accueil."</string>
+    <!-- no translation found for title_select_shortcut (2858897527672831763) -->
+    <skip />
+    <!-- no translation found for title_select_live_folder (441136484932944782) -->
+    <skip />
     <string name="menu_add">"Ajouter"</string>
     <string name="menu_wallpaper">"Arrière-plan"</string>
     <string name="menu_search">"Rechercher"</string>
@@ -50,4 +60,6 @@
     <string name="permlab_write_settings">"écrire les paramètres de la page d\'accueil et des raccourcis"</string>
     <string name="permdesc_write_settings">"Permet à une application de modifier les paramètres et les raccourcis de la page d\'accueil."</string>
     <string name="search_hint">"Recherche Google"</string>
+    <!-- no translation found for gadget_error_text (7654995305187314446) -->
+    <skip />
 </resources>

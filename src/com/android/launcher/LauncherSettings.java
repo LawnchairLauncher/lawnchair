@@ -147,6 +147,11 @@ class LauncherSettings {
         static final int ITEM_TYPE_LIVE_FOLDER = 3;
 
         /**
+         * The favorite is a gadget
+         */
+        static final int ITEM_TYPE_GADGET = 4;
+
+        /**
          * The favorite is a clock
          */
         static final int ITEM_TYPE_WIDGET_CLOCK = 1000;
@@ -161,6 +166,13 @@ class LauncherSettings {
          */
         static final int ITEM_TYPE_WIDGET_PHOTO_FRAME = 1002;
 
+        /**
+         * The gadgetId of the gadget
+         *
+         * <P>Type: INTEGER</P>
+         */
+        static final String GADGET_ID = "gadgetId";
+        
         /**
          * Indicates whether this favorite is an application-created shortcut or not.
          * If the value is 0, the favorite is not an application-created shortcut, if the

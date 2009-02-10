@@ -40,6 +40,9 @@ public class BubbleTextView extends TextView {
 
     private boolean mBackgroundSizeChanged;
     private Drawable mBackground;
+    private float mCornerRadius;
+    private float mPaddingH;
+    private float mPaddingV;
 
     public BubbleTextView(Context context) {
         super(context);
@@ -64,6 +67,12 @@ public class BubbleTextView extends TextView {
 
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setColor(getContext().getResources().getColor(R.color.bubble_dark_background));
+
+        final float scale = getContext().getResources().getDisplayMetrics().density;
+        mCornerRadius = CORNER_RADIUS * scale;
+        mPaddingH = PADDING_H * scale;
+        //noinspection PointlessArithmeticExpression
+        mPaddingV = PADDING_V * scale;
     }
 
     @Override
@@ -114,11 +123,11 @@ public class BubbleTextView extends TextView {
         final int left = getCompoundPaddingLeft();
         final int top = getExtendedPaddingTop();
 
-        rect.set(left + layout.getLineLeft(0) - PADDING_H,
-                top + layout.getLineTop(0) - PADDING_V,
-                Math.min(left + layout.getLineRight(0) + PADDING_H, mScrollX + mRight - mLeft),
-                top + layout.getLineBottom(0) + PADDING_V);
-        canvas.drawRoundRect(rect, CORNER_RADIUS, CORNER_RADIUS, mPaint);
+        rect.set(left + layout.getLineLeft(0) - mPaddingH,
+                top + layout.getLineTop(0) -  mPaddingV,
+                Math.min(left + layout.getLineRight(0) + mPaddingH, mScrollX + mRight - mLeft),
+                top + layout.getLineBottom(0) + mPaddingV);
+        canvas.drawRoundRect(rect, mCornerRadius, mCornerRadius, mPaint);
 
         super.draw(canvas);
     }

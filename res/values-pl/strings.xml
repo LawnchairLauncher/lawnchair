@@ -15,7 +15,7 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name">"Strona główna"</string>
+    <string name="application_name">"Sieć"</string>
     <string name="folder_name">"Folder"</string>
     <string name="chooser_wallpaper">"Wybierz tapetę"</string>
     <string name="wallpaper_instructions">"Ustaw tapetę"</string>
@@ -28,14 +28,24 @@
     <string name="menu_item_add_item">"Dodaj do strony głównej"</string>
     <string name="group_applications">"Aplikacja"</string>
     <string name="group_shortcuts">"Skrót"</string>
+    <!-- no translation found for group_search (5905328940867162196) -->
+    <skip />
+    <!-- no translation found for group_folder (236213814675135523) -->
+    <skip />
     <string name="group_live_folders">"Folder Live"</string>
     <string name="group_widgets">"Widget"</string>
+    <!-- no translation found for group_gadgets (7795333306847768497) -->
+    <skip />
     <string name="group_wallpapers">"Tapeta"</string>
     <string name="add_folder">"Folder"</string>
     <string name="add_clock">"Zegar"</string>
     <string name="add_photo_frame">"Ramka obrazu"</string>
     <string name="add_search">"Szukaj"</string>
     <string name="out_of_space">"Brak miejsca na tej stronie głównej"</string>
+    <!-- no translation found for title_select_shortcut (2858897527672831763) -->
+    <skip />
+    <!-- no translation found for title_select_live_folder (441136484932944782) -->
+    <skip />
     <string name="menu_add">"Dodaj"</string>
     <string name="menu_wallpaper">"Tapeta"</string>
     <string name="menu_search">"Szukaj"</string>
@@ -50,4 +60,6 @@
     <string name="permlab_write_settings">"zapisywanie ustawień i skrótów strony głównej"</string>
     <string name="permdesc_write_settings">"Umożliwia aplikacji zmianę ustawień i skrótów strony głównej."</string>
     <string name="search_hint">"Szukaj w Google"</string>
+    <!-- no translation found for gadget_error_text (7654995305187314446) -->
+    <skip />
 </resources>

@@ -123,9 +123,6 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
         final String[] extras = resources.getStringArray(R.array.extra_wallpapers);
         final String packageName = getApplication().getPackageName();
 
-        final ArrayList<Integer> images = mImages;
-        final ArrayList<Integer> thumbs = mThumbs;
-
         for (String extra : extras) {
             int res = resources.getIdentifier(extra, "drawable", packageName);
             if (res != 0) {
@@ -133,8 +130,8 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
                         "drawable", packageName);
 
                 if (thumbRes != 0) {
-                    images.add(res);
-                    thumbs.add(res);
+                    mThumbs.add(res);
+                    mImages.add(res);
                 }
             }
         }
@@ -148,7 +145,7 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
 
     public void onItemSelected(AdapterView parent, View v, int position, long id) {
         final ImageView view = mImageView;
-        Bitmap b = BitmapFactory.decodeResource(getResources(), IMAGE_IDS[position], mOptions);
+        Bitmap b = BitmapFactory.decodeResource(getResources(), mImages.get(position), mOptions);
         view.setImageBitmap(b);
 
         // Help the GC

@@ -28,14 +28,24 @@
     <string name="menu_item_add_item">"Añadir a pantalla de página principal"</string>
     <string name="group_applications">"Aplicación"</string>
     <string name="group_shortcuts">"Acceso directo"</string>
+    <!-- no translation found for group_search (5905328940867162196) -->
+    <skip />
+    <!-- no translation found for group_folder (236213814675135523) -->
+    <skip />
     <string name="group_live_folders">"Carpeta activa"</string>
     <string name="group_widgets">"Widget"</string>
+    <!-- no translation found for group_gadgets (7795333306847768497) -->
+    <skip />
     <string name="group_wallpapers">"Papel tapiz"</string>
     <string name="add_folder">"Carpeta"</string>
     <string name="add_clock">"Reloj"</string>
     <string name="add_photo_frame">"Picture frame"</string>
     <string name="add_search">"Búsqueda de Google"</string>
     <string name="out_of_space">"No queda espacio en esta pantalla de página principal."</string>
+    <!-- no translation found for title_select_shortcut (2858897527672831763) -->
+    <skip />
+    <!-- no translation found for title_select_live_folder (441136484932944782) -->
+    <skip />
     <string name="menu_add">"Añadir"</string>
     <string name="menu_wallpaper">"Papel tapiz"</string>
     <string name="menu_search">"Búsqueda de Google"</string>
@@ -50,4 +60,6 @@
     <string name="permlab_write_settings">"escribir información de accesos directos y de configuración de la página principal"</string>
     <string name="permdesc_write_settings">"Permite que una aplicación modifique la configuración y los accesos directos de la página principal."</string>
     <string name="search_hint">"Búsqueda de Google"</string>
+    <!-- no translation found for gadget_error_text (7654995305187314446) -->
+    <skip />
 </resources>

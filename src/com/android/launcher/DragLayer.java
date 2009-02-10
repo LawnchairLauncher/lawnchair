@@ -320,40 +320,33 @@ public class DragLayer extends FrameLayout implements DragController {
 
             break;
         case MotionEvent.ACTION_MOVE:
-            if (Launcher.sOpenGlEnabled) {
-                mLastMotionX = x;
-                mLastMotionY = y;
+            final int scrollX = mScrollX;
+            final int scrollY = mScrollY;
 
-                invalidate();
-            } else {
-                final int scrollX = mScrollX;
-                final int scrollY = mScrollY;
+            final float touchX = mTouchOffsetX;
+            final float touchY = mTouchOffsetY;
 
-                final float touchX = mTouchOffsetX;
-                final float touchY = mTouchOffsetY;
+            final int offsetX = mBitmapOffsetX;
+            final int offsetY = mBitmapOffsetY;
 
-                final int offsetX = mBitmapOffsetX;
-                final int offsetY = mBitmapOffsetY;
+            int left = (int) (scrollX + mLastMotionX - touchX - offsetX);
+            int top = (int) (scrollY + mLastMotionY - touchY - offsetY);
 
-                int left = (int) (scrollX + mLastMotionX - touchX - offsetX);
-                int top = (int) (scrollY + mLastMotionY - touchY - offsetY);
+            final Bitmap dragBitmap = mDragBitmap;
+            final int width = dragBitmap.getWidth();
+            final int height = dragBitmap.getHeight();
 
-                final Bitmap dragBitmap = mDragBitmap;
-                final int width = dragBitmap.getWidth();
-                final int height = dragBitmap.getHeight();
+            final Rect rect = mRect;
+            rect.set(left - 1, top - 1, left + width + 1, top + height + 1);
 
-                final Rect rect = mRect;
-                rect.set(left - 1, top - 1, left + width + 1, top + height + 1);
+            mLastMotionX = x;
+            mLastMotionY = y;
 
-                mLastMotionX = x;
-                mLastMotionY = y;
+            left = (int) (scrollX + x - touchX - offsetX);
+            top = (int) (scrollY + y - touchY - offsetY);
 
-                left = (int) (scrollX + x - touchX - offsetX);
-                top = (int) (scrollY + y - touchY - offsetY);
-
-                rect.union(left - 1, top - 1, left + width + 1, top + height + 1);
-                invalidate(rect);
-            }
+            rect.union(left - 1, top - 1, left + width + 1, top + height + 1);
+            invalidate(rect);
 
             final int[] coordinates = mDropCoordinates;
             DropTarget dropTarget = findDropTarget((int) x, (int) y, coordinates);

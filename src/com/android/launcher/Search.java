@@ -16,8 +16,6 @@
 
 package com.android.launcher;
 
-import java.util.List;
-
 import android.app.ISearchManager;
 import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
@@ -59,6 +57,8 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 
+import java.util.List;
+
 public class Search extends LinearLayout implements OnClickListener, OnKeyListener,
         OnLongClickListener, TextWatcher, OnItemClickListener, OnItemSelectedListener {
 
@@ -66,6 +66,7 @@ public class Search extends LinearLayout implements OnClickListener, OnKeyListen
 
     private AutoCompleteTextView mSearchText;
     private ImageButton mGoButton;
+    private ImageButton mVoiceButton;
     private OnLongClickListener mLongClickListener;
     
     // Support for suggestions
@@ -76,6 +77,9 @@ public class Search extends LinearLayout implements OnClickListener, OnKeyListen
     private String mSuggestionQuery = null;
     private int mItemSelected = -1;
     
+    // For voice searching
+    private Intent mVoiceSearchIntent;
+
     private Rect mTempRect = new Rect();
 
     /**
@@ -86,6 +90,10 @@ public class Search extends LinearLayout implements OnClickListener, OnKeyListen
      */
     public Search(Context context, AttributeSet attrs) {
         super(context, attrs);
+        
+        mVoiceSearchIntent = new Intent(android.speech.RecognizerIntent.ACTION_WEB_SEARCH);
+        mVoiceSearchIntent.putExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                android.speech.RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
     }
     
     /**
@@ -94,6 +102,14 @@ public class Search extends LinearLayout implements OnClickListener, OnKeyListen
     public void onClick(View v) {
         if (v == mGoButton) {
             query();
+        } else if (v == mVoiceButton) {
+            try {
+                getContext().startActivity(mVoiceSearchIntent);
+            } catch (ActivityNotFoundException ex) {
+                // Should not happen, since we check the availability of
+                // voice search before showing the button. But just in case...
+                Log.w(TAG, "Could not find voice search activity");
+            }
         }
     }
 
@@ -206,7 +222,7 @@ public class Search extends LinearLayout implements OnClickListener, OnKeyListen
                     return true;
                 }
             }
-        } else if (v == mGoButton) {
+        } else if (v == mGoButton || v == mVoiceButton) {
             boolean handled = false;
             if (!event.isSystem() && 
                     (keyCode != KeyEvent.KEYCODE_DPAD_UP) &&
@@ -243,7 +259,14 @@ public class Search extends LinearLayout implements OnClickListener, OnKeyListen
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        requestFocusFromTouch();
+        // Request focus unless the user tapped on the voice search button
+        final int x = (int) ev.getX();
+        final int y = (int) ev.getY();
+        final Rect frame = mTempRect;
+        mVoiceButton.getHitRect(frame);
+        if (!frame.contains(x, y)) {
+            requestFocusFromTouch();
+        }
         return super.onInterceptTouchEvent(ev);
     }
     
@@ -268,26 +291,29 @@ public class Search extends LinearLayout implements OnClickListener, OnKeyListen
         mSearchText.addTextChangedListener(this);
 
         mGoButton = (ImageButton) findViewById(R.id.search_go_btn);
+        mVoiceButton = (ImageButton) findViewById(R.id.search_voice_btn);
         mGoButton.setOnClickListener(this);
+        mVoiceButton.setOnClickListener(this);
         mGoButton.setOnKeyListener(this);
+        mVoiceButton.setOnKeyListener(this);
         
         mSearchText.setOnLongClickListener(this);
         mGoButton.setOnLongClickListener(this);
+        mVoiceButton.setOnLongClickListener(this);
         
         // disable the button since we start out w/empty input
         mGoButton.setEnabled(false);
         mGoButton.setFocusable(false);
         
+        configureSearchableInfo();
         configureSuggestions();
+        configureVoiceSearchButton();
     }
     
-    /** The rest of the class deals with providing search suggestions */
-    
     /**
-     * Set up the suggestions provider mechanism
+     * Read the searchable info from the search manager
      */
-    private void configureSuggestions() {
-        // get SearchableInfo
+    private void configureSearchableInfo() {
         ISearchManager sms;
         SearchableInfo searchable;
         sms = ISearchManager.Stub.asInterface(ServiceManager.getService(Context.SEARCH_SERVICE));
@@ -303,6 +329,36 @@ public class Search extends LinearLayout implements OnClickListener, OnKeyListen
             return;
         }
         mSearchable = searchable;
+    }
+    
+    /**
+     * If appropriate & available, configure voice search
+     * 
+     * Note:  Because the home screen search widget is always web search, we only check for
+     * getVoiceSearchLaunchWebSearch() modes.  We don't support the alternate form of app-specific
+     * voice search.
+     */
+    private void configureVoiceSearchButton() {
+        boolean voiceSearchVisible = false;
+        if (mSearchable.getVoiceSearchEnabled() && mSearchable.getVoiceSearchLaunchWebSearch()) {
+            // Enable the voice search button if there is an activity that can handle it
+            PackageManager pm = getContext().getPackageManager();
+            List<ResolveInfo> list = pm.queryIntentActivities(mVoiceSearchIntent,
+                    PackageManager.MATCH_DEFAULT_ONLY);
+            voiceSearchVisible = list.size() > 0;
+        }
+        
+        // finally, set visible state of voice search button, as appropriate
+        mVoiceButton.setVisibility(voiceSearchVisible ? View.VISIBLE : View.GONE);
+    }
+     
+    /** The rest of the class deals with providing search suggestions */
+    
+    /**
+     * Set up the suggestions provider mechanism
+     */
+    private void configureSuggestions() {
+        // get SearchableInfo
         
         mSearchText.setOnItemClickListener(this);
         mSearchText.setOnItemSelectedListener(this);

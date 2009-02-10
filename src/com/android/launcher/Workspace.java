@@ -89,6 +89,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     private boolean mAllowLongPress;
     private boolean mLocked;
 
+    private int mTouchSlop;
+
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -126,6 +128,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
         mPaint = new Paint();
         mPaint.setDither(false);
+
+        mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }
 
     /**
@@ -626,8 +630,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                  */
                 final int xDiff = (int) Math.abs(x - mLastMotionX);
                 final int yDiff = (int) Math.abs(y - mLastMotionY);
-                final int touchSlop = ViewConfiguration.getTouchSlop();
-                
+
+                final int touchSlop = mTouchSlop;
                 boolean xMoved = xDiff > touchSlop;
                 boolean yMoved = yDiff > touchSlop;
                 
@@ -1155,6 +1159,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             }
         }
     }
+    
+    // TODO: remove gadgets when gadgetmanager tells us they're gone
+//    void removeGadgetsForProvider() {
+//    }
 
     void moveToDefaultScreen() {
         snapToScreen(mDefaultScreen);
