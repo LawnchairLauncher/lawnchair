@@ -50,7 +50,6 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
             R.drawable.wallpaper_path_small,
             R.drawable.wallpaper_sunrise_small,
             R.drawable.wallpaper_mountain_small,
-            R.drawable.wallpaper_ripples_small,
             R.drawable.wallpaper_road_small,
             R.drawable.wallpaper_jellyfish_small,
             R.drawable.wallpaper_zanzibar_small,
@@ -68,7 +67,6 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
             R.drawable.wallpaper_path,
             R.drawable.wallpaper_sunrise,
             R.drawable.wallpaper_mountain,
-            R.drawable.wallpaper_ripples,
             R.drawable.wallpaper_road,
             R.drawable.wallpaper_jellyfish,
             R.drawable.wallpaper_zanzibar,
@@ -130,7 +128,7 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
                         "drawable", packageName);
 
                 if (thumbRes != 0) {
-                    mThumbs.add(res);
+                    mThumbs.add(thumbRes);
                     mImages.add(res);
                 }
             }

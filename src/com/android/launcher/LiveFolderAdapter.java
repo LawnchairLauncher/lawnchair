@@ -178,10 +178,13 @@ class LiveFolderAdapter extends CursorAdapter {
         }
         mCustomIcons.clear();
 
-        try {
-            getCursor().close();
-        } finally {
-            mLauncher.stopManagingCursor(getCursor());
+        final Cursor cursor = getCursor();
+        if (cursor != null) {
+            try {
+                cursor.close();
+            } finally {
+                mLauncher.stopManagingCursor(cursor);
+            }
         }
     }
 

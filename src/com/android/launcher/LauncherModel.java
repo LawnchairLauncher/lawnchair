@@ -894,37 +894,6 @@ public class LauncherModel {
         return null;
     }
 
-    static Widget getPhotoFrameInfo(Context context, int screen, int cellX, int cellY) {
-        final ContentResolver cr = context.getContentResolver();
-        Cursor c = cr.query(LauncherSettings.Favorites.CONTENT_URI,
-            null, "screen=? and cellX=? and cellY=? and itemType=?",
-            new String[] { String.valueOf(screen), String.valueOf(cellX), String.valueOf(cellY),
-                String.valueOf(LauncherSettings.Favorites.ITEM_TYPE_WIDGET_PHOTO_FRAME) }, null);
-
-        try {
-            if (c.moveToFirst()) {
-                final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ID);
-                final int containerIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CONTAINER);
-                final int screenIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SCREEN);
-                final int cellXIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLX);
-                final int cellYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLY);
-
-                Widget widgetInfo = Widget.makePhotoFrame();
-                widgetInfo.id = c.getLong(idIndex);
-                widgetInfo.screen = c.getInt(screenIndex);
-                widgetInfo.container = c.getInt(containerIndex);
-                widgetInfo.cellX = c.getInt(cellXIndex);
-                widgetInfo.cellY = c.getInt(cellYIndex);
-
-                return widgetInfo;
-            }
-        } finally {
-            c.close();
-        }
-
-        return null;
-    }
-
     /**
      * Add an item to the database in a specified container. Sets the container, screen, cellX and
      * cellY fields of the item. Also assigns an ID to the item.

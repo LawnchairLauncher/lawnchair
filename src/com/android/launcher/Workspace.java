@@ -839,11 +839,16 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     void addApplicationShortcut(ApplicationInfo info, CellLayout.CellInfo cellInfo) {
+        addApplicationShortcut(info, cellInfo, false);
+    }
+
+    void addApplicationShortcut(ApplicationInfo info, CellLayout.CellInfo cellInfo,
+            boolean insertAtFirst) {
         final CellLayout layout = (CellLayout) getChildAt(cellInfo.screen);
         final int[] result = new int[2];
 
         layout.cellToPoint(cellInfo.cellX, cellInfo.cellY, result);
-        onDropExternal(result[0], result[1], info, layout);
+        onDropExternal(result[0], result[1], info, layout, insertAtFirst);
     }
 
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset, Object dragInfo) {
@@ -882,6 +887,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     private void onDropExternal(int x, int y, Object dragInfo, CellLayout cellLayout) {
+        onDropExternal(x, y, dragInfo, cellLayout, false);
+    }
+    
+    private void onDropExternal(int x, int y, Object dragInfo, CellLayout cellLayout,
+            boolean insertAtFirst) {
         // Drag from somewhere else
         ItemInfo info = (ItemInfo) dragInfo;
 
@@ -905,7 +915,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             throw new IllegalStateException("Unknown item type: " + info.itemType);
         }
 
-        cellLayout.addView(view);
+        cellLayout.addView(view, insertAtFirst ? 0 : -1);
         view.setOnLongClickListener(mLongClickListener);
         cellLayout.onDropChild(view, x, y);
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();

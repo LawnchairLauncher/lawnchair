@@ -37,7 +37,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
-import android.gadget.GadgetInfo;
+import android.gadget.GadgetProviderInfo;
 import android.gadget.GadgetManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -197,7 +197,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mInflater = getLayoutInflater();
         
         mGadgetManager = GadgetManager.getInstance(this);
+        
         mGadgetHost = new LauncherGadgetHost(this, GADGET_HOST_ID);
+        mGadgetHost.startListening();
         
         // TODO: figure out if this is first launch and correctly clear GadgetHost database
 
@@ -232,18 +234,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         // For handling default keys
         mDefaultKeySsb = new SpannableStringBuilder();
         Selection.setSelection(mDefaultKeySsb, 0);
-    }
-    
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mGadgetHost.startListening();
-    }
-    
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mGadgetHost.stopListening();
     }
     
     private void checkForLocaleChange() {
@@ -315,7 +305,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         if (resultCode == RESULT_OK && mAddItemCellInfo != null) {
             switch (requestCode) {
                 case REQUEST_PICK_APPLICATION:
-                    completeAddApplication(this, data, mAddItemCellInfo);
+                    completeAddApplication(this, data, mAddItemCellInfo, !mDesktopLocked);
                     break;
                 case REQUEST_PICK_SHORTCUT:
                     addShortcut(data);
@@ -541,8 +531,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
      * @param data The intent describing the application.
      * @param cellInfo The position on screen where to create the shortcut.
      */
-    void completeAddApplication(Context context, Intent data, CellLayout.CellInfo cellInfo) {
+    void completeAddApplication(Context context, Intent data, CellLayout.CellInfo cellInfo,
+            boolean insertAtFirst) {
         cellInfo.screen = mWorkspace.getCurrentScreen();
+        if (!findSingleSlot(cellInfo)) return;
 
         // Find details for this application
         ComponentName component = data.getComponent();
@@ -567,7 +559,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             itemInfo.icon = activityInfo.loadIcon(packageManager);
             itemInfo.container = ItemInfo.NO_ID;
 
-            mWorkspace.addApplicationShortcut(itemInfo, mAddItemCellInfo);
+            mWorkspace.addApplicationShortcut(itemInfo, cellInfo, insertAtFirst);
         }
     }
     
@@ -580,8 +572,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
      */
     private void completeAddShortcut(Intent data, CellLayout.CellInfo cellInfo,
             boolean insertAtFirst) {
-
         cellInfo.screen = mWorkspace.getCurrentScreen();
+        if (!findSingleSlot(cellInfo)) return;
+        
         final ApplicationInfo info = addShortcut(this, data, cellInfo, false);
 
         if (!mRestoring) {
@@ -610,20 +603,20 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         
         Log.d(LOG_TAG, "dumping extras content="+extras.toString());
         
-        GadgetInfo gadgetInfo = mGadgetManager.getGadgetInfo(gadgetId);
+        GadgetProviderInfo gadgetInfo = mGadgetManager.getGadgetInfo(gadgetId);
         
         // Calculate the grid spans needed to fit this gadget
         CellLayout layout = (CellLayout) mWorkspace.getChildAt(cellInfo.screen);
-        layout.rectToCell(gadgetInfo.minWidth, gadgetInfo.minHeight, cellInfo);
-
+        int[] spans = layout.rectToCell(gadgetInfo.minWidth, gadgetInfo.minHeight);
+        
         // Try finding open space on Launcher screen
         final int[] xy = mCellCoordinates;
-        if (!findSlot(cellInfo, xy, cellInfo.spanX, cellInfo.spanY)) return;
+        if (!findSlot(cellInfo, xy, spans[0], spans[1])) return;
 
         // Build Launcher-specific Gadget info and save to database
         LauncherGadgetInfo launcherInfo = new LauncherGadgetInfo(gadgetId);
-        launcherInfo.spanX = cellInfo.spanX;
-        launcherInfo.spanY = cellInfo.spanY;
+        launcherInfo.spanX = spans[0];
+        launcherInfo.spanY = spans[1];
         
         LauncherModel.addItemToDatabase(this, launcherInfo,
                 LauncherSettings.Favorites.CONTAINER_DESKTOP,
@@ -643,19 +636,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         } else if (sModel.isDesktopLoaded()) {
             sModel.addDesktopItem(launcherInfo);
         }
-        
-        // Request fresh update if we needed to config this gadget to
-        // remove the stale UPDATE from the initial bind
-        if (!extras.containsKey(SKIP_CONFIG) || true) {
-            // TODO: move this down into GadgetManager to prevent abuse? (anyone
-            // could force a specific gadget into the ground through flooding)
-            Log.d(LOG_TAG, "requesting new gadget update because we had a config step");
-            Intent intent = new Intent(GadgetManager.GADGET_UPDATE_ACTION);
-            intent.putExtra(GadgetManager.EXTRA_GADGET_IDS, new int[] { gadgetId });
-            intent.setComponent(gadgetInfo.provider);
-            sendBroadcast(intent);
-        }
-
     }
     
     public LauncherGadgetHost getGadgetHost() {
@@ -802,6 +782,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mDestroyed = true;
 
         super.onDestroy();
+        
+        mGadgetHost.stopListening();
 
         TextKeyListener.getInstance().release();
 
@@ -901,24 +883,20 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
     }
     
-    static final String SKIP_CONFIG = "skip_config";
-
     void addGadget(Intent data) {
+        // TODO: catch bad gadget exception when sent
         int gadgetId = data.getIntExtra(GadgetManager.EXTRA_GADGET_ID, -1);
-        GadgetInfo gadget = mGadgetManager.getGadgetInfo(gadgetId);
+        GadgetProviderInfo gadget = mGadgetManager.getGadgetInfo(gadgetId);
 
         if (gadget.configure != null) {
             // Launch over to configure gadget, if needed
-            Intent intent = new Intent(GadgetManager.GADGET_CONFIGURE_ACTION);
+            Intent intent = new Intent(GadgetManager.ACTION_GADGET_CONFIGURE);
             intent.setComponent(gadget.configure);
             intent.putExtra(GadgetManager.EXTRA_GADGET_ID, gadgetId);
 
             startActivityForResult(intent, REQUEST_CREATE_GADGET);
         } else {
             // Otherwise just add it
-            Log.d(LOG_TAG, "dumping extras content="+data.getExtras().toString());
-            data.putExtra(SKIP_CONFIG, true);
-            Log.d(LOG_TAG, "dumping extras content="+data.getExtras().toString());
             onActivityResult(REQUEST_CREATE_GADGET, Activity.RESULT_OK, data);
         }
     }
@@ -951,28 +929,32 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         startActivityForResult(intent, REQUEST_CREATE_LIVE_FOLDER);
     }
 
-    void addFolder() {
+    void addFolder(boolean insertAtFirst) {
         UserFolderInfo folderInfo = new UserFolderInfo();
         folderInfo.title = getText(R.string.folder_name);
-        int cellX = mAddItemCellInfo.cellX;
-        int cellY = mAddItemCellInfo.cellY;
+
+        CellLayout.CellInfo cellInfo = mAddItemCellInfo;
+        cellInfo.screen = mWorkspace.getCurrentScreen();
+        if (!findSingleSlot(cellInfo)) return;
 
         // Update the model
         LauncherModel.addItemToDatabase(this, folderInfo, LauncherSettings.Favorites.CONTAINER_DESKTOP,
-                mWorkspace.getCurrentScreen(), cellX, cellY, false);
+                mWorkspace.getCurrentScreen(), cellInfo.cellX, cellInfo.cellY, false);
         sModel.addDesktopItem(folderInfo);
         sModel.addFolder(folderInfo);
 
         // Create the view
         FolderIcon newFolder = FolderIcon.fromXml(R.layout.folder_icon, this,
                 (ViewGroup) mWorkspace.getChildAt(mWorkspace.getCurrentScreen()), folderInfo);
-        mWorkspace.addInCurrentScreen(newFolder, cellX, cellY, 1, 1);
+        mWorkspace.addInCurrentScreen(newFolder,
+                cellInfo.cellX, cellInfo.cellY, 1, 1, insertAtFirst);
     }
-
+    
     private void completeAddLiveFolder(Intent data, CellLayout.CellInfo cellInfo,
             boolean insertAtFirst) {
-
         cellInfo.screen = mWorkspace.getCurrentScreen();
+        if (!findSingleSlot(cellInfo)) return;
+
         final LiveFolderInfo info = addLiveFolder(this, data, cellInfo, false);
 
         if (!mRestoring) {
@@ -1029,6 +1011,16 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         sModel.addFolder(info);
 
         return info;
+    }
+
+    private boolean findSingleSlot(CellLayout.CellInfo cellInfo) {
+        final int[] xy = new int[2];
+        if (findSlot(cellInfo, xy, 1, 1)) {
+            cellInfo.cellX = xy[0];
+            cellInfo.cellY = xy[1];
+            return true;
+        }
+        return false;
     }
 
     private boolean findSlot(CellLayout.CellInfo cellInfo, int[] xy, int spanX, int spanY) {
@@ -1184,7 +1176,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
 
         count = shortcuts.size();
-
+        
         final DesktopItemsBinder binder = new DesktopItemsBinder(this, shortcuts);
         binder.obtainMessage(DesktopItemsBinder.MESSAGE_BIND_ITEMS, 0, count).sendToTarget();
     }
@@ -1226,26 +1218,16 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     final LauncherGadgetInfo launcherInfo = (LauncherGadgetInfo) item;
                     
                     final int gadgetId = launcherInfo.gadgetId;
-                    GadgetInfo gadgetInfo = mGadgetManager.getGadgetInfo(gadgetId);
+                    GadgetProviderInfo gadgetInfo = mGadgetManager.getGadgetInfo(gadgetId);
                     launcherInfo.hostView = mGadgetHost.createView(this, gadgetId, gadgetInfo);
-                    
-                    Log.d(LOG_TAG, "about to setGadget during desktop bind");
+
+                    Log.d(LOG_TAG, "about to setGadget for id="+gadgetId+", info="+gadgetInfo);
                     launcherInfo.hostView.setGadget(gadgetId, gadgetInfo);
                     launcherInfo.hostView.setTag(launcherInfo);
                     
                     workspace.addInScreen(launcherInfo.hostView, item.screen, item.cellX,
                             item.cellY, item.spanX, item.spanY, !desktopLocked);
 
-                    // Now that we've bound the item, request an update for it
-                    if (gadgetInfo != null) {
-                        if (gadgetInfo.provider != null) {
-                            Intent intent = new Intent(GadgetManager.GADGET_UPDATE_ACTION);
-                            intent.putExtra(GadgetManager.EXTRA_GADGET_IDS, new int[] { gadgetId });
-                            intent.setComponent(gadgetInfo.provider);
-                            sendBroadcast(intent);
-                        }
-                    }
-                    
                     break;
                 case LauncherSettings.Favorites.ITEM_TYPE_WIDGET_SEARCH:
                     final int screen = workspace.getCurrentScreen();
@@ -1657,8 +1639,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     case AddAdapter.ITEM_GADGET: {
                         int gadgetId = Launcher.this.mGadgetHost.allocateGadgetId();
                         
-                        Intent pickIntent = new Intent(GadgetManager.GADGET_PICK_ACTION);
-                        pickIntent.putExtra(GadgetManager.EXTRA_HOST_ID, GADGET_HOST_ID);
+                        Intent pickIntent = new Intent(GadgetManager.ACTION_GADGET_PICK);
                         pickIntent.putExtra(GadgetManager.EXTRA_GADGET_ID, gadgetId);
                         startActivityForResult(pickIntent, REQUEST_PICK_GADGET);
                         break;
@@ -1676,7 +1657,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     }
 
                     case AddAdapter.ITEM_FOLDER: {
-                        addFolder();
+                        addFolder(!mDesktopLocked);
                         dismissDialog(DIALOG_CREATE_SHORTCUT);
                         break;
                     }

@@ -357,16 +357,10 @@ public class CellLayout extends ViewGroup {
         }
 
         cellInfo.valid = cellInfo.vacantCells.size() > 0;
-        if (cellInfo.valid) {
-            int[] xy = new int[2];
-            if (cellInfo.findCellForSpan(xy, 1, 1)) {
-                cellInfo.cellX = xy[0];
-                cellInfo.cellY = xy[1];
-                cellInfo.spanY = 1;
-                cellInfo.spanX = 1;
-            }
-        }
 
+        // Assume the caller will perform their own cell searching, otherwise we
+        // risk causing an unnecessary rebuild after findCellForSpan()
+        
         return cellInfo;
     }
 
@@ -665,9 +659,9 @@ public class CellLayout extends ViewGroup {
      *  
      * @param width Width in pixels
      * @param height Height in pixels
-     * @param cellInfo {@link CellInfo} to fill with calculated span parameters
+     * @param Horizontal and vertical spans required
      */
-    public void rectToCell(int width, int height, CellInfo cellInfo) {
+    public int[] rectToCell(int width, int height) {
         // Always assume we're working with the smallest span to make sure we
         // reserve enough space in both orientations.
         int actualWidth = mCellWidth + mWidthGap;
@@ -675,8 +669,9 @@ public class CellLayout extends ViewGroup {
         int smallerSize = Math.min(actualWidth, actualHeight);
         
         // Always round up to next largest cell
-        cellInfo.spanX = (width + smallerSize) / smallerSize;
-        cellInfo.spanY = (height + smallerSize) / smallerSize;
+        int spanX = (width + smallerSize) / smallerSize;
+        int spanY = (height + smallerSize) / smallerSize;
+        return new int[] { spanX, spanY };
     }
 
     /**
