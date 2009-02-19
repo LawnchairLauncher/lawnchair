@@ -20,7 +20,8 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.launcher"
-    android:sharedUserId="android.uid.shared">
+    android:sharedUserId="android.uid.shared"
+    android:sharedUserLabel="@string/application_name">
 
     <permission
         android:name="com.android.launcher.permission.INSTALL_SHORTCUT"

@@ -355,11 +355,21 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
         return handled;
     }
+    private boolean acceptFilter() {
+        final Configuration configuration = getResources().getConfiguration();
+        final boolean keyboardShowing = configuration.keyboardHidden !=
+                Configuration.KEYBOARDHIDDEN_YES;
+        final boolean hasKeyboard = configuration.keyboard != Configuration.KEYBOARD_NOKEYS;
+        final InputMethodManager inputManager = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+        return (hasKeyboard && keyboardShowing) ||
+                (!hasKeyboard && !inputManager.isFullscreenMode());
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         boolean handled = super.onKeyDown(keyCode, event);
-        if (!handled && keyCode != KeyEvent.KEYCODE_ENTER) {
+        if (!handled && acceptFilter() && keyCode != KeyEvent.KEYCODE_ENTER) {
             boolean gotKey = TextKeyListener.getInstance().onKeyDown(mWorkspace, mDefaultKeySsb,
                     keyCode, event);
             if (gotKey && mDefaultKeySsb != null && mDefaultKeySsb.length() > 0) {
@@ -861,8 +871,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 startWallpaper();
                 return true;
             case MENU_SEARCH:
-                if (!mWorkspace.snapToSearch()) {
-                    onSearchRequested();
+                if (mWorkspace.snapToSearch()) {
+                    closeDrawer(true);          // search gadget: get drawer out of the way
+                } else {
+                    onSearchRequested();        // no search gadget: use system search UI
                 }
                 return true;
             case MENU_NOTIFICATIONS:

@@ -343,9 +343,9 @@ public class Search extends LinearLayout implements OnClickListener, OnKeyListen
         if (mSearchable.getVoiceSearchEnabled() && mSearchable.getVoiceSearchLaunchWebSearch()) {
             // Enable the voice search button if there is an activity that can handle it
             PackageManager pm = getContext().getPackageManager();
-            List<ResolveInfo> list = pm.queryIntentActivities(mVoiceSearchIntent,
+            ResolveInfo ri = pm.resolveActivity(mVoiceSearchIntent,
                     PackageManager.MATCH_DEFAULT_ONLY);
-            voiceSearchVisible = list.size() > 0;
+            voiceSearchVisible = ri != null;
         }
         
         // finally, set visible state of voice search button, as appropriate

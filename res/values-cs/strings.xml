@@ -28,24 +28,19 @@
     <string name="menu_item_add_item">"Přidat na plochu"</string>
     <string name="group_applications">"Aplikace"</string>
     <string name="group_shortcuts">"Zástupce"</string>
-    <!-- no translation found for group_search (5905328940867162196) -->
-    <skip />
-    <!-- no translation found for group_folder (236213814675135523) -->
-    <skip />
+    <string name="group_search">"Hledat"</string>
+    <string name="group_folder">"Složka"</string>
     <string name="group_live_folders">"Složka Live"</string>
     <string name="group_widgets">"Miniaplikace"</string>
-    <!-- no translation found for group_gadgets (7795333306847768497) -->
-    <skip />
+    <string name="group_gadgets">"Gadget"</string>
     <string name="group_wallpapers">"Tapeta"</string>
     <string name="add_folder">"Složka"</string>
     <string name="add_clock">"Hodiny"</string>
     <string name="add_photo_frame">"Rámeček fotografie"</string>
     <string name="add_search">"Vyhledávání"</string>
     <string name="out_of_space">"Na této ploše již není místo."</string>
-    <!-- no translation found for title_select_shortcut (2858897527672831763) -->
-    <skip />
-    <!-- no translation found for title_select_live_folder (441136484932944782) -->
-    <skip />
+    <string name="title_select_shortcut">"Vyberte zástupce"</string>
+    <string name="title_select_live_folder">"Vyberte složku Live"</string>
     <string name="menu_add">"Přidat"</string>
     <string name="menu_wallpaper">"Tapeta"</string>
     <string name="menu_search">"Hledat"</string>
@@ -60,6 +55,5 @@
     <string name="permlab_write_settings">"zápis nastavení a odkazů plochy"</string>
     <string name="permdesc_write_settings">"Povoluje aplikaci změnit nastavení a odkazy plochy."</string>
     <string name="search_hint">"Vyhledávání Google"</string>
-    <!-- no translation found for gadget_error_text (7654995305187314446) -->
-    <skip />
+    <string name="gadget_error_text">"Při načítání gadgetu došlo k problému"</string>
 </resources>
