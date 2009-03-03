@@ -32,7 +32,6 @@
     <string name="group_folder">"Папка"</string>
     <string name="group_live_folders">"Динамическая папка"</string>
     <string name="group_widgets">"Виджет"</string>
-    <string name="group_gadgets">"Гаджет"</string>
     <string name="group_wallpapers">"Фоновый рисунок"</string>
     <string name="add_folder">"Папка"</string>
     <string name="add_clock">"Часы"</string>
@@ -55,5 +54,6 @@
     <string name="permlab_write_settings">"записывать ярлыки и настройки главного экрана"</string>
     <string name="permdesc_write_settings">"Позволяет приложению изменять настройки и ярлыки на главном экране."</string>
     <string name="search_hint">"Поиск Google"</string>
-    <string name="gadget_error_text">"Проблема загрузки гаджета"</string>
+    <!-- no translation found for gadget_error_text (8359351016167075858) -->
+    <skip />
 </resources>

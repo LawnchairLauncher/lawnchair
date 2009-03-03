@@ -40,6 +40,7 @@ import android.database.ContentObserver;
 import android.gadget.GadgetProviderInfo;
 import android.gadget.GadgetManager;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
@@ -86,6 +87,7 @@ import java.util.ArrayList;
  */
 public final class Launcher extends Activity implements View.OnClickListener, OnLongClickListener {
     static final String LOG_TAG = "Launcher";
+    static final boolean LOGD = false;
 
     private static final boolean PROFILE_STARTUP = false;
     private static final boolean DEBUG_USER_INTERFACE = false;
@@ -169,7 +171,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private GadgetManager mGadgetManager;
     private LauncherGadgetHost mGadgetHost;
     
-    private static final int GADGET_HOST_ID = 1024;
+    static final int GADGET_HOST_ID = 1024;
     
     private CellLayout.CellInfo mAddItemCellInfo;
     private CellLayout.CellInfo mMenuAddInfo;
@@ -191,6 +193,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private boolean mWaitingForResult;
     private boolean mLocaleChanged;
 
+    private Bundle mSavedInstanceState;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -201,8 +205,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mGadgetHost = new LauncherGadgetHost(this, GADGET_HOST_ID);
         mGadgetHost.startListening();
         
-        // TODO: figure out if this is first launch and correctly clear GadgetHost database
-
         if (PROFILE_STARTUP) {
             android.os.Debug.startMethodTracing("/sdcard/launcher");
         }
@@ -355,15 +357,11 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
         return handled;
     }
+
     private boolean acceptFilter() {
-        final Configuration configuration = getResources().getConfiguration();
-        final boolean keyboardShowing = configuration.keyboardHidden !=
-                Configuration.KEYBOARDHIDDEN_YES;
-        final boolean hasKeyboard = configuration.keyboard != Configuration.KEYBOARD_NOKEYS;
         final InputMethodManager inputManager = (InputMethodManager)
                 getSystemService(Context.INPUT_METHOD_SERVICE);
-        return (hasKeyboard && keyboardShowing) ||
-                (!hasKeyboard && !inputManager.isFullscreenMode());
+        return !inputManager.isFullscreenMode();
     }
 
     @Override
@@ -633,7 +631,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 mWorkspace.getCurrentScreen(), xy[0], xy[1], false);
 
         if (!mRestoring) {
-            sModel.addDesktopItem(launcherInfo);
+            sModel.addDesktopGadget(launcherInfo);
             
             // Perform actual inflation because we're live
             launcherInfo.hostView = mGadgetHost.createView(this, gadgetId, gadgetInfo);
@@ -644,7 +642,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             mWorkspace.addInCurrentScreen(launcherInfo.hostView, xy[0], xy[1],
                     launcherInfo.spanX, launcherInfo.spanY, insertAtFirst);
         } else if (sModel.isDesktopLoaded()) {
-            sModel.addDesktopItem(launcherInfo);
+            sModel.addDesktopGadget(launcherInfo);
         }
     }
     
@@ -746,6 +744,12 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     }
 
     @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        // Do not call super here
+        mSavedInstanceState = savedInstanceState;
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt(RUNTIME_STATE_CURRENT_SCREEN, mWorkspace.getCurrentScreen());
 
@@ -793,7 +797,11 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         super.onDestroy();
         
-        mGadgetHost.stopListening();
+        try {
+            mGadgetHost.stopListening();
+        } catch (NullPointerException ex) {
+            Log.w(LOG_TAG, "problem while stopping GadgetHost during Launcher destruction", ex);
+        }
 
         TextKeyListener.getInstance().release();
 
@@ -1156,8 +1164,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     void onDesktopItemsLoaded() {
         if (mDestroyed) return;
 
-        bindDesktopItems();
         mAllAppsGrid.setAdapter(Launcher.getModel().getApplicationsAdapter());
+        bindDesktopItems();
     }
 
     /**
@@ -1165,7 +1173,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
      */
     private void bindDesktopItems() {
         final ArrayList<ItemInfo> shortcuts = sModel.getDesktopItems();
-        if (shortcuts == null) {
+        final ArrayList<LauncherGadgetInfo> gadgets = sModel.getDesktopGadgets();
+        if (shortcuts == null || gadgets == null) {
             return;
         }
 
@@ -1187,19 +1196,17 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             });
         }
 
-        count = shortcuts.size();
-        
-        final DesktopItemsBinder binder = new DesktopItemsBinder(this, shortcuts);
-        binder.obtainMessage(DesktopItemsBinder.MESSAGE_BIND_ITEMS, 0, count).sendToTarget();
+        final DesktopBinder binder = new DesktopBinder(this, shortcuts, gadgets);
+        binder.startBindingItems();
     }
 
-    private void bindItems(Launcher.DesktopItemsBinder binder,
+    private void bindItems(Launcher.DesktopBinder binder,
             ArrayList<ItemInfo> shortcuts, int start, int count) {
 
         final Workspace workspace = mWorkspace;
         final boolean desktopLocked = mDesktopLocked;
 
-        final int end = Math.min(start + DesktopItemsBinder.ITEMS_COUNT, count);
+        final int end = Math.min(start + DesktopBinder.ITEMS_COUNT, count);
         int i = start;
 
         for ( ; i < end; i++) {
@@ -1226,21 +1233,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     workspace.addInScreen(newLiveFolder, item.screen, item.cellX, item.cellY, 1, 1,
                             !desktopLocked);
                     break;
-                case LauncherSettings.Favorites.ITEM_TYPE_GADGET:
-                    final LauncherGadgetInfo launcherInfo = (LauncherGadgetInfo) item;
-                    
-                    final int gadgetId = launcherInfo.gadgetId;
-                    GadgetProviderInfo gadgetInfo = mGadgetManager.getGadgetInfo(gadgetId);
-                    launcherInfo.hostView = mGadgetHost.createView(this, gadgetId, gadgetInfo);
-
-                    Log.d(LOG_TAG, "about to setGadget for id="+gadgetId+", info="+gadgetInfo);
-                    launcherInfo.hostView.setGadget(gadgetId, gadgetInfo);
-                    launcherInfo.hostView.setTag(launcherInfo);
-                    
-                    workspace.addInScreen(launcherInfo.hostView, item.screen, item.cellX,
-                            item.cellY, item.spanX, item.spanY, !desktopLocked);
-
-                    break;
                 case LauncherSettings.Favorites.ITEM_TYPE_WIDGET_SEARCH:
                     final int screen = workspace.getCurrentScreen();
                     final View view = mInflater.inflate(R.layout.widget_search,
@@ -1258,14 +1250,17 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         if (end >= count) {
             finishBindDesktopItems();
+            binder.startBindingGadgets();
         } else {
-            binder.obtainMessage(DesktopItemsBinder.MESSAGE_BIND_ITEMS, i, count).sendToTarget();
+            binder.obtainMessage(DesktopBinder.MESSAGE_BIND_ITEMS, i, count).sendToTarget();
         }
     }
 
     private void finishBindDesktopItems() {
         if (mSavedState != null) {
-            mWorkspace.getChildAt(mWorkspace.getCurrentScreen()).requestFocus();
+            if (!mWorkspace.hasFocus()) {
+                mWorkspace.getChildAt(mWorkspace.getCurrentScreen()).requestFocus();
+            }
 
             final long[] userFolders = mSavedState.getLongArray(RUNTIME_STATE_USER_FOLDERS);
             if (userFolders != null) {
@@ -1278,24 +1273,67 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 final Folder openFolder = mWorkspace.getOpenFolder();
                 if (openFolder != null) {
                     openFolder.requestFocus();
-                } else {
-                    mWorkspace.getChildAt(mWorkspace.getCurrentScreen()).requestFocus();
                 }
             }
 
             final boolean allApps = mSavedState.getBoolean(RUNTIME_STATE_ALL_APPS_FOLDER, false);
             if (allApps) {
                 mDrawer.open();
-                mDrawer.requestFocus();
             }
 
             mSavedState = null;
+        }
+
+        if (mSavedInstanceState != null) {
+            super.onRestoreInstanceState(mSavedInstanceState);
+            mSavedInstanceState = null;
+        }
+
+        if (mDrawer.isOpened() && !mDrawer.hasFocus()) {
+            mDrawer.requestFocus();
         }
 
         mDesktopLocked = false;
         mDrawer.unlock();
     }
 
+    private void bindGadgets(Launcher.DesktopBinder binder,
+            ArrayList<LauncherGadgetInfo> gadgets, int start, int count) {
+
+        final Workspace workspace = mWorkspace;
+        final boolean desktopLocked = mDesktopLocked;
+
+        final int end = Math.min(start + DesktopBinder.GADGETS_COUNT, count);
+        int i = start;
+
+        for ( ; i < end; i++) {
+            final LauncherGadgetInfo item = gadgets.get(i);
+                    
+            final int gadgetId = item.gadgetId;
+            final GadgetProviderInfo gadgetInfo = mGadgetManager.getGadgetInfo(gadgetId);
+            item.hostView = mGadgetHost.createView(this, gadgetId, gadgetInfo);
+            
+            if (LOGD) Log.d(LOG_TAG, String.format("about to setGadget for id=%d, info=%s", gadgetId, gadgetInfo));
+            
+            item.hostView.setGadget(gadgetId, gadgetInfo);
+            item.hostView.setTag(item);
+            
+            workspace.addInScreen(item.hostView, item.screen, item.cellX,
+                    item.cellY, item.spanX, item.spanY, !desktopLocked);
+        }
+
+        workspace.requestLayout();
+
+        if (end >= count) {
+            finishBindDesktopGadgets();
+        } else {
+            binder.obtainMessage(DesktopBinder.MESSAGE_BIND_GADGETS, i, count).sendToTarget();
+        }
+    }
+    
+    private void finishBindDesktopGadgets() {
+    }
+    
     DragController getDragController() {
         return mDragLayer;
     }
@@ -1419,7 +1457,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         // This happens when long clicking an item with the dpad/trackball
         if (cellInfo == null) {
-            return false;
+            return true;
         }
 
         if (mWorkspace.allowLongPress()) {
@@ -1448,6 +1486,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     boolean isDrawerDown() {
         return !mDrawer.isMoving() && !mDrawer.isOpened();
+    }
+
+    boolean isDrawerUp() {
+        return mDrawer.isOpened() && !mDrawer.isMoving();
     }
 
     Workspace getWorkspace() {
@@ -1766,6 +1808,16 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         public void onDrawerOpened() {
             if (!mOpen) {
                 mHandleIcon.reverseTransition(150);
+                final Rect bounds = mWorkspace.mDrawerBounds;
+
+                View view = mAllAppsGrid;
+                view.getDrawingRect(bounds);
+
+                while (view != mDragLayer) {
+                    bounds.offset(view.getLeft(), view.getTop());
+                    view = (View) view.getParent();
+                }
+
                 mOpen = true;
             }
         }
@@ -1773,41 +1825,63 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         public void onDrawerClosed() {
             if (mOpen) {
                 mHandleIcon.reverseTransition(150);
+                mWorkspace.mDrawerBounds.setEmpty();
                 mOpen = false;
             }
             mAllAppsGrid.setSelection(0);
             mAllAppsGrid.clearTextFilter();
-            mWorkspace.clearChildrenCache();
         }
 
         public void onScrollStarted() {
-            mWorkspace.enableChildrenCache();
         }
 
         public void onScrollEnded() {
         }
     }
 
-    private static class DesktopItemsBinder extends Handler {
+    private static class DesktopBinder extends Handler {
         static final int MESSAGE_BIND_ITEMS = 0x1;
+        static final int MESSAGE_BIND_GADGETS = 0x2;
         // Number of items to bind in every pass
         static final int ITEMS_COUNT = 6;
+        static final int GADGETS_COUNT = 1;
 
         private final ArrayList<ItemInfo> mShortcuts;
+        private final ArrayList<LauncherGadgetInfo> mGadgets;
         private final WeakReference<Launcher> mLauncher;
 
-        DesktopItemsBinder(Launcher launcher, ArrayList<ItemInfo> shortcuts) {
+        DesktopBinder(Launcher launcher, ArrayList<ItemInfo> shortcuts,
+                ArrayList<LauncherGadgetInfo> gadgets) {
+
             mLauncher = new WeakReference<Launcher>(launcher);
             mShortcuts = shortcuts;
+            mGadgets = gadgets;
+        }
+        
+        public void startBindingItems() {
+            obtainMessage(MESSAGE_BIND_ITEMS, 0, mShortcuts.size()).sendToTarget();
         }
 
+        public void startBindingGadgets() {
+            obtainMessage(MESSAGE_BIND_GADGETS, 0, mGadgets.size()).sendToTarget();
+        }
+        
         @Override
         public void handleMessage(Message msg) {
+            Launcher launcher = mLauncher.get();
+            if (launcher == null) {
+                return;
+            }
+            
             switch (msg.what) {
-                case MESSAGE_BIND_ITEMS:
-                    Launcher launcher = mLauncher.get();
-                    if (launcher != null) launcher.bindItems(this, mShortcuts, msg.arg1, msg.arg2);
+                case MESSAGE_BIND_ITEMS: {
+                    launcher.bindItems(this, mShortcuts, msg.arg1, msg.arg2);
                     break;
+                }
+                case MESSAGE_BIND_GADGETS: {
+                    launcher.bindGadgets(this, mGadgets, msg.arg1, msg.arg2);
+                    break;
+                }
             }
         }
     }

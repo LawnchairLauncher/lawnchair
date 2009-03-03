@@ -24,7 +24,8 @@ import android.net.Uri;
  */
 class LauncherSettings {
     /**
-     * Favorites.
+     * Favorites. When changing these values, be sure to update
+     * {@link com.android.settings.LauncherGadgetBinder} as needed.
      */
     static final class Favorites implements BaseColumns {
         /**

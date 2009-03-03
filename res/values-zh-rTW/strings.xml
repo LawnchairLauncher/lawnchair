@@ -32,7 +32,6 @@
     <string name="group_folder">"資料夾"</string>
     <string name="group_live_folders">"使用中的資料夾"</string>
     <string name="group_widgets">"Widget"</string>
-    <string name="group_gadgets">"小工具"</string>
     <string name="group_wallpapers">"桌布"</string>
     <string name="add_folder">"資料夾"</string>
     <string name="add_clock">"時鐘"</string>
@@ -55,5 +54,6 @@
     <string name="permlab_write_settings">"寫入首頁設定和捷徑"</string>
     <string name="permdesc_write_settings">"允許應用程式變更首頁中的設定和捷徑。"</string>
     <string name="search_hint">"Google 搜尋"</string>
-    <string name="gadget_error_text">"載入小工具時發生問題"</string>
+    <!-- no translation found for gadget_error_text (8359351016167075858) -->
+    <skip />
 </resources>

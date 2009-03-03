@@ -58,10 +58,8 @@
     <string name="group_folder">Folder</string>
     <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all live folders -->
     <string name="group_live_folders">Live folder</string>
-    <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all widgets -->
+    <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all widgets/gadgets -->
     <string name="group_widgets">Widget</string>
-    <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all gadgets -->
-    <string name="group_gadgets">Gadget</string>
     <!-- Options in "Add to Home" dialog box; Title of the group containing the list of apps that can set the wallpaper-->
     <string name="group_wallpapers">Wallpaper</string>
     <!-- Options in "Add to Home" dialog box; Name of the Folder widget-->
@@ -115,6 +113,6 @@
     <string name="search_hint">Google Search</string>
 
     <!-- Text to show user in place of a gadget when we can't display it properly -->
-    <string name="gadget_error_text">Problem loading gadget</string>
+    <string name="gadget_error_text">Problem loading widget</string>
 
 </resources>

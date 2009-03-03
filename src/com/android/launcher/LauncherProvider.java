@@ -30,6 +30,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.gadget.GadgetHost;
 import android.util.Log;
 import android.util.Xml;
 import android.net.Uri;
@@ -41,19 +42,25 @@ import java.io.FileReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import com.android.internal.util.XmlUtils;
+import com.android.launcher.LauncherSettings.Favorites;
 
 public class LauncherProvider extends ContentProvider {
-    private static final String LOG_TAG = "LauncherSettingsProvider";
+    private static final String LOG_TAG = "LauncherProvider";
+    private static final boolean LOGD = true;
 
     private static final String DATABASE_NAME = "launcher.db";
     
     private static final int DATABASE_VERSION = 2;
 
     static final String AUTHORITY = "com.android.launcher.settings";
+    
+    static final String EXTRA_BIND_SOURCES = "com.android.launcher.settings.bindsources";
+    static final String EXTRA_BIND_TARGETS = "com.android.launcher.settings.bindtargets";
 
     static final String TABLE_FAVORITES = "favorites";
     static final String PARAMETER_NOTIFY = "notify";
@@ -170,14 +177,18 @@ public class LauncherProvider extends ContentProvider {
         private static final String ATTRIBUTE_Y = "y";
 
         private final Context mContext;
+        private final GadgetHost mGadgetHost;
 
         DatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
             mContext = context;
+            mGadgetHost = new GadgetHost(context, Launcher.GADGET_HOST_ID);
         }
 
         @Override
         public void onCreate(SQLiteDatabase db) {
+            if (LOGD) Log.d(LOG_TAG, "creating new launcher database");
+            
             db.execSQL("CREATE TABLE favorites (" +
                     "_id INTEGER PRIMARY KEY," +
                     "title TEXT," +
@@ -199,11 +210,11 @@ public class LauncherProvider extends ContentProvider {
                     "displayMode INTEGER" +
                     ");");
 
-            // TODO: During first database creation, trigger wipe of any gadgets that
-            // might have been left around during a wipe-data.
-//            GadgetManager gadgetManager = GadgetManager.getInstance(mContext);
-
-
+            // Database was just created, so wipe any previous gadgets
+            if (mGadgetHost != null) {
+                mGadgetHost.deleteHost();
+            }
+            
             if (!convertDatabase(db)) {
                 // Populate favorites table with initial favorites
                 loadFavorites(db, DEFAULT_FAVORITES_PATH);
@@ -211,6 +222,7 @@ public class LauncherProvider extends ContentProvider {
         }
 
         private boolean convertDatabase(SQLiteDatabase db) {
+            if (LOGD) Log.d(LOG_TAG, "converting database from an older format, but not onUpgrade");
             boolean converted = false;
 
             final Uri uri = Uri.parse("content://" + Settings.AUTHORITY +
@@ -235,6 +247,12 @@ public class LauncherProvider extends ContentProvider {
                 if (converted) {
                     resolver.delete(uri, null, null);
                 }
+            }
+            
+            if (converted) {
+                // Convert widgets from this import into gadgets
+                if (LOGD) Log.d(LOG_TAG, "converted and now triggering widget upgrade");
+                convertWidgets(db);
             }
 
             return converted;
@@ -299,16 +317,16 @@ public class LauncherProvider extends ContentProvider {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            if (LOGD) Log.d(LOG_TAG, "onUpgrade triggered");
+            
             int version = oldVersion;
             if (version == 1) {
                 // upgrade 1 -> 2 added gadgetId column
                 db.beginTransaction();
                 try {
-                    // TODO: convert any existing widgets for search and clock
-                    // this might involve a FORCE_ADD_GADGET permission in GadgetManager that
-                    // Launcher could then use to add these gadgets without user interaction
+                    // Insert new column for holding gadgetIds
                     db.execSQL("ALTER TABLE favorites " +
-                            "ADD COLUMN gadgetId INTEGER NOT NULL DEFAULT -1;");
+                        "ADD COLUMN gadgetId INTEGER NOT NULL DEFAULT -1;");
                     db.setTransactionSuccessful();
                     version = 2;
                 } catch (SQLException ex) {
@@ -316,6 +334,11 @@ public class LauncherProvider extends ContentProvider {
                     Log.e(LOG_TAG, ex.getMessage(), ex);
                 } finally {
                     db.endTransaction();
+                }
+                
+                // Convert existing widgets only if table upgrade was successful
+                if (version == 2) {
+                    convertWidgets(db);
                 }
             }
             
@@ -325,8 +348,99 @@ public class LauncherProvider extends ContentProvider {
                 onCreate(db);
             }
         }
+        
+        /**
+         * Upgrade existing clock and photo frame widgets into their new gadget
+         * equivalents. This method allocates gadgetIds, and then hands off to
+         * LauncherGadgetBinder to finish the actual binding.
+         */
+        private void convertWidgets(SQLiteDatabase db) {
+            final int[] bindSources = new int[] {
+                    Favorites.ITEM_TYPE_WIDGET_CLOCK,
+                    Favorites.ITEM_TYPE_WIDGET_PHOTO_FRAME,
+            };
+            
+            final ArrayList<ComponentName> bindTargets = new ArrayList<ComponentName>();
+            bindTargets.add(new ComponentName("com.android.alarmclock",
+                    "com.android.alarmclock.AnalogGadgetProvider"));
+            bindTargets.add(new ComponentName("com.android.camera",
+                    "com.android.camera.PhotoGadgetProvider"));
+            
+            final String selectWhere = buildOrWhereString(Favorites.ITEM_TYPE, bindSources);
+            
+            Cursor c = null;
+            boolean allocatedGadgets = false;
+            
+            db.beginTransaction();
+            try {
+                // Select and iterate through each matching widget
+                c = db.query(TABLE_FAVORITES, new String[] { Favorites._ID },
+                        selectWhere, null, null, null, null);
+                
+                if (LOGD) Log.d(LOG_TAG, "found upgrade cursor count="+c.getCount());
+                
+                final ContentValues values = new ContentValues();
+                while (c != null && c.moveToNext()) {
+                    long favoriteId = c.getLong(0);
+                    
+                    // Allocate and update database with new gadgetId
+                    try {
+                        int gadgetId = mGadgetHost.allocateGadgetId();
+                        
+                        if (LOGD) Log.d(LOG_TAG, "allocated gadgetId="+gadgetId+" for favoriteId="+favoriteId);
+                        
+                        values.clear();
+                        values.put(LauncherSettings.Favorites.GADGET_ID, gadgetId);
+                        
+                        // Original widgets might not have valid spans when upgrading
+                        values.put(LauncherSettings.Favorites.SPANX, 2);
+                        values.put(LauncherSettings.Favorites.SPANY, 2);
 
+                        String updateWhere = Favorites._ID + "=" + favoriteId;
+                        db.update(TABLE_FAVORITES, values, updateWhere, null);
+                        
+                        allocatedGadgets = true;
+                    } catch (RuntimeException ex) {
+                        Log.e(LOG_TAG, "Problem allocating gadgetId", ex);
+                    }
+                }
+                
+                db.setTransactionSuccessful();
+            } catch (SQLException ex) {
+                Log.w(LOG_TAG, "Problem while allocating gadgetIds for existing widgets", ex);
+            } finally {
+                db.endTransaction();
+                if (c != null) {
+                    c.close();
+                }
+            }
+            
+            // If any gadgetIds allocated, then launch over to binder
+            if (allocatedGadgets) {
+                launchGadgetBinder(bindSources, bindTargets);
+            }
+        }
 
+        /**
+         * Launch the gadget binder that walks through the Launcher database,
+         * binding any matching widgets to the corresponding targets. We can't
+         * bind ourselves because our parent process can't obtain the
+         * BIND_GADGET permission.
+         */
+        private void launchGadgetBinder(int[] bindSources, ArrayList<ComponentName> bindTargets) {
+            final Intent intent = new Intent();
+            intent.setComponent(new ComponentName("com.android.settings",
+                    "com.android.settings.LauncherGadgetBinder"));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            
+            final Bundle extras = new Bundle();
+            extras.putIntArray(EXTRA_BIND_SOURCES, bindSources);
+            extras.putParcelableArrayList(EXTRA_BIND_TARGETS, bindTargets);
+            intent.putExtras(extras);
+            
+            mContext.startActivity(intent);
+        }
+        
         /**
          * Loads the default set of favorite packages from an xml file.
          *
@@ -413,11 +527,60 @@ public class LauncherProvider extends ContentProvider {
             values.put(LauncherSettings.Favorites.SPANY, 1);
             db.insert(TABLE_FAVORITES, null, values);
             
-            // TODO: automatically add clock and search gadget to
-            // default locations.  this might need the FORCE permission mentioned above
+            final int[] bindSources = new int[] {
+                    Favorites.ITEM_TYPE_WIDGET_CLOCK,
+            };
+            
+            final ArrayList<ComponentName> bindTargets = new ArrayList<ComponentName>();
+            bindTargets.add(new ComponentName("com.android.alarmclock",
+                    "com.android.alarmclock.AnalogGadgetProvider"));
+            
+            boolean allocatedGadgets = false;
+            
+            // Try binding to an analog clock gadget
+            try {
+                int gadgetId = mGadgetHost.allocateGadgetId();
+                
+                values.clear();
+                values.put(LauncherSettings.Favorites.CONTAINER,
+                        LauncherSettings.Favorites.CONTAINER_DESKTOP);
+                values.put(LauncherSettings.Favorites.ITEM_TYPE,
+                        LauncherSettings.Favorites.ITEM_TYPE_WIDGET_CLOCK);
+                values.put(LauncherSettings.Favorites.SCREEN, 1);
+                values.put(LauncherSettings.Favorites.CELLX, 1);
+                values.put(LauncherSettings.Favorites.CELLY, 0);
+                values.put(LauncherSettings.Favorites.SPANX, 2);
+                values.put(LauncherSettings.Favorites.SPANY, 2);
+                values.put(LauncherSettings.Favorites.GADGET_ID, gadgetId);
+                db.insert(TABLE_FAVORITES, null, values);
+                
+                allocatedGadgets = true;
+            } catch (RuntimeException ex) {
+                Log.e(LOG_TAG, "Problem allocating gadgetId", ex);
+            }
 
+            // If any gadgetIds allocated, then launch over to binder
+            if (allocatedGadgets) {
+                launchGadgetBinder(bindSources, bindTargets);
+            }
+            
             return i;
         }
+    }
+
+    /**
+     * Build a query string that will match any row where the column matches
+     * anything in the values list.
+     */
+    static String buildOrWhereString(String column, int[] values) {
+        StringBuilder selectWhere = new StringBuilder();
+        for (int i = values.length - 1; i >= 0; i--) {
+            selectWhere.append(column).append("=").append(values[i]);
+            if (i > 0) {
+                selectWhere.append(" OR ");
+            }
+        }
+        return selectWhere.toString();
     }
 
     static class SqlArguments {

@@ -17,6 +17,8 @@
 package com.android.launcher;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.ComponentName;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -90,6 +92,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     private boolean mLocked;
 
     private int mTouchSlop;
+
+    final Rect mDrawerBounds = new Rect();
+    final Rect mClipBounds = new Rect();
 
     /**
      * Used to inflate the Workspace from XML.
@@ -437,6 +442,18 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
+        // If the all apps drawer is open and the drawing region for the workspace
+        // is contained within the drawer's bounds, we skip the drawing. This requires
+        // the drawer to be fully opaque.
+        if (mLauncher.isDrawerUp()) {
+            final Rect clipBounds = mClipBounds;
+            canvas.getClipBounds(clipBounds);
+            clipBounds.offset(-mScrollX, -mScrollY);
+            if (mDrawerBounds.contains(clipBounds)) {
+                return;
+            }
+        }
+
         float x = mScrollX * mWallpaperOffset;
         if (x + mWallpaperWidth < mRight - mLeft) {
             x = mRight - mLeft - mWallpaperWidth;
@@ -673,6 +690,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                 // Release the drag
                 clearChildrenCache();
                 mTouchState = TOUCH_STATE_REST;
+                mAllowLongPress = false;
                 break;
         }
 
@@ -1152,7 +1170,13 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                 Object tag = view.getTag();
                 if (tag instanceof ApplicationInfo) {
                     ApplicationInfo info = (ApplicationInfo) tag;
-                    if (packageName.equals(info.intent.getComponent().getPackageName())) {
+                    // We need to check for ACTION_MAIN otherwise getComponent() might
+                    // return null for some shortcuts (for instance, for shortcuts to
+                    // web pages.)
+                    final Intent intent = info.intent;
+                    final ComponentName name = intent.getComponent();
+                    if (Intent.ACTION_MAIN.equals(intent.getAction()) &&
+                            name != null && packageName.equals(name.getPackageName())) {
                         model.removeDesktopItem(info);
                         LauncherModel.deleteItemFromDatabase(mLauncher, info);
                         childrenToRemove.add(view);

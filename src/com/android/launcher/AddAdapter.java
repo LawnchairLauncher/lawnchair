@@ -82,7 +82,7 @@ public class AddAdapter extends BaseAdapter {
         mItems.add(new ListItem(res, R.string.group_search,
                 R.drawable.ic_search_gadget, ITEM_SEARCH));
         
-        mItems.add(new ListItem(res, R.string.group_gadgets,
+        mItems.add(new ListItem(res, R.string.group_widgets,
                 R.drawable.ic_launcher_gadget, ITEM_GADGET));
         
         mItems.add(new ListItem(res, R.string.group_live_folders,

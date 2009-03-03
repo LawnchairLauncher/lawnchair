@@ -22,7 +22,7 @@
     android:paddingTop="5dip"
     android:paddingBottom="2dip"
     android:drawablePadding="0dip"
-
+        
     android:textSize="13dip"
     android:maxLines="2"
     android:ellipsize="marquee"

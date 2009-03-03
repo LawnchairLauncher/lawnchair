@@ -57,8 +57,6 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 
-import java.util.List;
-
 public class Search extends LinearLayout implements OnClickListener, OnKeyListener,
         OnLongClickListener, TextWatcher, OnItemClickListener, OnItemSelectedListener {
 
@@ -81,6 +79,7 @@ public class Search extends LinearLayout implements OnClickListener, OnKeyListen
     private Intent mVoiceSearchIntent;
 
     private Rect mTempRect = new Rect();
+    private boolean mRestoreFocus = false;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -170,7 +169,26 @@ public class Search extends LinearLayout implements OnClickListener, OnKeyListen
 
         getContext().startActivity(launcher);
     }
-    
+
+    @Override
+    public void onWindowFocusChanged(boolean hasWindowFocus) {
+        if (!hasWindowFocus && hasFocus()) {
+            mRestoreFocus = true;
+        }
+
+        super.onWindowFocusChanged(hasWindowFocus);
+
+        if (hasWindowFocus && mRestoreFocus) {
+            if (isInTouchMode()) {
+                final AutoCompleteTextView searchText = mSearchText;
+                searchText.setSelectAllOnFocus(false);
+                searchText.requestFocusFromTouch();
+                searchText.setSelectAllOnFocus(true);
+            }
+            mRestoreFocus = false;
+        }
+    }
+
     /**
      * Implements TextWatcher (for EditText)
      */
@@ -368,6 +386,18 @@ public class Search extends LinearLayout implements OnClickListener, OnKeyListen
                 com.android.internal.R.layout.search_dropdown_item_2line, null,
                 SuggestionsAdapter.TWO_LINE_FROM, SuggestionsAdapter.TWO_LINE_TO, mSearchable);
         mSearchText.setAdapter(mSuggestionsAdapter);
+    }
+    
+    /**
+     * Remove internal cursor references when detaching from window which
+     * prevents {@link Context} leaks.
+     */
+    @Override
+    public void onDetachedFromWindow() {
+        if (mSuggestionsAdapter != null) {
+            mSuggestionsAdapter.changeCursor(null);
+            mSuggestionsAdapter = null;
+        }
     }
     
     /**

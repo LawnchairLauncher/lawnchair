@@ -32,7 +32,6 @@
     <string name="group_folder">"Map"</string>
     <string name="group_live_folders">"Live map"</string>
     <string name="group_widgets">"Widget"</string>
-    <string name="group_gadgets">"Gadget"</string>
     <string name="group_wallpapers">"Achtergrond"</string>
     <string name="add_folder">"Map"</string>
     <string name="add_clock">"Klok"</string>
@@ -54,6 +53,7 @@
     <string name="permdesc_read_settings">"Hiermee kan een toepassing de instellingen en snelkoppelingen op de startpagina lezen."</string>
     <string name="permlab_write_settings">"instellingen en snelkoppelingen voor de startpagina schrijven"</string>
     <string name="permdesc_write_settings">"Hiermee kan een toepassing de instellingen en snelkoppelingen op de startpagina wijzigen."</string>
-    <string name="search_hint">"Zoeken met Google"</string>
-    <string name="gadget_error_text">"Probleem bij het laden van gadget"</string>
+    <string name="search_hint">"Google Zoeken"</string>
+    <!-- no translation found for gadget_error_text (8359351016167075858) -->
+    <skip />
 </resources>
