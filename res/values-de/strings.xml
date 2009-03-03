@@ -32,6 +32,7 @@
     <string name="group_folder">"Ordner"</string>
     <string name="group_live_folders">"Live-Ordner"</string>
     <string name="group_widgets">"Widget"</string>
+    <string name="group_gadgets">"Gadget"</string>
     <string name="group_wallpapers">"Hintergrund"</string>
     <string name="add_folder">"Ordner"</string>
     <string name="add_clock">"Uhr"</string>
@@ -54,6 +55,5 @@
     <string name="permlab_write_settings">"Einstellungen und Shortcuts für Startseite schreiben"</string>
     <string name="permdesc_write_settings">"Ermöglicht einer Anwendung, die Einstellungen und Shortcuts auf der Startseite zu ändern."</string>
     <string name="search_hint">"Google-Suche"</string>
-    <!-- no translation found for gadget_error_text (8359351016167075858) -->
-    <skip />
+    <string name="gadget_error_text">"Problem beim Laden von Gadget"</string>
 </resources>

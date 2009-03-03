@@ -57,7 +57,6 @@ public class LauncherModel {
     private boolean mDesktopItemsLoaded;
 
     private ArrayList<ItemInfo> mDesktopItems;
-    private ArrayList<LauncherGadgetInfo> mDesktopGadgets;
     private HashMap<Long, FolderInfo> mFolders;
 
     private ArrayList<ApplicationInfo> mApplications;
@@ -203,7 +202,6 @@ public class LauncherModel {
             final ApplicationsAdapter applicationList = mApplicationList;
             final int count = buffer.size();
 
-            applicationList.setNotifyOnChange(false);
             applicationList.clear();
             for (int i = 0; i < count; i++) {
                 applicationList.setNotifyOnChange(false);
@@ -224,7 +222,7 @@ public class LauncherModel {
     }
 
     boolean isDesktopLoaded() {
-        return mDesktopItems != null && mDesktopGadgets != null && mDesktopItemsLoaded;
+        return mDesktopItems != null && mDesktopItemsLoaded;
     }
     
     /**
@@ -234,7 +232,7 @@ public class LauncherModel {
     void loadUserItems(boolean isLaunching, Launcher launcher, boolean localeChanged,
             boolean loadApplications) {
 
-        if (isLaunching && isDesktopLoaded()) {
+        if (isLaunching && mDesktopItems != null && mDesktopItemsLoaded) {
             if (loadApplications) startApplicationsLoader(launcher);
             // We have already loaded our data from the DB
             launcher.onDesktopItemsLoaded();
@@ -360,11 +358,9 @@ public class LauncherModel {
             }
 
             mDesktopItems = new ArrayList<ItemInfo>();
-            mDesktopGadgets = new ArrayList<LauncherGadgetInfo>();
             mFolders = new HashMap<Long, FolderInfo>();
 
             final ArrayList<ItemInfo> desktopItems = mDesktopItems;
-            final ArrayList<LauncherGadgetInfo> desktopGadgets = mDesktopGadgets;
 
             final Cursor c = contentResolver.query(
                     LauncherSettings.Favorites.CONTENT_URI, null, null, null, null);
@@ -390,8 +386,8 @@ public class LauncherModel {
 
                 ApplicationInfo info;
                 String intentDescription;
-                Widget widgetInfo;
-                LauncherGadgetInfo gadgetInfo;
+                Widget widgetInfo = null;
+                LauncherGadgetInfo gadgetInfo = null;
                 int container;
                 long id;
                 Intent intent;
@@ -540,7 +536,7 @@ public class LauncherModel {
                             }
                             gadgetInfo.container = c.getInt(containerIndex);
                             
-                            desktopGadgets.add(gadgetInfo);
+                            desktopItems.add(gadgetInfo);
                             break;
                         }
                     } catch (Exception e) {
@@ -647,7 +643,6 @@ public class LauncherModel {
         mApplicationsAdapter = null;
         unbindAppDrawables(mApplications);
         unbindDrawables(mDesktopItems);
-        unbindGadgetHostViews(mDesktopGadgets);
     }
     
     /**
@@ -663,7 +658,6 @@ public class LauncherModel {
                 case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                 case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                     ((ApplicationInfo)item).icon.setCallback(null);
-                    break;
                 }
             }
         }
@@ -678,19 +672,6 @@ public class LauncherModel {
             final int count = applications.size();
             for (int i = 0; i < count; i++) {
                 applications.get(i).icon.setCallback(null);
-            }
-        }
-    }
-
-    /**
-     * Remove any {@link LauncherGadgetHostView} references in our gadgets.
-     */
-    private void unbindGadgetHostViews(ArrayList<LauncherGadgetInfo> gadgets) {
-        if (gadgets != null) {
-            final int count = gadgets.size();
-            for (int i = 0; i < count; i++) {
-                LauncherGadgetInfo launcherInfo = gadgets.get(i);
-                launcherInfo.hostView = null;
             }
         }
     }
@@ -715,13 +696,6 @@ public class LauncherModel {
     public ArrayList<ItemInfo> getDesktopItems() {
         return mDesktopItems;
     }
-    
-    /**
-     * @return The current list of desktop items
-     */
-    public ArrayList<LauncherGadgetInfo> getDesktopGadgets() {
-        return mDesktopGadgets;
-    }
 
     /**
      * Add an item to the desktop
@@ -739,20 +713,6 @@ public class LauncherModel {
     public void removeDesktopItem(ItemInfo info) {
         // TODO: write to DB; figure out if we should remove folder from folders list
         mDesktopItems.remove(info);
-    }
-
-    /**
-     * Add a gadget to the desktop
-     */
-    public void addDesktopGadget(LauncherGadgetInfo info) {
-        mDesktopGadgets.add(info);
-    }
-    
-    /**
-     * Remove a gadget from the desktop
-     */
-    public void removeDesktopGadget(LauncherGadgetInfo info) {
-        mDesktopGadgets.remove(info);
     }
 
     /**

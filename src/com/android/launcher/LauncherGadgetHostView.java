@@ -58,13 +58,13 @@ public class LauncherGadgetHostView extends GadgetHostView {
                 break;
             }
             
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP: {
                 mHasPerformedLongPress = false;
                 if (mPendingCheckForLongPress != null) {
                     removeCallbacks(mPendingCheckForLongPress);
                 }
                 break;
+            }
         }
         
         // Otherwise continue letting touch events fall through to children

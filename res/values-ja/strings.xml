@@ -32,6 +32,7 @@
     <string name="group_folder">"フォルダ"</string>
     <string name="group_live_folders">"ライブフォルダ"</string>
     <string name="group_widgets">"ウィジェット"</string>
+    <string name="group_gadgets">"ガジェット"</string>
     <string name="group_wallpapers">"壁紙"</string>
     <string name="add_folder">"フォルダ"</string>
     <string name="add_clock">"時計"</string>
@@ -54,6 +55,5 @@
     <string name="permlab_write_settings">"ホームの設定とショートカットの書き込み"</string>
     <string name="permdesc_write_settings">"ホームの設定とショートカットの変更をアプリケーションに許可します。"</string>
     <string name="search_hint">"Google検索"</string>
-    <!-- no translation found for gadget_error_text (8359351016167075858) -->
-    <skip />
+    <string name="gadget_error_text">"ガジェットをロードできません"</string>
 </resources>

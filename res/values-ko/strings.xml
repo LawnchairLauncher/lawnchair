@@ -32,6 +32,7 @@
     <string name="group_folder">"폴더"</string>
     <string name="group_live_folders">"라이브 폴더"</string>
     <string name="group_widgets">"위젯"</string>
+    <string name="group_gadgets">"가젯"</string>
     <string name="group_wallpapers">"배경화면"</string>
     <string name="add_folder">"폴더"</string>
     <string name="add_clock">"시계"</string>
@@ -54,6 +55,5 @@
     <string name="permlab_write_settings">"홈 설정 및 바로가기 쓰기"</string>
     <string name="permdesc_write_settings">"응용프로그램이 홈에 있는 설정 및 바로가기를 변경할 수 있습니다."</string>
     <string name="search_hint">"Google 검색"</string>
-    <!-- no translation found for gadget_error_text (8359351016167075858) -->
-    <skip />
+    <string name="gadget_error_text">"가젯 로드 중 문제 발생"</string>
 </resources>

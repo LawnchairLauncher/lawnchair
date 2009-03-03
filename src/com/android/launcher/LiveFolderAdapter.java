@@ -45,8 +45,8 @@ class LiveFolderAdapter extends CursorAdapter {
             new HashMap<Long, SoftReference<Drawable>>();
     private final Launcher mLauncher;
 
-    LiveFolderAdapter(Launcher launcher, LiveFolderInfo info, Cursor cursor) {
-        super(launcher, cursor, true);
+    LiveFolderAdapter(Launcher launcher, LiveFolderInfo info) {
+        super(launcher, query(launcher, info), true);
         mIsList = info.displayMode == LiveFolders.DISPLAY_MODE_LIST;
         mInflater = LayoutInflater.from(launcher);
         mLauncher = launcher;
@@ -54,9 +54,8 @@ class LiveFolderAdapter extends CursorAdapter {
         mLauncher.startManagingCursor(getCursor());
     }
 
-    static Cursor query(Context context, LiveFolderInfo info) {
-        return context.getContentResolver().query(info.uri, null, null,
-                null, LiveFolders.NAME + " ASC");
+    private static Cursor query(Context context, LiveFolderInfo info) {
+        return context.getContentResolver().query(info.uri, null, null, null, LiveFolders.NAME + " ASC");
     }
 
     public View newView(Context context, Cursor cursor, ViewGroup parent) {

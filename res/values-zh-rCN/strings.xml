@@ -32,6 +32,7 @@
     <string name="group_folder">"文件夹"</string>
     <string name="group_live_folders">"活动的文件夹"</string>
     <string name="group_widgets">"小工具"</string>
+    <string name="group_gadgets">"小工具"</string>
     <string name="group_wallpapers">"壁纸"</string>
     <string name="add_folder">"文件夹"</string>
     <string name="add_clock">"时钟"</string>
@@ -54,6 +55,5 @@
     <string name="permlab_write_settings">"写入“主页”设置和快捷键"</string>
     <string name="permdesc_write_settings">"允许应用程序更改“主页”中的设置和快捷键。"</string>
     <string name="search_hint">"Google 搜索"</string>
-    <!-- no translation found for gadget_error_text (8359351016167075858) -->
-    <skip />
+    <string name="gadget_error_text">"载入小工具时出现问题"</string>
 </resources>

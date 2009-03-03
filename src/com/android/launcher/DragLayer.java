@@ -32,7 +32,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.KeyEvent;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
 /**
@@ -128,8 +127,6 @@ public class DragLayer extends FrameLayout implements DragController {
     private int mAnimationType;
     private int mAnimationState = ANIMATION_STATE_DONE;
 
-    private InputMethodManager mInputMethodManager;
-
     /**
      * Used to create a new DragLayer from XML.
      *
@@ -147,14 +144,7 @@ public class DragLayer extends FrameLayout implements DragController {
         if (PROFILE_DRAWING_DURING_DRAG) {
             android.os.Debug.startMethodTracing("Launcher");
         }
-
-        // Hide soft keyboard, if visible
-        if (mInputMethodManager == null) {
-            mInputMethodManager = (InputMethodManager)
-                getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        }
-        mInputMethodManager.hideSoftInputFromWindow(getWindowToken(), 0);
-
+        
         if (mListener != null) {
             mListener.onDragStart(v, source, dragInfo, dragAction);
         }
