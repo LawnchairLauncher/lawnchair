@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2009 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name">"Startseite"</string>
+    <string name="folder_name">"Ordner"</string>
+    <string name="chooser_wallpaper">"Hintergrund auswählen"</string>
+    <string name="wallpaper_instructions">"Hintergrund festlegen"</string>
+    <string name="pick_wallpaper">"Galerie"</string>
+    <string name="activity_not_found">"Anwendung ist nicht auf dem Telefon installiert."</string>
+    <string name="rename_folder_label">"Ordnername"</string>
+    <string name="rename_folder_title">"Ordner umbenennen"</string>
+    <string name="rename_action">"OK"</string>
+    <string name="cancel_action">"Abbrechen"</string>
+    <string name="menu_item_add_item">"Zur Startseite hinzufügen"</string>
+    <string name="group_applications">"Anwendung"</string>
+    <string name="group_shortcuts">"Verknüpfung"</string>
+    <string name="group_search">"Suchen"</string>
+    <string name="group_folder">"Ordner"</string>
+    <string name="group_live_folders">"Live-Ordner"</string>
+    <string name="group_widgets">"Widget"</string>
+    <string name="group_wallpapers">"Hintergrund"</string>
+    <string name="add_folder">"Ordner"</string>
+    <string name="add_clock">"Uhr"</string>
+    <string name="add_photo_frame">"Bildrahmen"</string>
+    <string name="add_search">"Suchen"</string>
+    <string name="out_of_space">"Auf der Startseite ist kein Platz mehr vorhanden."</string>
+    <string name="title_select_shortcut">"Tastenkürzel auswählen"</string>
+    <string name="title_select_live_folder">"Live-Ordner auswählen"</string>
+    <string name="menu_add">"Hinzufügen"</string>
+    <string name="menu_wallpaper">"Hintergrund"</string>
+    <string name="menu_search">"Suchen"</string>
+    <string name="menu_notifications">"Benachrichtigungen"</string>
+    <string name="menu_settings">"Einstellungen"</string>
+    <string name="permlab_install_shortcut">"Verknüpfungen installieren"</string>
+    <string name="permdesc_install_shortcut">"Ermöglicht einer Anwendung das Hinzufügen von Verknüpfungen ohne Eingriff des Benutzers."</string>
+    <string name="permlab_uninstall_shortcut">"Verknüpfungen deinstallieren"</string>
+    <string name="permdesc_uninstall_shortcut">"Ermöglicht einer Anwendung das Entfernen von Verknüpfungen ohne Eingriff des Benutzers."</string>
+    <string name="permlab_read_settings">"Einstellungen und Shortcuts für Startseite lesen"</string>
+    <string name="permdesc_read_settings">"Ermöglicht einer Anwendung, die Einstellungen und Shortcuts auf der Startseite zu lesen."</string>
+    <string name="permlab_write_settings">"Einstellungen und Shortcuts für Startseite schreiben"</string>
+    <string name="permdesc_write_settings">"Ermöglicht einer Anwendung, die Einstellungen und Shortcuts auf der Startseite zu ändern."</string>
+    <string name="search_hint">"Google-Suche"</string>
+    <!-- no translation found for gadget_error_text (8359351016167075858) -->
+    <skip />
+</resources>

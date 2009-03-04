@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2009 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name">"Plocha"</string>
+    <string name="folder_name">"Složka"</string>
+    <string name="chooser_wallpaper">"Vybrat tapetu ze složky"</string>
+    <string name="wallpaper_instructions">"Nastavit tapetu"</string>
+    <string name="pick_wallpaper">"Galerie tapet"</string>
+    <string name="activity_not_found">"Aplikace není v telefonu nainstalována."</string>
+    <string name="rename_folder_label">"Název složky"</string>
+    <string name="rename_folder_title">"Přejmenovat složku"</string>
+    <string name="rename_action">"OK"</string>
+    <string name="cancel_action">"Zrušit"</string>
+    <string name="menu_item_add_item">"Přidat na plochu"</string>
+    <string name="group_applications">"Aplikace"</string>
+    <string name="group_shortcuts">"Zástupce"</string>
+    <string name="group_search">"Hledat"</string>
+    <string name="group_folder">"Složka"</string>
+    <string name="group_live_folders">"Složka Live"</string>
+    <string name="group_widgets">"Miniaplikace"</string>
+    <string name="group_wallpapers">"Tapeta"</string>
+    <string name="add_folder">"Složka"</string>
+    <string name="add_clock">"Hodiny"</string>
+    <string name="add_photo_frame">"Rámeček fotografie"</string>
+    <string name="add_search">"Vyhledávání"</string>
+    <string name="out_of_space">"Na této ploše již není místo."</string>
+    <string name="title_select_shortcut">"Vyberte zástupce"</string>
+    <string name="title_select_live_folder">"Vyberte složku Live"</string>
+    <string name="menu_add">"Přidat"</string>
+    <string name="menu_wallpaper">"Tapeta"</string>
+    <string name="menu_search">"Hledat"</string>
+    <string name="menu_notifications">"Oznámení"</string>
+    <string name="menu_settings">"Nastavení"</string>
+    <string name="permlab_install_shortcut">"instalovat zástupce"</string>
+    <string name="permdesc_install_shortcut">"Povoluje aplikaci přidat zástupce bez zásahu uživatele."</string>
+    <string name="permlab_uninstall_shortcut">"odinstalovat zástupce"</string>
+    <string name="permdesc_uninstall_shortcut">"Povoluje aplikaci odstranit zástupce bez zásahu uživatele."</string>
+    <string name="permlab_read_settings">"čtení nastavení a odkazů plochy"</string>
+    <string name="permdesc_read_settings">"Povoluje aplikaci číst nastavení a odkazy plochy."</string>
+    <string name="permlab_write_settings">"zápis nastavení a odkazů plochy"</string>
+    <string name="permdesc_write_settings">"Povoluje aplikaci změnit nastavení a odkazy plochy."</string>
+    <string name="search_hint">"Vyhledávání Google"</string>
+    <!-- no translation found for gadget_error_text (8359351016167075858) -->
+    <skip />
+</resources>
