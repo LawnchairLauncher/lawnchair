@@ -19,6 +19,8 @@ package com.android.launcher;
 import android.widget.AutoCompleteTextView;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.graphics.Rect;
 import android.view.WindowManager;
@@ -35,6 +37,15 @@ import android.app.Activity;
 public class SearchAutoCompleteTextView extends AutoCompleteTextView {
     private boolean mShowKeyboard;
 
+    private Handler mLoseFocusHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            if (msg.what == 1 && !hasFocus()) {
+                // Hide the soft keyboard when the search widget loses the focus
+                InputMethodManager.peekInstance().hideSoftInputFromWindow(getWindowToken(), 0);
+            }
+        }
+    };
+    
     public SearchAutoCompleteTextView(Context context) {
         super(context);
     }
@@ -61,23 +72,24 @@ public class SearchAutoCompleteTextView extends AutoCompleteTextView {
             lp.softInputMode =
                     (lp.softInputMode & ~WindowManager.LayoutParams.SOFT_INPUT_MASK_STATE) |
                             WindowManager.LayoutParams.SOFT_INPUT_STATE_UNSPECIFIED;
-
-            // Hide the soft keyboard when the search widget loses the focus
-            InputMethodManager.peekInstance().hideSoftInputFromWindow(getWindowToken(), 0);
+            // If we don't immediately gain focus, we want to hide the IME.
+            mLoseFocusHandler.sendEmptyMessage(1);
         }
 
-        final WindowManager manager = (WindowManager)
-                getContext().getSystemService(Context.WINDOW_SERVICE);
-        manager.updateViewLayout(getRootView(), lp);
+        if (getWindowToken() != null) {
+            final WindowManager manager = (WindowManager)
+                    getContext().getSystemService(Context.WINDOW_SERVICE);
+            manager.updateViewLayout(getRootView(), lp);
 
-        if (mShowKeyboard) {
-            if (getContext().getResources().getConfiguration().hardKeyboardHidden ==
-                    Configuration.HARDKEYBOARDHIDDEN_YES) {
-                InputMethodManager inputManager = (InputMethodManager)
-                        getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputManager.showSoftInput(this, 0);
+            if (mShowKeyboard) {
+                if (getContext().getResources().getConfiguration().hardKeyboardHidden ==
+                        Configuration.HARDKEYBOARDHIDDEN_YES) {
+                    InputMethodManager inputManager = (InputMethodManager)
+                            getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputManager.showSoftInput(this, 0);
+                }
+                mShowKeyboard = false;
             }
-            mShowKeyboard = false;
         }
     }
 
