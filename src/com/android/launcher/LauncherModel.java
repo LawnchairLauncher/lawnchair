@@ -28,6 +28,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
 import android.os.Process;
@@ -44,14 +45,17 @@ import java.net.URISyntaxException;
 /**
  * Maintains in-memory state of the Launcher. It is expected that there should be only one
  * LauncherModel object held in a static. Also provide APIs for updating the database state
- * for the Launcher
+ * for the Launcher.
  */
 public class LauncherModel {
     private static final int UI_NOTIFICATION_RATE = 4;
     private static final int DEFAULT_APPLICATIONS_NUMBER = 42;
     private static final long APPLICATION_NOT_RESPONDING_TIMEOUT = 5000;
+    private static final int INITIAL_ICON_CACHE_CAPACITY = 50;
 
-    private final Collator sCollator = Collator.getInstance();    
+    private static final boolean DEBUG = false;
+
+    private final Collator sCollator = Collator.getInstance();
 
     private boolean mApplicationsLoaded;
     private boolean mDesktopItemsLoaded;
@@ -67,6 +71,9 @@ public class LauncherModel {
     private Thread mLoader;
     private Thread mDesktopLoader;
 
+    private final HashMap<ComponentName, ApplicationInfo> mAppInfoCache =
+            new HashMap<ComponentName, ApplicationInfo>(INITIAL_ICON_CACHE_CAPACITY);
+
     void abortLoaders() {
         if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
             mApplicationsLoader.stop();
@@ -79,17 +86,30 @@ public class LauncherModel {
     }
 
     /**
+     * Drop our cache of components to their lables & icons.  We do
+     * this from Launcher when applications are added/removed.  It's a
+     * bit overkill, but it's a rare operation anyway.
+     */
+    synchronized void dropApplicationCache() {
+        mAppInfoCache.clear();
+    }
+
+    /**
      * Loads the list of installed applications in mApplications.
      */
-    void loadApplications(boolean isLaunching, Launcher launcher, boolean localeChanged) {
+    synchronized void loadApplications(boolean isLaunching, Launcher launcher,
+            boolean localeChanged) {
+        if (localeChanged) {
+            dropApplicationCache();
+        }
         if (isLaunching && mApplicationsLoaded && !localeChanged) {
             mApplicationsAdapter = new ApplicationsAdapter(launcher, mApplications);
             return;
         }
 
         if (mApplicationsAdapter == null || isLaunching || localeChanged) {
-            mApplicationsAdapter = new ApplicationsAdapter(launcher,
-                    mApplications = new ArrayList<ApplicationInfo>(DEFAULT_APPLICATIONS_NUMBER));
+            mApplications = new ArrayList<ApplicationInfo>(DEFAULT_APPLICATIONS_NUMBER);
+            mApplicationsAdapter = new ApplicationsAdapter(launcher, mApplications);
         }
 
         if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
@@ -153,20 +173,27 @@ public class LauncherModel {
                 ChangeNotifier action = new ChangeNotifier(applicationList);
 
                 for (int i = 0; i < count && !mStopped; i++) {
-                    ApplicationInfo application = new ApplicationInfo();
                     ResolveInfo info = apps.get(i);
-
-                    application.title = info.loadLabel(manager);
-                    if (application.title == null) {
-                        application.title = info.activityInfo.name;
-                    }
-                    application.setActivity(new ComponentName(
+                    ComponentName componentName = new ComponentName(
                             info.activityInfo.applicationInfo.packageName,
-                            info.activityInfo.name),
-                            Intent.FLAG_ACTIVITY_NEW_TASK |
-                            Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-                    application.icon = info.activityInfo.loadIcon(manager);
-                    application.container = ItemInfo.NO_ID;
+                            info.activityInfo.name);
+                    ApplicationInfo application = mAppInfoCache.get(componentName);
+                    if (application == null) {
+                        application = new ApplicationInfo();
+                        application.title = info.loadLabel(manager);
+                        if (application.title == null) {
+                            application.title = info.activityInfo.name;
+                        }
+                        application.setActivity(componentName,
+                                Intent.FLAG_ACTIVITY_NEW_TASK |
+                                Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                        application.container = ItemInfo.NO_ID;
+                        application.icon = info.activityInfo.loadIcon(manager);
+                        if (DEBUG) {
+                            Log.d(Launcher.LOG_TAG, "Loaded ApplicationInfo for " + componentName);
+                        }
+                        mAppInfoCache.put(componentName, application);
+                    }
 
                     action.add(application);
                 }
@@ -191,7 +218,7 @@ public class LauncherModel {
 
     private static class ChangeNotifier implements Runnable {
         private final ApplicationsAdapter mApplicationList;
-        private ArrayList<ApplicationInfo> mBuffer;
+        private final ArrayList<ApplicationInfo> mBuffer;
 
         ChangeNotifier(ApplicationsAdapter applicationList) {
             mApplicationList = applicationList;
@@ -226,7 +253,7 @@ public class LauncherModel {
     boolean isDesktopLoaded() {
         return mDesktopItems != null && mDesktopGadgets != null && mDesktopItemsLoaded;
     }
-    
+
     /**
      * Loads all of the items on the desktop, in folders, or in the dock.
      * These can be apps, shortcuts or widgets
@@ -512,7 +539,7 @@ public class LauncherModel {
                                         + "!= CONTAINER_DESKTOP  ignoring!");
                                 continue;
                             }
-                            
+
                             widgetInfo.id = c.getLong(idIndex);
                             widgetInfo.screen = c.getInt(screenIndex);
                             widgetInfo.container = container;
@@ -539,7 +566,7 @@ public class LauncherModel {
                                 continue;
                             }
                             gadgetInfo.container = c.getInt(containerIndex);
-                            
+
                             desktopGadgets.add(gadgetInfo);
                             break;
                         }
@@ -590,7 +617,7 @@ public class LauncherModel {
                 break;
             default:
                 liveFolderInfo.icon =
-                        launcher.getResources().getDrawable(R.drawable.ic_launcher_folder);                                    
+                        launcher.getResources().getDrawable(R.drawable.ic_launcher_folder);
         }
     }
 
@@ -598,7 +625,7 @@ public class LauncherModel {
      * Finds the user folder defined by the specified id.
      *
      * @param id The id of the folder to look for.
-     * 
+     *
      * @return A UserFolderInfo if the folder exists or null otherwise.
      */
     FolderInfo findFolderById(long id) {
@@ -648,8 +675,9 @@ public class LauncherModel {
         unbindAppDrawables(mApplications);
         unbindDrawables(mDesktopItems);
         unbindGadgetHostViews(mDesktopGadgets);
+        unbindCachedIconDrawables();
     }
-    
+
     /**
      * Remove the callback for the cached drawables or we leak the previous
      * Home screen on orientation change.
@@ -668,7 +696,7 @@ public class LauncherModel {
             }
         }
     }
-    
+
     /**
      * Remove the callback for the cached drawables or we leak the previous
      * Home screen on orientation change.
@@ -692,6 +720,16 @@ public class LauncherModel {
                 LauncherGadgetInfo launcherInfo = gadgets.get(i);
                 launcherInfo.hostView = null;
             }
+        }
+    }
+
+    /**
+     * Remove the callback for the cached drawables or we leak the previous
+     * Home screen on orientation change.
+     */
+    private void unbindCachedIconDrawables() {
+        for (ApplicationInfo appInfo : mAppInfoCache.values()) {
+            appInfo.icon.setCallback(null);
         }
     }
 

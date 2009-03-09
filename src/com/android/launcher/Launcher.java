@@ -151,7 +151,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     // Type: long
     private static final String RUNTIME_STATE_PENDING_FOLDER_RENAME_ID = "launcher.rename_folder_id";
 
-    private static LauncherModel sModel;
+    private static final LauncherModel sModel = new LauncherModel();
 
     private static Bitmap sWallpaper;
 
@@ -211,10 +211,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         checkForLocaleChange();
         setWallpaperDimension();
-
-        if (sModel == null) {
-            sModel = new LauncherModel();
-        }
 
         setContentView(R.layout.launcher);
         setupViews();
@@ -1742,6 +1738,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 }
             }
             removeDialog(DIALOG_CREATE_SHORTCUT);
+            sModel.dropApplicationCache();
             if (!reloadWorkspace) {
                 sModel.loadApplications(false, Launcher.this, false);
             } else {

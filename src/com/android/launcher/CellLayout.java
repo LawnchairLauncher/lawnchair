@@ -659,7 +659,6 @@ public class CellLayout extends ViewGroup {
      *  
      * @param width Width in pixels
      * @param height Height in pixels
-     * @param Horizontal and vertical spans required
      */
     public int[] rectToCell(int width, int height) {
         // Always assume we're working with the smallest span to make sure we
