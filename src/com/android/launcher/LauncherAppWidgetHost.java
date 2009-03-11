@@ -16,23 +16,24 @@
 
 package com.android.launcher;
 
+import android.appwidget.AppWidgetHost;
+import android.appwidget.AppWidgetHostView;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
-import android.gadget.GadgetHost;
-import android.gadget.GadgetHostView;
-import android.gadget.GadgetProviderInfo;
 
 /**
- * Specific {@link GadgetHost} that creates our {@link LauncherGadgetHostView}
+ * Specific {@link AppWidgetHost} that creates our {@link LauncherAppWidgetHostView}
  * which correctly captures all long-press events. This ensures that users can
- * always pick up and move gadgets.
+ * always pick up and move widgets.
  */
-public class LauncherGadgetHost extends GadgetHost {
-    public LauncherGadgetHost(Context context, int hostId) {
+public class LauncherAppWidgetHost extends AppWidgetHost {
+    public LauncherAppWidgetHost(Context context, int hostId) {
         super(context, hostId);
     }
     
-    protected GadgetHostView onCreateView(Context context, int gadgetId,
-            GadgetProviderInfo gadget) {
-        return new LauncherGadgetHostView(context);
+    @Override
+    protected AppWidgetHostView onCreateView(Context context, int appWidgetId,
+            AppWidgetProviderInfo appWidget) {
+        return new LauncherAppWidgetHostView(context);
     }
 }

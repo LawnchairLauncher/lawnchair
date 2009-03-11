@@ -60,7 +60,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 public class Search extends LinearLayout implements OnClickListener, OnKeyListener,
         OnLongClickListener, TextWatcher, OnItemClickListener, OnItemSelectedListener {
 
-    private final String TAG = "SearchGadget";
+    private final String TAG = "SearchWidget";
 
     private AutoCompleteTextView mSearchText;
     private ImageButton mGoButton;

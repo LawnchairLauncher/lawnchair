@@ -40,7 +40,7 @@ public class AddAdapter extends BaseAdapter {
     public static final int ITEM_APPLICATION = 0;
     public static final int ITEM_SHORTCUT = 1;
     public static final int ITEM_SEARCH = 2;
-    public static final int ITEM_GADGET = 3;
+    public static final int ITEM_APPWIDGET = 3;
     public static final int ITEM_LIVE_FOLDER = 4;
     public static final int ITEM_FOLDER = 5;
     public static final int ITEM_WALLPAPER = 6;
@@ -80,10 +80,10 @@ public class AddAdapter extends BaseAdapter {
                 R.drawable.ic_launcher_empty, ITEM_SHORTCUT));
         
         mItems.add(new ListItem(res, R.string.group_search,
-                R.drawable.ic_search_gadget, ITEM_SEARCH));
+                R.drawable.ic_search_widget, ITEM_SEARCH));
         
         mItems.add(new ListItem(res, R.string.group_widgets,
-                R.drawable.ic_launcher_gadget, ITEM_GADGET));
+                R.drawable.ic_launcher_appwidget, ITEM_APPWIDGET));
         
         mItems.add(new ListItem(res, R.string.group_live_folders,
                 R.drawable.ic_launcher_empty, ITEM_LIVE_FOLDER));

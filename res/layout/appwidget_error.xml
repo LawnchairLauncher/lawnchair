@@ -22,8 +22,8 @@
     android:paddingLeft="20dip"
     android:paddingRight="20dip"
     android:gravity="center"
-    android:background="@drawable/bg_gadget_error"
+    android:background="@drawable/bg_appwidget_error"
     android:textAppearance="?android:attr/textAppearanceMediumInverse"
-    android:textColor="@color/gadget_error_color"
+    android:textColor="@color/appwidget_error_color"
     android:text="@string/gadget_error_text"
     />

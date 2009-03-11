@@ -16,38 +16,38 @@
 
 package com.android.launcher;
 
+import android.appwidget.AppWidgetHostView;
 import android.content.ContentValues;
-import android.gadget.GadgetHostView;
 
 /**
- * Represents a gadget, which just contains an identifier.
+ * Represents a widget, which just contains an identifier.
  */
-class LauncherGadgetInfo extends ItemInfo {
+class LauncherAppWidgetInfo extends ItemInfo {
 
     /**
-     * Identifier for this gadget when talking with {@link GadgetManager} for updates.
+     * Identifier for this widget when talking with {@link AppWidgetManager} for updates.
      */
-    int gadgetId;
+    int appWidgetId;
     
     /**
-     * View that holds this gadget after it's been created.  This view isn't created
+     * View that holds this widget after it's been created.  This view isn't created
      * until Launcher knows it's needed.
      */
-    GadgetHostView hostView = null;
+    AppWidgetHostView hostView = null;
 
-    LauncherGadgetInfo(int gadgetId) {
-        itemType = LauncherSettings.Favorites.ITEM_TYPE_GADGET;
-        this.gadgetId = gadgetId;
+    LauncherAppWidgetInfo(int appWidgetId) {
+        itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
+        this.appWidgetId = appWidgetId;
     }
     
     @Override
     void onAddToDatabase(ContentValues values) {
         super.onAddToDatabase(values);
-        values.put(LauncherSettings.Favorites.GADGET_ID, gadgetId);
+        values.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId);
     }
 
     @Override
     public String toString() {
-        return Integer.toString(gadgetId);
+        return Integer.toString(appWidgetId);
     }
 }

@@ -16,8 +16,8 @@
 
 package com.android.launcher;
 
+import android.appwidget.AppWidgetHostView;
 import android.content.Context;
-import android.gadget.GadgetHostView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,21 +26,21 @@ import android.view.ViewConfiguration;
 /**
  * {@inheritDoc}
  */
-public class LauncherGadgetHostView extends GadgetHostView {
+public class LauncherAppWidgetHostView extends AppWidgetHostView {
     private boolean mHasPerformedLongPress;
     
     private CheckForLongPress mPendingCheckForLongPress;
     
     private LayoutInflater mInflater;
     
-    public LauncherGadgetHostView(Context context) {
+    public LauncherAppWidgetHostView(Context context) {
         super(context);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
     
     @Override
     protected View getErrorView() {
-        return mInflater.inflate(R.layout.gadget_error, this, false);
+        return mInflater.inflate(R.layout.appwidget_error, this, false);
     }
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -51,7 +51,7 @@ public class LauncherGadgetHostView extends GadgetHostView {
         }
             
         // Watch for longpress events at this level to make sure
-        // users can always pick up this Gadget
+        // users can always pick up this widget
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN: {
                 postCheckForLongClick();

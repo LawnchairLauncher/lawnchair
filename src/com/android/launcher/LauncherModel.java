@@ -28,13 +28,11 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
 import android.os.Process;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Comparator;
@@ -55,13 +53,13 @@ public class LauncherModel {
 
     private static final boolean DEBUG = false;
 
-    private final Collator sCollator = Collator.getInstance();
+    private static final Collator sCollator = Collator.getInstance();
 
     private boolean mApplicationsLoaded;
     private boolean mDesktopItemsLoaded;
 
     private ArrayList<ItemInfo> mDesktopItems;
-    private ArrayList<LauncherGadgetInfo> mDesktopGadgets;
+    private ArrayList<LauncherAppWidgetInfo> mDesktopAppWidgets;
     private HashMap<Long, FolderInfo> mFolders;
 
     private ArrayList<ApplicationInfo> mApplications;
@@ -170,14 +168,15 @@ public class LauncherModel {
                 final int count = apps.size();
                 final ApplicationsAdapter applicationList = mApplicationsAdapter;
 
-                ChangeNotifier action = new ChangeNotifier(applicationList);
+                final ChangeNotifier action = new ChangeNotifier(applicationList, launcher);
+                final HashMap<ComponentName, ApplicationInfo> appInfoCache = mAppInfoCache;
 
                 for (int i = 0; i < count && !mStopped; i++) {
                     ResolveInfo info = apps.get(i);
                     ComponentName componentName = new ComponentName(
                             info.activityInfo.applicationInfo.packageName,
                             info.activityInfo.name);
-                    ApplicationInfo application = mAppInfoCache.get(componentName);
+                    ApplicationInfo application = appInfoCache.get(componentName);
                     if (application == null) {
                         application = new ApplicationInfo();
                         application.title = info.loadLabel(manager);
@@ -192,20 +191,10 @@ public class LauncherModel {
                         if (DEBUG) {
                             Log.d(Launcher.LOG_TAG, "Loaded ApplicationInfo for " + componentName);
                         }
-                        mAppInfoCache.put(componentName, application);
+                        appInfoCache.put(componentName, application);
                     }
 
                     action.add(application);
-                }
-
-                action.sort(new Comparator<ApplicationInfo>() {
-                    public final int compare(ApplicationInfo a, ApplicationInfo b) {
-                        return sCollator.compare(a.title.toString(), b.title.toString());
-                    }
-                });
-
-                if (!mStopped) {
-                    launcher.runOnUiThread(action);
                 }
             }
 
@@ -216,42 +205,62 @@ public class LauncherModel {
         }
     }
 
-    private static class ChangeNotifier implements Runnable {
+    private static class ChangeNotifier implements Runnable, Comparator<ApplicationInfo> {
         private final ApplicationsAdapter mApplicationList;
+        private final Launcher mLauncher;
         private final ArrayList<ApplicationInfo> mBuffer;
+        private final Object mLock = new Object();
 
-        ChangeNotifier(ApplicationsAdapter applicationList) {
+        private boolean mFirst = true;
+
+        ChangeNotifier(ApplicationsAdapter applicationList, Launcher launcher) {
             mApplicationList = applicationList;
+            mLauncher = launcher;
             mBuffer = new ArrayList<ApplicationInfo>(UI_NOTIFICATION_RATE);
         }
 
         public void run() {
-            final ArrayList<ApplicationInfo> buffer = mBuffer;
             final ApplicationsAdapter applicationList = mApplicationList;
-            final int count = buffer.size();
 
-            applicationList.setNotifyOnChange(false);
-            applicationList.clear();
-            for (int i = 0; i < count; i++) {
+            if (mFirst) {
                 applicationList.setNotifyOnChange(false);
-                applicationList.add(buffer.get(i));
+                applicationList.clear();
+                mFirst = false;
             }
 
+            synchronized (mLock) {
+                final ArrayList<ApplicationInfo> buffer = mBuffer;
+                final int count = buffer.size();
+
+                for (int i = 0; i < count; i++) {
+                    applicationList.setNotifyOnChange(false);
+                    applicationList.add(buffer.get(i));
+                }
+
+                buffer.clear();
+            }
+
+            applicationList.sort(this);
             applicationList.notifyDataSetChanged();
-            buffer.clear();
         }
 
-        void add(ApplicationInfo application) {
-            mBuffer.add(application);
+        synchronized void add(ApplicationInfo application) {
+            synchronized (mLock) {
+                final ArrayList<ApplicationInfo> buffer = mBuffer;
+                buffer.add(application);
+                if (buffer.size() >= UI_NOTIFICATION_RATE) {
+                    mLauncher.runOnUiThread(this);
+                }
+            }
         }
 
-        void sort(Comparator<ApplicationInfo> comparator) {
-            Collections.sort(mBuffer, comparator);
+        public final int compare(ApplicationInfo a, ApplicationInfo b) {
+            return sCollator.compare(a.title.toString(), b.title.toString());
         }
     }
 
     boolean isDesktopLoaded() {
-        return mDesktopItems != null && mDesktopGadgets != null && mDesktopItemsLoaded;
+        return mDesktopItems != null && mDesktopAppWidgets != null && mDesktopItemsLoaded;
     }
 
     /**
@@ -387,11 +396,11 @@ public class LauncherModel {
             }
 
             mDesktopItems = new ArrayList<ItemInfo>();
-            mDesktopGadgets = new ArrayList<LauncherGadgetInfo>();
+            mDesktopAppWidgets = new ArrayList<LauncherAppWidgetInfo>();
             mFolders = new HashMap<Long, FolderInfo>();
 
             final ArrayList<ItemInfo> desktopItems = mDesktopItems;
-            final ArrayList<LauncherGadgetInfo> desktopGadgets = mDesktopGadgets;
+            final ArrayList<LauncherAppWidgetInfo> desktopAppWidgets = mDesktopAppWidgets;
 
             final Cursor c = contentResolver.query(
                     LauncherSettings.Favorites.CONTENT_URI, null, null, null, null);
@@ -406,7 +415,7 @@ public class LauncherModel {
                 final int iconResourceIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_RESOURCE);
                 final int containerIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CONTAINER);
                 final int itemTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
-                final int gadgetIdIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.GADGET_ID);
+                final int appWidgetIdIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.APPWIDGET_ID);
                 final int screenIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SCREEN);
                 final int cellXIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLX);
                 final int cellYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLY);
@@ -418,7 +427,7 @@ public class LauncherModel {
                 ApplicationInfo info;
                 String intentDescription;
                 Widget widgetInfo;
-                LauncherGadgetInfo gadgetInfo;
+                LauncherAppWidgetInfo appWidgetInfo;
                 int container;
                 long id;
                 Intent intent;
@@ -548,26 +557,26 @@ public class LauncherModel {
 
                             desktopItems.add(widgetInfo);
                             break;
-                        case LauncherSettings.Favorites.ITEM_TYPE_GADGET:
-                            // Read all Launcher-specific gadget details
-                            int gadgetId = c.getInt(gadgetIdIndex);
-                            gadgetInfo = new LauncherGadgetInfo(gadgetId);
-                            gadgetInfo.id = c.getLong(idIndex);
-                            gadgetInfo.screen = c.getInt(screenIndex);
-                            gadgetInfo.cellX = c.getInt(cellXIndex);
-                            gadgetInfo.cellY = c.getInt(cellYIndex);
-                            gadgetInfo.spanX = c.getInt(spanXIndex);
-                            gadgetInfo.spanY = c.getInt(spanYIndex);
+                        case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+                            // Read all Launcher-specific widget details
+                            int appWidgetId = c.getInt(appWidgetIdIndex);
+                            appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId);
+                            appWidgetInfo.id = c.getLong(idIndex);
+                            appWidgetInfo.screen = c.getInt(screenIndex);
+                            appWidgetInfo.cellX = c.getInt(cellXIndex);
+                            appWidgetInfo.cellY = c.getInt(cellYIndex);
+                            appWidgetInfo.spanX = c.getInt(spanXIndex);
+                            appWidgetInfo.spanY = c.getInt(spanYIndex);
 
                             container = c.getInt(containerIndex);
                             if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                                Log.e(Launcher.LOG_TAG, "Gadget found where container "
+                                Log.e(Launcher.LOG_TAG, "Widget found where container "
                                         + "!= CONTAINER_DESKTOP -- ignoring!");
                                 continue;
                             }
-                            gadgetInfo.container = c.getInt(containerIndex);
+                            appWidgetInfo.container = c.getInt(containerIndex);
 
-                            desktopGadgets.add(gadgetInfo);
+                            desktopAppWidgets.add(appWidgetInfo);
                             break;
                         }
                     } catch (Exception e) {
@@ -674,7 +683,7 @@ public class LauncherModel {
         mApplicationsAdapter = null;
         unbindAppDrawables(mApplications);
         unbindDrawables(mDesktopItems);
-        unbindGadgetHostViews(mDesktopGadgets);
+        unbindAppWidgetHostViews(mDesktopAppWidgets);
         unbindCachedIconDrawables();
     }
 
@@ -711,13 +720,13 @@ public class LauncherModel {
     }
 
     /**
-     * Remove any {@link LauncherGadgetHostView} references in our gadgets.
+     * Remove any {@link LauncherAppWidgetHostView} references in our widgets.
      */
-    private void unbindGadgetHostViews(ArrayList<LauncherGadgetInfo> gadgets) {
-        if (gadgets != null) {
-            final int count = gadgets.size();
+    private void unbindAppWidgetHostViews(ArrayList<LauncherAppWidgetInfo> appWidgets) {
+        if (appWidgets != null) {
+            final int count = appWidgets.size();
             for (int i = 0; i < count; i++) {
-                LauncherGadgetInfo launcherInfo = gadgets.get(i);
+                LauncherAppWidgetInfo launcherInfo = appWidgets.get(i);
                 launcherInfo.hostView = null;
             }
         }
@@ -757,8 +766,8 @@ public class LauncherModel {
     /**
      * @return The current list of desktop items
      */
-    public ArrayList<LauncherGadgetInfo> getDesktopGadgets() {
-        return mDesktopGadgets;
+    public ArrayList<LauncherAppWidgetInfo> getDesktopAppWidgets() {
+        return mDesktopAppWidgets;
     }
 
     /**
@@ -780,17 +789,17 @@ public class LauncherModel {
     }
 
     /**
-     * Add a gadget to the desktop
+     * Add a widget to the desktop
      */
-    public void addDesktopGadget(LauncherGadgetInfo info) {
-        mDesktopGadgets.add(info);
+    public void addDesktopAppWidget(LauncherAppWidgetInfo info) {
+        mDesktopAppWidgets.add(info);
     }
     
     /**
-     * Remove a gadget from the desktop
+     * Remove a widget from the desktop
      */
-    public void removeDesktopGadget(LauncherGadgetInfo info) {
-        mDesktopGadgets.remove(info);
+    public void removeDesktopAppWidget(LauncherAppWidgetInfo info) {
+        mDesktopAppWidgets.remove(info);
     }
 
     /**

@@ -25,6 +25,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Rect;
+import android.graphics.Region;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -95,6 +96,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     final Rect mDrawerBounds = new Rect();
     final Rect mClipBounds = new Rect();
+    int mDrawerContentHeight;
+    int mDrawerContentWidth;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -442,6 +445,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
+        boolean restore = false;
+
         // If the all apps drawer is open and the drawing region for the workspace
         // is contained within the drawer's bounds, we skip the drawing. This requires
         // the drawer to be fully opaque.
@@ -452,6 +457,15 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             if (mDrawerBounds.contains(clipBounds)) {
                 return;
             }
+        } else if (mLauncher.isDrawerMoving()) {
+            restore = true;
+            canvas.save(Canvas.CLIP_SAVE_FLAG);
+
+            final View view = mLauncher.getDrawerHandle();
+            final int top = view.getTop() + view.getHeight();
+
+            canvas.clipRect(mScrollX, top, mScrollX + mDrawerContentWidth,
+                    top + mDrawerContentHeight, Region.Op.DIFFERENCE);
         }
 
         float x = mScrollX * mWallpaperOffset;
@@ -484,6 +498,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                     drawChild(canvas, getChildAt(i), drawingTime);
                 }
             }
+        }
+
+        if (restore) {
+            canvas.restore();
         }
     }
 
@@ -1215,8 +1233,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         }
     }
     
-    // TODO: remove gadgets when gadgetmanager tells us they're gone
-//    void removeGadgetsForProvider() {
+    // TODO: remove widgets when appwidgetmanager tells us they're gone
+//    void removeAppWidgetsForProvider() {
 //    }
 
     void moveToDefaultScreen() {

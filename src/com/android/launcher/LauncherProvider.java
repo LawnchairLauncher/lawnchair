@@ -16,6 +16,7 @@
 
 package com.android.launcher;
 
+import android.appwidget.AppWidgetHost;
 import android.content.ContentProvider;
 import android.content.Context;
 import android.content.ContentValues;
@@ -30,7 +31,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.database.Cursor;
 import android.database.SQLException;
-import android.gadget.GadgetHost;
 import android.util.Log;
 import android.util.Xml;
 import android.net.Uri;
@@ -177,12 +177,12 @@ public class LauncherProvider extends ContentProvider {
         private static final String ATTRIBUTE_Y = "y";
 
         private final Context mContext;
-        private final GadgetHost mGadgetHost;
+        private final AppWidgetHost mAppWidgetHost;
 
         DatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
             mContext = context;
-            mGadgetHost = new GadgetHost(context, Launcher.GADGET_HOST_ID);
+            mAppWidgetHost = new AppWidgetHost(context, Launcher.APPWIDGET_HOST_ID);
         }
 
         @Override
@@ -210,9 +210,9 @@ public class LauncherProvider extends ContentProvider {
                     "displayMode INTEGER" +
                     ");");
 
-            // Database was just created, so wipe any previous gadgets
-            if (mGadgetHost != null) {
-                mGadgetHost.deleteHost();
+            // Database was just created, so wipe any previous widgets
+            if (mAppWidgetHost != null) {
+                mAppWidgetHost.deleteHost();
             }
             
             if (!convertDatabase(db)) {
@@ -250,7 +250,7 @@ public class LauncherProvider extends ContentProvider {
             }
             
             if (converted) {
-                // Convert widgets from this import into gadgets
+                // Convert widgets from this import into widgets
                 if (LOGD) Log.d(LOG_TAG, "converted and now triggering widget upgrade");
                 convertWidgets(db);
             }
@@ -287,7 +287,7 @@ public class LauncherProvider extends ContentProvider {
                 values.put(LauncherSettings.Favorites.ICON_RESOURCE, c.getString(iconResourceIndex));
                 values.put(LauncherSettings.Favorites.CONTAINER, c.getInt(containerIndex));
                 values.put(LauncherSettings.Favorites.ITEM_TYPE, c.getInt(itemTypeIndex));
-                values.put(LauncherSettings.Favorites.GADGET_ID, -1);
+                values.put(LauncherSettings.Favorites.APPWIDGET_ID, -1);
                 values.put(LauncherSettings.Favorites.SCREEN, c.getInt(screenIndex));
                 values.put(LauncherSettings.Favorites.CELLX, c.getInt(cellXIndex));
                 values.put(LauncherSettings.Favorites.CELLY, c.getInt(cellYIndex));
@@ -321,10 +321,10 @@ public class LauncherProvider extends ContentProvider {
             
             int version = oldVersion;
             if (version == 1) {
-                // upgrade 1 -> 2 added gadgetId column
+                // upgrade 1 -> 2 added appWidgetId column
                 db.beginTransaction();
                 try {
-                    // Insert new column for holding gadgetIds
+                    // Insert new column for holding appWidgetIds
                     db.execSQL("ALTER TABLE favorites " +
                         "ADD COLUMN gadgetId INTEGER NOT NULL DEFAULT -1;");
                     db.setTransactionSuccessful();
@@ -350,9 +350,9 @@ public class LauncherProvider extends ContentProvider {
         }
         
         /**
-         * Upgrade existing clock and photo frame widgets into their new gadget
-         * equivalents. This method allocates gadgetIds, and then hands off to
-         * LauncherGadgetBinder to finish the actual binding.
+         * Upgrade existing clock and photo frame widgets into their new widget
+         * equivalents. This method allocates appWidgetIds, and then hands off to
+         * LauncherAppWidgetBinder to finish the actual binding.
          */
         private void convertWidgets(SQLiteDatabase db) {
             final int[] bindSources = new int[] {
@@ -362,14 +362,14 @@ public class LauncherProvider extends ContentProvider {
             
             final ArrayList<ComponentName> bindTargets = new ArrayList<ComponentName>();
             bindTargets.add(new ComponentName("com.android.alarmclock",
-                    "com.android.alarmclock.AnalogGadgetProvider"));
+                    "com.android.alarmclock.AnalogAppWidgetProvider"));
             bindTargets.add(new ComponentName("com.android.camera",
-                    "com.android.camera.PhotoGadgetProvider"));
+                    "com.android.camera.PhotoAppWidgetProvider"));
             
             final String selectWhere = buildOrWhereString(Favorites.ITEM_TYPE, bindSources);
             
             Cursor c = null;
-            boolean allocatedGadgets = false;
+            boolean allocatedAppWidgets = false;
             
             db.beginTransaction();
             try {
@@ -383,14 +383,14 @@ public class LauncherProvider extends ContentProvider {
                 while (c != null && c.moveToNext()) {
                     long favoriteId = c.getLong(0);
                     
-                    // Allocate and update database with new gadgetId
+                    // Allocate and update database with new appWidgetId
                     try {
-                        int gadgetId = mGadgetHost.allocateGadgetId();
+                        int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
                         
-                        if (LOGD) Log.d(LOG_TAG, "allocated gadgetId="+gadgetId+" for favoriteId="+favoriteId);
+                        if (LOGD) Log.d(LOG_TAG, "allocated appWidgetId="+appWidgetId+" for favoriteId="+favoriteId);
                         
                         values.clear();
-                        values.put(LauncherSettings.Favorites.GADGET_ID, gadgetId);
+                        values.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId);
                         
                         // Original widgets might not have valid spans when upgrading
                         values.put(LauncherSettings.Favorites.SPANX, 2);
@@ -399,15 +399,15 @@ public class LauncherProvider extends ContentProvider {
                         String updateWhere = Favorites._ID + "=" + favoriteId;
                         db.update(TABLE_FAVORITES, values, updateWhere, null);
                         
-                        allocatedGadgets = true;
+                        allocatedAppWidgets = true;
                     } catch (RuntimeException ex) {
-                        Log.e(LOG_TAG, "Problem allocating gadgetId", ex);
+                        Log.e(LOG_TAG, "Problem allocating appWidgetId", ex);
                     }
                 }
                 
                 db.setTransactionSuccessful();
             } catch (SQLException ex) {
-                Log.w(LOG_TAG, "Problem while allocating gadgetIds for existing widgets", ex);
+                Log.w(LOG_TAG, "Problem while allocating appWidgetIds for existing widgets", ex);
             } finally {
                 db.endTransaction();
                 if (c != null) {
@@ -415,22 +415,22 @@ public class LauncherProvider extends ContentProvider {
                 }
             }
             
-            // If any gadgetIds allocated, then launch over to binder
-            if (allocatedGadgets) {
-                launchGadgetBinder(bindSources, bindTargets);
+            // If any appWidgetIds allocated, then launch over to binder
+            if (allocatedAppWidgets) {
+                launchAppWidgetBinder(bindSources, bindTargets);
             }
         }
 
         /**
-         * Launch the gadget binder that walks through the Launcher database,
+         * Launch the widget binder that walks through the Launcher database,
          * binding any matching widgets to the corresponding targets. We can't
          * bind ourselves because our parent process can't obtain the
-         * BIND_GADGET permission.
+         * BIND_APPWIDGET permission.
          */
-        private void launchGadgetBinder(int[] bindSources, ArrayList<ComponentName> bindTargets) {
+        private void launchAppWidgetBinder(int[] bindSources, ArrayList<ComponentName> bindTargets) {
             final Intent intent = new Intent();
             intent.setComponent(new ComponentName("com.android.settings",
-                    "com.android.settings.LauncherGadgetBinder"));
+                    "com.android.settings.LauncherAppWidgetBinder"));
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             
             final Bundle extras = new Bundle();
@@ -533,13 +533,13 @@ public class LauncherProvider extends ContentProvider {
             
             final ArrayList<ComponentName> bindTargets = new ArrayList<ComponentName>();
             bindTargets.add(new ComponentName("com.android.alarmclock",
-                    "com.android.alarmclock.AnalogGadgetProvider"));
+                    "com.android.alarmclock.AnalogAppWidgetProvider"));
             
-            boolean allocatedGadgets = false;
+            boolean allocatedAppWidgets = false;
             
-            // Try binding to an analog clock gadget
+            // Try binding to an analog clock widget
             try {
-                int gadgetId = mGadgetHost.allocateGadgetId();
+                int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
                 
                 values.clear();
                 values.put(LauncherSettings.Favorites.CONTAINER,
@@ -551,17 +551,17 @@ public class LauncherProvider extends ContentProvider {
                 values.put(LauncherSettings.Favorites.CELLY, 0);
                 values.put(LauncherSettings.Favorites.SPANX, 2);
                 values.put(LauncherSettings.Favorites.SPANY, 2);
-                values.put(LauncherSettings.Favorites.GADGET_ID, gadgetId);
+                values.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId);
                 db.insert(TABLE_FAVORITES, null, values);
                 
-                allocatedGadgets = true;
+                allocatedAppWidgets = true;
             } catch (RuntimeException ex) {
-                Log.e(LOG_TAG, "Problem allocating gadgetId", ex);
+                Log.e(LOG_TAG, "Problem allocating appWidgetId", ex);
             }
 
-            // If any gadgetIds allocated, then launch over to binder
-            if (allocatedGadgets) {
-                launchGadgetBinder(bindSources, bindTargets);
+            // If any appWidgetIds allocated, then launch over to binder
+            if (allocatedAppWidgets) {
+                launchAppWidgetBinder(bindSources, bindTargets);
             }
             
             return i;
