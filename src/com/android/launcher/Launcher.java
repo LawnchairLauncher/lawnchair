@@ -273,8 +273,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     }
 
     private void startLoaders() {
-        sModel.loadApplications(true, this, mLocaleChanged);
-        sModel.loadUserItems(!mLocaleChanged, this, mLocaleChanged, true);
+        boolean loadApplications = sModel.loadApplications(true, this, mLocaleChanged);
+        sModel.loadUserItems(!mLocaleChanged, this, mLocaleChanged, loadApplications);
+
         mRestoring = false;
     }
 
@@ -350,16 +351,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     protected void onPause() {
         super.onPause();
         closeDrawer(false);        
-    }
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        boolean handled = super.onKeyUp(keyCode, event);
-        if (keyCode == KeyEvent.KEYCODE_SEARCH) {
-            handled = mWorkspace.snapToSearch();
-            if (handled) closeDrawer(true);
-        }
-        return handled;
     }
 
     private boolean acceptFilter() {
@@ -882,11 +873,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 startWallpaper();
                 return true;
             case MENU_SEARCH:
-                if (mWorkspace.snapToSearch()) {
-                    closeDrawer(true);          // search widget: get drawer out of the way
-                } else {
-                    onSearchRequested();        // no search widget: use system search UI
-                }
+                onSearchRequested();
                 return true;
             case MENU_NOTIFICATIONS:
                 showNotifications();
@@ -894,6 +881,16 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onSearchRequested() {
+        if (mWorkspace.snapToSearch()) {
+            closeDrawer(true);                // search widget: get drawer out of the way
+            return true;
+        } else {
+            return super.onSearchRequested(); // no search widget: use system search UI
+        }
     }
 
     private void addItems() {
@@ -1166,8 +1163,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     void onDesktopItemsLoaded() {
         if (mDestroyed) return;
-
-        mAllAppsGrid.setAdapter(Launcher.getModel().getApplicationsAdapter());
+android.util.Log.d("Home", "setting grid adapter");
+        mAllAppsGrid.setAdapter(sModel.getApplicationsAdapter());
         bindDesktopItems();
     }
 
@@ -1467,6 +1464,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             if (cellInfo.cell == null) {
                 if (cellInfo.valid) {
                     // User long pressed on empty space
+                    mWorkspace.setAllowLongPress(false);
                     showAddDialog(cellInfo);
                 }
             } else {
@@ -1745,6 +1743,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         @Override
         public void onReceive(Context context, Intent intent) {
             boolean reloadWorkspace = false;
+android.util.Log.d("Home", "application intent received: " + intent.getAction());
+android.util.Log.d("Home", "  --> " + intent.getData());
             if (Intent.ACTION_PACKAGE_REMOVED.equals(intent.getAction())) {
                 if (!intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)) {
                     removeShortcutsForPackage(intent.getData().getSchemeSpecificPart());
@@ -1753,10 +1753,11 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 }
             }
             removeDialog(DIALOG_CREATE_SHORTCUT);
-            sModel.dropApplicationCache();
             if (!reloadWorkspace) {
+android.util.Log.d("Home", "  --> loading apps");
                 sModel.loadApplications(false, Launcher.this, false);
             } else {
+android.util.Log.d("Home", "  --> loading workspace");
                 sModel.loadUserItems(false, Launcher.this, false, true);
             }
         }

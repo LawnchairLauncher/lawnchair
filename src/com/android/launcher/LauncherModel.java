@@ -66,17 +66,18 @@ public class LauncherModel {
     private ApplicationsAdapter mApplicationsAdapter;
     private ApplicationsLoader mApplicationsLoader;
     private DesktopItemsLoader mDesktopItemsLoader;
-    private Thread mLoader;
-    private Thread mDesktopLoader;
+    private Thread mApplicationsLoaderThread;
+    private Thread mDesktopLoaderThread;
 
     private final HashMap<ComponentName, ApplicationInfo> mAppInfoCache =
             new HashMap<ComponentName, ApplicationInfo>(INITIAL_ICON_CACHE_CAPACITY);
 
-    void abortLoaders() {
+    synchronized void abortLoaders() {
         if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
             mApplicationsLoader.stop();
             mApplicationsLoaded = false;
         }
+
         if (mDesktopItemsLoader != null && mDesktopItemsLoader.isRunning()) {
             mDesktopItemsLoader.stop();
             mDesktopItemsLoaded = false;
@@ -94,44 +95,62 @@ public class LauncherModel {
 
     /**
      * Loads the list of installed applications in mApplications.
+     *
+     * @return true if the applications loader must be started
+     *         (see startApplicationsLoader()), false otherwise.
      */
-    synchronized void loadApplications(boolean isLaunching, Launcher launcher,
+    synchronized boolean loadApplications(boolean isLaunching, Launcher launcher,
             boolean localeChanged) {
-        if (localeChanged) {
-            dropApplicationCache();
-        }
+android.util.Log.d("Home", "load applications");
         if (isLaunching && mApplicationsLoaded && !localeChanged) {
             mApplicationsAdapter = new ApplicationsAdapter(launcher, mApplications);
-            return;
+android.util.Log.d("Home", "  --> applications loaded, return");
+            return false;
         }
+
+        waitForApplicationsLoader();
+
+        if (localeChanged) {
+            dropApplicationCache();
+        }        
 
         if (mApplicationsAdapter == null || isLaunching || localeChanged) {
             mApplications = new ArrayList<ApplicationInfo>(DEFAULT_APPLICATIONS_NUMBER);
             mApplicationsAdapter = new ApplicationsAdapter(launcher, mApplications);
         }
 
-        if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
-            mApplicationsLoader.stop();
-            // Wait for the currently running thread to finish, this can take a little
-            // time but it should be well below the timeout limit
-            try {
-                mLoader.join(APPLICATION_NOT_RESPONDING_TIMEOUT);
-            } catch (InterruptedException e) {
-                // Empty
-            }
-        }
-
         mApplicationsLoaded = false;
 
         if (!isLaunching) {
             startApplicationsLoader(launcher);
+            return false;
+        }
+
+        return true;
+    }
+
+    private synchronized void waitForApplicationsLoader() {
+        if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
+            android.util.Log.d("Home", "  --> wait for applications loader");
+
+            mApplicationsLoader.stop();
+            // Wait for the currently running thread to finish, this can take a little
+            // time but it should be well below the timeout limit
+            try {
+                mApplicationsLoaderThread.join(APPLICATION_NOT_RESPONDING_TIMEOUT);
+            } catch (InterruptedException e) {
+                // EMpty
+            }
         }
     }
 
-    private void startApplicationsLoader(Launcher launcher) {
+    private synchronized void startApplicationsLoader(Launcher launcher) {
+android.util.Log.d("Home", "  --> starting applications loader");
+        waitForApplicationsLoader();
+
         mApplicationsLoader = new ApplicationsLoader(launcher);
-        mLoader = new Thread(mApplicationsLoader, "Applications Loader");
-        mLoader.start();
+        mApplicationsLoaderThread = new Thread(mApplicationsLoader, "Applications Loader");
+        mApplicationsLoaderThread.start();
     }
 
     private class ApplicationsLoader implements Runnable {
@@ -168,7 +187,7 @@ public class LauncherModel {
                 final int count = apps.size();
                 final ApplicationsAdapter applicationList = mApplicationsAdapter;
 
-                final ChangeNotifier action = new ChangeNotifier(applicationList, launcher);
+                ChangeNotifier action = new ChangeNotifier(applicationList, true);
                 final HashMap<ComponentName, ApplicationInfo> appInfoCache = mAppInfoCache;
 
                 for (int i = 0; i < count && !mStopped; i++) {
@@ -194,8 +213,13 @@ public class LauncherModel {
                         appInfoCache.put(componentName, application);
                     }
 
-                    action.add(application);
+                    if (action.add(application)) {
+                        launcher.runOnUiThread(action);
+                        action = new ChangeNotifier(applicationList, false);
+                    }
                 }
+
+                launcher.runOnUiThread(action);
             }
 
             if (!mStopped) {
@@ -207,15 +231,13 @@ public class LauncherModel {
 
     private static class ChangeNotifier implements Runnable, Comparator<ApplicationInfo> {
         private final ApplicationsAdapter mApplicationList;
-        private final Launcher mLauncher;
         private final ArrayList<ApplicationInfo> mBuffer;
-        private final Object mLock = new Object();
 
         private boolean mFirst = true;
 
-        ChangeNotifier(ApplicationsAdapter applicationList, Launcher launcher) {
+        ChangeNotifier(ApplicationsAdapter applicationList, boolean first) {
             mApplicationList = applicationList;
-            mLauncher = launcher;
+            mFirst = first;
             mBuffer = new ArrayList<ApplicationInfo>(UI_NOTIFICATION_RATE);
         }
 
@@ -228,30 +250,24 @@ public class LauncherModel {
                 mFirst = false;
             }
 
-            synchronized (mLock) {
-                final ArrayList<ApplicationInfo> buffer = mBuffer;
-                final int count = buffer.size();
+            final ArrayList<ApplicationInfo> buffer = mBuffer;
+            final int count = buffer.size();
 
-                for (int i = 0; i < count; i++) {
-                    applicationList.setNotifyOnChange(false);
-                    applicationList.add(buffer.get(i));
-                }
-
-                buffer.clear();
+            for (int i = 0; i < count; i++) {
+                applicationList.setNotifyOnChange(false);
+                applicationList.add(buffer.get(i));
             }
+
+            buffer.clear();
 
             applicationList.sort(this);
             applicationList.notifyDataSetChanged();
         }
 
-        synchronized void add(ApplicationInfo application) {
-            synchronized (mLock) {
-                final ArrayList<ApplicationInfo> buffer = mBuffer;
-                buffer.add(application);
-                if (buffer.size() >= UI_NOTIFICATION_RATE) {
-                    mLauncher.runOnUiThread(this);
-                }
-            }
+        boolean add(ApplicationInfo application) {
+            final ArrayList<ApplicationInfo> buffer = mBuffer;
+            buffer.add(application);
+            return buffer.size() >= UI_NOTIFICATION_RATE;
         }
 
         public final int compare(ApplicationInfo a, ApplicationInfo b) {
@@ -269,8 +285,10 @@ public class LauncherModel {
      */
     void loadUserItems(boolean isLaunching, Launcher launcher, boolean localeChanged,
             boolean loadApplications) {
+android.util.Log.d("Home", "loading user items");
 
         if (isLaunching && isDesktopLoaded()) {
+android.util.Log.d("Home", "  --> items loaded, return");
             if (loadApplications) startApplicationsLoader(launcher);
             // We have already loaded our data from the DB
             launcher.onDesktopItemsLoaded();
@@ -282,16 +300,17 @@ public class LauncherModel {
             // Wait for the currently running thread to finish, this can take a little
             // time but it should be well below the timeout limit
             try {
-                mDesktopLoader.join(APPLICATION_NOT_RESPONDING_TIMEOUT);
+                mDesktopLoaderThread.join(APPLICATION_NOT_RESPONDING_TIMEOUT);
             } catch (InterruptedException e) {
                 // Empty
             }
         }
 
+android.util.Log.d("Home", "  --> starting workspace loader");
         mDesktopItemsLoaded = false;
         mDesktopItemsLoader = new DesktopItemsLoader(launcher, localeChanged, loadApplications);
-        mDesktopLoader = new Thread(mDesktopItemsLoader, "Desktop Items Loader");
-        mDesktopLoader.start();
+        mDesktopLoaderThread = new Thread(mDesktopItemsLoader, "Desktop Items Loader");
+        mDesktopLoaderThread.start();
     }
 
     private static void updateShortcutLabels(ContentResolver resolver, PackageManager manager) {
@@ -745,28 +764,21 @@ public class LauncherModel {
     /**
      * @return The current list of applications
      */
-    public ArrayList<ApplicationInfo> getApplications() {
-        return mApplications;
-    }
-
-    /**
-     * @return The current list of applications
-     */
-    public ApplicationsAdapter getApplicationsAdapter() {
+    ApplicationsAdapter getApplicationsAdapter() {
         return mApplicationsAdapter;
     }
 
     /**
      * @return The current list of desktop items
      */
-    public ArrayList<ItemInfo> getDesktopItems() {
+    ArrayList<ItemInfo> getDesktopItems() {
         return mDesktopItems;
     }
     
     /**
      * @return The current list of desktop items
      */
-    public ArrayList<LauncherAppWidgetInfo> getDesktopAppWidgets() {
+    ArrayList<LauncherAppWidgetInfo> getDesktopAppWidgets() {
         return mDesktopAppWidgets;
     }
 
@@ -774,7 +786,7 @@ public class LauncherModel {
      * Add an item to the desktop
      * @param info
      */
-    public void addDesktopItem(ItemInfo info) {
+    void addDesktopItem(ItemInfo info) {
         // TODO: write to DB; also check that folder has been added to folders list
         mDesktopItems.add(info);
     }
@@ -783,7 +795,7 @@ public class LauncherModel {
      * Remove an item from the desktop
      * @param info
      */
-    public void removeDesktopItem(ItemInfo info) {
+    void removeDesktopItem(ItemInfo info) {
         // TODO: write to DB; figure out if we should remove folder from folders list
         mDesktopItems.remove(info);
     }
@@ -791,14 +803,14 @@ public class LauncherModel {
     /**
      * Add a widget to the desktop
      */
-    public void addDesktopAppWidget(LauncherAppWidgetInfo info) {
+    void addDesktopAppWidget(LauncherAppWidgetInfo info) {
         mDesktopAppWidgets.add(info);
     }
     
     /**
      * Remove a widget from the desktop
      */
-    public void removeDesktopAppWidget(LauncherAppWidgetInfo info) {
+    void removeDesktopAppWidget(LauncherAppWidgetInfo info) {
         mDesktopAppWidgets.remove(info);
     }
 

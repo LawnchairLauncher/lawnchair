@@ -1195,6 +1195,14 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     public boolean allowLongPress() {
         return mAllowLongPress;
     }
+    
+    /**
+     * Set true to allow long-press events to be triggered, usually checked by
+     * {@link Launcher} to accept or block dpad-initiated long-presses.
+     */
+    public void setAllowLongPress(boolean allowLongPress) {
+        mAllowLongPress = allowLongPress;
+    }
 
     void removeShortcutsForPackage(String packageName) {
         final ArrayList<View> childrenToRemove = new ArrayList<View>();

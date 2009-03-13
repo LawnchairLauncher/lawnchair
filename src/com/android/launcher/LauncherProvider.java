@@ -55,7 +55,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "launcher.db";
     
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     static final String AUTHORITY = "com.android.launcher.settings";
     
@@ -200,7 +200,7 @@ public class LauncherProvider extends ContentProvider {
                     "spanX INTEGER," +
                     "spanY INTEGER," +
                     "itemType INTEGER," +
-                    "gadgetId INTEGER NOT NULL DEFAULT -1," +
+                    "appWidgetId INTEGER NOT NULL DEFAULT -1," +
                     "isShortcut INTEGER," +
                     "iconType INTEGER," +
                     "iconPackage TEXT," +
@@ -320,15 +320,15 @@ public class LauncherProvider extends ContentProvider {
             if (LOGD) Log.d(LOG_TAG, "onUpgrade triggered");
             
             int version = oldVersion;
-            if (version == 1) {
-                // upgrade 1 -> 2 added appWidgetId column
+            if (version < 3) {
+                // upgrade 1,2 -> 3 added appWidgetId column
                 db.beginTransaction();
                 try {
                     // Insert new column for holding appWidgetIds
                     db.execSQL("ALTER TABLE favorites " +
-                        "ADD COLUMN gadgetId INTEGER NOT NULL DEFAULT -1;");
+                        "ADD COLUMN appWidgetId INTEGER NOT NULL DEFAULT -1;");
                     db.setTransactionSuccessful();
-                    version = 2;
+                    version = 3;
                 } catch (SQLException ex) {
                     // Old version remains, which means we wipe old data
                     Log.e(LOG_TAG, ex.getMessage(), ex);
@@ -337,7 +337,7 @@ public class LauncherProvider extends ContentProvider {
                 }
                 
                 // Convert existing widgets only if table upgrade was successful
-                if (version == 2) {
+                if (version == 3) {
                     convertWidgets(db);
                 }
             }

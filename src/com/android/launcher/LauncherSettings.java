@@ -172,7 +172,7 @@ class LauncherSettings {
          *
          * <P>Type: INTEGER</P>
          */
-        static final String APPWIDGET_ID = "gadgetId";
+        static final String APPWIDGET_ID = "appWidgetId";
         
         /**
          * Indicates whether this favorite is an application-created shortcut or not.
