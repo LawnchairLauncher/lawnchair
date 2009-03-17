@@ -69,4 +69,11 @@
         <attr name="direction" />
     </declare-styleable>
 
+    <!-- AllAppsGridView specific attributes. These attributes are used to customize
+         the list of all apps in XML files. -->
+    <declare-styleable name="AllAppsGridView">
+        <!-- The background texture. -->
+        <attr name="texture" format="reference"  />
+    </declare-styleable>
+
 </resources>

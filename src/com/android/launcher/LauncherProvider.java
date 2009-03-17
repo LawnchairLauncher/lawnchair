@@ -16,6 +16,7 @@
 
 package com.android.launcher;
 
+import android.appwidget.AppWidgetHost;
 import android.content.ContentProvider;
 import android.content.Context;
 import android.content.ContentValues;
@@ -29,6 +30,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.util.Log;
 import android.util.Xml;
 import android.net.Uri;
@@ -40,18 +42,25 @@ import java.io.FileReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import com.android.internal.util.XmlUtils;
+import com.android.launcher.LauncherSettings.Favorites;
 
 public class LauncherProvider extends ContentProvider {
-    private static final String LOG_TAG = "LauncherSettingsProvider";
+    private static final String LOG_TAG = "LauncherProvider";
+    private static final boolean LOGD = true;
 
     private static final String DATABASE_NAME = "launcher.db";
-    private static final int DATABASE_VERSION = 1;
+    
+    private static final int DATABASE_VERSION = 3;
 
     static final String AUTHORITY = "com.android.launcher.settings";
+    
+    static final String EXTRA_BIND_SOURCES = "com.android.launcher.settings.bindsources";
+    static final String EXTRA_BIND_TARGETS = "com.android.launcher.settings.bindtargets";
 
     static final String TABLE_FAVORITES = "favorites";
     static final String PARAMETER_NOTIFY = "notify";
@@ -168,14 +177,18 @@ public class LauncherProvider extends ContentProvider {
         private static final String ATTRIBUTE_Y = "y";
 
         private final Context mContext;
+        private final AppWidgetHost mAppWidgetHost;
 
         DatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
             mContext = context;
+            mAppWidgetHost = new AppWidgetHost(context, Launcher.APPWIDGET_HOST_ID);
         }
 
         @Override
         public void onCreate(SQLiteDatabase db) {
+            if (LOGD) Log.d(LOG_TAG, "creating new launcher database");
+            
             db.execSQL("CREATE TABLE favorites (" +
                     "_id INTEGER PRIMARY KEY," +
                     "title TEXT," +
@@ -187,6 +200,7 @@ public class LauncherProvider extends ContentProvider {
                     "spanX INTEGER," +
                     "spanY INTEGER," +
                     "itemType INTEGER," +
+                    "appWidgetId INTEGER NOT NULL DEFAULT -1," +
                     "isShortcut INTEGER," +
                     "iconType INTEGER," +
                     "iconPackage TEXT," +
@@ -196,6 +210,11 @@ public class LauncherProvider extends ContentProvider {
                     "displayMode INTEGER" +
                     ");");
 
+            // Database was just created, so wipe any previous widgets
+            if (mAppWidgetHost != null) {
+                mAppWidgetHost.deleteHost();
+            }
+            
             if (!convertDatabase(db)) {
                 // Populate favorites table with initial favorites
                 loadFavorites(db, DEFAULT_FAVORITES_PATH);
@@ -203,10 +222,11 @@ public class LauncherProvider extends ContentProvider {
         }
 
         private boolean convertDatabase(SQLiteDatabase db) {
+            if (LOGD) Log.d(LOG_TAG, "converting database from an older format, but not onUpgrade");
             boolean converted = false;
 
             final Uri uri = Uri.parse("content://" + Settings.AUTHORITY +
-                    "/favorites?notify=true");
+                    "/old_favorites?notify=true");
             final ContentResolver resolver = mContext.getContentResolver();
             Cursor cursor = null;
 
@@ -227,6 +247,12 @@ public class LauncherProvider extends ContentProvider {
                 if (converted) {
                     resolver.delete(uri, null, null);
                 }
+            }
+            
+            if (converted) {
+                // Convert widgets from this import into widgets
+                if (LOGD) Log.d(LOG_TAG, "converted and now triggering widget upgrade");
+                convertWidgets(db);
             }
 
             return converted;
@@ -261,6 +287,7 @@ public class LauncherProvider extends ContentProvider {
                 values.put(LauncherSettings.Favorites.ICON_RESOURCE, c.getString(iconResourceIndex));
                 values.put(LauncherSettings.Favorites.CONTAINER, c.getInt(containerIndex));
                 values.put(LauncherSettings.Favorites.ITEM_TYPE, c.getInt(itemTypeIndex));
+                values.put(LauncherSettings.Favorites.APPWIDGET_ID, -1);
                 values.put(LauncherSettings.Favorites.SCREEN, c.getInt(screenIndex));
                 values.put(LauncherSettings.Favorites.CELLX, c.getInt(cellXIndex));
                 values.put(LauncherSettings.Favorites.CELLY, c.getInt(cellYIndex));
@@ -290,14 +317,130 @@ public class LauncherProvider extends ContentProvider {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            Log.w(LOG_TAG, "Upgrading database from version " + oldVersion + " to " +
-                    newVersion + ", which will destroy all old data");
+            if (LOGD) Log.d(LOG_TAG, "onUpgrade triggered");
+            
+            int version = oldVersion;
+            if (version < 3) {
+                // upgrade 1,2 -> 3 added appWidgetId column
+                db.beginTransaction();
+                try {
+                    // Insert new column for holding appWidgetIds
+                    db.execSQL("ALTER TABLE favorites " +
+                        "ADD COLUMN appWidgetId INTEGER NOT NULL DEFAULT -1;");
+                    db.setTransactionSuccessful();
+                    version = 3;
+                } catch (SQLException ex) {
+                    // Old version remains, which means we wipe old data
+                    Log.e(LOG_TAG, ex.getMessage(), ex);
+                } finally {
+                    db.endTransaction();
+                }
+                
+                // Convert existing widgets only if table upgrade was successful
+                if (version == 3) {
+                    convertWidgets(db);
+                }
+            }
+            
+            if (version != DATABASE_VERSION) {
+                Log.w(LOG_TAG, "Destroying all old data.");
+                db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVORITES);
+                onCreate(db);
+            }
+        }
+        
+        /**
+         * Upgrade existing clock and photo frame widgets into their new widget
+         * equivalents. This method allocates appWidgetIds, and then hands off to
+         * LauncherAppWidgetBinder to finish the actual binding.
+         */
+        private void convertWidgets(SQLiteDatabase db) {
+            final int[] bindSources = new int[] {
+                    Favorites.ITEM_TYPE_WIDGET_CLOCK,
+                    Favorites.ITEM_TYPE_WIDGET_PHOTO_FRAME,
+            };
+            
+            final ArrayList<ComponentName> bindTargets = new ArrayList<ComponentName>();
+            bindTargets.add(new ComponentName("com.android.alarmclock",
+                    "com.android.alarmclock.AnalogAppWidgetProvider"));
+            bindTargets.add(new ComponentName("com.android.camera",
+                    "com.android.camera.PhotoAppWidgetProvider"));
+            
+            final String selectWhere = buildOrWhereString(Favorites.ITEM_TYPE, bindSources);
+            
+            Cursor c = null;
+            boolean allocatedAppWidgets = false;
+            
+            db.beginTransaction();
+            try {
+                // Select and iterate through each matching widget
+                c = db.query(TABLE_FAVORITES, new String[] { Favorites._ID },
+                        selectWhere, null, null, null, null);
+                
+                if (LOGD) Log.d(LOG_TAG, "found upgrade cursor count="+c.getCount());
+                
+                final ContentValues values = new ContentValues();
+                while (c != null && c.moveToNext()) {
+                    long favoriteId = c.getLong(0);
+                    
+                    // Allocate and update database with new appWidgetId
+                    try {
+                        int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
+                        
+                        if (LOGD) Log.d(LOG_TAG, "allocated appWidgetId="+appWidgetId+" for favoriteId="+favoriteId);
+                        
+                        values.clear();
+                        values.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId);
+                        
+                        // Original widgets might not have valid spans when upgrading
+                        values.put(LauncherSettings.Favorites.SPANX, 2);
+                        values.put(LauncherSettings.Favorites.SPANY, 2);
 
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVORITES);
-            onCreate(db);
+                        String updateWhere = Favorites._ID + "=" + favoriteId;
+                        db.update(TABLE_FAVORITES, values, updateWhere, null);
+                        
+                        allocatedAppWidgets = true;
+                    } catch (RuntimeException ex) {
+                        Log.e(LOG_TAG, "Problem allocating appWidgetId", ex);
+                    }
+                }
+                
+                db.setTransactionSuccessful();
+            } catch (SQLException ex) {
+                Log.w(LOG_TAG, "Problem while allocating appWidgetIds for existing widgets", ex);
+            } finally {
+                db.endTransaction();
+                if (c != null) {
+                    c.close();
+                }
+            }
+            
+            // If any appWidgetIds allocated, then launch over to binder
+            if (allocatedAppWidgets) {
+                launchAppWidgetBinder(bindSources, bindTargets);
+            }
         }
 
-
+        /**
+         * Launch the widget binder that walks through the Launcher database,
+         * binding any matching widgets to the corresponding targets. We can't
+         * bind ourselves because our parent process can't obtain the
+         * BIND_APPWIDGET permission.
+         */
+        private void launchAppWidgetBinder(int[] bindSources, ArrayList<ComponentName> bindTargets) {
+            final Intent intent = new Intent();
+            intent.setComponent(new ComponentName("com.android.settings",
+                    "com.android.settings.LauncherAppWidgetBinder"));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            
+            final Bundle extras = new Bundle();
+            extras.putIntArray(EXTRA_BIND_SOURCES, bindSources);
+            extras.putParcelableArrayList(EXTRA_BIND_TARGETS, bindTargets);
+            intent.putExtras(extras);
+            
+            mContext.startActivity(intent);
+        }
+        
         /**
          * Loads the default set of favorite packages from an xml file.
          *
@@ -370,20 +513,7 @@ public class LauncherProvider extends ContentProvider {
             } catch (IOException e) {
                 Log.w(LOG_TAG, "Got exception parsing favorites.", e);
             }
-
-            // Add a clock
-            values.clear();
-            values.put(LauncherSettings.Favorites.CONTAINER,
-                    LauncherSettings.Favorites.CONTAINER_DESKTOP);
-            values.put(LauncherSettings.Favorites.ITEM_TYPE,
-                    LauncherSettings.Favorites.ITEM_TYPE_WIDGET_CLOCK);
-            values.put(LauncherSettings.Favorites.SCREEN, 1);
-            values.put(LauncherSettings.Favorites.CELLX, 1);
-            values.put(LauncherSettings.Favorites.CELLY, 0);
-            values.put(LauncherSettings.Favorites.SPANX, 2);
-            values.put(LauncherSettings.Favorites.SPANY, 2);
-            db.insert(TABLE_FAVORITES, null, values);
-
+            
             // Add a search box
             values.clear();
             values.put(LauncherSettings.Favorites.CONTAINER,
@@ -396,9 +526,61 @@ public class LauncherProvider extends ContentProvider {
             values.put(LauncherSettings.Favorites.SPANX, 4);
             values.put(LauncherSettings.Favorites.SPANY, 1);
             db.insert(TABLE_FAVORITES, null, values);
+            
+            final int[] bindSources = new int[] {
+                    Favorites.ITEM_TYPE_WIDGET_CLOCK,
+            };
+            
+            final ArrayList<ComponentName> bindTargets = new ArrayList<ComponentName>();
+            bindTargets.add(new ComponentName("com.android.alarmclock",
+                    "com.android.alarmclock.AnalogAppWidgetProvider"));
+            
+            boolean allocatedAppWidgets = false;
+            
+            // Try binding to an analog clock widget
+            try {
+                int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
+                
+                values.clear();
+                values.put(LauncherSettings.Favorites.CONTAINER,
+                        LauncherSettings.Favorites.CONTAINER_DESKTOP);
+                values.put(LauncherSettings.Favorites.ITEM_TYPE,
+                        LauncherSettings.Favorites.ITEM_TYPE_WIDGET_CLOCK);
+                values.put(LauncherSettings.Favorites.SCREEN, 1);
+                values.put(LauncherSettings.Favorites.CELLX, 1);
+                values.put(LauncherSettings.Favorites.CELLY, 0);
+                values.put(LauncherSettings.Favorites.SPANX, 2);
+                values.put(LauncherSettings.Favorites.SPANY, 2);
+                values.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId);
+                db.insert(TABLE_FAVORITES, null, values);
+                
+                allocatedAppWidgets = true;
+            } catch (RuntimeException ex) {
+                Log.e(LOG_TAG, "Problem allocating appWidgetId", ex);
+            }
 
+            // If any appWidgetIds allocated, then launch over to binder
+            if (allocatedAppWidgets) {
+                launchAppWidgetBinder(bindSources, bindTargets);
+            }
+            
             return i;
         }
+    }
+
+    /**
+     * Build a query string that will match any row where the column matches
+     * anything in the values list.
+     */
+    static String buildOrWhereString(String column, int[] values) {
+        StringBuilder selectWhere = new StringBuilder();
+        for (int i = values.length - 1; i >= 0; i--) {
+            selectWhere.append(column).append("=").append(values[i]);
+            if (i > 0) {
+                selectWhere.append(" OR ");
+            }
+        }
+        return selectWhere.toString();
     }
 
     static class SqlArguments {

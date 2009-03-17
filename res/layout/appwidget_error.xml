@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2008 The Android Open Source Project
+<!-- Copyright (C) 2009 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,9 +14,16 @@
      limitations under the License.
 -->
 
-<com.android.launcher.PhotoFrame xmlns:android="http://schemas.android.com/apk/res/android"
-	android:scaleType="center"
-	android:cropToPadding="true"
-    android:background="@drawable/picture_frame"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" />
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dip"
+    android:paddingBottom="10dip"
+    android:paddingLeft="20dip"
+    android:paddingRight="20dip"
+    android:gravity="center"
+    android:background="@drawable/bg_appwidget_error"
+    android:textAppearance="?android:attr/textAppearanceMediumInverse"
+    android:textColor="@color/appwidget_error_color"
+    android:text="@string/gadget_error_text"
+    />

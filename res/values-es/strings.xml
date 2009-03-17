@@ -17,9 +17,9 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name">"Página principal"</string>
     <string name="folder_name">"Carpeta"</string>
-    <string name="chooser_wallpaper">"Seleccionar papel tapiz de"</string>
-    <string name="wallpaper_instructions">"Establecer papel tapiz"</string>
-    <string name="pick_wallpaper">"Galería de papel tapiz"</string>
+    <string name="chooser_wallpaper">"Seleccionar fondo de pantalla de"</string>
+    <string name="wallpaper_instructions">"Establecer fondo de pantalla"</string>
+    <string name="pick_wallpaper">"Galería de fondo de pantalla"</string>
     <string name="activity_not_found">"La aplicación no está instalada en el teléfono."</string>
     <string name="rename_folder_label">"Nombre de carpeta"</string>
     <string name="rename_folder_title">"Cambiar nombre de carpeta"</string>
@@ -28,19 +28,23 @@
     <string name="menu_item_add_item">"Añadir a pantalla de página principal"</string>
     <string name="group_applications">"Aplicación"</string>
     <string name="group_shortcuts">"Acceso directo"</string>
+    <string name="group_search">"Búsqueda"</string>
+    <string name="group_folder">"Carpeta"</string>
     <string name="group_live_folders">"Carpeta activa"</string>
     <string name="group_widgets">"Widget"</string>
-    <string name="group_wallpapers">"Papel tapiz"</string>
+    <string name="group_wallpapers">"Fondo de pantalla"</string>
     <string name="add_folder">"Carpeta"</string>
     <string name="add_clock">"Reloj"</string>
     <string name="add_photo_frame">"Picture frame"</string>
     <string name="add_search">"Búsqueda de Google"</string>
     <string name="out_of_space">"No queda espacio en esta pantalla de página principal."</string>
+    <string name="title_select_shortcut">"Seleccionar acceso directo"</string>
+    <string name="title_select_live_folder">"Seleccionar carpeta activa"</string>
     <string name="menu_add">"Añadir"</string>
-    <string name="menu_wallpaper">"Papel tapiz"</string>
-    <string name="menu_search">"Búsqueda de Google"</string>
+    <string name="menu_wallpaper">"Fondo de pantalla"</string>
+    <string name="menu_search">"Buscar con Google"</string>
     <string name="menu_notifications">"Notificaciones"</string>
-    <string name="menu_settings">"Configuración"</string>
+    <string name="menu_settings">"Ajustes"</string>
     <string name="permlab_install_shortcut">"instalar accesos directos"</string>
     <string name="permdesc_install_shortcut">"Permite que una aplicación añada accesos directos sin intervención del usuario."</string>
     <string name="permlab_uninstall_shortcut">"desinstalar accesos directos"</string>
@@ -50,4 +54,6 @@
     <string name="permlab_write_settings">"escribir información de accesos directos y de configuración de la página principal"</string>
     <string name="permdesc_write_settings">"Permite que una aplicación modifique la configuración y los accesos directos de la página principal."</string>
     <string name="search_hint">"Búsqueda de Google"</string>
+    <!-- no translation found for gadget_error_text (8359351016167075858) -->
+    <skip />
 </resources>

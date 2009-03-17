@@ -24,7 +24,8 @@ import android.net.Uri;
  */
 class LauncherSettings {
     /**
-     * Favorites.
+     * Favorites. When changing these values, be sure to update
+     * {@link com.android.settings.LauncherAppWidgetBinder} as needed.
      */
     static final class Favorites implements BaseColumns {
         /**
@@ -147,6 +148,11 @@ class LauncherSettings {
         static final int ITEM_TYPE_LIVE_FOLDER = 3;
 
         /**
+         * The favorite is a widget
+         */
+        static final int ITEM_TYPE_APPWIDGET = 4;
+
+        /**
          * The favorite is a clock
          */
         static final int ITEM_TYPE_WIDGET_CLOCK = 1000;
@@ -161,6 +167,13 @@ class LauncherSettings {
          */
         static final int ITEM_TYPE_WIDGET_PHOTO_FRAME = 1002;
 
+        /**
+         * The appWidgetId of the widget
+         *
+         * <P>Type: INTEGER</P>
+         */
+        static final String APPWIDGET_ID = "appWidgetId";
+        
         /**
          * Indicates whether this favorite is an application-created shortcut or not.
          * If the value is 0, the favorite is not an application-created shortcut, if the

@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/google_logo" />
         
-    <AutoCompleteTextView
+    <com.android.launcher.SearchAutoCompleteTextView
         android:id="@+id/input"
         android:layout_width="0dip"
         android:layout_weight="1"
@@ -36,7 +36,8 @@
         android:singleLine="true"
         android:selectAllOnFocus="true"
         android:completionThreshold="1"
-        android:inputType="textAutoComplete|textSearchString"
+        android:inputType="textAutoComplete"
+        android:imeOptions="actionSearch"
         />
         
      <ImageButton android:id="@+id/search_go_btn"
@@ -46,4 +47,10 @@
          android:src="@*android:drawable/ic_btn_search"
          />
     
+     <ImageButton android:id="@+id/search_voice_btn"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:src="@android:drawable/ic_btn_speak_now"
+         />
+
 </com.android.launcher.Search>

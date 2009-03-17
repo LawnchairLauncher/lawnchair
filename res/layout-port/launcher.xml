@@ -16,7 +16,6 @@
 
 <com.android.launcher.DragLayer
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
 
     android:id="@+id/drag_layer"
@@ -37,15 +36,15 @@
 
     </com.android.launcher.Workspace>
 
-    <com.android.internal.widget.SlidingDrawer
+    <SlidingDrawer
         android:id="@+id/drawer"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
 
-        androidprv:topOffset="5px"
-        androidprv:bottomOffset="7px"
-        androidprv:handle="@+id/all_apps"
-        androidprv:content="@+id/content">
+        android:topOffset="5dip"
+        android:bottomOffset="7dip"
+        android:handle="@+id/all_apps"
+        android:content="@+id/content">
 
         <com.android.launcher.HandleView
             android:id="@id/all_apps"
@@ -67,7 +66,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
 
-            android:background="@color/grid_dark_background"
+            launcher:texture="@drawable/texture_brushed_steel"
 
             android:scrollbarStyle="outsideInset"
             android:drawSelectorOnTop="false"
@@ -81,7 +80,7 @@
             android:verticalSpacing="10dip"
             android:numColumns="4" />
 
-    </com.android.internal.widget.SlidingDrawer>
+    </SlidingDrawer>
 
     <com.android.launcher.DeleteZone
         android:id="@+id/delete_zone"

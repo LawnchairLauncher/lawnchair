@@ -50,7 +50,6 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
             R.drawable.wallpaper_path_small,
             R.drawable.wallpaper_sunrise_small,
             R.drawable.wallpaper_mountain_small,
-            R.drawable.wallpaper_ripples_small,
             R.drawable.wallpaper_road_small,
             R.drawable.wallpaper_jellyfish_small,
             R.drawable.wallpaper_zanzibar_small,
@@ -61,14 +60,13 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
     };
 
     private static final Integer[] IMAGE_IDS = {
-            R.drawable.wallpaper_lake,
+            com.android.internal.R.drawable.default_wallpaper,
             R.drawable.wallpaper_sunset,
             R.drawable.wallpaper_beach,
             R.drawable.wallpaper_snow_leopard,
             R.drawable.wallpaper_path,
             R.drawable.wallpaper_sunrise,
             R.drawable.wallpaper_mountain,
-            R.drawable.wallpaper_ripples,
             R.drawable.wallpaper_road,
             R.drawable.wallpaper_jellyfish,
             R.drawable.wallpaper_zanzibar,
@@ -123,9 +121,6 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
         final String[] extras = resources.getStringArray(R.array.extra_wallpapers);
         final String packageName = getApplication().getPackageName();
 
-        final ArrayList<Integer> images = mImages;
-        final ArrayList<Integer> thumbs = mThumbs;
-
         for (String extra : extras) {
             int res = resources.getIdentifier(extra, "drawable", packageName);
             if (res != 0) {
@@ -133,8 +128,8 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
                         "drawable", packageName);
 
                 if (thumbRes != 0) {
-                    images.add(res);
-                    thumbs.add(res);
+                    mThumbs.add(thumbRes);
+                    mImages.add(res);
                 }
             }
         }
@@ -148,7 +143,7 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
 
     public void onItemSelected(AdapterView parent, View v, int position, long id) {
         final ImageView view = mImageView;
-        Bitmap b = BitmapFactory.decodeResource(getResources(), IMAGE_IDS[position], mOptions);
+        Bitmap b = BitmapFactory.decodeResource(getResources(), mImages.get(position), mOptions);
         view.setImageBitmap(b);
 
         // Help the GC

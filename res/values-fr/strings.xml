@@ -17,9 +17,9 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name">"Accueil"</string>
     <string name="folder_name">"Dossier"</string>
-    <string name="chooser_wallpaper">"Sélectionner l\'arrière-plan à partir de"</string>
-    <string name="wallpaper_instructions">"Configurer l\'arrière-plan"</string>
-    <string name="pick_wallpaper">"Galerie des arrière-plans"</string>
+    <string name="chooser_wallpaper">"Sélectionner à partir de..."</string>
+    <string name="wallpaper_instructions">"Sélectionner"</string>
+    <string name="pick_wallpaper">"Galerie"</string>
     <string name="activity_not_found">"L\'application n\'est pas installée sur votre téléphone."</string>
     <string name="rename_folder_label">"Nom du dossier"</string>
     <string name="rename_folder_title">"Renommer le dossier"</string>
@@ -28,14 +28,18 @@
     <string name="menu_item_add_item">"Ajouter à l\'écran d\'accueil"</string>
     <string name="group_applications">"Application"</string>
     <string name="group_shortcuts">"Raccourci"</string>
-    <string name="group_live_folders">"Dossier live"</string>
+    <string name="group_search">"Recherche"</string>
+    <string name="group_folder">"Dossier"</string>
+    <string name="group_live_folders">"Dossier actif"</string>
     <string name="group_widgets">"Widget"</string>
     <string name="group_wallpapers">"Arrière-plan"</string>
     <string name="add_folder">"Dossier"</string>
     <string name="add_clock">"Horloge"</string>
     <string name="add_photo_frame">"Cadre d\'image"</string>
     <string name="add_search">"Rechercher"</string>
-    <string name="out_of_space">"Plus d\'espace libre sur l\'écran Accueil."</string>
+    <string name="out_of_space">"Plus d\'espace libre sur l\'écran d\'accueil."</string>
+    <string name="title_select_shortcut">"Sélectionner un raccourci"</string>
+    <string name="title_select_live_folder">"Sélectionner dossier actif"</string>
     <string name="menu_add">"Ajouter"</string>
     <string name="menu_wallpaper">"Arrière-plan"</string>
     <string name="menu_search">"Rechercher"</string>
@@ -45,9 +49,11 @@
     <string name="permdesc_install_shortcut">"Permet à une application d\'ajouter des raccourcis sans l\'intervention de l\'utilisateur."</string>
     <string name="permlab_uninstall_shortcut">"désinstaller les raccourcis"</string>
     <string name="permdesc_uninstall_shortcut">"Permet à une application de supprimer les raccourcis sans l\'intervention de l\'utilisateur."</string>
-    <string name="permlab_read_settings">"lire les paramètres et les raccourcis de la page d\'accueil"</string>
+    <string name="permlab_read_settings">"Lire les paramètres et les raccourcis de la page d\'accueil"</string>
     <string name="permdesc_read_settings">"Permet à une application de lire les paramètres et raccourcis de la page d\'accueil."</string>
-    <string name="permlab_write_settings">"écrire les paramètres de la page d\'accueil et des raccourcis"</string>
+    <string name="permlab_write_settings">"Enregistrer les paramètres de la page d\'accueil et des raccourcis"</string>
     <string name="permdesc_write_settings">"Permet à une application de modifier les paramètres et les raccourcis de la page d\'accueil."</string>
     <string name="search_hint">"Recherche Google"</string>
+    <!-- no translation found for gadget_error_text (8359351016167075858) -->
+    <skip />
 </resources>

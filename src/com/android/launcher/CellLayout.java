@@ -56,6 +56,8 @@ public class CellLayout extends ViewGroup {
 
     private RectF mDragRect = new RectF();
 
+    private boolean mDirtyTag;
+
     public CellLayout(Context context) {
         this(context, null);
     }
@@ -157,6 +159,7 @@ public class CellLayout extends ViewGroup {
                         cellInfo.spanY = lp.cellVSpan;
                         cellInfo.valid = true;
                         found = true;
+                        mDirtyTag = false;
                         break;
                     }
                 }
@@ -181,10 +184,12 @@ public class CellLayout extends ViewGroup {
                 cellInfo.valid = cellXY[0] >= 0 && cellXY[1] >= 0 && cellXY[0] < xCount &&
                         cellXY[1] < yCount && !occupied[cellXY[0]][cellXY[1]];
 
-                if (cellInfo.valid) {
-                    findIntersectingVacantCells(cellInfo, cellXY[0], cellXY[1],
-                            xCount, yCount, occupied);
-                }
+                // Instead of finding the interesting vacant cells here, wait until a
+                // caller invokes getTag() to retrieve the result. Finding the vacant
+                // cells is a bit expensive and can generate many new objects, it's
+                // therefore better to defer it until we know we actually need it.
+
+                mDirtyTag = true;
             }
             setTag(cellInfo);
         } else if (action == MotionEvent.ACTION_UP) {
@@ -194,10 +199,29 @@ public class CellLayout extends ViewGroup {
             cellInfo.spanX = 0;
             cellInfo.spanY = 0;
             cellInfo.valid = false;
+            mDirtyTag = false;
             setTag(cellInfo);
         }
 
         return false;
+    }
+
+    @Override
+    public CellInfo getTag() {
+        final CellInfo info = (CellInfo) super.getTag();
+        if (mDirtyTag && info.valid) {
+            final boolean portrait = mPortrait;
+            final int xCount = portrait ? mShortAxisCells : mLongAxisCells;
+            final int yCount = portrait ? mLongAxisCells : mShortAxisCells;
+
+            final boolean[][] occupied = mOccupied;
+            findOccupiedCells(xCount, yCount, occupied);
+
+            findIntersectingVacantCells(info, info.cellX, info.cellY, xCount, yCount, occupied);
+
+            mDirtyTag = false;
+        }
+        return info;
     }
 
     private static void findIntersectingVacantCells(CellInfo cellInfo, int x, int y,
@@ -207,14 +231,15 @@ public class CellLayout extends ViewGroup {
         cellInfo.maxVacantSpanXSpanY = Integer.MIN_VALUE;
         cellInfo.maxVacantSpanY = Integer.MIN_VALUE;
         cellInfo.maxVacantSpanYSpanX = Integer.MIN_VALUE;
-        cellInfo.vacantCells = new ArrayList<CellInfo.VacantCell>();
+        cellInfo.clearVacantCells();
 
         if (occupied[x][y]) {
             return;
         }
 
-        Rect current = new Rect(x, y, x, y);
-        findVacantCell(current, xCount, yCount, occupied, cellInfo);
+        cellInfo.current.set(x, y, x, y);
+
+        findVacantCell(cellInfo.current, xCount, yCount, occupied, cellInfo);
     }
 
     private static void findVacantCell(Rect current, int xCount, int yCount, boolean[][] occupied,
@@ -256,7 +281,7 @@ public class CellLayout extends ViewGroup {
     }
 
     private static void addVacantCell(Rect current, CellInfo cellInfo) {
-        CellInfo.VacantCell cell = new CellInfo.VacantCell();
+        CellInfo.VacantCell cell = CellInfo.VacantCell.acquire();
         cell.cellX = current.left;
         cell.cellY = current.top;
         cell.spanX = current.right - current.left + 1;
@@ -317,10 +342,9 @@ public class CellLayout extends ViewGroup {
         cellInfo.maxVacantSpanXSpanY = Integer.MIN_VALUE;
         cellInfo.maxVacantSpanY = Integer.MIN_VALUE;
         cellInfo.maxVacantSpanYSpanX = Integer.MIN_VALUE;
-        cellInfo.vacantCells = new ArrayList<CellInfo.VacantCell>();
         cellInfo.screen = mCellInfo.screen;
 
-        Rect current = new Rect();
+        Rect current = cellInfo.current;
 
         for (int x = 0; x < xCount; x++) {
             for (int y = 0; y < yCount; y++) {
@@ -333,16 +357,10 @@ public class CellLayout extends ViewGroup {
         }
 
         cellInfo.valid = cellInfo.vacantCells.size() > 0;
-        if (cellInfo.valid) {
-            int[] xy = new int[2];
-            if (cellInfo.findCellForSpan(xy, 1, 1)) {
-                cellInfo.cellX = xy[0];
-                cellInfo.cellY = xy[1];
-                cellInfo.spanY = 1;
-                cellInfo.spanX = 1;
-            }
-        }
 
+        // Assume the caller will perform their own cell searching, otherwise we
+        // risk causing an unnecessary rebuild after findCellForSpan()
+        
         return cellInfo;
     }
 
@@ -634,6 +652,26 @@ public class CellLayout extends ViewGroup {
         
         dragRect.set(x, y, x + width, y + height);
     }
+    
+    /**
+     * Computes the required horizontal and vertical cell spans to always 
+     * fit the given rectangle.
+     *  
+     * @param width Width in pixels
+     * @param height Height in pixels
+     */
+    public int[] rectToCell(int width, int height) {
+        // Always assume we're working with the smallest span to make sure we
+        // reserve enough space in both orientations.
+        int actualWidth = mCellWidth + mWidthGap;
+        int actualHeight = mCellHeight + mHeightGap;
+        int smallerSize = Math.min(actualWidth, actualHeight);
+        
+        // Always round up to next largest cell
+        int spanX = (width + smallerSize) / smallerSize;
+        int spanY = (height + smallerSize) / smallerSize;
+        return new int[] { spanX, spanY };
+    }
 
     /**
      * Find the first vacant cell, if there is one.
@@ -811,11 +849,53 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
     }
 
     static final class CellInfo implements ContextMenu.ContextMenuInfo {
+        /**
+         * See View.AttachInfo.InvalidateInfo for futher explanations about
+         * the recycling mechanism. In this case, we recycle the vacant cells
+         * instances because up to several hundreds can be instanciated when
+         * the user long presses an empty cell.
+         */
         static final class VacantCell {
             int cellX;
             int cellY;
             int spanX;
             int spanY;
+
+            // We can create up to 523 vacant cells on a 4x4 grid, 100 seems
+            // like a reasonable compromise given the size of a VacantCell and
+            // the fact that the user is not likely to touch an empty 4x4 grid
+            // very often 
+            private static final int POOL_LIMIT = 100;
+            private static final Object sLock = new Object();
+
+            private static int sAcquiredCount = 0;
+            private static VacantCell sRoot;
+
+            private VacantCell next;
+
+            static VacantCell acquire() {
+                synchronized (sLock) {
+                    if (sRoot == null) {
+                        return new VacantCell();
+                    }
+
+                    VacantCell info = sRoot;
+                    sRoot = info.next;
+                    sAcquiredCount--;
+
+                    return info;
+                }
+            }
+
+            void release() {
+                synchronized (sLock) {
+                    if (sAcquiredCount < POOL_LIMIT) {
+                        sAcquiredCount++;
+                        next = sRoot;
+                        sRoot = this;
+                    }
+                }
+            }
 
             @Override
             public String toString() {
@@ -832,17 +912,27 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         int screen;
         boolean valid;
 
-        ArrayList<VacantCell> vacantCells;
+        final ArrayList<VacantCell> vacantCells = new ArrayList<VacantCell>(VacantCell.POOL_LIMIT);
         int maxVacantSpanX;
         int maxVacantSpanXSpanY;
         int maxVacantSpanY;
         int maxVacantSpanYSpanX;
+        final Rect current = new Rect();
+
+        private void clearVacantCells() {
+            final ArrayList<VacantCell> list = vacantCells;
+            final int count = list.size();
+
+            for (int i = 0; i < count; i++) list.get(i).release();
+
+            list.clear();
+        }
 
         void findVacantCellsFromOccupied(boolean[] occupied, int xCount, int yCount) {
             if (cellX < 0 || cellY < 0) {
                 maxVacantSpanX = maxVacantSpanXSpanY = Integer.MIN_VALUE;
                 maxVacantSpanY = maxVacantSpanYSpanX = Integer.MIN_VALUE;
-                vacantCells = new ArrayList<VacantCell>();
+                clearVacantCells();
                 return;
             }
 
@@ -855,26 +945,40 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
             CellLayout.findIntersectingVacantCells(this, cellX, cellY, xCount, yCount, unflattened);
         }
 
+        /**
+         * This method can be called only once! Calling #findVacantCellsFromOccupied will
+         * restore the ability to call this method.
+         *
+         * Finds the upper-left coordinate of the first rectangle in the grid that can
+         * hold a cell of the specified dimensions.
+         *
+         * @param cellXY The array that will contain the position of a vacant cell if such a cell
+         *               can be found.
+         * @param spanX The horizontal span of the cell we want to find.
+         * @param spanY The vertical span of the cell we want to find.
+         *
+         * @return True if a vacant cell of the specified dimension was found, false otherwise.
+         */
         boolean findCellForSpan(int[] cellXY, int spanX, int spanY) {
-            if (vacantCells == null) {
-                return false;
-            }
+            final ArrayList<VacantCell> list = vacantCells;
+            final int count = list.size();
+
+            boolean found = false;
 
             if (this.spanX >= spanX && this.spanY >= spanY) {
                 cellXY[0] = cellX;
                 cellXY[1] = cellY;
-                return true;
+                found = true;
             }
 
-            final ArrayList<VacantCell> list = vacantCells;
-            final int count = list.size();
             // Look for an exact match first
             for (int i = 0; i < count; i++) {
                 VacantCell cell = list.get(i);
                 if (cell.spanX == spanX && cell.spanY == spanY) {
                     cellXY[0] = cell.cellX;
                     cellXY[1] = cell.cellY;
-                    return true;
+                    found = true;
+                    break;
                 }
             }
 
@@ -884,11 +988,14 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
                 if (cell.spanX >= spanX && cell.spanY >= spanY) {
                     cellXY[0] = cell.cellX;
                     cellXY[1] = cell.cellY;
-                    return true;
+                    found = true;
+                    break;
                 }
             }
 
-            return false;
+            clearVacantCells();
+
+            return found;
         }
 
         @Override

@@ -20,32 +20,11 @@ import android.content.ContentValues;
 import android.graphics.Bitmap;
 
 /**
- * Represents one instance of a Launcher widget (clock, search, photo frame).
- *
+ * Represents one instance of a Launcher widget, such as search.
  */
 class Widget extends ItemInfo {
-
     int layoutResource;
-    Bitmap photo;
 
-    static Widget makeClock() {
-        Widget w = new Widget();
-        w.itemType = LauncherSettings.Favorites.ITEM_TYPE_WIDGET_CLOCK;
-        w.spanX = 2;
-        w.spanY = 2;
-        w.layoutResource = R.layout.widget_clock;
-        return w;
-    }
-    
-    static Widget makePhotoFrame() {
-        Widget w = new Widget();
-        w.itemType = LauncherSettings.Favorites.ITEM_TYPE_WIDGET_PHOTO_FRAME;
-        w.spanX = 2;
-        w.spanY = 2;
-        w.layoutResource = R.layout.widget_photo_frame;
-        return w;
-    } 
-    
     static Widget makeSearch() {
         Widget w = new Widget();
         w.itemType = LauncherSettings.Favorites.ITEM_TYPE_WIDGET_SEARCH;
@@ -54,11 +33,4 @@ class Widget extends ItemInfo {
         w.layoutResource = R.layout.widget_search;
         return w;
     }
-
-    @Override
-    void onAddToDatabase(ContentValues values) { 
-        super.onAddToDatabase(values);
-        writeBitmap(values, photo);
-    }
-
 }

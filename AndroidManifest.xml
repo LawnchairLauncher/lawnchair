@@ -20,7 +20,8 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.launcher"
-    android:sharedUserId="android.uid.shared">
+    android:sharedUserId="android.uid.shared"
+    android:sharedUserLabel="@string/application_name">
 
     <permission
         android:name="com.android.launcher.permission.INSTALL_SHORTCUT"
@@ -69,7 +70,8 @@
             android:launchMode="singleTask"
             android:clearTaskOnLaunch="true"
             android:stateNotNeeded="true"
-            android:theme="@style/Theme">
+            android:theme="@style/Theme"
+            android:windowSoftInputMode="stateUnspecified|adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.HOME"/>

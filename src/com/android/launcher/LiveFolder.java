@@ -24,8 +24,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.net.Uri;
 import android.provider.LiveFolders;
+import android.os.AsyncTask;
+import android.database.Cursor;
+
+import java.lang.ref.WeakReference;
 
 public class LiveFolder extends Folder {
+    private AsyncTask<LiveFolderInfo,Void,Cursor> mLoadingTask;
+
     public LiveFolder(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -66,7 +72,10 @@ public class LiveFolder extends Folder {
 
     void bind(FolderInfo info) {
         super.bind(info);
-        setContentAdapter(new LiveFolderAdapter(mLauncher, (LiveFolderInfo) info));
+        if (mLoadingTask != null && mLoadingTask.getStatus() == AsyncTask.Status.RUNNING) {
+            mLoadingTask.cancel(true);
+        }
+        mLoadingTask = new FolderLoadingTask(this).execute((LiveFolderInfo) info);
     }
 
     @Override
@@ -78,6 +87,42 @@ public class LiveFolder extends Folder {
     @Override
     void onClose() {
         super.onClose();
+        if (mLoadingTask != null && mLoadingTask.getStatus() == AsyncTask.Status.RUNNING) {
+            mLoadingTask.cancel(true);
+        }
         ((LiveFolderAdapter) mContent.getAdapter()).cleanup();
+    }
+
+    static class FolderLoadingTask extends AsyncTask<LiveFolderInfo, Void, Cursor> {
+        private final WeakReference<LiveFolder> mFolder;
+        private LiveFolderInfo mInfo;
+
+        FolderLoadingTask(LiveFolder folder) {
+            mFolder = new WeakReference<LiveFolder>(folder);
+        }
+
+        protected Cursor doInBackground(LiveFolderInfo... params) {
+            final LiveFolder folder = mFolder.get();
+            if (folder != null) {
+                mInfo = params[0];
+                return LiveFolderAdapter.query(folder.mLauncher, mInfo);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Cursor cursor) {
+            if (!isCancelled()) {
+                if (cursor != null) {
+                    final LiveFolder folder = mFolder.get();
+                    if (folder != null) {
+                        final Launcher launcher = folder.mLauncher;
+                        folder.setContentAdapter(new LiveFolderAdapter(launcher, mInfo, cursor));
+                    }
+                }
+            } else if (cursor != null) {
+                cursor.close();
+            }
+        }
     }
 }

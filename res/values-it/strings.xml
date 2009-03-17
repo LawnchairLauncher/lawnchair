@@ -27,7 +27,9 @@
     <string name="cancel_action">"Annulla"</string>
     <string name="menu_item_add_item">"Aggiungi a schermata Home"</string>
     <string name="group_applications">"Applicazione"</string>
-    <string name="group_shortcuts">"Collegamento"</string>
+    <string name="group_shortcuts">"Scorciatoia"</string>
+    <string name="group_search">"Ricerca"</string>
+    <string name="group_folder">"Cartella"</string>
     <string name="group_live_folders">"Cartella dinamica"</string>
     <string name="group_widgets">"Widget"</string>
     <string name="group_wallpapers">"Sfondo"</string>
@@ -36,18 +38,22 @@
     <string name="add_photo_frame">"Cornice immagini"</string>
     <string name="add_search">"Ricerca"</string>
     <string name="out_of_space">"Spazio nella schermata Home esaurito."</string>
+    <string name="title_select_shortcut">"Seleziona collegamento"</string>
+    <string name="title_select_live_folder">"Seleziona cartella dinamica"</string>
     <string name="menu_add">"Aggiungi"</string>
     <string name="menu_wallpaper">"Sfondo"</string>
     <string name="menu_search">"Cerca"</string>
     <string name="menu_notifications">"Notifiche"</string>
     <string name="menu_settings">"Impostazioni"</string>
-    <string name="permlab_install_shortcut">"aggiungere collegamenti"</string>
-    <string name="permdesc_install_shortcut">"Consente a un\'applicazione di aggiungere collegamenti automaticamente."</string>
-    <string name="permlab_uninstall_shortcut">"eliminare collegamenti"</string>
-    <string name="permdesc_uninstall_shortcut">"Consente a un\'applicazione di rimuovere collegamenti automaticamente."</string>
-    <string name="permlab_read_settings">"leggere impostazioni e collegamenti in Home"</string>
-    <string name="permdesc_read_settings">"Consente a un\'applicazione di leggere le impostazioni e i collegamenti in Home."</string>
-    <string name="permlab_write_settings">"creare impostazioni e collegamenti in Home"</string>
-    <string name="permdesc_write_settings">"Consente a un\'applicazione di modificare le impostazioni e i collegamenti in Home."</string>
+    <string name="permlab_install_shortcut">"aggiungere scorciatorie"</string>
+    <string name="permdesc_install_shortcut">"Consente a un\'applicazione di aggiungere scorciatoie automaticamente."</string>
+    <string name="permlab_uninstall_shortcut">"eliminare scorciatoie"</string>
+    <string name="permdesc_uninstall_shortcut">"Consente a un\'applicazione di rimuovere scorciatoie automaticamente."</string>
+    <string name="permlab_read_settings">"leggere impostazioni e scorciatoie in Home"</string>
+    <string name="permdesc_read_settings">"Consente a un\'applicazione di leggere le impostazioni e le scorciatoie in Home."</string>
+    <string name="permlab_write_settings">"creare impostazioni e scorciatoie in Home"</string>
+    <string name="permdesc_write_settings">"Consente a un\'applicazione di modificare le impostazioni e le scorciatoie in Home."</string>
     <string name="search_hint">"Ricerca Google"</string>
+    <!-- no translation found for gadget_error_text (8359351016167075858) -->
+    <skip />
 </resources>

@@ -33,7 +33,6 @@ import android.util.Log;
 import android.os.Process;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Comparator;
@@ -44,33 +43,41 @@ import java.net.URISyntaxException;
 /**
  * Maintains in-memory state of the Launcher. It is expected that there should be only one
  * LauncherModel object held in a static. Also provide APIs for updating the database state
- * for the Launcher
+ * for the Launcher.
  */
 public class LauncherModel {
     private static final int UI_NOTIFICATION_RATE = 4;
     private static final int DEFAULT_APPLICATIONS_NUMBER = 42;
     private static final long APPLICATION_NOT_RESPONDING_TIMEOUT = 5000;
+    private static final int INITIAL_ICON_CACHE_CAPACITY = 50;
 
-    private final Collator sCollator = Collator.getInstance();    
+    private static final boolean DEBUG = false;
+
+    private static final Collator sCollator = Collator.getInstance();
 
     private boolean mApplicationsLoaded;
     private boolean mDesktopItemsLoaded;
 
     private ArrayList<ItemInfo> mDesktopItems;
+    private ArrayList<LauncherAppWidgetInfo> mDesktopAppWidgets;
     private HashMap<Long, FolderInfo> mFolders;
 
     private ArrayList<ApplicationInfo> mApplications;
     private ApplicationsAdapter mApplicationsAdapter;
     private ApplicationsLoader mApplicationsLoader;
     private DesktopItemsLoader mDesktopItemsLoader;
-    private Thread mLoader;
-    private Thread mDesktopLoader;
+    private Thread mApplicationsLoaderThread;
+    private Thread mDesktopLoaderThread;
 
-    void abortLoaders() {
+    private final HashMap<ComponentName, ApplicationInfo> mAppInfoCache =
+            new HashMap<ComponentName, ApplicationInfo>(INITIAL_ICON_CACHE_CAPACITY);
+
+    synchronized void abortLoaders() {
         if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
             mApplicationsLoader.stop();
             mApplicationsLoaded = false;
         }
+
         if (mDesktopItemsLoader != null && mDesktopItemsLoader.isRunning()) {
             mDesktopItemsLoader.stop();
             mDesktopItemsLoaded = false;
@@ -78,41 +85,72 @@ public class LauncherModel {
     }
 
     /**
-     * Loads the list of installed applications in mApplications.
+     * Drop our cache of components to their lables & icons.  We do
+     * this from Launcher when applications are added/removed.  It's a
+     * bit overkill, but it's a rare operation anyway.
      */
-    void loadApplications(boolean isLaunching, Launcher launcher, boolean localeChanged) {
+    synchronized void dropApplicationCache() {
+        mAppInfoCache.clear();
+    }
+
+    /**
+     * Loads the list of installed applications in mApplications.
+     *
+     * @return true if the applications loader must be started
+     *         (see startApplicationsLoader()), false otherwise.
+     */
+    synchronized boolean loadApplications(boolean isLaunching, Launcher launcher,
+            boolean localeChanged) {
+android.util.Log.d("Home", "load applications");
         if (isLaunching && mApplicationsLoaded && !localeChanged) {
             mApplicationsAdapter = new ApplicationsAdapter(launcher, mApplications);
-            return;
+android.util.Log.d("Home", "  --> applications loaded, return");
+            return false;
         }
+
+        waitForApplicationsLoader();
+
+        if (localeChanged) {
+            dropApplicationCache();
+        }        
 
         if (mApplicationsAdapter == null || isLaunching || localeChanged) {
-            mApplicationsAdapter = new ApplicationsAdapter(launcher,
-                    mApplications = new ArrayList<ApplicationInfo>(DEFAULT_APPLICATIONS_NUMBER));
-        }
-
-        if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
-            mApplicationsLoader.stop();
-            // Wait for the currently running thread to finish, this can take a little
-            // time but it should be well below the timeout limit
-            try {
-                mLoader.join(APPLICATION_NOT_RESPONDING_TIMEOUT);
-            } catch (InterruptedException e) {
-                // Empty
-            }
+            mApplications = new ArrayList<ApplicationInfo>(DEFAULT_APPLICATIONS_NUMBER);
+            mApplicationsAdapter = new ApplicationsAdapter(launcher, mApplications);
         }
 
         mApplicationsLoaded = false;
 
         if (!isLaunching) {
             startApplicationsLoader(launcher);
+            return false;
+        }
+
+        return true;
+    }
+
+    private synchronized void waitForApplicationsLoader() {
+        if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
+            android.util.Log.d("Home", "  --> wait for applications loader");
+
+            mApplicationsLoader.stop();
+            // Wait for the currently running thread to finish, this can take a little
+            // time but it should be well below the timeout limit
+            try {
+                mApplicationsLoaderThread.join(APPLICATION_NOT_RESPONDING_TIMEOUT);
+            } catch (InterruptedException e) {
+                // EMpty
+            }
         }
     }
 
-    private void startApplicationsLoader(Launcher launcher) {
+    private synchronized void startApplicationsLoader(Launcher launcher) {
+android.util.Log.d("Home", "  --> starting applications loader");
+        waitForApplicationsLoader();
+
         mApplicationsLoader = new ApplicationsLoader(launcher);
-        mLoader = new Thread(mApplicationsLoader, "Applications Loader");
-        mLoader.start();
+        mApplicationsLoaderThread = new Thread(mApplicationsLoader, "Applications Loader");
+        mApplicationsLoaderThread.start();
     }
 
     private class ApplicationsLoader implements Runnable {
@@ -149,36 +187,39 @@ public class LauncherModel {
                 final int count = apps.size();
                 final ApplicationsAdapter applicationList = mApplicationsAdapter;
 
-                ChangeNotifier action = new ChangeNotifier(applicationList);
+                ChangeNotifier action = new ChangeNotifier(applicationList, true);
+                final HashMap<ComponentName, ApplicationInfo> appInfoCache = mAppInfoCache;
 
                 for (int i = 0; i < count && !mStopped; i++) {
-                    ApplicationInfo application = new ApplicationInfo();
                     ResolveInfo info = apps.get(i);
-
-                    application.title = info.loadLabel(manager);
-                    if (application.title == null) {
-                        application.title = info.activityInfo.name;
-                    }
-                    application.setActivity(new ComponentName(
+                    ComponentName componentName = new ComponentName(
                             info.activityInfo.applicationInfo.packageName,
-                            info.activityInfo.name),
-                            Intent.FLAG_ACTIVITY_NEW_TASK |
-                            Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-                    application.icon = info.activityInfo.loadIcon(manager);
-                    application.container = ItemInfo.NO_ID;
-
-                    action.add(application);
-                }
-
-                action.sort(new Comparator<ApplicationInfo>() {
-                    public final int compare(ApplicationInfo a, ApplicationInfo b) {
-                        return sCollator.compare(a.title.toString(), b.title.toString());
+                            info.activityInfo.name);
+                    ApplicationInfo application = appInfoCache.get(componentName);
+                    if (application == null) {
+                        application = new ApplicationInfo();
+                        application.title = info.loadLabel(manager);
+                        if (application.title == null) {
+                            application.title = info.activityInfo.name;
+                        }
+                        application.setActivity(componentName,
+                                Intent.FLAG_ACTIVITY_NEW_TASK |
+                                Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                        application.container = ItemInfo.NO_ID;
+                        application.icon = info.activityInfo.loadIcon(manager);
+                        if (DEBUG) {
+                            Log.d(Launcher.LOG_TAG, "Loaded ApplicationInfo for " + componentName);
+                        }
+                        appInfoCache.put(componentName, application);
                     }
-                });
 
-                if (!mStopped) {
-                    launcher.runOnUiThread(action);
+                    if (action.add(application)) {
+                        launcher.runOnUiThread(action);
+                        action = new ChangeNotifier(applicationList, false);
+                    }
                 }
+
+                launcher.runOnUiThread(action);
             }
 
             if (!mStopped) {
@@ -188,51 +229,66 @@ public class LauncherModel {
         }
     }
 
-    private static class ChangeNotifier implements Runnable {
+    private static class ChangeNotifier implements Runnable, Comparator<ApplicationInfo> {
         private final ApplicationsAdapter mApplicationList;
-        private ArrayList<ApplicationInfo> mBuffer;
+        private final ArrayList<ApplicationInfo> mBuffer;
 
-        ChangeNotifier(ApplicationsAdapter applicationList) {
+        private boolean mFirst = true;
+
+        ChangeNotifier(ApplicationsAdapter applicationList, boolean first) {
             mApplicationList = applicationList;
+            mFirst = first;
             mBuffer = new ArrayList<ApplicationInfo>(UI_NOTIFICATION_RATE);
         }
 
         public void run() {
-            final ArrayList<ApplicationInfo> buffer = mBuffer;
             final ApplicationsAdapter applicationList = mApplicationList;
+
+            if (mFirst) {
+                applicationList.setNotifyOnChange(false);
+                applicationList.clear();
+                mFirst = false;
+            }
+
+            final ArrayList<ApplicationInfo> buffer = mBuffer;
             final int count = buffer.size();
 
-            applicationList.clear();
             for (int i = 0; i < count; i++) {
                 applicationList.setNotifyOnChange(false);
                 applicationList.add(buffer.get(i));
             }
 
-            applicationList.notifyDataSetChanged();
             buffer.clear();
+
+            applicationList.sort(this);
+            applicationList.notifyDataSetChanged();
         }
 
-        void add(ApplicationInfo application) {
-            mBuffer.add(application);
+        boolean add(ApplicationInfo application) {
+            final ArrayList<ApplicationInfo> buffer = mBuffer;
+            buffer.add(application);
+            return buffer.size() >= UI_NOTIFICATION_RATE;
         }
 
-        void sort(Comparator<ApplicationInfo> comparator) {
-            Collections.sort(mBuffer, comparator);
+        public final int compare(ApplicationInfo a, ApplicationInfo b) {
+            return sCollator.compare(a.title.toString(), b.title.toString());
         }
     }
 
     boolean isDesktopLoaded() {
-        return mDesktopItems != null && mDesktopItemsLoaded;
+        return mDesktopItems != null && mDesktopAppWidgets != null && mDesktopItemsLoaded;
     }
-    
+
     /**
      * Loads all of the items on the desktop, in folders, or in the dock.
      * These can be apps, shortcuts or widgets
      */
     void loadUserItems(boolean isLaunching, Launcher launcher, boolean localeChanged,
             boolean loadApplications) {
+android.util.Log.d("Home", "loading user items");
 
-        if (isLaunching && mDesktopItems != null && mDesktopItemsLoaded) {
+        if (isLaunching && isDesktopLoaded()) {
+android.util.Log.d("Home", "  --> items loaded, return");
             if (loadApplications) startApplicationsLoader(launcher);
             // We have already loaded our data from the DB
             launcher.onDesktopItemsLoaded();
@@ -244,16 +300,17 @@ public class LauncherModel {
             // Wait for the currently running thread to finish, this can take a little
             // time but it should be well below the timeout limit
             try {
-                mDesktopLoader.join(APPLICATION_NOT_RESPONDING_TIMEOUT);
+                mDesktopLoaderThread.join(APPLICATION_NOT_RESPONDING_TIMEOUT);
             } catch (InterruptedException e) {
                 // Empty
             }
         }
 
+android.util.Log.d("Home", "  --> starting workspace loader");
         mDesktopItemsLoaded = false;
         mDesktopItemsLoader = new DesktopItemsLoader(launcher, localeChanged, loadApplications);
-        mDesktopLoader = new Thread(mDesktopItemsLoader, "Desktop Items Loader");
-        mDesktopLoader.start();
+        mDesktopLoaderThread = new Thread(mDesktopItemsLoader, "Desktop Items Loader");
+        mDesktopLoaderThread.start();
     }
 
     private static void updateShortcutLabels(ContentResolver resolver, PackageManager manager) {
@@ -272,7 +329,8 @@ public class LauncherModel {
         try {
             while (c.moveToNext()) {
                 try {
-                    if (c.getInt(itemTypeIndex) != LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+                    if (c.getInt(itemTypeIndex) !=
+                            LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
                         continue;
                     }
 
@@ -357,9 +415,11 @@ public class LauncherModel {
             }
 
             mDesktopItems = new ArrayList<ItemInfo>();
+            mDesktopAppWidgets = new ArrayList<LauncherAppWidgetInfo>();
             mFolders = new HashMap<Long, FolderInfo>();
 
             final ArrayList<ItemInfo> desktopItems = mDesktopItems;
+            final ArrayList<LauncherAppWidgetInfo> desktopAppWidgets = mDesktopAppWidgets;
 
             final Cursor c = contentResolver.query(
                     LauncherSettings.Favorites.CONTENT_URI, null, null, null, null);
@@ -374,15 +434,19 @@ public class LauncherModel {
                 final int iconResourceIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_RESOURCE);
                 final int containerIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CONTAINER);
                 final int itemTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
+                final int appWidgetIdIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.APPWIDGET_ID);
                 final int screenIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SCREEN);
                 final int cellXIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLX);
                 final int cellYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLY);
+                final int spanXIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SPANX);
+                final int spanYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SPANY);
                 final int uriIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.URI);
                 final int displayModeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.DISPLAY_MODE);
 
                 ApplicationInfo info;
                 String intentDescription;
-                Widget widgetInfo = null;
+                Widget widgetInfo;
+                LauncherAppWidgetInfo appWidgetInfo;
                 int container;
                 long id;
                 Intent intent;
@@ -494,41 +558,44 @@ public class LauncherModel {
                                     break;
                             }
                             break;
-                        case LauncherSettings.Favorites.ITEM_TYPE_WIDGET_CLOCK:
                         case LauncherSettings.Favorites.ITEM_TYPE_WIDGET_SEARCH:
-                        case LauncherSettings.Favorites.ITEM_TYPE_WIDGET_PHOTO_FRAME:
-                            switch (itemType) {
-                            case LauncherSettings.Favorites.ITEM_TYPE_WIDGET_CLOCK:
-                                widgetInfo = Widget.makeClock();
-                                break;
-                            case LauncherSettings.Favorites.ITEM_TYPE_WIDGET_SEARCH:
-                                widgetInfo = Widget.makeSearch();
-                                break;
-                            case LauncherSettings.Favorites.ITEM_TYPE_WIDGET_PHOTO_FRAME:
-                                widgetInfo = Widget.makePhotoFrame();
-                                byte[] data = c.getBlob(iconIndex);
-                                if (data != null) {
-                                    widgetInfo.photo =
-                                            BitmapFactory.decodeByteArray(data, 0, data.length);
-                                }
-                                break;
+                            widgetInfo = Widget.makeSearch();
+
+                            container = c.getInt(containerIndex);
+                            if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                                Log.e(Launcher.LOG_TAG, "Widget found where container "
+                                        + "!= CONTAINER_DESKTOP  ignoring!");
+                                continue;
                             }
 
-                            if (widgetInfo != null) {
-                                container = c.getInt(containerIndex);
-                                if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                                    Log.e(Launcher.LOG_TAG, "Widget found where container "
-                                            + "!= CONTAINER_DESKTOP -- ignoring!");
-                                    continue;
-                                }
-                                widgetInfo.id = c.getLong(idIndex);
-                                widgetInfo.screen = c.getInt(screenIndex);
-                                widgetInfo.container = container;
-                                widgetInfo.cellX = c.getInt(cellXIndex);
-                                widgetInfo.cellY = c.getInt(cellYIndex);
+                            widgetInfo.id = c.getLong(idIndex);
+                            widgetInfo.screen = c.getInt(screenIndex);
+                            widgetInfo.container = container;
+                            widgetInfo.cellX = c.getInt(cellXIndex);
+                            widgetInfo.cellY = c.getInt(cellYIndex);
 
-                                desktopItems.add(widgetInfo);
+                            desktopItems.add(widgetInfo);
+                            break;
+                        case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+                            // Read all Launcher-specific widget details
+                            int appWidgetId = c.getInt(appWidgetIdIndex);
+                            appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId);
+                            appWidgetInfo.id = c.getLong(idIndex);
+                            appWidgetInfo.screen = c.getInt(screenIndex);
+                            appWidgetInfo.cellX = c.getInt(cellXIndex);
+                            appWidgetInfo.cellY = c.getInt(cellYIndex);
+                            appWidgetInfo.spanX = c.getInt(spanXIndex);
+                            appWidgetInfo.spanY = c.getInt(spanYIndex);
+
+                            container = c.getInt(containerIndex);
+                            if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                                Log.e(Launcher.LOG_TAG, "Widget found where container "
+                                        + "!= CONTAINER_DESKTOP -- ignoring!");
+                                continue;
                             }
+                            appWidgetInfo.container = c.getInt(containerIndex);
+
+                            desktopAppWidgets.add(appWidgetInfo);
                             break;
                         }
                     } catch (Exception e) {
@@ -578,7 +645,7 @@ public class LauncherModel {
                 break;
             default:
                 liveFolderInfo.icon =
-                        launcher.getResources().getDrawable(R.drawable.ic_launcher_folder);                                    
+                        launcher.getResources().getDrawable(R.drawable.ic_launcher_folder);
         }
     }
 
@@ -586,7 +653,7 @@ public class LauncherModel {
      * Finds the user folder defined by the specified id.
      *
      * @param id The id of the folder to look for.
-     * 
+     *
      * @return A UserFolderInfo if the folder exists or null otherwise.
      */
     FolderInfo findFolderById(long id) {
@@ -635,8 +702,10 @@ public class LauncherModel {
         mApplicationsAdapter = null;
         unbindAppDrawables(mApplications);
         unbindDrawables(mDesktopItems);
+        unbindAppWidgetHostViews(mDesktopAppWidgets);
+        unbindCachedIconDrawables();
     }
-    
+
     /**
      * Remove the callback for the cached drawables or we leak the previous
      * Home screen on orientation change.
@@ -650,11 +719,12 @@ public class LauncherModel {
                 case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                 case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                     ((ApplicationInfo)item).icon.setCallback(null);
+                    break;
                 }
             }
         }
     }
-    
+
     /**
      * Remove the callback for the cached drawables or we leak the previous
      * Home screen on orientation change.
@@ -669,31 +739,54 @@ public class LauncherModel {
     }
 
     /**
-     * @return The current list of applications
+     * Remove any {@link LauncherAppWidgetHostView} references in our widgets.
      */
-    public ArrayList<ApplicationInfo> getApplications() {
-        return mApplications;
+    private void unbindAppWidgetHostViews(ArrayList<LauncherAppWidgetInfo> appWidgets) {
+        if (appWidgets != null) {
+            final int count = appWidgets.size();
+            for (int i = 0; i < count; i++) {
+                LauncherAppWidgetInfo launcherInfo = appWidgets.get(i);
+                launcherInfo.hostView = null;
+            }
+        }
+    }
+
+    /**
+     * Remove the callback for the cached drawables or we leak the previous
+     * Home screen on orientation change.
+     */
+    private void unbindCachedIconDrawables() {
+        for (ApplicationInfo appInfo : mAppInfoCache.values()) {
+            appInfo.icon.setCallback(null);
+        }
     }
 
     /**
      * @return The current list of applications
      */
-    public ApplicationsAdapter getApplicationsAdapter() {
+    ApplicationsAdapter getApplicationsAdapter() {
         return mApplicationsAdapter;
     }
 
     /**
      * @return The current list of desktop items
      */
-    public ArrayList<ItemInfo> getDesktopItems() {
+    ArrayList<ItemInfo> getDesktopItems() {
         return mDesktopItems;
+    }
+    
+    /**
+     * @return The current list of desktop items
+     */
+    ArrayList<LauncherAppWidgetInfo> getDesktopAppWidgets() {
+        return mDesktopAppWidgets;
     }
 
     /**
      * Add an item to the desktop
      * @param info
      */
-    public void addDesktopItem(ItemInfo info) {
+    void addDesktopItem(ItemInfo info) {
         // TODO: write to DB; also check that folder has been added to folders list
         mDesktopItems.add(info);
     }
@@ -702,9 +795,23 @@ public class LauncherModel {
      * Remove an item from the desktop
      * @param info
      */
-    public void removeDesktopItem(ItemInfo info) {
+    void removeDesktopItem(ItemInfo info) {
         // TODO: write to DB; figure out if we should remove folder from folders list
         mDesktopItems.remove(info);
+    }
+
+    /**
+     * Add a widget to the desktop
+     */
+    void addDesktopAppWidget(LauncherAppWidgetInfo info) {
+        mDesktopAppWidgets.add(info);
+    }
+    
+    /**
+     * Remove a widget from the desktop
+     */
+    void removeDesktopAppWidget(LauncherAppWidgetInfo info) {
+        mDesktopAppWidgets.remove(info);
     }
 
     /**
@@ -886,37 +993,6 @@ public class LauncherModel {
         return null;
     }
 
-    static Widget getPhotoFrameInfo(Context context, int screen, int cellX, int cellY) {
-        final ContentResolver cr = context.getContentResolver();
-        Cursor c = cr.query(LauncherSettings.Favorites.CONTENT_URI,
-            null, "screen=? and cellX=? and cellY=? and itemType=?",
-            new String[] { String.valueOf(screen), String.valueOf(cellX), String.valueOf(cellY),
-                String.valueOf(LauncherSettings.Favorites.ITEM_TYPE_WIDGET_PHOTO_FRAME) }, null);
-
-        try {
-            if (c.moveToFirst()) {
-                final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ID);
-                final int containerIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CONTAINER);
-                final int screenIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SCREEN);
-                final int cellXIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLX);
-                final int cellYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLY);
-
-                Widget widgetInfo = Widget.makePhotoFrame();
-                widgetInfo.id = c.getLong(idIndex);
-                widgetInfo.screen = c.getInt(screenIndex);
-                widgetInfo.container = c.getInt(containerIndex);
-                widgetInfo.cellX = c.getInt(cellXIndex);
-                widgetInfo.cellY = c.getInt(cellYIndex);
-
-                return widgetInfo;
-            }
-        } finally {
-            c.close();
-        }
-
-        return null;
-    }
-
     /**
      * Add an item to the database in a specified container. Sets the container, screen, cellX and
      * cellY fields of the item. Also assigns an ID to the item.
@@ -972,7 +1048,7 @@ public class LauncherModel {
         final ContentResolver cr = context.getContentResolver();
 
         cr.delete(LauncherSettings.Favorites.getContentUri(info.id, false), null, null);
-        cr.delete(LauncherSettings.Favorites.CONTENT_URI, LauncherSettings.Favorites.CONTAINER + "=" + info.id,
-                null);
+        cr.delete(LauncherSettings.Favorites.CONTENT_URI,
+                LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
     }
 }

@@ -52,8 +52,13 @@
     <string name="group_applications">Application</string>
     <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all shortcuts -->
     <string name="group_shortcuts">Shortcut</string>
+    <!-- Options in "Add to Home" dialog box; Title of the search gadget -->
+    <string name="group_search">Search</string>
+    <!-- Options in "Add to Home" dialog box; Title of the folder gadget -->
+    <string name="group_folder">Folder</string>
+    <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all live folders -->
     <string name="group_live_folders">Live folder</string>
-    <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all widgets -->
+    <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all widgets/gadgets -->
     <string name="group_widgets">Widget</string>
     <!-- Options in "Add to Home" dialog box; Title of the group containing the list of apps that can set the wallpaper-->
     <string name="group_wallpapers">Wallpaper</string>
@@ -67,6 +72,11 @@
     <string name="add_search">Search</string>
     <!-- Error message when user has filled a home screen, possibly not used -->
     <string name="out_of_space">No more room on this Home screen.</string>
+
+    <!-- Title of dialog when user is selecting shortcut to add to homescreen -->
+    <string name="title_select_shortcut">Select shortcut</string>
+    <!-- Title of dialog when user is selecting live folder to add to homescreen -->
+    <string name="title_select_live_folder">Select live folder</string>
 
     <!-- Menus items: -->
     <skip />
@@ -101,5 +111,8 @@
          This translation SHOULD MATCH the string "search_hint" which is found in 
          GoogleSearch/res/values/strings.xml -->
     <string name="search_hint">Google Search</string>
-        
+
+    <!-- Text to show user in place of a gadget when we can't display it properly -->
+    <string name="gadget_error_text">Problem loading widget</string>
+
 </resources>

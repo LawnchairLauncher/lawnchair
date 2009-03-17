@@ -16,456 +16,111 @@
 
 package com.android.launcher;
 
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.widget.BaseExpandableListAdapter;
-import android.graphics.drawable.Drawable;
-import android.provider.LiveFolders;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
- * Shows a list of all the items that can be added to the workspace.
+ * Adapter showing the types of items that can be added to a {@link Workspace}.
  */
-public final class AddAdapter extends BaseExpandableListAdapter {
-    private static final int GROUP_APPLICATIONS = 0;
-    private static final int GROUP_SHORTCUTS = 1;
-    private static final int GROUP_WIDGETS = 2;
-    private static final int GROUP_LIVE_FOLDERS = 3;
-    private static final int GROUP_WALLPAPERS = 4;
-
-    private final Intent mCreateShortcutIntent;
-    private final Intent mCreateLiveFolderIntent;
-    private Intent mSetWallpaperIntent;
+public class AddAdapter extends BaseAdapter {
+    
+    private final Launcher mLauncher;
     private final LayoutInflater mInflater;
-    private Launcher mLauncher;
-    private Group[] mGroups;
-
-    /**
-     * Abstract class representing one thing that can be added
-     */
-    public abstract class AddAction implements Runnable {
-        protected final Context mContext;
-
-        AddAction(Context context) {
-            mContext = context;
-        }
-
-        Drawable getIcon(int resource) {
-            return mContext.getResources().getDrawable(resource);
-        }
-
-        public abstract void bindView(View v);
-    }
-
-    /**
-     * Class representing an action that will create set the wallpaper.
-     */
-    public class SetWallpaperAction extends CreateShortcutAction {
-        SetWallpaperAction(Context context, ResolveInfo info) {
-            super(context, info);
-        }
-
-        public void run() {
-            Intent intent = new Intent(mSetWallpaperIntent);
-            ActivityInfo activityInfo = mInfo.activityInfo;
-            intent.setComponent(new ComponentName(activityInfo.applicationInfo.packageName,
-                    activityInfo.name));
-            mLauncher.startActivity(intent);
-        }
-    }
+    
+    private final ArrayList<ListItem> mItems = new ArrayList<ListItem>();
+    
+    public static final int ITEM_APPLICATION = 0;
+    public static final int ITEM_SHORTCUT = 1;
+    public static final int ITEM_SEARCH = 2;
+    public static final int ITEM_APPWIDGET = 3;
+    public static final int ITEM_LIVE_FOLDER = 4;
+    public static final int ITEM_FOLDER = 5;
+    public static final int ITEM_WALLPAPER = 6;
     
     /**
-     * Class representing an action that will create a specific type
-     * of shortcut
+     * Specific item in our list.
      */
-    public class CreateShortcutAction extends AddAction {
+    public class ListItem {
+        public final CharSequence text;
+        public final Drawable image;
+        public final int actionTag;
         
-        ResolveInfo mInfo;
-        private CharSequence mLabel;
-        private Drawable mIcon;
-
-        CreateShortcutAction(Context context, ResolveInfo info) {
-            super(context);
-            mInfo = info;
-        }
-
-        @Override
-        public void bindView(View view) {
-            ResolveInfo info = mInfo;
-            TextView text = (TextView) view;
-
-            PackageManager pm = mLauncher.getPackageManager();
-
-            if (mLabel == null) {
-                mLabel = info.loadLabel(pm);
-                if (mLabel == null) {
-                    mLabel = info.activityInfo.name;
-                }
+        public ListItem(Resources res, int textResourceId, int imageResourceId, int actionTag) {
+            text = res.getString(textResourceId);
+            if (imageResourceId != -1) {
+                image = res.getDrawable(imageResourceId);
+            } else {
+                image = null;
             }
-
-            if (mIcon == null) {
-                mIcon = Utilities.createIconThumbnail(info.loadIcon(pm), mContext);
-            }
-
-            text.setText(mLabel);
-            text.setCompoundDrawablesWithIntrinsicBounds(mIcon, null, null, null);
-        }
-
-        public void run() {
-            Intent intent = new Intent(mCreateShortcutIntent);
-            ActivityInfo activityInfo = mInfo.activityInfo;
-            intent.setComponent(new ComponentName(activityInfo.applicationInfo.packageName,
-                    activityInfo.name));
-            mLauncher.addShortcut(intent);
-        }
-    }
-
-    /**
-     * Class representing an action that will create a specific type
-     * of live folder
-     */
-    public class CreateLiveFolderAction extends CreateShortcutAction {
-        CreateLiveFolderAction(Context context, ResolveInfo info) {
-            super(context, info);
-        }
-
-        @Override
-        public void run() {
-            Intent intent = new Intent(mCreateLiveFolderIntent);
-            ActivityInfo activityInfo = mInfo.activityInfo;
-            intent.setComponent(new ComponentName(activityInfo.applicationInfo.packageName,
-                    activityInfo.name));
-            mLauncher.addLiveFolder(intent);
-        }
-    }
-
-    /**
-     * Class representing an action that will add a folder
-     */
-    public class CreateFolderAction extends AddAction {
-        private Drawable mIcon;
-
-        CreateFolderAction(Context context) {
-            super(context);
-        }
-
-        @Override
-        public void bindView(View view) {
-            TextView text = (TextView) view;
-            text.setText(R.string.add_folder);
-            if (mIcon == null) mIcon = getIcon(R.drawable.ic_launcher_folder);
-            text.setCompoundDrawablesWithIntrinsicBounds(mIcon, null, null, null);
-        }
-
-        public void run() {
-            mLauncher.addFolder();
-        }
-    }
-
-    /**
-     * Class representing an action that will add a folder
-     */
-    public class CreateClockAction extends AddAction {
-
-        CreateClockAction(Context context) {
-            super(context);
-        }
-
-        @Override
-        public void bindView(View view) {
-            TextView text = (TextView) view;
-            text.setText(R.string.add_clock);
-            Drawable icon = getIcon(R.drawable.ic_launcher_alarmclock);
-            text.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
-        }
-
-        public void run() {
-            mLauncher.addClock();
-        }
-    }
-
-    /**
-     * Class representing an action that will add a PhotoFrame
-     */
-    public class CreatePhotoFrameAction extends AddAction {
-        private Drawable mIcon;
-
-        CreatePhotoFrameAction(Context context) {
-            super(context);
-        }
-
-        @Override
-        public void bindView(View view) {
-            TextView text = (TextView) view;
-            text.setText(R.string.add_photo_frame);
-            if (mIcon == null) mIcon = getIcon(R.drawable.ic_launcher_gallery);
-            text.setCompoundDrawablesWithIntrinsicBounds(mIcon, null, null, null);
-        }
-
-        public void run() {
-            mLauncher.getPhotoForPhotoFrame();
-        }
-    }
-
-
-    /**
-     * Class representing an action that will add a Search widget
-     */
-    public class CreateSearchAction extends AddAction {
-        private Drawable mIcon;
-
-        CreateSearchAction(Context context) {
-            super(context);
-        }
-
-        @Override
-        public void bindView(View view) {
-            TextView text = (TextView) view;
-            text.setText(R.string.add_search);
-            if (mIcon == null) mIcon = getIcon(R.drawable.ic_search_gadget);
-            text.setCompoundDrawablesWithIntrinsicBounds(mIcon, null, null, null);
-        }
-
-        public void run() {
-            mLauncher.addSearch();
+            this.actionTag = actionTag;
         }
     }
     
-    private class Group {
-        private String mName;
-        private ArrayList<AddAction> mList;
-
-        Group(String name) {
-            mName = name;
-            mList = new ArrayList<AddAction>();
-        }
-
-        void add(AddAction action) {
-            mList.add(action);
-        }
-
-        int size() {
-            return mList.size();
-        }
-
-        String getName() {
-            return mName;
-        }
-
-        void run(int position) {
-            mList.get(position).run();
-        }
-
-        void bindView(int childPosition, View view) {
-            mList.get(childPosition).bindView(view);
-        }
-
-        public Object get(int childPosition) {
-            return mList.get(childPosition);
-        }
-    }
-
-    private class ApplicationsGroup extends Group {
-        private final Launcher mLauncher;
-        private final ArrayList<ApplicationInfo> mApplications;
-
-        ApplicationsGroup(Launcher launcher, String name) {
-            super(name);
-            mLauncher = launcher;
-            mApplications = Launcher.getModel().getApplications();
-        }
-
-        @Override
-        int size() {
-            return mApplications == null ? 0 : mApplications.size();
-        }
-
-        @Override
-        void add(AddAction action) {
-        }
-
-        @Override
-        void run(int position) {
-            final ApplicationInfo info = mApplications.get(position);
-            mLauncher.addApplicationShortcut(info);
-        }
-
-        @Override
-        void bindView(int childPosition, View view) {
-            TextView text = (TextView) view.findViewById(R.id.title);
-
-            final ApplicationInfo info = mApplications.get(childPosition);
-            text.setText(info.title);
-            if (!info.filtered) {
-                info.icon = Utilities.createIconThumbnail(info.icon, mLauncher);
-                info.filtered = true;
-            }
-            text.setCompoundDrawablesWithIntrinsicBounds(info.icon, null, null, null);
-        }
-
-        @Override
-        public Object get(int childPosition) {
-            return mApplications.get(childPosition);
-        }
-    }
-
-    public AddAdapter(Launcher launcher, boolean forFolder) {
-        mCreateShortcutIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
-        mCreateShortcutIntent.setComponent(null);
-
-        mCreateLiveFolderIntent = new Intent(LiveFolders.ACTION_CREATE_LIVE_FOLDER);
-        mCreateLiveFolderIntent.setComponent(null);
-
-        mSetWallpaperIntent = new Intent(Intent.ACTION_SET_WALLPAPER);
-        mSetWallpaperIntent.setComponent(null);
-
+    public AddAdapter(Launcher launcher) {
+        super();
+        
         mLauncher = launcher;
-        mInflater = (LayoutInflater) launcher.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mInflater = (LayoutInflater) mLauncher.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        
+        // Create default actions
+        Resources res = launcher.getResources();
+        
+        mItems.add(new ListItem(res, R.string.group_applications,
+                R.drawable.ic_launcher_application, ITEM_APPLICATION));
+        
+        mItems.add(new ListItem(res, R.string.group_shortcuts,
+                R.drawable.ic_launcher_empty, ITEM_SHORTCUT));
+        
+        mItems.add(new ListItem(res, R.string.group_search,
+                R.drawable.ic_search_widget, ITEM_SEARCH));
+        
+        mItems.add(new ListItem(res, R.string.group_widgets,
+                R.drawable.ic_launcher_appwidget, ITEM_APPWIDGET));
+        
+        mItems.add(new ListItem(res, R.string.group_live_folders,
+                R.drawable.ic_launcher_empty, ITEM_LIVE_FOLDER));
+        
+        mItems.add(new ListItem(res, R.string.group_folder,
+                R.drawable.ic_launcher_folder, ITEM_FOLDER));
+        
+        mItems.add(new ListItem(res, R.string.group_wallpapers,
+                R.drawable.ic_launcher_gallery, ITEM_WALLPAPER));
 
-        mGroups = new Group[forFolder ? 2 : 5];
-        final Group[] groups = mGroups;
-        groups[GROUP_APPLICATIONS] = new ApplicationsGroup(mLauncher,
-                mLauncher.getString(R.string.group_applications));
-        groups[GROUP_SHORTCUTS] = new Group(mLauncher.getString(R.string.group_shortcuts));
-        groups[GROUP_LIVE_FOLDERS] = new Group(mLauncher.getString(R.string.group_live_folders));
+    }
 
-        if (!forFolder) {
-            groups[GROUP_WALLPAPERS] = new Group(mLauncher.getString(R.string.group_wallpapers));
-            groups[GROUP_SHORTCUTS].add(new CreateFolderAction(launcher));
-            groups[GROUP_WIDGETS] = new Group(mLauncher.getString(R.string.group_widgets));
-
-            final Group widgets = groups[GROUP_WIDGETS];
-            widgets.add(new CreateClockAction(launcher));
-            widgets.add(new CreatePhotoFrameAction(launcher));
-            widgets.add(new CreateSearchAction(launcher));
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ListItem item = (ListItem) getItem(position);
+        
+        if (convertView == null) {
+            convertView = mInflater.inflate(R.layout.add_list_item, parent, false);
         }
         
-        PackageManager packageManager = launcher.getPackageManager();
-
-        List<ResolveInfo> list = findTargetsForIntent(mCreateShortcutIntent, packageManager);
-        if (list != null && list.size() > 0) {
-            int count = list.size();
-            final Group shortcuts = groups[GROUP_SHORTCUTS];
-            for (int i = 0; i < count; i++) {
-                ResolveInfo resolveInfo = list.get(i);
-                shortcuts.add(new CreateShortcutAction(launcher, resolveInfo));
-            }
-        }
-
-        list = findTargetsForIntent(mCreateLiveFolderIntent, packageManager);
-        if (list != null && list.size() > 0) {
-            int count = list.size();
-            final Group shortcuts = groups[GROUP_LIVE_FOLDERS];
-            for (int i = 0; i < count; i++) {
-                ResolveInfo resolveInfo = list.get(i);
-                shortcuts.add(new CreateLiveFolderAction(launcher, resolveInfo));
-            }
-        }
-
-        list = findTargetsForIntent(mSetWallpaperIntent, packageManager);
-        if (list != null && list.size() > 0) {
-            int count = list.size();
-            final Group shortcuts = groups[GROUP_WALLPAPERS];
-            for (int i = 0; i < count; i++) {
-                ResolveInfo resolveInfo = list.get(i);
-                shortcuts.add(new SetWallpaperAction(launcher, resolveInfo));
-            }
-        }
+        TextView textView = (TextView) convertView;
+        textView.setTag(item);
+        textView.setText(item.text);
+        textView.setCompoundDrawablesWithIntrinsicBounds(item.image, null, null, null);
+        
+        return convertView;
     }
 
-    private List<ResolveInfo> findTargetsForIntent(Intent intent, PackageManager packageManager) {
-        List<ResolveInfo> list = packageManager.queryIntentActivities(intent,
-                PackageManager.MATCH_DEFAULT_ONLY);
-        if (list != null) {
-            int count = list.size();
-            if (count > 1) {
-                // Only display the first matches that are either of equal
-                // priority or have asked to be default options.
-                ResolveInfo firstInfo = list.get(0);
-                for (int i=1; i<count; i++) {
-                    ResolveInfo resolveInfo = list.get(i);
-                    if (firstInfo.priority != resolveInfo.priority ||
-                        firstInfo.isDefault != resolveInfo.isDefault) {
-                        while (i < count) {
-                            list.remove(i);
-                            count--;
-                        }
-                    }
-                }
-                Collections.sort(list, new ResolveInfo.DisplayNameComparator(packageManager));
-            }
-        }
-        return list;
+    public int getCount() {
+        return mItems.size();
     }
 
-    public int getGroupCount() {
-        return mGroups.length;
+    public Object getItem(int position) {
+        return mItems.get(position);
     }
 
-    public int getChildrenCount(int groupPosition) {
-        return mGroups[groupPosition].size();
+    public long getItemId(int position) {
+        return position;
     }
-
-    public Object getGroup(int groupPosition) {
-        return mGroups[groupPosition].getName();
-    }
-
-    public Object getChild(int groupPosition, int childPosition) {
-        return mGroups[groupPosition].get(childPosition);
-    }
-
-    public long getGroupId(int groupPosition) {
-        return groupPosition;
-    }
-
-    public long getChildId(int groupPosition, int childPosition) {
-        return (groupPosition << 16) | childPosition;
-    }
-
-    public boolean hasStableIds() {
-        return true;
-    }
-
-    public View getGroupView(int groupPosition, boolean isExpanded,
-            View convertView, ViewGroup parent) {
-        View view;
-        if (convertView == null) {
-            view = mInflater.inflate(R.layout.create_shortcut_group_item, parent, false);
-        } else {
-            view = convertView;
-        }
-        ((TextView) view).setText(mGroups[groupPosition].getName());
-        return view;
-    }
-
-    public View getChildView(int groupPosition, int childPosition, boolean isLastChild,
-            View convertView, ViewGroup parent) {
-        View view;
-        if (convertView == null) {
-            view = mInflater.inflate(R.layout.create_shortcut_list_item, parent, false);
-        } else {
-            view = convertView;
-        }
-        mGroups[groupPosition].bindView(childPosition, view);
-        return view;
-    }
-
-    public boolean isChildSelectable(int groupPosition, int childPosition) {
-        return true;
-    }
-
-    void performAction(int groupPosition, int childPosition) {
-        mGroups[groupPosition].run(childPosition);
-    }
+    
 }

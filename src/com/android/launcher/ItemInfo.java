@@ -38,10 +38,8 @@ class ItemInfo {
     /**
      * One of {@link LauncherSettings.Favorites#ITEM_TYPE_APPLICATION},
      * {@link LauncherSettings.Favorites#ITEM_TYPE_SHORTCUT},
-     * {@link LauncherSettings.Favorites#ITEM_TYPE_USER_FOLDER},
-     * {@link LauncherSettings.Favorites#ITEM_TYPE_WIDGET_CLOCK},
-     * {@link LauncherSettings.Favorites#ITEM_TYPE_WIDGET_SEARCH} or
-     * {@link LauncherSettings.Favorites#ITEM_TYPE_WIDGET_PHOTO_FRAME},
+     * {@link LauncherSettings.Favorites#ITEM_TYPE_USER_FOLDER}, or
+     * {@link LauncherSettings.Favorites#ITEM_TYPE_APPWIDGET}.
      */
     int itemType;
     

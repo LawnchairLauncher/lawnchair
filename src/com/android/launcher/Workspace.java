@@ -17,12 +17,15 @@
 package com.android.launcher;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.ComponentName;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Rect;
+import android.graphics.Region;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -89,6 +92,13 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     private boolean mAllowLongPress;
     private boolean mLocked;
 
+    private int mTouchSlop;
+
+    final Rect mDrawerBounds = new Rect();
+    final Rect mClipBounds = new Rect();
+    int mDrawerContentHeight;
+    int mDrawerContentWidth;
+
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -126,6 +136,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
         mPaint = new Paint();
         mPaint.setDither(false);
+
+        mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }
 
     /**
@@ -433,6 +445,29 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
+        boolean restore = false;
+
+        // If the all apps drawer is open and the drawing region for the workspace
+        // is contained within the drawer's bounds, we skip the drawing. This requires
+        // the drawer to be fully opaque.
+        if (mLauncher.isDrawerUp()) {
+            final Rect clipBounds = mClipBounds;
+            canvas.getClipBounds(clipBounds);
+            clipBounds.offset(-mScrollX, -mScrollY);
+            if (mDrawerBounds.contains(clipBounds)) {
+                return;
+            }
+        } else if (mLauncher.isDrawerMoving()) {
+            restore = true;
+            canvas.save(Canvas.CLIP_SAVE_FLAG);
+
+            final View view = mLauncher.getDrawerHandle();
+            final int top = view.getTop() + view.getHeight();
+
+            canvas.clipRect(mScrollX, top, mScrollX + mDrawerContentWidth,
+                    top + mDrawerContentHeight, Region.Op.DIFFERENCE);
+        }
+
         float x = mScrollX * mWallpaperOffset;
         if (x + mWallpaperWidth < mRight - mLeft) {
             x = mRight - mLeft - mWallpaperWidth;
@@ -463,6 +498,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                     drawChild(canvas, getChildAt(i), drawingTime);
                 }
             }
+        }
+
+        if (restore) {
+            canvas.restore();
         }
     }
 
@@ -626,8 +665,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                  */
                 final int xDiff = (int) Math.abs(x - mLastMotionX);
                 final int yDiff = (int) Math.abs(y - mLastMotionY);
-                final int touchSlop = ViewConfiguration.getTouchSlop();
-                
+
+                final int touchSlop = mTouchSlop;
                 boolean xMoved = xDiff > touchSlop;
                 boolean yMoved = yDiff > touchSlop;
                 
@@ -669,6 +708,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                 // Release the drag
                 clearChildrenCache();
                 mTouchState = TOUCH_STATE_REST;
+                mAllowLongPress = false;
                 break;
         }
 
@@ -835,11 +875,16 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     void addApplicationShortcut(ApplicationInfo info, CellLayout.CellInfo cellInfo) {
+        addApplicationShortcut(info, cellInfo, false);
+    }
+
+    void addApplicationShortcut(ApplicationInfo info, CellLayout.CellInfo cellInfo,
+            boolean insertAtFirst) {
         final CellLayout layout = (CellLayout) getChildAt(cellInfo.screen);
         final int[] result = new int[2];
 
         layout.cellToPoint(cellInfo.cellX, cellInfo.cellY, result);
-        onDropExternal(result[0], result[1], info, layout);
+        onDropExternal(result[0], result[1], info, layout, insertAtFirst);
     }
 
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset, Object dragInfo) {
@@ -878,6 +923,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     private void onDropExternal(int x, int y, Object dragInfo, CellLayout cellLayout) {
+        onDropExternal(x, y, dragInfo, cellLayout, false);
+    }
+    
+    private void onDropExternal(int x, int y, Object dragInfo, CellLayout cellLayout,
+            boolean insertAtFirst) {
         // Drag from somewhere else
         ItemInfo info = (ItemInfo) dragInfo;
 
@@ -901,7 +951,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             throw new IllegalStateException("Unknown item type: " + info.itemType);
         }
 
-        cellLayout.addView(view);
+        cellLayout.addView(view, insertAtFirst ? 0 : -1);
         view.setOnLongClickListener(mLongClickListener);
         cellLayout.onDropChild(view, x, y);
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
@@ -979,12 +1029,12 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     /**
      * Find a search widget on the given screen
      */
-    private View findSearchWidget(CellLayout screen) {
+    private Search findSearchWidget(CellLayout screen) {
         final int count = screen.getChildCount();
         for (int i = 0; i < count; i++) {
             View v = screen.getChildAt(i);
             if (v instanceof Search) {
-                return v;
+                return (Search) v;
             }
         }
         return null;
@@ -995,9 +1045,30 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
      * if there is one.  Also clears the current search selection so we don't 
      */
     private boolean focusOnSearch(int screen) {
-        CellLayout currentScreen = (CellLayout)getChildAt(screen);
-        Search searchWidget = (Search)findSearchWidget(currentScreen);
+        CellLayout currentScreen = (CellLayout) getChildAt(screen);
+        final Search searchWidget = findSearchWidget(currentScreen);
         if (searchWidget != null) {
+            // This is necessary when focus on search is requested from the menu
+            // If the workspace was not in touch mode before the menu is invoked
+            // and the user clicks "Search" by touching the menu item, the following
+            // happens:
+            //
+            // - We request focus from touch on the search widget
+            // - The search widget gains focus
+            // - The window focus comes back to Home's window
+            // - The touch mode change is propagated to Home's window
+            // - The search widget is not focusable in touch mode and ViewRoot
+            //   clears its focus
+            //
+            // Forcing focusable in touch mode ensures the search widget will
+            // keep the focus no matter what happens.
+            //
+            // Note: the search input field disables focusable in touch mode
+            // after the window gets the focus back, see SearchAutoCompleteTextView
+            final SearchAutoCompleteTextView input = searchWidget.getSearchInputField();
+            input.setFocusableInTouchMode(true);
+            input.showKeyboardOnNextFocus();
+
             if (isInTouchMode()) {
                 searchWidget.requestFocusFromTouch();
             } else {
@@ -1124,6 +1195,14 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     public boolean allowLongPress() {
         return mAllowLongPress;
     }
+    
+    /**
+     * Set true to allow long-press events to be triggered, usually checked by
+     * {@link Launcher} to accept or block dpad-initiated long-presses.
+     */
+    public void setAllowLongPress(boolean allowLongPress) {
+        mAllowLongPress = allowLongPress;
+    }
 
     void removeShortcutsForPackage(String packageName) {
         final ArrayList<View> childrenToRemove = new ArrayList<View>();
@@ -1138,7 +1217,13 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                 Object tag = view.getTag();
                 if (tag instanceof ApplicationInfo) {
                     ApplicationInfo info = (ApplicationInfo) tag;
-                    if (packageName.equals(info.intent.getComponent().getPackageName())) {
+                    // We need to check for ACTION_MAIN otherwise getComponent() might
+                    // return null for some shortcuts (for instance, for shortcuts to
+                    // web pages.)
+                    final Intent intent = info.intent;
+                    final ComponentName name = intent.getComponent();
+                    if (Intent.ACTION_MAIN.equals(intent.getAction()) &&
+                            name != null && packageName.equals(name.getPackageName())) {
                         model.removeDesktopItem(info);
                         LauncherModel.deleteItemFromDatabase(mLauncher, info);
                         childrenToRemove.add(view);
@@ -1155,6 +1240,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             }
         }
     }
+    
+    // TODO: remove widgets when appwidgetmanager tells us they're gone
+//    void removeAppWidgetsForProvider() {
+//    }
 
     void moveToDefaultScreen() {
         snapToScreen(mDefaultScreen);

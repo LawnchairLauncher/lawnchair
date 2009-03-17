@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2009 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name">"홈"</string>
+    <string name="folder_name">"폴더"</string>
+    <string name="chooser_wallpaper">"배경화면 선택"</string>
+    <string name="wallpaper_instructions">"배경화면 설정"</string>
+    <string name="pick_wallpaper">"배경화면 갤러리"</string>
+    <string name="activity_not_found">"전화기에 설치되어 있지 않은 응용프로그램입니다."</string>
+    <string name="rename_folder_label">"폴더 이름"</string>
+    <string name="rename_folder_title">"폴더 이름 바꾸기"</string>
+    <string name="rename_action">"확인"</string>
+    <string name="cancel_action">"취소"</string>
+    <string name="menu_item_add_item">"홈 화면에 추가"</string>
+    <string name="group_applications">"응용프로그램"</string>
+    <string name="group_shortcuts">"바로가기"</string>
+    <string name="group_search">"검색"</string>
+    <string name="group_folder">"폴더"</string>
+    <string name="group_live_folders">"라이브 폴더"</string>
+    <string name="group_widgets">"위젯"</string>
+    <string name="group_wallpapers">"배경화면"</string>
+    <string name="add_folder">"폴더"</string>
+    <string name="add_clock">"시계"</string>
+    <string name="add_photo_frame">"사진 프레임"</string>
+    <string name="add_search">"검색"</string>
+    <string name="out_of_space">"홈 화면에 더 이상 공간이 없습니다."</string>
+    <string name="title_select_shortcut">"바로가기 선택"</string>
+    <string name="title_select_live_folder">"라이브 폴더 선택"</string>
+    <string name="menu_add">"추가"</string>
+    <string name="menu_wallpaper">"배경화면"</string>
+    <string name="menu_search">"검색"</string>
+    <string name="menu_notifications">"알림"</string>
+    <string name="menu_settings">"설정"</string>
+    <string name="permlab_install_shortcut">"바로가기 설치"</string>
+    <string name="permdesc_install_shortcut">"응용프로그램이 사용자의 작업 없이 바로가기를 추가할 수 있도록 합니다."</string>
+    <string name="permlab_uninstall_shortcut">"바로가기 제거"</string>
+    <string name="permdesc_uninstall_shortcut">"응용프로그램이 사용자의 작업 없이 바로가기를 제거할 수 있도록 합니다."</string>
+    <string name="permlab_read_settings">"홈 설정 및 바로가기 읽기"</string>
+    <string name="permdesc_read_settings">"응용프로그램이 홈에 있는 설정 및 바로가기를 읽을 수 있습니다."</string>
+    <string name="permlab_write_settings">"홈 설정 및 바로가기 쓰기"</string>
+    <string name="permdesc_write_settings">"응용프로그램이 홈에 있는 설정 및 바로가기를 변경할 수 있습니다."</string>
+    <string name="search_hint">"Google 검색"</string>
+    <!-- no translation found for gadget_error_text (8359351016167075858) -->
+    <skip />
+</resources>

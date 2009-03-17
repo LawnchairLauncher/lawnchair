@@ -28,6 +28,8 @@
     <string name="menu_item_add_item">"新增至首頁畫面"</string>
     <string name="group_applications">"應用程式"</string>
     <string name="group_shortcuts">"捷徑"</string>
+    <string name="group_search">"搜尋"</string>
+    <string name="group_folder">"資料夾"</string>
     <string name="group_live_folders">"使用中的資料夾"</string>
     <string name="group_widgets">"Widget"</string>
     <string name="group_wallpapers">"桌布"</string>
@@ -36,6 +38,8 @@
     <string name="add_photo_frame">"相框"</string>
     <string name="add_search">"搜尋"</string>
     <string name="out_of_space">"首頁已無空間"</string>
+    <string name="title_select_shortcut">"選取捷徑"</string>
+    <string name="title_select_live_folder">"選取作用中資料夾"</string>
     <string name="menu_add">"新增"</string>
     <string name="menu_wallpaper">"桌布"</string>
     <string name="menu_search">"搜尋"</string>
@@ -50,4 +54,6 @@
     <string name="permlab_write_settings">"寫入首頁設定和捷徑"</string>
     <string name="permdesc_write_settings">"允許應用程式變更首頁中的設定和捷徑。"</string>
     <string name="search_hint">"Google 搜尋"</string>
+    <!-- no translation found for gadget_error_text (8359351016167075858) -->
+    <skip />
 </resources>

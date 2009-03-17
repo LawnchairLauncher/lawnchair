@@ -17,11 +17,10 @@
 ** limitations under the License.
 */
 -->
-<ExpandableListView xmlns:android="http://schemas.android.com/apk/res/android"
+<ListView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:layout_marginTop="5px"
+    android:layout_marginTop="5dip"
     android:cacheColorHint="@null"
-    android:childDivider="@android:drawable/divider_horizontal_bright"
     android:divider="@android:drawable/divider_horizontal_bright"
     android:scrollbars="vertical" />
