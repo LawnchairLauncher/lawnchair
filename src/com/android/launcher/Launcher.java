@@ -57,6 +57,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.Log;
+import static android.util.Log.*;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -111,6 +112,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private static final int REQUEST_PICK_APPWIDGET = 9;
 
     static final String EXTRA_SHORTCUT_DUPLICATE = "duplicate";
+
+    static final String EXTRA_CUSTOM_WIDGET = "custom_widget";
+    static final String SEARCH_WIDGET = "search_widget";
 
     static final int SCREEN_COUNT = 3;
     static final int DEFAULT_SCREN = 1;
@@ -603,7 +607,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         Bundle extras = data.getExtras();
         int appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
         
-        Log.d(LOG_TAG, "dumping extras content="+extras.toString());
+        d(LOG_TAG, "dumping extras content="+extras.toString());
         
         AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
         
@@ -671,7 +675,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     final int id = resources.getIdentifier(iconResource.resourceName, null, null);
                     icon = resources.getDrawable(id);
                 } catch (Exception e) {
-                    Log.w(LOG_TAG, "Could not load shortcut icon: " + extra);
+                    w(LOG_TAG, "Could not load shortcut icon: " + extra);
                 }
             }
         }
@@ -794,7 +798,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         try {
             mAppWidgetHost.stopListening();
         } catch (NullPointerException ex) {
-            Log.w(LOG_TAG, "problem while stopping AppWidgetHost during Launcher destruction", ex);
+            w(LOG_TAG, "problem while stopping AppWidgetHost during Launcher destruction", ex);
         }
 
         TextKeyListener.getInstance().release();
@@ -903,21 +907,36 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
     }
     
+    private void updateShortcutsForPackage(String packageName) {
+        if (packageName != null && packageName.length() > 0) {
+            mWorkspace.updateShortcutsForPackage(packageName);
+        }
+    }
+
     void addAppWidget(Intent data) {
         // TODO: catch bad widget exception when sent
         int appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-        AppWidgetProviderInfo appWidget = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
 
-        if (appWidget.configure != null) {
-            // Launch over to configure widget, if needed
-            Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
-            intent.setComponent(appWidget.configure);
-            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-
-            startActivityForResult(intent, REQUEST_CREATE_APPWIDGET);
+        String customWidget = data.getStringExtra(EXTRA_CUSTOM_WIDGET);
+        if (SEARCH_WIDGET.equals(customWidget)) {
+            // We don't need this any more, since this isn't a real app widget.
+            mAppWidgetHost.deleteAppWidgetId(appWidgetId);
+            // add the search widget
+            addSearch();
         } else {
-            // Otherwise just add it
-            onActivityResult(REQUEST_CREATE_APPWIDGET, Activity.RESULT_OK, data);
+            AppWidgetProviderInfo appWidget = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
+
+            if (appWidget.configure != null) {
+                // Launch over to configure widget, if needed
+                Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
+                intent.setComponent(appWidget.configure);
+                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+
+                startActivityForResult(intent, REQUEST_CREATE_APPWIDGET);
+            } else {
+                // Otherwise just add it
+                onActivityResult(REQUEST_CREATE_APPWIDGET, Activity.RESULT_OK, data);
+            }
         }
     }
     
@@ -1008,7 +1027,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 final int id = resources.getIdentifier(iconResource.resourceName, null, null);
                 icon = resources.getDrawable(id);
             } catch (Exception e) {
-                Log.w(LOG_TAG, "Could not load live folder icon: " + extra);
+                w(LOG_TAG, "Could not load live folder icon: " + extra);
             }
         }
 
@@ -1107,8 +1126,11 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             switch (event.getKeyCode()) {
                 case KeyEvent.KEYCODE_BACK:
                     mWorkspace.dispatchKeyEvent(event); 
-                    closeFolder();
-                    closeDrawer();
+                    if (mDrawer.isOpened()) {
+                        closeDrawer();
+                    } else {
+                        closeFolder();                        
+                    }
                     return true;
                 case KeyEvent.KEYCODE_HOME:
                     return true;
@@ -1163,7 +1185,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     void onDesktopItemsLoaded() {
         if (mDestroyed) return;
-android.util.Log.d("Home", "setting grid adapter");
+d("Home", "setting grid adapter");
         mAllAppsGrid.setAdapter(sModel.getApplicationsAdapter());
         bindDesktopItems();
     }
@@ -1313,7 +1335,7 @@ android.util.Log.d("Home", "setting grid adapter");
             final AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
             item.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
             
-            if (LOGD) Log.d(LOG_TAG, String.format("about to setAppWidget for id=%d, info=%s", appWidgetId, appWidgetInfo));
+            if (LOGD) d(LOG_TAG, String.format("about to setAppWidget for id=%d, info=%s", appWidgetId, appWidgetInfo));
             
             item.hostView.setAppWidget(appWidgetId, appWidgetInfo);
             item.hostView.setTag(item);
@@ -1704,6 +1726,23 @@ android.util.Log.d("Home", "setting grid adapter");
                         
                         Intent pickIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_PICK);
                         pickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+                        // add the search widget
+                        ArrayList<AppWidgetProviderInfo> customInfo =
+                                new ArrayList<AppWidgetProviderInfo>();
+                        AppWidgetProviderInfo info = new AppWidgetProviderInfo();
+                        info.provider = new ComponentName(getPackageName(), "XXX.YYY");
+                        info.label = getString(R.string.group_search);
+                        info.icon = R.drawable.ic_search_widget;
+                        customInfo.add(info);
+                        pickIntent.putParcelableArrayListExtra(
+                                AppWidgetManager.EXTRA_CUSTOM_INFO, customInfo);
+                        ArrayList<Bundle> customExtras = new ArrayList<Bundle>();
+                        Bundle b = new Bundle();
+                        b.putString(EXTRA_CUSTOM_WIDGET, SEARCH_WIDGET);
+                        customExtras.add(b);
+                        pickIntent.putParcelableArrayListExtra(
+                                AppWidgetManager.EXTRA_CUSTOM_EXTRAS, customExtras);
+                        // start the pick activity
                         startActivityForResult(pickIntent, REQUEST_PICK_APPWIDGET);
                         break;
                     }
@@ -1742,23 +1781,47 @@ android.util.Log.d("Home", "setting grid adapter");
     private class ApplicationsIntentReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            boolean reloadWorkspace = false;
-android.util.Log.d("Home", "application intent received: " + intent.getAction());
-android.util.Log.d("Home", "  --> " + intent.getData());
-            if (Intent.ACTION_PACKAGE_REMOVED.equals(intent.getAction())) {
-                if (!intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)) {
-                    removeShortcutsForPackage(intent.getData().getSchemeSpecificPart());
-                } else {
-                    reloadWorkspace = true;
-                }
+            final String action = intent.getAction();
+            final String packageName = intent.getData().getSchemeSpecificPart();
+            final boolean replacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
+
+            if (LauncherModel.DEBUG_LOADERS) {
+                d(LauncherModel.LOG_TAG, "application intent received: " + action +
+                        ", replacing=" + replacing);
+                d(LauncherModel.LOG_TAG, "  --> " + intent.getData());
             }
-            removeDialog(DIALOG_CREATE_SHORTCUT);
-            if (!reloadWorkspace) {
-android.util.Log.d("Home", "  --> loading apps");
-                sModel.loadApplications(false, Launcher.this, false);
+
+            if (!Intent.ACTION_PACKAGE_CHANGED.equals(action)) {
+                if (Intent.ACTION_PACKAGE_REMOVED.equals(action)) {
+                    if (!replacing) {
+                        removeShortcutsForPackage(packageName);
+                        if (LauncherModel.DEBUG_LOADERS) {
+                            d(LauncherModel.LOG_TAG, "  --> remove package");
+                        }
+                        sModel.removePackage(Launcher.this, packageName);
+                    }
+                    // else, we are replacing the package, so a PACKAGE_ADDED will be sent
+                    // later, we will update the package at this time
+                } else {
+                    if (!replacing) {
+                        if (LauncherModel.DEBUG_LOADERS) {
+                            d(LauncherModel.LOG_TAG, "  --> add package");
+                        }
+                        sModel.addPackage(Launcher.this, packageName);
+                    } else {
+                        if (LauncherModel.DEBUG_LOADERS) {
+                            d(LauncherModel.LOG_TAG, "  --> update package " + packageName);
+                        }
+                        sModel.updatePackage(Launcher.this, packageName);
+                        updateShortcutsForPackage(packageName);
+                    }
+                }
+                removeDialog(DIALOG_CREATE_SHORTCUT);
             } else {
-android.util.Log.d("Home", "  --> loading workspace");
-                sModel.loadUserItems(false, Launcher.this, false, true);
+                if (LauncherModel.DEBUG_LOADERS) {
+                    d(LauncherModel.LOG_TAG, "  --> sync package " + packageName);
+                }
+                sModel.syncPackage(Launcher.this, packageName);
             }
         }
     }

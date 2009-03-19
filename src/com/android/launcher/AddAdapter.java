@@ -79,8 +79,10 @@ public class AddAdapter extends BaseAdapter {
         mItems.add(new ListItem(res, R.string.group_shortcuts,
                 R.drawable.ic_launcher_empty, ITEM_SHORTCUT));
         
-        mItems.add(new ListItem(res, R.string.group_search,
-                R.drawable.ic_search_widget, ITEM_SEARCH));
+        if (false) {
+            mItems.add(new ListItem(res, R.string.group_search,
+                    R.drawable.ic_search_widget, ITEM_SEARCH));
+        }
         
         mItems.add(new ListItem(res, R.string.group_widgets,
                 R.drawable.ic_launcher_appwidget, ITEM_APPWIDGET));

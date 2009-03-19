@@ -24,6 +24,8 @@ import android.content.Intent;
 import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.ContentResolver;
+import android.content.res.XmlResourceParser;
+import android.content.res.TypedArray;
 import android.content.pm.PackageManager;
 import android.content.pm.ActivityInfo;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -33,19 +35,17 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.util.Log;
 import android.util.Xml;
+import android.util.AttributeSet;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.os.*;
 import android.provider.Settings;
 
-import java.io.FileReader;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParser;
 import com.android.internal.util.XmlUtils;
 import com.android.launcher.LauncherSettings.Favorites;
 
@@ -162,19 +162,10 @@ public class LauncherProvider extends ContentProvider {
     }
 
     private static class DatabaseHelper extends SQLiteOpenHelper {
-        /**
-         * Path to file containing default favorite packages, relative to ANDROID_ROOT.
-         */
-        private static final String DEFAULT_FAVORITES_PATH = "etc/favorites.xml";
-
         private static final String TAG_FAVORITES = "favorites";
         private static final String TAG_FAVORITE = "favorite";
-        private static final String TAG_PACKAGE = "package";
-        private static final String TAG_CLASS = "class";
-
-        private static final String ATTRIBUTE_SCREEN = "screen";
-        private static final String ATTRIBUTE_X = "x";
-        private static final String ATTRIBUTE_Y = "y";
+        private static final String TAG_CLOCK = "clock";
+        private static final String TAG_SEARCH = "search";
 
         private final Context mContext;
         private final AppWidgetHost mAppWidgetHost;
@@ -217,7 +208,7 @@ public class LauncherProvider extends ContentProvider {
             
             if (!convertDatabase(db)) {
                 // Populate favorites table with initial favorites
-                loadFavorites(db, DEFAULT_FAVORITES_PATH);
+                loadFavorites(db);
             }
         }
 
@@ -445,115 +436,121 @@ public class LauncherProvider extends ContentProvider {
          * Loads the default set of favorite packages from an xml file.
          *
          * @param db The database to write the values into
-         * @param subPath The relative path from ANDROID_ROOT to the file to read
          */
-        private int loadFavorites(SQLiteDatabase db, String subPath) {
-            FileReader favReader;
-
-            // Environment.getRootDirectory() is a fancy way of saying ANDROID_ROOT or "/system".
-            final File favFile = new File(Environment.getRootDirectory(), subPath);
-            try {
-                favReader = new FileReader(favFile);
-            } catch (FileNotFoundException e) {
-                Log.e(LOG_TAG, "Couldn't find or open favorites file " + favFile);
-                return 0;
-            }
-
+        private int loadFavorites(SQLiteDatabase db) {
             Intent intent = new Intent(Intent.ACTION_MAIN, null);
             intent.addCategory(Intent.CATEGORY_LAUNCHER);
             ContentValues values = new ContentValues();
 
             PackageManager packageManager = mContext.getPackageManager();
-            ActivityInfo info;
             int i = 0;
             try {
-                XmlPullParser parser = Xml.newPullParser();
-                parser.setInput(favReader);
-
+                XmlResourceParser parser = mContext.getResources().getXml(R.xml.default_workspace);
+                AttributeSet attrs = Xml.asAttributeSet(parser);
                 XmlUtils.beginDocument(parser, TAG_FAVORITES);
 
-                while (true) {
-                    XmlUtils.nextElement(parser);
+                final int depth = parser.getDepth();
 
-                    String name = parser.getName();
-                    if (!TAG_FAVORITE.equals(name)) {
-                        break;
+                int type;
+                while (((type = parser.next()) != XmlPullParser.END_TAG ||
+                        parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
+
+                    if (type != XmlPullParser.START_TAG) {
+                        continue;
                     }
 
-                    String pkg = parser.getAttributeValue(null, TAG_PACKAGE);
-                    String cls = parser.getAttributeValue(null, TAG_CLASS);
-                    try {
-                        ComponentName cn = new ComponentName(pkg, cls);
-                        info = packageManager.getActivityInfo(cn, 0);
-                        intent.setComponent(cn);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        values.put(LauncherSettings.Favorites.INTENT, intent.toURI());
-                        values.put(LauncherSettings.Favorites.TITLE,
-                                info.loadLabel(packageManager).toString());
-                        values.put(LauncherSettings.Favorites.CONTAINER,
-                                LauncherSettings.Favorites.CONTAINER_DESKTOP);
-                        values.put(LauncherSettings.Favorites.ITEM_TYPE,
-                                LauncherSettings.Favorites.ITEM_TYPE_APPLICATION);
-                        values.put(LauncherSettings.Favorites.SCREEN,
-                                parser.getAttributeValue(null, ATTRIBUTE_SCREEN));
-                        values.put(LauncherSettings.Favorites.CELLX,
-                                parser.getAttributeValue(null, ATTRIBUTE_X));
-                        values.put(LauncherSettings.Favorites.CELLY,
-                                parser.getAttributeValue(null, ATTRIBUTE_Y));
-                        values.put(LauncherSettings.Favorites.SPANX, 1);
-                        values.put(LauncherSettings.Favorites.SPANY, 1);
-                        db.insert(TABLE_FAVORITES, null, values);
-                        i++;
-                    } catch (PackageManager.NameNotFoundException e) {
-                        Log.w(LOG_TAG, "Unable to add favorite: " + pkg + "/" + cls, e);
+                    boolean added = false;
+                    final String name = parser.getName();
+
+                    TypedArray a = mContext.obtainStyledAttributes(attrs, R.styleable.Favorite);
+
+                    values.clear();                    
+                    values.put(LauncherSettings.Favorites.CONTAINER,
+                            LauncherSettings.Favorites.CONTAINER_DESKTOP);
+                    values.put(LauncherSettings.Favorites.SCREEN,
+                            a.getString(R.styleable.Favorite_screen));
+                    values.put(LauncherSettings.Favorites.CELLX,
+                            a.getString(R.styleable.Favorite_x));
+                    values.put(LauncherSettings.Favorites.CELLY,
+                            a.getString(R.styleable.Favorite_y));
+
+                    if (TAG_FAVORITE.equals(name)) {
+                        added = addShortcut(db, values, a, packageManager, intent);
+                    } else if (TAG_SEARCH.equals(name)) {
+                        added = addSearchWidget(db, values);
+                    } else if (TAG_CLOCK.equals(name)) {
+                        added = addClockWidget(db, values);
                     }
+
+                    if (added) i++;
+
+                    a.recycle();
                 }
             } catch (XmlPullParserException e) {
                 Log.w(LOG_TAG, "Got exception parsing favorites.", e);
             } catch (IOException e) {
                 Log.w(LOG_TAG, "Got exception parsing favorites.", e);
             }
-            
+
+            return i;
+        }
+
+        private boolean addShortcut(SQLiteDatabase db, ContentValues values, TypedArray a,
+                PackageManager packageManager, Intent intent) {
+
+            ActivityInfo info;
+            String packageName = a.getString(R.styleable.Favorite_packageName);
+            String className = a.getString(R.styleable.Favorite_className);
+            try {
+                ComponentName cn = new ComponentName(packageName, className);
+                info = packageManager.getActivityInfo(cn, 0);
+                intent.setComponent(cn);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                values.put(Favorites.INTENT, intent.toURI());
+                values.put(Favorites.TITLE, info.loadLabel(packageManager).toString());
+                values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_APPLICATION);
+                values.put(Favorites.SPANX, 1);
+                values.put(Favorites.SPANY, 1);
+                db.insert(TABLE_FAVORITES, null, values);
+            } catch (PackageManager.NameNotFoundException e) {
+                Log.w(LOG_TAG, "Unable to add favorite: " + packageName +
+                        "/" + className, e);
+                return false;
+            }
+            return true;
+        }
+
+        private boolean addSearchWidget(SQLiteDatabase db, ContentValues values) {
             // Add a search box
-            values.clear();
-            values.put(LauncherSettings.Favorites.CONTAINER,
-                    LauncherSettings.Favorites.CONTAINER_DESKTOP);
-            values.put(LauncherSettings.Favorites.ITEM_TYPE,
-                    LauncherSettings.Favorites.ITEM_TYPE_WIDGET_SEARCH);
-            values.put(LauncherSettings.Favorites.SCREEN, 2);
-            values.put(LauncherSettings.Favorites.CELLX, 0);
-            values.put(LauncherSettings.Favorites.CELLY, 0);
-            values.put(LauncherSettings.Favorites.SPANX, 4);
-            values.put(LauncherSettings.Favorites.SPANY, 1);
+            values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_WIDGET_SEARCH);
+            values.put(Favorites.SPANX, 4);
+            values.put(Favorites.SPANY, 1);
             db.insert(TABLE_FAVORITES, null, values);
-            
+
+            return true;
+        }
+
+        private boolean addClockWidget(SQLiteDatabase db, ContentValues values) {
             final int[] bindSources = new int[] {
                     Favorites.ITEM_TYPE_WIDGET_CLOCK,
             };
-            
+
             final ArrayList<ComponentName> bindTargets = new ArrayList<ComponentName>();
             bindTargets.add(new ComponentName("com.android.alarmclock",
                     "com.android.alarmclock.AnalogAppWidgetProvider"));
-            
+
             boolean allocatedAppWidgets = false;
-            
+
             // Try binding to an analog clock widget
             try {
                 int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
-                
-                values.clear();
-                values.put(LauncherSettings.Favorites.CONTAINER,
-                        LauncherSettings.Favorites.CONTAINER_DESKTOP);
-                values.put(LauncherSettings.Favorites.ITEM_TYPE,
-                        LauncherSettings.Favorites.ITEM_TYPE_WIDGET_CLOCK);
-                values.put(LauncherSettings.Favorites.SCREEN, 1);
-                values.put(LauncherSettings.Favorites.CELLX, 1);
-                values.put(LauncherSettings.Favorites.CELLY, 0);
-                values.put(LauncherSettings.Favorites.SPANX, 2);
-                values.put(LauncherSettings.Favorites.SPANY, 2);
-                values.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId);
+
+                values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_WIDGET_CLOCK);
+                values.put(Favorites.SPANX, 2);
+                values.put(Favorites.SPANY, 2);
+                values.put(Favorites.APPWIDGET_ID, appWidgetId);
                 db.insert(TABLE_FAVORITES, null, values);
-                
+
                 allocatedAppWidgets = true;
             } catch (RuntimeException ex) {
                 Log.e(LOG_TAG, "Problem allocating appWidgetId", ex);
@@ -563,8 +560,8 @@ public class LauncherProvider extends ContentProvider {
             if (allocatedAppWidgets) {
                 launchAppWidgetBinder(bindSources, bindTargets);
             }
-            
-            return i;
+
+            return allocatedAppWidgets;
         }
     }
 
