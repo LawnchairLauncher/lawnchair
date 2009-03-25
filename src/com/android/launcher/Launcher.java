@@ -1350,25 +1350,27 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     
     private void bindAppWidgets(Launcher.DesktopBinder binder,
             LinkedList<LauncherAppWidgetInfo> appWidgets) {
-
+        
         final Workspace workspace = mWorkspace;
         final boolean desktopLocked = mDesktopLocked;
 
-        final LauncherAppWidgetInfo item = appWidgets.removeFirst();
-        
-        final int appWidgetId = item.appWidgetId;
-        final AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
-        item.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
-        
-        if (LOGD) d(LOG_TAG, String.format("about to setAppWidget for id=%d, info=%s", appWidgetId, appWidgetInfo));
-        
-        item.hostView.setAppWidget(appWidgetId, appWidgetInfo);
-        item.hostView.setTag(item);
-        
-        workspace.addInScreen(item.hostView, item.screen, item.cellX,
-                item.cellY, item.spanX, item.spanY, !desktopLocked);
-
-        workspace.requestLayout();
+        if (!appWidgets.isEmpty()) {
+            final LauncherAppWidgetInfo item = appWidgets.removeFirst();
+            
+            final int appWidgetId = item.appWidgetId;
+            final AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
+            item.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
+            
+            if (LOGD) d(LOG_TAG, String.format("about to setAppWidget for id=%d, info=%s", appWidgetId, appWidgetInfo));
+            
+            item.hostView.setAppWidget(appWidgetId, appWidgetInfo);
+            item.hostView.setTag(item);
+            
+            workspace.addInScreen(item.hostView, item.screen, item.cellX,
+                    item.cellY, item.spanX, item.spanY, !desktopLocked);
+    
+            workspace.requestLayout();
+        }
 
         if (appWidgets.isEmpty()) {
             if (PROFILE_ROTATE) {
