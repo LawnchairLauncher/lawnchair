@@ -39,7 +39,6 @@ import android.content.res.Resources;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -63,19 +62,15 @@ import android.text.method.TextKeyListener;
 import android.util.Log;
 import static android.util.Log.*;
 import android.view.Display;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.View.OnLongClickListener;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.GridView;
@@ -314,8 +309,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         
         // For example, the user would PICK_SHORTCUT for "Music playlist", and we
         // launch over to the Music app to actually CREATE_SHORTCUT.
-        
-        Resources res = getResources();
         
         if (resultCode == RESULT_OK && mAddItemCellInfo != null) {
             switch (requestCode) {
@@ -1699,8 +1692,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private class CreateShortcut implements DialogInterface.OnClickListener,
             DialogInterface.OnCancelListener {
         private AddAdapter mAdapter;
-        private ListView mList;
-        
+
         Dialog createDialog() {
             mWaitingForResult = true;
             
@@ -1710,7 +1702,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             builder.setTitle(getString(R.string.menu_item_add_item));
             builder.setAdapter(mAdapter, this);
             
-            builder.setView(mList);
             builder.setInverseBackgroundForced(true);
 
             AlertDialog dialog = builder.create();
