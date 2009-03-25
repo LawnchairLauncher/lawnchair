@@ -412,7 +412,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     intent.putExtra(Contacts.Intents.UI.FILTER_TEXT_EXTRA_KEY, str);
                 }
 
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
                 try {
                     startActivity(intent);
