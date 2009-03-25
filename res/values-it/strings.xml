@@ -54,6 +54,5 @@
     <string name="permlab_write_settings">"creare impostazioni e scorciatoie in Home"</string>
     <string name="permdesc_write_settings">"Consente a un\'applicazione di modificare le impostazioni e le scorciatoie in Home."</string>
     <string name="search_hint">"Ricerca Google"</string>
-    <!-- no translation found for gadget_error_text (8359351016167075858) -->
-    <skip />
+    <string name="gadget_error_text">"Errore durante il caricamento del widget"</string>
 </resources>

@@ -54,6 +54,5 @@
     <string name="permlab_write_settings">"写入“主页”设置和快捷键"</string>
     <string name="permdesc_write_settings">"允许应用程序更改“主页”中的设置和快捷键。"</string>
     <string name="search_hint">"Google 搜索"</string>
-    <!-- no translation found for gadget_error_text (8359351016167075858) -->
-    <skip />
+    <string name="gadget_error_text">"载入窗口小部件时出现问题"</string>
 </resources>

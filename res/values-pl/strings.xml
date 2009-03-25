@@ -54,6 +54,5 @@
     <string name="permlab_write_settings">"zapisywanie ustawień i skrótów strony głównej"</string>
     <string name="permdesc_write_settings">"Umożliwia aplikacji zmianę ustawień i skrótów strony głównej."</string>
     <string name="search_hint">"Szukaj w Google"</string>
-    <!-- no translation found for gadget_error_text (8359351016167075858) -->
-    <skip />
+    <string name="gadget_error_text">"Problem podczas ładowania widżetu"</string>
 </resources>

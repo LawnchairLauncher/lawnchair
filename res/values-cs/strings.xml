@@ -54,6 +54,5 @@
     <string name="permlab_write_settings">"zápis nastavení a odkazů plochy"</string>
     <string name="permdesc_write_settings">"Povoluje aplikaci změnit nastavení a odkazy plochy."</string>
     <string name="search_hint">"Vyhledávání Google"</string>
-    <!-- no translation found for gadget_error_text (8359351016167075858) -->
-    <skip />
+    <string name="gadget_error_text">"Problém s načtením widgetu"</string>
 </resources>
