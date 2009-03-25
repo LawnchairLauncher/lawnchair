@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.widget.Toast;
 
 public class InstallShortcutReceiver extends BroadcastReceiver {
     private final int[] mCoordinates = new int[2];
@@ -37,6 +38,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     }
 
     private boolean installShortcut(Context context, Intent data, int screen) {
+        String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
+
         if (findEmptyCell(context, mCoordinates, screen)) {
             CellLayout.CellInfo cell = new CellLayout.CellInfo();
             cell.cellX = mCoordinates[0];
@@ -44,7 +47,6 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             cell.screen = screen;
 
             Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
-            String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
 
             if (intent.getAction() == null) {
                 intent.setAction(Intent.ACTION_VIEW);
@@ -55,9 +57,17 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             boolean duplicate = data.getBooleanExtra(Launcher.EXTRA_SHORTCUT_DUPLICATE, true);
             if (duplicate || !LauncherModel.shortcutExists(context, name, intent)) {
                 Launcher.addShortcut(context, data, cell, true);
+                Toast.makeText(context, context.getString(R.string.shortcut_installed, name),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, context.getString(R.string.shortcut_duplicate, name),
+                        Toast.LENGTH_SHORT).show();
             }
 
             return true;
+        } else {
+            Toast.makeText(context, context.getString(R.string.out_of_space),
+                    Toast.LENGTH_SHORT).show();
         }
 
         return false;
