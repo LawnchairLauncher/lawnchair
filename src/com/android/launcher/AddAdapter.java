@@ -31,8 +31,7 @@ import java.util.ArrayList;
  * Adapter showing the types of items that can be added to a {@link Workspace}.
  */
 public class AddAdapter extends BaseAdapter {
-    
-    private final Launcher mLauncher;
+
     private final LayoutInflater mInflater;
     
     private final ArrayList<ListItem> mItems = new ArrayList<ListItem>();
@@ -66,9 +65,8 @@ public class AddAdapter extends BaseAdapter {
     
     public AddAdapter(Launcher launcher) {
         super();
-        
-        mLauncher = launcher;
-        mInflater = (LayoutInflater) mLauncher.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        mInflater = (LayoutInflater) launcher.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         
         // Create default actions
         Resources res = launcher.getResources();
@@ -77,18 +75,13 @@ public class AddAdapter extends BaseAdapter {
                 R.drawable.ic_launcher_application, ITEM_APPLICATION));
         
         mItems.add(new ListItem(res, R.string.group_shortcuts,
-                R.drawable.ic_launcher_empty, ITEM_SHORTCUT));
-        
-        if (false) {
-            mItems.add(new ListItem(res, R.string.group_search,
-                    R.drawable.ic_search_widget, ITEM_SEARCH));
-        }
-        
+                R.drawable.ic_launcher_shortcut, ITEM_SHORTCUT));
+
         mItems.add(new ListItem(res, R.string.group_widgets,
                 R.drawable.ic_launcher_appwidget, ITEM_APPWIDGET));
         
         mItems.add(new ListItem(res, R.string.group_live_folders,
-                R.drawable.ic_launcher_empty, ITEM_LIVE_FOLDER));
+                R.drawable.ic_launcher_folder_live, ITEM_LIVE_FOLDER));
         
         mItems.add(new ListItem(res, R.string.group_folder,
                 R.drawable.ic_launcher_folder, ITEM_FOLDER));
