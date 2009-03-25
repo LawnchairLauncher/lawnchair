@@ -49,19 +49,19 @@
     <!-- Title of dialog box -->
     <string name="menu_item_add_item">Add to Home screen</string>
     <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all apps -->
-    <string name="group_applications">Application</string>
+    <string name="group_applications">Applications</string>
     <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all shortcuts -->
-    <string name="group_shortcuts">Shortcut</string>
+    <string name="group_shortcuts">Shortcuts</string>
     <!-- Options in "Add to Home" dialog box; Title of the search gadget -->
     <string name="group_search">Search</string>
     <!-- Options in "Add to Home" dialog box; Title of the folder gadget -->
-    <string name="group_folder">Folder</string>
+    <string name="group_folder">New folder</string>
     <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all live folders -->
-    <string name="group_live_folders">Live folder</string>
+    <string name="group_live_folders">Folders</string>
     <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all widgets/gadgets -->
-    <string name="group_widgets">Widget</string>
+    <string name="group_widgets">Widgets</string>
     <!-- Options in "Add to Home" dialog box; Title of the group containing the list of apps that can set the wallpaper-->
-    <string name="group_wallpapers">Wallpaper</string>
+    <string name="group_wallpapers">Wallpapers</string>
     <!-- Options in "Add to Home" dialog box; Name of the Folder widget-->
     <string name="add_folder">Folder</string>
     <!-- Options in "Add to Home" dialog box; Name of the Clock widget-->
@@ -76,7 +76,7 @@
     <!-- Title of dialog when user is selecting shortcut to add to homescreen -->
     <string name="title_select_shortcut">Select shortcut</string>
     <!-- Title of dialog when user is selecting live folder to add to homescreen -->
-    <string name="title_select_live_folder">Select live folder</string>
+    <string name="title_select_live_folder">Select folder</string>
 
     <!-- Menus items: -->
     <skip />
