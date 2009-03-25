@@ -46,6 +46,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
+import android.os.MessageQueue;
 import android.os.Parcelable;
 import android.os.RemoteException;
 import android.os.ServiceManager;
@@ -82,6 +84,7 @@ import android.appwidget.AppWidgetProviderInfo;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Default launcher application.
@@ -92,6 +95,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     private static final boolean PROFILE_STARTUP = false;
     private static final boolean PROFILE_DRAWER = false;
+    private static final boolean PROFILE_ROTATE = false;
     private static final boolean DEBUG_USER_INTERFACE = false;
 
     private static final int WALLPAPER_SCREENS_SPAN = 2;
@@ -201,6 +205,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     private Bundle mSavedInstanceState;
 
+    private DesktopBinder mBinder;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -355,6 +361,19 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     protected void onPause() {
         super.onPause();
         closeDrawer(false);        
+    }
+    
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        // Flag any binder to stop early before switching
+        if (mBinder != null) {
+            mBinder.mTerminate = true;
+        }
+        
+        if (PROFILE_ROTATE) {
+            android.os.Debug.startMethodTracing("/sdcard/launcher-rotate");
+        }
+        return null;
     }
 
     private boolean acceptFilter() {
@@ -1185,18 +1204,17 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     void onDesktopItemsLoaded() {
         if (mDestroyed) return;
-d("Home", "setting grid adapter");
-        mAllAppsGrid.setAdapter(sModel.getApplicationsAdapter());
         bindDesktopItems();
     }
-
+    
     /**
      * Refreshes the shortcuts shown on the workspace.
      */
     private void bindDesktopItems() {
         final ArrayList<ItemInfo> shortcuts = sModel.getDesktopItems();
         final ArrayList<LauncherAppWidgetInfo> appWidgets = sModel.getDesktopAppWidgets();
-        if (shortcuts == null || appWidgets == null) {
+        final ApplicationsAdapter drawerAdapter = sModel.getApplicationsAdapter();
+        if (shortcuts == null || appWidgets == null || drawerAdapter == null) {
             return;
         }
 
@@ -1217,9 +1235,14 @@ d("Home", "setting grid adapter");
                 }
             });
         }
-
-        final DesktopBinder binder = new DesktopBinder(this, shortcuts, appWidgets);
-        binder.startBindingItems();
+        
+        // Flag any old binder to terminate early
+        if (mBinder != null) {
+            mBinder.mTerminate = true;
+        }
+        
+        mBinder = new DesktopBinder(this, shortcuts, appWidgets, drawerAdapter);
+        mBinder.startWhenIdle();
     }
 
     private void bindItems(Launcher.DesktopBinder binder,
@@ -1272,7 +1295,7 @@ d("Home", "setting grid adapter");
 
         if (end >= count) {
             finishBindDesktopItems();
-            binder.startBindingAppWidgets();
+            binder.startBindingDrawer();
         } else {
             binder.obtainMessage(DesktopBinder.MESSAGE_BIND_ITEMS, i, count).sendToTarget();
         }
@@ -1318,44 +1341,44 @@ d("Home", "setting grid adapter");
         mDesktopLocked = false;
         mDrawer.unlock();
     }
-
+    
+    private void bindDrawer(Launcher.DesktopBinder binder,
+            ApplicationsAdapter drawerAdapter) {
+        mAllAppsGrid.setAdapter(drawerAdapter);
+        binder.startBindingAppWidgets();
+    }
+    
     private void bindAppWidgets(Launcher.DesktopBinder binder,
-            ArrayList<LauncherAppWidgetInfo> appWidgets, int start, int count) {
+            LinkedList<LauncherAppWidgetInfo> appWidgets) {
 
         final Workspace workspace = mWorkspace;
         final boolean desktopLocked = mDesktopLocked;
 
-        final int end = Math.min(start + DesktopBinder.APPWIDGETS_COUNT, count);
-        int i = start;
-
-        for ( ; i < end; i++) {
-            final LauncherAppWidgetInfo item = appWidgets.get(i);
-                    
-            final int appWidgetId = item.appWidgetId;
-            final AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
-            item.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
-            
-            if (LOGD) d(LOG_TAG, String.format("about to setAppWidget for id=%d, info=%s", appWidgetId, appWidgetInfo));
-            
-            item.hostView.setAppWidget(appWidgetId, appWidgetInfo);
-            item.hostView.setTag(item);
-            
-            workspace.addInScreen(item.hostView, item.screen, item.cellX,
-                    item.cellY, item.spanX, item.spanY, !desktopLocked);
-        }
+        final LauncherAppWidgetInfo item = appWidgets.removeFirst();
+        
+        final int appWidgetId = item.appWidgetId;
+        final AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
+        item.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
+        
+        if (LOGD) d(LOG_TAG, String.format("about to setAppWidget for id=%d, info=%s", appWidgetId, appWidgetInfo));
+        
+        item.hostView.setAppWidget(appWidgetId, appWidgetInfo);
+        item.hostView.setTag(item);
+        
+        workspace.addInScreen(item.hostView, item.screen, item.cellX,
+                item.cellY, item.spanX, item.spanY, !desktopLocked);
 
         workspace.requestLayout();
 
-        if (end >= count) {
-            finishBindDesktopAppWidgets();
+        if (appWidgets.isEmpty()) {
+            if (PROFILE_ROTATE) {
+                android.os.Debug.stopMethodTracing();
+            }
         } else {
-            binder.obtainMessage(DesktopBinder.MESSAGE_BIND_APPWIDGETS, i, count).sendToTarget();
+            binder.obtainMessage(DesktopBinder.MESSAGE_BIND_APPWIDGETS).sendToTarget();
         }
     }
-    
-    private void finishBindDesktopAppWidgets() {
-    }
-    
+
     DragController getDragController() {
         return mDragLayer;
     }
@@ -1928,37 +1951,72 @@ d("Home", "setting grid adapter");
         }
     }
 
-    private static class DesktopBinder extends Handler {
+    private static class DesktopBinder extends Handler implements MessageQueue.IdleHandler {
         static final int MESSAGE_BIND_ITEMS = 0x1;
         static final int MESSAGE_BIND_APPWIDGETS = 0x2;
+        static final int MESSAGE_BIND_DRAWER = 0x3;
+        
         // Number of items to bind in every pass
         static final int ITEMS_COUNT = 6;
-        static final int APPWIDGETS_COUNT = 1;
 
         private final ArrayList<ItemInfo> mShortcuts;
-        private final ArrayList<LauncherAppWidgetInfo> mAppWidgets;
+        private final LinkedList<LauncherAppWidgetInfo> mAppWidgets;
+        private final ApplicationsAdapter mDrawerAdapter;
         private final WeakReference<Launcher> mLauncher;
+        
+        public boolean mTerminate = false;
 
         DesktopBinder(Launcher launcher, ArrayList<ItemInfo> shortcuts,
-                ArrayList<LauncherAppWidgetInfo> appWidgets) {
+                ArrayList<LauncherAppWidgetInfo> appWidgets,
+                ApplicationsAdapter drawerAdapter) {
 
             mLauncher = new WeakReference<Launcher>(launcher);
             mShortcuts = shortcuts;
-            mAppWidgets = appWidgets;
+            mDrawerAdapter = drawerAdapter;
+            
+            // Sort widgets so active workspace is bound first
+            final int currentScreen = launcher.mWorkspace.getCurrentScreen();
+            final int size = appWidgets.size();
+            mAppWidgets = new LinkedList<LauncherAppWidgetInfo>();
+            
+            for (int i = 0; i < size; i++) {
+                LauncherAppWidgetInfo appWidgetInfo = appWidgets.get(i);
+                if (appWidgetInfo.screen == currentScreen) {
+                    mAppWidgets.addFirst(appWidgetInfo);
+                } else {
+                    mAppWidgets.addLast(appWidgetInfo);
+                }
+            }
+        }
+        
+        public void startWhenIdle() {
+            // Ask for notification when message queue becomes idle
+            final MessageQueue messageQueue = Looper.myQueue();
+            messageQueue.addIdleHandler(this);
+        }
+        
+        public boolean queueIdle() {
+            // Queue is idle, so start binding items
+            startBindingItems();
+            return false;
         }
         
         public void startBindingItems() {
             obtainMessage(MESSAGE_BIND_ITEMS, 0, mShortcuts.size()).sendToTarget();
         }
 
-        public void startBindingAppWidgets() {
-            obtainMessage(MESSAGE_BIND_APPWIDGETS, 0, mAppWidgets.size()).sendToTarget();
+        public void startBindingDrawer() {
+            obtainMessage(MESSAGE_BIND_DRAWER).sendToTarget();
         }
         
+        public void startBindingAppWidgets() {
+            obtainMessage(MESSAGE_BIND_APPWIDGETS).sendToTarget();
+        }
+
         @Override
         public void handleMessage(Message msg) {
             Launcher launcher = mLauncher.get();
-            if (launcher == null) {
+            if (launcher == null || mTerminate) {
                 return;
             }
             
@@ -1967,8 +2025,12 @@ d("Home", "setting grid adapter");
                     launcher.bindItems(this, mShortcuts, msg.arg1, msg.arg2);
                     break;
                 }
+                case MESSAGE_BIND_DRAWER: {
+                    launcher.bindDrawer(this, mDrawerAdapter);
+                    break;
+                }
                 case MESSAGE_BIND_APPWIDGETS: {
-                    launcher.bindAppWidgets(this, mAppWidgets, msg.arg1, msg.arg2);
+                    launcher.bindAppWidgets(this, mAppWidgets);
                     break;
                 }
             }
