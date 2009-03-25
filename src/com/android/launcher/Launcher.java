@@ -1261,7 +1261,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
         
         mBinder = new DesktopBinder(this, shortcuts, appWidgets, drawerAdapter);
-        mBinder.startWhenIdle();
+        mBinder.startBindingItems();
     }
 
     private void bindItems(Launcher.DesktopBinder binder,
@@ -1364,7 +1364,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private void bindDrawer(Launcher.DesktopBinder binder,
             ApplicationsAdapter drawerAdapter) {
         mAllAppsGrid.setAdapter(drawerAdapter);
-        binder.startBindingAppWidgets();
+        binder.startBindingAppWidgetsWhenIdle();
     }
     
     private void bindAppWidgets(Launcher.DesktopBinder binder,
@@ -2003,18 +2003,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             }
         }
         
-        public void startWhenIdle() {
-            // Ask for notification when message queue becomes idle
-            final MessageQueue messageQueue = Looper.myQueue();
-            messageQueue.addIdleHandler(this);
-        }
-        
-        public boolean queueIdle() {
-            // Queue is idle, so start binding items
-            startBindingItems();
-            return false;
-        }
-        
         public void startBindingItems() {
             obtainMessage(MESSAGE_BIND_ITEMS, 0, mShortcuts.size()).sendToTarget();
         }
@@ -2023,6 +2011,18 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             obtainMessage(MESSAGE_BIND_DRAWER).sendToTarget();
         }
         
+        public void startBindingAppWidgetsWhenIdle() {
+            // Ask for notification when message queue becomes idle
+            final MessageQueue messageQueue = Looper.myQueue();
+            messageQueue.addIdleHandler(this);
+        }
+        
+        public boolean queueIdle() {
+            // Queue is idle, so start binding items
+            startBindingAppWidgets();
+            return false;
+        }
+
         public void startBindingAppWidgets() {
             obtainMessage(MESSAGE_BIND_APPWIDGETS).sendToTarget();
         }
