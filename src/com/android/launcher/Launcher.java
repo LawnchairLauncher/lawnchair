@@ -996,7 +996,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     void addLiveFolder(Intent intent) {
         // Handle case where user selected "Folder"
-        String folderName = getResources().getString(R.string.folder_name);
+        String folderName = getResources().getString(R.string.group_folder);
         String shortcutName = intent.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
         
         if (folderName != null && folderName.equals(shortcutName)) {
