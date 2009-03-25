@@ -31,6 +31,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.Intent.ShortcutIconResource;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -38,6 +39,7 @@ import android.content.res.Resources;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -312,6 +314,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         
         // For example, the user would PICK_SHORTCUT for "Music playlist", and we
         // launch over to the Music app to actually CREATE_SHORTCUT.
+        
+        Resources res = getResources();
         
         if (resultCode == RESULT_OK && mAddItemCellInfo != null) {
             switch (requestCode) {
@@ -980,11 +984,32 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     }
 
     void addShortcut(Intent intent) {
-        startActivityForResult(intent, REQUEST_CREATE_SHORTCUT);
+        // Handle case where user selected "Applications"
+        String applicationName = getResources().getString(R.string.group_applications);
+        String shortcutName = intent.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
+        
+        if (applicationName != null && applicationName.equals(shortcutName)) {
+            Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+            mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+            
+            Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
+            pickIntent.putExtra(Intent.EXTRA_INTENT, mainIntent);
+            startActivityForResult(pickIntent, REQUEST_PICK_APPLICATION);
+        } else {
+            startActivityForResult(intent, REQUEST_CREATE_SHORTCUT);
+        }
     }
 
     void addLiveFolder(Intent intent) {
-        startActivityForResult(intent, REQUEST_CREATE_LIVE_FOLDER);
+        // Handle case where user selected "Folder"
+        String folderName = getResources().getString(R.string.folder_name);
+        String shortcutName = intent.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
+        
+        if (folderName != null && folderName.equals(shortcutName)) {
+            addFolder(!mDesktopLocked);
+        } else {
+            startActivityForResult(intent, REQUEST_CREATE_LIVE_FOLDER);
+        }
     }
 
     void addFolder(boolean insertAtFirst) {
@@ -1670,7 +1695,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
      * Displays the shortcut creation dialog and launches, if necessary, the
      * appropriate activity.
      */
-    private class CreateShortcut implements AdapterView.OnItemClickListener,
+    private class CreateShortcut implements DialogInterface.OnClickListener,
             DialogInterface.OnCancelListener {
         private AddAdapter mAdapter;
         private ListView mList;
@@ -1682,21 +1707,13 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             
             final AlertDialog.Builder builder = new AlertDialog.Builder(Launcher.this);
             builder.setTitle(getString(R.string.menu_item_add_item));
-            builder.setIcon(0);
-
-            mList = (ListView)
-                    View.inflate(Launcher.this, R.layout.create_shortcut_list, null);
-            mList.setAdapter(mAdapter);
-            mList.setOnItemClickListener(this);
+            builder.setAdapter(mAdapter, this);
+            
             builder.setView(mList);
             builder.setInverseBackgroundForced(true);
 
             AlertDialog dialog = builder.create();
             dialog.setOnCancelListener(this);
-
-            WindowManager.LayoutParams attributes = dialog.getWindow().getAttributes();
-            attributes.gravity = Gravity.TOP;
-            dialog.onWindowAttributesChanged(attributes);
 
             return dialog;
         }
@@ -1711,91 +1728,94 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             dismissDialog(DIALOG_CREATE_SHORTCUT);
         }
 
-        public void onItemClick(AdapterView parent, View view, int position, long id) {
-            // handle which item was clicked based on position
-            // this will launch off pick intent
+        /**
+         * Handle the action clicked in the "Add to home" dialog.
+         */
+        public void onClick(DialogInterface dialog, int which) {
+            Resources res = getResources();
+            cleanup();
             
-            Object tag = view.getTag();
-            if (tag instanceof AddAdapter.ListItem) {
-                AddAdapter.ListItem item = (AddAdapter.ListItem) tag;
-                cleanup();
-                switch (item.actionTag) {
-                    case AddAdapter.ITEM_APPLICATION: {
-                        Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
-                        mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-
-                        Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
-                        pickIntent.putExtra(Intent.EXTRA_INTENT, mainIntent);
-                        startActivityForResult(pickIntent, REQUEST_PICK_APPLICATION);
-                        break;
-                    }
-
-                    case AddAdapter.ITEM_SHORTCUT: {
-                        Intent shortcutIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
-
-                        Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
-                        pickIntent.putExtra(Intent.EXTRA_INTENT, shortcutIntent);
-                        pickIntent.putExtra(Intent.EXTRA_TITLE,
-                                getText(R.string.title_select_shortcut));
-                        startActivityForResult(pickIntent, REQUEST_PICK_SHORTCUT);
-                        break;
-                    }
+            switch (which) {
+                case AddAdapter.ITEM_SHORTCUT: {
+                    // Insert extra item to handle picking application
+                    Bundle bundle = new Bundle();
                     
-                    case AddAdapter.ITEM_SEARCH: {
-                        addSearch();
-                        break;
-                    }
+                    ArrayList<String> shortcutNames = new ArrayList<String>();
+                    shortcutNames.add(res.getString(R.string.group_applications));
+                    bundle.putStringArrayList(Intent.EXTRA_SHORTCUT_NAME, shortcutNames);
                     
-                    case AddAdapter.ITEM_APPWIDGET: {
-                        int appWidgetId = Launcher.this.mAppWidgetHost.allocateAppWidgetId();
-                        
-                        Intent pickIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_PICK);
-                        pickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-                        // add the search widget
-                        ArrayList<AppWidgetProviderInfo> customInfo =
-                                new ArrayList<AppWidgetProviderInfo>();
-                        AppWidgetProviderInfo info = new AppWidgetProviderInfo();
-                        info.provider = new ComponentName(getPackageName(), "XXX.YYY");
-                        info.label = getString(R.string.group_search);
-                        info.icon = R.drawable.ic_search_widget;
-                        customInfo.add(info);
-                        pickIntent.putParcelableArrayListExtra(
-                                AppWidgetManager.EXTRA_CUSTOM_INFO, customInfo);
-                        ArrayList<Bundle> customExtras = new ArrayList<Bundle>();
-                        Bundle b = new Bundle();
-                        b.putString(EXTRA_CUSTOM_WIDGET, SEARCH_WIDGET);
-                        customExtras.add(b);
-                        pickIntent.putParcelableArrayListExtra(
-                                AppWidgetManager.EXTRA_CUSTOM_EXTRAS, customExtras);
-                        // start the pick activity
-                        startActivityForResult(pickIntent, REQUEST_PICK_APPWIDGET);
-                        break;
-                    }
+                    ArrayList<ShortcutIconResource> shortcutIcons =
+                            new ArrayList<ShortcutIconResource>();
+                    shortcutIcons.add(ShortcutIconResource.fromContext(Launcher.this,
+                            R.drawable.ic_launcher_application));
+                    bundle.putParcelableArrayList(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, shortcutIcons);
                     
-                    case AddAdapter.ITEM_LIVE_FOLDER: {
-                        Intent liveFolderIntent = new Intent(LiveFolders.ACTION_CREATE_LIVE_FOLDER);
-
-                        Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
-                        pickIntent.putExtra(Intent.EXTRA_INTENT, liveFolderIntent);
-                        pickIntent.putExtra(Intent.EXTRA_TITLE,
-                                getText(R.string.title_select_live_folder));
-                        startActivityForResult(pickIntent, REQUEST_PICK_LIVE_FOLDER);
-                        break;
-                    }
-
-                    case AddAdapter.ITEM_FOLDER: {
-                        addFolder(!mDesktopLocked);
-                        dismissDialog(DIALOG_CREATE_SHORTCUT);
-                        break;
-                    }
-
-                    case AddAdapter.ITEM_WALLPAPER: {
-                        startWallpaper();
-                        break;
-                    }
-
-                }                
+                    Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
+                    pickIntent.putExtra(Intent.EXTRA_INTENT,
+                            new Intent(Intent.ACTION_CREATE_SHORTCUT));
+                    pickIntent.putExtra(Intent.EXTRA_TITLE,
+                            getText(R.string.title_select_shortcut));
+                    pickIntent.putExtras(bundle);
+                    
+                    startActivityForResult(pickIntent, REQUEST_PICK_SHORTCUT);
+                    break;
+                }
                 
+                case AddAdapter.ITEM_APPWIDGET: {
+                    int appWidgetId = Launcher.this.mAppWidgetHost.allocateAppWidgetId();
+                    
+                    Intent pickIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_PICK);
+                    pickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+                    // add the search widget
+                    ArrayList<AppWidgetProviderInfo> customInfo =
+                            new ArrayList<AppWidgetProviderInfo>();
+                    AppWidgetProviderInfo info = new AppWidgetProviderInfo();
+                    info.provider = new ComponentName(getPackageName(), "XXX.YYY");
+                    info.label = getString(R.string.group_search);
+                    info.icon = R.drawable.ic_search_widget;
+                    customInfo.add(info);
+                    pickIntent.putParcelableArrayListExtra(
+                            AppWidgetManager.EXTRA_CUSTOM_INFO, customInfo);
+                    ArrayList<Bundle> customExtras = new ArrayList<Bundle>();
+                    Bundle b = new Bundle();
+                    b.putString(EXTRA_CUSTOM_WIDGET, SEARCH_WIDGET);
+                    customExtras.add(b);
+                    pickIntent.putParcelableArrayListExtra(
+                            AppWidgetManager.EXTRA_CUSTOM_EXTRAS, customExtras);
+                    // start the pick activity
+                    startActivityForResult(pickIntent, REQUEST_PICK_APPWIDGET);
+                    break;
+                }
+                
+                case AddAdapter.ITEM_LIVE_FOLDER: {
+                    // Insert extra item to handle inserting folder
+                    Bundle bundle = new Bundle();
+                    
+                    ArrayList<String> shortcutNames = new ArrayList<String>();
+                    shortcutNames.add(res.getString(R.string.group_folder));
+                    bundle.putStringArrayList(Intent.EXTRA_SHORTCUT_NAME, shortcutNames);
+                    
+                    ArrayList<ShortcutIconResource> shortcutIcons =
+                            new ArrayList<ShortcutIconResource>();
+                    shortcutIcons.add(ShortcutIconResource.fromContext(Launcher.this,
+                            R.drawable.ic_launcher_folder));
+                    bundle.putParcelableArrayList(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, shortcutIcons);
+
+                    Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
+                    pickIntent.putExtra(Intent.EXTRA_INTENT,
+                            new Intent(LiveFolders.ACTION_CREATE_LIVE_FOLDER));
+                    pickIntent.putExtra(Intent.EXTRA_TITLE,
+                            getText(R.string.title_select_live_folder));
+                    pickIntent.putExtras(bundle);
+                    
+                    startActivityForResult(pickIntent, REQUEST_PICK_LIVE_FOLDER);
+                    break;
+                }
+
+                case AddAdapter.ITEM_WALLPAPER: {
+                    startWallpaper();
+                    break;
+                }
             }
         }
     }
