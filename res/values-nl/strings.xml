@@ -54,6 +54,5 @@
     <string name="permlab_write_settings">"instellingen en snelkoppelingen voor de startpagina schrijven"</string>
     <string name="permdesc_write_settings">"Hiermee kan een toepassing de instellingen en snelkoppelingen op de startpagina wijzigen."</string>
     <string name="search_hint">"Google Zoeken"</string>
-    <!-- no translation found for gadget_error_text (8359351016167075858) -->
-    <skip />
+    <string name="gadget_error_text">"Probleem bij het laden van widget"</string>
 </resources>

@@ -54,6 +54,5 @@
     <string name="permlab_write_settings">"записывать ярлыки и настройки главного экрана"</string>
     <string name="permdesc_write_settings">"Позволяет приложению изменять настройки и ярлыки на главном экране."</string>
     <string name="search_hint">"Поиск Google"</string>
-    <!-- no translation found for gadget_error_text (8359351016167075858) -->
-    <skip />
+    <string name="gadget_error_text">"Не удалось загрузить виджет"</string>
 </resources>

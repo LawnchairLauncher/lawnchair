@@ -54,6 +54,5 @@
     <string name="permlab_write_settings">"skrive skrivebordsinnstillinger og -snarveier"</string>
     <string name="permdesc_write_settings">"Lar applikasjonen endre innstillinger og snarveier på skrivebordet."</string>
     <string name="search_hint">"Google-søk"</string>
-    <!-- no translation found for gadget_error_text (8359351016167075858) -->
-    <skip />
+    <string name="gadget_error_text">"Problem under lasting av gadget"</string>
 </resources>

@@ -54,6 +54,5 @@
     <string name="permlab_write_settings">"escribir información de accesos directos y de configuración de la página principal"</string>
     <string name="permdesc_write_settings">"Permite que una aplicación modifique la configuración y los accesos directos de la página principal."</string>
     <string name="search_hint">"Búsqueda de Google"</string>
-    <!-- no translation found for gadget_error_text (8359351016167075858) -->
-    <skip />
+    <string name="gadget_error_text">"Problema al cargar el widget"</string>
 </resources>
