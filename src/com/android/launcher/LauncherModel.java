@@ -28,8 +28,9 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.util.Log;
+import static android.util.Log.*;
 import android.os.Process;
 
 import java.util.ArrayList;
@@ -46,12 +47,13 @@ import java.net.URISyntaxException;
  * for the Launcher.
  */
 public class LauncherModel {
+    static final boolean DEBUG_LOADERS = true;
+    static final String LOG_TAG = "HomeLoaders";
+
     private static final int UI_NOTIFICATION_RATE = 4;
     private static final int DEFAULT_APPLICATIONS_NUMBER = 42;
     private static final long APPLICATION_NOT_RESPONDING_TIMEOUT = 5000;
     private static final int INITIAL_ICON_CACHE_CAPACITY = 50;
-
-    private static final boolean DEBUG = false;
 
     private static final Collator sCollator = Collator.getInstance();
 
@@ -101,14 +103,16 @@ public class LauncherModel {
      */
     synchronized boolean loadApplications(boolean isLaunching, Launcher launcher,
             boolean localeChanged) {
-android.util.Log.d("Home", "load applications");
+
+        if (DEBUG_LOADERS) d(LOG_TAG, "load applications");
+
         if (isLaunching && mApplicationsLoaded && !localeChanged) {
             mApplicationsAdapter = new ApplicationsAdapter(launcher, mApplications);
-android.util.Log.d("Home", "  --> applications loaded, return");
+            if (DEBUG_LOADERS) d(LOG_TAG, "  --> applications loaded, return");
             return false;
         }
 
-        waitForApplicationsLoader();
+        stopAndWaitForApplicationsLoader();
 
         if (localeChanged) {
             dropApplicationCache();
@@ -129,9 +133,9 @@ android.util.Log.d("Home", "  --> applications loaded, return");
         return true;
     }
 
-    private synchronized void waitForApplicationsLoader() {
+    private synchronized void stopAndWaitForApplicationsLoader() {
         if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
-            android.util.Log.d("Home", "  --> wait for applications loader");
+            if (DEBUG_LOADERS) d(LOG_TAG, "  --> wait for applications loader");
 
             mApplicationsLoader.stop();
             // Wait for the currently running thread to finish, this can take a little
@@ -145,12 +149,308 @@ android.util.Log.d("Home", "  --> applications loaded, return");
     }
 
     private synchronized void startApplicationsLoader(Launcher launcher) {
-android.util.Log.d("Home", "  --> starting applications loader");
-        waitForApplicationsLoader();
+        if (DEBUG_LOADERS) d(LOG_TAG, "  --> starting applications loader");
+
+        stopAndWaitForApplicationsLoader();
 
         mApplicationsLoader = new ApplicationsLoader(launcher);
         mApplicationsLoaderThread = new Thread(mApplicationsLoader, "Applications Loader");
         mApplicationsLoaderThread.start();
+    }
+
+    synchronized void addPackage(Launcher launcher, String packageName) {
+        if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
+            startApplicationsLoader(launcher);
+            return;
+        }
+
+        if (packageName != null && packageName.length() > 0) {
+            final PackageManager packageManager = launcher.getPackageManager();
+            final List<ResolveInfo> matches = findActivitiesForPackage(packageManager, packageName);
+
+            if (matches.size() > 0) {
+                final ApplicationsAdapter adapter = mApplicationsAdapter;
+                final HashMap<ComponentName, ApplicationInfo> cache = mAppInfoCache;
+
+                for (ResolveInfo info : matches) {
+                    adapter.setNotifyOnChange(false);
+                    adapter.add(makeAndCacheApplicationInfo(packageManager, cache, info));
+                }
+
+                adapter.sort(new ApplicationInfoComparator());
+                adapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    synchronized void removePackage(Launcher launcher, String packageName) {
+        if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
+            dropApplicationCache(); // TODO: this could be optimized
+            startApplicationsLoader(launcher);
+            return;
+        }
+
+        if (packageName != null && packageName.length() > 0) {
+            final ApplicationsAdapter adapter = mApplicationsAdapter;
+
+            final List<ApplicationInfo> toRemove = new ArrayList<ApplicationInfo>();
+            final int count = adapter.getCount();
+
+            for (int i = 0; i < count; i++) {
+                final ApplicationInfo applicationInfo = adapter.getItem(i);
+                final Intent intent = applicationInfo.intent;
+                final ComponentName component = intent.getComponent();
+                if (packageName.equals(component.getPackageName())) {
+                    toRemove.add(applicationInfo);
+                }
+            }
+
+            final HashMap<ComponentName, ApplicationInfo> cache = mAppInfoCache;
+            for (ApplicationInfo info : toRemove) {
+                adapter.setNotifyOnChange(false);
+                adapter.remove(info);
+                cache.remove(info.intent.getComponent());
+            }
+
+            if (toRemove.size() > 0) {
+                adapter.sort(new ApplicationInfoComparator());
+                adapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    synchronized void updatePackage(Launcher launcher, String packageName) {
+        if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
+            startApplicationsLoader(launcher);
+            return;
+        }
+
+        if (packageName != null && packageName.length() > 0) {
+            final PackageManager packageManager = launcher.getPackageManager();
+            final ApplicationsAdapter adapter = mApplicationsAdapter;
+
+            final List<ResolveInfo> matches = findActivitiesForPackage(packageManager, packageName);
+            final int count = matches.size();
+
+            boolean changed = false;
+
+            for (int i = 0; i < count; i++) {
+                final ResolveInfo info = matches.get(i);
+                final ApplicationInfo applicationInfo = findIntent(adapter,
+                        info.activityInfo.applicationInfo.packageName, info.activityInfo.name);
+                if (applicationInfo != null) {
+                    updateAndCacheApplicationInfo(packageManager, info, applicationInfo);
+                    changed = true;
+                }
+            }
+
+            if (changed) {
+                adapter.sort(new ApplicationInfoComparator());
+                adapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    private void updateAndCacheApplicationInfo(PackageManager packageManager, ResolveInfo info,
+            ApplicationInfo applicationInfo) {
+
+        updateApplicationInfoTitleAndIcon(packageManager, info, applicationInfo);
+
+        ComponentName componentName = new ComponentName(
+                info.activityInfo.applicationInfo.packageName, info.activityInfo.name);
+        mAppInfoCache.put(componentName, applicationInfo);
+    }
+
+    synchronized void syncPackage(Launcher launcher, String packageName) {
+        if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
+            startApplicationsLoader(launcher);
+            return;
+        }
+
+        if (packageName != null && packageName.length() > 0) {
+            final PackageManager packageManager = launcher.getPackageManager();
+            final List<ResolveInfo> matches = findActivitiesForPackage(packageManager, packageName);
+
+            if (matches.size() > 0) {
+                final ApplicationsAdapter adapter = mApplicationsAdapter;
+
+                // Find disabled activities and remove them from the adapter
+                boolean removed = removeDisabledActivities(packageName, matches, adapter);
+                // Find enable activities and add them to the adapter
+                // Also updates existing activities with new labels/icons
+                boolean added = addEnabledAndUpdateActivities(matches, adapter, launcher);
+
+                if (added || removed) {
+                    adapter.sort(new ApplicationInfoComparator());
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        }
+    }
+
+    private static List<ResolveInfo> findActivitiesForPackage(PackageManager packageManager,
+            String packageName) {
+
+        final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+        mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+
+        final List<ResolveInfo> apps = packageManager.queryIntentActivities(mainIntent, 0);
+        final List<ResolveInfo> matches = new ArrayList<ResolveInfo>();
+
+        if (apps != null) {
+            // Find all activities that match the packageName
+            int count = apps.size();
+            for (int i = 0; i < count; i++) {
+                final ResolveInfo info = apps.get(i);
+                final ActivityInfo activityInfo = info.activityInfo;
+                if (packageName.equals(activityInfo.packageName)) {
+                    matches.add(info);
+                }
+            }
+        }
+
+        return matches;
+    }
+
+    private boolean addEnabledAndUpdateActivities(List<ResolveInfo> matches,
+            ApplicationsAdapter adapter, Launcher launcher) {
+
+        final List<ApplicationInfo> toAdd = new ArrayList<ApplicationInfo>();
+        final int count = matches.size();
+
+        boolean changed = false;
+
+        for (int i = 0; i < count; i++) {
+            final ResolveInfo info = matches.get(i);
+            final ApplicationInfo applicationInfo = findIntent(adapter,
+                    info.activityInfo.applicationInfo.packageName, info.activityInfo.name);
+            if (applicationInfo == null) {
+                toAdd.add(makeAndCacheApplicationInfo(launcher.getPackageManager(),
+                        mAppInfoCache, info));
+                changed = true;
+            } else {
+                updateAndCacheApplicationInfo(launcher.getPackageManager(), info, applicationInfo);
+                changed = true;
+            }
+        }
+
+        for (ApplicationInfo info : toAdd) {
+            adapter.setNotifyOnChange(false);
+            adapter.add(info);
+        }
+
+        return changed;
+    }
+
+    private boolean removeDisabledActivities(String packageName, List<ResolveInfo> matches,
+            ApplicationsAdapter adapter) {
+
+        final List<ApplicationInfo> toRemove = new ArrayList<ApplicationInfo>();
+        final int count = adapter.getCount();
+
+        boolean changed = false;
+
+        for (int i = 0; i < count; i++) {
+            final ApplicationInfo applicationInfo = adapter.getItem(i);
+            final Intent intent = applicationInfo.intent;
+            final ComponentName component = intent.getComponent();
+            if (packageName.equals(component.getPackageName())) {
+                if (!findIntent(matches, component)) {
+                    toRemove.add(applicationInfo);
+                    changed = true;
+                }
+            }
+        }
+
+        final HashMap<ComponentName, ApplicationInfo> cache = mAppInfoCache;
+        for (ApplicationInfo info : toRemove) {
+            adapter.setNotifyOnChange(false);
+            adapter.remove(info);
+            cache.remove(info.intent.getComponent());
+        }
+
+        return changed;
+    }
+
+    private static ApplicationInfo findIntent(ApplicationsAdapter adapter, String packageName,
+            String name) {
+
+        final int count = adapter.getCount();
+        for (int i = 0; i < count; i++) {
+            final ApplicationInfo applicationInfo = adapter.getItem(i);
+            final Intent intent = applicationInfo.intent;
+            final ComponentName component = intent.getComponent();
+            if (packageName.equals(component.getPackageName()) &&
+                    name.equals(component.getClassName())) {
+                return applicationInfo;
+            }
+        }
+
+        return null;
+    }
+
+    private static boolean findIntent(List<ResolveInfo> apps, ComponentName component) {
+        final String className = component.getClassName();
+        for (ResolveInfo info : apps) {
+            final ActivityInfo activityInfo = info.activityInfo;
+            if (activityInfo.name.equals(className)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    Drawable getApplicationInfoIcon(PackageManager manager, ApplicationInfo info) {
+        final ResolveInfo resolveInfo = manager.resolveActivity(info.intent, 0);
+        if (resolveInfo == null) {
+            return null;
+        }
+
+        ComponentName componentName = new ComponentName(
+                resolveInfo.activityInfo.applicationInfo.packageName,
+                resolveInfo.activityInfo.name);
+        ApplicationInfo application = mAppInfoCache.get(componentName);
+
+        if (application == null) {
+            return resolveInfo.activityInfo.loadIcon(manager);
+        }
+
+        return application.icon;
+    }
+
+    private static ApplicationInfo makeAndCacheApplicationInfo(PackageManager manager,
+            HashMap<ComponentName, ApplicationInfo> appInfoCache, ResolveInfo info) {
+
+        ComponentName componentName = new ComponentName(
+                info.activityInfo.applicationInfo.packageName,
+                info.activityInfo.name);
+        ApplicationInfo application = appInfoCache.get(componentName);
+
+        if (application == null) {
+            application = new ApplicationInfo();
+            application.container = ItemInfo.NO_ID;
+
+            updateApplicationInfoTitleAndIcon(manager, info, application);
+
+            application.setActivity(componentName,
+                    Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+
+            appInfoCache.put(componentName, application);
+        }
+
+        return application;
+    }
+
+    private static void updateApplicationInfoTitleAndIcon(PackageManager manager, ResolveInfo info,
+            ApplicationInfo application) {
+
+        application.title = info.loadLabel(manager);
+        if (application.title == null) {
+            application.title = info.activityInfo.name;
+        }
+
+        application.icon = info.activityInfo.loadIcon(manager);
+        application.filtered = false;
     }
 
     private class ApplicationsLoader implements Runnable {
@@ -176,7 +476,7 @@ android.util.Log.d("Home", "  --> starting applications loader");
 
             android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
 
-            Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+            final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
             mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 
             final Launcher launcher = mLauncher.get();
@@ -185,6 +485,8 @@ android.util.Log.d("Home", "  --> starting applications loader");
 
             if (apps != null && !mStopped) {
                 final int count = apps.size();
+                // Can be set to null on the UI thread by the unbind() method
+                // Do not access without checking for null first
                 final ApplicationsAdapter applicationList = mApplicationsAdapter;
 
                 ChangeNotifier action = new ChangeNotifier(applicationList, true);
@@ -192,28 +494,10 @@ android.util.Log.d("Home", "  --> starting applications loader");
 
                 for (int i = 0; i < count && !mStopped; i++) {
                     ResolveInfo info = apps.get(i);
-                    ComponentName componentName = new ComponentName(
-                            info.activityInfo.applicationInfo.packageName,
-                            info.activityInfo.name);
-                    ApplicationInfo application = appInfoCache.get(componentName);
-                    if (application == null) {
-                        application = new ApplicationInfo();
-                        application.title = info.loadLabel(manager);
-                        if (application.title == null) {
-                            application.title = info.activityInfo.name;
-                        }
-                        application.setActivity(componentName,
-                                Intent.FLAG_ACTIVITY_NEW_TASK |
-                                Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-                        application.container = ItemInfo.NO_ID;
-                        application.icon = info.activityInfo.loadIcon(manager);
-                        if (DEBUG) {
-                            Log.d(Launcher.LOG_TAG, "Loaded ApplicationInfo for " + componentName);
-                        }
-                        appInfoCache.put(componentName, application);
-                    }
+                    ApplicationInfo application =
+                            makeAndCacheApplicationInfo(manager, appInfoCache, info);
 
-                    if (action.add(application)) {
+                    if (action.add(application) && !mStopped) {
                         launcher.runOnUiThread(action);
                         action = new ChangeNotifier(applicationList, false);
                     }
@@ -229,7 +513,7 @@ android.util.Log.d("Home", "  --> starting applications loader");
         }
     }
 
-    private static class ChangeNotifier implements Runnable, Comparator<ApplicationInfo> {
+    private static class ChangeNotifier implements Runnable {
         private final ApplicationsAdapter mApplicationList;
         private final ArrayList<ApplicationInfo> mBuffer;
 
@@ -243,6 +527,8 @@ android.util.Log.d("Home", "  --> starting applications loader");
 
         public void run() {
             final ApplicationsAdapter applicationList = mApplicationList;
+            // Can be set to null on the UI thread by the unbind() method
+            if (applicationList == null) return;
 
             if (mFirst) {
                 applicationList.setNotifyOnChange(false);
@@ -260,7 +546,7 @@ android.util.Log.d("Home", "  --> starting applications loader");
 
             buffer.clear();
 
-            applicationList.sort(this);
+            applicationList.sort(new ApplicationInfoComparator());
             applicationList.notifyDataSetChanged();
         }
 
@@ -269,7 +555,9 @@ android.util.Log.d("Home", "  --> starting applications loader");
             buffer.add(application);
             return buffer.size() >= UI_NOTIFICATION_RATE;
         }
+    }
 
+    private static class ApplicationInfoComparator implements Comparator<ApplicationInfo> {
         public final int compare(ApplicationInfo a, ApplicationInfo b) {
             return sCollator.compare(a.title.toString(), b.title.toString());
         }
@@ -285,10 +573,10 @@ android.util.Log.d("Home", "  --> starting applications loader");
      */
     void loadUserItems(boolean isLaunching, Launcher launcher, boolean localeChanged,
             boolean loadApplications) {
-android.util.Log.d("Home", "loading user items");
+        if (DEBUG_LOADERS) d(LOG_TAG, "loading user items");
 
         if (isLaunching && isDesktopLoaded()) {
-android.util.Log.d("Home", "  --> items loaded, return");
+            if (DEBUG_LOADERS) d(LOG_TAG, "  --> items loaded, return");
             if (loadApplications) startApplicationsLoader(launcher);
             // We have already loaded our data from the DB
             launcher.onDesktopItemsLoaded();
@@ -306,7 +594,7 @@ android.util.Log.d("Home", "  --> items loaded, return");
             }
         }
 
-android.util.Log.d("Home", "  --> starting workspace loader");
+        if (DEBUG_LOADERS) d(LOG_TAG, "  --> starting workspace loader");
         mDesktopItemsLoaded = false;
         mDesktopItemsLoader = new DesktopItemsLoader(launcher, localeChanged, loadApplications);
         mDesktopLoaderThread = new Thread(mDesktopItemsLoader, "Desktop Items Loader");
@@ -563,7 +851,7 @@ android.util.Log.d("Home", "  --> starting workspace loader");
 
                             container = c.getInt(containerIndex);
                             if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                                Log.e(Launcher.LOG_TAG, "Widget found where container "
+                                e(Launcher.LOG_TAG, "Widget found where container "
                                         + "!= CONTAINER_DESKTOP  ignoring!");
                                 continue;
                             }
@@ -589,7 +877,7 @@ android.util.Log.d("Home", "  --> starting workspace loader");
 
                             container = c.getInt(containerIndex);
                             if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                                Log.e(Launcher.LOG_TAG, "Widget found where container "
+                                e(Launcher.LOG_TAG, "Widget found where container "
                                         + "!= CONTAINER_DESKTOP -- ignoring!");
                                 continue;
                             }
@@ -599,7 +887,7 @@ android.util.Log.d("Home", "  --> starting workspace loader");
                             break;
                         }
                     } catch (Exception e) {
-                        Log.w(Launcher.LOG_TAG, "Desktop items loading interrupted:", e);
+                        w(Launcher.LOG_TAG, "Desktop items loading interrupted:", e);
                     }
                 }
             } finally {
@@ -699,6 +987,8 @@ android.util.Log.d("Home", "  --> starting workspace loader");
      * Home screen on orientation change.
      */
     void unbind() {
+        // Interrupt the applications loader before setting the adapter to null
+        stopAndWaitForApplicationsLoader();
         mApplicationsAdapter = null;
         unbindAppDrawables(mApplications);
         unbindDrawables(mDesktopItems);

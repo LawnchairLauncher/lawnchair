@@ -54,6 +54,5 @@
     <string name="permlab_write_settings">"寫入首頁設定和捷徑"</string>
     <string name="permdesc_write_settings">"允許應用程式變更首頁中的設定和捷徑。"</string>
     <string name="search_hint">"Google 搜尋"</string>
-    <!-- no translation found for gadget_error_text (8359351016167075858) -->
-    <skip />
+    <string name="gadget_error_text">"載入小工具時發生問題"</string>
 </resources>

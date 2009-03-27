@@ -90,7 +90,13 @@ public class LiveFolder extends Folder {
         if (mLoadingTask != null && mLoadingTask.getStatus() == AsyncTask.Status.RUNNING) {
             mLoadingTask.cancel(true);
         }
-        ((LiveFolderAdapter) mContent.getAdapter()).cleanup();
+
+        // The adapter can be null if onClose() is called before FolderLoadingTask
+        // is done querying the provider
+        final LiveFolderAdapter adapter = (LiveFolderAdapter) mContent.getAdapter();
+        if (adapter != null) {
+            adapter.cleanup();
+        }
     }
 
     static class FolderLoadingTask extends AsyncTask<LiveFolderInfo, Void, Cursor> {

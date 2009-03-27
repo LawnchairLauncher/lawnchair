@@ -76,4 +76,12 @@
         <attr name="texture" format="reference"  />
     </declare-styleable>
 
+    <!-- XML attributes used by default_workspace.xml -->
+    <declare-styleable name="Favorite">
+        <attr name="className" format="string" />
+        <attr name="packageName" format="string" />
+        <attr name="screen" format="string" />
+        <attr name="x" format="string" />
+        <attr name="y" format="string" />
+    </declare-styleable>
 </resources>

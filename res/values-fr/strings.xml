@@ -54,6 +54,5 @@
     <string name="permlab_write_settings">"Enregistrer les paramètres de la page d\'accueil et des raccourcis"</string>
     <string name="permdesc_write_settings">"Permet à une application de modifier les paramètres et les raccourcis de la page d\'accueil."</string>
     <string name="search_hint">"Recherche Google"</string>
-    <!-- no translation found for gadget_error_text (8359351016167075858) -->
-    <skip />
+    <string name="gadget_error_text">"Problème lors du chargement du widget"</string>
 </resources>

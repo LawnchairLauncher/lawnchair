@@ -31,19 +31,15 @@ import java.util.ArrayList;
  * Adapter showing the types of items that can be added to a {@link Workspace}.
  */
 public class AddAdapter extends BaseAdapter {
-    
-    private final Launcher mLauncher;
+
     private final LayoutInflater mInflater;
     
     private final ArrayList<ListItem> mItems = new ArrayList<ListItem>();
     
-    public static final int ITEM_APPLICATION = 0;
-    public static final int ITEM_SHORTCUT = 1;
-    public static final int ITEM_SEARCH = 2;
-    public static final int ITEM_APPWIDGET = 3;
-    public static final int ITEM_LIVE_FOLDER = 4;
-    public static final int ITEM_FOLDER = 5;
-    public static final int ITEM_WALLPAPER = 6;
+    public static final int ITEM_SHORTCUT = 0;
+    public static final int ITEM_APPWIDGET = 1;
+    public static final int ITEM_LIVE_FOLDER = 2;
+    public static final int ITEM_WALLPAPER = 3;
     
     /**
      * Specific item in our list.
@@ -66,30 +62,20 @@ public class AddAdapter extends BaseAdapter {
     
     public AddAdapter(Launcher launcher) {
         super();
-        
-        mLauncher = launcher;
-        mInflater = (LayoutInflater) mLauncher.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        mInflater = (LayoutInflater) launcher.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         
         // Create default actions
         Resources res = launcher.getResources();
         
-        mItems.add(new ListItem(res, R.string.group_applications,
-                R.drawable.ic_launcher_application, ITEM_APPLICATION));
-        
         mItems.add(new ListItem(res, R.string.group_shortcuts,
-                R.drawable.ic_launcher_empty, ITEM_SHORTCUT));
-        
-        mItems.add(new ListItem(res, R.string.group_search,
-                R.drawable.ic_search_widget, ITEM_SEARCH));
-        
+                R.drawable.ic_launcher_shortcut, ITEM_SHORTCUT));
+
         mItems.add(new ListItem(res, R.string.group_widgets,
                 R.drawable.ic_launcher_appwidget, ITEM_APPWIDGET));
         
         mItems.add(new ListItem(res, R.string.group_live_folders,
-                R.drawable.ic_launcher_empty, ITEM_LIVE_FOLDER));
-        
-        mItems.add(new ListItem(res, R.string.group_folder,
-                R.drawable.ic_launcher_folder, ITEM_FOLDER));
+                R.drawable.ic_launcher_folder_live, ITEM_LIVE_FOLDER));
         
         mItems.add(new ListItem(res, R.string.group_wallpapers,
                 R.drawable.ic_launcher_gallery, ITEM_WALLPAPER));
