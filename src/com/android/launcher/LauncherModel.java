@@ -1243,7 +1243,7 @@ public class LauncherModel {
     FolderInfo getFolderById(Context context, long id) {
         final ContentResolver cr = context.getContentResolver();
         Cursor c = cr.query(LauncherSettings.Favorites.CONTENT_URI, null,
-                "_id=? and itemType=? or itemType=?",
+                "_id=? and (itemType=? or itemType=?)",
                 new String[] { String.valueOf(id),
                         String.valueOf(LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER),
                         String.valueOf(LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER) }, null);
