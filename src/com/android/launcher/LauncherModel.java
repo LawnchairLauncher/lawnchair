@@ -47,7 +47,7 @@ import java.net.URISyntaxException;
  * for the Launcher.
  */
 public class LauncherModel {
-    static final boolean DEBUG_LOADERS = false;
+    static final boolean DEBUG_LOADERS = true;
     static final String LOG_TAG = "HomeLoaders";
 
     private static final int UI_NOTIFICATION_RATE = 4;

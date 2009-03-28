@@ -1237,6 +1237,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             return;
         }
 
+        mAllAppsGrid.setAdapter(drawerAdapter);
+
         final Workspace workspace = mWorkspace;
         int count = workspace.getChildCount();
         for (int i = 0; i < count; i++) {
@@ -1260,7 +1262,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             mBinder.mTerminate = true;
         }
         
-        mBinder = new DesktopBinder(this, shortcuts, appWidgets, drawerAdapter);
+        mBinder = new DesktopBinder(this, shortcuts, appWidgets);
         mBinder.startBindingItems();
     }
 
@@ -1314,7 +1316,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         if (end >= count) {
             finishBindDesktopItems();
-            binder.startBindingDrawer();
+            binder.startBindingAppWidgetsWhenIdle();
         } else {
             binder.obtainMessage(DesktopBinder.MESSAGE_BIND_ITEMS, i, count).sendToTarget();
         }
@@ -1361,12 +1363,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mDrawer.unlock();
     }
     
-    private void bindDrawer(Launcher.DesktopBinder binder,
-            ApplicationsAdapter drawerAdapter) {
-        mAllAppsGrid.setAdapter(drawerAdapter);
-        binder.startBindingAppWidgetsWhenIdle();
-    }
-    
     private void bindAppWidgets(Launcher.DesktopBinder binder,
             LinkedList<LauncherAppWidgetInfo> appWidgets) {
         
@@ -1377,10 +1373,14 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             final LauncherAppWidgetInfo item = appWidgets.removeFirst();
             
             final int appWidgetId = item.appWidgetId;
-            final AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
+            final AppWidgetProviderInfo appWidgetInfo =
+                    mAppWidgetManager.getAppWidgetInfo(appWidgetId);
             item.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
             
-            if (LOGD) d(LOG_TAG, String.format("about to setAppWidget for id=%d, info=%s", appWidgetId, appWidgetInfo));
+            if (LOGD) {
+                d(LOG_TAG, String.format("about to setAppWidget for id=%d, info=%s",
+                        appWidgetId, appWidgetInfo));
+            }
             
             item.hostView.setAppWidget(appWidgetId, appWidgetInfo);
             item.hostView.setTag(item);
@@ -1968,25 +1968,21 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private static class DesktopBinder extends Handler implements MessageQueue.IdleHandler {
         static final int MESSAGE_BIND_ITEMS = 0x1;
         static final int MESSAGE_BIND_APPWIDGETS = 0x2;
-        static final int MESSAGE_BIND_DRAWER = 0x3;
         
         // Number of items to bind in every pass
         static final int ITEMS_COUNT = 6;
 
         private final ArrayList<ItemInfo> mShortcuts;
         private final LinkedList<LauncherAppWidgetInfo> mAppWidgets;
-        private final ApplicationsAdapter mDrawerAdapter;
         private final WeakReference<Launcher> mLauncher;
         
-        public boolean mTerminate = false;
+        public volatile boolean mTerminate = false;
 
         DesktopBinder(Launcher launcher, ArrayList<ItemInfo> shortcuts,
-                ArrayList<LauncherAppWidgetInfo> appWidgets,
-                ApplicationsAdapter drawerAdapter) {
+                ArrayList<LauncherAppWidgetInfo> appWidgets) {
 
             mLauncher = new WeakReference<Launcher>(launcher);
             mShortcuts = shortcuts;
-            mDrawerAdapter = drawerAdapter;
             
             // Sort widgets so active workspace is bound first
             final int currentScreen = launcher.mWorkspace.getCurrentScreen();
@@ -2005,10 +2001,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         
         public void startBindingItems() {
             obtainMessage(MESSAGE_BIND_ITEMS, 0, mShortcuts.size()).sendToTarget();
-        }
-
-        public void startBindingDrawer() {
-            obtainMessage(MESSAGE_BIND_DRAWER).sendToTarget();
         }
         
         public void startBindingAppWidgetsWhenIdle() {
@@ -2037,10 +2029,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             switch (msg.what) {
                 case MESSAGE_BIND_ITEMS: {
                     launcher.bindItems(this, mShortcuts, msg.arg1, msg.arg2);
-                    break;
-                }
-                case MESSAGE_BIND_DRAWER: {
-                    launcher.bindDrawer(this, mDrawerAdapter);
                     break;
                 }
                 case MESSAGE_BIND_APPWIDGETS: {
