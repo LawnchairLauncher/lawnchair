@@ -584,6 +584,7 @@ public class LauncherModel {
         }
 
         if (mDesktopItemsLoader != null && mDesktopItemsLoader.isRunning()) {
+            if (DEBUG_LOADERS) d(LOG_TAG, "  --> stopping workspace loader");
             mDesktopItemsLoader.stop();
             // Wait for the currently running thread to finish, this can take a little
             // time but it should be well below the timeout limit
@@ -592,6 +593,13 @@ public class LauncherModel {
             } catch (InterruptedException e) {
                 // Empty
             }
+
+            // If the thread we are interrupting was tasked to load the list of
+            // applications make sure we keep that information in the new loader
+            // spawned below
+            // note: we don't apply this to localeChanged because the thread can
+            // only be stopped *after* the localeChanged handling has occured
+            loadApplications = mDesktopItemsLoader.mLoadApplications;
         }
 
         if (DEBUG_LOADERS) d(LOG_TAG, "  --> starting workspace loader");
@@ -636,7 +644,8 @@ public class LauncherModel {
                                     final ContentValues values = new ContentValues();
                                     values.put(LauncherSettings.Favorites.TITLE, label);
 
-                                    resolver.update(LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION,
+                                    resolver.update(
+                                            LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION,
                                             values, "_id=?",
                                             new String[] { String.valueOf(c.getLong(idIndex)) });
 
@@ -1243,7 +1252,7 @@ public class LauncherModel {
     FolderInfo getFolderById(Context context, long id) {
         final ContentResolver cr = context.getContentResolver();
         Cursor c = cr.query(LauncherSettings.Favorites.CONTENT_URI, null,
-                "_id=? and itemType=? or itemType=?",
+                "_id=? and (itemType=? or itemType=?)",
                 new String[] { String.valueOf(id),
                         String.valueOf(LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER),
                         String.valueOf(LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER) }, null);
