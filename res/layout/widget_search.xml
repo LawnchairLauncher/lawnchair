@@ -45,17 +45,19 @@
         />
         
      <ImageButton android:id="@+id/search_go_btn"
-         android:layout_marginLeft="4dip"
+         android:layout_marginLeft="5dip"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:src="@*android:drawable/ic_btn_search"
+         style="@style/SearchButton"
          />
     
      <ImageButton android:id="@+id/search_voice_btn"
-         android:layout_marginLeft="2dip"
+         android:layout_marginLeft="4dip"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:src="@android:drawable/ic_btn_speak_now"
+         style="@style/SearchButton"
          />
 
 </com.android.launcher.Search>
