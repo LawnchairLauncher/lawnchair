@@ -168,6 +168,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     private final BroadcastReceiver mApplicationsReceiver = new ApplicationsIntentReceiver();
     private final ContentObserver mObserver = new FavoritesChangeObserver();
+    private final ContentObserver mAppWidgetResetObserver = new AppWidgetResetObserver();
 
     private LayoutInflater mInflater;
 
@@ -826,6 +827,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         sModel.abortLoaders();
 
         getContentResolver().unregisterContentObserver(mObserver);
+        getContentResolver().unregisterContentObserver(mAppWidgetResetObserver);
         unregisterReceiver(mApplicationsReceiver);
     }
 
@@ -1156,6 +1158,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private void registerContentObservers() {
         ContentResolver resolver = getContentResolver();
         resolver.registerContentObserver(LauncherSettings.Favorites.CONTENT_URI, true, mObserver);
+        resolver.registerContentObserver(LauncherProvider.CONTENT_APPWIDGET_RESET_URI, true, mAppWidgetResetObserver);
     }
 
     @Override
@@ -1219,6 +1222,16 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mDesktopLocked = true;
         mDrawer.lock();
         sModel.loadUserItems(false, this, false, false);
+    }
+
+    /**
+     * When reset, we handle by calling {@link AppWidgetHost#startListening()}
+     * to make sure our callbacks are set correctly.
+     */
+    private void onAppWidgetReset() {
+        if (mAppWidgetHost != null) {
+            mAppWidgetHost.startListening();
+        }
     }
 
     void onDesktopItemsLoaded() {
@@ -1874,6 +1887,21 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         @Override
         public void onChange(boolean selfChange) {
             onFavoritesChanged();
+        }
+    }
+
+    /**
+     * Receives notifications when the {@link AppWidgetHost} has been reset,
+     * usually only when the {@link LauncherProvider} database is first created.
+     */
+    private class AppWidgetResetObserver extends ContentObserver {
+        public AppWidgetResetObserver() {
+            super(new Handler());
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            onAppWidgetReset();
         }
     }
 

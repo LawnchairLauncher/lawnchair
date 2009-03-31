@@ -65,6 +65,14 @@ public class LauncherProvider extends ContentProvider {
     static final String TABLE_FAVORITES = "favorites";
     static final String PARAMETER_NOTIFY = "notify";
 
+    /**
+     * {@link Uri} triggered at any registered {@link ContentObserver} when
+     * {@link AppWidgetHost#deleteHost()} is called during database creation.
+     * Use this to recall {@link AppWidgetHost#startListening()} if needed.
+     */
+    static final Uri CONTENT_APPWIDGET_RESET_URI =
+            Uri.parse("content://" + AUTHORITY + "/appWidgetReset");
+    
     private SQLiteOpenHelper mOpenHelper;
 
     @Override
@@ -176,6 +184,17 @@ public class LauncherProvider extends ContentProvider {
             mAppWidgetHost = new AppWidgetHost(context, Launcher.APPWIDGET_HOST_ID);
         }
 
+        /**
+         * Send notification that we've deleted the {@link AppWidgetHost},
+         * probably as part of the initial database creation. The receiver may
+         * want to re-call {@link AppWidgetHost#startListening()} to ensure
+         * callbacks are correctly set.
+         */
+        private void sendAppWidgetResetNotify() {
+            final ContentResolver resolver = mContext.getContentResolver();
+            resolver.notifyChange(CONTENT_APPWIDGET_RESET_URI, null);
+        }
+
         @Override
         public void onCreate(SQLiteDatabase db) {
             if (LOGD) Log.d(LOG_TAG, "creating new launcher database");
@@ -204,6 +223,7 @@ public class LauncherProvider extends ContentProvider {
             // Database was just created, so wipe any previous widgets
             if (mAppWidgetHost != null) {
                 mAppWidgetHost.deleteHost();
+                sendAppWidgetResetNotify();
             }
             
             if (!convertDatabase(db)) {
