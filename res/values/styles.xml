@@ -53,4 +53,11 @@
         <item name="android:layout_marginLeft">10dip</item>
         <item name="android:layout_marginRight">10dip</item>
     </style>
+
+    <style name="SearchButton" parent="@android:style/Widget.Button.Small">
+        <item name="android:paddingTop">7dip</item>
+        <item name="android:paddingBottom">9dip</item>
+        <item name="android:paddingLeft">10dip</item>
+        <item name="android:paddingRight">10dip</item>
+    </style>
 </resources>
