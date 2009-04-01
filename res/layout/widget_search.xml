@@ -42,6 +42,8 @@
         android:inputType="textAutoComplete"
         android:imeOptions="actionSearch"
         android:lines="1"
+        android:dropDownWidth="fill_parent"
+        android:popupBackground="@drawable/spinner_dropdown_background"
         />
         
      <ImageButton android:id="@+id/search_go_btn"
