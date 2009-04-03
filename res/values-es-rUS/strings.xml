@@ -44,6 +44,12 @@
     <string name="add_photo_frame">"Marco de imagen"</string>
     <string name="add_search">"Buscar"</string>
     <string name="out_of_space">"No hay más espacio en esta pantalla de la página principal"</string>
+    <!-- no translation found for shortcut_installed (6623689857689040689) -->
+    <skip />
+    <!-- no translation found for shortcut_uninstalled (2758997515869993129) -->
+    <skip />
+    <!-- no translation found for shortcut_duplicate (4887186782641532074) -->
+    <skip />
     <string name="title_select_shortcut">"Seleccionar acceso directo"</string>
     <!-- no translation found for title_select_live_folder (3753447798805166749) -->
     <skip />
