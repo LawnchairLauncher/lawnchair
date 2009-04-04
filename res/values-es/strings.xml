@@ -19,7 +19,7 @@
     <string name="folder_name">"Carpeta"</string>
     <string name="chooser_wallpaper">"Seleccionar fondo de pantalla de"</string>
     <string name="wallpaper_instructions">"Establecer fondo de pantalla"</string>
-    <string name="pick_wallpaper">"Galería de fondo de pantalla"</string>
+    <string name="pick_wallpaper">"Galería de fondos de pantalla"</string>
     <string name="activity_not_found">"La aplicación no está instalada en el teléfono."</string>
     <string name="rename_folder_label">"Nombre de carpeta"</string>
     <string name="rename_folder_title">"Cambiar nombre de carpeta"</string>
