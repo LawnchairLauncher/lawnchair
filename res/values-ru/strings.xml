@@ -26,27 +26,20 @@
     <string name="rename_action">"ОК"</string>
     <string name="cancel_action">"Отмена"</string>
     <string name="menu_item_add_item">"Добавление на главный экран"</string>
-    <!-- no translation found for group_applications (4118484163419674240) -->
-    <skip />
-    <!-- no translation found for group_shortcuts (9133529424900391877) -->
-    <skip />
+    <string name="group_applications">"Программы"</string>
+    <string name="group_shortcuts">"Ярлыки"</string>
     <string name="group_search">"Поиск"</string>
-    <!-- no translation found for group_folder (5143593791798929193) -->
-    <skip />
-    <!-- no translation found for group_live_folders (2664945399140647217) -->
-    <skip />
-    <!-- no translation found for group_widgets (6704978494073105844) -->
-    <skip />
-    <!-- no translation found for group_wallpapers (1568191644272224858) -->
-    <skip />
+    <string name="group_folder">"Новая папка"</string>
+    <string name="group_live_folders">"Папки"</string>
+    <string name="group_widgets">"Виджеты"</string>
+    <string name="group_wallpapers">"Обои"</string>
     <string name="add_folder">"Папка"</string>
     <string name="add_clock">"Часы"</string>
     <string name="add_photo_frame">"Рамка для картинки"</string>
     <string name="add_search">"Поиск"</string>
     <string name="out_of_space">"На главном экране больше нет места."</string>
     <string name="title_select_shortcut">"Выберите ярлык"</string>
-    <!-- no translation found for title_select_live_folder (3753447798805166749) -->
-    <skip />
+    <string name="title_select_live_folder">"Выбор папки"</string>
     <string name="menu_add">"Добавить"</string>
     <string name="menu_wallpaper">"Фоновый рисунок"</string>
     <string name="menu_search">"Искать"</string>

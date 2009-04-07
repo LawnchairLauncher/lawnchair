@@ -26,27 +26,20 @@
     <string name="rename_action">"OK"</string>
     <string name="cancel_action">"キャンセル"</string>
     <string name="menu_item_add_item">"ホーム画面に追加"</string>
-    <!-- no translation found for group_applications (4118484163419674240) -->
-    <skip />
-    <!-- no translation found for group_shortcuts (9133529424900391877) -->
-    <skip />
+    <string name="group_applications">"アプリケーション"</string>
+    <string name="group_shortcuts">"ショートカット"</string>
     <string name="group_search">"検索"</string>
-    <!-- no translation found for group_folder (5143593791798929193) -->
-    <skip />
-    <!-- no translation found for group_live_folders (2664945399140647217) -->
-    <skip />
-    <!-- no translation found for group_widgets (6704978494073105844) -->
-    <skip />
-    <!-- no translation found for group_wallpapers (1568191644272224858) -->
-    <skip />
+    <string name="group_folder">"新しいフォルダ"</string>
+    <string name="group_live_folders">"フォルダ"</string>
+    <string name="group_widgets">"ウィジェット"</string>
+    <string name="group_wallpapers">"壁紙"</string>
     <string name="add_folder">"フォルダ"</string>
     <string name="add_clock">"時計"</string>
     <string name="add_photo_frame">"写真フレーム"</string>
     <string name="add_search">"検索"</string>
     <string name="out_of_space">"ホーム画面に空きスペースがありません。"</string>
     <string name="title_select_shortcut">"ショートカットを選択"</string>
-    <!-- no translation found for title_select_live_folder (3753447798805166749) -->
-    <skip />
+    <string name="title_select_live_folder">"フォルダの選択"</string>
     <string name="menu_add">"追加"</string>
     <string name="menu_wallpaper">"壁紙"</string>
     <string name="menu_search">"検索"</string>

@@ -26,27 +26,20 @@
     <string name="rename_action">"확인"</string>
     <string name="cancel_action">"취소"</string>
     <string name="menu_item_add_item">"홈 화면에 추가"</string>
-    <!-- no translation found for group_applications (4118484163419674240) -->
-    <skip />
-    <!-- no translation found for group_shortcuts (9133529424900391877) -->
-    <skip />
+    <string name="group_applications">"응용프로그램"</string>
+    <string name="group_shortcuts">"바로가기"</string>
     <string name="group_search">"검색"</string>
-    <!-- no translation found for group_folder (5143593791798929193) -->
-    <skip />
-    <!-- no translation found for group_live_folders (2664945399140647217) -->
-    <skip />
-    <!-- no translation found for group_widgets (6704978494073105844) -->
-    <skip />
-    <!-- no translation found for group_wallpapers (1568191644272224858) -->
-    <skip />
+    <string name="group_folder">"새 폴더"</string>
+    <string name="group_live_folders">"폴더"</string>
+    <string name="group_widgets">"위젯"</string>
+    <string name="group_wallpapers">"배경화면"</string>
     <string name="add_folder">"폴더"</string>
     <string name="add_clock">"시계"</string>
     <string name="add_photo_frame">"사진 프레임"</string>
     <string name="add_search">"검색"</string>
     <string name="out_of_space">"홈 화면에 더 이상 공간이 없습니다."</string>
     <string name="title_select_shortcut">"바로가기 선택"</string>
-    <!-- no translation found for title_select_live_folder (3753447798805166749) -->
-    <skip />
+    <string name="title_select_live_folder">"폴더 선택"</string>
     <string name="menu_add">"추가"</string>
     <string name="menu_wallpaper">"배경화면"</string>
     <string name="menu_search">"검색"</string>

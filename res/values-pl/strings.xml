@@ -26,27 +26,20 @@
     <string name="rename_action">"OK"</string>
     <string name="cancel_action">"Anuluj"</string>
     <string name="menu_item_add_item">"Dodaj do strony głównej"</string>
-    <!-- no translation found for group_applications (4118484163419674240) -->
-    <skip />
-    <!-- no translation found for group_shortcuts (9133529424900391877) -->
-    <skip />
+    <string name="group_applications">"Aplikacje"</string>
+    <string name="group_shortcuts">"Skróty"</string>
     <string name="group_search">"Wyszukiwarka"</string>
-    <!-- no translation found for group_folder (5143593791798929193) -->
-    <skip />
-    <!-- no translation found for group_live_folders (2664945399140647217) -->
-    <skip />
-    <!-- no translation found for group_widgets (6704978494073105844) -->
-    <skip />
-    <!-- no translation found for group_wallpapers (1568191644272224858) -->
-    <skip />
+    <string name="group_folder">"Nowy folder"</string>
+    <string name="group_live_folders">"Foldery"</string>
+    <string name="group_widgets">"Widżety"</string>
+    <string name="group_wallpapers">"Tapety"</string>
     <string name="add_folder">"Folder"</string>
     <string name="add_clock">"Zegar"</string>
     <string name="add_photo_frame">"Ramka obrazu"</string>
     <string name="add_search">"Wyszukiwarka"</string>
     <string name="out_of_space">"Brak miejsca na tej stronie głównej"</string>
     <string name="title_select_shortcut">"Wybierz skrót"</string>
-    <!-- no translation found for title_select_live_folder (3753447798805166749) -->
-    <skip />
+    <string name="title_select_live_folder">"Wybierz folder"</string>
     <string name="menu_add">"Dodaj"</string>
     <string name="menu_wallpaper">"Tapeta"</string>
     <string name="menu_search">"Szukaj"</string>
