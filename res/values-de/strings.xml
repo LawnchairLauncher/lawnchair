@@ -25,7 +25,7 @@
     <string name="rename_folder_title">"Ordner umbenennen"</string>
     <string name="rename_action">"OK"</string>
     <string name="cancel_action">"Abbrechen"</string>
-    <string name="menu_item_add_item">"Zur Startseite hinzufügen"</string>
+    <string name="menu_item_add_item">"Zum Startbildschirm hinzufügen"</string>
     <string name="group_applications">"Anwendungen"</string>
     <string name="group_shortcuts">"Verknüpfungen"</string>
     <string name="group_search">"Suchen"</string>
@@ -37,7 +37,7 @@
     <string name="add_clock">"Uhr"</string>
     <string name="add_photo_frame">"Bildrahmen"</string>
     <string name="add_search">"Suchen"</string>
-    <string name="out_of_space">"Auf der Startseite ist kein Platz mehr vorhanden."</string>
+    <string name="out_of_space">"Auf dem Startbildschirm ist kein Platz mehr vorhanden."</string>
     <string name="title_select_shortcut">"Tastenkürzel auswählen"</string>
     <string name="title_select_live_folder">"Ordner auswählen"</string>
     <string name="menu_add">"Hinzufügen"</string>
