@@ -174,7 +174,7 @@ public class CellLayout extends ViewGroup {
                 final int yCount = portrait ? mLongAxisCells : mShortAxisCells;
 
                 final boolean[][] occupied = mOccupied;
-                findOccupiedCells(xCount, yCount, occupied);
+                findOccupiedCells(xCount, yCount, occupied, null);
 
                 cellInfo.cell = null;
                 cellInfo.cellX = cellXY[0];
@@ -215,7 +215,7 @@ public class CellLayout extends ViewGroup {
             final int yCount = portrait ? mLongAxisCells : mShortAxisCells;
 
             final boolean[][] occupied = mOccupied;
-            findOccupiedCells(xCount, yCount, occupied);
+            findOccupiedCells(xCount, yCount, occupied, null);
 
             findIntersectingVacantCells(info, info.cellX, info.cellY, xCount, yCount, occupied);
 
@@ -315,7 +315,7 @@ public class CellLayout extends ViewGroup {
         return true;
     }
 
-    CellInfo findAllVacantCells(boolean[] occupiedCells) {
+    CellInfo findAllVacantCells(boolean[] occupiedCells, View ignoreView) {
         final boolean portrait = mPortrait;
         final int xCount = portrait ? mShortAxisCells : mLongAxisCells;
         final int yCount = portrait ? mLongAxisCells : mShortAxisCells;
@@ -329,7 +329,7 @@ public class CellLayout extends ViewGroup {
                 }
             }
         } else {
-            findOccupiedCells(xCount, yCount, occupied);
+            findOccupiedCells(xCount, yCount, occupied, ignoreView);
         }
 
         CellInfo cellInfo = new CellInfo();
@@ -527,64 +527,72 @@ public class CellLayout extends ViewGroup {
         super.setChildrenDrawnWithCacheEnabled(enabled);
     }
 
-    boolean acceptChildDrop(int x, int y, int cellHSpan, int cellVSpan, View cell) {
-        int[] cellXY = mCellXY;
-        pointToCellRounded(x, y, cellXY);
-        int cellX = cellXY[0];
-        int cellY = cellXY[1];
-
-        return findCell(cellX, cellY, cellHSpan, cellVSpan, cell) == null;
-    }
-
     /**
-     * Finds the first View intersecting with the specified cell. If the cell is outside
-     * of the layout, this is returned.
-     *
-     * @param cellX The X location of the cell to test.
-     * @param cellY The Y location of the cell to test.
-     * @param cellHSpan The horizontal span of the cell to test.
-     * @param cellVSpan The vertical span of the cell to test.
-     * @param ignoreCell View to ignore during the test.
-     *
-     * @return Returns the first View intersecting with the specified cell, this if the cell
-     *         lies outside of this layout's grid or null if no View was found.
+     * Find a vacant area that will fit the given bounds nearest the requested
+     * cell location. Uses Euclidean distance to score multiple vacant areas.
+     * 
+     * @param cellX The X location of the desired location.
+     * @param cellY The Y location of the desired location.
+     * @param spanX Horizontal span of the object.
+     * @param spanY Vertical span of the object.
+     * @param vacantCells Pre-computed set of vacant cells to search.
+     * @param recycle Previously returned value to possibly recycle.
+     * @return The X, Y cell of a vacant area that can contain this object,
+     *         nearest the requested location.
      */
-    View findCell(int cellX, int cellY, int cellHSpan, int cellVSpan, View ignoreCell) {
-        if (cellX < 0 || cellX + cellHSpan > (mPortrait ? mShortAxisCells : mLongAxisCells) ||
-                cellY < 0 || cellY + cellVSpan > (mPortrait ? mLongAxisCells : mShortAxisCells)) {
-            return this;
+    int[] findNearestVacantArea(int pixelX, int pixelY, int spanX, int spanY,
+            CellInfo vacantCells, int[] recycle) {
+        
+        // Keep track of best-scoring drop area
+        final int[] bestXY = recycle != null ? recycle : new int[2];
+        final int[] cellXY = mCellXY;
+        double bestDistance = Double.MAX_VALUE;
+        
+        // Bail early if vacant cells aren't valid
+        if (!vacantCells.valid) {
+            return null;
         }
 
-        final int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            final View view = getChildAt(i);
-            if (view == ignoreCell) {
+        // Look across all vacant cells for best fit
+        final int size = vacantCells.vacantCells.size();
+        for (int i = 0; i < size; i++) {
+            final CellInfo.VacantCell cell = vacantCells.vacantCells.get(i);
+            
+            // Reject if vacant cell isn't our exact size
+            if (cell.spanX != spanX || cell.spanY != spanY) {
                 continue;
             }
-
-            final LayoutParams lp = (LayoutParams) view.getLayoutParams();
-            if (cellX < lp.cellX + lp.cellHSpan && lp.cellX < cellX + cellHSpan &&
-                    cellY < lp.cellY + lp.cellVSpan && lp.cellY < cellY + cellVSpan) {
-                return view;
+            
+            // Score is center distance from requested pixel
+            cellToPoint(cell.cellX, cell.cellY, cellXY);
+            
+            double distance = Math.sqrt(Math.pow(cellXY[0] - pixelX, 2) +
+                    Math.pow(cellXY[1] - pixelY, 2));
+            if (distance <= bestDistance) {
+                bestDistance = distance;
+                bestXY[0] = cell.cellX;
+                bestXY[1] = cell.cellY;
             }
         }
 
-        return null;
+        // Return null if no suitable location found 
+        if (bestDistance < Double.MAX_VALUE) {
+            return bestXY;
+        } else {
+            return null;
+        }
     }
-
+    
     /**
      * Drop a child at the specified position
      *
      * @param child The child that is being dropped
-     * @param cellX The child's new x location
-     * @param cellY The child's new y location
+     * @param targetXY Destination area to move to
      */
-    void onDropChild(View child, int cellX, int cellY) {
-        int[] cellXY = mCellXY;
-        pointToCellRounded(cellX, cellY, cellXY);
+    void onDropChild(View child, int[] targetXY) {
         LayoutParams lp = (LayoutParams) child.getLayoutParams();
-        lp.cellX = cellXY[0];
-        lp.cellY = cellXY[1];
+        lp.cellX = targetXY[0];
+        lp.cellY = targetXY[1];
         lp.isDragging = false;
         mDragRect.setEmpty();
         child.requestLayout();
@@ -688,7 +696,7 @@ public class CellLayout extends ViewGroup {
         final int yCount = portrait ? mLongAxisCells : mShortAxisCells;
         final boolean[][] occupied = mOccupied;
 
-        findOccupiedCells(xCount, yCount, occupied);
+        findOccupiedCells(xCount, yCount, occupied, null);
 
         return findVacantCell(vacant, spanX, spanY, xCount, yCount, occupied);
     }
@@ -723,7 +731,7 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         final int yCount = portrait ? mLongAxisCells : mShortAxisCells;
         final boolean[][] occupied = mOccupied;
 
-        findOccupiedCells(xCount, yCount, occupied);
+        findOccupiedCells(xCount, yCount, occupied, null);
 
         final boolean[] flat = new boolean[xCount * yCount];
         for (int y = 0; y < yCount; y++) {
@@ -735,7 +743,7 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         return flat;
     }
 
-    private void findOccupiedCells(int xCount, int yCount, boolean[][] occupied) {
+    private void findOccupiedCells(int xCount, int yCount, boolean[][] occupied, View ignoreView) {
         for (int x = 0; x < xCount; x++) {
             for (int y = 0; y < yCount; y++) {
                 occupied[x][y] = false;
@@ -745,7 +753,7 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            if (child instanceof Folder) {
+            if (child instanceof Folder || child.equals(ignoreView)) {
                 continue;
             }
             LayoutParams lp = (LayoutParams) child.getLayoutParams();

@@ -24,4 +24,5 @@
     <color name="delete_color_filter">#A5FF0000</color>
 
     <color name="appwidget_error_color">#fccc</color>
+    <color name="snag_callout_color">#f444</color>
 </resources>

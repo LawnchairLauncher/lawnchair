@@ -19,6 +19,7 @@ package com.android.launcher;
 import android.widget.ImageView;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
@@ -76,6 +77,10 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
     public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset,
             Object dragInfo) {
         return true;
+    }
+    
+    public Rect estimateDropLocation(DragSource source, int x, int y, int xOffset, int yOffset, Object dragInfo, Rect recycle) {
+        return null;
     }
 
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset, Object dragInfo) {
