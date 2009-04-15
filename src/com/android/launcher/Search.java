@@ -329,6 +329,33 @@ public class Search extends LinearLayout implements OnClickListener, OnKeyListen
     }
     
     /**
+     * Cache of popup padding value after read from {@link Resources}.
+     */
+    private static float mPaddingInset = -1;
+    
+    /**
+     * When our size is changed, pass down adjusted width and offset values to
+     * correctly center the {@link AutoCompleteTextView} popup and include our
+     * padding.
+     */
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        if (changed) {
+            if (mPaddingInset == -1) {
+                mPaddingInset = getResources().getDimension(R.dimen.search_widget_inset);
+            }
+            
+            // Fill entire width of widget, minus padding inset
+            float paddedWidth = getWidth() - (mPaddingInset * 2);
+            float paddedOffset = -(mSearchText.getLeft() - mPaddingInset);
+                
+            mSearchText.setDropDownWidth((int) paddedWidth);
+            mSearchText.setDropDownHorizontalOffset((int) paddedOffset);
+        }
+    }
+    
+    /**
      * Read the searchable info from the search manager
      */
     private void configureSearchableInfo() {
