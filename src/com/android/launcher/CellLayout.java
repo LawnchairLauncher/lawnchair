@@ -98,6 +98,18 @@ public class CellLayout extends ViewGroup {
         }
     }
 
+    @Override
+    public void cancelLongPress() {
+        super.cancelLongPress();
+
+        // Cancel long press for all children
+        final int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            final View child = getChildAt(i);
+            child.cancelLongPress();
+        }
+    }
+
     int getCountX() {
         return mPortrait ? mShortAxisCells : mLongAxisCells;
     }
