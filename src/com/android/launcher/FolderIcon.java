@@ -18,6 +18,7 @@ package com.android.launcher;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -67,6 +68,10 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
         return (itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
                 itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT)
                 && item.container != mInfo.id;
+    }
+
+    public Rect estimateDropLocation(DragSource source, int x, int y, int xOffset, int yOffset, Object dragInfo, Rect recycle) {
+        return null;
     }
 
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset, Object dragInfo) {
