@@ -19,7 +19,7 @@
     <clock
         launcher:screen="2"
         launcher:x="1"
-        launcher:y="0" />
+        launcher:y="1" />
 
     <search
         launcher:screen="1"

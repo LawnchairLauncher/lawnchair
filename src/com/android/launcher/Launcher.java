@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.app.Dialog;
+import android.app.IWallpaperService;
 import android.app.SearchManager;
 import android.app.StatusBarManager;
 import android.content.ActivityNotFoundException;
@@ -35,26 +36,24 @@ import android.content.Intent.ShortcutIconResource;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.res.Resources;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.Message;
 import android.os.MessageQueue;
 import android.os.Parcelable;
 import android.os.RemoteException;
 import android.os.ServiceManager;
-import android.os.Message;
-import android.provider.*;
-import android.telephony.PhoneNumberUtils;
+import android.provider.LiveFolders;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -71,11 +70,11 @@ import android.view.ViewGroup;
 import android.view.View.OnLongClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.GridView;
+import android.widget.ListView;
+import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.GridView;
-import android.widget.SlidingDrawer;
-import android.app.IWallpaperService;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 
@@ -168,7 +167,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     private final BroadcastReceiver mApplicationsReceiver = new ApplicationsIntentReceiver();
     private final ContentObserver mObserver = new FavoritesChangeObserver();
-    private final ContentObserver mAppWidgetResetObserver = new AppWidgetResetObserver();
 
     private LayoutInflater mInflater;
 
@@ -353,6 +351,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         if (mRestoring) {
             startLoaders();
         }
+
+        // Make sure that the search gadget (if any) is in its normal place.
+        stopSearch(false);
     }
 
     @Override
@@ -387,43 +388,27 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             boolean gotKey = TextKeyListener.getInstance().onKeyDown(mWorkspace, mDefaultKeySsb,
                     keyCode, event);
             if (gotKey && mDefaultKeySsb != null && mDefaultKeySsb.length() > 0) {
-                // something usable has been typed - dispatch it now.
-                final String str = mDefaultKeySsb.toString();
-
-                boolean isDialable = true;
-                final int count = str.length();
-                for (int i = 0; i < count; i++) {
-                    if (!PhoneNumberUtils.isReallyDialable(str.charAt(i))) {
-                        isDialable = false;
-                        break;
-                    }
-                }
-                Intent intent;
-                if (isDialable) {
-                    intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", str, null));
-                } else {
-                    intent = new Intent(Contacts.Intents.UI.FILTER_CONTACTS_ACTION);
-                    intent.putExtra(Contacts.Intents.UI.FILTER_TEXT_EXTRA_KEY, str);
-                }
-
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-
-                try {
-                    startActivity(intent);
-                } catch (android.content.ActivityNotFoundException ex) {
-                    // Oh well... no one knows how to filter/dial. Life goes on.
-                }
-
-                mDefaultKeySsb.clear();
-                mDefaultKeySsb.clearSpans();
-                Selection.setSelection(mDefaultKeySsb, 0);
-
-                return true;
+                // something usable has been typed - start a search
+                // the typed text will be retrieved and cleared by 
+                // showSearchDialog()
+                // If there are multiple keystrokes before the search dialog takes focus,
+                // onSearchRequested() will be called for every keystroke,
+                // but it is idempotent, so it's fine.
+                return onSearchRequested();
             }
         }
 
         return handled;
+    }
+
+    private String getTypedText() {
+        return mDefaultKeySsb.toString();
+    }
+
+    private void clearTypedText() {
+        mDefaultKeySsb.clear();
+        mDefaultKeySsb.clearSpans();
+        Selection.setSelection(mDefaultKeySsb, 0);
     }
 
     /**
@@ -495,7 +480,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         drawer.setOnDrawerCloseListener(drawerManager);
         drawer.setOnDrawerScrollListener(drawerManager);
 
-        grid.setTextFilterEnabled(true);
+        grid.setTextFilterEnabled(false);
         grid.setDragger(dragLayer);
         grid.setLauncher(this);
 
@@ -827,7 +812,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         sModel.abortLoaders();
 
         getContentResolver().unregisterContentObserver(mObserver);
-        getContentResolver().unregisterContentObserver(mAppWidgetResetObserver);
         unregisterReceiver(mApplicationsReceiver);
     }
 
@@ -840,13 +824,76 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     @Override
     public void startSearch(String initialQuery, boolean selectInitialQuery, 
             Bundle appSearchData, boolean globalSearch) {
+
+        closeDrawer(false);
+        
+        // Slide the search widget to the top, if it's on the current screen,
+        // otherwise show the search dialog immediately.
+        Search searchWidget = mWorkspace.findSearchWidgetOnCurrentScreen();
+        if (searchWidget == null) {
+            showSearchDialog(initialQuery, selectInitialQuery, appSearchData, globalSearch);
+        } else {
+            searchWidget.startSearch(initialQuery, selectInitialQuery, appSearchData, globalSearch);
+            // show the currently typed text in the search widget while sliding
+            searchWidget.setQuery(getTypedText());
+        }
+    }
+    
+    /**
+     * Show the search dialog immediately, without changing the search widget.
+     * See {@link Activity.startSearch()} for the arguments.
+     */
+    public void showSearchDialog(String initialQuery, boolean selectInitialQuery, 
+            Bundle appSearchData, boolean globalSearch) {
+        
+        if (initialQuery == null) {
+            // Use any text typed in the launcher as the initial query
+            initialQuery = getTypedText();
+            clearTypedText();
+        }
         if (appSearchData == null) {
             appSearchData = new Bundle();
             appSearchData.putString(SearchManager.SOURCE, "launcher-search");
         }
-        super.startSearch(initialQuery, selectInitialQuery, appSearchData, globalSearch);
+        
+        final SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+
+        final Search searchWidget = mWorkspace.findSearchWidgetOnCurrentScreen();
+        if (searchWidget != null) {
+            // This gets called when the user leaves the search dialog to go back to
+            // the Launcher.
+            searchManager.setOnCancelListener(new SearchManager.OnCancelListener() {
+                public void onCancel() {
+                    searchManager.setOnCancelListener(null);
+                    stopSearch(true);
+                }            
+            });
+        }
+        
+        searchManager.startSearch(initialQuery, selectInitialQuery, getComponentName(),
+            appSearchData, globalSearch); 
     }
 
+    /**
+     * Cancel search dialog if it is open.
+     * 
+     * @param animate Whether to animate the search gadget (if any) when restoring it
+     * to its original position.
+     */
+    public void stopSearch(boolean animate) {
+        // Close search dialog
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        if (searchManager.isVisible()) {
+            searchManager.stopSearch();
+        }
+        // Restore search widget to its normal position
+        Search searchWidget = mWorkspace.findSearchWidgetOnCurrentScreen();
+        if (searchWidget != null) {
+            searchWidget.stopSearch(false);
+        }
+    }
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (mDesktopLocked) return false;
@@ -905,15 +952,16 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         return super.onOptionsItemSelected(item);
     }
+    
+    /**
+     * Indicates that we want global search for this activity by setting the globalSearch
+     * argument for {@link #startSearch} to true.
+     */
 
     @Override
     public boolean onSearchRequested() {
-        if (mWorkspace.snapToSearch()) {
-            closeDrawer(true);                // search widget: get drawer out of the way
-            return true;
-        } else {
-            return super.onSearchRequested(); // no search widget: use system search UI
-        }
+        startSearch(null, false, null, true); 
+        return true;
     }
 
     private void addItems() {
@@ -975,6 +1023,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     
         final View view = mInflater.inflate(info.layoutResource, null);
         view.setTag(info);
+        Search search = (Search) view.findViewById(R.id.widget_search);
+        search.setLauncher(this);
     
         mWorkspace.addInCurrentScreen(view, xy[0], xy[1], info.spanX, spanY);
     }
@@ -1158,7 +1208,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private void registerContentObservers() {
         ContentResolver resolver = getContentResolver();
         resolver.registerContentObserver(LauncherSettings.Favorites.CONTENT_URI, true, mObserver);
-        resolver.registerContentObserver(LauncherProvider.CONTENT_APPWIDGET_RESET_URI, true, mAppWidgetResetObserver);
     }
 
     @Override
@@ -1224,16 +1273,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         sModel.loadUserItems(false, this, false, false);
     }
 
-    /**
-     * When reset, we handle by calling {@link AppWidgetHost#startListening()}
-     * to make sure our callbacks are set correctly.
-     */
-    private void onAppWidgetReset() {
-        if (mAppWidgetHost != null) {
-            mAppWidgetHost.startListening();
-        }
-    }
-
     void onDesktopItemsLoaded() {
         if (mDestroyed) return;
         bindDesktopItems();
@@ -1249,8 +1288,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         if (shortcuts == null || appWidgets == null || drawerAdapter == null) {
             return;
         }
-
-        mAllAppsGrid.setAdapter(drawerAdapter);
 
         final Workspace workspace = mWorkspace;
         int count = workspace.getChildCount();
@@ -1275,7 +1312,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             mBinder.mTerminate = true;
         }
         
-        mBinder = new DesktopBinder(this, shortcuts, appWidgets);
+        mBinder = new DesktopBinder(this, shortcuts, appWidgets, drawerAdapter);
         mBinder.startBindingItems();
     }
 
@@ -1317,6 +1354,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     final View view = mInflater.inflate(R.layout.widget_search,
                             (ViewGroup) workspace.getChildAt(screen), false);
                     
+                    Search search = (Search) view.findViewById(R.id.widget_search);
+                    search.setLauncher(this);
+                    
                     final Widget widget = (Widget) item;
                     view.setTag(widget);
                     
@@ -1329,7 +1369,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         if (end >= count) {
             finishBindDesktopItems();
-            binder.startBindingAppWidgetsWhenIdle();
+            binder.startBindingDrawer();
         } else {
             binder.obtainMessage(DesktopBinder.MESSAGE_BIND_ITEMS, i, count).sendToTarget();
         }
@@ -1376,6 +1416,12 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mDrawer.unlock();
     }
     
+    private void bindDrawer(Launcher.DesktopBinder binder,
+            ApplicationsAdapter drawerAdapter) {
+        mAllAppsGrid.setAdapter(drawerAdapter);
+        binder.startBindingAppWidgetsWhenIdle();
+    }
+    
     private void bindAppWidgets(Launcher.DesktopBinder binder,
             LinkedList<LauncherAppWidgetInfo> appWidgets) {
         
@@ -1386,14 +1432,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             final LauncherAppWidgetInfo item = appWidgets.removeFirst();
             
             final int appWidgetId = item.appWidgetId;
-            final AppWidgetProviderInfo appWidgetInfo =
-                    mAppWidgetManager.getAppWidgetInfo(appWidgetId);
+            final AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
             item.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
             
-            if (LOGD) {
-                d(LOG_TAG, String.format("about to setAppWidget for id=%d, info=%s",
-                        appWidgetId, appWidgetInfo));
-            }
+            if (LOGD) d(LOG_TAG, String.format("about to setAppWidget for id=%d, info=%s", appWidgetId, appWidgetInfo));
             
             item.hostView.setAppWidget(appWidgetId, appWidgetInfo);
             item.hostView.setTag(item);
@@ -1891,21 +1933,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     }
 
     /**
-     * Receives notifications when the {@link AppWidgetHost} has been reset,
-     * usually only when the {@link LauncherProvider} database is first created.
-     */
-    private class AppWidgetResetObserver extends ContentObserver {
-        public AppWidgetResetObserver() {
-            super(new Handler());
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            onAppWidgetReset();
-        }
-    }
-
-    /**
      * Receives intents from other applications to change the wallpaper.
      */
     private static class WallpaperIntentReceiver extends BroadcastReceiver {
@@ -1996,21 +2023,25 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private static class DesktopBinder extends Handler implements MessageQueue.IdleHandler {
         static final int MESSAGE_BIND_ITEMS = 0x1;
         static final int MESSAGE_BIND_APPWIDGETS = 0x2;
+        static final int MESSAGE_BIND_DRAWER = 0x3;
         
         // Number of items to bind in every pass
         static final int ITEMS_COUNT = 6;
 
         private final ArrayList<ItemInfo> mShortcuts;
         private final LinkedList<LauncherAppWidgetInfo> mAppWidgets;
+        private final ApplicationsAdapter mDrawerAdapter;
         private final WeakReference<Launcher> mLauncher;
         
-        public volatile boolean mTerminate = false;
+        public boolean mTerminate = false;
 
         DesktopBinder(Launcher launcher, ArrayList<ItemInfo> shortcuts,
-                ArrayList<LauncherAppWidgetInfo> appWidgets) {
+                ArrayList<LauncherAppWidgetInfo> appWidgets,
+                ApplicationsAdapter drawerAdapter) {
 
             mLauncher = new WeakReference<Launcher>(launcher);
             mShortcuts = shortcuts;
+            mDrawerAdapter = drawerAdapter;
             
             // Sort widgets so active workspace is bound first
             final int currentScreen = launcher.mWorkspace.getCurrentScreen();
@@ -2029,6 +2060,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         
         public void startBindingItems() {
             obtainMessage(MESSAGE_BIND_ITEMS, 0, mShortcuts.size()).sendToTarget();
+        }
+
+        public void startBindingDrawer() {
+            obtainMessage(MESSAGE_BIND_DRAWER).sendToTarget();
         }
         
         public void startBindingAppWidgetsWhenIdle() {
@@ -2059,6 +2094,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     launcher.bindItems(this, mShortcuts, msg.arg1, msg.arg2);
                     break;
                 }
+                case MESSAGE_BIND_DRAWER: {
+                    launcher.bindDrawer(this, mDrawerAdapter);
+                    break;
+                }
                 case MESSAGE_BIND_APPWIDGETS: {
                     launcher.bindAppWidgets(this, mAppWidgets);
                     break;
@@ -2067,3 +2106,4 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
     }
 }
+
