@@ -71,7 +71,6 @@ import android.view.View.OnLongClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.ListView;
 import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -353,7 +352,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
 
         // Make sure that the search gadget (if any) is in its normal place.
-        stopSearch(false);
+        stopSearch();
     }
 
     @Override
@@ -767,9 +766,11 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             super.onSaveInstanceState(outState);
         }
 
-        if (mDrawer.isOpened()) {
+        // When the drawer is opened and we are saving the state because of a
+        // configuration change
+        if (mDrawer.isOpened() && getChangingConfigurations() != 0) {
             outState.putBoolean(RUNTIME_STATE_ALL_APPS_FOLDER, true);
-        }        
+        }
 
         if (mAddItemCellInfo != null && mAddItemCellInfo.valid && mWaitingForResult) {
             final CellLayout.CellInfo addItemCellInfo = mAddItemCellInfo;
@@ -841,9 +842,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     
     /**
      * Show the search dialog immediately, without changing the search widget.
-     * See {@link Activity.startSearch()} for the arguments.
+     *
+     * @see Activity#startSearch(String, boolean, android.os.Bundle, boolean)
      */
-    public void showSearchDialog(String initialQuery, boolean selectInitialQuery, 
+    void showSearchDialog(String initialQuery, boolean selectInitialQuery, 
             Bundle appSearchData, boolean globalSearch) {
         
         if (initialQuery == null) {
@@ -866,7 +868,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             searchManager.setOnCancelListener(new SearchManager.OnCancelListener() {
                 public void onCancel() {
                     searchManager.setOnCancelListener(null);
-                    stopSearch(true);
+                    stopSearch();
                 }            
             });
         }
@@ -877,11 +879,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     /**
      * Cancel search dialog if it is open.
-     * 
-     * @param animate Whether to animate the search gadget (if any) when restoring it
-     * to its original position.
      */
-    public void stopSearch(boolean animate) {
+    void stopSearch() {
         // Close search dialog
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         if (searchManager.isVisible()) {
@@ -913,8 +912,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 .setAlphabeticShortcut('N');
 
         final Intent settings = new Intent(android.provider.Settings.ACTION_SETTINGS);
-        settings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        settings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
         menu.add(0, MENU_SETTINGS, 0, R.string.menu_settings)
                 .setIcon(android.R.drawable.ic_menu_preferences).setAlphabeticShortcut('P')
