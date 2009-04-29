@@ -1100,7 +1100,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         }
         return result;
     }
-    
+
     /**
      * Find a search widget on the given screen
      */
@@ -1114,102 +1114,14 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         }
         return null;
     }
-    
+
     /**
-     * Focuses on the search widget on the specified screen,
-     * if there is one.  Also clears the current search selection so we don't 
+     * Gets the first search widget on the current screen, if there is one.
+     * Returns <code>null</code> otherwise.
      */
-    private boolean focusOnSearch(int screen) {
-        CellLayout currentScreen = (CellLayout) getChildAt(screen);
-        final Search searchWidget = findSearchWidget(currentScreen);
-        if (searchWidget != null) {
-            // This is necessary when focus on search is requested from the menu
-            // If the workspace was not in touch mode before the menu is invoked
-            // and the user clicks "Search" by touching the menu item, the following
-            // happens:
-            //
-            // - We request focus from touch on the search widget
-            // - The search widget gains focus
-            // - The window focus comes back to Home's window
-            // - The touch mode change is propagated to Home's window
-            // - The search widget is not focusable in touch mode and ViewRoot
-            //   clears its focus
-            //
-            // Forcing focusable in touch mode ensures the search widget will
-            // keep the focus no matter what happens.
-            //
-            // Note: the search input field disables focusable in touch mode
-            // after the window gets the focus back, see SearchAutoCompleteTextView
-            final SearchAutoCompleteTextView input = searchWidget.getSearchInputField();
-            input.setFocusableInTouchMode(true);
-            input.showKeyboardOnNextFocus();
-
-            if (isInTouchMode()) {
-                searchWidget.requestFocusFromTouch();
-            } else {
-                searchWidget.requestFocus();
-            }
-            searchWidget.clearQuery();
-            return true;
-        }
-        return false;
-    }
-    
-    /**
-     * Snap to the nearest screen with a search widget and give it focus
-     * 
-     * @return True if a search widget was found
-     */
-    public boolean snapToSearch() {
-        // The screen we are searching
-        int current = mCurrentScreen;
-        
-        // first position scanned so far
-        int first = current;
-
-        // last position scanned so far
-        int last = current;
-
-        // True if we should move down on the next iteration
-        boolean next = false;
-
-        // True when we have looked at the first item in the data
-        boolean hitFirst;
-
-        // True when we have looked at the last item in the data
-        boolean hitLast;
-        
-        final int count = getChildCount();
-
-        while (true) {
-            if (focusOnSearch(current)) {
-                return true;
-            }
-
-            hitLast = last == count - 1;
-            hitFirst = first == 0;
-
-            if (hitLast && hitFirst) {
-                // Looked at everything
-                break;
-            }
-
-            if (hitFirst || (next && !hitLast)) {
-                // Either we hit the top, or we are trying to move down
-                last++;
-                current = last;
-                // Try going up next time
-                next = false;
-            } else {
-                // Either we hit the bottom, or we are trying to move up
-                first--;
-                current = first;
-                // Try going down next time
-                next = true;
-            }
-
-        }
-        return false;
+    public Search findSearchWidgetOnCurrentScreen() {
+        CellLayout currentScreen = (CellLayout)getChildAt(mCurrentScreen);
+        return findSearchWidget(currentScreen);
     }
 
     public Folder getFolderForTag(Object tag) {
