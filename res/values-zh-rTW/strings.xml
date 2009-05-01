@@ -43,7 +43,7 @@
     <string name="menu_add">"新增"</string>
     <string name="menu_wallpaper">"桌布"</string>
     <string name="menu_search">"搜尋"</string>
-    <string name="menu_notifications">"通知選項"</string>
+    <string name="menu_notifications">"通知"</string>
     <string name="menu_settings">"設定"</string>
     <string name="permlab_install_shortcut">"安裝捷徑"</string>
     <string name="permdesc_install_shortcut">"允許應用程式自動新增快速鍵。"</string>
