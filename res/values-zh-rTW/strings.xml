@@ -46,7 +46,7 @@
     <string name="menu_notifications">"通知選項"</string>
     <string name="menu_settings">"設定"</string>
     <string name="permlab_install_shortcut">"安裝捷徑"</string>
-    <string name="permdesc_install_shortcut">"允許應用程式自動新增捷徑。"</string>
+    <string name="permdesc_install_shortcut">"允許應用程式自動新增快速鍵。"</string>
     <string name="permlab_uninstall_shortcut">"解除安裝捷徑"</string>
     <string name="permdesc_uninstall_shortcut">"允許應用程式自動移除捷徑。"</string>
     <string name="permlab_read_settings">"讀取首頁設定和捷徑"</string>
