@@ -531,8 +531,8 @@ public class CellLayout extends ViewGroup {
      * Find a vacant area that will fit the given bounds nearest the requested
      * cell location. Uses Euclidean distance to score multiple vacant areas.
      * 
-     * @param cellX The X location of the desired location.
-     * @param cellY The Y location of the desired location.
+     * @param pixelX The X location at which you want to search for a vacant area.
+     * @param pixelY The Y location at which you want to search for a vacant area.
      * @param spanX Horizontal span of the object.
      * @param spanY Vertical span of the object.
      * @param vacantCells Pre-computed set of vacant cells to search.
