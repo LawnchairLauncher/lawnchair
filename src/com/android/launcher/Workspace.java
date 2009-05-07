@@ -833,6 +833,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     void snapToScreen(int whichScreen) {
+        if (!mScroller.isFinished()) return;
+
         enableChildrenCache();
 
         whichScreen = Math.max(0, Math.min(whichScreen, getChildCount() - 1));
