@@ -60,7 +60,7 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
     };
 
     private static final Integer[] IMAGE_IDS = {
-            com.android.internal.R.drawable.default_wallpaper,
+            R.drawable.wallpaper_lake,
             R.drawable.wallpaper_sunset,
             R.drawable.wallpaper_beach,
             R.drawable.wallpaper_snow_leopard,
