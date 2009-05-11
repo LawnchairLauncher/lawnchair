@@ -457,11 +457,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     @Override
-    public boolean isOpaque() {
-        return !mWallpaper.hasAlpha();
-    }
-
-    @Override
     protected void dispatchDraw(Canvas canvas) {
         boolean restore = false;
 
@@ -920,7 +915,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                     originalCellLayout.removeView(cell);
                     cellLayout.addView(cell);
                 }
-                mTargetCell = estimateDropCell(x - xOffset, y - yOffset,
+                mTargetCell = estimateDropCell(source, x - xOffset, y - yOffset,
                         mDragInfo.spanX, mDragInfo.spanY, cell, cellLayout, mTargetCell);
                 cellLayout.onDropChild(cell, mTargetCell);
 
@@ -977,7 +972,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
         cellLayout.addView(view, insertAtFirst ? 0 : -1);
         view.setOnLongClickListener(mLongClickListener);
-        mTargetCell = estimateDropCell(x, y, 1, 1, view, cellLayout, mTargetCell);
+        mTargetCell = estimateDropCell(null, x, y, 1, 1, view, cellLayout, mTargetCell);
         cellLayout.onDropChild(view, mTargetCell);
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
 
@@ -1020,7 +1015,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         final Rect location = recycle != null ? recycle : new Rect();
         
         // Find drop cell and convert into rectangle
-        int[] dropCell = estimateDropCell(x - xOffset, y - yOffset,
+        int[] dropCell = estimateDropCell(source, x - xOffset, y - yOffset,
                 spanX, spanY, ignoreView, layout, mTempCell);
         
         if (dropCell == null) {
@@ -1041,7 +1036,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     /**
      * Calculate the nearest cell where the given object would be dropped.
      */
-    private int[] estimateDropCell(int pixelX, int pixelY,
+    private int[] estimateDropCell(DragSource source, int pixelX, int pixelY,
             int spanX, int spanY, View ignoreView, CellLayout layout, int[] recycle) {
         // Create vacant cell cache if none exists
         if (mVacantCache == null) {
