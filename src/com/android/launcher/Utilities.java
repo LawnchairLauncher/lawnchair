@@ -16,6 +16,7 @@
 
 package com.android.launcher;
 
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.graphics.Bitmap;
@@ -80,24 +81,35 @@ final class Utilities {
     static Drawable createIconThumbnail(Drawable icon, Context context) {
         if (sIconWidth == -1) {
             final Resources resources = context.getResources();
-            sIconWidth = sIconHeight = (int) resources.getDimension(
-                    android.R.dimen.app_icon_size);
+            sIconWidth = sIconHeight = (int) resources.getDimension(android.R.dimen.app_icon_size);
         }
 
         int width = sIconWidth;
         int height = sIconHeight;
 
-        final int iconWidth = icon.getIntrinsicWidth();
-        final int iconHeight = icon.getIntrinsicHeight();
-
+        float scale = 1.0f;
         if (icon instanceof PaintDrawable) {
             PaintDrawable painter = (PaintDrawable) icon;
             painter.setIntrinsicWidth(width);
             painter.setIntrinsicHeight(height);
+        } else if (icon instanceof BitmapDrawable) {
+            float displayDensity = context.getResources().getDisplayMetrics().density;
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) icon;
+            Bitmap bitmap = bitmapDrawable.getBitmap();
+            float iconDensity = bitmap.getDensityScale();
+            scale = displayDensity / iconDensity;
+
+            // Scale the bitmap to the screen density size if it's not loaded at the same density.
+            if (scale != 1.0f) {
+                icon = bitmapDrawable = new BitmapDrawable(bitmap);
+                bitmapDrawable.setDensityScale(scale);
+            }
         }
+        int iconWidth = icon.getIntrinsicWidth();
+        int iconHeight = icon.getIntrinsicHeight();
 
         if (width > 0 && height > 0) {
-            if (width < iconWidth || height < iconHeight) {
+            if (width < iconWidth || height < iconHeight || scale != 1.0f) {
                 final float ratio = (float) iconWidth / iconHeight;
 
                 if (iconWidth > iconHeight) {

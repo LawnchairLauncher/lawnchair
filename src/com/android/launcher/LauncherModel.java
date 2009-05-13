@@ -174,7 +174,7 @@ public class LauncherModel {
 
                 for (ResolveInfo info : matches) {
                     adapter.setNotifyOnChange(false);
-                    adapter.add(makeAndCacheApplicationInfo(packageManager, cache, info));
+                    adapter.add(makeAndCacheApplicationInfo(packageManager, cache, info, launcher));
                 }
 
                 adapter.sort(new ApplicationInfoComparator());
@@ -239,7 +239,7 @@ public class LauncherModel {
                 final ApplicationInfo applicationInfo = findIntent(adapter,
                         info.activityInfo.applicationInfo.packageName, info.activityInfo.name);
                 if (applicationInfo != null) {
-                    updateAndCacheApplicationInfo(packageManager, info, applicationInfo);
+                    updateAndCacheApplicationInfo(packageManager, info, applicationInfo, launcher);
                     changed = true;
                 }
             }
@@ -252,9 +252,9 @@ public class LauncherModel {
     }
 
     private void updateAndCacheApplicationInfo(PackageManager packageManager, ResolveInfo info,
-            ApplicationInfo applicationInfo) {
+            ApplicationInfo applicationInfo, Context context) {
 
-        updateApplicationInfoTitleAndIcon(packageManager, info, applicationInfo);
+        updateApplicationInfoTitleAndIcon(packageManager, info, applicationInfo, context);
 
         ComponentName componentName = new ComponentName(
                 info.activityInfo.applicationInfo.packageName, info.activityInfo.name);
@@ -326,10 +326,11 @@ public class LauncherModel {
                     info.activityInfo.applicationInfo.packageName, info.activityInfo.name);
             if (applicationInfo == null) {
                 toAdd.add(makeAndCacheApplicationInfo(launcher.getPackageManager(),
-                        mAppInfoCache, info));
+                        mAppInfoCache, info, launcher));
                 changed = true;
             } else {
-                updateAndCacheApplicationInfo(launcher.getPackageManager(), info, applicationInfo);
+                updateAndCacheApplicationInfo(
+                        launcher.getPackageManager(), info, applicationInfo, launcher);
                 changed = true;
             }
         }
@@ -419,7 +420,8 @@ public class LauncherModel {
     }
 
     private static ApplicationInfo makeAndCacheApplicationInfo(PackageManager manager,
-            HashMap<ComponentName, ApplicationInfo> appInfoCache, ResolveInfo info) {
+            HashMap<ComponentName, ApplicationInfo> appInfoCache, ResolveInfo info,
+            Context context) {
 
         ComponentName componentName = new ComponentName(
                 info.activityInfo.applicationInfo.packageName,
@@ -430,7 +432,7 @@ public class LauncherModel {
             application = new ApplicationInfo();
             application.container = ItemInfo.NO_ID;
 
-            updateApplicationInfoTitleAndIcon(manager, info, application);
+            updateApplicationInfoTitleAndIcon(manager, info, application, context);
 
             application.setActivity(componentName,
                     Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
@@ -442,14 +444,15 @@ public class LauncherModel {
     }
 
     private static void updateApplicationInfoTitleAndIcon(PackageManager manager, ResolveInfo info,
-            ApplicationInfo application) {
+            ApplicationInfo application, Context context) {
 
         application.title = info.loadLabel(manager);
         if (application.title == null) {
             application.title = info.activityInfo.name;
         }
 
-        application.icon = info.activityInfo.loadIcon(manager);
+        application.icon =
+                Utilities.createIconThumbnail(info.activityInfo.loadIcon(manager), context);
         application.filtered = false;
     }
 
@@ -495,7 +498,7 @@ public class LauncherModel {
                 for (int i = 0; i < count && !mStopped; i++) {
                     ResolveInfo info = apps.get(i);
                     ApplicationInfo application =
-                            makeAndCacheApplicationInfo(manager, appInfoCache, info);
+                        makeAndCacheApplicationInfo(manager, appInfoCache, info, launcher);
 
                     if (action.add(application) && !mStopped) {
                         launcher.runOnUiThread(action);
@@ -765,7 +768,7 @@ public class LauncherModel {
                             }
 
                             if (itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-                                info = getApplicationInfo(manager, intent);
+                                info = getApplicationInfo(manager, intent, launcher);
                             } else {
                                 info = getApplicationInfoShortcut(c, launcher, iconTypeIndex,
                                         iconPackageIndex, iconResourceIndex, iconIndex);
@@ -1116,7 +1119,8 @@ public class LauncherModel {
     /**
      * Make an ApplicationInfo object for an application
      */
-    private static ApplicationInfo getApplicationInfo(PackageManager manager, Intent intent) {
+    private static ApplicationInfo getApplicationInfo(PackageManager manager, Intent intent,
+                                                      Context context) {
         final ResolveInfo resolveInfo = manager.resolveActivity(intent, 0);
 
         if (resolveInfo == null) {
@@ -1125,7 +1129,7 @@ public class LauncherModel {
         
         final ApplicationInfo info = new ApplicationInfo();
         final ActivityInfo activityInfo = resolveInfo.activityInfo;
-        info.icon = activityInfo.loadIcon(manager);
+        info.icon = Utilities.createIconThumbnail(activityInfo.loadIcon(manager), context);
         if (info.title == null || info.title.length() == 0) {
             info.title = activityInfo.loadLabel(manager);
         }
@@ -1154,7 +1158,7 @@ public class LauncherModel {
                 try {
                     Resources resources = packageManager.getResourcesForApplication(packageName);
                     final int id = resources.getIdentifier(resourceName, null, null);
-                    info.icon = resources.getDrawable(id);
+                    info.icon = Utilities.createIconThumbnail(resources.getDrawable(id), launcher);
                 } catch (Exception e) {
                     info.icon = packageManager.getDefaultActivityIcon();
                 }
