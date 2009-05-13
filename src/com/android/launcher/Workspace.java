@@ -272,6 +272,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
      * @param currentScreen
      */
     void setCurrentScreen(int currentScreen) {
+        clearVacantCache();
         mCurrentScreen = Math.max(0, Math.min(currentScreen, getChildCount() - 1));
         scrollTo(mCurrentScreen * getWidth(), 0);
         invalidate();
@@ -345,6 +346,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             throw new IllegalStateException("The screen must be >= 0 and < " + getChildCount());
         }
 
+        clearVacantCache();
+
         final CellLayout group = (CellLayout) getChildAt(screen);
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
         if (lp == null) {
@@ -379,6 +382,13 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         return null;
     }
 
+    private void clearVacantCache() {
+        if (mVacantCache != null) {
+            mVacantCache.clearVacantCells();
+            mVacantCache = null;
+        }
+    }
+    
     /**
      * Returns the coordinate of a vacant cell for the current screen.
      */
@@ -840,6 +850,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     void snapToScreen(int whichScreen) {
         if (!mScroller.isFinished()) return;
 
+        clearVacantCache();
         enableChildrenCache();
 
         whichScreen = Math.max(0, Math.min(whichScreen, getChildCount() - 1));
@@ -934,7 +945,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
             Object dragInfo) {
-        mVacantCache = null;
+        clearVacantCache();
     }
 
     public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
@@ -943,7 +954,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset,
             Object dragInfo) {
-        mVacantCache = null;
+        clearVacantCache();
     }
 
     private void onDropExternal(int x, int y, Object dragInfo, CellLayout cellLayout) {
@@ -1001,8 +1012,17 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
      */
     public boolean acceptDrop(DragSource source, int x, int y,
             int xOffset, int yOffset, Object dragInfo) {
-        // Workspaces accept everything
-        return true;
+        final CellLayout layout = getCurrentDropLayout();
+        final CellLayout.CellInfo cellInfo = mDragInfo;
+        final int spanX = cellInfo == null ? 1 : cellInfo.spanX;
+        final int spanY = cellInfo == null ? 1 : cellInfo.spanY;
+
+        if (mVacantCache == null) {
+            final View ignoreView = cellInfo == null ? null : cellInfo.cell;
+            mVacantCache = layout.findAllVacantCells(null, ignoreView);
+        }
+
+        return mVacantCache.findCellForSpan(mTempEstimate, spanX, spanY, false);
     }
     
     /**
@@ -1080,14 +1100,14 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     public void scrollLeft() {
-        mVacantCache = null;
+        clearVacantCache();
         if (mNextScreen == INVALID_SCREEN && mCurrentScreen > 0 && mScroller.isFinished()) {
             snapToScreen(mCurrentScreen - 1);
         }
     }
 
     public void scrollRight() {
-        mVacantCache = null;
+        clearVacantCache();
         if (mNextScreen == INVALID_SCREEN && mCurrentScreen < getChildCount() -1 &&
                 mScroller.isFinished()) {
             snapToScreen(mCurrentScreen + 1);
@@ -1268,10 +1288,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             }
         }
     }
-
-    // TODO: remove widgets when appwidgetmanager tells us they're gone
-//    void removeAppWidgetsForProvider() {
-//    }
 
     void moveToDefaultScreen() {
         snapToScreen(mDefaultScreen);
