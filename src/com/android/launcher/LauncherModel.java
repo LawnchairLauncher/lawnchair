@@ -1169,9 +1169,14 @@ public class LauncherModel {
                 break;
             case LauncherSettings.Favorites.ICON_TYPE_BITMAP:
                 byte[] data = c.getBlob(iconIndex);
-                Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                info.icon = new FastBitmapDrawable(
-                        Utilities.createBitmapThumbnail(bitmap, launcher));
+                try {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                    info.icon = new FastBitmapDrawable(
+                            Utilities.createBitmapThumbnail(bitmap, launcher));
+                } catch (Exception e) {
+                    packageManager = launcher.getPackageManager();
+                    info.icon = packageManager.getDefaultActivityIcon();
+                }
                 info.filtered = true;
                 info.customIcon = true;
                 break;
