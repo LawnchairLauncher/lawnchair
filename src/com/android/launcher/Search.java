@@ -172,24 +172,24 @@ public class Search extends LinearLayout
         mAppSearchData = appSearchData;
         mGlobalSearch = globalSearch;
         
-        // Call up the keyboard before we actually call the search dialog so that it
-        // (hopefully) animates in at about the same time as the widget animation, and
-        // so that it becomes available as soon as possible. Only do this if a hard
-        // keyboard is not currently available.
-        if (getContext().getResources().getConfiguration().hardKeyboardHidden ==
-                Configuration.HARDKEYBOARDHIDDEN_YES) {
-            // Make sure the text field is not focusable, so it's not responsible for
-            // causing the whole view to shift up to accommodate the keyboard.
-            mSearchText.setFocusable(false);
-            
-            InputMethodManager inputManager = (InputMethodManager)
-                    getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.showSoftInputUnchecked(0, null);
-        }
-        
         if (isAtTop()) {
             showSearchDialog();
         } else {
+            // Call up the keyboard before we actually call the search dialog so that it
+            // (hopefully) animates in at about the same time as the widget animation, and
+            // so that it becomes available as soon as possible. Only do this if a hard
+            // keyboard is not currently available.
+            if (getContext().getResources().getConfiguration().hardKeyboardHidden ==
+                    Configuration.HARDKEYBOARDHIDDEN_YES) {
+                // Make sure the text field is not focusable, so it's not responsible for
+                // causing the whole view to shift up to accommodate the keyboard.
+                mSearchText.setFocusable(false);
+                
+                InputMethodManager inputManager = (InputMethodManager)
+                        getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.showSoftInputUnchecked(0, null);
+            }
+            
             // Start the animation, unless it has already started.
             if (getAnimation() != mMorphAnimation) {
                 mMorphAnimation.setDuration(getAnimationDuration());
