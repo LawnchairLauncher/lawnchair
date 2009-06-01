@@ -635,7 +635,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     @Override
-    public void addFocusables(ArrayList<View> views, int direction) {
+    public void addFocusables(ArrayList<View> views, int direction, int focusableMode) {
         if (mLauncher.isDrawerDown()) {
             final Folder openFolder = getOpenFolder();
             if (openFolder == null) {
