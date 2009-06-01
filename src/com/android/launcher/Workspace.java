@@ -1222,32 +1222,64 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         final ArrayList<View> childrenToRemove = new ArrayList<View>();
         final LauncherModel model = Launcher.getModel();
         final int count = getChildCount();
+
         for (int i = 0; i < count; i++) {
             final CellLayout layout = (CellLayout) getChildAt(i);
             int childCount = layout.getChildCount();
+
             childrenToRemove.clear();
+
             for (int j = 0; j < childCount; j++) {
                 final View view = layout.getChildAt(j);
                 Object tag = view.getTag();
+
                 if (tag instanceof ApplicationInfo) {
-                    ApplicationInfo info = (ApplicationInfo) tag;
+                    final ApplicationInfo info = (ApplicationInfo) tag;
                     // We need to check for ACTION_MAIN otherwise getComponent() might
                     // return null for some shortcuts (for instance, for shortcuts to
                     // web pages.)
                     final Intent intent = info.intent;
                     final ComponentName name = intent.getComponent();
+
                     if (Intent.ACTION_MAIN.equals(intent.getAction()) &&
                             name != null && packageName.equals(name.getPackageName())) {
                         model.removeDesktopItem(info);
                         LauncherModel.deleteItemFromDatabase(mLauncher, info);
                         childrenToRemove.add(view);
                     }
+                } else if (tag instanceof UserFolderInfo) {
+                    final UserFolderInfo info = (UserFolderInfo) tag;
+                    final ArrayList<ApplicationInfo> contents = info.contents;
+                    final ArrayList<ApplicationInfo> toRemove = new ArrayList<ApplicationInfo>(1);
+                    final int contentsCount = contents.size();
+                    boolean removedFromFolder = false;
+
+                    for (int k = 0; k < contentsCount; k++) {
+                        final ApplicationInfo appInfo = contents.get(k);
+                        final Intent intent = appInfo.intent;
+                        final ComponentName name = intent.getComponent();
+
+                        if (Intent.ACTION_MAIN.equals(intent.getAction()) &&
+                                name != null && packageName.equals(name.getPackageName())) {
+                            toRemove.add(appInfo);
+                            LauncherModel.deleteItemFromDatabase(mLauncher, appInfo);
+                            removedFromFolder = true;
+                        }
+                    }
+
+                    contents.removeAll(toRemove);
+                    if (removedFromFolder) {
+                        final Folder folder = getOpenFolder();
+                        if (folder != null) folder.notifyDataSetChanged();
+                    }
                 }
             }
+
             childCount = childrenToRemove.size();
             for (int j = 0; j < childCount; j++) {
                 layout.removeViewInLayout(childrenToRemove.get(j));
             }
+
             if (childCount > 0) {
                 layout.requestLayout();
                 layout.invalidate();
