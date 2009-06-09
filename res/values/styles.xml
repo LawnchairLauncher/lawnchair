@@ -60,4 +60,10 @@
         <item name="android:paddingLeft">10dip</item>
         <item name="android:paddingRight">10dip</item>
     </style>
+
+    <style name="PlusButton">
+        <item name="android:background">@drawable/btn_circle</item>
+        <item name="android:src">@drawable/ic_btn_round_plus</item>
+    </style>
+
 </resources>

@@ -35,7 +35,7 @@ public class UninstallShortcutReceiver extends BroadcastReceiver {
         if (intent != null && name != null) {
             final ContentResolver cr = context.getContentResolver();
             Cursor c = cr.query(LauncherSettings.Favorites.CONTENT_URI,
-                new String[] { LauncherSettings.Favorites.ID, LauncherSettings.Favorites.INTENT },
+                new String[] { LauncherSettings.Favorites._ID, LauncherSettings.Favorites.INTENT },
                 LauncherSettings.Favorites.TITLE + "=?", new String[] { name }, null);
 
             final int intentIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.INTENT);
