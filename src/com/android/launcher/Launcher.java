@@ -118,10 +118,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     static final int SCREEN_COUNT = 3;
     static final int DEFAULT_SCREN = 1;
     static final int NUMBER_CELLS_X = 4;
-    static final int NUMBER_CELLS_Y = 4;    
+    static final int NUMBER_CELLS_Y = 4;
 
     private static final int DIALOG_CREATE_SHORTCUT = 1;
-    static final int DIALOG_RENAME_FOLDER = 2;    
+    static final int DIALOG_RENAME_FOLDER = 2;
 
     private static final String PREFERENCES = "launcher";
     private static final String KEY_LOCALE = "locale";
@@ -171,12 +171,12 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     private DragLayer mDragLayer;
     private Workspace mWorkspace;
-    
+
     private AppWidgetManager mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
-    
+
     static final int APPWIDGET_HOST_ID = 1024;
-    
+
     private CellLayout.CellInfo mAddItemCellInfo;
     private CellLayout.CellInfo mMenuAddInfo;
     private final int[] mCellCoordinates = new int[2];
@@ -201,17 +201,17 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private Bundle mSavedInstanceState;
 
     private DesktopBinder mBinder;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mInflater = getLayoutInflater();
-        
+
         mAppWidgetManager = AppWidgetManager.getInstance(this);
-        
+
         mAppWidgetHost = new LauncherAppWidgetHost(this, APPWIDGET_HOST_ID);
         mAppWidgetHost.startListening();
-        
+
         if (PROFILE_STARTUP) {
             android.os.Debug.startMethodTracing("/sdcard/launcher");
         }
@@ -240,7 +240,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mDefaultKeySsb = new SpannableStringBuilder();
         Selection.setSelection(mDefaultKeySsb, 0);
     }
-    
+
     private void checkForLocaleChange() {
         final SharedPreferences preferences = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
         final Configuration configuration = getResources().getConfiguration();
@@ -304,10 +304,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // The pattern used here is that a user PICKs a specific application,
         // which, depending on the target, might need to CREATE the actual target.
-        
+
         // For example, the user would PICK_SHORTCUT for "Music playlist", and we
         // launch over to the Music app to actually CREATE_SHORTCUT.
-        
+
         if (resultCode == RESULT_OK && mAddItemCellInfo != null) {
             switch (requestCode) {
                 case REQUEST_PICK_APPLICATION:
@@ -358,16 +358,16 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     @Override
     protected void onPause() {
         super.onPause();
-        closeDrawer(false);        
+        closeDrawer(false);
     }
-    
+
     @Override
     public Object onRetainNonConfigurationInstance() {
         // Flag any binder to stop early before switching
         if (mBinder != null) {
             mBinder.mTerminate = true;
         }
-        
+
         if (PROFILE_ROTATE) {
             android.os.Debug.startMethodTracing("/sdcard/launcher-rotate");
         }
@@ -388,7 +388,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     keyCode, event);
             if (gotKey && mDefaultKeySsb != null && mDefaultKeySsb.length() > 0) {
                 // something usable has been typed - start a search
-                // the typed text will be retrieved and cleared by 
+                // the typed text will be retrieved and cleared by
                 // showSearchDialog()
                 // If there are multiple keystrokes before the search dialog takes focus,
                 // onSearchRequested() will be called for every keystroke,
@@ -554,15 +554,15 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         } catch (NameNotFoundException e) {
             Log.e(LOG_TAG, "Couldn't find ActivityInfo for selected application", e);
         }
-        
+
         if (activityInfo != null) {
             ApplicationInfo itemInfo = new ApplicationInfo();
-            
+
             itemInfo.title = activityInfo.loadLabel(packageManager);
             if (itemInfo.title == null) {
                 itemInfo.title = activityInfo.name;
             }
-            
+
             itemInfo.setActivity(component, Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             itemInfo.icon = activityInfo.loadIcon(packageManager);
@@ -571,7 +571,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             mWorkspace.addApplicationShortcut(itemInfo, cellInfo, insertAtFirst);
         }
     }
-    
+
     /**
      * Add a shortcut to the workspace.
      *
@@ -583,7 +583,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             boolean insertAtFirst) {
         cellInfo.screen = mWorkspace.getCurrentScreen();
         if (!findSingleSlot(cellInfo)) return;
-        
+
         final ApplicationInfo info = addShortcut(this, data, cellInfo, false);
 
         if (!mRestoring) {
@@ -596,7 +596,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
     }
 
-    
+
     /**
      * Add a widget to the workspace.
      *
@@ -608,15 +608,15 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         Bundle extras = data.getExtras();
         int appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-        
+
         d(LOG_TAG, "dumping extras content="+extras.toString());
-        
+
         AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
-        
+
         // Calculate the grid spans needed to fit this widget
         CellLayout layout = (CellLayout) mWorkspace.getChildAt(cellInfo.screen);
         int[] spans = layout.rectToCell(appWidgetInfo.minWidth, appWidgetInfo.minHeight);
-        
+
         // Try finding open space on Launcher screen
         final int[] xy = mCellCoordinates;
         if (!findSlot(cellInfo, xy, spans[0], spans[1])) return;
@@ -625,31 +625,31 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         LauncherAppWidgetInfo launcherInfo = new LauncherAppWidgetInfo(appWidgetId);
         launcherInfo.spanX = spans[0];
         launcherInfo.spanY = spans[1];
-        
+
         LauncherModel.addItemToDatabase(this, launcherInfo,
                 LauncherSettings.Favorites.CONTAINER_DESKTOP,
                 mWorkspace.getCurrentScreen(), xy[0], xy[1], false);
 
         if (!mRestoring) {
             sModel.addDesktopAppWidget(launcherInfo);
-            
+
             // Perform actual inflation because we're live
             launcherInfo.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
-            
+
             launcherInfo.hostView.setAppWidget(appWidgetId, appWidgetInfo);
             launcherInfo.hostView.setTag(launcherInfo);
-            
+
             mWorkspace.addInCurrentScreen(launcherInfo.hostView, xy[0], xy[1],
                     launcherInfo.spanX, launcherInfo.spanY, insertAtFirst);
         } else if (sModel.isDesktopLoaded()) {
             sModel.addDesktopAppWidget(launcherInfo);
         }
     }
-    
+
     public LauncherAppWidgetHost getAppWidgetHost() {
         return mAppWidgetHost;
     }
-    
+
     static ApplicationInfo addShortcut(Context context, Intent data,
             CellLayout.CellInfo cellInfo, boolean notify) {
 
@@ -798,7 +798,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mDestroyed = true;
 
         super.onDestroy();
-        
+
         try {
             mAppWidgetHost.stopListening();
         } catch (NullPointerException ex) {
@@ -823,11 +823,11 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     }
 
     @Override
-    public void startSearch(String initialQuery, boolean selectInitialQuery, 
+    public void startSearch(String initialQuery, boolean selectInitialQuery,
             Bundle appSearchData, boolean globalSearch) {
 
         closeDrawer(false);
-        
+
         // Slide the search widget to the top, if it's on the current screen,
         // otherwise show the search dialog immediately.
         Search searchWidget = mWorkspace.findSearchWidgetOnCurrentScreen();
@@ -839,15 +839,15 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             searchWidget.setQuery(getTypedText());
         }
     }
-    
+
     /**
      * Show the search dialog immediately, without changing the search widget.
      *
      * @see Activity#startSearch(String, boolean, android.os.Bundle, boolean)
      */
-    void showSearchDialog(String initialQuery, boolean selectInitialQuery, 
+    void showSearchDialog(String initialQuery, boolean selectInitialQuery,
             Bundle appSearchData, boolean globalSearch) {
-        
+
         if (initialQuery == null) {
             // Use any text typed in the launcher as the initial query
             initialQuery = getTypedText();
@@ -857,7 +857,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             appSearchData = new Bundle();
             appSearchData.putString(SearchManager.SOURCE, "launcher-search");
         }
-        
+
         final SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 
@@ -869,12 +869,12 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 public void onCancel() {
                     searchManager.setOnCancelListener(null);
                     stopSearch();
-                }            
+                }
             });
         }
-        
+
         searchManager.startSearch(initialQuery, selectInitialQuery, getComponentName(),
-            appSearchData, globalSearch); 
+            appSearchData, globalSearch);
     }
 
     /**
@@ -892,7 +892,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             searchWidget.stopSearch(false);
         }
     }
-    
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (mDesktopLocked) return false;
@@ -951,7 +951,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         return super.onOptionsItemSelected(item);
     }
-    
+
     /**
      * Indicates that we want global search for this activity by setting the globalSearch
      * argument for {@link #startSearch} to true.
@@ -959,7 +959,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     @Override
     public boolean onSearchRequested() {
-        startSearch(null, false, null, true); 
+        startSearch(null, false, null, true);
         return true;
     }
 
@@ -972,7 +972,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             mWorkspace.removeShortcutsForPackage(packageName);
         }
     }
-    
+
     private void updateShortcutsForPackage(String packageName) {
         if (packageName != null && packageName.length() > 0) {
             mWorkspace.updateShortcutsForPackage(packageName);
@@ -1005,26 +1005,26 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             }
         }
     }
-    
+
     void addSearch() {
         final Widget info = Widget.makeSearch();
         final CellLayout.CellInfo cellInfo = mAddItemCellInfo;
-        
+
         final int[] xy = mCellCoordinates;
         final int spanX = info.spanX;
         final int spanY = info.spanY;
-    
+
         if (!findSlot(cellInfo, xy, spanX, spanY)) return;
-    
+
         sModel.addDesktopItem(info);
         LauncherModel.addItemToDatabase(this, info, LauncherSettings.Favorites.CONTAINER_DESKTOP,
         mWorkspace.getCurrentScreen(), xy[0], xy[1], false);
-    
+
         final View view = mInflater.inflate(info.layoutResource, null);
         view.setTag(info);
         Search search = (Search) view.findViewById(R.id.widget_search);
         search.setLauncher(this);
-    
+
         mWorkspace.addInCurrentScreen(view, xy[0], xy[1], info.spanX, spanY);
     }
 
@@ -1032,11 +1032,11 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         // Handle case where user selected "Applications"
         String applicationName = getResources().getString(R.string.group_applications);
         String shortcutName = intent.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
-        
+
         if (applicationName != null && applicationName.equals(shortcutName)) {
             Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
             mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-            
+
             Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
             pickIntent.putExtra(Intent.EXTRA_INTENT, mainIntent);
             startActivityForResult(pickIntent, REQUEST_PICK_APPLICATION);
@@ -1049,7 +1049,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         // Handle case where user selected "Folder"
         String folderName = getResources().getString(R.string.group_folder);
         String shortcutName = intent.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
-        
+
         if (folderName != null && folderName.equals(shortcutName)) {
             addFolder(!mDesktopLocked);
         } else {
@@ -1077,7 +1077,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mWorkspace.addInCurrentScreen(newFolder,
                 cellInfo.cellX, cellInfo.cellY, 1, 1, insertAtFirst);
     }
-    
+
     private void completeAddLiveFolder(Intent data, CellLayout.CellInfo cellInfo,
             boolean insertAtFirst) {
         cellInfo.screen = mWorkspace.getCurrentScreen();
@@ -1214,11 +1214,11 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             switch (event.getKeyCode()) {
                 case KeyEvent.KEYCODE_BACK:
-                    mWorkspace.dispatchKeyEvent(event); 
+                    mWorkspace.dispatchKeyEvent(event);
                     if (mDrawer.isOpened()) {
                         closeDrawer();
                     } else {
-                        closeFolder();                        
+                        closeFolder();
                     }
                     return true;
                 case KeyEvent.KEYCODE_HOME:
@@ -1276,7 +1276,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         if (mDestroyed) return;
         bindDesktopItems();
     }
-    
+
     /**
      * Refreshes the shortcuts shown on the workspace.
      */
@@ -1293,7 +1293,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         for (int i = 0; i < count; i++) {
             ((ViewGroup) workspace.getChildAt(i)).removeAllViewsInLayout();
         }
-        
+
         if (DEBUG_USER_INTERFACE) {
             android.widget.Button finishButton = new android.widget.Button(this);
             finishButton.setText("Finish");
@@ -1305,12 +1305,12 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 }
             });
         }
-        
+
         // Flag any old binder to terminate early
         if (mBinder != null) {
             mBinder.mTerminate = true;
         }
-        
+
         mBinder = new DesktopBinder(this, shortcuts, appWidgets, drawerAdapter);
         mBinder.startBindingItems();
     }
@@ -1352,13 +1352,13 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     final int screen = workspace.getCurrentScreen();
                     final View view = mInflater.inflate(R.layout.widget_search,
                             (ViewGroup) workspace.getChildAt(screen), false);
-                    
+
                     Search search = (Search) view.findViewById(R.id.widget_search);
                     search.setLauncher(this);
-                    
+
                     final Widget widget = (Widget) item;
                     view.setTag(widget);
-                    
+
                     workspace.addWidget(view, widget, !desktopLocked);
                     break;
             }
@@ -1414,34 +1414,34 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mDesktopLocked = false;
         mDrawer.unlock();
     }
-    
+
     private void bindDrawer(Launcher.DesktopBinder binder,
             ApplicationsAdapter drawerAdapter) {
         mAllAppsGrid.setAdapter(drawerAdapter);
         binder.startBindingAppWidgetsWhenIdle();
     }
-    
+
     private void bindAppWidgets(Launcher.DesktopBinder binder,
             LinkedList<LauncherAppWidgetInfo> appWidgets) {
-        
+
         final Workspace workspace = mWorkspace;
         final boolean desktopLocked = mDesktopLocked;
 
         if (!appWidgets.isEmpty()) {
             final LauncherAppWidgetInfo item = appWidgets.removeFirst();
-            
+
             final int appWidgetId = item.appWidgetId;
             final AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
             item.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
-            
+
             if (LOGD) d(LOG_TAG, String.format("about to setAppWidget for id=%d, info=%s", appWidgetId, appWidgetInfo));
-            
+
             item.hostView.setAppWidget(appWidgetId, appWidgetInfo);
             item.hostView.setTag(item);
-            
+
             workspace.addInScreen(item.hostView, item.screen, item.cellX,
                     item.cellY, item.spanX, item.spanY, !desktopLocked);
-    
+
             workspace.requestLayout();
         }
 
@@ -1652,7 +1652,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 EditText input = (EditText) dialog.findViewById(R.id.folder_name);
                 final CharSequence text = mFolderInfo.title;
                 input.setText(text);
-                input.setSelection(0, text.length());                
+                input.setSelection(0, text.length());
                 break;
         }
     }
@@ -1744,22 +1744,23 @@ public final class Launcher extends Activity implements View.OnClickListener, On
      * appropriate activity.
      */
     private class CreateShortcut implements DialogInterface.OnClickListener,
-            DialogInterface.OnCancelListener {
+            DialogInterface.OnCancelListener, DialogInterface.OnDismissListener {
         private AddAdapter mAdapter;
 
         Dialog createDialog() {
             mWaitingForResult = true;
-            
+
             mAdapter = new AddAdapter(Launcher.this);
-            
+
             final AlertDialog.Builder builder = new AlertDialog.Builder(Launcher.this);
             builder.setTitle(getString(R.string.menu_item_add_item));
             builder.setAdapter(mAdapter, this);
-            
+
             builder.setInverseBackgroundForced(true);
 
             AlertDialog dialog = builder.create();
             dialog.setOnCancelListener(this);
+            dialog.setOnDismissListener(this);
 
             return dialog;
         }
@@ -1767,6 +1768,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         public void onCancel(DialogInterface dialog) {
             mWaitingForResult = false;
             cleanup();
+        }
+
+        public void onDismiss(DialogInterface dialog) {
+            mWorkspace.unlock();
         }
 
         private void cleanup() {
@@ -1780,36 +1785,36 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         public void onClick(DialogInterface dialog, int which) {
             Resources res = getResources();
             cleanup();
-            
+
             switch (which) {
                 case AddAdapter.ITEM_SHORTCUT: {
                     // Insert extra item to handle picking application
                     Bundle bundle = new Bundle();
-                    
+
                     ArrayList<String> shortcutNames = new ArrayList<String>();
                     shortcutNames.add(res.getString(R.string.group_applications));
                     bundle.putStringArrayList(Intent.EXTRA_SHORTCUT_NAME, shortcutNames);
-                    
+
                     ArrayList<ShortcutIconResource> shortcutIcons =
                             new ArrayList<ShortcutIconResource>();
                     shortcutIcons.add(ShortcutIconResource.fromContext(Launcher.this,
                             R.drawable.ic_launcher_application));
                     bundle.putParcelableArrayList(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, shortcutIcons);
-                    
+
                     Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
                     pickIntent.putExtra(Intent.EXTRA_INTENT,
                             new Intent(Intent.ACTION_CREATE_SHORTCUT));
                     pickIntent.putExtra(Intent.EXTRA_TITLE,
                             getText(R.string.title_select_shortcut));
                     pickIntent.putExtras(bundle);
-                    
+
                     startActivityForResult(pickIntent, REQUEST_PICK_SHORTCUT);
                     break;
                 }
-                
+
                 case AddAdapter.ITEM_APPWIDGET: {
                     int appWidgetId = Launcher.this.mAppWidgetHost.allocateAppWidgetId();
-                    
+
                     Intent pickIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_PICK);
                     pickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
                     // add the search widget
@@ -1832,15 +1837,15 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     startActivityForResult(pickIntent, REQUEST_PICK_APPWIDGET);
                     break;
                 }
-                
+
                 case AddAdapter.ITEM_LIVE_FOLDER: {
                     // Insert extra item to handle inserting folder
                     Bundle bundle = new Bundle();
-                    
+
                     ArrayList<String> shortcutNames = new ArrayList<String>();
                     shortcutNames.add(res.getString(R.string.group_folder));
                     bundle.putStringArrayList(Intent.EXTRA_SHORTCUT_NAME, shortcutNames);
-                    
+
                     ArrayList<ShortcutIconResource> shortcutIcons =
                             new ArrayList<ShortcutIconResource>();
                     shortcutIcons.add(ShortcutIconResource.fromContext(Launcher.this,
@@ -1853,7 +1858,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     pickIntent.putExtra(Intent.EXTRA_TITLE,
                             getText(R.string.title_select_live_folder));
                     pickIntent.putExtras(bundle);
-                    
+
                     startActivityForResult(pickIntent, REQUEST_PICK_LIVE_FOLDER);
                     break;
                 }
@@ -2023,7 +2028,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         static final int MESSAGE_BIND_ITEMS = 0x1;
         static final int MESSAGE_BIND_APPWIDGETS = 0x2;
         static final int MESSAGE_BIND_DRAWER = 0x3;
-        
+
         // Number of items to bind in every pass
         static final int ITEMS_COUNT = 6;
 
@@ -2031,7 +2036,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         private final LinkedList<LauncherAppWidgetInfo> mAppWidgets;
         private final ApplicationsAdapter mDrawerAdapter;
         private final WeakReference<Launcher> mLauncher;
-        
+
         public boolean mTerminate = false;
 
         DesktopBinder(Launcher launcher, ArrayList<ItemInfo> shortcuts,
@@ -2041,12 +2046,12 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             mLauncher = new WeakReference<Launcher>(launcher);
             mShortcuts = shortcuts;
             mDrawerAdapter = drawerAdapter;
-            
+
             // Sort widgets so active workspace is bound first
             final int currentScreen = launcher.mWorkspace.getCurrentScreen();
             final int size = appWidgets.size();
             mAppWidgets = new LinkedList<LauncherAppWidgetInfo>();
-            
+
             for (int i = 0; i < size; i++) {
                 LauncherAppWidgetInfo appWidgetInfo = appWidgets.get(i);
                 if (appWidgetInfo.screen == currentScreen) {
@@ -2056,7 +2061,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 }
             }
         }
-        
+
         public void startBindingItems() {
             obtainMessage(MESSAGE_BIND_ITEMS, 0, mShortcuts.size()).sendToTarget();
         }
@@ -2064,13 +2069,13 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         public void startBindingDrawer() {
             obtainMessage(MESSAGE_BIND_DRAWER).sendToTarget();
         }
-        
+
         public void startBindingAppWidgetsWhenIdle() {
             // Ask for notification when message queue becomes idle
             final MessageQueue messageQueue = Looper.myQueue();
             messageQueue.addIdleHandler(this);
         }
-        
+
         public boolean queueIdle() {
             // Queue is idle, so start binding items
             startBindingAppWidgets();
@@ -2087,7 +2092,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             if (launcher == null || mTerminate) {
                 return;
             }
-            
+
             switch (msg.what) {
                 case MESSAGE_BIND_ITEMS: {
                     launcher.bindItems(this, mShortcuts, msg.arg1, msg.arg2);
