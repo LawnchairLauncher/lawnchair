@@ -587,7 +587,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         final GestureOverlayView overlay = mGesturesOverlay;
         overlay.setFadeOffset(GesturesConstants.MATCH_DELAY);
         overlay.addOnGestureListener(mGesturesProcessor);
-        overlay.getGesturePaint().setXfermode(new PorterDuffXfermode(PorterDuff.Mode.MULTIPLY));        
+        overlay.getGesturePaint().setXfermode(new PorterDuffXfermode(PorterDuff.Mode.MULTIPLY));
     }
 
     private void createGesture() {
@@ -869,7 +869,11 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) {
 
                 if (mGesturesPanel != null && mDragLayer.getWindowVisibility() == View.VISIBLE) {
-                    onHomeKeyPressed();
+                    SearchManager searchManager =
+                            (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+                    if (!searchManager.isVisible()) {
+                        onHomeKeyPressed();
+                    }
                 }
                 closeDrawer();
 
@@ -2419,7 +2423,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         void update(ApplicationInfo info, Gesture gesture) {
             mGesturesOverlay.setGesture(gesture);
-            updatePrompt(info);            
+            updatePrompt(info);
         }
 
         class GestureMatcher implements Runnable {
