@@ -45,6 +45,12 @@
     <string name="add_photo_frame">"Moldura"</string>
     <string name="add_search">"Pesquisar"</string>
     <string name="out_of_space">"Não há mais espaço nesta página inicial."</string>
+    <!-- no translation found for shortcut_installed (6623689857689040689) -->
+    <skip />
+    <!-- no translation found for shortcut_uninstalled (2758997515869993129) -->
+    <skip />
+    <!-- no translation found for shortcut_duplicate (4887186782641532074) -->
+    <skip />
     <!-- no translation found for title_select_shortcut (2858897527672831763) -->
     <skip />
     <!-- no translation found for title_select_live_folder (3753447798805166749) -->
@@ -53,6 +59,8 @@
     <string name="menu_wallpaper">"Papel de parede"</string>
     <string name="menu_search">"Pesquisar"</string>
     <string name="menu_notifications">"Notificações"</string>
+    <!-- no translation found for menu_gestures (514678675575912237) -->
+    <skip />
     <string name="menu_settings">"Configurações"</string>
     <string name="permlab_install_shortcut">"instalar atalhos"</string>
     <string name="permdesc_install_shortcut">"Permite que um aplicativo adicione atalhos sem a intervenção do usuário."</string>
@@ -64,5 +72,29 @@
     <string name="permdesc_write_settings">"Permite que um aplicativo altere as configurações e atalhos na página inicial."</string>
     <string name="search_hint">"Google Search"</string>
     <!-- no translation found for gadget_error_text (8359351016167075858) -->
+    <skip />
+    <!-- no translation found for gestures_instructions (1099425576530504561) -->
+    <skip />
+    <!-- no translation found for gestures_unknown (309008617423088837) -->
+    <skip />
+    <!-- no translation found for gestures_created (8116808500193613741) -->
+    <skip />
+    <!-- no translation found for gestures_failed (5113829215530311557) -->
+    <skip />
+    <!-- no translation found for gestures_loading (6325241735907189384) -->
+    <skip />
+    <!-- no translation found for gestures_empty (8923837437173732411) -->
+    <skip />
+    <!-- no translation found for gestures_activity (3366108186921084558) -->
+    <skip />
+    <!-- no translation found for gestures_rename (713510200890627175) -->
+    <skip />
+    <!-- no translation found for gestures_delete (6962559975386260201) -->
+    <skip />
+    <!-- no translation found for gestures_delete_success (2961655691848002690) -->
+    <skip />
+    <!-- no translation found for gestures_rename_title (7463326669074661915) -->
+    <skip />
+    <!-- no translation found for gestures_rename_label (8790363956270703745) -->
     <skip />
 </resources>
