@@ -230,6 +230,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private Launcher.GesturesProcessor mGesturesProcessor;
     private Gesture mCurrentGesture;
     private GesturesAction mGesturesAction;
+    private boolean mHideGesturesPanel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -337,6 +338,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mWaitingForResult = false;
+
         // The pattern used here is that a user PICKs a specific application,
         // which, depending on the target, might need to CREATE the actual target.
 
@@ -389,7 +392,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 mAppWidgetHost.deleteAppWidgetId(appWidgetId);
             }
         }
-        mWaitingForResult = false;
     }
 
     @Override
@@ -417,7 +419,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     @Override
     protected void onStop() {
         super.onStop();
-        hideGesturesPanel();
+        if (mHideGesturesPanel) {
+            mHideGesturesPanel = false;
+            hideGesturesPanel();
+        }
     }
 
     @Override
@@ -1689,6 +1694,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     }
 
     void startActivitySafely(Intent intent) {
+        mHideGesturesPanel = true;
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         try {
             startActivity(intent);
