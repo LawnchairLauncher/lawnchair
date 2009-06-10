@@ -46,7 +46,7 @@
             android:shadowColor="#FF000000"
             android:shadowRadius="2.0"
 
-            android:drawablePadding="6dip"
+            android:drawablePadding="8dip"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:ellipsize="end"
             android:maxLines="2"
@@ -62,7 +62,7 @@
             android:shadowColor="#FF000000"
             android:shadowRadius="2.0"
 
-            android:drawablePadding="6dip"
+            android:drawablePadding="8dip"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:ellipsize="end"
             android:maxLines="2"
