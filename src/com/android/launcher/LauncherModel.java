@@ -560,7 +560,7 @@ public class LauncherModel {
         }
     }
 
-    private static class ApplicationInfoComparator implements Comparator<ApplicationInfo> {
+    static class ApplicationInfoComparator implements Comparator<ApplicationInfo> {
         public final int compare(ApplicationInfo a, ApplicationInfo b) {
             return sCollator.compare(a.title.toString(), b.title.toString());
         }
@@ -614,11 +614,11 @@ public class LauncherModel {
 
     private static void updateShortcutLabels(ContentResolver resolver, PackageManager manager) {
         final Cursor c = resolver.query(LauncherSettings.Favorites.CONTENT_URI,
-                new String[] { LauncherSettings.Favorites.ID, LauncherSettings.Favorites.TITLE,
+                new String[] { LauncherSettings.Favorites._ID, LauncherSettings.Favorites.TITLE,
                         LauncherSettings.Favorites.INTENT, LauncherSettings.Favorites.ITEM_TYPE },
                 null, null, null);
 
-        final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ID);
+        final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
         final int intentIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.INTENT);
         final int itemTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
         final int titleIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.TITLE);
@@ -725,7 +725,7 @@ public class LauncherModel {
                     LauncherSettings.Favorites.CONTENT_URI, null, null, null, null);
 
             try {
-                final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ID);
+                final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
                 final int intentIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.INTENT);
                 final int titleIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.TITLE);
                 final int iconTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_TYPE);
@@ -1143,7 +1143,7 @@ public class LauncherModel {
     /**
      * Make an ApplicationInfo object for a sortcut
      */
-    private ApplicationInfo getApplicationInfoShortcut(Cursor c, Launcher launcher,
+    private ApplicationInfo getApplicationInfoShortcut(Cursor c, Context context,
             int iconTypeIndex, int iconPackageIndex, int iconResourceIndex, int iconIndex) {
 
         final ApplicationInfo info = new ApplicationInfo();
@@ -1154,11 +1154,11 @@ public class LauncherModel {
             case LauncherSettings.Favorites.ICON_TYPE_RESOURCE:
                 String packageName = c.getString(iconPackageIndex);
                 String resourceName = c.getString(iconResourceIndex);
-                PackageManager packageManager = launcher.getPackageManager();
+                PackageManager packageManager = context.getPackageManager();
                 try {
                     Resources resources = packageManager.getResourcesForApplication(packageName);
                     final int id = resources.getIdentifier(resourceName, null, null);
-                    info.icon = Utilities.createIconThumbnail(resources.getDrawable(id), launcher);
+                    info.icon = Utilities.createIconThumbnail(resources.getDrawable(id), context);
                 } catch (Exception e) {
                     info.icon = packageManager.getDefaultActivityIcon();
                 }
@@ -1172,16 +1172,16 @@ public class LauncherModel {
                 try {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
                     info.icon = new FastBitmapDrawable(
-                            Utilities.createBitmapThumbnail(bitmap, launcher));
+                            Utilities.createBitmapThumbnail(bitmap, context));
                 } catch (Exception e) {
-                    packageManager = launcher.getPackageManager();
+                    packageManager = context.getPackageManager();
                     info.icon = packageManager.getDefaultActivityIcon();
                 }
                 info.filtered = true;
                 info.customIcon = true;
                 break;
             default:
-                info.icon = launcher.getPackageManager().getDefaultActivityIcon();
+                info.icon = context.getPackageManager().getDefaultActivityIcon();
                 info.customIcon = false;
                 break;
         }
@@ -1326,6 +1326,26 @@ public class LauncherModel {
     }
 
     /**
+     * Add an item to the database in a specified container. Sets the container, screen, cellX and
+     * cellY fields of the item. Also assigns an ID to the item.
+     */
+    static boolean addGestureToDatabase(Context context, ItemInfo item, boolean notify) {
+        final ContentValues values = new ContentValues();
+        final ContentResolver cr = context.getContentResolver();
+
+        item.onAddToDatabase(values);
+
+        Uri result = cr.insert(notify ? LauncherSettings.Gestures.CONTENT_URI :
+                LauncherSettings.Gestures.CONTENT_URI_NO_NOTIFICATION, values);
+
+        if (result != null) {
+            item.id = Integer.parseInt(result.getPathSegments().get(1));
+        }
+
+        return result != null;
+    }
+
+    /**
      * Update an item to the database in a specified container.
      */
     static void updateItemInDatabase(Context context, ItemInfo item) {
@@ -1358,5 +1378,85 @@ public class LauncherModel {
         cr.delete(LauncherSettings.Favorites.getContentUri(info.id, false), null, null);
         cr.delete(LauncherSettings.Favorites.CONTENT_URI,
                 LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
+    }
+
+    static void deleteGestureFromDatabase(Context context, ItemInfo item) {
+        final ContentResolver cr = context.getContentResolver();
+
+        cr.delete(LauncherSettings.Gestures.getContentUri(item.id, false), null, null);
+    }
+
+    static void updateGestureInDatabase(Context context, ItemInfo item) {
+        final ContentValues values = new ContentValues();
+        final ContentResolver cr = context.getContentResolver();
+
+        item.onAddToDatabase(values);
+
+        cr.update(LauncherSettings.Gestures.getContentUri(item.id, false), values, null, null);
+    }
+
+
+    ApplicationInfo queryGesture(Context context, String id) {
+        final ContentResolver contentResolver = context.getContentResolver();
+        final PackageManager manager = context.getPackageManager();
+        final Cursor c = contentResolver.query(
+                LauncherSettings.Gestures.CONTENT_URI, null, LauncherSettings.Gestures._ID + "=?",
+                new String[] { id }, null);
+
+        ApplicationInfo info = null;
+
+        try {
+            final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Gestures._ID);
+            final int intentIndex = c.getColumnIndexOrThrow(LauncherSettings.Gestures.INTENT);
+            final int titleIndex = c.getColumnIndexOrThrow(LauncherSettings.Gestures.TITLE);
+            final int iconTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Gestures.ICON_TYPE);
+            final int iconIndex = c.getColumnIndexOrThrow(LauncherSettings.Gestures.ICON);
+            final int iconPackageIndex = c.getColumnIndexOrThrow(LauncherSettings.Gestures.ICON_PACKAGE);
+            final int iconResourceIndex = c.getColumnIndexOrThrow(LauncherSettings.Gestures.ICON_RESOURCE);
+            final int itemTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Gestures.ITEM_TYPE);
+
+            String intentDescription;
+            Intent intent;
+
+            if (c.moveToNext()) {
+                int itemType = c.getInt(itemTypeIndex);
+
+                switch (itemType) {
+                    case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+                    case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                        intentDescription = c.getString(intentIndex);
+                        try {
+                            intent = Intent.getIntent(intentDescription);
+                        } catch (java.net.URISyntaxException e) {
+                            return null;
+                        }
+
+                        if (itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+                            info = getApplicationInfo(manager, intent, context);
+                        } else {
+                            info = getApplicationInfoShortcut(c, context, iconTypeIndex,
+                                    iconPackageIndex, iconResourceIndex, iconIndex);
+                        }
+
+                        if (info == null) {
+                            info = new ApplicationInfo();
+                            info.icon = manager.getDefaultActivityIcon();
+                        }
+
+                        info.isGesture = true;
+                        info.title = c.getString(titleIndex);
+                        info.intent = intent;
+                        info.id = c.getLong(idIndex);
+
+                        break;
+                }
+            }
+        } catch (Exception e) {
+            w(LOG_TAG, "Could not load gesture with name " + id);
+        } finally {
+            c.close();
+        }
+
+        return info;
     }
 }

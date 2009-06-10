@@ -91,6 +91,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="GesturesActivity"
+            android:label="@string/gestures_activity" />        
         
         <!-- Enable system-default search mode for any activity in Home -->
         <meta-data

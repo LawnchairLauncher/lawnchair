@@ -23,6 +23,8 @@
     <color name="bubble_dark_background">#B2191919</color>
     <color name="delete_color_filter">#A5FF0000</color>
 
-    <color name="appwidget_error_color">#fccc</color>
-    <color name="snag_callout_color">#f444</color>
+    <color name="appwidget_error_color">#FCCC</color>
+    <color name="snag_callout_color">#F444</color>
+
+    <color name="gesture_color">#FFFFFF00</color>
 </resources>
