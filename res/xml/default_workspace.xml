@@ -16,11 +16,6 @@
 
 <favorites xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher">
 
-    <clock
-        launcher:screen="2"
-        launcher:x="1"
-        launcher:y="1" />
-
     <search
         launcher:screen="1"
         launcher:x="0"
