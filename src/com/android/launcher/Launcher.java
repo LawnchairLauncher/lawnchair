@@ -105,6 +105,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private static final boolean DEBUG_USER_INTERFACE = false;
     private static final boolean DEBUG_GESTURES = false;
 
+    private static final boolean CONFIG_GESTURES_IMMEDIATE_MODE = true;
+
     private static final int WALLPAPER_SCREENS_SPAN = 2;
 
     private static final int MENU_GROUP_ADD = 1;
@@ -585,7 +587,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mGesturesProcessor = new GesturesProcessor();
 
         final GestureOverlayView overlay = mGesturesOverlay;
-        overlay.setFadeOffset(GesturesConstants.MATCH_DELAY);
         overlay.addOnGestureListener(mGesturesProcessor);
         overlay.getGesturePaint().setXfermode(new PorterDuffXfermode(PorterDuff.Mode.MULTIPLY));
     }
@@ -2350,8 +2351,11 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
 
         public void onGestureStarted(GestureOverlayView overlay, MotionEvent event) {
-            overlay.removeCallbacks(mMatcher);
-            resetGesturesNextPrompt();
+            //noinspection PointlessBooleanExpression,ConstantConditions
+            if (!CONFIG_GESTURES_IMMEDIATE_MODE) {
+                overlay.removeCallbacks(mMatcher);
+                resetGesturesNextPrompt();
+            }
 
             mGesturesAdd.setAlpha(128);
             mGesturesAdd.setEnabled(false);
@@ -2364,13 +2368,22 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
 
         public void onGestureEnded(GestureOverlayView overlay, MotionEvent event) {
-            overlay.removeCallbacks(mMatcher);
-
-            mMatcher.gesture = overlay.getGesture();
-            if (mMatcher.gesture.getLength() < GesturesConstants.LENGTH_THRESHOLD) {
-                overlay.clear(false);
+            if (CONFIG_GESTURES_IMMEDIATE_MODE) {
+                mMatcher.gesture = overlay.getGesture();
+                if (mMatcher.gesture.getLength() < GesturesConstants.LENGTH_THRESHOLD) {
+                    overlay.clear(false);
+                } else {
+                    mMatcher.run();
+                }
             } else {
-                overlay.postDelayed(mMatcher, GesturesConstants.MATCH_DELAY);
+                overlay.removeCallbacks(mMatcher);
+
+                mMatcher.gesture = overlay.getGesture();
+                if (mMatcher.gesture.getLength() < GesturesConstants.LENGTH_THRESHOLD) {
+                    overlay.clear(false);
+                } else {
+                    overlay.postDelayed(mMatcher, GesturesConstants.MATCH_DELAY);
+                }
             }
         }
 
@@ -2407,12 +2420,20 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
 
         private void updatePrompt(ApplicationInfo info) {
+            if (mGesturesAction.intent != null &&
+                    info.intent.toURI().equals(mGesturesAction.intent.toURI()) &&
+                    info.title.equals(((TextView) mGesturesPrompt.getCurrentView()).getText())) {
+                return;
+            }
             setGesturesNextPrompt(info.icon, info.title);
             mGesturesAction.intent = info.intent;
         }
 
         public void onGestureCancelled(GestureOverlayView overlay, MotionEvent event) {
-            overlay.removeCallbacks(mMatcher);
+            //noinspection PointlessBooleanExpression,ConstantConditions
+            if (!CONFIG_GESTURES_IMMEDIATE_MODE) {
+                overlay.removeCallbacks(mMatcher);
+            }
         }
 
         void addGesture(String name, Gesture gesture) {
