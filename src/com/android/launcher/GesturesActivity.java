@@ -209,7 +209,7 @@ public class GesturesActivity extends ListActivity {
         adapter.sort(mSorter);
         checkForEmpty();
         adapter.notifyDataSetChanged();
-        
+
         LauncherModel.deleteGestureFromDatabase(this, info);
 
         Toast.makeText(this, R.string.gestures_delete_success, Toast.LENGTH_SHORT).show();
@@ -239,6 +239,8 @@ public class GesturesActivity extends ListActivity {
                 final LauncherModel model = Launcher.getModel();
 
                 for (String name : store.getGestureEntries()) {
+                    if (isCancelled()) break;
+
                     final Gesture gesture = store.getGestures(name).get(0);
                     final Bitmap bitmap = gesture.toBitmap(mThumbnailSize, mThumbnailSize,
                             mThumbnailInset, mPathColor);
