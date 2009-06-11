@@ -24,7 +24,7 @@
 
     android:drawablePadding="12dip"
     android:paddingLeft="6dip"
-    android:paddingRight="2dip"
+    android:paddingRight="6dip"
 
     android:ellipsize="marquee"
     android:singleLine="true"
