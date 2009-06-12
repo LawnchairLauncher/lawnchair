@@ -53,7 +53,7 @@ public class DragLayer extends FrameLayout implements DragController {
     private boolean mShouldDrop;
     private float mLastMotionX;
     private float mLastMotionY;
-    
+
     /**
      * The bitmap that is currently being dragged
      */
@@ -67,42 +67,42 @@ public class DragLayer extends FrameLayout implements DragController {
      * X offset from where we touched on the cell to its upper-left corner
      */
     private float mTouchOffsetX;
-    
+
     /**
      * Y offset from where we touched on the cell to its upper-left corner
      */
     private float mTouchOffsetY;
-    
+
     /**
      * Utility rectangle
      */
     private Rect mDragRect = new Rect();
-    
+
     /**
      * Where the drag originated
      */
     private DragSource mDragSource;
-    
+
     /**
      * The data associated with the object being dragged
      */
     private Object mDragInfo;
 
-    private final Rect mRect = new Rect();    
+    private final Rect mRect = new Rect();
     private final int[] mDropCoordinates = new int[2];
 
     private final Vibrator mVibrator = new Vibrator();
-    
+
     private DragListener mListener;
 
     private DragScroller mDragScroller;
-    
+
     private static final int SCROLL_OUTSIDE_ZONE = 0;
     private static final int SCROLL_WAITING_IN_ZONE = 1;
 
     private static final int SCROLL_LEFT = 0;
     private static final int SCROLL_RIGHT = 1;
-    
+
     private int mScrollState = SCROLL_OUTSIDE_ZONE;
 
     private ScrollRunnable mScrollRunnable = new ScrollRunnable();
@@ -201,6 +201,9 @@ public class DragLayer extends FrameLayout implements DragController {
         int color = v.getDrawingCacheBackgroundColor();
         v.setDrawingCacheBackgroundColor(0);
 
+        if (color != 0) {
+            v.destroyDrawingCache();
+        }
         v.buildDrawingCache();
         Bitmap viewBitmap = v.getDrawingCache();
         int width = viewBitmap.getWidth();
@@ -582,7 +585,7 @@ public class DragLayer extends FrameLayout implements DragController {
     }
 
     public void removeDragListener(DragListener l) {
-        mListener = null;   
+        mListener = null;
     }
 
     /**
@@ -625,5 +628,5 @@ public class DragLayer extends FrameLayout implements DragController {
         void setDirection(int direction) {
             mDirection = direction;
         }
-    }    
+    }
 }
