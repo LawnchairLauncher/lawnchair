@@ -52,6 +52,9 @@ public class GesturesActivity extends ListActivity {
 
     private static final int DIALOG_RENAME_GESTURE = 1;
 
+    // Type: long (id)
+    private static final String GESTURES_INFO_ID = "gestures.info_id";
+
     private final Comparator<ApplicationInfo> mSorter =
             new LauncherModel.ApplicationInfoComparator();
 
@@ -95,6 +98,25 @@ public class GesturesActivity extends ListActivity {
     private void checkForEmpty() {
         if (mAdapter.getCount() == 0) {
             mEmpty.setText(R.string.gestures_empty);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (mCurrentRenameInfo != null) {
+            outState.putLong(GESTURES_INFO_ID, mCurrentRenameInfo.id);
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle state) {
+        super.onRestoreInstanceState(state);
+
+        long id = state.getLong(GESTURES_INFO_ID, -1);
+        if (id != -1) {
+            mCurrentRenameInfo = Launcher.getModel().queryGesture(this, String.valueOf(id));
         }
     }
 
@@ -185,17 +207,32 @@ public class GesturesActivity extends ListActivity {
     private void changeGestureName() {
         final String name = mInput.getText().toString();
         if (!TextUtils.isEmpty(name)) {
-            mCurrentRenameInfo.title = mInput.getText();
-            LauncherModel.updateGestureInDatabase(this, mCurrentRenameInfo);
+            final ApplicationInfo renameInfo = mCurrentRenameInfo;
+            final GesturesActivity.GesturesAdapter adapter = mAdapter;
+            final int count = adapter.getCount();
+
+            // Simple linear search, there should not be enough items to warrant
+            // a more sophisticated search
+            for (int i = 0; i < count; i++) {
+                final ApplicationInfo info = adapter.getItem(i);
+                if (info.id == renameInfo.id) {
+                    info.title = mInput.getText();
+                    LauncherModel.updateGestureInDatabase(this, info);
+                    break;
+                }
+            }
+
+            adapter.notifyDataSetChanged();
         }
+        mCurrentRenameInfo = null;
     }
 
     private void cleanupRenameDialog() {
         if (mRenameDialog != null) {
             mRenameDialog.dismiss();
             mRenameDialog = null;
-            mInput = null;
         }
+        mCurrentRenameInfo = null;
     }
 
     private void deleteGesture(ApplicationInfo info) {
