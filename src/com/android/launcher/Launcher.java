@@ -174,6 +174,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private static final String RUNTIME_STATE_PENDING_FOLDER_RENAME_ID = "launcher.rename_folder_id";
     // Type: Gesture (Parcelable)
     private static final String RUNTIME_STATE_PENDING_GESTURE = "launcher.gesture";
+    // Type: boolean
+    private static final String RUNTIME_STATE_GESTURES_PANEL = "launcher.gesture_panel_showing";
+    // Type: Gesture (Parcelable)
+    private static final String RUNTIME_STATE_GESTURES_PANEL_GESTURE = "launcher.gesture_panel_gesture";
 
     private static final LauncherModel sModel = new LauncherModel();
 
@@ -513,6 +517,24 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             long id = savedState.getLong(RUNTIME_STATE_PENDING_FOLDER_RENAME_ID);
             mFolderInfo = sModel.getFolderById(this, id);
             mRestoring = true;
+        }
+
+        boolean gesturesShowing = savedState.getBoolean(RUNTIME_STATE_GESTURES_PANEL, false);
+        if (gesturesShowing) {
+            final Gesture gesture = (Gesture) savedState.get(RUNTIME_STATE_GESTURES_PANEL_GESTURE);
+            mWorkspace.post(new Runnable() {
+                public void run() {
+                    showGesturesPanel(false);
+                    mGesturesProcessor.matchGesture(gesture, false);
+                    mWorkspace.post(new Runnable() {
+                        public void run() {
+                            if (gesture != null) {
+                                mGesturesOverlay.setGesture(gesture);
+                            }
+                        }
+                    });
+                }
+            });
         }
 
         mCurrentGesture = (Gesture) savedState.get(RUNTIME_STATE_PENDING_GESTURE);
@@ -903,6 +925,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     }
 
     private void showGesturesPanel() {
+        showGesturesPanel(true);
+    }
+
+    private void showGesturesPanel(boolean animate) {
         resetGesturesPrompt();
 
         mGesturesAdd.setEnabled(false);
@@ -921,7 +947,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         } else {
             window = mGesturesWindow;
         }
-        window.setAnimationStyle(com.android.internal.R.style.Animation_SlidingCard);
+        window.setAnimationStyle(animate ? com.android.internal.R.style.Animation_SlidingCard : 0);
 
         final int[] xy = new int[2];
         final DragLayer dragLayer = mDragLayer;
@@ -954,11 +980,24 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mGesturesPrompt.showNext();
     }
 
+    private void setGesturesPrompt(Drawable icon, CharSequence title) {
+        final TextView prompt = (TextView) mGesturesPrompt.getCurrentView();
+        prompt.setText(title);
+        prompt.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+        prompt.setClickable(true);
+    }
+
     void hideGesturesPanel() {
+        hideGesturesPanel(true);
+    }
+
+    void hideGesturesPanel(boolean animate) {
         if (mGesturesWindow != null) {
-            mGesturesWindow.setAnimationStyle(com.android.internal.R.style.Animation_SlidingCard);
-            mGesturesWindow.update();
-            mGesturesWindow.dismiss();
+            final PopupWindow popupWindow = mGesturesWindow;
+            popupWindow.setAnimationStyle(animate ?
+                    com.android.internal.R.style.Animation_SlidingCard : 0);
+            popupWindow.update();
+            popupWindow.dismiss();
         }
     }
 
@@ -985,9 +1024,11 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             super.onSaveInstanceState(outState);
         }
 
+        final boolean isConfigurationChange = getChangingConfigurations() != 0;
+
         // When the drawer is opened and we are saving the state because of a
         // configuration change
-        if (mDrawer.isOpened() && getChangingConfigurations() != 0) {
+        if (mDrawer.isOpened() && isConfigurationChange) {
             outState.putBoolean(RUNTIME_STATE_ALL_APPS_FOLDER, true);
         }
 
@@ -1014,6 +1055,15 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         if (mCurrentGesture != null && mWaitingForResult) {
             outState.putParcelable(RUNTIME_STATE_PENDING_GESTURE, mCurrentGesture);
         }
+
+        if (mGesturesWindow != null && mGesturesWindow.isShowing() && isConfigurationChange) {
+            outState.putBoolean(RUNTIME_STATE_GESTURES_PANEL, true);
+
+            final Gesture gesture = mGesturesOverlay.getGesture();
+            if (gesture != null) {
+                outState.putParcelable(RUNTIME_STATE_GESTURES_PANEL_GESTURE, gesture);
+            }
+        }
     }
 
     @Override
@@ -1030,6 +1080,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         TextKeyListener.getInstance().release();
 
+        hideGesturesPanel(false);
         mAllAppsGrid.clearTextFilter();
         mAllAppsGrid.setAdapter(null);
         sModel.unbind();
@@ -2391,7 +2442,11 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             }
         }
 
-        private void matchGesture(Gesture gesture) {
+        void matchGesture(Gesture gesture) {
+            matchGesture(gesture, true);
+        }
+
+        void matchGesture(Gesture gesture, boolean animate) {
             mGesturesAdd.setAlpha(255);
             mGesturesAdd.setEnabled(true);
 
@@ -2412,24 +2467,38 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
                         ApplicationInfo info = sModel.queryGesture(Launcher.this, prediction.name);
                         if (info != null) {
-                            updatePrompt(info);
+                            updatePrompt(info, animate);
                         }
                     }
                 }
 
                 if (!match){
-                    setGesturesNextPrompt(null, getString(R.string.gestures_unknown));
+                    if (animate) {
+                        setGesturesNextPrompt(null, getString(R.string.gestures_unknown));
+                    } else {
+                        setGesturesPrompt(null, getString(R.string.gestures_unknown));
+                    }
                 }
             }
         }
 
         private void updatePrompt(ApplicationInfo info) {
+            updatePrompt(info, true);
+        }
+
+        private void updatePrompt(ApplicationInfo info, boolean animate) {
             if (mGesturesAction.intent != null &&
                     info.intent.toURI().equals(mGesturesAction.intent.toURI()) &&
                     info.title.equals(((TextView) mGesturesPrompt.getCurrentView()).getText())) {
                 return;
             }
-            setGesturesNextPrompt(info.icon, info.title);
+
+            if (animate) {
+                setGesturesNextPrompt(info.icon, info.title);
+            } else {
+                setGesturesPrompt(info.icon, info.title);
+            }
+
             mGesturesAction.intent = info.intent;
         }
 
