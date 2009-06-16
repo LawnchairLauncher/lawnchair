@@ -869,7 +869,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             if ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) !=
                     Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) {
 
-                if (mGesturesPanel != null && mDragLayer.getWindowVisibility() == View.VISIBLE) {
+                if (mGesturesPanel != null && mDragLayer.getWindowVisibility() == View.VISIBLE &&
+                        mDragLayer.hasWindowFocus()) {
                     SearchManager searchManager =
                             (SearchManager) getSystemService(Context.SEARCH_SERVICE);
                     if (!searchManager.isVisible()) {
