@@ -24,9 +24,16 @@ import android.database.Cursor;
 import android.widget.Toast;
 
 public class InstallShortcutReceiver extends BroadcastReceiver {
+    private static final String ACTION_INSTALL_SHORTCUT =
+            "com.android.launcher.action.INSTALL_SHORTCUT";
+
     private final int[] mCoordinates = new int[2];
 
     public void onReceive(Context context, Intent data) {
+        if (!ACTION_INSTALL_SHORTCUT.equals(data.getAction())) {
+            return;
+        }
+
         int screen = Launcher.getScreen();
 
         if (!installShortcut(context, data, screen)) {
