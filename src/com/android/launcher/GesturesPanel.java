@@ -37,8 +37,11 @@ public class GesturesPanel extends RelativeLayout {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK &&
+                event.getAction() == KeyEvent.ACTION_DOWN) {
+
             ((Launcher) mContext).hideGesturesPanel();
+
             return true;
         }
 
