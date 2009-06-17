@@ -27,7 +27,14 @@ import android.widget.Toast;
 import java.net.URISyntaxException;
 
 public class UninstallShortcutReceiver extends BroadcastReceiver {
+    private static final String ACTION_UNINSTALL_SHORTCUT =
+            "com.android.launcher.action.UNINSTALL_SHORTCUT";
+
     public void onReceive(Context context, Intent data) {
+        if (!ACTION_UNINSTALL_SHORTCUT.equals(data.getAction())) {
+            return;
+        }
+
         Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
         String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
         boolean duplicate = data.getBooleanExtra(Launcher.EXTRA_SHORTCUT_DUPLICATE, true);
