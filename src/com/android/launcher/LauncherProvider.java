@@ -391,6 +391,7 @@ public class LauncherProvider extends ContentProvider {
             if (version != DATABASE_VERSION) {
                 Log.w(LOG_TAG, "Destroying all old data.");
                 db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVORITES);
+                db.execSQL("DROP TABLE IF EXISTS " + TABLE_GESTURES);
                 onCreate(db);
             }
         }
