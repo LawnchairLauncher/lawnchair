@@ -244,6 +244,8 @@ public class LauncherModel {
                 }
             }
 
+            if (syncLocked(launcher, packageName)) changed = true;
+
             if (changed) {
                 adapter.sort(new ApplicationInfoComparator());
                 adapter.notifyDataSetChanged();
@@ -268,24 +270,31 @@ public class LauncherModel {
         }
 
         if (packageName != null && packageName.length() > 0) {
-            final PackageManager packageManager = launcher.getPackageManager();
-            final List<ResolveInfo> matches = findActivitiesForPackage(packageManager, packageName);
-
-            if (matches.size() > 0) {
+            if (syncLocked(launcher, packageName)) {
                 final ApplicationsAdapter adapter = mApplicationsAdapter;
-
-                // Find disabled activities and remove them from the adapter
-                boolean removed = removeDisabledActivities(packageName, matches, adapter);
-                // Find enable activities and add them to the adapter
-                // Also updates existing activities with new labels/icons
-                boolean added = addEnabledAndUpdateActivities(matches, adapter, launcher);
-
-                if (added || removed) {
-                    adapter.sort(new ApplicationInfoComparator());
-                    adapter.notifyDataSetChanged();
-                }
+                adapter.sort(new ApplicationInfoComparator());
+                adapter.notifyDataSetChanged();                
             }
         }
+    }
+
+    private boolean syncLocked(Launcher launcher, String packageName) {
+        final PackageManager packageManager = launcher.getPackageManager();
+        final List<ResolveInfo> matches = findActivitiesForPackage(packageManager, packageName);
+
+        if (matches.size() > 0) {
+            final ApplicationsAdapter adapter = mApplicationsAdapter;
+
+            // Find disabled activities and remove them from the adapter
+            boolean removed = removeDisabledActivities(packageName, matches, adapter);
+            // Find enable activities and add them to the adapter
+            // Also updates existing activities with new labels/icons
+            boolean added = addEnabledAndUpdateActivities(matches, adapter, launcher);
+
+            return added || removed;
+        }
+
+        return false;
     }
 
     private static List<ResolveInfo> findActivitiesForPackage(PackageManager packageManager,
