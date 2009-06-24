@@ -90,7 +90,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@id/gestures_actions"
-        android:layout_marginRight="10dip"  
-        android:layout_marginTop="-22dip" />
+        android:layout_marginRight="5dip"  
+        android:layout_marginTop="-47dip" />
 
 </com.android.launcher.GesturesPanel>
