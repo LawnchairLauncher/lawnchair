@@ -641,7 +641,7 @@ public class LauncherModel {
 
                     final String intentUri = c.getString(intentIndex);
                     if (intentUri != null) {
-                        final Intent shortcut = Intent.getIntent(intentUri);
+                        final Intent shortcut = Intent.parseUri(intentUri, 0);
                         if (Intent.ACTION_MAIN.equals(shortcut.getAction())) {
                             final ComponentName name = shortcut.getComponent();
                             if (name != null) {
@@ -773,7 +773,7 @@ public class LauncherModel {
                         case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                             intentDescription = c.getString(intentIndex);
                             try {
-                                intent = Intent.getIntent(intentDescription);
+                                intent = Intent.parseUri(intentDescription, 0);
                             } catch (java.net.URISyntaxException e) {
                                 continue;
                             }
@@ -843,7 +843,7 @@ public class LauncherModel {
                             intent = null;
                             if (intentDescription != null) {
                                 try {
-                                    intent = Intent.getIntent(intentDescription);
+                                    intent = Intent.parseUri(intentDescription, 0);
                                 } catch (java.net.URISyntaxException e) {
                                     // Ignore, a live folder might not have a base intent
                                 }
@@ -1259,7 +1259,7 @@ public class LauncherModel {
         final ContentResolver cr = context.getContentResolver();
         Cursor c = cr.query(LauncherSettings.Favorites.CONTENT_URI,
             new String[] { "title", "intent" }, "title=? and intent=?",
-            new String[] { title, intent.toURI() }, null);
+            new String[] { title, intent.toUri(0) }, null);
         boolean result = false;
         try {
             result = c.moveToFirst();
@@ -1437,7 +1437,7 @@ public class LauncherModel {
                     case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                         intentDescription = c.getString(intentIndex);
                         try {
-                            intent = Intent.getIntent(intentDescription);
+                            intent = Intent.parseUri(intentDescription, 0);
                         } catch (java.net.URISyntaxException e) {
                             return null;
                         }

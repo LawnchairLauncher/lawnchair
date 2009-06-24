@@ -32,7 +32,7 @@ class LauncherSettings {
 
         /**
          * The Intent URL of the gesture, describing what it points to. This
-         * value is given to {@link android.content.Intent#getIntent} to create
+         * value is given to {@link android.content.Intent#parseUri(String, int)} to create
          * an Intent that can be launched.
          * <P>Type: TEXT</P>
          */

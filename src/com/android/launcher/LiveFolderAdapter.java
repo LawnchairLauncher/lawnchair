@@ -116,7 +116,7 @@ class LiveFolderAdapter extends CursorAdapter {
 
         if (holder.intentIndex != -1) {
             try {
-                holder.intent = Intent.getIntent(cursor.getString(holder.intentIndex));
+                holder.intent = Intent.parseUri(cursor.getString(holder.intentIndex), 0);
             } catch (URISyntaxException e) {
                 // Ignore
             }

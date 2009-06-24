@@ -63,7 +63,7 @@ class LiveFolderInfo extends FolderInfo {
         values.put(LauncherSettings.Favorites.TITLE, title.toString());
         values.put(LauncherSettings.Favorites.URI, uri.toString());
         if (baseIntent != null) {
-            values.put(LauncherSettings.Favorites.INTENT, baseIntent.toURI());
+            values.put(LauncherSettings.Favorites.INTENT, baseIntent.toUri(0));
         }
         values.put(LauncherSettings.Favorites.ICON_TYPE, LauncherSettings.Favorites.ICON_TYPE_RESOURCE);
         values.put(LauncherSettings.Favorites.DISPLAY_MODE, displayMode);

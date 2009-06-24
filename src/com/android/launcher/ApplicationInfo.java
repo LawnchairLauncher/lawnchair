@@ -100,7 +100,7 @@ class ApplicationInfo extends ItemInfo {
         String titleStr = title != null ? title.toString() : null;
         values.put(LauncherSettings.BaseLauncherColumns.TITLE, titleStr);
 
-        String uri = intent != null ? intent.toURI() : null;
+        String uri = intent != null ? intent.toUri(0) : null;
         values.put(LauncherSettings.BaseLauncherColumns.INTENT, uri);
 
         if (customIcon) {
