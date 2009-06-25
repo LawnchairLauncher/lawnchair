@@ -133,7 +133,7 @@
     <!-- Label of the button that the user clicks to create a new gesture-based shortcut -->
     <string name="gestures_add">Add shortcut</string>
     <!-- Label of the button that the user clicks to see the list of gesture-based shortcuts -->
-    <string name="gestures_add">Show shortcut</string>
+    <string name="gestures_show">Show shortcut</string>
     <!-- Message displayed when the gesture entered by the user cannot be recognized -->
     <string name="gestures_unknown">Unrecognized</string>
     <!-- Message displayed when the user has successfully created a new gesture -->
