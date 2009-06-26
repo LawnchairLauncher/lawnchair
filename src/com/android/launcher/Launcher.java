@@ -614,9 +614,11 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     }
 
     private void createGesture() {
-        mCurrentGesture = mGesturesOverlay.getGesture();
-        mWaitingForResult = true;
-        pickShortcut(REQUEST_PICK_GESTURE_ACTION, R.string.title_select_shortcut);
+        if (!mWaitingForResult) {
+            mCurrentGesture = mGesturesOverlay.getGesture();
+            mWaitingForResult = true;
+            pickShortcut(REQUEST_PICK_GESTURE_ACTION, R.string.title_select_shortcut);
+        }
     }
 
     private void completeCreateGesture(Intent data, boolean isShortcut) {
