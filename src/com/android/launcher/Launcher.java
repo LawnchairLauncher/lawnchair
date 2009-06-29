@@ -1096,7 +1096,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     @Override
     public void startActivityForResult(Intent intent, int requestCode) {
-        mWaitingForResult = true;
+        if (requestCode >= 0) mWaitingForResult = true;
         super.startActivityForResult(intent, requestCode);
     }
 
