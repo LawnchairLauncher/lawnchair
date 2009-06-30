@@ -31,7 +31,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.Intent.ShortcutIconResource;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -91,6 +90,10 @@ import android.gesture.Prediction;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.DataInputStream;
 
 /**
  * Default launcher application.
@@ -141,10 +144,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private static final int DIALOG_CREATE_SHORTCUT = 1;
     static final int DIALOG_RENAME_FOLDER = 2;
 
-    private static final String PREFERENCES = "launcher";
-    private static final String KEY_LOCALE = "locale";
-    private static final String KEY_MCC = "mcc";
-    private static final String KEY_MNC = "mnc";
+    private static final String PREFERENCES = "launcher.preferences";
 
     // Type: int
     private static final String RUNTIME_STATE_CURRENT_SCREEN = "launcher.current_screen";
@@ -284,26 +284,80 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     }
 
     private void checkForLocaleChange() {
-        final SharedPreferences preferences = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        final LocaleConfiguration localeConfiguration = new LocaleConfiguration();
+        readConfiguration(this, localeConfiguration);
+        
         final Configuration configuration = getResources().getConfiguration();
 
-        final String previousLocale = preferences.getString(KEY_LOCALE, null);
+        final String previousLocale = localeConfiguration.locale;
         final String locale = configuration.locale.toString();
 
-        final int previousMcc = preferences.getInt(KEY_MCC, -1);
+        final int previousMcc = localeConfiguration.mcc;
         final int mcc = configuration.mcc;
 
-        final int previousMnc = preferences.getInt(KEY_MNC, -1);
+        final int previousMnc = localeConfiguration.mnc;
         final int mnc = configuration.mnc;
 
         mLocaleChanged = !locale.equals(previousLocale) || mcc != previousMcc || mnc != previousMnc;
 
         if (mLocaleChanged) {
-            final SharedPreferences.Editor editor = preferences.edit();
-            editor.putString(KEY_LOCALE, locale);
-            editor.putInt(KEY_MCC, mcc);
-            editor.putInt(KEY_MNC, mnc);
-            editor.commit();
+            localeConfiguration.locale = locale;
+            localeConfiguration.mcc = mcc;
+            localeConfiguration.mnc = mnc;
+
+            writeConfiguration(this, localeConfiguration);
+        }
+    }
+
+    private static class LocaleConfiguration {
+        public String locale;
+        public int mcc = -1;
+        public int mnc = -1;
+    }
+    
+    private static void readConfiguration(Context context, LocaleConfiguration configuration) {
+        DataInputStream in = null;
+        try {
+            in = new DataInputStream(context.openFileInput(PREFERENCES));
+            configuration.locale = in.readUTF();
+            configuration.mcc = in.readInt();
+            configuration.mnc = in.readInt();
+        } catch (FileNotFoundException e) {
+            // Ignore
+        } catch (IOException e) {
+            // Ignore
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    // Ignore
+                }
+            }
+        }
+    }
+
+    private static void writeConfiguration(Context context, LocaleConfiguration configuration) {
+        DataOutputStream out = null;
+        try {
+            out = new DataOutputStream(context.openFileOutput(PREFERENCES, MODE_PRIVATE));
+            out.writeUTF(configuration.locale);
+            out.writeInt(configuration.mcc);
+            out.writeInt(configuration.mnc);
+            out.flush();
+        } catch (FileNotFoundException e) {
+            // Ignore
+        } catch (IOException e) {
+            //noinspection ResultOfMethodCallIgnored
+            context.getFileStreamPath(PREFERENCES).delete();
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    // Ignore
+                }
+            }
         }
     }
 
