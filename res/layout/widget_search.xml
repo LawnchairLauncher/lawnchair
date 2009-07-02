@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.0"
             android:editable="false"
-            android:inputType="text"
+            android:inputType="none"
             android:background="@drawable/textfield_searchwidget"
             android:textAppearance="?android:attr/textAppearanceMediumInverse"
             android:textColor="@android:color/primary_text_light"
