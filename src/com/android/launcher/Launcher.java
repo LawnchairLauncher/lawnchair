@@ -577,7 +577,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         boolean gesturesShowing = savedState.getBoolean(RUNTIME_STATE_GESTURES_PANEL, false);
         if (gesturesShowing) {
-            final Gesture gesture = (Gesture) savedState.get(RUNTIME_STATE_GESTURES_PANEL_GESTURE);
+            if (mCurrentGesture == null) {
+                mCurrentGesture = (Gesture) savedState.get(RUNTIME_STATE_GESTURES_PANEL_GESTURE);
+            }
+            final Gesture gesture = mCurrentGesture;
             mWorkspace.post(new Runnable() {
                 public void run() {
                     showGesturesPanel(false);
