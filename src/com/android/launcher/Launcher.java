@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.app.Dialog;
+import android.app.ISearchManager;
 import android.app.IWallpaperService;
 import android.app.SearchManager;
 import android.app.StatusBarManager;
@@ -219,6 +220,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private SpannableStringBuilder mDefaultKeySsb = null;
 
     private boolean mDestroyed;
+    
+    private boolean mIsNewIntent;
 
     private boolean mRestoring;
     private boolean mWaitingForResult;
@@ -461,9 +464,27 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         if (mRestoring) {
             startLoaders();
         }
-
-        // Make sure that the search gadget (if any) is in its normal place.
-        stopSearch();
+        
+        // If this was a new intent (i.e., the mIsNewIntent flag got set to true by
+        // onNewIntent), then close the search dialog if needed, because it probably
+        // came from the user pressing 'home' (rather than, for example, pressing 'back').
+        if (mIsNewIntent) {
+            // Post to a handler so that this happens after the search dialog tries to open
+            // itself again.
+            mWorkspace.post(new Runnable() {
+                public void run() {
+                    ISearchManager searchManagerService = ISearchManager.Stub.asInterface(
+                            ServiceManager.getService(Context.SEARCH_SERVICE));
+                    try {
+                        searchManagerService.stopSearch();
+                    } catch (RemoteException e) {
+                        e(LOG_TAG, "error stopping search", e);
+                    }    
+                }
+            });
+        }
+        
+        mIsNewIntent = false;
     }
 
     @Override
@@ -930,6 +951,11 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         // Close the menu
         if (Intent.ACTION_MAIN.equals(intent.getAction())) {
             getWindow().closeAllPanels();
+            
+            // Set this flag so that onResume knows to close the search dialog if it's open,
+            // because this was a new intent (thus a press of 'home' or some such) rather than
+            // for example onResume being called when the user pressed the 'back' button.
+            mIsNewIntent = true;
 
             try {
                 dismissDialog(DIALOG_CREATE_SHORTCUT);
