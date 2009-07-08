@@ -1244,9 +1244,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     void stopSearch() {
         // Close search dialog
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        if (searchManager.isVisible()) {
-            searchManager.stopSearch();
-        }
+        searchManager.stopSearch();
         // Restore search widget to its normal position
         Search searchWidget = mWorkspace.findSearchWidgetOnCurrentScreen();
         if (searchWidget != null) {
