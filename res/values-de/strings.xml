@@ -16,6 +16,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name">"Startseite"</string>
+    <string name="uid_name">"Android Core Apps"</string>
     <string name="folder_name">"Ordner"</string>
     <string name="chooser_wallpaper">"Hintergrund auswählen"</string>
     <string name="wallpaper_instructions">"Hintergrund festlegen"</string>
@@ -25,32 +26,29 @@
     <string name="rename_folder_title">"Ordner umbenennen"</string>
     <string name="rename_action">"OK"</string>
     <string name="cancel_action">"Abbrechen"</string>
-    <string name="menu_item_add_item">"Zur Startseite hinzufügen"</string>
-    <!-- no translation found for group_applications (4118484163419674240) -->
-    <skip />
-    <!-- no translation found for group_shortcuts (9133529424900391877) -->
-    <skip />
+    <string name="menu_item_add_item">"Zum Startbildschirm hinzufügen"</string>
+    <string name="group_applications">"Anwendungen"</string>
+    <string name="group_shortcuts">"Verknüpfungen"</string>
     <string name="group_search">"Suchen"</string>
-    <!-- no translation found for group_folder (5143593791798929193) -->
-    <skip />
-    <!-- no translation found for group_live_folders (2664945399140647217) -->
-    <skip />
-    <!-- no translation found for group_widgets (6704978494073105844) -->
-    <skip />
-    <!-- no translation found for group_wallpapers (1568191644272224858) -->
-    <skip />
+    <string name="group_folder">"Neuer Ordner"</string>
+    <string name="group_live_folders">"Ordner"</string>
+    <string name="group_widgets">"Widgets"</string>
+    <string name="group_wallpapers">"Hintergrundbilder"</string>
     <string name="add_folder">"Ordner"</string>
     <string name="add_clock">"Uhr"</string>
     <string name="add_photo_frame">"Bildrahmen"</string>
     <string name="add_search">"Suchen"</string>
-    <string name="out_of_space">"Auf der Startseite ist kein Platz mehr vorhanden."</string>
+    <string name="out_of_space">"Auf dem Startbildschirm ist kein Platz mehr vorhanden."</string>
+    <string name="shortcut_installed">"Verknüpfung \"%s\" ist installiert."</string>
+    <string name="shortcut_uninstalled">"Verknüpfung \"%s\" wurde entfernt."</string>
+    <string name="shortcut_duplicate">"Verknüpfung \"%s\" ist bereits vorhanden."</string>
     <string name="title_select_shortcut">"Tastenkürzel auswählen"</string>
-    <!-- no translation found for title_select_live_folder (3753447798805166749) -->
-    <skip />
+    <string name="title_select_live_folder">"Ordner auswählen"</string>
     <string name="menu_add">"Hinzufügen"</string>
     <string name="menu_wallpaper">"Hintergrund"</string>
     <string name="menu_search">"Suchen"</string>
     <string name="menu_notifications">"Benachrichtigungen"</string>
+    <string name="menu_gestures">"Bewegungen"</string>
     <string name="menu_settings">"Einstellungen"</string>
     <string name="permlab_install_shortcut">"Verknüpfungen installieren"</string>
     <string name="permdesc_install_shortcut">"Ermöglicht einer Anwendung das Hinzufügen von Verknüpfungen ohne Eingriff des Benutzers."</string>
@@ -62,4 +60,22 @@
     <string name="permdesc_write_settings">"Ermöglicht einer Anwendung, die Einstellungen und Shortcuts auf der Startseite zu ändern."</string>
     <string name="search_hint">"Google-Suche"</string>
     <string name="gadget_error_text">"Problem beim Laden des Widgets"</string>
+    <string name="gestures_instructions">"Eine Bewegung zeichnen"</string>
+    <string name="gestures_add">"Verknüpfung hinzufügen"</string>
+    <string name="gestures_show">"Verknüpfung anzeigen"</string>
+    <string name="gestures_unknown">"Nicht erkannt"</string>
+    <string name="gestures_created">"Bewegung %s wurde hinzugefügt."</string>
+    <string name="gestures_failed">"Bewegung konnte nicht erstellt werden."</string>
+    <string name="gestures_loading">"Bewegungen werden geladen..."</string>
+    <string name="gestures_empty">"Keine Bewegungen"</string>
+    <string name="gestures_activity">"Bewegungen"</string>
+    <string name="gestures_rename">"Umbenennen"</string>
+    <string name="gestures_delete">"Löschen"</string>
+    <string name="gestures_delete_success">"Bewegung wurde gelöscht."</string>
+    <string name="gestures_rename_title">"Bewegung umbenennen"</string>
+    <string name="gestures_rename_label">"Name der Bewegung"</string>
+    <string name="gestures_group_gestures">"Bewegungen"</string>
+    <string name="gestures_group_settings">"Einstellungen"</string>
+    <string name="gestures_preference_hotkey_title">"Über Startseite öffnen"</string>
+    <string name="gestures_preference_hotkey_summary">"Drücken Sie die Taste für die Startseite, um Bewegungen zu zeichnen."</string>
 </resources>

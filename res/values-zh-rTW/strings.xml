@@ -16,6 +16,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name">"首頁"</string>
+    <string name="uid_name">"Android 核心應用程式"</string>
     <string name="folder_name">"資料夾"</string>
     <string name="chooser_wallpaper">"從…選取桌布"</string>
     <string name="wallpaper_instructions">"設定桌布"</string>
@@ -38,12 +39,16 @@
     <string name="add_photo_frame">"相框"</string>
     <string name="add_search">"搜尋"</string>
     <string name="out_of_space">"首頁已無空間"</string>
+    <string name="shortcut_installed">"已安裝「%s」捷徑。"</string>
+    <string name="shortcut_uninstalled">"已移除「%s」捷徑"</string>
+    <string name="shortcut_duplicate">"已有「%s」捷徑。"</string>
     <string name="title_select_shortcut">"選取捷徑"</string>
     <string name="title_select_live_folder">"選取資料夾"</string>
     <string name="menu_add">"新增"</string>
     <string name="menu_wallpaper">"桌布"</string>
     <string name="menu_search">"搜尋"</string>
     <string name="menu_notifications">"通知"</string>
+    <string name="menu_gestures">"觸控動作"</string>
     <string name="menu_settings">"設定"</string>
     <string name="permlab_install_shortcut">"安裝捷徑"</string>
     <string name="permdesc_install_shortcut">"允許應用程式自動新增快速鍵。"</string>
@@ -55,4 +60,22 @@
     <string name="permdesc_write_settings">"允許應用程式變更首頁中的設定和捷徑。"</string>
     <string name="search_hint">"Google 搜尋"</string>
     <string name="gadget_error_text">"載入小工具時發生問題"</string>
+    <string name="gestures_instructions">"描繪觸控動作"</string>
+    <string name="gestures_add">"新增捷徑"</string>
+    <string name="gestures_show">"顯示捷徑"</string>
+    <string name="gestures_unknown">"無法辨識"</string>
+    <string name="gestures_created">"已新增觸控動作 %s"</string>
+    <string name="gestures_failed">"無法建立觸控動作"</string>
+    <string name="gestures_loading">"正在載入觸控動作..."</string>
+    <string name="gestures_empty">"無觸控動作"</string>
+    <string name="gestures_activity">"觸控動作"</string>
+    <string name="gestures_rename">"重新命名"</string>
+    <string name="gestures_delete">"刪除"</string>
+    <string name="gestures_delete_success">"已刪除觸控動作"</string>
+    <string name="gestures_rename_title">"重新命名觸控動作"</string>
+    <string name="gestures_rename_label">"觸控動作名稱"</string>
+    <string name="gestures_group_gestures">"觸控動作"</string>
+    <string name="gestures_group_settings">"設定"</string>
+    <string name="gestures_preference_hotkey_title">"使用主螢幕啟動"</string>
+    <string name="gestures_preference_hotkey_summary">"按下主螢幕鍵來描繪觸控動作"</string>
 </resources>

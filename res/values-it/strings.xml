@@ -16,6 +16,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name">"Home"</string>
+    <string name="uid_name">"Android Core Apps"</string>
     <string name="folder_name">"Cartella"</string>
     <string name="chooser_wallpaper">"Seleziona sfondo da"</string>
     <string name="wallpaper_instructions">"Imposta sfondo"</string>
@@ -38,12 +39,16 @@
     <string name="add_photo_frame">"Cornice immagini"</string>
     <string name="add_search">"Ricerca"</string>
     <string name="out_of_space">"Spazio nella schermata Home esaurito."</string>
+    <string name="shortcut_installed">"La scorciatoia \"%s\" è installata."</string>
+    <string name="shortcut_uninstalled">"La scorciatoia \"%s\" è stata rimossa."</string>
+    <string name="shortcut_duplicate">"Scorciatoia \"%s\" già presente."</string>
     <string name="title_select_shortcut">"Seleziona collegamento"</string>
     <string name="title_select_live_folder">"Seleziona cartella"</string>
     <string name="menu_add">"Aggiungi"</string>
     <string name="menu_wallpaper">"Sfondo"</string>
     <string name="menu_search">"Cerca"</string>
     <string name="menu_notifications">"Notifiche"</string>
+    <string name="menu_gestures">"Gesti"</string>
     <string name="menu_settings">"Impostazioni"</string>
     <string name="permlab_install_shortcut">"aggiungere scorciatorie"</string>
     <string name="permdesc_install_shortcut">"Consente a un\'applicazione di aggiungere scorciatoie automaticamente."</string>
@@ -55,4 +60,22 @@
     <string name="permdesc_write_settings">"Consente a un\'applicazione di modificare le impostazioni e le scorciatoie in Home."</string>
     <string name="search_hint">"Ricerca Google"</string>
     <string name="gadget_error_text">"Errore durante il caricamento del widget"</string>
+    <string name="gestures_instructions">"Traccia un gesto"</string>
+    <string name="gestures_add">"Aggiungi scorciatoia"</string>
+    <string name="gestures_show">"Mostra scorciatoia"</string>
+    <string name="gestures_unknown">"Non riconosciuto"</string>
+    <string name="gestures_created">"Gesto %s aggiunto"</string>
+    <string name="gestures_failed">"Impossibile creare il gesto"</string>
+    <string name="gestures_loading">"Caricamento gesti in corso..."</string>
+    <string name="gestures_empty">"Nessun gesto"</string>
+    <string name="gestures_activity">"Gesti"</string>
+    <string name="gestures_rename">"Rinomina"</string>
+    <string name="gestures_delete">"Elimina"</string>
+    <string name="gestures_delete_success">"Gesto eliminato"</string>
+    <string name="gestures_rename_title">"Rinomina gesto"</string>
+    <string name="gestures_rename_label">"Nome gesto"</string>
+    <string name="gestures_group_gestures">"Gesti"</string>
+    <string name="gestures_group_settings">"Impostazioni"</string>
+    <string name="gestures_preference_hotkey_title">"Utilizza \"home\" per l\'avvio"</string>
+    <string name="gestures_preference_hotkey_summary">"Premi il tasto \"home\" per tracciare gesti"</string>
 </resources>

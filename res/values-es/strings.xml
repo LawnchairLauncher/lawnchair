@@ -16,6 +16,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name">"Página principal"</string>
+    <string name="uid_name">"Aplicaciones básicas de Android"</string>
     <string name="folder_name">"Carpeta"</string>
     <string name="chooser_wallpaper">"Seleccionar fondo de pantalla de"</string>
     <string name="wallpaper_instructions">"Establecer fondo de pantalla"</string>
@@ -38,12 +39,16 @@
     <string name="add_photo_frame">"Picture frame"</string>
     <string name="add_search">"Búsqueda de Google"</string>
     <string name="out_of_space">"No queda espacio en esta pantalla de página principal."</string>
+    <string name="shortcut_installed">"El acceso directo \"%s\" está instalado."</string>
+    <string name="shortcut_uninstalled">"Se ha eliminado el acceso directo \"%s\"."</string>
+    <string name="shortcut_duplicate">"El acceso directo \"%s\" ya existe."</string>
     <string name="title_select_shortcut">"Seleccionar acceso directo"</string>
     <string name="title_select_live_folder">"Seleccionar carpeta"</string>
     <string name="menu_add">"Añadir"</string>
     <string name="menu_wallpaper">"Fondo de pantalla"</string>
     <string name="menu_search">"Buscar con Google"</string>
     <string name="menu_notifications">"Notificaciones"</string>
+    <string name="menu_gestures">"Gestos"</string>
     <string name="menu_settings">"Ajustes"</string>
     <string name="permlab_install_shortcut">"instalar accesos directos"</string>
     <string name="permdesc_install_shortcut">"Permite que una aplicación añada accesos directos sin intervención del usuario."</string>
@@ -55,4 +60,22 @@
     <string name="permdesc_write_settings">"Permite que una aplicación modifique la configuración y los accesos directos de la página principal."</string>
     <string name="search_hint">"Búsqueda de Google"</string>
     <string name="gadget_error_text">"Problema al cargar el widget"</string>
+    <string name="gestures_instructions">"Dibujar un gesto"</string>
+    <string name="gestures_add">"Añadir acceso directo"</string>
+    <string name="gestures_show">"Mostrar acceso directo"</string>
+    <string name="gestures_unknown">"No reconocido"</string>
+    <string name="gestures_created">"Gesto %s añadido"</string>
+    <string name="gestures_failed">"No se ha podido crear el gesto."</string>
+    <string name="gestures_loading">"Cargando gestos..."</string>
+    <string name="gestures_empty">"Ningún gesto"</string>
+    <string name="gestures_activity">"Gestos"</string>
+    <string name="gestures_rename">"Cambiar nombre"</string>
+    <string name="gestures_delete">"Suprimir"</string>
+    <string name="gestures_delete_success">"Gesto suprimido"</string>
+    <string name="gestures_rename_title">"Cambiar nombre de gesto"</string>
+    <string name="gestures_rename_label">"Nombre del gesto"</string>
+    <string name="gestures_group_gestures">"Gestos"</string>
+    <string name="gestures_group_settings">"Configuración"</string>
+    <string name="gestures_preference_hotkey_title">"Utilizar la tecla de página principal para iniciar"</string>
+    <string name="gestures_preference_hotkey_summary">"Pulsa la tecla de página principal para dibujar gestos."</string>
 </resources>
