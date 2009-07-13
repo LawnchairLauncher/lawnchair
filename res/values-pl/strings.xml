@@ -16,6 +16,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name">"Sieć"</string>
+    <string name="uid_name">"Aplikacje główne systemu Android"</string>
     <string name="folder_name">"Folder"</string>
     <string name="chooser_wallpaper">"Wybierz tapetę"</string>
     <string name="wallpaper_instructions">"Ustaw tapetę"</string>
@@ -38,12 +39,16 @@
     <string name="add_photo_frame">"Ramka obrazu"</string>
     <string name="add_search">"Wyszukiwarka"</string>
     <string name="out_of_space">"Brak miejsca na tej stronie głównej"</string>
+    <string name="shortcut_installed">"Skrót „%s” został zainstalowany."</string>
+    <string name="shortcut_uninstalled">"Skrót „%s” został usunięty."</string>
+    <string name="shortcut_duplicate">"Skrót „%s” już istnieje."</string>
     <string name="title_select_shortcut">"Wybierz skrót"</string>
     <string name="title_select_live_folder">"Wybierz folder"</string>
     <string name="menu_add">"Dodaj"</string>
     <string name="menu_wallpaper">"Tapeta"</string>
     <string name="menu_search">"Szukaj"</string>
     <string name="menu_notifications">"Powiadomienia"</string>
+    <string name="menu_gestures">"Gesty"</string>
     <string name="menu_settings">"Ustawienia"</string>
     <string name="permlab_install_shortcut">"zainstaluj skróty"</string>
     <string name="permdesc_install_shortcut">"Umożliwia aplikacji dodawanie skrótów bez interwencji użytkownika."</string>
@@ -55,4 +60,22 @@
     <string name="permdesc_write_settings">"Umożliwia aplikacji zmianę ustawień i skrótów strony głównej."</string>
     <string name="search_hint">"Szukaj w Google"</string>
     <string name="gadget_error_text">"Problem podczas ładowania widżetu"</string>
+    <string name="gestures_instructions">"Określ gest"</string>
+    <string name="gestures_add">"Dodaj skrót"</string>
+    <string name="gestures_show">"Pokaż skrót"</string>
+    <string name="gestures_unknown">"Nierozpoznany"</string>
+    <string name="gestures_created">"Dodano gest %s"</string>
+    <string name="gestures_failed">"Nie można utworzyć gestu"</string>
+    <string name="gestures_loading">"Trwa wczytywanie gestów..."</string>
+    <string name="gestures_empty">"Brak gestów"</string>
+    <string name="gestures_activity">"Gesty"</string>
+    <string name="gestures_rename">"Zmień nazwę"</string>
+    <string name="gestures_delete">"Usuń"</string>
+    <string name="gestures_delete_success">"Gest usunięty"</string>
+    <string name="gestures_rename_title">"Zmień nazwę gestu"</string>
+    <string name="gestures_rename_label">"Nazwa gestu"</string>
+    <string name="gestures_group_gestures">"Gesty"</string>
+    <string name="gestures_group_settings">"Ustawienia"</string>
+    <string name="gestures_preference_hotkey_title">"Użyj klawisza głównego, aby uruchomić"</string>
+    <string name="gestures_preference_hotkey_summary">"Naciśnij klawisz główny, aby określić gesty"</string>
 </resources>

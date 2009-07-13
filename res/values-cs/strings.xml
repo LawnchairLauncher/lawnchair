@@ -16,6 +16,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name">"Plocha"</string>
+    <string name="uid_name">"Android Core Apps"</string>
     <string name="folder_name">"Složka"</string>
     <string name="chooser_wallpaper">"Vybrat tapetu ze složky"</string>
     <string name="wallpaper_instructions">"Nastavit tapetu"</string>
@@ -26,31 +27,28 @@
     <string name="rename_action">"OK"</string>
     <string name="cancel_action">"Zrušit"</string>
     <string name="menu_item_add_item">"Přidat na plochu"</string>
-    <!-- no translation found for group_applications (4118484163419674240) -->
-    <skip />
-    <!-- no translation found for group_shortcuts (9133529424900391877) -->
-    <skip />
+    <string name="group_applications">"Aplikace"</string>
+    <string name="group_shortcuts">"Klávesové zkratky"</string>
     <string name="group_search">"Hledat"</string>
-    <!-- no translation found for group_folder (5143593791798929193) -->
-    <skip />
-    <!-- no translation found for group_live_folders (2664945399140647217) -->
-    <skip />
-    <!-- no translation found for group_widgets (6704978494073105844) -->
-    <skip />
-    <!-- no translation found for group_wallpapers (1568191644272224858) -->
-    <skip />
+    <string name="group_folder">"Nová složka"</string>
+    <string name="group_live_folders">"Složky"</string>
+    <string name="group_widgets">"Widgety"</string>
+    <string name="group_wallpapers">"Tapety"</string>
     <string name="add_folder">"Složka"</string>
     <string name="add_clock">"Hodiny"</string>
     <string name="add_photo_frame">"Rámeček fotografie"</string>
     <string name="add_search">"Vyhledávání"</string>
     <string name="out_of_space">"Na této ploše již není místo."</string>
+    <string name="shortcut_installed">"Zástupce %s je nainstalován."</string>
+    <string name="shortcut_uninstalled">"Zástupce %s byl odebrán."</string>
+    <string name="shortcut_duplicate">"Zástupce %s již existuje."</string>
     <string name="title_select_shortcut">"Vyberte zástupce"</string>
-    <!-- no translation found for title_select_live_folder (3753447798805166749) -->
-    <skip />
+    <string name="title_select_live_folder">"Vybrat složku"</string>
     <string name="menu_add">"Přidat"</string>
     <string name="menu_wallpaper">"Tapeta"</string>
     <string name="menu_search">"Hledat"</string>
     <string name="menu_notifications">"Oznámení"</string>
+    <string name="menu_gestures">"Gesta"</string>
     <string name="menu_settings">"Nastavení"</string>
     <string name="permlab_install_shortcut">"instalovat zástupce"</string>
     <string name="permdesc_install_shortcut">"Povoluje aplikaci přidat zástupce bez zásahu uživatele."</string>
@@ -62,4 +60,22 @@
     <string name="permdesc_write_settings">"Povoluje aplikaci změnit nastavení a odkazy plochy."</string>
     <string name="search_hint">"Vyhledávání Google"</string>
     <string name="gadget_error_text">"Problém s načtením widgetu"</string>
+    <string name="gestures_instructions">"Nakreslete gesto"</string>
+    <string name="gestures_add">"Přidat zástupce"</string>
+    <string name="gestures_show">"Zobrazit zástupce"</string>
+    <string name="gestures_unknown">"Nerozpoznáno"</string>
+    <string name="gestures_created">"Bylo přidáno gesto %s"</string>
+    <string name="gestures_failed">"Gesto nebylo možné vytvořit."</string>
+    <string name="gestures_loading">"Načítání gest..."</string>
+    <string name="gestures_empty">"Žádná gesta"</string>
+    <string name="gestures_activity">"Gesta"</string>
+    <string name="gestures_rename">"Přejmenovat"</string>
+    <string name="gestures_delete">"Smazat"</string>
+    <string name="gestures_delete_success">"Gesto bylo smazáno"</string>
+    <string name="gestures_rename_title">"Přejmenovat gesto"</string>
+    <string name="gestures_rename_label">"Název gesta"</string>
+    <string name="gestures_group_gestures">"Gesta"</string>
+    <string name="gestures_group_settings">"Nastavení"</string>
+    <string name="gestures_preference_hotkey_title">"Spouštět tlačítkem plochy"</string>
+    <string name="gestures_preference_hotkey_summary">"Po stisknutí tlačítka plochy kreslit gesta"</string>
 </resources>

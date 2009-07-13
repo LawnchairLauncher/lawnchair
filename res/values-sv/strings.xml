@@ -15,56 +15,56 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name">"Hjem"</string>
+    <string name="application_name">"Start"</string>
     <!-- no translation found for uid_name (3371120195364560632) -->
     <skip />
-    <string name="folder_name">"Mappe"</string>
-    <string name="chooser_wallpaper">"Velg bakgrunnsbilde fra"</string>
-    <string name="wallpaper_instructions">"Velg bakgrunnsbilde"</string>
-    <string name="pick_wallpaper">"Bildegalleri"</string>
-    <string name="activity_not_found">"Applikasjonen er ikke installert."</string>
-    <string name="rename_folder_label">"Mappenavn"</string>
-    <string name="rename_folder_title">"Gi nytt navn til mappe"</string>
+    <string name="folder_name">"Mapp"</string>
+    <string name="chooser_wallpaper">"Välj bakgrund från"</string>
+    <string name="wallpaper_instructions">"Ange bakgrund"</string>
+    <string name="pick_wallpaper">"Bakgrundsgalleri"</string>
+    <string name="activity_not_found">"Programmet är inte installerat på din telefon."</string>
+    <string name="rename_folder_label">"Mappnamn"</string>
+    <string name="rename_folder_title">"Byt namn på mapp"</string>
     <string name="rename_action">"OK"</string>
     <string name="cancel_action">"Avbryt"</string>
-    <string name="menu_item_add_item">"Legg til skrivebord"</string>
-    <string name="group_applications">"Applikasjoner"</string>
-    <string name="group_shortcuts">"Snarveier"</string>
-    <string name="group_search">"Søk"</string>
-    <string name="group_folder">"Ny mappe"</string>
-    <string name="group_live_folders">"Mapper"</string>
-    <string name="group_widgets">"Skrivebordselementer"</string>
-    <string name="group_wallpapers">"Bakgrunner"</string>
-    <string name="add_folder">"Mappe"</string>
-    <string name="add_clock">"Klokke"</string>
-    <string name="add_photo_frame">"Bilderamme"</string>
-    <string name="add_search">"Søk"</string>
-    <string name="out_of_space">"Ikke nok plass på skrivebordet."</string>
+    <string name="menu_item_add_item">"Lägg till på startsidan"</string>
+    <string name="group_applications">"Program"</string>
+    <string name="group_shortcuts">"Genvägar"</string>
+    <string name="group_search">"Sök"</string>
+    <string name="group_folder">"Ny mapp"</string>
+    <string name="group_live_folders">"Mappar"</string>
+    <string name="group_widgets">"Widgetar"</string>
+    <string name="group_wallpapers">"Bakgrundsbilder"</string>
+    <string name="add_folder">"Mapp"</string>
+    <string name="add_clock">"Klocka"</string>
+    <string name="add_photo_frame">"Bildram"</string>
+    <string name="add_search">"Sök"</string>
+    <string name="out_of_space">"Det finns inte plats för mer på den här startsidan."</string>
     <!-- no translation found for shortcut_installed (6623689857689040689) -->
     <skip />
     <!-- no translation found for shortcut_uninstalled (2758997515869993129) -->
     <skip />
     <!-- no translation found for shortcut_duplicate (4887186782641532074) -->
     <skip />
-    <string name="title_select_shortcut">"Velg snarvei"</string>
-    <string name="title_select_live_folder">"Velg mappe"</string>
-    <string name="menu_add">"Legg til"</string>
-    <string name="menu_wallpaper">"Bakgrunnsbilde"</string>
-    <string name="menu_search">"Søk"</string>
-    <string name="menu_notifications">"Varslinger"</string>
+    <string name="title_select_shortcut">"Välj genväg"</string>
+    <string name="title_select_live_folder">"Välj mapp"</string>
+    <string name="menu_add">"Lägg till"</string>
+    <string name="menu_wallpaper">"Bakgrund"</string>
+    <string name="menu_search">"Sök"</string>
+    <string name="menu_notifications">"Aviseringar"</string>
     <!-- no translation found for menu_gestures (514678675575912237) -->
     <skip />
-    <string name="menu_settings">"Innstillinger"</string>
-    <string name="permlab_install_shortcut">"installere snarveier"</string>
-    <string name="permdesc_install_shortcut">"Lar applikasjonen legge til snarveier uten å involvere brukeren."</string>
-    <string name="permlab_uninstall_shortcut">"avinstallere snarveier"</string>
-    <string name="permdesc_uninstall_shortcut">"Lar applikasjonen fjerne snarveier uten å involvere brukeren."</string>
-    <string name="permlab_read_settings">"lese skrivebordsinnstillinger og -snarveier"</string>
-    <string name="permdesc_read_settings">"Lar applikasjonen lese innstillinger og snarveier fra skrivebordet."</string>
-    <string name="permlab_write_settings">"skrive skrivebordsinnstillinger og -snarveier"</string>
-    <string name="permdesc_write_settings">"Lar applikasjonen endre innstillinger og snarveier på skrivebordet."</string>
-    <string name="search_hint">"Google-søk"</string>
-    <string name="gadget_error_text">"Problem under lasting av gadget"</string>
+    <string name="menu_settings">"Inställningar"</string>
+    <string name="permlab_install_shortcut">"installera genvägar"</string>
+    <string name="permdesc_install_shortcut">"Tillåter att ett program lägger till genvägar utan åtgärd från användaren."</string>
+    <string name="permlab_uninstall_shortcut">"avinstallera genvägar"</string>
+    <string name="permdesc_uninstall_shortcut">"Tillåter att ett program tar bort genvägar utan åtgärd från användaren."</string>
+    <string name="permlab_read_settings">"läsa inställningar och genvägar för startsidan"</string>
+    <string name="permdesc_read_settings">"Tillåter att ett program läser inställningar och genvägar på startsidan."</string>
+    <string name="permlab_write_settings">"skriva inställningar och genvägar för startsidan"</string>
+    <string name="permdesc_write_settings">"Tillåter att ett program ändrar inställningar och genvägar på startsidan."</string>
+    <string name="search_hint">"Google Sökning"</string>
+    <string name="gadget_error_text">"Det gick inte att läsa in widgeten"</string>
     <!-- no translation found for gestures_instructions (9028212666671537142) -->
     <skip />
     <!-- no translation found for gestures_add (7202345623338547552) -->
