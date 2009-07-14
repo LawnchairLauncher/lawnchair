@@ -2014,14 +2014,14 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     protected void onPrepareDialog(int id, Dialog dialog) {
         switch (id) {
             case DIALOG_CREATE_SHORTCUT:
-                mWorkspace.lock();
                 break;
             case DIALOG_RENAME_FOLDER:
-                mWorkspace.lock();
-                EditText input = (EditText) dialog.findViewById(R.id.folder_name);
-                final CharSequence text = mFolderInfo.title;
-                input.setText(text);
-                input.setSelection(0, text.length());
+                if (mFolderInfo != null) {
+                    EditText input = (EditText) dialog.findViewById(R.id.folder_name);
+                    final CharSequence text = mFolderInfo.title;
+                    input.setText(text);
+                    input.setSelection(0, text.length());
+                }
                 break;
         }
     }
@@ -2090,7 +2090,15 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 }
             );
             builder.setView(layout);
-            return builder.create();
+
+            final AlertDialog dialog = builder.create();
+            dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                public void onShow(DialogInterface dialog) {
+                    mWorkspace.lock();
+                }
+            });
+
+            return dialog;
         }
 
         private void changeFolderName() {
@@ -2133,7 +2141,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
      * appropriate activity.
      */
     private class CreateShortcut implements DialogInterface.OnClickListener,
-            DialogInterface.OnCancelListener, DialogInterface.OnDismissListener {
+            DialogInterface.OnCancelListener, DialogInterface.OnDismissListener,
+            DialogInterface.OnShowListener {
+
         private AddAdapter mAdapter;
 
         Dialog createDialog() {
@@ -2150,6 +2160,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             AlertDialog dialog = builder.create();
             dialog.setOnCancelListener(this);
             dialog.setOnDismissListener(this);
+            dialog.setOnShowListener(this);
 
             return dialog;
         }
@@ -2238,6 +2249,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     break;
                 }
             }
+        }
+
+        public void onShow(DialogInterface dialog) {
+            mWorkspace.lock();
         }
     }
 
