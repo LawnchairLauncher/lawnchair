@@ -32,6 +32,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.Intent.ShortcutIconResource;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -79,7 +80,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
-import android.widget.ViewSwitcher;
+import android.widget.Button;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.gesture.GestureOverlayView;
@@ -233,13 +234,14 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     private View mGesturesPanel;
     private GestureOverlayView mGesturesOverlay;
-    private ViewSwitcher mGesturesPrompt;
     private ImageView mGesturesAdd;
     private PopupWindow mGesturesWindow;
     private Launcher.GesturesProcessor mGesturesProcessor;
     private Gesture mCurrentGesture;
     private GesturesAction mGesturesAction;
     private boolean mHideGesturesPanel;
+    private TextView mGesturesPrompt;
+    private Button mGesturesSend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -605,7 +607,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             mWorkspace.post(new Runnable() {
                 public void run() {
                     showGesturesPanel(false);
-                    mGesturesProcessor.matchGesture(gesture, false);
+                    mGesturesProcessor.matchGesture(gesture);
                     mWorkspace.post(new Runnable() {
                         public void run() {
                             if (gesture != null) {
@@ -667,19 +669,23 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mGesturesPanel = mInflater.inflate(R.layout.gestures, mDragLayer, false);
         final View gesturesPanel = mGesturesPanel;
 
-        mGesturesPrompt = (ViewSwitcher) gesturesPanel.findViewById(R.id.gestures_actions);
         mGesturesAction = new GesturesAction();
 
-        mGesturesPrompt.getChildAt(0).setOnClickListener(mGesturesAction);
-        mGesturesPrompt.getChildAt(1).setOnClickListener(mGesturesAction);
-
+        mGesturesPrompt = (TextView) gesturesPanel.findViewById(R.id.gestures_prompt);
+        mGesturesSend = (Button) gesturesPanel.findViewById(R.id.gestures_action);
+        mGesturesSend.setOnClickListener(mGesturesAction);
+       
         mGesturesAdd = (ImageView) gesturesPanel.findViewById(R.id.gestures_add);
         final ImageView gesturesAdd = mGesturesAdd;
-        gesturesAdd.setAlpha(128);
-        gesturesAdd.setEnabled(false);
         gesturesAdd.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 createGesture();
+            }
+        });
+
+        gesturesPanel.findViewById(R.id.gestures_list).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startActivity(new Intent(Launcher.this, GesturesActivity.class));
             }
         });
 
@@ -976,17 +982,34 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             if ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) !=
                     Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) {
 
-                if (mGesturesPanel != null && mDragLayer.getWindowVisibility() == View.VISIBLE &&
-                        (mDragLayer.hasWindowFocus() ||
-                                (mGesturesWindow != null && mGesturesWindow.isShowing()))) {
+                // TODO: This really should not be done here every time
+                final SharedPreferences preferences =
+                        getSharedPreferences(GesturesActivity.PREFERENCES_NAME, MODE_PRIVATE);
+                final boolean homeKey = preferences.getBoolean(
+                        GesturesActivity.PREFERENCES_HOME_KEY, false);
 
-                    SearchManager searchManager =
-                            (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+                if (!homeKey) {
+                    if (!mWorkspace.isDefaultScreenShowing()) {
+                        mWorkspace.moveToDefaultScreen();
+                    }
 
-                    if (!searchManager.isVisible()) {
-                        onHomeKeyPressed();
+                    if (mGesturesWindow == null || mGesturesWindow.isShowing()) {
+                        hideGesturesPanel();
+                    }                    
+                } else {
+                    if (mGesturesPanel != null && mDragLayer.getWindowVisibility() == View.VISIBLE
+                            && (mDragLayer.hasWindowFocus() || (mGesturesWindow != null
+                            && mGesturesWindow.isShowing()))) {
+
+                        SearchManager searchManager =
+                                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+
+                        if (!searchManager.isVisible()) {
+                            onHomeKeyPressed();
+                        }
                     }
                 }
+
                 closeDrawer();
 
                 final View v = getWindow().peekDecorView();
@@ -1016,8 +1039,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private void showGesturesPanel(boolean animate) {
         resetGesturesPrompt();
 
-        mGesturesAdd.setEnabled(false);
-        mGesturesAdd.setAlpha(128);
+        mGesturesAdd.setVisibility(View.GONE);
 
         mGesturesOverlay.clear(false);
 
@@ -1027,12 +1049,13 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             window = mGesturesWindow;
             window.setFocusable(true);
             window.setTouchable(true);
-            window.setBackgroundDrawable(null);
+            window.setBackgroundDrawable(getResources().getDrawable(
+                    android.R.drawable.screen_background_dark));
             window.setContentView(mGesturesPanel);
         } else {
             window = mGesturesWindow;
         }
-        window.setAnimationStyle(animate ? com.android.internal.R.style.Animation_SlidingCard : 0);
+        window.setAnimationStyle(animate ? com.android.internal.R.style.Animation_Toast : 0);
 
         final int[] xy = new int[2];
         final DragLayer dragLayer = mDragLayer;
@@ -1045,31 +1068,23 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     private void resetGesturesPrompt() {
         mGesturesAction.intent = null;
-        final TextView prompt = (TextView) mGesturesPrompt.getCurrentView();
-        prompt.setText(R.string.gestures_instructions);
-        prompt.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
-        prompt.setClickable(false);
+        mGesturesPrompt.setText(R.string.gestures_instructions);
+        mGesturesPrompt.setVisibility(View.VISIBLE);
+        mGesturesSend.setVisibility(View.GONE);
     }
 
-    private void resetGesturesNextPrompt() {
+    private void setGestureUnknown() {
         mGesturesAction.intent = null;
-        setGesturesNextPrompt(null, getString(R.string.gestures_instructions));
-        mGesturesPrompt.getNextView().setClickable(false);
+        mGesturesPrompt.setText(R.string.gestures_unknown);
+        mGesturesPrompt.setVisibility(View.VISIBLE);
+        mGesturesSend.setVisibility(View.GONE);
     }
 
-    private void setGesturesNextPrompt(Drawable icon, CharSequence title) {
-        final TextView prompt = (TextView) mGesturesPrompt.getNextView();
-        prompt.setText(title);
-        prompt.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
-        prompt.setClickable(true);
-        mGesturesPrompt.showNext();
-    }
-
-    private void setGesturesPrompt(Drawable icon, CharSequence title) {
-        final TextView prompt = (TextView) mGesturesPrompt.getCurrentView();
-        prompt.setText(title);
-        prompt.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
-        prompt.setClickable(true);
+    private void setGestureAction(Drawable icon, CharSequence title) {
+        mGesturesPrompt.setVisibility(View.GONE);
+        mGesturesSend.setVisibility(View.VISIBLE);
+        mGesturesSend.setText(title);
+        mGesturesSend.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
     }
 
     void hideGesturesPanel() {
@@ -1080,7 +1095,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         if (mGesturesWindow != null) {
             final PopupWindow popupWindow = mGesturesWindow;
             popupWindow.setAnimationStyle(animate ?
-                    com.android.internal.R.style.Animation_SlidingCard : 0);
+                    com.android.internal.R.style.Animation_Toast : 0);
             popupWindow.update();
             popupWindow.dismiss();
         }
@@ -1270,10 +1285,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 .setIcon(com.android.internal.R.drawable.ic_menu_notifications)
                 .setAlphabeticShortcut('N');
 
-        final Intent gestures = new Intent(this, GesturesActivity.class);
+        // TODO: Remove
         menu.add(0, MENU_GESTURES, 0, R.string.menu_gestures)
-                .setIcon(com.android.internal.R.drawable.ic_menu_compose).setAlphabeticShortcut('G')
-                .setIntent(gestures);
+                .setIcon(com.android.internal.R.drawable.ic_menu_compose)
+                .setAlphabeticShortcut('G');
 
         final Intent settings = new Intent(android.provider.Settings.ACTION_SETTINGS);
         settings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
@@ -1310,6 +1325,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 return true;
             case MENU_NOTIFICATIONS:
                 showNotifications();
+                return true;
+            case MENU_GESTURES:
+                showGesturesPanel();
                 return true;
         }
 
@@ -2509,11 +2527,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             //noinspection PointlessBooleanExpression,ConstantConditions
             if (!CONFIG_GESTURES_IMMEDIATE_MODE) {
                 overlay.removeCallbacks(mMatcher);
-                resetGesturesNextPrompt();
+                resetGesturesPrompt();
             }
 
-            mGesturesAdd.setAlpha(128);
-            mGesturesAdd.setEnabled(false);
+            mGesturesAdd.setVisibility(View.GONE);
         }
 
         public void onGesture(GestureOverlayView overlay, MotionEvent event) {
@@ -2529,7 +2546,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     overlay.clear(false);
                     if (mGesturesAction.intent != null) {
                         mGesturesAction.intent = null;
-                        setGesturesNextPrompt(null, getString(R.string.gestures_unknown));
+                        setGestureAction(null, getString(R.string.gestures_unknown));
                     }
                 } else {
                     mMatcher.run();
@@ -2542,7 +2559,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     overlay.clear(false);
                     if (mGesturesAction.intent != null) {
                         mGesturesAction.intent = null;
-                        setGesturesNextPrompt(null, getString(R.string.gestures_unknown));
+                        setGestureAction(null, getString(R.string.gestures_unknown));
                     }
                 } else {
                     overlay.postDelayed(mMatcher, GesturesConstants.MATCH_DELAY);
@@ -2551,12 +2568,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
 
         void matchGesture(Gesture gesture) {
-            matchGesture(gesture, true);
-        }
-
-        void matchGesture(Gesture gesture, boolean animate) {
-            mGesturesAdd.setAlpha(255);
-            mGesturesAdd.setEnabled(true);
+            mGesturesAdd.setVisibility(View.VISIBLE);
 
             if (gesture != null) {
                 final ArrayList<Prediction> predictions = sLibrary.recognize(gesture);
@@ -2575,38 +2587,27 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
                         ApplicationInfo info = sModel.queryGesture(Launcher.this, prediction.name);
                         if (info != null) {
-                            updatePrompt(info, animate);
+                            updatePrompt(info);
                         }
                     }
                 }
 
                 if (!match){
                     mGesturesAction.intent = null;
-                    if (animate) {
-                        setGesturesNextPrompt(null, getString(R.string.gestures_unknown));
-                    } else {
-                        setGesturesPrompt(null, getString(R.string.gestures_unknown));
-                    }
+                    setGestureUnknown();
                 }
             }
         }
 
         private void updatePrompt(ApplicationInfo info) {
-            updatePrompt(info, true);
-        }
-
-        private void updatePrompt(ApplicationInfo info, boolean animate) {
+            // TODO: BRING BACK            
             if (mGesturesAction.intent != null &&
                     info.intent.toUri(0).equals(mGesturesAction.intent.toUri(0)) &&
-                    info.title.equals(((TextView) mGesturesPrompt.getCurrentView()).getText())) {
+                    info.title.equals(mGesturesSend.getText())) {
                 return;
             }
 
-            if (animate) {
-                setGesturesNextPrompt(info.icon, info.title);
-            } else {
-                setGesturesPrompt(info.icon, info.title);
-            }
+            setGestureAction(info.icon, info.title);
 
             mGesturesAction.intent = info.intent;
         }

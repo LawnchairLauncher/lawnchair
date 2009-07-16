@@ -14,6 +14,5 @@
      limitations under the License.
 -->
 
-<nine-patch xmlns:android="http://schemas.android.com/apk/res/android"
-    android:src="@drawable/gestures_frame"
-    android:dither="true" />
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="?android:attr/listSeparatorTextViewStyle" />

@@ -14,6 +14,13 @@
      limitations under the License.
 -->
 
-<nine-patch xmlns:android="http://schemas.android.com/apk/res/android"
-    android:src="@drawable/gestures_frame"
-    android:dither="true" />
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_window_focused="false" android:state_enabled="true"
+        android:drawable="@drawable/list_normal" />
+    <item android:state_pressed="true" 
+        android:drawable="@drawable/list_pressed" />
+    <item android:state_focused="true" android:state_enabled="true"
+        android:drawable="@drawable/list_selected" />
+    <item android:state_enabled="true"
+        android:drawable="@drawable/list_normal" />
+</selector>

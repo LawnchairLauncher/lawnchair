@@ -26,5 +26,6 @@
     <color name="appwidget_error_color">#FCCC</color>
     <color name="snag_callout_color">#F444</color>
 
-    <color name="gesture_color">#FFFFFF00</color>
+    <color name="gesture_color">#ff0563c1</color>
+    <color name="uncertain_gesture_color">#ff848484</color>
 </resources>
