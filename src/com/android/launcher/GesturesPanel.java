@@ -56,14 +56,14 @@ public class GesturesPanel extends LinearLayout {
                 return ((Launcher) mContext).getWorkspace().getRootView().dispatchKeyEvent(event);
         }
         
-        if (keyCode == KeyEvent.KEYCODE_BACK &&
-                event.getAction() == KeyEvent.ACTION_DOWN) {
-
-            ((Launcher) mContext).hideGesturesPanel();
-
-            return true;
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                ((Launcher) mContext).hideGesturesPanel();
+                return true;
+            }
+        } else {
+            return super.dispatchKeyEvent(event);
         }
-
-        return super.dispatchKeyEvent(event);
+        return false;
     }
 }
