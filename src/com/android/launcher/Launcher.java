@@ -42,8 +42,6 @@ import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
@@ -696,7 +694,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         final GestureOverlayView overlay = mGesturesOverlay;
         overlay.addOnGestureListener(mGesturesProcessor);
-        overlay.getGesturePaint().setXfermode(new PorterDuffXfermode(PorterDuff.Mode.MULTIPLY));
     }
 
     private void createGesture() {
@@ -2515,8 +2512,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
     }
 
-    private class GesturesProcessor implements GestureOverlayView.OnGestureListener,
-            GestureOverlayView.OnGesturePerformedListener {
+    private class GesturesProcessor implements GestureOverlayView.OnGestureListener {
 
         private final GestureMatcher mMatcher = new GestureMatcher();
 
@@ -2536,9 +2532,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
 
         public void onGesture(GestureOverlayView overlay, MotionEvent event) {
-        }
-
-        public void onGesturePerformed(GestureOverlayView overlay, Gesture gesture) {
         }
 
         public void onGestureEnded(GestureOverlayView overlay, MotionEvent event) {
