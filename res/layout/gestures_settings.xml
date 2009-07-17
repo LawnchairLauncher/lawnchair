@@ -14,22 +14,46 @@
      limitations under the License.
 -->
 
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
     <ListView
         android:id="@android:id/list"
+
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        android:layout_height="0dip"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/bottom_bar" />
 
-    <TextView
-        android:id="@android:id/empty"
+    <View
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_height="6dip"
+        android:layout_alignParentTop="false"
+        android:layout_above="@+id/bottom_bar"
 
-        android:gravity="center_horizontal"
+        android:background="@drawable/mirrored_shadow" />
 
-        android:text="@string/gestures_loading"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+    <RelativeLayout
+        android:id="@id/bottom_bar"
 
-</merge>
+        android:layout_width="fill_parent"
+        android:layout_height="60dip"
+        android:layout_alignParentBottom="true"
+
+        android:background="@drawable/g_bar_background">
+
+        <ImageButton
+            android:onClick="back"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="13dip"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+
+            android:background="@drawable/btn_g" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

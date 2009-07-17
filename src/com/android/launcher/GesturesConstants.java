@@ -22,4 +22,6 @@ interface GesturesConstants {
     final long MATCH_DELAY = 370;
     final float LENGTH_THRESHOLD = 120.0f;
     int PATH_SAMPLE_COUNT = 10;
+    String PREFERENCES_NAME = "gestures";
+    String PREFERENCES_HOME_KEY = "gestures.home";
 }

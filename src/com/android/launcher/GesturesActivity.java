@@ -56,9 +56,6 @@ public class GesturesActivity extends ListActivity implements AdapterView.OnItem
 
     private static final int DIALOG_RENAME_GESTURE = 1;
 
-    static final String PREFERENCES_NAME = "gestures";
-    static final String PREFERENCES_HOME_KEY = "gestures.home";
-    
     // Type: long (id)
     private static final String GESTURES_INFO_ID = "gestures.info_id";
 
@@ -68,7 +65,6 @@ public class GesturesActivity extends ListActivity implements AdapterView.OnItem
     private GesturesAdapter mAdapter;
     private GestureLibrary mStore;
     private GesturesLoadTask mTask;
-    private TextView mEmpty;
 
     private Dialog mRenameDialog;
     private EditText mInput;
@@ -86,12 +82,16 @@ public class GesturesActivity extends ListActivity implements AdapterView.OnItem
         getListView().setOnItemClickListener(this);
 
         mStore = Launcher.getGestureLibrary();
-        mEmpty = (TextView) findViewById(android.R.id.empty);
         mTask = (GesturesLoadTask) new GesturesLoadTask().execute();
 
         registerForContextMenu(getListView());
 
-        mPreferences = getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE);
+        mPreferences = getSharedPreferences(GesturesConstants.PREFERENCES_NAME, MODE_PRIVATE);
+    }
+
+    @SuppressWarnings({ "UnusedDeclaration" })
+    public void back(View v) {
+        finish();
     }
 
     @Override
@@ -104,12 +104,6 @@ public class GesturesActivity extends ListActivity implements AdapterView.OnItem
         }
 
         cleanupRenameDialog();
-    }
-
-    private void checkForEmpty() {
-        if (mAdapter.getCount() == 0) {
-            mEmpty.setText(R.string.gestures_empty);
-        }
     }
 
     @Override
@@ -257,7 +251,6 @@ public class GesturesActivity extends ListActivity implements AdapterView.OnItem
         adapter.setNotifyOnChange(false);
         adapter.remove(info);
         adapter.sort(mSorter);
-        checkForEmpty();
         adapter.notifyDataSetChanged();
 
         LauncherModel.deleteGestureFromDatabase(this, info);
@@ -269,7 +262,8 @@ public class GesturesActivity extends ListActivity implements AdapterView.OnItem
         if (position == 1) {
             final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkbox);
             checkBox.toggle();
-            mPreferences.edit().putBoolean(PREFERENCES_HOME_KEY, checkBox.isChecked()).commit();
+            mPreferences.edit().putBoolean(GesturesConstants.PREFERENCES_HOME_KEY,
+                    checkBox.isChecked()).commit();
         }
     }
 
@@ -327,12 +321,6 @@ public class GesturesActivity extends ListActivity implements AdapterView.OnItem
 
             adapter.sort(mSorter);
             adapter.notifyDataSetChanged();
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
-            checkForEmpty();
         }
     }
 
@@ -471,7 +459,7 @@ public class GesturesActivity extends ListActivity implements AdapterView.OnItem
             ((TextView) convertView.findViewById(R.id.title)).setText(title);
             ((TextView) convertView.findViewById(R.id.summary)).setText(summary);
             ((CheckBox) convertView.findViewById(R.id.checkbox)).setChecked(
-                    mPreferences.getBoolean(PREFERENCES_HOME_KEY, false));
+                    mPreferences.getBoolean(GesturesConstants.PREFERENCES_HOME_KEY, false));
 
             return convertView;
         }
