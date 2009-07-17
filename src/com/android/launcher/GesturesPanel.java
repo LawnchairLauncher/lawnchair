@@ -16,12 +16,12 @@
 
 package com.android.launcher;
 
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 
-public class GesturesPanel extends RelativeLayout {
+public class GesturesPanel extends LinearLayout {
     public GesturesPanel(Context context) {
         super(context);
     }
@@ -37,7 +37,26 @@ public class GesturesPanel extends RelativeLayout {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK &&
+        final int keyCode = event.getKeyCode();
+        
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_VOLUME_UP:
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+            case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+            case KeyEvent.KEYCODE_MUTE:
+            case KeyEvent.KEYCODE_HEADSETHOOK:
+            case KeyEvent.KEYCODE_MEDIA_STOP:
+            case KeyEvent.KEYCODE_MEDIA_NEXT:
+            case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+            case KeyEvent.KEYCODE_MEDIA_REWIND:
+            case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
+            case KeyEvent.KEYCODE_CAMERA:
+            case KeyEvent.KEYCODE_CALL:
+            case KeyEvent.KEYCODE_SEARCH:
+                return ((Launcher) mContext).getWorkspace().getRootView().dispatchKeyEvent(event);
+        }
+        
+        if (keyCode == KeyEvent.KEYCODE_BACK &&
                 event.getAction() == KeyEvent.ACTION_DOWN) {
 
             ((Launcher) mContext).hideGesturesPanel();

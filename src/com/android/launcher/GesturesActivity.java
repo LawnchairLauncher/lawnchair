@@ -26,8 +26,11 @@ import android.widget.TextView;
 import android.widget.AdapterView;
 import android.widget.Toast;
 import android.widget.EditText;
+import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,18 +43,22 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.text.TextUtils;
+import android.database.DataSetObserver;
 
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Collections;
 import java.util.Map;
 
-public class GesturesActivity extends ListActivity {
+public class GesturesActivity extends ListActivity implements AdapterView.OnItemClickListener {
     private static final int MENU_ID_RENAME = 1;
     private static final int MENU_ID_REMOVE = 2;
 
     private static final int DIALOG_RENAME_GESTURE = 1;
 
+    static final String PREFERENCES_NAME = "gestures";
+    static final String PREFERENCES_HOME_KEY = "gestures.home";
+    
     // Type: long (id)
     private static final String GESTURES_INFO_ID = "gestures.info_id";
 
@@ -66,6 +73,7 @@ public class GesturesActivity extends ListActivity {
     private Dialog mRenameDialog;
     private EditText mInput;
     private ApplicationInfo mCurrentRenameInfo;
+    private SharedPreferences mPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,13 +82,16 @@ public class GesturesActivity extends ListActivity {
         setContentView(R.layout.gestures_settings);
 
         mAdapter = new GesturesAdapter(this);
-        setListAdapter(mAdapter);
+        setListAdapter(new GesturesSettingsAdapter(mAdapter));
+        getListView().setOnItemClickListener(this);
 
         mStore = Launcher.getGestureLibrary();
         mEmpty = (TextView) findViewById(android.R.id.empty);
         mTask = (GesturesLoadTask) new GesturesLoadTask().execute();
 
         registerForContextMenu(getListView());
+
+        mPreferences = getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE);
     }
 
     @Override
@@ -127,10 +138,12 @@ public class GesturesActivity extends ListActivity {
         super.onCreateContextMenu(menu, v, menuInfo);
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-        menu.setHeaderTitle(((TextView) info.targetView).getText());
+        if (info.position > 2) {
+            menu.setHeaderTitle(((TextView) info.targetView).getText());
 
-        menu.add(0, MENU_ID_RENAME, 0, R.string.gestures_rename);
-        menu.add(0, MENU_ID_REMOVE, 0, R.string.gestures_delete);
+            menu.add(0, MENU_ID_RENAME, 0, R.string.gestures_rename);
+            menu.add(0, MENU_ID_REMOVE, 0, R.string.gestures_delete);
+        }
     }
 
     @Override
@@ -252,6 +265,14 @@ public class GesturesActivity extends ListActivity {
         Toast.makeText(this, R.string.gestures_delete_success, Toast.LENGTH_SHORT).show();
     }
 
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (position == 1) {
+            final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkbox);
+            checkBox.toggle();
+            mPreferences.edit().putBoolean(PREFERENCES_HOME_KEY, checkBox.isChecked()).commit();
+        }
+    }
+
     private class GesturesLoadTask extends AsyncTask<Void, ApplicationInfo, Boolean> {
         private int mThumbnailSize;
         private int mThumbnailInset;
@@ -343,6 +364,123 @@ public class GesturesActivity extends ListActivity {
             label.setCompoundDrawablesWithIntrinsicBounds(info.icon, null,
                     mThumbnails.get(info.id), null);
 
+            return convertView;
+        }
+    }
+
+    private class GesturesSettingsAdapter extends BaseAdapter {
+        private static final int FIXED_CHILDREN_COUNT = 3;
+
+        private static final int VIEW_TYPE_SEPARATOR = 0;
+        private static final int VIEW_TYPE_CHECKBOX = 1;
+
+        private final GesturesAdapter mAdapter;
+        private final LayoutInflater mInflater;
+
+        public GesturesSettingsAdapter(GesturesAdapter adapter) {
+            mAdapter = adapter;
+            mInflater = adapter.mInflater;
+            adapter.registerDataSetObserver(new DataSetObserver() {
+                @Override
+                public void onChanged() {
+                    notifyDataSetChanged();
+                }
+
+                @Override
+                public void onInvalidated() {
+                    notifyDataSetInvalidated();
+                }
+            });
+        }
+
+        public int getCount() {
+            return FIXED_CHILDREN_COUNT + mAdapter.getCount();
+        }
+
+        public Object getItem(int position) {
+            if (position < FIXED_CHILDREN_COUNT) {
+                return String.valueOf(position);
+            }
+            return mAdapter.getItem(position - FIXED_CHILDREN_COUNT);
+        }
+
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (position < FIXED_CHILDREN_COUNT) {
+                switch (position) {
+                    case 0:
+                    case 2:
+                        return VIEW_TYPE_SEPARATOR;
+                    case 1:
+                        return VIEW_TYPE_CHECKBOX;
+                }
+            }
+            return 2 + super.getItemViewType(position);
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            return 2 + mAdapter.getViewTypeCount();
+        }
+
+        @Override
+        public boolean areAllItemsEnabled() {
+            return false;
+        }
+
+        @Override
+        public boolean isEnabled(int position) {
+            return position != 0 && position != 2;
+        }
+
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (position < FIXED_CHILDREN_COUNT) {
+                // NOTE: Don't bother with ViewHolders here, we only have 3 items and
+                //       the list is likely to not be very long
+                switch (position) {
+                    case 0:
+                        convertView = createHeader(convertView, parent,
+                                R.string.gestures_group_settings);
+                        break;
+                    case 1:
+                        convertView = createSetting(convertView, parent,
+                                R.string.gestures_preference_hotkey_title,
+                                R.string.gestures_preference_hotkey_summary);
+                        break;
+                    case 2:
+                        convertView = createHeader(convertView, parent,
+                                R.string.gestures_group_gestures);
+                        break;
+                }
+                return convertView;
+            }
+            return mAdapter.getView(position - FIXED_CHILDREN_COUNT, convertView, parent);
+        }
+
+        private View createSetting(View convertView, ViewGroup parent,
+                int title, int summary) {
+
+            if (convertView == null) {
+                convertView = mInflater.inflate(R.layout.list_checkbox_2lines, parent, false);
+            }
+
+            ((TextView) convertView.findViewById(R.id.title)).setText(title);
+            ((TextView) convertView.findViewById(R.id.summary)).setText(summary);
+            ((CheckBox) convertView.findViewById(R.id.checkbox)).setChecked(
+                    mPreferences.getBoolean(PREFERENCES_HOME_KEY, false));
+
+            return convertView;
+        }
+
+        private View createHeader(View convertView, ViewGroup parent, int text) {
+            if (convertView == null) {
+                convertView = mInflater.inflate(R.layout.list_category, parent, false);
+            }
+            ((TextView) convertView).setText(text);
             return convertView;
         }
     }

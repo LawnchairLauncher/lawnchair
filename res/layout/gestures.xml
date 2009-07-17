@@ -14,83 +14,89 @@
      limitations under the License.
 -->
 
-<!-- Note: GesturesPanel is a special implementation that forces the widget
-     to be opaque for performance reasons. Make sure it visually is. -->
+<!-- TODO: Replace all this with a RelativeLayout -->
 <com.android.launcher.GesturesPanel
     xmlns:android="http://schemas.android.com/apk/res/android"
-        
-    android:id="@+id/gestures_panel"
+
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    
+    android:paddingLeft="13dip"
+    android:paddingRight="13dip"
+    
+    android:orientation="vertical"
+    android:background="@drawable/gestures_background">
 
-    <ViewSwitcher
-        android:id="@+id/gestures_actions"
+    <FrameLayout
         android:layout_width="fill_parent"
-        android:layout_height="83dip"
-        android:layout_alignParentBottom="true"
-
-        android:inAnimation="@anim/fade_in_fast"
-        android:outAnimation="@anim/fade_out_fast"
-
-        android:foregroundGravity="top|fill_horizontal"
-        android:foreground="@*android:drawable/title_bar_shadow"
-        android:background="@android:drawable/title_bar_tall">
-
+        android:layout_height="wrap_content"
+        
+        android:paddingTop="13dip"
+        android:paddingBottom="13dip">
+        
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center_horizontal"
-
-            android:gravity="center_vertical"
-
-            android:shadowColor="#FF000000"
-            android:shadowRadius="2.0"
-
-            android:drawablePadding="8dip"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/gestures_prompt"
+            android:layout_width="fill_parent"
+            android:layout_height="64dip"
+            
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceLargeInverse"
             android:ellipsize="end"
-            android:maxLines="2"
+            android:maxLines="1"
+            android:singleLine="true"
             android:text="@string/gestures_instructions" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center_horizontal"
+        <Button
+            android:id="@+id/gestures_action"
+            android:layout_width="fill_parent"
+            android:layout_height="64dip"
 
-            android:gravity="center_vertical"
-
-            android:shadowColor="#FF000000"
-            android:shadowRadius="2.0"
-
-            android:drawablePadding="8dip"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:gravity="left|center_vertical"
+            android:textAppearance="?android:attr/textAppearanceLargeInverse"
             android:ellipsize="end"
-            android:maxLines="2"
-            android:text="@string/gestures_instructions" />
-
-    </ViewSwitcher>
+            android:maxLines="1"
+            android:singleLine="true"
+            android:drawablePadding="6dip"
+            
+            android:visibility="gone" />
+        
+    </FrameLayout>
 
     <android.gesture.GestureOverlayView
         android:id="@+id/gestures_overlay"
         android:layout_width="fill_parent"
         android:layout_height="0dip"
         android:layout_weight="1.0"
-        android:layout_alignParentTop="true"
-        android:layout_above="@id/gestures_actions"
+        android:layout_marginLeft="6dip"
+        android:layout_marginRight="6dip"
 
-        android:background="@drawable/gestures_background"
-
+        android:gestureColor="@color/gesture_color"
+        android:uncertainGestureColor="@color/uncertain_gesture_color"
         android:gestureStrokeType="multiple" />
 
-    <ImageButton
-        style="@style/PlusButton"
-
-        android:id="@+id/gestures_add"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@id/gestures_actions"
-        android:layout_marginRight="5dip"  
-        android:layout_marginTop="-47dip" />
+        
+        android:paddingTop="15dip"
+        android:paddingBottom="13dip">
+
+        <ImageButton
+            android:id="@+id/gestures_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            
+            android:background="@drawable/btn_add" />
+        
+        <ImageButton
+            android:id="@+id/gestures_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+
+            android:background="@drawable/btn_list" />
+
+    </RelativeLayout>
 
 </com.android.launcher.GesturesPanel>

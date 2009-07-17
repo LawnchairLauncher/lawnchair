@@ -14,9 +14,7 @@
      limitations under the License.
 -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ListView
         android:id="@android:id/list"
@@ -34,4 +32,4 @@
         android:text="@string/gestures_loading"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-</FrameLayout>
+</merge>

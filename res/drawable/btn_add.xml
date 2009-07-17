@@ -16,17 +16,11 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_window_focused="false" android:state_enabled="true"
-        android:drawable="@drawable/btn_circle_normal" />
-    <item android:state_window_focused="false" android:state_enabled="false"
-        android:drawable="@drawable/btn_circle_disable" />
+        android:drawable="@drawable/plus_normal" />
     <item android:state_pressed="true" 
-        android:drawable="@drawable/btn_circle_pressed" />
+        android:drawable="@drawable/plus_pressed" />
     <item android:state_focused="true" android:state_enabled="true"
-        android:drawable="@drawable/btn_circle_selected" />
+        android:drawable="@drawable/plus_selected" />
     <item android:state_enabled="true"
-        android:drawable="@drawable/btn_circle_normal" />
-    <item android:state_focused="true"
-        android:drawable="@drawable/btn_circle_disable_focused" />
-    <item
-         android:drawable="@drawable/btn_circle_disable" />
+        android:drawable="@drawable/plus_normal" />
 </selector>
