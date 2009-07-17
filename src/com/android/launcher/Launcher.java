@@ -984,9 +984,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
                 // TODO: This really should not be done here every time
                 final SharedPreferences preferences =
-                        getSharedPreferences(GesturesActivity.PREFERENCES_NAME, MODE_PRIVATE);
+                        getSharedPreferences(GesturesConstants.PREFERENCES_NAME, MODE_PRIVATE);
                 final boolean homeKey = preferences.getBoolean(
-                        GesturesActivity.PREFERENCES_HOME_KEY, false);
+                        GesturesConstants.PREFERENCES_HOME_KEY, false);
 
                 if (!homeKey) {
                     if (!mWorkspace.isDefaultScreenShowing()) {
