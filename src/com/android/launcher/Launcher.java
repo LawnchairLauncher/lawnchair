@@ -601,11 +601,11 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             mWorkspace.post(new Runnable() {
                 public void run() {
                     showGesturesPanel(false);
-                    if (gesture != null) {
+                    if (gesture != null && mWorkspace.getParent() != null) {
                         mGesturesProcessor.matchGesture(gesture);
                         mWorkspace.post(new Runnable() {
                             public void run() {
-                                if (gesture != null) {
+                                if (gesture != null && mWorkspace.getParent() != null) {
                                     mGesturesOverlay.setGesture(gesture);
                                 }
                             }
