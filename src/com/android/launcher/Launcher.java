@@ -607,14 +607,16 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             mWorkspace.post(new Runnable() {
                 public void run() {
                     showGesturesPanel(false);
-                    mGesturesProcessor.matchGesture(gesture);
-                    mWorkspace.post(new Runnable() {
-                        public void run() {
-                            if (gesture != null) {
-                                mGesturesOverlay.setGesture(gesture);
+                    if (gesture != null) {
+                        mGesturesProcessor.matchGesture(gesture);
+                        mWorkspace.post(new Runnable() {
+                            public void run() {
+                                if (gesture != null) {
+                                    mGesturesOverlay.setGesture(gesture);
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
             });
         }
