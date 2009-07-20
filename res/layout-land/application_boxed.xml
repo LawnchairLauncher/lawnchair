@@ -19,6 +19,8 @@
     android:layout_width="fill_parent"
     android:layout_height="88dip"
 
+    android:paddingLeft="2dip"
+    android:paddingRight="2dip"
     android:paddingTop="5dip"
     android:paddingBottom="2dip"
     android:drawablePadding="0dip"
