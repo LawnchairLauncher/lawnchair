@@ -60,22 +60,4 @@
     <string name="permdesc_write_settings">"Consente a un\'applicazione di modificare le impostazioni e le scorciatoie in Home."</string>
     <string name="search_hint">"Ricerca Google"</string>
     <string name="gadget_error_text">"Errore durante il caricamento del widget"</string>
-    <string name="gestures_instructions">"Traccia un gesto"</string>
-    <string name="gestures_add">"Aggiungi scorciatoia"</string>
-    <string name="gestures_show">"Mostra scorciatoia"</string>
-    <string name="gestures_unknown">"Non riconosciuto"</string>
-    <string name="gestures_created">"Gesto %s aggiunto"</string>
-    <string name="gestures_failed">"Impossibile creare il gesto"</string>
-    <string name="gestures_loading">"Caricamento gesti in corso..."</string>
-    <string name="gestures_empty">"Nessun gesto"</string>
-    <string name="gestures_activity">"Gesti"</string>
-    <string name="gestures_rename">"Rinomina"</string>
-    <string name="gestures_delete">"Elimina"</string>
-    <string name="gestures_delete_success">"Gesto eliminato"</string>
-    <string name="gestures_rename_title">"Rinomina gesto"</string>
-    <string name="gestures_rename_label">"Nome gesto"</string>
-    <string name="gestures_group_gestures">"Gesti"</string>
-    <string name="gestures_group_settings">"Impostazioni"</string>
-    <string name="gestures_preference_hotkey_title">"Utilizza \"home\" per l\'avvio"</string>
-    <string name="gestures_preference_hotkey_summary">"Premi il tasto \"home\" per tracciare gesti"</string>
 </resources>

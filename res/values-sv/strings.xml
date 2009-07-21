@@ -65,40 +65,4 @@
     <string name="permdesc_write_settings">"Tillåter att ett program ändrar inställningar och genvägar på startsidan."</string>
     <string name="search_hint">"Google Sökning"</string>
     <string name="gadget_error_text">"Det gick inte att läsa in widgeten"</string>
-    <!-- no translation found for gestures_instructions (9028212666671537142) -->
-    <skip />
-    <!-- no translation found for gestures_add (7202345623338547552) -->
-    <skip />
-    <!-- no translation found for gestures_show (1819408048115485045) -->
-    <skip />
-    <!-- no translation found for gestures_unknown (4627778271648365869) -->
-    <skip />
-    <!-- no translation found for gestures_created (8116808500193613741) -->
-    <skip />
-    <!-- no translation found for gestures_failed (5113829215530311557) -->
-    <skip />
-    <!-- no translation found for gestures_loading (6325241735907189384) -->
-    <skip />
-    <!-- no translation found for gestures_empty (3992184768829668968) -->
-    <skip />
-    <!-- no translation found for gestures_activity (3366108186921084558) -->
-    <skip />
-    <!-- no translation found for gestures_rename (713510200890627175) -->
-    <skip />
-    <!-- no translation found for gestures_delete (6962559975386260201) -->
-    <skip />
-    <!-- no translation found for gestures_delete_success (2961655691848002690) -->
-    <skip />
-    <!-- no translation found for gestures_rename_title (7463326669074661915) -->
-    <skip />
-    <!-- no translation found for gestures_rename_label (8790363956270703745) -->
-    <skip />
-    <!-- no translation found for gestures_group_gestures (1224781238074132792) -->
-    <skip />
-    <!-- no translation found for gestures_group_settings (2153910512547403584) -->
-    <skip />
-    <!-- no translation found for gestures_preference_hotkey_title (293268419666027426) -->
-    <skip />
-    <!-- no translation found for gestures_preference_hotkey_summary (4351473330309584909) -->
-    <skip />
 </resources>

@@ -60,22 +60,4 @@
     <string name="permdesc_write_settings">"允許應用程式變更首頁中的設定和捷徑。"</string>
     <string name="search_hint">"Google 搜尋"</string>
     <string name="gadget_error_text">"載入小工具時發生問題"</string>
-    <string name="gestures_instructions">"描繪觸控動作"</string>
-    <string name="gestures_add">"新增捷徑"</string>
-    <string name="gestures_show">"顯示捷徑"</string>
-    <string name="gestures_unknown">"無法辨識"</string>
-    <string name="gestures_created">"已新增觸控動作 %s"</string>
-    <string name="gestures_failed">"無法建立觸控動作"</string>
-    <string name="gestures_loading">"正在載入觸控動作..."</string>
-    <string name="gestures_empty">"無觸控動作"</string>
-    <string name="gestures_activity">"觸控動作"</string>
-    <string name="gestures_rename">"重新命名"</string>
-    <string name="gestures_delete">"刪除"</string>
-    <string name="gestures_delete_success">"已刪除觸控動作"</string>
-    <string name="gestures_rename_title">"重新命名觸控動作"</string>
-    <string name="gestures_rename_label">"觸控動作名稱"</string>
-    <string name="gestures_group_gestures">"觸控動作"</string>
-    <string name="gestures_group_settings">"設定"</string>
-    <string name="gestures_preference_hotkey_title">"使用主螢幕啟動"</string>
-    <string name="gestures_preference_hotkey_summary">"按下主螢幕鍵來描繪觸控動作"</string>
 </resources>
