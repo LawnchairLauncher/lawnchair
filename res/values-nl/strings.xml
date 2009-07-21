@@ -60,22 +60,4 @@
     <string name="permdesc_write_settings">"Hiermee kan een toepassing de instellingen en snelkoppelingen op de startpagina wijzigen."</string>
     <string name="search_hint">"Google Zoeken"</string>
     <string name="gadget_error_text">"Probleem bij het laden van widget"</string>
-    <string name="gestures_instructions">"Een gebaar tekenen"</string>
-    <string name="gestures_add">"Snelkoppeling toevoegen"</string>
-    <string name="gestures_show">"Snelkoppeling weergeven"</string>
-    <string name="gestures_unknown">"Onbekend"</string>
-    <string name="gestures_created">"Gebaar %s toegevoegd"</string>
-    <string name="gestures_failed">"Gebaar kan niet worden gemaakt"</string>
-    <string name="gestures_loading">"Gebaren laden..."</string>
-    <string name="gestures_empty">"Geen gebaren"</string>
-    <string name="gestures_activity">"Gebaren"</string>
-    <string name="gestures_rename">"Naam wijzigen"</string>
-    <string name="gestures_delete">"Verwijderen"</string>
-    <string name="gestures_delete_success">"Gebaar verwijderd"</string>
-    <string name="gestures_rename_title">"Naam van gebaar wijzigen"</string>
-    <string name="gestures_rename_label">"Naam van gebaar"</string>
-    <string name="gestures_group_gestures">"Gebaren"</string>
-    <string name="gestures_group_settings">"Instellingen"</string>
-    <string name="gestures_preference_hotkey_title">"Gebruik de startpaginatoets om te starten"</string>
-    <string name="gestures_preference_hotkey_summary">"Druk op de startpaginatoets om gebaren te tekenen"</string>
 </resources>

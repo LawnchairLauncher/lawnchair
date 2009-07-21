@@ -92,11 +92,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name="GesturesActivity"
-            android:label="@string/gestures_activity"
-            android:theme="@android:style/Theme.Light.NoTitleBar" />        
-        
         <!-- Enable system-default search mode for any activity in Home -->
         <meta-data
             android:name="android.app.default_searchable"
