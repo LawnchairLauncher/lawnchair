@@ -60,22 +60,4 @@
     <string name="permdesc_write_settings">"Permet à une application de modifier les paramètres et les raccourcis de la page d\'accueil."</string>
     <string name="search_hint">"Recherche Google"</string>
     <string name="gadget_error_text">"Problème lors du chargement du widget"</string>
-    <string name="gestures_instructions">"Créer un geste"</string>
-    <string name="gestures_add">"Ajouter un raccourci"</string>
-    <string name="gestures_show">"Afficher le raccourci"</string>
-    <string name="gestures_unknown">"Non reconnu"</string>
-    <string name="gestures_created">"Le geste %s a bien été ajouté."</string>
-    <string name="gestures_failed">"Impossible de créer le geste."</string>
-    <string name="gestures_loading">"Chargement des gestes en cours…"</string>
-    <string name="gestures_empty">"Aucun geste"</string>
-    <string name="gestures_activity">"Gestes"</string>
-    <string name="gestures_rename">"Renommer"</string>
-    <string name="gestures_delete">"Supprimer"</string>
-    <string name="gestures_delete_success">"Le geste a bien été supprimé."</string>
-    <string name="gestures_rename_title">"Renommer le geste"</string>
-    <string name="gestures_rename_label">"Nom du geste"</string>
-    <string name="gestures_group_gestures">"Gestes"</string>
-    <string name="gestures_group_settings">"Paramètres"</string>
-    <string name="gestures_preference_hotkey_title">"Utiliser la touche Accueil pour commencer"</string>
-    <string name="gestures_preference_hotkey_summary">"Appuyer sur la touche Accueil pour créer un geste"</string>
 </resources>

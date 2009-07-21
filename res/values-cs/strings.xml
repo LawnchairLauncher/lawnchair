@@ -60,22 +60,4 @@
     <string name="permdesc_write_settings">"Povoluje aplikaci změnit nastavení a odkazy plochy."</string>
     <string name="search_hint">"Vyhledávání Google"</string>
     <string name="gadget_error_text">"Problém s načtením widgetu"</string>
-    <string name="gestures_instructions">"Nakreslete gesto"</string>
-    <string name="gestures_add">"Přidat zástupce"</string>
-    <string name="gestures_show">"Zobrazit zástupce"</string>
-    <string name="gestures_unknown">"Nerozpoznáno"</string>
-    <string name="gestures_created">"Bylo přidáno gesto %s"</string>
-    <string name="gestures_failed">"Gesto nebylo možné vytvořit."</string>
-    <string name="gestures_loading">"Načítání gest..."</string>
-    <string name="gestures_empty">"Žádná gesta"</string>
-    <string name="gestures_activity">"Gesta"</string>
-    <string name="gestures_rename">"Přejmenovat"</string>
-    <string name="gestures_delete">"Smazat"</string>
-    <string name="gestures_delete_success">"Gesto bylo smazáno"</string>
-    <string name="gestures_rename_title">"Přejmenovat gesto"</string>
-    <string name="gestures_rename_label">"Název gesta"</string>
-    <string name="gestures_group_gestures">"Gesta"</string>
-    <string name="gestures_group_settings">"Nastavení"</string>
-    <string name="gestures_preference_hotkey_title">"Spouštět tlačítkem plochy"</string>
-    <string name="gestures_preference_hotkey_summary">"Po stisknutí tlačítka plochy kreslit gesta"</string>
 </resources>
