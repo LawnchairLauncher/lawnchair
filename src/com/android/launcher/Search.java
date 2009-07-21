@@ -16,13 +16,20 @@
 
 package com.android.launcher;
 
+import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.server.search.SearchableInfo;
+import android.server.search.Searchables;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -68,6 +75,10 @@ public class Search extends LinearLayout
 
     // For voice searching
     private Intent mVoiceSearchIntent;
+    
+    private Drawable mGooglePlaceholder;
+    
+    private SearchManager mSearchManager;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -129,6 +140,8 @@ public class Search extends LinearLayout
         mVoiceSearchIntent = new Intent(android.speech.RecognizerIntent.ACTION_WEB_SEARCH);
         mVoiceSearchIntent.putExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 android.speech.RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
+        
+        mSearchManager = (SearchManager) getContext().getSystemService(Context.SEARCH_SERVICE);
     }
 
     /**
@@ -293,6 +306,10 @@ public class Search extends LinearLayout
 
         mSearchText = (TextView) findViewById(R.id.search_src_text);
         mVoiceButton = (ImageButton) findViewById(R.id.search_voice_btn);
+        
+        mGooglePlaceholder = getContext().getResources().getDrawable(R.drawable.placeholder_google);
+        mContext.registerReceiver(mBroadcastReceiver,
+                new IntentFilter(SearchManager.INTENT_ACTION_SEARCH_SETTINGS_CHANGED));
 
         mSearchText.setOnKeyListener(this);
 
@@ -304,6 +321,13 @@ public class Search extends LinearLayout
         mVoiceButton.setOnLongClickListener(this);
 
         configureVoiceSearchButton();
+        setUpTextField();
+    }
+    
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (mBroadcastReceiver != null) getContext().unregisterReceiver(mBroadcastReceiver);
     }
 
     /**
@@ -323,6 +347,28 @@ public class Search extends LinearLayout
         // finally, set visible state of voice search button, as appropriate
         mVoiceButton.setVisibility(voiceSearchVisible ? View.VISIBLE : View.GONE);
     }
+    
+    /**
+     * Sets up the look of the text field. If Google is the chosen search provider, includes
+     * a Google logo as placeholder.
+     */
+    private void setUpTextField() {
+        boolean showGooglePlaceholder = false;
+        SearchableInfo webSearchSearchable = mSearchManager.getDefaultSearchableForWebSearch();
+        if (webSearchSearchable != null) {
+            ComponentName webSearchComponent = webSearchSearchable.getSearchActivity();
+            if (webSearchComponent != null) {
+                String componentString = webSearchComponent.flattenToShortString();
+                if (Searchables.ENHANCED_GOOGLE_SEARCH_COMPONENT_NAME.equals(componentString) ||
+                        Searchables.GOOGLE_SEARCH_COMPONENT_NAME.equals(componentString)) {
+                    showGooglePlaceholder = true;
+                }
+            }
+        }
+        
+        mSearchText.setCompoundDrawablesWithIntrinsicBounds(
+                showGooglePlaceholder ? mGooglePlaceholder : null, null, null, null);
+    }
 
     /**
      * Sets the {@link Launcher} that this gadget will call on to display the search dialog. 
@@ -330,6 +376,17 @@ public class Search extends LinearLayout
     public void setLauncher(Launcher launcher) {
         mLauncher = launcher;
     }
+        
+    // Broadcast receiver for web search provider change notifications
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (SearchManager.INTENT_ACTION_SEARCH_SETTINGS_CHANGED.equals(action)) {
+                setUpTextField();
+            }
+        }
+    };
 
     /** 
      * Moves the view to the top left corner of its parent.
