@@ -200,6 +200,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private boolean mWaitingForResult;
     private boolean mLocaleChanged;
 
+    private boolean mHomeDown;
+    private boolean mBackDown;
+    
     private Bundle mSavedInstanceState;
 
     private DesktopBinder mBinder;
@@ -1305,18 +1308,39 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     }
 
     @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (!hasFocus) {
+            mBackDown = mHomeDown = false;
+        }
+    }
+
+    @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             switch (event.getKeyCode()) {
                 case KeyEvent.KEYCODE_BACK:
-                    mWorkspace.dispatchKeyEvent(event);
-                    if (mDrawer.isOpened()) {
-                        closeDrawer();
-                    } else {
-                        closeFolder();
-                    }
+                    mBackDown = true;
                     return true;
                 case KeyEvent.KEYCODE_HOME:
+                    mHomeDown = true;
+                    return true;
+            }
+        } else if (event.getAction() == KeyEvent.ACTION_UP) {
+            switch (event.getKeyCode()) {
+                case KeyEvent.KEYCODE_BACK:
+                    if (!event.isCanceled()) {
+                        mWorkspace.dispatchKeyEvent(event);
+                        if (mDrawer.isOpened()) {
+                            closeDrawer();
+                        } else {
+                            closeFolder();
+                        }
+                    }
+                    mBackDown = false;
+                    return true;
+                case KeyEvent.KEYCODE_HOME:
+                    mHomeDown = false;
                     return true;
             }
         }
