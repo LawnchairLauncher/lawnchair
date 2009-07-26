@@ -22,6 +22,8 @@
     <skip />
     <!-- Application name -->
     <string name="application_name">Home</string>
+    <!-- Name for all applications running as this uid. -->
+    <string name="uid_name">Android Core Apps</string>
     <!-- Default folder name -->
     <string name="folder_name">Folder</string>
     <!-- Title of dialog that appears after user selects Wallpaper from menu -->
@@ -68,10 +70,16 @@
     <string name="add_clock">Clock</string>
     <!-- Options in "Add to Home" dialog box; Name of the Picture frame widget-->
     <string name="add_photo_frame">Picture frame</string>
-    <!-- Options in "Add to Home" dialog box; Name of the Google Search widget-->
+    <!-- Options in "Add to Home" dialog box; Name of the global search widget-->
     <string name="add_search">Search</string>
     <!-- Error message when user has filled a home screen, possibly not used -->
     <string name="out_of_space">No more room on this Home screen.</string>
+    <!-- Message displayed when a shortcut is created by an external application -->
+    <string name="shortcut_installed">Shortcut \"%s\" is installed.</string>
+    <!-- Message displayed when a shortcut is uninstalled by an external application -->
+    <string name="shortcut_uninstalled">Shortcut \"%s\" was removed.</string>
+    <!-- Message displayed when an external application attemps to create a shortcut that already exists -->
+    <string name="shortcut_duplicate">Shortcut \"%s\" already exists.</string>
 
     <!-- Title of dialog when user is selecting shortcut to add to homescreen -->
     <string name="title_select_shortcut">Select shortcut</string>
@@ -84,11 +92,13 @@
     <string name="menu_add">Add</string>
     <!-- Noun, menu item used to set the desktop's wallpaper -->
     <string name="menu_wallpaper">Wallpaper</string>
-    <!-- Verb, menu item used to initiate a Google Search -->
+    <!-- Verb, menu item used to initiate global search -->
     <string name="menu_search">Search</string>
     <!-- Noun, menu item used to bring down the notifications shade -->
     <string name="menu_notifications">Notifications</string>
-    <!-- Noun, menu item used to show the system settings -->    
+    <!-- Noun, menu item used to show the gestures settings -->
+    <string name="menu_gestures">Gestures</string>
+    <!-- Noun, menu item used to show the system settings -->
     <string name="menu_settings">Settings</string>
 
     <!-- Permissions: -->
@@ -107,7 +117,9 @@
 
     <!-- Widgets: -->
     <skip />    
-    <!-- This is the hint text shown in the search widget, before text is entered.
+
+    <!-- TODO: Determine if this can be removed.
+         This is the hint text shown in the search widget, before text is entered.
          This translation SHOULD MATCH the string "search_hint" which is found in 
          GoogleSearch/res/values/strings.xml -->
     <string name="search_hint">Google Search</string>
@@ -115,4 +127,43 @@
     <!-- Text to show user in place of a gadget when we can't display it properly -->
     <string name="gadget_error_text">Problem loading widget</string>
 
+    <!-- Gestures: -->
+    <skip />
+
+    <!-- Message displayed when the user enters gestures mode and is asked to draw a gesture -->
+    <string name="gestures_instructions">Draw a gesture</string>
+    <!-- Label of the button that the user clicks to create a new gesture-based shortcut -->
+    <string name="gestures_add">Add shortcut</string>
+    <!-- Label of the button that the user clicks to see the list of gesture-based shortcuts -->
+    <string name="gestures_show">Show shortcut</string>
+    <!-- Message displayed when the gesture entered by the user cannot be recognized -->
+    <string name="gestures_unknown">Unrecognized</string>
+    <!-- Message displayed when the user has successfully created a new gesture -->
+    <string name="gestures_created">Added gesture "%s"</string>
+    <!-- Message displayed when the user could not create a new gesture -->
+    <string name="gestures_failed">Gesture could not be created</string>
+    <!-- Message displayed when the user opens the gestures settings screen -->
+    <string name="gestures_loading">Loading gestures...</string>
+    <!-- Message displayed when the user has no gestures -->
+    <string name="gestures_empty">No gestures</string>
+    <!-- Title of the screen used to view/manage gestures -->
+    <string name="gestures_activity">Gestures</string>
+    <!-- Noun, menu item used to rename a gesture -->
+    <string name="gestures_rename">Rename</string>
+    <!-- Noun, menu item used to remove a gesture -->
+    <string name="gestures_delete">Delete</string>
+    <!-- Message displayed when a gesture is successfully deleted -->
+    <string name="gestures_delete_success">Gesture deleted</string>
+    <!-- Title of dialog box -->
+    <string name="gestures_rename_title">Rename gesture</string>
+    <!-- Label of gesture name field in Rename gesture dialog box -->
+    <string name="gestures_rename_label">Gesture name</string>
+    <!-- Title of the preferences group showing the user's gestures -->
+    <string name="gestures_group_gestures">Gestures</string>
+    <!-- Title of the preferences group showing the gestures settings -->
+    <string name="gestures_group_settings">Settings</string>
+    <!-- Label of the setting used to enable/disable the home key to draw gestures -->
+    <string name="gestures_preference_hotkey_title">Use home to launch</string>
+    <!-- Summary of the setting used to enable/disable the home key to draw gestures -->
+    <string name="gestures_preference_hotkey_summary">Press home key to draw gestures</string>
 </resources>

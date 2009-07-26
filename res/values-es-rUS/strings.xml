@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2009 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name">"Página principal"</string>
+    <string name="folder_name">"Carpeta"</string>
+    <string name="chooser_wallpaper">"Seleccionar papel tapiz desde"</string>
+    <string name="wallpaper_instructions">"Definir papel tapiz"</string>
+    <string name="pick_wallpaper">"Galería de papel tapiz"</string>
+    <string name="activity_not_found">"La aplicación no está instalada en tu computadora."</string>
+    <string name="rename_folder_label">"Nombre de carpeta"</string>
+    <string name="rename_folder_title">"Cambiar nombre de carpeta"</string>
+    <string name="rename_action">"Aceptar"</string>
+    <string name="cancel_action">"Cancelar"</string>
+    <string name="menu_item_add_item">"Agregar a la pantalla Página principal"</string>
+    <!-- no translation found for group_applications (4118484163419674240) -->
+    <skip />
+    <!-- no translation found for group_shortcuts (9133529424900391877) -->
+    <skip />
+    <string name="group_search">"Buscar"</string>
+    <!-- no translation found for group_folder (5143593791798929193) -->
+    <skip />
+    <!-- no translation found for group_live_folders (2664945399140647217) -->
+    <skip />
+    <!-- no translation found for group_widgets (6704978494073105844) -->
+    <skip />
+    <!-- no translation found for group_wallpapers (1568191644272224858) -->
+    <skip />
+    <string name="add_folder">"Carpeta"</string>
+    <string name="add_clock">"Reloj"</string>
+    <string name="add_photo_frame">"Marco de imagen"</string>
+    <string name="add_search">"Buscar"</string>
+    <string name="out_of_space">"No hay más espacio en esta pantalla de la página principal"</string>
+    <!-- no translation found for shortcut_installed (6623689857689040689) -->
+    <skip />
+    <!-- no translation found for shortcut_uninstalled (2758997515869993129) -->
+    <skip />
+    <!-- no translation found for shortcut_duplicate (4887186782641532074) -->
+    <skip />
+    <string name="title_select_shortcut">"Seleccionar acceso directo"</string>
+    <!-- no translation found for title_select_live_folder (3753447798805166749) -->
+    <skip />
+    <string name="menu_add">"Agregar"</string>
+    <string name="menu_wallpaper">"Papel tapiz"</string>
+    <string name="menu_search">"Buscar"</string>
+    <string name="menu_notifications">"Notificaciones"</string>
+    <string name="menu_settings">"Configuración"</string>
+    <string name="permlab_install_shortcut">"instalar accesos directos"</string>
+    <string name="permdesc_install_shortcut">"Permite a una aplicación agregar accesos directos sin intervención del usuario."</string>
+    <string name="permlab_uninstall_shortcut">"desinstalar papel tapiz"</string>
+    <string name="permdesc_uninstall_shortcut">"Permite a una aplicación suprimir accesos directos sin intervención del usuario."</string>
+    <string name="permlab_read_settings">"leer configuración y accesos directos de la página principal"</string>
+    <string name="permdesc_read_settings">"Permite a una aplicación leer la configuración y los accesos directos de la página principal."</string>
+    <string name="permlab_write_settings">"escribir configuración y accesos directos de la página principal"</string>
+    <string name="permdesc_write_settings">"Permite a una aplicación cambiar la configuración y los accesos directos de la página principal."</string>
+    <string name="search_hint">"Búsqueda de Google"</string>
+    <string name="gadget_error_text">"Problema al cargar el widget"</string>
+</resources>

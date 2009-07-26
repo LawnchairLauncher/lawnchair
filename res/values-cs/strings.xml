@@ -26,20 +26,27 @@
     <string name="rename_action">"OK"</string>
     <string name="cancel_action">"Zrušit"</string>
     <string name="menu_item_add_item">"Přidat na plochu"</string>
-    <string name="group_applications">"Aplikace"</string>
-    <string name="group_shortcuts">"Klávesové zkratky"</string>
+    <!-- no translation found for group_applications (4118484163419674240) -->
+    <skip />
+    <!-- no translation found for group_shortcuts (9133529424900391877) -->
+    <skip />
     <string name="group_search">"Hledat"</string>
-    <string name="group_folder">"Nová složka"</string>
-    <string name="group_live_folders">"Složky"</string>
-    <string name="group_widgets">"Widgety"</string>
-    <string name="group_wallpapers">"Tapety"</string>
+    <!-- no translation found for group_folder (5143593791798929193) -->
+    <skip />
+    <!-- no translation found for group_live_folders (2664945399140647217) -->
+    <skip />
+    <!-- no translation found for group_widgets (6704978494073105844) -->
+    <skip />
+    <!-- no translation found for group_wallpapers (1568191644272224858) -->
+    <skip />
     <string name="add_folder">"Složka"</string>
     <string name="add_clock">"Hodiny"</string>
     <string name="add_photo_frame">"Rámeček fotografie"</string>
     <string name="add_search">"Vyhledávání"</string>
     <string name="out_of_space">"Na této ploše již není místo."</string>
     <string name="title_select_shortcut">"Vyberte zástupce"</string>
-    <string name="title_select_live_folder">"Vybrat složku"</string>
+    <!-- no translation found for title_select_live_folder (3753447798805166749) -->
+    <skip />
     <string name="menu_add">"Přidat"</string>
     <string name="menu_wallpaper">"Tapeta"</string>
     <string name="menu_search">"Hledat"</string>

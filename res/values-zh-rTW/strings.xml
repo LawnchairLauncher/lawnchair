@@ -26,34 +26,27 @@
     <string name="rename_action">"確定"</string>
     <string name="cancel_action">"取消"</string>
     <string name="menu_item_add_item">"新增至首頁畫面"</string>
-    <!-- no translation found for group_applications (4118484163419674240) -->
-    <skip />
-    <!-- no translation found for group_shortcuts (9133529424900391877) -->
-    <skip />
+    <string name="group_applications">"應用程式"</string>
+    <string name="group_shortcuts">"捷徑"</string>
     <string name="group_search">"搜尋"</string>
-    <!-- no translation found for group_folder (5143593791798929193) -->
-    <skip />
-    <!-- no translation found for group_live_folders (2664945399140647217) -->
-    <skip />
-    <!-- no translation found for group_widgets (6704978494073105844) -->
-    <skip />
-    <!-- no translation found for group_wallpapers (1568191644272224858) -->
-    <skip />
+    <string name="group_folder">"新資料夾"</string>
+    <string name="group_live_folders">"資料夾"</string>
+    <string name="group_widgets">"小工具"</string>
+    <string name="group_wallpapers">"桌布"</string>
     <string name="add_folder">"資料夾"</string>
     <string name="add_clock">"時鐘"</string>
     <string name="add_photo_frame">"相框"</string>
     <string name="add_search">"搜尋"</string>
     <string name="out_of_space">"首頁已無空間"</string>
     <string name="title_select_shortcut">"選取捷徑"</string>
-    <!-- no translation found for title_select_live_folder (3753447798805166749) -->
-    <skip />
+    <string name="title_select_live_folder">"選取資料夾"</string>
     <string name="menu_add">"新增"</string>
     <string name="menu_wallpaper">"桌布"</string>
     <string name="menu_search">"搜尋"</string>
-    <string name="menu_notifications">"通知選項"</string>
+    <string name="menu_notifications">"通知"</string>
     <string name="menu_settings">"設定"</string>
     <string name="permlab_install_shortcut">"安裝捷徑"</string>
-    <string name="permdesc_install_shortcut">"允許應用程式自動新增捷徑。"</string>
+    <string name="permdesc_install_shortcut">"允許應用程式自動新增快速鍵。"</string>
     <string name="permlab_uninstall_shortcut">"解除安裝捷徑"</string>
     <string name="permdesc_uninstall_shortcut">"允許應用程式自動移除捷徑。"</string>
     <string name="permlab_read_settings">"讀取首頁設定和捷徑"</string>

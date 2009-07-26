@@ -98,4 +98,14 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView {
         mPendingCheckForLongPress.rememberWindowAttachCount();
         postDelayed(mPendingCheckForLongPress, ViewConfiguration.getLongPressTimeout());
     }
+
+    @Override
+    public void cancelLongPress() {
+        super.cancelLongPress();
+
+        mHasPerformedLongPress = false;
+        if (mPendingCheckForLongPress != null) {
+            removeCallbacks(mPendingCheckForLongPress);
+        }
+    }
 }

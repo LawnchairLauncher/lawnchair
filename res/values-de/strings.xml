@@ -25,21 +25,28 @@
     <string name="rename_folder_title">"Ordner umbenennen"</string>
     <string name="rename_action">"OK"</string>
     <string name="cancel_action">"Abbrechen"</string>
-    <string name="menu_item_add_item">"Zum Startbildschirm hinzufügen"</string>
-    <string name="group_applications">"Anwendungen"</string>
-    <string name="group_shortcuts">"Verknüpfungen"</string>
+    <string name="menu_item_add_item">"Zur Startseite hinzufügen"</string>
+    <!-- no translation found for group_applications (4118484163419674240) -->
+    <skip />
+    <!-- no translation found for group_shortcuts (9133529424900391877) -->
+    <skip />
     <string name="group_search">"Suchen"</string>
-    <string name="group_folder">"Neuer Ordner"</string>
-    <string name="group_live_folders">"Ordner"</string>
-    <string name="group_widgets">"Widgets"</string>
-    <string name="group_wallpapers">"Hintergrundbilder"</string>
+    <!-- no translation found for group_folder (5143593791798929193) -->
+    <skip />
+    <!-- no translation found for group_live_folders (2664945399140647217) -->
+    <skip />
+    <!-- no translation found for group_widgets (6704978494073105844) -->
+    <skip />
+    <!-- no translation found for group_wallpapers (1568191644272224858) -->
+    <skip />
     <string name="add_folder">"Ordner"</string>
     <string name="add_clock">"Uhr"</string>
     <string name="add_photo_frame">"Bildrahmen"</string>
     <string name="add_search">"Suchen"</string>
-    <string name="out_of_space">"Auf dem Startbildschirm ist kein Platz mehr vorhanden."</string>
+    <string name="out_of_space">"Auf der Startseite ist kein Platz mehr vorhanden."</string>
     <string name="title_select_shortcut">"Tastenkürzel auswählen"</string>
-    <string name="title_select_live_folder">"Ordner auswählen"</string>
+    <!-- no translation found for title_select_live_folder (3753447798805166749) -->
+    <skip />
     <string name="menu_add">"Hinzufügen"</string>
     <string name="menu_wallpaper">"Hintergrund"</string>
     <string name="menu_search">"Suchen"</string>

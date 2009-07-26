@@ -20,6 +20,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.app.Dialog;
+import android.app.ISearchManager;
+import android.app.IWallpaperService;
 import android.app.SearchManager;
 import android.app.StatusBarManager;
 import android.content.ActivityNotFoundException;
@@ -30,36 +32,34 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.Intent.ShortcutIconResource;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.res.Resources;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.Message;
 import android.os.MessageQueue;
 import android.os.Parcelable;
 import android.os.RemoteException;
 import android.os.ServiceManager;
-import android.os.Message;
-import android.provider.*;
-import android.telephony.PhoneNumberUtils;
+import android.provider.LiveFolders;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
-import android.util.Log;
 import static android.util.Log.*;
 import android.view.Display;
 import android.view.KeyEvent;
@@ -68,20 +68,33 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.MotionEvent;
+import android.view.Gravity;
 import android.view.View.OnLongClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.GridView;
 import android.widget.SlidingDrawer;
-import android.app.IWallpaperService;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
+import android.widget.ViewSwitcher;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
+import android.gesture.GestureOverlayView;
+import android.gesture.GestureLibraries;
+import android.gesture.GestureLibrary;
+import android.gesture.Gesture;
+import android.gesture.Prediction;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.DataInputStream;
 
 /**
  * Default launcher application.
@@ -94,6 +107,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private static final boolean PROFILE_DRAWER = false;
     private static final boolean PROFILE_ROTATE = false;
     private static final boolean DEBUG_USER_INTERFACE = false;
+    private static final boolean DEBUG_GESTURES = false;
+
+    private static final boolean CONFIG_GESTURES_IMMEDIATE_MODE = true;
 
     private static final int WALLPAPER_SCREENS_SPAN = 2;
 
@@ -102,7 +118,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private static final int MENU_WALLPAPER_SETTINGS = MENU_ADD + 1;
     private static final int MENU_SEARCH = MENU_WALLPAPER_SETTINGS + 1;
     private static final int MENU_NOTIFICATIONS = MENU_SEARCH + 1;
-    private static final int MENU_SETTINGS = MENU_NOTIFICATIONS + 1;
+    private static final int MENU_GESTURES = MENU_NOTIFICATIONS + 1;
+    private static final int MENU_SETTINGS = MENU_GESTURES + 1;
 
     private static final int REQUEST_CREATE_SHORTCUT = 1;
     private static final int REQUEST_CREATE_LIVE_FOLDER = 4;
@@ -111,6 +128,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private static final int REQUEST_PICK_SHORTCUT = 7;
     private static final int REQUEST_PICK_LIVE_FOLDER = 8;
     private static final int REQUEST_PICK_APPWIDGET = 9;
+    private static final int REQUEST_PICK_GESTURE_ACTION = 10;
+    private static final int REQUEST_CREATE_GESTURE_ACTION = 11;
+    private static final int REQUEST_CREATE_GESTURE_APPLICATION_ACTION = 12;
 
     static final String EXTRA_SHORTCUT_DUPLICATE = "duplicate";
 
@@ -120,15 +140,12 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     static final int SCREEN_COUNT = 3;
     static final int DEFAULT_SCREN = 1;
     static final int NUMBER_CELLS_X = 4;
-    static final int NUMBER_CELLS_Y = 4;    
+    static final int NUMBER_CELLS_Y = 4;
 
     private static final int DIALOG_CREATE_SHORTCUT = 1;
-    static final int DIALOG_RENAME_FOLDER = 2;    
+    static final int DIALOG_RENAME_FOLDER = 2;
 
-    private static final String PREFERENCES = "launcher";
-    private static final String KEY_LOCALE = "locale";
-    private static final String KEY_MCC = "mcc";
-    private static final String KEY_MNC = "mnc";
+    private static final String PREFERENCES = "launcher.preferences";
 
     // Type: int
     private static final String RUNTIME_STATE_CURRENT_SCREEN = "launcher.current_screen";
@@ -156,6 +173,12 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private static final String RUNTIME_STATE_PENDING_FOLDER_RENAME = "launcher.rename_folder";
     // Type: long
     private static final String RUNTIME_STATE_PENDING_FOLDER_RENAME_ID = "launcher.rename_folder_id";
+    // Type: Gesture (Parcelable)
+    private static final String RUNTIME_STATE_PENDING_GESTURE = "launcher.gesture";
+    // Type: boolean
+    private static final String RUNTIME_STATE_GESTURES_PANEL = "launcher.gesture_panel_showing";
+    // Type: Gesture (Parcelable)
+    private static final String RUNTIME_STATE_GESTURES_PANEL_GESTURE = "launcher.gesture_panel_gesture";
 
     private static final LauncherModel sModel = new LauncherModel();
 
@@ -166,20 +189,21 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     private static WallpaperIntentReceiver sWallpaperReceiver;
 
+    private static GestureLibrary sLibrary;
+
     private final BroadcastReceiver mApplicationsReceiver = new ApplicationsIntentReceiver();
     private final ContentObserver mObserver = new FavoritesChangeObserver();
-    private final ContentObserver mAppWidgetResetObserver = new AppWidgetResetObserver();
 
     private LayoutInflater mInflater;
 
     private DragLayer mDragLayer;
     private Workspace mWorkspace;
-    
+
     private AppWidgetManager mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
-    
+
     static final int APPWIDGET_HOST_ID = 1024;
-    
+
     private CellLayout.CellInfo mAddItemCellInfo;
     private CellLayout.CellInfo mMenuAddInfo;
     private final int[] mCellCoordinates = new int[2];
@@ -196,6 +220,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private SpannableStringBuilder mDefaultKeySsb = null;
 
     private boolean mDestroyed;
+    
+    private boolean mIsNewIntent;
 
     private boolean mRestoring;
     private boolean mWaitingForResult;
@@ -204,17 +230,33 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private Bundle mSavedInstanceState;
 
     private DesktopBinder mBinder;
-    
+
+    private View mGesturesPanel;
+    private GestureOverlayView mGesturesOverlay;
+    private ViewSwitcher mGesturesPrompt;
+    private ImageView mGesturesAdd;
+    private PopupWindow mGesturesWindow;
+    private Launcher.GesturesProcessor mGesturesProcessor;
+    private Gesture mCurrentGesture;
+    private GesturesAction mGesturesAction;
+    private boolean mHideGesturesPanel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mInflater = getLayoutInflater();
-        
+
+        if (sLibrary == null) {
+            // The context is not kept by the library so it's safe to do this
+            sLibrary = GestureLibraries.fromPrivateFile(Launcher.this,
+                    GesturesConstants.STORE_NAME);
+        }
+
         mAppWidgetManager = AppWidgetManager.getInstance(this);
-        
+
         mAppWidgetHost = new LauncherAppWidgetHost(this, APPWIDGET_HOST_ID);
         mAppWidgetHost.startListening();
-        
+
         if (PROFILE_STARTUP) {
             android.os.Debug.startMethodTracing("/sdcard/launcher");
         }
@@ -243,28 +285,82 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mDefaultKeySsb = new SpannableStringBuilder();
         Selection.setSelection(mDefaultKeySsb, 0);
     }
-    
+
     private void checkForLocaleChange() {
-        final SharedPreferences preferences = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        final LocaleConfiguration localeConfiguration = new LocaleConfiguration();
+        readConfiguration(this, localeConfiguration);
+        
         final Configuration configuration = getResources().getConfiguration();
 
-        final String previousLocale = preferences.getString(KEY_LOCALE, null);
+        final String previousLocale = localeConfiguration.locale;
         final String locale = configuration.locale.toString();
 
-        final int previousMcc = preferences.getInt(KEY_MCC, -1);
+        final int previousMcc = localeConfiguration.mcc;
         final int mcc = configuration.mcc;
 
-        final int previousMnc = preferences.getInt(KEY_MNC, -1);
+        final int previousMnc = localeConfiguration.mnc;
         final int mnc = configuration.mnc;
 
         mLocaleChanged = !locale.equals(previousLocale) || mcc != previousMcc || mnc != previousMnc;
 
         if (mLocaleChanged) {
-            final SharedPreferences.Editor editor = preferences.edit();
-            editor.putString(KEY_LOCALE, locale);
-            editor.putInt(KEY_MCC, mcc);
-            editor.putInt(KEY_MNC, mnc);
-            editor.commit();
+            localeConfiguration.locale = locale;
+            localeConfiguration.mcc = mcc;
+            localeConfiguration.mnc = mnc;
+
+            writeConfiguration(this, localeConfiguration);
+        }
+    }
+
+    private static class LocaleConfiguration {
+        public String locale;
+        public int mcc = -1;
+        public int mnc = -1;
+    }
+    
+    private static void readConfiguration(Context context, LocaleConfiguration configuration) {
+        DataInputStream in = null;
+        try {
+            in = new DataInputStream(context.openFileInput(PREFERENCES));
+            configuration.locale = in.readUTF();
+            configuration.mcc = in.readInt();
+            configuration.mnc = in.readInt();
+        } catch (FileNotFoundException e) {
+            // Ignore
+        } catch (IOException e) {
+            // Ignore
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    // Ignore
+                }
+            }
+        }
+    }
+
+    private static void writeConfiguration(Context context, LocaleConfiguration configuration) {
+        DataOutputStream out = null;
+        try {
+            out = new DataOutputStream(context.openFileOutput(PREFERENCES, MODE_PRIVATE));
+            out.writeUTF(configuration.locale);
+            out.writeInt(configuration.mcc);
+            out.writeInt(configuration.mnc);
+            out.flush();
+        } catch (FileNotFoundException e) {
+            // Ignore
+        } catch (IOException e) {
+            //noinspection ResultOfMethodCallIgnored
+            context.getFileStreamPath(PREFERENCES).delete();
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    // Ignore
+                }
+            }
         }
     }
 
@@ -305,19 +401,25 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mWaitingForResult = false;
+
         // The pattern used here is that a user PICKs a specific application,
         // which, depending on the target, might need to CREATE the actual target.
-        
+
         // For example, the user would PICK_SHORTCUT for "Music playlist", and we
         // launch over to the Music app to actually CREATE_SHORTCUT.
-        
-        if (resultCode == RESULT_OK && mAddItemCellInfo != null) {
+
+        if (resultCode == RESULT_OK && (mAddItemCellInfo != null ||
+                ((requestCode == REQUEST_PICK_GESTURE_ACTION ||
+                requestCode == REQUEST_CREATE_GESTURE_ACTION ||
+                requestCode == REQUEST_CREATE_GESTURE_APPLICATION_ACTION) && mCurrentGesture != null))) {
+
             switch (requestCode) {
                 case REQUEST_PICK_APPLICATION:
                     completeAddApplication(this, data, mAddItemCellInfo, !mDesktopLocked);
                     break;
                 case REQUEST_PICK_SHORTCUT:
-                    addShortcut(data);
+                    processShortcut(data, REQUEST_PICK_APPLICATION, REQUEST_CREATE_SHORTCUT);
                     break;
                 case REQUEST_CREATE_SHORTCUT:
                     completeAddShortcut(data, mAddItemCellInfo, !mDesktopLocked);
@@ -334,6 +436,16 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 case REQUEST_CREATE_APPWIDGET:
                     completeAddAppWidget(data, mAddItemCellInfo, !mDesktopLocked);
                     break;
+                case REQUEST_PICK_GESTURE_ACTION:
+                    processShortcut(data, REQUEST_CREATE_GESTURE_APPLICATION_ACTION,
+                            REQUEST_CREATE_GESTURE_ACTION);
+                    break;
+                case REQUEST_CREATE_GESTURE_ACTION:
+                    completeCreateGesture(data, true);
+                    break;
+                case REQUEST_CREATE_GESTURE_APPLICATION_ACTION:
+                    completeCreateGesture(data, false);
+                    break;
             }
         } else if (requestCode == REQUEST_PICK_APPWIDGET &&
                 resultCode == RESULT_CANCELED && data != null) {
@@ -343,7 +455,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 mAppWidgetHost.deleteAppWidgetId(appWidgetId);
             }
         }
-        mWaitingForResult = false;
     }
 
     @Override
@@ -353,21 +464,55 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         if (mRestoring) {
             startLoaders();
         }
+        
+        // If this was a new intent (i.e., the mIsNewIntent flag got set to true by
+        // onNewIntent), then close the search dialog if needed, because it probably
+        // came from the user pressing 'home' (rather than, for example, pressing 'back').
+        if (mIsNewIntent) {
+            // Post to a handler so that this happens after the search dialog tries to open
+            // itself again.
+            mWorkspace.post(new Runnable() {
+                public void run() {
+                    ISearchManager searchManagerService = ISearchManager.Stub.asInterface(
+                            ServiceManager.getService(Context.SEARCH_SERVICE));
+                    try {
+                        searchManagerService.stopSearch();
+                    } catch (RemoteException e) {
+                        e(LOG_TAG, "error stopping search", e);
+                    }    
+                }
+            });
+        }
+        
+        mIsNewIntent = false;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        closeDrawer(false);        
+        if (mGesturesWindow != null) {
+            mGesturesWindow.setAnimationStyle(0);
+            mGesturesWindow.update();
+        }
+        closeDrawer(false);
     }
-    
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mHideGesturesPanel) {
+            mHideGesturesPanel = false;
+            hideGesturesPanel();
+        }
+    }
+
     @Override
     public Object onRetainNonConfigurationInstance() {
         // Flag any binder to stop early before switching
         if (mBinder != null) {
             mBinder.mTerminate = true;
         }
-        
+
         if (PROFILE_ROTATE) {
             android.os.Debug.startMethodTracing("/sdcard/launcher-rotate");
         }
@@ -387,43 +532,27 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             boolean gotKey = TextKeyListener.getInstance().onKeyDown(mWorkspace, mDefaultKeySsb,
                     keyCode, event);
             if (gotKey && mDefaultKeySsb != null && mDefaultKeySsb.length() > 0) {
-                // something usable has been typed - dispatch it now.
-                final String str = mDefaultKeySsb.toString();
-
-                boolean isDialable = true;
-                final int count = str.length();
-                for (int i = 0; i < count; i++) {
-                    if (!PhoneNumberUtils.isReallyDialable(str.charAt(i))) {
-                        isDialable = false;
-                        break;
-                    }
-                }
-                Intent intent;
-                if (isDialable) {
-                    intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", str, null));
-                } else {
-                    intent = new Intent(Contacts.Intents.UI.FILTER_CONTACTS_ACTION);
-                    intent.putExtra(Contacts.Intents.UI.FILTER_TEXT_EXTRA_KEY, str);
-                }
-
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-
-                try {
-                    startActivity(intent);
-                } catch (android.content.ActivityNotFoundException ex) {
-                    // Oh well... no one knows how to filter/dial. Life goes on.
-                }
-
-                mDefaultKeySsb.clear();
-                mDefaultKeySsb.clearSpans();
-                Selection.setSelection(mDefaultKeySsb, 0);
-
-                return true;
+                // something usable has been typed - start a search
+                // the typed text will be retrieved and cleared by
+                // showSearchDialog()
+                // If there are multiple keystrokes before the search dialog takes focus,
+                // onSearchRequested() will be called for every keystroke,
+                // but it is idempotent, so it's fine.
+                return onSearchRequested();
             }
         }
 
         return handled;
+    }
+
+    private String getTypedText() {
+        return mDefaultKeySsb.toString();
+    }
+
+    private void clearTypedText() {
+        mDefaultKeySsb.clear();
+        mDefaultKeySsb.clearSpans();
+        Selection.setSelection(mDefaultKeySsb, 0);
     }
 
     /**
@@ -464,6 +593,29 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             mFolderInfo = sModel.getFolderById(this, id);
             mRestoring = true;
         }
+
+        mCurrentGesture = (Gesture) savedState.get(RUNTIME_STATE_PENDING_GESTURE);
+
+        boolean gesturesShowing = savedState.getBoolean(RUNTIME_STATE_GESTURES_PANEL, false);
+        if (gesturesShowing) {
+            if (mCurrentGesture == null) {
+                mCurrentGesture = (Gesture) savedState.get(RUNTIME_STATE_GESTURES_PANEL_GESTURE);
+            }
+            final Gesture gesture = mCurrentGesture;
+            mWorkspace.post(new Runnable() {
+                public void run() {
+                    showGesturesPanel(false);
+                    mGesturesProcessor.matchGesture(gesture, false);
+                    mWorkspace.post(new Runnable() {
+                        public void run() {
+                            if (gesture != null) {
+                                mGesturesOverlay.setGesture(gesture);
+                            }
+                        }
+                    });
+                }
+            });
+        }
     }
 
     /**
@@ -495,7 +647,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         drawer.setOnDrawerCloseListener(drawerManager);
         drawer.setOnDrawerScrollListener(drawerManager);
 
-        grid.setTextFilterEnabled(true);
+        grid.setTextFilterEnabled(false);
         grid.setDragger(dragLayer);
         grid.setLauncher(this);
 
@@ -511,6 +663,69 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         dragLayer.setIgnoredDropTarget(grid);
         dragLayer.setDragScoller(workspace);
         dragLayer.setDragListener(deleteZone);
+
+        mGesturesPanel = mInflater.inflate(R.layout.gestures, mDragLayer, false);
+        final View gesturesPanel = mGesturesPanel;
+
+        mGesturesPrompt = (ViewSwitcher) gesturesPanel.findViewById(R.id.gestures_actions);
+        mGesturesAction = new GesturesAction();
+
+        mGesturesPrompt.getChildAt(0).setOnClickListener(mGesturesAction);
+        mGesturesPrompt.getChildAt(1).setOnClickListener(mGesturesAction);
+
+        mGesturesAdd = (ImageView) gesturesPanel.findViewById(R.id.gestures_add);
+        final ImageView gesturesAdd = mGesturesAdd;
+        gesturesAdd.setAlpha(128);
+        gesturesAdd.setEnabled(false);
+        gesturesAdd.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                createGesture();
+            }
+        });
+
+        mGesturesOverlay = (GestureOverlayView) gesturesPanel.findViewById(R.id.gestures_overlay);
+        mGesturesProcessor = new GesturesProcessor();
+
+        final GestureOverlayView overlay = mGesturesOverlay;
+        overlay.addOnGestureListener(mGesturesProcessor);
+        overlay.getGesturePaint().setXfermode(new PorterDuffXfermode(PorterDuff.Mode.MULTIPLY));
+    }
+
+    private void createGesture() {
+        if (!mWaitingForResult) {
+            mCurrentGesture = mGesturesOverlay.getGesture();
+            mWaitingForResult = true;
+            pickShortcut(REQUEST_PICK_GESTURE_ACTION, R.string.title_select_shortcut);
+        }
+    }
+
+    private void completeCreateGesture(Intent data, boolean isShortcut) {
+        ApplicationInfo info;
+
+        if (isShortcut) {
+            info = infoFromShortcutIntent(this, data);
+        } else {
+            info = infoFromApplicationIntent(this, data);
+        }
+
+        boolean success = false;
+        if (info != null) {
+            info.isGesture = true;
+
+            if (LauncherModel.addGestureToDatabase(this, info, false)) {
+                mGesturesProcessor.addGesture(String.valueOf(info.id), mCurrentGesture);
+                mGesturesProcessor.update(info, mCurrentGesture);
+                Toast.makeText(this, getString(R.string.gestures_created, info.title),
+                        Toast.LENGTH_SHORT).show();
+                success = true;
+            }
+        }
+
+        if (!success) {
+            Toast.makeText(this, getString(R.string.gestures_failed), Toast.LENGTH_SHORT).show();
+        }
+
+        mCurrentGesture = null;
     }
 
     /**
@@ -561,33 +776,41 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         cellInfo.screen = mWorkspace.getCurrentScreen();
         if (!findSingleSlot(cellInfo)) return;
 
-        // Find details for this application
+        final ApplicationInfo info = infoFromApplicationIntent(context, data);
+        if (info != null) {
+            mWorkspace.addApplicationShortcut(info, cellInfo, insertAtFirst);
+        }
+    }
+
+    private static ApplicationInfo infoFromApplicationIntent(Context context, Intent data) {
         ComponentName component = data.getComponent();
         PackageManager packageManager = context.getPackageManager();
         ActivityInfo activityInfo = null;
         try {
             activityInfo = packageManager.getActivityInfo(component, 0 /* no flags */);
         } catch (NameNotFoundException e) {
-            Log.e(LOG_TAG, "Couldn't find ActivityInfo for selected application", e);
+            e(LOG_TAG, "Couldn't find ActivityInfo for selected application", e);
         }
-        
+
         if (activityInfo != null) {
             ApplicationInfo itemInfo = new ApplicationInfo();
-            
+
             itemInfo.title = activityInfo.loadLabel(packageManager);
             if (itemInfo.title == null) {
                 itemInfo.title = activityInfo.name;
             }
-            
+
             itemInfo.setActivity(component, Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             itemInfo.icon = activityInfo.loadIcon(packageManager);
             itemInfo.container = ItemInfo.NO_ID;
 
-            mWorkspace.addApplicationShortcut(itemInfo, cellInfo, insertAtFirst);
+            return itemInfo;
         }
+
+        return null;
     }
-    
+
     /**
      * Add a shortcut to the workspace.
      *
@@ -599,7 +822,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             boolean insertAtFirst) {
         cellInfo.screen = mWorkspace.getCurrentScreen();
         if (!findSingleSlot(cellInfo)) return;
-        
+
         final ApplicationInfo info = addShortcut(this, data, cellInfo, false);
 
         if (!mRestoring) {
@@ -612,7 +835,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
     }
 
-    
+
     /**
      * Add a widget to the workspace.
      *
@@ -624,15 +847,15 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         Bundle extras = data.getExtras();
         int appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-        
+
         d(LOG_TAG, "dumping extras content="+extras.toString());
-        
+
         AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
-        
+
         // Calculate the grid spans needed to fit this widget
         CellLayout layout = (CellLayout) mWorkspace.getChildAt(cellInfo.screen);
         int[] spans = layout.rectToCell(appWidgetInfo.minWidth, appWidgetInfo.minHeight);
-        
+
         // Try finding open space on Launcher screen
         final int[] xy = mCellCoordinates;
         if (!findSlot(cellInfo, xy, spans[0], spans[1])) return;
@@ -641,34 +864,42 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         LauncherAppWidgetInfo launcherInfo = new LauncherAppWidgetInfo(appWidgetId);
         launcherInfo.spanX = spans[0];
         launcherInfo.spanY = spans[1];
-        
+
         LauncherModel.addItemToDatabase(this, launcherInfo,
                 LauncherSettings.Favorites.CONTAINER_DESKTOP,
                 mWorkspace.getCurrentScreen(), xy[0], xy[1], false);
 
         if (!mRestoring) {
             sModel.addDesktopAppWidget(launcherInfo);
-            
+
             // Perform actual inflation because we're live
             launcherInfo.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
-            
+
             launcherInfo.hostView.setAppWidget(appWidgetId, appWidgetInfo);
             launcherInfo.hostView.setTag(launcherInfo);
-            
+
             mWorkspace.addInCurrentScreen(launcherInfo.hostView, xy[0], xy[1],
                     launcherInfo.spanX, launcherInfo.spanY, insertAtFirst);
         } else if (sModel.isDesktopLoaded()) {
             sModel.addDesktopAppWidget(launcherInfo);
         }
     }
-    
+
     public LauncherAppWidgetHost getAppWidgetHost() {
         return mAppWidgetHost;
     }
-    
+
     static ApplicationInfo addShortcut(Context context, Intent data,
             CellLayout.CellInfo cellInfo, boolean notify) {
 
+        final ApplicationInfo info = infoFromShortcutIntent(context, data);
+        LauncherModel.addItemToDatabase(context, info, LauncherSettings.Favorites.CONTAINER_DESKTOP,
+                cellInfo.screen, cellInfo.cellX, cellInfo.cellY, notify);
+
+        return info;
+    }
+
+    private static ApplicationInfo infoFromShortcutIntent(Context context, Intent data) {
         Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
         String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
         Bitmap bitmap = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
@@ -676,7 +907,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         Drawable icon = null;
         boolean filtered = false;
         boolean customIcon = false;
-        Intent.ShortcutIconResource iconResource = null;
+        ShortcutIconResource iconResource = null;
 
         if (bitmap != null) {
             icon = new FastBitmapDrawable(Utilities.createBitmapThumbnail(bitmap, context));
@@ -684,9 +915,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             customIcon = true;
         } else {
             Parcelable extra = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
-            if (extra != null && extra instanceof Intent.ShortcutIconResource) {
+            if (extra != null && extra instanceof ShortcutIconResource) {
                 try {
-                    iconResource = (Intent.ShortcutIconResource) extra;
+                    iconResource = (ShortcutIconResource) extra;
                     final PackageManager packageManager = context.getPackageManager();
                     Resources resources = packageManager.getResourcesForApplication(
                             iconResource.packageName);
@@ -710,8 +941,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         info.customIcon = customIcon;
         info.iconResource = iconResource;
 
-        LauncherModel.addItemToDatabase(context, info, LauncherSettings.Favorites.CONTAINER_DESKTOP,
-                cellInfo.screen, cellInfo.cellX, cellInfo.cellY, notify);
         return info;
     }
 
@@ -722,6 +951,11 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         // Close the menu
         if (Intent.ACTION_MAIN.equals(intent.getAction())) {
             getWindow().closeAllPanels();
+            
+            // Set this flag so that onResume knows to close the search dialog if it's open,
+            // because this was a new intent (thus a press of 'home' or some such) rather than
+            // for example onResume being called when the user pressed the 'back' button.
+            mIsNewIntent = true;
 
             try {
                 dismissDialog(DIALOG_CREATE_SHORTCUT);
@@ -739,15 +973,23 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 // An exception is thrown if the dialog is not visible, which is fine
             }
 
-            // If we are already in front we go back to the default screen,
-            // otherwise we don't
             if ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) !=
                     Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) {
-                if (!mWorkspace.isDefaultScreenShowing()) {
-                    mWorkspace.moveToDefaultScreen();
+
+                if (mGesturesPanel != null && mDragLayer.getWindowVisibility() == View.VISIBLE &&
+                        (mDragLayer.hasWindowFocus() ||
+                                (mGesturesWindow != null && mGesturesWindow.isShowing()))) {
+
+                    SearchManager searchManager =
+                            (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+
+                    if (!searchManager.isVisible()) {
+                        onHomeKeyPressed();
+                    }
                 }
                 closeDrawer();
-                View v = getWindow().peekDecorView();
+
+                final View v = getWindow().peekDecorView();
                 if (v != null && v.getWindowToken() != null) {
                     InputMethodManager imm = (InputMethodManager)getSystemService(
                             INPUT_METHOD_SERVICE);
@@ -756,6 +998,91 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             } else {
                 closeDrawer(false);
             }
+        }
+    }
+
+    private void onHomeKeyPressed() {
+        if (mGesturesWindow == null || !mGesturesWindow.isShowing()) {
+            showGesturesPanel();
+        } else {
+            hideGesturesPanel();
+        }
+    }
+
+    private void showGesturesPanel() {
+        showGesturesPanel(true);
+    }
+
+    private void showGesturesPanel(boolean animate) {
+        resetGesturesPrompt();
+
+        mGesturesAdd.setEnabled(false);
+        mGesturesAdd.setAlpha(128);
+
+        mGesturesOverlay.clear(false);
+
+        PopupWindow window;
+        if (mGesturesWindow == null) {
+            mGesturesWindow = new PopupWindow(this);
+            window = mGesturesWindow;
+            window.setFocusable(true);
+            window.setTouchable(true);
+            window.setBackgroundDrawable(null);
+            window.setContentView(mGesturesPanel);
+        } else {
+            window = mGesturesWindow;
+        }
+        window.setAnimationStyle(animate ? com.android.internal.R.style.Animation_SlidingCard : 0);
+
+        final int[] xy = new int[2];
+        final DragLayer dragLayer = mDragLayer;
+        dragLayer.getLocationOnScreen(xy);
+
+        window.setWidth(dragLayer.getWidth());
+        window.setHeight(dragLayer.getHeight() - 1);
+        window.showAtLocation(dragLayer, Gravity.TOP | Gravity.LEFT, xy[0], xy[1] + 1);
+    }
+
+    private void resetGesturesPrompt() {
+        mGesturesAction.intent = null;
+        final TextView prompt = (TextView) mGesturesPrompt.getCurrentView();
+        prompt.setText(R.string.gestures_instructions);
+        prompt.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+        prompt.setClickable(false);
+    }
+
+    private void resetGesturesNextPrompt() {
+        mGesturesAction.intent = null;
+        setGesturesNextPrompt(null, getString(R.string.gestures_instructions));
+        mGesturesPrompt.getNextView().setClickable(false);
+    }
+
+    private void setGesturesNextPrompt(Drawable icon, CharSequence title) {
+        final TextView prompt = (TextView) mGesturesPrompt.getNextView();
+        prompt.setText(title);
+        prompt.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+        prompt.setClickable(true);
+        mGesturesPrompt.showNext();
+    }
+
+    private void setGesturesPrompt(Drawable icon, CharSequence title) {
+        final TextView prompt = (TextView) mGesturesPrompt.getCurrentView();
+        prompt.setText(title);
+        prompt.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+        prompt.setClickable(true);
+    }
+
+    void hideGesturesPanel() {
+        hideGesturesPanel(true);
+    }
+
+    void hideGesturesPanel(boolean animate) {
+        if (mGesturesWindow != null) {
+            final PopupWindow popupWindow = mGesturesWindow;
+            popupWindow.setAnimationStyle(animate ?
+                    com.android.internal.R.style.Animation_SlidingCard : 0);
+            popupWindow.update();
+            popupWindow.dismiss();
         }
     }
 
@@ -782,9 +1109,13 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             super.onSaveInstanceState(outState);
         }
 
-        if (mDrawer.isOpened()) {
+        final boolean isConfigurationChange = getChangingConfigurations() != 0;
+
+        // When the drawer is opened and we are saving the state because of a
+        // configuration change
+        if (mDrawer.isOpened() && isConfigurationChange) {
             outState.putBoolean(RUNTIME_STATE_ALL_APPS_FOLDER, true);
-        }        
+        }
 
         if (mAddItemCellInfo != null && mAddItemCellInfo.valid && mWaitingForResult) {
             final CellLayout.CellInfo addItemCellInfo = mAddItemCellInfo;
@@ -805,6 +1136,21 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             outState.putBoolean(RUNTIME_STATE_PENDING_FOLDER_RENAME, true);
             outState.putLong(RUNTIME_STATE_PENDING_FOLDER_RENAME_ID, mFolderInfo.id);
         }
+
+        if (mCurrentGesture != null && mWaitingForResult) {
+            outState.putParcelable(RUNTIME_STATE_PENDING_GESTURE, mCurrentGesture);
+        }
+
+        if (mGesturesWindow != null && mGesturesWindow.isShowing()) {
+            outState.putBoolean(RUNTIME_STATE_GESTURES_PANEL, true);
+
+            if (mCurrentGesture == null || !mWaitingForResult) {
+                final Gesture gesture = mGesturesOverlay.getGesture();
+                if (gesture != null) {
+                    outState.putParcelable(RUNTIME_STATE_GESTURES_PANEL_GESTURE, gesture);
+                }
+            }
+        }
     }
 
     @Override
@@ -812,7 +1158,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mDestroyed = true;
 
         super.onDestroy();
-        
+
         try {
             mAppWidgetHost.stopListening();
         } catch (NullPointerException ex) {
@@ -821,30 +1167,89 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         TextKeyListener.getInstance().release();
 
+        hideGesturesPanel(false);
         mAllAppsGrid.clearTextFilter();
         mAllAppsGrid.setAdapter(null);
         sModel.unbind();
         sModel.abortLoaders();
 
         getContentResolver().unregisterContentObserver(mObserver);
-        getContentResolver().unregisterContentObserver(mAppWidgetResetObserver);
         unregisterReceiver(mApplicationsReceiver);
     }
 
     @Override
     public void startActivityForResult(Intent intent, int requestCode) {
-        mWaitingForResult = true;
+        if (requestCode >= 0) mWaitingForResult = true;
         super.startActivityForResult(intent, requestCode);
     }
 
     @Override
-    public void startSearch(String initialQuery, boolean selectInitialQuery, 
+    public void startSearch(String initialQuery, boolean selectInitialQuery,
             Bundle appSearchData, boolean globalSearch) {
+
+        closeDrawer(false);
+
+        // Slide the search widget to the top, if it's on the current screen,
+        // otherwise show the search dialog immediately.
+        Search searchWidget = mWorkspace.findSearchWidgetOnCurrentScreen();
+        if (searchWidget == null) {
+            showSearchDialog(initialQuery, selectInitialQuery, appSearchData, globalSearch);
+        } else {
+            searchWidget.startSearch(initialQuery, selectInitialQuery, appSearchData, globalSearch);
+            // show the currently typed text in the search widget while sliding
+            searchWidget.setQuery(getTypedText());
+        }
+    }
+
+    /**
+     * Show the search dialog immediately, without changing the search widget.
+     *
+     * @see Activity#startSearch(String, boolean, android.os.Bundle, boolean)
+     */
+    void showSearchDialog(String initialQuery, boolean selectInitialQuery,
+            Bundle appSearchData, boolean globalSearch) {
+
+        if (initialQuery == null) {
+            // Use any text typed in the launcher as the initial query
+            initialQuery = getTypedText();
+            clearTypedText();
+        }
         if (appSearchData == null) {
             appSearchData = new Bundle();
             appSearchData.putString(SearchManager.SOURCE, "launcher-search");
         }
-        super.startSearch(initialQuery, selectInitialQuery, appSearchData, globalSearch);
+
+        final SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+
+        final Search searchWidget = mWorkspace.findSearchWidgetOnCurrentScreen();
+        if (searchWidget != null) {
+            // This gets called when the user leaves the search dialog to go back to
+            // the Launcher.
+            searchManager.setOnCancelListener(new SearchManager.OnCancelListener() {
+                public void onCancel() {
+                    searchManager.setOnCancelListener(null);
+                    stopSearch();
+                }
+            });
+        }
+
+        searchManager.startSearch(initialQuery, selectInitialQuery, getComponentName(),
+            appSearchData, globalSearch);
+    }
+
+    /**
+     * Cancel search dialog if it is open.
+     */
+    void stopSearch() {
+        // Close search dialog
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchManager.stopSearch();
+        // Restore search widget to its normal position
+        Search searchWidget = mWorkspace.findSearchWidgetOnCurrentScreen();
+        if (searchWidget != null) {
+            searchWidget.stopSearch(false);
+        }
     }
 
     @Override
@@ -865,9 +1270,14 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 .setIcon(com.android.internal.R.drawable.ic_menu_notifications)
                 .setAlphabeticShortcut('N');
 
+        final Intent gestures = new Intent(this, GesturesActivity.class);
+        menu.add(0, MENU_GESTURES, 0, R.string.menu_gestures)
+                .setIcon(com.android.internal.R.drawable.ic_menu_compose).setAlphabeticShortcut('G')
+                .setIntent(gestures);
+
         final Intent settings = new Intent(android.provider.Settings.ACTION_SETTINGS);
-        settings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        settings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
         menu.add(0, MENU_SETTINGS, 0, R.string.menu_settings)
                 .setIcon(android.R.drawable.ic_menu_preferences).setAlphabeticShortcut('P')
@@ -906,14 +1316,15 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Indicates that we want global search for this activity by setting the globalSearch
+     * argument for {@link #startSearch} to true.
+     */
+
     @Override
     public boolean onSearchRequested() {
-        if (mWorkspace.snapToSearch()) {
-            closeDrawer(true);                // search widget: get drawer out of the way
-            return true;
-        } else {
-            return super.onSearchRequested(); // no search widget: use system search UI
-        }
+        startSearch(null, false, null, true);
+        return true;
     }
 
     private void addItems() {
@@ -925,7 +1336,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             mWorkspace.removeShortcutsForPackage(packageName);
         }
     }
-    
+
     private void updateShortcutsForPackage(String packageName) {
         if (packageName != null && packageName.length() > 0) {
             mWorkspace.updateShortcutsForPackage(packageName);
@@ -958,41 +1369,43 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             }
         }
     }
-    
+
     void addSearch() {
         final Widget info = Widget.makeSearch();
         final CellLayout.CellInfo cellInfo = mAddItemCellInfo;
-        
+
         final int[] xy = mCellCoordinates;
         final int spanX = info.spanX;
         final int spanY = info.spanY;
-    
+
         if (!findSlot(cellInfo, xy, spanX, spanY)) return;
-    
+
         sModel.addDesktopItem(info);
         LauncherModel.addItemToDatabase(this, info, LauncherSettings.Favorites.CONTAINER_DESKTOP,
         mWorkspace.getCurrentScreen(), xy[0], xy[1], false);
-    
+
         final View view = mInflater.inflate(info.layoutResource, null);
         view.setTag(info);
-    
+        Search search = (Search) view.findViewById(R.id.widget_search);
+        search.setLauncher(this);
+
         mWorkspace.addInCurrentScreen(view, xy[0], xy[1], info.spanX, spanY);
     }
 
-    void addShortcut(Intent intent) {
+    void processShortcut(Intent intent, int requestCodeApplication, int requestCodeShortcut) {
         // Handle case where user selected "Applications"
         String applicationName = getResources().getString(R.string.group_applications);
         String shortcutName = intent.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
-        
+
         if (applicationName != null && applicationName.equals(shortcutName)) {
             Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
             mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-            
+
             Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
             pickIntent.putExtra(Intent.EXTRA_INTENT, mainIntent);
-            startActivityForResult(pickIntent, REQUEST_PICK_APPLICATION);
+            startActivityForResult(pickIntent, requestCodeApplication);
         } else {
-            startActivityForResult(intent, REQUEST_CREATE_SHORTCUT);
+            startActivityForResult(intent, requestCodeShortcut);
         }
     }
 
@@ -1000,7 +1413,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         // Handle case where user selected "Folder"
         String folderName = getResources().getString(R.string.group_folder);
         String shortcutName = intent.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
-        
+
         if (folderName != null && folderName.equals(shortcutName)) {
             addFolder(!mDesktopLocked);
         } else {
@@ -1028,7 +1441,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mWorkspace.addInCurrentScreen(newFolder,
                 cellInfo.cellX, cellInfo.cellY, 1, 1, insertAtFirst);
     }
-    
+
     private void completeAddLiveFolder(Intent data, CellLayout.CellInfo cellInfo,
             boolean insertAtFirst) {
         cellInfo.screen = mWorkspace.getCurrentScreen();
@@ -1158,7 +1571,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private void registerContentObservers() {
         ContentResolver resolver = getContentResolver();
         resolver.registerContentObserver(LauncherSettings.Favorites.CONTENT_URI, true, mObserver);
-        resolver.registerContentObserver(LauncherProvider.CONTENT_APPWIDGET_RESET_URI, true, mAppWidgetResetObserver);
     }
 
     @Override
@@ -1166,11 +1578,11 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             switch (event.getKeyCode()) {
                 case KeyEvent.KEYCODE_BACK:
-                    mWorkspace.dispatchKeyEvent(event); 
+                    mWorkspace.dispatchKeyEvent(event);
                     if (mDrawer.isOpened()) {
                         closeDrawer();
                     } else {
-                        closeFolder();                        
+                        closeFolder();
                     }
                     return true;
                 case KeyEvent.KEYCODE_HOME:
@@ -1224,21 +1636,11 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         sModel.loadUserItems(false, this, false, false);
     }
 
-    /**
-     * When reset, we handle by calling {@link AppWidgetHost#startListening()}
-     * to make sure our callbacks are set correctly.
-     */
-    private void onAppWidgetReset() {
-        if (mAppWidgetHost != null) {
-            mAppWidgetHost.startListening();
-        }
-    }
-
     void onDesktopItemsLoaded() {
         if (mDestroyed) return;
         bindDesktopItems();
     }
-    
+
     /**
      * Refreshes the shortcuts shown on the workspace.
      */
@@ -1250,14 +1652,12 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             return;
         }
 
-        mAllAppsGrid.setAdapter(drawerAdapter);
-
         final Workspace workspace = mWorkspace;
         int count = workspace.getChildCount();
         for (int i = 0; i < count; i++) {
             ((ViewGroup) workspace.getChildAt(i)).removeAllViewsInLayout();
         }
-        
+
         if (DEBUG_USER_INTERFACE) {
             android.widget.Button finishButton = new android.widget.Button(this);
             finishButton.setText("Finish");
@@ -1269,13 +1669,13 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 }
             });
         }
-        
+
         // Flag any old binder to terminate early
         if (mBinder != null) {
             mBinder.mTerminate = true;
         }
-        
-        mBinder = new DesktopBinder(this, shortcuts, appWidgets);
+
+        mBinder = new DesktopBinder(this, shortcuts, appWidgets, drawerAdapter);
         mBinder.startBindingItems();
     }
 
@@ -1316,10 +1716,13 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     final int screen = workspace.getCurrentScreen();
                     final View view = mInflater.inflate(R.layout.widget_search,
                             (ViewGroup) workspace.getChildAt(screen), false);
-                    
+
+                    Search search = (Search) view.findViewById(R.id.widget_search);
+                    search.setLauncher(this);
+
                     final Widget widget = (Widget) item;
                     view.setTag(widget);
-                    
+
                     workspace.addWidget(view, widget, !desktopLocked);
                     break;
             }
@@ -1329,7 +1732,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         if (end >= count) {
             finishBindDesktopItems();
-            binder.startBindingAppWidgetsWhenIdle();
+            binder.startBindingDrawer();
         } else {
             binder.obtainMessage(DesktopBinder.MESSAGE_BIND_ITEMS, i, count).sendToTarget();
         }
@@ -1375,32 +1778,34 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mDesktopLocked = false;
         mDrawer.unlock();
     }
-    
+
+    private void bindDrawer(Launcher.DesktopBinder binder,
+            ApplicationsAdapter drawerAdapter) {
+        mAllAppsGrid.setAdapter(drawerAdapter);
+        binder.startBindingAppWidgetsWhenIdle();
+    }
+
     private void bindAppWidgets(Launcher.DesktopBinder binder,
             LinkedList<LauncherAppWidgetInfo> appWidgets) {
-        
+
         final Workspace workspace = mWorkspace;
         final boolean desktopLocked = mDesktopLocked;
 
         if (!appWidgets.isEmpty()) {
             final LauncherAppWidgetInfo item = appWidgets.removeFirst();
-            
+
             final int appWidgetId = item.appWidgetId;
-            final AppWidgetProviderInfo appWidgetInfo =
-                    mAppWidgetManager.getAppWidgetInfo(appWidgetId);
+            final AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
             item.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
-            
-            if (LOGD) {
-                d(LOG_TAG, String.format("about to setAppWidget for id=%d, info=%s",
-                        appWidgetId, appWidgetInfo));
-            }
-            
+
+            if (LOGD) d(LOG_TAG, String.format("about to setAppWidget for id=%d, info=%s", appWidgetId, appWidgetInfo));
+
             item.hostView.setAppWidget(appWidgetId, appWidgetInfo);
             item.hostView.setTag(item);
-            
+
             workspace.addInScreen(item.hostView, item.screen, item.cellX,
                     item.cellY, item.spanX, item.spanY, !desktopLocked);
-    
+
             workspace.requestLayout();
         }
 
@@ -1434,6 +1839,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     }
 
     void startActivitySafely(Intent intent) {
+        mHideGesturesPanel = true;
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         try {
             startActivity(intent);
@@ -1441,7 +1847,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
         } catch (SecurityException e) {
             Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
-            Log.e(LOG_TAG, "Launcher does not have the permission to launch " + intent +
+            e(LOG_TAG, "Launcher does not have the permission to launch " + intent +
                     ". Make sure to create a MAIN intent-filter for the corresponding activity " +
                     "or use the exported attribute for this activity.", e);
         }
@@ -1560,6 +1966,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         return sModel;
     }
 
+    static GestureLibrary getGestureLibrary() {
+        return sLibrary;
+    }
+
     void closeAllApplications() {
         mDrawer.close();
     }
@@ -1611,7 +2021,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 EditText input = (EditText) dialog.findViewById(R.id.folder_name);
                 final CharSequence text = mFolderInfo.title;
                 input.setText(text);
-                input.setSelection(0, text.length());                
+                input.setSelection(0, text.length());
                 break;
         }
     }
@@ -1626,6 +2036,26 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mAddItemCellInfo = cellInfo;
         mWaitingForResult = true;
         showDialog(DIALOG_CREATE_SHORTCUT);
+    }
+
+    private void pickShortcut(int requestCode, int title) {
+        Bundle bundle = new Bundle();
+
+        ArrayList<String> shortcutNames = new ArrayList<String>();
+        shortcutNames.add(getString(R.string.group_applications));
+        bundle.putStringArrayList(Intent.EXTRA_SHORTCUT_NAME, shortcutNames);
+
+        ArrayList<ShortcutIconResource> shortcutIcons = new ArrayList<ShortcutIconResource>();
+        shortcutIcons.add(ShortcutIconResource.fromContext(Launcher.this,
+                        R.drawable.ic_launcher_application));
+        bundle.putParcelableArrayList(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, shortcutIcons);
+
+        Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
+        pickIntent.putExtra(Intent.EXTRA_INTENT, new Intent(Intent.ACTION_CREATE_SHORTCUT));
+        pickIntent.putExtra(Intent.EXTRA_TITLE, getText(title));
+        pickIntent.putExtras(bundle);
+
+        startActivityForResult(pickIntent, requestCode);
     }
 
     private class RenameFolder {
@@ -1703,22 +2133,23 @@ public final class Launcher extends Activity implements View.OnClickListener, On
      * appropriate activity.
      */
     private class CreateShortcut implements DialogInterface.OnClickListener,
-            DialogInterface.OnCancelListener {
+            DialogInterface.OnCancelListener, DialogInterface.OnDismissListener {
         private AddAdapter mAdapter;
 
         Dialog createDialog() {
             mWaitingForResult = true;
-            
+
             mAdapter = new AddAdapter(Launcher.this);
-            
+
             final AlertDialog.Builder builder = new AlertDialog.Builder(Launcher.this);
             builder.setTitle(getString(R.string.menu_item_add_item));
             builder.setAdapter(mAdapter, this);
-            
+
             builder.setInverseBackgroundForced(true);
 
             AlertDialog dialog = builder.create();
             dialog.setOnCancelListener(this);
+            dialog.setOnDismissListener(this);
 
             return dialog;
         }
@@ -1726,6 +2157,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         public void onCancel(DialogInterface dialog) {
             mWaitingForResult = false;
             cleanup();
+        }
+
+        public void onDismiss(DialogInterface dialog) {
+            mWorkspace.unlock();
         }
 
         private void cleanup() {
@@ -1739,36 +2174,17 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         public void onClick(DialogInterface dialog, int which) {
             Resources res = getResources();
             cleanup();
-            
+
             switch (which) {
                 case AddAdapter.ITEM_SHORTCUT: {
                     // Insert extra item to handle picking application
-                    Bundle bundle = new Bundle();
-                    
-                    ArrayList<String> shortcutNames = new ArrayList<String>();
-                    shortcutNames.add(res.getString(R.string.group_applications));
-                    bundle.putStringArrayList(Intent.EXTRA_SHORTCUT_NAME, shortcutNames);
-                    
-                    ArrayList<ShortcutIconResource> shortcutIcons =
-                            new ArrayList<ShortcutIconResource>();
-                    shortcutIcons.add(ShortcutIconResource.fromContext(Launcher.this,
-                            R.drawable.ic_launcher_application));
-                    bundle.putParcelableArrayList(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, shortcutIcons);
-                    
-                    Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
-                    pickIntent.putExtra(Intent.EXTRA_INTENT,
-                            new Intent(Intent.ACTION_CREATE_SHORTCUT));
-                    pickIntent.putExtra(Intent.EXTRA_TITLE,
-                            getText(R.string.title_select_shortcut));
-                    pickIntent.putExtras(bundle);
-                    
-                    startActivityForResult(pickIntent, REQUEST_PICK_SHORTCUT);
+                    pickShortcut(REQUEST_PICK_SHORTCUT, R.string.title_select_shortcut);
                     break;
                 }
-                
+
                 case AddAdapter.ITEM_APPWIDGET: {
                     int appWidgetId = Launcher.this.mAppWidgetHost.allocateAppWidgetId();
-                    
+
                     Intent pickIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_PICK);
                     pickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
                     // add the search widget
@@ -1791,15 +2207,15 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     startActivityForResult(pickIntent, REQUEST_PICK_APPWIDGET);
                     break;
                 }
-                
+
                 case AddAdapter.ITEM_LIVE_FOLDER: {
                     // Insert extra item to handle inserting folder
                     Bundle bundle = new Bundle();
-                    
+
                     ArrayList<String> shortcutNames = new ArrayList<String>();
                     shortcutNames.add(res.getString(R.string.group_folder));
                     bundle.putStringArrayList(Intent.EXTRA_SHORTCUT_NAME, shortcutNames);
-                    
+
                     ArrayList<ShortcutIconResource> shortcutIcons =
                             new ArrayList<ShortcutIconResource>();
                     shortcutIcons.add(ShortcutIconResource.fromContext(Launcher.this,
@@ -1812,7 +2228,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     pickIntent.putExtra(Intent.EXTRA_TITLE,
                             getText(R.string.title_select_live_folder));
                     pickIntent.putExtras(bundle);
-                    
+
                     startActivityForResult(pickIntent, REQUEST_PICK_LIVE_FOLDER);
                     break;
                 }
@@ -1887,21 +2303,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         @Override
         public void onChange(boolean selfChange) {
             onFavoritesChanged();
-        }
-    }
-
-    /**
-     * Receives notifications when the {@link AppWidgetHost} has been reset,
-     * usually only when the {@link LauncherProvider} database is first created.
-     */
-    private class AppWidgetResetObserver extends ContentObserver {
-        public AppWidgetResetObserver() {
-            super(new Handler());
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            onAppWidgetReset();
         }
     }
 
@@ -1996,27 +2397,31 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private static class DesktopBinder extends Handler implements MessageQueue.IdleHandler {
         static final int MESSAGE_BIND_ITEMS = 0x1;
         static final int MESSAGE_BIND_APPWIDGETS = 0x2;
-        
+        static final int MESSAGE_BIND_DRAWER = 0x3;
+
         // Number of items to bind in every pass
         static final int ITEMS_COUNT = 6;
 
         private final ArrayList<ItemInfo> mShortcuts;
         private final LinkedList<LauncherAppWidgetInfo> mAppWidgets;
+        private final ApplicationsAdapter mDrawerAdapter;
         private final WeakReference<Launcher> mLauncher;
-        
-        public volatile boolean mTerminate = false;
+
+        public boolean mTerminate = false;
 
         DesktopBinder(Launcher launcher, ArrayList<ItemInfo> shortcuts,
-                ArrayList<LauncherAppWidgetInfo> appWidgets) {
+                ArrayList<LauncherAppWidgetInfo> appWidgets,
+                ApplicationsAdapter drawerAdapter) {
 
             mLauncher = new WeakReference<Launcher>(launcher);
             mShortcuts = shortcuts;
-            
+            mDrawerAdapter = drawerAdapter;
+
             // Sort widgets so active workspace is bound first
             final int currentScreen = launcher.mWorkspace.getCurrentScreen();
             final int size = appWidgets.size();
             mAppWidgets = new LinkedList<LauncherAppWidgetInfo>();
-            
+
             for (int i = 0; i < size; i++) {
                 LauncherAppWidgetInfo appWidgetInfo = appWidgets.get(i);
                 if (appWidgetInfo.screen == currentScreen) {
@@ -2026,17 +2431,21 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 }
             }
         }
-        
+
         public void startBindingItems() {
             obtainMessage(MESSAGE_BIND_ITEMS, 0, mShortcuts.size()).sendToTarget();
         }
-        
+
+        public void startBindingDrawer() {
+            obtainMessage(MESSAGE_BIND_DRAWER).sendToTarget();
+        }
+
         public void startBindingAppWidgetsWhenIdle() {
             // Ask for notification when message queue becomes idle
             final MessageQueue messageQueue = Looper.myQueue();
             messageQueue.addIdleHandler(this);
         }
-        
+
         public boolean queueIdle() {
             // Queue is idle, so start binding items
             startBindingAppWidgets();
@@ -2053,10 +2462,14 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             if (launcher == null || mTerminate) {
                 return;
             }
-            
+
             switch (msg.what) {
                 case MESSAGE_BIND_ITEMS: {
                     launcher.bindItems(this, mShortcuts, msg.arg1, msg.arg2);
+                    break;
+                }
+                case MESSAGE_BIND_DRAWER: {
+                    launcher.bindDrawer(this, mDrawerAdapter);
                     break;
                 }
                 case MESSAGE_BIND_APPWIDGETS: {
@@ -2066,4 +2479,160 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             }
         }
     }
+
+    private class GesturesProcessor implements GestureOverlayView.OnGestureListener,
+            GestureOverlayView.OnGesturePerformedListener {
+
+        private final GestureMatcher mMatcher = new GestureMatcher();
+
+        GesturesProcessor() {
+            // TODO: Maybe the load should happen on a background thread?
+            sLibrary.load();
+        }
+
+        public void onGestureStarted(GestureOverlayView overlay, MotionEvent event) {
+            //noinspection PointlessBooleanExpression,ConstantConditions
+            if (!CONFIG_GESTURES_IMMEDIATE_MODE) {
+                overlay.removeCallbacks(mMatcher);
+                resetGesturesNextPrompt();
+            }
+
+            mGesturesAdd.setAlpha(128);
+            mGesturesAdd.setEnabled(false);
+        }
+
+        public void onGesture(GestureOverlayView overlay, MotionEvent event) {
+        }
+
+        public void onGesturePerformed(GestureOverlayView overlay, Gesture gesture) {
+        }
+
+        public void onGestureEnded(GestureOverlayView overlay, MotionEvent event) {
+            if (CONFIG_GESTURES_IMMEDIATE_MODE) {
+                mMatcher.gesture = overlay.getGesture();
+                if (mMatcher.gesture.getLength() < GesturesConstants.LENGTH_THRESHOLD) {
+                    overlay.clear(false);
+                    if (mGesturesAction.intent != null) {
+                        mGesturesAction.intent = null;
+                        setGesturesNextPrompt(null, getString(R.string.gestures_unknown));
+                    }
+                } else {
+                    mMatcher.run();
+                }
+            } else {
+                overlay.removeCallbacks(mMatcher);
+
+                mMatcher.gesture = overlay.getGesture();
+                if (mMatcher.gesture.getLength() < GesturesConstants.LENGTH_THRESHOLD) {
+                    overlay.clear(false);
+                    if (mGesturesAction.intent != null) {
+                        mGesturesAction.intent = null;
+                        setGesturesNextPrompt(null, getString(R.string.gestures_unknown));
+                    }
+                } else {
+                    overlay.postDelayed(mMatcher, GesturesConstants.MATCH_DELAY);
+                }
+            }
+        }
+
+        void matchGesture(Gesture gesture) {
+            matchGesture(gesture, true);
+        }
+
+        void matchGesture(Gesture gesture, boolean animate) {
+            mGesturesAdd.setAlpha(255);
+            mGesturesAdd.setEnabled(true);
+
+            if (gesture != null) {
+                final ArrayList<Prediction> predictions = sLibrary.recognize(gesture);
+
+                if (DEBUG_GESTURES) {
+                    for (Prediction p : predictions) {
+                        d(LOG_TAG, String.format("name=%s, score=%f", p.name, p.score));
+                    }
+                }
+
+                boolean match = false;
+                if (predictions.size() > 0) {
+                    final Prediction prediction = predictions.get(0);
+                    if (prediction.score > GesturesConstants.PREDICTION_THRESHOLD) {
+                        match = true;
+
+                        ApplicationInfo info = sModel.queryGesture(Launcher.this, prediction.name);
+                        if (info != null) {
+                            updatePrompt(info, animate);
+                        }
+                    }
+                }
+
+                if (!match){
+                    mGesturesAction.intent = null;
+                    if (animate) {
+                        setGesturesNextPrompt(null, getString(R.string.gestures_unknown));
+                    } else {
+                        setGesturesPrompt(null, getString(R.string.gestures_unknown));
+                    }
+                }
+            }
+        }
+
+        private void updatePrompt(ApplicationInfo info) {
+            updatePrompt(info, true);
+        }
+
+        private void updatePrompt(ApplicationInfo info, boolean animate) {
+            if (mGesturesAction.intent != null &&
+                    info.intent.toUri(0).equals(mGesturesAction.intent.toUri(0)) &&
+                    info.title.equals(((TextView) mGesturesPrompt.getCurrentView()).getText())) {
+                return;
+            }
+
+            if (animate) {
+                setGesturesNextPrompt(info.icon, info.title);
+            } else {
+                setGesturesPrompt(info.icon, info.title);
+            }
+
+            mGesturesAction.intent = info.intent;
+        }
+
+        public void onGestureCancelled(GestureOverlayView overlay, MotionEvent event) {
+            //noinspection PointlessBooleanExpression,ConstantConditions
+            if (!CONFIG_GESTURES_IMMEDIATE_MODE) {
+                overlay.removeCallbacks(mMatcher);
+            }
+        }
+
+        void addGesture(String name, Gesture gesture) {
+            sLibrary.addGesture(name, gesture);
+            // TODO: On a background thread?
+            sLibrary.save();
+        }
+
+        void update(ApplicationInfo info, Gesture gesture) {
+            mGesturesOverlay.setGesture(gesture);
+            updatePrompt(info);
+        }
+
+        class GestureMatcher implements Runnable {
+            Gesture gesture;
+
+            public void run() {
+                if (gesture != null) {
+                    matchGesture(gesture);
+                }
+            }
+        }
+    }
+
+    private class GesturesAction implements View.OnClickListener {
+        Intent intent;
+
+        public void onClick(View v) {
+            if (intent != null) {
+                startActivitySafely(intent);
+            }
+        }
+    }
 }
+

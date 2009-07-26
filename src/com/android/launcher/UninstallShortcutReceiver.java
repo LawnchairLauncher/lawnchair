@@ -22,11 +22,19 @@ import android.content.Intent;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.widget.Toast;
 
 import java.net.URISyntaxException;
 
 public class UninstallShortcutReceiver extends BroadcastReceiver {
+    private static final String ACTION_UNINSTALL_SHORTCUT =
+            "com.android.launcher.action.UNINSTALL_SHORTCUT";
+
     public void onReceive(Context context, Intent data) {
+        if (!ACTION_UNINSTALL_SHORTCUT.equals(data.getAction())) {
+            return;
+        }
+
         Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
         String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
         boolean duplicate = data.getBooleanExtra(Launcher.EXTRA_SHORTCUT_DUPLICATE, true);
@@ -34,7 +42,7 @@ public class UninstallShortcutReceiver extends BroadcastReceiver {
         if (intent != null && name != null) {
             final ContentResolver cr = context.getContentResolver();
             Cursor c = cr.query(LauncherSettings.Favorites.CONTENT_URI,
-                new String[] { LauncherSettings.Favorites.ID, LauncherSettings.Favorites.INTENT },
+                new String[] { LauncherSettings.Favorites._ID, LauncherSettings.Favorites.INTENT },
                 LauncherSettings.Favorites.TITLE + "=?", new String[] { name }, null);
 
             final int intentIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.INTENT);
@@ -45,7 +53,7 @@ public class UninstallShortcutReceiver extends BroadcastReceiver {
             try {
                 while (c.moveToNext()) {
                     try {
-                        if (intent.filterEquals(Intent.getIntent(c.getString(intentIndex)))) {
+                        if (intent.filterEquals(Intent.parseUri(c.getString(intentIndex), 0))) {
                             final long id = c.getLong(idIndex);
                             final Uri uri = LauncherSettings.Favorites.getContentUri(id, false);
                             cr.delete(uri, null, null);
@@ -62,7 +70,11 @@ public class UninstallShortcutReceiver extends BroadcastReceiver {
                 c.close();
             }
 
-            if (changed) cr.notifyChange(LauncherSettings.Favorites.CONTENT_URI, null);
+            if (changed) {
+                cr.notifyChange(LauncherSettings.Favorites.CONTENT_URI, null);
+                Toast.makeText(context, context.getString(R.string.shortcut_uninstalled, name),
+                        Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

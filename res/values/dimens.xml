@@ -16,4 +16,6 @@
 
 <resources>
     <dimen name="search_widget_inset">19dip</dimen>
+    <dimen name="gesture_thumbnail_inset">8dip</dimen>
+    <dimen name="gesture_thumbnail_size">64dip</dimen>
 </resources>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2009 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<!-- Note: GesturesPanel is a special implementation that forces the widget
+     to be opaque for performance reasons. Make sure it visually is. -->
+<com.android.launcher.GesturesPanel
+    xmlns:android="http://schemas.android.com/apk/res/android"
+        
+    android:id="@+id/gestures_panel"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <ViewSwitcher
+        android:id="@+id/gestures_actions"
+        android:layout_width="fill_parent"
+        android:layout_height="83dip"
+        android:layout_alignParentBottom="true"
+
+        android:inAnimation="@anim/fade_in_fast"
+        android:outAnimation="@anim/fade_out_fast"
+
+        android:foregroundGravity="top|fill_horizontal"
+        android:foreground="@*android:drawable/title_bar_shadow"
+        android:background="@android:drawable/title_bar_tall">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center_horizontal"
+
+            android:gravity="center_vertical"
+
+            android:shadowColor="#FF000000"
+            android:shadowRadius="2.0"
+
+            android:drawablePadding="8dip"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="@string/gestures_instructions" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center_horizontal"
+
+            android:gravity="center_vertical"
+
+            android:shadowColor="#FF000000"
+            android:shadowRadius="2.0"
+
+            android:drawablePadding="8dip"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="@string/gestures_instructions" />
+
+    </ViewSwitcher>
+
+    <android.gesture.GestureOverlayView
+        android:id="@+id/gestures_overlay"
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1.0"
+        android:layout_alignParentTop="true"
+        android:layout_above="@id/gestures_actions"
+
+        android:background="@drawable/gestures_background"
+
+        android:gestureStrokeType="multiple" />
+
+    <ImageButton
+        style="@style/PlusButton"
+
+        android:id="@+id/gestures_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/gestures_actions"
+        android:layout_marginRight="5dip"  
+        android:layout_marginTop="-47dip" />
+
+</com.android.launcher.GesturesPanel>

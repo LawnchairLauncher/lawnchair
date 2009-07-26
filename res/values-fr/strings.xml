@@ -36,12 +36,12 @@
     <string name="add_folder">"Dossier"</string>
     <string name="add_clock">"Horloge"</string>
     <string name="add_photo_frame">"Cadre d\'image"</string>
-    <string name="add_search">"Recherche"</string>
+    <string name="add_search">"Rechercher"</string>
     <string name="out_of_space">"Plus d\'espace libre sur l\'écran d\'accueil."</string>
     <string name="title_select_shortcut">"Sélectionner un raccourci"</string>
     <string name="title_select_live_folder">"Sélectionner le dossier"</string>
     <string name="menu_add">"Ajouter"</string>
-    <string name="menu_wallpaper">"Fond d\'écran"</string>
+    <string name="menu_wallpaper">"Arrière-plan"</string>
     <string name="menu_search">"Rechercher"</string>
     <string name="menu_notifications">"Notifications"</string>
     <string name="menu_settings">"Paramètres"</string>

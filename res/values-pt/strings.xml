@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2009 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name">"Página Inicial do Google"</string>
+    <string name="folder_name">"Pasta"</string>
+    <string name="chooser_wallpaper">"Selecionar papel de parede da"</string>
+    <string name="wallpaper_instructions">"Definir papel de parede"</string>
+    <string name="pick_wallpaper">"Galeria de papéis de parede"</string>
+    <string name="activity_not_found">"O aplicativo não está instalado no seu telefone."</string>
+    <string name="rename_folder_label">"Nome da pasta"</string>
+    <string name="rename_folder_title">"Renomear pasta"</string>
+    <string name="rename_action">"OK"</string>
+    <string name="cancel_action">"Cancelar"</string>
+    <string name="menu_item_add_item">"Adicionar à tela inicial"</string>
+    <!-- no translation found for group_applications (4118484163419674240) -->
+    <skip />
+    <!-- no translation found for group_shortcuts (9133529424900391877) -->
+    <skip />
+    <!-- no translation found for group_search (5905328940867162196) -->
+    <skip />
+    <!-- no translation found for group_folder (5143593791798929193) -->
+    <skip />
+    <!-- no translation found for group_live_folders (2664945399140647217) -->
+    <skip />
+    <!-- no translation found for group_widgets (6704978494073105844) -->
+    <skip />
+    <!-- no translation found for group_wallpapers (1568191644272224858) -->
+    <skip />
+    <string name="add_folder">"Pasta"</string>
+    <string name="add_clock">"Relógio"</string>
+    <string name="add_photo_frame">"Moldura"</string>
+    <string name="add_search">"Pesquisar"</string>
+    <string name="out_of_space">"Não há mais espaço nesta página inicial."</string>
+    <!-- no translation found for shortcut_installed (6623689857689040689) -->
+    <skip />
+    <!-- no translation found for shortcut_uninstalled (2758997515869993129) -->
+    <skip />
+    <!-- no translation found for shortcut_duplicate (4887186782641532074) -->
+    <skip />
+    <!-- no translation found for title_select_shortcut (2858897527672831763) -->
+    <skip />
+    <!-- no translation found for title_select_live_folder (3753447798805166749) -->
+    <skip />
+    <string name="menu_add">"Adicionar"</string>
+    <string name="menu_wallpaper">"Papel de parede"</string>
+    <string name="menu_search">"Pesquisar"</string>
+    <string name="menu_notifications">"Notificações"</string>
+    <!-- no translation found for menu_gestures (514678675575912237) -->
+    <skip />
+    <string name="menu_settings">"Configurações"</string>
+    <string name="permlab_install_shortcut">"instalar atalhos"</string>
+    <string name="permdesc_install_shortcut">"Permite que um aplicativo adicione atalhos sem a intervenção do usuário."</string>
+    <string name="permlab_uninstall_shortcut">"desinstalar atalhos"</string>
+    <string name="permdesc_uninstall_shortcut">"Permite que um aplicativo remova atalhos sem a intervenção do usuário."</string>
+    <string name="permlab_read_settings">"leia as configurações e atalhos da página inicial"</string>
+    <string name="permdesc_read_settings">"Permite que um aplicativo leia as configurações e atalhos na página inicial."</string>
+    <string name="permlab_write_settings">"grave as configurações e atalhos da página inicial"</string>
+    <string name="permdesc_write_settings">"Permite que um aplicativo altere as configurações e atalhos na página inicial."</string>
+    <string name="search_hint">"Google Search"</string>
+    <!-- no translation found for gadget_error_text (8359351016167075858) -->
+    <skip />
+    <!-- no translation found for gestures_instructions (1099425576530504561) -->
+    <skip />
+    <!-- no translation found for gestures_unknown (309008617423088837) -->
+    <skip />
+    <!-- no translation found for gestures_created (8116808500193613741) -->
+    <skip />
+    <!-- no translation found for gestures_failed (5113829215530311557) -->
+    <skip />
+    <!-- no translation found for gestures_loading (6325241735907189384) -->
+    <skip />
+    <!-- no translation found for gestures_empty (8923837437173732411) -->
+    <skip />
+    <!-- no translation found for gestures_activity (3366108186921084558) -->
+    <skip />
+    <!-- no translation found for gestures_rename (713510200890627175) -->
+    <skip />
+    <!-- no translation found for gestures_delete (6962559975386260201) -->
+    <skip />
+    <!-- no translation found for gestures_delete_success (2961655691848002690) -->
+    <skip />
+    <!-- no translation found for gestures_rename_title (7463326669074661915) -->
+    <skip />
+    <!-- no translation found for gestures_rename_label (8790363956270703745) -->
+    <skip />
+</resources>

@@ -36,6 +36,7 @@
     	android:layout_height="0dip"
     	android:layout_weight="1"
             
+        android:cacheColorHint="#ff333333"
         android:background="@drawable/box_launcher_bottom"
 
         android:scrollbarAlwaysDrawVerticalTrack="true"

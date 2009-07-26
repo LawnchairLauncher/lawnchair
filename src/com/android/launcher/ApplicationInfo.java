@@ -61,7 +61,7 @@ class ApplicationInfo extends ItemInfo {
     Intent.ShortcutIconResource iconResource;
 
     ApplicationInfo() {
-        itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+        itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
     }
     
     public ApplicationInfo(ApplicationInfo info) {
@@ -80,7 +80,7 @@ class ApplicationInfo extends ItemInfo {
 
     /**
      * Creates the application intent based on a component name and various launch flags.
-     * Sets {@link #itemType} to {@link LauncherSettings.Favorites#ITEM_TYPE_APPLICATION}.
+     * Sets {@link #itemType} to {@link LauncherSettings.BaseLauncherColumns#ITEM_TYPE_APPLICATION}.
      *
      * @param className the class name of the component representing the intent
      * @param launchFlags the launch flags
@@ -90,7 +90,7 @@ class ApplicationInfo extends ItemInfo {
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
         intent.setComponent(className);
         intent.setFlags(launchFlags);
-        itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
+        itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_APPLICATION;
     }
 
     @Override
@@ -98,22 +98,24 @@ class ApplicationInfo extends ItemInfo {
         super.onAddToDatabase(values);
 
         String titleStr = title != null ? title.toString() : null;
-        values.put(LauncherSettings.Favorites.TITLE, titleStr);
+        values.put(LauncherSettings.BaseLauncherColumns.TITLE, titleStr);
 
-        String uri = intent != null ? intent.toURI() : null;
-        values.put(LauncherSettings.Favorites.INTENT, uri);
+        String uri = intent != null ? intent.toUri(0) : null;
+        values.put(LauncherSettings.BaseLauncherColumns.INTENT, uri);
 
         if (customIcon) {
-            values.put(LauncherSettings.Favorites.ICON_TYPE,
-                    LauncherSettings.Favorites.ICON_TYPE_BITMAP);
+            values.put(LauncherSettings.BaseLauncherColumns.ICON_TYPE,
+                    LauncherSettings.BaseLauncherColumns.ICON_TYPE_BITMAP);
             Bitmap bitmap = ((FastBitmapDrawable) icon).getBitmap();
             writeBitmap(values, bitmap);
         } else {
-            values.put(LauncherSettings.Favorites.ICON_TYPE,
-                    LauncherSettings.Favorites.ICON_TYPE_RESOURCE);
+            values.put(LauncherSettings.BaseLauncherColumns.ICON_TYPE,
+                    LauncherSettings.BaseLauncherColumns.ICON_TYPE_RESOURCE);
             if (iconResource != null) {
-                values.put(LauncherSettings.Favorites.ICON_PACKAGE, iconResource.packageName);
-                values.put(LauncherSettings.Favorites.ICON_RESOURCE, iconResource.resourceName);
+                values.put(LauncherSettings.BaseLauncherColumns.ICON_PACKAGE,
+                        iconResource.packageName);
+                values.put(LauncherSettings.BaseLauncherColumns.ICON_RESOURCE,
+                        iconResource.resourceName);
             }
         }
     }

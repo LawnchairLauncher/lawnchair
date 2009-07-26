@@ -53,7 +53,7 @@ public class DragLayer extends FrameLayout implements DragController {
     private boolean mShouldDrop;
     private float mLastMotionX;
     private float mLastMotionY;
-    
+
     /**
      * The bitmap that is currently being dragged
      */
@@ -67,42 +67,42 @@ public class DragLayer extends FrameLayout implements DragController {
      * X offset from where we touched on the cell to its upper-left corner
      */
     private float mTouchOffsetX;
-    
+
     /**
      * Y offset from where we touched on the cell to its upper-left corner
      */
     private float mTouchOffsetY;
-    
+
     /**
      * Utility rectangle
      */
     private Rect mDragRect = new Rect();
-    
+
     /**
      * Where the drag originated
      */
     private DragSource mDragSource;
-    
+
     /**
      * The data associated with the object being dragged
      */
     private Object mDragInfo;
 
-    private final Rect mRect = new Rect();    
+    private final Rect mRect = new Rect();
     private final int[] mDropCoordinates = new int[2];
 
     private final Vibrator mVibrator = new Vibrator();
-    
+
     private DragListener mListener;
 
     private DragScroller mDragScroller;
-    
+
     private static final int SCROLL_OUTSIDE_ZONE = 0;
     private static final int SCROLL_WAITING_IN_ZONE = 1;
 
     private static final int SCROLL_LEFT = 0;
     private static final int SCROLL_RIGHT = 1;
-    
+
     private int mScrollState = SCROLL_OUTSIDE_ZONE;
 
     private ScrollRunnable mScrollRunnable = new ScrollRunnable();
@@ -113,7 +113,24 @@ public class DragLayer extends FrameLayout implements DragController {
     private DropTarget mLastDropTarget;
 
     private final Paint mTrashPaint = new Paint();
+    private final Paint mEstimatedPaint = new Paint();
     private Paint mDragPaint;
+
+    /**
+     * If true, draw a "snag" showing where the object currently being dragged
+     * would end up if dropped from current location.
+     */
+    private static final boolean DRAW_TARGET_SNAG = false;
+
+    private Rect mEstimatedRect = new Rect();
+    private float[] mDragCenter = new float[2];
+    private float[] mEstimatedCenter = new float[2];
+    private boolean mDrawEstimated = false;
+
+    private int mTriggerWidth = -1;
+    private int mTriggerHeight = -1;
+
+    private static final int DISTANCE_DRAW_SNAG = 20;
 
     private static final int ANIMATION_STATE_STARTING = 1;
     private static final int ANIMATION_STATE_RUNNING = 2;
@@ -141,6 +158,13 @@ public class DragLayer extends FrameLayout implements DragController {
 
         final int srcColor = context.getResources().getColor(R.color.delete_color_filter);
         mTrashPaint.setColorFilter(new PorterDuffColorFilter(srcColor, PorterDuff.Mode.SRC_ATOP));
+
+        // Make estimated paint area in gray
+        int snagColor = context.getResources().getColor(R.color.snag_callout_color);
+        mEstimatedPaint.setColor(snagColor);
+        mEstimatedPaint.setStrokeWidth(3);
+        mEstimatedPaint.setAntiAlias(true);
+
     }
 
     public void startDrag(View v, DragSource source, Object dragInfo, int dragAction) {
@@ -171,11 +195,22 @@ public class DragLayer extends FrameLayout implements DragController {
 
         boolean willNotCache = v.willNotCacheDrawing();
         v.setWillNotCacheDrawing(false);
-        v.buildDrawingCache();
 
+        // Reset the drawing cache background color to fully transparent
+        // for the duration of this operation
+        int color = v.getDrawingCacheBackgroundColor();
+        v.setDrawingCacheBackgroundColor(0);
+
+        if (color != 0) {
+            v.destroyDrawingCache();
+        }
+        v.buildDrawingCache();
         Bitmap viewBitmap = v.getDrawingCache();
         int width = viewBitmap.getWidth();
         int height = viewBitmap.getHeight();
+
+        mTriggerWidth = width * 2 / 3;
+        mTriggerHeight = height * 2 / 3;
 
         Matrix scale = new Matrix();
         float scaleFactor = v.getWidth();
@@ -191,6 +226,7 @@ public class DragLayer extends FrameLayout implements DragController {
         mDragBitmap = Bitmap.createBitmap(viewBitmap, 0, 0, width, height, scale, true);
         v.destroyDrawingCache();
         v.setWillNotCacheDrawing(willNotCache);
+        v.setDrawingCacheBackgroundColor(color);
 
         final Bitmap dragBitmap = mDragBitmap;
         mBitmapOffsetX = (dragBitmap.getWidth() - width) / 2;
@@ -252,6 +288,13 @@ public class DragLayer extends FrameLayout implements DragController {
                         break;
                 }
             } else {
+                // Only draw estimate drop "snag" when requested
+                if (DRAW_TARGET_SNAG && mDrawEstimated) {
+                    canvas.drawLine(mDragCenter[0], mDragCenter[1], mEstimatedCenter[0], mEstimatedCenter[1], mEstimatedPaint);
+                    canvas.drawCircle(mEstimatedCenter[0], mEstimatedCenter[1], 8, mEstimatedPaint);
+                }
+
+                // Draw actual icon being dragged
                 canvas.drawBitmap(mDragBitmap,
                         mScrollX + mLastMotionX - mTouchOffsetX - mBitmapOffsetX,
                         mScrollY + mLastMotionY - mTouchOffsetY - mBitmapOffsetY, mDragPaint);
@@ -355,8 +398,16 @@ public class DragLayer extends FrameLayout implements DragController {
             left = (int) (scrollX + x - touchX - offsetX);
             top = (int) (scrollY + y - touchY - offsetY);
 
+            // Invalidate current icon position
             rect.union(left - 1, top - 1, left + width + 1, top + height + 1);
-            invalidate(rect);
+
+            mDragCenter[0] = rect.centerX();
+            mDragCenter[1] = rect.centerY();
+
+            // Invalidate any old estimated location
+            if (DRAW_TARGET_SNAG && mDrawEstimated) {
+                rect.union(mEstimatedRect);
+            }
 
             final int[] coordinates = mDropCoordinates;
             DropTarget dropTarget = findDropTarget((int) x, (int) y, coordinates);
@@ -378,6 +429,33 @@ public class DragLayer extends FrameLayout implements DragController {
                         (int) mTouchOffsetX, (int) mTouchOffsetY, mDragInfo);
                 }
             }
+
+            // Render estimated drop "snag" only outside of width
+            mDrawEstimated = false;
+            if (DRAW_TARGET_SNAG && dropTarget != null) {
+                Rect foundEstimate = dropTarget.estimateDropLocation(mDragSource,
+                        (int) (scrollX + mLastMotionX), (int) (scrollY + mLastMotionY),
+                        (int) mTouchOffsetX, (int) mTouchOffsetY, mDragInfo, mEstimatedRect);
+
+                if (foundEstimate != null) {
+                    mEstimatedCenter[0] = foundEstimate.centerX();
+                    mEstimatedCenter[1] = foundEstimate.centerY();
+
+                    int deltaX = (int) Math.abs(mEstimatedCenter[0] - mDragCenter[0]);
+                    int deltaY = (int) Math.abs(mEstimatedCenter[1] - mDragCenter[1]);
+
+                    if (deltaX > mTriggerWidth || deltaY > mTriggerHeight) {
+                        mDrawEstimated = true;
+                    }
+                }
+            }
+
+            // Include new estimated area in invalidated rectangle
+            if (DRAW_TARGET_SNAG && mDrawEstimated) {
+                rect.union(mEstimatedRect);
+            }
+            invalidate(rect);
+
             mLastDropTarget = dropTarget;
 
             boolean inDragRegion = false;
@@ -478,9 +556,15 @@ public class DragLayer extends FrameLayout implements DragController {
                     }
                     if (target == null) {
                         if (child instanceof DropTarget) {
-                            dropCoordinates[0] = x;
-                            dropCoordinates[1] = y;
-                            return (DropTarget) child;
+                            // Only consider this child if they will accept
+                            DropTarget childTarget = (DropTarget) child;
+                            if (childTarget.acceptDrop(mDragSource, x, y, 0, 0, mDragInfo)) {
+                                dropCoordinates[0] = x;
+                                dropCoordinates[1] = y;
+                                return (DropTarget) child;
+                            } else {
+                                return null;
+                            }
                         }
                     } else {
                         return target;
@@ -501,7 +585,7 @@ public class DragLayer extends FrameLayout implements DragController {
     }
 
     public void removeDragListener(DragListener l) {
-        mListener = null;   
+        mListener = null;
     }
 
     /**
@@ -531,6 +615,7 @@ public class DragLayer extends FrameLayout implements DragController {
 
         public void run() {
             if (mDragScroller != null) {
+                mDrawEstimated = false;
                 if (mDirection == SCROLL_LEFT) {
                     mDragScroller.scrollLeft();
                 } else {
@@ -543,5 +628,5 @@ public class DragLayer extends FrameLayout implements DragController {
         void setDirection(int direction) {
             mDirection = direction;
         }
-    }    
+    }
 }

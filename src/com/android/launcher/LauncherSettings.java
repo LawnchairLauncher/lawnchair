@@ -23,11 +23,109 @@ import android.net.Uri;
  * Settings related utilities.
  */
 class LauncherSettings {
+    static interface BaseLauncherColumns extends BaseColumns {
+        /**
+         * Descriptive name of the gesture that can be displayed to the user.
+         * <P>Type: TEXT</P>
+         */
+        static final String TITLE = "title";
+
+        /**
+         * The Intent URL of the gesture, describing what it points to. This
+         * value is given to {@link android.content.Intent#parseUri(String, int)} to create
+         * an Intent that can be launched.
+         * <P>Type: TEXT</P>
+         */
+        static final String INTENT = "intent";
+
+        /**
+         * The type of the gesture
+         *
+         * <P>Type: INTEGER</P>
+         */
+        static final String ITEM_TYPE = "itemType";
+
+        /**
+         * The gesture is an application
+         */
+        static final int ITEM_TYPE_APPLICATION = 0;
+
+        /**
+         * The gesture is an application created shortcut
+         */
+        static final int ITEM_TYPE_SHORTCUT = 1;
+
+        /**
+         * The icon type.
+         * <P>Type: INTEGER</P>
+         */
+        static final String ICON_TYPE = "iconType";
+
+        /**
+         * The icon is a resource identified by a package name and an integer id.
+         */
+        static final int ICON_TYPE_RESOURCE = 0;
+
+        /**
+         * The icon is a bitmap.
+         */
+        static final int ICON_TYPE_BITMAP = 1;
+
+        /**
+         * The icon package name, if icon type is ICON_TYPE_RESOURCE.
+         * <P>Type: TEXT</P>
+         */
+        static final String ICON_PACKAGE = "iconPackage";
+
+        /**
+         * The icon resource id, if icon type is ICON_TYPE_RESOURCE.
+         * <P>Type: TEXT</P>
+         */
+        static final String ICON_RESOURCE = "iconResource";
+
+        /**
+         * The custom icon bitmap, if icon type is ICON_TYPE_BITMAP.
+         * <P>Type: BLOB</P>
+         */
+        static final String ICON = "icon";
+    }
+
+    static final class Gestures implements BaseLauncherColumns {
+                /**
+         * The content:// style URL for this table
+         */
+        static final Uri CONTENT_URI = Uri.parse("content://" +
+                LauncherProvider.AUTHORITY + "/" + LauncherProvider.TABLE_GESTURES +
+                "?" + LauncherProvider.PARAMETER_NOTIFY + "=true");
+
+        /**
+         * The content:// style URL for this table. When this Uri is used, no notification is
+         * sent if the content changes.
+         */
+        static final Uri CONTENT_URI_NO_NOTIFICATION = Uri.parse("content://" +
+                LauncherProvider.AUTHORITY + "/" + LauncherProvider.TABLE_GESTURES +
+                "?" + LauncherProvider.PARAMETER_NOTIFY + "=false");
+
+        /**
+         * The content:// style URL for a given row, identified by its id.
+         *
+         * @param id The row id.
+         * @param notify True to send a notification is the content changes.
+         *
+         * @return The unique content URL for the specified row.
+         */
+        static Uri getContentUri(long id, boolean notify) {
+            return Uri.parse("content://" + LauncherProvider.AUTHORITY +
+                    "/" + LauncherProvider.TABLE_GESTURES + "/" + id + "?" +
+                    LauncherProvider.PARAMETER_NOTIFY + "=" + notify);
+        }
+    }
+
     /**
      * Favorites. When changing these values, be sure to update
      * {@link com.android.settings.LauncherAppWidgetBinder} as needed.
      */
-    static final class Favorites implements BaseColumns {
+    static final class Favorites implements BaseLauncherColumns {
         /**
          * The content:// style URL for this table
          */
@@ -56,26 +154,6 @@ class LauncherSettings {
                     "/" + LauncherProvider.TABLE_FAVORITES + "/" + id + "?" +
                     LauncherProvider.PARAMETER_NOTIFY + "=" + notify);
         }
-
-        /**
-         * The row ID.
-         * <p>Type: INTEGER</p>
-         */
-        static final String ID = "_id";
-
-        /**
-         * Descriptive name of the favorite that can be displayed to the user.
-         * <P>Type: TEXT</P>
-         */
-        static final String TITLE = "title";
-
-        /**
-         * The Intent URL of the favorite, describing what it points to.  This
-         * value is given to {@link android.content.Intent#getIntent} to create
-         * an Intent that can be launched.
-         * <P>Type: TEXT</P>
-         */
-        static final String INTENT = "intent";
 
         /**
          * The container holding the favorite
@@ -121,23 +199,6 @@ class LauncherSettings {
         static final String SPANY = "spanY";
 
         /**
-         * The type of the favorite
-         *
-         * <P>Type: INTEGER</P>
-         */
-        static final String ITEM_TYPE = "itemType";
-
-        /**
-         * The favorite is an application
-         */
-        static final int ITEM_TYPE_APPLICATION = 0;
-
-        /**
-         * The favorite is an application created shortcut
-         */
-        static final int ITEM_TYPE_SHORTCUT = 1;
-
-        /**
          * The favorite is a user created folder
          */
         static final int ITEM_TYPE_USER_FOLDER = 2;
@@ -180,41 +241,8 @@ class LauncherSettings {
          * value is 1, it is an application-created shortcut.
          * <P>Type: INTEGER</P>
          */
+        @Deprecated
         static final String IS_SHORTCUT = "isShortcut";
-
-        /**
-         * The icon type.
-         * <P>Type: INTEGER</P>
-         */
-        static final String ICON_TYPE = "iconType";
-
-        /**
-         * The icon is a resource identified by a package name and an integer id.
-         */
-        static final int ICON_TYPE_RESOURCE = 0;
-
-        /**
-         * The icon is a bitmap.
-         */
-        static final int ICON_TYPE_BITMAP = 1;
-
-        /**
-         * The icon package name, if icon type is ICON_TYPE_RESOURCE.
-         * <P>Type: TEXT</P>
-         */
-        static final String ICON_PACKAGE = "iconPackage";
-
-        /**
-         * The icon resource id, if icon type is ICON_TYPE_RESOURCE.
-         * <P>Type: TEXT</P>
-         */
-        static final String ICON_RESOURCE = "iconResource";
-
-        /**
-         * The custom icon bitmap, if icon type is ICON_TYPE_BITMAP.
-         * <P>Type: BLOB</P>
-         */
-        static final String ICON = "icon";
 
         /**
          * The URI associated with the favorite. It is used, for instance, by

@@ -76,6 +76,11 @@ class ItemInfo {
      */
     int spanY = 1;
 
+    /**
+     * Indicates whether the item is a gesture.
+     */
+    boolean isGesture = false;
+
     ItemInfo() {
     }
 
@@ -96,13 +101,15 @@ class ItemInfo {
      * @param values
      */
     void onAddToDatabase(ContentValues values) { 
-        values.put(LauncherSettings.Favorites.ITEM_TYPE, itemType);
-        values.put(LauncherSettings.Favorites.CONTAINER, container);
-        values.put(LauncherSettings.Favorites.SCREEN, screen);
-        values.put(LauncherSettings.Favorites.CELLX, cellX);
-        values.put(LauncherSettings.Favorites.CELLY, cellY);
-        values.put(LauncherSettings.Favorites.SPANX, spanX);
-        values.put(LauncherSettings.Favorites.SPANY, spanY);
+        values.put(LauncherSettings.BaseLauncherColumns.ITEM_TYPE, itemType);
+        if (!isGesture) {
+            values.put(LauncherSettings.Favorites.CONTAINER, container);
+            values.put(LauncherSettings.Favorites.SCREEN, screen);
+            values.put(LauncherSettings.Favorites.CELLX, cellX);
+            values.put(LauncherSettings.Favorites.CELLY, cellY);
+            values.put(LauncherSettings.Favorites.SPANX, spanX);
+            values.put(LauncherSettings.Favorites.SPANY, spanY);
+        }
     }
 
     static void writeBitmap(ContentValues values, Bitmap bitmap) {

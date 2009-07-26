@@ -26,20 +26,27 @@
     <string name="rename_action">"OK"</string>
     <string name="cancel_action">"Avbryt"</string>
     <string name="menu_item_add_item">"Legg til skrivebord"</string>
-    <string name="group_applications">"Applikasjoner"</string>
-    <string name="group_shortcuts">"Snarveier"</string>
+    <!-- no translation found for group_applications (4118484163419674240) -->
+    <skip />
+    <!-- no translation found for group_shortcuts (9133529424900391877) -->
+    <skip />
     <string name="group_search">"Søk"</string>
-    <string name="group_folder">"Ny mappe"</string>
-    <string name="group_live_folders">"Mapper"</string>
-    <string name="group_widgets">"Skrivebordselementer"</string>
-    <string name="group_wallpapers">"Bakgrunner"</string>
+    <!-- no translation found for group_folder (5143593791798929193) -->
+    <skip />
+    <!-- no translation found for group_live_folders (2664945399140647217) -->
+    <skip />
+    <!-- no translation found for group_widgets (6704978494073105844) -->
+    <skip />
+    <!-- no translation found for group_wallpapers (1568191644272224858) -->
+    <skip />
     <string name="add_folder">"Mappe"</string>
     <string name="add_clock">"Klokke"</string>
     <string name="add_photo_frame">"Bilderamme"</string>
     <string name="add_search">"Søk"</string>
     <string name="out_of_space">"Ikke nok plass på skrivebordet."</string>
     <string name="title_select_shortcut">"Velg snarvei"</string>
-    <string name="title_select_live_folder">"Velg mappe"</string>
+    <!-- no translation found for title_select_live_folder (3753447798805166749) -->
+    <skip />
     <string name="menu_add">"Legg til"</string>
     <string name="menu_wallpaper">"Bakgrunnsbilde"</string>
     <string name="menu_search">"Søk"</string>

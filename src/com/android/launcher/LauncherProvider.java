@@ -55,7 +55,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "launcher.db";
     
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     static final String AUTHORITY = "com.android.launcher.settings";
     
@@ -63,10 +63,11 @@ public class LauncherProvider extends ContentProvider {
     static final String EXTRA_BIND_TARGETS = "com.android.launcher.settings.bindtargets";
 
     static final String TABLE_FAVORITES = "favorites";
+    static final String TABLE_GESTURES = "gestures";
     static final String PARAMETER_NOTIFY = "notify";
 
     /**
-     * {@link Uri} triggered at any registered {@link ContentObserver} when
+     * {@link Uri} triggered at any registered {@link android.database.ContentObserver} when
      * {@link AppWidgetHost#deleteHost()} is called during database creation.
      * Use this to recall {@link AppWidgetHost#startListening()} if needed.
      */
@@ -99,7 +100,7 @@ public class LauncherProvider extends ContentProvider {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         qb.setTables(args.table);
 
-        SQLiteDatabase db = mOpenHelper.getReadableDatabase();
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         Cursor result = qb.query(db, projection, args.where, args.args, null, null, sortOrder);
         result.setNotificationUri(getContext().getContentResolver(), uri);
 
@@ -220,6 +221,17 @@ public class LauncherProvider extends ContentProvider {
                     "displayMode INTEGER" +
                     ");");
 
+            db.execSQL("CREATE TABLE gestures (" +
+                    "_id INTEGER PRIMARY KEY," +
+                    "title TEXT," +
+                    "intent TEXT," +
+                    "itemType INTEGER," +
+                    "iconType INTEGER," +
+                    "iconPackage TEXT," +
+                    "iconResource TEXT," +
+                    "icon BLOB" +
+                    ");");
+
             // Database was just created, so wipe any previous widgets
             if (mAppWidgetHost != null) {
                 mAppWidgetHost.deleteHost();
@@ -270,7 +282,7 @@ public class LauncherProvider extends ContentProvider {
         }
 
         private int copyFromCursor(SQLiteDatabase db, Cursor c) {
-            final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ID);
+            final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
             final int intentIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.INTENT);
             final int titleIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.TITLE);
             final int iconTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_TYPE);
@@ -289,7 +301,7 @@ public class LauncherProvider extends ContentProvider {
             int i = 0;
             while (c.moveToNext()) {
                 ContentValues values = new ContentValues(c.getColumnCount());
-                values.put(LauncherSettings.Favorites.ID, c.getLong(idIndex));
+                values.put(LauncherSettings.Favorites._ID, c.getLong(idIndex));
                 values.put(LauncherSettings.Favorites.INTENT, c.getString(intentIndex));
                 values.put(LauncherSettings.Favorites.TITLE, c.getString(titleIndex));
                 values.put(LauncherSettings.Favorites.ICON_TYPE, c.getInt(iconTypeIndex));
@@ -352,10 +364,34 @@ public class LauncherProvider extends ContentProvider {
                     convertWidgets(db);
                 }
             }
+
+            if (version < 4) {
+                db.beginTransaction();
+                try {
+                    db.execSQL("CREATE TABLE gestures (" +
+                        "_id INTEGER PRIMARY KEY," +
+                        "title TEXT," +
+                        "intent TEXT," +
+                        "itemType INTEGER," +
+                        "iconType INTEGER," +
+                        "iconPackage TEXT," +
+                        "iconResource TEXT," +
+                        "icon BLOB" +
+                        ");");
+                    db.setTransactionSuccessful();
+                    version = 4;
+                } catch (SQLException ex) {
+                    // Old version remains, which means we wipe old data
+                    Log.e(LOG_TAG, ex.getMessage(), ex);
+                } finally {
+                    db.endTransaction();
+                }
+            }
             
             if (version != DATABASE_VERSION) {
                 Log.w(LOG_TAG, "Destroying all old data.");
                 db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVORITES);
+                db.execSQL("DROP TABLE IF EXISTS " + TABLE_GESTURES);
                 onCreate(db);
             }
         }
@@ -527,7 +563,7 @@ public class LauncherProvider extends ContentProvider {
                 intent.setComponent(cn);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-                values.put(Favorites.INTENT, intent.toURI());
+                values.put(Favorites.INTENT, intent.toUri(0));
                 values.put(Favorites.TITLE, info.loadLabel(packageManager).toString());
                 values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_APPLICATION);
                 values.put(Favorites.SPANX, 1);

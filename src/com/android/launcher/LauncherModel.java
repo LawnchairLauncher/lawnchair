@@ -116,7 +116,7 @@ public class LauncherModel {
 
         if (localeChanged) {
             dropApplicationCache();
-        }        
+        }
 
         if (mApplicationsAdapter == null || isLaunching || localeChanged) {
             mApplications = new ArrayList<ApplicationInfo>(DEFAULT_APPLICATIONS_NUMBER);
@@ -126,7 +126,7 @@ public class LauncherModel {
         mApplicationsLoaded = false;
 
         if (!isLaunching) {
-            startApplicationsLoader(launcher);
+            startApplicationsLoader(launcher, false);
             return false;
         }
 
@@ -148,19 +148,19 @@ public class LauncherModel {
         }
     }
 
-    private synchronized void startApplicationsLoader(Launcher launcher) {
+    private synchronized void startApplicationsLoader(Launcher launcher, boolean isLaunching) {
         if (DEBUG_LOADERS) d(LOG_TAG, "  --> starting applications loader");
 
         stopAndWaitForApplicationsLoader();
 
-        mApplicationsLoader = new ApplicationsLoader(launcher);
+        mApplicationsLoader = new ApplicationsLoader(launcher, isLaunching);
         mApplicationsLoaderThread = new Thread(mApplicationsLoader, "Applications Loader");
         mApplicationsLoaderThread.start();
     }
 
     synchronized void addPackage(Launcher launcher, String packageName) {
         if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
-            startApplicationsLoader(launcher);
+            startApplicationsLoader(launcher, false);
             return;
         }
 
@@ -174,7 +174,7 @@ public class LauncherModel {
 
                 for (ResolveInfo info : matches) {
                     adapter.setNotifyOnChange(false);
-                    adapter.add(makeAndCacheApplicationInfo(packageManager, cache, info));
+                    adapter.add(makeAndCacheApplicationInfo(packageManager, cache, info, launcher));
                 }
 
                 adapter.sort(new ApplicationInfoComparator());
@@ -186,7 +186,7 @@ public class LauncherModel {
     synchronized void removePackage(Launcher launcher, String packageName) {
         if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
             dropApplicationCache(); // TODO: this could be optimized
-            startApplicationsLoader(launcher);
+            startApplicationsLoader(launcher, false);
             return;
         }
 
@@ -221,7 +221,7 @@ public class LauncherModel {
 
     synchronized void updatePackage(Launcher launcher, String packageName) {
         if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
-            startApplicationsLoader(launcher);
+            startApplicationsLoader(launcher, false);
             return;
         }
 
@@ -239,10 +239,12 @@ public class LauncherModel {
                 final ApplicationInfo applicationInfo = findIntent(adapter,
                         info.activityInfo.applicationInfo.packageName, info.activityInfo.name);
                 if (applicationInfo != null) {
-                    updateAndCacheApplicationInfo(packageManager, info, applicationInfo);
+                    updateAndCacheApplicationInfo(packageManager, info, applicationInfo, launcher);
                     changed = true;
                 }
             }
+
+            if (syncLocked(launcher, packageName)) changed = true;
 
             if (changed) {
                 adapter.sort(new ApplicationInfoComparator());
@@ -252,9 +254,9 @@ public class LauncherModel {
     }
 
     private void updateAndCacheApplicationInfo(PackageManager packageManager, ResolveInfo info,
-            ApplicationInfo applicationInfo) {
+            ApplicationInfo applicationInfo, Context context) {
 
-        updateApplicationInfoTitleAndIcon(packageManager, info, applicationInfo);
+        updateApplicationInfoTitleAndIcon(packageManager, info, applicationInfo, context);
 
         ComponentName componentName = new ComponentName(
                 info.activityInfo.applicationInfo.packageName, info.activityInfo.name);
@@ -263,29 +265,36 @@ public class LauncherModel {
 
     synchronized void syncPackage(Launcher launcher, String packageName) {
         if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
-            startApplicationsLoader(launcher);
+            startApplicationsLoader(launcher, false);
             return;
         }
 
         if (packageName != null && packageName.length() > 0) {
-            final PackageManager packageManager = launcher.getPackageManager();
-            final List<ResolveInfo> matches = findActivitiesForPackage(packageManager, packageName);
-
-            if (matches.size() > 0) {
+            if (syncLocked(launcher, packageName)) {
                 final ApplicationsAdapter adapter = mApplicationsAdapter;
-
-                // Find disabled activities and remove them from the adapter
-                boolean removed = removeDisabledActivities(packageName, matches, adapter);
-                // Find enable activities and add them to the adapter
-                // Also updates existing activities with new labels/icons
-                boolean added = addEnabledAndUpdateActivities(matches, adapter, launcher);
-
-                if (added || removed) {
-                    adapter.sort(new ApplicationInfoComparator());
-                    adapter.notifyDataSetChanged();
-                }
+                adapter.sort(new ApplicationInfoComparator());
+                adapter.notifyDataSetChanged();                
             }
         }
+    }
+
+    private boolean syncLocked(Launcher launcher, String packageName) {
+        final PackageManager packageManager = launcher.getPackageManager();
+        final List<ResolveInfo> matches = findActivitiesForPackage(packageManager, packageName);
+
+        if (matches.size() > 0) {
+            final ApplicationsAdapter adapter = mApplicationsAdapter;
+
+            // Find disabled activities and remove them from the adapter
+            boolean removed = removeDisabledActivities(packageName, matches, adapter);
+            // Find enable activities and add them to the adapter
+            // Also updates existing activities with new labels/icons
+            boolean added = addEnabledAndUpdateActivities(matches, adapter, launcher);
+
+            return added || removed;
+        }
+
+        return false;
     }
 
     private static List<ResolveInfo> findActivitiesForPackage(PackageManager packageManager,
@@ -326,10 +335,11 @@ public class LauncherModel {
                     info.activityInfo.applicationInfo.packageName, info.activityInfo.name);
             if (applicationInfo == null) {
                 toAdd.add(makeAndCacheApplicationInfo(launcher.getPackageManager(),
-                        mAppInfoCache, info));
+                        mAppInfoCache, info, launcher));
                 changed = true;
             } else {
-                updateAndCacheApplicationInfo(launcher.getPackageManager(), info, applicationInfo);
+                updateAndCacheApplicationInfo(
+                        launcher.getPackageManager(), info, applicationInfo, launcher);
                 changed = true;
             }
         }
@@ -419,7 +429,8 @@ public class LauncherModel {
     }
 
     private static ApplicationInfo makeAndCacheApplicationInfo(PackageManager manager,
-            HashMap<ComponentName, ApplicationInfo> appInfoCache, ResolveInfo info) {
+            HashMap<ComponentName, ApplicationInfo> appInfoCache, ResolveInfo info,
+            Context context) {
 
         ComponentName componentName = new ComponentName(
                 info.activityInfo.applicationInfo.packageName,
@@ -430,7 +441,7 @@ public class LauncherModel {
             application = new ApplicationInfo();
             application.container = ItemInfo.NO_ID;
 
-            updateApplicationInfoTitleAndIcon(manager, info, application);
+            updateApplicationInfoTitleAndIcon(manager, info, application, context);
 
             application.setActivity(componentName,
                     Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
@@ -442,14 +453,15 @@ public class LauncherModel {
     }
 
     private static void updateApplicationInfoTitleAndIcon(PackageManager manager, ResolveInfo info,
-            ApplicationInfo application) {
+            ApplicationInfo application, Context context) {
 
         application.title = info.loadLabel(manager);
         if (application.title == null) {
             application.title = info.activityInfo.name;
         }
 
-        application.icon = info.activityInfo.loadIcon(manager);
+        application.icon =
+                Utilities.createIconThumbnail(info.activityInfo.loadIcon(manager), context);
         application.filtered = false;
     }
 
@@ -458,8 +470,10 @@ public class LauncherModel {
 
         private volatile boolean mStopped;
         private volatile boolean mRunning;
+        private final boolean mIsLaunching;
 
-        ApplicationsLoader(Launcher launcher) {
+        ApplicationsLoader(Launcher launcher, boolean isLaunching) {
+            mIsLaunching = isLaunching;
             mLauncher = new WeakReference<Launcher>(launcher);
         }
 
@@ -474,7 +488,10 @@ public class LauncherModel {
         public void run() {
             mRunning = true;
 
-            android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+            // Elevate priority when Home launches for the first time to avoid
+            // starving at boot time. Staring at a blank home is not cool.
+            android.os.Process.setThreadPriority(mIsLaunching ? Process.THREAD_PRIORITY_DEFAULT :
+                    Process.THREAD_PRIORITY_BACKGROUND);
 
             final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
             mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -495,7 +512,7 @@ public class LauncherModel {
                 for (int i = 0; i < count && !mStopped; i++) {
                     ResolveInfo info = apps.get(i);
                     ApplicationInfo application =
-                            makeAndCacheApplicationInfo(manager, appInfoCache, info);
+                        makeAndCacheApplicationInfo(manager, appInfoCache, info, launcher);
 
                     if (action.add(application) && !mStopped) {
                         launcher.runOnUiThread(action);
@@ -557,7 +574,7 @@ public class LauncherModel {
         }
     }
 
-    private static class ApplicationInfoComparator implements Comparator<ApplicationInfo> {
+    static class ApplicationInfoComparator implements Comparator<ApplicationInfo> {
         public final int compare(ApplicationInfo a, ApplicationInfo b) {
             return sCollator.compare(a.title.toString(), b.title.toString());
         }
@@ -577,7 +594,7 @@ public class LauncherModel {
 
         if (isLaunching && isDesktopLoaded()) {
             if (DEBUG_LOADERS) d(LOG_TAG, "  --> items loaded, return");
-            if (loadApplications) startApplicationsLoader(launcher);
+            if (loadApplications) startApplicationsLoader(launcher, true);
             // We have already loaded our data from the DB
             launcher.onDesktopItemsLoaded();
             return;
@@ -604,18 +621,19 @@ public class LauncherModel {
 
         if (DEBUG_LOADERS) d(LOG_TAG, "  --> starting workspace loader");
         mDesktopItemsLoaded = false;
-        mDesktopItemsLoader = new DesktopItemsLoader(launcher, localeChanged, loadApplications);
+        mDesktopItemsLoader = new DesktopItemsLoader(launcher, localeChanged, loadApplications,
+                isLaunching);
         mDesktopLoaderThread = new Thread(mDesktopItemsLoader, "Desktop Items Loader");
         mDesktopLoaderThread.start();
     }
 
     private static void updateShortcutLabels(ContentResolver resolver, PackageManager manager) {
         final Cursor c = resolver.query(LauncherSettings.Favorites.CONTENT_URI,
-                new String[] { LauncherSettings.Favorites.ID, LauncherSettings.Favorites.TITLE,
+                new String[] { LauncherSettings.Favorites._ID, LauncherSettings.Favorites.TITLE,
                         LauncherSettings.Favorites.INTENT, LauncherSettings.Favorites.ITEM_TYPE },
                 null, null, null);
 
-        final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ID);
+        final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
         final int intentIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.INTENT);
         final int itemTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
         final int titleIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.TITLE);
@@ -632,7 +650,7 @@ public class LauncherModel {
 
                     final String intentUri = c.getString(intentIndex);
                     if (intentUri != null) {
-                        final Intent shortcut = Intent.getIntent(intentUri);
+                        final Intent shortcut = Intent.parseUri(intentUri, 0);
                         if (Intent.ACTION_MAIN.equals(shortcut.getAction())) {
                             final ComponentName name = shortcut.getComponent();
                             if (name != null) {
@@ -685,9 +703,12 @@ public class LauncherModel {
         private final WeakReference<Launcher> mLauncher;
         private final boolean mLocaleChanged;
         private final boolean mLoadApplications;
+        private final boolean mIsLaunching;
 
-        DesktopItemsLoader(Launcher launcher, boolean localeChanged, boolean loadApplications) {
+        DesktopItemsLoader(Launcher launcher, boolean localeChanged, boolean loadApplications,
+                boolean isLaunching) {
             mLoadApplications = loadApplications;
+            mIsLaunching = isLaunching;
             mLauncher = new WeakReference<Launcher>(launcher);
             mLocaleChanged = localeChanged;
         }
@@ -702,6 +723,8 @@ public class LauncherModel {
 
         public void run() {
             mRunning = true;
+
+            android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
 
             final Launcher launcher = mLauncher.get();
             final ContentResolver contentResolver = launcher.getContentResolver();
@@ -722,7 +745,7 @@ public class LauncherModel {
                     LauncherSettings.Favorites.CONTENT_URI, null, null, null, null);
 
             try {
-                final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ID);
+                final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
                 final int intentIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.INTENT);
                 final int titleIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.TITLE);
                 final int iconTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_TYPE);
@@ -759,13 +782,13 @@ public class LauncherModel {
                         case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                             intentDescription = c.getString(intentIndex);
                             try {
-                                intent = Intent.getIntent(intentDescription);
+                                intent = Intent.parseUri(intentDescription, 0);
                             } catch (java.net.URISyntaxException e) {
                                 continue;
                             }
 
                             if (itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-                                info = getApplicationInfo(manager, intent);
+                                info = getApplicationInfo(manager, intent, launcher);
                             } else {
                                 info = getApplicationInfoShortcut(c, launcher, iconTypeIndex,
                                         iconPackageIndex, iconResourceIndex, iconIndex);
@@ -829,7 +852,7 @@ public class LauncherModel {
                             intent = null;
                             if (intentDescription != null) {
                                 try {
-                                    intent = Intent.getIntent(intentDescription);
+                                    intent = Intent.parseUri(intentDescription, 0);
                                 } catch (java.net.URISyntaxException e) {
                                     // Ignore, a live folder might not have a base intent
                                 }
@@ -909,7 +932,7 @@ public class LauncherModel {
                         launcher.onDesktopItemsLoaded();
                     }
                 });
-                if (mLoadApplications) startApplicationsLoader(launcher);
+                if (mLoadApplications) startApplicationsLoader(launcher, mIsLaunching);
             }
 
             if (!mStopped) {
@@ -1073,7 +1096,7 @@ public class LauncherModel {
     ArrayList<ItemInfo> getDesktopItems() {
         return mDesktopItems;
     }
-    
+
     /**
      * @return The current list of desktop items
      */
@@ -1089,7 +1112,7 @@ public class LauncherModel {
         // TODO: write to DB; also check that folder has been added to folders list
         mDesktopItems.add(info);
     }
-    
+
     /**
      * Remove an item from the desktop
      * @param info
@@ -1105,7 +1128,7 @@ public class LauncherModel {
     void addDesktopAppWidget(LauncherAppWidgetInfo info) {
         mDesktopAppWidgets.add(info);
     }
-    
+
     /**
      * Remove a widget from the desktop
      */
@@ -1116,16 +1139,17 @@ public class LauncherModel {
     /**
      * Make an ApplicationInfo object for an application
      */
-    private static ApplicationInfo getApplicationInfo(PackageManager manager, Intent intent) {
+    private static ApplicationInfo getApplicationInfo(PackageManager manager, Intent intent,
+                                                      Context context) {
         final ResolveInfo resolveInfo = manager.resolveActivity(intent, 0);
 
         if (resolveInfo == null) {
             return null;
         }
-        
+
         final ApplicationInfo info = new ApplicationInfo();
         final ActivityInfo activityInfo = resolveInfo.activityInfo;
-        info.icon = activityInfo.loadIcon(manager);
+        info.icon = Utilities.createIconThumbnail(activityInfo.loadIcon(manager), context);
         if (info.title == null || info.title.length() == 0) {
             info.title = activityInfo.loadLabel(manager);
         }
@@ -1135,11 +1159,11 @@ public class LauncherModel {
         info.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
         return info;
     }
-    
+
     /**
      * Make an ApplicationInfo object for a sortcut
      */
-    private ApplicationInfo getApplicationInfoShortcut(Cursor c, Launcher launcher,
+    private ApplicationInfo getApplicationInfoShortcut(Cursor c, Context context,
             int iconTypeIndex, int iconPackageIndex, int iconResourceIndex, int iconIndex) {
 
         final ApplicationInfo info = new ApplicationInfo();
@@ -1150,11 +1174,11 @@ public class LauncherModel {
             case LauncherSettings.Favorites.ICON_TYPE_RESOURCE:
                 String packageName = c.getString(iconPackageIndex);
                 String resourceName = c.getString(iconResourceIndex);
-                PackageManager packageManager = launcher.getPackageManager();
+                PackageManager packageManager = context.getPackageManager();
                 try {
                     Resources resources = packageManager.getResourcesForApplication(packageName);
                     final int id = resources.getIdentifier(resourceName, null, null);
-                    info.icon = resources.getDrawable(id);
+                    info.icon = Utilities.createIconThumbnail(resources.getDrawable(id), context);
                 } catch (Exception e) {
                     info.icon = packageManager.getDefaultActivityIcon();
                 }
@@ -1165,14 +1189,19 @@ public class LauncherModel {
                 break;
             case LauncherSettings.Favorites.ICON_TYPE_BITMAP:
                 byte[] data = c.getBlob(iconIndex);
-                Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                info.icon = new FastBitmapDrawable(
-                        Utilities.createBitmapThumbnail(bitmap, launcher));
+                try {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                    info.icon = new FastBitmapDrawable(
+                            Utilities.createBitmapThumbnail(bitmap, context));
+                } catch (Exception e) {
+                    packageManager = context.getPackageManager();
+                    info.icon = packageManager.getDefaultActivityIcon();
+                }
                 info.filtered = true;
                 info.customIcon = true;
                 break;
             default:
-                info.icon = launcher.getPackageManager().getDefaultActivityIcon();
+                info.icon = context.getPackageManager().getDefaultActivityIcon();
                 info.customIcon = false;
                 break;
         }
@@ -1186,7 +1215,7 @@ public class LauncherModel {
         //noinspection SuspiciousMethodCalls
         folder.contents.remove(info);
     }
-    
+
     /**
      * Removes a UserFolder from the in-memory list of folders. Does not change the DB.
      * @param userFolderInfo
@@ -1194,7 +1223,7 @@ public class LauncherModel {
     void removeUserFolder(UserFolderInfo userFolderInfo) {
         mFolders.remove(userFolderInfo.id);
     }
-    
+
     /**
      * Adds an item to the DB if it was not created previously, or move it to a new
      * <container, screen, cellX, cellY>
@@ -1209,7 +1238,7 @@ public class LauncherModel {
             moveItemInDatabase(context, item, container, screen, cellX, cellY);
         }
     }
-    
+
     /**
      * Move an item in the DB to a new <container, screen, cellX, cellY>
      */
@@ -1219,7 +1248,7 @@ public class LauncherModel {
         item.screen = screen;
         item.cellX = cellX;
         item.cellY = cellY;
-     
+
         final ContentValues values = new ContentValues();
         final ContentResolver cr = context.getContentResolver();
 
@@ -1239,7 +1268,7 @@ public class LauncherModel {
         final ContentResolver cr = context.getContentResolver();
         Cursor c = cr.query(LauncherSettings.Favorites.CONTENT_URI,
             new String[] { "title", "intent" }, "title=? and intent=?",
-            new String[] { title, intent.toURI() }, null);
+            new String[] { title, intent.toUri(0) }, null);
         boolean result = false;
         try {
             result = c.moveToFirst();
@@ -1302,18 +1331,38 @@ public class LauncherModel {
         item.screen = screen;
         item.cellX = cellX;
         item.cellY = cellY;
-        
+
         final ContentValues values = new ContentValues();
         final ContentResolver cr = context.getContentResolver();
-        
+
         item.onAddToDatabase(values);
-        
+
         Uri result = cr.insert(notify ? LauncherSettings.Favorites.CONTENT_URI :
                 LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION, values);
 
         if (result != null) {
             item.id = Integer.parseInt(result.getPathSegments().get(1));
         }
+    }
+
+    /**
+     * Add an item to the database in a specified container. Sets the container, screen, cellX and
+     * cellY fields of the item. Also assigns an ID to the item.
+     */
+    static boolean addGestureToDatabase(Context context, ItemInfo item, boolean notify) {
+        final ContentValues values = new ContentValues();
+        final ContentResolver cr = context.getContentResolver();
+
+        item.onAddToDatabase(values);
+
+        Uri result = cr.insert(notify ? LauncherSettings.Gestures.CONTENT_URI :
+                LauncherSettings.Gestures.CONTENT_URI_NO_NOTIFICATION, values);
+
+        if (result != null) {
+            item.id = Integer.parseInt(result.getPathSegments().get(1));
+        }
+
+        return result != null;
     }
 
     /**
@@ -1327,7 +1376,7 @@ public class LauncherModel {
 
         cr.update(LauncherSettings.Favorites.getContentUri(item.id, false), values, null, null);
     }
-    
+
     /**
      * Removes the specified item from the database
      * @param context
@@ -1349,5 +1398,85 @@ public class LauncherModel {
         cr.delete(LauncherSettings.Favorites.getContentUri(info.id, false), null, null);
         cr.delete(LauncherSettings.Favorites.CONTENT_URI,
                 LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
+    }
+
+    static void deleteGestureFromDatabase(Context context, ItemInfo item) {
+        final ContentResolver cr = context.getContentResolver();
+
+        cr.delete(LauncherSettings.Gestures.getContentUri(item.id, false), null, null);
+    }
+
+    static void updateGestureInDatabase(Context context, ItemInfo item) {
+        final ContentValues values = new ContentValues();
+        final ContentResolver cr = context.getContentResolver();
+
+        item.onAddToDatabase(values);
+
+        cr.update(LauncherSettings.Gestures.getContentUri(item.id, false), values, null, null);
+    }
+
+
+    ApplicationInfo queryGesture(Context context, String id) {
+        final ContentResolver contentResolver = context.getContentResolver();
+        final PackageManager manager = context.getPackageManager();
+        final Cursor c = contentResolver.query(
+                LauncherSettings.Gestures.CONTENT_URI, null, LauncherSettings.Gestures._ID + "=?",
+                new String[] { id }, null);
+
+        ApplicationInfo info = null;
+
+        try {
+            final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Gestures._ID);
+            final int intentIndex = c.getColumnIndexOrThrow(LauncherSettings.Gestures.INTENT);
+            final int titleIndex = c.getColumnIndexOrThrow(LauncherSettings.Gestures.TITLE);
+            final int iconTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Gestures.ICON_TYPE);
+            final int iconIndex = c.getColumnIndexOrThrow(LauncherSettings.Gestures.ICON);
+            final int iconPackageIndex = c.getColumnIndexOrThrow(LauncherSettings.Gestures.ICON_PACKAGE);
+            final int iconResourceIndex = c.getColumnIndexOrThrow(LauncherSettings.Gestures.ICON_RESOURCE);
+            final int itemTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Gestures.ITEM_TYPE);
+
+            String intentDescription;
+            Intent intent;
+
+            if (c.moveToNext()) {
+                int itemType = c.getInt(itemTypeIndex);
+
+                switch (itemType) {
+                    case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+                    case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                        intentDescription = c.getString(intentIndex);
+                        try {
+                            intent = Intent.parseUri(intentDescription, 0);
+                        } catch (java.net.URISyntaxException e) {
+                            return null;
+                        }
+
+                        if (itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+                            info = getApplicationInfo(manager, intent, context);
+                        } else {
+                            info = getApplicationInfoShortcut(c, context, iconTypeIndex,
+                                    iconPackageIndex, iconResourceIndex, iconIndex);
+                        }
+
+                        if (info == null) {
+                            info = new ApplicationInfo();
+                            info.icon = manager.getDefaultActivityIcon();
+                        }
+
+                        info.isGesture = true;
+                        info.title = c.getString(titleIndex);
+                        info.intent = intent;
+                        info.id = c.getLong(idIndex);
+
+                        break;
+                }
+            }
+        } catch (Exception e) {
+            w(LOG_TAG, "Could not load gesture with name " + id);
+        } finally {
+            c.close();
+        }
+
+        return info;
     }
 }

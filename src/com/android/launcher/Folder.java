@@ -24,7 +24,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.AbsListView;
-import android.widget.ListAdapter;
+import android.widget.BaseAdapter;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 
@@ -122,8 +122,12 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
      *
      * @param adapter The list of applications to display in the folder.
      */
-    void setContentAdapter(ListAdapter adapter) {
+    void setContentAdapter(BaseAdapter adapter) {
         mContent.setAdapter(adapter);
+    }
+
+    void notifyDataSetChanged() {
+        ((BaseAdapter) mContent.getAdapter()).notifyDataSetChanged();
     }
 
     void setLauncher(Launcher launcher) {

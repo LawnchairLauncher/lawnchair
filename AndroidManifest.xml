@@ -21,7 +21,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.launcher"
     android:sharedUserId="android.uid.shared"
-    android:sharedUserLabel="@string/application_name">
+    android:sharedUserLabel="@string/uid_name">
 
     <permission
         android:name="com.android.launcher.permission.INSTALL_SHORTCUT"
@@ -56,6 +56,7 @@
     <uses-permission android:name="android.permission.SET_WALLPAPER_HINTS" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.BIND_APPWIDGET" />
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
     <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS" />
 
@@ -90,6 +91,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="GesturesActivity"
+            android:label="@string/gestures_activity" />        
         
         <!-- Enable system-default search mode for any activity in Home -->
         <meta-data
