@@ -40,6 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.0"
             android:editable="false"
+            android:focusable="true"
             android:inputType="none"
             android:background="@drawable/textfield_searchwidget"
             android:textAppearance="?android:attr/textAppearanceMediumInverse"

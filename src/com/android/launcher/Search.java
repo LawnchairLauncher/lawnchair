@@ -194,10 +194,6 @@ public class Search extends LinearLayout
             // keyboard is not currently available.
             if (getContext().getResources().getConfiguration().hardKeyboardHidden ==
                     Configuration.HARDKEYBOARDHIDDEN_YES) {
-                // Make sure the text field is not focusable, so it's not responsible for
-                // causing the whole view to shift up to accommodate the keyboard.
-                mSearchText.setFocusable(false);
-                
                 InputMethodManager inputManager = (InputMethodManager)
                         getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputManager.showSoftInputUnchecked(0, null);
@@ -227,10 +223,6 @@ public class Search extends LinearLayout
     public void stopSearch(boolean animate) {
         setQuery("");
         
-        // Set the search field back to focusable after making it unfocusable in
-        // startSearch, so that the home screen doesn't try to shift around when the
-        // keyboard comes up.
-        mSearchText.setFocusable(true);
         // Only restore if we are not already restored.
         if (getAnimation() == mMorphAnimation) {
             if (animate && !isAtTop()) {
