@@ -17,7 +17,15 @@
 package com.android.launcher;
 
 import android.app.Activity;
+import android.app.IWallpaperService;
+import android.content.res.Resources;
+import android.graphics.BitmapFactory;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
+import android.os.RemoteException;
+import android.os.ServiceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,13 +37,10 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.Gallery;
 import android.widget.ImageView;
-import android.graphics.BitmapFactory;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.content.res.Resources;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -85,6 +90,7 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
 
     private ArrayList<Integer> mThumbs;
     private ArrayList<Integer> mImages;
+    private ArrayList<String> mNames;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -118,6 +124,12 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
         Collections.addAll(mImages, IMAGE_IDS);
 
         final Resources resources = getResources();
+
+        mNames = new ArrayList<String>(IMAGE_IDS.length + 4);
+        for (int res: mImages) {
+            mNames.add("res:" + resources.getResourceName(res));
+        }
+
         final String[] extras = resources.getStringArray(R.array.extra_wallpapers);
         final String packageName = getApplication().getPackageName();
 
@@ -130,6 +142,7 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
                 if (thumbRes != 0) {
                     mThumbs.add(thumbRes);
                     mImages.add(res);
+                    mNames.add("res:" + extra);
                 }
             }
         }
@@ -170,7 +183,7 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
         mIsWallpaperSet = true;
         try {
             InputStream stream = getResources().openRawResource(mImages.get(position));
-            setWallpaper(stream);
+            setWallpaper(stream, mNames.get(position));
             setResult(RESULT_OK);
             finish();
         } catch (IOException e) {
@@ -217,5 +230,35 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
 
     public void onClick(View v) {
         selectWallpaper(mGallery.getSelectedItemPosition());
+    }
+
+    private void setWallpaper(InputStream data, String name) throws IOException {
+        try {
+            IWallpaperService svc = IWallpaperService.Stub.asInterface(
+                    ServiceManager.getService(WALLPAPER_SERVICE));
+            ParcelFileDescriptor fd = svc.setWallpaper(name);
+            if (fd == null) {
+                return;
+            }
+            FileOutputStream fos = null;
+            try {
+                fos = new ParcelFileDescriptor.AutoCloseOutputStream(fd);
+                setWallpaper(data, fos);
+            } finally {
+                if (fos != null) {
+                    fos.close();
+                }
+            }
+        } catch (RemoteException e) {
+        }
+    }
+
+    private void setWallpaper(InputStream data, FileOutputStream fos)
+            throws IOException {
+        byte[] buffer = new byte[32768];
+        int amt;
+        while ((amt=data.read(buffer)) > 0) {
+            fos.write(buffer, 0, amt);
+        }
     }
 }
