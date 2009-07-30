@@ -15,7 +15,7 @@
  */
 
 
-package com.android.launcher;
+package com.android.launcher2;
 
 import android.widget.ImageView;
 import android.content.Context;

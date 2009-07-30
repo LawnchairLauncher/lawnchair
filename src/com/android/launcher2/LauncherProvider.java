@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher;
+package com.android.launcher2;
 
 import android.appwidget.AppWidgetHost;
 import android.content.ContentProvider;
@@ -47,7 +47,7 @@ import java.util.ArrayList;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParser;
 import com.android.internal.util.XmlUtils;
-import com.android.launcher.LauncherSettings.Favorites;
+import com.android.launcher2.LauncherSettings.Favorites;
 
 public class LauncherProvider extends ContentProvider {
     private static final String LOG_TAG = "LauncherProvider";
@@ -57,10 +57,10 @@ public class LauncherProvider extends ContentProvider {
     
     private static final int DATABASE_VERSION = 4;
 
-    static final String AUTHORITY = "com.android.launcher.settings";
+    static final String AUTHORITY = "com.android.launcher2.settings";
     
-    static final String EXTRA_BIND_SOURCES = "com.android.launcher.settings.bindsources";
-    static final String EXTRA_BIND_TARGETS = "com.android.launcher.settings.bindtargets";
+    static final String EXTRA_BIND_SOURCES = "com.android.launcher2.settings.bindsources";
+    static final String EXTRA_BIND_TARGETS = "com.android.launcher2.settings.bindtargets";
 
     static final String TABLE_FAVORITES = "favorites";
     static final String TABLE_GESTURES = "gestures";

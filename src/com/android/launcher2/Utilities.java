@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher;
+package com.android.launcher2;
 
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;

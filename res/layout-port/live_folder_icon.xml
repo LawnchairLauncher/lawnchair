@@ -17,5 +17,5 @@
  */
 -->
 
-<com.android.launcher.LiveFolderIcon xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.launcher2.LiveFolderIcon xmlns:android="http://schemas.android.com/apk/res/android"
  	style="@style/WorkspaceIcon.Portrait" />

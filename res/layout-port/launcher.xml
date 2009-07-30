@@ -14,16 +14,16 @@
      limitations under the License.
 -->
 
-<com.android.launcher.DragLayer
+<com.android.launcher2.DragLayer
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
+    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher2"
 
     android:id="@+id/drag_layer"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
     <!-- The workspace contains 3 screens of cells -->
-    <com.android.launcher.Workspace
+    <com.android.launcher2.Workspace
         android:id="@+id/workspace"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -34,7 +34,7 @@
         <include android:id="@+id/cell2" layout="@layout/workspace_screen" />
         <include android:id="@+id/cell3" layout="@layout/workspace_screen" />
 
-    </com.android.launcher.Workspace>
+    </com.android.launcher2.Workspace>
 
     <SlidingDrawer
         android:id="@+id/drawer"
@@ -46,7 +46,7 @@
         android:handle="@+id/all_apps"
         android:content="@+id/content">
 
-        <com.android.launcher.HandleView
+        <com.android.launcher2.HandleView
             android:id="@id/all_apps"
             android:layout_width="fill_parent"
             android:layout_height="56dip"
@@ -61,7 +61,7 @@
 
             launcher:direction="horizontal" />
 
-        <com.android.launcher.AllAppsGridView
+        <com.android.launcher2.AllAppsGridView
             android:id="@id/content"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -82,7 +82,7 @@
 
     </SlidingDrawer>
 
-    <com.android.launcher.DeleteZone
+    <com.android.launcher2.DeleteZone
         android:id="@+id/delete_zone"
         android:layout_width="wrap_content"
         android:layout_height="49dip"
@@ -96,4 +96,4 @@
         
         launcher:direction="horizontal" />
 
-</com.android.launcher.DragLayer>
+</com.android.launcher2.DragLayer>

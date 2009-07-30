@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher;
+package com.android.launcher2;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -1658,7 +1658,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         if (folderInfo instanceof UserFolderInfo) {
             openFolder = UserFolder.fromXml(this);
         } else if (folderInfo instanceof LiveFolderInfo) {
-            openFolder = com.android.launcher.LiveFolder.fromXml(this, folderInfo);
+            openFolder = com.android.launcher2.LiveFolder.fromXml(this, folderInfo);
         } else {
             return;
         }

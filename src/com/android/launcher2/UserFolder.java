@@ -1,4 +1,4 @@
-package com.android.launcher;
+package com.android.launcher2;
 
 import android.content.Context;
 import android.graphics.Rect;

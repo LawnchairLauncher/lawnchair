@@ -14,9 +14,9 @@
      limitations under the License.
 -->
 
-<com.android.launcher.CellLayout
+<com.android.launcher2.CellLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
+    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher2"
 
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
