@@ -28,6 +28,7 @@ import android.graphics.PorterDuff;
 import android.os.Vibrator;
 import android.os.SystemClock;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;

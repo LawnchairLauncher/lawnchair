@@ -28,6 +28,7 @@ import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -55,14 +56,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     private static final int SNAP_VELOCITY = 1000;
 
     private int mDefaultScreen;
-
-    private Paint mPaint;
-    private Bitmap mWallpaper;
-
-    private int mWallpaperWidth;
-    private int mWallpaperHeight;
-    private float mWallpaperOffset;
-    private boolean mWallpaperLoaded;
+    private View mWallpaper;
 
     private boolean mFirstLayout = true;
 
@@ -148,22 +142,13 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         mCurrentScreen = mDefaultScreen;
         Launcher.setScreen(mCurrentScreen);
 
-        mPaint = new Paint();
-        mPaint.setDither(false);
-
         final ViewConfiguration configuration = ViewConfiguration.get(getContext());
         mTouchSlop = configuration.getScaledTouchSlop();
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
     }
 
-    /**
-     * Set the background's wallpaper.
-     */
-    void loadWallpaper(Bitmap bitmap) {
-        mWallpaper = bitmap;
-        mWallpaperLoaded = true;
-        requestLayout();
-        invalidate();
+    void setWallpaper(View wallpaper) {
+        mWallpaper = wallpaper;
     }
 
     @Override
@@ -253,6 +238,13 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
      */
     int getCurrentScreen() {
         return mCurrentScreen;
+    }
+
+    /**
+     * Returns how many screens there are.
+     */
+    int getScreenCount() {
+        return getChildCount();
     }
 
     /**
@@ -460,6 +452,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         if (mScroller.computeScrollOffset()) {
             mScrollX = mScroller.getCurrX();
             mScrollY = mScroller.getCurrY();
+            mWallpaper.scrollTo(mScrollX, mScrollY);
             postInvalidate();
         } else if (mNextScreen != INVALID_SCREEN) {
             mCurrentScreen = Math.max(0, Math.min(mNextScreen, getChildCount() - 1));
@@ -470,41 +463,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     @Override
-    public boolean isOpaque() {
-        return !mWallpaper.hasAlpha();
-    }
-
-    @Override
     protected void dispatchDraw(Canvas canvas) {
         boolean restore = false;
-
-        // If the all apps drawer is open and the drawing region for the workspace
-        // is contained within the drawer's bounds, we skip the drawing. This requires
-        // the drawer to be fully opaque.
-        if (mLauncher.isDrawerUp()) {
-            final Rect clipBounds = mClipBounds;
-            canvas.getClipBounds(clipBounds);
-            clipBounds.offset(-mScrollX, -mScrollY);
-            if (mDrawerBounds.contains(clipBounds)) {
-                return;
-            }
-        } else if (mLauncher.isDrawerMoving()) {
-            restore = true;
-            canvas.save(Canvas.CLIP_SAVE_FLAG);
-
-            final View view = mLauncher.getDrawerHandle();
-            final int top = view.getTop() + view.getHeight();
-
-            canvas.clipRect(mScrollX, top, mScrollX + mDrawerContentWidth,
-                    top + mDrawerContentHeight, Region.Op.DIFFERENCE);
-        }
-
-        float x = mScrollX * mWallpaperOffset;
-        if (x + mWallpaperWidth < mRight - mLeft) {
-            x = mRight - mLeft - mWallpaperWidth;
-        }
-
-        canvas.drawBitmap(mWallpaper, x, (mBottom - mTop - mWallpaperHeight) / 2, mPaint);
 
         // ViewGroup.dispatchDraw() supports many features we don't need:
         // clip to padding, layout animation, animation listener, disappearing
@@ -556,18 +516,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         for (int i = 0; i < count; i++) {
             getChildAt(i).measure(widthMeasureSpec, heightMeasureSpec);
         }
-
-        if (mWallpaperLoaded) {
-            mWallpaperLoaded = false;
-            mWallpaper = Utilities.centerToFit(mWallpaper, width,
-                    MeasureSpec.getSize(heightMeasureSpec), getContext());
-            mWallpaperWidth = mWallpaper.getWidth();
-            mWallpaperHeight = mWallpaper.getHeight();
-        }
-
-        final int wallpaperWidth = mWallpaperWidth;
-        mWallpaperOffset = wallpaperWidth > width ? (count * width - wallpaperWidth) /
-                ((count - 1) * (float) width) : 1.0f;
 
         if (mFirstLayout) {
             scrollTo(mCurrentScreen * width, 0);
@@ -769,6 +717,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+
         if (mLocked || !mLauncher.isDrawerDown()) {
             return true;
         }
@@ -803,12 +752,14 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                 if (deltaX < 0) {
                     if (mScrollX > 0) {
                         scrollBy(Math.max(-mScrollX, deltaX), 0);
+                        mWallpaper.scrollTo(mScrollX, mScrollY);
                     }
                 } else if (deltaX > 0) {
                     final int availableToScroll = getChildAt(getChildCount() - 1).getRight() -
                             mScrollX - getWidth();
                     if (availableToScroll > 0) {
                         scrollBy(Math.min(availableToScroll, deltaX), 0);
+                        mWallpaper.scrollTo(mScrollX, mScrollY);
                     }
                 }
             }

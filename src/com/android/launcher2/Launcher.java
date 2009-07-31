@@ -171,6 +171,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private LayoutInflater mInflater;
 
     private DragLayer mDragLayer;
+    private WallpaperView mWallpaperView;
     private Workspace mWorkspace;
 
     private AppWidgetManager mAppWidgetManager;
@@ -539,6 +540,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mDragLayer = (DragLayer) findViewById(R.id.drag_layer);
         final DragLayer dragLayer = mDragLayer;
 
+        mWallpaperView = (WallpaperView) dragLayer.findViewById(R.id.wallpaper);
+        final WallpaperView wallpaper = mWallpaperView;
+
         mWorkspace = (Workspace) dragLayer.findViewById(R.id.workspace);
         final Workspace workspace = mWorkspace;
 
@@ -553,7 +557,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         workspace.setOnLongClickListener(this);
         workspace.setDragger(dragLayer);
         workspace.setLauncher(this);
+        workspace.setWallpaper(wallpaper);
+
         loadWallpaper();
+        wallpaper.setScreenCount(workspace.getScreenCount());
 
         deleteZone.setLauncher(this);
         deleteZone.setDragController(dragLayer);
@@ -1645,7 +1652,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 throw new IllegalStateException("The wallpaper must be a BitmapDrawable.");
             }
         }
-        mWorkspace.loadWallpaper(sWallpaper);
+        mWallpaperView.loadWallpaper(sWallpaper);
     }
 
     /**
@@ -1734,14 +1741,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     boolean isDrawerDown() {
         return /* TODO !mDrawer.isMoving() && */ !mAllAppsDialog.isOpen;
-    }
-
-    boolean isDrawerUp() {
-        return mAllAppsDialog.isOpen; /* TODO && !mDrawer.isMoving();*/
-    }
-
-    boolean isDrawerMoving() {
-        return false; // TODO mDrawer.isMoving();
     }
 
     Workspace getWorkspace() {
