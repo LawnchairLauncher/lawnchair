@@ -1505,7 +1505,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
             final boolean allApps = mSavedState.getBoolean(RUNTIME_STATE_ALL_APPS_FOLDER, false);
             if (allApps) {
-                showDialog(DIALOG_ALL_APPS);
+                showAllAppsDialog();
             }
 
             mSavedState = null;
@@ -1586,7 +1586,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             if (mAllAppsDialog.isOpen) {
                 // TODO how can we be here?
             } else {
-                showDialog(DIALOG_ALL_APPS);
+                showAllAppsDialog();
             }
         }
     }
@@ -1772,7 +1772,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     protected void onPrepareDialog(int id, Dialog dialog) {
         switch (id) {
             case DIALOG_ALL_APPS:
-                mAllAppsDialog.isOpen = true;
                 break;
             case DIALOG_CREATE_SHORTCUT:
                 break;
@@ -1785,6 +1784,11 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 }
                 break;
         }
+    }
+
+    void showAllAppsDialog() {
+        mAllAppsDialog.isOpen = true;
+        showDialog(DIALOG_ALL_APPS);
     }
 
     void showRenameDialog(FolderInfo info) {
