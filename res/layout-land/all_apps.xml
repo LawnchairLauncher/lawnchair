@@ -22,8 +22,6 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
 
-    launcher:texture="@drawable/pattern_carbon_fiber_dark"
-
     android:scrollbarStyle="outsideInset"
     android:drawSelectorOnTop="false"
     android:listSelector="@drawable/grid_selector"
