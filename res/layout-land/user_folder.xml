@@ -28,7 +28,7 @@
     	android:layout_height="wrap_content" />
 
     <GridView
-        android:id="@id/content"
+        android:id="@+id/content"
         android:layout_width="fill_parent"
     	android:layout_height="0dip"
     	android:layout_weight="1"

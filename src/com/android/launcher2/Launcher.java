@@ -70,7 +70,7 @@ import android.view.View.OnLongClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.SlidingDrawer;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.appwidget.AppWidgetManager;
@@ -123,8 +123,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     static final int NUMBER_CELLS_X = 4;
     static final int NUMBER_CELLS_Y = 4;
 
-    private static final int DIALOG_CREATE_SHORTCUT = 1;
-    static final int DIALOG_RENAME_FOLDER = 2;
+    static final int DIALOG_ALL_APPS = 1;
+    static final int DIALOG_CREATE_SHORTCUT = 2;
+    static final int DIALOG_RENAME_FOLDER = 3;
 
     private static final String PREFERENCES = "launcher.preferences";
 
@@ -182,10 +183,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private final int[] mCellCoordinates = new int[2];
     private FolderInfo mFolderInfo;
 
-    private SlidingDrawer mDrawer;
+    private AllAppsDialog mAllAppsDialog;
     private TransitionDrawable mHandleIcon;
     private HandleView mHandleView;
-    private AllAppsGridView mAllAppsGrid;
+    private AllAppsGridView mAllAppsGrid; // TODO: put this into AllAppsDialog
 
     private boolean mDesktopLocked = true;
     private Bundle mSavedState;
@@ -226,6 +227,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         setContentView(R.layout.launcher);
         setupViews();
+
+        mAllAppsDialog = new AllAppsDialog(this);
+        mAllAppsDialog.lock();
 
         registerIntentReceivers();
         registerContentObservers();
@@ -538,28 +542,13 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mWorkspace = (Workspace) dragLayer.findViewById(R.id.workspace);
         final Workspace workspace = mWorkspace;
 
-        mDrawer = (SlidingDrawer) dragLayer.findViewById(R.id.drawer);
-        final SlidingDrawer drawer = mDrawer;
-
-        mAllAppsGrid = (AllAppsGridView) drawer.getContent();
-        final AllAppsGridView grid = mAllAppsGrid;
-
         final DeleteZone deleteZone = (DeleteZone) dragLayer.findViewById(R.id.delete_zone);
 
-        mHandleView = (HandleView) drawer.findViewById(R.id.all_apps);
+        mHandleView = (HandleView) findViewById(R.id.all_apps);
         mHandleView.setLauncher(this);
+        mHandleView.setOnClickListener(this);
         mHandleIcon = (TransitionDrawable) mHandleView.getDrawable();
         mHandleIcon.setCrossFadeEnabled(true);
-
-        drawer.lock();
-        final DrawerManager drawerManager = new DrawerManager();
-        drawer.setOnDrawerOpenListener(drawerManager);
-        drawer.setOnDrawerCloseListener(drawerManager);
-        drawer.setOnDrawerScrollListener(drawerManager);
-
-        grid.setTextFilterEnabled(false);
-        grid.setDragger(dragLayer);
-        grid.setLauncher(this);
 
         workspace.setOnLongClickListener(this);
         workspace.setDragger(dragLayer);
@@ -570,7 +559,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         deleteZone.setDragController(dragLayer);
         deleteZone.setHandle(mHandleView);
 
-        dragLayer.setIgnoredDropTarget(grid);
+        // TODO dragLayer.setIgnoredDropTarget(grid);
         dragLayer.setDragScoller(workspace);
         dragLayer.setDragListener(deleteZone);
     }
@@ -868,7 +857,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         // When the drawer is opened and we are saving the state because of a
         // configuration change
-        if (mDrawer.isOpened() && isConfigurationChange) {
+        if (mAllAppsDialog.isOpen && isConfigurationChange) {
             outState.putBoolean(RUNTIME_STATE_ALL_APPS_FOLDER, true);
         }
 
@@ -1331,7 +1320,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 case KeyEvent.KEYCODE_BACK:
                     if (!event.isCanceled()) {
                         mWorkspace.dispatchKeyEvent(event);
-                        if (mDrawer.isOpened()) {
+                        if (mAllAppsDialog.isOpen) {
                             closeDrawer();
                         } else {
                             closeFolder();
@@ -1353,13 +1342,14 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     }
 
     private void closeDrawer(boolean animated) {
-        if (mDrawer.isOpened()) {
+        if (mAllAppsDialog.isOpen) {
             if (animated) {
-                mDrawer.animateClose();
+                // TODO mDrawer.animateClose();
+                mAllAppsDialog.dismiss();
             } else {
-                mDrawer.close();
+                mAllAppsDialog.dismiss();
             }
-            if (mDrawer.hasFocus()) {
+            if (false /* TODO mDrawer.hasFocus() */) {
                 mWorkspace.getChildAt(mWorkspace.getCurrentScreen()).requestFocus();
             }
         }
@@ -1387,7 +1377,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
      */
     private void onFavoritesChanged() {
         mDesktopLocked = true;
-        mDrawer.lock();
+        mAllAppsDialog.lock();
         sModel.loadUserItems(false, this, false, false);
     }
 
@@ -1515,7 +1505,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
             final boolean allApps = mSavedState.getBoolean(RUNTIME_STATE_ALL_APPS_FOLDER, false);
             if (allApps) {
-                mDrawer.open();
+                showDialog(DIALOG_ALL_APPS);
             }
 
             mSavedState = null;
@@ -1526,12 +1516,14 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             mSavedInstanceState = null;
         }
 
-        if (mDrawer.isOpened() && !mDrawer.hasFocus()) {
+        /* TODO
+        if (mAllAppsDialog.isOpen && !mDrawer.hasFocus()) {
             mDrawer.requestFocus();
         }
+        */
 
         mDesktopLocked = false;
-        mDrawer.unlock();
+        mAllAppsDialog.unlock();
     }
 
     private void bindDrawer(Launcher.DesktopBinder binder,
@@ -1590,6 +1582,12 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             startActivitySafely(intent);
         } else if (tag instanceof FolderInfo) {
             handleFolderClick((FolderInfo) tag);
+        } else if (v == mHandleView) {
+            if (mAllAppsDialog.isOpen) {
+                // TODO how can we be here?
+            } else {
+                showDialog(DIALOG_ALL_APPS);
+            }
         }
     }
 
@@ -1635,7 +1633,12 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         // The first time the application is started, we load the wallpaper from
         // the ApplicationContext
         if (sWallpaper == null) {
-            final Drawable drawable = getWallpaper();
+            final Drawable drawable;
+            if (false) {
+                drawable = getWallpaper();
+            } else {
+                drawable = getResources().getDrawable(R.drawable.wallpaper_path);
+            }
             if (drawable instanceof BitmapDrawable) {
                 sWallpaper = ((BitmapDrawable) drawable).getBitmap();
             } else {
@@ -1721,7 +1724,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     }
 
     void closeAllApplications() {
-        mDrawer.close();
+        // TODO mDrawer.close();
+        mAllAppsDialog.dismiss();
     }
 
     View getDrawerHandle() {
@@ -1729,28 +1733,32 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     }
 
     boolean isDrawerDown() {
-        return !mDrawer.isMoving() && !mDrawer.isOpened();
+        return /* TODO !mDrawer.isMoving() && */ !mAllAppsDialog.isOpen;
     }
 
     boolean isDrawerUp() {
-        return mDrawer.isOpened() && !mDrawer.isMoving();
+        return mAllAppsDialog.isOpen; /* TODO && !mDrawer.isMoving();*/
     }
 
     boolean isDrawerMoving() {
-        return mDrawer.isMoving();
+        return false; // TODO mDrawer.isMoving();
     }
 
     Workspace getWorkspace() {
         return mWorkspace;
     }
 
+    /* TODO
     GridView getApplicationsGrid() {
         return mAllAppsGrid;
     }
+    */
 
     @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
+            case DIALOG_ALL_APPS:
+                return mAllAppsDialog;
             case DIALOG_CREATE_SHORTCUT:
                 return new CreateShortcut().createDialog();
             case DIALOG_RENAME_FOLDER:
@@ -1763,6 +1771,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     @Override
     protected void onPrepareDialog(int id, Dialog dialog) {
         switch (id) {
+            case DIALOG_ALL_APPS:
+                mAllAppsDialog.isOpen = true;
+                break;
             case DIALOG_CREATE_SHORTCUT:
                 break;
             case DIALOG_RENAME_FOLDER:
@@ -1860,7 +1871,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 LauncherModel.updateItemInDatabase(Launcher.this, mFolderInfo);
 
                 if (mDesktopLocked) {
-                    mDrawer.lock();
+                    mAllAppsDialog.lock();
                     sModel.loadUserItems(false, Launcher.this, false, false);
                 } else {
                     final FolderIcon folderIcon = (FolderIcon)
@@ -1870,7 +1881,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                         getWorkspace().requestLayout();
                     } else {
                         mDesktopLocked = true;
-                        mDrawer.lock();
+                        mAllAppsDialog.lock();
                         sModel.loadUserItems(false, Launcher.this, false, false);
                     }
                 }
@@ -1883,6 +1894,53 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             dismissDialog(DIALOG_RENAME_FOLDER);
             mWaitingForResult = false;
             mFolderInfo = null;
+        }
+    }
+
+    /**
+     * Holds the 3d all apps view.
+     */
+    private class AllAppsDialog extends Dialog implements DialogInterface.OnCancelListener,
+            DialogInterface.OnDismissListener, DialogInterface.OnShowListener {
+
+        boolean isOpen;
+
+        AllAppsDialog(Context context) {
+            super(context, android.R.style.Theme_Translucent_NoTitleBar);
+
+            setOnCancelListener(this);
+            setOnDismissListener(this);
+            setOnShowListener(this);
+
+            setContentView(R.layout.all_apps);
+            AllAppsGridView grid = mAllAppsGrid = (AllAppsGridView)findViewById(R.id.all_apps);
+
+            grid.setTextFilterEnabled(false);
+            // TODO grid.setDragger(dragLayer);
+            grid.setLauncher(Launcher.this);
+        }
+
+        public void onCancel(DialogInterface dialog) {
+            onDestroy();
+        }
+
+        public void onDismiss(DialogInterface dialog) {
+            onDestroy();
+        }
+
+        public void onShow(DialogInterface dialog) {
+        }
+        
+        private void onDestroy() {
+            this.isOpen = false;
+        }
+
+        void lock() {
+            // TODO
+        }
+        
+        void unlock() {
+            // TODO
         }
     }
 
@@ -2104,57 +2162,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 if (launcher != null) {
                     launcher.loadWallpaper();
                 }
-            }
-        }
-    }
-
-    private class DrawerManager implements SlidingDrawer.OnDrawerOpenListener,
-            SlidingDrawer.OnDrawerCloseListener, SlidingDrawer.OnDrawerScrollListener {
-        private boolean mOpen;
-
-        public void onDrawerOpened() {
-            if (!mOpen) {
-                mHandleIcon.reverseTransition(150);
-
-                final Rect bounds = mWorkspace.mDrawerBounds;
-                offsetBoundsToDragLayer(bounds, mAllAppsGrid);
-
-                mOpen = true;
-            }
-        }
-
-        private void offsetBoundsToDragLayer(Rect bounds, View view) {
-            view.getDrawingRect(bounds);
-
-            while (view != mDragLayer) {
-                bounds.offset(view.getLeft(), view.getTop());
-                view = (View) view.getParent();
-            }
-        }
-
-        public void onDrawerClosed() {
-            if (mOpen) {
-                mHandleIcon.reverseTransition(150);
-                mWorkspace.mDrawerBounds.setEmpty();
-                mOpen = false;
-            }
-
-            mAllAppsGrid.setSelection(0);
-            mAllAppsGrid.clearTextFilter();
-        }
-
-        public void onScrollStarted() {
-            if (PROFILE_DRAWER) {
-                android.os.Debug.startMethodTracing("/sdcard/launcher-drawer");
-            }
-
-            mWorkspace.mDrawerContentWidth = mAllAppsGrid.getWidth();
-            mWorkspace.mDrawerContentHeight = mAllAppsGrid.getHeight();
-        }
-
-        public void onScrollEnded() {
-            if (PROFILE_DRAWER) {
-                android.os.Debug.stopMethodTracing();
             }
         }
     }

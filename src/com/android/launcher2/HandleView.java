@@ -62,9 +62,11 @@ public class HandleView extends ImageView {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         final boolean handled = super.onKeyDown(keyCode, event);
 
+        /* TODO
         if (!handled && !mLauncher.isDrawerDown() && !isDirectionKey(keyCode)) {
             return mLauncher.getApplicationsGrid().onKeyDown(keyCode, event);
         }
+        */
 
         return handled;
     }
@@ -73,9 +75,11 @@ public class HandleView extends ImageView {
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         final boolean handled = super.onKeyUp(keyCode, event);
 
+        /* TODO
         if (!handled && !mLauncher.isDrawerDown() && !isDirectionKey(keyCode)) {
             return mLauncher.getApplicationsGrid().onKeyUp(keyCode, event);
         }
+        */
 
         return handled;
     }

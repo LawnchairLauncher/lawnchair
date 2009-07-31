@@ -36,51 +36,21 @@
 
     </com.android.launcher2.Workspace>
 
-    <SlidingDrawer
-        android:id="@+id/drawer"
+    <com.android.launcher2.HandleView
+        android:id="@id/all_apps"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="56dip"
+        android:layout_gravity="bottom"
 
-        android:topOffset="5dip"
-        android:bottomOffset="7dip"
-        android:handle="@+id/all_apps"
-        android:content="@+id/content">
+        android:background="@drawable/handle"
 
-        <com.android.launcher2.HandleView
-            android:id="@id/all_apps"
-            android:layout_width="fill_parent"
-            android:layout_height="56dip"
+        android:focusable="true"
+        android:clickable="true"
 
-            android:background="@drawable/handle"
+        android:scaleType="center"
+        android:src="@drawable/handle_icon"
 
-            android:focusable="true"
-            android:clickable="true"
-
-            android:scaleType="center"
-            android:src="@drawable/handle_icon"
-
-            launcher:direction="horizontal" />
-
-        <com.android.launcher2.AllAppsGridView
-            android:id="@id/content"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-
-            launcher:texture="@drawable/pattern_carbon_fiber_dark"
-
-            android:scrollbarStyle="outsideInset"
-            android:drawSelectorOnTop="false"
-            android:listSelector="@drawable/grid_selector"
-
-            android:nextFocusLeft="@id/content"
-            android:nextFocusDown="@id/content"
-            android:nextFocusUp="@id/all_apps"
-            android:nextFocusRight="@id/content"
-
-            android:verticalSpacing="10dip"
-            android:numColumns="4" />
-
-    </SlidingDrawer>
+        launcher:direction="horizontal" />
 
     <com.android.launcher2.DeleteZone
         android:id="@+id/delete_zone"
