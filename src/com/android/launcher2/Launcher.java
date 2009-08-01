@@ -441,7 +441,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     @Override
     protected void onPause() {
         super.onPause();
-        closeDrawer(false);
+        closeAllAppsDialog(false);
     }
 
     @Override
@@ -823,7 +823,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     mWorkspace.moveToDefaultScreen();
                 }
 
-                closeDrawer();
+                closeAllAppsDialog(true);
 
                 final View v = getWindow().peekDecorView();
                 if (v != null && v.getWindowToken() != null) {
@@ -832,7 +832,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 }
             } else {
-                closeDrawer(false);
+                closeAllAppsDialog(false);
             }
         }
     }
@@ -922,7 +922,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     public void startSearch(String initialQuery, boolean selectInitialQuery,
             Bundle appSearchData, boolean globalSearch) {
 
-        closeDrawer(false);
+        closeAllAppsDialog(false);
 
         // Slide the search widget to the top, if it's on the current screen,
         // otherwise show the search dialog immediately.
@@ -1328,7 +1328,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     if (!event.isCanceled()) {
                         mWorkspace.dispatchKeyEvent(event);
                         if (mAllAppsDialog.isOpen) {
-                            closeDrawer();
+                            closeAllAppsDialog(true);
                         } else {
                             closeFolder();
                         }
@@ -1342,24 +1342,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
 
         return super.dispatchKeyEvent(event);
-    }
-
-    private void closeDrawer() {
-        closeDrawer(true);
-    }
-
-    private void closeDrawer(boolean animated) {
-        if (mAllAppsDialog.isOpen) {
-            if (animated) {
-                // TODO mDrawer.animateClose();
-                mAllAppsDialog.dismiss();
-            } else {
-                mAllAppsDialog.dismiss();
-            }
-            if (false /* TODO mDrawer.hasFocus() */) {
-                mWorkspace.getChildAt(mWorkspace.getCurrentScreen()).requestFocus();
-            }
-        }
     }
 
     private void closeFolder() {
@@ -1785,11 +1767,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
     }
 
-    void showAllAppsDialog() {
-        mAllAppsDialog.isOpen = true;
-        showDialog(DIALOG_ALL_APPS);
-    }
-
     void showRenameDialog(FolderInfo info) {
         mFolderInfo = info;
         mWaitingForResult = true;
@@ -1935,7 +1912,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
         
         private void onDestroy() {
-            this.isOpen = false;
         }
 
         void lock() {
@@ -1944,6 +1920,36 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         
         void unlock() {
             // TODO
+        }
+
+        @Override public boolean onKeyDown(int keyCode, KeyEvent event) {
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_BACK:
+                    closeAllAppsDialog(true);
+                    return true;
+                default:
+                    return super.onKeyDown(keyCode, event);
+            }
+        }
+    }
+
+    void showAllAppsDialog() {
+        mAllAppsDialog.isOpen = true;
+        showDialog(DIALOG_ALL_APPS);
+        mWorkspace.hide();
+    }
+
+    private void closeAllAppsDialog(boolean animated) {
+        if (mAllAppsDialog.isOpen) {
+            if (animated) {
+                // TODO mDrawer.animateClose();
+                mAllAppsDialog.dismiss();
+            } else {
+                mAllAppsDialog.dismiss();
+            }
+            mAllAppsDialog.isOpen = false;
+            mWorkspace.getChildAt(mWorkspace.getCurrentScreen()).requestFocus();
+            mWorkspace.show();
         }
     }
 
