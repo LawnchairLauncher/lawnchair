@@ -15,54 +15,54 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name">"홈"</string>
+    <string name="application_name" msgid="5865630159700533006">"홈"</string>
     <!-- no translation found for uid_name (3371120195364560632) -->
     <skip />
-    <string name="folder_name">"폴더"</string>
-    <string name="chooser_wallpaper">"배경화면 선택"</string>
-    <string name="wallpaper_instructions">"배경화면 설정"</string>
-    <string name="pick_wallpaper">"배경화면 갤러리"</string>
-    <string name="activity_not_found">"휴대전화에 설치되어 있지 않은 응용프로그램입니다."</string>
-    <string name="rename_folder_label">"폴더 이름"</string>
-    <string name="rename_folder_title">"폴더 이름 바꾸기"</string>
-    <string name="rename_action">"확인"</string>
-    <string name="cancel_action">"취소"</string>
-    <string name="menu_item_add_item">"홈 화면에 추가"</string>
-    <string name="group_applications">"응용프로그램"</string>
-    <string name="group_shortcuts">"바로가기"</string>
-    <string name="group_search">"검색"</string>
-    <string name="group_folder">"새 폴더"</string>
-    <string name="group_live_folders">"폴더"</string>
-    <string name="group_widgets">"위젯"</string>
-    <string name="group_wallpapers">"배경화면"</string>
-    <string name="add_folder">"폴더"</string>
-    <string name="add_clock">"시계"</string>
-    <string name="add_photo_frame">"사진 프레임"</string>
-    <string name="add_search">"검색"</string>
-    <string name="out_of_space">"홈 화면에 더 이상 공간이 없습니다."</string>
-    <!-- no translation found for shortcut_installed (6623689857689040689) -->
+    <string name="folder_name" msgid="4588446541914685904">"폴더"</string>
+    <string name="chooser_wallpaper" msgid="5988031014201479733">"배경화면 선택"</string>
+    <string name="wallpaper_instructions" msgid="4215640646180727542">"배경화면 설정"</string>
+    <string name="pick_wallpaper" msgid="2674908923379130941">"배경화면 갤러리"</string>
+    <string name="activity_not_found" msgid="3571057450431950427">"휴대전화에 설치되어 있지 않은 응용프로그램입니다."</string>
+    <string name="rename_folder_label" msgid="5646236631298452787">"폴더 이름"</string>
+    <string name="rename_folder_title" msgid="4544573104191526550">"폴더 이름 바꾸기"</string>
+    <string name="rename_action" msgid="6016003384693240896">"확인"</string>
+    <string name="cancel_action" msgid="3811860427489435048">"취소"</string>
+    <string name="menu_item_add_item" msgid="6233177331075781114">"홈 화면에 추가"</string>
+    <string name="group_applications" msgid="4118484163419674240">"응용프로그램"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"바로가기"</string>
+    <string name="group_search" msgid="5905328940867162196">"검색"</string>
+    <string name="group_folder" msgid="5143593791798929193">"새 폴더"</string>
+    <string name="group_live_folders" msgid="2664945399140647217">"폴더"</string>
+    <string name="group_widgets" msgid="6704978494073105844">"위젯"</string>
+    <string name="group_wallpapers" msgid="1568191644272224858">"배경화면"</string>
+    <string name="add_folder" msgid="3521088587367839879">"폴더"</string>
+    <string name="add_clock" msgid="2337943840175865746">"시계"</string>
+    <string name="add_photo_frame" msgid="3154058437359487954">"사진 프레임"</string>
+    <string name="add_search" msgid="7104834713685095105">"검색"</string>
+    <string name="out_of_space" msgid="8365249326091984698">"홈 화면에 더 이상 공간이 없습니다."</string>
+    <!-- no translation found for shortcut_installed (6179314539443046225) -->
     <skip />
     <!-- no translation found for shortcut_uninstalled (2758997515869993129) -->
     <skip />
     <!-- no translation found for shortcut_duplicate (4887186782641532074) -->
     <skip />
-    <string name="title_select_shortcut">"바로가기 선택"</string>
-    <string name="title_select_live_folder">"폴더 선택"</string>
-    <string name="menu_add">"추가"</string>
-    <string name="menu_wallpaper">"배경화면"</string>
-    <string name="menu_search">"검색"</string>
-    <string name="menu_notifications">"알림"</string>
+    <string name="title_select_shortcut" msgid="2858897527672831763">"바로가기 선택"</string>
+    <string name="title_select_live_folder" msgid="3753447798805166749">"폴더 선택"</string>
+    <string name="menu_add" msgid="3065046628354640854">"추가"</string>
+    <string name="menu_wallpaper" msgid="5837429080911269832">"배경화면"</string>
+    <string name="menu_search" msgid="4826514464423239041">"검색"</string>
+    <string name="menu_notifications" msgid="6424587053194766192">"알림"</string>
     <!-- no translation found for menu_gestures (514678675575912237) -->
     <skip />
-    <string name="menu_settings">"설정"</string>
-    <string name="permlab_install_shortcut">"바로가기 설치"</string>
-    <string name="permdesc_install_shortcut">"응용프로그램이 사용자의 작업 없이 바로가기를 추가할 수 있도록 합니다."</string>
-    <string name="permlab_uninstall_shortcut">"바로가기 제거"</string>
-    <string name="permdesc_uninstall_shortcut">"응용프로그램이 사용자의 작업 없이 바로가기를 삭제할 수 있도록 합니다."</string>
-    <string name="permlab_read_settings">"홈 설정 및 바로가기 읽기"</string>
-    <string name="permdesc_read_settings">"응용프로그램이 홈에 있는 설정 및 바로가기를 읽을 수 있도록 합니다."</string>
-    <string name="permlab_write_settings">"홈 설정 및 바로가기 쓰기"</string>
-    <string name="permdesc_write_settings">"응용프로그램이 홈에 있는 설정 및 바로가기를 변경할 수 있도록 합니다."</string>
-    <string name="search_hint">"Google 검색"</string>
-    <string name="gadget_error_text">"위젯을 로드하는 중 문제가 발생했습니다."</string>
+    <string name="menu_settings" msgid="6233960148378443661">"설정"</string>
+    <string name="permlab_install_shortcut" msgid="1201690825493376489">"바로가기 설치"</string>
+    <string name="permdesc_install_shortcut" msgid="7429365847558984148">"응용프로그램이 사용자의 작업 없이 바로가기를 추가할 수 있도록 합니다."</string>
+    <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"바로가기 제거"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="959972195916090900">"응용프로그램이 사용자의 작업 없이 바로가기를 삭제할 수 있도록 합니다."</string>
+    <string name="permlab_read_settings" msgid="3452408290738106747">"홈 설정 및 바로가기 읽기"</string>
+    <string name="permdesc_read_settings" msgid="8377434937176025492">"응용프로그램이 홈에 있는 설정 및 바로가기를 읽을 수 있도록 합니다."</string>
+    <string name="permlab_write_settings" msgid="1360567537236705628">"홈 설정 및 바로가기 쓰기"</string>
+    <string name="permdesc_write_settings" msgid="1098648778383349818">"응용프로그램이 홈에 있는 설정 및 바로가기를 변경할 수 있도록 합니다."</string>
+    <string name="search_hint" msgid="6974176141372467453">"Google 검색"</string>
+    <string name="gadget_error_text" msgid="8359351016167075858">"위젯을 로드하는 중 문제가 발생했습니다."</string>
 </resources>

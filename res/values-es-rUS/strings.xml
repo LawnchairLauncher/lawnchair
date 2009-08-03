@@ -15,54 +15,54 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name">"Página principal"</string>
+    <string name="application_name" msgid="5865630159700533006">"Página principal"</string>
     <!-- no translation found for uid_name (3371120195364560632) -->
     <skip />
-    <string name="folder_name">"Carpeta"</string>
-    <string name="chooser_wallpaper">"Seleccionar papel tapiz desde"</string>
-    <string name="wallpaper_instructions">"Definir papel tapiz"</string>
-    <string name="pick_wallpaper">"Galería de papel tapiz"</string>
-    <string name="activity_not_found">"La aplicación no está instalada en tu computadora."</string>
-    <string name="rename_folder_label">"Nombre de carpeta"</string>
-    <string name="rename_folder_title">"Cambiar nombre de carpeta"</string>
-    <string name="rename_action">"Aceptar"</string>
-    <string name="cancel_action">"Cancelar"</string>
-    <string name="menu_item_add_item">"Agregar a la pantalla Página principal"</string>
-    <string name="group_applications">"Aplicaciones"</string>
-    <string name="group_shortcuts">"Accesos directos"</string>
-    <string name="group_search">"Buscar"</string>
-    <string name="group_folder">"Carpeta nueva"</string>
-    <string name="group_live_folders">"Carpetas"</string>
-    <string name="group_widgets">"Controles"</string>
-    <string name="group_wallpapers">"Papeles tapiz"</string>
-    <string name="add_folder">"Carpeta"</string>
-    <string name="add_clock">"Reloj"</string>
-    <string name="add_photo_frame">"Marco de imagen"</string>
-    <string name="add_search">"Buscar"</string>
-    <string name="out_of_space">"No hay más espacio en esta pantalla de la página principal"</string>
-    <!-- no translation found for shortcut_installed (6623689857689040689) -->
+    <string name="folder_name" msgid="4588446541914685904">"Carpeta"</string>
+    <string name="chooser_wallpaper" msgid="5988031014201479733">"Seleccionar papel tapiz desde"</string>
+    <string name="wallpaper_instructions" msgid="4215640646180727542">"Definir papel tapiz"</string>
+    <string name="pick_wallpaper" msgid="2674908923379130941">"Galería de papel tapiz"</string>
+    <string name="activity_not_found" msgid="3571057450431950427">"La aplicación no está instalada en tu computadora."</string>
+    <string name="rename_folder_label" msgid="5646236631298452787">"Nombre de carpeta"</string>
+    <string name="rename_folder_title" msgid="4544573104191526550">"Cambiar nombre de carpeta"</string>
+    <string name="rename_action" msgid="6016003384693240896">"Aceptar"</string>
+    <string name="cancel_action" msgid="3811860427489435048">"Cancelar"</string>
+    <string name="menu_item_add_item" msgid="6233177331075781114">"Agregar a la pantalla Página principal"</string>
+    <string name="group_applications" msgid="4118484163419674240">"Aplicaciones"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"Accesos directos"</string>
+    <string name="group_search" msgid="5905328940867162196">"Buscar"</string>
+    <string name="group_folder" msgid="5143593791798929193">"Carpeta nueva"</string>
+    <string name="group_live_folders" msgid="2664945399140647217">"Carpetas"</string>
+    <string name="group_widgets" msgid="6704978494073105844">"Controles"</string>
+    <string name="group_wallpapers" msgid="1568191644272224858">"Papeles tapiz"</string>
+    <string name="add_folder" msgid="3521088587367839879">"Carpeta"</string>
+    <string name="add_clock" msgid="2337943840175865746">"Reloj"</string>
+    <string name="add_photo_frame" msgid="3154058437359487954">"Marco de imagen"</string>
+    <string name="add_search" msgid="7104834713685095105">"Buscar"</string>
+    <string name="out_of_space" msgid="8365249326091984698">"No hay más espacio en esta pantalla de la página principal"</string>
+    <!-- no translation found for shortcut_installed (6179314539443046225) -->
     <skip />
     <!-- no translation found for shortcut_uninstalled (2758997515869993129) -->
     <skip />
     <!-- no translation found for shortcut_duplicate (4887186782641532074) -->
     <skip />
-    <string name="title_select_shortcut">"Seleccionar acceso directo"</string>
-    <string name="title_select_live_folder">"Seleccionar carpeta"</string>
-    <string name="menu_add">"Agregar"</string>
-    <string name="menu_wallpaper">"Papel tapiz"</string>
-    <string name="menu_search">"Buscar"</string>
-    <string name="menu_notifications">"Notificaciones"</string>
+    <string name="title_select_shortcut" msgid="2858897527672831763">"Seleccionar acceso directo"</string>
+    <string name="title_select_live_folder" msgid="3753447798805166749">"Seleccionar carpeta"</string>
+    <string name="menu_add" msgid="3065046628354640854">"Agregar"</string>
+    <string name="menu_wallpaper" msgid="5837429080911269832">"Papel tapiz"</string>
+    <string name="menu_search" msgid="4826514464423239041">"Buscar"</string>
+    <string name="menu_notifications" msgid="6424587053194766192">"Notificaciones"</string>
     <!-- no translation found for menu_gestures (514678675575912237) -->
     <skip />
-    <string name="menu_settings">"Configuración"</string>
-    <string name="permlab_install_shortcut">"instalar accesos directos"</string>
-    <string name="permdesc_install_shortcut">"Permite a una aplicación agregar accesos directos sin intervención del usuario."</string>
-    <string name="permlab_uninstall_shortcut">"desinstalar papel tapiz"</string>
-    <string name="permdesc_uninstall_shortcut">"Permite a una aplicación suprimir accesos directos sin intervención del usuario."</string>
-    <string name="permlab_read_settings">"leer configuración y accesos directos de la página principal"</string>
-    <string name="permdesc_read_settings">"Permite a una aplicación leer la configuración y los accesos directos de la página principal."</string>
-    <string name="permlab_write_settings">"escribir configuración y accesos directos de la página principal"</string>
-    <string name="permdesc_write_settings">"Permite a una aplicación cambiar la configuración y los accesos directos de la página principal."</string>
-    <string name="search_hint">"Búsqueda de Google"</string>
-    <string name="gadget_error_text">"Problema al cargar el widget"</string>
+    <string name="menu_settings" msgid="6233960148378443661">"Configuración"</string>
+    <string name="permlab_install_shortcut" msgid="1201690825493376489">"instalar accesos directos"</string>
+    <string name="permdesc_install_shortcut" msgid="7429365847558984148">"Permite a una aplicación agregar accesos directos sin intervención del usuario."</string>
+    <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"desinstalar papel tapiz"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="959972195916090900">"Permite a una aplicación suprimir accesos directos sin intervención del usuario."</string>
+    <string name="permlab_read_settings" msgid="3452408290738106747">"leer configuración y accesos directos de la página principal"</string>
+    <string name="permdesc_read_settings" msgid="8377434937176025492">"Permite a una aplicación leer la configuración y los accesos directos de la página principal."</string>
+    <string name="permlab_write_settings" msgid="1360567537236705628">"escribir configuración y accesos directos de la página principal"</string>
+    <string name="permdesc_write_settings" msgid="1098648778383349818">"Permite a una aplicación cambiar la configuración y los accesos directos de la página principal."</string>
+    <string name="search_hint" msgid="6974176141372467453">"Búsqueda de Google"</string>
+    <string name="gadget_error_text" msgid="8359351016167075858">"Problema al cargar el widget"</string>
 </resources>

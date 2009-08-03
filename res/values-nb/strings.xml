@@ -15,54 +15,50 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name">"Hjem"</string>
-    <!-- no translation found for uid_name (3371120195364560632) -->
+    <string name="application_name" msgid="5865630159700533006">"Hjem"</string>
+    <string name="uid_name" msgid="3371120195364560632">"Android-kjerneapplikasjoner"</string>
+    <string name="folder_name" msgid="4588446541914685904">"Mappe"</string>
+    <string name="chooser_wallpaper" msgid="5988031014201479733">"Velg bakgrunnsbilde fra"</string>
+    <string name="wallpaper_instructions" msgid="4215640646180727542">"Velg bakgrunnsbilde"</string>
+    <string name="pick_wallpaper" msgid="2674908923379130941">"Bildegalleri"</string>
+    <string name="activity_not_found" msgid="3571057450431950427">"Applikasjonen er ikke installert."</string>
+    <string name="rename_folder_label" msgid="5646236631298452787">"Mappenavn"</string>
+    <string name="rename_folder_title" msgid="4544573104191526550">"Gi nytt navn til mappe"</string>
+    <string name="rename_action" msgid="6016003384693240896">"OK"</string>
+    <string name="cancel_action" msgid="3811860427489435048">"Avbryt"</string>
+    <string name="menu_item_add_item" msgid="6233177331075781114">"Legg til skrivebord"</string>
+    <string name="group_applications" msgid="4118484163419674240">"Applikasjoner"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"Snarveier"</string>
+    <string name="group_search" msgid="5905328940867162196">"Søk"</string>
+    <string name="group_folder" msgid="5143593791798929193">"Ny mappe"</string>
+    <string name="group_live_folders" msgid="2664945399140647217">"Mapper"</string>
+    <string name="group_widgets" msgid="6704978494073105844">"Skrivebordselementer"</string>
+    <string name="group_wallpapers" msgid="1568191644272224858">"Bakgrunner"</string>
+    <string name="add_folder" msgid="3521088587367839879">"Mappe"</string>
+    <string name="add_clock" msgid="2337943840175865746">"Klokke"</string>
+    <string name="add_photo_frame" msgid="3154058437359487954">"Bilderamme"</string>
+    <string name="add_search" msgid="7104834713685095105">"Søk"</string>
+    <string name="out_of_space" msgid="8365249326091984698">"Ikke nok plass på skrivebordet."</string>
+    <!-- no translation found for shortcut_installed (6179314539443046225) -->
     <skip />
-    <string name="folder_name">"Mappe"</string>
-    <string name="chooser_wallpaper">"Velg bakgrunnsbilde fra"</string>
-    <string name="wallpaper_instructions">"Velg bakgrunnsbilde"</string>
-    <string name="pick_wallpaper">"Bildegalleri"</string>
-    <string name="activity_not_found">"Applikasjonen er ikke installert."</string>
-    <string name="rename_folder_label">"Mappenavn"</string>
-    <string name="rename_folder_title">"Gi nytt navn til mappe"</string>
-    <string name="rename_action">"OK"</string>
-    <string name="cancel_action">"Avbryt"</string>
-    <string name="menu_item_add_item">"Legg til skrivebord"</string>
-    <string name="group_applications">"Applikasjoner"</string>
-    <string name="group_shortcuts">"Snarveier"</string>
-    <string name="group_search">"Søk"</string>
-    <string name="group_folder">"Ny mappe"</string>
-    <string name="group_live_folders">"Mapper"</string>
-    <string name="group_widgets">"Skrivebordselementer"</string>
-    <string name="group_wallpapers">"Bakgrunner"</string>
-    <string name="add_folder">"Mappe"</string>
-    <string name="add_clock">"Klokke"</string>
-    <string name="add_photo_frame">"Bilderamme"</string>
-    <string name="add_search">"Søk"</string>
-    <string name="out_of_space">"Ikke nok plass på skrivebordet."</string>
-    <!-- no translation found for shortcut_installed (6623689857689040689) -->
-    <skip />
-    <!-- no translation found for shortcut_uninstalled (2758997515869993129) -->
-    <skip />
-    <!-- no translation found for shortcut_duplicate (4887186782641532074) -->
-    <skip />
-    <string name="title_select_shortcut">"Velg snarvei"</string>
-    <string name="title_select_live_folder">"Velg mappe"</string>
-    <string name="menu_add">"Legg til"</string>
-    <string name="menu_wallpaper">"Bakgrunnsbilde"</string>
-    <string name="menu_search">"Søk"</string>
-    <string name="menu_notifications">"Varslinger"</string>
-    <!-- no translation found for menu_gestures (514678675575912237) -->
-    <skip />
-    <string name="menu_settings">"Innstillinger"</string>
-    <string name="permlab_install_shortcut">"installere snarveier"</string>
-    <string name="permdesc_install_shortcut">"Lar applikasjonen legge til snarveier uten å involvere brukeren."</string>
-    <string name="permlab_uninstall_shortcut">"avinstallere snarveier"</string>
-    <string name="permdesc_uninstall_shortcut">"Lar applikasjonen fjerne snarveier uten å involvere brukeren."</string>
-    <string name="permlab_read_settings">"lese skrivebordsinnstillinger og -snarveier"</string>
-    <string name="permdesc_read_settings">"Lar applikasjonen lese innstillinger og snarveier fra skrivebordet."</string>
-    <string name="permlab_write_settings">"skrive skrivebordsinnstillinger og -snarveier"</string>
-    <string name="permdesc_write_settings">"Lar applikasjonen endre innstillinger og snarveier på skrivebordet."</string>
-    <string name="search_hint">"Google-søk"</string>
-    <string name="gadget_error_text">"Problem under lasting av gadget"</string>
+    <string name="shortcut_uninstalled" msgid="2758997515869993129">"Fjernet snarveien «%s»."</string>
+    <string name="shortcut_duplicate" msgid="4887186782641532074">"Snarveien «%s» finnes allerede."</string>
+    <string name="title_select_shortcut" msgid="2858897527672831763">"Velg snarvei"</string>
+    <string name="title_select_live_folder" msgid="3753447798805166749">"Velg mappe"</string>
+    <string name="menu_add" msgid="3065046628354640854">"Legg til"</string>
+    <string name="menu_wallpaper" msgid="5837429080911269832">"Bakgrunnsbilde"</string>
+    <string name="menu_search" msgid="4826514464423239041">"Søk"</string>
+    <string name="menu_notifications" msgid="6424587053194766192">"Varslinger"</string>
+    <string name="menu_gestures" msgid="514678675575912237">"Bevegelser"</string>
+    <string name="menu_settings" msgid="6233960148378443661">"Innstillinger"</string>
+    <string name="permlab_install_shortcut" msgid="1201690825493376489">"installere snarveier"</string>
+    <string name="permdesc_install_shortcut" msgid="7429365847558984148">"Lar applikasjonen legge til snarveier uten å involvere brukeren."</string>
+    <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"avinstallere snarveier"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="959972195916090900">"Lar applikasjonen fjerne snarveier uten å involvere brukeren."</string>
+    <string name="permlab_read_settings" msgid="3452408290738106747">"lese skrivebordsinnstillinger og -snarveier"</string>
+    <string name="permdesc_read_settings" msgid="8377434937176025492">"Lar applikasjonen lese innstillinger og snarveier fra skrivebordet."</string>
+    <string name="permlab_write_settings" msgid="1360567537236705628">"skrive skrivebordsinnstillinger og -snarveier"</string>
+    <string name="permdesc_write_settings" msgid="1098648778383349818">"Lar applikasjonen endre innstillinger og snarveier på skrivebordet."</string>
+    <string name="search_hint" msgid="6974176141372467453">"Google-søk"</string>
+    <string name="gadget_error_text" msgid="8359351016167075858">"Problem under lasting av gadget"</string>
 </resources>

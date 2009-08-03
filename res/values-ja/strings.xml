@@ -15,54 +15,50 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name">"ホーム"</string>
-    <!-- no translation found for uid_name (3371120195364560632) -->
+    <string name="application_name" msgid="5865630159700533006">"ホーム"</string>
+    <string name="uid_name" msgid="3371120195364560632">"Android Core Apps"</string>
+    <string name="folder_name" msgid="4588446541914685904">"フォルダ"</string>
+    <string name="chooser_wallpaper" msgid="5988031014201479733">"壁紙を選択"</string>
+    <string name="wallpaper_instructions" msgid="4215640646180727542">"壁紙に設定"</string>
+    <string name="pick_wallpaper" msgid="2674908923379130941">"壁紙ギャラリー"</string>
+    <string name="activity_not_found" msgid="3571057450431950427">"アプリケーションがインストールされていません。"</string>
+    <string name="rename_folder_label" msgid="5646236631298452787">"フォルダ名"</string>
+    <string name="rename_folder_title" msgid="4544573104191526550">"フォルダ名を変更"</string>
+    <string name="rename_action" msgid="6016003384693240896">"OK"</string>
+    <string name="cancel_action" msgid="3811860427489435048">"キャンセル"</string>
+    <string name="menu_item_add_item" msgid="6233177331075781114">"ホーム画面に追加"</string>
+    <string name="group_applications" msgid="4118484163419674240">"アプリケーション"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"ショートカット"</string>
+    <string name="group_search" msgid="5905328940867162196">"検索"</string>
+    <string name="group_folder" msgid="5143593791798929193">"新しいフォルダ"</string>
+    <string name="group_live_folders" msgid="2664945399140647217">"フォルダ"</string>
+    <string name="group_widgets" msgid="6704978494073105844">"ウィジェット"</string>
+    <string name="group_wallpapers" msgid="1568191644272224858">"壁紙"</string>
+    <string name="add_folder" msgid="3521088587367839879">"フォルダ"</string>
+    <string name="add_clock" msgid="2337943840175865746">"時計"</string>
+    <string name="add_photo_frame" msgid="3154058437359487954">"写真フレーム"</string>
+    <string name="add_search" msgid="7104834713685095105">"検索"</string>
+    <string name="out_of_space" msgid="8365249326091984698">"ホーム画面に空きスペースがありません。"</string>
+    <!-- no translation found for shortcut_installed (6179314539443046225) -->
     <skip />
-    <string name="folder_name">"フォルダ"</string>
-    <string name="chooser_wallpaper">"壁紙を選択"</string>
-    <string name="wallpaper_instructions">"壁紙に設定"</string>
-    <string name="pick_wallpaper">"壁紙ギャラリー"</string>
-    <string name="activity_not_found">"アプリケーションがインストールされていません。"</string>
-    <string name="rename_folder_label">"フォルダ名"</string>
-    <string name="rename_folder_title">"フォルダ名を変更"</string>
-    <string name="rename_action">"OK"</string>
-    <string name="cancel_action">"キャンセル"</string>
-    <string name="menu_item_add_item">"ホーム画面に追加"</string>
-    <string name="group_applications">"アプリケーション"</string>
-    <string name="group_shortcuts">"ショートカット"</string>
-    <string name="group_search">"検索"</string>
-    <string name="group_folder">"新しいフォルダ"</string>
-    <string name="group_live_folders">"フォルダ"</string>
-    <string name="group_widgets">"ウィジェット"</string>
-    <string name="group_wallpapers">"壁紙"</string>
-    <string name="add_folder">"フォルダ"</string>
-    <string name="add_clock">"時計"</string>
-    <string name="add_photo_frame">"写真フレーム"</string>
-    <string name="add_search">"検索"</string>
-    <string name="out_of_space">"ホーム画面に空きスペースがありません。"</string>
-    <!-- no translation found for shortcut_installed (6623689857689040689) -->
-    <skip />
-    <!-- no translation found for shortcut_uninstalled (2758997515869993129) -->
-    <skip />
-    <!-- no translation found for shortcut_duplicate (4887186782641532074) -->
-    <skip />
-    <string name="title_select_shortcut">"ショートカットを選択"</string>
-    <string name="title_select_live_folder">"フォルダの選択"</string>
-    <string name="menu_add">"追加"</string>
-    <string name="menu_wallpaper">"壁紙"</string>
-    <string name="menu_search">"検索"</string>
-    <string name="menu_notifications">"通知"</string>
-    <!-- no translation found for menu_gestures (514678675575912237) -->
-    <skip />
-    <string name="menu_settings">"設定"</string>
-    <string name="permlab_install_shortcut">"ショートカットのインストール"</string>
-    <string name="permdesc_install_shortcut">"ユーザー操作なしでショートカットの追加をアプリケーションに許可します。"</string>
-    <string name="permlab_uninstall_shortcut">"ショートカットのアンインストール"</string>
-    <string name="permdesc_uninstall_shortcut">"ユーザー操作なしでショートカットの削除をアプリケーションに許可します。"</string>
-    <string name="permlab_read_settings">"ホーム設定とショートカットの読み取り"</string>
-    <string name="permdesc_read_settings">"ホームの設定とショートカットの読み取りをアプリケーションに許可します。"</string>
-    <string name="permlab_write_settings">"ホームの設定とショートカットの書き込み"</string>
-    <string name="permdesc_write_settings">"ホームの設定とショートカットの変更をアプリケーションに許可します。"</string>
-    <string name="search_hint">"Google検索"</string>
-    <string name="gadget_error_text">"ウィジェットを表示できません"</string>
+    <string name="shortcut_uninstalled" msgid="2758997515869993129">"ショートカット「%s」が削除されました。"</string>
+    <string name="shortcut_duplicate" msgid="4887186782641532074">"ショートカット「%s」は既に存在します。"</string>
+    <string name="title_select_shortcut" msgid="2858897527672831763">"ショートカットを選択"</string>
+    <string name="title_select_live_folder" msgid="3753447798805166749">"フォルダの選択"</string>
+    <string name="menu_add" msgid="3065046628354640854">"追加"</string>
+    <string name="menu_wallpaper" msgid="5837429080911269832">"壁紙"</string>
+    <string name="menu_search" msgid="4826514464423239041">"検索"</string>
+    <string name="menu_notifications" msgid="6424587053194766192">"通知"</string>
+    <string name="menu_gestures" msgid="514678675575912237">"ジェスチャー"</string>
+    <string name="menu_settings" msgid="6233960148378443661">"設定"</string>
+    <string name="permlab_install_shortcut" msgid="1201690825493376489">"ショートカットのインストール"</string>
+    <string name="permdesc_install_shortcut" msgid="7429365847558984148">"ユーザー操作なしでショートカットの追加をアプリケーションに許可します。"</string>
+    <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"ショートカットのアンインストール"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="959972195916090900">"ユーザー操作なしでショートカットの削除をアプリケーションに許可します。"</string>
+    <string name="permlab_read_settings" msgid="3452408290738106747">"ホーム設定とショートカットの読み取り"</string>
+    <string name="permdesc_read_settings" msgid="8377434937176025492">"ホームの設定とショートカットの読み取りをアプリケーションに許可します。"</string>
+    <string name="permlab_write_settings" msgid="1360567537236705628">"ホームの設定とショートカットの書き込み"</string>
+    <string name="permdesc_write_settings" msgid="1098648778383349818">"ホームの設定とショートカットの変更をアプリケーションに許可します。"</string>
+    <string name="search_hint" msgid="6974176141372467453">"Google検索"</string>
+    <string name="gadget_error_text" msgid="8359351016167075858">"ウィジェットを表示できません"</string>
 </resources>

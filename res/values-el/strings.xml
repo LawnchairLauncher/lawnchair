@@ -15,54 +15,54 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name">"Αρχική οθόνη"</string>
+    <string name="application_name" msgid="5865630159700533006">"Αρχική οθόνη"</string>
     <!-- no translation found for uid_name (3371120195364560632) -->
     <skip />
-    <string name="folder_name">"Φάκελος"</string>
-    <string name="chooser_wallpaper">"Επιλογή ταπετσαρίας από"</string>
-    <string name="wallpaper_instructions">"Ορισμός ταπετσαρίας"</string>
-    <string name="pick_wallpaper">"Συλλογή ταπετσαριών"</string>
-    <string name="activity_not_found">"Η εφαρμογή δεν έχει εγκατασταθεί στο τηλέφωνό σας."</string>
-    <string name="rename_folder_label">"Όνομα φακέλου"</string>
-    <string name="rename_folder_title">"Μετονομασία φακέλου"</string>
-    <string name="rename_action">"OK"</string>
-    <string name="cancel_action">"Ακύρωση"</string>
-    <string name="menu_item_add_item">"Προσθήκη στην αρχική οθόνη"</string>
-    <string name="group_applications">"Εφαρμογές"</string>
-    <string name="group_shortcuts">"Συντομεύσεις"</string>
-    <string name="group_search">"Αναζήτηση"</string>
-    <string name="group_folder">"Νέος φάκελος"</string>
-    <string name="group_live_folders">"Φάκελοι"</string>
-    <string name="group_widgets">"Γραφικά στοιχεία"</string>
-    <string name="group_wallpapers">"Ταπετσαρίες"</string>
-    <string name="add_folder">"Φάκελος"</string>
-    <string name="add_clock">"Ρολόι"</string>
-    <string name="add_photo_frame">"Πλαίσιο εικόνας"</string>
-    <string name="add_search">"Αναζήτηση"</string>
-    <string name="out_of_space">"Δεν υπάρχει χώρος σε αυτήν την αρχική οθόνη."</string>
-    <!-- no translation found for shortcut_installed (6623689857689040689) -->
+    <string name="folder_name" msgid="4588446541914685904">"Φάκελος"</string>
+    <string name="chooser_wallpaper" msgid="5988031014201479733">"Επιλογή ταπετσαρίας από"</string>
+    <string name="wallpaper_instructions" msgid="4215640646180727542">"Ορισμός ταπετσαρίας"</string>
+    <string name="pick_wallpaper" msgid="2674908923379130941">"Συλλογή ταπετσαριών"</string>
+    <string name="activity_not_found" msgid="3571057450431950427">"Η εφαρμογή δεν έχει εγκατασταθεί στο τηλέφωνό σας."</string>
+    <string name="rename_folder_label" msgid="5646236631298452787">"Όνομα φακέλου"</string>
+    <string name="rename_folder_title" msgid="4544573104191526550">"Μετονομασία φακέλου"</string>
+    <string name="rename_action" msgid="6016003384693240896">"OK"</string>
+    <string name="cancel_action" msgid="3811860427489435048">"Ακύρωση"</string>
+    <string name="menu_item_add_item" msgid="6233177331075781114">"Προσθήκη στην αρχική οθόνη"</string>
+    <string name="group_applications" msgid="4118484163419674240">"Εφαρμογές"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"Συντομεύσεις"</string>
+    <string name="group_search" msgid="5905328940867162196">"Αναζήτηση"</string>
+    <string name="group_folder" msgid="5143593791798929193">"Νέος φάκελος"</string>
+    <string name="group_live_folders" msgid="2664945399140647217">"Φάκελοι"</string>
+    <string name="group_widgets" msgid="6704978494073105844">"Γραφικά στοιχεία"</string>
+    <string name="group_wallpapers" msgid="1568191644272224858">"Ταπετσαρίες"</string>
+    <string name="add_folder" msgid="3521088587367839879">"Φάκελος"</string>
+    <string name="add_clock" msgid="2337943840175865746">"Ρολόι"</string>
+    <string name="add_photo_frame" msgid="3154058437359487954">"Πλαίσιο εικόνας"</string>
+    <string name="add_search" msgid="7104834713685095105">"Αναζήτηση"</string>
+    <string name="out_of_space" msgid="8365249326091984698">"Δεν υπάρχει χώρος σε αυτήν την αρχική οθόνη."</string>
+    <!-- no translation found for shortcut_installed (6179314539443046225) -->
     <skip />
     <!-- no translation found for shortcut_uninstalled (2758997515869993129) -->
     <skip />
     <!-- no translation found for shortcut_duplicate (4887186782641532074) -->
     <skip />
-    <string name="title_select_shortcut">"Επιλογή συντόμευσης"</string>
-    <string name="title_select_live_folder">"Επιλογή φακέλου"</string>
-    <string name="menu_add">"Προσθήκη"</string>
-    <string name="menu_wallpaper">"Ταπετσαρία"</string>
-    <string name="menu_search">"Αναζήτηση"</string>
-    <string name="menu_notifications">"Ειδοποιήσεις"</string>
+    <string name="title_select_shortcut" msgid="2858897527672831763">"Επιλογή συντόμευσης"</string>
+    <string name="title_select_live_folder" msgid="3753447798805166749">"Επιλογή φακέλου"</string>
+    <string name="menu_add" msgid="3065046628354640854">"Προσθήκη"</string>
+    <string name="menu_wallpaper" msgid="5837429080911269832">"Ταπετσαρία"</string>
+    <string name="menu_search" msgid="4826514464423239041">"Αναζήτηση"</string>
+    <string name="menu_notifications" msgid="6424587053194766192">"Ειδοποιήσεις"</string>
     <!-- no translation found for menu_gestures (514678675575912237) -->
     <skip />
-    <string name="menu_settings">"Ρυθμίσεις"</string>
-    <string name="permlab_install_shortcut">"εγκατάσταση συντομεύσεων"</string>
-    <string name="permdesc_install_shortcut">"Επιτρέπει σε μια εφαρμογή την προσθήκη συντομεύσεων χωρίς την παρέμβαση του χρήστη."</string>
-    <string name="permlab_uninstall_shortcut">"κατάργηση εγκατάστασης συντομεύσεων"</string>
-    <string name="permdesc_uninstall_shortcut">"Επιτρέπει σε μια εφαρμογή την κατάργηση συντομεύσεων χωρίς την παρέμβαση του χρήστη."</string>
-    <string name="permlab_read_settings">"ανάγνωση ρυθμίσεων και συντομεύσεων αρχικής οθόνης"</string>
-    <string name="permdesc_read_settings">"Επιτρέπει σε μια εφαρμογή την ανάγνωση των ρυθμίσεων και των συντομεύσεων στην αρχική οθόνη."</string>
-    <string name="permlab_write_settings">"εγγραφή ρυθμίσεων και συντομεύσεων αρχικής οθόνης"</string>
-    <string name="permdesc_write_settings">"Επιτρέπει σε μια εφαρμογή την αλλαγή των ρυθμίσεων και των συντομεύσεων στην αρχική οθόνη."</string>
-    <string name="search_hint">"Αναζήτηση Google"</string>
-    <string name="gadget_error_text">"Παρουσιάστηκε πρόβλημα στη φόρτωση του γραφικού στοιχείου"</string>
+    <string name="menu_settings" msgid="6233960148378443661">"Ρυθμίσεις"</string>
+    <string name="permlab_install_shortcut" msgid="1201690825493376489">"εγκατάσταση συντομεύσεων"</string>
+    <string name="permdesc_install_shortcut" msgid="7429365847558984148">"Επιτρέπει σε μια εφαρμογή την προσθήκη συντομεύσεων χωρίς την παρέμβαση του χρήστη."</string>
+    <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"κατάργηση εγκατάστασης συντομεύσεων"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="959972195916090900">"Επιτρέπει σε μια εφαρμογή την κατάργηση συντομεύσεων χωρίς την παρέμβαση του χρήστη."</string>
+    <string name="permlab_read_settings" msgid="3452408290738106747">"ανάγνωση ρυθμίσεων και συντομεύσεων αρχικής οθόνης"</string>
+    <string name="permdesc_read_settings" msgid="8377434937176025492">"Επιτρέπει σε μια εφαρμογή την ανάγνωση των ρυθμίσεων και των συντομεύσεων στην αρχική οθόνη."</string>
+    <string name="permlab_write_settings" msgid="1360567537236705628">"εγγραφή ρυθμίσεων και συντομεύσεων αρχικής οθόνης"</string>
+    <string name="permdesc_write_settings" msgid="1098648778383349818">"Επιτρέπει σε μια εφαρμογή την αλλαγή των ρυθμίσεων και των συντομεύσεων στην αρχική οθόνη."</string>
+    <string name="search_hint" msgid="6974176141372467453">"Αναζήτηση Google"</string>
+    <string name="gadget_error_text" msgid="8359351016167075858">"Παρουσιάστηκε πρόβλημα στη φόρτωση του γραφικού στοιχείου"</string>
 </resources>

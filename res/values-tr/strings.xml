@@ -15,54 +15,54 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name">"Ana Sayfa"</string>
+    <string name="application_name" msgid="5865630159700533006">"Ana Sayfa"</string>
     <!-- no translation found for uid_name (3371120195364560632) -->
     <skip />
-    <string name="folder_name">"Klasör"</string>
-    <string name="chooser_wallpaper">"Buradan duvar kağıdını seçin:"</string>
-    <string name="wallpaper_instructions">"Duvar kağıdını ayarla"</string>
-    <string name="pick_wallpaper">"Duvar kağıdı galerisi"</string>
-    <string name="activity_not_found">"Uygulama telefonunuza yüklenmemiş."</string>
-    <string name="rename_folder_label">"Klasör adı"</string>
-    <string name="rename_folder_title">"Klasörü yeniden adlandır"</string>
-    <string name="rename_action">"Tamam"</string>
-    <string name="cancel_action">"İptal"</string>
-    <string name="menu_item_add_item">"Ana ekrana ekle"</string>
-    <string name="group_applications">"Uygulamalar"</string>
-    <string name="group_shortcuts">"Kısayollar"</string>
-    <string name="group_search">"Arama"</string>
-    <string name="group_folder">"Yeni klasör"</string>
-    <string name="group_live_folders">"Klasörler"</string>
-    <string name="group_widgets">"Widget\'lar"</string>
-    <string name="group_wallpapers">"Duvar Kağıtları"</string>
-    <string name="add_folder">"Klasör"</string>
-    <string name="add_clock">"Saat"</string>
-    <string name="add_photo_frame">"Resim çerçevesi"</string>
-    <string name="add_search">"Arama"</string>
-    <string name="out_of_space">"Bu Ana ekranda başka yer yok."</string>
-    <!-- no translation found for shortcut_installed (6623689857689040689) -->
+    <string name="folder_name" msgid="4588446541914685904">"Klasör"</string>
+    <string name="chooser_wallpaper" msgid="5988031014201479733">"Buradan duvar kağıdını seçin:"</string>
+    <string name="wallpaper_instructions" msgid="4215640646180727542">"Duvar kağıdını ayarla"</string>
+    <string name="pick_wallpaper" msgid="2674908923379130941">"Duvar kağıdı galerisi"</string>
+    <string name="activity_not_found" msgid="3571057450431950427">"Uygulama telefonunuza yüklenmemiş."</string>
+    <string name="rename_folder_label" msgid="5646236631298452787">"Klasör adı"</string>
+    <string name="rename_folder_title" msgid="4544573104191526550">"Klasörü yeniden adlandır"</string>
+    <string name="rename_action" msgid="6016003384693240896">"Tamam"</string>
+    <string name="cancel_action" msgid="3811860427489435048">"İptal"</string>
+    <string name="menu_item_add_item" msgid="6233177331075781114">"Ana ekrana ekle"</string>
+    <string name="group_applications" msgid="4118484163419674240">"Uygulamalar"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"Kısayollar"</string>
+    <string name="group_search" msgid="5905328940867162196">"Arama"</string>
+    <string name="group_folder" msgid="5143593791798929193">"Yeni klasör"</string>
+    <string name="group_live_folders" msgid="2664945399140647217">"Klasörler"</string>
+    <string name="group_widgets" msgid="6704978494073105844">"Widget\'lar"</string>
+    <string name="group_wallpapers" msgid="1568191644272224858">"Duvar Kağıtları"</string>
+    <string name="add_folder" msgid="3521088587367839879">"Klasör"</string>
+    <string name="add_clock" msgid="2337943840175865746">"Saat"</string>
+    <string name="add_photo_frame" msgid="3154058437359487954">"Resim çerçevesi"</string>
+    <string name="add_search" msgid="7104834713685095105">"Arama"</string>
+    <string name="out_of_space" msgid="8365249326091984698">"Bu Ana ekranda başka yer yok."</string>
+    <!-- no translation found for shortcut_installed (6179314539443046225) -->
     <skip />
     <!-- no translation found for shortcut_uninstalled (2758997515869993129) -->
     <skip />
     <!-- no translation found for shortcut_duplicate (4887186782641532074) -->
     <skip />
-    <string name="title_select_shortcut">"Kısayolu seçin"</string>
-    <string name="title_select_live_folder">"Klasörü seçin"</string>
-    <string name="menu_add">"Ekle"</string>
-    <string name="menu_wallpaper">"Duvar Kağıdı"</string>
-    <string name="menu_search">"Ara"</string>
-    <string name="menu_notifications">"Bildirimler"</string>
+    <string name="title_select_shortcut" msgid="2858897527672831763">"Kısayolu seçin"</string>
+    <string name="title_select_live_folder" msgid="3753447798805166749">"Klasörü seçin"</string>
+    <string name="menu_add" msgid="3065046628354640854">"Ekle"</string>
+    <string name="menu_wallpaper" msgid="5837429080911269832">"Duvar Kağıdı"</string>
+    <string name="menu_search" msgid="4826514464423239041">"Ara"</string>
+    <string name="menu_notifications" msgid="6424587053194766192">"Bildirimler"</string>
     <!-- no translation found for menu_gestures (514678675575912237) -->
     <skip />
-    <string name="menu_settings">"Ayarlar"</string>
-    <string name="permlab_install_shortcut">"kısayolları yükle"</string>
-    <string name="permdesc_install_shortcut">"Bir uygulamaya, kısayolları kullanıcı müdahale etmeden ekleme izni verir."</string>
-    <string name="permlab_uninstall_shortcut">"kısayolları kaldır"</string>
-    <string name="permdesc_uninstall_shortcut">"Bir uygulamaya, kısayolları kullanıcı müdahale etmeden kaldırma izni verir."</string>
-    <string name="permlab_read_settings">"Ana Sayfa ayarlarını ve kısayollarını oku"</string>
-    <string name="permdesc_read_settings">"Bir uygulamaya Ana Sayfadaki ayarları ve kısayolları okuma izni verir."</string>
-    <string name="permlab_write_settings">"Ana Sayfa ayarlarını ve kısayollarını yaz"</string>
-    <string name="permdesc_write_settings">"Bir uygulamaya Ana Sayfadaki ayarları ve kısayolları değiştirme izni verir."</string>
-    <string name="search_hint">"Google Arama"</string>
-    <string name="gadget_error_text">"Widget yüklenirken sorun oluştu"</string>
+    <string name="menu_settings" msgid="6233960148378443661">"Ayarlar"</string>
+    <string name="permlab_install_shortcut" msgid="1201690825493376489">"kısayolları yükle"</string>
+    <string name="permdesc_install_shortcut" msgid="7429365847558984148">"Bir uygulamaya, kısayolları kullanıcı müdahale etmeden ekleme izni verir."</string>
+    <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"kısayolları kaldır"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="959972195916090900">"Bir uygulamaya, kısayolları kullanıcı müdahale etmeden kaldırma izni verir."</string>
+    <string name="permlab_read_settings" msgid="3452408290738106747">"Ana Sayfa ayarlarını ve kısayollarını oku"</string>
+    <string name="permdesc_read_settings" msgid="8377434937176025492">"Bir uygulamaya Ana Sayfadaki ayarları ve kısayolları okuma izni verir."</string>
+    <string name="permlab_write_settings" msgid="1360567537236705628">"Ana Sayfa ayarlarını ve kısayollarını yaz"</string>
+    <string name="permdesc_write_settings" msgid="1098648778383349818">"Bir uygulamaya Ana Sayfadaki ayarları ve kısayolları değiştirme izni verir."</string>
+    <string name="search_hint" msgid="6974176141372467453">"Google Arama"</string>
+    <string name="gadget_error_text" msgid="8359351016167075858">"Widget yüklenirken sorun oluştu"</string>
 </resources>

@@ -15,54 +15,54 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name">"主屏幕"</string>
+    <string name="application_name" msgid="5865630159700533006">"主屏幕"</string>
     <!-- no translation found for uid_name (3371120195364560632) -->
     <skip />
-    <string name="folder_name">"文件夹"</string>
-    <string name="chooser_wallpaper">"选择壁纸来源"</string>
-    <string name="wallpaper_instructions">"设置壁纸"</string>
-    <string name="pick_wallpaper">"壁纸图库"</string>
-    <string name="activity_not_found">"您的手机上未安装应用程序。"</string>
-    <string name="rename_folder_label">"文件夹名称"</string>
-    <string name="rename_folder_title">"重命名文件夹"</string>
-    <string name="rename_action">"确定"</string>
-    <string name="cancel_action">"取消"</string>
-    <string name="menu_item_add_item">"添加到主屏幕"</string>
-    <string name="group_applications">"应用程序"</string>
-    <string name="group_shortcuts">"快捷方式"</string>
-    <string name="group_search">"搜索"</string>
-    <string name="group_folder">"新建文件夹"</string>
-    <string name="group_live_folders">"文件夹"</string>
-    <string name="group_widgets">"窗口小部件"</string>
-    <string name="group_wallpapers">"壁纸"</string>
-    <string name="add_folder">"文件夹"</string>
-    <string name="add_clock">"时钟"</string>
-    <string name="add_photo_frame">"相框"</string>
-    <string name="add_search">"搜索"</string>
-    <string name="out_of_space">"此主屏幕上已没有更多空间。"</string>
-    <!-- no translation found for shortcut_installed (6623689857689040689) -->
+    <string name="folder_name" msgid="4588446541914685904">"文件夹"</string>
+    <string name="chooser_wallpaper" msgid="5988031014201479733">"选择壁纸来源"</string>
+    <string name="wallpaper_instructions" msgid="4215640646180727542">"设置壁纸"</string>
+    <string name="pick_wallpaper" msgid="2674908923379130941">"壁纸图库"</string>
+    <string name="activity_not_found" msgid="3571057450431950427">"您的手机上未安装应用程序。"</string>
+    <string name="rename_folder_label" msgid="5646236631298452787">"文件夹名称"</string>
+    <string name="rename_folder_title" msgid="4544573104191526550">"重命名文件夹"</string>
+    <string name="rename_action" msgid="6016003384693240896">"确定"</string>
+    <string name="cancel_action" msgid="3811860427489435048">"取消"</string>
+    <string name="menu_item_add_item" msgid="6233177331075781114">"添加到主屏幕"</string>
+    <string name="group_applications" msgid="4118484163419674240">"应用程序"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"快捷方式"</string>
+    <string name="group_search" msgid="5905328940867162196">"搜索"</string>
+    <string name="group_folder" msgid="5143593791798929193">"新建文件夹"</string>
+    <string name="group_live_folders" msgid="2664945399140647217">"文件夹"</string>
+    <string name="group_widgets" msgid="6704978494073105844">"窗口小部件"</string>
+    <string name="group_wallpapers" msgid="1568191644272224858">"壁纸"</string>
+    <string name="add_folder" msgid="3521088587367839879">"文件夹"</string>
+    <string name="add_clock" msgid="2337943840175865746">"时钟"</string>
+    <string name="add_photo_frame" msgid="3154058437359487954">"相框"</string>
+    <string name="add_search" msgid="7104834713685095105">"搜索"</string>
+    <string name="out_of_space" msgid="8365249326091984698">"此主屏幕上已没有更多空间。"</string>
+    <!-- no translation found for shortcut_installed (6179314539443046225) -->
     <skip />
     <!-- no translation found for shortcut_uninstalled (2758997515869993129) -->
     <skip />
     <!-- no translation found for shortcut_duplicate (4887186782641532074) -->
     <skip />
-    <string name="title_select_shortcut">"选择快捷方式"</string>
-    <string name="title_select_live_folder">"选择文件夹"</string>
-    <string name="menu_add">"添加"</string>
-    <string name="menu_wallpaper">"壁纸"</string>
-    <string name="menu_search">"搜索"</string>
-    <string name="menu_notifications">"通知"</string>
+    <string name="title_select_shortcut" msgid="2858897527672831763">"选择快捷方式"</string>
+    <string name="title_select_live_folder" msgid="3753447798805166749">"选择文件夹"</string>
+    <string name="menu_add" msgid="3065046628354640854">"添加"</string>
+    <string name="menu_wallpaper" msgid="5837429080911269832">"壁纸"</string>
+    <string name="menu_search" msgid="4826514464423239041">"搜索"</string>
+    <string name="menu_notifications" msgid="6424587053194766192">"通知"</string>
     <!-- no translation found for menu_gestures (514678675575912237) -->
     <skip />
-    <string name="menu_settings">"设置"</string>
-    <string name="permlab_install_shortcut">"安装快捷方式"</string>
-    <string name="permdesc_install_shortcut">"允许应用程序在无用户操作的情况下添加快捷方式。"</string>
-    <string name="permlab_uninstall_shortcut">"卸载快捷方式"</string>
-    <string name="permdesc_uninstall_shortcut">"允许应用程序在无用户操作的情况下删除快捷方式。"</string>
-    <string name="permlab_read_settings">"读取主屏幕设置和快捷方式"</string>
-    <string name="permdesc_read_settings">"允许应用程序读取主屏幕上的设置和快捷方式。"</string>
-    <string name="permlab_write_settings">"写入主屏幕设置和快捷方式"</string>
-    <string name="permdesc_write_settings">"允许应用程序更改主屏幕上的设置和快捷方式。"</string>
-    <string name="search_hint">"Google 搜索"</string>
-    <string name="gadget_error_text">"载入窗口小部件时出现问题"</string>
+    <string name="menu_settings" msgid="6233960148378443661">"设置"</string>
+    <string name="permlab_install_shortcut" msgid="1201690825493376489">"安装快捷方式"</string>
+    <string name="permdesc_install_shortcut" msgid="7429365847558984148">"允许应用程序在无用户操作的情况下添加快捷方式。"</string>
+    <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"卸载快捷方式"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="959972195916090900">"允许应用程序在无用户操作的情况下删除快捷方式。"</string>
+    <string name="permlab_read_settings" msgid="3452408290738106747">"读取主屏幕设置和快捷方式"</string>
+    <string name="permdesc_read_settings" msgid="8377434937176025492">"允许应用程序读取主屏幕上的设置和快捷方式。"</string>
+    <string name="permlab_write_settings" msgid="1360567537236705628">"写入主屏幕设置和快捷方式"</string>
+    <string name="permdesc_write_settings" msgid="1098648778383349818">"允许应用程序更改主屏幕上的设置和快捷方式。"</string>
+    <string name="search_hint" msgid="6974176141372467453">"Google 搜索"</string>
+    <string name="gadget_error_text" msgid="8359351016167075858">"载入窗口小部件时出现问题"</string>
 </resources>
