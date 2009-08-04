@@ -166,6 +166,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     private LayoutInflater mInflater;
 
+    private DragController mDragController;
     private DragLayer mDragLayer;
     private WallpaperView mWallpaperView;
     private Workspace mWorkspace;
@@ -528,10 +529,14 @@ public final class Launcher extends Activity implements View.OnClickListener, On
      * Finds all the views we need and configure them properly.
      */
     private void setupViews() {
+        mDragController = new DragController(this);
+        DragController dragController = mDragController;
+
         mDragLayer = (DragLayer) findViewById(R.id.drag_layer);
         final DragLayer dragLayer = mDragLayer;
+        dragLayer.setDragController(dragController);
 
-        mWallpaperView = (WallpaperView) dragLayer.findViewById(R.id.wallpaper);
+        mWallpaperView = (WallpaperView) findViewById(R.id.wallpaper);
         final WallpaperView wallpaper = mWallpaperView;
 
         mWorkspace = (Workspace) dragLayer.findViewById(R.id.workspace);
@@ -546,7 +551,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mHandleIcon.setCrossFadeEnabled(true);
 
         workspace.setOnLongClickListener(this);
-        workspace.setDragger(dragLayer);
+        workspace.setDragController(dragController);
         workspace.setLauncher(this);
         workspace.setWallpaper(wallpaper);
 
@@ -554,12 +559,16 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         wallpaper.setScreenCount(workspace.getScreenCount());
 
         deleteZone.setLauncher(this);
-        deleteZone.setDragController(dragLayer);
+        deleteZone.setDragController(dragController);
         deleteZone.setHandle(mHandleView);
 
-        // TODO dragLayer.setIgnoredDropTarget(grid);
-        dragLayer.setDragScoller(workspace);
-        dragLayer.setDragListener(deleteZone);
+        dragController.setDragScoller(workspace);
+        dragController.setDragListener(deleteZone);
+        dragController.setScrollView(dragLayer);
+        
+        // The order here is bottom to top.
+        dragController.addDropTarget(workspace);
+        dragController.addDropTarget(deleteZone);
     }
 
     /**
@@ -1347,6 +1356,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         ViewGroup parent = (ViewGroup) folder.getParent();
         if (parent != null) {
             parent.removeView(folder);
+            mDragController.removeDropTarget((DropTarget)folder);
         }
         folder.onClose();
     }
@@ -1545,10 +1555,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
     }
 
-    DragController getDragController() {
-        return mDragLayer;
-    }
-
     /**
      * Launches the intent referred by the clicked shortcut.
      *
@@ -1646,7 +1652,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             return;
         }
 
-        openFolder.setDragger(mDragLayer);
+        openFolder.setDragController(mDragController);
         openFolder.setLauncher(this);
 
         openFolder.bind(folderInfo);
@@ -1703,11 +1709,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         return sModel;
     }
 
-    void closeAllApplications() {
-        // TODO mDrawer.close();
-        mAllAppsDialog.dismiss();
-    }
-
     View getDrawerHandle() {
         return mHandleView;
     }
@@ -1744,6 +1745,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     protected void onPrepareDialog(int id, Dialog dialog) {
         switch (id) {
             case DIALOG_ALL_APPS:
+                mAllAppsGrid.onPrepareDialog();
                 break;
             case DIALOG_CREATE_SHORTCUT:
                 break;
@@ -1886,8 +1888,11 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             setContentView(R.layout.all_apps);
             AllAppsGridView grid = mAllAppsGrid = (AllAppsGridView)findViewById(R.id.all_apps);
 
+            DragLayer dragLayer = (DragLayer)findViewById(R.id.drag_layer);
+            dragLayer.setDragController(mDragController);
+
             grid.setTextFilterEnabled(false);
-            // TODO grid.setDragger(dragLayer);
+            grid.setDragController(mDragController);
             grid.setLauncher(Launcher.this);
         }
 
@@ -1930,7 +1935,11 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mWorkspace.hide();
     }
 
-    private void closeAllAppsDialog(boolean animated) {
+    void showWorkspace() {
+        mWorkspace.show();
+    }
+
+    void closeAllAppsDialog(boolean animated) {
         if (mAllAppsDialog.isOpen) {
             if (animated) {
                 // TODO mDrawer.animateClose();

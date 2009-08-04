@@ -14,20 +14,25 @@
      limitations under the License.
 -->
 
-<com.android.launcher2.AllAppsGridView
+<com.android.launcher2.DragLayer
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher2"
 
-    android:id="@+id/all_apps"
+    android:id="@+id/drag_layer"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_height="fill_parent">
 
-    android:scrollbarStyle="outsideInset"
-    android:drawSelectorOnTop="false"
-    android:listSelector="@drawable/grid_selector"
+    <com.android.launcher2.AllAppsGridView
+        android:id="@+id/all_apps"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
 
-    android:verticalSpacing="10dip"
-    android:numColumns="4" />
+        android:scrollbarStyle="outsideInset"
+        android:drawSelectorOnTop="false"
+        android:listSelector="@drawable/grid_selector"
+
+        android:verticalSpacing="10dip"
+        android:numColumns="4" />
 
 <!--
     android:nextFocusLeft="@id/content"
@@ -35,3 +40,5 @@
     android:nextFocusUp="@id/all_apps"
     android:nextFocusRight="@id/content"
 -->
+
+</com.android.launcher2.DragLayer>

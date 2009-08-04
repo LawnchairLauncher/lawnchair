@@ -30,8 +30,9 @@ import android.graphics.Canvas;
 public class AllAppsGridView extends GridView implements AdapterView.OnItemClickListener,
         AdapterView.OnItemLongClickListener, DragSource {
 
-    private DragController mDragger;
+    private DragController mDragController;
     private Launcher mLauncher;
+    private boolean mDraw = true;
 
     public AllAppsGridView(Context context) {
         super(context);
@@ -64,20 +65,33 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
         ApplicationInfo app = (ApplicationInfo) parent.getItemAtPosition(position);
         app = new ApplicationInfo(app);
 
-        mDragger.startDrag(view, this, app, DragController.DRAG_ACTION_COPY);
-        mLauncher.closeAllApplications();
-
+        mDragController.startDrag(view, this, app, DragController.DRAG_ACTION_COPY);
+        mLauncher.showWorkspace();
+        mDraw = false;
+        invalidate();
         return true;
     }
 
-    public void setDragger(DragController dragger) {
-        mDragger = dragger;
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        if (mDraw) {
+            super.dispatchDraw(canvas);
+        }
+    }
+
+    public void setDragController(DragController dragController) {
+        mDragController = dragController;
     }
 
     public void onDropCompleted(View target, boolean success) {
+        mLauncher.closeAllAppsDialog(false);
     }
 
     void setLauncher(Launcher launcher) {
         mLauncher = launcher;
+    }
+
+    void onPrepareDialog() {
+        mDraw = true;
     }
 }

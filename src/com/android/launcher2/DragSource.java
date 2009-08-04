@@ -23,6 +23,6 @@ import android.view.View;
  *
  */
 public interface DragSource {
-    void setDragger(DragController dragger);
+    void setDragController(DragController dragger);
     void onDropCompleted(View target, boolean success);
 }

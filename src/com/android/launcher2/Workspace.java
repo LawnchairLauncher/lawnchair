@@ -90,7 +90,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     private OnLongClickListener mLongClickListener;
 
     private Launcher mLauncher;
-    private DragController mDragger;
+    private DragController mDragController;
     
     /**
      * Cache of vacant cells, used during drag events and invalidated as needed.
@@ -363,6 +363,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         if (!(child instanceof Folder)) {
             child.setOnLongClickListener(mLongClickListener);
         }
+        if (child instanceof DropTarget) {
+            mDragController.addDropTarget((DropTarget)child);
+        }
     }
 
     void addWidget(View view, Widget widget) {
@@ -435,6 +438,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             child.setOnLongClickListener(mLongClickListener);
             if (!(child instanceof Folder)) {
                 child.setOnLongClickListener(mLongClickListener);
+            }
+            if (child instanceof DropTarget) {
+                mDragController.addDropTarget((DropTarget)child);
             }
         }
     }
@@ -510,6 +516,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         if (restore) {
             canvas.restoreToCount(restoreCount);
         }
+    }
+
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mDragController.setWindowToken(getWindowToken());
     }
 
     @Override
@@ -854,7 +865,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         CellLayout current = ((CellLayout) getChildAt(mCurrentScreen));
 
         current.onDragChild(child);
-        mDragger.startDrag(child, this, child.getTag(), DragController.DRAG_ACTION_MOVE);
+        mDragController.startDrag(child, this, child.getTag(), DragController.DRAG_ACTION_MOVE);
         invalidate();
     }
 
@@ -888,7 +899,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         onDropExternal(result[0], result[1], info, layout, insertAtFirst);
     }
 
-    public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset, Object dragInfo) {
+    public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo) {
         final CellLayout cellLayout = getCurrentDropLayout();
         if (source != this) {
             onDropExternal(x - xOffset, y - yOffset, dragInfo, cellLayout);
@@ -914,16 +926,16 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
-            Object dragInfo) {
+            DragView dragView, Object dragInfo) {
         clearVacantCache();
     }
 
     public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
-            Object dragInfo) {
+            DragView dragView, Object dragInfo) {
     }
 
     public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset,
-            Object dragInfo) {
+            DragView dragView, Object dragInfo) {
         clearVacantCache();
     }
 
@@ -958,6 +970,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
         cellLayout.addView(view, insertAtFirst ? 0 : -1);
         view.setOnLongClickListener(mLongClickListener);
+        if (view instanceof DropTarget) {
+            mDragController.addDropTarget((DropTarget)view);
+        }
+
         mTargetCell = estimateDropCell(x, y, 1, 1, view, cellLayout, mTargetCell);
         cellLayout.onDropChild(view, mTargetCell);
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
@@ -981,7 +997,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
      * {@inheritDoc}
      */
     public boolean acceptDrop(DragSource source, int x, int y,
-            int xOffset, int yOffset, Object dragInfo) {
+            int xOffset, int yOffset, DragView dragView, Object dragInfo) {
         final CellLayout layout = getCurrentDropLayout();
         final CellLayout.CellInfo cellInfo = mDragInfo;
         final int spanX = cellInfo == null ? 1 : cellInfo.spanX;
@@ -999,7 +1015,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
      * {@inheritDoc}
      */
     public Rect estimateDropLocation(DragSource source, int x, int y,
-            int xOffset, int yOffset, Object dragInfo, Rect recycle) {
+            int xOffset, int yOffset, DragView dragView, Object dragInfo, Rect recycle) {
         final CellLayout layout = getCurrentDropLayout();
         
         final CellLayout.CellInfo cellInfo = mDragInfo;
@@ -1047,8 +1063,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         mLauncher = launcher;
     }
 
-    public void setDragger(DragController dragger) {
-        mDragger = dragger;
+    public void setDragController(DragController dragController) {
+        mDragController = dragController;
     }
 
     public void onDropCompleted(View target, boolean success) {
@@ -1056,6 +1072,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             if (target != this && mDragInfo != null) {
                 final CellLayout cellLayout = (CellLayout) getChildAt(mDragInfo.screen);
                 cellLayout.removeView(mDragInfo.cell);
+                if (mDragInfo.cell instanceof DropTarget) {
+                    mDragController.removeDropTarget((DropTarget)mDragInfo.cell);
+                }
                 final Object tag = mDragInfo.cell.getTag();
                 Launcher.getModel().removeDesktopItem((ItemInfo) tag);
             }
@@ -1247,7 +1266,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
             childCount = childrenToRemove.size();
             for (int j = 0; j < childCount; j++) {
-                layout.removeViewInLayout(childrenToRemove.get(j));
+                View child = childrenToRemove.get(j);
+                layout.removeViewInLayout(child);
+                if (child instanceof DropTarget) {
+                    mDragController.removeDropTarget((DropTarget)child);
+                }
             }
 
             if (childCount > 0) {

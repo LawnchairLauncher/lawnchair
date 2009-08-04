@@ -54,23 +54,28 @@ public class LiveFolderIcon extends FolderIcon {
     }
 
     @Override
-    public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset, Object dragInfo) {
+    public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo) {
         return false;
     }
 
     @Override
-    public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset, Object dragInfo) {
+    public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo) {
     }
 
     @Override
-    public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset, Object dragInfo) {
+    public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo) {
     }
 
     @Override
-    public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset, Object dragInfo) {
+    public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo) {
     }
 
     @Override
-    public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset, Object dragInfo) {
+    public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo) {
     }
 }

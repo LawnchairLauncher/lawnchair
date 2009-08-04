@@ -14,18 +14,22 @@
      limitations under the License.
 -->
 
-<com.android.launcher2.DragLayer
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher2"
 
-    android:id="@+id/drag_layer"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <com.android.launcher2.WallpaperView
-        android:id="@+id/wallpaper"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+<com.android.launcher2.WallpaperView
+    android:id="@+id/wallpaper"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" />
+
+<com.android.launcher2.DragLayer
+    android:id="@+id/drag_layer"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
     <!-- The workspace contains 3 screens of cells -->
     <com.android.launcher2.Workspace
@@ -72,3 +76,5 @@
         launcher:direction="horizontal" />
 
 </com.android.launcher2.DragLayer>
+
+</FrameLayout>

@@ -35,7 +35,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         OnItemClickListener, OnClickListener, View.OnLongClickListener {
 
     protected AbsListView mContent;
-    protected DragController mDragger;
+    protected DragController mDragController;
     
     protected Launcher mLauncher;
 
@@ -98,7 +98,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
             app = new ApplicationInfo(app);
         }
 
-        mDragger.startDrag(view, this, app, DragController.DRAG_ACTION_COPY);
+        mDragController.startDrag(view, this, app, DragController.DRAG_ACTION_COPY);
         mLauncher.closeFolder(this);
         mDragItem = app;
 
@@ -109,8 +109,8 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         mCloneInfo = cloneInfo;
     }
 
-    public void setDragger(DragController dragger) {
-        mDragger = dragger;
+    public void setDragController(DragController dragController) {
+        mDragController = dragController;
     }
 
     public void onDropCompleted(View target, boolean success) {

@@ -19,6 +19,9 @@ package com.android.launcher2;
 import android.widget.ImageView;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
@@ -46,15 +49,12 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
     private Animation mHandleOutAnimation;
 
     private int mOrientation;
-    private DragLayer mDragLayer;
+    private DragController mDragController;
 
     private final RectF mRegion = new RectF();
     private TransitionDrawable mTransition;
     private View mHandle;
-
-    public DeleteZone(Context context) {
-        super(context);
-    }
+    private final Paint mTrashPaint = new Paint();
 
     public DeleteZone(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -62,6 +62,9 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
 
     public DeleteZone(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+
+        final int srcColor = context.getResources().getColor(R.color.delete_color_filter);
+        mTrashPaint.setColorFilter(new PorterDuffColorFilter(srcColor, PorterDuff.Mode.SRC_ATOP));
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DeleteZone, defStyle, 0);
         mOrientation = a.getInt(R.styleable.DeleteZone_direction, ORIENTATION_HORIZONTAL);
@@ -75,15 +78,17 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
     }
 
     public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset,
-            Object dragInfo) {
+            DragView dragView, Object dragInfo) {
         return true;
     }
     
-    public Rect estimateDropLocation(DragSource source, int x, int y, int xOffset, int yOffset, Object dragInfo, Rect recycle) {
+    public Rect estimateDropLocation(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo, Rect recycle) {
         return null;
     }
 
-    public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset, Object dragInfo) {
+    public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo) {
         final ItemInfo item = (ItemInfo) dragInfo;
 
         if (item.container == -1) return;
@@ -117,17 +122,19 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
     }
 
     public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
-            Object dragInfo) {
+            DragView dragView, Object dragInfo) {
         mTransition.reverseTransition(TRANSITION_DURATION);
+        dragView.setPaint(mTrashPaint);
     }
 
     public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
-            Object dragInfo) {
+            DragView dragView, Object dragInfo) {
     }
 
     public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset,
-            Object dragInfo) {
+            DragView dragView, Object dragInfo) {
         mTransition.reverseTransition(TRANSITION_DURATION);
+        dragView.setPaint(null);
     }
 
     public void onDragStart(View v, DragSource source, Object info, int dragAction) {
@@ -139,7 +146,7 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
             getLocationOnScreen(location);
             mRegion.set(location[0], location[1], location[0] + mRight - mLeft,
                     location[1] + mBottom - mTop);
-            mDragLayer.setDeleteRegion(mRegion);
+            mDragController.setDeleteRegion(mRegion);
             mTransition.resetTransition();
             startAnimation(mInAnimation);
             mHandle.startAnimation(mHandleOutAnimation);
@@ -150,7 +157,7 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
     public void onDragEnd() {
         if (mTrashMode) {
             mTrashMode = false;
-            mDragLayer.setDeleteRegion(null);
+            mDragController.setDeleteRegion(null);
             startAnimation(mOutAnimation);
             mHandle.startAnimation(mHandleInAnimation);
             setVisibility(GONE);
@@ -221,8 +228,8 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
         mLauncher = launcher;
     }
 
-    void setDragController(DragLayer dragLayer) {
-        mDragLayer = dragLayer;
+    void setDragController(DragController dragController) {
+        mDragController = dragController;
     }
 
     void setHandle(View view) {

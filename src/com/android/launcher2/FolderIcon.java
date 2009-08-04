@@ -62,7 +62,7 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
     }
 
     public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset,
-            Object dragInfo) {
+            DragView dragView, Object dragInfo) {
         final ItemInfo item = (ItemInfo) dragInfo;
         final int itemType = item.itemType;
         return (itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
@@ -70,11 +70,13 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
                 && item.container != mInfo.id;
     }
 
-    public Rect estimateDropLocation(DragSource source, int x, int y, int xOffset, int yOffset, Object dragInfo, Rect recycle) {
+    public Rect estimateDropLocation(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo, Rect recycle) {
         return null;
     }
 
-    public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset, Object dragInfo) {
+    public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo) {
         final ApplicationInfo item = (ApplicationInfo) dragInfo;
         // TODO: update open folder that is looking at this data
         mInfo.add(item);
@@ -82,16 +84,16 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
     }
 
     public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
-            Object dragInfo) {
+            DragView dragView, Object dragInfo) {
         setCompoundDrawablesWithIntrinsicBounds(null, mOpenIcon, null, null);
     }
 
     public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
-            Object dragInfo) {
+            DragView dragView, Object dragInfo) {
     }
 
     public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset,
-            Object dragInfo) {
+            DragView dragView, Object dragInfo) {
         setCompoundDrawablesWithIntrinsicBounds(null, mCloseIcon, null, null);
     }
 }

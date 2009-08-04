@@ -28,31 +28,36 @@ public class UserFolder extends Folder implements DropTarget {
     }
 
     public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset,
-            Object dragInfo) {
+            DragView dragView, Object dragInfo) {
         final ItemInfo item = (ItemInfo) dragInfo;
         final int itemType = item.itemType;
         return (itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
                 itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) && item.container != mInfo.id;
     }
     
-    public Rect estimateDropLocation(DragSource source, int x, int y, int xOffset, int yOffset, Object dragInfo, Rect recycle) {
+    public Rect estimateDropLocation(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo, Rect recycle) {
         return null;
     }
 
-    public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset, Object dragInfo) {
+    public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo) {
         final ApplicationInfo item = (ApplicationInfo) dragInfo;
         //noinspection unchecked
         ((ArrayAdapter<ApplicationInfo>) mContent.getAdapter()).add((ApplicationInfo) dragInfo);
         LauncherModel.addOrMoveItemInDatabase(mLauncher, item, mInfo.id, 0, 0, 0);
     }
 
-    public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset, Object dragInfo) {
+    public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo) {
     }
 
-    public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset, Object dragInfo) {
+    public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo) {
     }
 
-    public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset, Object dragInfo) {
+    public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo) {
     }
 
     @Override
