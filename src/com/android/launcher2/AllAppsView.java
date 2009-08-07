@@ -40,7 +40,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -232,6 +231,7 @@ public class AllAppsView extends RSSurfaceView {
     }
 
     public class RolloRS {
+
         //public static final int STATE_SELECTED_ID = 0;
         public static final int STATE_DONE = 1;
         //public static final int STATE_PRESSURE = 2;
@@ -243,7 +243,6 @@ public class AllAppsView extends RSSurfaceView {
         public static final int STATE_COUNT = 8;
         public static final int STATE_TOUCH = 9;
 
-
         public RolloRS() {
         }
 
@@ -253,6 +252,7 @@ public class AllAppsView extends RSSurfaceView {
             mWidth = width;
             mHeight = height;
             initNamed();
+            initIcons(29);
             initRS();
         }
 
@@ -297,15 +297,15 @@ public class AllAppsView extends RSSurfaceView {
         private ProgramVertex.MatrixAllocation mPVAlloc;
         private ProgramVertex mPVOrtho;
         private ProgramVertex.MatrixAllocation mPVOrthoAlloc;
-        private Allocation[] mIcons;
-        private Allocation[] mLabels;
 
         private int[] mAllocStateBuf;
         private Allocation mAllocState;
 
+        private Allocation[] mIcons;
         private int[] mAllocIconIDBuf;
         private Allocation mAllocIconID;
 
+        private Allocation[] mLabels;
         private int[] mAllocLabelIDBuf;
         private Allocation mAllocLabelID;
 
@@ -377,51 +377,47 @@ public class AllAppsView extends RSSurfaceView {
             mAllocScratch.data(mAllocScratchBuf);
 
             Log.e("rs", "Done loading named");
+        }
+        
+        private void initIcons(int count) {
+            mIcons = new Allocation[count];
+            mAllocIconIDBuf = new int[count];
+            mAllocIconID = Allocation.createSized(mRS,
+                Element.USER_I32, mAllocIconIDBuf.length);
 
+            mLabels = new Allocation[count];
+            mAllocLabelIDBuf = new int[mLabels.length];
+            mAllocLabelID = Allocation.createSized(mRS,
+                Element.USER_I32, mLabels.length);
 
+            Element ie8888 = Element.RGBA_8888;
 
-            {
-                mIcons = new Allocation[29];
-                mAllocIconIDBuf = new int[mIcons.length];
-                mAllocIconID = Allocation.createSized(mRS,
-                    Element.USER_I32, mAllocIconIDBuf.length);
+            final Utilities.BubbleText bubble = new Utilities.BubbleText(getContext());
 
-                mLabels = new Allocation[29];
-                mAllocLabelIDBuf = new int[mLabels.length];
-                mAllocLabelID = Allocation.createSized(mRS,
-                    Element.USER_I32, mLabels.length);
-
-                Element ie8888 = Element.RGBA_8888;
-
-                for (int i=0; i<mIcons.length; i++) {
-                    mIcons[i] = Allocation.createFromBitmapResource(
-                            mRS, mRes, R.raw.maps, ie8888, true);
-                    mLabels[i] = makeTextBitmap("Maps");
-                }
-
-                for(int ct=0; ct < mIcons.length; ct++) {
-                    mIcons[ct].uploadToTexture(0);
-                    mLabels[ct].uploadToTexture(0);
-                    mAllocIconIDBuf[ct] = mIcons[ct].getID();
-                    mAllocLabelIDBuf[ct] = mLabels[ct].getID();
-                }
-                mAllocIconID.data(mAllocIconIDBuf);
-                mAllocLabelID.data(mAllocLabelIDBuf);
+            for (int i=0; i<count; i++) {
+                mIcons[i] = Allocation.createFromBitmapResource(
+                        mRS, mRes, R.raw.maps, ie8888, true);
+                mLabels[i] = makeTextBitmap(bubble, i%9==0 ? "Google Maps" : "Maps");
             }
 
+            for(int ct=0; ct < count; ct++) {
+                mIcons[ct].uploadToTexture(0);
+                mLabels[ct].uploadToTexture(0);
+                mAllocIconIDBuf[ct] = mIcons[ct].getID();
+                mAllocLabelIDBuf[ct] = mLabels[ct].getID();
+            }
+            mAllocIconID.data(mAllocIconIDBuf);
+            mAllocLabelID.data(mAllocLabelIDBuf);
+
+            Log.e("rs", "Done loading icons");
         }
 
-        Allocation makeTextBitmap(String t) {
-            Bitmap b = Bitmap.createBitmap(128, 32, Bitmap.Config.ARGB_8888);
-            Canvas c = new Canvas(b);
-            Paint p = new Paint();
-            p.setTypeface(Typeface.DEFAULT_BOLD);
-            p.setTextSize(20);
-            p.setColor(0xffffffff);
-            c.drawText(t, 2, 26, p);
-            return Allocation.createFromBitmap(mRS, b, Element.RGBA_8888, true);
+        Allocation makeTextBitmap(Utilities.BubbleText bubble, String label) {
+            Bitmap b = bubble.createTextBitmap(label);
+            Allocation a = Allocation.createFromBitmap(mRS, b, Element.RGBA_8888, true);
+            b.recycle();
+            return a;
         }
-
 
         private void initRS() {
             ScriptC.Builder sb = new ScriptC.Builder(mRS);

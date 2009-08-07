@@ -128,12 +128,12 @@ int main(void* con, int ft, int launchID)
                 if (alpha > 0) {
                     color(1.0f, 1.0f, 1.0f, alpha);
 
-                    float ty = 605.f - y * 150.f;
+                    float ty = 654.f - y * 150.f;
 
                     ty = ty + 0.25f;
 
                     bindTexture(NAMED_PFText, 0, loadI32(3, index));
-                    drawRect(tx, ty, tx + 128.f, ty + 32.f, 0.5f);
+                    drawRect(tx, ty, tx + 128.f, ty + 64.f, 0.5f);
                 }
                 iconCount--;
                 index++;

@@ -20,12 +20,18 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.graphics.Bitmap;
-import android.graphics.PixelFormat;
 import android.graphics.Canvas;
-import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Paint;
+import android.graphics.PaintFlagsDrawFilter;
+import android.graphics.PixelFormat;
 import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.Typeface;
+import android.text.Layout.Alignment;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.content.res.Resources;
 import android.content.Context;
 
@@ -200,5 +206,112 @@ final class Utilities {
         }
 
         return bitmap;
+    }
+
+    static class BubbleText {
+        private static final int MAX_LINES = 2;
+        private TextPaint mTextPaint;
+        private Paint mRectPaint;
+
+        private float mBubblePadding;
+        private float mCornerRadius;
+        private RectF mBubbleRect = new RectF();
+
+        private float mTextWidth;
+        private int mLeading;
+        private int mFirstLineY;
+        private int mLineHeight;
+
+        private int mBitmapWidth;
+        private int mBitmapHeight;
+
+        BubbleText(Context context) {
+            final Resources resources = context.getResources();
+
+            final float scale = resources.getDisplayMetrics().density;
+
+            final float paddingLeft = 5.0f * scale;
+            final float paddingRight = 5.0f * scale;
+            final float cellWidth = resources.getDimension(R.dimen.workspace_cell_width);
+            final float bubbleWidth = cellWidth - paddingLeft - paddingRight;
+            mBubblePadding = 5.0f * scale;
+
+            RectF bubbleRect = mBubbleRect;
+            bubbleRect.left = 0;
+            bubbleRect.top = 0;
+            bubbleRect.right = (int)(bubbleWidth+0.5f);
+
+            mCornerRadius = BubbleTextView.CORNER_RADIUS * scale;
+            mTextWidth = bubbleWidth - mBubblePadding - mBubblePadding;
+
+            Paint rectPaint = mRectPaint = new Paint();
+            rectPaint.setColor(0xff000000);
+
+            TextPaint textPaint = mTextPaint = new TextPaint();
+            textPaint.setTypeface(Typeface.DEFAULT_BOLD);
+            textPaint.setTextSize(20);
+            textPaint.setColor(0xffffffff);
+
+            float ascent = -textPaint.ascent();
+            float descent = textPaint.descent();
+            float leading = (ascent+descent) * 0.1f;
+            mLeading = (int)(leading + 0.5f);
+            mFirstLineY = (int)(leading + ascent + 0.5f);
+            mLineHeight = (int)(leading + ascent + descent + 0.5f);
+
+            roundToPow2(64);
+            mBitmapWidth = roundToPow2((int)(mBubbleRect.width() + 0.5f));
+            mBitmapHeight = roundToPow2((int)((MAX_LINES * mLineHeight) + mLeading + 0.5f));
+
+            Log.d(Launcher.LOG_TAG, "mBitmapWidth=" + mBitmapWidth + " mBitmapHeight="
+                    + mBitmapHeight + " w=" + ((int)(mBubbleRect.width() + 0.5f))
+                    + " h=" + ((int)((MAX_LINES * mLineHeight) + mLeading + 0.5f)));
+        }
+
+        /** You own the bitmap after this and you must call recycle on it. */
+        Bitmap createTextBitmap(String text) {
+            Bitmap b = Bitmap.createBitmap(mBitmapWidth, mBitmapHeight, Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(b);
+
+            StaticLayout layout = new StaticLayout(text, mTextPaint, (int)mTextWidth,
+                    Alignment.ALIGN_CENTER, 1, 0, true);
+            int lineCount = layout.getLineCount();
+            if (lineCount > MAX_LINES) {
+                lineCount = MAX_LINES;
+            }
+            if (lineCount > 0) {
+                RectF bubbleRect = mBubbleRect;
+                bubbleRect.bottom = (int)((lineCount * mLineHeight) + mLeading + mLeading + 0.0f);
+                c.drawRoundRect(bubbleRect, mCornerRadius, mCornerRadius, mRectPaint);
+                Log.d(Launcher.LOG_TAG, "bubbleRect=" + bubbleRect);
+            }
+            for (int i=0; i<lineCount; i++) {
+                int x = (int)((mBubbleRect.width() - layout.getLineMax(i)) / 2.0f);
+                int y = mFirstLineY + (i * mLineHeight);
+                c.drawText(text.substring(layout.getLineStart(i), layout.getLineEnd(i)),
+                        x, y, mTextPaint);
+            }
+
+            return b;
+        }
+    }
+
+    /** Only works for positive numbers. */
+    static int roundToPow2(int n) {
+        int orig = n;
+        n >>= 1;
+        int mask = 0x8000000;
+        while (mask != 0 && (n & mask) == 0) {
+            mask >>= 1;
+        }
+        while (mask != 0) {
+            n |= mask;
+            mask >>= 1;
+        }
+        n += 1;
+        if (n != orig) {
+            n <<= 1;
+        }
+        return n;
     }
 }

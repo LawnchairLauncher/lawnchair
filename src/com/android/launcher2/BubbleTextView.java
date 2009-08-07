@@ -31,9 +31,9 @@ import android.text.Layout;
  * too aggressive.
  */
 public class BubbleTextView extends TextView {
-    private static final float CORNER_RADIUS = 8.0f;
-    private static final float PADDING_H = 5.0f;
-    private static final float PADDING_V = 1.0f;
+    static final float CORNER_RADIUS = 8.0f;
+    static final float PADDING_H = 5.0f;
+    static final float PADDING_V = 1.0f;
 
     private final RectF mRect = new RectF();
     private Paint mPaint;
