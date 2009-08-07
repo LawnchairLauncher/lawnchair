@@ -22,7 +22,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <com.android.launcher2.AllAppsGridView
+    <com.android.launcher2.AllAppsView
         android:id="@+id/all_apps"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"

@@ -184,7 +184,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private AllAppsDialog mAllAppsDialog;
     private TransitionDrawable mHandleIcon;
     private HandleView mHandleView;
-    private AllAppsGridView mAllAppsGrid; // TODO: put this into AllAppsDialog
+    private AllAppsView mAllAppsGrid; // TODO: put this into AllAppsDialog
 
     private boolean mDesktopLocked = true;
     private Bundle mSavedState;
@@ -903,8 +903,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         TextKeyListener.getInstance().release();
 
-        mAllAppsGrid.clearTextFilter();
-        mAllAppsGrid.setAdapter(null);
+        // TODO mAllAppsGrid.setAdapter(null);
         sModel.unbind();
         sModel.abortLoaders();
 
@@ -1518,7 +1517,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     private void bindDrawer(Launcher.DesktopBinder binder,
             ApplicationsAdapter drawerAdapter) {
-        mAllAppsGrid.setAdapter(drawerAdapter);
+        // TODO mAllAppsGrid.setAdapter(drawerAdapter);
         binder.startBindingAppWidgetsWhenIdle();
     }
 
@@ -1745,7 +1744,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     protected void onPrepareDialog(int id, Dialog dialog) {
         switch (id) {
             case DIALOG_ALL_APPS:
-                mAllAppsGrid.onPrepareDialog();
+                // TODO mAllAppsGrid.onPrepareDialog();
                 break;
             case DIALOG_CREATE_SHORTCUT:
                 break;
@@ -1886,14 +1885,13 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             setOnShowListener(this);
 
             setContentView(R.layout.all_apps);
-            AllAppsGridView grid = mAllAppsGrid = (AllAppsGridView)findViewById(R.id.all_apps);
+            AllAppsView grid = mAllAppsGrid = (AllAppsView)findViewById(R.id.all_apps);
 
             DragLayer dragLayer = (DragLayer)findViewById(R.id.drag_layer);
             dragLayer.setDragController(mDragController);
 
-            grid.setTextFilterEnabled(false);
-            grid.setDragController(mDragController);
-            grid.setLauncher(Launcher.this);
+            // TODO grid.setDragController(mDragController);
+            // TODO grid.setLauncher(Launcher.this);
         }
 
         public void onCancel(DialogInterface dialog) {
