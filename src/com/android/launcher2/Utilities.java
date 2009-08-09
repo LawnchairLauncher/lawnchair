@@ -234,7 +234,7 @@ final class Utilities {
             final float paddingRight = 5.0f * scale;
             final float cellWidth = resources.getDimension(R.dimen.workspace_cell_width);
             final float bubbleWidth = cellWidth - paddingLeft - paddingRight;
-            mBubblePadding = 5.0f * scale;
+            mBubblePadding = 3.0f * scale;
 
             RectF bubbleRect = mBubbleRect;
             bubbleRect.left = 0;
@@ -245,27 +245,29 @@ final class Utilities {
             mTextWidth = bubbleWidth - mBubblePadding - mBubblePadding;
 
             Paint rectPaint = mRectPaint = new Paint();
-            rectPaint.setColor(0xff000000);
+            rectPaint.setColor(0xaa000000);
+            rectPaint.setAntiAlias(true);
 
             TextPaint textPaint = mTextPaint = new TextPaint();
             textPaint.setTypeface(Typeface.DEFAULT_BOLD);
             textPaint.setTextSize(20);
             textPaint.setColor(0xffffffff);
+            textPaint.setAntiAlias(true);
 
             float ascent = -textPaint.ascent();
             float descent = textPaint.descent();
-            float leading = (ascent+descent) * 0.1f;
+            float leading = 0.0f;//(ascent+descent) * 0.1f;
             mLeading = (int)(leading + 0.5f);
             mFirstLineY = (int)(leading + ascent + 0.5f);
             mLineHeight = (int)(leading + ascent + descent + 0.5f);
 
             roundToPow2(64);
             mBitmapWidth = roundToPow2((int)(mBubbleRect.width() + 0.5f));
-            mBitmapHeight = roundToPow2((int)((MAX_LINES * mLineHeight) + mLeading + 0.5f));
+            mBitmapHeight = roundToPow2((int)((MAX_LINES * mLineHeight) + leading + 0.5f));
 
             Log.d(Launcher.LOG_TAG, "mBitmapWidth=" + mBitmapWidth + " mBitmapHeight="
                     + mBitmapHeight + " w=" + ((int)(mBubbleRect.width() + 0.5f))
-                    + " h=" + ((int)((MAX_LINES * mLineHeight) + mLeading + 0.5f)));
+                    + " h=" + ((int)((MAX_LINES * mLineHeight) + leading + 0.5f)));
         }
 
         /** You own the bitmap after this and you must call recycle on it. */
@@ -281,9 +283,8 @@ final class Utilities {
             }
             if (lineCount > 0) {
                 RectF bubbleRect = mBubbleRect;
-                bubbleRect.bottom = (int)((lineCount * mLineHeight) + mLeading + mLeading + 0.0f);
+                bubbleRect.bottom = height(lineCount);
                 c.drawRoundRect(bubbleRect, mCornerRadius, mCornerRadius, mRectPaint);
-                Log.d(Launcher.LOG_TAG, "bubbleRect=" + bubbleRect);
             }
             for (int i=0; i<lineCount; i++) {
                 int x = (int)((mBubbleRect.width() - layout.getLineMax(i)) / 2.0f);
@@ -293,6 +294,26 @@ final class Utilities {
             }
 
             return b;
+        }
+
+        private int height(int lineCount) {
+            return (int)((lineCount * mLineHeight) + mLeading + mLeading + 0.0f);
+        }
+
+        int getBubbleWidth() {
+            return (int)(mBubbleRect.width() + 0.5f);
+        }
+
+        int getMaxBubbleHeight() {
+            return height(MAX_LINES);
+        }
+
+        int getBitmapWidth() {
+            return mBitmapWidth;
+        }
+
+        int getBitmapHeight() {
+            return mBitmapHeight;
         }
     }
 

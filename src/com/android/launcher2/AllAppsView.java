@@ -243,6 +243,12 @@ public class AllAppsView extends RSSurfaceView {
         public static final int STATE_COUNT = 8;
         public static final int STATE_TOUCH = 9;
 
+        static final int ALLOC_PARAMS = 0;
+        static final int ALLOC_STATE = 1;
+        static final int ALLOC_SCRATCH = 2;
+        static final int ALLOC_ICON_IDS = 3;
+        static final int ALLOC_LABEL_IDS = 4;
+
         public RolloRS() {
         }
 
@@ -291,6 +297,7 @@ public class AllAppsView extends RSSurfaceView {
         private Sampler mSamplerText;
         private ProgramStore mPSBackground;
         private ProgramStore mPSText;
+        private ProgramFragment mPFDebug;
         private ProgramFragment mPFImages;
         private ProgramFragment mPFText;
         private ProgramVertex mPV;
@@ -312,6 +319,18 @@ public class AllAppsView extends RSSurfaceView {
         private int[] mAllocScratchBuf;
         private Allocation mAllocScratch;
 
+        Params mParams;
+
+        class Params extends IntAllocation {
+            Params(RenderScript rs) {
+                super(rs);
+            }
+            @AllocationIndex(0) public int bubbleWidth;
+            @AllocationIndex(1) public int bubbleHeight;
+            @AllocationIndex(2) public int bubbleBitmapWidth;
+            @AllocationIndex(3) public int bubbleBitmapHeight;
+        }
+
         private void initNamed() {
             Sampler.Builder sb = new Sampler.Builder(mRS);
             sb.setMin(Sampler.Value.LINEAR);//_MIP_LINEAR);
@@ -324,6 +343,9 @@ public class AllAppsView extends RSSurfaceView {
             sb.setMag(Sampler.Value.NEAREST);
             mSamplerText = sb.create();
 
+            ProgramFragment.Builder dbg = new ProgramFragment.Builder(mRS, null, null);
+            mPFDebug = dbg.create();
+            mPFDebug.setName("PFDebug");
 
             ProgramFragment.Builder bf = new ProgramFragment.Builder(mRS, null, null);
             bf.setTexEnable(true, 0);
@@ -380,6 +402,8 @@ public class AllAppsView extends RSSurfaceView {
         }
         
         private void initIcons(int count) {
+            mParams = new Params(mRS);
+
             mIcons = new Allocation[count];
             mAllocIconIDBuf = new int[count];
             mAllocIconID = Allocation.createSized(mRS,
@@ -393,6 +417,12 @@ public class AllAppsView extends RSSurfaceView {
             Element ie8888 = Element.RGBA_8888;
 
             final Utilities.BubbleText bubble = new Utilities.BubbleText(getContext());
+
+            mParams.bubbleWidth = bubble.getBubbleWidth();
+            mParams.bubbleHeight = bubble.getMaxBubbleHeight();
+            mParams.bubbleBitmapWidth = bubble.getBitmapWidth();
+            mParams.bubbleBitmapHeight = bubble.getBitmapHeight();
+            mParams.save();
 
             for (int i=0; i<count; i++) {
                 mIcons[i] = Allocation.createFromBitmapResource(
@@ -430,10 +460,12 @@ public class AllAppsView extends RSSurfaceView {
             mAllocStateBuf = new int[] {0, 0, 0, 8, 0, 0, -1, 0, mAllocIconIDBuf.length, 0, 0};
             mAllocState = Allocation.createSized(mRS,
                 Element.USER_I32, mAllocStateBuf.length);
-            mScript.bindAllocation(mAllocState, 0);
-            mScript.bindAllocation(mAllocIconID, 1);
-            mScript.bindAllocation(mAllocScratch, 2);
-            mScript.bindAllocation(mAllocLabelID, 3);
+
+            mScript.bindAllocation(mParams.getAllocation(), ALLOC_PARAMS);
+            mScript.bindAllocation(mAllocState, ALLOC_STATE);
+            mScript.bindAllocation(mAllocIconID, ALLOC_ICON_IDS);
+            mScript.bindAllocation(mAllocScratch, ALLOC_SCRATCH);
+            mScript.bindAllocation(mAllocLabelID, ALLOC_LABEL_IDS);
             setPosition(0);
             setZoom(1);
 
