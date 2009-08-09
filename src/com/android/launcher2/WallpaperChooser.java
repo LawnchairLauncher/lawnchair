@@ -172,7 +172,7 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
         try {
             WallpaperManager wpm = (WallpaperManager)getSystemService(
                     WALLPAPER_SERVICE);
-            wpm.set(mImages.get(position));
+            wpm.setResource(mImages.get(position));
             setResult(RESULT_OK);
             finish();
         } catch (IOException e) {
