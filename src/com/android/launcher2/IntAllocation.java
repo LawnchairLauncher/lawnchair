@@ -19,6 +19,7 @@ package com.android.launcher2;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
+import android.util.Log;
 
 import java.lang.reflect.Field;
 
@@ -45,6 +46,25 @@ public class IntAllocation {
                 }
             }
             mBuffer = new int[maxIndex+1];
+            if (true) {
+                // helpful debugging check
+                for (Field f: fields) {
+                    AllocationIndex index = f.getAnnotation(AllocationIndex.class);
+                    if (index != null) {
+                        int i = index.value();
+                        if (mBuffer[i] != 0) {
+                            throw new RuntimeException("@AllocationIndex on field in class "
+                                    + this.getClass().getName() + " with duplicate value "
+                                    + i + " for field " + f.getName() + ". The other field is "
+                                    + fields[mBuffer[i]-1].getName() + '.');
+                        }
+                        mBuffer[i] = i+1;
+                    }
+                }
+                for (int i=0; i<mBuffer.length; i++) {
+                    mBuffer[i] = 0;
+                }
+            }
             mAlloc = Allocation.createSized(mRS, Element.USER_I32, mBuffer.length);
         }
         int[] buf = mBuffer;
