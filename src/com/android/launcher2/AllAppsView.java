@@ -55,6 +55,11 @@ import android.graphics.PixelFormat;
 
 
 public class AllAppsView extends RSSurfaceView {
+    private RenderScript mRS;
+    private RolloRS mRollo;
+
+    private int mLastMotionX;
+
     public AllAppsView(Context context) {
         super(context);
         setFocusable(true);
@@ -69,152 +74,45 @@ public class AllAppsView extends RSSurfaceView {
         this(context);
     }
 
-    private RenderScript mRS;
-    private RolloRS mRender;
-
+    @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
         super.surfaceChanged(holder, format, w, h);
 
         mRS = createRenderScript();
-        mRender = new RolloRS();
-        mRender.init(mRS, getResources(), w, h);
+        mRollo = new RolloRS();
+        mRollo.init(getResources(), w, h);
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)
     {
-        // break point at here
         // this method doesn't work when 'extends View' include 'extends ScrollView'.
         return super.onKeyDown(keyCode, event);
-    }
-
-    boolean mControlMode = false;
-    boolean mZoomMode = false;
-    boolean mFlingMode = false;
-    float mFlingX = 0;
-    float mFlingY = 0;
-    float mColumn = -1;
-    float mOldColumn;
-    float mZoom = 1;
-
-    int mIconCount = 29;
-    int mRows = 4;
-    int mColumns = (mIconCount + mRows - 1) / mRows;
-
-    float mMaxZoom = ((float)mColumns) / 3.f;
-
-
-    void setColumn(boolean clamp)
-    {
-        //Log.e("rs", " col = " + Float.toString(mColumn));
-        float c = mColumn;
-        if(c > (mColumns -2)) {
-            c = (mColumns -2);
-        }
-        if(c < 0) {
-            c = 0;
-        }
-        mRender.setPosition(c);
-        if(clamp) {
-            mColumn = c;
-        }
-    }
-
-    void computeSelection(float x, float y)
-    {
-        float col = mColumn + (x - 0.5f) * 4 + 1.25f;
-        int iCol = (int)(col + 0.25f);
-
-        float row = (y / 0.8f) * mRows;
-        int iRow = (int)(row - 0.5f);
-
-        mRender.setSelected(iCol * mRows + iRow);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev)
     {
-        boolean ret = true;
-        int act = ev.getAction();
-        if (act == ev.ACTION_UP) {
-            ret = false;
+        int x = (int)ev.getX();
+        int deltaX;
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mLastMotionX = x;
+                break;
+            case MotionEvent.ACTION_MOVE:
+            case MotionEvent.ACTION_OUTSIDE:
+                deltaX = x - mLastMotionX;
+                mRollo.mState.scrollX += deltaX;
+                Log.d(Launcher.LOG_TAG, "updated scrollX=" + mRollo.mState.scrollX);
+                mRollo.mState.save();
+                mLastMotionX = x;
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                mLastMotionX = -10000;
+                break;
         }
-
-        float nx = ev.getX() / getWidth();
-        float ny = ev.getY() / getHeight();
-
-        //Log.e("rs", "width=" + Float.toString(getWidth()));
-        //Log.e("rs", "height=" + Float.toString(getHeight()));
-
-        mRender.setTouch(ret);
-
-        if((ny > 0.85f) || mControlMode) {
-            mFlingMode = false;
-
-            // Projector control
-            if((nx > 0.2f) && (nx < 0.8f) || mControlMode) {
-                if(act != ev.ACTION_UP) {
-                    float zoom = mMaxZoom;
-                    if(mControlMode) {
-                        if(!mZoomMode) {
-                            zoom = 1.f;
-                        }
-                        float dx = nx - mFlingX;
-
-                        if((ny < 0.9) && mZoomMode) {
-                            zoom = mMaxZoom - ((0.9f - ny) * 10.f);
-                            if(zoom < 1) {
-                                zoom = 1;
-                                mZoomMode = false;
-                            }
-                            mOldColumn = mColumn;
-                        }
-                        mColumn += dx * 4;// * zoom;
-                        if(zoom > 1.01f) {
-                            mColumn += (mZoom - zoom) * (nx - 0.5f) * 4 * zoom;
-                        }
-                    } else {
-                        mOldColumn = mColumn;
-                        mColumn = ((float)mColumns) / 2;
-                        mControlMode = true;
-                        mZoomMode = true;
-                    }
-                    mZoom = zoom;
-                    mFlingX = nx;
-                    mRender.setZoom(zoom);
-                    if(mZoom < 1.01f) {
-                        computeSelection(nx, ny);
-                    }
-                } else {
-                    mControlMode = false;
-                    mColumn = mOldColumn;
-                    mRender.setZoom(1.f);
-                    mRender.setSelected(-1);
-                }
-            } else {
-                // Do something with corners here....
-            }
-            setColumn(true);
-
-        } else {
-            // icon control
-            if(act != ev.ACTION_UP) {
-                if(mFlingMode) {
-                    mColumn += (mFlingX - nx) * 4;
-                    setColumn(true);
-                }
-                mFlingMode = true;
-                mFlingX = nx;
-                mFlingY = ny;
-            } else {
-                mFlingMode = false;
-                mColumn = (float)(java.lang.Math.floor(mColumn * 0.25f + 0.3f) * 4.f) + 1.f;
-                setColumn(true);
-            }
-        }
-
-
-        return ret;
+        return true;
     }
 
     @Override
@@ -232,66 +130,17 @@ public class AllAppsView extends RSSurfaceView {
 
     public class RolloRS {
 
-        //public static final int STATE_SELECTED_ID = 0;
-        public static final int STATE_DONE = 1;
-        //public static final int STATE_PRESSURE = 2;
-        public static final int STATE_ZOOM = 3;
-        //public static final int STATE_WARP = 4;
-        public static final int STATE_ORIENTATION = 5;
-        public static final int STATE_SELECTION = 6;
-        public static final int STATE_FIRST_VISIBLE = 7;
-        public static final int STATE_COUNT = 8;
-        public static final int STATE_TOUCH = 9;
-
+        // Allocations ======
         static final int ALLOC_PARAMS = 0;
         static final int ALLOC_STATE = 1;
         static final int ALLOC_SCRATCH = 2;
         static final int ALLOC_ICON_IDS = 3;
         static final int ALLOC_LABEL_IDS = 4;
 
-        public RolloRS() {
-        }
-
-        public void init(RenderScript rs, Resources res, int width, int height) {
-            mRS = rs;
-            mRes = res;
-            mWidth = width;
-            mHeight = height;
-            initNamed();
-            initIcons(29);
-            initRS();
-        }
-
-        public void setPosition(float column) {
-            mAllocStateBuf[STATE_FIRST_VISIBLE] = (int)(column * (-20));
-            mAllocState.data(mAllocStateBuf);
-        }
-
-        public void setTouch(boolean touch) {
-            mAllocStateBuf[STATE_TOUCH] = touch ? 1 : 0;
-            mAllocState.data(mAllocStateBuf);
-        }
-
-        public void setZoom(float z) {
-            //Log.e("rs", "zoom " + Float.toString(z));
-
-            mAllocStateBuf[STATE_ZOOM] = (int)(z * 1000.f);
-            mAllocState.data(mAllocStateBuf);
-        }
-
-        public void setSelected(int index) {
-            //Log.e("rs",  "setSelected " + Integer.toString(index));
-
-            mAllocStateBuf[STATE_SELECTION] = index;
-            mAllocStateBuf[STATE_DONE] = 1;
-            mAllocState.data(mAllocStateBuf);
-        }
-
         private int mWidth;
         private int mHeight;
 
         private Resources mRes;
-        private RenderScript mRS;
         private Script mScript;
         private Sampler mSampler;
         private Sampler mSamplerText;
@@ -305,9 +154,6 @@ public class AllAppsView extends RSSurfaceView {
         private ProgramVertex mPVOrtho;
         private ProgramVertex.MatrixAllocation mPVOrthoAlloc;
 
-        private int[] mAllocStateBuf;
-        private Allocation mAllocState;
-
         private Allocation[] mIcons;
         private int[] mAllocIconIDBuf;
         private Allocation mAllocIconID;
@@ -320,6 +166,7 @@ public class AllAppsView extends RSSurfaceView {
         private Allocation mAllocScratch;
 
         Params mParams;
+        State mState;
 
         class Params extends IntAllocation {
             Params(RenderScript rs) {
@@ -331,7 +178,27 @@ public class AllAppsView extends RSSurfaceView {
             @AllocationIndex(3) public int bubbleBitmapHeight;
         }
 
-        private void initNamed() {
+        class State extends IntAllocation {
+            State(RenderScript rs) {
+                super(rs);
+            }
+            @AllocationIndex(0) public int iconCount;
+            @AllocationIndex(1) public int scrollX;
+        }
+
+        public RolloRS() {
+        }
+
+        public void init(Resources res, int width, int height) {
+            mRes = res;
+            mWidth = width;
+            mHeight = height;
+            initGl();
+            initData();
+            initRs();
+        }
+
+        private void initGl() {
             Sampler.Builder sb = new Sampler.Builder(mRS);
             sb.setMin(Sampler.Value.LINEAR);//_MIP_LINEAR);
             sb.setMag(Sampler.Value.LINEAR);
@@ -401,8 +268,10 @@ public class AllAppsView extends RSSurfaceView {
             Log.e("rs", "Done loading named");
         }
         
-        private void initIcons(int count) {
+        private void initData() {
+            final int count = 29;
             mParams = new Params(mRS);
+            mState = new State(mRS);
 
             mIcons = new Allocation[count];
             mAllocIconIDBuf = new int[count];
@@ -422,7 +291,6 @@ public class AllAppsView extends RSSurfaceView {
             mParams.bubbleHeight = bubble.getMaxBubbleHeight();
             mParams.bubbleBitmapWidth = bubble.getBitmapWidth();
             mParams.bubbleBitmapHeight = bubble.getBitmapHeight();
-            mParams.save();
 
             for (int i=0; i<count; i++) {
                 mIcons[i] = Allocation.createFromBitmapResource(
@@ -430,16 +298,19 @@ public class AllAppsView extends RSSurfaceView {
                 mLabels[i] = makeTextBitmap(bubble, i%9==0 ? "Google Maps" : "Maps");
             }
 
-            for(int ct=0; ct < count; ct++) {
-                mIcons[ct].uploadToTexture(0);
-                mLabels[ct].uploadToTexture(0);
-                mAllocIconIDBuf[ct] = mIcons[ct].getID();
-                mAllocLabelIDBuf[ct] = mLabels[ct].getID();
+            for (int i=0; i<count; i++) {
+                mIcons[i].uploadToTexture(0);
+                mLabels[i].uploadToTexture(0);
+                mAllocIconIDBuf[i] = mIcons[i].getID();
+                mAllocLabelIDBuf[i] = mLabels[i].getID();
             }
             mAllocIconID.data(mAllocIconIDBuf);
             mAllocLabelID.data(mAllocLabelIDBuf);
 
-            Log.e("rs", "Done loading icons");
+            mState.iconCount = count;
+
+            mParams.save();
+            mState.save();
         }
 
         Allocation makeTextBitmap(Utilities.BubbleText bubble, String label) {
@@ -449,27 +320,18 @@ public class AllAppsView extends RSSurfaceView {
             return a;
         }
 
-        private void initRS() {
+        private void initRs() {
             ScriptC.Builder sb = new ScriptC.Builder(mRS);
             sb.setScript(mRes, R.raw.rollo);
-            //sb.setScript(mRes, R.raw.rollo2);
             sb.setRoot(true);
             mScript = sb.create();
             mScript.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-            mAllocStateBuf = new int[] {0, 0, 0, 8, 0, 0, -1, 0, mAllocIconIDBuf.length, 0, 0};
-            mAllocState = Allocation.createSized(mRS,
-                Element.USER_I32, mAllocStateBuf.length);
-
             mScript.bindAllocation(mParams.getAllocation(), ALLOC_PARAMS);
-            mScript.bindAllocation(mAllocState, ALLOC_STATE);
+            mScript.bindAllocation(mState.getAllocation(), ALLOC_STATE);
             mScript.bindAllocation(mAllocIconID, ALLOC_ICON_IDS);
             mScript.bindAllocation(mAllocScratch, ALLOC_SCRATCH);
             mScript.bindAllocation(mAllocLabelID, ALLOC_LABEL_IDS);
-            setPosition(0);
-            setZoom(1);
-
-            //RenderScript.File f = mRS.fileOpen("/sdcard/test.a3d");
 
             mRS.contextBindRootScript(mScript);
         }

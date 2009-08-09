@@ -20,16 +20,9 @@
 #define PARAM_BUBBLE_BITMAP_WIDTH       2
 #define PARAM_BUBBLE_BITMAP_HEIGHT      3
 
-//#define STATE_POS_X             0
-#define STATE_DONE              1
-//#define STATE_PRESSURE          2
-#define STATE_ZOOM              3
-//#define STATE_WARP              4
-#define STATE_ORIENTATION       5
-#define STATE_SELECTION         6
-#define STATE_FIRST_VISIBLE     7
-#define STATE_COUNT             8
-#define STATE_TOUCH             9
+// State ======
+#define STATE_ICON_COUNT                0
+#define STATE_SCROLL_X                  1
 
 // Scratch variables ======
 #define SCRATCH_FADE 0
@@ -74,7 +67,7 @@ main(void* con, int ft, int launchID)
     pfClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
     // icons & labels
-    int iconCount = loadI32(ALLOC_STATE, STATE_COUNT);
+    int iconCount = loadI32(ALLOC_STATE, STATE_ICON_COUNT);
     int pageCount = count_pages(iconCount);
 
     float densityScale = 2.0f / SCREEN_WIDTH;
@@ -94,17 +87,17 @@ main(void* con, int ft, int launchID)
     float iconWidth = ICON_WIDTH_PX * densityScale;
     float columnGutter = COLUMN_GUTTER_PX * densityScale;
 
-    float pageLeft = -1;
-    int icon = 0;
-    int page;
-
     float labelWidth = loadI32(ALLOC_PARAMS, PARAM_BUBBLE_WIDTH) * densityScale;
     float labelTextureWidth = loadI32(ALLOC_PARAMS, PARAM_BUBBLE_BITMAP_WIDTH) * densityScale;
     float labelTextureHeight = loadI32(ALLOC_PARAMS, PARAM_BUBBLE_BITMAP_HEIGHT) * densityScale;
 
-    int scrollXPx = 100;
-    pageLeft -= scrollXPx * densityScale;
+    float pageLeft = -1;
+    int icon = 0;
+    int page;
 
+    int scrollXPx = loadI32(ALLOC_STATE, STATE_SCROLL_X);
+    debugI32("scrollXPx", scrollXPx);
+    pageLeft += scrollXPx * densityScale;
 
     for (page=0; page<pageCount; page++) {
         // Bug makes 1.0f alpha fail.
@@ -148,7 +141,7 @@ main(void* con, int ft, int launchID)
         pageLeft += 2.0f;
     }
 
-    return 0;
+    return 1;
 }
 
 
