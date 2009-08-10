@@ -18,7 +18,6 @@ package com.android.launcher2;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Application;
 import android.app.Dialog;
 import android.app.ISearchManager;
 import android.app.SearchManager;
@@ -40,7 +39,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
@@ -64,6 +62,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.View.OnLongClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -88,7 +87,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     static final boolean LOGD = false;
 
     private static final boolean PROFILE_STARTUP = false;
-    private static final boolean PROFILE_DRAWER = false;
     private static final boolean PROFILE_ROTATE = false;
     private static final boolean DEBUG_USER_INTERFACE = false;
 
@@ -154,12 +152,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     private static final LauncherModel sModel = new LauncherModel();
 
-    private static Bitmap sWallpaper;
-
     private static final Object sLock = new Object();
     private static int sScreen = DEFAULT_SCREN;
-
-    private static WallpaperIntentReceiver sWallpaperReceiver;
 
     private final BroadcastReceiver mApplicationsReceiver = new ApplicationsIntentReceiver();
     private final ContentObserver mObserver = new FavoritesChangeObserver();
@@ -167,8 +161,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private LayoutInflater mInflater;
 
     private DragController mDragController;
-    private DragLayer mDragLayer;
-    private WallpaperView mWallpaperView;
     private Workspace mWorkspace;
 
     private AppWidgetManager mAppWidgetManager;
@@ -182,7 +174,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private FolderInfo mFolderInfo;
 
     private AllAppsDialog mAllAppsDialog;
-    private TransitionDrawable mHandleIcon;
     private HandleView mHandleView;
     private AllAppsView mAllAppsGrid; // TODO: put this into AllAppsDialog
 
@@ -209,6 +200,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER);
+
         mInflater = getLayoutInflater();
 
         mAppWidgetManager = AppWidgetManager.getInstance(this);
@@ -532,12 +525,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mDragController = new DragController(this);
         DragController dragController = mDragController;
 
-        mDragLayer = (DragLayer) findViewById(R.id.drag_layer);
-        final DragLayer dragLayer = mDragLayer;
+        DragLayer dragLayer = (DragLayer) findViewById(R.id.drag_layer);
         dragLayer.setDragController(dragController);
-
-        mWallpaperView = (WallpaperView) findViewById(R.id.wallpaper);
-        final WallpaperView wallpaper = mWallpaperView;
 
         mWorkspace = (Workspace) dragLayer.findViewById(R.id.workspace);
         final Workspace workspace = mWorkspace;
@@ -547,16 +536,12 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mHandleView = (HandleView) findViewById(R.id.all_apps);
         mHandleView.setLauncher(this);
         mHandleView.setOnClickListener(this);
-        mHandleIcon = (TransitionDrawable) mHandleView.getDrawable();
-        mHandleIcon.setCrossFadeEnabled(true);
+        TransitionDrawable handleIcon = (TransitionDrawable) mHandleView.getDrawable();
+        handleIcon.setCrossFadeEnabled(true);
 
         workspace.setOnLongClickListener(this);
         workspace.setDragController(dragController);
         workspace.setLauncher(this);
-        workspace.setWallpaper(wallpaper);
-
-        loadWallpaper();
-        wallpaper.setScreenCount(workspace.getScreenCount());
 
         deleteZone.setLauncher(this);
         deleteZone.setDragController(dragController);
@@ -1275,17 +1260,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
      * wallpaper.
      */
     private void registerIntentReceivers() {
-        if (sWallpaperReceiver == null) {
-            final Application application = getApplication();
-
-            sWallpaperReceiver = new WallpaperIntentReceiver(application, this);
-
-            IntentFilter filter = new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED);
-            application.registerReceiver(sWallpaperReceiver, filter);
-        } else {
-            sWallpaperReceiver.setLauncher(this);
-        }
-
         IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
         filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
         filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
@@ -1614,25 +1588,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
     }
 
-    private void loadWallpaper() {
-        // The first time the application is started, we load the wallpaper from
-        // the ApplicationContext
-        if (sWallpaper == null) {
-            final Drawable drawable;
-            if (false) {
-                drawable = getWallpaper();
-            } else {
-                drawable = getResources().getDrawable(R.drawable.wallpaper_path);
-            }
-            if (drawable instanceof BitmapDrawable) {
-                sWallpaper = ((BitmapDrawable) drawable).getBitmap();
-            } else {
-                throw new IllegalStateException("The wallpaper must be a BitmapDrawable.");
-            }
-        }
-        mWallpaperView.loadWallpaper(sWallpaper);
-    }
-
     /**
      * Opens the user fodler described by the specified tag. The opening of the folder
      * is animated relative to the specified View. If the View is null, no animation
@@ -1885,7 +1840,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             setOnShowListener(this);
 
             setContentView(R.layout.all_apps);
-            AllAppsView grid = mAllAppsGrid = (AllAppsView)findViewById(R.id.all_apps);
+            mAllAppsGrid = (AllAppsView) findViewById(R.id.all_apps);
 
             DragLayer dragLayer = (DragLayer)findViewById(R.id.drag_layer);
             dragLayer.setDragController(mDragController);
@@ -1916,7 +1871,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             // TODO
         }
 
-        @Override public boolean onKeyDown(int keyCode, KeyEvent event) {
+        @Override
+        public boolean onKeyDown(int keyCode, KeyEvent event) {
             switch (keyCode) {
                 case KeyEvent.KEYCODE_BACK:
                     closeAllAppsDialog(true);
@@ -2133,43 +2089,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         @Override
         public void onChange(boolean selfChange) {
             onFavoritesChanged();
-        }
-    }
-
-    /**
-     * Receives intents from other applications to change the wallpaper.
-     */
-    private static class WallpaperIntentReceiver extends BroadcastReceiver {
-        private final Application mApplication;
-        private WeakReference<Launcher> mLauncher;
-
-        WallpaperIntentReceiver(Application application, Launcher launcher) {
-            mApplication = application;
-            setLauncher(launcher);
-        }
-
-        void setLauncher(Launcher launcher) {
-            mLauncher = new WeakReference<Launcher>(launcher);
-        }
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // Load the wallpaper from the ApplicationContext and store it locally
-            // until the Launcher Activity is ready to use it
-            final Drawable drawable = mApplication.getWallpaper();
-            if (drawable instanceof BitmapDrawable) {
-                sWallpaper = ((BitmapDrawable) drawable).getBitmap();
-            } else {
-                throw new IllegalStateException("The wallpaper must be a BitmapDrawable.");
-            }
-
-            // If Launcher is alive, notify we have a new wallpaper
-            if (mLauncher != null) {
-                final Launcher launcher = mLauncher.get();
-                if (launcher != null) {
-                    launcher.loadWallpaper();
-                }
-            }
         }
     }
 

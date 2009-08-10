@@ -22,11 +22,6 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <com.android.launcher2.WallpaperView
-        android:id="@+id/wallpaper"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
-
     <!-- The workspace contains 3 screens of cells -->
     <com.android.launcher2.Workspace
         android:id="@+id/workspace"

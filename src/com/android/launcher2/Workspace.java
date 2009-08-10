@@ -20,15 +20,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ComponentName;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Rect;
-import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -57,7 +53,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     private static final int SNAP_VELOCITY = 1000;
 
     private int mDefaultScreen;
-    private View mWallpaper;
 
     private boolean mFirstLayout = true;
 
@@ -151,10 +146,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
 
         mTween = new SymmetricalLinearTween(true, 250/*ms*/, this);
-    }
-
-    void setWallpaper(View wallpaper) {
-        mWallpaper = wallpaper;
     }
 
     @Override
@@ -464,7 +455,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         if (mScroller.computeScrollOffset()) {
             mScrollX = mScroller.getCurrX();
             mScrollY = mScroller.getCurrY();
-            mWallpaper.scrollTo(mScrollX, mScrollY);
             postInvalidate();
         } else if (mNextScreen != INVALID_SCREEN) {
             mCurrentScreen = Math.max(0, Math.min(mNextScreen, getChildCount() - 1));
@@ -779,14 +769,12 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                 if (deltaX < 0) {
                     if (mScrollX > 0) {
                         scrollBy(Math.max(-mScrollX, deltaX), 0);
-                        mWallpaper.scrollTo(mScrollX, mScrollY);
                     }
                 } else if (deltaX > 0) {
                     final int availableToScroll = getChildAt(getChildCount() - 1).getRight() -
                             mScrollX - getWidth();
                     if (availableToScroll > 0) {
                         scrollBy(Math.min(availableToScroll, deltaX), 0);
-                        mWallpaper.scrollTo(mScrollX, mScrollY);
                     }
                 }
             }

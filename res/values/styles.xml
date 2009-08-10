@@ -18,8 +18,7 @@
 -->
 
 <resources>
-    <style name="Theme" parent="android:Theme">
-        <item name="android:windowBackground">@null</item>
+    <style name="Theme" parent="android:Theme.Wallpaper">
         <item name="android:windowNoTitle">true</item>
     </style>
 
