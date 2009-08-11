@@ -272,6 +272,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         clearVacantCache();
         mCurrentScreen = Math.max(0, Math.min(currentScreen, getChildCount() - 1));
         scrollTo(mCurrentScreen * getWidth(), 0);
+        updateWallpaperOffset();
         invalidate();
     }
 
@@ -456,9 +457,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     private void updateWallpaperOffset() {
-        int scrollRange = getChildAt(getChildCount()-1).getRight()-getWidth();
-        mWallpaperManager.setWallpaperOffsets(getWindowToken(),
-                mScrollX/(float)scrollRange, 0);
+        updateWallpaperOffset(getChildAt(getChildCount() - 1).getRight() - (mRight - mLeft));
+    }
+
+    private void updateWallpaperOffset(int scrollRange) {
+        mWallpaperManager.setWallpaperOffsets(getWindowToken(), mScrollX / (float) scrollRange, 0);
     }
     
     @Override
@@ -548,6 +551,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
         if (mFirstLayout) {
             scrollTo(mCurrentScreen * width, 0);
+            updateWallpaperOffset(width * (getChildCount() - 1));
             mFirstLayout = false;
         }
     }
