@@ -16,6 +16,7 @@
 
 package com.android.launcher2;
 
+import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ComponentName;
@@ -52,6 +53,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
      */
     private static final int SNAP_VELOCITY = 1000;
 
+    private final WallpaperManager mWallpaperManager;
+    
     private int mDefaultScreen;
 
     private boolean mFirstLayout = true;
@@ -126,6 +129,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     public Workspace(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
+        mWallpaperManager = WallpaperManager.getInstance(context);
+        
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.Workspace, defStyle, 0);
         mDefaultScreen = a.getInt(R.styleable.Workspace_defaultScreen, 1);
         a.recycle();
@@ -450,11 +455,18 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         }
     }
 
+    private void updateWallpaperOffset() {
+        int scrollRange = getChildAt(getChildCount()-1).getRight()-getWidth();
+        mWallpaperManager.setWallpaperOffsets(getWindowToken(),
+                mScrollX/(float)scrollRange, 0);
+    }
+    
     @Override
     public void computeScroll() {
         if (mScroller.computeScrollOffset()) {
             mScrollX = mScroller.getCurrX();
             mScrollY = mScroller.getCurrY();
+            updateWallpaperOffset();
             postInvalidate();
         } else if (mNextScreen != INVALID_SCREEN) {
             mCurrentScreen = Math.max(0, Math.min(mNextScreen, getChildCount() - 1));
@@ -769,12 +781,14 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                 if (deltaX < 0) {
                     if (mScrollX > 0) {
                         scrollBy(Math.max(-mScrollX, deltaX), 0);
+                        updateWallpaperOffset();
                     }
                 } else if (deltaX > 0) {
                     final int availableToScroll = getChildAt(getChildCount() - 1).getRight() -
                             mScrollX - getWidth();
                     if (availableToScroll > 0) {
                         scrollBy(Math.min(availableToScroll, deltaX), 0);
+                        updateWallpaperOffset();
                     }
                 }
             }
