@@ -118,6 +118,16 @@
             </intent-filter>
         </receiver>
 
+        <!-- TODO: Localize label -->
+        <service
+            android:label="@string/wallpaper_grass"
+            android:name="com.android.wallpaper.grass.GrassWallpaper"
+            android:permission="android.permission.BIND_WALLPAPER">
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+            </intent-filter>
+        </service>
+
         <!-- The settings provider contains Home's data, like the workspace favorites -->
         <provider
             android:name="LauncherProvider"
