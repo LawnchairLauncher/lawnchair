@@ -5,13 +5,6 @@
 
 #define PI 3.14159f
 
-// Allocations ======
-#define ALLOC_PARAMS    0
-#define ALLOC_STATE     1
-#define ALLOC_SCRATCH   2
-#define ALLOC_ICON_IDS  3
-#define ALLOC_LABEL_IDS 4
-
 // Variables from java ======
 
 // Parameters ======
@@ -23,11 +16,13 @@
 // State ======
 #define STATE_ICON_COUNT                0
 #define STATE_SCROLL_X                  1
+#define STATE_FLING_TIME                2
+#define STATE_FLING_VELOCITY_X          3
+#define STATE_ADJUSTED_DECELERATION     4
+#define STATE_CURRENT_SCROLL_X          5 /* with fling offset applied */
 
 // Scratch variables ======
-#define SCRATCH_FADE 0
-#define SCRATCH_ZOOM 1
-#define SCRATCH_ROT 2
+#define SCRATCH_ADJUSTED_DECELERATION   0
 
 // Drawing constants, should be parameters ======
 #define SCREEN_WIDTH 480
@@ -49,19 +44,31 @@
 #define COLUMN_GUTTER_PX 5
 #define LABEL_WIDTH_PX 105
 
+
 int
 count_pages(int iconCount)
 {
     int iconsPerPage = COLUMNS_PER_PAGE * ROWS_PER_PAGE;
     int pages = iconCount / iconsPerPage;
     if (pages*iconsPerPage != iconCount) {
-        iconCount++;
+        pages++;
     }
-    return iconCount;
+    return pages;
+}
+
+int current_page(float scrollXPx)
+{
+    return -scrollXPx / SCREEN_WIDTH;
+}
+
+float
+modf(float x, float y)
+{
+    return x-(y*floorf(x/y));
 }
 
 int
-main(void* con, int ft, int launchID)
+main(int launchID)
 {
     // Clear to transparent
     pfClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -91,25 +98,104 @@ main(void* con, int ft, int launchID)
     float labelTextureWidth = loadI32(ALLOC_PARAMS, PARAM_BUBBLE_BITMAP_WIDTH) * densityScale;
     float labelTextureHeight = loadI32(ALLOC_PARAMS, PARAM_BUBBLE_BITMAP_HEIGHT) * densityScale;
 
-    float pageLeft = -1;
-    int icon = 0;
+    float scrollXPx = loadI32(ALLOC_STATE, STATE_SCROLL_X);
+    float maxScrollX = -(pageCount-1) * SCREEN_WIDTH;
+    int done = 0;
+
+    // If we've been given a velocity, start a fling
+    float flingVelocityPxMs = loadI32(ALLOC_STATE, STATE_FLING_VELOCITY_X);
+    if (flingVelocityPxMs != 0) {
+        // how many screens will this velocity do? TODO: use long
+        // G * ppi * friction // why G? // friction = 0.015
+        float deceleration = loadF(ALLOC_STATE, STATE_ADJUSTED_DECELERATION);
+        if (deceleration == 0) {
+            // On the first frame, calculate which animation we're going to do.  If it's
+            // going to end up less than halfway into a page, we'll bounce back the previous
+            // page.  Otherwise, we'll adjust the deceleration so it just makes it to the
+            // page boundary.
+            if (flingVelocityPxMs > 0) {
+                deceleration = -1000;
+            } else {
+                deceleration = 1000;
+            }
+            // v' = v + at --> t = -v / a
+            // x' = x + vt + .5 a t^2 --> x' = x + (-v^2/a) + (v^2/2a)
+            float endPos = scrollXPx + (-(flingVelocityPxMs*flingVelocityPxMs)/deceleration)
+                    + ((flingVelocityPxMs*flingVelocityPxMs)/(2.0f*deceleration));
+
+            if (endPos > 0) {
+                endPos = 0;
+            }
+            if (endPos < maxScrollX) {
+                endPos = maxScrollX;
+            }
+            float screenWidthFloat = SCREEN_WIDTH;
+            float scrollOnPage = modf(endPos, screenWidthFloat);
+        }
+
+        // adjust the deceleration so we always hit a page boundary
+
+        int flingTime = loadI32(ALLOC_STATE, STATE_FLING_TIME);
+        int now = uptimeMillis();
+        float elapsedTime = (now - flingTime) / 1000.0f;
+        int animEndTime = -flingVelocityPxMs / deceleration;
+
+        done = elapsedTime >= animEndTime;
+        if (done) {
+            // clamp the time to the end value
+            elapsedTime = animEndTime;
+        }
+
+        float tension = 2.0f;
+        float interp = elapsedTime * elapsedTime * ((tension + 1) * elapsedTime + tension) + 1.0f; // normalized 0..1
+
+        int flingOffsetPx = (flingVelocityPxMs * elapsedTime)
+                + (deceleration * elapsedTime * elapsedTime / 2.0f);
+        scrollXPx += flingOffsetPx;
+
+    }
+
+    if (scrollXPx > 0) {
+        scrollXPx = 0;
+    }
+    if (scrollXPx < maxScrollX) {
+        scrollXPx = maxScrollX;
+    }
+    
+    storeI32(ALLOC_STATE, STATE_CURRENT_SCROLL_X, scrollXPx);
+    if (done) {
+        storeI32(ALLOC_STATE, STATE_SCROLL_X, scrollXPx);
+        storeI32(ALLOC_STATE, STATE_FLING_VELOCITY_X, 0);
+        storeF(ALLOC_STATE, STATE_ADJUSTED_DECELERATION, 0);
+    }
+
+    // don't draw everything, just the page before and after what we're viewing.
+    int currentPage = current_page(scrollXPx);
+    float screenWidth = SCREEN_WIDTH * densityScale;
+
+    float pageLeft = -1 + ((currentPage-1)*screenWidth);
+    int iconsPerPage = COLUMNS_PER_PAGE * ROWS_PER_PAGE;
+    int icon = (currentPage-1) * iconsPerPage;
+    if (icon < 0) {
+        icon = 0;
+    }
     int page;
-
-    int scrollXPx = loadI32(ALLOC_STATE, STATE_SCROLL_X);
-    debugI32("scrollXPx", scrollXPx);
+    int lastIcon = icon + (iconsPerPage*3);
+    if (lastIcon >= iconCount) {
+        lastIcon = iconCount-1;
+    }
     pageLeft += scrollXPx * densityScale;
-
-    for (page=0; page<pageCount; page++) {
+    for (page=currentPage-1; page<pageCount && page<=(currentPage+1); page++) {
         // Bug makes 1.0f alpha fail.
         color(1.0f, 1.0f, 1.0f, 0.99f);
         
         float cellTop = pagePaddingTop;
         int row;
-        for (row=0; row<ROWS_PER_PAGE && icon<iconCount; row++) {
+        for (row=0; row<ROWS_PER_PAGE && icon<=lastIcon; row++) {
             float s = pageLeft; // distance along the linear strip of icons in normalized coords
             s += pagePaddingLeft;
             int col;
-            for (col=0; col<COLUMNS_PER_PAGE && icon<iconCount; col++) {
+            for (col=0; col<COLUMNS_PER_PAGE && icon<=lastIcon; col++) {
                 // icon
                 float iconLeft = s + ((cellWidth-iconWidth)/2.0f);
                 float iconRight = iconLeft + iconWidth;
@@ -141,7 +227,6 @@ main(void* con, int ft, int launchID)
         pageLeft += 2.0f;
     }
 
-    return 1;
+    return !done;
 }
-
 
