@@ -118,7 +118,6 @@
             </intent-filter>
         </receiver>
 
-        <!-- TODO: Localize label -->
         <service
             android:label="@string/wallpaper_grass"
             android:name="com.android.wallpaper.grass.GrassWallpaper"
