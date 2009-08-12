@@ -44,13 +44,16 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
+import android.view.VelocityTracker;
+import android.view.ViewConfiguration;
 import android.graphics.PixelFormat;
 
 
@@ -58,12 +61,16 @@ public class AllAppsView extends RSSurfaceView {
     private RenderScript mRS;
     private RolloRS mRollo;
 
+    private ViewConfiguration mConfig;
+    private VelocityTracker mVelocity;
+    private int mLastScrollX;
     private int mLastMotionX;
 
     public AllAppsView(Context context) {
         super(context);
         setFocusable(true);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
+        mConfig = ViewConfiguration.get(context);
     }
 
     public AllAppsView(Context context, AttributeSet attrs) {
@@ -98,18 +105,34 @@ public class AllAppsView extends RSSurfaceView {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mLastMotionX = x;
+                mRollo.mState.read();
+                mRollo.mState.scrollX = mLastScrollX = mRollo.mState.currentScrollX;
+                mRollo.mState.flingVelocityX = 0;
+                mRollo.mState.adjustedDeceleration = 0;
+                mRollo.mState.save();
+                mVelocity = VelocityTracker.obtain();
+                mVelocity.addMovement(ev);
                 break;
             case MotionEvent.ACTION_MOVE:
             case MotionEvent.ACTION_OUTSIDE:
                 deltaX = x - mLastMotionX;
-                mRollo.mState.scrollX += deltaX;
-                Log.d(Launcher.LOG_TAG, "updated scrollX=" + mRollo.mState.scrollX);
+                mVelocity.addMovement(ev);
+                mRollo.mState.currentScrollX = mLastScrollX;
+                mLastScrollX += deltaX;
+                mRollo.mState.scrollX = mLastScrollX;
                 mRollo.mState.save();
                 mLastMotionX = x;
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
+                mVelocity.computeCurrentVelocity(1000 /* px/sec */,
+                        mConfig.getScaledMaximumFlingVelocity());
+                mRollo.mState.flingTimeMs = (int)SystemClock.uptimeMillis(); // TODO: use long
+                mRollo.mState.flingVelocityX = (int)mVelocity.getXVelocity();
+                mRollo.mState.save();
                 mLastMotionX = -10000;
+                mVelocity.recycle();
+                mVelocity = null;
                 break;
         }
         return true;
@@ -131,11 +154,6 @@ public class AllAppsView extends RSSurfaceView {
     public class RolloRS {
 
         // Allocations ======
-        static final int ALLOC_PARAMS = 0;
-        static final int ALLOC_STATE = 1;
-        static final int ALLOC_SCRATCH = 2;
-        static final int ALLOC_ICON_IDS = 3;
-        static final int ALLOC_LABEL_IDS = 4;
 
         private int mWidth;
         private int mHeight;
@@ -168,6 +186,14 @@ public class AllAppsView extends RSSurfaceView {
         Params mParams;
         State mState;
 
+        class Defines {
+            public static final int ALLOC_PARAMS = 0;
+            public static final int ALLOC_STATE = 1;
+            public static final int ALLOC_SCRATCH = 2;
+            public static final int ALLOC_ICON_IDS = 3;
+            public static final int ALLOC_LABEL_IDS = 4;
+        }
+
         class Params extends IntAllocation {
             Params(RenderScript rs) {
                 super(rs);
@@ -184,6 +210,10 @@ public class AllAppsView extends RSSurfaceView {
             }
             @AllocationIndex(0) public int iconCount;
             @AllocationIndex(1) public int scrollX;
+            @AllocationIndex(2) public int flingTimeMs;
+            @AllocationIndex(3) public int flingVelocityX;
+            @AllocationIndex(4) public int adjustedDeceleration;
+            @AllocationIndex(5) public int currentScrollX;
         }
 
         public RolloRS() {
@@ -261,15 +291,14 @@ public class AllAppsView extends RSSurfaceView {
             mRS.contextBindProgramVertex(mPV);
 
             mAllocScratchBuf = new int[32];
-            mAllocScratch = Allocation.createSized(mRS,
-                Element.USER_I32, mAllocScratchBuf.length);
+            mAllocScratch = Allocation.createSized(mRS, Element.USER_I32, mAllocScratchBuf.length);
             mAllocScratch.data(mAllocScratchBuf);
 
             Log.e("rs", "Done loading named");
         }
         
         private void initData() {
-            final int count = 29;
+            final int count = 100;
             mParams = new Params(mRS);
             mState = new State(mRS);
 
@@ -324,14 +353,15 @@ public class AllAppsView extends RSSurfaceView {
             ScriptC.Builder sb = new ScriptC.Builder(mRS);
             sb.setScript(mRes, R.raw.rollo);
             sb.setRoot(true);
+            sb.addDefines(Defines.class);
             mScript = sb.create();
             mScript.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-            mScript.bindAllocation(mParams.getAllocation(), ALLOC_PARAMS);
-            mScript.bindAllocation(mState.getAllocation(), ALLOC_STATE);
-            mScript.bindAllocation(mAllocIconID, ALLOC_ICON_IDS);
-            mScript.bindAllocation(mAllocScratch, ALLOC_SCRATCH);
-            mScript.bindAllocation(mAllocLabelID, ALLOC_LABEL_IDS);
+            mScript.bindAllocation(mParams.getAllocation(), Defines.ALLOC_PARAMS);
+            mScript.bindAllocation(mState.getAllocation(), Defines.ALLOC_STATE);
+            mScript.bindAllocation(mAllocIconID, Defines.ALLOC_ICON_IDS);
+            mScript.bindAllocation(mAllocScratch, Defines.ALLOC_SCRATCH);
+            mScript.bindAllocation(mAllocLabelID, Defines.ALLOC_LABEL_IDS);
 
             mRS.contextBindRootScript(mScript);
         }

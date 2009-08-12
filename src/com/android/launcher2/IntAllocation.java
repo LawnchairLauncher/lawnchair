@@ -81,6 +81,24 @@ public class IntAllocation {
         mAlloc.data(buf);
     }
 
+    public void read() {
+        int[] buf = mBuffer;
+        if (buf != null) {
+            mAlloc.readData(buf);
+            Field[] fields = this.getClass().getFields();
+            for (Field f: fields) {
+                AllocationIndex index = f.getAnnotation(AllocationIndex.class);
+                if (index != null) {
+                    try {
+                        f.setInt(this, buf[index.value()]);
+                    } catch (IllegalAccessException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            }
+        }
+    }
+
     Allocation getAllocation() {
         return mAlloc;
     }
