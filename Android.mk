@@ -14,6 +14,21 @@
 # limitations under the License.
 #
 
+######################################################
+#
+#    WARNING
+#
+#      /\
+#     /||\
+#    / || \
+#   /      \
+#  /   ||   \
+# /__________\
+#
+# Change the LOCAL_CERTIFICATE back to shared
+#
+######################################################
+
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
@@ -22,7 +37,8 @@ include $(CLEAR_VARS)
 LOCAL_SRC_FILES := $(call all-subdir-java-files)
 
 LOCAL_PACKAGE_NAME := Launcher2
-LOCAL_CERTIFICATE := shared
+LOCAL_CERTIFICATE := platform
+#LOCAL_CERTIFICATE := shared
 
 #LOCAL_OVERRIDES_PACKAGES := Home
 
