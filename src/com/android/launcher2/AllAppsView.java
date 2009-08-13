@@ -214,6 +214,8 @@ public class AllAppsView extends RSSurfaceView {
             @AllocationIndex(3) public int flingVelocityX;
             @AllocationIndex(4) public int adjustedDeceleration;
             @AllocationIndex(5) public int currentScrollX;
+            @AllocationIndex(6) public int flingDuration;
+            @AllocationIndex(7) public int flingEndPos;
         }
 
         public RolloRS() {

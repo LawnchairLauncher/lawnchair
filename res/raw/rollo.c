@@ -20,6 +20,8 @@
 #define STATE_FLING_VELOCITY_X          3
 #define STATE_ADJUSTED_DECELERATION     4
 #define STATE_CURRENT_SCROLL_X          5 /* with fling offset applied */
+#define STATE_FLING_DURATION            6
+#define STATE_FLING_END_POS             7
 
 // Scratch variables ======
 #define SCRATCH_ADJUSTED_DECELERATION   0
@@ -43,7 +45,6 @@
 #define ICON_WIDTH_PX 64
 #define COLUMN_GUTTER_PX 5
 #define LABEL_WIDTH_PX 105
-
 
 int
 count_pages(int iconCount)
@@ -102,12 +103,21 @@ main(int launchID)
     float maxScrollX = -(pageCount-1) * SCREEN_WIDTH;
     int done = 0;
 
+    // Clamp -- because java doesn't know how big the icons are
+    if (scrollXPx > 0) {
+        scrollXPx = 0;
+    }
+    if (scrollXPx < maxScrollX) {
+        scrollXPx = maxScrollX;
+    }
+
     // If we've been given a velocity, start a fling
     float flingVelocityPxMs = loadI32(ALLOC_STATE, STATE_FLING_VELOCITY_X);
     if (flingVelocityPxMs != 0) {
         // how many screens will this velocity do? TODO: use long
         // G * ppi * friction // why G? // friction = 0.015
         float deceleration = loadF(ALLOC_STATE, STATE_ADJUSTED_DECELERATION);
+        float flingDurationMs;
         if (deceleration == 0) {
             // On the first frame, calculate which animation we're going to do.  If it's
             // going to end up less than halfway into a page, we'll bounce back the previous
@@ -119,9 +129,10 @@ main(int launchID)
                 deceleration = 1000;
             }
             // v' = v + at --> t = -v / a
-            // x' = x + vt + .5 a t^2 --> x' = x + (-v^2/a) + (v^2/2a)
-            float endPos = scrollXPx + (-(flingVelocityPxMs*flingVelocityPxMs)/deceleration)
-                    + ((flingVelocityPxMs*flingVelocityPxMs)/(2.0f*deceleration));
+            // x' = x + vt + .5 a t^2
+            flingDurationMs = - flingVelocityPxMs / deceleration;
+            float endPos = scrollXPx + (flingVelocityPxMs*flingDurationMs)
+                    + ((deceleration*flingDurationMs*flingDurationMs)/2);
 
             if (endPos > 0) {
                 endPos = 0;
@@ -129,8 +140,41 @@ main(int launchID)
             if (endPos < maxScrollX) {
                 endPos = maxScrollX;
             }
-            float screenWidthFloat = SCREEN_WIDTH;
-            float scrollOnPage = modf(endPos, screenWidthFloat);
+            float scrollOnPage = modf(endPos, SCREEN_WIDTH);
+            int endPage = -endPos/SCREEN_WIDTH;
+            if (flingVelocityPxMs < 0) {
+                if (scrollOnPage < (SCREEN_WIDTH/2)) {
+                    // adjust the deceleration so we align on the page boundary
+                    // a = 2(x-x0-v0t)/t^2
+                    endPos = -(endPage+1) * SCREEN_WIDTH;
+                    debugI32("endPos case", 1);
+                } else {
+                    // TODO: bounce
+                    endPos = -(endPage+1) * SCREEN_WIDTH;
+                    debugI32("endPos case", 2);
+                }
+            } else {
+                if (scrollOnPage >= (SCREEN_WIDTH/2)) {
+                    // adjust the deceleration so we align on the page boundary
+                    endPos = -endPage * SCREEN_WIDTH;
+                    debugI32("endPos case", 3);
+                } else {
+                    // TODO: bounce
+                    endPos = -endPage * SCREEN_WIDTH;
+                    debugI32("endPos case", 4);
+                }
+            }
+            // v = v0 + at --> (v - v0) / t
+            deceleration = 2*(endPos-scrollXPx-(flingVelocityPxMs*flingDurationMs))
+                    / (flingDurationMs*flingDurationMs);
+            endPos = scrollXPx + (flingVelocityPxMs*flingDurationMs)
+                    + ((deceleration*flingDurationMs*flingDurationMs)/2);
+
+            storeF(ALLOC_STATE, STATE_ADJUSTED_DECELERATION, deceleration);
+            storeF(ALLOC_STATE, STATE_FLING_DURATION, flingDurationMs);
+            storeF(ALLOC_STATE, STATE_FLING_END_POS, endPos);
+        } else {
+            flingDurationMs = loadF(ALLOC_STATE, STATE_FLING_DURATION);
         }
 
         // adjust the deceleration so we always hit a page boundary
@@ -140,21 +184,17 @@ main(int launchID)
         float elapsedTime = (now - flingTime) / 1000.0f;
         int animEndTime = -flingVelocityPxMs / deceleration;
 
-        done = elapsedTime >= animEndTime;
-        if (done) {
-            // clamp the time to the end value
-            elapsedTime = animEndTime;
-        }
-
-        float tension = 2.0f;
-        float interp = elapsedTime * elapsedTime * ((tension + 1) * elapsedTime + tension) + 1.0f; // normalized 0..1
-
         int flingOffsetPx = (flingVelocityPxMs * elapsedTime)
                 + (deceleration * elapsedTime * elapsedTime / 2.0f);
         scrollXPx += flingOffsetPx;
 
+        if (elapsedTime > flingDurationMs) {
+            scrollXPx = loadF(ALLOC_STATE, STATE_FLING_END_POS);
+            done = 1;
+        }
     }
 
+    // Clamp
     if (scrollXPx > 0) {
         scrollXPx = 0;
     }
@@ -185,7 +225,7 @@ main(int launchID)
         lastIcon = iconCount-1;
     }
     pageLeft += scrollXPx * densityScale;
-    for (page=currentPage-1; page<pageCount && page<=(currentPage+1); page++) {
+    while (icon <= lastIcon) {
         // Bug makes 1.0f alpha fail.
         color(1.0f, 1.0f, 1.0f, 0.99f);
         
