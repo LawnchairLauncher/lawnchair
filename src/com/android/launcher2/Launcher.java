@@ -200,7 +200,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER);
 
         mInflater = getLayoutInflater();
 
