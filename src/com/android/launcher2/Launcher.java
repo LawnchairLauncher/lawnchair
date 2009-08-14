@@ -55,6 +55,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import static android.util.Log.*;
+import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -117,9 +118,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     static final int NUMBER_CELLS_X = 4;
     static final int NUMBER_CELLS_Y = 4;
 
-    static final int DIALOG_ALL_APPS = 1;
-    static final int DIALOG_CREATE_SHORTCUT = 2;
-    static final int DIALOG_RENAME_FOLDER = 3;
+    static final int DIALOG_CREATE_SHORTCUT = 1;
+    static final int DIALOG_RENAME_FOLDER = 2;
 
     private static final String PREFERENCES = "launcher.preferences";
 
@@ -173,9 +173,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private final int[] mCellCoordinates = new int[2];
     private FolderInfo mFolderInfo;
 
-    private AllAppsDialog mAllAppsDialog;
+    private DeleteZone mDeleteZone;
     private HandleView mHandleView;
-    private AllAppsView mAllAppsGrid; // TODO: put this into AllAppsDialog
+    private AllAppsView mAllAppsGrid;
+    private boolean mAllAppsVisible;
 
     private boolean mDesktopLocked = true;
     private Bundle mSavedState;
@@ -218,8 +219,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         setContentView(R.layout.launcher);
         setupViews();
 
-        mAllAppsDialog = new AllAppsDialog(this);
-        mAllAppsDialog.lock();
+        lockAllApps();
 
         registerIntentReceivers();
         registerContentObservers();
@@ -527,12 +527,15 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         DragLayer dragLayer = (DragLayer) findViewById(R.id.drag_layer);
         dragLayer.setDragController(dragController);
 
+        mAllAppsGrid = (AllAppsView)dragLayer.findViewById(R.id.all_apps_view);
+
         mWorkspace = (Workspace) dragLayer.findViewById(R.id.workspace);
         final Workspace workspace = mWorkspace;
 
-        final DeleteZone deleteZone = (DeleteZone) dragLayer.findViewById(R.id.delete_zone);
+        DeleteZone deleteZone = (DeleteZone) dragLayer.findViewById(R.id.delete_zone);
+        mDeleteZone = deleteZone;
 
-        mHandleView = (HandleView) findViewById(R.id.all_apps);
+        mHandleView = (HandleView) findViewById(R.id.all_apps_button);
         mHandleView.setLauncher(this);
         mHandleView.setOnClickListener(this);
         TransitionDrawable handleIcon = (TransitionDrawable) mHandleView.getDrawable();
@@ -848,7 +851,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         // When the drawer is opened and we are saving the state because of a
         // configuration change
-        if (mAllAppsDialog.isOpen && isConfigurationChange) {
+        if (mAllAppsVisible && isConfigurationChange) {
             outState.putBoolean(RUNTIME_STATE_ALL_APPS_FOLDER, true);
         }
 
@@ -887,7 +890,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         TextKeyListener.getInstance().release();
 
-        // TODO mAllAppsGrid.setAdapter(null);
+        mAllAppsGrid.setAdapter(null);
         sModel.unbind();
         sModel.abortLoaders();
 
@@ -1299,7 +1302,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 case KeyEvent.KEYCODE_BACK:
                     if (!event.isCanceled()) {
                         mWorkspace.dispatchKeyEvent(event);
-                        if (mAllAppsDialog.isOpen) {
+                        if (mAllAppsVisible) {
                             closeAllAppsDialog(true);
                         } else {
                             closeFolder();
@@ -1339,7 +1342,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
      */
     private void onFavoritesChanged() {
         mDesktopLocked = true;
-        mAllAppsDialog.lock();
+        lockAllApps();
         sModel.loadUserItems(false, this, false, false);
     }
 
@@ -1479,18 +1482,18 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
 
         /* TODO
-        if (mAllAppsDialog.isOpen && !mDrawer.hasFocus()) {
+        if (mAllAppsVisible && !mDrawer.hasFocus()) {
             mDrawer.requestFocus();
         }
         */
 
         mDesktopLocked = false;
-        mAllAppsDialog.unlock();
+        unlockAllApps();
     }
 
     private void bindDrawer(Launcher.DesktopBinder binder,
             ApplicationsAdapter drawerAdapter) {
-        // TODO mAllAppsGrid.setAdapter(drawerAdapter);
+        mAllAppsGrid.setAdapter(drawerAdapter);
         binder.startBindingAppWidgetsWhenIdle();
     }
 
@@ -1541,7 +1544,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         } else if (tag instanceof FolderInfo) {
             handleFolderClick((FolderInfo) tag);
         } else if (v == mHandleView) {
-            if (mAllAppsDialog.isOpen) {
+            if (mAllAppsVisible) {
                 // TODO how can we be here?
             } else {
                 showAllAppsDialog();
@@ -1666,8 +1669,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         return mHandleView;
     }
 
-    boolean isDrawerDown() {
-        return /* TODO !mDrawer.isMoving() && */ !mAllAppsDialog.isOpen;
+    boolean isDrawerDown() { // TODO rename to isAllAppsVisible()
+        return /* TODO !mDrawer.isMoving() && */ !mAllAppsVisible;
     }
 
     Workspace getWorkspace() {
@@ -1683,8 +1686,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
-            case DIALOG_ALL_APPS:
-                return mAllAppsDialog;
             case DIALOG_CREATE_SHORTCUT:
                 return new CreateShortcut().createDialog();
             case DIALOG_RENAME_FOLDER:
@@ -1697,9 +1698,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     @Override
     protected void onPrepareDialog(int id, Dialog dialog) {
         switch (id) {
-            case DIALOG_ALL_APPS:
-                // TODO mAllAppsGrid.onPrepareDialog();
-                break;
             case DIALOG_CREATE_SHORTCUT:
                 break;
             case DIALOG_RENAME_FOLDER:
@@ -1797,7 +1795,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 LauncherModel.updateItemInDatabase(Launcher.this, mFolderInfo);
 
                 if (mDesktopLocked) {
-                    mAllAppsDialog.lock();
+                    lockAllApps();
                     sModel.loadUserItems(false, Launcher.this, false, false);
                 } else {
                     final FolderIcon folderIcon = (FolderIcon)
@@ -1807,7 +1805,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                         getWorkspace().requestLayout();
                     } else {
                         mDesktopLocked = true;
-                        mAllAppsDialog.lock();
+                        lockAllApps();
                         sModel.loadUserItems(false, Launcher.this, false, false);
                     }
                 }
@@ -1823,87 +1821,41 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
     }
 
-    /**
-     * Holds the 3d all apps view.
-     */
-    private class AllAppsDialog extends Dialog implements DialogInterface.OnCancelListener,
-            DialogInterface.OnDismissListener, DialogInterface.OnShowListener {
-
-        boolean isOpen;
-
-        AllAppsDialog(Context context) {
-            super(context, android.R.style.Theme_Translucent_NoTitleBar);
-
-            setOnCancelListener(this);
-            setOnDismissListener(this);
-            setOnShowListener(this);
-
-            setContentView(R.layout.all_apps);
-            mAllAppsGrid = (AllAppsView) findViewById(R.id.all_apps);
-
-            DragLayer dragLayer = (DragLayer)findViewById(R.id.drag_layer);
-            dragLayer.setDragController(mDragController);
-
-            // TODO grid.setDragController(mDragController);
-            // TODO grid.setLauncher(Launcher.this);
-        }
-
-        public void onCancel(DialogInterface dialog) {
-            onDestroy();
-        }
-
-        public void onDismiss(DialogInterface dialog) {
-            onDestroy();
-        }
-
-        public void onShow(DialogInterface dialog) {
-        }
-        
-        private void onDestroy() {
-        }
-
-        void lock() {
-            // TODO
-        }
-        
-        void unlock() {
-            // TODO
-        }
-
-        @Override
-        public boolean onKeyDown(int keyCode, KeyEvent event) {
-            switch (keyCode) {
-                case KeyEvent.KEYCODE_BACK:
-                    closeAllAppsDialog(true);
-                    return true;
-                default:
-                    return super.onKeyDown(keyCode, event);
-            }
-        }
-    }
-
     void showAllAppsDialog() {
-        mAllAppsDialog.isOpen = true;
-        showDialog(DIALOG_ALL_APPS);
+        mAllAppsVisible = true;
+        mAllAppsGrid.setVisibility(View.VISIBLE);
         mWorkspace.hide();
-    }
-
-    void showWorkspace() {
-        mWorkspace.show();
+        
+        // TODO: fade these two too
+        mDeleteZone.setVisibility(View.GONE);
+        mHandleView.setVisibility(View.GONE);
     }
 
     void closeAllAppsDialog(boolean animated) {
-        if (mAllAppsDialog.isOpen) {
+        if (mAllAppsVisible) {
+            Log.d(LOG_TAG, "closing all apps");
             if (animated) {
                 // TODO mDrawer.animateClose();
-                mAllAppsDialog.dismiss();
+                mAllAppsGrid.setVisibility(View.GONE);
             } else {
-                mAllAppsDialog.dismiss();
+                mAllAppsGrid.setVisibility(View.GONE);
             }
-            mAllAppsDialog.isOpen = false;
+            mAllAppsVisible = false;
             mWorkspace.getChildAt(mWorkspace.getCurrentScreen()).requestFocus();
             mWorkspace.show();
+
+            // TODO: fade these two too
+            mDeleteZone.setVisibility(View.VISIBLE);
+            mHandleView.setVisibility(View.VISIBLE);
         }
+    }
+
+    void lockAllApps() {
+        // TODO
+    }
+
+    void unlockAllApps() {
+        // TODO
     }
 
     /**

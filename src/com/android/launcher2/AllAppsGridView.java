@@ -66,7 +66,7 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
         app = new ApplicationInfo(app);
 
         mDragController.startDrag(view, this, app, DragController.DRAG_ACTION_COPY);
-        mLauncher.showWorkspace();
+        mLauncher.closeAllAppsDialog(true);
         mDraw = false;
         invalidate();
         return true;

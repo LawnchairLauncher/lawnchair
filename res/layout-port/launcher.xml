@@ -14,17 +14,26 @@
      limitations under the License.
 -->
 
-<FrameLayout
+<com.android.launcher2.DragLayer
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher2"
 
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-
-<com.android.launcher2.DragLayer
     android:id="@+id/drag_layer"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
+
+    <com.android.launcher2.AllAppsView
+        android:id="@+id/all_apps_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:visibility="gone"
+
+        android:scrollbarStyle="outsideInset"
+        android:drawSelectorOnTop="false"
+        android:listSelector="@drawable/grid_selector"
+
+        android:verticalSpacing="10dip"
+        android:numColumns="4" />
 
     <!-- The workspace contains 3 screens of cells -->
     <com.android.launcher2.Workspace
@@ -41,7 +50,7 @@
     </com.android.launcher2.Workspace>
 
     <com.android.launcher2.HandleView
-        android:id="@id/all_apps"
+        android:id="@+id/all_apps_button"
         android:layout_width="fill_parent"
         android:layout_height="56dip"
         android:layout_gravity="bottom"
@@ -71,5 +80,3 @@
         launcher:direction="horizontal" />
 
 </com.android.launcher2.DragLayer>
-
-</FrameLayout>

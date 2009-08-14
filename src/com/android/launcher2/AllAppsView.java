@@ -36,6 +36,7 @@ import android.renderscript.Sampler;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -65,20 +66,28 @@ public class AllAppsView extends RSSurfaceView {
     private VelocityTracker mVelocity;
     private int mLastScrollX;
     private int mLastMotionX;
+    private ApplicationsAdapter mAdapter;
 
-    public AllAppsView(Context context) {
-        super(context);
+
+    public AllAppsView(Context context, AttributeSet attrs) {
+        super(context, attrs);
         setFocusable(true);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
         mConfig = ViewConfiguration.get(context);
     }
 
-    public AllAppsView(Context context, AttributeSet attrs) {
-        this(context);
+    public AllAppsView(Context context, AttributeSet attrs, int defStyle) {
+        this(context, attrs);
     }
 
-    public AllAppsView(Context context, AttributeSet attrs, int defStyle) {
-        this(context);
+    void setAdapter(ApplicationsAdapter adapter) {
+        if (mAdapter != null) {
+            mAdapter.unregisterDataSetObserver(mIconObserver);
+        }
+        mAdapter = adapter;
+        if (adapter != null) {
+            adapter.registerDataSetObserver(mIconObserver);
+        }
     }
 
     @Override
@@ -100,6 +109,7 @@ public class AllAppsView extends RSSurfaceView {
     @Override
     public boolean onTouchEvent(MotionEvent ev)
     {
+        Log.d(Launcher.LOG_TAG, "onTouchEvent " + ev);
         int x = (int)ev.getX();
         int deltaX;
         switch (ev.getAction()) {
@@ -150,6 +160,12 @@ public class AllAppsView extends RSSurfaceView {
 
         return true;
     }
+
+    DataSetObserver mIconObserver = new DataSetObserver() {
+        public void onChanged() {
+            Log.d(Launcher.LOG_TAG, "new icons arrived! now have " + mAdapter.getCount());
+        }
+    };
 
     public class RolloRS {
 

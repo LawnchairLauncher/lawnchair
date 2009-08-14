@@ -273,6 +273,8 @@ public class DragController {
      * Call this from a drag source view.
      */
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        Log.d(Launcher.LOG_TAG, "DragController.onInterceptTouchEvent " + ev + " mDragging="
+                + mDragging);
         final int action = ev.getAction();
 
         final float screenX = ev.getRawX();
