@@ -26,6 +26,7 @@ import android.graphics.RectF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -641,8 +642,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        Log.d(Launcher.LOG_TAG, "Workspace onIntercept " + ev + " mLocked=" + mLocked
+                + " mLauncher.isDrawerDown()=" + mLauncher.isDrawerDown());
         if (mLocked || !mLauncher.isDrawerDown()) {
-            return true;
+            Log.d(Launcher.LOG_TAG, "returning false");
+            return false; // We don't want the events.  Let them fall through to the all apps view.
         }
 
         /*
@@ -751,8 +755,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
 
+        Log.d(Launcher.LOG_TAG, "Workspace onTouchEvent " + ev);
+
         if (mLocked || !mLauncher.isDrawerDown()) {
-            return true;
+            return false; // We don't want the events.  Let them fall through to the all apps view.
         }
 
         if (mVelocityTracker == null) {
@@ -1357,6 +1363,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     void show() {
         mTween.start(true);
+        setVisibility(VISIBLE);
     }
 
     void hide() {
@@ -1378,5 +1385,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         // TODO: This conflicts with the cache for drawing.  Ref count instead?
         // TODO: Don't cache all three.
         clearChildrenCache();
+        if (mAlpha == 0) {
+            setVisibility(GONE);
+        }
     }
 }
