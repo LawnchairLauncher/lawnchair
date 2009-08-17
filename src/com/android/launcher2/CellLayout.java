@@ -602,13 +602,15 @@ public class CellLayout extends ViewGroup {
      * @param targetXY Destination area to move to
      */
     void onDropChild(View child, int[] targetXY) {
-        LayoutParams lp = (LayoutParams) child.getLayoutParams();
-        lp.cellX = targetXY[0];
-        lp.cellY = targetXY[1];
-        lp.isDragging = false;
-        mDragRect.setEmpty();
-        child.requestLayout();
-        invalidate();
+        if (child != null) {
+            LayoutParams lp = (LayoutParams) child.getLayoutParams();
+            lp.cellX = targetXY[0];
+            lp.cellY = targetXY[1];
+            lp.isDragging = false;
+            mDragRect.setEmpty();
+            child.requestLayout();
+            invalidate();
+        }
     }
 
     void onDropAborted(View child) {
