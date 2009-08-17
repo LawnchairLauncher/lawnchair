@@ -48,7 +48,7 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
 
         final Resources resources = launcher.getResources();
         Drawable d = resources.getDrawable(R.drawable.ic_launcher_folder);
-        d = Utilities.createIconThumbnail(d, launcher);
+        d = Utilities.createIconThumbnail(d, launcher, false);
         icon.mCloseIcon = d;
         icon.mOpenIcon = resources.getDrawable(R.drawable.ic_launcher_folder_open);
         icon.setCompoundDrawablesWithIntrinsicBounds(null, d, null, null);

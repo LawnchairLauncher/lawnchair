@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ComponentName;
 import android.content.res.TypedArray;
+import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.graphics.Rect;
@@ -100,7 +101,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     private int[] mTempEstimate = new int[2];
 
     private boolean mAllowLongPress;
-    private boolean mLocked;
 
     private int mTouchSlop;
     private int mMaximumVelocity;
@@ -642,10 +642,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        Log.d(Launcher.LOG_TAG, "Workspace onIntercept " + ev + " mLocked=" + mLocked
-                + " mLauncher.isDrawerDown()=" + mLauncher.isDrawerDown());
-        if (mLocked || !mLauncher.isDrawerDown()) {
-            Log.d(Launcher.LOG_TAG, "returning false");
+        if (mLauncher.isWorkspaceLocked() || !mLauncher.isDrawerDown()) {
             return false; // We don't want the events.  Let them fall through to the all apps view.
         }
 
@@ -755,9 +752,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
 
-        Log.d(Launcher.LOG_TAG, "Workspace onTouchEvent " + ev);
-
-        if (mLocked || !mLauncher.isDrawerDown()) {
+        if (mLauncher.isWorkspaceLocked() || !mLauncher.isDrawerDown()) {
             return false; // We don't want the events.  Let them fall through to the all apps view.
         }
 
@@ -990,8 +985,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         cellLayout.onDropChild(view, mTargetCell);
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
 
-        final LauncherModel model = Launcher.getModel();
-        model.addDesktopItem(info);
         LauncherModel.addOrMoveItemInDatabase(mLauncher, info,
                 LauncherSettings.Favorites.CONTAINER_DESKTOP, mCurrentScreen, lp.cellX, lp.cellY);
     }
@@ -1088,7 +1081,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                     mDragController.removeDropTarget((DropTarget)mDragInfo.cell);
                 }
                 final Object tag = mDragInfo.cell.getTag();
-                Launcher.getModel().removeDesktopItem((ItemInfo) tag);
             }
         } else {
             if (mDragInfo != null) {
@@ -1187,24 +1179,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     /**
-     * Unlocks the SlidingDrawer so that touch events are processed.
-     *
-     * @see #lock()
-     */
-    public void unlock() {
-        mLocked = false;
-    }
-
-    /**
-     * Locks the SlidingDrawer so that touch events are ignores.
-     *
-     * @see #unlock()
-     */
-    public void lock() {
-        mLocked = true;
-    }
-    
-    /**
      * @return True is long presses are still allowed for the current touch
      */
     public boolean allowLongPress() {
@@ -1221,7 +1195,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     void removeShortcutsForPackage(String packageName) {
         final ArrayList<View> childrenToRemove = new ArrayList<View>();
-        final LauncherModel model = Launcher.getModel();
         final int count = getChildCount();
 
         for (int i = 0; i < count; i++) {
@@ -1244,7 +1217,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
                     if (Intent.ACTION_MAIN.equals(intent.getAction()) &&
                             name != null && packageName.equals(name.getPackageName())) {
-                        model.removeDesktopItem(info);
                         LauncherModel.deleteItemFromDatabase(mLauncher, info);
                         childrenToRemove.add(view);
                     }
@@ -1293,6 +1265,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     void updateShortcutsForPackage(String packageName) {
+        final PackageManager pm = mLauncher.getPackageManager();
+
         final int count = getChildCount();
         for (int i = 0; i < count; i++) {
             final CellLayout layout = (CellLayout) getChildAt(i);
@@ -1311,11 +1285,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                             Intent.ACTION_MAIN.equals(intent.getAction()) && name != null &&
                             packageName.equals(name.getPackageName())) {
 
-                        final Drawable icon = Launcher.getModel().getApplicationInfoIcon(
-                                mLauncher.getPackageManager(), info);
+                        final Drawable icon = AppInfoCache.getIconDrawable(pm, info);
                         if (icon != null && icon != info.icon) {
                             info.icon.setCallback(null);
-                            info.icon = Utilities.createIconThumbnail(icon, mContext);
+                            info.icon = Utilities.createIconThumbnail(icon, mContext, false);
                             info.filtered = true;
                             ((TextView) view).setCompoundDrawablesWithIntrinsicBounds(null,
                                     info.icon, null, null);

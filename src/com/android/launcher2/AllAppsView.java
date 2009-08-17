@@ -59,8 +59,11 @@ import android.graphics.PixelFormat;
 
 
 public class AllAppsView extends RSSurfaceView {
+    private static final String TAG = "Launcher.AllAppsView";
+
     private RenderScript mRS;
     private RolloRS mRollo;
+    private ArrayList<ApplicationInfo> mAllAppsList;
 
     private ViewConfiguration mConfig;
     private VelocityTracker mVelocity;
@@ -97,6 +100,9 @@ public class AllAppsView extends RSSurfaceView {
         mRS = createRenderScript();
         mRollo = new RolloRS();
         mRollo.init(getResources(), w, h);
+        if (mAllAppsList != null) {
+            mRollo.setApps(mAllAppsList);
+        }
     }
 
     @Override
@@ -109,7 +115,6 @@ public class AllAppsView extends RSSurfaceView {
     @Override
     public boolean onTouchEvent(MotionEvent ev)
     {
-        Log.d(Launcher.LOG_TAG, "onTouchEvent " + ev);
         int x = (int)ev.getX();
         int deltaX;
         switch (ev.getAction()) {
@@ -163,9 +168,16 @@ public class AllAppsView extends RSSurfaceView {
 
     DataSetObserver mIconObserver = new DataSetObserver() {
         public void onChanged() {
-            Log.d(Launcher.LOG_TAG, "new icons arrived! now have " + mAdapter.getCount());
+            Log.d(TAG, "new icons arrived! now have " + mAdapter.getCount());
         }
     };
+
+    public void setApps(ArrayList<ApplicationInfo> list) {
+        mAllAppsList = list;
+        if (mRollo != null) {
+            mRollo.setApps(list);
+        }
+    }
 
     public class RolloRS {
 
@@ -316,21 +328,8 @@ public class AllAppsView extends RSSurfaceView {
         }
         
         private void initData() {
-            final int count = 100;
             mParams = new Params(mRS);
             mState = new State(mRS);
-
-            mIcons = new Allocation[count];
-            mAllocIconIDBuf = new int[count];
-            mAllocIconID = Allocation.createSized(mRS,
-                Element.USER_I32, mAllocIconIDBuf.length);
-
-            mLabels = new Allocation[count];
-            mAllocLabelIDBuf = new int[mLabels.length];
-            mAllocLabelID = Allocation.createSized(mRS,
-                Element.USER_I32, mLabels.length);
-
-            Element ie8888 = Element.RGBA_8888;
 
             final Utilities.BubbleText bubble = new Utilities.BubbleText(getContext());
 
@@ -339,25 +338,10 @@ public class AllAppsView extends RSSurfaceView {
             mParams.bubbleBitmapWidth = bubble.getBitmapWidth();
             mParams.bubbleBitmapHeight = bubble.getBitmapHeight();
 
-            for (int i=0; i<count; i++) {
-                mIcons[i] = Allocation.createFromBitmapResource(
-                        mRS, mRes, R.raw.maps, ie8888, true);
-                mLabels[i] = makeTextBitmap(bubble, i%9==0 ? "Google Maps" : "Maps");
-            }
-
-            for (int i=0; i<count; i++) {
-                mIcons[i].uploadToTexture(0);
-                mLabels[i].uploadToTexture(0);
-                mAllocIconIDBuf[i] = mIcons[i].getID();
-                mAllocLabelIDBuf[i] = mLabels[i].getID();
-            }
-            mAllocIconID.data(mAllocIconIDBuf);
-            mAllocLabelID.data(mAllocLabelIDBuf);
-
-            mState.iconCount = count;
-
             mParams.save();
             mState.save();
+
+            setApps(null);
         }
 
         Allocation makeTextBitmap(Utilities.BubbleText bubble, String label) {
@@ -383,8 +367,51 @@ public class AllAppsView extends RSSurfaceView {
 
             mRS.contextBindRootScript(mScript);
         }
-    }
 
+        private void setApps(ArrayList<ApplicationInfo> list) {
+            final int count = list != null ? list.size() : 0;
+            mIcons = new Allocation[count];
+            mAllocIconIDBuf = new int[count];
+            mAllocIconID = Allocation.createSized(mRS, Element.USER_I32, count);
+
+            mLabels = new Allocation[count];
+            mAllocLabelIDBuf = new int[count];
+            mAllocLabelID = Allocation.createSized(mRS, Element.USER_I32, count);
+
+            Element ie8888 = Element.RGBA_8888;
+
+            Utilities.BubbleText bubble = new Utilities.BubbleText(getContext());
+
+            for (int i=0; i<count; i++) {
+                final ApplicationInfo item = list.get(i);
+
+                mIcons[i] = Allocation.createFromBitmap(mRS, item.iconBitmap,
+                        Element.RGBA_8888, true);
+                mLabels[i] = Allocation.createFromBitmap(mRS, item.titleBitmap,
+                        Element.RGBA_8888, true);
+
+                mIcons[i].uploadToTexture(0);
+                mLabels[i].uploadToTexture(0);
+
+                mAllocIconIDBuf[i] = mIcons[i].getID();
+                mAllocLabelIDBuf[i] = mLabels[i].getID();
+            }
+
+            mAllocIconID.data(mAllocIconIDBuf);
+            mAllocLabelID.data(mAllocLabelIDBuf);
+
+            mState.iconCount = count;
+
+            Log.d("AllAppsView", "mScript=" + mScript + " mAllocIconID=" + mAllocIconID);
+
+            if (mScript != null) { // wtf
+                mScript.bindAllocation(mAllocIconID, Defines.ALLOC_ICON_IDS);
+                mScript.bindAllocation(mAllocLabelID, Defines.ALLOC_LABEL_IDS);
+            }
+
+            mState.save();
+        }
+    }
 }
 
 

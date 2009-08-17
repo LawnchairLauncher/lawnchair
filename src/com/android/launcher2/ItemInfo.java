@@ -130,4 +130,6 @@ class ItemInfo {
         }
     }
     
+    void unbind() {
+    }
 }

@@ -28,7 +28,7 @@ import java.util.ArrayList;
 /**
  * GridView adapter to show the list of applications and shortcuts
  */
-public class ApplicationsAdapter extends ArrayAdapter<ApplicationInfo> {
+public class ApplicationsAdapter  extends ArrayAdapter<ApplicationInfo> {
     private final LayoutInflater mInflater;
 
     public ApplicationsAdapter(Context context, ArrayList<ApplicationInfo> apps) {
@@ -45,7 +45,7 @@ public class ApplicationsAdapter extends ArrayAdapter<ApplicationInfo> {
         }
 
         if (!info.filtered) {
-            info.icon = Utilities.createIconThumbnail(info.icon, getContext());
+            info.icon = Utilities.createIconThumbnail(info.icon, getContext(), false);
             info.filtered = true;
         }
 

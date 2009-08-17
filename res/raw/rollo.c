@@ -19,7 +19,10 @@
 #define STATE_FLING_TIME                2
 #define STATE_FLING_VELOCITY_X          3
 #define STATE_ADJUSTED_DECELERATION     4
-#define STATE_CURRENT_SCROLL_X          5 /* with fling offset applied */
+
+/* with fling offset applied */
+#define STATE_CURRENT_SCROLL_X          5
+
 #define STATE_FLING_DURATION            6
 #define STATE_FLING_END_POS             7
 
@@ -36,6 +39,7 @@
 #define PAGE_PADDING_TOP_PX 80
 #define CELL_PADDING_TOP_PX 5
 #define ICON_HEIGHT_PX 64
+#define ICON_TEXTURE_HEIGHT_PX 128
 #define ICON_LABEL_GUTTER_PX 5
 #define CELL_PADDING_BOTTOM_PX 5
 #define ROW_GUTTER_PX 10
@@ -43,6 +47,7 @@
 #define PAGE_PADDING_LEFT_PX 22
 #define CELL_WIDTH_PX 105
 #define ICON_WIDTH_PX 64
+#define ICON_TEXTURE_WIDTH_PX 128
 #define COLUMN_GUTTER_PX 5
 #define LABEL_WIDTH_PX 105
 
@@ -88,11 +93,14 @@ main(int launchID)
             + CELL_PADDING_BOTTOM_PX + ROW_GUTTER_PX) * densityScale;
     float cellPaddingTop = CELL_PADDING_TOP_PX * densityScale;
     float iconHeight = ICON_HEIGHT_PX * densityScale;
+    float iconTextureHeight = ICON_HEIGHT_PX / ((float)ICON_TEXTURE_HEIGHT_PX);
     float iconLabelGutter = ICON_LABEL_GUTTER_PX * densityScale;
 
     float pagePaddingLeft = PAGE_PADDING_LEFT_PX * densityScale;
     float cellWidth = CELL_WIDTH_PX * densityScale;
+
     float iconWidth = ICON_WIDTH_PX * densityScale;
+    float iconTextureWidth = ICON_WIDTH_PX / ((float)ICON_TEXTURE_WIDTH_PX);
     float columnGutter = COLUMN_GUTTER_PX * densityScale;
 
     float labelWidth = loadI32(ALLOC_PARAMS, PARAM_BUBBLE_WIDTH) * densityScale;
@@ -128,6 +136,17 @@ main(int launchID)
             } else {
                 deceleration = 1000;
             }
+            // minimum velocity
+            if (flingVelocityPxMs < 0) {
+                if (flingVelocityPxMs > -500) {
+                    flingVelocityPxMs = -500;
+                }
+            } else {
+                if (flingVelocityPxMs < 500) {
+                    flingVelocityPxMs = 500;
+                }
+            }
+
             // v' = v + at --> t = -v / a
             // x' = x + vt + .5 a t^2
             flingDurationMs = - flingVelocityPxMs / deceleration;
@@ -142,26 +161,27 @@ main(int launchID)
             }
             float scrollOnPage = modf(endPos, SCREEN_WIDTH);
             int endPage = -endPos/SCREEN_WIDTH;
+
             if (flingVelocityPxMs < 0) {
                 if (scrollOnPage < (SCREEN_WIDTH/2)) {
                     // adjust the deceleration so we align on the page boundary
                     // a = 2(x-x0-v0t)/t^2
                     endPos = -(endPage+1) * SCREEN_WIDTH;
-                    debugI32("endPos case", 1);
+                    debugI32("endPos case 1", endPos);
                 } else {
                     // TODO: bounce
                     endPos = -(endPage+1) * SCREEN_WIDTH;
-                    debugI32("endPos case", 2);
+                    debugI32("endPos case 2", endPos);
                 }
             } else {
                 if (scrollOnPage >= (SCREEN_WIDTH/2)) {
                     // adjust the deceleration so we align on the page boundary
                     endPos = -endPage * SCREEN_WIDTH;
-                    debugI32("endPos case", 3);
+                    debugI32("endPos case 3", endPos);
                 } else {
                     // TODO: bounce
                     endPos = -endPage * SCREEN_WIDTH;
-                    debugI32("endPos case", 4);
+                    debugI32("endPos case 4", endPos);
                 }
             }
             // v = v0 + at --> (v - v0) / t
@@ -213,18 +233,10 @@ main(int launchID)
     int currentPage = current_page(scrollXPx);
     float screenWidth = SCREEN_WIDTH * densityScale;
 
-    float pageLeft = -1 + ((currentPage-1)*screenWidth);
     int iconsPerPage = COLUMNS_PER_PAGE * ROWS_PER_PAGE;
-    int icon = (currentPage-1) * iconsPerPage;
-    if (icon < 0) {
-        icon = 0;
-    }
-    int page;
-    int lastIcon = icon + (iconsPerPage*3);
-    if (lastIcon >= iconCount) {
-        lastIcon = iconCount-1;
-    }
-    pageLeft += scrollXPx * densityScale;
+    int icon = 0;
+    int lastIcon = iconCount-1;
+    float pageLeft = -1 + (scrollXPx * densityScale);
     while (icon <= lastIcon) {
         // Bug makes 1.0f alpha fail.
         color(1.0f, 1.0f, 1.0f, 0.99f);
@@ -246,11 +258,16 @@ main(int launchID)
                 bindProgramFragmentStore(NAMED_PFS);
 
                 bindTexture(NAMED_PF, 0, loadI32(ALLOC_ICON_IDS, icon));
-                drawRect(iconLeft, iconTop, iconRight, iconBottom, 0.0f);
+                //drawRect(iconLeft, iconTop, iconRight, iconBottom, 0.0f);
+                drawQuadTexCoords(
+                        iconLeft, iconTop, 0.0f,        0.0f, 0.0f,
+                        iconRight, iconTop, 0.0f,       iconTextureWidth, 0.0f,
+                        iconRight, iconBottom, 0.0f,    iconTextureWidth, iconTextureHeight,
+                        iconLeft, iconBottom, 0.0f,     0.0f, iconTextureHeight);
 
                 // label
                 float labelLeft = s + ((cellWidth-labelWidth)/2.0f);
-                float labelTop = iconBottom - iconLabelGutter;
+                float labelTop = iconTop - iconHeight - iconLabelGutter;
 
                 bindProgramFragment(NAMED_PFText);
                 bindProgramFragmentStore(NAMED_PFSText);
