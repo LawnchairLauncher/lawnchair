@@ -28,7 +28,7 @@
     <string name="cancel_action" msgid="3811860427489435048">"Zrušit"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"Přidat na plochu"</string>
     <string name="group_applications" msgid="4118484163419674240">"Aplikace"</string>
-    <string name="group_shortcuts" msgid="9133529424900391877">"Klávesové zkratky"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"Zástupce"</string>
     <string name="group_search" msgid="5905328940867162196">"Hledat"</string>
     <string name="group_folder" msgid="5143593791798929193">"Nová složka"</string>
     <string name="group_live_folders" msgid="2664945399140647217">"Složky"</string>
