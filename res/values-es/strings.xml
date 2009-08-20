@@ -39,8 +39,7 @@
     <string name="add_photo_frame" msgid="3154058437359487954">"Picture frame"</string>
     <string name="add_search" msgid="7104834713685095105">"Búsqueda de Google"</string>
     <string name="out_of_space" msgid="8365249326091984698">"No queda espacio en esta pantalla de página principal."</string>
-    <!-- no translation found for shortcut_installed (6179314539443046225) -->
-    <skip />
+    <string name="shortcut_installed" msgid="6179314539443046225">"Se ha creado el acceso directo \"%s\"."</string>
     <string name="shortcut_uninstalled" msgid="2758997515869993129">"Se ha eliminado el acceso directo \"%s\"."</string>
     <string name="shortcut_duplicate" msgid="4887186782641532074">"El acceso directo \"%s\" ya existe."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Seleccionar acceso directo"</string>

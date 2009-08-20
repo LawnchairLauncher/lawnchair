@@ -39,8 +39,7 @@
     <string name="add_photo_frame" msgid="3154058437359487954">"写真フレーム"</string>
     <string name="add_search" msgid="7104834713685095105">"検索"</string>
     <string name="out_of_space" msgid="8365249326091984698">"ホーム画面に空きスペースがありません。"</string>
-    <!-- no translation found for shortcut_installed (6179314539443046225) -->
-    <skip />
+    <string name="shortcut_installed" msgid="6179314539443046225">"ショートカット「%s」を作成しました。"</string>
     <string name="shortcut_uninstalled" msgid="2758997515869993129">"ショートカット「%s」が削除されました。"</string>
     <string name="shortcut_duplicate" msgid="4887186782641532074">"ショートカット「%s」は既に存在します。"</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"ショートカットを選択"</string>

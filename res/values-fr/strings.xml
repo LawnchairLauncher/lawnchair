@@ -39,8 +39,7 @@
     <string name="add_photo_frame" msgid="3154058437359487954">"Cadre d\'image"</string>
     <string name="add_search" msgid="7104834713685095105">"Recherche"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Plus d\'espace libre sur l\'écran d\'accueil."</string>
-    <!-- no translation found for shortcut_installed (6179314539443046225) -->
-    <skip />
+    <string name="shortcut_installed" msgid="6179314539443046225">"Raccourci \"%s\" créé."</string>
     <string name="shortcut_uninstalled" msgid="2758997515869993129">"Le raccourci \"%s\" a été supprimé."</string>
     <string name="shortcut_duplicate" msgid="4887186782641532074">"Le raccourci \"%s\" existe déjà."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Sélectionner un raccourci"</string>

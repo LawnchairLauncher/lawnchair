@@ -39,8 +39,7 @@
     <string name="add_photo_frame" msgid="3154058437359487954">"Fotolijstje"</string>
     <string name="add_search" msgid="7104834713685095105">"Zoeken"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Er is geen ruimte meer op dit startscherm."</string>
-    <!-- no translation found for shortcut_installed (6179314539443046225) -->
-    <skip />
+    <string name="shortcut_installed" msgid="6179314539443046225">"Snelkoppeling \'%s\' gemaakt."</string>
     <string name="shortcut_uninstalled" msgid="2758997515869993129">"Snelkoppeling \'%s\' is verwijderd."</string>
     <string name="shortcut_duplicate" msgid="4887186782641532074">"Snelkoppeling \'%s\' bestaat al."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Snelkoppeling selecteren"</string>
