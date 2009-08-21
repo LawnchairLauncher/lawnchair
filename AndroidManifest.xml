@@ -20,9 +20,7 @@
 <!--TODO MAKE THE sharedUserId be uid.system again !! -->
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.launcher2"
-    android:sharedUserId="android.uid.system"
-    android:sharedUserLabel="@string/uid_name">
+    package="com.android.launcher2">
 
     <!-- Turned off until there is only one launcher
     <permission
@@ -57,13 +55,16 @@
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.SET_WALLPAPER_HINTS" />
-    <uses-permission android:name="android.permission.SET_WALLPAPER_COMPONENT" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.BIND_APPWIDGET" />
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
     <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS" />
 
+    <!-- these two are only needed for the wallpaper picker -->
+    <uses-permission android:name="android.permission.SET_WALLPAPER_COMPONENT" />
+    <uses-permission android:name="android.permission.BIND_WALLPAPER" />
+    
     <!-- During development, run outside acore
         android:process="android.process.acore"
     -->
@@ -97,11 +98,11 @@
             </intent-filter>
         </activity>
 
-        <!-- TODO: MOVE TO SETTINGS -->
+        <!-- TODO: MOVE TO SETTINGS (or actually maybe to its own package) -->
         <!-- Standard picker for live wallpapers -->
         <activity android:name="LiveWallpaperPickActivity"
                 android:label="@string/live_wallpaper_picker_title"
-                android:theme="@*android:style/Theme.Dialog.Alert">
+                android:theme="@android:style/Theme.Wallpaper">
             <intent-filter>
                 <action android:name="android.service.wallpaper.LIVE_WALLPAPER_CHOOSER" />
                 <action android:name="android.intent.action.SET_WALLPAPER" />
