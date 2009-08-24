@@ -34,6 +34,11 @@ class ApplicationInfo extends ItemInfo {
     CharSequence title;
 
     /**
+     * A bitmap of the application's text in the bubble.
+     */
+    Bitmap titleBitmap;
+
+    /**
      * The intent used to start the application.
      */
     Intent intent;
@@ -42,6 +47,11 @@ class ApplicationInfo extends ItemInfo {
      * The application icon.
      */
     Drawable icon;
+
+    /**
+     * A bitmap version of the application icon.
+     */
+    Bitmap iconBitmap;
 
     /**
      * When set to true, indicates that the icon has been resized.
@@ -123,5 +133,11 @@ class ApplicationInfo extends ItemInfo {
     @Override
     public String toString() {
         return title.toString();
+    }
+
+    @Override
+    void unbind() {
+        super.unbind();
+        icon.setCallback(null);
     }
 }

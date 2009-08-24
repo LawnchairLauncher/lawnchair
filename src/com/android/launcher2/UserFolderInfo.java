@@ -43,7 +43,7 @@ class UserFolderInfo extends FolderInfo {
     }
     
     /**
-     * Remove an app or shortcut
+     * Remove an app or shortcut. Does not change the DB.
      * 
      * @param item
      */

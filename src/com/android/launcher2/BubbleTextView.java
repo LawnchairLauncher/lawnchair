@@ -63,7 +63,6 @@ public class BubbleTextView extends TextView {
         setFocusable(true);
         mBackground = getBackground();
         setBackgroundDrawable(null);
-        mBackground.setCallback(this);
 
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setColor(getContext().getResources().getColor(R.color.bubble_dark_background));
@@ -130,5 +129,17 @@ public class BubbleTextView extends TextView {
         canvas.drawRoundRect(rect, mCornerRadius, mCornerRadius, mPaint);
 
         super.draw(canvas);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mBackground.setCallback(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mBackground.setCallback(null);
     }
 }

@@ -50,4 +50,11 @@ class LauncherAppWidgetInfo extends ItemInfo {
     public String toString() {
         return Integer.toString(appWidgetId);
     }
+
+
+    @Override
+    void unbind() {
+        super.unbind();
+        hostView = null;
+    }
 }
