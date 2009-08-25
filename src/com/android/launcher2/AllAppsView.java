@@ -97,7 +97,7 @@ public class AllAppsView extends RSSurfaceView {
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
         super.surfaceChanged(holder, format, w, h);
 
-        mRS = createRenderScript();
+        mRS = createRenderScript(true);
         mRollo = new RolloRS();
         mRollo.init(getResources(), w, h);
         if (mAllAppsList != null) {
