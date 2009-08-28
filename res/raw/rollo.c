@@ -68,6 +68,12 @@ modf(float x, float y)
     return x-(y*floorf(x/y));
 }
 
+float
+far_size(float sizeAt0)
+{
+    return sizeAt0 * (RADIUS+2) / 2; // -2 is the camera z=(z-camZ)/z
+}
+
 void
 draw_page(int icon, int lastIcon, float centerAngle)
 {
@@ -78,28 +84,44 @@ draw_page(int icon, int lastIcon, float centerAngle)
     float iconTextureHeight = ICON_HEIGHT_PX / (float)ICON_TEXTURE_HEIGHT_PX;
 
     float iconWidthAngle = VIEW_ANGLE * ICON_WIDTH_PX / SCREEN_WIDTH_PX;
-    float columnGutterAngle = iconWidthAngle * 0.5f;
+    float columnGutterAngle = iconWidthAngle * 0.70f;
 
-    float normalizedIconSize = 2 * ICON_WIDTH_PX / (float)SCREEN_WIDTH_PX;
-    float farIconSize = normalizedIconSize * (RADIUS+2) / 2; // -2 is the camera z=(z-camZ)/z
+    float farIconSize = far_size(2 * ICON_WIDTH_PX / (float)SCREEN_WIDTH_PX);
+    float iconGutterHeight = farIconSize * 1.1f;
+
+    float labelWidthPx = loadI32(ALLOC_PARAMS, PARAM_BUBBLE_WIDTH);
+    float labelHeightPx = loadI32(ALLOC_PARAMS, PARAM_BUBBLE_HEIGHT);
+
+    float normalizedLabelWidth = 2 * labelWidthPx / (float)SCREEN_WIDTH_PX;
+    float farLabelWidth = far_size(normalizedLabelWidth);
+    float farLabelHeight = far_size(labelHeightPx * (normalizedLabelWidth / labelWidthPx));
+    float labelTextureWidth = labelWidthPx / loadI32(ALLOC_PARAMS, PARAM_BUBBLE_BITMAP_WIDTH);
+    float labelTextureHeight = labelHeightPx / loadI32(ALLOC_PARAMS, PARAM_BUBBLE_BITMAP_HEIGHT);
+
 
     for (row=0; row<ROWS_PER_PAGE && icon<=lastIcon; row++) {
         float angle = centerAngle;
         angle -= (columnGutterAngle + iconWidthAngle) * 1.5f;
 
-        float iconTop = (farIconSize + (.5*farIconSize)) * 1.5
-                - row * (farIconSize + (.5*farIconSize));
+        float iconTop = (farIconSize + iconGutterHeight) * 2.2f
+                - row * (farIconSize + iconGutterHeight);
         float iconBottom = iconTop - farIconSize;
+
+        float labelTop = iconBottom - (.1 * farLabelHeight);
+        float labelBottom = labelTop - farLabelHeight;
 
         for (col=0; col<COLUMNS_PER_PAGE && icon<=lastIcon; col++) {
             // icon
             float sine = sinf(angle);
             float cosine = cosf(angle);
 
-            float iconLeftX = sine * RADIUS  - (cosine * farIconSize * .5);
-            float iconRightX = iconLeftX + (cosine * farIconSize);
-            float iconLeftZ = (cosine * RADIUS) + (sine * farIconSize * .5);
-            float iconRightZ = (iconLeftZ - (sine * farIconSize));
+            float centerX = sine * RADIUS;
+            float centerZ = cosine * RADIUS;
+
+            float iconLeftX = centerX  - (cosine * farIconSize * .5);
+            float iconRightX = centerX + (cosine * farIconSize * .5);
+            float iconLeftZ = centerZ + (sine * farIconSize * .5);
+            float iconRightZ = centerZ - (sine * farIconSize * .5);
 
             bindTexture(NAMED_PF, 0, loadI32(ALLOC_ICON_IDS, icon));
             drawQuadTexCoords(
@@ -109,17 +131,16 @@ draw_page(int icon, int lastIcon, float centerAngle)
                     iconLeftX, iconBottom, iconLeftZ,    0.0f, iconTextureHeight);
 
             // label
-            /*
-            float labelLeft = s + ((cellWidth-labelWidth)/2.0f);
-            float labelTop = iconTop - iconHeight - iconLabelGutter;
+            float labelLeftX = centerX - farLabelWidth * 0.5f;
+            float labelRightX = centerX + farLabelWidth * 0.5f;
 
-            bindProgramFragment(NAMED_PFText);
-            bindProgramFragmentStore(NAMED_PFSText);
+            bindTexture(NAMED_PF, 0, loadI32(ALLOC_LABEL_IDS, icon));
+            drawQuadTexCoords(
+                    labelLeftX, labelTop, centerZ,       0.0f, 0.0f,
+                    labelRightX, labelTop, centerZ,      labelTextureWidth, 0.0f,
+                    labelRightX, labelBottom, centerZ,   labelTextureWidth, labelTextureHeight,
+                    labelLeftX, labelBottom, centerZ,    0.0f, labelTextureHeight);
 
-            bindTexture(NAMED_PFText, 0, loadI32(ALLOC_LABEL_IDS, icon));
-            drawRect(labelLeft, labelTop, labelLeft+labelTextureWidth,
-                    labelTop-labelTextureHeight, 0.0f);
-            */
             angle += columnGutterAngle + iconWidthAngle;
             icon++;
         }
@@ -146,10 +167,6 @@ main(int launchID)
             + CELL_PADDING_BOTTOM_PX + ROW_GUTTER_PX) * densityScale;
     float cellPaddingTop = CELL_PADDING_TOP_PX * densityScale;
     float iconLabelGutter = ICON_LABEL_GUTTER_PX * densityScale;
-
-    float labelWidth = loadI32(ALLOC_PARAMS, PARAM_BUBBLE_WIDTH) * densityScale;
-    float labelTextureWidth = loadI32(ALLOC_PARAMS, PARAM_BUBBLE_BITMAP_WIDTH) * densityScale;
-    float labelTextureHeight = loadI32(ALLOC_PARAMS, PARAM_BUBBLE_BITMAP_HEIGHT) * densityScale;
 
     float scrollXPx = loadI32(ALLOC_STATE, STATE_SCROLL_X);
     float maxScrollX = -(pageCount-1) * SCREEN_WIDTH_PX;
