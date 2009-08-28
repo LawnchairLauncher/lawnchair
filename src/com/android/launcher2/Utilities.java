@@ -264,12 +264,14 @@ final class Utilities {
             mTextWidth = bubbleWidth - mBubblePadding - mBubblePadding;
 
             Paint rectPaint = mRectPaint = new Paint();
-            rectPaint.setColor(0xaa000000);
+            rectPaint.setColor(0xff000000);
             rectPaint.setAntiAlias(true);
 
+            Log.d(Launcher.LOG_TAG, "scale=" + scale + " textSize=" + (13*scale));
+
             TextPaint textPaint = mTextPaint = new TextPaint();
-            textPaint.setTypeface(Typeface.DEFAULT_BOLD);
-            textPaint.setTextSize(20);
+            textPaint.setTypeface(Typeface.DEFAULT);
+            textPaint.setTextSize(13*scale);
             textPaint.setColor(0xffffffff);
             textPaint.setAntiAlias(true);
 
