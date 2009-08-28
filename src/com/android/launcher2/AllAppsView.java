@@ -287,7 +287,7 @@ public class AllAppsView extends RSSurfaceView {
             mPFText.bindSampler(mSamplerText, 0);
 
             ProgramStore.Builder bs = new ProgramStore.Builder(mRS, null, null);
-            bs.setDepthFunc(ProgramStore.DepthFunc.LESS);
+            bs.setDepthFunc(ProgramStore.DepthFunc.ALWAYS);
             bs.setDitherEnable(false);
             bs.setDepthMask(true);
             bs.setBlendFunc(ProgramStore.BlendSrcFunc.SRC_ALPHA,

@@ -296,18 +296,18 @@ public class LauncherModel {
 
             if (mAllAppsList.added.size() > 0) {
                 added = mAllAppsList.added;
-                added = new ArrayList();
+                mAllAppsList.added = new ArrayList();
             }
             if (mAllAppsList.removed.size() > 0) {
                 removed = mAllAppsList.removed;
-                removed = new ArrayList();
+                mAllAppsList.removed = new ArrayList();
                 for (ApplicationInfo info: removed) {
                     AppInfoCache.remove(info.intent.getComponent());
                 }
             }
             if (mAllAppsList.modified.size() > 0) {
                 modified = mAllAppsList.modified;
-                modified = new ArrayList();
+                mAllAppsList.modified = new ArrayList();
             }
 
             final Callbacks callbacks = mCallbacks.get();
@@ -438,6 +438,7 @@ public class LauncherModel {
                     while (!done) {
                         try {
                             mWaitThread.join();
+                            done = true;
                         } catch (InterruptedException ex) {
                         }
                     }
