@@ -128,6 +128,10 @@ public class LiveWallpaperPickActivity extends LauncherActivity
             synchronized (this) {
                 if (mConnected) {
                     mEngine = engine;
+                    try {
+                        engine.setVisibility(true);
+                    } catch (RemoteException e) {
+                    }
                 } else {
                     try {
                         engine.destroy();
@@ -156,6 +160,28 @@ public class LiveWallpaperPickActivity extends LauncherActivity
         
         // Set default return data
         setResult(RESULT_CANCELED);
+    }
+    
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mWallpaperConnection != null && mWallpaperConnection.mEngine != null) {
+            try {
+                mWallpaperConnection.mEngine.setVisibility(true);
+            } catch (RemoteException e) {
+            }
+        }
+    }
+    
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mWallpaperConnection != null && mWallpaperConnection.mEngine != null) {
+            try {
+                mWallpaperConnection.mEngine.setVisibility(false);
+            } catch (RemoteException e) {
+            }
+        }
     }
     
     @Override
