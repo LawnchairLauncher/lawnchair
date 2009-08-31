@@ -528,8 +528,10 @@ public final class Launcher extends Activity
         mHandleView = (HandleView) findViewById(R.id.all_apps_button);
         mHandleView.setLauncher(this);
         mHandleView.setOnClickListener(this);
+        /* TODO
         TransitionDrawable handleIcon = (TransitionDrawable) mHandleView.getDrawable();
-        handleIcon.setCrossFadeEnabled(true);
+        handleIocon.setCrossFadeEnabled(true);
+        */
 
         workspace.setOnLongClickListener(this);
         workspace.setDragController(dragController);

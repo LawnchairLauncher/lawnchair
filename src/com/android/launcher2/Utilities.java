@@ -274,6 +274,7 @@ final class Utilities {
             textPaint.setTextSize(13*scale);
             textPaint.setColor(0xffffffff);
             textPaint.setAntiAlias(true);
+            //textPaint.setShadowLayer(8, 0, 0, 0xff000000);
 
             float ascent = -textPaint.ascent();
             float descent = textPaint.descent();
