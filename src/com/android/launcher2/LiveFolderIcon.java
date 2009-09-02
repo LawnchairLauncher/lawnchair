@@ -42,7 +42,7 @@ public class LiveFolderIcon extends FolderIcon {
         Drawable d = folderInfo.icon;
         if (d == null) {
             d = Utilities.createIconThumbnail(resources.getDrawable(R.drawable.ic_launcher_folder),
-                    launcher, false);
+                    launcher);
             folderInfo.filtered = true;
         }
         icon.setCompoundDrawablesWithIntrinsicBounds(null, d, null, null);

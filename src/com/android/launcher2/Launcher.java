@@ -518,6 +518,7 @@ public final class Launcher extends Activity
         dragLayer.setDragController(dragController);
 
         mAllAppsGrid = (AllAppsView)dragLayer.findViewById(R.id.all_apps_view);
+        mAllAppsGrid.setLauncher(this);
 
         mWorkspace = (Workspace) dragLayer.findViewById(R.id.workspace);
         final Workspace workspace = mWorkspace;
@@ -575,7 +576,7 @@ public final class Launcher extends Activity
         TextView favorite = (TextView) mInflater.inflate(layoutResId, parent, false);
 
         if (!info.filtered) {
-            info.icon = Utilities.createIconThumbnail(info.icon, this, false);
+            info.icon = Utilities.createIconThumbnail(info.icon, this);
             info.filtered = true;
         }
 
@@ -873,7 +874,6 @@ public final class Launcher extends Activity
 
         TextKeyListener.getInstance().release();
 
-        mAllAppsGrid.setAdapter(null);
         mModel.stopLoader();
 
         unbindDesktopItems();

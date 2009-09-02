@@ -154,8 +154,7 @@ class LiveFolderAdapter extends CursorAdapter {
                             cursor.getString(holder.iconPackageIndex));
                     final int id = resources.getIdentifier(resource,
                             null, null);
-                    icon = Utilities.createIconThumbnail(resources.getDrawable(id), mContext,
-                            false);
+                    icon = Utilities.createIconThumbnail(resources.getDrawable(id), mContext);
                     mIcons.put(resource, icon);
                 } catch (Exception e) {
                     // Ignore
