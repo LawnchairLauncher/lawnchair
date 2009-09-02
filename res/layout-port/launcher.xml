@@ -49,21 +49,28 @@
 
     </com.android.launcher2.Workspace>
 
-    <com.android.launcher2.HandleView
-        android:id="@+id/all_apps_button"
+    <LinearLayout
+        android:id="@+id/buttons"
         android:layout_width="fill_parent"
         android:layout_height="56dip"
         android:layout_gravity="bottom"
 
-        android:background="@drawable/handle"
+        android:gravity="right"
+        >
 
-        android:focusable="true"
-        android:clickable="true"
+        <com.android.launcher2.HandleView
+            android:id="@+id/all_apps_button"
+            android:layout_width="@dimen/button_bar_height"
+            android:layout_height="@dimen/button_bar_height"
 
-        android:scaleType="center"
-        android:src="@drawable/handle_icon"
+            android:focusable="true"
+            android:clickable="true"
 
-        launcher:direction="horizontal" />
+            android:scaleType="center"
+            android:src="@drawable/all_apps_button"
+
+            launcher:direction="horizontal" />
+    </LinearLayout>
 
     <com.android.launcher2.DeleteZone
         android:id="@+id/delete_zone"

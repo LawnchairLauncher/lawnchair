@@ -66,11 +66,25 @@ public class AllAppsView extends RSSurfaceView {
     private ArrayList<ApplicationInfo> mAllAppsList;
 
     private ViewConfiguration mConfig;
+    private int mPageCount;
     private VelocityTracker mVelocity;
     private int mLastScrollX;
     private int mLastMotionX;
     private ApplicationsAdapter mAdapter;
+    private TouchHandler mTouchHandler;
+    private int mScrollHandleTop;
 
+    class Defines {
+        public static final int ALLOC_PARAMS = 0;
+        public static final int ALLOC_STATE = 1;
+        public static final int ALLOC_SCRATCH = 2;
+        public static final int ALLOC_ICON_IDS = 3;
+        public static final int ALLOC_LABEL_IDS = 4;
+
+        public static final int COLUMNS_PER_PAGE = 4;
+        public static final int ROWS_PER_PAGE = 4;
+        
+    }
 
     public AllAppsView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -103,6 +117,10 @@ public class AllAppsView extends RSSurfaceView {
         if (mAllAppsList != null) {
             mRollo.setApps(mAllAppsList);
         }
+
+        Resources res = getContext().getResources();
+        int barHeight = (int)res.getDimension(R.dimen.button_bar_height);
+        mScrollHandleTop = h - barHeight;
     }
 
     @Override
@@ -115,43 +133,88 @@ public class AllAppsView extends RSSurfaceView {
     @Override
     public boolean onTouchEvent(MotionEvent ev)
     {
-        int x = (int)ev.getX();
-        int deltaX;
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mLastMotionX = x;
-                mRollo.mState.read();
-                mRollo.mState.scrollX = mLastScrollX = mRollo.mState.currentScrollX;
-                mRollo.mState.flingVelocityX = 0;
-                mRollo.mState.adjustedDeceleration = 0;
-                mRollo.mState.save();
-                mVelocity = VelocityTracker.obtain();
-                mVelocity.addMovement(ev);
-                break;
-            case MotionEvent.ACTION_MOVE:
-            case MotionEvent.ACTION_OUTSIDE:
-                deltaX = x - mLastMotionX;
-                mVelocity.addMovement(ev);
-                mRollo.mState.currentScrollX = mLastScrollX;
-                mLastScrollX += deltaX;
-                mRollo.mState.scrollX = mLastScrollX;
-                mRollo.mState.save();
-                mLastMotionX = x;
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                mVelocity.computeCurrentVelocity(1000 /* px/sec */,
-                        mConfig.getScaledMaximumFlingVelocity());
-                mRollo.mState.flingTimeMs = (int)SystemClock.uptimeMillis(); // TODO: use long
-                mRollo.mState.flingVelocityX = (int)mVelocity.getXVelocity();
-                mRollo.mState.save();
-                mLastMotionX = -10000;
-                mVelocity.recycle();
-                mVelocity = null;
-                break;
+        mTouchHandler = mFlingHandler;
+        /*
+        int action = ev.getAction();
+        if (action == MotionEvent.ACTION_DOWN) {
+            if (ev.getY() > mScrollHandleTop) {
+                mTouchHandler = mScrollHandler;
+            } else {
+                mTouchHandler = mFlingHandler;
+            }
         }
-        return true;
+        */
+        return mTouchHandler.onTouchEvent(ev);
     }
+
+    private abstract class TouchHandler {
+        abstract boolean onTouchEvent(MotionEvent ev);
+    };
+
+    private TouchHandler mFlingHandler = new TouchHandler() {
+        @Override
+        public boolean onTouchEvent(MotionEvent ev)
+        {
+            int x = (int)ev.getX();
+            int deltaX;
+            switch (ev.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    mLastMotionX = x;
+                    mRollo.mState.read();
+                    mRollo.mState.scrollX = mLastScrollX = mRollo.mState.currentScrollX;
+                    mRollo.mState.flingVelocityX = 0;
+                    mRollo.mState.adjustedDeceleration = 0;
+                    mRollo.mState.save();
+                    mVelocity = VelocityTracker.obtain();
+                    mVelocity.addMovement(ev);
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                case MotionEvent.ACTION_OUTSIDE:
+                    deltaX = x - mLastMotionX;
+                    mVelocity.addMovement(ev);
+                    mRollo.mState.currentScrollX = mLastScrollX;
+                    mLastScrollX += deltaX;
+                    mRollo.mState.scrollX = mLastScrollX;
+                    mRollo.mState.save();
+                    mLastMotionX = x;
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    mVelocity.computeCurrentVelocity(1000 /* px/sec */,
+                            mConfig.getScaledMaximumFlingVelocity());
+                    mRollo.mState.flingTimeMs = (int)SystemClock.uptimeMillis(); // TODO: use long
+                    mRollo.mState.flingVelocityX = (int)mVelocity.getXVelocity();
+                    mRollo.mState.save();
+                    mLastMotionX = -10000;
+                    mVelocity.recycle();
+                    mVelocity = null;
+                    break;
+            }
+            return true;
+        }
+    };
+
+    /*
+    private TouchHandler mScrollHandler = new TouchHandler() {
+        @Override
+        public boolean onTouchEvent(MotionEvent ev)
+        {
+            int x = (int)ev.getX();
+            int w = getWidth();
+
+            float percent = x / (float)w;
+
+            mRollo.mState.read();
+
+            mRollo.mState.scrollX = mLastScrollX = -(int)(mPageCount * w * percent);
+            mRollo.mState.flingVelocityX = 0;
+            mRollo.mState.adjustedDeceleration = 0;
+            mRollo.mState.save();
+
+            return true;
+        }
+    };
+    */
 
     @Override
     public boolean onTrackballEvent(MotionEvent ev)
@@ -177,6 +240,16 @@ public class AllAppsView extends RSSurfaceView {
         if (mRollo != null) {
             mRollo.setApps(list);
         }
+        mPageCount = countPages(list.size());
+    }
+
+    private static int countPages(int iconCount) {
+        int iconsPerPage = Defines.COLUMNS_PER_PAGE * Defines.ROWS_PER_PAGE;
+        int pages = iconCount / iconsPerPage;
+        if (pages*iconsPerPage != iconCount) {
+            pages++;
+        }
+        return pages;
     }
 
     public class RolloRS {
@@ -200,6 +273,8 @@ public class AllAppsView extends RSSurfaceView {
         private ProgramVertex mPVOrtho;
         private ProgramVertex.MatrixAllocation mPVOrthoAlloc;
 
+        private Allocation mScrollHandle;
+
         private Allocation[] mIcons;
         private int[] mAllocIconIDBuf;
         private Allocation mAllocIconID;
@@ -214,14 +289,6 @@ public class AllAppsView extends RSSurfaceView {
         Params mParams;
         State mState;
 
-        class Defines {
-            public static final int ALLOC_PARAMS = 0;
-            public static final int ALLOC_STATE = 1;
-            public static final int ALLOC_SCRATCH = 2;
-            public static final int ALLOC_ICON_IDS = 3;
-            public static final int ALLOC_LABEL_IDS = 4;
-        }
-
         class Params extends IntAllocation {
             Params(RenderScript rs) {
                 super(rs);
@@ -230,6 +297,9 @@ public class AllAppsView extends RSSurfaceView {
             @AllocationIndex(1) public int bubbleHeight;
             @AllocationIndex(2) public int bubbleBitmapWidth;
             @AllocationIndex(3) public int bubbleBitmapHeight;
+            @AllocationIndex(4) public int scrollHandleId;
+            @AllocationIndex(5) public int scrollHandleTextureWidth;
+            @AllocationIndex(6) public int scrollHandleTextureHeight;
         }
 
         class State extends IntAllocation {
@@ -244,6 +314,7 @@ public class AllAppsView extends RSSurfaceView {
             @AllocationIndex(5) public int currentScrollX;
             @AllocationIndex(6) public int flingDuration;
             @AllocationIndex(7) public int flingEndPos;
+            @AllocationIndex(8) public int scrollHandlePos;
         }
 
         public RolloRS() {
@@ -338,17 +409,19 @@ public class AllAppsView extends RSSurfaceView {
             mParams.bubbleBitmapWidth = bubble.getBitmapWidth();
             mParams.bubbleBitmapHeight = bubble.getBitmapHeight();
 
+            mScrollHandle = Allocation.createFromBitmapResource(mRS, mRes,
+                    R.drawable.all_apps_button_pow2, Element.RGBA_8888, true);
+            mScrollHandle.uploadToTexture(0);
+            mParams.scrollHandleId = mScrollHandle.getID();
+            Log.d(TAG, "mParams.scrollHandleId=" + mParams.scrollHandleId);
+            mParams.scrollHandleTextureWidth = 128;
+            mParams.scrollHandleTextureHeight = 128;
+            mState.scrollHandlePos = 0;
+
             mParams.save();
             mState.save();
 
             setApps(null);
-        }
-
-        Allocation makeTextBitmap(Utilities.BubbleText bubble, String label) {
-            Bitmap b = bubble.createTextBitmap(label);
-            Allocation a = Allocation.createFromBitmap(mRS, b, Element.RGBA_8888, true);
-            b.recycle();
-            return a;
         }
 
         private void initRs() {
@@ -413,6 +486,5 @@ public class AllAppsView extends RSSurfaceView {
         }
     }
 }
-
 
 

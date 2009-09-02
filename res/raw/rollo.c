@@ -12,6 +12,9 @@
 #define PARAM_BUBBLE_HEIGHT             1
 #define PARAM_BUBBLE_BITMAP_WIDTH       2
 #define PARAM_BUBBLE_BITMAP_HEIGHT      3
+#define PARAM_SCROLL_HANDLE_ID          4
+#define PARAM_SCROLL_HANDLE_TEX_WIDTH   5
+#define PARAM_SCROLL_HANDLE_TEX_HEIGHT  6
 
 // State ======
 #define STATE_ICON_COUNT                0
@@ -26,14 +29,14 @@
 #define STATE_FLING_DURATION            6
 #define STATE_FLING_END_POS             7
 
+#define SCROLL_HANDLE_POS               8
+
 // Scratch variables ======
 #define SCRATCH_ADJUSTED_DECELERATION   0
 
 // Drawing constants, should be parameters ======
 #define SCREEN_WIDTH_PX 480
 #define SCREEN_HEIGHT 854
-#define COLUMNS_PER_PAGE 4
-#define ROWS_PER_PAGE 4
 
 #define PAGE_PADDING_TOP_PX 80
 #define CELL_PADDING_TOP_PX 5
@@ -169,15 +172,15 @@ main(int launchID)
     float iconLabelGutter = ICON_LABEL_GUTTER_PX * densityScale;
 
     float scrollXPx = loadI32(ALLOC_STATE, STATE_SCROLL_X);
-    float maxScrollX = -(pageCount-1) * SCREEN_WIDTH_PX;
+    float maxScrollXPx = -(pageCount-1) * SCREEN_WIDTH_PX;
     int done = 0;
 
     // Clamp -- because java doesn't know how big the icons are
     if (scrollXPx > 0) {
         scrollXPx = 0;
     }
-    if (scrollXPx < maxScrollX) {
-        scrollXPx = maxScrollX;
+    if (scrollXPx < maxScrollXPx) {
+        scrollXPx = maxScrollXPx;
     }
 
     // If we've been given a velocity, start a fling
@@ -217,8 +220,8 @@ main(int launchID)
             if (endPos > 0) {
                 endPos = 0;
             }
-            if (endPos < maxScrollX) {
-                endPos = maxScrollX;
+            if (endPos < maxScrollXPx) {
+                endPos = maxScrollXPx;
             }
             float scrollOnPage = modf(endPos, SCREEN_WIDTH_PX);
             int endPage = -endPos/SCREEN_WIDTH_PX;
@@ -279,8 +282,8 @@ main(int launchID)
     if (scrollXPx > 0) {
         scrollXPx = 0;
     }
-    if (scrollXPx < maxScrollX) {
-        scrollXPx = maxScrollX;
+    if (scrollXPx < maxScrollXPx) {
+        scrollXPx = maxScrollXPx;
     }
     
     storeI32(ALLOC_STATE, STATE_CURRENT_SCROLL_X, scrollXPx);
@@ -290,6 +293,8 @@ main(int launchID)
         storeF(ALLOC_STATE, STATE_ADJUSTED_DECELERATION, 0);
     }
 
+    // Draw the icons ========================================
+    bindProgramVertex(NAMED_PV);
     bindProgramFragment(NAMED_PF);
     bindProgramFragmentStore(NAMED_PFS);
 
@@ -307,6 +312,20 @@ main(int launchID)
 
     draw_page(icon, lastIcon, -VIEW_ANGLE*currentPagePosition);
     draw_page(icon+iconsPerPage, lastIcon, (-VIEW_ANGLE*currentPagePosition)+VIEW_ANGLE);
+    
+    // Draw the scroll handle ========================================
+    /*
+    bindProgramVertex(NAMED_PVOrtho);
+    bindProgramFragment(NAMED_PFText);
+    bindProgramFragmentStore(NAMED_PFSText);
+
+    bindTexture(NAMED_PFText, 0, loadI32(ALLOC_PARAMS, PARAM_SCROLL_HANDLE_ID));
+    float handleLeft = 40 + (320 * (scrollXPx/(float)(maxScrollXPx)));
+    float handleTop = 680;
+    float handleWidth = loadI32(ALLOC_PARAMS, PARAM_SCROLL_HANDLE_TEX_WIDTH);
+    float handleHeight = loadI32(ALLOC_PARAMS, PARAM_SCROLL_HANDLE_TEX_HEIGHT);
+    drawRect(handleLeft, handleTop, handleLeft+handleWidth, handleTop+handleHeight, 0.0f);
+    */
 
     return !done;
 }
