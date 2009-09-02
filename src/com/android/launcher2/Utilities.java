@@ -41,6 +41,8 @@ import android.content.Context;
 final class Utilities {
     private static int sIconWidth = -1;
     private static int sIconHeight = -1;
+    private static int sIconTextureWidth = -1;
+    private static int sIconTextureHeight = -1;
 
     private static final Paint sPaint = new Paint();
     private static final Rect sBounds = new Rect();
@@ -80,19 +82,14 @@ final class Utilities {
      *
      * @param icon The icon to get a thumbnail of.
      * @param context The application's context.
-     * @param forceBitmap If this is true, the drawable will always be redrawn
-     *          into a new bitmap if it isn't already a BitmapDrawable or a
-     *          FastBitmapDrawable.
      *
      * @return A thumbnail for the specified icon or the icon itself if the
      *         thumbnail could not be created. 
      */
-    static Drawable createIconThumbnail(Drawable icon, Context context, boolean forceBitmap) {
+    static Drawable createIconThumbnail(Drawable icon, Context context) {
         synchronized (sCanvas) { // we share the statics :-(
             if (sIconWidth == -1) {
-                final Resources resources = context.getResources();
-                sIconWidth = (int)resources.getDimension(android.R.dimen.app_icon_size);
-                sIconHeight = sIconWidth;
+                initStatics(context);
             }
 
             int width = sIconWidth;
@@ -155,25 +152,90 @@ final class Utilities {
                     icon = new FastBitmapDrawable(thumb);
                 }
             }
-            
-            if (forceBitmap) {
-                // no intrinsic size --> use default size
-                int w = sIconWidth;
-                int h = sIconHeight;
-                final Bitmap.Config c = Bitmap.Config.ARGB_8888;
-                final Bitmap thumb = Bitmap.createBitmap(roundToPow2(w), roundToPow2(h), c);
-                final Canvas canvas = sCanvas;
-                canvas.setBitmap(thumb);
-                sOldBounds.set(icon.getBounds());
-                icon.setBounds(0, 0, w, h);
-                icon.draw(canvas);
-                icon.setBounds(sOldBounds);
-                icon = new FastBitmapDrawable(thumb);
-            }
 
             return icon;
         }
     }
+
+    static int sColors[] = { 0xffff0000, 0xff00ff00, 0xff0000ff };
+    static int sColorIndex = 0;
+
+    /**
+     * Returns a bitmap suitable for the all apps view.  The bitmap will be a power
+     * of two sized ARGB_8888 bitmap that can be used as a gl texture.
+     */
+    static Bitmap createAllAppsBitmap(Drawable icon, Context context) {
+        synchronized (sCanvas) { // we share the statics :-(
+            if (sIconWidth == -1) {
+                initStatics(context);
+            }
+
+            int width = sIconWidth;
+            int height = sIconHeight;
+
+            float scale = 1.0f;
+            if (icon instanceof PaintDrawable) {
+                PaintDrawable painter = (PaintDrawable) icon;
+                painter.setIntrinsicWidth(width);
+                painter.setIntrinsicHeight(height);
+            } else if (icon instanceof BitmapDrawable) {
+                // Ensure the bitmap has a density.
+                BitmapDrawable bitmapDrawable = (BitmapDrawable) icon;
+                Bitmap bitmap = bitmapDrawable.getBitmap();
+                if (bitmap.getDensity() == Bitmap.DENSITY_NONE) {
+                    bitmapDrawable.setTargetDensity(context.getResources().getDisplayMetrics());
+                }
+            }
+            int sourceWidth = icon.getIntrinsicWidth();
+            int sourceHeight = icon.getIntrinsicHeight();
+
+            if (sourceWidth > 0 && sourceWidth > 0) {
+                // There are intrinsic sizes.
+                if (width < sourceWidth || height < sourceHeight || scale != 1.0f) {
+                    // It's too big, scale it down.
+                    final float ratio = (float) sourceWidth / sourceHeight;
+                    if (sourceWidth > sourceHeight) {
+                        height = (int) (width / ratio);
+                    } else if (sourceHeight > sourceWidth) {
+                        width = (int) (height * ratio);
+                    }
+                } else if (sourceWidth < width && sourceHeight < height) {
+                    // It's small, use the size they gave us.
+                    width = sourceWidth;
+                    height = sourceWidth;
+                }
+            }
+
+            // no intrinsic size --> use default size
+            int textureWidth = sIconTextureWidth;
+            int textureHeight = sIconTextureHeight;
+
+            final Bitmap bitmap = Bitmap.createBitmap(textureWidth, textureHeight,
+                    Bitmap.Config.ARGB_8888);
+            final Canvas canvas = sCanvas;
+            canvas.setBitmap(bitmap);
+
+            final int left = (textureWidth-width) / 2;
+            final int top = (textureHeight-height) / 2;
+
+            if (false) {
+                // draw a big box for the icon for debugging
+                canvas.drawColor(sColors[sColorIndex]);
+                if (++sColorIndex >= sColors.length) sColorIndex = 0;
+                Paint debugPaint = new Paint();
+                debugPaint.setColor(0xffcccc00);
+                canvas.drawRect(left, top, left+width, top+height, debugPaint);
+            }
+
+            sOldBounds.set(icon.getBounds());
+            icon.setBounds(left, top, left+width, top+height);
+            icon.draw(canvas);
+            icon.setBounds(sOldBounds);
+
+            return bitmap;
+        }
+    }
+
 
     /**
      * Returns a Bitmap representing the thumbnail of the specified Bitmap.
@@ -189,9 +251,7 @@ final class Utilities {
     static Bitmap createBitmapThumbnail(Bitmap bitmap, Context context) {
         synchronized (sCanvas) { // we share the statics :-(
             if (sIconWidth == -1) {
-                final Resources resources = context.getResources();
-                sIconWidth = sIconHeight = (int) resources.getDimension(
-                        android.R.dimen.app_icon_size);
+                initStatics(context);
             }
 
             int width = sIconWidth;
@@ -225,6 +285,12 @@ final class Utilities {
 
             return bitmap;
         }
+    }
+
+    private static void initStatics(Context context) {
+        final Resources resources = context.getResources();
+        sIconWidth = sIconHeight = (int) resources.getDimension(android.R.dimen.app_icon_size);
+        sIconTextureWidth = sIconTextureHeight = roundToPow2(sIconWidth);
     }
 
     static class BubbleText {

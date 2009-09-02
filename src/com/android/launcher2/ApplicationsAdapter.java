@@ -45,7 +45,7 @@ public class ApplicationsAdapter  extends ArrayAdapter<ApplicationInfo> {
         }
 
         if (!info.filtered) {
-            info.icon = Utilities.createIconThumbnail(info.icon, getContext(), false);
+            info.icon = Utilities.createIconThumbnail(info.icon, getContext());
             info.filtered = true;
         }
 

@@ -29,30 +29,14 @@
 #define STATE_FLING_DURATION            6
 #define STATE_FLING_END_POS             7
 
-#define SCROLL_HANDLE_POS               8
+#define STATE_START_SCROLL_X            8
+#define STATE_SELECTED_ICON_INDEX       9
+#define STATE_SELECTED_ICON_TEXTURE     10
 
-// Scratch variables ======
-#define SCRATCH_ADJUSTED_DECELERATION   0
+#define STATE_BORDERY0                  11
 
 // Drawing constants, should be parameters ======
-#define SCREEN_WIDTH_PX 480
-#define SCREEN_HEIGHT 854
-
-#define PAGE_PADDING_TOP_PX 80
-#define CELL_PADDING_TOP_PX 5
-#define ICON_HEIGHT_PX 64
-#define ICON_TEXTURE_HEIGHT_PX 128
-#define ICON_LABEL_GUTTER_PX 5
-#define CELL_PADDING_BOTTOM_PX 5
-#define ROW_GUTTER_PX 10
-
-#define PAGE_PADDING_LEFT_PX 22
-#define CELL_WIDTH_PX 105
-#define ICON_WIDTH_PX 64
-#define ICON_TEXTURE_WIDTH_PX 128
-
 #define VIEW_ANGLE 1.28700222f
-#define RADIUS 4.0f
 
 int
 count_pages(int iconCount)
@@ -89,8 +73,10 @@ draw_page(int icon, int lastIcon, float centerAngle)
     float iconWidthAngle = VIEW_ANGLE * ICON_WIDTH_PX / SCREEN_WIDTH_PX;
     float columnGutterAngle = iconWidthAngle * 0.70f;
 
-    float farIconSize = far_size(2 * ICON_WIDTH_PX / (float)SCREEN_WIDTH_PX);
+    float farIconSize = FAR_ICON_SIZE;
     float iconGutterHeight = farIconSize * 1.1f;
+
+    float farIconTextureSize = far_size(2 * ICON_TEXTURE_WIDTH_PX / (float)SCREEN_WIDTH_PX);
 
     float labelWidthPx = loadI32(ALLOC_PARAMS, PARAM_BUBBLE_WIDTH);
     float labelHeightPx = loadI32(ALLOC_PARAMS, PARAM_BUBBLE_HEIGHT);
@@ -101,17 +87,21 @@ draw_page(int icon, int lastIcon, float centerAngle)
     float labelTextureWidth = labelWidthPx / loadI32(ALLOC_PARAMS, PARAM_BUBBLE_BITMAP_WIDTH);
     float labelTextureHeight = labelHeightPx / loadI32(ALLOC_PARAMS, PARAM_BUBBLE_BITMAP_HEIGHT);
 
+    int selectedIconIndex = loadI32(ALLOC_STATE, STATE_SELECTED_ICON_INDEX);
 
     for (row=0; row<ROWS_PER_PAGE && icon<=lastIcon; row++) {
         float angle = centerAngle;
         angle -= (columnGutterAngle + iconWidthAngle) * 1.5f;
 
-        float iconTop = (farIconSize + iconGutterHeight) * 2.2f
+        float iconTop = (farIconSize + iconGutterHeight) * (2.0f + ICON_TOP_OFFSET)
                 - row * (farIconSize + iconGutterHeight);
         float iconBottom = iconTop - farIconSize;
 
         float labelTop = iconBottom - (.1 * farLabelHeight);
         float labelBottom = labelTop - farLabelHeight;
+
+        float iconTextureTop = iconTop + (0.5f * (farIconTextureSize - farIconSize));
+        float iconTextureBottom = iconTextureTop - farIconTextureSize;
 
         for (col=0; col<COLUMNS_PER_PAGE && icon<=lastIcon; col++) {
             // icon
@@ -121,17 +111,26 @@ draw_page(int icon, int lastIcon, float centerAngle)
             float centerX = sine * RADIUS;
             float centerZ = cosine * RADIUS;
 
-            float iconLeftX = centerX  - (cosine * farIconSize * .5);
-            float iconRightX = centerX + (cosine * farIconSize * .5);
-            float iconLeftZ = centerZ + (sine * farIconSize * .5);
-            float iconRightZ = centerZ - (sine * farIconSize * .5);
+            float iconLeftX = centerX  - (cosine * farIconTextureSize * .5);
+            float iconRightX = centerX + (cosine * farIconTextureSize * .5);
+            float iconLeftZ = centerZ + (sine * farIconTextureSize * .5);
+            float iconRightZ = centerZ - (sine * farIconTextureSize * .5);
+
+            if (selectedIconIndex == icon) {
+                bindTexture(NAMED_PF, 0, loadI32(ALLOC_STATE, STATE_SELECTED_ICON_TEXTURE));
+                drawQuadTexCoords(
+                        iconLeftX, iconTextureTop, iconLeftZ,       0.0f, 0.0f,
+                        iconRightX, iconTextureTop, iconRightZ,     1.0f, 0.0f,
+                        iconRightX, iconTextureBottom, iconRightZ,  1.0f, 1.0f,
+                        iconLeftX, iconTextureBottom, iconLeftZ,    0.0f, 1.0f);
+            }
 
             bindTexture(NAMED_PF, 0, loadI32(ALLOC_ICON_IDS, icon));
             drawQuadTexCoords(
-                    iconLeftX, iconTop, iconLeftZ,       0.0f, 0.0f,
-                    iconRightX, iconTop, iconRightZ,     iconTextureWidth, 0.0f,
-                    iconRightX, iconBottom, iconRightZ,  iconTextureWidth, iconTextureHeight,
-                    iconLeftX, iconBottom, iconLeftZ,    0.0f, iconTextureHeight);
+                    iconLeftX, iconTextureTop, iconLeftZ,       0.0f, 0.0f,
+                    iconRightX, iconTextureTop, iconRightZ,     1.0f, 0.0f,
+                    iconRightX, iconTextureBottom, iconRightZ,  1.0f, 1.0f,
+                    iconLeftX, iconTextureBottom, iconLeftZ,    0.0f, 1.0f);
 
             // label
             float labelLeftX = centerX - farLabelWidth * 0.5f;
@@ -159,17 +158,6 @@ main(int launchID)
     // icons & labels
     int iconCount = loadI32(ALLOC_STATE, STATE_ICON_COUNT);
     int pageCount = count_pages(iconCount);
-
-    float densityScale = 2.0f / SCREEN_WIDTH_PX;
-    float screenTop = SCREEN_HEIGHT/(float)SCREEN_WIDTH_PX; // == (SCREEN_HEIGHT/2)*densityScale;
-
-    float pagePaddingTop = screenTop - (PAGE_PADDING_TOP_PX * densityScale);
-    float pageGutterY = ROW_GUTTER_PX * densityScale;
-    float cellHeight = (CELL_PADDING_TOP_PX + ICON_HEIGHT_PX + ICON_LABEL_GUTTER_PX
-            + loadI32(ALLOC_PARAMS, PARAM_BUBBLE_HEIGHT)
-            + CELL_PADDING_BOTTOM_PX + ROW_GUTTER_PX) * densityScale;
-    float cellPaddingTop = CELL_PADDING_TOP_PX * densityScale;
-    float iconLabelGutter = ICON_LABEL_GUTTER_PX * densityScale;
 
     float scrollXPx = loadI32(ALLOC_STATE, STATE_SCROLL_X);
     float maxScrollXPx = -(pageCount-1) * SCREEN_WIDTH_PX;
@@ -313,12 +301,26 @@ main(int launchID)
     draw_page(icon, lastIcon, -VIEW_ANGLE*currentPagePosition);
     draw_page(icon+iconsPerPage, lastIcon, (-VIEW_ANGLE*currentPagePosition)+VIEW_ANGLE);
     
-    // Draw the scroll handle ========================================
+    // Draw the border lines for debugging ========================================
     /*
     bindProgramVertex(NAMED_PVOrtho);
     bindProgramFragment(NAMED_PFText);
     bindProgramFragmentStore(NAMED_PFSText);
 
+    color(1.0f, 1.0f, 0.0f, 0.99f);
+    int i;
+    for (i=0; i<ROWS_PER_PAGE+1; i++) {
+        int y = loadI32(ALLOC_Y_BORDERS, i);
+        drawRect(0, y, SCREEN_WIDTH_PX, y+1, 0.0f);
+    }
+    for (i=0; i<COLUMNS_PER_PAGE+1; i++) {
+        int x = loadI32(ALLOC_X_BORDERS, i);
+        drawRect(x, 0, x+1, SCREEN_HEIGHT_PX, 0.0f);
+    }
+    */
+
+    // Draw the scroll handle ========================================
+    /*
     bindTexture(NAMED_PFText, 0, loadI32(ALLOC_PARAMS, PARAM_SCROLL_HANDLE_ID));
     float handleLeft = 40 + (320 * (scrollXPx/(float)(maxScrollXPx)));
     float handleTop = 680;

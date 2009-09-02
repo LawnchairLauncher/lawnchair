@@ -944,7 +944,7 @@ public class LauncherModel {
 
         final ApplicationInfo info = new ApplicationInfo();
         final ActivityInfo activityInfo = resolveInfo.activityInfo;
-        info.icon = Utilities.createIconThumbnail(activityInfo.loadIcon(manager), context, false);
+        info.icon = Utilities.createIconThumbnail(activityInfo.loadIcon(manager), context);
         if (info.title == null || info.title.length() == 0) {
             info.title = activityInfo.loadLabel(manager);
         }
@@ -973,8 +973,7 @@ public class LauncherModel {
             try {
                 Resources resources = packageManager.getResourcesForApplication(packageName);
                 final int id = resources.getIdentifier(resourceName, null, null);
-                info.icon = Utilities.createIconThumbnail(resources.getDrawable(id), context,
-                        false);
+                info.icon = Utilities.createIconThumbnail(resources.getDrawable(id), context);
             } catch (Exception e) {
                 info.icon = packageManager.getDefaultActivityIcon();
             }

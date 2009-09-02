@@ -1288,7 +1288,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                         final Drawable icon = AppInfoCache.getIconDrawable(pm, info);
                         if (icon != null && icon != info.icon) {
                             info.icon.setCallback(null);
-                            info.icon = Utilities.createIconThumbnail(icon, mContext, false);
+                            info.icon = Utilities.createIconThumbnail(icon, mContext);
                             info.filtered = true;
                             ((TextView) view).setCompoundDrawablesWithIntrinsicBounds(null,
                                     info.icon, null, null);

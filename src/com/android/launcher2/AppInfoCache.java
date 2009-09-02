@@ -163,9 +163,8 @@ public class AppInfoCache {
             application.title = info.activityInfo.name;
         }
 
-        Drawable icon = Utilities.createIconThumbnail(info.activityInfo.loadIcon(packageManager),
-                context, true);
-        application.iconBitmap = ((FastBitmapDrawable)icon).getBitmap();
+        application.iconBitmap = Utilities.createAllAppsBitmap(
+                info.activityInfo.loadIcon(packageManager), context);
         application.filtered = true;
 
         application.titleBitmap = bubble.createTextBitmap(application.title.toString());
