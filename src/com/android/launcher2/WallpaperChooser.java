@@ -37,44 +37,9 @@ import android.widget.ImageView;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class WallpaperChooser extends Activity implements AdapterView.OnItemSelectedListener,
         OnClickListener {
-
-    private static final Integer[] THUMB_IDS = {
-            R.drawable.wallpaper_lake_small,
-            R.drawable.wallpaper_sunset_small,
-            R.drawable.wallpaper_beach_small,
-            R.drawable.wallpaper_snow_leopard_small,
-            R.drawable.wallpaper_path_small,
-            R.drawable.wallpaper_sunrise_small,
-            R.drawable.wallpaper_mountain_small,
-            R.drawable.wallpaper_road_small,
-            R.drawable.wallpaper_jellyfish_small,
-            R.drawable.wallpaper_zanzibar_small,
-            R.drawable.wallpaper_blue_small,
-            R.drawable.wallpaper_grey_small,
-            R.drawable.wallpaper_green_small,
-            R.drawable.wallpaper_pink_small,
-    };
-
-    private static final Integer[] IMAGE_IDS = {
-            R.drawable.wallpaper_lake,
-            R.drawable.wallpaper_sunset,
-            R.drawable.wallpaper_beach,
-            R.drawable.wallpaper_snow_leopard,
-            R.drawable.wallpaper_path,
-            R.drawable.wallpaper_sunrise,
-            R.drawable.wallpaper_mountain,
-            R.drawable.wallpaper_road,
-            R.drawable.wallpaper_jellyfish,
-            R.drawable.wallpaper_zanzibar,
-            R.drawable.wallpaper_blue,
-            R.drawable.wallpaper_grey,
-            R.drawable.wallpaper_green,
-            R.drawable.wallpaper_pink,
-    };
 
     private Gallery mGallery;
     private ImageView mImageView;
@@ -111,17 +76,18 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
     }
 
     private void findWallpapers() {
-        mThumbs = new ArrayList<Integer>(THUMB_IDS.length + 4);
-        Collections.addAll(mThumbs, THUMB_IDS);
-
-        mImages = new ArrayList<Integer>(IMAGE_IDS.length + 4);
-        Collections.addAll(mImages, IMAGE_IDS);
+        mThumbs = new ArrayList<Integer>(24);
+        mImages = new ArrayList<Integer>(24);
 
         final Resources resources = getResources();
-
-        final String[] extras = resources.getStringArray(R.array.extra_wallpapers);
         final String packageName = getApplication().getPackageName();
 
+        addWallpapers(resources, packageName, R.array.wallpapers);
+        addWallpapers(resources, packageName, R.array.extra_wallpapers);
+    }
+
+    private void addWallpapers(Resources resources, String packageName, int list) {
+        final String[] extras = resources.getStringArray(list);
         for (String extra : extras) {
             int res = resources.getIdentifier(extra, "drawable", packageName);
             if (res != 0) {
@@ -170,8 +136,7 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
 
         mIsWallpaperSet = true;
         try {
-            WallpaperManager wpm = (WallpaperManager)getSystemService(
-                    WALLPAPER_SERVICE);
+            WallpaperManager wpm = (WallpaperManager)getSystemService(WALLPAPER_SERVICE);
             wpm.setResource(mImages.get(position));
             setResult(RESULT_OK);
             finish();
