@@ -62,22 +62,20 @@ public class DragView extends View implements TweenCallback {
      * @param registrationX The x coordinate of the registration point.
      * @param registrationY The y coordinate of the registration point.
      */
-    public DragView(Context context, Bitmap bitmap, int registrationX, int registrationY) {
+    public DragView(Context context, Bitmap bitmap, int registrationX, int registrationY,
+            int left, int top, int width, int height) {
         super(context);
 
         mWindowManager = WindowManagerImpl.getDefault();
         
         mTween = new SymmetricalLinearTween(false, 110 /*ms duration*/, this);
 
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
-
         Matrix scale = new Matrix();
         float scaleFactor = width;
         scaleFactor = mScale = (scaleFactor + DRAG_SCALE) / scaleFactor;
         scale.setScale(scaleFactor, scaleFactor);
 
-        mBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, scale, true);
+        mBitmap = Bitmap.createBitmap(bitmap, left, top, width, height, scale, true);
 
         // The point in our scaled bitmap that the touch events are located
         mRegistrationX = registrationX + (DRAG_SCALE / 2);

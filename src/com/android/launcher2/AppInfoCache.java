@@ -130,12 +130,14 @@ public class AppInfoCache {
         ApplicationInfo cached;
         synchronized (sCache) {
             cached = sCache.get(componentName);
-        }
-
-        if (cached != null) {
-            return cached.icon;
-        } else {
-            return resolveInfo.activityInfo.loadIcon(packageManager);
+            if (cached != null) {
+                if (cached.icon == null) {
+                    cached.icon = resolveInfo.activityInfo.loadIcon(packageManager);
+                }
+                return cached.icon;
+            } else {
+                return resolveInfo.activityInfo.loadIcon(packageManager);
+            }
         }
     }
 

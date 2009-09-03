@@ -136,7 +136,7 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
         dragView.setPaint(null);
     }
 
-    public void onDragStart(View v, DragSource source, Object info, int dragAction) {
+    public void onDragStart(DragSource source, Object info, int dragAction) {
         final ItemInfo item = (ItemInfo) info;
         if (item != null) {
             mTrashMode = true;
