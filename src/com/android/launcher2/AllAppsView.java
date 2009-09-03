@@ -165,6 +165,10 @@ public class AllAppsView extends RSSurfaceView
     {
         super.onTouchEvent(ev);
 
+        if (mRollo.mState.visible == 0) {
+            return false;
+        }
+
         mTouchHandler = mFlingHandler;
         /*
         int action = ev.getAction();
@@ -270,7 +274,8 @@ public class AllAppsView extends RSSurfaceView
             mDragController.startDrag(app.iconBitmap, screenX, screenY,
                     left, top, Defines.ICON_WIDTH_PX, Defines.ICON_HEIGHT_PX,
                     this, app, DragController.DRAG_ACTION_COPY);
-            // close me!
+
+            mLauncher.closeAllAppsDialog(true);
         }
         return true;
     }
