@@ -80,9 +80,6 @@ public class DragController {
     /** Original view that is being dragged.  */
     private View mOriginator;
 
-    /** The contents of mOriginator with no scaling.  */
-    private Bitmap mDragBitmap;
-
     /** X offset from the upper-left corner of the cell to where we touched.  */
     private float mTouchOffsetX;
 
@@ -126,13 +123,12 @@ public class DragController {
         /**
          * A drag has begun
          * 
-         * @param v The view that is being dragged
          * @param source An object representing where the drag originated
          * @param info The data associated with the object that is being dragged
          * @param dragAction The drag action: either {@link DragController#DRAG_ACTION_MOVE}
          *        or {@link DragController#DRAG_ACTION_COPY}
          */
-        void onDragStart(View v, DragSource source, Object info, int dragAction);
+        void onDragStart(DragSource source, Object info, int dragAction);
         
         /**
          * The drag has eneded
@@ -152,7 +148,7 @@ public class DragController {
     }
 
     /**
-     * Starts a drag
+     * Starts a drag.
      * 
      * @param v The view that is being dragged
      * @param source An object representing where the drag originated
@@ -161,6 +157,44 @@ public class DragController {
      *        {@link #DRAG_ACTION_COPY}
      */
     public void startDrag(View v, DragSource source, Object dragInfo, int dragAction) {
+        mOriginator = v;
+
+        Bitmap b = getViewBitmap(v);
+
+        int[] loc = mCoordinatesTemp;
+        v.getLocationOnScreen(loc);
+        int screenX = loc[0];
+        int screenY = loc[1];
+
+        startDrag(b, screenX, screenY, 0, 0, b.getWidth(), b.getHeight(),
+                source, dragInfo, dragAction);
+
+        b.recycle();
+
+        if (dragAction == DRAG_ACTION_MOVE) {
+            v.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * Starts a drag.
+     * 
+     * @param b The bitmap to display as the drag image.  It will be re-scaled to the
+     *          enlarged size.
+     * @param screenX The x position on screen of the left-top of the bitmap.
+     * @param screenY The y position on screen of the left-top of the bitmap.
+     * @param textureLeft The left edge of the region inside b to use.
+     * @param textureTop The top edge of the region inside b to use.
+     * @param textureWidth The width of the region inside b to use.
+     * @param textureHeight The height of the region inside b to use.
+     * @param source An object representing where the drag originated
+     * @param info The data associated with the object that is being dragged
+     * @param dragAction The drag action: either {@link #DRAG_ACTION_MOVE} or
+     *        {@link #DRAG_ACTION_COPY}
+     */
+    public void startDrag(Bitmap b, int screenX, int screenY,
+            int textureLeft, int textureTop, int textureWidth, int textureHeight,
+            DragSource source, Object dragInfo, int dragAction) {
         if (PROFILE_DRAWING_DURING_DRAG) {
             android.os.Debug.startMethodTracing("Launcher");
         }
@@ -173,13 +207,8 @@ public class DragController {
         mInputMethodManager.hideSoftInputFromWindow(mWindowToken, 0);
 
         if (mListener != null) {
-            mListener.onDragStart(v, source, dragInfo, dragAction);
+            mListener.onDragStart(source, dragInfo, dragAction);
         }
-
-        int[] loc = mCoordinatesTemp;
-        v.getLocationOnScreen(loc);
-        int screenX = loc[0];
-        int screenY = loc[1];
 
         int registrationX = ((int)mMotionDownX) - screenX;
         int registrationY = ((int)mMotionDownY) - screenY;
@@ -188,20 +217,14 @@ public class DragController {
         mTouchOffsetY = mMotionDownY - screenY;
 
         mDragging = true;
-        mOriginator = v;
         mDragSource = source;
         mDragInfo = dragInfo;
 
         mVibrator.vibrate(VIBRATE_DURATION);
 
-        mDragBitmap = getViewBitmap(v);
-        DragView dragView = mDragView = new DragView(mContext, mDragBitmap,
-                registrationX, registrationY);
+        DragView dragView = mDragView = new DragView(mContext, b, registrationX, registrationY,
+                textureLeft, textureTop, textureWidth, textureHeight);
         dragView.show(mWindowToken, (int)mMotionDownX, (int)mMotionDownY);
-
-        if (dragAction == DRAG_ACTION_MOVE) {
-            v.setVisibility(View.GONE);
-        }
     }
 
     /**
@@ -261,10 +284,6 @@ public class DragController {
             if (mDragView != null) {
                 mDragView.remove();
                 mDragView = null;
-            }
-            if (mDragBitmap != null) {
-                mDragBitmap.recycle();
-                mDragBitmap = null;
             }
         }
     }
