@@ -1583,7 +1583,7 @@ public final class Launcher extends Activity
 
     void showAllAppsDialog() {
         mAllAppsVisible = true;
-        mAllAppsGrid.setVisibility(View.VISIBLE);
+        mAllAppsGrid.show();
         mWorkspace.hide();
         
         // TODO: fade these two too
@@ -1594,12 +1594,7 @@ public final class Launcher extends Activity
     void closeAllAppsDialog(boolean animated) {
         if (mAllAppsVisible) {
             Log.d(LOG_TAG, "closing all apps");
-            if (animated) {
-                // TODO mDrawer.animateClose();
-                mAllAppsGrid.setVisibility(View.GONE);
-            } else {
-                mAllAppsGrid.setVisibility(View.GONE);
-            }
+            mAllAppsGrid.hide(animated);
             mAllAppsVisible = false;
             mWorkspace.getChildAt(mWorkspace.getCurrentScreen()).requestFocus();
             mWorkspace.show();

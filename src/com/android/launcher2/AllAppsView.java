@@ -282,6 +282,18 @@ public class AllAppsView extends RSSurfaceView
     public void onDropCompleted(View target, boolean success) {
     }
 
+    public void show() {
+        mRollo.mState.read();
+        mRollo.mState.visible = 1;
+        mRollo.mState.save();
+    }
+
+    public void hide(boolean animate) {
+        mRollo.mState.read();
+        mRollo.mState.visible = 0;
+        mRollo.mState.save();
+    }
+
     /*
     private TouchHandler mScrollHandler = new TouchHandler() {
         @Override
@@ -409,6 +421,7 @@ public class AllAppsView extends RSSurfaceView
             @AllocationIndex(8) public int startScrollX;
             @AllocationIndex(9) public int selectedIconIndex = -1;
             @AllocationIndex(10) public int selectedIconTexture;
+            @AllocationIndex(11) public int visible;
         }
 
         public RolloRS() {
