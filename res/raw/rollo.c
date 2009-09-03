@@ -33,7 +33,7 @@
 #define STATE_SELECTED_ICON_INDEX       9
 #define STATE_SELECTED_ICON_TEXTURE     10
 
-#define STATE_BORDERY0                  11
+#define STATE_VISIBLE                   11
 
 // Drawing constants, should be parameters ======
 #define VIEW_ANGLE 1.28700222f
@@ -154,6 +154,11 @@ main(int launchID)
 {
     // Clear to transparent
     pfClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+    // If we're not supposed to be showing, don't do anything.
+    if (!loadI32(ALLOC_STATE, STATE_VISIBLE)) {
+        return 0;
+    }
 
     // icons & labels
     int iconCount = loadI32(ALLOC_STATE, STATE_ICON_COUNT);
