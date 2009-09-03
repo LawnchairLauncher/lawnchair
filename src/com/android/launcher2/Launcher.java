@@ -519,6 +519,7 @@ public final class Launcher extends Activity
 
         mAllAppsGrid = (AllAppsView)dragLayer.findViewById(R.id.all_apps_view);
         mAllAppsGrid.setLauncher(this);
+        mAllAppsGrid.setDragController(dragController);
 
         mWorkspace = (Workspace) dragLayer.findViewById(R.id.workspace);
         final Workspace workspace = mWorkspace;
@@ -575,6 +576,9 @@ public final class Launcher extends Activity
     View createShortcut(int layoutResId, ViewGroup parent, ApplicationInfo info) {
         TextView favorite = (TextView) mInflater.inflate(layoutResId, parent, false);
 
+        if (info.icon == null) {
+            info.icon = AppInfoCache.getIconDrawable(getPackageManager(), info);
+        }
         if (!info.filtered) {
             info.icon = Utilities.createIconThumbnail(info.icon, this);
             info.filtered = true;

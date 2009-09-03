@@ -61,10 +61,11 @@ import android.graphics.PixelFormat;
 
 
 public class AllAppsView extends RSSurfaceView
-        implements View.OnClickListener, View.OnLongClickListener {
+        implements View.OnClickListener, View.OnLongClickListener, DragSource {
     private static final String TAG = "Launcher.AllAppsView";
 
     private Launcher mLauncher;
+    private DragController mDragController;
 
     private RenderScript mRS;
     private RolloRS mRollo;
@@ -76,6 +77,8 @@ public class AllAppsView extends RSSurfaceView
     private VelocityTracker mVelocity;
     private int mLastScrollX;
     private int mLastMotionX;
+    private int mMotionDownRawX;
+    private int mMotionDownRawY;
     private TouchHandler mTouchHandler;
     private int mScrollHandleTop;
 
@@ -190,6 +193,8 @@ public class AllAppsView extends RSSurfaceView
             int deltaX;
             switch (ev.getAction()) {
                 case MotionEvent.ACTION_DOWN:
+                    mMotionDownRawX = (int)ev.getRawX();
+                    mMotionDownRawY = (int)ev.getRawY();
                     mLastMotionX = x;
                     mRollo.mState.read();
                     mRollo.mState.startScrollX = mRollo.mState.scrollX = mLastScrollX
@@ -251,9 +256,30 @@ public class AllAppsView extends RSSurfaceView
     }
 
     public boolean onLongClick(View v) {
-        Log.d(TAG, "long click! velocity=" + mRollo.mState.flingVelocityX + " index="
-                + mRollo.mState.selectedIconIndex);
+        int index = mRollo.mState.selectedIconIndex;
+        Log.d(TAG, "long click! velocity=" + mRollo.mState.flingVelocityX + " index=" + index);
+        if (mRollo.mState.flingVelocityX == 0 && index >= 0 && index < mAllAppsList.size()) {
+            ApplicationInfo app = mAllAppsList.get(index);
+
+            // We don't really have an accurate location to use.  This will do.
+            int screenX = mMotionDownRawX - (Defines.ICON_WIDTH_PX / 2);
+            int screenY = mMotionDownRawY - Defines.ICON_HEIGHT_PX;
+
+            int left = (Defines.ICON_TEXTURE_WIDTH_PX - Defines.ICON_WIDTH_PX) / 2;
+            int top = (Defines.ICON_TEXTURE_HEIGHT_PX - Defines.ICON_HEIGHT_PX) / 2;
+            mDragController.startDrag(app.iconBitmap, screenX, screenY,
+                    left, top, Defines.ICON_WIDTH_PX, Defines.ICON_HEIGHT_PX,
+                    this, app, DragController.DRAG_ACTION_COPY);
+            // close me!
+        }
         return true;
+    }
+
+    public void setDragController(DragController dragger) {
+        mDragController = dragger;
+    }
+
+    public void onDropCompleted(View target, boolean success) {
     }
 
     /*
