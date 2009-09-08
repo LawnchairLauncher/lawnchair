@@ -40,8 +40,17 @@ import android.widget.FrameLayout;
  * A ViewGroup that coordinated dragging across its dscendants
  */
 public class DragLayer extends FrameLayout {
+    private static final String TAG = "Launcher.DragLayer";
+
+    private static final int DRAG = 1;
+    private static final int SWIPE = 2;
+    private static final int BOTH = DRAG | SWIPE;
 
     DragController mDragController;
+    SwipeController mSwipeController;
+
+    private int mAllowed = BOTH;
+
 
     /**
      * Used to create a new DragLayer from XML.
@@ -57,6 +66,10 @@ public class DragLayer extends FrameLayout {
         mDragController = controller;
     }
     
+    public void setSwipeController(SwipeController controller) {
+        mSwipeController = controller;
+    }
+    
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         return mDragController.dispatchKeyEvent(event) || super.dispatchKeyEvent(event);
@@ -64,11 +77,47 @@ public class DragLayer extends FrameLayout {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return mDragController.onInterceptTouchEvent(ev);
+        boolean result = false;
+
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            mAllowed = BOTH;
+        }
+
+        if ((mAllowed & DRAG) != 0) {
+            result = mDragController.onInterceptTouchEvent(ev);
+            if (result) {
+                mAllowed = DRAG;
+            }
+        }
+
+        if ((mAllowed & SWIPE) != 0) {
+            result = mSwipeController.onInterceptTouchEvent(ev);
+            if (result) {
+                mAllowed = SWIPE;
+            }
+        }
+
+        return result;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        return mDragController.onTouchEvent(ev);
+        boolean result = false;
+
+        if ((mAllowed & DRAG) != 0) {
+            result = mDragController.onTouchEvent(ev);
+            if (result) {
+                mAllowed = DRAG;
+            }
+        }
+
+        if ((mAllowed & SWIPE) != 0) {
+            result = mSwipeController.onTouchEvent(ev);
+            if (result) {
+                mAllowed = SWIPE;
+            }
+        }
+
+        return result;
     }
 }
