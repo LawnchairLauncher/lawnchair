@@ -37,6 +37,8 @@
     <!-- Title for the screen that lets the user choose a live wallpaper to use
          for the system. -->
     <string name="live_wallpaper_picker_title">Live wallpaper</string>    
+    <!-- List item for configuring the current wallpaper -->
+    <string name="configure_wallpaper">Configure...</string>
 
     <!-- Folders -->
     <skip />

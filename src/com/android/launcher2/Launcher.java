@@ -22,6 +22,7 @@ import android.app.Dialog;
 import android.app.ISearchManager;
 import android.app.SearchManager;
 import android.app.StatusBarManager;
+import android.app.WallpaperInfo;
 import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -30,6 +31,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
 import android.content.pm.ActivityInfo;
+import android.content.pm.LabeledIntent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
@@ -1232,7 +1234,18 @@ public final class Launcher extends Activity
 
     private void startWallpaper() {
         final Intent pickWallpaper = new Intent(Intent.ACTION_SET_WALLPAPER);
-        startActivity(Intent.createChooser(pickWallpaper, getString(R.string.chooser_wallpaper)));
+        Intent chooser = Intent.createChooser(pickWallpaper,
+                getText(R.string.chooser_wallpaper));
+        WallpaperManager wm = (WallpaperManager)
+                getSystemService(Context.WALLPAPER_SERVICE);
+        WallpaperInfo wi = wm.getWallpaperInfo();
+        if (wi != null && wi.getSettingsActivity() != null) {
+            LabeledIntent li = new LabeledIntent(getPackageName(),
+                    R.string.configure_wallpaper, 0);
+            li.setClassName(wi.getPackageName(), wi.getSettingsActivity());
+            chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] { li });
+        }
+        startActivity(chooser);
     }
 
     @Override
