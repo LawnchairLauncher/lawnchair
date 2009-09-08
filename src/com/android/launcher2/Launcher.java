@@ -393,8 +393,6 @@ public final class Launcher extends Activity
     protected void onResume() {
         super.onResume();
 
-        Log.d(TAG, "onResume mRestoring=" + mRestoring);
-
         if (mRestoring) {
             mWorkspaceLoading = true;
             mModel.startLoader(this, true);
@@ -1619,7 +1617,6 @@ public final class Launcher extends Activity
 
     void closeAllAppsDialog(boolean animated) {
         if (mAllAppsVisible) {
-            Log.d(LOG_TAG, "closing all apps");
             mAllAppsGrid.hide();
             mAllAppsVisible = false;
             mWorkspace.getChildAt(mWorkspace.getCurrentScreen()).requestFocus();
