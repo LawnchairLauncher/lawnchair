@@ -34,6 +34,7 @@
 #define STATE_SELECTED_ICON_TEXTURE     10
 
 #define STATE_VISIBLE                   11
+#define STATE_ZOOM                      12
 
 // Drawing constants, should be parameters ======
 #define VIEW_ANGLE 1.28700222f
@@ -66,6 +67,8 @@ draw_page(int icon, int lastIcon, float centerAngle)
 {
     int row;
     int col;
+
+    float scale = 1.0f - loadI32(ALLOC_STATE, STATE_ZOOM)/100000.0f;
 
     float iconTextureWidth = ICON_WIDTH_PX / (float)ICON_TEXTURE_WIDTH_PX;
     float iconTextureHeight = ICON_HEIGHT_PX / (float)ICON_TEXTURE_HEIGHT_PX;
@@ -110,6 +113,7 @@ draw_page(int icon, int lastIcon, float centerAngle)
 
             float centerX = sine * RADIUS;
             float centerZ = cosine * RADIUS;
+            centerZ -= (7*scale);
 
             float iconLeftX = centerX  - (cosine * farIconTextureSize * .5);
             float iconRightX = centerX + (cosine * farIconTextureSize * .5);
@@ -133,15 +137,17 @@ draw_page(int icon, int lastIcon, float centerAngle)
                     iconLeftX, iconTextureBottom, iconLeftZ,    0.0f, 1.0f);
 
             // label
-            float labelLeftX = centerX - farLabelWidth * 0.5f;
-            float labelRightX = centerX + farLabelWidth * 0.5f;
+            if (scale <= 1.04f) {
+                float labelLeftX = centerX - farLabelWidth * 0.5f;
+                float labelRightX = centerX + farLabelWidth * 0.5f;
 
-            bindTexture(NAMED_PF, 0, loadI32(ALLOC_LABEL_IDS, icon));
-            drawQuadTexCoords(
-                    labelLeftX, labelTop, centerZ,       0.0f, 0.0f,
-                    labelRightX, labelTop, centerZ,      labelTextureWidth, 0.0f,
-                    labelRightX, labelBottom, centerZ,   labelTextureWidth, labelTextureHeight,
-                    labelLeftX, labelBottom, centerZ,    0.0f, labelTextureHeight);
+                bindTexture(NAMED_PF, 0, loadI32(ALLOC_LABEL_IDS, icon));
+                drawQuadTexCoords(
+                        labelLeftX, labelTop, centerZ,       0.0f, 0.0f,
+                        labelRightX, labelTop, centerZ,      labelTextureWidth, 0.0f,
+                        labelRightX, labelBottom, centerZ,   labelTextureWidth, labelTextureHeight,
+                        labelLeftX, labelBottom, centerZ,    0.0f, labelTextureHeight);
+            }
 
             angle += columnGutterAngle + iconWidthAngle;
             icon++;
@@ -269,6 +275,8 @@ main(int launchID)
             scrollXPx = loadF(ALLOC_STATE, STATE_FLING_END_POS);
             done = 1;
         }
+    } else {
+        done = 1;
     }
 
     // Clamp

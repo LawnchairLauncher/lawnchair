@@ -46,8 +46,9 @@ import java.util.ArrayList;
  * screen contains a number of icons, folders or widgets the user can interact with.
  * A workspace is meant to be used with a fixed width only.
  */
-public class Workspace extends ViewGroup implements DropTarget, DragSource, DragScroller,
-        TweenCallback {
+public class Workspace extends ViewGroup implements DropTarget, DragSource, DragScroller {
+    private static final String TAG = "Launcher.Workspace";
+
     private static final int INVALID_SCREEN = -1;
     
     /**
@@ -65,9 +66,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     private int mNextScreen = INVALID_SCREEN;
     private Scroller mScroller;
     private VelocityTracker mVelocityTracker;
-
-    private SymmetricalLinearTween mTween;
-    private int mAlpha = 255;
 
     /**
      * CellInfo for the cell that is currently being dragged
@@ -150,8 +148,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         final ViewConfiguration configuration = ViewConfiguration.get(getContext());
         mTouchSlop = configuration.getScaledTouchSlop();
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
-
-        mTween = new SymmetricalLinearTween(true, 250/*ms*/, this);
     }
 
     @Override
@@ -486,12 +482,24 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         int restoreCount = 0;
 
         // For the fade.  If view gets setAlpha(), use that instead.
-        int alpha = mAlpha;
-        if (alpha < 255) {
+        float scale = mScale;
+        if (scale < 0.999f) {
             int sx = mScrollX;
+
+            int alpha = (scale < 0.5f) ? (int)(255 * 2 * scale) : 255;
+
             restoreCount = canvas.saveLayerAlpha(sx, 0, sx+getWidth(), getHeight(), alpha,
                     Canvas.HAS_ALPHA_LAYER_SAVE_FLAG | Canvas.CLIP_TO_LAYER_SAVE_FLAG);
             restore = true;
+
+            if (scale < 0.999f) {
+                int w = getWidth();
+                w += 2 * mCurrentScreen * w;
+                int h = getHeight();
+                canvas.translate(w/2, h/2);
+                canvas.scale(scale, scale);
+                canvas.translate(-w/2, -h/2);
+            }
         }
 
         // ViewGroup.dispatchDraw() supports many features we don't need:
@@ -499,7 +507,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         // children, etc. The following implementation attempts to fast-track
         // the drawing dispatch by drawing only what we know needs to be drawn.
 
-        boolean fastDraw = mTouchState != TOUCH_STATE_SCROLLING && mNextScreen == INVALID_SCREEN;
+        boolean fastDraw = mTouchState != TOUCH_STATE_SCROLLING && mNextScreen == INVALID_SCREEN
+                && scale > 0.999f;
         // If we are not scrolling or flinging, draw only the current screen
         if (fastDraw) {
             drawChild(canvas, getChildAt(mCurrentScreen), getDrawingTime());
@@ -522,6 +531,12 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         if (restore) {
             canvas.restoreToCount(restoreCount);
         }
+    }
+
+    private float mScale = 1.0f;
+    public void setScale(float scale) {
+        mScale = scale;
+        invalidate();
     }
 
     protected void onAttachedToWindow() {
@@ -1335,31 +1350,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     void show() {
-        mTween.start(true);
         setVisibility(VISIBLE);
     }
 
     void hide() {
-        mTween.start(false);
-    }
-
-    public void onTweenValueChanged(float value, float oldValue) {
-        mAlpha = (int)(255*value);
-        invalidate();
-    }
-
-    public void onTweenStarted() {
-        // TODO: This conflicts with the cache for drawing.  Ref count instead?
-        // TODO: Don't cache all three.
-        enableChildrenCache();
-    }
-
-    public void onTweenFinished() {
-        // TODO: This conflicts with the cache for drawing.  Ref count instead?
-        // TODO: Don't cache all three.
-        clearChildrenCache();
-        if (mAlpha == 0) {
-            setVisibility(GONE);
-        }
     }
 }

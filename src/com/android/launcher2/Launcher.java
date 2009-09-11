@@ -82,7 +82,8 @@ import java.io.DataInputStream;
  * Default launcher application.
  */
 public final class Launcher extends Activity
-        implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks {
+        implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks,
+        SwipeController.SwipeListener {
     static final String LOG_TAG = "Launcher";
     static final String TAG = LOG_TAG;
     static final boolean LOGD = false;
@@ -107,6 +108,10 @@ public final class Launcher extends Activity
     private static final int REQUEST_PICK_SHORTCUT = 7;
     private static final int REQUEST_PICK_LIVE_FOLDER = 8;
     private static final int REQUEST_PICK_APPWIDGET = 9;
+
+    private static final int MODE_WORKSPACE = 0;
+    private static final int MODE_ALL_APPS = 1;
+    private static final int MODE_ALL_APPS_ZOOMED = 2;
 
     static final String EXTRA_SHORTCUT_DUPLICATE = "duplicate";
 
@@ -158,6 +163,7 @@ public final class Launcher extends Activity
     private LayoutInflater mInflater;
 
     private DragController mDragController;
+    private SwipeController mSwipeController;
     private Workspace mWorkspace;
 
     private AppWidgetManager mAppWidgetManager;
@@ -171,7 +177,8 @@ public final class Launcher extends Activity
     private DeleteZone mDeleteZone;
     private HandleView mHandleView;
     private AllAppsView mAllAppsGrid;
-    private boolean mAllAppsVisible;
+    private boolean mAllAppsVisible; // if it's visible at all
+    private int mMode = MODE_WORKSPACE;
 
     private Bundle mSavedState;
 
@@ -515,13 +522,18 @@ public final class Launcher extends Activity
     private void setupViews() {
         mDragController = new DragController(this);
         DragController dragController = mDragController;
+        mSwipeController = new SwipeController(this, this);
+        SwipeController swipeController = mSwipeController;
+        swipeController.setRange(-1, 0);
 
         DragLayer dragLayer = (DragLayer) findViewById(R.id.drag_layer);
         dragLayer.setDragController(dragController);
+        dragLayer.setSwipeController(swipeController);
 
         mAllAppsGrid = (AllAppsView)dragLayer.findViewById(R.id.all_apps_view);
         mAllAppsGrid.setLauncher(this);
         mAllAppsGrid.setDragController(dragController);
+        mAllAppsGrid.setWillNotDraw(false); // We don't want a hole punched in our window.
 
         mWorkspace = (Workspace) dragLayer.findViewById(R.id.workspace);
         final Workspace workspace = mWorkspace;
@@ -1422,6 +1434,7 @@ public final class Launcher extends Activity
         }
 
         if (mWorkspace.allowLongPress()) {
+            mSwipeController.cancelSwipe();
             if (cellInfo.cell == null) {
                 if (cellInfo.valid) {
                     // User long pressed on empty space
@@ -1607,7 +1620,7 @@ public final class Launcher extends Activity
     void closeAllAppsDialog(boolean animated) {
         if (mAllAppsVisible) {
             Log.d(LOG_TAG, "closing all apps");
-            mAllAppsGrid.hide(animated);
+            mAllAppsGrid.hide();
             mAllAppsVisible = false;
             mWorkspace.getChildAt(mWorkspace.getCurrentScreen()).requestFocus();
             mWorkspace.show();
@@ -1741,6 +1754,89 @@ public final class Launcher extends Activity
 
         public void onShow(DialogInterface dialog) {
         }
+    }
+
+    /**
+     * Implementation of the method from SwipeController.SwipeListener.
+     */
+    public void onStartSwipe() {
+        switch (mMode) {
+        case MODE_WORKSPACE:
+            mWorkspace.enableChildrenCache();
+            break;
+        case MODE_ALL_APPS:
+            break;
+        case MODE_ALL_APPS_ZOOMED:
+            break;
+        }
+    }
+
+    /**
+     * Implementation of the method from SwipeController.SwipeListener.
+     *
+     * @param amount The final value of the swipe (-1, 0 or 1)
+     */
+    public void onFinishSwipe(int amount) {
+        switch (mMode) {
+        case MODE_WORKSPACE:
+            if (amount == -1) {
+                mWorkspace.clearChildrenCache();
+                mMode = MODE_ALL_APPS;
+                mSwipeController.setRange(0, 1);
+            }
+            break;
+        case MODE_ALL_APPS:
+            if (amount == 1) {
+                mWorkspace.clearChildrenCache();
+                mMode = MODE_WORKSPACE;
+                mSwipeController.setRange(-1, 0);
+            }
+            break;
+        case MODE_ALL_APPS_ZOOMED:
+            break;
+        }
+    }
+
+    /**
+     * Implementation of the method from SwipeController.SwipeListener.
+     */
+    public void onSwipe(float amount) {
+        switch (mMode) {
+        case MODE_WORKSPACE:
+            // We can open the all apps view.
+            //   0 == workspace is showing
+            //  -1 == all apps is showing
+            setWorkspaceAndAllAppsScale(-amount);
+            break;
+        case MODE_ALL_APPS:
+            // We can close it, or (someday) zoom it further
+            //   0 == all apps showing
+            //   1 == workspace is showing
+            setWorkspaceAndAllAppsScale(1-amount);
+            break;
+        }
+    }
+
+    /**
+     * Set the scale factor for the workspace and the all apps grid.
+     *
+     * @param amount A float between 0 and 1, where:
+     *                  0 == workspace is showing and
+     *                  1 == the all apps grid is showing.
+     */
+    private void setWorkspaceAndAllAppsScale(float amount) {
+        //Log.d("setWorkspaceAndAllAppsScale", "setWorkspaceAndAllAppsScale amount=" + amount);
+        if (amount < 0.001f) {
+            amount = 0.0f;
+        }
+        if (amount > 0.999f) {
+            amount = 1.0f;
+            mWorkspace.setVisibility(View.INVISIBLE);
+        } else {
+            mWorkspace.setVisibility(View.VISIBLE);
+        }
+        mWorkspace.setScale(1-amount);
+        mAllAppsGrid.setScale(amount);
     }
 
     /**
