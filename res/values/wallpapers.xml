@@ -16,20 +16,21 @@
  -->
 
 <resources>
-    <string-array name="wallpapers">
-        <item>wallpaper_lake</item>
-        <item>wallpaper_sunset</item>
-        <item>wallpaper_beach</item>
-        <item>wallpaper_snow_leopard</item>
-        <item>wallpaper_path</item>
-        <item>wallpaper_sunrise</item>
-        <item>wallpaper_mountain</item>
-        <item>wallpaper_road</item>
+    <string-array name="wallpapers" translatable="false">
+        <item>wallpaper_bentgrass</item>
+        <item>wallpaper_canyon</item>
+        <item>wallpaper_despair</item>
+        <item>wallpaper_electric</item>
+        <item>wallpaper_goldengate</item>
+        <item>wallpaper_grass</item>
         <item>wallpaper_jellyfish</item>
-        <item>wallpaper_zanzibar</item>
-        <item>wallpaper_blue</item>
-        <item>wallpaper_grey</item>
-        <item>wallpaper_green</item>
-        <item>wallpaper_pink</item>
+        <item>wallpaper_leaves</item>
+        <item>wallpaper_monumentvalley</item>
+        <item>wallpaper_paradise</item>
+        <item>wallpaper_rainbokeh</item>
+        <item>wallpaper_ricefield</item>
+        <item>wallpaper_sunset</item>
+        <item>wallpaper_tree</item>
+        <item>wallpaper_valley</item>
     </string-array>
 </resources>
