@@ -32,6 +32,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.Bitmap;
 import android.os.Binder;
 import android.os.Bundle;
@@ -44,6 +45,7 @@ import android.service.wallpaper.IWallpaperEngine;
 import android.service.wallpaper.IWallpaperService;
 import android.service.wallpaper.WallpaperService;
 import android.service.wallpaper.WallpaperSettingsActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -87,7 +89,7 @@ public class LiveWallpaperPickActivity
     private ArrayList<Intent> mWallpaperIntents;
     private ArrayList<WallpaperInfo> mWallpaperInfos;
  
-    private ArrayList<Bitmap> mThumbBitmaps;
+    private ArrayList<Drawable> mThumbnails;
 
     class WallpaperConnection extends IWallpaperConnection.Stub
             implements ServiceConnection {
@@ -180,7 +182,7 @@ public class LiveWallpaperPickActivity
         }
 
         public int getCount() {
-            return mThumbBitmaps.size();
+            return mThumbnails.size();
         }
 
         public Object getItem(int position) {
@@ -200,15 +202,22 @@ public class LiveWallpaperPickActivity
                 image = (ImageView) convertView;
             }
           
-            image.setImageBitmap(mThumbBitmaps.get(position));
+            image.setImageDrawable(mThumbnails.get(position));
             image.getDrawable().setDither(true);
+
+            image.setAdjustViewBounds(true);
+            image.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            image.setLayoutParams(new Gallery.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.FILL_PARENT));
+
             return image;
         }
     }
 
 
     private void findLiveWallpapers() {
-        mThumbBitmaps = new ArrayList<Bitmap>(24);
+        mThumbnails = new ArrayList<Drawable>(24);
         List<ResolveInfo> list = 
                 mPackageManager.queryIntentServices(getTargetIntent(),
                         PackageManager.GET_META_DATA);
@@ -217,7 +226,9 @@ public class LiveWallpaperPickActivity
         mWallpaperInfos = new ArrayList<WallpaperInfo>(list.size());
         
         int listSize = list.size();
-        Log.d(TAG, String.format("findLiveWallpapers: found %d wallpaper services", listSize));
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        
         for (int i = 0; i < listSize; i++) {
             ResolveInfo resolveInfo = list.get(i);
             ComponentInfo ci = resolveInfo.serviceInfo;
@@ -231,26 +242,39 @@ public class LiveWallpaperPickActivity
                 Log.w(TAG, "Skipping wallpaper " + ci, e);
                 continue;
             }
-            String packageName = ci.applicationInfo.packageName;
-            String className = ci.name;
-            Log.d(TAG, String.format("findLiveWallpapers: [%d] pkg=%s cls=%s",
-                i, packageName, className));
+
+            String packageName = winfo.getPackageName();
+            String className = winfo.getServiceName();
             Intent intent = new Intent(getTargetIntent());
             intent.setClassName(packageName, className);
             mWallpaperIntents.add(intent);
             mWallpaperInfos.add(winfo);
 
-            Bitmap thumb = Bitmap.createBitmap(240,160,Bitmap.Config.ARGB_8888);
-            android.graphics.Canvas can = new android.graphics.Canvas(thumb);
-            android.graphics.Paint pt = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG|android.graphics.Paint.DITHER_FLAG);
-            pt.setARGB(255, 0, 0, 255);
-            can.drawPaint(pt);
-            pt.setARGB(255, 255, 255, 255);
-            pt.setTextSize(12);
-            can.drawText(className, 16, 150, pt);
-            pt.setTextSize(80);
-            can.drawText(String.format("%d", i), 100,100, pt);
-            mThumbBitmaps.add(thumb);
+            Drawable thumb = winfo.loadThumbnail(mPackageManager);
+            if (null == thumb) {
+                // TODO dsandler: replace with pretty placeholder
+                Bitmap thumbBit = Bitmap.createBitmap(
+                    (int)(240 * metrics.density),
+                    (int)(240 * metrics.density),
+                    Bitmap.Config.ARGB_8888);
+                android.graphics.Canvas can = new android.graphics.Canvas(thumbBit);
+                android.graphics.Paint pt = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG|android.graphics.Paint.DITHER_FLAG);
+                pt.setARGB(255, 0, 0, 255);
+                can.drawPaint(pt);
+                pt.setARGB(255, 255, 255, 255);
+                pt.setTextSize(12 * metrics.density);
+                can.drawText(className,
+                    (int)(12 * metrics.density), 
+                    (int)(thumbBit.getHeight()-12 * metrics.density),
+                    pt);
+                pt.setTextSize(100 * metrics.density);
+                can.drawText(String.format("#%d", i), 
+                    (int)(thumbBit.getWidth()*0.3),
+                    (int)(thumbBit.getHeight()*0.5),
+                    pt);
+                thumb = new BitmapDrawable(thumbBit);
+            }
+            mThumbnails.add(thumb);
         }
 
 
@@ -320,8 +344,6 @@ public class LiveWallpaperPickActivity
     }
     
     public void onItemSelected(AdapterView parent, View v, int position, long id) {
-        Log.d(TAG, String.format("onItemSelected: position=%d", position));
-
         mSelectedIntent = mWallpaperIntents.get(position);
         mSelectedInfo = mWallpaperInfos.get(position);
         mConfigureButton.setEnabled(mSelectedInfo != null
@@ -338,9 +360,6 @@ public class LiveWallpaperPickActivity
     }
     
     public void onClick(View v) { // "Set" button
-        Log.d(TAG, "Set clicked");
-
-//        mSelectedIntent = mWallpaperIntents.get(mGallery.getSelectedItemPosition());
         if (v.getId() == R.id.set) {
             if (mSelectedIntent != null) {
                 try {
