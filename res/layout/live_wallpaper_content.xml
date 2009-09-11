@@ -25,13 +25,13 @@
 	    android:layout_height="0px"
 	    android:layout_weight="1"
 	    >
-	
+	    <!--
 	    <ListView
 	        android:id="@android:id/list"
 	        android:layout_width="fill_parent"
 	        android:layout_height="fill_parent"
 	        />
-	
+	    -->
 	    <TextView
 	        android:id="@android:id/empty"
 	        android:layout_width="fill_parent"
@@ -41,9 +41,12 @@
 	        android:visibility="gone"
 	        android:textAppearance="?android:attr/textAppearanceMedium"
 	        />
-	
 	</FrameLayout>
 	
+    <Gallery android:id="@+id/gallery"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+        
     <Button android:id="@+id/set"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
