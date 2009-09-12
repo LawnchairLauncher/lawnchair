@@ -27,7 +27,6 @@ import android.graphics.RectF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -47,8 +46,6 @@ import java.util.ArrayList;
  * A workspace is meant to be used with a fixed width only.
  */
 public class Workspace extends ViewGroup implements DropTarget, DragSource, DragScroller {
-    private static final String TAG = "Launcher.Workspace";
-
     private static final int INVALID_SCREEN = -1;
     
     /**
@@ -932,7 +929,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             // Move internally
             if (mDragInfo != null) {
                 final View cell = mDragInfo.cell;
-                if (mCurrentScreen != mDragInfo.screen) {
+                int index = mScroller.isFinished() ? mCurrentScreen : mNextScreen;                
+                if (index != mDragInfo.screen) {
                     final CellLayout originalCellLayout = (CellLayout) getChildAt(mDragInfo.screen);
                     originalCellLayout.removeView(cell);
                     cellLayout.addView(cell);
@@ -944,7 +942,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                 final ItemInfo info = (ItemInfo)cell.getTag();
                 CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell.getLayoutParams();
                 LauncherModel.moveItemInDatabase(mLauncher, info,
-                        LauncherSettings.Favorites.CONTAINER_DESKTOP, mCurrentScreen, lp.cellX, lp.cellY);
+                        LauncherSettings.Favorites.CONTAINER_DESKTOP, index, lp.cellX, lp.cellY);
             }
         }
     }
