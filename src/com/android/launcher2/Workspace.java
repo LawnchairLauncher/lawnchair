@@ -95,7 +95,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     private int[] mTempCell = new int[2];
     private int[] mTempEstimate = new int[2];
 
-    private boolean mAllowLongPress;
+    private boolean mAllowLongPress = true;
 
     private int mTouchSlop;
     private int mMaximumVelocity;

@@ -74,7 +74,7 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mTransition = (TransitionDrawable) getBackground();
+        mTransition = (TransitionDrawable) getDrawable();
     }
 
     public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset,

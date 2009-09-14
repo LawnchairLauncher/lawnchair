@@ -1433,6 +1433,7 @@ public final class Launcher extends Activity
         }
 
         if (mWorkspace.allowLongPress()) {
+        Log.d(TAG, "there");
             mSwipeController.cancelSwipe();
             if (cellInfo.cell == null) {
                 if (cellInfo.valid) {
