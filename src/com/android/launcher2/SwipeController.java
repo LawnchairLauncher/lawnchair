@@ -143,6 +143,41 @@ public class SwipeController {
         return mTracking || mCanceled;
     }
 
+    /**
+     * Set the value, performing an animation.  Make sure that you have set the
+     * range properly first, otherwise the value may be clamped.
+     */
+    public void animate(float dest) {
+        go(dest, 0);
+    }
+
+    /**
+     * Set the value, but don't perform an animation.  Make sure that you have set the
+     * range properly first, otherwise the value may be clamped.
+     */
+    public void setImmediate(float dest) {
+        go(dest, dest);
+    }
+
+    /**
+     * Externally start a swipe.  If dest == amount, this will end up just immediately
+     * setting the value, but it will perform the proper start and finish callbacks.
+     */
+    private void go(float dest, float amount) {
+        mListener.onStartSwipe();
+
+        dest = clamp(dest);
+        mDirection = dest > amount ? 1 : -1; // if they're equal it doesn't matter
+        mVelocity = mDirection * 0.002f; // TODO: density.
+        mAmount = amount;
+        mDest = dest;
+
+        mFlingTime = SystemClock.uptimeMillis();
+        mLastTime = 0;
+
+        scheduleAnim();
+    }
+
     private float clamp(float v) {
         if (v < mMinDest) {
             return mMinDest;
@@ -165,6 +200,7 @@ public class SwipeController {
         mVelocityTracker.computeCurrentVelocity(1);
 
         mVelocity = mVelocityTracker.getYVelocity() / mSwipeDistance;
+        Log.d(TAG, "mVelocity=" + mVelocity);
         mDirection = mVelocity >= 0.0f ? 1 : -1;
         mAmount = clamp((screenY-mDownY)/mSwipeDistance);
         if (mAmount < 0) {
