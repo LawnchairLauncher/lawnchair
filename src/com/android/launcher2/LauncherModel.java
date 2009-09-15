@@ -310,7 +310,7 @@ public class LauncherModel {
                 mAllAppsList.modified = new ArrayList();
             }
 
-            final Callbacks callbacks = mCallbacks.get();
+            final Callbacks callbacks = mCallbacks != null ? mCallbacks.get() : null;
             if (callbacks == null) {
                 return;
             }
