@@ -5,39 +5,14 @@
 
 #define PI 3.14159f
 
-// Variables from java ======
-
-// Parameters ======
-#define PARAM_BUBBLE_WIDTH              0
-#define PARAM_BUBBLE_HEIGHT             1
-#define PARAM_BUBBLE_BITMAP_WIDTH       2
-#define PARAM_BUBBLE_BITMAP_HEIGHT      3
-#define PARAM_SCROLL_HANDLE_ID          4
-#define PARAM_SCROLL_HANDLE_TEX_WIDTH   5
-#define PARAM_SCROLL_HANDLE_TEX_HEIGHT  6
-
-// State ======
-#define STATE_ICON_COUNT                0
-#define STATE_SCROLL_X                  1
-#define STATE_FLING_TIME                2
-#define STATE_FLING_VELOCITY_X          3
-#define STATE_ADJUSTED_DECELERATION     4
-
-/* with fling offset applied */
-#define STATE_CURRENT_SCROLL_X          5
-
-#define STATE_FLING_DURATION            6
-#define STATE_FLING_END_POS             7
-
-#define STATE_START_SCROLL_X            8
-#define STATE_SELECTED_ICON_INDEX       9
-#define STATE_SELECTED_ICON_TEXTURE     10
-
-#define STATE_VISIBLE                   11
-#define STATE_ZOOM                      12
+float deceleration;
 
 // Drawing constants, should be parameters ======
 #define VIEW_ANGLE 1.28700222f
+
+void init() {
+    deceleration = 0;
+}
 
 int g_lastFrameTime = 0;
 void print_frame_rate()
@@ -78,7 +53,7 @@ draw_page(int icon, int lastIcon, float centerAngle)
     int row;
     int col;
 
-    float scale = 1.0f - loadI32(ALLOC_STATE, STATE_ZOOM)/100000.0f;
+    float scale = 1.0f - state->zoom;
 
     float iconTextureWidth = ICON_WIDTH_PX / (float)ICON_TEXTURE_WIDTH_PX;
     float iconTextureHeight = ICON_HEIGHT_PX / (float)ICON_TEXTURE_HEIGHT_PX;
@@ -91,16 +66,11 @@ draw_page(int icon, int lastIcon, float centerAngle)
 
     float farIconTextureSize = far_size(2 * ICON_TEXTURE_WIDTH_PX / (float)SCREEN_WIDTH_PX);
 
-    float labelWidthPx = loadI32(ALLOC_PARAMS, PARAM_BUBBLE_WIDTH);
-    float labelHeightPx = loadI32(ALLOC_PARAMS, PARAM_BUBBLE_HEIGHT);
-
-    float normalizedLabelWidth = 2 * labelWidthPx / (float)SCREEN_WIDTH_PX;
+    float normalizedLabelWidth = 2 * params->bubbleWidth / (float)SCREEN_WIDTH_PX;
     float farLabelWidth = far_size(normalizedLabelWidth);
-    float farLabelHeight = far_size(labelHeightPx * (normalizedLabelWidth / labelWidthPx));
-    float labelTextureWidth = labelWidthPx / loadI32(ALLOC_PARAMS, PARAM_BUBBLE_BITMAP_WIDTH);
-    float labelTextureHeight = labelHeightPx / loadI32(ALLOC_PARAMS, PARAM_BUBBLE_BITMAP_HEIGHT);
-
-    int selectedIconIndex = loadI32(ALLOC_STATE, STATE_SELECTED_ICON_INDEX);
+    float farLabelHeight = far_size(params->bubbleHeight * (normalizedLabelWidth / params->bubbleWidth));
+    float labelTextureWidth = (float)params->bubbleWidth / params->bubbleBitmapWidth;
+    float labelTextureHeight = (float)params->bubbleHeight / params->bubbleBitmapHeight;
 
     for (row=0; row<ROWS_PER_PAGE && icon<=lastIcon; row++) {
         float angle = centerAngle;
@@ -131,8 +101,8 @@ draw_page(int icon, int lastIcon, float centerAngle)
             float iconLeftZ = centerZ + (sine * farIconTextureSize * .5);
             float iconRightZ = centerZ - (sine * farIconTextureSize * .5);
 
-            if (selectedIconIndex == icon) {
-                bindTexture(NAMED_PF, 0, loadI32(ALLOC_STATE, STATE_SELECTED_ICON_TEXTURE));
+            if (state->selectedIconIndex == icon) {
+                bindTexture(NAMED_PF, 0, state->selectedIconTexture);
                 drawQuadTexCoords(
                         iconLeftX, iconTextureTop, iconLeftZ,       0.0f, 0.0f,
                         iconRightX, iconTextureTop, iconRightZ,     1.0f, 0.0f,
@@ -173,15 +143,15 @@ main(int launchID)
     pfClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
     // If we're not supposed to be showing, don't do anything.
-    if (!loadI32(ALLOC_STATE, STATE_VISIBLE)) {
+    if (!state->visible) {
         return 0;
     }
 
     // icons & labels
-    int iconCount = loadI32(ALLOC_STATE, STATE_ICON_COUNT);
+    int iconCount = state->iconCount;
     int pageCount = count_pages(iconCount);
 
-    float scrollXPx = loadI32(ALLOC_STATE, STATE_SCROLL_X);
+    float scrollXPx = state->scrollX;
     float maxScrollXPx = -(pageCount-1) * SCREEN_WIDTH_PX;
     int done = 0;
 
@@ -194,11 +164,10 @@ main(int launchID)
     }
 
     // If we've been given a velocity, start a fling
-    float flingVelocityPxMs = loadI32(ALLOC_STATE, STATE_FLING_VELOCITY_X);
+    float flingVelocityPxMs = state->flingVelocityX;
     if (flingVelocityPxMs != 0) {
         // how many screens will this velocity do? TODO: use long
         // G * ppi * friction // why G? // friction = 0.015
-        float deceleration = loadF(ALLOC_STATE, STATE_ADJUSTED_DECELERATION);
         float flingDurationMs;
         if (deceleration == 0) {
             // On the first frame, calculate which animation we're going to do.  If it's
@@ -264,18 +233,16 @@ main(int launchID)
             endPos = scrollXPx + (flingVelocityPxMs*flingDurationMs)
                     + ((deceleration*flingDurationMs*flingDurationMs)/2);
 
-            storeF(ALLOC_STATE, STATE_ADJUSTED_DECELERATION, deceleration);
-            storeF(ALLOC_STATE, STATE_FLING_DURATION, flingDurationMs);
-            storeF(ALLOC_STATE, STATE_FLING_END_POS, endPos);
+            state->flingDuration = flingDurationMs;
+            state->flingEndPos = endPos;
         } else {
-            flingDurationMs = loadF(ALLOC_STATE, STATE_FLING_DURATION);
+            flingDurationMs = state->flingDuration;
         }
 
         // adjust the deceleration so we always hit a page boundary
 
-        int flingTime = loadI32(ALLOC_STATE, STATE_FLING_TIME);
         int now = uptimeMillis();
-        float elapsedTime = (now - flingTime) / 1000.0f;
+        float elapsedTime = (now - state->flingTimeMs) / 1000.0f;
         int animEndTime = -flingVelocityPxMs / deceleration;
 
         int flingOffsetPx = (flingVelocityPxMs * elapsedTime)
@@ -283,7 +250,7 @@ main(int launchID)
         scrollXPx += flingOffsetPx;
 
         if (elapsedTime > flingDurationMs) {
-            scrollXPx = loadF(ALLOC_STATE, STATE_FLING_END_POS);
+            scrollXPx = state->flingEndPos;
             done = 1;
         }
     } else {
@@ -297,12 +264,12 @@ main(int launchID)
     if (scrollXPx < maxScrollXPx) {
         scrollXPx = maxScrollXPx;
     }
-    
-    storeI32(ALLOC_STATE, STATE_CURRENT_SCROLL_X, scrollXPx);
+
+    state->currentScrollX = scrollXPx;
     if (done) {
-        storeI32(ALLOC_STATE, STATE_SCROLL_X, scrollXPx);
-        storeI32(ALLOC_STATE, STATE_FLING_VELOCITY_X, 0);
-        storeF(ALLOC_STATE, STATE_ADJUSTED_DECELERATION, 0);
+        state->scrollX = scrollXPx;
+        state->flingVelocityX = 0;
+        deceleration = 0.f;
     }
 
     // Draw the icons ========================================
@@ -324,7 +291,7 @@ main(int launchID)
 
     draw_page(icon, lastIcon, -VIEW_ANGLE*currentPagePosition);
     draw_page(icon+iconsPerPage, lastIcon, (-VIEW_ANGLE*currentPagePosition)+VIEW_ANGLE);
-    
+
     // Draw the border lines for debugging ========================================
     /*
     bindProgramVertex(NAMED_PVOrtho);
