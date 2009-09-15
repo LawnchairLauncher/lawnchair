@@ -138,14 +138,14 @@ draw_page(int icon, int lastIcon, float centerAngle)
                         iconRightX, iconTextureTop, iconRightZ,     1.0f, 0.0f,
                         iconRightX, iconTextureBottom, iconRightZ,  1.0f, 1.0f,
                         iconLeftX, iconTextureBottom, iconLeftZ,    0.0f, 1.0f);
+            } else {
+                bindTexture(NAMED_PF, 0, loadI32(ALLOC_ICON_IDS, icon));
+                drawQuadTexCoords(
+                        iconLeftX, iconTextureTop, iconLeftZ,       0.0f, 0.0f,
+                        iconRightX, iconTextureTop, iconRightZ,     1.0f, 0.0f,
+                        iconRightX, iconTextureBottom, iconRightZ,  1.0f, 1.0f,
+                        iconLeftX, iconTextureBottom, iconLeftZ,    0.0f, 1.0f);
             }
-
-            bindTexture(NAMED_PF, 0, loadI32(ALLOC_ICON_IDS, icon));
-            drawQuadTexCoords(
-                    iconLeftX, iconTextureTop, iconLeftZ,       0.0f, 0.0f,
-                    iconRightX, iconTextureTop, iconRightZ,     1.0f, 0.0f,
-                    iconRightX, iconTextureBottom, iconRightZ,  1.0f, 1.0f,
-                    iconLeftX, iconTextureBottom, iconLeftZ,    0.0f, 1.0f);
 
             // label
             if (scale <= 0.1f) {
