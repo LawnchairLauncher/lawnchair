@@ -16,7 +16,7 @@
 
 package com.android.launcher2;
 
-import android.app.LauncherActivity;
+import android.app.Activity;
 import android.app.ListActivity;
 import android.app.WallpaperManager;
 import android.content.ComponentName;
@@ -24,10 +24,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.ComponentInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
 import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -39,8 +41,14 @@ import android.service.wallpaper.IWallpaperEngine;
 import android.service.wallpaper.IWallpaperService;
 import android.service.wallpaper.WallpaperService;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.Gallery;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import java.text.Collator;
@@ -53,8 +61,11 @@ import java.util.Comparator;
  * Displays a list of live wallpapers, allowing the user to select one
  * and make it the system global wallpaper.
  */
-public class LiveWallpaperPickActivity extends LauncherActivity
-        implements View.OnClickListener {
+public class LiveWallpaperPickActivity 
+    extends Activity
+    implements AdapterView.OnItemSelectedListener,
+               View.OnClickListener
+{
     private static final String TAG = "LiveWallpaperPickActivity";
 
     private PackageManager mPackageManager;
@@ -62,7 +73,13 @@ public class LiveWallpaperPickActivity extends LauncherActivity
     
     Intent mSelectedIntent;
     WallpaperConnection mWallpaperConnection;
-    
+ 
+    private Gallery mGallery;
+
+    private ArrayList<Intent> mWallpaperIntents;
+ 
+    private ArrayList<Bitmap> mThumbBitmaps;
+
     class WallpaperConnection extends IWallpaperConnection.Stub
             implements ServiceConnection {
         final Intent mIntent;
@@ -145,17 +162,98 @@ public class LiveWallpaperPickActivity extends LauncherActivity
             return null;
         }
     }
-    
+
+    private class ImageAdapter extends BaseAdapter {
+        private LayoutInflater mLayoutInflater;
+
+        ImageAdapter(LiveWallpaperPickActivity context) {
+            mLayoutInflater = context.getLayoutInflater();
+        }
+
+        public int getCount() {
+            return mThumbBitmaps.size();
+        }
+
+        public Object getItem(int position) {
+            return position;
+        }
+
+        public long getItemId(int position) {
+            return position;
+        }
+
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ImageView image;
+           
+            if (convertView == null) {
+                image = (ImageView) mLayoutInflater.inflate(R.layout.wallpaper_item, parent, false);
+            } else {
+                image = (ImageView) convertView;
+            }
+          
+            image.setImageBitmap(mThumbBitmaps.get(position));
+            image.getDrawable().setDither(true);
+            return image;
+        }
+    }
+
+
+    private void findLiveWallpapers() {
+        mThumbBitmaps = new ArrayList<Bitmap>(24);
+        List<ResolveInfo> list = 
+            mPackageManager.queryIntentServices(getTargetIntent(),
+                                                  /*noflags*/ 0);
+        
+        mWallpaperIntents = new ArrayList<Intent>(list.size());
+        
+        int listSize = list.size();
+        Log.d(TAG, String.format("findLiveWallpapers: found %d wallpaper services", listSize));
+        for (int i = 0; i < listSize; i++) {
+            ResolveInfo resolveInfo = list.get(i);
+            ComponentInfo ci = resolveInfo.serviceInfo;
+            String packageName = ci.applicationInfo.packageName;
+            String className = ci.name;
+            Log.d(TAG, String.format("findLiveWallpapers: [%d] pkg=%s cls=%s",
+                i, packageName, className));
+            Intent intent = new Intent(getTargetIntent());
+            intent.setClassName(packageName, className);
+            mWallpaperIntents.add(intent);
+
+            Bitmap thumb = Bitmap.createBitmap(240,160,Bitmap.Config.ARGB_8888);
+            android.graphics.Canvas can = new android.graphics.Canvas(thumb);
+            android.graphics.Paint pt = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG|android.graphics.Paint.DITHER_FLAG);
+            pt.setARGB(255, 0, 0, 255);
+            can.drawPaint(pt);
+            pt.setARGB(255, 255, 255, 255);
+            pt.setTextSize(12);
+            can.drawText(className, 16, 150, pt);
+            pt.setTextSize(80);
+            can.drawText(String.format("%d", i), 100,100, pt);
+            mThumbBitmaps.add(thumb);
+        }
+
+
+    }
+
     
     @Override
     public void onCreate(Bundle icicle) {
+        super.onCreate(icicle);
+
         mPackageManager = getPackageManager();
         mWallpaperManager = WallpaperManager.getInstance(this);
         
-        super.onCreate(icicle);
+        findLiveWallpapers();
+
+        setContentView(R.layout.live_wallpaper_content);
         
+        mGallery = (Gallery) findViewById(R.id.gallery);
+        mGallery.setAdapter(new ImageAdapter(this));
+        mGallery.setOnItemSelectedListener(this);
+        mGallery.setCallbackDuringFling(false);
+
         View button = findViewById(R.id.set);
-        button.setEnabled(false);
+//        button.setEnabled(false);
         button.setOnClickListener(this);
         
         // Set default return data
@@ -193,24 +291,14 @@ public class LiveWallpaperPickActivity extends LauncherActivity
         mWallpaperConnection = null;
     }
     
-    @Override
-    protected void onSetContentView() {
-        setContentView(R.layout.live_wallpaper_content);
-    }
-    
-    @Override
     protected Intent getTargetIntent() {
         return new Intent(WallpaperService.SERVICE_INTERFACE);
     }
     
-    @Override
-    protected List<ResolveInfo> onQueryPackageManager(Intent queryIntent) {
-        return mPackageManager.queryIntentServices(queryIntent, /* no flags */ 0);
-    }
-    
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        mSelectedIntent = intentForPosition(position);
+    public void onItemSelected(AdapterView parent, View v, int position, long id) {
+        Log.d(TAG, String.format("onItemSelected: position=%d", position));
+
+        mSelectedIntent = mWallpaperIntents.get(position);
         findViewById(R.id.set).setEnabled(true);
         
         WallpaperConnection conn = new WallpaperConnection(mSelectedIntent);
@@ -222,7 +310,10 @@ public class LiveWallpaperPickActivity extends LauncherActivity
         }
     }
     
-    public void onClick(View v) {
+    public void onClick(View v) { // "Set" button
+        Log.d(TAG, "Set clicked");
+
+//        mSelectedIntent = mWallpaperIntents.get(mGallery.getSelectedItemPosition());
         if (mSelectedIntent != null) {
             try {
                 mWallpaperManager.getIWallpaperManager().setWallpaperComponent(
@@ -236,4 +327,8 @@ public class LiveWallpaperPickActivity extends LauncherActivity
             finish();
         }
     }
+
+    public void onNothingSelected(AdapterView parent) {
+    }
+
 }
