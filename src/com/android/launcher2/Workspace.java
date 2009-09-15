@@ -495,10 +495,12 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             if (scale < 0.999f) {
                 int w = getWidth();
                 w += 2 * mCurrentScreen * w;
+                int dx = w/2;
                 int h = getHeight();
-                canvas.translate(w/2, h/2);
+                int dy = (h/2) - (h/4);
+                canvas.translate(dx, dy);
                 canvas.scale(scale, scale);
-                canvas.translate(-w/2, -h/2);
+                canvas.translate(-dx, -dy);
             }
         }
 

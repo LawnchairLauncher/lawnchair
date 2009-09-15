@@ -98,6 +98,7 @@ draw_page(int icon, int lastIcon, float centerAngle)
 
         float iconTop = (farIconSize + iconGutterHeight) * (2.0f + ICON_TOP_OFFSET)
                 - row * (farIconSize + iconGutterHeight);
+        iconTop -= 6 * scale; // make the zoom point below center
         float iconBottom = iconTop - farIconSize;
 
         float labelTop = iconBottom - (.1 * farLabelHeight);
@@ -113,7 +114,7 @@ draw_page(int icon, int lastIcon, float centerAngle)
 
             float centerX = sine * RADIUS;
             float centerZ = cosine * RADIUS;
-            centerZ -= (7*scale);
+            centerZ -= ((RADIUS+2+1)*scale); // 2 is camera loc, 1 put it slightly behind that.
 
             float iconLeftX = centerX  - (cosine * farIconTextureSize * .5);
             float iconRightX = centerX + (cosine * farIconTextureSize * .5);
