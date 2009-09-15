@@ -43,6 +43,8 @@ import android.content.Context;
 final class Utilities {
     private static final String TAG = "Launcher.Utilities";
 
+    private static final boolean TEXT_BURN = false;
+
     private static int sIconWidth = -1;
     private static int sIconHeight = -1;
     private static int sIconTextureWidth = -1;
@@ -379,7 +381,9 @@ final class Utilities {
             textPaint.setTextSize(13*scale);
             textPaint.setColor(0xffffffff);
             textPaint.setAntiAlias(true);
-            //textPaint.setShadowLayer(8, 0, 0, 0xff000000);
+            if (TEXT_BURN) {
+                textPaint.setShadowLayer(8, 0, 0, 0xff000000);
+            }
 
             float ascent = -textPaint.ascent();
             float descent = textPaint.descent();
@@ -407,7 +411,7 @@ final class Utilities {
             if (lineCount > MAX_LINES) {
                 lineCount = MAX_LINES;
             }
-            if (lineCount > 0) {
+            if (!TEXT_BURN && lineCount > 0) {
                 RectF bubbleRect = mBubbleRect;
                 bubbleRect.bottom = height(lineCount);
                 c.drawRoundRect(bubbleRect, mCornerRadius, mCornerRadius, mRectPaint);
