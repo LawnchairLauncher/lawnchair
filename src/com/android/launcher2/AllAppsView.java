@@ -66,6 +66,7 @@ public class AllAppsView extends RSSurfaceView
 
     private Launcher mLauncher;
     private DragController mDragController;
+    private boolean mLocked = true;
 
     private RenderScript mRS;
     private RolloRS mRollo;
@@ -163,11 +164,15 @@ public class AllAppsView extends RSSurfaceView
     @Override
     public boolean onTouchEvent(MotionEvent ev)
     {
-        super.onTouchEvent(ev);
-
         if (mRollo.mState.visible == 0) {
-            return false;
+            return true;
         }
+
+        if (mLocked) {
+            return true;
+        }
+
+        super.onTouchEvent(ev);
 
         mTouchHandler = mFlingHandler;
         /*
@@ -287,15 +292,31 @@ public class AllAppsView extends RSSurfaceView
     public void onDropCompleted(View target, boolean success) {
     }
 
+    private static final int SCALE_SCALE = 100000;
+
     public void show() {
         mRollo.mState.read();
         mRollo.mState.visible = 1;
+        mRollo.mState.zoom = SCALE_SCALE;
         mRollo.mState.save();
     }
 
-    public void hide(boolean animate) {
+    public void setScale(float amount) {
+        mRollo.mState.read();
+        if (amount > 0.001f) {
+            mRollo.mState.visible = 1;
+            mRollo.mState.zoom = (int)(SCALE_SCALE*amount);
+        } else {
+            mRollo.mState.visible = 0;
+            mRollo.mState.zoom = 0;
+        }
+        mRollo.mState.save();
+    }
+
+    public void hide() {
         mRollo.mState.read();
         mRollo.mState.visible = 0;
+        mRollo.mState.zoom = 0;
         mRollo.mState.save();
     }
 
@@ -341,6 +362,7 @@ public class AllAppsView extends RSSurfaceView
         }
         mPageCount = countPages(list.size());
         Log.d(TAG, "setApps mRollo=" + mRollo + " list=" + list);
+        mLocked = false;
     }
 
     private void invokeIcon(int index) {
@@ -427,6 +449,7 @@ public class AllAppsView extends RSSurfaceView
             @AllocationIndex(9) public int selectedIconIndex = -1;
             @AllocationIndex(10) public int selectedIconTexture;
             @AllocationIndex(11) public int visible;
+            @AllocationIndex(12) public int zoom;
         }
 
         public RolloRS() {

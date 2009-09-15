@@ -48,39 +48,29 @@
 
     </com.android.launcher2.Workspace>
 
-    <LinearLayout
-        android:id="@+id/buttons"
-        android:layout_width="fill_parent"
-        android:layout_height="56dip"
-        android:layout_gravity="bottom"
+    <com.android.launcher2.HandleView
+        android:id="@+id/all_apps_button"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/button_bar_height"
+        android:layout_gravity="bottom|center_horizontal"
 
-        android:gravity="right"
-        >
+        android:focusable="true"
+        android:clickable="true"
 
-        <com.android.launcher2.HandleView
-            android:id="@+id/all_apps_button"
-            android:layout_width="@dimen/button_bar_height"
-            android:layout_height="@dimen/button_bar_height"
-
-            android:focusable="true"
-            android:clickable="true"
-
-            android:scaleType="center"
-            android:src="@drawable/all_apps_button"
-
-            launcher:direction="horizontal" />
-    </LinearLayout>
+        android:scaleType="center"
+        android:src="@drawable/all_apps_button"
+        launcher:direction="horizontal" />
 
     <com.android.launcher2.DeleteZone
         android:id="@+id/delete_zone"
         android:layout_width="wrap_content"
         android:layout_height="49dip"
+        android:layout_gravity="bottom|center_horizontal"
 
         android:scaleType="center"
         android:src="@drawable/ic_delete"
         android:background="@drawable/delete_zone_selector"
 
-        android:layout_gravity="bottom|center_horizontal"
         android:visibility="invisible"
         
         launcher:direction="horizontal" />
