@@ -16,8 +16,11 @@
 
 package com.android.launcher2;
 
+import org.xmlpull.v1.XmlPullParserException;
+
 import android.app.Activity;
 import android.app.ListActivity;
+import android.app.WallpaperInfo;
 import android.app.WallpaperManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -40,6 +43,7 @@ import android.service.wallpaper.IWallpaperConnection;
 import android.service.wallpaper.IWallpaperEngine;
 import android.service.wallpaper.IWallpaperService;
 import android.service.wallpaper.WallpaperService;
+import android.service.wallpaper.WallpaperSettingsActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,10 +51,12 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import java.io.IOException;
 import java.text.Collator;
 import java.util.List;
 import java.util.ArrayList;
@@ -72,11 +78,14 @@ public class LiveWallpaperPickActivity
     private WallpaperManager mWallpaperManager;
     
     Intent mSelectedIntent;
+    WallpaperInfo mSelectedInfo;
     WallpaperConnection mWallpaperConnection;
  
     private Gallery mGallery;
-
+    private Button mConfigureButton;
+    
     private ArrayList<Intent> mWallpaperIntents;
+    private ArrayList<WallpaperInfo> mWallpaperInfos;
  
     private ArrayList<Bitmap> mThumbBitmaps;
 
@@ -201,16 +210,27 @@ public class LiveWallpaperPickActivity
     private void findLiveWallpapers() {
         mThumbBitmaps = new ArrayList<Bitmap>(24);
         List<ResolveInfo> list = 
-            mPackageManager.queryIntentServices(getTargetIntent(),
-                                                  /*noflags*/ 0);
+                mPackageManager.queryIntentServices(getTargetIntent(),
+                        PackageManager.GET_META_DATA);
         
         mWallpaperIntents = new ArrayList<Intent>(list.size());
+        mWallpaperInfos = new ArrayList<WallpaperInfo>(list.size());
         
         int listSize = list.size();
         Log.d(TAG, String.format("findLiveWallpapers: found %d wallpaper services", listSize));
         for (int i = 0; i < listSize; i++) {
             ResolveInfo resolveInfo = list.get(i);
             ComponentInfo ci = resolveInfo.serviceInfo;
+            WallpaperInfo winfo;
+            try {
+                winfo = new WallpaperInfo(this, resolveInfo);
+            } catch (XmlPullParserException e) {
+                Log.w(TAG, "Skipping wallpaper " + ci, e);
+                continue;
+            } catch (IOException e) {
+                Log.w(TAG, "Skipping wallpaper " + ci, e);
+                continue;
+            }
             String packageName = ci.applicationInfo.packageName;
             String className = ci.name;
             Log.d(TAG, String.format("findLiveWallpapers: [%d] pkg=%s cls=%s",
@@ -218,6 +238,7 @@ public class LiveWallpaperPickActivity
             Intent intent = new Intent(getTargetIntent());
             intent.setClassName(packageName, className);
             mWallpaperIntents.add(intent);
+            mWallpaperInfos.add(winfo);
 
             Bitmap thumb = Bitmap.createBitmap(240,160,Bitmap.Config.ARGB_8888);
             android.graphics.Canvas can = new android.graphics.Canvas(thumb);
@@ -253,9 +274,12 @@ public class LiveWallpaperPickActivity
         mGallery.setCallbackDuringFling(false);
 
         View button = findViewById(R.id.set);
-//        button.setEnabled(false);
         button.setOnClickListener(this);
         
+        mConfigureButton = (Button)findViewById(R.id.configure);
+        mConfigureButton.setEnabled(false);
+        mConfigureButton.setOnClickListener(this);
+      
         // Set default return data
         setResult(RESULT_CANCELED);
     }
@@ -299,6 +323,9 @@ public class LiveWallpaperPickActivity
         Log.d(TAG, String.format("onItemSelected: position=%d", position));
 
         mSelectedIntent = mWallpaperIntents.get(position);
+        mSelectedInfo = mWallpaperInfos.get(position);
+        mConfigureButton.setEnabled(mSelectedInfo != null
+                && mSelectedInfo.getSettingsActivity() != null);
         findViewById(R.id.set).setEnabled(true);
         
         WallpaperConnection conn = new WallpaperConnection(mSelectedIntent);
@@ -314,17 +341,27 @@ public class LiveWallpaperPickActivity
         Log.d(TAG, "Set clicked");
 
 //        mSelectedIntent = mWallpaperIntents.get(mGallery.getSelectedItemPosition());
-        if (mSelectedIntent != null) {
-            try {
-                mWallpaperManager.getIWallpaperManager().setWallpaperComponent(
-                        mSelectedIntent.getComponent());
-                this.setResult(RESULT_OK);
-            } catch (RemoteException e) {
-                // do nothing
-            } catch (RuntimeException e) {
-                Log.w(TAG, "Failure setting wallpaper", e);
+        if (v.getId() == R.id.set) {
+            if (mSelectedIntent != null) {
+                try {
+                    mWallpaperManager.getIWallpaperManager().setWallpaperComponent(
+                            mSelectedIntent.getComponent());
+                    this.setResult(RESULT_OK);
+                } catch (RemoteException e) {
+                    // do nothing
+                } catch (RuntimeException e) {
+                    Log.w(TAG, "Failure setting wallpaper", e);
+                }
+                finish();
             }
-            finish();
+        } else if (v.getId() == R.id.configure) {
+            if (mSelectedInfo != null && mSelectedInfo.getSettingsActivity() != null) {
+                Intent intent = new Intent();
+                intent.setComponent(new ComponentName(mSelectedInfo.getPackageName(),
+                        mSelectedInfo.getSettingsActivity()));
+                intent.putExtra(WallpaperSettingsActivity.EXTRA_PREVIEW_MODE, true);
+                startActivity(intent);
+            }
         }
     }
 
