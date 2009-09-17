@@ -130,6 +130,7 @@ public class AllAppsView extends RSSurfaceView
         mConfig = ViewConfiguration.get(context);
         setOnClickListener(this);
         setOnLongClickListener(this);
+        setOnTop(true);
     }
 
     public AllAppsView(Context context, AttributeSet attrs, int defStyle) {
