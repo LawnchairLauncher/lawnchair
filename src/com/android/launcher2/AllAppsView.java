@@ -64,9 +64,18 @@ public class AllAppsView extends RSSurfaceView
         implements View.OnClickListener, View.OnLongClickListener, DragSource {
     private static final String TAG = "Launcher.AllAppsView";
 
+    /** Bit for mLocks for when there are icons being loaded. */
+    private static final int LOCK_ICONS_PENDING = 1;
+
+    /** Bit for mLocks for when the enter/exit is going. */
+    private static final int LOCK_ZOOMING = 2;
+
     private Launcher mLauncher;
     private DragController mDragController;
-    private boolean mLocked = true;
+
+    /** When this is 0, modifications are allowed, when it's not, they're not.
+     * TODO: What about scrolling? */
+    private int mLocks = LOCK_ICONS_PENDING;
 
     private RenderScript mRS;
     private RolloRS mRollo;
@@ -80,7 +89,6 @@ public class AllAppsView extends RSSurfaceView
     private int mLastMotionX;
     private int mMotionDownRawX;
     private int mMotionDownRawY;
-    private TouchHandler mTouchHandler;
     private int mScrollHandleTop;
 
     static class Defines {
@@ -168,95 +176,74 @@ public class AllAppsView extends RSSurfaceView
             return true;
         }
 
-        if (mLocked) {
+        if (mLocks != 0) {
             return true;
         }
 
         super.onTouchEvent(ev);
 
-        mTouchHandler = mFlingHandler;
-        /*
-        int action = ev.getAction();
-        if (action == MotionEvent.ACTION_DOWN) {
-            if (ev.getY() > mScrollHandleTop) {
-                mTouchHandler = mScrollHandler;
+        int x = (int)ev.getX();
+        int deltaX;
+        switch (ev.getAction()) {
+        case MotionEvent.ACTION_DOWN:
+            mMotionDownRawX = (int)ev.getRawX();
+            mMotionDownRawY = (int)ev.getRawY();
+            mLastMotionX = x;
+            mRollo.mState.read();
+            mRollo.mState.startScrollX = mRollo.mState.scrollX = mLastScrollX
+                    = mRollo.mState.currentScrollX;
+            if (mRollo.mState.flingVelocityX != 0) {
+                mRollo.clearSelectedIcon();
             } else {
-                mTouchHandler = mFlingHandler;
+                mRollo.selectIcon(x, (int)ev.getY(), mRollo.mState.startScrollX,
+                        (-mRollo.mState.startScrollX / Defines.SCREEN_WIDTH_PX));
             }
+            mRollo.mState.flingVelocityX = 0;
+            mRollo.mState.adjustedDeceleration = 0;
+            mRollo.mState.save();
+            mVelocity = VelocityTracker.obtain();
+            mVelocity.addMovement(ev);
+            mStartedScrolling = false;
+            break;
+        case MotionEvent.ACTION_MOVE:
+        case MotionEvent.ACTION_OUTSIDE:
+            int slop = Math.abs(x - mLastMotionX);
+            if (!mStartedScrolling && slop < mConfig.getScaledTouchSlop()) {
+                // don't update mLastMotionX so slop is right and when we do start scrolling
+                // below, we get the right delta.
+            } else {
+                mStartedScrolling = true;
+                mRollo.clearSelectedIcon();
+                deltaX = x - mLastMotionX;
+                mVelocity.addMovement(ev);
+                mRollo.mState.currentScrollX = mLastScrollX;
+                mLastScrollX += deltaX;
+                mRollo.mState.scrollX = mLastScrollX;
+                mRollo.mState.save();
+                mLastMotionX = x;
+            }
+            break;
+        case MotionEvent.ACTION_UP:
+        case MotionEvent.ACTION_CANCEL:
+            mVelocity.computeCurrentVelocity(1000 /* px/sec */,
+                    mConfig.getScaledMaximumFlingVelocity());
+            mRollo.mState.flingTimeMs = (int)SystemClock.uptimeMillis(); // TODO: use long
+            mRollo.mState.flingVelocityX = (int)mVelocity.getXVelocity();
+            mRollo.clearSelectedIcon();
+            mRollo.mState.save();
+            mLastMotionX = -10000;
+            mVelocity.recycle();
+            mVelocity = null;
+            break;
         }
-        */
-        mTouchHandler.onTouchEvent(ev);
 
         return true;
     }
 
-    private abstract class TouchHandler {
-        abstract boolean onTouchEvent(MotionEvent ev);
-    };
-
-    private TouchHandler mFlingHandler = new TouchHandler() {
-        @Override
-        public boolean onTouchEvent(MotionEvent ev)
-        {
-            int x = (int)ev.getX();
-            int deltaX;
-            switch (ev.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    mMotionDownRawX = (int)ev.getRawX();
-                    mMotionDownRawY = (int)ev.getRawY();
-                    mLastMotionX = x;
-                    mRollo.mState.read();
-                    mRollo.mState.startScrollX = mRollo.mState.scrollX = mLastScrollX
-                            = mRollo.mState.currentScrollX;
-                    if (mRollo.mState.flingVelocityX != 0) {
-                        mRollo.clearSelectedIcon();
-                    } else {
-                        mRollo.selectIcon(x, (int)ev.getY(), mRollo.mState.startScrollX,
-                                (-mRollo.mState.startScrollX / Defines.SCREEN_WIDTH_PX));
-                    }
-                    mRollo.mState.flingVelocityX = 0;
-                    mRollo.mState.adjustedDeceleration = 0;
-                    mRollo.mState.save();
-                    mVelocity = VelocityTracker.obtain();
-                    mVelocity.addMovement(ev);
-                    mStartedScrolling = false;
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                case MotionEvent.ACTION_OUTSIDE:
-                    int slop = Math.abs(x - mLastMotionX);
-                    if (!mStartedScrolling && slop < mConfig.getScaledTouchSlop()) {
-                        // don't update mLastMotionX so slop is right and when we do start scrolling
-                        // below, we get the right delta.
-                    } else {
-                        mStartedScrolling = true;
-                        mRollo.clearSelectedIcon();
-                        deltaX = x - mLastMotionX;
-                        mVelocity.addMovement(ev);
-                        mRollo.mState.currentScrollX = mLastScrollX;
-                        mLastScrollX += deltaX;
-                        mRollo.mState.scrollX = mLastScrollX;
-                        mRollo.mState.save();
-                        mLastMotionX = x;
-                    }
-                    break;
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                    mVelocity.computeCurrentVelocity(1000 /* px/sec */,
-                            mConfig.getScaledMaximumFlingVelocity());
-                    mRollo.mState.flingTimeMs = (int)SystemClock.uptimeMillis(); // TODO: use long
-                    mRollo.mState.flingVelocityX = (int)mVelocity.getXVelocity();
-                    mRollo.clearSelectedIcon();
-                    mRollo.mState.save();
-                    mLastMotionX = -10000;
-                    mVelocity.recycle();
-                    mVelocity = null;
-                    break;
-            }
-            return true;
-        }
-    };
-
     public void onClick(View v) {
+        if (mLocks != 0) {
+            return;
+        }
         int index = mRollo.mState.selectedIconIndex;
         if (mRollo.mState.flingVelocityX == 0 && index >= 0 && index < mAllAppsList.size()) {
             ApplicationInfo app = mAllAppsList.get(index);
@@ -265,6 +252,9 @@ public class AllAppsView extends RSSurfaceView
     }
 
     public boolean onLongClick(View v) {
+        if (mLocks != 0) {
+            return true;
+        }
         int index = mRollo.mState.selectedIconIndex;
         Log.d(TAG, "long click! velocity=" + mRollo.mState.flingVelocityX + " index=" + index);
         if (mRollo.mState.flingVelocityX == 0 && index >= 0 && index < mAllAppsList.size()) {
@@ -280,7 +270,7 @@ public class AllAppsView extends RSSurfaceView
                     left, top, Defines.ICON_WIDTH_PX, Defines.ICON_HEIGHT_PX,
                     this, app, DragController.DRAG_ACTION_COPY);
 
-            mLauncher.closeAllAppsDialog(true);
+            mLauncher.closeAllApps(true);
         }
         return true;
     }
@@ -294,15 +284,10 @@ public class AllAppsView extends RSSurfaceView
 
     private static final int SCALE_SCALE = 100000;
 
-    public void show() {
-        mRollo.mState.read();
-        mRollo.mState.visible = 1;
-        mRollo.mState.zoom = SCALE_SCALE;
-        mRollo.mState.save();
-    }
-
     public void setScale(float amount) {
+        cancelLongPress();
         mRollo.mState.read();
+        mRollo.clearSelectedIcon();
         if (amount > 0.001f) {
             mRollo.mState.visible = 1;
             mRollo.mState.zoom = (int)(SCALE_SCALE*amount);
@@ -310,37 +295,21 @@ public class AllAppsView extends RSSurfaceView
             mRollo.mState.visible = 0;
             mRollo.mState.zoom = 0;
         }
-        mRollo.mState.save();
-    }
-
-    public void hide() {
-        mRollo.mState.read();
-        mRollo.mState.visible = 0;
-        mRollo.mState.zoom = 0;
-        mRollo.mState.save();
-    }
-
-    /*
-    private TouchHandler mScrollHandler = new TouchHandler() {
-        @Override
-        public boolean onTouchEvent(MotionEvent ev)
-        {
-            int x = (int)ev.getX();
-            int w = getWidth();
-
-            float percent = x / (float)w;
-
-            mRollo.mState.read();
-
-            mRollo.mState.scrollX = mLastScrollX = -(int)(mPageCount * w * percent);
-            mRollo.mState.flingVelocityX = 0;
-            mRollo.mState.adjustedDeceleration = 0;
-            mRollo.mState.save();
-
-            return true;
+        if (amount > 0.001f && amount < 0.999f) {
+            mLocks |= LOCK_ZOOMING;
+        } else {
+            mLocks &= ~LOCK_ZOOMING;
         }
-    };
-    */
+        mRollo.mState.save();
+    }
+
+    public boolean isZooming() {
+        return (mLocks & LOCK_ZOOMING) != 0;
+    }
+
+    public boolean isVisible() {
+        return mRollo != null && mRollo.mState.visible != 0;
+    }
 
     @Override
     public boolean onTrackballEvent(MotionEvent ev)
@@ -362,7 +331,7 @@ public class AllAppsView extends RSSurfaceView
         }
         mPageCount = countPages(list.size());
         Log.d(TAG, "setApps mRollo=" + mRollo + " list=" + list);
-        mLocked = false;
+        mLocks &= ~LOCK_ICONS_PENDING;
     }
 
     private void invokeIcon(int index) {

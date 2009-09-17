@@ -177,7 +177,6 @@ public final class Launcher extends Activity
     private DeleteZone mDeleteZone;
     private HandleView mHandleView;
     private AllAppsView mAllAppsGrid;
-    private boolean mAllAppsVisible; // if it's visible at all
     private int mMode = MODE_WORKSPACE;
 
     private Bundle mSavedState;
@@ -424,7 +423,7 @@ public final class Launcher extends Activity
     @Override
     protected void onPause() {
         super.onPause();
-        closeAllAppsDialog(false);
+        closeAllApps(false);
     }
 
     @Override
@@ -812,7 +811,7 @@ public final class Launcher extends Activity
                     mWorkspace.moveToDefaultScreen();
                 }
 
-                closeAllAppsDialog(true);
+                closeAllApps(true);
 
                 final View v = getWindow().peekDecorView();
                 if (v != null && v.getWindowToken() != null) {
@@ -821,7 +820,7 @@ public final class Launcher extends Activity
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 }
             } else {
-                closeAllAppsDialog(false);
+                closeAllApps(false);
             }
         }
     }
@@ -853,7 +852,8 @@ public final class Launcher extends Activity
 
         // When the drawer is opened and we are saving the state because of a
         // configuration change
-        if (mAllAppsVisible && isConfigurationChange) {
+        // TODO should not do this if the drawer is currently closing.
+        if (isAllAppsVisible() && isConfigurationChange) {
             outState.putBoolean(RUNTIME_STATE_ALL_APPS_FOLDER, true);
         }
 
@@ -906,7 +906,7 @@ public final class Launcher extends Activity
     public void startSearch(String initialQuery, boolean selectInitialQuery,
             Bundle appSearchData, boolean globalSearch) {
 
-        closeAllAppsDialog(false);
+        closeAllApps(false);
 
         // Slide the search widget to the top, if it's on the current screen,
         // otherwise show the search dialog immediately.
@@ -1282,8 +1282,8 @@ public final class Launcher extends Activity
                 case KeyEvent.KEYCODE_BACK:
                     if (!event.isCanceled()) {
                         mWorkspace.dispatchKeyEvent(event);
-                        if (mAllAppsVisible) {
-                            closeAllAppsDialog(true);
+                        if (isAllAppsVisible()) {
+                            closeAllApps(true);
                         } else {
                             closeFolder();
                         }
@@ -1341,10 +1341,11 @@ public final class Launcher extends Activity
         } else if (tag instanceof FolderInfo) {
             handleFolderClick((FolderInfo) tag);
         } else if (v == mHandleView) {
-            if (mAllAppsVisible) {
-                // TODO how can we be here?
+            Log.d(TAG, "onClick");
+            if (isAllAppsVisible()) {
+                closeAllApps(true);
             } else {
-                showAllAppsDialog();
+                showAllApps(true);
             }
         }
     }
@@ -1451,10 +1452,6 @@ public final class Launcher extends Activity
 
     View getDrawerHandle() {
         return mHandleView;
-    }
-
-    boolean isDrawerDown() { // TODO rename to isAllAppsVisible()
-        return /* TODO !mDrawer.isMoving() && */ !mAllAppsVisible;
     }
 
     Workspace getWorkspace() {
@@ -1605,26 +1602,44 @@ public final class Launcher extends Activity
         }
     }
 
-    void showAllAppsDialog() {
-        mAllAppsVisible = true;
-        mAllAppsGrid.show();
+    boolean isAllAppsVisible() {
+        return mAllAppsGrid.isZooming() || mAllAppsGrid.isVisible();
+    }
+
+    void showAllApps(boolean animated) {
+        if (mMode == MODE_ALL_APPS) {
+            return;
+        }
+
+        mSwipeController.setRange(-1, 0);
+        if (animated) {
+            mSwipeController.animate(-1);
+        } else {
+            mSwipeController.setImmediate(-1);
+        }
+
         mWorkspace.hide();
         
         // TODO: fade these two too
         mDeleteZone.setVisibility(View.GONE);
-        mHandleView.setVisibility(View.GONE);
+        //mHandleView.setVisibility(View.GONE);
     }
 
-    void closeAllAppsDialog(boolean animated) {
-        if (mAllAppsVisible) {
-            mAllAppsGrid.hide();
-            mAllAppsVisible = false;
+    void closeAllApps(boolean animated) {
+        if (mAllAppsGrid.isVisible()) {
+            mSwipeController.setRange(0, 1);
+            if (animated) {
+                mSwipeController.animate(1);
+            } else {
+                mSwipeController.setImmediate(1);
+            }
             mWorkspace.getChildAt(mWorkspace.getCurrentScreen()).requestFocus();
-            mWorkspace.show();
 
             // TODO: fade these two too
+            /*
             mDeleteZone.setVisibility(View.VISIBLE);
             mHandleView.setVisibility(View.VISIBLE);
+            */
         }
     }
 
@@ -1777,6 +1792,7 @@ public final class Launcher extends Activity
         switch (mMode) {
         case MODE_WORKSPACE:
             if (amount == -1) {
+                setWorkspaceAndAllAppsScale(-amount);
                 mWorkspace.clearChildrenCache();
                 mMode = MODE_ALL_APPS;
                 mSwipeController.setRange(0, 1);
@@ -1784,6 +1800,7 @@ public final class Launcher extends Activity
             break;
         case MODE_ALL_APPS:
             if (amount == 1) {
+                setWorkspaceAndAllAppsScale(1-amount);
                 mWorkspace.clearChildrenCache();
                 mMode = MODE_WORKSPACE;
                 mSwipeController.setRange(-1, 0);
@@ -1983,7 +2000,7 @@ public final class Launcher extends Activity
 
             final boolean allApps = mSavedState.getBoolean(RUNTIME_STATE_ALL_APPS_FOLDER, false);
             if (allApps) {
-                showAllAppsDialog();
+                showAllApps(false);
             }
 
             mSavedState = null;

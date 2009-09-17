@@ -600,7 +600,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     @Override
     protected boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
-        if (mLauncher.isDrawerDown()) {
+        if (mLauncher.isAllAppsVisible()) {
             final Folder openFolder = getOpenFolder();
             if (openFolder != null) {
                 return openFolder.requestFocus(direction, previouslyFocusedRect);
@@ -635,7 +635,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     @Override
     public void addFocusables(ArrayList<View> views, int direction, int focusableMode) {
-        if (mLauncher.isDrawerDown()) {
+        if (mLauncher.isAllAppsVisible()) {
             final Folder openFolder = getOpenFolder();
             if (openFolder == null) {
                 getChildAt(mCurrentScreen).addFocusables(views, direction);
@@ -656,7 +656,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (mLauncher.isWorkspaceLocked() || !mLauncher.isDrawerDown()) {
+        if (mLauncher.isWorkspaceLocked() || !mLauncher.isAllAppsVisible()) {
             return false; // We don't want the events.  Let them fall through to the all apps view.
         }
 
@@ -766,7 +766,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
 
-        if (mLauncher.isWorkspaceLocked() || !mLauncher.isDrawerDown()) {
+        if (mLauncher.isWorkspaceLocked() || !mLauncher.isAllAppsVisible()) {
             return false; // We don't want the events.  Let them fall through to the all apps view.
         }
 

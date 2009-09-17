@@ -39,6 +39,16 @@
 // Drawing constants, should be parameters ======
 #define VIEW_ANGLE 1.28700222f
 
+int g_lastFrameTime = 0;
+void print_frame_rate()
+{
+    int now = uptimeMillis();
+    if (g_lastFrameTime != 0) {
+        debugI32("frame_rate", 1000/(now-g_lastFrameTime));
+    }
+    g_lastFrameTime = now;
+}
+
 int
 count_pages(int iconCount)
 {
@@ -138,7 +148,7 @@ draw_page(int icon, int lastIcon, float centerAngle)
                     iconLeftX, iconTextureBottom, iconLeftZ,    0.0f, 1.0f);
 
             // label
-            if (scale <= 1.04f) {
+            if (scale <= 0.1f) {
                 float labelLeftX = centerX - farLabelWidth * 0.5f;
                 float labelRightX = centerX + farLabelWidth * 0.5f;
 
@@ -342,6 +352,8 @@ main(int launchID)
     float handleHeight = loadI32(ALLOC_PARAMS, PARAM_SCROLL_HANDLE_TEX_HEIGHT);
     drawRect(handleLeft, handleTop, handleLeft+handleWidth, handleTop+handleHeight, 0.0f);
     */
+
+    print_frame_rate();
 
     return !done;
 }
