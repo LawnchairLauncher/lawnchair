@@ -20,10 +20,12 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.graphics.Bitmap;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
@@ -39,12 +41,17 @@ import android.content.Context;
  * Various utilities shared amongst the Launcher's classes.
  */
 final class Utilities {
+    private static final String TAG = "Launcher.Utilities";
+
     private static int sIconWidth = -1;
     private static int sIconHeight = -1;
     private static int sIconTextureWidth = -1;
     private static int sIconTextureHeight = -1;
 
     private static final Paint sPaint = new Paint();
+    private static final Paint sBlurPaint = new Paint();
+    private static final Paint sGlowColorPaint = new Paint();
+    private static final Paint sEmptyPaint = new Paint();
     private static final Rect sBounds = new Rect();
     private static final Rect sOldBounds = new Rect();
     private static Canvas sCanvas = new Canvas();
@@ -236,6 +243,32 @@ final class Utilities {
         }
     }
 
+    static void drawSelectedAllAppsBitmap(Canvas dest, int destWidth, int destHeight, Bitmap src) {
+        synchronized (sCanvas) { // we share the statics :-(
+            if (sIconWidth == -1) {
+                // We can't have gotten to here without src being initialized, which
+                // comes from this file already.  So just assert.
+                //initStatics(context);
+                throw new RuntimeException("Assertion failed: Utilities not initialized");
+            }
+
+            dest.drawColor(0, PorterDuff.Mode.CLEAR);
+
+            final float scale = 1.55f;
+            Bitmap scaled = Bitmap.createScaledBitmap(src, (int)(src.getWidth()*scale),
+                    (int)(src.getHeight()*scale), true);
+
+            int[] xy = new int[2];
+            Bitmap mask = scaled.extractAlpha(sBlurPaint, xy);
+
+            dest.drawBitmap(mask, (destWidth - mask.getWidth()) / 2,
+                    (destHeight - mask.getHeight()) / 2, sGlowColorPaint);
+            dest.drawBitmap(src, (destWidth - src.getWidth()) / 2,
+                    (destHeight - src.getHeight()) / 2, sEmptyPaint);
+
+            mask.recycle();
+        }
+    }
 
     /**
      * Returns a Bitmap representing the thumbnail of the specified Bitmap.
@@ -289,8 +322,14 @@ final class Utilities {
 
     private static void initStatics(Context context) {
         final Resources resources = context.getResources();
+        final DisplayMetrics metrics = resources.getDisplayMetrics();
+        final float density = metrics.density;
+
         sIconWidth = sIconHeight = (int) resources.getDimension(android.R.dimen.app_icon_size);
         sIconTextureWidth = sIconTextureHeight = roundToPow2(sIconWidth);
+
+        sBlurPaint.setMaskFilter(new BlurMaskFilter(7 * density, BlurMaskFilter.Blur.NORMAL));
+        sGlowColorPaint.setColor(0xffff9000);
     }
 
     static class BubbleText {
@@ -333,7 +372,7 @@ final class Utilities {
             rectPaint.setColor(0xff000000);
             rectPaint.setAntiAlias(true);
 
-            Log.d(Launcher.LOG_TAG, "scale=" + scale + " textSize=" + (13*scale));
+            Log.d(TAG, "scale=" + scale + " textSize=" + (13*scale));
 
             TextPaint textPaint = mTextPaint = new TextPaint();
             textPaint.setTypeface(Typeface.DEFAULT);
@@ -352,7 +391,7 @@ final class Utilities {
             mBitmapWidth = roundToPow2((int)(mBubbleRect.width() + 0.5f));
             mBitmapHeight = roundToPow2((int)((MAX_LINES * mLineHeight) + leading + 0.5f));
 
-            Log.d(Launcher.LOG_TAG, "mBitmapWidth=" + mBitmapWidth + " mBitmapHeight="
+            Log.d(TAG, "mBitmapWidth=" + mBitmapWidth + " mBitmapHeight="
                     + mBitmapHeight + " w=" + ((int)(mBubbleRect.width() + 0.5f))
                     + " h=" + ((int)((MAX_LINES * mLineHeight) + leading + 0.5f)));
         }

@@ -39,7 +39,6 @@ import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
@@ -386,6 +385,7 @@ public class AllAppsView extends RSSurfaceView
         private Allocation mAllocTouchXBorders;
 
         private Bitmap mSelectionBitmap;
+        private Canvas mSelectionCanvas;
 
         Params mParams;
         State mState;
@@ -534,20 +534,9 @@ public class AllAppsView extends RSSurfaceView
             mParams.save();
             mState.save();
 
-            mSelectionBitmap = Bitmap.createBitmap(Defines.ICON_WIDTH_PX, Defines.ICON_HEIGHT_PX,
-                    Bitmap.Config.ARGB_8888);
-            Bitmap selectionBitmap = mSelectionBitmap;
-            Paint paint = new Paint();
-            float radius = 12 * getContext().getResources().getDisplayMetrics().density;
-            //paint.setMaskFilter(new BlurMaskFilter(radius, BlurMaskFilter.Blur.OUTER));
-            Canvas canvas = new Canvas(selectionBitmap);
-            canvas.drawColor(0xffff0000);
-
-            mSelectedIcon = Allocation.createFromBitmap(mRS, selectionBitmap,
-                    Element.RGBA_8888, false);
-            mSelectedIcon.uploadToTexture(0);
-
-            mState.selectedIconTexture = mSelectedIcon.getID();
+            mSelectionBitmap = Bitmap.createBitmap(Defines.ICON_TEXTURE_WIDTH_PX,
+                    Defines.ICON_TEXTURE_HEIGHT_PX, Bitmap.Config.ARGB_8888);
+            mSelectionCanvas = new Canvas(mSelectionBitmap);
 
             Log.d(TAG, "initData calling mRollo.setApps");
             setApps(null);
@@ -612,6 +601,9 @@ public class AllAppsView extends RSSurfaceView
                 mScript.bindAllocation(mAllocLabelID, Defines.ALLOC_LABEL_IDS);
             }
 
+            if (mAllAppsList != null) {
+                selectIcon(0); // TODO remove
+            }
             mState.save();
         }
 
@@ -676,13 +668,29 @@ public class AllAppsView extends RSSurfaceView
          * You need to call save() on mState on your own after calling this.
          */
         void selectIcon(int x, int y, int scrollX, int currentPage) {
-            int iconCount = mAllAppsList.size();
             int index = chooseTappedIcon(x, y, scrollX, currentPage);
+            selectIcon(index);
+        }
+
+        void selectIcon(int index) {
+            Log.d(TAG, "selectIcon index=" + index);
+            int iconCount = mAllAppsList.size();
             if (index < 0 || index >= iconCount) {
                 mState.selectedIconIndex = -1;
                 return;
             } else {
                 mState.selectedIconIndex = index;
+
+                Bitmap selectionBitmap = mSelectionBitmap;
+
+                Utilities.drawSelectedAllAppsBitmap(mSelectionCanvas,
+                        selectionBitmap.getWidth(), selectionBitmap.getHeight(),
+                        mAllAppsList.get(index).iconBitmap);
+
+                mSelectedIcon = Allocation.createFromBitmap(mRS, selectionBitmap,
+                        Element.RGBA_8888, false);
+                mSelectedIcon.uploadToTexture(0);
+                mState.selectedIconTexture = mSelectedIcon.getID();
             }
         }
 
@@ -690,7 +698,7 @@ public class AllAppsView extends RSSurfaceView
          * You need to call save() on mState on your own after calling this.
          */
         void clearSelectedIcon() {
-            mState.selectedIconIndex = -1;
+            //mState.selectedIconIndex = -1;
         }
     }
 }
