@@ -45,7 +45,6 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
     private ImageView mImageView;
     private boolean mIsWallpaperSet;
 
-    private BitmapFactory.Options mOptions;
     private Bitmap mBitmap;
 
     private ArrayList<Integer> mThumbs;
@@ -102,6 +101,16 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
     protected void onResume() {
         super.onResume();
         mIsWallpaperSet = false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        
+        if (mLoader != null && mLoader.getStatus() != WallpaperLoader.Status.FINISHED) {
+            mLoader.cancel(true);
+            mLoader = null;
+        }
     }
 
     public void onItemSelected(AdapterView parent, View v, int position, long id) {
@@ -199,6 +208,10 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
                 drawable.setDither(true);
 
                 view.postInvalidate();
+
+                mLoader = null;
+            } else {
+               b.recycle(); 
             }
         }
     }
