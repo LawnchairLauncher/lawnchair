@@ -63,13 +63,12 @@
 
     <com.android.launcher2.DeleteZone
         android:id="@+id/delete_zone"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="49dip"
         android:layout_gravity="bottom|center_horizontal"
 
         android:scaleType="center"
-        android:src="@drawable/ic_delete"
-        android:background="@drawable/delete_zone_selector"
+        android:src="@drawable/delete_zone_selector"
 
         android:visibility="invisible"
         

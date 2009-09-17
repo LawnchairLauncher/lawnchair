@@ -19,6 +19,6 @@
 -->
 
 <transition xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/delete_handle_normal"  />
-    <item android:drawable="@drawable/delete_handle"  />
+    <item android:drawable="@drawable/trashcan"  />
+    <item android:drawable="@drawable/trashcan_hover"  />
 </transition>
