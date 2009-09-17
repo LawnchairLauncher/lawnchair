@@ -28,6 +28,7 @@ import android.renderscript.RenderScript;
 import android.renderscript.ProgramVertex;
 import android.renderscript.Element;
 import android.renderscript.Allocation;
+import android.renderscript.Type;
 import android.renderscript.Script;
 import android.renderscript.ScriptC;
 import android.renderscript.ProgramFragment;
@@ -104,7 +105,7 @@ public class AllAppsView extends RSSurfaceView
 
         public static final int COLUMNS_PER_PAGE = 4;
         public static final int ROWS_PER_PAGE = 4;
-        
+
         public static final float RADIUS = 4.0f;
 
         public static final int SCREEN_WIDTH_PX = 480;
@@ -199,7 +200,6 @@ public class AllAppsView extends RSSurfaceView
                         (-mRollo.mState.startScrollX / Defines.SCREEN_WIDTH_PX));
             }
             mRollo.mState.flingVelocityX = 0;
-            mRollo.mState.adjustedDeceleration = 0;
             mRollo.mState.save();
             mVelocity = VelocityTracker.obtain();
             mVelocity.addMovement(ev);
@@ -282,15 +282,13 @@ public class AllAppsView extends RSSurfaceView
     public void onDropCompleted(View target, boolean success) {
     }
 
-    private static final int SCALE_SCALE = 100000;
-
     public void setScale(float amount) {
         cancelLongPress();
         mRollo.mState.read();
         mRollo.clearSelectedIcon();
         if (amount > 0.001f) {
             mRollo.mState.visible = 1;
-            mRollo.mState.zoom = (int)(SCALE_SCALE*amount);
+            mRollo.mState.zoom = amount;
         } else {
             mRollo.mState.visible = 0;
             mRollo.mState.zoom = 0;
@@ -390,36 +388,53 @@ public class AllAppsView extends RSSurfaceView
         Params mParams;
         State mState;
 
-        class Params extends IntAllocation {
-            Params(RenderScript rs) {
-                super(rs);
+        class BaseAlloc {
+            Allocation mAlloc;
+            Type mType;
+
+            void save() {
+                mAlloc.data(this);
             }
-            @AllocationIndex(0) public int bubbleWidth;
-            @AllocationIndex(1) public int bubbleHeight;
-            @AllocationIndex(2) public int bubbleBitmapWidth;
-            @AllocationIndex(3) public int bubbleBitmapHeight;
-            @AllocationIndex(4) public int scrollHandleId;
-            @AllocationIndex(5) public int scrollHandleTextureWidth;
-            @AllocationIndex(6) public int scrollHandleTextureHeight;
+
+            void read() {
+                mAlloc.read(this);
+            }
         }
 
-        class State extends IntAllocation {
-            State(RenderScript rs) {
-                super(rs);
+        class Params extends BaseAlloc {
+            Params() {
+                mType = Type.createFromClass(mRS, Params.class, 1, "ParamsClass");
+                mAlloc = Allocation.createTyped(mRS, mType);
+                save();
             }
-            @AllocationIndex(0) public int iconCount;
-            @AllocationIndex(1) public int scrollX;
-            @AllocationIndex(2) public int flingTimeMs;
-            @AllocationIndex(3) public int flingVelocityX;
-            @AllocationIndex(4) public int adjustedDeceleration;
-            @AllocationIndex(5) public int currentScrollX;
-            @AllocationIndex(6) public int flingDuration;
-            @AllocationIndex(7) public int flingEndPos;
-            @AllocationIndex(8) public int startScrollX;
-            @AllocationIndex(9) public int selectedIconIndex = -1;
-            @AllocationIndex(10) public int selectedIconTexture;
-            @AllocationIndex(11) public int visible;
-            @AllocationIndex(12) public int zoom;
+            public int bubbleWidth;
+            public int bubbleHeight;
+            public int bubbleBitmapWidth;
+            public int bubbleBitmapHeight;
+            public int scrollHandleId;
+            public int scrollHandleTextureWidth;
+            public int scrollHandleTextureHeight;
+        }
+
+        class State extends BaseAlloc {
+            public int iconCount;
+            public int scrollX;
+            public int flingTimeMs;
+            public float flingVelocityX;
+            public int currentScrollX;
+            public int flingDuration;
+            public int flingEndPos;
+            public int startScrollX;
+            public int selectedIconIndex = -1;
+            public int selectedIconTexture;
+            public int visible;
+            public float zoom;
+
+            State() {
+                mType = Type.createFromClass(mRS, State.class, 1, "StateClass");
+                mAlloc = Allocation.createTyped(mRS, mType);
+                save();
+            }
         }
 
         public RolloRS() {
@@ -510,10 +525,10 @@ public class AllAppsView extends RSSurfaceView
 
             Log.e("rs", "Done loading named");
         }
-        
+
         private void initData() {
-            mParams = new Params(mRS);
-            mState = new State(mRS);
+            mParams = new Params();
+            mState = new State();
 
             final Utilities.BubbleText bubble = new Utilities.BubbleText(getContext());
 
@@ -547,11 +562,13 @@ public class AllAppsView extends RSSurfaceView
             sb.setScript(mRes, R.raw.rollo);
             sb.setRoot(true);
             sb.addDefines(Defines.class);
+            sb.setType(mParams.mType, "params", Defines.ALLOC_PARAMS);
+            sb.setType(mState.mType, "state", Defines.ALLOC_STATE);
             mScript = sb.create();
             mScript.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-            mScript.bindAllocation(mParams.getAllocation(), Defines.ALLOC_PARAMS);
-            mScript.bindAllocation(mState.getAllocation(), Defines.ALLOC_STATE);
+            mScript.bindAllocation(mParams.mAlloc, Defines.ALLOC_PARAMS);
+            mScript.bindAllocation(mState.mAlloc, Defines.ALLOC_STATE);
             mScript.bindAllocation(mAllocIconID, Defines.ALLOC_ICON_IDS);
             mScript.bindAllocation(mAllocLabelID, Defines.ALLOC_LABEL_IDS);
             mScript.bindAllocation(mAllocTouchXBorders, Defines.ALLOC_X_BORDERS);
@@ -628,7 +645,7 @@ public class AllAppsView extends RSSurfaceView
             mTouchYBorders[4] = centerY + (int)(2.4f * cellHeight);
 
             mAllocTouchYBorders.data(mTouchYBorders);
-            
+
             int centerX = (width / 2);
             mTouchXBorders[0] = centerX - (2 * cellWidth);
             mTouchXBorders[1] = centerX - (int)(0.83f * cellWidth);;
@@ -660,7 +677,7 @@ public class AllAppsView extends RSSurfaceView
                 return -1;
             }
 
-            return (currentPage * Defines.ROWS_PER_PAGE * Defines.COLUMNS_PER_PAGE) 
+            return (currentPage * Defines.ROWS_PER_PAGE * Defines.COLUMNS_PER_PAGE)
                     + (row * Defines.ROWS_PER_PAGE) + col;
         }
 
