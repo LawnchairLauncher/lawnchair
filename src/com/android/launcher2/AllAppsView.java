@@ -618,9 +618,6 @@ public class AllAppsView extends RSSurfaceView
                 mScript.bindAllocation(mAllocLabelID, Defines.ALLOC_LABEL_IDS);
             }
 
-            if (mAllAppsList != null) {
-                selectIcon(0); // TODO remove
-            }
             mState.save();
         }
 
@@ -715,7 +712,7 @@ public class AllAppsView extends RSSurfaceView
          * You need to call save() on mState on your own after calling this.
          */
         void clearSelectedIcon() {
-            //mState.selectedIconIndex = -1;
+            mState.selectedIconIndex = -1;
         }
     }
 }
