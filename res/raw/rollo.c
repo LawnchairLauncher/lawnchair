@@ -5,13 +5,82 @@
 
 #define PI 3.14159f
 
-float deceleration;
+
+// Attraction to center values from page edge to page center.
+float g_AttractionTable[9];
+float g_FrictionTable[9];
+float g_PhysicsTableSize;
+
+float g_PosPage;
+float g_PosVelocity;
+float g_LastPositionX;
+int g_LastTouchDown;
+float g_DT;
+int g_LastTime;
+int g_Rendering;
+int g_PageCount;
 
 // Drawing constants, should be parameters ======
 #define VIEW_ANGLE 1.28700222f
 
 void init() {
-    deceleration = 0;
+    g_AttractionTable[0] = 4.5f;
+    g_AttractionTable[1] = 4.5f;
+    g_AttractionTable[2] = 5.0f;
+    g_AttractionTable[3] = 4.0f;
+    g_AttractionTable[4] = -4.0f;
+    g_AttractionTable[5] = -5.0f;
+    g_AttractionTable[6] = -4.5f;
+    g_AttractionTable[7] = -4.5f;
+    g_AttractionTable[8] = -4.5f;  // dup 7 to avoid a clamp later
+    g_FrictionTable[0] = 3.5f;
+    g_FrictionTable[1] = 3.6f;
+    g_FrictionTable[2] = 3.7f;
+    g_FrictionTable[3] = 3.8f;
+    g_FrictionTable[4] = 3.8f;
+    g_FrictionTable[5] = 3.7f;
+    g_FrictionTable[6] = 3.6f;
+    g_FrictionTable[7] = 3.5f;
+    g_FrictionTable[8] = 3.5f;  // dup 7 to avoid a clamp later
+    g_PhysicsTableSize = 7;
+
+    g_PosVelocity = 0;
+    g_PosPage = 0;
+    g_LastTouchDown = 0;
+    g_LastPositionX = 0;
+}
+
+void clampPosition() {
+    if (g_PosPage < 0) {
+        g_PosPage = 0;
+        g_PosVelocity = 0;
+    }
+    if (g_PosPage > (g_PageCount - 1)) {
+        g_PosPage = (g_PageCount - 1);
+        g_PosVelocity = 0;
+    }
+}
+
+void move() {
+    if (g_LastTouchDown) {
+        float dx = -(state->newPositionX - g_LastPositionX);
+        g_PosVelocity = 0;
+        g_PosPage += dx;
+    }
+    g_LastTouchDown = state->newTouchDown;
+    g_LastPositionX = state->newPositionX;
+    clampPosition();
+}
+
+void fling() {
+    g_LastTouchDown = 0;
+    g_PosVelocity = -state->flingVelocityX;
+    if (g_PosPage <= 0) {
+        g_PosVelocity = maxf(0, g_PosVelocity);
+    }
+    if (g_PosPage > (g_PageCount - 1)) {
+        g_PosVelocity = minf(0, (g_PageCount - 1) - g_PosPage);
+    }
 }
 
 int g_lastFrameTime = 0;
@@ -41,6 +110,76 @@ modf(float x, float y)
     return x-(y*floorf(x/y));
 }
 
+void updatePos() {
+    if (g_LastTouchDown) {
+        return;
+    }
+
+    //debugF("g_PosPage", g_PosPage);
+    //debugF("  g_PosVelocity", g_PosVelocity);
+
+    float tablePosNorm = fracf(g_PosPage + 0.5f);
+    float tablePosF = tablePosNorm * g_PhysicsTableSize;
+    int tablePosI = tablePosF;
+    float tablePosFrac = tablePosF - tablePosI;
+    //debugF("tablePosNorm", tablePosNorm);
+    //debugF("tablePosF", tablePosF);
+    //debugF("tablePosI", tablePosI);
+    //debugF("tablePosFrac", tablePosFrac);
+
+    float accel = lerpf(g_AttractionTable[tablePosI],
+                        g_AttractionTable[tablePosI + 1],
+                        tablePosFrac) * g_DT;
+    float friction = lerpf(g_FrictionTable[tablePosI],
+                           g_FrictionTable[tablePosI + 1],
+                           tablePosFrac) * g_DT;
+    //debugF("  accel", accel);
+    //debugF("  friction", friction);
+
+    g_PosVelocity += accel;
+    if ((friction > fabsf(g_PosVelocity)) && (friction > fabsf(accel))) {
+        // Special get back to center and overcome friction physics.
+        float t = tablePosNorm - 0.5f;
+        if (fabsf(t) < (friction * g_DT)) {
+            // really close, just snap
+            g_PosPage = roundf(g_PosPage);
+            g_PosVelocity = 0;
+        } else {
+            if (t > 0) {
+                g_PosVelocity = -friction;
+            } else {
+                g_PosVelocity = friction;
+            }
+        }
+    } else {
+        // Normal physics
+        if (g_PosVelocity > 0) {
+            g_PosVelocity -= friction;
+            if (g_PosVelocity < 0) {
+                g_PosVelocity = 0;
+            }
+        } else {
+            g_PosVelocity += friction;
+            if (g_PosVelocity > 0) {
+                g_PosVelocity = 0;
+            }
+        }
+    }
+    g_PosPage += g_PosVelocity * g_DT;
+
+    // Check for out of boundry conditions.
+    if (g_PosPage < 0 && g_PosVelocity < 0) {
+        float damp = 1.0 + (g_PosPage * 3);
+        damp = clampf(damp, 0.f, 0.9f);
+        g_PosVelocity *= damp;
+    }
+    if (g_PosPage > (g_PageCount-1) && g_PosVelocity > 0) {
+        float damp = 1.0 - ((g_PosPage - g_PageCount + 1) * 3);
+        damp = clampf(damp, 0.f, 0.9f);
+        g_PosVelocity *= damp;
+    }
+}
+
 float
 far_size(float sizeAt0)
 {
@@ -53,6 +192,7 @@ draw_page(int icon, int lastIcon, float centerAngle)
     int row;
     int col;
 
+    //debugF("center angle", centerAngle);
     float scale = 1.0f - state->zoom;
 
     float iconTextureWidth = ICON_WIDTH_PX / (float)ICON_TEXTURE_WIDTH_PX;
@@ -142,6 +282,11 @@ main(int launchID)
     // Clear to transparent
     pfClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
+    int newTime = uptimeMillis();
+    g_DT = (newTime - g_LastTime) / 1000.f;
+    g_LastTime = newTime;
+    //debugF("*** dt ", g_DT);
+
     // If we're not supposed to be showing, don't do anything.
     if (!state->visible) {
         return 0;
@@ -149,128 +294,13 @@ main(int launchID)
 
     // icons & labels
     int iconCount = state->iconCount;
-    int pageCount = count_pages(iconCount);
+    g_PageCount = count_pages(iconCount);
 
-    float scrollXPx = state->scrollX;
-    float maxScrollXPx = -(pageCount-1) * SCREEN_WIDTH_PX;
-    int done = 0;
+    updatePos(0.1f);
+    state->readPosX = g_PosPage;
+    state->readVel = g_PosVelocity;
 
-    // Clamp -- because java doesn't know how big the icons are
-    if (scrollXPx > 0) {
-        scrollXPx = 0;
-    }
-    if (scrollXPx < maxScrollXPx) {
-        scrollXPx = maxScrollXPx;
-    }
-
-    // If we've been given a velocity, start a fling
-    float flingVelocityPxMs = state->flingVelocityX;
-    if (flingVelocityPxMs != 0) {
-        // how many screens will this velocity do? TODO: use long
-        // G * ppi * friction // why G? // friction = 0.015
-        float flingDurationMs;
-        if (deceleration == 0) {
-            // On the first frame, calculate which animation we're going to do.  If it's
-            // going to end up less than halfway into a page, we'll bounce back the previous
-            // page.  Otherwise, we'll adjust the deceleration so it just makes it to the
-            // page boundary.
-            if (flingVelocityPxMs > 0) {
-                deceleration = -1000;
-            } else {
-                deceleration = 1000;
-            }
-            // minimum velocity
-            if (flingVelocityPxMs < 0) {
-                if (flingVelocityPxMs > -500) {
-                    flingVelocityPxMs = -500;
-                }
-            } else {
-                if (flingVelocityPxMs < 500) {
-                    flingVelocityPxMs = 500;
-                }
-            }
-
-            // v' = v + at --> t = -v / a
-            // x' = x + vt + .5 a t^2
-            flingDurationMs = - flingVelocityPxMs / deceleration;
-            float endPos = scrollXPx + (flingVelocityPxMs*flingDurationMs)
-                    + ((deceleration*flingDurationMs*flingDurationMs)/2);
-
-            if (endPos > 0) {
-                endPos = 0;
-            }
-            if (endPos < maxScrollXPx) {
-                endPos = maxScrollXPx;
-            }
-            float scrollOnPage = modf(endPos, SCREEN_WIDTH_PX);
-            int endPage = -endPos/SCREEN_WIDTH_PX;
-
-            if (flingVelocityPxMs < 0) {
-                if (scrollOnPage < (SCREEN_WIDTH_PX/2)) {
-                    // adjust the deceleration so we align on the page boundary
-                    // a = 2(x-x0-v0t)/t^2
-                    endPos = -(endPage+1) * SCREEN_WIDTH_PX;
-                    debugI32("endPos case 1", endPos);
-                } else {
-                    // TODO: bounce
-                    endPos = -(endPage+1) * SCREEN_WIDTH_PX;
-                    debugI32("endPos case 2", endPos);
-                }
-            } else {
-                if (scrollOnPage >= (SCREEN_WIDTH_PX/2)) {
-                    // adjust the deceleration so we align on the page boundary
-                    endPos = -endPage * SCREEN_WIDTH_PX;
-                    debugI32("endPos case 3", endPos);
-                } else {
-                    // TODO: bounce
-                    endPos = -endPage * SCREEN_WIDTH_PX;
-                    debugI32("endPos case 4", endPos);
-                }
-            }
-            // v = v0 + at --> (v - v0) / t
-            deceleration = 2*(endPos-scrollXPx-(flingVelocityPxMs*flingDurationMs))
-                    / (flingDurationMs*flingDurationMs);
-            endPos = scrollXPx + (flingVelocityPxMs*flingDurationMs)
-                    + ((deceleration*flingDurationMs*flingDurationMs)/2);
-
-            state->flingDuration = flingDurationMs;
-            state->flingEndPos = endPos;
-        } else {
-            flingDurationMs = state->flingDuration;
-        }
-
-        // adjust the deceleration so we always hit a page boundary
-
-        int now = uptimeMillis();
-        float elapsedTime = (now - state->flingTimeMs) / 1000.0f;
-        int animEndTime = -flingVelocityPxMs / deceleration;
-
-        int flingOffsetPx = (flingVelocityPxMs * elapsedTime)
-                + (deceleration * elapsedTime * elapsedTime / 2.0f);
-        scrollXPx += flingOffsetPx;
-
-        if (elapsedTime > flingDurationMs) {
-            scrollXPx = state->flingEndPos;
-            done = 1;
-        }
-    } else {
-        done = 1;
-    }
-
-    // Clamp
-    if (scrollXPx > 0) {
-        scrollXPx = 0;
-    }
-    if (scrollXPx < maxScrollXPx) {
-        scrollXPx = maxScrollXPx;
-    }
-
-    state->currentScrollX = scrollXPx;
-    if (done) {
-        state->scrollX = scrollXPx;
-        state->flingVelocityX = 0;
-        deceleration = 0.f;
-    }
+    //debugF("    draw g_PosPage", g_PosPage);
 
     // Draw the icons ========================================
     bindProgramVertex(NAMED_PV);
@@ -282,15 +312,15 @@ main(int launchID)
 
     int lastIcon = iconCount-1;
 
-    float currentPage = -scrollXPx / (float)SCREEN_WIDTH_PX;
-    int page = currentPage;
-    float currentPagePosition = currentPage - page;
+    int page = g_PosPage;
+    float currentPagePosition = g_PosPage - page;
 
     int iconsPerPage = COLUMNS_PER_PAGE * ROWS_PER_PAGE;
     int icon = clamp(iconsPerPage * page, 0, lastIcon);
 
     draw_page(icon, lastIcon, -VIEW_ANGLE*currentPagePosition);
     draw_page(icon+iconsPerPage, lastIcon, (-VIEW_ANGLE*currentPagePosition)+VIEW_ANGLE);
+
 
     // Draw the border lines for debugging ========================================
     /*
@@ -320,8 +350,13 @@ main(int launchID)
     drawRect(handleLeft, handleTop, handleLeft+handleWidth, handleTop+handleHeight, 0.0f);
     */
 
-    print_frame_rate();
+    //print_frame_rate();
 
-    return !done;
+    // Bug workaround where the last frame is not always displayed
+    // So we render the last frame twice.
+    int rendering = g_Rendering;
+    g_Rendering = (g_PosVelocity != 0) || fracf(g_PosPage);
+    rendering |= g_Rendering;
+    return rendering;
 }
 

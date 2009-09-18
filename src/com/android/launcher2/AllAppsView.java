@@ -85,11 +85,11 @@ public class AllAppsView extends RSSurfaceView
     private int mPageCount;
     private boolean mStartedScrolling;
     private VelocityTracker mVelocity;
-    private int mLastScrollX;
     private int mLastMotionX;
     private int mMotionDownRawX;
     private int mMotionDownRawY;
     private int mScrollHandleTop;
+    private long mTouchTime;
 
     static class Defines {
         private static float farSize(float sizeAt0) {
@@ -191,16 +191,17 @@ public class AllAppsView extends RSSurfaceView
             mMotionDownRawY = (int)ev.getRawY();
             mLastMotionX = x;
             mRollo.mState.read();
-            mRollo.mState.startScrollX = mRollo.mState.scrollX = mLastScrollX
-                    = mRollo.mState.currentScrollX;
-            if (mRollo.mState.flingVelocityX != 0) {
+
+            mRollo.mState.newPositionX = ev.getRawX() / Defines.SCREEN_WIDTH_PX;
+            mRollo.mState.newTouchDown = 1;
+
+            if (mRollo.mState.readVel != 0) {
                 mRollo.clearSelectedIcon();
             } else {
-                mRollo.selectIcon(x, (int)ev.getY(), mRollo.mState.startScrollX,
-                        (-mRollo.mState.startScrollX / Defines.SCREEN_WIDTH_PX));
+                mRollo.selectIcon(x, (int)ev.getY(), mRollo.mState.readPosX);
             }
-            mRollo.mState.flingVelocityX = 0;
             mRollo.mState.save();
+            mRollo.mInvokeMove.execute();
             mVelocity = VelocityTracker.obtain();
             mVelocity.addMovement(ev);
             mStartedScrolling = false;
@@ -212,25 +213,31 @@ public class AllAppsView extends RSSurfaceView
                 // don't update mLastMotionX so slop is right and when we do start scrolling
                 // below, we get the right delta.
             } else {
+
+                mRollo.mState.newPositionX = ev.getRawX() / Defines.SCREEN_WIDTH_PX;
+                mRollo.mState.newTouchDown = 1;
+                mRollo.mInvokeMove.execute();
+
                 mStartedScrolling = true;
                 mRollo.clearSelectedIcon();
                 deltaX = x - mLastMotionX;
                 mVelocity.addMovement(ev);
-                mRollo.mState.currentScrollX = mLastScrollX;
-                mLastScrollX += deltaX;
-                mRollo.mState.scrollX = mLastScrollX;
                 mRollo.mState.save();
                 mLastMotionX = x;
             }
             break;
         case MotionEvent.ACTION_UP:
         case MotionEvent.ACTION_CANCEL:
+
+            mRollo.mState.newPositionX = ev.getRawX() / Defines.SCREEN_WIDTH_PX;
+            mRollo.mState.newTouchDown = 0;
+
             mVelocity.computeCurrentVelocity(1000 /* px/sec */,
                     mConfig.getScaledMaximumFlingVelocity());
-            mRollo.mState.flingTimeMs = (int)SystemClock.uptimeMillis(); // TODO: use long
-            mRollo.mState.flingVelocityX = (int)mVelocity.getXVelocity();
+            mRollo.mState.flingVelocityX = mVelocity.getXVelocity() / Defines.SCREEN_WIDTH_PX;
             mRollo.clearSelectedIcon();
             mRollo.mState.save();
+            mRollo.mInvokeFling.execute();
             mLastMotionX = -10000;
             mVelocity.recycle();
             mVelocity = null;
@@ -354,6 +361,10 @@ public class AllAppsView extends RSSurfaceView
 
         private Resources mRes;
         private Script mScript;
+
+        private Script.Invokable mInvokeMove;
+        private Script.Invokable mInvokeFling;
+
         private Sampler mSampler;
         private Sampler mSamplerText;
         private ProgramStore mPSBackground;
@@ -417,14 +428,13 @@ public class AllAppsView extends RSSurfaceView
         }
 
         class State extends BaseAlloc {
+            public float newPositionX;
+            public int newTouchDown;
+            public float readPosX;
+            public float readVel;
+            public float flingVelocityX;
             public int iconCount;
             public int scrollX;
-            public int flingTimeMs;
-            public float flingVelocityX;
-            public int currentScrollX;
-            public int flingDuration;
-            public int flingEndPos;
-            public int startScrollX;
             public int selectedIconIndex = -1;
             public int selectedIconTexture;
             public int visible;
@@ -564,6 +574,8 @@ public class AllAppsView extends RSSurfaceView
             sb.addDefines(Defines.class);
             sb.setType(mParams.mType, "params", Defines.ALLOC_PARAMS);
             sb.setType(mState.mType, "state", Defines.ALLOC_STATE);
+            mInvokeMove = sb.addInvokable("move");
+            mInvokeFling = sb.addInvokable("fling");
             mScript = sb.create();
             mScript.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -653,7 +665,9 @@ public class AllAppsView extends RSSurfaceView
             mAllocTouchXBorders.data(mTouchXBorders);
         }
 
-        int chooseTappedIcon(int x, int y, int scrollX, int currentPage) {
+        int chooseTappedIcon(int x, int y, float page) {
+            int currentPage = (int)page;
+
             int col = -1;
             int row = -1;
 
@@ -681,8 +695,8 @@ public class AllAppsView extends RSSurfaceView
         /**
          * You need to call save() on mState on your own after calling this.
          */
-        void selectIcon(int x, int y, int scrollX, int currentPage) {
-            int index = chooseTappedIcon(x, y, scrollX, currentPage);
+        void selectIcon(int x, int y, float pos) {
+            int index = chooseTappedIcon(x, y, pos);
             selectIcon(index);
         }
 
