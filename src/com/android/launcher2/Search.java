@@ -75,9 +75,7 @@ public class Search extends LinearLayout
 
     // For voice searching
     private Intent mVoiceSearchIntent;
-    
-    private Drawable mGooglePlaceholder;
-    
+
     private SearchManager mSearchManager;
 
     /**
@@ -299,10 +297,6 @@ public class Search extends LinearLayout
         mSearchText = (TextView) findViewById(R.id.search_src_text);
         mVoiceButton = (ImageButton) findViewById(R.id.search_voice_btn);
         
-        mGooglePlaceholder = getContext().getResources().getDrawable(R.drawable.placeholder_google);
-        mContext.registerReceiver(mBroadcastReceiver,
-                new IntentFilter(SearchManager.INTENT_ACTION_SEARCH_SETTINGS_CHANGED));
-
         mSearchText.setOnKeyListener(this);
 
         mSearchText.setOnClickListener(this);
@@ -312,14 +306,17 @@ public class Search extends LinearLayout
         mSearchText.setOnLongClickListener(this);
         mVoiceButton.setOnLongClickListener(this);
 
+        // Set the placeholder text to be the Google logo within the search widget.
+        Drawable googlePlaceholder =
+                getContext().getResources().getDrawable(R.drawable.placeholder_google);
+        mSearchText.setCompoundDrawablesWithIntrinsicBounds(googlePlaceholder, null, null, null);
+
         configureVoiceSearchButton();
-        setUpTextField();
     }
     
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (mBroadcastReceiver != null) getContext().unregisterReceiver(mBroadcastReceiver);
     }
 
     /**
@@ -341,45 +338,12 @@ public class Search extends LinearLayout
     }
     
     /**
-     * Sets up the look of the text field. If Google is the chosen search provider, includes
-     * a Google logo as placeholder.
-     */
-    private void setUpTextField() {
-        boolean showGooglePlaceholder = false;
-        SearchableInfo webSearchSearchable = mSearchManager.getDefaultSearchableForWebSearch();
-        if (webSearchSearchable != null) {
-            ComponentName webSearchComponent = webSearchSearchable.getSearchActivity();
-            if (webSearchComponent != null) {
-                String componentString = webSearchComponent.flattenToShortString();
-                if (Searchables.ENHANCED_GOOGLE_SEARCH_COMPONENT_NAME.equals(componentString) ||
-                        Searchables.GOOGLE_SEARCH_COMPONENT_NAME.equals(componentString)) {
-                    showGooglePlaceholder = true;
-                }
-            }
-        }
-        
-        mSearchText.setCompoundDrawablesWithIntrinsicBounds(
-                showGooglePlaceholder ? mGooglePlaceholder : null, null, null, null);
-    }
-
-    /**
      * Sets the {@link Launcher} that this gadget will call on to display the search dialog. 
      */
     public void setLauncher(Launcher launcher) {
         mLauncher = launcher;
     }
         
-    // Broadcast receiver for web search provider change notifications
-    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (SearchManager.INTENT_ACTION_SEARCH_SETTINGS_CHANGED.equals(action)) {
-                setUpTextField();
-            }
-        }
-    };
-
     /** 
      * Moves the view to the top left corner of its parent.
      */
