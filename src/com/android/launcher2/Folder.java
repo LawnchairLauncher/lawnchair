@@ -64,11 +64,11 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mContent = (AbsListView) findViewById(R.id.content);
+        mContent = (AbsListView) findViewById(R.id.folder_content);
         mContent.setOnItemClickListener(this);
         mContent.setOnItemLongClickListener(this);
         
-        mCloseButton = (Button) findViewById(R.id.close);
+        mCloseButton = (Button) findViewById(R.id.folder_close);
         mCloseButton.setOnClickListener(this);
         mCloseButton.setOnLongClickListener(this);
     }
