@@ -131,6 +131,7 @@ public class AllAppsView extends RSSurfaceView
         setOnClickListener(this);
         setOnLongClickListener(this);
         setOnTop(true);
+        getHolder().setFormat(PixelFormat.TRANSLUCENT);
     }
 
     public AllAppsView(Context context, AttributeSet attrs, int defStyle) {
@@ -277,7 +278,7 @@ public class AllAppsView extends RSSurfaceView
                     left, top, Defines.ICON_WIDTH_PX, Defines.ICON_HEIGHT_PX,
                     this, app, DragController.DRAG_ACTION_COPY);
 
-            mLauncher.closeAllApps(true);
+            mLauncher.closeAllApps();
         }
         return true;
     }
@@ -287,6 +288,12 @@ public class AllAppsView extends RSSurfaceView
     }
 
     public void onDropCompleted(View target, boolean success) {
+    }
+
+    public void setZoom(float v) {
+        mRollo.mState.zoom = v;
+        mRollo.mState.save();
+        mRollo.mInvokeZoom.execute();
     }
 
     public void setScale(float amount) {
@@ -306,6 +313,7 @@ public class AllAppsView extends RSSurfaceView
             mLocks &= ~LOCK_ZOOMING;
         }
         mRollo.mState.save();
+        mRollo.mInvokeZoom.execute();
     }
 
     public boolean isZooming() {
@@ -364,6 +372,7 @@ public class AllAppsView extends RSSurfaceView
 
         private Script.Invokable mInvokeMove;
         private Script.Invokable mInvokeFling;
+        private Script.Invokable mInvokeZoom;
 
         private Sampler mSampler;
         private Sampler mSamplerText;
@@ -576,6 +585,7 @@ public class AllAppsView extends RSSurfaceView
             sb.setType(mState.mType, "state", Defines.ALLOC_STATE);
             mInvokeMove = sb.addInvokable("move");
             mInvokeFling = sb.addInvokable("fling");
+            mInvokeZoom = sb.addInvokable("setZoomTarget");
             mScript = sb.create();
             mScript.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
