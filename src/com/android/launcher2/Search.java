@@ -320,7 +320,7 @@ public class Search extends LinearLayout
     }
 
     /**
-     * If appropriate & available, configure voice search
+     * If appropriate &amp; available, configure voice search
      * 
      * Note:  Because the home screen search widget is always web search, we only check for
      * getVoiceSearchLaunchWebSearch() modes.  We don't support the alternate form of app-specific
