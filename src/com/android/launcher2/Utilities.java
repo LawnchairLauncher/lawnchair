@@ -93,7 +93,7 @@ final class Utilities {
      * @param context The application's context.
      *
      * @return A thumbnail for the specified icon or the icon itself if the
-     *         thumbnail could not be created. 
+     *         thumbnail could not be created.
      */
     static Drawable createIconThumbnail(Drawable icon, Context context) {
         synchronized (sCanvas) { // we share the statics :-(
@@ -411,11 +411,11 @@ final class Utilities {
             if (lineCount > MAX_LINES) {
                 lineCount = MAX_LINES;
             }
-            if (!TEXT_BURN && lineCount > 0) {
-                RectF bubbleRect = mBubbleRect;
-                bubbleRect.bottom = height(lineCount);
-                c.drawRoundRect(bubbleRect, mCornerRadius, mCornerRadius, mRectPaint);
-            }
+            //if (!TEXT_BURN && lineCount > 0) {
+                //RectF bubbleRect = mBubbleRect;
+                //bubbleRect.bottom = height(lineCount);
+                //c.drawRoundRect(bubbleRect, mCornerRadius, mCornerRadius, mRectPaint);
+            //}
             for (int i=0; i<lineCount; i++) {
                 int x = (int)((mBubbleRect.width() - layout.getLineMax(i)) / 2.0f);
                 int y = mFirstLineY + (i * mLineHeight);

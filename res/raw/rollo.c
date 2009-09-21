@@ -17,8 +17,9 @@ float g_LastPositionX;
 int g_LastTouchDown;
 float g_DT;
 int g_LastTime;
-int g_Rendering;
 int g_PageCount;
+float g_Zoom;
+float g_ZoomTarget;
 
 // Drawing constants, should be parameters ======
 #define VIEW_ANGLE 1.28700222f
@@ -48,17 +49,8 @@ void init() {
     g_PosPage = 0;
     g_LastTouchDown = 0;
     g_LastPositionX = 0;
-}
-
-void clampPosition() {
-    if (g_PosPage < 0) {
-        g_PosPage = 0;
-        g_PosVelocity = 0;
-    }
-    if (g_PosPage > (g_PageCount - 1)) {
-        g_PosPage = (g_PageCount - 1);
-        g_PosVelocity = 0;
-    }
+    g_Zoom = 0;
+    g_ZoomTarget = 0;
 }
 
 void move() {
@@ -66,31 +58,44 @@ void move() {
         float dx = -(state->newPositionX - g_LastPositionX);
         g_PosVelocity = 0;
         g_PosPage += dx;
+
+        float pmin = -0.25f;
+        float pmax = (g_PageCount - 1) + 0.25f;
+        g_PosPage = clampf(g_PosPage, pmin, pmax);
     }
     g_LastTouchDown = state->newTouchDown;
     g_LastPositionX = state->newPositionX;
-    clampPosition();
 }
 
 void fling() {
     g_LastTouchDown = 0;
     g_PosVelocity = -state->flingVelocityX;
+    float av = fabsf(g_PosVelocity);
+    float minVel = 3f;
+
+    minVel *= 1.f - (fabsf(fracf(g_PosPage + 0.5f) - 0.5f) * 0.45f);
+
+    if (av < minVel && av > 0.2f) {
+        if (g_PosVelocity > 0) {
+            g_PosVelocity = minVel;
+        } else {
+            g_PosVelocity = -minVel;
+        }
+    }
+
     if (g_PosPage <= 0) {
         g_PosVelocity = maxf(0, g_PosVelocity);
     }
     if (g_PosPage > (g_PageCount - 1)) {
-        g_PosVelocity = minf(0, (g_PageCount - 1) - g_PosPage);
+        g_PosVelocity = minf(0, g_PosVelocity);
     }
+    //g_Zoom += (maxf(fabsf(g_PosVelocity), 3) - 3) / 2.f;
 }
 
-int g_lastFrameTime = 0;
-void print_frame_rate()
-{
-    int now = uptimeMillis();
-    if (g_lastFrameTime != 0) {
-        debugI32("frame_rate", 1000/(now-g_lastFrameTime));
-    }
-    g_lastFrameTime = now;
+
+void setZoomTarget() {
+    g_ZoomTarget = state->zoom;
+    //debugF("zoom target", g_ZoomTarget);
 }
 
 int
@@ -136,7 +141,11 @@ void updatePos() {
     //debugF("  accel", accel);
     //debugF("  friction", friction);
 
-    g_PosVelocity += accel;
+    // If our velocity is low OR acceleration is opposing it, apply it.
+    if (fabsf(g_PosVelocity) < 0.5f || (g_PosVelocity * accel) < 0) {
+        g_PosVelocity += accel;
+    }
+
     if ((friction > fabsf(g_PosVelocity)) && (friction > fabsf(accel))) {
         // Special get back to center and overcome friction physics.
         float t = tablePosNorm - 0.5f;
@@ -155,14 +164,10 @@ void updatePos() {
         // Normal physics
         if (g_PosVelocity > 0) {
             g_PosVelocity -= friction;
-            if (g_PosVelocity < 0) {
-                g_PosVelocity = 0;
-            }
+            g_PosVelocity = maxf(g_PosVelocity, 0);
         } else {
             g_PosVelocity += friction;
-            if (g_PosVelocity > 0) {
-                g_PosVelocity = 0;
-            }
+            g_PosVelocity = minf(g_PosVelocity, 0);
         }
     }
     g_PosPage += g_PosVelocity * g_DT;
@@ -187,22 +192,21 @@ far_size(float sizeAt0)
 }
 
 void
-draw_page(int icon, int lastIcon, float centerAngle)
+draw_page(int icon, int lastIcon, float centerAngle, float scale)
 {
     int row;
     int col;
 
     //debugF("center angle", centerAngle);
-    float scale = 1.0f - state->zoom;
 
     float iconTextureWidth = ICON_WIDTH_PX / (float)ICON_TEXTURE_WIDTH_PX;
     float iconTextureHeight = ICON_HEIGHT_PX / (float)ICON_TEXTURE_HEIGHT_PX;
 
     float iconWidthAngle = VIEW_ANGLE * ICON_WIDTH_PX / SCREEN_WIDTH_PX;
-    float columnGutterAngle = iconWidthAngle * 0.70f;
+    float columnGutterAngle = iconWidthAngle * 0.9f;
 
     float farIconSize = FAR_ICON_SIZE;
-    float iconGutterHeight = farIconSize * 1.1f;
+    float iconGutterHeight = farIconSize * 1.3f;
 
     float farIconTextureSize = far_size(2 * ICON_TEXTURE_WIDTH_PX / (float)SCREEN_WIDTH_PX);
 
@@ -216,9 +220,8 @@ draw_page(int icon, int lastIcon, float centerAngle)
         float angle = centerAngle;
         angle -= (columnGutterAngle + iconWidthAngle) * 1.5f;
 
-        float iconTop = (farIconSize + iconGutterHeight) * (2.0f + ICON_TOP_OFFSET)
+        float iconTop = (farIconSize + iconGutterHeight) * (1.85f + ICON_TOP_OFFSET)
                 - row * (farIconSize + iconGutterHeight);
-        iconTop -= 6 * scale; // make the zoom point below center
         float iconBottom = iconTop - farIconSize;
 
         float labelTop = iconBottom - (.1 * farLabelHeight);
@@ -233,14 +236,18 @@ draw_page(int icon, int lastIcon, float centerAngle)
             float cosine = cosf(angle);
 
             float centerX = sine * RADIUS;
-            float centerZ = cosine * RADIUS;
-            centerZ -= ((RADIUS+2+1)*scale); // 2 is camera loc, 1 put it slightly behind that.
+            float centerZ = cosine * RADIUS / scale;
+
+            if (scale > 1.f) {
+                centerX *= scale;
+            }
 
             float iconLeftX = centerX  - (cosine * farIconTextureSize * .5);
             float iconRightX = centerX + (cosine * farIconTextureSize * .5);
             float iconLeftZ = centerZ + (sine * farIconTextureSize * .5);
             float iconRightZ = centerZ - (sine * farIconTextureSize * .5);
 
+            color(1.0f, 1.0f, 1.0f, 0.99f);
             if (state->selectedIconIndex == icon) {
                 bindTexture(NAMED_PF, 0, state->selectedIconTexture);
                 drawQuadTexCoords(
@@ -258,7 +265,11 @@ draw_page(int icon, int lastIcon, float centerAngle)
             }
 
             // label
-            if (scale <= 0.1f) {
+            if (scale < 1.2f) {
+                float a = maxf(scale, 1.0f);
+                a = (1.2f - a) * 5;
+                color(1.0f, 1.0f, 1.0f, a);
+
                 float labelLeftX = centerX - farLabelWidth * 0.5f;
                 float labelRightX = centerX + farLabelWidth * 0.5f;
 
@@ -279,18 +290,40 @@ draw_page(int icon, int lastIcon, float centerAngle)
 int
 main(int launchID)
 {
-    // Clear to transparent
-    pfClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
+    // Compute dt in seconds.
     int newTime = uptimeMillis();
     g_DT = (newTime - g_LastTime) / 1000.f;
     g_LastTime = newTime;
-    //debugF("*** dt ", g_DT);
 
-    // If we're not supposed to be showing, don't do anything.
-    if (!state->visible) {
-        return 0;
+    debugF("zoom", g_Zoom);
+    if (g_Zoom != g_ZoomTarget) {
+        float dz = (g_ZoomTarget - g_Zoom) * g_DT * 5;
+        if (dz && (fabsf(dz) < 0.03f)) {
+            if (dz > 0) {
+                dz = 0.03f;
+            } else {
+                dz = -0.03f;
+            }
+        }
+        if (fabsf(g_Zoom - g_ZoomTarget) < fabsf(dz)) {
+            g_Zoom = g_ZoomTarget;
+        } else {
+            g_Zoom += dz;
+        }
     }
+
+    // Set clear value to dim the background based on the zoom position.
+    if (g_Zoom < 0.8f) {
+        pfClearColor(0.0f, 0.0f, 0.0f, g_Zoom);
+        if (g_Zoom == 0) {
+            // Nothing else to do if fully zoomed out.
+            return 1;
+        }
+    } else {
+        pfClearColor(0.0f, 0.0f, 0.0f, 0.80f);
+    }
+
+
 
     // icons & labels
     int iconCount = state->iconCount;
@@ -318,27 +351,12 @@ main(int launchID)
     int iconsPerPage = COLUMNS_PER_PAGE * ROWS_PER_PAGE;
     int icon = clamp(iconsPerPage * page, 0, lastIcon);
 
-    draw_page(icon, lastIcon, -VIEW_ANGLE*currentPagePosition);
-    draw_page(icon+iconsPerPage, lastIcon, (-VIEW_ANGLE*currentPagePosition)+VIEW_ANGLE);
+    float scale = (1 / g_Zoom);
 
+    float pageAngle = VIEW_ANGLE * 1.2f;
+    draw_page(icon, lastIcon, -pageAngle*currentPagePosition, scale);
+    draw_page(icon+iconsPerPage, lastIcon, (-pageAngle*currentPagePosition)+pageAngle, scale);
 
-    // Draw the border lines for debugging ========================================
-    /*
-    bindProgramVertex(NAMED_PVOrtho);
-    bindProgramFragment(NAMED_PFText);
-    bindProgramFragmentStore(NAMED_PFSText);
-
-    color(1.0f, 1.0f, 0.0f, 0.99f);
-    int i;
-    for (i=0; i<ROWS_PER_PAGE+1; i++) {
-        int y = loadI32(ALLOC_Y_BORDERS, i);
-        drawRect(0, y, SCREEN_WIDTH_PX, y+1, 0.0f);
-    }
-    for (i=0; i<COLUMNS_PER_PAGE+1; i++) {
-        int x = loadI32(ALLOC_X_BORDERS, i);
-        drawRect(x, 0, x+1, SCREEN_HEIGHT_PX, 0.0f);
-    }
-    */
 
     // Draw the scroll handle ========================================
     /*
@@ -350,13 +368,8 @@ main(int launchID)
     drawRect(handleLeft, handleTop, handleLeft+handleWidth, handleTop+handleHeight, 0.0f);
     */
 
-    //print_frame_rate();
-
     // Bug workaround where the last frame is not always displayed
-    // So we render the last frame twice.
-    int rendering = g_Rendering;
-    g_Rendering = (g_PosVelocity != 0) || fracf(g_PosPage);
-    rendering |= g_Rendering;
-    return rendering;
+    // So we keep rendering until the bug is fixed.
+    return 1;//(g_PosVelocity != 0) || fracf(g_PosPage);
 }
 

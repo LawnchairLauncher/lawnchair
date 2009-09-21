@@ -193,7 +193,7 @@ public final class Launcher extends Activity
 
     private boolean mHomeDown;
     private boolean mBackDown;
-    
+
     private Bundle mSavedInstanceState;
 
     private LauncherModel mModel;
@@ -245,7 +245,7 @@ public final class Launcher extends Activity
     private void checkForLocaleChange() {
         final LocaleConfiguration localeConfiguration = new LocaleConfiguration();
         readConfiguration(this, localeConfiguration);
-        
+
         final Configuration configuration = getResources().getConfiguration();
 
         final String previousLocale = localeConfiguration.locale;
@@ -274,7 +274,7 @@ public final class Launcher extends Activity
         public int mcc = -1;
         public int mnc = -1;
     }
-    
+
     private static void readConfiguration(Context context, LocaleConfiguration configuration) {
         DataInputStream in = null;
         try {
@@ -397,7 +397,7 @@ public final class Launcher extends Activity
             mModel.startLoader(this, true);
             mRestoring = false;
         }
-        
+
         // If this was a new intent (i.e., the mIsNewIntent flag got set to true by
         // onNewIntent), then close the search dialog if needed, because it probably
         // came from the user pressing 'home' (rather than, for example, pressing 'back').
@@ -412,18 +412,18 @@ public final class Launcher extends Activity
                         searchManagerService.stopSearch();
                     } catch (RemoteException e) {
                         e(LOG_TAG, "error stopping search", e);
-                    }    
+                    }
                 }
             });
         }
-        
+
         mIsNewIntent = false;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        closeAllApps(false);
+        closeAllApps();
     }
 
     @Override
@@ -557,7 +557,7 @@ public final class Launcher extends Activity
         dragController.setDragScoller(workspace);
         dragController.setDragListener(deleteZone);
         dragController.setScrollView(dragLayer);
-        
+
         // The order here is bottom to top.
         dragController.addDropTarget(workspace);
         dragController.addDropTarget(deleteZone);
@@ -784,7 +784,7 @@ public final class Launcher extends Activity
         // Close the menu
         if (Intent.ACTION_MAIN.equals(intent.getAction())) {
             getWindow().closeAllPanels();
-            
+
             // Set this flag so that onResume knows to close the search dialog if it's open,
             // because this was a new intent (thus a press of 'home' or some such) rather than
             // for example onResume being called when the user pressed the 'back' button.
@@ -811,7 +811,7 @@ public final class Launcher extends Activity
                     mWorkspace.moveToDefaultScreen();
                 }
 
-                closeAllApps(true);
+                closeAllApps();
 
                 final View v = getWindow().peekDecorView();
                 if (v != null && v.getWindowToken() != null) {
@@ -820,7 +820,7 @@ public final class Launcher extends Activity
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 }
             } else {
-                closeAllApps(false);
+                closeAllApps();
             }
         }
     }
@@ -906,7 +906,7 @@ public final class Launcher extends Activity
     public void startSearch(String initialQuery, boolean selectInitialQuery,
             Bundle appSearchData, boolean globalSearch) {
 
-        closeAllApps(false);
+        closeAllApps();
 
         // Slide the search widget to the top, if it's on the current screen,
         // otherwise show the search dialog immediately.
@@ -1283,7 +1283,7 @@ public final class Launcher extends Activity
                     if (!event.isCanceled()) {
                         mWorkspace.dispatchKeyEvent(event);
                         if (isAllAppsVisible()) {
-                            closeAllApps(true);
+                            closeAllApps();
                         } else {
                             closeFolder();
                         }
@@ -1343,9 +1343,9 @@ public final class Launcher extends Activity
         } else if (v == mHandleView) {
             Log.d(TAG, "onClick");
             if (isAllAppsVisible()) {
-                closeAllApps(true);
+                closeAllApps();
             } else {
-                showAllApps(true);
+                showAllApps();
             }
         }
     }
@@ -1607,33 +1607,24 @@ public final class Launcher extends Activity
         return mAllAppsGrid.isZooming() || mAllAppsGrid.isVisible();
     }
 
-    void showAllApps(boolean animated) {
+    void showAllApps() {
         if (mMode == MODE_ALL_APPS) {
             return;
         }
 
         mSwipeController.setRange(-1, 0);
-        if (animated) {
-            mSwipeController.animate(-1);
-        } else {
-            mSwipeController.setImmediate(-1);
-        }
-
+        mSwipeController.setImmediate(-1);
         mWorkspace.hide();
-        
+
         // TODO: fade these two too
         mDeleteZone.setVisibility(View.GONE);
         //mHandleView.setVisibility(View.GONE);
     }
 
-    void closeAllApps(boolean animated) {
+    void closeAllApps() {
         if (mAllAppsGrid.isVisible()) {
             mSwipeController.setRange(0, 1);
-            if (animated) {
-                mSwipeController.animate(1);
-            } else {
-                mSwipeController.setImmediate(1);
-            }
+            mSwipeController.setImmediate(1);
             mWorkspace.getChildAt(mWorkspace.getCurrentScreen()).requestFocus();
 
             // TODO: fade these two too
@@ -1850,7 +1841,7 @@ public final class Launcher extends Activity
         } else {
             mWorkspace.setVisibility(View.VISIBLE);
         }
-        mWorkspace.setScale(1-amount);
+        //mWorkspace.setScale(1-amount);
         mAllAppsGrid.setScale(amount);
     }
 
@@ -2001,7 +1992,7 @@ public final class Launcher extends Activity
 
             final boolean allApps = mSavedState.getBoolean(RUNTIME_STATE_ALL_APPS_FOLDER, false);
             if (allApps) {
-                showAllApps(false);
+                showAllApps();
             }
 
             mSavedState = null;

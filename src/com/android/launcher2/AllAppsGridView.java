@@ -66,7 +66,7 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
         app = new ApplicationInfo(app);
 
         mDragController.startDrag(view, this, app, DragController.DRAG_ACTION_COPY);
-        mLauncher.closeAllApps(true);
+        mLauncher.closeAllApps();
         mDraw = false;
         invalidate();
         return true;
@@ -84,7 +84,7 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
     }
 
     public void onDropCompleted(View target, boolean success) {
-        mLauncher.closeAllApps(false);
+        mLauncher.closeAllApps();
     }
 
     void setLauncher(Launcher launcher) {
