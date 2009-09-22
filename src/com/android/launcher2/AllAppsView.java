@@ -628,12 +628,12 @@ public class AllAppsView extends RSSurfaceView
                 mLabelIds[i] = mLabels[i].getID();
             }
 
-            mAllocIconID.data(mIconIds);
-            mAllocLabelID.data(mLabelIds);
+            if(count > 0) {
+                mAllocIconID.data(mIconIds);
+                mAllocLabelID.data(mLabelIds);
+            }
 
             mState.iconCount = count;
-
-            Log.d("AllAppsView", "mScript=" + mScript + " mAllocIconID=" + mAllocIconID);
 
             if (mScript != null) { // wtf
                 mScript.bindAllocation(mAllocIconID, Defines.ALLOC_ICON_IDS);
