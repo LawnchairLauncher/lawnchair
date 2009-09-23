@@ -148,7 +148,9 @@ public class AppInfoCache {
     public static void unbindDrawables() {
         synchronized (sCache) {
             for (ApplicationInfo appInfo: sCache.values()) {
-                appInfo.icon.setCallback(null);
+                if (appInfo.icon != null) {
+                    appInfo.icon.setCallback(null);
+                }
             }
         }
     }
