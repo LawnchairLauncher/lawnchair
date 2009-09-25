@@ -37,6 +37,7 @@ import android.widget.Scroller;
 import android.widget.TextView;
 import android.os.Parcelable;
 import android.os.Parcel;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -46,6 +47,7 @@ import java.util.ArrayList;
  * A workspace is meant to be used with a fixed width only.
  */
 public class Workspace extends ViewGroup implements DropTarget, DragSource, DragScroller {
+    private static final String TAG = "Launcher.Workspace";
     private static final int INVALID_SCREEN = -1;
     
     /**
@@ -644,6 +646,16 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                 openFolder.addFocusables(views, direction);
             }
         }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            if (mLauncher.isWorkspaceLocked() || mLauncher.isAllAppsVisible()) {
+                return false;
+            }
+        }
+        return super.dispatchTouchEvent(ev);
     }
 
     @Override

@@ -21,8 +21,9 @@ import android.widget.ImageView;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import android.view.View;
+import android.view.MotionEvent;
 import android.view.KeyEvent;
+import android.view.View;
 
 public class HandleView extends ImageView {
     private static final int ORIENTATION_HORIZONTAL = 1;
@@ -82,6 +83,14 @@ public class HandleView extends ImageView {
         */
 
         return handled;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN && mLauncher.isAllAppsVisible()) {
+            return false;
+        }
+        return super.onTouchEvent(ev);
     }
 
     private static boolean isDirectionKey(int keyCode) {

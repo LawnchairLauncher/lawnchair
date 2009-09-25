@@ -31,14 +31,19 @@ import java.util.ArrayList;
 public class SwipeController {
     private static final String TAG = "Launcher.SwipeController";
 
+    public static final int MODE_WORKSPACE = 0;
+    public static final int MODE_ALL_APPS = 1;
+    public static final int MODE_ALL_APPS_ZOOMED = 2;
+
     private static final int FRAME_DELAY = 1000 / 30;
     private static final float DECAY_CONSTANT = 0.65f;
     private static final float SPRING_CONSTANT = 0.0009f;
 
     // configuration
-    private SwipeListener mListener;
     private int mSlop;
     private float mSwipeDistance;
+
+    private AllAppsView mAllAppsView;
 
     // state
     private VelocityTracker mVelocityTracker;
@@ -47,52 +52,59 @@ public class SwipeController {
     private int mDownX;
     private int mDownY;
 
-    private float mMinDest;
-    private float mMaxDest;
-    private long mFlingTime;
-    private long mLastTime;
-    private int mDirection;
-    private float mVelocity;
-    private float mDest;
+    private int mMode;
+    private int mMinDest;
+    private int mMaxDest;
     private float mAmount;
 
-    public interface SwipeListener {
-        public void onStartSwipe();
-        public void onFinishSwipe(int amount);
-        public void onSwipe(float amount);
-    }
-
-    public SwipeController(Context context, SwipeListener listener) {
+    public SwipeController(Context context) {
         ViewConfiguration config = ViewConfiguration.get(context);
         mSlop = config.getScaledTouchSlop();
         
         DisplayMetrics display = context.getResources().getDisplayMetrics();
         mSwipeDistance = display.heightPixels / 2; // one half of the screen
 
-        mListener = listener;
+        setMode(MODE_WORKSPACE, false);
     }
 
-    public void setRange(float min, float max) {
-        mMinDest = min;
-        mMaxDest = max;
+    public void setAllAppsView(AllAppsView allAppsView) {
+        mAllAppsView = allAppsView;
     }
 
-    public void cancelSwipe() {
+    public void setMode(int mode, boolean animate) {
+        mMinDest = mode - 1;
+        if (mMinDest < MODE_WORKSPACE) {
+            mMinDest = MODE_WORKSPACE;
+        }
+        mMaxDest = mode + 1;
+        if (mMaxDest > MODE_ALL_APPS) { // TODO: support _ZOOMED
+            mMaxDest = MODE_ALL_APPS;
+        }
         mCanceled = true;
+        if (mAllAppsView != null) {
+            // TODO: do something with the wallpaper
+            if (animate) {
+                mAllAppsView.setZoomTarget(mode);
+            } else {
+                mAllAppsView.setZoom(mode);
+            }
+        }
+        mMode = mode;
+    }
+
+    /**
+     * Cancels the current swipe, if there is one, and animates back to wherever we were before.
+     */
+    public void cancelSwipe() {
+         mCanceled = true;
+         mAllAppsView.setZoomTarget(mMode);
     }
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         onTouchEvent(ev);
-
-        // After we return true, onIntercept doesn't get called any more, so this is
-        // a good place to do the callback.
-        if (mTracking) {
-            mListener.onStartSwipe();
-        }
-
         return mTracking;
     }
-
+ 
     public boolean onTouchEvent(MotionEvent ev) {
         if (mVelocityTracker == null) {
             mVelocityTracker = VelocityTracker.obtain();
@@ -143,41 +155,6 @@ public class SwipeController {
         return mTracking || mCanceled;
     }
 
-    /**
-     * Set the value, performing an animation.  Make sure that you have set the
-     * range properly first, otherwise the value may be clamped.
-     */
-    public void animate(float dest) {
-        go(dest, 0);
-    }
-
-    /**
-     * Set the value, but don't perform an animation.  Make sure that you have set the
-     * range properly first, otherwise the value may be clamped.
-     */
-    public void setImmediate(float dest) {
-        go(dest, dest);
-    }
-
-    /**
-     * Externally start a swipe.  If dest == amount, this will end up just immediately
-     * setting the value, but it will perform the proper start and finish callbacks.
-     */
-    private void go(float dest, float amount) {
-        mListener.onStartSwipe();
-
-        dest = clamp(dest);
-        mDirection = dest > amount ? 1 : -1; // if they're equal it doesn't matter
-        mVelocity = mDirection * 0.002f; // TODO: density.
-        mAmount = amount;
-        mDest = dest;
-
-        mFlingTime = SystemClock.uptimeMillis();
-        mLastTime = 0;
-
-        scheduleAnim();
-    }
-
     private float clamp(float v) {
         if (v < mMinDest) {
             return mMinDest;
@@ -188,71 +165,42 @@ public class SwipeController {
         }
     }
 
-    /**
-     * Perform the callbacks.
-     */
+    private float dist(int screenY) {
+        return clamp(mMode - ((screenY - mDownY) / mSwipeDistance));
+    }
+
     private void track(int screenY) {
-        mAmount = clamp((screenY - mDownY) / mSwipeDistance);
-        mListener.onSwipe(mAmount);
+        mAmount = dist(screenY);
+
+        //Log.d(TAG, "mAmount=" + mAmount);
+        mAllAppsView.setZoom(mAmount);
     }
 
     private void fling(int screenY) {
+        mAmount = dist(screenY);
+
         mVelocityTracker.computeCurrentVelocity(1);
 
-        mVelocity = mVelocityTracker.getYVelocity() / mSwipeDistance;
-        Log.d(TAG, "mVelocity=" + mVelocity);
-        mDirection = mVelocity >= 0.0f ? 1 : -1;
-        mAmount = clamp((screenY-mDownY)/mSwipeDistance);
-        if (mAmount < 0) {
-            mDest = clamp(mVelocity < 0 ? -1.0f : 0.0f);
-        } else {
-            mDest = clamp(mVelocity < 0 ? 0.0f : 1.0f);
-        }
+        float velocity = mVelocityTracker.getYVelocity() / mSwipeDistance;
+        int direction = velocity >= 0.0f ? 1 : -1;
+        mAmount = dist(screenY);
 
-        mFlingTime = SystemClock.uptimeMillis();
-        mLastTime = 0;
-
-        scheduleAnim();
-    }
-
-    private void scheduleAnim() {
-        boolean send = true;
-        if (mDirection > 0) {
-            if (mAmount > (mDest - 0.01f)) {
-                send = false;
+        int dest = mMode;
+        if (mMode < mAmount) {
+            if (velocity < 0) { // up
+                dest = mMode + 1;
             }
         } else {
-            if (mAmount < (mDest + 0.01f)) {
-                send = false;
+            if (velocity > 0) { // down
+                dest = mMode - 1;
             }
         }
-        if (send) {
-            mHandler.sendEmptyMessageDelayed(1, FRAME_DELAY);
-        } else {
-            mListener.onFinishSwipe((int)(mAmount >= 0 ? (mAmount+0.5f) : (mAmount-0.5f)));
-        }
+        // else dest == mMode, so go back to where we started
+
+        //Log.d(TAG, "velocity=" + velocity + " mAmount=" + mAmount + " dest=" + dest);
+        mAllAppsView.setZoomTarget(dest);
+        mMode = dest;
+        mCanceled = true;
     }
-
-    Handler mHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            long now = SystemClock.uptimeMillis();
-
-            final long t = now - mFlingTime;
-            final long dt = t - mLastTime;
-            mLastTime = t;
-            final float timeSlices = dt / (float)FRAME_DELAY;
-
-            float distance = mDest - mAmount;
-
-            mVelocity += timeSlices * mDirection * SPRING_CONSTANT * distance * distance / 2;
-            mVelocity *= (timeSlices * DECAY_CONSTANT);
-
-            mAmount += timeSlices * mVelocity;
-            mAmount += distance * timeSlices * 0.2f; // cheat
-
-            mListener.onSwipe(mAmount);
-            scheduleAnim();
-        }
-    };
 }
 
