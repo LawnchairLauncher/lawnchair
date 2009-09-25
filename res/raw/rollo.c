@@ -24,6 +24,22 @@ float g_ZoomTarget;
 // Drawing constants, should be parameters ======
 #define VIEW_ANGLE 1.28700222f
 
+int g_oneLastFrame = 1;
+int one_last_frame(int more) {
+    if (more) {
+        g_oneLastFrame = 1;
+        return 1;
+    } else {
+        if (g_oneLastFrame) {
+            g_oneLastFrame = 0;
+            return 1;
+        } else {
+            g_oneLastFrame = 1;
+            return 0;
+        }
+    }
+}
+
 void init() {
     g_AttractionTable[0] = 4.5f;
     g_AttractionTable[1] = 4.5f;
@@ -295,7 +311,7 @@ main(int launchID)
     g_DT = (newTime - g_LastTime) / 1000.f;
     g_LastTime = newTime;
 
-    debugF("zoom", g_Zoom);
+    //debugF("zoom", g_Zoom);
     if (g_Zoom != g_ZoomTarget) {
         float dz = (g_ZoomTarget - g_Zoom) * g_DT * 5;
         if (dz && (fabsf(dz) < 0.03f)) {
@@ -317,7 +333,8 @@ main(int launchID)
         pfClearColor(0.0f, 0.0f, 0.0f, g_Zoom);
         if (g_Zoom == 0) {
             // Nothing else to do if fully zoomed out.
-            return 1;
+            g_PosPage = roundf(g_PosPage);
+            return one_last_frame(0);
         }
     } else {
         pfClearColor(0.0f, 0.0f, 0.0f, 0.80f);
@@ -370,6 +387,6 @@ main(int launchID)
 
     // Bug workaround where the last frame is not always displayed
     // So we keep rendering until the bug is fixed.
-    return 1;//(g_PosVelocity != 0) || fracf(g_PosPage);
+    return one_last_frame((g_PosVelocity != 0) || fracf(g_PosPage) || g_Zoom != g_ZoomTarget);
 }
 
