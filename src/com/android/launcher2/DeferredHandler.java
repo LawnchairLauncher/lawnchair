@@ -40,6 +40,9 @@ public class DeferredHandler {
         public void handleMessage(Message msg) {
             Runnable r;
             synchronized (mQueue) {
+                if (mQueue.size() == 0) {
+                    return;
+                }
                 r = mQueue.removeFirst();
             }
             r.run();

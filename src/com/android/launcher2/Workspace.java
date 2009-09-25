@@ -266,15 +266,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         clearVacantCache();
         mCurrentScreen = Math.max(0, Math.min(currentScreen, getChildCount() - 1));
         scrollTo(mCurrentScreen * getWidth(), 0);
-        updateWallpaperOffset();
         invalidate();
-    }
-
-    /**
-     * Shows the default screen (defined by the firstScreen attribute in XML.)
-     */
-    void showDefaultScreen() {
-        setCurrentScreen(mDefaultScreen);
     }
 
     /**
