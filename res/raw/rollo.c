@@ -24,22 +24,6 @@ float g_ZoomTarget;
 // Drawing constants, should be parameters ======
 #define VIEW_ANGLE 1.28700222f
 
-int g_oneLastFrame = 1;
-int one_last_frame(int more) {
-    if (more) {
-        g_oneLastFrame = 1;
-        return 1;
-    } else {
-        if (g_oneLastFrame) {
-            g_oneLastFrame = 0;
-            return 1;
-        } else {
-            g_oneLastFrame = 1;
-            return 0;
-        }
-    }
-}
-
 void init() {
     g_AttractionTable[0] = 4.5f;
     g_AttractionTable[1] = 4.5f;
@@ -108,10 +92,14 @@ void fling() {
     //g_Zoom += (maxf(fabsf(g_PosVelocity), 3) - 3) / 2.f;
 }
 
-
 void setZoomTarget() {
-    g_ZoomTarget = state->zoom;
+    g_ZoomTarget = state->zoomTarget;
     //debugF("zoom target", g_ZoomTarget);
+}
+
+void setZoom() {
+    readback->zoom = g_Zoom = g_ZoomTarget = state->zoom;
+    //debugF("zoom", g_ZoomTarget);
 }
 
 int
@@ -326,16 +314,17 @@ main(int launchID)
         } else {
             g_Zoom += dz;
         }
+        readback->zoom = g_Zoom;
     }
 
     // Set clear value to dim the background based on the zoom position.
-    if (g_Zoom < 0.8f) {
+    if (g_Zoom < 0.001f) {
+        pfClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        // Nothing else to do if fully zoomed out.
+        g_PosPage = roundf(g_PosPage);
+        return 1; // 0;
+    } else if (g_Zoom < 0.8f) {
         pfClearColor(0.0f, 0.0f, 0.0f, g_Zoom);
-        if (g_Zoom == 0) {
-            // Nothing else to do if fully zoomed out.
-            g_PosPage = roundf(g_PosPage);
-            return one_last_frame(0);
-        }
     } else {
         pfClearColor(0.0f, 0.0f, 0.0f, 0.80f);
     }
@@ -347,8 +336,8 @@ main(int launchID)
     g_PageCount = count_pages(iconCount);
 
     updatePos(0.1f);
-    state->readPosX = g_PosPage;
-    state->readVel = g_PosVelocity;
+    readback->posX = g_PosPage;
+    readback->velocity = g_PosVelocity;
 
     //debugF("    draw g_PosPage", g_PosPage);
 
@@ -387,6 +376,6 @@ main(int launchID)
 
     // Bug workaround where the last frame is not always displayed
     // So we keep rendering until the bug is fixed.
-    return one_last_frame((g_PosVelocity != 0) || fracf(g_PosPage) || g_Zoom != g_ZoomTarget);
+    return 1; //(g_PosVelocity != 0) || fracf(g_PosPage) || g_Zoom != g_ZoomTarget);
 }
 
