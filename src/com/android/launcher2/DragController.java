@@ -27,11 +27,13 @@ import android.os.Handler;
 import android.os.Vibrator;
 import android.os.SystemClock;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -76,6 +78,9 @@ public class DragController {
 
     /** Y coordinate of the down event. */
     private float mMotionDownY;
+
+    /** Info about the screen for clamping. */
+    private DisplayMetrics mDisplayMetrics = new DisplayMetrics();
 
     /** Original view that is being dragged.  */
     private View mOriginator;
@@ -298,8 +303,8 @@ public class DragController {
         }
         final int action = ev.getAction();
 
-        final float screenX = ev.getRawX();
-        final float screenY = ev.getRawY();
+        final int screenX = clamp((int)ev.getRawX(), 0, mDisplayMetrics.widthPixels);
+        final int screenY = clamp((int)ev.getRawY(), 0, mDisplayMetrics.heightPixels);
 
         switch (action) {
             case MotionEvent.ACTION_MOVE:
@@ -309,6 +314,7 @@ public class DragController {
                 // Remember location of down touch
                 mMotionDownX = screenX;
                 mMotionDownY = screenY;
+                recordScreenSize();
                 mLastDropTarget = null;
                 break;
 
@@ -335,17 +341,17 @@ public class DragController {
         }
 
         final int action = ev.getAction();
-        final float x = ev.getRawX();
-        final float y = ev.getRawY();
+        final int screenX = clamp((int)ev.getRawX(), 0, mDisplayMetrics.widthPixels);
+        final int screenY = clamp((int)ev.getRawY(), 0, mDisplayMetrics.heightPixels);
 
         switch (action) {
         case MotionEvent.ACTION_DOWN:
-
             // Remember where the motion event started
-            mMotionDownX = x;
-            mMotionDownY = y;
+            mMotionDownX = screenX;
+            mMotionDownY = screenY;
+            recordScreenSize();
 
-            if ((x < SCROLL_ZONE) || (x > scrollView.getWidth() - SCROLL_ZONE)) {
+            if ((screenX < SCROLL_ZONE) || (screenX > scrollView.getWidth() - SCROLL_ZONE)) {
                 mScrollState = SCROLL_WAITING_IN_ZONE;
                 mHandler.postDelayed(mScrollRunnable, SCROLL_DELAY);
             } else {
@@ -354,12 +360,13 @@ public class DragController {
 
             break;
         case MotionEvent.ACTION_MOVE:
-            // Update the drag view.
+            // Update the drag view.  Don't use the clamped pos here so the dragging looks
+            // like it goes off screen a little, intead of bumping up against the edge.
             mDragView.move((int)ev.getRawX(), (int)ev.getRawY());
 
             // Drop on someone?
             final int[] coordinates = mCoordinatesTemp;
-            DropTarget dropTarget = findDropTarget((int) x, (int) y, coordinates);
+            DropTarget dropTarget = findDropTarget((int) screenX, (int) screenY, coordinates);
             if (dropTarget != null) {
                 if (mLastDropTarget == dropTarget) {
                     dropTarget.onDragOver(mDragSource, coordinates[0], coordinates[1],
@@ -383,15 +390,15 @@ public class DragController {
             // Scroll, maybe, but not if we're in the delete region.
             boolean inDeleteRegion = false;
             if (mDeleteRegion != null) {
-                inDeleteRegion = mDeleteRegion.contains(ev.getRawX(), ev.getRawY());
+                inDeleteRegion = mDeleteRegion.contains(screenX, screenY);
             }
-            if (!inDeleteRegion && x < SCROLL_ZONE) {
+            if (!inDeleteRegion && screenX < SCROLL_ZONE) {
                 if (mScrollState == SCROLL_OUTSIDE_ZONE) {
                     mScrollState = SCROLL_WAITING_IN_ZONE;
                     mScrollRunnable.setDirection(SCROLL_LEFT);
                     mHandler.postDelayed(mScrollRunnable, SCROLL_DELAY);
                 }
-            } else if (!inDeleteRegion && x > scrollView.getWidth() - SCROLL_ZONE) {
+            } else if (!inDeleteRegion && screenX > scrollView.getWidth() - SCROLL_ZONE) {
                 if (mScrollState == SCROLL_OUTSIDE_ZONE) {
                     mScrollState = SCROLL_WAITING_IN_ZONE;
                     mScrollRunnable.setDirection(SCROLL_RIGHT);
@@ -409,7 +416,7 @@ public class DragController {
         case MotionEvent.ACTION_UP:
             mHandler.removeCallbacks(mScrollRunnable);
             if (mDragging) {
-                drop(x, y);
+                drop(screenX, screenY);
             }
             endDrag();
 
@@ -459,6 +466,28 @@ public class DragController {
             }
         }
         return null;
+    }
+
+    /**
+     * Get the screen size so we can clamp events to the screen size so even if
+     * you drag off the edge of the screen, we find something.
+     */
+    private void recordScreenSize() {
+        ((WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE))
+                .getDefaultDisplay().getMetrics(mDisplayMetrics);
+    }
+
+    /**
+     * Clamp val to be &gt;= min and &lt; max.
+     */
+    private static int clamp(int val, int min, int max) {
+        if (val < min) {
+            return min;
+        } else if (val >= max) {
+            return max - 1;
+        } else {
+            return val;
+        }
     }
 
     public void setDragScoller(DragScroller scroller) {
