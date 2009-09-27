@@ -399,7 +399,7 @@ public class AllAppsView extends RSSurfaceView
         private ProgramStore mPSText;
         private ProgramFragment mPFDebug;
         private ProgramFragment mPFImages;
-        private ProgramFragment mPFText;
+        private ProgramFragment mPFOrtho;
         private ProgramVertex mPV;
         private ProgramVertex.MatrixAllocation mPVAlloc;
         private ProgramVertex mPVOrtho;
@@ -523,10 +523,10 @@ public class AllAppsView extends RSSurfaceView
             mPFImages.bindSampler(mSampler, 0);
 
             bf.setTexEnvMode(ProgramFragment.EnvMode.MODULATE, 0);
-            //mPFText = bf.create();
-            mPFText = (new ProgramFragment.Builder(mRS, null, null)).create();
-            mPFText.setName("PFText");
-            mPFText.bindSampler(mSamplerText, 0);
+            //mPFOrtho = bf.create();
+            mPFOrtho = (new ProgramFragment.Builder(mRS, null, null)).create();
+            mPFOrtho.setName("PFOrtho");
+            mPFOrtho.bindSampler(mSamplerText, 0);
 
             ProgramStore.Builder bs = new ProgramStore.Builder(mRS, null, null);
             bs.setDepthFunc(ProgramStore.DepthFunc.ALWAYS);
@@ -691,20 +691,20 @@ public class AllAppsView extends RSSurfaceView
             int cellHeight = iconsSize / Defines.ROWS_PER_PAGE;
             int cellWidth = iconsSize / Defines.COLUMNS_PER_PAGE;
 
-            int centerY = (height / 2) - (int)(cellHeight * 0.35f);
-            mTouchYBorders[0] = centerY - (int)(2.4f * cellHeight);
-            mTouchYBorders[1] = centerY - (int)(1.15f * cellHeight);
+            int centerY = (height / 2) - (int)(cellHeight * 0.2f);
+            mTouchYBorders[0] = centerY - (int)(2.8f * cellHeight);
+            mTouchYBorders[1] = centerY - (int)(1.25f * cellHeight);
             mTouchYBorders[2] = centerY;
-            mTouchYBorders[3] = centerY + (int)(1.15f * cellHeight);;
-            mTouchYBorders[4] = centerY + (int)(2.4f * cellHeight);
+            mTouchYBorders[3] = centerY + (int)(1.25f * cellHeight);;
+            mTouchYBorders[4] = centerY + (int)(2.6f * cellHeight);
 
             mAllocTouchYBorders.data(mTouchYBorders);
 
             int centerX = (width / 2);
             mTouchXBorders[0] = centerX - (2 * cellWidth);
-            mTouchXBorders[1] = centerX - (int)(0.83f * cellWidth);;
+            mTouchXBorders[1] = centerX - (int)(0.85f * cellWidth);
             mTouchXBorders[2] = centerX;
-            mTouchXBorders[3] = centerX + (int)(0.83f * cellWidth);;
+            mTouchXBorders[3] = centerX + (int)(0.85f * cellWidth);
             mTouchXBorders[4] = centerX + (2 * cellWidth);
 
             mAllocTouchXBorders.data(mTouchXBorders);

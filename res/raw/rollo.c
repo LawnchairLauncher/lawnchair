@@ -363,10 +363,27 @@ main(int launchID)
     draw_page(icon, lastIcon, -pageAngle*currentPagePosition, scale);
     draw_page(icon+iconsPerPage, lastIcon, (-pageAngle*currentPagePosition)+pageAngle, scale);
 
+    // Draw the border lines for debugging ========================================
+    /*
+    bindProgramVertex(NAMED_PVOrtho);
+    bindProgramFragment(NAMED_PFOrtho);
+    bindProgramFragmentStore(NAMED_PFSText);
+
+    color(1.0f, 1.0f, 0.0f, 0.99f);
+    int i;
+    for (i=0; i<ROWS_PER_PAGE+1; i++) {
+        int y = loadI32(ALLOC_Y_BORDERS, i);
+        drawRect(0, y, SCREEN_WIDTH_PX, y+1, 0.0f);
+    }
+    for (i=0; i<COLUMNS_PER_PAGE+1; i++) {
+        int x = loadI32(ALLOC_X_BORDERS, i);
+        drawRect(x, 0, x+1, SCREEN_HEIGHT_PX, 0.0f);
+    }
+    */
 
     // Draw the scroll handle ========================================
     /*
-    bindTexture(NAMED_PFText, 0, loadI32(ALLOC_PARAMS, PARAM_SCROLL_HANDLE_ID));
+    bindTexture(NAMED_PFOrtho, 0, loadI32(ALLOC_PARAMS, PARAM_SCROLL_HANDLE_ID));
     float handleLeft = 40 + (320 * (scrollXPx/(float)(maxScrollXPx)));
     float handleTop = 680;
     float handleWidth = loadI32(ALLOC_PARAMS, PARAM_SCROLL_HANDLE_TEX_WIDTH);
