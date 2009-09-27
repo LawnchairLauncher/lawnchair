@@ -332,13 +332,21 @@ public class AllAppsView extends RSSurfaceView
         } else {
             mRollo.mInvokeSetZoomTarget.execute();
         }
+        mReadZoom.removeMessages(1);
+        mReadZoom.sendEmptyMessageDelayed(1, 1000);
     }
+
+    Handler mReadZoom = new Handler() {
+        public void handleMessage(Message msg) {
+            mRollo.mReadback.read();
+        }
+    };
 
     public boolean isVisible() {
         if (mRollo == null) {
             return false;
         }
-        mRollo.mReadback.read();
+        //mRollo.mReadback.read();
         return mRollo.mReadback.zoom > 0.001f;
     }
 
