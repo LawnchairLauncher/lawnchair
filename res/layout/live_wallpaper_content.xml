@@ -46,7 +46,7 @@
     <Gallery android:id="@+id/gallery"
         android:gravity="fill"
         android:layout_width="fill_parent"
-        android:layout_height="160dip" />
+        android:layout_height="120dip" />
         
     <LinearLayout
         android:orientation="horizontal"
