@@ -125,6 +125,7 @@ public class SwipeController {
             mTracking = false;
             mDownX = screenX;
             mDownY = screenY;
+            mAllAppsView.setZoomSwipeInProgress(true, true);
             break;
 
         case MotionEvent.ACTION_MOVE:
@@ -132,6 +133,7 @@ public class SwipeController {
                 if (Math.abs(deltaX) > mSlop) {
                     mCanceled = true;
                     mTracking = false;
+                    mAllAppsView.setZoomSwipeInProgress(false, true);
                 }
                 if (Math.abs(deltaY) > mSlop) {
                     mTracking = true;
@@ -146,6 +148,7 @@ public class SwipeController {
         case MotionEvent.ACTION_UP:
             if (mTracking && !mCanceled) {
                 fling(screenY);
+                mAllAppsView.setZoomSwipeInProgress(false, false);
             }
             mVelocityTracker.recycle();
             mVelocityTracker = null;

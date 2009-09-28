@@ -92,6 +92,10 @@ void fling() {
     //g_Zoom += (maxf(fabsf(g_PosVelocity), 3) - 3) / 2.f;
 }
 
+void touchUp() {
+    g_LastTouchDown = 0;
+}
+
 void setZoomTarget() {
     g_ZoomTarget = state->zoomTarget;
     //debugF("zoom target", g_ZoomTarget);
@@ -320,16 +324,16 @@ main(int launchID)
     // Set clear value to dim the background based on the zoom position.
     if (g_Zoom < 0.001f) {
         pfClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-        // Nothing else to do if fully zoomed out.
-        g_PosPage = roundf(g_PosPage);
+        // When we're zoomed out and not tracking motion events, reset the pos to 0.
+        if (!g_LastTouchDown) {
+            g_PosPage = 0;
+        }
         return 1; // 0;
     } else if (g_Zoom < 0.8f) {
         pfClearColor(0.0f, 0.0f, 0.0f, g_Zoom);
     } else {
         pfClearColor(0.0f, 0.0f, 0.0f, 0.80f);
     }
-
-
 
     // icons & labels
     int iconCount = state->iconCount;
