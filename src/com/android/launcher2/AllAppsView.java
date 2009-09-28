@@ -338,7 +338,10 @@ public class AllAppsView extends RSSurfaceView
 
     Handler mReadZoom = new Handler() {
         public void handleMessage(Message msg) {
-            mRollo.mReadback.read();
+            if(mRollo != null && mRollo.mReadback != null) {
+                // FIXME: These checks may indicate other problems.
+                mRollo.mReadback.read();
+            }
         }
     };
 
@@ -490,7 +493,9 @@ public class AllAppsView extends RSSurfaceView
             }
 
             void read() {
-                mAlloc.read(this);
+                if(mAlloc != null) {
+                    mAlloc.read(this);
+                }
             }
         }
 
@@ -571,16 +576,14 @@ public class AllAppsView extends RSSurfaceView
             mRS.contextBindProgramVertex(mPV);
 
             mTouchXBorders = new int[Defines.COLUMNS_PER_PAGE+1];
-            mAllocTouchXBorders = Allocation.createSized(mRS, Element.USER_I32,
+            mAllocTouchXBorders = Allocation.createSized(mRS, Element.USER_I32(mRS),
                     mTouchXBorders.length);
             mAllocTouchXBorders.data(mTouchXBorders);
 
             mTouchYBorders = new int[Defines.ROWS_PER_PAGE+1];
-            mAllocTouchYBorders = Allocation.createSized(mRS, Element.USER_I32,
+            mAllocTouchYBorders = Allocation.createSized(mRS, Element.USER_I32(mRS),
                     mTouchYBorders.length);
             mAllocTouchYBorders.data(mTouchYBorders);
-
-            Log.e("rs", "Done loading named");
         }
 
         private void initData() {
@@ -596,7 +599,7 @@ public class AllAppsView extends RSSurfaceView
             mParams.bubbleBitmapHeight = bubble.getBitmapHeight();
 
             mScrollHandle = Allocation.createFromBitmapResource(mRS, mRes,
-                    R.drawable.all_apps_button_pow2, Element.RGBA_8888, false);
+                    R.drawable.all_apps_button_pow2, Element.RGBA_8888(mRS), false);
             mScrollHandle.uploadToTexture(0);
             mParams.scrollHandleId = mScrollHandle.getID();
             Log.d(TAG, "mParams.scrollHandleId=" + mParams.scrollHandleId);
@@ -644,15 +647,20 @@ public class AllAppsView extends RSSurfaceView
 
         private void setApps(ArrayList<ApplicationInfo> list) {
             final int count = list != null ? list.size() : 0;
+            int allocCount = count;
+            if(allocCount < 1) {
+                allocCount = 1;
+            }
+
             mIcons = new Allocation[count];
-            mIconIds = new int[count];
-            mAllocIconID = Allocation.createSized(mRS, Element.USER_I32, count);
+            mIconIds = new int[allocCount];
+            mAllocIconID = Allocation.createSized(mRS, Element.USER_I32(mRS), allocCount);
 
             mLabels = new Allocation[count];
-            mLabelIds = new int[count];
-            mAllocLabelID = Allocation.createSized(mRS, Element.USER_I32, count);
+            mLabelIds = new int[allocCount];
+            mAllocLabelID = Allocation.createSized(mRS, Element.USER_I32(mRS), allocCount);
 
-            Element ie8888 = Element.RGBA_8888;
+            Element ie8888 = Element.RGBA_8888(mRS);
 
             Utilities.BubbleText bubble = new Utilities.BubbleText(getContext());
 
@@ -660,9 +668,9 @@ public class AllAppsView extends RSSurfaceView
                 final ApplicationInfo item = list.get(i);
 
                 mIcons[i] = Allocation.createFromBitmap(mRS, item.iconBitmap,
-                        Element.RGBA_8888, false);
+                        Element.RGBA_8888(mRS), false);
                 mLabels[i] = Allocation.createFromBitmap(mRS, item.titleBitmap,
-                        Element.RGBA_8888, false);
+                        Element.RGBA_8888(mRS), false);
 
                 mIcons[i].uploadToTexture(0);
                 mLabels[i].uploadToTexture(0);
@@ -671,10 +679,8 @@ public class AllAppsView extends RSSurfaceView
                 mLabelIds[i] = mLabels[i].getID();
             }
 
-            if(count > 0) {
-                mAllocIconID.data(mIconIds);
-                mAllocLabelID.data(mLabelIds);
-            }
+            mAllocIconID.data(mIconIds);
+            mAllocLabelID.data(mLabelIds);
 
             mState.iconCount = count;
 
@@ -769,7 +775,7 @@ public class AllAppsView extends RSSurfaceView
                         mAllAppsList.get(index).iconBitmap);
 
                 mSelectedIcon = Allocation.createFromBitmap(mRS, selectionBitmap,
-                        Element.RGBA_8888, false);
+                        Element.RGBA_8888(mRS), false);
                 mSelectedIcon.uploadToTexture(0);
                 mState.selectedIconTexture = mSelectedIcon.getID();
             }
