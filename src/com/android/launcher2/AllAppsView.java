@@ -87,6 +87,7 @@ public class AllAppsView extends RSSurfaceView
     private int mMotionDownRawY;
     private int mScrollHandleTop;
     private long mTouchTime;
+    private boolean mZoomSwipeInProgress;
 
     static class Defines {
         private static float farSize(float sizeAt0) {
@@ -236,16 +237,17 @@ public class AllAppsView extends RSSurfaceView
             break;
         case MotionEvent.ACTION_UP:
         case MotionEvent.ACTION_CANCEL:
+            if (!mZoomSwipeInProgress) {
+                mRollo.mState.newPositionX = ev.getRawX() / Defines.SCREEN_WIDTH_PX;
+                mRollo.mState.newTouchDown = 0;
 
-            mRollo.mState.newPositionX = ev.getRawX() / Defines.SCREEN_WIDTH_PX;
-            mRollo.mState.newTouchDown = 0;
-
-            mVelocity.computeCurrentVelocity(1000 /* px/sec */,
-                    mConfig.getScaledMaximumFlingVelocity());
-            mRollo.mState.flingVelocityX = mVelocity.getXVelocity() / Defines.SCREEN_WIDTH_PX;
-            mRollo.clearSelectedIcon();
-            mRollo.mState.save();
-            mRollo.mInvokeFling.execute();
+                mVelocity.computeCurrentVelocity(1000 /* px/sec */,
+                        mConfig.getScaledMaximumFlingVelocity());
+                mRollo.mState.flingVelocityX = mVelocity.getXVelocity() / Defines.SCREEN_WIDTH_PX;
+                mRollo.clearSelectedIcon();
+                mRollo.mState.save();
+                mRollo.mInvokeFling.execute();
+            }
             mLastMotionX = -10000;
             mVelocity.recycle();
             mVelocity = null;
@@ -295,6 +297,15 @@ public class AllAppsView extends RSSurfaceView
     }
 
     public void onDropCompleted(View target, boolean success) {
+    }
+
+    public void setZoomSwipeInProgress(boolean swiping, boolean touchStillDown) {
+        mZoomSwipeInProgress = swiping;
+        if (!touchStillDown) {
+            mRollo.mState.newTouchDown = 0;
+            mRollo.mState.save();
+            mRollo.mInvokeTouchUp.execute();
+        }
     }
 
     public void setZoomTarget(float amount) {
@@ -403,6 +414,7 @@ public class AllAppsView extends RSSurfaceView
         private Script.Invokable mInvokeFling;
         private Script.Invokable mInvokeSetZoomTarget;
         private Script.Invokable mInvokeSetZoom;
+        private Script.Invokable mInvokeTouchUp;
 
         private Sampler mSampler;
         private Sampler mSamplerText;
@@ -631,6 +643,7 @@ public class AllAppsView extends RSSurfaceView
             mInvokeFling = sb.addInvokable("fling");
             mInvokeSetZoomTarget = sb.addInvokable("setZoomTarget");
             mInvokeSetZoom = sb.addInvokable("setZoom");
+            mInvokeTouchUp = sb.addInvokable("touchUp");
             mScript = sb.create();
             mScript.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
