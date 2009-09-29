@@ -1,7 +1,7 @@
 #pragma version(1)
 #pragma stateVertex(PV)
-#pragma stateFragment(PF)
-#pragma stateFragmentStore(PFS)
+#pragma stateFragment(PFTexLinear)
+#pragma stateStore(PSIcons)
 
 #define PI 3.14159f
 
@@ -89,7 +89,6 @@ void fling() {
     if (g_PosPage > (g_PageCount - 1)) {
         g_PosVelocity = minf(0, g_PosVelocity);
     }
-    //g_Zoom += (maxf(fabsf(g_PosVelocity), 3) - 3) / 2.f;
 }
 
 void touchUp() {
@@ -128,18 +127,10 @@ void updatePos() {
         return;
     }
 
-    //debugF("g_PosPage", g_PosPage);
-    //debugF("  g_PosVelocity", g_PosVelocity);
-
     float tablePosNorm = fracf(g_PosPage + 0.5f);
     float tablePosF = tablePosNorm * g_PhysicsTableSize;
     int tablePosI = tablePosF;
     float tablePosFrac = tablePosF - tablePosI;
-    //debugF("tablePosNorm", tablePosNorm);
-    //debugF("tablePosF", tablePosF);
-    //debugF("tablePosI", tablePosI);
-    //debugF("tablePosFrac", tablePosFrac);
-
     float accel = lerpf(g_AttractionTable[tablePosI],
                         g_AttractionTable[tablePosI + 1],
                         tablePosFrac) * g_DT;
@@ -257,14 +248,14 @@ draw_page(int icon, int lastIcon, float centerAngle, float scale)
 
             color(1.0f, 1.0f, 1.0f, 0.99f);
             if (state->selectedIconIndex == icon) {
-                bindTexture(NAMED_PF, 0, state->selectedIconTexture);
+                bindTexture(NAMED_PFTexLinear, 0, state->selectedIconTexture);
                 drawQuadTexCoords(
                         iconLeftX, iconTextureTop, iconLeftZ,       0.0f, 0.0f,
                         iconRightX, iconTextureTop, iconRightZ,     1.0f, 0.0f,
                         iconRightX, iconTextureBottom, iconRightZ,  1.0f, 1.0f,
                         iconLeftX, iconTextureBottom, iconLeftZ,    0.0f, 1.0f);
             } else {
-                bindTexture(NAMED_PF, 0, loadI32(ALLOC_ICON_IDS, icon));
+                bindTexture(NAMED_PFTexLinear, 0, loadI32(ALLOC_ICON_IDS, icon));
                 drawQuadTexCoords(
                         iconLeftX, iconTextureTop, iconLeftZ,       0.0f, 0.0f,
                         iconRightX, iconTextureTop, iconRightZ,     1.0f, 0.0f,
@@ -281,7 +272,7 @@ draw_page(int icon, int lastIcon, float centerAngle, float scale)
                 float labelLeftX = centerX - farLabelWidth * 0.5f;
                 float labelRightX = centerX + farLabelWidth * 0.5f;
 
-                bindTexture(NAMED_PF, 0, loadI32(ALLOC_LABEL_IDS, icon));
+                bindTexture(NAMED_PFTexLinear, 0, loadI32(ALLOC_LABEL_IDS, icon));
                 drawQuadTexCoords(
                         labelLeftX, labelTop, centerZ,       0.0f, 0.0f,
                         labelRightX, labelTop, centerZ,      labelTextureWidth, 0.0f,
@@ -346,9 +337,6 @@ main(int launchID)
     //debugF("    draw g_PosPage", g_PosPage);
 
     // Draw the icons ========================================
-    bindProgramVertex(NAMED_PV);
-    bindProgramFragment(NAMED_PF);
-    bindProgramFragmentStore(NAMED_PFS);
 
     // Bug makes 1.0f alpha fail.
     color(1.0f, 1.0f, 1.0f, 0.99f);
