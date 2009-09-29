@@ -34,6 +34,8 @@ import android.content.pm.ServiceInfo;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -47,6 +49,7 @@ import android.service.wallpaper.WallpaperService;
 import android.service.wallpaper.WallpaperSettingsActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -228,7 +231,15 @@ public class LiveWallpaperPickActivity
         int listSize = list.size();
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        Drawable galleryIcon = this.getResources().getDrawable(
+            R.drawable.livewallpaper_placeholder);
+        int galleryIconW = galleryIcon.getIntrinsicWidth();
+        int galleryIconH = galleryIcon.getIntrinsicHeight();
         
+        Paint pt = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.DITHER_FLAG);
+        pt.setTextAlign(Paint.Align.CENTER);
+
         for (int i = 0; i < listSize; i++) {
             ResolveInfo resolveInfo = list.get(i);
             ComponentInfo ci = resolveInfo.serviceInfo;
@@ -252,25 +263,24 @@ public class LiveWallpaperPickActivity
 
             Drawable thumb = winfo.loadThumbnail(mPackageManager);
             if (null == thumb) {
-                // TODO dsandler: replace with pretty placeholder
+                final int thumbWidth = (int)(180 * metrics.density);
+                final int thumbHeight = (int)(160 * metrics.density);
                 Bitmap thumbBit = Bitmap.createBitmap(
-                    (int)(240 * metrics.density),
-                    (int)(240 * metrics.density),
+                    thumbWidth, thumbHeight, 
                     Bitmap.Config.ARGB_8888);
-                android.graphics.Canvas can = new android.graphics.Canvas(thumbBit);
-                android.graphics.Paint pt = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG|android.graphics.Paint.DITHER_FLAG);
-                pt.setARGB(255, 0, 0, 255);
+                Canvas can = new Canvas(thumbBit);
+                pt.setARGB(204,102,102,102);
                 can.drawPaint(pt);
+
+                galleryIcon.setBounds(0,0,thumbWidth,thumbHeight);
+                ((BitmapDrawable)galleryIcon).setGravity(Gravity.CENTER);
+                galleryIcon.draw(can);
+
                 pt.setARGB(255, 255, 255, 255);
-                pt.setTextSize(12 * metrics.density);
-                can.drawText(className,
-                    (int)(12 * metrics.density), 
-                    (int)(thumbBit.getHeight()-12 * metrics.density),
-                    pt);
-                pt.setTextSize(100 * metrics.density);
-                can.drawText(String.format("#%d", i), 
-                    (int)(thumbBit.getWidth()*0.3),
-                    (int)(thumbBit.getHeight()*0.5),
+                pt.setTextSize(20 * metrics.density);
+                can.drawText(className.substring(className.lastIndexOf('.')+1),
+                    (int)(thumbWidth*0.5),
+                    (int)(thumbHeight-22*metrics.density),
                     pt);
                 thumb = new BitmapDrawable(thumbBit);
             }
