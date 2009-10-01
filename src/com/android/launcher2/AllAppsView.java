@@ -486,7 +486,6 @@ public class AllAppsView extends RSSurfaceView
             public int newTouchDown;
             public float flingVelocityX;
             public int iconCount;
-            public int scrollX;
             public int selectedIconIndex = -1;
             public int selectedIconTexture;
             public float zoomTarget;
