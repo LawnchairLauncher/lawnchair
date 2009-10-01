@@ -403,6 +403,8 @@ final class Utilities {
             mBitmapWidth = roundToPow2((int)(mBubbleRect.width() + 0.5f));
             mBitmapHeight = roundToPow2((int)((MAX_LINES * mLineHeight) + leading + 0.5f));
 
+            mBubbleRect.offsetTo((mBitmapWidth-mBubbleRect.width())/2, 0);
+
             Log.d(TAG, "mBitmapWidth=" + mBitmapWidth + " mBitmapHeight="
                     + mBitmapHeight + " w=" + ((int)(mBubbleRect.width() + 0.5f))
                     + " h=" + ((int)((MAX_LINES * mLineHeight) + leading + 0.5f)));
@@ -425,7 +427,10 @@ final class Utilities {
                 //c.drawRoundRect(bubbleRect, mCornerRadius, mCornerRadius, mRectPaint);
             //}
             for (int i=0; i<lineCount; i++) {
-                int x = (int)((mBubbleRect.width() - layout.getLineMax(i)) / 2.0f);
+                //int x = (int)((mBubbleRect.width() - layout.getLineMax(i)) / 2.0f);
+                //int y = mFirstLineY + (i * mLineHeight);
+                int x = (int)(mBubbleRect.left
+                        + ((mBubbleRect.width() - layout.getLineMax(i)) / 2.0f));
                 int y = mFirstLineY + (i * mLineHeight);
                 c.drawText(text.substring(layout.getLineStart(i), layout.getLineEnd(i)),
                         x, y, mTextPaint);
