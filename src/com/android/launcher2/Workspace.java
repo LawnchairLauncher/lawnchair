@@ -37,7 +37,6 @@ import android.widget.Scroller;
 import android.widget.TextView;
 import android.os.Parcelable;
 import android.os.Parcel;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -997,7 +996,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         cellLayout.addView(view, insertAtFirst ? 0 : -1);
         view.setOnLongClickListener(mLongClickListener);
         if (view instanceof DropTarget) {
-            mDragController.addDropTarget((DropTarget)view);
+            mDragController.addDropTarget((DropTarget) view);
         }
 
         mTargetCell = estimateDropCell(x, y, 1, 1, view, cellLayout, mTargetCell);
@@ -1092,6 +1091,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     public void onDropCompleted(View target, boolean success) {
+        clearVacantCache();
+
         if (success){
             if (target != this && mDragInfo != null) {
                 final CellLayout cellLayout = (CellLayout) getChildAt(mDragInfo.screen);
@@ -1099,7 +1100,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                 if (mDragInfo.cell instanceof DropTarget) {
                     mDragController.removeDropTarget((DropTarget)mDragInfo.cell);
                 }
-                final Object tag = mDragInfo.cell.getTag();
+                //final Object tag = mDragInfo.cell.getTag();
             }
         } else {
             if (mDragInfo != null) {
