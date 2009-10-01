@@ -129,7 +129,7 @@ public class AllAppsView extends RSSurfaceView
         mConfig = ViewConfiguration.get(context);
         setOnClickListener(this);
         setOnLongClickListener(this);
-        setOnTop(true);
+        setZOrderOnTop(true);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
     }
 
