@@ -56,7 +56,7 @@ final class Utilities {
     private static final Paint sEmptyPaint = new Paint();
     private static final Rect sBounds = new Rect();
     private static final Rect sOldBounds = new Rect();
-    private static Canvas sCanvas = new Canvas();
+    private static final Canvas sCanvas = new Canvas();
 
     static {
         sCanvas.setDrawFilter(new PaintFlagsDrawFilter(Paint.DITHER_FLAG,
@@ -104,7 +104,6 @@ final class Utilities {
             int width = sIconWidth;
             int height = sIconHeight;
 
-            float scale = 1.0f;
             if (icon instanceof PaintDrawable) {
                 PaintDrawable painter = (PaintDrawable) icon;
                 painter.setIntrinsicWidth(width);
@@ -120,8 +119,8 @@ final class Utilities {
             int iconWidth = icon.getIntrinsicWidth();
             int iconHeight = icon.getIntrinsicHeight();
 
-            if (iconWidth > 0 && iconWidth > 0) {
-                if (width < iconWidth || height < iconHeight || scale != 1.0f) {
+            if (iconWidth > 0 && iconHeight > 0) {
+                if (width < iconWidth || height < iconHeight) {
                     final float ratio = (float) iconWidth / iconHeight;
 
                     if (iconWidth > iconHeight) {
@@ -182,7 +181,6 @@ final class Utilities {
             int width = sIconWidth;
             int height = sIconHeight;
 
-            float scale = 1.0f;
             if (icon instanceof PaintDrawable) {
                 PaintDrawable painter = (PaintDrawable) icon;
                 painter.setIntrinsicWidth(width);
@@ -200,7 +198,7 @@ final class Utilities {
 
             if (sourceWidth > 0 && sourceWidth > 0) {
                 // There are intrinsic sizes.
-                if (width < sourceWidth || height < sourceHeight || scale != 1.0f) {
+                if (width < sourceWidth || height < sourceHeight) {
                     // It's too big, scale it down.
                     final float ratio = (float) sourceWidth / sourceHeight;
                     if (sourceWidth > sourceHeight) {
@@ -211,7 +209,7 @@ final class Utilities {
                 } else if (sourceWidth < width && sourceHeight < height) {
                     // It's small, use the size they gave us.
                     width = sourceWidth;
-                    height = sourceWidth;
+                    height = sourceHeight;
                 }
             }
 
@@ -295,27 +293,40 @@ final class Utilities {
             final int bitmapWidth = bitmap.getWidth();
             final int bitmapHeight = bitmap.getHeight();
 
-            if (width > 0 && height > 0 && (width < bitmapWidth || height < bitmapHeight)) {
-                final float ratio = (float) bitmapWidth / bitmapHeight;
-
-                if (bitmapWidth > bitmapHeight) {
-                    height = (int) (width / ratio);
-                } else if (bitmapHeight > bitmapWidth) {
-                    width = (int) (height * ratio);
+            if (width > 0 && height > 0) {
+                if (width < bitmapWidth || height < bitmapHeight) {
+                    final float ratio = (float) bitmapWidth / bitmapHeight;
+        
+                    if (bitmapWidth > bitmapHeight) {
+                        height = (int) (width / ratio);
+                    } else if (bitmapHeight > bitmapWidth) {
+                        width = (int) (height * ratio);
+                    }
+        
+                    final Bitmap.Config c = (width == sIconWidth && height == sIconHeight) ?
+                            bitmap.getConfig() : Bitmap.Config.ARGB_8888;
+                    final Bitmap thumb = Bitmap.createBitmap(sIconWidth, sIconHeight, c);
+                    final Canvas canvas = sCanvas;
+                    final Paint paint = sPaint;
+                    canvas.setBitmap(thumb);
+                    paint.setDither(false);
+                    paint.setFilterBitmap(true);
+                    sBounds.set((sIconWidth - width) / 2, (sIconHeight - height) / 2, width, height);
+                    sOldBounds.set(0, 0, bitmapWidth, bitmapHeight);
+                    canvas.drawBitmap(bitmap, sOldBounds, sBounds, paint);
+                    return thumb;
+                } else if (bitmapWidth < width || bitmapHeight < height) {
+                    final Bitmap.Config c = Bitmap.Config.ARGB_8888;
+                    final Bitmap thumb = Bitmap.createBitmap(sIconWidth, sIconHeight, c);
+                    final Canvas canvas = sCanvas;
+                    final Paint paint = sPaint;
+                    canvas.setBitmap(thumb);
+                    paint.setDither(false);
+                    paint.setFilterBitmap(true);
+                    canvas.drawBitmap(bitmap, (sIconWidth - bitmapWidth) / 2,
+                            (sIconHeight - bitmapHeight) / 2, paint);
+                    return thumb;
                 }
-
-                final Bitmap.Config c = (width == sIconWidth && height == sIconHeight) ?
-                        bitmap.getConfig() : Bitmap.Config.ARGB_8888;
-                final Bitmap thumb = Bitmap.createBitmap(sIconWidth, sIconHeight, c);
-                final Canvas canvas = sCanvas;
-                final Paint paint = sPaint;
-                canvas.setBitmap(thumb);
-                paint.setDither(false);
-                paint.setFilterBitmap(true);
-                sBounds.set((sIconWidth - width) / 2, (sIconHeight - height) / 2, width, height);
-                sOldBounds.set(0, 0, bitmapWidth, bitmapHeight);
-                canvas.drawBitmap(bitmap, sOldBounds, sBounds, paint);
-                return thumb;
             }
 
             return bitmap;
@@ -337,10 +348,8 @@ final class Utilities {
     static class BubbleText {
         private static final int MAX_LINES = 2;
         private TextPaint mTextPaint;
-        private Paint mRectPaint;
 
         private float mBubblePadding;
-        private float mCornerRadius;
         private RectF mBubbleRect = new RectF();
 
         private float mTextWidth;
@@ -367,10 +376,9 @@ final class Utilities {
             bubbleRect.top = 0;
             bubbleRect.right = (int)(bubbleWidth+0.5f);
 
-            mCornerRadius = BubbleTextView.CORNER_RADIUS * scale;
             mTextWidth = bubbleWidth - mBubblePadding - mBubblePadding;
 
-            Paint rectPaint = mRectPaint = new Paint();
+            Paint rectPaint = new Paint();
             rectPaint.setColor(0xff000000);
             rectPaint.setAntiAlias(true);
 
