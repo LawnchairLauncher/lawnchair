@@ -331,10 +331,10 @@ public class AllAppsView extends RSSurfaceView
         cancelLongPress();
         mRollo.clearSelectedIcon();
         if (amount > 0.001f) {
-            mRollo.mState.zoomTarget = amount;
+            // set in readback, so we're correct even before the next frame
+            mRollo.mReadback.zoom = mRollo.mState.zoomTarget = amount;
             if (!animate) {
-                // set in readback, so we're correct even before the next frame
-                mRollo.mReadback.zoom = mRollo.mState.zoom = amount;
+                mRollo.mState.zoom = amount;
                 mRollo.mReadback.save();
             }
         } else {
