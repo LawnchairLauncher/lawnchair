@@ -262,7 +262,7 @@ public class AllAppsView extends RSSurfaceView
             return;
         }
         int index = mRollo.mState.selectedIconIndex;
-        if (mRollo.mState.flingVelocityX == 0 && index >= 0 && index < mAllAppsList.size()) {
+        if (mRollo.mReadback.velocity < 1 && index >= 0 && index < mAllAppsList.size()) {
             ApplicationInfo app = mAllAppsList.get(index);
             mLauncher.startActivitySafely(app.intent);
         }
@@ -416,17 +416,13 @@ public class AllAppsView extends RSSurfaceView
         private Script.Invokable mInvokeSetZoom;
         private Script.Invokable mInvokeTouchUp;
 
-        private Sampler mSampler;
-        private Sampler mSamplerText;
-        private ProgramStore mPSBackground;
+        private ProgramStore mPSIcons;
         private ProgramStore mPSText;
-        private ProgramFragment mPFDebug;
-        private ProgramFragment mPFImages;
-        private ProgramFragment mPFOrtho;
+        private ProgramFragment mPFColor;
+        private ProgramFragment mPFTexLinear;
+        private ProgramFragment mPFTexNearest;
         private ProgramVertex mPV;
-        private ProgramVertex.MatrixAllocation mPVAlloc;
         private ProgramVertex mPVOrtho;
-        private ProgramVertex.MatrixAllocation mPVOrthoAlloc;
 
         private Allocation mScrollHandle;
 
@@ -518,75 +514,76 @@ public class AllAppsView extends RSSurfaceView
             mRes = res;
             mWidth = width;
             mHeight = height;
+            initProgramVertex();
+            initProgramFragment();
+            initProgramStore();
             initGl();
             initData();
             initTouchState();
             initRs();
         }
 
-        private void initGl() {
-            Sampler.Builder sb = new Sampler.Builder(mRS);
-            sb.setMin(Sampler.Value.LINEAR);//_MIP_LINEAR);
-            sb.setMag(Sampler.Value.LINEAR);
-            sb.setWrapS(Sampler.Value.CLAMP);
-            sb.setWrapT(Sampler.Value.CLAMP);
-            mSampler = sb.create();
-
-            sb.setMin(Sampler.Value.NEAREST);
-            sb.setMag(Sampler.Value.NEAREST);
-            mSamplerText = sb.create();
-
-            ProgramFragment.Builder dbg = new ProgramFragment.Builder(mRS, null, null);
-            mPFDebug = dbg.create();
-            mPFDebug.setName("PFDebug");
-
-            ProgramFragment.Builder bf = new ProgramFragment.Builder(mRS, null, null);
-            bf.setTexEnable(true, 0);
-            bf.setTexEnvMode(ProgramFragment.EnvMode.MODULATE, 0);
-            mPFImages = bf.create();
-            mPFImages.setName("PF");
-            mPFImages.bindSampler(mSampler, 0);
-
-            bf.setTexEnvMode(ProgramFragment.EnvMode.MODULATE, 0);
-            //mPFOrtho = bf.create();
-            mPFOrtho = (new ProgramFragment.Builder(mRS, null, null)).create();
-            mPFOrtho.setName("PFOrtho");
-            mPFOrtho.bindSampler(mSamplerText, 0);
-
-            ProgramStore.Builder bs = new ProgramStore.Builder(mRS, null, null);
-            bs.setDepthFunc(ProgramStore.DepthFunc.ALWAYS);
-            bs.setDitherEnable(false);
-            bs.setDepthMask(true);
-            bs.setBlendFunc(ProgramStore.BlendSrcFunc.SRC_ALPHA,
-                            ProgramStore.BlendDstFunc.ONE_MINUS_SRC_ALPHA);
-            mPSBackground = bs.create();
-            mPSBackground.setName("PFS");
-
-            bs.setDepthFunc(ProgramStore.DepthFunc.ALWAYS);
-            bs.setDepthMask(false);
-            bs.setBlendFunc(ProgramStore.BlendSrcFunc.SRC_ALPHA,
-                            ProgramStore.BlendDstFunc.ONE_MINUS_SRC_ALPHA);
-            mPSText = bs.create();
-            mPSText.setName("PFSText");
-
-            mPVAlloc = new ProgramVertex.MatrixAllocation(mRS);
-            mPVAlloc.setupProjectionNormalized(mWidth, mHeight);
+        private void initProgramVertex() {
+            ProgramVertex.MatrixAllocation pva = new ProgramVertex.MatrixAllocation(mRS);
+            pva.setupProjectionNormalized(mWidth, mHeight);
 
             ProgramVertex.Builder pvb = new ProgramVertex.Builder(mRS, null, null);
             mPV = pvb.create();
             mPV.setName("PV");
-            mPV.bindAllocation(mPVAlloc);
+            mPV.bindAllocation(pva);
 
-            mPVOrthoAlloc = new ProgramVertex.MatrixAllocation(mRS);
-            mPVOrthoAlloc.setupOrthoWindow(mWidth, mHeight);
-
+            pva = new ProgramVertex.MatrixAllocation(mRS);
+            pva.setupOrthoWindow(mWidth, mHeight);
             pvb.setTextureMatrixEnable(true);
             mPVOrtho = pvb.create();
             mPVOrtho.setName("PVOrtho");
-            mPVOrtho.bindAllocation(mPVOrthoAlloc);
+            mPVOrtho.bindAllocation(pva);
 
             mRS.contextBindProgramVertex(mPV);
+        }
 
+        private void initProgramFragment() {
+            Sampler.Builder sb = new Sampler.Builder(mRS);
+            sb.setMin(Sampler.Value.LINEAR);
+            sb.setMag(Sampler.Value.LINEAR);
+            sb.setWrapS(Sampler.Value.CLAMP);
+            sb.setWrapT(Sampler.Value.CLAMP);
+            Sampler linear = sb.create();
+
+            sb.setMin(Sampler.Value.NEAREST);
+            sb.setMag(Sampler.Value.NEAREST);
+            Sampler nearest = sb.create();
+
+            ProgramFragment.Builder bf = new ProgramFragment.Builder(mRS, null, null);
+            mPFColor = bf.create();
+            mPFColor.setName("PFColor");
+
+            bf.setTexEnable(true, 0);
+            bf.setTexEnvMode(ProgramFragment.EnvMode.MODULATE, 0);
+            mPFTexLinear = bf.create();
+            mPFTexLinear.setName("PFTexLinear");
+            mPFTexLinear.bindSampler(linear, 0);
+
+            mPFTexNearest = bf.create();
+            mPFTexNearest.setName("PFTexNearest");
+            mPFTexNearest.bindSampler(nearest, 0);
+        }
+
+        private void initProgramStore() {
+            ProgramStore.Builder bs = new ProgramStore.Builder(mRS, null, null);
+            bs.setDepthFunc(ProgramStore.DepthFunc.ALWAYS);
+            bs.setDitherEnable(true);
+            bs.setBlendFunc(ProgramStore.BlendSrcFunc.SRC_ALPHA,
+                            ProgramStore.BlendDstFunc.ONE_MINUS_SRC_ALPHA);
+            mPSIcons = bs.create();
+            mPSIcons.setName("PSIcons");
+
+            //bs.setDitherEnable(false);
+            //mPSText = bs.create();
+            //mPSText.setName("PSText");
+        }
+
+        private void initGl() {
             mTouchXBorders = new int[Defines.COLUMNS_PER_PAGE+1];
             mAllocTouchXBorders = Allocation.createSized(mRS, Element.USER_I32(mRS),
                     mTouchXBorders.length);
