@@ -204,7 +204,7 @@ public class AllAppsView extends RSSurfaceView
             mRollo.mState.newPositionX = ev.getRawX() / Defines.SCREEN_WIDTH_PX;
             mRollo.mState.newTouchDown = 1;
 
-            if (mRollo.mReadback.velocity != 0) {
+            if (!mRollo.checkClickOK()) {
                 mRollo.clearSelectedIcon();
             } else {
                 mRollo.selectIcon(x, (int)ev.getY(), mRollo.mReadback.posX);
@@ -237,17 +237,21 @@ public class AllAppsView extends RSSurfaceView
             break;
         case MotionEvent.ACTION_UP:
         case MotionEvent.ACTION_CANCEL:
-            if (!mZoomSwipeInProgress) {
-                mRollo.mState.newPositionX = ev.getRawX() / Defines.SCREEN_WIDTH_PX;
-                mRollo.mState.newTouchDown = 0;
+            mRollo.mState.newTouchDown = 0;
+            mRollo.mState.newPositionX = ev.getRawX() / Defines.SCREEN_WIDTH_PX;
 
+            if (!mZoomSwipeInProgress) {
                 mVelocity.computeCurrentVelocity(1000 /* px/sec */,
                         mConfig.getScaledMaximumFlingVelocity());
                 mRollo.mState.flingVelocityX = mVelocity.getXVelocity() / Defines.SCREEN_WIDTH_PX;
                 mRollo.clearSelectedIcon();
                 mRollo.mState.save();
                 mRollo.mInvokeFling.execute();
+            } else {
+                mRollo.mState.save();
+                mRollo.mInvokeMove.execute();
             }
+
             mLastMotionX = -10000;
             mVelocity.recycle();
             mVelocity = null;
@@ -262,7 +266,7 @@ public class AllAppsView extends RSSurfaceView
             return;
         }
         int index = mRollo.mState.selectedIconIndex;
-        if (mRollo.mReadback.velocity < 1 && index >= 0 && index < mAllAppsList.size()) {
+        if (mRollo.checkClickOK() && index >= 0 && index < mAllAppsList.size()) {
             ApplicationInfo app = mAllAppsList.get(index);
             mLauncher.startActivitySafely(app.intent);
         }
@@ -273,8 +277,8 @@ public class AllAppsView extends RSSurfaceView
             return true;
         }
         int index = mRollo.mState.selectedIconIndex;
-        Log.d(TAG, "long click! velocity=" + mRollo.mState.flingVelocityX + " index=" + index);
-        if (mRollo.mState.flingVelocityX == 0 && index >= 0 && index < mAllAppsList.size()) {
+        Log.d(TAG, "long click! velocity=" + mRollo.mReadback.velocity + " index=" + index);
+        if (mRollo.checkClickOK() && index >= 0 && index < mAllAppsList.size()) {
             ApplicationInfo app = mAllAppsList.get(index);
 
             // We don't really have an accurate location to use.  This will do.
@@ -454,6 +458,12 @@ public class AllAppsView extends RSSurfaceView
             void save() {
                 mAlloc.data(this);
             }
+        }
+
+        private boolean checkClickOK() {
+            //android.util.Log.e("rs", "check click " + Float.toString(mReadback.velocity) + ", " + Float.toString(mReadback.posX));
+            return (Math.abs(mReadback.velocity) < 0.1f) &&
+                   (Math.abs(mReadback.posX - Math.round(mReadback.posX)) < 0.1f);
         }
 
         class Params extends BaseAlloc {
