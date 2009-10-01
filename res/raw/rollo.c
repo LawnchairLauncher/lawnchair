@@ -65,6 +65,7 @@ void move() {
     }
     g_LastTouchDown = state->newTouchDown;
     g_LastPositionX = state->newPositionX;
+    //debugF("Move P", g_PosPage);
 }
 
 void fling() {
@@ -89,6 +90,7 @@ void fling() {
     if (g_PosPage > (g_PageCount - 1)) {
         g_PosVelocity = minf(0, g_PosVelocity);
     }
+    //debugF("fling v", g_PosVelocity);
 }
 
 void touchUp() {
@@ -210,10 +212,7 @@ draw_page(int icon, int lastIcon, float centerAngle, float scale)
     float farIconTextureSize = far_size(2 * ICON_TEXTURE_WIDTH_PX / (float)SCREEN_WIDTH_PX);
 
     float normalizedLabelWidth = 2 * params->bubbleWidth / (float)SCREEN_WIDTH_PX;
-    float farLabelWidth = far_size(normalizedLabelWidth);
     float farLabelHeight = far_size(params->bubbleHeight * (normalizedLabelWidth / params->bubbleWidth));
-    float labelTextureWidth = (float)params->bubbleWidth / params->bubbleBitmapWidth;
-    float labelTextureHeight = (float)params->bubbleHeight / params->bubbleBitmapHeight;
 
     for (row=0; row<ROWS_PER_PAGE && icon<=lastIcon; row++) {
         float angle = centerAngle;
@@ -223,9 +222,7 @@ draw_page(int icon, int lastIcon, float centerAngle, float scale)
                 - row * (farIconSize + iconGutterHeight);
         float iconBottom = iconTop - farIconSize;
 
-        float labelTop = iconBottom - (.1 * farLabelHeight);
-        float labelBottom = labelTop - farLabelHeight;
-
+        float labelY = iconBottom - farLabelHeight;
         float iconTextureTop = iconTop + (0.5f * (farIconTextureSize - farIconSize));
         float iconTextureBottom = iconTextureTop - farIconTextureSize;
 
@@ -241,10 +238,10 @@ draw_page(int icon, int lastIcon, float centerAngle, float scale)
                 centerX *= scale;
             }
 
-            float iconLeftX = centerX  - (cosine * farIconTextureSize * .5);
-            float iconRightX = centerX + (cosine * farIconTextureSize * .5);
-            float iconLeftZ = centerZ + (sine * farIconTextureSize * .5);
-            float iconRightZ = centerZ - (sine * farIconTextureSize * .5);
+            float iconLeftX = centerX  - (/*cosine * */ farIconTextureSize * .5);
+            float iconRightX = centerX + (/*cosine * */ farIconTextureSize * .5);
+            float iconLeftZ = centerZ;// + (sine * farIconTextureSize * .5);
+            float iconRightZ = centerZ;// - (sine * farIconTextureSize * .5);
 
             color(1.0f, 1.0f, 1.0f, 0.99f);
             if (state->selectedIconIndex == icon) {
@@ -265,19 +262,11 @@ draw_page(int icon, int lastIcon, float centerAngle, float scale)
 
             // label
             if (scale < 1.2f) {
-                float a = maxf(scale, 1.0f);
-                a = (1.2f - a) * 5;
+                float a = (1.2f - maxf(scale, 1.0f)) * 5;
                 color(1.0f, 1.0f, 1.0f, a);
-
-                float labelLeftX = centerX - farLabelWidth * 0.5f;
-                float labelRightX = centerX + farLabelWidth * 0.5f;
-
                 bindTexture(NAMED_PFTexLinear, 0, loadI32(ALLOC_LABEL_IDS, icon));
-                drawQuadTexCoords(
-                        labelLeftX, labelTop, centerZ,       0.0f, 0.0f,
-                        labelRightX, labelTop, centerZ,      labelTextureWidth, 0.0f,
-                        labelRightX, labelBottom, centerZ,   labelTextureWidth, labelTextureHeight,
-                        labelLeftX, labelBottom, centerZ,    0.0f, labelTextureHeight);
+                drawSprite(centerX, labelY, centerZ,
+                           params->bubbleBitmapWidth, params->bubbleBitmapHeight);
             }
 
             angle += columnGutterAngle + iconWidthAngle;
@@ -320,10 +309,10 @@ main(int launchID)
             g_PosPage = 0;
         }
         return 1; // 0;
-    } else if (g_Zoom < 0.8f) {
+    } else if (g_Zoom < 0.85f) {
         pfClearColor(0.0f, 0.0f, 0.0f, g_Zoom);
     } else {
-        pfClearColor(0.0f, 0.0f, 0.0f, 0.80f);
+        pfClearColor(0.0f, 0.0f, 0.0f, 0.85f);
     }
 
     // icons & labels
