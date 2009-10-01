@@ -74,11 +74,13 @@ public class AllAppsView extends RSSurfaceView
      * TODO: What about scrolling? */
     private int mLocks = LOCK_ICONS_PENDING;
 
+    private int mSlopX;
+    private int mMaxFlingVelocity;
+
     private RenderScript mRS;
     private RolloRS mRollo;
     private ArrayList<ApplicationInfo> mAllAppsList;
 
-    private ViewConfiguration mConfig;
     private int mPageCount;
     private boolean mStartedScrolling;
     private VelocityTracker mVelocity;
@@ -126,7 +128,10 @@ public class AllAppsView extends RSSurfaceView
         super(context, attrs);
         setFocusable(true);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        mConfig = ViewConfiguration.get(context);
+        final ViewConfiguration config = ViewConfiguration.get(context);
+        mSlopX = config.getScaledTouchSlop();
+        mMaxFlingVelocity = config.getScaledMaximumFlingVelocity();
+
         setOnClickListener(this);
         setOnLongClickListener(this);
         setZOrderOnTop(true);
@@ -217,12 +222,11 @@ public class AllAppsView extends RSSurfaceView
             break;
         case MotionEvent.ACTION_MOVE:
         case MotionEvent.ACTION_OUTSIDE:
-            int slop = Math.abs(x - mLastMotionX);
-            if (!mStartedScrolling && slop < mConfig.getScaledTouchSlop()) {
-                // don't update mLastMotionX so slop is right and when we do start scrolling
+            int slopX = Math.abs(x - mLastMotionX);
+            if (!mStartedScrolling && slopX < mSlopX) {
+                // don't update mLastMotionX so slopX is right and when we do start scrolling
                 // below, we get the right delta.
             } else {
-
                 mRollo.mState.newPositionX = ev.getRawX() / Defines.SCREEN_WIDTH_PX;
                 mRollo.mState.newTouchDown = 1;
                 mRollo.mInvokeMove.execute();
@@ -241,8 +245,7 @@ public class AllAppsView extends RSSurfaceView
             mRollo.mState.newPositionX = ev.getRawX() / Defines.SCREEN_WIDTH_PX;
 
             if (!mZoomSwipeInProgress) {
-                mVelocity.computeCurrentVelocity(1000 /* px/sec */,
-                        mConfig.getScaledMaximumFlingVelocity());
+                mVelocity.computeCurrentVelocity(1000 /* px/sec */, mMaxFlingVelocity);
                 mRollo.mState.flingVelocityX = mVelocity.getXVelocity() / Defines.SCREEN_WIDTH_PX;
                 mRollo.clearSelectedIcon();
                 mRollo.mState.save();
