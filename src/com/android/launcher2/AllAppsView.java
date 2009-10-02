@@ -288,8 +288,10 @@ public class AllAppsView extends RSSurfaceView
                 }
 
                 mLastMotionX = -10000;
-                mVelocity.recycle();
-                mVelocity = null;
+                if (mVelocity != null) {
+                    mVelocity.recycle();
+                    mVelocity = null;
+                }
                 break;
             }
         }
