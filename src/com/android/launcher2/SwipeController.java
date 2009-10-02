@@ -61,7 +61,7 @@ public class SwipeController {
     public SwipeController(Context context) {
         ViewConfiguration config = ViewConfiguration.get(context);
         mSlopX = config.getScaledTouchSlop();
-        mSlopY = 3 * mSlopX / 2; // make it 50% more biased towards horizontal swiping.
+        mSlopY = 4 * mSlopX / 3; // make it 33% more biased towards horizontal swiping.
         
         DisplayMetrics display = context.getResources().getDisplayMetrics();
         mSwipeDistance = display.heightPixels / 2; // one half of the screen
