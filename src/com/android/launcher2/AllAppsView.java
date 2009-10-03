@@ -34,6 +34,7 @@ import android.renderscript.ScriptC;
 import android.renderscript.ProgramFragment;
 import android.renderscript.ProgramStore;
 import android.renderscript.Sampler;
+import android.renderscript.SimpleMesh;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -465,6 +466,7 @@ public class AllAppsView extends RSSurfaceView
         private ProgramFragment mPFTexNearest;
         private ProgramVertex mPV;
         private ProgramVertex mPVOrtho;
+        private SimpleMesh mMesh;
 
         private Allocation mHomeButton;
 
@@ -568,17 +570,73 @@ public class AllAppsView extends RSSurfaceView
             initProgramVertex();
             initProgramFragment();
             initProgramStore();
+            initMesh();
             initGl();
             initData();
             initTouchState();
             initRs();
         }
 
+        public void initMesh() {
+            SimpleMesh.TriangleMeshBuilder tm = new SimpleMesh.TriangleMeshBuilder(mRS, 3,
+                SimpleMesh.TriangleMeshBuilder.TEXTURE_0 | SimpleMesh.TriangleMeshBuilder.COLOR);
+
+            for (int ct=0; ct < 450; ct++) {
+                float x = 0;
+                float z = 0;
+                float l = 1.f;
+
+                if (ct < 190) {
+                    z = 0.1f + 0.05f * (190 - ct);
+                    x = -1;
+                    l = 0.125f + (0.125f / 190.f) * ct;
+                } else if (ct >= 190 && ct < 200) {
+                    float a = (3.14f * 0.5f) * (0.1f * (ct - 200));
+                    float s = (float)Math.sin(a);
+                    float c = (float)Math.cos(a);
+                    x = -0.9f + s * 0.1f;
+                    z = 0.1f - c * 0.1f;
+                    l = 0.25f + 0.075f * (ct - 190);
+                } else if (ct >= 200 && ct < 250) {
+                    z = 0.f;
+                    x = -0.9f + (1.8f * (ct - 200) / 50.f);
+                } else if (ct >= 250 && ct < 260) {
+                    float a = (3.14f * 0.5f) * (0.1f * (ct - 250));
+                    float s = (float)Math.sin(a);
+                    float c = (float)Math.cos(a);
+                    x = 0.9f + s * 0.1f;
+                    z = 0.1f - c * 0.1f;
+                    l = 0.25f + 0.075f * (260 - ct);
+                } else if (ct >= 260) {
+                    z = 0.1f + 0.05f * (ct - 260);
+                    x = 1;
+                    l = 0.125f + (0.125f / 190.f) * (450 - ct);
+                }
+                //Log.e("rs", "ct " + Integer.toString(ct) + "  x = " + Float.toString(x) + ", z = " + Float.toString(z));
+                //Log.e("rs", "ct " + Integer.toString(ct) + "  l = " + Float.toString(l));
+                float s = ct * 0.1f;
+                tm.setColor(l, l, l, 0.99f);
+                tm.setTexture(s, 1);
+                tm.addVertex(x, -0.5f, z);
+                tm.setTexture(s, 0);
+                tm.addVertex(x, 0.5f, z);
+            }
+            for (int ct=0; ct < (450*2 - 2); ct+= 2) {
+                tm.addTriangle(ct, ct+1, ct+2);
+                tm.addTriangle(ct+1, ct+3, ct+2);
+            }
+            mMesh = tm.create();
+            mMesh.setName("SMMesh");
+
+        }
+
+
         private void initProgramVertex() {
             ProgramVertex.MatrixAllocation pva = new ProgramVertex.MatrixAllocation(mRS);
             pva.setupProjectionNormalized(mWidth, mHeight);
 
             ProgramVertex.Builder pvb = new ProgramVertex.Builder(mRS, null, null);
+            pvb.setTextureMatrixEnable(true);
             mPV = pvb.create();
             mPV.setName("PV");
             mPV.bindAllocation(pva);
@@ -682,6 +740,7 @@ public class AllAppsView extends RSSurfaceView
         private void initRs() {
             ScriptC.Builder sb = new ScriptC.Builder(mRS);
             sb.setScript(mRes, R.raw.rollo);
+            //sb.setScript(mRes, R.raw.rollo2);
             sb.setRoot(true);
             sb.addDefines(mDefines);
             sb.setType(mParams.mType, "params", Defines.ALLOC_PARAMS);

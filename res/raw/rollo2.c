@@ -186,93 +186,39 @@ void updatePos() {
     }
 }
 
-float
-far_size(float sizeAt0)
+int positionStrip(float row, float column)
 {
-    return sizeAt0 * (RADIUS+2) / 2; // -2 is the camera z=(z-camZ)/z
+    float mat1[16];
+
+    float y =  1.2f - row * 0.6f;
+
+    float scale = 256.f / getWidth();
+    float xscale = scale * 4.55 / 1.8f / 2;
+
+    matrixLoadTranslate(mat1, 0.f, y, 0.f);
+    matrixScale(mat1, 1.f, scale, 1.f);
+    vpLoadModelMatrix(mat1);
+
+    float soff = -21.8f - (column * 1.25f);
+    matrixLoadScale(mat1, xscale, 1.f, 1.f);
+    matrixTranslate(mat1, soff, 0, 0);
+    vpLoadTextureMatrix(mat1);
+
+    return - soff * 10.f;
 }
 
-void
-draw_page(int icon, int lastIcon, float centerAngle, float scale)
+void drawIcon(float row, float column, int iconNum)
 {
-    int row;
-    int col;
+    int offset = positionStrip(row, column);
+    bindTexture(NAMED_PFTexLinear, 0, loadI32(ALLOC_ICON_IDS, iconNum));
 
-    //debugF("center angle", centerAngle);
-
-    float iconTextureWidth = ICON_WIDTH_PX / (float)ICON_TEXTURE_WIDTH_PX;
-    float iconTextureHeight = ICON_HEIGHT_PX / (float)ICON_TEXTURE_HEIGHT_PX;
-
-    float iconWidthAngle = VIEW_ANGLE * ICON_WIDTH_PX / SCREEN_WIDTH_PX;
-    float columnGutterAngle = iconWidthAngle * 0.9f;
-
-    float farIconSize = FAR_ICON_SIZE;
-    float iconGutterHeight = farIconSize * 1.3f;
-
-    float farIconTextureSize = far_size(2 * ICON_TEXTURE_WIDTH_PX / (float)SCREEN_WIDTH_PX);
-
-    float normalizedLabelWidth = 2 * params->bubbleWidth / (float)SCREEN_WIDTH_PX;
-    float farLabelHeight = far_size(params->bubbleHeight * (normalizedLabelWidth / params->bubbleWidth));
-
-    for (row=0; row<ROWS_PER_PAGE && icon<=lastIcon; row++) {
-        float angle = centerAngle;
-        angle -= (columnGutterAngle + iconWidthAngle) * 1.5f;
-
-        float iconTop = (farIconSize + iconGutterHeight) * (1.85f + ICON_TOP_OFFSET)
-                - row * (farIconSize + iconGutterHeight);
-        float iconBottom = iconTop - farIconSize;
-
-        float labelY = iconBottom - farLabelHeight;
-        float iconTextureTop = iconTop + (0.5f * (farIconTextureSize - farIconSize));
-        float iconTextureBottom = iconTextureTop - farIconTextureSize;
-
-        for (col=0; col<COLUMNS_PER_PAGE && icon<=lastIcon; col++) {
-            // icon
-            float sine = sinf(angle);
-            float cosine = cosf(angle);
-
-            float centerX = sine * RADIUS;
-            float centerZ = cosine * RADIUS / scale;
-
-            if (scale > 1.f) {
-                centerX *= scale;
-            }
-
-            float iconLeftX = centerX  - (/*cosine * */ farIconTextureSize * .5);
-            float iconRightX = centerX + (/*cosine * */ farIconTextureSize * .5);
-            float iconLeftZ = centerZ;// + (sine * farIconTextureSize * .5);
-            float iconRightZ = centerZ;// - (sine * farIconTextureSize * .5);
-
-            color(1.0f, 1.0f, 1.0f, 0.99f);
-            if (state->selectedIconIndex == icon) {
-                bindTexture(NAMED_PFTexLinear, 0, state->selectedIconTexture);
-                drawQuadTexCoords(
-                        iconLeftX, iconTextureTop, iconLeftZ,       0.0f, 0.0f,
-                        iconRightX, iconTextureTop, iconRightZ,     1.0f, 0.0f,
-                        iconRightX, iconTextureBottom, iconRightZ,  1.0f, 1.0f,
-                        iconLeftX, iconTextureBottom, iconLeftZ,    0.0f, 1.0f);
-            } else {
-                bindTexture(NAMED_PFTexLinear, 0, loadI32(ALLOC_ICON_IDS, icon));
-                drawQuadTexCoords(
-                        iconLeftX, iconTextureTop, iconLeftZ,       0.0f, 0.0f,
-                        iconRightX, iconTextureTop, iconRightZ,     1.0f, 0.0f,
-                        iconRightX, iconTextureBottom, iconRightZ,  1.0f, 1.0f,
-                        iconLeftX, iconTextureBottom, iconLeftZ,    0.0f, 1.0f);
-            }
-
-            // label
-            if (scale < 1.2f) {
-                float a = (1.2f - maxf(scale, 1.0f)) * 5;
-                color(1.0f, 1.0f, 1.0f, a);
-                bindTexture(NAMED_PFTexLinear, 0, loadI32(ALLOC_LABEL_IDS, icon));
-                drawSprite(centerX, labelY, centerZ,
-                           params->bubbleBitmapWidth, params->bubbleBitmapHeight);
-            }
-
-            angle += columnGutterAngle + iconWidthAngle;
-            icon++;
-        }
+    if (offset < 0) {
+        offset = 0;
     }
+    if (offset >= (450 - 20)) {
+        offset = (449 - 20);
+    }
+    drawSimpleMeshRange(NAMED_SMMesh, offset * 6, 20 * 6);
 }
 
 void
@@ -326,10 +272,10 @@ main(int launchID)
             g_PosPage = 0;
         }
         return 1; // 0;
-    } else if (g_Zoom < 0.85f) {
+    } else if (g_Zoom < 0.99f) {
         pfClearColor(0.0f, 0.0f, 0.0f, g_Zoom);
     } else {
-        pfClearColor(0.0f, 0.0f, 0.0f, g_Zoom);
+        pfClearColor(0.0f, 0.0f, 0.0f, 0.99f);
     }
 
     // icons & labels
@@ -345,7 +291,13 @@ main(int launchID)
     // Draw the icons ========================================
 
     // Bug makes 1.0f alpha fail.
-    color(1.0f, 1.0f, 1.0f, 0.99f);
+    //color(0.2f, 0.2f, 0.2f, 0.99f);
+    //bindProgramFragment(NAMED_PFColor);
+    //positionStrip(0, 0);
+    //drawSimpleMesh(NAMED_SMMesh);
+
+    bindProgramFragment(NAMED_PFTexLinear);
+
 
     int lastIcon = iconCount-1;
 
@@ -353,43 +305,60 @@ main(int launchID)
     float currentPagePosition = g_PosPage - page;
 
     int iconsPerPage = COLUMNS_PER_PAGE * ROWS_PER_PAGE;
-    int icon = clamp(iconsPerPage * page, 0, lastIcon);
-
     float scale = (1 / g_Zoom);
 
     float pageAngle = VIEW_ANGLE * 1.2f;
-    draw_page(icon, lastIcon, -pageAngle*currentPagePosition, scale);
-    draw_page(icon+iconsPerPage, lastIcon, (-pageAngle*currentPagePosition)+pageAngle, scale);
 
-    // Draw the border lines for debugging ========================================
-    /*
-    bindProgramVertex(NAMED_PVOrtho);
-    bindProgramFragment(NAMED_PFOrtho);
-    bindProgramFragmentStore(NAMED_PFSText);
+    float zoomOffset = 40 * (1 - g_Zoom);
+    int drawPage;
+    //lastIcon = 1;
+    for (drawPage = 0; drawPage < g_PageCount; drawPage++) {
+        int r, c;
+        for (r=0; r < 4; r++) {
+            for (c=0; c < 4; c++) {
+                int iconNum = drawPage * 16 + c + r * 4;
+                if (iconNum <= lastIcon) {
+                    float p = (((float)drawPage) - g_PosPage) * 5.f;
+                    p += c - 1.5f;
+                    p += zoomOffset;
+                    if (fabsf(p) > 2) {
+                        drawIcon(r, p, iconNum);
+                    }
+                }
+            }
+        }
+    }
 
-    color(1.0f, 1.0f, 0.0f, 0.99f);
-    int i;
-    for (i=0; i<ROWS_PER_PAGE+1; i++) {
-        int y = loadI32(ALLOC_Y_BORDERS, i);
-        drawRect(0, y, SCREEN_WIDTH_PX, y+1, 0.0f);
+    for (drawPage = 0; drawPage < g_PageCount; drawPage++) {
+        int r, c;
+        for (r=0; r < 4; r++) {
+            for (c=0; c < 4; c++) {
+                int iconNum = drawPage * 16 + c + r * 4;
+                if (iconNum <= lastIcon) {
+                    float p = (((float)drawPage) - g_PosPage) * 5.f;
+                    p += c - 1.5f;
+                    p += zoomOffset;
+                    float x = (p * 1.13f + 1.88f) * getWidth() * 0.2f;
+                    float y = 570 - r * 147;
+
+                    if (fabsf(p) <= 2) {
+                        drawIcon(r, p, iconNum);
+                    }
+                    if (fabsf(p) <= 2.5) {
+                        float a = (1.2f - maxf(scale, 1.0f)) * 5;
+                        color(1.0f, 1.0f, 1.0f, a);
+                        bindTexture(NAMED_PFTexLinear, 0, loadI32(ALLOC_LABEL_IDS, iconNum));
+                        drawSpriteScreenspace(x, y, 0,
+                                   params->bubbleBitmapWidth, params->bubbleBitmapHeight);
+                    }
+                }
+            }
+        }
+
     }
-    for (i=0; i<COLUMNS_PER_PAGE+1; i++) {
-        int x = loadI32(ALLOC_X_BORDERS, i);
-        drawRect(x, 0, x+1, SCREEN_HEIGHT_PX, 0.0f);
-    }
-    */
 
     // Draw the home button ========================================
-    draw_home_button();
-
-    /*
-    bindTexture(NAMED_PFOrtho, 0, loadI32(ALLOC_PARAMS, PARAM_SCROLL_HANDLE_ID));
-    float handleLeft = 40 + (320 * (scrollXPx/(float)(maxScrollXPx)));
-    float handleTop = 680;
-    float handleWidth = loadI32(ALLOC_PARAMS, PARAM_SCROLL_HANDLE_TEX_WIDTH);
-    float handleHeight = loadI32(ALLOC_PARAMS, PARAM_SCROLL_HANDLE_TEX_HEIGHT);
-    drawRect(handleLeft, handleTop, handleLeft+handleWidth, handleTop+handleHeight, 0.0f);
-    */
+    //draw_home_button();
 
     // Bug workaround where the last frame is not always displayed
     // So we keep rendering until the bug is fixed.
