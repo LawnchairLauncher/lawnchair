@@ -45,7 +45,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 import android.util.AttributeSet;
@@ -95,12 +94,10 @@ public class AllAppsView extends RSSurfaceView
     private int mMotionDownRawY;
     private int mHomeButtonTop;
     private long mTouchTime;
-    private boolean mZoomSwipeInProgress;
 
     static class Defines {
         public static final int ALLOC_PARAMS = 0;
         public static final int ALLOC_STATE = 1;
-        public static final int ALLOC_READBACK = 2;
         public static final int ALLOC_ICON_IDS = 3;
         public static final int ALLOC_LABEL_IDS = 4;
         public static final int ALLOC_X_BORDERS = 5;
@@ -224,7 +221,6 @@ public class AllAppsView extends RSSurfaceView
                 mMotionDownRawX = (int)ev.getRawX();
                 mMotionDownRawY = (int)ev.getRawY();
                 mLastMotionX = x;
-                mRollo.mReadback.read();
 
                 mRollo.mState.newPositionX = ev.getRawX() / mDefines.SCREEN_WIDTH_PX;
                 mRollo.mState.newTouchDown = 1;
@@ -232,7 +228,7 @@ public class AllAppsView extends RSSurfaceView
                 if (!mRollo.checkClickOK()) {
                     mRollo.clearSelectedIcon();
                 } else {
-                    mRollo.selectIcon(x, y, mRollo.mReadback.posX);
+                    mRollo.selectIcon(x, y, mRollo.mMessageProc.mPosX);
                 }
                 mRollo.mState.save();
                 mRollo.mInvokeMove.execute();
@@ -276,17 +272,12 @@ public class AllAppsView extends RSSurfaceView
                 mRollo.mState.newTouchDown = 0;
                 mRollo.mState.newPositionX = ev.getRawX() / mDefines.SCREEN_WIDTH_PX;
 
-                if (!mZoomSwipeInProgress) {
-                    mVelocity.computeCurrentVelocity(1000 /* px/sec */, mMaxFlingVelocity);
-                    mRollo.mState.flingVelocityX
-                            = mVelocity.getXVelocity() / mDefines.SCREEN_WIDTH_PX;
-                    mRollo.clearSelectedIcon();
-                    mRollo.mState.save();
-                    mRollo.mInvokeFling.execute();
-                } else {
-                    mRollo.mState.save();
-                    mRollo.mInvokeMove.execute();
-                }
+                mVelocity.computeCurrentVelocity(1000 /* px/sec */, mMaxFlingVelocity);
+                mRollo.mState.flingVelocityX
+                        = mVelocity.getXVelocity() / mDefines.SCREEN_WIDTH_PX;
+                mRollo.clearSelectedIcon();
+                mRollo.mState.save();
+                mRollo.mInvokeFling.execute();
 
                 mLastMotionX = -10000;
                 if (mVelocity != null) {
@@ -316,7 +307,7 @@ public class AllAppsView extends RSSurfaceView
             return true;
         }
         int index = mRollo.mState.selectedIconIndex;
-        Log.d(TAG, "long click! velocity=" + mRollo.mReadback.velocity + " index=" + index);
+        Log.d(TAG, "long click! velocity=" + mRollo.mMessageProc.mVelocity + " index=" + index);
         if (mRollo.checkClickOK() && index >= 0 && index < mAllAppsList.size()) {
             ApplicationInfo app = mAllAppsList.get(index);
 
@@ -348,7 +339,7 @@ public class AllAppsView extends RSSurfaceView
      * @param amount [0..1] 0 is hidden, 1 is open
      * @param animate Whether to animate.
      */
-    public void zoom(float amount, boolean animate) {
+    public void zoom(float amount) {
         if (mRollo == null) {
             return;
         }
@@ -357,43 +348,18 @@ public class AllAppsView extends RSSurfaceView
         mRollo.clearSelectedIcon();
         if (amount > 0.001f) {
             // set in readback, so we're correct even before the next frame
-            mRollo.mReadback.zoom = mRollo.mState.zoomTarget = amount;
-            if (!animate) {
-                mRollo.mState.zoom = amount;
-                mRollo.mReadback.save();
-            }
+            mRollo.mState.zoomTarget = amount;
         } else {
             mRollo.mState.zoomTarget = 0;
-            if (!animate) {
-                mRollo.mReadback.zoom = mRollo.mState.zoom = 0;
-                mRollo.mReadback.save();
-            }
         }
         mRollo.mState.save();
-        if (!animate) {
-            mRollo.mInvokeSetZoom.execute();
-        } else {
-            mRollo.mInvokeSetZoomTarget.execute();
-        }
-        mReadZoom.removeMessages(1);
-        mReadZoom.sendEmptyMessageDelayed(1, 1000);
     }
-
-    Handler mReadZoom = new Handler() {
-        public void handleMessage(Message msg) {
-            if(mRollo != null && mRollo.mReadback != null) {
-                // FIXME: These checks may indicate other problems.
-                mRollo.mReadback.read();
-            }
-        }
-    };
 
     public boolean isVisible() {
         if (mRollo == null) {
             return false;
         }
-        //mRollo.mReadback.read();
-        return mRollo.mReadback.zoom > 0.001f;
+        return mRollo.mMessageProc.mZoom > 0.001f;
     }
 
     @Override
@@ -444,8 +410,6 @@ public class AllAppsView extends RSSurfaceView
 
         private Script.Invokable mInvokeMove;
         private Script.Invokable mInvokeFling;
-        private Script.Invokable mInvokeSetZoomTarget;
-        private Script.Invokable mInvokeSetZoom;
         private Script.Invokable mInvokeTouchUp;
 
         private ProgramStore mPSIcons;
@@ -478,7 +442,6 @@ public class AllAppsView extends RSSurfaceView
 
         Params mParams;
         State mState;
-        Readback mReadback;
 
         class BaseAlloc {
             Allocation mAlloc;
@@ -489,10 +452,23 @@ public class AllAppsView extends RSSurfaceView
             }
         }
 
+        class AAMessage extends RenderScript.RSMessage {
+            public void run() {
+                mPosX = ((float)mData[0]) / (1 << 16);
+                mVelocity = ((float)mData[1]) / (1 << 16);
+                mZoom = ((float)mData[2]) / (1 << 16);
+                //Log.d("rs", "new msg " + mPosX + "  " + mVelocity + "  " + mZoom);
+            }
+            float mZoom;
+            float mPosX;
+            float mVelocity;
+        }
+        AAMessage mMessageProc;
+
         private boolean checkClickOK() {
             //android.util.Log.e("rs", "check click " + Float.toString(mReadback.velocity) + ", " + Float.toString(mReadback.posX));
-            return (Math.abs(mReadback.velocity) < 0.1f) &&
-                   (Math.abs(mReadback.posX - Math.round(mReadback.posX)) < 0.1f);
+            return (Math.abs(mMessageProc.mVelocity) < 0.1f) &&
+                   (Math.abs(mMessageProc.mPosX - Math.round(mMessageProc.mPosX)) < 0.1f);
         }
 
         class Params extends BaseAlloc {
@@ -521,30 +497,11 @@ public class AllAppsView extends RSSurfaceView
             public int selectedIconIndex = -1;
             public int selectedIconTexture;
             public float zoomTarget;
-            public float zoom;
 
             State() {
                 mType = Type.createFromClass(mRS, State.class, 1, "StateClass");
                 mAlloc = Allocation.createTyped(mRS, mType);
                 save();
-            }
-        }
-
-        class Readback extends BaseAlloc {
-            public float posX;
-            public float velocity;
-            public float zoom;
-
-            Readback() {
-                mType = Type.createFromClass(mRS, Readback.class, 1, "ReadbackClass");
-                mAlloc = Allocation.createTyped(mRS, mType);
-                save();
-            }
-
-            void read() {
-                if(mAlloc != null) {
-                    mAlloc.read(this);
-                }
             }
         }
 
@@ -670,6 +627,7 @@ public class AllAppsView extends RSSurfaceView
         private void initProgramStore() {
             ProgramStore.Builder bs = new ProgramStore.Builder(mRS, null, null);
             bs.setDepthFunc(ProgramStore.DepthFunc.ALWAYS);
+            bs.setColorMask(true,true,true,false);
             bs.setDitherEnable(true);
             bs.setBlendFunc(ProgramStore.BlendSrcFunc.SRC_ALPHA,
                             ProgramStore.BlendDstFunc.ONE_MINUS_SRC_ALPHA);
@@ -696,7 +654,6 @@ public class AllAppsView extends RSSurfaceView
         private void initData() {
             mParams = new Params();
             mState = new State();
-            mReadback = new Readback();
 
             final Utilities.BubbleText bubble = new Utilities.BubbleText(getContext());
 
@@ -716,7 +673,6 @@ public class AllAppsView extends RSSurfaceView
 
             mParams.save();
             mState.save();
-            mReadback.save();
 
             mSelectionBitmap = Bitmap.createBitmap(Defines.ICON_TEXTURE_WIDTH_PX,
                     Defines.ICON_TEXTURE_HEIGHT_PX, Bitmap.Config.ARGB_8888);
@@ -734,23 +690,21 @@ public class AllAppsView extends RSSurfaceView
             sb.addDefines(mDefines);
             sb.setType(mParams.mType, "params", Defines.ALLOC_PARAMS);
             sb.setType(mState.mType, "state", Defines.ALLOC_STATE);
-            sb.setType(mReadback.mType, "readback", Defines.ALLOC_READBACK);
             mInvokeMove = sb.addInvokable("move");
             mInvokeFling = sb.addInvokable("fling");
-            mInvokeSetZoomTarget = sb.addInvokable("setZoomTarget");
-            mInvokeSetZoom = sb.addInvokable("setZoom");
             mInvokeTouchUp = sb.addInvokable("touchUp");
             mScript = sb.create();
             mScript.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
             mScript.bindAllocation(mParams.mAlloc, Defines.ALLOC_PARAMS);
             mScript.bindAllocation(mState.mAlloc, Defines.ALLOC_STATE);
-            mScript.bindAllocation(mReadback.mAlloc, Defines.ALLOC_READBACK);
             mScript.bindAllocation(mAllocIconID, Defines.ALLOC_ICON_IDS);
             mScript.bindAllocation(mAllocLabelID, Defines.ALLOC_LABEL_IDS);
             mScript.bindAllocation(mAllocTouchXBorders, Defines.ALLOC_X_BORDERS);
             mScript.bindAllocation(mAllocTouchYBorders, Defines.ALLOC_Y_BORDERS);
 
+            mMessageProc = new AAMessage();
+            mRS.mMessageCallback = mMessageProc;
             mRS.contextBindRootScript(mScript);
         }
 

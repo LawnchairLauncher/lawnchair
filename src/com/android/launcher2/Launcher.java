@@ -1595,7 +1595,7 @@ public final class Launcher extends Activity
     }
 
     void showAllApps() {
-        mAllAppsGrid.zoom(1.0f, true);
+        mAllAppsGrid.zoom(1.0f);
         //mWorkspace.hide();
 
         // TODO: fade these two too
@@ -1605,7 +1605,7 @@ public final class Launcher extends Activity
 
     void closeAllApps(boolean animated) {
         if (mAllAppsGrid.isVisible()) {
-            mAllAppsGrid.zoom(0.0f, animated);
+            mAllAppsGrid.zoom(0.0f);
             mWorkspace.getChildAt(mWorkspace.getCurrentScreen()).requestFocus();
 
             // TODO: fade these two too
