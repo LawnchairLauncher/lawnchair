@@ -32,5 +32,10 @@
         <item>wallpaper_sunset</item>
         <item>wallpaper_tree</item>
         <item>wallpaper_valley</item>
+        <item>wallpaper_grass_day</item>
+        <item>wallpaper_grass_dawn</item>
+        <item>wallpaper_grass_twilight</item>
+        <item>wallpaper_grass_night</item>
+        <item>wallpaper_galaxy</item>
     </string-array>
 </resources>
