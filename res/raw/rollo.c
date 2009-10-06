@@ -19,10 +19,30 @@ float g_DT;
 int g_LastTime;
 int g_PageCount;
 float g_Zoom;
-float g_ZoomTarget;
 
 // Drawing constants, should be parameters ======
 #define VIEW_ANGLE 1.28700222f
+
+float g_OldPosPage;
+float g_OldPosVelocity;
+float g_OldZoom;
+
+void updateReadback() {
+    if ((g_OldPosPage != g_PosPage) ||
+        (g_OldPosVelocity != g_PosVelocity) ||
+        (g_OldZoom != g_Zoom)) {
+
+        g_OldPosPage = g_PosPage;
+        g_OldPosVelocity = g_PosVelocity;
+        g_OldZoom = g_Zoom;
+
+        int i[3];
+        i[0] = g_PosPage * (1 << 16);
+        i[1] = g_PosVelocity * (1 << 16);
+        i[2] = g_OldZoom * (1 << 16);
+        sendToClient(&i[0], 1, 12, 1);
+    }
+}
 
 void init() {
     g_AttractionTable[0] = 6.5f;
@@ -50,7 +70,6 @@ void init() {
     g_LastTouchDown = 0;
     g_LastPositionX = 0;
     g_Zoom = 0;
-    g_ZoomTarget = 0;
 }
 
 void move() {
@@ -95,16 +114,6 @@ void fling() {
 
 void touchUp() {
     g_LastTouchDown = 0;
-}
-
-void setZoomTarget() {
-    g_ZoomTarget = state->zoomTarget;
-    //debugF("zoom target", g_ZoomTarget);
-}
-
-void setZoom() {
-    readback->zoom = g_Zoom = g_ZoomTarget = state->zoom;
-    //debugF("zoom", g_ZoomTarget);
 }
 
 int
@@ -301,8 +310,8 @@ main(int launchID)
     g_LastTime = newTime;
 
     //debugF("zoom", g_Zoom);
-    if (g_Zoom != g_ZoomTarget) {
-        float dz = (g_ZoomTarget - g_Zoom) * g_DT * 5;
+    if (g_Zoom != state->zoomTarget) {
+        float dz = (state->zoomTarget - g_Zoom) * g_DT * 5;
         if (dz && (fabsf(dz) < 0.03f)) {
             if (dz > 0) {
                 dz = 0.03f;
@@ -310,22 +319,22 @@ main(int launchID)
                 dz = -0.03f;
             }
         }
-        if (fabsf(g_Zoom - g_ZoomTarget) < fabsf(dz)) {
-            g_Zoom = g_ZoomTarget;
+        if (fabsf(g_Zoom - state->zoomTarget) < fabsf(dz)) {
+            g_Zoom = state->zoomTarget;
         } else {
             g_Zoom += dz;
         }
-        readback->zoom = g_Zoom;
+        updateReadback();
     }
 
     // Set clear value to dim the background based on the zoom position.
-    if (g_Zoom < 0.001f) {
+    if ((g_Zoom < 0.001f) && (state->zoomTarget < 0.001f)) {
         pfClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         // When we're zoomed out and not tracking motion events, reset the pos to 0.
         if (!g_LastTouchDown) {
             g_PosPage = 0;
         }
-        return 1; // 0;
+        return 1;//0;
     } else if (g_Zoom < 0.85f) {
         pfClearColor(0.0f, 0.0f, 0.0f, g_Zoom);
     } else {
@@ -337,8 +346,7 @@ main(int launchID)
     g_PageCount = count_pages(iconCount);
 
     updatePos(0.1f);
-    readback->posX = g_PosPage;
-    readback->velocity = g_PosVelocity;
+    updateReadback();
 
     //debugF("    draw g_PosPage", g_PosPage);
 
@@ -393,6 +401,6 @@ main(int launchID)
 
     // Bug workaround where the last frame is not always displayed
     // So we keep rendering until the bug is fixed.
-    return 1; //(g_PosVelocity != 0) || fracf(g_PosPage) || g_Zoom != g_ZoomTarget);
+    return 1;//(g_PosVelocity != 0) || fracf(g_PosPage) || (g_Zoom != state->zoomTarget);
 }
 
