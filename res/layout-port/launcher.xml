@@ -32,7 +32,8 @@
         android:listSelector="@drawable/grid_selector"
 
         android:verticalSpacing="10dip"
-        android:numColumns="4" />
+        android:numColumns="4"
+        />
 
     <!-- The workspace contains 3 screens of cells -->
     <com.android.launcher2.Workspace
@@ -50,7 +51,7 @@
 
     <com.android.launcher2.HandleView
         android:id="@+id/all_apps_button"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="@dimen/button_bar_height"
         android:layout_gravity="bottom|center_horizontal"
 
@@ -59,7 +60,8 @@
 
         android:scaleType="center"
         android:src="@drawable/all_apps_button"
-        launcher:direction="horizontal" />
+        launcher:direction="horizontal"
+        />
 
     <com.android.launcher2.DeleteZone
         android:id="@+id/delete_zone"
@@ -69,9 +71,8 @@
 
         android:scaleType="center"
         android:src="@drawable/delete_zone_selector"
-
         android:visibility="invisible"
-        
-        launcher:direction="horizontal" />
+        launcher:direction="horizontal"
+        />
 
 </com.android.launcher2.DragLayer>
