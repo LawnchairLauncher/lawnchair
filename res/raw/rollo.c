@@ -355,6 +355,9 @@ main(int launchID)
     // Bug makes 1.0f alpha fail.
     color(1.0f, 1.0f, 1.0f, 0.99f);
 
+    if (iconCount <= 0) {
+        return 1;
+    }
     int lastIcon = iconCount-1;
 
     int page = g_PosPage;
