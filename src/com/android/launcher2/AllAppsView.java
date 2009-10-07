@@ -20,6 +20,8 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 import java.lang.Float;
+import java.util.Collections;
+import java.util.Comparator;
 
 import android.renderscript.RSSurfaceView;
 import android.renderscript.RenderScript;
@@ -307,7 +309,7 @@ public class AllAppsView extends RSSurfaceView
             return true;
         }
         int index = mRollo.mState.selectedIconIndex;
-        Log.d(TAG, "long click! velocity=" + mRollo.mMessageProc.mVelocity + " index=" + index);
+
         if (mRollo.checkClickOK() && index >= 0 && index < mAllAppsList.size()) {
             ApplicationInfo app = mAllAppsList.get(index);
 
@@ -381,13 +383,76 @@ public class AllAppsView extends RSSurfaceView
             mRollo.setApps(list);
         }
         mPageCount = countPages(list.size());
-        Log.d(TAG, "setApps mRollo=" + mRollo + " list=" + list);
         mLocks &= ~LOCK_ICONS_PENDING;
     }
 
-    private void invokeIcon(int index) {
-        Log.d(TAG, "launch it!!!! index=" + index);
+    public void addApps(ArrayList<ApplicationInfo> list) {
+        final int N = list.size();
+        if (mRollo != null) {
+            mRollo.reallocAppsList(mRollo.mState.iconCount + N);
+        }
+
+        for (int i=0; i<N; i++) {
+            final ApplicationInfo item = list.get(i);
+            int index = Collections.binarySearch(mAllAppsList, item, mAppNameComp);
+            if (index < 0) {
+                index = -(index+1);
+            }
+            mAllAppsList.add(index, item);
+            if (mRollo != null) {
+                mRollo.addApp(index, item);
+                mRollo.mState.iconCount++;
+            }
+        }
+
+        if (mRollo != null) {
+            mRollo.saveAppsList();
+        }
     }
+
+    public void removeApps(ArrayList<ApplicationInfo> list) {
+        final int N = list.size();
+        for (int i=0; i<N; i++) {
+            final ApplicationInfo item = list.get(i);
+            int index = Collections.binarySearch(mAllAppsList, item, mAppIntentComp);
+            if (index >= 0) {
+                mAllAppsList.remove(index);
+                if (mRollo != null) {
+                    mRollo.removeApp(index);
+                    mRollo.mState.iconCount--;
+                }
+            } else {
+                Log.e(TAG, "couldn't find a match for item \"" + item + "\"");
+                // Try to recover.  This should keep us from crashing for now.
+            }
+        }
+
+        if (mRollo != null) {
+            mRollo.saveAppsList();
+        }
+    }
+
+    public void updateApps(String packageName, ArrayList<ApplicationInfo> list) {
+        // Just remove and add, because they may need to be re-sorted.
+        removeApps(list);
+        addApps(list);
+    }
+
+    private Comparator<ApplicationInfo> mAppNameComp = new Comparator<ApplicationInfo>() {
+        public int compare(ApplicationInfo a, ApplicationInfo b) {
+            int result = a.title.toString().compareTo(b.toString());
+            if (result != 0) {
+                return result;
+            }
+            return a.intent.getComponent().compareTo(b.intent.getComponent());
+        }
+    };
+
+    private Comparator<ApplicationInfo> mAppIntentComp = new Comparator<ApplicationInfo>() {
+        public int compare(ApplicationInfo a, ApplicationInfo b) {
+            return a.intent.getComponent().compareTo(b.intent.getComponent());
+        }
+    };
 
     private static int countPages(int iconCount) {
         int iconsPerPage = Defines.COLUMNS_PER_PAGE * Defines.ROWS_PER_PAGE;
@@ -425,11 +490,11 @@ public class AllAppsView extends RSSurfaceView
 
         private Allocation[] mIcons;
         private int[] mIconIds;
-        private Allocation mAllocIconID;
+        private Allocation mAllocIconIds;
 
         private Allocation[] mLabels;
         private int[] mLabelIds;
-        private Allocation mAllocLabelID;
+        private Allocation mAllocLabelIds;
         private Allocation mSelectedIcon;
 
         private int[] mTouchYBorders;
@@ -678,7 +743,6 @@ public class AllAppsView extends RSSurfaceView
                     Defines.ICON_TEXTURE_HEIGHT_PX, Bitmap.Config.ARGB_8888);
             mSelectionCanvas = new Canvas(mSelectionBitmap);
 
-            Log.d(TAG, "initData calling mRollo.setApps");
             setApps(null);
         }
 
@@ -698,8 +762,8 @@ public class AllAppsView extends RSSurfaceView
 
             mScript.bindAllocation(mParams.mAlloc, Defines.ALLOC_PARAMS);
             mScript.bindAllocation(mState.mAlloc, Defines.ALLOC_STATE);
-            mScript.bindAllocation(mAllocIconID, Defines.ALLOC_ICON_IDS);
-            mScript.bindAllocation(mAllocLabelID, Defines.ALLOC_LABEL_IDS);
+            mScript.bindAllocation(mAllocIconIds, Defines.ALLOC_ICON_IDS);
+            mScript.bindAllocation(mAllocLabelIds, Defines.ALLOC_LABEL_IDS);
             mScript.bindAllocation(mAllocTouchXBorders, Defines.ALLOC_X_BORDERS);
             mScript.bindAllocation(mAllocTouchYBorders, Defines.ALLOC_Y_BORDERS);
 
@@ -711,48 +775,123 @@ public class AllAppsView extends RSSurfaceView
         private void setApps(ArrayList<ApplicationInfo> list) {
             final int count = list != null ? list.size() : 0;
             int allocCount = count;
-            if(allocCount < 1) {
+            if (allocCount < 1) {
                 allocCount = 1;
             }
 
             mIcons = new Allocation[count];
             mIconIds = new int[allocCount];
-            mAllocIconID = Allocation.createSized(mRS, Element.USER_I32(mRS), allocCount);
+            mAllocIconIds = Allocation.createSized(mRS, Element.USER_I32(mRS), allocCount);
 
             mLabels = new Allocation[count];
             mLabelIds = new int[allocCount];
-            mAllocLabelID = Allocation.createSized(mRS, Element.USER_I32(mRS), allocCount);
+            mAllocLabelIds = Allocation.createSized(mRS, Element.USER_I32(mRS), allocCount);
 
             Element ie8888 = Element.RGBA_8888(mRS);
 
             Utilities.BubbleText bubble = new Utilities.BubbleText(getContext());
 
             for (int i=0; i<count; i++) {
-                final ApplicationInfo item = list.get(i);
-
-                mIcons[i] = Allocation.createFromBitmap(mRS, item.iconBitmap,
-                        Element.RGBA_8888(mRS), false);
-                mLabels[i] = Allocation.createFromBitmap(mRS, item.titleBitmap,
-                        Element.RGBA_8888(mRS), false);
-
-                mIcons[i].uploadToTexture(0);
-                mLabels[i].uploadToTexture(0);
-
-                mIconIds[i] = mIcons[i].getID();
-                mLabelIds[i] = mLabels[i].getID();
+                uploadAppIcon(i, list.get(i));
             }
-
-            mAllocIconID.data(mIconIds);
-            mAllocLabelID.data(mLabelIds);
 
             mState.iconCount = count;
 
-            if (mScript != null) { // wtf
-                mScript.bindAllocation(mAllocIconID, Defines.ALLOC_ICON_IDS);
-                mScript.bindAllocation(mAllocLabelID, Defines.ALLOC_LABEL_IDS);
+            saveAppsList();
+        }
+
+        private void uploadAppIcon(int index, ApplicationInfo item) {
+            mIcons[index] = Allocation.createFromBitmap(mRS, item.iconBitmap,
+                    Element.RGBA_8888(mRS), false);
+            mLabels[index] = Allocation.createFromBitmap(mRS, item.titleBitmap,
+                    Element.RGBA_8888(mRS), false);
+
+            mIcons[index].uploadToTexture(0);
+            mLabels[index].uploadToTexture(0);
+
+            mIconIds[index] = mIcons[index].getID();
+            mLabelIds[index] = mLabels[index].getID();
+        }
+
+        /**
+         * Puts the empty spaces at the end.  Updates mState.iconCount.  You must
+         * fill in the values and call saveAppsList().
+         */
+        private void reallocAppsList(int count) {
+            Allocation[] icons = new Allocation[count];
+            int[] iconIds = new int[count];
+            mAllocIconIds = Allocation.createSized(mRS, Element.USER_I32(mRS), count);
+
+            Allocation[] labels = new Allocation[count];
+            int[] labelIds = new int[count];
+            mAllocLabelIds = Allocation.createSized(mRS, Element.USER_I32(mRS), count);
+
+            final int oldCount = mIcons.length;
+
+            System.arraycopy(mIcons, 0, icons, 0, oldCount);
+            System.arraycopy(mIconIds, 0, iconIds, 0, oldCount);
+            System.arraycopy(mLabels, 0, labels, 0, oldCount);
+            System.arraycopy(mLabelIds, 0, labelIds, 0, oldCount);
+
+            mIcons = icons;
+            mIconIds = iconIds;
+            mLabels = labels;
+            mLabelIds = labelIds;
+        }
+
+        /**
+         * Handle the allocations for the new app.  Make sure you call saveAppsList when done.
+         */
+        private void addApp(int index, ApplicationInfo item) {
+            final int count = mState.iconCount - index;
+            final int dest = index + 1;
+
+            System.arraycopy(mIcons, index, mIcons, dest, count);
+            System.arraycopy(mIconIds, index, mIconIds, dest, count);
+            System.arraycopy(mLabels, index, mLabels, dest, count);
+            System.arraycopy(mLabelIds, index, mLabelIds, dest, count);
+
+            uploadAppIcon(index, item);
+        }
+
+        /**
+         * Handle the allocations for the removed app.  Make sure you call saveAppsList when done.
+         */
+        private void removeApp(int index) {
+            final int count = mState.iconCount - index - 1;
+            final int src = index + 1;
+
+            System.arraycopy(mIcons, src, mIcons, index, count);
+            System.arraycopy(mIconIds, src, mIconIds, index, count);
+            System.arraycopy(mLabels, src, mLabels, index, count);
+            System.arraycopy(mLabelIds, src, mLabelIds, index, count);
+
+            final int last = mState.iconCount - 1;
+            mIcons[last] = null;
+            mIconIds[last] = 0;
+            mLabels[last] = null;
+            mLabelIds[last] = 0;
+        }
+
+        /**
+         * Send the apps list structures to RS.
+         */
+        private void saveAppsList() {
+            mRS.contextBindRootScript(null);
+            
+            mAllocIconIds.data(mIconIds);
+            mAllocLabelIds.data(mLabelIds);
+
+            if (mScript != null) { // this happens when we init it
+                mScript.bindAllocation(mAllocIconIds, Defines.ALLOC_ICON_IDS);
+                mScript.bindAllocation(mAllocLabelIds, Defines.ALLOC_LABEL_IDS);
             }
 
             mState.save();
+
+            // Note: mScript may be null if we haven't initialized it yet.
+            // In that case, this is a no-op.
+            mRS.contextBindRootScript(mScript);
         }
 
         void initTouchState() {
@@ -823,7 +962,6 @@ public class AllAppsView extends RSSurfaceView
         }
 
         void selectIcon(int index) {
-            Log.d(TAG, "selectIcon index=" + index);
             int iconCount = mAllAppsList.size();
             if (index < 0 || index >= iconCount) {
                 mState.selectedIconIndex = -1;
@@ -850,6 +988,7 @@ public class AllAppsView extends RSSurfaceView
         void clearSelectedIcon() {
             mState.selectedIconIndex = -1;
         }
+
     }
 }
 

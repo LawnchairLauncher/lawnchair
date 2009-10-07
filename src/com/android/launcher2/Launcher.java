@@ -1927,6 +1927,7 @@ public final class Launcher extends Activity
      */
     public void bindPackageAdded(ArrayList<ApplicationInfo> apps) {
         removeDialog(DIALOG_CREATE_SHORTCUT);
+        mAllAppsGrid.addApps(apps);
     }
 
     /**
@@ -1947,6 +1948,6 @@ public final class Launcher extends Activity
     public void bindPackageRemoved(String packageName, ArrayList<ApplicationInfo> apps) {
         removeDialog(DIALOG_CREATE_SHORTCUT);
         mWorkspace.removeShortcutsForPackage(packageName);
+        mAllAppsGrid.removeApps(apps);
     }
-
 }
