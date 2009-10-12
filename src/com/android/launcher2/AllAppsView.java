@@ -67,6 +67,9 @@ public class AllAppsView extends RSSurfaceView
     /** Bit for mLocks for when there are icons being loaded. */
     private static final int LOCK_ICONS_PENDING = 1;
 
+    private static final int TRACKING_FLING = 0;
+    private static final int TRACKING_HOME = 1;
+
     private Launcher mLauncher;
     private DragController mDragController;
 
@@ -77,6 +80,7 @@ public class AllAppsView extends RSSurfaceView
     private int mSlopX;
     private int mMaxFlingVelocity;
 
+    private Defines mDefines = new Defines();
     private RenderScript mRS;
     private RolloRS mRollo;
     private ArrayList<ApplicationInfo> mAllAppsList;
@@ -84,18 +88,15 @@ public class AllAppsView extends RSSurfaceView
     private int mPageCount;
     private boolean mStartedScrolling;
     private VelocityTracker mVelocity;
+    private int mTouchTracking;
     private int mLastMotionX;
     private int mMotionDownRawX;
     private int mMotionDownRawY;
-    private int mScrollHandleTop;
+    private int mHomeButtonTop;
     private long mTouchTime;
     private boolean mZoomSwipeInProgress;
 
     static class Defines {
-        private static float farSize(float sizeAt0) {
-            return sizeAt0 * (Defines.RADIUS - Defines.CAMERA_Z) / -Defines.CAMERA_Z;
-        }
-
         public static final int ALLOC_PARAMS = 0;
         public static final int ALLOC_STATE = 1;
         public static final int ALLOC_READBACK = 2;
@@ -109,9 +110,6 @@ public class AllAppsView extends RSSurfaceView
 
         public static final float RADIUS = 4.0f;
 
-        public static final int SCREEN_WIDTH_PX = 480;
-        public static final int SCREEN_HEIGHT_PX = 854;
-
         public static final int ICON_WIDTH_PX = 64;
         public static final int ICON_TEXTURE_WIDTH_PX = 128;
 
@@ -120,8 +118,21 @@ public class AllAppsView extends RSSurfaceView
         public static final float ICON_TOP_OFFSET = 0.2f;
 
         public static final float CAMERA_Z = -2;
-        public static final float FAR_ICON_SIZE
-                = farSize(2 * ICON_WIDTH_PX / (float)SCREEN_WIDTH_PX);
+
+        public int SCREEN_WIDTH_PX;
+        public int SCREEN_HEIGHT_PX;
+
+        public float FAR_ICON_SIZE;
+
+        public void recompute(int w, int h) {
+            SCREEN_WIDTH_PX = 480;
+            SCREEN_HEIGHT_PX = 800;
+            FAR_ICON_SIZE = farSize(2 * ICON_WIDTH_PX / (float)w);
+        }
+
+        private static float farSize(float sizeAt0) {
+            return sizeAt0 * (Defines.RADIUS - Defines.CAMERA_Z) / -Defines.CAMERA_Z;
+        }
     }
 
     public AllAppsView(Context context, AttributeSet attrs) {
@@ -171,7 +182,7 @@ public class AllAppsView extends RSSurfaceView
 
         Resources res = getContext().getResources();
         int barHeight = (int)res.getDimension(R.dimen.button_bar_height);
-        mScrollHandleTop = h - barHeight;
+        mHomeButtonTop = h - barHeight;
 
         long endTime = SystemClock.uptimeMillis();
         Log.d(TAG, "surfaceChanged took " + (endTime-startTime) + "ms");
@@ -198,67 +209,89 @@ public class AllAppsView extends RSSurfaceView
         super.onTouchEvent(ev);
 
         int x = (int)ev.getX();
+        int y = (int)ev.getY();
+
         int deltaX;
-        switch (ev.getAction()) {
+        int action = ev.getAction();
+        switch (action) {
         case MotionEvent.ACTION_DOWN:
-            mMotionDownRawX = (int)ev.getRawX();
-            mMotionDownRawY = (int)ev.getRawY();
-            mLastMotionX = x;
-            mRollo.mReadback.read();
-
-            mRollo.mState.newPositionX = ev.getRawX() / Defines.SCREEN_WIDTH_PX;
-            mRollo.mState.newTouchDown = 1;
-
-            if (!mRollo.checkClickOK()) {
-                mRollo.clearSelectedIcon();
+            if (y > mRollo.mTouchYBorders[mRollo.mTouchYBorders.length-1]) {
+                mTouchTracking = TRACKING_HOME;
             } else {
-                mRollo.selectIcon(x, (int)ev.getY(), mRollo.mReadback.posX);
+                mTouchTracking = TRACKING_FLING;
+
+                mMotionDownRawX = (int)ev.getRawX();
+                mMotionDownRawY = (int)ev.getRawY();
+                mLastMotionX = x;
+                mRollo.mReadback.read();
+
+                mRollo.mState.newPositionX = ev.getRawX() / mDefines.SCREEN_WIDTH_PX;
+                mRollo.mState.newTouchDown = 1;
+
+                if (!mRollo.checkClickOK()) {
+                    mRollo.clearSelectedIcon();
+                } else {
+                    mRollo.selectIcon(x, y, mRollo.mReadback.posX);
+                }
+                mRollo.mState.save();
+                mRollo.mInvokeMove.execute();
+                mVelocity = VelocityTracker.obtain();
+                mVelocity.addMovement(ev);
+                mStartedScrolling = false;
             }
-            mRollo.mState.save();
-            mRollo.mInvokeMove.execute();
-            mVelocity = VelocityTracker.obtain();
-            mVelocity.addMovement(ev);
-            mStartedScrolling = false;
             break;
         case MotionEvent.ACTION_MOVE:
         case MotionEvent.ACTION_OUTSIDE:
-            int slopX = Math.abs(x - mLastMotionX);
-            if (!mStartedScrolling && slopX < mSlopX) {
-                // don't update mLastMotionX so slopX is right and when we do start scrolling
-                // below, we get the right delta.
+            if (mTouchTracking == TRACKING_HOME) {
+                // TODO: highlight?
             } else {
-                mRollo.mState.newPositionX = ev.getRawX() / Defines.SCREEN_WIDTH_PX;
-                mRollo.mState.newTouchDown = 1;
-                mRollo.mInvokeMove.execute();
+                int slopX = Math.abs(x - mLastMotionX);
+                if (!mStartedScrolling && slopX < mSlopX) {
+                    // don't update mLastMotionX so slopX is right and when we do start scrolling
+                    // below, we get the right delta.
+                } else {
+                    mRollo.mState.newPositionX = ev.getRawX() / mDefines.SCREEN_WIDTH_PX;
+                    mRollo.mState.newTouchDown = 1;
+                    mRollo.mInvokeMove.execute();
 
-                mStartedScrolling = true;
-                mRollo.clearSelectedIcon();
-                deltaX = x - mLastMotionX;
-                mVelocity.addMovement(ev);
-                mRollo.mState.save();
-                mLastMotionX = x;
+                    mStartedScrolling = true;
+                    mRollo.clearSelectedIcon();
+                    deltaX = x - mLastMotionX;
+                    mVelocity.addMovement(ev);
+                    mRollo.mState.save();
+                    mLastMotionX = x;
+                }
             }
             break;
         case MotionEvent.ACTION_UP:
         case MotionEvent.ACTION_CANCEL:
-            mRollo.mState.newTouchDown = 0;
-            mRollo.mState.newPositionX = ev.getRawX() / Defines.SCREEN_WIDTH_PX;
-
-            if (!mZoomSwipeInProgress) {
-                mVelocity.computeCurrentVelocity(1000 /* px/sec */, mMaxFlingVelocity);
-                mRollo.mState.flingVelocityX = mVelocity.getXVelocity() / Defines.SCREEN_WIDTH_PX;
-                mRollo.clearSelectedIcon();
-                mRollo.mState.save();
-                mRollo.mInvokeFling.execute();
+            if (mTouchTracking == TRACKING_HOME) {
+                if (action == MotionEvent.ACTION_UP) {
+                    if (y > mRollo.mTouchYBorders[mRollo.mTouchYBorders.length-1]) {
+                        mLauncher.closeAllApps(true);
+                    }
+                }
             } else {
-                mRollo.mState.save();
-                mRollo.mInvokeMove.execute();
-            }
+                mRollo.mState.newTouchDown = 0;
+                mRollo.mState.newPositionX = ev.getRawX() / mDefines.SCREEN_WIDTH_PX;
 
-            mLastMotionX = -10000;
-            mVelocity.recycle();
-            mVelocity = null;
-            break;
+                if (!mZoomSwipeInProgress) {
+                    mVelocity.computeCurrentVelocity(1000 /* px/sec */, mMaxFlingVelocity);
+                    mRollo.mState.flingVelocityX
+                            = mVelocity.getXVelocity() / mDefines.SCREEN_WIDTH_PX;
+                    mRollo.clearSelectedIcon();
+                    mRollo.mState.save();
+                    mRollo.mInvokeFling.execute();
+                } else {
+                    mRollo.mState.save();
+                    mRollo.mInvokeMove.execute();
+                }
+
+                mLastMotionX = -10000;
+                mVelocity.recycle();
+                mVelocity = null;
+                break;
+            }
         }
 
         return true;
@@ -285,13 +318,13 @@ public class AllAppsView extends RSSurfaceView
             ApplicationInfo app = mAllAppsList.get(index);
 
             // We don't really have an accurate location to use.  This will do.
-            int screenX = mMotionDownRawX - (Defines.ICON_WIDTH_PX / 2);
-            int screenY = mMotionDownRawY - Defines.ICON_HEIGHT_PX;
+            int screenX = mMotionDownRawX - (mDefines.ICON_WIDTH_PX / 2);
+            int screenY = mMotionDownRawY - mDefines.ICON_HEIGHT_PX;
 
-            int left = (Defines.ICON_TEXTURE_WIDTH_PX - Defines.ICON_WIDTH_PX) / 2;
-            int top = (Defines.ICON_TEXTURE_HEIGHT_PX - Defines.ICON_HEIGHT_PX) / 2;
+            int left = (mDefines.ICON_TEXTURE_WIDTH_PX - mDefines.ICON_WIDTH_PX) / 2;
+            int top = (mDefines.ICON_TEXTURE_HEIGHT_PX - mDefines.ICON_HEIGHT_PX) / 2;
             mDragController.startDrag(app.iconBitmap, screenX, screenY,
-                    left, top, Defines.ICON_WIDTH_PX, Defines.ICON_HEIGHT_PX,
+                    left, top, mDefines.ICON_WIDTH_PX, mDefines.ICON_HEIGHT_PX,
                     this, app, DragController.DRAG_ACTION_COPY);
 
             mLauncher.closeAllApps(true);
@@ -431,7 +464,7 @@ public class AllAppsView extends RSSurfaceView
         private ProgramVertex mPV;
         private ProgramVertex mPVOrtho;
 
-        private Allocation mScrollHandle;
+        private Allocation mHomeButton;
 
         private Allocation[] mIcons;
         private int[] mIconIds;
@@ -479,9 +512,12 @@ public class AllAppsView extends RSSurfaceView
             public int bubbleHeight;
             public int bubbleBitmapWidth;
             public int bubbleBitmapHeight;
-            public int scrollHandleId;
-            public int scrollHandleTextureWidth;
-            public int scrollHandleTextureHeight;
+
+            public int homeButtonId;
+            public int homeButtonWidth;
+            public int homeButtonHeight;
+            public int homeButtonTextureWidth;
+            public int homeButtonTextureHeight;
         }
 
         class State extends BaseAlloc {
@@ -526,6 +562,7 @@ public class AllAppsView extends RSSurfaceView
             mRes = res;
             mWidth = width;
             mHeight = height;
+            mDefines.recompute(width, height);
             initProgramVertex();
             initProgramFragment();
             initProgramStore();
@@ -619,14 +656,14 @@ public class AllAppsView extends RSSurfaceView
             mParams.bubbleBitmapWidth = bubble.getBitmapWidth();
             mParams.bubbleBitmapHeight = bubble.getBitmapHeight();
 
-            mScrollHandle = Allocation.createFromBitmapResource(mRS, mRes,
-                    R.drawable.all_apps_button_pow2, Element.RGBA_8888(mRS), false);
-            mScrollHandle.uploadToTexture(0);
-            mParams.scrollHandleId = mScrollHandle.getID();
-            Log.d(TAG, "mParams.scrollHandleId=" + mParams.scrollHandleId);
-            mParams.scrollHandleTextureWidth = 128;
-            mParams.scrollHandleTextureHeight = 128;
-
+            mHomeButton = Allocation.createFromBitmapResource(mRS, mRes,
+                    R.drawable.home_button, Element.RGBA_8888(mRS), false);
+            mHomeButton.uploadToTexture(0);
+            mParams.homeButtonId = mHomeButton.getID();
+            mParams.homeButtonWidth = 76;
+            mParams.homeButtonHeight = 68;
+            mParams.homeButtonTextureWidth = 128;
+            mParams.homeButtonTextureHeight = 128;
 
             mParams.save();
             mState.save();
@@ -644,7 +681,7 @@ public class AllAppsView extends RSSurfaceView
             ScriptC.Builder sb = new ScriptC.Builder(mRS);
             sb.setScript(mRes, R.raw.rollo);
             sb.setRoot(true);
-            sb.addDefines(Defines.class);
+            sb.addDefines(mDefines);
             sb.setType(mParams.mType, "params", Defines.ALLOC_PARAMS);
             sb.setType(mState.mType, "state", Defines.ALLOC_STATE);
             sb.setType(mReadback.mType, "readback", Defines.ALLOC_READBACK);

@@ -275,6 +275,23 @@ draw_page(int icon, int lastIcon, float centerAngle, float scale)
     }
 }
 
+void
+draw_home_button()
+{
+    color(1.0f, 1.0f, 1.0f, 1.0f);
+    bindTexture(NAMED_PFTexLinear, 0, params->homeButtonId);
+
+    float scale = 2.0f / SCREEN_WIDTH_PX;
+
+    float x = 0.0f;
+
+    float y = -(SCREEN_HEIGHT_PX / (float)SCREEN_WIDTH_PX);
+    y += g_Zoom * (scale * params->homeButtonTextureHeight / 2);
+
+    float z = 0.0f;
+    drawSprite(x, y, z, params->homeButtonTextureWidth, params->homeButtonTextureHeight);
+}
+
 int
 main(int launchID)
 {
@@ -312,7 +329,7 @@ main(int launchID)
     } else if (g_Zoom < 0.85f) {
         pfClearColor(0.0f, 0.0f, 0.0f, g_Zoom);
     } else {
-        pfClearColor(0.0f, 0.0f, 0.0f, 0.85f);
+        pfClearColor(0.0f, 0.0f, 0.0f, g_Zoom);
     }
 
     // icons & labels
@@ -362,7 +379,9 @@ main(int launchID)
     }
     */
 
-    // Draw the scroll handle ========================================
+    // Draw the home button ========================================
+    draw_home_button();
+
     /*
     bindTexture(NAMED_PFOrtho, 0, loadI32(ALLOC_PARAMS, PARAM_SCROLL_HANDLE_ID));
     float handleLeft = 40 + (320 * (scrollXPx/(float)(maxScrollXPx)));
