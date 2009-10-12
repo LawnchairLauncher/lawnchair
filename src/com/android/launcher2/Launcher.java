@@ -774,6 +774,9 @@ public final class Launcher extends Activity
         if (Intent.ACTION_MAIN.equals(intent.getAction())) {
             getWindow().closeAllPanels();
 
+            // Whatever we were doing is hereby canceled.
+            mWaitingForResult = false;
+
             // Set this flag so that onResume knows to close the search dialog if it's open,
             // because this was a new intent (thus a press of 'home' or some such) rather than
             // for example onResume being called when the user pressed the 'back' button.
