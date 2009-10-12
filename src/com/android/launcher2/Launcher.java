@@ -183,6 +183,7 @@ public final class Launcher extends Activity
     private boolean mRestoring;
     private boolean mWaitingForResult;
     private boolean mLocaleChanged;
+    private boolean mExitingBecauseOfLaunch;
 
     private boolean mHomeDown;
     private boolean mBackDown;
@@ -416,7 +417,10 @@ public final class Launcher extends Activity
     @Override
     protected void onPause() {
         super.onPause();
-        closeAllApps(false);
+        if (mExitingBecauseOfLaunch) {
+            mExitingBecauseOfLaunch = false;
+            closeAllApps(false);
+        }
     }
 
     @Override
@@ -1330,6 +1334,7 @@ public final class Launcher extends Activity
             // Open shortcut
             final Intent intent = ((ApplicationInfo) tag).intent;
             startActivitySafely(intent);
+            mExitingBecauseOfLaunch = true;
         } else if (tag instanceof FolderInfo) {
             handleFolderClick((FolderInfo) tag);
         } else if (v == mHandleView) {
