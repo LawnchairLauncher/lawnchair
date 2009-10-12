@@ -3,6 +3,7 @@ package com.android.launcher2;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -12,6 +13,8 @@ import android.widget.ArrayAdapter;
  *
  */
 public class UserFolder extends Folder implements DropTarget {
+    private static final String TAG = "Launcher.UserFolder";
+
     public UserFolder(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -32,7 +35,8 @@ public class UserFolder extends Folder implements DropTarget {
         final ItemInfo item = (ItemInfo) dragInfo;
         final int itemType = item.itemType;
         return (itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
-                itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) && item.container != mInfo.id;
+                    itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT)
+                && item.container != mInfo.id;
     }
     
     public Rect estimateDropLocation(DragSource source, int x, int y, int xOffset, int yOffset,
@@ -42,7 +46,11 @@ public class UserFolder extends Folder implements DropTarget {
 
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
-        final ApplicationInfo item = (ApplicationInfo) dragInfo;
+        ApplicationInfo item = (ApplicationInfo) dragInfo;
+        if (item.container == NO_ID) {
+            // Came from all apps -- make a copy
+            item = new ApplicationInfo((ApplicationInfo)item);
+        }
         //noinspection unchecked
         ((ArrayAdapter<ApplicationInfo>) mContent.getAdapter()).add((ApplicationInfo) dragInfo);
         LauncherModel.addOrMoveItemInDatabase(mLauncher, item, mInfo.id, 0, 0, 0);

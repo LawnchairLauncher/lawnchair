@@ -44,6 +44,8 @@ import java.util.ArrayList;
  * Class for initiating a drag within a view or across multiple views.
  */
 public class DragController {
+    private static final String TAG = "Launcher.DragController";
+
     /** Indicates the drag is a move.  */
     public static int DRAG_ACTION_MOVE = 0;
 
