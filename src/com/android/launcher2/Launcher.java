@@ -158,7 +158,6 @@ public final class Launcher extends Activity
     private LayoutInflater mInflater;
 
     private DragController mDragController;
-    private SwipeController mSwipeController;
     private Workspace mWorkspace;
 
     private AppWidgetManager mAppWidgetManager;
@@ -513,18 +512,14 @@ public final class Launcher extends Activity
     private void setupViews() {
         mDragController = new DragController(this);
         DragController dragController = mDragController;
-        mSwipeController = new SwipeController(this);
-        SwipeController swipeController = mSwipeController;
 
         DragLayer dragLayer = (DragLayer) findViewById(R.id.drag_layer);
         dragLayer.setDragController(dragController);
-        dragLayer.setSwipeController(swipeController);
 
         mAllAppsGrid = (AllAppsView)dragLayer.findViewById(R.id.all_apps_view);
         mAllAppsGrid.setLauncher(this);
         mAllAppsGrid.setDragController(dragController);
         mAllAppsGrid.setWillNotDraw(false); // We don't want a hole punched in our window.
-        swipeController.setAllAppsView(mAllAppsGrid);
 
         mWorkspace = (Workspace) dragLayer.findViewById(R.id.workspace);
         final Workspace workspace = mWorkspace;
@@ -1427,7 +1422,6 @@ public final class Launcher extends Activity
         }
 
         if (mWorkspace.allowLongPress()) {
-            mSwipeController.cancelSwipe();
             if (cellInfo.cell == null) {
                 if (cellInfo.valid) {
                     // User long pressed on empty space
@@ -1601,7 +1595,7 @@ public final class Launcher extends Activity
     }
 
     void showAllApps() {
-        mSwipeController.setMode(SwipeController.MODE_ALL_APPS, true);
+        mAllAppsGrid.zoom(1.0f, true);
         //mWorkspace.hide();
 
         // TODO: fade these two too
@@ -1611,7 +1605,7 @@ public final class Launcher extends Activity
 
     void closeAllApps(boolean animated) {
         if (mAllAppsGrid.isVisible()) {
-            mSwipeController.setMode(SwipeController.MODE_WORKSPACE, animated);
+            mAllAppsGrid.zoom(0.0f, animated);
             mWorkspace.getChildAt(mWorkspace.getCurrentScreen()).requestFocus();
 
             // TODO: fade these two too

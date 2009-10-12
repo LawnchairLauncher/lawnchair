@@ -342,24 +342,13 @@ public class AllAppsView extends RSSurfaceView
     public void onDropCompleted(View target, boolean success) {
     }
 
-    public void setZoomSwipeInProgress(boolean swiping, boolean touchStillDown) {
-        mZoomSwipeInProgress = swiping;
-        if (!touchStillDown) {
-            mRollo.mState.newTouchDown = 0;
-            mRollo.mState.save();
-            mRollo.mInvokeTouchUp.execute();
-        }
-    }
-
-    public void setZoomTarget(float amount) {
-        zoom(amount, true);
-    }
-
-    public void setZoom(float amount) {
-        zoom(amount, false);
-    }
-
-    private void zoom(float amount, boolean animate) {
+    /**
+     * Zoom to the specifed amount.
+     *
+     * @param amount [0..1] 0 is hidden, 1 is open
+     * @param animate Whether to animate.
+     */
+    public void zoom(float amount, boolean animate) {
         if (mRollo == null) {
             return;
         }
