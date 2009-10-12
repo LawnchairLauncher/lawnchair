@@ -92,7 +92,7 @@
         <activity
             android:name="WallpaperChooser"
             android:label="@string/pick_wallpaper"
-            android:icon="@drawable/ic_launcher_gallery">
+            android:icon="@drawable/ic_launcher_wallpaper">
             <intent-filter>
                 <action android:name="android.intent.action.SET_WALLPAPER" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -102,6 +102,7 @@
         <!-- TODO: MOVE TO SETTINGS (or actually maybe to its own package) -->
         <!-- Standard picker for live wallpapers -->
         <activity android:name="LiveWallpaperPickActivity"
+                android:icon="@drawable/ic_launcher_appwidget"
                 android:label="@string/live_wallpaper_picker_title"
                 android:theme="@android:style/Theme.Wallpaper">
             <intent-filter>

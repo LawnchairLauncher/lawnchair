@@ -78,7 +78,7 @@ public class AddAdapter extends BaseAdapter {
                 R.drawable.ic_launcher_folder_live, ITEM_LIVE_FOLDER));
         
         mItems.add(new ListItem(res, R.string.group_wallpapers,
-                R.drawable.ic_launcher_gallery, ITEM_WALLPAPER));
+                R.drawable.ic_launcher_wallpaper, ITEM_WALLPAPER));
 
     }
 
