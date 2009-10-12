@@ -769,7 +769,15 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
 
-        if (mLauncher.isWorkspaceLocked() || mLauncher.isAllAppsVisible()) {
+        if (mLauncher.isWorkspaceLocked()) {
+            return false; // We don't want the events.  Let them fall through to the all apps view.
+        }
+        if (mLauncher.isAllAppsVisible()) {
+            // Cancel any scrolling that is in progress.
+            if (!mScroller.isFinished()) {
+                mScroller.abortAnimation();
+            }
+            snapToScreen(mCurrentScreen);
             return false; // We don't want the events.  Let them fall through to the all apps view.
         }
 
