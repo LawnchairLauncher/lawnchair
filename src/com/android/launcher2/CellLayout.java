@@ -124,8 +124,7 @@ public class CellLayout extends ViewGroup {
         // Generate an id for each view, this assumes we have at most 256x256 cells
         // per workspace screen
         final LayoutParams cellParams = (LayoutParams) params;
-        child.setId(((getId() & 0xFF) << 16) |
-                (cellParams.cellX & 0xFF) << 8 | (cellParams.cellY & 0xFF));
+        cellParams.regenerateId = true;
 
         super.addView(child, index, params);
     }
@@ -497,6 +496,11 @@ public class CellLayout extends ViewGroup {
                 lp.setup(cellWidth, cellHeight, mWidthGap, mHeightGap, longAxisStartPadding,
                         shortAxisStartPadding);
             }
+            
+            if (lp.regenerateId) {
+                child.setId(((getId() & 0xFF) << 16) | (lp.cellX & 0xFF) << 8 | (lp.cellY & 0xFF));
+                lp.regenerateId = false;
+            }
 
             int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(lp.width, MeasureSpec.EXACTLY);
             int childheightMeasureSpec =
@@ -834,6 +838,8 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         // Y coordinate of the view in the layout.
         @ViewDebug.ExportedProperty
         int y;
+
+        boolean regenerateId;
 
         public LayoutParams(Context c, AttributeSet attrs) {
             super(c, attrs);
