@@ -40,7 +40,8 @@ public class SwipeController {
     private static final float SPRING_CONSTANT = 0.0009f;
 
     // configuration
-    private int mSlop;
+    private int mSlopX;
+    private int mSlopY;
     private float mSwipeDistance;
 
     private AllAppsView mAllAppsView;
@@ -59,7 +60,8 @@ public class SwipeController {
 
     public SwipeController(Context context) {
         ViewConfiguration config = ViewConfiguration.get(context);
-        mSlop = config.getScaledTouchSlop();
+        mSlopX = config.getScaledTouchSlop();
+        mSlopY = 3 * mSlopX / 2; // make it 50% more biased towards horizontal swiping.
         
         DisplayMetrics display = context.getResources().getDisplayMetrics();
         mSwipeDistance = display.heightPixels / 2; // one half of the screen
@@ -130,12 +132,11 @@ public class SwipeController {
 
         case MotionEvent.ACTION_MOVE:
             if (!mCanceled && !mTracking) {
-                if (Math.abs(deltaX) > mSlop) {
+                if (Math.abs(deltaX) > mSlopX) {
                     mCanceled = true;
                     mTracking = false;
                     mAllAppsView.setZoomSwipeInProgress(false, true);
-                }
-                if (Math.abs(deltaY) > mSlop) {
+                } else if (Math.abs(deltaY) > mSlopY) {
                     mTracking = true;
                 }
             }
