@@ -27,6 +27,16 @@ float g_OldPosPage;
 float g_OldPosVelocity;
 float g_OldZoom;
 
+int g_DrawLastFrame;
+int lastFrame(int draw) {
+    // We draw one extra frame to work around the last frame post bug.
+    // We also need to track if we drew the last frame to deal with large DT
+    // in the physics.
+    int ret = g_DrawLastFrame | draw;
+    g_DrawLastFrame = draw;
+    return ret;  // should return draw instead.
+}
+
 void updateReadback() {
     if ((g_OldPosPage != g_PosPage) ||
         (g_OldPosVelocity != g_PosVelocity) ||
@@ -309,6 +319,16 @@ main(int launchID)
     g_DT = (newTime - g_LastTime) / 1000.f;
     g_LastTime = newTime;
 
+    if (!g_DrawLastFrame) {
+        // If we stopped rendering we cannot use DT.
+        // assume 30fps in this case.
+        g_DT = 0.033f;
+    }
+    if (g_DT > 0.2f) {
+        // physics may break if DT is large.
+        g_DT = 0.2f;
+    }
+
     //debugF("zoom", g_Zoom);
     if (g_Zoom != state->zoomTarget) {
         float dz = (state->zoomTarget - g_Zoom) * g_DT * 5;
@@ -334,7 +354,7 @@ main(int launchID)
         if (!g_LastTouchDown) {
             g_PosPage = 0;
         }
-        return 1;//0;
+        return lastFrame(0);
     } else if (g_Zoom < 0.85f) {
         pfClearColor(0.0f, 0.0f, 0.0f, g_Zoom);
     } else {
@@ -356,7 +376,7 @@ main(int launchID)
     color(1.0f, 1.0f, 1.0f, 0.99f);
 
     if (iconCount <= 0) {
-        return 1;
+        return lastFrame(0);
     }
     int lastIcon = iconCount-1;
 
@@ -404,6 +424,6 @@ main(int launchID)
 
     // Bug workaround where the last frame is not always displayed
     // So we keep rendering until the bug is fixed.
-    return 1;//(g_PosVelocity != 0) || fracf(g_PosPage) || (g_Zoom != state->zoomTarget);
+    return lastFrame((g_PosVelocity != 0) || fracf(g_PosPage) || (g_Zoom != state->zoomTarget));
 }
 
