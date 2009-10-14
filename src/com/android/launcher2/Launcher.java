@@ -1923,7 +1923,6 @@ public final class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void bindAllApplications(ArrayList<ApplicationInfo> apps) {
-        Log.d(LOG_TAG, "got info for " + apps.size() + " apps");
         mAllAppsList = apps;
         mAllAppsGrid.setApps(mAllAppsList);
     }
