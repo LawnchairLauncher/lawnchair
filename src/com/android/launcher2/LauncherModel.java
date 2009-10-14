@@ -523,7 +523,9 @@ public class LauncherModel {
                 }
 
                 // Bind all apps
-                bindAllApps();
+                if (allAppsDirty) {
+                    bindAllApps();
+                }
 
                 // Clear out this reference, otherwise we end up holding it until all of the
                 // callback runnables are done.
@@ -915,14 +917,15 @@ public class LauncherModel {
                     mAllAppsList.added = new ArrayList();
                     mHandler.post(new Runnable() {
                         public void run() {
-                            long t = SystemClock.uptimeMillis();
+                            final long t = SystemClock.uptimeMillis();
+                            final int count = results.size();
 
                             Callbacks callbacks = tryGetCallbacks();
                             if (callbacks != null) {
                                 callbacks.bindAllApplications(results);
                             }
 
-                            Log.d(TAG, "bound app icons in "
+                            Log.d(TAG, "bound app " + count + " icons in "
                                 + (SystemClock.uptimeMillis()-t) + "ms");
                         }
                     });
