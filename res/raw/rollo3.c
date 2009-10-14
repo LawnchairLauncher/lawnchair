@@ -17,7 +17,7 @@ float g_LastPositionX;
 int g_LastTouchDown;
 float g_DT;
 int g_LastTime;
-int g_PageCount;
+int g_PosMax;
 float g_Zoom;
 float g_OldPosPage;
 float g_OldPosVelocity;
@@ -53,6 +53,7 @@ void updateReadback() {
     }
 }
 
+
 void init() {
     g_AttractionTable[0] = 6.5f;
     g_AttractionTable[1] = 6.5f;
@@ -85,10 +86,10 @@ void move() {
     if (g_LastTouchDown) {
         float dx = -(state->newPositionX - g_LastPositionX);
         g_PosVelocity = 0;
-        g_PosPage += dx;
+        g_PosPage += dx * 4;
 
         float pmin = -0.25f;
-        float pmax = (g_PageCount - 1) + 0.25f;
+        float pmax = g_PosMax + 0.25f;
         g_PosPage = clampf(g_PosPage, pmin, pmax);
     }
     g_LastTouchDown = state->newTouchDown;
@@ -98,7 +99,7 @@ void move() {
 
 void fling() {
     g_LastTouchDown = 0;
-    g_PosVelocity = -state->flingVelocityX;
+    g_PosVelocity = -state->flingVelocityX * 2;
     float av = fabsf(g_PosVelocity);
     float minVel = 3.5f;
 
@@ -115,10 +116,9 @@ void fling() {
     if (g_PosPage <= 0) {
         g_PosVelocity = maxf(0, g_PosVelocity);
     }
-    if (g_PosPage > (g_PageCount - 1)) {
+    if (g_PosPage > g_PosMax) {
         g_PosVelocity = minf(0, g_PosVelocity);
     }
-    //debugF("fling v", g_PosVelocity);
 }
 
 void touchUp() {
@@ -147,6 +147,7 @@ void updatePos() {
         return;
     }
 
+    int outOfRange = 0;
     float tablePosNorm = fracf(g_PosPage + 0.5f);
     float tablePosF = tablePosNorm * g_PhysicsTableSize;
     int tablePosI = tablePosF;
@@ -157,15 +158,26 @@ void updatePos() {
     float friction = lerpf(g_FrictionTable[tablePosI],
                            g_FrictionTable[tablePosI + 1],
                            tablePosFrac) * g_DT;
-    //debugF("  accel", accel);
-    //debugF("  friction", friction);
+
+    if (g_PosPage < -0.5f) {
+        accel = g_AttractionTable[0] * g_DT;
+        friction = g_FrictionTable[0] * g_DT;
+        outOfRange = 1;
+    }
+    if ((g_PosPage - g_PosMax) > 0.5f) {
+        accel = g_AttractionTable[(int)g_PhysicsTableSize] * g_DT;
+        friction = g_FrictionTable[(int)g_PhysicsTableSize] * g_DT;
+        outOfRange = 1;
+    }
 
     // If our velocity is low OR acceleration is opposing it, apply it.
     if (fabsf(g_PosVelocity) < 1.0f || (g_PosVelocity * accel) < 0) {
         g_PosVelocity += accel;
     }
 
-    if ((friction > fabsf(g_PosVelocity)) && (friction > fabsf(accel))) {
+    if ((friction > fabsf(g_PosVelocity)) &&
+        (friction > fabsf(accel)) &&
+        !outOfRange) {
         // Special get back to center and overcome friction physics.
         float t = tablePosNorm - 0.5f;
         if (fabsf(t) < (friction * g_DT)) {
@@ -193,50 +205,48 @@ void updatePos() {
 
     // Check for out of boundry conditions.
     if (g_PosPage < 0 && g_PosVelocity < 0) {
+        g_PosPage = maxf(g_PosPage, -0.49);
         float damp = 1.0 + (g_PosPage * 4);
         damp = clampf(damp, 0.f, 0.9f);
         g_PosVelocity *= damp;
     }
-    if (g_PosPage > (g_PageCount-1) && g_PosVelocity > 0) {
-        float damp = 1.0 - ((g_PosPage - g_PageCount + 1) * 4);
+    if (g_PosPage > g_PosMax && g_PosVelocity > 0) {
+        g_PosPage = minf(g_PosPage, g_PosMax + 0.49);
+        float damp = 1.0 - ((g_PosPage - g_PosMax) * 4);
         damp = clampf(damp, 0.f, 0.9f);
         g_PosVelocity *= damp;
     }
 }
 
-int positionStrip(float row, float column)
+int positionStrip(float row, float column, int isTop)
 {
     float mat1[16];
 
-    float y =  1.2f - row * 0.6f;
+    float x = 0.5f * (column - 1.5f);
 
-    float scale = 256.f / getWidth();
-    float xscale = scale * 4.55 / 1.8f / 2;
+    float scale = 72.f * 3 / getWidth();
+    //float xscale = scale * 4.55 / 1.8f / 2;
 
-    matrixLoadTranslate(mat1, 0.f, y, 0.f);
-    matrixScale(mat1, 1.f, scale, 1.f);
+    if (isTop) {
+        matrixLoadTranslate(mat1, x, 0.8f, 0.f);
+        matrixScale(mat1, scale, scale, 1.f);
+    } else {
+        matrixLoadTranslate(mat1, x, -0.9f, 0.f);
+        matrixScale(mat1, scale, -scale, 1.f);
+    }
     vpLoadModelMatrix(mat1);
 
-    float soff = -21.8f - (column * 1.25f);
-    matrixLoadScale(mat1, xscale, 1.f, 1.f);
-    matrixTranslate(mat1, soff, 0, 0);
+    float soff = row;
+    if (isTop) {
+        matrixLoadScale(mat1, 1.f, -0.85f, 1.f);
+        matrixTranslate(mat1, 0, -(row * 1.4) - 0.97, 0);
+    } else {
+        matrixLoadScale(mat1, 1.f, 0.85f, 1.f);
+        matrixTranslate(mat1, 0, -(row * 1.4) - 0.45, 0);
+    }
     vpLoadTextureMatrix(mat1);
 
-    return - soff * 10.f;
-}
-
-void drawIcon(float row, float column, int iconNum)
-{
-    int offset = positionStrip(row, column);
-    bindTexture(NAMED_PFTexLinear, 0, loadI32(ALLOC_ICON_IDS, iconNum));
-
-    if (offset < 0) {
-        offset = 0;
-    }
-    if (offset >= (450 - 20)) {
-        offset = (449 - 20);
-    }
-    drawSimpleMeshRange(NAMED_SMMesh, offset * 6, 20 * 6);
+    return 0;//- soff * 10.f;
 }
 
 void
@@ -254,6 +264,105 @@ draw_home_button()
 
     float z = 0.0f;
     drawSprite(x, y, z, params->homeButtonTextureWidth, params->homeButtonTextureHeight);
+}
+
+void drawFrontGrid(float rowOffset)
+{
+    float h = getHeight();
+    float w = getWidth();
+
+    int intRowOffset = rowOffset;
+    float rowFrac = rowOffset - intRowOffset;
+    float colWidth = getWidth() / 4;
+    float rowHeight = colWidth + 25.f;
+    float yoff = h - ((h - (rowHeight * 4.f)) / 2);
+
+    yoff -= 110;
+
+    int row, col;
+    int iconNum = intRowOffset * 4;
+    float ymax = yoff;
+    float ymin = yoff - (3 * rowHeight) - 70;
+
+    for (row = 0; row < 5; row++) {
+        float y = yoff - ((-rowFrac + row) * rowHeight);
+
+        for (col=0; col < 4; col++) {
+            if (iconNum >= state->iconCount) {
+                return;
+            }
+
+            if (iconNum >= 0) {
+                float x = colWidth * col - ((128 - colWidth) / 2);
+
+                if ((y >= ymin) && (y <= ymax)) {
+                    color(1.f, 1.f, 1.f, 1.f);
+                    bindTexture(NAMED_PFTexLinear, 0, loadI32(ALLOC_ICON_IDS, iconNum));
+                    drawSpriteScreenspace(x, y, 0, 128, 128);
+                }
+
+                float y2 = y - 44;
+                float a = 1.f;
+                if (y2 < ymin) {
+                    a = 1.f - (ymin - y2) * 0.02f;
+                }
+                if (y > (ymax + 40)) {
+                    a = 1.f - (y - (ymax + 40)) * 0.02f;
+                }
+                a = clampf(a, 0, 1);
+
+                color(1, 1, 1, a);
+                bindTexture(NAMED_PFTexLinear, 0, loadI32(ALLOC_LABEL_IDS, iconNum));
+                drawSpriteScreenspace(x, y - 44, 0,
+                           params->bubbleBitmapWidth, params->bubbleBitmapHeight);
+            }
+            iconNum++;
+        }
+    }
+}
+
+void drawTop(float rowOffset)
+{
+    int intRowOffset = rowOffset;
+
+    int row, col;
+    int iconNum = 0;
+    for (row = 0; row < rowOffset; row++) {
+        for (col=0; col < 4; col++) {
+            if (iconNum >= state->iconCount) {
+                return;
+            }
+
+            int ps = positionStrip(rowOffset - row, col, 1);
+            bindTexture(NAMED_PFTexLinear, 0, loadI32(ALLOC_ICON_IDS, iconNum));
+            drawSimpleMesh(NAMED_SMMesh2);
+            iconNum++;
+        }
+    }
+}
+
+void drawBottom(float rowOffset)
+{
+    float pos = -1.f;
+    int intRowOffset = rowOffset;
+    pos -= rowOffset - intRowOffset;
+
+    int row, col;
+    int iconNum = (intRowOffset + 3) * 4;
+    while (1) {
+        for (col=0; col < 4; col++) {
+            if (iconNum >= state->iconCount) {
+                return;
+            }
+            if (pos > -1) {
+                int ps = positionStrip(pos, col, 0);
+                bindTexture(NAMED_PFTexLinear, 0, loadI32(ALLOC_ICON_IDS, iconNum));
+                drawSimpleMesh(NAMED_SMMesh2);
+            }
+            iconNum++;
+        }
+        pos += 1.f;
+    }
 }
 
 int
@@ -274,7 +383,6 @@ main(int launchID)
         g_DT = 0.2f;
     }
 
-    debugF("zoom", g_Zoom);
     if (g_Zoom != state->zoomTarget) {
         float dz = (state->zoomTarget - g_Zoom) * g_DT * 5;
         if (dz && (fabsf(dz) < 0.03f)) {
@@ -308,20 +416,25 @@ main(int launchID)
 
     // icons & labels
     int iconCount = state->iconCount;
-    g_PageCount = count_pages(iconCount);
+    g_PosMax = ((iconCount + 3) / 4) - 4;
+    if (g_PosMax < 0) g_PosMax = 0;
 
     updatePos(0.1f);
     updateReadback();
 
-    debugF("    draw g_PosPage", g_PosPage);
+    //debugF("    draw g_PosPage", g_PosPage);
 
     // Draw the icons ========================================
 
-    // Bug makes 1.0f alpha fail.
-    //color(0.2f, 0.2f, 0.2f, 0.99f);
     //bindProgramFragment(NAMED_PFColor);
-    //positionStrip(0, 0);
-    //drawSimpleMesh(NAMED_SMMesh);
+    //positionStrip(1, 0, 0);
+    //drawSimpleMesh(NAMED_SMMesh2);
+    //positionStrip(1, 1);
+    //drawSimpleMesh(NAMED_SMMesh2);
+    //positionStrip(1, 2);
+    //drawSimpleMesh(NAMED_SMMesh2);
+    //positionStrip(1, 3);
+    //drawSimpleMesh(NAMED_SMMesh2);
 
     bindProgramFragment(NAMED_PFTexLinear);
 
@@ -337,52 +450,10 @@ main(int launchID)
     float pageAngle = VIEW_ANGLE * 1.2f;
 
     float zoomOffset = 40 * (1 - g_Zoom);
-    int drawPage;
-    //lastIcon = 1;
-    for (drawPage = 0; drawPage < g_PageCount; drawPage++) {
-        int r, c;
-        for (r=0; r < 4; r++) {
-            for (c=0; c < 4; c++) {
-                int iconNum = drawPage * 16 + c + r * 4;
-                if (iconNum <= lastIcon) {
-                    float p = (((float)drawPage) - g_PosPage) * 5.f;
-                    p += c - 1.5f;
-                    p += zoomOffset;
-                    if (fabsf(p) > 2) {
-                        drawIcon(r, p, iconNum);
-                    }
-                }
-            }
-        }
-    }
 
-    for (drawPage = 0; drawPage < g_PageCount; drawPage++) {
-        int r, c;
-        for (r=0; r < 4; r++) {
-            for (c=0; c < 4; c++) {
-                int iconNum = drawPage * 16 + c + r * 4;
-                if (iconNum <= lastIcon) {
-                    float p = (((float)drawPage) - g_PosPage) * 5.f;
-                    p += c - 1.5f;
-                    p += zoomOffset;
-                    float x = (p * 1.13f + 1.88f) * getWidth() * 0.2f;
-                    float y = 570 - r * 147;
-
-                    if (fabsf(p) <= 2) {
-                        drawIcon(r, p, iconNum);
-                    }
-                    if (fabsf(p) <= 2.5) {
-                        float a = (1.2f - maxf(scale, 1.0f)) * 5;
-                        color(1.0f, 1.0f, 1.0f, a);
-                        bindTexture(NAMED_PFTexLinear, 0, loadI32(ALLOC_LABEL_IDS, iconNum));
-                        drawSpriteScreenspace(x, y, 0,
-                                   params->bubbleBitmapWidth, params->bubbleBitmapHeight);
-                    }
-                }
-            }
-        }
-
-    }
+    drawTop(g_PosPage);
+    drawBottom(g_PosPage);
+    drawFrontGrid(g_PosPage);
 
     {
         float mat1[16];
@@ -391,11 +462,32 @@ main(int launchID)
         vpLoadTextureMatrix(mat1);
     }
 
+    if (0) {
+        float h = getHeight();
+
+        color(1, 1, 1, 1);
+        bindProgramFragment(NAMED_PFColor);
+        bindProgramVertex(NAMED_PVOrtho);
+        float dy = 145.f;
+        float y = h - ((h - (dy * 4.f)) / 2);
+
+        drawLine(0, y, 0,  480, y, 0);
+        y -= dy;
+        drawLine(0, y, 0,  480, y, 0);
+        y -= dy;
+        drawLine(0, y, 0,  480, y, 0);
+        y -= dy;
+        drawLine(0, y, 0,  480, y, 0);
+        y -= dy;
+        drawLine(0, y, 0,  480, y, 0);
+    }
+
+
     // Draw the home button ========================================
     //draw_home_button();
 
     // Bug workaround where the last frame is not always displayed
     // So we keep rendering until the bug is fixed.
-    return 1; //(g_PosVelocity != 0) || fracf(g_PosPage) || g_Zoom != g_ZoomTarget);
+    return lastFrame((g_PosVelocity != 0) || fracf(g_PosPage) || g_Zoom != state->zoomTarget);
 }
 
