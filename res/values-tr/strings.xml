@@ -15,14 +15,17 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name" msgid="5865630159700533006">"Ana Sayfa"</string>
-    <!-- no translation found for uid_name (3371120195364560632) -->
+    <!-- no translation found for application_name (4528470563311667177) -->
     <skip />
+    <string name="uid_name" msgid="3371120195364560632">"Android Core Apps"</string>
     <string name="folder_name" msgid="4588446541914685904">"Klasör"</string>
     <string name="chooser_wallpaper" msgid="5988031014201479733">"Buradan duvar kağıdını seçin:"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Duvar kağıdını ayarla"</string>
     <string name="pick_wallpaper" msgid="2674908923379130941">"Duvar kağıdı galerisi"</string>
     <string name="activity_not_found" msgid="3571057450431950427">"Uygulama telefonunuza yüklenmemiş."</string>
+    <!-- no translation found for live_wallpaper_picker_title (7738370557178100072) -->
+    <skip />
+    <string name="configure_wallpaper" msgid="2820186271419674623">"Yapılandır..."</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Klasör adı"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Klasörü yeniden adlandır"</string>
     <string name="rename_action" msgid="6016003384693240896">"Tamam"</string>
@@ -40,20 +43,16 @@
     <string name="add_photo_frame" msgid="3154058437359487954">"Resim çerçevesi"</string>
     <string name="add_search" msgid="7104834713685095105">"Arama"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Bu Ana ekranda başka yer yok."</string>
-    <!-- no translation found for shortcut_installed (6179314539443046225) -->
-    <skip />
-    <!-- no translation found for shortcut_uninstalled (2758997515869993129) -->
-    <skip />
-    <!-- no translation found for shortcut_duplicate (4887186782641532074) -->
-    <skip />
+    <string name="shortcut_installed" msgid="7071557296331322355">"\"<xliff:g id="NAME">%s</xliff:g>\" kısayolu oluşturuldu."</string>
+    <string name="shortcut_uninstalled" msgid="2129499669449749995">"\"<xliff:g id="NAME">%s</xliff:g>\" kısayolu kaldırıldı."</string>
+    <string name="shortcut_duplicate" msgid="4757756326465060694">"\"<xliff:g id="NAME">%s</xliff:g>\" kısayolu zaten var."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Kısayolu seçin"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"Klasörü seçin"</string>
     <string name="menu_add" msgid="3065046628354640854">"Ekle"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"Duvar Kağıdı"</string>
     <string name="menu_search" msgid="4826514464423239041">"Ara"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"Bildirimler"</string>
-    <!-- no translation found for menu_gestures (514678675575912237) -->
-    <skip />
+    <string name="menu_gestures" msgid="514678675575912237">"Hareketler"</string>
     <string name="menu_settings" msgid="6233960148378443661">"Ayarlar"</string>
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"kısayolları yükle"</string>
     <string name="permdesc_install_shortcut" msgid="7429365847558984148">"Bir uygulamaya, kısayolları kullanıcı müdahale etmeden ekleme izni verir."</string>
@@ -65,4 +64,8 @@
     <string name="permdesc_write_settings" msgid="1098648778383349818">"Bir uygulamaya Ana Sayfadaki ayarları ve kısayolları değiştirme izni verir."</string>
     <string name="search_hint" msgid="6974176141372467453">"Google Arama"</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Widget yüklenirken sorun oluştu"</string>
+    <!-- no translation found for live_wallpaper_empty (4278728108785853407) -->
+    <skip />
+    <!-- no translation found for set_live_wallpaper (2381437614949033266) -->
+    <skip />
 </resources>
