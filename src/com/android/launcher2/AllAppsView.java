@@ -79,7 +79,7 @@ public class AllAppsView extends RSSurfaceView
      * TODO: What about scrolling? */
     private int mLocks = LOCK_ICONS_PENDING;
 
-    private int mSlopX;
+    private int mSlop;
     private int mMaxFlingVelocity;
 
     private Defines mDefines = new Defines();
@@ -91,10 +91,10 @@ public class AllAppsView extends RSSurfaceView
     private boolean mStartedScrolling;
     private VelocityTracker mVelocity;
     private int mTouchTracking;
-    private int mLastMotionX;
-    private int mLastMotionY;
     private int mMotionDownRawX;
     private int mMotionDownRawY;
+    private int mDownIconIndex = -1;
+    private int mCurrentIconIndex = -1;
     private int mHomeButtonTop;
     private long mTouchTime;
     private boolean mRotateMove = true;
@@ -142,7 +142,7 @@ public class AllAppsView extends RSSurfaceView
         setFocusable(true);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
         final ViewConfiguration config = ViewConfiguration.get(context);
-        mSlopX = config.getScaledTouchSlop();
+        mSlop = config.getScaledTouchSlop();
         mMaxFlingVelocity = config.getScaledMaximumFlingVelocity();
 
         setOnClickListener(this);
@@ -229,8 +229,6 @@ public class AllAppsView extends RSSurfaceView
 
                 mMotionDownRawX = (int)ev.getRawX();
                 mMotionDownRawY = (int)ev.getRawY();
-                mLastMotionX = x;
-                mLastMotionY = y;
 
                 if (mRotateMove) {
                     mRollo.mState.newPositionX = ev.getRawY() / mDefines.SCREEN_WIDTH_PX;
@@ -242,7 +240,12 @@ public class AllAppsView extends RSSurfaceView
                 if (!mRollo.checkClickOK()) {
                     mRollo.clearSelectedIcon();
                 } else {
-                    mRollo.selectIcon(x, y, mRollo.mMessageProc.mPosX);
+                    mDownIconIndex = mCurrentIconIndex
+                            = mRollo.selectIcon(x, y, mRollo.mMessageProc.mPosX);
+                    if (mDownIconIndex < 0) {
+                        // if nothing was selected, no long press.
+                        cancelLongPress();
+                    }
                 }
                 mRollo.mState.save();
                 mRollo.move();
@@ -256,17 +259,30 @@ public class AllAppsView extends RSSurfaceView
             if (mTouchTracking == TRACKING_HOME) {
                 // TODO: highlight?
             } else {
-                int slopX;
+                int rawX = (int)ev.getRawX();
+                int rawY = (int)ev.getRawY();
+                int slop;
                 if (mRotateMove) {
-                    slopX = Math.abs(y - mLastMotionY);
+                    slop = Math.abs(rawY - mMotionDownRawY);
                 } else {
-                    slopX = Math.abs(x - mLastMotionX);
+                    slop = Math.abs(rawX - mMotionDownRawX);
                 }
 
-                if (!mStartedScrolling && slopX < mSlopX) {
-                    // don't update mLastMotionX so slopX is right and when we do start scrolling
+                if (!mStartedScrolling && slop < mSlop) {
+                    // don't update anything so when we do start scrolling
                     // below, we get the right delta.
+                    mCurrentIconIndex = mRollo.chooseTappedIcon(x, y, mRollo.mMessageProc.mPosX);
+                    if (mDownIconIndex != mCurrentIconIndex) {
+                        // If a different icon is selected, don't allow it to be picked up.
+                        // This handles off-axis dragging.
+                        cancelLongPress();
+                        mCurrentIconIndex = -1;
+                    }
                 } else {
+                    if (!mStartedScrolling) {
+                        cancelLongPress();
+                        mCurrentIconIndex = -1;
+                    }
                     if (mRotateMove) {
                         mRollo.mState.newPositionX = ev.getRawY() / mDefines.SCREEN_WIDTH_PX;
                     } else {
@@ -279,8 +295,6 @@ public class AllAppsView extends RSSurfaceView
                     mRollo.clearSelectedIcon();
                     mVelocity.addMovement(ev);
                     mRollo.mState.save();
-                    mLastMotionX = x;
-                    mLastMotionY = y;
                 }
             }
             break;
@@ -312,7 +326,6 @@ public class AllAppsView extends RSSurfaceView
                 mRollo.mState.save();
                 mRollo.fling();
 
-                mLastMotionX = -10000;
                 if (mVelocity != null) {
                     mVelocity.recycle();
                     mVelocity = null;
@@ -328,9 +341,9 @@ public class AllAppsView extends RSSurfaceView
         if (mLocks != 0 || !isVisible()) {
             return;
         }
-        int index = mRollo.mState.selectedIconIndex;
-        if (mRollo.checkClickOK() && index >= 0 && index < mAllAppsList.size()) {
-            ApplicationInfo app = mAllAppsList.get(index);
+        if (mRollo.checkClickOK() && mCurrentIconIndex == mDownIconIndex
+                && mCurrentIconIndex >= 0 && mCurrentIconIndex < mAllAppsList.size()) {
+            ApplicationInfo app = mAllAppsList.get(mCurrentIconIndex);
             mLauncher.startActivitySafely(app.intent);
         }
     }
@@ -339,10 +352,9 @@ public class AllAppsView extends RSSurfaceView
         if (mLocks != 0 || !isVisible()) {
             return true;
         }
-        int index = mRollo.mState.selectedIconIndex;
-
-        if (mRollo.checkClickOK() && index >= 0 && index < mAllAppsList.size()) {
-            ApplicationInfo app = mAllAppsList.get(index);
+        if (mRollo.checkClickOK() && mCurrentIconIndex == mDownIconIndex
+                && mCurrentIconIndex >= 0 && mCurrentIconIndex < mAllAppsList.size()) {
+            ApplicationInfo app = mAllAppsList.get(mCurrentIconIndex);
 
             // We don't really have an accurate location to use.  This will do.
             int screenX = mMotionDownRawX - (mDefines.ICON_WIDTH_PX / 2);
@@ -1052,6 +1064,20 @@ public class AllAppsView extends RSSurfaceView
             return row * 4 + col;
         }
 
+        int chooseTappedIcon(int x, int y, float pos) {
+            int index;
+            if (mViewMode != 0) {
+                index = chooseTappedIconHorz(x, y, pos);
+            } else {
+                index = chooseTappedIconVert(x, y, pos);
+            }
+            final int iconCount = mAllAppsList.size();
+            if (index >= iconCount) {
+                index = -1;
+            }
+            return index;
+        }
+
         boolean setView(int v) {
             mViewMode = v;
             mRS.contextBindRootScript(mScript[mViewMode]);
@@ -1068,23 +1094,18 @@ public class AllAppsView extends RSSurfaceView
 
         /**
          * You need to call save() on mState on your own after calling this.
+         *
+         * @return the index of the icon that was selected.
          */
-        void selectIcon(int x, int y, float pos) {
-            int index;
-            //Log.e("rs", "select " + x + ", " + y + ", " + pos + ",  " + mViewMode);
-            if (mViewMode != 0) {
-                index = chooseTappedIconHorz(x, y, pos);
-            } else {
-                index = chooseTappedIconVert(x, y, pos);
-            }
+        int selectIcon(int x, int y, float pos) {
+            final int index = chooseTappedIcon(x, y, pos);
             selectIcon(index);
+            return index;
         }
 
         void selectIcon(int index) {
-            int iconCount = mAllAppsList.size();
-            if (index < 0 || index >= iconCount) {
+            if (index < 0) {
                 mState.selectedIconIndex = -1;
-                return;
             } else {
                 mState.selectedIconIndex = index;
 
