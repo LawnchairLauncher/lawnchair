@@ -219,7 +219,7 @@ public class AllAppsView extends RSSurfaceView
         switch (action) {
         case MotionEvent.ACTION_DOWN:
             if (x < 60 && y > 700) {
-                mRotateMove = mRollo.setView((++mRSMode) & 3);
+                //mRotateMove = mRollo.setView((++mRSMode) & 3);
             }
 
             if (y > mRollo.mTouchYBorders[mRollo.mTouchYBorders.length-1]) {
@@ -1005,7 +1005,7 @@ public class AllAppsView extends RSSurfaceView
             mAllocTouchXBorders.data(mTouchXBorders);
         }
 
-        int chooseTappedIcon(int x, int y, float page) {
+        int chooseTappedIconHorz(int x, int y, float page) {
             int currentPage = (int)page;
 
             int col = -1;
@@ -1032,6 +1032,20 @@ public class AllAppsView extends RSSurfaceView
                     + (row * Defines.ROWS_PER_PAGE) + col;
         }
 
+        int chooseTappedIconVert(int x, int y, float pos) {
+            int ydead = (getHeight() - 4 * 145) / 2;
+            if (y < ydead || y > (getHeight() - ydead)) {
+                return -1;
+            }
+
+            y -= ydead;
+            y += pos * 145;
+            int row = y / 145;
+            int col = x / 120;
+
+            return row * 4 + col;
+        }
+
         boolean setView(int v) {
             mViewMode = v;
             mRS.contextBindRootScript(mScript[mViewMode]);
@@ -1050,7 +1064,13 @@ public class AllAppsView extends RSSurfaceView
          * You need to call save() on mState on your own after calling this.
          */
         void selectIcon(int x, int y, float pos) {
-            int index = chooseTappedIcon(x, y, pos);
+            int index;
+            //Log.e("rs", "select " + x + ", " + y + ", " + pos + ",  " + mViewMode);
+            if (mViewMode != 0) {
+                index = chooseTappedIconHorz(x, y, pos);
+            } else {
+                index = chooseTappedIconVert(x, y, pos);
+            }
             selectIcon(index);
         }
 

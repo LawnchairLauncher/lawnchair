@@ -8,7 +8,6 @@
 
 // Attraction to center values from page edge to page center.
 float g_AttractionTable[9];
-float g_FrictionTable[9];
 float g_PhysicsTableSize;
 
 float g_PosPage;
@@ -64,15 +63,6 @@ void init() {
     g_AttractionTable[6] = -6.5f;
     g_AttractionTable[7] = -6.5f;
     g_AttractionTable[8] = -6.5f;  // dup 7 to avoid a clamp later
-    g_FrictionTable[0] = 3.5f;
-    g_FrictionTable[1] = 3.6f;
-    g_FrictionTable[2] = 4.0f;
-    g_FrictionTable[3] = 5.0f;
-    g_FrictionTable[4] = 5.0f;
-    g_FrictionTable[5] = 4.0f;
-    g_FrictionTable[6] = 3.6f;
-    g_FrictionTable[7] = 3.5f;
-    g_FrictionTable[8] = 3.5f;  // dup 7 to avoid a clamp later
     g_PhysicsTableSize = 7;
 
     g_PosVelocity = 0;
@@ -121,21 +111,6 @@ void fling() {
     }
 }
 
-void touchUp() {
-    g_LastTouchDown = 0;
-}
-
-int
-count_pages(int iconCount)
-{
-    int iconsPerPage = COLUMNS_PER_PAGE * ROWS_PER_PAGE;
-    int pages = iconCount / iconsPerPage;
-    if (pages*iconsPerPage != iconCount) {
-        pages++;
-    }
-    return pages;
-}
-
 float
 modf(float x, float y)
 {
@@ -155,23 +130,19 @@ void updatePos() {
     float accel = lerpf(g_AttractionTable[tablePosI],
                         g_AttractionTable[tablePosI + 1],
                         tablePosFrac) * g_DT;
-    float friction = lerpf(g_FrictionTable[tablePosI],
-                           g_FrictionTable[tablePosI + 1],
-                           tablePosFrac) * g_DT;
+    float friction = 4.f * g_DT;
 
     if (g_PosPage < -0.5f) {
         accel = g_AttractionTable[0] * g_DT;
-        friction = g_FrictionTable[0] * g_DT;
         outOfRange = 1;
     }
     if ((g_PosPage - g_PosMax) > 0.5f) {
         accel = g_AttractionTable[(int)g_PhysicsTableSize] * g_DT;
-        friction = g_FrictionTable[(int)g_PhysicsTableSize] * g_DT;
         outOfRange = 1;
     }
 
     // If our velocity is low OR acceleration is opposing it, apply it.
-    if (fabsf(g_PosVelocity) < 1.0f || (g_PosVelocity * accel) < 0) {
+    if (fabsf(g_PosVelocity) < 1.0f || (g_PosVelocity * accel) < 0 || outOfRange) {
         g_PosVelocity += accel;
     }
 
@@ -221,11 +192,8 @@ void updatePos() {
 int positionStrip(float row, float column, int isTop)
 {
     float mat1[16];
-
     float x = 0.5f * (column - 1.5f);
-
     float scale = 72.f * 3 / getWidth();
-    //float xscale = scale * 4.55 / 1.8f / 2;
 
     if (isTop) {
         matrixLoadTranslate(mat1, x, 0.8f, 0.f);
@@ -236,17 +204,16 @@ int positionStrip(float row, float column, int isTop)
     }
     vpLoadModelMatrix(mat1);
 
-    float soff = row;
+    float soff = -(row * 1.4);
     if (isTop) {
         matrixLoadScale(mat1, 1.f, -0.85f, 1.f);
-        matrixTranslate(mat1, 0, -(row * 1.4) - 0.97, 0);
+        matrixTranslate(mat1, 0, soff - 0.97f, 0);
     } else {
         matrixLoadScale(mat1, 1.f, 0.85f, 1.f);
-        matrixTranslate(mat1, 0, -(row * 1.4) - 0.45, 0);
+        matrixTranslate(mat1, 0, soff - 0.45f, 0);
     }
     vpLoadTextureMatrix(mat1);
-
-    return 0;//- soff * 10.f;
+    return -soff * 10.f;
 }
 
 void
@@ -321,10 +288,18 @@ void drawFrontGrid(float rowOffset)
     }
 }
 
+void drawStrip(float row, float column, int isTop, int iconNum)
+{
+    if (iconNum < 0) return;
+    int offset = positionStrip(row, column, isTop);
+    bindTexture(NAMED_PFTexLinear, 0, loadI32(ALLOC_ICON_IDS, iconNum));
+    if (offset < -20) return;
+    offset = clamp(offset, 0, 199 - 20);
+    drawSimpleMeshRange(NAMED_SMMesh2, offset * 6, 20 * 6);
+}
+
 void drawTop(float rowOffset)
 {
-    int intRowOffset = rowOffset;
-
     int row, col;
     int iconNum = 0;
     for (row = 0; row < rowOffset; row++) {
@@ -332,10 +307,7 @@ void drawTop(float rowOffset)
             if (iconNum >= state->iconCount) {
                 return;
             }
-
-            int ps = positionStrip(rowOffset - row, col, 1);
-            bindTexture(NAMED_PFTexLinear, 0, loadI32(ALLOC_ICON_IDS, iconNum));
-            drawSimpleMesh(NAMED_SMMesh2);
+            drawStrip(rowOffset - row, col, 1, iconNum);
             iconNum++;
         }
     }
@@ -355,9 +327,7 @@ void drawBottom(float rowOffset)
                 return;
             }
             if (pos > -1) {
-                int ps = positionStrip(pos, col, 0);
-                bindTexture(NAMED_PFTexLinear, 0, loadI32(ALLOC_ICON_IDS, iconNum));
-                drawSimpleMesh(NAMED_SMMesh2);
+                drawStrip(pos, col, 0, iconNum);
             }
             iconNum++;
         }
@@ -378,10 +348,8 @@ main(int launchID)
         // assume 30fps in this case.
         g_DT = 0.033f;
     }
-    if (g_DT > 0.2f) {
-        // physics may break if DT is large.
-        g_DT = 0.2f;
-    }
+    // physics may break if DT is large.
+    g_DT = minf(g_DT, 0.2f);
 
     if (g_Zoom != state->zoomTarget) {
         float dz = (state->zoomTarget - g_Zoom) * g_DT * 5;
@@ -429,31 +397,14 @@ main(int launchID)
     //bindProgramFragment(NAMED_PFColor);
     //positionStrip(1, 0, 0);
     //drawSimpleMesh(NAMED_SMMesh2);
-    //positionStrip(1, 1);
-    //drawSimpleMesh(NAMED_SMMesh2);
-    //positionStrip(1, 2);
-    //drawSimpleMesh(NAMED_SMMesh2);
-    //positionStrip(1, 3);
-    //drawSimpleMesh(NAMED_SMMesh2);
 
     bindProgramFragment(NAMED_PFTexLinear);
 
 
-    int lastIcon = iconCount-1;
-
-    int page = g_PosPage;
-    float currentPagePosition = g_PosPage - page;
-
-    int iconsPerPage = COLUMNS_PER_PAGE * ROWS_PER_PAGE;
-    float scale = (1 / g_Zoom);
-
-    float pageAngle = VIEW_ANGLE * 1.2f;
-
-    float zoomOffset = 40 * (1 - g_Zoom);
-
-    drawTop(g_PosPage);
-    drawBottom(g_PosPage);
-    drawFrontGrid(g_PosPage);
+    float zoomOffset = 8.f * (1 - g_Zoom);
+    drawTop(g_PosPage - zoomOffset);
+    drawBottom(g_PosPage - zoomOffset);
+    drawFrontGrid(g_PosPage - zoomOffset);
 
     {
         float mat1[16];
@@ -461,6 +412,7 @@ main(int launchID)
         vpLoadModelMatrix(mat1);
         vpLoadTextureMatrix(mat1);
     }
+    draw_home_button();
 
     if (0) {
         float h = getHeight();
