@@ -5,6 +5,7 @@
 
 #define PI 3.14159f
 
+int g_SpecialHWWar;
 
 // Attraction to center values from page edge to page center.
 float g_AttractionTable[9];
@@ -52,6 +53,13 @@ void updateReadback() {
     }
 }
 
+void setColor(float r, float g, float b, float a) {
+    if (g_SpecialHWWar) {
+        color(0, 0, 0, 0.001f);
+    } else {
+        color(r, g, b, a);
+    }
+}
 
 void init() {
     g_AttractionTable[0] = 6.5f;
@@ -70,6 +78,11 @@ void init() {
     g_LastTouchDown = 0;
     g_LastPositionX = 0;
     g_Zoom = 0;
+    g_SpecialHWWar = 1;
+}
+
+void resetHWWar() {
+    g_SpecialHWWar = 1;
 }
 
 void move() {
@@ -219,7 +232,7 @@ int positionStrip(float row, float column, int isTop)
 void
 draw_home_button()
 {
-    color(1.0f, 1.0f, 1.0f, 1.0f);
+    setColor(1.0f, 1.0f, 1.0f, 1.0f);
     bindTexture(NAMED_PFTexLinear, 0, params->homeButtonId);
 
     float scale = 2.0f / SCREEN_WIDTH_PX;
@@ -263,7 +276,7 @@ void drawFrontGrid(float rowOffset)
                 float x = colWidth * col - ((128 - colWidth) / 2);
 
                 if ((y >= ymin) && (y <= ymax)) {
-                    color(1.f, 1.f, 1.f, 1.f);
+                    setColor(1.f, 1.f, 1.f, 1.f);
                     bindTexture(NAMED_PFTexLinear, 0, loadI32(ALLOC_ICON_IDS, iconNum));
                     drawSpriteScreenspace(x, y, 0, 128, 128);
                 }
@@ -278,7 +291,7 @@ void drawFrontGrid(float rowOffset)
                 }
                 a = clampf(a, 0, 1);
 
-                color(1, 1, 1, a);
+                setColor(1, 1, 1, a);
                 bindTexture(NAMED_PFTexLinear, 0, loadI32(ALLOC_LABEL_IDS, iconNum));
                 drawSpriteScreenspace(x, y - 44, 0,
                            params->bubbleBitmapWidth, params->bubbleBitmapHeight);
@@ -369,15 +382,13 @@ main(int launchID)
     }
 
     // Set clear value to dim the background based on the zoom position.
-    if ((g_Zoom < 0.001f) && (state->zoomTarget < 0.001f)) {
+    if ((g_Zoom < 0.001f) && (state->zoomTarget < 0.001f) && !g_SpecialHWWar) {
         pfClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         // When we're zoomed out and not tracking motion events, reset the pos to 0.
         if (!g_LastTouchDown) {
             g_PosPage = 0;
         }
         return lastFrame(0);
-    } else if (g_Zoom < 0.85f) {
-        pfClearColor(0.0f, 0.0f, 0.0f, g_Zoom);
     } else {
         pfClearColor(0.0f, 0.0f, 0.0f, g_Zoom);
     }
@@ -414,6 +425,16 @@ main(int launchID)
     }
     draw_home_button();
 
+
+    // This is a WAR to do a rendering pass without drawing during init to
+    // force the driver to preload and compile its shaders.
+    // Without this the first animation does not appear due to the time it
+    // takes to init the driver state.
+    if (g_SpecialHWWar) {
+        g_SpecialHWWar = 0;
+        return 1;
+    }
+
     if (0) {
         float h = getHeight();
 
@@ -433,10 +454,6 @@ main(int launchID)
         y -= dy;
         drawLine(0, y, 0,  480, y, 0);
     }
-
-
-    // Draw the home button ========================================
-    //draw_home_button();
 
     // Bug workaround where the last frame is not always displayed
     // So we keep rendering until the bug is fixed.
