@@ -92,10 +92,12 @@ public class AllAppsView extends RSSurfaceView
     private VelocityTracker mVelocity;
     private int mTouchTracking;
     private int mLastMotionX;
+    private int mLastMotionY;
     private int mMotionDownRawX;
     private int mMotionDownRawY;
     private int mHomeButtonTop;
     private long mTouchTime;
+    private boolean mRotateMove = true;
 
     static class Defines {
         public static final int ALLOC_PARAMS = 0;
@@ -195,6 +197,8 @@ public class AllAppsView extends RSSurfaceView
         return super.onKeyDown(keyCode, event);
     }
 
+    private int mRSMode = 0;
+
     @Override
     public boolean onTouchEvent(MotionEvent ev)
     {
@@ -211,10 +215,13 @@ public class AllAppsView extends RSSurfaceView
         int x = (int)ev.getX();
         int y = (int)ev.getY();
 
-        int deltaX;
         int action = ev.getAction();
         switch (action) {
         case MotionEvent.ACTION_DOWN:
+            if (x < 60 && y > 700) {
+                mRotateMove = mRollo.setView((++mRSMode) & 3);
+            }
+
             if (y > mRollo.mTouchYBorders[mRollo.mTouchYBorders.length-1]) {
                 mTouchTracking = TRACKING_HOME;
             } else {
@@ -223,8 +230,13 @@ public class AllAppsView extends RSSurfaceView
                 mMotionDownRawX = (int)ev.getRawX();
                 mMotionDownRawY = (int)ev.getRawY();
                 mLastMotionX = x;
+                mLastMotionY = y;
 
-                mRollo.mState.newPositionX = ev.getRawX() / mDefines.SCREEN_WIDTH_PX;
+                if (mRotateMove) {
+                    mRollo.mState.newPositionX = ev.getRawY() / mDefines.SCREEN_WIDTH_PX;
+                } else {
+                    mRollo.mState.newPositionX = ev.getRawX() / mDefines.SCREEN_WIDTH_PX;
+                }
                 mRollo.mState.newTouchDown = 1;
 
                 if (!mRollo.checkClickOK()) {
@@ -233,7 +245,7 @@ public class AllAppsView extends RSSurfaceView
                     mRollo.selectIcon(x, y, mRollo.mMessageProc.mPosX);
                 }
                 mRollo.mState.save();
-                mRollo.mInvokeMove.execute();
+                mRollo.move();
                 mVelocity = VelocityTracker.obtain();
                 mVelocity.addMovement(ev);
                 mStartedScrolling = false;
@@ -244,21 +256,31 @@ public class AllAppsView extends RSSurfaceView
             if (mTouchTracking == TRACKING_HOME) {
                 // TODO: highlight?
             } else {
-                int slopX = Math.abs(x - mLastMotionX);
+                int slopX;
+                if (mRotateMove) {
+                    slopX = Math.abs(y - mLastMotionY);
+                } else {
+                    slopX = Math.abs(x - mLastMotionX);
+                }
+
                 if (!mStartedScrolling && slopX < mSlopX) {
                     // don't update mLastMotionX so slopX is right and when we do start scrolling
                     // below, we get the right delta.
                 } else {
-                    mRollo.mState.newPositionX = ev.getRawX() / mDefines.SCREEN_WIDTH_PX;
+                    if (mRotateMove) {
+                        mRollo.mState.newPositionX = ev.getRawY() / mDefines.SCREEN_WIDTH_PX;
+                    } else {
+                        mRollo.mState.newPositionX = ev.getRawX() / mDefines.SCREEN_WIDTH_PX;
+                    }
                     mRollo.mState.newTouchDown = 1;
-                    mRollo.mInvokeMove.execute();
+                    mRollo.move();
 
                     mStartedScrolling = true;
                     mRollo.clearSelectedIcon();
-                    deltaX = x - mLastMotionX;
                     mVelocity.addMovement(ev);
                     mRollo.mState.save();
                     mLastMotionX = x;
+                    mLastMotionY = y;
                 }
             }
             break;
@@ -272,14 +294,23 @@ public class AllAppsView extends RSSurfaceView
                 }
             } else {
                 mRollo.mState.newTouchDown = 0;
-                mRollo.mState.newPositionX = ev.getRawX() / mDefines.SCREEN_WIDTH_PX;
+                if (mRotateMove) {
+                    mRollo.mState.newPositionX = ev.getRawY() / mDefines.SCREEN_WIDTH_PX;
+                } else {
+                    mRollo.mState.newPositionX = ev.getRawX() / mDefines.SCREEN_WIDTH_PX;
+                }
 
                 mVelocity.computeCurrentVelocity(1000 /* px/sec */, mMaxFlingVelocity);
-                mRollo.mState.flingVelocityX
-                        = mVelocity.getXVelocity() / mDefines.SCREEN_WIDTH_PX;
+                if (mRotateMove) {
+                    mRollo.mState.flingVelocityX
+                            = mVelocity.getYVelocity() / mDefines.SCREEN_WIDTH_PX;
+                } else {
+                    mRollo.mState.flingVelocityX
+                            = mVelocity.getXVelocity() / mDefines.SCREEN_WIDTH_PX;
+                }
                 mRollo.clearSelectedIcon();
                 mRollo.mState.save();
-                mRollo.mInvokeFling.execute();
+                mRollo.fling();
 
                 mLastMotionX = -10000;
                 if (mVelocity != null) {
@@ -466,16 +497,16 @@ public class AllAppsView extends RSSurfaceView
     public class RolloRS {
 
         // Allocations ======
+        private int mViewMode = 0;
 
         private int mWidth;
         private int mHeight;
 
         private Resources mRes;
-        private Script mScript;
+        private Script[] mScript = new Script[4];
 
-        private Script.Invokable mInvokeMove;
-        private Script.Invokable mInvokeFling;
-        private Script.Invokable mInvokeTouchUp;
+        private Script.Invokable[] mInvokeMove = new Script.Invokable[4];
+        private Script.Invokable[] mInvokeFling = new Script.Invokable[4];
 
         private ProgramStore mPSIcons;
         private ProgramStore mPSText;
@@ -485,6 +516,7 @@ public class AllAppsView extends RSSurfaceView
         private ProgramVertex mPV;
         private ProgramVertex mPVOrtho;
         private SimpleMesh mMesh;
+        private SimpleMesh mMesh2;
 
         private Allocation mHomeButton;
 
@@ -504,6 +536,7 @@ public class AllAppsView extends RSSurfaceView
 
         private Bitmap mSelectionBitmap;
         private Canvas mSelectionCanvas;
+
 
         Params mParams;
         State mState;
@@ -582,6 +615,7 @@ public class AllAppsView extends RSSurfaceView
             initProgramFragment();
             initProgramStore();
             initMesh();
+            initMesh2();
             initGl();
             initData();
             initTouchState();
@@ -641,6 +675,44 @@ public class AllAppsView extends RSSurfaceView
 
         }
 
+
+        public void initMesh2() {
+            SimpleMesh.TriangleMeshBuilder tm = new SimpleMesh.TriangleMeshBuilder(mRS, 3,
+                SimpleMesh.TriangleMeshBuilder.TEXTURE_0 | SimpleMesh.TriangleMeshBuilder.COLOR);
+
+            float y = 0;
+            float z = 0;
+            for (int ct=0; ct < 200; ct++) {
+                float angle = 0;
+                float maxAngle = 3.14f * 0.16f;
+                float l = 1.f;
+
+                l = 1 - ((ct-5) * 0.10f);
+                if (ct > 7) {
+                    angle = maxAngle * (ct - 7) * 0.2f;
+                    angle = Math.min(angle, maxAngle);
+                }
+                l = Math.max(0.3f, l);
+                l = Math.min(1.0f, l);
+
+                y += 0.1f * Math.cos(angle);
+                z += 0.1f * Math.sin(angle);
+
+                float t = 0.1f * ct;
+                float ds = 0.08f;
+                tm.setColor(l, l, l, 0.99f);
+                tm.setTexture(ds, t);
+                tm.addVertex(-0.5f, y, z);
+                tm.setTexture(1 - ds, t);
+                tm.addVertex(0.5f, y, z);
+            }
+            for (int ct=0; ct < (200 * 2 - 2); ct+= 2) {
+                tm.addTriangle(ct, ct+1, ct+2);
+                tm.addTriangle(ct+1, ct+3, ct+2);
+            }
+            mMesh2 = tm.create();
+            mMesh2.setName("SMMesh2");
+        }
 
         private void initProgramVertex() {
             ProgramVertex.MatrixAllocation pva = new ProgramVertex.MatrixAllocation(mRS);
@@ -746,30 +818,35 @@ public class AllAppsView extends RSSurfaceView
             setApps(null);
         }
 
-        private void initRs() {
+        private void initScript(int idx, int id) {
             ScriptC.Builder sb = new ScriptC.Builder(mRS);
-            sb.setScript(mRes, R.raw.rollo);
-            //sb.setScript(mRes, R.raw.rollo2);
+            sb.setScript(mRes, id);
             sb.setRoot(true);
             sb.addDefines(mDefines);
             sb.setType(mParams.mType, "params", Defines.ALLOC_PARAMS);
             sb.setType(mState.mType, "state", Defines.ALLOC_STATE);
-            mInvokeMove = sb.addInvokable("move");
-            mInvokeFling = sb.addInvokable("fling");
-            mInvokeTouchUp = sb.addInvokable("touchUp");
-            mScript = sb.create();
-            mScript.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            mInvokeMove[idx] = sb.addInvokable("move");
+            mInvokeFling[idx] = sb.addInvokable("fling");
+            mScript[idx] = sb.create();
+            mScript[idx].setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            mScript[idx].bindAllocation(mParams.mAlloc, Defines.ALLOC_PARAMS);
+            mScript[idx].bindAllocation(mState.mAlloc, Defines.ALLOC_STATE);
+            mScript[idx].bindAllocation(mAllocIconIds, Defines.ALLOC_ICON_IDS);
+            mScript[idx].bindAllocation(mAllocLabelIds, Defines.ALLOC_LABEL_IDS);
+            mScript[idx].bindAllocation(mAllocTouchXBorders, Defines.ALLOC_X_BORDERS);
+            mScript[idx].bindAllocation(mAllocTouchYBorders, Defines.ALLOC_Y_BORDERS);
+        }
 
-            mScript.bindAllocation(mParams.mAlloc, Defines.ALLOC_PARAMS);
-            mScript.bindAllocation(mState.mAlloc, Defines.ALLOC_STATE);
-            mScript.bindAllocation(mAllocIconIds, Defines.ALLOC_ICON_IDS);
-            mScript.bindAllocation(mAllocLabelIds, Defines.ALLOC_LABEL_IDS);
-            mScript.bindAllocation(mAllocTouchXBorders, Defines.ALLOC_X_BORDERS);
-            mScript.bindAllocation(mAllocTouchYBorders, Defines.ALLOC_Y_BORDERS);
+        private void initRs() {
+            mViewMode = 0;
+            initScript(0, R.raw.rollo3);
+            initScript(1, R.raw.rollo2);
+            initScript(2, R.raw.rollo);
+            initScript(3, R.raw.rollo4);
 
             mMessageProc = new AAMessage();
             mRS.mMessageCallback = mMessageProc;
-            mRS.contextBindRootScript(mScript);
+            mRS.contextBindRootScript(mScript[mViewMode]);
         }
 
         private void setApps(ArrayList<ApplicationInfo> list) {
@@ -878,20 +955,22 @@ public class AllAppsView extends RSSurfaceView
          */
         private void saveAppsList() {
             mRS.contextBindRootScript(null);
-            
+
             mAllocIconIds.data(mIconIds);
             mAllocLabelIds.data(mLabelIds);
 
-            if (mScript != null) { // this happens when we init it
-                mScript.bindAllocation(mAllocIconIds, Defines.ALLOC_ICON_IDS);
-                mScript.bindAllocation(mAllocLabelIds, Defines.ALLOC_LABEL_IDS);
+            if (mScript[0] != null) { // this happens when we init it
+                for (int ct=0; ct < 4; ct++) {
+                    mScript[ct].bindAllocation(mAllocIconIds, Defines.ALLOC_ICON_IDS);
+                    mScript[ct].bindAllocation(mAllocLabelIds, Defines.ALLOC_LABEL_IDS);
+                }
             }
 
             mState.save();
 
             // Note: mScript may be null if we haven't initialized it yet.
             // In that case, this is a no-op.
-            mRS.contextBindRootScript(mScript);
+            mRS.contextBindRootScript(mScript[mViewMode]);
         }
 
         void initTouchState() {
@@ -951,6 +1030,20 @@ public class AllAppsView extends RSSurfaceView
 
             return (currentPage * Defines.ROWS_PER_PAGE * Defines.COLUMNS_PER_PAGE)
                     + (row * Defines.ROWS_PER_PAGE) + col;
+        }
+
+        boolean setView(int v) {
+            mViewMode = v;
+            mRS.contextBindRootScript(mScript[mViewMode]);
+            return (v == 0);
+        }
+
+        void fling() {
+            mInvokeFling[mViewMode].execute();
+        }
+
+        void move() {
+            mInvokeMove[mViewMode].execute();
         }
 
         /**
