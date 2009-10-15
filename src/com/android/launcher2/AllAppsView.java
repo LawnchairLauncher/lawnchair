@@ -507,6 +507,7 @@ public class AllAppsView extends RSSurfaceView
 
         private Script.Invokable[] mInvokeMove = new Script.Invokable[4];
         private Script.Invokable[] mInvokeFling = new Script.Invokable[4];
+        private Script.Invokable[] mInvokeResetWAR = new Script.Invokable[4];
 
         private ProgramStore mPSIcons;
         private ProgramStore mPSText;
@@ -827,6 +828,7 @@ public class AllAppsView extends RSSurfaceView
             sb.setType(mState.mType, "state", Defines.ALLOC_STATE);
             mInvokeMove[idx] = sb.addInvokable("move");
             mInvokeFling[idx] = sb.addInvokable("fling");
+            mInvokeResetWAR[idx] = sb.addInvokable("resetHWWar");
             mScript[idx] = sb.create();
             mScript[idx].setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
             mScript[idx].bindAllocation(mParams.mAlloc, Defines.ALLOC_PARAMS);
@@ -970,6 +972,10 @@ public class AllAppsView extends RSSurfaceView
 
             // Note: mScript may be null if we haven't initialized it yet.
             // In that case, this is a no-op.
+            if (mInvokeResetWAR != null &&
+                mInvokeResetWAR[mViewMode] != null) {
+                mInvokeResetWAR[mViewMode].execute();
+            }
             mRS.contextBindRootScript(mScript[mViewMode]);
         }
 

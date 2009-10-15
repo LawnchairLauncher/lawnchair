@@ -81,6 +81,9 @@ void init() {
     g_Zoom = 0;
 }
 
+void resetHWWar() {
+}
+
 void move() {
     if (g_LastTouchDown) {
         float dx = -(state->newPositionX - g_LastPositionX);
