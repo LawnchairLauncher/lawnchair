@@ -249,6 +249,13 @@ public class LauncherModel {
         mLoader.stopLoader();
     }
 
+    /**
+     * We pick up most of the changes to all apps.
+     */
+    public void setAllAppsDirty() {
+        mLoader.setAllAppsDirty();
+    }
+
     public void setWorkspaceDirty() {
         mLoader.setWorkspaceDirty();
     }
