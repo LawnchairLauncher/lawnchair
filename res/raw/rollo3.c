@@ -277,6 +277,12 @@ void drawFrontGrid(float rowOffset)
 
                 if ((y >= ymin) && (y <= ymax)) {
                     setColor(1.f, 1.f, 1.f, 1.f);
+
+                    if (state->selectedIconIndex == iconNum) {
+                        bindTexture(NAMED_PFTexLinear, 0, state->selectedIconTexture);
+                        drawSpriteScreenspace(x, y, 0, 128, 128);
+                    }
+
                     bindTexture(NAMED_PFTexLinear, 0, loadI32(ALLOC_ICON_IDS, iconNum));
                     drawSpriteScreenspace(x, y, 0, 128, 128);
                 }
