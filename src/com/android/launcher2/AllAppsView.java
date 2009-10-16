@@ -225,6 +225,8 @@ public class AllAppsView extends RSSurfaceView
 
             if (y > mRollo.mTouchYBorders[mRollo.mTouchYBorders.length-1]) {
                 mTouchTracking = TRACKING_HOME;
+                mRollo.setHomeSelected(true);
+                mRollo.mState.save();
             } else {
                 mTouchTracking = TRACKING_FLING;
 
@@ -258,7 +260,8 @@ public class AllAppsView extends RSSurfaceView
         case MotionEvent.ACTION_MOVE:
         case MotionEvent.ACTION_OUTSIDE:
             if (mTouchTracking == TRACKING_HOME) {
-                // TODO: highlight?
+                mRollo.setHomeSelected(y > mRollo.mTouchYBorders[mRollo.mTouchYBorders.length-1]);
+                mRollo.mState.save();
             } else if (mTouchTracking == TRACKING_FLING) {
                 int rawX = (int)ev.getRawX();
                 int rawY = (int)ev.getRawY();
@@ -306,6 +309,8 @@ public class AllAppsView extends RSSurfaceView
                     if (y > mRollo.mTouchYBorders[mRollo.mTouchYBorders.length-1]) {
                         mLauncher.closeAllApps(true);
                     }
+                    mRollo.setHomeSelected(false);
+                    mRollo.mState.save();
                 }
             } else if (mTouchTracking == TRACKING_FLING) {
                 mRollo.mState.newTouchDown = 0;
@@ -533,7 +538,8 @@ public class AllAppsView extends RSSurfaceView
         private SimpleMesh mMesh;
         private SimpleMesh mMesh2;
 
-        private Allocation mHomeButton;
+        private Allocation mHomeButtonNormal;
+        private Allocation mHomeButtonPressed;
 
         private Allocation[] mIcons;
         private int[] mIconIds;
@@ -595,7 +601,6 @@ public class AllAppsView extends RSSurfaceView
             public int bubbleBitmapWidth;
             public int bubbleBitmapHeight;
 
-            public int homeButtonId;
             public int homeButtonWidth;
             public int homeButtonHeight;
             public int homeButtonTextureWidth;
@@ -610,6 +615,7 @@ public class AllAppsView extends RSSurfaceView
             public int selectedIconIndex = -1;
             public int selectedIconTexture;
             public float zoomTarget;
+            public int homeButtonId;
 
             State() {
                 mType = Type.createFromClass(mRS, State.class, 1, "StateClass");
@@ -814,14 +820,18 @@ public class AllAppsView extends RSSurfaceView
             mParams.bubbleBitmapWidth = bubble.getBitmapWidth();
             mParams.bubbleBitmapHeight = bubble.getBitmapHeight();
 
-            mHomeButton = Allocation.createFromBitmapResource(mRS, mRes,
-                    R.drawable.home_button, Element.RGBA_8888(mRS), false);
-            mHomeButton.uploadToTexture(0);
-            mParams.homeButtonId = mHomeButton.getID();
+            mHomeButtonNormal = Allocation.createFromBitmapResource(mRS, mRes,
+                    R.drawable.home_button_normal, Element.RGBA_8888(mRS), false);
+            mHomeButtonNormal.uploadToTexture(0);
+            mHomeButtonPressed = Allocation.createFromBitmapResource(mRS, mRes,
+                    R.drawable.home_button_pressed, Element.RGBA_8888(mRS), false);
+            mHomeButtonPressed.uploadToTexture(0);
             mParams.homeButtonWidth = 76;
             mParams.homeButtonHeight = 68;
             mParams.homeButtonTextureWidth = 128;
             mParams.homeButtonTextureHeight = 128;
+
+            mState.homeButtonId = mHomeButtonNormal.getID();
 
             mParams.save();
             mState.save();
@@ -1131,6 +1141,13 @@ public class AllAppsView extends RSSurfaceView
             mState.selectedIconIndex = -1;
         }
 
+        void setHomeSelected(boolean pressed) {
+            if (pressed) {
+                mState.homeButtonId = mHomeButtonPressed.getID();
+            } else {
+                mState.homeButtonId = mHomeButtonNormal.getID();
+            }
+        }
     }
 }
 
