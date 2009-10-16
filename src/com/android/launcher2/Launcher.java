@@ -227,6 +227,11 @@ public final class Launcher extends Activity
             android.os.Debug.stopMethodTracing();
         }
 
+        // We have a new AllAppsView, we need to re-bind everything, and it could have
+        // changed in our absence.
+        mModel.setAllAppsDirty();
+        mModel.setWorkspaceDirty();
+
         if (!mRestoring) {
             mModel.startLoader(this, true);
         }
