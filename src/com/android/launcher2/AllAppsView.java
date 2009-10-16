@@ -69,8 +69,9 @@ public class AllAppsView extends RSSurfaceView
     /** Bit for mLocks for when there are icons being loaded. */
     private static final int LOCK_ICONS_PENDING = 1;
 
-    private static final int TRACKING_FLING = 0;
-    private static final int TRACKING_HOME = 1;
+    private static final int TRACKING_NONE = 0;
+    private static final int TRACKING_FLING = 1;
+    private static final int TRACKING_HOME = 2;
 
     private Launcher mLauncher;
     private DragController mDragController;
@@ -258,7 +259,7 @@ public class AllAppsView extends RSSurfaceView
         case MotionEvent.ACTION_OUTSIDE:
             if (mTouchTracking == TRACKING_HOME) {
                 // TODO: highlight?
-            } else {
+            } else if (mTouchTracking == TRACKING_FLING) {
                 int rawX = (int)ev.getRawX();
                 int rawY = (int)ev.getRawY();
                 int slop;
@@ -306,7 +307,7 @@ public class AllAppsView extends RSSurfaceView
                         mLauncher.closeAllApps(true);
                     }
                 }
-            } else {
+            } else if (mTouchTracking == TRACKING_FLING) {
                 mRollo.mState.newTouchDown = 0;
                 if (mRotateMove) {
                     mRollo.mState.newPositionX = ev.getRawY() / mDefines.SCREEN_WIDTH_PX;
@@ -330,8 +331,9 @@ public class AllAppsView extends RSSurfaceView
                     mVelocity.recycle();
                     mVelocity = null;
                 }
-                break;
             }
+            mTouchTracking = TRACKING_NONE;
+            break;
         }
 
         return true;
