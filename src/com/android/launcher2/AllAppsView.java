@@ -398,6 +398,7 @@ public class AllAppsView extends RSSurfaceView
 
         cancelLongPress();
         mRollo.clearSelectedIcon();
+        mRollo.setHomeSelected(false);
         if (amount > 0.001f) {
             // set in readback, so we're correct even before the next frame
             mRollo.mState.zoomTarget = amount;
