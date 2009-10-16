@@ -233,7 +233,7 @@ void
 draw_home_button()
 {
     setColor(1.0f, 1.0f, 1.0f, 1.0f);
-    bindTexture(NAMED_PFTexLinear, 0, params->homeButtonId);
+    bindTexture(NAMED_PFTexLinear, 0, state->homeButtonId);
 
     float scale = 2.0f / SCREEN_WIDTH_PX;
 
