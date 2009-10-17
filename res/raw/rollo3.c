@@ -202,7 +202,7 @@ void updatePos() {
     }
 }
 
-int positionStrip(float row, float column, int isTop)
+int positionStrip(float row, float column, int isTop, float p)
 {
     float mat1[16];
     float x = 0.5f * (column - 1.5f);
@@ -214,6 +214,8 @@ int positionStrip(float row, float column, int isTop)
     } else {
         matrixLoadTranslate(mat1, x, -0.9f, 0.f);
         matrixScale(mat1, scale, -scale, 1.f);
+        matrixTranslate(mat1, 0, p * 2, 0.f);
+        matrixRotate(mat1, -p * 50, 1, 0, 0);
     }
     vpLoadModelMatrix(mat1);
 
@@ -246,7 +248,7 @@ draw_home_button()
     drawSprite(x, y, z, params->homeButtonTextureWidth, params->homeButtonTextureHeight);
 }
 
-void drawFrontGrid(float rowOffset)
+void drawFrontGrid(float rowOffset, float p)
 {
     float h = getHeight();
     float w = getWidth();
@@ -278,13 +280,25 @@ void drawFrontGrid(float rowOffset)
                 if ((y >= ymin) && (y <= ymax)) {
                     setColor(1.f, 1.f, 1.f, 1.f);
 
-                    if (state->selectedIconIndex == iconNum) {
+                    if (state->selectedIconIndex == iconNum && !p) {
                         bindTexture(NAMED_PFTexLinear, 0, state->selectedIconTexture);
                         drawSpriteScreenspace(x, y, 0, 128, 128);
                     }
 
                     bindTexture(NAMED_PFTexLinear, 0, loadI32(ALLOC_ICON_IDS, iconNum));
-                    drawSpriteScreenspace(x, y, 0, 128, 128);
+                    if (!p) {
+                        drawSpriteScreenspace(x, y, 0, 128, 128);
+                    } else {
+                        float px = ((x + 64) - (getWidth() / 2)) / (getWidth() / 2);
+                        float py = ((y + 64) - (getHeight() / 2)) / (getWidth() / 2);
+                        float d = 64.f / (getWidth() / 2);
+                        px *= p + 1;
+                        py *= p + 1;
+                        drawQuadTexCoords(px - d, py - d, -p, 0, 1,
+                                          px - d, py + d, -p, 0, 0,
+                                          px + d, py + d, -p, 1, 0,
+                                          px + d, py - d, -p, 1, 1);
+                    }
                 }
 
                 float y2 = y - 44;
@@ -296,6 +310,7 @@ void drawFrontGrid(float rowOffset)
                     a = 1.f - (y - (ymax + 40)) * 0.02f;
                 }
                 a = clampf(a, 0, 1);
+                a *= maxf(0, 1.f - p * 5.f);
 
                 setColor(1, 1, 1, a);
                 bindTexture(NAMED_PFTexLinear, 0, loadI32(ALLOC_LABEL_IDS, iconNum));
@@ -307,10 +322,10 @@ void drawFrontGrid(float rowOffset)
     }
 }
 
-void drawStrip(float row, float column, int isTop, int iconNum)
+void drawStrip(float row, float column, int isTop, int iconNum, float p)
 {
     if (iconNum < 0) return;
-    int offset = positionStrip(row, column, isTop);
+    int offset = positionStrip(row, column, isTop, p);
     bindTexture(NAMED_PFTexLinear, 0, loadI32(ALLOC_ICON_IDS, iconNum));
     if (offset < -20) return;
     offset = clamp(offset, 0, 199 - 20);
@@ -326,13 +341,13 @@ void drawTop(float rowOffset)
             if (iconNum >= state->iconCount) {
                 return;
             }
-            drawStrip(rowOffset - row, col, 1, iconNum);
+            drawStrip(rowOffset - row, col, 1, iconNum, 0);
             iconNum++;
         }
     }
 }
 
-void drawBottom(float rowOffset)
+void drawBottom(float rowOffset, float p)
 {
     float pos = -1.f;
     int intRowOffset = rowOffset;
@@ -346,7 +361,7 @@ void drawBottom(float rowOffset)
                 return;
             }
             if (pos > -1) {
-                drawStrip(pos, col, 0, iconNum);
+                drawStrip(pos, col, 0, iconNum, p);
             }
             iconNum++;
         }
@@ -371,12 +386,17 @@ main(int launchID)
     g_DT = minf(g_DT, 0.2f);
 
     if (g_Zoom != state->zoomTarget) {
-        float dz = (state->zoomTarget - g_Zoom) * g_DT * 5;
-        if (dz && (fabsf(dz) < 0.03f)) {
+        float dz;
+        if (state->zoomTarget > 0.5f) {
+            dz = (1 - g_Zoom) * 0.2f;
+        } else {
+            dz = -g_DT - (1 - g_Zoom) * 0.2f;
+        }
+        if (dz && (fabsf(dz) < 0.02f)) {
             if (dz > 0) {
-                dz = 0.03f;
+                dz = 0.02f;
             } else {
-                dz = -0.03f;
+                dz = -0.02f;
             }
         }
         if (fabsf(g_Zoom - state->zoomTarget) < fabsf(dz)) {
@@ -418,10 +438,8 @@ main(int launchID)
     bindProgramFragment(NAMED_PFTexLinear);
 
 
-    float zoomOffset = 8.f * (1 - g_Zoom);
-    drawTop(g_PosPage - zoomOffset);
-    drawBottom(g_PosPage - zoomOffset);
-    drawFrontGrid(g_PosPage - zoomOffset);
+    drawTop(g_PosPage);
+    drawBottom(g_PosPage, 1-g_Zoom);
 
     {
         float mat1[16];
@@ -429,6 +447,7 @@ main(int launchID)
         vpLoadModelMatrix(mat1);
         vpLoadTextureMatrix(mat1);
     }
+    drawFrontGrid(g_PosPage, 1-g_Zoom);
     draw_home_button();
 
 
