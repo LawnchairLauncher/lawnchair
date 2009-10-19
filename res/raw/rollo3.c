@@ -102,7 +102,7 @@ void move() {
 
 void fling() {
     g_LastTouchDown = 0;
-    g_PosVelocity = -state->flingVelocityX * 2;
+    g_PosVelocity = -state->flingVelocity * 4;
     float av = fabsf(g_PosVelocity);
     float minVel = 3.5f;
 
@@ -329,7 +329,7 @@ void drawStrip(float row, float column, int isTop, int iconNum, float p)
     bindTexture(NAMED_PFTexLinear, 0, loadI32(ALLOC_ICON_IDS, iconNum));
     if (offset < -20) return;
     offset = clamp(offset, 0, 199 - 20);
-    drawSimpleMeshRange(NAMED_SMMesh2, offset * 6, 20 * 6);
+    drawSimpleMeshRange(NAMED_SMMesh, offset * 6, 20 * 6);
 }
 
 void drawTop(float rowOffset)
@@ -433,7 +433,7 @@ main(int launchID)
 
     //bindProgramFragment(NAMED_PFColor);
     //positionStrip(1, 0, 0);
-    //drawSimpleMesh(NAMED_SMMesh2);
+    //drawSimpleMesh(NAMED_SMMesh);
 
     bindProgramFragment(NAMED_PFTexLinear);
 
@@ -458,26 +458,6 @@ main(int launchID)
     if (g_SpecialHWWar) {
         g_SpecialHWWar = 0;
         return 1;
-    }
-
-    if (0) {
-        float h = getHeight();
-
-        color(1, 1, 1, 1);
-        bindProgramFragment(NAMED_PFColor);
-        bindProgramVertex(NAMED_PVOrtho);
-        float dy = 145.f;
-        float y = h - ((h - (dy * 4.f)) / 2);
-
-        drawLine(0, y, 0,  480, y, 0);
-        y -= dy;
-        drawLine(0, y, 0,  480, y, 0);
-        y -= dy;
-        drawLine(0, y, 0,  480, y, 0);
-        y -= dy;
-        drawLine(0, y, 0,  480, y, 0);
-        y -= dy;
-        drawLine(0, y, 0,  480, y, 0);
     }
 
     // Bug workaround where the last frame is not always displayed

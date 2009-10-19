@@ -98,43 +98,28 @@ public class AllAppsView extends RSSurfaceView
     private int mCurrentIconIndex = -1;
     private int mHomeButtonTop;
     private long mTouchTime;
-    private boolean mRotateMove = true;
 
     static class Defines {
         public static final int ALLOC_PARAMS = 0;
         public static final int ALLOC_STATE = 1;
         public static final int ALLOC_ICON_IDS = 3;
         public static final int ALLOC_LABEL_IDS = 4;
-        public static final int ALLOC_X_BORDERS = 5;
-        public static final int ALLOC_Y_BORDERS = 6;
 
         public static final int COLUMNS_PER_PAGE = 4;
         public static final int ROWS_PER_PAGE = 4;
-
-        public static final float RADIUS = 4.0f;
 
         public static final int ICON_WIDTH_PX = 64;
         public static final int ICON_TEXTURE_WIDTH_PX = 128;
 
         public static final int ICON_HEIGHT_PX = 64;
         public static final int ICON_TEXTURE_HEIGHT_PX = 128;
-        public static final float ICON_TOP_OFFSET = 0.2f;
-
-        public static final float CAMERA_Z = -2;
 
         public int SCREEN_WIDTH_PX;
         public int SCREEN_HEIGHT_PX;
 
-        public float FAR_ICON_SIZE;
-
         public void recompute(int w, int h) {
             SCREEN_WIDTH_PX = 480;
             SCREEN_HEIGHT_PX = 800;
-            FAR_ICON_SIZE = farSize(2 * ICON_WIDTH_PX / (float)w);
-        }
-
-        private static float farSize(float sizeAt0) {
-            return sizeAt0 * (Defines.RADIUS - Defines.CAMERA_Z) / -Defines.CAMERA_Z;
         }
     }
 
@@ -219,10 +204,6 @@ public class AllAppsView extends RSSurfaceView
         int action = ev.getAction();
         switch (action) {
         case MotionEvent.ACTION_DOWN:
-            if (x < 60 && y > 700) {
-                //mRotateMove = mRollo.setView((++mRSMode) & 3);
-            }
-
             if (y > mRollo.mTouchYBorders[mRollo.mTouchYBorders.length-1]) {
                 mTouchTracking = TRACKING_HOME;
                 mRollo.setHomeSelected(true);
@@ -233,11 +214,7 @@ public class AllAppsView extends RSSurfaceView
                 mMotionDownRawX = (int)ev.getRawX();
                 mMotionDownRawY = (int)ev.getRawY();
 
-                if (mRotateMove) {
-                    mRollo.mState.newPositionX = ev.getRawY() / mDefines.SCREEN_WIDTH_PX;
-                } else {
-                    mRollo.mState.newPositionX = ev.getRawX() / mDefines.SCREEN_WIDTH_PX;
-                }
+                mRollo.mState.newPositionX = ev.getRawY() / getWidth();
                 mRollo.mState.newTouchDown = 1;
 
                 if (!mRollo.checkClickOK()) {
@@ -266,11 +243,7 @@ public class AllAppsView extends RSSurfaceView
                 int rawX = (int)ev.getRawX();
                 int rawY = (int)ev.getRawY();
                 int slop;
-                if (mRotateMove) {
-                    slop = Math.abs(rawY - mMotionDownRawY);
-                } else {
-                    slop = Math.abs(rawX - mMotionDownRawX);
-                }
+                slop = Math.abs(rawY - mMotionDownRawY);
 
                 if (!mStartedScrolling && slop < mSlop) {
                     // don't update anything so when we do start scrolling
@@ -287,11 +260,7 @@ public class AllAppsView extends RSSurfaceView
                         cancelLongPress();
                         mCurrentIconIndex = -1;
                     }
-                    if (mRotateMove) {
-                        mRollo.mState.newPositionX = ev.getRawY() / mDefines.SCREEN_WIDTH_PX;
-                    } else {
-                        mRollo.mState.newPositionX = ev.getRawX() / mDefines.SCREEN_WIDTH_PX;
-                    }
+                    mRollo.mState.newPositionX = ev.getRawY() / getWidth();
                     mRollo.mState.newTouchDown = 1;
                     mRollo.move();
 
@@ -314,20 +283,10 @@ public class AllAppsView extends RSSurfaceView
                 }
             } else if (mTouchTracking == TRACKING_FLING) {
                 mRollo.mState.newTouchDown = 0;
-                if (mRotateMove) {
-                    mRollo.mState.newPositionX = ev.getRawY() / mDefines.SCREEN_WIDTH_PX;
-                } else {
-                    mRollo.mState.newPositionX = ev.getRawX() / mDefines.SCREEN_WIDTH_PX;
-                }
+                mRollo.mState.newPositionX = ev.getRawY() / getWidth();
 
                 mVelocity.computeCurrentVelocity(1000 /* px/sec */, mMaxFlingVelocity);
-                if (mRotateMove) {
-                    mRollo.mState.flingVelocityX
-                            = mVelocity.getYVelocity() / mDefines.SCREEN_WIDTH_PX;
-                } else {
-                    mRollo.mState.flingVelocityX
-                            = mVelocity.getXVelocity() / mDefines.SCREEN_WIDTH_PX;
-                }
+                mRollo.mState.flingVelocity = mVelocity.getYVelocity() / getHeight();
                 mRollo.clearSelectedIcon();
                 mRollo.mState.save();
                 mRollo.fling();
@@ -517,23 +476,19 @@ public class AllAppsView extends RSSurfaceView
     public class RolloRS {
 
         // Allocations ======
-        private int mViewMode = 0;
-
         private int mWidth;
         private int mHeight;
 
         private Resources mRes;
-        private Script[] mScript = new Script[4];
-
-        private Script.Invokable[] mInvokeMove = new Script.Invokable[4];
-        private Script.Invokable[] mInvokeFling = new Script.Invokable[4];
-        private Script.Invokable[] mInvokeResetWAR = new Script.Invokable[4];
+        private Script mScript;
+        private Script.Invokable mInvokeMove;
+        private Script.Invokable mInvokeFling;
+        private Script.Invokable mInvokeResetWAR;
 
         private ProgramStore mPSIcons;
         private ProgramStore mPSText;
         private ProgramFragment mPFColor;
         private ProgramFragment mPFTexLinear;
-        private ProgramFragment mPFTexNearest;
         private ProgramVertex mPV;
         private ProgramVertex mPVOrtho;
         private SimpleMesh mMesh;
@@ -552,9 +507,7 @@ public class AllAppsView extends RSSurfaceView
         private Allocation mSelectedIcon;
 
         private int[] mTouchYBorders;
-        private Allocation mAllocTouchYBorders;
         private int[] mTouchXBorders;
-        private Allocation mAllocTouchXBorders;
 
         private Bitmap mSelectionBitmap;
         private Canvas mSelectionCanvas;
@@ -611,7 +564,7 @@ public class AllAppsView extends RSSurfaceView
         class State extends BaseAlloc {
             public float newPositionX;
             public int newTouchDown;
-            public float flingVelocityX;
+            public float flingVelocity;
             public int iconCount;
             public int selectedIconIndex = -1;
             public int selectedIconTexture;
@@ -637,7 +590,6 @@ public class AllAppsView extends RSSurfaceView
             initProgramFragment();
             initProgramStore();
             initMesh();
-            initMesh2();
             initGl();
             initData();
             initTouchState();
@@ -645,60 +597,6 @@ public class AllAppsView extends RSSurfaceView
         }
 
         public void initMesh() {
-            SimpleMesh.TriangleMeshBuilder tm = new SimpleMesh.TriangleMeshBuilder(mRS, 3,
-                SimpleMesh.TriangleMeshBuilder.TEXTURE_0 | SimpleMesh.TriangleMeshBuilder.COLOR);
-
-            for (int ct=0; ct < 450; ct++) {
-                float x = 0;
-                float z = 0;
-                float l = 1.f;
-
-                if (ct < 190) {
-                    z = 0.1f + 0.05f * (190 - ct);
-                    x = -1;
-                    l = 0.125f + (0.125f / 190.f) * ct;
-                } else if (ct >= 190 && ct < 200) {
-                    float a = (3.14f * 0.5f) * (0.1f * (ct - 200));
-                    float s = (float)Math.sin(a);
-                    float c = (float)Math.cos(a);
-                    x = -0.9f + s * 0.1f;
-                    z = 0.1f - c * 0.1f;
-                    l = 0.25f + 0.075f * (ct - 190);
-                } else if (ct >= 200 && ct < 250) {
-                    z = 0.f;
-                    x = -0.9f + (1.8f * (ct - 200) / 50.f);
-                } else if (ct >= 250 && ct < 260) {
-                    float a = (3.14f * 0.5f) * (0.1f * (ct - 250));
-                    float s = (float)Math.sin(a);
-                    float c = (float)Math.cos(a);
-                    x = 0.9f + s * 0.1f;
-                    z = 0.1f - c * 0.1f;
-                    l = 0.25f + 0.075f * (260 - ct);
-                } else if (ct >= 260) {
-                    z = 0.1f + 0.05f * (ct - 260);
-                    x = 1;
-                    l = 0.125f + (0.125f / 190.f) * (450 - ct);
-                }
-                //Log.e("rs", "ct " + Integer.toString(ct) + "  x = " + Float.toString(x) + ", z = " + Float.toString(z));
-                //Log.e("rs", "ct " + Integer.toString(ct) + "  l = " + Float.toString(l));
-                float s = ct * 0.1f;
-                tm.setColor(l, l, l, 0.99f);
-                tm.setTexture(s, 1);
-                tm.addVertex(x, -0.5f, z);
-                tm.setTexture(s, 0);
-                tm.addVertex(x, 0.5f, z);
-            }
-            for (int ct=0; ct < (450*2 - 2); ct+= 2) {
-                tm.addTriangle(ct, ct+1, ct+2);
-                tm.addTriangle(ct+1, ct+3, ct+2);
-            }
-            mMesh = tm.create();
-            mMesh.setName("SMMesh");
-
-        }
-
-
-        public void initMesh2() {
             SimpleMesh.TriangleMeshBuilder tm = new SimpleMesh.TriangleMeshBuilder(mRS, 3,
                 SimpleMesh.TriangleMeshBuilder.TEXTURE_0 | SimpleMesh.TriangleMeshBuilder.COLOR);
 
@@ -733,7 +631,7 @@ public class AllAppsView extends RSSurfaceView
                 tm.addTriangle(ct+1, ct+3, ct+2);
             }
             mMesh2 = tm.create();
-            mMesh2.setName("SMMesh2");
+            mMesh2.setName("SMMesh");
         }
 
         private void initProgramVertex() {
@@ -746,12 +644,12 @@ public class AllAppsView extends RSSurfaceView
             mPV.setName("PV");
             mPV.bindAllocation(pva);
 
-            pva = new ProgramVertex.MatrixAllocation(mRS);
-            pva.setupOrthoWindow(mWidth, mHeight);
-            pvb.setTextureMatrixEnable(true);
-            mPVOrtho = pvb.create();
-            mPVOrtho.setName("PVOrtho");
-            mPVOrtho.bindAllocation(pva);
+            //pva = new ProgramVertex.MatrixAllocation(mRS);
+            //pva.setupOrthoWindow(mWidth, mHeight);
+            //pvb.setTextureMatrixEnable(true);
+            //mPVOrtho = pvb.create();
+            //mPVOrtho.setName("PVOrtho");
+            //mPVOrtho.bindAllocation(pva);
 
             mRS.contextBindProgramVertex(mPV);
         }
@@ -769,18 +667,14 @@ public class AllAppsView extends RSSurfaceView
             Sampler nearest = sb.create();
 
             ProgramFragment.Builder bf = new ProgramFragment.Builder(mRS, null, null);
-            mPFColor = bf.create();
-            mPFColor.setName("PFColor");
+            //mPFColor = bf.create();
+            //mPFColor.setName("PFColor");
 
             bf.setTexEnable(true, 0);
             bf.setTexEnvMode(ProgramFragment.EnvMode.MODULATE, 0);
             mPFTexLinear = bf.create();
             mPFTexLinear.setName("PFTexLinear");
             mPFTexLinear.bindSampler(linear, 0);
-
-            mPFTexNearest = bf.create();
-            mPFTexNearest.setName("PFTexNearest");
-            mPFTexNearest.bindSampler(nearest, 0);
         }
 
         private void initProgramStore() {
@@ -800,14 +694,7 @@ public class AllAppsView extends RSSurfaceView
 
         private void initGl() {
             mTouchXBorders = new int[Defines.COLUMNS_PER_PAGE+1];
-            mAllocTouchXBorders = Allocation.createSized(mRS, Element.USER_I32(mRS),
-                    mTouchXBorders.length);
-            mAllocTouchXBorders.data(mTouchXBorders);
-
             mTouchYBorders = new int[Defines.ROWS_PER_PAGE+1];
-            mAllocTouchYBorders = Allocation.createSized(mRS, Element.USER_I32(mRS),
-                    mTouchYBorders.length);
-            mAllocTouchYBorders.data(mTouchYBorders);
         }
 
         private void initData() {
@@ -844,36 +731,29 @@ public class AllAppsView extends RSSurfaceView
             setApps(null);
         }
 
-        private void initScript(int idx, int id) {
+        private void initScript(int id) {
+        }
+
+        private void initRs() {
             ScriptC.Builder sb = new ScriptC.Builder(mRS);
-            sb.setScript(mRes, id);
+            sb.setScript(mRes, R.raw.rollo3);
             sb.setRoot(true);
             sb.addDefines(mDefines);
             sb.setType(mParams.mType, "params", Defines.ALLOC_PARAMS);
             sb.setType(mState.mType, "state", Defines.ALLOC_STATE);
-            mInvokeMove[idx] = sb.addInvokable("move");
-            mInvokeFling[idx] = sb.addInvokable("fling");
-            mInvokeResetWAR[idx] = sb.addInvokable("resetHWWar");
-            mScript[idx] = sb.create();
-            mScript[idx].setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-            mScript[idx].bindAllocation(mParams.mAlloc, Defines.ALLOC_PARAMS);
-            mScript[idx].bindAllocation(mState.mAlloc, Defines.ALLOC_STATE);
-            mScript[idx].bindAllocation(mAllocIconIds, Defines.ALLOC_ICON_IDS);
-            mScript[idx].bindAllocation(mAllocLabelIds, Defines.ALLOC_LABEL_IDS);
-            mScript[idx].bindAllocation(mAllocTouchXBorders, Defines.ALLOC_X_BORDERS);
-            mScript[idx].bindAllocation(mAllocTouchYBorders, Defines.ALLOC_Y_BORDERS);
-        }
-
-        private void initRs() {
-            mViewMode = 0;
-            initScript(0, R.raw.rollo3);
-            initScript(1, R.raw.rollo2);
-            initScript(2, R.raw.rollo);
-            initScript(3, R.raw.rollo4);
+            mInvokeMove = sb.addInvokable("move");
+            mInvokeFling = sb.addInvokable("fling");
+            mInvokeResetWAR = sb.addInvokable("resetHWWar");
+            mScript = sb.create();
+            mScript.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            mScript.bindAllocation(mParams.mAlloc, Defines.ALLOC_PARAMS);
+            mScript.bindAllocation(mState.mAlloc, Defines.ALLOC_STATE);
+            mScript.bindAllocation(mAllocIconIds, Defines.ALLOC_ICON_IDS);
+            mScript.bindAllocation(mAllocLabelIds, Defines.ALLOC_LABEL_IDS);
 
             mMessageProc = new AAMessage();
             mRS.mMessageCallback = mMessageProc;
-            mRS.contextBindRootScript(mScript[mViewMode]);
+            mRS.contextBindRootScript(mScript);
         }
 
         private void setApps(ArrayList<ApplicationInfo> list) {
@@ -986,62 +866,48 @@ public class AllAppsView extends RSSurfaceView
             mAllocIconIds.data(mIconIds);
             mAllocLabelIds.data(mLabelIds);
 
-            if (mScript[0] != null) { // this happens when we init it
-                for (int ct=0; ct < 4; ct++) {
-                    mScript[ct].bindAllocation(mAllocIconIds, Defines.ALLOC_ICON_IDS);
-                    mScript[ct].bindAllocation(mAllocLabelIds, Defines.ALLOC_LABEL_IDS);
-                }
+            if (mScript != null) { // this happens when we init it
+                mScript.bindAllocation(mAllocIconIds, Defines.ALLOC_ICON_IDS);
+                mScript.bindAllocation(mAllocLabelIds, Defines.ALLOC_LABEL_IDS);
             }
 
             mState.save();
 
             // Note: mScript may be null if we haven't initialized it yet.
             // In that case, this is a no-op.
-            if (mInvokeResetWAR != null &&
-                mInvokeResetWAR[mViewMode] != null) {
-                mInvokeResetWAR[mViewMode].execute();
+            if (mInvokeResetWAR != null) {
+                mInvokeResetWAR.execute();
             }
-            mRS.contextBindRootScript(mScript[mViewMode]);
+            mRS.contextBindRootScript(mScript);
         }
 
         void initTouchState() {
             int width = getWidth();
             int height = getHeight();
+            int cellHeight = 145;//iconsSize / Defines.ROWS_PER_PAGE;
+            int cellWidth = width / Defines.COLUMNS_PER_PAGE;
 
-            int iconsSize;
-            if (width < height) {
-                iconsSize = width;
-            } else {
-                iconsSize = height;
-            }
-            int cellHeight = iconsSize / Defines.ROWS_PER_PAGE;
-            int cellWidth = iconsSize / Defines.COLUMNS_PER_PAGE;
-
-            int centerY = (height / 2) - (int)(cellHeight * 0.2f);
-            mTouchYBorders[0] = centerY - (int)(2.8f * cellHeight);
-            mTouchYBorders[1] = centerY - (int)(1.25f * cellHeight);
+            int centerY = (height / 2);
+            mTouchYBorders[0] = centerY - (cellHeight * 2);
+            mTouchYBorders[1] = centerY - cellHeight;
             mTouchYBorders[2] = centerY;
-            mTouchYBorders[3] = centerY + (int)(1.25f * cellHeight);;
-            mTouchYBorders[4] = centerY + (int)(2.6f * cellHeight);
-
-            mAllocTouchYBorders.data(mTouchYBorders);
+            mTouchYBorders[3] = centerY + cellHeight;
+            mTouchYBorders[4] = centerY + (cellHeight * 2);
 
             int centerX = (width / 2);
-            mTouchXBorders[0] = centerX - (2 * cellWidth);
-            mTouchXBorders[1] = centerX - (int)(0.85f * cellWidth);
+            mTouchXBorders[0] = 0;
+            mTouchXBorders[1] = centerX - (width / 4);
             mTouchXBorders[2] = centerX;
-            mTouchXBorders[3] = centerX + (int)(0.85f * cellWidth);
-            mTouchXBorders[4] = centerX + (2 * cellWidth);
-
-            mAllocTouchXBorders.data(mTouchXBorders);
+            mTouchXBorders[3] = centerX + (width / 4);
+            mTouchXBorders[4] = width;
         }
 
-        int chooseTappedIconHorz(int x, int y, float page) {
-            int currentPage = (int)page;
+        int chooseTappedIcon(int x, int y, float pos) {
+            // Adjust for scroll position if not zero.
+            y += (pos - ((int)pos)) * (mTouchYBorders[1] - mTouchYBorders[0]);
 
             int col = -1;
             int row = -1;
-
             for (int i=0; i<Defines.COLUMNS_PER_PAGE; i++) {
                 if (x >= mTouchXBorders[i] && x < mTouchXBorders[i+1]) {
                     col = i;
@@ -1059,50 +925,16 @@ public class AllAppsView extends RSSurfaceView
                 return -1;
             }
 
-            return (currentPage * Defines.ROWS_PER_PAGE * Defines.COLUMNS_PER_PAGE)
+            return (((int)pos) * Defines.COLUMNS_PER_PAGE)
                     + (row * Defines.ROWS_PER_PAGE) + col;
         }
 
-        int chooseTappedIconVert(int x, int y, float pos) {
-            int ydead = (getHeight() - 4 * 145) / 2;
-            if (y < ydead || y > (getHeight() - ydead)) {
-                return -1;
-            }
-
-            y -= ydead;
-            y += pos * 145;
-            int row = y / 145;
-            int col = x / 120;
-
-            return row * 4 + col;
-        }
-
-        int chooseTappedIcon(int x, int y, float pos) {
-            int index;
-            if (mViewMode != 0) {
-                index = chooseTappedIconHorz(x, y, pos);
-            } else {
-                index = chooseTappedIconVert(x, y, pos);
-            }
-            final int iconCount = mAllAppsList.size();
-            if (index >= iconCount) {
-                index = -1;
-            }
-            return index;
-        }
-
-        boolean setView(int v) {
-            mViewMode = v;
-            mRS.contextBindRootScript(mScript[mViewMode]);
-            return (v == 0);
-        }
-
         void fling() {
-            mInvokeFling[mViewMode].execute();
+            mInvokeFling.execute();
         }
 
         void move() {
-            mInvokeMove[mViewMode].execute();
+            mInvokeMove.execute();
         }
 
         /**
