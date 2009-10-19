@@ -482,8 +482,10 @@ public class AllAppsView extends RSSurfaceView
         private Resources mRes;
         private Script mScript;
         private Script.Invokable mInvokeMove;
+        private Script.Invokable mInvokeMoveTo;
         private Script.Invokable mInvokeFling;
         private Script.Invokable mInvokeResetWAR;
+
 
         private ProgramStore mPSIcons;
         private ProgramStore mPSText;
@@ -570,6 +572,7 @@ public class AllAppsView extends RSSurfaceView
             public int selectedIconTexture;
             public float zoomTarget;
             public int homeButtonId;
+            public float targetPos;
 
             State() {
                 mType = Type.createFromClass(mRS, State.class, 1, "StateClass");
@@ -743,6 +746,7 @@ public class AllAppsView extends RSSurfaceView
             sb.setType(mState.mType, "state", Defines.ALLOC_STATE);
             mInvokeMove = sb.addInvokable("move");
             mInvokeFling = sb.addInvokable("fling");
+            mInvokeMoveTo = sb.addInvokable("moveTo");
             mInvokeResetWAR = sb.addInvokable("resetHWWar");
             mScript = sb.create();
             mScript.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -935,6 +939,12 @@ public class AllAppsView extends RSSurfaceView
 
         void move() {
             mInvokeMove.execute();
+        }
+
+        void moveTo(float row) {
+            mState.targetPos = row;
+            mState.save();
+            mInvokeMoveTo.execute();
         }
 
         /**

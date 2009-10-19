@@ -22,6 +22,10 @@ float g_Zoom;
 float g_OldPosPage;
 float g_OldPosVelocity;
 float g_OldZoom;
+float g_MoveToTotalTime;
+float g_MoveToTime;
+float g_MoveToOldPos;
+
 
 // Drawing constants, should be parameters ======
 #define VIEW_ANGLE 1.28700222f
@@ -79,6 +83,9 @@ void init() {
     g_LastPositionX = 0;
     g_Zoom = 0;
     g_SpecialHWWar = 1;
+    g_MoveToTime = 0;
+    g_MoveToOldPos = 0;
+    g_MoveToTotalTime = 0.5f;
 }
 
 void resetHWWar() {
@@ -97,7 +104,14 @@ void move() {
     }
     g_LastTouchDown = state->newTouchDown;
     g_LastPositionX = state->newPositionX;
+    g_MoveToTime = 0;
     //debugF("Move P", g_PosPage);
+}
+
+void moveTo() {
+    g_MoveToTime = g_MoveToTotalTime;
+    g_PosVelocity = 0;
+    g_MoveToOldPos = g_PosPage;
 }
 
 void fling() {
@@ -144,6 +158,25 @@ void updatePos() {
                         g_AttractionTable[tablePosI + 1],
                         tablePosFrac) * g_DT;
     float friction = 4.f * g_DT;
+
+    if (g_MoveToTime) {
+        float a = 2.f * (state->targetPos - g_MoveToOldPos) /
+                  (g_MoveToTotalTime * g_MoveToTotalTime);
+        if (g_MoveToTime > (g_MoveToTotalTime * 0.5f)) {
+            // slowing
+            g_PosPage = state->targetPos - 0.5f * a * (g_MoveToTime * g_MoveToTime);
+        } else {
+            // accelerating.
+            float t = g_MoveToTotalTime - g_MoveToTime;
+            g_PosPage = g_MoveToOldPos + 0.5f * a * (t * t);
+        }
+        g_MoveToTime -= g_DT;
+        if (g_MoveToTime <= 0) {
+            g_MoveToTime = 0;
+            g_PosPage = state->targetPos;
+        }
+        return;
+    }
 
     if (g_PosPage < -0.5f) {
         accel = g_AttractionTable[0] * g_DT;
