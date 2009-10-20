@@ -289,16 +289,11 @@ draw_home_button()
 {
     setColor(1.0f, 1.0f, 1.0f, 1.0f);
     bindTexture(NAMED_PFTexLinear, 0, state->homeButtonId);
+    float x = (SCREEN_WIDTH_PX - params->homeButtonTextureWidth) / 2;
+    float y = (g_Zoom - 1.f) * params->homeButtonTextureHeight;
 
-    float scale = 2.0f / SCREEN_WIDTH_PX;
-
-    float x = 0.0f;
-
-    float y = -(SCREEN_HEIGHT_PX / (float)SCREEN_WIDTH_PX);
-    y += g_Zoom * (scale * params->homeButtonTextureHeight / 2);
-
-    float z = 0.0f;
-    drawSprite(x, y, z, params->homeButtonTextureWidth, params->homeButtonTextureHeight);
+    y -= 36; // move the house to the edge of the screen as it doesn't fill the texture.
+    drawSpriteScreenspace(x, y, 0, params->homeButtonTextureWidth, params->homeButtonTextureHeight);
 }
 
 void drawFrontGrid(float rowOffset, float p)
