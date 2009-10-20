@@ -374,6 +374,7 @@ public class AllAppsView extends RSSurfaceView
         return mRollo.mMessageProc.mZoom > 0.001f;
     }
 
+    /*
     @Override
     public boolean onTrackballEvent(MotionEvent ev)
     {
@@ -386,6 +387,7 @@ public class AllAppsView extends RSSurfaceView
 
         return true;
     }
+    */
 
     public void setApps(ArrayList<ApplicationInfo> list) {
         mAllAppsList = list;
