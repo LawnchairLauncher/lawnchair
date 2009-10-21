@@ -15,13 +15,14 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name" msgid="5865630159700533006">"ホーム"</string>
+    <string name="application_name" msgid="4528470563311667177">"_Launcher2"</string>
     <string name="uid_name" msgid="3371120195364560632">"Android Core Apps"</string>
     <string name="folder_name" msgid="4588446541914685904">"フォルダ"</string>
     <string name="chooser_wallpaper" msgid="5988031014201479733">"壁紙を選択"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"壁紙に設定"</string>
     <string name="pick_wallpaper" msgid="2674908923379130941">"壁紙ギャラリー"</string>
     <string name="activity_not_found" msgid="3571057450431950427">"アプリケーションがインストールされていません。"</string>
+    <string name="configure_wallpaper" msgid="2820186271419674623">"設定..."</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"フォルダ名"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"フォルダ名を変更"</string>
     <string name="rename_action" msgid="6016003384693240896">"OK"</string>
@@ -39,9 +40,9 @@
     <string name="add_photo_frame" msgid="3154058437359487954">"写真フレーム"</string>
     <string name="add_search" msgid="7104834713685095105">"検索"</string>
     <string name="out_of_space" msgid="8365249326091984698">"ホーム画面に空きスペースがありません。"</string>
-    <string name="shortcut_installed" msgid="6179314539443046225">"ショートカット「%s」を作成しました。"</string>
-    <string name="shortcut_uninstalled" msgid="2758997515869993129">"ショートカット「%s」が削除されました。"</string>
-    <string name="shortcut_duplicate" msgid="4887186782641532074">"ショートカット「%s」は既に存在します。"</string>
+    <string name="shortcut_installed" msgid="7071557296331322355">"ショートカット「<xliff:g id="NAME">%s</xliff:g>」を作成しました。"</string>
+    <string name="shortcut_uninstalled" msgid="2129499669449749995">"ショートカット「<xliff:g id="NAME">%s</xliff:g>」を削除しました。"</string>
+    <string name="shortcut_duplicate" msgid="4757756326465060694">"ショートカット「<xliff:g id="NAME">%s</xliff:g>」は既に存在します。"</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"ショートカットを選択"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"フォルダの選択"</string>
     <string name="menu_add" msgid="3065046628354640854">"追加"</string>
