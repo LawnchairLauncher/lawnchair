@@ -247,9 +247,9 @@ int positionStrip(float row, float column, int isTop, float p)
     } else {
         matrixLoadTranslate(mat1, x, -0.9f, 0.f);
         matrixScale(mat1, scale, -scale, 1.f);
-        matrixTranslate(mat1, 0, p * 2, 0.f);
-        matrixRotate(mat1, -p * 50, 1, 0, 0);
     }
+    matrixTranslate(mat1, 0, p * 2, 0.f);
+    matrixRotate(mat1, -p * 50, 1, 0, 0);
     vpLoadModelMatrix(mat1);
 
     float soff = -(row * 1.4);
@@ -365,7 +365,7 @@ void drawStrip(float row, float column, int isTop, int iconNum, float p)
     drawSimpleMeshRange(NAMED_SMMesh, offset * 6, 20 * 6);
 }
 
-void drawTop(float rowOffset)
+void drawTop(float rowOffset, float p)
 {
     int row, col;
     int iconNum = 0;
@@ -374,7 +374,7 @@ void drawTop(float rowOffset)
             if (iconNum >= state->iconCount) {
                 return;
             }
-            drawStrip(rowOffset - row, col, 1, iconNum, 0);
+            drawStrip(rowOffset - row, col, 1, iconNum, p);
             iconNum++;
         }
     }
@@ -471,7 +471,7 @@ main(int launchID)
     bindProgramFragment(NAMED_PFTexLinear);
 
 
-    drawTop(g_PosPage);
+    drawTop(g_PosPage, 1-g_Zoom);
     drawBottom(g_PosPage, 1-g_Zoom);
 
     {
