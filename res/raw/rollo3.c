@@ -85,7 +85,7 @@ void init() {
     g_SpecialHWWar = 1;
     g_MoveToTime = 0;
     g_MoveToOldPos = 0;
-    g_MoveToTotalTime = 0.5f;
+    g_MoveToTotalTime = 0.2f; // Duration of scrolling 1 line
 }
 
 void resetHWWar() {
@@ -112,6 +112,8 @@ void moveTo() {
     g_MoveToTime = g_MoveToTotalTime;
     g_PosVelocity = 0;
     g_MoveToOldPos = g_PosPage;
+	
+	// debugF("======= moveTo", state->targetPos);
 }
 
 void fling() {
@@ -144,6 +146,17 @@ modf(float x, float y)
     return x-(y*floorf(x/y));
 }
 
+
+/*
+ * Interpolates values in the range 0..1 to a curve that eases in
+ * and out.
+ */
+float
+getInterpolation(float input) {
+    return (cosf((input + 1) * PI) / 2.0f) + 0.5f;
+}
+
+
 void updatePos() {
     if (g_LastTouchDown) {
         return;
@@ -160,6 +173,8 @@ void updatePos() {
     float friction = 4.f * g_DT;
 
     if (g_MoveToTime) {
+		
+		/*
         float a = 2.f * (state->targetPos - g_MoveToOldPos) /
                   (g_MoveToTotalTime * g_MoveToTotalTime);
         if (g_MoveToTime > (g_MoveToTotalTime * 0.5f)) {
@@ -170,6 +185,11 @@ void updatePos() {
             float t = g_MoveToTotalTime - g_MoveToTime;
             g_PosPage = g_MoveToOldPos + 0.5f * a * (t * t);
         }
+		 */
+		
+		// New position is old posiition + (total distance) * (interpolated time)
+		g_PosPage = g_MoveToOldPos + (state->targetPos - g_MoveToOldPos) * getInterpolation((g_MoveToTotalTime - g_MoveToTime) / g_MoveToTotalTime);
+		
         g_MoveToTime -= g_DT;
         if (g_MoveToTime <= 0) {
             g_MoveToTime = 0;
@@ -409,7 +429,7 @@ main(int launchID)
     int newTime = uptimeMillis();
     g_DT = (newTime - g_LastTime) / 1000.f;
     g_LastTime = newTime;
-
+	
     if (!g_DrawLastFrame) {
         // If we stopped rendering we cannot use DT.
         // assume 30fps in this case.
@@ -495,6 +515,6 @@ main(int launchID)
 
     // Bug workaround where the last frame is not always displayed
     // So we keep rendering until the bug is fixed.
-    return lastFrame((g_PosVelocity != 0) || fracf(g_PosPage) || g_Zoom != state->zoomTarget);
+    return lastFrame((g_PosVelocity != 0) || fracf(g_PosPage) || g_Zoom != state->zoomTarget || (g_MoveToTime != 0));
 }
 
