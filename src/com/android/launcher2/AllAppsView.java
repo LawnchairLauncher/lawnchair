@@ -88,12 +88,12 @@ public class AllAppsView extends RSSurfaceView
     private RenderScript mRS;
     private RolloRS mRollo;
     private ArrayList<ApplicationInfo> mAllAppsList;
-    
+
     /**
      * True when we are using arrow keys or trackball to drive navigation
      */
     private boolean mArrowNavigation = false;
-    
+
     private int mPageCount;
     private boolean mStartedScrolling;
     private VelocityTracker mVelocity;
@@ -181,7 +181,7 @@ public class AllAppsView extends RSSurfaceView
         long endTime = SystemClock.uptimeMillis();
         Log.d(TAG, "surfaceChanged took " + (endTime-startTime) + "ms");
     }
-    
+
 
     @Override
     protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
@@ -205,7 +205,7 @@ public class AllAppsView extends RSSurfaceView
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        
+
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
             if (mArrowNavigation) {
                 int whichApp = mRollo.mState.selectedIconIndex;
@@ -215,20 +215,20 @@ public class AllAppsView extends RSSurfaceView
                 }
             }
         }
-        
+
         if (mArrowNavigation && mRollo.mState.iconCount > 0) {
             mArrowNavigation = true;
-            
+
             int currentSelection = mRollo.mState.selectedIconIndex;
             int currentTopRow = (int) mRollo.mMessageProc.mPosX;
-            
+
             // The column of the current selection, in the range 0..COLUMNS_PER_PAGE-1
             int currentPageCol = currentSelection % Defines.COLUMNS_PER_PAGE;
-            
+
             // The row of the current selection, in the range 0..ROWS_PER_PAGE-1
             int currentPageRow = (currentSelection - (currentTopRow * Defines.COLUMNS_PER_PAGE))
                     / Defines.ROWS_PER_PAGE;
-            
+
             int newSelection = currentSelection;
 
             switch (keyCode) {
@@ -237,7 +237,7 @@ public class AllAppsView extends RSSurfaceView
                     newSelection = currentSelection - Defines.COLUMNS_PER_PAGE;
                 } else if (currentTopRow > 0) {
                     mRollo.moveTo(currentTopRow - 1);
-                    newSelection = currentSelection - Defines.COLUMNS_PER_PAGE; 
+                    newSelection = currentSelection - Defines.COLUMNS_PER_PAGE;
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
@@ -256,7 +256,7 @@ public class AllAppsView extends RSSurfaceView
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_RIGHT:
-                if ((currentPageCol < Defines.COLUMNS_PER_PAGE - 1) && 
+                if ((currentPageCol < Defines.COLUMNS_PER_PAGE - 1) &&
                         (currentSelection < mRollo.mState.iconCount - 1)) {
                     newSelection = currentSelection + 1;
                 }
@@ -276,7 +276,7 @@ public class AllAppsView extends RSSurfaceView
     public boolean onTouchEvent(MotionEvent ev)
     {
         mArrowNavigation = false;
-        
+
         if (!isVisible()) {
             return true;
         }
@@ -635,8 +635,8 @@ public class AllAppsView extends RSSurfaceView
 
         private boolean checkClickOK() {
             //android.util.Log.e("rs", "check click " + Float.toString(mReadback.velocity) + ", " + Float.toString(mReadback.posX));
-            return (Math.abs(mMessageProc.mVelocity) < 0.1f) &&
-                   (Math.abs(mMessageProc.mPosX - Math.round(mMessageProc.mPosX)) < 0.1f);
+            return (Math.abs(mMessageProc.mVelocity) < 0.4f) &&
+                   (Math.abs(mMessageProc.mPosX - Math.round(mMessageProc.mPosX)) < 0.4f);
         }
 
         class Params extends BaseAlloc {
