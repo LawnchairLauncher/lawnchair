@@ -15,13 +15,14 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name" msgid="5865630159700533006">"Plocha"</string>
+    <string name="application_name" msgid="4528470563311667177">"_Launcher2"</string>
     <string name="uid_name" msgid="3371120195364560632">"Android Core Apps"</string>
     <string name="folder_name" msgid="4588446541914685904">"Složka"</string>
     <string name="chooser_wallpaper" msgid="5988031014201479733">"Vybrat tapetu ze složky"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Nastavit tapetu"</string>
     <string name="pick_wallpaper" msgid="2674908923379130941">"Galerie tapet"</string>
     <string name="activity_not_found" msgid="3571057450431950427">"Aplikace není v telefonu nainstalována."</string>
+    <string name="configure_wallpaper" msgid="2820186271419674623">"Konfigurace..."</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Název složky"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Přejmenovat složku"</string>
     <string name="rename_action" msgid="6016003384693240896">"OK"</string>
@@ -39,9 +40,9 @@
     <string name="add_photo_frame" msgid="3154058437359487954">"Rámeček fotografie"</string>
     <string name="add_search" msgid="7104834713685095105">"Vyhledávání"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Na této ploše již není místo."</string>
-    <string name="shortcut_installed" msgid="6179314539443046225">"Byl vytvořen zástupce %s."</string>
-    <string name="shortcut_uninstalled" msgid="2758997515869993129">"Zástupce %s byl odebrán."</string>
-    <string name="shortcut_duplicate" msgid="4887186782641532074">"Zástupce %s již existuje."</string>
+    <string name="shortcut_installed" msgid="7071557296331322355">"Zástupce <xliff:g id="NAME">%s</xliff:g> byl vytvořen."</string>
+    <string name="shortcut_uninstalled" msgid="2129499669449749995">"Zástupce <xliff:g id="NAME">%s</xliff:g> byl odebrán."</string>
+    <string name="shortcut_duplicate" msgid="4757756326465060694">"Zástupce <xliff:g id="NAME">%s</xliff:g> již existuje."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Vyberte zástupce"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"Vybrat složku"</string>
     <string name="menu_add" msgid="3065046628354640854">"Přidat"</string>
