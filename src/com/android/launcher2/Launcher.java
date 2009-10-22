@@ -107,6 +107,7 @@ public final class Launcher extends Activity
     private static final int REQUEST_PICK_SHORTCUT = 7;
     private static final int REQUEST_PICK_LIVE_FOLDER = 8;
     private static final int REQUEST_PICK_APPWIDGET = 9;
+    private static final int REQUEST_PICK_WALLPAPER = 10;
 
     static final String EXTRA_SHORTCUT_DUPLICATE = "duplicate";
 
@@ -375,6 +376,9 @@ public final class Launcher extends Activity
                     break;
                 case REQUEST_CREATE_APPWIDGET:
                     completeAddAppWidget(data, mAddItemCellInfo);
+                    break;
+                case REQUEST_PICK_WALLPAPER:
+                    // We just wanted the activity result here so we can clear mWaitingForResult
                     break;
             }
         } else if (requestCode == REQUEST_PICK_APPWIDGET &&
@@ -1258,7 +1262,7 @@ public final class Launcher extends Activity
             li.setClassName(wi.getPackageName(), wi.getSettingsActivity());
             chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] { li });
         }
-        startActivity(chooser);
+        startActivityForResult(chooser, REQUEST_PICK_WALLPAPER);
     }
 
     @Override
@@ -1614,6 +1618,7 @@ public final class Launcher extends Activity
         //mWorkspace.hide();
 
         mAllAppsGrid.setFocusable(true);
+        mAllAppsGrid.requestFocus();
         
         // TODO: fade these two too
         mDeleteZone.setVisibility(View.GONE);
