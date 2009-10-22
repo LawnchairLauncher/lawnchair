@@ -45,6 +45,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Message;
@@ -87,7 +88,12 @@ public class AllAppsView extends RSSurfaceView
     private RenderScript mRS;
     private RolloRS mRollo;
     private ArrayList<ApplicationInfo> mAllAppsList;
-
+    
+    /**
+     * True when we are using arrow keys or trackball to drive navigation
+     */
+    private boolean mArrowNavigation = false;
+    
     private int mPageCount;
     private boolean mStartedScrolling;
     private VelocityTracker mVelocity;
@@ -175,12 +181,93 @@ public class AllAppsView extends RSSurfaceView
         long endTime = SystemClock.uptimeMillis();
         Log.d(TAG, "surfaceChanged took " + (endTime-startTime) + "ms");
     }
+    
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)
-    {
-        // this method doesn't work when 'extends View' include 'extends ScrollView'.
-        return super.onKeyDown(keyCode, event);
+    protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
+        super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
+        if (gainFocus) {
+            if (!mArrowNavigation && mRollo.mState.iconCount > 0) {
+                // Select the first icon when we gain keyboard focus
+                mArrowNavigation = true;
+                mRollo.selectIcon(Math.round(mRollo.mMessageProc.mPosX) * Defines.COLUMNS_PER_PAGE);
+                mRollo.mState.save();
+            }
+        } else {
+            if (mArrowNavigation) {
+                // Clear selection when we lose focus
+                mRollo.clearSelectedIcon();
+                mRollo.mState.save();
+                mArrowNavigation = false;
+            }
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        
+        if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
+            if (mArrowNavigation) {
+                int whichApp = mRollo.mState.selectedIconIndex;
+                if (whichApp >= 0) {
+                    ApplicationInfo app = mAllAppsList.get(whichApp);
+                    mLauncher.startActivitySafely(app.intent);
+                }
+            }
+        }
+        
+        if (mArrowNavigation && mRollo.mState.iconCount > 0) {
+            mArrowNavigation = true;
+            
+            int currentSelection = mRollo.mState.selectedIconIndex;
+            int currentTopRow = (int) mRollo.mMessageProc.mPosX;
+            
+            // The column of the current selection, in the range 0..COLUMNS_PER_PAGE-1
+            int currentPageCol = currentSelection % Defines.COLUMNS_PER_PAGE;
+            
+            // The row of the current selection, in the range 0..ROWS_PER_PAGE-1
+            int currentPageRow = (currentSelection - (currentTopRow * Defines.COLUMNS_PER_PAGE))
+                    / Defines.ROWS_PER_PAGE;
+            
+            int newSelection = currentSelection;
+
+            switch (keyCode) {
+            case KeyEvent.KEYCODE_DPAD_UP:
+                if (currentPageRow > 0) {
+                    newSelection = currentSelection - Defines.COLUMNS_PER_PAGE;
+                } else if (currentTopRow > 0) {
+                    mRollo.moveTo(currentTopRow - 1);
+                    newSelection = currentSelection - Defines.COLUMNS_PER_PAGE; 
+                }
+                break;
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+                if (currentSelection < mRollo.mState.iconCount - Defines.COLUMNS_PER_PAGE) {
+                    if (currentPageRow < Defines.ROWS_PER_PAGE - 1) {
+                        newSelection = currentSelection + Defines.COLUMNS_PER_PAGE;
+                    } else {
+                        mRollo.moveTo(currentTopRow + 1);
+                        newSelection = currentSelection + Defines.COLUMNS_PER_PAGE;
+                    }
+                }
+                break;
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+                if (currentPageCol > 0) {
+                    newSelection = currentSelection - 1;
+                }
+                break;
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                if ((currentPageCol < Defines.COLUMNS_PER_PAGE - 1) && 
+                        (currentSelection < mRollo.mState.iconCount - 1)) {
+                    newSelection = currentSelection + 1;
+                }
+                break;
+            }
+            if (newSelection != currentSelection) {
+                mRollo.selectIcon(newSelection);
+                mRollo.mState.save();
+            }
+        }
+        return true;
     }
 
     private int mRSMode = 0;
@@ -188,6 +275,8 @@ public class AllAppsView extends RSSurfaceView
     @Override
     public boolean onTouchEvent(MotionEvent ev)
     {
+        mArrowNavigation = false;
+        
         if (!isVisible()) {
             return true;
         }
@@ -208,13 +297,14 @@ public class AllAppsView extends RSSurfaceView
                 mTouchTracking = TRACKING_HOME;
                 mRollo.setHomeSelected(true);
                 mRollo.mState.save();
+                mCurrentIconIndex = -1;
             } else {
                 mTouchTracking = TRACKING_FLING;
 
                 mMotionDownRawX = (int)ev.getRawX();
                 mMotionDownRawY = (int)ev.getRawY();
 
-                mRollo.mState.newPositionX = ev.getRawY() / getWidth();
+                mRollo.mState.newPositionX = ev.getRawY() / getHeight();
                 mRollo.mState.newTouchDown = 1;
 
                 if (!mRollo.checkClickOK()) {
@@ -260,7 +350,7 @@ public class AllAppsView extends RSSurfaceView
                         cancelLongPress();
                         mCurrentIconIndex = -1;
                     }
-                    mRollo.mState.newPositionX = ev.getRawY() / getWidth();
+                    mRollo.mState.newPositionX = ev.getRawY() / getHeight();
                     mRollo.mState.newTouchDown = 1;
                     mRollo.move();
 
@@ -281,9 +371,10 @@ public class AllAppsView extends RSSurfaceView
                     mRollo.setHomeSelected(false);
                     mRollo.mState.save();
                 }
+                mCurrentIconIndex = -1;
             } else if (mTouchTracking == TRACKING_FLING) {
                 mRollo.mState.newTouchDown = 0;
-                mRollo.mState.newPositionX = ev.getRawY() / getWidth();
+                mRollo.mState.newPositionX = ev.getRawY() / getHeight();
 
                 mVelocity.computeCurrentVelocity(1000 /* px/sec */, mMaxFlingVelocity);
                 mRollo.mState.flingVelocity = mVelocity.getYVelocity() / getHeight();
