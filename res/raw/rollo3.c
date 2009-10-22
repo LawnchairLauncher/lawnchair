@@ -9,6 +9,7 @@ int g_SpecialHWWar;
 
 // Attraction to center values from page edge to page center.
 float g_AttractionTable[9];
+float g_FrictionTable[9];
 float g_PhysicsTableSize;
 
 float g_PosPage;
@@ -66,15 +67,24 @@ void setColor(float r, float g, float b, float a) {
 }
 
 void init() {
-    g_AttractionTable[0] = 6.5f;
-    g_AttractionTable[1] = 6.5f;
-    g_AttractionTable[2] = 7.0f;
-    g_AttractionTable[3] = 6.0f;
-    g_AttractionTable[4] = -6.0f;
-    g_AttractionTable[5] = -7.0f;
-    g_AttractionTable[6] = -6.5f;
-    g_AttractionTable[7] = -6.5f;
-    g_AttractionTable[8] = -6.5f;  // dup 7 to avoid a clamp later
+    g_AttractionTable[0] = 20.0f;
+    g_AttractionTable[1] = 20.0f;
+    g_AttractionTable[2] = 15.0f;
+    g_AttractionTable[3] = 10.0f;
+    g_AttractionTable[4] = -10.0f;
+    g_AttractionTable[5] = -15.0f;
+    g_AttractionTable[6] = -15.0f;
+    g_AttractionTable[7] = -20.0f;
+    g_AttractionTable[8] = -20.0f;  // dup 7 to avoid a clamp later
+    g_FrictionTable[0] = 10.0f;
+    g_FrictionTable[1] = 10.0f;
+    g_FrictionTable[2] = 11.0f;
+    g_FrictionTable[3] = 15.0f;
+    g_FrictionTable[4] = 15.0f;
+    g_FrictionTable[5] = 11.0f;
+    g_FrictionTable[6] = 10.0f;
+    g_FrictionTable[7] = 10.0f;
+    g_FrictionTable[8] = 10.0f;  // dup 7 to avoid a clamp later
     g_PhysicsTableSize = 7;
 
     g_PosVelocity = 0;
@@ -112,7 +122,7 @@ void moveTo() {
     g_MoveToTime = g_MoveToTotalTime;
     g_PosVelocity = 0;
     g_MoveToOldPos = g_PosPage;
-	
+
 	// debugF("======= moveTo", state->targetPos);
 }
 
@@ -170,10 +180,12 @@ void updatePos() {
     float accel = lerpf(g_AttractionTable[tablePosI],
                         g_AttractionTable[tablePosI + 1],
                         tablePosFrac) * g_DT;
-    float friction = 4.f * g_DT;
+    float friction = lerpf(g_FrictionTable[tablePosI],
+                        g_FrictionTable[tablePosI + 1],
+                        tablePosFrac) * g_DT;
 
     if (g_MoveToTime) {
-		
+
 		/*
         float a = 2.f * (state->targetPos - g_MoveToOldPos) /
                   (g_MoveToTotalTime * g_MoveToTotalTime);
@@ -186,10 +198,10 @@ void updatePos() {
             g_PosPage = g_MoveToOldPos + 0.5f * a * (t * t);
         }
 		 */
-		
+
 		// New position is old posiition + (total distance) * (interpolated time)
 		g_PosPage = g_MoveToOldPos + (state->targetPos - g_MoveToOldPos) * getInterpolation((g_MoveToTotalTime - g_MoveToTime) / g_MoveToTotalTime);
-		
+
         g_MoveToTime -= g_DT;
         if (g_MoveToTime <= 0) {
             g_MoveToTime = 0;
@@ -208,7 +220,7 @@ void updatePos() {
     }
 
     // If our velocity is low OR acceleration is opposing it, apply it.
-    if (fabsf(g_PosVelocity) < 1.0f || (g_PosVelocity * accel) < 0 || outOfRange) {
+    if (fabsf(g_PosVelocity) < 2.5f || (g_PosVelocity * accel) < 0 || outOfRange) {
         g_PosVelocity += accel;
     }
 
@@ -424,7 +436,7 @@ main(int launchID)
     int newTime = uptimeMillis();
     g_DT = (newTime - g_LastTime) / 1000.f;
     g_LastTime = newTime;
-	
+
     if (!g_DrawLastFrame) {
         // If we stopped rendering we cannot use DT.
         // assume 30fps in this case.
