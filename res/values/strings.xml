@@ -34,6 +34,8 @@
     <string name="pick_wallpaper">Wallpaper gallery</string>
     <!-- Displayed when user selects a shortcut for an app that was uninstalled -->
     <string name="activity_not_found">Application is not installed on your phone.</string>
+    <!-- List item for configuring the current wallpaper -->
+    <string name="configure_wallpaper">Configure...</string>
 
     <!-- Folders -->
     <skip />
