@@ -77,7 +77,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     private float mLastMotionX;
     private float mLastMotionY;
-
+    
     private final static int TOUCH_STATE_REST = 0;
     private final static int TOUCH_STATE_SCROLLING = 1;
 
@@ -735,10 +735,22 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
+                
+                if (mTouchState != TOUCH_STATE_SCROLLING) {
+                    
+                    final CellLayout currentScreen = (CellLayout)getChildAt(mCurrentScreen);
+                    if (!currentScreen.lastDownOnOccupiedCell()) {
+                        // Send a tap to the wallpaper if the last down was on empty space
+                        mWallpaperManager.sendWallpaperCommand(getWindowToken(), 
+                                "android.wallpaper.tap", (int) ev.getX(), (int) ev.getY(), 0, null);
+                    }
+                }
+                
                 // Release the drag
                 clearChildrenCache();
                 mTouchState = TOUCH_STATE_REST;
                 mAllowLongPress = false;
+
                 break;
         }
 
@@ -768,7 +780,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-
+        
         if (mLauncher.isWorkspaceLocked()) {
             return false; // We don't want the events.  Let them fall through to the all apps view.
         }
