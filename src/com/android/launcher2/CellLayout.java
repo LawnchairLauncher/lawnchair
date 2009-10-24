@@ -58,6 +58,8 @@ public class CellLayout extends ViewGroup {
     private RectF mDragRect = new RectF();
 
     private boolean mDirtyTag;
+    
+    private boolean mLastDownOnOccupiedCell = false;
 
     public CellLayout(Context context) {
         this(context, null);
@@ -176,6 +178,8 @@ public class CellLayout extends ViewGroup {
                     }
                 }
             }
+            
+            mLastDownOnOccupiedCell = found;
 
             if (!found) {
                 int cellXY[] = mCellXY;
@@ -1038,6 +1042,10 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
             return "Cell[view=" + (cell == null ? "null" : cell.getClass()) + ", x=" + cellX +
                     ", y=" + cellY + "]";
         }
+    }
+
+    public boolean lastDownOnOccupiedCell() {
+        return mLastDownOnOccupiedCell;
     }
 }
 
