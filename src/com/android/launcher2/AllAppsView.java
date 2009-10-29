@@ -166,6 +166,12 @@ public class AllAppsView extends RSSurfaceView
 
         long startTime = SystemClock.uptimeMillis();
 
+        if (mRS != null) {
+            destroyRenderScript();
+            mRS = null;
+            mRollo = null;
+        }
+
         mRS = createRenderScript(true);
         mRollo = new RolloRS();
         mRollo.init(getResources(), w, h);
