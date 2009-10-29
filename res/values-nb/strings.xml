@@ -15,7 +15,7 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name" msgid="4528470563311667177">"_Launcher2"</string>
+    <string name="application_name" msgid="4528470563311667177">"Hjem"</string>
     <string name="uid_name" msgid="3371120195364560632">"Android-kjerneapplikasjoner"</string>
     <string name="folder_name" msgid="4588446541914685904">"Mappe"</string>
     <string name="chooser_wallpaper" msgid="5988031014201479733">"Velg bakgrunnsbilde fra"</string>
