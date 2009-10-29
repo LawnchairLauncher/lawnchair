@@ -192,6 +192,11 @@ public class AllAppsView extends RSSurfaceView
     @Override
     protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
+
+        if (!isVisible()) {
+            return;
+        }
+
         if (gainFocus) {
             if (!mArrowNavigation && mRollo.mState.iconCount > 0) {
                 // Select the first icon when we gain keyboard focus
@@ -211,6 +216,10 @@ public class AllAppsView extends RSSurfaceView
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (!isVisible()) {
+            return false;
+        }
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
             if (mArrowNavigation) {
