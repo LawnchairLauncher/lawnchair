@@ -54,6 +54,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.SoundEffectConstants;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -132,6 +133,7 @@ public class AllAppsView extends RSSurfaceView
     public AllAppsView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setFocusable(true);
+        setSoundEffectsEnabled(false);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
         final ViewConfiguration config = ViewConfiguration.get(context);
         mSlop = config.getScaledTouchSlop();
@@ -141,6 +143,17 @@ public class AllAppsView extends RSSurfaceView
         setOnLongClickListener(this);
         setZOrderOnTop(true);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
+    }
+
+    /**
+     * If you have an attached click listener, View always plays the click sound!?!?
+     * Deal with sound effects by hand.
+     */
+    public void reallyPlaySoundEffect(int sound) {
+        boolean old = isSoundEffectsEnabled();
+        setSoundEffectsEnabled(true);
+        playSoundEffect(sound);
+        setSoundEffectsEnabled(old);
     }
 
     public AllAppsView(Context context, AttributeSet attrs, int defStyle) {
@@ -187,7 +200,6 @@ public class AllAppsView extends RSSurfaceView
         long endTime = SystemClock.uptimeMillis();
         Log.d(TAG, "surfaceChanged took " + (endTime-startTime) + "ms");
     }
-
 
     @Override
     protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
@@ -381,6 +393,7 @@ public class AllAppsView extends RSSurfaceView
             if (mTouchTracking == TRACKING_HOME) {
                 if (action == MotionEvent.ACTION_UP) {
                     if (y > mRollo.mTouchYBorders[mRollo.mTouchYBorders.length-1]) {
+                        reallyPlaySoundEffect(SoundEffectConstants.CLICK);
                         mLauncher.closeAllApps(true);
                     }
                     mRollo.setHomeSelected(false);
@@ -415,6 +428,7 @@ public class AllAppsView extends RSSurfaceView
         }
         if (mRollo.checkClickOK() && mCurrentIconIndex == mDownIconIndex
                 && mCurrentIconIndex >= 0 && mCurrentIconIndex < mAllAppsList.size()) {
+            reallyPlaySoundEffect(SoundEffectConstants.CLICK);
             ApplicationInfo app = mAllAppsList.get(mCurrentIconIndex);
             mLauncher.startActivitySafely(app.intent);
         }
