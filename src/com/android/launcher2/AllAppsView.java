@@ -1028,6 +1028,20 @@ public class AllAppsView extends RSSurfaceView
             mTouchXBorders[4] = width;
         }
 
+        void fling() {
+            mInvokeFling.execute();
+        }
+
+        void move() {
+            mInvokeMove.execute();
+        }
+
+        void moveTo(float row) {
+            mState.targetPos = row;
+            mState.save();
+            mInvokeMoveTo.execute();
+        }
+
         int chooseTappedIcon(int x, int y, float pos) {
             // Adjust for scroll position if not zero.
             y += (pos - ((int)pos)) * (mTouchYBorders[1] - mTouchYBorders[0]);
@@ -1051,22 +1065,14 @@ public class AllAppsView extends RSSurfaceView
                 return -1;
             }
 
-            return (((int)pos) * Defines.COLUMNS_PER_PAGE)
+            int index = (((int)pos) * Defines.COLUMNS_PER_PAGE)
                     + (row * Defines.ROWS_PER_PAGE) + col;
-        }
 
-        void fling() {
-            mInvokeFling.execute();
-        }
-
-        void move() {
-            mInvokeMove.execute();
-        }
-
-        void moveTo(float row) {
-            mState.targetPos = row;
-            mState.save();
-            mInvokeMoveTo.execute();
+            if (index >= mState.iconCount) {
+                return -1;
+            } else {
+                return index;
+            }
         }
 
         /**
