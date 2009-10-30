@@ -29,6 +29,7 @@ import android.renderscript.RenderScript;
 import android.renderscript.RenderScript;
 import android.renderscript.ProgramVertex;
 import android.renderscript.Element;
+import android.renderscript.Dimension;
 import android.renderscript.Allocation;
 import android.renderscript.Type;
 import android.renderscript.Script;
@@ -612,7 +613,8 @@ public class AllAppsView extends RSSurfaceView
         private ProgramStore mPSIcons;
         private ProgramStore mPSText;
         private ProgramFragment mPFColor;
-        private ProgramFragment mPFTexLinear;
+        private ProgramFragment mPFTexMip;
+        private ProgramFragment mPFTexNearest;
         private ProgramVertex mPV;
         private ProgramVertex mPVOrtho;
         private SimpleMesh mMesh;
@@ -737,7 +739,7 @@ public class AllAppsView extends RSSurfaceView
                     angle = maxAngle * (ct - 7) * 0.2f;
                     angle = Math.min(angle, maxAngle);
                 }
-                l = Math.max(0.3f, l);
+                l = Math.max(0.4f, l);
                 l = Math.min(1.0f, l);
 
                 y += 0.1f * Math.cos(angle);
@@ -781,7 +783,7 @@ public class AllAppsView extends RSSurfaceView
 
         private void initProgramFragment() {
             Sampler.Builder sb = new Sampler.Builder(mRS);
-            sb.setMin(Sampler.Value.LINEAR);
+            sb.setMin(Sampler.Value.LINEAR_MIP_LINEAR);
             sb.setMag(Sampler.Value.LINEAR);
             sb.setWrapS(Sampler.Value.CLAMP);
             sb.setWrapT(Sampler.Value.CLAMP);
@@ -797,9 +799,13 @@ public class AllAppsView extends RSSurfaceView
 
             bf.setTexEnable(true, 0);
             bf.setTexEnvMode(ProgramFragment.EnvMode.MODULATE, 0);
-            mPFTexLinear = bf.create();
-            mPFTexLinear.setName("PFTexLinear");
-            mPFTexLinear.bindSampler(linear, 0);
+            mPFTexMip = bf.create();
+            mPFTexMip.setName("PFTexMip");
+            mPFTexMip.bindSampler(linear, 0);
+
+            mPFTexNearest = bf.create();
+            mPFTexNearest.setName("PFTexNearest");
+            mPFTexNearest.bindSampler(nearest, 0);
         }
 
         private void initProgramStore() {
@@ -910,11 +916,31 @@ public class AllAppsView extends RSSurfaceView
             saveAppsList();
         }
 
+        private void frameBitmapAllocMips(Allocation alloc, int w, int h) {
+            int black[] = new int[w > h ? w : h];
+            Allocation.Adapter2D a = alloc.createAdapter2D();
+            int mip = 0;
+            while (w > 1 || h > 1) {
+                a.subData(0, 0, 1, h, black);
+                a.subData(w-1, 0, 1, h, black);
+                a.subData(0, 0, w, 1, black);
+                a.subData(0, h-1, w, 1, black);
+                mip++;
+                w = (w + 1) >> 1;
+                h = (h + 1) >> 1;
+                a.setConstraint(Dimension.LOD, mip);
+            }
+            a.subData(0, 0, 1, 1, black);
+        }
+
         private void uploadAppIcon(int index, ApplicationInfo item) {
             mIcons[index] = Allocation.createFromBitmap(mRS, item.iconBitmap,
-                    Element.RGBA_8888(mRS), false);
+                    Element.RGBA_8888(mRS), true);
+            frameBitmapAllocMips(mIcons[index], item.iconBitmap.getWidth(), item.iconBitmap.getHeight());
+
             mLabels[index] = Allocation.createFromBitmap(mRS, item.titleBitmap,
-                    Element.RGBA_8888(mRS), false);
+                    Element.RGBA_8888(mRS), true);
+            frameBitmapAllocMips(mLabels[index], item.titleBitmap.getWidth(), item.titleBitmap.getHeight());
 
             mIcons[index].uploadToTexture(0);
             mLabels[index].uploadToTexture(0);
@@ -1087,7 +1113,7 @@ public class AllAppsView extends RSSurfaceView
         }
 
         void selectIcon(int index) {
-            if (index < 0) {
+            if (index < 0 || index >= mAllAppsList.size()) {
                 mState.selectedIconIndex = -1;
             } else {
                 mState.selectedIconIndex = index;
