@@ -1,6 +1,6 @@
 #pragma version(1)
 #pragma stateVertex(PV)
-#pragma stateFragment(PFTexLinear)
+#pragma stateFragment(PFTexNearest)
 #pragma stateStore(PSIcons)
 
 #define PI 3.14159f
@@ -69,11 +69,11 @@ void setColor(float r, float g, float b, float a) {
 void init() {
     g_AttractionTable[0] = 20.0f;
     g_AttractionTable[1] = 20.0f;
-    g_AttractionTable[2] = 15.0f;
+    g_AttractionTable[2] = 20.0f;
     g_AttractionTable[3] = 10.0f;
     g_AttractionTable[4] = -10.0f;
-    g_AttractionTable[5] = -15.0f;
-    g_AttractionTable[6] = -15.0f;
+    g_AttractionTable[5] = -20.0f;
+    g_AttractionTable[6] = -20.0f;
     g_AttractionTable[7] = -20.0f;
     g_AttractionTable[8] = -20.0f;  // dup 7 to avoid a clamp later
     g_FrictionTable[0] = 10.0f;
@@ -108,8 +108,8 @@ void move() {
         g_PosVelocity = 0;
         g_PosPage += dx * 4;
 
-        float pmin = -0.25f;
-        float pmax = g_PosMax + 0.25f;
+        float pmin = -0.49f;
+        float pmax = g_PosMax + 0.49f;
         g_PosPage = clampf(g_PosPage, pmin, pmax);
     }
     g_LastTouchDown = state->newTouchDown;
@@ -172,7 +172,6 @@ void updatePos() {
         return;
     }
 
-    int outOfRange = 0;
     float tablePosNorm = fracf(g_PosPage + 0.5f);
     float tablePosF = tablePosNorm * g_PhysicsTableSize;
     int tablePosI = tablePosF;
@@ -185,23 +184,8 @@ void updatePos() {
                         tablePosFrac) * g_DT;
 
     if (g_MoveToTime) {
-
-		/*
-        float a = 2.f * (state->targetPos - g_MoveToOldPos) /
-                  (g_MoveToTotalTime * g_MoveToTotalTime);
-        if (g_MoveToTime > (g_MoveToTotalTime * 0.5f)) {
-            // slowing
-            g_PosPage = state->targetPos - 0.5f * a * (g_MoveToTime * g_MoveToTime);
-        } else {
-            // accelerating.
-            float t = g_MoveToTotalTime - g_MoveToTime;
-            g_PosPage = g_MoveToOldPos + 0.5f * a * (t * t);
-        }
-		 */
-
-		// New position is old posiition + (total distance) * (interpolated time)
-		g_PosPage = g_MoveToOldPos + (state->targetPos - g_MoveToOldPos) * getInterpolation((g_MoveToTotalTime - g_MoveToTime) / g_MoveToTotalTime);
-
+        // New position is old posiition + (total distance) * (interpolated time)
+        g_PosPage = g_MoveToOldPos + (state->targetPos - g_MoveToOldPos) * getInterpolation((g_MoveToTotalTime - g_MoveToTime) / g_MoveToTotalTime);
         g_MoveToTime -= g_DT;
         if (g_MoveToTime <= 0) {
             g_MoveToTime = 0;
@@ -210,23 +194,25 @@ void updatePos() {
         return;
     }
 
-    if (g_PosPage < -0.5f) {
-        accel = g_AttractionTable[0] * g_DT;
-        outOfRange = 1;
-    }
-    if ((g_PosPage - g_PosMax) > 0.5f) {
-        accel = g_AttractionTable[(int)g_PhysicsTableSize] * g_DT;
-        outOfRange = 1;
-    }
-
     // If our velocity is low OR acceleration is opposing it, apply it.
-    if (fabsf(g_PosVelocity) < 2.5f || (g_PosVelocity * accel) < 0 || outOfRange) {
+    if (fabsf(g_PosVelocity) < 4.0f || (g_PosVelocity * accel) < 0) {
         g_PosVelocity += accel;
     }
+    //debugF("g_PosPage", g_PosPage);
+    //debugF("  g_PosVelocity", g_PosVelocity);
+    //debugF("  friction", friction);
+    //debugF("  accel", accel);
 
-    if ((friction > fabsf(g_PosVelocity)) &&
-        (friction > fabsf(accel)) &&
-        !outOfRange) {
+    // Normal physics
+    if (g_PosVelocity > 0) {
+        g_PosVelocity -= friction;
+        g_PosVelocity = maxf(g_PosVelocity, 0);
+    } else {
+        g_PosVelocity += friction;
+        g_PosVelocity = minf(g_PosVelocity, 0);
+    }
+
+    if ((friction > fabsf(g_PosVelocity)) && (friction > fabsf(accel))) {
         // Special get back to center and overcome friction physics.
         float t = tablePosNorm - 0.5f;
         if (fabsf(t) < (friction * g_DT)) {
@@ -240,34 +226,25 @@ void updatePos() {
                 g_PosVelocity = friction;
             }
         }
-    } else {
-        // Normal physics
-        if (g_PosVelocity > 0) {
-            g_PosVelocity -= friction;
-            g_PosVelocity = maxf(g_PosVelocity, 0);
-        } else {
-            g_PosVelocity += friction;
-            g_PosVelocity = minf(g_PosVelocity, 0);
-        }
     }
-    g_PosPage += g_PosVelocity * g_DT;
 
     // Check for out of boundry conditions.
     if (g_PosPage < 0 && g_PosVelocity < 0) {
-        g_PosPage = maxf(g_PosPage, -0.49);
         float damp = 1.0 + (g_PosPage * 4);
         damp = clampf(damp, 0.f, 0.9f);
         g_PosVelocity *= damp;
     }
     if (g_PosPage > g_PosMax && g_PosVelocity > 0) {
-        g_PosPage = minf(g_PosPage, g_PosMax + 0.49);
         float damp = 1.0 - ((g_PosPage - g_PosMax) * 4);
         damp = clampf(damp, 0.f, 0.9f);
         g_PosVelocity *= damp;
     }
+
+    g_PosPage += g_PosVelocity * g_DT;
+    g_PosPage = clampf(g_PosPage, -0.49, g_PosMax + 0.49);
 }
 
-int positionStrip(float row, float column, int isTop, float p)
+int positionStrip(float row, float column, int isTop, float p, int isText)
 {
     float mat1[16];
     float x = 0.5f * (column - 1.5f);
@@ -287,9 +264,15 @@ int positionStrip(float row, float column, int isTop, float p)
     float soff = -(row * 1.4);
     if (isTop) {
         matrixLoadScale(mat1, 1.f, -0.85f, 1.f);
+        if (isText) {
+            matrixScale(mat1, 1.f, 2.f, 1.f);
+        }
         matrixTranslate(mat1, 0, soff - 0.97f, 0);
     } else {
         matrixLoadScale(mat1, 1.f, 0.85f, 1.f);
+        if (isText) {
+            matrixScale(mat1, 1.f, 2.f, 1.f);
+        }
         matrixTranslate(mat1, 0, soff - 0.45f, 0);
     }
     vpLoadTextureMatrix(mat1);
@@ -300,11 +283,11 @@ void
 draw_home_button()
 {
     setColor(1.0f, 1.0f, 1.0f, 1.0f);
-    bindTexture(NAMED_PFTexLinear, 0, state->homeButtonId);
+    bindTexture(NAMED_PFTexNearest, 0, state->homeButtonId);
     float x = (SCREEN_WIDTH_PX - params->homeButtonTextureWidth) / 2;
     float y = (g_Zoom - 1.f) * params->homeButtonTextureHeight;
 
-    y -= 36; // move the house to the edge of the screen as it doesn't fill the texture.
+    y -= 30; // move the house to the edge of the screen as it doesn't fill the texture.
     drawSpriteScreenspace(x, y, 0, params->homeButtonTextureWidth, params->homeButtonTextureHeight);
 }
 
@@ -339,13 +322,12 @@ void drawFrontGrid(float rowOffset, float p)
 
                 if ((y >= ymin) && (y <= ymax)) {
                     setColor(1.f, 1.f, 1.f, 1.f);
-
                     if (state->selectedIconIndex == iconNum && !p) {
-                        bindTexture(NAMED_PFTexLinear, 0, state->selectedIconTexture);
+                        bindTexture(NAMED_PFTexNearest, 0, state->selectedIconTexture);
                         drawSpriteScreenspace(x, y, 0, 128, 128);
                     }
 
-                    bindTexture(NAMED_PFTexLinear, 0, loadI32(ALLOC_ICON_IDS, iconNum));
+                    bindTexture(NAMED_PFTexNearest, 0, loadI32(ALLOC_ICON_IDS, iconNum));
                     if (!p) {
                         drawSpriteScreenspace(x, y, 0, 128, 128);
                     } else {
@@ -362,20 +344,13 @@ void drawFrontGrid(float rowOffset, float p)
                 }
 
                 float y2 = y - 44;
-                float a = 1.f;
-                if (y2 < ymin) {
-                    a = 1.f - (ymin - y2) * 0.02f;
+                if ((y2 >= ymin) && (y2 <= ymax)) {
+                    float a = maxf(0, 1.f - p * 5.f);
+                    setColor(1.f, 1.f, 1.f, a);
+                    bindTexture(NAMED_PFTexNearest, 0, loadI32(ALLOC_LABEL_IDS, iconNum));
+                    drawSpriteScreenspace(x, y - 44, 0,
+                               params->bubbleBitmapWidth, params->bubbleBitmapHeight);
                 }
-                if (y > (ymax + 40)) {
-                    a = 1.f - (y - (ymax + 40)) * 0.02f;
-                }
-                a = clampf(a, 0, 1);
-                a *= maxf(0, 1.f - p * 5.f);
-
-                setColor(1, 1, 1, a);
-                bindTexture(NAMED_PFTexLinear, 0, loadI32(ALLOC_LABEL_IDS, iconNum));
-                drawSpriteScreenspace(x, y - 44, 0,
-                           params->bubbleBitmapWidth, params->bubbleBitmapHeight);
             }
             iconNum++;
         }
@@ -385,11 +360,22 @@ void drawFrontGrid(float rowOffset, float p)
 void drawStrip(float row, float column, int isTop, int iconNum, float p)
 {
     if (iconNum < 0) return;
-    int offset = positionStrip(row, column, isTop, p);
-    bindTexture(NAMED_PFTexLinear, 0, loadI32(ALLOC_ICON_IDS, iconNum));
+    int offset = positionStrip(row, column, isTop, p, 0);
+    bindTexture(NAMED_PFTexMip, 0, loadI32(ALLOC_ICON_IDS, iconNum));
     if (offset < -20) return;
     offset = clamp(offset, 0, 199 - 20);
     drawSimpleMeshRange(NAMED_SMMesh, offset * 6, 20 * 6);
+
+    if (isTop) {
+        offset = positionStrip(row - 0.72f, column, isTop, p, 1);
+    } else {
+        offset = positionStrip(row + 0.73f, column, isTop, p, 1);
+    }
+    if (offset < -20) return;
+    bindTexture(NAMED_PFTexMip, 0, loadI32(ALLOC_LABEL_IDS, iconNum));
+    offset = clamp(offset, 0, 199 - 20);
+    //drawSimpleMeshRange(NAMED_SMMesh, offset * 6, 20 * 6);
+    drawSimpleMesh(NAMED_SMMesh);
 }
 
 void drawTop(float rowOffset, float p)
@@ -495,7 +481,7 @@ main(int launchID)
     //positionStrip(1, 0, 0);
     //drawSimpleMesh(NAMED_SMMesh);
 
-    bindProgramFragment(NAMED_PFTexLinear);
+    bindProgramFragment(NAMED_PFTexMip);
 
 
     drawTop(g_PosPage, 1-g_Zoom);
@@ -507,6 +493,8 @@ main(int launchID)
         vpLoadModelMatrix(mat1);
         vpLoadTextureMatrix(mat1);
     }
+
+    bindProgramFragment(NAMED_PFTexNearest);
     drawFrontGrid(g_PosPage, 1-g_Zoom);
     draw_home_button();
 
