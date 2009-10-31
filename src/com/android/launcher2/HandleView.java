@@ -60,32 +60,6 @@ public class HandleView extends ImageView {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        final boolean handled = super.onKeyDown(keyCode, event);
-
-        /* TODO
-        if (!handled && !mLauncher.isDrawerDown() && !isDirectionKey(keyCode)) {
-            return mLauncher.getApplicationsGrid().onKeyDown(keyCode, event);
-        }
-        */
-
-        return handled;
-    }
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        final boolean handled = super.onKeyUp(keyCode, event);
-
-        /* TODO
-        if (!handled && !mLauncher.isDrawerDown() && !isDirectionKey(keyCode)) {
-            return mLauncher.getApplicationsGrid().onKeyUp(keyCode, event);
-        }
-        */
-
-        return handled;
-    }
-
-    @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN && mLauncher.isAllAppsVisible()) {
             return false;
