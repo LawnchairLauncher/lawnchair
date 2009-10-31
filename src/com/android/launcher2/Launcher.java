@@ -1780,6 +1780,7 @@ public final class Launcher extends Activity
         final Workspace workspace = mWorkspace;
         int count = workspace.getChildCount();
         for (int i = 0; i < count; i++) {
+            // Use removeAllViewsInLayout() to avoid an extra requestLayout() and invalidate().
             ((ViewGroup) workspace.getChildAt(i)).removeAllViewsInLayout();
         }
 
