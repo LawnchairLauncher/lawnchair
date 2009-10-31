@@ -169,7 +169,6 @@ public class AppInfoCache {
 
         application.iconBitmap = Utilities.createAllAppsBitmap(
                 info.activityInfo.loadIcon(packageManager), context);
-        application.filtered = true;
 
         application.titleBitmap = bubble.createTextBitmap(application.title.toString());
     }
