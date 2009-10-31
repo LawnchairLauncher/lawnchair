@@ -17,7 +17,6 @@
 package com.android.launcher2;
 
 import android.app.Application;
-import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -27,7 +26,11 @@ import android.os.Handler;
 import dalvik.system.VMRuntime;
 
 public class LauncherApplication extends Application {
-    public static final LauncherModel sModel = new LauncherModel();
+    public final LauncherModel mModel;
+
+    public LauncherApplication() {
+        mModel = new LauncherModel(this);
+    }
 
     @Override
     public void onCreate() {
@@ -40,7 +43,7 @@ public class LauncherApplication extends Application {
         filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
         filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
         filter.addDataScheme("package");
-        registerReceiver(mApplicationsReceiver, filter);
+        registerReceiver(mModel, filter);
 
         // Register for changes to the favorites
         ContentResolver resolver = getContentResolver();
@@ -55,21 +58,11 @@ public class LauncherApplication extends Application {
     public void onTerminate() {
         super.onTerminate();
 
-        unregisterReceiver(mApplicationsReceiver);
+        unregisterReceiver(mModel);
 
         ContentResolver resolver = getContentResolver();
         resolver.unregisterContentObserver(mFavoritesObserver);
     }
-
-    /**
-     * Receives notifications when applications are added/removed.
-     */
-    private final BroadcastReceiver mApplicationsReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            sModel.onReceiveIntent(LauncherApplication.this, intent);
-        }
-    };
 
     /**
      * Receives notifications whenever the user favorites have changed.
@@ -78,13 +71,13 @@ public class LauncherApplication extends Application {
         @Override
         public void onChange(boolean selfChange) {
             // TODO: lockAllApps();
-            sModel.setWorkspaceDirty();
-            sModel.startLoader(LauncherApplication.this, false);
+            mModel.setWorkspaceDirty();
+            mModel.startLoader(LauncherApplication.this, false);
         }
     };
 
     LauncherModel setLauncher(Launcher launcher) {
-        sModel.initialize(launcher);
-        return sModel;
+        mModel.initialize(launcher);
+        return mModel;
     }
 }

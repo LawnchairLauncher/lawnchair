@@ -16,6 +16,7 @@
 
 package com.android.launcher2;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -49,14 +50,16 @@ import java.util.List;
  * LauncherModel object held in a static. Also provide APIs for updating the database state
  * for the Launcher.
  */
-public class LauncherModel {
+public class LauncherModel extends BroadcastReceiver {
     static final boolean DEBUG_LOADERS = true;
     static final String TAG = "Launcher.Model";
 
+    private final LauncherApplication mApp;
     private final Object mLock = new Object();
     private DeferredHandler mHandler = new DeferredHandler();
     private Loader mLoader = new Loader();
 
+    private boolean mBeforeFirstLoad = true;
     private WeakReference<Callbacks> mCallbacks;
 
     private AllAppsList mAllAppsList = new AllAppsList();
@@ -73,6 +76,9 @@ public class LauncherModel {
         public void bindPackageRemoved(String packageName, ArrayList<ApplicationInfo> apps);
     }
 
+    LauncherModel(LauncherApplication app) {
+        mApp = app;
+    }
 
     /**
      * Adds an item to the DB if it was not created previously, or move it to a new
@@ -264,7 +270,10 @@ public class LauncherModel {
      * Call from the handler for ACTION_PACKAGE_ADDED, ACTION_PACKAGE_REMOVED and
      * ACTION_PACKAGE_CHANGED.
      */
-    public void onReceiveIntent(Context context, Intent intent) {
+    public void onReceive(Context context, Intent intent) {
+        // Use the app as the context.
+        context = mApp;
+
         final String packageName = intent.getData().getSchemeSpecificPart();
 
         ArrayList<ApplicationInfo> added = null;
@@ -274,6 +283,12 @@ public class LauncherModel {
         boolean remove = false;
 
         synchronized (mLock) {
+            if (mBeforeFirstLoad) {
+                // If we haven't even loaded yet, don't bother, since we'll just pick
+                // up the changes.
+                return;
+            }
+
             final String action = intent.getAction();
             final boolean replacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
 
@@ -515,6 +530,8 @@ public class LauncherModel {
                 synchronized (mLock) {
                     allAppsSeq = mAllAppsSeq;
                     allAppsDirty = mAllAppsSeq != mLastAllAppsSeq;
+                    //Log.d(TAG, "mAllAppsSeq=" + mAllAppsSeq
+                    //          + " mLastAllAppsSeq=" + mLastAllAppsSeq + " allAppsDirty");
                 }
                 if (allAppsDirty) {
                     loadAllApps();
@@ -901,6 +918,8 @@ public class LauncherModel {
                 final List<ResolveInfo> apps = packageManager.queryIntentActivities(mainIntent, 0);
 
                 synchronized (mLock) {
+                    mBeforeFirstLoad = false;
+
                     mAllAppsList.clear();
                     if (apps != null) {
                         long t = SystemClock.uptimeMillis();
