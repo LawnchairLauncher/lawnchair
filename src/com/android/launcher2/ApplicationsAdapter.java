@@ -17,6 +17,7 @@
 package com.android.launcher2;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,9 +31,11 @@ import java.util.ArrayList;
  */
 public class ApplicationsAdapter  extends ArrayAdapter<ApplicationInfo> {
     private final LayoutInflater mInflater;
+    private final PackageManager mPackageManager;
 
     public ApplicationsAdapter(Context context, ArrayList<ApplicationInfo> apps) {
         super(context, 0, apps);
+        mPackageManager = context.getPackageManager();
         mInflater = LayoutInflater.from(context);
     }
 
@@ -44,6 +47,9 @@ public class ApplicationsAdapter  extends ArrayAdapter<ApplicationInfo> {
             convertView = mInflater.inflate(R.layout.application_boxed, parent, false);
         }
 
+        if (info.icon == null) {
+            info.icon = AppInfoCache.getIconDrawable(mPackageManager, info);
+        }
         if (!info.filtered) {
             info.icon = Utilities.createIconThumbnail(info.icon, getContext());
             info.filtered = true;
