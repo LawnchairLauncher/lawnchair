@@ -76,5 +76,10 @@
         <attr name="screen" format="string" />
         <attr name="x" format="string" />
         <attr name="y" format="string" />
+        <attr name="spanX" format="string" />
+        <attr name="spanY" format="string" />
+        <attr name="icon" format="reference" />  
+        <attr name="title" format="reference" />
+        <attr name="uri" format="string" />
     </declare-styleable>
 </resources>
