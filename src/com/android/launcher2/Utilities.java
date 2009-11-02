@@ -22,12 +22,14 @@ import android.graphics.drawable.PaintDrawable;
 import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
+import android.graphics.MaskFilter;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.TableMaskFilter;
 import android.graphics.Typeface;
 import android.text.Layout.Alignment;
 import android.text.StaticLayout;
@@ -253,18 +255,13 @@ final class Utilities {
             }
 
             dest.drawColor(0, PorterDuff.Mode.CLEAR);
-
-            final float scale = 1.55f;
-            Bitmap scaled = Bitmap.createScaledBitmap(src, (int)(src.getWidth()*scale),
-                    (int)(src.getHeight()*scale), true);
-
+            
             int[] xy = new int[2];
-            Bitmap mask = scaled.extractAlpha(sBlurPaint, xy);
+            Bitmap mask = src.extractAlpha(sBlurPaint, xy);
 
-            dest.drawBitmap(mask, (destWidth - mask.getWidth()) / 2,
-                    (destHeight - mask.getHeight()) / 2, sGlowColorPaint);
-            dest.drawBitmap(src, (destWidth - src.getWidth()) / 2,
-                    (destHeight - src.getHeight()) / 2, sEmptyPaint);
+            float px = (destWidth - src.getWidth()) / 2;
+            float py = (destHeight - src.getHeight()) / 2;
+            dest.drawBitmap(mask, px + xy[0], py + xy[1], sGlowColorPaint);
 
             mask.recycle();
         }
@@ -341,8 +338,9 @@ final class Utilities {
         sIconWidth = sIconHeight = (int) resources.getDimension(android.R.dimen.app_icon_size);
         sIconTextureWidth = sIconTextureHeight = roundToPow2(sIconWidth);
 
-        sBlurPaint.setMaskFilter(new BlurMaskFilter(7 * density, BlurMaskFilter.Blur.NORMAL));
+        sBlurPaint.setMaskFilter(new BlurMaskFilter(4 * density, BlurMaskFilter.Blur.NORMAL));
         sGlowColorPaint.setColor(0xffff9000);
+        sGlowColorPaint.setMaskFilter(TableMaskFilter.CreateClipTable(0, 64));
     }
 
     static class BubbleText {
