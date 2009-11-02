@@ -202,6 +202,7 @@ public final class Launcher extends Activity
         super.onCreate(savedInstanceState);
 
         mModel = ((LauncherApplication)getApplication()).setLauncher(this);
+        mDragController = new DragController(this);
         mInflater = getLayoutInflater();
 
         mAppWidgetManager = AppWidgetManager.getInstance(this);
@@ -523,7 +524,6 @@ public final class Launcher extends Activity
      * Finds all the views we need and configure them properly.
      */
     private void setupViews() {
-        mDragController = new DragController(this);
         DragController dragController = mDragController;
 
         DragLayer dragLayer = (DragLayer) findViewById(R.id.drag_layer);
@@ -1318,8 +1318,7 @@ public final class Launcher extends Activity
         ViewGroup parent = (ViewGroup) folder.getParent();
         if (parent != null) {
             parent.removeView(folder);
-            // TODO: this line crashes.
-            //mDragController.removeDropTarget((DropTarget)folder);
+            mDragController.removeDropTarget((DropTarget)folder);
         }
         folder.onClose();
     }
