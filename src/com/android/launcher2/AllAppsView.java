@@ -39,6 +39,7 @@ import android.renderscript.ProgramStore;
 import android.renderscript.Sampler;
 import android.renderscript.SimpleMesh;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.DataSetObserver;
@@ -547,7 +548,7 @@ public class AllAppsView extends RSSurfaceView
         final int N = list.size();
         for (int i=0; i<N; i++) {
             final ApplicationInfo item = list.get(i);
-            int index = Collections.binarySearch(mAllAppsList, item, mAppIntentComp);
+            int index = findAppByComponent(mAllAppsList, item);
             if (index >= 0) {
                 mAllAppsList.remove(index);
                 if (mRollo != null) {
@@ -581,11 +582,17 @@ public class AllAppsView extends RSSurfaceView
         }
     };
 
-    private Comparator<ApplicationInfo> mAppIntentComp = new Comparator<ApplicationInfo>() {
-        public int compare(ApplicationInfo a, ApplicationInfo b) {
-            return a.intent.getComponent().compareTo(b.intent.getComponent());
+    private static int findAppByComponent(ArrayList<ApplicationInfo> list, ApplicationInfo item) {
+        ComponentName component = item.intent.getComponent();
+        final int N = list.size();
+        for (int i=0; i<N; i++) {
+            ApplicationInfo x = list.get(i);
+            if (x.intent.getComponent().equals(component)) {
+                return i;
+            }
         }
-    };
+        return -1;
+    }
 
     private static int countPages(int iconCount) {
         int iconsPerPage = Defines.COLUMNS_PER_PAGE * Defines.ROWS_PER_PAGE;
