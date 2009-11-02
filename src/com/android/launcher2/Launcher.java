@@ -1318,7 +1318,10 @@ public final class Launcher extends Activity
         ViewGroup parent = (ViewGroup) folder.getParent();
         if (parent != null) {
             parent.removeView(folder);
-            mDragController.removeDropTarget((DropTarget)folder);
+            if (folder instanceof DropTarget) {
+                // Live folders aren't DropTargets.
+                mDragController.removeDropTarget((DropTarget)folder);
+            }
         }
         folder.onClose();
     }
