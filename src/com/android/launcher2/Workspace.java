@@ -26,7 +26,11 @@ import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Parcelable;
+import android.os.Parcel;
+import android.os.SystemClock;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -35,8 +39,6 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.Scroller;
 import android.widget.TextView;
-import android.os.Parcelable;
-import android.os.Parcel;
 
 import java.util.ArrayList;
 
@@ -468,6 +470,24 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
+        if (Launcher.lastStartTime != 0) {
+            int itemCount = 0;
+            for (int i=0; i<getChildCount(); i++) {
+                View child = getChildAt(i);
+                if (child instanceof ViewGroup) {
+                    itemCount += ((ViewGroup)child).getChildCount();
+                }
+            }
+            if (!mLauncher.isWorkspaceLocked()) {
+                Log.d(Launcher.TAG, "time from start to draw (" + itemCount + " items): "
+                        + (SystemClock.uptimeMillis() - Launcher.lastStartTime) + "ms");
+                Launcher.lastStartTime = 0;
+            } else {
+                Log.d(Launcher.TAG, "drawing but not ready yet (" + itemCount + " items): "
+                        + (SystemClock.uptimeMillis() - Launcher.lastStartTime) + "ms");
+            }
+        }
+
         boolean restore = false;
         int restoreCount = 0;
 

@@ -177,9 +177,10 @@ public class AllAppsView extends RSSurfaceView
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-        super.surfaceChanged(holder, format, w, h);
-
+        Log.d(TAG, "starting surfaceChanged");
         long startTime = SystemClock.uptimeMillis();
+
+        super.surfaceChanged(holder, format, w, h);
 
         if (mRS != null) {
             destroyRenderScript();
