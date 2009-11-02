@@ -380,8 +380,6 @@ final class Utilities {
             rectPaint.setColor(0xff000000);
             rectPaint.setAntiAlias(true);
 
-            Log.d(TAG, "scale=" + scale + " textSize=" + (13*scale));
-
             TextPaint textPaint = mTextPaint = new TextPaint();
             textPaint.setTypeface(Typeface.DEFAULT);
             textPaint.setTextSize(13*scale);
@@ -403,9 +401,11 @@ final class Utilities {
 
             mBubbleRect.offsetTo((mBitmapWidth-mBubbleRect.width())/2, 0);
 
-            Log.d(TAG, "mBitmapWidth=" + mBitmapWidth + " mBitmapHeight="
-                    + mBitmapHeight + " w=" + ((int)(mBubbleRect.width() + 0.5f))
-                    + " h=" + ((int)((MAX_LINES * mLineHeight) + leading + 0.5f)));
+            if (false) {
+                Log.d(TAG, "mBitmapWidth=" + mBitmapWidth + " mBitmapHeight="
+                        + mBitmapHeight + " w=" + ((int)(mBubbleRect.width() + 0.5f))
+                        + " h=" + ((int)((MAX_LINES * mLineHeight) + leading + 0.5f)));
+            }
         }
 
         /** You own the bitmap after this and you must call recycle on it. */
