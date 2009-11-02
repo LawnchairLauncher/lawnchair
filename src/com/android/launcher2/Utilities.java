@@ -338,9 +338,9 @@ final class Utilities {
         sIconWidth = sIconHeight = (int) resources.getDimension(android.R.dimen.app_icon_size);
         sIconTextureWidth = sIconTextureHeight = roundToPow2(sIconWidth);
 
-        sBlurPaint.setMaskFilter(new BlurMaskFilter(4 * density, BlurMaskFilter.Blur.NORMAL));
+        sBlurPaint.setMaskFilter(new BlurMaskFilter(5 * density, BlurMaskFilter.Blur.NORMAL));
         sGlowColorPaint.setColor(0xffff9000);
-        sGlowColorPaint.setMaskFilter(TableMaskFilter.CreateClipTable(0, 64));
+        sGlowColorPaint.setMaskFilter(TableMaskFilter.CreateClipTable(0, 30));
     }
 
     static class BubbleText {
