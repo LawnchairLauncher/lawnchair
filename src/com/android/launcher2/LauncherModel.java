@@ -505,7 +505,7 @@ public class LauncherModel extends BroadcastReceiver {
                 // This way we don't start loading all apps until the workspace has settled
                 // down.
                 synchronized (LoaderThread.this) {
-                    mHandler.post(new Runnable() {
+                    mHandler.postIdle(new Runnable() {
                             public void run() {
                                 synchronized (LoaderThread.this) {
                                     mWorkspaceDoneBinding = true;
