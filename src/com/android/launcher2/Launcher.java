@@ -46,6 +46,7 @@ import android.os.MessageQueue;
 import android.os.Parcelable;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.SystemClock;
 import android.provider.LiveFolders;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
@@ -197,8 +198,12 @@ public final class Launcher extends Activity
     private static HashMap<Long, FolderInfo> mFolders = new HashMap();
     private ArrayList<ApplicationInfo> mAllAppsList = new ArrayList();
 
+    public static long lastStartTime;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        lastStartTime = SystemClock.uptimeMillis();
+
         super.onCreate(savedInstanceState);
 
         mModel = ((LauncherApplication)getApplication()).setLauncher(this);
@@ -394,6 +399,10 @@ public final class Launcher extends Activity
 
     @Override
     protected void onResume() {
+        if (lastStartTime == 0) {
+            lastStartTime = SystemClock.uptimeMillis();
+        }
+
         super.onResume();
 
         if (mRestoring) {
@@ -1925,12 +1934,6 @@ public final class Launcher extends Activity
             super.onRestoreInstanceState(mSavedInstanceState);
             mSavedInstanceState = null;
         }
-
-        /* TODO
-        if (mAllAppsVisible && !mDrawer.hasFocus()) {
-            mDrawer.requestFocus();
-        }
-        */
 
         Log.d(TAG, "finishBindingItems done");
         mWorkspaceLoading = false;
