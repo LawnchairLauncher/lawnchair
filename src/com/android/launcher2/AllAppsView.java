@@ -16,54 +16,40 @@
 
 package com.android.launcher2;
 
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.concurrent.Semaphore;
-import java.lang.Float;
-import java.util.Collections;
-import java.util.Comparator;
-
-import android.renderscript.RSSurfaceView;
-import android.renderscript.RenderScript;
-
-import android.renderscript.RenderScript;
-import android.renderscript.ProgramVertex;
-import android.renderscript.Element;
-import android.renderscript.Dimension;
-import android.renderscript.Allocation;
-import android.renderscript.Type;
-import android.renderscript.Script;
-import android.renderscript.ScriptC;
-import android.renderscript.ProgramFragment;
-import android.renderscript.ProgramStore;
-import android.renderscript.Sampler;
-import android.renderscript.SimpleMesh;
-
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
-import android.database.DataSetObserver;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Message;
 import android.os.SystemClock;
+import android.renderscript.Allocation;
+import android.renderscript.Dimension;
+import android.renderscript.Element;
+import android.renderscript.ProgramFragment;
+import android.renderscript.ProgramStore;
+import android.renderscript.ProgramVertex;
+import android.renderscript.RSSurfaceView;
+import android.renderscript.RenderScript;
+import android.renderscript.Sampler;
+import android.renderscript.Script;
+import android.renderscript.ScriptC;
+import android.renderscript.SimpleMesh;
+import android.renderscript.Type;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
-import android.view.Surface;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.View;
 import android.view.VelocityTracker;
+import android.view.View;
 import android.view.ViewConfiguration;
-import android.graphics.PixelFormat;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 
 public class AllAppsView extends RSSurfaceView
@@ -97,7 +83,11 @@ public class AllAppsView extends RSSurfaceView
      */
     private boolean mArrowNavigation = false;
 
-    private int mPageCount;
+    /**
+     * Used to keep track of the selection when AllAppsView loses window focus
+     */
+    private int mLastSelectedIcon;
+    
     private boolean mStartedScrolling;
     private VelocityTracker mVelocity;
     private int mTouchTracking;
@@ -105,8 +95,7 @@ public class AllAppsView extends RSSurfaceView
     private int mMotionDownRawY;
     private int mDownIconIndex = -1;
     private int mCurrentIconIndex = -1;
-    private int mHomeButtonTop;
-    private long mTouchTime;
+
 
     static class Defines {
         public static final int ALLOC_PARAMS = 0;
@@ -198,10 +187,39 @@ public class AllAppsView extends RSSurfaceView
 
         Resources res = getContext().getResources();
         int barHeight = (int)res.getDimension(R.dimen.button_bar_height);
-        mHomeButtonTop = h - barHeight;
 
         long endTime = SystemClock.uptimeMillis();
         Log.d(TAG, "surfaceChanged took " + (endTime-startTime) + "ms");
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasWindowFocus) {
+        super.onWindowFocusChanged(hasWindowFocus);
+        if (mArrowNavigation) {
+            if (!hasWindowFocus) {
+                // Clear selection when we lose window focus
+                mLastSelectedIcon = mRollo.mState.selectedIconIndex;
+                mRollo.clearSelectedIcon();
+                mRollo.mState.save();
+            } else if (hasWindowFocus) {
+                if (mRollo.mState.iconCount > 0) {
+                    int selection = mLastSelectedIcon;
+                    final int firstIcon = Math.round(mRollo.mMessageProc.mPosX) * 
+                        Defines.COLUMNS_PER_PAGE;
+                    if (selection < 0 || // No selection    
+                            selection < firstIcon || // off the top of the screen
+                            selection >= mRollo.mState.iconCount || // past last icon
+                            selection >= firstIcon + // past last icon on screen
+                                (Defines.COLUMNS_PER_PAGE * Defines.ROWS_PER_PAGE)) {
+                        selection = firstIcon;
+                    }
+                            
+                    // Select the first icon when we gain window focus
+                    mRollo.selectIcon(selection);
+                    mRollo.mState.save();
+                }
+            }
+        }
     }
 
     @Override
@@ -232,6 +250,8 @@ public class AllAppsView extends RSSurfaceView
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
+        boolean handled = false;
+        
         if (!isVisible()) {
             return false;
         }
@@ -244,6 +264,7 @@ public class AllAppsView extends RSSurfaceView
                 if (whichApp >= 0) {
                     ApplicationInfo app = mAllAppsList.get(whichApp);
                     mLauncher.startActivitySafely(app.intent);
+                    handled = true;
                 }
             }
         }
@@ -251,8 +272,8 @@ public class AllAppsView extends RSSurfaceView
         if (mArrowNavigation && iconCount > 0) {
             mArrowNavigation = true;
 
-            final int currentSelection = mRollo.mState.selectedIconIndex;
-            final int currentTopRow = (int) mRollo.mMessageProc.mPosX;
+            int currentSelection = mRollo.mState.selectedIconIndex;
+            int currentTopRow = Math.round(mRollo.mMessageProc.mPosX);
 
             // The column of the current selection, in the range 0..COLUMNS_PER_PAGE-1
             final int currentPageCol = currentSelection % Defines.COLUMNS_PER_PAGE;
@@ -268,10 +289,12 @@ public class AllAppsView extends RSSurfaceView
                 if (currentPageRow > 0) {
                     newSelection = currentSelection - Defines.COLUMNS_PER_PAGE;
                 } else if (currentTopRow > 0) {
-                    mRollo.moveTo(currentTopRow - 1);
                     newSelection = currentSelection - Defines.COLUMNS_PER_PAGE;
+                    mRollo.moveTo(newSelection / Defines.COLUMNS_PER_PAGE);
                 }
+                handled = true;
                 break;
+
             case KeyEvent.KEYCODE_DPAD_DOWN: {
                 final int rowCount = iconCount / Defines.COLUMNS_PER_PAGE
                         + (iconCount % Defines.COLUMNS_PER_PAGE == 0 ? 0 : 1);
@@ -285,21 +308,25 @@ public class AllAppsView extends RSSurfaceView
                         newSelection = iconCount - 1;
                     }
                     if (currentPageRow >= Defines.ROWS_PER_PAGE - 1) {
-                        mRollo.moveTo(currentTopRow + 1);
+                        mRollo.moveTo((newSelection / Defines.COLUMNS_PER_PAGE) -
+                                Defines.ROWS_PER_PAGE + 1);
                     }
                 }
+                handled = true;
                 break;
             }
             case KeyEvent.KEYCODE_DPAD_LEFT:
                 if (currentPageCol > 0) {
                     newSelection = currentSelection - 1;
                 }
+                handled = true;
                 break;
             case KeyEvent.KEYCODE_DPAD_RIGHT:
                 if ((currentPageCol < Defines.COLUMNS_PER_PAGE - 1) &&
                         (currentSelection < iconCount - 1)) {
                     newSelection = currentSelection + 1;
                 }
+                handled = true;
                 break;
             }
             if (newSelection != currentSelection) {
@@ -307,10 +334,8 @@ public class AllAppsView extends RSSurfaceView
                 mRollo.mState.save();
             }
         }
-        return true;
+        return handled;
     }
-
-    private int mRSMode = 0;
 
     @Override
     public boolean onTouchEvent(MotionEvent ev)
@@ -481,7 +506,6 @@ public class AllAppsView extends RSSurfaceView
      * Zoom to the specifed amount.
      *
      * @param amount [0..1] 0 is hidden, 1 is open
-     * @param animate Whether to animate.
      */
     public void zoom(float amount) {
         if (mRollo == null) {
@@ -527,7 +551,6 @@ public class AllAppsView extends RSSurfaceView
         if (mRollo != null) {
             mRollo.setApps(list);
         }
-        mPageCount = countPages(list.size());
         mLocks &= ~LOCK_ICONS_PENDING;
     }
 
