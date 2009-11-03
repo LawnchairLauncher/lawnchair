@@ -236,6 +236,8 @@ public class AllAppsView extends RSSurfaceView
             return false;
         }
 
+        final int iconCount = mRollo.mState.iconCount;
+
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
             if (mArrowNavigation) {
                 int whichApp = mRollo.mState.selectedIconIndex;
@@ -246,17 +248,17 @@ public class AllAppsView extends RSSurfaceView
             }
         }
 
-        if (mArrowNavigation && mRollo.mState.iconCount > 0) {
+        if (mArrowNavigation && iconCount > 0) {
             mArrowNavigation = true;
 
-            int currentSelection = mRollo.mState.selectedIconIndex;
-            int currentTopRow = (int) mRollo.mMessageProc.mPosX;
+            final int currentSelection = mRollo.mState.selectedIconIndex;
+            final int currentTopRow = (int) mRollo.mMessageProc.mPosX;
 
             // The column of the current selection, in the range 0..COLUMNS_PER_PAGE-1
-            int currentPageCol = currentSelection % Defines.COLUMNS_PER_PAGE;
+            final int currentPageCol = currentSelection % Defines.COLUMNS_PER_PAGE;
 
             // The row of the current selection, in the range 0..ROWS_PER_PAGE-1
-            int currentPageRow = (currentSelection - (currentTopRow * Defines.COLUMNS_PER_PAGE))
+            final int currentPageRow = (currentSelection - (currentTopRow*Defines.COLUMNS_PER_PAGE))
                     / Defines.ROWS_PER_PAGE;
 
             int newSelection = currentSelection;
@@ -270,16 +272,24 @@ public class AllAppsView extends RSSurfaceView
                     newSelection = currentSelection - Defines.COLUMNS_PER_PAGE;
                 }
                 break;
-            case KeyEvent.KEYCODE_DPAD_DOWN:
-                if (currentSelection < mRollo.mState.iconCount - Defines.COLUMNS_PER_PAGE) {
-                    if (currentPageRow < Defines.ROWS_PER_PAGE - 1) {
-                        newSelection = currentSelection + Defines.COLUMNS_PER_PAGE;
-                    } else {
+            case KeyEvent.KEYCODE_DPAD_DOWN: {
+                final int rowCount = iconCount / Defines.COLUMNS_PER_PAGE
+                        + (iconCount % Defines.COLUMNS_PER_PAGE == 0 ? 0 : 1);
+                final int currentRow = currentSelection / Defines.COLUMNS_PER_PAGE;
+                if (currentRow < rowCount-1) {
+                    newSelection = currentSelection + Defines.COLUMNS_PER_PAGE;
+                    if (newSelection >= iconCount) {
+                        // Go from D to G in this arrangement:
+                        //     A B C D
+                        //     E F G
+                        newSelection = iconCount - 1;
+                    }
+                    if (currentPageRow >= Defines.ROWS_PER_PAGE - 1) {
                         mRollo.moveTo(currentTopRow + 1);
-                        newSelection = currentSelection + Defines.COLUMNS_PER_PAGE;
                     }
                 }
                 break;
+            }
             case KeyEvent.KEYCODE_DPAD_LEFT:
                 if (currentPageCol > 0) {
                     newSelection = currentSelection - 1;
@@ -287,7 +297,7 @@ public class AllAppsView extends RSSurfaceView
                 break;
             case KeyEvent.KEYCODE_DPAD_RIGHT:
                 if ((currentPageCol < Defines.COLUMNS_PER_PAGE - 1) &&
-                        (currentSelection < mRollo.mState.iconCount - 1)) {
+                        (currentSelection < iconCount - 1)) {
                     newSelection = currentSelection + 1;
                 }
                 break;
