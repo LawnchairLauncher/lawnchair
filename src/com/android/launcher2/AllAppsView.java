@@ -158,10 +158,6 @@ public class AllAppsView extends RSSurfaceView
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         super.surfaceDestroyed(holder);
-
-        destroyRenderScript();
-        mRS = null;
-        mRollo = null;
     }
 
     @Override
@@ -171,18 +167,15 @@ public class AllAppsView extends RSSurfaceView
 
         super.surfaceChanged(holder, format, w, h);
 
-        if (mRS != null) {
-            destroyRenderScript();
-            mRS = null;
-            mRollo = null;
-        }
+        if (mRS == null) {
 
-        mRS = createRenderScript(true);
-        mRollo = new RolloRS();
-        mRollo.init(getResources(), w, h);
-        if (mAllAppsList != null) {
-            mRollo.setApps(mAllAppsList);
-            Log.d(TAG, "surfaceChanged... calling mRollo.setApps");
+            mRS = createRenderScript(true);
+            mRollo = new RolloRS();
+            mRollo.init(getResources(), w, h);
+            if (mAllAppsList != null) {
+                mRollo.setApps(mAllAppsList);
+                Log.d(TAG, "surfaceChanged... calling mRollo.setApps");
+            }
         }
 
         Resources res = getContext().getResources();
