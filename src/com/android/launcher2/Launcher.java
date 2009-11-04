@@ -38,11 +38,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
-import android.os.Looper;
-import android.os.Message;
-import android.os.MessageQueue;
 import android.os.Parcelable;
 import android.os.RemoteException;
 import android.os.ServiceManager;
@@ -61,7 +57,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.View.OnLongClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -70,10 +65,8 @@ import android.widget.Toast;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -184,19 +177,14 @@ public final class Launcher extends Activity
 
     private boolean mRestoring;
     private boolean mWaitingForResult;
-    private boolean mLocaleChanged;
     private boolean mExitingBecauseOfLaunch;
-
-    private boolean mHomeDown;
-    private boolean mBackDown;
 
     private Bundle mSavedInstanceState;
 
     private LauncherModel mModel;
 
-    private ArrayList<ItemInfo> mDesktopItems = new ArrayList();
-    private static HashMap<Long, FolderInfo> mFolders = new HashMap();
-    private ArrayList<ApplicationInfo> mAllAppsList = new ArrayList();
+    private ArrayList<ItemInfo> mDesktopItems = new ArrayList<ItemInfo>();
+    private static HashMap<Long, FolderInfo> mFolders = new HashMap<Long, FolderInfo>();
 
     public static long lastStartTime;
 
@@ -263,9 +251,9 @@ public final class Launcher extends Activity
         final int previousMnc = localeConfiguration.mnc;
         final int mnc = configuration.mnc;
 
-        mLocaleChanged = !locale.equals(previousLocale) || mcc != previousMcc || mnc != previousMnc;
+        boolean localeChanged = !locale.equals(previousLocale) || mcc != previousMcc || mnc != previousMnc;
 
-        if (mLocaleChanged) {
+        if (localeChanged) {
             localeConfiguration.locale = locale;
             localeConfiguration.mcc = mcc;
             localeConfiguration.mnc = mnc;
@@ -1275,22 +1263,12 @@ public final class Launcher extends Activity
     }
 
     @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (!hasFocus) {
-            mBackDown = mHomeDown = false;
-        }
-    }
-
-    @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             switch (event.getKeyCode()) {
                 case KeyEvent.KEYCODE_BACK:
-                    mBackDown = true;
                     return true;
                 case KeyEvent.KEYCODE_HOME:
-                    mHomeDown = true;
                     return true;
             }
         } else if (event.getAction() == KeyEvent.ACTION_UP) {
@@ -1304,10 +1282,8 @@ public final class Launcher extends Activity
                             closeFolder();
                         }
                     }
-                    mBackDown = false;
                     return true;
                 case KeyEvent.KEYCODE_HOME:
-                    mHomeDown = false;
                     return true;
             }
         }
@@ -1881,11 +1857,6 @@ public final class Launcher extends Activity
         final AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
         item.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
 
-        if (true) {
-            Log.d(LOG_TAG, String.format("about to setAppWidget for id=%d, info=%s",
-                    appWidgetId, appWidgetInfo));
-        }
-
         item.hostView.setAppWidget(appWidgetId, appWidgetInfo);
         item.hostView.setTag(item);
 
@@ -1945,8 +1916,7 @@ public final class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void bindAllApplications(ArrayList<ApplicationInfo> apps) {
-        mAllAppsList = apps;
-        mAllAppsGrid.setApps(mAllAppsList);
+        mAllAppsGrid.setApps(apps);
     }
 
     /**
