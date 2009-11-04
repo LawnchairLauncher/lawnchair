@@ -16,20 +16,15 @@
 
 package com.android.launcher2;
 
-import android.app.SearchManager;
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.server.search.SearchableInfo;
-import android.server.search.Searchables;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -75,8 +70,6 @@ public class Search extends LinearLayout
 
     // For voice searching
     private Intent mVoiceSearchIntent;
-
-    private SearchManager mSearchManager;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -138,8 +131,6 @@ public class Search extends LinearLayout
         mVoiceSearchIntent = new Intent(android.speech.RecognizerIntent.ACTION_WEB_SEARCH);
         mVoiceSearchIntent.putExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 android.speech.RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
-        
-        mSearchManager = (SearchManager) getContext().getSystemService(Context.SEARCH_SERVICE);
     }
 
     /**
@@ -174,7 +165,7 @@ public class Search extends LinearLayout
 
     /**
      * Morph the search gadget to the search dialog.
-     * See {@link Activity.startSearch()} for the arguments.
+     * See {@link Activity#startSearch()} for the arguments.
      */
     public void startSearch(String initialQuery, boolean selectInitialQuery, 
             Bundle appSearchData, boolean globalSearch) {
@@ -233,11 +224,11 @@ public class Search extends LinearLayout
     }
 
     private boolean isAtTop() {
-        return getTop() == 0;
+        return getWidgetTop() == 0;
     }
 
     private int getAnimationDuration() {
-        return (int) (getTop() / ANIMATION_VELOCITY);
+        return (int) (getWidgetTop() / ANIMATION_VELOCITY);
     }
 
     /**
@@ -351,7 +342,7 @@ public class Search extends LinearLayout
         @Override
         protected void applyTransformation(float interpolatedTime, Transformation t) {
             float dx = -getLeft() * interpolatedTime;
-            float dy = -getTop() * interpolatedTime;
+            float dy = -getWidgetTop() * interpolatedTime;
             t.getMatrix().setTranslate(dx, dy);
         }
     }
@@ -363,9 +354,17 @@ public class Search extends LinearLayout
         @Override
         protected void applyTransformation(float interpolatedTime, Transformation t) {
             float dx = -getLeft() * (1.0f - interpolatedTime);
-            float dy = -getTop() * (1.0f - interpolatedTime);
+            float dy = -getWidgetTop() * (1.0f - interpolatedTime);
             t.getMatrix().setTranslate(dx, dy);
         }
     }
 
+    /**
+     * The widget is centered vertically within it's 4x1 slot. This is accomplished by nesting
+     * the actual widget inside another view. For animation purposes, we care about the top of the
+     * actual widget rather than it's container. This method return the top of the actual widget.
+     */
+    private int getWidgetTop() {
+        return getTop() + getChildAt(0).getTop();
+    }
 }
