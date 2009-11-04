@@ -48,7 +48,7 @@ import java.util.ArrayList;
  * A workspace is meant to be used with a fixed width only.
  */
 public class Workspace extends ViewGroup implements DropTarget, DragSource, DragScroller {
-    private static final String TAG = "Launcher.Workspace";
+    //private static final String TAG = "Launcher.Workspace";
     private static final int INVALID_SCREEN = -1;
     
     /**
@@ -982,7 +982,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                         mDragInfo.spanX, mDragInfo.spanY, cell, cellLayout, mTargetCell);
                 cellLayout.onDropChild(cell, mTargetCell);
 
-                final ItemInfo info = (ItemInfo)cell.getTag();
+                final ItemInfo info = (ItemInfo) cell.getTag();
                 CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell.getLayoutParams();
                 LauncherModel.moveItemInDatabase(mLauncher, info,
                         LauncherSettings.Favorites.CONTAINER_DESKTOP, index, lp.cellX, lp.cellY);

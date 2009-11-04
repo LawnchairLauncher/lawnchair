@@ -27,6 +27,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
+import android.app.WallpaperManager;
 
 import java.util.ArrayList;
 
@@ -52,14 +53,14 @@ public class CellLayout extends ViewGroup {
     private final CellInfo mCellInfo = new CellInfo();
     
     int[] mCellXY = new int[2];
-    
     boolean[][] mOccupied;
 
     private RectF mDragRect = new RectF();
 
     private boolean mDirtyTag;
-    
     private boolean mLastDownOnOccupiedCell = false;
+    
+    private final WallpaperManager mWallpaperManager;     
 
     public CellLayout(Context context) {
         this(context, null);
@@ -99,6 +100,8 @@ public class CellLayout extends ViewGroup {
                 mOccupied = new boolean[mLongAxisCells][mShortAxisCells];
             }
         }
+        
+        mWallpaperManager = WallpaperManager.getInstance(getContext());
     }
 
     @Override
@@ -433,6 +436,14 @@ public class CellLayout extends ViewGroup {
         result[1] = vStartPadding + cellY * (mCellHeight + mHeightGap);
     }
 
+    int getCellWidth() {
+        return mCellWidth;
+    }
+
+    int getCellHeight() {
+        return mCellHeight;
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // TODO: currently ignoring padding
@@ -528,6 +539,13 @@ public class CellLayout extends ViewGroup {
                 int childLeft = lp.x;
                 int childTop = lp.y;
                 child.layout(childLeft, childTop, childLeft + lp.width, childTop + lp.height);
+
+                if (lp.dropped) {
+                    lp.dropped = false;
+
+                    mWallpaperManager.sendWallpaperCommand(getWindowToken(), "android.home.drop",
+                            childLeft + lp.width / 2, childTop + lp.height / 2, 0, null);
+                }
             }
         }
     }
@@ -616,6 +634,7 @@ public class CellLayout extends ViewGroup {
             lp.cellX = targetXY[0];
             lp.cellY = targetXY[1];
             lp.isDragging = false;
+            lp.dropped = true;
             mDragRect.setEmpty();
             child.requestLayout();
             invalidate();
@@ -844,6 +863,8 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         int y;
 
         boolean regenerateId;
+        
+        boolean dropped;
 
         public LayoutParams(Context c, AttributeSet attrs) {
             super(c, attrs);
