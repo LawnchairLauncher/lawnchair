@@ -84,9 +84,7 @@ public class DragView extends View implements TweenCallback {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int widthSize = resolveSize(mBitmap.getWidth(), widthMeasureSpec);
-        int heightSize = resolveSize(mBitmap.getHeight(), heightMeasureSpec);
-        setMeasuredDimension(widthSize, heightSize);
+        setMeasuredDimension(mBitmap.getWidth(), mBitmap.getHeight());
     }
 
     @Override
