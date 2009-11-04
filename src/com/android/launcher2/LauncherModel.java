@@ -29,9 +29,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import static android.util.Log.*;
 import android.util.Log;
 import android.os.Process;
 import android.os.SystemClock;
@@ -318,18 +316,18 @@ public class LauncherModel extends BroadcastReceiver {
 
             if (mAllAppsList.added.size() > 0) {
                 added = mAllAppsList.added;
-                mAllAppsList.added = new ArrayList();
+                mAllAppsList.added = new ArrayList<ApplicationInfo>();
             }
             if (mAllAppsList.removed.size() > 0) {
                 removed = mAllAppsList.removed;
-                mAllAppsList.removed = new ArrayList();
+                mAllAppsList.removed = new ArrayList<ApplicationInfo>();
                 for (ApplicationInfo info: removed) {
                     AppInfoCache.remove(info.intent.getComponent());
                 }
             }
             if (mAllAppsList.modified.size() > 0) {
                 modified = mAllAppsList.modified;
-                mAllAppsList.modified = new ArrayList();
+                mAllAppsList.modified = new ArrayList<ApplicationInfo>();
             }
 
             final Callbacks callbacks = mCallbacks != null ? mCallbacks.get() : null;
@@ -375,9 +373,9 @@ public class LauncherModel extends BroadcastReceiver {
         private int mLastAllAppsSeq = 0;
         private int mAllAppsSeq = 1;
 
-        final ArrayList<ItemInfo> mItems = new ArrayList();
-        final ArrayList<LauncherAppWidgetInfo> mAppWidgets = new ArrayList();
-        final HashMap<Long, FolderInfo> folders = new HashMap();
+        final ArrayList<ItemInfo> mItems = new ArrayList<ItemInfo>();
+        final ArrayList<LauncherAppWidgetInfo> mAppWidgets = new ArrayList<LauncherAppWidgetInfo>();
+        final HashMap<Long, FolderInfo> folders = new HashMap<Long, FolderInfo>();
                 
         /**
          * Call this from the ui thread so the handler is initialized on the correct thread.
@@ -462,6 +460,7 @@ public class LauncherModel extends BroadcastReceiver {
                             mWaitThread.join();
                             done = true;
                         } catch (InterruptedException ex) {
+                            // Ignore
                         }
                     }
                     mWaitThread = null;
@@ -519,6 +518,7 @@ public class LauncherModel extends BroadcastReceiver {
                         try {
                             this.wait();
                         } catch (InterruptedException ex) {
+                            // Ignore
                         }
                     }
                     Log.d(TAG, "done waiting to be done with workspace");
@@ -559,7 +559,6 @@ public class LauncherModel extends BroadcastReceiver {
                     // Setting the reference is atomic, but we can't do it inside the other critical
                     // sections.
                     mLoaderThread = null;
-                    return;
                 }
             }
 
@@ -942,7 +941,7 @@ public class LauncherModel extends BroadcastReceiver {
             private void bindAllApps() {
                 synchronized (mLock) {
                     final ArrayList<ApplicationInfo> results = mAllAppsList.added;
-                    mAllAppsList.added = new ArrayList();
+                    mAllAppsList.added = new ArrayList<ApplicationInfo>();
                     mHandler.post(new Runnable() {
                         public void run() {
                             final long t = SystemClock.uptimeMillis();
