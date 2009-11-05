@@ -253,7 +253,6 @@ public class AllAppsView extends RSSurfaceView
         if (!isVisible()) {
             return false;
         }
-
         final int iconCount = mRollo.mState.iconCount;
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
@@ -553,6 +552,11 @@ public class AllAppsView extends RSSurfaceView
     }
 
     public void addApps(ArrayList<ApplicationInfo> list) {
+        if (mAllAppsList == null) {
+            // Not done loading yet.  We'll find out about it later.
+            return;
+        }
+
         final int N = list.size();
         if (mRollo != null) {
             mRollo.reallocAppsList(mRollo.mState.iconCount + N);
@@ -578,6 +582,11 @@ public class AllAppsView extends RSSurfaceView
     }
 
     public void removeApps(ArrayList<ApplicationInfo> list) {
+        if (mAllAppsList == null) {
+            // Not done loading yet.  We'll find out about it later.
+            return;
+        }
+
         final int N = list.size();
         for (int i=0; i<N; i++) {
             final ApplicationInfo item = list.get(i);
@@ -1169,7 +1178,7 @@ public class AllAppsView extends RSSurfaceView
         }
 
         void selectIcon(int index) {
-            if (index < 0 || index >= mAllAppsList.size()) {
+            if (mAllAppsList == null || index < 0 || index >= mAllAppsList.size()) {
                 mState.selectedIconIndex = -1;
             } else {
                 mState.selectedIconIndex = index;
