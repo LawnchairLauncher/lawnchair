@@ -564,6 +564,7 @@ public class AllAppsView extends RSSurfaceView
             if (index < 0) {
                 index = -(index+1);
             }
+            Log.d(TAG, "Adding app '" + item + "' at index " + index + " mRollo=" + mRollo);
             mAllAppsList.add(index, item);
             if (mRollo != null) {
                 mRollo.addApp(index, item);
