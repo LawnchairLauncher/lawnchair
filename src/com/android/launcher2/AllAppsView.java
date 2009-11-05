@@ -158,6 +158,7 @@ public class AllAppsView extends RSSurfaceView
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         super.surfaceDestroyed(holder);
+        mRollo.mHasSurface = false;
     }
 
     @Override
@@ -171,11 +172,15 @@ public class AllAppsView extends RSSurfaceView
 
             mRS = createRenderScript(true);
             mRollo = new RolloRS();
+            mRollo.mHasSurface = true;
             mRollo.init(getResources(), w, h);
             if (mAllAppsList != null) {
                 mRollo.setApps(mAllAppsList);
                 Log.d(TAG, "surfaceChanged... calling mRollo.setApps");
             }
+        } else {
+            mRollo.mHasSurface = true;
+            mRollo.dirtyCheck();
         }
 
         Resources res = getContext().getResources();
@@ -672,6 +677,8 @@ public class AllAppsView extends RSSurfaceView
         private Bitmap mSelectionBitmap;
         private Canvas mSelectionCanvas;
 
+        boolean mHasSurface = false;
+        private boolean mAppsDirty = false;
 
         Params mParams;
         State mState;
@@ -922,6 +929,20 @@ public class AllAppsView extends RSSurfaceView
             mRS.contextBindRootScript(mScript);
         }
 
+        private void uploadApps(ArrayList<ApplicationInfo> list) {
+            for (int i=0; i < mState.iconCount; i++) {
+                uploadAppIcon(i, list.get(i));
+            }
+        }
+
+        void dirtyCheck() {
+            if (mAppsDirty && mHasSurface) {
+                uploadApps(mAllAppsList);
+                saveAppsList();
+                mAppsDirty = false;
+            }
+        }
+
         private void setApps(ArrayList<ApplicationInfo> list) {
             final int count = list != null ? list.size() : 0;
             int allocCount = count;
@@ -941,12 +962,8 @@ public class AllAppsView extends RSSurfaceView
 
             Utilities.BubbleText bubble = new Utilities.BubbleText(getContext());
 
-            for (int i=0; i<count; i++) {
-                uploadAppIcon(i, list.get(i));
-            }
-
             mState.iconCount = count;
-
+            uploadApps(list);
             saveAppsList();
         }
 
@@ -1021,7 +1038,11 @@ public class AllAppsView extends RSSurfaceView
             System.arraycopy(mLabels, index, mLabels, dest, count);
             System.arraycopy(mLabelIds, index, mLabelIds, dest, count);
 
-            uploadAppIcon(index, item);
+            if (mHasSurface ) {
+                uploadAppIcon(index, item);
+            } else {
+                mAppsDirty = true;
+            }
         }
 
         /**
