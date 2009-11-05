@@ -269,6 +269,8 @@ public class LauncherModel extends BroadcastReceiver {
      * ACTION_PACKAGE_CHANGED.
      */
     public void onReceive(Context context, Intent intent) {
+        Log.d(TAG, "onReceive intent=" + intent);
+
         // Use the app as the context.
         context = mApp;
 
@@ -332,6 +334,7 @@ public class LauncherModel extends BroadcastReceiver {
 
             final Callbacks callbacks = mCallbacks != null ? mCallbacks.get() : null;
             if (callbacks == null) {
+                Log.d(TAG, "nobody to tell about the new app");
                 return;
             }
 
