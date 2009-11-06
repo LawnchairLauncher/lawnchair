@@ -376,8 +376,9 @@ public final class Launcher extends Activity
                     // We just wanted the activity result here so we can clear mWaitingForResult
                     break;
             }
-        } else if (requestCode == REQUEST_PICK_APPWIDGET &&
-                resultCode == RESULT_CANCELED && data != null) {
+        } else if ((requestCode == REQUEST_PICK_APPWIDGET ||
+                requestCode == REQUEST_CREATE_APPWIDGET) && resultCode == RESULT_CANCELED &&
+                data != null) {
             // Clean up the appWidgetId if we canceled
             int appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
             if (appWidgetId != -1) {
@@ -680,7 +681,7 @@ public final class Launcher extends Activity
         Bundle extras = data.getExtras();
         int appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
 
-        d(LOG_TAG, "dumping extras content="+extras.toString());
+        if (LOGD) d(LOG_TAG, "dumping extras content=" + extras.toString());
 
         AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
 
@@ -690,7 +691,10 @@ public final class Launcher extends Activity
 
         // Try finding open space on Launcher screen
         final int[] xy = mCellCoordinates;
-        if (!findSlot(cellInfo, xy, spans[0], spans[1])) return;
+        if (!findSlot(cellInfo, xy, spans[0], spans[1])) {
+            if (appWidgetId != -1) mAppWidgetHost.deleteAppWidgetId(appWidgetId);
+            return;
+        }
 
         // Build Launcher-specific widget info and save to database
         LauncherAppWidgetInfo launcherInfo = new LauncherAppWidgetInfo(appWidgetId);
