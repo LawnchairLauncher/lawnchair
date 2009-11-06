@@ -26,6 +26,7 @@ import android.app.WallpaperInfo;
 import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -36,9 +37,11 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.os.RemoteException;
 import android.os.ServiceManager;
@@ -151,6 +154,8 @@ public final class Launcher extends Activity
     private static final Object sLock = new Object();
     private static int sScreen = DEFAULT_SCREEN;
 
+    private final ContentObserver mWidgetObserver = new AppWidgetResetObserver();
+
     private LayoutInflater mInflater;
 
     private DragController mDragController;
@@ -200,7 +205,6 @@ public final class Launcher extends Activity
         mInflater = getLayoutInflater();
 
         mAppWidgetManager = AppWidgetManager.getInstance(this);
-
         mAppWidgetHost = new LauncherAppWidgetHost(this, APPWIDGET_HOST_ID);
         mAppWidgetHost.startListening();
 
@@ -213,6 +217,8 @@ public final class Launcher extends Activity
 
         setContentView(R.layout.launcher);
         setupViews();
+
+        registerContentObservers();
 
         lockAllApps();
 
@@ -903,6 +909,8 @@ public final class Launcher extends Activity
 
         unbindDesktopItems();
         AppInfoCache.unbindDrawables();
+
+        getContentResolver().unregisterContentObserver(mWidgetObserver);
     }
 
     @Override
@@ -1269,6 +1277,12 @@ public final class Launcher extends Activity
         startActivityForResult(chooser, REQUEST_PICK_WALLPAPER);
     }
 
+    private void registerContentObservers() {
+        ContentResolver resolver = getContentResolver();
+        resolver.registerContentObserver(LauncherProvider.CONTENT_APPWIDGET_RESET_URI,
+                true, mWidgetObserver);
+    }
+
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -1316,6 +1330,13 @@ public final class Launcher extends Activity
             }
         }
         folder.onClose();
+    }
+
+    /**
+     * Re-listen when widgets are reset.
+     */
+    private void onAppWidgetReset() {
+        mAppWidgetHost.startListening();
     }
 
     /**
@@ -1760,6 +1781,20 @@ public final class Launcher extends Activity
         }
 
         public void onShow(DialogInterface dialog) {
+        }
+    }
+
+    /**
+     * Receives notifications whenever the appwidgets are reset.
+     */
+    private class AppWidgetResetObserver extends ContentObserver {
+        public AppWidgetResetObserver() {
+            super(new Handler());
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            onAppWidgetReset();
         }
     }
 
