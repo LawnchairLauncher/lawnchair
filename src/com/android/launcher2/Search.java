@@ -47,6 +47,10 @@ public class Search extends LinearLayout
     // Speed at which the widget slides up/down, in pixels/ms.
     private static final float ANIMATION_VELOCITY = 1.0f;
 
+    /** The distance in dips between the optical top of the widget and the top if its bounds */
+    private static final float WIDGET_TOP_OFFSET = 9;
+
+    
     private final String TAG = "SearchWidget";
 
     private Launcher mLauncher;
@@ -70,6 +74,8 @@ public class Search extends LinearLayout
 
     // For voice searching
     private Intent mVoiceSearchIntent;
+    
+    private int mWidgetTopOffset;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -80,6 +86,9 @@ public class Search extends LinearLayout
     public Search(Context context, AttributeSet attrs) {
         super(context, attrs);
 
+        final float scale = context.getResources().getDisplayMetrics().density;
+        mWidgetTopOffset = Math.round(WIDGET_TOP_OFFSET * scale);
+        
         Interpolator interpolator = new AccelerateDecelerateInterpolator();
 
         mMorphAnimation = new ToParentOriginAnimation();
@@ -365,6 +374,6 @@ public class Search extends LinearLayout
      * actual widget rather than it's container. This method return the top of the actual widget.
      */
     private int getWidgetTop() {
-        return getTop() + getChildAt(0).getTop();
+        return getTop() + getChildAt(0).getTop() + mWidgetTopOffset;
     }
 }
