@@ -108,8 +108,8 @@ public final class Launcher extends Activity
     static final String EXTRA_CUSTOM_WIDGET = "custom_widget";
     static final String SEARCH_WIDGET = "search_widget";
 
-    static final int SCREEN_COUNT = 3;
-    static final int DEFAULT_SCREN = 1;
+    static final int SCREEN_COUNT = 5;
+    static final int DEFAULT_SCREEN = 2;
     static final int NUMBER_CELLS_X = 4;
     static final int NUMBER_CELLS_Y = 4;
 
@@ -148,7 +148,7 @@ public final class Launcher extends Activity
     static final int APPWIDGET_HOST_ID = 1024;
 
     private static final Object sLock = new Object();
-    private static int sScreen = DEFAULT_SCREN;
+    private static int sScreen = DEFAULT_SCREEN;
 
     private LayoutInflater mInflater;
 

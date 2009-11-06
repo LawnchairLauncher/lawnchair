@@ -543,6 +543,14 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         if (restore) {
             canvas.restoreToCount(restoreCount);
         }
+        
+        onDrawScrollBars(canvas);
+    }
+
+    @Override
+    protected int computeHorizontalScrollRange() {
+        final int count = getChildCount();
+        return count == 0 ? getWidth() : (getChildAt(count - 1)).getRight();
     }
 
     private float mScale = 1.0f;
@@ -577,8 +585,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             getChildAt(i).measure(widthMeasureSpec, heightMeasureSpec);
         }
 
+
         if (mFirstLayout) {
+            setHorizontalScrollBarEnabled(false);
             scrollTo(mCurrentScreen * width, 0);
+            setHorizontalScrollBarEnabled(true);
             updateWallpaperOffset(width * (getChildCount() - 1));
             mFirstLayout = false;
         }
@@ -725,7 +736,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                     if (xMoved) {
                         // Scroll if the user moved far enough along the X axis
                         mTouchState = TOUCH_STATE_SCROLLING;
-                        enableChildrenCache();
+                        enableChildrenCache(mCurrentScreen - 1, mCurrentScreen + 1);
                     }
                     // Either way, cancel any pending longpress
                     if (mAllowLongPress) {
@@ -781,9 +792,20 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         return mTouchState != TOUCH_STATE_REST;
     }
 
-    void enableChildrenCache() {
+    void enableChildrenCache(int fromScreen, int toScreen) {
+        if (fromScreen > toScreen) {
+            int temp = fromScreen;
+            fromScreen = toScreen;
+            toScreen = fromScreen;
+        }
+        
         final int count = getChildCount();
-        for (int i = 0; i < count; i++) {
+        
+        fromScreen = Math.max(fromScreen, 0);
+        toScreen = Math.min(toScreen, count - 1);
+        
+        for (int i = fromScreen; i <= toScreen; i++) {
+            // Log.d("TAG", "enablingChildrenCache: " + i);
             final CellLayout layout = (CellLayout) getChildAt(i);
             layout.setChildrenDrawnWithCacheEnabled(true);
             layout.setChildrenDrawingCacheEnabled(true);
@@ -852,6 +874,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                         scrollBy(Math.min(availableToScroll, deltaX), 0);
                         updateWallpaperOffset();
                     }
+                } else {
+                    awakenScrollBars();
                 }
             }
             break;
@@ -895,22 +919,26 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     void snapToScreen(int whichScreen) {
         if (!mScroller.isFinished()) return;
 
-        clearVacantCache();
-        enableChildrenCache();
-
         whichScreen = Math.max(0, Math.min(whichScreen, getChildCount() - 1));
-        boolean changingScreens = whichScreen != mCurrentScreen;
+        
+        clearVacantCache();
+        enableChildrenCache(mCurrentScreen, whichScreen);
+
+
+        final int screenDelta = Math.abs(whichScreen - mCurrentScreen);
         
         mNextScreen = whichScreen;
         
         View focusedChild = getFocusedChild();
-        if (focusedChild != null && changingScreens && focusedChild == getChildAt(mCurrentScreen)) {
+        if (focusedChild != null && screenDelta != 0 && focusedChild == getChildAt(mCurrentScreen)) {
             focusedChild.clearFocus();
         }
         
         final int newX = whichScreen * getWidth();
         final int delta = newX - mScrollX;
-        mScroller.startScroll(mScrollX, 0, delta, 0, Math.abs(delta) * 2);
+        final int duration = screenDelta * 300;
+        awakenScrollBars(duration);
+        mScroller.startScroll(mScrollX, 0, delta, 0, duration);
         invalidate();
     }
 
