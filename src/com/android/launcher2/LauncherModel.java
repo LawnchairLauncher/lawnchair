@@ -66,6 +66,7 @@ public class LauncherModel extends BroadcastReceiver {
         public int getCurrentWorkspaceScreen();
         public void startBinding();
         public void bindItems(ArrayList<ItemInfo> shortcuts, int start, int end);
+        public void bindFolders(HashMap<Long,FolderInfo> folders);
         public void finishBindingItems();
         public void bindAppWidget(LauncherAppWidgetInfo info);
         public void bindAllApplications(ArrayList<ApplicationInfo> apps);
@@ -378,7 +379,7 @@ public class LauncherModel extends BroadcastReceiver {
 
         final ArrayList<ItemInfo> mItems = new ArrayList<ItemInfo>();
         final ArrayList<LauncherAppWidgetInfo> mAppWidgets = new ArrayList<LauncherAppWidgetInfo>();
-        final HashMap<Long, FolderInfo> folders = new HashMap<Long, FolderInfo>();
+        final HashMap<Long, FolderInfo> mFolders = new HashMap<Long, FolderInfo>();
                 
         /**
          * Call this from the ui thread so the handler is initialized on the correct thread.
@@ -695,16 +696,16 @@ public class LauncherModel extends BroadcastReceiver {
                                     default:
                                         // Item is in a user folder
                                         UserFolderInfo folderInfo =
-                                                findOrMakeUserFolder(folders, container);
+                                                findOrMakeUserFolder(mFolders, container);
                                         folderInfo.add(info);
                                         break;
                                     }
                                 }
                                 break;
-                            case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
 
+                            case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
                                 id = c.getLong(idIndex);
-                                UserFolderInfo folderInfo = findOrMakeUserFolder(folders, id);
+                                UserFolderInfo folderInfo = findOrMakeUserFolder(mFolders, id);
 
                                 folderInfo.title = c.getString(titleIndex);
 
@@ -720,11 +721,14 @@ public class LauncherModel extends BroadcastReceiver {
                                         mItems.add(folderInfo);
                                         break;
                                 }
+
+                                mFolders.put(folderInfo.id, folderInfo);
                                 break;
+
                             case LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER:
 
                                 id = c.getLong(idIndex);
-                                LiveFolderInfo liveFolderInfo = findOrMakeLiveFolder(folders, id);
+                                LiveFolderInfo liveFolderInfo = findOrMakeLiveFolder(mFolders, id);
 
                                 intentDescription = c.getString(intentIndex);
                                 intent = null;
@@ -755,7 +759,9 @@ public class LauncherModel extends BroadcastReceiver {
                                         mItems.add(liveFolderInfo);
                                         break;
                                 }
+                                mFolders.put(liveFolderInfo.id, liveFolderInfo);
                                 break;
+
                             case LauncherSettings.Favorites.ITEM_TYPE_WIDGET_SEARCH:
                                 widgetInfo = Widget.makeSearch();
 
@@ -774,6 +780,7 @@ public class LauncherModel extends BroadcastReceiver {
 
                                 mItems.add(widgetInfo);
                                 break;
+
                             case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
                                 // Read all Launcher-specific widget details
                                 int appWidgetId = c.getInt(appWidgetIdIndex);
@@ -845,6 +852,14 @@ public class LauncherModel extends BroadcastReceiver {
                         }
                     });
                 }
+                mHandler.post(new Runnable() {
+                    public void run() {
+                        Callbacks callbacks = tryGetCallbacks();
+                        if (callbacks != null) {
+                            callbacks.bindFolders(mFolders);
+                        }
+                    }
+                });
                 // Wait until the queue goes empty.
                 mHandler.postIdle(new Runnable() {
                     public void run() {
@@ -886,7 +901,6 @@ public class LauncherModel extends BroadcastReceiver {
                         });
                     }
                 }
-                // TODO: Bind the folders
                 // Tell the workspace that we're done.
                 mHandler.post(new Runnable() {
                     public void run() {

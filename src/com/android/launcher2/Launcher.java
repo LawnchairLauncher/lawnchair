@@ -66,6 +66,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 
 import java.util.ArrayList;
+import java.util.Map.Entry;
 import java.util.HashMap;
 import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
@@ -1841,7 +1842,8 @@ public final class Launcher extends Activity
     /**
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    void bindFolders(HashMap<Long, FolderInfo> folders) {
+    public void bindFolders(HashMap<Long, FolderInfo> folders) {
+        mFolders.clear();
         mFolders.putAll(folders);
     }
 
