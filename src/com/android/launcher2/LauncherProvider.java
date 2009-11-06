@@ -58,7 +58,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "launcher.db";
     
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     static final String AUTHORITY = "com.android.launcher2.settings";
     
@@ -385,6 +385,21 @@ public class LauncherProvider extends ContentProvider {
                         ");");
                     db.setTransactionSuccessful();
                     version = 4;
+                } catch (SQLException ex) {
+                    // Old version remains, which means we wipe old data
+                    Log.e(LOG_TAG, ex.getMessage(), ex);
+                } finally {
+                    db.endTransaction();
+                }
+            }
+            
+            if (version < 5) {
+                // We went from 3 to 5 screens. Move everything 1 to the right
+                db.beginTransaction();
+                try {
+                    db.execSQL("UPDATE favorites SET screen=(screen + 1);");
+                    db.setTransactionSuccessful();
+                    version = 5;
                 } catch (SQLException ex) {
                     // Old version remains, which means we wipe old data
                     Log.e(LOG_TAG, ex.getMessage(), ex);
