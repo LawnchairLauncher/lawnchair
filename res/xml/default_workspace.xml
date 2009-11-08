@@ -16,31 +16,28 @@
 
 <favorites xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher2">
 
-com.android.camera
-
     <!--  Left screen [1] -->
-    
     <favorite
         launcher:packageName="com.android.camera"
         launcher:className="com.android.camera.Camera"
         launcher:screen="1"
         launcher:x="1"
         launcher:y="3" />
- 
+
      <favorite
         launcher:packageName="com.android.camera"
         launcher:className="com.android.camera.Camera"
         launcher:screen="1"
         launcher:x="2"
         launcher:y="3" />
-               
+        
     <!--  Middle screen [2] -->
     <search
         launcher:screen="2"
         launcher:x="0"
         launcher:y="0" />
 
-    <favorite
+   <favorite
         launcher:packageName="com.android.contacts"
         launcher:className="com.android.contacts.DialtactsActivity"
         launcher:screen="2"
@@ -83,23 +80,23 @@ com.android.camera
         launcher:y="2" />
 
     <!--  Right screen [3] -->
-    
-	<appwidget
-		launcher:packageName="com.android.settings"
-		launcher:className="com.android.settings.widget.SettingsAppWidgetProvider"
-		launcher:screen="3"
-		launcher:x="0"
-		launcher:y="0"
-		launcher:spanX="4"
-		launcher:spanY="1" />
-		
+
+    <appwidget
+        launcher:packageName="com.android.settings"
+        launcher:className="com.android.settings.widget.SettingsAppWidgetProvider"
+        launcher:screen="3"
+        launcher:x="0"
+        launcher:y="0"
+        launcher:spanX="4"
+        launcher:spanY="1" />
+ 
     <favorite
         launcher:packageName="com.google.android.gm"
         launcher:className="com.google.android.gm.ConversationListActivityGmail"
         launcher:screen="3"
         launcher:x="1"
         launcher:y="3" />
-        		
+
     <favorite
         launcher:packageName="com.google.android.talk"
         launcher:className="com.google.android.talk.SigningInActivity"
