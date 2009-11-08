@@ -63,6 +63,14 @@ public class AllAppsView extends RSSurfaceView
     private static final int TRACKING_FLING = 1;
     private static final int TRACKING_HOME = 2;
 
+    private static final int SELECTED_NONE = 0;
+    private static final int SELECTED_FOCUSED = 1;
+    private static final int SELECTED_PRESSED = 2;
+
+    private static final int SELECTION_NONE = 0;
+    private static final int SELECTION_ICONS = 1;
+    private static final int SELECTION_HOME = 2;
+
     private Launcher mLauncher;
     private DragController mDragController;
 
@@ -82,13 +90,19 @@ public class AllAppsView extends RSSurfaceView
      * True when we are using arrow keys or trackball to drive navigation
      */
     private boolean mArrowNavigation = false;
+    private boolean mStartedScrolling;
+
+    /**
+     * Used to keep track of the selection when AllAppsView loses window focus.
+     * One of the SELECTION_ constants.
+     */
+    private int mLastSelection;
 
     /**
      * Used to keep track of the selection when AllAppsView loses window focus
      */
     private int mLastSelectedIcon;
-    
-    private boolean mStartedScrolling;
+
     private VelocityTracker mVelocity;
     private int mTouchTracking;
     private int mMotionDownRawX;
@@ -197,24 +211,30 @@ public class AllAppsView extends RSSurfaceView
             if (!hasWindowFocus) {
                 // Clear selection when we lose window focus
                 mLastSelectedIcon = mRollo.mState.selectedIconIndex;
+                mRollo.setHomeSelected(SELECTED_NONE);
                 mRollo.clearSelectedIcon();
                 mRollo.mState.save();
             } else if (hasWindowFocus) {
                 if (mRollo.mState.iconCount > 0) {
-                    int selection = mLastSelectedIcon;
-                    final int firstIcon = Math.round(mRollo.mMessageProc.mPosX) * 
-                        Defines.COLUMNS_PER_PAGE;
-                    if (selection < 0 || // No selection    
-                            selection < firstIcon || // off the top of the screen
-                            selection >= mRollo.mState.iconCount || // past last icon
-                            selection >= firstIcon + // past last icon on screen
-                                (Defines.COLUMNS_PER_PAGE * Defines.ROWS_PER_PAGE)) {
-                        selection = firstIcon;
+                    if (mLastSelection == SELECTION_ICONS) {
+                        int selection = mLastSelectedIcon;
+                        final int firstIcon = Math.round(mRollo.mMessageProc.mPosX) *
+                            Defines.COLUMNS_PER_PAGE;
+                        if (selection < 0 || // No selection
+                                selection < firstIcon || // off the top of the screen
+                                selection >= mRollo.mState.iconCount || // past last icon
+                                selection >= firstIcon + // past last icon on screen
+                                    (Defines.COLUMNS_PER_PAGE * Defines.ROWS_PER_PAGE)) {
+                            selection = firstIcon;
+                        }
+
+                        // Select the first icon when we gain window focus
+                        mRollo.selectIcon(selection, SELECTED_FOCUSED);
+                        mRollo.mState.save();
+                    } else if (mLastSelection == SELECTION_HOME) {
+                        mRollo.setHomeSelected(SELECTED_FOCUSED);
+                        mRollo.mState.save();
                     }
-                            
-                    // Select the first icon when we gain window focus
-                    mRollo.selectIcon(selection, false);
-                    mRollo.mState.save();
                 }
             }
         }
@@ -233,13 +253,14 @@ public class AllAppsView extends RSSurfaceView
                 // Select the first icon when we gain keyboard focus
                 mArrowNavigation = true;
                 mRollo.selectIcon(Math.round(mRollo.mMessageProc.mPosX) * Defines.COLUMNS_PER_PAGE,
-                        false);
+                        SELECTED_FOCUSED);
                 mRollo.mState.save();
             }
         } else {
             if (mArrowNavigation) {
                 // Clear selection when we lose focus
                 mRollo.clearSelectedIcon();
+                mRollo.setHomeSelected(SELECTED_NONE);
                 mRollo.mState.save();
                 mArrowNavigation = false;
             }
@@ -258,11 +279,16 @@ public class AllAppsView extends RSSurfaceView
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
             if (mArrowNavigation) {
-                int whichApp = mRollo.mState.selectedIconIndex;
-                if (whichApp >= 0) {
-                    ApplicationInfo app = mAllAppsList.get(whichApp);
-                    mLauncher.startActivitySafely(app.intent);
-                    handled = true;
+                if (mLastSelection == SELECTION_HOME) {
+                    reallyPlaySoundEffect(SoundEffectConstants.CLICK);
+                    mLauncher.closeAllApps(true);
+                } else {
+                    int whichApp = mRollo.mState.selectedIconIndex;
+                    if (whichApp >= 0) {
+                        ApplicationInfo app = mAllAppsList.get(whichApp);
+                        mLauncher.startActivitySafely(app.intent);
+                        handled = true;
+                    }
                 }
             }
         }
@@ -284,11 +310,31 @@ public class AllAppsView extends RSSurfaceView
 
             switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_UP:
-                if (currentPageRow > 0) {
-                    newSelection = currentSelection - Defines.COLUMNS_PER_PAGE;
-                } else if (currentTopRow > 0) {
-                    newSelection = currentSelection - Defines.COLUMNS_PER_PAGE;
-                    mRollo.moveTo(newSelection / Defines.COLUMNS_PER_PAGE);
+                if (mLastSelection == SELECTION_HOME) {
+                    mRollo.setHomeSelected(SELECTED_NONE);
+                    int lastRowCount = iconCount % Defines.COLUMNS_PER_PAGE;
+                    if (lastRowCount == 0) {
+                        lastRowCount = Defines.COLUMNS_PER_PAGE;
+                    }
+                    newSelection = iconCount - lastRowCount + (Defines.COLUMNS_PER_PAGE / 2);
+                    if (newSelection >= iconCount) {
+                        newSelection = iconCount-1;
+                    }
+                    int target = (newSelection / Defines.COLUMNS_PER_PAGE)
+                            - (Defines.ROWS_PER_PAGE - 1);
+                    if (target < 0) {
+                        target = 0;
+                    }
+                    if (currentTopRow != target) {
+                        mRollo.moveTo(target);
+                    }
+                } else {
+                    if (currentPageRow > 0) {
+                        newSelection = currentSelection - Defines.COLUMNS_PER_PAGE;
+                    } else if (currentTopRow > 0) {
+                        newSelection = currentSelection - Defines.COLUMNS_PER_PAGE;
+                        mRollo.moveTo(newSelection / Defines.COLUMNS_PER_PAGE);
+                    }
                 }
                 handled = true;
                 break;
@@ -297,17 +343,23 @@ public class AllAppsView extends RSSurfaceView
                 final int rowCount = iconCount / Defines.COLUMNS_PER_PAGE
                         + (iconCount % Defines.COLUMNS_PER_PAGE == 0 ? 0 : 1);
                 final int currentRow = currentSelection / Defines.COLUMNS_PER_PAGE;
-                if (currentRow < rowCount-1) {
-                    newSelection = currentSelection + Defines.COLUMNS_PER_PAGE;
-                    if (newSelection >= iconCount) {
-                        // Go from D to G in this arrangement:
-                        //     A B C D
-                        //     E F G
-                        newSelection = iconCount - 1;
-                    }
-                    if (currentPageRow >= Defines.ROWS_PER_PAGE - 1) {
-                        mRollo.moveTo((newSelection / Defines.COLUMNS_PER_PAGE) -
-                                Defines.ROWS_PER_PAGE + 1);
+                if (mLastSelection != SELECTION_HOME) {
+                    if (currentRow < rowCount-1) {
+                        mRollo.setHomeSelected(SELECTED_NONE);
+                        newSelection = currentSelection + Defines.COLUMNS_PER_PAGE;
+                        if (newSelection >= iconCount) {
+                            // Go from D to G in this arrangement:
+                            //     A B C D
+                            //     E F G
+                            newSelection = iconCount - 1;
+                        }
+                        if (currentPageRow >= Defines.ROWS_PER_PAGE - 1) {
+                            mRollo.moveTo((newSelection / Defines.COLUMNS_PER_PAGE) -
+                                    Defines.ROWS_PER_PAGE + 1);
+                        }
+                    } else {
+                        newSelection = -1;
+                        mRollo.setHomeSelected(SELECTED_FOCUSED);
                     }
                 }
                 handled = true;
@@ -328,7 +380,7 @@ public class AllAppsView extends RSSurfaceView
                 break;
             }
             if (newSelection != currentSelection) {
-                mRollo.selectIcon(newSelection, false);
+                mRollo.selectIcon(newSelection, SELECTED_FOCUSED);
                 mRollo.mState.save();
             }
         }
@@ -358,7 +410,7 @@ public class AllAppsView extends RSSurfaceView
         case MotionEvent.ACTION_DOWN:
             if (y > mRollo.mTouchYBorders[mRollo.mTouchYBorders.length-1]) {
                 mTouchTracking = TRACKING_HOME;
-                mRollo.setHomeSelected(true);
+                mRollo.setHomeSelected(SELECTED_PRESSED);
                 mRollo.mState.save();
                 mCurrentIconIndex = -1;
             } else {
@@ -374,7 +426,7 @@ public class AllAppsView extends RSSurfaceView
                     mRollo.clearSelectedIcon();
                 } else {
                     mDownIconIndex = mCurrentIconIndex
-                            = mRollo.selectIcon(x, y, mRollo.mMessageProc.mPosX, true);
+                            = mRollo.selectIcon(x, y, mRollo.mMessageProc.mPosX, SELECTED_PRESSED);
                     if (mDownIconIndex < 0) {
                         // if nothing was selected, no long press.
                         cancelLongPress();
@@ -390,7 +442,8 @@ public class AllAppsView extends RSSurfaceView
         case MotionEvent.ACTION_MOVE:
         case MotionEvent.ACTION_OUTSIDE:
             if (mTouchTracking == TRACKING_HOME) {
-                mRollo.setHomeSelected(y > mRollo.mTouchYBorders[mRollo.mTouchYBorders.length-1]);
+                mRollo.setHomeSelected(y > mRollo.mTouchYBorders[mRollo.mTouchYBorders.length-1]
+                        ? SELECTED_PRESSED : SELECTED_NONE);
                 mRollo.mState.save();
             } else if (mTouchTracking == TRACKING_FLING) {
                 int rawX = (int)ev.getRawX();
@@ -432,7 +485,7 @@ public class AllAppsView extends RSSurfaceView
                         reallyPlaySoundEffect(SoundEffectConstants.CLICK);
                         mLauncher.closeAllApps(true);
                     }
-                    mRollo.setHomeSelected(false);
+                    mRollo.setHomeSelected(SELECTED_NONE);
                     mRollo.mState.save();
                 }
                 mCurrentIconIndex = -1;
@@ -512,7 +565,7 @@ public class AllAppsView extends RSSurfaceView
 
         cancelLongPress();
         mRollo.clearSelectedIcon();
-        mRollo.setHomeSelected(false);
+        mRollo.setHomeSelected(SELECTED_NONE);
         if (amount > 0.001f) {
             // set in readback, so we're correct even before the next frame
             mRollo.mState.zoomTarget = amount;
@@ -671,6 +724,7 @@ public class AllAppsView extends RSSurfaceView
         private SimpleMesh mMesh2;
 
         private Allocation mHomeButtonNormal;
+        private Allocation mHomeButtonFocused;
         private Allocation mHomeButtonPressed;
 
         private Allocation[] mIcons;
@@ -894,6 +948,9 @@ public class AllAppsView extends RSSurfaceView
             mHomeButtonNormal = Allocation.createFromBitmapResource(mRS, mRes,
                     R.drawable.home_button_normal, Element.RGBA_8888(mRS), false);
             mHomeButtonNormal.uploadToTexture(0);
+            mHomeButtonFocused = Allocation.createFromBitmapResource(mRS, mRes,
+                    R.drawable.home_button_focused, Element.RGBA_8888(mRS), false);
+            mHomeButtonFocused.uploadToTexture(0);
             mHomeButtonPressed = Allocation.createFromBitmapResource(mRS, mRes,
                     R.drawable.home_button_pressed, Element.RGBA_8888(mRS), false);
             mHomeButtonPressed.uploadToTexture(0);
@@ -1172,9 +1229,9 @@ public class AllAppsView extends RSSurfaceView
          *
          * @return the index of the icon that was selected.
          */
-        int selectIcon(int x, int y, float pos, boolean selected) {
+        int selectIcon(int x, int y, float pos, int pressed) {
             final int index = chooseTappedIcon(x, y, pos);
-            selectIcon(index, selected);
+            selectIcon(index, pressed);
             return index;
         }
 
@@ -1182,18 +1239,26 @@ public class AllAppsView extends RSSurfaceView
          * Select the icon at the given index.
          *
          * @param index The index.
-         * @param selected True if selected, false if just focused (they get different colors).
+         * @param pressed one of SELECTED_PRESSED or SELECTED_FOCUSED
          */
-        void selectIcon(int index, boolean selected) {
+        void selectIcon(int index, int pressed) {
             if (mAllAppsList == null || index < 0 || index >= mAllAppsList.size()) {
                 mState.selectedIconIndex = -1;
+                if (mLastSelection == SELECTION_ICONS) {
+                    mLastSelection = SELECTION_NONE;
+                }
             } else {
+                if (pressed == SELECTED_FOCUSED) {
+                    mLastSelection = SELECTION_ICONS;
+                }
+
                 mState.selectedIconIndex = index;
 
                 Bitmap selectionBitmap = mSelectionBitmap;
 
                 Utilities.drawSelectedAllAppsBitmap(mSelectionCanvas,
-                        selectionBitmap.getWidth(), selectionBitmap.getHeight(), selected,
+                        selectionBitmap.getWidth(), selectionBitmap.getHeight(),
+                        pressed == SELECTED_PRESSED,
                         mAllAppsList.get(index).iconBitmap);
 
                 mSelectedIcon = Allocation.createFromBitmap(mRS, selectionBitmap,
@@ -1210,11 +1275,18 @@ public class AllAppsView extends RSSurfaceView
             mState.selectedIconIndex = -1;
         }
 
-        void setHomeSelected(boolean pressed) {
-            if (pressed) {
-                mState.homeButtonId = mHomeButtonPressed.getID();
-            } else {
+        void setHomeSelected(int mode) {
+            switch (mode) {
+            case SELECTED_NONE:
                 mState.homeButtonId = mHomeButtonNormal.getID();
+                break;
+            case SELECTED_FOCUSED:
+                mLastSelection = SELECTION_HOME;
+                mState.homeButtonId = mHomeButtonFocused.getID();
+                break;
+            case SELECTED_PRESSED:
+                mState.homeButtonId = mHomeButtonPressed.getID();
+                break;
             }
         }
     }
