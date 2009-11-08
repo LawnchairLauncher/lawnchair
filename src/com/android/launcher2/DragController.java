@@ -305,6 +305,10 @@ public class DragController {
         }
         final int action = ev.getAction();
 
+        if (action == MotionEvent.ACTION_DOWN) {
+            recordScreenSize();
+        }
+
         final int screenX = clamp((int)ev.getRawX(), 0, mDisplayMetrics.widthPixels);
         final int screenY = clamp((int)ev.getRawY(), 0, mDisplayMetrics.heightPixels);
 
@@ -316,7 +320,6 @@ public class DragController {
                 // Remember location of down touch
                 mMotionDownX = screenX;
                 mMotionDownY = screenY;
-                recordScreenSize();
                 mLastDropTarget = null;
                 break;
 
@@ -351,7 +354,6 @@ public class DragController {
             // Remember where the motion event started
             mMotionDownX = screenX;
             mMotionDownY = screenY;
-            recordScreenSize();
 
             if ((screenX < SCROLL_ZONE) || (screenX > scrollView.getWidth() - SCROLL_ZONE)) {
                 mScrollState = SCROLL_WAITING_IN_ZONE;
