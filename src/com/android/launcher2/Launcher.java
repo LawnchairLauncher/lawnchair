@@ -65,11 +65,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ImageView;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 
 import java.util.ArrayList;
-import java.util.Map.Entry;
 import java.util.HashMap;
 import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
@@ -550,10 +550,10 @@ public final class Launcher extends Activity
         mHandleView = (HandleView) findViewById(R.id.all_apps_button);
         mHandleView.setLauncher(this);
         mHandleView.setOnClickListener(this);
-        /* TODO
-        TransitionDrawable handleIcon = (TransitionDrawable) mHandleView.getDrawable();
-        handleIocon.setCrossFadeEnabled(true);
-        */
+        
+        Drawable previous = ((ImageView) dragLayer.findViewById(R.id.previous_screen)).getDrawable();
+        Drawable next = ((ImageView) dragLayer.findViewById(R.id.next_screen)).getDrawable();
+        mWorkspace.setIndicators(previous, next);
 
         workspace.setOnLongClickListener(this);
         workspace.setDragController(dragController);
@@ -572,6 +572,16 @@ public final class Launcher extends Activity
         dragController.addDropTarget(deleteZone);
     }
 
+    @SuppressWarnings({"UnusedDeclaration"})
+    public void previousScreen(View v) {
+        mWorkspace.scrollLeft();
+    }
+
+    @SuppressWarnings({"UnusedDeclaration"})
+    public void nextScreen(View v) {
+        mWorkspace.scrollRight();
+    }
+    
     /**
      * Creates a view representing a shortcut.
      *
