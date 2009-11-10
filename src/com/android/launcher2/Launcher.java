@@ -1559,6 +1559,10 @@ public final class Launcher extends Activity
             final AlertDialog dialog = builder.create();
             dialog.setOnShowListener(new DialogInterface.OnShowListener() {
                 public void onShow(DialogInterface dialog) {
+                    mInput.requestFocus();
+                    InputMethodManager inputManager = (InputMethodManager)
+                            getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputManager.showSoftInput(mInput, 0);
                 }
             });
 
