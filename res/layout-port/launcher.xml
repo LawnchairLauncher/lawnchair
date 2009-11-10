@@ -40,8 +40,6 @@
         android:id="@+id/workspace"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:scrollbars="horizontal"
-        android:fadeScrollbars="true"
         launcher:defaultScreen="2">
 
         <include android:id="@+id/cell1" layout="@layout/workspace_screen" />
@@ -52,9 +50,37 @@
                 
     </com.android.launcher2.Workspace>
 
+    <ImageView
+        android:id="@+id/previous_screen"
+        android:layout_width="53dip"
+        android:layout_height="@dimen/button_bar_height"
+        android:layout_gravity="bottom|left"
+        android:layout_marginLeft="6dip"
+
+        android:src="@drawable/home_arrows_left"
+        
+        android:onClick="previousScreen"
+
+        android:focusable="true"
+        android:clickable="true" />
+
+    <ImageView
+        android:id="@+id/next_screen"
+        android:layout_width="53dip"
+        android:layout_height="@dimen/button_bar_height"
+        android:layout_gravity="bottom|right"
+        android:layout_marginRight="6dip"
+
+        android:src="@drawable/home_arrows_right"
+        
+        android:onClick="nextScreen"
+        
+        android:focusable="true"
+        android:clickable="true" />
+
     <com.android.launcher2.HandleView
         android:id="@+id/all_apps_button"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/button_bar_height"
         android:layout_gravity="bottom|center_horizontal"
 
@@ -68,8 +94,8 @@
 
     <com.android.launcher2.DeleteZone
         android:id="@+id/delete_zone"
-        android:layout_width="fill_parent"
-        android:layout_height="49dip"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/button_bar_height"
         android:layout_gravity="bottom|center_horizontal"
 
         android:scaleType="center"
