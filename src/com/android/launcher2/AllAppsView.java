@@ -112,6 +112,9 @@ public class AllAppsView extends RSSurfaceView
 
     private boolean mShouldGainFocus;
 
+    private boolean mZoomDirty = false;
+    private float mNextZoom;
+    private boolean mNextAnimate;
 
     static class Defines {
         public static final int ALLOC_PARAMS = 0;
@@ -185,7 +188,6 @@ public class AllAppsView extends RSSurfaceView
         super.surfaceChanged(holder, format, w, h);
 
         if (mRS == null) {
-
             mRS = createRenderScript(true);
             mRollo = new RolloRS();
             mRollo.mHasSurface = true;
@@ -198,6 +200,7 @@ public class AllAppsView extends RSSurfaceView
                 gainFocus();
                 mShouldGainFocus = false;
             }
+            mRollo.dirtyCheck();
         } else {
             mRollo.mHasSurface = true;
             mRollo.dirtyCheck();
@@ -572,32 +575,44 @@ public class AllAppsView extends RSSurfaceView
     }
 
     /**
-     * Zoom to the specifed amount.
+     * Zoom to the specifed level.
      *
-     * @param amount [0..1] 0 is hidden, 1 is open
+     * @param zoom [0..1] 0 is hidden, 1 is open
      */
-    public void zoom(float amount) {
-        if (mRollo == null) {
-            return;
-        }
-
+    public void zoom(float zoom, boolean animate) {
         cancelLongPress();
-        mRollo.clearSelectedIcon();
-        mRollo.setHomeSelected(SELECTED_NONE);
-        if (amount > 0.001f) {
-            // set in readback, so we're correct even before the next frame
-            mRollo.mState.zoomTarget = amount;
+        if (mRollo == null || !mRollo.mHasSurface) {
+            mZoomDirty = true;
+            mNextZoom = zoom;
+            mNextAnimate = animate;
+            return;
         } else {
-            mRollo.mState.zoomTarget = 0;
+            mRollo.setZoom(zoom, animate);
         }
-        mRollo.mState.save();
     }
 
     public boolean isVisible() {
-        if (mRollo == null) {
-            return false;
+        if (mZoomDirty) {
+            return mNextZoom > 0.001f;
+        } else {
+            if (mRollo == null) {
+                return false;
+            } else {
+                return mRollo.mMessageProc.mZoom > 0.001f;
+            }
         }
-        return mRollo.mMessageProc.mZoom > 0.001f;
+    }
+
+    public boolean isOpaque() {
+        if (mZoomDirty) {
+            return mNextZoom > 0.999f;
+        } else {
+            if (mRollo == null) {
+                return false;
+            } else {
+                return mRollo.mMessageProc.mZoom > 0.999f;
+            }
+        }
     }
 
     /*
@@ -729,7 +744,7 @@ public class AllAppsView extends RSSurfaceView
         private Script.Invokable mInvokeMoveTo;
         private Script.Invokable mInvokeFling;
         private Script.Invokable mInvokeResetWAR;
-
+        private Script.Invokable mInvokeSetZoom;
 
         private ProgramStore mPSIcons;
         private ProgramStore mPSText;
@@ -1003,6 +1018,7 @@ public class AllAppsView extends RSSurfaceView
             mInvokeFling = sb.addInvokable("fling");
             mInvokeMoveTo = sb.addInvokable("moveTo");
             mInvokeResetWAR = sb.addInvokable("resetHWWar");
+            mInvokeSetZoom = sb.addInvokable("setZoom");
             mScript = sb.create();
             mScript.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
             mScript.bindAllocation(mParams.mAlloc, Defines.ALLOC_PARAMS);
@@ -1022,10 +1038,16 @@ public class AllAppsView extends RSSurfaceView
         }
 
         void dirtyCheck() {
-            if (mAppsDirty && mHasSurface) {
-                uploadApps(mAllAppsList);
-                saveAppsList();
-                mAppsDirty = false;
+            if (mHasSurface) {
+                if (mAppsDirty) {
+                    uploadApps(mAllAppsList);
+                    saveAppsList();
+                    mAppsDirty = false;
+                }
+                if (mZoomDirty) {
+                    setZoom(mNextZoom, mNextAnimate);
+                    mZoomDirty = false;
+                }
             }
         }
 
@@ -1051,6 +1073,20 @@ public class AllAppsView extends RSSurfaceView
             mState.iconCount = count;
             uploadApps(list);
             saveAppsList();
+        }
+
+        private void setZoom(float zoom, boolean animate) {
+            mRollo.clearSelectedIcon();
+            mRollo.setHomeSelected(SELECTED_NONE);
+            if (zoom > 0.001f) {
+                mRollo.mState.zoomTarget = zoom;
+            } else {
+                mRollo.mState.zoomTarget = 0;
+            }
+            mRollo.mState.save();
+            if (!animate) {
+                mRollo.mInvokeSetZoom.execute();
+            }
         }
 
         private void frameBitmapAllocMips(Allocation alloc, int w, int h) {
