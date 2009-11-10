@@ -54,7 +54,8 @@ final class Utilities {
 
     private static final Paint sPaint = new Paint();
     private static final Paint sBlurPaint = new Paint();
-    private static final Paint sGlowColorPaint = new Paint();
+    private static final Paint sGlowColorSelectedPaint = new Paint();
+    private static final Paint sGlowColorFocusedPaint = new Paint();
     private static final Paint sEmptyPaint = new Paint();
     private static final Rect sBounds = new Rect();
     private static final Rect sOldBounds = new Rect();
@@ -245,7 +246,8 @@ final class Utilities {
         }
     }
 
-    static void drawSelectedAllAppsBitmap(Canvas dest, int destWidth, int destHeight, Bitmap src) {
+    static void drawSelectedAllAppsBitmap(Canvas dest, int destWidth, int destHeight,
+            boolean selected, Bitmap src) {
         synchronized (sCanvas) { // we share the statics :-(
             if (sIconWidth == -1) {
                 // We can't have gotten to here without src being initialized, which
@@ -261,7 +263,8 @@ final class Utilities {
 
             float px = (destWidth - src.getWidth()) / 2;
             float py = (destHeight - src.getHeight()) / 2;
-            dest.drawBitmap(mask, px + xy[0], py + xy[1], sGlowColorPaint);
+            dest.drawBitmap(mask, px + xy[0], py + xy[1],
+                    selected ? sGlowColorSelectedPaint : sGlowColorFocusedPaint);
 
             mask.recycle();
         }
@@ -339,8 +342,10 @@ final class Utilities {
         sIconTextureWidth = sIconTextureHeight = roundToPow2(sIconWidth);
 
         sBlurPaint.setMaskFilter(new BlurMaskFilter(5 * density, BlurMaskFilter.Blur.NORMAL));
-        sGlowColorPaint.setColor(0xffff9000);
-        sGlowColorPaint.setMaskFilter(TableMaskFilter.CreateClipTable(0, 30));
+        sGlowColorSelectedPaint.setColor(0xffffc300);
+        sGlowColorSelectedPaint.setMaskFilter(TableMaskFilter.CreateClipTable(0, 30));
+        sGlowColorFocusedPaint.setColor(0xffff8e00);
+        sGlowColorFocusedPaint.setMaskFilter(TableMaskFilter.CreateClipTable(0, 30));
     }
 
     static class BubbleText {

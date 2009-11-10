@@ -213,7 +213,7 @@ public class AllAppsView extends RSSurfaceView
                     }
                             
                     // Select the first icon when we gain window focus
-                    mRollo.selectIcon(selection);
+                    mRollo.selectIcon(selection, false);
                     mRollo.mState.save();
                 }
             }
@@ -232,7 +232,8 @@ public class AllAppsView extends RSSurfaceView
             if (!mArrowNavigation && mRollo.mState.iconCount > 0) {
                 // Select the first icon when we gain keyboard focus
                 mArrowNavigation = true;
-                mRollo.selectIcon(Math.round(mRollo.mMessageProc.mPosX) * Defines.COLUMNS_PER_PAGE);
+                mRollo.selectIcon(Math.round(mRollo.mMessageProc.mPosX) * Defines.COLUMNS_PER_PAGE,
+                        false);
                 mRollo.mState.save();
             }
         } else {
@@ -327,7 +328,7 @@ public class AllAppsView extends RSSurfaceView
                 break;
             }
             if (newSelection != currentSelection) {
-                mRollo.selectIcon(newSelection);
+                mRollo.selectIcon(newSelection, false);
                 mRollo.mState.save();
             }
         }
@@ -373,7 +374,7 @@ public class AllAppsView extends RSSurfaceView
                     mRollo.clearSelectedIcon();
                 } else {
                     mDownIconIndex = mCurrentIconIndex
-                            = mRollo.selectIcon(x, y, mRollo.mMessageProc.mPosX);
+                            = mRollo.selectIcon(x, y, mRollo.mMessageProc.mPosX, true);
                     if (mDownIconIndex < 0) {
                         // if nothing was selected, no long press.
                         cancelLongPress();
@@ -1171,13 +1172,19 @@ public class AllAppsView extends RSSurfaceView
          *
          * @return the index of the icon that was selected.
          */
-        int selectIcon(int x, int y, float pos) {
+        int selectIcon(int x, int y, float pos, boolean selected) {
             final int index = chooseTappedIcon(x, y, pos);
-            selectIcon(index);
+            selectIcon(index, selected);
             return index;
         }
 
-        void selectIcon(int index) {
+        /**
+         * Select the icon at the given index.
+         *
+         * @param index The index.
+         * @param selected True if selected, false if just focused (they get different colors).
+         */
+        void selectIcon(int index, boolean selected) {
             if (mAllAppsList == null || index < 0 || index >= mAllAppsList.size()) {
                 mState.selectedIconIndex = -1;
             } else {
@@ -1186,7 +1193,7 @@ public class AllAppsView extends RSSurfaceView
                 Bitmap selectionBitmap = mSelectionBitmap;
 
                 Utilities.drawSelectedAllAppsBitmap(mSelectionCanvas,
-                        selectionBitmap.getWidth(), selectionBitmap.getHeight(),
+                        selectionBitmap.getWidth(), selectionBitmap.getHeight(), selected,
                         mAllAppsList.get(index).iconBitmap);
 
                 mSelectedIcon = Allocation.createFromBitmap(mRS, selectionBitmap,
