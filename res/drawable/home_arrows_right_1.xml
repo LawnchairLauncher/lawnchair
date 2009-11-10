@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2008 The Android Open Source Project
+<!-- Copyright (C) 2009 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,9 +15,8 @@
 -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_pressed="true" android:drawable="@drawable/all_apps_button_pressed" />
-    <item android:state_focused="true" android:state_window_focused="true" android:drawable="@drawable/all_apps_button_focused" />
-    <item android:state_focused="true" android:state_window_focused="false" android:drawable="@drawable/all_apps_button_normal" />
-    <item android:drawable="@drawable/all_apps_button_normal" />
+    <item android:state_pressed="true" android:drawable="@drawable/ic_home_arrows_1_press_right" />
+    <item android:state_focused="true" android:state_window_focused="true" android:drawable="@drawable/ic_home_arrows_1_focus_right" />
+    <item android:state_focused="true" android:state_window_focused="false" android:drawable="@drawable/ic_home_arrows_1_normal_right" />
+    <item android:drawable="@drawable/ic_home_arrows_1_normal_right" />
 </selector>
-

@@ -17,31 +17,15 @@
 package com.android.launcher2;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.Paint;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.PorterDuff;
-import android.os.Vibrator;
-import android.os.SystemClock;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.KeyEvent;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
 /**
  * A ViewGroup that coordinated dragging across its dscendants
  */
 public class DragLayer extends FrameLayout {
-    private static final String TAG = "Launcher.DragLayer";
-
     DragController mDragController;
 
     /**

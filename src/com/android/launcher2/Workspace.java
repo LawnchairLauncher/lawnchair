@@ -108,6 +108,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     int mDrawerContentHeight;
     int mDrawerContentWidth;
 
+    private Drawable mPreviousIndicator;
+    private Drawable mNextIndicator;
+
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -462,6 +465,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             postInvalidate();
         } else if (mNextScreen != INVALID_SCREEN) {
             mCurrentScreen = Math.max(0, Math.min(mNextScreen, getChildCount() - 1));
+            mPreviousIndicator.setLevel(mCurrentScreen);
+            mNextIndicator.setLevel(mCurrentScreen);
             Launcher.setScreen(mCurrentScreen);
             mNextScreen = INVALID_SCREEN;
             clearChildrenCache();
@@ -543,14 +548,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         if (restore) {
             canvas.restoreToCount(restoreCount);
         }
-        
-        onDrawScrollBars(canvas);
-    }
-
-    @Override
-    protected int computeHorizontalScrollRange() {
-        final int count = getChildCount();
-        return count == 0 ? getWidth() : (getChildAt(count - 1)).getRight();
     }
 
     private float mScale = 1.0f;
@@ -794,7 +791,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     void enableChildrenCache(int fromScreen, int toScreen) {
         if (fromScreen > toScreen) {
-            int temp = fromScreen;
             fromScreen = toScreen;
             toScreen = fromScreen;
         }
@@ -805,7 +801,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         toScreen = Math.min(toScreen, count - 1);
         
         for (int i = fromScreen; i <= toScreen; i++) {
-            // Log.d("TAG", "enablingChildrenCache: " + i);
             final CellLayout layout = (CellLayout) getChildAt(i);
             layout.setChildrenDrawnWithCacheEnabled(true);
             layout.setChildrenDrawingCacheEnabled(true);
@@ -1390,6 +1385,13 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     void moveToDefaultScreen() {
         snapToScreen(mDefaultScreen);
         getChildAt(mDefaultScreen).requestFocus();
+    }
+
+    void setIndicators(Drawable previous, Drawable next) {
+        mPreviousIndicator = previous;
+        mNextIndicator = next;
+        previous.setLevel(mCurrentScreen);
+        next.setLevel(mCurrentScreen);
     }
 
     public static class SavedState extends BaseSavedState {
