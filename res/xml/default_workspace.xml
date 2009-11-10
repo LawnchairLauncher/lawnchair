@@ -25,8 +25,8 @@
         launcher:y="3" />
 
      <favorite
-        launcher:packageName="com.android.camera"
-        launcher:className="com.android.camera.Camera"
+        launcher:packageName="com.cooliris.media"
+        launcher:className="com.cooliris.media.Gallery"
         launcher:screen="1"
         launcher:x="2"
         launcher:y="3" />
