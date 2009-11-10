@@ -42,6 +42,7 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -62,7 +63,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.MotionEvent;
 import android.view.View.OnLongClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -1588,7 +1588,6 @@ public final class Launcher extends Activity
         float sHeight = height * scale;
 
         LinearLayout preview = new LinearLayout(this);
-        preview.setFocusable(true);
 
         PreviewTouchHandler handler = new PreviewTouchHandler(anchor);
         ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>(count);
@@ -1621,7 +1620,7 @@ public final class Launcher extends Activity
         p.setHeight((int) (sHeight + extraH));
         p.setAnimationStyle(R.style.AnimationPreview);
         p.setOutsideTouchable(true);
-        p.setBackgroundDrawable(null);
+        p.setBackgroundDrawable(new ColorDrawable(0));
         p.showAsDropDown(anchor, 0, 0);        
 
         p.setOnDismissListener(new PopupWindow.OnDismissListener() {
