@@ -39,6 +39,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -60,12 +61,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.MotionEvent;
 import android.view.View.OnLongClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 
@@ -80,7 +83,7 @@ import java.io.DataInputStream;
  * Default launcher application.
  */
 public final class Launcher extends Activity
-        implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks {
+        implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks, View.OnTouchListener, View.OnKeyListener {
     static final String LOG_TAG = "Launcher";
     static final String TAG = LOG_TAG;
     static final boolean LOGD = false;
@@ -193,6 +196,8 @@ public final class Launcher extends Activity
     private static HashMap<Long, FolderInfo> mFolders = new HashMap<Long, FolderInfo>();
 
     public static long lastStartTime;
+    private ImageView mPreviousView;
+    private ImageView mNextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -436,6 +441,8 @@ public final class Launcher extends Activity
             mExitingBecauseOfLaunch = false;
             closeAllApps(false);
         }
+        dismissPreview(mPreviousView);
+        dismissPreview(mNextView);
     }
 
     @Override
@@ -550,10 +557,20 @@ public final class Launcher extends Activity
         mHandleView = (HandleView) findViewById(R.id.all_apps_button);
         mHandleView.setLauncher(this);
         mHandleView.setOnClickListener(this);
-        
-        Drawable previous = ((ImageView) dragLayer.findViewById(R.id.previous_screen)).getDrawable();
-        Drawable next = ((ImageView) dragLayer.findViewById(R.id.next_screen)).getDrawable();
+
+        mPreviousView = (ImageView) dragLayer.findViewById(R.id.previous_screen);
+        mNextView = (ImageView) dragLayer.findViewById(R.id.next_screen);
+
+        Drawable previous = mPreviousView.getDrawable();
+        Drawable next = mNextView.getDrawable();
         mWorkspace.setIndicators(previous, next);
+
+        mPreviousView.setOnLongClickListener(this);
+        mPreviousView.setOnTouchListener(this);
+        mPreviousView.setOnKeyListener(this);
+        mNextView.setOnLongClickListener(this);
+        mNextView.setOnTouchListener(this);
+        mNextView.setOnKeyListener(this);
 
         workspace.setOnLongClickListener(this);
         workspace.setDragController(dragController);
@@ -921,6 +938,9 @@ public final class Launcher extends Activity
         AppInfoCache.unbindDrawables();
 
         getContentResolver().unregisterContentObserver(mWidgetObserver);
+        
+        dismissPreview(mPreviousView);
+        dismissPreview(mNextView);        
     }
 
     @Override
@@ -1450,6 +1470,15 @@ public final class Launcher extends Activity
     }
 
     public boolean onLongClick(View v) {
+        switch (v.getId()) {
+            case R.id.previous_screen:
+                showPreviousPreview(v);
+                return true;
+            case R.id.next_screen:
+                showNextPreview(v);
+                return true;
+        }
+
         if (isWorkspaceLocked()) {
             return false;
         }
@@ -1482,6 +1511,85 @@ public final class Launcher extends Activity
         return true;
     }
 
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_UP) {
+            dismissPreview(v);
+        }
+        return false;
+    }
+
+    public boolean onTouch(View v, MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            dismissPreview(v);
+        }
+        return false;
+    }
+
+    private void dismissPreview(View v) {
+        PopupWindow window = (PopupWindow) v.getTag();
+        if (window != null) {
+            window.dismiss();
+            ((ImageView) v.getTag(R.id.workspace)).setImageBitmap(null);
+            ((Bitmap) v.getTag(R.id.icon)).recycle();
+
+            v.setTag(R.id.workspace, null);
+            v.setTag(R.id.icon, null);
+        }
+        v.setTag(null);
+    }
+
+    private void showPreviousPreview(View anchor) {
+        int current = mWorkspace.getCurrentScreen();
+        if (current <= 0) return;
+
+        View previous = mWorkspace.getChildAt(current - 1);
+        showPreview(anchor, previous);
+    }
+
+    private void showNextPreview(View anchor) {
+        int current = mWorkspace.getCurrentScreen();
+        if (current >= mWorkspace.getChildCount() - 1) return;
+
+        View next = mWorkspace.getChildAt(current + 1);
+        showPreview(anchor, next);
+    }
+
+    private void showPreview(View anchor, View source) {
+        boolean cacheEnabled = source.isDrawingCacheEnabled();
+        source.setDrawingCacheEnabled(true);
+        source.buildDrawingCache();
+
+        Bitmap cache = source.getDrawingCache();
+        if (cache == null) return;
+
+        Bitmap bitmap = Bitmap.createScaledBitmap(cache,
+                (int) (cache.getWidth() / 2.5f), (int) (cache.getHeight() / 2.5f), true);
+
+        ImageView preview = new ImageView(this);
+        preview.setImageBitmap(bitmap);
+        Drawable d = getResources().getDrawable(R.drawable.preview_popup);
+        preview.setBackgroundDrawable(d);
+
+        Rect r = new Rect();
+        d.getPadding(r);
+        int extraW = r.left + r.right;
+        int extraH = r.top + r.bottom;
+
+        PopupWindow p = new PopupWindow(preview, bitmap.getWidth() + extraW,
+                bitmap.getHeight() + extraH);
+        p.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        p.setAnimationStyle(R.style.AnimationPreview);
+        p.showAsDropDown(anchor, 0, 0);
+
+        source.destroyDrawingCache();
+        if (!cacheEnabled) source.setDrawingCacheEnabled(cacheEnabled);
+
+        anchor.setTag(p);
+        anchor.setTag(R.id.workspace, preview);
+        anchor.setTag(R.id.icon, bitmap);        
+    }
+
     View getDrawerHandle() {
         return mHandleView;
     }
@@ -1489,12 +1597,6 @@ public final class Launcher extends Activity
     Workspace getWorkspace() {
         return mWorkspace;
     }
-
-    /* TODO
-    GridView getApplicationsGrid() {
-        return mAllAppsGrid;
-    }
-    */
 
     @Override
     protected Dialog onCreateDialog(int id) {
