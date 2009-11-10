@@ -40,7 +40,7 @@ import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.graphics.Matrix;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -84,7 +84,7 @@ import java.io.DataInputStream;
  * Default launcher application.
  */
 public final class Launcher extends Activity
-        implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks, View.OnTouchListener, View.OnKeyListener {
+        implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks {
     static final String LOG_TAG = "Launcher";
     static final String TAG = LOG_TAG;
     static final boolean LOGD = false;
@@ -567,11 +567,7 @@ public final class Launcher extends Activity
         mWorkspace.setIndicators(previous, next);
 
         mPreviousView.setOnLongClickListener(this);
-        mPreviousView.setOnTouchListener(this);
-        mPreviousView.setOnKeyListener(this);
         mNextView.setOnLongClickListener(this);
-        mNextView.setOnTouchListener(this);
-        mNextView.setOnKeyListener(this);
 
         workspace.setOnLongClickListener(this);
         workspace.setDragController(dragController);
@@ -941,7 +937,7 @@ public final class Launcher extends Activity
         getContentResolver().unregisterContentObserver(mWidgetObserver);
         
         dismissPreview(mPreviousView);
-        dismissPreview(mNextView);        
+        dismissPreview(mNextView);
     }
 
     @Override
@@ -1333,6 +1329,8 @@ public final class Launcher extends Activity
                         } else {
                             closeFolder();
                         }
+                        dismissPreview(mPreviousView);
+                        dismissPreview(mNextView);
                     }
                     return true;
                 case KeyEvent.KEYCODE_HOME:
@@ -1512,23 +1510,10 @@ public final class Launcher extends Activity
         return true;
     }
 
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_UP) {
-            dismissPreview(v);
-        }
-        return false;
-    }
-
-    public boolean onTouch(View v, MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_UP) {
-            dismissPreview(v);
-        }
-        return false;
-    }
-
     private void dismissPreview(View v) {
         PopupWindow window = (PopupWindow) v.getTag();
         if (window != null) {
+            window.setOnDismissListener(null);
             window.dismiss();
             ((ImageView) v.getTag(R.id.workspace)).setImageBitmap(null);
             ((Bitmap) v.getTag(R.id.icon)).recycle();
@@ -1543,65 +1528,130 @@ public final class Launcher extends Activity
         int current = mWorkspace.getCurrentScreen();
         if (current <= 0) return;
 
-        View previous = mWorkspace.getChildAt(current - 1);
-        showPreview(anchor, previous);
+        showPreviews(anchor, 0, current);
     }
 
     private void showNextPreview(View anchor) {
         int current = mWorkspace.getCurrentScreen();
         if (current >= mWorkspace.getChildCount() - 1) return;
 
-        View next = mWorkspace.getChildAt(current + 1);
-        showPreview(anchor, next);
+        showPreviews(anchor, current + 1, mWorkspace.getChildCount());
     }
 
-    private void showPreview(View anchor, View source) {
-        boolean cacheEnabled = source.isDrawingCacheEnabled();
-        source.setDrawingCacheEnabled(true);
-        source.buildDrawingCache();
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
 
-        Bitmap cache = source.getDrawingCache();
-        if (cache == null) return;
+        if (!hasFocus) {
+            dismissPreview(mPreviousView);
+            dismissPreview(mNextView);
+        }
+    }
 
-        int width = cache.getWidth();
-        int height = cache.getHeight();
-        float sx = (int) (width / 2.5f) / (float) width;
-        float sy = (int) (height / 2.5f) / (float) height;
-
-        Matrix m = new Matrix();
-        m.setScale(sx, sy);
-
-        CellLayout cell = ((CellLayout) source);
-        int x = cell.getLeftPadding();
-        int y = cell.getTopPadding();
-        width -= (x + cell.getRightPadding());
-        height -= (y + cell.getBottomPadding());
-
-        Bitmap bitmap = Bitmap.createBitmap(cache, x, y, width, height, m, true);
-
+    private void showPreviews(final View anchor, int start, int end) {
         ImageView preview = new ImageView(this);
-        preview.setImageBitmap(bitmap);
+        preview.requestFocus();
+
         Drawable d = getResources().getDrawable(R.drawable.preview_popup);
-        preview.setBackgroundDrawable(d);
 
         Rect r = new Rect();
         d.getPadding(r);
         int extraW = r.left + r.right;
         int extraH = r.top + r.bottom;
 
-        PopupWindow p = new PopupWindow(preview, bitmap.getWidth() + extraW,
-                bitmap.getHeight() + extraH);
-        p.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
+        Workspace workspace = mWorkspace;
+        CellLayout cell = ((CellLayout) workspace.getChildAt(start));
+
+        float max = workspace.getChildCount() - 1;
+
+        int aW = cell.getWidth() - extraW;
+        float w = aW / max;
+
+        int width = cell.getWidth();
+        int height = cell.getHeight();
+        int x = cell.getLeftPadding();
+        int y = cell.getTopPadding();
+        width -= (x + cell.getRightPadding());
+        height -= (y + cell.getBottomPadding());
+
+        float scale = w / width;
+
+        int count = end - start;
+
+        final float sWidth = width * scale;
+        float sHeight = height * scale;
+
+        Bitmap bitmap = Bitmap.createBitmap((int) (sWidth * count),
+                (int) sHeight, Bitmap.Config.ARGB_8888);
+
+        PopupWindow p = new PopupWindow(this);
+        p.setContentView(preview);
+        p.setWidth(bitmap.getWidth() + extraW);
+        p.setHeight(bitmap.getHeight() + extraH);
         p.setAnimationStyle(R.style.AnimationPreview);
+        p.setOutsideTouchable(true);
+        p.setBackgroundDrawable(d);
         p.showAsDropDown(anchor, 0, 0);
 
-        source.destroyDrawingCache();
-        if (!cacheEnabled) source.setDrawingCacheEnabled(cacheEnabled);
+        Canvas c = new Canvas(bitmap);
+
+        for (int i = start; i < end; i++) {
+            cell = (CellLayout) workspace.getChildAt(i);
+
+            c.save();
+            c.scale(scale, scale);
+            c.translate(-cell.getLeftPadding(), -cell.getTopPadding());
+            cell.dispatchDraw(c);
+            c.restore();
+
+            c.translate(sWidth, 0.0f);
+        }
+
+        preview.setImageBitmap(bitmap);
+
+        PreviewTouchHandler handler = new PreviewTouchHandler(anchor, sWidth);
+        preview.setOnClickListener(handler);
+        preview.setOnTouchListener(handler);
+        p.setOnDismissListener(handler);
 
         anchor.setTag(p);
         anchor.setTag(R.id.workspace, preview);
         anchor.setTag(R.id.icon, bitmap);        
+    }
+
+    class PreviewTouchHandler implements View.OnTouchListener, View.OnClickListener,
+            PopupWindow.OnDismissListener {
+
+        private final View mAnchor;
+        private final float mWidth;
+        private float mTouchX;
+
+        public PreviewTouchHandler(View anchor, float width) {
+            mAnchor = anchor;
+            mWidth = width;
+        }
+
+        public boolean onTouch(View v, MotionEvent event) {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                mTouchX = event.getX();
+            }
+            return false;
+        }
+
+        public void onClick(View v) {
+            int screen = 0;
+            if (mAnchor == mNextView) {
+                screen = mWorkspace.getCurrentScreen() + (int) (mTouchX / mWidth) + 1;
+            } else if (mAnchor == mPreviousView) {
+                screen = (int) (mTouchX / mWidth);
+            }
+            mWorkspace.snapToScreen(screen);
+            dismissPreview(mAnchor);
+        }
+
+        public void onDismiss() {
+            dismissPreview(mAnchor);
+        }
     }
 
     View getDrawerHandle() {
