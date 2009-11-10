@@ -70,6 +70,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.LinearLayout;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 
@@ -1510,13 +1511,21 @@ public final class Launcher extends Activity
         return true;
     }
 
+    @SuppressWarnings({"unchecked"})
     private void dismissPreview(View v) {
         PopupWindow window = (PopupWindow) v.getTag();
         if (window != null) {
             window.setOnDismissListener(null);
             window.dismiss();
-            ((ImageView) v.getTag(R.id.workspace)).setImageBitmap(null);
-            ((Bitmap) v.getTag(R.id.icon)).recycle();
+            
+            ViewGroup group = (ViewGroup) v.getTag(R.id.workspace);
+            int count = group.getChildCount();
+            for (int i = 0; i < count; i++) {
+                ((ImageView) group.getChildAt(i)).setImageDrawable(null);
+            }
+
+            ArrayList<Bitmap> bitmaps = (ArrayList<Bitmap>) v.getTag(R.id.icon);
+            for (Bitmap bitmap : bitmaps) bitmap.recycle();
 
             v.setTag(R.id.workspace, null);
             v.setTag(R.id.icon, null);
@@ -1549,20 +1558,17 @@ public final class Launcher extends Activity
     }
 
     private void showPreviews(final View anchor, int start, int end) {
-        ImageView preview = new ImageView(this);
-        preview.requestFocus();
-
         Drawable d = getResources().getDrawable(R.drawable.preview_popup);
-
-        Rect r = new Rect();
-        d.getPadding(r);
-        int extraW = r.left + r.right;
-        int extraH = r.top + r.bottom;
 
         Workspace workspace = mWorkspace;
         CellLayout cell = ((CellLayout) workspace.getChildAt(start));
 
         float max = workspace.getChildCount() - 1;
+        
+        Rect r = new Rect();
+        d.getPadding(r);
+        int extraW = (int) ((r.left + r.right) * max);
+        int extraH = r.top + r.bottom;
 
         int aW = cell.getWidth() - extraW;
         float w = aW / max;
@@ -1581,75 +1587,63 @@ public final class Launcher extends Activity
         final float sWidth = width * scale;
         float sHeight = height * scale;
 
-        Bitmap bitmap = Bitmap.createBitmap((int) (sWidth * count),
-                (int) sHeight, Bitmap.Config.ARGB_8888);
+        LinearLayout preview = new LinearLayout(this);
+        preview.setFocusable(true);
 
-        PopupWindow p = new PopupWindow(this);
-        p.setContentView(preview);
-        p.setWidth(bitmap.getWidth() + extraW);
-        p.setHeight(bitmap.getHeight() + extraH);
-        p.setAnimationStyle(R.style.AnimationPreview);
-        p.setOutsideTouchable(true);
-        p.setBackgroundDrawable(d);
-        p.showAsDropDown(anchor, 0, 0);
-
-        Canvas c = new Canvas(bitmap);
+        PreviewTouchHandler handler = new PreviewTouchHandler(anchor);
+        ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>(count);
 
         for (int i = start; i < end; i++) {
+            ImageView image = new ImageView(this);
             cell = (CellLayout) workspace.getChildAt(i);
 
-            c.save();
+            Bitmap bitmap = Bitmap.createBitmap((int) sWidth, (int) sHeight,
+                    Bitmap.Config.ARGB_8888);
+            
+            Canvas c = new Canvas(bitmap);
             c.scale(scale, scale);
             c.translate(-cell.getLeftPadding(), -cell.getTopPadding());
             cell.dispatchDraw(c);
-            c.restore();
 
-            c.translate(sWidth, 0.0f);
+            image.setBackgroundDrawable(d);
+            image.setImageBitmap(bitmap);
+            image.setTag(i);
+            image.setOnClickListener(handler);
+            bitmaps.add(bitmap);
+
+            preview.addView(image,
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
+        
+        PopupWindow p = new PopupWindow(this);
+        p.setContentView(preview);
+        p.setWidth((int) (sWidth * count + extraW));
+        p.setHeight((int) (sHeight + extraH));
+        p.setAnimationStyle(R.style.AnimationPreview);
+        p.setOutsideTouchable(true);
+        p.setBackgroundDrawable(null);
+        p.showAsDropDown(anchor, 0, 0);        
 
-        preview.setImageBitmap(bitmap);
-
-        PreviewTouchHandler handler = new PreviewTouchHandler(anchor, sWidth);
-        preview.setOnClickListener(handler);
-        preview.setOnTouchListener(handler);
-        p.setOnDismissListener(handler);
+        p.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            public void onDismiss() {
+                dismissPreview(anchor);
+            }
+        });
 
         anchor.setTag(p);
         anchor.setTag(R.id.workspace, preview);
-        anchor.setTag(R.id.icon, bitmap);        
+        anchor.setTag(R.id.icon, bitmaps);        
     }
 
-    class PreviewTouchHandler implements View.OnTouchListener, View.OnClickListener,
-            PopupWindow.OnDismissListener {
-
+    class PreviewTouchHandler implements View.OnClickListener {
         private final View mAnchor;
-        private final float mWidth;
-        private float mTouchX;
 
-        public PreviewTouchHandler(View anchor, float width) {
+        public PreviewTouchHandler(View anchor) {
             mAnchor = anchor;
-            mWidth = width;
-        }
-
-        public boolean onTouch(View v, MotionEvent event) {
-            if (event.getAction() == MotionEvent.ACTION_UP) {
-                mTouchX = event.getX();
-            }
-            return false;
         }
 
         public void onClick(View v) {
-            int screen = 0;
-            if (mAnchor == mNextView) {
-                screen = mWorkspace.getCurrentScreen() + (int) (mTouchX / mWidth) + 1;
-            } else if (mAnchor == mPreviousView) {
-                screen = (int) (mTouchX / mWidth);
-            }
-            mWorkspace.snapToScreen(screen);
-            dismissPreview(mAnchor);
-        }
-
-        public void onDismiss() {
+            mWorkspace.snapToScreen((Integer) v.getTag());
             dismissPreview(mAnchor);
         }
     }
