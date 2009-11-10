@@ -444,6 +444,22 @@ public class CellLayout extends ViewGroup {
         return mCellHeight;
     }
 
+    int getLeftPadding() {
+        return mPortrait ? mShortAxisStartPadding : mLongAxisStartPadding;
+    }
+
+    int getTopPadding() {
+        return mPortrait ? mLongAxisStartPadding : mShortAxisStartPadding;        
+    }
+
+    int getRightPadding() {
+        return mPortrait ? mShortAxisEndPadding : mLongAxisEndPadding;
+    }
+
+    int getBottomPadding() {
+        return mPortrait ? mLongAxisEndPadding : mShortAxisEndPadding;        
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // TODO: currently ignoring padding
