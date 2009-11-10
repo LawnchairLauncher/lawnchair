@@ -21,6 +21,7 @@ import android.content.res.TypedArray;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.ContextMenu;
 import android.view.MotionEvent;
@@ -102,6 +103,11 @@ public class CellLayout extends ViewGroup {
         }
         
         mWallpaperManager = WallpaperManager.getInstance(getContext());
+    }
+
+    @Override
+    public void dispatchDraw(Canvas canvas) {
+        super.dispatchDraw(canvas);
     }
 
     @Override
