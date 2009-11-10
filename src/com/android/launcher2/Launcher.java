@@ -40,6 +40,7 @@ import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -1562,8 +1563,21 @@ public final class Launcher extends Activity
         Bitmap cache = source.getDrawingCache();
         if (cache == null) return;
 
-        Bitmap bitmap = Bitmap.createScaledBitmap(cache,
-                (int) (cache.getWidth() / 2.5f), (int) (cache.getHeight() / 2.5f), true);
+        int width = cache.getWidth();
+        int height = cache.getHeight();
+        float sx = (int) (width / 2.5f) / (float) width;
+        float sy = (int) (height / 2.5f) / (float) height;
+
+        Matrix m = new Matrix();
+        m.setScale(sx, sy);
+
+        CellLayout cell = ((CellLayout) source);
+        int x = cell.getLeftPadding();
+        int y = cell.getTopPadding();
+        width -= (x + cell.getRightPadding());
+        height -= (y + cell.getBottomPadding());
+
+        Bitmap bitmap = Bitmap.createBitmap(cache, x, y, width, height, m, true);
 
         ImageView preview = new ImageView(this);
         preview.setImageBitmap(bitmap);
