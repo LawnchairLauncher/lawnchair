@@ -110,6 +110,8 @@ public class AllAppsView extends RSSurfaceView
     private int mDownIconIndex = -1;
     private int mCurrentIconIndex = -1;
 
+    private boolean mShouldGainFocus;
+
 
     static class Defines {
         public static final int ALLOC_PARAMS = 0;
@@ -192,6 +194,10 @@ public class AllAppsView extends RSSurfaceView
                 mRollo.setApps(mAllAppsList);
                 Log.d(TAG, "surfaceChanged... calling mRollo.setApps");
             }
+            if (mShouldGainFocus) {
+                gainFocus();
+                mShouldGainFocus = false;
+            }
         } else {
             mRollo.mHasSurface = true;
             mRollo.dirtyCheck();
@@ -249,21 +255,33 @@ public class AllAppsView extends RSSurfaceView
         }
 
         if (gainFocus) {
-            if (!mArrowNavigation && mRollo.mState.iconCount > 0) {
-                // Select the first icon when we gain keyboard focus
-                mArrowNavigation = true;
-                mRollo.selectIcon(Math.round(mRollo.mMessageProc.mPosX) * Defines.COLUMNS_PER_PAGE,
-                        SELECTED_FOCUSED);
-                mRollo.mState.save();
+            if (mRollo != null) {
+                gainFocus();
+            } else {
+                mShouldGainFocus = true;
             }
         } else {
-            if (mArrowNavigation) {
-                // Clear selection when we lose focus
-                mRollo.clearSelectedIcon();
-                mRollo.setHomeSelected(SELECTED_NONE);
-                mRollo.mState.save();
-                mArrowNavigation = false;
+            if (mRollo != null) {
+                if (mArrowNavigation) {
+                    // Clear selection when we lose focus
+                    mRollo.clearSelectedIcon();
+                    mRollo.setHomeSelected(SELECTED_NONE);
+                    mRollo.mState.save();
+                    mArrowNavigation = false;
+                }
+            } else {
+                mShouldGainFocus = false;
             }
+        }
+    }
+
+    private void gainFocus() {
+        if (!mArrowNavigation && mRollo.mState.iconCount > 0) {
+            // Select the first icon when we gain keyboard focus
+            mArrowNavigation = true;
+            mRollo.selectIcon(Math.round(mRollo.mMessageProc.mPosX) * Defines.COLUMNS_PER_PAGE,
+                    SELECTED_FOCUSED);
+            mRollo.mState.save();
         }
     }
 
