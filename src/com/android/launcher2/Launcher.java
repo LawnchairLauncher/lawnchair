@@ -1057,6 +1057,7 @@ public final class Launcher extends Activity
     }
 
     private void addItems() {
+        closeAllApps(true);
         showAddDialog(mMenuAddInfo);
     }
 
@@ -1252,6 +1253,7 @@ public final class Launcher extends Activity
     }
 
     private void startWallpaper() {
+        closeAllApps(true);
         final Intent pickWallpaper = new Intent(Intent.ACTION_SET_WALLPAPER);
         Intent chooser = Intent.createChooser(pickWallpaper,
                 getText(R.string.chooser_wallpaper));
