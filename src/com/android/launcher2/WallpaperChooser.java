@@ -40,6 +40,7 @@ import java.util.ArrayList;
 
 public class WallpaperChooser extends Activity implements AdapterView.OnItemSelectedListener,
         OnClickListener {
+    private static final String TAG = "Launcher.WallpaperChooser";
 
     private Gallery mGallery;
     private ImageView mImageView;
@@ -137,7 +138,7 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
             setResult(RESULT_OK);
             finish();
         } catch (IOException e) {
-            Log.e(Launcher.LOG_TAG, "Failed to set wallpaper: " + e);
+            Log.e(TAG, "Failed to set wallpaper: " + e);
         }
     }
 
@@ -178,9 +179,8 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
             if (thumbDrawable != null) {
                 thumbDrawable.setDither(true);
             } else {
-                Log.e(Launcher.LOG_TAG, String.format(
-                    "Error decoding thumbnail resId=%d for wallpaper #%d",
-                    thumbRes, position));
+                Log.e(TAG, "Error decoding thumbnail resId=" + thumbRes + " for wallpaper #"
+                        + position);
             }
             return image;
         }

@@ -495,24 +495,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             return;
         }
 
-        if (Launcher.lastStartTime != 0) {
-            int itemCount = 0;
-            for (int i=0; i<getChildCount(); i++) {
-                View child = getChildAt(i);
-                if (child instanceof ViewGroup) {
-                    itemCount += ((ViewGroup)child).getChildCount();
-                }
-            }
-            if (!mLauncher.isWorkspaceLocked()) {
-                Log.d(Launcher.TAG, "time from start to draw (" + itemCount + " items): "
-                        + (SystemClock.uptimeMillis() - Launcher.lastStartTime) + "ms");
-                Launcher.lastStartTime = 0;
-            } else {
-                Log.d(Launcher.TAG, "drawing but not ready yet (" + itemCount + " items): "
-                        + (SystemClock.uptimeMillis() - Launcher.lastStartTime) + "ms");
-            }
-        }
-
         boolean restore = false;
         int restoreCount = 0;
 
