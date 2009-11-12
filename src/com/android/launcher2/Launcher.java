@@ -437,6 +437,7 @@ public final class Launcher extends Activity
         super.onPause();
         dismissPreview(mPreviousView);
         dismissPreview(mNextView);
+        mDragController.cancelDrag();
     }
 
     @Override
