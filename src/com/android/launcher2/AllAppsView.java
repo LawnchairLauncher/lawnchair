@@ -182,8 +182,7 @@ public class AllAppsView extends RSSurfaceView
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-        Log.d(TAG, "starting surfaceChanged");
-        long startTime = SystemClock.uptimeMillis();
+        //long startTime = SystemClock.uptimeMillis();
 
         super.surfaceChanged(holder, format, w, h);
 
@@ -194,7 +193,6 @@ public class AllAppsView extends RSSurfaceView
             mRollo.init(getResources(), w, h);
             if (mAllAppsList != null) {
                 mRollo.setApps(mAllAppsList);
-                Log.d(TAG, "surfaceChanged... calling mRollo.setApps");
             }
             if (mShouldGainFocus) {
                 gainFocus();
@@ -209,8 +207,8 @@ public class AllAppsView extends RSSurfaceView
         Resources res = getContext().getResources();
         int barHeight = (int)res.getDimension(R.dimen.button_bar_height);
 
-        long endTime = SystemClock.uptimeMillis();
-        Log.d(TAG, "surfaceChanged took " + (endTime-startTime) + "ms");
+        //long endTime = SystemClock.uptimeMillis();
+        //Log.d(TAG, "surfaceChanged took " + (endTime-startTime) + "ms");
     }
 
     @Override
@@ -615,21 +613,6 @@ public class AllAppsView extends RSSurfaceView
         }
     }
 
-    /*
-    @Override
-    public boolean onTrackballEvent(MotionEvent ev)
-    {
-        float x = ev.getX();
-        float y = ev.getY();
-        //Float tx = new Float(x);
-        //Float ty = new Float(y);
-        //Log.e("rs", "tbe " + tx.toString() + ", " + ty.toString());
-
-
-        return true;
-    }
-    */
-
     public void setApps(ArrayList<ApplicationInfo> list) {
         mAllAppsList = list;
         if (mRollo != null) {
@@ -655,7 +638,6 @@ public class AllAppsView extends RSSurfaceView
             if (index < 0) {
                 index = -(index+1);
             }
-            Log.d(TAG, "Adding app '" + item + "' at index " + index + " mRollo=" + mRollo);
             mAllAppsList.add(index, item);
             if (mRollo != null) {
                 mRollo.addApp(index, item);
@@ -685,7 +667,7 @@ public class AllAppsView extends RSSurfaceView
                     mRollo.mState.iconCount--;
                 }
             } else {
-                Log.e(TAG, "couldn't find a match for item \"" + item + "\"");
+                Log.w(TAG, "couldn't find a match for item \"" + item + "\"");
                 // Try to recover.  This should keep us from crashing for now.
             }
         }
@@ -795,7 +777,6 @@ public class AllAppsView extends RSSurfaceView
                 mPosX = ((float)mData[0]) / (1 << 16);
                 mVelocity = ((float)mData[1]) / (1 << 16);
                 mZoom = ((float)mData[2]) / (1 << 16);
-                //Log.d("rs", "new msg " + mPosX + "  " + mVelocity + "  " + mZoom);
             }
             float mZoom;
             float mPosX;
@@ -804,7 +785,6 @@ public class AllAppsView extends RSSurfaceView
         AAMessage mMessageProc;
 
         private boolean checkClickOK() {
-            //android.util.Log.e("rs", "check click " + Float.toString(mReadback.velocity) + ", " + Float.toString(mReadback.posX));
             return (Math.abs(mMessageProc.mVelocity) < 0.4f) &&
                    (Math.abs(mMessageProc.mPosX - Math.round(mMessageProc.mPosX)) < 0.4f);
         }

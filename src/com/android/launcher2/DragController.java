@@ -300,7 +300,7 @@ public class DragController {
      */
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (false) {
-            Log.d(Launcher.LOG_TAG, "DragController.onInterceptTouchEvent " + ev + " mDragging="
+            Log.d(Launcher.TAG, "DragController.onInterceptTouchEvent " + ev + " mDragging="
                     + mDragging);
         }
         final int action = ev.getAction();
