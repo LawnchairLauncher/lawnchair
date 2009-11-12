@@ -885,8 +885,6 @@ public final class Launcher extends Activity
             super.onSaveInstanceState(outState);
         }
 
-        final boolean isConfigurationChange = getChangingConfigurations() != 0;
-
         // TODO should not do this if the drawer is currently closing.
         if (isAllAppsVisible()) {
             outState.putBoolean(RUNTIME_STATE_ALL_APPS_FOLDER, true);
@@ -1511,23 +1509,26 @@ public final class Launcher extends Activity
     }
 
     @SuppressWarnings({"unchecked"})
-    private void dismissPreview(View v) {
-        PopupWindow window = (PopupWindow) v.getTag();
+    private void dismissPreview(final View v) {
+        final PopupWindow window = (PopupWindow) v.getTag();
         if (window != null) {
-            window.setOnDismissListener(null);
+            window.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                public void onDismiss() {
+                    ViewGroup group = (ViewGroup) v.getTag(R.id.workspace);
+                    int count = group.getChildCount();
+                    for (int i = 0; i < count; i++) {
+                        ((ImageView) group.getChildAt(i)).setImageDrawable(null);
+                    }
+
+                    ArrayList<Bitmap> bitmaps = (ArrayList<Bitmap>) v.getTag(R.id.icon);
+                    for (Bitmap bitmap : bitmaps) bitmap.recycle();
+
+                    v.setTag(R.id.workspace, null);
+                    v.setTag(R.id.icon, null);
+                    window.setOnDismissListener(null);
+                }
+            });
             window.dismiss();
-            
-            ViewGroup group = (ViewGroup) v.getTag(R.id.workspace);
-            int count = group.getChildCount();
-            for (int i = 0; i < count; i++) {
-                ((ImageView) group.getChildAt(i)).setImageDrawable(null);
-            }
-
-            ArrayList<Bitmap> bitmaps = (ArrayList<Bitmap>) v.getTag(R.id.icon);
-            for (Bitmap bitmap : bitmaps) bitmap.recycle();
-
-            v.setTag(R.id.workspace, null);
-            v.setTag(R.id.icon, null);
         }
         v.setTag(null);
     }
@@ -1536,36 +1537,26 @@ public final class Launcher extends Activity
         int current = mWorkspace.getCurrentScreen();
         if (current <= 0) return;
 
-        showPreviews(anchor, 0, current);
+        showPreviews(anchor, 0, mWorkspace.getChildCount());
     }
 
     private void showNextPreview(View anchor) {
         int current = mWorkspace.getCurrentScreen();
         if (current >= mWorkspace.getChildCount() - 1) return;
 
-        showPreviews(anchor, current + 1, mWorkspace.getChildCount());
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-
-        if (!hasFocus) {
-            dismissPreview(mPreviousView);
-            dismissPreview(mNextView);
-        }
+        showPreviews(anchor, 0, mWorkspace.getChildCount());        
     }
 
     private void showPreviews(final View anchor, int start, int end) {
-        Drawable d = getResources().getDrawable(R.drawable.preview_popup);
+        Resources resources = getResources();
 
         Workspace workspace = mWorkspace;
         CellLayout cell = ((CellLayout) workspace.getChildAt(start));
-
-        float max = workspace.getChildCount() - 1;
+        
+        float max = workspace.getChildCount();
         
         Rect r = new Rect();
-        d.getPadding(r);
+        resources.getDrawable(R.drawable.preview_background).getPadding(r);
         int extraW = (int) ((r.left + r.right) * max);
         int extraH = r.top + r.bottom;
 
@@ -1603,14 +1594,18 @@ public final class Launcher extends Activity
             c.translate(-cell.getLeftPadding(), -cell.getTopPadding());
             cell.dispatchDraw(c);
 
-            image.setBackgroundDrawable(d);
+            image.setBackgroundDrawable(resources.getDrawable(R.drawable.preview_background));
             image.setImageBitmap(bitmap);
             image.setTag(i);
             image.setOnClickListener(handler);
-            bitmaps.add(bitmap);
+            image.setOnFocusChangeListener(handler);
+            image.setFocusable(true);
+            if (i == mWorkspace.getCurrentScreen()) image.requestFocus();
 
             preview.addView(image,
-                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+            bitmaps.add(bitmap);            
         }
         
         PopupWindow p = new PopupWindow(this);
@@ -1619,8 +1614,9 @@ public final class Launcher extends Activity
         p.setHeight((int) (sHeight + extraH));
         p.setAnimationStyle(R.style.AnimationPreview);
         p.setOutsideTouchable(true);
+        p.setFocusable(true);
         p.setBackgroundDrawable(new ColorDrawable(0));
-        p.showAsDropDown(anchor, 0, 0);        
+        p.showAsDropDown(anchor, 0, 0);
 
         p.setOnDismissListener(new PopupWindow.OnDismissListener() {
             public void onDismiss() {
@@ -1633,7 +1629,7 @@ public final class Launcher extends Activity
         anchor.setTag(R.id.icon, bitmaps);        
     }
 
-    class PreviewTouchHandler implements View.OnClickListener {
+    class PreviewTouchHandler implements View.OnClickListener, Runnable, View.OnFocusChangeListener {
         private final View mAnchor;
 
         public PreviewTouchHandler(View anchor) {
@@ -1642,7 +1638,17 @@ public final class Launcher extends Activity
 
         public void onClick(View v) {
             mWorkspace.snapToScreen((Integer) v.getTag());
-            dismissPreview(mAnchor);
+            v.post(this);
+        }
+
+        public void run() {
+            dismissPreview(mAnchor);            
+        }
+
+        public void onFocusChange(View v, boolean hasFocus) {
+            if (hasFocus) {
+                mWorkspace.snapToScreen((Integer) v.getTag());                
+            }
         }
     }
 
