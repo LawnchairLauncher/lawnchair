@@ -25,12 +25,14 @@ import android.app.StatusBarManager;
 import android.app.WallpaperInfo;
 import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.LabeledIntent;
 import android.content.pm.PackageManager;
@@ -159,6 +161,8 @@ public final class Launcher extends Activity
     private static final Object sLock = new Object();
     private static int sScreen = DEFAULT_SCREEN;
 
+    private final BroadcastReceiver mCloseSystemDialogsReceiver
+            = new CloseSystemDialogsIntentReceiver();
     private final ContentObserver mWidgetObserver = new AppWidgetResetObserver();
 
     private LayoutInflater mInflater;
@@ -210,6 +214,9 @@ public final class Launcher extends Activity
         mModel = ((LauncherApplication)getApplication()).setLauncher(this);
         mDragController = new DragController(this);
         mInflater = getLayoutInflater();
+
+        IntentFilter filter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+        registerReceiver(mCloseSystemDialogsReceiver, filter);
 
         mAppWidgetManager = AppWidgetManager.getInstance(this);
         mAppWidgetHost = new LauncherAppWidgetHost(this, APPWIDGET_HOST_ID);
@@ -814,13 +821,32 @@ public final class Launcher extends Activity
         return info;
     }
 
+    void closeSystemDialogs() {
+        closeAllApps(false);
+        getWindow().closeAllPanels();
+
+        try {
+            dismissDialog(DIALOG_CREATE_SHORTCUT);
+            // Unlock the workspace if the dialog was showing
+        } catch (Exception e) {
+            // An exception is thrown if the dialog is not visible, which is fine
+        }
+
+        try {
+            dismissDialog(DIALOG_RENAME_FOLDER);
+            // Unlock the workspace if the dialog was showing
+        } catch (Exception e) {
+            // An exception is thrown if the dialog is not visible, which is fine
+        }
+    }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
         // Close the menu
         if (Intent.ACTION_MAIN.equals(intent.getAction())) {
-            getWindow().closeAllPanels();
+            closeSystemDialogs();
 
             // Whatever we were doing is hereby canceled.
             mWaitingForResult = false;
@@ -829,20 +855,6 @@ public final class Launcher extends Activity
             // because this was a new intent (thus a press of 'home' or some such) rather than
             // for example onResume being called when the user pressed the 'back' button.
             mIsNewIntent = true;
-
-            try {
-                dismissDialog(DIALOG_CREATE_SHORTCUT);
-                // Unlock the workspace if the dialog was showing
-            } catch (Exception e) {
-                // An exception is thrown if the dialog is not visible, which is fine
-            }
-
-            try {
-                dismissDialog(DIALOG_RENAME_FOLDER);
-                // Unlock the workspace if the dialog was showing
-            } catch (Exception e) {
-                // An exception is thrown if the dialog is not visible, which is fine
-            }
 
             if ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) !=
                     Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) {
@@ -939,6 +951,8 @@ public final class Launcher extends Activity
         
         dismissPreview(mPreviousView);
         dismissPreview(mNextView);
+
+        unregisterReceiver(mCloseSystemDialogsReceiver);
     }
 
     @Override
@@ -1305,6 +1319,10 @@ public final class Launcher extends Activity
         startActivityForResult(chooser, REQUEST_PICK_WALLPAPER);
     }
 
+    /**
+     * Registers various content observers. The current implementation registers
+     * only a favorites observer to keep track of the favorites applications.
+     */
     private void registerContentObservers() {
         ContentResolver resolver = getContentResolver();
         resolver.registerContentObserver(LauncherProvider.CONTENT_APPWIDGET_RESET_URI,
@@ -1950,6 +1968,17 @@ public final class Launcher extends Activity
         }
 
         public void onShow(DialogInterface dialog) {
+        }
+    }
+
+    /**
+     * Receives notifications when applications are added/removed.
+     */
+    private class CloseSystemDialogsIntentReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "CloseSystemDialogsIntentReceiver.onReceiver intent=" + intent);
+            closeSystemDialogs();
         }
     }
 
