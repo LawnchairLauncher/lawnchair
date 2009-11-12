@@ -46,6 +46,7 @@ import android.view.SurfaceHolder;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.accessibility.AccessibilityEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -563,6 +564,44 @@ public class AllAppsView extends RSSurfaceView
             mLauncher.closeAllApps(true);
         }
         return true;
+    }
+
+    @Override
+    public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
+        if (event.getEventType() == AccessibilityEvent.TYPE_VIEW_SELECTED) {
+            if (!isVisible()) {
+                return false;
+            }
+            String text = null;
+            int index;
+            int count = mAllAppsList.size() + 1; // +1 is home
+            int pos = -1;
+            switch (mLastSelection) {
+            case SELECTION_ICONS:
+                index = mRollo.mState.selectedIconIndex;
+                if (index >= 0) {
+                    ApplicationInfo info = mAllAppsList.get(index);
+                    if (info.title != null) {
+                        text = info.title.toString();
+                        pos = index;
+                    }
+                }
+                break;
+            case SELECTION_HOME:
+                text = getContext().getString(R.string.all_apps_home_button_label);
+                pos = count;
+                break;
+            }
+            if (text != null) {
+                Log.d(TAG, "dispatchPopulateAccessibilityEvent setting text=" + text);
+                event.setEnabled(true);
+                event.getText().add(text);
+                //event.setContentDescription(text);
+                event.setItemCount(count);
+                event.setCurrentItemIndex(pos);
+            }
+        }
+        return false;
     }
 
     public void setDragController(DragController dragger) {
@@ -1286,19 +1325,28 @@ public class AllAppsView extends RSSurfaceView
                     mLastSelection = SELECTION_ICONS;
                 }
 
+                int prev = mState.selectedIconIndex;
                 mState.selectedIconIndex = index;
 
+                ApplicationInfo info = mAllAppsList.get(index);
                 Bitmap selectionBitmap = mSelectionBitmap;
 
                 Utilities.drawSelectedAllAppsBitmap(mSelectionCanvas,
                         selectionBitmap.getWidth(), selectionBitmap.getHeight(),
-                        pressed == SELECTED_PRESSED,
-                        mAllAppsList.get(index).iconBitmap);
+                        pressed == SELECTED_PRESSED, info.iconBitmap);
 
                 mSelectedIcon = Allocation.createFromBitmap(mRS, selectionBitmap,
                         Element.RGBA_8888(mRS), false);
                 mSelectedIcon.uploadToTexture(0);
                 mState.selectedIconTexture = mSelectedIcon.getID();
+
+                if (prev != index) {
+                    if (info.title != null && info.title.length() > 0) {
+                        Log.d(TAG, "sendAccessibilityEvent SELECTION_ICONS " + info.title);
+                        //setContentDescription(info.title);
+                        sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
+                    }
+                }
             }
         }
 
@@ -1310,6 +1358,7 @@ public class AllAppsView extends RSSurfaceView
         }
 
         void setHomeSelected(int mode) {
+            final int prev = mLastSelection;
             switch (mode) {
             case SELECTED_NONE:
                 mState.homeButtonId = mHomeButtonNormal.getID();
@@ -1317,6 +1366,10 @@ public class AllAppsView extends RSSurfaceView
             case SELECTED_FOCUSED:
                 mLastSelection = SELECTION_HOME;
                 mState.homeButtonId = mHomeButtonFocused.getID();
+                if (prev != SELECTION_HOME) {
+                    Log.d(TAG, "sendAccessibilityEvent SELECTION_HOME");
+                    sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
+                }
                 break;
             case SELECTED_PRESSED:
                 mState.homeButtonId = mHomeButtonPressed.getID();
