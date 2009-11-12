@@ -49,7 +49,7 @@ import java.util.List;
  * for the Launcher.
  */
 public class LauncherModel extends BroadcastReceiver {
-    static final boolean DEBUG_LOADERS = true;
+    static final boolean DEBUG_LOADERS = false;
     static final String TAG = "Launcher.Model";
 
     private final LauncherApplication mApp;
@@ -270,8 +270,6 @@ public class LauncherModel extends BroadcastReceiver {
      * ACTION_PACKAGE_CHANGED.
      */
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "onReceive intent=" + intent);
-
         // Use the app as the context.
         context = mApp;
 
@@ -335,7 +333,7 @@ public class LauncherModel extends BroadcastReceiver {
 
             final Callbacks callbacks = mCallbacks != null ? mCallbacks.get() : null;
             if (callbacks == null) {
-                Log.d(TAG, "nobody to tell about the new app");
+                Log.w(TAG, "Nobody to tell about the new app.  Launcher is probably loading.");
                 return;
             }
 
@@ -389,7 +387,9 @@ public class LauncherModel extends BroadcastReceiver {
 
         public void startLoader(Context context, boolean isLaunching) {
             synchronized (mLock) {
-                Log.d(TAG, "startLoader isLaunching=" + isLaunching);
+                if (DEBUG_LOADERS) {
+                    Log.d(TAG, "startLoader isLaunching=" + isLaunching);
+                }
                 // Don't bother to start the thread if we know it's not going to do anything
                 if (mCallbacks.get() != null) {
                     LoaderThread oldThread = mLoaderThread;
@@ -512,12 +512,16 @@ public class LauncherModel extends BroadcastReceiver {
                             public void run() {
                                 synchronized (LoaderThread.this) {
                                     mWorkspaceDoneBinding = true;
-                                    Log.d(TAG, "done with workspace");
+                                    if (DEBUG_LOADERS) {
+                                        Log.d(TAG, "done with workspace");
+                                        }
                                     LoaderThread.this.notify();
                                 }
                             }
                         });
-                    Log.d(TAG, "waiting to be done with workspace");
+                    if (DEBUG_LOADERS) {
+                        Log.d(TAG, "waiting to be done with workspace");
+                    }
                     while (!mStopped && !mWorkspaceDoneBinding) {
                         try {
                             this.wait();
@@ -525,7 +529,9 @@ public class LauncherModel extends BroadcastReceiver {
                             // Ignore
                         }
                     }
-                    Log.d(TAG, "done waiting to be done with workspace");
+                    if (DEBUG_LOADERS) {
+                        Log.d(TAG, "done waiting to be done with workspace");
+                    }
                 }
 
                 // Load all apps if they're dirty
@@ -534,8 +540,10 @@ public class LauncherModel extends BroadcastReceiver {
                 synchronized (mLock) {
                     allAppsSeq = mAllAppsSeq;
                     allAppsDirty = mAllAppsSeq != mLastAllAppsSeq;
-                    //Log.d(TAG, "mAllAppsSeq=" + mAllAppsSeq
-                    //          + " mLastAllAppsSeq=" + mLastAllAppsSeq + " allAppsDirty");
+                    if (DEBUG_LOADERS) {
+                        Log.d(TAG, "mAllAppsSeq=" + mAllAppsSeq
+                                + " mLastAllAppsSeq=" + mLastAllAppsSeq + " allAppsDirty");
+                    }
                 }
                 if (allAppsDirty) {
                     loadAllApps();
@@ -814,7 +822,9 @@ public class LauncherModel extends BroadcastReceiver {
                 } finally {
                     c.close();
                 }
-                Log.d(TAG, "loaded workspace in " + (SystemClock.uptimeMillis()-t) + "ms");
+                if (DEBUG_LOADERS) {
+                    Log.d(TAG, "loaded workspace in " + (SystemClock.uptimeMillis()-t) + "ms");
+                }
             }
 
             /**
@@ -867,7 +877,9 @@ public class LauncherModel extends BroadcastReceiver {
                 // Wait until the queue goes empty.
                 mHandler.postIdle(new Runnable() {
                     public void run() {
-                        Log.d(TAG, "Going to start binding widgets soon.");
+                        if (DEBUG_LOADERS) {
+                            Log.d(TAG, "Going to start binding widgets soon.");
+                        }
                     }
                 });
                 // Bind the widgets, one at a time.
@@ -917,7 +929,10 @@ public class LauncherModel extends BroadcastReceiver {
                 // If we're profiling, this is the last thing in the queue.
                 mHandler.post(new Runnable() {
                     public void run() {
-                        Log.d(TAG, "bound workspace in " + (SystemClock.uptimeMillis()-t) + "ms");
+                        if (DEBUG_LOADERS) {
+                            Log.d(TAG, "bound workspace in "
+                                + (SystemClock.uptimeMillis()-t) + "ms");
+                        }
                         if (Launcher.PROFILE_ROTATE) {
                             android.os.Debug.stopMethodTracing();
                         }
@@ -954,7 +969,10 @@ public class LauncherModel extends BroadcastReceiver {
                         }
                         Collections.sort(mAllAppsList.data, sComparator);
                         Collections.sort(mAllAppsList.added, sComparator);
-                        Log.d(TAG, "cached app icons in " + (SystemClock.uptimeMillis()-t) + "ms");
+                        if (DEBUG_LOADERS) {
+                            Log.d(TAG, "cached app icons in "
+                                    + (SystemClock.uptimeMillis()-t) + "ms");
+                        }
                     }
                 }
             }
@@ -973,8 +991,10 @@ public class LauncherModel extends BroadcastReceiver {
                                 callbacks.bindAllApplications(results);
                             }
 
-                            Log.d(TAG, "bound app " + count + " icons in "
-                                + (SystemClock.uptimeMillis()-t) + "ms");
+                            if (DEBUG_LOADERS) {
+                                Log.d(TAG, "bound app " + count + " icons in "
+                                    + (SystemClock.uptimeMillis()-t) + "ms");
+                            }
                         }
                     });
                 }

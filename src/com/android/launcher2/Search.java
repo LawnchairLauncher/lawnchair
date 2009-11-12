@@ -51,7 +51,7 @@ public class Search extends LinearLayout
     private static final float WIDGET_TOP_OFFSET = 9;
 
     
-    private final String TAG = "SearchWidget";
+    private final String TAG = "Launcher.SearchWidget";
 
     private Launcher mLauncher;
 
