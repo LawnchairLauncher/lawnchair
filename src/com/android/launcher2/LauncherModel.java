@@ -680,7 +680,10 @@ public class LauncherModel extends BroadcastReceiver {
                                 }
 
                                 if (info != null) {
-                                    info.title = c.getString(titleIndex);
+                                    if (itemType
+                                            != LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+                                        info.title = c.getString(titleIndex);
+                                    }
                                     info.intent = intent;
 
                                     info.id = c.getLong(idIndex);
