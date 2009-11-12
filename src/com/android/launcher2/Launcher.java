@@ -192,7 +192,6 @@ public final class Launcher extends Activity
 
     private boolean mRestoring;
     private boolean mWaitingForResult;
-    private boolean mExitingBecauseOfLaunch;
 
     private Bundle mSavedInstanceState;
 
@@ -446,10 +445,6 @@ public final class Launcher extends Activity
     @Override
     protected void onPause() {
         super.onPause();
-        if (mExitingBecauseOfLaunch) {
-            mExitingBecauseOfLaunch = false;
-            closeAllApps(false);
-        }
         dismissPreview(mPreviousView);
         dismissPreview(mNextView);
     }
@@ -509,6 +504,11 @@ public final class Launcher extends Activity
     private void restoreState(Bundle savedState) {
         if (savedState == null) {
             return;
+        }
+
+        final boolean allApps = savedState.getBoolean(RUNTIME_STATE_ALL_APPS_FOLDER, false);
+        if (allApps) {
+            showAllApps(false);
         }
 
         final int currentScreen = savedState.getInt(RUNTIME_STATE_CURRENT_SCREEN, -1);
@@ -856,23 +856,17 @@ public final class Launcher extends Activity
             // for example onResume being called when the user pressed the 'back' button.
             mIsNewIntent = true;
 
-            if ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) !=
-                    Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) {
+            if (!mWorkspace.isDefaultScreenShowing()) {
+                mWorkspace.moveToDefaultScreen();
+            }
 
-                if (!mWorkspace.isDefaultScreenShowing()) {
-                    mWorkspace.moveToDefaultScreen();
-                }
+            closeAllApps(false);
 
-                closeAllApps(true);
-
-                final View v = getWindow().peekDecorView();
-                if (v != null && v.getWindowToken() != null) {
-                    InputMethodManager imm = (InputMethodManager)getSystemService(
-                            INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                }
-            } else {
-                closeAllApps(false);
+            final View v = getWindow().peekDecorView();
+            if (v != null && v.getWindowToken() != null) {
+                InputMethodManager imm = (InputMethodManager)getSystemService(
+                        INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
             }
         }
     }
@@ -902,10 +896,8 @@ public final class Launcher extends Activity
 
         final boolean isConfigurationChange = getChangingConfigurations() != 0;
 
-        // When the drawer is opened and we are saving the state because of a
-        // configuration change
         // TODO should not do this if the drawer is currently closing.
-        if (isAllAppsVisible() && isConfigurationChange) {
+        if (isAllAppsVisible()) {
             outState.putBoolean(RUNTIME_STATE_ALL_APPS_FOLDER, true);
         }
 
@@ -1408,7 +1400,6 @@ public final class Launcher extends Activity
             // Open shortcut
             final Intent intent = ((ApplicationInfo) tag).intent;
             startActivitySafely(intent);
-            mExitingBecauseOfLaunch = true;
         } else if (tag instanceof FolderInfo) {
             handleFolderClick((FolderInfo) tag);
         } else if (v == mHandleView) {
@@ -1416,7 +1407,7 @@ public final class Launcher extends Activity
             if (isAllAppsVisible()) {
                 closeAllApps(true);
             } else {
-                showAllApps();
+                showAllApps(true);
             }
         }
     }
@@ -1819,9 +1810,15 @@ public final class Launcher extends Activity
         return mAllAppsGrid.isVisible();
     }
 
-    void showAllApps() {
-        mAllAppsGrid.zoom(1.0f);
+    boolean isAllAppsOpaque() {
+        return mAllAppsGrid.isOpaque();
+    }
+
+    void showAllApps(boolean animated) {
+        mAllAppsGrid.zoom(1.0f, animated);
         //mWorkspace.hide();
+
+        mWorkspace.startFading(false);
 
         mAllAppsGrid.setFocusable(true);
         mAllAppsGrid.requestFocus();
@@ -1833,10 +1830,10 @@ public final class Launcher extends Activity
 
     void closeAllApps(boolean animated) {
         if (mAllAppsGrid.isVisible()) {
-            mAllAppsGrid.zoom(0.0f);
+            mAllAppsGrid.zoom(0.0f, animated);
             mAllAppsGrid.setFocusable(false);
             mWorkspace.getChildAt(mWorkspace.getCurrentScreen()).requestFocus();
-
+            mWorkspace.startFading(true);
 
             // TODO: fade these two too
             /*
@@ -2136,11 +2133,6 @@ public final class Launcher extends Activity
                 if (openFolder != null) {
                     openFolder.requestFocus();
                 }
-            }
-
-            final boolean allApps = mSavedState.getBoolean(RUNTIME_STATE_ALL_APPS_FOLDER, false);
-            if (allApps) {
-                showAllApps();
             }
 
             mSavedState = null;
