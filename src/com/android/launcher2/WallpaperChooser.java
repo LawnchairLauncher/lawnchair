@@ -171,9 +171,17 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
             } else {
                 image = (ImageView) convertView;
             }
-
-            image.setImageResource(mThumbs.get(position));
-            image.getDrawable().setDither(true);
+            
+            int thumbRes = mThumbs.get(position);
+            image.setImageResource(thumbRes);
+            Drawable thumbDrawable = image.getDrawable();
+            if (thumbDrawable != null) {
+                thumbDrawable.setDither(true);
+            } else {
+                Log.e(Launcher.LOG_TAG, String.format(
+                    "Error decoding thumbnail resId=%d for wallpaper #%d",
+                    thumbRes, position));
+            }
             return image;
         }
     }
