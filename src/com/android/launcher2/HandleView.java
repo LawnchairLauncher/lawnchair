@@ -45,6 +45,8 @@ public class HandleView extends ImageView {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.HandleView, defStyle, 0);
         mOrientation = a.getInt(R.styleable.HandleView_direction, ORIENTATION_HORIZONTAL);
         a.recycle();
+
+        setContentDescription(context.getString(R.string.all_apps_button_label));
     }
 
     @Override
