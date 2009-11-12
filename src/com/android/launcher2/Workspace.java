@@ -48,7 +48,7 @@ import java.util.ArrayList;
  * A workspace is meant to be used with a fixed width only.
  */
 public class Workspace extends ViewGroup implements DropTarget, DragSource, DragScroller {
-    //private static final String TAG = "Launcher.Workspace";
+    private static final String TAG = "Launcher.Workspace";
     private static final int INVALID_SCREEN = -1;
     
     /**
@@ -110,6 +110,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     private Drawable mPreviousIndicator;
     private Drawable mNextIndicator;
+
+    private boolean mFading = true;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -474,8 +476,25 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         }
     }
 
+    public void startFading(boolean dest) {
+        mFading = dest;
+        invalidate();
+    }
+
     @Override
     protected void dispatchDraw(Canvas canvas) {
+        final boolean allAppsOpaque = mLauncher.isAllAppsOpaque();
+        if (mFading == allAppsOpaque) {
+            invalidate();
+        } else {
+            mFading = !allAppsOpaque;
+        }
+        if (allAppsOpaque) {
+            // If the launcher is up, draw black.
+            canvas.drawARGB(0xff, 0, 0, 0);
+            return;
+        }
+
         if (Launcher.lastStartTime != 0) {
             int itemCount = 0;
             for (int i=0; i<getChildCount(); i++) {
@@ -788,6 +807,34 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
          * drag mode.
          */
         return mTouchState != TOUCH_STATE_REST;
+    }
+
+    /**
+     * If one of our descendant views decides that it could be focused now, only
+     * pass that along if it's on the current screen.
+     *
+     * This happens when live folders requery, and if they're off screen, they
+     * end up calling requestFocus, which pulls it on screen.
+     */
+    @Override
+    public void focusableViewAvailable(View focused) {
+        View current = getChildAt(mCurrentScreen);
+        View v = focused;
+        while (true) {
+            if (v == current) {
+                super.focusableViewAvailable(focused);
+                return;
+            }
+            if (v == this) {
+                return;
+            }
+            ViewParent parent = v.getParent();
+            if (parent instanceof View) {
+                v = (View)v.getParent();
+            } else {
+                return;
+            }
+        }
     }
 
     void enableChildrenCache(int fromScreen, int toScreen) {

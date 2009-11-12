@@ -126,6 +126,12 @@ void moveTo() {
 	// debugF("======= moveTo", state->targetPos);
 }
 
+void setZoom() {
+    g_Zoom = state->zoomTarget;
+    g_DrawLastFrame = 1;
+    updateReadback();
+}
+
 void fling() {
     g_LastTouchDown = 0;
     g_PosVelocity = -state->flingVelocity * 4;
