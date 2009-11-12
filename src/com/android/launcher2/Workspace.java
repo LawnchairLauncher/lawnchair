@@ -28,9 +28,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
 import android.os.Parcel;
-import android.os.SystemClock;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -48,6 +46,7 @@ import java.util.ArrayList;
  * A workspace is meant to be used with a fixed width only.
  */
 public class Workspace extends ViewGroup implements DropTarget, DragSource, DragScroller {
+    @SuppressWarnings({"UnusedDeclaration"})
     private static final String TAG = "Launcher.Workspace";
     private static final int INVALID_SCREEN = -1;
     
@@ -942,17 +941,19 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     void snapToScreen(int whichScreen) {
-        if (!mScroller.isFinished()) return;
+        //if (!mScroller.isFinished()) return;
 
         whichScreen = Math.max(0, Math.min(whichScreen, getChildCount() - 1));
         
         clearVacantCache();
         enableChildrenCache(mCurrentScreen, whichScreen);
 
-
         final int screenDelta = Math.abs(whichScreen - mCurrentScreen);
         
         mNextScreen = whichScreen;
+
+        mPreviousIndicator.setLevel(mNextScreen);
+        mNextIndicator.setLevel(mNextScreen);
         
         View focusedChild = getFocusedChild();
         if (focusedChild != null && screenDelta != 0 && focusedChild == getChildAt(mCurrentScreen)) {
