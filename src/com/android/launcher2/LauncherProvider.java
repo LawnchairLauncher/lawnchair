@@ -53,8 +53,8 @@ import com.android.internal.util.XmlUtils;
 import com.android.launcher2.LauncherSettings.Favorites;
 
 public class LauncherProvider extends ContentProvider {
-    private static final String LOG_TAG = "LauncherProvider";
-    private static final boolean LOGD = true;
+    private static final String TAG = "Launcher.LauncherProvider";
+    private static final boolean LOGD = false;
 
     private static final String DATABASE_NAME = "launcher.db";
     
@@ -203,7 +203,7 @@ public class LauncherProvider extends ContentProvider {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            if (LOGD) Log.d(LOG_TAG, "creating new launcher database");
+            if (LOGD) Log.d(TAG, "creating new launcher database");
             
             db.execSQL("CREATE TABLE favorites (" +
                     "_id INTEGER PRIMARY KEY," +
@@ -250,7 +250,7 @@ public class LauncherProvider extends ContentProvider {
         }
 
         private boolean convertDatabase(SQLiteDatabase db) {
-            if (LOGD) Log.d(LOG_TAG, "converting database from an older format, but not onUpgrade");
+            if (LOGD) Log.d(TAG, "converting database from an older format, but not onUpgrade");
             boolean converted = false;
 
             final Uri uri = Uri.parse("content://" + Settings.AUTHORITY +
@@ -279,7 +279,7 @@ public class LauncherProvider extends ContentProvider {
             
             if (converted) {
                 // Convert widgets from this import into widgets
-                if (LOGD) Log.d(LOG_TAG, "converted and now triggering widget upgrade");
+                if (LOGD) Log.d(TAG, "converted and now triggering widget upgrade");
                 convertWidgets(db);
             }
 
@@ -345,7 +345,7 @@ public class LauncherProvider extends ContentProvider {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            if (LOGD) Log.d(LOG_TAG, "onUpgrade triggered");
+            if (LOGD) Log.d(TAG, "onUpgrade triggered");
             
             int version = oldVersion;
             if (version < 3) {
@@ -359,7 +359,7 @@ public class LauncherProvider extends ContentProvider {
                     version = 3;
                 } catch (SQLException ex) {
                     // Old version remains, which means we wipe old data
-                    Log.e(LOG_TAG, ex.getMessage(), ex);
+                    Log.e(TAG, ex.getMessage(), ex);
                 } finally {
                     db.endTransaction();
                 }
@@ -387,7 +387,7 @@ public class LauncherProvider extends ContentProvider {
                     version = 4;
                 } catch (SQLException ex) {
                     // Old version remains, which means we wipe old data
-                    Log.e(LOG_TAG, ex.getMessage(), ex);
+                    Log.e(TAG, ex.getMessage(), ex);
                 } finally {
                     db.endTransaction();
                 }
@@ -402,14 +402,14 @@ public class LauncherProvider extends ContentProvider {
                     version = 5;
                 } catch (SQLException ex) {
                     // Old version remains, which means we wipe old data
-                    Log.e(LOG_TAG, ex.getMessage(), ex);
+                    Log.e(TAG, ex.getMessage(), ex);
                 } finally {
                     db.endTransaction();
                 }
             }
             
             if (version != DATABASE_VERSION) {
-                Log.w(LOG_TAG, "Destroying all old data.");
+                Log.w(TAG, "Destroying all old data.");
                 db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVORITES);
                 db.execSQL("DROP TABLE IF EXISTS " + TABLE_GESTURES);
                 onCreate(db);
@@ -444,7 +444,7 @@ public class LauncherProvider extends ContentProvider {
                 c = db.query(TABLE_FAVORITES, new String[] { Favorites._ID },
                         selectWhere, null, null, null, null);
                 
-                if (LOGD) Log.d(LOG_TAG, "found upgrade cursor count="+c.getCount());
+                if (LOGD) Log.d(TAG, "found upgrade cursor count=" + c.getCount());
                 
                 final ContentValues values = new ContentValues();
                 while (c != null && c.moveToNext()) {
@@ -454,7 +454,10 @@ public class LauncherProvider extends ContentProvider {
                     try {
                         int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
                         
-                        if (LOGD) Log.d(LOG_TAG, "allocated appWidgetId="+appWidgetId+" for favoriteId="+favoriteId);
+                        if (LOGD) {
+                            Log.d(TAG, "allocated appWidgetId=" + appWidgetId
+                                    + " for favoriteId=" + favoriteId);
+                        }
                         
                         values.clear();
                         values.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId);
@@ -468,13 +471,13 @@ public class LauncherProvider extends ContentProvider {
                         
                         allocatedAppWidgets = true;
                     } catch (RuntimeException ex) {
-                        Log.e(LOG_TAG, "Problem allocating appWidgetId", ex);
+                        Log.e(TAG, "Problem allocating appWidgetId", ex);
                     }
                 }
                 
                 db.setTransactionSuccessful();
             } catch (SQLException ex) {
-                Log.w(LOG_TAG, "Problem while allocating appWidgetIds for existing widgets", ex);
+                Log.w(TAG, "Problem while allocating appWidgetIds for existing widgets", ex);
             } finally {
                 db.endTransaction();
                 if (c != null) {
@@ -567,9 +570,9 @@ public class LauncherProvider extends ContentProvider {
                     a.recycle();
                 }
             } catch (XmlPullParserException e) {
-                Log.w(LOG_TAG, "Got exception parsing favorites.", e);
+                Log.w(TAG, "Got exception parsing favorites.", e);
             } catch (IOException e) {
-                Log.w(LOG_TAG, "Got exception parsing favorites.", e);
+                Log.w(TAG, "Got exception parsing favorites.", e);
             }
 
             return i;
@@ -594,7 +597,7 @@ public class LauncherProvider extends ContentProvider {
                 values.put(Favorites.SPANY, 1);
                 db.insert(TABLE_FAVORITES, null, values);
             } catch (PackageManager.NameNotFoundException e) {
-                Log.w(LOG_TAG, "Unable to add favorite: " + packageName +
+                Log.w(TAG, "Unable to add favorite: " + packageName +
                         "/" + className, e);
                 return false;
             }
@@ -634,7 +637,7 @@ public class LauncherProvider extends ContentProvider {
 
                 allocatedAppWidgets = true;
             } catch (RuntimeException ex) {
-                Log.e(LOG_TAG, "Problem allocating appWidgetId", ex);
+                Log.e(TAG, "Problem allocating appWidgetId", ex);
             }
 
             // If any appWidgetIds allocated, then launch over to binder
@@ -678,7 +681,7 @@ public class LauncherProvider extends ContentProvider {
                 
                 appWidgetManager.bindAppWidgetId(appWidgetId, cn);
             } catch (RuntimeException ex) {
-                Log.e(LOG_TAG, "Problem allocating appWidgetId", ex);
+                Log.e(TAG, "Problem allocating appWidgetId", ex);
             }
             
             return allocatedAppWidgets;
@@ -697,13 +700,12 @@ public class LauncherProvider extends ContentProvider {
                 uri = a.getString(R.styleable.Favorite_uri);
                 intent = Intent.parseUri(uri, 0);
             } catch (URISyntaxException e) {
-                Log.w(LauncherModel.TAG, "Shortcut has malformed uri: " + uri);
+                Log.w(TAG, "Shortcut has malformed uri: " + uri);
                 return false; // Oh well
             }
 
             if (iconResId == 0 || titleResId == 0) {
-                Log.w(LauncherModel.TAG,
-                        "Shortcut is missing title or icon resource ID");
+                Log.w(TAG, "Shortcut is missing title or icon resource ID");
                 return false;
             }
 

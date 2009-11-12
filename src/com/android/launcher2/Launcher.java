@@ -56,7 +56,6 @@ import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
-import static android.util.Log.*;
 import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
@@ -88,8 +87,7 @@ import java.io.DataInputStream;
  */
 public final class Launcher extends Activity
         implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks {
-    static final String LOG_TAG = "Launcher";
-    static final String TAG = LOG_TAG;
+    static final String TAG = "Launcher";
     static final boolean LOGD = false;
 
     static final boolean PROFILE_STARTUP = false;
@@ -200,14 +198,11 @@ public final class Launcher extends Activity
     private ArrayList<ItemInfo> mDesktopItems = new ArrayList<ItemInfo>();
     private static HashMap<Long, FolderInfo> mFolders = new HashMap<Long, FolderInfo>();
 
-    public static long lastStartTime;
     private ImageView mPreviousView;
     private ImageView mNextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        lastStartTime = SystemClock.uptimeMillis();
-
         super.onCreate(savedInstanceState);
 
         mModel = ((LauncherApplication)getApplication()).setLauncher(this);
@@ -408,10 +403,6 @@ public final class Launcher extends Activity
 
     @Override
     protected void onResume() {
-        if (lastStartTime == 0) {
-            lastStartTime = SystemClock.uptimeMillis();
-        }
-
         super.onResume();
 
         if (mRestoring) {
@@ -433,7 +424,7 @@ public final class Launcher extends Activity
                     try {
                         searchManagerService.stopSearch();
                     } catch (RemoteException e) {
-                        e(LOG_TAG, "error stopping search", e);
+                        Log.e(TAG, "error stopping search", e);
                     }
                 }
             });
@@ -667,7 +658,7 @@ public final class Launcher extends Activity
         try {
             activityInfo = packageManager.getActivityInfo(component, 0 /* no flags */);
         } catch (NameNotFoundException e) {
-            e(LOG_TAG, "Couldn't find ActivityInfo for selected application", e);
+            Log.e(TAG, "Couldn't find ActivityInfo for selected application", e);
         }
 
         if (activityInfo != null) {
@@ -719,7 +710,7 @@ public final class Launcher extends Activity
         Bundle extras = data.getExtras();
         int appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
 
-        if (LOGD) d(LOG_TAG, "dumping extras content=" + extras.toString());
+        if (LOGD) Log.d(TAG, "dumping extras content=" + extras.toString());
 
         AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
 
@@ -801,7 +792,7 @@ public final class Launcher extends Activity
                     final int id = resources.getIdentifier(iconResource.resourceName, null, null);
                     icon = resources.getDrawable(id);
                 } catch (Exception e) {
-                    w(LOG_TAG, "Could not load shortcut icon: " + extra);
+                    Log.w(TAG, "Could not load shortcut icon: " + extra);
                 }
             }
         }
@@ -929,7 +920,7 @@ public final class Launcher extends Activity
         try {
             mAppWidgetHost.stopListening();
         } catch (NullPointerException ex) {
-            w(LOG_TAG, "problem while stopping AppWidgetHost during Launcher destruction", ex);
+            Log.w(TAG, "problem while stopping AppWidgetHost during Launcher destruction", ex);
         }
 
         TextKeyListener.getInstance().release();
@@ -1239,7 +1230,7 @@ public final class Launcher extends Activity
                 final int id = resources.getIdentifier(iconResource.resourceName, null, null);
                 icon = resources.getDrawable(id);
             } catch (Exception e) {
-                w(LOG_TAG, "Could not load live folder icon: " + extra);
+                Log.w(TAG, "Could not load live folder icon: " + extra);
             }
         }
 
@@ -1403,7 +1394,6 @@ public final class Launcher extends Activity
         } else if (tag instanceof FolderInfo) {
             handleFolderClick((FolderInfo) tag);
         } else if (v == mHandleView) {
-            Log.d(TAG, "onClick");
             if (isAllAppsVisible()) {
                 closeAllApps(true);
             } else {
@@ -1420,7 +1410,7 @@ public final class Launcher extends Activity
             Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
         } catch (SecurityException e) {
             Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
-            e(LOG_TAG, "Launcher does not have the permission to launch " + intent +
+            Log.e(TAG, "Launcher does not have the permission to launch " + intent +
                     ". Make sure to create a MAIN intent-filter for the corresponding activity " +
                     "or use the exported attribute for this activity.", e);
         }
@@ -1974,7 +1964,6 @@ public final class Launcher extends Activity
     private class CloseSystemDialogsIntentReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "CloseSystemDialogsIntentReceiver.onReceiver intent=" + intent);
             closeSystemDialogs();
         }
     }
@@ -2143,7 +2132,6 @@ public final class Launcher extends Activity
             mSavedInstanceState = null;
         }
 
-        Log.d(TAG, "finishBindingItems done");
         mWorkspaceLoading = false;
     }
 
