@@ -104,7 +104,7 @@ public class AllAppsView extends RSSurfaceView
      */
     private int mLastSelectedIcon;
 
-    private VelocityTracker mVelocity;
+    private VelocityTracker mVelocityTracker;
     private int mTouchTracking;
     private int mMotionDownRawX;
     private int mMotionDownRawY;
@@ -114,9 +114,11 @@ public class AllAppsView extends RSSurfaceView
     private boolean mShouldGainFocus;
 
     private boolean mZoomDirty = false;
-    private float mNextZoom;
-    private boolean mNextAnimate;
-    AAMessage mMessageProc;
+    private boolean mAnimateNextZoom;
+    private float mZoom;
+    private float mPosX;
+    private float mVelocity;
+    private AAMessage mMessageProc;
 
     static class Defines {
         public static final int ALLOC_PARAMS = 0;
@@ -231,7 +233,7 @@ public class AllAppsView extends RSSurfaceView
                 if (mRollo.mState.iconCount > 0) {
                     if (mLastSelection == SELECTION_ICONS) {
                         int selection = mLastSelectedIcon;
-                        final int firstIcon = Math.round(mMessageProc.mPosX) *
+                        final int firstIcon = Math.round(mPosX) *
                             Defines.COLUMNS_PER_PAGE;
                         if (selection < 0 || // No selection
                                 selection < firstIcon || // off the top of the screen
@@ -286,7 +288,7 @@ public class AllAppsView extends RSSurfaceView
         if (!mArrowNavigation && mRollo.mState.iconCount > 0) {
             // Select the first icon when we gain keyboard focus
             mArrowNavigation = true;
-            mRollo.selectIcon(Math.round(mMessageProc.mPosX) * Defines.COLUMNS_PER_PAGE,
+            mRollo.selectIcon(Math.round(mPosX) * Defines.COLUMNS_PER_PAGE,
                     SELECTED_FOCUSED);
             mRollo.mState.save();
         }
@@ -322,7 +324,7 @@ public class AllAppsView extends RSSurfaceView
             mArrowNavigation = true;
 
             int currentSelection = mRollo.mState.selectedIconIndex;
-            int currentTopRow = Math.round(mMessageProc.mPosX);
+            int currentTopRow = Math.round(mPosX);
 
             // The column of the current selection, in the range 0..COLUMNS_PER_PAGE-1
             final int currentPageCol = currentSelection % Defines.COLUMNS_PER_PAGE;
@@ -451,7 +453,7 @@ public class AllAppsView extends RSSurfaceView
                     mRollo.clearSelectedIcon();
                 } else {
                     mDownIconIndex = mCurrentIconIndex
-                            = mRollo.selectIcon(x, y, mMessageProc.mPosX, SELECTED_PRESSED);
+                            = mRollo.selectIcon(x, y, mPosX, SELECTED_PRESSED);
                     if (mDownIconIndex < 0) {
                         // if nothing was selected, no long press.
                         cancelLongPress();
@@ -459,8 +461,8 @@ public class AllAppsView extends RSSurfaceView
                 }
                 mRollo.mState.save();
                 mRollo.move();
-                mVelocity = VelocityTracker.obtain();
-                mVelocity.addMovement(ev);
+                mVelocityTracker = VelocityTracker.obtain();
+                mVelocityTracker.addMovement(ev);
                 mStartedScrolling = false;
             }
             break;
@@ -479,7 +481,7 @@ public class AllAppsView extends RSSurfaceView
                 if (!mStartedScrolling && slop < mSlop) {
                     // don't update anything so when we do start scrolling
                     // below, we get the right delta.
-                    mCurrentIconIndex = mRollo.chooseTappedIcon(x, y, mMessageProc.mPosX);
+                    mCurrentIconIndex = mRollo.chooseTappedIcon(x, y, mPosX);
                     if (mDownIconIndex != mCurrentIconIndex) {
                         // If a different icon is selected, don't allow it to be picked up.
                         // This handles off-axis dragging.
@@ -497,7 +499,7 @@ public class AllAppsView extends RSSurfaceView
 
                     mStartedScrolling = true;
                     mRollo.clearSelectedIcon();
-                    mVelocity.addMovement(ev);
+                    mVelocityTracker.addMovement(ev);
                     mRollo.mState.save();
                 }
             }
@@ -518,15 +520,15 @@ public class AllAppsView extends RSSurfaceView
                 mRollo.mState.newTouchDown = 0;
                 mRollo.mState.newPositionX = ev.getRawY() / getHeight();
 
-                mVelocity.computeCurrentVelocity(1000 /* px/sec */, mMaxFlingVelocity);
-                mRollo.mState.flingVelocity = mVelocity.getYVelocity() / getHeight();
+                mVelocityTracker.computeCurrentVelocity(1000 /* px/sec */, mMaxFlingVelocity);
+                mRollo.mState.flingVelocity = mVelocityTracker.getYVelocity() / getHeight();
                 mRollo.clearSelectedIcon();
                 mRollo.mState.save();
                 mRollo.fling();
 
-                if (mVelocity != null) {
-                    mVelocity.recycle();
-                    mVelocity = null;
+                if (mVelocityTracker != null) {
+                    mVelocityTracker.recycle();
+                    mVelocityTracker = null;
                 }
             }
             mTouchTracking = TRACKING_NONE;
@@ -625,8 +627,8 @@ public class AllAppsView extends RSSurfaceView
         cancelLongPress();
         if (mRollo == null || !mRollo.mHasSurface) {
             mZoomDirty = true;
-            mNextZoom = zoom;
-            mNextAnimate = animate;
+            mZoom = zoom;
+            mAnimateNextZoom = animate;
             return;
         } else {
             mRollo.setZoom(zoom, animate);
@@ -634,27 +636,13 @@ public class AllAppsView extends RSSurfaceView
     }
 
     public boolean isVisible() {
-        if (mZoomDirty) {
-            return mNextZoom > 0.001f;
-        } else {
-            if (mMessageProc == null) {
-                return false;
-            } else {
-                return mMessageProc.mZoom > 0.001f;
-            }
-        }
+        Log.d(TAG, "isVisible mZoomDirty=" + mZoomDirty
+                + " mMessageProc=" + (mMessageProc == null ? "null" : mZoom));
+        return mZoom > 0.001f;
     }
 
     public boolean isOpaque() {
-        if (mZoomDirty) {
-            return mNextZoom > 0.999f;
-        } else {
-            if (mMessageProc == null) {
-                return false;
-            } else {
-                return mMessageProc.mZoom > 0.999f;
-            }
-        }
+        return mZoom > 0.999f;
     }
 
     public void setApps(ArrayList<ApplicationInfo> list) {
@@ -765,9 +753,6 @@ public class AllAppsView extends RSSurfaceView
             mZoom = ((float)mData[2]) / (1 << 16);
             mZoomDirty = false;
         }
-        float mZoom;
-        float mPosX;
-        float mVelocity;
     }
 
     public class RolloRS {
@@ -829,8 +814,8 @@ public class AllAppsView extends RSSurfaceView
         }
 
         private boolean checkClickOK() {
-            return (Math.abs(mMessageProc.mVelocity) < 0.4f) &&
-                   (Math.abs(mMessageProc.mPosX - Math.round(mMessageProc.mPosX)) < 0.4f);
+            return (Math.abs(mVelocity) < 0.4f) &&
+                   (Math.abs(mPosX - Math.round(mPosX)) < 0.4f);
         }
 
         class Params extends BaseAlloc {
@@ -1067,7 +1052,7 @@ public class AllAppsView extends RSSurfaceView
                     mAppsDirty = false;
                 }
                 if (mZoomDirty) {
-                    setZoom(mNextZoom, mNextAnimate);
+                    setZoom(mZoom, mAnimateNextZoom);
                 }
             }
         }
