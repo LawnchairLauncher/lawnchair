@@ -17,28 +17,23 @@
 
 <resources>
     <string-array name="wallpapers" translatable="false">
-        <item>wallpaper_bentgrass</item>
-        <item>wallpaper_canyon</item>
-        <item>wallpaper_desert</item>
-        <item>wallpaper_despair</item>
+        <item>wallpaper_nexusrain</item>
+        <item>wallpaper_darkgraylined</item>
+        <item>wallpaper_brown</item>
+        <item>wallpaper_nooneexpectsthe</item>
+        <item>wallpaper_lavadark</item>
+        <item>wallpaper_greencorr</item>
+        <item>wallpaper_pcut</item>
+        <item>wallpaper_hazybluedots</item>
+        <item>wallpaper_purple</item>
         <item>wallpaper_electric</item>
-        <item>wallpaper_fumes</item>
-        <item>wallpaper_goldengate</item>
         <item>wallpaper_grass</item>
-        <item>wallpaper_jellyfish</item>
-        <item>wallpaper_leaves</item>
         <item>wallpaper_monumentvalley</item>
-        <item>wallpaper_paradise</item>
-        <item>wallpaper_rainbokeh</item>
-        <item>wallpaper_ricefield</item>
-        <item>wallpaper_snow_leopard</item>
-        <item>wallpaper_sunset</item>
         <item>wallpaper_tree</item>
-        <item>wallpaper_valley</item>
         <item>wallpaper_zanzibar</item>
-        <item>wallpaper_grass_day</item>
-        <item>wallpaper_grass_dawn</item>
-        <item>wallpaper_grass_twilight</item>
+        <item>wallpaper_desert</item>
+        <item>wallpaper_canyon</item>
+        <item>wallpaper_goldengate</item>
         <item>wallpaper_grass_night</item>
         <item>wallpaper_galaxy</item>
     </string-array>
