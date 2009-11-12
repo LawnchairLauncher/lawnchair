@@ -84,7 +84,8 @@
             android:name="WallpaperChooser"
             android:label="@string/pick_wallpaper"
             android:icon="@drawable/ic_launcher_wallpaper"
-            android:screenOrientation="nosensor">
+            android:screenOrientation="nosensor"
+            android:finishOnCloseSystemDialogs="true">
             <intent-filter>
                 <action android:name="android.intent.action.SET_WALLPAPER" />
                 <category android:name="android.intent.category.DEFAULT" />
