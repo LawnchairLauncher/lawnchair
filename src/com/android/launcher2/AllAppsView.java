@@ -179,6 +179,8 @@ public class AllAppsView extends RSSurfaceView
     public void surfaceDestroyed(SurfaceHolder holder) {
         super.surfaceDestroyed(holder);
         mRollo.mHasSurface = false;
+        // Without this, we leak mMessageCallback which leaks the context.
+        mRS.mMessageCallback = null;
     }
 
     @Override
