@@ -50,7 +50,6 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.os.RemoteException;
 import android.os.ServiceManager;
-import android.os.SystemClock;
 import android.provider.LiveFolders;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
@@ -1519,7 +1518,6 @@ public final class Launcher extends Activity
                     for (int i = 0; i < count; i++) {
                         ((ImageView) group.getChildAt(i)).setImageDrawable(null);
                     }
-
                     ArrayList<Bitmap> bitmaps = (ArrayList<Bitmap>) v.getTag(R.id.icon);
                     for (Bitmap bitmap : bitmaps) bitmap.recycle();
 
@@ -1647,7 +1645,7 @@ public final class Launcher extends Activity
 
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
-                mWorkspace.snapToScreen((Integer) v.getTag());                
+                mWorkspace.snapToScreen((Integer) v.getTag());
             }
         }
     }
