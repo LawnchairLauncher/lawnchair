@@ -483,6 +483,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
+        /*
         final boolean allAppsOpaque = mLauncher.isAllAppsOpaque();
         if (mFading == allAppsOpaque) {
             invalidate();
@@ -494,6 +495,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             canvas.drawARGB(0xff, 0, 0, 0);
             return;
         }
+        */
 
         boolean restore = false;
         int restoreCount = 0;
