@@ -29,6 +29,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
 import android.os.Parcel;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -688,7 +689,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (mLauncher.isWorkspaceLocked() || mLauncher.isAllAppsVisible()) {
+        final boolean workspaceLocked = mLauncher.isWorkspaceLocked();
+        final boolean allAppsVisible = mLauncher.isAllAppsVisible();
+        Log.d(TAG, "workspaceLocked=" + workspaceLocked + " allAppsVisible=" + allAppsVisible);
+        if (workspaceLocked || allAppsVisible) {
             return false; // We don't want the events.  Let them fall through to the all apps view.
         }
 
