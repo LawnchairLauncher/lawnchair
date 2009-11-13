@@ -157,6 +157,13 @@ public class AllAppsView extends RSSurfaceView
         setOnLongClickListener(this);
         setZOrderOnTop(true);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
+
+        mRS = createRenderScript(true);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        destroyRenderScript();
     }
 
     /**
@@ -192,8 +199,7 @@ public class AllAppsView extends RSSurfaceView
 
         super.surfaceChanged(holder, format, w, h);
 
-        if (mRS == null) {
-            mRS = createRenderScript(true);
+        if (mRollo == null) {
             mRollo = new RolloRS();
             mRollo.mHasSurface = true;
             mRollo.init(getResources(), w, h);
@@ -204,11 +210,12 @@ public class AllAppsView extends RSSurfaceView
                 gainFocus();
                 mShouldGainFocus = false;
             }
-            mRollo.dirtyCheck();
         } else {
             mRollo.mHasSurface = true;
-            mRollo.dirtyCheck();
         }
+        mRollo.dirtyCheck();
+
+        mRS.mMessageCallback = mMessageProc = new AAMessage();
 
         mRS.mMessageCallback = mMessageProc = new AAMessage();
 
@@ -298,7 +305,7 @@ public class AllAppsView extends RSSurfaceView
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
         boolean handled = false;
-        
+
         if (!isVisible()) {
             return false;
         }
