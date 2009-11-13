@@ -279,6 +279,13 @@ public class DragController {
         return mDragging;
     }
 
+    /**
+     * Stop dragging without dropping.
+     */
+    public void cancelDrag() {
+        endDrag();
+    }
+
     private void endDrag() {
         if (mDragging) {
             mDragging = false;
@@ -426,7 +433,7 @@ public class DragController {
 
             break;
         case MotionEvent.ACTION_CANCEL:
-            endDrag();
+            cancelDrag();
         }
 
         return true;
