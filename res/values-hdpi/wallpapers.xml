@@ -17,18 +17,6 @@
 
 <resources>
     <string-array name="wallpapers" translatable="false">
-        <item>wallpaper_nexusrain</item>
-        <item>wallpaper_nexuswallpaper1</item>
-        <item>wallpaper_x67</item>
-        <item>wallpaper_bluegray</item>
-        <item>wallpaper_gray</item>
-        <item>wallpaper_greengray</item>
-        <item>wallpaper_redgray</item>
-        <item>wallpaper_brown</item>
-        <item>wallpaper_lavadark</item>
-        <item>wallpaper_pcut</item>
-        <item>wallpaper_hazybluedots</item>
-        <item>wallpaper_ropelights</item>
         <item>wallpaper_electric</item>
         <item>wallpaper_grass</item>
         <item>wallpaper_canyon</item>
@@ -42,5 +30,17 @@
         <item>wallpaper_goldengate</item>
         <item>wallpaper_grass_night</item>
         <item>wallpaper_galaxy</item>
+        <item>wallpaper_x67</item>
+        <item>wallpaper_nexusrain</item>
+        <item>wallpaper_nexuswallpaper1</item>
+        <item>wallpaper_brown</item>
+        <item>wallpaper_lavadark</item>
+        <item>wallpaper_pcut</item>
+        <item>wallpaper_hazybluedots</item>
+        <item>wallpaper_ropelights</item>
+        <item>wallpaper_bluegray</item>
+        <item>wallpaper_gray</item>
+        <item>wallpaper_greengray</item>
+        <item>wallpaper_redgray</item>
     </string-array>
 </resources>
