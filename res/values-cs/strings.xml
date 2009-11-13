@@ -15,7 +15,7 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name" msgid="4528470563311667177">"_Launcher2"</string>
+    <string name="application_name" msgid="8424725141379931883">"Launcher"</string>
     <string name="uid_name" msgid="3371120195364560632">"Android Core Apps"</string>
     <string name="folder_name" msgid="4588446541914685904">"Složka"</string>
     <string name="chooser_wallpaper" msgid="5988031014201479733">"Vybrat tapetu ze složky"</string>
@@ -45,6 +45,10 @@
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Zástupce <xliff:g id="NAME">%s</xliff:g> již existuje."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Vyberte zástupce"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"Vybrat složku"</string>
+    <!-- no translation found for all_apps_button_label (3953036962111614813) -->
+    <skip />
+    <!-- no translation found for all_apps_home_button_label (1022222300329398558) -->
+    <skip />
     <string name="menu_add" msgid="3065046628354640854">"Přidat"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"Tapeta"</string>
     <string name="menu_search" msgid="4826514464423239041">"Hledat"</string>
