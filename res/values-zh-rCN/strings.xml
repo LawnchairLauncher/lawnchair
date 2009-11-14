@@ -40,16 +40,14 @@
     <string name="add_clock" msgid="2337943840175865746">"时钟"</string>
     <string name="add_photo_frame" msgid="3154058437359487954">"相框"</string>
     <string name="add_search" msgid="7104834713685095105">"搜索"</string>
-    <string name="out_of_space" msgid="8365249326091984698">"此主屏幕上已没有更多空间。"</string>
+    <string name="out_of_space" msgid="8365249326091984698">"此主屏幕上已没有空间。"</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"已创建“<xliff:g id="NAME">%s</xliff:g>”快捷方式。"</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"已删除“<xliff:g id="NAME">%s</xliff:g>”快捷方式。"</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"“<xliff:g id="NAME">%s</xliff:g>”快捷方式已存在。"</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"选择快捷方式"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"选择文件夹"</string>
-    <!-- no translation found for all_apps_button_label (3953036962111614813) -->
-    <skip />
-    <!-- no translation found for all_apps_home_button_label (1022222300329398558) -->
-    <skip />
+    <string name="all_apps_button_label" msgid="3953036962111614813">"所有应用程序"</string>
+    <string name="all_apps_home_button_label" msgid="1022222300329398558">"主屏幕"</string>
     <string name="menu_add" msgid="3065046628354640854">"添加"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"壁纸"</string>
     <string name="menu_search" msgid="4826514464423239041">"搜索"</string>
