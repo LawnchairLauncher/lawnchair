@@ -52,7 +52,7 @@
 
     <ImageView
         android:id="@+id/previous_screen"
-        android:layout_width="53dip"
+        android:layout_width="93dip"
         android:layout_height="@dimen/button_bar_height"
         android:layout_gravity="bottom|left"
         android:layout_marginLeft="6dip"
@@ -66,7 +66,7 @@
 
     <ImageView
         android:id="@+id/next_screen"
-        android:layout_width="53dip"
+        android:layout_width="93dip"
         android:layout_height="@dimen/button_bar_height"
         android:layout_gravity="bottom|right"
         android:layout_marginRight="6dip"
