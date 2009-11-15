@@ -45,10 +45,8 @@
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Collegamento \"<xliff:g id="NAME">%s</xliff:g>\" già presente."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Seleziona collegamento"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"Seleziona cartella"</string>
-    <!-- no translation found for all_apps_button_label (3953036962111614813) -->
-    <skip />
-    <!-- no translation found for all_apps_home_button_label (1022222300329398558) -->
-    <skip />
+    <string name="all_apps_button_label" msgid="3953036962111614813">"Tutte le applicazioni"</string>
+    <string name="all_apps_home_button_label" msgid="1022222300329398558">"Home"</string>
     <string name="menu_add" msgid="3065046628354640854">"Aggiungi"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"Sfondo"</string>
     <string name="menu_search" msgid="4826514464423239041">"Cerca"</string>
