@@ -214,6 +214,7 @@ public class AllAppsView extends RSSurfaceView
             mRollo.mHasSurface = true;
         }
         mRollo.dirtyCheck();
+        mRollo.resize(w, h);
 
         mRS.mMessageCallback = mMessageProc = new AAMessage();
 
@@ -783,6 +784,7 @@ public class AllAppsView extends RSSurfaceView
         private ProgramVertex mPVOrtho;
         private SimpleMesh mMesh;
         private SimpleMesh mMesh2;
+        private ProgramVertex.MatrixAllocation mPVA;
 
         private Allocation mHomeButtonNormal;
         private Allocation mHomeButtonFocused;
@@ -914,15 +916,21 @@ public class AllAppsView extends RSSurfaceView
             mMesh2.setName("SMMesh");
         }
 
+        void resize(int w, int h) {
+            mPVA.setupProjectionNormalized(w, h);
+            mWidth = w;
+            mHeight = h;
+        }
+
         private void initProgramVertex() {
-            ProgramVertex.MatrixAllocation pva = new ProgramVertex.MatrixAllocation(mRS);
-            pva.setupProjectionNormalized(mWidth, mHeight);
+            mPVA = new ProgramVertex.MatrixAllocation(mRS);
+            resize(mWidth, mHeight);
 
             ProgramVertex.Builder pvb = new ProgramVertex.Builder(mRS, null, null);
             pvb.setTextureMatrixEnable(true);
             mPV = pvb.create();
             mPV.setName("PV");
-            mPV.bindAllocation(pva);
+            mPV.bindAllocation(mPVA);
 
             //pva = new ProgramVertex.MatrixAllocation(mRS);
             //pva.setupOrthoWindow(mWidth, mHeight);
