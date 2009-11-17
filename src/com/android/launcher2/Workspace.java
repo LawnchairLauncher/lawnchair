@@ -139,6 +139,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         mDefaultScreen = a.getInt(R.styleable.Workspace_defaultScreen, 1);
         a.recycle();
 
+        setHapticFeedbackEnabled(false);
         initWorkspace();
     }
 
@@ -352,6 +353,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         }
         group.addView(child, insert ? 0 : -1, lp);
         if (!(child instanceof Folder)) {
+            child.setHapticFeedbackEnabled(false);
             child.setOnLongClickListener(mLongClickListener);
         }
         if (child instanceof DropTarget) {
@@ -426,10 +428,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         if (vacant) {
             group.addView(child,
                     new CellLayout.LayoutParams(mTempCell[0], mTempCell[1], spanX, spanY));
+            child.setHapticFeedbackEnabled(false);
             child.setOnLongClickListener(mLongClickListener);
-            if (!(child instanceof Folder)) {
-                child.setOnLongClickListener(mLongClickListener);
-            }
             if (child instanceof DropTarget) {
                 mDragController.addDropTarget((DropTarget)child);
             }
@@ -1094,6 +1094,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         }
 
         cellLayout.addView(view, insertAtFirst ? 0 : -1);
+        view.setHapticFeedbackEnabled(false);
         view.setOnLongClickListener(mLongClickListener);
         if (view instanceof DropTarget) {
             mDragController.addDropTarget((DropTarget) view);
