@@ -326,7 +326,7 @@ public class AllAppsView extends RSSurfaceView
             }
         }
 
-        if (mArrowNavigation && iconCount > 0) {
+        if (iconCount > 0) {
             mArrowNavigation = true;
 
             int currentSelection = mRollo.mState.selectedIconIndex;
@@ -367,6 +367,8 @@ public class AllAppsView extends RSSurfaceView
                     } else if (currentTopRow > 0) {
                         newSelection = currentSelection - Defines.COLUMNS_PER_PAGE;
                         mRollo.moveTo(newSelection / Defines.COLUMNS_PER_PAGE);
+                    } else {
+                        newSelection = Defines.COLUMNS_PER_PAGE * (Defines.ROWS_PER_PAGE-1);
                     }
                 }
                 handled = true;
@@ -379,7 +381,11 @@ public class AllAppsView extends RSSurfaceView
                 if (mLastSelection != SELECTION_HOME) {
                     if (currentRow < rowCount-1) {
                         mRollo.setHomeSelected(SELECTED_NONE);
-                        newSelection = currentSelection + Defines.COLUMNS_PER_PAGE;
+                        if (currentSelection < 0) {
+                            newSelection = 0;
+                        } else {
+                            newSelection = currentSelection + Defines.COLUMNS_PER_PAGE;
+                        }
                         if (newSelection >= iconCount) {
                             // Go from D to G in this arrangement:
                             //     A B C D
@@ -606,7 +612,6 @@ public class AllAppsView extends RSSurfaceView
                 break;
             }
             if (text != null) {
-                Log.d(TAG, "dispatchPopulateAccessibilityEvent setting text=" + text);
                 event.setEnabled(true);
                 event.getText().add(text);
                 //event.setContentDescription(text);
@@ -642,8 +647,6 @@ public class AllAppsView extends RSSurfaceView
     }
 
     public boolean isVisible() {
-        Log.d(TAG, "isVisible mZoomDirty=" + mZoomDirty
-                + " mMessageProc=" + (mMessageProc == null ? "null" : mZoom));
         return mZoom > 0.001f;
     }
 
@@ -1342,7 +1345,6 @@ public class AllAppsView extends RSSurfaceView
 
                 if (prev != index) {
                     if (info.title != null && info.title.length() > 0) {
-                        Log.d(TAG, "sendAccessibilityEvent SELECTION_ICONS " + info.title);
                         //setContentDescription(info.title);
                         sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
                     }
@@ -1367,7 +1369,6 @@ public class AllAppsView extends RSSurfaceView
                 mLastSelection = SELECTION_HOME;
                 mState.homeButtonId = mHomeButtonFocused.getID();
                 if (prev != SELECTION_HOME) {
-                    Log.d(TAG, "sendAccessibilityEvent SELECTION_HOME");
                     sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
                 }
                 break;
