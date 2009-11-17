@@ -616,6 +616,7 @@ public class LauncherModel extends BroadcastReceiver {
 
                 mItems.clear();
                 mAppWidgets.clear();
+                mFolders.clear();
 
                 final Cursor c = contentResolver.query(
                         LauncherSettings.Favorites.CONTENT_URI, null, null, null, null);
