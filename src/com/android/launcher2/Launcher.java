@@ -48,6 +48,7 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.SystemProperties;
 import android.provider.LiveFolders;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
@@ -1321,6 +1322,12 @@ public final class Launcher extends Activity
                     return true;
                 case KeyEvent.KEYCODE_HOME:
                     return true;
+                case KeyEvent.KEYCODE_VOLUME_DOWN:
+                    if (SystemProperties.getInt("launcher2.dumpstate", 0) != 0) {
+                        dumpState();
+                        return true;
+                    }
+                    break;
             }
         } else if (event.getAction() == KeyEvent.ACTION_UP) {
             switch (event.getKeyCode()) {
@@ -2191,5 +2198,15 @@ public final class Launcher extends Activity
         removeDialog(DIALOG_CREATE_SHORTCUT);
         mWorkspace.removeShortcutsForPackage(packageName);
         mAllAppsGrid.removeApps(apps);
+    }
+
+    /**
+     * Prints out out state for debugging.
+     */
+    public void dumpState() {
+        Log.d(TAG, "BEGIN launcher2 dump state for launcher " + this);
+        mModel.dumpState();
+        mAllAppsGrid.dumpState();
+        Log.d(TAG, "END launcher2 dump state");
     }
 }
