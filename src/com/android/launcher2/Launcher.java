@@ -48,6 +48,7 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.SystemProperties;
 import android.provider.LiveFolders;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
@@ -55,6 +56,7 @@ import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.Log;
 import android.view.Display;
+import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -563,7 +565,9 @@ public final class Launcher extends Activity
         Drawable next = mNextView.getDrawable();
         mWorkspace.setIndicators(previous, next);
 
+        mPreviousView.setHapticFeedbackEnabled(false);
         mPreviousView.setOnLongClickListener(this);
+        mNextView.setHapticFeedbackEnabled(false);
         mNextView.setOnLongClickListener(this);
 
         workspace.setOnLongClickListener(this);
@@ -1318,6 +1322,12 @@ public final class Launcher extends Activity
                     return true;
                 case KeyEvent.KEYCODE_HOME:
                     return true;
+                case KeyEvent.KEYCODE_VOLUME_DOWN:
+                    if (SystemProperties.getInt("launcher2.dumpstate", 0) != 0) {
+                        dumpState();
+                        return true;
+                    }
+                    break;
             }
         } else if (event.getAction() == KeyEvent.ACTION_UP) {
             switch (event.getKeyCode()) {
@@ -1469,10 +1479,18 @@ public final class Launcher extends Activity
     public boolean onLongClick(View v) {
         switch (v.getId()) {
             case R.id.previous_screen:
-                showPreviousPreview(v);
+                if (!isAllAppsVisible()) {
+                    mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
+                            HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                    showPreviousPreview(v);
+                }
                 return true;
             case R.id.next_screen:
-                showNextPreview(v);
+                if (!isAllAppsVisible()) {
+                    mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
+                            HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                    showNextPreview(v);
+                }
                 return true;
         }
 
@@ -1501,6 +1519,8 @@ public final class Launcher extends Activity
             } else {
                 if (!(cellInfo.cell instanceof Folder)) {
                     // User long pressed on an item
+                    mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
+                            HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                     mWorkspace.startDrag(cellInfo);
                 }
             }
@@ -2178,5 +2198,15 @@ public final class Launcher extends Activity
         removeDialog(DIALOG_CREATE_SHORTCUT);
         mWorkspace.removeShortcutsForPackage(packageName);
         mAllAppsGrid.removeApps(apps);
+    }
+
+    /**
+     * Prints out out state for debugging.
+     */
+    public void dumpState() {
+        Log.d(TAG, "BEGIN launcher2 dump state for launcher " + this);
+        mModel.dumpState();
+        mAllAppsGrid.dumpState();
+        Log.d(TAG, "END launcher2 dump state");
     }
 }
