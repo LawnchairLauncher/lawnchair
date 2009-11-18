@@ -1000,6 +1000,27 @@ public class LauncherModel extends BroadcastReceiver {
                     });
                 }
             }
+
+            public void dumpState() {
+                Log.d(TAG, "mLoader.mLoaderThread.mContext=" + mContext);
+                Log.d(TAG, "mLoader.mLoaderThread.mWaitThread=" + mWaitThread);
+                Log.d(TAG, "mLoader.mLoaderThread.mIsLaunching=" + mIsLaunching);
+                Log.d(TAG, "mLoader.mLoaderThread.mStopped=" + mStopped);
+                Log.d(TAG, "mLoader.mLoaderThread.mWorkspaceDoneBinding=" + mWorkspaceDoneBinding);
+            }
+        }
+
+        public void dumpState() {
+            Log.d(TAG, "mLoader.mLastWorkspaceSeq=" + mLoader.mLastWorkspaceSeq);
+            Log.d(TAG, "mLoader.mWorkspaceSeq=" + mLoader.mWorkspaceSeq);
+            Log.d(TAG, "mLoader.mLastAllAppsSeq=" + mLoader.mLastAllAppsSeq);
+            Log.d(TAG, "mLoader.mAllAppsSeq=" + mLoader.mAllAppsSeq);
+            Log.d(TAG, "mLoader.mItems size=" + mLoader.mItems.size());
+            if (mLoaderThread != null) {
+                mLoaderThread.dumpState();
+            } else {
+                Log.d(TAG, "mLoader.mLoaderThread=null");
+            }
         }
     }
 
@@ -1208,4 +1229,14 @@ public class LauncherModel extends BroadcastReceiver {
             return sCollator.compare(a.title.toString(), b.title.toString());
         }
     };
+
+    public void dumpState() {
+        Log.d(TAG, "mBeforeFirstLoad=" + mBeforeFirstLoad);
+        Log.d(TAG, "mCallbacks=" + mCallbacks);
+        ApplicationInfo.dumpApplicationInfoList(TAG, "mAllAppsList.data", mAllAppsList.data);
+        ApplicationInfo.dumpApplicationInfoList(TAG, "mAllAppsList.added", mAllAppsList.added);
+        ApplicationInfo.dumpApplicationInfoList(TAG, "mAllAppsList.removed", mAllAppsList.removed);
+        ApplicationInfo.dumpApplicationInfoList(TAG, "mAllAppsList.modified", mAllAppsList.modified);
+        mLoader.dumpState();
+    }
 }
