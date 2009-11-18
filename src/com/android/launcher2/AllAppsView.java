@@ -49,6 +49,7 @@ import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityEvent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -1376,6 +1377,69 @@ public class AllAppsView extends RSSurfaceView
                 mState.homeButtonId = mHomeButtonPressed.getID();
                 break;
             }
+        }
+
+        public void dumpState() {
+            Log.d(TAG, "mRollo.mWidth=" + mWidth);
+            Log.d(TAG, "mRollo.mHeight=" + mHeight);
+            Log.d(TAG, "mRollo.mIcons=" + mIcons);
+            if (mIcons != null) {
+                Log.d(TAG, "mRollo.mIcons.length=" + mIcons.length);
+            }
+            if (mIconIds != null) {
+                Log.d(TAG, "mRollo.mIconIds.length=" + mIconIds.length);
+            }
+            Log.d(TAG, "mRollo.mIconIds=" +  Arrays.toString(mIconIds));
+            if (mLabelIds != null) {
+                Log.d(TAG, "mRollo.mLabelIds.length=" + mLabelIds.length);
+            }
+            Log.d(TAG, "mRollo.mLabelIds=" +  Arrays.toString(mLabelIds));
+            Log.d(TAG, "mRollo.mTouchXBorders=" +  Arrays.toString(mTouchXBorders));
+            Log.d(TAG, "mRollo.mTouchYBorders=" +  Arrays.toString(mTouchYBorders));
+            Log.d(TAG, "mRollo.mHasSurface=" + mHasSurface);
+            Log.d(TAG, "mRollo.mAppsDirty=" + mAppsDirty);
+            Log.d(TAG, "mRollo.mState.newPositionX=" + mState.newPositionX);
+            Log.d(TAG, "mRollo.mState.newTouchDown=" + mState.newTouchDown);
+            Log.d(TAG, "mRollo.mState.flingVelocity=" + mState.flingVelocity);
+            Log.d(TAG, "mRollo.mState.iconCount=" + mState.iconCount);
+            Log.d(TAG, "mRollo.mState.selectedIconIndex=" + mState.selectedIconIndex);
+            Log.d(TAG, "mRollo.mState.selectedIconTexture=" + mState.selectedIconTexture);
+            Log.d(TAG, "mRollo.mState.zoomTarget=" + mState.zoomTarget);
+            Log.d(TAG, "mRollo.mState.homeButtonId=" + mState.homeButtonId);
+            Log.d(TAG, "mRollo.mState.targetPos=" + mState.targetPos);
+            Log.d(TAG, "mRollo.mParams.bubbleWidth=" + mParams.bubbleWidth);
+            Log.d(TAG, "mRollo.mParams.bubbleHeight=" + mParams.bubbleHeight);
+            Log.d(TAG, "mRollo.mParams.bubbleBitmapWidth=" + mParams.bubbleBitmapWidth);
+            Log.d(TAG, "mRollo.mParams.bubbleBitmapHeight=" + mParams.bubbleBitmapHeight);
+            Log.d(TAG, "mRollo.mParams.homeButtonWidth=" + mParams.homeButtonWidth);
+            Log.d(TAG, "mRollo.mParams.homeButtonHeight=" + mParams.homeButtonHeight);
+            Log.d(TAG, "mRollo.mParams.homeButtonTextureWidth=" + mParams.homeButtonTextureWidth);
+            Log.d(TAG, "mRollo.mParams.homeButtonTextureHeight=" + mParams.homeButtonTextureHeight);
+        }
+    }
+
+    public void dumpState() {
+        Log.d(TAG, "mRS=" + mRS);
+        Log.d(TAG, "mRollo=" + mRollo);
+        ApplicationInfo.dumpApplicationInfoList(TAG, "mAllAppsList", mAllAppsList);
+        Log.d(TAG, "mArrowNavigation=" + mArrowNavigation);
+        Log.d(TAG, "mStartedScrolling=" + mStartedScrolling);
+        Log.d(TAG, "mLastSelection=" + mLastSelection);
+        Log.d(TAG, "mLastSelectedIcon=" + mLastSelectedIcon);
+        Log.d(TAG, "mVelocityTracker=" + mVelocityTracker);
+        Log.d(TAG, "mTouchTracking=" + mTouchTracking);
+        Log.d(TAG, "mShouldGainFocus=" + mShouldGainFocus);
+        Log.d(TAG, "mZoomDirty=" + mZoomDirty);
+        Log.d(TAG, "mAnimateNextZoom=" + mAnimateNextZoom);
+        Log.d(TAG, "mZoom=" + mZoom);
+        Log.d(TAG, "mPosX=" + mPosX);
+        Log.d(TAG, "mVelocity=" + mVelocity);
+        Log.d(TAG, "mMessageProc=" + mMessageProc);
+        if (mRollo != null) {
+            mRollo.dumpState();
+        }
+        if (mRS != null) {
+            mRS.contextDump(0);
         }
     }
 }
