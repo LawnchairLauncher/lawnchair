@@ -21,6 +21,9 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
+
+import java.util.ArrayList;
 
 /**
  * Represents a launchable application. An application is made of a name (or title),
@@ -139,5 +142,16 @@ class ApplicationInfo extends ItemInfo {
     void unbind() {
         super.unbind();
         icon.setCallback(null);
+    }
+
+
+    public static void dumpApplicationInfoList(String tag, String label,
+            ArrayList<ApplicationInfo> list) {
+        Log.d(tag, label + " size=" + list.size());
+        for (ApplicationInfo info: list) {
+            Log.d(tag, "   title=\"" + info.title + "\" titleBitmap=" + info.titleBitmap
+                    + " icon=" + info.icon + " iconBitmap=" + info.iconBitmap
+                    + " filtered=" + info.filtered + " customIcon=" + info.customIcon);
+        }
     }
 }
