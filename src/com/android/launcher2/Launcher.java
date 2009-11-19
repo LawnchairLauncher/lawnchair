@@ -1332,7 +1332,7 @@ public final class Launcher extends Activity
         } else if (event.getAction() == KeyEvent.ACTION_UP) {
             switch (event.getKeyCode()) {
                 case KeyEvent.KEYCODE_BACK:
-                    if (!event.isCanceled()) {
+                    if (event.isTracking() && !event.isCanceled()) {
                         mWorkspace.dispatchKeyEvent(event);
                         if (isAllAppsVisible()) {
                             closeAllApps(true);
