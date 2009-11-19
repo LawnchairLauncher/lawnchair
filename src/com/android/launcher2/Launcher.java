@@ -1908,7 +1908,11 @@ public final class Launcher extends Activity
         }
 
         private void cleanup() {
-            dismissDialog(DIALOG_CREATE_SHORTCUT);
+            try {
+                dismissDialog(DIALOG_CREATE_SHORTCUT);
+            } catch (Exception e) {
+                // An exception is thrown if the dialog is not visible, which is fine
+            }
         }
 
         /**
