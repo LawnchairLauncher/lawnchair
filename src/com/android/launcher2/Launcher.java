@@ -1332,7 +1332,7 @@ public final class Launcher extends Activity
         } else if (event.getAction() == KeyEvent.ACTION_UP) {
             switch (event.getKeyCode()) {
                 case KeyEvent.KEYCODE_BACK:
-                    if (!event.isCanceled()) {
+                    if (event.isTracking() && !event.isCanceled()) {
                         mWorkspace.dispatchKeyEvent(event);
                         if (isAllAppsVisible()) {
                             closeAllApps(true);
@@ -2205,6 +2205,14 @@ public final class Launcher extends Activity
      */
     public void dumpState() {
         Log.d(TAG, "BEGIN launcher2 dump state for launcher " + this);
+        Log.d(TAG, "mSavedState=" + mSavedState);
+        Log.d(TAG, "mIsNewIntent=" + mIsNewIntent);
+        Log.d(TAG, "mWorkspaceLoading=" + mWorkspaceLoading);
+        Log.d(TAG, "mRestoring=" + mRestoring);
+        Log.d(TAG, "mWaitingForResult=" + mWaitingForResult);
+        Log.d(TAG, "mSavedInstanceState=" + mSavedInstanceState);
+        Log.d(TAG, "mDesktopItems.size=" + mDesktopItems.size());
+        Log.d(TAG, "mFolders.size=" + mFolders.size());
         mModel.dumpState();
         mAllAppsGrid.dumpState();
         Log.d(TAG, "END launcher2 dump state");
