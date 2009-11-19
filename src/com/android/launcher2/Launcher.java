@@ -1323,8 +1323,6 @@ public final class Launcher extends Activity
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             switch (event.getKeyCode()) {
-                case KeyEvent.KEYCODE_BACK:
-                    return true;
                 case KeyEvent.KEYCODE_HOME:
                     return true;
                 case KeyEvent.KEYCODE_VOLUME_DOWN:
@@ -1336,24 +1334,23 @@ public final class Launcher extends Activity
             }
         } else if (event.getAction() == KeyEvent.ACTION_UP) {
             switch (event.getKeyCode()) {
-                case KeyEvent.KEYCODE_BACK:
-                    if (event.isTracking() && !event.isCanceled()) {
-                        mWorkspace.dispatchKeyEvent(event);
-                        if (isAllAppsVisible()) {
-                            closeAllApps(true);
-                        } else {
-                            closeFolder();
-                        }
-                        dismissPreview(mPreviousView);
-                        dismissPreview(mNextView);
-                    }
-                    return true;
                 case KeyEvent.KEYCODE_HOME:
                     return true;
             }
         }
 
         return super.dispatchKeyEvent(event);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isAllAppsVisible()) {
+            closeAllApps(true);
+        } else {
+            closeFolder();
+        }
+        dismissPreview(mPreviousView);
+        dismissPreview(mNextView);
     }
 
     private void closeFolder() {
