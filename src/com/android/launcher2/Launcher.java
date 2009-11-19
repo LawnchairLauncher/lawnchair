@@ -819,7 +819,7 @@ public final class Launcher extends Activity
     }
 
     void closeSystemDialogs() {
-        closeAllApps(false);
+        closeAllApps(true);
         getWindow().closeAllPanels();
 
         try {
@@ -854,11 +854,13 @@ public final class Launcher extends Activity
             // for example onResume being called when the user pressed the 'back' button.
             mIsNewIntent = true;
 
+            boolean alreadyOnHome = ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
+                        != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+            boolean allAppsVisible = isAllAppsVisible();
             if (!mWorkspace.isDefaultScreenShowing()) {
-                mWorkspace.moveToDefaultScreen();
+                mWorkspace.moveToDefaultScreen(alreadyOnHome && !allAppsVisible);
             }
-
-            closeAllApps(false);
+            closeAllApps(alreadyOnHome && allAppsVisible);
 
             final View v = getWindow().peekDecorView();
             if (v != null && v.getWindowToken() != null) {
