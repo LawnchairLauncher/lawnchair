@@ -980,7 +980,9 @@ public class LauncherModel extends BroadcastReceiver {
 
             private void bindAllApps() {
                 synchronized (mLock) {
-                    final ArrayList<ApplicationInfo> results = mAllAppsList.added;
+                    final ArrayList<ApplicationInfo> results
+                            = (ArrayList<ApplicationInfo>)mAllAppsList.data.clone();
+                    // We're adding this now, so clear out this so we don't re-send them.
                     mAllAppsList.added = new ArrayList<ApplicationInfo>();
                     mHandler.post(new Runnable() {
                         public void run() {
