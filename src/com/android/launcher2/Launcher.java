@@ -831,6 +831,9 @@ public final class Launcher extends Activity
         } catch (Exception e) {
             // An exception is thrown if the dialog is not visible, which is fine
         }
+
+        // Whatever we were doing is hereby canceled.
+        mWaitingForResult = false;
     }
 
     @Override
@@ -839,10 +842,8 @@ public final class Launcher extends Activity
 
         // Close the menu
         if (Intent.ACTION_MAIN.equals(intent.getAction())) {
+            // also will cancel mWaitingForResult.
             closeSystemDialogs();
-
-            // Whatever we were doing is hereby canceled.
-            mWaitingForResult = false;
 
             // Set this flag so that onResume knows to close the search dialog if it's open,
             // because this was a new intent (thus a press of 'home' or some such) rather than
