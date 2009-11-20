@@ -589,12 +589,16 @@ public final class Launcher extends Activity
 
     @SuppressWarnings({"UnusedDeclaration"})
     public void previousScreen(View v) {
-        mWorkspace.scrollLeft();
+        if (!isAllAppsVisible()) {
+            mWorkspace.scrollLeft();
+        }
     }
 
     @SuppressWarnings({"UnusedDeclaration"})
     public void nextScreen(View v) {
-        mWorkspace.scrollRight();
+        if (!isAllAppsVisible()) {
+            mWorkspace.scrollRight();
+        }
     }
     
     /**
