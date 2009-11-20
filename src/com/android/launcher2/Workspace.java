@@ -947,6 +947,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     void snapToScreen(int whichScreen) {
+        snapToScreen(whichScreen, true);
+    }
+
+    void snapToScreen(int whichScreen, boolean animate) {
         //if (!mScroller.isFinished()) return;
 
         whichScreen = Math.max(0, Math.min(whichScreen, getChildCount() - 1));
@@ -970,7 +974,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         final int delta = newX - mScrollX;
         final int duration = screenDelta * 300;
         awakenScrollBars(duration);
-        mScroller.startScroll(mScrollX, 0, delta, 0, duration);
+        // 1ms is close to don't animate
+        mScroller.startScroll(mScrollX, 0, delta, 0, animate ? duration : 1);
         invalidate();
     }
 
@@ -1420,8 +1425,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         }
     }
 
-    void moveToDefaultScreen() {
-        snapToScreen(mDefaultScreen);
+    void moveToDefaultScreen(boolean animate) {
+        snapToScreen(mDefaultScreen, animate);
         getChildAt(mDefaultScreen).requestFocus();
     }
 
