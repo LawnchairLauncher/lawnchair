@@ -278,8 +278,6 @@ public class LauncherModel extends BroadcastReceiver {
         ArrayList<ApplicationInfo> added = null;
         ArrayList<ApplicationInfo> removed = null;
         ArrayList<ApplicationInfo> modified = null;
-        boolean update = false;
-        boolean remove = false;
 
         synchronized (mLock) {
             if (mBeforeFirstLoad) {
@@ -298,11 +296,9 @@ public class LauncherModel extends BroadcastReceiver {
 
             if (Intent.ACTION_PACKAGE_CHANGED.equals(action)) {
                 mAllAppsList.updatePackage(context, packageName);
-                update = true;
             } else if (Intent.ACTION_PACKAGE_REMOVED.equals(action)) {
                 if (!replacing) {
                     mAllAppsList.removePackage(packageName);
-                    remove = true;
                 }
                 // else, we are replacing the package, so a PACKAGE_ADDED will be sent
                 // later, we will update the package at this time
@@ -311,7 +307,6 @@ public class LauncherModel extends BroadcastReceiver {
                     mAllAppsList.addPackage(context, packageName);
                 } else {
                     mAllAppsList.updatePackage(context, packageName);
-                    update = true;
                 }
             }
 
@@ -345,7 +340,7 @@ public class LauncherModel extends BroadcastReceiver {
                     }
                 });
             }
-            if (update || modified != null) {
+            if (modified != null) {
                 final ArrayList<ApplicationInfo> modifiedFinal = modified;
                 mHandler.post(new Runnable() {
                     public void run() {
@@ -353,7 +348,7 @@ public class LauncherModel extends BroadcastReceiver {
                     }
                 });
             }
-            if (remove || removed != null) {
+            if (removed != null) {
                 final ArrayList<ApplicationInfo> removedFinal = removed;
                 mHandler.post(new Runnable() {
                     public void run() {
@@ -980,7 +975,9 @@ public class LauncherModel extends BroadcastReceiver {
 
             private void bindAllApps() {
                 synchronized (mLock) {
-                    final ArrayList<ApplicationInfo> results = mAllAppsList.added;
+                    final ArrayList<ApplicationInfo> results
+                            = (ArrayList<ApplicationInfo>)mAllAppsList.data.clone();
+                    // We're adding this now, so clear out this so we don't re-send them.
                     mAllAppsList.added = new ArrayList<ApplicationInfo>();
                     mHandler.post(new Runnable() {
                         public void run() {

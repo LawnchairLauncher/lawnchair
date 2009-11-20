@@ -589,12 +589,16 @@ public final class Launcher extends Activity
 
     @SuppressWarnings({"UnusedDeclaration"})
     public void previousScreen(View v) {
-        mWorkspace.scrollLeft();
+        if (!isAllAppsVisible()) {
+            mWorkspace.scrollLeft();
+        }
     }
 
     @SuppressWarnings({"UnusedDeclaration"})
     public void nextScreen(View v) {
-        mWorkspace.scrollRight();
+        if (!isAllAppsVisible()) {
+            mWorkspace.scrollRight();
+        }
     }
     
     /**
@@ -815,7 +819,7 @@ public final class Launcher extends Activity
     }
 
     void closeSystemDialogs() {
-        closeAllApps(false);
+        closeAllApps(true);
         getWindow().closeAllPanels();
 
         try {
@@ -831,6 +835,9 @@ public final class Launcher extends Activity
         } catch (Exception e) {
             // An exception is thrown if the dialog is not visible, which is fine
         }
+
+        // Whatever we were doing is hereby canceled.
+        mWaitingForResult = false;
     }
 
     @Override
@@ -839,21 +846,21 @@ public final class Launcher extends Activity
 
         // Close the menu
         if (Intent.ACTION_MAIN.equals(intent.getAction())) {
+            // also will cancel mWaitingForResult.
             closeSystemDialogs();
-
-            // Whatever we were doing is hereby canceled.
-            mWaitingForResult = false;
 
             // Set this flag so that onResume knows to close the search dialog if it's open,
             // because this was a new intent (thus a press of 'home' or some such) rather than
             // for example onResume being called when the user pressed the 'back' button.
             mIsNewIntent = true;
 
+            boolean alreadyOnHome = ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
+                        != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+            boolean allAppsVisible = isAllAppsVisible();
             if (!mWorkspace.isDefaultScreenShowing()) {
-                mWorkspace.moveToDefaultScreen();
+                mWorkspace.moveToDefaultScreen(alreadyOnHome && !allAppsVisible);
             }
-
-            closeAllApps(false);
+            closeAllApps(alreadyOnHome && allAppsVisible);
 
             final View v = getWindow().peekDecorView();
             if (v != null && v.getWindowToken() != null) {
@@ -1318,8 +1325,6 @@ public final class Launcher extends Activity
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             switch (event.getKeyCode()) {
-                case KeyEvent.KEYCODE_BACK:
-                    return true;
                 case KeyEvent.KEYCODE_HOME:
                     return true;
                 case KeyEvent.KEYCODE_VOLUME_DOWN:
@@ -1331,24 +1336,23 @@ public final class Launcher extends Activity
             }
         } else if (event.getAction() == KeyEvent.ACTION_UP) {
             switch (event.getKeyCode()) {
-                case KeyEvent.KEYCODE_BACK:
-                    if (event.isTracking() && !event.isCanceled()) {
-                        mWorkspace.dispatchKeyEvent(event);
-                        if (isAllAppsVisible()) {
-                            closeAllApps(true);
-                        } else {
-                            closeFolder();
-                        }
-                        dismissPreview(mPreviousView);
-                        dismissPreview(mNextView);
-                    }
-                    return true;
                 case KeyEvent.KEYCODE_HOME:
                     return true;
             }
         }
 
         return super.dispatchKeyEvent(event);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isAllAppsVisible()) {
+            closeAllApps(true);
+        } else {
+            closeFolder();
+        }
+        dismissPreview(mPreviousView);
+        dismissPreview(mNextView);
     }
 
     private void closeFolder() {
@@ -1904,7 +1908,11 @@ public final class Launcher extends Activity
         }
 
         private void cleanup() {
-            dismissDialog(DIALOG_CREATE_SHORTCUT);
+            try {
+                dismissDialog(DIALOG_CREATE_SHORTCUT);
+            } catch (Exception e) {
+                // An exception is thrown if the dialog is not visible, which is fine
+            }
         }
 
         /**
