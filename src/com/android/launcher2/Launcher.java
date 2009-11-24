@@ -418,13 +418,7 @@ public final class Launcher extends Activity
             // itself again.
             mWorkspace.post(new Runnable() {
                 public void run() {
-                    ISearchManager searchManagerService = ISearchManager.Stub.asInterface(
-                            ServiceManager.getService(Context.SEARCH_SERVICE));
-                    try {
-                        searchManagerService.stopSearch();
-                    } catch (RemoteException e) {
-                        Log.e(TAG, "error stopping search", e);
-                    }
+                    stopSearch();
                 }
             });
         }
