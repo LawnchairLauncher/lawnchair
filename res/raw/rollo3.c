@@ -378,10 +378,11 @@ void drawStrip(float row, float column, int isTop, int iconNum, float p)
         offset = positionStrip(row + 0.73f, column, isTop, p, 1);
     }
     if (offset < -20) return;
+    if (offset > 200) return;
     bindTexture(NAMED_PFTexMip, 0, loadI32(ALLOC_LABEL_IDS, iconNum));
     offset = clamp(offset, 0, 199 - 20);
-    //drawSimpleMeshRange(NAMED_SMMesh, offset * 6, 20 * 6);
-    drawSimpleMesh(NAMED_SMMesh);
+    drawSimpleMeshRange(NAMED_SMMesh, offset * 6, 20 * 6);
+    //drawSimpleMesh(NAMED_SMMesh);
 }
 
 void drawTop(float rowOffset, float p)
