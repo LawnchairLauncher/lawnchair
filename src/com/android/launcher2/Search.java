@@ -253,7 +253,8 @@ public class Search extends LinearLayout
             if (animation.hasEnded() 
                     && animation.getFillAfter()
                     && animation.willChangeBounds()) {
-                ((View) getParent()).invalidate();
+                View parent = (View) getParent();
+                if (parent != null) parent.invalidate();
             } else {
                 invalidate();
             }
