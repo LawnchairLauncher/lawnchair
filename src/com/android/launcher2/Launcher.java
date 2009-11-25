@@ -2222,6 +2222,7 @@ public final class Launcher extends Activity
     public void bindPackageUpdated(String packageName, ArrayList<ApplicationInfo> apps) {
         removeDialog(DIALOG_CREATE_SHORTCUT);
         mWorkspace.updateShortcutsForPackage(packageName);
+        mAllAppsGrid.updateApps(packageName, apps);
     }
 
     /**
