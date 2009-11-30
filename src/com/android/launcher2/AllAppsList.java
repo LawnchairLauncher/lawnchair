@@ -152,7 +152,7 @@ class AllAppsList {
                     data.add(applicationInfo);
                     added.add(applicationInfo);
                 } else {
-                    AppInfoCache.update(info, applicationInfo, context);
+                    AppInfoCache.update(info, applicationInfo, context, bubble);
                     modified.add(applicationInfo);
                 }
             }

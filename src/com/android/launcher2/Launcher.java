@@ -813,7 +813,6 @@ public final class Launcher extends Activity
     }
 
     void closeSystemDialogs() {
-        closeAllApps(true);
         getWindow().closeAllPanels();
 
         try {
@@ -1841,6 +1840,28 @@ public final class Launcher extends Activity
         //mHandleView.setVisibility(View.GONE);
     }
 
+    /**
+     * Things to test when changing this code:
+     *   - Home from workspace
+     *          - from center screen
+     *          - from other screens
+     *   - Home from all apps
+     *   - Back from all apps
+     *   - Launch app from workspace and quit
+     *          - with back
+     *          - with home
+     *   - Launch app from all apps and quit
+     *          - with back
+     *          - with home
+     *   - On workspace, long press power and go back
+     *          - with back
+     *          - with home
+     *   - On all apps, long press power and go back
+     *          - with back
+     *          - with home
+     *   - On workspace, power off
+     *   - On all apps, power off
+     */
     void closeAllApps(boolean animated) {
         if (mAllAppsGrid.isVisible()) {
             mAllAppsGrid.zoom(0.0f, animated);
@@ -1992,6 +2013,18 @@ public final class Launcher extends Activity
         @Override
         public void onReceive(Context context, Intent intent) {
             closeSystemDialogs();
+            String reason = intent.getStringExtra("reason");
+            if (!"homekey".equals(reason)) {
+                boolean animate = true;
+                /*
+                if ("globalactions".equals(reason)) {
+                    // For some reason (probably the fading), this animation is
+                    // choppy, so don't show it.
+                    animate = false;
+                }
+                */
+                closeAllApps(animate);
+            }
         }
     }
 
@@ -2189,6 +2222,7 @@ public final class Launcher extends Activity
     public void bindPackageUpdated(String packageName, ArrayList<ApplicationInfo> apps) {
         removeDialog(DIALOG_CREATE_SHORTCUT);
         mWorkspace.updateShortcutsForPackage(packageName);
+        mAllAppsGrid.updateApps(packageName, apps);
     }
 
     /**

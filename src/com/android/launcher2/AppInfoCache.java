@@ -86,9 +86,10 @@ public class AppInfoCache {
     /**
      * Update the entry in the in the cache with its new metadata.
      */
-    public static void update(ResolveInfo info, ApplicationInfo applicationInfo, Context context) {
+    public static void update(ResolveInfo info, ApplicationInfo applicationInfo, Context context,
+            Utilities.BubbleText bubble) {
         synchronized (sCache) {
-            updateTitleAndIcon(info, applicationInfo, context, new Utilities.BubbleText(context));
+            updateTitleAndIcon(info, applicationInfo, context, bubble);
 
             ComponentName componentName = new ComponentName(
                     info.activityInfo.applicationInfo.packageName, info.activityInfo.name);
