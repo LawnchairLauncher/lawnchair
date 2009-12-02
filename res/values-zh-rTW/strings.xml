@@ -45,10 +45,8 @@
     <string name="shortcut_duplicate" msgid="4757756326465060694">"「<xliff:g id="NAME">%s</xliff:g>」捷徑已經存在。"</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"選取捷徑"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"選取資料夾"</string>
-    <!-- no translation found for all_apps_button_label (3953036962111614813) -->
-    <skip />
-    <!-- no translation found for all_apps_home_button_label (1022222300329398558) -->
-    <skip />
+    <string name="all_apps_button_label" msgid="3953036962111614813">"所有應用程式"</string>
+    <string name="all_apps_home_button_label" msgid="1022222300329398558">"主螢幕"</string>
     <string name="menu_add" msgid="3065046628354640854">"新增"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"桌布"</string>
     <string name="menu_search" msgid="4826514464423239041">"搜尋"</string>
