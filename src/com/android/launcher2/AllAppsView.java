@@ -678,7 +678,8 @@ public class AllAppsView extends RSSurfaceView
 
         for (int i=0; i<N; i++) {
             final ApplicationInfo item = list.get(i);
-            int index = Collections.binarySearch(mAllAppsList, item, mAppNameComp);
+            int index = Collections.binarySearch(mAllAppsList, item,
+                    LauncherModel.APP_NAME_COMPARATOR);
             if (index < 0) {
                 index = -(index+1);
             }
@@ -726,16 +727,6 @@ public class AllAppsView extends RSSurfaceView
         removeApps(list);
         addApps(list);
     }
-
-    private Comparator<ApplicationInfo> mAppNameComp = new Comparator<ApplicationInfo>() {
-        public int compare(ApplicationInfo a, ApplicationInfo b) {
-            int result = a.title.toString().compareTo(b.toString());
-            if (result != 0) {
-                return result;
-            }
-            return a.intent.getComponent().compareTo(b.intent.getComponent());
-        }
-    };
 
     private static int findAppByComponent(ArrayList<ApplicationInfo> list, ApplicationInfo item) {
         ComponentName component = item.intent.getComponent();

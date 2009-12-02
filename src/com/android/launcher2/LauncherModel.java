@@ -963,8 +963,8 @@ public class LauncherModel extends BroadcastReceiver {
                             // This builds the icon bitmaps.
                             mAllAppsList.add(AppInfoCache.cache(apps.get(i), context, bubble));
                         }
-                        Collections.sort(mAllAppsList.data, sComparator);
-                        Collections.sort(mAllAppsList.added, sComparator);
+                        Collections.sort(mAllAppsList.data, APP_NAME_COMPARATOR);
+                        Collections.sort(mAllAppsList.added, APP_NAME_COMPARATOR);
                         if (DEBUG_LOADERS) {
                             Log.d(TAG, "cached app icons in "
                                     + (SystemClock.uptimeMillis()-t) + "ms");
@@ -1220,7 +1220,7 @@ public class LauncherModel extends BroadcastReceiver {
     }
 
     private static final Collator sCollator = Collator.getInstance();
-    private static final Comparator<ApplicationInfo> sComparator
+    public static final Comparator<ApplicationInfo> APP_NAME_COMPARATOR
             = new Comparator<ApplicationInfo>() {
         public final int compare(ApplicationInfo a, ApplicationInfo b) {
             return sCollator.compare(a.title.toString(), b.title.toString());
