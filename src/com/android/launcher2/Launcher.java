@@ -1321,7 +1321,7 @@ public final class Launcher extends Activity
                 case KeyEvent.KEYCODE_HOME:
                     return true;
                 case KeyEvent.KEYCODE_VOLUME_DOWN:
-                    if (SystemProperties.getInt("launcher2.dumpstate", 0) != 0) {
+                    if (SystemProperties.getInt("debug.launcher2.dumpstate", 0) != 0) {
                         dumpState();
                         return true;
                     }
