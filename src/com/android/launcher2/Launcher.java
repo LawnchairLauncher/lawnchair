@@ -208,9 +208,6 @@ public final class Launcher extends Activity
         mDragController = new DragController(this);
         mInflater = getLayoutInflater();
 
-        IntentFilter filter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-        registerReceiver(mCloseSystemDialogsReceiver, filter);
-
         mAppWidgetManager = AppWidgetManager.getInstance(this);
         mAppWidgetHost = new LauncherAppWidgetHost(this, APPWIDGET_HOST_ID);
         mAppWidgetHost.startListening();
@@ -404,6 +401,9 @@ public final class Launcher extends Activity
     protected void onResume() {
         super.onResume();
 
+        IntentFilter filter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+        registerReceiver(mCloseSystemDialogsReceiver, filter);
+
         if (mRestoring) {
             mWorkspaceLoading = true;
             mModel.startLoader(this, true);
@@ -432,6 +432,7 @@ public final class Launcher extends Activity
         dismissPreview(mPreviousView);
         dismissPreview(mNextView);
         mDragController.cancelDrag();
+        unregisterReceiver(mCloseSystemDialogsReceiver);
     }
 
     @Override
@@ -934,8 +935,6 @@ public final class Launcher extends Activity
         
         dismissPreview(mPreviousView);
         dismissPreview(mNextView);
-
-        unregisterReceiver(mCloseSystemDialogsReceiver);
     }
 
     @Override
@@ -1845,7 +1844,7 @@ public final class Launcher extends Activity
     }
 
     /**
-     * Things to test when changing this code:
+     * Things to test when changing this code.
      *   - Home from workspace
      *          - from center screen
      *          - from other screens
@@ -1857,6 +1856,10 @@ public final class Launcher extends Activity
      *   - Launch app from all apps and quit
      *          - with back
      *          - with home
+     *   - Go to a screen that's not the default, then all
+     *     apps, and launch and app, and go back
+     *          - with back
+     *          -with home
      *   - On workspace, long press power and go back
      *          - with back
      *          - with home
@@ -1865,6 +1868,11 @@ public final class Launcher extends Activity
      *          - with home
      *   - On workspace, power off
      *   - On all apps, power off
+     *   - Launch an app and turn off the screen while in that app
+     *          - Go back with home key
+     *          - Go back with back key
+     *          - From all apps
+     *          - From workspace
      */
     void closeAllApps(boolean animated) {
         if (mAllAppsGrid.isVisible()) {
