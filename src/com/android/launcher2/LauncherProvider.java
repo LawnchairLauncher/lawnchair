@@ -58,7 +58,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "launcher.db";
     
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
 
     static final String AUTHORITY = "com.android.launcher2.settings";
     
@@ -66,7 +66,6 @@ public class LauncherProvider extends ContentProvider {
     static final String EXTRA_BIND_TARGETS = "com.android.launcher2.settings.bindtargets";
 
     static final String TABLE_FAVORITES = "favorites";
-    static final String TABLE_GESTURES = "gestures";
     static final String PARAMETER_NOTIFY = "notify";
 
     /**
@@ -226,17 +225,6 @@ public class LauncherProvider extends ContentProvider {
                     "displayMode INTEGER" +
                     ");");
 
-            db.execSQL("CREATE TABLE gestures (" +
-                    "_id INTEGER PRIMARY KEY," +
-                    "title TEXT," +
-                    "intent TEXT," +
-                    "itemType INTEGER," +
-                    "iconType INTEGER," +
-                    "iconPackage TEXT," +
-                    "iconResource TEXT," +
-                    "icon BLOB" +
-                    ");");
-
             // Database was just created, so wipe any previous widgets
             if (mAppWidgetHost != null) {
                 mAppWidgetHost.deleteHost();
@@ -371,26 +359,7 @@ public class LauncherProvider extends ContentProvider {
             }
 
             if (version < 4) {
-                db.beginTransaction();
-                try {
-                    db.execSQL("CREATE TABLE gestures (" +
-                        "_id INTEGER PRIMARY KEY," +
-                        "title TEXT," +
-                        "intent TEXT," +
-                        "itemType INTEGER," +
-                        "iconType INTEGER," +
-                        "iconPackage TEXT," +
-                        "iconResource TEXT," +
-                        "icon BLOB" +
-                        ");");
-                    db.setTransactionSuccessful();
-                    version = 4;
-                } catch (SQLException ex) {
-                    // Old version remains, which means we wipe old data
-                    Log.e(TAG, ex.getMessage(), ex);
-                } finally {
-                    db.endTransaction();
-                }
+                version = 4;
             }
             
             if (version < 5) {
@@ -408,14 +377,86 @@ public class LauncherProvider extends ContentProvider {
                 }
             }
             
+            if (version < 6) {
+                if (updateContactsShortcuts(db)) {
+                    version = 6;
+                }
+            }
+            
             if (version != DATABASE_VERSION) {
                 Log.w(TAG, "Destroying all old data.");
                 db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVORITES);
-                db.execSQL("DROP TABLE IF EXISTS " + TABLE_GESTURES);
                 onCreate(db);
             }
         }
-        
+
+        private boolean updateContactsShortcuts(SQLiteDatabase db) {
+            Cursor c = null;
+            final String selectWhere = buildOrWhereString(Favorites.ITEM_TYPE,
+                    new int[] { Favorites.ITEM_TYPE_SHORTCUT });
+
+            db.beginTransaction();
+            try {
+                // Select and iterate through each matching widget
+                c = db.query(TABLE_FAVORITES, new String[] { Favorites._ID, Favorites.INTENT },
+                        selectWhere, null, null, null, null);
+                
+                if (LOGD) Log.d(TAG, "found upgrade cursor count=" + c.getCount());
+                
+                final ContentValues values = new ContentValues();
+                final int idIndex = c.getColumnIndex(Favorites._ID);
+                final int intentIndex = c.getColumnIndex(Favorites.INTENT);
+                
+                while (c != null && c.moveToNext()) {
+                    long favoriteId = c.getLong(idIndex);
+                    final String intentUri = c.getString(intentIndex);
+                    if (intentUri != null) {
+                        try {
+                            Intent intent = Intent.parseUri(intentUri, 0);
+                            android.util.Log.d("Home", intent.toString());
+                            final Uri uri = intent.getData();
+                            final String data = uri.toString();
+                            if (Intent.ACTION_VIEW.equals(intent.getAction()) &&
+                                    (data.startsWith("content://contacts/people/") ||
+                                    data.startsWith("content://com.android.contacts/contacts/lookup/"))) {
+
+                                intent = new Intent("com.android.contacts.action.QUICK_CONTACT");
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                        Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+
+                                intent.setData(uri);
+                                intent.putExtra("mode", 3);
+                                intent.putExtra("exclude_mimes", (String[]) null);
+
+                                values.clear();
+                                values.put(LauncherSettings.Favorites.INTENT, intent.toUri(0));
+    
+                                String updateWhere = Favorites._ID + "=" + favoriteId;
+                                db.update(TABLE_FAVORITES, values, updateWhere, null);                                
+                            }
+                        } catch (RuntimeException ex) {
+                            Log.e(TAG, "Problem upgrading shortcut", ex);
+                        } catch (URISyntaxException e) {
+                            Log.e(TAG, "Problem upgrading shortcut", e);                            
+                        }
+                    }
+                }
+                
+                db.setTransactionSuccessful();
+            } catch (SQLException ex) {
+                Log.w(TAG, "Problem while upgrading contacts", ex);
+                return false;
+            } finally {
+                db.endTransaction();
+                if (c != null) {
+                    c.close();
+                }
+            }
+
+            return true;
+        }
+
         /**
          * Upgrade existing clock and photo frame widgets into their new widget
          * equivalents. This method allocates appWidgetIds, and then hands off to
@@ -649,10 +690,6 @@ public class LauncherProvider extends ContentProvider {
         }
         
         private boolean addAppWidget(SQLiteDatabase db, ContentValues values, TypedArray a) {
-            final int[] bindSources = new int[] {
-                    Favorites.ITEM_TYPE_APPWIDGET,
-            };
-
             String packageName = a.getString(R.styleable.Favorite_packageName);
             String className = a.getString(R.styleable.Favorite_className);
 
@@ -662,9 +699,6 @@ public class LauncherProvider extends ContentProvider {
             
             ComponentName cn = new ComponentName(packageName, className);
             
-            final ArrayList<ComponentName> bindTargets = new ArrayList<ComponentName>();
-            bindTargets.add(cn);
-
             boolean allocatedAppWidgets = false;
             final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
 
@@ -694,7 +728,7 @@ public class LauncherProvider extends ContentProvider {
             final int iconResId = a.getResourceId(R.styleable.Favorite_icon, 0);
             final int titleResId = a.getResourceId(R.styleable.Favorite_title, 0);
 
-            Intent intent = null;
+            Intent intent;
             String uri = null;
             try {
                 uri = a.getString(R.styleable.Favorite_uri);

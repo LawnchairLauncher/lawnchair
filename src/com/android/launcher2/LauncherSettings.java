@@ -90,37 +90,6 @@ class LauncherSettings {
         static final String ICON = "icon";
     }
 
-    static final class Gestures implements BaseLauncherColumns {
-                /**
-         * The content:// style URL for this table
-         */
-        static final Uri CONTENT_URI = Uri.parse("content://" +
-                LauncherProvider.AUTHORITY + "/" + LauncherProvider.TABLE_GESTURES +
-                "?" + LauncherProvider.PARAMETER_NOTIFY + "=true");
-
-        /**
-         * The content:// style URL for this table. When this Uri is used, no notification is
-         * sent if the content changes.
-         */
-        static final Uri CONTENT_URI_NO_NOTIFICATION = Uri.parse("content://" +
-                LauncherProvider.AUTHORITY + "/" + LauncherProvider.TABLE_GESTURES +
-                "?" + LauncherProvider.PARAMETER_NOTIFY + "=false");
-
-        /**
-         * The content:// style URL for a given row, identified by its id.
-         *
-         * @param id The row id.
-         * @param notify True to send a notification is the content changes.
-         *
-         * @return The unique content URL for the specified row.
-         */
-        static Uri getContentUri(long id, boolean notify) {
-            return Uri.parse("content://" + LauncherProvider.AUTHORITY +
-                    "/" + LauncherProvider.TABLE_GESTURES + "/" + id + "?" +
-                    LauncherProvider.PARAMETER_NOTIFY + "=" + notify);
-        }
-    }
-
     /**
      * Favorites. When changing these values, be sure to update
      * {@link com.android.settings.LauncherAppWidgetBinder} as needed.
