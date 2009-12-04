@@ -1395,6 +1395,10 @@ public final class Launcher extends Activity
         if (tag instanceof ApplicationInfo) {
             // Open shortcut
             final Intent intent = ((ApplicationInfo) tag).intent;
+            int[] pos = new int[2];
+            v.getLocationOnScreen(pos);
+            intent.setSourceBounds(
+                    new Rect(pos[0], pos[1], pos[0]+v.getWidth(), pos[1]+v.getHeight()));
             startActivitySafely(intent);
         } else if (tag instanceof FolderInfo) {
             handleFolderClick((FolderInfo) tag);
