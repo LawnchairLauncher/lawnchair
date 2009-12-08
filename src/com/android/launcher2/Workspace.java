@@ -23,7 +23,6 @@ import android.content.ComponentName;
 import android.content.res.TypedArray;
 import android.content.pm.PackageManager;
 import android.graphics.Canvas;
-import android.graphics.RectF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
@@ -103,15 +102,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     private int mTouchSlop;
     private int mMaximumVelocity;
 
-    final Rect mDrawerBounds = new Rect();
-    final Rect mClipBounds = new Rect();
-    int mDrawerContentHeight;
-    int mDrawerContentWidth;
-
     private Drawable mPreviousIndicator;
     private Drawable mNextIndicator;
-
-    private boolean mFading = true;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -246,27 +238,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     /**
-     * Returns how many screens there are.
-     */
-    int getScreenCount() {
-        return getChildCount();
-    }
-
-    /**
-     * Computes a bounding rectangle for a range of cells
-     *
-     * @param cellX X coordinate of upper left corner expressed as a cell position
-     * @param cellY Y coordinate of upper left corner expressed as a cell position
-     * @param cellHSpan Width in cells
-     * @param cellVSpan Height in cells
-     * @param rect Rectnagle into which to put the results
-     */
-    public void cellToRect(int cellX, int cellY, int cellHSpan, int cellVSpan, RectF rect) {
-        ((CellLayout)getChildAt(mCurrentScreen)).cellToRect(cellX, cellY,
-                cellHSpan, cellVSpan, rect);
-    }
-
-    /**
      * Sets the current screen.
      *
      * @param currentScreen
@@ -385,56 +356,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             mVacantCache = null;
         }
     }
-    
-    /**
-     * Returns the coordinate of a vacant cell for the current screen.
-     */
-    boolean getVacantCell(int[] vacant, int spanX, int spanY) {
-        CellLayout group = (CellLayout) getChildAt(mCurrentScreen);
-        if (group != null) {
-            return group.getVacantCell(vacant, spanX, spanY);
-        }
-        return false;
-    }
-
-    /**
-     * Adds the specified child in the current screen. The position and dimension of
-     * the child are defined by x, y, spanX and spanY.
-     *
-     * @param child The child to add in one of the workspace's screens.
-     * @param spanX The number of cells spanned horizontally by the child.
-     * @param spanY The number of cells spanned vertically by the child.
-     */
-    void fitInCurrentScreen(View child, int spanX, int spanY) {
-        fitInScreen(child, mCurrentScreen, spanX, spanY);
-    }
-
-    /**
-     * Adds the specified child in the specified screen. The position and dimension of
-     * the child are defined by x, y, spanX and spanY.
-     *
-     * @param child The child to add in one of the workspace's screens.
-     * @param screen The screen in which to add the child.
-     * @param spanX The number of cells spanned horizontally by the child.
-     * @param spanY The number of cells spanned vertically by the child.
-     */
-    void fitInScreen(View child, int screen, int spanX, int spanY) {
-        if (screen < 0 || screen >= getChildCount()) {
-            throw new IllegalStateException("The screen must be >= 0 and < " + getChildCount());
-        }
-
-        final CellLayout group = (CellLayout) getChildAt(screen);
-        boolean vacant = group.getVacantCell(mTempCell, spanX, spanY);
-        if (vacant) {
-            group.addView(child,
-                    new CellLayout.LayoutParams(mTempCell[0], mTempCell[1], spanX, spanY));
-            child.setHapticFeedbackEnabled(false);
-            child.setOnLongClickListener(mLongClickListener);
-            if (child instanceof DropTarget) {
-                mDragController.addDropTarget((DropTarget)child);
-            }
-        }
-    }
 
     /**
      * Registers the specified listener on each screen contained in this workspace.
@@ -476,60 +397,17 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         }
     }
 
-    public void startFading(boolean dest) {
-        mFading = dest;
-        invalidate();
-    }
-
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        /*
-        final boolean allAppsOpaque = mLauncher.isAllAppsOpaque();
-        if (mFading == allAppsOpaque) {
-            invalidate();
-        } else {
-            mFading = !allAppsOpaque;
-        }
-        if (allAppsOpaque) {
-            // If the launcher is up, draw black.
-            canvas.drawARGB(0xff, 0, 0, 0);
-            return;
-        }
-        */
-
         boolean restore = false;
         int restoreCount = 0;
-
-        // For the fade.  If view gets setAlpha(), use that instead.
-        float scale = mScale;
-        if (scale < 0.999f) {
-            int sx = mScrollX;
-
-            int alpha = (scale < 0.5f) ? (int)(255 * 2 * scale) : 255;
-
-            restoreCount = canvas.saveLayerAlpha(sx, 0, sx+getWidth(), getHeight(), alpha,
-                    Canvas.HAS_ALPHA_LAYER_SAVE_FLAG | Canvas.CLIP_TO_LAYER_SAVE_FLAG);
-            restore = true;
-
-            if (scale < 0.999f) {
-                int w = getWidth();
-                w += 2 * mCurrentScreen * w;
-                int dx = w/2;
-                int h = getHeight();
-                int dy = (h/2) - (h/4);
-                canvas.translate(dx, dy);
-                canvas.scale(scale, scale);
-                canvas.translate(-dx, -dy);
-            }
-        }
 
         // ViewGroup.dispatchDraw() supports many features we don't need:
         // clip to padding, layout animation, animation listener, disappearing
         // children, etc. The following implementation attempts to fast-track
         // the drawing dispatch by drawing only what we know needs to be drawn.
 
-        boolean fastDraw = mTouchState != TOUCH_STATE_SCROLLING && mNextScreen == INVALID_SCREEN
-                && scale > 0.999f;
+        boolean fastDraw = mTouchState != TOUCH_STATE_SCROLLING && mNextScreen == INVALID_SCREEN;
         // If we are not scrolling or flinging, draw only the current screen
         if (fastDraw) {
             drawChild(canvas, getChildAt(mCurrentScreen), getDrawingTime());
@@ -552,12 +430,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         if (restore) {
             canvas.restoreToCount(restoreCount);
         }
-    }
-
-    private float mScale = 1.0f;
-    public void setScale(float scale) {
-        mScale = scale;
-        invalidate();
     }
 
     protected void onAttachedToWindow() {
@@ -974,7 +846,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         final int delta = newX - mScrollX;
         final int duration = screenDelta * 300;
         awakenScrollBars(duration);
+
         // 1ms is close to don't animate
+        if (!mScroller.isFinished()) mScroller.abortAnimation();
         mScroller.startScroll(mScrollX, 0, delta, 0, animate ? duration : 1);
         invalidate();
     }
@@ -1220,16 +1094,19 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     public void scrollLeft() {
         clearVacantCache();
-        if (mNextScreen == INVALID_SCREEN && mCurrentScreen > 0 && mScroller.isFinished()) {
-            snapToScreen(mCurrentScreen - 1);
+        if (mScroller.isFinished()) {
+            if (mCurrentScreen > 0) snapToScreen(mCurrentScreen - 1);
+        } else {
+            if (mNextScreen > 0) snapToScreen(mNextScreen - 1);            
         }
     }
 
     public void scrollRight() {
         clearVacantCache();
-        if (mNextScreen == INVALID_SCREEN && mCurrentScreen < getChildCount() -1 &&
-                mScroller.isFinished()) {
-            snapToScreen(mCurrentScreen + 1);
+        if (mScroller.isFinished()) {
+            if (mCurrentScreen < getChildCount() -1) snapToScreen(mCurrentScreen + 1);
+        } else {
+            if (mNextScreen < getChildCount() -1) snapToScreen(mNextScreen + 1);            
         }
     }
 
@@ -1465,12 +1342,5 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                 return new SavedState[size];
             }
         };
-    }
-
-    void show() {
-        setVisibility(VISIBLE);
-    }
-
-    void hide() {
     }
 }
