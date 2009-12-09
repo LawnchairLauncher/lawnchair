@@ -1149,7 +1149,7 @@ public class AllAppsView extends RSSurfaceView
             int[] labelIds = new int[count];
             mAllocLabelIds = Allocation.createSized(mRS, Element.USER_I32(mRS), count);
 
-            final int oldCount = mIcons.length;
+            final int oldCount = mRollo.mState.iconCount;
 
             System.arraycopy(mIcons, 0, icons, 0, oldCount);
             System.arraycopy(mIconIds, 0, iconIds, 0, oldCount);
