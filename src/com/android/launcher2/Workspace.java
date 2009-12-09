@@ -565,7 +565,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         final boolean workspaceLocked = mLauncher.isWorkspaceLocked();
         final boolean allAppsVisible = mLauncher.isAllAppsVisible();
-        Log.d(TAG, "workspaceLocked=" + workspaceLocked + " allAppsVisible=" + allAppsVisible);
         if (workspaceLocked || allAppsVisible) {
             return false; // We don't want the events.  Let them fall through to the all apps view.
         }
