@@ -651,7 +651,6 @@ public class LauncherModel extends BroadcastReceiver {
 
                     ApplicationInfo info;
                     String intentDescription;
-                    Widget widgetInfo;
                     LauncherAppWidgetInfo appWidgetInfo;
                     int container;
                     long id;
@@ -768,25 +767,6 @@ public class LauncherModel extends BroadcastReceiver {
                                         break;
                                 }
                                 mFolders.put(liveFolderInfo.id, liveFolderInfo);
-                                break;
-
-                            case LauncherSettings.Favorites.ITEM_TYPE_WIDGET_SEARCH:
-                                widgetInfo = Widget.makeSearch();
-
-                                container = c.getInt(containerIndex);
-                                if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                                    Log.e(TAG, "Widget found where container "
-                                            + "!= CONTAINER_DESKTOP  ignoring!");
-                                    continue;
-                                }
-
-                                widgetInfo.id = c.getLong(idIndex);
-                                widgetInfo.screen = c.getInt(screenIndex);
-                                widgetInfo.container = container;
-                                widgetInfo.cellX = c.getInt(cellXIndex);
-                                widgetInfo.cellY = c.getInt(cellYIndex);
-
-                                mItems.add(widgetInfo);
                                 break;
 
                             case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:

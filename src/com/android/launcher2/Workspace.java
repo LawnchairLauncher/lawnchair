@@ -332,16 +332,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         }
     }
 
-    void addWidget(View view, Widget widget) {
-        addInScreen(view, widget.screen, widget.cellX, widget.cellY, widget.spanX,
-                widget.spanY, false);
-    }
-
-    void addWidget(View view, Widget widget, boolean insert) {
-        addInScreen(view, widget.screen, widget.cellX, widget.cellY, widget.spanX,
-                widget.spanY, insert);
-    }
-
     CellLayout.CellInfo findAllVacantCells(boolean[] occupied) {
         CellLayout group = (CellLayout) getChildAt(mCurrentScreen);
         if (group != null) {
@@ -856,8 +846,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         View child = cellInfo.cell;
         
         // Make sure the drag was started by a long press as opposed to a long click.
-        // Note that Search takes focus when clicked rather than entering touch mode
-        if (!child.isInTouchMode() && !(child instanceof Search)) {
+        if (!child.isInTouchMode()) {
             return;
         }
         
@@ -1121,29 +1110,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             }
         }
         return result;
-    }
-
-    /**
-     * Find a search widget on the given screen
-     */
-    private Search findSearchWidget(CellLayout screen) {
-        final int count = screen.getChildCount();
-        for (int i = 0; i < count; i++) {
-            View v = screen.getChildAt(i);
-            if (v instanceof Search) {
-                return (Search) v;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Gets the first search widget on the current screen, if there is one.
-     * Returns <code>null</code> otherwise.
-     */
-    public Search findSearchWidgetOnCurrentScreen() {
-        CellLayout currentScreen = (CellLayout)getChildAt(mCurrentScreen);
-        return findSearchWidget(currentScreen);
     }
 
     public Folder getFolderForTag(Object tag) {
