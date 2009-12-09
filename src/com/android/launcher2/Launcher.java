@@ -19,7 +19,6 @@ package com.android.launcher2;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ISearchManager;
 import android.app.SearchManager;
 import android.app.StatusBarManager;
 import android.app.WallpaperManager;
@@ -46,8 +45,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
-import android.os.RemoteException;
-import android.os.ServiceManager;
 import android.os.SystemProperties;
 import android.provider.LiveFolders;
 import android.text.Selection;
@@ -552,6 +549,7 @@ public final class Launcher extends Activity
         mHandleView = (HandleView) findViewById(R.id.all_apps_button);
         mHandleView.setLauncher(this);
         mHandleView.setOnClickListener(this);
+        mHandleView.setOnLongClickListener(this);
 
         mPreviousView = (ImageView) dragLayer.findViewById(R.id.previous_screen);
         mNextView = (ImageView) dragLayer.findViewById(R.id.next_screen);
@@ -1482,14 +1480,21 @@ public final class Launcher extends Activity
                 if (!isAllAppsVisible()) {
                     mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                             HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-                    showPreviousPreview(v);
+                    showPreviews(v);
                 }
                 return true;
             case R.id.next_screen:
                 if (!isAllAppsVisible()) {
                     mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                             HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-                    showNextPreview(v);
+                    showPreviews(v);
+                }
+                return true;
+            case R.id.all_apps_button:
+                if (!isAllAppsVisible()) {
+                    mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
+                            HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                    showPreviews(v);
                 }
                 return true;
         }
@@ -1552,29 +1557,19 @@ public final class Launcher extends Activity
         v.setTag(null);
     }
 
-    private void showPreviousPreview(View anchor) {
-        int current = mWorkspace.getCurrentScreen();
-        if (current <= 0) return;
-
+    private void showPreviews(View anchor) {
         showPreviews(anchor, 0, mWorkspace.getChildCount());
     }
 
-    private void showNextPreview(View anchor) {
-        int current = mWorkspace.getCurrentScreen();
-        if (current >= mWorkspace.getChildCount() - 1) return;
-
-        showPreviews(anchor, 0, mWorkspace.getChildCount());        
-    }
-
     private void showPreviews(final View anchor, int start, int end) {
-        Resources resources = getResources();
+        final Resources resources = getResources();
+        final Workspace workspace = mWorkspace;
 
-        Workspace workspace = mWorkspace;
         CellLayout cell = ((CellLayout) workspace.getChildAt(start));
         
         float max = workspace.getChildCount();
         
-        Rect r = new Rect();
+        final Rect r = new Rect();
         resources.getDrawable(R.drawable.preview_background).getPadding(r);
         int extraW = (int) ((r.left + r.right) * max);
         int extraH = r.top + r.bottom;
@@ -1605,10 +1600,10 @@ public final class Launcher extends Activity
             ImageView image = new ImageView(this);
             cell = (CellLayout) workspace.getChildAt(i);
 
-            Bitmap bitmap = Bitmap.createBitmap((int) sWidth, (int) sHeight,
+            final Bitmap bitmap = Bitmap.createBitmap((int) sWidth, (int) sHeight,
                     Bitmap.Config.ARGB_8888);
-            
-            Canvas c = new Canvas(bitmap);
+
+            final Canvas c = new Canvas(bitmap);
             c.scale(scale, scale);
             c.translate(-cell.getLeftPadding(), -cell.getTopPadding());
             cell.dispatchDraw(c);
@@ -1626,8 +1621,8 @@ public final class Launcher extends Activity
 
             bitmaps.add(bitmap);            
         }
-        
-        PopupWindow p = new PopupWindow(this);
+
+        final PopupWindow p = new PopupWindow(this);
         p.setContentView(preview);
         p.setWidth((int) (sWidth * count + extraW));
         p.setHeight((int) (sHeight + extraH));
@@ -1669,10 +1664,6 @@ public final class Launcher extends Activity
                 mWorkspace.snapToScreen((Integer) v.getTag());
             }
         }
-    }
-
-    View getDrawerHandle() {
-        return mHandleView;
     }
 
     Workspace getWorkspace() {
@@ -1825,22 +1816,14 @@ public final class Launcher extends Activity
         return mAllAppsGrid.isVisible();
     }
 
-    boolean isAllAppsOpaque() {
-        return mAllAppsGrid.isOpaque();
-    }
-
     void showAllApps(boolean animated) {
         mAllAppsGrid.zoom(1.0f, animated);
-        //mWorkspace.hide();
-
-        mWorkspace.startFading(false);
 
         mAllAppsGrid.setFocusable(true);
         mAllAppsGrid.requestFocus();
         
         // TODO: fade these two too
         mDeleteZone.setVisibility(View.GONE);
-        //mHandleView.setVisibility(View.GONE);
     }
 
     /**
@@ -1879,13 +1862,6 @@ public final class Launcher extends Activity
             mAllAppsGrid.zoom(0.0f, animated);
             mAllAppsGrid.setFocusable(false);
             mWorkspace.getChildAt(mWorkspace.getCurrentScreen()).requestFocus();
-            mWorkspace.startFading(true);
-
-            // TODO: fade these two too
-            /*
-            mDeleteZone.setVisibility(View.VISIBLE);
-            mHandleView.setVisibility(View.VISIBLE);
-            */
         }
     }
 
