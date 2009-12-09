@@ -368,8 +368,8 @@ public class AllAppsView extends RSSurfaceView
                     } else if (currentTopRow > 0) {
                         newSelection = currentSelection - Defines.COLUMNS_PER_PAGE;
                         mRollo.moveTo(newSelection / Defines.COLUMNS_PER_PAGE);
-                    } else {
-                        newSelection = Defines.COLUMNS_PER_PAGE * (Defines.ROWS_PER_PAGE-1);
+                    } else if (currentPageRow != 0) {
+                        newSelection = currentTopRow * Defines.ROWS_PER_PAGE;
                     }
                 }
                 handled = true;
