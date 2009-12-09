@@ -273,13 +273,13 @@ public class AllAppsView extends RSSurfaceView
         }
 
         if (gainFocus) {
-            if (mRollo != null) {
+            if (mRollo != null && mRollo.mHasSurface) {
                 gainFocus();
             } else {
                 mShouldGainFocus = true;
             }
         } else {
-            if (mRollo != null) {
+            if (mRollo != null && mRollo.mHasSurface) {
                 if (mArrowNavigation) {
                     // Clear selection when we lose focus
                     mRollo.clearSelectedIcon();
@@ -370,8 +370,8 @@ public class AllAppsView extends RSSurfaceView
                     } else if (currentTopRow > 0) {
                         newSelection = currentSelection - Defines.COLUMNS_PER_PAGE;
                         mRollo.moveTo(newSelection / Defines.COLUMNS_PER_PAGE);
-                    } else {
-                        newSelection = Defines.COLUMNS_PER_PAGE * (Defines.ROWS_PER_PAGE-1);
+                    } else if (currentPageRow != 0) {
+                        newSelection = currentTopRow * Defines.ROWS_PER_PAGE;
                     }
                 }
                 handled = true;
@@ -660,7 +660,11 @@ public class AllAppsView extends RSSurfaceView
     public void setApps(ArrayList<ApplicationInfo> list) {
         mAllAppsList = list;
         if (mRollo != null) {
-            mRollo.setApps(list);
+            if (mRollo.mHasSurface) {
+                mRollo.setApps(list);
+            } else {
+                mRollo.mAppsDirty = true;
+            }
         }
         mLocks &= ~LOCK_ICONS_PENDING;
     }
@@ -672,7 +676,7 @@ public class AllAppsView extends RSSurfaceView
         }
 
         final int N = list.size();
-        if (mRollo != null) {
+        if (mRollo != null && mRollo.mHasSurface) {
             mRollo.reallocAppsList(mRollo.mState.iconCount + N);
         }
 
@@ -684,13 +688,13 @@ public class AllAppsView extends RSSurfaceView
                 index = -(index+1);
             }
             mAllAppsList.add(index, item);
-            if (mRollo != null) {
+            if (mRollo != null && mRollo.mHasSurface) {
                 mRollo.addApp(index, item);
                 mRollo.mState.iconCount++;
             }
         }
 
-        if (mRollo != null) {
+        if (mRollo != null && mRollo.mHasSurface) {
             mRollo.saveAppsList();
         }
     }
@@ -706,10 +710,10 @@ public class AllAppsView extends RSSurfaceView
             final ApplicationInfo item = list.get(i);
             int index = findAppByComponent(mAllAppsList, item);
             if (index >= 0) {
+                int ic = mRollo != null ? mRollo.mState.iconCount : 666;
                 mAllAppsList.remove(index);
-                if (mRollo != null) {
+                if (mRollo != null && mRollo.mHasSurface) {
                     mRollo.removeApp(index);
-                    mRollo.mState.iconCount--;
                 }
             } else {
                 Log.w(TAG, "couldn't find a match for item \"" + item + "\"");
@@ -717,7 +721,7 @@ public class AllAppsView extends RSSurfaceView
             }
         }
 
-        if (mRollo != null) {
+        if (mRollo != null && mRollo.mHasSurface) {
             mRollo.saveAppsList();
         }
     }
@@ -1151,7 +1155,7 @@ public class AllAppsView extends RSSurfaceView
             int[] labelIds = new int[count];
             mAllocLabelIds = Allocation.createSized(mRS, Element.USER_I32(mRS), count);
 
-            final int oldCount = mIcons.length;
+            final int oldCount = mRollo.mState.iconCount;
 
             System.arraycopy(mIcons, 0, icons, 0, oldCount);
             System.arraycopy(mIconIds, 0, iconIds, 0, oldCount);
@@ -1176,7 +1180,7 @@ public class AllAppsView extends RSSurfaceView
             System.arraycopy(mLabels, index, mLabels, dest, count);
             System.arraycopy(mLabelIds, index, mLabelIds, dest, count);
 
-            if (mHasSurface ) {
+            if (mHasSurface) {
                 uploadAppIcon(index, item);
             } else {
                 mAppsDirty = true;
@@ -1195,7 +1199,9 @@ public class AllAppsView extends RSSurfaceView
             System.arraycopy(mLabels, src, mLabels, index, count);
             System.arraycopy(mLabelIds, src, mLabelIds, index, count);
 
+            mRollo.mState.iconCount--;
             final int last = mState.iconCount - 1;
+
             mIcons[last] = null;
             mIconIds[last] = 0;
             mLabels[last] = null;
