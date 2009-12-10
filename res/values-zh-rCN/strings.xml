@@ -20,7 +20,7 @@
     <string name="folder_name" msgid="4588446541914685904">"文件夹"</string>
     <string name="chooser_wallpaper" msgid="5988031014201479733">"选择壁纸来源"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"设置壁纸"</string>
-    <string name="pick_wallpaper" msgid="2674908923379130941">"壁纸图库"</string>
+    <string name="pick_wallpaper" msgid="5630222540525626723">"壁纸"</string>
     <string name="activity_not_found" msgid="3571057450431950427">"您的手机上未安装应用程序。"</string>
     <string name="configure_wallpaper" msgid="2820186271419674623">"配置..."</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"文件夹名称"</string>

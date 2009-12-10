@@ -20,7 +20,8 @@
     <string name="folder_name" msgid="4588446541914685904">"Pasta"</string>
     <string name="chooser_wallpaper" msgid="5988031014201479733">"Selecionar papel de parede de"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Definir papel de parede"</string>
-    <string name="pick_wallpaper" msgid="2674908923379130941">"Galeria de papel de parede"</string>
+    <!-- no translation found for pick_wallpaper (5630222540525626723) -->
+    <skip />
     <string name="activity_not_found" msgid="3571057450431950427">"O aplicativo não está instalado no seu telefone."</string>
     <string name="configure_wallpaper" msgid="2820186271419674623">"Configurar..."</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nome da pasta"</string>

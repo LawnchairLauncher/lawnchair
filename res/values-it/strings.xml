@@ -20,7 +20,7 @@
     <string name="folder_name" msgid="4588446541914685904">"Cartella"</string>
     <string name="chooser_wallpaper" msgid="5988031014201479733">"Seleziona sfondo da"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Imposta sfondo"</string>
-    <string name="pick_wallpaper" msgid="2674908923379130941">"Galleria sfondi"</string>
+    <string name="pick_wallpaper" msgid="5630222540525626723">"Sfondi"</string>
     <string name="activity_not_found" msgid="3571057450431950427">"Applicazione non installata sul telefono."</string>
     <string name="configure_wallpaper" msgid="2820186271419674623">"Configura..."</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nome cartella"</string>
