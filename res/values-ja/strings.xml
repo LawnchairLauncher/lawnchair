@@ -20,7 +20,7 @@
     <string name="folder_name" msgid="4588446541914685904">"フォルダ"</string>
     <string name="chooser_wallpaper" msgid="5988031014201479733">"壁紙を選択"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"壁紙に設定"</string>
-    <string name="pick_wallpaper" msgid="2674908923379130941">"壁紙ギャラリー"</string>
+    <string name="pick_wallpaper" msgid="5630222540525626723">"壁紙"</string>
     <string name="activity_not_found" msgid="3571057450431950427">"アプリケーションがインストールされていません。"</string>
     <string name="configure_wallpaper" msgid="2820186271419674623">"設定..."</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"フォルダ名"</string>

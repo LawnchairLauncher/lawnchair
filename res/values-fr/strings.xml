@@ -20,7 +20,7 @@
     <string name="folder_name" msgid="4588446541914685904">"Dossier"</string>
     <string name="chooser_wallpaper" msgid="5988031014201479733">"Sélectionner à partir de..."</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Sélectionner"</string>
-    <string name="pick_wallpaper" msgid="2674908923379130941">"Galerie"</string>
+    <string name="pick_wallpaper" msgid="5630222540525626723">"Fonds d\'écran"</string>
     <string name="activity_not_found" msgid="3571057450431950427">"L\'application n\'est pas installée sur votre téléphone."</string>
     <string name="configure_wallpaper" msgid="2820186271419674623">"Configurer..."</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nom du dossier"</string>

@@ -20,7 +20,7 @@
     <string name="folder_name" msgid="4588446541914685904">"Složka"</string>
     <string name="chooser_wallpaper" msgid="5988031014201479733">"Vybrat tapetu ze složky"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Nastavit tapetu"</string>
-    <string name="pick_wallpaper" msgid="2674908923379130941">"Galerie tapet"</string>
+    <string name="pick_wallpaper" msgid="5630222540525626723">"Tapety"</string>
     <string name="activity_not_found" msgid="3571057450431950427">"Aplikace není v telefonu nainstalována."</string>
     <string name="configure_wallpaper" msgid="2820186271419674623">"Konfigurace..."</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Název složky"</string>
