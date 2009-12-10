@@ -110,9 +110,6 @@ public final class Launcher extends Activity
 
     static final String EXTRA_SHORTCUT_DUPLICATE = "duplicate";
 
-    static final String EXTRA_CUSTOM_WIDGET = "custom_widget";
-    static final String SEARCH_WIDGET = "search_widget";
-
     static final int SCREEN_COUNT = 5;
     static final int DEFAULT_SCREEN = 2;
     static final int NUMBER_CELLS_X = 4;
@@ -179,8 +176,6 @@ public final class Launcher extends Activity
     private Bundle mSavedState;
 
     private SpannableStringBuilder mDefaultKeySsb = null;
-
-    private boolean mIsNewIntent;
 
     private boolean mWorkspaceLoading = true;
 
@@ -406,21 +401,6 @@ public final class Launcher extends Activity
             mModel.startLoader(this, true);
             mRestoring = false;
         }
-
-        // If this was a new intent (i.e., the mIsNewIntent flag got set to true by
-        // onNewIntent), then close the search dialog if needed, because it probably
-        // came from the user pressing 'home' (rather than, for example, pressing 'back').
-        if (mIsNewIntent) {
-            // Post to a handler so that this happens after the search dialog tries to open
-            // itself again.
-            mWorkspace.post(new Runnable() {
-                public void run() {
-                    stopSearch();
-                }
-            });
-        }
-
-        mIsNewIntent = false;
     }
 
     @Override
@@ -841,11 +821,6 @@ public final class Launcher extends Activity
             // also will cancel mWaitingForResult.
             closeSystemDialogs();
 
-            // Set this flag so that onResume knows to close the search dialog if it's open,
-            // because this was a new intent (thus a press of 'home' or some such) rather than
-            // for example onResume being called when the user pressed the 'back' button.
-            mIsNewIntent = true;
-
             boolean alreadyOnHome = ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
                         != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
             boolean allAppsVisible = isAllAppsVisible();
@@ -947,26 +922,6 @@ public final class Launcher extends Activity
 
         closeAllApps(true);
 
-        // Slide the search widget to the top, if it's on the current screen,
-        // otherwise show the search dialog immediately.
-        Search searchWidget = mWorkspace.findSearchWidgetOnCurrentScreen();
-        if (searchWidget == null) {
-            showSearchDialog(initialQuery, selectInitialQuery, appSearchData, globalSearch);
-        } else {
-            searchWidget.startSearch(initialQuery, selectInitialQuery, appSearchData, globalSearch);
-            // show the currently typed text in the search widget while sliding
-            searchWidget.setQuery(getTypedText());
-        }
-    }
-
-    /**
-     * Show the search dialog immediately, without changing the search widget.
-     *
-     * @see Activity#startSearch(String, boolean, android.os.Bundle, boolean)
-     */
-    void showSearchDialog(String initialQuery, boolean selectInitialQuery,
-            Bundle appSearchData, boolean globalSearch) {
-
         if (initialQuery == null) {
             // Use any text typed in the launcher as the initial query
             initialQuery = getTypedText();
@@ -979,35 +934,8 @@ public final class Launcher extends Activity
 
         final SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-
-        final Search searchWidget = mWorkspace.findSearchWidgetOnCurrentScreen();
-        if (searchWidget != null) {
-            // This gets called when the user leaves the search dialog to go back to
-            // the Launcher.
-            searchManager.setOnCancelListener(new SearchManager.OnCancelListener() {
-                public void onCancel() {
-                    searchManager.setOnCancelListener(null);
-                    stopSearch();
-                }
-            });
-        }
-
         searchManager.startSearch(initialQuery, selectInitialQuery, getComponentName(),
             appSearchData, globalSearch);
-    }
-
-    /**
-     * Cancel search dialog if it is open.
-     */
-    void stopSearch() {
-        // Close search dialog
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchManager.stopSearch();
-        // Restore search widget to its normal position
-        Search searchWidget = mWorkspace.findSearchWidgetOnCurrentScreen();
-        if (searchWidget != null) {
-            searchWidget.stopSearch(false);
-        }
     }
 
     @Override
@@ -1094,49 +1022,19 @@ public final class Launcher extends Activity
     void addAppWidget(Intent data) {
         // TODO: catch bad widget exception when sent
         int appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+        AppWidgetProviderInfo appWidget = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
 
-        String customWidget = data.getStringExtra(EXTRA_CUSTOM_WIDGET);
-        if (SEARCH_WIDGET.equals(customWidget)) {
-            // We don't need this any more, since this isn't a real app widget.
-            mAppWidgetHost.deleteAppWidgetId(appWidgetId);
-            // add the search widget
-            addSearch();
+        if (appWidget.configure != null) {
+            // Launch over to configure widget, if needed
+            Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
+            intent.setComponent(appWidget.configure);
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+
+            startActivityForResult(intent, REQUEST_CREATE_APPWIDGET);
         } else {
-            AppWidgetProviderInfo appWidget = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
-
-            if (appWidget.configure != null) {
-                // Launch over to configure widget, if needed
-                Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
-                intent.setComponent(appWidget.configure);
-                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-
-                startActivityForResult(intent, REQUEST_CREATE_APPWIDGET);
-            } else {
-                // Otherwise just add it
-                onActivityResult(REQUEST_CREATE_APPWIDGET, Activity.RESULT_OK, data);
-            }
+            // Otherwise just add it
+            onActivityResult(REQUEST_CREATE_APPWIDGET, Activity.RESULT_OK, data);
         }
-    }
-
-    void addSearch() {
-        final Widget info = Widget.makeSearch();
-        final CellLayout.CellInfo cellInfo = mAddItemCellInfo;
-
-        final int[] xy = mCellCoordinates;
-        final int spanX = info.spanX;
-        final int spanY = info.spanY;
-
-        if (!findSlot(cellInfo, xy, spanX, spanY)) return;
-
-        LauncherModel.addItemToDatabase(this, info, LauncherSettings.Favorites.CONTAINER_DESKTOP,
-        mWorkspace.getCurrentScreen(), xy[0], xy[1], false);
-
-        final View view = mInflater.inflate(info.layoutResource, null);
-        view.setTag(info);
-        Search search = (Search) view.findViewById(R.id.widget_search);
-        search.setLauncher(this);
-
-        mWorkspace.addInCurrentScreen(view, xy[0], xy[1], info.spanX, spanY);
     }
 
     void processShortcut(Intent intent, int requestCodeApplication, int requestCodeShortcut) {
@@ -1937,22 +1835,6 @@ public final class Launcher extends Activity
 
                     Intent pickIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_PICK);
                     pickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-                    // add the search widget
-                    ArrayList<AppWidgetProviderInfo> customInfo =
-                            new ArrayList<AppWidgetProviderInfo>();
-                    AppWidgetProviderInfo info = new AppWidgetProviderInfo();
-                    info.provider = new ComponentName(getPackageName(), "XXX.YYY");
-                    info.label = getString(R.string.group_search);
-                    info.icon = R.drawable.ic_search_widget;
-                    customInfo.add(info);
-                    pickIntent.putParcelableArrayListExtra(
-                            AppWidgetManager.EXTRA_CUSTOM_INFO, customInfo);
-                    ArrayList<Bundle> customExtras = new ArrayList<Bundle>();
-                    Bundle b = new Bundle();
-                    b.putString(EXTRA_CUSTOM_WIDGET, SEARCH_WIDGET);
-                    customExtras.add(b);
-                    pickIntent.putParcelableArrayListExtra(
-                            AppWidgetManager.EXTRA_CUSTOM_EXTRAS, customExtras);
                     // start the pick activity
                     startActivityForResult(pickIntent, REQUEST_PICK_APPWIDGET);
                     break;
@@ -2097,19 +1979,6 @@ public final class Launcher extends Activity
                     workspace.addInScreen(newLiveFolder, item.screen, item.cellX, item.cellY, 1, 1,
                             false);
                     break;
-                case LauncherSettings.Favorites.ITEM_TYPE_WIDGET_SEARCH:
-                    final int screen = workspace.getCurrentScreen();
-                    final View view = mInflater.inflate(R.layout.widget_search,
-                            (ViewGroup) workspace.getChildAt(screen), false);
-
-                    Search search = (Search) view.findViewById(R.id.widget_search);
-                    search.setLauncher(this);
-
-                    final Widget widget = (Widget) item;
-                    view.setTag(widget);
-
-                    workspace.addWidget(view, widget, false);
-                    break;
             }
         }
 
@@ -2230,7 +2099,6 @@ public final class Launcher extends Activity
     public void dumpState() {
         Log.d(TAG, "BEGIN launcher2 dump state for launcher " + this);
         Log.d(TAG, "mSavedState=" + mSavedState);
-        Log.d(TAG, "mIsNewIntent=" + mIsNewIntent);
         Log.d(TAG, "mWorkspaceLoading=" + mWorkspaceLoading);
         Log.d(TAG, "mRestoring=" + mRestoring);
         Log.d(TAG, "mWaitingForResult=" + mWaitingForResult);

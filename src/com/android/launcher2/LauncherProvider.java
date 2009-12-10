@@ -58,7 +58,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "launcher.db";
     
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
 
     static final String AUTHORITY = "com.android.launcher2.settings";
     
@@ -382,7 +382,13 @@ public class LauncherProvider extends ContentProvider {
                     version = 6;
                 }
             }
-            
+
+            if (version < 7) {
+                // Version 7 gets rid of the special search widget.
+                convertWidgets(db);
+                version = 7;
+            }
+
             if (version != DATABASE_VERSION) {
                 Log.w(TAG, "Destroying all old data.");
                 db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVORITES);
@@ -466,6 +472,7 @@ public class LauncherProvider extends ContentProvider {
             final int[] bindSources = new int[] {
                     Favorites.ITEM_TYPE_WIDGET_CLOCK,
                     Favorites.ITEM_TYPE_WIDGET_PHOTO_FRAME,
+                    Favorites.ITEM_TYPE_WIDGET_SEARCH,
             };
             
             final ArrayList<ComponentName> bindTargets = new ArrayList<ComponentName>();
@@ -473,7 +480,9 @@ public class LauncherProvider extends ContentProvider {
                     "com.android.alarmclock.AnalogAppWidgetProvider"));
             bindTargets.add(new ComponentName("com.android.camera",
                     "com.android.camera.PhotoAppWidgetProvider"));
-            
+            bindTargets.add(new ComponentName("com.android.quicksearchbox",
+                    "com.android.quicksearchbox.SearchWidgetProvider"));
+
             final String selectWhere = buildOrWhereString(Favorites.ITEM_TYPE, bindSources);
             
             Cursor c = null;
@@ -482,7 +491,7 @@ public class LauncherProvider extends ContentProvider {
             db.beginTransaction();
             try {
                 // Select and iterate through each matching widget
-                c = db.query(TABLE_FAVORITES, new String[] { Favorites._ID },
+                c = db.query(TABLE_FAVORITES, new String[] { Favorites._ID, Favorites.ITEM_TYPE },
                         selectWhere, null, null, null, null);
                 
                 if (LOGD) Log.d(TAG, "found upgrade cursor count=" + c.getCount());
@@ -490,7 +499,8 @@ public class LauncherProvider extends ContentProvider {
                 final ContentValues values = new ContentValues();
                 while (c != null && c.moveToNext()) {
                     long favoriteId = c.getLong(0);
-                    
+                    int favoriteType = c.getInt(1);
+
                     // Allocate and update database with new appWidgetId
                     try {
                         int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
@@ -499,13 +509,18 @@ public class LauncherProvider extends ContentProvider {
                             Log.d(TAG, "allocated appWidgetId=" + appWidgetId
                                     + " for favoriteId=" + favoriteId);
                         }
-                        
                         values.clear();
-                        values.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId);
-                        
+                        values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_APPWIDGET);
+                        values.put(Favorites.APPWIDGET_ID, appWidgetId);
+
                         // Original widgets might not have valid spans when upgrading
-                        values.put(LauncherSettings.Favorites.SPANX, 2);
-                        values.put(LauncherSettings.Favorites.SPANY, 2);
+                        if (favoriteType == Favorites.ITEM_TYPE_WIDGET_SEARCH) {
+                            values.put(LauncherSettings.Favorites.SPANX, 4);
+                            values.put(LauncherSettings.Favorites.SPANY, 1);
+                        } else {
+                            values.put(LauncherSettings.Favorites.SPANX, 2);
+                            values.put(LauncherSettings.Favorites.SPANY, 2);
+                        }
 
                         String updateWhere = Favorites._ID + "=" + favoriteId;
                         db.update(TABLE_FAVORITES, values, updateWhere, null);
@@ -646,13 +661,9 @@ public class LauncherProvider extends ContentProvider {
         }
 
         private boolean addSearchWidget(SQLiteDatabase db, ContentValues values) {
-            // Add a search box
-            values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_WIDGET_SEARCH);
-            values.put(Favorites.SPANX, 4);
-            values.put(Favorites.SPANY, 1);
-            db.insert(TABLE_FAVORITES, null, values);
-
-            return true;
+            ComponentName cn = new ComponentName("com.android.quicksearchbox",
+                    "com.android.quicksearchbox.SearchWidgetProvider");
+            return addAppWidget(db, values, cn, 4, 1);
         }
 
         private boolean addClockWidget(SQLiteDatabase db, ContentValues values) {
@@ -698,7 +709,13 @@ public class LauncherProvider extends ContentProvider {
             }
             
             ComponentName cn = new ComponentName(packageName, className);
-            
+            int spanX = a.getInt(R.styleable.Favorite_spanX, 0);
+            int spanY = a.getInt(R.styleable.Favorite_spanY, 0);
+            return addAppWidget(db, values, cn, spanX, spanY);
+        }
+
+        private boolean addAppWidget(SQLiteDatabase db, ContentValues values, ComponentName cn,
+                int spanX, int spanY) {
             boolean allocatedAppWidgets = false;
             final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
 
@@ -706,8 +723,8 @@ public class LauncherProvider extends ContentProvider {
                 int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
                 
                 values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_APPWIDGET);
-                values.put(Favorites.SPANX, a.getString(R.styleable.Favorite_spanX));
-                values.put(Favorites.SPANY, a.getString(R.styleable.Favorite_spanY));
+                values.put(Favorites.SPANX, spanX);
+                values.put(Favorites.SPANY, spanY);
                 values.put(Favorites.APPWIDGET_ID, appWidgetId);
                 db.insert(TABLE_FAVORITES, null, values);
 
