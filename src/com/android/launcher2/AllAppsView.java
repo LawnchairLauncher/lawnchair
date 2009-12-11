@@ -804,7 +804,7 @@ public class AllAppsView extends RSSurfaceView
         private Canvas mSelectionCanvas;
 
         boolean mHasSurface = false;
-        private boolean mAppsDirty = false;
+        private boolean mAppsDirty = true;
 
         Params mParams;
         State mState;
@@ -1051,7 +1051,7 @@ public class AllAppsView extends RSSurfaceView
 
         void dirtyCheck() {
             if (mHasSurface) {
-                if (mAppsDirty) {
+                if (mAppsDirty && mAllAppsList != null) {
                     for (int i=0; i < mState.iconCount; i++) {
                         uploadAppIcon(i, mAllAppsList.get(i));
                     }
