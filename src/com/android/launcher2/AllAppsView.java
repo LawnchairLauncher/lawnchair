@@ -277,7 +277,7 @@ public class AllAppsView extends RSSurfaceView
                 mShouldGainFocus = true;
             }
         } else {
-            if (mRollo != null && mRollo.mHasSurface) {
+            if (mRollo != null) {
                 if (mArrowNavigation) {
                     // Clear selection when we lose focus
                     mRollo.clearSelectedIcon();
@@ -674,7 +674,7 @@ public class AllAppsView extends RSSurfaceView
         }
 
         final int N = list.size();
-        if (mRollo != null && mRollo.mHasSurface) {
+        if (mRollo != null) {
             mRollo.reallocAppsList(mRollo.mState.iconCount + N);
         }
 
@@ -686,13 +686,12 @@ public class AllAppsView extends RSSurfaceView
                 index = -(index+1);
             }
             mAllAppsList.add(index, item);
-            if (mRollo != null && mRollo.mHasSurface) {
+            if (mRollo != null) {
                 mRollo.addApp(index, item);
-                mRollo.mState.iconCount++;
             }
         }
 
-        if (mRollo != null && mRollo.mHasSurface) {
+        if (mRollo != null) {
             mRollo.saveAppsList();
         }
     }
@@ -710,7 +709,7 @@ public class AllAppsView extends RSSurfaceView
             if (index >= 0) {
                 int ic = mRollo != null ? mRollo.mState.iconCount : 666;
                 mAllAppsList.remove(index);
-                if (mRollo != null && mRollo.mHasSurface) {
+                if (mRollo != null) {
                     mRollo.removeApp(index);
                 }
             } else {
@@ -719,7 +718,7 @@ public class AllAppsView extends RSSurfaceView
             }
         }
 
-        if (mRollo != null && mRollo.mHasSurface) {
+        if (mRollo != null) {
             mRollo.saveAppsList();
         }
     }
@@ -1050,16 +1049,12 @@ public class AllAppsView extends RSSurfaceView
             mRS.contextBindRootScript(mScript);
         }
 
-        private void uploadApps(ArrayList<ApplicationInfo> list) {
-            for (int i=0; i < mState.iconCount; i++) {
-                uploadAppIcon(i, list.get(i));
-            }
-        }
-
         void dirtyCheck() {
             if (mHasSurface) {
                 if (mAppsDirty) {
-                    uploadApps(mAllAppsList);
+                    for (int i=0; i < mState.iconCount; i++) {
+                        uploadAppIcon(i, mAllAppsList.get(i));
+                    }
                     saveAppsList();
                     mAppsDirty = false;
                 }
@@ -1086,10 +1081,11 @@ public class AllAppsView extends RSSurfaceView
 
             Element ie8888 = Element.RGBA_8888(mRS);
 
-            Utilities.BubbleText bubble = new Utilities.BubbleText(getContext());
-
             mState.iconCount = count;
-            uploadApps(list);
+            for (int i=0; i < mState.iconCount; i++) {
+                createAppIconAllocations(i, list.get(i));
+                uploadAppIcon(i, list.get(i));
+            }
             saveAppsList();
         }
 
@@ -1124,20 +1120,30 @@ public class AllAppsView extends RSSurfaceView
             a.subData(0, 0, 1, 1, black);
         }
 
-        private void uploadAppIcon(int index, ApplicationInfo item) {
+        private void createAppIconAllocations(int index, ApplicationInfo item) {
             mIcons[index] = Allocation.createFromBitmap(mRS, item.iconBitmap,
                     Element.RGBA_8888(mRS), true);
-            frameBitmapAllocMips(mIcons[index], item.iconBitmap.getWidth(), item.iconBitmap.getHeight());
+            frameBitmapAllocMips(mIcons[index], item.iconBitmap.getWidth(),
+                    item.iconBitmap.getHeight());
 
             mLabels[index] = Allocation.createFromBitmap(mRS, item.titleBitmap,
                     Element.RGBA_8888(mRS), true);
-            frameBitmapAllocMips(mLabels[index], item.titleBitmap.getWidth(), item.titleBitmap.getHeight());
-
-            mIcons[index].uploadToTexture(0);
-            mLabels[index].uploadToTexture(0);
+            frameBitmapAllocMips(mLabels[index], item.titleBitmap.getWidth(),
+                    item.titleBitmap.getHeight());
 
             mIconIds[index] = mIcons[index].getID();
             mLabelIds[index] = mLabels[index].getID();
+        }
+
+        private void uploadAppIcon(int index, ApplicationInfo item) {
+            if (mIconIds[index] != mIcons[index].getID()) {
+                throw new IllegalStateException("uploadAppIcon index=" + index
+                    + " mIcons[index].getID=" + mIcons[index].getID()
+                    + " mIconsIds[index]=" + mIconIds[index]
+                    + " item=" + item);
+            }
+            mIcons[index].uploadToTexture(0);
+            mLabels[index].uploadToTexture(0);
         }
 
         /**
@@ -1178,11 +1184,15 @@ public class AllAppsView extends RSSurfaceView
             System.arraycopy(mLabels, index, mLabels, dest, count);
             System.arraycopy(mLabelIds, index, mLabelIds, dest, count);
 
+            createAppIconAllocations(index, item);
+
             if (mHasSurface) {
                 uploadAppIcon(index, item);
             } else {
                 mAppsDirty = true;
             }
+
+            mRollo.mState.iconCount++;
         }
 
         /**
@@ -1198,7 +1208,7 @@ public class AllAppsView extends RSSurfaceView
             System.arraycopy(mLabelIds, src, mLabelIds, index, count);
 
             mRollo.mState.iconCount--;
-            final int last = mState.iconCount - 1;
+            final int last = mState.iconCount;
 
             mIcons[last] = null;
             mIconIds[last] = 0;
