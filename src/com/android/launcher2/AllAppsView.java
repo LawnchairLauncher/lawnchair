@@ -660,11 +660,7 @@ public class AllAppsView extends RSSurfaceView
     public void setApps(ArrayList<ApplicationInfo> list) {
         mAllAppsList = list;
         if (mRollo != null) {
-            if (mRollo.mHasSurface) {
-                mRollo.setApps(list);
-            } else {
-                mRollo.mAppsDirty = true;
-            }
+            mRollo.setApps(list);
         }
         mLocks &= ~LOCK_ICONS_PENDING;
     }
@@ -1086,7 +1082,13 @@ public class AllAppsView extends RSSurfaceView
             mState.iconCount = count;
             for (int i=0; i < mState.iconCount; i++) {
                 createAppIconAllocations(i, list.get(i));
-                uploadAppIcon(i, list.get(i));
+            }
+            if (mHasSurface) {
+                for (int i=0; i < mState.iconCount; i++) {
+                    uploadAppIcon(i, list.get(i));
+                }
+            } else {
+                mRollo.mAppsDirty = true;
             }
             saveAppsList();
         }
