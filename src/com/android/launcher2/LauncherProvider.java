@@ -469,24 +469,16 @@ public class LauncherProvider extends ContentProvider {
          * LauncherAppWidgetBinder to finish the actual binding.
          */
         private void convertWidgets(SQLiteDatabase db) {
+            final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
             final int[] bindSources = new int[] {
                     Favorites.ITEM_TYPE_WIDGET_CLOCK,
                     Favorites.ITEM_TYPE_WIDGET_PHOTO_FRAME,
                     Favorites.ITEM_TYPE_WIDGET_SEARCH,
             };
-            
-            final ArrayList<ComponentName> bindTargets = new ArrayList<ComponentName>();
-            bindTargets.add(new ComponentName("com.android.alarmclock",
-                    "com.android.alarmclock.AnalogAppWidgetProvider"));
-            bindTargets.add(new ComponentName("com.android.camera",
-                    "com.android.camera.PhotoAppWidgetProvider"));
-            bindTargets.add(new ComponentName("com.android.quicksearchbox",
-                    "com.android.quicksearchbox.SearchWidgetProvider"));
 
             final String selectWhere = buildOrWhereString(Favorites.ITEM_TYPE, bindSources);
             
             Cursor c = null;
-            boolean allocatedAppWidgets = false;
             
             db.beginTransaction();
             try {
@@ -524,8 +516,21 @@ public class LauncherProvider extends ContentProvider {
 
                         String updateWhere = Favorites._ID + "=" + favoriteId;
                         db.update(TABLE_FAVORITES, values, updateWhere, null);
-                        
-                        allocatedAppWidgets = true;
+
+                        ComponentName cn = null;
+                        if (favoriteType == Favorites.ITEM_TYPE_WIDGET_CLOCK) {
+                            appWidgetManager.bindAppWidgetId(appWidgetId,
+                                    new ComponentName("com.android.alarmclock",
+                                    "com.android.alarmclock.AnalogAppWidgetProvider"));
+                        } else if (favoriteType == Favorites.ITEM_TYPE_WIDGET_PHOTO_FRAME) {
+                            appWidgetManager.bindAppWidgetId(appWidgetId,
+                                    new ComponentName("com.android.camera",
+                                    "com.android.camera.PhotoAppWidgetProvider"));
+                        } else if (favoriteType == Favorites.ITEM_TYPE_WIDGET_SEARCH) {
+                            appWidgetManager.bindAppWidgetId(appWidgetId,
+                                    new ComponentName("com.android.quicksearchbox",
+                                    "com.android.quicksearchbox.SearchWidgetProvider"));
+                        }
                     } catch (RuntimeException ex) {
                         Log.e(TAG, "Problem allocating appWidgetId", ex);
                     }
@@ -540,33 +545,8 @@ public class LauncherProvider extends ContentProvider {
                     c.close();
                 }
             }
-            
-            // If any appWidgetIds allocated, then launch over to binder
-            if (allocatedAppWidgets) {
-                launchAppWidgetBinder(bindSources, bindTargets);
-            }
         }
 
-        /**
-         * Launch the widget binder that walks through the Launcher database,
-         * binding any matching widgets to the corresponding targets. We can't
-         * bind ourselves because our parent process can't obtain the
-         * BIND_APPWIDGET permission.
-         */
-        private void launchAppWidgetBinder(int[] bindSources, ArrayList<ComponentName> bindTargets) {
-            final Intent intent = new Intent();
-            intent.setComponent(new ComponentName("com.android.settings",
-                    "com.android.settings.LauncherAppWidgetBinder"));
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            
-            final Bundle extras = new Bundle();
-            extras.putIntArray(EXTRA_BIND_SOURCES, bindSources);
-            extras.putParcelableArrayList(EXTRA_BIND_TARGETS, bindTargets);
-            intent.putExtras(extras);
-            
-            mContext.startActivity(intent);
-        }
-        
         /**
          * Loads the default set of favorite packages from an xml file.
          *
@@ -667,37 +647,9 @@ public class LauncherProvider extends ContentProvider {
         }
 
         private boolean addClockWidget(SQLiteDatabase db, ContentValues values) {
-            final int[] bindSources = new int[] {
-                    Favorites.ITEM_TYPE_WIDGET_CLOCK,
-            };
-
-            final ArrayList<ComponentName> bindTargets = new ArrayList<ComponentName>();
-            bindTargets.add(new ComponentName("com.android.alarmclock",
-                    "com.android.alarmclock.AnalogAppWidgetProvider"));
-
-            boolean allocatedAppWidgets = false;
-            
-            // Try binding to an analog clock widget
-            try {
-                int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
-
-                values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_WIDGET_CLOCK);
-                values.put(Favorites.SPANX, 2);
-                values.put(Favorites.SPANY, 2);
-                values.put(Favorites.APPWIDGET_ID, appWidgetId);
-                db.insert(TABLE_FAVORITES, null, values);
-
-                allocatedAppWidgets = true;
-            } catch (RuntimeException ex) {
-                Log.e(TAG, "Problem allocating appWidgetId", ex);
-            }
-
-            // If any appWidgetIds allocated, then launch over to binder
-            if (allocatedAppWidgets) {
-                launchAppWidgetBinder(bindSources, bindTargets);
-            }
-
-            return allocatedAppWidgets;
+            ComponentName cn = new ComponentName("com.android.alarmclock",
+                    "com.android.alarmclock.AnalogAppWidgetProvider");
+            return addAppWidget(db, values, cn, 2, 2);
         }
         
         private boolean addAppWidget(SQLiteDatabase db, ContentValues values, TypedArray a) {
