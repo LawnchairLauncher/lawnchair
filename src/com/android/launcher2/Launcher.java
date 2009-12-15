@@ -187,6 +187,7 @@ public final class Launcher extends Activity
 
     private boolean mWorkspaceLoading = true;
 
+    private boolean mPaused = true;
     private boolean mRestoring;
     private boolean mWaitingForResult;
 
@@ -245,6 +246,9 @@ public final class Launcher extends Activity
         // For handling default keys
         mDefaultKeySsb = new SpannableStringBuilder();
         Selection.setSelection(mDefaultKeySsb, 0);
+
+        IntentFilter filter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+        registerReceiver(mCloseSystemDialogsReceiver, filter);
     }
 
     private void checkForLocaleChange() {
@@ -401,8 +405,7 @@ public final class Launcher extends Activity
     protected void onResume() {
         super.onResume();
 
-        IntentFilter filter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-        registerReceiver(mCloseSystemDialogsReceiver, filter);
+        mPaused = false;
 
         if (mRestoring) {
             mWorkspaceLoading = true;
@@ -432,7 +435,6 @@ public final class Launcher extends Activity
         dismissPreview(mPreviousView);
         dismissPreview(mNextView);
         mDragController.cancelDrag();
-        unregisterReceiver(mCloseSystemDialogsReceiver);
     }
 
     @Override
@@ -935,6 +937,8 @@ public final class Launcher extends Activity
         
         dismissPreview(mPreviousView);
         dismissPreview(mNextView);
+
+        unregisterReceiver(mCloseSystemDialogsReceiver);
     }
 
     @Override
@@ -1849,7 +1853,11 @@ public final class Launcher extends Activity
      *          - from center screen
      *          - from other screens
      *   - Home from all apps
+     *          - from center screen
+     *          - from other screens
      *   - Back from all apps
+     *          - from center screen
+     *          - from other screens
      *   - Launch app from workspace and quit
      *          - with back
      *          - with home
@@ -1870,7 +1878,7 @@ public final class Launcher extends Activity
      *   - On all apps, power off
      *   - Launch an app and turn off the screen while in that app
      *          - Go back with home key
-     *          - Go back with back key
+     *          - Go back with back key  TODO: make this not go to workspace
      *          - From all apps
      *          - From workspace
      */
@@ -2028,13 +2036,9 @@ public final class Launcher extends Activity
             String reason = intent.getStringExtra("reason");
             if (!"homekey".equals(reason)) {
                 boolean animate = true;
-                /*
-                if ("globalactions".equals(reason)) {
-                    // For some reason (probably the fading), this animation is
-                    // choppy, so don't show it.
+                if (mPaused || "lock".equals(reason)) {
                     animate = false;
                 }
-                */
                 closeAllApps(animate);
             }
         }
