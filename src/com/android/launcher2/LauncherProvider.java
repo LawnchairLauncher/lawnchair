@@ -465,8 +465,7 @@ public class LauncherProvider extends ContentProvider {
 
         /**
          * Upgrade existing clock and photo frame widgets into their new widget
-         * equivalents. This method allocates appWidgetIds, and then hands off to
-         * LauncherAppWidgetBinder to finish the actual binding.
+         * equivalents.
          */
         private void convertWidgets(SQLiteDatabase db) {
             final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
