@@ -189,7 +189,6 @@ public class AllAppsView extends RSSurfaceView
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         super.surfaceDestroyed(holder);
-        mRollo.mHasSurface = false;
         // Without this, we leak mMessageCallback which leaks the context.
         mRS.mMessageCallback = null;
     }
@@ -202,7 +201,6 @@ public class AllAppsView extends RSSurfaceView
 
         if (mRollo == null) {
             mRollo = new RolloRS();
-            mRollo.mHasSurface = true;
             mRollo.init(getResources(), w, h);
             if (mAllAppsList != null) {
                 mRollo.setApps(mAllAppsList);
@@ -211,8 +209,6 @@ public class AllAppsView extends RSSurfaceView
                 gainFocus();
                 mShouldGainFocus = false;
             }
-        } else {
-            mRollo.mHasSurface = true;
         }
         mRollo.dirtyCheck();
         mRollo.resize(w, h);
@@ -271,7 +267,7 @@ public class AllAppsView extends RSSurfaceView
         }
 
         if (gainFocus) {
-            if (mRollo != null && mRollo.mHasSurface) {
+            if (mRollo != null) {
                 gainFocus();
             } else {
                 mShouldGainFocus = true;
@@ -637,7 +633,7 @@ public class AllAppsView extends RSSurfaceView
      */
     public void zoom(float zoom, boolean animate) {
         cancelLongPress();
-        if (mRollo == null || !mRollo.mHasSurface) {
+        if (mRollo == null) {
             mZoomDirty = true;
             mZoom = zoom;
             mAnimateNextZoom = animate;
@@ -798,9 +794,6 @@ public class AllAppsView extends RSSurfaceView
 
         private Bitmap mSelectionBitmap;
         private Canvas mSelectionCanvas;
-
-        boolean mHasSurface = false;
-        private boolean mAppsDirty = true;
 
         Params mParams;
         State mState;
@@ -1046,17 +1039,8 @@ public class AllAppsView extends RSSurfaceView
         }
 
         void dirtyCheck() {
-            if (mHasSurface) {
-                if (mAppsDirty && mAllAppsList != null) {
-                    for (int i=0; i < mState.iconCount; i++) {
-                        uploadAppIcon(i, mAllAppsList.get(i));
-                    }
-                    saveAppsList();
-                    mAppsDirty = false;
-                }
-                if (mZoomDirty) {
-                    setZoom(mZoom, mAnimateNextZoom);
-                }
+            if (mZoomDirty) {
+                setZoom(mZoom, mAnimateNextZoom);
             }
         }
 
@@ -1081,12 +1065,8 @@ public class AllAppsView extends RSSurfaceView
             for (int i=0; i < mState.iconCount; i++) {
                 createAppIconAllocations(i, list.get(i));
             }
-            if (mHasSurface) {
-                for (int i=0; i < mState.iconCount; i++) {
-                    uploadAppIcon(i, list.get(i));
-                }
-            } else {
-                mRollo.mAppsDirty = true;
+            for (int i=0; i < mState.iconCount; i++) {
+                uploadAppIcon(i, list.get(i));
             }
             saveAppsList();
         }
@@ -1187,13 +1167,7 @@ public class AllAppsView extends RSSurfaceView
             System.arraycopy(mLabelIds, index, mLabelIds, dest, count);
 
             createAppIconAllocations(index, item);
-
-            if (mHasSurface) {
-                uploadAppIcon(index, item);
-            } else {
-                mAppsDirty = true;
-            }
-
+            uploadAppIcon(index, item);
             mRollo.mState.iconCount++;
         }
 
@@ -1405,8 +1379,6 @@ public class AllAppsView extends RSSurfaceView
             Log.d(TAG, "mRollo.mLabelIds=" +  Arrays.toString(mLabelIds));
             Log.d(TAG, "mRollo.mTouchXBorders=" +  Arrays.toString(mTouchXBorders));
             Log.d(TAG, "mRollo.mTouchYBorders=" +  Arrays.toString(mTouchYBorders));
-            Log.d(TAG, "mRollo.mHasSurface=" + mHasSurface);
-            Log.d(TAG, "mRollo.mAppsDirty=" + mAppsDirty);
             Log.d(TAG, "mRollo.mState.newPositionX=" + mState.newPositionX);
             Log.d(TAG, "mRollo.mState.newTouchDown=" + mState.newTouchDown);
             Log.d(TAG, "mRollo.mState.flingVelocity=" + mState.flingVelocity);
