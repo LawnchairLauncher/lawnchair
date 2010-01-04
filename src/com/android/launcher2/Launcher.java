@@ -751,15 +751,15 @@ public final class Launcher extends Activity
     private static ApplicationInfo infoFromShortcutIntent(Context context, Intent data) {
         Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
         String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
-        Bitmap bitmap = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
+        Parcelable bitmap = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
 
         Drawable icon = null;
         boolean filtered = false;
         boolean customIcon = false;
         ShortcutIconResource iconResource = null;
 
-        if (bitmap != null) {
-            icon = new FastBitmapDrawable(Utilities.createBitmapThumbnail(bitmap, context));
+        if (bitmap != null && bitmap instanceof Bitmap) {
+            icon = new FastBitmapDrawable(Utilities.createBitmapThumbnail((Bitmap) bitmap, context));
             filtered = true;
             customIcon = true;
         } else {
