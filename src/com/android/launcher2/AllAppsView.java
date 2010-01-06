@@ -1018,7 +1018,7 @@ public class AllAppsView extends RSSurfaceView
 
         private void initRs() {
             ScriptC.Builder sb = new ScriptC.Builder(mRS);
-            sb.setScript(mRes, R.raw.rollo3);
+            sb.setScript(mRes, R.raw.allapps);
             sb.setRoot(true);
             sb.addDefines(mDefines);
             sb.setType(mParams.mType, "params", Defines.ALLOC_PARAMS);
