@@ -15,16 +15,14 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- no translation found for application_name (4528470563311667177) -->
-    <skip />
+    <string name="application_name" msgid="8424725141379931883">"Launcher"</string>
     <string name="uid_name" msgid="3371120195364560632">"Principais aplicativos do Android"</string>
     <string name="folder_name" msgid="4588446541914685904">"Pasta"</string>
     <string name="chooser_wallpaper" msgid="5988031014201479733">"Selecionar papel de parede de"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Definir papel de parede"</string>
-    <string name="pick_wallpaper" msgid="2674908923379130941">"Galeria de papel de parede"</string>
-    <string name="activity_not_found" msgid="3571057450431950427">"O aplicativo não está instalado no seu telefone."</string>
-    <!-- no translation found for live_wallpaper_picker_title (7738370557178100072) -->
+    <!-- no translation found for pick_wallpaper (5630222540525626723) -->
     <skip />
+    <string name="activity_not_found" msgid="3571057450431950427">"O aplicativo não está instalado no seu telefone."</string>
     <string name="configure_wallpaper" msgid="2820186271419674623">"Configurar..."</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nome da pasta"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Renomear pasta"</string>
@@ -46,6 +44,8 @@
     <string name="shortcut_duplicate" msgid="4757756326465060694">"O atalho \"<xliff:g id="NAME">%s</xliff:g>\" já existe."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Selecionar atalho"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"Selecionar pasta"</string>
+    <string name="all_apps_button_label" msgid="3953036962111614813">"Todos os aplicativos"</string>
+    <string name="all_apps_home_button_label" msgid="1022222300329398558">"Página inicial"</string>
     <string name="menu_add" msgid="3065046628354640854">"Adicionar"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"Papel de parede"</string>
     <string name="menu_search" msgid="4826514464423239041">"Pesquisar"</string>
@@ -61,8 +61,4 @@
     <string name="permlab_write_settings" msgid="1360567537236705628">"gravar configurações e atalhos da Página inicial"</string>
     <string name="permdesc_write_settings" msgid="1098648778383349818">"Permite que um aplicativo altere as configurações e atalhos na Página inicial."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Problema ao carregar o widget"</string>
-    <!-- no translation found for live_wallpaper_empty (4278728108785853407) -->
-    <skip />
-    <!-- no translation found for set_live_wallpaper (2381437614949033266) -->
-    <skip />
 </resources>

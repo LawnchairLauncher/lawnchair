@@ -15,16 +15,13 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- no translation found for application_name (4528470563311667177) -->
-    <skip />
+    <string name="application_name" msgid="8424725141379931883">"Launcher"</string>
     <string name="uid_name" msgid="3371120195364560632">"Android Core Apps"</string>
     <string name="folder_name" msgid="4588446541914685904">"Cartella"</string>
     <string name="chooser_wallpaper" msgid="5988031014201479733">"Seleziona sfondo da"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Imposta sfondo"</string>
-    <string name="pick_wallpaper" msgid="2674908923379130941">"Galleria sfondi"</string>
+    <string name="pick_wallpaper" msgid="5630222540525626723">"Sfondi"</string>
     <string name="activity_not_found" msgid="3571057450431950427">"Applicazione non installata sul telefono."</string>
-    <!-- no translation found for live_wallpaper_picker_title (7738370557178100072) -->
-    <skip />
     <string name="configure_wallpaper" msgid="2820186271419674623">"Configura..."</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nome cartella"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Rinomina cartella"</string>
@@ -46,6 +43,8 @@
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Collegamento \"<xliff:g id="NAME">%s</xliff:g>\" già presente."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Seleziona collegamento"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"Seleziona cartella"</string>
+    <string name="all_apps_button_label" msgid="3953036962111614813">"Tutte le applicazioni"</string>
+    <string name="all_apps_home_button_label" msgid="1022222300329398558">"Home"</string>
     <string name="menu_add" msgid="3065046628354640854">"Aggiungi"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"Sfondo"</string>
     <string name="menu_search" msgid="4826514464423239041">"Cerca"</string>
@@ -61,8 +60,4 @@
     <string name="permlab_write_settings" msgid="1360567537236705628">"creare impostazioni e scorciatoie in Home"</string>
     <string name="permdesc_write_settings" msgid="1098648778383349818">"Consente a un\'applicazione di modificare le impostazioni e le scorciatoie in Home."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Errore durante il caricamento del widget"</string>
-    <!-- no translation found for live_wallpaper_empty (4278728108785853407) -->
-    <skip />
-    <!-- no translation found for set_live_wallpaper (2381437614949033266) -->
-    <skip />
 </resources>

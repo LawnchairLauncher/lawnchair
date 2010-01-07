@@ -15,16 +15,13 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- no translation found for application_name (4528470563311667177) -->
-    <skip />
+    <string name="application_name" msgid="8424725141379931883">"Launcher"</string>
     <string name="uid_name" msgid="3371120195364560632">"Android Core 애플리케이션"</string>
     <string name="folder_name" msgid="4588446541914685904">"폴더"</string>
     <string name="chooser_wallpaper" msgid="5988031014201479733">"배경화면 선택"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"배경화면 설정"</string>
-    <string name="pick_wallpaper" msgid="2674908923379130941">"배경화면 갤러리"</string>
+    <string name="pick_wallpaper" msgid="5630222540525626723">"배경화면"</string>
     <string name="activity_not_found" msgid="3571057450431950427">"휴대전화에 설치되어 있지 않은 응용프로그램입니다."</string>
-    <!-- no translation found for live_wallpaper_picker_title (7738370557178100072) -->
-    <skip />
     <string name="configure_wallpaper" msgid="2820186271419674623">"구성..."</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"폴더 이름"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"폴더 이름 바꾸기"</string>
@@ -46,6 +43,8 @@
     <string name="shortcut_duplicate" msgid="4757756326465060694">"바로가기(\'<xliff:g id="NAME">%s</xliff:g>\')가 이미 있습니다."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"바로가기 선택"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"폴더 선택"</string>
+    <string name="all_apps_button_label" msgid="3953036962111614813">"모든 응용프로그램"</string>
+    <string name="all_apps_home_button_label" msgid="1022222300329398558">"홈"</string>
     <string name="menu_add" msgid="3065046628354640854">"추가"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"배경화면"</string>
     <string name="menu_search" msgid="4826514464423239041">"검색"</string>
@@ -61,8 +60,4 @@
     <string name="permlab_write_settings" msgid="1360567537236705628">"홈 설정 및 바로가기 쓰기"</string>
     <string name="permdesc_write_settings" msgid="1098648778383349818">"응용프로그램이 홈에 있는 설정 및 바로가기를 변경할 수 있도록 합니다."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"위젯을 로드하는 중 문제가 발생했습니다."</string>
-    <!-- no translation found for live_wallpaper_empty (4278728108785853407) -->
-    <skip />
-    <!-- no translation found for set_live_wallpaper (2381437614949033266) -->
-    <skip />
 </resources>

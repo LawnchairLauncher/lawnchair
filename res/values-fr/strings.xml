@@ -15,16 +15,13 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- no translation found for application_name (4528470563311667177) -->
-    <skip />
+    <string name="application_name" msgid="8424725141379931883">"Lanceur d\'applications"</string>
     <string name="uid_name" msgid="3371120195364560632">"Applications de base Android"</string>
     <string name="folder_name" msgid="4588446541914685904">"Dossier"</string>
     <string name="chooser_wallpaper" msgid="5988031014201479733">"Sélectionner à partir de..."</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Sélectionner"</string>
-    <string name="pick_wallpaper" msgid="2674908923379130941">"Galerie"</string>
+    <string name="pick_wallpaper" msgid="5630222540525626723">"Fonds d\'écran"</string>
     <string name="activity_not_found" msgid="3571057450431950427">"L\'application n\'est pas installée sur votre téléphone."</string>
-    <!-- no translation found for live_wallpaper_picker_title (7738370557178100072) -->
-    <skip />
     <string name="configure_wallpaper" msgid="2820186271419674623">"Configurer..."</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nom du dossier"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Renommer le dossier"</string>
@@ -46,6 +43,8 @@
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Le raccourci \"<xliff:g id="NAME">%s</xliff:g>\" existe déjà."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Sélectionner un raccourci"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"Sélectionner le dossier"</string>
+    <string name="all_apps_button_label" msgid="3953036962111614813">"Toutes les applications"</string>
+    <string name="all_apps_home_button_label" msgid="1022222300329398558">"Domicile"</string>
     <string name="menu_add" msgid="3065046628354640854">"Ajouter"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"Fond d\'écran"</string>
     <string name="menu_search" msgid="4826514464423239041">"Rechercher"</string>
@@ -61,8 +60,4 @@
     <string name="permlab_write_settings" msgid="1360567537236705628">"Enregistrer les paramètres de la page d\'accueil et des raccourcis"</string>
     <string name="permdesc_write_settings" msgid="1098648778383349818">"Permet à une application de modifier les paramètres et les raccourcis de la page d\'accueil."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Problème lors du chargement du widget"</string>
-    <!-- no translation found for live_wallpaper_empty (4278728108785853407) -->
-    <skip />
-    <!-- no translation found for set_live_wallpaper (2381437614949033266) -->
-    <skip />
 </resources>

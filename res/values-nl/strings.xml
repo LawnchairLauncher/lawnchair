@@ -15,16 +15,13 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- no translation found for application_name (4528470563311667177) -->
-    <skip />
+    <string name="application_name" msgid="8424725141379931883">"Launcher"</string>
     <string name="uid_name" msgid="3371120195364560632">"Android-kerntoepassingen"</string>
     <string name="folder_name" msgid="4588446541914685904">"Map"</string>
     <string name="chooser_wallpaper" msgid="5988031014201479733">"Achtergrond selecteren in"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Achtergrond instellen"</string>
-    <string name="pick_wallpaper" msgid="2674908923379130941">"Achtergrondgalerij"</string>
+    <string name="pick_wallpaper" msgid="5630222540525626723">"Achtergronden"</string>
     <string name="activity_not_found" msgid="3571057450431950427">"Deze toepassing is niet geïnstalleerd op uw telefoon."</string>
-    <!-- no translation found for live_wallpaper_picker_title (7738370557178100072) -->
-    <skip />
     <string name="configure_wallpaper" msgid="2820186271419674623">"Configureren..."</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Mapnaam"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Naam van map wijzigen"</string>
@@ -46,6 +43,8 @@
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Snelkoppeling \'<xliff:g id="NAME">%s</xliff:g>\' bestaat al."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Snelkoppeling selecteren"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"Map selecteren"</string>
+    <string name="all_apps_button_label" msgid="3953036962111614813">"Alle toepassingen"</string>
+    <string name="all_apps_home_button_label" msgid="1022222300329398558">"Startpagina"</string>
     <string name="menu_add" msgid="3065046628354640854">"Toevoegen"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"Achtergrond"</string>
     <string name="menu_search" msgid="4826514464423239041">"Zoeken"</string>
@@ -61,8 +60,4 @@
     <string name="permlab_write_settings" msgid="1360567537236705628">"instellingen en snelkoppelingen voor de startpagina schrijven"</string>
     <string name="permdesc_write_settings" msgid="1098648778383349818">"Hiermee kan een toepassing de instellingen en snelkoppelingen op de startpagina wijzigen."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Probleem bij het laden van widget"</string>
-    <!-- no translation found for live_wallpaper_empty (4278728108785853407) -->
-    <skip />
-    <!-- no translation found for set_live_wallpaper (2381437614949033266) -->
-    <skip />
 </resources>
