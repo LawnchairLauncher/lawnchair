@@ -114,8 +114,10 @@ public class AllAppsView extends RSSurfaceView
 
     private boolean mShouldGainFocus;
 
+    private boolean mHaveSurface = false;
     private boolean mZoomDirty = false;
     private boolean mAnimateNextZoom;
+    private float mNextZoom;
     private float mZoom;
     private float mPosX;
     private float mVelocity;
@@ -191,6 +193,10 @@ public class AllAppsView extends RSSurfaceView
         super.surfaceDestroyed(holder);
         // Without this, we leak mMessageCallback which leaks the context.
         mRS.mMessageCallback = null;
+        // We may lose any callbacks that are pending, so make sure that we re-sync that
+        // on the next surfaceChanged.
+        mZoomDirty = true;
+        mHaveSurface = false;
     }
 
     @Override
@@ -198,6 +204,8 @@ public class AllAppsView extends RSSurfaceView
         //long startTime = SystemClock.uptimeMillis();
 
         super.surfaceChanged(holder, format, w, h);
+
+        mHaveSurface = true;
 
         if (mRollo == null) {
             mRollo = new RolloRS();
@@ -633,10 +641,13 @@ public class AllAppsView extends RSSurfaceView
      */
     public void zoom(float zoom, boolean animate) {
         cancelLongPress();
-        if (mRollo == null) {
+        mNextZoom = zoom;
+        mAnimateNextZoom = animate;
+        // if we do setZoom while we don't have a surface, we won't
+        // get the callbacks that actually set mZoom.
+        if (mRollo == null || !mHaveSurface) {
             mZoomDirty = true;
             mZoom = zoom;
-            mAnimateNextZoom = animate;
             return;
         } else {
             mRollo.setZoom(zoom, animate);
@@ -1040,7 +1051,7 @@ public class AllAppsView extends RSSurfaceView
 
         void dirtyCheck() {
             if (mZoomDirty) {
-                setZoom(mZoom, mAnimateNextZoom);
+                setZoom(mNextZoom, mAnimateNextZoom);
             }
         }
 
