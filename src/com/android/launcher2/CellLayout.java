@@ -901,7 +901,7 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         }
         
         public LayoutParams(int cellX, int cellY, int cellHSpan, int cellVSpan) {
-            super(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+            super(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
             this.cellX = cellX;
             this.cellY = cellY;
             this.cellHSpan = cellHSpan;

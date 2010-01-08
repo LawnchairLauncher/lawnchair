@@ -19,13 +19,13 @@
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher2"
 
     android:id="@+id/drag_layer"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <com.android.launcher2.AllAppsView
         android:id="@+id/all_apps_view"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
 
         android:scrollbarStyle="outsideInset"
         android:drawSelectorOnTop="false"
@@ -38,8 +38,8 @@
     <!-- The workspace contains 3 screens of cells -->
     <com.android.launcher2.Workspace
         android:id="@+id/workspace"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         launcher:defaultScreen="2">
 
         <include android:id="@+id/cell1" layout="@layout/workspace_screen" />

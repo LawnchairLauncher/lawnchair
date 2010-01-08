@@ -27,12 +27,12 @@
         android:textSize="14sp"
         android:textColor="#404040"
         android:textStyle="bold"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
     	android:layout_height="wrap_content" />
 
     <GridView
         android:id="@id/folder_content"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
     	android:layout_height="0dip"
     	android:layout_weight="1"
 

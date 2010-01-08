@@ -18,7 +18,7 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
 
     android:paddingLeft="10dip"
@@ -34,7 +34,7 @@
     <LinearLayout
         android:layout_width="0dip"
         android:layout_weight="1.0"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
 
         android:paddingLeft="8dip"
         android:paddingRight="8dip"
