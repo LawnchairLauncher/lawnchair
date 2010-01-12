@@ -272,6 +272,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
      * @param currentScreen
      */
     void setCurrentScreen(int currentScreen) {
+        if (!mScroller.isFinished()) mScroller.abortAnimation();
         clearVacantCache();
         mCurrentScreen = Math.max(0, Math.min(currentScreen, getChildCount() - 1));
         scrollTo(mCurrentScreen * getWidth(), 0);
@@ -946,10 +947,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     void snapToScreen(int whichScreen) {
-        snapToScreen(whichScreen, true);
-    }
-
-    void snapToScreen(int whichScreen, boolean animate) {
         //if (!mScroller.isFinished()) return;
 
         whichScreen = Math.max(0, Math.min(whichScreen, getChildCount() - 1));
@@ -973,8 +970,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         final int delta = newX - mScrollX;
         final int duration = screenDelta * 300;
         awakenScrollBars(duration);
-        // 1ms is close to don't animate
-        mScroller.startScroll(mScrollX, 0, delta, 0, animate ? duration : 1);
+        mScroller.startScroll(mScrollX, 0, delta, 0, duration);
         invalidate();
     }
 
@@ -1425,7 +1421,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     void moveToDefaultScreen(boolean animate) {
-        snapToScreen(mDefaultScreen, animate);
+        if (animate) {
+            snapToScreen(mDefaultScreen);
+        } else {
+            setCurrentScreen(mDefaultScreen);
+        }
         getChildAt(mDefaultScreen).requestFocus();
     }
 
