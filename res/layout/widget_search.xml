@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2008 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+  
+          http://www.apache.org/licenses/LICENSE-2.0
+  
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<com.android.launcher2.Search 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher2"
+    android:id="@+id/widget_search"  
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <LinearLayout
+        android:id="@+id/search_plate"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="14dip"
+        android:paddingRight="14dip"
+        android:paddingTop="13dip"
+        android:paddingBottom="12dip"
+        android:background="@drawable/search_floater" >
+
+        <TextView
+            android:id="@+id/search_src_text"
+            android:layout_width="0dip"
+            android:layout_height="42dip"
+            android:layout_weight="1.0"
+            android:editable="false"
+            android:focusable="true"
+            android:inputType="none"
+            android:background="@drawable/textfield_searchwidget"
+            android:textAppearance="?android:attr/textAppearanceMediumInverse"
+            android:textColor="@android:color/primary_text_light"
+        />
+        
+        <ImageButton 
+            android:id="@+id/search_voice_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="42dip"
+            android:layout_marginLeft="4dip"
+            android:background="@*android:drawable/btn_search_dialog_voice"
+            android:src="@*android:drawable/ic_btn_speak_now"
+        />
+
+    </LinearLayout>
+
+</com.android.launcher2.Search>

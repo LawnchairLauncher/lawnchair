@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+* Copyright (C) 2008 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+-->
+
+<resources>
+    <style name="Theme" parent="android:Theme.Wallpaper">
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="AnimationPreview">
+        <item name="android:windowEnterAnimation">@anim/fade_in_fast</item>
+        <item name="android:windowExitAnimation">@anim/fade_out_fast</item>
+    </style>
+    
+    <style name="WorkspaceIcon">
+        <item name="android:textSize">13dip</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:shadowColor">#FF000000</item>
+        <item name="android:shadowRadius">2.0</item>
+        <item name="android:textColor">#FFF</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:background">@drawable/shortcut_selector</item>
+        <item name="android:paddingLeft">5dip</item>
+        <item name="android:paddingRight">5dip</item>
+    </style>
+
+    <style name="WorkspaceIcon.Portrait">
+        <item name="android:drawablePadding">5dip</item>
+        <item name="android:paddingTop">4dip</item>
+        <item name="android:layout_marginLeft">3dip</item>
+        <item name="android:layout_marginRight">3dip</item>
+        <item name="android:layout_marginTop">13dip</item>
+        <item name="android:layout_marginBottom">8dip</item>
+    </style>
+
+    <style name="WorkspaceIcon.Landscape">
+        <item name="android:drawablePadding">3dip</item>
+        <item name="android:paddingTop">2dip</item>
+        <item name="android:layout_marginLeft">10dip</item>
+        <item name="android:layout_marginRight">10dip</item>
+    </style>
+
+    <style name="SearchButton" parent="@android:style/Widget.Button.Small">
+        <item name="android:paddingTop">7dip</item>
+        <item name="android:paddingBottom">9dip</item>
+        <item name="android:paddingLeft">10dip</item>
+        <item name="android:paddingRight">10dip</item>
+    </style>
+
+</resources>

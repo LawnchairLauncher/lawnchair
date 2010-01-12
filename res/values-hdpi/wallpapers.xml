@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ * Copyright (C) 2009 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+<resources>
+    <string-array name="wallpapers" translatable="false">
+        <item>wallpaper_electric</item>
+        <item>wallpaper_grass</item>
+        <item>wallpaper_canyon</item>
+        <item>wallpaper_monumentvalley</item>
+        <item>wallpaper_tree</item>
+        <item>wallpaper_zanzibar</item>
+        <item>wallpaper_field</item>
+        <item>wallpaper_cloud</item>
+        <item>wallpaper_desert</item>
+        <item>wallpaper_goldengate</item>
+        <item>wallpaper_despair</item>
+        <item>wallpaper_grass_night</item>
+        <item>wallpaper_galaxy</item>
+        <item>wallpaper_x67</item>
+        <item>wallpaper_nexusrain</item>
+        <item>wallpaper_nexuspattern</item>
+        <item>wallpaper_nexuswallpaper1</item>
+        <item>wallpaper_brown</item>
+        <item>wallpaper_pcut</item>
+        <item>wallpaper_bluedotgrid</item>
+        <item>wallpaper_hazybluedots</item>
+        <item>wallpaper_ropelights</item>
+        <item>wallpaper_gray</item>
+        <item>wallpaper_greengray</item>
+        <item>wallpaper_lightgrad</item>
+    </string-array>
+</resources>

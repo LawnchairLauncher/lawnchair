@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2007 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+  
+          http://www.apache.org/licenses/LICENSE-2.0
+  
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<com.android.launcher2.DragLayer
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher2"
+
+    android:id="@+id/drag_layer"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <com.android.launcher2.AllAppsView
+        android:id="@+id/all_apps_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+
+        android:scrollbarStyle="outsideInset"
+        android:drawSelectorOnTop="false"
+        android:listSelector="@drawable/grid_selector"
+
+        android:verticalSpacing="10dip"
+        android:numColumns="4" />
+
+    <!-- The workspace contains 3 screens of cells -->
+    <com.android.launcher2.Workspace
+        android:id="@+id/workspace"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scrollbars="horizontal"
+        android:fadeScrollbars="true"
+        launcher:defaultScreen="2">
+
+        <include android:id="@+id/cell1" layout="@layout/workspace_screen" />
+        <include android:id="@+id/cell2" layout="@layout/workspace_screen" />
+        <include android:id="@+id/cell3" layout="@layout/workspace_screen" />
+        <include android:id="@+id/cell4" layout="@layout/workspace_screen" />
+        <include android:id="@+id/cell5" layout="@layout/workspace_screen" />
+
+    </com.android.launcher2.Workspace>
+
+    <ImageView
+        android:id="@+id/previous_screen"
+        android:layout_width="93dip"
+        android:layout_height="@dimen/button_bar_height"
+        android:layout_gravity="bottom|left"
+        android:layout_marginLeft="6dip"
+
+        android:src="@drawable/home_arrows_left"
+        
+        android:onClick="previousScreen"
+
+        android:focusable="true"
+        android:clickable="true" />
+
+    <ImageView
+        android:id="@+id/next_screen"
+        android:layout_width="93dip"
+        android:layout_height="@dimen/button_bar_height"
+        android:layout_gravity="bottom|right"
+        android:layout_marginRight="6dip"
+
+        android:src="@drawable/home_arrows_right"
+        
+        android:onClick="nextScreen"
+        
+        android:focusable="true"
+        android:clickable="true" />
+
+    <com.android.launcher2.HandleView
+        android:id="@+id/all_apps_button"
+        android:layout_width="@dimen/button_bar_height"
+        android:layout_height="fill_parent"
+        android:layout_gravity="right|center_vertical"
+
+        android:focusable="true"
+        android:clickable="true"
+
+        android:scaleType="center"
+        android:src="@drawable/all_apps_button"
+        launcher:direction="vertical"
+        />
+
+    <com.android.launcher2.DeleteZone
+        android:id="@+id/delete_zone"
+        android:layout_width="49dip"
+        android:layout_height="fill_parent"
+
+        android:scaleType="center"
+        android:src="@drawable/delete_zone_selector"
+        android:visibility="invisible"
+        launcher:direction="vertical"
+        />
+
+</com.android.launcher2.DragLayer>

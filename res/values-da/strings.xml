@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2009 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name" msgid="8424725141379931883">"Launcher"</string>
+    <string name="uid_name" msgid="3371120195364560632">"Android-kerneprogrammer"</string>
+    <string name="folder_name" msgid="4588446541914685904">"Mappe"</string>
+    <string name="chooser_wallpaper" msgid="5988031014201479733">"Vælg tapet fra"</string>
+    <string name="wallpaper_instructions" msgid="4215640646180727542">"Angiv tapet"</string>
+    <string name="pick_wallpaper" msgid="5630222540525626723">"Tapeter"</string>
+    <string name="activity_not_found" msgid="3571057450431950427">"Programmet er ikke installeret på din telefon."</string>
+    <string name="configure_wallpaper" msgid="2820186271419674623">"Konfigurer ..."</string>
+    <string name="rename_folder_label" msgid="5646236631298452787">"Mappenavn"</string>
+    <string name="rename_folder_title" msgid="4544573104191526550">"Omdøb mappe"</string>
+    <string name="rename_action" msgid="6016003384693240896">"OK"</string>
+    <string name="cancel_action" msgid="3811860427489435048">"Annuller"</string>
+    <string name="menu_item_add_item" msgid="6233177331075781114">"Føj til Startskærm"</string>
+    <string name="group_applications" msgid="4118484163419674240">"Programmer"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"Genveje"</string>
+    <string name="group_search" msgid="5905328940867162196">"Søg"</string>
+    <string name="group_folder" msgid="5143593791798929193">"Ny mappe"</string>
+    <string name="group_live_folders" msgid="2664945399140647217">"Mapper"</string>
+    <string name="group_widgets" msgid="6704978494073105844">"Widgets"</string>
+    <string name="group_wallpapers" msgid="1568191644272224858">"Tapeter"</string>
+    <string name="add_folder" msgid="3521088587367839879">"Mappe"</string>
+    <string name="add_clock" msgid="2337943840175865746">"Ur"</string>
+    <string name="add_photo_frame" msgid="3154058437359487954">"Billedramme"</string>
+    <string name="add_search" msgid="7104834713685095105">"Søg"</string>
+    <string name="out_of_space" msgid="8365249326091984698">"Der er ikke mere plads på Startskærmen."</string>
+    <string name="shortcut_installed" msgid="7071557296331322355">"Genvejen \"<xliff:g id="NAME">%s</xliff:g>\" blev oprettet."</string>
+    <string name="shortcut_uninstalled" msgid="2129499669449749995">"Genvejen \"<xliff:g id="NAME">%s</xliff:g>\" blev fjernet."</string>
+    <string name="shortcut_duplicate" msgid="4757756326465060694">"Genvejen \"<xliff:g id="NAME">%s</xliff:g>\" findes allerede."</string>
+    <string name="title_select_shortcut" msgid="2858897527672831763">"Vælg genvej"</string>
+    <string name="title_select_live_folder" msgid="3753447798805166749">"Vælg mappe"</string>
+    <string name="all_apps_button_label" msgid="3953036962111614813">"Alle programmer"</string>
+    <string name="all_apps_home_button_label" msgid="1022222300329398558">"Start"</string>
+    <string name="menu_add" msgid="3065046628354640854">"Tilføj"</string>
+    <string name="menu_wallpaper" msgid="5837429080911269832">"Tapet"</string>
+    <string name="menu_search" msgid="4826514464423239041">"Søg"</string>
+    <string name="menu_notifications" msgid="6424587053194766192">"Meddelelser"</string>
+    <string name="menu_gestures" msgid="514678675575912237">"Gestus"</string>
+    <string name="menu_settings" msgid="6233960148378443661">"Indstillinger"</string>
+    <string name="permlab_install_shortcut" msgid="1201690825493376489">"installer genveje"</string>
+    <string name="permdesc_install_shortcut" msgid="7429365847558984148">"Tillader, at et program tilføjer genveje uden brugerindgriben."</string>
+    <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"afinstaller genveje"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="959972195916090900">"Tillader, at et program fjerner genveje uden brugerindgriben."</string>
+    <string name="permlab_read_settings" msgid="3452408290738106747">"læs indstillinger og genveje for Start"</string>
+    <string name="permdesc_read_settings" msgid="8377434937176025492">"Tillader, at et program læser indstillingerne og genvejene i Start."</string>
+    <string name="permlab_write_settings" msgid="1360567537236705628">"skriv indstillinger og genveje for Start"</string>
+    <string name="permdesc_write_settings" msgid="1098648778383349818">"Tillader, at et program ændrer indstillingerne og genvejene i Start."</string>
+    <string name="search_hint" msgid="6974176141372467453">"Google-søgning"</string>
+    <string name="gadget_error_text" msgid="8359351016167075858">"Der er problemer med indlæsning af widget"</string>
+</resources>

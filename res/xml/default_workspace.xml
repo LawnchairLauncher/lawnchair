@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2009 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<favorites xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher2">
+
+    <!--  Left screen [1] -->
+    <favorite
+        launcher:packageName="com.android.camera"
+        launcher:className="com.android.camera.Camera"
+        launcher:screen="1"
+        launcher:x="1"
+        launcher:y="3" />
+
+     <favorite
+        launcher:packageName="com.cooliris.media"
+        launcher:className="com.cooliris.media.Gallery"
+        launcher:screen="1"
+        launcher:x="2"
+        launcher:y="3" />
+        
+    <!--  Middle screen [2] -->
+    <search
+        launcher:screen="2"
+        launcher:x="0"
+        launcher:y="0" />
+
+   <favorite
+        launcher:packageName="com.android.contacts"
+        launcher:className="com.android.contacts.DialtactsActivity"
+        launcher:screen="2"
+        launcher:x="0"
+        launcher:y="3" />
+
+    <favorite
+        launcher:packageName="com.android.contacts"
+        launcher:className="com.android.contacts.DialtactsContactsEntryActivity"
+        launcher:screen="2"
+        launcher:x="1"
+        launcher:y="3" />
+
+    <favorite
+        launcher:packageName="com.android.browser"
+        launcher:className="com.android.browser.BrowserActivity"
+        launcher:screen="2"
+        launcher:x="2"
+        launcher:y="3" />
+
+    <favorite
+        launcher:packageName="com.google.android.apps.maps"
+        launcher:className="com.google.android.maps.MapsActivity"
+        launcher:screen="2"
+        launcher:x="3"
+        launcher:y="3" />
+
+    <favorite
+        launcher:packageName="com.android.mms"
+        launcher:className="com.android.mms.ui.ConversationList"
+        launcher:screen="2"
+        launcher:x="0"
+        launcher:y="2" />
+
+    <favorite
+        launcher:packageName="com.android.vending"
+        launcher:className="com.android.vending.AssetBrowserActivity"
+        launcher:screen="2"
+        launcher:x="3"
+        launcher:y="2" />
+
+    <!--  Right screen [3] -->
+
+    <appwidget
+        launcher:packageName="com.android.settings"
+        launcher:className="com.android.settings.widget.SettingsAppWidgetProvider"
+        launcher:screen="3"
+        launcher:x="0"
+        launcher:y="0"
+        launcher:spanX="4"
+        launcher:spanY="1" />
+ 
+    <favorite
+        launcher:packageName="com.google.android.gm"
+        launcher:className="com.google.android.gm.ConversationListActivityGmail"
+        launcher:screen="3"
+        launcher:x="1"
+        launcher:y="3" />
+
+    <favorite
+        launcher:packageName="com.google.android.talk"
+        launcher:className="com.google.android.talk.SigningInActivity"
+        launcher:screen="3"
+        launcher:x="2"
+        launcher:y="3" />
+</favorites>
