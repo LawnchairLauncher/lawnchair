@@ -556,6 +556,7 @@ public final class Launcher extends Activity
         dragController.setDragScoller(workspace);
         dragController.setDragListener(deleteZone);
         dragController.setScrollView(dragLayer);
+        dragController.setMoveTarget(workspace);
 
         // The order here is bottom to top.
         dragController.addDropTarget(workspace);
