@@ -18,18 +18,21 @@ package com.android.launcher2;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ProviderInfo;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.RemoteException;
 import android.util.Log;
 import android.os.Process;
 import android.os.SystemClock;
@@ -602,6 +605,7 @@ public class LauncherModel extends BroadcastReceiver {
                 final Context context = mContext;
                 final ContentResolver contentResolver = context.getContentResolver();
                 final PackageManager manager = context.getPackageManager();
+                final boolean isSafeMode = manager.isSafeMode();
 
                 /* TODO
                 if (mLocaleChanged) {
@@ -612,6 +616,8 @@ public class LauncherModel extends BroadcastReceiver {
                 mItems.clear();
                 mAppWidgets.clear();
                 mFolders.clear();
+
+                final ArrayList<Long> itemsToRemove = new ArrayList<Long>();
 
                 final Cursor c = contentResolver.query(
                         LauncherSettings.Favorites.CONTENT_URI, null, null, null, null);
@@ -733,40 +739,50 @@ public class LauncherModel extends BroadcastReceiver {
                                 break;
 
                             case LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER:
-
                                 id = c.getLong(idIndex);
-                                LiveFolderInfo liveFolderInfo = findOrMakeLiveFolder(mFolders, id);
+                                Uri uri = Uri.parse(c.getString(uriIndex));
 
-                                intentDescription = c.getString(intentIndex);
-                                intent = null;
-                                if (intentDescription != null) {
-                                    try {
-                                        intent = Intent.parseUri(intentDescription, 0);
-                                    } catch (URISyntaxException e) {
-                                        // Ignore, a live folder might not have a base intent
+                                // Make sure the live folder exists
+                                final ProviderInfo providerInfo =
+                                        context.getPackageManager().resolveContentProvider(
+                                                uri.getAuthority(), 0);
+
+                                if (providerInfo == null && !isSafeMode) {
+                                    itemsToRemove.add(id);
+                                } else {
+                                    LiveFolderInfo liveFolderInfo = findOrMakeLiveFolder(mFolders, id);
+    
+                                    intentDescription = c.getString(intentIndex);
+                                    intent = null;
+                                    if (intentDescription != null) {
+                                        try {
+                                            intent = Intent.parseUri(intentDescription, 0);
+                                        } catch (URISyntaxException e) {
+                                            // Ignore, a live folder might not have a base intent
+                                        }
                                     }
+    
+                                    liveFolderInfo.title = c.getString(titleIndex);
+                                    liveFolderInfo.id = id;
+                                    liveFolderInfo.uri = uri;
+                                    container = c.getInt(containerIndex);
+                                    liveFolderInfo.container = container;
+                                    liveFolderInfo.screen = c.getInt(screenIndex);
+                                    liveFolderInfo.cellX = c.getInt(cellXIndex);
+                                    liveFolderInfo.cellY = c.getInt(cellYIndex);
+                                    liveFolderInfo.baseIntent = intent;
+                                    liveFolderInfo.displayMode = c.getInt(displayModeIndex);
+    
+                                    loadLiveFolderIcon(context, c, iconTypeIndex, iconPackageIndex,
+                                            iconResourceIndex, liveFolderInfo);
+    
+                                    switch (container) {
+                                        case LauncherSettings.Favorites.CONTAINER_DESKTOP:
+                                            mItems.add(liveFolderInfo);
+                                            break;
+                                    }
+                                    mFolders.put(liveFolderInfo.id, liveFolderInfo);
                                 }
-
-                                liveFolderInfo.title = c.getString(titleIndex);
-                                liveFolderInfo.id = id;
-                                container = c.getInt(containerIndex);
-                                liveFolderInfo.container = container;
-                                liveFolderInfo.screen = c.getInt(screenIndex);
-                                liveFolderInfo.cellX = c.getInt(cellXIndex);
-                                liveFolderInfo.cellY = c.getInt(cellYIndex);
-                                liveFolderInfo.uri = Uri.parse(c.getString(uriIndex));
-                                liveFolderInfo.baseIntent = intent;
-                                liveFolderInfo.displayMode = c.getInt(displayModeIndex);
-
-                                loadLiveFolderIcon(context, c, iconTypeIndex, iconPackageIndex,
-                                        iconResourceIndex, liveFolderInfo);
-
-                                switch (container) {
-                                    case LauncherSettings.Favorites.CONTAINER_DESKTOP:
-                                        mItems.add(liveFolderInfo);
-                                        break;
-                                }
-                                mFolders.put(liveFolderInfo.id, liveFolderInfo);
                                 break;
 
                             case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
@@ -798,6 +814,25 @@ public class LauncherModel extends BroadcastReceiver {
                 } finally {
                     c.close();
                 }
+
+                if (itemsToRemove.size() > 0) {
+                    ContentProviderClient client = contentResolver.acquireContentProviderClient(
+                                    LauncherSettings.Favorites.CONTENT_URI);
+                    // Remove dead items
+                    for (long id : itemsToRemove) {
+                        if (DEBUG_LOADERS) {
+                            Log.d(TAG, "Removed id = " + id);
+                        }
+                        // Don't notify content observers
+                        try {
+                            client.delete(LauncherSettings.Favorites.getContentUri(id, false),
+                                    null, null);
+                        } catch (RemoteException e) {
+                            Log.w(TAG, "Could not remove id = " + id);
+                        }
+                    }
+                }
+
                 if (DEBUG_LOADERS) {
                     Log.d(TAG, "loaded workspace in " + (SystemClock.uptimeMillis()-t) + "ms");
                 }
@@ -956,7 +991,7 @@ public class LauncherModel extends BroadcastReceiver {
             private void bindAllApps() {
                 synchronized (mLock) {
                     final ArrayList<ApplicationInfo> results
-                            = (ArrayList<ApplicationInfo>)mAllAppsList.data.clone();
+                            = (ArrayList<ApplicationInfo>) mAllAppsList.data.clone();
                     // We're adding this now, so clear out this so we don't re-send them.
                     mAllAppsList.added = new ArrayList<ApplicationInfo>();
                     mHandler.post(new Runnable() {
@@ -971,7 +1006,7 @@ public class LauncherModel extends BroadcastReceiver {
 
                             if (DEBUG_LOADERS) {
                                 Log.d(TAG, "bound app " + count + " icons in "
-                                    + (SystemClock.uptimeMillis()-t) + "ms");
+                                    + (SystemClock.uptimeMillis() - t) + "ms");
                             }
                         }
                     });

@@ -18,7 +18,6 @@ package com.android.launcher2;
 
 import android.app.Application;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;

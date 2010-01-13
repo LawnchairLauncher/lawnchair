@@ -20,15 +20,16 @@ import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ComponentName;
+import android.content.pm.ProviderInfo;
 import android.content.res.TypedArray;
 import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Parcelable;
 import android.os.Parcel;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -1157,9 +1158,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         mAllowLongPress = allowLongPress;
     }
 
-    void removeShortcutsForPackage(String packageName) {
+    void removeItemsForPackage(String packageName) {
         final ArrayList<View> childrenToRemove = new ArrayList<View>();
         final int count = getChildCount();
+        final PackageManager manager = getContext().getPackageManager();
 
         for (int i = 0; i < count; i++) {
             final CellLayout layout = (CellLayout) getChildAt(i);
@@ -1208,6 +1210,15 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                     if (removedFromFolder) {
                         final Folder folder = getOpenFolder();
                         if (folder != null) folder.notifyDataSetChanged();
+                    }
+                } else if (tag instanceof LiveFolderInfo) {
+                    final LiveFolderInfo info = (LiveFolderInfo) tag;
+                    final Uri uri = info.uri;
+                    final ProviderInfo providerInfo = manager.resolveContentProvider(
+                            uri.getAuthority(), 0);
+                    if (providerInfo == null || packageName.equals(providerInfo.packageName)) {
+                        LauncherModel.deleteItemFromDatabase(mLauncher, info);
+                        childrenToRemove.add(view);                        
                     }
                 }
             }

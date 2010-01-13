@@ -2094,7 +2094,7 @@ public final class Launcher extends Activity
      */
     public void bindPackageRemoved(String packageName, ArrayList<ApplicationInfo> apps) {
         removeDialog(DIALOG_CREATE_SHORTCUT);
-        mWorkspace.removeShortcutsForPackage(packageName);
+        mWorkspace.removeItemsForPackage(packageName);
         mAllAppsGrid.removeApps(apps);
     }
 
