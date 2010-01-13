@@ -17,6 +17,8 @@
 package com.android.launcher2;
 
 import android.app.WallpaperManager;
+import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ComponentName;
@@ -1158,84 +1160,106 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         mAllowLongPress = allowLongPress;
     }
 
-    void removeItemsForPackage(String packageName) {
-        final ArrayList<View> childrenToRemove = new ArrayList<View>();
+    void removeItemsForPackage(final String packageName) {
         final int count = getChildCount();
         final PackageManager manager = getContext().getPackageManager();
+        final AppWidgetManager widgets = AppWidgetManager.getInstance(getContext());
 
         for (int i = 0; i < count; i++) {
             final CellLayout layout = (CellLayout) getChildAt(i);
-            int childCount = layout.getChildCount();
 
-            childrenToRemove.clear();
+            // Avoid ANRs by treating each screen separately
+            post(new Runnable() {
+                public void run() {
+                    final ArrayList<View> childrenToRemove = new ArrayList<View>();
+                    childrenToRemove.clear();
+        
+                    int childCount = layout.getChildCount();
+                    for (int j = 0; j < childCount; j++) {
+                        final View view = layout.getChildAt(j);
+                        Object tag = view.getTag();
+        
+                        if (tag instanceof ApplicationInfo) {
+                            final ApplicationInfo info = (ApplicationInfo) tag;
+                            // We need to check for ACTION_MAIN otherwise getComponent() might
+                            // return null for some shortcuts (for instance, for shortcuts to
+                            // web pages.)
+                            final Intent intent = info.intent;
+                            final ComponentName name = intent.getComponent();
+        
+                            if (Intent.ACTION_MAIN.equals(intent.getAction()) &&
+                                    name != null && packageName.equals(name.getPackageName())) {
+                                // TODO: This should probably be done on a worker thread
+                                LauncherModel.deleteItemFromDatabase(mLauncher, info);
+                                childrenToRemove.add(view);
+                            }
+                        } else if (tag instanceof UserFolderInfo) {
+                            final UserFolderInfo info = (UserFolderInfo) tag;
+                            final ArrayList<ApplicationInfo> contents = info.contents;
+                            final ArrayList<ApplicationInfo> toRemove =
+                                    new ArrayList<ApplicationInfo>(1);
+                            final int contentsCount = contents.size();
+                            boolean removedFromFolder = false;
+        
+                            for (int k = 0; k < contentsCount; k++) {
+                                final ApplicationInfo appInfo = contents.get(k);
+                                final Intent intent = appInfo.intent;
+                                final ComponentName name = intent.getComponent();
+        
+                                if (Intent.ACTION_MAIN.equals(intent.getAction()) &&
+                                        name != null && packageName.equals(name.getPackageName())) {
+                                    toRemove.add(appInfo);
+                                    // TODO: This should probably be done on a worker thread
+                                    LauncherModel.deleteItemFromDatabase(mLauncher, appInfo);
+                                    removedFromFolder = true;
+                                }
+                            }
+        
+                            contents.removeAll(toRemove);
+                            if (removedFromFolder) {
+                                final Folder folder = getOpenFolder();
+                                if (folder != null) folder.notifyDataSetChanged();
+                            }
+                        } else if (tag instanceof LiveFolderInfo) {
+                            final LiveFolderInfo info = (LiveFolderInfo) tag;
+                            final Uri uri = info.uri;
+                            final ProviderInfo providerInfo = manager.resolveContentProvider(
+                                    uri.getAuthority(), 0);
 
-            for (int j = 0; j < childCount; j++) {
-                final View view = layout.getChildAt(j);
-                Object tag = view.getTag();
-
-                if (tag instanceof ApplicationInfo) {
-                    final ApplicationInfo info = (ApplicationInfo) tag;
-                    // We need to check for ACTION_MAIN otherwise getComponent() might
-                    // return null for some shortcuts (for instance, for shortcuts to
-                    // web pages.)
-                    final Intent intent = info.intent;
-                    final ComponentName name = intent.getComponent();
-
-                    if (Intent.ACTION_MAIN.equals(intent.getAction()) &&
-                            name != null && packageName.equals(name.getPackageName())) {
-                        LauncherModel.deleteItemFromDatabase(mLauncher, info);
-                        childrenToRemove.add(view);
-                    }
-                } else if (tag instanceof UserFolderInfo) {
-                    final UserFolderInfo info = (UserFolderInfo) tag;
-                    final ArrayList<ApplicationInfo> contents = info.contents;
-                    final ArrayList<ApplicationInfo> toRemove = new ArrayList<ApplicationInfo>(1);
-                    final int contentsCount = contents.size();
-                    boolean removedFromFolder = false;
-
-                    for (int k = 0; k < contentsCount; k++) {
-                        final ApplicationInfo appInfo = contents.get(k);
-                        final Intent intent = appInfo.intent;
-                        final ComponentName name = intent.getComponent();
-
-                        if (Intent.ACTION_MAIN.equals(intent.getAction()) &&
-                                name != null && packageName.equals(name.getPackageName())) {
-                            toRemove.add(appInfo);
-                            LauncherModel.deleteItemFromDatabase(mLauncher, appInfo);
-                            removedFromFolder = true;
+                            if (providerInfo == null ||
+                                    packageName.equals(providerInfo.packageName)) {
+                                // TODO: This should probably be done on a worker thread
+                                LauncherModel.deleteItemFromDatabase(mLauncher, info);
+                                childrenToRemove.add(view);                        
+                            }
+                        } else if (tag instanceof LauncherAppWidgetInfo) {
+                            final LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) tag;
+                            final AppWidgetProviderInfo provider =
+                                    widgets.getAppWidgetInfo(info.appWidgetId);
+                            if (provider == null ||
+                                    packageName.equals(provider.provider.getPackageName())) {
+                                // TODO: This should probably be done on a worker thread
+                                LauncherModel.deleteItemFromDatabase(mLauncher, info);
+                                childrenToRemove.add(view);                                
+                            }
                         }
                     }
-
-                    contents.removeAll(toRemove);
-                    if (removedFromFolder) {
-                        final Folder folder = getOpenFolder();
-                        if (folder != null) folder.notifyDataSetChanged();
+        
+                    childCount = childrenToRemove.size();
+                    for (int j = 0; j < childCount; j++) {
+                        View child = childrenToRemove.get(j);
+                        layout.removeViewInLayout(child);
+                        if (child instanceof DropTarget) {
+                            mDragController.removeDropTarget((DropTarget)child);
+                        }
                     }
-                } else if (tag instanceof LiveFolderInfo) {
-                    final LiveFolderInfo info = (LiveFolderInfo) tag;
-                    final Uri uri = info.uri;
-                    final ProviderInfo providerInfo = manager.resolveContentProvider(
-                            uri.getAuthority(), 0);
-                    if (providerInfo == null || packageName.equals(providerInfo.packageName)) {
-                        LauncherModel.deleteItemFromDatabase(mLauncher, info);
-                        childrenToRemove.add(view);                        
+        
+                    if (childCount > 0) {
+                        layout.requestLayout();
+                        layout.invalidate();
                     }
                 }
-            }
-
-            childCount = childrenToRemove.size();
-            for (int j = 0; j < childCount; j++) {
-                View child = childrenToRemove.get(j);
-                layout.removeViewInLayout(child);
-                if (child instanceof DropTarget) {
-                    mDragController.removeDropTarget((DropTarget)child);
-                }
-            }
-
-            if (childCount > 0) {
-                layout.requestLayout();
-                layout.invalidate();
-            }
+            });
         }
     }
 

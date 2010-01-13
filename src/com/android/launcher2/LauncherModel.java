@@ -16,6 +16,8 @@
 
 package com.android.launcher2;
 
+import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentProviderClient;
@@ -605,6 +607,7 @@ public class LauncherModel extends BroadcastReceiver {
                 final Context context = mContext;
                 final ContentResolver contentResolver = context.getContentResolver();
                 final PackageManager manager = context.getPackageManager();
+                final AppWidgetManager widgets = AppWidgetManager.getInstance(context);
                 final boolean isSafeMode = manager.isSafeMode();
 
                 /* TODO
@@ -788,23 +791,33 @@ public class LauncherModel extends BroadcastReceiver {
                             case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
                                 // Read all Launcher-specific widget details
                                 int appWidgetId = c.getInt(appWidgetIdIndex);
-                                appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId);
-                                appWidgetInfo.id = c.getLong(idIndex);
-                                appWidgetInfo.screen = c.getInt(screenIndex);
-                                appWidgetInfo.cellX = c.getInt(cellXIndex);
-                                appWidgetInfo.cellY = c.getInt(cellYIndex);
-                                appWidgetInfo.spanX = c.getInt(spanXIndex);
-                                appWidgetInfo.spanY = c.getInt(spanYIndex);
+                                id = c.getLong(idIndex);
 
-                                container = c.getInt(containerIndex);
-                                if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                                    Log.e(TAG, "Widget found where container "
-                                            + "!= CONTAINER_DESKTOP -- ignoring!");
-                                    continue;
+                                final AppWidgetProviderInfo provider =
+                                        widgets.getAppWidgetInfo(appWidgetId);
+                                
+                                if (!isSafeMode && (provider == null || provider.provider == null ||
+                                        provider.provider.getPackageName() == null)) {
+                                    itemsToRemove.add(id);
+                                } else {
+                                    appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId);
+                                    appWidgetInfo.id = id;
+                                    appWidgetInfo.screen = c.getInt(screenIndex);
+                                    appWidgetInfo.cellX = c.getInt(cellXIndex);
+                                    appWidgetInfo.cellY = c.getInt(cellYIndex);
+                                    appWidgetInfo.spanX = c.getInt(spanXIndex);
+                                    appWidgetInfo.spanY = c.getInt(spanYIndex);
+    
+                                    container = c.getInt(containerIndex);
+                                    if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                                        Log.e(TAG, "Widget found where container "
+                                                + "!= CONTAINER_DESKTOP -- ignoring!");
+                                        continue;
+                                    }
+                                    appWidgetInfo.container = c.getInt(containerIndex);
+    
+                                    mAppWidgets.add(appWidgetInfo);
                                 }
-                                appWidgetInfo.container = c.getInt(containerIndex);
-
-                                mAppWidgets.add(appWidgetInfo);
                                 break;
                             }
                         } catch (Exception e) {
