@@ -16,8 +16,10 @@
 
 package com.android.launcher2;
 
+import android.app.SearchManager;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.ContentProvider;
 import android.content.Context;
 import android.content.ContentValues;
@@ -46,6 +48,7 @@ import android.provider.Settings;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParser;
@@ -527,8 +530,7 @@ public class LauncherProvider extends ContentProvider {
                                     "com.android.camera.PhotoAppWidgetProvider"));
                         } else if (favoriteType == Favorites.ITEM_TYPE_WIDGET_SEARCH) {
                             appWidgetManager.bindAppWidgetId(appWidgetId,
-                                    new ComponentName("com.android.quicksearchbox",
-                                    "com.android.quicksearchbox.SearchWidgetProvider"));
+                                    getSearchWidgetProvider());
                         }
                     } catch (RuntimeException ex) {
                         Log.e(TAG, "Problem allocating appWidgetId", ex);
@@ -639,9 +641,34 @@ public class LauncherProvider extends ContentProvider {
             return true;
         }
 
+        private ComponentName getSearchWidgetProvider() {
+            SearchManager searchManager =
+                    (SearchManager) mContext.getSystemService(Context.SEARCH_SERVICE);
+            ComponentName searchComponent = searchManager.getGlobalSearchActivity();
+            if (searchComponent == null) return null;
+            return getProviderInPackage(searchComponent.getPackageName());
+        }
+
+        /**
+         * Gets an appwidget provider from the given package. If the package contains more than
+         * one appwidget provider, an arbitrary one is returned.
+         */
+        private ComponentName getProviderInPackage(String packageName) {
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
+            List<AppWidgetProviderInfo> providers = appWidgetManager.getInstalledProviders();
+            if (providers == null) return null;
+            final int providerCount = providers.size();
+            for (int i = 0; i < providerCount; i++) {
+                ComponentName provider = providers.get(i).provider;
+                if (provider != null && provider.getPackageName().equals(packageName)) {
+                    return provider;
+                }
+            }
+            return null;
+        }
+
         private boolean addSearchWidget(SQLiteDatabase db, ContentValues values) {
-            ComponentName cn = new ComponentName("com.android.quicksearchbox",
-                    "com.android.quicksearchbox.SearchWidgetProvider");
+            ComponentName cn = getSearchWidgetProvider();
             return addAppWidget(db, values, cn, 4, 1);
         }
 
