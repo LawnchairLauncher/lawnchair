@@ -168,10 +168,13 @@ public class AppInfoCache {
             application.title = info.activityInfo.name;
         }
 
+        // TODO: turn this on in froyo, not enough time for testing in mr3
+        //if (application.iconBitmap != null) {
+        //    application.iconBitmap.recycle();
+        //}
         application.iconBitmap = Utilities.createAllAppsBitmap(
-                info.activityInfo.loadIcon(packageManager), context);
-
-        application.titleBitmap = bubble.createTextBitmap(application.title.toString());
+                info.activityInfo.loadIcon(packageManager),
+                application.title.toString(), bubble, context);
     }
 }
 

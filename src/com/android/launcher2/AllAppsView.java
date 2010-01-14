@@ -125,15 +125,11 @@ public class AllAppsView extends RSSurfaceView
         public static final int ALLOC_PARAMS = 0;
         public static final int ALLOC_STATE = 1;
         public static final int ALLOC_ICON_IDS = 3;
-        public static final int ALLOC_LABEL_IDS = 4;
 
         public static final int COLUMNS_PER_PAGE = 4;
         public static final int ROWS_PER_PAGE = 4;
 
-        public static final int ICON_WIDTH_PX = 64;
         public static final int ICON_TEXTURE_WIDTH_PX = 128;
-
-        public static final int ICON_HEIGHT_PX = 64;
         public static final int ICON_TEXTURE_HEIGHT_PX = 128;
 
         public int SCREEN_WIDTH_PX;
@@ -571,15 +567,18 @@ public class AllAppsView extends RSSurfaceView
                 && mCurrentIconIndex >= 0 && mCurrentIconIndex < mAllAppsList.size()) {
             ApplicationInfo app = mAllAppsList.get(mCurrentIconIndex);
 
-            // We don't really have an accurate location to use.  This will do.
-            int screenX = mMotionDownRawX - (mDefines.ICON_WIDTH_PX / 2);
-            int screenY = mMotionDownRawY - mDefines.ICON_HEIGHT_PX;
+            Bitmap bmp = Utilities.extractIconFromTexture(app.iconBitmap, getContext());
 
-            int left = (mDefines.ICON_TEXTURE_WIDTH_PX - mDefines.ICON_WIDTH_PX) / 2;
-            int top = (mDefines.ICON_TEXTURE_HEIGHT_PX - mDefines.ICON_HEIGHT_PX) / 2;
-            mDragController.startDrag(app.iconBitmap, screenX, screenY,
-                    left, top, mDefines.ICON_WIDTH_PX, mDefines.ICON_HEIGHT_PX,
-                    this, app, DragController.DRAG_ACTION_COPY);
+            final int w = bmp.getWidth();
+            final int h = bmp.getHeight();
+
+            // We don't really have an accurate location to use.  This will do.
+            int screenX = mMotionDownRawX - (w / 2);
+            int screenY = mMotionDownRawY - h;
+
+            mDragController.startDrag(bmp, screenX, screenY,
+                    0, 0, w, h, this, app, DragController.DRAG_ACTION_COPY);
+            bmp.recycle();
 
             mLauncher.closeAllApps(true);
         }
@@ -787,10 +786,6 @@ public class AllAppsView extends RSSurfaceView
         private Allocation[] mIcons;
         private int[] mIconIds;
         private Allocation mAllocIconIds;
-
-        private Allocation[] mLabels;
-        private int[] mLabelIds;
-        private Allocation mAllocLabelIds;
         private Allocation mSelectedIcon;
 
         private int[] mTouchYBorders;
@@ -883,7 +878,7 @@ public class AllAppsView extends RSSurfaceView
                 float maxAngle = 3.14f * 0.16f;
                 float l = 1.f;
 
-                l = 1 - ((ct-5) * 0.10f);
+                l = 1 - ((ct-7) * 0.10f);
                 if (ct > 7) {
                     angle = maxAngle * (ct - 7) * 0.2f;
                     angle = Math.min(angle, maxAngle);
@@ -949,8 +944,8 @@ public class AllAppsView extends RSSurfaceView
             Sampler nearest = sb.create();
 
             ProgramFragment.Builder bf = new ProgramFragment.Builder(mRS, null, null);
-            //mPFColor = bf.create();
-            //mPFColor.setName("PFColor");
+            mPFColor = bf.create();
+            mPFColor.setName("PFColor");
 
             bf.setTexEnable(true, 0);
             bf.setTexEnvMode(ProgramFragment.EnvMode.MODULATE, 0);
@@ -1040,7 +1035,6 @@ public class AllAppsView extends RSSurfaceView
             mScript.bindAllocation(mParams.mAlloc, Defines.ALLOC_PARAMS);
             mScript.bindAllocation(mState.mAlloc, Defines.ALLOC_STATE);
             mScript.bindAllocation(mAllocIconIds, Defines.ALLOC_ICON_IDS);
-            mScript.bindAllocation(mAllocLabelIds, Defines.ALLOC_LABEL_IDS);
 
             mRS.contextBindRootScript(mScript);
         }
@@ -1071,16 +1065,15 @@ public class AllAppsView extends RSSurfaceView
             mIconIds = new int[allocCount];
             mAllocIconIds = Allocation.createSized(mRS, Element.USER_I32(mRS), allocCount);
 
-            mLabels = new Allocation[count];
-            mLabelIds = new int[allocCount];
-            mAllocLabelIds = Allocation.createSized(mRS, Element.USER_I32(mRS), allocCount);
-
             Element ie8888 = Element.RGBA_8888(mRS);
 
             mState.iconCount = count;
+            long before = SystemClock.uptimeMillis();
             for (int i=0; i < mState.iconCount; i++) {
                 createAppIconAllocations(i, list.get(i));
             }
+            long after = SystemClock.uptimeMillis();
+            //Log.d(TAG, "createAppIconAllocations took " + (after-before) + "ms");
             if (mHasSurface) {
                 for (int i=0; i < mState.iconCount; i++) {
                     uploadAppIcon(i, list.get(i));
@@ -1123,18 +1116,11 @@ public class AllAppsView extends RSSurfaceView
         }
 
         private void createAppIconAllocations(int index, ApplicationInfo item) {
-            mIcons[index] = Allocation.createFromBitmap(mRS, item.iconBitmap,
-                    Element.RGBA_8888(mRS), true);
-            frameBitmapAllocMips(mIcons[index], item.iconBitmap.getWidth(),
-                    item.iconBitmap.getHeight());
-
-            mLabels[index] = Allocation.createFromBitmap(mRS, item.titleBitmap,
-                    Element.RGBA_8888(mRS), true);
-            frameBitmapAllocMips(mLabels[index], item.titleBitmap.getWidth(),
-                    item.titleBitmap.getHeight());
+            Bitmap bitmap = item.iconBitmap;
+            mIcons[index] = Allocation.createFromBitmap(mRS, bitmap, Element.RGBA_8888(mRS), true);
+            frameBitmapAllocMips(mIcons[index], bitmap.getWidth(), bitmap.getHeight());
 
             mIconIds[index] = mIcons[index].getID();
-            mLabelIds[index] = mLabels[index].getID();
         }
 
         private void uploadAppIcon(int index, ApplicationInfo item) {
@@ -1145,7 +1131,6 @@ public class AllAppsView extends RSSurfaceView
                     + " item=" + item);
             }
             mIcons[index].uploadToTexture(0);
-            mLabels[index].uploadToTexture(0);
         }
 
         /**
@@ -1157,21 +1142,13 @@ public class AllAppsView extends RSSurfaceView
             int[] iconIds = new int[count];
             mAllocIconIds = Allocation.createSized(mRS, Element.USER_I32(mRS), count);
 
-            Allocation[] labels = new Allocation[count];
-            int[] labelIds = new int[count];
-            mAllocLabelIds = Allocation.createSized(mRS, Element.USER_I32(mRS), count);
-
             final int oldCount = mRollo.mState.iconCount;
 
             System.arraycopy(mIcons, 0, icons, 0, oldCount);
             System.arraycopy(mIconIds, 0, iconIds, 0, oldCount);
-            System.arraycopy(mLabels, 0, labels, 0, oldCount);
-            System.arraycopy(mLabelIds, 0, labelIds, 0, oldCount);
 
             mIcons = icons;
             mIconIds = iconIds;
-            mLabels = labels;
-            mLabelIds = labelIds;
         }
 
         /**
@@ -1183,8 +1160,6 @@ public class AllAppsView extends RSSurfaceView
 
             System.arraycopy(mIcons, index, mIcons, dest, count);
             System.arraycopy(mIconIds, index, mIconIds, dest, count);
-            System.arraycopy(mLabels, index, mLabels, dest, count);
-            System.arraycopy(mLabelIds, index, mLabelIds, dest, count);
 
             createAppIconAllocations(index, item);
 
@@ -1206,16 +1181,12 @@ public class AllAppsView extends RSSurfaceView
 
             System.arraycopy(mIcons, src, mIcons, index, count);
             System.arraycopy(mIconIds, src, mIconIds, index, count);
-            System.arraycopy(mLabels, src, mLabels, index, count);
-            System.arraycopy(mLabelIds, src, mLabelIds, index, count);
 
             mRollo.mState.iconCount--;
             final int last = mState.iconCount;
 
             mIcons[last] = null;
             mIconIds[last] = 0;
-            mLabels[last] = null;
-            mLabelIds[last] = 0;
         }
 
         /**
@@ -1225,11 +1196,9 @@ public class AllAppsView extends RSSurfaceView
             mRS.contextBindRootScript(null);
 
             mAllocIconIds.data(mIconIds);
-            mAllocLabelIds.data(mLabelIds);
 
             if (mScript != null) { // this happens when we init it
                 mScript.bindAllocation(mAllocIconIds, Defines.ALLOC_ICON_IDS);
-                mScript.bindAllocation(mAllocLabelIds, Defines.ALLOC_LABEL_IDS);
             }
 
             mState.save();
@@ -1344,7 +1313,7 @@ public class AllAppsView extends RSSurfaceView
                 ApplicationInfo info = mAllAppsList.get(index);
                 Bitmap selectionBitmap = mSelectionBitmap;
 
-                Utilities.drawSelectedAllAppsBitmap(mSelectionCanvas,
+                Utilities.drawSelectedAllAppsBitmap(mSelectionCanvas, selectionBitmap,
                         selectionBitmap.getWidth(), selectionBitmap.getHeight(),
                         pressed == SELECTED_PRESSED, info.iconBitmap);
 
@@ -1399,10 +1368,6 @@ public class AllAppsView extends RSSurfaceView
                 Log.d(TAG, "mRollo.mIconIds.length=" + mIconIds.length);
             }
             Log.d(TAG, "mRollo.mIconIds=" +  Arrays.toString(mIconIds));
-            if (mLabelIds != null) {
-                Log.d(TAG, "mRollo.mLabelIds.length=" + mLabelIds.length);
-            }
-            Log.d(TAG, "mRollo.mLabelIds=" +  Arrays.toString(mLabelIds));
             Log.d(TAG, "mRollo.mTouchXBorders=" +  Arrays.toString(mTouchXBorders));
             Log.d(TAG, "mRollo.mTouchYBorders=" +  Arrays.toString(mTouchYBorders));
             Log.d(TAG, "mRollo.mHasSurface=" + mHasSurface);

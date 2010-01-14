@@ -52,6 +52,10 @@ final class Utilities {
     private static int sIconTextureWidth = -1;
     private static int sIconTextureHeight = -1;
 
+    private static int sTitleMargin = -1;
+    private static float sBlurRadius = -1;
+    private static Rect sIconTextureRect;
+
     private static final Paint sPaint = new Paint();
     private static final Paint sBlurPaint = new Paint();
     private static final Paint sGlowColorPressedPaint = new Paint();
@@ -175,7 +179,8 @@ final class Utilities {
      * Returns a bitmap suitable for the all apps view.  The bitmap will be a power
      * of two sized ARGB_8888 bitmap that can be used as a gl texture.
      */
-    static Bitmap createAllAppsBitmap(Drawable icon, Context context) {
+    static Bitmap createAllAppsBitmap(Drawable icon, String title, BubbleText bubble,
+            Context context) {
         synchronized (sCanvas) { // we share the statics :-(
             if (sIconWidth == -1) {
                 initStatics(context);
@@ -217,8 +222,8 @@ final class Utilities {
             }
 
             // no intrinsic size --> use default size
-            int textureWidth = sIconTextureWidth;
-            int textureHeight = sIconTextureHeight;
+            final int textureWidth = sIconTextureWidth;
+            final int textureHeight = sIconTextureHeight;
 
             final Bitmap bitmap = Bitmap.createBitmap(textureWidth, textureHeight,
                     Bitmap.Config.ARGB_8888);
@@ -226,7 +231,7 @@ final class Utilities {
             canvas.setBitmap(bitmap);
 
             final int left = (textureWidth-width) / 2;
-            final int top = (textureHeight-height) / 2;
+            final int top = sIconTextureRect.top;
 
             if (false) {
                 // draw a big box for the icon for debugging
@@ -242,12 +247,34 @@ final class Utilities {
             icon.draw(canvas);
             icon.setBounds(sOldBounds);
 
+            if (title != null) {
+                bubble.drawText(canvas, title);
+            }
+
             return bitmap;
         }
     }
 
-    static void drawSelectedAllAppsBitmap(Canvas dest, int destWidth, int destHeight,
-            boolean pressed, Bitmap src) {
+    static Bitmap extractIconFromTexture(Bitmap src, Context context) {
+        synchronized (sCanvas) { // we share the statics :-(
+            if (sIconWidth == -1) {
+                initStatics(context);
+            }
+            final Bitmap bitmap = Bitmap.createBitmap(sIconWidth, sIconHeight,
+                    Bitmap.Config.ARGB_8888);
+            final Canvas canvas = sCanvas;
+            canvas.setBitmap(bitmap);
+
+            Rect r = new Rect(0, 0, sIconWidth, sIconHeight);
+            canvas.drawColor(0, PorterDuff.Mode.CLEAR);
+            canvas.drawBitmap(src, sIconTextureRect, r, sEmptyPaint);
+
+            return bitmap;
+        }
+    }
+
+    static void drawSelectedAllAppsBitmap(Canvas dest, Bitmap destBitmap,
+            int destWidth, int destHeight, boolean pressed, Bitmap src) {
         synchronized (sCanvas) { // we share the statics :-(
             if (sIconWidth == -1) {
                 // We can't have gotten to here without src being initialized, which
@@ -257,12 +284,14 @@ final class Utilities {
             }
 
             dest.drawColor(0, PorterDuff.Mode.CLEAR);
-            
+            dest.drawBitmap(src, sIconTextureRect, sIconTextureRect, sEmptyPaint);
+
             int[] xy = new int[2];
-            Bitmap mask = src.extractAlpha(sBlurPaint, xy);
+            Bitmap mask = destBitmap.extractAlpha(sBlurPaint, xy);
 
             float px = (destWidth - src.getWidth()) / 2;
             float py = (destHeight - src.getHeight()) / 2;
+            dest.drawColor(0, PorterDuff.Mode.CLEAR);
             dest.drawBitmap(mask, px + xy[0], py + xy[1],
                     pressed ? sGlowColorPressedPaint : sGlowColorFocusedPaint);
 
@@ -341,6 +370,12 @@ final class Utilities {
         sIconWidth = sIconHeight = (int) resources.getDimension(android.R.dimen.app_icon_size);
         sIconTextureWidth = sIconTextureHeight = roundToPow2(sIconWidth);
 
+        sTitleMargin = (int)(1 * density);
+        sBlurRadius = 5 * density;
+        final int left = (sIconTextureWidth-sIconWidth)/2;
+        final int top = (int)(sBlurRadius) + 1;
+        sIconTextureRect = new Rect(left, top, left+sIconWidth, top+sIconHeight);
+
         sBlurPaint.setMaskFilter(new BlurMaskFilter(5 * density, BlurMaskFilter.Blur.NORMAL));
         sGlowColorPressedPaint.setColor(0xffffc300);
         sGlowColorPressedPaint.setMaskFilter(TableMaskFilter.CreateClipTable(0, 30));
@@ -364,60 +399,65 @@ final class Utilities {
         private int mBitmapHeight;
 
         BubbleText(Context context) {
-            final Resources resources = context.getResources();
+            synchronized (sCanvas) { // we share the statics :-(
+                if (sIconWidth == -1) {
+                    initStatics(context);
+                }
+                final Resources resources = context.getResources();
 
-            final float scale = resources.getDisplayMetrics().density;
+                final float scale = resources.getDisplayMetrics().density;
 
-            final float paddingLeft = 5.0f * scale;
-            final float paddingRight = 5.0f * scale;
-            final float cellWidth = resources.getDimension(R.dimen.workspace_cell_width);
-            final float bubbleWidth = cellWidth - paddingLeft - paddingRight;
-            mBubblePadding = 3.0f * scale;
+                final float paddingLeft = 5.0f * scale;
+                final float paddingRight = 5.0f * scale;
+                final float cellWidth = resources.getDimension(R.dimen.workspace_cell_width);
+                final float bubbleWidth = cellWidth - paddingLeft - paddingRight;
+                mBubblePadding = 3.0f * scale;
 
-            RectF bubbleRect = mBubbleRect;
-            bubbleRect.left = 0;
-            bubbleRect.top = 0;
-            bubbleRect.right = (int)(bubbleWidth+0.5f);
+                RectF bubbleRect = mBubbleRect;
+                bubbleRect.left = 0;
+                bubbleRect.top = 0;
+                bubbleRect.right = (int)(bubbleWidth+0.5f);
 
-            mTextWidth = bubbleWidth - mBubblePadding - mBubblePadding;
+                mTextWidth = bubbleWidth - mBubblePadding - mBubblePadding;
 
-            Paint rectPaint = new Paint();
-            rectPaint.setColor(0xff000000);
-            rectPaint.setAntiAlias(true);
+                Paint rectPaint = new Paint();
+                rectPaint.setColor(0xff000000);
+                rectPaint.setAntiAlias(true);
 
-            TextPaint textPaint = mTextPaint = new TextPaint();
-            textPaint.setTypeface(Typeface.DEFAULT);
-            textPaint.setTextSize(13*scale);
-            textPaint.setColor(0xffffffff);
-            textPaint.setAntiAlias(true);
-            if (TEXT_BURN) {
-                textPaint.setShadowLayer(8, 0, 0, 0xff000000);
-            }
+                TextPaint textPaint = mTextPaint = new TextPaint();
+                textPaint.setTypeface(Typeface.DEFAULT);
+                textPaint.setTextSize(13*scale);
+                //textPaint.setColor(0xff00ff00);
+                textPaint.setColor(0xffffffff);
+                textPaint.setAntiAlias(true);
+                if (TEXT_BURN) {
+                    textPaint.setShadowLayer(8, 0, 0, 0xff000000);
+                }
 
-            float ascent = -textPaint.ascent();
-            float descent = textPaint.descent();
-            float leading = 0.0f;//(ascent+descent) * 0.1f;
-            mLeading = (int)(leading + 0.5f);
-            mFirstLineY = (int)(leading + ascent + 0.5f);
-            mLineHeight = (int)(leading + ascent + descent + 0.5f);
+                final int iconTop = (int)(sBlurRadius) + 1;
+                final int iconBottom = iconTop + sIconHeight;
 
-            mBitmapWidth = roundToPow2((int)(mBubbleRect.width() + 0.5f));
-            mBitmapHeight = roundToPow2((int)((MAX_LINES * mLineHeight) + leading + 0.5f));
+                float ascent = -textPaint.ascent();
+                float descent = textPaint.descent();
+                float leading = -1.0f;//(ascent+descent) * 0.1f;
+                mLeading = (int)(leading + 0.5f);
+                mFirstLineY = (int)(iconBottom + sTitleMargin + ascent + 0.5f);
+                mLineHeight = (int)(leading + ascent + descent + 0.5f);
 
-            mBubbleRect.offsetTo((mBitmapWidth-mBubbleRect.width())/2, 0);
+                mBitmapWidth = roundToPow2((int)(mBubbleRect.width() + 0.5f));
+                mBitmapHeight = roundToPow2((int)((MAX_LINES * mLineHeight) + leading + 0.5f));
 
-            if (false) {
-                Log.d(TAG, "mBitmapWidth=" + mBitmapWidth + " mBitmapHeight="
-                        + mBitmapHeight + " w=" + ((int)(mBubbleRect.width() + 0.5f))
-                        + " h=" + ((int)((MAX_LINES * mLineHeight) + leading + 0.5f)));
+                mBubbleRect.offsetTo((mBitmapWidth-mBubbleRect.width())/2, 0);
+
+                if (false) {
+                    Log.d(TAG, "mBitmapWidth=" + mBitmapWidth + " mBitmapHeight="
+                            + mBitmapHeight + " w=" + ((int)(mBubbleRect.width() + 0.5f))
+                            + " h=" + ((int)((MAX_LINES * mLineHeight) + leading + 0.5f)));
+                }
             }
         }
 
-        /** You own the bitmap after this and you must call recycle on it. */
-        Bitmap createTextBitmap(String text) {
-            Bitmap b = Bitmap.createBitmap(mBitmapWidth, mBitmapHeight, Bitmap.Config.ARGB_8888);
-            Canvas c = new Canvas(b);
-
+        void drawText(Canvas c, String text) {
             StaticLayout layout = new StaticLayout(text, mTextPaint, (int)mTextWidth,
                     Alignment.ALIGN_CENTER, 1, 0, true);
             int lineCount = layout.getLineCount();
@@ -438,8 +478,6 @@ final class Utilities {
                 c.drawText(text.substring(layout.getLineStart(i), layout.getLineEnd(i)),
                         x, y, mTextPaint);
             }
-
-            return b;
         }
 
         private int height(int lineCount) {
