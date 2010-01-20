@@ -128,6 +128,7 @@ public class AllAppsView extends RSSurfaceView
         public static final int ALLOC_STATE = 1;
         public static final int ALLOC_ICON_IDS = 3;
         public static final int ALLOC_LABEL_IDS = 4;
+        public static final int ALLOC_VP_CONSTANTS = 5;
 
         public static final int COLUMNS_PER_PAGE = 4;
         public static final int ROWS_PER_PAGE = 4;
@@ -575,15 +576,18 @@ public class AllAppsView extends RSSurfaceView
                 && mCurrentIconIndex >= 0 && mCurrentIconIndex < mAllAppsList.size()) {
             ApplicationInfo app = mAllAppsList.get(mCurrentIconIndex);
 
+            Bitmap bmp = app.iconBitmap;
+            final int w = bmp.getWidth();
+            final int h = bmp.getHeight();
+
             // We don't really have an accurate location to use.  This will do.
-            int screenX = mMotionDownRawX - (mDefines.ICON_WIDTH_PX / 2);
-            int screenY = mMotionDownRawY - mDefines.ICON_HEIGHT_PX;
+            int screenX = mMotionDownRawX - (w / 2);
+            int screenY = mMotionDownRawY - h;
 
             int left = (mDefines.ICON_TEXTURE_WIDTH_PX - mDefines.ICON_WIDTH_PX) / 2;
             int top = (mDefines.ICON_TEXTURE_HEIGHT_PX - mDefines.ICON_HEIGHT_PX) / 2;
-            mDragController.startDrag(app.iconBitmap, screenX, screenY,
-                    left, top, mDefines.ICON_WIDTH_PX, mDefines.ICON_HEIGHT_PX,
-                    this, app, DragController.DRAG_ACTION_COPY);
+            mDragController.startDrag(bmp, screenX, screenY,
+                    0, 0, w, h, this, app, DragController.DRAG_ACTION_COPY);
 
             mLauncher.closeAllApps(true);
         }
@@ -783,9 +787,11 @@ public class AllAppsView extends RSSurfaceView
         private ProgramFragment mPFTexNearest;
         private ProgramVertex mPV;
         private ProgramVertex mPVOrtho;
+        private ProgramVertex mPVCurve;
         private SimpleMesh mMesh;
-        private SimpleMesh mMesh2;
         private ProgramVertex.MatrixAllocation mPVA;
+
+        private Allocation mUniformAlloc;
 
         private Allocation mHomeButtonNormal;
         private Allocation mHomeButtonFocused;
@@ -869,49 +875,27 @@ public class AllAppsView extends RSSurfaceView
             initProgramVertex();
             initProgramFragment();
             initProgramStore();
-            initMesh();
+            //initMesh();
             initGl();
             initData();
             initTouchState();
             initRs();
         }
 
-        public void initMesh() {
-            SimpleMesh.TriangleMeshBuilder tm = new SimpleMesh.TriangleMeshBuilder(mRS, 3,
-                SimpleMesh.TriangleMeshBuilder.TEXTURE_0 | SimpleMesh.TriangleMeshBuilder.COLOR);
+        public void initMesh2() {
+            SimpleMesh.TriangleMeshBuilder tm = new SimpleMesh.TriangleMeshBuilder(mRS, 2, 0);
 
-            float y = 0;
-            float z = 0;
-            for (int ct=0; ct < 200; ct++) {
-                float angle = 0;
-                float maxAngle = 3.14f * 0.16f;
-                float l = 1.f;
-
-                l = 1 - ((ct-5) * 0.10f);
-                if (ct > 7) {
-                    angle = maxAngle * (ct - 7) * 0.2f;
-                    angle = Math.min(angle, maxAngle);
-                }
-                l = Math.max(0.4f, l);
-                l = Math.min(1.0f, l);
-
-                y += 0.1f * Math.cos(angle);
-                z += 0.1f * Math.sin(angle);
-
-                float t = 0.1f * ct;
-                float ds = 0.08f;
-                tm.setColor(l, l, l, 0.99f);
-                tm.setTexture(ds, t);
-                tm.addVertex(-0.5f, y, z);
-                tm.setTexture(1 - ds, t);
-                tm.addVertex(0.5f, y, z);
+            for (int ct=0; ct < 16; ct++) {
+                float pos = (1.f / 16.f) * ct;
+                tm.addVertex(0.0f, pos);
+                tm.addVertex(1.0f, pos);
             }
-            for (int ct=0; ct < (200 * 2 - 2); ct+= 2) {
+            for (int ct=0; ct < (16 * 2 - 2); ct+= 2) {
                 tm.addTriangle(ct, ct+1, ct+2);
                 tm.addTriangle(ct+1, ct+3, ct+2);
             }
-            mMesh2 = tm.create();
-            mMesh2.setName("SMMesh");
+            mMesh = tm.create();
+            mMesh.setName("SMCell");
         }
 
         void resize(int w, int h) {
@@ -930,6 +914,72 @@ public class AllAppsView extends RSSurfaceView
             mPV.setName("PV");
             mPV.bindAllocation(mPVA);
 
+            Element.Builder eb = new Element.Builder(mRS);
+            eb.add(Element.createVector(mRS, Element.DataType.FLOAT_32, 2), "ImgSize");
+            eb.add(Element.createVector(mRS, Element.DataType.FLOAT_32, 4), "Position");
+            Element e = eb.create();
+
+            mUniformAlloc = Allocation.createSized(mRS, e, 1);
+
+            initMesh2();
+            ProgramVertex.ShaderBuilder sb = new ProgramVertex.ShaderBuilder(mRS);
+            String t = new String("void main() {\n" +
+                                  // Animation
+                                  "  float ani = UNI_Position.z;\n" +
+
+                                  "  float scale = (2.0 / 480.0);\n" +
+                                  "  float x = UNI_Position.x + UNI_ImgSize.x * (1.0 - ani) * (ATTRIB_position.x - 0.5);\n" +
+                                  "  float ys= UNI_Position.y + UNI_ImgSize.y * (1.0 - ani) * ATTRIB_position.y;\n" +
+                                  "  float y = 0.0;\n" +
+                                  "  float z = 0.0;\n" +
+                                  "  float lum = 1.0;\n" +
+
+                                  "  float cv = min(ys, 50.0) - 50.0;\n" +
+                                  "  y += cv * 0.681;\n" +  // Roughy 47 degrees
+                                  "  z += -cv * 0.731;\n" +
+                                  "  cv = clamp(ys, 50.0, 120.0) - 120.0;\n" +  // curve range
+                                  "  y += cv * cos(cv * 0.4 / (180.0 / 3.14));\n" +
+                                  "  z += cv * sin(cv * 0.4 / (180.0 / 3.14));\n" +
+
+                                  "  cv = max(ys, 750.0) - 750.0;\n" +
+                                  "  y += cv * 0.681;\n" +
+                                  "  z += cv * 0.731;\n" +
+                                  "  cv = clamp(ys, 680.0, 750.0) - 680.0;\n" +
+                                  "  y += cv * cos(cv * 0.4 / (180.0 / 3.14));\n" +
+                                  "  z += cv * sin(cv * 0.4 / (180.0 / 3.14));\n" +
+
+                                  "  y += clamp(ys, 120.0, 680.0);\n" +
+                                  "  lum += (clamp(ys, 60.0, 115.0) - 115.0) / 100.0;\n" +
+                                  "  lum -= (clamp(ys, 685.0, 740.0) - 685.0) / 100.0;\n" +
+
+                                  "  vec4 pos;\n" +
+                                  "  pos.x = x * scale - 1.0;\n" +
+                                  "  pos.y = y * scale - 1.66;\n" +
+                                  "  pos.z = z * scale;\n" +
+                                  "  pos.w = 1.0;\n" +
+
+                                  "  pos.x *= 1.0 + ani * 4.0;\n" +
+                                  "  pos.y *= 1.0 + ani * 4.0;\n" +
+                                  "  pos.z -= ani * 1.5;\n" +
+                                  "  lum *= 1.0 - ani;\n" +
+
+                                  "  gl_Position = UNI_MVP * pos;\n" +
+                                  "  varColor.rgba = vec4(lum, lum, lum, 1.0);\n" +
+                                  "  varTex0.xy = ATTRIB_position;\n" +
+                                  "  varTex0.y = 1.0 - varTex0.y;\n" +
+                                  "  varTex0.zw = vec2(0.0, 0.0);\n" +
+                                  "}\n");
+            sb.setShader(t);
+            sb.addConstant(mUniformAlloc.getType());
+            sb.addInput(mMesh.getVertexType(0).getElement());
+            mPVCurve = sb.create();
+            mPVCurve.setName("PVCurve");
+            mPVCurve.bindAllocation(mPVA);
+            mPVCurve.bindConstants(mUniformAlloc, 1);
+
+            float tf[] = new float[] {72.f, 72.f, 0.f, 0.f, 120.f, 120.f, 0.f, 0.f};
+            mUniformAlloc.data(tf);
+
             //pva = new ProgramVertex.MatrixAllocation(mRS);
             //pva.setupOrthoWindow(mWidth, mHeight);
             //pvb.setTextureMatrixEnable(true);
@@ -943,7 +993,7 @@ public class AllAppsView extends RSSurfaceView
         private void initProgramFragment() {
             Sampler.Builder sb = new Sampler.Builder(mRS);
             sb.setMin(Sampler.Value.LINEAR_MIP_LINEAR);
-            sb.setMag(Sampler.Value.LINEAR);
+            sb.setMag(Sampler.Value.NEAREST);
             sb.setWrapS(Sampler.Value.CLAMP);
             sb.setWrapT(Sampler.Value.CLAMP);
             Sampler linear = sb.create();
@@ -956,7 +1006,7 @@ public class AllAppsView extends RSSurfaceView
             //mPFColor = bf.create();
             //mPFColor.setName("PFColor");
 
-            bf.setTexture(ProgramFragment.Builder.EnvMode.REPLACE,
+            bf.setTexture(ProgramFragment.Builder.EnvMode.MODULATE,
                           ProgramFragment.Builder.Format.RGBA, 0);
             mPFTexMip = bf.create();
             mPFTexMip.setName("PFTexMip");
@@ -1034,6 +1084,7 @@ public class AllAppsView extends RSSurfaceView
             sb.addDefines(mDefines);
             sb.setType(mParams.mType, "params", Defines.ALLOC_PARAMS);
             sb.setType(mState.mType, "state", Defines.ALLOC_STATE);
+            sb.setType(mUniformAlloc.getType(), "vpConstants", Defines.ALLOC_VP_CONSTANTS);
             mInvokeMove = sb.addInvokable("move");
             mInvokeFling = sb.addInvokable("fling");
             mInvokeMoveTo = sb.addInvokable("moveTo");
@@ -1045,6 +1096,7 @@ public class AllAppsView extends RSSurfaceView
             mScript.bindAllocation(mState.mAlloc, Defines.ALLOC_STATE);
             mScript.bindAllocation(mAllocIconIds, Defines.ALLOC_ICON_IDS);
             mScript.bindAllocation(mAllocLabelIds, Defines.ALLOC_LABEL_IDS);
+            mScript.bindAllocation(mUniformAlloc, Defines.ALLOC_VP_CONSTANTS);
 
             mRS.contextBindRootScript(mScript);
         }
@@ -1096,34 +1148,11 @@ public class AllAppsView extends RSSurfaceView
             }
         }
 
-        private void frameBitmapAllocMips(Allocation alloc, int w, int h) {
-            int black[] = new int[w > h ? w : h];
-            Allocation.Adapter2D a = alloc.createAdapter2D();
-            int mip = 0;
-            while (w > 1 || h > 1) {
-                a.subData(0, 0, 1, h, black);
-                a.subData(w-1, 0, 1, h, black);
-                a.subData(0, 0, w, 1, black);
-                a.subData(0, h-1, w, 1, black);
-                mip++;
-                w = (w + 1) >> 1;
-                h = (h + 1) >> 1;
-                a.setConstraint(Dimension.LOD, mip);
-            }
-            a.subData(0, 0, 1, 1, black);
-        }
-
         private void createAppIconAllocations(int index, ApplicationInfo item) {
             mIcons[index] = Allocation.createFromBitmap(mRS, item.iconBitmap,
                     Element.RGBA_8888(mRS), true);
-            frameBitmapAllocMips(mIcons[index], item.iconBitmap.getWidth(),
-                    item.iconBitmap.getHeight());
-
             mLabels[index] = Allocation.createFromBitmap(mRS, item.titleBitmap,
                     Element.RGBA_8888(mRS), true);
-            frameBitmapAllocMips(mLabels[index], item.titleBitmap.getWidth(),
-                    item.titleBitmap.getHeight());
-
             mIconIds[index] = mIcons[index].getID();
             mLabelIds[index] = mLabels[index].getID();
         }

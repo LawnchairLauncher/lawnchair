@@ -250,40 +250,6 @@ void updatePos() {
     g_PosPage = clampf(g_PosPage, -0.49, g_PosMax + 0.49);
 }
 
-int positionStrip(float row, float column, int isTop, float p, int isText)
-{
-    float mat1[16];
-    float x = 0.5f * (column - 1.5f);
-    float scale = 72.f * 3 / getWidth();
-
-    if (isTop) {
-        matrixLoadTranslate(mat1, x, 0.8f, 0.f);
-        matrixScale(mat1, scale, scale, 1.f);
-    } else {
-        matrixLoadTranslate(mat1, x, -0.9f, 0.f);
-        matrixScale(mat1, scale, -scale, 1.f);
-    }
-    matrixTranslate(mat1, 0, p * 2, 0.f);
-    matrixRotate(mat1, -p * 50, 1, 0, 0);
-    vpLoadModelMatrix(mat1);
-
-    float soff = -(row * 1.4);
-    if (isTop) {
-        matrixLoadScale(mat1, 1.f, -0.85f, 1.f);
-        if (isText) {
-            matrixScale(mat1, 1.f, 2.f, 1.f);
-        }
-        matrixTranslate(mat1, 0, soff - 0.97f, 0);
-    } else {
-        matrixLoadScale(mat1, 1.f, 0.85f, 1.f);
-        if (isText) {
-            matrixScale(mat1, 1.f, 2.f, 1.f);
-        }
-        matrixTranslate(mat1, 0, soff - 0.45f, 0);
-    }
-    vpLoadTextureMatrix(mat1);
-    return -soff * 10.f;
-}
 
 void
 draw_home_button()
@@ -306,16 +272,16 @@ void drawFrontGrid(float rowOffset, float p)
     float rowFrac = rowOffset - intRowOffset;
     float colWidth = getWidth() / 4;
     float rowHeight = colWidth + 25.f;
-    float yoff = h - ((h - (rowHeight * 4.f)) / 2);
-
-    yoff -= 110;
+    float yoff = 0.5f * h + 1.5f * rowHeight;
 
     int row, col;
-    int iconNum = intRowOffset * 4;
-    float ymax = yoff;
-    float ymin = yoff - (3 * rowHeight) - 70;
+    int iconNum = (intRowOffset - 5) * 4;
 
-    for (row = 0; row < 5; row++) {
+    bindProgramVertex(NAMED_PVCurve);
+
+    storeF(ALLOC_VP_CONSTANTS, 4, p);
+
+    for (row = -5; row < 15; row++) {
         float y = yoff - ((-rowFrac + row) * rowHeight);
 
         for (col=0; col < 4; col++) {
@@ -324,103 +290,26 @@ void drawFrontGrid(float rowOffset, float p)
             }
 
             if (iconNum >= 0) {
-                float x = colWidth * col - ((128 - colWidth) / 2);
+                float x = colWidth * col + (colWidth / 2);
 
-                if ((y >= ymin) && (y <= ymax)) {
-                    setColor(1.f, 1.f, 1.f, 1.f);
-                    if (state->selectedIconIndex == iconNum && !p) {
-                        bindTexture(NAMED_PFTexNearest, 0, state->selectedIconTexture);
-                        drawSpriteScreenspace(x, y, 0, 128, 128);
-                    }
+                storeF(ALLOC_VP_CONSTANTS, 0, 74.f);
+                storeF(ALLOC_VP_CONSTANTS, 1, 74.f);
+                storeF(ALLOC_VP_CONSTANTS, 2, x);
+                storeF(ALLOC_VP_CONSTANTS, 3, y);
+                bindTexture(NAMED_PFTexMip, 0, loadI32(ALLOC_ICON_IDS, iconNum));
+                drawSimpleMesh(NAMED_SMCell);
 
-                    bindTexture(NAMED_PFTexNearest, 0, loadI32(ALLOC_ICON_IDS, iconNum));
-                    if (!p) {
-                        drawSpriteScreenspace(x, y, 0, 128, 128);
-                    } else {
-                        float px = ((x + 64) - (getWidth() / 2)) / (getWidth() / 2);
-                        float py = ((y + 64) - (getHeight() / 2)) / (getWidth() / 2);
-                        float d = 64.f / (getWidth() / 2);
-                        px *= p + 1;
-                        py *= p + 1;
-                        drawQuadTexCoords(px - d, py - d, -p, 0, 1,
-                                          px - d, py + d, -p, 0, 0,
-                                          px + d, py + d, -p, 1, 0,
-                                          px + d, py - d, -p, 1, 1);
-                    }
-                }
-
-                float y2 = y - 44;
-                if ((y2 >= ymin) && (y2 <= ymax)) {
-                    float a = maxf(0, 1.f - p * 5.f);
-                    setColor(1.f, 1.f, 1.f, a);
-                    bindTexture(NAMED_PFTexNearest, 0, loadI32(ALLOC_LABEL_IDS, iconNum));
-                    drawSpriteScreenspace(x, y - 44, 0,
-                               params->bubbleBitmapWidth, params->bubbleBitmapHeight);
-                }
+                storeF(ALLOC_VP_CONSTANTS, 0, 128.f);
+                storeF(ALLOC_VP_CONSTANTS, 1, 64.f);
+                storeF(ALLOC_VP_CONSTANTS, 3, y - 64.f);
+                bindTexture(NAMED_PFTexMip, 0, loadI32(ALLOC_LABEL_IDS, iconNum));
+                drawSimpleMesh(NAMED_SMCell);
             }
             iconNum++;
         }
     }
 }
 
-void drawStrip(float row, float column, int isTop, int iconNum, float p)
-{
-    if (iconNum < 0) return;
-    int offset = positionStrip(row, column, isTop, p, 0);
-    bindTexture(NAMED_PFTexMip, 0, loadI32(ALLOC_ICON_IDS, iconNum));
-    if (offset < -20) return;
-    offset = clamp(offset, 0, 199 - 20);
-    drawSimpleMeshRange(NAMED_SMMesh, offset * 6, 20 * 6);
-
-    if (isTop) {
-        offset = positionStrip(row - 0.72f, column, isTop, p, 1);
-    } else {
-        offset = positionStrip(row + 0.73f, column, isTop, p, 1);
-    }
-    if (offset < -20) return;
-    if (offset > 200) return;
-    bindTexture(NAMED_PFTexMip, 0, loadI32(ALLOC_LABEL_IDS, iconNum));
-    offset = clamp(offset, 0, 199 - 20);
-    drawSimpleMeshRange(NAMED_SMMesh, offset * 6, 20 * 6);
-    //drawSimpleMesh(NAMED_SMMesh);
-}
-
-void drawTop(float rowOffset, float p)
-{
-    int row, col;
-    int iconNum = 0;
-    for (row = 0; row < rowOffset; row++) {
-        for (col=0; col < 4; col++) {
-            if (iconNum >= state->iconCount) {
-                return;
-            }
-            drawStrip(rowOffset - row, col, 1, iconNum, p);
-            iconNum++;
-        }
-    }
-}
-
-void drawBottom(float rowOffset, float p)
-{
-    float pos = -1.f;
-    int intRowOffset = rowOffset;
-    pos -= rowOffset - intRowOffset;
-
-    int row, col;
-    int iconNum = (intRowOffset + 3) * 4;
-    while (1) {
-        for (col=0; col < 4; col++) {
-            if (iconNum >= state->iconCount) {
-                return;
-            }
-            if (pos > -1) {
-                drawStrip(pos, col, 0, iconNum, p);
-            }
-            iconNum++;
-        }
-        pos += 1.f;
-    }
-}
 
 int
 main(int launchID)
@@ -483,28 +372,11 @@ main(int launchID)
     //debugF("    draw g_PosPage", g_PosPage);
 
     // Draw the icons ========================================
-
-    //bindProgramFragment(NAMED_PFColor);
-    //positionStrip(1, 0, 0);
-    //drawSimpleMesh(NAMED_SMMesh);
-
     bindProgramFragment(NAMED_PFTexMip);
-
-
-    drawTop(g_PosPage, 1-g_Zoom);
-    drawBottom(g_PosPage, 1-g_Zoom);
-
-    {
-        float mat1[16];
-        matrixLoadIdentity(mat1);
-        vpLoadModelMatrix(mat1);
-        vpLoadTextureMatrix(mat1);
-    }
+    drawFrontGrid(g_PosPage, 1-g_Zoom);
 
     bindProgramFragment(NAMED_PFTexNearest);
-    drawFrontGrid(g_PosPage, 1-g_Zoom);
     draw_home_button();
-
 
     // This is a WAR to do a rendering pass without drawing during init to
     // force the driver to preload and compile its shaders.
