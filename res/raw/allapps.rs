@@ -291,21 +291,21 @@ void drawFrontGrid(float rowOffset, float p)
 
             if (iconNum >= 0) {
                 float x = colWidth * col + (colWidth / 2);
-
-                bindProgramFragment(NAMED_PFTexMip);
-
                 storeF(ALLOC_VP_CONSTANTS, 2, x);
-                storeF(ALLOC_VP_CONSTANTS, 3, y);
+
                 if (state->selectedIconIndex == iconNum && !p) {
-                    //bindTexture(NAMED_PFTexMip, 0, state->selectedIconTexture);
-                    //bindTexture(NAMED_PFTexMip, 0, loadI32(ALLOC_ICON_IDS, iconNum));
-                    //storeF(ALLOC_VP_CONSTANTS, 0, 100.f);
-                    //storeF(ALLOC_VP_CONSTANTS, 1, 100.f);
-                    //drawSimpleMesh(NAMED_SMCell);
+                    bindProgramFragment(NAMED_PFTexNearest);
+                    bindTexture(NAMED_PFTexNearest, 0, state->selectedIconTexture);
+                    storeF(ALLOC_VP_CONSTANTS, 0, SELECTION_TEXTURE_WIDTH_PX);
+                    storeF(ALLOC_VP_CONSTANTS, 1, SELECTION_TEXTURE_HEIGHT_PX);
+                    storeF(ALLOC_VP_CONSTANTS, 3, y - (SELECTION_TEXTURE_HEIGHT_PX - ICON_TEXTURE_HEIGHT_PX) * 0.5f);
+                    drawSimpleMesh(NAMED_SMCell);
                 }
 
-                storeF(ALLOC_VP_CONSTANTS, 0, 74.f);
-                storeF(ALLOC_VP_CONSTANTS, 1, 74.f);
+                bindProgramFragment(NAMED_PFTexMip);
+                storeF(ALLOC_VP_CONSTANTS, 0, ICON_TEXTURE_WIDTH_PX);
+                storeF(ALLOC_VP_CONSTANTS, 1, ICON_TEXTURE_HEIGHT_PX);
+                storeF(ALLOC_VP_CONSTANTS, 3, y);
                 bindTexture(NAMED_PFTexMip, 0, loadI32(ALLOC_ICON_IDS, iconNum));
                 drawSimpleMesh(NAMED_SMCell);
 
