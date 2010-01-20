@@ -257,7 +257,7 @@ final class Utilities {
             }
 
             dest.drawColor(0, PorterDuff.Mode.CLEAR);
-            
+
             int[] xy = new int[2];
             Bitmap mask = src.extractAlpha(sBlurPaint, xy);
 
@@ -296,13 +296,13 @@ final class Utilities {
             if (width > 0 && height > 0) {
                 if (width < bitmapWidth || height < bitmapHeight) {
                     final float ratio = (float) bitmapWidth / bitmapHeight;
-        
+
                     if (bitmapWidth > bitmapHeight) {
                         height = (int) (width / ratio);
                     } else if (bitmapHeight > bitmapWidth) {
                         width = (int) (height * ratio);
                     }
-        
+
                     final Bitmap.Config c = (width == sIconWidth && height == sIconHeight) ?
                             bitmap.getConfig() : Bitmap.Config.ARGB_8888;
                     final Bitmap thumb = Bitmap.createBitmap(sIconWidth, sIconHeight, c);
@@ -339,7 +339,7 @@ final class Utilities {
         final float density = metrics.density;
 
         sIconWidth = sIconHeight = (int) resources.getDimension(android.R.dimen.app_icon_size);
-        sIconTextureWidth = sIconTextureHeight = roundToPow2(sIconWidth);
+        sIconTextureWidth = sIconTextureHeight = sIconWidth + 2;
 
         sBlurPaint.setMaskFilter(new BlurMaskFilter(5 * density, BlurMaskFilter.Blur.NORMAL));
         sGlowColorPressedPaint.setColor(0xffffc300);
