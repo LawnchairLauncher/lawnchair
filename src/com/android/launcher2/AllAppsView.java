@@ -134,10 +134,12 @@ public class AllAppsView extends RSSurfaceView
         public static final int ROWS_PER_PAGE = 4;
 
         public static final int ICON_WIDTH_PX = 64;
-        public static final int ICON_TEXTURE_WIDTH_PX = 128;
+        public static final int ICON_TEXTURE_WIDTH_PX = 74;
+        public static final int SELECTION_TEXTURE_WIDTH_PX = 74 + 20;
 
         public static final int ICON_HEIGHT_PX = 64;
-        public static final int ICON_TEXTURE_HEIGHT_PX = 128;
+        public static final int ICON_TEXTURE_HEIGHT_PX = 74;
+        public static final int SELECTION_TEXTURE_HEIGHT_PX = 74 + 20;
 
         public int SCREEN_WIDTH_PX;
         public int SCREEN_HEIGHT_PX;
@@ -1075,8 +1077,8 @@ public class AllAppsView extends RSSurfaceView
             mParams.save();
             mState.save();
 
-            mSelectionBitmap = Bitmap.createBitmap(Defines.ICON_TEXTURE_WIDTH_PX,
-                    Defines.ICON_TEXTURE_HEIGHT_PX, Bitmap.Config.ARGB_8888);
+            mSelectionBitmap = Bitmap.createBitmap(Defines.SELECTION_TEXTURE_WIDTH_PX,
+                    Defines.SELECTION_TEXTURE_HEIGHT_PX, Bitmap.Config.ARGB_8888);
             mSelectionCanvas = new Canvas(mSelectionBitmap);
 
             setApps(null);
