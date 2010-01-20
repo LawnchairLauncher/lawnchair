@@ -415,7 +415,7 @@ final class Utilities {
 
         /** You own the bitmap after this and you must call recycle on it. */
         Bitmap createTextBitmap(String text) {
-            Bitmap b = Bitmap.createBitmap(mBitmapWidth, mBitmapHeight, Bitmap.Config.ARGB_8888);
+            Bitmap b = Bitmap.createBitmap(mBitmapWidth, mBitmapHeight, Bitmap.Config.ALPHA_8);
             Canvas c = new Canvas(b);
 
             StaticLayout layout = new StaticLayout(text, mTextPaint, (int)mTextWidth,

@@ -784,6 +784,7 @@ public class AllAppsView extends RSSurfaceView
         private ProgramStore mPSText;
         private ProgramFragment mPFColor;
         private ProgramFragment mPFTexMip;
+        private ProgramFragment mPFTexMipAlpha;
         private ProgramFragment mPFTexNearest;
         private ProgramVertex mPV;
         private ProgramVertex mPVOrtho;
@@ -1015,6 +1016,13 @@ public class AllAppsView extends RSSurfaceView
             mPFTexNearest = bf.create();
             mPFTexNearest.setName("PFTexNearest");
             mPFTexNearest.bindSampler(nearest, 0);
+
+            bf.setTexture(ProgramFragment.Builder.EnvMode.MODULATE,
+                          ProgramFragment.Builder.Format.ALPHA, 0);
+            mPFTexMipAlpha = bf.create();
+            mPFTexMipAlpha.setName("PFTexMipAlpha");
+            mPFTexMipAlpha.bindSampler(linear, 0);
+
         }
 
         private void initProgramStore() {
@@ -1152,7 +1160,7 @@ public class AllAppsView extends RSSurfaceView
             mIcons[index] = Allocation.createFromBitmap(mRS, item.iconBitmap,
                     Element.RGBA_8888(mRS), true);
             mLabels[index] = Allocation.createFromBitmap(mRS, item.titleBitmap,
-                    Element.RGBA_8888(mRS), true);
+                    Element.A_8(mRS), true);
             mIconIds[index] = mIcons[index].getID();
             mLabelIds[index] = mLabels[index].getID();
         }
