@@ -292,17 +292,28 @@ void drawFrontGrid(float rowOffset, float p)
             if (iconNum >= 0) {
                 float x = colWidth * col + (colWidth / 2);
 
-                storeF(ALLOC_VP_CONSTANTS, 0, 74.f);
-                storeF(ALLOC_VP_CONSTANTS, 1, 74.f);
+                bindProgramFragment(NAMED_PFTexMip);
+
                 storeF(ALLOC_VP_CONSTANTS, 2, x);
                 storeF(ALLOC_VP_CONSTANTS, 3, y);
+                if (state->selectedIconIndex == iconNum && !p) {
+                    //bindTexture(NAMED_PFTexMip, 0, state->selectedIconTexture);
+                    //bindTexture(NAMED_PFTexMip, 0, loadI32(ALLOC_ICON_IDS, iconNum));
+                    //storeF(ALLOC_VP_CONSTANTS, 0, 100.f);
+                    //storeF(ALLOC_VP_CONSTANTS, 1, 100.f);
+                    //drawSimpleMesh(NAMED_SMCell);
+                }
+
+                storeF(ALLOC_VP_CONSTANTS, 0, 74.f);
+                storeF(ALLOC_VP_CONSTANTS, 1, 74.f);
                 bindTexture(NAMED_PFTexMip, 0, loadI32(ALLOC_ICON_IDS, iconNum));
                 drawSimpleMesh(NAMED_SMCell);
 
+                bindProgramFragment(NAMED_PFTexMipAlpha);
                 storeF(ALLOC_VP_CONSTANTS, 0, 128.f);
                 storeF(ALLOC_VP_CONSTANTS, 1, 64.f);
                 storeF(ALLOC_VP_CONSTANTS, 3, y - 64.f);
-                bindTexture(NAMED_PFTexMip, 0, loadI32(ALLOC_LABEL_IDS, iconNum));
+                bindTexture(NAMED_PFTexMipAlpha, 0, loadI32(ALLOC_LABEL_IDS, iconNum));
                 drawSimpleMesh(NAMED_SMCell);
             }
             iconNum++;
@@ -372,7 +383,6 @@ main(int launchID)
     //debugF("    draw g_PosPage", g_PosPage);
 
     // Draw the icons ========================================
-    bindProgramFragment(NAMED_PFTexMip);
     drawFrontGrid(g_PosPage, 1-g_Zoom);
 
     bindProgramFragment(NAMED_PFTexNearest);
