@@ -106,7 +106,7 @@ void move() {
     if (g_LastTouchDown) {
         float dx = -(state->newPositionX - g_LastPositionX);
         g_PosVelocity = 0;
-        g_PosPage += dx * 4;
+        g_PosPage += dx * 5.2f;
 
         float pmin = -0.49f;
         float pmax = g_PosMax + 0.49f;
