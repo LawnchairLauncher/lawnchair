@@ -20,6 +20,7 @@ float g_DT;
 int g_LastTime;
 int g_PosMax;
 float g_Zoom;
+float g_Animation;
 float g_OldPosPage;
 float g_OldPosVelocity;
 float g_OldZoom;
@@ -257,7 +258,7 @@ draw_home_button()
     setColor(1.0f, 1.0f, 1.0f, 1.0f);
     bindTexture(NAMED_PFTexNearest, 0, state->homeButtonId);
     float x = (SCREEN_WIDTH_PX - params->homeButtonTextureWidth) / 2;
-    float y = (g_Zoom - 1.f) * params->homeButtonTextureHeight;
+    float y = -g_Animation * params->homeButtonTextureHeight;
 
     y -= 30; // move the house to the edge of the screen as it doesn't fill the texture.
     drawSpriteScreenspace(x, y, 0, params->homeButtonTextureWidth, params->homeButtonTextureHeight);
@@ -339,24 +340,16 @@ main(int launchID)
     g_DT = minf(g_DT, 0.2f);
 
     if (g_Zoom != state->zoomTarget) {
-        float dz;
-        if (state->zoomTarget > 0.5f) {
-            dz = (1 - g_Zoom) * 0.2f;
-        } else {
-            dz = -g_DT - (1 - g_Zoom) * 0.2f;
-        }
-        if (dz && (fabsf(dz) < 0.02f)) {
-            if (dz > 0) {
-                dz = 0.02f;
-            } else {
-                dz = -0.02f;
-            }
+        float dz = g_DT * 1.7f;
+        if (state->zoomTarget < 0.5f) {
+            dz = -dz;
         }
         if (fabsf(g_Zoom - state->zoomTarget) < fabsf(dz)) {
             g_Zoom = state->zoomTarget;
         } else {
             g_Zoom += dz;
         }
+        g_Animation = powf(1-g_Zoom, 3);
         updateReadback();
     }
 
@@ -383,7 +376,7 @@ main(int launchID)
     //debugF("    draw g_PosPage", g_PosPage);
 
     // Draw the icons ========================================
-    drawFrontGrid(g_PosPage, 1-g_Zoom);
+    drawFrontGrid(g_PosPage, g_Animation);
 
     bindProgramFragment(NAMED_PFTexNearest);
     draw_home_button();
