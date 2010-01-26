@@ -565,8 +565,11 @@ public class CellLayout extends ViewGroup {
                 if (lp.dropped) {
                     lp.dropped = false;
 
+                    final int[] cellXY = mCellXY;
+                    getLocationOnScreen(cellXY);
                     mWallpaperManager.sendWallpaperCommand(getWindowToken(), "android.home.drop",
-                            childLeft + lp.width / 2, childTop + lp.height / 2, 0, null);
+                            cellXY[0] + childLeft + lp.width / 2,
+                            cellXY[1] + childTop + lp.height / 2, 0, null);
                 }
             }
         }
