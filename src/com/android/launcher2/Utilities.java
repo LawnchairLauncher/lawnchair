@@ -22,7 +22,6 @@ import android.graphics.drawable.PaintDrawable;
 import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
-import android.graphics.MaskFilter;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.PixelFormat;
@@ -56,7 +55,6 @@ final class Utilities {
     private static final Paint sBlurPaint = new Paint();
     private static final Paint sGlowColorPressedPaint = new Paint();
     private static final Paint sGlowColorFocusedPaint = new Paint();
-    private static final Paint sEmptyPaint = new Paint();
     private static final Rect sBounds = new Rect();
     private static final Rect sOldBounds = new Rect();
     private static final Canvas sCanvas = new Canvas();
@@ -350,23 +348,27 @@ final class Utilities {
 
     static class BubbleText {
         private static final int MAX_LINES = 2;
-        private TextPaint mTextPaint;
 
-        private float mBubblePadding;
-        private RectF mBubbleRect = new RectF();
+        private final TextPaint mTextPaint;
 
-        private float mTextWidth;
-        private int mLeading;
-        private int mFirstLineY;
-        private int mLineHeight;
+        private final float mBubblePadding;
+        private final RectF mBubbleRect = new RectF();
 
-        private int mBitmapWidth;
-        private int mBitmapHeight;
+        private final float mTextWidth;
+        private final int mLeading;
+        private final int mFirstLineY;
+        private final int mLineHeight;
+
+        private final int mBitmapWidth;
+        private final int mBitmapHeight;
+        private final int mDensity;
 
         BubbleText(Context context) {
             final Resources resources = context.getResources();
 
-            final float scale = resources.getDisplayMetrics().density;
+            final DisplayMetrics metrics = resources.getDisplayMetrics();
+            final float scale = metrics.density;
+            mDensity = metrics.densityDpi;
 
             final float paddingLeft = 5.0f * scale;
             final float paddingRight = 5.0f * scale;
@@ -380,10 +382,6 @@ final class Utilities {
             bubbleRect.right = (int)(bubbleWidth+0.5f);
 
             mTextWidth = bubbleWidth - mBubblePadding - mBubblePadding;
-
-            Paint rectPaint = new Paint();
-            rectPaint.setColor(0xff000000);
-            rectPaint.setAntiAlias(true);
 
             TextPaint textPaint = mTextPaint = new TextPaint();
             textPaint.setTypeface(Typeface.DEFAULT);
@@ -416,6 +414,7 @@ final class Utilities {
         /** You own the bitmap after this and you must call recycle on it. */
         Bitmap createTextBitmap(String text) {
             Bitmap b = Bitmap.createBitmap(mBitmapWidth, mBitmapHeight, Bitmap.Config.ALPHA_8);
+            b.setDensity(mDensity);
             Canvas c = new Canvas(b);
 
             StaticLayout layout = new StaticLayout(text, mTextPaint, (int)mTextWidth,
@@ -432,11 +431,11 @@ final class Utilities {
             for (int i=0; i<lineCount; i++) {
                 //int x = (int)((mBubbleRect.width() - layout.getLineMax(i)) / 2.0f);
                 //int y = mFirstLineY + (i * mLineHeight);
+                final String lineText = text.substring(layout.getLineStart(i), layout.getLineEnd(i));
                 int x = (int)(mBubbleRect.left
-                        + ((mBubbleRect.width() - layout.getLineMax(i)) / 2.0f));
+                        + ((mBubbleRect.width() - mTextPaint.measureText(lineText)) * 0.5f));
                 int y = mFirstLineY + (i * mLineHeight);
-                c.drawText(text.substring(layout.getLineStart(i), layout.getLineEnd(i)),
-                        x, y, mTextPaint);
+                c.drawText(lineText, x, y, mTextPaint);
             }
 
             return b;
