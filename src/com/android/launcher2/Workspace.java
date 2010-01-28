@@ -249,6 +249,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         if (!mScroller.isFinished()) mScroller.abortAnimation();
         clearVacantCache();
         mCurrentScreen = Math.max(0, Math.min(currentScreen, getChildCount() - 1));
+        mPreviousIndicator.setLevel(mCurrentScreen);
+        mNextIndicator.setLevel(mCurrentScreen);
         scrollTo(mCurrentScreen * getWidth(), 0);
         invalidate();
     }
