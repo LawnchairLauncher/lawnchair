@@ -61,6 +61,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnLongClickListener;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -397,6 +398,15 @@ public final class Launcher extends Activity
     protected void onResume() {
         super.onResume();
 
+        /*
+        // We can't hide the IME if it was forced open.  So don't bother.
+        final InputMethodManager inputManager = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        inputManager.hideSoftInputFromWindow(lp.token, 0);
+        Log.d(TAG, "called hideSoftInputFromWindow");
+        */
+
         mPaused = false;
 
         if (mRestoring) {
@@ -446,6 +456,11 @@ public final class Launcher extends Activity
                 // but it is idempotent, so it's fine.
                 return onSearchRequested();
             }
+        }
+
+        // Eat the long press event so the keyboard doesn't come up.
+        if (keyCode == KeyEvent.KEYCODE_MENU && event.isLongPress()) {
+            return true;
         }
 
         return handled;
