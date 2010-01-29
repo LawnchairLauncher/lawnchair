@@ -94,6 +94,8 @@ public final class Launcher extends Activity
     private static final int WALLPAPER_SCREENS_SPAN = 2;
 
     private static final int MENU_GROUP_ADD = 1;
+    private static final int MENU_GROUP_WALLPAPER = MENU_GROUP_ADD + 1;
+
     private static final int MENU_ADD = Menu.FIRST + 1;
     private static final int MENU_WALLPAPER_SETTINGS = MENU_ADD + 1;
     private static final int MENU_SEARCH = MENU_WALLPAPER_SETTINGS + 1;
@@ -398,15 +400,6 @@ public final class Launcher extends Activity
     protected void onResume() {
         super.onResume();
 
-        /*
-        // We can't hide the IME if it was forced open.  So don't bother.
-        final InputMethodManager inputManager = (InputMethodManager)
-                getSystemService(Context.INPUT_METHOD_SERVICE);
-        WindowManager.LayoutParams lp = getWindow().getAttributes();
-        inputManager.hideSoftInputFromWindow(lp.token, 0);
-        Log.d(TAG, "called hideSoftInputFromWindow");
-        */
-
         mPaused = false;
 
         if (mRestoring) {
@@ -434,6 +427,27 @@ public final class Launcher extends Activity
         }
         return null;
     }
+
+    // We can't hide the IME if it was forced open.  So don't bother
+    /*
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+
+        if (hasFocus) {
+            final InputMethodManager inputManager = (InputMethodManager)
+                    getSystemService(Context.INPUT_METHOD_SERVICE);
+            WindowManager.LayoutParams lp = getWindow().getAttributes();
+            inputManager.hideSoftInputFromWindow(lp.token, 0, new android.os.ResultReceiver(new
+                        android.os.Handler()) {
+                        protected void onReceiveResult(int resultCode, Bundle resultData) {
+                            Log.d(TAG, "ResultReceiver got resultCode=" + resultCode);
+                        }
+                    });
+            Log.d(TAG, "called hideSoftInputFromWindow from onWindowFocusChanged");
+        }
+    }
+    */
 
     private boolean acceptFilter() {
         final InputMethodManager inputManager = (InputMethodManager)
@@ -965,10 +979,11 @@ public final class Launcher extends Activity
         }
 
         super.onCreateOptionsMenu(menu);
+
         menu.add(MENU_GROUP_ADD, MENU_ADD, 0, R.string.menu_add)
                 .setIcon(android.R.drawable.ic_menu_add)
                 .setAlphabeticShortcut('A');
-        menu.add(0, MENU_WALLPAPER_SETTINGS, 0, R.string.menu_wallpaper)
+        menu.add(MENU_GROUP_WALLPAPER, MENU_WALLPAPER_SETTINGS, 0, R.string.menu_wallpaper)
                  .setIcon(android.R.drawable.ic_menu_gallery)
                  .setAlphabeticShortcut('W');
         menu.add(0, MENU_SEARCH, 0, R.string.menu_search)
@@ -993,8 +1008,22 @@ public final class Launcher extends Activity
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        mMenuAddInfo = mWorkspace.findAllVacantCells(null);
-        menu.setGroupEnabled(MENU_GROUP_ADD, mMenuAddInfo != null && mMenuAddInfo.valid);
+        // If all apps is animating, don't show the menu, because we don't know
+        // which one to show.
+        if (mAllAppsGrid.isVisible() && !mAllAppsGrid.isOpaque()) {
+            return false;
+        }
+
+        // Only show the add and wallpaper options when we're not in all apps.
+        boolean visible = !mAllAppsGrid.isOpaque();
+        menu.setGroupVisible(MENU_GROUP_ADD, visible);
+        menu.setGroupVisible(MENU_GROUP_WALLPAPER, visible);
+
+        // Disable add if the workspace is full.
+        if (visible) {
+            mMenuAddInfo = mWorkspace.findAllVacantCells(null);
+            menu.setGroupEnabled(MENU_GROUP_ADD, mMenuAddInfo != null && mMenuAddInfo.valid);
+        }
 
         return true;
     }
