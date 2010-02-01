@@ -413,15 +413,19 @@ public class AllAppsView extends RSSurfaceView
                 break;
             }
             case KeyEvent.KEYCODE_DPAD_LEFT:
-                if (currentPageCol > 0) {
-                    newSelection = currentSelection - 1;
+                if (mLastSelection != SELECTION_HOME) {
+                    if (currentPageCol > 0) {
+                        newSelection = currentSelection - 1;
+                    }
                 }
                 handled = true;
                 break;
             case KeyEvent.KEYCODE_DPAD_RIGHT:
-                if ((currentPageCol < Defines.COLUMNS_PER_PAGE - 1) &&
-                        (currentSelection < iconCount - 1)) {
-                    newSelection = currentSelection + 1;
+                if (mLastSelection != SELECTION_HOME) {
+                    if ((currentPageCol < Defines.COLUMNS_PER_PAGE - 1) &&
+                            (currentSelection < iconCount - 1)) {
+                        newSelection = currentSelection + 1;
+                    }
                 }
                 handled = true;
                 break;
