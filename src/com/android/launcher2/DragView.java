@@ -37,7 +37,7 @@ import android.view.WindowManagerImpl;
 
 public class DragView extends View implements TweenCallback {
     // Number of pixels to add to the dragged item for scaling.  Should be even for pixel alignment.
-    private static final int DRAG_SCALE = 24;
+    private static final int DRAG_SCALE = 40;
 
     private Bitmap mBitmap;
     private Paint mPaint;
