@@ -282,6 +282,7 @@ void drawFrontGrid(float rowOffset, float p)
 
     storeF(ALLOC_VP_CONSTANTS, 4, p);
 
+    setColor(1.0f, 1.0f, 1.0f, 1.0f);
     for (row = -5; row < 15; row++) {
         float y = yoff - ((-rowFrac + row) * rowHeight);
 
