@@ -1267,7 +1267,9 @@ public class AllAppsView extends RSSurfaceView
             if (mInvokeResetWAR != null) {
                 mInvokeResetWAR.execute();
             }
-            mRS.contextBindRootScript(mScript);
+            if (mScript != null) {
+                mRS.contextBindRootScript(mScript);
+            }
         }
 
         void initTouchState() {
