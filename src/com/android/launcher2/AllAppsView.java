@@ -924,6 +924,8 @@ public class AllAppsView extends RSSurfaceView
             Element.Builder eb = new Element.Builder(mRS);
             eb.add(Element.createVector(mRS, Element.DataType.FLOAT_32, 2), "ImgSize");
             eb.add(Element.createVector(mRS, Element.DataType.FLOAT_32, 4), "Position");
+            eb.add(Element.createVector(mRS, Element.DataType.FLOAT_32, 2), "BendPos");
+            eb.add(Element.createVector(mRS, Element.DataType.FLOAT_32, 4), "ScaleOffset");
             Element e = eb.create();
 
             mUniformAlloc = Allocation.createSized(mRS, e, 1);
@@ -934,6 +936,16 @@ public class AllAppsView extends RSSurfaceView
                                   // Animation
                                   "  float ani = UNI_Position.z;\n" +
 
+                                  "  float bendAngle = 47.0 * (3.14 / 180.0);\n" +
+                                  "  float bendDistance = 50.0;\n" +
+                                  "  float bendY1 = UNI_BendPos.x;\n" +
+                                  "  float bendY2 = UNI_BendPos.y;\n" +
+                                  "  float distanceDimLevel = 0.6;\n" +
+
+                                  "  float bendStep = (bendAngle / bendDistance) * (bendAngle * 0.5);\n" +
+                                  "  float aDy = cos(bendAngle);\n" +
+                                  "  float aDz = sin(bendAngle);\n" +
+
                                   "  float scale = (2.0 / 480.0);\n" +
                                   "  float x = UNI_Position.x + UNI_ImgSize.x * (1.0 - ani) * (ATTRIB_position.x - 0.5);\n" +
                                   "  float ys= UNI_Position.y + UNI_ImgSize.y * (1.0 - ani) * ATTRIB_position.y;\n" +
@@ -941,28 +953,28 @@ public class AllAppsView extends RSSurfaceView
                                   "  float z = 0.0;\n" +
                                   "  float lum = 1.0;\n" +
 
-                                  "  float cv = min(ys, 50.0) - 50.0;\n" +
-                                  "  y += cv * 0.681;\n" +  // Roughy 47 degrees
-                                  "  z += -cv * 0.731;\n" +
-                                  "  cv = clamp(ys, 50.0, 120.0) - 120.0;\n" +  // curve range
-                                  "  y += cv * cos(cv * 0.4 / (180.0 / 3.14));\n" +
-                                  "  z += cv * sin(cv * 0.4 / (180.0 / 3.14));\n" +
+                                  "  float cv = min(ys, bendY1 - bendDistance) - (bendY1 - bendDistance);\n" +
+                                  "  y += cv * aDy;\n" +
+                                  "  z += -cv * aDz;\n" +
+                                  "  cv = clamp(ys, bendY1 - bendDistance, bendY1) - bendY1;\n" +  // curve range
+                                  "  lum += cv / bendDistance * distanceDimLevel;\n" +
+                                  "  y += cv * cos(cv * bendStep);\n" +
+                                  "  z += cv * sin(cv * bendStep);\n" +
 
-                                  "  cv = max(ys, 750.0) - 750.0;\n" +
-                                  "  y += cv * 0.681;\n" +
-                                  "  z += cv * 0.731;\n" +
-                                  "  cv = clamp(ys, 680.0, 750.0) - 680.0;\n" +
-                                  "  y += cv * cos(cv * 0.4 / (180.0 / 3.14));\n" +
-                                  "  z += cv * sin(cv * 0.4 / (180.0 / 3.14));\n" +
+                                  "  cv = max(ys, bendY2 + bendDistance) - (bendY2 + bendDistance);\n" +
+                                  "  y += cv * aDy;\n" +
+                                  "  z += cv * aDz;\n" +
+                                  "  cv = clamp(ys, bendY2, bendY2 + bendDistance) - bendY2;\n" +
+                                  "  lum -= cv / bendDistance * distanceDimLevel;\n" +
+                                  "  y += cv * cos(cv * bendStep);\n" +
+                                  "  z += cv * sin(cv * bendStep);\n" +
 
-                                  "  y += clamp(ys, 120.0, 680.0);\n" +
-                                  "  lum += (clamp(ys, 60.0, 115.0) - 115.0) / 100.0;\n" +
-                                  "  lum -= (clamp(ys, 685.0, 740.0) - 685.0) / 100.0;\n" +
+                                  "  y += clamp(ys, bendY1, bendY2);\n" +
 
                                   "  vec4 pos;\n" +
-                                  "  pos.x = x * scale - 1.0;\n" +
-                                  "  pos.y = y * scale - 1.66;\n" +
-                                  "  pos.z = z * scale;\n" +
+                                  "  pos.x = (x + UNI_ScaleOffset.z) * UNI_ScaleOffset.x;\n" +
+                                  "  pos.y = (y + UNI_ScaleOffset.w) * UNI_ScaleOffset.x;\n" +
+                                  "  pos.z = z * UNI_ScaleOffset.x;\n" +
                                   "  pos.w = 1.0;\n" +
 
                                   "  pos.x *= 1.0 + ani * 4.0;\n" +
@@ -984,7 +996,10 @@ public class AllAppsView extends RSSurfaceView
             mPVCurve.bindAllocation(mPVA);
             mPVCurve.bindConstants(mUniformAlloc, 1);
 
-            float tf[] = new float[] {72.f, 72.f, 0.f, 0.f, 120.f, 120.f, 0.f, 0.f};
+            float tf[] = new float[] {72.f, 72.f,
+                                      120.f, 120.f, 0.f, 0.f,
+                                      120.f, 680.f,
+                                      (2.f / 480.f), 0, -240.f, -380.f};
             mUniformAlloc.data(tf);
 
             //pva = new ProgramVertex.MatrixAllocation(mRS);
