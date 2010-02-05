@@ -372,7 +372,7 @@ final class Utilities {
 
             final float paddingLeft = 5.0f * scale;
             final float paddingRight = 5.0f * scale;
-            final float cellWidth = resources.getDimension(R.dimen.workspace_cell_width);
+            final float cellWidth = resources.getDimension(R.dimen.title_texture_width);
             final float bubbleWidth = cellWidth - paddingLeft - paddingRight;
             mBubblePadding = 3.0f * scale;
 
@@ -399,7 +399,7 @@ final class Utilities {
             mFirstLineY = (int)(leading + ascent + 0.5f);
             mLineHeight = (int)(leading + ascent + descent + 0.5f);
 
-            mBitmapWidth = roundToPow2((int)(mBubbleRect.width() + 0.5f));
+            mBitmapWidth = (int)(mBubbleRect.width() + 0.5f);
             mBitmapHeight = roundToPow2((int)((MAX_LINES * mLineHeight) + leading + 0.5f));
 
             mBubbleRect.offsetTo((mBitmapWidth-mBubbleRect.width())/2, 0);
