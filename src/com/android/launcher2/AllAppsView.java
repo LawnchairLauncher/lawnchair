@@ -796,13 +796,10 @@ public class AllAppsView extends RSSurfaceView
         private Script.Invokable mInvokeSetZoom;
 
         private ProgramStore mPSIcons;
-        private ProgramStore mPSText;
-        private ProgramFragment mPFColor;
         private ProgramFragment mPFTexMip;
         private ProgramFragment mPFTexMipAlpha;
         private ProgramFragment mPFTexNearest;
         private ProgramVertex mPV;
-        private ProgramVertex mPVOrtho;
         private ProgramVertex mPVCurve;
         private SimpleMesh mMesh;
         private ProgramVertex.MatrixAllocation mPVA;
@@ -890,14 +887,13 @@ public class AllAppsView extends RSSurfaceView
             initProgramVertex();
             initProgramFragment();
             initProgramStore();
-            //initMesh();
             initGl();
             initData();
             initTouchState();
             initRs();
         }
 
-        public void initMesh2() {
+        public void initMesh() {
             SimpleMesh.TriangleMeshBuilder tm = new SimpleMesh.TriangleMeshBuilder(mRS, 2, 0);
 
             for (int ct=0; ct < 16; ct++) {
@@ -938,7 +934,7 @@ public class AllAppsView extends RSSurfaceView
 
             mUniformAlloc = Allocation.createSized(mRS, e, 1);
 
-            initMesh2();
+            initMesh();
             ProgramVertex.ShaderBuilder sb = new ProgramVertex.ShaderBuilder(mRS);
             String t = new String("void main() {\n" +
                                   // Animation
@@ -1004,19 +1000,6 @@ public class AllAppsView extends RSSurfaceView
             mPVCurve.bindAllocation(mPVA);
             mPVCurve.bindConstants(mUniformAlloc, 1);
 
-            float tf[] = new float[] {72.f, 72.f,
-                                      120.f, 120.f, 0.f, 0.f,
-                                      120.f, 680.f,
-                                      (2.f / 480.f), 0, -240.f, -380.f};
-            mUniformAlloc.data(tf);
-
-            //pva = new ProgramVertex.MatrixAllocation(mRS);
-            //pva.setupOrthoWindow(mWidth, mHeight);
-            //pvb.setTextureMatrixEnable(true);
-            //mPVOrtho = pvb.create();
-            //mPVOrtho.setName("PVOrtho");
-            //mPVOrtho.bindAllocation(pva);
-
             mRS.contextBindProgramVertex(mPV);
         }
 
@@ -1033,9 +1016,6 @@ public class AllAppsView extends RSSurfaceView
             Sampler nearest = sb.create();
 
             ProgramFragment.Builder bf = new ProgramFragment.Builder(mRS);
-            //mPFColor = bf.create();
-            //mPFColor.setName("PFColor");
-
             bf.setTexture(ProgramFragment.Builder.EnvMode.MODULATE,
                           ProgramFragment.Builder.Format.RGBA, 0);
             mPFTexMip = bf.create();
@@ -1063,10 +1043,6 @@ public class AllAppsView extends RSSurfaceView
                             ProgramStore.BlendDstFunc.ONE_MINUS_SRC_ALPHA);
             mPSIcons = bs.create();
             mPSIcons.setName("PSIcons");
-
-            //bs.setDitherEnable(false);
-            //mPSText = bs.create();
-            //mPSText.setName("PSText");
         }
 
         private void initGl() {
