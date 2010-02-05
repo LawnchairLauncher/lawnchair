@@ -257,10 +257,21 @@ draw_home_button()
 {
     setColor(1.0f, 1.0f, 1.0f, 1.0f);
     bindTexture(NAMED_PFTexNearest, 0, state->homeButtonId);
-    float x = (SCREEN_WIDTH_PX - params->homeButtonTextureWidth) / 2;
-    float y = -g_Animation * params->homeButtonTextureHeight;
 
-    y -= 30; // move the house to the edge of the screen as it doesn't fill the texture.
+    float w = getWidth();
+    float h = getHeight();
+
+    float x;
+    float y;
+    if (getWidth() > getHeight()) {
+        x = w - (params->homeButtonTextureWidth * (1 - g_Animation)) + 20;
+        y = (h - params->homeButtonTextureHeight) * 0.5f;
+    } else {
+        x = (w - params->homeButtonTextureWidth) / 2;
+        y = -g_Animation * params->homeButtonTextureHeight;
+        y -= 30; // move the house to the edge of the screen as it doesn't fill the texture.
+    }
+
     drawSpriteScreenspace(x, y, 0, params->homeButtonTextureWidth, params->homeButtonTextureHeight);
 }
 
@@ -271,50 +282,58 @@ void drawFrontGrid(float rowOffset, float p)
 
     int intRowOffset = rowOffset;
     float rowFrac = rowOffset - intRowOffset;
-    float colWidth = getWidth() / 4;
+    float colWidth = 120.f;//getWidth() / 4;
     float rowHeight = colWidth + 25.f;
     float yoff = 0.5f * h + 1.5f * rowHeight;
 
     int row, col;
-    int iconNum = (intRowOffset - 5) * 4;
+    int colCount = 4;
+    if (w > h) {
+        colCount = 6;
+        rowHeight -= 12.f;
+        yoff = 0.47f * h + 1.0f * rowHeight;
+    }
+
+    int iconNum = (intRowOffset - 5) * colCount;
+
 
     bindProgramVertex(NAMED_PVCurve);
 
-    storeF(ALLOC_VP_CONSTANTS, 4, p);
+    vpConstants->Position.z = p;
 
     setColor(1.0f, 1.0f, 1.0f, 1.0f);
     for (row = -5; row < 15; row++) {
         float y = yoff - ((-rowFrac + row) * rowHeight);
 
-        for (col=0; col < 4; col++) {
+        for (col=0; col < colCount; col++) {
             if (iconNum >= state->iconCount) {
                 return;
             }
 
             if (iconNum >= 0) {
                 float x = colWidth * col + (colWidth / 2);
-                storeF(ALLOC_VP_CONSTANTS, 2, x);
+                vpConstants->Position.x = x;
 
                 if (state->selectedIconIndex == iconNum && !p) {
                     bindProgramFragment(NAMED_PFTexNearest);
                     bindTexture(NAMED_PFTexNearest, 0, state->selectedIconTexture);
-                    storeF(ALLOC_VP_CONSTANTS, 0, SELECTION_TEXTURE_WIDTH_PX);
-                    storeF(ALLOC_VP_CONSTANTS, 1, SELECTION_TEXTURE_HEIGHT_PX);
-                    storeF(ALLOC_VP_CONSTANTS, 3, y - (SELECTION_TEXTURE_HEIGHT_PX - ICON_TEXTURE_HEIGHT_PX) * 0.5f);
+                    vpConstants->ImgSize.x = SELECTION_TEXTURE_WIDTH_PX;
+                    vpConstants->ImgSize.y = SELECTION_TEXTURE_HEIGHT_PX;
+                    vpConstants->Position.y = y - (SELECTION_TEXTURE_HEIGHT_PX - ICON_TEXTURE_HEIGHT_PX) * 0.5f;
                     drawSimpleMesh(NAMED_SMCell);
                 }
 
                 bindProgramFragment(NAMED_PFTexMip);
-                storeF(ALLOC_VP_CONSTANTS, 0, ICON_TEXTURE_WIDTH_PX);
-                storeF(ALLOC_VP_CONSTANTS, 1, ICON_TEXTURE_HEIGHT_PX);
-                storeF(ALLOC_VP_CONSTANTS, 3, y);
+                vpConstants->ImgSize.x = ICON_TEXTURE_WIDTH_PX;
+                vpConstants->ImgSize.y = ICON_TEXTURE_HEIGHT_PX;
+                vpConstants->Position.y = y;
                 bindTexture(NAMED_PFTexMip, 0, loadI32(ALLOC_ICON_IDS, iconNum));
                 drawSimpleMesh(NAMED_SMCell);
 
                 bindProgramFragment(NAMED_PFTexMipAlpha);
-                storeF(ALLOC_VP_CONSTANTS, 0, 128.f);
-                storeF(ALLOC_VP_CONSTANTS, 1, 64.f);
-                storeF(ALLOC_VP_CONSTANTS, 3, y - 64.f);
+                vpConstants->ImgSize.x = 120.f;
+                vpConstants->ImgSize.y = 64.f;
+                vpConstants->Position.y = y - 64.f;
                 bindTexture(NAMED_PFTexMipAlpha, 0, loadI32(ALLOC_LABEL_IDS, iconNum));
                 drawSimpleMesh(NAMED_SMCell);
             }

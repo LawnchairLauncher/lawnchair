@@ -229,6 +229,23 @@ public class AllAppsView extends RSSurfaceView
         Resources res = getContext().getResources();
         int barHeight = (int)res.getDimension(R.dimen.button_bar_height);
 
+
+        if (mRollo.mUniformAlloc != null) {
+            float tf[] = new float[] {72.f, 72.f,
+                                      120.f, 120.f, 0.f, 0.f,
+                                      120.f, 680.f,
+                                      (2.f / 480.f), 0, -((float)w / 2) - 0.25f, -380.25f};
+            if (w > h) {
+                tf[6] = 40.f;
+                tf[7] = h - 40.f;
+                tf[9] = 1.f;
+                tf[10] = -((float)w / 2) - 0.25f;
+                tf[11] = -((float)h / 2) - 0.25f;
+            }
+
+            mRollo.mUniformAlloc.data(tf);
+        }
+
         //long endTime = SystemClock.uptimeMillis();
         //Log.d(TAG, "surfaceChanged took " + (endTime-startTime) + "ms");
     }
@@ -893,7 +910,7 @@ public class AllAppsView extends RSSurfaceView
             SimpleMesh.TriangleMeshBuilder tm = new SimpleMesh.TriangleMeshBuilder(mRS, 2, 0);
 
             for (int ct=0; ct < 16; ct++) {
-                float pos = (1.f / 16.f) * ct;
+                float pos = (1.f / (16.f - 1)) * ct;
                 tm.addVertex(0.0f, pos);
                 tm.addVertex(1.0f, pos);
             }
@@ -936,10 +953,10 @@ public class AllAppsView extends RSSurfaceView
                                   // Animation
                                   "  float ani = UNI_Position.z;\n" +
 
-                                  "  float bendAngle = 47.0 * (3.14 / 180.0);\n" +
-                                  "  float bendDistance = 50.0;\n" +
                                   "  float bendY1 = UNI_BendPos.x;\n" +
                                   "  float bendY2 = UNI_BendPos.y;\n" +
+                                  "  float bendAngle = 47.0 * (3.14 / 180.0);\n" +
+                                  "  float bendDistance = bendY1 * 0.4;\n" +
                                   "  float distanceDimLevel = 0.6;\n" +
 
                                   "  float bendStep = (bendAngle / bendDistance) * (bendAngle * 0.5);\n" +
