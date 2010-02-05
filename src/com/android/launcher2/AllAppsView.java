@@ -140,14 +140,6 @@ public class AllAppsView extends RSSurfaceView
         public static final int ICON_HEIGHT_PX = 64;
         public static final int ICON_TEXTURE_HEIGHT_PX = 74;
         public static final int SELECTION_TEXTURE_HEIGHT_PX = 74 + 20;
-
-        public int SCREEN_WIDTH_PX;
-        public int SCREEN_HEIGHT_PX;
-
-        public void recompute(int w, int h) {
-            SCREEN_WIDTH_PX = 480;
-            SCREEN_HEIGHT_PX = 800;
-        }
     }
 
     public AllAppsView(Context context, AttributeSet attrs) {
@@ -895,7 +887,6 @@ public class AllAppsView extends RSSurfaceView
             mRes = res;
             mWidth = width;
             mHeight = height;
-            mDefines.recompute(width, height);
             initProgramVertex();
             initProgramFragment();
             initProgramStore();
