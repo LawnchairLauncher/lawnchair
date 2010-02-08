@@ -25,17 +25,17 @@ import android.os.Handler;
 import dalvik.system.VMRuntime;
 
 public class LauncherApplication extends Application {
-    public final LauncherModel mModel;
-
-    public LauncherApplication() {
-        mModel = new LauncherModel(this);
-    }
+    public LauncherModel mModel;
+    public IconCache mIconCache;
 
     @Override
     public void onCreate() {
         VMRuntime.getRuntime().setMinimumHeapSize(4 * 1024 * 1024);
 
         super.onCreate();
+
+        mIconCache = new IconCache(this);
+        mModel = new LauncherModel(this, mIconCache);
 
         // Register intent receivers
         IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
@@ -77,6 +77,14 @@ public class LauncherApplication extends Application {
 
     LauncherModel setLauncher(Launcher launcher) {
         mModel.initialize(launcher);
+        return mModel;
+    }
+
+    IconCache getIconCache() {
+        return mIconCache;
+    }
+
+    LauncherModel getModel() {
         return mModel;
     }
 }

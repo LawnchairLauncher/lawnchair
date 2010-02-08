@@ -46,7 +46,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     /**
      * Which item is being dragged
      */
-    protected ApplicationInfo mDragItem;
+    protected ShortcutInfo mDragItem;
     private boolean mCloneInfo;
 
     /**
@@ -74,7 +74,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     }
     
     public void onItemClick(AdapterView parent, View v, int position, long id) {
-        ApplicationInfo app = (ApplicationInfo) parent.getItemAtPosition(position);
+        ShortcutInfo app = (ShortcutInfo) parent.getItemAtPosition(position);
         mLauncher.startActivitySafely(app.intent);
     }
 
@@ -93,9 +93,9 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
             return false;
         }
 
-        ApplicationInfo app = (ApplicationInfo) parent.getItemAtPosition(position);
+        ShortcutInfo app = (ShortcutInfo) parent.getItemAtPosition(position);
         if (mCloneInfo) {
-            app = new ApplicationInfo(app);
+            app = new ShortcutInfo(app);
         }
 
         mDragController.startDrag(view, this, app, DragController.DRAG_ACTION_COPY);
@@ -118,7 +118,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
 
     /**
      * Sets the adapter used to populate the content area. The adapter must only
-     * contains ApplicationInfo items.
+     * contains ShortcutInfo items.
      *
      * @param adapter The list of applications to display in the folder.
      */

@@ -191,6 +191,7 @@ public final class Launcher extends Activity
     private Bundle mSavedInstanceState;
 
     private LauncherModel mModel;
+    private IconCache mIconCache;
 
     private ArrayList<ItemInfo> mDesktopItems = new ArrayList<ItemInfo>();
     private static HashMap<Long, FolderInfo> mFolders = new HashMap<Long, FolderInfo>();
@@ -202,7 +203,9 @@ public final class Launcher extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mModel = ((LauncherApplication)getApplication()).setLauncher(this);
+        LauncherApplication app = ((LauncherApplication)getApplication());
+        mModel = app.setLauncher(this);
+        mIconCache = app.getIconCache();
         mDragController = new DragController(this);
         mInflater = getLayoutInflater();
 
@@ -271,7 +274,7 @@ public final class Launcher extends Activity
             localeConfiguration.mnc = mnc;
 
             writeConfiguration(this, localeConfiguration);
-            AppInfoCache.flush();
+            mIconCache.flush();
         }
     }
 
@@ -615,7 +618,7 @@ public final class Launcher extends Activity
      *
      * @return A View inflated from R.layout.application.
      */
-    View createShortcut(ApplicationInfo info) {
+    View createShortcut(ShortcutInfo info) {
         return createShortcut(R.layout.application,
                 (ViewGroup) mWorkspace.getChildAt(mWorkspace.getCurrentScreen()), info);
     }
@@ -629,18 +632,12 @@ public final class Launcher extends Activity
      *
      * @return A View inflated from layoutResId.
      */
-    View createShortcut(int layoutResId, ViewGroup parent, ApplicationInfo info) {
+    View createShortcut(int layoutResId, ViewGroup parent, ShortcutInfo info) {
         TextView favorite = (TextView) mInflater.inflate(layoutResId, parent, false);
 
-        if (info.icon == null) {
-            info.icon = AppInfoCache.getIconDrawable(getPackageManager(), info);
-        }
-        if (!info.filtered) {
-            info.icon = Utilities.createIconThumbnail(info.icon, this);
-            info.filtered = true;
-        }
-
-        favorite.setCompoundDrawablesWithIntrinsicBounds(null, info.icon, null, null);
+        favorite.setCompoundDrawablesWithIntrinsicBounds(null,
+                new FastBitmapDrawable(info.getIcon(mIconCache)),
+                null, null);
         favorite.setText(info.title);
         favorite.setTag(info);
         favorite.setOnClickListener(this);
@@ -658,39 +655,17 @@ public final class Launcher extends Activity
         cellInfo.screen = mWorkspace.getCurrentScreen();
         if (!findSingleSlot(cellInfo)) return;
 
-        final ApplicationInfo info = infoFromApplicationIntent(context, data);
+        final ShortcutInfo info = mModel.getShortcutInfo(context.getPackageManager(),
+                data, context);
+
         if (info != null) {
-            mWorkspace.addApplicationShortcut(info, cellInfo, isWorkspaceLocked());
-        }
-    }
-
-    private static ApplicationInfo infoFromApplicationIntent(Context context, Intent data) {
-        ComponentName component = data.getComponent();
-        PackageManager packageManager = context.getPackageManager();
-        ActivityInfo activityInfo = null;
-        try {
-            activityInfo = packageManager.getActivityInfo(component, 0 /* no flags */);
-        } catch (NameNotFoundException e) {
-            Log.e(TAG, "Couldn't find ActivityInfo for selected application", e);
-        }
-
-        if (activityInfo != null) {
-            ApplicationInfo itemInfo = new ApplicationInfo();
-
-            itemInfo.title = activityInfo.loadLabel(packageManager);
-            if (itemInfo.title == null) {
-                itemInfo.title = activityInfo.name;
-            }
-
-            itemInfo.setActivity(component, Intent.FLAG_ACTIVITY_NEW_TASK |
+            info.setActivity(data.getComponent(), Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-            itemInfo.icon = activityInfo.loadIcon(packageManager);
-            itemInfo.container = ItemInfo.NO_ID;
-
-            return itemInfo;
+            info.container = ItemInfo.NO_ID;
+            mWorkspace.addApplicationShortcut(info, cellInfo, isWorkspaceLocked());
+        } else {
+            Log.e(TAG, "Couldn't find ActivityInfo for selected application: " + data);
         }
-
-        return null;
     }
 
     /**
@@ -703,7 +678,7 @@ public final class Launcher extends Activity
         cellInfo.screen = mWorkspace.getCurrentScreen();
         if (!findSingleSlot(cellInfo)) return;
 
-        final ApplicationInfo info = addShortcut(this, data, cellInfo, false);
+        final ShortcutInfo info = mModel.addShortcut(this, data, cellInfo, false);
 
         if (!mRestoring) {
             final View view = createShortcut(info);
@@ -768,61 +743,6 @@ public final class Launcher extends Activity
 
     public LauncherAppWidgetHost getAppWidgetHost() {
         return mAppWidgetHost;
-    }
-
-    static ApplicationInfo addShortcut(Context context, Intent data,
-            CellLayout.CellInfo cellInfo, boolean notify) {
-
-        final ApplicationInfo info = infoFromShortcutIntent(context, data);
-        LauncherModel.addItemToDatabase(context, info, LauncherSettings.Favorites.CONTAINER_DESKTOP,
-                cellInfo.screen, cellInfo.cellX, cellInfo.cellY, notify);
-
-        return info;
-    }
-
-    private static ApplicationInfo infoFromShortcutIntent(Context context, Intent data) {
-        Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
-        String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
-        Parcelable bitmap = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
-
-        Drawable icon = null;
-        boolean filtered = false;
-        boolean customIcon = false;
-        ShortcutIconResource iconResource = null;
-
-        if (bitmap != null && bitmap instanceof Bitmap) {
-            icon = new FastBitmapDrawable(Utilities.createBitmapThumbnail((Bitmap) bitmap, context));
-            filtered = true;
-            customIcon = true;
-        } else {
-            Parcelable extra = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
-            if (extra != null && extra instanceof ShortcutIconResource) {
-                try {
-                    iconResource = (ShortcutIconResource) extra;
-                    final PackageManager packageManager = context.getPackageManager();
-                    Resources resources = packageManager.getResourcesForApplication(
-                            iconResource.packageName);
-                    final int id = resources.getIdentifier(iconResource.resourceName, null, null);
-                    icon = resources.getDrawable(id);
-                } catch (Exception e) {
-                    Log.w(TAG, "Could not load shortcut icon: " + extra);
-                }
-            }
-        }
-
-        if (icon == null) {
-            icon = context.getPackageManager().getDefaultActivityIcon();
-        }
-
-        final ApplicationInfo info = new ApplicationInfo();
-        info.icon = icon;
-        info.filtered = filtered;
-        info.title = name;
-        info.intent = intent;
-        info.customIcon = customIcon;
-        info.iconResource = iconResource;
-
-        return info;
     }
 
     void closeSystemDialogs() {
@@ -936,7 +856,6 @@ public final class Launcher extends Activity
         mModel.stopLoader();
 
         unbindDesktopItems();
-        AppInfoCache.unbindDrawables();
 
         getContentResolver().unregisterContentObserver(mWidgetObserver);
         
@@ -1163,7 +1082,6 @@ public final class Launcher extends Activity
         String name = data.getStringExtra(LiveFolders.EXTRA_LIVE_FOLDER_NAME);
 
         Drawable icon = null;
-        boolean filtered = false;
         Intent.ShortcutIconResource iconResource = null;
 
         Parcelable extra = data.getParcelableExtra(LiveFolders.EXTRA_LIVE_FOLDER_ICON);
@@ -1185,8 +1103,7 @@ public final class Launcher extends Activity
         }
 
         final LiveFolderInfo info = new LiveFolderInfo();
-        info.icon = icon;
-        info.filtered = filtered;
+        info.icon = Utilities.createIconBitmap(icon, context);
         info.title = name;
         info.iconResource = iconResource;
         info.uri = data.getData();
@@ -1338,9 +1255,9 @@ public final class Launcher extends Activity
      */
     public void onClick(View v) {
         Object tag = v.getTag();
-        if (tag instanceof ApplicationInfo) {
+        if (tag instanceof ShortcutInfo) {
             // Open shortcut
-            final Intent intent = ((ApplicationInfo) tag).intent;
+            final Intent intent = ((ShortcutInfo)tag).intent;
             int[] pos = new int[2];
             v.getLocationOnScreen(pos);
             intent.setSourceBounds(
@@ -2011,7 +1928,7 @@ public final class Launcher extends Activity
             switch (item.itemType) {
                 case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                 case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                    final View shortcut = createShortcut((ApplicationInfo) item);
+                    final View shortcut = createShortcut((ShortcutInfo)item);
                     workspace.addInScreen(shortcut, item.screen, item.cellX, item.cellY, 1, 1,
                             false);
                     break;

@@ -44,10 +44,13 @@ class AllAppsList {
     /** The list of apps that have been modified since the last notify() call. */
     public ArrayList<ApplicationInfo> modified = new ArrayList<ApplicationInfo>();
 
+    private IconCache mIconCache;
+
     /**
      * Boring constructor.
      */
-    public AllAppsList() {
+    public AllAppsList(IconCache iconCache) {
+        mIconCache = iconCache;
     }
 
     /**
@@ -82,9 +85,8 @@ class AllAppsList {
         final List<ResolveInfo> matches = findActivitiesForPackage(context, packageName);
 
         if (matches.size() > 0) {
-            Utilities.BubbleText bubble = new Utilities.BubbleText(context);
             for (ResolveInfo info : matches) {
-                ApplicationInfo item = AppInfoCache.cache(info, context, bubble);
+                ApplicationInfo item = new ApplicationInfo(info, mIconCache);
                 data.add(item);
                 added.add(item);
             }
@@ -105,9 +107,9 @@ class AllAppsList {
             }
         }
         // This is more aggressive than it needs to be.
-        AppInfoCache.flush();
+        mIconCache.flush();
     }
-    
+
     /**
      * Add and remove icons for this package which has been updated.
      */
@@ -122,7 +124,7 @@ class AllAppsList {
                 if (packageName.equals(component.getPackageName())) {
                     if (!findActivity(matches, component)) {
                         removed.add(applicationInfo);
-                        AppInfoCache.remove(component);
+                        mIconCache.remove(component);
                         data.remove(i);
                     }
                 }
@@ -130,7 +132,6 @@ class AllAppsList {
 
             // Find enabled activities and add them to the adapter
             // Also updates existing activities with new labels/icons
-            Utilities.BubbleText bubble = new Utilities.BubbleText(context);
             int count = matches.size();
             for (int i = 0; i < count; i++) {
                 final ResolveInfo info = matches.get(i);
@@ -138,11 +139,12 @@ class AllAppsList {
                         info.activityInfo.applicationInfo.packageName,
                         info.activityInfo.name);
                 if (applicationInfo == null) {
-                    applicationInfo = AppInfoCache.cache(info, context, bubble);
+                    applicationInfo = new ApplicationInfo(info, mIconCache);
                     data.add(applicationInfo);
                     added.add(applicationInfo);
                 } else {
-                    AppInfoCache.update(info, applicationInfo, context, bubble);
+                    mIconCache.remove(applicationInfo.componentName);
+                    mIconCache.getTitleAndIcon(applicationInfo, info);
                     modified.add(applicationInfo);
                 }
             }

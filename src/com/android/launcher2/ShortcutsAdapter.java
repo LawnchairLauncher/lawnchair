@@ -29,34 +29,29 @@ import java.util.ArrayList;
 /**
  * GridView adapter to show the list of applications and shortcuts
  */
-public class ApplicationsAdapter  extends ArrayAdapter<ApplicationInfo> {
+public class ShortcutsAdapter  extends ArrayAdapter<ShortcutInfo> {
     private final LayoutInflater mInflater;
     private final PackageManager mPackageManager;
+    private final IconCache mIconCache;
 
-    public ApplicationsAdapter(Context context, ArrayList<ApplicationInfo> apps) {
+    public ShortcutsAdapter(Context context, ArrayList<ShortcutInfo> apps) {
         super(context, 0, apps);
         mPackageManager = context.getPackageManager();
         mInflater = LayoutInflater.from(context);
+        mIconCache = ((LauncherApplication)context.getApplicationContext()).getIconCache();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        final ApplicationInfo info = getItem(position);
+        final ShortcutInfo info = getItem(position);
 
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.application_boxed, parent, false);
         }
 
-        if (info.icon == null) {
-            info.icon = AppInfoCache.getIconDrawable(mPackageManager, info);
-        }
-        if (!info.filtered) {
-            info.icon = Utilities.createIconThumbnail(info.icon, getContext());
-            info.filtered = true;
-        }
-
         final TextView textView = (TextView) convertView;
-        textView.setCompoundDrawablesWithIntrinsicBounds(null, info.icon, null, null);
+        textView.setCompoundDrawablesWithIntrinsicBounds(null,
+                new FastBitmapDrawable(info.getIcon(mIconCache)), null, null);
         textView.setText(info.title);
 
         return convertView;

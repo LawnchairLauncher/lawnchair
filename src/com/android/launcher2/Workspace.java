@@ -90,6 +90,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     private OnLongClickListener mLongClickListener;
 
     private Launcher mLauncher;
+    private IconCache mIconCache;
     private DragController mDragController;
     
     /**
@@ -142,9 +143,12 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
      * Initializes various states for this workspace.
      */
     private void initWorkspace() {
-        mScroller = new Scroller(getContext());
+        Context context = getContext();
+        mScroller = new Scroller(context);
         mCurrentScreen = mDefaultScreen;
         Launcher.setScreen(mCurrentScreen);
+        LauncherApplication app = (LauncherApplication)context.getApplicationContext();
+        mIconCache = app.getIconCache();
 
         final ViewConfiguration configuration = ViewConfiguration.get(getContext());
         mTouchSlop = configuration.getScaledTouchSlop();
@@ -880,11 +884,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         }
     }
 
-    void addApplicationShortcut(ApplicationInfo info, CellLayout.CellInfo cellInfo) {
+    void addApplicationShortcut(ShortcutInfo info, CellLayout.CellInfo cellInfo) {
         addApplicationShortcut(info, cellInfo, false);
     }
 
-    void addApplicationShortcut(ApplicationInfo info, CellLayout.CellInfo cellInfo,
+    void addApplicationShortcut(ShortcutInfo info, CellLayout.CellInfo cellInfo,
             boolean insertAtFirst) {
         final CellLayout layout = (CellLayout) getChildAt(cellInfo.screen);
         final int[] result = new int[2];
@@ -950,10 +954,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
             if (info.container == NO_ID) {
                 // Came from all apps -- make a copy
-                info = new ApplicationInfo((ApplicationInfo) info);
+                info = new ShortcutInfo((ShortcutInfo)info);
             }
-            view = mLauncher.createShortcut(R.layout.application, cellLayout,
-                    (ApplicationInfo) info);
+            view = mLauncher.createShortcut(R.layout.application, cellLayout, (ShortcutInfo)info);
             break;
         case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
             view = FolderIcon.fromXml(R.layout.folder_icon, mLauncher,
@@ -1183,8 +1186,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                         final View view = layout.getChildAt(j);
                         Object tag = view.getTag();
         
-                        if (tag instanceof ApplicationInfo) {
-                            final ApplicationInfo info = (ApplicationInfo) tag;
+                        if (tag instanceof ShortcutInfo) {
+                            final ShortcutInfo info = (ShortcutInfo) tag;
                             // We need to check for ACTION_MAIN otherwise getComponent() might
                             // return null for some shortcuts (for instance, for shortcuts to
                             // web pages.)
@@ -1199,14 +1202,13 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                             }
                         } else if (tag instanceof UserFolderInfo) {
                             final UserFolderInfo info = (UserFolderInfo) tag;
-                            final ArrayList<ApplicationInfo> contents = info.contents;
-                            final ArrayList<ApplicationInfo> toRemove =
-                                    new ArrayList<ApplicationInfo>(1);
+                            final ArrayList<ShortcutInfo> contents = info.contents;
+                            final ArrayList<ShortcutInfo> toRemove = new ArrayList<ShortcutInfo>(1);
                             final int contentsCount = contents.size();
                             boolean removedFromFolder = false;
         
                             for (int k = 0; k < contentsCount; k++) {
-                                final ApplicationInfo appInfo = contents.get(k);
+                                final ShortcutInfo appInfo = contents.get(k);
                                 final Intent intent = appInfo.intent;
                                 final ComponentName name = intent.getComponent();
         
@@ -1277,8 +1279,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             for (int j = 0; j < childCount; j++) {
                 final View view = layout.getChildAt(j);
                 Object tag = view.getTag();
-                if (tag instanceof ApplicationInfo) {
-                    ApplicationInfo info = (ApplicationInfo) tag;
+                if (tag instanceof ShortcutInfo) {
+                    ShortcutInfo info = (ShortcutInfo)tag;
                     // We need to check for ACTION_MAIN otherwise getComponent() might
                     // return null for some shortcuts (for instance, for shortcuts to
                     // web pages.)
@@ -1288,14 +1290,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                             Intent.ACTION_MAIN.equals(intent.getAction()) && name != null &&
                             packageName.equals(name.getPackageName())) {
 
-                        final Drawable icon = AppInfoCache.getIconDrawable(pm, info);
-                        if (icon != null && icon != info.icon) {
-                            info.icon.setCallback(null);
-                            info.icon = Utilities.createIconThumbnail(icon, mContext);
-                            info.filtered = true;
-                            ((TextView) view).setCompoundDrawablesWithIntrinsicBounds(null,
-                                    info.icon, null, null);
-                        }
+                        info.setIcon(mIconCache.getIcon(info.intent));
+                        ((TextView) view).setCompoundDrawablesWithIntrinsicBounds(null,
+                                new FastBitmapDrawable(info.getIcon(mIconCache)), null, null);
                     }
                 }
             }
