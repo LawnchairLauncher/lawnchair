@@ -31,6 +31,7 @@ import android.renderscript.ProgramFragment;
 import android.renderscript.ProgramStore;
 import android.renderscript.ProgramVertex;
 import android.renderscript.RSSurfaceView;
+import android.renderscript.RenderScriptGL;
 import android.renderscript.RenderScript;
 import android.renderscript.Sampler;
 import android.renderscript.Script;
@@ -84,7 +85,7 @@ public class AllAppsView extends RSSurfaceView
     private int mMaxFlingVelocity;
 
     private Defines mDefines = new Defines();
-    private RenderScript mRS;
+    private RenderScriptGL mRS;
     private RolloRS mRollo;
     private ArrayList<ApplicationInfo> mAllAppsList;
 
