@@ -16,6 +16,8 @@
 
 package com.android.launcher2;
 
+import com.android.common.Search;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -963,7 +965,7 @@ public final class Launcher extends Activity
         }
         if (appSearchData == null) {
             appSearchData = new Bundle();
-            appSearchData.putString(SearchManager.SOURCE, "launcher-search");
+            appSearchData.putString(Search.SOURCE, "launcher-search");
         }
 
         final SearchManager searchManager =
