@@ -85,87 +85,6 @@ final class Utilities {
         return bitmap;
     }
 
-    /**
-     * Returns a Drawable representing the thumbnail of the specified Drawable.
-     * The size of the thumbnail is defined by the dimension
-     * android.R.dimen.launcher_application_icon_size.
-     *
-     * @param icon The icon to get a thumbnail of.
-     * @param context The application's context.
-     *
-     * @return A thumbnail for the specified icon or the icon itself if the
-     *         thumbnail could not be created.
-     */
-    static Drawable createIconThumbnail(Drawable icon, Context context) {
-        synchronized (sCanvas) { // we share the statics :-(
-            if (sIconWidth == -1) {
-                initStatics(context);
-            }
-
-            int width = sIconWidth;
-            int height = sIconHeight;
-
-            if (icon instanceof PaintDrawable) {
-                PaintDrawable painter = (PaintDrawable) icon;
-                painter.setIntrinsicWidth(width);
-                painter.setIntrinsicHeight(height);
-            } else if (icon instanceof BitmapDrawable) {
-                // Ensure the bitmap has a density.
-                BitmapDrawable bitmapDrawable = (BitmapDrawable) icon;
-                Bitmap bitmap = bitmapDrawable.getBitmap();
-                if (bitmap.getDensity() == Bitmap.DENSITY_NONE) {
-                    bitmapDrawable.setTargetDensity(context.getResources().getDisplayMetrics());
-                }
-            }
-            int iconWidth = icon.getIntrinsicWidth();
-            int iconHeight = icon.getIntrinsicHeight();
-
-            if (iconWidth > 0 && iconHeight > 0) {
-                if (width < iconWidth || height < iconHeight) {
-                    final float ratio = (float) iconWidth / iconHeight;
-
-                    if (iconWidth > iconHeight) {
-                        height = (int) (width / ratio);
-                    } else if (iconHeight > iconWidth) {
-                        width = (int) (height * ratio);
-                    }
-
-                    final Bitmap.Config c = icon.getOpacity() != PixelFormat.OPAQUE ?
-                                Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565;
-                    final Bitmap thumb = Bitmap.createBitmap(sIconWidth, sIconHeight, c);
-                    final Canvas canvas = sCanvas;
-                    canvas.setBitmap(thumb);
-                    // Copy the old bounds to restore them later
-                    // If we were to do oldBounds = icon.getBounds(),
-                    // the call to setBounds() that follows would
-                    // change the same instance and we would lose the
-                    // old bounds
-                    sOldBounds.set(icon.getBounds());
-                    final int x = (sIconWidth - width) / 2;
-                    final int y = (sIconHeight - height) / 2;
-                    icon.setBounds(x, y, x + width, y + height);
-                    icon.draw(canvas);
-                    icon.setBounds(sOldBounds);
-                    icon = new FastBitmapDrawable(thumb);
-                } else if (iconWidth < width && iconHeight < height) {
-                    final Bitmap.Config c = Bitmap.Config.ARGB_8888;
-                    final Bitmap thumb = Bitmap.createBitmap(sIconWidth, sIconHeight, c);
-                    final Canvas canvas = sCanvas;
-                    canvas.setBitmap(thumb);
-                    sOldBounds.set(icon.getBounds());
-                    final int x = (width - iconWidth) / 2;
-                    final int y = (height - iconHeight) / 2;
-                    icon.setBounds(x, y, x + iconWidth, y + iconHeight);
-                    icon.draw(canvas);
-                    icon.setBounds(sOldBounds);
-                    icon = new FastBitmapDrawable(thumb);
-                }
-            }
-
-            return icon;
-        }
-    }
-
     static int sColors[] = { 0xffff0000, 0xff00ff00, 0xff0000ff };
     static int sColorIndex = 0;
 
@@ -173,7 +92,7 @@ final class Utilities {
      * Returns a bitmap suitable for the all apps view.  The bitmap will be a power
      * of two sized ARGB_8888 bitmap that can be used as a gl texture.
      */
-    static Bitmap createAllAppsBitmap(Drawable icon, Context context) {
+    static Bitmap createIconBitmap(Drawable icon, Context context) {
         synchronized (sCanvas) { // we share the statics :-(
             if (sIconWidth == -1) {
                 initStatics(context);
@@ -279,55 +198,17 @@ final class Utilities {
      * @return A thumbnail for the specified bitmap or the bitmap itself if the
      *         thumbnail could not be created.
      */
-    static Bitmap createBitmapThumbnail(Bitmap bitmap, Context context) {
+    static Bitmap resampleIconBitmap(Bitmap bitmap, Context context) {
         synchronized (sCanvas) { // we share the statics :-(
             if (sIconWidth == -1) {
                 initStatics(context);
             }
 
-            int width = sIconWidth;
-            int height = sIconHeight;
-
-            final int bitmapWidth = bitmap.getWidth();
-            final int bitmapHeight = bitmap.getHeight();
-
-            if (width > 0 && height > 0) {
-                if (width < bitmapWidth || height < bitmapHeight) {
-                    final float ratio = (float) bitmapWidth / bitmapHeight;
-
-                    if (bitmapWidth > bitmapHeight) {
-                        height = (int) (width / ratio);
-                    } else if (bitmapHeight > bitmapWidth) {
-                        width = (int) (height * ratio);
-                    }
-
-                    final Bitmap.Config c = (width == sIconWidth && height == sIconHeight) ?
-                            bitmap.getConfig() : Bitmap.Config.ARGB_8888;
-                    final Bitmap thumb = Bitmap.createBitmap(sIconWidth, sIconHeight, c);
-                    final Canvas canvas = sCanvas;
-                    final Paint paint = sPaint;
-                    canvas.setBitmap(thumb);
-                    paint.setDither(false);
-                    paint.setFilterBitmap(true);
-                    sBounds.set((sIconWidth - width) / 2, (sIconHeight - height) / 2, width, height);
-                    sOldBounds.set(0, 0, bitmapWidth, bitmapHeight);
-                    canvas.drawBitmap(bitmap, sOldBounds, sBounds, paint);
-                    return thumb;
-                } else if (bitmapWidth < width || bitmapHeight < height) {
-                    final Bitmap.Config c = Bitmap.Config.ARGB_8888;
-                    final Bitmap thumb = Bitmap.createBitmap(sIconWidth, sIconHeight, c);
-                    final Canvas canvas = sCanvas;
-                    final Paint paint = sPaint;
-                    canvas.setBitmap(thumb);
-                    paint.setDither(false);
-                    paint.setFilterBitmap(true);
-                    canvas.drawBitmap(bitmap, (sIconWidth - bitmapWidth) / 2,
-                            (sIconHeight - bitmapHeight) / 2, paint);
-                    return thumb;
-                }
+            if (bitmap.getWidth() == sIconWidth && bitmap.getHeight() == sIconHeight) {
+                return bitmap;
+            } else {
+                return createIconBitmap(new BitmapDrawable(bitmap), context);
             }
-
-            return bitmap;
         }
     }
 

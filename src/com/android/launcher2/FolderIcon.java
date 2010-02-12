@@ -48,7 +48,6 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
 
         final Resources resources = launcher.getResources();
         Drawable d = resources.getDrawable(R.drawable.ic_launcher_folder);
-        d = Utilities.createIconThumbnail(d, launcher);
         icon.mCloseIcon = d;
         icon.mOpenIcon = resources.getDrawable(R.drawable.ic_launcher_folder_open);
         icon.setCompoundDrawablesWithIntrinsicBounds(null, d, null, null);
@@ -77,8 +76,13 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
 
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
-        final ApplicationInfo item = (ApplicationInfo) dragInfo;
-        // TODO: update open folder that is looking at this data
+        ShortcutInfo item;
+        if (dragInfo instanceof ApplicationInfo) {
+            // Came from all apps -- make a copy
+            item = ((ApplicationInfo)dragInfo).makeShortcut();
+        } else {
+            item = (ShortcutInfo)dragInfo;
+        }
         mInfo.add(item);
         LauncherModel.addOrMoveItemInDatabase(mLauncher, item, mInfo.id, 0, 0, 0);
     }

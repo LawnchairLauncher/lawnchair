@@ -24,6 +24,7 @@ import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.Intent.ShortcutIconResource;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -34,6 +35,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Parcelable;
 import android.os.RemoteException;
 import android.util.Log;
 import android.os.Process;
@@ -65,7 +67,10 @@ public class LauncherModel extends BroadcastReceiver {
     private boolean mBeforeFirstLoad = true;
     private WeakReference<Callbacks> mCallbacks;
 
-    private AllAppsList mAllAppsList = new AllAppsList();
+    private AllAppsList mAllAppsList;
+    private IconCache mIconCache;
+
+    private Bitmap mDefaultIcon;
 
     public interface Callbacks {
         public int getCurrentWorkspaceScreen();
@@ -80,8 +85,17 @@ public class LauncherModel extends BroadcastReceiver {
         public void bindPackageRemoved(String packageName, ArrayList<ApplicationInfo> apps);
     }
 
-    LauncherModel(LauncherApplication app) {
+    LauncherModel(LauncherApplication app, IconCache iconCache) {
         mApp = app;
+        mAllAppsList = new AllAppsList(iconCache);
+        mIconCache = iconCache;
+
+        mDefaultIcon = Utilities.createIconBitmap(
+                app.getPackageManager().getDefaultActivityIcon(), app);
+    }
+
+    public Bitmap getDefaultIcon() {
+        return Bitmap.createBitmap(mDefaultIcon);
     }
 
     /**
@@ -323,7 +337,7 @@ public class LauncherModel extends BroadcastReceiver {
                 removed = mAllAppsList.removed;
                 mAllAppsList.removed = new ArrayList<ApplicationInfo>();
                 for (ApplicationInfo info: removed) {
-                    AppInfoCache.remove(info.intent.getComponent());
+                    mIconCache.remove(info.intent.getComponent());
                 }
             }
             if (mAllAppsList.modified.size() > 0) {
@@ -658,7 +672,7 @@ public class LauncherModel extends BroadcastReceiver {
                     final int displayModeIndex = c.getColumnIndexOrThrow(
                             LauncherSettings.Favorites.DISPLAY_MODE);
 
-                    ApplicationInfo info;
+                    ShortcutInfo info;
                     String intentDescription;
                     LauncherAppWidgetInfo appWidgetInfo;
                     int container;
@@ -680,15 +694,15 @@ public class LauncherModel extends BroadcastReceiver {
                                 }
 
                                 if (itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-                                    info = getApplicationInfo(manager, intent, context);
+                                    info = getShortcutInfo(manager, intent, context);
                                 } else {
-                                    info = getApplicationInfoShortcut(c, context, iconTypeIndex,
+                                    info = getShortcutInfo(c, context, iconTypeIndex,
                                             iconPackageIndex, iconResourceIndex, iconIndex);
                                 }
 
                                 if (info == null) {
-                                    info = new ApplicationInfo();
-                                    info.icon = manager.getDefaultActivityIcon();
+                                    info = new ShortcutInfo();
+                                    info.setIcon(getDefaultIcon());
                                 }
 
                                 if (info != null) {
@@ -973,9 +987,7 @@ public class LauncherModel extends BroadcastReceiver {
                     return;
                 }
 
-                final Context context = mContext;
-                final PackageManager packageManager = context.getPackageManager();
-
+                final PackageManager packageManager = mContext.getPackageManager();
                 final List<ResolveInfo> apps = packageManager.queryIntentActivities(mainIntent, 0);
 
                 synchronized (mLock) {
@@ -986,10 +998,9 @@ public class LauncherModel extends BroadcastReceiver {
                         long t = SystemClock.uptimeMillis();
 
                         int N = apps.size();
-                        Utilities.BubbleText bubble = new Utilities.BubbleText(context);
                         for (int i=0; i<N && !mStopped; i++) {
                             // This builds the icon bitmaps.
-                            mAllAppsList.add(AppInfoCache.cache(apps.get(i), context, bubble));
+                            mAllAppsList.add(new ApplicationInfo(apps.get(i), mIconCache));
                         }
                         Collections.sort(mAllAppsList.data, APP_NAME_COMPARATOR);
                         Collections.sort(mAllAppsList.added, APP_NAME_COMPARATOR);
@@ -1050,9 +1061,9 @@ public class LauncherModel extends BroadcastReceiver {
     }
 
     /**
-     * Make an ApplicationInfo object for an application.
+     * Make an ShortcutInfo object for a sortcut that is an application.
      */
-    private static ApplicationInfo getApplicationInfo(PackageManager manager, Intent intent,
+    public ShortcutInfo getShortcutInfo(PackageManager manager, Intent intent,
                                                       Context context) {
         final ResolveInfo resolveInfo = manager.resolveActivity(intent, 0);
 
@@ -1060,26 +1071,26 @@ public class LauncherModel extends BroadcastReceiver {
             return null;
         }
 
-        final ApplicationInfo info = new ApplicationInfo();
+        final ShortcutInfo info = new ShortcutInfo();
         final ActivityInfo activityInfo = resolveInfo.activityInfo;
-        info.icon = Utilities.createIconThumbnail(activityInfo.loadIcon(manager), context);
+        info.setIcon(mIconCache.getIcon(intent.getComponent(), resolveInfo));
         if (info.title == null || info.title.length() == 0) {
             info.title = activityInfo.loadLabel(manager);
         }
         if (info.title == null) {
-            info.title = "";
+            info.title = activityInfo.name;
         }
         info.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
         return info;
     }
 
     /**
-     * Make an ApplicationInfo object for a sortcut
+     * Make an ShortcutInfo object for a shortcut that isn't an application.
      */
-    private static ApplicationInfo getApplicationInfoShortcut(Cursor c, Context context,
+    private ShortcutInfo getShortcutInfo(Cursor c, Context context,
             int iconTypeIndex, int iconPackageIndex, int iconResourceIndex, int iconIndex) {
 
-        final ApplicationInfo info = new ApplicationInfo();
+        final ShortcutInfo info = new ShortcutInfo();
         info.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
 
         int iconType = c.getInt(iconTypeIndex);
@@ -1091,9 +1102,9 @@ public class LauncherModel extends BroadcastReceiver {
             try {
                 Resources resources = packageManager.getResourcesForApplication(packageName);
                 final int id = resources.getIdentifier(resourceName, null, null);
-                info.icon = Utilities.createIconThumbnail(resources.getDrawable(id), context);
+                info.setIcon(Utilities.createIconBitmap(resources.getDrawable(id), context));
             } catch (Exception e) {
-                info.icon = packageManager.getDefaultActivityIcon();
+                info.setIcon(getDefaultIcon());
             }
             info.iconResource = new Intent.ShortcutIconResource();
             info.iconResource.packageName = packageName;
@@ -1104,20 +1115,71 @@ public class LauncherModel extends BroadcastReceiver {
             byte[] data = c.getBlob(iconIndex);
             try {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                info.icon = new FastBitmapDrawable(
-                        Utilities.createBitmapThumbnail(bitmap, context));
+                info.setIcon(bitmap);
             } catch (Exception e) {
-                packageManager = context.getPackageManager();
-                info.icon = packageManager.getDefaultActivityIcon();
+                info.setIcon(getDefaultIcon());
             }
-            info.filtered = true;
             info.customIcon = true;
             break;
         default:
-            info.icon = context.getPackageManager().getDefaultActivityIcon();
+            info.setIcon(getDefaultIcon());
             info.customIcon = false;
             break;
         }
+        return info;
+    }
+
+    ShortcutInfo addShortcut(Context context, Intent data,
+            CellLayout.CellInfo cellInfo, boolean notify) {
+
+        final ShortcutInfo info = infoFromShortcutIntent(context, data);
+        addItemToDatabase(context, info, LauncherSettings.Favorites.CONTAINER_DESKTOP,
+                cellInfo.screen, cellInfo.cellX, cellInfo.cellY, notify);
+
+        return info;
+    }
+
+    private ShortcutInfo infoFromShortcutIntent(Context context, Intent data) {
+        Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
+        String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
+        Parcelable bitmap = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
+
+        Bitmap icon = null;
+        boolean filtered = false;
+        boolean customIcon = false;
+        ShortcutIconResource iconResource = null;
+
+        if (bitmap != null && bitmap instanceof Bitmap) {
+            icon = Utilities.createIconBitmap(new FastBitmapDrawable((Bitmap)bitmap), context);
+            filtered = true;
+            customIcon = true;
+        } else {
+            Parcelable extra = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
+            if (extra != null && extra instanceof ShortcutIconResource) {
+                try {
+                    iconResource = (ShortcutIconResource) extra;
+                    final PackageManager packageManager = context.getPackageManager();
+                    Resources resources = packageManager.getResourcesForApplication(
+                            iconResource.packageName);
+                    final int id = resources.getIdentifier(iconResource.resourceName, null, null);
+                    icon = Utilities.createIconBitmap(resources.getDrawable(id), context);
+                } catch (Exception e) {
+                    Log.w(TAG, "Could not load shortcut icon: " + extra);
+                }
+            }
+        }
+
+        if (icon == null) {
+            icon = getDefaultIcon();
+        }
+
+        final ShortcutInfo info = new ShortcutInfo();
+        info.setIcon(icon);
+        info.title = name;
+        info.intent = intent;
+        info.customIcon = customIcon;
+        info.iconResource = iconResource;
+
         return info;
     }
 
@@ -1133,18 +1195,21 @@ public class LauncherModel extends BroadcastReceiver {
             try {
                 Resources resources = packageManager.getResourcesForApplication(packageName);
                 final int id = resources.getIdentifier(resourceName, null, null);
-                liveFolderInfo.icon = resources.getDrawable(id);
+                liveFolderInfo.icon = Utilities.createIconBitmap(resources.getDrawable(id),
+                        context);
             } catch (Exception e) {
-                liveFolderInfo.icon =
-                        context.getResources().getDrawable(R.drawable.ic_launcher_folder);
+                liveFolderInfo.icon = Utilities.createIconBitmap(
+                        context.getResources().getDrawable(R.drawable.ic_launcher_folder),
+                        context);
             }
             liveFolderInfo.iconResource = new Intent.ShortcutIconResource();
             liveFolderInfo.iconResource.packageName = packageName;
             liveFolderInfo.iconResource.resourceName = resourceName;
             break;
         default:
-            liveFolderInfo.icon =
-                    context.getResources().getDrawable(R.drawable.ic_launcher_folder);
+            liveFolderInfo.icon = Utilities.createIconBitmap(
+                    context.getResources().getDrawable(R.drawable.ic_launcher_folder),
+                    context);
         }
     }
 

@@ -27,7 +27,7 @@ class UserFolderInfo extends FolderInfo {
     /**
      * The apps and shortcuts 
      */
-    ArrayList<ApplicationInfo> contents = new ArrayList<ApplicationInfo>();
+    ArrayList<ShortcutInfo> contents = new ArrayList<ShortcutInfo>();
     
     UserFolderInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER;
@@ -38,7 +38,7 @@ class UserFolderInfo extends FolderInfo {
      * 
      * @param item
      */
-    public void add(ApplicationInfo item) {
+    public void add(ShortcutInfo item) {
         contents.add(item);
     }
     
@@ -47,7 +47,7 @@ class UserFolderInfo extends FolderInfo {
      * 
      * @param item
      */
-    public void remove(ApplicationInfo item) {
+    public void remove(ShortcutInfo item) {
         contents.remove(item);
     }
     
