@@ -260,7 +260,7 @@ final class Utilities {
             RectF bubbleRect = mBubbleRect;
             bubbleRect.left = 0;
             bubbleRect.top = 0;
-            bubbleRect.right = (int)(bubbleWidth+0.5f);
+            bubbleRect.right = (int) cellWidth;
 
             mTextWidth = bubbleWidth - mBubblePadding - mBubblePadding;
 
