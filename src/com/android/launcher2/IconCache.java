@@ -89,6 +89,9 @@ public class IconCache {
     public void getTitleAndIcon(ApplicationInfo application, ResolveInfo info) {
         synchronized (mCache) {
             CacheEntry entry = cacheLocked(application.componentName, info);
+            if (entry.titleBitmap == null) {
+                entry.titleBitmap = mBubble.createTextBitmap(entry.title.toString());
+            }
 
             application.title = entry.title;
             application.titleBitmap = entry.titleBitmap;
@@ -122,15 +125,14 @@ public class IconCache {
         if (entry == null) {
             entry = new CacheEntry();
 
+            mCache.put(componentName, entry);
+
             entry.title = info.loadLabel(mPackageManager).toString();
             if (entry.title == null) {
                 entry.title = info.activityInfo.name;
             }
-            entry.titleBitmap = mBubble.createTextBitmap(entry.title.toString());
             entry.icon = Utilities.createIconBitmap(
                     info.activityInfo.loadIcon(mPackageManager), mContext);
-
-            mCache.put(componentName, entry);
         }
         return entry;
     }
