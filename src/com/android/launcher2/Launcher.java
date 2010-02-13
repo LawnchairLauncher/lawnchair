@@ -44,14 +44,11 @@ import android.graphics.Rect;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.os.SystemProperties;
-import android.provider.ContactsContract;
 import android.provider.LiveFolders;
-import android.telephony.PhoneNumberUtils;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -201,8 +198,6 @@ public final class Launcher extends Activity
 
     private ImageView mPreviousView;
     private ImageView mNextView;
-
-    private boolean mUtsTestMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -411,7 +406,6 @@ public final class Launcher extends Activity
         super.onResume();
 
         mPaused = false;
-        mUtsTestMode = SystemProperties.getInt("persist.sys.uts-test-mode", 0) == 1;
 
         if (mRestoring) {
             mWorkspaceLoading = true;
@@ -468,10 +462,6 @@ public final class Launcher extends Activity
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (mUtsTestMode) {
-            return handleUtsTestModeKeyDown(keyCode, event);
-        }
-
         boolean handled = super.onKeyDown(keyCode, event);
         if (!handled && acceptFilter() && keyCode != KeyEvent.KEYCODE_ENTER) {
             boolean gotKey = TextKeyListener.getInstance().onKeyDown(mWorkspace, mDefaultKeySsb,
@@ -490,52 +480,6 @@ public final class Launcher extends Activity
         // Eat the long press event so the keyboard doesn't come up.
         if (keyCode == KeyEvent.KEYCODE_MENU && event.isLongPress()) {
             return true;
-        }
-
-        return handled;
-    }
-
-    public boolean handleUtsTestModeKeyDown(int keyCode, KeyEvent event) {
-        Log.d(TAG, "UTS-TEST-MODE");
-        boolean handled = super.onKeyDown(keyCode, event);
-        if (!handled && acceptFilter() && keyCode != KeyEvent.KEYCODE_ENTER) {
-            boolean gotKey = TextKeyListener.getInstance().onKeyDown(mWorkspace, mDefaultKeySsb,
-                    keyCode, event);
-            if (gotKey && mDefaultKeySsb != null && mDefaultKeySsb.length() > 0) {
-                // something usable has been typed - dispatch it now.
-                final String str = mDefaultKeySsb.toString();
-
-                boolean isDialable = true;
-                final int count = str.length();
-                for (int i = 0; i < count; i++) {
-                    if (!PhoneNumberUtils.isReallyDialable(str.charAt(i))) {
-                        isDialable = false;
-                        break;
-                    }
-                }
-                Intent intent;
-                if (isDialable) {
-                    intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", str, null));
-                } else {
-                    intent = new Intent(ContactsContract.Intents.UI.FILTER_CONTACTS_ACTION);
-                    intent.putExtra(ContactsContract.Intents.UI.FILTER_TEXT_EXTRA_KEY, str);
-                }
-
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-
-                try {
-                    startActivity(intent);
-                } catch (android.content.ActivityNotFoundException ex) {
-                    // Oh well... no one knows how to filter/dial. Life goes on.
-                }
-
-                mDefaultKeySsb.clear();
-                mDefaultKeySsb.clearSpans();
-                Selection.setSelection(mDefaultKeySsb, 0);
-
-                return true;
-            }
         }
 
         return handled;
