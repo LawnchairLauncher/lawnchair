@@ -486,7 +486,7 @@ public class LauncherProvider extends ContentProvider {
                 final ContentValues values = new ContentValues();
                 final ContentResolver cr = mContext.getContentResolver();
                 final SQLiteStatement update = db.compileStatement("UPDATE favorites "
-                        + "WHERE _id=? SET icon=?");
+                        + "SET icon=? WHERE _id=?");
 
                 c = db.rawQuery("SELECT _id, icon FROM favorites WHERE iconType=" +
                         Favorites.ICON_TYPE_BITMAP, null);
