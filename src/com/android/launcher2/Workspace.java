@@ -954,7 +954,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
             if (info.container == NO_ID) {
                 // Came from all apps -- make a copy
-                info = new ShortcutInfo((ShortcutInfo)info);
+                info = new ShortcutInfo((ApplicationInfo)info);
             }
             view = mLauncher.createShortcut(R.layout.application, cellLayout, (ShortcutInfo)info);
             break;
