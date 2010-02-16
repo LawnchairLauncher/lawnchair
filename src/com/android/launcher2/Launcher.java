@@ -558,6 +558,7 @@ public final class Launcher extends Activity
 
         mWorkspace = (Workspace) dragLayer.findViewById(R.id.workspace);
         final Workspace workspace = mWorkspace;
+        workspace.setHapticFeedbackEnabled(false);
 
         DeleteZone deleteZone = (DeleteZone) dragLayer.findViewById(R.id.delete_zone);
         mDeleteZone = deleteZone;
@@ -1385,6 +1386,8 @@ public final class Launcher extends Activity
                 if (cellInfo.valid) {
                     // User long pressed on empty space
                     mWorkspace.setAllowLongPress(false);
+                    mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
+                            HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                     showAddDialog(cellInfo);
                 }
             } else {
