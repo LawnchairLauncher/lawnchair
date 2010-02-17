@@ -160,9 +160,14 @@ public class AllAppsView extends RSSurfaceView
         mRS = createRenderScript(true);
     }
 
+    /**
+     * Note that this implementation prohibits this view from ever being reattached.
+     */
     @Override
     protected void onDetachedFromWindow() {
         destroyRenderScript();
+        mRS.mMessageCallback = null;
+        mRS = null;
     }
 
     /**
@@ -217,7 +222,9 @@ public class AllAppsView extends RSSurfaceView
         mRollo.dirtyCheck();
         mRollo.resize(w, h);
 
-        mRS.mMessageCallback = mMessageProc = new AAMessage();
+        if (mRS != null) {
+            mRS.mMessageCallback = mMessageProc = new AAMessage();
+        }
 
         Resources res = getContext().getResources();
         int barHeight = (int)res.getDimension(R.dimen.button_bar_height);
@@ -683,6 +690,11 @@ public class AllAppsView extends RSSurfaceView
     }
 
     public void setApps(ArrayList<ApplicationInfo> list) {
+        if (mRS == null) {
+            // We've been removed from the window.  Don't bother with all this.
+            return;
+        }
+
         mAllAppsList = list;
         if (mRollo != null) {
             mRollo.setApps(list);
@@ -693,6 +705,10 @@ public class AllAppsView extends RSSurfaceView
     public void addApps(ArrayList<ApplicationInfo> list) {
         if (mAllAppsList == null) {
             // Not done loading yet.  We'll find out about it later.
+            return;
+        }
+        if (mRS == null) {
+            // We've been removed from the window.  Don't bother with all this.
             return;
         }
 
