@@ -256,6 +256,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         mPreviousIndicator.setLevel(mCurrentScreen);
         mNextIndicator.setLevel(mCurrentScreen);
         scrollTo(mCurrentScreen * getWidth(), 0);
+        updateWallpaperOffset();
         invalidate();
     }
 
@@ -833,7 +834,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
         mPreviousIndicator.setLevel(mNextScreen);
         mNextIndicator.setLevel(mNextScreen);
-        
+
         View focusedChild = getFocusedChild();
         if (focusedChild != null && screenDelta != 0 && focusedChild == getChildAt(mCurrentScreen)) {
             focusedChild.clearFocus();
