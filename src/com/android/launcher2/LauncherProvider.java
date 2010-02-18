@@ -480,6 +480,7 @@ public class LauncherProvider extends ContentProvider {
         private void normalizeIcons(SQLiteDatabase db) {
             Log.d(TAG, "normalizing icons");
 
+            db.beginTransaction();
             Cursor c = null;
             try {
                 boolean logged = false;
