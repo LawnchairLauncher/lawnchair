@@ -67,6 +67,10 @@ class FastBitmapDrawable extends Drawable {
         return mBitmap.getHeight();
     }
 
+    public void setBitmap(Bitmap b) {
+        mBitmap = b;
+    }
+
     public Bitmap getBitmap() {
         return mBitmap;
     }

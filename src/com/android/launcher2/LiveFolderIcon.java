@@ -21,7 +21,7 @@ import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
 
 public class LiveFolderIcon extends FolderIcon {
     public LiveFolderIcon(Context context, AttributeSet attrs) {
@@ -39,13 +39,12 @@ public class LiveFolderIcon extends FolderIcon {
                 LayoutInflater.from(launcher).inflate(resId, group, false);
 
         final Resources resources = launcher.getResources();
-        Drawable d = folderInfo.icon;
-        if (d == null) {
-            d = Utilities.createIconThumbnail(resources.getDrawable(R.drawable.ic_launcher_folder),
+        Bitmap b = folderInfo.icon;
+        if (b == null) {
+            b = Utilities.createIconBitmap(resources.getDrawable(R.drawable.ic_launcher_folder),
                     launcher);
-            folderInfo.filtered = true;
         }
-        icon.setCompoundDrawablesWithIntrinsicBounds(null, d, null, null);
+        icon.setCompoundDrawablesWithIntrinsicBounds(null, new FastBitmapDrawable(b), null, null);
         icon.setText(folderInfo.title);
         icon.setTag(folderInfo);
         icon.setOnClickListener(launcher);

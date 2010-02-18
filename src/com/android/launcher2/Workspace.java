@@ -17,19 +17,21 @@
 package com.android.launcher2;
 
 import android.app.WallpaperManager;
+import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ComponentName;
+import android.content.pm.ProviderInfo;
 import android.content.res.TypedArray;
 import android.content.pm.PackageManager;
 import android.graphics.Canvas;
-import android.graphics.RectF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Parcelable;
 import android.os.Parcel;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -88,6 +90,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     private OnLongClickListener mLongClickListener;
 
     private Launcher mLauncher;
+    private IconCache mIconCache;
     private DragController mDragController;
     
     /**
@@ -103,15 +106,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     private int mTouchSlop;
     private int mMaximumVelocity;
 
-    final Rect mDrawerBounds = new Rect();
-    final Rect mClipBounds = new Rect();
-    int mDrawerContentHeight;
-    int mDrawerContentWidth;
-
     private Drawable mPreviousIndicator;
     private Drawable mNextIndicator;
-
-    private boolean mFading = true;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -147,9 +143,12 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
      * Initializes various states for this workspace.
      */
     private void initWorkspace() {
-        mScroller = new Scroller(getContext());
+        Context context = getContext();
+        mScroller = new Scroller(context);
         mCurrentScreen = mDefaultScreen;
         Launcher.setScreen(mCurrentScreen);
+        LauncherApplication app = (LauncherApplication)context.getApplicationContext();
+        mIconCache = app.getIconCache();
 
         final ViewConfiguration configuration = ViewConfiguration.get(getContext());
         mTouchSlop = configuration.getScaledTouchSlop();
@@ -246,27 +245,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     /**
-     * Returns how many screens there are.
-     */
-    int getScreenCount() {
-        return getChildCount();
-    }
-
-    /**
-     * Computes a bounding rectangle for a range of cells
-     *
-     * @param cellX X coordinate of upper left corner expressed as a cell position
-     * @param cellY Y coordinate of upper left corner expressed as a cell position
-     * @param cellHSpan Width in cells
-     * @param cellVSpan Height in cells
-     * @param rect Rectnagle into which to put the results
-     */
-    public void cellToRect(int cellX, int cellY, int cellHSpan, int cellVSpan, RectF rect) {
-        ((CellLayout)getChildAt(mCurrentScreen)).cellToRect(cellX, cellY,
-                cellHSpan, cellVSpan, rect);
-    }
-
-    /**
      * Sets the current screen.
      *
      * @param currentScreen
@@ -275,6 +253,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         if (!mScroller.isFinished()) mScroller.abortAnimation();
         clearVacantCache();
         mCurrentScreen = Math.max(0, Math.min(currentScreen, getChildCount() - 1));
+        mPreviousIndicator.setLevel(mCurrentScreen);
+        mNextIndicator.setLevel(mCurrentScreen);
         scrollTo(mCurrentScreen * getWidth(), 0);
         invalidate();
     }
@@ -386,56 +366,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             mVacantCache = null;
         }
     }
-    
-    /**
-     * Returns the coordinate of a vacant cell for the current screen.
-     */
-    boolean getVacantCell(int[] vacant, int spanX, int spanY) {
-        CellLayout group = (CellLayout) getChildAt(mCurrentScreen);
-        if (group != null) {
-            return group.getVacantCell(vacant, spanX, spanY);
-        }
-        return false;
-    }
-
-    /**
-     * Adds the specified child in the current screen. The position and dimension of
-     * the child are defined by x, y, spanX and spanY.
-     *
-     * @param child The child to add in one of the workspace's screens.
-     * @param spanX The number of cells spanned horizontally by the child.
-     * @param spanY The number of cells spanned vertically by the child.
-     */
-    void fitInCurrentScreen(View child, int spanX, int spanY) {
-        fitInScreen(child, mCurrentScreen, spanX, spanY);
-    }
-
-    /**
-     * Adds the specified child in the specified screen. The position and dimension of
-     * the child are defined by x, y, spanX and spanY.
-     *
-     * @param child The child to add in one of the workspace's screens.
-     * @param screen The screen in which to add the child.
-     * @param spanX The number of cells spanned horizontally by the child.
-     * @param spanY The number of cells spanned vertically by the child.
-     */
-    void fitInScreen(View child, int screen, int spanX, int spanY) {
-        if (screen < 0 || screen >= getChildCount()) {
-            throw new IllegalStateException("The screen must be >= 0 and < " + getChildCount());
-        }
-
-        final CellLayout group = (CellLayout) getChildAt(screen);
-        boolean vacant = group.getVacantCell(mTempCell, spanX, spanY);
-        if (vacant) {
-            group.addView(child,
-                    new CellLayout.LayoutParams(mTempCell[0], mTempCell[1], spanX, spanY));
-            child.setHapticFeedbackEnabled(false);
-            child.setOnLongClickListener(mLongClickListener);
-            if (child instanceof DropTarget) {
-                mDragController.addDropTarget((DropTarget)child);
-            }
-        }
-    }
 
     /**
      * Registers the specified listener on each screen contained in this workspace.
@@ -477,60 +407,17 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         }
     }
 
-    public void startFading(boolean dest) {
-        mFading = dest;
-        invalidate();
-    }
-
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        /*
-        final boolean allAppsOpaque = mLauncher.isAllAppsOpaque();
-        if (mFading == allAppsOpaque) {
-            invalidate();
-        } else {
-            mFading = !allAppsOpaque;
-        }
-        if (allAppsOpaque) {
-            // If the launcher is up, draw black.
-            canvas.drawARGB(0xff, 0, 0, 0);
-            return;
-        }
-        */
-
         boolean restore = false;
         int restoreCount = 0;
-
-        // For the fade.  If view gets setAlpha(), use that instead.
-        float scale = mScale;
-        if (scale < 0.999f) {
-            int sx = mScrollX;
-
-            int alpha = (scale < 0.5f) ? (int)(255 * 2 * scale) : 255;
-
-            restoreCount = canvas.saveLayerAlpha(sx, 0, sx+getWidth(), getHeight(), alpha,
-                    Canvas.HAS_ALPHA_LAYER_SAVE_FLAG | Canvas.CLIP_TO_LAYER_SAVE_FLAG);
-            restore = true;
-
-            if (scale < 0.999f) {
-                int w = getWidth();
-                w += 2 * mCurrentScreen * w;
-                int dx = w/2;
-                int h = getHeight();
-                int dy = (h/2) - (h/4);
-                canvas.translate(dx, dy);
-                canvas.scale(scale, scale);
-                canvas.translate(-dx, -dy);
-            }
-        }
 
         // ViewGroup.dispatchDraw() supports many features we don't need:
         // clip to padding, layout animation, animation listener, disappearing
         // children, etc. The following implementation attempts to fast-track
         // the drawing dispatch by drawing only what we know needs to be drawn.
 
-        boolean fastDraw = mTouchState != TOUCH_STATE_SCROLLING && mNextScreen == INVALID_SCREEN
-                && scale > 0.999f;
+        boolean fastDraw = mTouchState != TOUCH_STATE_SCROLLING && mNextScreen == INVALID_SCREEN;
         // If we are not scrolling or flinging, draw only the current screen
         if (fastDraw) {
             drawChild(canvas, getChildAt(mCurrentScreen), getDrawingTime());
@@ -553,12 +440,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         if (restore) {
             canvas.restoreToCount(restoreCount);
         }
-    }
-
-    private float mScale = 1.0f;
-    public void setScale(float scale) {
-        mScale = scale;
-        invalidate();
     }
 
     protected void onAttachedToWindow() {
@@ -772,12 +653,14 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             case MotionEvent.ACTION_UP:
                 
                 if (mTouchState != TOUCH_STATE_SCROLLING) {
-                    
                     final CellLayout currentScreen = (CellLayout)getChildAt(mCurrentScreen);
                     if (!currentScreen.lastDownOnOccupiedCell()) {
+                        getLocationOnScreen(mTempCell);
                         // Send a tap to the wallpaper if the last down was on empty space
                         mWallpaperManager.sendWallpaperCommand(getWindowToken(), 
-                                "android.wallpaper.tap", (int) ev.getX(), (int) ev.getY(), 0, null);
+                                "android.wallpaper.tap",
+                                mTempCell[0] + (int) ev.getX(),
+                                mTempCell[1] + (int) ev.getY(), 0, null);
                     }
                 }
                 
@@ -970,6 +853,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         final int delta = newX - mScrollX;
         final int duration = screenDelta * 300;
         awakenScrollBars(duration);
+
+        if (!mScroller.isFinished()) mScroller.abortAnimation();
         mScroller.startScroll(mScrollX, 0, delta, 0, duration);
         invalidate();
     }
@@ -1010,11 +895,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         }
     }
 
-    void addApplicationShortcut(ApplicationInfo info, CellLayout.CellInfo cellInfo) {
+    void addApplicationShortcut(ShortcutInfo info, CellLayout.CellInfo cellInfo) {
         addApplicationShortcut(info, cellInfo, false);
     }
 
-    void addApplicationShortcut(ApplicationInfo info, CellLayout.CellInfo cellInfo,
+    void addApplicationShortcut(ShortcutInfo info, CellLayout.CellInfo cellInfo,
             boolean insertAtFirst) {
         final CellLayout layout = (CellLayout) getChildAt(cellInfo.screen);
         final int[] result = new int[2];
@@ -1080,10 +965,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
             if (info.container == NO_ID) {
                 // Came from all apps -- make a copy
-                info = new ApplicationInfo((ApplicationInfo) info);
+                info = new ShortcutInfo((ApplicationInfo)info);
             }
-            view = mLauncher.createShortcut(R.layout.application, cellLayout,
-                    (ApplicationInfo) info);
+            view = mLauncher.createShortcut(R.layout.application, cellLayout, (ShortcutInfo)info);
             break;
         case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
             view = FolderIcon.fromXml(R.layout.folder_icon, mLauncher,
@@ -1215,16 +1099,19 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     public void scrollLeft() {
         clearVacantCache();
-        if (mNextScreen == INVALID_SCREEN && mCurrentScreen > 0 && mScroller.isFinished()) {
-            snapToScreen(mCurrentScreen - 1);
+        if (mScroller.isFinished()) {
+            if (mCurrentScreen > 0) snapToScreen(mCurrentScreen - 1);
+        } else {
+            if (mNextScreen > 0) snapToScreen(mNextScreen - 1);            
         }
     }
 
     public void scrollRight() {
         clearVacantCache();
-        if (mNextScreen == INVALID_SCREEN && mCurrentScreen < getChildCount() -1 &&
-                mScroller.isFinished()) {
-            snapToScreen(mCurrentScreen + 1);
+        if (mScroller.isFinished()) {
+            if (mCurrentScreen < getChildCount() -1) snapToScreen(mCurrentScreen + 1);
+        } else {
+            if (mNextScreen < getChildCount() -1) snapToScreen(mNextScreen + 1);            
         }
     }
 
@@ -1314,74 +1201,105 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         mAllowLongPress = allowLongPress;
     }
 
-    void removeShortcutsForPackage(String packageName) {
-        final ArrayList<View> childrenToRemove = new ArrayList<View>();
+    void removeItemsForPackage(final String packageName) {
         final int count = getChildCount();
+        final PackageManager manager = getContext().getPackageManager();
+        final AppWidgetManager widgets = AppWidgetManager.getInstance(getContext());
 
         for (int i = 0; i < count; i++) {
             final CellLayout layout = (CellLayout) getChildAt(i);
-            int childCount = layout.getChildCount();
 
-            childrenToRemove.clear();
+            // Avoid ANRs by treating each screen separately
+            post(new Runnable() {
+                public void run() {
+                    final ArrayList<View> childrenToRemove = new ArrayList<View>();
+                    childrenToRemove.clear();
+        
+                    int childCount = layout.getChildCount();
+                    for (int j = 0; j < childCount; j++) {
+                        final View view = layout.getChildAt(j);
+                        Object tag = view.getTag();
+        
+                        if (tag instanceof ShortcutInfo) {
+                            final ShortcutInfo info = (ShortcutInfo) tag;
+                            // We need to check for ACTION_MAIN otherwise getComponent() might
+                            // return null for some shortcuts (for instance, for shortcuts to
+                            // web pages.)
+                            final Intent intent = info.intent;
+                            final ComponentName name = intent.getComponent();
+        
+                            if (Intent.ACTION_MAIN.equals(intent.getAction()) &&
+                                    name != null && packageName.equals(name.getPackageName())) {
+                                // TODO: This should probably be done on a worker thread
+                                LauncherModel.deleteItemFromDatabase(mLauncher, info);
+                                childrenToRemove.add(view);
+                            }
+                        } else if (tag instanceof UserFolderInfo) {
+                            final UserFolderInfo info = (UserFolderInfo) tag;
+                            final ArrayList<ShortcutInfo> contents = info.contents;
+                            final ArrayList<ShortcutInfo> toRemove = new ArrayList<ShortcutInfo>(1);
+                            final int contentsCount = contents.size();
+                            boolean removedFromFolder = false;
+        
+                            for (int k = 0; k < contentsCount; k++) {
+                                final ShortcutInfo appInfo = contents.get(k);
+                                final Intent intent = appInfo.intent;
+                                final ComponentName name = intent.getComponent();
+        
+                                if (Intent.ACTION_MAIN.equals(intent.getAction()) &&
+                                        name != null && packageName.equals(name.getPackageName())) {
+                                    toRemove.add(appInfo);
+                                    // TODO: This should probably be done on a worker thread
+                                    LauncherModel.deleteItemFromDatabase(mLauncher, appInfo);
+                                    removedFromFolder = true;
+                                }
+                            }
+        
+                            contents.removeAll(toRemove);
+                            if (removedFromFolder) {
+                                final Folder folder = getOpenFolder();
+                                if (folder != null) folder.notifyDataSetChanged();
+                            }
+                        } else if (tag instanceof LiveFolderInfo) {
+                            final LiveFolderInfo info = (LiveFolderInfo) tag;
+                            final Uri uri = info.uri;
+                            final ProviderInfo providerInfo = manager.resolveContentProvider(
+                                    uri.getAuthority(), 0);
 
-            for (int j = 0; j < childCount; j++) {
-                final View view = layout.getChildAt(j);
-                Object tag = view.getTag();
-
-                if (tag instanceof ApplicationInfo) {
-                    final ApplicationInfo info = (ApplicationInfo) tag;
-                    // We need to check for ACTION_MAIN otherwise getComponent() might
-                    // return null for some shortcuts (for instance, for shortcuts to
-                    // web pages.)
-                    final Intent intent = info.intent;
-                    final ComponentName name = intent.getComponent();
-
-                    if (Intent.ACTION_MAIN.equals(intent.getAction()) &&
-                            name != null && packageName.equals(name.getPackageName())) {
-                        LauncherModel.deleteItemFromDatabase(mLauncher, info);
-                        childrenToRemove.add(view);
-                    }
-                } else if (tag instanceof UserFolderInfo) {
-                    final UserFolderInfo info = (UserFolderInfo) tag;
-                    final ArrayList<ApplicationInfo> contents = info.contents;
-                    final ArrayList<ApplicationInfo> toRemove = new ArrayList<ApplicationInfo>(1);
-                    final int contentsCount = contents.size();
-                    boolean removedFromFolder = false;
-
-                    for (int k = 0; k < contentsCount; k++) {
-                        final ApplicationInfo appInfo = contents.get(k);
-                        final Intent intent = appInfo.intent;
-                        final ComponentName name = intent.getComponent();
-
-                        if (Intent.ACTION_MAIN.equals(intent.getAction()) &&
-                                name != null && packageName.equals(name.getPackageName())) {
-                            toRemove.add(appInfo);
-                            LauncherModel.deleteItemFromDatabase(mLauncher, appInfo);
-                            removedFromFolder = true;
+                            if (providerInfo == null ||
+                                    packageName.equals(providerInfo.packageName)) {
+                                // TODO: This should probably be done on a worker thread
+                                LauncherModel.deleteItemFromDatabase(mLauncher, info);
+                                childrenToRemove.add(view);                        
+                            }
+                        } else if (tag instanceof LauncherAppWidgetInfo) {
+                            final LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) tag;
+                            final AppWidgetProviderInfo provider =
+                                    widgets.getAppWidgetInfo(info.appWidgetId);
+                            if (provider == null ||
+                                    packageName.equals(provider.provider.getPackageName())) {
+                                // TODO: This should probably be done on a worker thread
+                                LauncherModel.deleteItemFromDatabase(mLauncher, info);
+                                childrenToRemove.add(view);                                
+                            }
                         }
                     }
-
-                    contents.removeAll(toRemove);
-                    if (removedFromFolder) {
-                        final Folder folder = getOpenFolder();
-                        if (folder != null) folder.notifyDataSetChanged();
+        
+                    childCount = childrenToRemove.size();
+                    for (int j = 0; j < childCount; j++) {
+                        View child = childrenToRemove.get(j);
+                        layout.removeViewInLayout(child);
+                        if (child instanceof DropTarget) {
+                            mDragController.removeDropTarget((DropTarget)child);
+                        }
+                    }
+        
+                    if (childCount > 0) {
+                        layout.requestLayout();
+                        layout.invalidate();
                     }
                 }
-            }
-
-            childCount = childrenToRemove.size();
-            for (int j = 0; j < childCount; j++) {
-                View child = childrenToRemove.get(j);
-                layout.removeViewInLayout(child);
-                if (child instanceof DropTarget) {
-                    mDragController.removeDropTarget((DropTarget)child);
-                }
-            }
-
-            if (childCount > 0) {
-                layout.requestLayout();
-                layout.invalidate();
-            }
+            });
         }
     }
 
@@ -1395,8 +1313,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             for (int j = 0; j < childCount; j++) {
                 final View view = layout.getChildAt(j);
                 Object tag = view.getTag();
-                if (tag instanceof ApplicationInfo) {
-                    ApplicationInfo info = (ApplicationInfo) tag;
+                if (tag instanceof ShortcutInfo) {
+                    ShortcutInfo info = (ShortcutInfo)tag;
                     // We need to check for ACTION_MAIN otherwise getComponent() might
                     // return null for some shortcuts (for instance, for shortcuts to
                     // web pages.)
@@ -1406,14 +1324,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                             Intent.ACTION_MAIN.equals(intent.getAction()) && name != null &&
                             packageName.equals(name.getPackageName())) {
 
-                        final Drawable icon = AppInfoCache.getIconDrawable(pm, info);
-                        if (icon != null && icon != info.icon) {
-                            info.icon.setCallback(null);
-                            info.icon = Utilities.createIconThumbnail(icon, mContext);
-                            info.filtered = true;
-                            ((TextView) view).setCompoundDrawablesWithIntrinsicBounds(null,
-                                    info.icon, null, null);
-                        }
+                        info.setIcon(mIconCache.getIcon(info.intent));
+                        ((TextView) view).setCompoundDrawablesWithIntrinsicBounds(null,
+                                new FastBitmapDrawable(info.getIcon(mIconCache)), null, null);
                     }
                 }
             }
@@ -1464,12 +1377,5 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                 return new SavedState[size];
             }
         };
-    }
-
-    void show() {
-        setVisibility(VISIBLE);
-    }
-
-    void hide() {
     }
 }

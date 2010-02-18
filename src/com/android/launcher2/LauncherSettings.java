@@ -91,8 +91,7 @@ class LauncherSettings {
     }
 
     /**
-     * Favorites. When changing these values, be sure to update
-     * {@link com.android.settings.LauncherAppWidgetBinder} as needed.
+     * Favorites.
      */
     static final class Favorites implements BaseLauncherColumns {
         /**

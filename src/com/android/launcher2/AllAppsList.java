@@ -17,25 +17,13 @@
 package com.android.launcher2;
 
 import android.content.ComponentName;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.content.res.Resources;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.util.Log;
-import android.os.Process;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -46,18 +34,23 @@ class AllAppsList {
     public static final int DEFAULT_APPLICATIONS_NUMBER = 42;
     
     /** The list off all apps. */
-    public ArrayList<ApplicationInfo> data = new ArrayList(DEFAULT_APPLICATIONS_NUMBER);
+    public ArrayList<ApplicationInfo> data =
+            new ArrayList<ApplicationInfo>(DEFAULT_APPLICATIONS_NUMBER);
     /** The list of apps that have been added since the last notify() call. */
-    public ArrayList<ApplicationInfo> added = new ArrayList(DEFAULT_APPLICATIONS_NUMBER);
+    public ArrayList<ApplicationInfo> added =
+            new ArrayList<ApplicationInfo>(DEFAULT_APPLICATIONS_NUMBER);
     /** The list of apps that have been removed since the last notify() call. */
-    public ArrayList<ApplicationInfo> removed = new ArrayList();
+    public ArrayList<ApplicationInfo> removed = new ArrayList<ApplicationInfo>();
     /** The list of apps that have been modified since the last notify() call. */
-    public ArrayList<ApplicationInfo> modified = new ArrayList();
+    public ArrayList<ApplicationInfo> modified = new ArrayList<ApplicationInfo>();
+
+    private IconCache mIconCache;
 
     /**
      * Boring constructor.
      */
-    public AllAppsList() {
+    public AllAppsList(IconCache iconCache) {
+        mIconCache = iconCache;
     }
 
     /**
@@ -92,9 +85,8 @@ class AllAppsList {
         final List<ResolveInfo> matches = findActivitiesForPackage(context, packageName);
 
         if (matches.size() > 0) {
-            Utilities.BubbleText bubble = new Utilities.BubbleText(context);
             for (ResolveInfo info : matches) {
-                ApplicationInfo item = AppInfoCache.cache(info, context, bubble);
+                ApplicationInfo item = new ApplicationInfo(info, mIconCache);
                 data.add(item);
                 added.add(item);
             }
@@ -106,7 +98,7 @@ class AllAppsList {
      */
     public void removePackage(String packageName) {
         final List<ApplicationInfo> data = this.data;
-        for (int i=data.size()-1; i>=0; i--) {
+        for (int i = data.size() - 1; i >= 0; i--) {
             ApplicationInfo info = data.get(i);
             final ComponentName component = info.intent.getComponent();
             if (packageName.equals(component.getPackageName())) {
@@ -115,9 +107,9 @@ class AllAppsList {
             }
         }
         // This is more aggressive than it needs to be.
-        AppInfoCache.flush();
+        mIconCache.flush();
     }
-    
+
     /**
      * Add and remove icons for this package which has been updated.
      */
@@ -126,13 +118,13 @@ class AllAppsList {
         if (matches.size() > 0) {
             // Find disabled/removed activities and remove them from data and add them
             // to the removed list.
-            for (int i=data.size()-1; i>=0; i--) {
+            for (int i = data.size() - 1; i >= 0; i--) {
                 final ApplicationInfo applicationInfo = data.get(i);
                 final ComponentName component = applicationInfo.intent.getComponent();
                 if (packageName.equals(component.getPackageName())) {
                     if (!findActivity(matches, component)) {
                         removed.add(applicationInfo);
-                        AppInfoCache.remove(component);
+                        mIconCache.remove(component);
                         data.remove(i);
                     }
                 }
@@ -140,19 +132,19 @@ class AllAppsList {
 
             // Find enabled activities and add them to the adapter
             // Also updates existing activities with new labels/icons
-            Utilities.BubbleText bubble = new Utilities.BubbleText(context);
             int count = matches.size();
-            for (int i=0; i<count; i++) {
+            for (int i = 0; i < count; i++) {
                 final ResolveInfo info = matches.get(i);
                 ApplicationInfo applicationInfo = findApplicationInfoLocked(
                         info.activityInfo.applicationInfo.packageName,
                         info.activityInfo.name);
                 if (applicationInfo == null) {
-                    applicationInfo = AppInfoCache.cache(info, context, bubble);
+                    applicationInfo = new ApplicationInfo(info, mIconCache);
                     data.add(applicationInfo);
                     added.add(applicationInfo);
                 } else {
-                    AppInfoCache.update(info, applicationInfo, context, bubble);
+                    mIconCache.remove(applicationInfo.componentName);
+                    mIconCache.getTitleAndIcon(applicationInfo, info);
                     modified.add(applicationInfo);
                 }
             }

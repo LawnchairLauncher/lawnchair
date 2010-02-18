@@ -114,8 +114,10 @@ public class AllAppsView extends RSSurfaceView
 
     private boolean mShouldGainFocus;
 
+    private boolean mHaveSurface = false;
     private boolean mZoomDirty = false;
     private boolean mAnimateNextZoom;
+    private float mNextZoom;
     private float mZoom;
     private float mPosX;
     private float mVelocity;
@@ -125,20 +127,19 @@ public class AllAppsView extends RSSurfaceView
         public static final int ALLOC_PARAMS = 0;
         public static final int ALLOC_STATE = 1;
         public static final int ALLOC_ICON_IDS = 3;
+        public static final int ALLOC_LABEL_IDS = 4;
+        public static final int ALLOC_VP_CONSTANTS = 5;
 
         public static final int COLUMNS_PER_PAGE = 4;
         public static final int ROWS_PER_PAGE = 4;
 
-        public static final int ICON_TEXTURE_WIDTH_PX = 128;
-        public static final int ICON_TEXTURE_HEIGHT_PX = 128;
+        public static final int ICON_WIDTH_PX = 64;
+        public static final int ICON_TEXTURE_WIDTH_PX = 74;
+        public static final int SELECTION_TEXTURE_WIDTH_PX = 74 + 20;
 
-        public int SCREEN_WIDTH_PX;
-        public int SCREEN_HEIGHT_PX;
-
-        public void recompute(int w, int h) {
-            SCREEN_WIDTH_PX = 480;
-            SCREEN_HEIGHT_PX = 800;
-        }
+        public static final int ICON_HEIGHT_PX = 64;
+        public static final int ICON_TEXTURE_HEIGHT_PX = 74;
+        public static final int SELECTION_TEXTURE_HEIGHT_PX = 74 + 20;
     }
 
     public AllAppsView(Context context, AttributeSet attrs) {
@@ -158,9 +159,14 @@ public class AllAppsView extends RSSurfaceView
         mRS = createRenderScript(true);
     }
 
+    /**
+     * Note that this implementation prohibits this view from ever being reattached.
+     */
     @Override
     protected void onDetachedFromWindow() {
         destroyRenderScript();
+        mRS.mMessageCallback = null;
+        mRS = null;
     }
 
     /**
@@ -185,9 +191,12 @@ public class AllAppsView extends RSSurfaceView
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         super.surfaceDestroyed(holder);
-        mRollo.mHasSurface = false;
         // Without this, we leak mMessageCallback which leaks the context.
         mRS.mMessageCallback = null;
+        // We may lose any callbacks that are pending, so make sure that we re-sync that
+        // on the next surfaceChanged.
+        mZoomDirty = true;
+        mHaveSurface = false;
     }
 
     @Override
@@ -196,9 +205,10 @@ public class AllAppsView extends RSSurfaceView
 
         super.surfaceChanged(holder, format, w, h);
 
+        mHaveSurface = true;
+
         if (mRollo == null) {
             mRollo = new RolloRS();
-            mRollo.mHasSurface = true;
             mRollo.init(getResources(), w, h);
             if (mAllAppsList != null) {
                 mRollo.setApps(mAllAppsList);
@@ -207,16 +217,33 @@ public class AllAppsView extends RSSurfaceView
                 gainFocus();
                 mShouldGainFocus = false;
             }
-        } else {
-            mRollo.mHasSurface = true;
         }
         mRollo.dirtyCheck();
         mRollo.resize(w, h);
 
-        mRS.mMessageCallback = mMessageProc = new AAMessage();
+        if (mRS != null) {
+            mRS.mMessageCallback = mMessageProc = new AAMessage();
+        }
 
         Resources res = getContext().getResources();
         int barHeight = (int)res.getDimension(R.dimen.button_bar_height);
+
+
+        if (mRollo.mUniformAlloc != null) {
+            float tf[] = new float[] {72.f, 72.f,
+                                      120.f, 120.f, 0.f, 0.f,
+                                      120.f, 680.f,
+                                      (2.f / 480.f), 0, -((float)w / 2) - 0.25f, -380.25f};
+            if (w > h) {
+                tf[6] = 40.f;
+                tf[7] = h - 40.f;
+                tf[9] = 1.f;
+                tf[10] = -((float)w / 2) - 0.25f;
+                tf[11] = -((float)h / 2) - 0.25f;
+            }
+
+            mRollo.mUniformAlloc.data(tf);
+        }
 
         //long endTime = SystemClock.uptimeMillis();
         //Log.d(TAG, "surfaceChanged took " + (endTime-startTime) + "ms");
@@ -267,7 +294,7 @@ public class AllAppsView extends RSSurfaceView
         }
 
         if (gainFocus) {
-            if (mRollo != null && mRollo.mHasSurface) {
+            if (mRollo != null) {
                 gainFocus();
             } else {
                 mShouldGainFocus = true;
@@ -402,15 +429,19 @@ public class AllAppsView extends RSSurfaceView
                 break;
             }
             case KeyEvent.KEYCODE_DPAD_LEFT:
-                if (currentPageCol > 0) {
-                    newSelection = currentSelection - 1;
+                if (mLastSelection != SELECTION_HOME) {
+                    if (currentPageCol > 0) {
+                        newSelection = currentSelection - 1;
+                    }
                 }
                 handled = true;
                 break;
             case KeyEvent.KEYCODE_DPAD_RIGHT:
-                if ((currentPageCol < Defines.COLUMNS_PER_PAGE - 1) &&
-                        (currentSelection < iconCount - 1)) {
-                    newSelection = currentSelection + 1;
+                if (mLastSelection != SELECTION_HOME) {
+                    if ((currentPageCol < Defines.COLUMNS_PER_PAGE - 1) &&
+                            (currentSelection < iconCount - 1)) {
+                        newSelection = currentSelection + 1;
+                    }
                 }
                 handled = true;
                 break;
@@ -567,8 +598,7 @@ public class AllAppsView extends RSSurfaceView
                 && mCurrentIconIndex >= 0 && mCurrentIconIndex < mAllAppsList.size()) {
             ApplicationInfo app = mAllAppsList.get(mCurrentIconIndex);
 
-            Bitmap bmp = Utilities.extractIconFromTexture(app.iconBitmap, getContext());
-
+            Bitmap bmp = app.iconBitmap;
             final int w = bmp.getWidth();
             final int h = bmp.getHeight();
 
@@ -576,9 +606,10 @@ public class AllAppsView extends RSSurfaceView
             int screenX = mMotionDownRawX - (w / 2);
             int screenY = mMotionDownRawY - h;
 
+            int left = (mDefines.ICON_TEXTURE_WIDTH_PX - mDefines.ICON_WIDTH_PX) / 2;
+            int top = (mDefines.ICON_TEXTURE_HEIGHT_PX - mDefines.ICON_HEIGHT_PX) / 2;
             mDragController.startDrag(bmp, screenX, screenY,
                     0, 0, w, h, this, app, DragController.DRAG_ACTION_COPY);
-            bmp.recycle();
 
             mLauncher.closeAllApps(true);
         }
@@ -636,10 +667,13 @@ public class AllAppsView extends RSSurfaceView
      */
     public void zoom(float zoom, boolean animate) {
         cancelLongPress();
-        if (mRollo == null || !mRollo.mHasSurface) {
+        mNextZoom = zoom;
+        mAnimateNextZoom = animate;
+        // if we do setZoom while we don't have a surface, we won't
+        // get the callbacks that actually set mZoom.
+        if (mRollo == null || !mHaveSurface) {
             mZoomDirty = true;
             mZoom = zoom;
-            mAnimateNextZoom = animate;
             return;
         } else {
             mRollo.setZoom(zoom, animate);
@@ -655,6 +689,11 @@ public class AllAppsView extends RSSurfaceView
     }
 
     public void setApps(ArrayList<ApplicationInfo> list) {
+        if (mRS == null) {
+            // We've been removed from the window.  Don't bother with all this.
+            return;
+        }
+
         mAllAppsList = list;
         if (mRollo != null) {
             mRollo.setApps(list);
@@ -665,6 +704,10 @@ public class AllAppsView extends RSSurfaceView
     public void addApps(ArrayList<ApplicationInfo> list) {
         if (mAllAppsList == null) {
             // Not done loading yet.  We'll find out about it later.
+            return;
+        }
+        if (mRS == null) {
+            // We've been removed from the window.  Don't bother with all this.
             return;
         }
 
@@ -769,15 +812,15 @@ public class AllAppsView extends RSSurfaceView
         private Script.Invokable mInvokeSetZoom;
 
         private ProgramStore mPSIcons;
-        private ProgramStore mPSText;
-        private ProgramFragment mPFColor;
         private ProgramFragment mPFTexMip;
+        private ProgramFragment mPFTexMipAlpha;
         private ProgramFragment mPFTexNearest;
         private ProgramVertex mPV;
-        private ProgramVertex mPVOrtho;
+        private ProgramVertex mPVCurve;
         private SimpleMesh mMesh;
-        private SimpleMesh mMesh2;
         private ProgramVertex.MatrixAllocation mPVA;
+
+        private Allocation mUniformAlloc;
 
         private Allocation mHomeButtonNormal;
         private Allocation mHomeButtonFocused;
@@ -786,6 +829,10 @@ public class AllAppsView extends RSSurfaceView
         private Allocation[] mIcons;
         private int[] mIconIds;
         private Allocation mAllocIconIds;
+
+        private Allocation[] mLabels;
+        private int[] mLabelIds;
+        private Allocation mAllocLabelIds;
         private Allocation mSelectedIcon;
 
         private int[] mTouchYBorders;
@@ -793,9 +840,6 @@ public class AllAppsView extends RSSurfaceView
 
         private Bitmap mSelectionBitmap;
         private Canvas mSelectionCanvas;
-
-        boolean mHasSurface = false;
-        private boolean mAppsDirty = true;
 
         Params mParams;
         State mState;
@@ -856,11 +900,9 @@ public class AllAppsView extends RSSurfaceView
             mRes = res;
             mWidth = width;
             mHeight = height;
-            mDefines.recompute(width, height);
             initProgramVertex();
             initProgramFragment();
             initProgramStore();
-            initMesh();
             initGl();
             initData();
             initTouchState();
@@ -868,41 +910,19 @@ public class AllAppsView extends RSSurfaceView
         }
 
         public void initMesh() {
-            SimpleMesh.TriangleMeshBuilder tm = new SimpleMesh.TriangleMeshBuilder(mRS, 3,
-                SimpleMesh.TriangleMeshBuilder.TEXTURE_0 | SimpleMesh.TriangleMeshBuilder.COLOR);
+            SimpleMesh.TriangleMeshBuilder tm = new SimpleMesh.TriangleMeshBuilder(mRS, 2, 0);
 
-            float y = 0;
-            float z = 0;
-            for (int ct=0; ct < 200; ct++) {
-                float angle = 0;
-                float maxAngle = 3.14f * 0.16f;
-                float l = 1.f;
-
-                l = 1 - ((ct-7) * 0.10f);
-                if (ct > 7) {
-                    angle = maxAngle * (ct - 7) * 0.2f;
-                    angle = Math.min(angle, maxAngle);
-                }
-                l = Math.max(0.4f, l);
-                l = Math.min(1.0f, l);
-
-                y += 0.1f * Math.cos(angle);
-                z += 0.1f * Math.sin(angle);
-
-                float t = 0.1f * ct;
-                float ds = 0.08f;
-                tm.setColor(l, l, l, 0.99f);
-                tm.setTexture(ds, t);
-                tm.addVertex(-0.5f, y, z);
-                tm.setTexture(1 - ds, t);
-                tm.addVertex(0.5f, y, z);
+            for (int ct=0; ct < 16; ct++) {
+                float pos = (1.f / (16.f - 1)) * ct;
+                tm.addVertex(0.0f, pos);
+                tm.addVertex(1.0f, pos);
             }
-            for (int ct=0; ct < (200 * 2 - 2); ct+= 2) {
+            for (int ct=0; ct < (16 * 2 - 2); ct+= 2) {
                 tm.addTriangle(ct, ct+1, ct+2);
                 tm.addTriangle(ct+1, ct+3, ct+2);
             }
-            mMesh2 = tm.create();
-            mMesh2.setName("SMMesh");
+            mMesh = tm.create();
+            mMesh.setName("SMCell");
         }
 
         void resize(int w, int h) {
@@ -921,12 +941,80 @@ public class AllAppsView extends RSSurfaceView
             mPV.setName("PV");
             mPV.bindAllocation(mPVA);
 
-            //pva = new ProgramVertex.MatrixAllocation(mRS);
-            //pva.setupOrthoWindow(mWidth, mHeight);
-            //pvb.setTextureMatrixEnable(true);
-            //mPVOrtho = pvb.create();
-            //mPVOrtho.setName("PVOrtho");
-            //mPVOrtho.bindAllocation(pva);
+            Element.Builder eb = new Element.Builder(mRS);
+            eb.add(Element.createVector(mRS, Element.DataType.FLOAT_32, 2), "ImgSize");
+            eb.add(Element.createVector(mRS, Element.DataType.FLOAT_32, 4), "Position");
+            eb.add(Element.createVector(mRS, Element.DataType.FLOAT_32, 2), "BendPos");
+            eb.add(Element.createVector(mRS, Element.DataType.FLOAT_32, 4), "ScaleOffset");
+            Element e = eb.create();
+
+            mUniformAlloc = Allocation.createSized(mRS, e, 1);
+
+            initMesh();
+            ProgramVertex.ShaderBuilder sb = new ProgramVertex.ShaderBuilder(mRS);
+            String t = new String("void main() {\n" +
+                                  // Animation
+                                  "  float ani = UNI_Position.z;\n" +
+
+                                  "  float bendY1 = UNI_BendPos.x;\n" +
+                                  "  float bendY2 = UNI_BendPos.y;\n" +
+                                  "  float bendAngle = 47.0 * (3.14 / 180.0);\n" +
+                                  "  float bendDistance = bendY1 * 0.4;\n" +
+                                  "  float distanceDimLevel = 0.6;\n" +
+
+                                  "  float bendStep = (bendAngle / bendDistance) * (bendAngle * 0.5);\n" +
+                                  "  float aDy = cos(bendAngle);\n" +
+                                  "  float aDz = sin(bendAngle);\n" +
+
+                                  "  float scale = (2.0 / 480.0);\n" +
+                                  "  float x = UNI_Position.x + UNI_ImgSize.x * (1.0 - ani) * (ATTRIB_position.x - 0.5);\n" +
+                                  "  float ys= UNI_Position.y + UNI_ImgSize.y * (1.0 - ani) * ATTRIB_position.y;\n" +
+                                  "  float y = 0.0;\n" +
+                                  "  float z = 0.0;\n" +
+                                  "  float lum = 1.0;\n" +
+
+                                  "  float cv = min(ys, bendY1 - bendDistance) - (bendY1 - bendDistance);\n" +
+                                  "  y += cv * aDy;\n" +
+                                  "  z += -cv * aDz;\n" +
+                                  "  cv = clamp(ys, bendY1 - bendDistance, bendY1) - bendY1;\n" +  // curve range
+                                  "  lum += cv / bendDistance * distanceDimLevel;\n" +
+                                  "  y += cv * cos(cv * bendStep);\n" +
+                                  "  z += cv * sin(cv * bendStep);\n" +
+
+                                  "  cv = max(ys, bendY2 + bendDistance) - (bendY2 + bendDistance);\n" +
+                                  "  y += cv * aDy;\n" +
+                                  "  z += cv * aDz;\n" +
+                                  "  cv = clamp(ys, bendY2, bendY2 + bendDistance) - bendY2;\n" +
+                                  "  lum -= cv / bendDistance * distanceDimLevel;\n" +
+                                  "  y += cv * cos(cv * bendStep);\n" +
+                                  "  z += cv * sin(cv * bendStep);\n" +
+
+                                  "  y += clamp(ys, bendY1, bendY2);\n" +
+
+                                  "  vec4 pos;\n" +
+                                  "  pos.x = (x + UNI_ScaleOffset.z) * UNI_ScaleOffset.x;\n" +
+                                  "  pos.y = (y + UNI_ScaleOffset.w) * UNI_ScaleOffset.x;\n" +
+                                  "  pos.z = z * UNI_ScaleOffset.x;\n" +
+                                  "  pos.w = 1.0;\n" +
+
+                                  "  pos.x *= 1.0 + ani * 4.0;\n" +
+                                  "  pos.y *= 1.0 + ani * 4.0;\n" +
+                                  "  pos.z -= ani * 1.5;\n" +
+                                  "  lum *= 1.0 - ani;\n" +
+
+                                  "  gl_Position = UNI_MVP * pos;\n" +
+                                  "  varColor.rgba = vec4(lum, lum, lum, 1.0);\n" +
+                                  "  varTex0.xy = ATTRIB_position;\n" +
+                                  "  varTex0.y = 1.0 - varTex0.y;\n" +
+                                  "  varTex0.zw = vec2(0.0, 0.0);\n" +
+                                  "}\n");
+            sb.setShader(t);
+            sb.addConstant(mUniformAlloc.getType());
+            sb.addInput(mMesh.getVertexType(0).getElement());
+            mPVCurve = sb.create();
+            mPVCurve.setName("PVCurve");
+            mPVCurve.bindAllocation(mPVA);
+            mPVCurve.bindConstants(mUniformAlloc, 1);
 
             mRS.contextBindProgramVertex(mPV);
         }
@@ -934,7 +1022,7 @@ public class AllAppsView extends RSSurfaceView
         private void initProgramFragment() {
             Sampler.Builder sb = new Sampler.Builder(mRS);
             sb.setMin(Sampler.Value.LINEAR_MIP_LINEAR);
-            sb.setMag(Sampler.Value.LINEAR);
+            sb.setMag(Sampler.Value.NEAREST);
             sb.setWrapS(Sampler.Value.CLAMP);
             sb.setWrapT(Sampler.Value.CLAMP);
             Sampler linear = sb.create();
@@ -944,9 +1032,6 @@ public class AllAppsView extends RSSurfaceView
             Sampler nearest = sb.create();
 
             ProgramFragment.Builder bf = new ProgramFragment.Builder(mRS);
-            mPFColor = bf.create();
-            mPFColor.setName("PFColor");
-
             bf.setTexture(ProgramFragment.Builder.EnvMode.MODULATE,
                           ProgramFragment.Builder.Format.RGBA, 0);
             mPFTexMip = bf.create();
@@ -956,6 +1041,13 @@ public class AllAppsView extends RSSurfaceView
             mPFTexNearest = bf.create();
             mPFTexNearest.setName("PFTexNearest");
             mPFTexNearest.bindSampler(nearest, 0);
+
+            bf.setTexture(ProgramFragment.Builder.EnvMode.MODULATE,
+                          ProgramFragment.Builder.Format.ALPHA, 0);
+            mPFTexMipAlpha = bf.create();
+            mPFTexMipAlpha.setName("PFTexMipAlpha");
+            mPFTexMipAlpha.bindSampler(linear, 0);
+
         }
 
         private void initProgramStore() {
@@ -967,10 +1059,6 @@ public class AllAppsView extends RSSurfaceView
                             ProgramStore.BlendDstFunc.ONE_MINUS_SRC_ALPHA);
             mPSIcons = bs.create();
             mPSIcons.setName("PSIcons");
-
-            //bs.setDitherEnable(false);
-            //mPSText = bs.create();
-            //mPSText.setName("PSText");
         }
 
         private void initGl() {
@@ -1008,8 +1096,8 @@ public class AllAppsView extends RSSurfaceView
             mParams.save();
             mState.save();
 
-            mSelectionBitmap = Bitmap.createBitmap(Defines.ICON_TEXTURE_WIDTH_PX,
-                    Defines.ICON_TEXTURE_HEIGHT_PX, Bitmap.Config.ARGB_8888);
+            mSelectionBitmap = Bitmap.createBitmap(Defines.SELECTION_TEXTURE_WIDTH_PX,
+                    Defines.SELECTION_TEXTURE_HEIGHT_PX, Bitmap.Config.ARGB_8888);
             mSelectionCanvas = new Canvas(mSelectionBitmap);
 
             setApps(null);
@@ -1020,11 +1108,12 @@ public class AllAppsView extends RSSurfaceView
 
         private void initRs() {
             ScriptC.Builder sb = new ScriptC.Builder(mRS);
-            sb.setScript(mRes, R.raw.rollo3);
+            sb.setScript(mRes, R.raw.allapps);
             sb.setRoot(true);
             sb.addDefines(mDefines);
             sb.setType(mParams.mType, "params", Defines.ALLOC_PARAMS);
             sb.setType(mState.mType, "state", Defines.ALLOC_STATE);
+            sb.setType(mUniformAlloc.getType(), "vpConstants", Defines.ALLOC_VP_CONSTANTS);
             mInvokeMove = sb.addInvokable("move");
             mInvokeFling = sb.addInvokable("fling");
             mInvokeMoveTo = sb.addInvokable("moveTo");
@@ -1035,22 +1124,15 @@ public class AllAppsView extends RSSurfaceView
             mScript.bindAllocation(mParams.mAlloc, Defines.ALLOC_PARAMS);
             mScript.bindAllocation(mState.mAlloc, Defines.ALLOC_STATE);
             mScript.bindAllocation(mAllocIconIds, Defines.ALLOC_ICON_IDS);
+            mScript.bindAllocation(mAllocLabelIds, Defines.ALLOC_LABEL_IDS);
+            mScript.bindAllocation(mUniformAlloc, Defines.ALLOC_VP_CONSTANTS);
 
             mRS.contextBindRootScript(mScript);
         }
 
         void dirtyCheck() {
-            if (mHasSurface) {
-                if (mAppsDirty && mAllAppsList != null) {
-                    for (int i=0; i < mState.iconCount; i++) {
-                        uploadAppIcon(i, mAllAppsList.get(i));
-                    }
-                    saveAppsList();
-                    mAppsDirty = false;
-                }
-                if (mZoomDirty) {
-                    setZoom(mZoom, mAnimateNextZoom);
-                }
+            if (mZoomDirty) {
+                setZoom(mNextZoom, mAnimateNextZoom);
             }
         }
 
@@ -1065,21 +1147,18 @@ public class AllAppsView extends RSSurfaceView
             mIconIds = new int[allocCount];
             mAllocIconIds = Allocation.createSized(mRS, Element.USER_I32(mRS), allocCount);
 
+            mLabels = new Allocation[count];
+            mLabelIds = new int[allocCount];
+            mAllocLabelIds = Allocation.createSized(mRS, Element.USER_I32(mRS), allocCount);
+
             Element ie8888 = Element.RGBA_8888(mRS);
 
             mState.iconCount = count;
-            long before = SystemClock.uptimeMillis();
             for (int i=0; i < mState.iconCount; i++) {
                 createAppIconAllocations(i, list.get(i));
             }
-            long after = SystemClock.uptimeMillis();
-            //Log.d(TAG, "createAppIconAllocations took " + (after-before) + "ms");
-            if (mHasSurface) {
-                for (int i=0; i < mState.iconCount; i++) {
-                    uploadAppIcon(i, list.get(i));
-                }
-            } else {
-                mRollo.mAppsDirty = true;
+            for (int i=0; i < mState.iconCount; i++) {
+                uploadAppIcon(i, list.get(i));
             }
             saveAppsList();
         }
@@ -1098,29 +1177,13 @@ public class AllAppsView extends RSSurfaceView
             }
         }
 
-        private void frameBitmapAllocMips(Allocation alloc, int w, int h) {
-            int black[] = new int[w > h ? w : h];
-            Allocation.Adapter2D a = alloc.createAdapter2D();
-            int mip = 0;
-            while (w > 1 || h > 1) {
-                a.subData(0, 0, 1, h, black);
-                a.subData(w-1, 0, 1, h, black);
-                a.subData(0, 0, w, 1, black);
-                a.subData(0, h-1, w, 1, black);
-                mip++;
-                w = (w + 1) >> 1;
-                h = (h + 1) >> 1;
-                a.setConstraint(Dimension.LOD, mip);
-            }
-            a.subData(0, 0, 1, 1, black);
-        }
-
         private void createAppIconAllocations(int index, ApplicationInfo item) {
-            Bitmap bitmap = item.iconBitmap;
-            mIcons[index] = Allocation.createFromBitmap(mRS, bitmap, Element.RGBA_8888(mRS), true);
-            frameBitmapAllocMips(mIcons[index], bitmap.getWidth(), bitmap.getHeight());
-
+            mIcons[index] = Allocation.createFromBitmap(mRS, item.iconBitmap,
+                    Element.RGBA_8888(mRS), true);
+            mLabels[index] = Allocation.createFromBitmap(mRS, item.titleBitmap,
+                    Element.A_8(mRS), true);
             mIconIds[index] = mIcons[index].getID();
+            mLabelIds[index] = mLabels[index].getID();
         }
 
         private void uploadAppIcon(int index, ApplicationInfo item) {
@@ -1131,6 +1194,7 @@ public class AllAppsView extends RSSurfaceView
                     + " item=" + item);
             }
             mIcons[index].uploadToTexture(0);
+            mLabels[index].uploadToTexture(0);
         }
 
         /**
@@ -1142,13 +1206,21 @@ public class AllAppsView extends RSSurfaceView
             int[] iconIds = new int[count];
             mAllocIconIds = Allocation.createSized(mRS, Element.USER_I32(mRS), count);
 
+            Allocation[] labels = new Allocation[count];
+            int[] labelIds = new int[count];
+            mAllocLabelIds = Allocation.createSized(mRS, Element.USER_I32(mRS), count);
+
             final int oldCount = mRollo.mState.iconCount;
 
             System.arraycopy(mIcons, 0, icons, 0, oldCount);
             System.arraycopy(mIconIds, 0, iconIds, 0, oldCount);
+            System.arraycopy(mLabels, 0, labels, 0, oldCount);
+            System.arraycopy(mLabelIds, 0, labelIds, 0, oldCount);
 
             mIcons = icons;
             mIconIds = iconIds;
+            mLabels = labels;
+            mLabelIds = labelIds;
         }
 
         /**
@@ -1160,15 +1232,11 @@ public class AllAppsView extends RSSurfaceView
 
             System.arraycopy(mIcons, index, mIcons, dest, count);
             System.arraycopy(mIconIds, index, mIconIds, dest, count);
+            System.arraycopy(mLabels, index, mLabels, dest, count);
+            System.arraycopy(mLabelIds, index, mLabelIds, dest, count);
 
             createAppIconAllocations(index, item);
-
-            if (mHasSurface) {
-                uploadAppIcon(index, item);
-            } else {
-                mAppsDirty = true;
-            }
-
+            uploadAppIcon(index, item);
             mRollo.mState.iconCount++;
         }
 
@@ -1181,12 +1249,16 @@ public class AllAppsView extends RSSurfaceView
 
             System.arraycopy(mIcons, src, mIcons, index, count);
             System.arraycopy(mIconIds, src, mIconIds, index, count);
+            System.arraycopy(mLabels, src, mLabels, index, count);
+            System.arraycopy(mLabelIds, src, mLabelIds, index, count);
 
             mRollo.mState.iconCount--;
             final int last = mState.iconCount;
 
             mIcons[last] = null;
             mIconIds[last] = 0;
+            mLabels[last] = null;
+            mLabelIds[last] = 0;
         }
 
         /**
@@ -1196,9 +1268,11 @@ public class AllAppsView extends RSSurfaceView
             mRS.contextBindRootScript(null);
 
             mAllocIconIds.data(mIconIds);
+            mAllocLabelIds.data(mLabelIds);
 
             if (mScript != null) { // this happens when we init it
                 mScript.bindAllocation(mAllocIconIds, Defines.ALLOC_ICON_IDS);
+                mScript.bindAllocation(mAllocLabelIds, Defines.ALLOC_LABEL_IDS);
             }
 
             mState.save();
@@ -1208,7 +1282,9 @@ public class AllAppsView extends RSSurfaceView
             if (mInvokeResetWAR != null) {
                 mInvokeResetWAR.execute();
             }
-            mRS.contextBindRootScript(mScript);
+            if (mScript != null) {
+                mRS.contextBindRootScript(mScript);
+            }
         }
 
         void initTouchState() {
@@ -1313,7 +1389,7 @@ public class AllAppsView extends RSSurfaceView
                 ApplicationInfo info = mAllAppsList.get(index);
                 Bitmap selectionBitmap = mSelectionBitmap;
 
-                Utilities.drawSelectedAllAppsBitmap(mSelectionCanvas, selectionBitmap,
+                Utilities.drawSelectedAllAppsBitmap(mSelectionCanvas,
                         selectionBitmap.getWidth(), selectionBitmap.getHeight(),
                         pressed == SELECTED_PRESSED, info.iconBitmap);
 
@@ -1368,10 +1444,12 @@ public class AllAppsView extends RSSurfaceView
                 Log.d(TAG, "mRollo.mIconIds.length=" + mIconIds.length);
             }
             Log.d(TAG, "mRollo.mIconIds=" +  Arrays.toString(mIconIds));
+            if (mLabelIds != null) {
+                Log.d(TAG, "mRollo.mLabelIds.length=" + mLabelIds.length);
+            }
+            Log.d(TAG, "mRollo.mLabelIds=" +  Arrays.toString(mLabelIds));
             Log.d(TAG, "mRollo.mTouchXBorders=" +  Arrays.toString(mTouchXBorders));
             Log.d(TAG, "mRollo.mTouchYBorders=" +  Arrays.toString(mTouchYBorders));
-            Log.d(TAG, "mRollo.mHasSurface=" + mHasSurface);
-            Log.d(TAG, "mRollo.mAppsDirty=" + mAppsDirty);
             Log.d(TAG, "mRollo.mState.newPositionX=" + mState.newPositionX);
             Log.d(TAG, "mRollo.mState.newTouchDown=" + mState.newTouchDown);
             Log.d(TAG, "mRollo.mState.flingVelocity=" + mState.flingVelocity);

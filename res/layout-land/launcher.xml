@@ -82,7 +82,7 @@
     <com.android.launcher2.HandleView
         android:id="@+id/all_apps_button"
         android:layout_width="@dimen/button_bar_height"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="right|center_vertical"
 
         android:focusable="true"
@@ -95,8 +95,9 @@
 
     <com.android.launcher2.DeleteZone
         android:id="@+id/delete_zone"
-        android:layout_width="49dip"
+        android:layout_width="@dimen/button_bar_height"
         android:layout_height="fill_parent"
+        android:layout_gravity="right|center_vertical"
 
         android:scaleType="center"
         android:src="@drawable/delete_zone_selector"

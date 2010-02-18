@@ -46,13 +46,14 @@ public class UserFolder extends Folder implements DropTarget {
 
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
-        ApplicationInfo item = (ApplicationInfo) dragInfo;
-        if (item.container == NO_ID) {
+        ShortcutInfo item;
+        if (dragInfo instanceof ApplicationInfo) {
             // Came from all apps -- make a copy
-            item = new ApplicationInfo((ApplicationInfo)item);
+            item = ((ApplicationInfo)dragInfo).makeShortcut();
+        } else {
+            item = (ShortcutInfo)dragInfo;
         }
-        //noinspection unchecked
-        ((ArrayAdapter<ApplicationInfo>) mContent.getAdapter()).add((ApplicationInfo) dragInfo);
+        ((ShortcutsAdapter)mContent.getAdapter()).add(item);
         LauncherModel.addOrMoveItemInDatabase(mLauncher, item, mInfo.id, 0, 0, 0);
     }
 
@@ -71,16 +72,14 @@ public class UserFolder extends Folder implements DropTarget {
     @Override
     public void onDropCompleted(View target, boolean success) {
         if (success) {
-            //noinspection unchecked
-            ArrayAdapter<ApplicationInfo> adapter =
-                    (ArrayAdapter<ApplicationInfo>) mContent.getAdapter();
+            ShortcutsAdapter adapter = (ShortcutsAdapter)mContent.getAdapter();
             adapter.remove(mDragItem);
         }
     }
 
     void bind(FolderInfo info) {
         super.bind(info);
-        setContentAdapter(new ApplicationsAdapter(mContext, ((UserFolderInfo) info).contents));
+        setContentAdapter(new ShortcutsAdapter(mContext, ((UserFolderInfo) info).contents));
     }
 
     // When the folder opens, we need to refresh the GridView's selection by

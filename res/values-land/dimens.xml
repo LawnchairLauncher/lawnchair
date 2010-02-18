@@ -17,7 +17,6 @@
 <resources>
     <dimen name="workspace_cell_width">106dip</dimen>
     <dimen name="workspace_cell_height">74dip</dimen>
+    <dimen name="button_bar_height">62dip</dimen>
     <dimen name="search_widget_inset">19dip</dimen>
-    <dimen name="gesture_thumbnail_inset">8dip</dimen>
-    <dimen name="gesture_thumbnail_size">64dip</dimen>
 </resources>

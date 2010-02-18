@@ -25,7 +25,8 @@ import android.content.ContentValues;
 class LauncherAppWidgetInfo extends ItemInfo {
 
     /**
-     * Identifier for this widget when talking with {@link AppWidgetManager} for updates.
+     * Identifier for this widget when talking with
+     * {@link android.appwidget.AppWidgetManager} for updates.
      */
     int appWidgetId;
     
