@@ -29,6 +29,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.IBinder;
 import android.os.Parcelable;
 import android.os.Parcel;
 import android.util.AttributeSet;
@@ -377,8 +378,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     private void updateWallpaperOffset(int scrollRange) {
-        mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 0 );
-        mWallpaperManager.setWallpaperOffsets(getWindowToken(), mScrollX / (float) scrollRange, 0);
+        IBinder token = getWindowToken();
+        if (token != null) {
+            mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 0 );
+            mWallpaperManager.setWallpaperOffsets(getWindowToken(), mScrollX/(float)scrollRange, 0);
+        }
     }
     
     @Override
@@ -435,6 +439,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        computeScroll();
         mDragController.setWindowToken(getWindowToken());
     }
 
