@@ -521,6 +521,7 @@ public class LauncherProvider extends ContentProvider {
                         logged = true;
                     }
                 }
+                db.setTransactionSuccessful();
             } catch (SQLException ex) {
                 Log.w(TAG, "Problem while allocating appWidgetIds for existing widgets", ex);
             } finally {
