@@ -369,7 +369,7 @@ public final class Launcher extends Activity
                     completeAddApplication(this, data, mAddItemCellInfo);
                     break;
                 case REQUEST_PICK_SHORTCUT:
-                    processShortcut(data, REQUEST_PICK_APPLICATION, REQUEST_CREATE_SHORTCUT);
+                    processShortcut(data);
                     break;
                 case REQUEST_CREATE_SHORTCUT:
                     completeAddShortcut(data, mAddItemCellInfo);
@@ -1008,7 +1008,7 @@ public final class Launcher extends Activity
         }
     }
 
-    void processShortcut(Intent intent, int requestCodeApplication, int requestCodeShortcut) {
+    void processShortcut(Intent intent) {
         // Handle case where user selected "Applications"
         String applicationName = getResources().getString(R.string.group_applications);
         String shortcutName = intent.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
@@ -1019,9 +1019,9 @@ public final class Launcher extends Activity
 
             Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
             pickIntent.putExtra(Intent.EXTRA_INTENT, mainIntent);
-            startActivityForResult(pickIntent, requestCodeApplication);
+            startActivityForResult(pickIntent, REQUEST_PICK_APPLICATION);
         } else {
-            startActivityForResult(intent, requestCodeShortcut);
+            startActivityForResult(intent, REQUEST_CREATE_SHORTCUT);
         }
     }
 
@@ -1579,7 +1579,7 @@ public final class Launcher extends Activity
         showDialog(DIALOG_CREATE_SHORTCUT);
     }
 
-    private void pickShortcut(int requestCode, int title) {
+    private void pickShortcut() {
         Bundle bundle = new Bundle();
 
         ArrayList<String> shortcutNames = new ArrayList<String>();
@@ -1593,10 +1593,10 @@ public final class Launcher extends Activity
 
         Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
         pickIntent.putExtra(Intent.EXTRA_INTENT, new Intent(Intent.ACTION_CREATE_SHORTCUT));
-        pickIntent.putExtra(Intent.EXTRA_TITLE, getText(title));
+        pickIntent.putExtra(Intent.EXTRA_TITLE, getText(R.string.title_select_shortcut));
         pickIntent.putExtras(bundle);
 
-        startActivityForResult(pickIntent, requestCode);
+        startActivityForResult(pickIntent, REQUEST_PICK_SHORTCUT);
     }
 
     private class RenameFolder {
@@ -1801,7 +1801,7 @@ public final class Launcher extends Activity
             switch (which) {
                 case AddAdapter.ITEM_SHORTCUT: {
                     // Insert extra item to handle picking application
-                    pickShortcut(REQUEST_PICK_SHORTCUT, R.string.title_select_shortcut);
+                    pickShortcut();
                     break;
                 }
 
