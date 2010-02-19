@@ -963,7 +963,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         switch (info.itemType) {
         case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
         case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-            if (info.container == NO_ID) {
+            if (info.container == NO_ID && info instanceof ApplicationInfo) {
                 // Came from all apps -- make a copy
                 info = new ShortcutInfo((ApplicationInfo)info);
             }
