@@ -18,25 +18,18 @@ package com.android.launcher2;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.IBinder;
 import android.os.Handler;
 import android.os.Vibrator;
-import android.os.SystemClock;
-import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import java.util.ArrayList;
 
@@ -44,6 +37,7 @@ import java.util.ArrayList;
  * Class for initiating a drag within a view or across multiple views.
  */
 public class DragController {
+    @SuppressWarnings({"UnusedDeclaration"})
     private static final String TAG = "Launcher.DragController";
 
     /** Indicates the drag is a move.  */
@@ -113,6 +107,8 @@ public class DragController {
     /** The view that will be scrolled when dragging to the left and right edges of the screen. */
     private View mScrollView;
 
+    private View mMoveTarget;
+
     private DragScroller mDragScroller;
     private int mScrollState = SCROLL_OUTSIDE_ZONE;
     private ScrollRunnable mScrollRunnable = new ScrollRunnable();
@@ -147,7 +143,6 @@ public class DragController {
      * Used to create a new DragLayer from XML.
      *
      * @param context The application's context.
-     * @param attrs The attribtues set containing the Workspace's customization values.
      */
     public DragController(Context context) {
         mContext = context;
@@ -159,7 +154,7 @@ public class DragController {
      * 
      * @param v The view that is being dragged
      * @param source An object representing where the drag originated
-     * @param info The data associated with the object that is being dragged
+     * @param dragInfo The data associated with the object that is being dragged
      * @param dragAction The drag action: either {@link #DRAG_ACTION_MOVE} or
      *        {@link #DRAG_ACTION_COPY}
      */
@@ -195,7 +190,7 @@ public class DragController {
      * @param textureWidth The width of the region inside b to use.
      * @param textureHeight The height of the region inside b to use.
      * @param source An object representing where the drag originated
-     * @param info The data associated with the object that is being dragged
+     * @param dragInfo The data associated with the object that is being dragged
      * @param dragAction The drag action: either {@link #DRAG_ACTION_MOVE} or
      *        {@link #DRAG_ACTION_COPY}
      */
@@ -275,6 +270,7 @@ public class DragController {
      *              || super.dispatchKeyEvent(event);
      * </pre>
      */
+    @SuppressWarnings({"UnusedDeclaration"})
     public boolean dispatchKeyEvent(KeyEvent event) {
         return mDragging;
     }
@@ -343,6 +339,17 @@ public class DragController {
     }
 
     /**
+     * Sets the view that should handle move events.
+     */
+    void setMoveTarget(View view) {
+        mMoveTarget = view;
+    }    
+
+    public boolean dispatchUnhandledMove(View focused, int direction) {
+        return mMoveTarget != null && mMoveTarget.dispatchUnhandledMove(focused, direction);
+    }
+
+    /**
      * Call this from a drag source view.
      */
     public boolean onTouchEvent(MotionEvent ev) {
@@ -377,7 +384,7 @@ public class DragController {
 
             // Drop on someone?
             final int[] coordinates = mCoordinatesTemp;
-            DropTarget dropTarget = findDropTarget((int) screenX, (int) screenY, coordinates);
+            DropTarget dropTarget = findDropTarget(screenX, screenY, coordinates);
             if (dropTarget != null) {
                 if (mLastDropTarget == dropTarget) {
                     dropTarget.onDragOver(mDragSource, coordinates[0], coordinates[1],

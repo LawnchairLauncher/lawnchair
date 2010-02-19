@@ -101,9 +101,9 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
             if (source instanceof UserFolder) {
                 final UserFolder userFolder = (UserFolder) source;
                 final UserFolderInfo userFolderInfo = (UserFolderInfo) userFolder.getInfo();
-                // item must be an ApplicationInfo otherwise it couldn't have been in the folder
+                // Item must be a ShortcutInfo otherwise it couldn't have been in the folder
                 // in the first place.
-                userFolderInfo.remove((ApplicationInfo)item);
+                userFolderInfo.remove((ShortcutInfo)item);
             }
         }
         if (item instanceof UserFolderInfo) {

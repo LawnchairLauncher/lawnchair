@@ -32,9 +32,12 @@ import android.content.pm.PackageManager;
 import android.content.pm.ActivityInfo;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.util.Xml;
 import android.util.AttributeSet;
@@ -58,7 +61,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "launcher.db";
     
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 8;
 
     static final String AUTHORITY = "com.android.launcher2.settings";
     
@@ -382,7 +385,15 @@ public class LauncherProvider extends ContentProvider {
                     version = 6;
                 }
             }
-            
+
+            if (version < 8) {
+                // Version 8 (froyo) has the icons all normalized.  This should
+                // already be the case in practice, but we now rely on it and don't
+                // resample the images each time.
+                normalizeIcons(db);
+                version = 8;
+            }
+
             if (version != DATABASE_VERSION) {
                 Log.w(TAG, "Destroying all old data.");
                 db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVORITES);
@@ -457,10 +468,64 @@ public class LauncherProvider extends ContentProvider {
             return true;
         }
 
+        private void normalizeIcons(SQLiteDatabase db) {
+            Log.d(TAG, "normalizing icons");
+
+            db.beginTransaction();
+            Cursor c = null;
+            try {
+                boolean logged = false;
+                final ContentValues values = new ContentValues();
+                final ContentResolver cr = mContext.getContentResolver();
+                final SQLiteStatement update = db.compileStatement("UPDATE favorites "
+                        + "SET icon=? WHERE _id=?");
+
+                c = db.rawQuery("SELECT _id, icon FROM favorites WHERE iconType=" +
+                        Favorites.ICON_TYPE_BITMAP, null);
+
+                final int idIndex = c.getColumnIndexOrThrow(Favorites._ID);
+                final int iconIndex = c.getColumnIndexOrThrow(Favorites.ICON);
+
+                while (c.moveToNext()) {
+                    long id = c.getLong(idIndex);
+                    byte[] data = c.getBlob(iconIndex);
+                    try {
+                        Bitmap bitmap = Utilities.resampleIconBitmap(
+                                BitmapFactory.decodeByteArray(data, 0, data.length),
+                                mContext);
+                        if (bitmap != null) {
+                            update.bindLong(1, id);
+                            data = ItemInfo.flattenBitmap(bitmap);
+                            if (data != null) {
+                                update.bindBlob(2, data);
+                                update.execute();
+                            }
+                            bitmap.recycle();
+                            bitmap = null;
+                        }
+                    } catch (Exception e) {
+                        if (!logged) {
+                            Log.e(TAG, "Failed normalizing icon " + id, e);
+                        } else {
+                            Log.e(TAG, "Also failed normalizing icon " + id);
+                        }
+                        logged = true;
+                    }
+                }
+            } catch (SQLException ex) {
+                Log.w(TAG, "Problem while allocating appWidgetIds for existing widgets", ex);
+            } finally {
+                db.endTransaction();
+                if (c != null) {
+                    c.close();
+                }
+            }
+            
+        }
+
         /**
          * Upgrade existing clock and photo frame widgets into their new widget
-         * equivalents. This method allocates appWidgetIds, and then hands off to
-         * LauncherAppWidgetBinder to finish the actual binding.
+         * equivalents.
          */
         private void convertWidgets(SQLiteDatabase db) {
             final int[] bindSources = new int[] {

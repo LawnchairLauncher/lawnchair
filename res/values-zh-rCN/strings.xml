@@ -38,8 +38,8 @@
     <string name="add_folder" msgid="3521088587367839879">"文件夹"</string>
     <string name="add_clock" msgid="2337943840175865746">"时钟"</string>
     <string name="add_photo_frame" msgid="3154058437359487954">"相框"</string>
-    <string name="add_search" msgid="7104834713685095105">"搜索"</string>
     <string name="out_of_space" msgid="8365249326091984698">"此主屏幕上已没有空间。"</string>
+    <string name="add_search" msgid="7104834713685095105">"搜索"</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"已创建“<xliff:g id="NAME">%s</xliff:g>”快捷方式。"</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"已删除“<xliff:g id="NAME">%s</xliff:g>”快捷方式。"</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"“<xliff:g id="NAME">%s</xliff:g>”快捷方式已存在。"</string>

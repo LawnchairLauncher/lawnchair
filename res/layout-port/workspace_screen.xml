@@ -20,11 +20,12 @@
 
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:hapticFeedbackEnabled="false"
 
     launcher:cellWidth="@dimen/workspace_cell_width"
     launcher:cellHeight="@dimen/workspace_cell_height"
-    launcher:longAxisStartPadding="0dip"
-    launcher:longAxisEndPadding="55dip"
+    launcher:longAxisStartPadding="8dip"
+    launcher:longAxisEndPadding="@dimen/button_bar_height"
     launcher:shortAxisStartPadding="0dip"
     launcher:shortAxisEndPadding="0dip"
     launcher:shortAxisCells="4"
