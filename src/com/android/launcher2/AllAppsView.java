@@ -1266,24 +1266,23 @@ public class AllAppsView extends RSSurfaceView
          * Send the apps list structures to RS.
          */
         private void saveAppsList() {
-            mRS.contextBindRootScript(null);
-
-            mAllocIconIds.data(mIconIds);
-            mAllocLabelIds.data(mLabelIds);
-
             if (mScript != null) { // this happens when we init it
+                mRS.contextBindRootScript(null);
+
+                mAllocIconIds.data(mIconIds);
+                mAllocLabelIds.data(mLabelIds);
+
                 mScript.bindAllocation(mAllocIconIds, Defines.ALLOC_ICON_IDS);
                 mScript.bindAllocation(mAllocLabelIds, Defines.ALLOC_LABEL_IDS);
-            }
 
-            mState.save();
+                mState.save();
 
-            // Note: mScript may be null if we haven't initialized it yet.
-            // In that case, this is a no-op.
-            if (mInvokeResetWAR != null) {
-                mInvokeResetWAR.execute();
-            }
-            if (mScript != null) {
+                // Note: mScript may be null if we haven't initialized it yet.
+                // In that case, this is a no-op.
+                if (mInvokeResetWAR != null) {
+                    mInvokeResetWAR.execute();
+                }
+
                 mRS.contextBindRootScript(mScript);
             }
         }
