@@ -312,7 +312,7 @@ void drawFrontGrid(float rowOffset, float p)
 
             if (iconNum >= 0) {
                 float x = colWidth * col + (colWidth / 2);
-                vpConstants->Position.x = x;
+                vpConstants->Position.x = x + 0.2f;
 
                 if (state->selectedIconIndex == iconNum && !p) {
                     bindProgramFragment(NAMED_PFTexNearest);
@@ -326,14 +326,14 @@ void drawFrontGrid(float rowOffset, float p)
                 bindProgramFragment(NAMED_PFTexMip);
                 vpConstants->ImgSize.x = ICON_TEXTURE_WIDTH_PX;
                 vpConstants->ImgSize.y = ICON_TEXTURE_HEIGHT_PX;
-                vpConstants->Position.y = y;
+                vpConstants->Position.y = y - 0.2f;
                 bindTexture(NAMED_PFTexMip, 0, loadI32(ALLOC_ICON_IDS, iconNum));
                 drawSimpleMesh(NAMED_SMCell);
 
                 bindProgramFragment(NAMED_PFTexMipAlpha);
                 vpConstants->ImgSize.x = 120.f;
                 vpConstants->ImgSize.y = 64.f;
-                vpConstants->Position.y = y - 64.f;
+                vpConstants->Position.y = y - 64.f - 0.2f;
                 bindTexture(NAMED_PFTexMipAlpha, 0, loadI32(ALLOC_LABEL_IDS, iconNum));
                 drawSimpleMesh(NAMED_SMCell);
             }
