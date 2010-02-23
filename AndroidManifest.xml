@@ -94,11 +94,6 @@
             </intent-filter>
         </activity>
 
-        <!-- Enable system-default search mode for any activity in Home -->
-        <meta-data
-            android:name="android.app.default_searchable"
-            android:value="*" />
-
         <!-- Intent received used to install shortcuts from other applications -->
         <receiver
             android:name=".InstallShortcutReceiver"
