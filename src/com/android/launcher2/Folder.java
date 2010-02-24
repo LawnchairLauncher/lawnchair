@@ -17,6 +17,7 @@
 package com.android.launcher2;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -47,7 +48,6 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
      * Which item is being dragged
      */
     protected ShortcutInfo mDragItem;
-    private boolean mCloneInfo;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -75,6 +75,10 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     
     public void onItemClick(AdapterView parent, View v, int position, long id) {
         ShortcutInfo app = (ShortcutInfo) parent.getItemAtPosition(position);
+        int[] pos = new int[2];
+        v.getLocationOnScreen(pos);
+        app.intent.setSourceBounds(new Rect(pos[0], pos[1],
+                pos[0] + v.getWidth(), pos[1] + v.getHeight()));
         mLauncher.startActivitySafely(app.intent);
     }
 
@@ -94,19 +98,12 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         }
 
         ShortcutInfo app = (ShortcutInfo) parent.getItemAtPosition(position);
-        if (mCloneInfo) {
-            app = new ShortcutInfo(app);
-        }
 
         mDragController.startDrag(view, this, app, DragController.DRAG_ACTION_COPY);
         mLauncher.closeFolder(this);
         mDragItem = app;
 
         return true;
-    }
-
-    void setCloneInfo(boolean cloneInfo) {
-        mCloneInfo = cloneInfo;
     }
 
     public void setDragController(DragController dragController) {
