@@ -93,6 +93,7 @@ void init() {
     g_LastTouchDown = 0;
     g_LastPositionX = 0;
     g_Zoom = 0;
+    g_Animation = 1.f;
     g_SpecialHWWar = 1;
     g_MoveToTime = 0;
     g_MoveToOldPos = 0;
