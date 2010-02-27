@@ -44,7 +44,7 @@
     <string name="title_select_shortcut" msgid="2858897527672831763">"Sélectionner un raccourci"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"Sélectionner le dossier"</string>
     <string name="all_apps_button_label" msgid="3953036962111614813">"Toutes les applications"</string>
-    <string name="all_apps_home_button_label" msgid="1022222300329398558">"Domicile"</string>
+    <string name="all_apps_home_button_label" msgid="1022222300329398558">"Page d\'accueil"</string>
     <string name="menu_add" msgid="3065046628354640854">"Ajouter"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"Fond d\'écran"</string>
     <string name="menu_search" msgid="4826514464423239041">"Rechercher"</string>
