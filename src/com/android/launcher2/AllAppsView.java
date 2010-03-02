@@ -1265,7 +1265,8 @@ public class AllAppsView extends RSSurfaceView
          * Send the apps list structures to RS.
          */
         private void saveAppsList() {
-            if (mScript != null) { // this happens when we init it
+            // WTF: how could mScript be not null but mAllocIconIds null b/2460740.
+            if (mScript != null && mAllocIconIds != null) {
                 mRS.contextBindRootScript(null);
 
                 mAllocIconIds.data(mIconIds);
