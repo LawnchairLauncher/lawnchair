@@ -85,7 +85,7 @@ import java.io.DataInputStream;
  * Default launcher application.
  */
 public final class Launcher extends Activity
-        implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks {
+        implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks, AllAppsView.Watcher {
     static final String TAG = "Launcher";
     static final boolean LOGD = false;
 
@@ -1685,6 +1685,13 @@ public final class Launcher extends Activity
         return mAllAppsGrid.isVisible();
     }
 
+    // AllAppsView.Watcher
+    public void zoomed(float zoom) {
+        if (zoom == 1.0f) {
+            mWorkspace.setVisibility(View.GONE);
+        }
+    }
+
     void showAllApps(boolean animated) {
         mAllAppsGrid.zoom(1.0f, animated);
 
@@ -1732,6 +1739,7 @@ public final class Launcher extends Activity
      */
     void closeAllApps(boolean animated) {
         if (mAllAppsGrid.isVisible()) {
+            mWorkspace.setVisibility(View.VISIBLE);
             mAllAppsGrid.zoom(0.0f, animated);
             ((View)mAllAppsGrid).setFocusable(false);
             mWorkspace.getChildAt(mWorkspace.getCurrentScreen()).requestFocus();

@@ -51,6 +51,10 @@ import java.util.Comparator;
 
 
 public interface AllAppsView {
+    public interface Watcher {
+        public void zoomed(float zoom);
+    };
+
     public void setLauncher(Launcher launcher);
 
     public void setDragController(DragController dragger);

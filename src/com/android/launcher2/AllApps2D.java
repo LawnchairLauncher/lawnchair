@@ -134,19 +134,25 @@ public class AllApps2D
     protected void onFinishInflate() {
         setBackgroundColor(0xFF000000);
 
-        mGrid = (GridView)findViewById(R.id.all_apps_2d_grid);
-        mGrid.setOnItemClickListener(this);
-        mGrid.setOnItemLongClickListener(this);
-        
-        setOnKeyListener(this);
+        try {
+            mGrid = (GridView)findViewWithTag("all_apps_2d_grid");
+            if (mGrid == null) throw new Resources.NotFoundException();
+            mGrid.setOnItemClickListener(this);
+            mGrid.setOnItemLongClickListener(this);
+            
+            ImageButton homeButton = (ImageButton) findViewWithTag("all_apps_2d_home");
+            if (homeButton == null) throw new Resources.NotFoundException();
+            homeButton.setOnClickListener(
+                new View.OnClickListener() {
+                    public void onClick(View v) {
+                        mLauncher.closeAllApps(true);
+                    }
+                });
+        } catch (Resources.NotFoundException e) {
+            Log.e(TAG, "Can't find necessary layout elements for AllApps2D");
+        }
 
-        ImageButton homeButton = (ImageButton) findViewById(R.id.all_apps_2d_home);
-        homeButton.setOnClickListener(
-            new View.OnClickListener() {
-                public void onClick(View v) {
-                    mLauncher.closeAllApps(true);
-                }
-            });
+        setOnKeyListener(this);
     }
 
     public AllApps2D(Context context, AttributeSet attrs, int defStyle) {
@@ -235,6 +241,8 @@ public class AllApps2D
         } else {
             mZoom = 1.0f;
         }
+
+        mLauncher.zoomed(mZoom);
     }
 
     public boolean isVisible() {
