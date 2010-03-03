@@ -25,7 +25,7 @@ LOCAL_SRC_FILES := $(call all-subdir-java-files)
 
 LOCAL_PACKAGE_NAME := Launcher2
 
-LOCAL_OVERRIDES_PACKAGES := Launcher
+LOCAL_OVERRIDES_PACKAGES := Home
 
 LOCAL_PROGUARD_ENABLED := disabled
 
