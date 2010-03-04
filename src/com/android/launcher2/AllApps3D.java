@@ -481,10 +481,12 @@ public class AllApps3D extends RSSurfaceView
         int x = (int)ev.getX();
         int y = (int)ev.getY();
     
+        final boolean isPortrait = getWidth() < getHeight();
         int action = ev.getAction();
         switch (action) {
         case MotionEvent.ACTION_DOWN:
-            if (y > mRollo.mTouchYBorders[mRollo.mTouchYBorders.length-1]) {
+            if ((isPortrait && y > mRollo.mTouchYBorders[mRollo.mTouchYBorders.length-1]) ||
+                    (!isPortrait && x > mRollo.mTouchXBorders[mRollo.mTouchXBorders.length-1])) {
                 mTouchTracking = TRACKING_HOME;
                 mRollo.setHomeSelected(SELECTED_PRESSED);
                 mRollo.mState.save();
@@ -518,7 +520,9 @@ public class AllApps3D extends RSSurfaceView
         case MotionEvent.ACTION_MOVE:
         case MotionEvent.ACTION_OUTSIDE:
             if (mTouchTracking == TRACKING_HOME) {
-                mRollo.setHomeSelected(y > mRollo.mTouchYBorders[mRollo.mTouchYBorders.length-1]
+                mRollo.setHomeSelected((isPortrait &&
+                        y > mRollo.mTouchYBorders[mRollo.mTouchYBorders.length-1]) || (!isPortrait
+                        && x > mRollo.mTouchXBorders[mRollo.mTouchXBorders.length-1])
                         ? SELECTED_PRESSED : SELECTED_NONE);
                 mRollo.mState.save();
             } else if (mTouchTracking == TRACKING_FLING) {
@@ -556,7 +560,8 @@ public class AllApps3D extends RSSurfaceView
         case MotionEvent.ACTION_CANCEL:
             if (mTouchTracking == TRACKING_HOME) {
                 if (action == MotionEvent.ACTION_UP) {
-                    if (y > mRollo.mTouchYBorders[mRollo.mTouchYBorders.length-1]) {
+                    if ((isPortrait && y > mRollo.mTouchYBorders[mRollo.mTouchYBorders.length-1]) ||
+                        (!isPortrait && x > mRollo.mTouchXBorders[mRollo.mTouchXBorders.length-1])) {
                         reallyPlaySoundEffect(SoundEffectConstants.CLICK);
                         mLauncher.closeAllApps(true);
                     }
