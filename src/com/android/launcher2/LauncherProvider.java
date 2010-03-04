@@ -45,12 +45,10 @@ import android.util.Xml;
 import android.util.AttributeSet;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.os.*;
 import android.provider.Settings;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -69,9 +67,6 @@ public class LauncherProvider extends ContentProvider {
 
     static final String AUTHORITY = "com.android.launcher2.settings";
     
-    static final String EXTRA_BIND_SOURCES = "com.android.launcher2.settings.bindsources";
-    static final String EXTRA_BIND_TARGETS = "com.android.launcher2.settings.bindtargets";
-
     static final String TABLE_FAVORITES = "favorites";
     static final String PARAMETER_NOTIFY = "notify";
 
@@ -485,8 +480,6 @@ public class LauncherProvider extends ContentProvider {
             Cursor c = null;
             try {
                 boolean logged = false;
-                final ContentValues values = new ContentValues();
-                final ContentResolver cr = mContext.getContentResolver();
                 final SQLiteStatement update = db.compileStatement("UPDATE favorites "
                         + "SET icon=? WHERE _id=?");
 
@@ -587,7 +580,6 @@ public class LauncherProvider extends ContentProvider {
                         String updateWhere = Favorites._ID + "=" + favoriteId;
                         db.update(TABLE_FAVORITES, values, updateWhere, null);
 
-                        ComponentName cn = null;
                         if (favoriteType == Favorites.ITEM_TYPE_WIDGET_CLOCK) {
                             appWidgetManager.bindAppWidgetId(appWidgetId,
                                     new ComponentName("com.android.alarmclock",
