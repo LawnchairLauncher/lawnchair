@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 
+import com.android.launcher.R;
+
 /**
  * Folder which contains applications or shortcuts chosen by the user.
  *

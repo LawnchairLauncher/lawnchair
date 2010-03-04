@@ -23,6 +23,8 @@ import android.content.ContentResolver;
 import android.database.Cursor;
 import android.widget.Toast;
 
+import com.android.launcher.R;
+
 public class InstallShortcutReceiver extends BroadcastReceiver {
     private static final String ACTION_INSTALL_SHORTCUT =
             "com.android.launcher.action.INSTALL_SHORTCUT";

@@ -19,26 +19,15 @@ package com.android.launcher2;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.PixelFormat;
-import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
-import android.view.MotionEvent;
 import android.view.LayoutInflater;
-import android.view.SoundEffectConstants;
-import android.view.SurfaceHolder;
-import android.view.VelocityTracker;
 import android.view.View;
-import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.ViewConfiguration;
-import android.view.accessibility.AccessibilityEvent;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -47,10 +36,9 @@ import android.widget.GridView;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 
+import com.android.launcher.R;
 
 public class AllApps2D
         extends RelativeLayout

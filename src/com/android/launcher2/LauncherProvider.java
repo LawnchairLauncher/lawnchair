@@ -57,6 +57,8 @@ import org.xmlpull.v1.XmlPullParser;
 import com.android.internal.util.XmlUtils;
 import com.android.launcher2.LauncherSettings.Favorites;
 
+import com.android.launcher.R;
+
 public class LauncherProvider extends ContentProvider {
     private static final String TAG = "Launcher.LauncherProvider";
     private static final boolean LOGD = false;

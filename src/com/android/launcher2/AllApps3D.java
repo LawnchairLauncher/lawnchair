@@ -52,6 +52,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
+import com.android.launcher.R;
+
 public class AllApps3D extends RSSurfaceView
         implements AllAppsView, View.OnClickListener, View.OnLongClickListener, DragSource {
     private static final String TAG = "Launcher.AllApps3D";

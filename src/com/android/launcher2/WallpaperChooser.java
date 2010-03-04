@@ -38,6 +38,8 @@ import android.widget.ImageView;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.android.launcher.R;
+
 public class WallpaperChooser extends Activity implements AdapterView.OnItemSelectedListener,
         OnClickListener {
     private static final String TAG = "Launcher.WallpaperChooser";

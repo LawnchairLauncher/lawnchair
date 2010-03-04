@@ -23,6 +23,8 @@ import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.graphics.Bitmap;
 
+import com.android.launcher.R;
+
 public class LiveFolderIcon extends FolderIcon {
     public LiveFolderIcon(Context context, AttributeSet attrs) {
         super(context, attrs);

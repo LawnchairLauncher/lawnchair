@@ -32,6 +32,8 @@ import android.app.WallpaperManager;
 
 import java.util.ArrayList;
 
+import com.android.launcher.R;
+
 public class CellLayout extends ViewGroup {
     private boolean mPortrait;
 

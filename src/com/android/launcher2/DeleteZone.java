@@ -33,6 +33,8 @@ import android.view.animation.AlphaAnimation;
 import android.graphics.RectF;
 import android.graphics.drawable.TransitionDrawable;
 
+import com.android.launcher.R;
+
 public class DeleteZone extends ImageView implements DropTarget, DragController.DragListener {
     private static final int ORIENTATION_HORIZONTAL = 1;
     private static final int TRANSITION_DURATION = 250;

@@ -77,6 +77,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.DataInputStream;
 
+import com.android.launcher.R;
+
 /**
  * Default launcher application.
  */

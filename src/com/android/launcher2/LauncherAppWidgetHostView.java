@@ -23,6 +23,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
+import com.android.launcher.R;
+
 /**
  * {@inheritDoc}
  */

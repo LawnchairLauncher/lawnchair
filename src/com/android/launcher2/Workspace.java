@@ -44,6 +44,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import com.android.launcher.R;
+
 /**
  * The workspace is a wide area with a wallpaper and a finite number of screens. Each
  * screen contains a number of icons, folders or widgets the user can interact with.

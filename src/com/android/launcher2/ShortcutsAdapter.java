@@ -26,17 +26,17 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import com.android.launcher.R;
+
 /**
  * GridView adapter to show the list of applications and shortcuts
  */
 public class ShortcutsAdapter  extends ArrayAdapter<ShortcutInfo> {
     private final LayoutInflater mInflater;
-    private final PackageManager mPackageManager;
     private final IconCache mIconCache;
 
     public ShortcutsAdapter(Context context, ArrayList<ShortcutInfo> apps) {
         super(context, 0, apps);
-        mPackageManager = context.getPackageManager();
         mInflater = LayoutInflater.from(context);
         mIconCache = ((LauncherApplication)context.getApplicationContext()).getIconCache();
     }

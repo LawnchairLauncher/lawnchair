@@ -38,6 +38,8 @@ import android.util.Log;
 import android.content.res.Resources;
 import android.content.Context;
 
+import com.android.launcher.R;
+
 /**
  * Various utilities shared amongst the Launcher's classes.
  */

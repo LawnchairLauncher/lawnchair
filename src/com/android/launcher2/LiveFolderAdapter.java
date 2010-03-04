@@ -36,6 +36,8 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.lang.ref.SoftReference;
 
+import com.android.launcher.R;
+
 class LiveFolderAdapter extends CursorAdapter {
     private boolean mIsList;
     private LayoutInflater mInflater;
