@@ -14,7 +14,20 @@
      limitations under the License.
 -->
 
-<!-- switch to all_apps_3d on devices that support RenderScript -->
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
-    <include layout="@layout/all_apps_2d" />
-</merge>
+<!-- Replace with AllAppsView to use 2D version -->
+<com.android.launcher2.AllApps3D
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:id="@+id/all_apps_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:scrollbarStyle="outsideInset"
+    android:drawSelectorOnTop="false"
+    android:listSelector="@drawable/grid_selector"
+    android:verticalSpacing="10dip"
+    android:numColumns="4"
+    android:fadingEdgeLength="20dip"
+    android:padding="2dip"
+    android:cacheColorHint="#FF000000"
+    />
