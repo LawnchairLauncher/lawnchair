@@ -2055,7 +2055,7 @@ public final class Launcher extends Activity
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindPackageAdded(ArrayList<ApplicationInfo> apps) {
+    public void bindAppsAdded(ArrayList<ApplicationInfo> apps) {
         removeDialog(DIALOG_CREATE_SHORTCUT);
         mAllAppsGrid.addApps(apps);
     }
@@ -2065,10 +2065,10 @@ public final class Launcher extends Activity
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindPackageUpdated(String packageName, ArrayList<ApplicationInfo> apps) {
+    public void bindAppsUpdated(ArrayList<ApplicationInfo> apps) {
         removeDialog(DIALOG_CREATE_SHORTCUT);
-        mWorkspace.updateShortcutsForPackage(packageName);
-        mAllAppsGrid.updateApps(packageName, apps);
+        mWorkspace.updateShortcuts(apps);
+        mAllAppsGrid.updateApps(apps);
     }
 
     /**
@@ -2076,9 +2076,9 @@ public final class Launcher extends Activity
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindPackageRemoved(String packageName, ArrayList<ApplicationInfo> apps) {
+    public void bindAppsRemoved(ArrayList<ApplicationInfo> apps) {
         removeDialog(DIALOG_CREATE_SHORTCUT);
-        mWorkspace.removeItemsForPackage(packageName);
+        mWorkspace.removeItems(apps);
         mAllAppsGrid.removeApps(apps);
     }
 

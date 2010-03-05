@@ -39,7 +39,7 @@ public interface AllAppsView {
 
     public void removeApps(ArrayList<ApplicationInfo> list);
 
-    public void updateApps(String packageName, ArrayList<ApplicationInfo> list);
+    public void updateApps(ArrayList<ApplicationInfo> list);
 
     public void dumpState();
 }

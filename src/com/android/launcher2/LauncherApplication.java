@@ -43,6 +43,10 @@ public class LauncherApplication extends Application {
         filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
         filter.addDataScheme("package");
         registerReceiver(mModel, filter);
+        filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE);
+        filter.addAction(Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE);
+        registerReceiver(mModel, filter);
 
         // Register for changes to the favorites
         ContentResolver resolver = getContentResolver();

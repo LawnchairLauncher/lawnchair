@@ -43,6 +43,7 @@ import android.widget.Scroller;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import com.android.launcher.R;
 
@@ -1223,10 +1224,16 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         mAllowLongPress = allowLongPress;
     }
 
-    void removeItemsForPackage(final String packageName) {
+    void removeItems(final ArrayList<ApplicationInfo> apps) {
         final int count = getChildCount();
         final PackageManager manager = getContext().getPackageManager();
         final AppWidgetManager widgets = AppWidgetManager.getInstance(getContext());
+
+        final HashSet<String> packageNames = new HashSet<String>();
+        final int appCount = apps.size();
+        for (int i = 0; i < appCount; i++) {
+            packageNames.add(apps.get(i).componentName.getPackageName());
+        }
 
         for (int i = 0; i < count; i++) {
             final CellLayout layout = (CellLayout) getChildAt(i);
@@ -1244,17 +1251,17 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         
                         if (tag instanceof ShortcutInfo) {
                             final ShortcutInfo info = (ShortcutInfo) tag;
-                            // We need to check for ACTION_MAIN otherwise getComponent() might
-                            // return null for some shortcuts (for instance, for shortcuts to
-                            // web pages.)
                             final Intent intent = info.intent;
                             final ComponentName name = intent.getComponent();
         
-                            if (Intent.ACTION_MAIN.equals(intent.getAction()) &&
-                                    name != null && packageName.equals(name.getPackageName())) {
-                                // TODO: This should probably be done on a worker thread
-                                LauncherModel.deleteItemFromDatabase(mLauncher, info);
-                                childrenToRemove.add(view);
+                            if (Intent.ACTION_MAIN.equals(intent.getAction()) && name != null) {
+                                for (String packageName: packageNames) {
+                                    if (packageName.equals(name.getPackageName())) {
+                                        // TODO: This should probably be done on a worker thread
+                                        LauncherModel.deleteItemFromDatabase(mLauncher, info);
+                                        childrenToRemove.add(view);
+                                    }
+                                }
                             }
                         } else if (tag instanceof UserFolderInfo) {
                             final UserFolderInfo info = (UserFolderInfo) tag;
@@ -1268,12 +1275,16 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                                 final Intent intent = appInfo.intent;
                                 final ComponentName name = intent.getComponent();
         
-                                if (Intent.ACTION_MAIN.equals(intent.getAction()) &&
-                                        name != null && packageName.equals(name.getPackageName())) {
-                                    toRemove.add(appInfo);
-                                    // TODO: This should probably be done on a worker thread
-                                    LauncherModel.deleteItemFromDatabase(mLauncher, appInfo);
-                                    removedFromFolder = true;
+                                if (Intent.ACTION_MAIN.equals(intent.getAction()) && name != null) {
+                                    for (String packageName: packageNames) {
+                                        if (packageName.equals(name.getPackageName())) {
+                                            toRemove.add(appInfo);
+                                            // TODO: This should probably be done on a worker thread
+                                            LauncherModel.deleteItemFromDatabase(
+                                                    mLauncher, appInfo);
+                                            removedFromFolder = true;
+                                        }
+                                    }
                                 }
                             }
         
@@ -1288,21 +1299,27 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                             final ProviderInfo providerInfo = manager.resolveContentProvider(
                                     uri.getAuthority(), 0);
 
-                            if (providerInfo == null ||
-                                    packageName.equals(providerInfo.packageName)) {
-                                // TODO: This should probably be done on a worker thread
-                                LauncherModel.deleteItemFromDatabase(mLauncher, info);
-                                childrenToRemove.add(view);                        
+                            if (providerInfo == null) {
+                                for (String packageName: packageNames) {
+                                    if (packageName.equals(providerInfo.packageName)) {
+                                        // TODO: This should probably be done on a worker thread
+                                        LauncherModel.deleteItemFromDatabase(mLauncher, info);
+                                        childrenToRemove.add(view);                        
+                                    }
+                                }
                             }
                         } else if (tag instanceof LauncherAppWidgetInfo) {
                             final LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) tag;
                             final AppWidgetProviderInfo provider =
                                     widgets.getAppWidgetInfo(info.appWidgetId);
-                            if (provider == null ||
-                                    packageName.equals(provider.provider.getPackageName())) {
-                                // TODO: This should probably be done on a worker thread
-                                LauncherModel.deleteItemFromDatabase(mLauncher, info);
-                                childrenToRemove.add(view);                                
+                            if (provider == null) {
+                                for (String packageName: packageNames) {
+                                    if (packageName.equals(provider.provider.getPackageName())) {
+                                        // TODO: This should probably be done on a worker thread
+                                        LauncherModel.deleteItemFromDatabase(mLauncher, info);
+                                        childrenToRemove.add(view);                                
+                                    }
+                                }
                             }
                         }
                     }
@@ -1325,7 +1342,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         }
     }
 
-    void updateShortcutsForPackage(String packageName) {
+    void updateShortcuts(ArrayList<ApplicationInfo> apps) {
         final PackageManager pm = mLauncher.getPackageManager();
 
         final int count = getChildCount();
@@ -1343,12 +1360,17 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                     final Intent intent = info.intent;
                     final ComponentName name = intent.getComponent();
                     if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION &&
-                            Intent.ACTION_MAIN.equals(intent.getAction()) && name != null &&
-                            packageName.equals(name.getPackageName())) {
-
-                        info.setIcon(mIconCache.getIcon(info.intent));
-                        ((TextView) view).setCompoundDrawablesWithIntrinsicBounds(null,
-                                new FastBitmapDrawable(info.getIcon(mIconCache)), null, null);
+                            Intent.ACTION_MAIN.equals(intent.getAction()) && name != null) {
+                        final int appCount = apps.size();
+                        for (int k=0; k<appCount; k++) {
+                            ApplicationInfo app = apps.get(k);
+                            if (app.componentName.equals(name)) {
+                                info.setIcon(mIconCache.getIcon(info.intent));
+                                ((TextView)view).setCompoundDrawablesWithIntrinsicBounds(null,
+                                        new FastBitmapDrawable(info.getIcon(mIconCache)),
+                                        null, null);
+                                }
+                        }
                     }
                 }
             }

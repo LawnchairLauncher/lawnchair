@@ -279,7 +279,7 @@ public class AllApps2D
         mAppsAdapter.notifyDataSetChanged();
     }
 
-    public void updateApps(String packageName, ArrayList<ApplicationInfo> list) {
+    public void updateApps(ArrayList<ApplicationInfo> list) {
         // Just remove and add, because they may need to be re-sorted.
         removeApps(list);
         addApps(list);

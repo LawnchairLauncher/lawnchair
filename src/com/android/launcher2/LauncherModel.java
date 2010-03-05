@@ -82,9 +82,9 @@ public class LauncherModel extends BroadcastReceiver {
         public void finishBindingItems();
         public void bindAppWidget(LauncherAppWidgetInfo info);
         public void bindAllApplications(ArrayList<ApplicationInfo> apps);
-        public void bindPackageAdded(ArrayList<ApplicationInfo> apps);
-        public void bindPackageUpdated(String packageName, ArrayList<ApplicationInfo> apps);
-        public void bindPackageRemoved(String packageName, ArrayList<ApplicationInfo> apps);
+        public void bindAppsAdded(ArrayList<ApplicationInfo> apps);
+        public void bindAppsUpdated(ArrayList<ApplicationInfo> apps);
+        public void bindAppsRemoved(ArrayList<ApplicationInfo> apps);
     }
 
     LauncherModel(LauncherApplication app, IconCache iconCache) {
@@ -291,10 +291,10 @@ public class LauncherModel extends BroadcastReceiver {
      * ACTION_PACKAGE_CHANGED.
      */
     public void onReceive(Context context, Intent intent) {
+        Log.d(TAG, "onReceive intent=" + intent);
+
         // Use the app as the context.
         context = mApp;
-
-        final String packageName = intent.getData().getSchemeSpecificPart();
 
         ArrayList<ApplicationInfo> added = null;
         ArrayList<ApplicationInfo> removed = null;
@@ -308,26 +308,48 @@ public class LauncherModel extends BroadcastReceiver {
             }
 
             final String action = intent.getAction();
-            final boolean replacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
 
-            if (packageName == null || packageName.length() == 0) {
-                // they sent us a bad intent
-                return;
-            }
+            if (Intent.ACTION_PACKAGE_CHANGED.equals(action)
+                    || Intent.ACTION_PACKAGE_REMOVED.equals(action)
+                    || Intent.ACTION_PACKAGE_ADDED.equals(action)) {
+                final String packageName = intent.getData().getSchemeSpecificPart();
+                final boolean replacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
 
-            if (Intent.ACTION_PACKAGE_CHANGED.equals(action)) {
-                mAllAppsList.updatePackage(context, packageName);
-            } else if (Intent.ACTION_PACKAGE_REMOVED.equals(action)) {
-                if (!replacing) {
-                    mAllAppsList.removePackage(packageName);
+                if (packageName == null || packageName.length() == 0) {
+                    // they sent us a bad intent
+                    return;
                 }
-                // else, we are replacing the package, so a PACKAGE_ADDED will be sent
-                // later, we will update the package at this time
-            } else {
-                if (!replacing) {
-                    mAllAppsList.addPackage(context, packageName);
-                } else {
+
+                if (Intent.ACTION_PACKAGE_CHANGED.equals(action)) {
                     mAllAppsList.updatePackage(context, packageName);
+                } else if (Intent.ACTION_PACKAGE_REMOVED.equals(action)) {
+                    if (!replacing) {
+                        mAllAppsList.removePackage(packageName);
+                    }
+                    // else, we are replacing the package, so a PACKAGE_ADDED will be sent
+                    // later, we will update the package at this time
+                } else if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {
+                    if (!replacing) {
+                        mAllAppsList.addPackage(context, packageName);
+                    } else {
+                        mAllAppsList.updatePackage(context, packageName);
+                    }
+                }
+            } else {
+                if (Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE.equals(action)) {
+                     String packages[] = intent.getStringArrayExtra(
+                             Intent.EXTRA_CHANGED_PACKAGE_LIST);
+                     if (packages == null || packages.length == 0) {
+                         return;
+                     }
+                     Log.d(TAG, "they're back! " + packages);
+                } else if (Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE.equals(action)) {
+                     String packages[] = intent.getStringArrayExtra(
+                             Intent.EXTRA_CHANGED_PACKAGE_LIST);
+                     if (packages == null || packages.length == 0) {
+                         return;
+                     }
+                     Log.d(TAG, "they're gone! " + packages);
                 }
             }
 
@@ -357,7 +379,7 @@ public class LauncherModel extends BroadcastReceiver {
                 final ArrayList<ApplicationInfo> addedFinal = added;
                 mHandler.post(new Runnable() {
                     public void run() {
-                        callbacks.bindPackageAdded(addedFinal);
+                        callbacks.bindAppsAdded(addedFinal);
                     }
                 });
             }
@@ -365,7 +387,7 @@ public class LauncherModel extends BroadcastReceiver {
                 final ArrayList<ApplicationInfo> modifiedFinal = modified;
                 mHandler.post(new Runnable() {
                     public void run() {
-                        callbacks.bindPackageUpdated(packageName, modifiedFinal);
+                        callbacks.bindAppsUpdated(modifiedFinal);
                     }
                 });
             }
@@ -373,7 +395,7 @@ public class LauncherModel extends BroadcastReceiver {
                 final ArrayList<ApplicationInfo> removedFinal = removed;
                 mHandler.post(new Runnable() {
                     public void run() {
-                        callbacks.bindPackageRemoved(packageName, removedFinal);
+                        callbacks.bindAppsRemoved(removedFinal);
                     }
                 });
             }
