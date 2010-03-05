@@ -1776,8 +1776,6 @@ public final class Launcher extends Activity
         private AddAdapter mAdapter;
 
         Dialog createDialog() {
-            mWaitingForResult = true;
-
             mAdapter = new AddAdapter(Launcher.this);
 
             final AlertDialog.Builder builder = new AlertDialog.Builder(Launcher.this);
@@ -1867,6 +1865,7 @@ public final class Launcher extends Activity
         }
 
         public void onShow(DialogInterface dialog) {
+            mWaitingForResult = true;            
         }
     }
 
