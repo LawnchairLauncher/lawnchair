@@ -234,7 +234,6 @@ final class Utilities {
 
         private final TextPaint mTextPaint;
 
-        private final float mBubblePadding;
         private final RectF mBubbleRect = new RectF();
 
         private final float mTextWidth;
@@ -253,18 +252,16 @@ final class Utilities {
             final float scale = metrics.density;
             mDensity = metrics.densityDpi;
 
-            final float paddingLeft = 5.0f * scale;
-            final float paddingRight = 5.0f * scale;
+            final float paddingLeft = 2.0f * scale;
+            final float paddingRight = 2.0f * scale;
             final float cellWidth = resources.getDimension(R.dimen.title_texture_width);
-            final float bubbleWidth = cellWidth - paddingLeft - paddingRight;
-            mBubblePadding = 3.0f * scale;
 
             RectF bubbleRect = mBubbleRect;
             bubbleRect.left = 0;
             bubbleRect.top = 0;
             bubbleRect.right = (int) cellWidth;
 
-            mTextWidth = bubbleWidth - mBubblePadding - mBubblePadding;
+            mTextWidth = cellWidth - paddingLeft - paddingRight;
 
             TextPaint textPaint = mTextPaint = new TextPaint();
             textPaint.setTypeface(Typeface.DEFAULT);
