@@ -78,7 +78,11 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
         mImages = new ArrayList<Integer>(24);
 
         final Resources resources = getResources();
-        final String packageName = getApplication().getPackageName();
+        // Context.getPackageName() may return the "original" package name,
+        // com.android.launcher2; Resources needs the real package name,
+        // com.android.launcher. So we ask Resources for what it thinks the
+        // package name should be.
+        final String packageName = resources.getResourcePackageName(R.array.wallpapers);
 
         addWallpapers(resources, packageName, R.array.wallpapers);
         addWallpapers(resources, packageName, R.array.extra_wallpapers);
@@ -95,6 +99,7 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
                 if (thumbRes != 0) {
                     mThumbs.add(thumbRes);
                     mImages.add(res);
+                    // Log.d(TAG, "addWallpapers: [" + packageName + "]: " + extra + " (" + res + ")");
                 }
             }
         }
