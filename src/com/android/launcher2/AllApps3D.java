@@ -1188,9 +1188,9 @@ public class AllApps3D extends RSSurfaceView
     
         private void createAppIconAllocations(int index, ApplicationInfo item) {
             mIcons[index] = Allocation.createFromBitmap(mRS, item.iconBitmap,
-                    Element.RGBA_8888(mRS), true);
+                    Element.RGBA_8888(mRS), false);
             mLabels[index] = Allocation.createFromBitmap(mRS, item.titleBitmap,
-                    Element.A_8(mRS), true);
+                    Element.A_8(mRS), false);
             mIconIds[index] = mIcons[index].getID();
             mLabelIds[index] = mLabels[index].getID();
         }
@@ -1202,8 +1202,8 @@ public class AllApps3D extends RSSurfaceView
                     + " mIconsIds[index]=" + mIconIds[index]
                     + " item=" + item);
             }
-            mIcons[index].uploadToTexture(0);
-            mLabels[index].uploadToTexture(0);
+            mIcons[index].uploadToTexture(true, 0);
+            mLabels[index].uploadToTexture(true, 0);
         }
     
         /**
