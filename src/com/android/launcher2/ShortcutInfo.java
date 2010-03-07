@@ -48,6 +48,17 @@ class ShortcutInfo extends ItemInfo {
     boolean customIcon;
 
     /**
+     * Indicates whether we're using the default fallback icon instead of something from the
+     * app.
+     */
+    boolean usingFallbackIcon;
+
+    /**
+     * Indicates whether the shortcut is on external storage and may go away at any time.
+     */
+    boolean onExternalStorage;
+
+    /**
      * If isShortcut=true and customIcon=false, this contains a reference to the
      * shortcut icon as an application's resource.
      */
@@ -122,9 +133,11 @@ class ShortcutInfo extends ItemInfo {
         if (customIcon) {
             values.put(LauncherSettings.BaseLauncherColumns.ICON_TYPE,
                     LauncherSettings.BaseLauncherColumns.ICON_TYPE_BITMAP);
-            Bitmap bitmap = this.mIcon;
-            writeBitmap(values, bitmap);
+            writeBitmap(values, mIcon);
         } else {
+            if (onExternalStorage && !usingFallbackIcon) {
+                writeBitmap(values, mIcon);
+            }
             values.put(LauncherSettings.BaseLauncherColumns.ICON_TYPE,
                     LauncherSettings.BaseLauncherColumns.ICON_TYPE_RESOURCE);
             if (iconResource != null) {

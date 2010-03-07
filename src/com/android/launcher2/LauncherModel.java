@@ -45,6 +45,7 @@ import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
 import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Collections;
 import java.util.HashMap;
@@ -96,7 +97,7 @@ public class LauncherModel extends BroadcastReceiver {
                 app.getPackageManager().getDefaultActivityIcon(), app);
     }
 
-    public Bitmap getDefaultIcon() {
+    public Bitmap getFallbackIcon() {
         return Bitmap.createBitmap(mDefaultIcon);
     }
 
@@ -291,8 +292,6 @@ public class LauncherModel extends BroadcastReceiver {
      * ACTION_PACKAGE_CHANGED.
      */
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "onReceive intent=" + intent);
-
         // Use the app as the context.
         context = mApp;
 
@@ -335,6 +334,53 @@ public class LauncherModel extends BroadcastReceiver {
                         mAllAppsList.updatePackage(context, packageName);
                     }
                 }
+
+                if (mAllAppsList.added.size() > 0) {
+                    added = mAllAppsList.added;
+                    mAllAppsList.added = new ArrayList<ApplicationInfo>();
+                }
+                if (mAllAppsList.removed.size() > 0) {
+                    removed = mAllAppsList.removed;
+                    mAllAppsList.removed = new ArrayList<ApplicationInfo>();
+                    for (ApplicationInfo info: removed) {
+                        mIconCache.remove(info.intent.getComponent());
+                    }
+                }
+                if (mAllAppsList.modified.size() > 0) {
+                    modified = mAllAppsList.modified;
+                    mAllAppsList.modified = new ArrayList<ApplicationInfo>();
+                }
+
+                final Callbacks callbacks = mCallbacks != null ? mCallbacks.get() : null;
+                if (callbacks == null) {
+                    Log.w(TAG, "Nobody to tell about the new app.  Launcher is probably loading.");
+                    return;
+                }
+
+                if (added != null) {
+                    final ArrayList<ApplicationInfo> addedFinal = added;
+                    mHandler.post(new Runnable() {
+                        public void run() {
+                            callbacks.bindAppsAdded(addedFinal);
+                        }
+                    });
+                }
+                if (modified != null) {
+                    final ArrayList<ApplicationInfo> modifiedFinal = modified;
+                    mHandler.post(new Runnable() {
+                        public void run() {
+                            callbacks.bindAppsUpdated(modifiedFinal);
+                        }
+                    });
+                }
+                if (removed != null) {
+                    final ArrayList<ApplicationInfo> removedFinal = removed;
+                    mHandler.post(new Runnable() {
+                        public void run() {
+                            callbacks.bindAppsRemoved(removedFinal);
+                        }
+                    });
+                }
             } else {
                 if (Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE.equals(action)) {
                      String packages[] = intent.getStringArrayExtra(
@@ -342,62 +388,19 @@ public class LauncherModel extends BroadcastReceiver {
                      if (packages == null || packages.length == 0) {
                          return;
                      }
-                     Log.d(TAG, "they're back! " + packages);
+                     setAllAppsDirty();
+                     setWorkspaceDirty();
+                     startLoader(context, false);
                 } else if (Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE.equals(action)) {
                      String packages[] = intent.getStringArrayExtra(
                              Intent.EXTRA_CHANGED_PACKAGE_LIST);
                      if (packages == null || packages.length == 0) {
                          return;
                      }
-                     Log.d(TAG, "they're gone! " + packages);
+                     setAllAppsDirty();
+                     setWorkspaceDirty();
+                     startLoader(context, false);
                 }
-            }
-
-            if (mAllAppsList.added.size() > 0) {
-                added = mAllAppsList.added;
-                mAllAppsList.added = new ArrayList<ApplicationInfo>();
-            }
-            if (mAllAppsList.removed.size() > 0) {
-                removed = mAllAppsList.removed;
-                mAllAppsList.removed = new ArrayList<ApplicationInfo>();
-                for (ApplicationInfo info: removed) {
-                    mIconCache.remove(info.intent.getComponent());
-                }
-            }
-            if (mAllAppsList.modified.size() > 0) {
-                modified = mAllAppsList.modified;
-                mAllAppsList.modified = new ArrayList<ApplicationInfo>();
-            }
-
-            final Callbacks callbacks = mCallbacks != null ? mCallbacks.get() : null;
-            if (callbacks == null) {
-                Log.w(TAG, "Nobody to tell about the new app.  Launcher is probably loading.");
-                return;
-            }
-
-            if (added != null) {
-                final ArrayList<ApplicationInfo> addedFinal = added;
-                mHandler.post(new Runnable() {
-                    public void run() {
-                        callbacks.bindAppsAdded(addedFinal);
-                    }
-                });
-            }
-            if (modified != null) {
-                final ArrayList<ApplicationInfo> modifiedFinal = modified;
-                mHandler.post(new Runnable() {
-                    public void run() {
-                        callbacks.bindAppsUpdated(modifiedFinal);
-                    }
-                });
-            }
-            if (removed != null) {
-                final ArrayList<ApplicationInfo> removedFinal = removed;
-                mHandler.post(new Runnable() {
-                    public void run() {
-                        callbacks.bindAppsRemoved(removedFinal);
-                    }
-                });
             }
         }
     }
@@ -648,12 +651,6 @@ public class LauncherModel extends BroadcastReceiver {
                 final AppWidgetManager widgets = AppWidgetManager.getInstance(context);
                 final boolean isSafeMode = manager.isSafeMode();
 
-                /* TODO
-                if (mLocaleChanged) {
-                    updateShortcutLabels(contentResolver, manager);
-                }
-                */
-
                 mItems.clear();
                 mAppWidgets.clear();
                 mFolders.clear();
@@ -718,24 +715,18 @@ public class LauncherModel extends BroadcastReceiver {
                                 }
 
                                 if (itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-                                    info = getShortcutInfo(manager, intent, context);
+                                    info = getShortcutInfo(manager, intent, context, c, iconIndex,
+                                            titleIndex);
                                 } else {
                                     info = getShortcutInfo(c, context, iconTypeIndex,
-                                            iconPackageIndex, iconResourceIndex, iconIndex);
-                                }
-
-                                if (info == null) {
-                                    info = new ShortcutInfo();
-                                    info.setIcon(getDefaultIcon());
+                                            iconPackageIndex, iconResourceIndex, iconIndex,
+                                            titleIndex);
                                 }
 
                                 if (info != null) {
-                                    if (itemType
-                                            != LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-                                        info.title = c.getString(titleIndex);
-                                    }
-                                    info.intent = intent;
+                                    updateSavedIcon(context, info, c, iconIndex);
 
+                                    info.intent = intent;
                                     info.id = c.getLong(idIndex);
                                     container = c.getInt(containerIndex);
                                     info.container = container;
@@ -754,6 +745,15 @@ public class LauncherModel extends BroadcastReceiver {
                                         folderInfo.add(info);
                                         break;
                                     }
+                                } else {
+                                    // Failed to load the shortcut, probably because the
+                                    // activity manager couldn't resolve it (maybe the app
+                                    // was uninstalled), or the db row was somehow screwed up.
+                                    // Delete it.
+                                    id = c.getLong(idIndex);
+                                    Log.e(TAG, "Error loading shortcut " + id + ", removing it");
+                                    contentResolver.delete(LauncherSettings.Favorites.getContentUri(
+                                                id, false), null, null);
                                 }
                                 break;
 
@@ -1085,24 +1085,62 @@ public class LauncherModel extends BroadcastReceiver {
     }
 
     /**
-     * Make an ShortcutInfo object for a sortcut that is an application.
+     * This is called from the code that adds shortcuts from the intent receiver.  This
+     * doesn't have a Cursor, but
      */
-    public ShortcutInfo getShortcutInfo(PackageManager manager, Intent intent,
-                                                      Context context) {
-        final ResolveInfo resolveInfo = manager.resolveActivity(intent, 0);
+    public ShortcutInfo getShortcutInfo(PackageManager manager, Intent intent, Context context) {
+        return getShortcutInfo(manager, intent, context);
+    }
 
-        if (resolveInfo == null) {
+    /**
+     * Make an ShortcutInfo object for a shortcut that is an application.
+     *
+     * If c is not null, then it will be used to fill in missing data like the title and icon.
+     */
+    public ShortcutInfo getShortcutInfo(PackageManager manager, Intent intent, Context context,
+            Cursor c, int iconIndex, int titleIndex) {
+        Bitmap icon = null;
+        final ShortcutInfo info = new ShortcutInfo();
+
+        ComponentName componentName = intent.getComponent();
+        if (componentName == null) {
             return null;
         }
 
-        final ShortcutInfo info = new ShortcutInfo();
-        final ActivityInfo activityInfo = resolveInfo.activityInfo;
-        info.setIcon(mIconCache.getIcon(intent.getComponent(), resolveInfo));
-        if (info.title == null || info.title.length() == 0) {
-            info.title = activityInfo.loadLabel(manager);
+        // the resource -- This may implicitly give us back the fallback icon,
+        // but don't worry about that.  All we're doing with usingFallbackIcon is
+        // to avoid saving lots of copies of that in the database, and most apps
+        // have icons anyway.
+        final ResolveInfo resolveInfo = manager.resolveActivity(intent, 0);
+        if (resolveInfo != null) {
+            icon = mIconCache.getIcon(componentName, resolveInfo);
         }
+        // the db
+        if (icon == null) {
+            if (c != null) {
+                icon = getIconFromCursor(c, iconIndex);
+            }
+        }
+        // the fallback icon
+        if (icon == null) {
+            icon = getFallbackIcon();
+            info.usingFallbackIcon = true;
+        }
+        info.setIcon(icon);
+
+        // from the resource
+        if (resolveInfo != null) {
+            info.title = resolveInfo.activityInfo.loadLabel(manager);
+        }
+        // from the db
         if (info.title == null) {
-            info.title = activityInfo.name;
+            if (c != null) {
+                info.title =  c.getString(titleIndex);
+            }
+        }
+        // fall back to the class name of the activity
+        if (info.title == null) {
+            info.title = componentName.getClassName();
         }
         info.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
         return info;
@@ -1112,10 +1150,14 @@ public class LauncherModel extends BroadcastReceiver {
      * Make an ShortcutInfo object for a shortcut that isn't an application.
      */
     private ShortcutInfo getShortcutInfo(Cursor c, Context context,
-            int iconTypeIndex, int iconPackageIndex, int iconResourceIndex, int iconIndex) {
+            int iconTypeIndex, int iconPackageIndex, int iconResourceIndex, int iconIndex,
+            int titleIndex) {
 
+        Bitmap icon = null;
         final ShortcutInfo info = new ShortcutInfo();
         info.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+
+        info.title = c.getString(titleIndex);
 
         int iconType = c.getInt(iconTypeIndex);
         switch (iconType) {
@@ -1123,34 +1165,58 @@ public class LauncherModel extends BroadcastReceiver {
             String packageName = c.getString(iconPackageIndex);
             String resourceName = c.getString(iconResourceIndex);
             PackageManager packageManager = context.getPackageManager();
+            info.customIcon = false;
+            // the resource
             try {
                 Resources resources = packageManager.getResourcesForApplication(packageName);
-                final int id = resources.getIdentifier(resourceName, null, null);
-                info.setIcon(Utilities.createIconBitmap(resources.getDrawable(id), context));
+                if (resources != null) {
+                    final int id = resources.getIdentifier(resourceName, null, null);
+                    icon = Utilities.createIconBitmap(resources.getDrawable(id), context);
+                }
             } catch (Exception e) {
-                info.setIcon(getDefaultIcon());
+                // drop this.  we have other places to look for icons
             }
-            info.iconResource = new Intent.ShortcutIconResource();
-            info.iconResource.packageName = packageName;
-            info.iconResource.resourceName = resourceName;
-            info.customIcon = false;
+            // the db
+            if (icon == null) {
+                icon = getIconFromCursor(c, iconIndex);
+            }
+            // the fallback icon
+            if (icon == null) {
+                icon = getFallbackIcon();
+                info.usingFallbackIcon = true;
+            }
             break;
         case LauncherSettings.Favorites.ICON_TYPE_BITMAP:
-            byte[] data = c.getBlob(iconIndex);
-            try {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                info.setIcon(bitmap);
-            } catch (Exception e) {
-                info.setIcon(getDefaultIcon());
+            icon = getIconFromCursor(c, iconIndex);
+            if (icon == null) {
+                icon = getFallbackIcon();
+                info.customIcon = false;
+                info.usingFallbackIcon = true;
+            } else {
+                info.customIcon = true;
             }
-            info.customIcon = true;
+            info.setIcon(icon);
             break;
         default:
-            info.setIcon(getDefaultIcon());
+            info.setIcon(getFallbackIcon());
+            info.usingFallbackIcon = true;
             info.customIcon = false;
             break;
         }
         return info;
+    }
+
+    Bitmap getIconFromCursor(Cursor c, int iconIndex) {
+        if (false) {
+            Log.d(TAG, "getIconFromCursor app="
+                    + c.getString(c.getColumnIndexOrThrow(LauncherSettings.Favorites.TITLE)));
+        }
+        byte[] data = c.getBlob(iconIndex);
+        try {
+            return BitmapFactory.decodeByteArray(data, 0, data.length);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     ShortcutInfo addShortcut(Context context, Intent data,
@@ -1193,12 +1259,14 @@ public class LauncherModel extends BroadcastReceiver {
             }
         }
 
-        if (icon == null) {
-            icon = getDefaultIcon();
-        }
-
         final ShortcutInfo info = new ShortcutInfo();
+
+        if (icon == null) {
+            icon = getFallbackIcon();
+            info.usingFallbackIcon = true;
+        }
         info.setIcon(icon);
+
         info.title = name;
         info.intent = intent;
         info.customIcon = customIcon;
@@ -1237,6 +1305,37 @@ public class LauncherModel extends BroadcastReceiver {
         }
     }
 
+    void updateSavedIcon(Context context, ShortcutInfo info, Cursor c, int iconIndex) {
+        // If this icon doesn't have a custom icon, check to see
+        // what's stored in the DB, and if it doesn't match what
+        // we're going to show, store what we are going to show back
+        // into the DB.  We do this so when we're loading, if the
+        // package manager can't find an icon (for example because
+        // the app is on SD) then we can use that instead.
+        if (info.onExternalStorage && !info.customIcon && !info.usingFallbackIcon) {
+            boolean needSave;
+            byte[] data = c.getBlob(iconIndex);
+            try {
+                if (data != null) {
+                    Bitmap saved = BitmapFactory.decodeByteArray(data, 0, data.length);
+                    Bitmap loaded = info.getIcon(mIconCache);
+                    needSave = !saved.sameAs(loaded);
+                } else {
+                    needSave = true;
+                }
+            } catch (Exception e) {
+                needSave = true;
+            }
+            if (needSave) {
+                Log.d(TAG, "going to save icon bitmap for info=" + info);
+                // This is slower than is ideal, but this only happens either
+                // after the froyo OTA or when the app is updated with a new
+                // icon.
+                updateItemInDatabase(context, info);
+            }
+        }
+    }
+
     /**
      * Return an existing UserFolderInfo object if we have encountered this ID previously,
      * or make a new one.
@@ -1265,64 +1364,6 @@ public class LauncherModel extends BroadcastReceiver {
             folders.put(id, folderInfo);
         }
         return (LiveFolderInfo) folderInfo;
-    }
-
-    private static void updateShortcutLabels(ContentResolver resolver, PackageManager manager) {
-        final Cursor c = resolver.query(LauncherSettings.Favorites.CONTENT_URI,
-                new String[] { LauncherSettings.Favorites._ID, LauncherSettings.Favorites.TITLE,
-                        LauncherSettings.Favorites.INTENT, LauncherSettings.Favorites.ITEM_TYPE },
-                null, null, null);
-
-        final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
-        final int intentIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.INTENT);
-        final int itemTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
-        final int titleIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.TITLE);
-
-        // boolean changed = false;
-
-        try {
-            while (c.moveToNext()) {
-                try {
-                    if (c.getInt(itemTypeIndex) !=
-                            LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-                        continue;
-                    }
-
-                    final String intentUri = c.getString(intentIndex);
-                    if (intentUri != null) {
-                        final Intent shortcut = Intent.parseUri(intentUri, 0);
-                        if (Intent.ACTION_MAIN.equals(shortcut.getAction())) {
-                            final ComponentName name = shortcut.getComponent();
-                            if (name != null) {
-                                final ActivityInfo activityInfo = manager.getActivityInfo(name, 0);
-                                final String title = c.getString(titleIndex);
-                                String label = getLabel(manager, activityInfo);
-
-                                if (title == null || !title.equals(label)) {
-                                    final ContentValues values = new ContentValues();
-                                    values.put(LauncherSettings.Favorites.TITLE, label);
-
-                                    resolver.update(
-                                            LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION,
-                                            values, "_id=?",
-                                            new String[] { String.valueOf(c.getLong(idIndex)) });
-
-                                    // changed = true;
-                                }
-                            }
-                        }
-                    }
-                } catch (URISyntaxException e) {
-                    // Ignore
-                } catch (PackageManager.NameNotFoundException e) {
-                    // Ignore
-                }
-            }
-        } finally {
-            c.close();
-        }
-
-        // if (changed) resolver.notifyChange(Settings.Favorites.CONTENT_URI, null);
     }
 
     private static String getLabel(PackageManager manager, ActivityInfo activityInfo) {

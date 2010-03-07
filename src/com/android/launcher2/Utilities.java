@@ -22,6 +22,8 @@ import android.graphics.drawable.PaintDrawable;
 import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.PixelFormat;
@@ -57,6 +59,7 @@ final class Utilities {
     private static final Paint sBlurPaint = new Paint();
     private static final Paint sGlowColorPressedPaint = new Paint();
     private static final Paint sGlowColorFocusedPaint = new Paint();
+    private static final Paint sDisabledPaint = new Paint();
     private static final Rect sBounds = new Rect();
     private static final Rect sOldBounds = new Rect();
     private static final Canvas sCanvas = new Canvas();
@@ -214,6 +217,22 @@ final class Utilities {
         }
     }
 
+    static Bitmap drawDisabledBitmap(Bitmap bitmap, Context context) {
+        synchronized (sCanvas) { // we share the statics :-(
+            if (sIconWidth == -1) {
+                initStatics(context);
+            }
+            final Bitmap disabled = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(),
+                    Bitmap.Config.ARGB_8888);
+            final Canvas canvas = sCanvas;
+            canvas.setBitmap(disabled);
+            
+            canvas.drawBitmap(bitmap, 0.0f, 0.0f, sDisabledPaint);
+
+            return disabled;
+        }
+    }
+
     private static void initStatics(Context context) {
         final Resources resources = context.getResources();
         final DisplayMetrics metrics = resources.getDisplayMetrics();
@@ -227,6 +246,11 @@ final class Utilities {
         sGlowColorPressedPaint.setMaskFilter(TableMaskFilter.CreateClipTable(0, 30));
         sGlowColorFocusedPaint.setColor(0xffff8e00);
         sGlowColorFocusedPaint.setMaskFilter(TableMaskFilter.CreateClipTable(0, 30));
+
+        ColorMatrix cm = new ColorMatrix();
+        cm.setSaturation(0.2f);
+        sDisabledPaint.setColorFilter(new ColorMatrixColorFilter(cm));
+        sDisabledPaint.setAlpha(0x88);
     }
 
     static class BubbleText {
