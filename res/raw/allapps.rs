@@ -370,9 +370,9 @@ main(int launchID)
         } else {
             g_Zoom += dz;
         }
-        g_Animation = powf(1-g_Zoom, 3);
         updateReadback();
     }
+    g_Animation = powf(1-g_Zoom, 3);
 
     // Set clear value to dim the background based on the zoom position.
     if ((g_Zoom < 0.001f) && (state->zoomTarget < 0.001f) && !g_SpecialHWWar) {
