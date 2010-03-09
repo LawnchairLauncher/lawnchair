@@ -19,7 +19,9 @@
 -->
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.launcher">
+    package="com.android.launcher"
+    android:sharedUserId="@string/sharedUserId"
+    >
 
     <original-package android:name="com.android.launcher2" />
 
@@ -62,6 +64,7 @@
     
     <application
         android:name="com.android.launcher2.LauncherApplication"
+        android:process="@string/process"
         android:label="@string/application_name"
         android:icon="@drawable/ic_launcher_home">
 
