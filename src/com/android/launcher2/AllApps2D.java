@@ -57,28 +57,26 @@ public class AllApps2D
 
     private ArrayList<ApplicationInfo> mAllAppsList = new ArrayList<ApplicationInfo>();
 
-    /**
-     * True when we are using arrow keys or trackball to drive navigation
-     */
-    private boolean mArrowNavigation = false;
-    private boolean mStartedScrolling;
-
-    /**
-     * Used to keep track of the selection when AllApps2D loses window focus.
-     * One of the SELECTION_ constants.
-     */
-    private int mLastSelection;
-
-    /**
-     * Used to keep track of the selection when AllApps2D loses window focus
-     */
-    private int mLastSelectedIcon;
-
+    // preserve compatibility with 3D all apps:
+    //    0.0 -> hidden
+    //    1.0 -> shown and opaque
+    //    intermediate values -> partially shown & partially opaque
     private float mZoom;
 
     private AppsAdapter mAppsAdapter;
 
     // ------------------------------------------------------------
+    
+    public static class HomeButton extends ImageButton {
+        public HomeButton(Context context, AttributeSet attrs) {
+            super(context, attrs);
+        }
+        @Override
+        public View focusSearch(int direction) {
+            if (direction == FOCUS_UP) return super.focusSearch(direction);
+            return null;
+        }
+    }
 
     public class AppsAdapter extends ArrayAdapter<ApplicationInfo> {
         private final LayoutInflater mInflater;
@@ -184,6 +182,11 @@ public class AllApps2D
         return true;
     }
 
+    protected void onFocusChanged(boolean gainFocus, int direction, android.graphics.Rect prev) {
+        if (gainFocus) {
+            mGrid.requestFocus();
+        }
+    }
 
     public void setDragController(DragController dragger) {
         mDragController = dragger;
