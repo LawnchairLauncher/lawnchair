@@ -616,12 +616,14 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                 final int xDiff = (int) Math.abs(x - mLastMotionX);
                 final int yDiff = (int) Math.abs(y - mLastMotionY);
 
-                boolean xMoved = xDiff > mPagingTouchSlop;
-                boolean yMoved = yDiff > mTouchSlop;
+                final int touchSlop = mTouchSlop;
+                boolean xPaged = xDiff > mPagingTouchSlop;
+                boolean xMoved = xDiff > touchSlop;
+                boolean yMoved = yDiff > touchSlop;
                 
                 if (xMoved || yMoved) {
                     
-                    if (xMoved) {
+                    if (xPaged) {
                         // Scroll if the user moved far enough along the X axis
                         mTouchState = TOUCH_STATE_SCROLLING;
                         mLastMotionX = x;
