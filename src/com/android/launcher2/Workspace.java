@@ -107,8 +107,13 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     private boolean mAllowLongPress = true;
 
     private int mTouchSlop;
+    private int mPagingTouchSlop;
     private int mMaximumVelocity;
+    
+    private static final int INVALID_POINTER = -1;
 
+    private int mActivePointerId = INVALID_POINTER;
+    
     private Drawable mPreviousIndicator;
     private Drawable mNextIndicator;
 
@@ -155,6 +160,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
         final ViewConfiguration configuration = ViewConfiguration.get(getContext());
         mTouchSlop = configuration.getScaledTouchSlop();
+        mPagingTouchSlop = configuration.getScaledPagingTouchSlop();
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
     }
 
@@ -593,11 +599,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             return true;
         }
 
-        final float x = ev.getX();
-        final float y = ev.getY();
-
-        switch (action) {
-            case MotionEvent.ACTION_MOVE:
+        switch (action & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_MOVE: {
                 /*
                  * mIsBeingDragged == false, otherwise the shortcut would have caught it. Check
                  * whether the user has moved far enough from his original down touch.
@@ -607,18 +610,21 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                  * Locally do absolute value. mLastMotionX is set to the y value
                  * of the down event.
                  */
+                final int pointerIndex = ev.findPointerIndex(mActivePointerId);
+                final float x = ev.getX(pointerIndex);
+                final float y = ev.getY(pointerIndex);
                 final int xDiff = (int) Math.abs(x - mLastMotionX);
                 final int yDiff = (int) Math.abs(y - mLastMotionY);
 
-                final int touchSlop = mTouchSlop;
-                boolean xMoved = xDiff > touchSlop;
-                boolean yMoved = yDiff > touchSlop;
+                boolean xMoved = xDiff > mPagingTouchSlop;
+                boolean yMoved = yDiff > mTouchSlop;
                 
                 if (xMoved || yMoved) {
                     
                     if (xMoved) {
                         // Scroll if the user moved far enough along the X axis
                         mTouchState = TOUCH_STATE_SCROLLING;
+                        mLastMotionX = x;
                         enableChildrenCache(mCurrentScreen - 1, mCurrentScreen + 1);
                     }
                     // Either way, cancel any pending longpress
@@ -632,11 +638,15 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                     }
                 }
                 break;
+            }
 
-            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_DOWN: {
+                final float x = ev.getX();
+                final float y = ev.getY();
                 // Remember location of down touch
                 mLastMotionX = x;
                 mLastMotionY = y;
+                mActivePointerId = ev.getPointerId(0);
                 mAllowLongPress = true;
 
                 /*
@@ -646,6 +656,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                  */
                 mTouchState = mScroller.isFinished() ? TOUCH_STATE_REST : TOUCH_STATE_SCROLLING;
                 break;
+            }
 
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
@@ -655,18 +666,24 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                     if (!currentScreen.lastDownOnOccupiedCell()) {
                         getLocationOnScreen(mTempCell);
                         // Send a tap to the wallpaper if the last down was on empty space
+                        final int pointerIndex = ev.findPointerIndex(mActivePointerId);
                         mWallpaperManager.sendWallpaperCommand(getWindowToken(), 
                                 "android.wallpaper.tap",
-                                mTempCell[0] + (int) ev.getX(),
-                                mTempCell[1] + (int) ev.getY(), 0, null);
+                                mTempCell[0] + (int) ev.getX(pointerIndex),
+                                mTempCell[1] + (int) ev.getY(pointerIndex), 0, null);
                     }
                 }
                 
                 // Release the drag
                 clearChildrenCache();
                 mTouchState = TOUCH_STATE_REST;
+                mActivePointerId = INVALID_POINTER;
                 mAllowLongPress = false;
 
+                break;
+                
+            case MotionEvent.ACTION_POINTER_UP:
+                onSecondaryPointerUp(ev);
                 break;
         }
 
@@ -675,6 +692,24 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
          * drag mode.
          */
         return mTouchState != TOUCH_STATE_REST;
+    }
+    
+    private void onSecondaryPointerUp(MotionEvent ev) {
+        final int pointerIndex = (ev.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >>
+                MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+        final int pointerId = ev.getPointerId(pointerIndex);
+        if (pointerId == mActivePointerId) {
+            // This was our active pointer going up. Choose a new
+            // active pointer and adjust accordingly.
+            // TODO: Make this decision more intelligent.
+            final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
+            mLastMotionX = ev.getX(newPointerIndex);
+            mLastMotionY = ev.getY(newPointerIndex);
+            mActivePointerId = ev.getPointerId(newPointerIndex);
+            if (mVelocityTracker != null) {
+                mVelocityTracker.clear();
+            }
+        }
     }
 
     /**
@@ -752,9 +787,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         mVelocityTracker.addMovement(ev);
 
         final int action = ev.getAction();
-        final float x = ev.getX();
 
-        switch (action) {
+        switch (action & MotionEvent.ACTION_MASK) {
         case MotionEvent.ACTION_DOWN:
             /*
              * If being flinged and user touches, stop the fling. isFinished
@@ -765,11 +799,14 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             }
 
             // Remember where the motion event started
-            mLastMotionX = x;
+            mLastMotionX = ev.getX();
+            mActivePointerId = ev.getPointerId(0);
             break;
         case MotionEvent.ACTION_MOVE:
             if (mTouchState == TOUCH_STATE_SCROLLING) {
                 // Scroll to follow the motion event
+                final int pointerIndex = ev.findPointerIndex(mActivePointerId);
+                final float x = ev.getX(pointerIndex);
                 final int deltaX = (int) (mLastMotionX - x);
                 mLastMotionX = x;
 
@@ -794,14 +831,17 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             if (mTouchState == TOUCH_STATE_SCROLLING) {
                 final VelocityTracker velocityTracker = mVelocityTracker;
                 velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
-                int velocityX = (int) velocityTracker.getXVelocity();
-
+                final int velocityX = (int) velocityTracker.getXVelocity(mActivePointerId);
+                
+                final int screenWidth = getWidth();
+                final int whichScreen = (mScrollX + (screenWidth / 2)) / screenWidth;
+                
                 if (velocityX > SNAP_VELOCITY && mCurrentScreen > 0) {
                     // Fling hard enough to move left
-                    snapToScreen(mCurrentScreen - 1);
+                    snapToScreen(Math.min(whichScreen, mCurrentScreen - 1));
                 } else if (velocityX < -SNAP_VELOCITY && mCurrentScreen < getChildCount() - 1) {
                     // Fling hard enough to move right
-                    snapToScreen(mCurrentScreen + 1);
+                    snapToScreen(Math.max(whichScreen, mCurrentScreen + 1));
                 } else {
                     snapToDestination();
                 }
@@ -812,9 +852,15 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                 }
             }
             mTouchState = TOUCH_STATE_REST;
+            mActivePointerId = INVALID_POINTER;
             break;
         case MotionEvent.ACTION_CANCEL:
             mTouchState = TOUCH_STATE_REST;
+            mActivePointerId = INVALID_POINTER;
+            break;
+        case MotionEvent.ACTION_POINTER_UP:
+            onSecondaryPointerUp(ev);
+            break;
         }
 
         return true;
@@ -849,7 +895,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         
         final int newX = whichScreen * getWidth();
         final int delta = newX - mScrollX;
-        final int duration = screenDelta * 300;
+        final int duration = screenDelta != 0 ? screenDelta * 300 : 300;
         awakenScrollBars(duration);
 
         if (!mScroller.isFinished()) mScroller.abortAnimation();
