@@ -113,16 +113,25 @@
     <string name="menu_settings">Settings</string>
 
     <!-- Permissions: -->
+    <skip />
+    <!-- Permission short label -->
     <string name="permlab_install_shortcut">install shortcuts</string>
+    <!-- Permission description -->
     <string name="permdesc_install_shortcut">Allows an application to add
         shortcuts without user intervention.</string>
+    <!-- Permission short label -->
     <string name="permlab_uninstall_shortcut">uninstall shortcuts</string>
+    <!-- Permission description -->
     <string name="permdesc_uninstall_shortcut">Allows an application to remove
         shortcuts without user intervention.</string>
+    <!-- Permission short label -->
     <string name="permlab_read_settings">read Home settings and shortcuts</string>
+    <!-- Permission description -->
     <string name="permdesc_read_settings">Allows an application to read the settings and
         shortcuts in Home.</string>
+    <!-- Permission short label -->
     <string name="permlab_write_settings">write Home settings and shortcuts</string>
+    <!-- Permission description -->
     <string name="permdesc_write_settings">Allows an application to change the settings and
         shortcuts in Home.</string>
 
