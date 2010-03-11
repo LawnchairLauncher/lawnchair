@@ -1089,7 +1089,7 @@ public class LauncherModel extends BroadcastReceiver {
      * doesn't have a Cursor, but
      */
     public ShortcutInfo getShortcutInfo(PackageManager manager, Intent intent, Context context) {
-        return getShortcutInfo(manager, intent, context);
+        return getShortcutInfo(manager, intent, context, null, -1, -1);
     }
 
     /**
