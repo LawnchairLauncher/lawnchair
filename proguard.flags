@@ -2,3 +2,5 @@
   public void previousScreen(android.view.View);
   public void nextScreen(android.view.View);
 }
+
+-keep class com.android.launcher2.AllApps3D.Defines
