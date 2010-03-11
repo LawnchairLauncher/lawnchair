@@ -300,6 +300,9 @@ public class AllApps2D
     public void dumpState() {
         ApplicationInfo.dumpApplicationInfoList(TAG, "mAllAppsList", mAllAppsList);
     }
+    
+    public void surrender() {
+    }
 }
 
 

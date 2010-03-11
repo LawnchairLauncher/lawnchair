@@ -84,10 +84,11 @@ public class AllApps3D extends RSSurfaceView
     private int mMaxFlingVelocity;
 
     private Defines mDefines = new Defines();
-    private RenderScriptGL mRS;
-    private RolloRS mRollo;
     private ArrayList<ApplicationInfo> mAllAppsList;
 
+    private static RenderScriptGL mRS;
+    private static RolloRS mRollo;
+    
     /**
      * True when we are using arrow keys or trackball to drive navigation
      */
@@ -125,7 +126,8 @@ public class AllApps3D extends RSSurfaceView
     
     private int mColumnsPerPage;
     private int mRowsPerPage;
-    
+    private boolean mSurrendered;
+
     @SuppressWarnings({"UnusedDeclaration"})
     static class Defines {
         public static final int ALLOC_PARAMS = 0;
@@ -163,14 +165,24 @@ public class AllApps3D extends RSSurfaceView
         setZOrderOnTop(true);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
     
-        mRS = createRenderScript(true);
-    
+        if (mRS == null) {
+            mRS = createRenderScript(true);
+        } else {
+            createRenderScript(mRS);
+        }
+
         final DisplayMetrics metrics = getResources().getDisplayMetrics();
         final boolean isPortrait = metrics.widthPixels < metrics.heightPixels;
         mColumnsPerPage = isPortrait ? Defines.COLUMNS_PER_PAGE_PORTRAIT :
                 Defines.COLUMNS_PER_PAGE_LANDSCAPE;
         mRowsPerPage = isPortrait ? Defines.ROWS_PER_PAGE_PORTRAIT :
                 Defines.ROWS_PER_PAGE_LANDSCAPE;
+
+        if (mRollo != null) {
+            mRollo.mAllApps = this;
+            mRollo.mRes = getResources();
+            mRollo.mInitialize = true;
+        }
     }
     
     @SuppressWarnings({"UnusedDeclaration"})
@@ -178,14 +190,22 @@ public class AllApps3D extends RSSurfaceView
         this(context, attrs);
     }
     
+    public void surrender() {
+        mRS.contextSetSurface(0, 0, null);
+        mRS.mMessageCallback = null;
+        mSurrendered = true;
+    }
+
     /**
      * Note that this implementation prohibits this view from ever being reattached.
      */
     @Override
     protected void onDetachedFromWindow() {
-        destroyRenderScript();
         mRS.mMessageCallback = null;
-        mRS = null;
+        if (!mSurrendered) {
+            destroyRenderScript();
+            mRS = null;
+        }
     }
     
     /**
@@ -207,7 +227,9 @@ public class AllApps3D extends RSSurfaceView
     public void surfaceDestroyed(SurfaceHolder holder) {
         super.surfaceDestroyed(holder);
         // Without this, we leak mMessageCallback which leaks the context.
-        mRS.mMessageCallback = null;
+        if (!mSurrendered) {
+            mRS.mMessageCallback = null;
+        }
         // We may lose any callbacks that are pending, so make sure that we re-sync that
         // on the next surfaceChanged.
         mZoomDirty = true;
@@ -219,11 +241,13 @@ public class AllApps3D extends RSSurfaceView
         //long startTime = SystemClock.uptimeMillis();
     
         super.surfaceChanged(holder, format, w, h);
+        
+        if (mSurrendered) return;
     
         mHaveSurface = true;
     
         if (mRollo == null) {
-            mRollo = new RolloRS();
+            mRollo = new RolloRS(this);
             mRollo.init(getResources(), w, h);
             if (mAllAppsList != null) {
                 mRollo.setApps(mAllAppsList);
@@ -232,7 +256,12 @@ public class AllApps3D extends RSSurfaceView
                 gainFocus();
                 mShouldGainFocus = false;
             }
+        } else if (mRollo.mInitialize) {
+            mRollo.initGl();
+            mRollo.initTouchState(w, h);
+            mRollo.mInitialize = false;
         }
+        
         mRollo.dirtyCheck();
         mRollo.resize(w, h);
     
@@ -263,6 +292,9 @@ public class AllApps3D extends RSSurfaceView
     @Override
     public void onWindowFocusChanged(boolean hasWindowFocus) {
         super.onWindowFocusChanged(hasWindowFocus);
+
+        if (mSurrendered) return;
+        
         if (mArrowNavigation) {
             if (!hasWindowFocus) {
                 // Clear selection when we lose window focus
@@ -300,7 +332,7 @@ public class AllApps3D extends RSSurfaceView
     protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
     
-        if (!isVisible()) {
+        if (!isVisible() || mSurrendered) {
             return;
         }
     
@@ -705,9 +737,24 @@ public class AllApps3D extends RSSurfaceView
             // We've been removed from the window.  Don't bother with all this.
             return;
         }
-    
+
+        boolean reload = false;
+        if (mAllAppsList == null) {
+            reload = true;
+        } else if (list.size() != mAllAppsList.size()) {
+            reload = true;
+        } else {
+            final int count = list.size();
+            for (int i = 0; i < count; i++) {
+                if (list.get(i) != mAllAppsList.get(i)) {
+                    reload = true;
+                    break;
+                }
+            }
+        }
+        
         mAllAppsList = list;
-        if (mRollo != null) {
+        if (mRollo != null && reload) {
             mRollo.setApps(list);
         }
         mLocks &= ~LOCK_ICONS_PENDING;
@@ -810,8 +857,7 @@ public class AllApps3D extends RSSurfaceView
         }
     }
     
-    public class RolloRS {
-    
+    public static class RolloRS {
         // Allocations ======
         private int mWidth;
         private int mHeight;
@@ -856,7 +902,10 @@ public class AllApps3D extends RSSurfaceView
     
         Params mParams;
         State mState;
-    
+        
+        AllApps3D mAllApps;
+        boolean mInitialize;
+
         class BaseAlloc {
             Allocation mAlloc;
             Type mType;
@@ -867,8 +916,8 @@ public class AllApps3D extends RSSurfaceView
         }
     
         private boolean checkClickOK() {
-            return (Math.abs(mVelocity) < 0.4f) &&
-                   (Math.abs(mPosX - Math.round(mPosX)) < 0.4f);
+            return (Math.abs(mAllApps.mVelocity) < 0.4f) &&
+                   (Math.abs(mAllApps.mPosX - Math.round(mAllApps.mPosX)) < 0.4f);
         }
     
         class Params extends BaseAlloc {
@@ -906,7 +955,8 @@ public class AllApps3D extends RSSurfaceView
             }
         }
     
-        public RolloRS() {
+        public RolloRS(AllApps3D allApps) {
+            mAllApps = allApps;
         }
     
         public void init(Resources res, int width, int height) {
@@ -918,7 +968,7 @@ public class AllApps3D extends RSSurfaceView
             initProgramStore();
             initGl();
             initData();
-            initTouchState();
+            initTouchState(width, height);
             initRs();
         }
     
@@ -1075,15 +1125,15 @@ public class AllApps3D extends RSSurfaceView
         }
     
         private void initGl() {
-            mTouchXBorders = new int[mColumnsPerPage +1];
-            mTouchYBorders = new int[mRowsPerPage +1];
+            mTouchXBorders = new int[mAllApps.mColumnsPerPage + 1];
+            mTouchYBorders = new int[mAllApps.mRowsPerPage + 1];
         }
     
         private void initData() {
             mParams = new Params();
             mState = new State();
     
-            final Utilities.BubbleText bubble = new Utilities.BubbleText(getContext());
+            final Utilities.BubbleText bubble = new Utilities.BubbleText(mAllApps.getContext());
     
             mParams.bubbleWidth = bubble.getBubbleWidth();
             mParams.bubbleHeight = bubble.getMaxBubbleHeight();
@@ -1120,7 +1170,7 @@ public class AllApps3D extends RSSurfaceView
             ScriptC.Builder sb = new ScriptC.Builder(mRS);
             sb.setScript(mRes, R.raw.allapps);
             sb.setRoot(true);
-            sb.addDefines(mDefines);
+            sb.addDefines(mAllApps.mDefines);
             sb.setType(mParams.mType, "params", Defines.ALLOC_PARAMS);
             sb.setType(mState.mType, "state", Defines.ALLOC_STATE);
             sb.setType(mUniformAlloc.getType(), "vpConstants", Defines.ALLOC_VP_CONSTANTS);
@@ -1141,8 +1191,8 @@ public class AllApps3D extends RSSurfaceView
         }
     
         void dirtyCheck() {
-            if (mZoomDirty) {
-                setZoom(mNextZoom, mAnimateNextZoom);
+            if (mAllApps.mZoomDirty) {
+                setZoom(mAllApps.mNextZoom, mAllApps.mAnimateNextZoom);
             }
         }
     
@@ -1296,24 +1346,25 @@ public class AllApps3D extends RSSurfaceView
             }
         }
     
-        void initTouchState() {
-            boolean isPortrait = getWidth() < getHeight();
+        void initTouchState(int width, int height) {
+            boolean isPortrait = width < height;
+
             // TODO: Put this in a config file/define
             int cellHeight = 145;//iconsSize / Defines.ROWS_PER_PAGE_PORTRAIT;
             if (!isPortrait) cellHeight -= 12;
-            int centerY = (int) (getHeight() * (isPortrait ? 0.5f : 0.47f));
+            int centerY = (int) (mAllApps.getHeight() * (isPortrait ? 0.5f : 0.47f));
             if (!isPortrait) centerY += cellHeight / 2;
-            int half = (int) Math.floor((mRowsPerPage + 1) / 2);
+            int half = (int) Math.floor((mAllApps.mRowsPerPage + 1) / 2);
             int end = mTouchYBorders.length - (half + 1);
     
             for (int i = -half; i <= end; i++) {
                 mTouchYBorders[i + half] = centerY + i * cellHeight;
             }
-    
+
             int x = 0;
             // TODO: Put this in a config file/define
             int columnWidth = 120;
-            for (int i = 0; i < mColumnsPerPage + 1; i++) {
+            for (int i = 0; i < mAllApps.mColumnsPerPage + 1; i++) {
                 mTouchXBorders[i] = x;
                 x += columnWidth;
             }
@@ -1339,14 +1390,14 @@ public class AllApps3D extends RSSurfaceView
     
             int col = -1;
             int row = -1;
-            final int columnsCount = mColumnsPerPage;
+            final int columnsCount = mAllApps.mColumnsPerPage;
             for (int i=0; i< columnsCount; i++) {
                 if (x >= mTouchXBorders[i] && x < mTouchXBorders[i+1]) {
                     col = i;
                     break;
                 }
             }
-            final int rowsCount = mRowsPerPage;
+            final int rowsCount = mAllApps.mRowsPerPage;
             for (int i=0; i< rowsCount; i++) {
                 if (y >= mTouchYBorders[i] && y < mTouchYBorders[i+1]) {
                     row = i;
@@ -1385,20 +1436,21 @@ public class AllApps3D extends RSSurfaceView
          * @param pressed one of SELECTED_PRESSED or SELECTED_FOCUSED
          */
         void selectIcon(int index, int pressed) {
-            if (mAllAppsList == null || index < 0 || index >= mAllAppsList.size()) {
+            final ArrayList<ApplicationInfo> appsList = mAllApps.mAllAppsList;
+            if (appsList == null || index < 0 || index >= appsList.size()) {
                 mState.selectedIconIndex = -1;
-                if (mLastSelection == SELECTION_ICONS) {
-                    mLastSelection = SELECTION_NONE;
+                if (mAllApps.mLastSelection == SELECTION_ICONS) {
+                    mAllApps.mLastSelection = SELECTION_NONE;
                 }
             } else {
                 if (pressed == SELECTED_FOCUSED) {
-                    mLastSelection = SELECTION_ICONS;
+                    mAllApps.mLastSelection = SELECTION_ICONS;
                 }
     
                 int prev = mState.selectedIconIndex;
                 mState.selectedIconIndex = index;
     
-                ApplicationInfo info = mAllAppsList.get(index);
+                ApplicationInfo info = appsList.get(index);
                 Bitmap selectionBitmap = mSelectionBitmap;
     
                 Utilities.drawSelectedAllAppsBitmap(mSelectionCanvas,
@@ -1413,7 +1465,7 @@ public class AllApps3D extends RSSurfaceView
                 if (prev != index) {
                     if (info.title != null && info.title.length() > 0) {
                         //setContentDescription(info.title);
-                        sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
+                        mAllApps.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
                     }
                 }
             }
@@ -1427,16 +1479,16 @@ public class AllApps3D extends RSSurfaceView
         }
     
         void setHomeSelected(int mode) {
-            final int prev = mLastSelection;
+            final int prev = mAllApps.mLastSelection;
             switch (mode) {
             case SELECTED_NONE:
                 mState.homeButtonId = mHomeButtonNormal.getID();
                 break;
             case SELECTED_FOCUSED:
-                mLastSelection = SELECTION_HOME;
+                mAllApps.mLastSelection = SELECTION_HOME;
                 mState.homeButtonId = mHomeButtonFocused.getID();
                 if (prev != SELECTION_HOME) {
-                    sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
+                    mAllApps.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
                 }
                 break;
             case SELECTED_PRESSED:

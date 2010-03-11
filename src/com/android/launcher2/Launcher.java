@@ -424,11 +424,12 @@ public final class Launcher extends Activity
     public Object onRetainNonConfigurationInstance() {
         // Flag the loader to stop early before switching
         mModel.stopLoader();
+        mAllAppsGrid.surrender();
 
         if (PROFILE_ROTATE) {
             android.os.Debug.startMethodTracing("/sdcard/launcher-rotate");
         }
-        return null;
+        return Boolean.TRUE;
     }
 
     // We can't hide the IME if it was forced open.  So don't bother
