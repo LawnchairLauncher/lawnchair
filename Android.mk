@@ -28,7 +28,6 @@ LOCAL_CERTIFICATE := shared
 
 LOCAL_OVERRIDES_PACKAGES := Home
 
-LOCAL_PROGUARD_ENABLED := disabled
 LOCAL_PROGUARD_FLAGS := -include $(LOCAL_PATH)/proguard.flags
 
 include $(BUILD_PACKAGE)
