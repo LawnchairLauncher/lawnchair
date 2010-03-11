@@ -624,15 +624,21 @@ public class LauncherModel extends BroadcastReceiver {
 
             /**
              * Gets the callbacks object.  If we've been stopped, or if the launcher object
-             * has somehow been garbage collected, return null instead.
+             * has somehow been garbage collected, return null instead.  Pass in the Callbacks
+             * object that was around when the deferred message was scheduled, and if there's
+             * a new Callbacks object around then also return null.  This will save us from
+             * calling onto it with data that will be ignored.
              */
-            Callbacks tryGetCallbacks() {
+            Callbacks tryGetCallbacks(Callbacks oldCallbacks) {
                 synchronized (mLock) {
                     if (mStopped) {
                         return null;
                     }
 
                     final Callbacks callbacks = mCallbacks.get();
+                    if (callbacks != oldCallbacks) {
+                        return null;
+                    }
                     if (callbacks == null) {
                         Log.w(TAG, "no mCallbacks");
                         return null;
@@ -897,8 +903,8 @@ public class LauncherModel extends BroadcastReceiver {
 
                 // Don't use these two variables in any of the callback runnables.
                 // Otherwise we hold a reference to them.
-                Callbacks callbacks = mCallbacks.get();
-                if (callbacks == null) {
+                final Callbacks oldCallbacks = mCallbacks.get();
+                if (oldCallbacks == null) {
                     // This launcher has exited and nobody bothered to tell us.  Just bail.
                     Log.w(TAG, "LoaderThread running with no launcher");
                     return;
@@ -908,7 +914,7 @@ public class LauncherModel extends BroadcastReceiver {
                 // Tell the workspace that we're about to start firing items at it
                 mHandler.post(new Runnable() {
                     public void run() {
-                        Callbacks callbacks = tryGetCallbacks();
+                        Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                         if (callbacks != null) {
                             callbacks.startBinding();
                         }
@@ -921,7 +927,7 @@ public class LauncherModel extends BroadcastReceiver {
                     final int chunkSize = (i+ITEMS_CHUNK <= N) ? ITEMS_CHUNK : (N-i);
                     mHandler.post(new Runnable() {
                         public void run() {
-                            Callbacks callbacks = tryGetCallbacks();
+                            Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                             if (callbacks != null) {
                                 callbacks.bindItems(mItems, start, start+chunkSize);
                             }
@@ -930,7 +936,7 @@ public class LauncherModel extends BroadcastReceiver {
                 }
                 mHandler.post(new Runnable() {
                     public void run() {
-                        Callbacks callbacks = tryGetCallbacks();
+                        Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                         if (callbacks != null) {
                             callbacks.bindFolders(mFolders);
                         }
@@ -949,7 +955,7 @@ public class LauncherModel extends BroadcastReceiver {
                 // but since getCurrentScreen() just returns the int, we should be okay.  This
                 // is just a hint for the order, and if it's wrong, we'll be okay.
                 // TODO: instead, we should have that push the current screen into here.
-                final int currentScreen = callbacks.getCurrentWorkspaceScreen();
+                final int currentScreen = oldCallbacks.getCurrentWorkspaceScreen();
                 N = mAppWidgets.size();
                 // once for the current screen
                 for (int i=0; i<N; i++) {
@@ -957,7 +963,7 @@ public class LauncherModel extends BroadcastReceiver {
                     if (widget.screen == currentScreen) {
                         mHandler.post(new Runnable() {
                             public void run() {
-                                Callbacks callbacks = tryGetCallbacks();
+                                Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                                 if (callbacks != null) {
                                     callbacks.bindAppWidget(widget);
                                 }
@@ -971,7 +977,7 @@ public class LauncherModel extends BroadcastReceiver {
                     if (widget.screen != currentScreen) {
                         mHandler.post(new Runnable() {
                             public void run() {
-                                Callbacks callbacks = tryGetCallbacks();
+                                Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                                 if (callbacks != null) {
                                     callbacks.bindAppWidget(widget);
                                 }
@@ -982,7 +988,7 @@ public class LauncherModel extends BroadcastReceiver {
                 // Tell the workspace that we're done.
                 mHandler.post(new Runnable() {
                     public void run() {
-                        Callbacks callbacks = tryGetCallbacks();
+                        Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                         if (callbacks != null) {
                             callbacks.finishBindingItems();
                         }
@@ -1006,7 +1012,7 @@ public class LauncherModel extends BroadcastReceiver {
                 final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
                 mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 
-                final Callbacks callbacks = tryGetCallbacks();
+                final Callbacks callbacks = mCallbacks.get();
                 if (callbacks == null) {
                     return;
                 }
@@ -1042,12 +1048,13 @@ public class LauncherModel extends BroadcastReceiver {
                             = (ArrayList<ApplicationInfo>) mAllAppsList.data.clone();
                     // We're adding this now, so clear out this so we don't re-send them.
                     mAllAppsList.added = new ArrayList<ApplicationInfo>();
+                    final Callbacks old = mCallbacks.get();
                     mHandler.post(new Runnable() {
                         public void run() {
                             final long t = SystemClock.uptimeMillis();
                             final int count = results.size();
 
-                            Callbacks callbacks = tryGetCallbacks();
+                            Callbacks callbacks = tryGetCallbacks(old);
                             if (callbacks != null) {
                                 callbacks.bindAllApplications(results);
                             }
