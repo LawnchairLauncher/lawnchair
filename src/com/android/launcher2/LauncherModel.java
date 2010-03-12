@@ -1202,14 +1202,14 @@ public class LauncherModel extends BroadcastReceiver {
             } else {
                 info.customIcon = true;
             }
-            info.setIcon(icon);
             break;
         default:
-            info.setIcon(getFallbackIcon());
+            icon = getFallbackIcon();
             info.usingFallbackIcon = true;
             info.customIcon = false;
             break;
         }
+        info.setIcon(icon);
         return info;
     }
 
