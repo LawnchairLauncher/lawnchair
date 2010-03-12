@@ -389,9 +389,12 @@ main(int launchID)
     // icons & labels
     int iconCount = state->iconCount;
     g_PosMax = ((iconCount + 3) / 4) - 4;
+    if (getWidth() > getHeight()) {
+        g_PosMax -= 2;
+    }
     if (g_PosMax < 0) g_PosMax = 0;
 
-    updatePos(0.1f);
+    updatePos();
     updateReadback();
 
     //debugF("    draw g_PosPage", g_PosPage);
