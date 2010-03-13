@@ -127,6 +127,8 @@ public class AllApps3D extends RSSurfaceView
     private int mRowsPerPage;
     private boolean mSurrendered;
 
+    private int mRestoreFocusIndex = -1;
+    
     @SuppressWarnings({"UnusedDeclaration"})
     static class Defines {
         public static final int ALLOC_PARAMS = 0;
@@ -767,6 +769,13 @@ public class AllApps3D extends RSSurfaceView
         if (mRollo != null && reload) {
             mRollo.setApps(list);
         }
+        
+        if (hasFocus() && mRestoreFocusIndex != -1) {
+            mRollo.selectIcon(mRestoreFocusIndex, SELECTED_FOCUSED);
+            mRollo.mState.save();
+            mRestoreFocusIndex = -1;
+        }
+        
         mLocks &= ~LOCK_ICONS_PENDING;
     }
 
@@ -1251,8 +1260,10 @@ public class AllApps3D extends RSSurfaceView
         }
 
         private void setZoom(float zoom, boolean animate) {
-            mRollo.clearSelectedIcon();
-            mRollo.setHomeSelected(SELECTED_NONE);
+            if (animate) {
+                mRollo.clearSelectedIcon();
+                mRollo.setHomeSelected(SELECTED_NONE);
+            }
             if (zoom > 0.001f) {
                 mRollo.mState.zoomTarget = zoom;
             } else {
@@ -1464,6 +1475,9 @@ public class AllApps3D extends RSSurfaceView
         void selectIcon(int index, int pressed) {
             final ArrayList<ApplicationInfo> appsList = mAllApps.mAllAppsList;
             if (appsList == null || index < 0 || index >= appsList.size()) {
+                if (mAllApps != null) {
+                    mAllApps.mRestoreFocusIndex = index;
+                }
                 mState.selectedIconIndex = -1;
                 if (mAllApps.mLastSelection == SELECTION_ICONS) {
                     mAllApps.mLastSelection = SELECTION_NONE;
