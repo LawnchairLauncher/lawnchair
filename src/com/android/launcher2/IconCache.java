@@ -17,27 +17,14 @@
 package com.android.launcher2;
 
 import android.content.ComponentName;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.content.res.Resources;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
-import android.util.Log;
-import android.os.Process;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Cache of application icons.  Icons can be made from any thread.
@@ -53,9 +40,10 @@ public class IconCache {
         public Bitmap titleBitmap;
     }
 
-    private LauncherApplication mContext;
-    private PackageManager mPackageManager;
-    private Utilities.BubbleText mBubble;
+    private final Bitmap mDefaultIcon;
+    private final LauncherApplication mContext;
+    private final PackageManager mPackageManager;
+    private final Utilities.BubbleText mBubble;
     private final HashMap<ComponentName, CacheEntry> mCache =
             new HashMap<ComponentName, CacheEntry>(INITIAL_ICON_CACHE_CAPACITY);
 
@@ -63,6 +51,18 @@ public class IconCache {
         mContext = context;
         mPackageManager = context.getPackageManager();
         mBubble = new Utilities.BubbleText(context);
+        mDefaultIcon = makeDefaultIcon();
+    }
+
+    private Bitmap makeDefaultIcon() {
+        Drawable d = mPackageManager.getDefaultActivityIcon();
+        Bitmap b = Bitmap.createBitmap(Math.max(d.getIntrinsicWidth(), 1),
+                Math.max(d.getIntrinsicHeight(), 1),
+                Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        d.setBounds(0, 0, b.getWidth(), b.getHeight());
+        d.draw(c);
+        return b;
     }
 
     /**
@@ -90,7 +90,7 @@ public class IconCache {
         synchronized (mCache) {
             CacheEntry entry = cacheLocked(application.componentName, info);
             if (entry.titleBitmap == null) {
-                entry.titleBitmap = mBubble.createTextBitmap(entry.title.toString());
+                entry.titleBitmap = mBubble.createTextBitmap(entry.title);
             }
 
             application.title = entry.title;
@@ -104,7 +104,7 @@ public class IconCache {
         ComponentName component = intent.getComponent();
 
         if (resolveInfo == null || component == null) {
-            return null;
+            return mDefaultIcon;
         }
 
         CacheEntry entry = cacheLocked(component, resolveInfo);
@@ -137,4 +137,3 @@ public class IconCache {
         return entry;
     }
 }
-
