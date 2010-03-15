@@ -551,9 +551,9 @@ public final class Launcher extends Activity
         mAllAppsGrid = (AllAppsView)dragLayer.findViewById(R.id.all_apps_view);
         mAllAppsGrid.setLauncher(this);
         mAllAppsGrid.setDragController(dragController);
-        ((View)mAllAppsGrid).setWillNotDraw(false); // We don't want a hole punched in our window.
+        ((View) mAllAppsGrid).setWillNotDraw(false); // We don't want a hole punched in our window.
         // Manage focusability manually since this thing is always visible
-        ((View)mAllAppsGrid).setFocusable(false); 
+        ((View) mAllAppsGrid).setFocusable(false); 
 
         mWorkspace = (Workspace) dragLayer.findViewById(R.id.workspace);
         final Workspace workspace = mWorkspace;
@@ -1707,8 +1707,8 @@ public final class Launcher extends Activity
     void showAllApps(boolean animated) {
         mAllAppsGrid.zoom(1.0f, animated);
 
-        ((View)mAllAppsGrid).setFocusable(true);
-        ((View)mAllAppsGrid).requestFocus();
+        ((View) mAllAppsGrid).setFocusable(true);
+        ((View) mAllAppsGrid).requestFocus();
         
         // TODO: fade these two too
         mDeleteZone.setVisibility(View.GONE);
