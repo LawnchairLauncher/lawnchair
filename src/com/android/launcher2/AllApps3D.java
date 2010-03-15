@@ -120,7 +120,6 @@ public class AllApps3D extends RSSurfaceView
     private boolean mAnimateNextZoom;
     private float mNextZoom;
     private float mZoom;
-    private float mPosX;
     private float mVelocity;
     private AAMessage mMessageProc;
 
@@ -128,6 +127,8 @@ public class AllApps3D extends RSSurfaceView
     private int mRowsPerPage;
     private boolean mSurrendered;
 
+    private int mRestoreFocusIndex = -1;
+    
     @SuppressWarnings({"UnusedDeclaration"})
     static class Defines {
         public static final int ALLOC_PARAMS = 0;
@@ -306,8 +307,7 @@ public class AllApps3D extends RSSurfaceView
                 if (mRollo.mState.iconCount > 0) {
                     if (mLastSelection == SELECTION_ICONS) {
                         int selection = mLastSelectedIcon;
-                        final int firstIcon = Math.round(mPosX) *
-                                mColumnsPerPage;
+                        final int firstIcon = Math.round(mRollo.mScrollPos) * mColumnsPerPage;
                         if (selection < 0 || // No selection
                                 selection < firstIcon || // off the top of the screen
                                 selection >= mRollo.mState.iconCount || // past last icon
@@ -361,8 +361,7 @@ public class AllApps3D extends RSSurfaceView
         if (!mArrowNavigation && mRollo.mState.iconCount > 0) {
             // Select the first icon when we gain keyboard focus
             mArrowNavigation = true;
-            mRollo.selectIcon(Math.round(mPosX) * mColumnsPerPage,
-                    SELECTED_FOCUSED);
+            mRollo.selectIcon(Math.round(mRollo.mScrollPos) * mColumnsPerPage, SELECTED_FOCUSED);
             mRollo.mState.save();
         }
     }
@@ -394,16 +393,18 @@ public class AllApps3D extends RSSurfaceView
         }
 
         if (iconCount > 0) {
+            final boolean isPortrait = getWidth() < getHeight();
+            
             mArrowNavigation = true;
 
             int currentSelection = mRollo.mState.selectedIconIndex;
-            int currentTopRow = Math.round(mPosX);
+            int currentTopRow = Math.round(mRollo.mScrollPos);
 
             // The column of the current selection, in the range 0..COLUMNS_PER_PAGE_PORTRAIT-1
             final int currentPageCol = currentSelection % mColumnsPerPage;
 
             // The row of the current selection, in the range 0..ROWS_PER_PAGE_PORTRAIT-1
-            final int currentPageRow = (currentSelection - (currentTopRow* mColumnsPerPage))
+            final int currentPageRow = (currentSelection - (currentTopRow * mColumnsPerPage))
                     / mRowsPerPage;
 
             int newSelection = currentSelection;
@@ -411,26 +412,30 @@ public class AllApps3D extends RSSurfaceView
             switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_UP:
                 if (mLastSelection == SELECTION_HOME) {
-                    mRollo.setHomeSelected(SELECTED_NONE);
-                    int lastRowCount = iconCount % mColumnsPerPage;
-                    if (lastRowCount == 0) {
-                        lastRowCount = mColumnsPerPage;
-                    }
-                    newSelection = iconCount - lastRowCount + (mColumnsPerPage / 2);
-                    if (newSelection >= iconCount) {
-                        newSelection = iconCount-1;
-                    }
-                    int target = (newSelection / mColumnsPerPage)
-                            - (mRowsPerPage - 1);
-                    if (target < 0) {
-                        target = 0;
-                    }
-                    if (currentTopRow != target) {
-                        mRollo.moveTo(target);
+                    if (isPortrait) {
+                        mRollo.setHomeSelected(SELECTED_NONE);
+                        int lastRowCount = iconCount % mColumnsPerPage;
+                        if (lastRowCount == 0) {
+                            lastRowCount = mColumnsPerPage;
+                        }
+                        newSelection = iconCount - lastRowCount + (mColumnsPerPage / 2);
+                        if (newSelection >= iconCount) {
+                            newSelection = iconCount-1;
+                        }
+                        int target = (newSelection / mColumnsPerPage) - (mRowsPerPage - 1);
+                        if (target < 0) {
+                            target = 0;
+                        }
+                        if (currentTopRow != target) {
+                            mRollo.moveTo(target);
+                        }
                     }
                 } else {
                     if (currentPageRow > 0) {
                         newSelection = currentSelection - mColumnsPerPage;
+                        if (currentTopRow > newSelection / mColumnsPerPage) {
+                            mRollo.moveTo(newSelection / mColumnsPerPage);
+                        }
                     } else if (currentTopRow > 0) {
                         newSelection = currentSelection - mColumnsPerPage;
                         mRollo.moveTo(newSelection / mColumnsPerPage);
@@ -460,10 +465,9 @@ public class AllApps3D extends RSSurfaceView
                             newSelection = iconCount - 1;
                         }
                         if (currentPageRow >= mRowsPerPage - 1) {
-                            mRollo.moveTo((newSelection / mColumnsPerPage) -
-                                    mRowsPerPage + 1);
+                            mRollo.moveTo((newSelection / mColumnsPerPage) - mRowsPerPage + 1);
                         }
-                    } else {
+                    } else if (isPortrait) {
                         newSelection = -1;
                         mRollo.setHomeSelected(SELECTED_FOCUSED);
                     }
@@ -476,12 +480,20 @@ public class AllApps3D extends RSSurfaceView
                     if (currentPageCol > 0) {
                         newSelection = currentSelection - 1;
                     }
+                } else if (!isPortrait) {
+                    newSelection = ((int) (mRollo.mScrollPos) * mColumnsPerPage) +
+                            (mRowsPerPage / 2 * mColumnsPerPage) + mColumnsPerPage - 1;
+                    mRollo.setHomeSelected(SELECTED_NONE);
                 }
                 handled = true;
                 break;
             case KeyEvent.KEYCODE_DPAD_RIGHT:
                 if (mLastSelection != SELECTION_HOME) {
-                    if ((currentPageCol < mColumnsPerPage - 1) &&
+                    if (!isPortrait && (currentPageCol == mColumnsPerPage - 1 ||
+                            currentSelection == iconCount - 1)) {
+                        newSelection = -1;
+                        mRollo.setHomeSelected(SELECTED_FOCUSED);
+                    } else if ((currentPageCol < mColumnsPerPage - 1) &&
                             (currentSelection < iconCount - 1)) {
                         newSelection = currentSelection + 1;
                     }
@@ -538,7 +550,7 @@ public class AllApps3D extends RSSurfaceView
                     mRollo.clearSelectedIcon();
                 } else {
                     mDownIconIndex = mCurrentIconIndex
-                            = mRollo.selectIcon(x, y, mPosX, SELECTED_PRESSED);
+                            = mRollo.selectIcon(x, y, SELECTED_PRESSED);
                     if (mDownIconIndex < 0) {
                         // if nothing was selected, no long press.
                         cancelLongPress();
@@ -567,7 +579,7 @@ public class AllApps3D extends RSSurfaceView
                 if (!mStartedScrolling && slop < mSlop) {
                     // don't update anything so when we do start scrolling
                     // below, we get the right delta.
-                    mCurrentIconIndex = mRollo.chooseTappedIcon(x, y, mPosX);
+                    mCurrentIconIndex = mRollo.chooseTappedIcon(x, y);
                     if (mDownIconIndex != mCurrentIconIndex) {
                         // If a different icon is selected, don't allow it to be picked up.
                         // This handles off-axis dragging.
@@ -757,6 +769,13 @@ public class AllApps3D extends RSSurfaceView
         if (mRollo != null && reload) {
             mRollo.setApps(list);
         }
+        
+        if (hasFocus() && mRestoreFocusIndex != -1) {
+            mRollo.selectIcon(mRestoreFocusIndex, SELECTED_FOCUSED);
+            mRollo.mState.save();
+            mRestoreFocusIndex = -1;
+        }
+        
         mLocks &= ~LOCK_ICONS_PENDING;
     }
 
@@ -856,7 +875,7 @@ public class AllApps3D extends RSSurfaceView
 
     class AAMessage extends RenderScript.RSMessage {
         public void run() {
-            mPosX = ((float)mData[0]) / (1 << 16);
+            mRollo.mScrollPos = ((float)mData[0]) / (1 << 16);
             mVelocity = ((float)mData[1]) / (1 << 16);
             mZoom = ((float)mData[2]) / (1 << 16);
             mZoomDirty = false;
@@ -905,6 +924,8 @@ public class AllApps3D extends RSSurfaceView
 
         private Bitmap mSelectionBitmap;
         private Canvas mSelectionCanvas;
+        
+        private float mScrollPos;        
 
         Params mParams;
         State mState;
@@ -923,7 +944,7 @@ public class AllApps3D extends RSSurfaceView
 
         private boolean checkClickOK() {
             return (Math.abs(mAllApps.mVelocity) < 0.4f) &&
-                   (Math.abs(mAllApps.mPosX - Math.round(mAllApps.mPosX)) < 0.4f);
+                   (Math.abs(mScrollPos - Math.round(mScrollPos)) < 0.4f);
         }
 
         void pause() {
@@ -1239,8 +1260,10 @@ public class AllApps3D extends RSSurfaceView
         }
 
         private void setZoom(float zoom, boolean animate) {
-            mRollo.clearSelectedIcon();
-            mRollo.setHomeSelected(SELECTED_NONE);
+            if (animate) {
+                mRollo.clearSelectedIcon();
+                mRollo.setHomeSelected(SELECTED_NONE);
+            }
             if (zoom > 0.001f) {
                 mRollo.mState.zoomTarget = zoom;
             } else {
@@ -1396,7 +1419,9 @@ public class AllApps3D extends RSSurfaceView
             mInvokeMoveTo.execute();
         }
 
-        int chooseTappedIcon(int x, int y, float pos) {
+        int chooseTappedIcon(int x, int y) {
+            float pos = mScrollPos;
+
             // Adjust for scroll position if not zero.
             y += (pos - ((int)pos)) * (mTouchYBorders[1] - mTouchYBorders[0]);
 
@@ -1421,7 +1446,7 @@ public class AllApps3D extends RSSurfaceView
                 return -1;
             }
 
-            int index = (((int)pos) * columnsCount) + (row * columnsCount) + col;
+            int index = (((int) pos) * columnsCount) + (row * columnsCount) + col;
 
             if (index >= mState.iconCount) {
                 return -1;
@@ -1435,8 +1460,8 @@ public class AllApps3D extends RSSurfaceView
          *
          * @return the index of the icon that was selected.
          */
-        int selectIcon(int x, int y, float pos, int pressed) {
-            final int index = chooseTappedIcon(x, y, pos);
+        int selectIcon(int x, int y, int pressed) {
+            final int index = chooseTappedIcon(x, y);
             selectIcon(index, pressed);
             return index;
         }
@@ -1450,6 +1475,9 @@ public class AllApps3D extends RSSurfaceView
         void selectIcon(int index, int pressed) {
             final ArrayList<ApplicationInfo> appsList = mAllApps.mAllAppsList;
             if (appsList == null || index < 0 || index >= appsList.size()) {
+                if (mAllApps != null) {
+                    mAllApps.mRestoreFocusIndex = index;
+                }
                 mState.selectedIconIndex = -1;
                 if (mAllApps.mLastSelection == SELECTION_ICONS) {
                     mAllApps.mLastSelection = SELECTION_NONE;
@@ -1560,7 +1588,7 @@ public class AllApps3D extends RSSurfaceView
         Log.d(TAG, "mZoomDirty=" + mZoomDirty);
         Log.d(TAG, "mAnimateNextZoom=" + mAnimateNextZoom);
         Log.d(TAG, "mZoom=" + mZoom);
-        Log.d(TAG, "mPosX=" + mPosX);
+        Log.d(TAG, "mScrollPos=" + mRollo.mScrollPos);
         Log.d(TAG, "mVelocity=" + mVelocity);
         Log.d(TAG, "mMessageProc=" + mMessageProc);
         if (mRollo != null) {
