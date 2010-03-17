@@ -842,6 +842,8 @@ public class LauncherModel extends BroadcastReceiver {
                                 
                                 if (!isSafeMode && (provider == null || provider.provider == null ||
                                         provider.provider.getPackageName() == null)) {
+                                    Log.e(TAG, "Deleting widget that isn't installed anymore: id="
+                                            + id + " appWidgetId=" + appWidgetId);
                                     itemsToRemove.add(id);
                                 } else {
                                     appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId);
@@ -1114,6 +1116,9 @@ public class LauncherModel extends BroadcastReceiver {
             return null;
         }
 
+        // TODO: See if the PackageManager knows about this case.  If it doesn't
+        // then return null & delete this.
+
         // the resource -- This may implicitly give us back the fallback icon,
         // but don't worry about that.  All we're doing with usingFallbackIcon is
         // to avoid saving lots of copies of that in the database, and most apps
@@ -1163,6 +1168,8 @@ public class LauncherModel extends BroadcastReceiver {
         Bitmap icon = null;
         final ShortcutInfo info = new ShortcutInfo();
         info.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+
+        // TODO: If there's an explicit component and we can't install that, delete it.
 
         info.title = c.getString(titleIndex);
 
