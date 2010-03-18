@@ -112,6 +112,8 @@ public class AllApps3D extends RSSurfaceView
     private int mMotionDownRawY;
     private int mDownIconIndex = -1;
     private int mCurrentIconIndex = -1;
+    private int[] mTouchYBorders;
+    private int[] mTouchXBorders;
 
     private boolean mShouldGainFocus;
 
@@ -261,9 +263,10 @@ public class AllApps3D extends RSSurfaceView
             }
         } else if (sRollo.mInitialize) {
             sRollo.initGl();
-            sRollo.initTouchState(w, h);
             sRollo.mInitialize = false;
         }
+
+        initTouchState(w, h);
 
         sRollo.dirtyCheck();
         sRollo.resize(w, h);
@@ -511,6 +514,74 @@ public class AllApps3D extends RSSurfaceView
         return handled;
     }
 
+    void initTouchState(int width, int height) {
+        boolean isPortrait = width < height;
+
+        int[] viewPos = new int[2];
+        getLocationOnScreen(viewPos);
+
+        mTouchXBorders = new int[mColumnsPerPage + 1];
+        mTouchYBorders = new int[mRowsPerPage + 1];
+
+        // TODO: Put this in a config file/define
+        int cellHeight = 145;//iconsSize / Defines.ROWS_PER_PAGE_PORTRAIT;
+        if (!isPortrait) cellHeight -= 12;
+        int centerY = (int) (height * (isPortrait ? 0.5f : 0.47f));
+        if (!isPortrait) centerY += cellHeight / 2;
+        int half = (int) Math.floor((mRowsPerPage + 1) / 2);
+        int end = mTouchYBorders.length - (half + 1);
+
+        for (int i = -half; i <= end; i++) {
+            mTouchYBorders[i + half] = centerY + (i * cellHeight) - viewPos[1];
+        }
+
+        int x = 0;
+        // TODO: Put this in a config file/define
+        int columnWidth = 120;
+        for (int i = 0; i < mColumnsPerPage + 1; i++) {
+            mTouchXBorders[i] = x - viewPos[0];
+            x += columnWidth;
+        }
+    }
+
+    int chooseTappedIcon(int x, int y) {
+        float pos = sRollo != null ? sRollo.mScrollPos : 0;
+
+        int oldY = y;
+
+        // Adjust for scroll position if not zero.
+        y += (pos - ((int)pos)) * (mTouchYBorders[1] - mTouchYBorders[0]);
+
+        int col = -1;
+        int row = -1;
+        final int columnsCount = mColumnsPerPage;
+        for (int i=0; i< columnsCount; i++) {
+            if (x >= mTouchXBorders[i] && x < mTouchXBorders[i+1]) {
+                col = i;
+                break;
+            }
+        }
+        final int rowsCount = mRowsPerPage;
+        for (int i=0; i< rowsCount; i++) {
+            if (y >= mTouchYBorders[i] && y < mTouchYBorders[i+1]) {
+                row = i;
+                break;
+            }
+        }
+
+        if (row < 0 || col < 0) {
+            return -1;
+        }
+
+        int index = (((int) pos) * columnsCount) + (row * columnsCount) + col;
+
+        if (index >= mAllAppsList.size()) {
+            return -1;
+        } else {
+            return index;
+        }
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent ev)
     {
@@ -533,8 +604,8 @@ public class AllApps3D extends RSSurfaceView
         int action = ev.getAction();
         switch (action) {
         case MotionEvent.ACTION_DOWN:
-            if ((isPortrait && y > sRollo.mTouchYBorders[sRollo.mTouchYBorders.length-1]) ||
-                    (!isPortrait && x > sRollo.mTouchXBorders[sRollo.mTouchXBorders.length-1])) {
+            if ((isPortrait && y > mTouchYBorders[mTouchYBorders.length-1]) ||
+                    (!isPortrait && x > mTouchXBorders[mTouchXBorders.length-1])) {
                 mTouchTracking = TRACKING_HOME;
                 sRollo.setHomeSelected(SELECTED_PRESSED);
                 sRollo.mState.save();
@@ -569,8 +640,8 @@ public class AllApps3D extends RSSurfaceView
         case MotionEvent.ACTION_OUTSIDE:
             if (mTouchTracking == TRACKING_HOME) {
                 sRollo.setHomeSelected((isPortrait &&
-                        y > sRollo.mTouchYBorders[sRollo.mTouchYBorders.length-1]) || (!isPortrait
-                        && x > sRollo.mTouchXBorders[sRollo.mTouchXBorders.length-1])
+                        y > mTouchYBorders[mTouchYBorders.length-1]) || (!isPortrait
+                        && x > mTouchXBorders[mTouchXBorders.length-1])
                         ? SELECTED_PRESSED : SELECTED_NONE);
                 sRollo.mState.save();
             } else if (mTouchTracking == TRACKING_FLING) {
@@ -581,7 +652,7 @@ public class AllApps3D extends RSSurfaceView
                 if (!mStartedScrolling && slop < mSlop) {
                     // don't update anything so when we do start scrolling
                     // below, we get the right delta.
-                    mCurrentIconIndex = sRollo.chooseTappedIcon(x, y);
+                    mCurrentIconIndex = chooseTappedIcon(x, y);
                     if (mDownIconIndex != mCurrentIconIndex) {
                         // If a different icon is selected, don't allow it to be picked up.
                         // This handles off-axis dragging.
@@ -608,8 +679,8 @@ public class AllApps3D extends RSSurfaceView
         case MotionEvent.ACTION_CANCEL:
             if (mTouchTracking == TRACKING_HOME) {
                 if (action == MotionEvent.ACTION_UP) {
-                    if ((isPortrait && y > sRollo.mTouchYBorders[sRollo.mTouchYBorders.length-1]) ||
-                        (!isPortrait && x > sRollo.mTouchXBorders[sRollo.mTouchXBorders.length-1])) {
+                    if ((isPortrait && y > mTouchYBorders[mTouchYBorders.length-1]) ||
+                        (!isPortrait && x > mTouchXBorders[mTouchXBorders.length-1])) {
                         reallyPlaySoundEffect(SoundEffectConstants.CLICK);
                         mLauncher.closeAllApps(true);
                     }
@@ -921,9 +992,6 @@ public class AllApps3D extends RSSurfaceView
         private Allocation mAllocLabelIds;
         private Allocation mSelectedIcon;
 
-        private int[] mTouchYBorders;
-        private int[] mTouchXBorders;
-
         private Bitmap mSelectionBitmap;
         private Canvas mSelectionCanvas;
         
@@ -1005,7 +1073,6 @@ public class AllApps3D extends RSSurfaceView
             initProgramStore();
             initGl();
             initData();
-            initTouchState(width, height);
             initRs();
         }
 
@@ -1162,8 +1229,6 @@ public class AllApps3D extends RSSurfaceView
         }
 
         private void initGl() {
-            mTouchXBorders = new int[mAllApps.mColumnsPerPage + 1];
-            mTouchYBorders = new int[mAllApps.mRowsPerPage + 1];
         }
 
         private void initData() {
@@ -1383,30 +1448,6 @@ public class AllApps3D extends RSSurfaceView
             }
         }
 
-        void initTouchState(int width, int height) {
-            boolean isPortrait = width < height;
-
-            // TODO: Put this in a config file/define
-            int cellHeight = 145;//iconsSize / Defines.ROWS_PER_PAGE_PORTRAIT;
-            if (!isPortrait) cellHeight -= 12;
-            int centerY = (int) (mAllApps.getHeight() * (isPortrait ? 0.5f : 0.47f));
-            if (!isPortrait) centerY += cellHeight / 2;
-            int half = (int) Math.floor((mAllApps.mRowsPerPage + 1) / 2);
-            int end = mTouchYBorders.length - (half + 1);
-
-            for (int i = -half; i <= end; i++) {
-                mTouchYBorders[i + half] = centerY + i * cellHeight;
-            }
-
-            int x = 0;
-            // TODO: Put this in a config file/define
-            int columnWidth = 120;
-            for (int i = 0; i < mAllApps.mColumnsPerPage + 1; i++) {
-                mTouchXBorders[i] = x;
-                x += columnWidth;
-            }
-        }
-
         void fling() {
             mInvokeFling.execute();
         }
@@ -1421,51 +1462,19 @@ public class AllApps3D extends RSSurfaceView
             mInvokeMoveTo.execute();
         }
 
-        int chooseTappedIcon(int x, int y) {
-            float pos = mScrollPos;
-
-            // Adjust for scroll position if not zero.
-            y += (pos - ((int)pos)) * (mTouchYBorders[1] - mTouchYBorders[0]);
-
-            int col = -1;
-            int row = -1;
-            final int columnsCount = mAllApps.mColumnsPerPage;
-            for (int i=0; i< columnsCount; i++) {
-                if (x >= mTouchXBorders[i] && x < mTouchXBorders[i+1]) {
-                    col = i;
-                    break;
-                }
-            }
-            final int rowsCount = mAllApps.mRowsPerPage;
-            for (int i=0; i< rowsCount; i++) {
-                if (y >= mTouchYBorders[i] && y < mTouchYBorders[i+1]) {
-                    row = i;
-                    break;
-                }
-            }
-
-            if (row < 0 || col < 0) {
-                return -1;
-            }
-
-            int index = (((int) pos) * columnsCount) + (row * columnsCount) + col;
-
-            if (index >= mState.iconCount) {
-                return -1;
-            } else {
-                return index;
-            }
-        }
-
         /**
          * You need to call save() on mState on your own after calling this.
          *
          * @return the index of the icon that was selected.
          */
         int selectIcon(int x, int y, int pressed) {
-            final int index = chooseTappedIcon(x, y);
-            selectIcon(index, pressed);
-            return index;
+            if (mAllApps != null) {
+                final int index = mAllApps.chooseTappedIcon(x, y);
+                selectIcon(index, pressed);
+                return index;
+            } else {
+                return -1;
+            }
         }
 
         /**
@@ -1554,8 +1563,6 @@ public class AllApps3D extends RSSurfaceView
                 Log.d(TAG, "sRollo.mLabelIds.length=" + mLabelIds.length);
             }
             Log.d(TAG, "sRollo.mLabelIds=" +  Arrays.toString(mLabelIds));
-            Log.d(TAG, "sRollo.mTouchXBorders=" +  Arrays.toString(mTouchXBorders));
-            Log.d(TAG, "sRollo.mTouchYBorders=" +  Arrays.toString(mTouchYBorders));
             Log.d(TAG, "sRollo.mState.newPositionX=" + mState.newPositionX);
             Log.d(TAG, "sRollo.mState.newTouchDown=" + mState.newTouchDown);
             Log.d(TAG, "sRollo.mState.flingVelocity=" + mState.flingVelocity);
@@ -1580,6 +1587,8 @@ public class AllApps3D extends RSSurfaceView
         Log.d(TAG, "sRS=" + sRS);
         Log.d(TAG, "sRollo=" + sRollo);
         ApplicationInfo.dumpApplicationInfoList(TAG, "mAllAppsList", mAllAppsList);
+        Log.d(TAG, "mTouchXBorders=" +  Arrays.toString(mTouchXBorders));
+        Log.d(TAG, "mTouchYBorders=" +  Arrays.toString(mTouchYBorders));
         Log.d(TAG, "mArrowNavigation=" + mArrowNavigation);
         Log.d(TAG, "mStartedScrolling=" + mStartedScrolling);
         Log.d(TAG, "mLastSelection=" + mLastSelection);
