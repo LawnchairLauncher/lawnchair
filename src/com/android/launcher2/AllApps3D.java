@@ -204,8 +204,10 @@ public class AllApps3D extends RSSurfaceView
     protected void onDetachedFromWindow() {
         mRS.mMessageCallback = null;
         if (!mSurrendered) {
+            Log.i(TAG, "onDetachedFromWindow");
             destroyRenderScript();
             mRS = null;
+            mRollo = null;
         }
     }
 
