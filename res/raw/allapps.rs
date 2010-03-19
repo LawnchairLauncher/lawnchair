@@ -28,6 +28,8 @@ float g_MoveToTotalTime;
 float g_MoveToTime;
 float g_MoveToOldPos;
 
+int g_Cols;
+int g_Rows;
 
 // Drawing constants, should be parameters ======
 #define VIEW_ANGLE 1.28700222f
@@ -388,10 +390,14 @@ main(int launchID)
 
     // icons & labels
     int iconCount = state->iconCount;
-    g_PosMax = ((iconCount + 3) / 4) - 4;
     if (getWidth() > getHeight()) {
-        g_PosMax -= 2;
+        g_Cols = 6;
+        g_Rows = 3;
+    } else {
+        g_Cols = 4;
+        g_Rows = 4;
     }
+    g_PosMax = ((iconCount + (g_Cols-1)) / g_Cols) - g_Rows;
     if (g_PosMax < 0) g_PosMax = 0;
 
     updatePos();
