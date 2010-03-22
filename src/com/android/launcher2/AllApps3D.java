@@ -809,8 +809,12 @@ public class AllApps3D extends RSSurfaceView
         }
     }
 
+    /**
+     * If sRollo is null, then we're not visible.  This is also used to guard against
+     * sRollo being null.
+     */
     public boolean isVisible() {
-        return mZoom > 0.001f;
+        return sRollo != null && mZoom > 0.001f;
     }
 
     public boolean isOpaque() {
