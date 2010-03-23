@@ -506,6 +506,7 @@ public class LauncherProvider extends ContentProvider {
                                 update.execute();
                             }
                             bitmap.recycle();
+                            //noinspection UnusedAssignment
                             bitmap = null;
                         }
                     } catch (Exception e) {
@@ -659,7 +660,7 @@ public class LauncherProvider extends ContentProvider {
                     } else if (TAG_CLOCK.equals(name)) {
                         added = addClockWidget(db, values);
                     } else if (TAG_APPWIDGET.equals(name)) {
-                        added = addAppWidget(db, values, a);
+                        added = addAppWidget(db, values, a, packageManager);
                     } else if (TAG_SHORTCUT.equals(name)) {
                         added = addUriShortcut(db, values, a);
                     }
@@ -684,11 +685,20 @@ public class LauncherProvider extends ContentProvider {
             String packageName = a.getString(R.styleable.Favorite_packageName);
             String className = a.getString(R.styleable.Favorite_className);
             try {
-                ComponentName cn = new ComponentName(packageName, className);
-                info = packageManager.getActivityInfo(cn, 0);
+                ComponentName cn;
+                try {
+                    cn = new ComponentName(packageName, className);
+                    info = packageManager.getActivityInfo(cn, 0);
+                } catch (PackageManager.NameNotFoundException nnfe) {
+                    String[] packages = packageManager.currentToCanonicalPackageNames(
+                        new String[] { packageName });
+                    cn = new ComponentName(packages[0], className);
+                    info = packageManager.getActivityInfo(cn, 0);
+                }
+
                 intent.setComponent(cn);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                        Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
                 values.put(Favorites.INTENT, intent.toUri(0));
                 values.put(Favorites.TITLE, info.loadLabel(packageManager).toString());
                 values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_APPLICATION);
@@ -740,18 +750,38 @@ public class LauncherProvider extends ContentProvider {
             return addAppWidget(db, values, cn, 2, 2);
         }
         
-        private boolean addAppWidget(SQLiteDatabase db, ContentValues values, TypedArray a) {
+        private boolean addAppWidget(SQLiteDatabase db, ContentValues values, TypedArray a,
+                PackageManager packageManager) {
+
             String packageName = a.getString(R.styleable.Favorite_packageName);
             String className = a.getString(R.styleable.Favorite_className);
 
             if (packageName == null || className == null) {
                 return false;
             }
-            
+
+            boolean hasPackage = true;
             ComponentName cn = new ComponentName(packageName, className);
-            int spanX = a.getInt(R.styleable.Favorite_spanX, 0);
-            int spanY = a.getInt(R.styleable.Favorite_spanY, 0);
-            return addAppWidget(db, values, cn, spanX, spanY);
+            try {
+                packageManager.getReceiverInfo(cn, 0);
+            } catch (Exception e) {
+                String[] packages = packageManager.currentToCanonicalPackageNames(
+                        new String[] { packageName });
+                cn = new ComponentName(packages[0], className);
+                try {
+                    packageManager.getReceiverInfo(cn, 0);
+                } catch (Exception e1) {
+                    hasPackage = false;
+                }
+            }
+
+            if (hasPackage) {
+                int spanX = a.getInt(R.styleable.Favorite_spanX, 0);
+                int spanY = a.getInt(R.styleable.Favorite_spanY, 0);
+                return addAppWidget(db, values, cn, spanX, spanY);
+            }
+            
+            return false;
         }
 
         private boolean addAppWidget(SQLiteDatabase db, ContentValues values, ComponentName cn,
