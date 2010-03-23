@@ -366,22 +366,28 @@ public class LauncherProvider extends ContentProvider {
                 version = 4;
             }
             
-            if (version < 5) {
+            // Where's version 5?
+            // - Donut and sholes on 2.0 shipped with version 4 of launcher1.
+            // - Passion shipped on 2.1 with version 6 of launcher2
+            // - Sholes shipped on 2.1r1 (aka Mr. 3) with version 5 of launcher 1
+            //   but version 5 on there was the updateContactsShortcuts change
+            //   which was version 6 in launcher 2 (first shipped on passion 2.1r1).
+            // The updateContactsShortcuts change is idempotent, so running it twice
+            // is okay so we'll do that when upgrading the devices that shipped with it.
+            if (version < 6) {
                 // We went from 3 to 5 screens. Move everything 1 to the right
                 db.beginTransaction();
                 try {
                     db.execSQL("UPDATE favorites SET screen=(screen + 1);");
                     db.setTransactionSuccessful();
-                    version = 5;
                 } catch (SQLException ex) {
                     // Old version remains, which means we wipe old data
                     Log.e(TAG, ex.getMessage(), ex);
                 } finally {
                     db.endTransaction();
                 }
-            }
             
-            if (version < 6) {
+               // We added the fast track.
                 if (updateContactsShortcuts(db)) {
                     version = 6;
                 }
