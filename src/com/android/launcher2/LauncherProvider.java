@@ -480,9 +480,10 @@ public class LauncherProvider extends ContentProvider {
 
             db.beginTransaction();
             Cursor c = null;
+            SQLiteStatement update = null;
             try {
                 boolean logged = false;
-                final SQLiteStatement update = db.compileStatement("UPDATE favorites "
+                update = db.compileStatement("UPDATE favorites "
                         + "SET icon=? WHERE _id=?");
 
                 c = db.rawQuery("SELECT _id, icon FROM favorites WHERE iconType=" +
@@ -506,8 +507,6 @@ public class LauncherProvider extends ContentProvider {
                                 update.execute();
                             }
                             bitmap.recycle();
-                            //noinspection UnusedAssignment
-                            bitmap = null;
                         }
                     } catch (Exception e) {
                         if (!logged) {
@@ -523,6 +522,9 @@ public class LauncherProvider extends ContentProvider {
                 Log.w(TAG, "Problem while allocating appWidgetIds for existing widgets", ex);
             } finally {
                 db.endTransaction();
+                if (update != null) {
+                    update.close();
+                }
                 if (c != null) {
                     c.close();
                 }
