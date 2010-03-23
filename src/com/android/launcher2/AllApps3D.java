@@ -194,8 +194,10 @@ public class AllApps3D extends RSSurfaceView
     }
 
     public void surrender() {
-        sRS.contextSetSurface(0, 0, null);
-        sRS.mMessageCallback = null;
+        if (sRS != null) {
+            sRS.contextSetSurface(0, 0, null);
+            sRS.mMessageCallback = null;
+        }
         mSurrendered = true;
     }
 
@@ -1022,11 +1024,15 @@ public class AllApps3D extends RSSurfaceView
         }
 
         void pause() {
-            sRS.contextBindRootScript(null);
+            if (sRS != null) {
+                sRS.contextBindRootScript(null);
+            }
         }
 
         void resume() {
-            sRS.contextBindRootScript(mScript);
+            if (sRS != null) {
+                sRS.contextBindRootScript(mScript);
+            }
         }
 
         class Params extends BaseAlloc {
