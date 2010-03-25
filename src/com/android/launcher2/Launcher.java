@@ -1262,7 +1262,7 @@ public final class Launcher extends Activity
             v.getLocationOnScreen(pos);
             intent.setSourceBounds(new Rect(pos[0], pos[1],
                     pos[0] + v.getWidth(), pos[1] + v.getHeight()));
-            startActivitySafely(intent);
+            startActivitySafely(intent, tag);
         } else if (tag instanceof FolderInfo) {
             handleFolderClick((FolderInfo) tag);
         } else if (v == mHandleView) {
@@ -1274,17 +1274,19 @@ public final class Launcher extends Activity
         }
     }
 
-    void startActivitySafely(Intent intent) {
+    void startActivitySafely(Intent intent, Object tag) {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         try {
             startActivity(intent);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Unable to launch. tag=" + tag + " intent=" + intent);
         } catch (SecurityException e) {
             Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Launcher does not have the permission to launch " + intent +
                     ". Make sure to create a MAIN intent-filter for the corresponding activity " +
-                    "or use the exported attribute for this activity.", e);
+                    "or use the exported attribute for this activity. "
+                    + "tag="+ tag + " intent=" + intent, e);
         }
     }
     
