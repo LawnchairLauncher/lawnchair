@@ -98,7 +98,7 @@ class ApplicationInfo extends ItemInfo {
 
     @Override
     public String toString() {
-        return title.toString();
+        return "ApplicationInfo(title=" + title.toString() + ")";
     }
 
     public static void dumpApplicationInfoList(String tag, String label,

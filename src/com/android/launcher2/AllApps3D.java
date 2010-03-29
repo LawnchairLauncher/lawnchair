@@ -392,7 +392,7 @@ public class AllApps3D extends RSSurfaceView
                     int whichApp = sRollo.mState.selectedIconIndex;
                     if (whichApp >= 0) {
                         ApplicationInfo app = mAllAppsList.get(whichApp);
-                        mLauncher.startActivitySafely(app.intent);
+                        mLauncher.startActivitySafely(app.intent, app);
                         handled = true;
                     }
                 }
@@ -720,7 +720,7 @@ public class AllApps3D extends RSSurfaceView
                 && mCurrentIconIndex >= 0 && mCurrentIconIndex < mAllAppsList.size()) {
             reallyPlaySoundEffect(SoundEffectConstants.CLICK);
             ApplicationInfo app = mAllAppsList.get(mCurrentIconIndex);
-            mLauncher.startActivitySafely(app.intent);
+            mLauncher.startActivitySafely(app.intent, app);
         }
     }
 

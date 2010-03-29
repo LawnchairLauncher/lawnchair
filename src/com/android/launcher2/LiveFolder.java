@@ -60,10 +60,11 @@ public class LiveFolder extends Folder {
                 Uri uri = baseIntent.getData();
                 uri = uri.buildUpon().appendPath(Long.toString(holder.id)).build();
                 intent.setData(uri);
-                mLauncher.startActivitySafely(intent);
+                mLauncher.startActivitySafely(intent, "(position=" + position + ", id=" + id + ")");
             }
         } else if (holder.intent != null) {
-            mLauncher.startActivitySafely(holder.intent);
+            mLauncher.startActivitySafely(holder.intent,
+                    "(position=" + position + ", id=" + id + ")");
         }
     }
 

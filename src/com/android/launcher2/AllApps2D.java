@@ -165,7 +165,7 @@ public class AllApps2D
 
     public void onItemClick(AdapterView parent, View v, int position, long id) {
         ApplicationInfo app = (ApplicationInfo) parent.getItemAtPosition(position);
-        mLauncher.startActivitySafely(app.intent);
+        mLauncher.startActivitySafely(app.intent, app);
     }
 
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
