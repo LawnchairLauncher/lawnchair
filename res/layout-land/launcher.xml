@@ -48,6 +48,7 @@
         android:layout_gravity="bottom|left"
         android:layout_marginLeft="6dip"
 
+        android:scaleType="center"
         android:src="@drawable/home_arrows_left"
         
         android:onClick="previousScreen"
@@ -62,6 +63,7 @@
         android:layout_gravity="bottom|right"
         android:layout_marginRight="6dip"
 
+        android:scaleType="center"
         android:src="@drawable/home_arrows_right"
         
         android:onClick="nextScreen"
