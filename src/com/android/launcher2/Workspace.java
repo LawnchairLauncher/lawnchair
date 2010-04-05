@@ -838,13 +838,20 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                 
                 final int screenWidth = getWidth();
                 final int whichScreen = (mScrollX + (screenWidth / 2)) / screenWidth;
+                final float scrolledPos = (float) mScrollX / screenWidth;
                 
                 if (velocityX > SNAP_VELOCITY && mCurrentScreen > 0) {
-                    // Fling hard enough to move left
-                    snapToScreen(Math.min(whichScreen, mCurrentScreen - 1));
+                    // Fling hard enough to move left.
+                    // Don't fling across more than one screen at a time.
+                    final int bound = scrolledPos < whichScreen ?
+                            mCurrentScreen - 1 : mCurrentScreen;
+                    snapToScreen(Math.min(whichScreen, bound));
                 } else if (velocityX < -SNAP_VELOCITY && mCurrentScreen < getChildCount() - 1) {
                     // Fling hard enough to move right
-                    snapToScreen(Math.max(whichScreen, mCurrentScreen + 1));
+                    // Don't fling across more than one screen at a time.
+                    final int bound = scrolledPos > whichScreen ?
+                            mCurrentScreen + 1 : mCurrentScreen;
+                    snapToScreen(Math.max(whichScreen, bound));
                 } else {
                     snapToDestination();
                 }
