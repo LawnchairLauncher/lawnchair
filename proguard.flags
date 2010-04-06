@@ -6,3 +6,7 @@
 -keep class com.android.launcher2.AllApps3D$Defines {
   *;
 }
+
+-keep class com.android.launcher2.ClippedImageView {
+  *;
+}

@@ -41,7 +41,7 @@
 
     </com.android.launcher2.Workspace>
 
-    <ImageView
+    <com.android.launcher2.ClippedImageView
         android:id="@+id/previous_screen"
         android:layout_width="93dip"
         android:layout_height="@dimen/button_bar_height"
@@ -53,10 +53,12 @@
         
         android:onClick="previousScreen"
 
+        launcher:ignoreZone="56dip"
+
         android:focusable="true"
         android:clickable="true" />
 
-    <ImageView
+    <com.android.launcher2.ClippedImageView
         android:id="@+id/next_screen"
         android:layout_width="93dip"
         android:layout_height="@dimen/button_bar_height"
@@ -67,6 +69,8 @@
         android:src="@drawable/home_arrows_right"
         
         android:onClick="nextScreen"
+        
+        launcher:ignoreZone="-56dip"
         
         android:focusable="true"
         android:clickable="true" />
