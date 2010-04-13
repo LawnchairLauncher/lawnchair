@@ -24,6 +24,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -56,10 +57,17 @@ class AllAppsList {
     /**
      * Add the supplied ApplicationInfo objects to the list, and enqueue it into the
      * list to broadcast when notify() is called.
+     *
+     * Postcondition: data and added are sorted in order of LauncherModel.APP_NAME_COMPARATOR.
      */
     public void add(ApplicationInfo info) {
-        data.add(info);
-        added.add(info);
+        int pos = Collections.binarySearch(data, info, LauncherModel.APP_NAME_COMPARATOR);
+        if (pos < 0) pos = -1 - pos;
+        data.add(pos, info);
+        
+        pos = Collections.binarySearch(added, info, LauncherModel.APP_NAME_COMPARATOR);
+        if (pos < 0) pos = -1 - pos;
+        added.add(pos, info);
     }
     
     public void clear() {
@@ -86,9 +94,7 @@ class AllAppsList {
 
         if (matches.size() > 0) {
             for (ResolveInfo info : matches) {
-                ApplicationInfo item = new ApplicationInfo(info, mIconCache);
-                data.add(item);
-                added.add(item);
+                add(new ApplicationInfo(info, mIconCache));
             }
         }
     }
@@ -139,9 +145,7 @@ class AllAppsList {
                         info.activityInfo.applicationInfo.packageName,
                         info.activityInfo.name);
                 if (applicationInfo == null) {
-                    applicationInfo = new ApplicationInfo(info, mIconCache);
-                    data.add(applicationInfo);
-                    added.add(applicationInfo);
+                    add(new ApplicationInfo(info, mIconCache));
                 } else {
                     mIconCache.remove(applicationInfo.componentName);
                     mIconCache.getTitleAndIcon(applicationInfo, info);
