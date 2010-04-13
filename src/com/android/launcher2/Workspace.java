@@ -60,7 +60,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     /**
      * The velocity at which a fling gesture will cause us to snap to the next screen
      */
-    private static final int SNAP_VELOCITY = 1000;
+    private static final int SNAP_VELOCITY = 600;
 
     private final WallpaperManager mWallpaperManager;
     
@@ -600,6 +600,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             return true;
         }
 
+        if (mVelocityTracker == null) {
+            mVelocityTracker = VelocityTracker.obtain();
+        }
+        mVelocityTracker.addMovement(ev);
+        
         switch (action & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_MOVE: {
                 /*
@@ -682,6 +687,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                 mTouchState = TOUCH_STATE_REST;
                 mActivePointerId = INVALID_POINTER;
                 mAllowLongPress = false;
+                
+                if (mVelocityTracker != null) {
+                    mVelocityTracker.recycle();
+                    mVelocityTracker = null;
+                }
 
                 break;
                 
