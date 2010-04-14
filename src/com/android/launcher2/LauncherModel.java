@@ -432,7 +432,7 @@ public class LauncherModel extends BroadcastReceiver {
                     Log.d(TAG, "startLoader isLaunching=" + isLaunching);
                 }
                 // Don't bother to start the thread if we know it's not going to do anything
-                if (mCallbacks.get() != null) {
+                if (mCallbacks != null && mCallbacks.get() != null) {
                     LoaderThread oldThread = mLoaderThread;
                     if (oldThread != null) {
                         if (oldThread.isLaunching()) {
@@ -632,6 +632,10 @@ public class LauncherModel extends BroadcastReceiver {
             Callbacks tryGetCallbacks(Callbacks oldCallbacks) {
                 synchronized (mLock) {
                     if (mStopped) {
+                        return null;
+                    }
+
+                    if (mCallbacks == null) {
                         return null;
                     }
 

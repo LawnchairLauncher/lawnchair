@@ -1617,7 +1617,6 @@ public final class Launcher extends Activity
         private EditText mInput;
 
         Dialog createDialog() {
-            mWaitingForResult = true;
             final View layout = View.inflate(Launcher.this, R.layout.rename_folder, null);
             mInput = (EditText) layout.findViewById(R.id.folder_name);
 
@@ -1649,6 +1648,7 @@ public final class Launcher extends Activity
             final AlertDialog dialog = builder.create();
             dialog.setOnShowListener(new DialogInterface.OnShowListener() {
                 public void onShow(DialogInterface dialog) {
+                    mWaitingForResult = true;
                     mInput.requestFocus();
                     InputMethodManager inputManager = (InputMethodManager)
                             getSystemService(Context.INPUT_METHOD_SERVICE);
