@@ -831,6 +831,10 @@ public class AllApps3D extends RSSurfaceView
             return;
         }
 
+        if (list != null) {
+            Collections.sort(list, LauncherModel.APP_NAME_COMPARATOR);
+        }
+
         boolean reload = false;
         if (mAllAppsList == null) {
             reload = true;
