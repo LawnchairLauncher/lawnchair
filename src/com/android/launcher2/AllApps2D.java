@@ -50,6 +50,8 @@ public class AllApps2D
 
     private static final String TAG = "Launcher.AllApps2D";
 
+    private static final int BATCH_SIZE = 6; // give us a few apps at a time
+
     private Launcher mLauncher;
     private DragController mDragController;
 
@@ -298,6 +300,10 @@ public class AllApps2D
             }
         }
         return -1;
+    }
+
+    public int getAppBatchSize() {
+        return BATCH_SIZE;
     }
 
     public void dumpState() {

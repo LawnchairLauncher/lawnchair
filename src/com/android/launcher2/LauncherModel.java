@@ -62,6 +62,8 @@ public class LauncherModel extends BroadcastReceiver {
     static final boolean DEBUG_LOADERS = false;
     static final String TAG = "Launcher.Model";
 
+    final int ALL_APPS_LOAD_DELAY = 150; // ms
+
     private final LauncherApplication mApp;
     private final Object mLock = new Object();
     private DeferredHandler mHandler = new DeferredHandler();
@@ -86,6 +88,7 @@ public class LauncherModel extends BroadcastReceiver {
         public void bindAppsAdded(ArrayList<ApplicationInfo> apps);
         public void bindAppsUpdated(ArrayList<ApplicationInfo> apps);
         public void bindAppsRemoved(ArrayList<ApplicationInfo> apps);
+        public int  getAppBatchSize();
     }
 
     LauncherModel(LauncherApplication app, IconCache iconCache) {
@@ -575,6 +578,13 @@ public class LauncherModel extends BroadcastReceiver {
                     }
                 }
 
+                // Whew! Hard work done.
+                synchronized (mLock) {
+                    if (mIsLaunching) {
+                        android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
+                    }
+                }
+
                 // Load all apps if they're dirty
                 int allAppsSeq;
                 boolean allAppsDirty;
@@ -587,7 +597,7 @@ public class LauncherModel extends BroadcastReceiver {
                     }
                 }
                 if (allAppsDirty) {
-                    loadAllApps();
+                    loadAndBindAllApps();
                 }
                 synchronized (mLock) {
                     // If we're not stopped, and nobody has incremented mAllAppsSeq.
@@ -597,11 +607,6 @@ public class LauncherModel extends BroadcastReceiver {
                     if (allAppsSeq == mAllAppsSeq) {
                         mLastAllAppsSeq = mAllAppsSeq;
                     }
-                }
-
-                // Bind all apps
-                if (allAppsDirty) {
-                    bindAllApps();
                 }
 
                 // Clear out this reference, otherwise we end up holding it until all of the
@@ -1014,7 +1019,9 @@ public class LauncherModel extends BroadcastReceiver {
                 });
             }
 
-            private void loadAllApps() {
+            private void loadAndBindAllApps() {
+                final long t = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
+
                 final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
                 mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 
@@ -1026,53 +1033,79 @@ public class LauncherModel extends BroadcastReceiver {
                 final PackageManager packageManager = mContext.getPackageManager();
                 final List<ResolveInfo> apps = packageManager.queryIntentActivities(mainIntent, 0);
 
+                int N;
+                int batchSize = callbacks.getAppBatchSize();
+
                 synchronized (mLock) {
                     mBeforeFirstLoad = false;
-
                     mAllAppsList.clear();
-                    if (apps != null) {
-                        long t = SystemClock.uptimeMillis();
+                    if (apps == null) return;
+                    N = apps.size();
+                    if (batchSize <= 0)
+                        batchSize = N;
+                }
 
-                        int N = apps.size();
-                        for (int i=0; i<N && !mStopped; i++) {
+                int i=0;
+                while (i < N && !mStopped) {
+                    synchronized (mLock) {
+                        final long t2 = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
+
+                        for (int j=0; i<N && j<batchSize; j++) {
                             // This builds the icon bitmaps.
                             mAllAppsList.add(new ApplicationInfo(apps.get(i), mIconCache));
+                            i++;
                         }
+                        // re-sort before binding this batch to the grid
                         Collections.sort(mAllAppsList.data, APP_NAME_COMPARATOR);
                         Collections.sort(mAllAppsList.added, APP_NAME_COMPARATOR);
                         if (DEBUG_LOADERS) {
-                            Log.d(TAG, "cached app icons in "
-                                    + (SystemClock.uptimeMillis()-t) + "ms");
+                            Log.d(TAG, "batch of " + batchSize + " icons processed in "
+                                    + (SystemClock.uptimeMillis()-t2) + "ms");
                         }
                     }
+
+                    mHandler.post(bindAllAppsTask);
+
+                    if (ALL_APPS_LOAD_DELAY > 0) {
+                        try {
+                            Thread.sleep(ALL_APPS_LOAD_DELAY);
+                        } catch (InterruptedException exc) { }
+                    }
+                }
+
+                if (DEBUG_LOADERS) {
+                    Log.d(TAG, "cached all " + N + " apps in "
+                            + (SystemClock.uptimeMillis()-t) + "ms");
                 }
             }
 
-            private void bindAllApps() {
-                synchronized (mLock) {
-                    final ArrayList<ApplicationInfo> results
-                            = (ArrayList<ApplicationInfo>) mAllAppsList.data.clone();
-                    // We're adding this now, so clear out this so we don't re-send them.
-                    mAllAppsList.added = new ArrayList<ApplicationInfo>();
-                    final Callbacks old = mCallbacks.get();
-                    mHandler.post(new Runnable() {
-                        public void run() {
-                            final long t = SystemClock.uptimeMillis();
-                            final int count = results.size();
+            final Runnable bindAllAppsTask = new Runnable() {
+                public void run() {
+                    final long t = SystemClock.uptimeMillis();
+                    int count = 0;
+                    Callbacks callbacks = null;
+                    ArrayList<ApplicationInfo> results = null;
+                    synchronized (mLock) {
+                        mHandler.cancelRunnable(this);
 
-                            Callbacks callbacks = tryGetCallbacks(old);
-                            if (callbacks != null) {
-                                callbacks.bindAllApplications(results);
-                            }
+                        results = (ArrayList<ApplicationInfo>) mAllAppsList.data.clone();
+                        // We're adding this now, so clear out this so we don't re-send them.
+                        mAllAppsList.added = new ArrayList<ApplicationInfo>();
+                        count = results.size();
 
-                            if (DEBUG_LOADERS) {
-                                Log.d(TAG, "bound app " + count + " icons in "
-                                    + (SystemClock.uptimeMillis() - t) + "ms");
-                            }
-                        }
-                    });
+                        callbacks = tryGetCallbacks(mCallbacks.get());
+                    }
+
+                    if (callbacks != null && count > 0) {
+                        callbacks.bindAllApplications(results);
+                    }
+
+                    if (DEBUG_LOADERS) {
+                        Log.d(TAG, "bound " + count + " apps in "
+                            + (SystemClock.uptimeMillis() - t) + "ms");
+                    }
                 }
-            }
+            };
 
             public void dumpState() {
                 Log.d(TAG, "mLoader.mLoaderThread.mContext=" + mContext);
