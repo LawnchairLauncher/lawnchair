@@ -91,6 +91,10 @@ public class AllApps3D extends RSSurfaceView
     private static RenderScriptGL sRS;
     private static RolloRS sRollo;
 
+    private static boolean sZoomDirty = false;
+    private static boolean sAnimateNextZoom;
+    private static float sNextZoom;
+
     /**
      * True when we are using arrow keys or trackball to drive navigation
      */
@@ -120,9 +124,6 @@ public class AllApps3D extends RSSurfaceView
     private boolean mShouldGainFocus;
 
     private boolean mHaveSurface = false;
-    private boolean mZoomDirty = false;
-    private boolean mAnimateNextZoom;
-    private float mNextZoom;
     private float mZoom;
     private float mVelocity;
     private AAMessage mMessageProc;
@@ -241,7 +242,7 @@ public class AllApps3D extends RSSurfaceView
         }
         // We may lose any callbacks that are pending, so make sure that we re-sync that
         // on the next surfaceChanged.
-        mZoomDirty = true;
+        sZoomDirty = true;
         mHaveSurface = false;
     }
 
@@ -801,12 +802,12 @@ public class AllApps3D extends RSSurfaceView
      */
     public void zoom(float zoom, boolean animate) {
         cancelLongPress();
-        mNextZoom = zoom;
-        mAnimateNextZoom = animate;
+        sNextZoom = zoom;
+        sAnimateNextZoom = animate;
         // if we do setZoom while we don't have a surface, we won't
         // get the callbacks that actually set mZoom.
         if (sRollo == null || !mHaveSurface) {
-            mZoomDirty = true;
+            sZoomDirty = true;
             mZoom = zoom;
         } else {
             sRollo.setZoom(zoom, animate);
@@ -959,7 +960,7 @@ public class AllApps3D extends RSSurfaceView
             sRollo.mScrollPos = ((float)mData[0]) / (1 << 16);
             mVelocity = ((float)mData[1]) / (1 << 16);
             mZoom = ((float)mData[2]) / (1 << 16);
-            mZoomDirty = false;
+            sZoomDirty = false;
         }
     }
 
@@ -1305,8 +1306,8 @@ public class AllApps3D extends RSSurfaceView
         }
 
         void dirtyCheck() {
-            if (mAllApps.mZoomDirty) {
-                setZoom(mAllApps.mNextZoom, mAllApps.mAnimateNextZoom);
+            if (sZoomDirty) {
+                setZoom(mAllApps.sNextZoom, mAllApps.sAnimateNextZoom);
             }
         }
 
@@ -1612,8 +1613,8 @@ public class AllApps3D extends RSSurfaceView
         Log.d(TAG, "mVelocityTracker=" + mVelocityTracker);
         Log.d(TAG, "mTouchTracking=" + mTouchTracking);
         Log.d(TAG, "mShouldGainFocus=" + mShouldGainFocus);
-        Log.d(TAG, "mZoomDirty=" + mZoomDirty);
-        Log.d(TAG, "mAnimateNextZoom=" + mAnimateNextZoom);
+        Log.d(TAG, "sZoomDirty=" + sZoomDirty);
+        Log.d(TAG, "sAnimateNextZoom=" + sAnimateNextZoom);
         Log.d(TAG, "mZoom=" + mZoom);
         Log.d(TAG, "mScrollPos=" + sRollo.mScrollPos);
         Log.d(TAG, "mVelocity=" + mVelocity);
