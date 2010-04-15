@@ -87,6 +87,12 @@ public class DeferredHandler {
         post(new IdleRunnable(runnable));
     }
 
+    public void cancelRunnable(Runnable runnable) {
+        synchronized (mQueue) {
+            while (mQueue.remove(runnable)) { }
+        }
+    }
+
     public void cancel() {
         synchronized (mQueue) {
             mQueue.clear();
