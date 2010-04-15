@@ -57,17 +57,10 @@ class AllAppsList {
     /**
      * Add the supplied ApplicationInfo objects to the list, and enqueue it into the
      * list to broadcast when notify() is called.
-     *
-     * Postcondition: data and added are sorted in order of LauncherModel.APP_NAME_COMPARATOR.
      */
     public void add(ApplicationInfo info) {
-        int pos = Collections.binarySearch(data, info, LauncherModel.APP_NAME_COMPARATOR);
-        if (pos < 0) pos = -1 - pos;
-        data.add(pos, info);
-        
-        pos = Collections.binarySearch(added, info, LauncherModel.APP_NAME_COMPARATOR);
-        if (pos < 0) pos = -1 - pos;
-        added.add(pos, info);
+        data.add(info);
+        added.add(info);
     }
     
     public void clear() {
