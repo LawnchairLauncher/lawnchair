@@ -1316,7 +1316,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                             final ProviderInfo providerInfo = manager.resolveContentProvider(
                                     uri.getAuthority(), 0);
 
-                            if (providerInfo == null) {
+                            if (providerInfo != null) {
                                 for (String packageName: packageNames) {
                                     if (packageName.equals(providerInfo.packageName)) {
                                         // TODO: This should probably be done on a worker thread
