@@ -16,22 +16,25 @@
 
 package com.android.launcher2;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ComponentName;
+import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.content.res.TypedArray;
-import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.IBinder;
-import android.os.Parcelable;
 import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -39,11 +42,9 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.animation.OvershootInterpolator;
 import android.widget.Scroller;
 import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.HashSet;
 
 import com.android.launcher.R;
 
@@ -153,7 +154,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
      */
     private void initWorkspace() {
         Context context = getContext();
-        mScroller = new Scroller(context);
+        mScroller = new Scroller(context, new OvershootInterpolator());
         mCurrentScreen = mDefaultScreen;
         Launcher.setScreen(mCurrentScreen);
         LauncherApplication app = (LauncherApplication)context.getApplicationContext();
@@ -390,7 +391,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         IBinder token = getWindowToken();
         if (token != null) {
             mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 0 );
-            mWallpaperManager.setWallpaperOffsets(getWindowToken(), mScrollX/(float)scrollRange, 0);
+            mWallpaperManager.setWallpaperOffsets(getWindowToken(),
+                    Math.max(0.f, Math.min(mScrollX/(float)scrollRange, 1.f)), 0);
         }
     }
     
