@@ -2095,7 +2095,7 @@ public final class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public int getAppBatchSize() {
-        return mAllAppsGrid.getAppBatchSize();
+        return getResources().getInteger(R.integer.config_allAppsBatchSize);
     }
 
     /**
