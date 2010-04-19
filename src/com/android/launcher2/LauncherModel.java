@@ -62,7 +62,7 @@ public class LauncherModel extends BroadcastReceiver {
     static final boolean DEBUG_LOADERS = false;
     static final String TAG = "Launcher.Model";
 
-    final int ALL_APPS_LOAD_DELAY = 150; // ms
+    private int mAllAppsLoadDelay; // milliseconds between batches
 
     private final LauncherApplication mApp;
     private final Object mLock = new Object();
@@ -98,6 +98,8 @@ public class LauncherModel extends BroadcastReceiver {
 
         mDefaultIcon = Utilities.createIconBitmap(
                 app.getPackageManager().getDefaultActivityIcon(), app);
+
+        mAllAppsLoadDelay = app.getResources().getInteger(R.integer.config_allAppsBatchLoadDelay);
     }
 
     public Bitmap getFallbackIcon() {
@@ -581,7 +583,7 @@ public class LauncherModel extends BroadcastReceiver {
                 // Whew! Hard work done.
                 synchronized (mLock) {
                     if (mIsLaunching) {
-                        android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
+                        android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
                     }
                 }
 
@@ -1055,9 +1057,6 @@ public class LauncherModel extends BroadcastReceiver {
                             mAllAppsList.add(new ApplicationInfo(apps.get(i), mIconCache));
                             i++;
                         }
-                        // re-sort before binding this batch to the grid
-                        Collections.sort(mAllAppsList.data, APP_NAME_COMPARATOR);
-                        Collections.sort(mAllAppsList.added, APP_NAME_COMPARATOR);
                         if (DEBUG_LOADERS) {
                             Log.d(TAG, "batch of " + batchSize + " icons processed in "
                                     + (SystemClock.uptimeMillis()-t2) + "ms");
@@ -1066,16 +1065,17 @@ public class LauncherModel extends BroadcastReceiver {
 
                     mHandler.post(bindAllAppsTask);
 
-                    if (ALL_APPS_LOAD_DELAY > 0) {
+                    if (mAllAppsLoadDelay > 0 && i < N) {
                         try {
-                            Thread.sleep(ALL_APPS_LOAD_DELAY);
+                            Thread.sleep(mAllAppsLoadDelay);
                         } catch (InterruptedException exc) { }
                     }
                 }
 
                 if (DEBUG_LOADERS) {
                     Log.d(TAG, "cached all " + N + " apps in "
-                            + (SystemClock.uptimeMillis()-t) + "ms");
+                            + (SystemClock.uptimeMillis()-t) + "ms"
+                            + (mAllAppsLoadDelay > 0 ? " (including delay)" : ""));
                 }
             }
 
