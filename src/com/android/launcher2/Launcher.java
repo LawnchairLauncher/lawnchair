@@ -1750,6 +1750,10 @@ public final class Launcher extends Activity
      *          - Go back with back key  TODO: make this not go to workspace
      *          - From all apps
      *          - From workspace
+     *   - Enter and exit car mode (becuase it causes an extra configuration changed)
+     *          - From all apps
+     *          - From the center workspace
+     *          - From another workspace
      */
     void closeAllApps(boolean animated) {
         if (mAllAppsGrid.isVisible()) {
@@ -2091,7 +2095,7 @@ public final class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public int getAppBatchSize() {
-        return mAllAppsGrid.getAppBatchSize();
+        return getResources().getInteger(R.integer.config_allAppsBatchSize);
     }
 
     /**

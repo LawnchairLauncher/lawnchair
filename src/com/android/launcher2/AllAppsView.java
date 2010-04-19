@@ -41,8 +41,6 @@ public interface AllAppsView {
 
     public void updateApps(ArrayList<ApplicationInfo> list);
     
-    public int  getAppBatchSize();
-
     public void dumpState();
 
     public void surrender();
