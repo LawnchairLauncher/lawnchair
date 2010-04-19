@@ -1,5 +1,6 @@
 <resources>
     <integer name="config_allAppsFadeInTime">700</integer>
     <integer name="config_allAppsFadeOutTime">700</integer>
-    <integer name="config_allAppsBatchLoadDelay">150</integer>
+    <integer name="config_allAppsBatchLoadDelay">0</integer>
+    <integer name="config_allAppsBatchSize">0</integer>
 </resources>

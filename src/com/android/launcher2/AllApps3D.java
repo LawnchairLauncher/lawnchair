@@ -73,8 +73,6 @@ public class AllApps3D extends RSSurfaceView
     private static final int SELECTION_ICONS = 1;
     private static final int SELECTION_HOME = 2;
 
-    private static final int BATCH_SIZE = 0; // give us all the apps at once
-
     private Launcher mLauncher;
     private DragController mDragController;
 
@@ -1598,10 +1596,6 @@ public class AllApps3D extends RSSurfaceView
             Log.d(TAG, "sRollo.mParams.homeButtonTextureWidth=" + mParams.homeButtonTextureWidth);
             Log.d(TAG, "sRollo.mParams.homeButtonTextureHeight=" + mParams.homeButtonTextureHeight);
         }
-    }
-
-    public int getAppBatchSize() {
-        return BATCH_SIZE;
     }
 
     public void dumpState() {
