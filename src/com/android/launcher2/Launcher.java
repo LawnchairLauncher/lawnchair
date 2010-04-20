@@ -2090,15 +2090,6 @@ public final class Launcher extends Activity
     }
 
     /**
-     * Find out how many apps we should send to the grid at a time.
-     *
-     * Implementation of the method from LauncherModel.Callbacks.
-     */
-    public int getAppBatchSize() {
-        return getResources().getInteger(R.integer.config_allAppsBatchSize);
-    }
-
-    /**
      * Prints out out state for debugging.
      */
     public void dumpState() {
