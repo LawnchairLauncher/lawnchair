@@ -57,8 +57,13 @@ class AllAppsList {
     /**
      * Add the supplied ApplicationInfo objects to the list, and enqueue it into the
      * list to broadcast when notify() is called.
+     *
+     * If the app is already in the list, doesn't add it.
      */
     public void add(ApplicationInfo info) {
+        if (findActivity(data, info.componentName)) {
+            return;
+        }
         data.add(info);
         added.add(info);
     }
@@ -183,6 +188,20 @@ class AllAppsList {
         for (ResolveInfo info : apps) {
             final ActivityInfo activityInfo = info.activityInfo;
             if (activityInfo.name.equals(className)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns whether <em>apps</em> contains <em>component</em>.
+     */
+    private static boolean findActivity(ArrayList<ApplicationInfo> apps, ComponentName component) {
+        final int N = apps.size();
+        for (int i=0; i<N; i++) {
+            final ApplicationInfo info = apps.get(i);
+            if (info.componentName.equals(component)) {
                 return true;
             }
         }
