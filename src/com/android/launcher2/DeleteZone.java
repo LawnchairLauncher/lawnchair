@@ -183,15 +183,7 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
             animationSet.setDuration(ANIMATION_DURATION);
         }
         if (mHandleInAnimation == null) {
-            if (mOrientation == ORIENTATION_HORIZONTAL) {
-                mHandleInAnimation = new TranslateAnimation(Animation.ABSOLUTE, 0.0f,
-                        Animation.ABSOLUTE, 0.0f, Animation.RELATIVE_TO_SELF, 1.0f,
-                        Animation.RELATIVE_TO_SELF, 0.0f);
-            } else {
-                mHandleInAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF,
-                        1.0f, Animation.RELATIVE_TO_SELF, 0.0f, Animation.ABSOLUTE, 0.0f,
-                        Animation.ABSOLUTE, 0.0f);
-            }
+            mHandleInAnimation = new AlphaAnimation(0.0f, 1.0f);
             mHandleInAnimation.setDuration(ANIMATION_DURATION);
         }
         if (mOutAnimation == null) {
@@ -211,15 +203,7 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
             animationSet.setDuration(ANIMATION_DURATION);
         }
         if (mHandleOutAnimation == null) {
-            if (mOrientation == ORIENTATION_HORIZONTAL) {
-                mHandleOutAnimation = new FastTranslateAnimation(Animation.ABSOLUTE, 0.0f,
-                        Animation.ABSOLUTE, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f,
-                        Animation.RELATIVE_TO_SELF, 1.0f);
-            } else {
-                mHandleOutAnimation = new FastTranslateAnimation(Animation.RELATIVE_TO_SELF,
-                        0.0f, Animation.RELATIVE_TO_SELF, 1.0f, Animation.ABSOLUTE, 0.0f,
-                        Animation.ABSOLUTE, 0.0f);
-            }
+            mHandleOutAnimation = new AlphaAnimation(1.0f, 0.0f);
             mHandleOutAnimation.setFillAfter(true);
             mHandleOutAnimation.setDuration(ANIMATION_DURATION);
         }
