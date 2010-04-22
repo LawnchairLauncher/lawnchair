@@ -1103,15 +1103,19 @@ public class LauncherModel extends BroadcastReceiver {
                             public void run() {
                                 final long t = SystemClock.uptimeMillis();
                                 final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
-                                if (first) {
-                                    mBeforeFirstLoad = false;
-                                    callbacks.bindAllApplications(added);
+                                if (callbacks != null) {
+                                    if (first) {
+                                        mBeforeFirstLoad = false;
+                                        callbacks.bindAllApplications(added);
+                                    } else {
+                                        callbacks.bindAppsAdded(added);
+                                    }
+                                    if (DEBUG_LOADERS) {
+                                        Log.d(TAG, "bound " + added.size() + " apps in "
+                                            + (SystemClock.uptimeMillis() - t) + "ms");
+                                    }
                                 } else {
-                                    callbacks.bindAppsAdded(added);
-                                }
-                                if (DEBUG_LOADERS) {
-                                    Log.d(TAG, "bound " + added.size() + " apps in "
-                                        + (SystemClock.uptimeMillis() - t) + "ms");
+                                    Log.i(TAG, "not binding apps: no Launcher activity");
                                 }
                             }
                         });
