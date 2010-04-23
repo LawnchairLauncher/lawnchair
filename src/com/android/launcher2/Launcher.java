@@ -26,12 +26,14 @@ import android.app.StatusBarManager;
 import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -41,6 +43,7 @@ import android.graphics.Rect;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -197,6 +200,17 @@ public final class Launcher extends Activity
     private ImageView mPreviousView;
     private ImageView mNextView;
 
+    // Hotseats (quick-launch icons next to AllApps)
+    // TODO: move these intial intents out to Uris in an XML resource
+    private static final int NUM_HOTSEATS = 2;
+    private Intent[] mHotseats = new Intent[] {
+        new Intent(Intent.ACTION_MAIN)
+            .setComponent(ComponentName.unflattenFromString(
+                "com.android.contacts/.ContactsLaunchActivity")),
+        new Intent(Intent.ACTION_WEB_SEARCH, Uri.EMPTY),
+    };
+    private CharSequence[] mHotseatLabels = new CharSequence[2];
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -215,6 +229,7 @@ public final class Launcher extends Activity
             android.os.Debug.startMethodTracing("/sdcard/launcher");
         }
 
+        loadHotseats();
         checkForLocaleChange();
         setWallpaperDimension();
 
@@ -273,6 +288,8 @@ public final class Launcher extends Activity
 
             writeConfiguration(this, localeConfiguration);
             mIconCache.flush();
+
+            loadHotseats();
         }
     }
 
@@ -349,6 +366,44 @@ public final class Launcher extends Activity
         final int width = isPortrait ? display.getWidth() : display.getHeight();
         final int height = isPortrait ? display.getHeight() : display.getWidth();
         wpm.suggestDesiredDimensions(width * WALLPAPER_SCREENS_SPAN, height);
+    }
+
+    private void loadHotseats() {
+        PackageManager pm = getPackageManager();
+        for (int i=0; i<mHotseats.length; i++) {
+            Intent intent = mHotseats[i];
+
+            if (LOGD) {
+                Log.d(TAG, "loadHotseats: hotseat " + i 
+                    + " initial intent=[" + intent.toUri(Intent.URI_INTENT_SCHEME)
+                    + "]");
+            }
+
+            // fix up the default intents
+            if (intent.getAction().equals(Intent.ACTION_WEB_SEARCH)
+                    && intent.getData().equals(Uri.EMPTY)) {
+                // use this to represent "default web browser"
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com/"));
+            }
+            ComponentName com = intent.resolveActivity(pm);
+            mHotseats[i] = new Intent(Intent.ACTION_MAIN).setComponent(com);
+
+            // load the labels for accessibility
+            try {
+                ActivityInfo ai = pm.getActivityInfo(com, 0);
+                mHotseatLabels[i] = ai.loadLabel(pm);
+            } catch (PackageManager.NameNotFoundException ex) {
+                mHotseatLabels[i] = "";
+            }
+
+            if (LOGD) {
+                Log.d(TAG, "loadHotseats: hotseat " + i 
+                    + " intent=[" + mHotseats[i].toUri(Intent.URI_INTENT_SCHEME)
+                    + "] label=[" + mHotseatLabels[i]
+                    + "]"
+                    );
+            }
+        }
     }
 
     @Override
@@ -567,6 +622,9 @@ public final class Launcher extends Activity
         mHandleView.setOnClickListener(this);
         mHandleView.setOnLongClickListener(this);
 
+        findViewById(R.id.hotseat_left).setContentDescription(mHotseatLabels[0]);
+        findViewById(R.id.hotseat_right).setContentDescription(mHotseatLabels[1]);
+
         mPreviousView = (ImageView) dragLayer.findViewById(R.id.previous_screen);
         mNextView = (ImageView) dragLayer.findViewById(R.id.next_screen);
 
@@ -585,7 +643,7 @@ public final class Launcher extends Activity
 
         deleteZone.setLauncher(this);
         deleteZone.setDragController(dragController);
-        deleteZone.setHandle(mHandleView);
+        deleteZone.setHandle(findViewById(R.id.all_apps_button_cluster));
 
         dragController.setDragScoller(workspace);
         dragController.setDragListener(deleteZone);
@@ -608,6 +666,23 @@ public final class Launcher extends Activity
     public void nextScreen(View v) {
         if (!isAllAppsVisible()) {
             mWorkspace.scrollRight();
+        }
+    }
+
+    @SuppressWarnings({"UnusedDeclaration"})
+    public void launchHotSeat(View v) {
+        int index = -1;
+        if (v.getId() == R.id.hotseat_left) {
+            index = 0;
+        } else if (v.getId() == R.id.hotseat_right) {
+            index = 1;
+        }
+
+        if (index >= 0 && mHotseats[index] != null) {
+            startActivitySafely(
+                mHotseats[index],
+                "hotseat"
+            );
         }
     }
     
@@ -1280,7 +1355,7 @@ public final class Launcher extends Activity
             startActivity(intent);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Unable to launch. tag=" + tag + " intent=" + intent);
+            Log.e(TAG, "Unable to launch. tag=" + tag + " intent=" + intent, e);
         } catch (SecurityException e) {
             Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Launcher does not have the permission to launch " + intent +
