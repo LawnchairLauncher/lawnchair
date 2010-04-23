@@ -75,24 +75,11 @@
         android:focusable="true"
         android:clickable="true" />
 
-    <com.android.launcher2.HandleView
-        android:id="@+id/all_apps_button"
-        android:layout_width="@dimen/button_bar_height"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right|center_vertical"
-
-        android:focusable="true"
-        android:clickable="true"
-
-        android:scaleType="center"
-        android:src="@drawable/all_apps_button"
-        launcher:direction="vertical"
-        />
-
     <com.android.launcher2.DeleteZone
         android:id="@+id/delete_zone"
-        android:layout_width="@dimen/button_bar_height"
+        android:layout_width="@dimen/button_bar_height_portrait"
         android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/half_status_bar_height"
         android:layout_gravity="right|center_vertical"
 
         android:scaleType="center"
@@ -101,4 +88,43 @@
         launcher:direction="vertical"
         />
 
+    <RelativeLayout
+        android:id="@+id/all_apps_button_cluster"
+        android:layout_height="fill_parent"
+        android:layout_width="@dimen/button_bar_height_portrait"
+        android:layout_gravity="right|center_vertical"
+        android:layout_marginBottom="@dimen/half_status_bar_height"
+        android:padding="4dip"
+        >
+
+        <com.android.launcher2.HandleView
+            style="@style/HotseatButton"
+            android:id="@+id/all_apps_button"
+            android:layout_centerInParent="true"
+
+            android:src="@drawable/all_apps_button"
+            launcher:direction="vertical"
+            />
+
+        <ImageView
+            android:id="@+id/hotseat_left"
+            style="@style/HotseatButton.Left"
+            android:layout_below="@id/all_apps_button"
+
+            android:src="@drawable/hotseat_phone"
+
+            android:onClick="launchHotSeat"
+            />
+
+        <ImageView
+            android:id="@+id/hotseat_right"
+            style="@style/HotseatButton.Right"
+            android:layout_above="@id/all_apps_button"
+
+            android:src="@drawable/hotseat_browser"
+
+            android:onClick="launchHotSeat"
+            />
+
+    </RelativeLayout>
 </com.android.launcher2.DragLayer>
