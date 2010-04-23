@@ -18,6 +18,14 @@
     <!--  Far-left screen [0] -->
 
     <!--  Left screen [1] -->
+    <appwidget
+        launcher:packageName="com.google.android.apps.genie.geniewidget"
+        launcher:className="com.google.android.apps.genie.geniewidget.miniwidget.MiniWidgetProvider"
+        launcher:screen="1"
+        launcher:x="0"
+        launcher:y="0"
+        launcher:spanX="4"
+        launcher:spanY="1" />
         
     <!--  Middle screen [2] -->
     <search
@@ -35,6 +43,14 @@
         launcher:spanY="1" />
 
     <!--  Right screen [3] -->
+    <appwidget
+        launcher:packageName="com.android.music"
+        launcher:className="com.android.music.MediaAppWidgetProvider"
+        launcher:screen="3"
+        launcher:x="0"
+        launcher:y="0"
+        launcher:spanX="4"
+        launcher:spanY="1" />
 
     <!--  Far-right screen [4] -->
 
