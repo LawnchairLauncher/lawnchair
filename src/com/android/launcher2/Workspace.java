@@ -42,7 +42,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.view.animation.OvershootInterpolator;
+import android.view.animation.Interpolator;
 import android.widget.Scroller;
 import android.widget.TextView;
 
@@ -119,6 +119,28 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     private Drawable mPreviousIndicator;
     private Drawable mNextIndicator;
 
+    private WorkspaceOvershootInterpolator mScrollInterpolator;
+
+    private static class WorkspaceOvershootInterpolator implements Interpolator {
+        private static final float DEFAULT_TENSION = 2.f;
+        private float mTension;
+
+        public WorkspaceOvershootInterpolator() {
+            mTension = DEFAULT_TENSION;
+        }
+        
+        public void setDistance(int distance) {
+            mTension = distance > 0 ? DEFAULT_TENSION / distance : DEFAULT_TENSION;
+        }
+
+        public float getInterpolation(float t) {
+            // _o(t) = t * t * ((tension + 1) * t + tension)
+            // o(t) = _o(t - 1) + 1
+            t -= 1.0f;
+            return t * t * ((mTension + 1) * t + mTension) + 1.0f;
+        }
+    }
+    
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -154,7 +176,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
      */
     private void initWorkspace() {
         Context context = getContext();
-        mScroller = new Scroller(context, new OvershootInterpolator());
+        mScrollInterpolator = new WorkspaceOvershootInterpolator();
+        mScroller = new Scroller(context, mScrollInterpolator);
         mCurrentScreen = mDefaultScreen;
         Launcher.setScreen(mCurrentScreen);
         LauncherApplication app = (LauncherApplication)context.getApplicationContext();
@@ -917,10 +940,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         
         final int newX = whichScreen * getWidth();
         final int delta = newX - mScrollX;
-        final int duration = screenDelta != 0 ? screenDelta * 300 : 300;
+        final int duration = screenDelta != 0 ? 200 + screenDelta * 100 : 300;
         awakenScrollBars(duration);
 
         if (!mScroller.isFinished()) mScroller.abortAnimation();
+        mScrollInterpolator.setDistance(screenDelta);
         mScroller.startScroll(mScrollX, 0, delta, 0, duration);
         invalidate();
     }
