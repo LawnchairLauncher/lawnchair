@@ -31,7 +31,7 @@
     <string name="rename_folder_title" msgid="4544573104191526550">"Cambiar nombre de carpeta"</string>
     <string name="rename_action" msgid="6016003384693240896">"Aceptar"</string>
     <string name="cancel_action" msgid="3811860427489435048">"Cancelar"</string>
-    <string name="menu_item_add_item" msgid="6233177331075781114">"Añadir a pantalla de inicio"</string>
+    <string name="menu_item_add_item" msgid="6233177331075781114">"Añadir a pantalla principal"</string>
     <string name="group_applications" msgid="4118484163419674240">"Aplicaciones"</string>
     <string name="group_shortcuts" msgid="9133529424900391877">"Accesos directos"</string>
     <string name="group_folder" msgid="5143593791798929193">"Nueva carpeta"</string>
