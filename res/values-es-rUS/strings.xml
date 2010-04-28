@@ -23,7 +23,7 @@
     <string name="uid_name" msgid="3371120195364560632">"Aplicaciones del núcleo de Android"</string>
     <string name="folder_name" msgid="4588446541914685904">"Carpeta"</string>
     <string name="chooser_wallpaper" msgid="5988031014201479733">"Seleccionar papel tapiz desde"</string>
-    <string name="wallpaper_instructions" msgid="4215640646180727542">"Definir papel tapiz"</string>
+    <string name="wallpaper_instructions" msgid="4215640646180727542">"Definir como fondo de pantalla"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"Papeles tapiz"</string>
     <string name="activity_not_found" msgid="3571057450431950427">"La aplicación no está instalada en tu computadora."</string>
     <string name="configure_wallpaper" msgid="2820186271419674623">"Configurar..."</string>

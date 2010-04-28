@@ -40,7 +40,7 @@
     <string name="group_wallpapers" msgid="1568191644272224858">"배경화면"</string>
     <string name="add_folder" msgid="3521088587367839879">"폴더"</string>
     <string name="add_clock" msgid="2337943840175865746">"시계"</string>
-    <string name="add_photo_frame" msgid="3154058437359487954">"사진 프레임"</string>
+    <string name="add_photo_frame" msgid="3154058437359487954">"사진 액자"</string>
     <string name="out_of_space" msgid="8365249326091984698">"홈 화면에 더 이상 공간이 없습니다."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"바로가기(\'<xliff:g id="NAME">%s</xliff:g>\')가 생성되었습니다."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"바로가기(\'<xliff:g id="NAME">%s</xliff:g>\')가 삭제되었습니다."</string>
