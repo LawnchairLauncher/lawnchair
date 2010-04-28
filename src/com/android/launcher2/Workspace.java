@@ -42,7 +42,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.view.animation.OvershootInterpolator;
+import android.view.animation.Interpolator;
 import android.widget.Scroller;
 import android.widget.TextView;
 
@@ -119,6 +119,35 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     private Drawable mPreviousIndicator;
     private Drawable mNextIndicator;
 
+    private WorkspaceOvershootInterpolator mScrollInterpolator;
+
+    private static final float BASELINE_FLING_VELOCITY = 2500.f;
+    private static final float FLING_VELOCITY_INFLUENCE = 0.4f;
+    
+    private static class WorkspaceOvershootInterpolator implements Interpolator {
+        private static final float DEFAULT_TENSION = 1.3f;
+        private float mTension;
+
+        public WorkspaceOvershootInterpolator() {
+            mTension = DEFAULT_TENSION;
+        }
+        
+        public void setDistance(int distance) {
+            mTension = distance > 0 ? DEFAULT_TENSION / distance : DEFAULT_TENSION;
+        }
+
+        public void disableSettle() {
+            mTension = 0.f;
+        }
+
+        public float getInterpolation(float t) {
+            // _o(t) = t * t * ((tension + 1) * t + tension)
+            // o(t) = _o(t - 1) + 1
+            t -= 1.0f;
+            return t * t * ((mTension + 1) * t + mTension) + 1.0f;
+        }
+    }
+    
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -154,7 +183,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
      */
     private void initWorkspace() {
         Context context = getContext();
-        mScroller = new Scroller(context, new OvershootInterpolator());
+        mScrollInterpolator = new WorkspaceOvershootInterpolator();
+        mScroller = new Scroller(context, mScrollInterpolator);
         mCurrentScreen = mDefaultScreen;
         Launcher.setScreen(mCurrentScreen);
         LauncherApplication app = (LauncherApplication)context.getApplicationContext();
@@ -429,17 +459,14 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             drawChild(canvas, getChildAt(mCurrentScreen), getDrawingTime());
         } else {
             final long drawingTime = getDrawingTime();
-            // If we are flinging, draw only the current screen and the target screen
-            if (mNextScreen >= 0 && mNextScreen < getChildCount() &&
-                    Math.abs(mCurrentScreen - mNextScreen) == 1) {
-                drawChild(canvas, getChildAt(mCurrentScreen), drawingTime);
-                drawChild(canvas, getChildAt(mNextScreen), drawingTime);
-            } else {
-                // If we are scrolling, draw all of our children
-                final int count = getChildCount();
-                for (int i = 0; i < count; i++) {
-                    drawChild(canvas, getChildAt(i), drawingTime);
-                }
+            final float scrollPos = (float) mScrollX / getWidth();
+            final int leftScreen = (int) scrollPos;
+            final int rightScreen = leftScreen + 1;
+            if (leftScreen >= 0) {
+                drawChild(canvas, getChildAt(leftScreen), drawingTime);
+            }
+            if (scrollPos != leftScreen && rightScreen < getChildCount()) {
+                drawChild(canvas, getChildAt(rightScreen), drawingTime);
             }
         }
 
@@ -757,8 +784,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     void enableChildrenCache(int fromScreen, int toScreen) {
         if (fromScreen > toScreen) {
-            fromScreen = toScreen;
-            toScreen = fromScreen;
+            final int temp = fromScreen; 
+            fromScreen = toScreen - 1;
+            toScreen = temp;
+        } else {
+            toScreen++;
         }
         
         final int count = getChildCount();
@@ -857,15 +887,15 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                     // Don't fling across more than one screen at a time.
                     final int bound = scrolledPos < whichScreen ?
                             mCurrentScreen - 1 : mCurrentScreen;
-                    snapToScreen(Math.min(whichScreen, bound));
+                    snapToScreen(Math.min(whichScreen, bound), velocityX, true);
                 } else if (velocityX < -SNAP_VELOCITY && mCurrentScreen < getChildCount() - 1) {
                     // Fling hard enough to move right
                     // Don't fling across more than one screen at a time.
                     final int bound = scrolledPos > whichScreen ?
                             mCurrentScreen + 1 : mCurrentScreen;
-                    snapToScreen(Math.max(whichScreen, bound));
+                    snapToScreen(Math.max(whichScreen, bound), velocityX, true);
                 } else {
-                    snapToDestination();
+                    snapToScreen(whichScreen, 0, true);
                 }
 
                 if (mVelocityTracker != null) {
@@ -887,15 +917,12 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
         return true;
     }
-
-    private void snapToDestination() {
-        final int screenWidth = getWidth();
-        final int whichScreen = (mScrollX + (screenWidth / 2)) / screenWidth;
-
-        snapToScreen(whichScreen);
+    
+    void snapToScreen(int whichScreen) {
+        snapToScreen(whichScreen, 0, false);
     }
 
-    void snapToScreen(int whichScreen) {
+    private void snapToScreen(int whichScreen, int velocity, boolean settle) {
         //if (!mScroller.isFinished()) return;
 
         whichScreen = Math.max(0, Math.min(whichScreen, getChildCount() - 1));
@@ -903,24 +930,41 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         clearVacantCache();
         enableChildrenCache(mCurrentScreen, whichScreen);
 
-        final int screenDelta = Math.abs(whichScreen - mCurrentScreen);
-        
         mNextScreen = whichScreen;
 
         mPreviousIndicator.setLevel(mNextScreen);
         mNextIndicator.setLevel(mNextScreen);
 
         View focusedChild = getFocusedChild();
-        if (focusedChild != null && screenDelta != 0 && focusedChild == getChildAt(mCurrentScreen)) {
+        if (focusedChild != null && whichScreen != mCurrentScreen &&
+                focusedChild == getChildAt(mCurrentScreen)) {
             focusedChild.clearFocus();
         }
         
+        final int screenDelta = Math.max(1, Math.abs(whichScreen - mCurrentScreen));
         final int newX = whichScreen * getWidth();
         final int delta = newX - mScrollX;
-        final int duration = screenDelta != 0 ? screenDelta * 300 : 300;
-        awakenScrollBars(duration);
+        int duration = (screenDelta + 1) * 100;
 
-        if (!mScroller.isFinished()) mScroller.abortAnimation();
+        if (!mScroller.isFinished()) {
+            mScroller.abortAnimation();
+        }
+        
+        if (settle) {
+            mScrollInterpolator.setDistance(screenDelta);
+        } else {
+            mScrollInterpolator.disableSettle();
+        }
+        
+        velocity = Math.abs(velocity);
+        if (velocity > 0) {
+            duration += (duration / (velocity / BASELINE_FLING_VELOCITY))
+                    * FLING_VELOCITY_INFLUENCE;
+        } else {
+            duration += 100;
+        }
+
+        awakenScrollBars(duration);
         mScroller.startScroll(mScrollX, 0, delta, 0, duration);
         invalidate();
     }

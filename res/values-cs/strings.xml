@@ -46,7 +46,7 @@
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Zástupce <xliff:g id="NAME">%s</xliff:g> byl odebrán."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Zástupce <xliff:g id="NAME">%s</xliff:g> již existuje."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Vyberte zástupce"</string>
-    <string name="title_select_live_folder" msgid="3753447798805166749">"Vybrat složku"</string>
+    <string name="title_select_live_folder" msgid="3753447798805166749">"Vyberte složku"</string>
     <string name="all_apps_button_label" msgid="3953036962111614813">"Všechny aplikace"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Plocha"</string>
     <string name="menu_add" msgid="3065046628354640854">"Přidat"</string>
