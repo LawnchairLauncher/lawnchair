@@ -27,4 +27,10 @@
     <!-- roughly half a status bar (for vertically centering the right-hand
          button cluster in landscape) -->
     <dimen name="half_status_bar_height">12dip</dimen>
+
+    <!-- height & width of the drop rectangle for the trash icon -->
+    <dimen name="delete_zone_size">70dip</dimen>
+    
+    <!-- delete_zone_size_full - button_bar_height_portrait -->
+    <dimen name="delete_zone_padding">14dip</dimen>
 </resources>

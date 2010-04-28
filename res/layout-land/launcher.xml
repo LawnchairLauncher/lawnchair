@@ -77,8 +77,9 @@
 
     <com.android.launcher2.DeleteZone
         android:id="@+id/delete_zone"
-        android:layout_width="@dimen/button_bar_height_portrait"
-        android:layout_height="match_parent"
+        android:layout_width="@dimen/delete_zone_size"
+        android:layout_height="@dimen/delete_zone_size"
+        android:paddingLeft="@dimen/delete_zone_padding"
         android:layout_marginBottom="@dimen/half_status_bar_height"
         android:layout_gravity="right|center_vertical"
 
