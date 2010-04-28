@@ -1096,13 +1096,13 @@ public class LauncherModel extends BroadcastReceiver {
                         }
 
                         final boolean first = i <= batchSize;
+                        final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                         final ArrayList<ApplicationInfo> added = mAllAppsList.added;
                         mAllAppsList.added = new ArrayList<ApplicationInfo>();
 
                         mHandler.post(new Runnable() {
                             public void run() {
                                 final long t = SystemClock.uptimeMillis();
-                                final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                                 if (callbacks != null) {
                                     if (first) {
                                         mBeforeFirstLoad = false;
