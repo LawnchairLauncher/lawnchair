@@ -22,8 +22,8 @@
     <string name="application_name" msgid="8424725141379931883">"Launcher"</string>
     <string name="uid_name" msgid="3371120195364560632">"Principais aplicativos do Android"</string>
     <string name="folder_name" msgid="4588446541914685904">"Pasta"</string>
-    <string name="chooser_wallpaper" msgid="5988031014201479733">"Selecionar papel de parede de"</string>
-    <string name="wallpaper_instructions" msgid="4215640646180727542">"Definir papel de parede"</string>
+    <string name="chooser_wallpaper" msgid="5988031014201479733">"Selecionar plano de fundo de"</string>
+    <string name="wallpaper_instructions" msgid="4215640646180727542">"Definir plano de fundo"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"Papéis de parede"</string>
     <string name="activity_not_found" msgid="3571057450431950427">"O aplicativo não está instalado no seu telefone."</string>
     <string name="configure_wallpaper" msgid="2820186271419674623">"Configurar..."</string>
@@ -50,8 +50,8 @@
     <string name="all_apps_button_label" msgid="3953036962111614813">"Todos os aplicativos"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Página inicial"</string>
     <string name="menu_add" msgid="3065046628354640854">"Adicionar"</string>
-    <string name="menu_wallpaper" msgid="5837429080911269832">"Papel de parede"</string>
-    <string name="menu_search" msgid="4826514464423239041">"Pesquisar"</string>
+    <string name="menu_wallpaper" msgid="5837429080911269832">"Plano de fundo"</string>
+    <string name="menu_search" msgid="4826514464423239041">"Pesquisa"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"Notificações"</string>
     <string name="menu_gestures" msgid="514678675575912237">"Gestos"</string>
     <string name="menu_settings" msgid="6233960148378443661">"Configurações"</string>
