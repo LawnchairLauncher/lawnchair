@@ -33,7 +33,7 @@
     <string name="cancel_action" msgid="3811860427489435048">"Annulla"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"Aggiungi a schermata Home"</string>
     <string name="group_applications" msgid="4118484163419674240">"Applicazioni"</string>
-    <string name="group_shortcuts" msgid="9133529424900391877">"Collegamenti"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"Scorciatoie"</string>
     <string name="group_folder" msgid="5143593791798929193">"Nuova cartella"</string>
     <string name="group_live_folders" msgid="2664945399140647217">"Cartelle"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Widget"</string>
@@ -42,10 +42,10 @@
     <string name="add_clock" msgid="2337943840175865746">"Orologio"</string>
     <string name="add_photo_frame" msgid="3154058437359487954">"Cornice immagini"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Spazio nella schermata Home esaurito."</string>
-    <string name="shortcut_installed" msgid="7071557296331322355">"Collegamento \"<xliff:g id="NAME">%s</xliff:g>\" creato."</string>
-    <string name="shortcut_uninstalled" msgid="2129499669449749995">"Il collegamento \"<xliff:g id="NAME">%s</xliff:g>\" è stato rimosso."</string>
-    <string name="shortcut_duplicate" msgid="4757756326465060694">"Collegamento \"<xliff:g id="NAME">%s</xliff:g>\" già presente."</string>
-    <string name="title_select_shortcut" msgid="2858897527672831763">"Seleziona collegamento"</string>
+    <string name="shortcut_installed" msgid="7071557296331322355">"Scoriciatoia \"<xliff:g id="NAME">%s</xliff:g>\" creata."</string>
+    <string name="shortcut_uninstalled" msgid="2129499669449749995">"La scorciatoia \"<xliff:g id="NAME">%s</xliff:g>\" è stata rimossa."</string>
+    <string name="shortcut_duplicate" msgid="4757756326465060694">"Scorciatoia \"<xliff:g id="NAME">%s</xliff:g>\" già presente."</string>
+    <string name="title_select_shortcut" msgid="2858897527672831763">"Seleziona scorciatoia"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"Seleziona cartella"</string>
     <string name="all_apps_button_label" msgid="3953036962111614813">"Tutte le applicazioni"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Home"</string>
