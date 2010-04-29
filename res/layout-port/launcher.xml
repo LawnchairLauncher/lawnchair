@@ -71,8 +71,9 @@
 
     <com.android.launcher2.DeleteZone
         android:id="@+id/delete_zone"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/button_bar_height"
+        android:layout_width="@dimen/delete_zone_size"
+        android:layout_height="@dimen/delete_zone_size"
+        android:paddingTop="@dimen/delete_zone_padding"
         android:layout_gravity="bottom|center_horizontal"
 
         android:scaleType="center"
@@ -86,13 +87,14 @@
         android:layout_width="fill_parent"
         android:layout_height="@dimen/button_bar_height"
         android:layout_gravity="bottom|center_horizontal"
-        android:padding="4dip"
+        android:paddingTop="2dip"
         >
 
         <com.android.launcher2.HandleView
             style="@style/HotseatButton"
             android:id="@+id/all_apps_button"
-            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
 
             android:src="@drawable/all_apps_button"
             launcher:direction="horizontal"
