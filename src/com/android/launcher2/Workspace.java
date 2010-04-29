@@ -118,6 +118,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     
     private Drawable mPreviousIndicator;
     private Drawable mNextIndicator;
+    
+    // Touch scrolling history for smoothing
+    private float[] mLastX = new float[6];
+    private int mLastCount = 0;
 
     private WorkspaceOvershootInterpolator mScrollInterpolator;
 
@@ -662,7 +666,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                         // Scroll if the user moved far enough along the X axis
                         mTouchState = TOUCH_STATE_SCROLLING;
                         mLastMotionX = x;
-                        enableChildrenCache(mCurrentScreen - 1, mCurrentScreen + 1);
+                        enableChildrenCache(0, getChildCount());
                     }
                     // Either way, cancel any pending longpress
                     if (mAllowLongPress) {
@@ -751,6 +755,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             if (mVelocityTracker != null) {
                 mVelocityTracker.clear();
             }
+            resetFilter();
         }
     }
 
@@ -784,18 +789,16 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     void enableChildrenCache(int fromScreen, int toScreen) {
         if (fromScreen > toScreen) {
-            final int temp = fromScreen; 
-            fromScreen = toScreen - 1;
+            final int temp = fromScreen;
+            fromScreen = toScreen;
             toScreen = temp;
-        } else {
-            toScreen++;
         }
         
         final int count = getChildCount();
-        
+
         fromScreen = Math.max(fromScreen, 0);
         toScreen = Math.min(toScreen, count - 1);
-        
+
         for (int i = fromScreen; i <= toScreen; i++) {
             final CellLayout layout = (CellLayout) getChildAt(i);
             layout.setChildrenDrawnWithCacheEnabled(true);
@@ -809,6 +812,25 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             final CellLayout layout = (CellLayout) getChildAt(i);
             layout.setChildrenDrawnWithCacheEnabled(false);
         }
+    }
+    
+    private float filterX(float x) {
+        final float[] lastX = mLastX;
+        final int len = lastX.length;
+        final int lastCount = Math.min(len, mLastCount + 1);
+        
+        float sum = x;
+        for (int i = 1; i < lastCount; i++) {
+            sum += lastX[i] = lastX[i - 1];
+        }
+        lastX[0] = x;
+
+        mLastCount = lastCount;
+        return sum / lastCount;
+    }
+    
+    private void resetFilter() {
+        mLastCount = 0;
     }
 
     @Override
@@ -851,20 +873,20 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             if (mTouchState == TOUCH_STATE_SCROLLING) {
                 // Scroll to follow the motion event
                 final int pointerIndex = ev.findPointerIndex(mActivePointerId);
-                final float x = ev.getX(pointerIndex);
-                final int deltaX = (int) (mLastMotionX - x);
+                final float x = filterX(ev.getX(pointerIndex));
+                final float deltaX = mLastMotionX - x;
                 mLastMotionX = x;
 
                 if (deltaX < 0) {
                     if (mScrollX > 0) {
-                        scrollBy(Math.max(-mScrollX, deltaX), 0);
+                        scrollBy(Math.round(Math.max(-mScrollX, deltaX)), 0);
                         updateWallpaperOffset();
                     }
                 } else if (deltaX > 0) {
                     final int availableToScroll = getChildAt(getChildCount() - 1).getRight() -
                             mScrollX - getWidth();
                     if (availableToScroll > 0) {
-                        scrollBy(Math.min(availableToScroll, deltaX), 0);
+                        scrollBy(Math.round(Math.min(availableToScroll, deltaX)), 0);
                         updateWallpaperOffset();
                     }
                 } else {
@@ -902,6 +924,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                     mVelocityTracker.recycle();
                     mVelocityTracker = null;
                 }
+                resetFilter();
             }
             mTouchState = TOUCH_STATE_REST;
             mActivePointerId = INVALID_POINTER;
@@ -909,6 +932,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         case MotionEvent.ACTION_CANCEL:
             mTouchState = TOUCH_STATE_REST;
             mActivePointerId = INVALID_POINTER;
+            resetFilter();
             break;
         case MotionEvent.ACTION_POINTER_UP:
             onSecondaryPointerUp(ev);
