@@ -579,7 +579,7 @@ public class CellLayout extends ViewGroup {
             final View view = getChildAt(i);
             view.setDrawingCacheEnabled(enabled);
             // Update the drawing caches
-            view.buildDrawingCache(false);
+            view.buildDrawingCache(true);
         }
     }
 
