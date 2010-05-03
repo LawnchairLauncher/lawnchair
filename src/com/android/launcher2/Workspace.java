@@ -666,7 +666,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                         // Scroll if the user moved far enough along the X axis
                         mTouchState = TOUCH_STATE_SCROLLING;
                         mLastMotionX = x;
-                        enableChildrenCache(0, getChildCount());
+                        enableChildrenCache(mCurrentScreen - 1, mCurrentScreen + 1);
                     }
                     // Either way, cancel any pending longpress
                     if (mAllowLongPress) {
@@ -868,6 +868,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             // Remember where the motion event started
             mLastMotionX = ev.getX();
             mActivePointerId = ev.getPointerId(0);
+            if (mTouchState == TOUCH_STATE_SCROLLING) {
+                enableChildrenCache(mCurrentScreen - 1, mCurrentScreen + 1);
+            }
             break;
         case MotionEvent.ACTION_MOVE:
             if (mTouchState == TOUCH_STATE_SCROLLING) {
