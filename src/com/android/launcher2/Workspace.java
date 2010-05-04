@@ -109,7 +109,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     private boolean mAllowLongPress = true;
 
     private int mTouchSlop;
-    private int mPagingTouchSlop;
     private int mMaximumVelocity;
     
     private static final int INVALID_POINTER = -1;
@@ -119,9 +118,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     private Drawable mPreviousIndicator;
     private Drawable mNextIndicator;
     
-    // Touch scrolling history for smoothing
-    private float[] mLastX = new float[6];
-    private int mLastCount = 0;
+    private static final float NANOTIME_DIV = 1000000000.0f;
+    private static final float SMOOTHING_SPEED = 0.75f;
+    private static final float SMOOTHING_CONSTANT = (float) (0.016 / Math.log(SMOOTHING_SPEED));
+    private float mSmoothingTime;
+    private float mTouchX;
 
     private WorkspaceOvershootInterpolator mScrollInterpolator;
 
@@ -196,7 +197,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
         final ViewConfiguration configuration = ViewConfiguration.get(getContext());
         mTouchSlop = configuration.getScaledTouchSlop();
-        mPagingTouchSlop = configuration.getScaledPagingTouchSlop();
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
     }
 
@@ -431,9 +431,17 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
     
     @Override
+    public void scrollTo(int x, int y) {
+        super.scrollTo(x, y);
+        mTouchX = x;
+        mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
+    }
+    
+    @Override
     public void computeScroll() {
         if (mScroller.computeScrollOffset()) {
-            mScrollX = mScroller.getCurrX();
+            mTouchX = mScrollX = mScroller.getCurrX();
+            mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
             mScrollY = mScroller.getCurrY();
             updateWallpaperOffset();
             postInvalidate();
@@ -444,6 +452,18 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             Launcher.setScreen(mCurrentScreen);
             mNextScreen = INVALID_SCREEN;
             clearChildrenCache();
+        } else if (mTouchState == TOUCH_STATE_SCROLLING) {
+            final float now = System.nanoTime() / NANOTIME_DIV;
+            final float e = (float) Math.exp((now - mSmoothingTime) / SMOOTHING_CONSTANT);
+            final float dx = mTouchX - mScrollX;
+            mScrollX += dx * e;
+            mSmoothingTime = now;
+
+            // Keep generating points as long as we're more than 1px away from the target
+            if (dx > 1.f || dx < -1.f) {
+                updateWallpaperOffset();
+                postInvalidate();
+            }
         }
     }
 
@@ -656,16 +676,17 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                 final int yDiff = (int) Math.abs(y - mLastMotionY);
 
                 final int touchSlop = mTouchSlop;
-                boolean xPaged = xDiff > mPagingTouchSlop;
                 boolean xMoved = xDiff > touchSlop;
                 boolean yMoved = yDiff > touchSlop;
                 
                 if (xMoved || yMoved) {
                     
-                    if (xPaged) {
+                    if (xMoved) {
                         // Scroll if the user moved far enough along the X axis
                         mTouchState = TOUCH_STATE_SCROLLING;
                         mLastMotionX = x;
+                        mTouchX = mScrollX;
+                        mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
                         enableChildrenCache(mCurrentScreen - 1, mCurrentScreen + 1);
                     }
                     // Either way, cancel any pending longpress
@@ -755,7 +776,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             if (mVelocityTracker != null) {
                 mVelocityTracker.clear();
             }
-            resetFilter();
         }
     }
 
@@ -813,25 +833,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             layout.setChildrenDrawnWithCacheEnabled(false);
         }
     }
-    
-    private float filterX(float x) {
-        final float[] lastX = mLastX;
-        final int len = lastX.length;
-        final int lastCount = Math.min(len, mLastCount + 1);
-        
-        float sum = x;
-        for (int i = 1; i < lastCount; i++) {
-            sum += lastX[i] = lastX[i - 1];
-        }
-        lastX[0] = x;
-
-        mLastCount = lastCount;
-        return sum / lastCount;
-    }
-    
-    private void resetFilter() {
-        mLastCount = 0;
-    }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
@@ -876,21 +877,23 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             if (mTouchState == TOUCH_STATE_SCROLLING) {
                 // Scroll to follow the motion event
                 final int pointerIndex = ev.findPointerIndex(mActivePointerId);
-                final float x = filterX(ev.getX(pointerIndex));
+                final float x = ev.getX(pointerIndex);
                 final float deltaX = mLastMotionX - x;
                 mLastMotionX = x;
 
                 if (deltaX < 0) {
-                    if (mScrollX > 0) {
-                        scrollBy(Math.round(Math.max(-mScrollX, deltaX)), 0);
-                        updateWallpaperOffset();
+                    if (mTouchX > 0) {
+                        mTouchX += Math.max(-mTouchX, deltaX);
+                        mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
+                        invalidate();
                     }
                 } else if (deltaX > 0) {
-                    final int availableToScroll = getChildAt(getChildCount() - 1).getRight() -
-                            mScrollX - getWidth();
+                    final float availableToScroll = getChildAt(getChildCount() - 1).getRight() -
+                            mTouchX - getWidth();
                     if (availableToScroll > 0) {
-                        scrollBy(Math.round(Math.min(availableToScroll, deltaX)), 0);
-                        updateWallpaperOffset();
+                        mTouchX += Math.min(availableToScroll, deltaX);
+                        mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
+                        invalidate();
                     }
                 } else {
                     awakenScrollBars();
@@ -927,7 +930,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                     mVelocityTracker.recycle();
                     mVelocityTracker = null;
                 }
-                resetFilter();
             }
             mTouchState = TOUCH_STATE_REST;
             mActivePointerId = INVALID_POINTER;
@@ -935,7 +937,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         case MotionEvent.ACTION_CANCEL:
             mTouchState = TOUCH_STATE_REST;
             mActivePointerId = INVALID_POINTER;
-            resetFilter();
             break;
         case MotionEvent.ACTION_POINTER_UP:
             onSecondaryPointerUp(ev);
