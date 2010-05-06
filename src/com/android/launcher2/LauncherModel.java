@@ -73,6 +73,7 @@ public class LauncherModel extends BroadcastReceiver {
     private boolean mBeforeFirstLoad = true; // only access this from main thread
     private WeakReference<Callbacks> mCallbacks;
 
+    private final Object mAllAppsListLock = new Object();
     private AllAppsList mAllAppsList;
     private IconCache mIconCache;
 
@@ -306,7 +307,7 @@ public class LauncherModel extends BroadcastReceiver {
         ArrayList<ApplicationInfo> removed = null;
         ArrayList<ApplicationInfo> modified = null;
 
-        synchronized (mLock) {
+        synchronized (mAllAppsListLock) {
             if (mBeforeFirstLoad) {
                 // If we haven't even loaded yet, don't bother, since we'll just pick
                 // up the changes.
@@ -1047,7 +1048,7 @@ public class LauncherModel extends BroadcastReceiver {
                 int i=0;
                 int batchSize = -1;
                 while (i < N && !mStopped) {
-                    synchronized (mLock) {
+                    synchronized (mAllAppsListLock) {
                         if (i == 0) {
                             // This needs to happen inside the same lock block as when we
                             // prepare the first batch for bindAllApplications.  Otherwise

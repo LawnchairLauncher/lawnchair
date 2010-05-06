@@ -100,24 +100,28 @@ public class IconCache {
     }
 
     public Bitmap getIcon(Intent intent) {
-        final ResolveInfo resolveInfo = mPackageManager.resolveActivity(intent, 0);
-        ComponentName component = intent.getComponent();
+        synchronized (mCache) {
+            final ResolveInfo resolveInfo = mPackageManager.resolveActivity(intent, 0);
+            ComponentName component = intent.getComponent();
 
-        if (resolveInfo == null || component == null) {
-            return mDefaultIcon;
+            if (resolveInfo == null || component == null) {
+                return mDefaultIcon;
+            }
+
+            CacheEntry entry = cacheLocked(component, resolveInfo);
+            return entry.icon;
         }
-
-        CacheEntry entry = cacheLocked(component, resolveInfo);
-        return entry.icon;
     }
 
     public Bitmap getIcon(ComponentName component, ResolveInfo resolveInfo) {
-        if (resolveInfo == null || component == null) {
-            return null;
-        }
+        synchronized (mCache) {
+            if (resolveInfo == null || component == null) {
+                return null;
+            }
 
-        CacheEntry entry = cacheLocked(component, resolveInfo);
-        return entry.icon;
+            CacheEntry entry = cacheLocked(component, resolveInfo);
+            return entry.icon;
+        }
     }
 
     private CacheEntry cacheLocked(ComponentName componentName, ResolveInfo info) {
