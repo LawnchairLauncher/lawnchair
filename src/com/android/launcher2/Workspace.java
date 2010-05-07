@@ -1403,7 +1403,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                             final LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) tag;
                             final AppWidgetProviderInfo provider =
                                     widgets.getAppWidgetInfo(info.appWidgetId);
-                            if (provider == null) {
+                            if (provider != null) {
                                 for (String packageName: packageNames) {
                                     if (packageName.equals(provider.provider.getPackageName())) {
                                         // TODO: This should probably be done on a worker thread
