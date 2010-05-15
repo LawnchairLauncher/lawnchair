@@ -3,14 +3,8 @@
 #include "../../../../../frameworks/base/libs/rs/scriptc/rs_types.rsh"
 #include "../../../../../frameworks/base/libs/rs/scriptc/rs_math.rsh"
 #include "../../../../../frameworks/base/libs/rs/scriptc/rs_graphics.rsh"
-//#pragma stateVertex(PV)
-//#pragma stateFragment(PFTexNearest)
-//#pragma stateStore(PSIcons)
 
 #define PI 3.14159f
-
-static int g_SpecialHWWar;
-
 
 // Constants from Java
 int COLUMNS_PER_PAGE_PORTRAIT;
@@ -53,53 +47,29 @@ VpConsts_t *vpConstants;
 
 void debugAll()
 {
-    debugPi(1000, COLUMNS_PER_PAGE_PORTRAIT);
-    debugPi(1001, ROWS_PER_PAGE_PORTRAIT);
-    debugPi(1002, COLUMNS_PER_PAGE_LANDSCAPE);
-    debugPi(1003, ROWS_PER_PAGE_LANDSCAPE);
-
-    debugPf(1018, gNewPositionX);
-    debugPi(1019, gNewTouchDown);
-    debugPf(1020, gFlingVelocity);
-    debugPi(1021, gIconCount);
-    debugPi(1022, gSelectedIconIndex);
-    debugPi(1023, gSelectedIconTexture);
-    debugPf(1024, gZoomTarget);
-    debugPi(1025, gHomeButton);
-    debugPf(1026, gTargetPos);
-
-    debugPi(1027, gPFTexNearest);
-    debugPi(1028, gPFTexMip);
-    debugPi(1029, gPFTexMipAlpha);
-    debugPi(1030, gPVCurve);
-    debugPi(1031, gSMCell);
-
-    debugP(1032, gIconIDs);
-    debugP(1033, gLabelIDs);
-    debugP(1034, vpConstants);
 }
 
 
 // Attraction to center values from page edge to page center.
-static float g_AttractionTable[9];
-static float g_FrictionTable[9];
-static float g_PhysicsTableSize;
+static float g_AttractionTable[9] = {20.f, 20.f, 20.f, 10.f, -10.f, -20.f, -20.f, -20.f, -20.f};
+static float g_FrictionTable[9] = {10.f, 10.f, 11.f, 15.f, 15.f, 11.f, 10.f, 10.f, 10.f};
+static float g_PhysicsTableSize = 7;
 
-static float g_PosPage;
-static float g_PosVelocity;
-static float g_LastPositionX;
-static int g_LastTouchDown;
+static float g_PosPage = 0.f;
+static float g_PosVelocity = 0.f;
+static float g_LastPositionX = 0.f;
+static int g_LastTouchDown = 0;
 static float g_DT;
 static int g_LastTime;
 static int g_PosMax;
-static float g_Zoom;
-static float g_Animation;
+static float g_Zoom = 0.f;
+static float g_Animation = 1.f;
 static float g_OldPosPage;
 static float g_OldPosVelocity;
 static float g_OldZoom;
-static float g_MoveToTotalTime;
-static float g_MoveToTime;
-static float g_MoveToOldPos;
+static float g_MoveToTotalTime = 0.2f;
+static float g_MoveToTime = 0.f;
+static float g_MoveToOldPos = 0.f;
 
 static int g_Cols;
 static int g_Rows;
@@ -109,24 +79,15 @@ static int g_Rows;
 
 static int g_DrawLastFrame;
 static int lastFrame(int draw) {
-    //debugPi(99, 13);
-    // We draw one extra frame to work around the last frame post bug.
-    // We also need to track if we drew the last frame to deal with large DT
-    // in the physics.
-    int ret = g_DrawLastFrame | draw;
     g_DrawLastFrame = draw;
-    return ret;  // should return draw instead.
+    return draw;
 }
 
 static void updateReadback() {
-    //debugPi(99, 12);
-    //if ((g_OldPosPage != g_PosPage) ||
-        //(g_OldPosVelocity != g_PosVelocity) ||
-        //(g_OldZoom != g_Zoom)) {
+    if ((g_OldPosPage != g_PosPage) ||
+        (g_OldPosVelocity != g_PosVelocity) ||
+        (g_OldZoom != g_Zoom)) {
 
-    //debugPf(40, g_PosPage);
-    //debugPf(41, g_PosVelocity);
-    //debugPf(42, g_Zoom);
         g_OldPosPage = g_PosPage;
         g_OldPosVelocity = g_PosVelocity;
         g_OldZoom = g_Zoom;
@@ -136,55 +97,17 @@ static void updateReadback() {
         i[1] = g_PosVelocity * (1 << 16);
         i[2] = g_OldZoom * (1 << 16);
         sendToClient(&i[0], 1, 12, 1);
-    //}
+    }
 }
 
-static void setColor(float r, float g, float b, float a) {
-    //debugPi(99, 11);
-    if (g_SpecialHWWar) {
-        color(0, 0, 0, 0.001f);
-    } else {
-        color(r, g, b, a);
-    }
+void setColor(float r, float g, float b, float a) {
 }
 
 void init() {
     //debugPi(99, 10);
-    g_AttractionTable[0] = 20.0f;
-    g_AttractionTable[1] = 20.0f;
-    g_AttractionTable[2] = 20.0f;
-    g_AttractionTable[3] = 10.0f;
-    g_AttractionTable[4] = -10.0f;
-    g_AttractionTable[5] = -20.0f;
-    g_AttractionTable[6] = -20.0f;
-    g_AttractionTable[7] = -20.0f;
-    g_AttractionTable[8] = -20.0f;  // dup 7 to avoid a clamp later
-    g_FrictionTable[0] = 10.0f;
-    g_FrictionTable[1] = 10.0f;
-    g_FrictionTable[2] = 11.0f;
-    g_FrictionTable[3] = 15.0f;
-    g_FrictionTable[4] = 15.0f;
-    g_FrictionTable[5] = 11.0f;
-    g_FrictionTable[6] = 10.0f;
-    g_FrictionTable[7] = 10.0f;
-    g_FrictionTable[8] = 10.0f;  // dup 7 to avoid a clamp later
-    g_PhysicsTableSize = 7;
-
-    g_PosVelocity = 0;
-    g_PosPage = 0;
-    g_LastTouchDown = 0;
-    g_LastPositionX = 0;
-    g_Zoom = 0;
-    g_Animation = 1.f;
-    g_SpecialHWWar = 1;
-    g_MoveToTime = 0;
-    g_MoveToOldPos = 0;
-    g_MoveToTotalTime = 0.2f; // Duration of scrolling 1 line
 }
 
 void resetHWWar() {
-    //debugPi(99, 9);
-    g_SpecialHWWar = 1;
 }
 
 void move() {
@@ -329,15 +252,13 @@ static void updatePos() {
 
     g_PosPage += g_PosVelocity * g_DT;
     g_PosPage = clamp(g_PosPage, -0.49f, g_PosMax + 0.49f);
-
-    //debugPf(300, g_PosPage);
 }
 
 static void
 draw_home_button()
 {
     //debugPi(99, 2);
-    setColor(1.0f, 1.0f, 1.0f, 1.0f);
+    color(1.0f, 1.0f, 1.0f, 1.0f);
     bindTexture(gPFTexNearest, 0, gHomeButton);
 
     float w = getWidth();
@@ -371,8 +292,6 @@ static void drawFrontGrid(float rowOffset, float p)
     float rowHeight = colWidth + 25.f;
     float yoff = 0.5f * h + 1.5f * rowHeight;
 
-    //debugPi(199, 1);
-
     int row, col;
     int colCount = 4;
     if (w > h) {
@@ -387,7 +306,7 @@ static void drawFrontGrid(float rowOffset, float p)
 
     vpConstants->Position.z = p;
 
-    setColor(1.0f, 1.0f, 1.0f, 1.0f);
+    color(1.0f, 1.0f, 1.0f, 1.0f);
     for (row = -5; row < 15; row++) {
         float y = yoff - ((-rowFrac + row) * rowHeight);
 
@@ -415,13 +334,6 @@ static void drawFrontGrid(float rowOffset, float p)
                 vpConstants->Position.y = y - 0.2f;
                 bindTexture(gPFTexMip, 0, gIconIDs[iconNum]);
                 drawSimpleMesh(gSMCell);
-
-                //debugPf(202, vpConstants->ImgSize.x);
-                //debugPf(203, vpConstants->ImgSize.y);
-                //debugPf(204, vpConstants->Position.y);
-                //debugPi(205, gIconIDs[iconNum]);
-                //debugPi(206, gLabelIDs[iconNum]);
-
 
                 bindProgramFragment(gPFTexMipAlpha);
                 vpConstants->ImgSize.x = allocGetDimX(gLabelIDs[iconNum]);
@@ -470,7 +382,7 @@ int root()
 
     //debugPf(100, g_Zoom);
     // Set clear value to dim the background based on the zoom position.
-    if ((g_Zoom < 0.001f) && (gZoomTarget < 0.001f) && !g_SpecialHWWar) {
+    if ((g_Zoom < 0.001f) && (gZoomTarget < 0.001f)) {
         pfClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         // When we're zoomed out and not tracking motion events, reset the pos to 0.
         if (!g_LastTouchDown) {
@@ -484,12 +396,13 @@ int root()
 
     // icons & labels
     if (getWidth() > getHeight()) {
-        g_Cols = 6;
-        g_Rows = 3;
+        g_Cols = COLUMNS_PER_PAGE_LANDSCAPE;
+        g_Rows = ROWS_PER_PAGE_LANDSCAPE;
     } else {
-        g_Cols = 4;
-        g_Rows = 4;
+        g_Cols = COLUMNS_PER_PAGE_PORTRAIT;
+        g_Rows = ROWS_PER_PAGE_PORTRAIT;
     }
+
     g_PosMax = ((gIconCount + (g_Cols-1)) / g_Cols) - g_Rows;
     if (g_PosMax < 0) g_PosMax = 0;
 
@@ -503,18 +416,6 @@ int root()
 
     bindProgramFragment(gPFTexNearest);
     draw_home_button();
-
-    // This is a WAR to do a rendering pass without drawing during init to
-    // force the driver to preload and compile its shaders.
-    // Without this the first animation does not appear due to the time it
-    // takes to init the driver state.
-    if (g_SpecialHWWar) {
-        g_SpecialHWWar = 0;
-        return 1;
-    }
-
-    // Bug workaround where the last frame is not always displayed
-    // So we keep rendering until the bug is fixed.
     return lastFrame((g_PosVelocity != 0) || frac(g_PosPage) || g_Zoom != gZoomTarget || (g_MoveToTime != 0));
 }
 

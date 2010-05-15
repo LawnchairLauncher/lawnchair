@@ -184,10 +184,10 @@ public class ScriptC_allapps
         //android.util.Log.e("rs", "invokable_Fling");
         invoke(2);
     }
-    public void invokable_ResetWAR() {
+    //public void invokable_ResetWAR() {
         //android.util.Log.e("rs", "invokable_WAR");
-        invoke(9);  // verified
-    }
+        //invoke(9);  // verified
+    //}
     public void invokable_SetZoom() {
         //android.util.Log.e("rs", "invokable_SetZoom");
         invoke(12);

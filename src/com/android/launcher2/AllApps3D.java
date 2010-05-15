@@ -1366,7 +1366,6 @@ public class AllApps3D extends RSSurfaceView
 
                 mScript.bind_gIconIDs(mAllocIconIds);
                 mScript.bind_gLabelIDs(mAllocLabelIds);
-                mScript.invokable_ResetWAR();
             }
         }
 
