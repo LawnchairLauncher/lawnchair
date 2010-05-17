@@ -19,7 +19,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name" msgid="8424725141379931883">"Launcher"</string>
+    <string name="application_name" msgid="8424725141379931883">"Avvio applicazioni"</string>
     <string name="uid_name" msgid="3371120195364560632">"Android Core Apps"</string>
     <string name="folder_name" msgid="4588446541914685904">"Cartella"</string>
     <string name="chooser_wallpaper" msgid="5988031014201479733">"Seleziona sfondo da"</string>
