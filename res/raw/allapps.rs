@@ -60,7 +60,7 @@ static float g_PosVelocity = 0.f;
 static float g_LastPositionX = 0.f;
 static int g_LastTouchDown = 0;
 static float g_DT;
-static int g_LastTime;
+static int64_t g_LastTime;
 static int g_PosMax;
 static float g_Zoom = 0.f;
 static float g_Animation = 1.f;
@@ -82,9 +82,8 @@ static int lastFrame(int draw) {
     // We draw one extra frame to work around the last frame post bug.
     // We also need to track if we drew the last frame to deal with large DT
     // in the physics.
-    int ret = g_DrawLastFrame | draw;
     g_DrawLastFrame = draw;
-    return ret;//draw;
+    return draw;
 }
 
 static void updateReadback() {
@@ -100,22 +99,18 @@ static void updateReadback() {
         i[0] = g_PosPage * (1 << 16);
         i[1] = g_PosVelocity * (1 << 16);
         i[2] = g_OldZoom * (1 << 16);
-        sendToClient(&i[0], 1, 12, 1);
+        rsSendToClient(&i[0], 1, 12, 1);
     }
 }
 
 void setColor(float r, float g, float b, float a) {
 }
-
 void init() {
-    //debugPi(99, 10);
 }
-
 void resetHWWar() {
 }
 
 void move() {
-    //debugPi(99, 8);
     if (g_LastTouchDown) {
         float dx = -(gNewPositionX - g_LastPositionX);
         g_PosVelocity = 0;
@@ -128,33 +123,27 @@ void move() {
     g_LastTouchDown = gNewTouchDown;
     g_LastPositionX = gNewPositionX;
     g_MoveToTime = 0;
-    //debugF("Move P", g_PosPage);
 }
 
 void moveTo() {
-    //debugPi(99, 7);
     g_MoveToTime = g_MoveToTotalTime;
     g_PosVelocity = 0;
     g_MoveToOldPos = g_PosPage;
-
-	// debugF("======= moveTo", state->targetPos);
 }
 
 void setZoom() {
-    //debugPi(99, 6);
     g_Zoom = gZoomTarget;
     g_DrawLastFrame = 1;
     updateReadback();
 }
 
 void fling() {
-    //debugPi(99, 5);
     g_LastTouchDown = 0;
     g_PosVelocity = -gFlingVelocity * 4;
     float av = fabs(g_PosVelocity);
     float minVel = 3.5f;
 
-    minVel *= 1.f - (fabs(frac(g_PosPage + 0.5f) - 0.5f) * 0.45f);
+    minVel *= 1.f - (fabs(rsFrac(g_PosPage + 0.5f) - 0.5f) * 0.45f);
 
     if (av < minVel && av > 0.2f) {
         if (g_PosVelocity > 0) {
@@ -175,18 +164,16 @@ void fling() {
 // Interpolates values in the range 0..1 to a curve that eases in
 // and out.
 static float getInterpolation(float input) {
-    //debugPi(99, 4);
     return (cos((input + 1) * PI) * 0.5f) + 0.5f;
 }
 
 
 static void updatePos() {
-    //debugPi(99, 3);
     if (g_LastTouchDown) {
         return;
     }
 
-    float tablePosNorm = frac(g_PosPage + 0.5f);
+    float tablePosNorm = rsFrac(g_PosPage + 0.5f);
     float tablePosF = tablePosNorm * g_PhysicsTableSize;
     int tablePosI = tablePosF;
     float tablePosFrac = tablePosF - tablePosI;
@@ -212,10 +199,10 @@ static void updatePos() {
     if (fabs(g_PosVelocity) < 4.0f || (g_PosVelocity * accel) < 0) {
         g_PosVelocity += accel;
     }
-    //debugF("g_PosPage", g_PosPage);
-    //debugF("  g_PosVelocity", g_PosVelocity);
-    //debugF("  friction", friction);
-    //debugF("  accel", accel);
+    //RS_DEBUG(g_PosPage);
+    //RS_DEBUG(g_PosVelocity);
+    //RS_DEBUG(friction);
+    //RS_DEBUG(accel);
 
     // Normal physics
     if (g_PosVelocity > 0) {
@@ -261,18 +248,17 @@ static void updatePos() {
 static void
 draw_home_button()
 {
-    //debugPi(99, 2);
     color(1.0f, 1.0f, 1.0f, 1.0f);
-    bindTexture(gPFTexNearest, 0, gHomeButton);
+    rsgBindTexture(gPFTexNearest, 0, gHomeButton);
 
-    float w = getWidth();
-    float h = getHeight();
-    float tw = allocGetDimX(gHomeButton);
-    float th = allocGetDimY(gHomeButton);
+    float w = rsgGetWidth();
+    float h = rsgGetHeight();
+    float tw = rsAllocationGetDimX(gHomeButton);
+    float th = rsAllocationGetDimY(gHomeButton);
 
     float x;
     float y;
-    if (getWidth() > getHeight()) {
+    if (w > h) {
         x = w - (tw * (1 - g_Animation)) + 20;
         y = (h - th) * 0.5f;
     } else {
@@ -281,18 +267,17 @@ draw_home_button()
         y -= 30; // move the house to the edge of the screen as it doesn't fill the texture.
     }
 
-    drawSpriteScreenspace(x, y, 0, tw, th);
+    rsgDrawSpriteScreenspace(x, y, 0, tw, th);
 }
 
 static void drawFrontGrid(float rowOffset, float p)
 {
-    //debugPi(99, 1);
-    float h = getHeight();
-    float w = getWidth();
+    float h = rsgGetHeight();
+    float w = rsgGetWidth();
 
     int intRowOffset = rowOffset;
     float rowFrac = rowOffset - intRowOffset;
-    float colWidth = 120.f;//getWidth() / 4;
+    float colWidth = 120.f;//w / 4;
     float rowHeight = colWidth + 25.f;
     float yoff = 0.5f * h + 1.5f * rowHeight;
 
@@ -306,7 +291,7 @@ static void drawFrontGrid(float rowOffset, float p)
 
     int iconNum = (intRowOffset - 5) * colCount;
 
-    bindProgramVertex(gPVCurve);
+    rsgBindProgramVertex(gPVCurve);
 
     vpConstants->Position.z = p;
 
@@ -324,27 +309,28 @@ static void drawFrontGrid(float rowOffset, float p)
                 vpConstants->Position.x = x + 0.2f;
 
                 if (gSelectedIconIndex == iconNum && !p && gSelectedIconTexture) {
-                    bindProgramFragment(gPFTexNearest);
-                    bindTexture(gPFTexNearest, 0, gSelectedIconTexture);
-                    vpConstants->ImgSize.x = allocGetDimX(gSelectedIconTexture);
-                    vpConstants->ImgSize.y = allocGetDimY(gSelectedIconTexture);
-                    vpConstants->Position.y = y - (allocGetDimY(gSelectedIconTexture) - allocGetDimY(gIconIDs[iconNum])) * 0.5f;
-                    drawSimpleMesh(gSMCell);
+                    rsgBindProgramFragment(gPFTexNearest);
+                    rsgBindTexture(gPFTexNearest, 0, gSelectedIconTexture);
+                    vpConstants->ImgSize.x = rsAllocationGetDimX(gSelectedIconTexture);
+                    vpConstants->ImgSize.y = rsAllocationGetDimY(gSelectedIconTexture);
+                    vpConstants->Position.y = y - (rsAllocationGetDimY(gSelectedIconTexture)
+                                                - rsAllocationGetDimY(gIconIDs[iconNum])) * 0.5f;
+                    rsgDrawSimpleMesh(gSMCell);
                 }
 
-                bindProgramFragment(gPFTexMip);
-                vpConstants->ImgSize.x = allocGetDimX(gIconIDs[iconNum]);
-                vpConstants->ImgSize.y = allocGetDimY(gIconIDs[iconNum]);
+                rsgBindProgramFragment(gPFTexMip);
+                vpConstants->ImgSize.x = rsAllocationGetDimX(gIconIDs[iconNum]);
+                vpConstants->ImgSize.y = rsAllocationGetDimY(gIconIDs[iconNum]);
                 vpConstants->Position.y = y - 0.2f;
-                bindTexture(gPFTexMip, 0, gIconIDs[iconNum]);
-                drawSimpleMesh(gSMCell);
+                rsgBindTexture(gPFTexMip, 0, gIconIDs[iconNum]);
+                rsgDrawSimpleMesh(gSMCell);
 
-                bindProgramFragment(gPFTexMipAlpha);
-                vpConstants->ImgSize.x = allocGetDimX(gLabelIDs[iconNum]);
-                vpConstants->ImgSize.y = allocGetDimY(gLabelIDs[iconNum]);
+                rsgBindProgramFragment(gPFTexMipAlpha);
+                vpConstants->ImgSize.x = rsAllocationGetDimX(gLabelIDs[iconNum]);
+                vpConstants->ImgSize.y = rsAllocationGetDimY(gLabelIDs[iconNum]);
                 vpConstants->Position.y = y - 64.f - 0.2f;
-                bindTexture(gPFTexMipAlpha, 0, gLabelIDs[iconNum]);
-                drawSimpleMesh(gSMCell);
+                rsgBindTexture(gPFTexMipAlpha, 0, gLabelIDs[iconNum]);
+                rsgDrawSimpleMesh(gSMCell);
             }
             iconNum++;
         }
@@ -354,11 +340,8 @@ static void drawFrontGrid(float rowOffset, float p)
 
 int root()
 {
-    //debugAll();
-    bindProgramStore(gPS);
-
     // Compute dt in seconds.
-    int newTime = uptimeMillis();
+    int64_t newTime = rsUptimeMillis();
     g_DT = (newTime - g_LastTime) * 0.001f;
     g_LastTime = newTime;
 
@@ -384,22 +367,22 @@ int root()
     }
     g_Animation = pow(1.f - g_Zoom, 3.f);
 
-    //debugPf(100, g_Zoom);
     // Set clear value to dim the background based on the zoom position.
     if ((g_Zoom < 0.001f) && (gZoomTarget < 0.001f)) {
-        pfClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        rsgClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         // When we're zoomed out and not tracking motion events, reset the pos to 0.
         if (!g_LastTouchDown) {
             g_PosPage = 0;
         }
         return lastFrame(0);
     } else {
-        //debugPf(101, g_Zoom);
-        pfClearColor(0.0f, 0.0f, 0.0f, g_Zoom);
+        rsgClearColor(0.0f, 0.0f, 0.0f, g_Zoom);
     }
 
+    rsgBindProgramStore(gPS);
+
     // icons & labels
-    if (getWidth() > getHeight()) {
+    if (rsgGetWidth() > rsgGetHeight()) {
         g_Cols = COLUMNS_PER_PAGE_LANDSCAPE;
         g_Rows = ROWS_PER_PAGE_LANDSCAPE;
     } else {
@@ -413,14 +396,12 @@ int root()
     updatePos();
     updateReadback();
 
-    //debugF("    draw g_PosPage", g_PosPage);
-
     // Draw the icons ========================================
     drawFrontGrid(g_PosPage, g_Animation);
 
-    bindProgramFragment(gPFTexNearest);
+    rsgBindProgramFragment(gPFTexNearest);
     draw_home_button();
-    return lastFrame((g_PosVelocity != 0) || frac(g_PosPage) || g_Zoom != gZoomTarget || (g_MoveToTime != 0));
+    return lastFrame((g_PosVelocity != 0) || rsFrac(g_PosPage) || g_Zoom != gZoomTarget || (g_MoveToTime != 0));
 }
 
 

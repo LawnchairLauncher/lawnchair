@@ -1019,8 +1019,6 @@ public class AllApps3D extends RSSurfaceView
             mWidth = width;
             mHeight = height;
             mScript = new ScriptC_allapps(sRS, mRes, R.raw.allapps_bc, true);
-            mScript.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
 
             initProgramVertex();
             initProgramFragment();
@@ -1030,10 +1028,6 @@ public class AllApps3D extends RSSurfaceView
 
             mScript.bind_gIconIDs(mAllocIconIds);
             mScript.bind_gLabelIDs(mAllocLabelIds);
-
-            //mScript.bindAllocation(mParams.mAlloc, Defines.ALLOC_PARAMS);
-            //mScript.bindAllocation(mState.mAlloc, Defines.ALLOC_STATE);
-
             sRS.contextBindRootScript(mScript);
         }
 
@@ -1189,17 +1183,6 @@ public class AllApps3D extends RSSurfaceView
             mScript.set_ROWS_PER_PAGE_PORTRAIT(Defines.ROWS_PER_PAGE_PORTRAIT);
             mScript.set_COLUMNS_PER_PAGE_LANDSCAPE(Defines.COLUMNS_PER_PAGE_LANDSCAPE);
             mScript.set_ROWS_PER_PAGE_LANDSCAPE(Defines.ROWS_PER_PAGE_LANDSCAPE);
-
-            //mScript.set_gNewPositionX(float v) {
-            //mScript.set_gNewTouchDown(int v) {
-            //mScript.set_gFlingVelocity(float v) {
-            //mScript.set_gIconCount(int v) {
-            //mScript.set_gSelectedIconIndex(int v) {
-            //mScript.set_gSelectedIconTexture(int v) {
-            //mScript.set_gZoomTarget(float v) {
-            //mScript.set_gTargetPos(float v) {
-
-
 
             mHomeButtonNormal = Allocation.createFromBitmapResource(sRS, mRes,
                     R.drawable.home_button_normal, Element.RGBA_8888(sRS), false);
