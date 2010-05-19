@@ -623,6 +623,14 @@ public class LauncherModel extends BroadcastReceiver {
                     // sections.
                     mLoaderThread = null;
                 }
+
+                // Trigger a gc to try to clean up after the stuff is done, since the
+                // renderscript allocations aren't charge to the java heap.
+                mHandler.post(new Runnable() {
+                        public void run() {
+                            System.gc();
+                        }
+                    });
             }
 
             public void stopLocked() {
