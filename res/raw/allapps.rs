@@ -79,8 +79,12 @@ static int g_Rows;
 
 static int g_DrawLastFrame;
 static int lastFrame(int draw) {
+    // We draw one extra frame to work around the last frame post bug.
+    // We also need to track if we drew the last frame to deal with large DT
+    // in the physics.
+    int ret = g_DrawLastFrame | draw;
     g_DrawLastFrame = draw;
-    return draw;
+    return ret;//draw;
 }
 
 static void updateReadback() {
