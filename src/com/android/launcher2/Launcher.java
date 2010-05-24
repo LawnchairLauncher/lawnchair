@@ -204,7 +204,6 @@ public final class Launcher extends Activity
     private ImageView mNextView;
 
     // Hotseats (quick-launch icons next to AllApps)
-    // TODO: move these intial intents out to Uris in an XML resource
     private static final int NUM_HOTSEATS = 2;
     private String[] mHotseatConfig = null;
     private Intent[] mHotseats = null;
@@ -782,6 +781,8 @@ public final class Launcher extends Activity
 
     @SuppressWarnings({"UnusedDeclaration"})
     public void launchHotSeat(View v) {
+        if (isAllAppsVisible()) return;
+
         int index = -1;
         if (v.getId() == R.id.hotseat_left) {
             index = 0;
