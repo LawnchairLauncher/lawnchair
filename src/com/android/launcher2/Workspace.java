@@ -36,6 +36,7 @@ import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -363,7 +364,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
      */
     void addInScreen(View child, int screen, int x, int y, int spanX, int spanY, boolean insert) {
         if (screen < 0 || screen >= getChildCount()) {
-            throw new IllegalStateException("The screen must be >= 0 and < " + getChildCount());
+            Log.e(TAG, "The screen must be >= 0 and < " + getChildCount()
+                + " (was " + screen + "); skipping child");
+            return;
         }
 
         clearVacantCache();
