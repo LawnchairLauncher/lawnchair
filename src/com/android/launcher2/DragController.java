@@ -163,6 +163,11 @@ public class DragController {
 
         Bitmap b = getViewBitmap(v);
 
+        if (b == null) {
+            // out of memory?
+            return;
+        }
+
         int[] loc = mCoordinatesTemp;
         v.getLocationOnScreen(loc);
         int screenX = loc[0];
@@ -249,6 +254,10 @@ public class DragController {
         }
         v.buildDrawingCache();
         Bitmap cacheBitmap = v.getDrawingCache();
+        if (cacheBitmap == null) {
+            Log.e(TAG, "failed getViewBitmap(" + v + ")", new RuntimeException());
+            return null;
+        }
 
         Bitmap bitmap = Bitmap.createBitmap(cacheBitmap);
 
