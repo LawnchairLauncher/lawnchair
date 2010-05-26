@@ -670,6 +670,28 @@ public class LauncherModel extends BroadcastReceiver {
                 }
             }
 
+            // check & update map of what's occupied; used to discard overlapping/invalid items
+            private boolean checkItemPlacement(ItemInfo occupied[][][], ItemInfo item) {
+                for (int x = item.cellX; x < (item.cellX+item.spanX); x++) {
+                    for (int y = item.cellY; y < (item.cellY+item.spanY); y++) {
+                        if (occupied[item.screen][x][y] != null) {
+                            Log.e(TAG, "Error loading shortcut " + item
+                                + " into cell (" + item.screen + ":" 
+                                + x + "," + y
+                                + ") occupied by " 
+                                + occupied[item.screen][x][y]);
+                            return false;
+                        }
+                    }
+                }
+                for (int x = item.cellX; x < (item.cellX+item.spanX); x++) {
+                    for (int y = item.cellY; y < (item.cellY+item.spanY); y++) {
+                        occupied[item.screen][x][y] = item;
+                    }
+                }
+                return true;
+            }
+
             private void loadWorkspace() {
                 long t = SystemClock.uptimeMillis();
 
@@ -687,6 +709,8 @@ public class LauncherModel extends BroadcastReceiver {
 
                 final Cursor c = contentResolver.query(
                         LauncherSettings.Favorites.CONTENT_URI, null, null, null, null);
+
+                final ItemInfo occupied[][][] = new ItemInfo[Launcher.SCREEN_COUNT][Launcher.NUMBER_CELLS_X][Launcher.NUMBER_CELLS_Y];
 
                 try {
                     final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
@@ -762,6 +786,11 @@ public class LauncherModel extends BroadcastReceiver {
                                     info.cellX = c.getInt(cellXIndex);
                                     info.cellY = c.getInt(cellYIndex);
 
+                                    // check & update map of what's occupied
+                                    if (!checkItemPlacement(occupied, info)) {
+                                        break;
+                                    }
+
                                     switch (container) {
                                     case LauncherSettings.Favorites.CONTAINER_DESKTOP:
                                         mItems.add(info);
@@ -797,6 +826,11 @@ public class LauncherModel extends BroadcastReceiver {
                                 folderInfo.screen = c.getInt(screenIndex);
                                 folderInfo.cellX = c.getInt(cellXIndex);
                                 folderInfo.cellY = c.getInt(cellYIndex);
+
+                                // check & update map of what's occupied
+                                if (!checkItemPlacement(occupied, folderInfo)) {
+                                    break;
+                                }
 
                                 switch (container) {
                                     case LauncherSettings.Favorites.CONTAINER_DESKTOP:
@@ -841,7 +875,12 @@ public class LauncherModel extends BroadcastReceiver {
                                     liveFolderInfo.cellY = c.getInt(cellYIndex);
                                     liveFolderInfo.baseIntent = intent;
                                     liveFolderInfo.displayMode = c.getInt(displayModeIndex);
-    
+
+                                    // check & update map of what's occupied
+                                    if (!checkItemPlacement(occupied, liveFolderInfo)) {
+                                        break;
+                                    }
+
                                     loadLiveFolderIcon(context, c, iconTypeIndex, iconPackageIndex,
                                             iconResourceIndex, liveFolderInfo);
     
@@ -884,6 +923,11 @@ public class LauncherModel extends BroadcastReceiver {
                                     }
                                     appWidgetInfo.container = c.getInt(containerIndex);
     
+                                    // check & update map of what's occupied
+                                    if (!checkItemPlacement(occupied, appWidgetInfo)) {
+                                        break;
+                                    }
+
                                     mAppWidgets.add(appWidgetInfo);
                                 }
                                 break;
@@ -916,6 +960,19 @@ public class LauncherModel extends BroadcastReceiver {
 
                 if (DEBUG_LOADERS) {
                     Log.d(TAG, "loaded workspace in " + (SystemClock.uptimeMillis()-t) + "ms");
+                    Log.d(TAG, "workspace layout: ");
+                    for (int y = 0; y < Launcher.NUMBER_CELLS_Y; y++) {
+                        String line = "";
+                        for (int s = 0; s < Launcher.SCREEN_COUNT; s++) {
+                            if (s > 0) {
+                                line += " | ";
+                            }
+                            for (int x = 0; x < Launcher.NUMBER_CELLS_X; x++) {
+                                line += ((occupied[s][x][y] != null) ? "#" : ".");
+                            }
+                        }
+                        Log.d(TAG, "[ " + line + " ]");
+                    }
                 }
             }
 
