@@ -137,4 +137,9 @@ class ItemInfo {
     
     void unbind() {
     }
+
+    @Override
+    public String toString() {
+        return "Item(id=" + this.id + " type=" + this.itemType + ")";
+    }
 }

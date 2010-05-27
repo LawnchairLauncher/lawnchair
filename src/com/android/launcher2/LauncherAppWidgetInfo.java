@@ -49,7 +49,7 @@ class LauncherAppWidgetInfo extends ItemInfo {
 
     @Override
     public String toString() {
-        return Integer.toString(appWidgetId);
+        return "AppWidget(id=" + Integer.toString(appWidgetId) + ")";
     }
 
 
