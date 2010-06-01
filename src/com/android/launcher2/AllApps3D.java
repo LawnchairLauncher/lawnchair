@@ -1220,11 +1220,11 @@ public class AllApps3D extends RSSurfaceView
 
             mIcons = new Allocation[count];
             mIconIds = new int[allocCount];
-            mAllocIconIds = Allocation.createSized(sRS, Element.USER_I32(sRS), allocCount);
+            mAllocIconIds = Allocation.createSized(sRS, Element.I32(sRS), allocCount);
 
             mLabels = new Allocation[count];
             mLabelIds = new int[allocCount];
-            mAllocLabelIds = Allocation.createSized(sRS, Element.USER_I32(sRS), allocCount);
+            mAllocLabelIds = Allocation.createSized(sRS, Element.I32(sRS), allocCount);
 
             mScript.set_gIconCount(count);
             for (int i=0; i < count; i++) {
@@ -1280,11 +1280,11 @@ public class AllApps3D extends RSSurfaceView
         private void reallocAppsList(int count) {
             Allocation[] icons = new Allocation[count];
             int[] iconIds = new int[count];
-            mAllocIconIds = Allocation.createSized(sRS, Element.USER_I32(sRS), count);
+            mAllocIconIds = Allocation.createSized(sRS, Element.I32(sRS), count);
 
             Allocation[] labels = new Allocation[count];
             int[] labelIds = new int[count];
-            mAllocLabelIds = Allocation.createSized(sRS, Element.USER_I32(sRS), count);
+            mAllocLabelIds = Allocation.createSized(sRS, Element.I32(sRS), count);
 
             final int oldCount = sRollo.mScript.get_gIconCount();
 

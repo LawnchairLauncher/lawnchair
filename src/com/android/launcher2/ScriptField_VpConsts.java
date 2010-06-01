@@ -33,10 +33,10 @@ public class ScriptField_VpConsts
         mItemArray = new Item[count];
 
         Element.Builder eb = new Element.Builder(rs);
-        eb.add(Element.createVector(rs, Element.DataType.FLOAT_32, 4), "Position");
-        eb.add(Element.createVector(rs, Element.DataType.FLOAT_32, 4), "ScaleOffset");
-        eb.add(Element.createVector(rs, Element.DataType.FLOAT_32, 2), "BendPos");
-        eb.add(Element.createVector(rs, Element.DataType.FLOAT_32, 2), "ImgSize");
+        eb.add(Element.F32_4(rs), "Position");
+        eb.add(Element.F32_4(rs), "ScaleOffset");
+        eb.add(Element.F32_2(rs), "BendPos");
+        eb.add(Element.F32_2(rs), "ImgSize");
         mElement = eb.create();
 
         init(rs, count);
