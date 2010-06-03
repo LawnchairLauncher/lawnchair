@@ -672,6 +672,10 @@ public class LauncherModel extends BroadcastReceiver {
 
             // check & update map of what's occupied; used to discard overlapping/invalid items
             private boolean checkItemPlacement(ItemInfo occupied[][][], ItemInfo item) {
+                if (item.container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                    return true;
+                }
+
                 for (int x = item.cellX; x < (item.cellX+item.spanX); x++) {
                     for (int y = item.cellY; y < (item.cellY+item.spanY); y++) {
                         if (occupied[item.screen][x][y] != null) {

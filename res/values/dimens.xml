@@ -24,6 +24,10 @@
          button_bar_height changes -->
     <dimen name="button_bar_height_portrait">56dip</dimen>
 
+    <!-- roughly a status bar (for vertically centering the all apps
+         home icon in landscape) -->
+    <dimen name="status_bar_height">25dip</dimen>
+
     <!-- roughly half a status bar (for vertically centering the right-hand
          button cluster in landscape) -->
     <dimen name="half_status_bar_height">12dip</dimen>

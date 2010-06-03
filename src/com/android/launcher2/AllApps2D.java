@@ -20,6 +20,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -49,6 +51,7 @@ public class AllApps2D
                    DragSource {
 
     private static final String TAG = "Launcher.AllApps2D";
+    private static final boolean DEBUG = false;
 
     private Launcher mLauncher;
     private DragController mDragController;
@@ -100,7 +103,13 @@ public class AllApps2D
 //            }
 
             final TextView textView = (TextView) convertView;
+            if (DEBUG) {
+                Log.d(TAG, "icon bitmap = " + info.iconBitmap 
+                    + " density = " + info.iconBitmap.getDensity());
+            }
+            info.iconBitmap.setDensity(Bitmap.DENSITY_NONE);
             textView.setCompoundDrawablesWithIntrinsicBounds(null, new BitmapDrawable(info.iconBitmap), null, null);
+            textView.setBackgroundColor(Color.BLACK);
             textView.setText(info.title);
 
             return convertView;
@@ -118,13 +127,15 @@ public class AllApps2D
 
     @Override
     protected void onFinishInflate() {
-        setBackgroundColor(0xFF000000);
+        setBackgroundColor(Color.BLACK);
 
         try {
             mGrid = (GridView)findViewWithTag("all_apps_2d_grid");
             if (mGrid == null) throw new Resources.NotFoundException();
             mGrid.setOnItemClickListener(this);
             mGrid.setOnItemLongClickListener(this);
+            mGrid.setBackgroundColor(Color.BLACK);
+            mGrid.setCacheColorHint(Color.BLACK);
             
             ImageButton homeButton = (ImageButton) findViewWithTag("all_apps_2d_home");
             if (homeButton == null) throw new Resources.NotFoundException();
