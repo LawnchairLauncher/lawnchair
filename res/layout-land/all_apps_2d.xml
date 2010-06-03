@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2010 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+  
+          http://www.apache.org/licenses/LICENSE-2.0
+  
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<!-- Sapphire gets 2D all apps view -->
+<com.android.launcher2.AllApps2D
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:id="@+id/all_apps_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="2dip"
+    >
+
+    <GridView android:id="@+id/all_apps_2d_grid"
+        android:tag="all_apps_2d_grid"
+        android:scrollbars="none"
+        android:drawSelectorOnTop="false"
+        android:listSelector="@drawable/grid_selector"
+        android:verticalSpacing="10dip"
+        android:numColumns="6"
+        android:fadingEdgeLength="48dip"
+        android:cacheColorHint="#FF000000"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/button_bar_height_portrait"
+        android:nextFocusRight="@+id/all_apps_2d_home"
+        android:nextFocusUp="@null"
+        android:nextFocusLeft="@null"
+        android:nextFocusDown="@null"
+        />
+
+    <view
+        class="com.android.launcher2.AllApps2D$HomeButton"
+        android:id="@+id/all_apps_2d_home"
+        android:tag="all_apps_2d_home"
+        android:src="@drawable/home_button"
+        android:background="#FF000000"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_height="wrap_content"
+        android:layout_width="@dimen/button_bar_height_portrait"
+        android:paddingBottom="@dimen/status_bar_height"
+        android:nextFocusLeft="@+id/all_apps_2d_grid"
+        android:nextFocusDown="@null"
+        android:nextFocusUp="@null"
+        android:nextFocusRight="@null"
+        />
+
+</com.android.launcher2.AllApps2D>
