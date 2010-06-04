@@ -109,7 +109,6 @@ public class AllApps2D
             }
             info.iconBitmap.setDensity(Bitmap.DENSITY_NONE);
             textView.setCompoundDrawablesWithIntrinsicBounds(null, new BitmapDrawable(info.iconBitmap), null, null);
-            textView.setBackgroundColor(Color.BLACK);
             textView.setText(info.title);
 
             return convertView;
