@@ -49,6 +49,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.provider.LiveFolders;
 import android.text.Selection;
@@ -91,10 +92,10 @@ import com.android.launcher.R;
 public final class Launcher extends Activity
         implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks, AllAppsView.Watcher {
     static final String TAG = "Launcher";
-    static final boolean LOGD = false;
+    static final boolean LOGD = true;
 
     static final boolean PROFILE_STARTUP = false;
-    static final boolean PROFILE_ROTATE = false;
+    static final boolean DEBUG_WIDGETS = false;
     static final boolean DEBUG_USER_INTERFACE = false;
 
     private static final int WALLPAPER_SCREENS_SPAN = 2;
@@ -586,10 +587,6 @@ public final class Launcher extends Activity
         // Flag the loader to stop early before switching
         mModel.stopLoader();
         mAllAppsGrid.surrender();
-
-        if (PROFILE_ROTATE) {
-            android.os.Debug.startMethodTracing("/sdcard/launcher-rotate");
-        }
         return Boolean.TRUE;
     }
 
@@ -1885,8 +1882,9 @@ public final class Launcher extends Activity
         }
     }
 
-    boolean isAllAppsVisible() {
-        return mAllAppsGrid.isVisible();
+    // Now a part of LauncherModel.Callbacks. Used to reorder loading steps.
+    public boolean isAllAppsVisible() {
+        return (mAllAppsGrid != null) ? mAllAppsGrid.isVisible() : false;
     }
 
     // AllAppsView.Watcher
@@ -2185,10 +2183,18 @@ public final class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void bindAppWidget(LauncherAppWidgetInfo item) {
+        final long start = DEBUG_WIDGETS ? SystemClock.uptimeMillis() : 0;
+        if (DEBUG_WIDGETS) {
+            Log.d(TAG, "bindAppWidget: " + item);
+        }
         final Workspace workspace = mWorkspace;
 
         final int appWidgetId = item.appWidgetId;
         final AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
+        if (DEBUG_WIDGETS) {
+            Log.d(TAG, "bindAppWidget: id=" + item.appWidgetId + " belongs to component " + appWidgetInfo.provider);
+        }
+
         item.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
 
         item.hostView.setAppWidget(appWidgetId, appWidgetInfo);
@@ -2200,6 +2206,11 @@ public final class Launcher extends Activity
         workspace.requestLayout();
 
         mDesktopItems.add(item);
+
+        if (DEBUG_WIDGETS) {
+            Log.d(TAG, "bound widget id="+item.appWidgetId+" in "
+                    + (SystemClock.uptimeMillis()-start) + "ms");
+        }
     }
 
     /**
