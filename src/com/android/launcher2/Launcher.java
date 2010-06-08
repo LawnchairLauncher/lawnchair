@@ -92,7 +92,7 @@ import com.android.launcher.R;
 public final class Launcher extends Activity
         implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks, AllAppsView.Watcher {
     static final String TAG = "Launcher";
-    static final boolean LOGD = true;
+    static final boolean LOGD = false;
 
     static final boolean PROFILE_STARTUP = false;
     static final boolean DEBUG_WIDGETS = false;
@@ -246,11 +246,6 @@ public final class Launcher extends Activity
         if (PROFILE_STARTUP) {
             android.os.Debug.stopMethodTracing();
         }
-
-        // We have a new AllAppsView, we need to re-bind everything, and it could have
-        // changed in our absence.
-        mModel.setAllAppsDirty();
-        mModel.setWorkspaceDirty();
 
         if (!mRestoring) {
             mModel.startLoader(this, true);
@@ -1856,7 +1851,6 @@ public final class Launcher extends Activity
 
                 if (mWorkspaceLoading) {
                     lockAllApps();
-                    mModel.setWorkspaceDirty();
                     mModel.startLoader(Launcher.this, false);
                 } else {
                     final FolderIcon folderIcon = (FolderIcon)
@@ -1866,7 +1860,6 @@ public final class Launcher extends Activity
                         getWorkspace().requestLayout();
                     } else {
                         lockAllApps();
-                        mModel.setWorkspaceDirty();
                         mWorkspaceLoading = true;
                         mModel.startLoader(Launcher.this, false);
                     }

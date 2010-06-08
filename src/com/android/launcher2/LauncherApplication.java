@@ -73,8 +73,6 @@ public class LauncherApplication extends Application {
     private final ContentObserver mFavoritesObserver = new ContentObserver(new Handler()) {
         @Override
         public void onChange(boolean selfChange) {
-            // TODO: lockAllApps();
-            mModel.setWorkspaceDirty();
             mModel.startLoader(LauncherApplication.this, false);
         }
     };
