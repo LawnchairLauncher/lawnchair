@@ -961,7 +961,23 @@ public class AllApps3D extends RSSurfaceView
         public void run() {
             sRollo.mScrollPos = ((float)mData[0]) / (1 << 16);
             mVelocity = ((float)mData[1]) / (1 << 16);
+
+            boolean lastVisible = isVisible();
             mZoom = ((float)mData[2]) / (1 << 16);
+
+            final boolean visible = isVisible();
+            if (visible != lastVisible) {
+                post(new Runnable() {
+                    public void run() {
+                        if (visible) {
+                            showSurface();
+                        } else {
+                            hideSurface();
+                        }
+                    }
+                });
+            }
+
             sZoomDirty = false;
         }
     }
