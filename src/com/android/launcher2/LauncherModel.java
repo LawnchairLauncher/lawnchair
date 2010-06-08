@@ -71,6 +71,12 @@ public class LauncherModel extends BroadcastReceiver {
     private DeferredHandler mHandler = new DeferredHandler();
     private Loader mLoader = new Loader();
 
+    // We start off with everything not loaded.  After that, we assume that
+    // our monitoring of the package manager provides all updates and we never
+    // need to do a requery.  These are only ever touched from the loader thread.
+    private boolean mWorkspaceLoaded;
+    private boolean mAllAppsLoaded;
+
     private boolean mBeforeFirstLoad = true; // only access this from main thread
     private WeakReference<Callbacks> mCallbacks;
 
@@ -287,17 +293,6 @@ public class LauncherModel extends BroadcastReceiver {
     }
 
     /**
-     * We pick up most of the changes to all apps.
-     */
-    public void setAllAppsDirty() {
-        mLoader.setAllAppsDirty();
-    }
-
-    public void setWorkspaceDirty() {
-        mLoader.setWorkspaceDirty();
-    }
-
-    /**
      * Call from the handler for ACTION_PACKAGE_ADDED, ACTION_PACKAGE_REMOVED and
      * ACTION_PACKAGE_CHANGED.
      */
@@ -398,8 +393,9 @@ public class LauncherModel extends BroadcastReceiver {
                      if (packages == null || packages.length == 0) {
                          return;
                      }
-                     setAllAppsDirty();
-                     setWorkspaceDirty();
+                     synchronized (this) {
+                         mAllAppsLoaded = mWorkspaceLoaded = false;
+                     }
                      startLoader(context, false);
                 } else if (Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE.equals(action)) {
                      String packages[] = intent.getStringArrayExtra(
@@ -407,8 +403,9 @@ public class LauncherModel extends BroadcastReceiver {
                      if (packages == null || packages.length == 0) {
                          return;
                      }
-                     setAllAppsDirty();
-                     setWorkspaceDirty();
+                     synchronized (this) {
+                         mAllAppsLoaded = mWorkspaceLoaded = false;
+                     }
                      startLoader(context, false);
                 }
             }
@@ -419,12 +416,6 @@ public class LauncherModel extends BroadcastReceiver {
         private static final int ITEMS_CHUNK = 6;
 
         private LoaderThread mLoaderThread;
-
-        private int mLastWorkspaceSeq = 0;
-        private int mWorkspaceSeq = 1;
-
-        private int mLastAllAppsSeq = 0;
-        private int mAllAppsSeq = 1;
 
         final ArrayList<ItemInfo> mItems = new ArrayList<ItemInfo>();
         final ArrayList<LauncherAppWidgetInfo> mAppWidgets = new ArrayList<LauncherAppWidgetInfo>();
@@ -463,18 +454,6 @@ public class LauncherModel extends BroadcastReceiver {
                 if (mLoaderThread != null) {
                     mLoaderThread.stopLocked();
                 }
-            }
-        }
-
-        public void setWorkspaceDirty() {
-            synchronized (mLock) {
-                mWorkspaceSeq++;
-            }
-        }
-
-        public void setAllAppsDirty() {
-            synchronized (mLock) {
-                mAllAppsSeq++;
             }
         }
 
@@ -524,58 +503,31 @@ public class LauncherModel extends BroadcastReceiver {
             }
 
             private void loadAndBindWorkspace() {
-                // Load the workspace only if it's dirty.
-                int workspaceSeq;
-                boolean workspaceDirty;
-                synchronized (mLock) {
-                    workspaceSeq = mWorkspaceSeq;
-                    workspaceDirty = mWorkspaceSeq != mLastWorkspaceSeq;
-                }
-                if (workspaceDirty) {
-                    loadWorkspace();
-                }
-                synchronized (mLock) {
-                    // If we're not stopped, and nobody has incremented mWorkspaceSeq.
-                    if (mStopped) {
-                        if (PROFILE_LOADERS) {
-                            android.os.Debug.stopMethodTracing();
-                        }
+                // Load the workspace
 
+                // Other other threads can unset mWorkspaceLoaded, so atomically set it,
+                // and then if they unset it, or we unset it because of mStopped, it will
+                // be unset.
+                boolean loaded;
+                synchronized (this) {
+                    loaded = mWorkspaceLoaded;
+                    mWorkspaceLoaded = true;
+                }
+
+                // For now, just always reload the workspace.  It's ~100 ms vs. the
+                // binding which takes many hundreds of ms.
+                // We can reconsider.
+                if (DEBUG_LOADERS) Log.d(TAG, "loadAndBindWorkspace loaded=" + loaded);
+                if (true || !loaded) {
+                    loadWorkspace();
+                    if (mStopped) {
+                        mWorkspaceLoaded = false;
                         return;
-                    }
-                    if (workspaceSeq == mWorkspaceSeq) {
-                        mLastWorkspaceSeq = mWorkspaceSeq;
                     }
                 }
 
                 // Bind the workspace
                 bindWorkspace();
-            }
-
-            private void loadAndBindAllAppsIfDirty() {
-                // Load all apps if they're dirty
-                int allAppsSeq;
-                boolean allAppsDirty;
-                synchronized (mLock) {
-                    allAppsSeq = mAllAppsSeq;
-                    allAppsDirty = mAllAppsSeq != mLastAllAppsSeq;
-                    if (DEBUG_LOADERS) {
-                        Log.d(TAG, "mAllAppsSeq=" + mAllAppsSeq
-                                + " mLastAllAppsSeq=" + mLastAllAppsSeq + " allAppsDirty");
-                    }
-                }
-                if (allAppsDirty) {
-                    loadAndBindAllApps();
-                }
-                synchronized (mLock) {
-                    // If we're not stopped, and nobody has incremented mAllAppsSeq.
-                    if (mStopped) {
-                        return;
-                    }
-                    if (allAppsSeq == mAllAppsSeq) {
-                        mLastAllAppsSeq = mAllAppsSeq;
-                    }
-                }
             }
 
             private void waitForIdle() {
@@ -637,7 +589,7 @@ public class LauncherModel extends BroadcastReceiver {
                     loadAndBindWorkspace();
                 } else {
                     if (DEBUG_LOADERS) Log.d(TAG, "step 1: special: loading all apps");
-                    loadAndBindAllAppsIfDirty();
+                    loadAndBindAllApps();
                 }
 
                 // Whew! Hard work done.
@@ -650,7 +602,7 @@ public class LauncherModel extends BroadcastReceiver {
                 // second step
                 if (loadWorkspaceFirst) {
                     if (DEBUG_LOADERS) Log.d(TAG, "step 2: loading all apps");
-                    loadAndBindAllAppsIfDirty();
+                    loadAndBindAllApps();
                 } else {
                     if (DEBUG_LOADERS) Log.d(TAG, "step 2: special: loading workspace");
                     loadAndBindWorkspace();
@@ -671,7 +623,7 @@ public class LauncherModel extends BroadcastReceiver {
                 }
 
                 // Trigger a gc to try to clean up after the stuff is done, since the
-                // renderscript allocations aren't charge to the java heap.
+                // renderscript allocations aren't charged to the java heap.
                 mHandler.post(new Runnable() {
                         public void run() {
                             System.gc();
@@ -1133,6 +1085,55 @@ public class LauncherModel extends BroadcastReceiver {
             }
 
             private void loadAndBindAllApps() {
+                // Other other threads can unset mAllAppsLoaded, so atomically set it,
+                // and then if they unset it, or we unset it because of mStopped, it will
+                // be unset.
+                boolean loaded;
+                synchronized (this) {
+                    loaded = mAllAppsLoaded;
+                    mAllAppsLoaded = true;
+                }
+
+                if (DEBUG_LOADERS) Log.d(TAG, "loadAndBindAllApps loaded=" + loaded);
+                if (!loaded) {
+                    loadAllAppsByBatch();
+                    if (mStopped) {
+                        mAllAppsLoaded = false;
+                        return;
+                    }
+                } else {
+                    onlyBindAllApps();
+                }
+            }
+
+            private void onlyBindAllApps() {
+                final Callbacks oldCallbacks = mCallbacks.get();
+                if (oldCallbacks == null) {
+                    // This launcher has exited and nobody bothered to tell us.  Just bail.
+                    Log.w(TAG, "LoaderThread running with no launcher (onlyBindAllApps)");
+                    return;
+                }
+
+                // shallow copy
+                final ArrayList<ApplicationInfo> list
+                        = (ArrayList<ApplicationInfo>)mAllAppsList.data.clone();
+                mHandler.post(new Runnable() {
+                    public void run() {
+                        final long t = SystemClock.uptimeMillis();
+                        final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
+                        if (callbacks != null) {
+                            callbacks.bindAllApplications(list);
+                        }
+                        if (DEBUG_LOADERS) {
+                            Log.d(TAG, "bound all " + list.size() + " apps from cache in "
+                                    + (SystemClock.uptimeMillis()-t) + "ms");
+                        }
+                    }
+                });
+
+            }
+
+            private void loadAllAppsByBatch() {
                 final long t = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
 
                 // Don't use these two variables in any of the callback runnables.
@@ -1140,7 +1141,7 @@ public class LauncherModel extends BroadcastReceiver {
                 final Callbacks oldCallbacks = mCallbacks.get();
                 if (oldCallbacks == null) {
                     // This launcher has exited and nobody bothered to tell us.  Just bail.
-                    Log.w(TAG, "LoaderThread running with no launcher (loadAndBindAllApps)");
+                    Log.w(TAG, "LoaderThread running with no launcher (loadAllAppsByBatch)");
                     return;
                 }
 
@@ -1262,10 +1263,6 @@ public class LauncherModel extends BroadcastReceiver {
         }
 
         public void dumpState() {
-            Log.d(TAG, "mLoader.mLastWorkspaceSeq=" + mLoader.mLastWorkspaceSeq);
-            Log.d(TAG, "mLoader.mWorkspaceSeq=" + mLoader.mWorkspaceSeq);
-            Log.d(TAG, "mLoader.mLastAllAppsSeq=" + mLoader.mLastAllAppsSeq);
-            Log.d(TAG, "mLoader.mAllAppsSeq=" + mLoader.mAllAppsSeq);
             Log.d(TAG, "mLoader.mItems size=" + mLoader.mItems.size());
             if (mLoaderThread != null) {
                 mLoaderThread.dumpState();
