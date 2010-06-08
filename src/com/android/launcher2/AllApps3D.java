@@ -148,7 +148,6 @@ public class AllApps3D extends RSSurfaceView
         super(context, attrs);
         setFocusable(true);
         setSoundEffectsEnabled(false);
-        getHolder().setFormat(PixelFormat.TRANSLUCENT);
         final ViewConfiguration config = ViewConfiguration.get(context);
         mSlop = config.getScaledTouchSlop();
         mMaxFlingVelocity = config.getScaledMaximumFlingVelocity();
