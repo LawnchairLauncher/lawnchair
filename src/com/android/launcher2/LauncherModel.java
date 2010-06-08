@@ -60,6 +60,7 @@ import com.android.launcher.R;
  */
 public class LauncherModel extends BroadcastReceiver {
     static final boolean DEBUG_LOADERS = false;
+    static final boolean PROFILE_LOADERS = false;
     static final String TAG = "Launcher.Model";
 
     private int mBatchSize; // 0 is all apps at once
@@ -90,6 +91,7 @@ public class LauncherModel extends BroadcastReceiver {
         public void bindAppsAdded(ArrayList<ApplicationInfo> apps);
         public void bindAppsUpdated(ArrayList<ApplicationInfo> apps);
         public void bindAppsRemoved(ArrayList<ApplicationInfo> apps);
+        public boolean isAllAppsVisible();
     }
 
     LauncherModel(LauncherApplication app, IconCache iconCache) {
@@ -439,6 +441,7 @@ public class LauncherModel extends BroadcastReceiver {
                 if (DEBUG_LOADERS) {
                     Log.d(TAG, "startLoader isLaunching=" + isLaunching);
                 }
+
                 // Don't bother to start the thread if we know it's not going to do anything
                 if (mCallbacks != null && mCallbacks.get() != null) {
                     LoaderThread oldThread = mLoaderThread;
@@ -486,7 +489,7 @@ public class LauncherModel extends BroadcastReceiver {
             private Thread mWaitThread;
             private boolean mIsLaunching;
             private boolean mStopped;
-            private boolean mWorkspaceDoneBinding;
+            private boolean mLoadAndBindStepFinished;
 
             LoaderThread(Context context, Thread waitThread, boolean isLaunching) {
                 mContext = context;
@@ -520,16 +523,7 @@ public class LauncherModel extends BroadcastReceiver {
                 }
             }
 
-            public void run() {
-                waitForOtherThread();
-
-                // Elevate priority when Home launches for the first time to avoid
-                // starving at boot time. Staring at a blank home is not cool.
-                synchronized (mLock) {
-                    android.os.Process.setThreadPriority(mIsLaunching
-                            ? Process.THREAD_PRIORITY_DEFAULT : Process.THREAD_PRIORITY_BACKGROUND);
-                }
-
+            private void loadAndBindWorkspace() {
                 // Load the workspace only if it's dirty.
                 int workspaceSeq;
                 boolean workspaceDirty;
@@ -543,6 +537,10 @@ public class LauncherModel extends BroadcastReceiver {
                 synchronized (mLock) {
                     // If we're not stopped, and nobody has incremented mWorkspaceSeq.
                     if (mStopped) {
+                        if (PROFILE_LOADERS) {
+                            android.os.Debug.stopMethodTracing();
+                        }
+
                         return;
                     }
                     if (workspaceSeq == mWorkspaceSeq) {
@@ -552,44 +550,9 @@ public class LauncherModel extends BroadcastReceiver {
 
                 // Bind the workspace
                 bindWorkspace();
-                
-                // Wait until the either we're stopped or the other threads are done.
-                // This way we don't start loading all apps until the workspace has settled
-                // down.
-                synchronized (LoaderThread.this) {
-                    mHandler.postIdle(new Runnable() {
-                            public void run() {
-                                synchronized (LoaderThread.this) {
-                                    mWorkspaceDoneBinding = true;
-                                    if (DEBUG_LOADERS) {
-                                        Log.d(TAG, "done with workspace");
-                                        }
-                                    LoaderThread.this.notify();
-                                }
-                            }
-                        });
-                    if (DEBUG_LOADERS) {
-                        Log.d(TAG, "waiting to be done with workspace");
-                    }
-                    while (!mStopped && !mWorkspaceDoneBinding) {
-                        try {
-                            this.wait();
-                        } catch (InterruptedException ex) {
-                            // Ignore
-                        }
-                    }
-                    if (DEBUG_LOADERS) {
-                        Log.d(TAG, "done waiting to be done with workspace");
-                    }
-                }
+            }
 
-                // Whew! Hard work done.
-                synchronized (mLock) {
-                    if (mIsLaunching) {
-                        android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-                    }
-                }
-
+            private void loadAndBindAllAppsIfDirty() {
                 // Load all apps if they're dirty
                 int allAppsSeq;
                 boolean allAppsDirty;
@@ -613,6 +576,85 @@ public class LauncherModel extends BroadcastReceiver {
                         mLastAllAppsSeq = mAllAppsSeq;
                     }
                 }
+            }
+
+            private void waitForIdle() {
+                // Wait until the either we're stopped or the other threads are done.
+                // This way we don't start loading all apps until the workspace has settled
+                // down.
+                synchronized (LoaderThread.this) {
+                    final long workspaceWaitTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
+
+                    mHandler.postIdle(new Runnable() {
+                            public void run() {
+                                synchronized (LoaderThread.this) {
+                                    mLoadAndBindStepFinished = true;
+                                    if (DEBUG_LOADERS) {
+                                        Log.d(TAG, "done with previous binding step");
+                                    }
+                                    LoaderThread.this.notify();
+                                }
+                            }
+                        });
+
+                    while (!mStopped && !mLoadAndBindStepFinished) {
+                        try {
+                            this.wait();
+                        } catch (InterruptedException ex) {
+                            // Ignore
+                        }
+                    }
+                    if (DEBUG_LOADERS) {
+                        Log.d(TAG, "waited "
+                                + (SystemClock.uptimeMillis()-workspaceWaitTime) 
+                                + "ms for previous step to finish binding");
+                    }
+                }
+            }
+
+            public void run() {
+                waitForOtherThread();
+
+                // Optimize for end-user experience: if the Launcher is up and // running with the
+                // All Apps interface in the foreground, load All Apps first. Otherwise, load the
+                // workspace first (default).
+                final Callbacks cbk = mCallbacks.get();
+                final boolean loadWorkspaceFirst = cbk != null ? (!cbk.isAllAppsVisible()) : true;
+
+                // Elevate priority when Home launches for the first time to avoid
+                // starving at boot time. Staring at a blank home is not cool.
+                synchronized (mLock) {
+                    android.os.Process.setThreadPriority(mIsLaunching
+                            ? Process.THREAD_PRIORITY_DEFAULT : Process.THREAD_PRIORITY_BACKGROUND);
+                }
+
+                if (PROFILE_LOADERS) {
+                    android.os.Debug.startMethodTracing("/sdcard/launcher-loaders");
+                }
+                
+                if (loadWorkspaceFirst) {
+                    if (DEBUG_LOADERS) Log.d(TAG, "step 1: loading workspace");
+                    loadAndBindWorkspace();
+                } else {
+                    if (DEBUG_LOADERS) Log.d(TAG, "step 1: special: loading all apps");
+                    loadAndBindAllAppsIfDirty();
+                }
+
+                // Whew! Hard work done.
+                synchronized (mLock) {
+                    if (mIsLaunching) {
+                        android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+                    }
+                }
+
+                // second step
+                if (loadWorkspaceFirst) {
+                    if (DEBUG_LOADERS) Log.d(TAG, "step 2: loading all apps");
+                    loadAndBindAllAppsIfDirty();
+                } else {
+                    if (DEBUG_LOADERS) Log.d(TAG, "step 2: special: loading workspace");
+                    loadAndBindWorkspace();
+                }
 
                 // Clear out this reference, otherwise we end up holding it until all of the
                 // callback runnables are done.
@@ -622,6 +664,10 @@ public class LauncherModel extends BroadcastReceiver {
                     // Setting the reference is atomic, but we can't do it inside the other critical
                     // sections.
                     mLoaderThread = null;
+                }
+
+                if (PROFILE_LOADERS) {
+                    android.os.Debug.stopMethodTracing();
                 }
 
                 // Trigger a gc to try to clean up after the stuff is done, since the
@@ -672,10 +718,6 @@ public class LauncherModel extends BroadcastReceiver {
 
             // check & update map of what's occupied; used to discard overlapping/invalid items
             private boolean checkItemPlacement(ItemInfo occupied[][][], ItemInfo item) {
-                if (item.container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                    return true;
-                }
-
                 for (int x = item.cellX; x < (item.cellX+item.spanX); x++) {
                     for (int y = item.cellY; y < (item.cellY+item.spanY); y++) {
                         if (occupied[item.screen][x][y] != null) {
@@ -697,7 +739,7 @@ public class LauncherModel extends BroadcastReceiver {
             }
 
             private void loadWorkspace() {
-                long t = SystemClock.uptimeMillis();
+                final long t = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
 
                 final Context context = mContext;
                 final ContentResolver contentResolver = context.getContentResolver();
@@ -1028,7 +1070,7 @@ public class LauncherModel extends BroadcastReceiver {
                     }
                 });
                 // Wait until the queue goes empty.
-                mHandler.postIdle(new Runnable() {
+                mHandler.post(new Runnable() {
                     public void run() {
                         if (DEBUG_LOADERS) {
                             Log.d(TAG, "Going to start binding widgets soon.");
@@ -1085,9 +1127,6 @@ public class LauncherModel extends BroadcastReceiver {
                         if (DEBUG_LOADERS) {
                             Log.d(TAG, "bound workspace in "
                                 + (SystemClock.uptimeMillis()-t) + "ms");
-                        }
-                        if (Launcher.PROFILE_ROTATE) {
-                            android.os.Debug.stopMethodTracing();
                         }
                     }
                 });
@@ -1152,7 +1191,7 @@ public class LauncherModel extends BroadcastReceiver {
                                     new ResolveInfo.DisplayNameComparator(packageManager));
                             if (DEBUG_LOADERS) {
                                 Log.d(TAG, "sort took "
-                                        + (SystemClock.uptimeMillis()-qiaTime) + "ms");
+                                        + (SystemClock.uptimeMillis()-sortTime) + "ms");
                             }
                         }
 
@@ -1218,7 +1257,7 @@ public class LauncherModel extends BroadcastReceiver {
                 Log.d(TAG, "mLoader.mLoaderThread.mWaitThread=" + mWaitThread);
                 Log.d(TAG, "mLoader.mLoaderThread.mIsLaunching=" + mIsLaunching);
                 Log.d(TAG, "mLoader.mLoaderThread.mStopped=" + mStopped);
-                Log.d(TAG, "mLoader.mLoaderThread.mWorkspaceDoneBinding=" + mWorkspaceDoneBinding);
+                Log.d(TAG, "mLoader.mLoaderThread.mLoadAndBindStepFinished=" + mLoadAndBindStepFinished);
             }
         }
 
