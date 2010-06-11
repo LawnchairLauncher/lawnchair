@@ -17,6 +17,7 @@
 package com.android.launcher2;
 
 import android.appwidget.AppWidgetHostView;
+import android.content.ComponentName;
 import android.content.ContentValues;
 
 /**
@@ -29,6 +30,7 @@ class LauncherAppWidgetInfo extends ItemInfo {
      * {@link android.appwidget.AppWidgetManager} for updates.
      */
     int appWidgetId;
+    ComponentName providerName;
     
     /**
      * View that holds this widget after it's been created.  This view isn't created

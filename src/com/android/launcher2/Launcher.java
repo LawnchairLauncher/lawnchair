@@ -17,6 +17,7 @@
 package com.android.launcher2;
 
 import com.android.common.Search;
+import com.android.launcher.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -24,6 +25,8 @@ import android.app.Dialog;
 import android.app.SearchManager;
 import android.app.StatusBarManager;
 import android.app.WallpaperManager;
+import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -31,9 +34,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.Intent.ShortcutIconResource;
 import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
+import android.content.Intent.ShortcutIconResource;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
@@ -41,10 +43,10 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -66,25 +68,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnLongClickListener;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ImageView;
-import android.widget.PopupWindow;
-import android.widget.LinearLayout;
-import android.appwidget.AppWidgetManager;
-import android.appwidget.AppWidgetProviderInfo;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashMap;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.DataInputStream;
-
-import com.android.launcher.R;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Default launcher application.
@@ -182,6 +181,7 @@ public final class Launcher extends Activity
     private DeleteZone mDeleteZone;
     private HandleView mHandleView;
     private AllAppsView mAllAppsGrid;
+    private WidgetChooser mWidgetChooser;
 
     private Bundle mSavedState;
 
@@ -536,10 +536,13 @@ public final class Launcher extends Activity
                     completeAddLiveFolder(data, mAddItemCellInfo);
                     break;
                 case REQUEST_PICK_APPWIDGET:
-                    addAppWidget(data);
+                    addAppWidgetFromPick(data);
                     break;
                 case REQUEST_CREATE_APPWIDGET:
-                    completeAddAppWidget(data, mAddItemCellInfo);
+                    int appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+                    // TODO: Is this log message meaningful?
+                    if (LOGD) Log.d(TAG, "dumping extras content=" + data.getExtras());
+                    completeAddAppWidget(appWidgetId, mAddItemCellInfo);
                     break;
                 case REQUEST_PICK_WALLPAPER:
                     // We just wanted the activity result here so we can clear mWaitingForResult
@@ -572,8 +575,11 @@ public final class Launcher extends Activity
     @Override
     protected void onPause() {
         super.onPause();
-        dismissPreview(mPreviousView);
-        dismissPreview(mNextView);
+        // Some launcher layouts don't have a previous and next view
+        if (mPreviousView != null) {
+            dismissPreview(mPreviousView);
+            dismissPreview(mNextView);
+        }
         mDragController.cancelDrag();
     }
 
@@ -720,24 +726,30 @@ public final class Launcher extends Activity
         mHandleView.setOnClickListener(this);
         mHandleView.setOnLongClickListener(this);
 
-        ImageView hotseatLeft = (ImageView) findViewById(R.id.hotseat_left);
-        hotseatLeft.setContentDescription(mHotseatLabels[0]);
-        hotseatLeft.setImageDrawable(mHotseatIcons[0]);
-        ImageView hotseatRight = (ImageView) findViewById(R.id.hotseat_right);
-        hotseatRight.setContentDescription(mHotseatLabels[1]);
-        hotseatRight.setImageDrawable(mHotseatIcons[1]);
+        mWidgetChooser = (WidgetChooser) findViewById(R.id.widget_chooser);
+        if (mWidgetChooser != null) {
+            mWidgetChooser.setDragController(dragController);
+            mWidgetChooser.setLauncher(this);
+        } else {
+             ImageView hotseatLeft = (ImageView) findViewById(R.id.hotseat_left);
+             hotseatLeft.setContentDescription(mHotseatLabels[0]);
+             hotseatLeft.setImageDrawable(mHotseatIcons[0]);
+             ImageView hotseatRight = (ImageView) findViewById(R.id.hotseat_right);
+             hotseatRight.setContentDescription(mHotseatLabels[1]);
+             hotseatRight.setImageDrawable(mHotseatIcons[1]);
 
-        mPreviousView = (ImageView) dragLayer.findViewById(R.id.previous_screen);
-        mNextView = (ImageView) dragLayer.findViewById(R.id.next_screen);
+             mPreviousView = (ImageView) dragLayer.findViewById(R.id.previous_screen);
+             mNextView = (ImageView) dragLayer.findViewById(R.id.next_screen);
 
-        Drawable previous = mPreviousView.getDrawable();
-        Drawable next = mNextView.getDrawable();
-        mWorkspace.setIndicators(previous, next);
+             Drawable previous = mPreviousView.getDrawable();
+             Drawable next = mNextView.getDrawable();
+             mWorkspace.setIndicators(previous, next);
 
-        mPreviousView.setHapticFeedbackEnabled(false);
-        mPreviousView.setOnLongClickListener(this);
-        mNextView.setHapticFeedbackEnabled(false);
-        mNextView.setOnLongClickListener(this);
+             mPreviousView.setHapticFeedbackEnabled(false);
+             mPreviousView.setOnLongClickListener(this);
+             mNextView.setHapticFeedbackEnabled(false);
+             mNextView.setOnLongClickListener(this);
+        }
 
         workspace.setOnLongClickListener(this);
         workspace.setDragController(dragController);
@@ -745,7 +757,8 @@ public final class Launcher extends Activity
 
         deleteZone.setLauncher(this);
         deleteZone.setDragController(dragController);
-        deleteZone.setHandle(findViewById(R.id.all_apps_button_cluster));
+        int deleteZoneHandleId = isScreenXLarge() ? R.id.add_button : R.id.all_apps_button_cluster;
+        deleteZone.setHandle(findViewById(deleteZoneHandleId));
 
         dragController.setDragScoller(workspace);
         dragController.setDragListener(deleteZone);
@@ -876,12 +889,7 @@ public final class Launcher extends Activity
      * @param data The intent describing the appWidgetId.
      * @param cellInfo The position on screen where to create the widget.
      */
-    private void completeAddAppWidget(Intent data, CellLayout.CellInfo cellInfo) {
-        Bundle extras = data.getExtras();
-        int appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-
-        if (LOGD) Log.d(TAG, "dumping extras content=" + extras.toString());
-
+    private void completeAddAppWidget(int appWidgetId, CellLayout.CellInfo cellInfo) {
         AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
 
         // Calculate the grid spans needed to fit this widget
@@ -1171,9 +1179,27 @@ public final class Launcher extends Activity
         showAddDialog(mMenuAddInfo);
     }
 
-    void addAppWidget(Intent data) {
+    boolean isScreenXLarge() {
+        int screenLayout = getResources().getConfiguration().screenLayout;
+        return (screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE;
+    }
+
+    void addAppWidgetFromDrop(ComponentName appWidgetProvider, CellLayout.CellInfo cellInfo) {
+        mAddItemCellInfo = cellInfo;
+        int appWidgetId = getAppWidgetHost().allocateAppWidgetId();
+        AppWidgetManager.getInstance(this).bindAppWidgetId(appWidgetId, appWidgetProvider);
+        addAppWidgetImpl(appWidgetId);
+    }
+
+    void addAppWidgetFromPick(Intent data) {
         // TODO: catch bad widget exception when sent
         int appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+        // TODO: Is this log message meaningful?
+        if (LOGD) Log.d(TAG, "dumping extras content=" + data.getExtras());
+        addAppWidgetImpl(appWidgetId);
+    }
+
+    void addAppWidgetImpl(int appWidgetId) {
         AppWidgetProviderInfo appWidget = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
 
         if (appWidget.configure != null) {
@@ -1185,7 +1211,7 @@ public final class Launcher extends Activity
             startActivityForResultSafely(intent, REQUEST_CREATE_APPWIDGET);
         } else {
             // Otherwise just add it
-            onActivityResult(REQUEST_CREATE_APPWIDGET, Activity.RESULT_OK, data);
+            completeAddAppWidget(appWidgetId, mAddItemCellInfo);
         }
     }
 
@@ -1389,8 +1415,11 @@ public final class Launcher extends Activity
         } else {
             closeFolder();
         }
-        dismissPreview(mPreviousView);
-        dismissPreview(mNextView);
+        // Some launcher layouts don't have a previous and next view
+        if (mPreviousView != null) {
+            dismissPreview(mPreviousView);
+            dismissPreview(mNextView);
+        }
     }
 
     private void closeFolder() {
@@ -1454,6 +1483,24 @@ public final class Launcher extends Activity
                 showAllApps(true);
             }
         }
+    }
+
+    /**
+     * Event handler for the "plus" button that appears on the home screen, which
+     * enters home screen customization mode.
+     *
+     * @param v The view that was clicked.
+     */
+    public void onClickAddButton(View v) {
+        View widgetChooser = findViewById(R.id.widget_chooser);
+        widgetChooser.setVisibility(View.VISIBLE);
+
+        // Animate the widget chooser up from the bottom of the screen
+        widgetChooser.startAnimation(AnimationUtils.loadAnimation(this, R.anim.widget_chooser_slide_up));
+    }
+
+    public void onClickAllAppsButton(View w) {
+        showAllApps(true);
     }
 
     void startActivitySafely(Intent intent, Object tag) {

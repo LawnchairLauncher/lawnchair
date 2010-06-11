@@ -16,8 +16,7 @@
 
 package com.android.launcher2;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import com.android.launcher.R;
 
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
@@ -47,7 +46,8 @@ import android.view.animation.Interpolator;
 import android.widget.Scroller;
 import android.widget.TextView;
 
-import com.android.launcher.R;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of screens. Each
@@ -450,8 +450,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             postInvalidate();
         } else if (mNextScreen != INVALID_SCREEN) {
             mCurrentScreen = Math.max(0, Math.min(mNextScreen, getChildCount() - 1));
-            mPreviousIndicator.setLevel(mCurrentScreen);
-            mNextIndicator.setLevel(mCurrentScreen);
+            if (mPreviousIndicator != null) {
+                mPreviousIndicator.setLevel(mCurrentScreen);
+                mNextIndicator.setLevel(mCurrentScreen);
+            }
             Launcher.setScreen(mCurrentScreen);
             mNextScreen = INVALID_SCREEN;
             clearChildrenCache();
@@ -963,8 +965,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
         mNextScreen = whichScreen;
 
+        if (mPreviousIndicator != null) {
         mPreviousIndicator.setLevel(mNextScreen);
         mNextIndicator.setLevel(mNextScreen);
+        }
 
         View focusedChild = getFocusedChild();
         if (focusedChild != null && whichScreen != mCurrentScreen &&
@@ -1098,7 +1102,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         // Drag from somewhere else
         ItemInfo info = (ItemInfo) dragInfo;
 
-        View view;
+        View view = null;
 
         switch (info.itemType) {
         case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
@@ -1113,23 +1117,31 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             view = FolderIcon.fromXml(R.layout.folder_icon, mLauncher,
                     (ViewGroup) getChildAt(mCurrentScreen), ((UserFolderInfo) info));
             break;
+        case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+            cellLayout.setTagToCellInfoForPoint(x, y);
+            mLauncher.addAppWidgetFromDrop(((LauncherAppWidgetInfo)dragInfo).providerName, cellLayout.getTag());
+            break;
         default:
             throw new IllegalStateException("Unknown item type: " + info.itemType);
         }
 
-        cellLayout.addView(view, insertAtFirst ? 0 : -1);
-        view.setHapticFeedbackEnabled(false);
-        view.setOnLongClickListener(mLongClickListener);
-        if (view instanceof DropTarget) {
-            mDragController.addDropTarget((DropTarget) view);
+        // addAppWidgetFromDrop already took care of attaching the widget view to the appropriate cell
+        // TODO why aren't we calling addInScreen here?
+        if (info.itemType != LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET) {
+            cellLayout.addView(view, insertAtFirst ? 0 : -1);
+            view.setHapticFeedbackEnabled(false);
+            view.setOnLongClickListener(mLongClickListener);
+            if (view instanceof DropTarget) {
+                mDragController.addDropTarget((DropTarget) view);
+            }
+
+            mTargetCell = estimateDropCell(x, y, 1, 1, view, cellLayout, mTargetCell);
+            cellLayout.onDropChild(view, mTargetCell);
+            CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
+
+            LauncherModel.addOrMoveItemInDatabase(mLauncher, info,
+                    LauncherSettings.Favorites.CONTAINER_DESKTOP, mCurrentScreen, lp.cellX, lp.cellY);
         }
-
-        mTargetCell = estimateDropCell(x, y, 1, 1, view, cellLayout, mTargetCell);
-        cellLayout.onDropChild(view, mTargetCell);
-        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
-
-        LauncherModel.addOrMoveItemInDatabase(mLauncher, info,
-                LauncherSettings.Favorites.CONTAINER_DESKTOP, mCurrentScreen, lp.cellX, lp.cellY);
     }
     
     /**

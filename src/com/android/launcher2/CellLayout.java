@@ -158,67 +158,72 @@ public class CellLayout extends ViewGroup {
         mCellInfo.screen = ((ViewGroup) getParent()).indexOfChild(this);
     }
 
+    public void setTagToCellInfoForPoint(int touchX, int touchY) {
+        final CellInfo cellInfo = mCellInfo;
+        final Rect frame = mRect;
+        final int x = touchX + mScrollX;
+        final int y = touchY + mScrollY;
+        final int count = getChildCount();
+
+        boolean found = false;
+        for (int i = count - 1; i >= 0; i--) {
+            final View child = getChildAt(i);
+
+            if ((child.getVisibility()) == VISIBLE || child.getAnimation() != null) {
+                child.getHitRect(frame);
+                if (frame.contains(x, y)) {
+                    final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+                    cellInfo.cell = child;
+                    cellInfo.cellX = lp.cellX;
+                    cellInfo.cellY = lp.cellY;
+                    cellInfo.spanX = lp.cellHSpan;
+                    cellInfo.spanY = lp.cellVSpan;
+                    cellInfo.valid = true;
+                    found = true;
+                    mDirtyTag = false;
+                    break;
+                }
+            }
+        }
+            
+        mLastDownOnOccupiedCell = found;
+
+        if (!found) {
+            int cellXY[] = mCellXY;
+            pointToCellExact(x, y, cellXY);
+
+            final boolean portrait = mPortrait;
+            final int xCount = portrait ? mShortAxisCells : mLongAxisCells;
+            final int yCount = portrait ? mLongAxisCells : mShortAxisCells;
+
+            final boolean[][] occupied = mOccupied;
+            findOccupiedCells(xCount, yCount, occupied, null);
+
+            cellInfo.cell = null;
+            cellInfo.cellX = cellXY[0];
+            cellInfo.cellY = cellXY[1];
+            cellInfo.spanX = 1;
+            cellInfo.spanY = 1;
+            cellInfo.valid = cellXY[0] >= 0 && cellXY[1] >= 0 && cellXY[0] < xCount &&
+                    cellXY[1] < yCount && !occupied[cellXY[0]][cellXY[1]];
+
+            // Instead of finding the interesting vacant cells here, wait until a
+            // caller invokes getTag() to retrieve the result. Finding the vacant
+            // cells is a bit expensive and can generate many new objects, it's
+            // therefore better to defer it until we know we actually need it.
+
+            mDirtyTag = true;
+        }
+        setTag(cellInfo);
+    }
+
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         final int action = ev.getAction();
         final CellInfo cellInfo = mCellInfo;
 
         if (action == MotionEvent.ACTION_DOWN) {
-            final Rect frame = mRect;
-            final int x = (int) ev.getX() + mScrollX;
-            final int y = (int) ev.getY() + mScrollY;
-            final int count = getChildCount();
-
-            boolean found = false;
-            for (int i = count - 1; i >= 0; i--) {
-                final View child = getChildAt(i);
-
-                if ((child.getVisibility()) == VISIBLE || child.getAnimation() != null) {
-                    child.getHitRect(frame);
-                    if (frame.contains(x, y)) {
-                        final LayoutParams lp = (LayoutParams) child.getLayoutParams();
-                        cellInfo.cell = child;
-                        cellInfo.cellX = lp.cellX;
-                        cellInfo.cellY = lp.cellY;
-                        cellInfo.spanX = lp.cellHSpan;
-                        cellInfo.spanY = lp.cellVSpan;
-                        cellInfo.valid = true;
-                        found = true;
-                        mDirtyTag = false;
-                        break;
-                    }
-                }
-            }
-            
-            mLastDownOnOccupiedCell = found;
-
-            if (!found) {
-                int cellXY[] = mCellXY;
-                pointToCellExact(x, y, cellXY);
-
-                final boolean portrait = mPortrait;
-                final int xCount = portrait ? mShortAxisCells : mLongAxisCells;
-                final int yCount = portrait ? mLongAxisCells : mShortAxisCells;
-
-                final boolean[][] occupied = mOccupied;
-                findOccupiedCells(xCount, yCount, occupied, null);
-
-                cellInfo.cell = null;
-                cellInfo.cellX = cellXY[0];
-                cellInfo.cellY = cellXY[1];
-                cellInfo.spanX = 1;
-                cellInfo.spanY = 1;
-                cellInfo.valid = cellXY[0] >= 0 && cellXY[1] >= 0 && cellXY[0] < xCount &&
-                        cellXY[1] < yCount && !occupied[cellXY[0]][cellXY[1]];
-
-                // Instead of finding the interesting vacant cells here, wait until a
-                // caller invokes getTag() to retrieve the result. Finding the vacant
-                // cells is a bit expensive and can generate many new objects, it's
-                // therefore better to defer it until we know we actually need it.
-
-                mDirtyTag = true;
-            }
-            setTag(cellInfo);
+            setTagToCellInfoForPoint((int) ev.getX(), (int) ev.getY());
         } else if (action == MotionEvent.ACTION_UP) {
             cellInfo.cell = null;
             cellInfo.cellX = -1;
