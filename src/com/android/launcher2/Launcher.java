@@ -2093,7 +2093,11 @@ public final class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public int getCurrentWorkspaceScreen() {
-        return mWorkspace.getCurrentScreen();
+        if (mWorkspace != null) {
+            return mWorkspace.getCurrentScreen();
+        } else {
+            return SCREEN_COUNT / 2;
+        }
     }
 
     /**
