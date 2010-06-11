@@ -304,13 +304,13 @@ public class LauncherModel extends BroadcastReceiver {
         ArrayList<ApplicationInfo> removed = null;
         ArrayList<ApplicationInfo> modified = null;
 
-        synchronized (mAllAppsListLock) {
-            if (mBeforeFirstLoad) {
-                // If we haven't even loaded yet, don't bother, since we'll just pick
-                // up the changes.
-                return;
-            }
+        if (mBeforeFirstLoad) {
+            // If we haven't even loaded yet, don't bother, since we'll just pick
+            // up the changes.
+            return;
+        }
 
+        synchronized (mAllAppsListLock) {
             final String action = intent.getAction();
 
             if (Intent.ACTION_PACKAGE_CHANGED.equals(action)
