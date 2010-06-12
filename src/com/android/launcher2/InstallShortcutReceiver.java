@@ -16,11 +16,11 @@
 
 package com.android.launcher2;
 
+import java.util.ArrayList;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ContentResolver;
-import android.database.Cursor;
 import android.widget.Toast;
 
 import com.android.launcher.R;
@@ -86,38 +86,24 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     private static boolean findEmptyCell(Context context, int[] xy, int screen) {
         final int xCount = Launcher.NUMBER_CELLS_X;
         final int yCount = Launcher.NUMBER_CELLS_Y;
-
         boolean[][] occupied = new boolean[xCount][yCount];
 
-        final ContentResolver cr = context.getContentResolver();
-        Cursor c = cr.query(LauncherSettings.Favorites.CONTENT_URI,
-            new String[] { LauncherSettings.Favorites.CELLX, LauncherSettings.Favorites.CELLY,
-                    LauncherSettings.Favorites.SPANX, LauncherSettings.Favorites.SPANY },
-            LauncherSettings.Favorites.SCREEN + "=?",
-            new String[] { String.valueOf(screen) }, null);
-
-        final int cellXIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLX);
-        final int cellYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLY);
-        final int spanXIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SPANX);
-        final int spanYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SPANY);
-
-        try {
-            while (c.moveToNext()) {
-                int cellX = c.getInt(cellXIndex);
-                int cellY = c.getInt(cellYIndex);
-                int spanX = c.getInt(spanXIndex);
-                int spanY = c.getInt(spanYIndex);
-
+        ArrayList<ItemInfo> items = LauncherModel.getItemsInLocalCoordinates(context);
+        ItemInfo item = null;
+        int cellX, cellY, spanX, spanY;
+        for (int i = 0; i < items.size(); ++i) {
+            item = items.get(i);
+            if (item.screen == screen) {
+                cellX = item.cellX;
+                cellY = item.cellY;
+                spanX = item.spanX;
+                spanY = item.spanY;
                 for (int x = cellX; x < cellX + spanX && x < xCount; x++) {
                     for (int y = cellY; y < cellY + spanY && y < yCount; y++) {
                         occupied[x][y] = true;
                     }
                 }
             }
-        } catch (Exception e) {
-            return false;
-        } finally {
-            c.close();
         }
 
         return CellLayout.findVacantCell(xy, 1, 1, xCount, yCount, occupied);

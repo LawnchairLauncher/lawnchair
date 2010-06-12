@@ -16,9 +16,8 @@
 
 package com.android.launcher2;
 
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.PaintDrawable;
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
@@ -26,19 +25,19 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
-import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.TableMaskFilter;
 import android.graphics.Typeface;
-import android.text.Layout.Alignment;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.PaintDrawable;
 import android.text.StaticLayout;
 import android.text.TextPaint;
+import android.text.Layout.Alignment;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.content.res.Resources;
-import android.content.Context;
 
 import com.android.launcher.R;
 

@@ -20,6 +20,7 @@ import android.app.Application;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.os.Handler;
 import dalvik.system.VMRuntime;
@@ -27,6 +28,8 @@ import dalvik.system.VMRuntime;
 public class LauncherApplication extends Application {
     public LauncherModel mModel;
     public IconCache mIconCache;
+    private static boolean sIsScreenXLarge;
+    private static final boolean ENABLE_ROTATION = false;
 
     @Override
     public void onCreate() {
@@ -36,6 +39,7 @@ public class LauncherApplication extends Application {
 
         mIconCache = new IconCache(this);
         mModel = new LauncherModel(this, mIconCache);
+        sIsScreenXLarge = (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE;
 
         // Register intent receivers
         IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
@@ -88,5 +92,13 @@ public class LauncherApplication extends Application {
 
     LauncherModel getModel() {
         return mModel;
+    }
+
+    public static boolean isInPlaceRotationEnabled() {
+        return sIsScreenXLarge && ENABLE_ROTATION;
+    }
+
+    public static boolean isScreenXLarge() {
+        return sIsScreenXLarge;
     }
 }

@@ -16,8 +16,13 @@
 
 package com.android.launcher2;
 
-import com.android.common.Search;
-import com.android.launcher.R;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -36,6 +41,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Intent.ShortcutIconResource;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
@@ -67,6 +73,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.View.OnLongClickListener;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -77,13 +84,8 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import com.android.common.Search;
+import com.android.launcher.R;
 
 /**
  * Default launcher application.
@@ -211,9 +213,16 @@ public final class Launcher extends Activity
     private Drawable[] mHotseatIcons = null;
     private CharSequence[] mHotseatLabels = null;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (LauncherApplication.isInPlaceRotationEnabled()) {
+            // hide the status bar (temporary until we get the status bar design figured out)
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+        }
 
         LauncherApplication app = ((LauncherApplication)getApplication());
         mModel = app.setLauncher(this);
@@ -232,8 +241,8 @@ public final class Launcher extends Activity
         loadHotseats();
         checkForLocaleChange();
         setWallpaperDimension();
-
         setContentView(R.layout.launcher);
+
         setupViews();
 
         registerContentObservers();
@@ -258,6 +267,19 @@ public final class Launcher extends Activity
         IntentFilter filter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         registerReceiver(mCloseSystemDialogsReceiver, filter);
     }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        // TODO Auto-generated method stub
+        super.onConfigurationChanged(newConfig);
+
+        if (LauncherApplication.isInPlaceRotationEnabled()) {
+            mModel.updateOrientation();
+            mWorkspace.refreshWorkspaceChildren();
+            mWorkspace.rotateCurrentScreensChildren();
+        }
+    }
+
 
     private void checkForLocaleChange() {
         final LocaleConfiguration localeConfiguration = new LocaleConfiguration();
@@ -419,7 +441,7 @@ public final class Launcher extends Activity
                 // note: if the user launches this without a default set, she
                 // will always be taken to the default URL above; this is
                 // unavoidable as we must specify a valid URL in order for the
-                // chooser to appear, and once the user selects something, that 
+                // chooser to appear, and once the user selects something, that
                 // URL is unavoidably sent to the chosen app.
             } else {
                 try {
@@ -429,7 +451,7 @@ public final class Launcher extends Activity
                     // bogus; leave intent=null
                 }
             }
-            
+
             if (intent == null) {
                 mHotseats[i] = null;
                 mHotseatLabels[i] = getText(R.string.activity_not_found);
@@ -437,15 +459,15 @@ public final class Launcher extends Activity
             }
 
             if (LOGD) {
-                Log.d(TAG, "loadHotseats: hotseat " + i 
-                    + " initial intent=[" 
+                Log.d(TAG, "loadHotseats: hotseat " + i
+                    + " initial intent=["
                     + intent.toUri(Intent.URI_INTENT_SCHEME)
                     + "]");
             }
 
             ResolveInfo bestMatch = pm.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
             List<ResolveInfo> allMatches = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-            if (LOGD) { 
+            if (LOGD) {
                 Log.d(TAG, "Best match for intent: " + bestMatch);
                 Log.d(TAG, "All matches: ");
                 for (ResolveInfo ri : allMatches) {
@@ -454,8 +476,8 @@ public final class Launcher extends Activity
             }
             // did this resolve to a single app, or the resolver?
             if (allMatches.size() == 0 || bestMatch == null) {
-                // can't find any activity to handle this. let's leave the 
-                // intent as-is and let Launcher show a toast when it fails 
+                // can't find any activity to handle this. let's leave the
+                // intent as-is and let Launcher show a toast when it fails
                 // to launch.
                 mHotseats[i] = intent;
 
@@ -471,7 +493,7 @@ public final class Launcher extends Activity
                         break;
                     }
                 }
-                
+
                 if (!found) {
                     if (LOGD) Log.d(TAG, "Multiple options, no default yet");
                     // the bestMatch is probably the ResolveActivity, meaning the
@@ -496,8 +518,8 @@ public final class Launcher extends Activity
             }
 
             if (LOGD) {
-                Log.d(TAG, "loadHotseats: hotseat " + i 
-                    + " final intent=[" 
+                Log.d(TAG, "loadHotseats: hotseat " + i
+                    + " final intent=["
                     + ((mHotseats[i] == null)
                         ? "null"
                         : mHotseats[i].toUri(Intent.URI_INTENT_SCHEME))
@@ -712,7 +734,7 @@ public final class Launcher extends Activity
         mAllAppsGrid.setDragController(dragController);
         ((View) mAllAppsGrid).setWillNotDraw(false); // We don't want a hole punched in our window.
         // Manage focusability manually since this thing is always visible
-        ((View) mAllAppsGrid).setFocusable(false); 
+        ((View) mAllAppsGrid).setFocusable(false);
 
         mWorkspace = (Workspace) dragLayer.findViewById(R.id.workspace);
         final Workspace workspace = mWorkspace;
@@ -757,7 +779,7 @@ public final class Launcher extends Activity
 
         deleteZone.setLauncher(this);
         deleteZone.setDragController(dragController);
-        int deleteZoneHandleId = isScreenXLarge() ? R.id.add_button : R.id.all_apps_button_cluster;
+        int deleteZoneHandleId = LauncherApplication.isScreenXLarge() ? R.id.add_button : R.id.all_apps_button_cluster;
         deleteZone.setHandle(findViewById(deleteZoneHandleId));
 
         dragController.setDragScoller(workspace);
@@ -805,7 +827,7 @@ public final class Launcher extends Activity
             );
         }
     }
-    
+
     /**
      * Creates a view representing a shortcut.
      *
@@ -1048,7 +1070,7 @@ public final class Launcher extends Activity
         unbindDesktopItems();
 
         getContentResolver().unregisterContentObserver(mWidgetObserver);
-        
+
         dismissPreview(mPreviousView);
         dismissPreview(mNextView);
 
@@ -1177,11 +1199,6 @@ public final class Launcher extends Activity
     private void addItems() {
         closeAllApps(true);
         showAddDialog(mMenuAddInfo);
-    }
-
-    boolean isScreenXLarge() {
-        int screenLayout = getResources().getConfiguration().screenLayout;
-        return (screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE;
     }
 
     void addAppWidgetFromDrop(ComponentName appWidgetProvider, CellLayout.CellInfo cellInfo) {
@@ -1518,7 +1535,7 @@ public final class Launcher extends Activity
                     + "tag="+ tag + " intent=" + intent, e);
         }
     }
-    
+
     void startActivityForResultSafely(Intent intent, int requestCode) {
         try {
             startActivityForResult(intent, requestCode);
@@ -1563,7 +1580,7 @@ public final class Launcher extends Activity
      *
      * @param folderInfo The FolderInfo describing the folder to open.
      */
-    private void openFolder(FolderInfo folderInfo) {
+    public void openFolder(FolderInfo folderInfo) {
         Folder openFolder;
 
         if (folderInfo instanceof UserFolderInfo) {
@@ -1580,7 +1597,8 @@ public final class Launcher extends Activity
         openFolder.bind(folderInfo);
         folderInfo.opened = true;
 
-        mWorkspace.addInScreen(openFolder, folderInfo.screen, 0, 0, 4, 4);
+        mWorkspace.addInFullScreen(openFolder, folderInfo.screen);
+
         openFolder.onOpen();
     }
 
@@ -1678,9 +1696,9 @@ public final class Launcher extends Activity
         final Workspace workspace = mWorkspace;
 
         CellLayout cell = ((CellLayout) workspace.getChildAt(start));
-        
+
         float max = workspace.getChildCount();
-        
+
         final Rect r = new Rect();
         resources.getDrawable(R.drawable.preview_background).getPadding(r);
         int extraW = (int) ((r.left + r.right) * max);
@@ -1731,7 +1749,7 @@ public final class Launcher extends Activity
             preview.addView(image,
                     LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
-            bitmaps.add(bitmap);            
+            bitmaps.add(bitmap);
         }
 
         final PopupWindow p = new PopupWindow(this);
@@ -1752,7 +1770,7 @@ public final class Launcher extends Activity
 
         anchor.setTag(p);
         anchor.setTag(R.id.workspace, preview);
-        anchor.setTag(R.id.icon, bitmaps);        
+        anchor.setTag(R.id.icon, bitmaps);
     }
 
     class PreviewTouchHandler implements View.OnClickListener, Runnable, View.OnFocusChangeListener {
@@ -1768,7 +1786,7 @@ public final class Launcher extends Activity
         }
 
         public void run() {
-            dismissPreview(mAnchor);            
+            dismissPreview(mAnchor);
         }
 
         public void onFocusChange(View v, boolean hasFocus) {
@@ -1939,7 +1957,7 @@ public final class Launcher extends Activity
 
         ((View) mAllAppsGrid).setFocusable(true);
         ((View) mAllAppsGrid).requestFocus();
-        
+
         // TODO: fade these two too
         mDeleteZone.setVisibility(View.GONE);
     }
@@ -2100,7 +2118,7 @@ public final class Launcher extends Activity
         }
 
         public void onShow(DialogInterface dialog) {
-            mWaitingForResult = true;            
+            mWaitingForResult = true;
         }
     }
 

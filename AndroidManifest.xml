@@ -75,6 +75,7 @@
             android:stateNotNeeded="true"
             android:theme="@style/Theme"
             android:screenOrientation="nosensor"
+            android:configChanges="orientation"
             android:windowSoftInputMode="stateUnspecified|adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

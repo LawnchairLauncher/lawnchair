@@ -32,6 +32,10 @@
     <declare-styleable name="Workspace">
         <!-- The first screen the workspace should display. -->
         <attr name="defaultScreen" format="integer"  />
+        <!-- The number of horizontal cells for the device in its natural orientation -->
+        <attr name="canonicalDeviceWidth" format="integer"  />
+        <!-- The number of vertical cells for the device in its natural orientation -->
+        <attr name="canonicalDeviceHeight" format="integer"  />
     </declare-styleable>
     
     <!-- CellLayout specific attributes. These attributes are used to customize

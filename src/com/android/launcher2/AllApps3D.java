@@ -16,6 +16,10 @@
 
 package com.android.launcher2;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
@@ -29,11 +33,9 @@ import android.renderscript.ProgramFragment;
 import android.renderscript.ProgramStore;
 import android.renderscript.ProgramVertex;
 import android.renderscript.RSSurfaceView;
-import android.renderscript.RenderScriptGL;
 import android.renderscript.RenderScript;
+import android.renderscript.RenderScriptGL;
 import android.renderscript.Sampler;
-import android.renderscript.Script;
-import android.renderscript.ScriptC;
 import android.renderscript.SimpleMesh;
 import android.renderscript.Type;
 import android.util.AttributeSet;
@@ -47,10 +49,6 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityEvent;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 
 import com.android.launcher.R;
 

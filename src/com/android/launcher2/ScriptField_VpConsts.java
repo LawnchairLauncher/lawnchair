@@ -19,6 +19,11 @@ package com.android.launcher2;
 import android.renderscript.*;
 import android.content.res.Resources;
 import android.util.Log;
+import android.renderscript.Element;
+import android.renderscript.FieldPacker;
+import android.renderscript.Float2;
+import android.renderscript.Float4;
+import android.renderscript.RenderScript;
 
 public class ScriptField_VpConsts extends android.renderscript.Script.FieldBase {
     static public class Item {
