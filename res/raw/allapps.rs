@@ -1,5 +1,7 @@
 #pragma version(1)
 
+#pragma rs java_package_name(com.android.launcher2)
+
 #include "../../../../../frameworks/base/libs/rs/scriptc/rs_types.rsh"
 #include "../../../../../frameworks/base/libs/rs/scriptc/rs_math.rsh"
 #include "../../../../../frameworks/base/libs/rs/scriptc/rs_graphics.rsh"
