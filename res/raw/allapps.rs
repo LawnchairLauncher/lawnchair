@@ -18,7 +18,7 @@ float gNewPositionX;
 int gNewTouchDown;
 float gFlingVelocity;
 int gIconCount;
-int gSelectedIconIndex;
+int gSelectedIconIndex = -1;
 rs_allocation gSelectedIconTexture;
 float gZoomTarget;
 rs_allocation gHomeButton;
@@ -34,7 +34,7 @@ rs_mesh gSMCell;
 rs_allocation *gIconIDs;
 rs_allocation *gLabelIDs;
 
-typedef struct VpConsts_s {
+typedef struct VpConsts {
     float4 Position;
     float4 ScaleOffset;
     float2 BendPos;
@@ -310,7 +310,7 @@ static void drawFrontGrid(float rowOffset, float p)
                 float x = colWidth * col + (colWidth / 2);
                 vpConstants->Position.x = x + 0.2f;
 
-                if (gSelectedIconIndex == iconNum && !p && gSelectedIconTexture) {
+                if (gSelectedIconIndex == iconNum && !p && gSelectedIconTexture.p) {
                     rsgBindProgramFragment(gPFTexNearest);
                     rsgBindTexture(gPFTexNearest, 0, gSelectedIconTexture);
                     vpConstants->ImgSize.x = rsAllocationGetDimX(gSelectedIconTexture);
