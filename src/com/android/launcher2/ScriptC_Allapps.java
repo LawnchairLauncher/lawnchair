@@ -70,40 +70,7 @@ public class ScriptC_Allapps extends ScriptC {
         return mExportVar_ROWS_PER_PAGE_LANDSCAPE;
     }
 
-    private final static int mExportVarIdx_gNewPositionX = 4;
-    private float mExportVar_gNewPositionX;
-    public void set_gNewPositionX(float v) {
-        mExportVar_gNewPositionX = v;
-        setVar(mExportVarIdx_gNewPositionX, v);
-    }
-
-    public float get_gNewPositionX() {
-        return mExportVar_gNewPositionX;
-    }
-
-    private final static int mExportVarIdx_gNewTouchDown = 5;
-    private int mExportVar_gNewTouchDown;
-    public void set_gNewTouchDown(int v) {
-        mExportVar_gNewTouchDown = v;
-        setVar(mExportVarIdx_gNewTouchDown, v);
-    }
-
-    public int get_gNewTouchDown() {
-        return mExportVar_gNewTouchDown;
-    }
-
-    private final static int mExportVarIdx_gFlingVelocity = 6;
-    private float mExportVar_gFlingVelocity;
-    public void set_gFlingVelocity(float v) {
-        mExportVar_gFlingVelocity = v;
-        setVar(mExportVarIdx_gFlingVelocity, v);
-    }
-
-    public float get_gFlingVelocity() {
-        return mExportVar_gFlingVelocity;
-    }
-
-    private final static int mExportVarIdx_gIconCount = 7;
+    private final static int mExportVarIdx_gIconCount = 4;
     private int mExportVar_gIconCount;
     public void set_gIconCount(int v) {
         mExportVar_gIconCount = v;
@@ -114,7 +81,7 @@ public class ScriptC_Allapps extends ScriptC {
         return mExportVar_gIconCount;
     }
 
-    private final static int mExportVarIdx_gSelectedIconIndex = 8;
+    private final static int mExportVarIdx_gSelectedIconIndex = 5;
     private int mExportVar_gSelectedIconIndex;
     public void set_gSelectedIconIndex(int v) {
         mExportVar_gSelectedIconIndex = v;
@@ -125,7 +92,7 @@ public class ScriptC_Allapps extends ScriptC {
         return mExportVar_gSelectedIconIndex;
     }
 
-    private final static int mExportVarIdx_gSelectedIconTexture = 9;
+    private final static int mExportVarIdx_gSelectedIconTexture = 6;
     private Allocation mExportVar_gSelectedIconTexture;
     public void set_gSelectedIconTexture(Allocation v) {
         mExportVar_gSelectedIconTexture = v;
@@ -136,18 +103,7 @@ public class ScriptC_Allapps extends ScriptC {
         return mExportVar_gSelectedIconTexture;
     }
 
-    private final static int mExportVarIdx_gZoomTarget = 10;
-    private float mExportVar_gZoomTarget;
-    public void set_gZoomTarget(float v) {
-        mExportVar_gZoomTarget = v;
-        setVar(mExportVarIdx_gZoomTarget, v);
-    }
-
-    public float get_gZoomTarget() {
-        return mExportVar_gZoomTarget;
-    }
-
-    private final static int mExportVarIdx_gHomeButton = 11;
+    private final static int mExportVarIdx_gHomeButton = 7;
     private Allocation mExportVar_gHomeButton;
     public void set_gHomeButton(Allocation v) {
         mExportVar_gHomeButton = v;
@@ -158,18 +114,7 @@ public class ScriptC_Allapps extends ScriptC {
         return mExportVar_gHomeButton;
     }
 
-    private final static int mExportVarIdx_gTargetPos = 12;
-    private float mExportVar_gTargetPos;
-    public void set_gTargetPos(float v) {
-        mExportVar_gTargetPos = v;
-        setVar(mExportVarIdx_gTargetPos, v);
-    }
-
-    public float get_gTargetPos() {
-        return mExportVar_gTargetPos;
-    }
-
-    private final static int mExportVarIdx_gPFTexNearest = 13;
+    private final static int mExportVarIdx_gPFTexNearest = 8;
     private ProgramFragment mExportVar_gPFTexNearest;
     public void set_gPFTexNearest(ProgramFragment v) {
         mExportVar_gPFTexNearest = v;
@@ -180,7 +125,7 @@ public class ScriptC_Allapps extends ScriptC {
         return mExportVar_gPFTexNearest;
     }
 
-    private final static int mExportVarIdx_gPFTexMip = 14;
+    private final static int mExportVarIdx_gPFTexMip = 9;
     private ProgramFragment mExportVar_gPFTexMip;
     public void set_gPFTexMip(ProgramFragment v) {
         mExportVar_gPFTexMip = v;
@@ -191,7 +136,7 @@ public class ScriptC_Allapps extends ScriptC {
         return mExportVar_gPFTexMip;
     }
 
-    private final static int mExportVarIdx_gPFTexMipAlpha = 15;
+    private final static int mExportVarIdx_gPFTexMipAlpha = 10;
     private ProgramFragment mExportVar_gPFTexMipAlpha;
     public void set_gPFTexMipAlpha(ProgramFragment v) {
         mExportVar_gPFTexMipAlpha = v;
@@ -202,7 +147,7 @@ public class ScriptC_Allapps extends ScriptC {
         return mExportVar_gPFTexMipAlpha;
     }
 
-    private final static int mExportVarIdx_gPVCurve = 16;
+    private final static int mExportVarIdx_gPVCurve = 11;
     private ProgramVertex mExportVar_gPVCurve;
     public void set_gPVCurve(ProgramVertex v) {
         mExportVar_gPVCurve = v;
@@ -213,7 +158,7 @@ public class ScriptC_Allapps extends ScriptC {
         return mExportVar_gPVCurve;
     }
 
-    private final static int mExportVarIdx_gPS = 17;
+    private final static int mExportVarIdx_gPS = 12;
     private ProgramStore mExportVar_gPS;
     public void set_gPS(ProgramStore v) {
         mExportVar_gPS = v;
@@ -224,7 +169,7 @@ public class ScriptC_Allapps extends ScriptC {
         return mExportVar_gPS;
     }
 
-    private final static int mExportVarIdx_gSMCell = 18;
+    private final static int mExportVarIdx_gSMCell = 13;
     private SimpleMesh mExportVar_gSMCell;
     public void set_gSMCell(SimpleMesh v) {
         mExportVar_gSMCell = v;
@@ -235,7 +180,7 @@ public class ScriptC_Allapps extends ScriptC {
         return mExportVar_gSMCell;
     }
 
-    private final static int mExportVarIdx_gIconIDs = 19;
+    private final static int mExportVarIdx_gIconIDs = 14;
     private Allocation mExportVar_gIconIDs;
     public void bind_gIconIDs(Allocation v) {
         mExportVar_gIconIDs = v;
@@ -247,7 +192,7 @@ public class ScriptC_Allapps extends ScriptC {
         return mExportVar_gIconIDs;
     }
 
-    private final static int mExportVarIdx_gLabelIDs = 20;
+    private final static int mExportVarIdx_gLabelIDs = 15;
     private Allocation mExportVar_gLabelIDs;
     public void bind_gLabelIDs(Allocation v) {
         mExportVar_gLabelIDs = v;
@@ -259,7 +204,7 @@ public class ScriptC_Allapps extends ScriptC {
         return mExportVar_gLabelIDs;
     }
 
-    private final static int mExportVarIdx_vpConstants = 21;
+    private final static int mExportVarIdx_vpConstants = 16;
     private ScriptField_VpConsts mExportVar_vpConstants;
     public void bind_vpConstants(ScriptField_VpConsts v) {
         mExportVar_vpConstants = v;
@@ -271,29 +216,45 @@ public class ScriptC_Allapps extends ScriptC {
         return mExportVar_vpConstants;
     }
 
-    private final static int mExportFuncIdx_resetHWWar = 0;
-    public void invoke_resetHWWar() {
-        invoke(mExportFuncIdx_resetHWWar);
+    private final static int mExportVarIdx_gTargetPos = 17;
+    private float mExportVar_gTargetPos;
+    public void set_gTargetPos(float v) {
+        mExportVar_gTargetPos = v;
+        setVar(mExportVarIdx_gTargetPos, v);
     }
 
-    private final static int mExportFuncIdx_move = 1;
-    public void invoke_move() {
-        invoke(mExportFuncIdx_move);
+    public float get_gTargetPos() {
+        return mExportVar_gTargetPos;
     }
 
-    private final static int mExportFuncIdx_moveTo = 2;
-    public void invoke_moveTo() {
-        invoke(mExportFuncIdx_moveTo);
+    private final static int mExportFuncIdx_move = 0;
+    public void invoke_move(float newPos) {
+        FieldPacker move_fp = new FieldPacker(4);
+        move_fp.addF32(newPos);
+        invoke(mExportFuncIdx_move, move_fp);
     }
 
-    private final static int mExportFuncIdx_setZoom = 3;
-    public void invoke_setZoom() {
-        invoke(mExportFuncIdx_setZoom);
+    private final static int mExportFuncIdx_moveTo = 1;
+    public void invoke_moveTo(float targetPos) {
+        FieldPacker moveTo_fp = new FieldPacker(4);
+        moveTo_fp.addF32(targetPos);
+        invoke(mExportFuncIdx_moveTo, moveTo_fp);
     }
 
-    private final static int mExportFuncIdx_fling = 4;
-    public void invoke_fling() {
-        invoke(mExportFuncIdx_fling);
+    private final static int mExportFuncIdx_setZoom = 2;
+    public void invoke_setZoom(float z, int animate) {
+        FieldPacker setZoom_fp = new FieldPacker(8);
+        setZoom_fp.addF32(z);
+        setZoom_fp.addI32(animate);
+        invoke(mExportFuncIdx_setZoom, setZoom_fp);
+    }
+
+    private final static int mExportFuncIdx_fling = 3;
+    public void invoke_fling(float newPos, float vel) {
+        FieldPacker fling_fp = new FieldPacker(8);
+        fling_fp.addF32(newPos);
+        fling_fp.addF32(vel);
+        invoke(mExportFuncIdx_fling, fling_fp);
     }
 
 }

@@ -69,7 +69,7 @@ public class ScriptField_VpConsts extends android.renderscript.Script.FieldBase 
         mItemArray[index] = i;
         if (copyNow)  {
             copyToArray(i, index);
-            mAllocation.subData1D(index * Item.sizeof, Item.sizeof, mIOBuffer.getData());
+            mAllocation.subData1D(index /** Item.sizeof*/, 1/*Item.sizeof*/, mIOBuffer.getData());
         }
 
     }
