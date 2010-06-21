@@ -2281,9 +2281,11 @@ public final class Launcher extends Activity
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindAppsRemoved(ArrayList<ApplicationInfo> apps) {
+    public void bindAppsRemoved(ArrayList<ApplicationInfo> apps, boolean permanent) {
         removeDialog(DIALOG_CREATE_SHORTCUT);
-        mWorkspace.removeItems(apps);
+        if (permanent) {
+            mWorkspace.removeItems(apps);
+        }
         mAllAppsGrid.removeApps(apps);
     }
 
