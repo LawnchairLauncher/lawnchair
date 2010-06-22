@@ -14,15 +14,10 @@ int ROWS_PER_PAGE_PORTRAIT;
 int COLUMNS_PER_PAGE_LANDSCAPE;
 int ROWS_PER_PAGE_LANDSCAPE;
 
-float gNewPositionX;
-int gNewTouchDown;
-float gFlingVelocity;
 int gIconCount;
 int gSelectedIconIndex = -1;
 rs_allocation gSelectedIconTexture;
-float gZoomTarget;
 rs_allocation gHomeButton;
-float gTargetPos;
 
 rs_program_fragment gPFTexNearest;
 rs_program_fragment gPFTexMip;
@@ -43,13 +38,8 @@ typedef struct VpConsts {
 VpConsts_t *vpConstants;
 
 
-#pragma rs export_var(COLUMNS_PER_PAGE_PORTRAIT, ROWS_PER_PAGE_PORTRAIT, COLUMNS_PER_PAGE_LANDSCAPE, ROWS_PER_PAGE_LANDSCAPE, gNewPositionX, gNewTouchDown, gFlingVelocity, gIconCount, gSelectedIconIndex, gSelectedIconTexture, gZoomTarget, gHomeButton, gTargetPos, gPFTexNearest, gPFTexMip, gPFTexMipAlpha, gPVCurve, gPS, gSMCell, gIconIDs, gLabelIDs, vpConstants)
-#pragma rs export_func(resetHWWar, move, moveTo, setZoom, fling)
-
-
-void debugAll()
-{
-}
+#pragma rs export_var(COLUMNS_PER_PAGE_PORTRAIT, ROWS_PER_PAGE_PORTRAIT, COLUMNS_PER_PAGE_LANDSCAPE, ROWS_PER_PAGE_LANDSCAPE, gIconCount, gSelectedIconIndex, gSelectedIconTexture, gHomeButton, gTargetPos, gPFTexNearest, gPFTexMip, gPFTexMipAlpha, gPVCurve, gPS, gSMCell, gIconIDs, gLabelIDs, vpConstants)
+#pragma rs export_func(move, moveTo, setZoom, fling)
 
 
 // Attraction to center values from page edge to page center.
@@ -57,10 +47,12 @@ static float g_AttractionTable[9] = {20.f, 20.f, 20.f, 10.f, -10.f, -20.f, -20.f
 static float g_FrictionTable[9] = {10.f, 10.f, 11.f, 15.f, 15.f, 11.f, 10.f, 10.f, 10.f};
 static float g_PhysicsTableSize = 7;
 
+static float gZoomTarget;
+static float gTargetPos;
 static float g_PosPage = 0.f;
 static float g_PosVelocity = 0.f;
 static float g_LastPositionX = 0.f;
-static int g_LastTouchDown = 0;
+static bool g_LastTouchDown = false;
 static float g_DT;
 static int64_t g_LastTime;
 static int g_PosMax;
@@ -79,14 +71,6 @@ static int g_Rows;
 // Drawing constants, should be parameters ======
 #define VIEW_ANGLE 1.28700222f
 
-static int g_DrawLastFrame;
-static int lastFrame(int draw) {
-    // We draw one extra frame to work around the last frame post bug.
-    // We also need to track if we drew the last frame to deal with large DT
-    // in the physics.
-    g_DrawLastFrame = draw;
-    return draw;
-}
 
 static void updateReadback() {
     if ((g_OldPosPage != g_PosPage) ||
@@ -105,16 +89,12 @@ static void updateReadback() {
     }
 }
 
-void setColor(float r, float g, float b, float a) {
-}
 void init() {
 }
-void resetHWWar() {
-}
 
-void move() {
+void move(float newPos) {
     if (g_LastTouchDown) {
-        float dx = -(gNewPositionX - g_LastPositionX);
+        float dx = -(newPos - g_LastPositionX);
         g_PosVelocity = 0;
         g_PosPage += dx * 5.2f;
 
@@ -122,26 +102,34 @@ void move() {
         float pmax = g_PosMax + 0.49f;
         g_PosPage = clamp(g_PosPage, pmin, pmax);
     }
-    g_LastTouchDown = gNewTouchDown;
-    g_LastPositionX = gNewPositionX;
+    g_LastTouchDown = true;
+    g_LastPositionX = newPos;
     g_MoveToTime = 0;
 }
 
-void moveTo() {
+void moveTo(float targetPos) {
+    gTargetPos = targetPos;
     g_MoveToTime = g_MoveToTotalTime;
     g_PosVelocity = 0;
     g_MoveToOldPos = g_PosPage;
 }
 
-void setZoom() {
-    g_Zoom = gZoomTarget;
-    g_DrawLastFrame = 1;
+void setZoom(float z, /*bool*/ int animate) {
+    gZoomTarget = z;
+    if (gZoomTarget < 0.001f) {
+        gZoomTarget = 0;
+    }
+    if (!animate) {
+        g_Zoom = gZoomTarget;
+    }
     updateReadback();
 }
 
-void fling() {
-    g_LastTouchDown = 0;
-    g_PosVelocity = -gFlingVelocity * 4;
+void fling(float newPos, float vel) {
+    move(newPos);
+
+    g_LastTouchDown = false;
+    g_PosVelocity = -vel * 4;
     float av = fabs(g_PosVelocity);
     float minVel = 3.5f;
 
@@ -347,13 +335,8 @@ int root()
     g_DT = (newTime - g_LastTime) * 0.001f;
     g_LastTime = newTime;
 
-    if (!g_DrawLastFrame) {
-        // If we stopped rendering we cannot use DT.
-        // assume 30fps in this case.
-        g_DT = 0.033f;
-    }
     // physics may break if DT is large.
-    g_DT = min(g_DT, 0.2f);
+    g_DT = min(g_DT, 0.1f);
 
     if (g_Zoom != gZoomTarget) {
         float dz = g_DT * 1.7f;
@@ -376,7 +359,7 @@ int root()
         if (!g_LastTouchDown) {
             g_PosPage = 0;
         }
-        return lastFrame(0);
+        return 0;
     } else {
         rsgClearColor(0.0f, 0.0f, 0.0f, g_Zoom);
     }
@@ -403,7 +386,7 @@ int root()
 
     rsgBindProgramFragment(gPFTexNearest);
     draw_home_button();
-    return lastFrame((g_PosVelocity != 0) || rsFrac(g_PosPage) || g_Zoom != gZoomTarget || (g_MoveToTime != 0));
+    return (g_PosVelocity != 0) || rsFrac(g_PosPage) || g_Zoom != gZoomTarget || (g_MoveToTime != 0);
 }
 
 

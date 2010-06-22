@@ -268,19 +268,19 @@ public class AllApps3D extends RSSurfaceView
         }
 
         if (sRollo.mUniformAlloc != null) {
-            float tf[] = new float[] {120.f, 120.f, 0.f, 0.f,
-                                      (2.f / 480.f), 0, -((float)w / 2) - 0.25f, -380.25f,
-                                      120.f, 680.f,
-                                      72.f, 72.f,};
+            ScriptField_VpConsts.Item i = new ScriptField_VpConsts.Item();
+            i.ScaleOffset.x = (2.f / 480.f);
+            i.ScaleOffset.y = 0;
+            i.ScaleOffset.z = -((float)w / 2) - 0.25f;
+            i.ScaleOffset.w = -380.25f;
+            i.BendPos.x = 120.f;
+            i.BendPos.y = 680.f;
             if (w > h) {
-                tf[6] = 40.f;
-                tf[7] = h - 40.f;
-                tf[9] = 1.f;
-                tf[10] = -((float)w / 2) - 0.25f;
-                tf[11] = -((float)h / 2) - 0.25f;
+                i.ScaleOffset.z = 40.f;
+                i.ScaleOffset.w = h - 40.f;
+                i.BendPos.y = 1.f;
             }
-
-            sRollo.mUniformAlloc.getAllocation().data(tf);
+            sRollo.mUniformAlloc.set(i, 0, true);
         }
 
         //long endTime = SystemClock.uptimeMillis();
@@ -601,9 +601,6 @@ public class AllApps3D extends RSSurfaceView
                 mMotionDownRawX = (int)ev.getRawX();
                 mMotionDownRawY = (int)ev.getRawY();
 
-                sRollo.mScript.set_gNewPositionX(ev.getRawY() / getHeight());
-                sRollo.mScript.set_gNewTouchDown(1);
-
                 if (!sRollo.checkClickOK()) {
                     sRollo.clearSelectedIcon();
                 } else {
@@ -614,7 +611,7 @@ public class AllApps3D extends RSSurfaceView
                         cancelLongPress();
                     }
                 }
-                sRollo.move();
+                sRollo.move(ev.getRawY() / getHeight());
                 mVelocityTracker = VelocityTracker.obtain();
                 mVelocityTracker.addMovement(ev);
                 mStartedScrolling = false;
@@ -647,9 +644,7 @@ public class AllApps3D extends RSSurfaceView
                         cancelLongPress();
                         mCurrentIconIndex = -1;
                     }
-                    sRollo.mScript.set_gNewPositionX(ev.getRawY() / getHeight());
-                    sRollo.mScript.set_gNewTouchDown(1);
-                    sRollo.move();
+                    sRollo.move(ev.getRawY() / getHeight());
 
                     mStartedScrolling = true;
                     sRollo.clearSelectedIcon();
@@ -670,14 +665,10 @@ public class AllApps3D extends RSSurfaceView
                 }
                 mCurrentIconIndex = -1;
             } else if (mTouchTracking == TRACKING_FLING) {
-                sRollo.mScript.set_gNewTouchDown(0);
-                sRollo.mScript.set_gNewPositionX(ev.getRawY() / getHeight());
-
                 mVelocityTracker.computeCurrentVelocity(1000 /* px/sec */, mMaxFlingVelocity);
-                sRollo.mScript.set_gFlingVelocity(mVelocityTracker.getYVelocity() / getHeight());
                 sRollo.clearSelectedIcon();
-                sRollo.move();
-                sRollo.fling();
+                sRollo.fling(ev.getRawY() / getHeight(),
+                             mVelocityTracker.getYVelocity() / getHeight());
 
                 if (mVelocityTracker != null) {
                     mVelocityTracker.recycle();
@@ -923,17 +914,6 @@ public class AllApps3D extends RSSurfaceView
         return -1;
     }
 
-    /*
-    private static int countPages(int iconCount) {
-        int iconsPerPage = getColumnsCount() * Defines.ROWS_PER_PAGE_PORTRAIT;
-        int pages = iconCount / iconsPerPage;
-        if (pages*iconsPerPage != iconCount) {
-            pages++;
-        }
-        return pages;
-    }
-    */
-
     class AAMessage extends RenderScript.RSMessage {
         public void run() {
             sRollo.mScrollPos = ((float)mData[0]) / (1 << 16);
@@ -967,12 +947,6 @@ public class AllApps3D extends RSSurfaceView
         private Resources mRes;
         ScriptC_Allapps mScript;
 
-        //private ProgramStore mPSIcons;
-        private ProgramFragment mPFTexMip;
-        private ProgramFragment mPFTexMipAlpha;
-        private ProgramFragment mPFTexNearest;
-        private ProgramVertex mPV;
-        private ProgramVertex mPVCurve;
         private SimpleMesh mMesh;
         private ProgramVertex.MatrixAllocation mPVA;
 
@@ -989,7 +963,6 @@ public class AllApps3D extends RSSurfaceView
         private Allocation[] mLabels;
         private int[] mLabelIds;
         private Allocation mAllocLabelIds;
-        private Allocation mSelectedIcon;
 
         private Bitmap mSelectionBitmap;
         private Canvas mSelectionCanvas;
@@ -1074,8 +1047,9 @@ public class AllApps3D extends RSSurfaceView
 
             ProgramVertex.Builder pvb = new ProgramVertex.Builder(sRS, null, null);
             pvb.setTextureMatrixEnable(true);
-            mPV = pvb.create();
-            mPV.bindAllocation(mPVA);
+            ProgramVertex pv = pvb.create();
+            pv.bindAllocation(mPVA);
+            sRS.contextBindProgramVertex(pv);
 
             mUniformAlloc = new ScriptField_VpConsts(sRS, 1);
             mScript.bind_vpConstants(mUniformAlloc);
@@ -1141,12 +1115,11 @@ public class AllApps3D extends RSSurfaceView
             sb.setShader(t);
             sb.addConstant(mUniformAlloc.getType());
             sb.addInput(mMesh.getVertexType(0).getElement());
-            mPVCurve = sb.create();
-            mPVCurve.bindAllocation(mPVA);
-            mPVCurve.bindConstants(mUniformAlloc.getAllocation(), 1);
+            ProgramVertex pvc = sb.create();
+            pvc.bindAllocation(mPVA);
+            pvc.bindConstants(mUniformAlloc.getAllocation(), 1);
 
-            sRS.contextBindProgramVertex(mPV);
-            mScript.set_gPVCurve(mPVCurve);
+            mScript.set_gPVCurve(pvc);
         }
 
         private void initProgramFragment() {
@@ -1164,20 +1137,20 @@ public class AllApps3D extends RSSurfaceView
             ProgramFragment.Builder bf = new ProgramFragment.Builder(sRS);
             bf.setTexture(ProgramFragment.Builder.EnvMode.MODULATE,
                           ProgramFragment.Builder.Format.RGBA, 0);
-            mPFTexMip = bf.create();
-            mPFTexMip.bindSampler(linear, 0);
+            ProgramFragment pfTexMip = bf.create();
+            pfTexMip.bindSampler(linear, 0);
 
-            mPFTexNearest = bf.create();
-            mPFTexNearest.bindSampler(nearest, 0);
+            ProgramFragment pfTexNearest = bf.create();
+            pfTexNearest.bindSampler(nearest, 0);
 
             bf.setTexture(ProgramFragment.Builder.EnvMode.MODULATE,
                           ProgramFragment.Builder.Format.ALPHA, 0);
-            mPFTexMipAlpha = bf.create();
-            mPFTexMipAlpha.bindSampler(linear, 0);
+            ProgramFragment pfTexMipAlpha = bf.create();
+            pfTexMipAlpha.bindSampler(linear, 0);
 
-            mScript.set_gPFTexNearest(mPFTexNearest);
-            mScript.set_gPFTexMip(mPFTexMip);
-            mScript.set_gPFTexMipAlpha(mPFTexMipAlpha);
+            mScript.set_gPFTexNearest(pfTexNearest);
+            mScript.set_gPFTexMip(pfTexMip);
+            mScript.set_gPFTexMipAlpha(pfTexMipAlpha);
         }
 
         private void initProgramStore() {
@@ -1258,14 +1231,7 @@ public class AllApps3D extends RSSurfaceView
                 sRollo.clearSelectedIcon();
                 sRollo.setHomeSelected(SELECTED_NONE);
             }
-            if (zoom > 0.001f) {
-                sRollo.mScript.set_gZoomTarget(zoom);
-            } else {
-                sRollo.mScript.set_gZoomTarget(0);
-            }
-            if (!animate) {
-                sRollo.mScript.invoke_setZoom();
-            }
+            sRollo.mScript.invoke_setZoom(zoom, animate ? 1 : 0);
         }
 
         private void createAppIconAllocations(int index, ApplicationInfo item) {
@@ -1367,17 +1333,16 @@ public class AllApps3D extends RSSurfaceView
             }
         }
 
-        void fling() {
-            mScript.invoke_fling();
+        void fling(float pos, float v) {
+            mScript.invoke_fling(pos, v);
         }
 
-        void move() {
-            mScript.invoke_move();
+        void move(float pos) {
+            mScript.invoke_move(pos);
         }
 
         void moveTo(float row) {
-            mScript.set_gTargetPos(row);
-            mScript.invoke_moveTo();
+            mScript.invoke_moveTo(row);
         }
 
         /**
@@ -1426,10 +1391,10 @@ public class AllApps3D extends RSSurfaceView
                         selectionBitmap.getWidth(), selectionBitmap.getHeight(),
                         pressed == SELECTED_PRESSED, info.iconBitmap);
 
-                mSelectedIcon = Allocation.createFromBitmap(sRS, selectionBitmap,
+                Allocation si = Allocation.createFromBitmap(sRS, selectionBitmap,
                         Element.RGBA_8888(sRS), false);
-                mSelectedIcon.uploadToTexture(0);
-                mScript.set_gSelectedIconTexture(mSelectedIcon);
+                si.uploadToTexture(0);
+                mScript.set_gSelectedIconTexture(si);
 
                 if (prev != index) {
                     if (info.title != null && info.title.length() > 0) {
