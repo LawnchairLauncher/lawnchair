@@ -35,6 +35,8 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Parcelable;
 import android.os.RemoteException;
 import android.util.Log;
@@ -60,16 +62,18 @@ import com.android.launcher.R;
  */
 public class LauncherModel extends BroadcastReceiver {
     static final boolean DEBUG_LOADERS = false;
-    static final boolean PROFILE_LOADERS = false;
     static final String TAG = "Launcher.Model";
 
+    private static final int ITEMS_CHUNK = 6; // batch size for the workspace icons
     private int mBatchSize; // 0 is all apps at once
     private int mAllAppsLoadDelay; // milliseconds between batches
 
     private final LauncherApplication mApp;
     private final Object mLock = new Object();
     private DeferredHandler mHandler = new DeferredHandler();
-    private Loader mLoader = new Loader();
+    private HandlerThread mWorkerThread;
+    private Handler mWorker;
+    private LoaderTask mLoaderTask;
 
     // We start off with everything not loaded.  After that, we assume that
     // our monitoring of the package manager provides all updates and we never
@@ -77,12 +81,13 @@ public class LauncherModel extends BroadcastReceiver {
     private boolean mWorkspaceLoaded;
     private boolean mAllAppsLoaded;
 
-    private boolean mBeforeFirstLoad = true; // only access this from main thread
     private WeakReference<Callbacks> mCallbacks;
 
-    private final Object mAllAppsListLock = new Object();
-    private AllAppsList mAllAppsList;
+    private AllAppsList mAllAppsList; // only access in worker thread
     private IconCache mIconCache;
+    final ArrayList<ItemInfo> mItems = new ArrayList<ItemInfo>();
+    final ArrayList<LauncherAppWidgetInfo> mAppWidgets = new ArrayList<LauncherAppWidgetInfo>();
+    final HashMap<Long, FolderInfo> mFolders = new HashMap<Long, FolderInfo>();
 
     private Bitmap mDefaultIcon;
 
@@ -96,7 +101,7 @@ public class LauncherModel extends BroadcastReceiver {
         public void bindAllApplications(ArrayList<ApplicationInfo> apps);
         public void bindAppsAdded(ArrayList<ApplicationInfo> apps);
         public void bindAppsUpdated(ArrayList<ApplicationInfo> apps);
-        public void bindAppsRemoved(ArrayList<ApplicationInfo> apps);
+        public void bindAppsRemoved(ArrayList<ApplicationInfo> apps, boolean permanent);
         public boolean isAllAppsVisible();
     }
 
@@ -111,6 +116,10 @@ public class LauncherModel extends BroadcastReceiver {
         mAllAppsLoadDelay = app.getResources().getInteger(R.integer.config_allAppsBatchLoadDelay);
 
         mBatchSize = app.getResources().getInteger(R.integer.config_allAppsBatchSize);
+
+        mWorkerThread = new HandlerThread("launcher-loader");
+        mWorkerThread.start();
+        mWorker = new Handler(mWorkerThread.getLooper());
     }
 
     public Bitmap getFallbackIcon() {
@@ -284,295 +293,176 @@ public class LauncherModel extends BroadcastReceiver {
         }
     }
 
-    public void startLoader(Context context, boolean isLaunching) {
-        mLoader.startLoader(context, isLaunching);
-    }
-
-    public void stopLoader() {
-        mLoader.stopLoader();
-    }
-
     /**
      * Call from the handler for ACTION_PACKAGE_ADDED, ACTION_PACKAGE_REMOVED and
      * ACTION_PACKAGE_CHANGED.
      */
     public void onReceive(Context context, Intent intent) {
-        // Use the app as the context.
-        context = mApp;
+        if (DEBUG_LOADERS) Log.d(TAG, "onReceive intent=" + intent);
+        
+        final String action = intent.getAction();
 
-        ArrayList<ApplicationInfo> added = null;
-        ArrayList<ApplicationInfo> removed = null;
-        ArrayList<ApplicationInfo> modified = null;
+        if (Intent.ACTION_PACKAGE_CHANGED.equals(action)
+                || Intent.ACTION_PACKAGE_REMOVED.equals(action)
+                || Intent.ACTION_PACKAGE_ADDED.equals(action)) {
+            final String packageName = intent.getData().getSchemeSpecificPart();
+            final boolean replacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
 
-        if (mBeforeFirstLoad) {
-            // If we haven't even loaded yet, don't bother, since we'll just pick
-            // up the changes.
-            return;
+            int op = PackageUpdatedTask.OP_NONE;
+
+            if (packageName == null || packageName.length() == 0) {
+                // they sent us a bad intent
+                return;
+            }
+
+            if (Intent.ACTION_PACKAGE_CHANGED.equals(action)) {
+                op = PackageUpdatedTask.OP_UPDATE;
+            } else if (Intent.ACTION_PACKAGE_REMOVED.equals(action)) {
+                if (!replacing) {
+                    op = PackageUpdatedTask.OP_REMOVE;
+                }
+                // else, we are replacing the package, so a PACKAGE_ADDED will be sent
+                // later, we will update the package at this time
+            } else if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {
+                if (!replacing) {
+                    op = PackageUpdatedTask.OP_ADD;
+                } else {
+                    op = PackageUpdatedTask.OP_UPDATE;
+                }
+            }
+
+            if (op != PackageUpdatedTask.OP_NONE) {
+                enqueuePackageUpdated(new PackageUpdatedTask(op, new String[] { packageName }));
+            }
+
+        } else if (Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE.equals(action)) {
+            String[] packages = intent.getStringArrayExtra(Intent.EXTRA_CHANGED_PACKAGE_LIST);
+            enqueuePackageUpdated(new PackageUpdatedTask(PackageUpdatedTask.OP_ADD, packages));
+
+        } else if (Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE.equals(action)) {
+            String[] packages = intent.getStringArrayExtra(Intent.EXTRA_CHANGED_PACKAGE_LIST);
+            enqueuePackageUpdated(new PackageUpdatedTask(
+                        PackageUpdatedTask.OP_UNAVAILABLE, packages));
+
         }
+    }
 
-        synchronized (mAllAppsListLock) {
-            final String action = intent.getAction();
+    public void startLoader(Context context, boolean isLaunching) {
+        synchronized (mLock) {
+            if (DEBUG_LOADERS) {
+                Log.d(TAG, "startLoader isLaunching=" + isLaunching);
+            }
 
-            if (Intent.ACTION_PACKAGE_CHANGED.equals(action)
-                    || Intent.ACTION_PACKAGE_REMOVED.equals(action)
-                    || Intent.ACTION_PACKAGE_ADDED.equals(action)) {
-                final String packageName = intent.getData().getSchemeSpecificPart();
-                final boolean replacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
-
-                if (packageName == null || packageName.length() == 0) {
-                    // they sent us a bad intent
-                    return;
-                }
-
-                if (Intent.ACTION_PACKAGE_CHANGED.equals(action)) {
-                    mAllAppsList.updatePackage(context, packageName);
-                } else if (Intent.ACTION_PACKAGE_REMOVED.equals(action)) {
-                    if (!replacing) {
-                        mAllAppsList.removePackage(packageName);
+            // Don't bother to start the thread if we know it's not going to do anything
+            if (mCallbacks != null && mCallbacks.get() != null) {
+                // If there is already one running, tell it to stop.
+                LoaderTask oldTask = mLoaderTask;
+                if (oldTask != null) {
+                    if (oldTask.isLaunching()) {
+                        // don't downgrade isLaunching if we're already running
+                        isLaunching = true;
                     }
-                    // else, we are replacing the package, so a PACKAGE_ADDED will be sent
-                    // later, we will update the package at this time
-                } else if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {
-                    if (!replacing) {
-                        mAllAppsList.addPackage(context, packageName);
-                    } else {
-                        mAllAppsList.updatePackage(context, packageName);
-                    }
+                    oldTask.stopLocked();
                 }
-
-                if (mAllAppsList.added.size() > 0) {
-                    added = mAllAppsList.added;
-                    mAllAppsList.added = new ArrayList<ApplicationInfo>();
-                }
-                if (mAllAppsList.removed.size() > 0) {
-                    removed = mAllAppsList.removed;
-                    mAllAppsList.removed = new ArrayList<ApplicationInfo>();
-                    for (ApplicationInfo info: removed) {
-                        mIconCache.remove(info.intent.getComponent());
-                    }
-                }
-                if (mAllAppsList.modified.size() > 0) {
-                    modified = mAllAppsList.modified;
-                    mAllAppsList.modified = new ArrayList<ApplicationInfo>();
-                }
-
-                final Callbacks callbacks = mCallbacks != null ? mCallbacks.get() : null;
-                if (callbacks == null) {
-                    Log.w(TAG, "Nobody to tell about the new app.  Launcher is probably loading.");
-                    return;
-                }
-
-                if (added != null) {
-                    final ArrayList<ApplicationInfo> addedFinal = added;
-                    mHandler.post(new Runnable() {
-                        public void run() {
-                            callbacks.bindAppsAdded(addedFinal);
-                        }
-                    });
-                }
-                if (modified != null) {
-                    final ArrayList<ApplicationInfo> modifiedFinal = modified;
-                    mHandler.post(new Runnable() {
-                        public void run() {
-                            callbacks.bindAppsUpdated(modifiedFinal);
-                        }
-                    });
-                }
-                if (removed != null) {
-                    final ArrayList<ApplicationInfo> removedFinal = removed;
-                    mHandler.post(new Runnable() {
-                        public void run() {
-                            callbacks.bindAppsRemoved(removedFinal);
-                        }
-                    });
-                }
-            } else {
-                if (Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE.equals(action)) {
-                     String packages[] = intent.getStringArrayExtra(
-                             Intent.EXTRA_CHANGED_PACKAGE_LIST);
-                     if (packages == null || packages.length == 0) {
-                         return;
-                     }
-                     synchronized (this) {
-                         mAllAppsLoaded = mWorkspaceLoaded = false;
-                     }
-                     startLoader(context, false);
-                } else if (Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE.equals(action)) {
-                     String packages[] = intent.getStringArrayExtra(
-                             Intent.EXTRA_CHANGED_PACKAGE_LIST);
-                     if (packages == null || packages.length == 0) {
-                         return;
-                     }
-                     synchronized (this) {
-                         mAllAppsLoaded = mWorkspaceLoaded = false;
-                     }
-                     startLoader(context, false);
-                }
+                mLoaderTask = new LoaderTask(context, isLaunching);
+                mWorker.post(mLoaderTask);
             }
         }
     }
 
-    public class Loader {
-        private static final int ITEMS_CHUNK = 6;
-
-        private LoaderThread mLoaderThread;
-
-        final ArrayList<ItemInfo> mItems = new ArrayList<ItemInfo>();
-        final ArrayList<LauncherAppWidgetInfo> mAppWidgets = new ArrayList<LauncherAppWidgetInfo>();
-        final HashMap<Long, FolderInfo> mFolders = new HashMap<Long, FolderInfo>();
-                
-        /**
-         * Call this from the ui thread so the handler is initialized on the correct thread.
-         */
-        public Loader() {
-        }
-
-        public void startLoader(Context context, boolean isLaunching) {
-            synchronized (mLock) {
-                if (DEBUG_LOADERS) {
-                    Log.d(TAG, "startLoader isLaunching=" + isLaunching);
-                }
-
-                // Don't bother to start the thread if we know it's not going to do anything
-                if (mCallbacks != null && mCallbacks.get() != null) {
-                    LoaderThread oldThread = mLoaderThread;
-                    if (oldThread != null) {
-                        if (oldThread.isLaunching()) {
-                            // don't downgrade isLaunching if we're already running
-                            isLaunching = true;
-                        }
-                        oldThread.stopLocked();
-                    }
-                    mLoaderThread = new LoaderThread(context, oldThread, isLaunching);
-                    mLoaderThread.start();
-                }
+    public void stopLoader() {
+        synchronized (mLock) {
+            if (mLoaderTask != null) {
+                mLoaderTask.stopLocked();
             }
         }
+    }
 
-        public void stopLoader() {
-            synchronized (mLock) {
-                if (mLoaderThread != null) {
-                    mLoaderThread.stopLocked();
-                }
-            }
+    /**
+     * Runnable for the thread that loads the contents of the launcher:
+     *   - workspace icons
+     *   - widgets
+     *   - all apps icons
+     */
+    private class LoaderTask implements Runnable {
+        private Context mContext;
+        private Thread mWaitThread;
+        private boolean mIsLaunching;
+        private boolean mStopped;
+        private boolean mLoadAndBindStepFinished;
+
+        LoaderTask(Context context, boolean isLaunching) {
+            mContext = context;
+            mIsLaunching = isLaunching;
         }
 
-        /**
-         * Runnable for the thread that loads the contents of the launcher:
-         *   - workspace icons
-         *   - widgets
-         *   - all apps icons
-         */
-        private class LoaderThread extends Thread {
-            private Context mContext;
-            private Thread mWaitThread;
-            private boolean mIsLaunching;
-            private boolean mStopped;
-            private boolean mLoadAndBindStepFinished;
+        boolean isLaunching() {
+            return mIsLaunching;
+        }
 
-            LoaderThread(Context context, Thread waitThread, boolean isLaunching) {
-                mContext = context;
-                mWaitThread = waitThread;
-                mIsLaunching = isLaunching;
+        private void loadAndBindWorkspace() {
+            // Load the workspace
+
+            // For now, just always reload the workspace.  It's ~100 ms vs. the
+            // binding which takes many hundreds of ms.
+            // We can reconsider.
+            if (DEBUG_LOADERS) {
+                Log.d(TAG, "loadAndBindWorkspace mWorkspaceLoaded=" + mWorkspaceLoaded);
             }
-
-            boolean isLaunching() {
-                return mIsLaunching;
-            }
-
-            /**
-             * If another LoaderThread was supplied, we need to wait for that to finish before
-             * we start our processing.  This keeps the ordering of the setting and clearing
-             * of the dirty flags correct by making sure we don't start processing stuff until
-             * they've had a chance to re-set them.  We do this waiting the worker thread, not
-             * the ui thread to avoid ANRs.
-             */
-            private void waitForOtherThread() {
-                if (mWaitThread != null) {
-                    boolean done = false;
-                    while (!done) {
-                        try {
-                            mWaitThread.join();
-                            done = true;
-                        } catch (InterruptedException ex) {
-                            // Ignore
-                        }
-                    }
-                    mWaitThread = null;
+            if (true || !mWorkspaceLoaded) {
+                loadWorkspace();
+                if (mStopped) {
+                    return;
                 }
+                mWorkspaceLoaded = true;
             }
 
-            private void loadAndBindWorkspace() {
-                // Load the workspace
+            // Bind the workspace
+            bindWorkspace();
+        }
 
-                // Other other threads can unset mWorkspaceLoaded, so atomically set it,
-                // and then if they unset it, or we unset it because of mStopped, it will
-                // be unset.
-                boolean loaded;
-                synchronized (this) {
-                    loaded = mWorkspaceLoaded;
-                    mWorkspaceLoaded = true;
-                }
+        private void waitForIdle() {
+            // Wait until the either we're stopped or the other threads are done.
+            // This way we don't start loading all apps until the workspace has settled
+            // down.
+            synchronized (LoaderTask.this) {
+                final long workspaceWaitTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
 
-                // For now, just always reload the workspace.  It's ~100 ms vs. the
-                // binding which takes many hundreds of ms.
-                // We can reconsider.
-                if (DEBUG_LOADERS) Log.d(TAG, "loadAndBindWorkspace loaded=" + loaded);
-                if (true || !loaded) {
-                    loadWorkspace();
-                    if (mStopped) {
-                        mWorkspaceLoaded = false;
-                        return;
-                    }
-                }
-
-                // Bind the workspace
-                bindWorkspace();
-            }
-
-            private void waitForIdle() {
-                // Wait until the either we're stopped or the other threads are done.
-                // This way we don't start loading all apps until the workspace has settled
-                // down.
-                synchronized (LoaderThread.this) {
-                    final long workspaceWaitTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
-
-                    mHandler.postIdle(new Runnable() {
-                            public void run() {
-                                synchronized (LoaderThread.this) {
-                                    mLoadAndBindStepFinished = true;
-                                    if (DEBUG_LOADERS) {
-                                        Log.d(TAG, "done with previous binding step");
-                                    }
-                                    LoaderThread.this.notify();
+                mHandler.postIdle(new Runnable() {
+                        public void run() {
+                            synchronized (LoaderTask.this) {
+                                mLoadAndBindStepFinished = true;
+                                if (DEBUG_LOADERS) {
+                                    Log.d(TAG, "done with previous binding step");
                                 }
+                                LoaderTask.this.notify();
                             }
-                        });
-
-                    while (!mStopped && !mLoadAndBindStepFinished) {
-                        try {
-                            this.wait();
-                        } catch (InterruptedException ex) {
-                            // Ignore
                         }
-                    }
-                    if (DEBUG_LOADERS) {
-                        Log.d(TAG, "waited "
-                                + (SystemClock.uptimeMillis()-workspaceWaitTime) 
-                                + "ms for previous step to finish binding");
+                    });
+
+                while (!mStopped && !mLoadAndBindStepFinished) {
+                    try {
+                        this.wait();
+                    } catch (InterruptedException ex) {
+                        // Ignore
                     }
                 }
+                if (DEBUG_LOADERS) {
+                    Log.d(TAG, "waited "
+                            + (SystemClock.uptimeMillis()-workspaceWaitTime) 
+                            + "ms for previous step to finish binding");
+                }
             }
+        }
 
-            public void run() {
-                waitForOtherThread();
+        public void run() {
+            // Optimize for end-user experience: if the Launcher is up and // running with the
+            // All Apps interface in the foreground, load All Apps first. Otherwise, load the
+            // workspace first (default).
+            final Callbacks cbk = mCallbacks.get();
+            final boolean loadWorkspaceFirst = cbk != null ? (!cbk.isAllAppsVisible()) : true;
 
-                // Optimize for end-user experience: if the Launcher is up and // running with the
-                // All Apps interface in the foreground, load All Apps first. Otherwise, load the
-                // workspace first (default).
-                final Callbacks cbk = mCallbacks.get();
-                final boolean loadWorkspaceFirst = cbk != null ? (!cbk.isAllAppsVisible()) : true;
-
+            keep_running: {
                 // Elevate priority when Home launches for the first time to avoid
                 // starving at boot time. Staring at a blank home is not cool.
                 synchronized (mLock) {
@@ -580,10 +470,6 @@ public class LauncherModel extends BroadcastReceiver {
                             ? Process.THREAD_PRIORITY_DEFAULT : Process.THREAD_PRIORITY_BACKGROUND);
                 }
 
-                if (PROFILE_LOADERS) {
-                    android.os.Debug.startMethodTracing("/sdcard/launcher-loaders");
-                }
-                
                 if (loadWorkspaceFirst) {
                     if (DEBUG_LOADERS) Log.d(TAG, "step 1: loading workspace");
                     loadAndBindWorkspace();
@@ -592,12 +478,18 @@ public class LauncherModel extends BroadcastReceiver {
                     loadAndBindAllApps();
                 }
 
-                // Whew! Hard work done.
+                if (mStopped) {
+                    break keep_running;
+                }
+
+                // Whew! Hard work done.  Slow us down, and wait until the UI thread has
+                // settled down.
                 synchronized (mLock) {
                     if (mIsLaunching) {
                         android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
                     }
                 }
+                waitForIdle();
 
                 // second step
                 if (loadWorkspaceFirst) {
@@ -607,671 +499,760 @@ public class LauncherModel extends BroadcastReceiver {
                     if (DEBUG_LOADERS) Log.d(TAG, "step 2: special: loading workspace");
                     loadAndBindWorkspace();
                 }
+            }
 
-                // Clear out this reference, otherwise we end up holding it until all of the
-                // callback runnables are done.
-                mContext = null;
+            // Clear out this reference, otherwise we end up holding it until all of the
+            // callback runnables are done.
+            mContext = null;
 
-                synchronized (mLock) {
-                    // Setting the reference is atomic, but we can't do it inside the other critical
-                    // sections.
-                    mLoaderThread = null;
+            synchronized (mLock) {
+                // If we are still the last one to be scheduled, remove ourselves.
+                if (mLoaderTask == this) {
+                    mLoaderTask = null;
                 }
+            }
 
-                if (PROFILE_LOADERS) {
-                    android.os.Debug.stopMethodTracing();
-                }
-
-                // Trigger a gc to try to clean up after the stuff is done, since the
-                // renderscript allocations aren't charged to the java heap.
+            // Trigger a gc to try to clean up after the stuff is done, since the
+            // renderscript allocations aren't charged to the java heap.
+            if (mStopped) {
                 mHandler.post(new Runnable() {
                         public void run() {
                             System.gc();
                         }
                     });
-            }
-
-            public void stopLocked() {
-                synchronized (LoaderThread.this) {
-                    mStopped = true;
-                    this.notify();
-                }
-            }
-
-            /**
-             * Gets the callbacks object.  If we've been stopped, or if the launcher object
-             * has somehow been garbage collected, return null instead.  Pass in the Callbacks
-             * object that was around when the deferred message was scheduled, and if there's
-             * a new Callbacks object around then also return null.  This will save us from
-             * calling onto it with data that will be ignored.
-             */
-            Callbacks tryGetCallbacks(Callbacks oldCallbacks) {
-                synchronized (mLock) {
-                    if (mStopped) {
-                        return null;
-                    }
-
-                    if (mCallbacks == null) {
-                        return null;
-                    }
-
-                    final Callbacks callbacks = mCallbacks.get();
-                    if (callbacks != oldCallbacks) {
-                        return null;
-                    }
-                    if (callbacks == null) {
-                        Log.w(TAG, "no mCallbacks");
-                        return null;
-                    }
-
-                    return callbacks;
-                }
-            }
-
-            // check & update map of what's occupied; used to discard overlapping/invalid items
-            private boolean checkItemPlacement(ItemInfo occupied[][][], ItemInfo item) {
-                if (item.container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                    return true;
-                }
-
-                for (int x = item.cellX; x < (item.cellX+item.spanX); x++) {
-                    for (int y = item.cellY; y < (item.cellY+item.spanY); y++) {
-                        if (occupied[item.screen][x][y] != null) {
-                            Log.e(TAG, "Error loading shortcut " + item
-                                + " into cell (" + item.screen + ":" 
-                                + x + "," + y
-                                + ") occupied by " 
-                                + occupied[item.screen][x][y]);
-                            return false;
+            } else {
+                mHandler.postIdle(new Runnable() {
+                        public void run() {
+                            System.gc();
                         }
-                    }
+                    });
+            }
+        }
+
+        public void stopLocked() {
+            synchronized (LoaderTask.this) {
+                mStopped = true;
+                this.notify();
+            }
+        }
+
+        /**
+         * Gets the callbacks object.  If we've been stopped, or if the launcher object
+         * has somehow been garbage collected, return null instead.  Pass in the Callbacks
+         * object that was around when the deferred message was scheduled, and if there's
+         * a new Callbacks object around then also return null.  This will save us from
+         * calling onto it with data that will be ignored.
+         */
+        Callbacks tryGetCallbacks(Callbacks oldCallbacks) {
+            synchronized (mLock) {
+                if (mStopped) {
+                    return null;
                 }
-                for (int x = item.cellX; x < (item.cellX+item.spanX); x++) {
-                    for (int y = item.cellY; y < (item.cellY+item.spanY); y++) {
-                        occupied[item.screen][x][y] = item;
-                    }
+
+                if (mCallbacks == null) {
+                    return null;
                 }
+
+                final Callbacks callbacks = mCallbacks.get();
+                if (callbacks != oldCallbacks) {
+                    return null;
+                }
+                if (callbacks == null) {
+                    Log.w(TAG, "no mCallbacks");
+                    return null;
+                }
+
+                return callbacks;
+            }
+        }
+
+        // check & update map of what's occupied; used to discard overlapping/invalid items
+        private boolean checkItemPlacement(ItemInfo occupied[][][], ItemInfo item) {
+            if (item.container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
                 return true;
             }
 
-            private void loadWorkspace() {
-                final long t = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
+            for (int x = item.cellX; x < (item.cellX+item.spanX); x++) {
+                for (int y = item.cellY; y < (item.cellY+item.spanY); y++) {
+                    if (occupied[item.screen][x][y] != null) {
+                        Log.e(TAG, "Error loading shortcut " + item
+                            + " into cell (" + item.screen + ":" 
+                            + x + "," + y
+                            + ") occupied by " 
+                            + occupied[item.screen][x][y]);
+                        return false;
+                    }
+                }
+            }
+            for (int x = item.cellX; x < (item.cellX+item.spanX); x++) {
+                for (int y = item.cellY; y < (item.cellY+item.spanY); y++) {
+                    occupied[item.screen][x][y] = item;
+                }
+            }
+            return true;
+        }
 
-                final Context context = mContext;
-                final ContentResolver contentResolver = context.getContentResolver();
-                final PackageManager manager = context.getPackageManager();
-                final AppWidgetManager widgets = AppWidgetManager.getInstance(context);
-                final boolean isSafeMode = manager.isSafeMode();
+        private void loadWorkspace() {
+            final long t = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
 
-                mItems.clear();
-                mAppWidgets.clear();
-                mFolders.clear();
+            final Context context = mContext;
+            final ContentResolver contentResolver = context.getContentResolver();
+            final PackageManager manager = context.getPackageManager();
+            final AppWidgetManager widgets = AppWidgetManager.getInstance(context);
+            final boolean isSafeMode = manager.isSafeMode();
 
-                final ArrayList<Long> itemsToRemove = new ArrayList<Long>();
+            mItems.clear();
+            mAppWidgets.clear();
+            mFolders.clear();
 
-                final Cursor c = contentResolver.query(
-                        LauncherSettings.Favorites.CONTENT_URI, null, null, null, null);
+            final ArrayList<Long> itemsToRemove = new ArrayList<Long>();
 
-                final ItemInfo occupied[][][] = new ItemInfo[Launcher.SCREEN_COUNT][Launcher.NUMBER_CELLS_X][Launcher.NUMBER_CELLS_Y];
+            final Cursor c = contentResolver.query(
+                    LauncherSettings.Favorites.CONTENT_URI, null, null, null, null);
 
-                try {
-                    final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
-                    final int intentIndex = c.getColumnIndexOrThrow
-                            (LauncherSettings.Favorites.INTENT);
-                    final int titleIndex = c.getColumnIndexOrThrow
-                            (LauncherSettings.Favorites.TITLE);
-                    final int iconTypeIndex = c.getColumnIndexOrThrow(
-                            LauncherSettings.Favorites.ICON_TYPE);
-                    final int iconIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON);
-                    final int iconPackageIndex = c.getColumnIndexOrThrow(
-                            LauncherSettings.Favorites.ICON_PACKAGE);
-                    final int iconResourceIndex = c.getColumnIndexOrThrow(
-                            LauncherSettings.Favorites.ICON_RESOURCE);
-                    final int containerIndex = c.getColumnIndexOrThrow(
-                            LauncherSettings.Favorites.CONTAINER);
-                    final int itemTypeIndex = c.getColumnIndexOrThrow(
-                            LauncherSettings.Favorites.ITEM_TYPE);
-                    final int appWidgetIdIndex = c.getColumnIndexOrThrow(
-                            LauncherSettings.Favorites.APPWIDGET_ID);
-                    final int screenIndex = c.getColumnIndexOrThrow(
-                            LauncherSettings.Favorites.SCREEN);
-                    final int cellXIndex = c.getColumnIndexOrThrow
-                            (LauncherSettings.Favorites.CELLX);
-                    final int cellYIndex = c.getColumnIndexOrThrow
-                            (LauncherSettings.Favorites.CELLY);
-                    final int spanXIndex = c.getColumnIndexOrThrow
-                            (LauncherSettings.Favorites.SPANX);
-                    final int spanYIndex = c.getColumnIndexOrThrow(
-                            LauncherSettings.Favorites.SPANY);
-                    final int uriIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.URI);
-                    final int displayModeIndex = c.getColumnIndexOrThrow(
-                            LauncherSettings.Favorites.DISPLAY_MODE);
+            final ItemInfo occupied[][][] = new ItemInfo[Launcher.SCREEN_COUNT][Launcher.NUMBER_CELLS_X][Launcher.NUMBER_CELLS_Y];
 
-                    ShortcutInfo info;
-                    String intentDescription;
-                    LauncherAppWidgetInfo appWidgetInfo;
-                    int container;
-                    long id;
-                    Intent intent;
+            try {
+                final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
+                final int intentIndex = c.getColumnIndexOrThrow
+                        (LauncherSettings.Favorites.INTENT);
+                final int titleIndex = c.getColumnIndexOrThrow
+                        (LauncherSettings.Favorites.TITLE);
+                final int iconTypeIndex = c.getColumnIndexOrThrow(
+                        LauncherSettings.Favorites.ICON_TYPE);
+                final int iconIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON);
+                final int iconPackageIndex = c.getColumnIndexOrThrow(
+                        LauncherSettings.Favorites.ICON_PACKAGE);
+                final int iconResourceIndex = c.getColumnIndexOrThrow(
+                        LauncherSettings.Favorites.ICON_RESOURCE);
+                final int containerIndex = c.getColumnIndexOrThrow(
+                        LauncherSettings.Favorites.CONTAINER);
+                final int itemTypeIndex = c.getColumnIndexOrThrow(
+                        LauncherSettings.Favorites.ITEM_TYPE);
+                final int appWidgetIdIndex = c.getColumnIndexOrThrow(
+                        LauncherSettings.Favorites.APPWIDGET_ID);
+                final int screenIndex = c.getColumnIndexOrThrow(
+                        LauncherSettings.Favorites.SCREEN);
+                final int cellXIndex = c.getColumnIndexOrThrow
+                        (LauncherSettings.Favorites.CELLX);
+                final int cellYIndex = c.getColumnIndexOrThrow
+                        (LauncherSettings.Favorites.CELLY);
+                final int spanXIndex = c.getColumnIndexOrThrow
+                        (LauncherSettings.Favorites.SPANX);
+                final int spanYIndex = c.getColumnIndexOrThrow(
+                        LauncherSettings.Favorites.SPANY);
+                final int uriIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.URI);
+                final int displayModeIndex = c.getColumnIndexOrThrow(
+                        LauncherSettings.Favorites.DISPLAY_MODE);
 
-                    while (!mStopped && c.moveToNext()) {
-                        try {
-                            int itemType = c.getInt(itemTypeIndex);
+                ShortcutInfo info;
+                String intentDescription;
+                LauncherAppWidgetInfo appWidgetInfo;
+                int container;
+                long id;
+                Intent intent;
 
-                            switch (itemType) {
-                            case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
-                            case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                                intentDescription = c.getString(intentIndex);
-                                try {
-                                    intent = Intent.parseUri(intentDescription, 0);
-                                } catch (URISyntaxException e) {
-                                    continue;
-                                }
+                while (!mStopped && c.moveToNext()) {
+                    try {
+                        int itemType = c.getInt(itemTypeIndex);
 
-                                if (itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-                                    info = getShortcutInfo(manager, intent, context, c, iconIndex,
-                                            titleIndex);
-                                } else {
-                                    info = getShortcutInfo(c, context, iconTypeIndex,
-                                            iconPackageIndex, iconResourceIndex, iconIndex,
-                                            titleIndex);
-                                }
+                        switch (itemType) {
+                        case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+                        case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                            intentDescription = c.getString(intentIndex);
+                            try {
+                                intent = Intent.parseUri(intentDescription, 0);
+                            } catch (URISyntaxException e) {
+                                continue;
+                            }
 
-                                if (info != null) {
-                                    updateSavedIcon(context, info, c, iconIndex);
+                            if (itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+                                info = getShortcutInfo(manager, intent, context, c, iconIndex,
+                                        titleIndex);
+                            } else {
+                                info = getShortcutInfo(c, context, iconTypeIndex,
+                                        iconPackageIndex, iconResourceIndex, iconIndex,
+                                        titleIndex);
+                            }
 
-                                    info.intent = intent;
-                                    info.id = c.getLong(idIndex);
-                                    container = c.getInt(containerIndex);
-                                    info.container = container;
-                                    info.screen = c.getInt(screenIndex);
-                                    info.cellX = c.getInt(cellXIndex);
-                                    info.cellY = c.getInt(cellYIndex);
+                            if (info != null) {
+                                updateSavedIcon(context, info, c, iconIndex);
 
-                                    // check & update map of what's occupied
-                                    if (!checkItemPlacement(occupied, info)) {
-                                        break;
-                                    }
-
-                                    switch (container) {
-                                    case LauncherSettings.Favorites.CONTAINER_DESKTOP:
-                                        mItems.add(info);
-                                        break;
-                                    default:
-                                        // Item is in a user folder
-                                        UserFolderInfo folderInfo =
-                                                findOrMakeUserFolder(mFolders, container);
-                                        folderInfo.add(info);
-                                        break;
-                                    }
-                                } else {
-                                    // Failed to load the shortcut, probably because the
-                                    // activity manager couldn't resolve it (maybe the app
-                                    // was uninstalled), or the db row was somehow screwed up.
-                                    // Delete it.
-                                    id = c.getLong(idIndex);
-                                    Log.e(TAG, "Error loading shortcut " + id + ", removing it");
-                                    contentResolver.delete(LauncherSettings.Favorites.getContentUri(
-                                                id, false), null, null);
-                                }
-                                break;
-
-                            case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
-                                id = c.getLong(idIndex);
-                                UserFolderInfo folderInfo = findOrMakeUserFolder(mFolders, id);
-
-                                folderInfo.title = c.getString(titleIndex);
-
-                                folderInfo.id = id;
+                                info.intent = intent;
+                                info.id = c.getLong(idIndex);
                                 container = c.getInt(containerIndex);
-                                folderInfo.container = container;
-                                folderInfo.screen = c.getInt(screenIndex);
-                                folderInfo.cellX = c.getInt(cellXIndex);
-                                folderInfo.cellY = c.getInt(cellYIndex);
+                                info.container = container;
+                                info.screen = c.getInt(screenIndex);
+                                info.cellX = c.getInt(cellXIndex);
+                                info.cellY = c.getInt(cellYIndex);
 
                                 // check & update map of what's occupied
-                                if (!checkItemPlacement(occupied, folderInfo)) {
+                                if (!checkItemPlacement(occupied, info)) {
                                     break;
                                 }
 
                                 switch (container) {
+                                case LauncherSettings.Favorites.CONTAINER_DESKTOP:
+                                    mItems.add(info);
+                                    break;
+                                default:
+                                    // Item is in a user folder
+                                    UserFolderInfo folderInfo =
+                                            findOrMakeUserFolder(mFolders, container);
+                                    folderInfo.add(info);
+                                    break;
+                                }
+                            } else {
+                                // Failed to load the shortcut, probably because the
+                                // activity manager couldn't resolve it (maybe the app
+                                // was uninstalled), or the db row was somehow screwed up.
+                                // Delete it.
+                                id = c.getLong(idIndex);
+                                Log.e(TAG, "Error loading shortcut " + id + ", removing it");
+                                contentResolver.delete(LauncherSettings.Favorites.getContentUri(
+                                            id, false), null, null);
+                            }
+                            break;
+
+                        case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
+                            id = c.getLong(idIndex);
+                            UserFolderInfo folderInfo = findOrMakeUserFolder(mFolders, id);
+
+                            folderInfo.title = c.getString(titleIndex);
+
+                            folderInfo.id = id;
+                            container = c.getInt(containerIndex);
+                            folderInfo.container = container;
+                            folderInfo.screen = c.getInt(screenIndex);
+                            folderInfo.cellX = c.getInt(cellXIndex);
+                            folderInfo.cellY = c.getInt(cellYIndex);
+
+                            // check & update map of what's occupied
+                            if (!checkItemPlacement(occupied, folderInfo)) {
+                                break;
+                            }
+
+                            switch (container) {
+                                case LauncherSettings.Favorites.CONTAINER_DESKTOP:
+                                    mItems.add(folderInfo);
+                                    break;
+                            }
+
+                            mFolders.put(folderInfo.id, folderInfo);
+                            break;
+
+                        case LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER:
+                            id = c.getLong(idIndex);
+                            Uri uri = Uri.parse(c.getString(uriIndex));
+
+                            // Make sure the live folder exists
+                            final ProviderInfo providerInfo =
+                                    context.getPackageManager().resolveContentProvider(
+                                            uri.getAuthority(), 0);
+
+                            if (providerInfo == null && !isSafeMode) {
+                                itemsToRemove.add(id);
+                            } else {
+                                LiveFolderInfo liveFolderInfo = findOrMakeLiveFolder(mFolders, id);
+
+                                intentDescription = c.getString(intentIndex);
+                                intent = null;
+                                if (intentDescription != null) {
+                                    try {
+                                        intent = Intent.parseUri(intentDescription, 0);
+                                    } catch (URISyntaxException e) {
+                                        // Ignore, a live folder might not have a base intent
+                                    }
+                                }
+
+                                liveFolderInfo.title = c.getString(titleIndex);
+                                liveFolderInfo.id = id;
+                                liveFolderInfo.uri = uri;
+                                container = c.getInt(containerIndex);
+                                liveFolderInfo.container = container;
+                                liveFolderInfo.screen = c.getInt(screenIndex);
+                                liveFolderInfo.cellX = c.getInt(cellXIndex);
+                                liveFolderInfo.cellY = c.getInt(cellYIndex);
+                                liveFolderInfo.baseIntent = intent;
+                                liveFolderInfo.displayMode = c.getInt(displayModeIndex);
+
+                                // check & update map of what's occupied
+                                if (!checkItemPlacement(occupied, liveFolderInfo)) {
+                                    break;
+                                }
+
+                                loadLiveFolderIcon(context, c, iconTypeIndex, iconPackageIndex,
+                                        iconResourceIndex, liveFolderInfo);
+
+                                switch (container) {
                                     case LauncherSettings.Favorites.CONTAINER_DESKTOP:
-                                        mItems.add(folderInfo);
+                                        mItems.add(liveFolderInfo);
                                         break;
                                 }
-
-                                mFolders.put(folderInfo.id, folderInfo);
-                                break;
-
-                            case LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER:
-                                id = c.getLong(idIndex);
-                                Uri uri = Uri.parse(c.getString(uriIndex));
-
-                                // Make sure the live folder exists
-                                final ProviderInfo providerInfo =
-                                        context.getPackageManager().resolveContentProvider(
-                                                uri.getAuthority(), 0);
-
-                                if (providerInfo == null && !isSafeMode) {
-                                    itemsToRemove.add(id);
-                                } else {
-                                    LiveFolderInfo liveFolderInfo = findOrMakeLiveFolder(mFolders, id);
-    
-                                    intentDescription = c.getString(intentIndex);
-                                    intent = null;
-                                    if (intentDescription != null) {
-                                        try {
-                                            intent = Intent.parseUri(intentDescription, 0);
-                                        } catch (URISyntaxException e) {
-                                            // Ignore, a live folder might not have a base intent
-                                        }
-                                    }
-    
-                                    liveFolderInfo.title = c.getString(titleIndex);
-                                    liveFolderInfo.id = id;
-                                    liveFolderInfo.uri = uri;
-                                    container = c.getInt(containerIndex);
-                                    liveFolderInfo.container = container;
-                                    liveFolderInfo.screen = c.getInt(screenIndex);
-                                    liveFolderInfo.cellX = c.getInt(cellXIndex);
-                                    liveFolderInfo.cellY = c.getInt(cellYIndex);
-                                    liveFolderInfo.baseIntent = intent;
-                                    liveFolderInfo.displayMode = c.getInt(displayModeIndex);
-
-                                    // check & update map of what's occupied
-                                    if (!checkItemPlacement(occupied, liveFolderInfo)) {
-                                        break;
-                                    }
-
-                                    loadLiveFolderIcon(context, c, iconTypeIndex, iconPackageIndex,
-                                            iconResourceIndex, liveFolderInfo);
-    
-                                    switch (container) {
-                                        case LauncherSettings.Favorites.CONTAINER_DESKTOP:
-                                            mItems.add(liveFolderInfo);
-                                            break;
-                                    }
-                                    mFolders.put(liveFolderInfo.id, liveFolderInfo);
-                                }
-                                break;
-
-                            case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
-                                // Read all Launcher-specific widget details
-                                int appWidgetId = c.getInt(appWidgetIdIndex);
-                                id = c.getLong(idIndex);
-
-                                final AppWidgetProviderInfo provider =
-                                        widgets.getAppWidgetInfo(appWidgetId);
-                                
-                                if (!isSafeMode && (provider == null || provider.provider == null ||
-                                        provider.provider.getPackageName() == null)) {
-                                    Log.e(TAG, "Deleting widget that isn't installed anymore: id="
-                                            + id + " appWidgetId=" + appWidgetId);
-                                    itemsToRemove.add(id);
-                                } else {
-                                    appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId);
-                                    appWidgetInfo.id = id;
-                                    appWidgetInfo.screen = c.getInt(screenIndex);
-                                    appWidgetInfo.cellX = c.getInt(cellXIndex);
-                                    appWidgetInfo.cellY = c.getInt(cellYIndex);
-                                    appWidgetInfo.spanX = c.getInt(spanXIndex);
-                                    appWidgetInfo.spanY = c.getInt(spanYIndex);
-    
-                                    container = c.getInt(containerIndex);
-                                    if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                                        Log.e(TAG, "Widget found where container "
-                                                + "!= CONTAINER_DESKTOP -- ignoring!");
-                                        continue;
-                                    }
-                                    appWidgetInfo.container = c.getInt(containerIndex);
-    
-                                    // check & update map of what's occupied
-                                    if (!checkItemPlacement(occupied, appWidgetInfo)) {
-                                        break;
-                                    }
-
-                                    mAppWidgets.add(appWidgetInfo);
-                                }
-                                break;
+                                mFolders.put(liveFolderInfo.id, liveFolderInfo);
                             }
-                        } catch (Exception e) {
-                            Log.w(TAG, "Desktop items loading interrupted:", e);
-                        }
-                    }
-                } finally {
-                    c.close();
-                }
+                            break;
 
-                if (itemsToRemove.size() > 0) {
-                    ContentProviderClient client = contentResolver.acquireContentProviderClient(
-                                    LauncherSettings.Favorites.CONTENT_URI);
-                    // Remove dead items
-                    for (long id : itemsToRemove) {
-                        if (DEBUG_LOADERS) {
-                            Log.d(TAG, "Removed id = " + id);
+                        case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+                            // Read all Launcher-specific widget details
+                            int appWidgetId = c.getInt(appWidgetIdIndex);
+                            id = c.getLong(idIndex);
+
+                            final AppWidgetProviderInfo provider =
+                                    widgets.getAppWidgetInfo(appWidgetId);
+                            
+                            if (!isSafeMode && (provider == null || provider.provider == null ||
+                                    provider.provider.getPackageName() == null)) {
+                                Log.e(TAG, "Deleting widget that isn't installed anymore: id="
+                                        + id + " appWidgetId=" + appWidgetId);
+                                itemsToRemove.add(id);
+                            } else {
+                                appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId);
+                                appWidgetInfo.id = id;
+                                appWidgetInfo.screen = c.getInt(screenIndex);
+                                appWidgetInfo.cellX = c.getInt(cellXIndex);
+                                appWidgetInfo.cellY = c.getInt(cellYIndex);
+                                appWidgetInfo.spanX = c.getInt(spanXIndex);
+                                appWidgetInfo.spanY = c.getInt(spanYIndex);
+
+                                container = c.getInt(containerIndex);
+                                if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                                    Log.e(TAG, "Widget found where container "
+                                            + "!= CONTAINER_DESKTOP -- ignoring!");
+                                    continue;
+                                }
+                                appWidgetInfo.container = c.getInt(containerIndex);
+
+                                // check & update map of what's occupied
+                                if (!checkItemPlacement(occupied, appWidgetInfo)) {
+                                    break;
+                                }
+
+                                mAppWidgets.add(appWidgetInfo);
+                            }
+                            break;
                         }
-                        // Don't notify content observers
-                        try {
-                            client.delete(LauncherSettings.Favorites.getContentUri(id, false),
-                                    null, null);
-                        } catch (RemoteException e) {
-                            Log.w(TAG, "Could not remove id = " + id);
-                        }
+                    } catch (Exception e) {
+                        Log.w(TAG, "Desktop items loading interrupted:", e);
                     }
                 }
+            } finally {
+                c.close();
+            }
 
-                if (DEBUG_LOADERS) {
-                    Log.d(TAG, "loaded workspace in " + (SystemClock.uptimeMillis()-t) + "ms");
-                    Log.d(TAG, "workspace layout: ");
-                    for (int y = 0; y < Launcher.NUMBER_CELLS_Y; y++) {
-                        String line = "";
-                        for (int s = 0; s < Launcher.SCREEN_COUNT; s++) {
-                            if (s > 0) {
-                                line += " | ";
-                            }
-                            for (int x = 0; x < Launcher.NUMBER_CELLS_X; x++) {
-                                line += ((occupied[s][x][y] != null) ? "#" : ".");
-                            }
-                        }
-                        Log.d(TAG, "[ " + line + " ]");
+            if (itemsToRemove.size() > 0) {
+                ContentProviderClient client = contentResolver.acquireContentProviderClient(
+                                LauncherSettings.Favorites.CONTENT_URI);
+                // Remove dead items
+                for (long id : itemsToRemove) {
+                    if (DEBUG_LOADERS) {
+                        Log.d(TAG, "Removed id = " + id);
+                    }
+                    // Don't notify content observers
+                    try {
+                        client.delete(LauncherSettings.Favorites.getContentUri(id, false),
+                                null, null);
+                    } catch (RemoteException e) {
+                        Log.w(TAG, "Could not remove id = " + id);
                     }
                 }
             }
 
-            /**
-             * Read everything out of our database.
-             */
-            private void bindWorkspace() {
-                final long t = SystemClock.uptimeMillis();
-
-                // Don't use these two variables in any of the callback runnables.
-                // Otherwise we hold a reference to them.
-                final Callbacks oldCallbacks = mCallbacks.get();
-                if (oldCallbacks == null) {
-                    // This launcher has exited and nobody bothered to tell us.  Just bail.
-                    Log.w(TAG, "LoaderThread running with no launcher");
-                    return;
+            if (DEBUG_LOADERS) {
+                Log.d(TAG, "loaded workspace in " + (SystemClock.uptimeMillis()-t) + "ms");
+                Log.d(TAG, "workspace layout: ");
+                for (int y = 0; y < Launcher.NUMBER_CELLS_Y; y++) {
+                    String line = "";
+                    for (int s = 0; s < Launcher.SCREEN_COUNT; s++) {
+                        if (s > 0) {
+                            line += " | ";
+                        }
+                        for (int x = 0; x < Launcher.NUMBER_CELLS_X; x++) {
+                            line += ((occupied[s][x][y] != null) ? "#" : ".");
+                        }
+                    }
+                    Log.d(TAG, "[ " + line + " ]");
                 }
+            }
+        }
 
-                int N;
-                // Tell the workspace that we're about to start firing items at it
+        /**
+         * Read everything out of our database.
+         */
+        private void bindWorkspace() {
+            final long t = SystemClock.uptimeMillis();
+
+            // Don't use these two variables in any of the callback runnables.
+            // Otherwise we hold a reference to them.
+            final Callbacks oldCallbacks = mCallbacks.get();
+            if (oldCallbacks == null) {
+                // This launcher has exited and nobody bothered to tell us.  Just bail.
+                Log.w(TAG, "LoaderTask running with no launcher");
+                return;
+            }
+
+            int N;
+            // Tell the workspace that we're about to start firing items at it
+            mHandler.post(new Runnable() {
+                public void run() {
+                    Callbacks callbacks = tryGetCallbacks(oldCallbacks);
+                    if (callbacks != null) {
+                        callbacks.startBinding();
+                    }
+                }
+            });
+            // Add the items to the workspace.
+            N = mItems.size();
+            for (int i=0; i<N; i+=ITEMS_CHUNK) {
+                final int start = i;
+                final int chunkSize = (i+ITEMS_CHUNK <= N) ? ITEMS_CHUNK : (N-i);
                 mHandler.post(new Runnable() {
                     public void run() {
                         Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                         if (callbacks != null) {
-                            callbacks.startBinding();
+                            callbacks.bindItems(mItems, start, start+chunkSize);
                         }
                     }
                 });
-                // Add the items to the workspace.
-                N = mItems.size();
-                for (int i=0; i<N; i+=ITEMS_CHUNK) {
-                    final int start = i;
-                    final int chunkSize = (i+ITEMS_CHUNK <= N) ? ITEMS_CHUNK : (N-i);
+            }
+            mHandler.post(new Runnable() {
+                public void run() {
+                    Callbacks callbacks = tryGetCallbacks(oldCallbacks);
+                    if (callbacks != null) {
+                        callbacks.bindFolders(mFolders);
+                    }
+                }
+            });
+            // Wait until the queue goes empty.
+            mHandler.post(new Runnable() {
+                public void run() {
+                    if (DEBUG_LOADERS) {
+                        Log.d(TAG, "Going to start binding widgets soon.");
+                    }
+                }
+            });
+            // Bind the widgets, one at a time.
+            // WARNING: this is calling into the workspace from the background thread,
+            // but since getCurrentScreen() just returns the int, we should be okay.  This
+            // is just a hint for the order, and if it's wrong, we'll be okay.
+            // TODO: instead, we should have that push the current screen into here.
+            final int currentScreen = oldCallbacks.getCurrentWorkspaceScreen();
+            N = mAppWidgets.size();
+            // once for the current screen
+            for (int i=0; i<N; i++) {
+                final LauncherAppWidgetInfo widget = mAppWidgets.get(i);
+                if (widget.screen == currentScreen) {
                     mHandler.post(new Runnable() {
                         public void run() {
                             Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                             if (callbacks != null) {
-                                callbacks.bindItems(mItems, start, start+chunkSize);
+                                callbacks.bindAppWidget(widget);
                             }
                         }
                     });
                 }
-                mHandler.post(new Runnable() {
-                    public void run() {
-                        Callbacks callbacks = tryGetCallbacks(oldCallbacks);
-                        if (callbacks != null) {
-                            callbacks.bindFolders(mFolders);
-                        }
-                    }
-                });
-                // Wait until the queue goes empty.
-                mHandler.post(new Runnable() {
-                    public void run() {
-                        if (DEBUG_LOADERS) {
-                            Log.d(TAG, "Going to start binding widgets soon.");
-                        }
-                    }
-                });
-                // Bind the widgets, one at a time.
-                // WARNING: this is calling into the workspace from the background thread,
-                // but since getCurrentScreen() just returns the int, we should be okay.  This
-                // is just a hint for the order, and if it's wrong, we'll be okay.
-                // TODO: instead, we should have that push the current screen into here.
-                final int currentScreen = oldCallbacks.getCurrentWorkspaceScreen();
-                N = mAppWidgets.size();
-                // once for the current screen
-                for (int i=0; i<N; i++) {
-                    final LauncherAppWidgetInfo widget = mAppWidgets.get(i);
-                    if (widget.screen == currentScreen) {
-                        mHandler.post(new Runnable() {
-                            public void run() {
-                                Callbacks callbacks = tryGetCallbacks(oldCallbacks);
-                                if (callbacks != null) {
-                                    callbacks.bindAppWidget(widget);
-                                }
-                            }
-                        });
-                    }
-                }
-                // once for the other screens
-                for (int i=0; i<N; i++) {
-                    final LauncherAppWidgetInfo widget = mAppWidgets.get(i);
-                    if (widget.screen != currentScreen) {
-                        mHandler.post(new Runnable() {
-                            public void run() {
-                                Callbacks callbacks = tryGetCallbacks(oldCallbacks);
-                                if (callbacks != null) {
-                                    callbacks.bindAppWidget(widget);
-                                }
-                            }
-                        });
-                    }
-                }
-                // Tell the workspace that we're done.
-                mHandler.post(new Runnable() {
-                    public void run() {
-                        Callbacks callbacks = tryGetCallbacks(oldCallbacks);
-                        if (callbacks != null) {
-                            callbacks.finishBindingItems();
-                        }
-                    }
-                });
-                // If we're profiling, this is the last thing in the queue.
-                mHandler.post(new Runnable() {
-                    public void run() {
-                        if (DEBUG_LOADERS) {
-                            Log.d(TAG, "bound workspace in "
-                                + (SystemClock.uptimeMillis()-t) + "ms");
-                        }
-                    }
-                });
             }
-
-            private void loadAndBindAllApps() {
-                // Other other threads can unset mAllAppsLoaded, so atomically set it,
-                // and then if they unset it, or we unset it because of mStopped, it will
-                // be unset.
-                boolean loaded;
-                synchronized (this) {
-                    loaded = mAllAppsLoaded;
-                    mAllAppsLoaded = true;
-                }
-
-                if (DEBUG_LOADERS) Log.d(TAG, "loadAndBindAllApps loaded=" + loaded);
-                if (!loaded) {
-                    loadAllAppsByBatch();
-                    if (mStopped) {
-                        mAllAppsLoaded = false;
-                        return;
-                    }
-                } else {
-                    onlyBindAllApps();
+            // once for the other screens
+            for (int i=0; i<N; i++) {
+                final LauncherAppWidgetInfo widget = mAppWidgets.get(i);
+                if (widget.screen != currentScreen) {
+                    mHandler.post(new Runnable() {
+                        public void run() {
+                            Callbacks callbacks = tryGetCallbacks(oldCallbacks);
+                            if (callbacks != null) {
+                                callbacks.bindAppWidget(widget);
+                            }
+                        }
+                    });
                 }
             }
+            // Tell the workspace that we're done.
+            mHandler.post(new Runnable() {
+                public void run() {
+                    Callbacks callbacks = tryGetCallbacks(oldCallbacks);
+                    if (callbacks != null) {
+                        callbacks.finishBindingItems();
+                    }
+                }
+            });
+            // If we're profiling, this is the last thing in the queue.
+            mHandler.post(new Runnable() {
+                public void run() {
+                    if (DEBUG_LOADERS) {
+                        Log.d(TAG, "bound workspace in "
+                            + (SystemClock.uptimeMillis()-t) + "ms");
+                    }
+                }
+            });
+        }
 
-            private void onlyBindAllApps() {
-                final Callbacks oldCallbacks = mCallbacks.get();
-                if (oldCallbacks == null) {
-                    // This launcher has exited and nobody bothered to tell us.  Just bail.
-                    Log.w(TAG, "LoaderThread running with no launcher (onlyBindAllApps)");
+        private void loadAndBindAllApps() {
+            if (DEBUG_LOADERS) {
+                Log.d(TAG, "loadAndBindAllApps mAllAppsLoaded=" + mAllAppsLoaded);
+            }
+            if (!mAllAppsLoaded) {
+                loadAllAppsByBatch();
+                if (mStopped) {
                     return;
                 }
+                mAllAppsLoaded = true;
+            } else {
+                onlyBindAllApps();
+            }
+        }
 
-                // shallow copy
-                final ArrayList<ApplicationInfo> list
-                        = (ArrayList<ApplicationInfo>)mAllAppsList.data.clone();
+        private void onlyBindAllApps() {
+            final Callbacks oldCallbacks = mCallbacks.get();
+            if (oldCallbacks == null) {
+                // This launcher has exited and nobody bothered to tell us.  Just bail.
+                Log.w(TAG, "LoaderTask running with no launcher (onlyBindAllApps)");
+                return;
+            }
+
+            // shallow copy
+            final ArrayList<ApplicationInfo> list
+                    = (ArrayList<ApplicationInfo>)mAllAppsList.data.clone();
+            mHandler.post(new Runnable() {
+                public void run() {
+                    final long t = SystemClock.uptimeMillis();
+                    final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
+                    if (callbacks != null) {
+                        callbacks.bindAllApplications(list);
+                    }
+                    if (DEBUG_LOADERS) {
+                        Log.d(TAG, "bound all " + list.size() + " apps from cache in "
+                                + (SystemClock.uptimeMillis()-t) + "ms");
+                    }
+                }
+            });
+
+        }
+
+        private void loadAllAppsByBatch() {
+            final long t = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
+
+            // Don't use these two variables in any of the callback runnables.
+            // Otherwise we hold a reference to them.
+            final Callbacks oldCallbacks = mCallbacks.get();
+            if (oldCallbacks == null) {
+                // This launcher has exited and nobody bothered to tell us.  Just bail.
+                Log.w(TAG, "LoaderTask running with no launcher (loadAllAppsByBatch)");
+                return;
+            }
+
+            final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+            mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+
+            final PackageManager packageManager = mContext.getPackageManager();
+            List<ResolveInfo> apps = null;
+
+            int N = Integer.MAX_VALUE;
+
+            int startIndex;
+            int i=0;
+            int batchSize = -1;
+            while (i < N && !mStopped) {
+                if (i == 0) {
+                    mAllAppsList.clear();
+                    final long qiaTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
+                    apps = packageManager.queryIntentActivities(mainIntent, 0);
+                    if (DEBUG_LOADERS) {
+                        Log.d(TAG, "queryIntentActivities took "
+                                + (SystemClock.uptimeMillis()-qiaTime) + "ms");
+                    }
+                    if (apps == null) {
+                        return;
+                    }
+                    N = apps.size();
+                    if (DEBUG_LOADERS) {
+                        Log.d(TAG, "queryIntentActivities got " + N + " apps");
+                    }
+                    if (N == 0) {
+                        // There are no apps?!?
+                        return;
+                    }
+                    if (mBatchSize == 0) {
+                        batchSize = N;
+                    } else {
+                        batchSize = mBatchSize;
+                    }
+
+                    final long sortTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
+                    Collections.sort(apps,
+                            new ResolveInfo.DisplayNameComparator(packageManager));
+                    if (DEBUG_LOADERS) {
+                        Log.d(TAG, "sort took "
+                                + (SystemClock.uptimeMillis()-sortTime) + "ms");
+                    }
+                }
+
+                final long t2 = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
+
+                startIndex = i;
+                for (int j=0; i<N && j<batchSize; j++) {
+                    // This builds the icon bitmaps.
+                    mAllAppsList.add(new ApplicationInfo(apps.get(i), mIconCache));
+                    i++;
+                }
+
+                final boolean first = i <= batchSize;
+                final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
+                final ArrayList<ApplicationInfo> added = mAllAppsList.added;
+                mAllAppsList.added = new ArrayList<ApplicationInfo>();
+
                 mHandler.post(new Runnable() {
                     public void run() {
                         final long t = SystemClock.uptimeMillis();
-                        final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                         if (callbacks != null) {
-                            callbacks.bindAllApplications(list);
-                        }
-                        if (DEBUG_LOADERS) {
-                            Log.d(TAG, "bound all " + list.size() + " apps from cache in "
-                                    + (SystemClock.uptimeMillis()-t) + "ms");
+                            if (first) {
+                                callbacks.bindAllApplications(added);
+                            } else {
+                                callbacks.bindAppsAdded(added);
+                            }
+                            if (DEBUG_LOADERS) {
+                                Log.d(TAG, "bound " + added.size() + " apps in "
+                                    + (SystemClock.uptimeMillis() - t) + "ms");
+                            }
+                        } else {
+                            Log.i(TAG, "not binding apps: no Launcher activity");
                         }
                     }
                 });
 
-            }
-
-            private void loadAllAppsByBatch() {
-                final long t = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
-
-                // Don't use these two variables in any of the callback runnables.
-                // Otherwise we hold a reference to them.
-                final Callbacks oldCallbacks = mCallbacks.get();
-                if (oldCallbacks == null) {
-                    // This launcher has exited and nobody bothered to tell us.  Just bail.
-                    Log.w(TAG, "LoaderThread running with no launcher (loadAllAppsByBatch)");
-                    return;
-                }
-
-                final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
-                mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-
-                final PackageManager packageManager = mContext.getPackageManager();
-                List<ResolveInfo> apps = null;
-
-                int N = Integer.MAX_VALUE;
-
-                int startIndex;
-                int i=0;
-                int batchSize = -1;
-                while (i < N && !mStopped) {
-                    synchronized (mAllAppsListLock) {
-                        if (i == 0) {
-                            // This needs to happen inside the same lock block as when we
-                            // prepare the first batch for bindAllApplications.  Otherwise
-                            // the package changed receiver can come in and double-add
-                            // (or miss one?).
-                            mAllAppsList.clear();
-                            final long qiaTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
-                            apps = packageManager.queryIntentActivities(mainIntent, 0);
-                            if (DEBUG_LOADERS) {
-                                Log.d(TAG, "queryIntentActivities took "
-                                        + (SystemClock.uptimeMillis()-qiaTime) + "ms");
-                            }
-                            if (apps == null) {
-                                return;
-                            }
-                            N = apps.size();
-                            if (DEBUG_LOADERS) {
-                                Log.d(TAG, "queryIntentActivities got " + N + " apps");
-                            }
-                            if (N == 0) {
-                                // There are no apps?!?
-                                return;
-                            }
-                            if (mBatchSize == 0) {
-                                batchSize = N;
-                            } else {
-                                batchSize = mBatchSize;
-                            }
-
-                            final long sortTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
-                            Collections.sort(apps,
-                                    new ResolveInfo.DisplayNameComparator(packageManager));
-                            if (DEBUG_LOADERS) {
-                                Log.d(TAG, "sort took "
-                                        + (SystemClock.uptimeMillis()-sortTime) + "ms");
-                            }
-                        }
-
-                        final long t2 = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
-
-                        startIndex = i;
-                        for (int j=0; i<N && j<batchSize; j++) {
-                            // This builds the icon bitmaps.
-                            mAllAppsList.add(new ApplicationInfo(apps.get(i), mIconCache));
-                            i++;
-                        }
-
-                        final boolean first = i <= batchSize;
-                        final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
-                        final ArrayList<ApplicationInfo> added = mAllAppsList.added;
-                        mAllAppsList.added = new ArrayList<ApplicationInfo>();
-
-                        mHandler.post(new Runnable() {
-                            public void run() {
-                                final long t = SystemClock.uptimeMillis();
-                                if (callbacks != null) {
-                                    if (first) {
-                                        mBeforeFirstLoad = false;
-                                        callbacks.bindAllApplications(added);
-                                    } else {
-                                        callbacks.bindAppsAdded(added);
-                                    }
-                                    if (DEBUG_LOADERS) {
-                                        Log.d(TAG, "bound " + added.size() + " apps in "
-                                            + (SystemClock.uptimeMillis() - t) + "ms");
-                                    }
-                                } else {
-                                    Log.i(TAG, "not binding apps: no Launcher activity");
-                                }
-                            }
-                        });
-
-                        if (DEBUG_LOADERS) {
-                            Log.d(TAG, "batch of " + (i-startIndex) + " icons processed in "
-                                    + (SystemClock.uptimeMillis()-t2) + "ms");
-                        }
-                    }
-
-                    if (mAllAppsLoadDelay > 0 && i < N) {
-                        try {
-                            if (DEBUG_LOADERS) {
-                                Log.d(TAG, "sleeping for " + mAllAppsLoadDelay + "ms");
-                            }
-                            Thread.sleep(mAllAppsLoadDelay);
-                        } catch (InterruptedException exc) { }
-                    }
-                }
-
                 if (DEBUG_LOADERS) {
-                    Log.d(TAG, "cached all " + N + " apps in "
-                            + (SystemClock.uptimeMillis()-t) + "ms"
-                            + (mAllAppsLoadDelay > 0 ? " (including delay)" : ""));
+                    Log.d(TAG, "batch of " + (i-startIndex) + " icons processed in "
+                            + (SystemClock.uptimeMillis()-t2) + "ms");
+                }
+
+                if (mAllAppsLoadDelay > 0 && i < N) {
+                    try {
+                        if (DEBUG_LOADERS) {
+                            Log.d(TAG, "sleeping for " + mAllAppsLoadDelay + "ms");
+                        }
+                        Thread.sleep(mAllAppsLoadDelay);
+                    } catch (InterruptedException exc) { }
                 }
             }
 
-            public void dumpState() {
-                Log.d(TAG, "mLoader.mLoaderThread.mContext=" + mContext);
-                Log.d(TAG, "mLoader.mLoaderThread.mWaitThread=" + mWaitThread);
-                Log.d(TAG, "mLoader.mLoaderThread.mIsLaunching=" + mIsLaunching);
-                Log.d(TAG, "mLoader.mLoaderThread.mStopped=" + mStopped);
-                Log.d(TAG, "mLoader.mLoaderThread.mLoadAndBindStepFinished=" + mLoadAndBindStepFinished);
+            if (DEBUG_LOADERS) {
+                Log.d(TAG, "cached all " + N + " apps in "
+                        + (SystemClock.uptimeMillis()-t) + "ms"
+                        + (mAllAppsLoadDelay > 0 ? " (including delay)" : ""));
             }
         }
 
         public void dumpState() {
-            Log.d(TAG, "mLoader.mItems size=" + mLoader.mItems.size());
-            if (mLoaderThread != null) {
-                mLoaderThread.dumpState();
-            } else {
-                Log.d(TAG, "mLoader.mLoaderThread=null");
+            Log.d(TAG, "mLoaderTask.mContext=" + mContext);
+            Log.d(TAG, "mLoaderTask.mWaitThread=" + mWaitThread);
+            Log.d(TAG, "mLoaderTask.mIsLaunching=" + mIsLaunching);
+            Log.d(TAG, "mLoaderTask.mStopped=" + mStopped);
+            Log.d(TAG, "mLoaderTask.mLoadAndBindStepFinished=" + mLoadAndBindStepFinished);
+        }
+    }
+
+    void enqueuePackageUpdated(PackageUpdatedTask task) {
+        mWorker.post(task);
+    }
+
+    private class PackageUpdatedTask implements Runnable {
+        int mOp;
+        String[] mPackages;
+
+        public static final int OP_NONE = 0;
+        public static final int OP_ADD = 1;
+        public static final int OP_UPDATE = 2;
+        public static final int OP_REMOVE = 3; // uninstlled
+        public static final int OP_UNAVAILABLE = 4; // external media unmounted
+
+
+        public PackageUpdatedTask(int op, String[] packages) {
+            mOp = op;
+            mPackages = packages;
+        }
+
+        public void run() {
+            final Context context = mApp;
+
+            final String[] packages = mPackages;
+            final int N = packages.length;
+            switch (mOp) {
+                case OP_ADD:
+                    for (int i=0; i<N; i++) {
+                        if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.addPackage " + packages[i]);
+                        mAllAppsList.addPackage(context, packages[i]);
+                    }
+                    break;
+                case OP_UPDATE:
+                    for (int i=0; i<N; i++) {
+                        if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.updatePackage " + packages[i]);
+                        mAllAppsList.updatePackage(context, packages[i]);
+                    }
+                    break;
+                case OP_REMOVE:
+                case OP_UNAVAILABLE:
+                    for (int i=0; i<N; i++) {
+                        if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.removePackage " + packages[i]);
+                        mAllAppsList.removePackage(packages[i]);
+                    }
+                    break;
+            }
+
+            ArrayList<ApplicationInfo> added = null;
+            ArrayList<ApplicationInfo> removed = null;
+            ArrayList<ApplicationInfo> modified = null;
+
+            if (mAllAppsList.added.size() > 0) {
+                added = mAllAppsList.added;
+                mAllAppsList.added = new ArrayList<ApplicationInfo>();
+            }
+            if (mAllAppsList.removed.size() > 0) {
+                removed = mAllAppsList.removed;
+                mAllAppsList.removed = new ArrayList<ApplicationInfo>();
+                for (ApplicationInfo info: removed) {
+                    mIconCache.remove(info.intent.getComponent());
+                }
+            }
+            if (mAllAppsList.modified.size() > 0) {
+                modified = mAllAppsList.modified;
+                mAllAppsList.modified = new ArrayList<ApplicationInfo>();
+            }
+
+            final Callbacks callbacks = mCallbacks != null ? mCallbacks.get() : null;
+            if (callbacks == null) {
+                Log.w(TAG, "Nobody to tell about the new app.  Launcher is probably loading.");
+                return;
+            }
+
+            if (added != null) {
+                final ArrayList<ApplicationInfo> addedFinal = added;
+                mHandler.post(new Runnable() {
+                    public void run() {
+                        if (callbacks == mCallbacks.get()) {
+                            callbacks.bindAppsAdded(addedFinal);
+                        }
+                    }
+                });
+            }
+            if (modified != null) {
+                final ArrayList<ApplicationInfo> modifiedFinal = modified;
+                mHandler.post(new Runnable() {
+                    public void run() {
+                        if (callbacks == mCallbacks.get()) {
+                            callbacks.bindAppsUpdated(modifiedFinal);
+                        }
+                    }
+                });
+            }
+            if (removed != null) {
+                final boolean permanent = mOp != OP_UNAVAILABLE;
+                final ArrayList<ApplicationInfo> removedFinal = removed;
+                mHandler.post(new Runnable() {
+                    public void run() {
+                        if (callbacks == mCallbacks.get()) {
+                            callbacks.bindAppsRemoved(removedFinal, permanent);
+                        }
+                    }
+                });
             }
         }
     }
@@ -1583,12 +1564,16 @@ public class LauncherModel extends BroadcastReceiver {
     };
 
     public void dumpState() {
-        Log.d(TAG, "mBeforeFirstLoad=" + mBeforeFirstLoad);
         Log.d(TAG, "mCallbacks=" + mCallbacks);
         ApplicationInfo.dumpApplicationInfoList(TAG, "mAllAppsList.data", mAllAppsList.data);
         ApplicationInfo.dumpApplicationInfoList(TAG, "mAllAppsList.added", mAllAppsList.added);
         ApplicationInfo.dumpApplicationInfoList(TAG, "mAllAppsList.removed", mAllAppsList.removed);
         ApplicationInfo.dumpApplicationInfoList(TAG, "mAllAppsList.modified", mAllAppsList.modified);
-        mLoader.dumpState();
+        Log.d(TAG, "mItems size=" + mItems.size());
+        if (mLoaderTask != null) {
+            mLoaderTask.dumpState();
+        } else {
+            Log.d(TAG, "mLoaderTask=null");
+        }
     }
 }
