@@ -23,6 +23,7 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,7 @@ public class WidgetGalleryAdapter extends BaseAdapter {
     private LayoutInflater mLayoutInflater;
     private PackageManager mPackageManager;
     private List<AppWidgetProviderInfo> mWidgets;
+    private static final String TAG = "Launcher.WidgetGalleryAdapter";
 
     WidgetGalleryAdapter(Context context) {
         mLayoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -65,8 +67,19 @@ public class WidgetGalleryAdapter extends BaseAdapter {
         }
 
         AppWidgetProviderInfo info = mWidgets.get(position);
-        Drawable drawable = mPackageManager.getDrawable(info.provider.getPackageName(), info.icon, null);
-        imageView.setImageDrawable(drawable);
+        Drawable image = null;
+        if (info.previewImage != 0) {
+            image = mPackageManager.getDrawable(
+                    info.provider.getPackageName(), info.previewImage, null);
+            if (image == null) {
+                Log.w(TAG, "Can't load icon drawable 0x" + Integer.toHexString(info.icon)
+                        + " for provider: " + info.provider);
+            }
+        }
+        if (image == null) {
+            image = mPackageManager.getDrawable(info.provider.getPackageName(), info.icon, null);
+        }
+        imageView.setImageDrawable(image);
 
         return imageView;
     }
