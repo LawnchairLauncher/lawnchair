@@ -48,6 +48,7 @@ import android.view.animation.RotateAnimation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.Scroller;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -97,6 +98,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     private int mTouchState = TOUCH_STATE_REST;
 
+    private OnTouchListener mInterceptTouchListener;
     private OnLongClickListener mLongClickListener;
 
     private Launcher mLauncher;
@@ -512,6 +514,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         }
     }
 
+    public void setOnInterceptTouchListener(View.OnTouchListener listener) {
+        mInterceptTouchListener = listener;
+    }
+
     /**
      * Registers the specified listener on each screen contained in this workspace.
      *
@@ -747,6 +753,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (mInterceptTouchListener != null && mInterceptTouchListener.onTouch(this, ev)) {
+            return true;
+        }
         final boolean workspaceLocked = mLauncher.isWorkspaceLocked();
         final boolean allAppsVisible = mLauncher.isAllAppsVisible();
         if (workspaceLocked || allAppsVisible) {
@@ -1289,7 +1298,12 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             mVacantCache = layout.findAllVacantCells(null, ignoreView);
         }
 
-        return mVacantCache.findCellForSpan(mTempEstimate, spanX, spanY, false);
+        if (mVacantCache.findCellForSpan(mTempEstimate, spanX, spanY, false)) {
+            return true;
+        } else {
+            Toast.makeText(getContext(), getContext().getString(R.string.out_of_space), Toast.LENGTH_SHORT).show();
+            return false;
+        }
     }
 
     /**

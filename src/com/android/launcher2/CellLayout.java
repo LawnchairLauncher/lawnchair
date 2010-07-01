@@ -1104,7 +1104,9 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
 
             boolean found = false;
 
-            if (this.spanX >= spanX && this.spanY >= spanY) {
+            // return the span represented by the CellInfo only there is no view there
+            //   (this.cell == null) and there is enough space
+            if (this.cell == null && this.spanX >= spanX && this.spanY >= spanY) {
                 cellXY[0] = cellX;
                 cellXY[1] = cellY;
                 found = true;

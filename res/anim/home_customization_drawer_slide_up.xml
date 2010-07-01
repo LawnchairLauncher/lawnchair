@@ -19,5 +19,4 @@
     android:fromYDelta="100%p"
     android:toYDelta="0%p"
 
-    android:duration="500"
-    android:fillAfter="true" />
+    android:duration="500" />

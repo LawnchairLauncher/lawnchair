@@ -16,19 +16,14 @@
 
 package com.android.launcher2;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import com.android.common.Search;
+import com.android.launcher.R;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.SearchManager;
 import android.app.StatusBarManager;
+import android.app.TabActivity;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -71,27 +66,37 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.View.OnLongClickListener;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.common.Search;
-import com.android.launcher.R;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Default launcher application.
  */
-public final class Launcher extends Activity
-        implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks, AllAppsView.Watcher {
+public final class Launcher extends TabActivity
+        implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks,
+                   AllAppsView.Watcher, View.OnTouchListener {
     static final String TAG = "Launcher";
     static final boolean LOGD = false;
 
@@ -183,7 +188,7 @@ public final class Launcher extends Activity
     private DeleteZone mDeleteZone;
     private HandleView mHandleView;
     private AllAppsView mAllAppsGrid;
-    private WidgetChooser mWidgetChooser;
+    private TabHost mHomeCustomizationDrawer;
 
     private Bundle mSavedState;
 
@@ -243,6 +248,22 @@ public final class Launcher extends Activity
         setWallpaperDimension();
         setContentView(R.layout.launcher);
 
+        mHomeCustomizationDrawer = getTabHost();
+
+        String widgetsLabel = getString(R.string.widgets_tab_label);
+        mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec("widgets")
+                .setIndicator(widgetsLabel).setContent(R.id.widget_chooser));
+        String foldersLabel = getString(R.string.folders_tab_label);
+        mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec("folders")
+                .setIndicator(foldersLabel).setContent(R.id.folder_chooser));
+        String shortcutsLabel = getString(R.string.shortcuts_tab_label);
+        mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec("shortcuts")
+                .setIndicator(shortcutsLabel).setContent(R.id.shortcut_chooser));
+        String wallpapersLabel = getString(R.string.wallpapers_tab_label);
+        mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec("wallpapers")
+                .setIndicator(wallpapersLabel).setContent(R.id.wallpaperstab));
+
+        mHomeCustomizationDrawer.setCurrentTab(0);
         setupViews();
 
         registerContentObservers();
@@ -562,8 +583,6 @@ public final class Launcher extends Activity
                     break;
                 case REQUEST_CREATE_APPWIDGET:
                     int appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-                    // TODO: Is this log message meaningful?
-                    if (LOGD) Log.d(TAG, "dumping extras content=" + data.getExtras());
                     completeAddAppWidget(appWidgetId, mAddItemCellInfo);
                     break;
                 case REQUEST_PICK_WALLPAPER:
@@ -739,6 +758,7 @@ public final class Launcher extends Activity
         mWorkspace = (Workspace) dragLayer.findViewById(R.id.workspace);
         final Workspace workspace = mWorkspace;
         workspace.setHapticFeedbackEnabled(false);
+        workspace.setOnInterceptTouchListener(this);
 
         DeleteZone deleteZone = (DeleteZone) dragLayer.findViewById(R.id.delete_zone);
         mDeleteZone = deleteZone;
@@ -748,10 +768,22 @@ public final class Launcher extends Activity
         mHandleView.setOnClickListener(this);
         mHandleView.setOnLongClickListener(this);
 
-        mWidgetChooser = (WidgetChooser) findViewById(R.id.widget_chooser);
-        if (mWidgetChooser != null) {
-            mWidgetChooser.setDragController(dragController);
-            mWidgetChooser.setLauncher(this);
+        WidgetChooser widgetChooser = (WidgetChooser) findViewById(R.id.widget_chooser);
+        if (widgetChooser != null) {
+            WidgetListAdapter widgetGalleryAdapter = new WidgetListAdapter(this);
+            widgetChooser.setAdapter(widgetGalleryAdapter);
+            widgetChooser.setDragController(dragController);
+            widgetChooser.setLauncher(this);
+
+            FolderChooser folderChooser = (FolderChooser) findViewById(R.id.folder_chooser);
+            IntentListAdapter folderTypes = new FolderListAdapter(this, LiveFolders.ACTION_CREATE_LIVE_FOLDER);
+            folderChooser.setAdapter(folderTypes);
+            folderChooser.setLauncher(this);
+
+            ShortcutChooser shortcutChooser = (ShortcutChooser) findViewById(R.id.shortcut_chooser);
+            IntentListAdapter shortcutTypes = new ShortcutListAdapter(this, Intent.ACTION_CREATE_SHORTCUT);
+            shortcutChooser.setAdapter(shortcutTypes);
+            shortcutChooser.setLauncher(this);
         } else {
              ImageView hotseatLeft = (ImageView) findViewById(R.id.hotseat_left);
              hotseatLeft.setContentDescription(mHotseatLabels[0]);
@@ -1161,6 +1193,13 @@ public final class Launcher extends Activity
         return true;
     }
 
+    // we need to initialize mAddItemCellInfo before adding something to the homescreen -- when
+    // using the settings menu to add an item, something similar happens in showAddDialog
+    public void prepareAddItemFromHomeCustomizationDrawer() {
+        mMenuAddInfo = mWorkspace.findAllVacantCells(null);
+        mAddItemCellInfo = mMenuAddInfo;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -1502,6 +1541,29 @@ public final class Launcher extends Activity
         }
     }
 
+    private final class SlideDownFinishedListener implements Animation.AnimationListener {
+        TabHost mHomeCustomizationDrawer;
+        SlideDownFinishedListener(TabHost homeCustomizationDrawer) {
+            mHomeCustomizationDrawer = homeCustomizationDrawer;
+        }
+        public void onAnimationEnd(Animation animation) {
+            mHomeCustomizationDrawer.setVisibility(View.GONE);
+        }
+        public void onAnimationRepeat(Animation animation) {}
+        public void onAnimationStart(Animation animation) {}
+    }
+
+    public boolean onTouch(View v, MotionEvent event) {
+        // this is being forwarded from mWorkspace;
+        // clicking anywhere on the workspace causes the drawer to slide down
+        if (mHomeCustomizationDrawer.getVisibility() == View.VISIBLE) {
+            Animation slideDownAnimation = AnimationUtils.loadAnimation(this, R.anim.home_customization_drawer_slide_down);
+            slideDownAnimation.setAnimationListener(new SlideDownFinishedListener(mHomeCustomizationDrawer));
+            mHomeCustomizationDrawer.startAnimation(slideDownAnimation);
+        }
+        return false;
+    }
+
     /**
      * Event handler for the "plus" button that appears on the home screen, which
      * enters home screen customization mode.
@@ -1509,11 +1571,12 @@ public final class Launcher extends Activity
      * @param v The view that was clicked.
      */
     public void onClickAddButton(View v) {
-        View widgetChooser = findViewById(R.id.widget_chooser);
-        widgetChooser.setVisibility(View.VISIBLE);
 
         // Animate the widget chooser up from the bottom of the screen
-        widgetChooser.startAnimation(AnimationUtils.loadAnimation(this, R.anim.widget_chooser_slide_up));
+        if (mHomeCustomizationDrawer.getVisibility() == View.GONE) {
+            mHomeCustomizationDrawer.setVisibility(View.VISIBLE);
+            mHomeCustomizationDrawer.startAnimation(AnimationUtils.loadAnimation(this, R.anim.home_customization_drawer_slide_up));
+        }
     }
 
     public void onClickAllAppsButton(View w) {
@@ -1841,6 +1904,7 @@ public final class Launcher extends Activity
     }
 
     private void pickShortcut() {
+        // Insert extra item to handle picking application
         Bundle bundle = new Bundle();
 
         ArrayList<String> shortcutNames = new ArrayList<String>();
@@ -2070,7 +2134,6 @@ public final class Launcher extends Activity
 
             switch (which) {
                 case AddAdapter.ITEM_SHORTCUT: {
-                    // Insert extra item to handle picking application
                     pickShortcut();
                     break;
                 }

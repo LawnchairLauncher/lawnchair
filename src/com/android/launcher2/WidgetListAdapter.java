@@ -29,16 +29,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.List;
 
-public class WidgetGalleryAdapter extends BaseAdapter {
+public class WidgetListAdapter extends BaseAdapter {
     private LayoutInflater mLayoutInflater;
     private PackageManager mPackageManager;
     private List<AppWidgetProviderInfo> mWidgets;
     private static final String TAG = "Launcher.WidgetGalleryAdapter";
 
-    WidgetGalleryAdapter(Context context) {
+    WidgetListAdapter(Context context) {
         mLayoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         AppWidgetManager widgetManager = AppWidgetManager.getInstance(context);
         mWidgets = widgetManager.getInstalledProviders();
@@ -58,12 +60,13 @@ public class WidgetGalleryAdapter extends BaseAdapter {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView;
+        TextView textView;
 
         if (convertView == null) {
-            imageView = (ImageView) mLayoutInflater.inflate(R.layout.widget_item, parent, false);
+            textView = (TextView) mLayoutInflater.inflate(
+                    R.layout.home_customization_drawer_item, parent, false);
         } else {
-            imageView = (ImageView) convertView;
+            textView = (TextView) convertView;
         }
 
         AppWidgetProviderInfo info = mWidgets.get(position);
@@ -79,8 +82,10 @@ public class WidgetGalleryAdapter extends BaseAdapter {
         if (image == null) {
             image = mPackageManager.getDrawable(info.provider.getPackageName(), info.icon, null);
         }
-        imageView.setImageDrawable(image);
+        image.setBounds(0, 0, image.getIntrinsicWidth(), image.getIntrinsicHeight());
+        textView.setCompoundDrawables(null, image, null, null);
+        textView.setText(info.label);
 
-        return imageView;
+        return textView;
     }
 }

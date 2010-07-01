@@ -43,6 +43,11 @@
     <string name="activity_not_found">Application is not installed on your phone.</string>
     <!-- List item for configuring the current wallpaper -->
     <string name="configure_wallpaper">Configure...</string>
+    <string name="widgets_tab_label">Widgets</string>
+    <string name="folders_tab_label">Folders</string>
+    <string name="shortcuts_tab_label">Shortcuts</string>
+    <string name="wallpapers_tab_label">Wallpapers</string>
+    <string name="wallpapers_temp_tab_text">This will be the wallpapers tab</string>
 
     <!-- Folders -->
     <skip />

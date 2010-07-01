@@ -6,52 +6,23 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Gallery;
 
-public class WidgetChooser extends Gallery
-    implements Gallery.OnItemLongClickListener, DragSource {
-
-    Context mContext;
-
-    private Launcher mLauncher;
+public class WidgetChooser extends HomeCustomizationItemGallery implements DragSource {
     private DragController mDragController;
-    private WidgetGalleryAdapter mWidgetGalleryAdapter;
-
-    private int mMotionDownRawX;
-    private int mMotionDownRawY;
 
     public WidgetChooser(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setLongClickable(true);
-        setOnItemLongClickListener(this);
-        mContext = context;
-
-        setCallbackDuringFling(false);
-
-        mWidgetGalleryAdapter = new WidgetGalleryAdapter(context);
-        setAdapter(mWidgetGalleryAdapter);
-    }
-
-    public void onDropCompleted(View target, boolean success) {
-        // TODO Auto-generated method stub
-
     }
 
     public void setDragController(DragController dragger) {
         mDragController = dragger;
     }
 
-    public void setLauncher(Launcher launcher) {
-        mLauncher = launcher;
-    }
-
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        AppWidgetProviderInfo info = (AppWidgetProviderInfo)mWidgetGalleryAdapter.getItem(position);
+        AppWidgetProviderInfo info = (AppWidgetProviderInfo)getAdapter().getItem(position);
         try {
             Resources r = mContext.getPackageManager().getResourcesForApplication(info.provider.getPackageName());
 
@@ -73,22 +44,7 @@ public class WidgetChooser extends Gallery
         }
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN && mLauncher.isAllAppsVisible()) {
-            return false;
-        }
-
-        super.onTouchEvent(ev);
-
-        int x = (int) ev.getX();
-        int y = (int) ev.getY();
-
-        switch (ev.getAction()) {
-        case MotionEvent.ACTION_DOWN:
-            mMotionDownRawX = (int) ev.getRawX();
-            mMotionDownRawY = (int) ev.getRawY();
-        }
-        return true;
+    public void onDropCompleted(View target, boolean success) {
     }
 }
+
