@@ -36,7 +36,7 @@ import android.renderscript.RSSurfaceView;
 import android.renderscript.RenderScript;
 import android.renderscript.RenderScriptGL;
 import android.renderscript.Sampler;
-import android.renderscript.SimpleMesh;
+import android.renderscript.Mesh;
 import android.renderscript.Type;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -945,7 +945,7 @@ public class AllApps3D extends RSSurfaceView
         private Resources mRes;
         ScriptC_Allapps mScript;
 
-        private SimpleMesh mMesh;
+        private Mesh mMesh;
         private ProgramVertex.MatrixAllocation mPVA;
 
         private ScriptField_VpConsts mUniformAlloc;
@@ -1018,7 +1018,7 @@ public class AllApps3D extends RSSurfaceView
         }
 
         public void initMesh() {
-            SimpleMesh.TriangleMeshBuilder tm = new SimpleMesh.TriangleMeshBuilder(sRS, 2, 0);
+            Mesh.TriangleMeshBuilder tm = new Mesh.TriangleMeshBuilder(sRS, 2, 0);
 
             for (int ct=0; ct < 16; ct++) {
                 float pos = (1.f / (16.f - 1)) * ct;
@@ -1029,7 +1029,7 @@ public class AllApps3D extends RSSurfaceView
                 tm.addTriangle(ct, ct+1, ct+2);
                 tm.addTriangle(ct+1, ct+3, ct+2);
             }
-            mMesh = tm.create();
+            mMesh = tm.create(true);
             mScript.set_gSMCell(mMesh);
         }
 
@@ -1112,7 +1112,7 @@ public class AllApps3D extends RSSurfaceView
                     "}\n";
             sb.setShader(t);
             sb.addConstant(mUniformAlloc.getType());
-            sb.addInput(mMesh.getVertexType(0).getElement());
+            sb.addInput(mMesh.getVertexAllocation(0).getType().getElement());
             ProgramVertex pvc = sb.create();
             pvc.bindAllocation(mPVA);
             pvc.bindConstants(mUniformAlloc.getAllocation(), 1);

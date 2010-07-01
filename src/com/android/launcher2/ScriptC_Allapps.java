@@ -170,13 +170,13 @@ public class ScriptC_Allapps extends ScriptC {
     }
 
     private final static int mExportVarIdx_gSMCell = 13;
-    private SimpleMesh mExportVar_gSMCell;
-    public void set_gSMCell(SimpleMesh v) {
+    private Mesh mExportVar_gSMCell;
+    public void set_gSMCell(Mesh v) {
         mExportVar_gSMCell = v;
         setVar(mExportVarIdx_gSMCell, (v == null) ? 0 : v.getID());
     }
 
-    public SimpleMesh get_gSMCell() {
+    public Mesh get_gSMCell() {
         return mExportVar_gSMCell;
     }
 
