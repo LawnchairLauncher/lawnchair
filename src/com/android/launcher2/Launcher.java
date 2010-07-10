@@ -19,11 +19,11 @@ package com.android.launcher2;
 import com.android.common.Search;
 import com.android.launcher.R;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.SearchManager;
 import android.app.StatusBarManager;
-import android.app.TabActivity;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -74,7 +74,6 @@ import android.view.View.OnLongClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -94,7 +93,7 @@ import java.util.List;
 /**
  * Default launcher application.
  */
-public final class Launcher extends TabActivity
+public final class Launcher extends Activity
         implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks,
                    AllAppsView.Watcher, View.OnTouchListener {
     static final String TAG = "Launcher";
@@ -247,23 +246,25 @@ public final class Launcher extends TabActivity
         checkForLocaleChange();
         setWallpaperDimension();
         setContentView(R.layout.launcher);
+        mHomeCustomizationDrawer = (TabHost) findViewById(com.android.internal.R.id.tabhost);
+        if (mHomeCustomizationDrawer != null) {
+            mHomeCustomizationDrawer.setup();
 
-        mHomeCustomizationDrawer = getTabHost();
-
-        String widgetsLabel = getString(R.string.widgets_tab_label);
-        mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec("widgets")
-                .setIndicator(widgetsLabel).setContent(R.id.widget_chooser));
-        String foldersLabel = getString(R.string.folders_tab_label);
-        mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec("folders")
-                .setIndicator(foldersLabel).setContent(R.id.folder_chooser));
-        String shortcutsLabel = getString(R.string.shortcuts_tab_label);
-        mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec("shortcuts")
-                .setIndicator(shortcutsLabel).setContent(R.id.shortcut_chooser));
-        String wallpapersLabel = getString(R.string.wallpapers_tab_label);
-        mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec("wallpapers")
-                .setIndicator(wallpapersLabel).setContent(R.id.wallpaperstab));
-
-        mHomeCustomizationDrawer.setCurrentTab(0);
+            String widgetsLabel = getString(R.string.widgets_tab_label);
+            mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec("widgets")
+                    .setIndicator(widgetsLabel).setContent(R.id.widget_chooser));
+            String foldersLabel = getString(R.string.folders_tab_label);
+            mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec("folders")
+                    .setIndicator(foldersLabel).setContent(R.id.folder_chooser));
+            String shortcutsLabel = getString(R.string.shortcuts_tab_label);
+            mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec("shortcuts")
+                    .setIndicator(shortcutsLabel).setContent(R.id.shortcut_chooser));
+            String wallpapersLabel = getString(R.string.wallpapers_tab_label);
+            mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec("wallpapers")
+                    .setIndicator(wallpapersLabel).setContent(R.id.wallpaperstab));
+    
+            mHomeCustomizationDrawer.setCurrentTab(0);
+        }
         setupViews();
 
         registerContentObservers();
@@ -758,7 +759,11 @@ public final class Launcher extends TabActivity
         mWorkspace = (Workspace) dragLayer.findViewById(R.id.workspace);
         final Workspace workspace = mWorkspace;
         workspace.setHapticFeedbackEnabled(false);
-        workspace.setOnInterceptTouchListener(this);
+
+        // We only intercept touch events to dismiss the home customization drawer; if it doesn't
+        //  exist, then no need to do this
+        if (mHomeCustomizationDrawer != null)
+            workspace.setOnInterceptTouchListener(this);
 
         DeleteZone deleteZone = (DeleteZone) dragLayer.findViewById(R.id.delete_zone);
         mDeleteZone = deleteZone;
@@ -1040,6 +1045,13 @@ public final class Launcher extends TabActivity
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         // Do not call super here
         mSavedInstanceState = savedInstanceState;
+
+        if (mHomeCustomizationDrawer != null) {
+            String cur = savedInstanceState.getString("currentTab");
+            if (cur != null) {
+                mHomeCustomizationDrawer.setCurrentTabByTag(cur);
+            }
+        }
     }
 
     @Override
@@ -1082,6 +1094,13 @@ public final class Launcher extends TabActivity
         if (mFolderInfo != null && mWaitingForResult) {
             outState.putBoolean(RUNTIME_STATE_PENDING_FOLDER_RENAME, true);
             outState.putLong(RUNTIME_STATE_PENDING_FOLDER_RENAME_ID, mFolderInfo.id);
+        }
+
+        if (mHomeCustomizationDrawer != null) {
+            String currentTabTag = mHomeCustomizationDrawer.getCurrentTabTag();
+            if (currentTabTag != null) {
+                outState.putString("currentTab", currentTabTag);
+            }
         }
     }
 
@@ -1556,7 +1575,7 @@ public final class Launcher extends TabActivity
     public boolean onTouch(View v, MotionEvent event) {
         // this is being forwarded from mWorkspace;
         // clicking anywhere on the workspace causes the drawer to slide down
-        if (mHomeCustomizationDrawer.getVisibility() == View.VISIBLE) {
+        if (mHomeCustomizationDrawer != null && mHomeCustomizationDrawer.getVisibility() == View.VISIBLE) {
             Animation slideDownAnimation = AnimationUtils.loadAnimation(this, R.anim.home_customization_drawer_slide_down);
             slideDownAnimation.setAnimationListener(new SlideDownFinishedListener(mHomeCustomizationDrawer));
             mHomeCustomizationDrawer.startAnimation(slideDownAnimation);
@@ -1573,7 +1592,7 @@ public final class Launcher extends TabActivity
     public void onClickAddButton(View v) {
 
         // Animate the widget chooser up from the bottom of the screen
-        if (mHomeCustomizationDrawer.getVisibility() == View.GONE) {
+        if (mHomeCustomizationDrawer != null && mHomeCustomizationDrawer.getVisibility() == View.GONE) {
             mHomeCustomizationDrawer.setVisibility(View.VISIBLE);
             mHomeCustomizationDrawer.startAnimation(AnimationUtils.loadAnimation(this, R.anim.home_customization_drawer_slide_up));
         }
