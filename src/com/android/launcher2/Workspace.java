@@ -28,6 +28,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -43,9 +44,9 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.Interpolator;
 import android.view.animation.RotateAnimation;
-import android.view.animation.Animation.AnimationListener;
 import android.widget.Scroller;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -89,6 +90,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
      * Target drop area calculated during last acceptDrop call.
      */
     private int[] mTargetCell = null;
+
+    /**
+     * The CellLayout that is currently being dragged over
+     */
+    private CellLayout mDragTargetLayout = null;
 
     private float mLastMotionX;
     private float mLastMotionY;
@@ -135,6 +141,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     private static final float BASELINE_FLING_VELOCITY = 2500.f;
     private static final float FLING_VELOCITY_INFLUENCE = 0.4f;
+
+    private Paint mDropIndicatorPaint;
 
     private static class WorkspaceOvershootInterpolator implements Interpolator {
         private static final float DEFAULT_TENSION = 1.3f;
@@ -480,13 +488,12 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             lp.cellVSpan = spanY;
         }
 
-        // get the canonical child id to uniquely represent this view in this
-        // screen
+        // Get the canonical child id to uniquely represent this view in this screen
         int childId = LauncherModel.getCanonicalCellLayoutChildId(child.getId(), screen, x, y, spanX, spanY);
         if (!group.addViewToCellLayout(child, insert ? 0 : -1, childId, lp)) {
             // TODO: This branch occurs when the workspace is adding views
             // outside of the defined grid
-            // maybe we should be deleting these items from the LauncherMode?
+            // maybe we should be deleting these items from the LauncherModel?
             Log.w(TAG, "Failed to add to item at (" + lp.cellX + "," + lp.cellY + ") to CellLayout");
         }
 
@@ -1212,13 +1219,45 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         clearVacantCache();
     }
 
-    public void onDragOver(DragSource source, int x, int y, int xOffset,
-            int yOffset, DragView dragView, Object dragInfo) {
+    public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo) {
+
+        ItemInfo item = (ItemInfo)dragInfo;
+
+        CellLayout currentLayout = getCurrentDropLayout();
+
+        if (dragInfo instanceof LauncherAppWidgetInfo) {
+            LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo)dragInfo;
+
+            if (widgetInfo.spanX == -1) {
+                // Calculate the grid spans needed to fit this widget
+                int[] spans = currentLayout.rectToCell(widgetInfo.minWidth, widgetInfo.minHeight);
+                item.spanX = spans[0];
+                item.spanY = spans[1];
+            }
+        }
+        if (currentLayout != mDragTargetLayout) {
+            if (mDragTargetLayout != null) {
+                mDragTargetLayout.onDragComplete();
+            }
+            mDragTargetLayout = currentLayout;
+        }
+
+        // Find the top left corner of the item
+        int originX = x - xOffset;
+        int originY = y - yOffset;
+
+        final View child = (mDragInfo == null) ? null : mDragInfo.cell;
+        currentLayout.visualizeDropLocation(child, originX, originY, item.spanX, item.spanY);
     }
 
     public void onDragExit(DragSource source, int x, int y, int xOffset,
             int yOffset, DragView dragView, Object dragInfo) {
         clearVacantCache();
+        if (mDragTargetLayout != null) {
+            mDragTargetLayout.onDragComplete();
+            mDragTargetLayout = null;
+        }
     }
 
     private void onDropExternal(int x, int y, Object dragInfo,
@@ -1257,16 +1296,15 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                     + info.itemType);
         }
 
-        // addAppWidgetFromDrop already took care of attaching the widget view to the appropriate cell
-        // TODO why aren't we calling addInScreen here?
-        if (info.itemType != LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET) {
-            mTargetCell = estimateDropCell(x, y, 1, 1, view, cellLayout,
-                    mTargetCell);
+        // If the view is null, it has already been added.
+        if (view == null) {
+            cellLayout.onDragComplete();
+        } else {
+            mTargetCell = estimateDropCell(x, y, 1, 1, view, cellLayout, mTargetCell);
             addInScreen(view, indexOfChild(cellLayout), mTargetCell[0],
                     mTargetCell[1], info.spanX, info.spanY, insertAtFirst);
             cellLayout.onDropChild(view);
-            CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view
-                    .getLayoutParams();
+            CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
 
             LauncherModel.addOrMoveItemInDatabase(mLauncher, info,
                     LauncherSettings.Favorites.CONTAINER_DESKTOP, mCurrentScreen,
@@ -1344,14 +1382,18 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
      */
     private int[] estimateDropCell(int pixelX, int pixelY,
             int spanX, int spanY, View ignoreView, CellLayout layout, int[] recycle) {
+
+        final int[] cellXY = mTempCell;
+        layout.estimateDropCell(pixelX, pixelY, spanX, spanY, cellXY);
+        layout.cellToPoint(cellXY[0], cellXY[1], mTempEstimate);
+
         // Create vacant cell cache if none exists
         if (mVacantCache == null) {
             mVacantCache = layout.findAllVacantCells(null, ignoreView);
         }
 
         // Find the best target drop location
-        return layout.findNearestVacantArea(pixelX, pixelY,
-                spanX, spanY, mVacantCache, recycle);
+        return layout.findNearestVacantArea(mTempEstimate[0], mTempEstimate[1], spanX, spanY, mVacantCache, recycle);
     }
 
     void setLauncher(Launcher launcher) {

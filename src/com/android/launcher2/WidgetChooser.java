@@ -34,8 +34,11 @@ public class WidgetChooser extends HomeCustomizationItemGallery implements DragS
             int screenX = mMotionDownRawX - (w / 2);
             int screenY = mMotionDownRawY - h;
 
-            LauncherAppWidgetInfo dragInfo = new LauncherAppWidgetInfo(-1);
-            dragInfo.providerName = info.provider;
+            AppWidgetProviderInfo appWidgetInfo = (AppWidgetProviderInfo)view.getTag();
+            LauncherAppWidgetInfo dragInfo = new LauncherAppWidgetInfo(info.provider);
+            // TODO: Is this really the best place to do this?
+            dragInfo.minWidth = appWidgetInfo.minWidth;
+            dragInfo.minHeight = appWidgetInfo.minHeight;
             mDragController.startDrag(bmp, screenX, screenY,
                     0, 0, w, h, this, dragInfo, DragController.DRAG_ACTION_COPY);
             return true;

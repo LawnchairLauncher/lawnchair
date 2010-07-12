@@ -85,6 +85,8 @@ public class WidgetListAdapter extends BaseAdapter {
         image.setBounds(0, 0, image.getIntrinsicWidth(), image.getIntrinsicHeight());
         textView.setCompoundDrawables(null, image, null, null);
         textView.setText(info.label);
+        // Store the widget info on the associated view so we can easily fetch it later
+        textView.setTag(info);
 
         return textView;
     }

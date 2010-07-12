@@ -16,7 +16,7 @@
 
 package com.android.launcher2;
 
-import java.util.ArrayList;
+import com.android.launcher.R;
 
 import android.app.WallpaperManager;
 import android.content.Context;
@@ -25,6 +25,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.ContextMenu;
 import android.view.MotionEvent;
@@ -34,7 +35,8 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.LayoutAnimationController;
 
-import com.android.launcher.R;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class CellLayout extends ViewGroup {
     static final String TAG = "CellLayout";
@@ -63,10 +65,25 @@ public class CellLayout extends ViewGroup {
     private final Rect mRect = new Rect();
     private final CellInfo mCellInfo = new CellInfo();
 
-    int[] mCellXY = new int[2];
+    // This is a temporary variable to prevent having to allocate a new object just to
+    // return an (x, y) value from helper functions. Do NOT use it to maintain other state.
+    private final int[] mTmpCellXY = new int[2];
+
     boolean[][] mOccupied;
 
-    private RectF mDragRect = new RectF();
+    private final RectF mDragRect = new RectF();
+
+    // When dragging, used to indicate a vacant drop location
+    private Drawable mVacantDrawable;
+
+    // When dragging, used to indicate an occupied drop location
+    private Drawable mOccupiedDrawable;
+
+    // Updated to point to mVacantDrawable or mOccupiedDrawable, as appropriate
+    private Drawable mDragRectDrawable;
+
+    // When a drag operation is in progress, holds the nearest cell to the touch point
+    private final int[] mDragCell = new int[2];
 
     private boolean mDirtyTag;
     private boolean mLastDownOnOccupiedCell = false;
@@ -83,6 +100,13 @@ public class CellLayout extends ViewGroup {
 
     public CellLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+
+        // A ViewGroup usually does not draw, but CellLayout needs to draw a rectangle to show
+        // the user where a dragged item will land when dropped.
+        setWillNotDraw(false);
+        mVacantDrawable = getResources().getDrawable(R.drawable.rounded_rect_green);
+        mOccupiedDrawable = getResources().getDrawable(R.drawable.rounded_rect_red);
+
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CellLayout, defStyle, 0);
 
         mCellWidth = a.getDimensionPixelSize(R.styleable.CellLayout_cellWidth, 10);
@@ -110,6 +134,18 @@ public class CellLayout extends ViewGroup {
     @Override
     public void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        if (!mDragRect.isEmpty()) {
+            mDragRectDrawable.setBounds(
+                    (int)mDragRect.left,
+                    (int)mDragRect.top,
+                    (int)mDragRect.right,
+                    (int)mDragRect.bottom);
+            mDragRectDrawable.draw(canvas);
+        }
     }
 
     @Override
@@ -199,7 +235,7 @@ public class CellLayout extends ViewGroup {
         mLastDownOnOccupiedCell = found;
 
         if (!found) {
-            int cellXY[] = mCellXY;
+            final int cellXY[] = mTmpCellXY;
             pointToCellExact(x, y, cellXY);
 
             final boolean portrait = mPortrait;
@@ -207,7 +243,7 @@ public class CellLayout extends ViewGroup {
             final int yCount = portrait ? mLongAxisCells : mShortAxisCells;
 
             final boolean[][] occupied = mOccupied;
-            findOccupiedCells(xCount, yCount, occupied, null);
+            findOccupiedCells(xCount, yCount, occupied, null, true);
 
             cellInfo.cell = null;
             cellInfo.cellX = cellXY[0];
@@ -258,7 +294,7 @@ public class CellLayout extends ViewGroup {
             final int yCount = portrait ? mLongAxisCells : mShortAxisCells;
 
             final boolean[][] occupied = mOccupied;
-            findOccupiedCells(xCount, yCount, occupied, null);
+            findOccupiedCells(xCount, yCount, occupied, null, true);
 
             findIntersectingVacantCells(info, info.cellX, info.cellY, xCount, yCount, occupied);
 
@@ -340,6 +376,9 @@ public class CellLayout extends ViewGroup {
         cellInfo.vacantCells.add(cell);
     }
 
+    /**
+     * Check if the column 'x' is empty from rows 'top' to 'bottom', inclusive.
+     */
     private static boolean isColumnEmpty(int x, int top, int bottom, boolean[][] occupied) {
         for (int y = top; y <= bottom; y++) {
             if (occupied[x][y]) {
@@ -349,6 +388,9 @@ public class CellLayout extends ViewGroup {
         return true;
     }
 
+    /**
+     * Check if the row 'y' is empty from columns 'left' to 'right', inclusive.
+     */
     private static boolean isRowEmpty(int y, int left, int right, boolean[][] occupied) {
         for (int x = left; x <= right; x++) {
             if (occupied[x][y]) {
@@ -372,7 +414,7 @@ public class CellLayout extends ViewGroup {
                 }
             }
         } else {
-            findOccupiedCells(xCount, yCount, occupied, ignoreView);
+            findOccupiedCells(xCount, yCount, occupied, ignoreView, true);
         }
 
         CellInfo cellInfo = new CellInfo();
@@ -600,7 +642,7 @@ public class CellLayout extends ViewGroup {
                 if (lp.dropped) {
                     lp.dropped = false;
 
-                    final int[] cellXY = mCellXY;
+                    final int[] cellXY = mTmpCellXY;
                     getLocationOnScreen(cellXY);
                     mWallpaperManager.sendWallpaperCommand(getWindowToken(), "android.home.drop",
                             cellXY[0] + childLeft + lp.width / 2,
@@ -626,6 +668,79 @@ public class CellLayout extends ViewGroup {
         super.setChildrenDrawnWithCacheEnabled(enabled);
     }
 
+    private boolean isVacant(int originX, int originY, int spanX, int spanY) {
+        for (int i = 0; i < spanY; i++) {
+            if (!isRowEmpty(originY + i, originX, originX + spanX - 1, mOccupied)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Estimate where the top left cell of the dragged item will land if it is dropped.
+     *
+     * @param originX The X value of the top left corner of the item
+     * @param originY The Y value of the top left corner of the item
+     * @param spanX The number of horizontal cells that the item spans
+     * @param spanY The number of vertical cells that the item spans
+     * @param result The estimated drop cell X and Y.
+     */
+    void estimateDropCell(int originX, int originY, int spanX, int spanY, int[] result) {
+        final int countX = getCountX();
+        final int countY = getCountY();
+
+        pointToCellRounded(originX, originY, result);
+
+        // If the item isn't fully on this screen, snap to the edges
+        int rightOverhang = result[0] + spanX - countX;
+        if (rightOverhang > 0) {
+            result[0] -= rightOverhang; // Snap to right
+        }
+        result[0] = Math.max(0, result[0]); // Snap to left
+        int bottomOverhang = result[1] + spanY - countY;
+        if (bottomOverhang > 0) {
+            result[1] -= bottomOverhang; // Snap to bottom
+        }
+        result[1] = Math.max(0, result[1]); // Snap to top
+    }
+
+    void visualizeDropLocation(View view, int originX, int originY, int spanX, int spanY) {
+        final int[] originCell = mDragCell;
+        final int[] cellXY = mTmpCellXY;
+        estimateDropCell(originX, originY, spanX, spanY, cellXY);
+
+        // Only recalculate the bounding rect when necessary
+        if (!Arrays.equals(cellXY, originCell)) {
+            originCell[0] = cellXY[0];
+            originCell[1] = cellXY[1];
+
+            // Find the top left corner of the rect the object will occupy
+            final int[] topLeft = mTmpCellXY;
+            cellToPoint(originCell[0], originCell[1], topLeft);
+            final int left = topLeft[0];
+            final int top = topLeft[1];
+
+            // Now find the bottom right
+            final int[] bottomRight = mTmpCellXY;
+            cellToPoint(originCell[0] + spanX - 1, originCell[1] + spanY - 1, bottomRight);
+            bottomRight[0] += mCellWidth;
+            bottomRight[1] += mCellHeight;
+
+            final int countX = mPortrait ? mShortAxisCells : mLongAxisCells;
+            final int countY = mPortrait ? mLongAxisCells : mShortAxisCells;
+            // TODO: It's not necessary to do this every time, but it's not especially expensive
+            findOccupiedCells(countX, countY, mOccupied, view, false);
+
+            boolean vacant = isVacant(originCell[0], originCell[1], spanX, spanY);
+            mDragRectDrawable = vacant ? mVacantDrawable : mOccupiedDrawable;
+
+            // mDragRect will be rendered in onDraw()
+            mDragRect.set(left, top, bottomRight[0], bottomRight[1]);
+            invalidate();
+        }
+    }
+
     /**
      * Find a vacant area that will fit the given bounds nearest the requested
      * cell location. Uses Euclidean distance to score multiple vacant areas.
@@ -644,7 +759,6 @@ public class CellLayout extends ViewGroup {
 
         // Keep track of best-scoring drop area
         final int[] bestXY = recycle != null ? recycle : new int[2];
-        final int[] cellXY = mCellXY;
         double bestDistance = Double.MAX_VALUE;
 
         // Bail early if vacant cells aren't valid
@@ -662,7 +776,8 @@ public class CellLayout extends ViewGroup {
                 continue;
             }
 
-            // Score is center distance from requested pixel
+            // Score is distance from requested pixel to the top left of each cell
+            final int[] cellXY = mTmpCellXY;
             cellToPoint(cell.cellX, cell.cellY, cellXY);
 
             double distance = Math.sqrt(Math.pow(cellXY[0] - pixelX, 2)
@@ -683,6 +798,18 @@ public class CellLayout extends ViewGroup {
     }
 
     /**
+     * Called when a drag and drop operation has finished (successfully or not).
+     */
+    void onDragComplete() {
+        // Invalidate the drag data
+        mDragCell[0] = -1;
+        mDragCell[1] = -1;
+
+        mDragRect.setEmpty();
+        invalidate();
+    }
+
+    /**
      * Mark a child as having been dropped.
      *
      * @param child The child that is being dropped
@@ -694,16 +821,15 @@ public class CellLayout extends ViewGroup {
             lp.dropped = true;
             mDragRect.setEmpty();
             child.requestLayout();
-            invalidate();
         }
+        onDragComplete();
     }
 
     void onDropAborted(View child) {
         if (child != null) {
             ((LayoutParams) child.getLayoutParams()).isDragging = false;
-            invalidate();
         }
-        mDragRect.setEmpty();
+        onDragComplete();
     }
 
     /**
@@ -718,30 +844,16 @@ public class CellLayout extends ViewGroup {
     }
 
     /**
-     * Drag a child over the specified position
-     *
-     * @param child The child that is being dropped
-     * @param cellX The child's new x cell location
-     * @param cellY The child's new y cell location
-     */
-    void onDragOverChild(View child, int cellX, int cellY) {
-        int[] cellXY = mCellXY;
-        pointToCellRounded(cellX, cellY, cellXY);
-        LayoutParams lp = (LayoutParams) child.getLayoutParams();
-        cellToRect(cellXY[0], cellXY[1], lp.cellHSpan, lp.cellVSpan, mDragRect);
-        invalidate();
-    }
-
-    /**
      * Computes a bounding rectangle for a range of cells
      *
      * @param cellX X coordinate of upper left corner expressed as a cell position
      * @param cellY Y coordinate of upper left corner expressed as a cell position
      * @param cellHSpan Width in cells
      * @param cellVSpan Height in cells
-     * @param dragRect Rectnagle into which to put the results
+     * @param resultRect Rect into which to put the results
      */
-    public void cellToRect(int cellX, int cellY, int cellHSpan, int cellVSpan, RectF dragRect) {
+    public void cellToRect(int cellX, int cellY, int cellHSpan, int cellVSpan, RectF resultRect) {
+        final boolean portrait = mPortrait;
         final int cellWidth = mCellWidth;
         final int cellHeight = mCellHeight;
         final int widthGap = mWidthGap;
@@ -756,7 +868,7 @@ public class CellLayout extends ViewGroup {
         int x = hStartPadding + cellX * (cellWidth + widthGap);
         int y = vStartPadding + cellY * (cellHeight + heightGap);
 
-        dragRect.set(x, y, x + width, y + height);
+        resultRect.set(x, y, x + width, y + height);
     }
 
     /**
@@ -796,7 +908,7 @@ public class CellLayout extends ViewGroup {
         final int yCount = portrait ? mLongAxisCells : mShortAxisCells;
         final boolean[][] occupied = mOccupied;
 
-        findOccupiedCells(xCount, yCount, occupied, null);
+        findOccupiedCells(xCount, yCount, occupied, null, true);
 
         return findVacantCell(vacant, spanX, spanY, xCount, yCount, occupied);
     }
@@ -825,13 +937,16 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         return false;
     }
 
-    boolean[] getOccupiedCells() {
+    /**
+     * Update the array of occupied cells (mOccupied), and return a flattened copy of the array.
+     */
+    boolean[] getOccupiedCellsFlattened() {
         final boolean portrait = mPortrait;
         final int xCount = portrait ? mShortAxisCells : mLongAxisCells;
         final int yCount = portrait ? mLongAxisCells : mShortAxisCells;
         final boolean[][] occupied = mOccupied;
 
-        findOccupiedCells(xCount, yCount, occupied, null);
+        findOccupiedCells(xCount, yCount, occupied, null, true);
 
         final boolean[] flat = new boolean[xCount * yCount];
         for (int y = 0; y < yCount; y++) {
@@ -843,7 +958,14 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         return flat;
     }
 
-    private void findOccupiedCells(int xCount, int yCount, boolean[][] occupied, View ignoreView) {
+    /**
+     * Update the array of occupied cells.
+     * @param ignoreView If non-null, the space occupied by this View is treated as vacant
+     * @param ignoreFolders If true, a cell occupied by a Folder is treated as vacant
+     */
+    private void findOccupiedCells(
+            int xCount, int yCount, boolean[][] occupied, View ignoreView, boolean ignoreFolders) {
+
         for (int x = 0; x < xCount; x++) {
             for (int y = 0; y < yCount; y++) {
                 occupied[x][y] = false;
@@ -853,7 +975,7 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            if (child instanceof Folder || child.equals(ignoreView)) {
+            if ((ignoreFolders && child instanceof Folder) || child.equals(ignoreView)) {
                 continue;
             }
             LayoutParams lp = (LayoutParams) child.getLayoutParams();

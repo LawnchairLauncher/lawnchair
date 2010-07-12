@@ -1088,7 +1088,7 @@ public final class Launcher extends Activity
             outState.putInt(RUNTIME_STATE_PENDING_ADD_COUNT_X, layout.getCountX());
             outState.putInt(RUNTIME_STATE_PENDING_ADD_COUNT_Y, layout.getCountY());
             outState.putBooleanArray(RUNTIME_STATE_PENDING_ADD_OCCUPIED_CELLS,
-                   layout.getOccupiedCells());
+                   layout.getOccupiedCellsFlattened());
         }
 
         if (mFolderInfo != null && mWaitingForResult) {
