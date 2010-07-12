@@ -49,6 +49,7 @@
         <com.android.launcher2.HandleView
             style="@style/HotseatButton"
             android:id="@+id/all_apps_button"
+            android:layout_height="@dimen/button_bar_height"
             android:layout_width="@dimen/button_bar_height"
 
             android:src="@drawable/all_apps_button"
