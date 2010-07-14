@@ -102,4 +102,10 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
             DragView dragView, Object dragInfo) {
         setCompoundDrawablesWithIntrinsicBounds(null, mCloseIcon, null, null);
     }
+
+    @Override
+    public DropTarget getDropTargetDelegate(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo) {
+        return null;
+    }
 }

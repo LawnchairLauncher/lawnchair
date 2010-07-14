@@ -677,6 +677,20 @@ public class CellLayout extends ViewGroup {
         return true;
     }
 
+    public View getChildAt(int x, int y) {
+        final int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            View child = getChildAt(i);
+            LayoutParams lp = (LayoutParams) child.getLayoutParams();
+
+            if ((lp.cellX <= x) && (x < lp.cellX + lp.cellHSpan) &&
+                    (lp.cellY <= y) && (y < lp.cellY + lp.cellHSpan)) {
+                return child;
+            }
+        }
+        return null;
+    }
+
     /**
      * Estimate where the top left cell of the dragged item will land if it is dropped.
      *
@@ -690,7 +704,7 @@ public class CellLayout extends ViewGroup {
         final int countX = getCountX();
         final int countY = getCountY();
 
-        pointToCellRounded(originX, originY, result);
+        pointToCellRounded(originX + (mCellWidth / 2), originY + (mCellHeight / 2), result);
 
         // If the item isn't fully on this screen, snap to the edges
         int rightOverhang = result[0] + spanX - countX;

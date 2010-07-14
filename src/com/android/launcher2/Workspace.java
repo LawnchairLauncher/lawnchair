@@ -1219,11 +1219,45 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         clearVacantCache();
     }
 
+    public DropTarget getDropTargetDelegate(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo) {
+
+        // We may need to delegate the drag to a child view. If a 1x1 item
+        // would land in a cell occupied by a DragTarget (e.g. a Folder),
+        // then drag events should be handled by that child.
+
+        ItemInfo item = (ItemInfo)dragInfo;
+        CellLayout currentLayout = getCurrentDropLayout();
+
+        int dragPointX, dragPointY;
+        if (item.spanX == 1 && item.spanY == 1) {
+            // For a 1x1, calculate the drop cell exactly as in onDragOver
+            dragPointX = x - xOffset;
+            dragPointY = y - yOffset;
+        } else {
+            // Otherwise, use the exact drag coordinates
+            dragPointX = x;
+            dragPointY = y;
+        }
+
+        // If we are dragging over a cell that contains a DropTarget that will
+        // accept the drop, delegate to that DropTarget.
+        final int[] cellXY = mTempCell;
+        currentLayout.estimateDropCell(dragPointX, dragPointY, item.spanX, item.spanY, cellXY);
+        View child = currentLayout.getChildAt(cellXY[0], cellXY[1]);
+        if (child instanceof DropTarget) {
+            DropTarget target = (DropTarget)child;
+            if (target.acceptDrop(source, x, y, xOffset, yOffset, dragView, dragInfo)) {
+                return target;
+            }
+        }
+        return null;
+    }
+
     public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
 
         ItemInfo item = (ItemInfo)dragInfo;
-
         CellLayout currentLayout = getCurrentDropLayout();
 
         if (dragInfo instanceof LauncherAppWidgetInfo) {

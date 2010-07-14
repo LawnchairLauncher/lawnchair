@@ -394,6 +394,12 @@ public class DragController {
             // Drop on someone?
             final int[] coordinates = mCoordinatesTemp;
             DropTarget dropTarget = findDropTarget(screenX, screenY, coordinates);
+            DropTarget delegate = dropTarget.getDropTargetDelegate(
+                    mDragSource, coordinates[0], coordinates[1],
+                    (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo);
+            if (delegate != null) {
+                dropTarget = delegate;
+            }
             if (dropTarget != null) {
                 if (mLastDropTarget == dropTarget) {
                     dropTarget.onDragOver(mDragSource, coordinates[0], coordinates[1],
@@ -482,13 +488,25 @@ public class DragController {
         final ArrayList<DropTarget> dropTargets = mDropTargets;
         final int count = dropTargets.size();
         for (int i=count-1; i>=0; i--) {
-            final DropTarget target = dropTargets.get(i);
+            DropTarget target = dropTargets.get(i);
             target.getHitRect(r);
+
+            // Convert the hit rect to screen coordinates
             target.getLocationOnScreen(dropCoordinates);
             r.offset(dropCoordinates[0] - target.getLeft(), dropCoordinates[1] - target.getTop());
+
             if (r.contains(x, y)) {
+                DropTarget delegate = target.getDropTargetDelegate(mDragSource,
+                        x, y, (int)mTouchOffsetX, (int)mTouchOffsetY, mDragView, mDragInfo);
+                if (delegate != null) {
+                    target = delegate;
+                    target.getLocationOnScreen(dropCoordinates);
+                }
+
+                // Make dropCoordinates relative to the DropTarget
                 dropCoordinates[0] = x - dropCoordinates[0];
                 dropCoordinates[1] = y - dropCoordinates[1];
+
                 return target;
             }
         }

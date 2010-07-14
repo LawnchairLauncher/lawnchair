@@ -51,6 +51,26 @@ public interface DropTarget {
             DragView dragView, Object dragInfo);
 
     /**
+     * Allows a DropTarget to delegate drag and drop events to another object.
+     *
+     * Most subclasses will should just return null from this method.
+     *
+     * @param source DragSource where the drag started
+     * @param x X coordinate of the drop location
+     * @param y Y coordinate of the drop location
+     * @param xOffset Horizontal offset with the object being dragged where the original
+     *          touch happened
+     * @param yOffset Vertical offset with the object being dragged where the original
+     *          touch happened
+     * @param dragView The DragView that's being dragged around on screen.
+     * @param dragInfo Data associated with the object being dragged
+     *
+     * @return The DropTarget to delegate to, or null to not delegate to another object.
+     */
+    DropTarget getDropTargetDelegate(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo);
+
+    /**
      * Check if a drop action can occur at, or near, the requested location.
      * This may be called repeatedly during a drag, so any calls should return
      * quickly.

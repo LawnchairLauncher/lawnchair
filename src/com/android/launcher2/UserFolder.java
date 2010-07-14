@@ -89,4 +89,10 @@ public class UserFolder extends Folder implements DropTarget {
         super.onOpen();
         requestFocus();
     }
+
+    @Override
+    public DropTarget getDropTargetDelegate(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo) {
+        return null;
+    }
 }
