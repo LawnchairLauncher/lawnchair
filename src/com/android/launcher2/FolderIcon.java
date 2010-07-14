@@ -91,7 +91,9 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
 
     public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
-        setCompoundDrawablesWithIntrinsicBounds(null, mOpenIcon, null, null);
+        if (acceptDrop(source, x, y, xOffset, yOffset, dragView, dragInfo)) {
+            setCompoundDrawablesWithIntrinsicBounds(null, mOpenIcon, null, null);
+        }
     }
 
     public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
