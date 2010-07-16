@@ -1265,7 +1265,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
             if (widgetInfo.spanX == -1) {
                 // Calculate the grid spans needed to fit this widget
-                int[] spans = currentLayout.rectToCell(widgetInfo.minWidth, widgetInfo.minHeight);
+                int[] spans = currentLayout.rectToCell(widgetInfo.minWidth, widgetInfo.minHeight, null);
                 item.spanX = spans[0];
                 item.spanY = spans[1];
             }
@@ -1428,6 +1428,13 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
         // Find the best target drop location
         return layout.findNearestVacantArea(mTempEstimate[0], mTempEstimate[1], spanX, spanY, mVacantCache, recycle);
+    }
+
+    /**
+     * Estimate the size that a child with the given dimensions will take in the current screen.
+     */
+    void estimateChildSize(int minWidth, int minHeight, int[] result) {
+        ((CellLayout)getChildAt(mCurrentScreen)).estimateChildSize(minWidth, minHeight, result);
     }
 
     void setLauncher(Launcher launcher) {

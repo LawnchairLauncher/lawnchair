@@ -953,7 +953,7 @@ public final class Launcher extends Activity
 
         // Calculate the grid spans needed to fit this widget
         CellLayout layout = (CellLayout) mWorkspace.getChildAt(cellInfo.screen);
-        int[] spans = layout.rectToCell(appWidgetInfo.minWidth, appWidgetInfo.minHeight);
+        int[] spans = layout.rectToCell(appWidgetInfo.minWidth, appWidgetInfo.minHeight, null);
 
         // Try finding open space on Launcher screen
         final int[] xy = mCellCoordinates;

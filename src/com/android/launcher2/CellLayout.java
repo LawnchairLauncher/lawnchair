@@ -63,6 +63,7 @@ public class CellLayout extends ViewGroup {
     private int mHeightGap;
 
     private final Rect mRect = new Rect();
+    private final RectF mRectF = new RectF();
     private final CellInfo mCellInfo = new CellInfo();
 
     // This is a temporary variable to prevent having to allocate a new object just to
@@ -692,6 +693,19 @@ public class CellLayout extends ViewGroup {
     }
 
     /**
+     * Estimate the size that a child with the given dimensions will take in the layout.
+     */
+    void estimateChildSize(int minWidth, int minHeight, int[] result) {
+        // Assuming it's placed at 0, 0, find where the bottom right cell will land
+        rectToCell(minWidth, minHeight, result);
+
+        // Then figure out the rect it will occupy
+        cellToRect(0, 0, result[0], result[1], mRectF);
+        result[0] = (int)mRectF.width();
+        result[1] = (int)mRectF.height();
+    }
+
+    /**
      * Estimate where the top left cell of the dragged item will land if it is dropped.
      *
      * @param originX The X value of the top left corner of the item
@@ -891,8 +905,9 @@ public class CellLayout extends ViewGroup {
      *
      * @param width Width in pixels
      * @param height Height in pixels
+     * @param result An array of length 2 in which to store the result (may be null).
      */
-    public int[] rectToCell(int width, int height) {
+    public int[] rectToCell(int width, int height, int[] result) {
         // Always assume we're working with the smallest span to make sure we
         // reserve enough space in both orientations.
         final Resources resources = getResources();
@@ -904,7 +919,12 @@ public class CellLayout extends ViewGroup {
         int spanX = (width + smallerSize) / smallerSize;
         int spanY = (height + smallerSize) / smallerSize;
 
-        return new int[] { spanX, spanY };
+        if (result == null) {
+            return new int[] { spanX, spanY };
+        }
+        result[0] = spanX;
+        result[1] = spanY;
+        return result;
     }
 
     /**
