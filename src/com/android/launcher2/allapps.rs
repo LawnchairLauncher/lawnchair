@@ -2,9 +2,9 @@
 
 #pragma rs java_package_name(com.android.launcher2)
 
-#include "../../../../../frameworks/base/libs/rs/scriptc/rs_types.rsh"
-#include "../../../../../frameworks/base/libs/rs/scriptc/rs_math.rsh"
-#include "../../../../../frameworks/base/libs/rs/scriptc/rs_graphics.rsh"
+#include "rs_types.rsh"
+#include "rs_math.rsh"
+#include "rs_graphics.rsh"
 
 #define PI 3.14159f
 
