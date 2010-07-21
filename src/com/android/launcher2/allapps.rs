@@ -2,8 +2,6 @@
 
 #pragma rs java_package_name(com.android.launcher2)
 
-#include "rs_types.rsh"
-#include "rs_math.rsh"
 #include "rs_graphics.rsh"
 
 #define PI 3.14159f
