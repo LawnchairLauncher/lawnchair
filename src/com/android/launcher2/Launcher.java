@@ -34,8 +34,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.Intent.ShortcutIconResource;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -68,10 +68,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.View.OnLongClickListener;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -1027,10 +1028,13 @@ public final class Launcher extends Activity
             boolean alreadyOnHome = ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
                         != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
             boolean allAppsVisible = isAllAppsVisible();
+
+            // TODO: Figure out the right thing to do in XLarge mode here
             if (!mWorkspace.isDefaultScreenShowing()) {
                 mWorkspace.moveToDefaultScreen(alreadyOnHome && !allAppsVisible);
             }
             closeAllApps(alreadyOnHome && allAppsVisible);
+            hideCustomizationDrawer();
 
             final View v = getWindow().peekDecorView();
             if (v != null && v.getWindowToken() != null) {
@@ -1256,7 +1260,14 @@ public final class Launcher extends Activity
 
     private void addItems() {
         closeAllApps(true);
-        showAddDialog(mMenuAddInfo);
+        if (LauncherApplication.isScreenXLarge()) {
+            // Animate the widget chooser up from the bottom of the screen
+            if (!isCustomizationDrawerVisible()) {
+                showCustomizationDrawer();
+            }
+        } else {
+            showAddDialog(mMenuAddInfo);
+        }
     }
 
     void addAppWidgetFromDrop(ComponentName appWidgetProvider, CellLayout.CellInfo cellInfo) {
@@ -1487,6 +1498,8 @@ public final class Launcher extends Activity
     public void onBackPressed() {
         if (isAllAppsVisible()) {
             closeAllApps(true);
+        } else if (isCustomizationDrawerVisible()) {
+            hideCustomizationDrawer();
         } else {
             closeFolder();
         }
@@ -1560,26 +1573,10 @@ public final class Launcher extends Activity
         }
     }
 
-    private final class SlideDownFinishedListener implements Animation.AnimationListener {
-        TabHost mHomeCustomizationDrawer;
-        SlideDownFinishedListener(TabHost homeCustomizationDrawer) {
-            mHomeCustomizationDrawer = homeCustomizationDrawer;
-        }
-        public void onAnimationEnd(Animation animation) {
-            mHomeCustomizationDrawer.setVisibility(View.GONE);
-        }
-        public void onAnimationRepeat(Animation animation) {}
-        public void onAnimationStart(Animation animation) {}
-    }
-
     public boolean onTouch(View v, MotionEvent event) {
         // this is being forwarded from mWorkspace;
         // clicking anywhere on the workspace causes the drawer to slide down
-        if (mHomeCustomizationDrawer != null && mHomeCustomizationDrawer.getVisibility() == View.VISIBLE) {
-            Animation slideDownAnimation = AnimationUtils.loadAnimation(this, R.anim.home_customization_drawer_slide_down);
-            slideDownAnimation.setAnimationListener(new SlideDownFinishedListener(mHomeCustomizationDrawer));
-            mHomeCustomizationDrawer.startAnimation(slideDownAnimation);
-        }
+        hideCustomizationDrawer();
         return false;
     }
 
@@ -1590,16 +1587,7 @@ public final class Launcher extends Activity
      * @param v The view that was clicked.
      */
     public void onClickAddButton(View v) {
-
-        // Animate the widget chooser up from the bottom of the screen
-        if (mHomeCustomizationDrawer != null && mHomeCustomizationDrawer.getVisibility() == View.GONE) {
-            mHomeCustomizationDrawer.setVisibility(View.VISIBLE);
-            mHomeCustomizationDrawer.startAnimation(AnimationUtils.loadAnimation(this, R.anim.home_customization_drawer_slide_up));
-        }
-    }
-
-    public void onClickAllAppsButton(View w) {
-        showAllApps(true);
+        addItems();
     }
 
     void startActivitySafely(Intent intent, Object tag) {
@@ -2036,7 +2024,16 @@ public final class Launcher extends Activity
     }
 
     void showAllApps(boolean animated) {
-        mAllAppsGrid.zoom(1.0f, animated);
+        hideCustomizationDrawer();
+
+        if (LauncherApplication.isScreenXLarge() && animated) {
+            // Not really a zoom -- this just makes the view visible
+            mAllAppsGrid.zoom(1.0f, false);
+            Animation anim = AnimationUtils.loadAnimation(this, R.anim.all_apps_zoom_in);
+            ((View) mAllAppsGrid).startAnimation(anim);
+        } else {
+            mAllAppsGrid.zoom(1.0f, animated);
+        }
 
         ((View) mAllAppsGrid).setFocusable(true);
         ((View) mAllAppsGrid).requestFocus();
@@ -2087,7 +2084,19 @@ public final class Launcher extends Activity
     void closeAllApps(boolean animated) {
         if (mAllAppsGrid.isVisible()) {
             mWorkspace.setVisibility(View.VISIBLE);
-            mAllAppsGrid.zoom(0.0f, animated);
+            if (LauncherApplication.isScreenXLarge() && animated) {
+                Animation anim = AnimationUtils.loadAnimation(this, R.anim.all_apps_zoom_out);
+                anim.setAnimationListener(new AnimationListener() {
+                    public void onAnimationStart(Animation animation) {}
+                    public void onAnimationRepeat(Animation animation) {}
+                    public void onAnimationEnd(Animation animation) {
+                        mAllAppsGrid.zoom(0.0f, false);
+                    }
+                });
+                ((View)mAllAppsGrid).startAnimation(anim);
+            } else {
+                mAllAppsGrid.zoom(0.0f, animated);
+            }
             ((View)mAllAppsGrid).setFocusable(false);
             mWorkspace.getChildAt(mWorkspace.getCurrentScreen()).requestFocus();
         }
@@ -2099,6 +2108,33 @@ public final class Launcher extends Activity
 
     void unlockAllApps() {
         // TODO
+    }
+
+    private boolean isCustomizationDrawerVisible() {
+        return mHomeCustomizationDrawer != null && mHomeCustomizationDrawer.getVisibility() == View.VISIBLE;
+    }
+
+    private void showCustomizationDrawer() {
+        if (isAllAppsVisible()) {
+            // TODO: Make a smoother transition here
+            closeAllApps(false);
+        }
+        mHomeCustomizationDrawer.setVisibility(View.VISIBLE);
+        mHomeCustomizationDrawer.startAnimation(AnimationUtils.loadAnimation(this, R.anim.home_customization_drawer_slide_up));
+    }
+
+    private void hideCustomizationDrawer() {
+        if (isCustomizationDrawerVisible()) {
+            Animation slideDownAnimation = AnimationUtils.loadAnimation(this, R.anim.home_customization_drawer_slide_down);
+            slideDownAnimation.setAnimationListener(new Animation.AnimationListener() {
+                public void onAnimationEnd(Animation animation) {
+                    mHomeCustomizationDrawer.setVisibility(View.GONE);
+                }
+                public void onAnimationRepeat(Animation animation) {}
+                public void onAnimationStart(Animation animation) {}
+            });
+            mHomeCustomizationDrawer.startAnimation(slideDownAnimation);
+        }
     }
 
     /**

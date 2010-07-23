@@ -16,15 +16,15 @@
 
 package com.android.launcher2;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import com.android.launcher.R;
 
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.Bitmap;
-import android.graphics.Color;
+import android.graphics.PixelFormat;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -39,7 +39,8 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.android.launcher.R;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class AllApps2D
         extends RelativeLayout
@@ -66,6 +67,8 @@ public class AllApps2D
     private float mZoom;
 
     private AppsAdapter mAppsAdapter;
+
+    private boolean mIsViewOpaque;
 
     // ------------------------------------------------------------
     
@@ -125,24 +128,24 @@ public class AllApps2D
 
     @Override
     protected void onFinishInflate() {
-        setBackgroundColor(Color.BLACK);
+        mIsViewOpaque = super.isOpaque();
 
         try {
             mGrid = (GridView)findViewWithTag("all_apps_2d_grid");
             if (mGrid == null) throw new Resources.NotFoundException();
             mGrid.setOnItemClickListener(this);
             mGrid.setOnItemLongClickListener(this);
-            mGrid.setBackgroundColor(Color.BLACK);
-            mGrid.setCacheColorHint(Color.BLACK);
             
+            // The home button is optional; some layouts might not use it
             ImageButton homeButton = (ImageButton) findViewWithTag("all_apps_2d_home");
-            if (homeButton == null) throw new Resources.NotFoundException();
-            homeButton.setOnClickListener(
-                new View.OnClickListener() {
-                    public void onClick(View v) {
-                        mLauncher.closeAllApps(true);
-                    }
-                });
+            if (homeButton != null) {
+                homeButton.setOnClickListener(
+                    new View.OnClickListener() {
+                        public void onClick(View v) {
+                            mLauncher.closeAllApps(true);
+                        }
+                    });
+            }
         } catch (Resources.NotFoundException e) {
             Log.e(TAG, "Can't find necessary layout elements for AllApps2D");
         }
@@ -251,7 +254,7 @@ public class AllApps2D
 
     @Override
     public boolean isOpaque() {
-        return mZoom > 0.999f;
+        return mIsViewOpaque && mZoom > 0.999f;
     }
 
     public void setApps(ArrayList<ApplicationInfo> list) {
