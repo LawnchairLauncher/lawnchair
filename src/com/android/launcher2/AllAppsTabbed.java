@@ -92,6 +92,11 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
     }
 
     @Override
+    public boolean isAnimating() {
+        return (getAnimation() != null);
+    }
+
+    @Override
     public void setApps(ArrayList<ApplicationInfo> list) {
         mAllApps2D.setApps(list);
     }

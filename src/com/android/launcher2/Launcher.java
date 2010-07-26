@@ -218,7 +218,6 @@ public final class Launcher extends Activity
     private Drawable[] mHotseatIcons = null;
     private CharSequence[] mHotseatLabels = null;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -1205,12 +1204,12 @@ public final class Launcher extends Activity
 
         // If all apps is animating, don't show the menu, because we don't know
         // which one to show.
-        if (mAllAppsGrid.isVisible() && !mAllAppsGrid.isOpaque()) {
+        if (mAllAppsGrid.isAnimating()) {
             return false;
         }
 
         // Only show the add and wallpaper options when we're not in all apps.
-        boolean visible = !mAllAppsGrid.isOpaque();
+        boolean visible = !mAllAppsGrid.isVisible();
         menu.setGroupVisible(MENU_GROUP_ADD, visible);
         menu.setGroupVisible(MENU_GROUP_WALLPAPER, visible);
 

@@ -68,8 +68,6 @@ public class AllApps2D
 
     private AppsAdapter mAppsAdapter;
 
-    private boolean mIsViewOpaque;
-
     // ------------------------------------------------------------
     
     public static class HomeButton extends ImageButton {
@@ -128,8 +126,6 @@ public class AllApps2D
 
     @Override
     protected void onFinishInflate() {
-        mIsViewOpaque = super.isOpaque();
-
         try {
             mGrid = (GridView)findViewWithTag("all_apps_2d_grid");
             if (mGrid == null) throw new Resources.NotFoundException();
@@ -252,9 +248,8 @@ public class AllApps2D
         return mZoom > 0.001f;
     }
 
-    @Override
-    public boolean isOpaque() {
-        return mIsViewOpaque && mZoom > 0.999f;
+    public boolean isAnimating() {
+        return (getAnimation() != null);
     }
 
     public void setApps(ArrayList<ApplicationInfo> list) {

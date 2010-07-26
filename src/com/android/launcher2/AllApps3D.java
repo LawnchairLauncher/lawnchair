@@ -787,8 +787,8 @@ public class AllApps3D extends RSSurfaceView
         return sRollo != null && mZoom > 0.001f;
     }
 
-    public boolean isOpaque() {
-        return mZoom > 0.999f;
+    public boolean isAnimating() {
+        return isVisible() && mZoom <= 0.999f;
     }
 
     public void setApps(ArrayList<ApplicationInfo> list) {

@@ -31,7 +31,7 @@ public interface AllAppsView {
 
     public boolean isVisible();
 
-    public boolean isOpaque();
+    public boolean isAnimating();
 
     public void setApps(ArrayList<ApplicationInfo> list);
 
