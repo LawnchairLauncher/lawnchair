@@ -621,6 +621,8 @@ public final class Launcher extends Activity
         // Some launcher layouts don't have a previous and next view
         if (mPreviousView != null) {
             dismissPreview(mPreviousView);
+        }
+        if (mNextView != null) {
             dismissPreview(mNextView);
         }
         mDragController.cancelDrag();
@@ -1126,8 +1128,13 @@ public final class Launcher extends Activity
 
         getContentResolver().unregisterContentObserver(mWidgetObserver);
 
-        dismissPreview(mPreviousView);
-        dismissPreview(mNextView);
+        // Some launcher layouts don't have a previous and next view
+        if (mPreviousView != null) {
+            dismissPreview(mPreviousView);
+        }
+        if (mNextView != null) {
+            dismissPreview(mNextView);
+        }
 
         unregisterReceiver(mCloseSystemDialogsReceiver);
     }
