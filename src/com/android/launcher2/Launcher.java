@@ -762,11 +762,6 @@ public final class Launcher extends Activity
         final Workspace workspace = mWorkspace;
         workspace.setHapticFeedbackEnabled(false);
 
-        // We only intercept touch events to dismiss the home customization drawer; if it doesn't
-        //  exist, then no need to do this
-        if (mHomeCustomizationDrawer != null)
-            workspace.setOnInterceptTouchListener(this);
-
         DeleteZone deleteZone = (DeleteZone) dragLayer.findViewById(R.id.delete_zone);
         mDeleteZone = deleteZone;
 
@@ -1036,6 +1031,7 @@ public final class Launcher extends Activity
             }
             closeAllApps(alreadyOnHome && allAppsVisible);
             hideCustomizationDrawer();
+            mWorkspace.unshrink();
 
             final View v = getWindow().peekDecorView();
             if (v != null && v.getWindowToken() != null) {
@@ -1270,6 +1266,7 @@ public final class Launcher extends Activity
             // Animate the widget chooser up from the bottom of the screen
             if (!isCustomizationDrawerVisible()) {
                 showCustomizationDrawer();
+                mWorkspace.shrink();
             }
         } else {
             showAddDialog(mMenuAddInfo);
@@ -1506,6 +1503,7 @@ public final class Launcher extends Activity
             closeAllApps(true);
         } else if (isCustomizationDrawerVisible()) {
             hideCustomizationDrawer();
+            mWorkspace.unshrink();
         } else {
             closeFolder();
         }
@@ -1580,9 +1578,10 @@ public final class Launcher extends Activity
     }
 
     public boolean onTouch(View v, MotionEvent event) {
-        // this is being forwarded from mWorkspace;
+        // this is an intercepted event being forwarded from mWorkspace;
         // clicking anywhere on the workspace causes the drawer to slide down
         hideCustomizationDrawer();
+        mWorkspace.unshrink();
         return false;
     }
 
@@ -2129,7 +2128,7 @@ public final class Launcher extends Activity
         mHomeCustomizationDrawer.startAnimation(AnimationUtils.loadAnimation(this, R.anim.home_customization_drawer_slide_up));
     }
 
-    private void hideCustomizationDrawer() {
+    void hideCustomizationDrawer() {
         if (isCustomizationDrawerVisible()) {
             Animation slideDownAnimation = AnimationUtils.loadAnimation(this, R.anim.home_customization_drawer_slide_down);
             slideDownAnimation.setAnimationListener(new Animation.AnimationListener() {

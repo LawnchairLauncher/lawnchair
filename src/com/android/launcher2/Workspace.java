@@ -17,7 +17,12 @@
 package com.android.launcher2;
 
 import com.android.launcher.R;
+import com.android.launcher2.CellLayout.LayoutParams;
 
+import android.animation.Animatable;
+import android.animation.PropertyAnimator;
+import android.animation.Sequencer;
+import android.animation.Animatable.AnimatableListener;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -41,12 +46,14 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.view.animation.RotateAnimation;
+import android.view.animation.Animation.AnimationListener;
 import android.widget.Scroller;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,10 +66,14 @@ import java.util.HashSet;
  * Each screen contains a number of icons, folders or widgets the user can
  * interact with. A workspace is meant to be used with a fixed width only.
  */
-public class Workspace extends ViewGroup implements DropTarget, DragSource, DragScroller {
+public class Workspace extends ViewGroup
+        implements DropTarget, DragSource, DragScroller, View.OnTouchListener {
     @SuppressWarnings({"UnusedDeclaration"})
     private static final String TAG = "Launcher.Workspace";
     private static final int INVALID_SCREEN = -1;
+    // This is how much the workspace shrinks when we enter all apps or
+    // customization mode
+    private static final float SHRINK_FACTOR = 0.16f;
 
     /**
      * The velocity at which a fling gesture will cause us to snap to the next
@@ -104,7 +115,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     private int mTouchState = TOUCH_STATE_REST;
 
-    private OnTouchListener mInterceptTouchListener;
     private OnLongClickListener mLongClickListener;
 
     private Launcher mLauncher;
@@ -143,6 +153,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     private static final float FLING_VELOCITY_INFLUENCE = 0.4f;
 
     private Paint mDropIndicatorPaint;
+
+    // State variable that indicated whether the screens are small (ie when you're
+    // in all apps or customize mode)
+    private boolean mIsSmall;
+    private AnimatableListener mUnshrinkAnimationListener;
 
     private static class WorkspaceOvershootInterpolator implements Interpolator {
         private static final float DEFAULT_TENSION = 1.3f;
@@ -218,6 +233,14 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         final ViewConfiguration configuration = ViewConfiguration.get(getContext());
         mTouchSlop = configuration.getScaledTouchSlop();
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
+        mUnshrinkAnimationListener = new AnimatableListener() {
+            public void onAnimationStart(Animatable animation) {}
+            public void onAnimationEnd(Animatable animation) {
+                mIsSmall = false;
+            }
+            public void onAnimationCancel(Animatable animation) {}
+            public void onAnimationRepeat(Animatable animation) {}
+        };
     }
 
     @Override
@@ -278,10 +301,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     ArrayList<Folder> getOpenFolders() {
-        final int screens = getChildCount();
-        ArrayList<Folder> folders = new ArrayList<Folder>(screens);
+        final int screenCount = getChildCount();
+        ArrayList<Folder> folders = new ArrayList<Folder>(screenCount);
 
-        for (int screen = 0; screen < screens; screen++) {
+        for (int screen = 0; screen < screenCount; screen++) {
             CellLayout currentScreen = (CellLayout) getChildAt(screen);
             int count = currentScreen.getChildCount();
             for (int i = 0; i < count; i++) {
@@ -425,7 +448,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     public void refreshWorkspaceChildren() {
-        final int count = getChildCount();
+        final int screenCount = getChildCount();
         View child;
 
         CellLayout.LayoutParams lp;
@@ -436,12 +459,12 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
         clearVacantCache();
 
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < screenCount; i++) {
             final CellLayout layout = (CellLayout) getChildAt(i);
-            int numChildren = layout.getChildCount();
+            final int count = layout.getChildCount();
 
             // save reference to all current children
-            for (int j = 0; j < numChildren; j++) {
+            for (int j = 0; j < count; j++) {
                 child = layout.getChildAt(j);
 
                 lp = (CellLayout.LayoutParams) child.getLayoutParams();
@@ -521,8 +544,13 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         }
     }
 
-    public void setOnInterceptTouchListener(View.OnTouchListener listener) {
-        mInterceptTouchListener = listener;
+    public boolean onTouch(View v, MotionEvent event) {
+        // this is an intercepted event being forwarded from a cell layout
+        if (mIsSmall) {
+            unshrink((CellLayout)v);
+            mLauncher.hideCustomizationDrawer();
+        }
+        return false;
     }
 
     /**
@@ -533,8 +561,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     @Override
     public void setOnLongClickListener(OnLongClickListener l) {
         mLongClickListener = l;
-        final int count = getChildCount();
-        for (int i = 0; i < count; i++) {
+        final int screenCount = getChildCount();
+        for (int i = 0; i < screenCount; i++) {
             getChildAt(i).setOnLongClickListener(l);
         }
     }
@@ -602,8 +630,17 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         // the drawing dispatch by drawing only what we know needs to be drawn.
 
         boolean fastDraw = mTouchState != TOUCH_STATE_SCROLLING && mNextScreen == INVALID_SCREEN;
-        // If we are not scrolling or flinging, draw only the current screen
-        if (fastDraw) {
+
+        // if the screens are all small, we need to draw all the screens since
+        // they're most likely all visible
+        if (mIsSmall) {
+            final int screenCount = getChildCount();
+            for (int i = 0; i < screenCount; i++) {
+                CellLayout cl = (CellLayout)getChildAt(i);
+                drawChild(canvas, cl, getDrawingTime());
+            }
+        } else if (fastDraw) {
+            // If we are not scrolling or flinging, draw only the current screen
             drawChild(canvas, getChildAt(mCurrentScreen), getDrawingTime());
         } else {
             final long drawingTime = getDrawingTime();
@@ -645,8 +682,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         }
 
         // The children are given the same width and height as the workspace
-        final int count = getChildCount();
-        for (int i = 0; i < count; i++) {
+        final int screenCount = getChildCount();
+        for (int i = 0; i < screenCount; i++) {
             getChildAt(i).measure(widthMeasureSpec, heightMeasureSpec);
         }
 
@@ -655,21 +692,26 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             scrollTo(mCurrentScreen * width, 0);
             setHorizontalScrollBarEnabled(true);
             updateWallpaperOffset(width * (getChildCount() - 1));
-            mFirstLayout = false;
         }
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        int childLeft = 0;
+        final int screenCount = getChildCount();
+        if (mFirstLayout) {
+            final int width = getWidth();
+            for (int i = 0; i < screenCount; i++) {
+                getChildAt(i).setX(i*width);
+            }
+            mFirstLayout = false;
+        }
 
-        final int count = getChildCount();
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < screenCount; i++) {
             final View child = getChildAt(i);
             if (child.getVisibility() != View.GONE) {
-                final int childWidth = child.getMeasuredWidth();
-                child.layout(childLeft, 0, childLeft + childWidth, child.getMeasuredHeight());
-                childLeft += childWidth;
+                final int childX = child.getX();
+                child.layout(
+                        childX, 0, childX + child.getMeasuredWidth(), child.getMeasuredHeight());
             }
         }
 
@@ -760,9 +802,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (mInterceptTouchListener != null && mInterceptTouchListener.onTouch(this, ev)) {
-            return true;
-        }
         final boolean workspaceLocked = mLauncher.isWorkspaceLocked();
         final boolean allAppsVisible = mLauncher.isAllAppsVisible();
         if (workspaceLocked || allAppsVisible) {
@@ -946,10 +985,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             toScreen = temp;
         }
 
-        final int count = getChildCount();
+        final int screenCount = getChildCount();
 
         fromScreen = Math.max(fromScreen, 0);
-        toScreen = Math.min(toScreen, count - 1);
+        toScreen = Math.min(toScreen, screenCount - 1);
 
         for (int i = fromScreen; i <= toScreen; i++) {
             final CellLayout layout = (CellLayout) getChildAt(i);
@@ -959,8 +998,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     void clearChildrenCache() {
-        final int count = getChildCount();
-        for (int i = 0; i < count; i++) {
+        final int screenCount = getChildCount();
+        for (int i = 0; i < screenCount; i++) {
             final CellLayout layout = (CellLayout) getChildAt(i);
             layout.setChildrenDrawnWithCacheEnabled(false);
         }
@@ -1076,6 +1115,87 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         }
 
         return true;
+    }
+
+    // we use this to shrink the workspace for the all apps view and the customize view
+    void shrink() {
+        mIsSmall = true;
+        final int screenWidth = getWidth();
+
+        final int scaledWorkspacePageWidth = (int)(SHRINK_FACTOR*screenWidth);
+        final float scaledSpacing = getResources().getDimension(R.dimen.smallScreenSpacing);
+
+        final int screenCount = getChildCount();
+        float totalWidth = screenCount * scaledWorkspacePageWidth + (screenCount - 1) * scaledSpacing;
+
+        // We animate all the screens to the centered position in workspace
+        // At the same time, the screens become greyed/dimmed
+
+        // newX is initialized to the left-most position of the centered screens
+        float newX = (mCurrentScreen + 1) * screenWidth - screenWidth / 2 - totalWidth / 2;
+        Sequencer s = new Sequencer();
+        for (int i = 0; i < screenCount; i++) {
+            CellLayout cl = (CellLayout) getChildAt(i);
+            PropertyAnimator translate = new PropertyAnimator(
+                    500, cl, "x", cl.getX(), (int) newX);
+            PropertyAnimator scaleX = new PropertyAnimator(
+                    500, cl, "scaleX", cl.getScaleX(), SHRINK_FACTOR);
+            PropertyAnimator scaleY = new PropertyAnimator(
+                    500, cl, "scaleY", cl.getScaleY(), SHRINK_FACTOR);
+            PropertyAnimator alpha = new PropertyAnimator(
+                    500, cl, "dimmedBitmapAlpha", cl.getDimmedBitmapAlpha(), 1.0f);
+            Sequencer.Builder b = s.play(translate);
+            b.with(scaleX);
+            b.with(scaleY);
+            b.with(alpha);
+            // increment newX for the next screen
+            newX += scaledWorkspacePageWidth + scaledSpacing;
+            cl.setOnInterceptTouchListener(this);
+        }
+        setChildrenDrawnWithCacheEnabled(true);
+        s.start();
+    }
+
+    // We call this when we trigger an unshrink by clicking on the CellLayout cl
+    private void unshrink(CellLayout clThatWasClicked) {
+        int newCurrentScreen = mCurrentScreen;
+        final int screenCount = getChildCount();
+        for (int i = 0; i < screenCount; i++) {
+            if (getChildAt(i) == clThatWasClicked) {
+                newCurrentScreen = i;
+            }
+        }
+        final int delta = (newCurrentScreen - mCurrentScreen)*getWidth();
+        for (int i = 0; i < screenCount; i++) {
+            CellLayout cl = (CellLayout) getChildAt(i);
+            cl.setX(cl.getX() + delta);
+        }
+        mScrollX = newCurrentScreen * getWidth();
+
+        unshrink();
+        setCurrentScreen(newCurrentScreen);
+    }
+
+    public void unshrink() {
+        final int screenWidth = getWidth();
+        Sequencer s = new Sequencer();
+        final int screenCount = getChildCount();
+        for (int i = 0; i < screenCount; i++) {
+            CellLayout cl = (CellLayout)getChildAt(i);
+            int x = screenWidth * i;
+
+            PropertyAnimator translate = new PropertyAnimator(500, cl, "x", cl.getX(), x);
+            PropertyAnimator scaleX = new PropertyAnimator(500, cl, "scaleX", cl.getScaleX(), 1.0f);
+            PropertyAnimator scaleY = new PropertyAnimator(500, cl, "scaleY", cl.getScaleY(), 1.0f);
+            PropertyAnimator alpha = new PropertyAnimator(
+                    500, cl, "dimmedBitmapAlpha", cl.getDimmedBitmapAlpha(), 0.0f);
+            Sequencer.Builder b = s.play(translate);
+            b.with(scaleX);
+            b.with(scaleY);
+            b.with(alpha);
+        }
+        s.addListener(mUnshrinkAnimationListener);
+        s.start();
     }
 
     void snapToScreen(int whichScreen) {
@@ -1493,8 +1613,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         int result = -1;
         if (v != null) {
             ViewParent vp = v.getParent();
-            int count = getChildCount();
-            for (int i = 0; i < count; i++) {
+            final int screenCount = getChildCount();
+            for (int i = 0; i < screenCount; i++) {
                 if (vp == getChildAt(i)) {
                     return i;
                 }
@@ -1504,7 +1624,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     public Folder getFolderForTag(Object tag) {
-        int screenCount = getChildCount();
+        final int screenCount = getChildCount();
         for (int screen = 0; screen < screenCount; screen++) {
             CellLayout currentScreen = ((CellLayout) getChildAt(screen));
             int count = currentScreen.getChildCount();
@@ -1553,7 +1673,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     void removeItems(final ArrayList<ApplicationInfo> apps) {
-        final int count = getChildCount();
+        final int screenCount = getChildCount();
         final PackageManager manager = getContext().getPackageManager();
         final AppWidgetManager widgets = AppWidgetManager.getInstance(getContext());
 
@@ -1563,7 +1683,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             packageNames.add(apps.get(i).componentName.getPackageName());
         }
 
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < screenCount; i++) {
             final CellLayout layout = (CellLayout) getChildAt(i);
 
             // Avoid ANRs by treating each screen separately
@@ -1674,8 +1794,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     void updateShortcuts(ArrayList<ApplicationInfo> apps) {
         final PackageManager pm = mLauncher.getPackageManager();
 
-        final int count = getChildCount();
-        for (int i = 0; i < count; i++) {
+        final int screenCount = getChildCount();
+        for (int i = 0; i < screenCount; i++) {
             final CellLayout layout = (CellLayout) getChildAt(i);
             int childCount = layout.getChildCount();
             for (int j = 0; j < childCount; j++) {

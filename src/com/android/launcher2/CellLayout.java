@@ -22,7 +22,11 @@ import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
@@ -32,6 +36,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
+import android.view.View.OnTouchListener;
 import android.view.animation.Animation;
 import android.view.animation.LayoutAnimationController;
 
@@ -40,6 +45,8 @@ import java.util.Arrays;
 
 public class CellLayout extends ViewGroup {
     static final String TAG = "CellLayout";
+    // we make the dimmed bitmap smaller than the screen itself for memory + perf reasons
+    static final float DIMMED_BITMAP_SCALE = 0.25f;
 
     private boolean mPortrait;
 
@@ -71,6 +78,18 @@ public class CellLayout extends ViewGroup {
     private final int[] mTmpCellXY = new int[2];
 
     boolean[][] mOccupied;
+
+    private OnTouchListener mInterceptTouchListener;
+
+    // this is what the home screen fades to when it shrinks
+    //   (ie in all apps and in home screen customize mode)
+    private Bitmap mDimmedBitmap;
+    private Canvas mDimmedBitmapCanvas;
+    private float mDimmedBitmapAlpha;
+    private boolean mDimmedBitmapDirty;
+    private final Paint mDimmedBitmapPaint = new Paint();
+    private final Rect mLayoutRect = new Rect();
+    private final Rect mDimmedBitmapRect = new Rect();
 
     private final RectF mDragRect = new RectF();
 
@@ -130,6 +149,8 @@ public class CellLayout extends ViewGroup {
         setAlwaysDrawnWithCacheEnabled(false);
 
         mWallpaperManager = WallpaperManager.getInstance(getContext());
+
+        mDimmedBitmapPaint.setFilterBitmap(true);
     }
 
     @Override
@@ -147,6 +168,15 @@ public class CellLayout extends ViewGroup {
                     (int)mDragRect.bottom);
             mDragRectDrawable.draw(canvas);
         }
+        if (mDimmedBitmap != null && mDimmedBitmapAlpha > 0.0f) {
+            if (mDimmedBitmapDirty) {
+                updateDimmedBitmap();
+                mDimmedBitmapDirty = false;
+            }
+            mDimmedBitmapPaint.setAlpha((int) (mDimmedBitmapAlpha * 255));
+
+            canvas.drawBitmap(mDimmedBitmap, mDimmedBitmapRect, mLayoutRect, mDimmedBitmapPaint);
+        }
     }
 
     @Override
@@ -159,6 +189,10 @@ public class CellLayout extends ViewGroup {
             final View child = getChildAt(i);
             child.cancelLongPress();
         }
+    }
+
+    public void setOnInterceptTouchListener(View.OnTouchListener listener) {
+        mInterceptTouchListener = listener;
     }
 
     int getCountX() {
@@ -183,10 +217,23 @@ public class CellLayout extends ViewGroup {
 
             child.setId(childId);
 
+            // We might be in the middle or end of shrinking/fading to a dimmed view
+            // Make sure this view's alpha is set the same as all the rest of the views
+            child.setAlpha(1.0f - mDimmedBitmapAlpha);
+
             addView(child, index, lp);
+
+            // next time we draw the dimmed bitmap we need to update it
+            mDimmedBitmapDirty = true;
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void removeView(View view) {
+        super.removeView(view);
+        mDimmedBitmapDirty = true;
     }
 
     @Override
@@ -267,6 +314,9 @@ public class CellLayout extends ViewGroup {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (mInterceptTouchListener != null && mInterceptTouchListener.onTouch(this, ev)) {
+            return true;
+        }
         final int action = ev.getAction();
         final CellInfo cellInfo = mCellInfo;
 
@@ -654,6 +704,13 @@ public class CellLayout extends ViewGroup {
     }
 
     @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        mLayoutRect.set(0, 0, w, h);
+        mDimmedBitmapRect.set(0, 0, (int) (DIMMED_BITMAP_SCALE * w), (int) (DIMMED_BITMAP_SCALE * h));
+    }
+
+    @Override
     protected void setChildrenDrawingCacheEnabled(boolean enabled) {
         final int count = getChildCount();
         for (int i = 0; i < count; i++) {
@@ -667,6 +724,55 @@ public class CellLayout extends ViewGroup {
     @Override
     protected void setChildrenDrawnWithCacheEnabled(boolean enabled) {
         super.setChildrenDrawnWithCacheEnabled(enabled);
+    }
+
+    public float getDimmedBitmapAlpha() {
+        return mDimmedBitmapAlpha;
+    }
+
+    public void setDimmedBitmapAlpha(float alpha) {
+        // If we're dimming the screen after it was not dimmed, refresh
+        // to allow for updated widgets. We don't continually refresh it
+        // after this point, however, as an optimization
+        if (mDimmedBitmapAlpha == 0.0f && alpha > 0.0f) {
+            updateDimmedBitmap();
+        }
+        mDimmedBitmapAlpha = alpha;
+        setChildrenAlpha(1.0f - mDimmedBitmapAlpha);
+    }
+
+    private void setChildrenAlpha(float alpha) {
+        for (int i = 0; i < getChildCount(); i++) {
+            getChildAt(i).setAlpha(alpha);
+        }
+    }
+
+    public void updateDimmedBitmap() {
+        if (mDimmedBitmap == null) {
+            mDimmedBitmap = Bitmap.createBitmap((int) (getWidth() * DIMMED_BITMAP_SCALE),
+                    (int) (getHeight() * DIMMED_BITMAP_SCALE), Bitmap.Config.ARGB_8888);
+            mDimmedBitmapCanvas = new Canvas(mDimmedBitmap);
+            mDimmedBitmapCanvas.scale(DIMMED_BITMAP_SCALE, DIMMED_BITMAP_SCALE);
+        }
+        // clear the canvas
+        mDimmedBitmapCanvas.drawColor(0x00000000, PorterDuff.Mode.CLEAR);
+
+        // draw the screen into the bitmap
+        // just for drawing to the bitmap, make all the items on the screen opaque
+        setChildrenAlpha(1.0f);
+        dispatchDraw(mDimmedBitmapCanvas);
+        setChildrenAlpha(1.0f - mDimmedBitmapAlpha);
+
+        // make the bitmap 'dimmed' ie colored regions are dark grey,
+        // the rest is light grey
+        // We draw grey to the whole bitmap, but filter where we draw based on
+        // what regions are transparent or not (SRC_OUT), causing the intended effect
+
+        // First, draw light grey everywhere in the background (currently transparent) regions
+        // This will leave the regions with the widgets as mostly transparent
+        mDimmedBitmapCanvas.drawColor(0xCCCCCCCC, PorterDuff.Mode.SRC_OUT);
+        // Now, fill the the remaining transparent regions with dark grey
+        mDimmedBitmapCanvas.drawColor(0xCC333333, PorterDuff.Mode.SRC_OUT);
     }
 
     private boolean isVacant(int originX, int originY, int spanX, int spanY) {
