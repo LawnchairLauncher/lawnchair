@@ -128,8 +128,6 @@ public final class Launcher extends Activity
 
     static final int SCREEN_COUNT = 5;
     static final int DEFAULT_SCREEN = 2;
-    static final int NUMBER_CELLS_X = 4;
-    static final int NUMBER_CELLS_Y = 4;
 
     static final int DIALOG_CREATE_SHORTCUT = 1;
     static final int DIALOG_RENAME_FOLDER = 2;
@@ -294,12 +292,6 @@ public final class Launcher extends Activity
     public void onConfigurationChanged(Configuration newConfig) {
         // TODO Auto-generated method stub
         super.onConfigurationChanged(newConfig);
-
-        if (LauncherApplication.isInPlaceRotationEnabled()) {
-            mModel.updateOrientation();
-            mWorkspace.refreshWorkspaceChildren();
-            mWorkspace.rotateCurrentScreensChildren();
-        }
     }
 
 

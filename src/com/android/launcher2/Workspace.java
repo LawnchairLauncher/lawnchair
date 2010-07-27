@@ -136,6 +136,8 @@ public class Workspace extends ViewGroup
     private int mMaximumVelocity;
 
     private static final int INVALID_POINTER = -1;
+    private static final int DEFAULT_CELL_COUNT_X = 4;
+    private static final int DEFAULT_CELL_COUNT_Y = 4;
 
     private int mActivePointerId = INVALID_POINTER;
 
@@ -208,13 +210,12 @@ public class Workspace extends ViewGroup
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.Workspace, defStyle, 0);
-        int canonicalDeviceWidth = a.getInt(R.styleable.Workspace_canonicalDeviceWidth, 4);
-        int canonicalDeviceHeight = a.getInt(R.styleable.Workspace_canonicalDeviceHeight, 4);
+        int cellCountX = a.getInt(R.styleable.Workspace_cellCountX, DEFAULT_CELL_COUNT_X);
+        int cellCountY = a.getInt(R.styleable.Workspace_cellCountY, DEFAULT_CELL_COUNT_Y);
         mDefaultScreen = a.getInt(R.styleable.Workspace_defaultScreen, 1);
         a.recycle();
 
-        LauncherModel.updateWorkspaceLayoutCells(canonicalDeviceWidth,
-                canonicalDeviceHeight);
+        LauncherModel.updateWorkspaceLayoutCells(cellCountX, cellCountY);
         setHapticFeedbackEnabled(false);
         initWorkspace();
     }
@@ -416,81 +417,6 @@ public class Workspace extends ViewGroup
         addInScreen(child, screen, 0, 0, -1, -1);
     }
 
-    public void rotateCurrentScreensChildren() {
-
-        // close all the folders first
-        final ArrayList<Folder> openFolders = getOpenFolders();
-
-        WorkspaceOvershootInterpolator wi = new WorkspaceOvershootInterpolator();
-        RotateAnimation ra = new RotateAnimation((float) LauncherModel
-                .getPreviousOrientationRelativeToCurrent(), 0,
-                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
-                0.5f);
-        ra.setInterpolator(wi);
-        CellLayout currentScreen = (CellLayout) getChildAt(mCurrentScreen);
-        ra.setStartOffset(150);
-        ra.setDuration(650 + (int) (Math.random() * 400) - 200);
-
-        CellLayout.CellLayoutAnimationController animationController = new CellLayout.CellLayoutAnimationController(
-                ra, 0.0f);
-        currentScreen.setLayoutAnimation(animationController);
-        currentScreen.setLayoutAnimationListener(new AnimationListener() {
-            public void onAnimationStart(Animation animation) {
-                // do nothing
-            }
-
-            public void onAnimationRepeat(Animation animation) {
-                // do nothing
-            }
-
-            public void onAnimationEnd(Animation animation) {
-                for (int j = 0; j < openFolders.size(); ++j) {
-                    Folder folder = openFolders.get(j);
-                    if (!folder.getInfo().opened) {
-                        mLauncher.openFolder(folder.getInfo());
-                    }
-                }
-            }
-        });
-        animationController.start();
-
-        for (int j = 0; j < openFolders.size(); ++j) {
-            mLauncher.closeFolder(openFolders.get(j));
-        }
-    }
-
-    public void refreshWorkspaceChildren() {
-        final int screenCount = getChildCount();
-        View child;
-
-        CellLayout.LayoutParams lp;
-        int widthMeasureSpec = MeasureSpec.makeMeasureSpec(LauncherModel
-                .getLocalDeviceWidth(), MeasureSpec.EXACTLY);
-        int heightMeasureSpec = MeasureSpec.makeMeasureSpec(LauncherModel
-                .getLocalDeviceHeight(), MeasureSpec.EXACTLY);
-
-        clearVacantCache();
-
-        for (int i = 0; i < screenCount; i++) {
-            final CellLayout layout = (CellLayout) getChildAt(i);
-            final int count = layout.getChildCount();
-
-            // save reference to all current children
-            for (int j = 0; j < count; j++) {
-                child = layout.getChildAt(j);
-
-                lp = (CellLayout.LayoutParams) child.getLayoutParams();
-                LauncherModelOrientationHelper.Coordinates localCoord = LauncherModel
-                        .getLocalCoordinatesFromPreviousLocalCoordinates(lp);
-
-                lp.cellX = localCoord.x;
-                lp.cellY = localCoord.y;
-            }
-
-            layout.measure(widthMeasureSpec, heightMeasureSpec);
-        }
-    }
-
     /**
      * Adds the specified child in the specified screen. The position and dimension of
      * the child are defined by x, y, spanX and spanY.
@@ -524,7 +450,7 @@ public class Workspace extends ViewGroup
         }
 
         // Get the canonical child id to uniquely represent this view in this screen
-        int childId = LauncherModel.getCanonicalCellLayoutChildId(child.getId(), screen, x, y, spanX, spanY);
+        int childId = LauncherModel.getCellLayoutChildId(child.getId(), screen, x, y, spanX, spanY);
         if (!group.addViewToCellLayout(child, insert ? 0 : -1, childId, lp)) {
             // TODO: This branch occurs when the workspace is adding views
             // outside of the defined grid

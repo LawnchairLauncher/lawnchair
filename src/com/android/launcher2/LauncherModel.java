@@ -90,7 +90,8 @@ public class LauncherModel extends BroadcastReceiver {
 
     private Bitmap mDefaultIcon;
 
-    private static LauncherModelOrientationHelper mModelOrientationHelper;
+    private static int mCellCountX;
+    private static int mCellCountY;
 
     public interface Callbacks {
         public int getCurrentWorkspaceScreen();
@@ -110,7 +111,6 @@ public class LauncherModel extends BroadcastReceiver {
         mApp = app;
         mAllAppsList = new AllAppsList(iconCache);
         mIconCache = iconCache;
-        mModelOrientationHelper = new LauncherModelOrientationHelper(mApp);
 
         mDefaultIcon = Utilities.createIconBitmap(
                 app.getPackageManager().getDefaultActivityIcon(), app);
@@ -143,14 +143,6 @@ public class LauncherModel extends BroadcastReceiver {
         }
     }
 
-    static int getCurrentOrientation() {
-        return mModelOrientationHelper.getCurrentOrientation();
-    }
-
-    static int getPreviousOrientationRelativeToCurrent() {
-        return mModelOrientationHelper.getPreviousOrientationRelativeToCurrent();
-    }
-
     /**
      * Move an item in the DB to a new <container, screen, cellX, cellY>
      */
@@ -164,11 +156,10 @@ public class LauncherModel extends BroadcastReceiver {
 
         final ContentValues values = new ContentValues();
         final ContentResolver cr = context.getContentResolver();
-        final LauncherModelOrientationHelper.Coordinates coord = mModelOrientationHelper.getCanonicalCoordinates(item);
 
         values.put(LauncherSettings.Favorites.CONTAINER, item.container);
-        values.put(LauncherSettings.Favorites.CELLX, coord.x);
-        values.put(LauncherSettings.Favorites.CELLY, coord.y);
+        values.put(LauncherSettings.Favorites.CELLX, cellX);
+        values.put(LauncherSettings.Favorites.CELLY, cellY);
         values.put(LauncherSettings.Favorites.SCREEN, item.screen);
 
         cr.update(LauncherSettings.Favorites.getContentUri(item.id, false), values, null, null);
@@ -264,13 +255,12 @@ public class LauncherModel extends BroadcastReceiver {
                         break;
                 }
 
-                final LauncherModelOrientationHelper.Coordinates coord = mModelOrientationHelper.getLocalCoordinates(c.getInt(cellXIndex), c.getInt(cellYIndex), 1, 1);
                 folderInfo.title = c.getString(titleIndex);
                 folderInfo.id = id;
                 folderInfo.container = c.getInt(containerIndex);
                 folderInfo.screen = c.getInt(screenIndex);
-                folderInfo.cellX = coord.x;
-                folderInfo.cellY = coord.y;
+                folderInfo.cellX = c.getInt(cellXIndex);
+                folderInfo.cellY = c.getInt(cellYIndex);
 
                 return folderInfo;
             }
@@ -296,9 +286,7 @@ public class LauncherModel extends BroadcastReceiver {
         final ContentResolver cr = context.getContentResolver();
         item.onAddToDatabase(values);
 
-        // update the values to be written with their canonical counterparts
-        final LauncherModelOrientationHelper.Coordinates coord = mModelOrientationHelper.getCanonicalCoordinates(item);
-        item.updateValuesWithCoordinates(values, coord.x, coord.y);
+        item.updateValuesWithCoordinates(values, cellX, cellY);
 
         Uri result = cr.insert(notify ? LauncherSettings.Favorites.CONTENT_URI :
                 LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION, values);
@@ -311,31 +299,16 @@ public class LauncherModel extends BroadcastReceiver {
     /**
      * Creates a new unique child id, for a given cell span across all layouts.
      */
-    static int getCanonicalCellLayoutChildId(int cellId, int screen, int localCellX, int localCellY, int spanX, int spanY) {
-        if (LauncherApplication.isInPlaceRotationEnabled()) {
-            LauncherModelOrientationHelper.Coordinates coord = mModelOrientationHelper.getCanonicalCoordinates(localCellX, localCellY, spanX, spanY);
-            return ((screen & 0xFF) << 16) | (coord.x & 0xFF) << 8 | (coord.y & 0xFF);
-        } else {
-            return ((cellId & 0xFF) << 16) | (localCellX & 0xFF) << 8 | (localCellY & 0xFF);
-        }
+    static int getCellLayoutChildId(int cellId, int screen, int localCellX, int localCellY, int spanX, int spanY) {
+        return ((cellId & 0xFF) << 16) | (localCellX & 0xFF) << 8 | (localCellY & 0xFF);
     }
 
-    /*
-     * Convenience functions to help return the local device width and height.
-     */
-    static int getLocalDeviceWidth() {
-        return mModelOrientationHelper.getLocalDeviceWidth();
+    static int getCellCountX() {
+        return mCellCountX;
     }
 
-    static int getLocalDeviceHeight() {
-        return mModelOrientationHelper.getLocalDeviceHeight();
-    }
-
-    /**
-     * Return the new local coordinates given the local coordinates from the previous orientation.
-     */
-    static LauncherModelOrientationHelper.Coordinates getLocalCoordinatesFromPreviousLocalCoordinates(CellLayout.LayoutParams lp) {
-        return mModelOrientationHelper.getLocalCoordinatesFromPreviousLocalCoordinates(lp.cellX, lp.cellY, lp.cellHSpan, lp.cellVSpan);
+    static int getCellCountY() {
+        return mCellCountY;
     }
 
     /**
@@ -343,7 +316,8 @@ public class LauncherModel extends BroadcastReceiver {
      * when performing local/canonical coordinate transformations.
      */
     static void updateWorkspaceLayoutCells(int shortAxisCellCount, int longAxisCellCount) {
-        mModelOrientationHelper.updateDeviceDimensions(shortAxisCellCount, longAxisCellCount);
+        mCellCountX = shortAxisCellCount;
+        mCellCountY = longAxisCellCount;
     }
 
     /**
@@ -354,10 +328,7 @@ public class LauncherModel extends BroadcastReceiver {
         final ContentResolver cr = context.getContentResolver();
 
         item.onAddToDatabase(values);
-
-        // update the values to be written with their canonical counterparts
-        final LauncherModelOrientationHelper.Coordinates coord = mModelOrientationHelper.getCanonicalCoordinates(item);
-        item.updateValuesWithCoordinates(values, coord.x, coord.y);
+        item.updateValuesWithCoordinates(values, item.cellX, item.cellY);
 
         cr.update(LauncherSettings.Favorites.getContentUri(item.id, false), values, null, null);
     }
@@ -391,11 +362,6 @@ public class LauncherModel extends BroadcastReceiver {
         synchronized (mLock) {
             mCallbacks = new WeakReference<Callbacks>(callbacks);
         }
-    }
-
-    public void updateOrientation() {
-        // we update the LauncherModelOrientationHelper orientation whenever we re-initialize
-        mModelOrientationHelper.updateOrientation(mApp);
     }
 
     /**
@@ -712,7 +678,8 @@ public class LauncherModel extends BroadcastReceiver {
             final Cursor c = contentResolver.query(
                     LauncherSettings.Favorites.CONTENT_URI, null, null, null, null);
 
-            final ItemInfo occupied[][][] = new ItemInfo[Launcher.SCREEN_COUNT][Launcher.NUMBER_CELLS_X][Launcher.NUMBER_CELLS_Y];
+            final ItemInfo occupied[][][] =
+                    new ItemInfo[Launcher.SCREEN_COUNT][mCellCountX][mCellCountY];
 
             try {
                 final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
@@ -747,11 +714,6 @@ public class LauncherModel extends BroadcastReceiver {
                 final int displayModeIndex = c.getColumnIndexOrThrow(
                         LauncherSettings.Favorites.DISPLAY_MODE);
 
-
-                LauncherModelOrientationHelper.Coordinates localCoords;
-                int cellX;
-                int cellY;
-
                 ShortcutInfo info;
                 String intentDescription;
                 LauncherAppWidgetInfo appWidgetInfo;
@@ -785,17 +747,13 @@ public class LauncherModel extends BroadcastReceiver {
                             if (info != null) {
                                 updateSavedIcon(context, info, c, iconIndex);
 
-                                cellX = c.getInt(cellXIndex);
-                                cellY = c.getInt(cellYIndex);
-                                localCoords = mModelOrientationHelper.getLocalCoordinates(cellX, cellY, 1, 1);
-
                                 info.intent = intent;
                                 info.id = c.getLong(idIndex);
                                 container = c.getInt(containerIndex);
                                 info.container = container;
                                 info.screen = c.getInt(screenIndex);
-                                info.cellX = localCoords.x;
-                                info.cellY = localCoords.y;
+                                info.cellX = c.getInt(cellXIndex);
+                                info.cellY = c.getInt(cellYIndex);
 
                                 // check & update map of what's occupied
                                 if (!checkItemPlacement(occupied, info)) {
@@ -829,17 +787,13 @@ public class LauncherModel extends BroadcastReceiver {
                             id = c.getLong(idIndex);
                             UserFolderInfo folderInfo = findOrMakeUserFolder(mFolders, id);
 
-                            cellX = c.getInt(cellXIndex);
-                            cellY = c.getInt(cellYIndex);
-                            localCoords = mModelOrientationHelper.getLocalCoordinates(cellX, cellY, 1, 1);
-
                             folderInfo.title = c.getString(titleIndex);
                             folderInfo.id = id;
                             container = c.getInt(containerIndex);
                             folderInfo.container = container;
                             folderInfo.screen = c.getInt(screenIndex);
-                            folderInfo.cellX = localCoords.x;
-                            folderInfo.cellY = localCoords.y;
+                            folderInfo.cellX = c.getInt(cellXIndex);
+                            folderInfo.cellY = c.getInt(cellYIndex);
 
                             // check & update map of what's occupied
                             if (!checkItemPlacement(occupied, folderInfo)) {
@@ -877,18 +831,14 @@ public class LauncherModel extends BroadcastReceiver {
                                     }
                                 }
 
-                                cellX = c.getInt(cellXIndex);
-                                cellY = c.getInt(cellYIndex);
-                                localCoords = mModelOrientationHelper.getLocalCoordinates(cellX, cellY, 1, 1);
-
                                 liveFolderInfo.title = c.getString(titleIndex);
                                 liveFolderInfo.id = id;
                                 liveFolderInfo.uri = uri;
                                 container = c.getInt(containerIndex);
                                 liveFolderInfo.container = container;
                                 liveFolderInfo.screen = c.getInt(screenIndex);
-                                liveFolderInfo.cellX = localCoords.x;
-                                liveFolderInfo.cellY = localCoords.y;
+                                liveFolderInfo.cellX = c.getInt(cellXIndex);
+                                liveFolderInfo.cellY = c.getInt(cellYIndex);
                                 liveFolderInfo.baseIntent = intent;
                                 liveFolderInfo.displayMode = c.getInt(displayModeIndex);
 
@@ -923,19 +873,13 @@ public class LauncherModel extends BroadcastReceiver {
                                         + id + " appWidgetId=" + appWidgetId);
                                 itemsToRemove.add(id);
                             } else {
-                                cellX = c.getInt(cellXIndex);
-                                cellY = c.getInt(cellYIndex);
-                                int spanX = c.getInt(spanXIndex);
-                                int spanY = c.getInt(spanYIndex);
-                                localCoords = mModelOrientationHelper.getLocalCoordinates(cellX, cellY, spanX, spanY);
-
                                 appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId);
                                 appWidgetInfo.id = id;
                                 appWidgetInfo.screen = c.getInt(screenIndex);
-                                appWidgetInfo.cellX = localCoords.x;
-                                appWidgetInfo.cellY = localCoords.y;
-                                appWidgetInfo.spanX = spanX;
-                                appWidgetInfo.spanY = spanY;
+                                appWidgetInfo.cellX = c.getInt(cellXIndex);
+                                appWidgetInfo.cellY = c.getInt(cellYIndex);
+                                appWidgetInfo.spanX = c.getInt(spanXIndex);
+                                appWidgetInfo.spanY = c.getInt(spanYIndex);
 
                                 container = c.getInt(containerIndex);
                                 if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
@@ -983,13 +927,13 @@ public class LauncherModel extends BroadcastReceiver {
             if (DEBUG_LOADERS) {
                 Log.d(TAG, "loaded workspace in " + (SystemClock.uptimeMillis()-t) + "ms");
                 Log.d(TAG, "workspace layout: ");
-                for (int y = 0; y < Launcher.NUMBER_CELLS_Y; y++) {
+                for (int y = 0; y < mCellCountY; y++) {
                     String line = "";
                     for (int s = 0; s < Launcher.SCREEN_COUNT; s++) {
                         if (s > 0) {
                             line += " | ";
                         }
-                        for (int x = 0; x < Launcher.NUMBER_CELLS_X; x++) {
+                        for (int x = 0; x < mCellCountX; x++) {
                             line += ((occupied[s][x][y] != null) ? "#" : ".");
                         }
                     }

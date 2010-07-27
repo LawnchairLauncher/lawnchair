@@ -32,10 +32,10 @@
     <declare-styleable name="Workspace">
         <!-- The first screen the workspace should display. -->
         <attr name="defaultScreen" format="integer"  />
-        <!-- The number of horizontal cells for the device in its natural orientation -->
-        <attr name="canonicalDeviceWidth" format="integer"  />
-        <!-- The number of vertical cells for the device in its natural orientation -->
-        <attr name="canonicalDeviceHeight" format="integer"  />
+        <!-- The number of horizontal cells in the CellLayout -->
+        <attr name="cellCountX" format="integer"  />
+        <!-- The number of vertical cells in the CellLayout -->
+        <attr name="cellCountY" format="integer"  />
     </declare-styleable>
     
     <!-- CellLayout specific attributes. These attributes are used to customize
@@ -46,17 +46,13 @@
         <!-- The height of a single cell -->
         <attr name="cellHeight" format="dimension"  />
         <!-- Padding to apply at the start of the long axis -->
-        <attr name="longAxisStartPadding" format="dimension"  />
+        <attr name="xAxisStartPadding" format="dimension"  />
         <!-- Padding to apply at the end of the long axis -->
-        <attr name="longAxisEndPadding" format="dimension"  />
+        <attr name="xAxisEndPadding" format="dimension"  />
         <!-- Padding to apply at the start of the short axis -->
-        <attr name="shortAxisStartPadding" format="dimension"  />
+        <attr name="yAxisStartPadding" format="dimension"  />
         <!-- Padding to apply at the end of the short axis -->
-        <attr name="shortAxisEndPadding" format="dimension"  />
-        <!-- Number of cells on the short axis of the CellLayout -->
-        <attr name="shortAxisCells" format="integer" />
-        <!-- Number of cells on the long axis of the CellLayout -->
-        <attr name="longAxisCells" format="integer" />
+        <attr name="yAxisEndPadding" format="dimension"  />
     </declare-styleable>
 
     <!-- DeleteZone specific attributes. These attributes are used to customize

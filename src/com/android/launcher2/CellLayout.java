@@ -53,18 +53,13 @@ public class CellLayout extends ViewGroup {
     private int mCellWidth;
     private int mCellHeight;
 
-    private int mLongAxisStartPadding;
-    private int mLongAxisEndPadding;
-    private int mShortAxisStartPadding;
-    private int mShortAxisEndPadding;
-
     private int mLeftPadding;
     private int mRightPadding;
     private int mTopPadding;
     private int mBottomPadding;
 
-    private int mShortAxisCells;
-    private int mLongAxisCells;
+    private int mCountX;
+    private int mCountY;
 
     private int mWidthGap;
     private int mHeightGap;
@@ -132,17 +127,17 @@ public class CellLayout extends ViewGroup {
         mCellWidth = a.getDimensionPixelSize(R.styleable.CellLayout_cellWidth, 10);
         mCellHeight = a.getDimensionPixelSize(R.styleable.CellLayout_cellHeight, 10);
 
-        mLongAxisStartPadding =
-            a.getDimensionPixelSize(R.styleable.CellLayout_longAxisStartPadding, 10);
-        mLongAxisEndPadding =
-            a.getDimensionPixelSize(R.styleable.CellLayout_longAxisEndPadding, 10);
-        mShortAxisStartPadding =
-            a.getDimensionPixelSize(R.styleable.CellLayout_shortAxisStartPadding, 10);
-        mShortAxisEndPadding =
-            a.getDimensionPixelSize(R.styleable.CellLayout_shortAxisEndPadding, 10);
+        mLeftPadding =
+            a.getDimensionPixelSize(R.styleable.CellLayout_xAxisStartPadding, 10);
+        mRightPadding =
+            a.getDimensionPixelSize(R.styleable.CellLayout_xAxisEndPadding, 10);
+        mTopPadding =
+            a.getDimensionPixelSize(R.styleable.CellLayout_yAxisStartPadding, 10);
+        mBottomPadding =
+            a.getDimensionPixelSize(R.styleable.CellLayout_yAxisEndPadding, 10);
 
-        mShortAxisCells = a.getInt(R.styleable.CellLayout_shortAxisCells, 4);
-        mLongAxisCells = a.getInt(R.styleable.CellLayout_longAxisCells, 4);
+        mCountX = LauncherModel.getCellCountX();
+        mCountY = LauncherModel.getCellCountY();
 
         a.recycle();
 
@@ -196,11 +191,11 @@ public class CellLayout extends ViewGroup {
     }
 
     int getCountX() {
-        return mPortrait ? mShortAxisCells : mLongAxisCells;
+        return mCountX;
     }
 
     int getCountY() {
-        return mPortrait ? mLongAxisCells : mShortAxisCells;
+        return mCountY;
     }
 
     // Takes canonical layout parameters
@@ -209,11 +204,11 @@ public class CellLayout extends ViewGroup {
 
         // Generate an id for each view, this assumes we have at most 256x256 cells
         // per workspace screen
-        if (lp.cellX >= 0 && lp.cellX <= getCountX() - 1 && lp.cellY >= 0 && lp.cellY <= getCountY() - 1) {
+        if (lp.cellX >= 0 && lp.cellX <= mCountX - 1 && lp.cellY >= 0 && lp.cellY <= mCountY - 1) {
             // If the horizontal or vertical span is set to -1, it is taken to
             // mean that it spans the extent of the CellLayout
-            if (lp.cellHSpan < 0) lp.cellHSpan = getCountX();
-            if (lp.cellVSpan < 0) lp.cellVSpan = getCountY();
+            if (lp.cellHSpan < 0) lp.cellHSpan = mCountX;
+            if (lp.cellVSpan < 0) lp.cellVSpan = mCountY;
 
             child.setId(childId);
 
@@ -287,8 +282,8 @@ public class CellLayout extends ViewGroup {
             pointToCellExact(x, y, cellXY);
 
             final boolean portrait = mPortrait;
-            final int xCount = portrait ? mShortAxisCells : mLongAxisCells;
-            final int yCount = portrait ? mLongAxisCells : mShortAxisCells;
+            final int xCount = mCountX;
+            final int yCount = mCountY;
 
             final boolean[][] occupied = mOccupied;
             findOccupiedCells(xCount, yCount, occupied, null, true);
@@ -340,9 +335,8 @@ public class CellLayout extends ViewGroup {
     public CellInfo getTag() {
         final CellInfo info = (CellInfo) super.getTag();
         if (mDirtyTag && info.valid) {
-            final boolean portrait = mPortrait;
-            final int xCount = portrait ? mShortAxisCells : mLongAxisCells;
-            final int yCount = portrait ? mLongAxisCells : mShortAxisCells;
+            final int xCount = mCountX;
+            final int yCount = mCountY;
 
             final boolean[][] occupied = mOccupied;
             findOccupiedCells(xCount, yCount, occupied, null, true);
@@ -452,9 +446,8 @@ public class CellLayout extends ViewGroup {
     }
 
     CellInfo findAllVacantCells(boolean[] occupiedCells, View ignoreView) {
-        final boolean portrait = mPortrait;
-        final int xCount = portrait ? mShortAxisCells : mLongAxisCells;
-        final int yCount = portrait ? mLongAxisCells : mShortAxisCells;
+        final int xCount = mCountX;
+        final int yCount = mCountY;
 
         boolean[][] occupied = mOccupied;
 
@@ -507,16 +500,14 @@ public class CellLayout extends ViewGroup {
      * @param result Array of 2 ints to hold the x and y coordinate of the cell
      */
     void pointToCellExact(int x, int y, int[] result) {
-        final boolean portrait = mPortrait;
-
         final int hStartPadding = getLeftPadding();
         final int vStartPadding = getTopPadding();
 
         result[0] = (x - hStartPadding) / (mCellWidth + mWidthGap);
         result[1] = (y - vStartPadding) / (mCellHeight + mHeightGap);
 
-        final int xAxis = portrait ? mShortAxisCells : mLongAxisCells;
-        final int yAxis = portrait ? mLongAxisCells : mShortAxisCells;
+        final int xAxis = mCountX;
+        final int yAxis = mCountY;
 
         if (result[0] < 0) result[0] = 0;
         if (result[0] >= xAxis) result[0] = xAxis - 1;
@@ -588,75 +579,24 @@ public class CellLayout extends ViewGroup {
             throw new RuntimeException("CellLayout cannot have UNSPECIFIED dimensions");
         }
 
-        final int shortAxisCells = mShortAxisCells;
-        final int longAxisCells = mLongAxisCells;
         final int cellWidth = mCellWidth;
         final int cellHeight = mCellHeight;
 
-        boolean portrait = heightSpecSize > widthSpecSize;
-        if (portrait != mPortrait || mOccupied == null) {
-            if (portrait) {
-                mOccupied = new boolean[mShortAxisCells][mLongAxisCells];
-            } else {
-                mOccupied = new boolean[mLongAxisCells][mShortAxisCells];
-            }
+        if (mOccupied == null) {
+            mOccupied = new boolean[mCountX][mCountY];
         }
-        mPortrait = portrait;
 
-        int numShortGaps = shortAxisCells - 1;
-        int numLongGaps = longAxisCells - 1;
+        int numWidthGaps = mCountX - 1;
+        int numHeightGaps = mCountY - 1;
 
-        if (mPortrait) {
-            int vSpaceLeft = heightSpecSize - mLongAxisStartPadding
-                    - mLongAxisEndPadding - (cellHeight * longAxisCells);
-            mHeightGap = vSpaceLeft / numLongGaps;
+        int vSpaceLeft = heightSpecSize - mTopPadding
+                - mBottomPadding - (cellHeight * mCountY);
+        mHeightGap = vSpaceLeft / numHeightGaps;
 
-            int hSpaceLeft = widthSpecSize - mShortAxisStartPadding
-                    - mShortAxisEndPadding - (cellWidth * shortAxisCells);
-            if (numShortGaps > 0) {
-                mWidthGap = hSpaceLeft / numShortGaps;
-            } else {
-                mWidthGap = 0;
-            }
+        int hSpaceLeft = widthSpecSize - mLeftPadding
+                - mRightPadding - (cellWidth * mCountX);
+        mWidthGap = hSpaceLeft / numWidthGaps;
 
-            if (LauncherApplication.isInPlaceRotationEnabled()) {
-                mWidthGap = mHeightGap = Math.min(mHeightGap, mWidthGap);
-                mLeftPadding = mRightPadding = (widthSpecSize - cellWidth
-                        * shortAxisCells - (shortAxisCells - 1) * mWidthGap) / 2;
-                mTopPadding = mBottomPadding = (heightSpecSize - cellHeight
-                        * longAxisCells - (longAxisCells - 1) * mHeightGap) / 2;
-            } else {
-                mLeftPadding = mShortAxisStartPadding;
-                mRightPadding = mShortAxisEndPadding;
-                mTopPadding = mLongAxisStartPadding;
-                mBottomPadding = mLongAxisEndPadding;
-            }
-        } else {
-            int hSpaceLeft = widthSpecSize - mLongAxisStartPadding
-                    - mLongAxisEndPadding - (cellWidth * longAxisCells);
-            mWidthGap = hSpaceLeft / numLongGaps;
-
-            int vSpaceLeft = heightSpecSize - mShortAxisStartPadding
-                    - mShortAxisEndPadding - (cellHeight * shortAxisCells);
-            if (numShortGaps > 0) {
-                mHeightGap = vSpaceLeft / numShortGaps;
-            } else {
-                mHeightGap = 0;
-            }
-
-            if (LauncherApplication.isScreenXLarge()) {
-                mWidthGap = mHeightGap = Math.min(mHeightGap, mWidthGap);
-                mLeftPadding = mRightPadding = (widthSpecSize - cellWidth
-                        * longAxisCells - (longAxisCells - 1) * mWidthGap) / 2 ;
-                mTopPadding = mBottomPadding = (heightSpecSize - cellHeight
-                        * shortAxisCells - (shortAxisCells - 1) * mHeightGap) / 2;
-            } else {
-                mLeftPadding = mLongAxisStartPadding;
-                mRightPadding = mLongAxisEndPadding;
-                mTopPadding = mShortAxisStartPadding;
-                mBottomPadding = mShortAxisEndPadding;
-            }
-        }
         int count = getChildCount();
 
         for (int i = 0; i < count; i++) {
@@ -821,8 +761,8 @@ public class CellLayout extends ViewGroup {
      * @param result The estimated drop cell X and Y.
      */
     void estimateDropCell(int originX, int originY, int spanX, int spanY, int[] result) {
-        final int countX = getCountX();
-        final int countY = getCountY();
+        final int countX = mCountX;
+        final int countY = mCountY;
 
         pointToCellRounded(originX, originY, result);
 
@@ -861,8 +801,8 @@ public class CellLayout extends ViewGroup {
             bottomRight[0] += mCellWidth;
             bottomRight[1] += mCellHeight;
 
-            final int countX = mPortrait ? mShortAxisCells : mLongAxisCells;
-            final int countY = mPortrait ? mLongAxisCells : mShortAxisCells;
+            final int countX = mCountX;
+            final int countY = mCountY;
             // TODO: It's not necessary to do this every time, but it's not especially expensive
             findOccupiedCells(countX, countY, mOccupied, view, false);
 
@@ -987,7 +927,6 @@ public class CellLayout extends ViewGroup {
      * @param resultRect Rect into which to put the results
      */
     public void cellToRect(int cellX, int cellY, int cellHSpan, int cellVSpan, RectF resultRect) {
-        final boolean portrait = mPortrait;
         final int cellWidth = mCellWidth;
         final int cellHeight = mCellHeight;
         final int widthGap = mWidthGap;
@@ -1043,9 +982,8 @@ public class CellLayout extends ViewGroup {
      * @return True if a vacant cell was found
      */
     public boolean getVacantCell(int[] vacant, int spanX, int spanY) {
-        final boolean portrait = mPortrait;
-        final int xCount = portrait ? mShortAxisCells : mLongAxisCells;
-        final int yCount = portrait ? mLongAxisCells : mShortAxisCells;
+        final int xCount = mCountX;
+        final int yCount = mCountY;
         final boolean[][] occupied = mOccupied;
 
         findOccupiedCells(xCount, yCount, occupied, null, true);
@@ -1081,9 +1019,8 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
      * Update the array of occupied cells (mOccupied), and return a flattened copy of the array.
      */
     boolean[] getOccupiedCellsFlattened() {
-        final boolean portrait = mPortrait;
-        final int xCount = portrait ? mShortAxisCells : mLongAxisCells;
-        final int yCount = portrait ? mLongAxisCells : mShortAxisCells;
+        final int xCount = mCountX;
+        final int yCount = mCountY;
         final boolean[][] occupied = mOccupied;
 
         findOccupiedCells(xCount, yCount, occupied, null, true);
