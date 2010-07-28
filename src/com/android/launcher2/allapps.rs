@@ -52,7 +52,6 @@ static float g_PosVelocity = 0.f;
 static float g_LastPositionX = 0.f;
 static bool g_LastTouchDown = false;
 static float g_DT;
-static int64_t g_LastTime;
 static int g_PosMax;
 static float g_Zoom = 0.f;
 static float g_Animation = 1.f;
@@ -83,7 +82,7 @@ static void updateReadback() {
         i[0] = g_PosPage * (1 << 16);
         i[1] = g_PosVelocity * (1 << 16);
         i[2] = g_OldZoom * (1 << 16);
-        rsSendToClient(&i[0], 1, 12, 1);
+        rsSendToClientBlocking(1, &i[0], sizeof(i));
     }
 }
 
@@ -329,12 +328,8 @@ static void drawFrontGrid(float rowOffset, float p)
 int root()
 {
     // Compute dt in seconds.
-    int64_t newTime = rsUptimeMillis();
-    g_DT = (newTime - g_LastTime) * 0.001f;
-    g_LastTime = newTime;
-
     // physics may break if DT is large.
-    g_DT = min(g_DT, 0.1f);
+    g_DT = min(rsGetDt(), 0.1f);
 
     if (g_Zoom != gZoomTarget) {
         float dz = g_DT * 1.7f;
