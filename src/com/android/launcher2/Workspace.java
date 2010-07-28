@@ -548,7 +548,7 @@ public class Workspace extends ViewGroup
         // this is an intercepted event being forwarded from a cell layout
         if (mIsSmall) {
             unshrink((CellLayout)v);
-            mLauncher.hideCustomizationDrawer();
+            mLauncher.onWorkspaceUnshrink();
         }
         return false;
     }
@@ -710,8 +710,9 @@ public class Workspace extends ViewGroup
             final View child = getChildAt(i);
             if (child.getVisibility() != View.GONE) {
                 final int childX = child.getX();
-                child.layout(
-                        childX, 0, childX + child.getMeasuredWidth(), child.getMeasuredHeight());
+                final int childY = child.getY();
+                child.layout(childX, childY,
+                        childX + child.getMeasuredWidth(), childY + child.getMeasuredHeight());
             }
         }
 
@@ -1117,16 +1118,30 @@ public class Workspace extends ViewGroup
         return true;
     }
 
+    void shrinkToTop() {
+        shrink(true);
+    }
+
+    void shrinkToBottom() {
+        shrink(false);
+    }
+
     // we use this to shrink the workspace for the all apps view and the customize view
-    void shrink() {
+    private void shrink(boolean shrinkToTop) {
         mIsSmall = true;
         final int screenWidth = getWidth();
-
-        final int scaledWorkspacePageWidth = (int)(SHRINK_FACTOR*screenWidth);
+        final int screenHeight = getHeight();
+        final int scaledScreenWidth = (int)(SHRINK_FACTOR*screenWidth);
+        final int scaledScreenHeight = (int)(SHRINK_FACTOR*screenHeight);
         final float scaledSpacing = getResources().getDimension(R.dimen.smallScreenSpacing);
 
         final int screenCount = getChildCount();
-        float totalWidth = screenCount * scaledWorkspacePageWidth + (screenCount - 1) * scaledSpacing;
+        float totalWidth = screenCount * scaledScreenWidth + (screenCount - 1) * scaledSpacing;
+
+        float newY = getResources().getDimension(R.dimen.smallScreenVerticalMargin);
+        if (!shrinkToTop) {
+            newY = screenHeight - newY - scaledScreenHeight;
+        }
 
         // We animate all the screens to the centered position in workspace
         // At the same time, the screens become greyed/dimmed
@@ -1136,20 +1151,23 @@ public class Workspace extends ViewGroup
         Sequencer s = new Sequencer();
         for (int i = 0; i < screenCount; i++) {
             CellLayout cl = (CellLayout) getChildAt(i);
-            PropertyAnimator translate = new PropertyAnimator(
+            PropertyAnimator translateX = new PropertyAnimator(
                     500, cl, "x", cl.getX(), (int) newX);
+            PropertyAnimator translateY = new PropertyAnimator(
+                    500, cl, "y", cl.getY(), (int) newY);
             PropertyAnimator scaleX = new PropertyAnimator(
                     500, cl, "scaleX", cl.getScaleX(), SHRINK_FACTOR);
             PropertyAnimator scaleY = new PropertyAnimator(
                     500, cl, "scaleY", cl.getScaleY(), SHRINK_FACTOR);
             PropertyAnimator alpha = new PropertyAnimator(
                     500, cl, "dimmedBitmapAlpha", cl.getDimmedBitmapAlpha(), 1.0f);
-            Sequencer.Builder b = s.play(translate);
+            Sequencer.Builder b = s.play(translateX);
+            b.with(translateY);
             b.with(scaleX);
             b.with(scaleY);
             b.with(alpha);
             // increment newX for the next screen
-            newX += scaledWorkspacePageWidth + scaledSpacing;
+            newX += scaledScreenWidth + scaledSpacing;
             cl.setOnInterceptTouchListener(this);
         }
         setChildrenDrawnWithCacheEnabled(true);
@@ -1184,12 +1202,14 @@ public class Workspace extends ViewGroup
             CellLayout cl = (CellLayout)getChildAt(i);
             int x = screenWidth * i;
 
-            PropertyAnimator translate = new PropertyAnimator(500, cl, "x", cl.getX(), x);
+            PropertyAnimator translateX = new PropertyAnimator(500, cl, "x", cl.getX(), x);
+            PropertyAnimator translateY = new PropertyAnimator(500, cl, "y", cl.getY(), 0);
             PropertyAnimator scaleX = new PropertyAnimator(500, cl, "scaleX", cl.getScaleX(), 1.0f);
             PropertyAnimator scaleY = new PropertyAnimator(500, cl, "scaleY", cl.getScaleY(), 1.0f);
             PropertyAnimator alpha = new PropertyAnimator(
                     500, cl, "dimmedBitmapAlpha", cl.getDimmedBitmapAlpha(), 0.0f);
-            Sequencer.Builder b = s.play(translate);
+            Sequencer.Builder b = s.play(translateX);
+            b.with(translateY);
             b.with(scaleX);
             b.with(scaleY);
             b.with(alpha);
