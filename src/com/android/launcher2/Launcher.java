@@ -1266,7 +1266,7 @@ public final class Launcher extends Activity
             // Animate the widget chooser up from the bottom of the screen
             if (!isCustomizationDrawerVisible()) {
                 showCustomizationDrawer();
-                mWorkspace.shrink();
+                mWorkspace.shrinkToTop();
             }
         } else {
             showAddDialog(mMenuAddInfo);
@@ -2023,7 +2023,8 @@ public final class Launcher extends Activity
 
     // AllAppsView.Watcher
     public void zoomed(float zoom) {
-        if (zoom == 1.0f) {
+        // In XLarge view, we zoom down the workspace below all apps so it's still visible
+        if (zoom == 1.0f && !LauncherApplication.isScreenXLarge()) {
             mWorkspace.setVisibility(View.GONE);
         }
     }
@@ -2036,6 +2037,7 @@ public final class Launcher extends Activity
             mAllAppsGrid.zoom(1.0f, false);
             Animation anim = AnimationUtils.loadAnimation(this, R.anim.all_apps_zoom_in);
             ((View) mAllAppsGrid).startAnimation(anim);
+            mWorkspace.shrinkToBottom();
         } else {
             mAllAppsGrid.zoom(1.0f, animated);
         }
@@ -2099,6 +2101,7 @@ public final class Launcher extends Activity
                     }
                 });
                 ((View)mAllAppsGrid).startAnimation(anim);
+                mWorkspace.unshrink();
             } else {
                 mAllAppsGrid.zoom(0.0f, animated);
             }
@@ -2128,7 +2131,7 @@ public final class Launcher extends Activity
         mHomeCustomizationDrawer.startAnimation(AnimationUtils.loadAnimation(this, R.anim.home_customization_drawer_slide_up));
     }
 
-    void hideCustomizationDrawer() {
+    private void hideCustomizationDrawer() {
         if (isCustomizationDrawerVisible()) {
             Animation slideDownAnimation = AnimationUtils.loadAnimation(this, R.anim.home_customization_drawer_slide_down);
             slideDownAnimation.setAnimationListener(new Animation.AnimationListener() {
@@ -2139,6 +2142,16 @@ public final class Launcher extends Activity
                 public void onAnimationStart(Animation animation) {}
             });
             mHomeCustomizationDrawer.startAnimation(slideDownAnimation);
+        }
+    }
+
+    void onWorkspaceUnshrink() {
+        if (isAllAppsVisible()) {
+            // TODO: Make a smoother transition here
+            closeAllApps(false);
+        }
+        if (isCustomizationDrawerVisible()) {
+            hideCustomizationDrawer();
         }
     }
 
