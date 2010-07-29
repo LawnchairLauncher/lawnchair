@@ -34,16 +34,23 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
 
     private static final String TAG = "Launcher.AllAppsTabbed";
 
-    private AllAppsView mAllApps2D;
+    private static final String TAG_ALL = "ALL";
+    private static final String TAG_APPS = "APPS";
+    private static final String TAG_GAMES = "GAMES";
+    private static final String TAG_DOWNLOADED = "DOWNLOADED";
+
+    private AllApps2D mAllApps2D;
+    private Context mContext;
 
     public AllAppsTabbed(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mContext = context;
     }
 
     @Override
     protected void onFinishInflate() {
         try {
-            mAllApps2D = (AllAppsView)findViewById(R.id.all_apps_2d);
+            mAllApps2D = (AllApps2D)findViewById(R.id.all_apps_2d);
             if (mAllApps2D == null) throw new Resources.NotFoundException();
         } catch (Resources.NotFoundException e) {
             Log.e(TAG, "Can't find necessary layout elements for AllAppsTabbed");
@@ -53,15 +60,36 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
         // This lets us share the same view between all tabs
         TabContentFactory contentFactory = new TabContentFactory() {
             public View createTabContent(String tag) {
-                return (View)mAllApps2D;
+                return mAllApps2D;
             }
         };
 
-        // TODO: Make these tabs show the appropriate content (they're no-ops for now)
-        addTab(newTabSpec("apps").setIndicator("All").setContent(contentFactory));
-        addTab(newTabSpec("apps").setIndicator("Apps").setContent(contentFactory));
-        addTab(newTabSpec("apps").setIndicator("Games").setContent(contentFactory));
-        addTab(newTabSpec("apps").setIndicator("Downloaded").setContent(contentFactory));
+        String label = mContext.getString(R.string.all_apps_tab_all);
+        addTab(newTabSpec(TAG_ALL).setIndicator(label).setContent(contentFactory));
+
+        label = mContext.getString(R.string.all_apps_tab_apps);
+        addTab(newTabSpec(TAG_APPS).setIndicator(label).setContent(contentFactory));
+
+        label = mContext.getString(R.string.all_apps_tab_games);
+        addTab(newTabSpec(TAG_GAMES).setIndicator(label).setContent(contentFactory));
+
+        label = mContext.getString(R.string.all_apps_tab_downloaded);
+        addTab(newTabSpec(TAG_DOWNLOADED).setIndicator(label).setContent(contentFactory));
+
+        setOnTabChangedListener(new OnTabChangeListener() {
+            public void onTabChanged(String tabId) {
+                String tag = getCurrentTabTag();
+                if (tag == TAG_ALL) {
+                    mAllApps2D.filterApps(AllApps2D.AppType.ALL);
+                } else if (tag == TAG_APPS) {
+                    mAllApps2D.filterApps(AllApps2D.AppType.APP);
+                } else if (tag == TAG_GAMES) {
+                    mAllApps2D.filterApps(AllApps2D.AppType.GAME);
+                } else if (tag == TAG_DOWNLOADED) {
+                    mAllApps2D.filterApps(AllApps2D.AppType.DOWNLOADED);
+                }
+            }
+        });
 
         setCurrentTab(0);
         setVisibility(GONE);
@@ -125,5 +153,4 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
     public void surrender() {
         mAllApps2D.surrender();
     }
-
 }

@@ -22,9 +22,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -58,7 +56,15 @@ public class AllApps2D
 
     private GridView mGrid;
 
+    /** All applications in the system (we might only be showing a subset) */
     private ArrayList<ApplicationInfo> mAllAppsList = new ArrayList<ApplicationInfo>();
+
+    /** Currently visible applications in the grid */
+    private ArrayList<ApplicationInfo> mVisibleAppsList = new ArrayList<ApplicationInfo>();
+
+    public enum AppType { APP, GAME, DOWNLOADED, ALL };
+
+    private AppType mCurrentFilter = AppType.ALL;
 
     // preserve compatibility with 3D all apps:
     //    0.0 -> hidden
@@ -120,8 +126,7 @@ public class AllApps2D
         setVisibility(View.GONE);
         setSoundEffectsEnabled(false);
 
-        mAppsAdapter = new AppsAdapter(getContext(), mAllAppsList);
-        mAppsAdapter.setNotifyOnChange(false);
+        mAppsAdapter = new AppsAdapter(getContext(), mVisibleAppsList);
     }
 
     @Override
@@ -255,11 +260,10 @@ public class AllApps2D
     public void setApps(ArrayList<ApplicationInfo> list) {
         mAllAppsList.clear();
         addApps(list);
+        filterApps(mCurrentFilter);
     }
 
     public void addApps(ArrayList<ApplicationInfo> list) {
-//        Log.d(TAG, "addApps: " + list.size() + " apps: " + list.toString());
-
         final int N = list.size();
 
         for (int i=0; i<N; i++) {
@@ -271,11 +275,12 @@ public class AllApps2D
             }
             mAllAppsList.add(index, item);
         }
-        mAppsAdapter.notifyDataSetChanged();
+        filterApps(mCurrentFilter);
     }
 
     public void removeApps(ArrayList<ApplicationInfo> list) {
         final int N = list.size();
+
         for (int i=0; i<N; i++) {
             final ApplicationInfo item = list.get(i);
             int index = findAppByComponent(mAllAppsList, item);
@@ -286,13 +291,40 @@ public class AllApps2D
                 // Try to recover.  This should keep us from crashing for now.
             }
         }
-        mAppsAdapter.notifyDataSetChanged();
+        filterApps(mCurrentFilter);
     }
 
     public void updateApps(ArrayList<ApplicationInfo> list) {
         // Just remove and add, because they may need to be re-sorted.
         removeApps(list);
         addApps(list);
+    }
+
+    public void filterApps(AppType appType) {
+        mCurrentFilter = appType;
+
+        mAppsAdapter.setNotifyOnChange(false);
+        mVisibleAppsList.clear();
+        if (appType == AppType.ALL) {
+            mVisibleAppsList.addAll(mAllAppsList);
+        } else {
+            int searchFlags = 0;
+
+            if (appType == AppType.APP) {
+                searchFlags = ApplicationInfo.APP_FLAG;
+            } else if (appType == AppType.GAME) {
+                searchFlags = ApplicationInfo.GAME_FLAG;
+            } else if (appType == AppType.DOWNLOADED) {
+                searchFlags = ApplicationInfo.DOWNLOADED_FLAG;
+            }
+
+            for (ApplicationInfo info : mAllAppsList) {
+                if ((info.flags & searchFlags) != 0) {
+                    mVisibleAppsList.add(info);
+                }
+            }
+        }
+        mAppsAdapter.notifyDataSetChanged();
     }
 
     private static int findAppByComponent(ArrayList<ApplicationInfo> list, ApplicationInfo item) {

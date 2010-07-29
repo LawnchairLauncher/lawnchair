@@ -1213,7 +1213,7 @@ public class LauncherModel extends BroadcastReceiver {
                 startIndex = i;
                 for (int j=0; i<N && j<batchSize; j++) {
                     // This builds the icon bitmaps.
-                    mAllAppsList.add(new ApplicationInfo(apps.get(i), mIconCache));
+                    mAllAppsList.add(new ApplicationInfo(packageManager, apps.get(i), mIconCache));
                     i++;
                 }
 

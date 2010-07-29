@@ -43,11 +43,17 @@
     <string name="activity_not_found">Application is not installed on your phone.</string>
     <!-- List item for configuring the current wallpaper -->
     <string name="configure_wallpaper">Configure...</string>
+    <!--  Labels for the tabs in the customize drawer -->
     <string name="widgets_tab_label">Widgets</string>
     <string name="folders_tab_label">Folders</string>
     <string name="shortcuts_tab_label">Shortcuts</string>
     <string name="wallpapers_tab_label">Wallpapers</string>
     <string name="wallpapers_temp_tab_text">This will be the wallpapers tab</string>
+    <!--  Labels for the tabs in All Apps -->
+    <string name="all_apps_tab_all">All</string>
+    <string name="all_apps_tab_apps">Apps</string>
+    <string name="all_apps_tab_games">Games</string>
+    <string name="all_apps_tab_downloaded">Downloaded</string>
 
     <!-- Folders -->
     <skip />
