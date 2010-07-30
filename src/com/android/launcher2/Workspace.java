@@ -86,6 +86,7 @@ public class Workspace extends ViewGroup
     private int mDefaultScreen;
 
     private boolean mFirstLayout = true;
+    private boolean mWaitingToShrinkToBottom = false;
 
     private int mCurrentScreen;
     private int mNextScreen = INVALID_SCREEN;
@@ -726,6 +727,13 @@ public class Workspace extends ViewGroup
             }
         }
 
+        // if shrinkToBottom() is called on initialization, it has to be deferred
+        // until after the first call to onLayout so that it has the correct width
+        if (mWaitingToShrinkToBottom) {
+            shrinkToBottom(false);
+            mWaitingToShrinkToBottom = false;
+        }
+
         if (LauncherApplication.isInPlaceRotationEnabled()) {
             // When the device is rotated, the scroll position of the current screen
             // needs to be refreshed
@@ -1135,15 +1143,27 @@ public class Workspace extends ViewGroup
     }
 
     void shrinkToTop() {
-        shrink(true);
+        shrink(true, true);
     }
 
     void shrinkToBottom() {
-        shrink(false);
+        shrinkToBottom(true);
+    }
+
+    void shrinkToBottom(boolean animated) {
+        if (mFirstLayout) {
+            // (mFirstLayout == "first layout has not happened yet")
+            // if we get a call to shrink() as part of our initialization (for example, if
+            // Launcher is started in All Apps mode) then we need to wait for a layout call
+            // to get our width so we can layout the mini-screen views correctly
+            mWaitingToShrinkToBottom = true;
+        } else {
+            shrink(false, animated);
+        }
     }
 
     // we use this to shrink the workspace for the all apps view and the customize view
-    private void shrink(boolean shrinkToTop) {
+    private void shrink(boolean shrinkToTop, boolean animated) {
         mIsSmall = true;
         final int screenWidth = getWidth();
         final int screenHeight = getHeight();
@@ -1167,21 +1187,29 @@ public class Workspace extends ViewGroup
         Sequencer s = new Sequencer();
         for (int i = 0; i < screenCount; i++) {
             CellLayout cl = (CellLayout) getChildAt(i);
-            PropertyAnimator translateX = new PropertyAnimator(
-                    500, cl, "x", cl.getX(), (int) newX);
-            PropertyAnimator translateY = new PropertyAnimator(
-                    500, cl, "y", cl.getY(), (int) newY);
-            PropertyAnimator scaleX = new PropertyAnimator(
-                    500, cl, "scaleX", cl.getScaleX(), SHRINK_FACTOR);
-            PropertyAnimator scaleY = new PropertyAnimator(
-                    500, cl, "scaleY", cl.getScaleY(), SHRINK_FACTOR);
-            PropertyAnimator alpha = new PropertyAnimator(
-                    500, cl, "dimmedBitmapAlpha", cl.getDimmedBitmapAlpha(), 1.0f);
-            Sequencer.Builder b = s.play(translateX);
-            b.with(translateY);
-            b.with(scaleX);
-            b.with(scaleY);
-            b.with(alpha);
+            if (animated) {
+                PropertyAnimator translateX = new PropertyAnimator(
+                        500, cl, "x", cl.getX(), (int) newX);
+                PropertyAnimator translateY = new PropertyAnimator(
+                        500, cl, "y", cl.getY(), (int) newY);
+                PropertyAnimator scaleX = new PropertyAnimator(
+                        500, cl, "scaleX", cl.getScaleX(), SHRINK_FACTOR);
+                PropertyAnimator scaleY = new PropertyAnimator(
+                        500, cl, "scaleY", cl.getScaleY(), SHRINK_FACTOR);
+                PropertyAnimator alpha = new PropertyAnimator(
+                        500, cl, "dimmedBitmapAlpha", cl.getDimmedBitmapAlpha(), 1.0f);
+                Sequencer.Builder b = s.play(translateX);
+                b.with(translateY);
+                b.with(scaleX);
+                b.with(scaleY);
+                b.with(alpha);
+            } else {
+                cl.setX((int)newX);
+                cl.setY((int)newY);
+                cl.setScaleX(SHRINK_FACTOR);
+                cl.setScaleY(SHRINK_FACTOR);
+                cl.setDimmedBitmapAlpha(1.0f);
+            }
             // increment newX for the next screen
             newX += scaledScreenWidth + scaledSpacing;
             cl.setOnInterceptTouchListener(this);

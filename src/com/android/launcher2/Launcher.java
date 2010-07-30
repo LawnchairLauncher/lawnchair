@@ -2032,12 +2032,14 @@ public final class Launcher extends Activity
     void showAllApps(boolean animated) {
         hideCustomizationDrawer();
 
+        if (LauncherApplication.isScreenXLarge()) {
+            mWorkspace.shrinkToBottom(animated);
+        }
         if (LauncherApplication.isScreenXLarge() && animated) {
             // Not really a zoom -- this just makes the view visible
             mAllAppsGrid.zoom(1.0f, false);
             Animation anim = AnimationUtils.loadAnimation(this, R.anim.all_apps_zoom_in);
             ((View) mAllAppsGrid).startAnimation(anim);
-            mWorkspace.shrinkToBottom();
         } else {
             mAllAppsGrid.zoom(1.0f, animated);
         }
