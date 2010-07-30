@@ -804,7 +804,10 @@ public class Workspace extends ViewGroup
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            if (mLauncher.isWorkspaceLocked() || mLauncher.isAllAppsVisible()) {
+            // (In XLarge mode, the workspace is shrunken below all apps, and responds to taps
+            // ie when you click on a mini-screen, it zooms back to that screen)
+            if (mLauncher.isWorkspaceLocked() ||
+                    (!LauncherApplication.isScreenXLarge() && mLauncher.isAllAppsVisible())) {
                 return false;
             }
         }
@@ -815,7 +818,10 @@ public class Workspace extends ViewGroup
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         final boolean workspaceLocked = mLauncher.isWorkspaceLocked();
         final boolean allAppsVisible = mLauncher.isAllAppsVisible();
-        if (workspaceLocked || allAppsVisible) {
+
+        // (In XLarge mode, the workspace is shrunken below all apps, and responds to taps
+        // ie when you click on a mini-screen, it zooms back to that screen)
+        if (workspaceLocked || (!LauncherApplication.isScreenXLarge() && allAppsVisible)) {
             return false; // We don't want the events.  Let them fall through to the all apps view.
         }
 

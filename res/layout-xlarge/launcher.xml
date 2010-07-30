@@ -34,6 +34,7 @@
         android:id="@+id/workspace"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        launcher:defaultScreen="2"
         launcher:canonicalDeviceWidth="8"
         launcher:canonicalDeviceHeight="4">
 

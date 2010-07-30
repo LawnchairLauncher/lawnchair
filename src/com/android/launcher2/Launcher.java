@@ -2147,8 +2147,7 @@ public final class Launcher extends Activity
 
     void onWorkspaceUnshrink() {
         if (isAllAppsVisible()) {
-            // TODO: Make a smoother transition here
-            closeAllApps(false);
+            closeAllApps(true);
         }
         if (isCustomizationDrawerVisible()) {
             hideCustomizationDrawer();
