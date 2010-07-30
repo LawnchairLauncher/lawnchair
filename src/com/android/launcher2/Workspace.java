@@ -342,6 +342,14 @@ public class Workspace extends ViewGroup
      * @param currentScreen
      */
     void setCurrentScreen(int currentScreen) {
+        setCurrentScreen(currentScreen, true);
+    }
+
+    void setCurrentScreen(int currentScreen, boolean animateScrolling) {
+        setCurrentScreen(currentScreen, animateScrolling, getWidth());
+    }
+
+    void setCurrentScreen(int currentScreen, boolean animateScrolling, int screenWidth) {
         if (!mScroller.isFinished())
             mScroller.abortAnimation();
         clearVacantCache();
@@ -350,9 +358,12 @@ public class Workspace extends ViewGroup
             mPreviousIndicator.setLevel(mCurrentScreen);
             mNextIndicator.setLevel(mCurrentScreen);
         }
-
-        scrollTo(mCurrentScreen * getWidth(), 0);
-        updateWallpaperOffset();
+        if (animateScrolling) {
+            scrollTo(mCurrentScreen * screenWidth, 0);
+        } else {
+            mScrollX = mCurrentScreen * screenWidth;
+        }
+        updateWallpaperOffset(screenWidth * (getChildCount() - 1));
         invalidate();
     }
 
@@ -689,9 +700,8 @@ public class Workspace extends ViewGroup
 
         if (mFirstLayout) {
             setHorizontalScrollBarEnabled(false);
-            scrollTo(mCurrentScreen * width, 0);
+            setCurrentScreen(mCurrentScreen, false, width);
             setHorizontalScrollBarEnabled(true);
-            updateWallpaperOffset(width * (getChildCount() - 1));
         }
     }
 
@@ -1176,46 +1186,50 @@ public class Workspace extends ViewGroup
 
     // We call this when we trigger an unshrink by clicking on the CellLayout cl
     private void unshrink(CellLayout clThatWasClicked) {
-        int newCurrentScreen = mCurrentScreen;
-        final int screenCount = getChildCount();
-        for (int i = 0; i < screenCount; i++) {
-            if (getChildAt(i) == clThatWasClicked) {
-                newCurrentScreen = i;
+        if (mIsSmall) {
+            int newCurrentScreen = mCurrentScreen;
+            final int screenCount = getChildCount();
+            for (int i = 0; i < screenCount; i++) {
+                if (getChildAt(i) == clThatWasClicked) {
+                    newCurrentScreen = i;
+                }
             }
-        }
-        final int delta = (newCurrentScreen - mCurrentScreen)*getWidth();
-        for (int i = 0; i < screenCount; i++) {
-            CellLayout cl = (CellLayout) getChildAt(i);
-            cl.setX(cl.getX() + delta);
-        }
-        mScrollX = newCurrentScreen * getWidth();
+            final int delta = (newCurrentScreen - mCurrentScreen)*getWidth();
+            for (int i = 0; i < screenCount; i++) {
+                CellLayout cl = (CellLayout) getChildAt(i);
+                cl.setX(cl.getX() + delta);
+            }
+            mScrollX = newCurrentScreen * getWidth();
 
-        unshrink();
-        setCurrentScreen(newCurrentScreen);
+            unshrink();
+            setCurrentScreen(newCurrentScreen);
+        }
     }
 
     public void unshrink() {
-        final int screenWidth = getWidth();
-        Sequencer s = new Sequencer();
-        final int screenCount = getChildCount();
-        for (int i = 0; i < screenCount; i++) {
-            CellLayout cl = (CellLayout)getChildAt(i);
-            int x = screenWidth * i;
+        if (mIsSmall) {
+            final int screenWidth = getWidth();
+            Sequencer s = new Sequencer();
+            final int screenCount = getChildCount();
+            for (int i = 0; i < screenCount; i++) {
+                CellLayout cl = (CellLayout)getChildAt(i);
+                int x = screenWidth * i;
 
-            PropertyAnimator translateX = new PropertyAnimator(500, cl, "x", cl.getX(), x);
-            PropertyAnimator translateY = new PropertyAnimator(500, cl, "y", cl.getY(), 0);
-            PropertyAnimator scaleX = new PropertyAnimator(500, cl, "scaleX", cl.getScaleX(), 1.0f);
-            PropertyAnimator scaleY = new PropertyAnimator(500, cl, "scaleY", cl.getScaleY(), 1.0f);
-            PropertyAnimator alpha = new PropertyAnimator(
-                    500, cl, "dimmedBitmapAlpha", cl.getDimmedBitmapAlpha(), 0.0f);
-            Sequencer.Builder b = s.play(translateX);
-            b.with(translateY);
-            b.with(scaleX);
-            b.with(scaleY);
-            b.with(alpha);
+                PropertyAnimator translateX = new PropertyAnimator(500, cl, "x", cl.getX(), x);
+                PropertyAnimator translateY = new PropertyAnimator(500, cl, "y", cl.getY(), 0);
+                PropertyAnimator scaleX = new PropertyAnimator(500, cl, "scaleX", cl.getScaleX(), 1.0f);
+                PropertyAnimator scaleY = new PropertyAnimator(500, cl, "scaleY", cl.getScaleY(), 1.0f);
+                PropertyAnimator alpha = new PropertyAnimator(
+                        500, cl, "dimmedBitmapAlpha", cl.getDimmedBitmapAlpha(), 0.0f);
+                Sequencer.Builder b = s.play(translateX);
+                b.with(translateY);
+                b.with(scaleX);
+                b.with(scaleY);
+                b.with(alpha);
+            }
+            s.addListener(mUnshrinkAnimationListener);
+            s.start();
         }
-        s.addListener(mUnshrinkAnimationListener);
-        s.start();
     }
 
     void snapToScreen(int whichScreen) {
@@ -1301,7 +1315,7 @@ public class Workspace extends ViewGroup
         SavedState savedState = (SavedState) state;
         super.onRestoreInstanceState(savedState.getSuperState());
         if (savedState.currentScreen != -1) {
-            mCurrentScreen = savedState.currentScreen;
+            setCurrentScreen(savedState.currentScreen, false);
             Launcher.setScreen(mCurrentScreen);
         }
     }
