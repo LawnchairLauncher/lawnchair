@@ -35,6 +35,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.Parcelable;
 import android.os.RemoteException;
 import android.util.Log;
@@ -581,7 +582,8 @@ public class LauncherModel extends BroadcastReceiver {
                 }
 
                 if (PROFILE_LOADERS) {
-                    android.os.Debug.startMethodTracing("/sdcard/launcher-loaders");
+                    android.os.Debug.startMethodTracing(
+                            Environment.getExternalStorageDirectory() + "/launcher-loaders");
                 }
                 
                 if (loadWorkspaceFirst) {
