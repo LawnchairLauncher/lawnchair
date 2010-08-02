@@ -73,7 +73,7 @@ public class WidgetListAdapter extends BaseAdapter {
             LayoutInflater inflater =
                 (LayoutInflater)mLauncher.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             textView = (TextView) inflater.inflate(
-                    R.layout.home_customization_drawer_item, parent, false);
+                    R.layout.home_customization_drawer_widget, parent, false);
         } else {
             textView = (TextView) convertView;
         }

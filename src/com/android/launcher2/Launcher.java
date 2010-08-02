@@ -778,12 +778,14 @@ public final class Launcher extends Activity
             widgetChooser.setLauncher(this);
 
             FolderChooser folderChooser = (FolderChooser) findViewById(R.id.folder_chooser);
-            IntentListAdapter folderTypes = new FolderListAdapter(this, LiveFolders.ACTION_CREATE_LIVE_FOLDER);
+            IntentListAdapter folderTypes = new FolderListAdapter(
+                    this, LiveFolders.ACTION_CREATE_LIVE_FOLDER);
             folderChooser.setAdapter(folderTypes);
             folderChooser.setLauncher(this);
 
             ShortcutChooser shortcutChooser = (ShortcutChooser) findViewById(R.id.shortcut_chooser);
-            IntentListAdapter shortcutTypes = new ShortcutListAdapter(this, Intent.ACTION_CREATE_SHORTCUT);
+            IntentListAdapter shortcutTypes = new IntentListAdapter(
+                    this, Intent.ACTION_CREATE_SHORTCUT);
             shortcutChooser.setAdapter(shortcutTypes);
             shortcutChooser.setLauncher(this);
         } else {
@@ -813,7 +815,12 @@ public final class Launcher extends Activity
 
         deleteZone.setLauncher(this);
         deleteZone.setDragController(dragController);
-        int deleteZoneHandleId = LauncherApplication.isScreenXLarge() ? R.id.add_button : R.id.all_apps_button_cluster;
+        int deleteZoneHandleId;
+        if (LauncherApplication.isScreenXLarge()) {
+            deleteZoneHandleId = R.id.add_button;
+        } else {
+            deleteZoneHandleId = R.id.all_apps_button_cluster;
+        }
         deleteZone.setHandle(findViewById(deleteZoneHandleId));
 
         dragController.setDragScoller(workspace);
@@ -2121,7 +2128,8 @@ public final class Launcher extends Activity
     }
 
     private boolean isCustomizationDrawerVisible() {
-        return mHomeCustomizationDrawer != null && mHomeCustomizationDrawer.getVisibility() == View.VISIBLE;
+        return mHomeCustomizationDrawer != null &&
+                mHomeCustomizationDrawer.getVisibility() == View.VISIBLE;
     }
 
     private void showCustomizationDrawer() {
@@ -2130,12 +2138,14 @@ public final class Launcher extends Activity
             closeAllApps(false);
         }
         mHomeCustomizationDrawer.setVisibility(View.VISIBLE);
-        mHomeCustomizationDrawer.startAnimation(AnimationUtils.loadAnimation(this, R.anim.home_customization_drawer_slide_up));
+        mHomeCustomizationDrawer.startAnimation(
+                AnimationUtils.loadAnimation(this, R.anim.home_customization_drawer_slide_up));
     }
 
     private void hideCustomizationDrawer() {
         if (isCustomizationDrawerVisible()) {
-            Animation slideDownAnimation = AnimationUtils.loadAnimation(this, R.anim.home_customization_drawer_slide_down);
+            Animation slideDownAnimation = AnimationUtils.loadAnimation(
+                    this, R.anim.home_customization_drawer_slide_down);
             slideDownAnimation.setAnimationListener(new Animation.AnimationListener() {
                 public void onAnimationEnd(Animation animation) {
                     mHomeCustomizationDrawer.setVisibility(View.GONE);
