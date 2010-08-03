@@ -720,8 +720,8 @@ public class Workspace extends ViewGroup
         for (int i = 0; i < screenCount; i++) {
             final View child = getChildAt(i);
             if (child.getVisibility() != View.GONE) {
-                final int childX = child.getX();
-                final int childY = child.getY();
+                final int childX = (int)child.getX();
+                final int childY = (int)child.getY();
                 child.layout(childX, childY,
                         childX + child.getMeasuredWidth(), childY + child.getMeasuredHeight());
             }

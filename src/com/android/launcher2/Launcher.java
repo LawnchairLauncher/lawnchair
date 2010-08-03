@@ -34,8 +34,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.Intent.ShortcutIconResource;
 import android.content.IntentFilter;
+import android.content.Intent.ShortcutIconResource;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -68,12 +68,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.View.OnLongClickListener;
 import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
+import android.view.animation.Animation.AnimationListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -765,10 +765,13 @@ public final class Launcher extends Activity
         DeleteZone deleteZone = (DeleteZone) dragLayer.findViewById(R.id.delete_zone);
         mDeleteZone = deleteZone;
 
-        mHandleView = (HandleView) findViewById(R.id.all_apps_button);
-        mHandleView.setLauncher(this);
-        mHandleView.setOnClickListener(this);
-        mHandleView.setOnLongClickListener(this);
+        View handleView = findViewById(R.id.all_apps_button);
+        if (handleView != null && handleView instanceof HandleView) {
+            // we don't use handle view in xlarge mode
+            mHandleView.setLauncher(this);
+            mHandleView.setOnClickListener(this);
+            mHandleView.setOnLongClickListener(this);
+        }
 
         WidgetChooser widgetChooser = (WidgetChooser) findViewById(R.id.widget_chooser);
         if (widgetChooser != null) {
@@ -817,7 +820,7 @@ public final class Launcher extends Activity
         deleteZone.setDragController(dragController);
         int deleteZoneHandleId;
         if (LauncherApplication.isScreenXLarge()) {
-            deleteZoneHandleId = R.id.add_button;
+            deleteZoneHandleId = R.id.configure_button;
         } else {
             deleteZoneHandleId = R.id.all_apps_button_cluster;
         }
@@ -1593,13 +1596,36 @@ public final class Launcher extends Activity
     }
 
     /**
-     * Event handler for the "plus" button that appears on the home screen, which
+     * Event handler for the search button
+     *
+     * @param v The view that was clicked.
+     */
+    public void onClickSearchButton(View v) {
+        Intent i = new Intent(SearchManager.INTENT_ACTION_GLOBAL_SEARCH);
+        View button = findViewById(R.id.search_button);
+        i.setSourceBounds(
+                new Rect(button.getLeft(), button.getTop(), button.getRight(), button.getBottom()));
+        startActivity(i);
+    }
+
+    /**
+     * Event handler for the "gear" button that appears on the home screen, which
      * enters home screen customization mode.
      *
      * @param v The view that was clicked.
      */
-    public void onClickAddButton(View v) {
+    public void onClickConfigureButton(View v) {
         addItems();
+    }
+
+    /**
+     * Event handler for the "grid" button that appears on the home screen, which
+     * enters all apps mode.
+     *
+     * @param v The view that was clicked.
+     */
+    public void onClickAllAppsButton(View v) {
+        showAllApps(true);
     }
 
     void startActivitySafely(Intent intent, Object tag) {
