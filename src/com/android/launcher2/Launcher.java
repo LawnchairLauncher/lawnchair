@@ -768,6 +768,7 @@ public final class Launcher extends Activity
         View handleView = findViewById(R.id.all_apps_button);
         if (handleView != null && handleView instanceof HandleView) {
             // we don't use handle view in xlarge mode
+            mHandleView = (HandleView)handleView;
             mHandleView.setLauncher(this);
             mHandleView.setOnClickListener(this);
             mHandleView.setOnLongClickListener(this);
