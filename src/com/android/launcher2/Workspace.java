@@ -634,22 +634,18 @@ public class Workspace extends ViewGroup
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        final int screenCount = getChildCount();
         if (mFirstLayout) {
-            final int width = getWidth();
-            for (int i = 0; i < screenCount; i++) {
-                getChildAt(i).setX(i*width);
-            }
             mFirstLayout = false;
         }
-
+        int childLeft = 0;
+        final int screenCount = getChildCount();
         for (int i = 0; i < screenCount; i++) {
             final View child = getChildAt(i);
             if (child.getVisibility() != View.GONE) {
-                final int childX = (int)child.getX();
-                final int childY = (int)child.getY();
-                child.layout(childX, childY,
-                        childX + child.getMeasuredWidth(), childY + child.getMeasuredHeight());
+                final int childWidth = child.getMeasuredWidth();
+                child.layout(childLeft, 0,
+                        childLeft + childWidth, child.getMeasuredHeight());
+                childLeft += childWidth;
             }
         }
 
