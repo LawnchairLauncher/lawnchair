@@ -2,6 +2,9 @@
   public void previousScreen(android.view.View);
   public void nextScreen(android.view.View);
   public void launchHotSeat(android.view.View);
+  public void onClickSearchButton(android.view.View);
+  public void onClickConfigureButton(android.view.View);
+  public void onClickAllAppsButton(android.view.View);
 }
 
 -keep class com.android.launcher2.AllApps3D$Defines {
