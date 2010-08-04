@@ -19,6 +19,11 @@ package com.android.launcher2;
 import com.android.common.Search;
 import com.android.launcher.R;
 
+import android.animation.Animatable;
+import android.animation.AnimatableListenerAdapter;
+import android.animation.Animator;
+import android.animation.PropertyAnimator;
+import android.animation.Sequencer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -34,8 +39,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.Intent.ShortcutIconResource;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -68,12 +73,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.View.OnLongClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.Animation.AnimationListener;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -2062,10 +2068,42 @@ public final class Launcher extends Activity
             mWorkspace.shrinkToBottom(animated);
         }
         if (LauncherApplication.isScreenXLarge() && animated) {
-            // Not really a zoom -- this just makes the view visible
-            mAllAppsGrid.zoom(1.0f, false);
-            Animation anim = AnimationUtils.loadAnimation(this, R.anim.all_apps_zoom_in);
-            ((View) mAllAppsGrid).startAnimation(anim);
+            final View allApps = (View)mAllAppsGrid;
+
+            final Resources res = getResources();
+            final int duration = res.getInteger(R.integer.config_allAppsZoomInTime);
+            final float scale = (float) res.getInteger(R.integer.config_allAppsZoomScaleFactor);
+            final int height = allApps.getHeight();
+
+            // All apps should appear right at the end of the workspace shrink animation
+            final int startDelay = res.getInteger(R.integer.config_workspaceShrinkTime) - duration;
+
+            Interpolator interp = new DecelerateInterpolator(2.0f);
+
+            allApps.setPivotX(allApps.getWidth() / 2.0f);
+            allApps.setPivotY(height);
+
+            Animator scaleXAnim = new PropertyAnimator(duration, allApps, "scaleX", scale, 1.0f);
+            scaleXAnim.setInterpolator(interp);
+            scaleXAnim.addListener(new AnimatableListenerAdapter() {
+                public void onAnimationStart(Animatable animation) {
+                    // Not really a zoom -- this just makes the view visible
+                    mAllAppsGrid.zoom(1.0f, false);
+                }
+            });
+
+            Animator scaleYAnim = new PropertyAnimator(duration, allApps, "scaleY", scale, 1.0f);
+            scaleYAnim.setInterpolator(interp);
+
+            // Translate down by 20% of the total height
+            float oldY = (-allApps.getHeight() * 0.2f);
+            Animator yAnim = new PropertyAnimator(duration, allApps, "y", oldY, 0.0f);
+            yAnim.setInterpolator(interp);
+
+            Sequencer s = new Sequencer();
+            s.playTogether(scaleXAnim, scaleYAnim, yAnim);
+            s.play(scaleXAnim).after(startDelay);
+            s.start();
         } else {
             mAllAppsGrid.zoom(1.0f, animated);
         }
@@ -2120,15 +2158,29 @@ public final class Launcher extends Activity
         if (mAllAppsGrid.isVisible()) {
             mWorkspace.setVisibility(View.VISIBLE);
             if (LauncherApplication.isScreenXLarge() && animated) {
-                Animation anim = AnimationUtils.loadAnimation(this, R.anim.all_apps_zoom_out);
-                anim.setAnimationListener(new AnimationListener() {
-                    public void onAnimationStart(Animation animation) {}
-                    public void onAnimationRepeat(Animation animation) {}
-                    public void onAnimationEnd(Animation animation) {
+                Resources res = getResources();
+                int duration = res.getInteger(R.integer.config_allAppsZoomOutTime);
+                float scaleFactor = (float) res.getInteger(R.integer.config_allAppsZoomScaleFactor);
+                View allApps = (View) mAllAppsGrid;
+
+                allApps.setPivotX(allApps.getWidth() / 2.0f);
+                allApps.setPivotY(allApps.getHeight());
+
+                // Translate up by 20% of the total height
+                float newY = allApps.getY() - allApps.getHeight() * 0.2f;
+
+                Sequencer seq = new Sequencer();
+                seq.playTogether(
+                        new PropertyAnimator(duration, allApps, "scaleX", scaleFactor),
+                        new PropertyAnimator(duration, allApps, "scaleY", scaleFactor),
+                        new PropertyAnimator(duration, allApps, "y", newY));
+                seq.addListener(new AnimatableListenerAdapter() {
+                    public void onAnimationEnd(Animatable animation) {
                         mAllAppsGrid.zoom(0.0f, false);
                     }
                 });
-                ((View)mAllAppsGrid).startAnimation(anim);
+                // Start the AllApps animation at the same time as the workspace unshrink
+                seq.start();
                 mWorkspace.unshrink();
             } else {
                 mAllAppsGrid.zoom(0.0f, animated);

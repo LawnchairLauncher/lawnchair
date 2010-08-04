@@ -92,7 +92,10 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
         });
 
         setCurrentTab(0);
-        setVisibility(GONE);
+
+        // It needs to be INVISIBLE so that it will be measured in the layout.
+        // Otherwise the animations is messed up when we show it for the first time.
+        setVisibility(INVISIBLE);
     }
 
     @Override

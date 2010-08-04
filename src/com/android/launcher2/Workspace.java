@@ -17,12 +17,13 @@
 package com.android.launcher2;
 
 import com.android.launcher.R;
-import com.android.launcher2.CellLayout.LayoutParams;
 
 import android.animation.Animatable;
+import android.animation.Animatable.AnimatableListener;
+import android.animation.Animator;
+import android.animation.Animator.AnimatorUpdateListener;
 import android.animation.PropertyAnimator;
 import android.animation.Sequencer;
-import android.animation.Animatable.AnimatableListener;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -31,6 +32,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -46,14 +48,12 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.Interpolator;
 import android.view.animation.RotateAnimation;
-import android.view.animation.Animation.AnimationListener;
 import android.widget.Scroller;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -1087,11 +1087,12 @@ public class Workspace extends ViewGroup
     // we use this to shrink the workspace for the all apps view and the customize view
     private void shrink(boolean shrinkToTop, boolean animated) {
         mIsSmall = true;
+        final Resources res = getResources();
         final int screenWidth = getWidth();
         final int screenHeight = getHeight();
-        final int scaledScreenWidth = (int)(SHRINK_FACTOR*screenWidth);
-        final int scaledScreenHeight = (int)(SHRINK_FACTOR*screenHeight);
-        final float scaledSpacing = getResources().getDimension(R.dimen.smallScreenSpacing);
+        final int scaledScreenWidth = (int) (SHRINK_FACTOR * screenWidth);
+        final int scaledScreenHeight = (int) (SHRINK_FACTOR * screenHeight);
+        final float scaledSpacing = res.getDimension(R.dimen.smallScreenSpacing);
 
         final int screenCount = getChildCount();
         float totalWidth = screenCount * scaledScreenWidth + (screenCount - 1) * scaledSpacing;
@@ -1110,21 +1111,13 @@ public class Workspace extends ViewGroup
         for (int i = 0; i < screenCount; i++) {
             CellLayout cl = (CellLayout) getChildAt(i);
             if (animated) {
-                PropertyAnimator translateX = new PropertyAnimator(
-                        500, cl, "x", cl.getX(), (int) newX);
-                PropertyAnimator translateY = new PropertyAnimator(
-                        500, cl, "y", cl.getY(), (int) newY);
-                PropertyAnimator scaleX = new PropertyAnimator(
-                        500, cl, "scaleX", cl.getScaleX(), SHRINK_FACTOR);
-                PropertyAnimator scaleY = new PropertyAnimator(
-                        500, cl, "scaleY", cl.getScaleY(), SHRINK_FACTOR);
-                PropertyAnimator alpha = new PropertyAnimator(
-                        500, cl, "dimmedBitmapAlpha", cl.getDimmedBitmapAlpha(), 1.0f);
-                Sequencer.Builder b = s.play(translateX);
-                b.with(translateY);
-                b.with(scaleX);
-                b.with(scaleY);
-                b.with(alpha);
+                final int duration = res.getInteger(R.integer.config_workspaceShrinkTime);
+                s.playTogether(
+                        new PropertyAnimator(duration, cl, "x", newX),
+                        new PropertyAnimator(duration, cl, "y", newY),
+                        new PropertyAnimator(duration, cl, "scaleX", SHRINK_FACTOR),
+                        new PropertyAnimator(duration, cl, "scaleY", SHRINK_FACTOR),
+                        new PropertyAnimator(duration, cl, "dimmedBitmapAlpha", 1.0f));
             } else {
                 cl.setX((int)newX);
                 cl.setY((int)newY);
@@ -1137,7 +1130,7 @@ public class Workspace extends ViewGroup
             cl.setOnInterceptTouchListener(this);
         }
         setChildrenDrawnWithCacheEnabled(true);
-        s.start();
+        if (animated) s.start();
     }
 
     // We call this when we trigger an unshrink by clicking on the CellLayout cl
@@ -1168,20 +1161,15 @@ public class Workspace extends ViewGroup
             Sequencer s = new Sequencer();
             final int screenCount = getChildCount();
             for (int i = 0; i < screenCount; i++) {
-                CellLayout cl = (CellLayout)getChildAt(i);
-                int x = screenWidth * i;
-
-                PropertyAnimator translateX = new PropertyAnimator(500, cl, "x", cl.getX(), x);
-                PropertyAnimator translateY = new PropertyAnimator(500, cl, "y", cl.getY(), 0);
-                PropertyAnimator scaleX = new PropertyAnimator(500, cl, "scaleX", cl.getScaleX(), 1.0f);
-                PropertyAnimator scaleY = new PropertyAnimator(500, cl, "scaleY", cl.getScaleY(), 1.0f);
-                PropertyAnimator alpha = new PropertyAnimator(
-                        500, cl, "dimmedBitmapAlpha", cl.getDimmedBitmapAlpha(), 0.0f);
-                Sequencer.Builder b = s.play(translateX);
-                b.with(translateY);
-                b.with(scaleX);
-                b.with(scaleY);
-                b.with(alpha);
+                final CellLayout cl = (CellLayout)getChildAt(i);
+                final int duration =
+                    getResources().getInteger(R.integer.config_workspaceUnshrinkTime);
+                s.playTogether(
+                        new PropertyAnimator(duration, cl, "x", (float) screenWidth * i),
+                        new PropertyAnimator(duration, cl, "y", 0.0f),
+                        new PropertyAnimator(duration, cl, "scaleX", 1.0f),
+                        new PropertyAnimator(duration, cl, "scaleY", cl.getScaleY(), 1.0f),
+                        new PropertyAnimator(duration, cl, "dimmedBitmapAlpha", 0.0f));
             }
             s.addListener(mUnshrinkAnimationListener);
             s.start();
