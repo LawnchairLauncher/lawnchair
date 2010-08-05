@@ -45,14 +45,24 @@
     <string name="configure_wallpaper">Configure...</string>
     <!--  Labels for the tabs in the customize drawer -->
     <string name="widgets_tab_label">Widgets</string>
+    <!--  Title of tab containing all possible folders (ie standard Folders and Live Folders) that 
+          can be added to the home screen -->
     <string name="folders_tab_label">Folders</string>
+    <!--  Title of tab containing all possible shortcuts (eg Contacts, Bookmarks) that can be
+          added to the home screen -->
     <string name="shortcuts_tab_label">Shortcuts</string>
+    <!--  Title of tab for configuring wallpapers -->
     <string name="wallpapers_tab_label">Wallpapers</string>
+    <!--  Placeholder text, will be removed -->
     <string name="wallpapers_temp_tab_text">This will be the wallpapers tab</string>
     <!--  Labels for the tabs in All Apps -->
+    <!--  Title of the tab for all applications (includes games and non-games) -->
     <string name="all_apps_tab_all">All</string>
+    <!--  Title of the tab for all applications *except* games -->
     <string name="all_apps_tab_apps">Apps</string>
+    <!--  Title of the tab for applications labeled as games -->
     <string name="all_apps_tab_games">Games</string>
+    <!--  Tile of the tab for applications that were downloaded from market -->
     <string name="all_apps_tab_downloaded">Downloaded</string>
 
     <!-- Folders -->
