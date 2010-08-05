@@ -1040,7 +1040,6 @@ public final class Launcher extends Activity
             }
             closeAllApps(alreadyOnHome && allAppsVisible);
             hideCustomizationDrawer();
-            mWorkspace.unshrink();
 
             final View v = getWindow().peekDecorView();
             if (v != null && v.getWindowToken() != null) {
@@ -1512,7 +1511,6 @@ public final class Launcher extends Activity
             closeAllApps(true);
         } else if (isCustomizationDrawerVisible()) {
             hideCustomizationDrawer();
-            mWorkspace.unshrink();
         } else {
             closeFolder();
         }
@@ -1590,7 +1588,6 @@ public final class Launcher extends Activity
         // this is an intercepted event being forwarded from mWorkspace;
         // clicking anywhere on the workspace causes the drawer to slide down
         hideCustomizationDrawer();
-        mWorkspace.unshrink();
         return false;
     }
 
@@ -2062,7 +2059,8 @@ public final class Launcher extends Activity
     }
 
     void showAllApps(boolean animated) {
-        hideCustomizationDrawer();
+        boolean unshrinkWorkspace = false;
+        hideCustomizationDrawer(unshrinkWorkspace);
 
         if (LauncherApplication.isScreenXLarge()) {
             mWorkspace.shrinkToBottom(animated);
@@ -2213,7 +2211,11 @@ public final class Launcher extends Activity
                 AnimationUtils.loadAnimation(this, R.anim.home_customization_drawer_slide_up));
     }
 
-    private void hideCustomizationDrawer() {
+    void hideCustomizationDrawer() {
+        hideCustomizationDrawer(true);
+    }
+
+    void hideCustomizationDrawer(boolean unshrinkWorkspace) {
         if (isCustomizationDrawerVisible()) {
             Animation slideDownAnimation = AnimationUtils.loadAnimation(
                     this, R.anim.home_customization_drawer_slide_down);
@@ -2225,6 +2227,9 @@ public final class Launcher extends Activity
                 public void onAnimationStart(Animation animation) {}
             });
             mHomeCustomizationDrawer.startAnimation(slideDownAnimation);
+            if (unshrinkWorkspace) {
+                mWorkspace.unshrink();
+            }
         }
     }
 
