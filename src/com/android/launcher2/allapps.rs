@@ -235,7 +235,6 @@ static void updatePos() {
 static void
 draw_home_button()
 {
-    color(1.0f, 1.0f, 1.0f, 1.0f);
     rsgBindTexture(gPFTexNearest, 0, gHomeButton);
 
     float w = rsgGetWidth();
@@ -282,7 +281,6 @@ static void drawFrontGrid(float rowOffset, float p)
 
     vpConstants->Position.z = p;
 
-    color(1.0f, 1.0f, 1.0f, 1.0f);
     for (row = -5; row < 15; row++) {
         float y = yoff - ((-rowFrac + row) * rowHeight);
 

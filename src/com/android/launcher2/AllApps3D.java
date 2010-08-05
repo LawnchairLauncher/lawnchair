@@ -1135,14 +1135,17 @@ public class AllApps3D extends RSSurfaceView
             ProgramFragment.Builder bf = new ProgramFragment.Builder(sRS);
             bf.setTexture(ProgramFragment.Builder.EnvMode.MODULATE,
                           ProgramFragment.Builder.Format.RGBA, 0);
+            bf.setVaryingColor(true);
             ProgramFragment pfTexMip = bf.create();
             pfTexMip.bindSampler(linear, 0);
 
+            bf.setVaryingColor(false);
             ProgramFragment pfTexNearest = bf.create();
             pfTexNearest.bindSampler(nearest, 0);
 
             bf.setTexture(ProgramFragment.Builder.EnvMode.MODULATE,
                           ProgramFragment.Builder.Format.ALPHA, 0);
+            bf.setVaryingColor(true);
             ProgramFragment pfTexMipAlpha = bf.create();
             pfTexMipAlpha.bindSampler(linear, 0);
 
