@@ -7,6 +7,11 @@
   public void onClickAllAppsButton(android.view.View);
 }
 
+-keep class com.android.launcher2.CellLayout {
+  public float getDimmedBitmapAlpha();
+  public void setDimmedBitmapAlpha(float);
+}
+
 -keep class com.android.launcher2.AllApps3D$Defines {
   *;
 }
