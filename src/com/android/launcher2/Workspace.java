@@ -1369,8 +1369,8 @@ public class Workspace extends ViewGroup
     public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
 
-        ItemInfo item = (ItemInfo)dragInfo;
-        CellLayout currentLayout = getCurrentDropLayout();
+        final ItemInfo item = (ItemInfo)dragInfo;
+        final CellLayout currentLayout = getCurrentDropLayout();
 
         if (dragInfo instanceof LauncherAppWidgetInfo) {
             LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo)dragInfo;
@@ -1392,6 +1392,17 @@ public class Workspace extends ViewGroup
         // Find the top left corner of the item
         int originX = x - xOffset;
         int originY = y - yOffset;
+
+        // If not dragging from the Workspace, the size of dragView might not match the cell size
+        if (!source.equals(this)) {
+            // Break the drag view up into evenly sized chunks based on its spans
+            int chunkWidth = dragView.getWidth() / item.spanX;
+            int chunkHeight = dragView.getHeight() / item.spanY;
+
+            // Adjust the origin for a cell centered at the top left chunk
+            originX += (chunkWidth - currentLayout.getCellWidth()) / 2;
+            originY += (chunkHeight - currentLayout.getCellHeight()) / 2;
+        }
 
         final View child = (mDragInfo == null) ? null : mDragInfo.cell;
         currentLayout.visualizeDropLocation(child, originX, originY, item.spanX, item.spanY);

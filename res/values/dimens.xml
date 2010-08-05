@@ -37,11 +37,4 @@
     
     <!-- delete_zone_size_full - button_bar_height_portrait -->
     <dimen name="delete_zone_padding">14dip</dimen>
-
-    <!-- horizontal spacing between mini screen thumbnails ie. in all
-         apps and in customization mode -->
-    <dimen name="smallScreenSpacing">10dip</dimen>
-
-    <!-- vertical spacing between edge of screen and mini screen thumbnails -->
-    <dimen name="smallScreenVerticalMargin">20dip</dimen>
 </resources>

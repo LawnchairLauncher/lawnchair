@@ -764,7 +764,9 @@ public class CellLayout extends ViewGroup {
         final int countX = mCountX;
         final int countY = mCountY;
 
-        pointToCellRounded(originX, originY, result);
+        // originX and originY give the top left of the cell, but pointToCellRounded
+        // compares center-to-center, so pass in the middle coordinates
+        pointToCellRounded(originX + (mCellWidth / 2), originY + (mCellHeight / 2), result);
 
         // If the item isn't fully on this screen, snap to the edges
         int rightOverhang = result[0] + spanX - countX;

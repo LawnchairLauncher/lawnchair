@@ -17,4 +17,11 @@
 <resources>
     <dimen name="workspace_cell_width">76dip</dimen>
     <dimen name="workspace_cell_height">76dip</dimen>
+
+    <!-- horizontal spacing between mini screen thumbnails ie. in all
+         apps and in customization mode -->
+    <dimen name="smallScreenSpacing">10dip</dimen>
+
+    <!-- vertical spacing between edge of screen and mini screen thumbnails -->
+    <dimen name="smallScreenVerticalMargin">20dip</dimen>
 </resources>
