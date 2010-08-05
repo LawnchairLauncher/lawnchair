@@ -744,6 +744,20 @@ public class Workspace extends ViewGroup
         return super.dispatchTouchEvent(ev);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void requestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+        if (disallowIntercept) {
+            // We need to make sure to cancel our long press if
+            // a scrollable widget takes over touch events
+            final View currentScreen = getChildAt(mCurrentScreen);
+            currentScreen.cancelLongPress();
+        }
+        super.requestDisallowInterceptTouchEvent(disallowIntercept);
+    }
+
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         final boolean workspaceLocked = mLauncher.isWorkspaceLocked();
