@@ -76,8 +76,7 @@ import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.inputmethod.InputMethodManager;
@@ -216,7 +215,6 @@ public final class Launcher extends Activity
     private ImageView mNextView;
 
     // Hotseats (quick-launch icons next to AllApps)
-    private static final int NUM_HOTSEATS = 2;
     private String[] mHotseatConfig = null;
     private Intent[] mHotseats = null;
     private Drawable[] mHotseatIcons = null;
@@ -299,7 +297,6 @@ public final class Launcher extends Activity
         // TODO Auto-generated method stub
         super.onConfigurationChanged(newConfig);
     }
-
 
     private void checkForLocaleChange() {
         final LocaleConfiguration localeConfiguration = new LocaleConfiguration();
@@ -753,8 +750,15 @@ public final class Launcher extends Activity
         mAllAppsGrid.setLauncher(this);
         mAllAppsGrid.setDragController(dragController);
         ((View) mAllAppsGrid).setWillNotDraw(false); // We don't want a hole punched in our window.
-        // Manage focusability manually since this thing is always visible
+        // Manage focusability manually since this thing is always visible (in non-xlarge)
         ((View) mAllAppsGrid).setFocusable(false);
+
+        if (LauncherApplication.isScreenXLarge()) {
+            // They need to be INVISIBLE initially so that they will be measured in the layout.
+            // Otherwise the animations are messed up when we show them for the first time.
+            ((View) mAllAppsGrid).setVisibility(View.INVISIBLE);
+            mHomeCustomizationDrawer.setVisibility(View.INVISIBLE);
+        }
 
         mWorkspace = (Workspace) dragLayer.findViewById(R.id.workspace);
         final Workspace workspace = mWorkspace;
@@ -1269,7 +1273,6 @@ public final class Launcher extends Activity
     }
 
     private void addItems() {
-        closeAllApps(true);
         if (LauncherApplication.isScreenXLarge()) {
             // Animate the widget chooser up from the bottom of the screen
             if (!isCustomizationDrawerVisible()) {
@@ -1277,6 +1280,7 @@ public final class Launcher extends Activity
                 mWorkspace.shrinkToTop();
             }
         } else {
+            closeAllApps(true);
             showAddDialog(mMenuAddInfo);
         }
     }
@@ -2058,52 +2062,130 @@ public final class Launcher extends Activity
         }
     }
 
-    void showAllApps(boolean animated) {
-        boolean unshrinkWorkspace = false;
-        hideCustomizationDrawer(unshrinkWorkspace);
+    /**
+     * Zoom the camera out from the workspace to reveal 'toView'.
+     * Assumes that the view to show is anchored at either the very top or very bottom
+     * of the screen.
+     * @param toView The view to show when the animation is complete
+     * @param above If true, toView will appear from the top of the screen
+     */
+    private void cameraZoomOut(final View toView, boolean above) {
+        final Resources res = getResources();
+        final int duration = res.getInteger(R.integer.config_allAppsZoomInTime);
+        final float scale = (float) res.getInteger(R.integer.config_allAppsZoomScaleFactor);
+        final int height = toView.getHeight();
 
+        // toView should appear right at the end of the workspace shrink animation
+        final int startDelay = res.getInteger(R.integer.config_workspaceShrinkTime) - duration;
+
+        Interpolator interp = new DecelerateInterpolator();
+
+        toView.setPivotX(toView.getWidth() / 2.0f);
+        // Set pivotY so that at the starting zoom factor, the view is off-screen by a small margin
+        // Assumes that the view is normally anchored to either the top or bottom of the screen
+        final int margin = 200;
+        if (above) {
+            toView.setPivotY(height + ((toView.getTop() + height) / scale) + margin);
+        } else {
+            toView.setPivotY(0.0f - (toView.getTop() / scale) - margin);
+        }
+
+        Animator scaleXAnim = new PropertyAnimator(duration, toView, "scaleX", scale, 1.0f);
+        scaleXAnim.setInterpolator(interp);
+        scaleXAnim.addListener(new AnimatableListenerAdapter() {
+            public void onAnimationStart(Animatable animation) {
+                // Prepare the position
+                toView.setTranslationX(0.0f);
+                toView.setTranslationY(0.0f);
+                toView.setVisibility(View.VISIBLE);
+            }
+        });
+
+        Animator scaleYAnim = new PropertyAnimator(duration, toView, "scaleY", scale, 1.0f);
+        scaleYAnim.setInterpolator(interp);
+
+        Sequencer s = new Sequencer();
+        s.playTogether(scaleXAnim, scaleYAnim);
+        s.play(scaleXAnim).after(startDelay);
+        s.start();
+    }
+
+    /**
+     * Zoom the camera back into the workspace, hiding 'fromView'.
+     * This is the opposite of cameraZoomOut.
+     * @param fromView The currently-focused view, which will be hidden.
+     */
+    private void cameraZoomIn(final View fromView) {
+        Resources res = getResources();
+        int duration = res.getInteger(R.integer.config_allAppsZoomOutTime);
+        float scaleFactor = (float) res.getInteger(R.integer.config_allAppsZoomScaleFactor);
+
+        Interpolator interp = new AccelerateInterpolator();
+
+        Sequencer s = new Sequencer();
+        Animator scaleXAnim = new PropertyAnimator(duration, fromView, "scaleX", scaleFactor);
+        scaleXAnim.setInterpolator(interp);
+        Animator scaleYAnim = new PropertyAnimator(duration, fromView, "scaleY", scaleFactor);
+        scaleYAnim.setInterpolator(interp);
+        s.playTogether(scaleXAnim, scaleYAnim);
+        s.addListener(new AnimatableListenerAdapter() {
+            public void onAnimationEnd(Animatable animation) {
+                fromView.setVisibility(View.GONE);
+                fromView.setScaleX(1.0f);
+                fromView.setScaleY(1.0f);
+            }
+        });
+        s.start();
+    }
+
+    /**
+     * Pan the camera in the vertical plane between 'fromView' and 'toView'.
+     * This is the transition used on xlarge screens to go between all apps and
+     * the home customization drawer.
+     * @param fromView The view to pan away from.
+     * @param toView The view to pan into the frame.
+     */
+    private void cameraPan(final View fromView, final View toView) {
+        final int duration = getResources().getInteger(R.integer.config_allAppsCameraPanTime);
+        final int workspaceHeight = mWorkspace.getHeight();
+
+        final boolean panDown = fromView.getY() < toView.getY();
+
+        final float fromViewStartY = panDown ? 0.0f : fromView.getY();
+        final float fromViewEndY = panDown ? -fromView.getHeight() * 2 : workspaceHeight * 2;
+        final float toViewStartY = panDown ? workspaceHeight * 2 : -toView.getHeight() * 2;
+        final float toViewEndY = panDown ? workspaceHeight - toView.getHeight() : 0.0f;
+
+        Sequencer s = new Sequencer();
+        s.playTogether(
+                new PropertyAnimator(duration, fromView, "y", fromViewStartY, fromViewEndY),
+                new PropertyAnimator(duration, toView, "y", toViewStartY, toViewEndY));
+        s.addListener(new AnimatableListenerAdapter() {
+            public void onAnimationStart(Animatable animation) {
+                toView.setVisibility(View.VISIBLE);
+                toView.setY(toViewStartY);
+            }
+            public void onAnimationEnd(Animatable animation) {
+                fromView.setVisibility(View.GONE);
+            }
+        });
+        s.start();
+    }
+
+    void showAllApps(boolean animated) {
         if (LauncherApplication.isScreenXLarge()) {
             mWorkspace.shrinkToBottom(animated);
         }
+
         if (LauncherApplication.isScreenXLarge() && animated) {
-            final View allApps = (View)mAllAppsGrid;
-
-            final Resources res = getResources();
-            final int duration = res.getInteger(R.integer.config_allAppsZoomInTime);
-            final float scale = (float) res.getInteger(R.integer.config_allAppsZoomScaleFactor);
-            final int height = allApps.getHeight();
-
-            // All apps should appear right at the end of the workspace shrink animation
-            final int startDelay = res.getInteger(R.integer.config_workspaceShrinkTime) - duration;
-
-            Interpolator interp = new DecelerateInterpolator(2.0f);
-
-            allApps.setPivotX(allApps.getWidth() / 2.0f);
-            allApps.setPivotY(height);
-
-            Animator scaleXAnim = new PropertyAnimator(duration, allApps, "scaleX", scale, 1.0f);
-            scaleXAnim.setInterpolator(interp);
-            scaleXAnim.addListener(new AnimatableListenerAdapter() {
-                public void onAnimationStart(Animatable animation) {
-                    // Not really a zoom -- this just makes the view visible
-                    mAllAppsGrid.zoom(1.0f, false);
-                }
-            });
-
-            Animator scaleYAnim = new PropertyAnimator(duration, allApps, "scaleY", scale, 1.0f);
-            scaleYAnim.setInterpolator(interp);
-
-            // Translate down by 20% of the total height
-            float oldY = (-allApps.getHeight() * 0.2f);
-            Animator yAnim = new PropertyAnimator(duration, allApps, "y", oldY, 0.0f);
-            yAnim.setInterpolator(interp);
-
-            Sequencer s = new Sequencer();
-            s.playTogether(scaleXAnim, scaleYAnim, yAnim);
-            s.play(scaleXAnim).after(startDelay);
-            s.start();
+            if (isCustomizationDrawerVisible()) {
+                cameraPan(mHomeCustomizationDrawer, (View) mAllAppsGrid);
+            } else {
+                cameraZoomOut((View) mAllAppsGrid, true);
+            }
         } else {
             mAllAppsGrid.zoom(1.0f, animated);
+            hideCustomizationDrawer(); // TODO: Should be able to do this un-animated
         }
 
         ((View) mAllAppsGrid).setFocusable(true);
@@ -2156,30 +2238,8 @@ public final class Launcher extends Activity
         if (mAllAppsGrid.isVisible()) {
             mWorkspace.setVisibility(View.VISIBLE);
             if (LauncherApplication.isScreenXLarge() && animated) {
-                Resources res = getResources();
-                int duration = res.getInteger(R.integer.config_allAppsZoomOutTime);
-                float scaleFactor = (float) res.getInteger(R.integer.config_allAppsZoomScaleFactor);
-                View allApps = (View) mAllAppsGrid;
-
-                allApps.setPivotX(allApps.getWidth() / 2.0f);
-                allApps.setPivotY(allApps.getHeight());
-
-                // Translate up by 20% of the total height
-                float newY = allApps.getY() - allApps.getHeight() * 0.2f;
-
-                Sequencer seq = new Sequencer();
-                seq.playTogether(
-                        new PropertyAnimator(duration, allApps, "scaleX", scaleFactor),
-                        new PropertyAnimator(duration, allApps, "scaleY", scaleFactor),
-                        new PropertyAnimator(duration, allApps, "y", newY));
-                seq.addListener(new AnimatableListenerAdapter() {
-                    public void onAnimationEnd(Animatable animation) {
-                        mAllAppsGrid.zoom(0.0f, false);
-                    }
-                });
-                // Start the AllApps animation at the same time as the workspace unshrink
-                seq.start();
                 mWorkspace.unshrink();
+                cameraZoomIn((View) mAllAppsGrid);
             } else {
                 mAllAppsGrid.zoom(0.0f, animated);
             }
@@ -2202,13 +2262,12 @@ public final class Launcher extends Activity
     }
 
     private void showCustomizationDrawer() {
+        mWorkspace.shrinkToTop();
         if (isAllAppsVisible()) {
-            // TODO: Make a smoother transition here
-            closeAllApps(false);
+            cameraPan((View) mAllAppsGrid, mHomeCustomizationDrawer);
+        } else {
+            cameraZoomOut(mHomeCustomizationDrawer, false);
         }
-        mHomeCustomizationDrawer.setVisibility(View.VISIBLE);
-        mHomeCustomizationDrawer.startAnimation(
-                AnimationUtils.loadAnimation(this, R.anim.home_customization_drawer_slide_up));
     }
 
     void hideCustomizationDrawer() {
@@ -2217,19 +2276,10 @@ public final class Launcher extends Activity
 
     void hideCustomizationDrawer(boolean unshrinkWorkspace) {
         if (isCustomizationDrawerVisible()) {
-            Animation slideDownAnimation = AnimationUtils.loadAnimation(
-                    this, R.anim.home_customization_drawer_slide_down);
-            slideDownAnimation.setAnimationListener(new Animation.AnimationListener() {
-                public void onAnimationEnd(Animation animation) {
-                    mHomeCustomizationDrawer.setVisibility(View.GONE);
-                }
-                public void onAnimationRepeat(Animation animation) {}
-                public void onAnimationStart(Animation animation) {}
-            });
-            mHomeCustomizationDrawer.startAnimation(slideDownAnimation);
             if (unshrinkWorkspace) {
                 mWorkspace.unshrink();
             }
+            cameraZoomIn(mHomeCustomizationDrawer);
         }
     }
 

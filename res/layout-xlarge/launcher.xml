@@ -26,7 +26,7 @@
         layout="@layout/all_apps_tabbed"
         android:id="@+id/all_apps_view"
         android:layout_width="match_parent"
-        android:layout_height="550dip"
+        android:layout_height="500dip"
         android:layout_gravity="top"/>
 
     <!-- The workspace contains 5 screens of cells -->
@@ -96,8 +96,7 @@
         android:id="@android:id/tabhost"
         android:layout_width="match_parent"
         android:layout_height="500dip"
-        android:layout_gravity="bottom"
-        android:visibility="gone">
+        android:layout_gravity="bottom">
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"

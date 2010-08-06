@@ -10,6 +10,9 @@
     <!-- Scaling factor used in the all apps zooming animations -->
     <integer name="config_allAppsZoomScaleFactor">5</integer>
 
+    <!-- Duration in milliseconds of the camera pan animation b/w all apps & customize -->
+    <integer name="config_allAppsCameraPanTime">700</integer>
+
     <!-- Duration in milliseconds of the workspace shrink animation -->
     <integer name="config_workspaceShrinkTime">700</integer>
 

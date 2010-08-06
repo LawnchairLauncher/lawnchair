@@ -1181,7 +1181,7 @@ public class Workspace extends ViewGroup
                         new PropertyAnimator(duration, cl, "translationX", 0.0f),
                         new PropertyAnimator(duration, cl, "translationY", 0.0f),
                         new PropertyAnimator(duration, cl, "scaleX", 1.0f),
-                        new PropertyAnimator(duration, cl, "scaleY", cl.getScaleY(), 1.0f),
+                        new PropertyAnimator(duration, cl, "scaleY", 1.0f),
                         new PropertyAnimator(duration, cl, "dimmedBitmapAlpha", 0.0f));
             }
             s.addListener(mUnshrinkAnimationListener);

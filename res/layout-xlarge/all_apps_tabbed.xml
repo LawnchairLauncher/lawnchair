@@ -44,7 +44,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginBottom="@dimen/button_bar_height"
+                    android:layout_marginBottom="8dip"
                     android:layout_marginTop="8dip"
                     android:nextFocusDown="@+id/all_apps_2d_home"
                     android:nextFocusUp="@null"

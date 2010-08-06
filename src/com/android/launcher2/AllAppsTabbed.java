@@ -92,10 +92,6 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
         });
 
         setCurrentTab(0);
-
-        // It needs to be INVISIBLE so that it will be measured in the layout.
-        // Otherwise the animations is messed up when we show it for the first time.
-        setVisibility(INVISIBLE);
     }
 
     @Override
@@ -113,8 +109,13 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
         // NOTE: animate parameter is ignored for the TabHost itself
         setVisibility((zoom == 0.0f) ? View.GONE : View.VISIBLE);
         mAllApps2D.zoom(zoom, animate);
-        bringChildToFront((View)mAllApps2D);
-        getParent().bringChildToFront(this);
+    }
+
+    @Override
+    public void setVisibility(int visibility) {
+        super.setVisibility(visibility);
+        float zoom = visibility == View.VISIBLE ? 1.0f : 0.0f;
+        mAllApps2D.zoom(zoom, false);
     }
 
     @Override
