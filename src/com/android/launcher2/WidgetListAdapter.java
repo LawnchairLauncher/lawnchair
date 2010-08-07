@@ -109,14 +109,18 @@ public class WidgetListAdapter extends BaseAdapter {
             background.draw(mCanvas);
 
             // Draw the icon vertically centered, flush left
-            Drawable icon = packageManager.getDrawable(packageName, info.icon, null);
-            background.getPadding(mTempRect);
+            try {
+                Drawable icon = packageManager.getDrawable(packageName, info.icon, null);
+                background.getPadding(mTempRect);
 
-            final int left = mTempRect.left;
-            final int top = (height - icon.getIntrinsicHeight()) / 2;
-            icon.setBounds(
-                    left, top, left + icon.getIntrinsicWidth(), top + icon.getIntrinsicHeight());
-            icon.draw(mCanvas);
+                final int left = mTempRect.left;
+                final int top = (height - icon.getIntrinsicHeight()) / 2;
+                icon.setBounds(
+                        left, top, left + icon.getIntrinsicWidth(), top + icon.getIntrinsicHeight());
+                icon.draw(mCanvas);
+            } catch (Resources.NotFoundException e) {
+                // if we can't find the icon, then just don't draw it
+            }
 
             drawable = new BitmapDrawable(resources, bitmap);
         }

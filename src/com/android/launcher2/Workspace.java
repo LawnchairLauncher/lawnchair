@@ -1171,7 +1171,6 @@ public class Workspace extends ViewGroup
 
     public void unshrink() {
         if (mIsSmall) {
-            final int screenWidth = getWidth();
             Sequencer s = new Sequencer();
             final int screenCount = getChildCount();
             for (int i = 0; i < screenCount; i++) {
@@ -1179,8 +1178,8 @@ public class Workspace extends ViewGroup
                 final int duration =
                     getResources().getInteger(R.integer.config_workspaceUnshrinkTime);
                 s.playTogether(
-                        new PropertyAnimator(duration, cl, "x", (float) screenWidth * i),
-                        new PropertyAnimator(duration, cl, "y", 0.0f),
+                        new PropertyAnimator(duration, cl, "translationX", 0.0f),
+                        new PropertyAnimator(duration, cl, "translationY", 0.0f),
                         new PropertyAnimator(duration, cl, "scaleX", 1.0f),
                         new PropertyAnimator(duration, cl, "scaleY", cl.getScaleY(), 1.0f),
                         new PropertyAnimator(duration, cl, "dimmedBitmapAlpha", 0.0f));
