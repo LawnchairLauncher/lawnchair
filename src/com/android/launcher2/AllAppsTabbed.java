@@ -16,16 +16,20 @@
 
 package com.android.launcher2;
 
-import com.android.launcher.R;
+import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TabHost;
+import android.widget.TabWidget;
+import android.widget.TextView;
 
-import java.util.ArrayList;
+import com.android.launcher.R;
 
 /**
  * Implements a tabbed version of AllApps2D.
@@ -39,7 +43,7 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
     private static final String TAG_GAMES = "GAMES";
     private static final String TAG_DOWNLOADED = "DOWNLOADED";
 
-    private AllApps2D mAllApps2D;
+    private AllAppsPagedView mAllApps;
     private Context mContext;
 
     public AllAppsTabbed(Context context, AttributeSet attrs) {
@@ -49,18 +53,20 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
 
     @Override
     protected void onFinishInflate() {
+        // setup the tab host
+        setup();
+
         try {
-            mAllApps2D = (AllApps2D)findViewById(R.id.all_apps_2d);
-            if (mAllApps2D == null) throw new Resources.NotFoundException();
+            mAllApps = (AllAppsPagedView) findViewById(R.id.all_apps_paged_view);
+            if (mAllApps == null) throw new Resources.NotFoundException();
         } catch (Resources.NotFoundException e) {
             Log.e(TAG, "Can't find necessary layout elements for AllAppsTabbed");
         }
-        setup();
 
-        // This lets us share the same view between all tabs
+        // share the same AllApps workspace across all the tabs
         TabContentFactory contentFactory = new TabContentFactory() {
             public View createTabContent(String tag) {
-                return mAllApps2D;
+                return mAllApps;
             }
         };
 
@@ -76,51 +82,67 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
         label = mContext.getString(R.string.all_apps_tab_downloaded);
         addTab(newTabSpec(TAG_DOWNLOADED).setIndicator(label).setContent(contentFactory));
 
+        // TEMP: just styling the tab widget to be a bit nicer until we get the actual
+        // new assets
+        TabWidget tabWidget = getTabWidget();
+        for (int i = 0; i < tabWidget.getChildCount(); ++i) {
+            RelativeLayout tab = (RelativeLayout) tabWidget.getChildTabViewAt(i);
+            TextView text = (TextView) tab.getChildAt(1);
+            text.setTextSize(20.0f);
+            text.setPadding(20, 0, 20, 0);
+            text.setShadowLayer(1.0f, 0.0f, 1.0f, Color.BLACK);
+            tab.setBackgroundDrawable(null);
+        }
+
         setOnTabChangedListener(new OnTabChangeListener() {
             public void onTabChanged(String tabId) {
                 String tag = getCurrentTabTag();
                 if (tag == TAG_ALL) {
-                    mAllApps2D.filterApps(AllApps2D.AppType.ALL);
+                    mAllApps.setAppFilter(AllAppsPagedView.ALL_APPS_FLAG);
                 } else if (tag == TAG_APPS) {
-                    mAllApps2D.filterApps(AllApps2D.AppType.APP);
+                    mAllApps.setAppFilter(ApplicationInfo.APP_FLAG);
                 } else if (tag == TAG_GAMES) {
-                    mAllApps2D.filterApps(AllApps2D.AppType.GAME);
+                    mAllApps.setAppFilter(ApplicationInfo.GAME_FLAG);
                 } else if (tag == TAG_DOWNLOADED) {
-                    mAllApps2D.filterApps(AllApps2D.AppType.DOWNLOADED);
+                    mAllApps.setAppFilter(ApplicationInfo.DOWNLOADED_FLAG);
                 }
             }
         });
 
         setCurrentTab(0);
+
+        // It needs to be INVISIBLE so that it will be measured in the layout.
+        // Otherwise the animations is messed up when we show it for the first time.
+        setVisibility(INVISIBLE);
     }
 
     @Override
     public void setLauncher(Launcher launcher) {
-        mAllApps2D.setLauncher(launcher);
+        mAllApps.setLauncher(launcher);
     }
 
     @Override
     public void setDragController(DragController dragger) {
-        mAllApps2D.setDragController(dragger);
+        mAllApps.setDragController(dragger);
     }
 
     @Override
     public void zoom(float zoom, boolean animate) {
         // NOTE: animate parameter is ignored for the TabHost itself
         setVisibility((zoom == 0.0f) ? View.GONE : View.VISIBLE);
-        mAllApps2D.zoom(zoom, animate);
+        mAllApps.zoom(zoom, animate);
     }
 
     @Override
     public void setVisibility(int visibility) {
         super.setVisibility(visibility);
         float zoom = visibility == View.VISIBLE ? 1.0f : 0.0f;
-        mAllApps2D.zoom(zoom, false);
+        mAllApps.zoom(zoom, false);
     }
 
     @Override
     public boolean isVisible() {
-        return mAllApps2D.isVisible();
+        return mAllApps.isVisible();
     }
 
     @Override
@@ -130,31 +152,31 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
 
     @Override
     public void setApps(ArrayList<ApplicationInfo> list) {
-        mAllApps2D.setApps(list);
+        mAllApps.setApps(list);
     }
 
     @Override
     public void addApps(ArrayList<ApplicationInfo> list) {
-        mAllApps2D.addApps(list);
+        mAllApps.addApps(list);
     }
 
     @Override
     public void removeApps(ArrayList<ApplicationInfo> list) {
-        mAllApps2D.removeApps(list);
+        mAllApps.removeApps(list);
     }
 
     @Override
     public void updateApps(ArrayList<ApplicationInfo> list) {
-        mAllApps2D.updateApps(list);
+        mAllApps.updateApps(list);
     }
 
     @Override
     public void dumpState() {
-        mAllApps2D.dumpState();
+        mAllApps.dumpState();
     }
 
     @Override
     public void surrender() {
-        mAllApps2D.surrender();
+        mAllApps.surrender();
     }
 }

@@ -55,6 +55,15 @@
         <attr name="yAxisEndPadding" format="dimension"  />
     </declare-styleable>
 
+    <!-- PagedView specific attributes. These attributes are used to customize
+         a PagedView view in XML files. -->
+    <declare-styleable name="PagedView">
+        <!-- The number of horizontal cells in a page -->
+        <attr name="cellCountX" />
+        <!-- The number of vertical cells in a page -->
+        <attr name="cellCountY" />
+    </declare-styleable>
+
     <!-- DeleteZone specific attributes. These attributes are used to customize
          a DeleteZone view in XML files. -->
     <declare-styleable name="DeleteZone">

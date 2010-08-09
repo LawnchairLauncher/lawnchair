@@ -13,44 +13,31 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher2.AllAppsTabbed xmlns:android="http://schemas.android.com/apk/res/android">
+<com.android.launcher2.AllAppsTabbed
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#30000000">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <TabWidget
             android:id="@android:id/tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:tabStripEnabled="false"
+            android:paddingBottom="10dp" />
         <FrameLayout
             android:id="@android:id/tabcontent"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <com.android.launcher2.AllApps2D
-                android:id="@+id/all_apps_2d"
+            <com.android.launcher2.AllAppsPagedView
+                android:id="@+id/all_apps_paged_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="2dip">
-                <GridView android:id="@+id/all_apps_2d_grid"
-                    android:tag="all_apps_2d_grid"
-                    android:scrollbars="none"
-                    android:drawSelectorOnTop="false"
-                    android:listSelector="@drawable/grid_selector"
-                    android:verticalSpacing="10dip"
-                    android:numColumns="8"
-                    android:fadingEdgeLength="0dip"
-                    android:cacheColorHint="#00000000"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginBottom="8dip"
-                    android:layout_marginTop="8dip"
-                    android:nextFocusDown="@+id/all_apps_2d_home"
-                    android:nextFocusUp="@null"
-                    android:nextFocusLeft="@null"
-                    android:nextFocusRight="@null" />
-            </com.android.launcher2.AllApps2D>
+                cellCountX="8"
+                cellCountY="4">
+            </com.android.launcher2.AllAppsPagedView>
         </FrameLayout>
     </LinearLayout>
 </com.android.launcher2.AllAppsTabbed>
