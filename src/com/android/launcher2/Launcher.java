@@ -16,8 +16,13 @@
 
 package com.android.launcher2;
 
-import com.android.common.Search;
-import com.android.launcher.R;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import android.animation.Animatable;
 import android.animation.AnimatableListenerAdapter;
@@ -39,8 +44,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.Intent.ShortcutIconResource;
 import android.content.IntentFilter;
+import android.content.Intent.ShortcutIconResource;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -50,6 +55,7 @@ import android.content.res.TypedArray;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -73,10 +79,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
+import android.view.View.OnLongClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.inputmethod.InputMethodManager;
@@ -84,17 +92,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TabHost;
+import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.TabHost.OnTabChangeListener;
+import android.widget.TabHost.TabContentFactory;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import com.android.common.Search;
+import com.android.launcher.R;
 
 /**
  * Default launcher application.
@@ -166,6 +173,12 @@ public final class Launcher extends Activity
     // Type: long
     private static final String RUNTIME_STATE_PENDING_FOLDER_RENAME_ID = "launcher.rename_folder_id";
 
+    // tags for the customization tabs
+    private static final String WIDGETS_TAG = "widgets";
+    private static final String FOLDERS_TAG = "folders";
+    private static final String SHORTCUTS_TAG = "shortcuts";
+    private static final String WALLPAPERS_TAG = "wallpapers";
+
     static final int APPWIDGET_HOST_ID = 1024;
 
     private static final Object sLock = new Object();
@@ -192,6 +205,7 @@ public final class Launcher extends Activity
     private HandleView mHandleView;
     private AllAppsView mAllAppsGrid;
     private TabHost mHomeCustomizationDrawer;
+    private CustomizePagedView mCustomizePagedView;
 
     private Bundle mSavedState;
 
@@ -252,18 +266,72 @@ public final class Launcher extends Activity
         if (mHomeCustomizationDrawer != null) {
             mHomeCustomizationDrawer.setup();
 
+            // share the same customization workspace across all the tabs
+            mCustomizePagedView = new CustomizePagedView(this);
+            TabContentFactory contentFactory = new TabContentFactory() {
+                public View createTabContent(String tag) {
+                    return mCustomizePagedView;
+                }
+            };
+
             String widgetsLabel = getString(R.string.widgets_tab_label);
-            mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec("widgets")
-                    .setIndicator(widgetsLabel).setContent(R.id.widget_chooser));
+            mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(WIDGETS_TAG)
+                    .setIndicator(widgetsLabel).setContent(contentFactory));
             String foldersLabel = getString(R.string.folders_tab_label);
-            mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec("folders")
-                    .setIndicator(foldersLabel).setContent(R.id.folder_chooser));
+            mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(FOLDERS_TAG)
+                    .setIndicator(foldersLabel).setContent(contentFactory));
             String shortcutsLabel = getString(R.string.shortcuts_tab_label);
-            mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec("shortcuts")
-                    .setIndicator(shortcutsLabel).setContent(R.id.shortcut_chooser));
+            mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(SHORTCUTS_TAG)
+                    .setIndicator(shortcutsLabel).setContent(contentFactory));
             String wallpapersLabel = getString(R.string.wallpapers_tab_label);
-            mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec("wallpapers")
-                    .setIndicator(wallpapersLabel).setContent(R.id.wallpaperstab));
+            mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(WALLPAPERS_TAG)
+                    .setIndicator(wallpapersLabel).setContent(contentFactory));
+
+            // TEMP: just styling the tab widget to be a bit nicer until we get the actual
+            // new assets
+            TabWidget tabWidget = mHomeCustomizationDrawer.getTabWidget();
+            for (int i = 0; i < tabWidget.getChildCount(); ++i) {
+                RelativeLayout tab = (RelativeLayout) tabWidget.getChildTabViewAt(i);
+                TextView text = (TextView) tab.getChildAt(1);
+                text.setTextSize(20.0f);
+                text.setPadding(20, 0, 20, 0);
+                text.setShadowLayer(1.0f, 0.0f, 1.0f, Color.BLACK);
+                tab.setBackgroundDrawable(null);
+            }
+
+            mHomeCustomizationDrawer.setOnTabChangedListener(new OnTabChangeListener() {
+                public void onTabChanged(String tabId) {
+                    // animate the changing of the tab content by fading pages in and out
+                    final int duration = 150;
+                    final float alpha = mCustomizePagedView.getAlpha();
+                    Animator alphaAnim = new PropertyAnimator(duration, mCustomizePagedView, 
+                            "alpha", alpha, 0.0f);
+                    alphaAnim.addListener(new AnimatableListenerAdapter() {
+                        public void onAnimationEnd(Animatable animation) {
+                            String tag = mHomeCustomizationDrawer.getCurrentTabTag();
+                            if (tag == WIDGETS_TAG) {
+                                mCustomizePagedView.setCustomizationFilter(
+                                    CustomizePagedView.CustomizationType.WidgetCustomization);
+                            } else if (tag == FOLDERS_TAG) {
+                                mCustomizePagedView.setCustomizationFilter(
+                                    CustomizePagedView.CustomizationType.FolderCustomization);
+                            } else if (tag == SHORTCUTS_TAG) {
+                                mCustomizePagedView.setCustomizationFilter(
+                                    CustomizePagedView.CustomizationType.ShortcutCustomization);
+                            } else if (tag == WALLPAPERS_TAG) {
+                                mCustomizePagedView.setCustomizationFilter(
+                                    CustomizePagedView.CustomizationType.WallpaperCustomization);
+                            }
+
+                            final float alpha = mCustomizePagedView.getAlpha();
+                            Animator alphaAnim = new PropertyAnimator(duration, mCustomizePagedView, 
+                                    "alpha", alpha, 1.0f);
+                            alphaAnim.start();
+                        }
+                    });
+                    alphaAnim.start();
+                }
+            });
     
             mHomeCustomizationDrawer.setCurrentTab(0);
         }
@@ -776,24 +844,10 @@ public final class Launcher extends Activity
             mHandleView.setOnLongClickListener(this);
         }
 
-        WidgetChooser widgetChooser = (WidgetChooser) findViewById(R.id.widget_chooser);
-        if (widgetChooser != null) {
-            WidgetListAdapter widgetGalleryAdapter = new WidgetListAdapter(this);
-            widgetChooser.setAdapter(widgetGalleryAdapter);
-            widgetChooser.setDragController(dragController);
-            widgetChooser.setLauncher(this);
-
-            FolderChooser folderChooser = (FolderChooser) findViewById(R.id.folder_chooser);
-            IntentListAdapter folderTypes = new FolderListAdapter(
-                    this, LiveFolders.ACTION_CREATE_LIVE_FOLDER);
-            folderChooser.setAdapter(folderTypes);
-            folderChooser.setLauncher(this);
-
-            ShortcutChooser shortcutChooser = (ShortcutChooser) findViewById(R.id.shortcut_chooser);
-            IntentListAdapter shortcutTypes = new IntentListAdapter(
-                    this, Intent.ACTION_CREATE_SHORTCUT);
-            shortcutChooser.setAdapter(shortcutTypes);
-            shortcutChooser.setLauncher(this);
+        if (mCustomizePagedView != null) {
+            mCustomizePagedView.setLauncher(this);
+            mCustomizePagedView.setDragController(dragController);
+            mCustomizePagedView.update();
         } else {
              ImageView hotseatLeft = (ImageView) findViewById(R.id.hotseat_left);
              hotseatLeft.setContentDescription(mHotseatLabels[0]);
@@ -2192,6 +2246,9 @@ public final class Launcher extends Activity
     }
 
     void showAllApps(boolean animated) {
+        if (mAllAppsGrid.isVisible())
+            return;
+
         if (LauncherApplication.isScreenXLarge()) {
             mWorkspace.shrinkToBottom(animated);
         }
@@ -2199,6 +2256,7 @@ public final class Launcher extends Activity
         if (LauncherApplication.isScreenXLarge() && animated) {
             if (isCustomizationDrawerVisible()) {
                 cameraPan(mHomeCustomizationDrawer, (View) mAllAppsGrid);
+                mCustomizePagedView.cleanup();
             } else {
                 cameraZoomOut((View) mAllAppsGrid, true);
             }
@@ -2299,6 +2357,7 @@ public final class Launcher extends Activity
                 mWorkspace.unshrink();
             }
             cameraZoomIn(mHomeCustomizationDrawer);
+            mCustomizePagedView.cleanup();
         }
     }
 
@@ -2645,6 +2704,14 @@ public final class Launcher extends Activity
             mWorkspace.removeItems(apps);
         }
         mAllAppsGrid.removeApps(apps);
+    }
+
+    /**
+     * A number of packages were updated.
+     */
+    public void bindPackagesUpdated() {
+        // update the customization drawer contents
+        mCustomizePagedView.update();
     }
 
     /**

@@ -18,13 +18,15 @@
     android:id="@+id/name"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
+    android:gravity="center_vertical"
 
     android:textColor="#FFFFFFFF"
     android:shadowColor="#FF000000"
     android:shadowDx="0.0"
     android:shadowDy="1.0"
     android:shadowRadius="1.0"
+    android:drawableLeft="@drawable/ic_launcher_wallpaper"
+    android:drawablePadding="10dip"
 
     android:maxLines="2"
     android:fadingEdge="horizontal" />

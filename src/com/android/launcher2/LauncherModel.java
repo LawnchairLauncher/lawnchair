@@ -104,6 +104,7 @@ public class LauncherModel extends BroadcastReceiver {
         public void bindAppsAdded(ArrayList<ApplicationInfo> apps);
         public void bindAppsUpdated(ArrayList<ApplicationInfo> apps);
         public void bindAppsRemoved(ArrayList<ApplicationInfo> apps, boolean permanent);
+        public void bindPackagesUpdated();
         public boolean isAllAppsVisible();
     }
 
@@ -1320,6 +1321,15 @@ public class LauncherModel extends BroadcastReceiver {
                     }
                 });
             }
+
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (callbacks == mCallbacks.get()) {
+                        callbacks.bindPackagesUpdated();
+                    }
+                }
+            });
         }
     }
 

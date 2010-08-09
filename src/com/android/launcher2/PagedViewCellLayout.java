@@ -55,6 +55,8 @@ public class PagedViewCellLayout extends ViewGroup {
     private final Rect mLayoutRect = new Rect();
     private final Rect mDimmedBitmapRect = new Rect();
 
+    private boolean mCenterContent;
+
     private int mCellCountX;
     private int mCellCountY;
     private int mCellWidth;
@@ -236,13 +238,28 @@ public class PagedViewCellLayout extends ViewGroup {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int count = getChildCount();
 
+        int offsetX = 0;
+        if (mCenterContent) {
+            // determine the max width of all the rows and center accordingly
+            int maxRowWidth = 0;
+            for (int i = 0; i < count; i++) {
+                View child = getChildAt(i);
+                if (child.getVisibility() != GONE) {
+                    PagedViewCellLayout.LayoutParams lp =
+                        (PagedViewCellLayout.LayoutParams) child.getLayoutParams();
+                    maxRowWidth = Math.max(maxRowWidth, lp.x + lp.width);
+                }
+            }
+            offsetX = (getMeasuredWidth() / 2) - (maxRowWidth / 2);
+        }
+
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
             if (child.getVisibility() != GONE) {
                 PagedViewCellLayout.LayoutParams lp =
                     (PagedViewCellLayout.LayoutParams) child.getLayoutParams();
 
-                int childLeft = lp.x;
+                int childLeft = offsetX + lp.x;
                 int childTop = lp.y;
                 child.layout(childLeft, childTop, childLeft + lp.width, childTop + lp.height);
             }
@@ -259,6 +276,10 @@ public class PagedViewCellLayout extends ViewGroup {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         return super.onTouchEvent(event) || true;
+    }
+
+    public void enableCenteredContent(boolean enabled) {
+        mCenterContent = enabled;
     }
 
     @Override
@@ -327,10 +348,30 @@ public class PagedViewCellLayout extends ViewGroup {
         }
     }
 
+    public void clearDimmedBitmap() {
+        setDimmedBitmapAlpha(0.0f);
+        if (mDimmedBitmap != null) {
+            mDimmedBitmap.recycle();
+            mDimmedBitmap = null;
+        }
+    }
+
     private void setChildrenAlpha(float alpha) {
         for (int i = 0; i < getChildCount(); i++) {
             getChildAt(i).setAlpha(alpha);
         }
+    }
+
+    public int[] getCellCountForDimensions(int width, int height) {
+        // Always assume we're working with the smallest span to make sure we
+        // reserve enough space in both orientations
+        int smallerSize = Math.min(mCellWidth, mCellHeight);
+
+        // Always round up to next largest cell
+        int spanX = (width + smallerSize) / smallerSize;
+        int spanY = (height + smallerSize) / smallerSize;
+
+        return new int[] { spanX, spanY };
     }
 
     /**
@@ -341,6 +382,39 @@ public class PagedViewCellLayout extends ViewGroup {
     void onDragChild(View child) {
         PagedViewCellLayout.LayoutParams lp = (PagedViewCellLayout.LayoutParams) child.getLayoutParams();
         lp.isDragging = true;
+    }
+
+    public int estimateCellHSpan(int width) {
+        return (width + mCellWidth) / mCellWidth;
+    }
+    public int estimateCellVSpan(int height) {
+        return (height + mCellHeight) / mCellHeight;
+    }
+    public int[] estimateCellDimensions(int approxWidth, int approxHeight, 
+            int cellHSpan, int cellVSpan) {
+        // NOTE: we are disabling this until we find a good way to approximate this without fully
+        // measuring
+        /*
+        // we may want to use this before any measuring/layout happens, so we pass in an approximate
+        // size for the layout
+        int numWidthGaps = mCellCountX - 1;
+        int numHeightGaps = mCellCountY - 1;
+        int hSpaceLeft = approxWidth - mPaddingLeft
+            - mPaddingRight - (mCellWidth * mCellCountX);
+        int vSpaceLeft = approxHeight - mPaddingTop
+            - mPaddingBottom - (mCellHeight * mCellCountY);
+        int widthGap = hSpaceLeft / numWidthGaps;
+        int heightGap = vSpaceLeft / numHeightGaps;
+        int minGap = Math.min(widthGap, heightGap);
+        return new int[] {
+            (cellHSpan * mCellWidth) + ((cellHSpan - 1) * minGap),
+            (cellVSpan * mCellHeight) + ((cellVSpan - 1) * minGap)
+        };
+        */
+        return new int[] {
+            (cellHSpan * mCellWidth),
+            (cellVSpan * mCellHeight)
+        };
     }
 
     @Override
@@ -388,12 +462,21 @@ public class PagedViewCellLayout extends ViewGroup {
          */
         public boolean isDragging;
 
+        // a data object that you can bind to this layout params
+        private Object mTag;
+
         // X coordinate of the view in the layout.
         @ViewDebug.ExportedProperty
         int x;
         // Y coordinate of the view in the layout.
         @ViewDebug.ExportedProperty
         int y;
+
+        public LayoutParams() {
+            super(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+            cellHSpan = 1;
+            cellVSpan = 1;
+        }
 
         public LayoutParams(Context c, AttributeSet attrs) {
             super(c, attrs);
@@ -440,8 +523,17 @@ public class PagedViewCellLayout extends ViewGroup {
             y = vStartPadding + myCellY * (cellHeight + heightGap) + topMargin;
         }
 
+        public Object getTag() {
+            return mTag;
+        }
+
+        public void setTag(Object tag) {
+            mTag = tag;
+        }
+
         public String toString() {
-            return "(" + this.cellX + ", " + this.cellY + ")";
+            return "(" + this.cellX + ", " + this.cellY + ", " +
+                this.cellHSpan + ", " + this.cellVSpan + ")";
         }
     }
 }

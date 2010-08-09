@@ -22,6 +22,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -32,7 +33,13 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.Animation.AnimationListener;
 import android.widget.Scroller;
+
+import com.android.launcher.R;
 
 /**
  * An abstraction of the original Workspace which supports browsing through a
@@ -81,16 +88,12 @@ public abstract class PagedView extends ViewGroup {
     private ScreenSwitchListener mScreenSwitchListener;
 
     private boolean mDimmedPagesDirty;
+    private final Handler mHandler = new Handler();
 
     public interface ScreenSwitchListener {
         void onScreenSwitch(View newScreen, int newScreenIndex);
     }
 
-    /**
-     * Constructor
-     *
-     * @param context The application's context.
-     */
     public PagedView(Context context) {
         this(context, null);
     }
@@ -158,6 +161,7 @@ public abstract class PagedView extends ViewGroup {
 
         mCurrentScreen = Math.max(0, Math.min(currentScreen, getScreenCount() - 1));
         scrollTo(getChildOffset(mCurrentScreen) - getRelativeChildOffset(mCurrentScreen), 0);
+
         invalidate();
         notifyScreenSwitchListener();
     }
@@ -457,6 +461,23 @@ public abstract class PagedView extends ViewGroup {
         return mTouchState != TOUCH_STATE_REST;
     }
 
+    protected void animateClickFeedback(View v, final Runnable r) {
+        // animate the view slightly to show click feedback running some logic after it is "pressed"
+        Animation anim = AnimationUtils.loadAnimation(getContext(), 
+                R.anim.paged_view_click_feedback);
+        anim.setAnimationListener(new AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {}
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                r.run();
+            }
+            @Override
+            public void onAnimationEnd(Animation animation) {}
+        });
+        v.startAnimation(anim);
+    }
+
     /*
      * Determines if we should change the touch state to start scrolling after the
      * user moves their touch point too far.
@@ -689,6 +710,10 @@ public abstract class PagedView extends ViewGroup {
 
         if (!mScroller.isFinished()) mScroller.abortAnimation();
         mScroller.startScroll(sX, 0, delta, 0, duration);
+
+        // only load some associated pages
+        loadAssociatedPages(mNextScreen);
+
         invalidate();
     }
 
@@ -775,13 +800,86 @@ public abstract class PagedView extends ViewGroup {
         };
     }
 
+    private void clearDimmedBitmaps(boolean skipCurrentScreens) {
+        final int count = getChildCount();
+        if (mCurrentScreen < count) {
+            if (skipCurrentScreens) {
+                int lowerScreenBound = Math.max(0, mCurrentScreen - 1);
+                int upperScreenBound = Math.min(mCurrentScreen + 1, count - 1);
+                for (int i = 0; i < count; ++i) {
+                    if (i < lowerScreenBound || i > upperScreenBound) {
+                        PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(i);
+                        layout.clearDimmedBitmap();
+                    }
+                }
+            } else {
+                for (int i = 0; i < count; ++i) {
+                    PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(i);
+                    layout.clearDimmedBitmap();
+                }
+            }
+        }
+    }
+    Runnable clearLayoutOtherDimmedBitmapsRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mScroller.isFinished()) {
+                clearDimmedBitmaps(true);
+                mHandler.removeMessages(0);
+            } else {
+                mHandler.postDelayed(clearLayoutOtherDimmedBitmapsRunnable, 50);
+            }
+        }
+    };
+    Runnable clearLayoutDimmedBitmapsRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mScroller.isFinished()) {
+                clearDimmedBitmaps(false);
+                mHandler.removeMessages(0);
+            } else {
+                mHandler.postDelayed(clearLayoutOtherDimmedBitmapsRunnable, 50);
+            }
+        }
+    };
+
+    // called when this paged view is no longer visible
+    public void cleanup() {
+        // clear all the layout dimmed bitmaps
+        mHandler.removeMessages(0);
+        mHandler.postDelayed(clearLayoutDimmedBitmapsRunnable, 500);
+    }
+
+    public void loadAssociatedPages(int screen) {
+        final int count = getChildCount();
+        if (screen < count) {
+            int lowerScreenBound = Math.max(0, screen - 1);
+            int upperScreenBound = Math.min(screen + 1, count - 1);
+            boolean hasDimmedBitmap = false;
+            for (int i = 0; i < count; ++i) {
+                if (lowerScreenBound <= i && i <= upperScreenBound) {
+                    syncPageItems(i);
+                } else {
+                    PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(i);
+                    if (layout.getChildCount() > 0) {
+                        layout.removeAllViews();
+                    }
+                    hasDimmedBitmap |= layout.getDimmedBitmapAlpha() > 0.0f;
+                }
+            }
+
+            if (hasDimmedBitmap) {
+                mHandler.removeMessages(0);
+                mHandler.postDelayed(clearLayoutOtherDimmedBitmapsRunnable, 500);
+            }
+        }
+    }
+
     public abstract void syncPages();
     public abstract void syncPageItems(int page);
     public void invalidatePageData() {
         syncPages();
-        for (int i = 0; i < getChildCount(); ++i) {
-            syncPageItems(i);
-        }
+        loadAssociatedPages(mCurrentScreen);
         invalidateDimmedPages();
         requestLayout();
     }

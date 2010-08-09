@@ -20,6 +20,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import android.animation.Animatable;
+import android.animation.AnimatableListenerAdapter;
+import android.animation.Animator;
+import android.animation.PropertyAnimator;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -98,9 +102,11 @@ public class AllAppsPagedView extends PagedView
 
     public void setAppFilter(int filterType) {
         mAppFilter = filterType;
-        mFilteredApps = rebuildFilteredApps(mApps);
-        setCurrentScreen(0);
-        invalidatePageData();
+        if (mApps != null) {
+            mFilteredApps = rebuildFilteredApps(mApps);
+            setCurrentScreen(0);
+            invalidatePageData();
+        }
     }
 
     @Override
@@ -156,22 +162,13 @@ public class AllAppsPagedView extends PagedView
         if (childIndex == getCurrentScreen()) {
             final ApplicationInfo app = (ApplicationInfo) v.getTag();
 
-            AlphaAnimation anim = new AlphaAnimation(1.0f, 0.65f);
-            anim.setDuration(100);
-            anim.setFillAfter(true);
-            anim.setRepeatMode(AlphaAnimation.REVERSE);
-            anim.setRepeatCount(1);
-            anim.setAnimationListener(new AnimationListener() {
+            // animate some feedback to the click
+            animateClickFeedback(v, new Runnable() {
                 @Override
-                public void onAnimationStart(Animation animation) {}
-                @Override
-                public void onAnimationRepeat(Animation animation) {
+                public void run() {
                     mLauncher.startActivitySafely(app.intent, app);
                 }
-                @Override
-                public void onAnimationEnd(Animation animation) {}
             });
-            v.startAnimation(anim);
         }
     }
 
@@ -223,26 +220,30 @@ public class AllAppsPagedView extends PagedView
     @Override
     public void setApps(ArrayList<ApplicationInfo> list) {
         mApps = list;
-        Collections.sort(mApps, new Comparator<ApplicationInfo>() {
-            @Override
-            public int compare(ApplicationInfo object1, ApplicationInfo object2) {
-                return object1.title.toString().compareTo(object2.title.toString());
-            }
-        });
+        Collections.sort(mApps, LauncherModel.APP_NAME_COMPARATOR);
         mFilteredApps = rebuildFilteredApps(mApps);
         invalidatePageData();
     }
 
+    private void addAppsWithoutInvalidate(ArrayList<ApplicationInfo> list) {
+        // we add it in place, in alphabetical order
+        final int count = list.size();
+        for (int i = 0; i < count; ++i) {
+            final ApplicationInfo info = list.get(i);
+            final int index = Collections.binarySearch(mApps, info, LauncherModel.APP_NAME_COMPARATOR);
+            if (index < 0) {
+                mApps.add(-(index + 1), info);
+            }
+        }
+        mFilteredApps = rebuildFilteredApps(mApps);
+    }
     @Override
     public void addApps(ArrayList<ApplicationInfo> list) {
-        // TODO: we need to add it in place, in alphabetical order
-        mApps.addAll(list);
-        mFilteredApps.addAll(rebuildFilteredApps(list));
+        addAppsWithoutInvalidate(list);
         invalidatePageData();
     }
 
-    @Override
-    public void removeApps(ArrayList<ApplicationInfo> list) {
+    private void removeAppsWithoutInvalidate(ArrayList<ApplicationInfo> list) {
         // loop through all the apps and remove apps that have the same component
         final int length = list.size();
         for (int i = 0; i < length; ++i) {
@@ -251,14 +252,19 @@ public class AllAppsPagedView extends PagedView
                 mApps.remove(removeIndex);
             }
         }
-        mFilteredApps = rebuildFilteredApps(list);
+        mFilteredApps = rebuildFilteredApps(mApps);
+    }
+    @Override
+    public void removeApps(ArrayList<ApplicationInfo> list) {
+        removeAppsWithoutInvalidate(list);
         invalidatePageData();
     }
 
     @Override
     public void updateApps(ArrayList<ApplicationInfo> list) {
-        removeApps(list);
-        addApps(list);
+        removeAppsWithoutInvalidate(list);
+        addAppsWithoutInvalidate(list);
+        invalidatePageData();
     }
 
     private int findAppByComponent(ArrayList<ApplicationInfo> list, ApplicationInfo item) {
@@ -308,25 +314,43 @@ public class AllAppsPagedView extends PagedView
     @Override
     public void syncPageItems(int page) {
         // ensure that we have the right number of items on the pages
-        int numCells = mCellCountX * mCellCountY;
-        int startIndex = page * numCells;
-        int endIndex = Math.min(startIndex + numCells, mFilteredApps.size());
+        final int cellsPerPage = mCellCountX * mCellCountY;
+        final int startIndex = page * cellsPerPage;
+        final int endIndex = Math.min(startIndex + cellsPerPage, mFilteredApps.size());
         PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(page);
-        // TODO: we can optimize by just re-applying to existing views
-        layout.removeAllViews();
-        for (int i = startIndex; i < endIndex; ++i) {
-            ApplicationInfo info = mFilteredApps.get(i);
+
+        final int curNumPageItems = layout.getChildCount();
+        final int numPageItems = endIndex - startIndex;
+
+        // remove any extra items
+        int extraPageItemsDiff = curNumPageItems - numPageItems;
+        for (int i = 0; i < extraPageItemsDiff; ++i) {
+            layout.removeViewAt(numPageItems);
+        }
+        // add any necessary items
+        for (int i = curNumPageItems; i < numPageItems; ++i) {
             TextView text = (TextView) mInflater.inflate(R.layout.all_apps_paged_view_application, layout, false);
+            text.setOnClickListener(this);
+            text.setOnLongClickListener(this);
+
+            layout.addViewToCellLayout(text, -1, i,
+                new PagedViewCellLayout.LayoutParams(0, 0, 1, 1));
+        }
+
+        // actually reapply to the existing text views
+        for (int i = startIndex; i < endIndex; ++i) {
+            int index = i - startIndex;
+            ApplicationInfo info = mFilteredApps.get(i);
+            TextView text = (TextView) layout.getChildAt(index);
             text.setCompoundDrawablesWithIntrinsicBounds(null,
                 new BitmapDrawable(info.iconBitmap), null, null);
             text.setText(info.title);
             text.setTag(info);
-            text.setOnClickListener(this);
-            text.setOnLongClickListener(this);
 
-            int index = i - startIndex;
-            layout.addViewToCellLayout(text, index, i,
-                new PagedViewCellLayout.LayoutParams(index % mCellCountX, index / mCellCountX, 1, 1));
+            PagedViewCellLayout.LayoutParams params = 
+                (PagedViewCellLayout.LayoutParams) text.getLayoutParams();
+            params.cellX = index % mCellCountX;
+            params.cellY = index / mCellCountX;
         }
     }
 

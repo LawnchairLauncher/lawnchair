@@ -18,6 +18,10 @@ package com.android.launcher2;
 
 import java.util.ArrayList;
 
+import android.animation.Animatable;
+import android.animation.AnimatableListenerAdapter;
+import android.animation.Animator;
+import android.animation.PropertyAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -96,16 +100,30 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
 
         setOnTabChangedListener(new OnTabChangeListener() {
             public void onTabChanged(String tabId) {
-                String tag = getCurrentTabTag();
-                if (tag == TAG_ALL) {
-                    mAllApps.setAppFilter(AllAppsPagedView.ALL_APPS_FLAG);
-                } else if (tag == TAG_APPS) {
-                    mAllApps.setAppFilter(ApplicationInfo.APP_FLAG);
-                } else if (tag == TAG_GAMES) {
-                    mAllApps.setAppFilter(ApplicationInfo.GAME_FLAG);
-                } else if (tag == TAG_DOWNLOADED) {
-                    mAllApps.setAppFilter(ApplicationInfo.DOWNLOADED_FLAG);
-                }
+                // animate the changing of the tab content by fading pages in and out
+                final int duration = 150;
+                final float alpha = mAllApps.getAlpha();
+                Animator alphaAnim = new PropertyAnimator(duration, mAllApps, "alpha", alpha, 0.0f);
+                alphaAnim.addListener(new AnimatableListenerAdapter() {
+                    public void onAnimationEnd(Animatable animation) {
+                        String tag = getCurrentTabTag();
+                        if (tag == TAG_ALL) {
+                            mAllApps.setAppFilter(AllAppsPagedView.ALL_APPS_FLAG);
+                        } else if (tag == TAG_APPS) {
+                            mAllApps.setAppFilter(ApplicationInfo.APP_FLAG);
+                        } else if (tag == TAG_GAMES) {
+                            mAllApps.setAppFilter(ApplicationInfo.GAME_FLAG);
+                        } else if (tag == TAG_DOWNLOADED) {
+                            mAllApps.setAppFilter(ApplicationInfo.DOWNLOADED_FLAG);
+                        }
+
+                        final float alpha = mAllApps.getAlpha();
+                        Animator alphaAnim = 
+                            new PropertyAnimator(duration, mAllApps, "alpha", alpha, 1.0f);
+                        alphaAnim.start();
+                    }
+                });
+                alphaAnim.start();
             }
         });
 
@@ -135,9 +153,12 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
 
     @Override
     public void setVisibility(int visibility) {
+        final boolean isVisible = (visibility == View.VISIBLE); 
         super.setVisibility(visibility);
-        float zoom = visibility == View.VISIBLE ? 1.0f : 0.0f;
+        float zoom = (isVisible ? 1.0f : 0.0f);
         mAllApps.zoom(zoom, false);
+        if (!isVisible)
+            mAllApps.cleanup();
     }
 
     @Override
