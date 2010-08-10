@@ -1038,9 +1038,15 @@ public final class Launcher extends Activity
                         != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
             boolean allAppsVisible = isAllAppsVisible();
 
-            // TODO: Figure out the right thing to do in XLarge mode here
+            // in all these cases, only animate if we're already on home
+            if (LauncherApplication.isScreenXLarge()) {
+                mWorkspace.unshrink(alreadyOnHome);
+            }
             if (!mWorkspace.isDefaultScreenShowing()) {
-                mWorkspace.moveToDefaultScreen(alreadyOnHome && !allAppsVisible);
+                // on the phone, we don't animate the change to the workspace if all apps is visible
+                // on xlarge screens, however, we want an animated transition
+                mWorkspace.moveToDefaultScreen(alreadyOnHome &&
+                        (LauncherApplication.isScreenXLarge() || !allAppsVisible));
             }
             closeAllApps(alreadyOnHome && allAppsVisible);
             hideCustomizationDrawer();
@@ -2409,6 +2415,7 @@ public final class Launcher extends Activity
                     animate = false;
                 }
                 closeAllApps(animate);
+                mWorkspace.unshrink(animate);
             }
         }
     }

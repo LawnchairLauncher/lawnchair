@@ -69,6 +69,16 @@
             android:onClick="onClickConfigureButton"
             android:focusable="true"
             android:clickable="true" />
+        <com.android.launcher2.DeleteZone
+            android:id="@+id/delete_zone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/delete_zone_padding"
+
+            android:scaleType="center"
+            android:src="@drawable/delete_zone_selector"
+            android:visibility="gone"
+            launcher:direction="horizontal" />
         <ImageView
             android:id="@+id/all_apps_button"
             android:layout_width="wrap_content"
@@ -79,17 +89,6 @@
             android:onClick="onClickAllAppsButton"
             android:focusable="true"
             android:clickable="true" />
-        <com.android.launcher2.DeleteZone
-            android:id="@+id/delete_zone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="@dimen/delete_zone_padding"
-            android:layout_toRightOf="@id/configure_button"
-
-            android:scaleType="center"
-            android:src="@drawable/delete_zone_selector"
-            android:visibility="gone"
-            launcher:direction="horizontal" />
     </RelativeLayout>
 
     <TabHost
