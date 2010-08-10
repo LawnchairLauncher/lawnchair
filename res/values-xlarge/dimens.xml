@@ -24,4 +24,7 @@
 
     <!-- vertical spacing between edge of screen and mini screen thumbnails -->
     <dimen name="smallScreenVerticalMargin">20dip</dimen>
+
+    <!-- padding above the delete zone -->
+    <dimen name="delete_zone_padding">6dip</dimen>
 </resources>

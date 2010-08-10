@@ -1149,15 +1149,21 @@ public class Workspace extends ViewGroup
 
     // We call this when we trigger an unshrink by clicking on the CellLayout cl
     private void unshrink(CellLayout clThatWasClicked) {
-        if (mIsSmall) {
-            int newCurrentScreen = mCurrentScreen;
-            final int screenCount = getChildCount();
-            for (int i = 0; i < screenCount; i++) {
-                if (getChildAt(i) == clThatWasClicked) {
-                    newCurrentScreen = i;
-                }
+        int newCurrentScreen = mCurrentScreen;
+        final int screenCount = getChildCount();
+        for (int i = 0; i < screenCount; i++) {
+            if (getChildAt(i) == clThatWasClicked) {
+                newCurrentScreen = i;
             }
-            final int delta = (newCurrentScreen - mCurrentScreen)*getWidth();
+        }
+        unshrink(newCurrentScreen);
+    }
+
+    private void unshrink(int newCurrentScreen) {
+        if (mIsSmall) {
+            int delta = (newCurrentScreen - mCurrentScreen)*getWidth();
+
+            final int screenCount = getChildCount();
             for (int i = 0; i < screenCount; i++) {
                 CellLayout cl = (CellLayout) getChildAt(i);
                 cl.setX(cl.getX() + delta);
@@ -1169,20 +1175,32 @@ public class Workspace extends ViewGroup
         }
     }
 
-    public void unshrink() {
+    void unshrink() {
+        unshrink(true);
+    }
+
+    void unshrink(boolean animated) {
         if (mIsSmall) {
             Sequencer s = new Sequencer();
             final int screenCount = getChildCount();
+
+            final int duration = getResources().getInteger(R.integer.config_workspaceUnshrinkTime);
             for (int i = 0; i < screenCount; i++) {
                 final CellLayout cl = (CellLayout)getChildAt(i);
-                final int duration =
-                    getResources().getInteger(R.integer.config_workspaceUnshrinkTime);
-                s.playTogether(
-                        new PropertyAnimator(duration, cl, "translationX", 0.0f),
-                        new PropertyAnimator(duration, cl, "translationY", 0.0f),
-                        new PropertyAnimator(duration, cl, "scaleX", 1.0f),
-                        new PropertyAnimator(duration, cl, "scaleY", 1.0f),
-                        new PropertyAnimator(duration, cl, "dimmedBitmapAlpha", 0.0f));
+                if (animated) {
+                    s.playTogether(
+                            new PropertyAnimator(duration, cl, "translationX", 0.0f),
+                            new PropertyAnimator(duration, cl, "translationY", 0.0f),
+                            new PropertyAnimator(duration, cl, "scaleX", 1.0f),
+                            new PropertyAnimator(duration, cl, "scaleY", 1.0f),
+                            new PropertyAnimator(duration, cl, "dimmedBitmapAlpha", 0.0f));
+                } else {
+                    cl.setTranslationX(0.0f);
+                    cl.setTranslationY(0.0f);
+                    cl.setScaleX(1.0f);
+                    cl.setScaleY(1.0f);
+                    cl.setDimmedBitmapAlpha(0.0f);
+                }
             }
             s.addListener(mUnshrinkAnimationListener);
             s.start();
@@ -1830,7 +1848,11 @@ public class Workspace extends ViewGroup
 
     void moveToDefaultScreen(boolean animate) {
         if (animate) {
-            snapToScreen(mDefaultScreen);
+            if (mIsSmall) {
+                unshrink(mDefaultScreen);
+            } else {
+                snapToScreen(mDefaultScreen);
+            }
         } else {
             setCurrentScreen(mDefaultScreen);
         }
