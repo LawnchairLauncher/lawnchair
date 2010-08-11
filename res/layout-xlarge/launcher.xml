@@ -36,7 +36,7 @@
         android:layout_height="match_parent"
         launcher:defaultScreen="2"
         launcher:cellCountX="8"
-        launcher:cellCountY="4">
+        launcher:cellCountY="7">
 
         <include android:id="@+id/cell1" layout="@layout/workspace_screen" />
         <include android:id="@+id/cell2" layout="@layout/workspace_screen" />
@@ -45,21 +45,39 @@
         <include android:id="@+id/cell5" layout="@layout/workspace_screen" />
     </com.android.launcher2.Workspace>
 
-    <ImageView
-        android:id="@+id/search_button"
+    <RelativeLayout
+        android:id="@+id/search_button_cluster"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/search_button"
+        android:layout_gravity="top|left">
 
-        android:onClick="onClickSearchButton"
-        android:focusable="true"
-        android:clickable="true"
-        android:layout_gravity="top|left"/>
+        <ImageView
+            android:id="@+id/search_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/search_button"
+
+            android:onClick="onClickSearchButton"
+            android:focusable="true"
+            android:clickable="true"/>
+        <ImageView
+            android:id="@+id/rotate_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/rotate_button"
+
+            android:onClick="onClickRotateButton"
+            android:focusable="true"
+            android:clickable="true"
+            android:layout_toRightOf="@id/search_button" />
+    </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/all_apps_button_cluster"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|right">
+
         <ImageView
             android:id="@+id/configure_button"
             android:layout_width="wrap_content"

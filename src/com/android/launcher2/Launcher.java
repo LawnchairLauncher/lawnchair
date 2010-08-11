@@ -1625,6 +1625,19 @@ public final class Launcher extends Activity
     }
 
     /**
+     * Temporary: to allow us to test rotation in the launcher.
+     *
+     * @param v The view that was clicked.
+     */
+    public void onClickRotateButton(View v) {
+        // TODO: this method is temporary. Remove it.
+            setRequestedOrientation(
+                (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+                    ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                    : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
+
+    /**
      * Event handler for the "grid" button that appears on the home screen, which
      * enters all apps mode.
      *
