@@ -1124,6 +1124,8 @@ public class Workspace extends ViewGroup
         Sequencer s = new Sequencer();
         for (int i = 0; i < screenCount; i++) {
             CellLayout cl = (CellLayout) getChildAt(i);
+            cl.setPivotX(0.0f);
+            cl.setPivotY(0.0f);
             if (animated) {
                 final int duration = res.getInteger(R.integer.config_workspaceShrinkTime);
                 s.playTogether(
@@ -1187,6 +1189,8 @@ public class Workspace extends ViewGroup
             final int duration = getResources().getInteger(R.integer.config_workspaceUnshrinkTime);
             for (int i = 0; i < screenCount; i++) {
                 final CellLayout cl = (CellLayout)getChildAt(i);
+                cl.setPivotX(0.0f);
+                cl.setPivotY(0.0f);
                 if (animated) {
                     s.playTogether(
                             new PropertyAnimator(duration, cl, "translationX", 0.0f),
