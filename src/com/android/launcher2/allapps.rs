@@ -293,7 +293,7 @@ static void drawFrontGrid(float rowOffset, float p)
                 float x = colWidth * col + (colWidth / 2);
                 vpConstants->Position.x = x + 0.2f;
 
-                if (gSelectedIconIndex == iconNum && !p && gSelectedIconTexture.p) {
+                if (gSelectedIconIndex == iconNum && !p && rsIsObject(gSelectedIconTexture)) {
                     rsgBindProgramFragment(gPFTexNearest);
                     rsgBindTexture(gPFTexNearest, 0, gSelectedIconTexture);
                     vpConstants->ImgSize.x = rsAllocationGetDimX(gSelectedIconTexture);
