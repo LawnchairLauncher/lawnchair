@@ -17,13 +17,12 @@
 package com.android.launcher2;
 
 import com.android.launcher.R;
+import com.android.launcher2.CellLayout.CellInfo;
 
 import android.animation.Animatable;
-import android.animation.Animatable.AnimatableListener;
-import android.animation.Animator;
-import android.animation.Animator.AnimatorUpdateListener;
 import android.animation.PropertyAnimator;
 import android.animation.Sequencer;
+import android.animation.Animatable.AnimatableListener;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -50,10 +49,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 import android.view.animation.Interpolator;
-import android.view.animation.RotateAnimation;
 import android.widget.Scroller;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -122,10 +118,6 @@ public class Workspace extends ViewGroup
     private IconCache mIconCache;
     private DragController mDragController;
 
-    /**
-     * Cache of vacant cells, used during drag events and invalidated as needed.
-     */
-    private CellLayout.CellInfo mVacantCache = null;
 
     private int[] mTempCell = new int[2];
     private int[] mTempEstimate = new int[2];
@@ -354,7 +346,6 @@ public class Workspace extends ViewGroup
     void setCurrentScreen(int currentScreen, boolean animateScrolling, int screenWidth) {
         if (!mScroller.isFinished())
             mScroller.abortAnimation();
-        clearVacantCache();
         mCurrentScreen = Math.max(0, Math.min(currentScreen, getChildCount() - 1));
         if (mPreviousIndicator != null) {
             mPreviousIndicator.setLevel(mCurrentScreen);
@@ -436,8 +427,6 @@ public class Workspace extends ViewGroup
             return;
         }
 
-        clearVacantCache();
-
         final CellLayout group = (CellLayout) getChildAt(screen);
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
         if (lp == null) {
@@ -467,19 +456,12 @@ public class Workspace extends ViewGroup
         }
     }
 
-    CellLayout.CellInfo findAllVacantCells(boolean[] occupied) {
+    CellLayout.CellInfo updateOccupiedCells(boolean[] occupied) {
         CellLayout group = (CellLayout) getChildAt(mCurrentScreen);
         if (group != null) {
-            return group.findAllVacantCells(occupied, null);
+            return group.updateOccupiedCells(occupied, null);
         }
         return null;
-    }
-
-    private void clearVacantCache() {
-        if (mVacantCache != null) {
-            mVacantCache.clearVacantCells();
-            mVacantCache = null;
-        }
     }
 
     public boolean onTouch(View v, MotionEvent event) {
@@ -1220,7 +1202,6 @@ public class Workspace extends ViewGroup
 
         whichScreen = Math.max(0, Math.min(whichScreen, getChildCount() - 1));
 
-        clearVacantCache();
         enableChildrenCache(mCurrentScreen, whichScreen);
 
         mNextScreen = whichScreen;
@@ -1349,7 +1330,6 @@ public class Workspace extends ViewGroup
 
     public void onDragEnter(DragSource source, int x, int y, int xOffset,
             int yOffset, DragView dragView, Object dragInfo) {
-        clearVacantCache();
     }
 
     public DropTarget getDropTargetDelegate(DragSource source, int x, int y, int xOffset, int yOffset,
@@ -1431,7 +1411,6 @@ public class Workspace extends ViewGroup
 
     public void onDragExit(DragSource source, int x, int y, int xOffset,
             int yOffset, DragView dragView, Object dragInfo) {
-        clearVacantCache();
         if (mDragTargetLayout != null) {
             mDragTargetLayout.onDragComplete();
             mDragTargetLayout = null;
@@ -1505,16 +1484,14 @@ public class Workspace extends ViewGroup
     public boolean acceptDrop(DragSource source, int x, int y,
             int xOffset, int yOffset, DragView dragView, Object dragInfo) {
         final CellLayout layout = getCurrentDropLayout();
-        final CellLayout.CellInfo cellInfo = mDragInfo;
-        final int spanX = cellInfo == null ? 1 : cellInfo.spanX;
-        final int spanY = cellInfo == null ? 1 : cellInfo.spanY;
+        final CellLayout.CellInfo dragCellInfo = mDragInfo;
+        final int spanX = dragCellInfo == null ? 1 : dragCellInfo.spanX;
+        final int spanY = dragCellInfo == null ? 1 : dragCellInfo.spanY;
 
-        if (mVacantCache == null) {
-            final View ignoreView = cellInfo == null ? null : cellInfo.cell;
-            mVacantCache = layout.findAllVacantCells(null, ignoreView);
-        }
+        final View ignoreView = dragCellInfo == null ? null : dragCellInfo.cell;
+        final CellLayout.CellInfo cellInfo = layout.updateOccupiedCells(null, ignoreView);
 
-        if (mVacantCache.findCellForSpan(mTempEstimate, spanX, spanY, false)) {
+        if (cellInfo.findCellForSpan(mTempEstimate, spanX, spanY)) {
             return true;
         } else {
             Toast.makeText(getContext(), getContext().getString(R.string.out_of_space), Toast.LENGTH_SHORT).show();
@@ -1565,13 +1542,9 @@ public class Workspace extends ViewGroup
         layout.estimateDropCell(pixelX, pixelY, spanX, spanY, cellXY);
         layout.cellToPoint(cellXY[0], cellXY[1], mTempEstimate);
 
-        // Create vacant cell cache if none exists
-        if (mVacantCache == null) {
-            mVacantCache = layout.findAllVacantCells(null, ignoreView);
-        }
-
+        final CellLayout.CellInfo cellInfo = layout.updateOccupiedCells(null, ignoreView);
         // Find the best target drop location
-        return layout.findNearestVacantArea(mTempEstimate[0], mTempEstimate[1], spanX, spanY, mVacantCache, recycle);
+        return layout.findNearestVacantArea(mTempEstimate[0], mTempEstimate[1], spanX, spanY, cellInfo, recycle);
     }
 
     /**
@@ -1590,8 +1563,6 @@ public class Workspace extends ViewGroup
     }
 
     public void onDropCompleted(View target, boolean success) {
-        clearVacantCache();
-
         if (success) {
             if (target != this && mDragInfo != null) {
                 final CellLayout cellLayout = (CellLayout) getChildAt(mDragInfo.screen);
@@ -1612,7 +1583,6 @@ public class Workspace extends ViewGroup
     }
 
     public void scrollLeft() {
-        clearVacantCache();
         if (mScroller.isFinished()) {
             if (mCurrentScreen > 0)
                 snapToScreen(mCurrentScreen - 1);
@@ -1623,7 +1593,6 @@ public class Workspace extends ViewGroup
     }
 
     public void scrollRight() {
-        clearVacantCache();
         if (mScroller.isFinished()) {
             if (mCurrentScreen < getChildCount() - 1)
                 snapToScreen(mCurrentScreen + 1);

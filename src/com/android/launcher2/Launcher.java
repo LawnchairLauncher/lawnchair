@@ -722,7 +722,7 @@ public final class Launcher extends Activity
             addItemCellInfo.cellY = savedState.getInt(RUNTIME_STATE_PENDING_ADD_CELL_Y);
             addItemCellInfo.spanX = savedState.getInt(RUNTIME_STATE_PENDING_ADD_SPAN_X);
             addItemCellInfo.spanY = savedState.getInt(RUNTIME_STATE_PENDING_ADD_SPAN_Y);
-            addItemCellInfo.findVacantCellsFromOccupied(
+            addItemCellInfo.updateOccupiedCells(
                     savedState.getBooleanArray(RUNTIME_STATE_PENDING_ADD_OCCUPIED_CELLS),
                     savedState.getInt(RUNTIME_STATE_PENDING_ADD_COUNT_X),
                     savedState.getInt(RUNTIME_STATE_PENDING_ADD_COUNT_Y));
@@ -1229,7 +1229,7 @@ public final class Launcher extends Activity
 
         // Disable add if the workspace is full.
         if (visible) {
-            mMenuAddInfo = mWorkspace.findAllVacantCells(null);
+            mMenuAddInfo = mWorkspace.updateOccupiedCells(null);
             menu.setGroupEnabled(MENU_GROUP_ADD, mMenuAddInfo != null && mMenuAddInfo.valid);
         }
 
@@ -1239,7 +1239,7 @@ public final class Launcher extends Activity
     // we need to initialize mAddItemCellInfo before adding something to the homescreen -- when
     // using the settings menu to add an item, something similar happens in showAddDialog
     public void prepareAddItemFromHomeCustomizationDrawer() {
-        mMenuAddInfo = mWorkspace.findAllVacantCells(null);
+        mMenuAddInfo = mWorkspace.updateOccupiedCells(null);
         mAddItemCellInfo = mMenuAddInfo;
     }
 
@@ -1447,7 +1447,7 @@ public final class Launcher extends Activity
         if (!cellInfo.findCellForSpan(xy, spanX, spanY)) {
             boolean[] occupied = mSavedState != null ?
                     mSavedState.getBooleanArray(RUNTIME_STATE_PENDING_ADD_OCCUPIED_CELLS) : null;
-            cellInfo = mWorkspace.findAllVacantCells(occupied);
+            cellInfo = mWorkspace.updateOccupiedCells(occupied);
             if (!cellInfo.findCellForSpan(xy, spanX, spanY)) {
                 Toast.makeText(this, getString(R.string.out_of_space), Toast.LENGTH_SHORT).show();
                 return false;
