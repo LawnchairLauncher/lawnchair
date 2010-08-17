@@ -72,8 +72,7 @@ public interface DropTarget {
 
     /**
      * Check if a drop action can occur at, or near, the requested location.
-     * This may be called repeatedly during a drag, so any calls should return
-     * quickly.
+     * This will be called just before onDrop.
      * 
      * @param source DragSource where the drag started
      * @param x X coordinate of the drop location

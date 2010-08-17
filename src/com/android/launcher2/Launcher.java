@@ -16,6 +16,9 @@
 
 package com.android.launcher2;
 
+import com.android.common.Search;
+import com.android.launcher.R;
+
 import android.animation.Animatable;
 import android.animation.AnimatableListenerAdapter;
 import android.animation.Animator;
@@ -58,6 +61,7 @@ import android.os.Parcelable;
 import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.provider.LiveFolders;
+import android.provider.Settings;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -89,8 +93,14 @@ import android.widget.TabHost.TabContentFactory;
 import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.android.common.Search;
-import com.android.launcher.R;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -875,20 +885,31 @@ public final class Launcher extends Activity
         deleteZone.setDragController(dragController);
         int deleteZoneHandleId;
         if (LauncherApplication.isScreenXLarge()) {
-            deleteZoneHandleId = R.id.configure_button;
+            deleteZoneHandleId = R.id.all_apps_button;
         } else {
             deleteZoneHandleId = R.id.all_apps_button_cluster;
         }
         deleteZone.setHandle(findViewById(deleteZoneHandleId));
+        dragController.addDragListener(deleteZone);
+
+        ApplicationInfoDropTarget infoButton = (ApplicationInfoDropTarget)findViewById(R.id.info_button);
+        if (infoButton != null) {
+            infoButton.setLauncher(this);
+            infoButton.setHandle(findViewById(R.id.configure_button));
+            infoButton.setDragColor(getResources().getColor(R.color.app_info_filter));
+            dragController.addDragListener(infoButton);
+        }
 
         dragController.setDragScoller(workspace);
-        dragController.setDragListener(deleteZone);
         dragController.setScrollView(dragLayer);
         dragController.setMoveTarget(workspace);
 
         // The order here is bottom to top.
         dragController.addDropTarget(workspace);
         dragController.addDropTarget(deleteZone);
+        if (infoButton != null) {
+            dragController.addDropTarget(infoButton);
+        }
     }
 
     @SuppressWarnings({"UnusedDeclaration"})
@@ -1684,6 +1705,12 @@ public final class Launcher extends Activity
      */
     public void onClickAllAppsButton(View v) {
         showAllApps(true);
+    }
+
+    void startApplicationDetailsActivity(String packageName) {
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                Uri.fromParts("package", packageName, null));
+        startActivity(intent);
     }
 
     void startActivitySafely(Intent intent, Object tag) {

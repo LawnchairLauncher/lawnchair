@@ -99,7 +99,7 @@ public class DragController {
     /** Who can receive drop events */
     private ArrayList<DropTarget> mDropTargets = new ArrayList<DropTarget>();
 
-    private DragListener mListener;
+    private ArrayList<DragListener> mListeners = new ArrayList<DragListener>();
 
     /** The window token used as the parent for the DragView. */
     private IBinder mWindowToken;
@@ -213,8 +213,8 @@ public class DragController {
         }
         mInputMethodManager.hideSoftInputFromWindow(mWindowToken, 0);
 
-        if (mListener != null) {
-            mListener.onDragStart(source, dragInfo, dragAction);
+        for (DragListener listener : mListeners) {
+            listener.onDragStart(source, dragInfo, dragAction);
         }
 
         int registrationX = ((int)mMotionDownX) - screenX;
@@ -297,8 +297,8 @@ public class DragController {
             if (mOriginator != null) {
                 mOriginator.setVisibility(View.VISIBLE);
             }
-            if (mListener != null) {
-                mListener.onDragEnd();
+            for (DragListener listener : mListeners) {
+                listener.onDragEnd();
             }
             if (mDragView != null) {
                 mDragView.remove();
@@ -547,15 +547,15 @@ public class DragController {
     /**
      * Sets the drag listner which will be notified when a drag starts or ends.
      */
-    public void setDragListener(DragListener l) {
-        mListener = l;
+    public void addDragListener(DragListener l) {
+        mListeners.add(l);
     }
 
     /**
      * Remove a previously installed drag listener.
      */
     public void removeDragListener(DragListener l) {
-        mListener = null;
+        mListeners.remove(l);
     }
 
     /**
