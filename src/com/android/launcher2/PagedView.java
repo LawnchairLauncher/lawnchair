@@ -271,7 +271,9 @@ public abstract class PagedView extends ViewGroup {
                     dimAlpha = (float) (distanceFromScreenCenter - halfChildWidth) / halfChildWidth;
                     dimAlpha = (dimAlpha * dimAlpha);
                 }
-                layout.setDimmedBitmapAlpha(Math.max(0.0f, Math.min(1.0f, dimAlpha)));
+                dimAlpha = Math.max(0.0f, Math.min(1.0f, dimAlpha));
+                if (Float.compare(dimAlpha, layout.getDimmedBitmapAlpha()) != 0)
+                    layout.setDimmedBitmapAlpha(dimAlpha);
             }
         }
         super.dispatchDraw(canvas);
