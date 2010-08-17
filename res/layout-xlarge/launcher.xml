@@ -45,32 +45,16 @@
         <include android:id="@+id/cell5" layout="@layout/workspace_screen" />
     </com.android.launcher2.Workspace>
 
-    <RelativeLayout
-        android:id="@+id/search_button_cluster"
+    <ImageView
+        android:id="@+id/search_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="top|left">
+        android:layout_gravity="top|left"
+        android:src="@drawable/search_button"
 
-        <ImageView
-            android:id="@+id/search_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/search_button"
-
-            android:onClick="onClickSearchButton"
-            android:focusable="true"
-            android:clickable="true"/>
-        <ImageView
-            android:id="@+id/rotate_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/rotate_button"
-
-            android:onClick="onClickRotateButton"
-            android:focusable="true"
-            android:clickable="true"
-            android:layout_toRightOf="@id/search_button" />
-    </RelativeLayout>
+        android:onClick="onClickSearchButton"
+        android:focusable="true"
+        android:clickable="true"/>
 
     <RelativeLayout
         android:id="@+id/all_apps_button_cluster"
