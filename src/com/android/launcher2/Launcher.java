@@ -16,14 +16,6 @@
 
 package com.android.launcher2;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import android.animation.Animatable;
 import android.animation.AnimatableListenerAdapter;
 import android.animation.Animator;
@@ -44,8 +36,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.Intent.ShortcutIconResource;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -79,12 +71,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
-import android.view.View.OnLongClickListener;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.inputmethod.InputMethodManager;
@@ -94,14 +84,21 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TabHost;
+import android.widget.TabHost.OnTabChangeListener;
+import android.widget.TabHost.TabContentFactory;
 import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.TabHost.OnTabChangeListener;
-import android.widget.TabHost.TabContentFactory;
-
 import com.android.common.Search;
 import com.android.launcher.R;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Default launcher application.
@@ -463,11 +460,12 @@ public final class Launcher extends Activity
         WallpaperManager wpm = (WallpaperManager)getSystemService(WALLPAPER_SERVICE);
 
         Display display = getWindowManager().getDefaultDisplay();
-        boolean isPortrait = display.getWidth() < display.getHeight();
-
-        final int width = isPortrait ? display.getWidth() : display.getHeight();
-        final int height = isPortrait ? display.getHeight() : display.getWidth();
-        wpm.suggestDesiredDimensions(width * WALLPAPER_SCREENS_SPAN, height);
+        // TODO: Put back when we decide about scrolling the wallpaper
+        // boolean isPortrait = display.getWidth() < display.getHeight();
+        // final int width = isPortrait ? display.getWidth() : display.getHeight();
+        // final int height = isPortrait ? display.getHeight() : display.getWidth();
+        wpm.suggestDesiredDimensions(Math.max(display.getWidth(), display.getHeight()),
+                Math.max(display.getWidth(), display.getHeight()));
     }
 
     // Note: This doesn't do all the client-id magic that BrowserProvider does
@@ -1009,7 +1007,7 @@ public final class Launcher extends Activity
     /**
      * Add a widget to the workspace.
      *
-     * @param data The intent describing the appWidgetId.
+     * @param appWidgetId The app widget id
      * @param cellInfo The position on screen where to create the widget.
      */
     private void completeAddAppWidget(int appWidgetId, CellLayout.CellInfo cellInfo) {
@@ -2111,7 +2109,7 @@ public final class Launcher extends Activity
 
     // Now a part of LauncherModel.Callbacks. Used to reorder loading steps.
     public boolean isAllAppsVisible() {
-        return (mAllAppsGrid != null) ? mAllAppsGrid.isVisible() : false;
+        return mAllAppsGrid != null && mAllAppsGrid.isVisible();
     }
 
     // AllAppsView.Watcher
