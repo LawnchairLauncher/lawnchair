@@ -205,6 +205,7 @@ public final class Launcher extends Activity
     private LauncherAppWidgetHost mAppWidgetHost;
 
     private CellLayout.CellInfo mAddItemCellInfo;
+    private int[] mAddItemCoordinates;
     private CellLayout.CellInfo mMenuAddInfo;
     private final int[] mCellCoordinates = new int[2];
     private FolderInfo mFolderInfo;
@@ -791,6 +792,7 @@ public final class Launcher extends Activity
 
         final int addScreen = savedState.getInt(RUNTIME_STATE_PENDING_ADD_SCREEN, -1);
         if (addScreen > -1) {
+            mAddItemCoordinates = null;
             mAddItemCellInfo = new CellLayout.CellInfo();
             final CellLayout.CellInfo addItemCellInfo = mAddItemCellInfo;
             addItemCellInfo.valid = true;
@@ -818,7 +820,7 @@ public final class Launcher extends Activity
      * Finds all the views we need and configure them properly.
      */
     private void setupViews() {
-        DragController dragController = mDragController;
+        final DragController dragController = mDragController;
 
         DragLayer dragLayer = (DragLayer) findViewById(R.id.drag_layer);
         dragLayer.setDragController(dragController);
@@ -1040,8 +1042,26 @@ public final class Launcher extends Activity
         int[] spans = layout.rectToCell(appWidgetInfo.minWidth, appWidgetInfo.minHeight, null);
 
         // Try finding open space on Launcher screen
+        // We have saved the position to which the widget was dragged-- this really only matters
+        // if we are placing widgets on a "spring-loaded" screen
         final int[] xy = mCellCoordinates;
-        if (!findSlot(cellInfo, xy, spans[0], spans[1])) {
+
+        // For now, we don't save the coordinate where we dropped the icon because we're not
+        // supporting spring-loaded mini-screens; however, leaving the ability to directly place
+        // a widget on the home screen in case we want to add it in the future
+        final int[] xyTouch = null;
+        //final int[] xyTouch = mAddItemCoordinates;
+        boolean findNearestVacantAreaFailed = false;
+        if (xyTouch != null) {
+            CellLayout screen = (CellLayout) mWorkspace.getChildAt(cellInfo.screen);
+            int[] result = screen.findNearestVacantArea(
+                    mAddItemCoordinates[0], mAddItemCoordinates[1],
+                    spans[0], spans[1], cellInfo, xy);
+            findNearestVacantAreaFailed = (result == null);
+        }
+
+        if (findNearestVacantAreaFailed ||
+                (xyTouch == null && !findSlot(cellInfo, xy, spans[0], spans[1]))) {
             if (appWidgetId != -1) mAppWidgetHost.deleteAppWidgetId(appWidgetId);
             return;
         }
@@ -1053,7 +1073,7 @@ public final class Launcher extends Activity
 
         LauncherModel.addItemToDatabase(this, launcherInfo,
                 LauncherSettings.Favorites.CONTAINER_DESKTOP,
-                mWorkspace.getCurrentScreen(), xy[0], xy[1], false);
+                cellInfo.screen, xy[0], xy[1], false);
 
         if (!mRestoring) {
             mDesktopItems.add(launcherInfo);
@@ -1064,7 +1084,7 @@ public final class Launcher extends Activity
             launcherInfo.hostView.setAppWidget(appWidgetId, appWidgetInfo);
             launcherInfo.hostView.setTag(launcherInfo);
 
-            mWorkspace.addInCurrentScreen(launcherInfo.hostView, xy[0], xy[1],
+            mWorkspace.addInScreen(launcherInfo.hostView, cellInfo.screen, xy[0], xy[1],
                     launcherInfo.spanX, launcherInfo.spanY, isWorkspaceLocked());
         }
     }
@@ -1307,7 +1327,7 @@ public final class Launcher extends Activity
 
         // Disable add if the workspace is full.
         if (visible) {
-            mMenuAddInfo = mWorkspace.updateOccupiedCells(null);
+            mMenuAddInfo = mWorkspace.updateOccupiedCellsForCurrentScreen(null);
             menu.setGroupEnabled(MENU_GROUP_ADD, mMenuAddInfo != null && mMenuAddInfo.valid);
         }
 
@@ -1317,8 +1337,9 @@ public final class Launcher extends Activity
     // we need to initialize mAddItemCellInfo before adding something to the homescreen -- when
     // using the settings menu to add an item, something similar happens in showAddDialog
     public void prepareAddItemFromHomeCustomizationDrawer() {
-        mMenuAddInfo = mWorkspace.updateOccupiedCells(null);
+        mMenuAddInfo = mWorkspace.updateOccupiedCellsForCurrentScreen(null);
         mAddItemCellInfo = mMenuAddInfo;
+        mAddItemCellInfo = null;
     }
 
     @Override
@@ -1369,8 +1390,12 @@ public final class Launcher extends Activity
         }
     }
 
-    void addAppWidgetFromDrop(ComponentName appWidgetProvider, CellLayout.CellInfo cellInfo) {
+    void addAppWidgetFromDrop(ComponentName appWidgetProvider, CellLayout.CellInfo cellInfo,
+            int[] position) {
         mAddItemCellInfo = cellInfo;
+
+        // only set mAddItemCoordinates if we dropped on home screen in "spring-loaded" manner
+        mAddItemCoordinates = position;
         int appWidgetId = getAppWidgetHost().allocateAppWidgetId();
         AppWidgetManager.getInstance(this).bindAppWidgetId(appWidgetId, appWidgetProvider);
         addAppWidgetImpl(appWidgetId);
@@ -1523,9 +1548,8 @@ public final class Launcher extends Activity
 
     private boolean findSlot(CellLayout.CellInfo cellInfo, int[] xy, int spanX, int spanY) {
         if (!cellInfo.findCellForSpan(xy, spanX, spanY)) {
-            boolean[] occupied = mSavedState != null ?
-                    mSavedState.getBooleanArray(RUNTIME_STATE_PENDING_ADD_OCCUPIED_CELLS) : null;
-            cellInfo = mWorkspace.updateOccupiedCells(occupied);
+            CellLayout targetLayout = (CellLayout) mWorkspace.getChildAt(cellInfo.screen);
+            cellInfo = targetLayout.updateOccupiedCells(null, null);
             if (!cellInfo.findCellForSpan(xy, spanX, spanY)) {
                 Toast.makeText(this, getString(R.string.out_of_space), Toast.LENGTH_SHORT).show();
                 return false;
@@ -2034,6 +2058,7 @@ public final class Launcher extends Activity
 
     private void showAddDialog(CellLayout.CellInfo cellInfo) {
         mAddItemCellInfo = cellInfo;
+        mAddItemCoordinates = null;
         mWaitingForResult = true;
         showDialog(DIALOG_CREATE_SHORTCUT);
     }

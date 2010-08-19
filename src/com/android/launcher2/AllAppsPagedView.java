@@ -181,7 +181,6 @@ public class AllAppsPagedView extends PagedView
         app = new ApplicationInfo(app);
 
         mDragController.startDrag(v, this, app, DragController.DRAG_ACTION_COPY);
-        mLauncher.closeAllApps(true);
         return true;
     }
 

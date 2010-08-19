@@ -34,6 +34,7 @@ import android.content.pm.ProviderInfo;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -124,6 +125,8 @@ public class Workspace extends ViewGroup
 
     private int[] mTempCell = new int[2];
     private int[] mTempEstimate = new int[2];
+    private float[] mTempDragCoordinates = new float[2];
+    private float[] mTempDragBottomRightCoordinates = new float[2];
 
     private boolean mAllowLongPress = true;
 
@@ -459,7 +462,7 @@ public class Workspace extends ViewGroup
         }
     }
 
-    CellLayout.CellInfo updateOccupiedCells(boolean[] occupied) {
+    CellLayout.CellInfo updateOccupiedCellsForCurrentScreen(boolean[] occupied) {
         CellLayout group = (CellLayout) getChildAt(mCurrentScreen);
         if (group != null) {
             return group.updateOccupiedCells(occupied, null);
@@ -1309,9 +1312,31 @@ public class Workspace extends ViewGroup
 
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
-        final CellLayout cellLayout = getCurrentDropLayout();
+        CellLayout cellLayout = getCurrentDropLayout();
+        int originX = x - xOffset;
+        int originY = y - yOffset;
+        if (mIsSmall) {
+            // find out which target layout is over
+            final float[] localXY = mTempDragCoordinates;
+            localXY[0] = originX;
+            localXY[1] = originY;
+            final float[] localBottomRightXY = mTempDragBottomRightCoordinates;
+            // we need to subtract left/top here because DragController already adds
+            // dragRegionLeft/Top to xOffset and yOffset
+            localBottomRightXY[0] = originX + dragView.getDragRegionWidth();
+            localBottomRightXY[1] = originY + dragView.getDragRegionHeight();
+            cellLayout =  findMatchingScreenForDragOver(localXY, localBottomRightXY);
+            if (cellLayout == null) {
+                // cancel the drag if we're not over a mini-screen at time of drop
+                // TODO: maybe add a nice fade here?
+                return;
+            }
+            // localXY will be transformed into the local screen's coordinate space; save that info
+            originX = (int)localXY[0];
+            originY = (int)localXY[1];
+        }
         if (source != this) {
-            onDropExternal(x - xOffset, y - yOffset, dragInfo, cellLayout);
+            onDropExternal(originX, originY, dragInfo, cellLayout);
         } else {
             // Move internally
             if (mDragInfo != null) {
@@ -1323,7 +1348,8 @@ public class Workspace extends ViewGroup
                     addInScreen(cell, index, mDragInfo.cellX, mDragInfo.cellY,
                             mDragInfo.spanX, mDragInfo.spanY);
                 }
-                mTargetCell = estimateDropCell(x - xOffset, y - yOffset,
+
+                mTargetCell = estimateDropCell(originX, originY,
                         mDragInfo.spanX, mDragInfo.spanY, cell, cellLayout,
                         mTargetCell);
                 cellLayout.onDropChild(cell);
@@ -1381,11 +1407,87 @@ public class Workspace extends ViewGroup
         return null;
     }
 
+    // xy = upper left corner of item being dragged
+    // bottomRightXy = lower right corner of item being dragged
+    // This method will see which mini-screen is most overlapped by the item being dragged, and
+    // return it. It will also transform the parameters xy and bottomRightXy into the local
+    // coordinate space of the returned screen
+    private CellLayout findMatchingScreenForDragOver(float[] xy, float[] bottomRightXy) {
+        float x = xy[0];
+        float y = xy[1];
+        float right = bottomRightXy[0];
+        float bottom = bottomRightXy[1];
+
+        float bestX = 0;
+        float bestY = 0;
+        float bestRight = 0;
+        float bestBottom = 0;
+
+        Matrix inverseMatrix = new Matrix();
+
+        // We loop through all the screens (ie CellLayouts) and see which one overlaps the most
+        // with the item being dragged.
+        final int screenCount = getChildCount();
+        CellLayout bestMatchingScreen = null;
+        float bestOverlapSoFar = 0;
+        for (int i = 0; i < screenCount; i++) {
+            CellLayout cl = (CellLayout)getChildAt(i);
+            // Transform the coordinates of the item being dragged to the CellLayout's coordinates
+            float left = cl.getLeft();
+            float top = cl.getTop();
+            xy[0] = x + mScrollX - left;
+            xy[1] = y + mScrollY - top;
+            cl.getMatrix().invert(inverseMatrix);
+
+            bottomRightXy[0] = right + mScrollX - left;
+            bottomRightXy[1] = bottom + mScrollY - top;
+
+            inverseMatrix.mapPoints(xy);
+            inverseMatrix.mapPoints(bottomRightXy);
+
+            float dragRegionX = xy[0];
+            float dragRegionY = xy[1];
+            float dragRegionRight = bottomRightXy[0];
+            float dragRegionBottom = bottomRightXy[1];
+
+            // Find the overlapping region
+            float overlapLeft = Math.max(0f, dragRegionX);
+            float overlapTop = Math.max(0f, dragRegionY);
+            float overlapBottom = Math.min(cl.getHeight(), dragRegionBottom);
+            float overlapRight = Math.min(cl.getWidth(), dragRegionRight);
+
+            if (overlapRight >= 0 && overlapLeft <= cl.getWidth() &&
+                    overlapTop >= 0 && overlapBottom <= cl.getHeight()) {
+                // Calculate the size of the overlapping region
+                float overlap = (overlapRight - overlapLeft) * (overlapBottom - overlapTop);
+                if (overlap > bestOverlapSoFar) {
+                    bestOverlapSoFar = overlap;
+                    bestMatchingScreen = cl;
+                    bestX = xy[0];
+                    bestY = xy[1];
+                    bestRight = bottomRightXy[0];
+                    bestBottom = bottomRightXy[1];
+                }
+             }
+        }
+        if (bestMatchingScreen != null && bestMatchingScreen != mDragTargetLayout) {
+            if (mDragTargetLayout != null) {
+                mDragTargetLayout.onDragComplete();
+            }
+            mDragTargetLayout = bestMatchingScreen;
+        }
+        xy[0] = bestX;
+        xy[1] = bestY;
+        bottomRightXy[0] = bestRight;
+        bottomRightXy[1] = bestBottom;
+        return bestMatchingScreen;
+    }
+
     public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
 
         final ItemInfo item = (ItemInfo)dragInfo;
-        final CellLayout currentLayout = getCurrentDropLayout();
+        CellLayout currentLayout = getCurrentDropLayout();
 
         if (dragInfo instanceof LauncherAppWidgetInfo) {
             LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo)dragInfo;
@@ -1397,6 +1499,39 @@ public class Workspace extends ViewGroup
                 item.spanY = spans[1];
             }
         }
+        int originX = x - xOffset;
+        int originY = y - yOffset;
+        if (mIsSmall) {
+            // find out which mini screen the dragged item is over
+            final float[] localXY = mTempDragCoordinates;
+            localXY[0] = originX;
+            localXY[1] = originY;
+            final float[] localBottomRightXY = mTempDragBottomRightCoordinates;
+
+            localBottomRightXY[0] = originX + dragView.getDragRegionWidth();
+            localBottomRightXY[1] = originY + dragView.getDragRegionHeight();
+            currentLayout = findMatchingScreenForDragOver(localXY, localBottomRightXY);
+            if (currentLayout != null) {
+                currentLayout.setHover(true);
+            }
+
+            originX = (int)localXY[0];
+            originY = (int)localXY[1];
+        }
+
+        if (source != this) {
+            // This is a hack to fix the point used to determine which cell an icon from the all
+            // apps screen is over
+            if (item != null && item.spanX == 1 && currentLayout != null) {
+                int dragRegionLeft = (dragView.getWidth() - currentLayout.getCellWidth()) / 2;
+
+                originX += dragRegionLeft - dragView.getDragRegionLeft();
+                if (dragView.getDragRegionWidth() != currentLayout.getCellWidth()) {
+                    dragView.setDragRegion(dragView.getDragRegionLeft(), dragView.getDragRegionTop(),
+                            currentLayout.getCellWidth(), dragView.getDragRegionHeight());
+                }
+            }
+        }
         if (currentLayout != mDragTargetLayout) {
             if (mDragTargetLayout != null) {
                 mDragTargetLayout.onDragComplete();
@@ -1404,23 +1539,14 @@ public class Workspace extends ViewGroup
             mDragTargetLayout = currentLayout;
         }
 
-        // Find the top left corner of the item
-        int originX = x - xOffset;
-        int originY = y - yOffset;
-
-        // If not dragging from the Workspace, the size of dragView might not match the cell size
-        if (!source.equals(this)) {
-            // Break the drag view up into evenly sized chunks based on its spans
-            int chunkWidth = dragView.getWidth() / item.spanX;
-            int chunkHeight = dragView.getHeight() / item.spanY;
-
-            // Adjust the origin for a cell centered at the top left chunk
-            originX += (chunkWidth - currentLayout.getCellWidth()) / 2;
-            originY += (chunkHeight - currentLayout.getCellHeight()) / 2;
+        // only visualize the drop locations for moving icons within the home screen on tablet
+        // on phone, we also visualize icons dragged in from All Apps
+        if ((!LauncherApplication.isScreenXLarge() || source == this)
+                && mDragTargetLayout != null) {
+            final View child = (mDragInfo == null) ? null : mDragInfo.cell;
+            mDragTargetLayout.visualizeDropLocation(
+                    child, originX, originY, item.spanX, item.spanY);
         }
-
-        final View child = (mDragInfo == null) ? null : mDragInfo.cell;
-        currentLayout.visualizeDropLocation(child, originX, originY, item.spanX, item.spanY);
     }
 
     public void onDragExit(DragSource source, int x, int y, int xOffset,
@@ -1460,7 +1586,11 @@ public class Workspace extends ViewGroup
             break;
         case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
             cellLayout.setTagToCellInfoForPoint(x, y);
-            mLauncher.addAppWidgetFromDrop(((LauncherAppWidgetInfo)dragInfo).providerName, cellLayout.getTag());
+            int[] position = new int[2];
+            position[0] = x;
+            position[1] = y;
+            mLauncher.addAppWidgetFromDrop(((LauncherAppWidgetInfo)dragInfo).providerName,
+                    cellLayout.getTag(), position);
             break;
         default:
             throw new IllegalStateException("Unknown item type: "

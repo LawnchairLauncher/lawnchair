@@ -151,7 +151,7 @@ public class DragController {
 
     /**
      * Starts a drag.
-     * 
+     *
      * @param v The view that is being dragged
      * @param source An object representing where the drag originated
      * @param dragInfo The data associated with the object that is being dragged
@@ -159,6 +159,22 @@ public class DragController {
      *        {@link #DRAG_ACTION_COPY}
      */
     public void startDrag(View v, DragSource source, Object dragInfo, int dragAction) {
+        startDrag(v, source, dragInfo, dragAction, null);
+    }
+
+    /**
+     * Starts a drag.
+     *
+     * @param v The view that is being dragged
+     * @param source An object representing where the drag originated
+     * @param dragInfo The data associated with the object that is being dragged
+     * @param dragAction The drag action: either {@link #DRAG_ACTION_MOVE} or
+     *        {@link #DRAG_ACTION_COPY}
+     * @param dragRegion Coordinates within the bitmap b for the position of item being dragged.
+     *          Makes dragging feel more precise, e.g. you can clip out a transparent border
+     */
+    public void startDrag(View v, DragSource source, Object dragInfo, int dragAction,
+            Rect dragRegion) {
         mOriginator = v;
 
         Bitmap b = getViewBitmap(v);
@@ -174,7 +190,7 @@ public class DragController {
         int screenY = loc[1];
 
         startDrag(b, screenX, screenY, 0, 0, b.getWidth(), b.getHeight(),
-                source, dragInfo, dragAction);
+                source, dragInfo, dragAction, dragRegion);
 
         b.recycle();
 
@@ -185,7 +201,7 @@ public class DragController {
 
     /**
      * Starts a drag.
-     * 
+     *
      * @param b The bitmap to display as the drag image.  It will be re-scaled to the
      *          enlarged size.
      * @param screenX The x position on screen of the left-top of the bitmap.
@@ -202,6 +218,31 @@ public class DragController {
     public void startDrag(Bitmap b, int screenX, int screenY,
             int textureLeft, int textureTop, int textureWidth, int textureHeight,
             DragSource source, Object dragInfo, int dragAction) {
+        startDrag(b, screenX, screenY, textureLeft, textureTop, textureWidth, textureHeight,
+                source, dragInfo, dragAction, null);
+    }
+
+    /**
+     * Starts a drag.
+     *
+     * @param b The bitmap to display as the drag image.  It will be re-scaled to the
+     *          enlarged size.
+     * @param screenX The x position on screen of the left-top of the bitmap.
+     * @param screenY The y position on screen of the left-top of the bitmap.
+     * @param textureLeft The left edge of the region inside b to use.
+     * @param textureTop The top edge of the region inside b to use.
+     * @param textureWidth The width of the region inside b to use.
+     * @param textureHeight The height of the region inside b to use.
+     * @param source An object representing where the drag originated
+     * @param dragInfo The data associated with the object that is being dragged
+     * @param dragAction The drag action: either {@link #DRAG_ACTION_MOVE} or
+     *        {@link #DRAG_ACTION_COPY}
+     * @param dragRegion Coordinates within the bitmap b for the position of item being dragged.
+     *          Makes dragging feel more precise, e.g. you can clip out a transparent border
+     */
+    public void startDrag(Bitmap b, int screenX, int screenY,
+            int textureLeft, int textureTop, int textureWidth, int textureHeight,
+            DragSource source, Object dragInfo, int dragAction, Rect dragRegion) {
         if (PROFILE_DRAWING_DURING_DRAG) {
             android.os.Debug.startMethodTracing("Launcher");
         }
@@ -220,8 +261,10 @@ public class DragController {
         int registrationX = ((int)mMotionDownX) - screenX;
         int registrationY = ((int)mMotionDownY) - screenY;
 
-        mTouchOffsetX = mMotionDownX - screenX;
-        mTouchOffsetY = mMotionDownY - screenY;
+        final int dragRegionLeft = dragRegion == null ? 0 : dragRegion.left;
+        final int dragRegionTop = dragRegion == null ? 0 : dragRegion.top;
+        mTouchOffsetX = mMotionDownX - screenX - dragRegionLeft;
+        mTouchOffsetY = mMotionDownY - screenY - dragRegionTop;
 
         mDragging = true;
         mDragSource = source;
@@ -231,6 +274,12 @@ public class DragController {
 
         DragView dragView = mDragView = new DragView(mContext, b, registrationX, registrationY,
                 textureLeft, textureTop, textureWidth, textureHeight);
+
+        if (dragRegion != null) {
+            dragView.setDragRegion(dragRegionLeft, dragRegion.top,
+                    dragRegion.right - dragRegionLeft, dragRegion.bottom - dragRegionTop);
+        }
+
         dragView.show(mWindowToken, (int)mMotionDownX, (int)mMotionDownY);
     }
 

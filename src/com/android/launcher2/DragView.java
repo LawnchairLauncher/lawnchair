@@ -39,6 +39,11 @@ public class DragView extends View implements TweenCallback {
     private int mRegistrationX;
     private int mRegistrationY;
 
+    private int mDragRegionLeft = 0;
+    private int mDragRegionTop = 0;
+    private int mDragRegionWidth;
+    private int mDragRegionHeight;
+
     SymmetricalLinearTween mTween;
     private float mScale;
     private float mAnimationScale = 1.0f;
@@ -71,10 +76,35 @@ public class DragView extends View implements TweenCallback {
         scale.setScale(scaleFactor, scaleFactor);
 
         mBitmap = Bitmap.createBitmap(bitmap, left, top, width, height, scale, true);
+        mDragRegionWidth = width;
+        mDragRegionHeight = height;
 
         // The point in our scaled bitmap that the touch events are located
         mRegistrationX = registrationX + (DRAG_SCALE / 2);
         mRegistrationY = registrationY + (DRAG_SCALE / 2);
+    }
+
+    public void setDragRegion(int left, int top, int width, int height) {
+        mDragRegionLeft = left;
+        mDragRegionTop = top;
+        mDragRegionWidth = width;
+        mDragRegionHeight = height;
+    }
+
+    public int getDragRegionLeft() {
+        return mDragRegionLeft;
+    }
+
+    public int getDragRegionTop() {
+        return mDragRegionTop;
+    }
+
+    public int getDragRegionWidth() {
+        return mDragRegionWidth;
+    }
+
+    public int getDragRegionHeight() {
+        return mDragRegionHeight;
     }
 
     @Override

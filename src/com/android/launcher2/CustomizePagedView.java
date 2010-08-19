@@ -166,12 +166,26 @@ public class CustomizePagedView extends PagedView
         final View animView = v;
         switch (mCustomizationType) {
         case WidgetCustomization:
+            // We assume that the view v is a TextView with a compound drawable on top, and that the
+            // whole text view is centered horizontally and top aligned. We get a more precise
+            // drag point using this information
+            final TextView textView = (TextView) animView;
+            final Drawable[] drawables = textView.getCompoundDrawables();
+            final Drawable icon = drawables[1];
+            int dragPointOffsetX = 0;
+            int dragPointOffsetY = 0;
+            Rect bounds = null;
+            if (icon != null) {
+                bounds = icon.getBounds();
+                bounds.left = (v.getWidth() - bounds.right) / 2;
+                bounds.right += bounds.left;
+            }
+
             AppWidgetProviderInfo appWidgetInfo = (AppWidgetProviderInfo) v.getTag();
             LauncherAppWidgetInfo dragInfo = new LauncherAppWidgetInfo(appWidgetInfo.provider);
             dragInfo.minWidth = appWidgetInfo.minWidth;
             dragInfo.minHeight = appWidgetInfo.minHeight;
-            mDragController.startDrag(v, this, dragInfo, DragController.DRAG_ACTION_COPY);
-            mLauncher.hideCustomizationDrawer();
+            mDragController.startDrag(v, this, dragInfo, DragController.DRAG_ACTION_COPY, bounds);
             return true;
         case FolderCustomization:
             // animate some feedback to the long press

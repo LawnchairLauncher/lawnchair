@@ -24,6 +24,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
@@ -81,10 +82,15 @@ public class CellLayout extends ViewGroup {
     private Bitmap mDimmedBitmap;
     private Canvas mDimmedBitmapCanvas;
     private float mDimmedBitmapAlpha;
-    private boolean mDimmedBitmapDirty;
+    private boolean mDimmedBitmapDirty = false;
     private final Paint mDimmedBitmapPaint = new Paint();
     private final Rect mLayoutRect = new Rect();
     private final Rect mDimmedBitmapRect = new Rect();
+    private Drawable mDimmedBitmapBackground;
+    private Drawable mDimmedBitmapBackgroundHover;
+    // If we're actively dragging something over this screen and it's small,
+    // mHover is true
+    private boolean mHover = false;
 
     private final RectF mDragRect = new RectF();
 
@@ -122,6 +128,14 @@ public class CellLayout extends ViewGroup {
         mVacantDrawable = getResources().getDrawable(R.drawable.rounded_rect_green);
         mOccupiedDrawable = getResources().getDrawable(R.drawable.rounded_rect_red);
 
+        if (LauncherApplication.isScreenXLarge()) {
+            mDimmedBitmapBackground = getResources().getDrawable(
+                    R.drawable.mini_home_screen_bg);
+
+            mDimmedBitmapBackgroundHover = getResources().getDrawable(
+                    R.drawable.mini_home_screen_bg_hover);
+        }
+
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CellLayout, defStyle, 0);
 
         mCellWidth = a.getDimensionPixelSize(R.styleable.CellLayout_cellWidth, 10);
@@ -148,8 +162,20 @@ public class CellLayout extends ViewGroup {
         mDimmedBitmapPaint.setFilterBitmap(true);
     }
 
+    public void setHover(boolean value) {
+        if (mHover != value) {
+            invalidate();
+        }
+        mHover = value;
+    }
+
     @Override
     public void dispatchDraw(Canvas canvas) {
+        if (mDimmedBitmapAlpha > 0.0f) {
+            final Drawable bg = mHover ? mDimmedBitmapBackgroundHover : mDimmedBitmapBackground;
+            bg.setAlpha((int) (mDimmedBitmapAlpha * 255));
+            bg.draw(canvas);
+        }
         super.dispatchDraw(canvas);
     }
 
@@ -567,6 +593,12 @@ public class CellLayout extends ViewGroup {
         super.onSizeChanged(w, h, oldw, oldh);
         mLayoutRect.set(0, 0, w, h);
         mDimmedBitmapRect.set(0, 0, (int) (DIMMED_BITMAP_SCALE * w), (int) (DIMMED_BITMAP_SCALE * h));
+        if (mDimmedBitmapBackground != null) {
+            mDimmedBitmapBackground.setBounds(mLayoutRect);
+        }
+        if (mDimmedBitmapBackgroundHover != null) {
+            mDimmedBitmapBackgroundHover.setBounds(mLayoutRect);
+        }
     }
 
     @Override
@@ -619,19 +651,12 @@ public class CellLayout extends ViewGroup {
         // draw the screen into the bitmap
         // just for drawing to the bitmap, make all the items on the screen opaque
         setChildrenAlpha(1.0f);
-        dispatchDraw(mDimmedBitmapCanvas);
+        // call our superclass's dispatchdraw so we don't draw the background
+        super.dispatchDraw(mDimmedBitmapCanvas);
         setChildrenAlpha(1.0f - mDimmedBitmapAlpha);
 
-        // make the bitmap 'dimmed' ie colored regions are dark grey,
-        // the rest is light grey
-        // We draw grey to the whole bitmap, but filter where we draw based on
-        // what regions are transparent or not (SRC_OUT), causing the intended effect
-
-        // First, draw light grey everywhere in the background (currently transparent) regions
-        // This will leave the regions with the widgets as mostly transparent
-        mDimmedBitmapCanvas.drawColor(0xCCCCCCCC, PorterDuff.Mode.SRC_OUT);
-        // Now, fill the the remaining transparent regions with dark grey
-        mDimmedBitmapCanvas.drawColor(0xCC333333, PorterDuff.Mode.SRC_OUT);
+        // replace all colored areas with a dark  (semi-transparent black)
+        mDimmedBitmapCanvas.drawColor(Color.argb(160, 0, 0, 0), PorterDuff.Mode.SRC_IN);
     }
 
     private boolean isVacant(int originX, int originY, int spanX, int spanY) {
@@ -683,9 +708,9 @@ public class CellLayout extends ViewGroup {
         final int countX = mCountX;
         final int countY = mCountY;
 
-        // originX and originY give the top left of the cell, but pointToCellRounded
-        // compares center-to-center, so pass in the middle coordinates
-        pointToCellRounded(originX + (mCellWidth / 2), originY + (mCellHeight / 2), result);
+        // pointToCellRounded takes the top left of a cell but will pad that with
+        // cellWidth/2 and cellHeight/2 when finding the matching cell
+        pointToCellRounded(originX, originY, result);
 
         // If the item isn't fully on this screen, snap to the edges
         int rightOverhang = result[0] + spanX - countX;
@@ -798,6 +823,7 @@ public class CellLayout extends ViewGroup {
         mDragCell[0] = -1;
         mDragCell[1] = -1;
 
+        setHover(false);
         mDragRect.setEmpty();
         invalidate();
     }
@@ -1104,12 +1130,12 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         private int mCountX;
         private int mCountY;
         View cell;
-        int cellX;
-        int cellY;
+        int cellX = -1;
+        int cellY = -1;
         // intersectX and intersectY constrain the results of findCellForSpan; any empty space
         // it results must include this point (unless intersectX and intersectY are -1)
-        int intersectX;
-        int intersectY;
+        int intersectX = -1;
+        int intersectY = -1;
         int spanX;
         int spanY;
         int screen;
@@ -1179,7 +1205,7 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
                 endY = Math.min(endY, intersectY + (spanY - 1));
             }
 
-            for (int x = startX; x < endX + 1; x++) {
+            for (int x = startX; x < endX; x++) {
                 inner:
                 for (int y = startY; y < endY; y++) {
                     for (int i = 0; i < spanX; i++) {
