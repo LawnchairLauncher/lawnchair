@@ -353,7 +353,7 @@ public class CustomizePagedView extends PagedView
                 // if we can't find the icon, then just don't draw it
             }
 
-            drawable = new BitmapDrawable(resources, bitmap);
+            drawable = new FastBitmapDrawable(bitmap);
         }
         drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
         return drawable;

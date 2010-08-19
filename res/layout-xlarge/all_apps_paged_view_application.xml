@@ -14,13 +14,15 @@
      limitations under the License.
 -->
 
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.launcher2.PagedViewIcon xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/name"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
+    android:paddingTop="2dip"
 
     android:textColor="#FFFFFFFF"
+    android:textSize="14sp"
     android:shadowColor="#FF000000"
     android:shadowDx="0.0"
     android:shadowDy="1.0"

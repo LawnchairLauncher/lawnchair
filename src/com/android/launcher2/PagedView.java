@@ -88,7 +88,6 @@ public abstract class PagedView extends ViewGroup {
     private ScreenSwitchListener mScreenSwitchListener;
 
     private boolean mDimmedPagesDirty;
-    private final Handler mHandler = new Handler();
 
     public interface ScreenSwitchListener {
         void onScreenSwitch(View newScreen, int newScreenIndex);
@@ -262,18 +261,18 @@ public abstract class PagedView extends ViewGroup {
                 int halfChildWidth = (childWidth / 2);
                 int childCenter = getChildOffset(i) + halfChildWidth;
                 int distanceFromScreenCenter = Math.abs(childCenter - screenCenter);
-                float dimAlpha = 0.0f;
+                float alpha = 0.0f;
                 if (distanceFromScreenCenter < halfChildWidth) {
-                    dimAlpha = 0.0f;
+                    alpha = 1.0f;
                 } else if (distanceFromScreenCenter > childWidth) {
-                    dimAlpha = 1.0f;
+                    alpha = 0.0f;
                 } else {
-                    dimAlpha = (float) (distanceFromScreenCenter - halfChildWidth) / halfChildWidth;
-                    dimAlpha = (dimAlpha * dimAlpha);
+                    float dimAlpha = (float) (distanceFromScreenCenter - halfChildWidth) / halfChildWidth;
+                    dimAlpha = Math.max(0.0f, Math.min(1.0f, (dimAlpha * dimAlpha)));
+                    alpha = 1.0f - dimAlpha;
                 }
-                dimAlpha = Math.max(0.0f, Math.min(1.0f, dimAlpha));
-                if (Float.compare(dimAlpha, layout.getDimmedBitmapAlpha()) != 0)
-                    layout.setDimmedBitmapAlpha(dimAlpha);
+                if (Float.compare(alpha, layout.getAlpha()) != 0)
+                    layout.setAlpha(alpha);
             }
         }
         super.dispatchDraw(canvas);
@@ -802,77 +801,20 @@ public abstract class PagedView extends ViewGroup {
         };
     }
 
-    private void clearDimmedBitmaps(boolean skipCurrentScreens) {
-        final int count = getChildCount();
-        if (mCurrentScreen < count) {
-            if (skipCurrentScreens) {
-                int lowerScreenBound = Math.max(0, mCurrentScreen - 1);
-                int upperScreenBound = Math.min(mCurrentScreen + 1, count - 1);
-                for (int i = 0; i < count; ++i) {
-                    if (i < lowerScreenBound || i > upperScreenBound) {
-                        PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(i);
-                        layout.clearDimmedBitmap();
-                    }
-                }
-            } else {
-                for (int i = 0; i < count; ++i) {
-                    PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(i);
-                    layout.clearDimmedBitmap();
-                }
-            }
-        }
-    }
-    Runnable clearLayoutOtherDimmedBitmapsRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mScroller.isFinished()) {
-                clearDimmedBitmaps(true);
-                mHandler.removeMessages(0);
-            } else {
-                mHandler.postDelayed(clearLayoutOtherDimmedBitmapsRunnable, 50);
-            }
-        }
-    };
-    Runnable clearLayoutDimmedBitmapsRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mScroller.isFinished()) {
-                clearDimmedBitmaps(false);
-                mHandler.removeMessages(0);
-            } else {
-                mHandler.postDelayed(clearLayoutOtherDimmedBitmapsRunnable, 50);
-            }
-        }
-    };
-
-    // called when this paged view is no longer visible
-    public void cleanup() {
-        // clear all the layout dimmed bitmaps
-        mHandler.removeMessages(0);
-        mHandler.postDelayed(clearLayoutDimmedBitmapsRunnable, 500);
-    }
-
     public void loadAssociatedPages(int screen) {
         final int count = getChildCount();
         if (screen < count) {
             int lowerScreenBound = Math.max(0, screen - 1);
             int upperScreenBound = Math.min(screen + 1, count - 1);
-            boolean hasDimmedBitmap = false;
             for (int i = 0; i < count; ++i) {
                 if (lowerScreenBound <= i && i <= upperScreenBound) {
                     syncPageItems(i);
                 } else {
-                    PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(i);
+                    final PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(i);
                     if (layout.getChildCount() > 0) {
                         layout.removeAllViews();
                     }
-                    hasDimmedBitmap |= layout.getDimmedBitmapAlpha() > 0.0f;
                 }
-            }
-
-            if (hasDimmedBitmap) {
-                mHandler.removeMessages(0);
-                mHandler.postDelayed(clearLayoutOtherDimmedBitmapsRunnable, 500);
             }
         }
     }

@@ -36,24 +36,9 @@ import android.view.ViewGroup;
  * to give a preview of its contents.
  */
 public class PagedViewCellLayout extends ViewGroup {
-    public interface DimmedBitmapSetupListener {
-        public void onPreUpdateDimmedBitmap(PagedViewCellLayout layout);
-        public void onPostUpdateDimmedBitmap(PagedViewCellLayout layout);
-    }
-
     static final String TAG = "PagedViewCellLayout";
 
-    // we make the dimmed bitmap smaller than the screen itself for memory + perf reasons
-    static final float DIMMED_BITMAP_SCALE = 0.75f;
-
-    // a dimmed version of the layout for rendering when in the periphery
-    private Bitmap mDimmedBitmap;
-    private Canvas mDimmedBitmapCanvas;
-    private float mDimmedBitmapAlpha;
-    private boolean mDimmedBitmapDirty;
-    private final Paint mDimmedBitmapPaint = new Paint();
-    private final Rect mLayoutRect = new Rect();
-    private final Rect mDimmedBitmapRect = new Rect();
+    private float mHolographicAlpha;
 
     private boolean mCenterContent;
 
@@ -62,8 +47,6 @@ public class PagedViewCellLayout extends ViewGroup {
     private int mCellWidth;
     private int mCellHeight;
     private static int sDefaultCellDimensions = 96;
-
-    private DimmedBitmapSetupListener mDimmedBitmapSetupListener;
 
     public PagedViewCellLayout(Context context) {
         this(context, null);
@@ -76,35 +59,25 @@ public class PagedViewCellLayout extends ViewGroup {
     public PagedViewCellLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        // enable drawing if we have to display a dimmed version of this layout
-        setWillNotDraw(false);
         setAlwaysDrawnWithCacheEnabled(false);
 
         // setup default cell parameters
         mCellWidth = mCellHeight = sDefaultCellDimensions;
         mCellCountX = LauncherModel.getCellCountX();
         mCellCountY = LauncherModel.getCellCountY();
-
-        mDimmedBitmapPaint.setFilterBitmap(true);
-    }
-
-    public void setDimmedBitmapSetupListener(DimmedBitmapSetupListener listener) {
-        mDimmedBitmapSetupListener = listener;
+        mHolographicAlpha = 0.0f;
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+    protected boolean onSetAlpha(int alpha) {
+        return true;
+    }
 
-        if (mDimmedBitmap != null && mDimmedBitmapAlpha > 0.0f) {
-            if (mDimmedBitmapDirty) {
-                updateDimmedBitmap();
-                mDimmedBitmapDirty = false;
-            }
-            mDimmedBitmapPaint.setAlpha((int) (mDimmedBitmapAlpha * 255));
-
-            canvas.drawBitmap(mDimmedBitmap, mDimmedBitmapRect, mLayoutRect, mDimmedBitmapPaint);
-        }
+    @Override
+    public void setAlpha(float alpha) {
+        super.setAlpha(alpha);
+        setChildrenAlpha(alpha);
+        mHolographicAlpha = 1.0f - alpha;
     }
 
     @Override
@@ -136,25 +109,12 @@ public class PagedViewCellLayout extends ViewGroup {
 
             // We might be in the middle or end of shrinking/fading to a dimmed view
             // Make sure this view's alpha is set the same as all the rest of the views
-            child.setAlpha(1.0f - mDimmedBitmapAlpha);
+            child.setAlpha(1.0f - mHolographicAlpha);
 
             addView(child, index, lp);
-
-            // next time we draw the dimmed bitmap we need to update it
-            mDimmedBitmapDirty = true;
-            invalidate();
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void removeView(View view) {
-        super.removeView(view);
-
-        // next time we draw the dimmed bitmap we need to update it
-        mDimmedBitmapDirty = true;
-        invalidate();
     }
 
     @Override
@@ -267,13 +227,6 @@ public class PagedViewCellLayout extends ViewGroup {
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        mLayoutRect.set(0, 0, w, h);
-        mDimmedBitmapRect.set(0, 0, (int) (DIMMED_BITMAP_SCALE * w), (int) (DIMMED_BITMAP_SCALE * h));
-    }
-
-    @Override
     public boolean onTouchEvent(MotionEvent event) {
         return super.onTouchEvent(event) || true;
     }
@@ -299,65 +252,9 @@ public class PagedViewCellLayout extends ViewGroup {
         requestLayout();
     }
 
-    public float getDimmedBitmapAlpha() {
-        return mDimmedBitmapAlpha;
-    }
-
-    public void setDimmedBitmapAlpha(float alpha) {
-        // If we're dimming the screen after it was not dimmed, refresh
-        // to allow for updated widgets. We don't continually refresh it
-        // after this point, however, as an optimization
-        if (mDimmedBitmapAlpha == 0.0f && alpha > 0.0f) {
-            updateDimmedBitmap();
-        }
-        mDimmedBitmapAlpha = alpha;
-        setChildrenAlpha(1.0f - mDimmedBitmapAlpha);
-    }
-
-    public void updateDimmedBitmap() {
-        if (mDimmedBitmapSetupListener != null) {
-            mDimmedBitmapSetupListener.onPreUpdateDimmedBitmap(this);
-        }
-
-        if (mDimmedBitmap == null) {
-            mDimmedBitmap = Bitmap.createBitmap((int) (getWidth() * DIMMED_BITMAP_SCALE),
-                    (int) (getHeight() * DIMMED_BITMAP_SCALE), Bitmap.Config.ARGB_8888);
-            mDimmedBitmapCanvas = new Canvas(mDimmedBitmap);
-            mDimmedBitmapCanvas.scale(DIMMED_BITMAP_SCALE, DIMMED_BITMAP_SCALE);
-        }
-        // clear the canvas
-        mDimmedBitmapCanvas.drawColor(0x00000000, PorterDuff.Mode.CLEAR);
-
-        // draw the screen into the bitmap
-        // just for drawing to the bitmap, make all the items on the screen opaque
-        setChildrenAlpha(1.0f);
-        dispatchDraw(mDimmedBitmapCanvas);
-        setChildrenAlpha(1.0f - mDimmedBitmapAlpha);
-
-        // make the bitmap 'dimmed' ie colored regions are dark grey,
-        // the rest is light grey
-        // We draw grey to the whole bitmap, but filter where we draw based on
-        // what regions are transparent or not (SRC_OUT), causing the intended effect
-
-        // First, draw light grey everywhere in the background (currently transparent) regions
-        // This will leave the regions with the widgets as mostly transparent
-        mDimmedBitmapCanvas.drawColor(Color.argb(80, 0, 0, 0), PorterDuff.Mode.SRC_IN);
-
-        if (mDimmedBitmapSetupListener != null) {
-            mDimmedBitmapSetupListener.onPostUpdateDimmedBitmap(this);
-        }
-    }
-
-    public void clearDimmedBitmap() {
-        setDimmedBitmapAlpha(0.0f);
-        if (mDimmedBitmap != null) {
-            mDimmedBitmap.recycle();
-            mDimmedBitmap = null;
-        }
-    }
-
     private void setChildrenAlpha(float alpha) {
-        for (int i = 0; i < getChildCount(); i++) {
+        final int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
             getChildAt(i).setAlpha(alpha);
         }
     }

@@ -2268,7 +2268,6 @@ public final class Launcher extends Activity
         if (LauncherApplication.isScreenXLarge() && animated) {
             if (isCustomizationDrawerVisible()) {
                 cameraPan(mHomeCustomizationDrawer, (View) mAllAppsGrid);
-                mCustomizePagedView.cleanup();
             } else {
                 cameraZoomOut((View) mAllAppsGrid, true);
             }
@@ -2369,7 +2368,6 @@ public final class Launcher extends Activity
                 mWorkspace.unshrink();
             }
             cameraZoomIn(mHomeCustomizationDrawer);
-            mCustomizePagedView.cleanup();
         }
     }
 
@@ -2723,7 +2721,8 @@ public final class Launcher extends Activity
      */
     public void bindPackagesUpdated() {
         // update the customization drawer contents
-        mCustomizePagedView.update();
+        if (mCustomizePagedView != null)
+            mCustomizePagedView.update();
     }
 
     /**

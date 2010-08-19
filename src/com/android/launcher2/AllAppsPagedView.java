@@ -44,8 +44,7 @@ import com.android.launcher.R;
  * with all of the user's applications.
  */
 public class AllAppsPagedView extends PagedView
-        implements AllAppsView, View.OnClickListener, View.OnLongClickListener, DragSource,
-        PagedViewCellLayout.DimmedBitmapSetupListener {
+        implements AllAppsView, View.OnClickListener, View.OnLongClickListener, DragSource {
 
     private static final String TAG = "AllAppsPagedView";
     private static final boolean DEBUG = false;
@@ -303,7 +302,6 @@ public class AllAppsPagedView extends PagedView
         for (int i = curNumPages; i < numPages; ++i) {
             PagedViewCellLayout layout = new PagedViewCellLayout(getContext());
             layout.setCellCount(mCellCountX, mCellCountY);
-            layout.setDimmedBitmapSetupListener(this);
             addView(layout);
         }
 
@@ -343,7 +341,7 @@ public class AllAppsPagedView extends PagedView
             ApplicationInfo info = mFilteredApps.get(i);
             TextView text = (TextView) layout.getChildAt(index);
             text.setCompoundDrawablesWithIntrinsicBounds(null,
-                new BitmapDrawable(info.iconBitmap), null, null);
+                new FastBitmapDrawable(info.iconBitmap), null, null);
             text.setText(info.title);
             text.setTag(info);
 
@@ -351,26 +349,6 @@ public class AllAppsPagedView extends PagedView
                 (PagedViewCellLayout.LayoutParams) text.getLayoutParams();
             params.cellX = index % mCellCountX;
             params.cellY = index / mCellCountX;
-        }
-    }
-
-    @Override
-    public void onPreUpdateDimmedBitmap(PagedViewCellLayout layout) {
-        // disable all children text for now
-        final int childCount = layout.getChildCount();
-        for (int i = 0; i < childCount; ++i) {
-            TextView text = (TextView) layout.getChildAt(i);
-            text.setText("");
-        }
-    }
-    @Override
-    public void onPostUpdateDimmedBitmap(PagedViewCellLayout layout) {
-        // re-enable all children text
-        final int childCount = layout.getChildCount();
-        for (int i = 0; i < childCount; ++i) {
-            TextView text = (TextView) layout.getChildAt(i);
-            final ApplicationInfo info = (ApplicationInfo) text.getTag();
-            text.setText(info.title);
         }
     }
 }

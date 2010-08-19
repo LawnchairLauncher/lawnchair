@@ -157,8 +157,6 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
         super.setVisibility(visibility);
         float zoom = (isVisible ? 1.0f : 0.0f);
         mAllApps.zoom(zoom, false);
-        if (!isVisible)
-            mAllApps.cleanup();
     }
 
     @Override
