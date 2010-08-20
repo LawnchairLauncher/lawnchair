@@ -170,17 +170,9 @@ public class PagedViewIcon extends TextView implements Checkable {
     @Override
     public void setAlpha(float alpha) {
         final float viewAlpha = sHolographicOutlineHelper.viewAlphaInterpolator(alpha);
-        mAlpha = (int) (viewAlpha * 255);
         final float holographicAlpha = sHolographicOutlineHelper.highlightAlphaInterpolator(alpha);
+        mAlpha = (int) (viewAlpha * 255);
         mHolographicAlpha = (int) (holographicAlpha * 255);
-
-        // WORKAROUND: until TextView handles canvas shadow layer alpha itself
-        int sRed = Color.red(mShadowColor);
-        int sGreen = Color.green(mShadowColor);
-        int sBlue = Color.blue(mShadowColor);
-        super.setShadowLayer(mShadowRadius, mShadowDx, mShadowDy, Color.argb(mAlpha, sRed, sGreen,
-                sBlue));
-
         super.setAlpha(viewAlpha);
     }
 
@@ -227,27 +219,17 @@ public class PagedViewIcon extends TextView implements Checkable {
         }
     }
 
-    // WORKAROUND: until TextView handles canvas shadow layer alpha itself
-    float mShadowRadius, mShadowDx, mShadowDy;
-    int mShadowColor;
-    @Override
-    public void setShadowLayer(float radius, float dx, float dy, int color) {
-        mShadowRadius = radius;
-        mShadowDx = dx;
-        mShadowDy = dy;
-        mShadowColor = color;
-        super.setShadowLayer(radius, dx, dy, color);
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
+        // draw the view itself
         if (mIsHolographicUpdatePass) {
             // only clip to the text view (restore its alpha so that we get a proper outline)
             canvas.save();
             canvas.clipRect(mDrawableClipRect, Op.REPLACE);
-            super.onSetAlpha(255);
+            final float alpha = getAlpha();
+            super.setAlpha(1.0f);
             super.onDraw(canvas);
-            super.onSetAlpha(mAlpha);
+            super.setAlpha(alpha);
             canvas.restore();
         } else {
             if (mAlpha > 0) {

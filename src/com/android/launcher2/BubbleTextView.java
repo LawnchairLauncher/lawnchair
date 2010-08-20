@@ -144,4 +144,10 @@ public class BubbleTextView extends TextView {
         super.onDetachedFromWindow();
         mBackground.setCallback(null);
     }
+
+    @Override
+    protected boolean onSetAlpha(int alpha) {
+        mPaint.setAlpha(alpha);
+        return super.onSetAlpha(alpha);
+    }
 }

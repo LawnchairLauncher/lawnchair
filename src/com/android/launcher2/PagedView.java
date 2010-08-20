@@ -271,8 +271,9 @@ public abstract class PagedView extends ViewGroup {
                     dimAlpha = Math.max(0.0f, Math.min(1.0f, (dimAlpha * dimAlpha)));
                     alpha = 1.0f - dimAlpha;
                 }
-                if (Float.compare(alpha, layout.getAlpha()) != 0)
+                if (Float.compare(alpha, layout.getAlpha()) != 0) {
                     layout.setAlpha(alpha);
+                }
             }
         }
         super.dispatchDraw(canvas);
