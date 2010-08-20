@@ -75,9 +75,9 @@ public class PagedViewCellLayout extends ViewGroup {
 
     @Override
     public void setAlpha(float alpha) {
-        super.setAlpha(alpha);
-        setChildrenAlpha(alpha);
         mHolographicAlpha = 1.0f - alpha;
+        setChildrenAlpha(alpha);
+        super.setAlpha(alpha);
     }
 
     @Override
