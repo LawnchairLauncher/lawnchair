@@ -40,17 +40,19 @@ import android.widget.TextView;
 import com.android.launcher2.PagedView.PagedViewIconCache;
 
 class HolographicOutlineHelper {
+    private float mDensity;
     private final Paint mHolographicPaint = new Paint();
     private final Paint mBlurPaint = new Paint();
     private final Paint mErasePaint = new Paint();
-    private static final Matrix mIdentity = new Matrix();
-    private static final float STROKE_WIDTH = 6.0f;
+    private static final Matrix mIdentity = new Matrix();;
     private static final float BLUR_FACTOR = 3.5f;
 
+    public static final float DEFAULT_STROKE_WIDTH = 6.0f;
     public static final int HOLOGRAPHIC_BLUE = 0xFF6699FF;
-    public static final int HOLOGRAPHIC_GREEN = 0xFF66FF66;
+    public static final int HOLOGRAPHIC_GREEN = 0xFF51E633;
 
     HolographicOutlineHelper(float density) {
+        mDensity = density;
         mHolographicPaint.setColor(HOLOGRAPHIC_BLUE);
         mHolographicPaint.setFilterBitmap(true);
         mHolographicPaint.setAntiAlias(true);
@@ -101,13 +103,14 @@ class HolographicOutlineHelper {
     /**
      * Applies an outline to whatever is currently drawn in the specified bitmap.
      */
-    void applyOutline(Bitmap srcDst, Canvas srcDstCanvas, PointF offset) {
+    void applyOutline(Bitmap srcDst, Canvas srcDstCanvas, float strokeWidth, PointF offset) {
+        strokeWidth *= mDensity;
         Bitmap mask = srcDst.extractAlpha();
         Matrix m = new Matrix();
         final int width = srcDst.getWidth();
         final int height = srcDst.getHeight();
-        float xScale = STROKE_WIDTH*2.0f/width;
-        float yScale = STROKE_WIDTH*2.0f/height;
+        float xScale = strokeWidth*2.0f/width;
+        float yScale = strokeWidth*2.0f/height;
         m.preScale(1+xScale, 1+yScale, (width / 2.0f) + offset.x,
                 (height / 2.0f) + offset.y);
 
@@ -138,6 +141,7 @@ public class PagedViewIcon extends TextView implements Checkable {
     // holographic outline
     private final Paint mPaint = new Paint();
     private static HolographicOutlineHelper sHolographicOutlineHelper;
+    private Bitmap mCheckedOutline;
     private Bitmap mHolographicOutline;
     private Canvas mHolographicOutlineCanvas;
     private boolean mIsHolographicUpdatePass;
@@ -207,6 +211,13 @@ public class PagedViewIcon extends TextView implements Checkable {
         super.setAlpha(viewAlpha);
     }
 
+    public void invalidateCheckedImage() {
+        if (mCheckedOutline != null) {
+            mCheckedOutline.recycle();
+            mCheckedOutline = null;
+        }
+    }
+
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
@@ -229,10 +240,11 @@ public class PagedViewIcon extends TextView implements Checkable {
             draw(mHolographicOutlineCanvas);
             sHolographicOutlineHelper.setColor(HolographicOutlineHelper.HOLOGRAPHIC_BLUE);
             sHolographicOutlineHelper.applyOutline(mHolographicOutline, mHolographicOutlineCanvas,
-                    offset);
+                    HolographicOutlineHelper.DEFAULT_STROKE_WIDTH, offset);
             sHolographicOutlineHelper.applyBlur(mHolographicOutline, mHolographicOutlineCanvas);
             mIsHolographicUpdatePass = false;
             mIconCache.addOutline(mIconCacheKey, mHolographicOutline);
+            mHolographicOutlineCanvas = null;
         }
     }
 
@@ -254,9 +266,17 @@ public class PagedViewIcon extends TextView implements Checkable {
             }
         }
 
-        if (!mIsHolographicUpdatePass && mHolographicOutline != null && mHolographicAlpha > 0) {
-            mPaint.setAlpha(mHolographicAlpha);
-            canvas.drawBitmap(mHolographicOutline, 0, 0, mPaint);
+        // draw any blended overlays
+        if (!mIsHolographicUpdatePass) {
+            if (mCheckedOutline == null) {
+                if (mHolographicOutline != null && mHolographicAlpha > 0) {
+                    mPaint.setAlpha(mHolographicAlpha);
+                    canvas.drawBitmap(mHolographicOutline, 0, 0, mPaint);
+                }
+            } else {
+                mPaint.setAlpha(255);
+                canvas.drawBitmap(mCheckedOutline, 0, 0, mPaint);
+            }
         }
     }
 
@@ -267,8 +287,32 @@ public class PagedViewIcon extends TextView implements Checkable {
 
     @Override
     public void setChecked(boolean checked) {
-        mIsChecked = checked;
-        invalidate();
+        if (mIsChecked != checked) {
+            mIsChecked = checked;
+
+            if (mIsChecked) {
+                final PointF offset = new PointF(0,
+                        -(getCompoundPaddingBottom() + getCompoundPaddingTop())/2.0f);
+
+                // set a flag to indicate that we are going to draw the view at full alpha with the text
+                // clipped for the generation of the holographic icon
+                mIsHolographicUpdatePass = true;
+                mCheckedOutline = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(),
+                        Bitmap.Config.ARGB_8888);
+                mHolographicOutlineCanvas = new Canvas(mCheckedOutline);
+                mHolographicOutlineCanvas.concat(getMatrix());
+                draw(mHolographicOutlineCanvas);
+                sHolographicOutlineHelper.setColor(HolographicOutlineHelper.HOLOGRAPHIC_GREEN);
+                sHolographicOutlineHelper.applyOutline(mCheckedOutline, mHolographicOutlineCanvas,
+                        HolographicOutlineHelper.DEFAULT_STROKE_WIDTH + 1.0f, offset);
+                mIsHolographicUpdatePass = false;
+                mHolographicOutlineCanvas = null;
+            } else {
+                invalidateCheckedImage();
+            }
+
+            invalidate();
+        }
     }
 
     @Override

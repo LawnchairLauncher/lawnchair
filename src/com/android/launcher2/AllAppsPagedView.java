@@ -22,10 +22,15 @@ import java.util.Collections;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.widget.Checkable;
 import android.widget.TextView;
 
 import com.android.launcher.R;
@@ -35,7 +40,8 @@ import com.android.launcher.R;
  * with all of the user's applications.
  */
 public class AllAppsPagedView extends PagedView
-        implements AllAppsView, View.OnClickListener, View.OnLongClickListener, DragSource {
+        implements AllAppsView, View.OnClickListener, View.OnLongClickListener, DragSource,
+        DropTarget, ActionMode.Callback {
 
     private static final String TAG = "AllAppsPagedView";
     private static final boolean DEBUG = false;
@@ -127,6 +133,8 @@ public class AllAppsPagedView extends PagedView
         if (!isVisible()) {
             setVisibility(View.GONE);
             mZoom = 0.0f;
+
+            endChoiceMode();
         } else {
             mZoom = 1.0f;
         }
@@ -138,7 +146,7 @@ public class AllAppsPagedView extends PagedView
     private int getChildIndexForGrandChild(View v) {
         final int childCount = getChildCount();
         for (int i = 0; i < childCount; ++i) {
-            PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(i);
+            final PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(i);
             if (layout.indexOfChild(v) > -1) {
                 return i;
             }
@@ -148,6 +156,22 @@ public class AllAppsPagedView extends PagedView
 
     @Override
     public void onClick(View v) {
+        // if we are already in a choice mode, then just change the selection
+        if (v instanceof Checkable) {
+            if (!isChoiceMode(CHOICE_MODE_NONE)) {
+                if (isChoiceMode(CHOICE_MODE_SINGLE)) {
+                    // reset all the previously checked items if in single selection mode
+                    resetCheckedGrandchildren();
+                }
+
+                // then toggle this one
+                Checkable c = (Checkable) v;
+                c.toggle();
+                return;
+            }
+        }
+
+        // otherwise continue and launch the application
         int childIndex = getChildIndexForGrandChild(v);
         if (childIndex == getCurrentPage()) {
             final ApplicationInfo app = (ApplicationInfo) v.getTag();
@@ -159,6 +183,8 @@ public class AllAppsPagedView extends PagedView
                     mLauncher.startActivitySafely(app.intent, app);
                 }
             });
+
+            endChoiceMode();
         }
     }
 
@@ -167,6 +193,24 @@ public class AllAppsPagedView extends PagedView
         if (!v.isInTouchMode()) {
             return false;
         }
+
+        /* Uncomment this to enable selection mode with the action bar
+
+        // start the choice mode, and select the item that was long-pressed
+        if (isChoiceMode(CHOICE_MODE_NONE)) {
+            startChoiceMode(CHOICE_MODE_SINGLE, this);
+        }
+
+        if (v instanceof Checkable) {
+            // In preparation for drag, we always reset the checked grand children regardless of
+            // what choice mode we are in
+            resetCheckedGrandchildren();
+
+            // Toggle the selection on the dragged app
+            Checkable c = (Checkable) v;
+            c.toggle();
+        }
+         */
 
         ApplicationInfo app = (ApplicationInfo) v.getTag();
         app = new ApplicationInfo(app);
@@ -177,7 +221,10 @@ public class AllAppsPagedView extends PagedView
 
     @Override
     public void onDropCompleted(View target, boolean success) {
-        // do nothing
+        // close the choice action mode if we have a proper drop
+        if (target != this) {
+            endChoiceMode();
+        }
     }
 
     @Override
@@ -341,4 +388,63 @@ public class AllAppsPagedView extends PagedView
             params.cellY = index / mCellCountX;
         }
     }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        mDragController.addDropTarget(this);
+
+        // REST TO BE IMPLEMENTED BY PAT
+        mode.setTitle("Customization title goes here");
+        return true;
+    }
+
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        return true;
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+        mDragController.removeDropTarget(this);
+        endChoiceMode();
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        // TO BE IMPLEMENTED BY PAT
+        // get the checked grandchild, and handle the action here
+        return false;
+    }
+
+    /*
+     * We don't actually use AllAppsPagedView as a drop target... it's only used to intercept a drop
+     * to the workspace.
+     */
+    @Override
+    public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo) {
+        return false;
+    }
+    @Override
+    public Rect estimateDropLocation(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo, Rect recycle) {
+        return null;
+    }
+    @Override
+    public DropTarget getDropTargetDelegate(DragSource source, int x, int y, int xOffset,
+            int yOffset, DragView dragView, Object dragInfo) {
+        return null;
+    }
+    @Override
+    public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo) {}
+    @Override
+    public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo) {}
+    @Override
+    public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo) {}
+    @Override
+    public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo) {}
 }

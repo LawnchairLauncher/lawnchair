@@ -19,7 +19,6 @@ package com.android.launcher2;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -27,6 +26,8 @@ import android.graphics.Rect;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.ActionMode;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -36,6 +37,7 @@ import android.view.ViewParent;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
+import android.widget.Checkable;
 import android.widget.Scroller;
 
 import com.android.launcher.R;
@@ -51,6 +53,7 @@ public abstract class PagedView extends ViewGroup {
     // the min drag distance for a fling to register, to prevent random page shifts
     private static final int MIN_LENGTH_FOR_FLING = 50;
 
+    private static final int PAGE_SNAP_ANIMATION_DURATION = 1000;
     protected static final float NANOTIME_DIV = 1000000000.0f;
 
     // the velocity at which a fling gesture will cause us to snap to the next page
@@ -95,6 +98,14 @@ public abstract class PagedView extends ViewGroup {
 
     private ArrayList<Boolean> mDirtyPageContent;
     private boolean mDirtyPageAlpha;
+
+    // choice modes
+    protected static final int CHOICE_MODE_NONE = 0;
+    protected static final int CHOICE_MODE_SINGLE = 1;
+    // Multiple selection mode is not supported by all Launcher actions atm
+    protected static final int CHOICE_MODE_MULTIPLE = 2;
+    private int mChoiceMode;
+    private ActionMode mActionMode;
 
     protected PagedViewIconCache mPageViewIconCache;
 
@@ -153,6 +164,7 @@ public abstract class PagedView extends ViewGroup {
 
     public PagedView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        mChoiceMode = CHOICE_MODE_NONE;
 
         setHapticFeedbackEnabled(false);
         init();
@@ -530,7 +542,14 @@ public abstract class PagedView extends ViewGroup {
                  * otherwise don't.  mScroller.isFinished should be false when
                  * being flinged.
                  */
-                mTouchState = mScroller.isFinished() ? TOUCH_STATE_REST : TOUCH_STATE_SCROLLING;
+                final int xDist = (mScroller.getFinalX() - mScroller.getCurrX());
+                final boolean finishedScrolling = (mScroller.isFinished() || xDist < mTouchSlop);
+                if (finishedScrolling) {
+                    mTouchState = TOUCH_STATE_REST;
+                    mScroller.abortAnimation();
+                } else {
+                    mTouchState = TOUCH_STATE_SCROLLING;
+                }
 
                 // check if this can be the beginning of a tap on the side of the pages
                 // to scroll the current page
@@ -819,7 +838,7 @@ public abstract class PagedView extends ViewGroup {
                 minDistanceFromScreenCenterIndex = i;
             }
         }
-        snapToPage(minDistanceFromScreenCenterIndex, 1000);
+        snapToPage(minDistanceFromScreenCenterIndex, PAGE_SNAP_ANIMATION_DURATION);
     }
 
     protected void snapToPageWithVelocity(int whichPage, int velocity) {
@@ -829,7 +848,7 @@ public abstract class PagedView extends ViewGroup {
     }
 
     protected void snapToPage(int whichPage) {
-        snapToPage(whichPage, 1000);
+        snapToPage(whichPage, PAGE_SNAP_ANIMATION_DURATION);
     }
 
     protected void snapToPage(int whichPage, int duration) {
@@ -979,6 +998,50 @@ public abstract class PagedView extends ViewGroup {
                     }
                 }
             }
+        }
+    }
+
+    protected void startChoiceMode(int mode, ActionMode.Callback callback) {
+        // StartActionMode may call through toendChoiceMode, so we should do this first
+        mActionMode = startActionMode(callback);
+        mChoiceMode = mode;
+    }
+
+    protected void endChoiceMode() {
+        if (!isChoiceMode(CHOICE_MODE_NONE)) {
+            mActionMode.finish();
+            mActionMode = null;
+            mChoiceMode = CHOICE_MODE_NONE;
+            resetCheckedGrandchildren();
+        }
+    }
+
+    protected boolean isChoiceMode(int mode) {
+        return mChoiceMode == mode;
+    }
+
+    protected ArrayList<Checkable> getCheckedGrandchildren() {
+        ArrayList<Checkable> checked = new ArrayList<Checkable>();
+        final int childCount = getChildCount();
+        for (int i = 0; i < childCount; ++i) {
+            final PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(i);
+            final int grandChildCount = layout.getChildCount();
+            for (int j = 0; j < grandChildCount; ++j) {
+                final View v = layout.getChildAt(j);
+                if (v instanceof Checkable) {
+                    checked.add((Checkable) v);
+                }
+            }
+        }
+        return checked;
+    }
+
+    protected void resetCheckedGrandchildren() {
+        // loop through children, and set all of their children to _not_ be checked
+        final ArrayList<Checkable> checked = getCheckedGrandchildren();
+        for (int i = 0; i < checked.size(); ++i) {
+            final Checkable c = checked.get(i);
+            c.setChecked(false);
         }
     }
 
