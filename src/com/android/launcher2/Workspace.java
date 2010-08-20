@@ -70,6 +70,9 @@ public class Workspace extends ViewGroup
     // This is how much the workspace shrinks when we enter all apps or
     // customization mode
     private static final float SHRINK_FACTOR = 0.16f;
+    private static final int SHRINK_TO_TOP = 0;
+    private static final int SHRINK_TO_MIDDLE = 1;
+    private static final int SHRINK_TO_BOTTOM = 2;
 
     /**
      * The velocity at which a fling gesture will cause us to snap to the next
@@ -1061,8 +1064,16 @@ public class Workspace extends ViewGroup
         return true;
     }
 
+    public boolean isSmall() {
+        return mIsSmall;
+    }
+
     void shrinkToTop() {
-        shrink(true, true);
+        shrink(SHRINK_TO_TOP, true);
+    }
+
+    void shrinkToMiddle() {
+        shrink(SHRINK_TO_MIDDLE, true);
     }
 
     void shrinkToBottom() {
@@ -1077,12 +1088,12 @@ public class Workspace extends ViewGroup
             // to get our width so we can layout the mini-screen views correctly
             mWaitingToShrinkToBottom = true;
         } else {
-            shrink(false, animated);
+            shrink(SHRINK_TO_BOTTOM, animated);
         }
     }
 
     // we use this to shrink the workspace for the all apps view and the customize view
-    private void shrink(boolean shrinkToTop, boolean animated) {
+    private void shrink(int shrinkPosition, boolean animated) {
         mIsSmall = true;
         final Resources res = getResources();
         final int screenWidth = getWidth();
@@ -1095,8 +1106,10 @@ public class Workspace extends ViewGroup
         float totalWidth = screenCount * scaledScreenWidth + (screenCount - 1) * scaledSpacing;
 
         float newY = getResources().getDimension(R.dimen.smallScreenVerticalMargin);
-        if (!shrinkToTop) {
+        if (shrinkPosition == SHRINK_TO_BOTTOM) {
             newY = screenHeight - newY - scaledScreenHeight;
+        } else if (shrinkPosition == SHRINK_TO_MIDDLE) {
+            newY = screenHeight / 2 - scaledScreenHeight / 2;
         }
 
         // We animate all the screens to the centered position in workspace

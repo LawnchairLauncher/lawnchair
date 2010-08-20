@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2008 The Android Open Source Project
  *
@@ -1110,16 +1111,20 @@ public final class Launcher extends Activity
             boolean alreadyOnHome = ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
                         != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
             boolean allAppsVisible = isAllAppsVisible();
+            boolean customizationDrawerVisible = isCustomizationDrawerVisible();
+
 
             // in all these cases, only animate if we're already on home
             if (LauncherApplication.isScreenXLarge()) {
-                mWorkspace.unshrink(alreadyOnHome);
-            }
-            if (!mWorkspace.isDefaultScreenShowing()) {
+                if (alreadyOnHome && !mWorkspace.isSmall() &&
+                        !allAppsVisible && !customizationDrawerVisible) {
+                    mWorkspace.shrinkToMiddle();
+                } else {
+                    mWorkspace.unshrink(alreadyOnHome);
+                }
+            } else if (!mWorkspace.isDefaultScreenShowing()) {
                 // on the phone, we don't animate the change to the workspace if all apps is visible
-                // on xlarge screens, however, we want an animated transition
-                mWorkspace.moveToDefaultScreen(alreadyOnHome &&
-                        (LauncherApplication.isScreenXLarge() || !allAppsVisible));
+                mWorkspace.moveToDefaultScreen(alreadyOnHome && !allAppsVisible);
             }
             closeAllApps(alreadyOnHome && allAppsVisible);
             hideCustomizationDrawer();
