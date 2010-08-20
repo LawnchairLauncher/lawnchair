@@ -469,6 +469,7 @@ public class Workspace extends ViewGroup
         if (mIsSmall) {
             unshrink((CellLayout)v);
             mLauncher.onWorkspaceUnshrink();
+            return true;
         }
         return false;
     }
