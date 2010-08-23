@@ -1731,22 +1731,26 @@ public class Workspace extends ViewGroup
     }
 
     public void scrollLeft() {
-        if (mScroller.isFinished()) {
-            if (mCurrentScreen > 0)
-                snapToScreen(mCurrentScreen - 1);
-        } else {
-            if (mNextScreen > 0)
-                snapToScreen(mNextScreen - 1);
+        if (!mIsSmall) {
+            if (mScroller.isFinished()) {
+                if (mCurrentScreen > 0)
+                    snapToScreen(mCurrentScreen - 1);
+            } else {
+                if (mNextScreen > 0)
+                    snapToScreen(mNextScreen - 1);
+            }
         }
     }
 
     public void scrollRight() {
-        if (mScroller.isFinished()) {
-            if (mCurrentScreen < getChildCount() - 1)
-                snapToScreen(mCurrentScreen + 1);
-        } else {
-            if (mNextScreen < getChildCount() - 1)
-                snapToScreen(mNextScreen + 1);
+        if (!mIsSmall) {
+            if (mScroller.isFinished()) {
+                if (mCurrentScreen < getChildCount() - 1)
+                    snapToScreen(mCurrentScreen + 1);
+            } else {
+                if (mNextScreen < getChildCount() - 1)
+                    snapToScreen(mNextScreen + 1);
+            }
         }
     }
 
