@@ -2498,6 +2498,7 @@ public final class Launcher extends Activity
                 }
                 closeAllApps(animate);
                 mWorkspace.unshrink(animate);
+                hideCustomizationDrawer();
             }
         }
     }
