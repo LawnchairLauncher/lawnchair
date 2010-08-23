@@ -1075,8 +1075,8 @@ public class Workspace extends ViewGroup
         return mIsSmall;
     }
 
-    void shrinkToTop() {
-        shrink(SHRINK_TO_TOP, true);
+    void shrinkToTop(boolean animated) {
+        shrink(SHRINK_TO_TOP, animated);
     }
 
     void shrinkToMiddle() {

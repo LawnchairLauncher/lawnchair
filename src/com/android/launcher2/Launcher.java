@@ -103,14 +103,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 /**
  * Default launcher application.
  */
@@ -186,6 +178,9 @@ public final class Launcher extends Activity
     private static final String FOLDERS_TAG = "folders";
     private static final String SHORTCUTS_TAG = "shortcuts";
     private static final String WALLPAPERS_TAG = "wallpapers";
+
+    /** The different states that Launcher can be in. */
+    private enum State { WORKSPACE, ALL_APPS, CUSTOMIZE, OVERVIEW };
 
     static final int APPWIDGET_HOST_ID = 1024;
 
@@ -1147,7 +1142,7 @@ public final class Launcher extends Activity
                 mWorkspace.moveToDefaultScreen(alreadyOnHome && !allAppsVisible);
             }
             closeAllApps(alreadyOnHome && allAppsVisible);
-            hideCustomizationDrawer();
+            hideCustomizationDrawer(alreadyOnHome);
 
             final View v = getWindow().peekDecorView();
             if (v != null && v.getWindowToken() != null) {
@@ -1381,8 +1376,7 @@ public final class Launcher extends Activity
         if (LauncherApplication.isScreenXLarge()) {
             // Animate the widget chooser up from the bottom of the screen
             if (!isCustomizationDrawerVisible()) {
-                showCustomizationDrawer();
-                mWorkspace.shrinkToTop();
+                showCustomizationDrawer(true);
             }
         } else {
             closeAllApps(true);
@@ -1622,7 +1616,7 @@ public final class Launcher extends Activity
         if (isAllAppsVisible()) {
             closeAllApps(true);
         } else if (isCustomizationDrawerVisible()) {
-            hideCustomizationDrawer();
+            hideCustomizationDrawer(true);
         } else {
             closeFolder();
         }
@@ -1699,7 +1693,7 @@ public final class Launcher extends Activity
     public boolean onTouch(View v, MotionEvent event) {
         // this is an intercepted event being forwarded from mWorkspace;
         // clicking anywhere on the workspace causes the drawer to slide down
-        hideCustomizationDrawer();
+        hideCustomizationDrawer(true);
         return false;
     }
 
@@ -2176,35 +2170,122 @@ public final class Launcher extends Activity
             mWorkspace.setVisibility(View.GONE);
         }
     }
+    
+    /**
+     * Helper function for creating a show or hide animations for a toolbar button.
+     *
+     * @param show If true, create an animation to the show the item. Otherwise, hide it.
+     * @param view The toolbar button to be animated
+     * @return An Animatable that will perform the show or hide action
+     */
+    private Animatable getToolbarButtonAnim(boolean show, final View view) {
+        final boolean showing = show;
+        final boolean hiding = !show;
+
+        final int duration = show ?
+                getResources().getInteger(R.integer.config_toolbarButtonFadeInTime) :
+                getResources().getInteger(R.integer.config_toolbarButtonFadeOutTime);
+
+        Animatable anim = new PropertyAnimator<Float>(duration, view, "alpha", show ? 1.0f : 0.0f);
+        anim.addListener(new AnimatableListenerAdapter() {
+            public void onAnimationStart(Animatable animation) {
+                if (showing) {
+                    view.setVisibility(View.VISIBLE);
+                    view.setFocusable(true);
+                    view.setClickable(true);
+                }
+            }
+            public void onAnimationEnd(Animatable animation) {
+                if (hiding) {
+                    // We can't set it to GONE, otherwise the RelativeLayout gets screwed up
+                    view.setVisibility(View.INVISIBLE);
+                    view.setFocusable(false);
+                    view.setClickable(false);
+                }
+            }
+        });
+        return anim;
+    }
+
+    /**
+     * Create the animations to show/hide the appropriate toolbar buttons for the new state.
+     *
+     * @param newState The state that is being switched to
+     * @param showSeq Sequencer in which to put "show" animations
+     * @param hideSeq Sequencer in which to put "hide" animations
+     */
+    private void getToolbarButtonAnimations(State newState, Sequencer showSeq, Sequencer hideSeq) {
+        final View searchButton = findViewById(R.id.search_button);
+        final View allAppsButton = findViewById(R.id.all_apps_button);
+        final View marketButton = findViewById(R.id.market_button);
+        final View configureButton = findViewById(R.id.configure_button);
+
+        switch (newState) {
+        case WORKSPACE:
+            showSeq.playTogether(new Animatable[] {
+                    getToolbarButtonAnim(true, searchButton),
+                    getToolbarButtonAnim(true, allAppsButton),
+                    getToolbarButtonAnim(true, configureButton)
+            });
+            hideSeq.play(getToolbarButtonAnim(false, marketButton));
+            break;
+        case ALL_APPS:
+            // TODO: Market button should also be shown
+            showSeq.play(getToolbarButtonAnim(true, configureButton))
+                    .with(getToolbarButtonAnim(true, marketButton));
+            hideSeq.play(getToolbarButtonAnim(false, searchButton))
+                    .with(getToolbarButtonAnim(false, allAppsButton));
+            break;
+        case CUSTOMIZE:
+            showSeq.play(getToolbarButtonAnim(true, allAppsButton));
+            hideSeq.playTogether(new Animatable[] {
+                    getToolbarButtonAnim(false, searchButton),
+                    getToolbarButtonAnim(false, marketButton),
+                    getToolbarButtonAnim(false, configureButton)
+            });
+            break;
+        }
+    }
+
+    /**
+     * Helper method for the cameraZoomIn/cameraZoomOut animations
+     * @param view The view being animated
+     * @param state The state that we are moving in or out of -- either ALL_APPS or CUSTOMIZE
+     * @param scaleFactor The scale factor used for the zoom
+     */
+    private void setPivotsForZoom(View view, State state, float scaleFactor) {
+        final int height = view.getHeight();
+        view.setPivotX(view.getWidth() / 2.0f);
+        // Set pivotY so that at the starting zoom factor, the view is off-screen by a small margin
+        // Assumes that the view is normally anchored to either the top or bottom of the screen
+        final int margin = getResources().getInteger(R.integer.config_allAppsVerticalOffset);
+        if (state == State.ALL_APPS) {
+            view.setPivotY(height + ((view.getTop() + height) / scaleFactor) + margin);
+        } else {
+            view.setPivotY(0.0f - (view.getTop() / scaleFactor) - margin);
+        }
+    }
 
     /**
      * Zoom the camera out from the workspace to reveal 'toView'.
      * Assumes that the view to show is anchored at either the very top or very bottom
      * of the screen.
-     * @param toView The view to show when the animation is complete
-     * @param above If true, toView will appear from the top of the screen
+     * @param toState The state to zoom out to. Must be ALL_APPS or CUSTOMIZE.
      */
-    private void cameraZoomOut(final View toView, boolean above) {
+    private void cameraZoomOut(State toState, final boolean animated) {
         final Resources res = getResources();
         final int duration = res.getInteger(R.integer.config_allAppsZoomInTime);
         final float scale = (float) res.getInteger(R.integer.config_allAppsZoomScaleFactor);
+        final boolean toAllApps = (toState == State.ALL_APPS);
+        final View toView = toAllApps ? (View) mAllAppsGrid : mHomeCustomizationDrawer;
         final int height = toView.getHeight();
 
         // toView should appear right at the end of the workspace shrink animation
         final int startDelay = res.getInteger(R.integer.config_workspaceShrinkTime) - duration;
 
+        setPivotsForZoom(toView, toState, scale);
+
         Interpolator interp = new DecelerateInterpolator();
-
-        toView.setPivotX(toView.getWidth() / 2.0f);
-        // Set pivotY so that at the starting zoom factor, the view is off-screen by a small margin
-        // Assumes that the view is normally anchored to either the top or bottom of the screen
-        final int margin = 200;
-        if (above) {
-            toView.setPivotY(height + ((toView.getTop() + height) / scale) + margin);
-        } else {
-            toView.setPivotY(0.0f - (toView.getTop() / scale) - margin);
-        }
-
         Animator scaleXAnim = new PropertyAnimator(duration, toView, "scaleX", scale, 1.0f);
         scaleXAnim.setInterpolator(interp);
         scaleXAnim.addListener(new AnimatableListenerAdapter() {
@@ -2213,27 +2294,48 @@ public final class Launcher extends Activity
                 toView.setTranslationX(0.0f);
                 toView.setTranslationY(0.0f);
                 toView.setVisibility(View.VISIBLE);
+
+                if (!animated) animation.end(); // Go immediately to the final state
             }
         });
 
         Animator scaleYAnim = new PropertyAnimator(duration, toView, "scaleY", scale, 1.0f);
         scaleYAnim.setInterpolator(interp);
 
+        Sequencer toolbarHideAnim = new Sequencer();
+        Sequencer toolbarShowAnim = new Sequencer();
+        getToolbarButtonAnimations(toState, toolbarShowAnim, toolbarHideAnim);
+
         Sequencer s = new Sequencer();
-        s.playTogether(scaleXAnim, scaleYAnim);
+        s.playTogether(scaleXAnim, scaleYAnim, toolbarHideAnim);
         s.play(scaleXAnim).after(startDelay);
+
+        // Show the new toolbar buttons just as the main animation is ending
+        final int fadeInTime = res.getInteger(R.integer.config_toolbarButtonFadeInTime);
+        s.play(toolbarShowAnim).after(duration + startDelay - fadeInTime);
+
+        if (toState == State.ALL_APPS) {
+            mWorkspace.shrinkToBottom(animated);
+        } else {
+            mWorkspace.shrinkToTop(animated);
+        }
         s.start();
     }
 
     /**
      * Zoom the camera back into the workspace, hiding 'fromView'.
      * This is the opposite of cameraZoomOut.
-     * @param fromView The currently-focused view, which will be hidden.
+     * @param fromState The current state (must be ALL_APPS or CUSTOMIZE).
+     * @param animated If true, the transition will be animated.
      */
-    private void cameraZoomIn(final View fromView) {
+    private void cameraZoomIn(State fromState, final boolean animated) {
         Resources res = getResources();
         int duration = res.getInteger(R.integer.config_allAppsZoomOutTime);
         float scaleFactor = (float) res.getInteger(R.integer.config_allAppsZoomScaleFactor);
+        final View fromView =
+            (fromState == State.ALL_APPS) ? (View) mAllAppsGrid : mHomeCustomizationDrawer;
+
+        setPivotsForZoom(fromView, fromState, scaleFactor);
 
         Interpolator interp = new AccelerateInterpolator();
 
@@ -2242,14 +2344,30 @@ public final class Launcher extends Activity
         scaleXAnim.setInterpolator(interp);
         Animator scaleYAnim = new PropertyAnimator(duration, fromView, "scaleY", scaleFactor);
         scaleYAnim.setInterpolator(interp);
-        s.playTogether(scaleXAnim, scaleYAnim);
         s.addListener(new AnimatableListenerAdapter() {
+            public void onAnimationStart(Animatable animation) {
+                if (!animated) animation.end(); // Go immediately to the final state
+            }
+
             public void onAnimationEnd(Animatable animation) {
                 fromView.setVisibility(View.GONE);
                 fromView.setScaleX(1.0f);
                 fromView.setScaleY(1.0f);
             }
         });
+
+        Sequencer toolbarHideAnim = new Sequencer();
+        Sequencer toolbarShowAnim = new Sequencer();
+        getToolbarButtonAnimations(State.WORKSPACE, toolbarShowAnim, toolbarHideAnim);
+
+        s.playTogether(scaleXAnim, scaleYAnim, toolbarHideAnim);
+
+        // Show the new toolbar buttons at the very end of the whole animation
+        final int fadeInTime = res.getInteger(R.integer.config_toolbarButtonFadeInTime);
+        final int unshrinkTime = res.getInteger(R.integer.config_workspaceUnshrinkTime);
+        s.play(toolbarShowAnim).after(unshrinkTime - fadeInTime);
+
+        mWorkspace.unshrink(animated);
         s.start();
     }
 
@@ -2257,34 +2375,57 @@ public final class Launcher extends Activity
      * Pan the camera in the vertical plane between 'fromView' and 'toView'.
      * This is the transition used on xlarge screens to go between all apps and
      * the home customization drawer.
-     * @param fromView The view to pan away from.
-     * @param toView The view to pan into the frame.
+     * @param fromState The view to pan away from. Must be ALL_APPS or CUSTOMIZE.
+     * @param toState The view to pan into the frame. Must be ALL_APPS or CUSTOMIZE.
+     * @param animated If true, the transition will be animated.
      */
-    private void cameraPan(final View fromView, final View toView) {
-        final int duration = getResources().getInteger(R.integer.config_allAppsCameraPanTime);
+    private void cameraPan(State fromState, State toState, final boolean animated) {
+        final Resources res = getResources();
+        final int duration = res.getInteger(R.integer.config_allAppsCameraPanTime);
         final int workspaceHeight = mWorkspace.getHeight();
 
-        final boolean panDown = fromView.getY() < toView.getY();
+        final boolean fromAllApps = (fromState == State.ALL_APPS);
+        final View fromView = fromAllApps ? (View) mAllAppsGrid : mHomeCustomizationDrawer;
+        final View toView = fromAllApps ? mHomeCustomizationDrawer : (View) mAllAppsGrid;
 
-        final float fromViewStartY = panDown ? 0.0f : fromView.getY();
-        final float fromViewEndY = panDown ? -fromView.getHeight() * 2 : workspaceHeight * 2;
-        final float toViewStartY = panDown ? workspaceHeight * 2 : -toView.getHeight() * 2;
-        final float toViewEndY = panDown ? workspaceHeight - toView.getHeight() : 0.0f;
+        final float fromViewStartY = fromAllApps ? 0.0f : fromView.getY();
+        final float fromViewEndY = fromAllApps ? -fromView.getHeight() * 2 : workspaceHeight * 2;
+        final float toViewStartY = fromAllApps ? workspaceHeight * 2 : -toView.getHeight() * 2;
+        final float toViewEndY = fromAllApps ? workspaceHeight - toView.getHeight() : 0.0f;
 
         Sequencer s = new Sequencer();
-        s.playTogether(
-                new PropertyAnimator(duration, fromView, "y", fromViewStartY, fromViewEndY),
-                new PropertyAnimator(duration, toView, "y", toViewStartY, toViewEndY));
         s.addListener(new AnimatableListenerAdapter() {
             public void onAnimationStart(Animatable animation) {
                 toView.setVisibility(View.VISIBLE);
                 toView.setY(toViewStartY);
+
+                if (!animated) animation.end(); // Go immediately to the final state
             }
             public void onAnimationEnd(Animatable animation) {
                 fromView.setVisibility(View.GONE);
             }
         });
+
+        Sequencer toolbarHideAnim = new Sequencer();
+        Sequencer toolbarShowAnim = new Sequencer();
+        getToolbarButtonAnimations(toState, toolbarShowAnim, toolbarHideAnim);
+
+        s.playTogether(
+                toolbarHideAnim,
+                new PropertyAnimator(duration, fromView, "y", fromViewStartY, fromViewEndY),
+                new PropertyAnimator(duration, toView, "y", toViewStartY, toViewEndY));
+
+        // Show the new toolbar buttons just as the main animation is ending
+        final int fadeInTime = res.getInteger(R.integer.config_toolbarButtonFadeInTime);
+        s.play(toolbarShowAnim).after(duration - fadeInTime);
+
+        if (toState == State.ALL_APPS) {
+            mWorkspace.shrinkToBottom(animated);
+        } else {
+            mWorkspace.shrinkToTop(animated);
+        }
         s.start();
+        if (!animated) s.end(); // Go immediately to the final state
     }
 
     void showAllApps(boolean animated) {
@@ -2292,18 +2433,13 @@ public final class Launcher extends Activity
             return;
 
         if (LauncherApplication.isScreenXLarge()) {
-            mWorkspace.shrinkToBottom(animated);
-        }
-
-        if (LauncherApplication.isScreenXLarge() && animated) {
             if (isCustomizationDrawerVisible()) {
-                cameraPan(mHomeCustomizationDrawer, (View) mAllAppsGrid);
+                cameraPan(State.CUSTOMIZE, State.ALL_APPS, animated);
             } else {
-                cameraZoomOut((View) mAllAppsGrid, true);
+                cameraZoomOut(State.ALL_APPS, animated);
             }
         } else {
             mAllAppsGrid.zoom(1.0f, animated);
-            hideCustomizationDrawer(); // TODO: Should be able to do this un-animated
         }
 
         ((View) mAllAppsGrid).setFocusable(true);
@@ -2356,8 +2492,7 @@ public final class Launcher extends Activity
         if (mAllAppsGrid.isVisible()) {
             mWorkspace.setVisibility(View.VISIBLE);
             if (LauncherApplication.isScreenXLarge() && animated) {
-                mWorkspace.unshrink();
-                cameraZoomIn((View) mAllAppsGrid);
+                cameraZoomIn(State.ALL_APPS, animated);
             } else {
                 mAllAppsGrid.zoom(0.0f, animated);
             }
@@ -2379,34 +2514,29 @@ public final class Launcher extends Activity
                 mHomeCustomizationDrawer.getVisibility() == View.VISIBLE;
     }
 
-    private void showCustomizationDrawer() {
-        mWorkspace.shrinkToTop();
+    // Show the customization drawer (only exists in x-large configuration)
+    private void showCustomizationDrawer(boolean animated) {
         if (isAllAppsVisible()) {
-            cameraPan((View) mAllAppsGrid, mHomeCustomizationDrawer);
+            cameraPan(State.ALL_APPS, State.CUSTOMIZE, animated);
         } else {
-            cameraZoomOut(mHomeCustomizationDrawer, false);
+            cameraZoomOut(State.CUSTOMIZE, animated);
         }
     }
 
-    void hideCustomizationDrawer() {
-        hideCustomizationDrawer(true);
-    }
-
-    void hideCustomizationDrawer(boolean unshrinkWorkspace) {
+    // Hide the customization drawer (only exists in x-large configuration)
+    void hideCustomizationDrawer(boolean animated) {
         if (isCustomizationDrawerVisible()) {
-            if (unshrinkWorkspace) {
-                mWorkspace.unshrink();
-            }
-            cameraZoomIn(mHomeCustomizationDrawer);
+            cameraZoomIn(State.CUSTOMIZE, animated);
         }
     }
 
     void onWorkspaceUnshrink() {
+        final boolean animated = true;
         if (isAllAppsVisible()) {
-            closeAllApps(true);
+            closeAllApps(animated);
         }
         if (isCustomizationDrawerVisible()) {
-            hideCustomizationDrawer();
+            hideCustomizationDrawer(animated);
         }
     }
 
@@ -2527,8 +2657,7 @@ public final class Launcher extends Activity
                     animate = false;
                 }
                 closeAllApps(animate);
-                mWorkspace.unshrink(animate);
-                hideCustomizationDrawer();
+                hideCustomizationDrawer(animate);
             }
         }
     }

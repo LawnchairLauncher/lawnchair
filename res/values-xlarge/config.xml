@@ -1,4 +1,6 @@
 <resources>
+    <!--  NOTE: Many of the all apps values here are also used for the customization drawer -->
+
     <!-- Duration in milliseconds of the all apps zoom-in animation. -->
     <!-- NB: This should be less than the workspaceShrinkTime as they happen together. -->
     <integer name="config_allAppsZoomInTime">350</integer>
@@ -10,12 +12,18 @@
     <!-- Scaling factor used in the all apps zooming animations -->
     <integer name="config_allAppsZoomScaleFactor">5</integer>
 
-    <!-- Duration in milliseconds of the camera pan animation b/w all apps & customize -->
+    <!-- The extra distance off-screen that all apps appears from -->
+    <integer name="config_allAppsVerticalOffset">200</integer>
+
+    <!-- Duration in milliseconds of the animations between all apps, customize, & home.
+         NOTE: If these are changed, the toolbar animation times below should also be. -->
     <integer name="config_allAppsCameraPanTime">700</integer>
-
-    <!-- Duration in milliseconds of the workspace shrink animation -->
     <integer name="config_workspaceShrinkTime">700</integer>
-
-    <!-- Duration in milliseconds of the workspace unshrink animation -->
     <integer name="config_workspaceUnshrinkTime">700</integer>
+
+    <!-- Duration in milliseconds toolbar fade in and fade out animations.
+         NOTE: Fade in and fade out time should together be less the transition
+         animations between all apps, customize, & the workspace. -->
+    <integer name="config_toolbarButtonFadeInTime">350</integer>
+    <integer name="config_toolbarButtonFadeOutTime">350</integer>
 </resources>
