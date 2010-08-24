@@ -18,23 +18,14 @@ package com.android.launcher2;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
-import android.animation.Animatable;
-import android.animation.AnimatableListenerAdapter;
-import android.animation.Animator;
-import android.animation.PropertyAnimator;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.Animation.AnimationListener;
 import android.widget.TextView;
 
 import com.android.launcher.R;
@@ -103,7 +94,7 @@ public class AllAppsPagedView extends PagedView
         mAppFilter = filterType;
         if (mApps != null) {
             mFilteredApps = rebuildFilteredApps(mApps);
-            setCurrentScreen(0);
+            setCurrentPage(0);
             invalidatePageData();
         }
     }
@@ -158,7 +149,7 @@ public class AllAppsPagedView extends PagedView
     @Override
     public void onClick(View v) {
         int childIndex = getChildIndexForGrandChild(v);
-        if (childIndex == getCurrentScreen()) {
+        if (childIndex == getCurrentPage()) {
             final ApplicationInfo app = (ApplicationInfo) v.getTag();
 
             // animate some feedback to the click
@@ -305,7 +296,7 @@ public class AllAppsPagedView extends PagedView
         }
 
         // bound the current page
-        setCurrentScreen(Math.max(0, Math.min(numPages - 1, getCurrentScreen())));
+        setCurrentPage(Math.max(0, Math.min(numPages - 1, getCurrentPage())));
     }
 
     @Override

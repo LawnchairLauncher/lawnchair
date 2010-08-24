@@ -499,11 +499,15 @@ public class Workspace extends ViewGroup
     }
 
     private void updateWallpaperOffset(int scrollRange) {
-        IBinder token = getWindowToken();
-        if (token != null) {
-            mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 0 );
-            mWallpaperManager.setWallpaperOffsets(getWindowToken(),
-                    Math.max(0.f, Math.min(mScrollX/(float)scrollRange, 1.f)), 0);
+        final boolean isStaticWallpaper = (mWallpaperManager != null) &&
+                (mWallpaperManager.getWallpaperInfo() == null);
+        if (LauncherApplication.isScreenXLarge() && !isStaticWallpaper) {
+            IBinder token = getWindowToken();
+            if (token != null) {
+                mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 0 );
+                mWallpaperManager.setWallpaperOffsets(getWindowToken(),
+                        Math.max(0.f, Math.min(mScrollX/(float)scrollRange, 1.f)), 0);
+            }
         }
     }
 

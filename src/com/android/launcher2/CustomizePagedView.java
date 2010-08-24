@@ -30,17 +30,14 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Rect;
 import android.graphics.Bitmap.Config;
+import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.graphics.Region.Op;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.provider.LiveFolders;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -148,7 +145,7 @@ public class CustomizePagedView extends PagedView
 
     public void setCustomizationFilter(CustomizationType filterType) {
         mCustomizationType = filterType;
-        setCurrentScreen(0);
+        setCurrentPage(0);
         invalidatePageData();
     }
 
@@ -509,7 +506,7 @@ public class CustomizePagedView extends PagedView
             break;
         default:
             removeAllViews();
-            setCurrentScreen(0);
+            setCurrentPage(0);
             break;
         }
 
@@ -526,7 +523,7 @@ public class CustomizePagedView extends PagedView
         }
 
         // bound the current page
-        setCurrentScreen(Math.max(0, Math.min(childCount - 1, getCurrentScreen())));
+        setCurrentPage(Math.max(0, Math.min(childCount - 1, getCurrentPage())));
     }
 
     @Override

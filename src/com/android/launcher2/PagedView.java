@@ -17,26 +17,23 @@
 package com.android.launcher2;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.widget.Scroller;
 
 import com.android.launcher.R;
@@ -47,18 +44,18 @@ import com.android.launcher.R;
  */
 public abstract class PagedView extends ViewGroup {
     private static final String TAG = "PagedView";
-    private static final int INVALID_SCREEN = -1;
+    private static final int INVALID_PAGE = -1;
 
-    // the velocity at which a fling gesture will cause us to snap to the next screen
+    // the velocity at which a fling gesture will cause us to snap to the next page
     private static final int SNAP_VELOCITY = 500;
 
-    // the min drag distance for a fling to register, to prevent random screen shifts
+    // the min drag distance for a fling to register, to prevent random page shifts
     private static final int MIN_LENGTH_FOR_FLING = 50;
 
     private boolean mFirstLayout = true;
 
-    private int mCurrentScreen;
-    private int mNextScreen = INVALID_SCREEN;
+    private int mCurrentPage;
+    private int mNextPage = INVALID_PAGE;
     private Scroller mScroller;
     private VelocityTracker mVelocityTracker;
 
@@ -85,12 +82,13 @@ public abstract class PagedView extends ViewGroup {
 
     private int mActivePointerId = INVALID_POINTER;
 
-    private ScreenSwitchListener mScreenSwitchListener;
+    private PageSwitchListener mPageSwitchListener;
 
-    private boolean mDimmedPagesDirty;
+    private ArrayList<Boolean> mDirtyPageContent;
+    private boolean mDirtyPageAlpha;
 
-    public interface ScreenSwitchListener {
-        void onScreenSwitch(View newScreen, int newScreenIndex);
+    public interface PageSwitchListener {
+        void onPageSwitch(View newPage, int newPageIndex);
     }
 
     public PagedView(Context context) {
@@ -112,8 +110,10 @@ public abstract class PagedView extends ViewGroup {
      * Initializes various states for this workspace.
      */
     private void initWorkspace() {
+        mDirtyPageContent = new ArrayList<Boolean>();
+        mDirtyPageContent.ensureCapacity(32);
         mScroller = new Scroller(getContext());
-        mCurrentScreen = 0;
+        mCurrentPage = 0;
 
         final ViewConfiguration configuration = ViewConfiguration.get(getContext());
         mTouchSlop = configuration.getScaledTouchSlop();
@@ -121,27 +121,27 @@ public abstract class PagedView extends ViewGroup {
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
     }
 
-    public void setScreenSwitchListener(ScreenSwitchListener screenSwitchListener) {
-        mScreenSwitchListener = screenSwitchListener;
-        if (mScreenSwitchListener != null) {
-            mScreenSwitchListener.onScreenSwitch(getScreenAt(mCurrentScreen), mCurrentScreen);
+    public void setPageSwitchListener(PageSwitchListener pageSwitchListener) {
+        mPageSwitchListener = pageSwitchListener;
+        if (mPageSwitchListener != null) {
+            mPageSwitchListener.onPageSwitch(getPageAt(mCurrentPage), mCurrentPage);
         }
     }
 
     /**
-     * Returns the index of the currently displayed screen.
+     * Returns the index of the currently displayed page.
      *
-     * @return The index of the currently displayed screen.
+     * @return The index of the currently displayed page.
      */
-    int getCurrentScreen() {
-        return mCurrentScreen;
+    int getCurrentPage() {
+        return mCurrentPage;
     }
 
-    int getScreenCount() {
+    int getPageCount() {
         return getChildCount();
     }
 
-    View getScreenAt(int index) {
+    View getPageAt(int index) {
         return getChildAt(index);
     }
 
@@ -150,38 +150,36 @@ public abstract class PagedView extends ViewGroup {
     }
 
     /**
-     * Sets the current screen.
-     *
-     * @param currentScreen
+     * Sets the current page.
      */
-    void setCurrentScreen(int currentScreen) {
+    void setCurrentPage(int currentPage) {
         if (!mScroller.isFinished()) mScroller.abortAnimation();
         if (getChildCount() == 0) return;
 
-        mCurrentScreen = Math.max(0, Math.min(currentScreen, getScreenCount() - 1));
-        scrollTo(getChildOffset(mCurrentScreen) - getRelativeChildOffset(mCurrentScreen), 0);
+        mCurrentPage = Math.max(0, Math.min(currentPage, getPageCount() - 1));
+        scrollTo(getChildOffset(mCurrentPage) - getRelativeChildOffset(mCurrentPage), 0);
 
         invalidate();
-        notifyScreenSwitchListener();
+        notifyPageSwitchListener();
     }
 
-    private void notifyScreenSwitchListener() {
-        if (mScreenSwitchListener != null) {
-            mScreenSwitchListener.onScreenSwitch(getScreenAt(mCurrentScreen), mCurrentScreen);
+    private void notifyPageSwitchListener() {
+        if (mPageSwitchListener != null) {
+            mPageSwitchListener.onPageSwitch(getPageAt(mCurrentPage), mCurrentPage);
         }
     }
 
     /**
-     * Registers the specified listener on each screen contained in this workspace.
+     * Registers the specified listener on each page contained in this workspace.
      *
      * @param l The listener used to respond to long clicks.
      */
     @Override
     public void setOnLongClickListener(OnLongClickListener l) {
         mLongClickListener = l;
-        final int count = getScreenCount();
+        final int count = getPageCount();
         for (int i = 0; i < count; i++) {
-            getScreenAt(i).setOnLongClickListener(l);
+            getPageAt(i).setOnLongClickListener(l);
         }
     }
 
@@ -190,10 +188,10 @@ public abstract class PagedView extends ViewGroup {
         if (mScroller.computeScrollOffset()) {
             scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
             postInvalidate();
-        } else if (mNextScreen != INVALID_SCREEN) {
-            mCurrentScreen = Math.max(0, Math.min(mNextScreen, getScreenCount() - 1));
-            notifyScreenSwitchListener();
-            mNextScreen = INVALID_SCREEN;
+        } else if (mNextPage != INVALID_PAGE) {
+            mCurrentPage = Math.max(0, Math.min(mNextPage, getPageCount() - 1));
+            notifyPageSwitchListener();
+            mNextPage = INVALID_PAGE;
         }
     }
 
@@ -221,7 +219,7 @@ public abstract class PagedView extends ViewGroup {
 
         if (mFirstLayout) {
             setHorizontalScrollBarEnabled(false);
-            scrollTo(mCurrentScreen * widthSize, 0);
+            scrollTo(mCurrentPage * widthSize, 0);
             setHorizontalScrollBarEnabled(true);
             mFirstLayout = false;
         }
@@ -245,14 +243,9 @@ public abstract class PagedView extends ViewGroup {
         }
     }
 
-    protected void invalidateDimmedPages() {
-        mDimmedPagesDirty = true;
-    }
-
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        if (mDimmedPagesDirty || (mTouchState == TOUCH_STATE_SCROLLING) ||
-                !mScroller.isFinished()) {
+        if (mDirtyPageAlpha || (mTouchState == TOUCH_STATE_SCROLLING) || !mScroller.isFinished()) {
             int screenCenter = mScrollX + (getMeasuredWidth() / 2);
             final int childCount = getChildCount();
             for (int i = 0; i < childCount; ++i) {
@@ -275,15 +268,16 @@ public abstract class PagedView extends ViewGroup {
                     layout.setAlpha(alpha);
                 }
             }
+            mDirtyPageAlpha = false;
         }
         super.dispatchDraw(canvas);
     }
 
     @Override
     public boolean requestChildRectangleOnScreen(View child, Rect rectangle, boolean immediate) {
-        int screen = indexOfChild(child);
-        if (screen != mCurrentScreen || !mScroller.isFinished()) {
-            snapToScreen(screen);
+        int page = indexOfChild(child);
+        if (page != mCurrentPage || !mScroller.isFinished()) {
+            snapToPage(page);
             return true;
         }
         return false;
@@ -291,13 +285,13 @@ public abstract class PagedView extends ViewGroup {
 
     @Override
     protected boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
-        int focusableScreen;
-        if (mNextScreen != INVALID_SCREEN) {
-            focusableScreen = mNextScreen;
+        int focusablePage;
+        if (mNextPage != INVALID_PAGE) {
+            focusablePage = mNextPage;
         } else {
-            focusableScreen = mCurrentScreen;
+            focusablePage = mCurrentPage;
         }
-        View v = getScreenAt(focusableScreen);
+        View v = getPageAt(focusablePage);
         if (v != null) {
             v.requestFocus(direction, previouslyFocusedRect);
         }
@@ -307,13 +301,13 @@ public abstract class PagedView extends ViewGroup {
     @Override
     public boolean dispatchUnhandledMove(View focused, int direction) {
         if (direction == View.FOCUS_LEFT) {
-            if (getCurrentScreen() > 0) {
-                snapToScreen(getCurrentScreen() - 1);
+            if (getCurrentPage() > 0) {
+                snapToPage(getCurrentPage() - 1);
                 return true;
             }
         } else if (direction == View.FOCUS_RIGHT) {
-            if (getCurrentScreen() < getScreenCount() - 1) {
-                snapToScreen(getCurrentScreen() + 1);
+            if (getCurrentPage() < getPageCount() - 1) {
+                snapToPage(getCurrentPage() + 1);
                 return true;
             }
         }
@@ -322,30 +316,30 @@ public abstract class PagedView extends ViewGroup {
 
     @Override
     public void addFocusables(ArrayList<View> views, int direction, int focusableMode) {
-        if (mCurrentScreen >= 0 && mCurrentScreen < getScreenCount()) {
-            getScreenAt(mCurrentScreen).addFocusables(views, direction);
+        if (mCurrentPage >= 0 && mCurrentPage < getPageCount()) {
+            getPageAt(mCurrentPage).addFocusables(views, direction);
         }
         if (direction == View.FOCUS_LEFT) {
-            if (mCurrentScreen > 0) {
-                getScreenAt(mCurrentScreen - 1).addFocusables(views, direction);
+            if (mCurrentPage > 0) {
+                getPageAt(mCurrentPage - 1).addFocusables(views, direction);
             }
         } else if (direction == View.FOCUS_RIGHT){
-            if (mCurrentScreen < getScreenCount() - 1) {
-                getScreenAt(mCurrentScreen + 1).addFocusables(views, direction);
+            if (mCurrentPage < getPageCount() - 1) {
+                getPageAt(mCurrentPage + 1).addFocusables(views, direction);
             }
         }
     }
 
     /**
      * If one of our descendant views decides that it could be focused now, only
-     * pass that along if it's on the current screen.
+     * pass that along if it's on the current page.
      *
-     * This happens when live folders requery, and if they're off screen, they
-     * end up calling requestFocus, which pulls it on screen.
+     * This happens when live folders requery, and if they're off page, they
+     * end up calling requestFocus, which pulls it on page.
      */
     @Override
     public void focusableViewAvailable(View focused) {
-        View current = getScreenAt(mCurrentScreen);
+        View current = getPageAt(mCurrentPage);
         View v = focused;
         while (true) {
             if (v == current) {
@@ -372,8 +366,8 @@ public abstract class PagedView extends ViewGroup {
         if (disallowIntercept) {
             // We need to make sure to cancel our long press if
             // a scrollable widget takes over touch events
-            final View currentScreen = getChildAt(mCurrentScreen);
-            currentScreen.cancelLongPress();
+            final View currentPage = getChildAt(mCurrentPage);
+            currentPage.cancelLongPress();
         }
         super.requestDisallowInterceptTouchEvent(disallowIntercept);
     }
@@ -425,7 +419,7 @@ public abstract class PagedView extends ViewGroup {
                  */
                 mTouchState = mScroller.isFinished() ? TOUCH_STATE_REST : TOUCH_STATE_SCROLLING;
 
-                // check if this can be the beginning of a tap on the side of the screens
+                // check if this can be the beginning of a tap on the side of the pages
                 // to scroll the current page
                 if ((mTouchState != TOUCH_STATE_PREV_PAGE) &&
                         (mTouchState != TOUCH_STATE_NEXT_PAGE)) {
@@ -512,8 +506,8 @@ public abstract class PagedView extends ViewGroup {
                 // Try canceling the long press. It could also have been scheduled
                 // by a distant descendant, so use the mAllowLongPress flag to block
                 // everything
-                final View currentScreen = getScreenAt(mCurrentScreen);
-                currentScreen.cancelLongPress();
+                final View currentPage = getPageAt(mCurrentPage);
+                currentPage.cancelLongPress();
             }
         }
     }
@@ -581,11 +575,11 @@ public abstract class PagedView extends ViewGroup {
                 int velocityX = (int) velocityTracker.getXVelocity(activePointerId);
                 boolean isfling = Math.abs(mDownMotionX - x) > MIN_LENGTH_FOR_FLING;
 
-                if (isfling && velocityX > SNAP_VELOCITY && mCurrentScreen > 0) {
-                    snapToScreen(mCurrentScreen - 1);
+                if (isfling && velocityX > SNAP_VELOCITY && mCurrentPage > 0) {
+                    snapToPage(mCurrentPage - 1);
                 } else if (isfling && velocityX < -SNAP_VELOCITY &&
-                        mCurrentScreen < getChildCount() - 1) {
-                    snapToScreen(mCurrentScreen + 1);
+                        mCurrentPage < getChildCount() - 1) {
+                    snapToPage(mCurrentPage + 1);
                 } else {
                     snapToDestination();
                 }
@@ -598,9 +592,9 @@ public abstract class PagedView extends ViewGroup {
                 // at this point we have not moved beyond the touch slop
                 // (otherwise mTouchState would be TOUCH_STATE_SCROLLING), so
                 // we can just page
-                int nextScreen = Math.max(0, mCurrentScreen - 1);
-                if (nextScreen != mCurrentScreen) {
-                    snapToScreen(nextScreen);
+                int nextPage = Math.max(0, mCurrentPage - 1);
+                if (nextPage != mCurrentPage) {
+                    snapToPage(nextPage);
                 } else {
                     snapToDestination();
                 }
@@ -608,9 +602,9 @@ public abstract class PagedView extends ViewGroup {
                 // at this point we have not moved beyond the touch slop
                 // (otherwise mTouchState would be TOUCH_STATE_SCROLLING), so
                 // we can just page
-                int nextScreen = Math.min(getChildCount() - 1, mCurrentScreen + 1);
-                if (nextScreen != mCurrentScreen) {
-                    snapToScreen(nextScreen);
+                int nextPage = Math.min(getChildCount() - 1, mCurrentPage + 1);
+                if (nextPage != mCurrentPage) {
+                    snapToPage(nextPage);
                 } else {
                     snapToDestination();
                 }
@@ -653,9 +647,9 @@ public abstract class PagedView extends ViewGroup {
     @Override
     public void requestChildFocus(View child, View focused) {
         super.requestChildFocus(child, focused);
-        int screen = indexOfChild(child);
-        if (screen >= 0 && !isInTouchMode()) {
-            snapToScreen(screen);
+        int page = indexOfChild(child);
+        if (page >= 0 && !isInTouchMode()) {
+            snapToPage(page);
         }
     }
 
@@ -690,19 +684,19 @@ public abstract class PagedView extends ViewGroup {
                 minDistanceFromScreenCenterIndex = i;
             }
         }
-        snapToScreen(minDistanceFromScreenCenterIndex, 1000);
+        snapToPage(minDistanceFromScreenCenterIndex, 1000);
     }
 
-    void snapToScreen(int whichScreen) {
-        snapToScreen(whichScreen, 1000);
+    void snapToPage(int whichPage) {
+        snapToPage(whichPage, 1000);
     }
 
-    void snapToScreen(int whichScreen, int duration) {
-        whichScreen = Math.max(0, Math.min(whichScreen, getScreenCount() - 1));
+    void snapToPage(int whichPage, int duration) {
+        whichPage = Math.max(0, Math.min(whichPage, getPageCount() - 1));
 
-        mNextScreen = whichScreen;
+        mNextPage = whichPage;
 
-        int newX = getChildOffset(whichScreen) - getRelativeChildOffset(whichScreen);
+        int newX = getChildOffset(whichPage) - getRelativeChildOffset(whichPage);
         final int sX = getScrollX();
         final int delta = newX - sX;
         awakenScrollBars(duration);
@@ -714,7 +708,7 @@ public abstract class PagedView extends ViewGroup {
         mScroller.startScroll(sX, 0, delta, 0, duration);
 
         // only load some associated pages
-        loadAssociatedPages(mNextScreen);
+        loadAssociatedPages(mNextPage);
 
         invalidate();
     }
@@ -722,7 +716,7 @@ public abstract class PagedView extends ViewGroup {
     @Override
     protected Parcelable onSaveInstanceState() {
         final SavedState state = new SavedState(super.onSaveInstanceState());
-        state.currentScreen = mCurrentScreen;
+        state.currentPage = mCurrentPage;
         return state;
     }
 
@@ -730,28 +724,28 @@ public abstract class PagedView extends ViewGroup {
     protected void onRestoreInstanceState(Parcelable state) {
         SavedState savedState = (SavedState) state;
         super.onRestoreInstanceState(savedState.getSuperState());
-        if (savedState.currentScreen != -1) {
-            mCurrentScreen = savedState.currentScreen;
+        if (savedState.currentPage != -1) {
+            mCurrentPage = savedState.currentPage;
         }
     }
 
     public void scrollLeft() {
         if (mScroller.isFinished()) {
-            if (mCurrentScreen > 0) snapToScreen(mCurrentScreen - 1);
+            if (mCurrentPage > 0) snapToPage(mCurrentPage - 1);
         } else {
-            if (mNextScreen > 0) snapToScreen(mNextScreen - 1);
+            if (mNextPage > 0) snapToPage(mNextPage - 1);
         }
     }
 
     public void scrollRight() {
         if (mScroller.isFinished()) {
-            if (mCurrentScreen < getChildCount() -1) snapToScreen(mCurrentScreen + 1);
+            if (mCurrentPage < getChildCount() -1) snapToPage(mCurrentPage + 1);
         } else {
-            if (mNextScreen < getChildCount() -1) snapToScreen(mNextScreen + 1);
+            if (mNextPage < getChildCount() -1) snapToPage(mNextPage + 1);
         }
     }
 
-    public int getScreenForView(View v) {
+    public int getPageForView(View v) {
         int result = -1;
         if (v != null) {
             ViewParent vp = v.getParent();
@@ -773,7 +767,7 @@ public abstract class PagedView extends ViewGroup {
     }
 
     public static class SavedState extends BaseSavedState {
-        int currentScreen = -1;
+        int currentPage = -1;
 
         SavedState(Parcelable superState) {
             super(superState);
@@ -781,13 +775,13 @@ public abstract class PagedView extends ViewGroup {
 
         private SavedState(Parcel in) {
             super(in);
-            currentScreen = in.readInt();
+            currentPage = in.readInt();
         }
 
         @Override
         public void writeToParcel(Parcel out, int flags) {
             super.writeToParcel(out, flags);
-            out.writeInt(currentScreen);
+            out.writeInt(currentPage);
         }
 
         public static final Parcelable.Creator<SavedState> CREATOR =
@@ -802,30 +796,57 @@ public abstract class PagedView extends ViewGroup {
         };
     }
 
-    public void loadAssociatedPages(int screen) {
+    public void loadAssociatedPages(int page) {
         final int count = getChildCount();
-        if (screen < count) {
-            int lowerScreenBound = Math.max(0, screen - 1);
-            int upperScreenBound = Math.min(screen + 1, count - 1);
+        if (page < count) {
+            int lowerPageBound = Math.max(0, page - 1);
+            int upperPageBound = Math.min(page + 1, count - 1);
             for (int i = 0; i < count; ++i) {
-                if (lowerScreenBound <= i && i <= upperScreenBound) {
-                    syncPageItems(i);
+                final PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(i);
+                final int childCount = layout.getChildCount();
+                if (lowerPageBound <= i && i <= upperPageBound) {
+                    if (mDirtyPageContent.get(i)) {
+                        syncPageItems(i);
+                        mDirtyPageContent.set(i, false);
+                    }
                 } else {
-                    final PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(i);
-                    if (layout.getChildCount() > 0) {
+                    if (childCount > 0) {
                         layout.removeAllViews();
                     }
+                    mDirtyPageContent.set(i, true);
                 }
             }
         }
     }
 
+    /**
+     * This method is called ONLY to synchronize the number of pages that the paged view has.
+     * To actually fill the pages with information, implement syncPageItems() below.  It is
+     * guaranteed that syncPageItems() will be called for a particular page before it is shown,
+     * and therefore, individual page items do not need to be updated in this method.
+     */
     public abstract void syncPages();
+
+    /**
+     * This method is called to synchronize the items that are on a particular page.  If views on
+     * the page can be reused, then they should be updated within this method.
+     */
     public abstract void syncPageItems(int page);
+
     public void invalidatePageData() {
+        // Update all the pages
         syncPages();
-        loadAssociatedPages(mCurrentScreen);
-        invalidateDimmedPages();
+
+        // Mark each of the pages as dirty
+        final int count = getChildCount();
+        mDirtyPageContent.clear();
+        for (int i = 0; i < count; ++i) {
+            mDirtyPageContent.add(true);
+        }
+
+        // Load any pages that are necessary for the current window of views
+        loadAssociatedPages(mCurrentPage);
+        mDirtyPageAlpha = true;
         requestLayout();
     }
 }
