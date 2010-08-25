@@ -18,8 +18,10 @@ package com.android.launcher2;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Parcel;
@@ -87,6 +89,30 @@ public abstract class PagedView extends ViewGroup {
     private ArrayList<Boolean> mDirtyPageContent;
     private boolean mDirtyPageAlpha;
 
+    protected PagedViewIconCache mPageViewIconCache;
+
+    /**
+     * Simple cache mechanism for PagedViewIcon outlines.
+     */
+    class PagedViewIconCache {
+        private final HashMap<Object, Bitmap> iconOutlineCache = new HashMap<Object, Bitmap>();
+
+        public void clear() {
+            iconOutlineCache.clear();
+        }
+        public void addOutline(Object key, Bitmap b) {
+            iconOutlineCache.put(key, b);
+        }
+        public void removeOutline(Object key) {
+            if (iconOutlineCache.containsKey(key)) {
+                iconOutlineCache.remove(key);
+            }
+        }
+        public Bitmap getOutline(Object key) {
+            return iconOutlineCache.get(key);
+        }
+    }
+
     public interface PageSwitchListener {
         void onPageSwitch(View newPage, int newPageIndex);
     }
@@ -112,6 +138,7 @@ public abstract class PagedView extends ViewGroup {
     private void initWorkspace() {
         mDirtyPageContent = new ArrayList<Boolean>();
         mDirtyPageContent.ensureCapacity(32);
+        mPageViewIconCache = new PagedViewIconCache();
         mScroller = new Scroller(getContext());
         mCurrentPage = 0;
 

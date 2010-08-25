@@ -136,6 +136,9 @@ public class CustomizePagedView extends PagedView
         mShortcutList = mPackageManager.queryIntentActivities(shortcutsIntent, 0);
         Collections.sort(mShortcutList, resolveInfoComparator);
 
+        // reset the icon cache
+        mPageViewIconCache.clear();
+
         invalidatePageData();
     }
 
@@ -443,19 +446,15 @@ public class CustomizePagedView extends PagedView
         layout.removeAllViews();
         for (int i = startIndex; i < endIndex; ++i) {
             ResolveInfo info = list.get(i);
-            Drawable image = info.loadIcon(mPackageManager);
-            TextView text = (TextView) mInflater.inflate(R.layout.customize_paged_view_item, 
-                    layout, false);
-            image.setBounds(0, 0, image.getIntrinsicWidth(), image.getIntrinsicHeight());
-            text.setCompoundDrawablesWithIntrinsicBounds(null, image, null, null);
-            text.setText(info.loadLabel(mPackageManager));
-            text.setTag(info);
-            text.setOnLongClickListener(this);
+            PagedViewIcon icon = (PagedViewIcon) mInflater.inflate(
+                    R.layout.customize_paged_view_item, layout, false);
+            icon.applyFromResolveInfo(info, mPackageManager, mPageViewIconCache);
+            icon.setOnLongClickListener(this);
 
             final int index = i - startIndex;
             final int x = index % mCellCountX;
             final int y = index / mCellCountX;
-            layout.addViewToCellLayout(text, -1, i, new PagedViewCellLayout.LayoutParams(x,y, 1,1));
+            layout.addViewToCellLayout(icon, -1, i, new PagedViewCellLayout.LayoutParams(x,y, 1,1));
         }
     }
 

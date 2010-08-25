@@ -17,6 +17,8 @@
 package com.android.launcher2;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
@@ -31,8 +33,11 @@ import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.widget.Checkable;
 import android.widget.TextView;
+
+import com.android.launcher2.PagedView.PagedViewIconCache;
 
 class HolographicOutlineHelper {
     private final Paint mHolographicPaint = new Paint();
@@ -138,6 +143,9 @@ public class PagedViewIcon extends TextView implements Checkable {
     private boolean mIsHolographicUpdatePass;
     private Rect mDrawableClipRect;
 
+    private Object mIconCacheKey;
+    private PagedViewIconCache mIconCache;
+
     private int mAlpha;
     private int mHolographicAlpha;
 
@@ -166,6 +174,30 @@ public class PagedViewIcon extends TextView implements Checkable {
         setBackgroundDrawable(null);
     }
 
+    public void applyFromApplicationInfo(ApplicationInfo info, PagedViewIconCache cache) {
+        mIconCache = cache;
+        mIconCacheKey = info;
+        mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
+
+        setCompoundDrawablesWithIntrinsicBounds(null,
+                new FastBitmapDrawable(info.iconBitmap), null, null);
+        setText(info.title);
+        setTag(info);
+    }
+
+    public void applyFromResolveInfo(ResolveInfo info, PackageManager packageManager,
+            PagedViewIconCache cache) {
+        mIconCache = cache;
+        mIconCacheKey = info;
+        mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
+
+        Drawable image = info.loadIcon(packageManager);
+        image.setBounds(0, 0, image.getIntrinsicWidth(), image.getIntrinsicHeight());
+        setCompoundDrawablesWithIntrinsicBounds(null, image, null, null);
+        setText(info.loadLabel(packageManager));
+        setTag(info);
+    }
+
     @Override
     public void setAlpha(float alpha) {
         final float viewAlpha = sHolographicOutlineHelper.viewAlphaInterpolator(alpha);
@@ -173,21 +205,6 @@ public class PagedViewIcon extends TextView implements Checkable {
         mAlpha = (int) (viewAlpha * 255);
         mHolographicAlpha = (int) (holographicAlpha * 255);
         super.setAlpha(viewAlpha);
-    }
-
-    @Override
-    public void setCompoundDrawablesWithIntrinsicBounds(Drawable left, Drawable top,
-            Drawable right, Drawable bottom) {
-        invalidateHolographicImage();
-        super.setCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom);
-    }
-
-    public void invalidateHolographicImage() {
-        if (mHolographicOutline != null) {
-            mHolographicOutline.recycle();
-            mHolographicOutline = null;
-            mHolographicOutlineCanvas = null;
-        }
     }
 
     @Override
@@ -215,6 +232,7 @@ public class PagedViewIcon extends TextView implements Checkable {
                     offset);
             sHolographicOutlineHelper.applyBlur(mHolographicOutline, mHolographicOutlineCanvas);
             mIsHolographicUpdatePass = false;
+            mIconCache.addOutline(mIconCacheKey, mHolographicOutline);
         }
     }
 

@@ -211,6 +211,7 @@ public class AllAppsPagedView extends PagedView
         mApps = list;
         Collections.sort(mApps, LauncherModel.APP_NAME_COMPARATOR);
         mFilteredApps = rebuildFilteredApps(mApps);
+        mPageViewIconCache.clear();
         invalidatePageData();
     }
 
@@ -236,9 +237,11 @@ public class AllAppsPagedView extends PagedView
         // loop through all the apps and remove apps that have the same component
         final int length = list.size();
         for (int i = 0; i < length; ++i) {
-            int removeIndex = findAppByComponent(mApps, list.get(i));
+            final ApplicationInfo info = list.get(i);
+            int removeIndex = findAppByComponent(mApps, info);
             if (removeIndex > -1) {
                 mApps.remove(removeIndex);
+                mPageViewIconCache.removeOutline(info);
             }
         }
         mFilteredApps = rebuildFilteredApps(mApps);
@@ -327,16 +330,13 @@ public class AllAppsPagedView extends PagedView
 
         // actually reapply to the existing text views
         for (int i = startIndex; i < endIndex; ++i) {
-            int index = i - startIndex;
-            ApplicationInfo info = mFilteredApps.get(i);
-            TextView text = (TextView) layout.getChildAt(index);
-            text.setCompoundDrawablesWithIntrinsicBounds(null,
-                new FastBitmapDrawable(info.iconBitmap), null, null);
-            text.setText(info.title);
-            text.setTag(info);
+            final int index = i - startIndex;
+            final ApplicationInfo info = mFilteredApps.get(i);
+            PagedViewIcon icon = (PagedViewIcon) layout.getChildAt(index);
+            icon.applyFromApplicationInfo(info, mPageViewIconCache);
 
             PagedViewCellLayout.LayoutParams params = 
-                (PagedViewCellLayout.LayoutParams) text.getLayoutParams();
+                (PagedViewCellLayout.LayoutParams) icon.getLayoutParams();
             params.cellX = index % mCellCountX;
             params.cellY = index / mCellCountX;
         }
