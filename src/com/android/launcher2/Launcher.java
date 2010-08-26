@@ -790,7 +790,7 @@ public final class Launcher extends Activity
 
         final int currentScreen = savedState.getInt(RUNTIME_STATE_CURRENT_SCREEN, -1);
         if (currentScreen > -1) {
-            mWorkspace.setCurrentScreen(currentScreen);
+            mWorkspace.setCurrentPage(currentScreen);
         }
 
         final int addScreen = savedState.getInt(RUNTIME_STATE_PENDING_ADD_SCREEN, -1);
@@ -963,7 +963,7 @@ public final class Launcher extends Activity
      */
     View createShortcut(ShortcutInfo info) {
         return createShortcut(R.layout.application,
-                (ViewGroup) mWorkspace.getChildAt(mWorkspace.getCurrentScreen()), info);
+                (ViewGroup) mWorkspace.getChildAt(mWorkspace.getCurrentPage()), info);
     }
 
     /**
@@ -995,7 +995,7 @@ public final class Launcher extends Activity
      * @param cellInfo The position on screen where to create the shortcut.
      */
     void completeAddApplication(Context context, Intent data, CellLayout.CellInfo cellInfo) {
-        cellInfo.screen = mWorkspace.getCurrentScreen();
+        cellInfo.screen = mWorkspace.getCurrentPage();
         if (!findSingleSlot(cellInfo)) return;
 
         final ShortcutInfo info = mModel.getShortcutInfo(context.getPackageManager(),
@@ -1018,7 +1018,7 @@ public final class Launcher extends Activity
      * @param cellInfo The position on screen where to create the shortcut.
      */
     private void completeAddShortcut(Intent data, CellLayout.CellInfo cellInfo) {
-        cellInfo.screen = mWorkspace.getCurrentScreen();
+        cellInfo.screen = mWorkspace.getCurrentPage();
         if (!findSingleSlot(cellInfo)) return;
 
         final ShortcutInfo info = mModel.addShortcut(this, data, cellInfo, false);
@@ -1144,7 +1144,7 @@ public final class Launcher extends Activity
                 } else {
                     mWorkspace.unshrink(alreadyOnHome);
                 }
-            } else if (!mWorkspace.isDefaultScreenShowing()) {
+            } else if (!mWorkspace.isDefaultPageShowing()) {
                 // on the phone, we don't animate the change to the workspace if all apps is visible
                 mWorkspace.moveToDefaultScreen(alreadyOnHome && !allAppsVisible);
             }
@@ -1175,7 +1175,7 @@ public final class Launcher extends Activity
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(RUNTIME_STATE_CURRENT_SCREEN, mWorkspace.getCurrentScreen());
+        outState.putInt(RUNTIME_STATE_CURRENT_SCREEN, mWorkspace.getCurrentPage());
 
         final ArrayList<Folder> folders = mWorkspace.getOpenFolders();
         if (folders.size() > 0) {
@@ -1459,18 +1459,18 @@ public final class Launcher extends Activity
         folderInfo.title = getText(R.string.folder_name);
 
         CellLayout.CellInfo cellInfo = mAddItemCellInfo;
-        cellInfo.screen = mWorkspace.getCurrentScreen();
+        cellInfo.screen = mWorkspace.getCurrentPage();
         if (!findSingleSlot(cellInfo)) return;
 
         // Update the model
         LauncherModel.addItemToDatabase(this, folderInfo,
                 LauncherSettings.Favorites.CONTAINER_DESKTOP,
-                mWorkspace.getCurrentScreen(), cellInfo.cellX, cellInfo.cellY, false);
+                mWorkspace.getCurrentPage(), cellInfo.cellX, cellInfo.cellY, false);
         mFolders.put(folderInfo.id, folderInfo);
 
         // Create the view
         FolderIcon newFolder = FolderIcon.fromXml(R.layout.folder_icon, this,
-                (ViewGroup) mWorkspace.getChildAt(mWorkspace.getCurrentScreen()), folderInfo);
+                (ViewGroup) mWorkspace.getChildAt(mWorkspace.getCurrentPage()), folderInfo);
         mWorkspace.addInCurrentScreen(newFolder,
                 cellInfo.cellX, cellInfo.cellY, 1, 1, isWorkspaceLocked());
     }
@@ -1480,14 +1480,14 @@ public final class Launcher extends Activity
     }
 
     private void completeAddLiveFolder(Intent data, CellLayout.CellInfo cellInfo) {
-        cellInfo.screen = mWorkspace.getCurrentScreen();
+        cellInfo.screen = mWorkspace.getCurrentPage();
         if (!findSingleSlot(cellInfo)) return;
 
         final LiveFolderInfo info = addLiveFolder(this, data, cellInfo, false);
 
         if (!mRestoring) {
             final View view = LiveFolderIcon.fromXml(R.layout.live_folder_icon, this,
-                (ViewGroup) mWorkspace.getChildAt(mWorkspace.getCurrentScreen()), info);
+                (ViewGroup) mWorkspace.getChildAt(mWorkspace.getCurrentPage()), info);
             mWorkspace.addInCurrentScreen(view, cellInfo.cellX, cellInfo.cellY, 1, 1,
                     isWorkspaceLocked());
         }
@@ -1788,10 +1788,10 @@ public final class Launcher extends Activity
             Folder openFolder = mWorkspace.getFolderForTag(folderInfo);
             int folderScreen;
             if (openFolder != null) {
-                folderScreen = mWorkspace.getScreenForView(openFolder);
+                folderScreen = mWorkspace.getPageForView(openFolder);
                 // .. and close it
                 closeFolder(openFolder);
-                if (folderScreen != mWorkspace.getCurrentScreen()) {
+                if (folderScreen != mWorkspace.getCurrentPage()) {
                     // Close any folder open on the current screen
                     closeFolder();
                     // Pull the folder onto this screen
@@ -1972,7 +1972,7 @@ public final class Launcher extends Activity
             image.setOnClickListener(handler);
             image.setOnFocusChangeListener(handler);
             image.setFocusable(true);
-            if (i == mWorkspace.getCurrentScreen()) image.requestFocus();
+            if (i == mWorkspace.getCurrentPage()) image.requestFocus();
 
             preview.addView(image,
                     LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -2009,7 +2009,7 @@ public final class Launcher extends Activity
         }
 
         public void onClick(View v) {
-            mWorkspace.snapToScreen((Integer) v.getTag());
+            mWorkspace.snapToPage((Integer) v.getTag());
             v.post(this);
         }
 
@@ -2019,7 +2019,7 @@ public final class Launcher extends Activity
 
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
-                mWorkspace.snapToScreen((Integer) v.getTag());
+                mWorkspace.snapToPage((Integer) v.getTag());
             }
         }
     }
@@ -2528,7 +2528,7 @@ public final class Launcher extends Activity
                 mAllAppsGrid.zoom(0.0f, animated);
             }
             ((View)mAllAppsGrid).setFocusable(false);
-            mWorkspace.getChildAt(mWorkspace.getCurrentScreen()).requestFocus();
+            mWorkspace.getChildAt(mWorkspace.getCurrentPage()).requestFocus();
         }
     }
 
@@ -2752,7 +2752,7 @@ public final class Launcher extends Activity
      */
     public int getCurrentWorkspaceScreen() {
         if (mWorkspace != null) {
-            return mWorkspace.getCurrentScreen();
+            return mWorkspace.getCurrentPage();
         } else {
             return SCREEN_COUNT / 2;
         }
@@ -2805,7 +2805,7 @@ public final class Launcher extends Activity
                     break;
                 case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
                     final FolderIcon newFolder = FolderIcon.fromXml(R.layout.folder_icon, this,
-                            (ViewGroup) workspace.getChildAt(workspace.getCurrentScreen()),
+                            (ViewGroup) workspace.getChildAt(workspace.getCurrentPage()),
                             (UserFolderInfo) item);
                     workspace.addInScreen(newFolder, item.screen, item.cellX, item.cellY, 1, 1,
                             false);
@@ -2813,7 +2813,7 @@ public final class Launcher extends Activity
                 case LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER:
                     final FolderIcon newLiveFolder = LiveFolderIcon.fromXml(
                             R.layout.live_folder_icon, this,
-                            (ViewGroup) workspace.getChildAt(workspace.getCurrentScreen()),
+                            (ViewGroup) workspace.getChildAt(workspace.getCurrentPage()),
                             (LiveFolderInfo) item);
                     workspace.addInScreen(newLiveFolder, item.screen, item.cellX, item.cellY, 1, 1,
                             false);
@@ -2876,7 +2876,7 @@ public final class Launcher extends Activity
     public void finishBindingItems() {
         if (mSavedState != null) {
             if (!mWorkspace.hasFocus()) {
-                mWorkspace.getChildAt(mWorkspace.getCurrentScreen()).requestFocus();
+                mWorkspace.getChildAt(mWorkspace.getCurrentPage()).requestFocus();
             }
 
             final long[] userFolders = mSavedState.getLongArray(RUNTIME_STATE_USER_FOLDERS);

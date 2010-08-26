@@ -148,7 +148,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
 
     void onClose() {
         final Workspace workspace = mLauncher.getWorkspace();
-        workspace.getChildAt(workspace.getCurrentScreen()).requestFocus();
+        workspace.getChildAt(workspace.getCurrentPage()).requestFocus();
     }
 
     void bind(FolderInfo info) {
