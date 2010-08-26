@@ -24,6 +24,7 @@ import android.animation.Animatable;
 import android.animation.AnimatableListenerAdapter;
 import android.animation.Animator;
 import android.animation.PropertyAnimator;
+import android.animation.PropertyValuesHolder;
 import android.animation.Sequencer;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -2230,7 +2231,6 @@ public final class Launcher extends Activity
             hideSeq.play(getToolbarButtonAnim(false, marketButton));
             break;
         case ALL_APPS:
-            // TODO: Market button should also be shown
             showSeq.play(getToolbarButtonAnim(true, configureButton))
                     .with(getToolbarButtonAnim(true, marketButton));
             hideSeq.play(getToolbarButtonAnim(false, searchButton))
@@ -2278,17 +2278,17 @@ public final class Launcher extends Activity
         final float scale = (float) res.getInteger(R.integer.config_allAppsZoomScaleFactor);
         final boolean toAllApps = (toState == State.ALL_APPS);
         final View toView = toAllApps ? (View) mAllAppsGrid : mHomeCustomizationDrawer;
-        final int height = toView.getHeight();
 
         // toView should appear right at the end of the workspace shrink animation
         final int startDelay = res.getInteger(R.integer.config_workspaceShrinkTime) - duration;
 
         setPivotsForZoom(toView, toState, scale);
 
-        Interpolator interp = new DecelerateInterpolator();
-        Animator scaleXAnim = new PropertyAnimator(duration, toView, "scaleX", scale, 1.0f);
-        scaleXAnim.setInterpolator(interp);
-        scaleXAnim.addListener(new AnimatableListenerAdapter() {
+        Animator scaleAnim = new PropertyAnimator(duration, toView,
+                new PropertyValuesHolder<Float>("scaleX", scale, 1.0f),
+                new PropertyValuesHolder<Float>("scaleY", scale, 1.0f));
+        scaleAnim.setInterpolator(new DecelerateInterpolator());
+        scaleAnim.addListener(new AnimatableListenerAdapter() {
             public void onAnimationStart(Animatable animation) {
                 // Prepare the position
                 toView.setTranslationX(0.0f);
@@ -2299,16 +2299,13 @@ public final class Launcher extends Activity
             }
         });
 
-        Animator scaleYAnim = new PropertyAnimator(duration, toView, "scaleY", scale, 1.0f);
-        scaleYAnim.setInterpolator(interp);
-
         Sequencer toolbarHideAnim = new Sequencer();
         Sequencer toolbarShowAnim = new Sequencer();
         getToolbarButtonAnimations(toState, toolbarShowAnim, toolbarHideAnim);
 
         Sequencer s = new Sequencer();
-        s.playTogether(scaleXAnim, scaleYAnim, toolbarHideAnim);
-        s.play(scaleXAnim).after(startDelay);
+        s.playTogether(scaleAnim, toolbarHideAnim);
+        s.play(scaleAnim).after(startDelay);
 
         // Show the new toolbar buttons just as the main animation is ending
         final int fadeInTime = res.getInteger(R.integer.config_toolbarButtonFadeInTime);
@@ -2337,13 +2334,11 @@ public final class Launcher extends Activity
 
         setPivotsForZoom(fromView, fromState, scaleFactor);
 
-        Interpolator interp = new AccelerateInterpolator();
-
         Sequencer s = new Sequencer();
-        Animator scaleXAnim = new PropertyAnimator(duration, fromView, "scaleX", scaleFactor);
-        scaleXAnim.setInterpolator(interp);
-        Animator scaleYAnim = new PropertyAnimator(duration, fromView, "scaleY", scaleFactor);
-        scaleYAnim.setInterpolator(interp);
+        Animator scaleAnim = new PropertyAnimator(duration, fromView,
+                new PropertyValuesHolder<Float>("scaleX", scaleFactor),
+                new PropertyValuesHolder<Float>("scaleY", scaleFactor));
+        scaleAnim.setInterpolator(new AccelerateInterpolator());
         s.addListener(new AnimatableListenerAdapter() {
             public void onAnimationStart(Animatable animation) {
                 if (!animated) animation.end(); // Go immediately to the final state
@@ -2360,7 +2355,7 @@ public final class Launcher extends Activity
         Sequencer toolbarShowAnim = new Sequencer();
         getToolbarButtonAnimations(State.WORKSPACE, toolbarShowAnim, toolbarHideAnim);
 
-        s.playTogether(scaleXAnim, scaleYAnim, toolbarHideAnim);
+        s.playTogether(scaleAnim, toolbarHideAnim);
 
         // Show the new toolbar buttons at the very end of the whole animation
         final int fadeInTime = res.getInteger(R.integer.config_toolbarButtonFadeInTime);
