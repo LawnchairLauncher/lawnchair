@@ -17,12 +17,12 @@
 package com.android.launcher2;
 
 import com.android.launcher.R;
-import com.android.launcher2.CellLayout.CellInfo;
 
 import android.animation.Animatable;
-import android.animation.PropertyAnimator;
-import android.animation.Sequencer;
 import android.animation.Animatable.AnimatableListener;
+import android.animation.PropertyAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.Sequencer;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -1124,19 +1124,18 @@ public class Workspace extends ViewGroup
 
         // newX is initialized to the left-most position of the centered screens
         float newX = (mCurrentScreen + 1) * screenWidth - screenWidth / 2 - totalWidth / 2;
-        Sequencer s = new Sequencer();
         for (int i = 0; i < screenCount; i++) {
             CellLayout cl = (CellLayout) getChildAt(i);
             cl.setPivotX(0.0f);
             cl.setPivotY(0.0f);
             if (animated) {
                 final int duration = res.getInteger(R.integer.config_workspaceShrinkTime);
-                s.playTogether(
-                        new PropertyAnimator(duration, cl, "x", newX),
-                        new PropertyAnimator(duration, cl, "y", newY),
-                        new PropertyAnimator(duration, cl, "scaleX", SHRINK_FACTOR),
-                        new PropertyAnimator(duration, cl, "scaleY", SHRINK_FACTOR),
-                        new PropertyAnimator(duration, cl, "dimmedBitmapAlpha", 1.0f));
+                new PropertyAnimator(duration, cl,
+                        new PropertyValuesHolder("x", newX),
+                        new PropertyValuesHolder("y", newY),
+                        new PropertyValuesHolder("scaleX", SHRINK_FACTOR),
+                        new PropertyValuesHolder("scaleY", SHRINK_FACTOR),
+                        new PropertyValuesHolder("dimmedBitmapAlpha", 1.0f)).start();
             } else {
                 cl.setX((int)newX);
                 cl.setY((int)newY);
@@ -1149,7 +1148,6 @@ public class Workspace extends ViewGroup
             cl.setOnInterceptTouchListener(this);
         }
         setChildrenDrawnWithCacheEnabled(true);
-        if (animated) s.start();
     }
 
     // We call this when we trigger an unshrink by clicking on the CellLayout cl

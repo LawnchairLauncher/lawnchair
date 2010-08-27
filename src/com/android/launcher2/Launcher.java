@@ -2172,14 +2172,30 @@ public final class Launcher extends Activity
         }
     }
     
+    private void showToolbarButton(View button) {
+        button.setAlpha(1.0f);
+        button.setVisibility(View.VISIBLE);
+        button.setFocusable(true);
+        button.setClickable(true);
+    }
+
+    private void hideToolbarButton(View button) {
+        button.setAlpha(0.0f);
+        // We can't set it to GONE, otherwise the RelativeLayout gets screwed up
+        button.setVisibility(View.INVISIBLE);
+        button.setFocusable(false);
+        button.setClickable(false);
+    }
+
     /**
-     * Helper function for creating a show or hide animations for a toolbar button.
+     * Helper function for showing or hiding a toolbar button, possibly animated.
      *
      * @param show If true, create an animation to the show the item. Otherwise, hide it.
      * @param view The toolbar button to be animated
-     * @return An Animatable that will perform the show or hide action
+     * @param seq A Sequencer that will be used to animate the transition. If null, the
+     * transition will not be animated.
      */
-    private Animatable getToolbarButtonAnim(boolean show, final View view) {
+    private void hideOrShowToolbarButton(boolean show, final View view, Sequencer seq) {
         final boolean showing = show;
         final boolean hiding = !show;
 
@@ -2187,35 +2203,35 @@ public final class Launcher extends Activity
                 getResources().getInteger(R.integer.config_toolbarButtonFadeInTime) :
                 getResources().getInteger(R.integer.config_toolbarButtonFadeOutTime);
 
-        Animatable anim = new PropertyAnimator<Float>(duration, view, "alpha", show ? 1.0f : 0.0f);
-        anim.addListener(new AnimatableListenerAdapter() {
-            public void onAnimationStart(Animatable animation) {
-                if (showing) {
-                    view.setVisibility(View.VISIBLE);
-                    view.setFocusable(true);
-                    view.setClickable(true);
+        if (seq != null) {
+            Animatable anim = new PropertyAnimator<Float>(duration, view, "alpha", show ? 1.0f : 0.0f);
+            anim.addListener(new AnimatableListenerAdapter() {
+                public void onAnimationStart(Animatable animation) {
+                    if (showing) showToolbarButton(view);
                 }
-            }
-            public void onAnimationEnd(Animatable animation) {
-                if (hiding) {
-                    // We can't set it to GONE, otherwise the RelativeLayout gets screwed up
-                    view.setVisibility(View.INVISIBLE);
-                    view.setFocusable(false);
-                    view.setClickable(false);
+                public void onAnimationEnd(Animatable animation) {
+                    if (hiding) hideToolbarButton(view);
                 }
+            });
+            seq.play(anim);
+        } else {
+            if (showing) {
+                showToolbarButton(view);
+            } else {
+                hideToolbarButton(view);
             }
-        });
-        return anim;
+        }
     }
 
     /**
-     * Create the animations to show/hide the appropriate toolbar buttons for the new state.
+     * Show/hide the appropriate toolbar buttons for newState.
+     * If showSeq or hideSeq is null, the transition will be done immediately (not animated).
      *
      * @param newState The state that is being switched to
-     * @param showSeq Sequencer in which to put "show" animations
-     * @param hideSeq Sequencer in which to put "hide" animations
+     * @param showSeq Sequencer in which to put "show" animations, or null.
+     * @param hideSeq Sequencer in which to put "hide" animations, or null.
      */
-    private void getToolbarButtonAnimations(State newState, Sequencer showSeq, Sequencer hideSeq) {
+    private void hideAndShowToolbarButtons(State newState, Sequencer showSeq, Sequencer hideSeq) {
         final View searchButton = findViewById(R.id.search_button);
         final View allAppsButton = findViewById(R.id.all_apps_button);
         final View marketButton = findViewById(R.id.market_button);
@@ -2223,26 +2239,22 @@ public final class Launcher extends Activity
 
         switch (newState) {
         case WORKSPACE:
-            showSeq.playTogether(new Animatable[] {
-                    getToolbarButtonAnim(true, searchButton),
-                    getToolbarButtonAnim(true, allAppsButton),
-                    getToolbarButtonAnim(true, configureButton)
-            });
-            hideSeq.play(getToolbarButtonAnim(false, marketButton));
+            hideOrShowToolbarButton(true, searchButton, showSeq);
+            hideOrShowToolbarButton(true, allAppsButton, showSeq);
+            hideOrShowToolbarButton(true, configureButton, showSeq);
+            hideOrShowToolbarButton(false, marketButton, hideSeq);
             break;
         case ALL_APPS:
-            showSeq.play(getToolbarButtonAnim(true, configureButton))
-                    .with(getToolbarButtonAnim(true, marketButton));
-            hideSeq.play(getToolbarButtonAnim(false, searchButton))
-                    .with(getToolbarButtonAnim(false, allAppsButton));
+            hideOrShowToolbarButton(true, configureButton, showSeq);
+            hideOrShowToolbarButton(true, marketButton, showSeq);
+            hideOrShowToolbarButton(false, searchButton, hideSeq);
+            hideOrShowToolbarButton(false, allAppsButton, hideSeq);
             break;
         case CUSTOMIZE:
-            showSeq.play(getToolbarButtonAnim(true, allAppsButton));
-            hideSeq.playTogether(new Animatable[] {
-                    getToolbarButtonAnim(false, searchButton),
-                    getToolbarButtonAnim(false, marketButton),
-                    getToolbarButtonAnim(false, configureButton)
-            });
+            hideOrShowToolbarButton(true, allAppsButton, showSeq);
+            hideOrShowToolbarButton(false, searchButton, hideSeq);
+            hideOrShowToolbarButton(false, marketButton, hideSeq);
+            hideOrShowToolbarButton(false, configureButton, hideSeq);
             break;
         }
     }
@@ -2272,51 +2284,58 @@ public final class Launcher extends Activity
      * of the screen.
      * @param toState The state to zoom out to. Must be ALL_APPS or CUSTOMIZE.
      */
-    private void cameraZoomOut(State toState, final boolean animated) {
+    private void cameraZoomOut(State toState, boolean animated) {
         final Resources res = getResources();
         final int duration = res.getInteger(R.integer.config_allAppsZoomInTime);
         final float scale = (float) res.getInteger(R.integer.config_allAppsZoomScaleFactor);
         final boolean toAllApps = (toState == State.ALL_APPS);
         final View toView = toAllApps ? (View) mAllAppsGrid : mHomeCustomizationDrawer;
 
-        // toView should appear right at the end of the workspace shrink animation
-        final int startDelay = res.getInteger(R.integer.config_workspaceShrinkTime) - duration;
-
         setPivotsForZoom(toView, toState, scale);
-
-        Animator scaleAnim = new PropertyAnimator(duration, toView,
-                new PropertyValuesHolder<Float>("scaleX", scale, 1.0f),
-                new PropertyValuesHolder<Float>("scaleY", scale, 1.0f));
-        scaleAnim.setInterpolator(new DecelerateInterpolator());
-        scaleAnim.addListener(new AnimatableListenerAdapter() {
-            public void onAnimationStart(Animatable animation) {
-                // Prepare the position
-                toView.setTranslationX(0.0f);
-                toView.setTranslationY(0.0f);
-                toView.setVisibility(View.VISIBLE);
-
-                if (!animated) animation.end(); // Go immediately to the final state
-            }
-        });
-
-        Sequencer toolbarHideAnim = new Sequencer();
-        Sequencer toolbarShowAnim = new Sequencer();
-        getToolbarButtonAnimations(toState, toolbarShowAnim, toolbarHideAnim);
-
-        Sequencer s = new Sequencer();
-        s.playTogether(scaleAnim, toolbarHideAnim);
-        s.play(scaleAnim).after(startDelay);
-
-        // Show the new toolbar buttons just as the main animation is ending
-        final int fadeInTime = res.getInteger(R.integer.config_toolbarButtonFadeInTime);
-        s.play(toolbarShowAnim).after(duration + startDelay - fadeInTime);
 
         if (toState == State.ALL_APPS) {
             mWorkspace.shrinkToBottom(animated);
         } else {
             mWorkspace.shrinkToTop(animated);
         }
-        s.start();
+
+        if (animated) {
+            Animator scaleAnim = new PropertyAnimator(duration, toView,
+                    new PropertyValuesHolder<Float>("scaleX", scale, 1.0f),
+                    new PropertyValuesHolder<Float>("scaleY", scale, 1.0f));
+            scaleAnim.setInterpolator(new DecelerateInterpolator());
+            scaleAnim.addListener(new AnimatableListenerAdapter() {
+                public void onAnimationStart(Animatable animation) {
+                    // Prepare the position
+                    toView.setTranslationX(0.0f);
+                    toView.setTranslationY(0.0f);
+                    toView.setVisibility(View.VISIBLE);
+                }
+            });
+
+            Sequencer toolbarHideAnim = new Sequencer();
+            Sequencer toolbarShowAnim = new Sequencer();
+            hideAndShowToolbarButtons(toState, toolbarShowAnim, toolbarHideAnim);
+
+            // toView should appear right at the end of the workspace shrink animation
+            final int startDelay = res.getInteger(R.integer.config_workspaceShrinkTime) - duration;
+
+            Sequencer s = new Sequencer();
+            s.playTogether(scaleAnim, toolbarHideAnim);
+            s.play(scaleAnim).after(startDelay);
+
+            // Show the new toolbar buttons just as the main animation is ending
+            final int fadeInTime = res.getInteger(R.integer.config_toolbarButtonFadeInTime);
+            s.play(toolbarShowAnim).after(duration + startDelay - fadeInTime);
+            s.start();
+        } else {
+            toView.setTranslationX(0.0f);
+            toView.setTranslationY(0.0f);
+            toView.setScaleX(1.0f);
+            toView.setScaleY(1.0f);
+            toView.setVisibility(View.VISIBLE);
+            hideAndShowToolbarButtons(toState, null, null);
+        }
     }
 
     /**
@@ -2325,7 +2344,7 @@ public final class Launcher extends Activity
      * @param fromState The current state (must be ALL_APPS or CUSTOMIZE).
      * @param animated If true, the transition will be animated.
      */
-    private void cameraZoomIn(State fromState, final boolean animated) {
+    private void cameraZoomIn(State fromState, boolean animated) {
         Resources res = getResources();
         int duration = res.getInteger(R.integer.config_allAppsZoomOutTime);
         float scaleFactor = (float) res.getInteger(R.integer.config_allAppsZoomScaleFactor);
@@ -2334,36 +2353,37 @@ public final class Launcher extends Activity
 
         setPivotsForZoom(fromView, fromState, scaleFactor);
 
-        Sequencer s = new Sequencer();
-        Animator scaleAnim = new PropertyAnimator(duration, fromView,
-                new PropertyValuesHolder<Float>("scaleX", scaleFactor),
-                new PropertyValuesHolder<Float>("scaleY", scaleFactor));
-        scaleAnim.setInterpolator(new AccelerateInterpolator());
-        s.addListener(new AnimatableListenerAdapter() {
-            public void onAnimationStart(Animatable animation) {
-                if (!animated) animation.end(); // Go immediately to the final state
-            }
-
-            public void onAnimationEnd(Animatable animation) {
-                fromView.setVisibility(View.GONE);
-                fromView.setScaleX(1.0f);
-                fromView.setScaleY(1.0f);
-            }
-        });
-
-        Sequencer toolbarHideAnim = new Sequencer();
-        Sequencer toolbarShowAnim = new Sequencer();
-        getToolbarButtonAnimations(State.WORKSPACE, toolbarShowAnim, toolbarHideAnim);
-
-        s.playTogether(scaleAnim, toolbarHideAnim);
-
-        // Show the new toolbar buttons at the very end of the whole animation
-        final int fadeInTime = res.getInteger(R.integer.config_toolbarButtonFadeInTime);
-        final int unshrinkTime = res.getInteger(R.integer.config_workspaceUnshrinkTime);
-        s.play(toolbarShowAnim).after(unshrinkTime - fadeInTime);
-
         mWorkspace.unshrink(animated);
-        s.start();
+
+        if (animated) {
+            Sequencer s = new Sequencer();
+            Animator scaleAnim = new PropertyAnimator(duration, fromView,
+                    new PropertyValuesHolder<Float>("scaleX", scaleFactor),
+                    new PropertyValuesHolder<Float>("scaleY", scaleFactor));
+            scaleAnim.setInterpolator(new AccelerateInterpolator());
+            s.addListener(new AnimatableListenerAdapter() {
+                public void onAnimationEnd(Animatable animation) {
+                    fromView.setVisibility(View.GONE);
+                    fromView.setScaleX(1.0f);
+                    fromView.setScaleY(1.0f);
+                }
+            });
+
+            Sequencer toolbarHideAnim = new Sequencer();
+            Sequencer toolbarShowAnim = new Sequencer();
+            hideAndShowToolbarButtons(State.WORKSPACE, toolbarShowAnim, toolbarHideAnim);
+
+            s.playTogether(scaleAnim, toolbarHideAnim);
+
+            // Show the new toolbar buttons at the very end of the whole animation
+            final int fadeInTime = res.getInteger(R.integer.config_toolbarButtonFadeInTime);
+            final int unshrinkTime = res.getInteger(R.integer.config_workspaceUnshrinkTime);
+            s.play(toolbarShowAnim).after(unshrinkTime - fadeInTime);
+            s.start();
+        } else {
+            fromView.setVisibility(View.GONE);
+            hideAndShowToolbarButtons(State.WORKSPACE, null, null);
+        }
     }
 
     /**
@@ -2374,7 +2394,7 @@ public final class Launcher extends Activity
      * @param toState The view to pan into the frame. Must be ALL_APPS or CUSTOMIZE.
      * @param animated If true, the transition will be animated.
      */
-    private void cameraPan(State fromState, State toState, final boolean animated) {
+    private void cameraPan(State fromState, State toState, boolean animated) {
         final Resources res = getResources();
         final int duration = res.getInteger(R.integer.config_allAppsCameraPanTime);
         final int workspaceHeight = mWorkspace.getHeight();
@@ -2388,39 +2408,44 @@ public final class Launcher extends Activity
         final float toViewStartY = fromAllApps ? workspaceHeight * 2 : -toView.getHeight() * 2;
         final float toViewEndY = fromAllApps ? workspaceHeight - toView.getHeight() : 0.0f;
 
-        Sequencer s = new Sequencer();
-        s.addListener(new AnimatableListenerAdapter() {
-            public void onAnimationStart(Animatable animation) {
-                toView.setVisibility(View.VISIBLE);
-                toView.setY(toViewStartY);
-
-                if (!animated) animation.end(); // Go immediately to the final state
-            }
-            public void onAnimationEnd(Animatable animation) {
-                fromView.setVisibility(View.GONE);
-            }
-        });
-
-        Sequencer toolbarHideAnim = new Sequencer();
-        Sequencer toolbarShowAnim = new Sequencer();
-        getToolbarButtonAnimations(toState, toolbarShowAnim, toolbarHideAnim);
-
-        s.playTogether(
-                toolbarHideAnim,
-                new PropertyAnimator(duration, fromView, "y", fromViewStartY, fromViewEndY),
-                new PropertyAnimator(duration, toView, "y", toViewStartY, toViewEndY));
-
-        // Show the new toolbar buttons just as the main animation is ending
-        final int fadeInTime = res.getInteger(R.integer.config_toolbarButtonFadeInTime);
-        s.play(toolbarShowAnim).after(duration - fadeInTime);
-
         if (toState == State.ALL_APPS) {
             mWorkspace.shrinkToBottom(animated);
         } else {
             mWorkspace.shrinkToTop(animated);
         }
-        s.start();
-        if (!animated) s.end(); // Go immediately to the final state
+
+        if (animated) {
+            Sequencer s = new Sequencer();
+            s.addListener(new AnimatableListenerAdapter() {
+                public void onAnimationStart(Animatable animation) {
+                    toView.setVisibility(View.VISIBLE);
+                    toView.setY(toViewStartY);
+                }
+                public void onAnimationEnd(Animatable animation) {
+                    fromView.setVisibility(View.GONE);
+                }
+            });
+
+            Sequencer toolbarHideAnim = new Sequencer();
+            Sequencer toolbarShowAnim = new Sequencer();
+            hideAndShowToolbarButtons(toState, toolbarShowAnim, toolbarHideAnim);
+
+            s.playTogether(
+                    toolbarHideAnim,
+                    new PropertyAnimator(duration, fromView, "y", fromViewStartY, fromViewEndY),
+                    new PropertyAnimator(duration, toView, "y", toViewStartY, toViewEndY));
+
+            // Show the new toolbar buttons just as the main animation is ending
+            final int fadeInTime = res.getInteger(R.integer.config_toolbarButtonFadeInTime);
+            s.play(toolbarShowAnim).after(duration - fadeInTime);
+            s.start();
+        } else {
+            fromView.setY(fromViewEndY);
+            fromView.setVisibility(View.GONE);
+            toView.setY(toViewEndY);
+            toView.setVisibility(View.VISIBLE);
+            hideAndShowToolbarButtons(toState, null, null);
+        }
     }
 
     void showAllApps(boolean animated) {
@@ -2486,7 +2511,7 @@ public final class Launcher extends Activity
     void closeAllApps(boolean animated) {
         if (mAllAppsGrid.isVisible()) {
             mWorkspace.setVisibility(View.VISIBLE);
-            if (LauncherApplication.isScreenXLarge() && animated) {
+            if (LauncherApplication.isScreenXLarge()) {
                 cameraZoomIn(State.ALL_APPS, animated);
             } else {
                 mAllAppsGrid.zoom(0.0f, animated);
