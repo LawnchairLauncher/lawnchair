@@ -45,6 +45,7 @@ import android.content.Intent.ShortcutIconResource;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -82,7 +83,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.Interpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -180,6 +180,8 @@ public final class Launcher extends Activity
     private static final String SHORTCUTS_TAG = "shortcuts";
     private static final String WALLPAPERS_TAG = "wallpapers";
 
+    private static final String TOOLBAR_ICON_METADATA_NAME = "com.android.launcher.toolbar_icon";
+
     /** The different states that Launcher can be in. */
     private enum State { WORKSPACE, ALL_APPS, CUSTOMIZE, OVERVIEW };
 
@@ -238,6 +240,8 @@ public final class Launcher extends Activity
     private Intent[] mHotseats = null;
     private Drawable[] mHotseatIcons = null;
     private CharSequence[] mHotseatLabels = null;
+
+    private Intent mAppMarketIntent = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -681,6 +685,9 @@ public final class Launcher extends Activity
             mModel.startLoader(this, true);
             mRestoring = false;
         }
+        // When we resume Launcher, a different Activity might be responsible for the app
+        // market intent, so refresh the icon
+        updateAppMarketIcon();
     }
 
     @Override
@@ -1128,7 +1135,6 @@ public final class Launcher extends Activity
                         != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
             boolean allAppsVisible = isAllAppsVisible();
             boolean customizationDrawerVisible = isCustomizationDrawerVisible();
-
 
             // in all these cases, only animate if we're already on home
             if (LauncherApplication.isScreenXLarge()) {
@@ -1729,6 +1735,12 @@ public final class Launcher extends Activity
      */
     public void onClickAllAppsButton(View v) {
         showAllApps(true);
+    }
+
+    public void onClickAppMarketButton(View v) {
+        if (mAppMarketIntent != null) {
+            startActivitySafely(mAppMarketIntent, "app market");
+        }
     }
 
     void startApplicationDetailsActivity(String packageName) {
@@ -2561,6 +2573,46 @@ public final class Launcher extends Activity
     }
 
     /**
+     * Sets the app market icon (shown when all apps is visible on x-large screens)
+     */
+    private void updateAppMarketIcon() {
+        if (LauncherApplication.isScreenXLarge()) {
+            // Find the app market activity by resolving an intent.
+            // (If multiple app markets are installed, it will return the ResolverActivity.)
+            PackageManager packageManager = getPackageManager();
+            Intent intent = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_MARKET);
+            ComponentName activityName = intent.resolveActivity(getPackageManager());
+            if (activityName != null) {
+                mAppMarketIntent = intent;
+                ImageView marketButton = (ImageView) findViewById(R.id.market_button);
+                Drawable toolbarIcon = null;
+                try {
+                    // Look for the toolbar icon specified in the activity meta-data
+                    Bundle metaData = packageManager.getActivityInfo(
+                            activityName, PackageManager.GET_META_DATA).metaData;
+                    if (metaData != null) {
+                        int iconResId = metaData.getInt(TOOLBAR_ICON_METADATA_NAME);
+                        if (iconResId != 0) {
+                            Resources res = packageManager.getResourcesForActivity(activityName);
+                            toolbarIcon = res.getDrawable(iconResId);
+                        }
+                    }
+                } catch (NameNotFoundException e) {
+                    // Do nothing
+                }
+                // If we were unable to find the icon via the meta-data, use a generic one
+                if (toolbarIcon == null) {
+                    marketButton.setImageResource(R.drawable.app_market_generic);
+                } else {
+                    marketButton.setImageDrawable(toolbarIcon);
+                }
+            } else {
+                mAppMarketIntent = null;
+            }
+        }
+    }
+
+    /**
      * Displays the shortcut creation dialog and launches, if necessary, the
      * appropriate activity.
      */
@@ -2860,6 +2912,7 @@ public final class Launcher extends Activity
      */
     public void bindAllApplications(ArrayList<ApplicationInfo> apps) {
         mAllAppsGrid.setApps(apps);
+        updateAppMarketIcon();
     }
 
     /**
@@ -2870,6 +2923,7 @@ public final class Launcher extends Activity
     public void bindAppsAdded(ArrayList<ApplicationInfo> apps) {
         removeDialog(DIALOG_CREATE_SHORTCUT);
         mAllAppsGrid.addApps(apps);
+        updateAppMarketIcon();
     }
 
     /**
@@ -2881,6 +2935,7 @@ public final class Launcher extends Activity
         removeDialog(DIALOG_CREATE_SHORTCUT);
         mWorkspace.updateShortcuts(apps);
         mAllAppsGrid.updateApps(apps);
+        updateAppMarketIcon();
     }
 
     /**
@@ -2894,6 +2949,7 @@ public final class Launcher extends Activity
             mWorkspace.removeItems(apps);
         }
         mAllAppsGrid.removeApps(apps);
+        updateAppMarketIcon();
     }
 
     /**
