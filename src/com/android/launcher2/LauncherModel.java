@@ -1566,7 +1566,7 @@ public class LauncherModel extends BroadcastReceiver {
         // into the DB.  We do this so when we're loading, if the
         // package manager can't find an icon (for example because
         // the app is on SD) then we can use that instead.
-        if (info.onExternalStorage && !info.customIcon && !info.usingFallbackIcon) {
+        if (!info.customIcon && !info.usingFallbackIcon) {
             boolean needSave;
             byte[] data = c.getBlob(iconIndex);
             try {
