@@ -83,6 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_alignLeft="@id/all_apps_button"
 
+            android:onClick="onClickAppMarketButton"
             android:focusable="false"
             android:clickable="false"
             android:visibility="gone"/>
