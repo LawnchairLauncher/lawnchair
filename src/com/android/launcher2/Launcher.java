@@ -1341,7 +1341,6 @@ public final class Launcher extends Activity
     public void prepareAddItemFromHomeCustomizationDrawer() {
         mMenuAddInfo = mWorkspace.updateOccupiedCellsForCurrentScreen(null);
         mAddItemCellInfo = mMenuAddInfo;
-        mAddItemCellInfo = null;
     }
 
     @Override
