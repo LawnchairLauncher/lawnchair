@@ -54,11 +54,6 @@ class ShortcutInfo extends ItemInfo {
     boolean usingFallbackIcon;
 
     /**
-     * Indicates whether the shortcut is on external storage and may go away at any time.
-     */
-    boolean onExternalStorage;
-
-    /**
      * If isShortcut=true and customIcon=false, this contains a reference to the
      * shortcut icon as an application's resource.
      */
@@ -101,6 +96,7 @@ class ShortcutInfo extends ItemInfo {
     public Bitmap getIcon(IconCache iconCache) {
         if (mIcon == null) {
             mIcon = iconCache.getIcon(this.intent);
+            this.usingFallbackIcon = iconCache.isDefaultIcon(mIcon);
         }
         return mIcon;
     }
@@ -135,7 +131,7 @@ class ShortcutInfo extends ItemInfo {
                     LauncherSettings.BaseLauncherColumns.ICON_TYPE_BITMAP);
             writeBitmap(values, mIcon);
         } else {
-            if (onExternalStorage && !usingFallbackIcon) {
+            if (!usingFallbackIcon) {
                 writeBitmap(values, mIcon);
             }
             values.put(LauncherSettings.BaseLauncherColumns.ICON_TYPE,
