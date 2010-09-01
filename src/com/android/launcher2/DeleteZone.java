@@ -16,24 +16,25 @@
 
 package com.android.launcher2;
 
-import android.widget.ImageView;
+import com.android.launcher.R;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
-import android.util.AttributeSet;
-import android.view.View;
-import android.view.animation.TranslateAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AlphaAnimation;
 import android.graphics.RectF;
 import android.graphics.drawable.TransitionDrawable;
-
-import com.android.launcher.R;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.TranslateAnimation;
+import android.widget.ImageView;
 
 public class DeleteZone extends ImageView implements DropTarget, DragController.DragListener {
     private static final int ORIENTATION_HORIZONTAL = 1;
@@ -93,21 +94,26 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
             DragView dragView, Object dragInfo) {
         final ItemInfo item = (ItemInfo) dragInfo;
 
+        // On x-large screens, you can uninstall an app by dragging from all apps
+        if (item instanceof ApplicationInfo && LauncherApplication.isScreenXLarge()) {
+            ApplicationInfo appInfo = (ApplicationInfo)item;
+            mLauncher.startApplicationUninstallActivity(appInfo.componentName);
+        }
+
         if (item.container == -1) return;
 
         if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
             if (item instanceof LauncherAppWidgetInfo) {
                 mLauncher.removeAppWidget((LauncherAppWidgetInfo) item);
             }
-        } else {
-            if (source instanceof UserFolder) {
-                final UserFolder userFolder = (UserFolder) source;
-                final UserFolderInfo userFolderInfo = (UserFolderInfo) userFolder.getInfo();
-                // Item must be a ShortcutInfo otherwise it couldn't have been in the folder
-                // in the first place.
-                userFolderInfo.remove((ShortcutInfo)item);
-            }
+        } else if (source instanceof UserFolder) {
+            final UserFolder userFolder = (UserFolder) source;
+            final UserFolderInfo userFolderInfo = (UserFolderInfo) userFolder.getInfo();
+            // Item must be a ShortcutInfo otherwise it couldn't have been in the folder
+            // in the first place.
+            userFolderInfo.remove((ShortcutInfo)item);
         }
+
         if (item instanceof UserFolderInfo) {
             final UserFolderInfo userFolderInfo = (UserFolderInfo)item;
             LauncherModel.deleteUserFolderContentsFromDatabase(mLauncher, userFolderInfo);
@@ -119,6 +125,7 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
                 appWidgetHost.deleteAppWidgetId(launcherAppWidgetInfo.appWidgetId);
             }
         }
+
         LauncherModel.deleteItemFromDatabase(mLauncher, item);
     }
 

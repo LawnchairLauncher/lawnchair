@@ -16,6 +16,7 @@
 
 package com.android.launcher2;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
@@ -65,13 +66,13 @@ public class ApplicationInfoDropTarget extends ImageView implements DropTarget, 
         // in onDrop, because it allows us to reject the drop (by returning false)
         // so that the object being dragged isn't removed from the home screen.
 
-        String packageName = null;
+        ComponentName componentName = null;
         if (dragInfo instanceof ApplicationInfo) {
-            packageName = ((ApplicationInfo)dragInfo).componentName.getPackageName();
+            componentName = ((ApplicationInfo)dragInfo).componentName;
         } else if (dragInfo instanceof ShortcutInfo) {
-            packageName = ((ShortcutInfo)dragInfo).intent.getComponent().getPackageName();
+            componentName = ((ShortcutInfo)dragInfo).intent.getComponent();
         }
-        mLauncher.startApplicationDetailsActivity(packageName);
+        mLauncher.startApplicationDetailsActivity(componentName);
         return false;
     }
 

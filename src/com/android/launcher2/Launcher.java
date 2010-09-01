@@ -1765,9 +1765,18 @@ public final class Launcher extends Activity
         }
     }
 
-    void startApplicationDetailsActivity(String packageName) {
+    void startApplicationDetailsActivity(ComponentName componentName) {
+        String packageName = componentName.getPackageName();
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 Uri.fromParts("package", packageName, null));
+        startActivity(intent);
+    }
+
+    void startApplicationUninstallActivity(ComponentName componentName) {
+        String packageName = componentName.getPackageName();
+        String className = componentName.getClassName();
+        Intent intent = new Intent(
+                Intent.ACTION_DELETE, Uri.fromParts("package", packageName, className));
         startActivity(intent);
     }
 
@@ -2277,18 +2286,21 @@ public final class Launcher extends Activity
             hideOrShowToolbarButton(true, allAppsButton, showSeq);
             hideOrShowToolbarButton(true, configureButton, showSeq);
             hideOrShowToolbarButton(false, marketButton, hideSeq);
+            mDeleteZone.setHandle(allAppsButton);
             break;
         case ALL_APPS:
             hideOrShowToolbarButton(true, configureButton, showSeq);
             hideOrShowToolbarButton(true, marketButton, showSeq);
             hideOrShowToolbarButton(false, searchButton, hideSeq);
             hideOrShowToolbarButton(false, allAppsButton, hideSeq);
+            mDeleteZone.setHandle(marketButton);
             break;
         case CUSTOMIZE:
             hideOrShowToolbarButton(true, allAppsButton, showSeq);
             hideOrShowToolbarButton(false, searchButton, hideSeq);
             hideOrShowToolbarButton(false, marketButton, hideSeq);
             hideOrShowToolbarButton(false, configureButton, hideSeq);
+            mDeleteZone.setHandle(allAppsButton);
             break;
         }
     }
