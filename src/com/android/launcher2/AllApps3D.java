@@ -970,15 +970,6 @@ public class AllApps3D extends RSSurfaceView
         AllApps3D mAllApps;
         boolean mInitialize;
 
-        class BaseAlloc {
-            Allocation mAlloc;
-            Type mType;
-
-            void save() {
-                mAlloc.data(this);
-            }
-        }
-
         private boolean checkClickOK() {
             return (Math.abs(mAllApps.mVelocity) < 0.4f) &&
                    (Math.abs(mScrollPos - Math.round(mScrollPos)) < 0.4f);
