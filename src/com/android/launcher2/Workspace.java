@@ -660,9 +660,7 @@ public class Workspace extends ViewGroup
     public boolean requestChildRectangleOnScreen(View child, Rect rectangle, boolean immediate) {
         int screen = indexOfChild(child);
         if (screen != mCurrentScreen || !mScroller.isFinished()) {
-            if (!mLauncher.isWorkspaceLocked()) {
-                snapToScreen(screen);
-            }
+            snapToScreen(screen);
             return true;
         }
         return false;
@@ -729,8 +727,7 @@ public class Workspace extends ViewGroup
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             // (In XLarge mode, the workspace is shrunken below all apps, and responds to taps
             // ie when you click on a mini-screen, it zooms back to that screen)
-            if (mLauncher.isWorkspaceLocked() ||
-                    (!LauncherApplication.isScreenXLarge() && mLauncher.isAllAppsVisible())) {
+            if (!LauncherApplication.isScreenXLarge() && mLauncher.isAllAppsVisible()) {
                 return false;
             }
         }
@@ -753,12 +750,11 @@ public class Workspace extends ViewGroup
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        final boolean workspaceLocked = mLauncher.isWorkspaceLocked();
         final boolean allAppsVisible = mLauncher.isAllAppsVisible();
 
         // (In XLarge mode, the workspace is shrunken below all apps, and responds to taps
         // ie when you click on a mini-screen, it zooms back to that screen)
-        if (workspaceLocked || (!LauncherApplication.isScreenXLarge() && allAppsVisible)) {
+        if (!LauncherApplication.isScreenXLarge() && allAppsVisible) {
             return false; // We don't want the events.  Let them fall through to the all apps view.
         }
 
@@ -961,10 +957,6 @@ public class Workspace extends ViewGroup
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-
-        if (mLauncher.isWorkspaceLocked()) {
-            return false; // We don't want the events.  Let them fall through to the all apps view.
-        }
         if (mLauncher.isAllAppsVisible()) {
             // Cancel any scrolling that is in progress.
             if (!mScroller.isFinished()) {
