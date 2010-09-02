@@ -58,6 +58,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -229,8 +230,10 @@ public final class Launcher extends Activity
     private LauncherModel mModel;
     private IconCache mIconCache;
 
+    private static LocaleConfiguration sLocaleConfiguration = null;
+
     private ArrayList<ItemInfo> mDesktopItems = new ArrayList<ItemInfo>();
-    private static HashMap<Long, FolderInfo> mFolders = new HashMap<Long, FolderInfo>();
+    private static HashMap<Long, FolderInfo> sFolders = new HashMap<Long, FolderInfo>();
 
     private ImageView mPreviousView;
     private ImageView mNextView;
@@ -376,31 +379,51 @@ public final class Launcher extends Activity
     }
 
     private void checkForLocaleChange() {
-        final LocaleConfiguration localeConfiguration = new LocaleConfiguration();
-        readConfiguration(this, localeConfiguration);
+        if (sLocaleConfiguration == null) {
+            new AsyncTask<Void, Void, LocaleConfiguration>() {
+                @Override
+                protected LocaleConfiguration doInBackground(Void... unused) {
+                    LocaleConfiguration localeConfiguration = new LocaleConfiguration();
+                    readConfiguration(Launcher.this, localeConfiguration);
+                    return localeConfiguration;
+                }
+
+                @Override
+                protected void onPostExecute(LocaleConfiguration result) {
+                    sLocaleConfiguration = result;
+                    checkForLocaleChange();  // recursive, but now with a locale configuration
+                }
+            }.execute();
+            return;
+        }
 
         final Configuration configuration = getResources().getConfiguration();
 
-        final String previousLocale = localeConfiguration.locale;
+        final String previousLocale = sLocaleConfiguration.locale;
         final String locale = configuration.locale.toString();
 
-        final int previousMcc = localeConfiguration.mcc;
+        final int previousMcc = sLocaleConfiguration.mcc;
         final int mcc = configuration.mcc;
 
-        final int previousMnc = localeConfiguration.mnc;
+        final int previousMnc = sLocaleConfiguration.mnc;
         final int mnc = configuration.mnc;
 
         boolean localeChanged = !locale.equals(previousLocale) || mcc != previousMcc || mnc != previousMnc;
 
         if (localeChanged) {
-            localeConfiguration.locale = locale;
-            localeConfiguration.mcc = mcc;
-            localeConfiguration.mnc = mnc;
+            sLocaleConfiguration.locale = locale;
+            sLocaleConfiguration.mcc = mcc;
+            sLocaleConfiguration.mnc = mnc;
 
-            writeConfiguration(this, localeConfiguration);
             mIconCache.flush();
-
             loadHotseats();
+
+            final LocaleConfiguration localeConfiguration = sLocaleConfiguration;
+            new Thread("WriteLocaleConfiguration") {
+                public void run() {
+                    writeConfiguration(Launcher.this, localeConfiguration);
+                }
+            }.start();
         }
     }
 
@@ -814,7 +837,7 @@ public final class Launcher extends Activity
         boolean renameFolder = savedState.getBoolean(RUNTIME_STATE_PENDING_FOLDER_RENAME, false);
         if (renameFolder) {
             long id = savedState.getLong(RUNTIME_STATE_PENDING_FOLDER_RENAME_ID);
-            mFolderInfo = mModel.getFolderById(this, mFolders, id);
+            mFolderInfo = mModel.getFolderById(this, sFolders, id);
             mRestoring = true;
         }
     }
@@ -1466,7 +1489,7 @@ public final class Launcher extends Activity
         LauncherModel.addItemToDatabase(this, folderInfo,
                 LauncherSettings.Favorites.CONTAINER_DESKTOP,
                 mWorkspace.getCurrentPage(), cellInfo.cellX, cellInfo.cellY, false);
-        mFolders.put(folderInfo.id, folderInfo);
+        sFolders.put(folderInfo.id, folderInfo);
 
         // Create the view
         FolderIcon newFolder = FolderIcon.fromXml(R.layout.folder_icon, this,
@@ -1476,7 +1499,7 @@ public final class Launcher extends Activity
     }
 
     void removeFolder(FolderInfo folder) {
-        mFolders.remove(folder.id);
+        sFolders.remove(folder.id);
     }
 
     private void completeAddLiveFolder(Intent data, CellLayout.CellInfo cellInfo) {
@@ -1531,7 +1554,7 @@ public final class Launcher extends Activity
 
         LauncherModel.addItemToDatabase(context, info, LauncherSettings.Favorites.CONTAINER_DESKTOP,
                 cellInfo.screen, cellInfo.cellX, cellInfo.cellY, notify);
-        mFolders.put(info.id, info);
+        sFolders.put(info.id, info);
 
         return info;
     }
@@ -2140,7 +2163,7 @@ public final class Launcher extends Activity
             final String name = mInput.getText().toString();
             if (!TextUtils.isEmpty(name)) {
                 // Make sure we have the right folder info
-                mFolderInfo = mFolders.get(mFolderInfo.id);
+                mFolderInfo = sFolders.get(mFolderInfo.id);
                 mFolderInfo.title = name;
                 LauncherModel.updateItemInDatabase(Launcher.this, mFolderInfo);
 
@@ -2828,8 +2851,8 @@ public final class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void bindFolders(HashMap<Long, FolderInfo> folders) {
-        mFolders.clear();
-        mFolders.putAll(folders);
+        sFolders.clear();
+        sFolders.putAll(folders);
     }
 
     /**
@@ -2882,7 +2905,7 @@ public final class Launcher extends Activity
             final long[] userFolders = mSavedState.getLongArray(RUNTIME_STATE_USER_FOLDERS);
             if (userFolders != null) {
                 for (long folderId : userFolders) {
-                    final FolderInfo info = mFolders.get(folderId);
+                    final FolderInfo info = sFolders.get(folderId);
                     if (info != null) {
                         openFolder(info);
                     }
@@ -2971,7 +2994,7 @@ public final class Launcher extends Activity
         Log.d(TAG, "mWaitingForResult=" + mWaitingForResult);
         Log.d(TAG, "mSavedInstanceState=" + mSavedInstanceState);
         Log.d(TAG, "mDesktopItems.size=" + mDesktopItems.size());
-        Log.d(TAG, "mFolders.size=" + mFolders.size());
+        Log.d(TAG, "sFolders.size=" + sFolders.size());
         mModel.dumpState();
         mAllAppsGrid.dumpState();
         Log.d(TAG, "END launcher2 dump state");
