@@ -18,4 +18,5 @@
 -->
 <resources>
     <color name="app_info_filter">#A50000FE</color>
+    <color name="dimmed_view_color">#FF7F7F7F</color>
 </resources>

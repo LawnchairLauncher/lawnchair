@@ -22,12 +22,7 @@ import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
@@ -37,17 +32,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
-import android.view.View.OnTouchListener;
 import android.view.animation.Animation;
 import android.view.animation.LayoutAnimationController;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class CellLayout extends ViewGroup {
     static final String TAG = "CellLayout";
-    // we make the dimmed bitmap smaller than the screen itself for memory + perf reasons
-    static final float DIMMED_BITMAP_SCALE = 0.25f;
 
     private boolean mPortrait;
 
@@ -77,17 +68,10 @@ public class CellLayout extends ViewGroup {
 
     private OnTouchListener mInterceptTouchListener;
 
-    // this is what the home screen fades to when it shrinks
-    //   (ie in all apps and in home screen customize mode)
-    private Bitmap mDimmedBitmap;
-    private Canvas mDimmedBitmapCanvas;
-    private float mDimmedBitmapAlpha;
-    private boolean mDimmedBitmapDirty = false;
-    private final Paint mDimmedBitmapPaint = new Paint();
-    private final Rect mLayoutRect = new Rect();
-    private final Rect mDimmedBitmapRect = new Rect();
-    private Drawable mDimmedBitmapBackground;
-    private Drawable mDimmedBitmapBackgroundHover;
+    private float mBackgroundAlpha;
+    private final Rect mBackgroundLayoutRect = new Rect();
+    private Drawable mBackground;
+    private Drawable mBackgroundHover;
     // If we're actively dragging something over this screen and it's small,
     // mHover is true
     private boolean mHover = false;
@@ -129,13 +113,10 @@ public class CellLayout extends ViewGroup {
         mOccupiedDrawable = getResources().getDrawable(R.drawable.rounded_rect_red);
 
         if (LauncherApplication.isScreenXLarge()) {
-            mDimmedBitmapBackground = getResources().getDrawable(
-                    R.drawable.mini_home_screen_bg);
-            mDimmedBitmapBackground.setFilterBitmap(true);
-
-            mDimmedBitmapBackgroundHover = getResources().getDrawable(
-                    R.drawable.mini_home_screen_bg_hover);
-            mDimmedBitmapBackgroundHover.setFilterBitmap(true);
+            mBackground = getResources().getDrawable(R.drawable.mini_home_screen_bg);
+            mBackground.setFilterBitmap(true);
+            mBackgroundHover = getResources().getDrawable(R.drawable.mini_home_screen_bg_hover);
+            mBackgroundHover.setFilterBitmap(true);
         }
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CellLayout, defStyle, 0);
@@ -160,8 +141,6 @@ public class CellLayout extends ViewGroup {
         setAlwaysDrawnWithCacheEnabled(false);
 
         mWallpaperManager = WallpaperManager.getInstance(getContext());
-
-        mDimmedBitmapPaint.setFilterBitmap(true);
     }
 
     public void setHover(boolean value) {
@@ -173,9 +152,9 @@ public class CellLayout extends ViewGroup {
 
     @Override
     public void dispatchDraw(Canvas canvas) {
-        if (mDimmedBitmapAlpha > 0.0f) {
-            final Drawable bg = mHover ? mDimmedBitmapBackgroundHover : mDimmedBitmapBackground;
-            bg.setAlpha((int) (mDimmedBitmapAlpha * 255));
+        if (mBackgroundAlpha > 0.0f) {
+            final Drawable bg = mHover ? mBackgroundHover : mBackground;
+            bg.setAlpha((int) (mBackgroundAlpha * 255));
             bg.draw(canvas);
         }
         super.dispatchDraw(canvas);
@@ -191,15 +170,7 @@ public class CellLayout extends ViewGroup {
                     (int)mDragRect.bottom);
             mDragRectDrawable.draw(canvas);
         }
-        if (mDimmedBitmap != null && mDimmedBitmapAlpha > 0.0f) {
-            if (mDimmedBitmapDirty) {
-                updateDimmedBitmap();
-                mDimmedBitmapDirty = false;
-            }
-            mDimmedBitmapPaint.setAlpha((int) (mDimmedBitmapAlpha * 255));
-
-            //canvas.drawBitmap(mDimmedBitmap, mDimmedBitmapRect, mLayoutRect, mDimmedBitmapPaint);
-        }
+        super.onDraw(canvas);
     }
 
     @Override
@@ -242,21 +213,13 @@ public class CellLayout extends ViewGroup {
 
             // We might be in the middle or end of shrinking/fading to a dimmed view
             // Make sure this view's alpha is set the same as all the rest of the views
-            //child.setAlpha(1.0f - mDimmedBitmapAlpha);
+            child.setAlpha(getAlpha());
 
             addView(child, index, lp);
 
-            // next time we draw the dimmed bitmap we need to update it
-            mDimmedBitmapDirty = true;
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void removeView(View view) {
-        super.removeView(view);
-        mDimmedBitmapDirty = true;
     }
 
     @Override
@@ -544,6 +507,10 @@ public class CellLayout extends ViewGroup {
                 - mRightPadding - (cellWidth * mCountX);
         mWidthGap = hSpaceLeft / numWidthGaps;
 
+        // center it around the min gaps
+        int minGap = Math.min(mWidthGap, mHeightGap);
+        mWidthGap = mHeightGap = minGap;
+
         int count = getChildCount();
 
         for (int i = 0; i < count; i++) {
@@ -559,8 +526,15 @@ public class CellLayout extends ViewGroup {
 
             child.measure(childWidthMeasureSpec, childheightMeasureSpec);
         }
-
-        setMeasuredDimension(widthSpecSize, heightSpecSize);
+        if (widthSpecMode == MeasureSpec.AT_MOST) {
+            int newWidth = mLeftPadding + mRightPadding + (mCountX * cellWidth) +
+                ((mCountX - 1) * minGap);
+            int newHeight = mTopPadding + mBottomPadding + (mCountY * cellHeight) +
+                ((mCountY - 1) * minGap);
+            setMeasuredDimension(newWidth, newHeight);
+        } else if (widthSpecMode == MeasureSpec.EXACTLY) {
+            setMeasuredDimension(widthSpecSize, heightSpecSize);
+        }
     }
 
     @Override
@@ -593,13 +567,12 @@ public class CellLayout extends ViewGroup {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        mLayoutRect.set(0, 0, w, h);
-        mDimmedBitmapRect.set(0, 0, (int) (DIMMED_BITMAP_SCALE * w), (int) (DIMMED_BITMAP_SCALE * h));
-        if (mDimmedBitmapBackground != null) {
-            mDimmedBitmapBackground.setBounds(mLayoutRect);
+        mBackgroundLayoutRect.set(0, 0, w, h);
+        if (mBackground != null) {
+            mBackground.setBounds(mBackgroundLayoutRect);
         }
-        if (mDimmedBitmapBackgroundHover != null) {
-            mDimmedBitmapBackgroundHover.setBounds(mLayoutRect);
+        if (mBackgroundHover != null) {
+            mBackgroundHover.setBounds(mBackgroundLayoutRect);
         }
     }
 
@@ -619,20 +592,26 @@ public class CellLayout extends ViewGroup {
         super.setChildrenDrawnWithCacheEnabled(enabled);
     }
 
-    public float getDimmedBitmapAlpha() {
-        return mDimmedBitmapAlpha;
+    public float getBackgroundAlpha() {
+        return mBackgroundAlpha;
     }
 
-    public void setDimmedBitmapAlpha(float alpha) {
-        // If we're dimming the screen after it was not dimmed, refresh
-        // to allow for updated widgets. We don't continually refresh it
-        // after this point, however, as an optimization
-        if (mDimmedBitmapAlpha == 0.0f && alpha > 0.0f) {
-            updateDimmedBitmap();
-        }
-        mDimmedBitmapAlpha = alpha;
-        //setChildrenAlpha(1.0f - mDimmedBitmapAlpha);
+    public void setBackgroundAlpha(float alpha) {
+        mBackgroundAlpha = alpha;
         invalidate();
+    }
+
+    // Need to return true to let the view system know we know how to handle alpha-- this is
+    // because when our children have an alpha of 0.0f, they are still rendering their "dimmed"
+    // versions
+    @Override
+    protected boolean onSetAlpha(int alpha) {
+        return true;
+    }
+
+    public void setAlpha(float alpha) {
+        setChildrenAlpha(alpha);
+        super.setAlpha(alpha);
     }
 
     private void setChildrenAlpha(float alpha) {
@@ -640,27 +619,6 @@ public class CellLayout extends ViewGroup {
         for (int i = 0; i < childCount; i++) {
             getChildAt(i).setAlpha(alpha);
         }
-    }
-
-    public void updateDimmedBitmap() {
-        if (mDimmedBitmap == null) {
-            mDimmedBitmap = Bitmap.createBitmap((int) (getWidth() * DIMMED_BITMAP_SCALE),
-                    (int) (getHeight() * DIMMED_BITMAP_SCALE), Bitmap.Config.ARGB_8888);
-            mDimmedBitmapCanvas = new Canvas(mDimmedBitmap);
-            mDimmedBitmapCanvas.scale(DIMMED_BITMAP_SCALE, DIMMED_BITMAP_SCALE);
-        }
-        // clear the canvas
-        mDimmedBitmapCanvas.drawColor(0x00000000, PorterDuff.Mode.CLEAR);
-
-        // draw the screen into the bitmap
-        // just for drawing to the bitmap, make all the items on the screen opaque
-        //setChildrenAlpha(1.0f);
-        // call our superclass's dispatchdraw so we don't draw the background
-        super.dispatchDraw(mDimmedBitmapCanvas);
-        //setChildrenAlpha(1.0f - mDimmedBitmapAlpha);
-
-        // replace all colored areas with a dark  (semi-transparent black)
-        mDimmedBitmapCanvas.drawColor(Color.argb(160, 0, 0, 0), PorterDuff.Mode.SRC_IN);
     }
 
     private boolean isVacant(int originX, int originY, int spanX, int spanY) {

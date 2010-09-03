@@ -33,8 +33,8 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
+import android.view.animation.Animation.AnimationListener;
 import android.widget.Checkable;
 import android.widget.Scroller;
 
@@ -87,13 +87,11 @@ public abstract class PagedView extends ViewGroup {
     private int mPagingTouchSlop;
     private int mMaximumVelocity;
 
-    private static final int INVALID_POINTER = -1;
+    protected static final int INVALID_POINTER = -1;
 
-    private int mActivePointerId = INVALID_POINTER;
+    protected int mActivePointerId = INVALID_POINTER;
 
-    private enum PageMovingState { PAGE_BEGIN_MOVING, PAGE_END_MOVING };
     private PageSwitchListener mPageSwitchListener;
-    private PageMovingListener mPageMovingListener;
 
     private ArrayList<Boolean> mDirtyPageContent;
     private boolean mDirtyPageAlpha;
@@ -266,10 +264,12 @@ public abstract class PagedView extends ViewGroup {
     // we moved this functionality to a helper function so SmoothPagedView can reuse it
     protected boolean computeScrollHelper() {
         if (mScroller.computeScrollOffset()) {
+            mDirtyPageAlpha = true;
             scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
             invalidate();
             return true;
         } else if (mNextPage != INVALID_PAGE) {
+            mDirtyPageAlpha = true;
             mCurrentPage = Math.max(0, Math.min(mNextPage, getPageCount() - 1));
             mNextPage = INVALID_PAGE;
             notifyPageSwitchListener();
@@ -299,17 +299,41 @@ public abstract class PagedView extends ViewGroup {
         }
 
         // The children are given the same width and height as the workspace
+        // unless they were set to WRAP_CONTENT
         final int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
-            getChildAt(i).measure(widthMeasureSpec, heightMeasureSpec);
+            // disallowing padding in paged view (just pass 0)
+            final View child = getChildAt(i);
+            final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+
+            int childWidthMode;
+            if (lp.width == LayoutParams.WRAP_CONTENT) {
+                childWidthMode = MeasureSpec.AT_MOST;
+            } else {
+                childWidthMode = MeasureSpec.EXACTLY;
+            }
+
+            int childHeightMode;
+            if (lp.height == LayoutParams.WRAP_CONTENT) {
+                childHeightMode = MeasureSpec.AT_MOST;
+            } else {
+                childHeightMode = MeasureSpec.EXACTLY;
+            }
+
+            final int childWidthMeasureSpec =
+                MeasureSpec.makeMeasureSpec(widthSize, childWidthMode);
+            final int childHeightMeasureSpec =
+                MeasureSpec.makeMeasureSpec(heightSize, childHeightMode);
+
+            child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
         }
 
         setMeasuredDimension(widthSize, heightSize);
 
-        if (mFirstLayout) {
+        if (mFirstLayout && mCurrentPage >= 0 && mCurrentPage < getChildCount()) {
             setHorizontalScrollBarEnabled(false);
-            scrollTo(mCurrentPage * widthSize, 0);
-            mScroller.setFinalX(mCurrentPage * widthSize);
+            scrollTo(getChildOffset(mCurrentPage) - getRelativeChildOffset(mCurrentPage), 0);
+            mScroller.setFinalX(getChildOffset(mCurrentPage) - getRelativeChildOffset(mCurrentPage));
             setHorizontalScrollBarEnabled(true);
             mFirstLayout = false;
         }
@@ -327,7 +351,9 @@ public abstract class PagedView extends ViewGroup {
             final View child = getChildAt(i);
             if (child.getVisibility() != View.GONE) {
                 final int childWidth = child.getMeasuredWidth();
-                child.layout(childLeft, 0, childLeft + childWidth, child.getMeasuredHeight());
+                final int childHeight = (getMeasuredHeight() - child.getMeasuredHeight()) / 2;
+                child.layout(childLeft, childHeight,
+                        childLeft + childWidth, childHeight + child.getMeasuredHeight());
                 childLeft += childWidth;
             }
         }
