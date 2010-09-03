@@ -367,34 +367,36 @@ public abstract class PagedView extends ViewGroup {
 
         // As an optimization, this code assumes that all pages have the same width as the 0th
         // page.
-        final int pageWidth = getChildAt(0).getMeasuredWidth();
         final int pageCount = getChildCount();
-        final int screenWidth = getMeasuredWidth();
-        int x = getRelativeChildOffset(0) + pageWidth;
-        int leftScreen = 0;
-        int rightScreen = 0;
-        while (x <= mScrollX) {
-            leftScreen++;
-            x += pageWidth;
-            // replace above line with this if you don't assume all pages have same width as 0th
-            // page:
-            // x += getChildAt(leftScreen).getMeasuredWidth();
-        }
-        rightScreen = leftScreen;
-        while (x < mScrollX + screenWidth) {
-            rightScreen++;
-            x += pageWidth;
-            // replace above line with this if you don't assume all pages have same width as 0th
-            // page:
-            //if (rightScreen < pageCount) {
-            //    x += getChildAt(rightScreen).getMeasuredWidth();
-            //}
-        }
-        rightScreen = Math.min(getChildCount() - 1, rightScreen);
+        if (pageCount > 0) {
+            final int pageWidth = getChildAt(0).getMeasuredWidth();
+            final int screenWidth = getMeasuredWidth();
+            int x = getRelativeChildOffset(0) + pageWidth;
+            int leftScreen = 0;
+            int rightScreen = 0;
+            while (x <= mScrollX) {
+                leftScreen++;
+                x += pageWidth;
+                // replace above line with this if you don't assume all pages have same width as 0th
+                // page:
+                // x += getChildAt(leftScreen).getMeasuredWidth();
+            }
+            rightScreen = leftScreen;
+            while (x < mScrollX + screenWidth) {
+                rightScreen++;
+                x += pageWidth;
+                // replace above line with this if you don't assume all pages have same width as 0th
+                // page:
+                //if (rightScreen < pageCount) {
+                //    x += getChildAt(rightScreen).getMeasuredWidth();
+                //}
+            }
+            rightScreen = Math.min(getChildCount() - 1, rightScreen);
 
-        final long drawingTime = getDrawingTime();
-        for (int i = leftScreen; i <= rightScreen; i++) {
-            drawChild(canvas, getChildAt(i), drawingTime);
+            final long drawingTime = getDrawingTime();
+            for (int i = leftScreen; i <= rightScreen; i++) {
+                drawChild(canvas, getChildAt(i), drawingTime);
+            }
         }
     }
 
