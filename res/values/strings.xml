@@ -168,4 +168,6 @@
     <string name="default_browser_url" translatable="false">
         http://www.google.com/m?client=ms-{CID}&amp;source=android-home-hotseat</string>
 
+    <!--  Text to inform the user that they can't uninstall a system application -->
+    <string name="uninstall_system_app_text">This is a system application and cannot be uninstalled.</string>
 </resources>
