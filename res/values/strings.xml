@@ -133,6 +133,17 @@
     <!-- Noun, menu item used to show the system settings -->
     <string name="menu_settings">Settings</string>
 
+    <!--  Strings for the contextual action bar (CAB) in All Apps -->
+    <skip />
+    <!-- Describes the button for uninstalling the currently selected application.
+         Text is not displayed, but provided for accessibility. [CHAR_LIMIT=none] -->
+    <string name="cab_menu_delete_app">Uninstall application</string>
+    <!-- Describes the button for getting details/info about currently selected application.
+         Text is not displayed, but provided for accessibility. [CHAR_LIMIT=none] -->
+    <string name="cab_menu_app_info">Application details</string>
+    <!-- Appears in the CAB when an app is selected in All Apps. [CHAR_LIMIT=50] -->
+    <string name="cab_selection_text">1 application selected</string>
+
     <!-- Permissions: -->
     <skip />
     <!-- Permission short label -->

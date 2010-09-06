@@ -16,14 +16,14 @@
 
 package com.android.launcher2;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import com.android.launcher.R;
 
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,7 +33,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.Checkable;
 import android.widget.TextView;
 
-import com.android.launcher.R;
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * An implementation of PagedView that populates the pages of the workspace
@@ -45,6 +46,9 @@ public class AllAppsPagedView extends PagedView
 
     private static final String TAG = "AllAppsPagedView";
     private static final boolean DEBUG = false;
+
+    private static final int MENU_DELETE_APP = 1;
+    private static final int MENU_APP_INFO = 2;
 
     private Launcher mLauncher;
     private DragController mDragController;
@@ -159,14 +163,19 @@ public class AllAppsPagedView extends PagedView
         // if we are already in a choice mode, then just change the selection
         if (v instanceof Checkable) {
             if (!isChoiceMode(CHOICE_MODE_NONE)) {
+                Checkable c = (Checkable) v;
                 if (isChoiceMode(CHOICE_MODE_SINGLE)) {
-                    // reset all the previously checked items if in single selection mode
+                    // Uncheck all the other grandchildren, and toggle the clicked one
+                    boolean wasChecked = c.isChecked();
                     resetCheckedGrandchildren();
+                    c.setChecked(!wasChecked);
+                } else {
+                    c.toggle();
+                }
+                if (getCheckedGrandchildren().size() == 0) {
+                    endChoiceMode();
                 }
 
-                // then toggle this one
-                Checkable c = (Checkable) v;
-                c.toggle();
                 return;
             }
         }
@@ -194,8 +203,6 @@ public class AllAppsPagedView extends PagedView
             return false;
         }
 
-        /* Uncomment this to enable selection mode with the action bar
-
         // start the choice mode, and select the item that was long-pressed
         if (isChoiceMode(CHOICE_MODE_NONE)) {
             startChoiceMode(CHOICE_MODE_SINGLE, this);
@@ -210,7 +217,6 @@ public class AllAppsPagedView extends PagedView
             Checkable c = (Checkable) v;
             c.toggle();
         }
-         */
 
         ApplicationInfo app = (ApplicationInfo) v.getTag();
         app = new ApplicationInfo(app);
@@ -391,15 +397,17 @@ public class AllAppsPagedView extends PagedView
 
     @Override
     public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-        mDragController.addDropTarget(this);
-
-        // REST TO BE IMPLEMENTED BY PAT
-        mode.setTitle("Customization title goes here");
+        mode.setTitle(R.string.cab_selection_text);
+        menu.add(0, MENU_APP_INFO, 0, R.string.cab_menu_app_info)
+                .setIcon(R.drawable.info_button);
+        menu.add(0, MENU_DELETE_APP, 0, R.string.cab_menu_delete_app)
+                .setIcon(R.drawable.delete_zone_selector);
         return true;
     }
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        mDragController.addDropTarget(this);
         return true;
     }
 
@@ -411,8 +419,17 @@ public class AllAppsPagedView extends PagedView
 
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        // TO BE IMPLEMENTED BY PAT
-        // get the checked grandchild, and handle the action here
+        final int id = item.getItemId();
+
+        // Assumes that we are in CHOICE_MODE_SINGLE
+        final View chosenView = (View) getSingleCheckedGrandchild();
+        final ApplicationInfo appInfo = (ApplicationInfo) chosenView.getTag();
+
+        if (id == MENU_APP_INFO) {
+            mLauncher.startApplicationDetailsActivity(appInfo.componentName);
+        } else if (id == MENU_DELETE_APP) {
+            mLauncher.startApplicationUninstallActivity(appInfo.componentName);
+        }
         return false;
     }
 

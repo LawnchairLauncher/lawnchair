@@ -34,6 +34,7 @@
         android:id="@+id/workspace"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingTop="?android:attr/windowActionBarSize"
         launcher:defaultScreen="2"
         launcher:cellCountX="8"
         launcher:cellCountY="7">
@@ -48,15 +49,14 @@
     <RelativeLayout
         android:id="@+id/all_apps_button_cluster"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:padding="@dimen/toolbar_padding">
+        android:layout_height="?android:attr/windowActionBarSize"
+        android:layout_gravity="top">
 
         <ImageView
             android:id="@+id/search_button"
             android:src="@drawable/search_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="left"
 
             android:onClick="onClickSearchButton"
@@ -67,7 +67,7 @@
             android:id="@+id/all_apps_button"
             android:src="@drawable/all_apps_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="@dimen/toolbar_button_spacing"
 
@@ -80,7 +80,7 @@
         <ImageView
             android:id="@+id/market_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignLeft="@id/all_apps_button"
 
             android:onClick="onClickAppMarketButton"
@@ -92,7 +92,7 @@
             android:id="@+id/configure_button"
             android:src="@drawable/configure_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_toLeftOf="@id/all_apps_button"
             android:layout_marginLeft="@dimen/toolbar_button_spacing"
 
@@ -104,7 +104,7 @@
             android:id="@+id/delete_zone"
             android:src="@drawable/delete_zone_selector"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignLeft="@id/all_apps_button"
 
             android:visibility="gone"
@@ -114,7 +114,7 @@
             android:id="@+id/info_button"
             android:src="@drawable/info_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignLeft="@id/configure_button"
 
             android:visibility="gone"

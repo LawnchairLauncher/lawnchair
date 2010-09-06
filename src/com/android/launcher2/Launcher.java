@@ -1305,7 +1305,7 @@ public final class Launcher extends Activity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (isWorkspaceLocked()) {
+        if (isWorkspaceLocked() || LauncherApplication.isScreenXLarge()) {
             return false;
         }
 

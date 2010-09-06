@@ -15,7 +15,8 @@
 -->
 <com.android.launcher2.AllAppsTabbed
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="#30000000">
+    android:background="#30000000"
+    android:paddingTop="?android:attr/windowActionBarSize">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"

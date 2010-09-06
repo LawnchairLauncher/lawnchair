@@ -16,9 +16,8 @@
 
 package com.android.launcher2;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import com.android.launcher.R;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -26,7 +25,6 @@ import android.graphics.Rect;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -40,7 +38,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.Checkable;
 import android.widget.Scroller;
 
-import com.android.launcher.R;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * An abstraction of the original Workspace which supports browsing through a
@@ -104,6 +103,7 @@ public abstract class PagedView extends ViewGroup {
     protected static final int CHOICE_MODE_SINGLE = 1;
     // Multiple selection mode is not supported by all Launcher actions atm
     protected static final int CHOICE_MODE_MULTIPLE = 2;
+
     private int mChoiceMode;
     private ActionMode mActionMode;
 
@@ -1011,10 +1011,10 @@ public abstract class PagedView extends ViewGroup {
 
     protected void endChoiceMode() {
         if (!isChoiceMode(CHOICE_MODE_NONE)) {
-            mActionMode.finish();
-            mActionMode = null;
             mChoiceMode = CHOICE_MODE_NONE;
             resetCheckedGrandchildren();
+            mActionMode.finish();
+            mActionMode = null;
         }
     }
 
@@ -1030,12 +1030,33 @@ public abstract class PagedView extends ViewGroup {
             final int grandChildCount = layout.getChildCount();
             for (int j = 0; j < grandChildCount; ++j) {
                 final View v = layout.getChildAt(j);
-                if (v instanceof Checkable) {
+                if (v instanceof Checkable && ((Checkable) v).isChecked()) {
                     checked.add((Checkable) v);
                 }
             }
         }
         return checked;
+    }
+
+    /**
+     * If in CHOICE_MODE_SINGLE and an item is checked, returns that item.
+     * Otherwise, returns null.
+     */
+    protected Checkable getSingleCheckedGrandchild() {
+        if (mChoiceMode == CHOICE_MODE_SINGLE) {
+            final int childCount = getChildCount();
+            for (int i = 0; i < childCount; ++i) {
+                final PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(i);
+                final int grandChildCount = layout.getChildCount();
+                for (int j = 0; j < grandChildCount; ++j) {
+                    final View v = layout.getChildAt(j);
+                    if (v instanceof Checkable && ((Checkable) v).isChecked()) {
+                        return (Checkable) v;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     protected void resetCheckedGrandchildren() {
