@@ -59,16 +59,12 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
     private View mHandle;
     private final Paint mTrashPaint = new Paint();
 
-    private Context mContext = null;
-
     public DeleteZone(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
     public DeleteZone(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
-        mContext = context;
 
         final int srcColor = context.getResources().getColor(R.color.delete_color_filter);
         mTrashPaint.setColorFilter(new PorterDuffColorFilter(srcColor, PorterDuff.Mode.SRC_ATOP));
@@ -100,15 +96,7 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
 
         // On x-large screens, you can uninstall an app by dragging from all apps
         if (item instanceof ApplicationInfo && LauncherApplication.isScreenXLarge()) {
-            ApplicationInfo appInfo = (ApplicationInfo)item;
-            if ((appInfo.flags & ApplicationInfo.DOWNLOADED_FLAG) != 0) {
-                mLauncher.startApplicationUninstallActivity(appInfo.componentName);
-            } else {
-                // System applications cannot be installed. For now, show a toast explaining that.
-                // We may give them the option of disabling apps this way.
-                int messageId = R.string.uninstall_system_app_text;
-                Toast.makeText(mContext, messageId, Toast.LENGTH_SHORT).show();
-            }
+            mLauncher.startApplicationUninstallActivity((ApplicationInfo) item);
         }
 
         if (item.container == -1) return;

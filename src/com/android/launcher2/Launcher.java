@@ -1772,12 +1772,19 @@ public final class Launcher extends Activity
         startActivity(intent);
     }
 
-    void startApplicationUninstallActivity(ComponentName componentName) {
-        String packageName = componentName.getPackageName();
-        String className = componentName.getClassName();
-        Intent intent = new Intent(
-                Intent.ACTION_DELETE, Uri.fromParts("package", packageName, className));
-        startActivity(intent);
+    void startApplicationUninstallActivity(ApplicationInfo appInfo) {
+        if ((appInfo.flags & ApplicationInfo.DOWNLOADED_FLAG) == 0) {
+            // System applications cannot be installed. For now, show a toast explaining that.
+            // We may give them the option of disabling apps this way.
+            int messageId = R.string.uninstall_system_app_text;
+            Toast.makeText(this, messageId, Toast.LENGTH_SHORT).show();
+        } else {
+            String packageName = appInfo.componentName.getPackageName();
+            String className = appInfo.componentName.getClassName();
+            Intent intent = new Intent(
+                    Intent.ACTION_DELETE, Uri.fromParts("package", packageName, className));
+            startActivity(intent);
+        }
     }
 
     void startActivitySafely(Intent intent, Object tag) {

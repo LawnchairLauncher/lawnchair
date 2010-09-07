@@ -428,7 +428,7 @@ public class AllAppsPagedView extends PagedView
         if (id == MENU_APP_INFO) {
             mLauncher.startApplicationDetailsActivity(appInfo.componentName);
         } else if (id == MENU_DELETE_APP) {
-            mLauncher.startApplicationUninstallActivity(appInfo.componentName);
+            mLauncher.startApplicationUninstallActivity(appInfo);
         }
         return false;
     }
