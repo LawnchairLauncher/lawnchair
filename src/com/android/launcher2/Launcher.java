@@ -17,15 +17,15 @@
 
 package com.android.launcher2;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import com.android.common.Search;
 import com.android.launcher.R;
 
-import android.animation.Animatable;
-import android.animation.AnimatableListenerAdapter;
-import android.animation.Animator;
-import android.animation.PropertyAnimator;
+import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.animation.Sequencer;
+import android.animation.AnimatorSet;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -316,10 +316,10 @@ public final class Launcher extends Activity
                     // animate the changing of the tab content by fading pages in and out
                     final int duration = 150;
                     final float alpha = mCustomizePagedView.getAlpha();
-                    Animator alphaAnim = new PropertyAnimator(duration, mCustomizePagedView, 
+                    ValueAnimator alphaAnim = new ObjectAnimator(duration, mCustomizePagedView,
                             "alpha", alpha, 0.0f);
-                    alphaAnim.addListener(new AnimatableListenerAdapter() {
-                        public void onAnimationEnd(Animatable animation) {
+                    alphaAnim.addListener(new AnimatorListenerAdapter() {
+                        public void onAnimationEnd(Animator animation) {
                             String tag = mHomeCustomizationDrawer.getCurrentTabTag();
                             if (tag == WIDGETS_TAG) {
                                 mCustomizePagedView.setCustomizationFilter(
@@ -336,7 +336,7 @@ public final class Launcher extends Activity
                             }
 
                             final float alpha = mCustomizePagedView.getAlpha();
-                            Animator alphaAnim = new PropertyAnimator(duration, mCustomizePagedView, 
+                            ValueAnimator alphaAnim = new ObjectAnimator(duration, mCustomizePagedView,
                                     "alpha", alpha, 1.0f);
                             alphaAnim.start();
                         }
@@ -2242,10 +2242,10 @@ public final class Launcher extends Activity
      *
      * @param show If true, create an animation to the show the item. Otherwise, hide it.
      * @param view The toolbar button to be animated
-     * @param seq A Sequencer that will be used to animate the transition. If null, the
+     * @param seq A AnimatorSet that will be used to animate the transition. If null, the
      * transition will not be animated.
      */
-    private void hideOrShowToolbarButton(boolean show, final View view, Sequencer seq) {
+    private void hideOrShowToolbarButton(boolean show, final View view, AnimatorSet seq) {
         final boolean showing = show;
         final boolean hiding = !show;
 
@@ -2254,12 +2254,12 @@ public final class Launcher extends Activity
                 getResources().getInteger(R.integer.config_toolbarButtonFadeOutTime);
 
         if (seq != null) {
-            Animatable anim = new PropertyAnimator<Float>(duration, view, "alpha", show ? 1.0f : 0.0f);
-            anim.addListener(new AnimatableListenerAdapter() {
-                public void onAnimationStart(Animatable animation) {
+            Animator anim = new ObjectAnimator<Float>(duration, view, "alpha", show ? 1.0f : 0.0f);
+            anim.addListener(new AnimatorListenerAdapter() {
+                public void onAnimationStart(Animator animation) {
                     if (showing) showToolbarButton(view);
                 }
-                public void onAnimationEnd(Animatable animation) {
+                public void onAnimationEnd(Animator animation) {
                     if (hiding) hideToolbarButton(view);
                 }
             });
@@ -2278,10 +2278,10 @@ public final class Launcher extends Activity
      * If showSeq or hideSeq is null, the transition will be done immediately (not animated).
      *
      * @param newState The state that is being switched to
-     * @param showSeq Sequencer in which to put "show" animations, or null.
-     * @param hideSeq Sequencer in which to put "hide" animations, or null.
+     * @param showSeq AnimatorSet in which to put "show" animations, or null.
+     * @param hideSeq AnimatorSet in which to put "hide" animations, or null.
      */
-    private void hideAndShowToolbarButtons(State newState, Sequencer showSeq, Sequencer hideSeq) {
+    private void hideAndShowToolbarButtons(State newState, AnimatorSet showSeq, AnimatorSet hideSeq) {
         final View searchButton = findViewById(R.id.search_button);
         final View allAppsButton = findViewById(R.id.all_apps_button);
         final View marketButton = findViewById(R.id.market_button);
@@ -2353,12 +2353,12 @@ public final class Launcher extends Activity
         }
 
         if (animated) {
-            Animator scaleAnim = new PropertyAnimator(duration, toView,
+            ValueAnimator scaleAnim = new ObjectAnimator(duration, toView,
                     new PropertyValuesHolder<Float>("scaleX", scale, 1.0f),
                     new PropertyValuesHolder<Float>("scaleY", scale, 1.0f));
             scaleAnim.setInterpolator(new DecelerateInterpolator());
-            scaleAnim.addListener(new AnimatableListenerAdapter() {
-                public void onAnimationStart(Animatable animation) {
+            scaleAnim.addListener(new AnimatorListenerAdapter() {
+                public void onAnimationStart(Animator animation) {
                     // Prepare the position
                     toView.setTranslationX(0.0f);
                     toView.setTranslationY(0.0f);
@@ -2366,14 +2366,14 @@ public final class Launcher extends Activity
                 }
             });
 
-            Sequencer toolbarHideAnim = new Sequencer();
-            Sequencer toolbarShowAnim = new Sequencer();
+            AnimatorSet toolbarHideAnim = new AnimatorSet();
+            AnimatorSet toolbarShowAnim = new AnimatorSet();
             hideAndShowToolbarButtons(toState, toolbarShowAnim, toolbarHideAnim);
 
             // toView should appear right at the end of the workspace shrink animation
             final int startDelay = res.getInteger(R.integer.config_workspaceShrinkTime) - duration;
 
-            Sequencer s = new Sequencer();
+            AnimatorSet s = new AnimatorSet();
             s.playTogether(scaleAnim, toolbarHideAnim);
             s.play(scaleAnim).after(startDelay);
 
@@ -2409,21 +2409,21 @@ public final class Launcher extends Activity
         mWorkspace.unshrink(animated);
 
         if (animated) {
-            Sequencer s = new Sequencer();
-            Animator scaleAnim = new PropertyAnimator(duration, fromView,
+            AnimatorSet s = new AnimatorSet();
+            ValueAnimator scaleAnim = new ObjectAnimator(duration, fromView,
                     new PropertyValuesHolder<Float>("scaleX", scaleFactor),
                     new PropertyValuesHolder<Float>("scaleY", scaleFactor));
             scaleAnim.setInterpolator(new AccelerateInterpolator());
-            s.addListener(new AnimatableListenerAdapter() {
-                public void onAnimationEnd(Animatable animation) {
+            s.addListener(new AnimatorListenerAdapter() {
+                public void onAnimationEnd(Animator animation) {
                     fromView.setVisibility(View.GONE);
                     fromView.setScaleX(1.0f);
                     fromView.setScaleY(1.0f);
                 }
             });
 
-            Sequencer toolbarHideAnim = new Sequencer();
-            Sequencer toolbarShowAnim = new Sequencer();
+            AnimatorSet toolbarHideAnim = new AnimatorSet();
+            AnimatorSet toolbarShowAnim = new AnimatorSet();
             hideAndShowToolbarButtons(State.WORKSPACE, toolbarShowAnim, toolbarHideAnim);
 
             s.playTogether(scaleAnim, toolbarHideAnim);
@@ -2468,25 +2468,25 @@ public final class Launcher extends Activity
         }
 
         if (animated) {
-            Sequencer s = new Sequencer();
-            s.addListener(new AnimatableListenerAdapter() {
-                public void onAnimationStart(Animatable animation) {
+            AnimatorSet s = new AnimatorSet();
+            s.addListener(new AnimatorListenerAdapter() {
+                public void onAnimationStart(Animator animation) {
                     toView.setVisibility(View.VISIBLE);
                     toView.setY(toViewStartY);
                 }
-                public void onAnimationEnd(Animatable animation) {
+                public void onAnimationEnd(Animator animation) {
                     fromView.setVisibility(View.GONE);
                 }
             });
 
-            Sequencer toolbarHideAnim = new Sequencer();
-            Sequencer toolbarShowAnim = new Sequencer();
+            AnimatorSet toolbarHideAnim = new AnimatorSet();
+            AnimatorSet toolbarShowAnim = new AnimatorSet();
             hideAndShowToolbarButtons(toState, toolbarShowAnim, toolbarHideAnim);
 
             s.playTogether(
                     toolbarHideAnim,
-                    new PropertyAnimator(duration, fromView, "y", fromViewStartY, fromViewEndY),
-                    new PropertyAnimator(duration, toView, "y", toViewStartY, toViewEndY));
+                    new ObjectAnimator(duration, fromView, "y", fromViewStartY, fromViewEndY),
+                    new ObjectAnimator(duration, toView, "y", toViewStartY, toViewEndY));
 
             // Show the new toolbar buttons just as the main animation is ending
             final int fadeInTime = res.getInteger(R.integer.config_toolbarButtonFadeInTime);

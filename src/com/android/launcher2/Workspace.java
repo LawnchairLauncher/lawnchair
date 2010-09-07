@@ -16,13 +16,13 @@
 
 package com.android.launcher2;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import com.android.launcher.R;
 
-import android.animation.Animatable;
-import android.animation.PropertyAnimator;
 import android.animation.PropertyValuesHolder;
-import android.animation.Sequencer;
-import android.animation.Animatable.AnimatableListener;
+import android.animation.AnimatorSet;
+import android.animation.Animator.AnimatorListener;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -106,7 +106,7 @@ public class Workspace extends SmoothPagedView
     // State variable that indicated whether the pages are small (ie when you're
     // in all apps or customize mode)
     private boolean mIsSmall;
-    private AnimatableListener mUnshrinkAnimationListener;
+    private AnimatorListener mUnshrinkAnimationListener;
 
 
     /**
@@ -156,13 +156,13 @@ public class Workspace extends SmoothPagedView
         LauncherApplication app = (LauncherApplication)context.getApplicationContext();
         mIconCache = app.getIconCache();
 
-        mUnshrinkAnimationListener = new AnimatableListener() {
-            public void onAnimationStart(Animatable animation) {}
-            public void onAnimationEnd(Animatable animation) {
+        mUnshrinkAnimationListener = new AnimatorListener() {
+            public void onAnimationStart(Animator animation) {}
+            public void onAnimationEnd(Animator animation) {
                 mIsSmall = false;
             }
-            public void onAnimationCancel(Animatable animation) {}
-            public void onAnimationRepeat(Animatable animation) {}
+            public void onAnimationCancel(Animator animation) {}
+            public void onAnimationRepeat(Animator animation) {}
         };
 
         mSnapVelocity = 600;
@@ -609,7 +609,7 @@ public class Workspace extends SmoothPagedView
             cl.setPivotY(0.0f);
             if (animated) {
                 final int duration = res.getInteger(R.integer.config_workspaceShrinkTime);
-                new PropertyAnimator(duration, cl,
+                new ObjectAnimator(duration, cl,
                         new PropertyValuesHolder("x", newX),
                         new PropertyValuesHolder("y", newY),
                         new PropertyValuesHolder("scaleX", SHRINK_FACTOR),
@@ -663,7 +663,7 @@ public class Workspace extends SmoothPagedView
 
     void unshrink(boolean animated) {
         if (mIsSmall) {
-            Sequencer s = new Sequencer();
+            AnimatorSet s = new AnimatorSet();
             final int screenCount = getChildCount();
 
             final int duration = getResources().getInteger(R.integer.config_workspaceUnshrinkTime);
@@ -673,11 +673,11 @@ public class Workspace extends SmoothPagedView
                 cl.setPivotY(0.0f);
                 if (animated) {
                     s.playTogether(
-                            new PropertyAnimator<Float>(duration, cl, "translationX", 0.0f),
-                            new PropertyAnimator<Float>(duration, cl, "translationY", 0.0f),
-                            new PropertyAnimator<Float>(duration, cl, "scaleX", 1.0f),
-                            new PropertyAnimator<Float>(duration, cl, "scaleY", 1.0f),
-                            new PropertyAnimator<Float>(duration, cl, "dimmedBitmapAlpha", 0.0f));
+                            new ObjectAnimator<Float>(duration, cl, "translationX", 0.0f),
+                            new ObjectAnimator<Float>(duration, cl, "translationY", 0.0f),
+                            new ObjectAnimator<Float>(duration, cl, "scaleX", 1.0f),
+                            new ObjectAnimator<Float>(duration, cl, "scaleY", 1.0f),
+                            new ObjectAnimator<Float>(duration, cl, "dimmedBitmapAlpha", 0.0f));
                 } else {
                     cl.setTranslationX(0.0f);
                     cl.setTranslationY(0.0f);

@@ -18,10 +18,10 @@ package com.android.launcher2;
 
 import java.util.ArrayList;
 
-import android.animation.Animatable;
-import android.animation.AnimatableListenerAdapter;
 import android.animation.Animator;
-import android.animation.PropertyAnimator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -103,9 +103,9 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
                 // animate the changing of the tab content by fading pages in and out
                 final int duration = 150;
                 final float alpha = mAllApps.getAlpha();
-                Animator alphaAnim = new PropertyAnimator(duration, mAllApps, "alpha", alpha, 0.0f);
-                alphaAnim.addListener(new AnimatableListenerAdapter() {
-                    public void onAnimationEnd(Animatable animation) {
+                ValueAnimator alphaAnim = new ObjectAnimator(duration, mAllApps, "alpha", alpha, 0.0f);
+                alphaAnim.addListener(new AnimatorListenerAdapter() {
+                    public void onAnimationEnd(Animator animation) {
                         String tag = getCurrentTabTag();
                         if (tag == TAG_ALL) {
                             mAllApps.setAppFilter(AllAppsPagedView.ALL_APPS_FLAG);
@@ -118,8 +118,8 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
                         }
 
                         final float alpha = mAllApps.getAlpha();
-                        Animator alphaAnim = 
-                            new PropertyAnimator(duration, mAllApps, "alpha", alpha, 1.0f);
+                        ValueAnimator alphaAnim =
+                            new ObjectAnimator(duration, mAllApps, "alpha", alpha, 1.0f);
                         alphaAnim.start();
                     }
                 });
