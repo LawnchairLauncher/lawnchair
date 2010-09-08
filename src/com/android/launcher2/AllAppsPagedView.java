@@ -93,6 +93,7 @@ public class AllAppsPagedView extends PagedView
     @Override
     public void setLauncher(Launcher launcher) {
         mLauncher = launcher;
+        mLauncher.setAllAppsPagedView(this);
     }
 
     @Override

@@ -1009,7 +1009,7 @@ public abstract class PagedView extends ViewGroup {
         mChoiceMode = mode;
     }
 
-    protected void endChoiceMode() {
+    public void endChoiceMode() {
         if (!isChoiceMode(CHOICE_MODE_NONE)) {
             mChoiceMode = CHOICE_MODE_NONE;
             resetCheckedGrandchildren();
@@ -1055,6 +1055,14 @@ public abstract class PagedView extends ViewGroup {
                     }
                 }
             }
+        }
+        return null;
+    }
+
+    public Object getChosenItem() {
+        View checkedView = (View) getSingleCheckedGrandchild();
+        if (checkedView != null) {
+            return checkedView.getTag();
         }
         return null;
     }

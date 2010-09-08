@@ -368,8 +368,7 @@ public class Workspace extends SmoothPagedView
     public boolean onTouch(View v, MotionEvent event) {
         // this is an intercepted event being forwarded from a cell layout
         if (mIsSmall) {
-            unshrink((CellLayout)v);
-            mLauncher.onWorkspaceUnshrink();
+            mLauncher.onWorkspaceClick((CellLayout) v);
             return true;
         }
         return false;
@@ -630,7 +629,7 @@ public class Workspace extends SmoothPagedView
     }
 
     // We call this when we trigger an unshrink by clicking on the CellLayout cl
-    private void unshrink(CellLayout clThatWasClicked) {
+    public void unshrink(CellLayout clThatWasClicked) {
         int newCurrentPage = mCurrentPage;
         final int screenCount = getChildCount();
         for (int i = 0; i < screenCount; i++) {
@@ -972,6 +971,24 @@ public class Workspace extends SmoothPagedView
     private void onDropExternal(int x, int y, Object dragInfo,
             CellLayout cellLayout) {
         onDropExternal(x, y, dragInfo, cellLayout, false);
+    }
+
+    /**
+     * Add the item specified by dragInfo to the given layout.
+     * This is basically the equivalent of onDropExternal, except it's not initiated
+     * by drag and drop.
+     * @return true if successful
+     */
+    public boolean addExternalItemToScreen(Object dragInfo, View layout) {
+        CellLayout cl = (CellLayout) layout;
+        ItemInfo info = (ItemInfo) dragInfo;
+
+        final CellLayout.CellInfo cellInfo = cl.updateOccupiedCells(null, null);
+        if (cellInfo.findCellForSpan(mTempEstimate, info.spanX, info.spanY)) {
+            onDropExternal(0, 0, dragInfo, cl, false);
+            return true;
+        }
+        return false;
     }
 
     private void onDropExternal(int x, int y, Object dragInfo,

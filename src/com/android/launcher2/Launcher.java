@@ -213,7 +213,9 @@ public final class Launcher extends Activity
     private HandleView mHandleView;
     private AllAppsView mAllAppsGrid;
     private TabHost mHomeCustomizationDrawer;
-    private CustomizePagedView mCustomizePagedView;
+
+    private PagedView mAllAppsPagedView = null;
+    private CustomizePagedView mCustomizePagedView = null;
 
     private Bundle mSavedState;
 
@@ -2404,6 +2406,9 @@ public final class Launcher extends Activity
         final View fromView =
             (fromState == State.ALL_APPS) ? (View) mAllAppsGrid : mHomeCustomizationDrawer;
 
+        mCustomizePagedView.endChoiceMode();
+        mAllAppsPagedView.endChoiceMode();
+
         setPivotsForZoom(fromView, fromState, scaleFactor);
 
         mWorkspace.unshrink(animated);
@@ -2460,6 +2465,9 @@ public final class Launcher extends Activity
         final float fromViewEndY = fromAllApps ? -fromView.getHeight() * 2 : workspaceHeight * 2;
         final float toViewStartY = fromAllApps ? workspaceHeight * 2 : -toView.getHeight() * 2;
         final float toViewEndY = fromAllApps ? workspaceHeight - toView.getHeight() : 0.0f;
+
+        mCustomizePagedView.endChoiceMode();
+        mAllAppsPagedView.endChoiceMode();
 
         if (toState == State.ALL_APPS) {
             mWorkspace.shrinkToBottom(animated);
@@ -2603,13 +2611,28 @@ public final class Launcher extends Activity
         }
     }
 
-    void onWorkspaceUnshrink() {
-        final boolean animated = true;
-        if (isAllAppsVisible()) {
-            closeAllApps(animated);
+    void onWorkspaceClick(CellLayout layout) {
+        Object itemInfo = mAllAppsPagedView.getChosenItem();
+        if (itemInfo == null) {
+            itemInfo = mCustomizePagedView.getChosenItem();
         }
-        if (isCustomizationDrawerVisible()) {
-            hideCustomizationDrawer(animated);
+
+        if (itemInfo == null) {
+            // No items are chosen in All Apps or Customize, so just zoom into the workspace
+            mWorkspace.unshrink(layout);
+            if (isAllAppsVisible()) {
+                closeAllApps(true);
+            } else if (isCustomizationDrawerVisible()) {
+                hideCustomizationDrawer(true);
+            }
+        } else {
+            // Act as if the chosen item was dropped on the given CellLayout
+            if (mWorkspace.addExternalItemToScreen(itemInfo, layout)) {
+                mAllAppsPagedView.endChoiceMode();
+                mCustomizePagedView.endChoiceMode();
+            } else {
+                Toast.makeText(this, getString(R.string.out_of_space), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -2798,6 +2821,10 @@ public final class Launcher extends Activity
         } else {
             return SCREEN_COUNT / 2;
         }
+    }
+
+    void setAllAppsPagedView(PagedView view) {
+        mAllAppsPagedView = view;
     }
 
     /**
