@@ -58,6 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="left"
+            android:layout_marginLeft="@dimen/toolbar_button_spacing"
 
             android:onClick="onClickSearchButton"
             android:focusable="true"
@@ -70,6 +71,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="@dimen/toolbar_button_spacing"
+            android:layout_marginRight="@dimen/toolbar_button_spacing"
 
             android:onClick="onClickAllAppsButton"
             android:focusable="true"
