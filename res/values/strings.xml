@@ -56,13 +56,13 @@
     <!--  Placeholder text, will be removed -->
     <string name="wallpapers_temp_tab_text">This will be the wallpapers tab</string>
     <!--  Labels for the tabs in All Apps -->
-    <!--  Title of the tab for all applications (includes games and non-games) -->
+    <!--  Title of the tab for all applications (includes games and non-games) [CHAR_LIMIT=12] -->
     <string name="all_apps_tab_all">All</string>
-    <!--  Title of the tab for all applications *except* games -->
+    <!--  Title of the tab for all applications *except* games [CHAR_LIMIT=12] -->
     <string name="all_apps_tab_apps">Apps</string>
-    <!--  Title of the tab for applications labeled as games -->
+    <!--  Title of the tab for applications labeled as games [CHAR_LIMIT=12] -->
     <string name="all_apps_tab_games">Games</string>
-    <!--  Tile of the tab for applications that were downloaded from market -->
+    <!--  Tile of the tab for applications that were downloaded from market [CHAR_LIMIT=12] -->
     <string name="all_apps_tab_downloaded">Downloaded</string>
 
     <!-- Folders -->
