@@ -100,6 +100,7 @@ class ApplicationInfo extends ItemInfo {
         componentName = info.componentName;
         title = info.title.toString();
         intent = new Intent(info.intent);
+        flags = info.flags;
     }
 
     /**

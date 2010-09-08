@@ -204,11 +204,6 @@ public class AllAppsPagedView extends PagedView
             return false;
         }
 
-        // start the choice mode, and select the item that was long-pressed
-        if (isChoiceMode(CHOICE_MODE_NONE)) {
-            startChoiceMode(CHOICE_MODE_SINGLE, this);
-        }
-
         if (v instanceof Checkable) {
             // In preparation for drag, we always reset the checked grand children regardless of
             // what choice mode we are in
@@ -217,6 +212,11 @@ public class AllAppsPagedView extends PagedView
             // Toggle the selection on the dragged app
             Checkable c = (Checkable) v;
             c.toggle();
+        }
+
+        // Start choice mode AFTER the item is selected
+        if (isChoiceMode(CHOICE_MODE_NONE)) {
+            startChoiceMode(CHOICE_MODE_SINGLE, this);
         }
 
         ApplicationInfo app = (ApplicationInfo) v.getTag();
@@ -399,6 +399,7 @@ public class AllAppsPagedView extends PagedView
     @Override
     public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
         mode.setTitle(R.string.cab_selection_text);
+
         menu.add(0, MENU_APP_INFO, 0, R.string.cab_menu_app_info)
                 .setIcon(R.drawable.info_button);
         menu.add(0, MENU_DELETE_APP, 0, R.string.cab_menu_delete_app)
@@ -423,8 +424,7 @@ public class AllAppsPagedView extends PagedView
         final int id = item.getItemId();
 
         // Assumes that we are in CHOICE_MODE_SINGLE
-        final View chosenView = (View) getSingleCheckedGrandchild();
-        final ApplicationInfo appInfo = (ApplicationInfo) chosenView.getTag();
+        final ApplicationInfo appInfo = (ApplicationInfo) getChosenItem();
 
         if (id == MENU_APP_INFO) {
             mLauncher.startApplicationDetailsActivity(appInfo.componentName);

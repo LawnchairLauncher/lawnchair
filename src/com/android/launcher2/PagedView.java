@@ -1004,9 +1004,10 @@ public abstract class PagedView extends ViewGroup {
     }
 
     protected void startChoiceMode(int mode, ActionMode.Callback callback) {
-        // StartActionMode may call through toendChoiceMode, so we should do this first
-        mActionMode = startActionMode(callback);
-        mChoiceMode = mode;
+        if (isChoiceMode(CHOICE_MODE_NONE)) {
+            mChoiceMode = mode;
+            mActionMode = startActionMode(callback);
+        }
     }
 
     public void endChoiceMode() {
