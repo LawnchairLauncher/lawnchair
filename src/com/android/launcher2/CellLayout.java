@@ -131,9 +131,11 @@ public class CellLayout extends ViewGroup {
         if (LauncherApplication.isScreenXLarge()) {
             mDimmedBitmapBackground = getResources().getDrawable(
                     R.drawable.mini_home_screen_bg);
+            mDimmedBitmapBackground.setFilterBitmap(true);
 
             mDimmedBitmapBackgroundHover = getResources().getDrawable(
                     R.drawable.mini_home_screen_bg_hover);
+            mDimmedBitmapBackgroundHover.setFilterBitmap(true);
         }
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CellLayout, defStyle, 0);
@@ -196,7 +198,7 @@ public class CellLayout extends ViewGroup {
             }
             mDimmedBitmapPaint.setAlpha((int) (mDimmedBitmapAlpha * 255));
 
-            canvas.drawBitmap(mDimmedBitmap, mDimmedBitmapRect, mLayoutRect, mDimmedBitmapPaint);
+            //canvas.drawBitmap(mDimmedBitmap, mDimmedBitmapRect, mLayoutRect, mDimmedBitmapPaint);
         }
     }
 
@@ -240,7 +242,7 @@ public class CellLayout extends ViewGroup {
 
             // We might be in the middle or end of shrinking/fading to a dimmed view
             // Make sure this view's alpha is set the same as all the rest of the views
-            child.setAlpha(1.0f - mDimmedBitmapAlpha);
+            //child.setAlpha(1.0f - mDimmedBitmapAlpha);
 
             addView(child, index, lp);
 
@@ -629,7 +631,7 @@ public class CellLayout extends ViewGroup {
             updateDimmedBitmap();
         }
         mDimmedBitmapAlpha = alpha;
-        setChildrenAlpha(1.0f - mDimmedBitmapAlpha);
+        //setChildrenAlpha(1.0f - mDimmedBitmapAlpha);
         invalidate();
     }
 
@@ -652,10 +654,10 @@ public class CellLayout extends ViewGroup {
 
         // draw the screen into the bitmap
         // just for drawing to the bitmap, make all the items on the screen opaque
-        setChildrenAlpha(1.0f);
+        //setChildrenAlpha(1.0f);
         // call our superclass's dispatchdraw so we don't draw the background
         super.dispatchDraw(mDimmedBitmapCanvas);
-        setChildrenAlpha(1.0f - mDimmedBitmapAlpha);
+        //setChildrenAlpha(1.0f - mDimmedBitmapAlpha);
 
         // replace all colored areas with a dark  (semi-transparent black)
         mDimmedBitmapCanvas.drawColor(Color.argb(160, 0, 0, 0), PorterDuff.Mode.SRC_IN);
