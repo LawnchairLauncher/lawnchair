@@ -1163,15 +1163,12 @@ public final class Launcher extends Activity
 
             // in all these cases, only animate if we're already on home
             if (LauncherApplication.isScreenXLarge()) {
-                if (alreadyOnHome && !mWorkspace.isSmall() &&
-                        !allAppsVisible && !customizationDrawerVisible) {
-                    mWorkspace.shrinkToMiddle();
-                } else {
-                    mWorkspace.unshrink(alreadyOnHome);
-                }
-            } else if (!mWorkspace.isDefaultPageShowing()) {
+                mWorkspace.unshrink(alreadyOnHome);
+            }
+            if (!mWorkspace.isDefaultPageShowing()) {
                 // on the phone, we don't animate the change to the workspace if all apps is visible
-                mWorkspace.moveToDefaultScreen(alreadyOnHome && !allAppsVisible);
+                mWorkspace.moveToDefaultScreen(
+                        alreadyOnHome && (LauncherApplication.isScreenXLarge() || !allAppsVisible));
             }
             closeAllApps(alreadyOnHome && allAppsVisible);
             hideCustomizationDrawer(alreadyOnHome);
