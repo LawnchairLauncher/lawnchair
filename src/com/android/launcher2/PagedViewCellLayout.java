@@ -252,6 +252,16 @@ public class PagedViewCellLayout extends ViewGroup {
         requestLayout();
     }
 
+    public void setCellDimensions(int width, int height) {
+        mCellWidth = width;
+        mCellHeight = height;
+        requestLayout();
+    }
+
+    public int getDefaultCellDimensions() {
+        return sDefaultCellDimensions;
+    }
+
     private void setChildrenAlpha(float alpha) {
         final int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
@@ -281,37 +291,36 @@ public class PagedViewCellLayout extends ViewGroup {
         lp.isDragging = true;
     }
 
+    /**
+     * Estimates the number of cells that the specified width would take up.
+     */
     public int estimateCellHSpan(int width) {
+        // TODO: we need to take widthGap into effect
         return (width + mCellWidth) / mCellWidth;
     }
+
+    /**
+     * Estimates the number of cells that the specified height would take up.
+     */
     public int estimateCellVSpan(int height) {
+        // TODO: we need to take heightGap into effect
         return (height + mCellHeight) / mCellHeight;
     }
-    public int[] estimateCellDimensions(int approxWidth, int approxHeight, 
-            int cellHSpan, int cellVSpan) {
-        // NOTE: we are disabling this until we find a good way to approximate this without fully
-        // measuring
-        /*
-        // we may want to use this before any measuring/layout happens, so we pass in an approximate
-        // size for the layout
-        int numWidthGaps = mCellCountX - 1;
-        int numHeightGaps = mCellCountY - 1;
-        int hSpaceLeft = approxWidth - mPaddingLeft
-            - mPaddingRight - (mCellWidth * mCellCountX);
-        int vSpaceLeft = approxHeight - mPaddingTop
-            - mPaddingBottom - (mCellHeight * mCellCountY);
-        int widthGap = hSpaceLeft / numWidthGaps;
-        int heightGap = vSpaceLeft / numHeightGaps;
-        int minGap = Math.min(widthGap, heightGap);
-        return new int[] {
-            (cellHSpan * mCellWidth) + ((cellHSpan - 1) * minGap),
-            (cellVSpan * mCellHeight) + ((cellVSpan - 1) * minGap)
-        };
-        */
-        return new int[] {
-            (cellHSpan * mCellWidth),
-            (cellVSpan * mCellHeight)
-        };
+
+    /**
+     * Estimates the width that the number of vSpan cells will take up.
+     */
+    public int estimateCellWidth(int hSpan) {
+        // TODO: we need to take widthGap into effect
+        return hSpan * mCellWidth;
+    }
+
+    /**
+     * Estimates the height that the number of vSpan cells will take up.
+     */
+    public int estimateCellHeight(int vSpan) {
+        // TODO: we need to take heightGap into effect
+        return vSpan * mCellHeight;
     }
 
     @Override

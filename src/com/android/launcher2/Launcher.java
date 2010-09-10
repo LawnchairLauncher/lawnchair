@@ -281,7 +281,8 @@ public final class Launcher extends Activity
             mHomeCustomizationDrawer.setup();
 
             // share the same customization workspace across all the tabs
-            mCustomizePagedView = new CustomizePagedView(this);
+            mCustomizePagedView = (CustomizePagedView) mInflater.inflate(
+                    R.layout.customization_drawer, mHomeCustomizationDrawer, false);
             TabContentFactory contentFactory = new TabContentFactory() {
                 public View createTabContent(String tag) {
                     return mCustomizePagedView;

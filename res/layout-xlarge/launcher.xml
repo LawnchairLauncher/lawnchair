@@ -128,7 +128,7 @@
     <TabHost
         android:id="@android:id/tabhost"
         android:layout_width="match_parent"
-        android:layout_height="550dip"
+        android:layout_height="500dip"
         android:layout_gravity="bottom">
         <LinearLayout
             android:orientation="vertical"
