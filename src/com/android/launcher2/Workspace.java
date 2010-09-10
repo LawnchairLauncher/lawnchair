@@ -64,6 +64,16 @@ public class Workspace extends SmoothPagedView
     // This is how much the workspace shrinks when we enter all apps or
     // customization mode
     private static final float SHRINK_FACTOR = 0.16f;
+
+    // The maximum Y rotation to apply to the mini home screens
+    private static final float MINI_PAGE_MAX_ROTATION = 25.0f;
+
+    // These are extra scale factors to apply to the mini home screens
+    // so as to achieve the desired transform
+    private static final float EXTRA_SCALE_FACTOR_0 = 0.97f;
+    private static final float EXTRA_SCALE_FACTOR_1 = 1.0f;
+    private static final float EXTRA_SCALE_FACTOR_2 = 1.13f;
+
     private enum ShrinkPosition { SHRINK_TO_TOP, SHRINK_TO_MIDDLE, SHRINK_TO_BOTTOM };
 
     private final WallpaperManager mWallpaperManager;
@@ -90,7 +100,6 @@ public class Workspace extends SmoothPagedView
     private Launcher mLauncher;
     private IconCache mIconCache;
     private DragController mDragController;
-
 
     private int[] mTempCell = new int[2];
     private int[] mTempEstimate = new int[2];
@@ -572,6 +581,18 @@ public class Workspace extends SmoothPagedView
         }
     }
 
+    private float getYScaleForScreen(int screen) {
+        int x = Math.abs(screen - 2);
+
+        // TODO: This should be generalized for use with arbitrary rotation angles.
+        switch(x) {
+            case 0: return EXTRA_SCALE_FACTOR_0;
+            case 1: return EXTRA_SCALE_FACTOR_1;
+            case 2: return EXTRA_SCALE_FACTOR_2;
+        }
+        return 1.0f;
+    }
+
     // we use this to shrink the workspace for the all apps view and the customize view
     private void shrink(ShrinkPosition shrinkPosition, boolean animated) {
         mIsSmall = true;
@@ -585,10 +606,10 @@ public class Workspace extends SmoothPagedView
 
         final int scaledPageWidth = (int) (SHRINK_FACTOR * pageWidth);
         final int scaledPageHeight = (int) (SHRINK_FACTOR * pageHeight);
-        final float scaledSpacing = res.getDimension(R.dimen.smallScreenSpacing);
+        final float extraScaledSpacing = res.getDimension(R.dimen.smallScreenExtraSpacing);
 
         final int screenCount = getChildCount();
-        float totalWidth = screenCount * scaledPageWidth + (screenCount - 1) * scaledSpacing;
+        float totalWidth = screenCount * scaledPageWidth + (screenCount - 1) * extraScaledSpacing;
 
         float newY = getResources().getDimension(R.dimen.smallScreenVerticalMargin);
         if (shrinkPosition == ShrinkPosition.SHRINK_TO_BOTTOM) {
@@ -602,27 +623,37 @@ public class Workspace extends SmoothPagedView
 
         // newX is initialized to the left-most position of the centered screens
         float newX = mScroller.getFinalX() + screenWidth / 2 - totalWidth / 2;
+
+        // We are going to scale about the center of the view, so we need to adjust the positions
+        // of the views accordingly
+        newX -= (pageWidth - scaledPageWidth) / 2.0f;
+        newY -= (pageHeight - scaledPageHeight) / 2.0f;
         for (int i = 0; i < screenCount; i++) {
             CellLayout cl = (CellLayout) getChildAt(i);
-            cl.setPivotX(0.0f);
-            cl.setPivotY(0.0f);
+
+            float rotation = (-i + 2) * MINI_PAGE_MAX_ROTATION / 2.0f;
+            float rotationScaleX = (float) (1.0f / Math.cos(Math.PI * rotation / 180.0f));
+            float rotationScaleY = getYScaleForScreen(i);
+
             if (animated) {
                 final int duration = res.getInteger(R.integer.config_workspaceShrinkTime);
                 new ObjectAnimator(duration, cl,
                         new PropertyValuesHolder("x", newX),
                         new PropertyValuesHolder("y", newY),
-                        new PropertyValuesHolder("scaleX", SHRINK_FACTOR),
-                        new PropertyValuesHolder("scaleY", SHRINK_FACTOR),
-                        new PropertyValuesHolder("dimmedBitmapAlpha", 1.0f)).start();
+                        new PropertyValuesHolder("scaleX", SHRINK_FACTOR * rotationScaleX),
+                        new PropertyValuesHolder("scaleY", SHRINK_FACTOR * rotationScaleY),
+                        new PropertyValuesHolder("dimmedBitmapAlpha", 1.0f),
+                        new PropertyValuesHolder("rotationY", rotation)).start();
             } else {
                 cl.setX((int)newX);
                 cl.setY((int)newY);
                 cl.setScaleX(SHRINK_FACTOR);
                 cl.setScaleY(SHRINK_FACTOR);
                 cl.setDimmedBitmapAlpha(1.0f);
+                cl.setRotationY(rotation);
             }
             // increment newX for the next screen
-            newX += scaledPageWidth + scaledSpacing;
+            newX += scaledPageWidth + extraScaledSpacing;
             cl.setOnInterceptTouchListener(this);
         }
         setChildrenDrawnWithCacheEnabled(true);
@@ -668,21 +699,21 @@ public class Workspace extends SmoothPagedView
             final int duration = getResources().getInteger(R.integer.config_workspaceUnshrinkTime);
             for (int i = 0; i < screenCount; i++) {
                 final CellLayout cl = (CellLayout)getChildAt(i);
-                cl.setPivotX(0.0f);
-                cl.setPivotY(0.0f);
                 if (animated) {
                     s.playTogether(
                             new ObjectAnimator<Float>(duration, cl, "translationX", 0.0f),
                             new ObjectAnimator<Float>(duration, cl, "translationY", 0.0f),
                             new ObjectAnimator<Float>(duration, cl, "scaleX", 1.0f),
                             new ObjectAnimator<Float>(duration, cl, "scaleY", 1.0f),
-                            new ObjectAnimator<Float>(duration, cl, "dimmedBitmapAlpha", 0.0f));
+                            new ObjectAnimator<Float>(duration, cl, "dimmedBitmapAlpha", 0.0f),
+                            new ObjectAnimator<Float>(duration, cl, "rotationY", 0.0f));
                 } else {
                     cl.setTranslationX(0.0f);
                     cl.setTranslationY(0.0f);
                     cl.setScaleX(1.0f);
                     cl.setScaleY(1.0f);
                     cl.setDimmedBitmapAlpha(0.0f);
+                    cl.setRotationY(0.0f);
                 }
             }
             s.addListener(mUnshrinkAnimationListener);
