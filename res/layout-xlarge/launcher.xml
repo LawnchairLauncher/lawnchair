@@ -34,7 +34,7 @@
         android:id="@+id/workspace"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="?android:attr/windowActionBarSize"
+        android:paddingTop="?android:attr/actionBarSize"
         launcher:defaultScreen="2"
         launcher:cellCountX="8"
         launcher:cellCountY="7">
@@ -49,7 +49,7 @@
     <RelativeLayout
         android:id="@+id/all_apps_button_cluster"
         android:layout_width="fill_parent"
-        android:layout_height="?android:attr/windowActionBarSize"
+        android:layout_height="?android:attr/actionBarSize"
         android:layout_gravity="top">
 
         <ImageView
