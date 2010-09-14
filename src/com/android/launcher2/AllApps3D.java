@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
+import com.android.launcher.R;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
@@ -27,17 +29,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
-import android.renderscript.Allocation;
-import android.renderscript.Element;
-import android.renderscript.ProgramFragment;
-import android.renderscript.ProgramStore;
-import android.renderscript.ProgramVertex;
-import android.renderscript.RSSurfaceView;
-import android.renderscript.RenderScript;
-import android.renderscript.RenderScriptGL;
-import android.renderscript.Sampler;
-import android.renderscript.Mesh;
-import android.renderscript.Type;
+import android.renderscript.*;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -49,8 +41,6 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityEvent;
-
-import com.android.launcher.R;
 
 public class AllApps3D extends RSSurfaceView
         implements AllAppsView, View.OnClickListener, View.OnLongClickListener, DragSource {
@@ -263,22 +253,6 @@ public class AllApps3D extends RSSurfaceView
         Log.d(TAG, "sc " + sRS);
         if (sRS != null) {
             sRS.mMessageCallback = mMessageProc = new AAMessage();
-        }
-
-        if (sRollo.mUniformAlloc != null) {
-            ScriptField_VpConsts.Item i = new ScriptField_VpConsts.Item();
-            i.ScaleOffset.x = (2.f / 480.f);
-            i.ScaleOffset.y = 0;
-            i.ScaleOffset.z = -((float)w / 2) - 0.25f;
-            i.ScaleOffset.w = -380.25f;
-            i.BendPos.x = 120.f;
-            i.BendPos.y = 680.f;
-            if (w > h) {
-                i.ScaleOffset.z = 40.f;
-                i.ScaleOffset.w = h - 40.f;
-                i.BendPos.y = 1.f;
-            }
-            sRollo.mUniformAlloc.set(i, 0, true);
         }
 
         //long endTime = SystemClock.uptimeMillis();
@@ -1029,8 +1003,51 @@ public class AllApps3D extends RSSurfaceView
             mScript.set_gSMCell(mMesh);
         }
 
+        Matrix4f getProjectionMatrix(int w, int h) {
+            // range -1,1 in the narrow axis at z = 0.
+            Matrix4f m1 = new Matrix4f();
+            Matrix4f m2 = new Matrix4f();
+
+            if(w > h) {
+                float aspect = ((float)w) / h;
+                m1.loadFrustum(-aspect,aspect,  -1,1,  1,100);
+            } else {
+                float aspect = ((float)h) / w;
+                m1.loadFrustum(-1,1, -aspect,aspect, 1,100);
+            }
+
+            m2.loadRotate(180, 0, 1, 0);
+            m1.loadMultiply(m1, m2);
+
+            m2.loadScale(-2, 2, 1);
+            m1.loadMultiply(m1, m2);
+
+            m2.loadTranslate(0, 0, 2);
+            m1.loadMultiply(m1, m2);
+            return m1;
+        }
+
         void resize(int w, int h) {
-            mPVA.setupProjectionNormalized(w, h);
+            Matrix4f proj = getProjectionMatrix(w, h);
+            mPVA.loadProjection(proj);
+
+            if (mUniformAlloc != null) {
+                ScriptField_VpConsts.Item i = new ScriptField_VpConsts.Item();
+                i.Proj = proj;
+                i.ScaleOffset.x = (2.f / 480.f);
+                i.ScaleOffset.y = 0;
+                i.ScaleOffset.z = -((float)w / 2) - 0.25f;
+                i.ScaleOffset.w = -380.25f;
+                i.BendPos.x = 120.f;
+                i.BendPos.y = 680.f;
+                if (w > h) {
+                    i.ScaleOffset.z = 40.f;
+                    i.ScaleOffset.w = h - 40.f;
+                    i.BendPos.y = 1.f;
+                }
+                mUniformAlloc.set(i, 0, true);
+            }
+
             mWidth = w;
             mHeight = h;
         }
@@ -1050,7 +1067,9 @@ public class AllApps3D extends RSSurfaceView
 
             initMesh();
             ProgramVertex.ShaderBuilder sb = new ProgramVertex.ShaderBuilder(sRS);
-            String t = "void main() {\n" +
+            String t = "varying vec4 varColor;\n" +
+                    "varying vec4 varTex0;\n" +
+                    "void main() {\n" +
                     // Animation
                     "  float ani = UNI_Position.z;\n" +
 
@@ -1100,7 +1119,7 @@ public class AllApps3D extends RSSurfaceView
                     "  pos.z -= ani * 1.5;\n" +
                     "  lum *= 1.0 - ani;\n" +
 
-                    "  gl_Position = UNI_MVP * pos;\n" +
+                    "  gl_Position = UNI_Proj * pos;\n" +
                     "  varColor.rgba = vec4(lum, lum, lum, 1.0);\n" +
                     "  varTex0.xy = ATTRIB_position;\n" +
                     "  varTex0.y = 1.0 - varTex0.y;\n" +
@@ -1110,8 +1129,7 @@ public class AllApps3D extends RSSurfaceView
             sb.addConstant(mUniformAlloc.getType());
             sb.addInput(mMesh.getVertexAllocation(0).getType().getElement());
             ProgramVertex pvc = sb.create();
-            pvc.bindAllocation(mPVA);
-            pvc.bindConstants(mUniformAlloc.getAllocation(), 1);
+            pvc.bindConstants(mUniformAlloc.getAllocation(), 0);
 
             mScript.set_gPVCurve(pvc);
         }
