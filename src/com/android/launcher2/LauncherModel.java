@@ -269,8 +269,12 @@ public class LauncherModel extends BroadcastReceiver {
      */
     static void deleteItemFromDatabase(Context context, ItemInfo item) {
         final ContentResolver cr = context.getContentResolver();
-
-        cr.delete(LauncherSettings.Favorites.getContentUri(item.id, false), null, null);
+        final Uri uriToDelete = LauncherSettings.Favorites.getContentUri(item.id, false);
+        new Thread("deleteItemFromDatabase") {
+            public void run() {
+                cr.delete(uriToDelete, null, null);
+            }
+        }.start();
     }
 
     /**

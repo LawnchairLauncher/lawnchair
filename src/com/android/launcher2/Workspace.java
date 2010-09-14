@@ -1345,7 +1345,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                             if (Intent.ACTION_MAIN.equals(intent.getAction()) && name != null) {
                                 for (String packageName: packageNames) {
                                     if (packageName.equals(name.getPackageName())) {
-                                        // TODO: This should probably be done on a worker thread
                                         LauncherModel.deleteItemFromDatabase(mLauncher, info);
                                         childrenToRemove.add(view);
                                     }
@@ -1367,9 +1366,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                                     for (String packageName: packageNames) {
                                         if (packageName.equals(name.getPackageName())) {
                                             toRemove.add(appInfo);
-                                            // TODO: This should probably be done on a worker thread
-                                            LauncherModel.deleteItemFromDatabase(
-                                                    mLauncher, appInfo);
+                                            LauncherModel.deleteItemFromDatabase(mLauncher, appInfo);
                                             removedFromFolder = true;
                                         }
                                     }
@@ -1390,7 +1387,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                             if (providerInfo != null) {
                                 for (String packageName: packageNames) {
                                     if (packageName.equals(providerInfo.packageName)) {
-                                        // TODO: This should probably be done on a worker thread
                                         LauncherModel.deleteItemFromDatabase(mLauncher, info);
                                         childrenToRemove.add(view);                        
                                     }
@@ -1403,7 +1399,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                             if (provider != null) {
                                 for (String packageName: packageNames) {
                                     if (packageName.equals(provider.provider.getPackageName())) {
-                                        // TODO: This should probably be done on a worker thread
                                         LauncherModel.deleteItemFromDatabase(mLauncher, info);
                                         childrenToRemove.add(view);                                
                                     }
