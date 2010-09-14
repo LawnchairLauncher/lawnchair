@@ -72,7 +72,7 @@ public class Workspace extends SmoothPagedView
     // so as to achieve the desired transform
     private static final float EXTRA_SCALE_FACTOR_0 = 0.97f;
     private static final float EXTRA_SCALE_FACTOR_1 = 1.0f;
-    private static final float EXTRA_SCALE_FACTOR_2 = 1.13f;
+    private static final float EXTRA_SCALE_FACTOR_2 = 1.08f;
 
     private enum ShrinkPosition { SHRINK_TO_TOP, SHRINK_TO_MIDDLE, SHRINK_TO_BOTTOM };
 
@@ -138,7 +138,10 @@ public class Workspace extends SmoothPagedView
     public Workspace(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mContentIsRefreshable = false;
-        mFadeInAdjacentScreens = false;
+
+        if (!LauncherApplication.isScreenXLarge()) {
+            mFadeInAdjacentScreens = false;
+        }
 
         mWallpaperManager = WallpaperManager.getInstance(context);
 
@@ -383,19 +386,46 @@ public class Workspace extends SmoothPagedView
         return false;
     }
 
+    @Override
+    public boolean dispatchUnhandledMove(View focused, int direction) {
+        if (mIsSmall) {
+            // when the home screens are shrunken, shouldn't allow side-scrolling
+            return false;
+        }
+        return super.dispatchUnhandledMove(focused, direction);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (mIsSmall) {
+            // when the home screens are shrunken, shouldn't allow side-scrolling
+            return false;
+        }
+        return super.onInterceptTouchEvent(ev);
+    }
+
     protected void pageBeginMoving() {
         if (mNextPage != INVALID_PAGE) {
             // we're snapping to a particular screen
-            enableChildrenCache(mCurrentPage, mNextPage);
+            // there's an issue where the alpha of neighboring pages doesn't get updated
+            // if drawing cache is enabled on children-- we only use that on xlarge devices,
+            // so disable drawing cache in those cases
+            if (!LauncherApplication.isScreenXLarge()) {
+                enableChildrenCache(mCurrentPage, mNextPage);
+            }
         } else {
             // this is when user is actively dragging a particular screen, they might
             // swipe it either left or right (but we won't advance by more than one screen)
-            enableChildrenCache(mCurrentPage - 1, mCurrentPage + 1);
+            if (!LauncherApplication.isScreenXLarge()) {
+                enableChildrenCache(mCurrentPage - 1, mCurrentPage + 1);
+            }
         }
     }
 
     protected void pageEndMoving() {
-        clearChildrenCache();
+        if (!LauncherApplication.isScreenXLarge()) {
+            clearChildrenCache();
+        }
     }
 
     @Override
@@ -465,9 +495,6 @@ public class Workspace extends SmoothPagedView
             for (int i = 0; i < pageCount; i++) {
                 final View page = (View) getChildAt(i);
 
-                if (page.getAlpha() != 1.0f) {
-                    page.setAlpha(1.0f);
-                }
                 drawChild(canvas, page, drawingTime);
             }
         } else {
@@ -596,6 +623,10 @@ public class Workspace extends SmoothPagedView
     // we use this to shrink the workspace for the all apps view and the customize view
     private void shrink(ShrinkPosition shrinkPosition, boolean animated) {
         mIsSmall = true;
+        // we intercept and reject all touch events when we're small, so be sure to reset the state
+        mTouchState = TOUCH_STATE_REST;
+        mActivePointerId = INVALID_POINTER;
+
         final Resources res = getResources();
         final int screenWidth = getWidth();
         final int screenHeight = getHeight();
@@ -637,19 +668,21 @@ public class Workspace extends SmoothPagedView
 
             if (animated) {
                 final int duration = res.getInteger(R.integer.config_workspaceShrinkTime);
-                new ObjectAnimator(duration, cl,
-                        new PropertyValuesHolder("x", newX),
-                        new PropertyValuesHolder("y", newY),
-                        new PropertyValuesHolder("scaleX", SHRINK_FACTOR * rotationScaleX),
-                        new PropertyValuesHolder("scaleY", SHRINK_FACTOR * rotationScaleY),
-                        new PropertyValuesHolder("dimmedBitmapAlpha", 1.0f),
-                        new PropertyValuesHolder("rotationY", rotation)).start();
+                new ObjectAnimator<Float>(duration, cl,
+                        new PropertyValuesHolder<Float>("x", newX),
+                        new PropertyValuesHolder<Float>("y", newY),
+                        new PropertyValuesHolder<Float>("scaleX", SHRINK_FACTOR * rotationScaleX),
+                        new PropertyValuesHolder<Float>("scaleY", SHRINK_FACTOR * rotationScaleY),
+                        new PropertyValuesHolder<Float>("backgroundAlpha", 1.0f),
+                        new PropertyValuesHolder<Float>("alpha", 0.0f),
+                        new PropertyValuesHolder<Float>("rotationY", rotation)).start();
             } else {
                 cl.setX((int)newX);
                 cl.setY((int)newY);
                 cl.setScaleX(SHRINK_FACTOR);
                 cl.setScaleY(SHRINK_FACTOR);
-                cl.setDimmedBitmapAlpha(1.0f);
+                cl.setBackgroundAlpha(1.0f);
+                cl.setAlpha(0.0f);
                 cl.setRotationY(rotation);
             }
             // increment newX for the next screen
@@ -673,7 +706,8 @@ public class Workspace extends SmoothPagedView
 
     private void unshrink(int newCurrentPage) {
         if (mIsSmall) {
-            int delta = (newCurrentPage - mCurrentPage)*getWidth();
+            int newX = getChildOffset(newCurrentPage) - getRelativeChildOffset(newCurrentPage);
+            int delta = newX - mScrollX;
 
             final int screenCount = getChildCount();
             for (int i = 0; i < screenCount; i++) {
@@ -699,20 +733,23 @@ public class Workspace extends SmoothPagedView
             final int duration = getResources().getInteger(R.integer.config_workspaceUnshrinkTime);
             for (int i = 0; i < screenCount; i++) {
                 final CellLayout cl = (CellLayout)getChildAt(i);
+                float finalAlphaValue = (i == mCurrentPage) ? 1.0f : 0.0f;
                 if (animated) {
                     s.playTogether(
                             new ObjectAnimator<Float>(duration, cl, "translationX", 0.0f),
                             new ObjectAnimator<Float>(duration, cl, "translationY", 0.0f),
                             new ObjectAnimator<Float>(duration, cl, "scaleX", 1.0f),
                             new ObjectAnimator<Float>(duration, cl, "scaleY", 1.0f),
-                            new ObjectAnimator<Float>(duration, cl, "dimmedBitmapAlpha", 0.0f),
+                            new ObjectAnimator<Float>(duration, cl, "backgroundAlpha", 0.0f),
+                            new ObjectAnimator<Float>(duration, cl, "alpha", finalAlphaValue),
                             new ObjectAnimator<Float>(duration, cl, "rotationY", 0.0f));
                 } else {
                     cl.setTranslationX(0.0f);
                     cl.setTranslationY(0.0f);
                     cl.setScaleX(1.0f);
                     cl.setScaleY(1.0f);
-                    cl.setDimmedBitmapAlpha(0.0f);
+                    cl.setBackgroundAlpha(0.0f);
+                    cl.setAlpha(1.0f);
                     cl.setRotationY(0.0f);
                 }
             }
@@ -838,6 +875,8 @@ public class Workspace extends SmoothPagedView
         // If we are dragging over a cell that contains a DropTarget that will
         // accept the drop, delegate to that DropTarget.
         final int[] cellXY = mTempCell;
+        int localDragPointX = dragPointX - (currentLayout.getLeft() - mScrollX);
+        int localDragPointY = dragPointY - (currentLayout.getTop() - mScrollY);
         currentLayout.estimateDropCell(dragPointX, dragPointY, item.spanX, item.spanY, cellXY);
         View child = currentLayout.getChildAt(cellXY[0], cellXY[1]);
         if (child instanceof DropTarget) {
@@ -986,8 +1025,10 @@ public class Workspace extends SmoothPagedView
         if ((!LauncherApplication.isScreenXLarge() || source == this)
                 && mDragTargetLayout != null) {
             final View child = (mDragInfo == null) ? null : mDragInfo.cell;
+            int localOriginX = originX - (mDragTargetLayout.getLeft() - mScrollX);
+            int localOriginY = originY - (mDragTargetLayout.getTop() - mScrollY);
             mDragTargetLayout.visualizeDropLocation(
-                    child, originX, originY, item.spanX, item.spanY);
+                    child, localOriginX, localOriginY, item.spanX, item.spanY);
         }
     }
 
@@ -1143,7 +1184,9 @@ public class Workspace extends SmoothPagedView
             int spanX, int spanY, View ignoreView, CellLayout layout, int[] recycle) {
 
         final int[] cellXY = mTempCell;
-        layout.estimateDropCell(pixelX, pixelY, spanX, spanY, cellXY);
+        int localPixelX = pixelX - (layout.getLeft() - mScrollX);
+        int localPixelY = pixelY - (layout.getTop() - mScrollY);
+        layout.estimateDropCell(localPixelX, localPixelY, spanX, spanY, cellXY);
         layout.cellToPoint(cellXY[0], cellXY[1], mTempEstimate);
 
         final CellLayout.CellInfo cellInfo = layout.updateOccupiedCells(null, ignoreView);

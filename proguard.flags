@@ -9,8 +9,8 @@
 }
 
 -keep class com.android.launcher2.CellLayout {
-  public float getDimmedBitmapAlpha();
-  public void setDimmedBitmapAlpha(float);
+  public float getBackgroundAlpha();
+  public void setBackgroundAlpha(float);
 }
 
 -keep class com.android.launcher2.AllApps3D$Defines {

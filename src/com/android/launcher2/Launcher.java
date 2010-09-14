@@ -374,12 +374,6 @@ public final class Launcher extends Activity
         registerReceiver(mCloseSystemDialogsReceiver, filter);
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        // TODO Auto-generated method stub
-        super.onConfigurationChanged(newConfig);
-    }
-
     private void checkForLocaleChange() {
         if (sLocaleConfiguration == null) {
             new AsyncTask<Void, Void, LocaleConfiguration>() {

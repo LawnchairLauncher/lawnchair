@@ -68,6 +68,12 @@
     <string name="menu_notifications" msgid="6424587053194766192">"알림"</string>
     <string name="menu_gestures" msgid="514678675575912237">"동작"</string>
     <string name="menu_settings" msgid="6233960148378443661">"설정"</string>
+    <!-- no translation found for cab_menu_delete_app (1242619904941293871) -->
+    <skip />
+    <!-- no translation found for cab_menu_app_info (5180426909324882018) -->
+    <skip />
+    <!-- no translation found for cab_selection_text (8712157849499378915) -->
+    <skip />
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"바로가기 설치"</string>
     <string name="permdesc_install_shortcut" msgid="7429365847558984148">"애플리케이션이 사용자의 작업 없이 바로가기를 추가할 수 있도록 합니다."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"바로가기 제거"</string>
@@ -77,4 +83,6 @@
     <string name="permlab_write_settings" msgid="1360567537236705628">"홈 설정 및 바로가기 쓰기"</string>
     <string name="permdesc_write_settings" msgid="1098648778383349818">"애플리케이션이 홈에 있는 설정 및 바로가기를 변경할 수 있도록 합니다."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"위젯을 로드하는 중 문제가 발생했습니다."</string>
+    <!-- no translation found for uninstall_system_app_text (7488523163288397451) -->
+    <skip />
 </resources>

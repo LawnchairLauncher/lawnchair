@@ -68,6 +68,12 @@
     <string name="menu_notifications" msgid="6424587053194766192">"Уведомления"</string>
     <string name="menu_gestures" msgid="514678675575912237">"Жесты"</string>
     <string name="menu_settings" msgid="6233960148378443661">"Настройки"</string>
+    <!-- no translation found for cab_menu_delete_app (1242619904941293871) -->
+    <skip />
+    <!-- no translation found for cab_menu_app_info (5180426909324882018) -->
+    <skip />
+    <!-- no translation found for cab_selection_text (8712157849499378915) -->
+    <skip />
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"устанавливать ярлыки"</string>
     <string name="permdesc_install_shortcut" msgid="7429365847558984148">"Позволяет приложению добавлять ярлыки без вмешательства пользователя"</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"удалять ярлыки"</string>
@@ -77,4 +83,6 @@
     <string name="permlab_write_settings" msgid="1360567537236705628">"изменять настройки и ярлыки главного экрана"</string>
     <string name="permdesc_write_settings" msgid="1098648778383349818">"Позволяет приложению изменять настройки и ярлыки на главном экране."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Не удалось загрузить виджет"</string>
+    <!-- no translation found for uninstall_system_app_text (7488523163288397451) -->
+    <skip />
 </resources>
