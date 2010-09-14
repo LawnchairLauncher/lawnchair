@@ -72,7 +72,7 @@ public class Workspace extends SmoothPagedView
     // so as to achieve the desired transform
     private static final float EXTRA_SCALE_FACTOR_0 = 0.97f;
     private static final float EXTRA_SCALE_FACTOR_1 = 1.0f;
-    private static final float EXTRA_SCALE_FACTOR_2 = 1.13f;
+    private static final float EXTRA_SCALE_FACTOR_2 = 1.08f;
 
     private enum ShrinkPosition { SHRINK_TO_TOP, SHRINK_TO_MIDDLE, SHRINK_TO_BOTTOM };
 
@@ -671,8 +671,8 @@ public class Workspace extends SmoothPagedView
                 new ObjectAnimator<Float>(duration, cl,
                         new PropertyValuesHolder<Float>("x", newX),
                         new PropertyValuesHolder<Float>("y", newY),
-                        new PropertyValuesHolder<Float>("scaleX", SHRINK_FACTOR),
-                        new PropertyValuesHolder<Float>("scaleY", SHRINK_FACTOR),
+                        new PropertyValuesHolder<Float>("scaleX", SHRINK_FACTOR * rotationScaleX),
+                        new PropertyValuesHolder<Float>("scaleY", SHRINK_FACTOR * rotationScaleY),
                         new PropertyValuesHolder<Float>("backgroundAlpha", 1.0f),
                         new PropertyValuesHolder<Float>("alpha", 0.0f),
                         new PropertyValuesHolder<Float>("rotationY", rotation)).start();
