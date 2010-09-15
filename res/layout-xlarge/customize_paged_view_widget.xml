@@ -13,20 +13,62 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/name"
-    android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
-    android:paddingTop="2dip"
+    android:paddingLeft="12.5dp"
+    android:paddingRight="12.5dp"
+    android:paddingTop="40dp"
+    android:paddingBottom="50dp"
+    android:gravity="top"
+    android:orientation="vertical">
 
-    android:textColor="#FFFFFFFF"
-    android:textSize="14sp"
-    android:shadowColor="#FF000000"
-    android:shadowDx="0.0"
-    android:shadowDy="1.0"
-    android:shadowRadius="1.0"
+    <!-- The icon of the widget. -->
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:scaleType="fitStart" />
 
-    android:maxLines="2"
-    android:fadingEdge="horizontal" />
+    <!-- The divider image. -->
+    <ImageView
+        android:id="@+id/divider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:src="@drawable/widget_divider" />
+
+    <!-- The name of the widget. -->
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+
+        android:textColor="#FFFFFFFF"
+        android:textSize="14sp"
+        android:shadowColor="#FF000000"
+        android:shadowDx="0.0"
+        android:shadowDy="1.0"
+        android:shadowRadius="1.0"
+
+        android:maxLines="2"
+        android:fadingEdge="horizontal" />
+
+    <!-- The original dimensions of the widget (can't be the same text as above due to different
+         style. -->
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/dims"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+
+        android:textColor="#FF999999"
+        android:textSize="14sp"
+        android:shadowColor="#99000000"
+        android:shadowDx="0.0"
+        android:shadowDy="1.0"
+        android:shadowRadius="1.0" />
+</LinearLayout>

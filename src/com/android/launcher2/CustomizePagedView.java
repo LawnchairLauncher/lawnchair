@@ -28,7 +28,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -38,8 +40,13 @@ import android.graphics.drawable.Drawable;
 import android.provider.LiveFolders;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.launcher.R;
@@ -55,6 +62,27 @@ public class CustomizePagedView extends PagedView
         WallpaperCustomization
     }
 
+    /**
+     * The linear layout used strictly for the widget tab of the customization tray
+     */
+    private class WidgetLayout extends LinearLayout {
+        public WidgetLayout(Context context) {
+            super(context);
+        }
+
+        @Override
+        public boolean onTouchEvent(MotionEvent event) {
+            // We eat up the touch events here, since the PagedView (which uses the same swiping
+            // touch code as Workspace previously) uses onInterceptTouchEvent() to determine when
+            // the user is scrolling between pages.  This means that if the pages themselves don't
+            // handle touch events, it gets forwarded up to PagedView itself, and it's own
+            // onTouchEvent() handling will prevent further intercept touch events from being called
+            // (it's the same view in that case).  This is not ideal, but to prevent more changes,
+            // we just always mark the touch event as handled.
+            return super.onTouchEvent(event) || true;
+        }
+    }
+
     private static final String TAG = "CustomizeWorkspace";
     private static final boolean DEBUG = false;
 
@@ -64,33 +92,57 @@ public class CustomizePagedView extends PagedView
 
     private CustomizationType mCustomizationType;
 
-    private PagedViewCellLayout mTmpWidgetLayout;
-    private ArrayList<ArrayList<PagedViewCellLayout.LayoutParams>> mWidgetPages;
+    // The layout used to emulate the workspace in resolve the cell dimensions of a widget
+    private PagedViewCellLayout mWorkspaceWidgetLayout;
+
+    // The mapping between the pages and the widgets that will be laid out on them
+    private ArrayList<ArrayList<AppWidgetProviderInfo>> mWidgetPages;
+
+    // The max dimensions for the ImageView we use for displaying the widget
+    private int mMaxWidgetWidth;
+
+    // The max number of widget cells to take a "page" of widget
+    private int mMaxWidgetsCellHSpan;
+
+    // The raw sources of data for each of the different tabs of the customization page
     private List<AppWidgetProviderInfo> mWidgetList;
     private List<ResolveInfo> mFolderList;
     private List<ResolveInfo> mShortcutList;
 
-    private int mCellCountX;
-    private int mCellCountY;
+    private static final int sCellCountX = 8;
+    private static final int sCellCountY = 4;
+    private static final int sMinWidgetCellHSpan = 2;
+    private static final int sMaxWidgetCellHSpan = 4;
+
+    // The scale factor for widget previews inside the widget drawer
+    private static final float sScaleFactor = 0.75f;
 
     private final Canvas mCanvas = new Canvas();
     private final LayoutInflater mInflater;
 
     public CustomizePagedView(Context context) {
-        this(context, null);
+        this(context, null, 0);
     }
 
     public CustomizePagedView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        mCellCountX = 8;
-        mCellCountY = 4;
+        this(context, attrs, 0);
+    }
+
+    public CustomizePagedView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CustomizePagedView,
+                defStyle, 0);
         mCustomizationType = CustomizationType.WidgetCustomization;
-        mWidgetPages = new ArrayList<ArrayList<PagedViewCellLayout.LayoutParams>>();
-        mTmpWidgetLayout = new PagedViewCellLayout(context);
+        mWidgetPages = new ArrayList<ArrayList<AppWidgetProviderInfo>>();
+        mWorkspaceWidgetLayout = new PagedViewCellLayout(context);
         mInflater = LayoutInflater.from(context);
-        setupPage(mTmpWidgetLayout);
+        mMaxWidgetsCellHSpan = a.getInt(R.styleable.CustomizePagedView_widgetCellCountX, 8);
+        a.recycle();
+
         setVisibility(View.GONE);
         setSoundEffectsEnabled(false);
+        setupWorkspaceLayout();
     }
 
     public void setLauncher(Launcher launcher) {
@@ -139,6 +191,7 @@ public class CustomizePagedView extends PagedView
         // reset the icon cache
         mPageViewIconCache.clear();
 
+        // Refresh all the tabs
         invalidatePageData();
     }
 
@@ -166,26 +219,22 @@ public class CustomizePagedView extends PagedView
         final View animView = v;
         switch (mCustomizationType) {
         case WidgetCustomization:
-            // We assume that the view v is a TextView with a compound drawable on top, and that the
-            // whole text view is centered horizontally and top aligned. We get a more precise
-            // drag point using this information
-            final TextView textView = (TextView) animView;
-            final Drawable[] drawables = textView.getCompoundDrawables();
-            final Drawable icon = drawables[1];
-            int dragPointOffsetX = 0;
-            int dragPointOffsetY = 0;
-            Rect bounds = null;
-            if (icon != null) {
-                bounds = icon.getBounds();
-                bounds.left = (v.getWidth() - bounds.right) / 2;
-                bounds.right += bounds.left;
-            }
+            // Get the icon as the drag representation
+            final LinearLayout l = (LinearLayout) animView;
+            final Drawable icon = ((ImageView) l.findViewById(R.id.icon)).getDrawable();
+            Bitmap b = Bitmap.createBitmap(icon.getIntrinsicWidth(), icon.getIntrinsicHeight(),
+                    Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(b);
+            icon.draw(c);
 
             AppWidgetProviderInfo appWidgetInfo = (AppWidgetProviderInfo) v.getTag();
             LauncherAppWidgetInfo dragInfo = new LauncherAppWidgetInfo(appWidgetInfo.provider);
             dragInfo.minWidth = appWidgetInfo.minWidth;
             dragInfo.minHeight = appWidgetInfo.minHeight;
-            mDragController.startDrag(v, this, dragInfo, DragController.DRAG_ACTION_COPY, bounds);
+            mDragController.startDrag(v, b, this, dragInfo, DragController.DRAG_ACTION_COPY, null);
+
+            // Cleanup the icon
+            b.recycle();
             return true;
         case FolderCustomization:
             // animate some feedback to the long press
@@ -236,80 +285,50 @@ public class CustomizePagedView extends PagedView
         return false;
     }
 
+    /**
+     * Pre-processes the layout of the different widget pages.
+     * @return the number of pages of widgets that we have
+     */
     private int relayoutWidgets() {
-        final int widgetCount = mWidgetList.size();
-        if (widgetCount == 0) return 0;
+        if (mWidgetList.isEmpty()) return 0;
 
+        // create a new page for the first set of widgets
+        ArrayList<AppWidgetProviderInfo> newPage = new ArrayList<AppWidgetProviderInfo>();
         mWidgetPages.clear();
-        ArrayList<PagedViewCellLayout.LayoutParams> page = 
-            new ArrayList<PagedViewCellLayout.LayoutParams>();
-        mWidgetPages.add(page);
-        int rowOffsetX = 0;
-        int rowOffsetY = 0;
-        int curRowHeight = 0;
-        // we only get the cell dims this way for the layout calculations because
-        // we know that we aren't going to change the dims when we construct it
-        // afterwards
+        mWidgetPages.add(newPage);
+
+        // do this until we have no more widgets to lay out
+        final int maxNumCellsPerRow = mMaxWidgetsCellHSpan;
+        final int widgetCount = mWidgetList.size();
+        int numCellsInRow = 0;
         for (int i = 0; i < widgetCount; ++i) {
-            AppWidgetProviderInfo info = mWidgetList.get(i);
-            PagedViewCellLayout.LayoutParams params;
+            final AppWidgetProviderInfo info = mWidgetList.get(i);
 
-            final int cellSpanX = mTmpWidgetLayout.estimateCellHSpan(info.minWidth);
-            final int cellSpanY = mTmpWidgetLayout.estimateCellVSpan(info.minHeight);
+            // determine the size of the current widget
+            int cellSpanX = Math.max(sMinWidgetCellHSpan, Math.min(sMaxWidgetCellHSpan,
+                    mWorkspaceWidgetLayout.estimateCellHSpan(info.minWidth)));
 
-            if (((rowOffsetX + cellSpanX) <= mCellCountX) &&
-                    ((rowOffsetY + cellSpanY) <= mCellCountY)) {
-                // just add to end of current row
-                params = new PagedViewCellLayout.LayoutParams(rowOffsetX, rowOffsetY,
-                        cellSpanX, cellSpanY);
-
-                rowOffsetX += cellSpanX;
-                curRowHeight = Math.max(curRowHeight, cellSpanY);
-            } else {
-                /*
-                // fix all the items in this last row to be bottom aligned
-                int prevRowOffsetX = rowOffsetX;
-                for (int j = page.size() - 1; j >= 0; --j) {
-                    PagedViewCellLayout.LayoutParams params = page.get(j);
-                    // skip once we get to the previous row
-                    if (params.cellX > prevRowOffsetX)
-                        break;
-
-                    params.cellY += curRowHeight - params.cellVSpan;
-                    prevRowOffsetX = params.cellX;
-                }
-                */
-
-                // doesn't fit on current row, see if we can start a new row on
-                // this page
-                if ((rowOffsetY + curRowHeight + cellSpanY) > mCellCountY) {
-                    // start a new page and add this item to it
-                    page = new ArrayList<PagedViewCellLayout.LayoutParams>();
-                    mWidgetPages.add(page);
-
-                    params = new PagedViewCellLayout.LayoutParams(0, 0, cellSpanX, cellSpanY);
-                    rowOffsetX = cellSpanX;
-                    rowOffsetY = 0;
-                    curRowHeight = cellSpanY;
-                } else {
-                    // add it to the current page on this new row
-                    params = new PagedViewCellLayout.LayoutParams(0, rowOffsetY + curRowHeight,
-                            cellSpanX, cellSpanY);
-
-                    rowOffsetX = cellSpanX;
-                    rowOffsetY += curRowHeight;
-                    curRowHeight = cellSpanY;
-                }
+            // create a new page if necessary
+            if ((numCellsInRow + cellSpanX) > maxNumCellsPerRow) {
+                numCellsInRow = 0;
+                newPage = new ArrayList<AppWidgetProviderInfo>();
+                mWidgetPages.add(newPage);
             }
 
-            params.setTag(info);
-            page.add(params);
+            // add the item to the current page
+            newPage.add(info);
+            numCellsInRow += cellSpanX;
         }
+
         return mWidgetPages.size();
     }
 
-    private Drawable getWidgetIcon(PagedViewCellLayout.LayoutParams params, 
-            AppWidgetProviderInfo info) {
+    /**
+     * This method will extract the preview image specified by the widget developer (if it exists),
+     * otherwise, it will try to generate a default image preview with the widget's package icon.
+     * @return the drawable will be used and sized in the ImageView to represent the widget
+     */
+    private Drawable getWidgetIcon(AppWidgetProviderInfo info) {
         PackageManager packageManager = mLauncher.getPackageManager();
         String packageName = info.provider.getPackageName();
         Drawable drawable = null;
@@ -327,15 +346,11 @@ public class CustomizePagedView extends PagedView
         if (drawable == null) {
             Resources resources = mLauncher.getResources();
 
-            // Determine the size the widget will take in the layout
             // Create a new bitmap to hold the widget preview
-            int[] dims = mTmpWidgetLayout.estimateCellDimensions(getMeasuredWidth(), 
-                    getMeasuredHeight(), params.cellHSpan, params.cellVSpan);
-            final int width = dims[0];
-            final int height = dims[1] - 35;
-            // TEMP
-            // TEMP: HACK ABOVE TO GET TEXT TO SHOW
-            // TEMP
+            final int minDim = mWorkspaceWidgetLayout.estimateCellWidth(1);
+            final int maxDim = mWorkspaceWidgetLayout.estimateCellWidth(3);
+            int width = (int) (Math.max(minDim, Math.min(maxDim, info.minWidth)) * sScaleFactor);
+            int height = (int) (Math.max(minDim, Math.min(maxDim, info.minHeight)) * sScaleFactor);
             Bitmap bitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
             mCanvas.setBitmap(bitmap);
             // For some reason, we must re-set the clip rect here, otherwise it will be wrong
@@ -349,19 +364,16 @@ public class CustomizePagedView extends PagedView
             try {
                 Rect tmpRect = new Rect();
                 Drawable icon = null;
-                if (info.icon != 0) {
+                if (info.icon > 0) {
                     icon = packageManager.getDrawable(packageName, info.icon, null);
                 } else {
                     icon = resources.getDrawable(R.drawable.ic_launcher_application);
                 }
                 background.getPadding(tmpRect);
 
-                final int iconSize = Math.min(
-                        Math.min(icon.getIntrinsicWidth(), width - tmpRect.left - tmpRect.right),
-                        Math.min(icon.getIntrinsicHeight(), height - tmpRect.top - tmpRect.bottom));
-                final int left = (width / 2) - (iconSize / 2);
-                final int top = (height / 2) - (iconSize / 2);
-                icon.setBounds(new Rect(left, top, left + iconSize, top + iconSize));
+                final int iconSize = minDim / 2;
+                final int offset = iconSize / 4;
+                icon.setBounds(new Rect(offset, offset, offset + iconSize, offset + iconSize));
                 icon.draw(mCanvas);
             } catch (Resources.NotFoundException e) {
                 // if we can't find the icon, then just don't draw it
@@ -374,62 +386,77 @@ public class CustomizePagedView extends PagedView
     }
 
     private void setupPage(PagedViewCellLayout layout) {
-        layout.setCellCount(mCellCountX, mCellCountY);
+        layout.setCellCount(sCellCountX, sCellCountY);
         layout.setPadding(20, 10, 20, 0);
+    }
+
+    private void setupWorkspaceLayout() {
+        mWorkspaceWidgetLayout.setCellCount(sCellCountX, sCellCountY);
+        mWorkspaceWidgetLayout.setPadding(20, 10, 20, 0);
+
+        mMaxWidgetWidth = mWorkspaceWidgetLayout.estimateCellWidth(sMaxWidgetCellHSpan);
     }
 
     private void syncWidgetPages() {
         if (mWidgetList == null) return;
 
-        // calculate the layout for all the widget pages first and ensure that
-        // we have the right number of pages
+        // we need to repopulate with the LinearLayout layout for the widget pages
+        removeAllViews();
         int numPages = relayoutWidgets();
-        int curNumPages = getChildCount();
-        // remove any extra pages after the "last" page
-        int extraPageDiff = curNumPages - numPages;
-        for (int i = 0; i < extraPageDiff; ++i) {
-            removeViewAt(numPages);
-        }
-        // add any necessary pages
-        for (int i = curNumPages; i < numPages; ++i) {
-            PagedViewCellLayout layout = new PagedViewCellLayout(getContext());
-            setupPage(layout);
-            addView(layout);
+        for (int i = 0; i < numPages; ++i) {
+            LinearLayout layout = new WidgetLayout(getContext());
+            layout.setGravity(Gravity.CENTER_HORIZONTAL);
+
+            // Temporary change to prevent the last page from being too small (and items bleeding
+            // onto it).  We can remove this once we properly fix the fading algorithm
+            if (i < numPages - 1) {
+                addView(layout, new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT));
+            } else {
+                addView(layout, new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT));
+            }
         }
     }
 
     private void syncWidgetPageItems(int page) {
         // ensure that we have the right number of items on the pages
-        PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(page);
-        final ArrayList<PagedViewCellLayout.LayoutParams> list = mWidgetPages.get(page);
+        LinearLayout layout = (LinearLayout) getChildAt(page);
+        final ArrayList<AppWidgetProviderInfo> list = mWidgetPages.get(page);
         final int count = list.size();
         layout.removeAllViews();
         for (int i = 0; i < count; ++i) {
-            PagedViewCellLayout.LayoutParams params = list.get(i);
-            AppWidgetProviderInfo info = (AppWidgetProviderInfo) params.getTag();
-            final Drawable icon = getWidgetIcon(params, info);
-            TextView text = (TextView) mInflater.inflate(R.layout.customize_paged_view_widget, 
-                    layout, false);
-            text.setCompoundDrawablesWithIntrinsicBounds(null, icon, null, null);
-            text.setText(info.label);
-            text.setTag(info);
-            text.setOnLongClickListener(this);
+            AppWidgetProviderInfo info = (AppWidgetProviderInfo) list.get(i);
+            LinearLayout l = (LinearLayout) mInflater.inflate(
+                    R.layout.customize_paged_view_widget, layout, false);
+            l.setTag(info);
+            l.setOnLongClickListener(this);
 
-            layout.addViewToCellLayout(text, -1, mWidgetList.indexOf(info), params);
+            final Drawable icon = getWidgetIcon(info);
+            final int hSpan = mWorkspaceWidgetLayout.estimateCellHSpan(info.minWidth);
+            final int vSpan = mWorkspaceWidgetLayout.estimateCellHSpan(info.minHeight);
+
+            ImageView image = (ImageView) l.findViewById(R.id.icon);
+            image.setMaxWidth(mMaxWidgetWidth);
+            image.setImageDrawable(icon);
+            TextView name = (TextView) l.findViewById(R.id.name);
+            name.setText(info.label);
+            TextView dims = (TextView) l.findViewById(R.id.dims);
+            dims.setText("" + hSpan + " x " + vSpan);
+
+            layout.addView(l);
         }
     }
 
     private void syncListPages(List<ResolveInfo> list) {
+        // we need to repopulate with PagedViewCellLayouts
+        removeAllViews();
+
         // ensure that we have the right number of pages
-        int numPages = (int) Math.ceil((float) list.size() / (mCellCountX * mCellCountY));
-        int curNumPages = getChildCount();
-        // remove any extra pages after the "last" page
-        int extraPageDiff = curNumPages - numPages;
-        for (int i = 0; i < extraPageDiff; ++i) {
-            removeViewAt(numPages);
-        }
-        // add any necessary pages
-        for (int i = curNumPages; i < numPages; ++i) {
+        int numPages = (int) Math.ceil((float) list.size() / (sCellCountX * sCellCountY));
+        for (int i = 0; i < numPages; ++i) {
             PagedViewCellLayout layout = new PagedViewCellLayout(getContext());
             setupPage(layout);
             addView(layout);
@@ -438,7 +465,7 @@ public class CustomizePagedView extends PagedView
 
     private void syncListPageItems(int page, List<ResolveInfo> list) {
         // ensure that we have the right number of items on the pages
-        int numCells = mCellCountX * mCellCountY;
+        int numCells = sCellCountX * sCellCountY;
         int startIndex = page * numCells;
         int endIndex = Math.min(startIndex + numCells, list.size());
         PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(page);
@@ -452,24 +479,22 @@ public class CustomizePagedView extends PagedView
             icon.setOnLongClickListener(this);
 
             final int index = i - startIndex;
-            final int x = index % mCellCountX;
-            final int y = index / mCellCountX;
+            final int x = index % sCellCountX;
+            final int y = index / sCellCountX;
+            setupPage(layout);
             layout.addViewToCellLayout(icon, -1, i, new PagedViewCellLayout.LayoutParams(x,y, 1,1));
         }
     }
 
     private void syncWallpaperPages() {
         // NOT CURRENTLY IMPLEMENTED
-        // ensure that we have the right number of pages
-        int numPages = 1;
-        int curNumPages = getChildCount();
-        // remove any extra pages after the "last" page
-        int extraPageDiff = curNumPages - numPages;
-        for (int i = 0; i < extraPageDiff; ++i) {
-            removeViewAt(numPages);
-        }
+
+        // we need to repopulate with PagedViewCellLayouts
+        removeAllViews();
+
         // add any necessary pages
-        for (int i = curNumPages; i < numPages; ++i) {
+        int numPages = 1;
+        for (int i = 0; i < numPages; ++i) {
             PagedViewCellLayout layout = new PagedViewCellLayout(getContext());
             setupPage(layout);
             addView(layout);
@@ -485,23 +510,28 @@ public class CustomizePagedView extends PagedView
         // NOTE: this is just place holder text until MikeJurka implements wallpaper picker
         text.setText("Wallpaper customization coming soon!");
 
+        setupPage(layout);
         layout.addViewToCellLayout(text, -1, 0, new PagedViewCellLayout.LayoutParams(0, 0, 3, 1));
     }
 
     @Override
     public void syncPages() {
+        boolean centerPagedViewCellLayouts = false;
         switch (mCustomizationType) {
         case WidgetCustomization:
             syncWidgetPages();
             break;
         case FolderCustomization:
             syncListPages(mFolderList);
+            centerPagedViewCellLayouts = true;
             break;
         case ShortcutCustomization:
             syncListPages(mShortcutList);
+            centerPagedViewCellLayouts = true;
             break;
         case WallpaperCustomization:
             syncWallpaperPages();
+            centerPagedViewCellLayouts = true;
             break;
         default:
             removeAllViews();
@@ -511,13 +541,15 @@ public class CustomizePagedView extends PagedView
 
         // only try and center the page if there is one page
         final int childCount = getChildCount();
-        if (childCount == 1) {
-            PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(0);
-            layout.enableCenteredContent(true);
-        } else {
-            for (int i = 0; i < childCount; ++i) {
-                PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(i);
-                layout.enableCenteredContent(false);
+        if (centerPagedViewCellLayouts) {
+            if (childCount == 1) {
+                PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(0);
+                layout.enableCenteredContent(true);
+            } else {
+                for (int i = 0; i < childCount; ++i) {
+                    PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(i);
+                    layout.enableCenteredContent(false);
+                }
             }
         }
 
@@ -541,5 +573,12 @@ public class CustomizePagedView extends PagedView
             syncWallpaperPageItems(page);
             break;
         }
+    }
+
+    protected int getAssociatedLowerPageBound(int page) {
+        return 0;
+    }
+    protected int getAssociatedUpperPageBound(int page) {
+        return getChildCount();
     }
 }

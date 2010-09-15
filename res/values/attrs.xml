@@ -64,6 +64,13 @@
         <attr name="cellCountY" />
     </declare-styleable>
 
+    <!-- CustomizePagedView specific attributes. These attributes are used to customize
+         a CustomizePagedView view in XML files. -->
+    <declare-styleable name="CustomizePagedView">
+        <!-- The number of horizontal cells for the widget tab -->
+        <attr name="widgetCellCountX" format="integer" />
+    </declare-styleable>
+
     <!-- DeleteZone specific attributes. These attributes are used to customize
          a DeleteZone view in XML files. -->
     <declare-styleable name="DeleteZone">

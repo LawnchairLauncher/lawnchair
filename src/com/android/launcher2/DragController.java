@@ -134,7 +134,7 @@ public class DragController {
         void onDragStart(DragSource source, Object info, int dragAction);
         
         /**
-         * The drag has eneded
+         * The drag has ended
          */
         void onDragEnd();
     }
@@ -193,6 +193,35 @@ public class DragController {
                 source, dragInfo, dragAction, dragRegion);
 
         b.recycle();
+
+        if (dragAction == DRAG_ACTION_MOVE) {
+            v.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * Starts a drag.
+     *
+     * @param v The view that is being dragged
+     * @param bmp The bitmap that represents the view being dragged
+     * @param source An object representing where the drag originated
+     * @param dragInfo The data associated with the object that is being dragged
+     * @param dragAction The drag action: either {@link #DRAG_ACTION_MOVE} or
+     *        {@link #DRAG_ACTION_COPY}
+     * @param dragRegion Coordinates within the bitmap b for the position of item being dragged.
+     *          Makes dragging feel more precise, e.g. you can clip out a transparent border
+     */
+    public void startDrag(View v, Bitmap bmp, DragSource source, Object dragInfo, int dragAction,
+            Rect dragRegion) {
+        mOriginator = v;
+
+        int[] loc = mCoordinatesTemp;
+        v.getLocationOnScreen(loc);
+        int screenX = loc[0];
+        int screenY = loc[1];
+
+        startDrag(bmp, screenX, screenY, 0, 0, bmp.getWidth(), bmp.getHeight(),
+                source, dragInfo, dragAction, dragRegion);
 
         if (dragAction == DRAG_ACTION_MOVE) {
             v.setVisibility(View.GONE);
