@@ -877,7 +877,7 @@ public abstract class PagedView extends ViewGroup {
         return offset;
     }
 
-    protected void snapToDestination() {
+    int getPageNearestToCenterOfScreen() {
         int minDistanceFromScreenCenter = getMeasuredWidth();
         int minDistanceFromScreenCenterIndex = -1;
         int screenCenter = mScrollX + (getMeasuredWidth() / 2);
@@ -893,7 +893,11 @@ public abstract class PagedView extends ViewGroup {
                 minDistanceFromScreenCenterIndex = i;
             }
         }
-        snapToPage(minDistanceFromScreenCenterIndex, PAGE_SNAP_ANIMATION_DURATION);
+        return minDistanceFromScreenCenterIndex;
+    }
+
+    protected void snapToDestination() {
+        snapToPage(getPageNearestToCenterOfScreen(), PAGE_SNAP_ANIMATION_DURATION);
     }
 
     protected void snapToPageWithVelocity(int whichPage, int velocity) {

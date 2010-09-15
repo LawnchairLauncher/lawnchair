@@ -96,7 +96,7 @@ public abstract class SmoothPagedView extends PagedView {
 
     @Override
     protected void snapToDestination() {
-        snapToPageWithVelocity(mCurrentPage, 0);
+        snapToPageWithVelocity(getPageNearestToCenterOfScreen(), 0);
     }
 
     @Override
