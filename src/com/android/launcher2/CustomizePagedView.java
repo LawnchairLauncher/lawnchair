@@ -444,7 +444,7 @@ public class CustomizePagedView extends PagedView
             TextView name = (TextView) l.findViewById(R.id.name);
             name.setText(info.label);
             TextView dims = (TextView) l.findViewById(R.id.dims);
-            dims.setText("" + hSpan + " x " + vSpan);
+            dims.setText(mContext.getString(R.string.widget_dims_format, hSpan, vSpan));
 
             layout.addView(l);
         }
