@@ -28,6 +28,7 @@ rs_allocation *gIconIDs;
 rs_allocation *gLabelIDs;
 
 typedef struct VpConsts {
+    rs_matrix4x4 Proj;
     float4 Position;
     float4 ScaleOffset;
     float2 BendPos;
@@ -64,6 +65,8 @@ static float g_MoveToOldPos = 0.f;
 
 static int g_Cols;
 static int g_Rows;
+
+rs_allocation g_VPConstAlloc;
 
 // Drawing constants, should be parameters ======
 #define VIEW_ANGLE 1.28700222f
@@ -300,6 +303,7 @@ static void drawFrontGrid(float rowOffset, float p)
                     vpConstants->ImgSize.y = rsAllocationGetDimY(gSelectedIconTexture);
                     vpConstants->Position.y = y - (rsAllocationGetDimY(gSelectedIconTexture)
                                                 - rsAllocationGetDimY(gIconIDs[iconNum])) * 0.5f;
+                    rsAllocationMarkDirty(g_VPConstAlloc);
                     rsgDrawMesh(gSMCell);
                 }
 
@@ -307,6 +311,7 @@ static void drawFrontGrid(float rowOffset, float p)
                 vpConstants->ImgSize.x = rsAllocationGetDimX(gIconIDs[iconNum]);
                 vpConstants->ImgSize.y = rsAllocationGetDimY(gIconIDs[iconNum]);
                 vpConstants->Position.y = y - 0.2f;
+                rsAllocationMarkDirty(g_VPConstAlloc);
                 rsgBindTexture(gPFTexMip, 0, gIconIDs[iconNum]);
                 rsgDrawMesh(gSMCell);
 
@@ -314,6 +319,7 @@ static void drawFrontGrid(float rowOffset, float p)
                 vpConstants->ImgSize.x = rsAllocationGetDimX(gLabelIDs[iconNum]);
                 vpConstants->ImgSize.y = rsAllocationGetDimY(gLabelIDs[iconNum]);
                 vpConstants->Position.y = y - 64.f - 0.2f;
+                rsAllocationMarkDirty(g_VPConstAlloc);
                 rsgBindTexture(gPFTexMipAlpha, 0, gLabelIDs[iconNum]);
                 rsgDrawMesh(gSMCell);
             }
@@ -328,6 +334,7 @@ int root()
     // Compute dt in seconds.
     // physics may break if DT is large.
     g_DT = min(rsGetDt(), 0.1f);
+    g_VPConstAlloc = rsGetAllocation(vpConstants);
 
     if (g_Zoom != gZoomTarget) {
         float dz = g_DT * 1.7f;

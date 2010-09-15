@@ -329,18 +329,19 @@ public abstract class PagedView extends ViewGroup {
         }
 
         setMeasuredDimension(widthSize, heightSize);
-
-        if (mFirstLayout && mCurrentPage >= 0 && mCurrentPage < getChildCount()) {
-            setHorizontalScrollBarEnabled(false);
-            scrollTo(getChildOffset(mCurrentPage) - getRelativeChildOffset(mCurrentPage), 0);
-            mScroller.setFinalX(getChildOffset(mCurrentPage) - getRelativeChildOffset(mCurrentPage));
-            setHorizontalScrollBarEnabled(true);
-            mFirstLayout = false;
-        }
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        if (mFirstLayout && mCurrentPage >= 0 && mCurrentPage < getChildCount()) {
+            setHorizontalScrollBarEnabled(false);
+            int newX = getChildOffset(mCurrentPage) - getRelativeChildOffset(mCurrentPage);
+            scrollTo(newX, 0);
+            mScroller.setFinalX(newX);
+            setHorizontalScrollBarEnabled(true);
+            mFirstLayout = false;
+        }
+
         final int childCount = getChildCount();
         int childLeft = 0;
         if (childCount > 0) {
@@ -544,15 +545,21 @@ public abstract class PagedView extends ViewGroup {
             return true;
         }
 
-
         switch (action & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_MOVE: {
                 /*
                  * mIsBeingDragged == false, otherwise the shortcut would have caught it. Check
                  * whether the user has moved far enough from his original down touch.
                  */
-                determineScrollingStart(ev);
-                break;
+                if (mActivePointerId != INVALID_POINTER) {
+                    determineScrollingStart(ev);
+                    break;
+                }
+                // if mActivePointerId is INVALID_POINTER, then we must have missed an ACTION_DOWN
+                // event. in that case, treat the first occurence of a move event as a ACTION_DOWN
+                // i.e. fall through to the next case (don't break)
+                // (We sometimes miss ACTION_DOWN events in Workspace because it ignores all events
+                // while it's small- this was causing a crash before we checked for INVALID_POINTER)
             }
 
             case MotionEvent.ACTION_DOWN: {
