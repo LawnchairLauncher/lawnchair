@@ -231,19 +231,11 @@ public class CustomizePagedView extends PagedView
                 public void run() {
                     // add the shortcut
                     ResolveInfo info = (ResolveInfo) animView.getTag();
-                    Intent createShortcutIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
-                    if (info.labelRes == R.string.group_applications) {
-                        // Create app shortcuts is a special built-in case of shortcuts
-                        createShortcutIntent.putExtra(
-                                Intent.EXTRA_SHORTCUT_NAME,getContext().getString(
-                                        R.string.group_applications));
-                    } else {
-                        ComponentName name = new ComponentName(info.activityInfo.packageName,
-                                info.activityInfo.name);
-                        createShortcutIntent.setComponent(name);
-                    }
-                    mLauncher.prepareAddItemFromHomeCustomizationDrawer();
-                    mLauncher.processShortcut(createShortcutIntent);
+                    Intent createWallpapersIntent = new Intent(Intent.ACTION_SET_WALLPAPER);
+                    ComponentName name = new ComponentName(info.activityInfo.packageName,
+                            info.activityInfo.name);
+                    createWallpapersIntent.setComponent(name);
+                    mLauncher.processWallpaper(createWallpapersIntent);
                 }
             });
         }
