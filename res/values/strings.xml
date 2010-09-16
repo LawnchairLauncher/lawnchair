@@ -65,6 +65,10 @@
     <!--  Tile of the tab for applications that were downloaded from market [CHAR_LIMIT=12] -->
     <string name="all_apps_tab_downloaded">Downloaded</string>
 
+    <!-- Customization Drawer -->
+    <!-- The format string for the dimensions of a widget in the drawer -->
+    <string name="widget_dims_format">%1$d x %2$d</string>
+
     <!-- Folders -->
     <skip />
     <!-- Label of Folder name field in Rename folder dialog box -->

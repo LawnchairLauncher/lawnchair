@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2009 The Android Open Source Project
+<!-- Copyright (C) 2010 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,19 +13,10 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
+<com.android.launcher2.CustomizePagedView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
 
-<resources>
-    <dimen name="workspace_cell_width">76dip</dimen>
-    <dimen name="workspace_cell_height">76dip</dimen>
-
-    <!-- extra horizontal spacing between mini screen thumbnails ie. in all
-         apps and in customization mode -->
-    <dimen name="smallScreenExtraSpacing">0dip</dimen>
-
-    <!-- vertical spacing between edge of screen and mini screen thumbnails -->
-    <dimen name="smallScreenVerticalMargin">60dip</dimen>
-
-    <dimen name="toolbar_padding">10dip</dimen>
-
-    <dimen name="toolbar_button_spacing">20dip</dimen>
-</resources>
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    launcher:widgetCellCountX="12" />

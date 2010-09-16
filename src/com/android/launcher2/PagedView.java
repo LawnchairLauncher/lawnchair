@@ -16,7 +16,8 @@
 
 package com.android.launcher2;
 
-import com.android.launcher.R;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -25,6 +26,7 @@ import android.graphics.Rect;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -33,13 +35,13 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.widget.Checkable;
+import android.widget.LinearLayout;
 import android.widget.Scroller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import com.android.launcher.R;
 
 /**
  * An abstraction of the original Workspace which supports browsing through a
@@ -345,7 +347,7 @@ public abstract class PagedView extends ViewGroup {
         final int childCount = getChildCount();
         int childLeft = 0;
         if (childCount > 0) {
-            childLeft = (getMeasuredWidth() - getChildAt(0).getMeasuredWidth()) / 2;
+            childLeft = getRelativeChildOffset(0);
         }
 
         for (int i = 0; i < childCount; i++) {
@@ -360,28 +362,35 @@ public abstract class PagedView extends ViewGroup {
         }
     }
 
-    @Override
-    protected void dispatchDraw(Canvas canvas) {
+    protected void updateAdjacentPagesAlpha() {
         if (mFadeInAdjacentScreens) {
             if (mDirtyPageAlpha || (mTouchState == TOUCH_STATE_SCROLLING) || !mScroller.isFinished()) {
-                int screenCenter = mScrollX + (getMeasuredWidth() / 2);
+                int halfScreenSize = getMeasuredWidth() / 2;
+                int screenCenter = mScrollX + halfScreenSize;
+
                 final int childCount = getChildCount();
                 for (int i = 0; i < childCount; ++i) {
                     View layout = (View) getChildAt(i);
                     int childWidth = layout.getMeasuredWidth();
                     int halfChildWidth = (childWidth / 2);
                     int childCenter = getChildOffset(i) + halfChildWidth;
-                    int distanceFromScreenCenter = Math.abs(childCenter - screenCenter);
-                    float alpha = 0.0f;
-                    if (distanceFromScreenCenter < halfChildWidth) {
-                        alpha = 1.0f;
-                    } else if (distanceFromScreenCenter > childWidth) {
-                        alpha = 0.0f;
+
+                    int d = halfChildWidth;
+                    int distanceFromScreenCenter = childCenter - screenCenter;
+                    if (distanceFromScreenCenter > 0) {
+                        if (i > 0) {
+                            d += getChildAt(i - 1).getMeasuredWidth() / 2;
+                        }
                     } else {
-                        float dimAlpha = (float) (distanceFromScreenCenter - halfChildWidth) / halfChildWidth;
-                        dimAlpha = Math.max(0.0f, Math.min(1.0f, (dimAlpha * dimAlpha)));
-                        alpha = 1.0f - dimAlpha;
+                        if (i < childCount - 1) {
+                            d += getChildAt(i + 1).getMeasuredWidth() / 2;
+                        }
                     }
+
+                    float dimAlpha = (float) (Math.abs(distanceFromScreenCenter)) / d;
+                    dimAlpha = Math.max(0.0f, Math.min(1.0f, (dimAlpha * dimAlpha)));
+                    float alpha = 1.0f - dimAlpha;
+
                     if (Float.compare(alpha, layout.getAlpha()) != 0) {
                         layout.setAlpha(alpha);
                     }
@@ -389,9 +398,13 @@ public abstract class PagedView extends ViewGroup {
                 mDirtyPageAlpha = false;
             }
         }
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        updateAdjacentPagesAlpha();
 
         // Find out which screens are visible; as an optimization we only call draw on them
-
         // As an optimization, this code assumes that all pages have the same width as the 0th
         // page.
         final int pageCount = getChildCount();
@@ -591,11 +604,11 @@ public abstract class PagedView extends ViewGroup {
                 if ((mTouchState != TOUCH_STATE_PREV_PAGE) &&
                         (mTouchState != TOUCH_STATE_NEXT_PAGE)) {
                     if (getChildCount() > 0) {
-                        int relativeChildLeft = getChildOffset(0);
-                        int relativeChildRight = relativeChildLeft + getChildAt(0).getMeasuredWidth();
-                        if (x < relativeChildLeft) {
+                        int width = getMeasuredWidth();
+                        int offset = getRelativeChildOffset(mCurrentPage);
+                        if (x < offset) {
                             mTouchState = TOUCH_STATE_PREV_PAGE;
-                        } else if (x > relativeChildRight) {
+                        } else if (x > (width - offset)) {
                             mTouchState = TOUCH_STATE_NEXT_PAGE;
                         }
                     }
@@ -842,6 +855,19 @@ public abstract class PagedView extends ViewGroup {
         }
     }
 
+    protected int getChildIndexForRelativeOffset(int relativeOffset) {
+        final int childCount = getChildCount();
+        int left = getRelativeChildOffset(0);
+        for (int i = 0; i < childCount; ++i) {
+            final int right = (left + getChildAt(i).getMeasuredWidth());
+            if (left <= relativeOffset && relativeOffset <= right) {
+                return i;
+            }
+            left = right;
+        }
+        return -1;
+    }
+
     protected int getRelativeChildOffset(int index) {
         return (getMeasuredWidth() - getChildAt(index).getMeasuredWidth()) / 2;
     }
@@ -857,7 +883,7 @@ public abstract class PagedView extends ViewGroup {
         return offset;
     }
 
-    protected void snapToDestination() {
+    int getPageNearestToCenterOfScreen() {
         int minDistanceFromScreenCenter = getMeasuredWidth();
         int minDistanceFromScreenCenterIndex = -1;
         int screenCenter = mScrollX + (getMeasuredWidth() / 2);
@@ -873,7 +899,11 @@ public abstract class PagedView extends ViewGroup {
                 minDistanceFromScreenCenterIndex = i;
             }
         }
-        snapToPage(minDistanceFromScreenCenterIndex, PAGE_SNAP_ANIMATION_DURATION);
+        return minDistanceFromScreenCenterIndex;
+    }
+
+    protected void snapToDestination() {
+        snapToPage(getPageNearestToCenterOfScreen(), PAGE_SNAP_ANIMATION_DURATION);
     }
 
     protected void snapToPageWithVelocity(int whichPage, int velocity) {
@@ -888,7 +918,6 @@ public abstract class PagedView extends ViewGroup {
 
     protected void snapToPage(int whichPage, int duration) {
         whichPage = Math.max(0, Math.min(whichPage, getPageCount() - 1));
-
 
         int newX = getChildOffset(whichPage) - getRelativeChildOffset(whichPage);
         final int sX = getScrollX();
@@ -1015,8 +1044,8 @@ public abstract class PagedView extends ViewGroup {
         if (mContentIsRefreshable) {
             final int count = getChildCount();
             if (page < count) {
-                int lowerPageBound = Math.max(0, page - 1);
-                int upperPageBound = Math.min(page + 1, count - 1);
+                int lowerPageBound = getAssociatedLowerPageBound(page);
+                int upperPageBound = getAssociatedUpperPageBound(page);
                 for (int i = 0; i < count; ++i) {
                     final ViewGroup layout = (ViewGroup) getChildAt(i);
                     final int childCount = layout.getChildCount();
@@ -1034,6 +1063,14 @@ public abstract class PagedView extends ViewGroup {
                 }
             }
         }
+    }
+
+    protected int getAssociatedLowerPageBound(int page) {
+        return Math.max(0, page - 1);
+    }
+    protected int getAssociatedUpperPageBound(int page) {
+        final int count = getChildCount();
+        return Math.min(page + 1, count - 1);
     }
 
     protected void startChoiceMode(int mode, ActionMode.Callback callback) {
