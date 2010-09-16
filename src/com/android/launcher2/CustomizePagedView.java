@@ -52,7 +52,7 @@ import android.widget.TextView;
 import com.android.launcher.R;
 
 public class CustomizePagedView extends PagedView
-    implements View.OnLongClickListener,
+    implements View.OnLongClickListener, View.OnClickListener,
                 DragSource {
 
     public enum CustomizationType {
@@ -108,6 +108,7 @@ public class CustomizePagedView extends PagedView
     private List<AppWidgetProviderInfo> mWidgetList;
     private List<ResolveInfo> mFolderList;
     private List<ResolveInfo> mShortcutList;
+    private List<ResolveInfo> mWallpaperList;
 
     private static final int sCellCountX = 8;
     private static final int sCellCountY = 4;
@@ -188,6 +189,11 @@ public class CustomizePagedView extends PagedView
         mShortcutList = mPackageManager.queryIntentActivities(shortcutsIntent, 0);
         Collections.sort(mShortcutList, resolveInfoComparator);
 
+        // get the list of wallpapers
+        Intent wallpapersIntent = new Intent(Intent.ACTION_SET_WALLPAPER);
+        mWallpaperList = mPackageManager.queryIntentActivities(wallpapersIntent, 0);
+        Collections.sort(mWallpaperList, resolveInfoComparator);
+
         // reset the icon cache
         mPageViewIconCache.clear();
 
@@ -208,6 +214,39 @@ public class CustomizePagedView extends PagedView
     @Override
     public void onDropCompleted(View target, boolean success) {
         // do nothing
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (!v.isInTouchMode()) {
+            return;
+        }
+
+        final View animView = v;
+        switch (mCustomizationType) {
+        case WallpaperCustomization:
+            // animate some feedback to the long press
+            animateClickFeedback(v, new Runnable() {
+                @Override
+                public void run() {
+                    // add the shortcut
+                    ResolveInfo info = (ResolveInfo) animView.getTag();
+                    Intent createShortcutIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
+                    if (info.labelRes == R.string.group_applications) {
+                        // Create app shortcuts is a special built-in case of shortcuts
+                        createShortcutIntent.putExtra(
+                                Intent.EXTRA_SHORTCUT_NAME,getContext().getString(
+                                        R.string.group_applications));
+                    } else {
+                        ComponentName name = new ComponentName(info.activityInfo.packageName,
+                                info.activityInfo.name);
+                        createShortcutIntent.setComponent(name);
+                    }
+                    mLauncher.prepareAddItemFromHomeCustomizationDrawer();
+                    mLauncher.processShortcut(createShortcutIntent);
+                }
+            });
+        }
     }
 
     @Override
@@ -476,7 +515,11 @@ public class CustomizePagedView extends PagedView
             PagedViewIcon icon = (PagedViewIcon) mInflater.inflate(
                     R.layout.customize_paged_view_item, layout, false);
             icon.applyFromResolveInfo(info, mPackageManager, mPageViewIconCache);
-            icon.setOnLongClickListener(this);
+            if (mCustomizationType == CustomizationType.WallpaperCustomization) {
+                icon.setOnClickListener(this);
+            } else {
+                icon.setOnLongClickListener(this);
+            }
 
             final int index = i - startIndex;
             final int x = index % sCellCountX;
@@ -484,34 +527,6 @@ public class CustomizePagedView extends PagedView
             setupPage(layout);
             layout.addViewToCellLayout(icon, -1, i, new PagedViewCellLayout.LayoutParams(x,y, 1,1));
         }
-    }
-
-    private void syncWallpaperPages() {
-        // NOT CURRENTLY IMPLEMENTED
-
-        // we need to repopulate with PagedViewCellLayouts
-        removeAllViews();
-
-        // add any necessary pages
-        int numPages = 1;
-        for (int i = 0; i < numPages; ++i) {
-            PagedViewCellLayout layout = new PagedViewCellLayout(getContext());
-            setupPage(layout);
-            addView(layout);
-        }
-    }
-
-    private void syncWallpaperPageItems(int page) {
-        PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(page);
-        layout.removeAllViews();
-
-        TextView text = (TextView) mInflater.inflate(
-                R.layout.customize_paged_view_wallpaper_placeholder, layout, false);
-        // NOTE: this is just place holder text until MikeJurka implements wallpaper picker
-        text.setText("Wallpaper customization coming soon!");
-
-        setupPage(layout);
-        layout.addViewToCellLayout(text, -1, 0, new PagedViewCellLayout.LayoutParams(0, 0, 3, 1));
     }
 
     @Override
@@ -530,7 +545,7 @@ public class CustomizePagedView extends PagedView
             centerPagedViewCellLayouts = true;
             break;
         case WallpaperCustomization:
-            syncWallpaperPages();
+            syncListPages(mWallpaperList);
             centerPagedViewCellLayouts = true;
             break;
         default:
@@ -570,7 +585,7 @@ public class CustomizePagedView extends PagedView
             syncListPageItems(page, mShortcutList);
             break;
         case WallpaperCustomization:
-            syncWallpaperPageItems(page);
+            syncListPageItems(page, mWallpaperList);
             break;
         }
     }

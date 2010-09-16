@@ -374,17 +374,23 @@ public abstract class PagedView extends ViewGroup {
                     int childWidth = layout.getMeasuredWidth();
                     int halfChildWidth = (childWidth / 2);
                     int childCenter = getChildOffset(i) + halfChildWidth;
-                    int distanceFromScreenCenter = Math.abs(childCenter - screenCenter);
-                    float alpha = 0.0f;
-                    if (distanceFromScreenCenter < halfChildWidth) {
-                        alpha = 1.0f;
-                    } else if (distanceFromScreenCenter > childWidth) {
-                        alpha = 0.0f;
+
+                    int d = halfChildWidth;
+                    int distanceFromScreenCenter = childCenter - screenCenter;
+                    if (distanceFromScreenCenter > 0) {
+                        if (i > 0) {
+                            d += getChildAt(i - 1).getMeasuredWidth() / 2;
+                        }
                     } else {
-                        float dimAlpha = (float) (distanceFromScreenCenter - halfChildWidth) / halfChildWidth;
-                        dimAlpha = Math.max(0.0f, Math.min(1.0f, (dimAlpha * dimAlpha)));
-                        alpha = 1.0f - dimAlpha;
+                        if (i < childCount - 1) {
+                            d += getChildAt(i + 1).getMeasuredWidth() / 2;
+                        }
                     }
+
+                    float dimAlpha = (float) (Math.abs(distanceFromScreenCenter)) / d;
+                    dimAlpha = Math.max(0.0f, Math.min(1.0f, (dimAlpha * dimAlpha)));
+                    float alpha = 1.0f - dimAlpha;
+
                     if (Float.compare(alpha, layout.getAlpha()) != 0) {
                         layout.setAlpha(alpha);
                     }
