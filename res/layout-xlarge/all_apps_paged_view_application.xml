@@ -14,7 +14,15 @@
      limitations under the License.
 -->
 
-<com.android.launcher2.PagedViewIcon xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.launcher2.PagedViewIcon
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
+
+    launcher:blurColor="#FF6B8CF0"
+    launcher:outlineColor="#FF8CD2FF"
+    launcher:checkedBlurColor="#FFBBE83C"
+    launcher:checkedOutlineColor="#FF8CD2FF"
+
     android:id="@+id/name"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
