@@ -190,6 +190,10 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
         }
     }
 
+    public boolean isDropEnabled() {
+        return true;
+    }
+
     private void createAnimations() {
         if (mInAnimation == null) {
             mInAnimation = new FastAnimationSet();

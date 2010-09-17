@@ -16,6 +16,7 @@
 
 package com.android.launcher2;
 
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -27,6 +28,8 @@ class LiveFolderInfo extends FolderInfo {
      * The base intent, if it exists.
      */
     Intent baseIntent;
+
+    ComponentName componentName;
 
     /**
      * The live folder's content uri.

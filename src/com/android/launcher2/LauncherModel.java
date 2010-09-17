@@ -1478,11 +1478,11 @@ public class LauncherModel extends BroadcastReceiver {
     }
 
     ShortcutInfo addShortcut(Context context, Intent data,
-            CellLayout.CellInfo cellInfo, boolean notify) {
+            int screen, int cellX, int cellY, boolean notify) {
 
         final ShortcutInfo info = infoFromShortcutIntent(context, data);
         addItemToDatabase(context, info, LauncherSettings.Favorites.CONTAINER_DESKTOP,
-                cellInfo.screen, cellInfo.cellX, cellInfo.cellY, notify);
+                screen, cellX, cellY, notify);
 
         return info;
     }

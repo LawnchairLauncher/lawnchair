@@ -16,10 +16,7 @@
 
 package com.android.launcher2;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import com.android.launcher.R;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -28,13 +25,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.Bitmap.Config;
 import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
 import android.provider.LiveFolders;
@@ -44,12 +40,14 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.launcher.R;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class CustomizePagedView extends PagedView
     implements View.OnLongClickListener, View.OnClickListener,
@@ -354,6 +352,7 @@ public class CustomizePagedView extends PagedView
         }
 
         final View animView = v;
+        PendingAddItemInfo createItemInfo = new PendingAddItemInfo();
         switch (mCustomizationType) {
         case WidgetCustomization:
             // Get the icon as the drag representation
@@ -365,58 +364,35 @@ public class CustomizePagedView extends PagedView
             icon.draw(c);
 
             AppWidgetProviderInfo appWidgetInfo = (AppWidgetProviderInfo) v.getTag();
-            LauncherAppWidgetInfo dragInfo = new LauncherAppWidgetInfo(appWidgetInfo.provider);
-            dragInfo.minWidth = appWidgetInfo.minWidth;
-            dragInfo.minHeight = appWidgetInfo.minHeight;
-            mDragController.startDrag(v, b, this, dragInfo, DragController.DRAG_ACTION_COPY, null);
+            createItemInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
+            createItemInfo.componentName = appWidgetInfo.provider;
+            mDragController.startDrag(v, b, this, createItemInfo, DragController.DRAG_ACTION_COPY, null);
 
             // Cleanup the icon
             b.recycle();
             return true;
         case FolderCustomization:
-            // animate some feedback to the long press
-            animateClickFeedback(v, new Runnable() {
-                @Override
-                public void run() {
-                    // add the folder
-                    ResolveInfo resolveInfo = (ResolveInfo) animView.getTag();
-                    Intent createFolderIntent = new Intent(LiveFolders.ACTION_CREATE_LIVE_FOLDER);
-                    if (resolveInfo.labelRes == R.string.group_folder) {
-                        // Create app shortcuts is a special built-in case of shortcuts
-                        createFolderIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME,
-                            getContext().getString(R.string.group_folder));
-                    } else {
-                        ComponentName name = new ComponentName(resolveInfo.activityInfo.packageName,
-                                resolveInfo.activityInfo.name);
-                        createFolderIntent.setComponent(name);
-                    }
-                    mLauncher.prepareAddItemFromHomeCustomizationDrawer();
-                    mLauncher.addLiveFolder(createFolderIntent);
-                }
-            });
+            ResolveInfo resolveInfo = (ResolveInfo) animView.getTag();
+            if (resolveInfo.labelRes == R.string.group_folder) {
+                UserFolderInfo folderInfo = new UserFolderInfo();
+                folderInfo.title = getResources().getText(R.string.folder_name);
+                mDragController.startDrag(
+                        v, this, folderInfo, DragController.DRAG_ACTION_COPY, null);
+            } else {
+                createItemInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER;
+                createItemInfo.componentName = new ComponentName(
+                        resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name);
+                mDragController.startDrag(
+                        v, this, createItemInfo, DragController.DRAG_ACTION_COPY, null);
+            }
             return true;
         case ShortcutCustomization:
-            // animate some feedback to the long press
-            animateClickFeedback(v, new Runnable() {
-                @Override
-                public void run() {
-                    // add the shortcut
-                    ResolveInfo info = (ResolveInfo) animView.getTag();
-                    Intent createShortcutIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
-                    if (info.labelRes == R.string.group_applications) {
-                        // Create app shortcuts is a special built-in case of shortcuts
-                        createShortcutIntent.putExtra(
-                                Intent.EXTRA_SHORTCUT_NAME,getContext().getString(
-                                        R.string.group_applications));
-                    } else {
-                        ComponentName name = new ComponentName(info.activityInfo.packageName, 
-                                info.activityInfo.name);
-                        createShortcutIntent.setComponent(name);
-                    }
-                    mLauncher.prepareAddItemFromHomeCustomizationDrawer();
-                    mLauncher.processShortcut(createShortcutIntent);
-                }
-            });
+            ResolveInfo info = (ResolveInfo) animView.getTag();
+            createItemInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+            createItemInfo.componentName = new ComponentName(
+                    info.activityInfo.packageName, info.activityInfo.name);
+            mDragController.startDrag(
+                    v, this, createItemInfo, DragController.DRAG_ACTION_COPY, null);
             return true;
         case ApplicationCustomization:
             // Pick up the application for dropping

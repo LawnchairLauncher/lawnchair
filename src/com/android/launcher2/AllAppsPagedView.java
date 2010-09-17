@@ -511,4 +511,8 @@ public class AllAppsPagedView extends PagedView
     @Override
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {}
+
+    public boolean isDropEnabled() {
+        return true;
+    }
 }

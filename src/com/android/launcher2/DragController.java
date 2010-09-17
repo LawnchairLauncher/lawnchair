@@ -18,16 +18,17 @@ package com.android.launcher2;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.os.IBinder;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Vibrator;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.View;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
@@ -568,6 +569,9 @@ public class DragController {
         final int count = dropTargets.size();
         for (int i=count-1; i>=0; i--) {
             DropTarget target = dropTargets.get(i);
+            if (!target.isDropEnabled())
+                continue;
+
             target.getHitRect(r);
 
             // Convert the hit rect to screen coordinates
