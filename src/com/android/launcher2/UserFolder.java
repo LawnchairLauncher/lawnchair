@@ -38,11 +38,6 @@ public class UserFolder extends Folder implements DropTarget {
                     itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT)
                 && item.container != mInfo.id;
     }
-    
-    public Rect estimateDropLocation(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo, Rect recycle) {
-        return null;
-    }
 
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {

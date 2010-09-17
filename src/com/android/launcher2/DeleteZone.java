@@ -83,11 +83,6 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
             DragView dragView, Object dragInfo) {
         return true;
     }
-    
-    public Rect estimateDropLocation(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo, Rect recycle) {
-        return null;
-    }
 
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {

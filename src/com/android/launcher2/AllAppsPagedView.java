@@ -444,11 +444,6 @@ public class AllAppsPagedView extends PagedView
         return false;
     }
     @Override
-    public Rect estimateDropLocation(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo, Rect recycle) {
-        return null;
-    }
-    @Override
     public DropTarget getDropTargetDelegate(DragSource source, int x, int y, int xOffset,
             int yOffset, DragView dragView, Object dragInfo) {
         return null;

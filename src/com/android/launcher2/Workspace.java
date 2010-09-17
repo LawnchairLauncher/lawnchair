@@ -1145,39 +1145,6 @@ public class Workspace extends SmoothPagedView
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public Rect estimateDropLocation(DragSource source, int x, int y,
-            int xOffset, int yOffset, DragView dragView, Object dragInfo, Rect recycle) {
-        final CellLayout layout = getCurrentDropLayout();
-
-        final CellLayout.CellInfo cellInfo = mDragInfo;
-        final int spanX = cellInfo == null ? 1 : cellInfo.spanX;
-        final int spanY = cellInfo == null ? 1 : cellInfo.spanY;
-        final View ignoreView = cellInfo == null ? null : cellInfo.cell;
-
-        final Rect location = recycle != null ? recycle : new Rect();
-
-        // Find drop cell and convert into rectangle
-        int[] dropCell = estimateDropCell(x - xOffset, y - yOffset, spanX,
-                spanY, ignoreView, layout, mTempCell);
-
-        if (dropCell == null) {
-            return null;
-        }
-
-        layout.cellToPoint(dropCell[0], dropCell[1], mTempEstimate);
-        location.left = mTempEstimate[0];
-        location.top = mTempEstimate[1];
-
-        layout.cellToPoint(dropCell[0] + spanX, dropCell[1] + spanY, mTempEstimate);
-        location.right = mTempEstimate[0];
-        location.bottom = mTempEstimate[1];
-
-        return location;
-    }
-
-    /**
      * Calculate the nearest cell where the given object would be dropped.
      */
     private int[] estimateDropCell(int pixelX, int pixelY,
