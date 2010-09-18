@@ -1459,6 +1459,10 @@ public final class Launcher extends Activity
         }
     }
 
+    void processWallpaper(Intent intent) {
+        startActivityForResult(intent, REQUEST_PICK_WALLPAPER);
+    }
+
     void addLiveFolder(Intent intent) {
         // Handle case where user selected "Folder"
         String folderName = getResources().getString(R.string.group_folder);
