@@ -922,7 +922,7 @@ public class AllApps3D extends RSSurfaceView
         private int mHeight;
 
         private Resources mRes;
-        ScriptC_Allapps mScript;
+        ScriptC_allapps mScript;
 
         private Mesh mMesh;
         private ProgramVertex.MatrixAllocation mPVA;
@@ -974,7 +974,7 @@ public class AllApps3D extends RSSurfaceView
             mRes = res;
             mWidth = width;
             mHeight = height;
-            mScript = new ScriptC_Allapps(sRS, mRes, R.raw.allapps, true);
+            mScript = new ScriptC_allapps(sRS, mRes, R.raw.allapps, true);
 
             initProgramVertex();
             initProgramFragment();

@@ -71,11 +71,6 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
                 && item.container != mInfo.id;
     }
 
-    public Rect estimateDropLocation(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo, Rect recycle) {
-        return null;
-    }
-
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
         ShortcutInfo item;
