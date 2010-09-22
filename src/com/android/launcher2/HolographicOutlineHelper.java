@@ -19,39 +19,31 @@ package com.android.launcher2;
 import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 
 public class HolographicOutlineHelper {
-    private float mDensity;
     private final Paint mHolographicPaint = new Paint();
-    private final Paint mBlurPaint = new Paint();
+    private final Paint mExpensiveBlurPaint = new Paint();
     private final Paint mErasePaint = new Paint();
-    private static final Matrix mIdentity = new Matrix();;
-    private static final float BLUR_FACTOR = 3.5f;
 
-    public static final float DEFAULT_STROKE_WIDTH = 6.0f;
-    public static final int HOLOGRAPHIC_BLUE = 0xFF6699FF;
-    public static final int HOLOGRAPHIC_GREEN = 0xFF51E633;
+    private static final BlurMaskFilter mThickOuterBlurMaskFilter = new BlurMaskFilter(6.0f,
+            BlurMaskFilter.Blur.OUTER);
+    private static final BlurMaskFilter mThinOuterBlurMaskFilter = new BlurMaskFilter(1.0f,
+            BlurMaskFilter.Blur.OUTER);
+    private static final BlurMaskFilter mThickInnerBlurMaskFilter = new BlurMaskFilter(4.0f,
+            BlurMaskFilter.Blur.NORMAL);
 
-    HolographicOutlineHelper(float density) {
-        mDensity = density;
-        mHolographicPaint.setColor(HOLOGRAPHIC_BLUE);
+    public static float DEFAULT_STROKE_WIDTH = 6.0f;
+
+    HolographicOutlineHelper() {
         mHolographicPaint.setFilterBitmap(true);
         mHolographicPaint.setAntiAlias(true);
-        mBlurPaint.setMaskFilter(new BlurMaskFilter(BLUR_FACTOR * density,
-                BlurMaskFilter.Blur.OUTER));
-        mBlurPaint.setFilterBitmap(true);
+        mExpensiveBlurPaint.setFilterBitmap(true);
         mErasePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
         mErasePaint.setFilterBitmap(true);
         mErasePaint.setAntiAlias(true);
-    }
-
-    private float cubic(float r) {
-        return (float) (Math.pow(r - 1, 3) + 1);
     }
 
     /**
@@ -59,7 +51,7 @@ public class HolographicOutlineHelper {
      * pages.
      */
     public float highlightAlphaInterpolator(float r) {
-        float maxAlpha = 0.6f;
+        float maxAlpha = 0.8f;
         return (float) Math.pow(maxAlpha * (1.0f - r), 1.5f);
     }
 
@@ -76,39 +68,51 @@ public class HolographicOutlineHelper {
     }
 
     /**
-     * Sets the color of the holographic paint to be used when applying the outline/blur.
+     * Applies a more expensive and accurate outline to whatever is currently drawn in a specified
+     * bitmap.
      */
-    void setColor(int color) {
+    void applyExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas, int color,
+            int outlineColor) {
+        // calculate the outer blur first
+        mExpensiveBlurPaint.setMaskFilter(mThickOuterBlurMaskFilter);
+        int[] outerBlurOffset = new int[2];
+        Bitmap thickOuterBlur = srcDst.extractAlpha(mExpensiveBlurPaint, outerBlurOffset);
+        mExpensiveBlurPaint.setMaskFilter(mThinOuterBlurMaskFilter);
+        int[] thinOuterBlurOffset = new int[2];
+        Bitmap thinOuterBlur = srcDst.extractAlpha(mExpensiveBlurPaint, thinOuterBlurOffset);
+
+        // calculate the inner blur
+        srcDstCanvas.drawColor(0xFF000000, PorterDuff.Mode.SRC_OUT);
+        mExpensiveBlurPaint.setMaskFilter(mThickInnerBlurMaskFilter);
+        int[] thickInnerBlurOffset = new int[2];
+        Bitmap thickInnerBlur = srcDst.extractAlpha(mExpensiveBlurPaint, thickInnerBlurOffset);
+
+        // mask out the inner blur
+        srcDstCanvas.setBitmap(thickInnerBlur);
+        srcDstCanvas.drawBitmap(srcDst, -thickInnerBlurOffset[0],
+                -thickInnerBlurOffset[1], mErasePaint);
+        srcDstCanvas.drawRect(0, 0, -thickInnerBlurOffset[0], thickInnerBlur.getHeight(),
+                mErasePaint);
+        srcDstCanvas.drawRect(0, 0, thickInnerBlur.getWidth(), -thickInnerBlurOffset[1],
+                mErasePaint);
+
+        // draw the inner and outer blur
+        srcDstCanvas.setBitmap(srcDst);
+        srcDstCanvas.drawColor(0x00000000, PorterDuff.Mode.CLEAR);
         mHolographicPaint.setColor(color);
-    }
+        srcDstCanvas.drawBitmap(thickInnerBlur, thickInnerBlurOffset[0], thickInnerBlurOffset[1],
+                mHolographicPaint);
+        srcDstCanvas.drawBitmap(thickOuterBlur, outerBlurOffset[0], outerBlurOffset[1],
+                mHolographicPaint);
 
-    /**
-     * Applies an outline to whatever is currently drawn in the specified bitmap.
-     */
-    void applyOutline(Bitmap srcDst, Canvas srcDstCanvas, float strokeWidth, PointF offset) {
-        strokeWidth *= mDensity;
-        Bitmap mask = srcDst.extractAlpha();
-        Matrix m = new Matrix();
-        final int width = srcDst.getWidth();
-        final int height = srcDst.getHeight();
-        float xScale = strokeWidth * 2.0f / width;
-        float yScale = strokeWidth * 2.0f / height;
-        m.preScale(1 + xScale, 1 + yScale, (width / 2.0f) + offset.x,
-                (height / 2.0f) + offset.y);
+        // draw the bright outline
+        mHolographicPaint.setColor(outlineColor);
+        srcDstCanvas.drawBitmap(thinOuterBlur, thinOuterBlurOffset[0], thinOuterBlurOffset[1],
+                mHolographicPaint);
 
-        srcDstCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
-        srcDstCanvas.drawBitmap(mask, m, mHolographicPaint);
-        srcDstCanvas.drawBitmap(mask, mIdentity, mErasePaint);
-        mask.recycle();
-    }
-
-    /**
-     * Applies an blur to whatever is currently drawn in the specified bitmap.
-     */
-    void applyBlur(Bitmap srcDst, Canvas srcDstCanvas) {
-        int[] xy = new int[2];
-        Bitmap mask = srcDst.extractAlpha(mBlurPaint, xy);
-        srcDstCanvas.drawBitmap(mask, xy[0], xy[1], mHolographicPaint);
-        mask.recycle();
+        // cleanup
+        thinOuterBlur.recycle();
+        thickOuterBlur.recycle();
+        thickInnerBlur.recycle();
     }
 }

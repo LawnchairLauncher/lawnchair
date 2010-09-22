@@ -16,12 +16,10 @@
 
 package com.android.launcher2;
 
-import com.android.launcher2.PagedView.PagedViewIconCache;
-
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -30,9 +28,11 @@ import android.graphics.Rect;
 import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.widget.Checkable;
 import android.widget.TextView;
+
+import com.android.launcher.R;
+import com.android.launcher2.PagedView.PagedViewIconCache;
 
 
 
@@ -60,6 +60,13 @@ public class PagedViewIcon extends TextView implements Checkable {
 
     private boolean mIsChecked;
 
+    // Highlight colours
+    private int mHoloBlurColor;
+    private int mHoloOutlineColor;
+    private int mCheckedBlurColor;
+    private int mCheckedOutlineColor;
+
+
     public PagedViewIcon(Context context) {
         this(context, null);
     }
@@ -70,12 +77,15 @@ public class PagedViewIcon extends TextView implements Checkable {
 
     public PagedViewIcon(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PagedViewIcon, defStyle, 0);
+        mHoloBlurColor = a.getColor(R.styleable.PagedViewIcon_blurColor, 0);
+        mHoloOutlineColor = a.getColor(R.styleable.PagedViewIcon_outlineColor, 0);
+        mCheckedBlurColor = a.getColor(R.styleable.PagedViewIcon_checkedBlurColor, 0);
+        mCheckedOutlineColor = a.getColor(R.styleable.PagedViewIcon_checkedOutlineColor, 0);
+        a.recycle();
 
         if (sHolographicOutlineHelper == null) {
-            final Resources resources = context.getResources();
-            final DisplayMetrics metrics = resources.getDisplayMetrics();
-            final float density = metrics.density;
-            sHolographicOutlineHelper = new HolographicOutlineHelper(density);
+            sHolographicOutlineHelper = new HolographicOutlineHelper();
         }
         mDrawableClipRect = new Rect();
 
@@ -128,9 +138,6 @@ public class PagedViewIcon extends TextView implements Checkable {
         super.onLayout(changed, left, top, right, bottom);
 
         if (mHolographicOutline == null) {
-            final PointF offset = new PointF(0,
-                    -(getCompoundPaddingBottom() + getCompoundPaddingTop())/2.0f);
-
             // update the clipping rect to be used in the holographic pass below
             getDrawingRect(mDrawableClipRect);
             mDrawableClipRect.bottom = getPaddingTop() + getCompoundPaddingTop();
@@ -143,10 +150,8 @@ public class PagedViewIcon extends TextView implements Checkable {
             mHolographicOutlineCanvas = new Canvas(mHolographicOutline);
             mHolographicOutlineCanvas.concat(getMatrix());
             draw(mHolographicOutlineCanvas);
-            sHolographicOutlineHelper.setColor(HolographicOutlineHelper.HOLOGRAPHIC_BLUE);
-            sHolographicOutlineHelper.applyOutline(mHolographicOutline, mHolographicOutlineCanvas,
-                    HolographicOutlineHelper.DEFAULT_STROKE_WIDTH, offset);
-            sHolographicOutlineHelper.applyBlur(mHolographicOutline, mHolographicOutlineCanvas);
+            sHolographicOutlineHelper.applyExpensiveOutlineWithBlur(mHolographicOutline,
+                    mHolographicOutlineCanvas, mHoloBlurColor, mHoloOutlineColor);
             mIsHolographicUpdatePass = false;
             mIconCache.addOutline(mIconCacheKey, mHolographicOutline);
             mHolographicOutlineCanvas = null;
@@ -196,8 +201,9 @@ public class PagedViewIcon extends TextView implements Checkable {
             mIsChecked = checked;
 
             if (mIsChecked) {
-                final PointF offset = new PointF(0,
-                        -(getCompoundPaddingBottom() + getCompoundPaddingTop())/2.0f);
+                // update the clipping rect to be used in the holographic pass below
+                getDrawingRect(mDrawableClipRect);
+                mDrawableClipRect.bottom = getPaddingTop() + getCompoundPaddingTop();
 
                 // set a flag to indicate that we are going to draw the view at full alpha with the text
                 // clipped for the generation of the holographic icon
@@ -207,9 +213,8 @@ public class PagedViewIcon extends TextView implements Checkable {
                 mHolographicOutlineCanvas = new Canvas(mCheckedOutline);
                 mHolographicOutlineCanvas.concat(getMatrix());
                 draw(mHolographicOutlineCanvas);
-                sHolographicOutlineHelper.setColor(HolographicOutlineHelper.HOLOGRAPHIC_GREEN);
-                sHolographicOutlineHelper.applyOutline(mCheckedOutline, mHolographicOutlineCanvas,
-                        HolographicOutlineHelper.DEFAULT_STROKE_WIDTH + 1.0f, offset);
+                sHolographicOutlineHelper.applyExpensiveOutlineWithBlur(mCheckedOutline,
+                        mHolographicOutlineCanvas, mCheckedBlurColor, mCheckedOutlineColor);
                 mIsHolographicUpdatePass = false;
                 mHolographicOutlineCanvas = null;
             } else {

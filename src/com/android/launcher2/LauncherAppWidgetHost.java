@@ -37,7 +37,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         if (LauncherApplication.isScreenXLarge()) {
             return new DimmableAppWidgetHostView(context);
         } else {
-            return new AppWidgetHostView(context);
+            return new LauncherAppWidgetHostView(context);
         }
     }
 }
