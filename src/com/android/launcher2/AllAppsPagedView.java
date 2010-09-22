@@ -21,14 +21,13 @@ import com.android.launcher.R;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Checkable;
 import android.widget.TextView;
@@ -71,6 +70,12 @@ public class AllAppsPagedView extends PagedView
     private int mCellCountY;
 
     private final LayoutInflater mInflater;
+
+    private ViewGroup mOrigInfoButtonParent;
+    private LayoutParams mOrigInfoButtonLayoutParams;
+
+    private ViewGroup mOrigDeleteZoneParent;
+    private LayoutParams mOrigDeleteZoneLayoutParams;
 
     public AllAppsPagedView(Context context) {
         this(context, null);
@@ -400,10 +405,28 @@ public class AllAppsPagedView extends PagedView
     public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
         mode.setTitle(R.string.cab_selection_text);
 
-        menu.add(0, MENU_APP_INFO, 0, R.string.cab_menu_app_info)
-                .setIcon(R.drawable.info_button);
-        menu.add(0, MENU_DELETE_APP, 0, R.string.cab_menu_delete_app)
-                .setIcon(R.drawable.delete_zone_selector);
+        // Until the workspace has a selection mode and the CAB supports drag-and-drop, we
+        // take a hybrid approach: grab the views from the workspace and stuff them into the CAB.
+        // When the action mode is done, restore the views to their original place in the toolbar.
+
+        ApplicationInfoDropTarget infoButton =
+                (ApplicationInfoDropTarget) mLauncher.findViewById(R.id.info_button);
+        mOrigInfoButtonParent = (ViewGroup) infoButton.getParent();
+        mOrigInfoButtonLayoutParams = infoButton.getLayoutParams();
+        mOrigInfoButtonParent.removeView(infoButton);
+        infoButton.setManageVisibility(false);
+        infoButton.setVisibility(View.VISIBLE);
+
+        DeleteZone deleteZone = (DeleteZone) mLauncher.findViewById(R.id.delete_zone);
+        mOrigDeleteZoneParent = (ViewGroup) deleteZone.getParent();
+        mOrigDeleteZoneLayoutParams = deleteZone.getLayoutParams();
+        mOrigDeleteZoneParent.removeView(deleteZone);
+        deleteZone.setManageVisibility(false);
+        deleteZone.setVisibility(View.VISIBLE);
+
+        menu.add(0, MENU_APP_INFO, 0, R.string.cab_menu_app_info).setActionView(infoButton);
+        menu.add(0, MENU_DELETE_APP, 0, R.string.cab_menu_delete_app).setActionView(deleteZone);
+
         return true;
     }
 
@@ -415,6 +438,20 @@ public class AllAppsPagedView extends PagedView
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
+        // Re-parent the drop targets into the toolbar, and restore their layout params
+        ApplicationInfoDropTarget infoButton =
+                (ApplicationInfoDropTarget) mLauncher.findViewById(R.id.info_button);
+        ((ViewGroup) infoButton.getParent()).removeView(infoButton);
+        mOrigInfoButtonParent.addView(infoButton, mOrigInfoButtonLayoutParams);
+        infoButton.setVisibility(View.GONE);
+        infoButton.setManageVisibility(true);
+
+        DeleteZone deleteZone = (DeleteZone) mLauncher.findViewById(R.id.delete_zone);
+        ((ViewGroup) deleteZone.getParent()).removeView(deleteZone);
+        mOrigDeleteZoneParent.addView(deleteZone, mOrigDeleteZoneLayoutParams);
+        deleteZone.setVisibility(View.GONE);
+        deleteZone.setManageVisibility(true);
+
         mDragController.removeDropTarget(this);
         endChoiceMode();
     }
