@@ -21,7 +21,6 @@ import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -32,10 +31,17 @@ import android.widget.ImageView;
  */
 public class ApplicationInfoDropTarget extends ImageView implements DropTarget, DragController.DragListener {
     private Launcher mLauncher;
-    private DragController mDragController;
     private boolean mActive = false;
 
-    private View mHandle;
+    /**
+     * If true, this View responsible for managing its own visibility, and that of its handle.
+     * This is generally the case, but it will be set to false when this is part of the
+     * Contextual Action Bar.
+     */
+    private boolean mManageVisibility = true;
+
+    /** The view that this view should appear in the place of. */
+    private View mHandle = null;
 
     private final Paint mPaint = new Paint();
 
@@ -45,11 +51,6 @@ public class ApplicationInfoDropTarget extends ImageView implements DropTarget, 
 
     public ApplicationInfoDropTarget(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
     }
 
     /**
@@ -92,7 +93,6 @@ public class ApplicationInfoDropTarget extends ImageView implements DropTarget, 
 
     public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
-        // TODO: Animate out
         dragView.setPaint(null);
     }
 
@@ -100,22 +100,23 @@ public class ApplicationInfoDropTarget extends ImageView implements DropTarget, 
         if (info != null) {
             mActive = true;
 
-            // TODO: Animate these in and out
-
-            // Only show the info icon when an application is selected
-            if (((ItemInfo)info).itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-                setVisibility(VISIBLE);
+            if (mManageVisibility) {
+                // Only show the info icon when an application is selected
+                if (((ItemInfo)info).itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+                    setVisibility(VISIBLE);
+                }
+                mHandle.setVisibility(INVISIBLE);
             }
-            mHandle.setVisibility(INVISIBLE);
         }
     }
 
     public void onDragEnd() {
         if (mActive) {
             mActive = false;
-            // TODO: Animate these in and out
-            setVisibility(GONE);
-            mHandle.setVisibility(VISIBLE);
+            if (mManageVisibility) {
+                setVisibility(GONE);
+                mHandle.setVisibility(VISIBLE);
+            }
         }
     }
 
@@ -123,12 +124,12 @@ public class ApplicationInfoDropTarget extends ImageView implements DropTarget, 
         mLauncher = launcher;
     }
 
-    void setDragController(DragController dragController) {
-        mDragController = dragController;
-    }
-
     void setHandle(View view) {
         mHandle = view;
+    }
+
+    void setManageVisibility(boolean value) {
+        mManageVisibility = value;
     }
 
     @Override
