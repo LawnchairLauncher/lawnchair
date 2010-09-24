@@ -55,7 +55,7 @@
     <string name="menu_notifications" msgid="6424587053194766192">"Notifiche"</string>
     <string name="menu_gestures" msgid="514678675575912237">"Gesti"</string>
     <string name="menu_settings" msgid="6233960148378443661">"Impostazioni"</string>
-    <string name="permlab_install_shortcut" msgid="1201690825493376489">"aggiungere scorciatorie"</string>
+    <string name="permlab_install_shortcut" msgid="1201690825493376489">"aggiungere scorciatoie"</string>
     <string name="permdesc_install_shortcut" msgid="7429365847558984148">"Consente a un\'applicazione di aggiungere scorciatoie automaticamente."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"eliminare scorciatoie"</string>
     <string name="permdesc_uninstall_shortcut" msgid="959972195916090900">"Consente a un\'applicazione di rimuovere scorciatoie automaticamente."</string>
