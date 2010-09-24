@@ -31,9 +31,11 @@
     <skip />
     <!-- no translation found for folders_tab_label (1145293785541489736) -->
     <skip />
-    <!-- no translation found for shortcuts_tab_label (3312788893569416806) -->
+    <!-- no translation found for shortcuts_tab_label (8640731503933155644) -->
     <skip />
     <!-- no translation found for wallpapers_tab_label (1617804870364119879) -->
+    <skip />
+    <!-- no translation found for applications_tab_label (9046797126882613707) -->
     <skip />
     <!-- no translation found for wallpapers_temp_tab_text (1660218201190495279) -->
     <skip />
@@ -44,6 +46,8 @@
     <!-- no translation found for all_apps_tab_games (1855736784923494918) -->
     <skip />
     <!-- no translation found for all_apps_tab_downloaded (2300935549064726963) -->
+    <skip />
+    <!-- no translation found for widget_dims_format (412876472704567784) -->
     <skip />
     <string name="rename_folder_label" msgid="5646236631298452787">"Num da l\'ordinatur"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Renumnar l\'ordinatur"</string>
@@ -60,9 +64,9 @@
     <string name="add_clock" msgid="2337943840175865746">"Ura"</string>
     <string name="add_photo_frame" msgid="3154058437359487954">"Rom da maletgs"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Nagin spazi liber sin il visur da partenza."</string>
-    <string name="shortcut_installed" msgid="7071557296331322355">"Creà ina scursanida \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
-    <string name="shortcut_uninstalled" msgid="2129499669449749995">"La scursanida \"<xliff:g id="NAME">%s</xliff:g>\" è vegnida stizzada."</string>
-    <string name="shortcut_duplicate" msgid="4757756326465060694">"La scursanida \"<xliff:g id="NAME">%s</xliff:g>\" exista gia."</string>
+    <string name="shortcut_installed" msgid="7071557296331322355">"\"Creà ina scursanida \"\"<xliff:g id="NAME">%s</xliff:g>\"\".\""</string>
+    <string name="shortcut_uninstalled" msgid="2129499669449749995">"\"La scursanida \"\"<xliff:g id="NAME">%s</xliff:g>\"\" è vegnida stizzada.\""</string>
+    <string name="shortcut_duplicate" msgid="4757756326465060694">"\"La scursanida \"\"<xliff:g id="NAME">%s</xliff:g>\"\" exista gia.\""</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Tscherner ina cumbinaziun da tastas"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"Tscherner l\'ordinatur"</string>
     <string name="all_apps_button_label" msgid="3953036962111614813">"Tut las applicaziuns"</string>
