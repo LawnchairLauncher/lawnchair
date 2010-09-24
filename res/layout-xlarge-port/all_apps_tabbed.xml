@@ -38,7 +38,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 launcher:cellCountX="7"
-                launcher:cellCountY="4">
+                launcher:cellCountY="4"
+                launcher:pageLayoutPaddingTop="10dp"
+                launcher:pageLayoutPaddingBottom="10dp"
+                launcher:pageLayoutPaddingLeft="0dp"
+                launcher:pageLayoutPaddingRight="0dp">
             </com.android.launcher2.AllAppsPagedView>
         </FrameLayout>
     </LinearLayout>

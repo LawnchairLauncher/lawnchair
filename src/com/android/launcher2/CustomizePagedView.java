@@ -59,7 +59,8 @@ public class CustomizePagedView extends PagedView
         WidgetCustomization,
         FolderCustomization,
         ShortcutCustomization,
-        WallpaperCustomization
+        WallpaperCustomization,
+        ApplicationCustomization
     }
 
     /**
@@ -109,9 +110,14 @@ public class CustomizePagedView extends PagedView
     private List<ResolveInfo> mFolderList;
     private List<ResolveInfo> mShortcutList;
     private List<ResolveInfo> mWallpaperList;
+    private List<ApplicationInfo> mApps;
 
-    private static final int sCellCountX = 8;
-    private static final int sCellCountY = 4;
+    private int mCellCountX;
+    private int mCellCountY;
+    private int mPageLayoutPaddingTop;
+    private int mPageLayoutPaddingBottom;
+    private int mPageLayoutPaddingLeft;
+    private int mPageLayoutPaddingRight;
     private static final int sMinWidgetCellHSpan = 2;
     private static final int sMaxWidgetCellHSpan = 4;
 
@@ -132,14 +138,27 @@ public class CustomizePagedView extends PagedView
     public CustomizePagedView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CustomizePagedView,
+        TypedArray a;
+        a = context.obtainStyledAttributes(attrs, R.styleable.CustomizePagedView,
                 defStyle, 0);
+        mMaxWidgetsCellHSpan = a.getInt(R.styleable.CustomizePagedView_widgetCellCountX, 8);
+        a.recycle();
+        a = context.obtainStyledAttributes(attrs, R.styleable.PagedView, defStyle, 0);
+        mCellCountX = a.getInt(R.styleable.PagedView_cellCountX, 7);
+        mCellCountY = a.getInt(R.styleable.PagedView_cellCountY, 4);
+        mPageLayoutPaddingTop = a.getDimensionPixelSize(
+                R.styleable.PagedView_pageLayoutPaddingTop, 10);
+        mPageLayoutPaddingBottom = a.getDimensionPixelSize(
+                R.styleable.PagedView_pageLayoutPaddingBottom, 10);
+        mPageLayoutPaddingLeft = a.getDimensionPixelSize(
+                R.styleable.PagedView_pageLayoutPaddingLeft, 10);
+        mPageLayoutPaddingRight = a.getDimensionPixelSize(
+                R.styleable.PagedView_pageLayoutPaddingRight, 10);
+        a.recycle();
         mCustomizationType = CustomizationType.WidgetCustomization;
         mWidgetPages = new ArrayList<ArrayList<AppWidgetProviderInfo>>();
         mWorkspaceWidgetLayout = new PagedViewCellLayout(context);
         mInflater = LayoutInflater.from(context);
-        mMaxWidgetsCellHSpan = a.getInt(R.styleable.CustomizePagedView_widgetCellCountX, 8);
-        a.recycle();
 
         setVisibility(View.GONE);
         setSoundEffectsEnabled(false);
@@ -150,6 +169,93 @@ public class CustomizePagedView extends PagedView
         Context context = getContext();
         mLauncher = launcher;
         mPackageManager = context.getPackageManager();
+    }
+
+    /**
+     * Sets the list of applications that launcher has loaded.
+     */
+    public void setApps(ArrayList<ApplicationInfo> list) {
+        mApps = list;
+        Collections.sort(mApps, LauncherModel.APP_NAME_COMPARATOR);
+        mPageViewIconCache.clear();
+        invalidatePageData();
+    }
+
+    /**
+     * Convenience function to add new items to the set of applications that were previously loaded.
+     * Called by both updateApps() and setApps().
+     */
+    private void addAppsWithoutInvalidate(ArrayList<ApplicationInfo> list) {
+        // we add it in place, in alphabetical order
+        final int count = list.size();
+        for (int i = 0; i < count; ++i) {
+            final ApplicationInfo info = list.get(i);
+            final int index = Collections.binarySearch(mApps, info, LauncherModel.APP_NAME_COMPARATOR);
+            if (index < 0) {
+                mApps.add(-(index + 1), info);
+            }
+        }
+    }
+
+    /**
+     * Adds new applications to the loaded list, and notifies the paged view to update itself.
+     */
+    public void addApps(ArrayList<ApplicationInfo> list) {
+        addAppsWithoutInvalidate(list);
+        invalidatePageData();
+    }
+
+    /**
+     * Convenience function to remove items to the set of applications that were previously loaded.
+     * Called by both updateApps() and removeApps().
+     */
+    private void removeAppsWithoutInvalidate(ArrayList<ApplicationInfo> list) {
+        // loop through all the apps and remove apps that have the same component
+        final int length = list.size();
+        for (int i = 0; i < length; ++i) {
+            final ApplicationInfo info = list.get(i);
+            int removeIndex = findAppByComponent(mApps, info);
+            if (removeIndex > -1) {
+                mApps.remove(removeIndex);
+                mPageViewIconCache.removeOutline(info);
+            }
+        }
+    }
+
+    /**
+     * Removes applications from the loaded list, and notifies the paged view to update itself.
+     */
+    public void removeApps(ArrayList<ApplicationInfo> list) {
+        removeAppsWithoutInvalidate(list);
+        invalidatePageData();
+    }
+
+    /**
+     * Updates a set of applications from the loaded list, and notifies the paged view to update
+     * itself.
+     */
+    public void updateApps(ArrayList<ApplicationInfo> list) {
+        // We remove and re-add the updated applications list because it's properties may have
+        // changed (ie. the title), and this will ensure that the items will be in their proper
+        // place in the list.
+        removeAppsWithoutInvalidate(list);
+        addAppsWithoutInvalidate(list);
+        invalidatePageData();
+    }
+
+    /**
+     * Convenience function to find matching ApplicationInfos for removal.
+     */
+    private int findAppByComponent(List<ApplicationInfo> list, ApplicationInfo item) {
+        ComponentName removeComponent = item.intent.getComponent();
+        final int length = list.size();
+        for (int i = 0; i < length; ++i) {
+            ApplicationInfo info = list.get(i);
+            if (info.intent.getComponent().equals(removeComponent)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public void update() {
@@ -312,6 +418,13 @@ public class CustomizePagedView extends PagedView
                 }
             });
             return true;
+        case ApplicationCustomization:
+            // Pick up the application for dropping
+            ApplicationInfo app = (ApplicationInfo) v.getTag();
+            app = new ApplicationInfo(app);
+
+            mDragController.startDrag(v, this, app, DragController.DRAG_ACTION_COPY);
+            return true;
         }
         return false;
     }
@@ -417,12 +530,13 @@ public class CustomizePagedView extends PagedView
     }
 
     private void setupPage(PagedViewCellLayout layout) {
-        layout.setCellCount(sCellCountX, sCellCountY);
-        layout.setPadding(20, 10, 20, 0);
+        layout.setCellCount(mCellCountX, mCellCountY);
+        layout.setPadding(mPageLayoutPaddingLeft, mPageLayoutPaddingTop, mPageLayoutPaddingRight,
+                mPageLayoutPaddingBottom);
     }
 
     private void setupWorkspaceLayout() {
-        mWorkspaceWidgetLayout.setCellCount(sCellCountX, sCellCountY);
+        mWorkspaceWidgetLayout.setCellCount(mCellCountX, mCellCountY);
         mWorkspaceWidgetLayout.setPadding(20, 10, 20, 0);
 
         mMaxWidgetWidth = mWorkspaceWidgetLayout.estimateCellWidth(sMaxWidgetCellHSpan);
@@ -486,7 +600,7 @@ public class CustomizePagedView extends PagedView
         removeAllViews();
 
         // ensure that we have the right number of pages
-        int numPages = (int) Math.ceil((float) list.size() / (sCellCountX * sCellCountY));
+        int numPages = (int) Math.ceil((float) list.size() / (mCellCountX * mCellCountY));
         for (int i = 0; i < numPages; ++i) {
             PagedViewCellLayout layout = new PagedViewCellLayout(getContext());
             setupPage(layout);
@@ -496,7 +610,7 @@ public class CustomizePagedView extends PagedView
 
     private void syncListPageItems(int page, List<ResolveInfo> list) {
         // ensure that we have the right number of items on the pages
-        int numCells = sCellCountX * sCellCountY;
+        int numCells = mCellCountX * mCellCountY;
         int startIndex = page * numCells;
         int endIndex = Math.min(startIndex + numCells, list.size());
         PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(page);
@@ -514,8 +628,48 @@ public class CustomizePagedView extends PagedView
             }
 
             final int index = i - startIndex;
-            final int x = index % sCellCountX;
-            final int y = index / sCellCountX;
+            final int x = index % mCellCountX;
+            final int y = index / mCellCountX;
+            setupPage(layout);
+            layout.addViewToCellLayout(icon, -1, i, new PagedViewCellLayout.LayoutParams(x,y, 1,1));
+        }
+    }
+
+    private void syncAppPages() {
+        if (mApps == null) return;
+
+        // We need to repopulate with PagedViewCellLayouts
+        removeAllViews();
+
+        // Ensure that we have the right number of pages
+        int numPages = (int) Math.ceil((float) mApps.size() / (mCellCountX * mCellCountY));
+        for (int i = 0; i < numPages; ++i) {
+            PagedViewCellLayout layout = new PagedViewCellLayout(getContext());
+            setupPage(layout);
+            addView(layout);
+        }
+    }
+
+    private void syncAppPageItems(int page) {
+        if (mApps == null) return;
+
+        // ensure that we have the right number of items on the pages
+        int numCells = mCellCountX * mCellCountY;
+        int startIndex = page * numCells;
+        int endIndex = Math.min(startIndex + numCells, mApps.size());
+        PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(page);
+        // TODO: we can optimize by just re-applying to existing views
+        layout.removeAllViews();
+        for (int i = startIndex; i < endIndex; ++i) {
+            final ApplicationInfo info = mApps.get(i);
+            PagedViewIcon icon = (PagedViewIcon) mInflater.inflate(
+                    R.layout.all_apps_paged_view_application, layout, false);
+            icon.applyFromApplicationInfo(info, mPageViewIconCache);
+            icon.setOnLongClickListener(this);
+
+            final int index = i - startIndex;
+            final int x = index % mCellCountX;
+            final int y = index / mCellCountX;
             setupPage(layout);
             layout.addViewToCellLayout(icon, -1, i, new PagedViewCellLayout.LayoutParams(x,y, 1,1));
         }
@@ -539,6 +693,10 @@ public class CustomizePagedView extends PagedView
         case WallpaperCustomization:
             syncListPages(mWallpaperList);
             centerPagedViewCellLayouts = true;
+            break;
+        case ApplicationCustomization:
+            syncAppPages();
+            centerPagedViewCellLayouts = false;
             break;
         default:
             removeAllViews();
@@ -578,6 +736,9 @@ public class CustomizePagedView extends PagedView
             break;
         case WallpaperCustomization:
             syncListPageItems(page, mWallpaperList);
+            break;
+        case ApplicationCustomization:
+            syncAppPageItems(page);
             break;
         }
     }

@@ -177,6 +177,7 @@ public final class Launcher extends Activity
 
     // tags for the customization tabs
     private static final String WIDGETS_TAG = "widgets";
+    private static final String APPLICATIONS_TAG = "applications";
     private static final String FOLDERS_TAG = "folders";
     private static final String SHORTCUTS_TAG = "shortcuts";
     private static final String WALLPAPERS_TAG = "wallpapers";
@@ -292,15 +293,18 @@ public final class Launcher extends Activity
             String widgetsLabel = getString(R.string.widgets_tab_label);
             mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(WIDGETS_TAG)
                     .setIndicator(widgetsLabel).setContent(contentFactory));
+            String applicationsLabel = getString(R.string.applications_tab_label);
+            mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(APPLICATIONS_TAG)
+                    .setIndicator(applicationsLabel).setContent(contentFactory));
             String foldersLabel = getString(R.string.folders_tab_label);
             mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(FOLDERS_TAG)
                     .setIndicator(foldersLabel).setContent(contentFactory));
-            String shortcutsLabel = getString(R.string.shortcuts_tab_label);
-            mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(SHORTCUTS_TAG)
-                    .setIndicator(shortcutsLabel).setContent(contentFactory));
             String wallpapersLabel = getString(R.string.wallpapers_tab_label);
             mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(WALLPAPERS_TAG)
                     .setIndicator(wallpapersLabel).setContent(contentFactory));
+            String shortcutsLabel = getString(R.string.shortcuts_tab_label);
+            mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(SHORTCUTS_TAG)
+                    .setIndicator(shortcutsLabel).setContent(contentFactory));
 
             // TEMP: just styling the tab widget to be a bit nicer until we get the actual
             // new assets
@@ -327,20 +331,23 @@ public final class Launcher extends Activity
                             if (tag == WIDGETS_TAG) {
                                 mCustomizePagedView.setCustomizationFilter(
                                     CustomizePagedView.CustomizationType.WidgetCustomization);
+                            } else if (tag == APPLICATIONS_TAG) {
+                                mCustomizePagedView.setCustomizationFilter(
+                                        CustomizePagedView.CustomizationType.ApplicationCustomization);
                             } else if (tag == FOLDERS_TAG) {
                                 mCustomizePagedView.setCustomizationFilter(
                                     CustomizePagedView.CustomizationType.FolderCustomization);
-                            } else if (tag == SHORTCUTS_TAG) {
-                                mCustomizePagedView.setCustomizationFilter(
-                                    CustomizePagedView.CustomizationType.ShortcutCustomization);
                             } else if (tag == WALLPAPERS_TAG) {
                                 mCustomizePagedView.setCustomizationFilter(
                                     CustomizePagedView.CustomizationType.WallpaperCustomization);
+                            } else if (tag == SHORTCUTS_TAG) {
+                                mCustomizePagedView.setCustomizationFilter(
+                                        CustomizePagedView.CustomizationType.ShortcutCustomization);
                             }
 
                             final float alpha = mCustomizePagedView.getAlpha();
-                            ValueAnimator alphaAnim = new ObjectAnimator(duration, mCustomizePagedView,
-                                    "alpha", alpha, 1.0f);
+                            ValueAnimator alphaAnim = new ObjectAnimator(duration,
+                                    mCustomizePagedView, "alpha", alpha, 1.0f);
                             alphaAnim.start();
                         }
                     });
@@ -2976,6 +2983,7 @@ public final class Launcher extends Activity
      */
     public void bindAllApplications(ArrayList<ApplicationInfo> apps) {
         mAllAppsGrid.setApps(apps);
+        mCustomizePagedView.setApps(apps);
         updateAppMarketIcon();
     }
 
@@ -2987,6 +2995,7 @@ public final class Launcher extends Activity
     public void bindAppsAdded(ArrayList<ApplicationInfo> apps) {
         removeDialog(DIALOG_CREATE_SHORTCUT);
         mAllAppsGrid.addApps(apps);
+        mCustomizePagedView.addApps(apps);
         updateAppMarketIcon();
     }
 
@@ -2999,6 +3008,7 @@ public final class Launcher extends Activity
         removeDialog(DIALOG_CREATE_SHORTCUT);
         mWorkspace.updateShortcuts(apps);
         mAllAppsGrid.updateApps(apps);
+        mCustomizePagedView.updateApps(apps);
         updateAppMarketIcon();
     }
 
@@ -3013,6 +3023,7 @@ public final class Launcher extends Activity
             mWorkspace.removeItems(apps);
         }
         mAllAppsGrid.removeApps(apps);
+        mCustomizePagedView.removeApps(apps);
         updateAppMarketIcon();
     }
 
