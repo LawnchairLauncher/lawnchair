@@ -1223,9 +1223,9 @@ public final class Launcher extends Activity
 
             Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
             pickIntent.putExtra(Intent.EXTRA_INTENT, mainIntent);
-            startActivityForResult(pickIntent, REQUEST_PICK_APPLICATION);
+            startActivityForResultSafely(pickIntent, REQUEST_PICK_APPLICATION);
         } else {
-            startActivityForResult(intent, REQUEST_CREATE_SHORTCUT);
+            startActivityForResultSafely(intent, REQUEST_CREATE_SHORTCUT);
         }
     }
 
@@ -1237,7 +1237,7 @@ public final class Launcher extends Activity
         if (folderName != null && folderName.equals(shortcutName)) {
             addFolder();
         } else {
-            startActivityForResult(intent, REQUEST_CREATE_LIVE_FOLDER);
+            startActivityForResultSafely(intent, REQUEST_CREATE_LIVE_FOLDER);
         }
     }
 
