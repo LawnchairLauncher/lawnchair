@@ -432,7 +432,7 @@ public class Workspace extends SmoothPagedView
     }
 
     @Override
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
         // if shrinkToBottom() is called on initialization, it has to be deferred

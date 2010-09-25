@@ -655,7 +655,8 @@ public final class Launcher extends Activity
         if (resultCode == RESULT_OK && mAddScreen != -1) {
             switch (requestCode) {
                 case REQUEST_PICK_APPLICATION:
-                    completeAddApplication(this, data, mAddScreen, mAddIntersectCellX, mAddIntersectCellY);
+                    completeAddApplication(
+                            this, data, mAddScreen, mAddIntersectCellX, mAddIntersectCellY);
                     break;
                 case REQUEST_PICK_SHORTCUT:
                     processShortcut(data);
@@ -1532,7 +1533,8 @@ public final class Launcher extends Activity
         sFolders.remove(folder.id);
     }
 
-    private void completeAddLiveFolder(Intent data, int screen, int intersectCellX, int intersectCellY) {
+    private void completeAddLiveFolder(
+            Intent data, int screen, int intersectCellX, int intersectCellY) {
         final CellLayout layout = (CellLayout) mWorkspace.getChildAt(screen);
         final int[] cellXY = mTmpAddItemCellCoordinates;
         if (!layout.findCellForSpanThatIntersects(cellXY, 1, 1, intersectCellX, intersectCellY)) {

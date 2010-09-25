@@ -490,7 +490,7 @@ public class CellLayout extends ViewGroup {
     }
 
     @Override
-    public void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int count = getChildCount();
 
         for (int i = 0; i < count; i++) {
@@ -578,18 +578,17 @@ public class CellLayout extends ViewGroup {
         if (ignoreView != null) {
             markCellsAsUnoccupiedForView(ignoreView);
         }
+        boolean isVacant = true;
         for (int i = 0; i < spanY; i++) {
             if (!isRowEmpty(originY + i, originX, originX + spanX - 1, mOccupied)) {
-                if (ignoreView != null) {
-                    markCellsAsOccupiedForView(ignoreView);
-                }
-                return false;
+                isVacant = false;
+                break;
             }
         }
         if (ignoreView != null) {
             markCellsAsOccupiedForView(ignoreView);
         }
-        return true;
+        return isVacant;
     }
 
     private boolean isVacant(int originX, int originY, int spanX, int spanY) {
@@ -801,6 +800,7 @@ public class CellLayout extends ViewGroup {
             markCellsAsUnoccupiedForView(ignoreView);
         }
 
+        boolean foundCell = false;
         while (true) {
             int startX = 0;
             if (intersectX >= 0) {
@@ -836,10 +836,8 @@ public class CellLayout extends ViewGroup {
                         cellXY[0] = x;
                         cellXY[1] = y;
                     }
-                    if (ignoreView != null) {
-                        markCellsAsOccupiedForView(ignoreView);
-                    }
-                    return true;
+                    foundCell = true;
+                    break;
                 }
             }
             if (intersectX == -1 && intersectY == -1) {
@@ -856,7 +854,7 @@ public class CellLayout extends ViewGroup {
         if (ignoreView != null) {
             markCellsAsOccupiedForView(ignoreView);
         }
-        return false;
+        return foundCell;
     }
 
     /**

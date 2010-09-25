@@ -334,7 +334,7 @@ public abstract class PagedView extends ViewGroup {
     }
 
     @Override
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         if (mFirstLayout && mCurrentPage >= 0 && mCurrentPage < getChildCount()) {
             setHorizontalScrollBarEnabled(false);
             int newX = getChildOffset(mCurrentPage) - getRelativeChildOffset(mCurrentPage);
