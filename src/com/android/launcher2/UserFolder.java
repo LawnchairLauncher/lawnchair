@@ -72,6 +72,10 @@ public class UserFolder extends Folder implements DropTarget {
         }
     }
 
+    public boolean isDropEnabled() {
+        return true;
+    }
+
     void bind(FolderInfo info) {
         super.bind(info);
         setContentAdapter(new ShortcutsAdapter(mContext, ((UserFolderInfo) info).contents));

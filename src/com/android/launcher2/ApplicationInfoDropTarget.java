@@ -110,6 +110,10 @@ public class ApplicationInfoDropTarget extends ImageView implements DropTarget, 
         }
     }
 
+    public boolean isDropEnabled() {
+        return true;
+    }
+
     public void onDragEnd() {
         if (mActive) {
             mActive = false;

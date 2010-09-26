@@ -75,6 +75,11 @@
         <attr name="cellCountX" />
         <!-- The number of vertical cells in a page -->
         <attr name="cellCountY" />
+        <!-- The padding of the pages that are dynamically created per page -->
+        <attr name="pageLayoutPaddingTop" format="dimension" />
+        <attr name="pageLayoutPaddingBottom" format="dimension" />
+        <attr name="pageLayoutPaddingLeft" format="dimension" />
+        <attr name="pageLayoutPaddingRight" format="dimension" />
     </declare-styleable>
 
     <!-- CustomizePagedView specific attributes. These attributes are used to customize

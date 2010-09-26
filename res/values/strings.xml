@@ -50,9 +50,11 @@
     <string name="folders_tab_label">Folders</string>
     <!--  Title of tab containing all possible shortcuts (eg Contacts, Bookmarks) that can be
           added to the home screen -->
-    <string name="shortcuts_tab_label">Shortcuts</string>
+    <string name="shortcuts_tab_label">More</string>
     <!--  Title of tab for configuring wallpapers -->
     <string name="wallpapers_tab_label">Wallpapers</string>
+    <!--  Title of tab for configuring applications -->
+    <string name="applications_tab_label">App Shortcuts</string>
     <!--  Placeholder text, will be removed -->
     <string name="wallpapers_temp_tab_text">This will be the wallpapers tab</string>
     <!--  Labels for the tabs in All Apps -->

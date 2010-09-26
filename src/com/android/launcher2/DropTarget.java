@@ -23,6 +23,12 @@ import android.graphics.Rect;
  *
  */
 public interface DropTarget {
+    /**
+     * Used to temporarily disable certain drop targets
+     *
+     * @return boolean specifying whether this drop target is currently enabled
+     */
+    boolean isDropEnabled();
 
     /**
      * Handle an object being dropped on the DropTarget

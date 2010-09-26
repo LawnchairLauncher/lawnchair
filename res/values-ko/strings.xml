@@ -29,16 +29,17 @@
     <string name="configure_wallpaper" msgid="2820186271419674623">"구성..."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"위젯"</string>
     <string name="folders_tab_label" msgid="1145293785541489736">"폴더"</string>
-    <string name="shortcuts_tab_label" msgid="3312788893569416806">"바로가기"</string>
+    <!-- no translation found for shortcuts_tab_label (8640731503933155644) -->
+    <skip />
     <string name="wallpapers_tab_label" msgid="1617804870364119879">"배경화면"</string>
+    <!-- no translation found for applications_tab_label (9046797126882613707) -->
+    <skip />
     <string name="wallpapers_temp_tab_text" msgid="1660218201190495279">"배경화면 탭이 됩니다."</string>
-    <!-- no translation found for all_apps_tab_all (2942727589595027258) -->
-    <skip />
-    <!-- no translation found for all_apps_tab_apps (5468972551904071712) -->
-    <skip />
-    <!-- no translation found for all_apps_tab_games (1855736784923494918) -->
-    <skip />
-    <!-- no translation found for all_apps_tab_downloaded (2300935549064726963) -->
+    <string name="all_apps_tab_all" msgid="2942727589595027258">"모두"</string>
+    <string name="all_apps_tab_apps" msgid="5468972551904071712">"애플리케이션"</string>
+    <string name="all_apps_tab_games" msgid="1855736784923494918">"게임"</string>
+    <string name="all_apps_tab_downloaded" msgid="2300935549064726963">"다운로드앱"</string>
+    <!-- no translation found for widget_dims_format (412876472704567784) -->
     <skip />
     <string name="rename_folder_label" msgid="5646236631298452787">"폴더 이름"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"폴더 이름 바꾸기"</string>
@@ -83,6 +84,5 @@
     <string name="permlab_write_settings" msgid="1360567537236705628">"홈 설정 및 바로가기 쓰기"</string>
     <string name="permdesc_write_settings" msgid="1098648778383349818">"애플리케이션이 홈에 있는 설정 및 바로가기를 변경할 수 있도록 합니다."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"위젯을 로드하는 중 문제가 발생했습니다."</string>
-    <!-- no translation found for uninstall_system_app_text (7488523163288397451) -->
-    <skip />
+    <string name="uninstall_system_app_text" msgid="7488523163288397451">"시스템 애플리케이션은 제거할 수 없습니다."</string>
 </resources>

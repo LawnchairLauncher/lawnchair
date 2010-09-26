@@ -50,11 +50,6 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
 
         if (findEmptyCell(context, mCoordinates, screen)) {
-            CellLayout.CellInfo cell = new CellLayout.CellInfo();
-            cell.cellX = mCoordinates[0];
-            cell.cellY = mCoordinates[1];
-            cell.screen = screen;
-
             Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
 
             if (intent.getAction() == null) {
@@ -66,7 +61,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             boolean duplicate = data.getBooleanExtra(Launcher.EXTRA_SHORTCUT_DUPLICATE, true);
             if (duplicate || !LauncherModel.shortcutExists(context, name, intent)) {
                 ((LauncherApplication)context.getApplicationContext()).getModel()
-                        .addShortcut(context, data, cell, true);
+                        .addShortcut(context, data, screen, mCoordinates[0], mCoordinates[1], true);
                 Toast.makeText(context, context.getString(R.string.shortcut_installed, name),
                         Toast.LENGTH_SHORT).show();
             } else {
