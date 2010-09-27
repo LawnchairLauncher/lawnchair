@@ -124,6 +124,8 @@ public class CustomizePagedView extends PagedView
     private static final int sMinWidgetCellHSpan = 2;
     private static final int sMaxWidgetCellHSpan = 4;
 
+    private int mChoiceModeTitleText;
+
     // The scale factor for widget previews inside the widget drawer
     private static final float sScaleFactor = 0.75f;
 
@@ -336,15 +338,29 @@ public class CustomizePagedView extends PagedView
 
         // On certain pages, we allow single tap to mark items as selected so that they can be
         // dropped onto the mini workspaces
+        boolean enterChoiceMode = false;
         switch (mCustomizationType) {
         case WidgetCustomization:
+            mChoiceModeTitleText = R.string.cab_widget_selection_text;
+            enterChoiceMode = true;
+            break;
         case ApplicationCustomization:
+            mChoiceModeTitleText = R.string.cab_app_selection_text;
+            enterChoiceMode = true;
+            break;
         case FolderCustomization:
+            mChoiceModeTitleText = R.string.cab_folder_selection_text;
+            enterChoiceMode = true;
+            break;
         case ShortcutCustomization:
-            if (isChoiceMode(CHOICE_MODE_NONE)) {
-                startChoiceMode(CHOICE_MODE_SINGLE, this);
-            }
+            mChoiceModeTitleText = R.string.cab_shortcut_selection_text;
+            enterChoiceMode = true;
+            break;
+        default:
+            break;
+        }
 
+        if (enterChoiceMode) {
             if (v instanceof Checkable) {
                 final Checkable c = (Checkable) v;
                 final boolean wasChecked = c.isChecked();
@@ -354,11 +370,12 @@ public class CustomizePagedView extends PagedView
                 // End the current choice mode when we have no items selected
                 if (!c.isChecked()) {
                     endChoiceMode();
+                } else if (isChoiceMode(CHOICE_MODE_NONE)) {
+                    endChoiceMode();
+                    startChoiceMode(CHOICE_MODE_SINGLE, this);
                 }
             }
             return;
-        default:
-            break;
         }
 
         // Otherwise, we just handle the single click here
@@ -798,7 +815,7 @@ public class CustomizePagedView extends PagedView
 
     @Override
     public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-        mode.setTitle(R.string.cab_selection_text);
+        mode.setTitle(mChoiceModeTitleText);
         return true;
     }
 

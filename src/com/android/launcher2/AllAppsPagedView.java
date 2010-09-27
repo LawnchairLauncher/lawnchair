@@ -417,7 +417,7 @@ public class AllAppsPagedView extends PagedView
 
     @Override
     public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-        mode.setTitle(R.string.cab_selection_text);
+        mode.setTitle(R.string.cab_app_selection_text);
 
         // Until the workspace has a selection mode and the CAB supports drag-and-drop, we
         // take a hybrid approach: grab the views from the workspace and stuff them into the CAB.
