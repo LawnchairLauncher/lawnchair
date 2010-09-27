@@ -68,6 +68,15 @@
         <attr name="checkedOutlineColor" format="color" />
     </declare-styleable>
 
+    <!-- PagedViewWidgetIcon specific attributes. These attributes are used to
+         customize a PagedViewWidgetIcon view in XML files. -->
+    <declare-styleable name="PagedViewWidgetIcon">
+        <!-- The checked blur color of the holographic outline -->
+        <attr name="checkedBlurColor" />
+        <!-- The checked outline color of the holographic outline -->
+        <attr name="checkedOutlineColor" />
+    </declare-styleable>
+
     <!-- PagedView specific attributes. These attributes are used to customize
          a PagedView view in XML files. -->
     <declare-styleable name="PagedView">

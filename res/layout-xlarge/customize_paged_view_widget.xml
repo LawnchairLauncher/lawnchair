@@ -13,7 +13,10 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.launcher2.PagedViewWidgetIcon
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
+
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:paddingLeft="12.5dp"
@@ -21,11 +24,14 @@
     android:paddingTop="40dp"
     android:paddingBottom="50dp"
     android:gravity="top"
-    android:orientation="vertical">
+    android:orientation="vertical"
+
+    launcher:checkedBlurColor="#FFDAFF71"
+    launcher:checkedOutlineColor="#FFCFFF9C">
 
     <!-- The icon of the widget. -->
     <ImageView
-        android:id="@+id/icon"
+        android:id="@+id/widget_preview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1.0"
@@ -42,7 +48,7 @@
 
     <!-- The name of the widget. -->
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/name"
+        android:id="@+id/widget_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="left"
@@ -60,7 +66,7 @@
     <!-- The original dimensions of the widget (can't be the same text as above due to different
          style. -->
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/dims"
+        android:id="@+id/widget_dims"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="left"
@@ -71,4 +77,4 @@
         android:shadowDx="0.0"
         android:shadowDy="1.0"
         android:shadowRadius="1.0" />
-</LinearLayout>
+</com.android.launcher2.PagedViewWidgetIcon>

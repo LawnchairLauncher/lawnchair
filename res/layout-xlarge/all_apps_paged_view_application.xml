@@ -23,7 +23,7 @@
     launcher:checkedBlurColor="#FFBBE83C"
     launcher:checkedOutlineColor="#FF8CD2FF"
 
-    android:id="@+id/name"
+    android:id="@+id/application_icon"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
