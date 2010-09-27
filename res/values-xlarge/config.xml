@@ -26,4 +26,16 @@
          animations between all apps, customize, & the workspace. -->
     <integer name="config_toolbarButtonFadeInTime">350</integer>
     <integer name="config_toolbarButtonFadeOutTime">350</integer>
+
+    <integer name="config_crosshairsFadeInTime">600</integer>
+
+    <!-- When dragging items on the workspace, how much bigger (in pixels) the dragged view
+         should be, as compared to the original view. If 0, it will not be scaled at all.
+         Should be an even number, for pixel alignment. -->
+    <integer name="config_dragViewExtraPixels">0</integer>
+
+    <!-- When dragging items on the workspace, the number of pixels by which the position of
+         the drag view should be offset from the position of the original view. -->
+    <integer name="config_dragViewOffsetX">0</integer>
+    <integer name="config_dragViewOffsetY">12</integer>
 </resources>

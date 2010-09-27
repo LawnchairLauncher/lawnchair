@@ -17,7 +17,10 @@
 
 package com.android.launcher2;
 
+import com.android.launcher.R;
+
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -31,9 +34,6 @@ import android.view.WindowManager;
 import android.view.WindowManagerImpl;
 
 public class DragView extends View implements TweenCallback {
-    // Number of pixels to add to the dragged item for scaling.  Should be even for pixel alignment.
-    private static final int DRAG_SCALE = 40;
-
     private Bitmap mBitmap;
     private Paint mPaint;
     private int mRegistrationX;
@@ -66,21 +66,24 @@ public class DragView extends View implements TweenCallback {
             int left, int top, int width, int height) {
         super(context);
 
+        final Resources res = getResources();
+        final int dragScale = res.getInteger(R.integer.config_dragViewExtraPixels);
+
         mWindowManager = WindowManagerImpl.getDefault();
         
         mTween = new SymmetricalLinearTween(false, 110 /*ms duration*/, this);
 
         Matrix scale = new Matrix();
         float scaleFactor = width;
-        scaleFactor = mScale = (scaleFactor + DRAG_SCALE) / scaleFactor;
+        scaleFactor = mScale = (scaleFactor + dragScale) / scaleFactor;
         scale.setScale(scaleFactor, scaleFactor);
 
         mBitmap = Bitmap.createBitmap(bitmap, left, top, width, height, scale, true);
         setDragRegion(0, 0, width, height);
 
         // The point in our scaled bitmap that the touch events are located
-        mRegistrationX = registrationX + (DRAG_SCALE / 2);
-        mRegistrationY = registrationY + (DRAG_SCALE / 2);
+        mRegistrationX = registrationX + res.getInteger(R.integer.config_dragViewOffsetX);
+        mRegistrationY = registrationY + res.getInteger(R.integer.config_dragViewOffsetY);
     }
 
     public void setDragRegion(int left, int top, int width, int height) {

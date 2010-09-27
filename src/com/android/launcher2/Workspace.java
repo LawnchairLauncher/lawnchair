@@ -19,10 +19,10 @@ package com.android.launcher2;
 import com.android.launcher.R;
 
 import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.animation.Animator.AnimatorListener;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -46,7 +46,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -866,6 +865,7 @@ public class Workspace extends SmoothPagedView
 
         current.onDragChild(child);
         mDragController.startDrag(child, this, child.getTag(), DragController.DRAG_ACTION_MOVE);
+        current.onDragEnter(child);
         invalidate();
     }
 
@@ -939,6 +939,7 @@ public class Workspace extends SmoothPagedView
 
     public void onDragEnter(DragSource source, int x, int y, int xOffset,
             int yOffset, DragView dragView, Object dragInfo) {
+        getCurrentDropLayout().onDragEnter(dragView);
     }
 
     public DropTarget getDropTargetDelegate(DragSource source, int x, int y, int xOffset, int yOffset,
@@ -981,7 +982,6 @@ public class Workspace extends SmoothPagedView
         }
         return null;
     }
-
 
     private void mapPointGlobalToLocal(View v, float[] xy) {
         xy[0] = xy[0] + mScrollX - v.getLeft();
@@ -1113,6 +1113,7 @@ public class Workspace extends SmoothPagedView
         if (currentLayout != mDragTargetLayout) {
             if (mDragTargetLayout != null) {
                 mDragTargetLayout.onDragExit();
+                currentLayout.onDragEnter(dragView);
             }
             mDragTargetLayout = currentLayout;
         }
@@ -1125,7 +1126,7 @@ public class Workspace extends SmoothPagedView
             int localOriginX = originX - (mDragTargetLayout.getLeft() - mScrollX);
             int localOriginY = originY - (mDragTargetLayout.getTop() - mScrollY);
             mDragTargetLayout.visualizeDropLocation(
-                    child, localOriginX, localOriginY, item.spanX, item.spanY, child);
+                    child, localOriginX, localOriginY, item.spanX, item.spanY);
         }
     }
 

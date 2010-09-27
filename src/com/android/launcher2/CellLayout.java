@@ -18,15 +18,20 @@ package com.android.launcher2;
 
 import com.android.launcher.R;
 
+import android.animation.ValueAnimator;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MotionEvent;
 import android.view.View;
@@ -58,9 +63,11 @@ public class CellLayout extends ViewGroup implements Dimmable {
     private final RectF mRectF = new RectF();
     private final CellInfo mCellInfo = new CellInfo();
 
-    // This is a temporary variable to prevent having to allocate a new object just to
-    // return an (x, y) value from helper functions. Do NOT use it to maintain other state.
+    // These are temporary variables to prevent having to allocate a new object just to
+    // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
     private final int[] mTmpCellXY = new int[2];
+    private final int[] mTmpPoint = new int[2];
+    private final PointF mTmpPointF = new PointF();
 
     boolean[][] mOccupied;
 
@@ -77,15 +84,13 @@ public class CellLayout extends ViewGroup implements Dimmable {
     private boolean mHover = false;
 
     private final RectF mDragRect = new RectF();
+    private final Point mDragCenter = new Point();
 
-    // When dragging, used to indicate a vacant drop location
-    private Drawable mVacantDrawable;
-
-    // When dragging, used to indicate an occupied drop location
-    private Drawable mOccupiedDrawable;
-
-    // Updated to point to mVacantDrawable or mOccupiedDrawable, as appropriate
     private Drawable mDragRectDrawable;
+
+    private Drawable mCrosshairsDrawable = null;
+    private ValueAnimator mCrosshairsAnimator = null;
+    private float mCrosshairsVisibility = 0.0f;
 
     // When a drag operation is in progress, holds the nearest cell to the touch point
     private final int[] mDragCell = new int[2];
@@ -106,17 +111,6 @@ public class CellLayout extends ViewGroup implements Dimmable {
         // A ViewGroup usually does not draw, but CellLayout needs to draw a rectangle to show
         // the user where a dragged item will land when dropped.
         setWillNotDraw(false);
-        mVacantDrawable = getResources().getDrawable(R.drawable.rounded_rect_green);
-        mOccupiedDrawable = getResources().getDrawable(R.drawable.rounded_rect_red);
-
-        if (LauncherApplication.isScreenXLarge()) {
-            mBackgroundMini = getResources().getDrawable(R.drawable.mini_home_screen_bg);
-            mBackgroundMini.setFilterBitmap(true);
-            mBackground = getResources().getDrawable(R.drawable.home_screen_bg);
-            mBackground.setFilterBitmap(true);
-            mBackgroundMiniHover = getResources().getDrawable(R.drawable.mini_home_screen_bg_hover);
-            mBackgroundMiniHover.setFilterBitmap(true);
-        }
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CellLayout, defStyle, 0);
 
@@ -140,7 +134,31 @@ public class CellLayout extends ViewGroup implements Dimmable {
 
         setAlwaysDrawnWithCacheEnabled(false);
 
-        mWallpaperManager = WallpaperManager.getInstance(getContext());
+        mWallpaperManager = WallpaperManager.getInstance(context);
+
+        if (LauncherApplication.isScreenXLarge()) {
+            final Resources res = getResources();
+
+            mBackgroundMini = res.getDrawable(R.drawable.mini_home_screen_bg);
+            mBackgroundMini.setFilterBitmap(true);
+            mBackground = res.getDrawable(R.drawable.home_screen_bg);
+            mBackground.setFilterBitmap(true);
+            mBackgroundMiniHover = res.getDrawable(R.drawable.mini_home_screen_bg_hover);
+            mBackgroundMiniHover.setFilterBitmap(true);
+
+            mDragRectDrawable = res.getDrawable(R.drawable.rounded_rect_green);
+            mCrosshairsDrawable = res.getDrawable(R.drawable.gardening_crosshairs);
+
+            // Set up the animation for fading the crosshairs in and out
+            int animDuration = res.getInteger(R.integer.config_crosshairsFadeInTime);
+            mCrosshairsAnimator = new ValueAnimator<Float>(animDuration);
+            mCrosshairsAnimator.addUpdateListener(new AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    mCrosshairsVisibility = ((Float) animation.getAnimatedValue()).floatValue();
+                    CellLayout.this.invalidate();
+                }
+            });
+        }
     }
 
     public void setHover(boolean value) {
@@ -148,6 +166,15 @@ public class CellLayout extends ViewGroup implements Dimmable {
             invalidate();
         }
         mHover = value;
+    }
+
+    private void animateCrosshairsTo(float value) {
+        final ValueAnimator anim = mCrosshairsAnimator;
+        long fullDuration = getResources().getInteger(R.integer.config_crosshairsFadeInTime);
+        anim.setDuration(fullDuration - anim.getCurrentPlayTime());
+        anim.setValues(mCrosshairsVisibility, value);
+        anim.cancel();
+        anim.start();
     }
 
     @Override
@@ -169,15 +196,47 @@ public class CellLayout extends ViewGroup implements Dimmable {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (!mDragRect.isEmpty()) {
-            mDragRectDrawable.setBounds(
-                    (int)mDragRect.left,
-                    (int)mDragRect.top,
-                    (int)mDragRect.right,
-                    (int)mDragRect.bottom);
-            mDragRectDrawable.draw(canvas);
+        if (mCrosshairsVisibility > 0.0f) {
+            final int countX = mCountX;
+            final int countY = mCountY;
+
+            if (!mDragRect.isEmpty()) {
+                mDragRectDrawable.setBounds(
+                        (int)mDragRect.left,
+                        (int)mDragRect.top,
+                        (int)mDragRect.right,
+                        (int)mDragRect.bottom);
+                mDragRectDrawable.setAlpha((int) (mCrosshairsVisibility * 255));
+                mDragRectDrawable.draw(canvas);
+            }
+
+            final float MAX_ALPHA = 0.4f;
+            final int MAX_VISIBLE_DISTANCE = 600;
+            final float DISTANCE_MULTIPLIER = 0.002f;
+
+            final Drawable d = mCrosshairsDrawable;
+            final int width = d.getIntrinsicWidth();
+            final int height = d.getIntrinsicHeight();
+
+            int x = getLeftPadding() - (mWidthGap / 2) - (width / 2);
+            for (int col = 0; col <= countX; col++) {
+                int y = getTopPadding() - (mHeightGap / 2) - (height / 2);
+                for (int row = 0; row <= countY; row++) {
+                    mTmpPointF.set(x - mDragCenter.x, y - mDragCenter.y);
+                    float dist = mTmpPointF.length();
+                    // Crosshairs further from the drag point are more faint
+                    float alpha = Math.min(MAX_ALPHA,
+                            DISTANCE_MULTIPLIER * (MAX_VISIBLE_DISTANCE - dist));
+                    if (alpha > 0.0f) {
+                        d.setBounds(x, y, x + width, y + height);
+                        d.setAlpha((int) (alpha * 255 * mCrosshairsVisibility));
+                        d.draw(canvas);
+                    }
+                    y += mCellHeight + mHeightGap;
+                }
+                x += mCellWidth + mWidthGap;
+            }
         }
-        super.onDraw(canvas);
     }
 
     public void setDimmableProgress(float progress) {
@@ -218,7 +277,6 @@ public class CellLayout extends ViewGroup implements Dimmable {
         return mCountY;
     }
 
-    // Takes canonical layout parameters
     public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params) {
         final LayoutParams lp = params;
 
@@ -680,34 +738,24 @@ public class CellLayout extends ViewGroup implements Dimmable {
         result[1] = Math.max(0, result[1]); // Snap to top
     }
 
-    void visualizeDropLocation(
-            View view, int originX, int originY, int spanX, int spanY, View draggedItem) {
-        final int[] originCell = mDragCell;
-        final int[] cellXY = mTmpCellXY;
-        estimateDropCell(originX, originY, spanX, spanY, cellXY);
+    void visualizeDropLocation(View view, int originX, int originY, int spanX, int spanY) {
+        final int[] nearest = findNearestVacantArea(originX, originY, spanX, spanY, view, mDragCell);
+        mDragCenter.set(originX + (view.getWidth() / 2), originY + (view.getHeight() / 2));
 
-        // Only recalculate the bounding rect when necessary
-        if (!Arrays.equals(cellXY, originCell)) {
-            originCell[0] = cellXY[0];
-            originCell[1] = cellXY[1];
-
+        if (nearest != null) {
             // Find the top left corner of the rect the object will occupy
-            final int[] topLeft = mTmpCellXY;
-            cellToPoint(originCell[0], originCell[1], topLeft);
+            final int[] topLeft = mTmpPoint;
+            cellToPoint(nearest[0], nearest[1], topLeft);
+
+            // Need to copy these, because the next call to cellToPoint will overwrite them
             final int left = topLeft[0];
             final int top = topLeft[1];
 
             // Now find the bottom right
-            final int[] bottomRight = mTmpCellXY;
-            cellToPoint(originCell[0] + spanX - 1, originCell[1] + spanY - 1, bottomRight);
+            final int[] bottomRight = mTmpPoint;
+            cellToPoint(nearest[0] + spanX - 1, nearest[1] + spanY - 1, bottomRight);
             bottomRight[0] += mCellWidth;
             bottomRight[1] += mCellHeight;
-
-            boolean vacant =
-                isVacantIgnoring(originCell[0], originCell[1], spanX, spanY, draggedItem);
-            mDragRectDrawable = vacant ? mVacantDrawable : mOccupiedDrawable;
-
-            // mDragRect will be rendered in onDraw()
             mDragRect.set(left, top, bottomRight[0], bottomRight[1]);
             invalidate();
         }
@@ -721,14 +769,14 @@ public class CellLayout extends ViewGroup implements Dimmable {
      * @param pixelY The Y location at which you want to search for a vacant area.
      * @param spanX Horizontal span of the object.
      * @param spanY Vertical span of the object.
-     * @param vacantCells Pre-computed set of vacant cells to search.
-     * @param recycle Previously returned value to possibly recycle.
+     * @param result Array in which to place the result, or null (in which case a new array will
+     *        be allocated)
      * @return The X, Y cell of a vacant area that can contain this object,
      *         nearest the requested location.
      */
     int[] findNearestVacantArea(
-            int pixelX, int pixelY, int spanX, int spanY, int[] recycle) {
-        return findNearestVacantArea(pixelX, pixelY, spanX, spanY, null, recycle);
+            int pixelX, int pixelY, int spanX, int spanY, int[] result) {
+        return findNearestVacantArea(pixelX, pixelY, spanX, spanY, null, result);
     }
 
     /**
@@ -739,27 +787,30 @@ public class CellLayout extends ViewGroup implements Dimmable {
      * @param pixelY The Y location at which you want to search for a vacant area.
      * @param spanX Horizontal span of the object.
      * @param spanY Vertical span of the object.
-     * @param vacantCells Pre-computed set of vacant cells to search.
-     * @param recycle Previously returned value to possibly recycle.
      * @param ignoreView Considers space occupied by this view as unoccupied
+     * @param result Previously returned value to possibly recycle.
      * @return The X, Y cell of a vacant area that can contain this object,
      *         nearest the requested location.
      */
     int[] findNearestVacantArea(
-            int pixelX, int pixelY, int spanX, int spanY, View ignoreView, int[] recycle) {
+            int pixelX, int pixelY, int spanX, int spanY, View ignoreView, int[] result) {
         if (ignoreView != null) {
             markCellsAsUnoccupiedForView(ignoreView);
         }
         // Keep track of best-scoring drop area
-        final int[] bestXY = recycle != null ? recycle : new int[2];
+        final int[] bestXY = result != null ? result : new int[2];
         double bestDistance = Double.MAX_VALUE;
 
-        for (int x = 0; x < mCountX - (spanX - 1); x++) {
+        final int countX = mCountX;
+        final int countY = mCountY;
+        final boolean[][] occupied = mOccupied;
+
+        for (int x = 0; x < countX - (spanX - 1); x++) {
             inner:
-            for (int y = 0; y < mCountY - (spanY - 1); y++) {
+            for (int y = 0; y < countY - (spanY - 1); y++) {
                 for (int i = 0; i < spanX; i++) {
                     for (int j = 0; j < spanY; j++) {
-                        if (mOccupied[x + i][y + j]) {
+                        if (occupied[x + i][y + j]) {
                             // small optimization: we can skip to below the row we just found
                             // an occupied cell
                             y += j;
@@ -919,12 +970,18 @@ public class CellLayout extends ViewGroup implements Dimmable {
         mDragCell[1] = -1;
 
         setHover(false);
-        mDragRect.setEmpty();
         invalidate();
+
+        // Fade out the drag indicators
+        if (mCrosshairsAnimator != null) {
+            animateCrosshairsTo(0.0f);
+        }
     }
 
     /**
      * Mark a child as having been dropped.
+     * At the beginning of the drag operation, the child may have been on another
+     * screen, but it is reparented before this method is called.
      *
      * @param child The child that is being dropped
      */
@@ -933,7 +990,6 @@ public class CellLayout extends ViewGroup implements Dimmable {
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
             lp.isDragging = false;
             lp.dropped = true;
-            mDragRect.setEmpty();
             child.requestLayout();
         }
         onDragExit();
@@ -954,7 +1010,19 @@ public class CellLayout extends ViewGroup implements Dimmable {
     void onDragChild(View child) {
         LayoutParams lp = (LayoutParams) child.getLayoutParams();
         lp.isDragging = true;
+    }
+
+    /**
+     * A drag event has begun over this layout.
+     * It may have begun over this layout (in which case onDragChild is called first),
+     * or it may have begun on another layout.
+     */
+    void onDragEnter(View dragView) {
         mDragRect.setEmpty();
+        // Fade in the drag indicators
+        if (mCrosshairsAnimator != null) {
+            animateCrosshairsTo(1.0f);
+        }
     }
 
     /**
