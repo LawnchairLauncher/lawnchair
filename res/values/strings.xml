@@ -101,6 +101,8 @@
     <skip />
     <!-- Verb, menu item used to add an item on the desktop -->
     <string name="menu_add">Add</string>
+    <!-- Menu item used to manage installed applications -->
+    <string name="menu_manage_apps">Manage Apps</string>
     <!-- Noun, menu item used to set the desktop's wallpaper -->
     <string name="menu_wallpaper">Wallpaper</string>
     <!-- Verb, menu item used to initiate global search -->
