@@ -3003,7 +3003,9 @@ public final class Launcher extends Activity
      */
     public void bindAllApplications(ArrayList<ApplicationInfo> apps) {
         mAllAppsGrid.setApps(apps);
-        mCustomizePagedView.setApps(apps);
+        if (mCustomizePagedView != null) {
+            mCustomizePagedView.setApps(apps);
+        }
         updateAppMarketIcon();
     }
 
@@ -3015,7 +3017,9 @@ public final class Launcher extends Activity
     public void bindAppsAdded(ArrayList<ApplicationInfo> apps) {
         removeDialog(DIALOG_CREATE_SHORTCUT);
         mAllAppsGrid.addApps(apps);
-        mCustomizePagedView.addApps(apps);
+        if (mCustomizePagedView != null) {
+            mCustomizePagedView.addApps(apps);
+        }
         updateAppMarketIcon();
     }
 
@@ -3028,7 +3032,9 @@ public final class Launcher extends Activity
         removeDialog(DIALOG_CREATE_SHORTCUT);
         mWorkspace.updateShortcuts(apps);
         mAllAppsGrid.updateApps(apps);
-        mCustomizePagedView.updateApps(apps);
+        if (mCustomizePagedView != null) {
+            mCustomizePagedView.updateApps(apps);
+        }
         updateAppMarketIcon();
     }
 
@@ -3043,7 +3049,9 @@ public final class Launcher extends Activity
             mWorkspace.removeItems(apps);
         }
         mAllAppsGrid.removeApps(apps);
-        mCustomizePagedView.removeApps(apps);
+        if (mCustomizePagedView != null) {
+            mCustomizePagedView.removeApps(apps);
+        }
         updateAppMarketIcon();
     }
 
