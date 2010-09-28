@@ -788,7 +788,7 @@ public class Workspace extends SmoothPagedView
                             mDragInfo.spanX, mDragInfo.spanY);
                 }
 
-                mTargetCell = estimateDropCell(originX, originY,
+                mTargetCell = findNearestVacantArea(originX, originY,
                         mDragInfo.spanX, mDragInfo.spanY, cell, cellLayout,
                         mTargetCell);
                 cellLayout.onDropChild(cell);
@@ -1085,7 +1085,7 @@ public class Workspace extends SmoothPagedView
         if (view == null) {
             cellLayout.onDragExit();
         } else {
-            mTargetCell = estimateDropCell(x, y, 1, 1, view, cellLayout, mTargetCell);
+            mTargetCell = findNearestVacantArea(x, y, 1, 1, view, cellLayout, mTargetCell);
             addInScreen(view, indexOfChild(cellLayout), mTargetCell[0],
                     mTargetCell[1], info.spanX, info.spanY, insertAtFirst);
             cellLayout.onDropChild(view);
@@ -1148,7 +1148,7 @@ public class Workspace extends SmoothPagedView
     /**
      * Calculate the nearest cell where the given object would be dropped.
      */
-    private int[] estimateDropCell(int pixelX, int pixelY,
+    private int[] findNearestVacantArea(int pixelX, int pixelY,
             int spanX, int spanY, View ignoreView, CellLayout layout, int[] recycle) {
 
         final int[] cellXY = mTempCell;
@@ -1159,7 +1159,7 @@ public class Workspace extends SmoothPagedView
 
         // Find the best target drop location
         return layout.findNearestVacantArea(
-                mTempEstimate[0], mTempEstimate[1], spanX, spanY, recycle);
+                mTempEstimate[0], mTempEstimate[1], spanX, spanY, ignoreView, recycle);
     }
 
     /**

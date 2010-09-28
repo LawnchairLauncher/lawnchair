@@ -698,8 +698,30 @@ public class CellLayout extends ViewGroup {
      * @return The X, Y cell of a vacant area that can contain this object,
      *         nearest the requested location.
      */
-    int[] findNearestVacantArea(int pixelX, int pixelY, int spanX, int spanY, int[] recycle) {
+    int[] findNearestVacantArea(
+            int pixelX, int pixelY, int spanX, int spanY, int[] recycle) {
+        return findNearestVacantArea(pixelX, pixelY, spanX, spanY, null, recycle);
+    }
 
+    /**
+     * Find a vacant area that will fit the given bounds nearest the requested
+     * cell location. Uses Euclidean distance to score multiple vacant areas.
+     *
+     * @param pixelX The X location at which you want to search for a vacant area.
+     * @param pixelY The Y location at which you want to search for a vacant area.
+     * @param spanX Horizontal span of the object.
+     * @param spanY Vertical span of the object.
+     * @param vacantCells Pre-computed set of vacant cells to search.
+     * @param recycle Previously returned value to possibly recycle.
+     * @param ignoreView Considers space occupied by this view as unoccupied
+     * @return The X, Y cell of a vacant area that can contain this object,
+     *         nearest the requested location.
+     */
+    int[] findNearestVacantArea(
+            int pixelX, int pixelY, int spanX, int spanY, View ignoreView, int[] recycle) {
+        if (ignoreView != null) {
+            markCellsAsUnoccupiedForView(ignoreView);
+        }
         // Keep track of best-scoring drop area
         final int[] bestXY = recycle != null ? recycle : new int[2];
         double bestDistance = Double.MAX_VALUE;
@@ -728,6 +750,9 @@ public class CellLayout extends ViewGroup {
                     bestXY[1] = y;
                 }
             }
+        }
+        if (ignoreView != null) {
+            markCellsAsOccupiedForView(ignoreView);
         }
 
         // Return null if no suitable location found
