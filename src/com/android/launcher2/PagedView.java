@@ -104,7 +104,7 @@ public abstract class PagedView extends ViewGroup {
     // Multiple selection mode is not supported by all Launcher actions atm
     protected static final int CHOICE_MODE_MULTIPLE = 2;
 
-    private int mChoiceMode;
+    protected int mChoiceMode;
     private ActionMode mActionMode;
 
     protected PagedViewIconCache mPageViewIconCache;
@@ -1084,7 +1084,7 @@ public abstract class PagedView extends ViewGroup {
         if (!isChoiceMode(CHOICE_MODE_NONE)) {
             mChoiceMode = CHOICE_MODE_NONE;
             resetCheckedGrandchildren();
-            mActionMode.finish();
+            if (mActionMode != null) mActionMode.finish();
             mActionMode = null;
         }
     }
