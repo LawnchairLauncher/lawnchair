@@ -3071,8 +3071,9 @@ public final class Launcher extends Activity
      */
     public void bindPackagesUpdated() {
         // update the customization drawer contents
-        if (mCustomizePagedView != null)
+        if (mCustomizePagedView != null) {
             mCustomizePagedView.update();
+        }
     }
 
     /**
