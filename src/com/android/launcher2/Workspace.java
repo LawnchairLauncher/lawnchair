@@ -1085,7 +1085,7 @@ public class Workspace extends SmoothPagedView
         if (view == null) {
             cellLayout.onDragExit();
         } else {
-            mTargetCell = findNearestVacantArea(x, y, 1, 1, view, cellLayout, mTargetCell);
+            mTargetCell = findNearestVacantArea(x, y, 1, 1, null, cellLayout, mTargetCell);
             addInScreen(view, indexOfChild(cellLayout), mTargetCell[0],
                     mTargetCell[1], info.spanX, info.spanY, insertAtFirst);
             cellLayout.onDropChild(view);
