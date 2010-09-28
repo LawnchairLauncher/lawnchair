@@ -1473,9 +1473,9 @@ public final class Launcher extends Activity
 
             Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
             pickIntent.putExtra(Intent.EXTRA_INTENT, mainIntent);
-            startActivityForResult(pickIntent, REQUEST_PICK_APPLICATION);
+            startActivityForResultSafely(pickIntent, REQUEST_PICK_APPLICATION);
         } else {
-            startActivityForResult(intent, REQUEST_CREATE_SHORTCUT);
+            startActivityForResultSafely(intent, REQUEST_CREATE_SHORTCUT);
         }
     }
 
@@ -1502,7 +1502,7 @@ public final class Launcher extends Activity
         if (folderName != null && folderName.equals(shortcutName)) {
             addFolder(mAddScreen, mAddIntersectCellX, mAddIntersectCellY);
         } else {
-            startActivityForResult(intent, REQUEST_CREATE_LIVE_FOLDER);
+            startActivityForResultSafely(intent, REQUEST_CREATE_LIVE_FOLDER);
         }
     }
 
@@ -3003,7 +3003,9 @@ public final class Launcher extends Activity
      */
     public void bindAllApplications(ArrayList<ApplicationInfo> apps) {
         mAllAppsGrid.setApps(apps);
-        mCustomizePagedView.setApps(apps);
+        if (mCustomizePagedView != null) {
+            mCustomizePagedView.setApps(apps);
+        }
         updateAppMarketIcon();
     }
 
@@ -3015,7 +3017,9 @@ public final class Launcher extends Activity
     public void bindAppsAdded(ArrayList<ApplicationInfo> apps) {
         removeDialog(DIALOG_CREATE_SHORTCUT);
         mAllAppsGrid.addApps(apps);
-        mCustomizePagedView.addApps(apps);
+        if (mCustomizePagedView != null) {
+            mCustomizePagedView.addApps(apps);
+        }
         updateAppMarketIcon();
     }
 
@@ -3028,7 +3032,9 @@ public final class Launcher extends Activity
         removeDialog(DIALOG_CREATE_SHORTCUT);
         mWorkspace.updateShortcuts(apps);
         mAllAppsGrid.updateApps(apps);
-        mCustomizePagedView.updateApps(apps);
+        if (mCustomizePagedView != null) {
+            mCustomizePagedView.updateApps(apps);
+        }
         updateAppMarketIcon();
     }
 
@@ -3043,7 +3049,9 @@ public final class Launcher extends Activity
             mWorkspace.removeItems(apps);
         }
         mAllAppsGrid.removeApps(apps);
-        mCustomizePagedView.removeApps(apps);
+        if (mCustomizePagedView != null) {
+            mCustomizePagedView.removeApps(apps);
+        }
         updateAppMarketIcon();
     }
 

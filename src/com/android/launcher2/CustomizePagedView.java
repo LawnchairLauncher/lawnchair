@@ -36,10 +36,15 @@ import android.graphics.drawable.Drawable;
 import android.provider.LiveFolders;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -51,7 +56,7 @@ import java.util.List;
 
 public class CustomizePagedView extends PagedView
     implements View.OnLongClickListener, View.OnClickListener,
-                DragSource {
+                DragSource, ActionMode.Callback {
 
     public enum CustomizationType {
         WidgetCustomization,
@@ -118,6 +123,8 @@ public class CustomizePagedView extends PagedView
     private int mPageLayoutPaddingRight;
     private static final int sMinWidgetCellHSpan = 2;
     private static final int sMaxWidgetCellHSpan = 4;
+
+    private int mChoiceModeTitleText;
 
     // The scale factor for widget previews inside the widget drawer
     private static final float sScaleFactor = 0.75f;
@@ -313,6 +320,9 @@ public class CustomizePagedView extends PagedView
         mCustomizationType = filterType;
         setCurrentPage(0);
         invalidatePageData();
+
+        // End the current choice mode so that we don't carry selections across tabs
+        endChoiceMode();
     }
 
     @Override
@@ -326,15 +336,58 @@ public class CustomizePagedView extends PagedView
             return;
         }
 
-        final View animView = v;
+        // On certain pages, we allow single tap to mark items as selected so that they can be
+        // dropped onto the mini workspaces
+        boolean enterChoiceMode = false;
+        switch (mCustomizationType) {
+        case WidgetCustomization:
+            mChoiceModeTitleText = R.string.cab_widget_selection_text;
+            enterChoiceMode = true;
+            break;
+        case ApplicationCustomization:
+            mChoiceModeTitleText = R.string.cab_app_selection_text;
+            enterChoiceMode = true;
+            break;
+        case FolderCustomization:
+            mChoiceModeTitleText = R.string.cab_folder_selection_text;
+            enterChoiceMode = true;
+            break;
+        case ShortcutCustomization:
+            mChoiceModeTitleText = R.string.cab_shortcut_selection_text;
+            enterChoiceMode = true;
+            break;
+        default:
+            break;
+        }
+
+        if (enterChoiceMode) {
+            if (v instanceof Checkable) {
+                final Checkable c = (Checkable) v;
+                final boolean wasChecked = c.isChecked();
+                resetCheckedGrandchildren();
+                c.setChecked(!wasChecked);
+
+                // End the current choice mode when we have no items selected
+                if (!c.isChecked()) {
+                    endChoiceMode();
+                } else if (isChoiceMode(CHOICE_MODE_NONE)) {
+                    endChoiceMode();
+                    startChoiceMode(CHOICE_MODE_SINGLE, this);
+                }
+            }
+            return;
+        }
+
+        // Otherwise, we just handle the single click here
         switch (mCustomizationType) {
         case WallpaperCustomization:
             // animate some feedback to the long press
+            final View clickView = v;
             animateClickFeedback(v, new Runnable() {
                 @Override
                 public void run() {
                     // add the shortcut
-                    ResolveInfo info = (ResolveInfo) animView.getTag();
+                    ResolveInfo info = (ResolveInfo) clickView.getTag();
                     Intent createWallpapersIntent = new Intent(Intent.ACTION_SET_WALLPAPER);
                     ComponentName name = new ComponentName(info.activityInfo.packageName,
                             info.activityInfo.name);
@@ -342,6 +395,9 @@ public class CustomizePagedView extends PagedView
                     mLauncher.processWallpaper(createWallpapersIntent);
                 }
             });
+            break;
+        default:
+            break;
         }
     }
 
@@ -351,46 +407,43 @@ public class CustomizePagedView extends PagedView
             return false;
         }
 
-        final View animView = v;
-        PendingAddItemInfo createItemInfo = new PendingAddItemInfo();
+        // End the current choice mode before we start dragging anything
+        if (isChoiceMode(CHOICE_MODE_SINGLE)) {
+            endChoiceMode();
+        }
+
+        PendingAddItemInfo createItemInfo;
         switch (mCustomizationType) {
         case WidgetCustomization:
             // Get the icon as the drag representation
-            final LinearLayout l = (LinearLayout) animView;
-            final Drawable icon = ((ImageView) l.findViewById(R.id.icon)).getDrawable();
+            final LinearLayout l = (LinearLayout) v;
+            final Drawable icon = ((ImageView) l.findViewById(R.id.widget_preview)).getDrawable();
             Bitmap b = Bitmap.createBitmap(icon.getIntrinsicWidth(), icon.getIntrinsicHeight(),
                     Bitmap.Config.ARGB_8888);
             Canvas c = new Canvas(b);
             icon.draw(c);
 
-            AppWidgetProviderInfo appWidgetInfo = (AppWidgetProviderInfo) v.getTag();
-            createItemInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
-            createItemInfo.componentName = appWidgetInfo.provider;
-            mDragController.startDrag(v, b, this, createItemInfo, DragController.DRAG_ACTION_COPY, null);
+            createItemInfo = (PendingAddItemInfo) v.getTag();
+            mDragController.startDrag(v, b, this, createItemInfo, DragController.DRAG_ACTION_COPY,
+                    null);
 
             // Cleanup the icon
             b.recycle();
             return true;
         case FolderCustomization:
-            ResolveInfo resolveInfo = (ResolveInfo) animView.getTag();
-            if (resolveInfo.labelRes == R.string.group_folder) {
-                UserFolderInfo folderInfo = new UserFolderInfo();
-                folderInfo.title = getResources().getText(R.string.folder_name);
+            if (v.getTag() instanceof UserFolderInfo) {
+                // The UserFolderInfo tag is only really used for live folders
+                UserFolderInfo folderInfo = (UserFolderInfo) v.getTag();
                 mDragController.startDrag(
                         v, this, folderInfo, DragController.DRAG_ACTION_COPY, null);
             } else {
-                createItemInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER;
-                createItemInfo.componentName = new ComponentName(
-                        resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name);
+                createItemInfo = (PendingAddItemInfo) v.getTag();
                 mDragController.startDrag(
                         v, this, createItemInfo, DragController.DRAG_ACTION_COPY, null);
             }
             return true;
         case ShortcutCustomization:
-            ResolveInfo info = (ResolveInfo) animView.getTag();
-            createItemInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
-            createItemInfo.componentName = new ComponentName(
-                    info.activityInfo.packageName, info.activityInfo.name);
+            createItemInfo = (PendingAddItemInfo) v.getTag();
             mDragController.startDrag(
                     v, this, createItemInfo, DragController.DRAG_ACTION_COPY, null);
             return true;
@@ -550,21 +603,26 @@ public class CustomizePagedView extends PagedView
         layout.removeAllViews();
         for (int i = 0; i < count; ++i) {
             AppWidgetProviderInfo info = (AppWidgetProviderInfo) list.get(i);
+            PendingAddItemInfo createItemInfo = new PendingAddItemInfo();
+            createItemInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
+            createItemInfo.componentName = info.provider;
+
             LinearLayout l = (LinearLayout) mInflater.inflate(
                     R.layout.customize_paged_view_widget, layout, false);
-            l.setTag(info);
+            l.setTag(createItemInfo);
+            l.setOnClickListener(this);
             l.setOnLongClickListener(this);
 
             final Drawable icon = getWidgetIcon(info);
             final int hSpan = mWorkspaceWidgetLayout.estimateCellHSpan(info.minWidth);
             final int vSpan = mWorkspaceWidgetLayout.estimateCellHSpan(info.minHeight);
 
-            ImageView image = (ImageView) l.findViewById(R.id.icon);
+            ImageView image = (ImageView) l.findViewById(R.id.widget_preview);
             image.setMaxWidth(mMaxWidgetWidth);
             image.setImageDrawable(icon);
-            TextView name = (TextView) l.findViewById(R.id.name);
+            TextView name = (TextView) l.findViewById(R.id.widget_name);
             name.setText(info.label);
-            TextView dims = (TextView) l.findViewById(R.id.dims);
+            TextView dims = (TextView) l.findViewById(R.id.widget_dims);
             dims.setText(mContext.getString(R.string.widget_dims_format, hSpan, vSpan));
 
             layout.addView(l);
@@ -594,13 +652,39 @@ public class CustomizePagedView extends PagedView
         layout.removeAllViews();
         for (int i = startIndex; i < endIndex; ++i) {
             ResolveInfo info = list.get(i);
+            PendingAddItemInfo createItemInfo = new PendingAddItemInfo();
+
             PagedViewIcon icon = (PagedViewIcon) mInflater.inflate(
                     R.layout.customize_paged_view_item, layout, false);
             icon.applyFromResolveInfo(info, mPackageManager, mPageViewIconCache);
-            if (mCustomizationType == CustomizationType.WallpaperCustomization) {
+            switch (mCustomizationType) {
+            case WallpaperCustomization:
                 icon.setOnClickListener(this);
-            } else {
+                break;
+            case FolderCustomization:
+                if (info.labelRes != R.string.group_folder) {
+                    createItemInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER;
+                    createItemInfo.componentName = new ComponentName(info.activityInfo.packageName,
+                            info.activityInfo.name);
+                    icon.setTag(createItemInfo);
+                } else {
+                    UserFolderInfo folderInfo = new UserFolderInfo();
+                    folderInfo.title = getResources().getText(R.string.folder_name);
+                    icon.setTag(folderInfo);
+                }
+                icon.setOnClickListener(this);
                 icon.setOnLongClickListener(this);
+                break;
+            case ShortcutCustomization:
+                createItemInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+                createItemInfo.componentName = new ComponentName(info.activityInfo.packageName,
+                        info.activityInfo.name);
+                icon.setTag(createItemInfo);
+                icon.setOnClickListener(this);
+                icon.setOnLongClickListener(this);
+                break;
+            default:
+                break;
             }
 
             final int index = i - startIndex;
@@ -641,6 +725,7 @@ public class CustomizePagedView extends PagedView
             PagedViewIcon icon = (PagedViewIcon) mInflater.inflate(
                     R.layout.all_apps_paged_view_application, layout, false);
             icon.applyFromApplicationInfo(info, mPageViewIconCache);
+            icon.setOnClickListener(this);
             icon.setOnLongClickListener(this);
 
             final int index = i - startIndex;
@@ -719,10 +804,34 @@ public class CustomizePagedView extends PagedView
         }
     }
 
+    @Override
     protected int getAssociatedLowerPageBound(int page) {
         return 0;
     }
+    @Override
     protected int getAssociatedUpperPageBound(int page) {
         return getChildCount();
     }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        mode.setTitle(mChoiceModeTitleText);
+        return true;
+    }
+
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        return true;
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+        endChoiceMode();
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        return false;
+    }
+
 }

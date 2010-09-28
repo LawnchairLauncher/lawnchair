@@ -1097,7 +1097,7 @@ public abstract class PagedView extends ViewGroup {
         ArrayList<Checkable> checked = new ArrayList<Checkable>();
         final int childCount = getChildCount();
         for (int i = 0; i < childCount; ++i) {
-            final PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(i);
+            final ViewGroup layout = (ViewGroup) getChildAt(i);
             final int grandChildCount = layout.getChildCount();
             for (int j = 0; j < grandChildCount; ++j) {
                 final View v = layout.getChildAt(j);
@@ -1117,7 +1117,7 @@ public abstract class PagedView extends ViewGroup {
         if (mChoiceMode == CHOICE_MODE_SINGLE) {
             final int childCount = getChildCount();
             for (int i = 0; i < childCount; ++i) {
-                final PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(i);
+                final ViewGroup layout = (ViewGroup) getChildAt(i);
                 final int grandChildCount = layout.getChildCount();
                 for (int j = 0; j < grandChildCount; ++j) {
                     final View v = layout.getChildAt(j);

@@ -35,8 +35,6 @@ public class HolographicOutlineHelper {
     private static final BlurMaskFilter mThickInnerBlurMaskFilter = new BlurMaskFilter(4.0f,
             BlurMaskFilter.Blur.NORMAL);
 
-    public static float DEFAULT_STROKE_WIDTH = 6.0f;
-
     HolographicOutlineHelper() {
         mHolographicPaint.setFilterBitmap(true);
         mHolographicPaint.setAntiAlias(true);
