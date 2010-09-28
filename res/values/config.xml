@@ -3,5 +3,5 @@
     <integer name="config_allAppsFadeOutTime">700</integer>
     <integer name="config_allAppsBatchLoadDelay">0</integer>
     <integer name="config_allAppsBatchSize">0</integer>
-    <integer name="config_hardwareAccelerated">0</integer>
+    <bool name="config_hardwareAccelerated">false</bool>
 </resources>
