@@ -137,7 +137,7 @@ public class CellLayout extends ViewGroup {
         if (LauncherApplication.isScreenXLarge()) {
             final Resources res = getResources();
 
-            mBackground = res.getDrawable(R.drawable.home_screen_bg);
+            mBackground = res.getDrawable(R.drawable.mini_home_screen_bg);
             mBackground.setFilterBitmap(true);
             mBackgroundHover = res.getDrawable(R.drawable.mini_home_screen_bg_hover);
             mBackgroundHover.setFilterBitmap(true);
