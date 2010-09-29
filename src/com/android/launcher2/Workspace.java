@@ -322,7 +322,7 @@ public class Workspace extends SmoothPagedView
         }
 
         // Get the canonical child id to uniquely represent this view in this screen
-        int childId = LauncherModel.getCellLayoutChildId(child.getId(), screen, x, y, spanX, spanY);
+        int childId = LauncherModel.getCellLayoutChildId(-1, screen, x, y, spanX, spanY);
         if (!group.addViewToCellLayout(child, insert ? 0 : -1, childId, lp)) {
             // TODO: This branch occurs when the workspace is adding views
             // outside of the defined grid
@@ -799,6 +799,8 @@ public class Workspace extends SmoothPagedView
                 cellLayout.onMove(cell, mTargetCell[0], mTargetCell[1]);
                 lp.cellX = mTargetCell[0];
                 lp.cellY = mTargetCell[1];
+                cell.setId(LauncherModel.getCellLayoutChildId(cell.getId(), mDragInfo.screen,
+                        mTargetCell[0], mTargetCell[1], mDragInfo.spanX, mDragInfo.spanY));
 
                 LauncherModel.moveItemInDatabase(mLauncher, info,
                         LauncherSettings.Favorites.CONTAINER_DESKTOP, index,

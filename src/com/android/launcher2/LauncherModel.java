@@ -300,8 +300,10 @@ public class LauncherModel extends BroadcastReceiver {
     /**
      * Creates a new unique child id, for a given cell span across all layouts.
      */
-    static int getCellLayoutChildId(int cellId, int screen, int localCellX, int localCellY, int spanX, int spanY) {
-        return ((cellId & 0xFF) << 16) | (localCellX & 0xFF) << 8 | (localCellY & 0xFF);
+    static int getCellLayoutChildId(
+            int cellId, int screen, int localCellX, int localCellY, int spanX, int spanY) {
+        return ((cellId & 0xFF) << 24)
+                | (screen & 0xFF) << 16 | (localCellX & 0xFF) << 8 | (localCellY & 0xFF);
     }
 
     static int getCellCountX() {
