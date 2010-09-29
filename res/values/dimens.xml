@@ -37,4 +37,8 @@
     
     <!-- delete_zone_size_full - button_bar_height_portrait -->
     <dimen name="delete_zone_padding">14dip</dimen>
+
+    <!-- the area at the edge of the screen that makes the workspace go left
+         or right while you're dragging. -->
+    <dimen name="scroll_zone">20dp</dimen>
 </resources>

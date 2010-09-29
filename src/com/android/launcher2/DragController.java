@@ -33,6 +33,8 @@ import android.view.inputmethod.InputMethodManager;
 
 import java.util.ArrayList;
 
+import com.android.launcher.R;
+
 /**
  * Class for initiating a drag within a view or across multiple views.
  */
@@ -47,7 +49,6 @@ public class DragController {
     public static int DRAG_ACTION_COPY = 1;
 
     private static final int SCROLL_DELAY = 600;
-    private static final int SCROLL_ZONE = 20;
     private static final int VIBRATE_DURATION = 35;
 
     private static final boolean PROFILE_DRAWING_DURING_DRAG = false;
@@ -86,6 +87,11 @@ public class DragController {
 
     /** Y offset from the upper-left corner of the cell to where we touched.  */
     private float mTouchOffsetY;
+
+    /** the area at the edge of the screen that makes the workspace go left
+     *   or right while you're dragging.
+     */
+    private int mScrollZone;
 
     /** Where the drag originated */
     private DragSource mDragSource;
@@ -147,6 +153,7 @@ public class DragController {
     public DragController(Context context) {
         mContext = context;
         mHandler = new Handler();
+        mScrollZone = context.getResources().getDimensionPixelSize(R.dimen.scroll_zone);
     }
 
     /**
@@ -475,13 +482,13 @@ public class DragController {
         if (mDeleteRegion != null) {
             inDeleteRegion = mDeleteRegion.contains(x, y);
         }
-        if (!inDeleteRegion && x < SCROLL_ZONE) {
+        if (!inDeleteRegion && x < mScrollZone) {
             if (mScrollState == SCROLL_OUTSIDE_ZONE) {
                 mScrollState = SCROLL_WAITING_IN_ZONE;
                 mScrollRunnable.setDirection(SCROLL_LEFT);
                 mHandler.postDelayed(mScrollRunnable, SCROLL_DELAY);
             }
-        } else if (!inDeleteRegion && x > mScrollView.getWidth() - SCROLL_ZONE) {
+        } else if (!inDeleteRegion && x > mScrollView.getWidth() - mScrollZone) {
             if (mScrollState == SCROLL_OUTSIDE_ZONE) {
                 mScrollState = SCROLL_WAITING_IN_ZONE;
                 mScrollRunnable.setDirection(SCROLL_RIGHT);
@@ -514,7 +521,7 @@ public class DragController {
             mMotionDownX = screenX;
             mMotionDownY = screenY;
 
-            if ((screenX < SCROLL_ZONE) || (screenX > mScrollView.getWidth() - SCROLL_ZONE)) {
+            if ((screenX < mScrollZone) || (screenX > mScrollView.getWidth() - mScrollZone)) {
                 mScrollState = SCROLL_WAITING_IN_ZONE;
                 mHandler.postDelayed(mScrollRunnable, SCROLL_DELAY);
             } else {
