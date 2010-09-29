@@ -21,18 +21,17 @@ import com.android.launcher.R;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.util.AttributeSet;
 
-public class DimmableBubbleTextView extends BubbleTextView {
+public class DimmableBubbleTextView extends BubbleTextView implements Dimmable {
     private  Paint mDimmedPaint = new Paint();
     private int mAlpha;
-    private int mDimmedAlpha;
     private Bitmap mDimmedView;
     private Canvas mDimmedViewCanvas;
     private boolean isDimmedViewUpdatePass;
+    private float mDimmableProgress;
 
     public DimmableBubbleTextView(Context context) {
         super(context);
@@ -49,48 +48,12 @@ public class DimmableBubbleTextView extends BubbleTextView {
         mDimmedPaint.setFilterBitmap(true);
     }
 
-    private static float cubic(float r) {
-        return (float) (Math.pow(r-1, 3) + 1);
+    public void setDimmableProgress(float progress) {
+        mDimmableProgress = progress;
     }
 
-    /**
-     * Returns the interpolated holographic highlight alpha for the effect we want when scrolling
-     * pages.
-     */
-    public static float highlightAlphaInterpolator(float r) {
-        final float pivot = 0.3f;
-        if (r < pivot) {
-            return Math.max(0.5f, 0.65f*cubic(r/pivot));
-        } else {
-            return Math.min(1.0f, 0.65f*cubic(1 - (r-pivot)/(1-pivot)));
-        }
-    }
-
-    /**
-     * Returns the interpolated view alpha for the effect we want when scrolling pages.
-     */
-    public static float viewAlphaInterpolator(float r) {
-        final float pivot = 0.6f;
-        if (r < pivot) {
-            return r/pivot;
-        } else {
-            return 1.0f;
-        }
-    }
-
-    @Override
-    public boolean onSetAlpha(int alpha) {
-        super.onSetAlpha(alpha);
-        return true;
-    }
-
-    @Override
-    public void setAlpha(float alpha) {
-        final float viewAlpha = viewAlphaInterpolator(alpha);
-        final float dimmedAlpha = highlightAlphaInterpolator(alpha);
-        mAlpha = (int) (viewAlpha * 255);
-        mDimmedAlpha = (int) (dimmedAlpha * 255);
-        super.setAlpha(viewAlpha);
+    public float getDimmableProgress() {
+        return mDimmableProgress;
     }
 
     @Override
@@ -124,13 +87,11 @@ public class DimmableBubbleTextView extends BubbleTextView {
             super.setAlpha(alpha);
             canvas.restore();
         } else {
-            if (mAlpha > 0) {
-                super.onDraw(canvas);
-            }
+            super.onDraw(canvas);
         }
 
-        if (mDimmedView != null && mDimmedAlpha > 0) {
-            mDimmedPaint.setAlpha(mDimmedAlpha);
+        if (mDimmedView != null && mDimmableProgress > 0) {
+            mDimmedPaint.setAlpha((int) (mDimmableProgress * 255));
             canvas.drawBitmap(mDimmedView, mScrollX, mScrollY, mDimmedPaint);
         }
     }
