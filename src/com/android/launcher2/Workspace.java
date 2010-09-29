@@ -19,10 +19,10 @@ package com.android.launcher2;
 import com.android.launcher.R;
 
 import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.animation.Animator.AnimatorListener;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -33,9 +33,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Camera;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -46,7 +44,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -66,26 +63,14 @@ public class Workspace extends SmoothPagedView
     // customization mode
     private static final float SHRINK_FACTOR = 0.16f;
 
-    // Y rotation to apply to the workspace screens
-    private static final float WORKSPACE_ROTATION = 12.5f;
+    // The maximum Y rotation to apply to the mini home screens
+    private static final float MINI_PAGE_MAX_ROTATION = 25.0f;
 
     // These are extra scale factors to apply to the mini home screens
     // so as to achieve the desired transform
     private static final float EXTRA_SCALE_FACTOR_0 = 0.97f;
     private static final float EXTRA_SCALE_FACTOR_1 = 1.0f;
     private static final float EXTRA_SCALE_FACTOR_2 = 1.08f;
-
-    private static final int BACKGROUND_FADE_OUT_DELAY = 300;
-    private static final int BACKGROUND_FADE_OUT_DURATION = 300;
-    private static final int BACKGROUND_FADE_IN_DURATION = 100;
-
-    static final int SCROLL_RIGHT = 0;
-    static final int SCROLL_LEFT = 1;
-
-    // These animators are used to fade the
-    private ObjectAnimator<Float> mBackgroundFadeIn;
-    private ObjectAnimator<Float> mBackgroundFadeOut;
-    private float mBackgroundAlpha = 0;
 
     private enum ShrinkPosition { SHRINK_TO_TOP, SHRINK_TO_MIDDLE, SHRINK_TO_BOTTOM };
 
@@ -192,15 +177,6 @@ public class Workspace extends SmoothPagedView
         };
 
         mSnapVelocity = 600;
-    }
-
-    @Override
-    protected int getScrollMode() {
-        if (LauncherApplication.isScreenXLarge()) {
-            return SmoothPagedView.QUINTIC_MODE;
-        } else {
-            return SmoothPagedView.OVERSHOOT_MODE;
-        }
     }
 
     @Override
@@ -406,14 +382,12 @@ public class Workspace extends SmoothPagedView
                 enableChildrenCache(mCurrentPage - 1, mCurrentPage + 1);
             }
         }
-        showOutlines();
     }
 
     protected void pageEndMoving() {
         if (!LauncherApplication.isScreenXLarge()) {
             clearChildrenCache();
         }
-        hideOutlines();
     }
 
     @Override
@@ -446,99 +420,6 @@ public class Workspace extends SmoothPagedView
                 mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 0 );
                 mWallpaperManager.setWallpaperOffsets(getWindowToken(),
                         Math.max(0.f, Math.min(mScrollX/(float)scrollRange, 1.f)), 0);
-            }
-        }
-    }
-
-    private float getScaleXForRotation(float degrees) {
-        return (float) (1.0f / Math.cos(Math.PI * degrees / 180.0f));
-    }
-
-    public void showOutlines() {
-        if (mBackgroundFadeOut != null) mBackgroundFadeOut.cancel();
-        if (mBackgroundFadeIn != null) mBackgroundFadeIn.cancel();
-        mBackgroundFadeIn = new ObjectAnimator<Float>(BACKGROUND_FADE_IN_DURATION, this,
-                        new PropertyValuesHolder<Float>("backgroundAlpha", 1.0f));
-        mBackgroundFadeIn.start();
-    }
-
-    public void hideOutlines() {
-        if (mBackgroundFadeIn != null) mBackgroundFadeIn.cancel();
-        if (mBackgroundFadeOut != null) mBackgroundFadeOut.cancel();
-        mBackgroundFadeOut = new ObjectAnimator<Float>(BACKGROUND_FADE_OUT_DURATION, this,
-                        new PropertyValuesHolder<Float>("backgroundAlpha", 0.0f));
-        mBackgroundFadeOut.setStartDelay(BACKGROUND_FADE_OUT_DELAY);
-        mBackgroundFadeOut.start();
-    }
-
-    public void setBackgroundAlpha(float alpha) {
-        mBackgroundAlpha = alpha;
-        for (int i = 0; i < getChildCount(); i++) {
-            CellLayout cl = (CellLayout) getChildAt(i);
-            cl.setBackgroundAlpha(alpha);
-        }
-    }
-
-    public float getBackgroundAlpha() {
-        return mBackgroundAlpha;
-    }
-
-    @Override
-    protected void screenScrolled(int screenCenter) {
-        View cur = getChildAt(mCurrentPage);
-        View toRight = getChildAt(mCurrentPage + 1);
-        View toLeft = getChildAt(mCurrentPage - 1);
-
-        for (int i = 0; i < mCurrentPage - 1; i++) {
-            View v = getChildAt(i);
-            if (v != null) {
-                v.setRotationY(WORKSPACE_ROTATION);
-                v.setScaleX(getScaleXForRotation(WORKSPACE_ROTATION));
-            }
-        }
-        for (int i = mCurrentPage + 1; i < getChildCount(); i++) {
-            View v = getChildAt(i);
-            if (v != null) {
-                v.setRotationY(-WORKSPACE_ROTATION);
-                v.setScaleX(getScaleXForRotation(-WORKSPACE_ROTATION));
-            }
-        }
-
-        int pageWidth = cur.getMeasuredWidth();
-        int delta = screenCenter - (mCurrentPage * pageWidth + pageWidth / 2 +
-                getRelativeChildOffset(0));
-
-        float scrollProgress = Math.abs(delta/(pageWidth*1.0f));
-        int scrollDirection = delta > 0 ? SCROLL_LEFT : SCROLL_RIGHT;
-
-        float rotation;
-
-        if (scrollDirection == SCROLL_RIGHT) {
-            rotation = -scrollProgress * WORKSPACE_ROTATION;
-            cur.setRotationY(rotation);
-            cur.setScaleX(getScaleXForRotation(rotation));
-            if (toLeft != null) {
-                rotation = WORKSPACE_ROTATION * (1 - scrollProgress);
-                toLeft.setRotationY(rotation);
-                toLeft.setScaleX(getScaleXForRotation(rotation));
-            }
-            if (toRight != null) {
-                toRight.setRotationY(-WORKSPACE_ROTATION);
-                toRight.setScaleX(getScaleXForRotation(WORKSPACE_ROTATION));
-            }
-        } else {
-            rotation = scrollProgress * WORKSPACE_ROTATION;
-            cur.setRotationY(rotation);
-            cur.setScaleX(getScaleXForRotation(rotation));
-
-            if (toRight != null) {
-                rotation = -WORKSPACE_ROTATION * (1 - scrollProgress);
-                toRight.setRotationY(rotation);
-                toRight.setScaleX(getScaleXForRotation(rotation));
-            }
-            if (toLeft != null) {
-                toLeft.setRotationY(WORKSPACE_ROTATION);
-                toLeft.setScaleX(getScaleXForRotation(WORKSPACE_ROTATION));
             }
         }
     }
@@ -743,7 +624,7 @@ public class Workspace extends SmoothPagedView
         for (int i = 0; i < screenCount; i++) {
             CellLayout cl = (CellLayout) getChildAt(i);
 
-            float rotation = (-i + 2) * WORKSPACE_ROTATION;
+            float rotation = (-i + 2) * MINI_PAGE_MAX_ROTATION / 2.0f;
             float rotationScaleX = (float) (1.0f / Math.cos(Math.PI * rotation / 180.0f));
             float rotationScaleY = getYScaleForScreen(i);
 
@@ -755,16 +636,14 @@ public class Workspace extends SmoothPagedView
                         new PropertyValuesHolder<Float>("scaleX", SHRINK_FACTOR * rotationScaleX),
                         new PropertyValuesHolder<Float>("scaleY", SHRINK_FACTOR * rotationScaleY),
                         new PropertyValuesHolder<Float>("backgroundAlpha", 1.0f),
-                        new PropertyValuesHolder<Float>("dimmableProgress", 1.0f),
                         new PropertyValuesHolder<Float>("alpha", 0.0f),
                         new PropertyValuesHolder<Float>("rotationY", rotation)).start();
             } else {
                 cl.setX((int)newX);
                 cl.setY((int)newY);
-                cl.setScaleX(SHRINK_FACTOR * rotationScaleX);
-                cl.setScaleY(SHRINK_FACTOR * rotationScaleY);
+                cl.setScaleX(SHRINK_FACTOR);
+                cl.setScaleY(SHRINK_FACTOR);
                 cl.setBackgroundAlpha(1.0f);
-                cl.setDimmableProgress(1.0f);
                 cl.setAlpha(0.0f);
                 cl.setRotationY(rotation);
             }
@@ -817,14 +696,6 @@ public class Workspace extends SmoothPagedView
             for (int i = 0; i < screenCount; i++) {
                 final CellLayout cl = (CellLayout)getChildAt(i);
                 float finalAlphaValue = (i == mCurrentPage) ? 1.0f : 0.0f;
-                float rotation = 0.0f;
-
-                if (i < mCurrentPage) {
-                    rotation = WORKSPACE_ROTATION;
-                } else if (i > mCurrentPage) {
-                    rotation = -WORKSPACE_ROTATION;
-                }
-
                 if (animated) {
                     s.playTogether(
                             new ObjectAnimator<Float>(duration, cl, "translationX", 0.0f),
@@ -833,17 +704,15 @@ public class Workspace extends SmoothPagedView
                             new ObjectAnimator<Float>(duration, cl, "scaleY", 1.0f),
                             new ObjectAnimator<Float>(duration, cl, "backgroundAlpha", 0.0f),
                             new ObjectAnimator<Float>(duration, cl, "alpha", finalAlphaValue),
-                            new ObjectAnimator<Float>(duration, cl, "dimmableProgress", 0.0f),
-                            new ObjectAnimator<Float>(duration, cl, "rotationY", rotation));
+                            new ObjectAnimator<Float>(duration, cl, "rotationY", 0.0f));
                 } else {
                     cl.setTranslationX(0.0f);
                     cl.setTranslationY(0.0f);
                     cl.setScaleX(1.0f);
                     cl.setScaleY(1.0f);
                     cl.setBackgroundAlpha(0.0f);
-                    cl.setDimmableProgress(0.0f);
-                    cl.setAlpha(finalAlphaValue);
-                    cl.setRotationY(rotation);
+                    cl.setAlpha(1.0f);
+                    cl.setRotationY(0.0f);
                 }
             }
             s.addListener(mUnshrinkAnimationListener);
@@ -866,6 +735,7 @@ public class Workspace extends SmoothPagedView
 
         current.onDragChild(child);
         mDragController.startDrag(child, this, child.getTag(), DragController.DRAG_ACTION_MOVE);
+        current.onDragEnter(child);
         invalidate();
     }
 
@@ -939,6 +809,7 @@ public class Workspace extends SmoothPagedView
 
     public void onDragEnter(DragSource source, int x, int y, int xOffset,
             int yOffset, DragView dragView, Object dragInfo) {
+        getCurrentDropLayout().onDragEnter(dragView);
     }
 
     public DropTarget getDropTargetDelegate(DragSource source, int x, int y, int xOffset, int yOffset,
@@ -981,7 +852,6 @@ public class Workspace extends SmoothPagedView
         }
         return null;
     }
-
 
     private void mapPointGlobalToLocal(View v, float[] xy) {
         xy[0] = xy[0] + mScrollX - v.getLeft();
@@ -1113,6 +983,7 @@ public class Workspace extends SmoothPagedView
         if (currentLayout != mDragTargetLayout) {
             if (mDragTargetLayout != null) {
                 mDragTargetLayout.onDragExit();
+                currentLayout.onDragEnter(dragView);
             }
             mDragTargetLayout = currentLayout;
         }
@@ -1125,7 +996,7 @@ public class Workspace extends SmoothPagedView
             int localOriginX = originX - (mDragTargetLayout.getLeft() - mScrollX);
             int localOriginY = originY - (mDragTargetLayout.getTop() - mScrollY);
             mDragTargetLayout.visualizeDropLocation(
-                    child, localOriginX, localOriginY, item.spanX, item.spanY, child);
+                    child, localOriginX, localOriginY, item.spanX, item.spanY);
         }
     }
 

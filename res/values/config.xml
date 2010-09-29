@@ -4,4 +4,15 @@
     <integer name="config_allAppsBatchLoadDelay">0</integer>
     <integer name="config_allAppsBatchSize">0</integer>
     <bool name="config_hardwareAccelerated">false</bool>
+
+    <!--  When dragging an item on the workspace, how much bigger (in pixels) the dragged view
+          should be, as compared to the original view. If 0, it will not be scaled at all.
+          Should be an even number, for pixel alignment. -->
+    <integer name="config_dragViewExtraPixels">40</integer>
+
+    <!-- When dragging items on the workspace, the number of pixels by which the position of
+         the drag view should be offset from the position of the original view.
+         Setting to 1/2 of config_dragViewExtraPixels keeps it centered on its old position. -->
+    <integer name="config_dragViewOffsetX">20</integer>
+    <integer name="config_dragViewOffsetY">20</integer>
 </resources>

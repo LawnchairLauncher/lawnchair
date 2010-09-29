@@ -18,7 +18,6 @@ package com.android.launcher2;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
@@ -311,6 +310,8 @@ public class DragController {
         }
 
         dragView.show(mWindowToken, (int)mMotionDownX, (int)mMotionDownY);
+
+        handleMoveEvent((int) mMotionDownX, (int) mMotionDownY);
     }
 
     /**
@@ -437,12 +438,68 @@ public class DragController {
         return mMoveTarget != null && mMoveTarget.dispatchUnhandledMove(focused, direction);
     }
 
+    private void handleMoveEvent(int x, int y) {
+        mDragView.move(x, y);
+
+        // Drop on someone?
+        final int[] coordinates = mCoordinatesTemp;
+        DropTarget dropTarget = findDropTarget(x, y, coordinates);
+        if (dropTarget != null) {
+            DropTarget delegate = dropTarget.getDropTargetDelegate(
+                    mDragSource, coordinates[0], coordinates[1],
+                    (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo);
+            if (delegate != null) {
+                dropTarget = delegate;
+            }
+
+            if (mLastDropTarget != dropTarget) {
+                if (mLastDropTarget != null) {
+                    mLastDropTarget.onDragExit(mDragSource, coordinates[0], coordinates[1],
+                        (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo);
+                }
+                dropTarget.onDragEnter(mDragSource, coordinates[0], coordinates[1],
+                    (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo);
+            }
+            dropTarget.onDragOver(mDragSource, coordinates[0], coordinates[1],
+                    (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo);
+        } else {
+            if (mLastDropTarget != null) {
+                mLastDropTarget.onDragExit(mDragSource, coordinates[0], coordinates[1],
+                    (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo);
+            }
+        }
+        mLastDropTarget = dropTarget;
+
+        // Scroll, maybe, but not if we're in the delete region.
+        boolean inDeleteRegion = false;
+        if (mDeleteRegion != null) {
+            inDeleteRegion = mDeleteRegion.contains(x, y);
+        }
+        if (!inDeleteRegion && x < SCROLL_ZONE) {
+            if (mScrollState == SCROLL_OUTSIDE_ZONE) {
+                mScrollState = SCROLL_WAITING_IN_ZONE;
+                mScrollRunnable.setDirection(SCROLL_LEFT);
+                mHandler.postDelayed(mScrollRunnable, SCROLL_DELAY);
+            }
+        } else if (!inDeleteRegion && x > mScrollView.getWidth() - SCROLL_ZONE) {
+            if (mScrollState == SCROLL_OUTSIDE_ZONE) {
+                mScrollState = SCROLL_WAITING_IN_ZONE;
+                mScrollRunnable.setDirection(SCROLL_RIGHT);
+                mHandler.postDelayed(mScrollRunnable, SCROLL_DELAY);
+            }
+        } else {
+            if (mScrollState == SCROLL_WAITING_IN_ZONE) {
+                mScrollState = SCROLL_OUTSIDE_ZONE;
+                mScrollRunnable.setDirection(SCROLL_RIGHT);
+                mHandler.removeCallbacks(mScrollRunnable);
+            }
+        }
+    }
+
     /**
      * Call this from a drag source view.
      */
     public boolean onTouchEvent(MotionEvent ev) {
-        View scrollView = mScrollView;
-
         if (!mDragging) {
             return false;
         }
@@ -457,74 +514,15 @@ public class DragController {
             mMotionDownX = screenX;
             mMotionDownY = screenY;
 
-            if ((screenX < SCROLL_ZONE) || (screenX > scrollView.getWidth() - SCROLL_ZONE)) {
+            if ((screenX < SCROLL_ZONE) || (screenX > mScrollView.getWidth() - SCROLL_ZONE)) {
                 mScrollState = SCROLL_WAITING_IN_ZONE;
                 mHandler.postDelayed(mScrollRunnable, SCROLL_DELAY);
             } else {
                 mScrollState = SCROLL_OUTSIDE_ZONE;
             }
-
             break;
         case MotionEvent.ACTION_MOVE:
-            // Update the drag view.  Don't use the clamped pos here so the dragging looks
-            // like it goes off screen a little, intead of bumping up against the edge.
-            mDragView.move((int)ev.getRawX(), (int)ev.getRawY());
-
-            // Drop on someone?
-            final int[] coordinates = mCoordinatesTemp;
-            DropTarget dropTarget = findDropTarget(screenX, screenY, coordinates);
-            if (dropTarget != null) {
-                DropTarget delegate = dropTarget.getDropTargetDelegate(
-                        mDragSource, coordinates[0], coordinates[1],
-                        (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo);
-                if (delegate != null) {
-                    dropTarget = delegate;
-                }
-
-                if (mLastDropTarget == dropTarget) {
-                    dropTarget.onDragOver(mDragSource, coordinates[0], coordinates[1],
-                        (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo);
-                } else {
-                    if (mLastDropTarget != null) {
-                        mLastDropTarget.onDragExit(mDragSource, coordinates[0], coordinates[1],
-                            (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo);
-                    }
-                    dropTarget.onDragEnter(mDragSource, coordinates[0], coordinates[1],
-                        (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo);
-                }
-            } else {
-                if (mLastDropTarget != null) {
-                    mLastDropTarget.onDragExit(mDragSource, coordinates[0], coordinates[1],
-                        (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo);
-                }
-            }
-            mLastDropTarget = dropTarget;
-
-            // Scroll, maybe, but not if we're in the delete region.
-            boolean inDeleteRegion = false;
-            if (mDeleteRegion != null) {
-                inDeleteRegion = mDeleteRegion.contains(screenX, screenY);
-            }
-            if (!inDeleteRegion && screenX < SCROLL_ZONE) {
-                if (mScrollState == SCROLL_OUTSIDE_ZONE) {
-                    mScrollState = SCROLL_WAITING_IN_ZONE;
-                    mScrollRunnable.setDirection(SCROLL_LEFT);
-                    mHandler.postDelayed(mScrollRunnable, SCROLL_DELAY);
-                }
-            } else if (!inDeleteRegion && screenX > scrollView.getWidth() - SCROLL_ZONE) {
-                if (mScrollState == SCROLL_OUTSIDE_ZONE) {
-                    mScrollState = SCROLL_WAITING_IN_ZONE;
-                    mScrollRunnable.setDirection(SCROLL_RIGHT);
-                    mHandler.postDelayed(mScrollRunnable, SCROLL_DELAY);
-                }
-            } else {
-                if (mScrollState == SCROLL_WAITING_IN_ZONE) {
-                    mScrollState = SCROLL_OUTSIDE_ZONE;
-                    mScrollRunnable.setDirection(SCROLL_RIGHT);
-                    mHandler.removeCallbacks(mScrollRunnable);
-                }
-            }
-
+            handleMoveEvent(screenX, screenY);
             break;
         case MotionEvent.ACTION_UP:
             mHandler.removeCallbacks(mScrollRunnable);

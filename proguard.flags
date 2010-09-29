@@ -11,6 +11,23 @@
 -keep class com.android.launcher2.CellLayout {
   public float getBackgroundAlpha();
   public void setBackgroundAlpha(float);
+  public float getDimmableProgress();
+  public void setDimmableProgress(float);
+}
+
+-keep class com.android.launcher2.DimmableBubbleTextView {
+  public float getDimmableProgress();
+  public void setDimmableProgress(float);
+}
+
+-keep class com.android.launcher2.DimmableAppWidgetHostView {
+  public float getDimmableProgress();
+  public void setDimmableProgress(float);
+}
+
+-keep class com.android.launcher2.Workspace {
+  public float getBackgroundAlpha();
+  public void setBackgroundAlpha(float);
 }
 
 -keep class com.android.launcher2.AllApps3D$Defines {
