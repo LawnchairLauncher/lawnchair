@@ -26,15 +26,11 @@ public abstract class SmoothPagedView extends PagedView {
     private static final float SMOOTHING_SPEED = 0.75f;
     private static final float SMOOTHING_CONSTANT = (float) (0.016 / Math.log(SMOOTHING_SPEED));
 
-    private float mBaseLineFlingVelocity;
-    private float mFlingVelocityInfluence;
 
-    static final int OVERSHOOT_MODE = 0;
-    static final int QUINTIC_MODE = 1;
+    private static final float BASELINE_FLING_VELOCITY = 2500.f;
+    private static final float FLING_VELOCITY_INFLUENCE = 0.4f;
 
-    int mScrollMode;
-
-    private Interpolator mScrollInterpolator;
+    private WorkspaceOvershootInterpolator mScrollInterpolator;
 
     private static class WorkspaceOvershootInterpolator implements Interpolator {
         private static final float DEFAULT_TENSION = 1.3f;
@@ -57,16 +53,6 @@ public abstract class SmoothPagedView extends PagedView {
             // o(t) = _o(t - 1) + 1
             t -= 1.0f;
             return t * t * ((mTension + 1) * t + mTension) + 1.0f;
-        }
-    }
-
-    private static class QuinticInterpolator implements Interpolator {
-        public QuinticInterpolator() {
-        }
-
-        public float getInterpolation(float t) {
-            t -= 1.0f;
-            return t*t*t*t*t + 1;
         }
     }
 
@@ -97,27 +83,14 @@ public abstract class SmoothPagedView extends PagedView {
         mDeferScrollUpdate = true;
     }
 
-    protected int getScrollMode() {
-        return OVERSHOOT_MODE;
-    }
-
     /**
      * Initializes various states for this workspace.
      */
     @Override
     protected void init() {
         super.init();
-
-        mScrollMode = getScrollMode();
-        if (mScrollMode == QUINTIC_MODE) {
-            mBaseLineFlingVelocity = 700.0f;
-            mFlingVelocityInfluence = 0.8f;
-            mScrollInterpolator = new QuinticInterpolator();
-        } else {  // QUINTIC_MODE
-            mBaseLineFlingVelocity = 2500.0f;
-            mFlingVelocityInfluence = 0.4f;
-            mScrollInterpolator = new WorkspaceOvershootInterpolator();
-        }
+        mScrollInterpolator = new WorkspaceOvershootInterpolator();
+        // overwrite the previous mScroller
         mScroller = new Scroller(getContext(), mScrollInterpolator);
     }
 
@@ -139,32 +112,25 @@ public abstract class SmoothPagedView extends PagedView {
         final int screenDelta = Math.max(1, Math.abs(whichPage - mCurrentPage));
         final int newX = getChildOffset(whichPage) - getRelativeChildOffset(whichPage);
         final int delta = newX - mScrollX;
-        int duration;
-        if (mScrollMode == OVERSHOOT_MODE) {
-            duration = (screenDelta + 1) * 100;
-        } else { // QUINTIC_MODE
-            duration = Math.round(Math.abs(delta) * 0.6f);
-        }
+        int duration = (screenDelta + 1) * 100;
 
         if (!mScroller.isFinished()) {
             mScroller.abortAnimation();
         }
 
-        if (mScrollMode == OVERSHOOT_MODE) {
-            if (settle) {
-                ((WorkspaceOvershootInterpolator) mScrollInterpolator).setDistance(screenDelta);
-            } else {
-                ((WorkspaceOvershootInterpolator) mScrollInterpolator).disableSettle();
-            }
+        if (settle) {
+            mScrollInterpolator.setDistance(screenDelta);
+        } else {
+            mScrollInterpolator.disableSettle();
         }
 
         velocity = Math.abs(velocity);
         if (velocity > 0) {
-            duration += (duration / (velocity / mBaseLineFlingVelocity)) * mFlingVelocityInfluence;
+            duration += (duration / (velocity / BASELINE_FLING_VELOCITY))
+                    * FLING_VELOCITY_INFLUENCE;
         } else {
             duration += 100;
         }
-
         snapToPage(whichPage, delta, duration);
     }
 

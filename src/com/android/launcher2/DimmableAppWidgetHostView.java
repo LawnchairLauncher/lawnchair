@@ -21,21 +21,52 @@ import com.android.launcher.R;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.view.View;
 
-public class DimmableAppWidgetHostView extends LauncherAppWidgetHostView implements Dimmable {
+public class DimmableAppWidgetHostView extends LauncherAppWidgetHostView {
     public DimmableAppWidgetHostView(Context context) {
         super(context);
         mPaint.setFilterBitmap(true);
     }
 
     private final Paint mPaint = new Paint();
+    private int mAlpha;
+    private int mDimmedAlpha;
     private Bitmap mDimmedView;
     private Canvas mDimmedViewCanvas;
     private boolean isDimmedViewUpdatePass;
-    private float mDimmableProgress;
+
+    private static float cubic(float r) {
+        return (float) (Math.pow(r-1, 3) + 1);
+    }
+
+    /**
+     * Returns the interpolated holographic highlight alpha for the effect we want when scrolling
+     * pages.
+     */
+    public static float highlightAlphaInterpolator(float r) {
+        final float pivot = 0.3f;
+        if (r < pivot) {
+            return Math.max(0.5f, 0.65f*cubic(r/pivot));
+        } else {
+            return Math.min(1.0f, 0.65f*cubic(1 - (r-pivot)/(1-pivot)));
+        }
+    }
+
+    /**
+     * Returns the interpolated view alpha for the effect we want when scrolling pages.
+     */
+    public static float viewAlphaInterpolator(float r) {
+        final float pivot = 0.6f;
+        if (r < pivot) {
+            return r/pivot;
+        } else {
+            return 1.0f;
+        }
+    }
 
     private void setChildAlpha(float alpha) {
         if (getChildCount() > 0) {
@@ -52,18 +83,20 @@ public class DimmableAppWidgetHostView extends LauncherAppWidgetHostView impleme
         setChildAlpha(getAlpha());
     }
 
-    //@Override
+    @Override
     public boolean onSetAlpha(int alpha) {
         super.onSetAlpha(alpha);
         return true;
     }
 
-    public void setDimmableProgress(float progress) {
-        mDimmableProgress = progress;
-    }
-
-    public float getDimmableProgress() {
-        return mDimmableProgress;
+    @Override
+    public void setAlpha(float alpha) {
+        final float viewAlpha = viewAlphaInterpolator(alpha);
+        final float dimmedAlpha = highlightAlphaInterpolator(alpha);
+        mAlpha = (int) (viewAlpha * 255);
+        mDimmedAlpha = (int) (dimmedAlpha * 255);
+        super.setAlpha(viewAlpha);
+        setChildAlpha(viewAlpha);
     }
 
     private void updateDimmedView() {
@@ -80,14 +113,13 @@ public class DimmableAppWidgetHostView extends LauncherAppWidgetHostView impleme
         int dimmedColor = getContext().getResources().getColor(R.color.dimmed_view_color);
         mDimmedViewCanvas.drawColor(dimmedColor, PorterDuff.Mode.SRC_IN);
         isDimmedViewUpdatePass = false;
-        invalidate();
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
-        if (mDimmedView == null && mDimmableProgress > 0.0f) {
+        if (mDimmedView == null && mDimmedAlpha > 0.0f) {
             updateDimmedView();
         }
     }
@@ -102,9 +134,9 @@ public class DimmableAppWidgetHostView extends LauncherAppWidgetHostView impleme
             canvas.restore();
             setAlpha(alpha);
         } else {
-            if (mDimmedView != null && mDimmableProgress > 0) {
+            if (mDimmedView != null && mDimmedAlpha > 0) {
                 // draw the dimmed version of this widget
-                mPaint.setAlpha((int) (mDimmableProgress * 255));
+                mPaint.setAlpha(mDimmedAlpha);
                 canvas.drawBitmap(mDimmedView, 0, 0, mPaint);
             }
 
