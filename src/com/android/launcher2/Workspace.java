@@ -799,7 +799,7 @@ public class Workspace extends SmoothPagedView
                 cellLayout.onMove(cell, mTargetCell[0], mTargetCell[1]);
                 lp.cellX = mTargetCell[0];
                 lp.cellY = mTargetCell[1];
-                cell.setId(LauncherModel.getCellLayoutChildId(cell.getId(), mDragInfo.screen,
+                cell.setId(LauncherModel.getCellLayoutChildId(-1, mDragInfo.screen,
                         mTargetCell[0], mTargetCell[1], mDragInfo.spanX, mDragInfo.spanY));
 
                 LauncherModel.moveItemInDatabase(mLauncher, info,
