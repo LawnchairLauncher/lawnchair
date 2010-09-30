@@ -42,7 +42,7 @@ import android.view.animation.LayoutAnimationController;
 
 import java.util.Arrays;
 
-public class CellLayout extends ViewGroup {
+public class CellLayout extends ViewGroup implements Dimmable {
     static final String TAG = "CellLayout";
 
     private int mCellWidth;
@@ -75,8 +75,10 @@ public class CellLayout extends ViewGroup {
 
     private float mBackgroundAlpha;
     private final Rect mBackgroundLayoutRect = new Rect();
+
     private Drawable mBackground;
-    private Drawable mBackgroundHover;
+    private Drawable mBackgroundMini;
+    private Drawable mBackgroundMiniHover;
     // If we're actively dragging something over this screen and it's small,
     // mHover is true
     private boolean mHover = false;
@@ -137,10 +139,12 @@ public class CellLayout extends ViewGroup {
         if (LauncherApplication.isScreenXLarge()) {
             final Resources res = getResources();
 
-            mBackground = res.getDrawable(R.drawable.mini_home_screen_bg);
+            mBackgroundMini = getResources().getDrawable(R.drawable.mini_home_screen_bg);
+            mBackgroundMini.setFilterBitmap(true);
+            mBackground = getResources().getDrawable(R.drawable.home_screen_bg);
             mBackground.setFilterBitmap(true);
-            mBackgroundHover = res.getDrawable(R.drawable.mini_home_screen_bg_hover);
-            mBackgroundHover.setFilterBitmap(true);
+            mBackgroundMiniHover = getResources().getDrawable(R.drawable.mini_home_screen_bg_hover);
+            mBackgroundMiniHover.setFilterBitmap(true);
 
             mDragRectDrawable = res.getDrawable(R.drawable.rounded_rect_green);
             mCrosshairsDrawable = res.getDrawable(R.drawable.gardening_crosshairs);
@@ -176,7 +180,14 @@ public class CellLayout extends ViewGroup {
     @Override
     public void dispatchDraw(Canvas canvas) {
         if (mBackgroundAlpha > 0.0f) {
-            final Drawable bg = mHover ? mBackgroundHover : mBackground;
+            Drawable bg;
+            if (mHover && getScaleX() < 0.5f) {
+                bg = mBackgroundMiniHover;
+            } else if (getScaleX() < 0.5f) {
+                bg = mBackgroundMini;
+            } else {
+                bg = mBackground;
+            }
             bg.setAlpha((int) (mBackgroundAlpha * 255));
             bg.draw(canvas);
         }
@@ -226,6 +237,20 @@ public class CellLayout extends ViewGroup {
                 x += mCellWidth + mWidthGap;
             }
         }
+    }
+
+    public void setDimmableProgress(float progress) {
+        for (int i = 0; i < getChildCount(); i++) {
+            Dimmable d = (Dimmable) getChildAt(i);
+            d.setDimmableProgress(progress);
+        }
+    }
+
+    public float getDimmableProgress() {
+        if (getChildCount() > 0) {
+            return ((Dimmable) getChildAt(0)).getDimmableProgress();
+        }
+        return 0.0f;
     }
 
     @Override
@@ -581,8 +606,11 @@ public class CellLayout extends ViewGroup {
         if (mBackground != null) {
             mBackground.setBounds(mBackgroundLayoutRect);
         }
-        if (mBackgroundHover != null) {
-            mBackgroundHover.setBounds(mBackgroundLayoutRect);
+        if (mBackgroundMiniHover != null) {
+            mBackgroundMiniHover.setBounds(mBackgroundLayoutRect);
+        }
+        if (mBackgroundMini != null) {
+            mBackgroundMini.setBounds(mBackgroundLayoutRect);
         }
     }
 
