@@ -766,9 +766,9 @@ public class CellLayout extends ViewGroup {
      */
     int[] findNearestVacantArea(
             int pixelX, int pixelY, int spanX, int spanY, View ignoreView, int[] result) {
-        if (ignoreView != null) {
-            markCellsAsUnoccupiedForView(ignoreView);
-        }
+        // mark space take by ignoreView as available (method checks if ignoreView is null)
+        markCellsAsUnoccupiedForView(ignoreView);
+
         // Keep track of best-scoring drop area
         final int[] bestXY = result != null ? result : new int[2];
         double bestDistance = Double.MAX_VALUE;
@@ -802,9 +802,8 @@ public class CellLayout extends ViewGroup {
                 }
             }
         }
-        if (ignoreView != null) {
-            markCellsAsOccupiedForView(ignoreView);
-        }
+        // re-mark space taken by ignoreView as occupied
+        markCellsAsOccupiedForView(ignoreView);
 
         // Return null if no suitable location found
         if (bestDistance < Double.MAX_VALUE) {
@@ -872,9 +871,8 @@ public class CellLayout extends ViewGroup {
      */
     boolean findCellForSpanThatIntersectsIgnoring(int[] cellXY, int spanX, int spanY,
             int intersectX, int intersectY, View ignoreView) {
-        if (ignoreView != null) {
-            markCellsAsUnoccupiedForView(ignoreView);
-        }
+        // mark space take by ignoreView as available (method checks if ignoreView is null)
+        markCellsAsUnoccupiedForView(ignoreView);
 
         boolean foundCell = false;
         while (true) {
@@ -927,9 +925,8 @@ public class CellLayout extends ViewGroup {
             }
         }
 
-        if (ignoreView != null) {
-            markCellsAsOccupiedForView(ignoreView);
-        }
+        // re-mark space taken by ignoreView as occupied
+        markCellsAsOccupiedForView(ignoreView);
         return foundCell;
     }
 
@@ -1123,11 +1120,13 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
     }
 
     private void markCellsAsOccupiedForView(View view) {
+        if (view == null || view.getParent() != this) return;
         LayoutParams lp = (LayoutParams) view.getLayoutParams();
         markCellsForView(lp.cellX, lp.cellY, lp.cellHSpan, lp.cellVSpan, true);
     }
 
     private void markCellsAsUnoccupiedForView(View view) {
+        if (view == null || view.getParent() != this) return;
         LayoutParams lp = (LayoutParams) view.getLayoutParams();
         markCellsForView(lp.cellX, lp.cellY, lp.cellHSpan, lp.cellVSpan, false);
     }

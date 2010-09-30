@@ -774,23 +774,25 @@ public class Workspace extends SmoothPagedView
         } else {
             cellLayout = getCurrentDropLayout();
         }
+
         if (source != this) {
             onDropExternal(originX, originY, dragInfo, cellLayout);
         } else {
             // Move internally
             if (mDragInfo != null) {
                 final View cell = mDragInfo.cell;
-                int index = mScroller.isFinished() ? mCurrentPage : mNextPage;
-                if (index != mDragInfo.screen) {
-                    final CellLayout originalCellLayout = (CellLayout) getChildAt(mDragInfo.screen);
-                    originalCellLayout.removeView(cell);
-                    addInScreen(cell, index, mDragInfo.cellX, mDragInfo.cellY,
-                            mDragInfo.spanX, mDragInfo.spanY);
-                }
 
                 mTargetCell = findNearestVacantArea(originX, originY,
                         mDragInfo.spanX, mDragInfo.spanY, cell, cellLayout,
                         mTargetCell);
+
+                int screen = indexOfChild(cellLayout);
+                if (screen != mDragInfo.screen) {
+                    final CellLayout originalCellLayout = (CellLayout) getChildAt(mDragInfo.screen);
+                    originalCellLayout.removeView(cell);
+                    addInScreen(cell, screen, mTargetCell[0], mTargetCell[1],
+                            mDragInfo.spanX, mDragInfo.spanY);
+                }
                 cellLayout.onDropChild(cell);
 
                 // update the item's position after drop
@@ -803,7 +805,7 @@ public class Workspace extends SmoothPagedView
                         mTargetCell[0], mTargetCell[1], mDragInfo.spanX, mDragInfo.spanY));
 
                 LauncherModel.moveItemInDatabase(mLauncher, info,
-                        LauncherSettings.Favorites.CONTAINER_DESKTOP, index,
+                        LauncherSettings.Favorites.CONTAINER_DESKTOP, screen,
                         lp.cellX, lp.cellY);
             }
         }
