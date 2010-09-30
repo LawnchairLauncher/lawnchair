@@ -1156,15 +1156,12 @@ public class Workspace extends SmoothPagedView
     private int[] findNearestVacantArea(int pixelX, int pixelY,
             int spanX, int spanY, View ignoreView, CellLayout layout, int[] recycle) {
 
-        final int[] cellXY = mTempCell;
         int localPixelX = pixelX - (layout.getLeft() - mScrollX);
         int localPixelY = pixelY - (layout.getTop() - mScrollY);
-        layout.estimateDropCell(localPixelX, localPixelY, spanX, spanY, cellXY);
-        layout.cellToPoint(cellXY[0], cellXY[1], mTempEstimate);
 
         // Find the best target drop location
         return layout.findNearestVacantArea(
-                mTempEstimate[0], mTempEstimate[1], spanX, spanY, ignoreView, recycle);
+                localPixelX, localPixelY, spanX, spanY, ignoreView, recycle);
     }
 
     /**
