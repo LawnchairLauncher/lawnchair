@@ -182,8 +182,9 @@ public class CustomizePagedView extends PagedView
     public void setApps(ArrayList<ApplicationInfo> list) {
         mApps = list;
         Collections.sort(mApps, LauncherModel.APP_NAME_COMPARATOR);
-        mPageViewIconCache.clear();
-        invalidatePageData();
+
+        // Update the widgets/shortcuts to reflect changes in the set of available apps
+        update();
     }
 
     /**
@@ -207,7 +208,9 @@ public class CustomizePagedView extends PagedView
      */
     public void addApps(ArrayList<ApplicationInfo> list) {
         addAppsWithoutInvalidate(list);
-        invalidatePageData();
+
+        // Update the widgets/shortcuts to reflect changes in the set of available apps
+        update();
     }
 
     /**
@@ -232,7 +235,9 @@ public class CustomizePagedView extends PagedView
      */
     public void removeApps(ArrayList<ApplicationInfo> list) {
         removeAppsWithoutInvalidate(list);
-        invalidatePageData();
+
+        // Update the widgets/shortcuts to reflect changes in the set of available apps
+        update();
     }
 
     /**
@@ -245,7 +250,9 @@ public class CustomizePagedView extends PagedView
         // place in the list.
         removeAppsWithoutInvalidate(list);
         addAppsWithoutInvalidate(list);
-        invalidatePageData();
+
+        // Update the widgets/shortcuts to reflect changes in the set of available apps
+        update();
     }
 
     /**
@@ -554,7 +561,8 @@ public class CustomizePagedView extends PagedView
                 Drawable icon = null;
                 if (info.icon > 0) {
                     icon = packageManager.getDrawable(packageName, info.icon, null);
-                } else {
+                }
+                if (icon == null) {
                     icon = resources.getDrawable(R.drawable.ic_launcher_application);
                 }
                 background.getPadding(tmpRect);
