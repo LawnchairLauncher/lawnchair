@@ -110,9 +110,9 @@ public class PagedViewIcon extends TextView implements Checkable {
         mIconCacheKey = info;
         mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
 
-        Drawable image = info.loadIcon(packageManager);
-        image.setBounds(0, 0, image.getIntrinsicWidth(), image.getIntrinsicHeight());
-        setCompoundDrawablesWithIntrinsicBounds(null, image, null, null);
+        Bitmap image = Utilities.createIconBitmap(info.loadIcon(packageManager), mContext);
+        setCompoundDrawablesWithIntrinsicBounds(null, 
+                new FastBitmapDrawable(image), null, null);
         setText(info.loadLabel(packageManager));
         setTag(info);
     }
