@@ -54,7 +54,6 @@
 
         <ImageView
             android:id="@+id/search_button"
-            android:src="@drawable/search_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="left"
