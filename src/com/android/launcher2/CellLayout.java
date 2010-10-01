@@ -31,18 +31,19 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.view.animation.LayoutAnimationController;
 
 import java.util.Arrays;
 
-public class CellLayout extends ViewGroup {
+public class CellLayout extends ViewGroup implements Dimmable {
     static final String TAG = "CellLayout";
 
     private int mCellWidth;
@@ -75,16 +76,26 @@ public class CellLayout extends ViewGroup {
 
     private float mBackgroundAlpha;
     private final Rect mBackgroundLayoutRect = new Rect();
+
     private Drawable mBackground;
-    private Drawable mBackgroundHover;
-    // If we're actively dragging something over this screen and it's small,
-    // mHover is true
+    private Drawable mBackgroundMini;
+    private Drawable mBackgroundMiniHover;
+    // If we're actively dragging something over this screen and it's small, mHover is true
     private boolean mHover = false;
 
-    private final RectF mDragRect = new RectF();
     private final Point mDragCenter = new Point();
 
     private Drawable mDragRectDrawable;
+
+    // These arrays are used to implement the drag visualization on x-large screens.
+    // They are used as circular arrays, indexed by mDragRectCurrent.
+    private Rect[] mDragRects = new Rect[8];
+    private int[] mDragRectAlphas = new int[mDragRects.length];
+    private InterruptibleInOutAnimator[] mDragRectAnims =
+        new InterruptibleInOutAnimator[mDragRects.length];
+
+    // Used as an index into the above 3 arrays; indicates which is the most current value.
+    private int mDragRectCurrent = 0;
 
     private Drawable mCrosshairsDrawable = null;
     private ValueAnimator mCrosshairsAnimator = null;
@@ -137,13 +148,18 @@ public class CellLayout extends ViewGroup {
         if (LauncherApplication.isScreenXLarge()) {
             final Resources res = getResources();
 
-            mBackground = res.getDrawable(R.drawable.mini_home_screen_bg);
+            mBackgroundMini = res.getDrawable(R.drawable.mini_home_screen_bg);
+            mBackgroundMini.setFilterBitmap(true);
+            mBackground = res.getDrawable(R.drawable.home_screen_bg);
             mBackground.setFilterBitmap(true);
-            mBackgroundHover = res.getDrawable(R.drawable.mini_home_screen_bg_hover);
-            mBackgroundHover.setFilterBitmap(true);
+            mBackgroundMiniHover = res.getDrawable(R.drawable.mini_home_screen_bg_hover);
+            mBackgroundMiniHover.setFilterBitmap(true);
+
+            // Initialize the data structures used for the drag visualization.
 
             mDragRectDrawable = res.getDrawable(R.drawable.rounded_rect_green);
             mCrosshairsDrawable = res.getDrawable(R.drawable.gardening_crosshairs);
+            Interpolator interp = new DecelerateInterpolator(2.5f); // Quint ease out
 
             // Set up the animation for fading the crosshairs in and out
             int animDuration = res.getInteger(R.integer.config_crosshairsFadeInTime);
@@ -154,6 +170,32 @@ public class CellLayout extends ViewGroup {
                     CellLayout.this.invalidate();
                 }
             });
+            mCrosshairsAnimator.setInterpolator(interp);
+
+            for (int i = 0; i < mDragRects.length; i++) {
+                mDragRects[i] = new Rect();
+            }
+
+            // When dragging things around the home screens, we show a green outline of
+            // where the item will land. The outlines gradually fade out, leaving a trail
+            // behind the drag path.
+            // Set up all the animations that are used to implement this fading.
+            final int duration = res.getInteger(R.integer.config_dragOutlineFadeTime);
+            final int fromAlphaValue = 0;
+            final int toAlphaValue = res.getInteger(R.integer.config_dragOutlineMaxAlpha);
+            for (int i = 0; i < mDragRectAnims.length; i++) {
+                final InterruptibleInOutAnimator anim =
+                    new InterruptibleInOutAnimator(duration, fromAlphaValue, toAlphaValue);
+                anim.setInterpolator(interp);
+                final int thisIndex = i;
+                anim.addUpdateListener(new AnimatorUpdateListener() {
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        mDragRectAlphas[thisIndex] = (Integer) animation.getAnimatedValue();
+                        CellLayout.this.invalidate(mDragRects[thisIndex]);
+                    }
+                });
+                mDragRectAnims[i] = anim;
+            }
         }
     }
 
@@ -176,7 +218,14 @@ public class CellLayout extends ViewGroup {
     @Override
     public void dispatchDraw(Canvas canvas) {
         if (mBackgroundAlpha > 0.0f) {
-            final Drawable bg = mHover ? mBackgroundHover : mBackground;
+            Drawable bg;
+            if (mHover && getScaleX() < 0.5f) {
+                bg = mBackgroundMiniHover;
+            } else if (getScaleX() < 0.5f) {
+                bg = mBackgroundMini;
+            } else {
+                bg = mBackground;
+            }
             bg.setAlpha((int) (mBackgroundAlpha * 255));
             bg.draw(canvas);
         }
@@ -188,16 +237,6 @@ public class CellLayout extends ViewGroup {
         if (mCrosshairsVisibility > 0.0f) {
             final int countX = mCountX;
             final int countY = mCountY;
-
-            if (!mDragRect.isEmpty()) {
-                mDragRectDrawable.setBounds(
-                        (int)mDragRect.left,
-                        (int)mDragRect.top,
-                        (int)mDragRect.right,
-                        (int)mDragRect.bottom);
-                mDragRectDrawable.setAlpha((int) (mCrosshairsVisibility * 255));
-                mDragRectDrawable.draw(canvas);
-            }
 
             final float MAX_ALPHA = 0.4f;
             final int MAX_VISIBLE_DISTANCE = 600;
@@ -225,7 +264,30 @@ public class CellLayout extends ViewGroup {
                 }
                 x += mCellWidth + mWidthGap;
             }
+
+            for (int i = 0; i < mDragRects.length; i++) {
+                int alpha = mDragRectAlphas[i];
+                if (alpha > 0) {
+                    mDragRectDrawable.setAlpha(alpha);
+                    mDragRectDrawable.setBounds(mDragRects[i]);
+                    mDragRectDrawable.draw(canvas);
+                }
+            }
         }
+    }
+
+    public void setDimmableProgress(float progress) {
+        for (int i = 0; i < getChildCount(); i++) {
+            Dimmable d = (Dimmable) getChildAt(i);
+            d.setDimmableProgress(progress);
+        }
+    }
+
+    public float getDimmableProgress() {
+        if (getChildCount() > 0) {
+            return ((Dimmable) getChildAt(0)).getDimmableProgress();
+        }
+        return 0.0f;
     }
 
     @Override
@@ -581,8 +643,11 @@ public class CellLayout extends ViewGroup {
         if (mBackground != null) {
             mBackground.setBounds(mBackgroundLayoutRect);
         }
-        if (mBackgroundHover != null) {
-            mBackgroundHover.setBounds(mBackgroundLayoutRect);
+        if (mBackgroundMiniHover != null) {
+            mBackgroundMiniHover.setBounds(mBackgroundLayoutRect);
+        }
+        if (mBackgroundMini != null) {
+            mBackgroundMini.setBounds(mBackgroundLayoutRect);
         }
     }
 
@@ -723,13 +788,23 @@ public class CellLayout extends ViewGroup {
             final int left = topLeft[0];
             final int top = topLeft[1];
 
-            // Now find the bottom right
-            final int[] bottomRight = mTmpPoint;
-            cellToPoint(nearest[0] + spanX - 1, nearest[1] + spanY - 1, bottomRight);
-            bottomRight[0] += mCellWidth;
-            bottomRight[1] += mCellHeight;
-            mDragRect.set(left, top, bottomRight[0], bottomRight[1]);
-            invalidate();
+            final Rect dragRect = mDragRects[mDragRectCurrent];
+
+            if (dragRect.isEmpty() || left != dragRect.left || top != dragRect.top) {
+                // Now find the bottom right
+                final int[] bottomRight = mTmpPoint;
+                cellToPoint(nearest[0] + spanX - 1, nearest[1] + spanY - 1, bottomRight);
+                bottomRight[0] += mCellWidth;
+                bottomRight[1] += mCellHeight;
+
+                final int oldIndex = mDragRectCurrent;
+                mDragRectCurrent = (oldIndex + 1) % mDragRects.length;
+
+                mDragRects[mDragRectCurrent].set(left, top, bottomRight[0], bottomRight[1]);
+
+                mDragRectAnims[oldIndex].animateOut();
+                mDragRectAnims[mDragRectCurrent].animateIn();
+            }
         }
     }
 
@@ -766,9 +841,9 @@ public class CellLayout extends ViewGroup {
      */
     int[] findNearestVacantArea(
             int pixelX, int pixelY, int spanX, int spanY, View ignoreView, int[] result) {
-        if (ignoreView != null) {
-            markCellsAsUnoccupiedForView(ignoreView);
-        }
+        // mark space take by ignoreView as available (method checks if ignoreView is null)
+        markCellsAsUnoccupiedForView(ignoreView);
+
         // Keep track of best-scoring drop area
         final int[] bestXY = result != null ? result : new int[2];
         double bestDistance = Double.MAX_VALUE;
@@ -802,9 +877,8 @@ public class CellLayout extends ViewGroup {
                 }
             }
         }
-        if (ignoreView != null) {
-            markCellsAsOccupiedForView(ignoreView);
-        }
+        // re-mark space taken by ignoreView as occupied
+        markCellsAsOccupiedForView(ignoreView);
 
         // Return null if no suitable location found
         if (bestDistance < Double.MAX_VALUE) {
@@ -872,9 +946,8 @@ public class CellLayout extends ViewGroup {
      */
     boolean findCellForSpanThatIntersectsIgnoring(int[] cellXY, int spanX, int spanY,
             int intersectX, int intersectY, View ignoreView) {
-        if (ignoreView != null) {
-            markCellsAsUnoccupiedForView(ignoreView);
-        }
+        // mark space take by ignoreView as available (method checks if ignoreView is null)
+        markCellsAsUnoccupiedForView(ignoreView);
 
         boolean foundCell = false;
         while (true) {
@@ -927,9 +1000,8 @@ public class CellLayout extends ViewGroup {
             }
         }
 
-        if (ignoreView != null) {
-            markCellsAsOccupiedForView(ignoreView);
-        }
+        // re-mark space taken by ignoreView as occupied
+        markCellsAsOccupiedForView(ignoreView);
         return foundCell;
     }
 
@@ -948,6 +1020,10 @@ public class CellLayout extends ViewGroup {
         if (mCrosshairsAnimator != null) {
             animateCrosshairsTo(0.0f);
         }
+
+        mDragRectAnims[mDragRectCurrent].animateOut();
+        mDragRectCurrent = (mDragRectCurrent + 1) % mDragRects.length;
+        mDragRects[mDragRectCurrent].setEmpty();
     }
 
     /**
@@ -990,7 +1066,6 @@ public class CellLayout extends ViewGroup {
      * or it may have begun on another layout.
      */
     void onDragEnter(View dragView) {
-        mDragRect.setEmpty();
         // Fade in the drag indicators
         if (mCrosshairsAnimator != null) {
             animateCrosshairsTo(1.0f);
@@ -1123,11 +1198,13 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
     }
 
     private void markCellsAsOccupiedForView(View view) {
+        if (view == null || view.getParent() != this) return;
         LayoutParams lp = (LayoutParams) view.getLayoutParams();
         markCellsForView(lp.cellX, lp.cellY, lp.cellHSpan, lp.cellVSpan, true);
     }
 
     private void markCellsAsUnoccupiedForView(View view) {
+        if (view == null || view.getParent() != this) return;
         LayoutParams lp = (LayoutParams) view.getLayoutParams();
         markCellsForView(lp.cellX, lp.cellY, lp.cellHSpan, lp.cellVSpan, false);
     }

@@ -300,8 +300,10 @@ public class LauncherModel extends BroadcastReceiver {
     /**
      * Creates a new unique child id, for a given cell span across all layouts.
      */
-    static int getCellLayoutChildId(int cellId, int screen, int localCellX, int localCellY, int spanX, int spanY) {
-        return ((cellId & 0xFF) << 16) | (localCellX & 0xFF) << 8 | (localCellY & 0xFF);
+    static int getCellLayoutChildId(
+            int cellId, int screen, int localCellX, int localCellY, int spanX, int spanY) {
+        return ((cellId & 0xFF) << 24)
+                | (screen & 0xFF) << 16 | (localCellX & 0xFF) << 8 | (localCellY & 0xFF);
     }
 
     static int getCellCountX() {
@@ -412,8 +414,9 @@ public class LauncherModel extends BroadcastReceiver {
             }
 
         } else if (Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE.equals(action)) {
-            String[] packages = intent.getStringArrayExtra(Intent.EXTRA_CHANGED_PACKAGE_LIST);
-            enqueuePackageUpdated(new PackageUpdatedTask(PackageUpdatedTask.OP_ADD, packages));
+            // When everything comes back, just reload everything.  We might not
+            // have the right icons for apps on external storage.
+            startLoader(mApp, false);
 
         } else if (Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE.equals(action)) {
             String[] packages = intent.getStringArrayExtra(Intent.EXTRA_CHANGED_PACKAGE_LIST);

@@ -38,4 +38,11 @@
          the drag view should be offset from the position of the original view. -->
     <integer name="config_dragViewOffsetX">0</integer>
     <integer name="config_dragViewOffsetY">12</integer>
+
+    <!-- The duration (in ms) of the fade animation on the object outlines, used when
+         we are dragging objects around on the home screen. -->
+    <integer name="config_dragOutlineFadeTime">900</integer>
+
+    <!-- The alpha value at which to show the most recent drop visualization outline. -->
+    <integer name="config_dragOutlineMaxAlpha">180</integer>
 </resources>

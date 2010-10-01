@@ -73,11 +73,13 @@ public abstract class PagedView extends ViewGroup {
     private float mDownMotionX;
     private float mLastMotionX;
     private float mLastMotionY;
+    private int mLastScreenCenter = -1;
 
     protected final static int TOUCH_STATE_REST = 0;
     protected final static int TOUCH_STATE_SCROLLING = 1;
     protected final static int TOUCH_STATE_PREV_PAGE = 2;
     protected final static int TOUCH_STATE_NEXT_PAGE = 3;
+    protected final static float ALPHA_QUANTIZE_LEVEL = 0.01f;
 
     protected int mTouchState = TOUCH_STATE_REST;
 
@@ -367,7 +369,6 @@ public abstract class PagedView extends ViewGroup {
             if (mDirtyPageAlpha || (mTouchState == TOUCH_STATE_SCROLLING) || !mScroller.isFinished()) {
                 int halfScreenSize = getMeasuredWidth() / 2;
                 int screenCenter = mScrollX + halfScreenSize;
-
                 final int childCount = getChildCount();
                 for (int i = 0; i < childCount; ++i) {
                     View layout = (View) getChildAt(i);
@@ -391,6 +392,12 @@ public abstract class PagedView extends ViewGroup {
                     dimAlpha = Math.max(0.0f, Math.min(1.0f, (dimAlpha * dimAlpha)));
                     float alpha = 1.0f - dimAlpha;
 
+                    if (alpha < ALPHA_QUANTIZE_LEVEL) {
+                        alpha = 0.0f;
+                    } else if (alpha > 1.0f - ALPHA_QUANTIZE_LEVEL) {
+                        alpha = 1.0f;
+                    }
+
                     if (Float.compare(alpha, layout.getAlpha()) != 0) {
                         layout.setAlpha(alpha);
                     }
@@ -400,9 +407,19 @@ public abstract class PagedView extends ViewGroup {
         }
     }
 
+    protected void screenScrolled(int screenCenter) {
+    }
+
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        updateAdjacentPagesAlpha();
+        int halfScreenSize = getMeasuredWidth() / 2;
+        int screenCenter = mScrollX + halfScreenSize;
+
+        if (screenCenter != mLastScreenCenter) {
+            screenScrolled(screenCenter);
+            updateAdjacentPagesAlpha();
+            mLastScreenCenter = screenCenter;
+        }
 
         // Find out which screens are visible; as an optimization we only call draw on them
         // As an optimization, this code assumes that all pages have the same width as the 0th
