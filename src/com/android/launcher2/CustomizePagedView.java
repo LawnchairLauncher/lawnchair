@@ -321,7 +321,7 @@ public class CustomizePagedView extends PagedView
 
     @Override
     public void onDropCompleted(View target, boolean success) {
-        // do nothing
+        mLauncher.getWorkspace().onDragStopped();
     }
 
     @Override
@@ -431,9 +431,11 @@ public class CustomizePagedView extends PagedView
                     Bitmap.Config.ARGB_8888);
             Canvas c = new Canvas(b);
             icon.draw(c);
+            PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo) v.getTag();
 
-            createItemInfo = (PendingAddItemInfo) v.getTag();
-            mDragController.startDrag(v, b, this, createItemInfo, DragController.DRAG_ACTION_COPY,
+            mLauncher.getWorkspace().onDragStartedWithItemMinSize(
+                    createWidgetInfo.minWidth, createWidgetInfo.minHeight);
+            mDragController.startDrag(v, b, this, createWidgetInfo, DragController.DRAG_ACTION_COPY,
                     null);
 
             // Cleanup the icon
@@ -450,11 +452,13 @@ public class CustomizePagedView extends PagedView
                 mDragController.startDrag(
                         v, this, createItemInfo, DragController.DRAG_ACTION_COPY, null);
             }
+            mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1);
             return true;
         case ShortcutCustomization:
             createItemInfo = (PendingAddItemInfo) v.getTag();
             mDragController.startDrag(
                     v, this, createItemInfo, DragController.DRAG_ACTION_COPY, null);
+            mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1);
             return true;
         case ApplicationCustomization:
             // Pick up the application for dropping
@@ -462,6 +466,7 @@ public class CustomizePagedView extends PagedView
             app = new ApplicationInfo(app);
 
             mDragController.startDrag(v, this, app, DragController.DRAG_ACTION_COPY);
+            mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1);
             return true;
         }
         return false;
@@ -613,9 +618,11 @@ public class CustomizePagedView extends PagedView
         layout.removeAllViews();
         for (int i = 0; i < count; ++i) {
             AppWidgetProviderInfo info = (AppWidgetProviderInfo) list.get(i);
-            PendingAddItemInfo createItemInfo = new PendingAddItemInfo();
+            PendingAddWidgetInfo createItemInfo = new PendingAddWidgetInfo();
             createItemInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
             createItemInfo.componentName = info.provider;
+            createItemInfo.minWidth = info.minWidth;
+            createItemInfo.minHeight = info.minHeight;
 
             LinearLayout l = (LinearLayout) mInflater.inflate(
                     R.layout.customize_paged_view_widget, layout, false);

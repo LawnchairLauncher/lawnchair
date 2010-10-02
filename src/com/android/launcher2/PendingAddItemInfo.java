@@ -27,3 +27,8 @@ class PendingAddItemInfo extends ItemInfo {
      */
     ComponentName componentName;
 }
+
+class PendingAddWidgetInfo extends PendingAddItemInfo {
+    int minWidth;
+    int minHeight;
+}
