@@ -392,26 +392,17 @@ public class Workspace extends SmoothPagedView
     protected void pageBeginMoving() {
         if (mNextPage != INVALID_PAGE) {
             // we're snapping to a particular screen
-            // there's an issue where the alpha of neighboring pages doesn't get updated
-            // if drawing cache is enabled on children-- we only use that on xlarge devices,
-            // so disable drawing cache in those cases
-            if (!LauncherApplication.isScreenXLarge()) {
-                enableChildrenCache(mCurrentPage, mNextPage);
-            }
+            enableChildrenCache(mCurrentPage, mNextPage);
         } else {
             // this is when user is actively dragging a particular screen, they might
             // swipe it either left or right (but we won't advance by more than one screen)
-            if (!LauncherApplication.isScreenXLarge()) {
-                enableChildrenCache(mCurrentPage - 1, mCurrentPage + 1);
-            }
+            enableChildrenCache(mCurrentPage - 1, mCurrentPage + 1);
         }
         showOutlines();
     }
 
     protected void pageEndMoving() {
-        if (!LauncherApplication.isScreenXLarge()) {
-            clearChildrenCache();
-        }
+        clearChildrenCache();
         hideOutlines();
     }
 
@@ -754,8 +745,7 @@ public class Workspace extends SmoothPagedView
                         new PropertyValuesHolder<Float>("scaleX", SHRINK_FACTOR * rotationScaleX),
                         new PropertyValuesHolder<Float>("scaleY", SHRINK_FACTOR * rotationScaleY),
                         new PropertyValuesHolder<Float>("backgroundAlpha", 1.0f),
-                        new PropertyValuesHolder<Float>("dimmableProgress", 1.0f),
-                        new PropertyValuesHolder<Float>("alpha", 0.0f),
+                        new PropertyValuesHolder<Float>("alpha", 1.0f),
                         new PropertyValuesHolder<Float>("rotationY", rotation)).start();
             } else {
                 cl.setX((int)newX);
@@ -763,7 +753,6 @@ public class Workspace extends SmoothPagedView
                 cl.setScaleX(SHRINK_FACTOR * rotationScaleX);
                 cl.setScaleY(SHRINK_FACTOR * rotationScaleY);
                 cl.setBackgroundAlpha(1.0f);
-                cl.setDimmableProgress(1.0f);
                 cl.setAlpha(0.0f);
                 cl.setRotationY(rotation);
             }
@@ -832,7 +821,6 @@ public class Workspace extends SmoothPagedView
                             new ObjectAnimator<Float>(duration, cl, "scaleY", 1.0f),
                             new ObjectAnimator<Float>(duration, cl, "backgroundAlpha", 0.0f),
                             new ObjectAnimator<Float>(duration, cl, "alpha", finalAlphaValue),
-                            new ObjectAnimator<Float>(duration, cl, "dimmableProgress", 0.0f),
                             new ObjectAnimator<Float>(duration, cl, "rotationY", rotation));
                 } else {
                     cl.setTranslationX(0.0f);
@@ -840,7 +828,6 @@ public class Workspace extends SmoothPagedView
                     cl.setScaleX(1.0f);
                     cl.setScaleY(1.0f);
                     cl.setBackgroundAlpha(0.0f);
-                    cl.setDimmableProgress(0.0f);
                     cl.setAlpha(finalAlphaValue);
                     cl.setRotationY(rotation);
                 }

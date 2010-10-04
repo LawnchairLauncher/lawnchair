@@ -34,10 +34,6 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     @Override
     protected AppWidgetHostView onCreateView(Context context, int appWidgetId,
             AppWidgetProviderInfo appWidget) {
-        if (LauncherApplication.isScreenXLarge()) {
-            return new DimmableAppWidgetHostView(context);
-        } else {
-            return new LauncherAppWidgetHostView(context);
-        }
+        return new LauncherAppWidgetHostView(context);
     }
 }
