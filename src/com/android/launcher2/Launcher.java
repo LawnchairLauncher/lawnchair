@@ -239,7 +239,6 @@ public final class Launcher extends Activity
     private CharSequence[] mHotseatLabels = null;
 
     private Intent mAppMarketIntent = null;
-    private Intent mGlobalSearchIntent = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1757,13 +1756,7 @@ public final class Launcher extends Activity
      * @param v The view that was clicked.
      */
     public void onClickSearchButton(View v) {
-        if (mGlobalSearchIntent != null) {
-            View b = findViewById(R.id.search_button);
-            mGlobalSearchIntent.setSourceBounds(
-                    new Rect(b.getLeft(), b.getTop(), b.getRight(), b.getBottom()));
-            startActivitySafely(mGlobalSearchIntent, "global search");
-        }
-
+        startSearch(null, false, null, true);
     }
 
     /**
@@ -2668,56 +2661,60 @@ public final class Launcher extends Activity
         }
     }
 
-    /* Core logic for updating market and search button icons. Intent is used to resolve which
-     * activity to ask for an icon. Returns intent to launch the activity, or null if it wasn't
-     * resolved */
-    private Intent updateExternalIcon(int buttonId, Intent intent, int fallbackDrawableId) {
-        if (LauncherApplication.isScreenXLarge()) {
-            // Find the app market activity by resolving an intent.
-            // (If multiple app markets are installed, it will return the ResolverActivity.)
+    private void updateButtonWithIconFromExternalActivity(
+            int buttonId, ComponentName activityName, int fallbackDrawableId) {
+        ImageView button = (ImageView) findViewById(buttonId);
+        Drawable toolbarIcon = null;
+        try {
             PackageManager packageManager = getPackageManager();
-            ComponentName activityName = intent.resolveActivity(getPackageManager());
+            // Look for the toolbar icon specified in the activity meta-data
+            Bundle metaData = packageManager.getActivityInfo(
+                    activityName, PackageManager.GET_META_DATA).metaData;
+            if (metaData != null) {
+                int iconResId = metaData.getInt(TOOLBAR_ICON_METADATA_NAME);
+                if (iconResId != 0) {
+                    Resources res = packageManager.getResourcesForActivity(activityName);
+                    toolbarIcon = res.getDrawable(iconResId);
+                }
+            }
+        } catch (NameNotFoundException e) {
+            // Do nothing
+        }
+        // If we were unable to find the icon via the meta-data, use a generic one
+        if (toolbarIcon == null) {
+            button.setImageResource(fallbackDrawableId);
+        } else {
+            button.setImageDrawable(toolbarIcon);
+        }
+    }
+
+    private void updateGlobalSearchIcon() {
+        if (LauncherApplication.isScreenXLarge()) {
+            final SearchManager searchManager =
+                    (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+            ComponentName activityName = searchManager.getGlobalSearchActivity();
             if (activityName != null) {
-                ImageView button = (ImageView) findViewById(buttonId);
-                Drawable toolbarIcon = null;
-                try {
-                    // Look for the toolbar icon specified in the activity meta-data
-                    Bundle metaData = packageManager.getActivityInfo(
-                            activityName, PackageManager.GET_META_DATA).metaData;
-                    if (metaData != null) {
-                        int iconResId = metaData.getInt(TOOLBAR_ICON_METADATA_NAME);
-                        if (iconResId != 0) {
-                            Resources res = packageManager.getResourcesForActivity(activityName);
-                            toolbarIcon = res.getDrawable(iconResId);
-                        }
-                    }
-                } catch (NameNotFoundException e) {
-                    // Do nothing
-                }
-                // If we were unable to find the icon via the meta-data, use a generic one
-                if (toolbarIcon == null) {
-                    button.setImageResource(fallbackDrawableId);
-                } else {
-                    button.setImageDrawable(toolbarIcon);
-                }
-                return intent;
+                updateButtonWithIconFromExternalActivity(
+                        R.id.search_button, activityName, R.drawable.search_button_generic);
             }
         }
-        return null;
     }
+
     /**
      * Sets the app market icon (shown when all apps is visible on x-large screens)
      */
     private void updateAppMarketIcon() {
-        Intent intent = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_MARKET);
-        mAppMarketIntent = updateExternalIcon(
-                R.id.market_button, intent, R.drawable.app_market_generic);
-    }
-
-    private void updateGlobalSearchIcon() {
-        Intent intent = new Intent(SearchManager.INTENT_ACTION_GLOBAL_SEARCH);
-        mGlobalSearchIntent = updateExternalIcon(
-                R.id.search_button, intent, R.drawable.search_button_generic);
+        if (LauncherApplication.isScreenXLarge()) {
+            Intent intent = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_MARKET);
+            // Find the app market activity by resolving an intent.
+            // (If multiple app markets are installed, it will return the ResolverActivity.)
+            ComponentName activityName = intent.resolveActivity(getPackageManager());
+            if (activityName != null) {
+                mAppMarketIntent = intent;
+                updateButtonWithIconFromExternalActivity(
+                        R.id.market_button, activityName, R.drawable.app_market_generic);
+            }
+        }
     }
 
     /**
