@@ -64,13 +64,28 @@
             android:clickable="true"/>
 
         <ImageView
-            android:id="@+id/all_apps_button"
-            android:src="@drawable/all_apps_button"
+            android:id="@+id/configure_button"
+            android:src="@drawable/configure_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="@dimen/toolbar_button_spacing"
             android:layout_marginRight="@dimen/toolbar_button_spacing"
+
+            android:onClick="onClickConfigureButton"
+            android:focusable="true"
+            android:clickable="true" />
+
+        <TextView
+            android:id="@+id/all_apps_button"
+            android:text="@string/all_apps_button_label"
+            android:background="@drawable/all_apps_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@id/configure_button"
+            android:layout_marginLeft="@dimen/toolbar_button_spacing"
+            android:layout_marginRight="@dimen/toolbar_button_spacing"
+            android:textSize="18dip"
 
             android:onClick="onClickAllAppsButton"
             android:focusable="true"
@@ -88,18 +103,6 @@
             android:focusable="false"
             android:clickable="false"
             android:visibility="gone"/>
-
-        <ImageView
-            android:id="@+id/configure_button"
-            android:src="@drawable/configure_button"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_toLeftOf="@id/all_apps_button"
-            android:layout_marginLeft="@dimen/toolbar_button_spacing"
-
-            android:onClick="onClickConfigureButton"
-            android:focusable="true"
-            android:clickable="true" />
 
         <com.android.launcher2.DeleteZone
             android:id="@+id/delete_zone"

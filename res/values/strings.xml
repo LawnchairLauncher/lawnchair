@@ -118,8 +118,8 @@
     <!-- Title of dialog when user is selecting live folder to add to homescreen -->
     <string name="title_select_live_folder">Select folder</string>
 
-    <!-- All applications label for accessibilty (spoken when the button gets focus). -->
-    <string name="all_apps_button_label">All applications</string>
+    <!-- All applications label -->
+    <string name="all_apps_button_label">Apps</string>
     <!-- Label for button in all applications label to go back home (to the workspace / desktop)
          for accessibilty (spoken when the button gets focus). -->
     <string name="all_apps_home_button_label">Home</string>
