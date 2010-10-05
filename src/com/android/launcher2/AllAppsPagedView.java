@@ -66,13 +66,6 @@ public class AllAppsPagedView extends PagedView
     static final int ALL_APPS_FLAG = -1;
     private int mAppFilter = ALL_APPS_FLAG;
 
-    private int mCellCountX;
-    private int mCellCountY;
-    private int mPageLayoutPaddingTop;
-    private int mPageLayoutPaddingBottom;
-    private int mPageLayoutPaddingLeft;
-    private int mPageLayoutPaddingRight;
-
     private final LayoutInflater mInflater;
 
     private ViewGroup mOrigInfoButtonParent;
@@ -94,14 +87,6 @@ public class AllAppsPagedView extends PagedView
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PagedView, defStyle, 0);
         mCellCountX = a.getInt(R.styleable.PagedView_cellCountX, 6);
         mCellCountY = a.getInt(R.styleable.PagedView_cellCountY, 4);
-        mPageLayoutPaddingTop = a.getDimensionPixelSize(
-                R.styleable.PagedView_pageLayoutPaddingTop, 10);
-        mPageLayoutPaddingBottom = a.getDimensionPixelSize(
-                R.styleable.PagedView_pageLayoutPaddingBottom, 10);
-        mPageLayoutPaddingLeft = a.getDimensionPixelSize(
-                R.styleable.PagedView_pageLayoutPaddingLeft, 10);
-        mPageLayoutPaddingRight = a.getDimensionPixelSize(
-                R.styleable.PagedView_pageLayoutPaddingRight, 10);
         mInflater = LayoutInflater.from(context);
         a.recycle();
         setSoundEffectsEnabled(false);
