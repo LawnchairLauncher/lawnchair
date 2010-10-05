@@ -88,6 +88,8 @@
 
     <!-- Title of dialog when user is selecting shortcut to add to homescreen -->
     <string name="title_select_shortcut">Select shortcut</string>
+    <!-- Title of dialog when user is selecting an application to add to homescreen -->
+    <string name="title_select_application">Select application</string>
     <!-- Title of dialog when user is selecting live folder to add to homescreen -->
     <string name="title_select_live_folder">Select folder</string>
 
