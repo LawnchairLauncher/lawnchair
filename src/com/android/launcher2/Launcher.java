@@ -239,6 +239,7 @@ public final class Launcher extends Activity
     private CharSequence[] mHotseatLabels = null;
 
     private Intent mAppMarketIntent = null;
+    private Intent mGlobalSearchIntent = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1756,11 +1757,13 @@ public final class Launcher extends Activity
      * @param v The view that was clicked.
      */
     public void onClickSearchButton(View v) {
-        Intent i = new Intent(SearchManager.INTENT_ACTION_GLOBAL_SEARCH);
-        View button = findViewById(R.id.search_button);
-        i.setSourceBounds(
-                new Rect(button.getLeft(), button.getTop(), button.getRight(), button.getBottom()));
-        startActivity(i);
+        if (mGlobalSearchIntent != null) {
+            View b = findViewById(R.id.search_button);
+            mGlobalSearchIntent.setSourceBounds(
+                    new Rect(b.getLeft(), b.getTop(), b.getRight(), b.getBottom()));
+            startActivitySafely(mGlobalSearchIntent, "global search");
+        }
+
     }
 
     /**
@@ -2670,19 +2673,17 @@ public final class Launcher extends Activity
         }
     }
 
-    /**
-     * Sets the app market icon (shown when all apps is visible on x-large screens)
-     */
-    private void updateAppMarketIcon() {
+    /* Core logic for updating market and search button icons. Intent is used to resolve which
+     * activity to ask for an icon. Returns intent to launch the activity, or null if it wasn't
+     * resolved */
+    private Intent updateExternalIcon(int buttonId, Intent intent, int fallbackDrawableId) {
         if (LauncherApplication.isScreenXLarge()) {
             // Find the app market activity by resolving an intent.
             // (If multiple app markets are installed, it will return the ResolverActivity.)
             PackageManager packageManager = getPackageManager();
-            Intent intent = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_MARKET);
             ComponentName activityName = intent.resolveActivity(getPackageManager());
             if (activityName != null) {
-                mAppMarketIntent = intent;
-                ImageView marketButton = (ImageView) findViewById(R.id.market_button);
+                ImageView button = (ImageView) findViewById(buttonId);
                 Drawable toolbarIcon = null;
                 try {
                     // Look for the toolbar icon specified in the activity meta-data
@@ -2700,14 +2701,28 @@ public final class Launcher extends Activity
                 }
                 // If we were unable to find the icon via the meta-data, use a generic one
                 if (toolbarIcon == null) {
-                    marketButton.setImageResource(R.drawable.app_market_generic);
+                    button.setImageResource(fallbackDrawableId);
                 } else {
-                    marketButton.setImageDrawable(toolbarIcon);
+                    button.setImageDrawable(toolbarIcon);
                 }
-            } else {
-                mAppMarketIntent = null;
+                return intent;
             }
         }
+        return null;
+    }
+    /**
+     * Sets the app market icon (shown when all apps is visible on x-large screens)
+     */
+    private void updateAppMarketIcon() {
+        Intent intent = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_MARKET);
+        mAppMarketIntent = updateExternalIcon(
+                R.id.market_button, intent, R.drawable.app_market_generic);
+    }
+
+    private void updateGlobalSearchIcon() {
+        Intent intent = new Intent(SearchManager.INTENT_ACTION_GLOBAL_SEARCH);
+        mGlobalSearchIntent = updateExternalIcon(
+                R.id.search_button, intent, R.drawable.search_button_generic);
     }
 
     /**
@@ -3018,6 +3033,7 @@ public final class Launcher extends Activity
             mCustomizePagedView.setApps(apps);
         }
         updateAppMarketIcon();
+        updateGlobalSearchIcon();
     }
 
     /**
@@ -3032,6 +3048,7 @@ public final class Launcher extends Activity
             mCustomizePagedView.addApps(apps);
         }
         updateAppMarketIcon();
+        updateGlobalSearchIcon();
     }
 
     /**
@@ -3047,6 +3064,7 @@ public final class Launcher extends Activity
             mCustomizePagedView.updateApps(apps);
         }
         updateAppMarketIcon();
+        updateGlobalSearchIcon();
     }
 
     /**
@@ -3064,6 +3082,7 @@ public final class Launcher extends Activity
             mCustomizePagedView.removeApps(apps);
         }
         updateAppMarketIcon();
+        updateGlobalSearchIcon();
     }
 
     /**
