@@ -1945,12 +1945,7 @@ public final class Launcher extends Activity
                 mWorkspace.setAllowLongPress(false);
                 mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                         HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-                if (LauncherApplication.isScreenXLarge()) {
-                    // Animate the widget chooser up from the bottom of the screen
-                    if (!isCustomizationDrawerVisible()) {
-                        showCustomizationDrawer(true);
-                    }
-                } else {
+                if (!LauncherApplication.isScreenXLarge()) {
                     showAddDialog(longClickCellInfo.cellX, longClickCellInfo.cellY);
                 }
             } else {
