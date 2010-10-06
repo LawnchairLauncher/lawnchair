@@ -2029,7 +2029,7 @@ public final class Launcher extends Activity
             final Canvas c = new Canvas(bitmap);
             c.scale(scale, scale);
             c.translate(-cell.getLeftPadding(), -cell.getTopPadding());
-            cell.dispatchDraw(c);
+            cell.drawChildren(c);
 
             image.setBackgroundDrawable(resources.getDrawable(R.drawable.preview_background));
             image.setImageBitmap(bitmap);

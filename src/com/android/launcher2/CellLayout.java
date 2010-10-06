@@ -41,8 +41,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.LayoutAnimationController;
 
-import java.util.Arrays;
-
 public class CellLayout extends ViewGroup implements Dimmable {
     static final String TAG = "CellLayout";
 
@@ -75,12 +73,13 @@ public class CellLayout extends ViewGroup implements Dimmable {
     private OnTouchListener mInterceptTouchListener;
 
     private float mBackgroundAlpha;
-    private final Rect mBackgroundLayoutRect = new Rect();
 
     private Drawable mBackground;
     private Drawable mBackgroundMini;
     private Drawable mBackgroundMiniHover;
-    // If we're actively dragging something over this screen and it's small, mHover is true
+    private Drawable mBackgroundHover;
+
+    // If we're actively dragging something over this screen, mHover is true
     private boolean mHover = false;
 
     private final Point mDragCenter = new Point();
@@ -154,6 +153,8 @@ public class CellLayout extends ViewGroup implements Dimmable {
             mBackground.setFilterBitmap(true);
             mBackgroundMiniHover = res.getDrawable(R.drawable.mini_home_screen_bg_hover);
             mBackgroundMiniHover.setFilterBitmap(true);
+            mBackgroundHover = res.getDrawable(R.drawable.home_screen_bg_hover);
+            mBackgroundHover.setFilterBitmap(true);
         }
 
         // Initialize the data structures used for the drag visualization.
@@ -215,27 +216,25 @@ public class CellLayout extends ViewGroup implements Dimmable {
         anim.start();
     }
 
+    public void drawChildren(Canvas canvas) {
+        super.dispatchDraw(canvas);
+    }
+
     @Override
-    public void dispatchDraw(Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
         if (mBackgroundAlpha > 0.0f) {
             Drawable bg;
-            if (mHover && getScaleX() < 0.5f) {
-                bg = mBackgroundMiniHover;
-            } else if (getScaleX() < 0.5f) {
-                bg = mBackgroundMini;
+            if (getScaleX() < 0.5f) {
+                bg = mHover ? mBackgroundMiniHover : mBackgroundMini;
             } else {
-                bg = mBackground;
+                bg = mHover ? mBackgroundHover : mBackground;
             }
             if (bg != null) {
                 bg.setAlpha((int) (mBackgroundAlpha * 255));
                 bg.draw(canvas);
             }
         }
-        super.dispatchDraw(canvas);
-    }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
         if (mCrosshairsVisibility > 0.0f) {
             final int countX = mCountX;
             final int countY = mCountY;
@@ -641,15 +640,17 @@ public class CellLayout extends ViewGroup implements Dimmable {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        mBackgroundLayoutRect.set(0, 0, w, h);
         if (mBackground != null) {
-            mBackground.setBounds(mBackgroundLayoutRect);
+            mBackground.setBounds(0, 0, w, h);
+        }
+        if (mBackgroundHover != null) {
+            mBackgroundHover.setBounds(0, 0, w, h);
         }
         if (mBackgroundMiniHover != null) {
-            mBackgroundMiniHover.setBounds(mBackgroundLayoutRect);
+            mBackgroundMiniHover.setBounds(0, 0, w, h);
         }
         if (mBackgroundMini != null) {
-            mBackgroundMini.setBounds(mBackgroundLayoutRect);
+            mBackgroundMini.setBounds(0, 0, w, h);
         }
     }
 
@@ -1016,7 +1017,6 @@ public class CellLayout extends ViewGroup implements Dimmable {
         mDragCell[1] = -1;
 
         setHover(false);
-        invalidate();
 
         // Fade out the drag indicators
         if (mCrosshairsAnimator != null) {

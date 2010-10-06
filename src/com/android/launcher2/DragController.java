@@ -56,8 +56,8 @@ public class DragController {
     private static final int SCROLL_OUTSIDE_ZONE = 0;
     private static final int SCROLL_WAITING_IN_ZONE = 1;
 
-    private static final int SCROLL_LEFT = 0;
-    private static final int SCROLL_RIGHT = 1;
+    static final int SCROLL_LEFT = 0;
+    static final int SCROLL_RIGHT = 1;
 
     private Context mContext;
     private Handler mHandler;
@@ -154,6 +154,10 @@ public class DragController {
         mContext = context;
         mHandler = new Handler();
         mScrollZone = context.getResources().getDimensionPixelSize(R.dimen.scroll_zone);
+    }
+
+    public boolean dragging() {
+        return mDragging;
     }
 
     /**
@@ -487,18 +491,21 @@ public class DragController {
                 mScrollState = SCROLL_WAITING_IN_ZONE;
                 mScrollRunnable.setDirection(SCROLL_LEFT);
                 mHandler.postDelayed(mScrollRunnable, SCROLL_DELAY);
+                mDragScroller.onEnterScrollArea(SCROLL_LEFT);
             }
         } else if (!inDeleteRegion && x > mScrollView.getWidth() - mScrollZone) {
             if (mScrollState == SCROLL_OUTSIDE_ZONE) {
                 mScrollState = SCROLL_WAITING_IN_ZONE;
                 mScrollRunnable.setDirection(SCROLL_RIGHT);
                 mHandler.postDelayed(mScrollRunnable, SCROLL_DELAY);
+                mDragScroller.onEnterScrollArea(SCROLL_RIGHT);
             }
         } else {
             if (mScrollState == SCROLL_WAITING_IN_ZONE) {
                 mScrollState = SCROLL_OUTSIDE_ZONE;
                 mScrollRunnable.setDirection(SCROLL_RIGHT);
                 mHandler.removeCallbacks(mScrollRunnable);
+                mDragScroller.onExitScrollArea();
             }
         }
     }
