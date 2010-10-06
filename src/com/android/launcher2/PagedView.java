@@ -242,7 +242,9 @@ public abstract class PagedView extends ViewGroup {
         if (getChildCount() == 0) return;
 
         mCurrentPage = Math.max(0, Math.min(currentPage, getPageCount() - 1));
-        scrollTo(getChildOffset(mCurrentPage) - getRelativeChildOffset(mCurrentPage), 0);
+        int newX = getChildOffset(mCurrentPage) - getRelativeChildOffset(mCurrentPage);
+        scrollTo(newX, 0);
+        mScroller.setFinalX(newX);
 
         invalidate();
         notifyPageSwitchListener();
