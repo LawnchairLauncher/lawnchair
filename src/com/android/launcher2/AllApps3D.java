@@ -1068,7 +1068,7 @@ public class AllApps3D extends RSSurfaceView
             initMesh();
             ProgramVertex.ShaderBuilder sb = new ProgramVertex.ShaderBuilder(sRS);
             String t = "varying vec4 varColor;\n" +
-                    "varying vec4 varTex0;\n" +
+                    "varying vec2 varTex0;\n" +
                     "void main() {\n" +
                     // Animation
                     "  float ani = UNI_Position.z;\n" +
@@ -1123,7 +1123,6 @@ public class AllApps3D extends RSSurfaceView
                     "  varColor.rgba = vec4(lum, lum, lum, 1.0);\n" +
                     "  varTex0.xy = ATTRIB_position;\n" +
                     "  varTex0.y = 1.0 - varTex0.y;\n" +
-                    "  varTex0.zw = vec2(0.0, 0.0);\n" +
                     "}\n";
             sb.setShader(t);
             sb.addConstant(mUniformAlloc.getType());
