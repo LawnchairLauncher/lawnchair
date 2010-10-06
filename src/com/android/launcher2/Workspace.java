@@ -475,9 +475,9 @@ public class Workspace extends SmoothPagedView
 
     @Override
     protected void screenScrolled(int screenCenter) {
-        View cur = getChildAt(mCurrentPage);
-        View toRight = getChildAt(mCurrentPage + 1);
-        View toLeft = getChildAt(mCurrentPage - 1);
+        CellLayout cur = (CellLayout) getChildAt(mCurrentPage);
+        CellLayout toRight = (CellLayout) getChildAt(mCurrentPage + 1);
+        CellLayout toLeft = (CellLayout) getChildAt(mCurrentPage - 1);
 
         for (int i = 0; i < mCurrentPage - 1; i++) {
             View v = getChildAt(i);
@@ -494,11 +494,12 @@ public class Workspace extends SmoothPagedView
             }
         }
 
+        int halfScreenSize = getMeasuredWidth() / 2;
         int pageWidth = cur.getMeasuredWidth();
-        int delta = screenCenter - (mCurrentPage * pageWidth + pageWidth / 2 +
-                getRelativeChildOffset(0));
+        int delta = screenCenter - (getChildOffset(mCurrentPage) -
+                getRelativeChildOffset(mCurrentPage) + halfScreenSize);
 
-        float scrollProgress = Math.abs(delta/(pageWidth*1.0f));
+        float scrollProgress = Math.abs(delta/(pageWidth*1.0f + mPageSpacing));
         int scrollDirection = delta > 0 ? SCROLL_LEFT : SCROLL_RIGHT;
 
         float rotation;
@@ -507,6 +508,7 @@ public class Workspace extends SmoothPagedView
             rotation = -scrollProgress * WORKSPACE_ROTATION;
             cur.setRotationY(rotation);
             cur.setScaleX(getScaleXForRotation(rotation));
+
             if (toLeft != null) {
                 rotation = WORKSPACE_ROTATION * (1 - scrollProgress);
                 toLeft.setRotationY(rotation);

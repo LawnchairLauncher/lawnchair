@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -90,6 +91,13 @@ public abstract class PagedView extends ViewGroup {
     private int mTouchSlop;
     private int mPagingTouchSlop;
     private int mMaximumVelocity;
+    protected int mPageSpacing;
+    protected int mPageLayoutPaddingTop;
+    protected int mPageLayoutPaddingBottom;
+    protected int mPageLayoutPaddingLeft;
+    protected int mPageLayoutPaddingRight;
+    protected int mCellCountX;
+    protected int mCellCountY;
 
     protected static final int INVALID_POINTER = -1;
 
@@ -167,6 +175,19 @@ public abstract class PagedView extends ViewGroup {
     public PagedView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mChoiceMode = CHOICE_MODE_NONE;
+
+        TypedArray a = context.obtainStyledAttributes(attrs,
+                R.styleable.PagedView, defStyle, 0);
+        mPageSpacing = a.getDimensionPixelSize(R.styleable.PagedView_pageSpacing, 0);
+        mPageLayoutPaddingTop = a.getDimensionPixelSize(
+                R.styleable.PagedView_pageLayoutPaddingTop, 10);
+        mPageLayoutPaddingBottom = a.getDimensionPixelSize(
+                R.styleable.PagedView_pageLayoutPaddingBottom, 10);
+        mPageLayoutPaddingLeft = a.getDimensionPixelSize(
+                R.styleable.PagedView_pageLayoutPaddingLeft, 10);
+        mPageLayoutPaddingRight = a.getDimensionPixelSize(
+                R.styleable.PagedView_pageLayoutPaddingRight, 10);
+        a.recycle();
 
         setHapticFeedbackEnabled(false);
         init();
@@ -359,7 +380,7 @@ public abstract class PagedView extends ViewGroup {
                 final int childHeight = (getMeasuredHeight() - child.getMeasuredHeight()) / 2;
                 child.layout(childLeft, childHeight,
                         childLeft + childWidth, childHeight + child.getMeasuredHeight());
-                childLeft += childWidth;
+                childLeft += childWidth + mPageSpacing;
             }
         }
     }
@@ -387,6 +408,7 @@ public abstract class PagedView extends ViewGroup {
                             d += getChildAt(i + 1).getMeasuredWidth() / 2;
                         }
                     }
+                    d += mPageSpacing;
 
                     float dimAlpha = (float) (Math.abs(distanceFromScreenCenter)) / d;
                     dimAlpha = Math.max(0.0f, Math.min(1.0f, (dimAlpha * dimAlpha)));
@@ -433,7 +455,7 @@ public abstract class PagedView extends ViewGroup {
             int rightScreen = 0;
             while (x <= mScrollX) {
                 leftScreen++;
-                x += pageWidth;
+                x += pageWidth + mPageSpacing;
                 // replace above line with this if you don't assume all pages have same width as 0th
                 // page:
                 // x += getChildAt(leftScreen).getMeasuredWidth();
@@ -441,7 +463,7 @@ public abstract class PagedView extends ViewGroup {
             rightScreen = leftScreen;
             while (x < mScrollX + screenWidth) {
                 rightScreen++;
-                x += pageWidth;
+                x += pageWidth + mPageSpacing;
                 // replace above line with this if you don't assume all pages have same width as 0th
                 // page:
                 //if (rightScreen < pageCount) {
@@ -874,13 +896,14 @@ public abstract class PagedView extends ViewGroup {
 
     protected int getChildIndexForRelativeOffset(int relativeOffset) {
         final int childCount = getChildCount();
-        int left = getRelativeChildOffset(0);
+        int left;
+        int right;
         for (int i = 0; i < childCount; ++i) {
-            final int right = (left + getChildAt(i).getMeasuredWidth());
+            left = getRelativeChildOffset(i);
+            right = (left + getChildAt(i).getMeasuredWidth());
             if (left <= relativeOffset && relativeOffset <= right) {
                 return i;
             }
-            left = right;
         }
         return -1;
     }
@@ -895,7 +918,7 @@ public abstract class PagedView extends ViewGroup {
 
         int offset = getRelativeChildOffset(0);
         for (int i = 0; i < index; ++i) {
-            offset += getChildAt(i).getMeasuredWidth();
+            offset += getChildAt(i).getMeasuredWidth() + mPageSpacing;
         }
         return offset;
     }

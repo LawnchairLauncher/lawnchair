@@ -226,8 +226,10 @@ public class CellLayout extends ViewGroup implements Dimmable {
             } else {
                 bg = mBackground;
             }
-            bg.setAlpha((int) (mBackgroundAlpha * 255));
-            bg.draw(canvas);
+            if (bg != null) {
+                bg.setAlpha((int) (mBackgroundAlpha * 255));
+                bg.draw(canvas);
+            }
         }
         super.dispatchDraw(canvas);
     }
