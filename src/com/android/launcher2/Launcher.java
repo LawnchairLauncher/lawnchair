@@ -1484,6 +1484,7 @@ public final class Launcher extends Activity
 
             Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
             pickIntent.putExtra(Intent.EXTRA_INTENT, mainIntent);
+            pickIntent.putExtra(Intent.EXTRA_TITLE, getText(R.string.title_select_application));
             startActivityForResultSafely(pickIntent, REQUEST_PICK_APPLICATION);
         } else {
             startActivityForResultSafely(intent, REQUEST_CREATE_SHORTCUT);
