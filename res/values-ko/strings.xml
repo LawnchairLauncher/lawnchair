@@ -46,6 +46,8 @@
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"바로가기(\'<xliff:g id="NAME">%s</xliff:g>\')가 삭제되었습니다."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"바로가기(\'<xliff:g id="NAME">%s</xliff:g>\')가 이미 있습니다."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"바로가기 선택"</string>
+    <!-- no translation found for title_select_application (8031072293115454221) -->
+    <skip />
     <string name="title_select_live_folder" msgid="3753447798805166749">"폴더 선택"</string>
     <string name="all_apps_button_label" msgid="3953036962111614813">"모든 애플리케이션"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"홈"</string>

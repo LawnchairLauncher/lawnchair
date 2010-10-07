@@ -46,6 +46,8 @@
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Fjernet snarveien «<xliff:g id="NAME">%s</xliff:g>»."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Snarveien «<xliff:g id="NAME">%s</xliff:g>» fins allerede."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Velg snarvei"</string>
+    <!-- no translation found for title_select_application (8031072293115454221) -->
+    <skip />
     <string name="title_select_live_folder" msgid="3753447798805166749">"Velg mappe"</string>
     <string name="all_apps_button_label" msgid="3953036962111614813">"Alle programmer"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Startsiden"</string>

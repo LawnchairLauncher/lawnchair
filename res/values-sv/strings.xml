@@ -46,6 +46,8 @@
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Genvägen \"<xliff:g id="NAME">%s</xliff:g>\" har tagits bort."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Genvägen \"<xliff:g id="NAME">%s</xliff:g>\" finns redan."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Välj genväg"</string>
+    <!-- no translation found for title_select_application (8031072293115454221) -->
+    <skip />
     <string name="title_select_live_folder" msgid="3753447798805166749">"Välj mapp"</string>
     <string name="all_apps_button_label" msgid="3953036962111614813">"Alla program"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Startsida"</string>
