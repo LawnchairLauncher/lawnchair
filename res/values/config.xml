@@ -5,6 +5,8 @@
     <integer name="config_allAppsBatchSize">0</integer>
     <bool name="config_hardwareAccelerated">false</bool>
 
+    <integer name="config_crosshairsFadeInTime">600</integer>
+
     <!--  When dragging an item on the workspace, how much bigger (in pixels) the dragged view
           should be, as compared to the original view. If 0, it will not be scaled at all.
           Should be an even number, for pixel alignment. -->
@@ -15,4 +17,11 @@
          Setting to 1/2 of config_dragViewExtraPixels keeps it centered on its old position. -->
     <integer name="config_dragViewOffsetX">20</integer>
     <integer name="config_dragViewOffsetY">20</integer>
+
+    <!-- The duration (in ms) of the fade animation on the object outlines, used when
+         we are dragging objects around on the home screen. -->
+    <integer name="config_dragOutlineFadeTime">900</integer>
+
+    <!-- The alpha value at which to show the most recent drop visualization outline. -->
+    <integer name="config_dragOutlineMaxAlpha">180</integer>
 </resources>

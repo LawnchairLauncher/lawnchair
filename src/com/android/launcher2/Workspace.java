@@ -33,9 +33,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Camera;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -77,9 +75,6 @@ public class Workspace extends SmoothPagedView
     private static final int BACKGROUND_FADE_OUT_DELAY = 300;
     private static final int BACKGROUND_FADE_OUT_DURATION = 300;
     private static final int BACKGROUND_FADE_IN_DURATION = 100;
-
-    static final int SCROLL_RIGHT = 0;
-    static final int SCROLL_LEFT = 1;
 
     // These animators are used to fade the
     private ObjectAnimator<Float> mBackgroundFadeIn;
@@ -126,10 +121,13 @@ public class Workspace extends SmoothPagedView
     private Drawable mPreviousIndicator;
     private Drawable mNextIndicator;
 
-    // State variable that indicated whether the pages are small (ie when you're
+    // State variable that indicates whether the pages are small (ie when you're
     // in all apps or customize mode)
-    private boolean mIsSmall;
+    private boolean mIsSmall = false;
+    private boolean mIsInUnshrinkAnimation = false;
     private AnimatorListener mUnshrinkAnimationListener;
+
+    private boolean mInScrollArea = false;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -182,9 +180,11 @@ public class Workspace extends SmoothPagedView
         mIconCache = app.getIconCache();
 
         mUnshrinkAnimationListener = new AnimatorListener() {
-            public void onAnimationStart(Animator animation) {}
+            public void onAnimationStart(Animator animation) {
+                mIsInUnshrinkAnimation = true;
+            }
             public void onAnimationEnd(Animator animation) {
-                mIsSmall = false;
+                mIsInUnshrinkAnimation = false;
             }
             public void onAnimationCancel(Animator animation) {}
             public void onAnimationRepeat(Animator animation) {}
@@ -364,7 +364,7 @@ public class Workspace extends SmoothPagedView
 
     public boolean onTouch(View v, MotionEvent event) {
         // this is an intercepted event being forwarded from a cell layout
-        if (mIsSmall) {
+        if (mIsSmall || mIsInUnshrinkAnimation) {
             mLauncher.onWorkspaceClick((CellLayout) v);
             return true;
         }
@@ -373,7 +373,7 @@ public class Workspace extends SmoothPagedView
 
     @Override
     public boolean dispatchUnhandledMove(View focused, int direction) {
-        if (mIsSmall) {
+        if (mIsSmall || mIsInUnshrinkAnimation) {
             // when the home screens are shrunken, shouldn't allow side-scrolling
             return false;
         }
@@ -382,14 +382,14 @@ public class Workspace extends SmoothPagedView
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (mIsSmall) {
+        if (mIsSmall || mIsInUnshrinkAnimation) {
             // when the home screens are shrunken, shouldn't allow side-scrolling
             return false;
         }
         return super.onInterceptTouchEvent(ev);
     }
 
-    protected void pageBeginMoving() {
+    protected void onPageBeginMoving() {
         if (mNextPage != INVALID_PAGE) {
             // we're snapping to a particular screen
             enableChildrenCache(mCurrentPage, mNextPage);
@@ -401,9 +401,13 @@ public class Workspace extends SmoothPagedView
         showOutlines();
     }
 
-    protected void pageEndMoving() {
+    protected void onPageEndMoving() {
         clearChildrenCache();
-        hideOutlines();
+
+        // Hide the outlines, as long as we're not dragging
+        if (!mDragController.dragging()) {
+            hideOutlines();
+        }
     }
 
     @Override
@@ -500,11 +504,11 @@ public class Workspace extends SmoothPagedView
                 getRelativeChildOffset(mCurrentPage) + halfScreenSize);
 
         float scrollProgress = Math.abs(delta/(pageWidth*1.0f + mPageSpacing));
-        int scrollDirection = delta > 0 ? SCROLL_LEFT : SCROLL_RIGHT;
+        boolean scrollRight = (delta <= 0);
 
         float rotation;
 
-        if (scrollDirection == SCROLL_RIGHT) {
+        if (scrollRight) {
             rotation = -scrollProgress * WORKSPACE_ROTATION;
             cur.setRotationY(rotation);
             cur.setScaleX(getScaleXForRotation(rotation));
@@ -561,7 +565,7 @@ public class Workspace extends SmoothPagedView
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        if (mIsSmall) {
+        if (mIsSmall || mIsInUnshrinkAnimation) {
             // Draw all the workspaces if we're small
             final int pageCount = getChildCount();
             final long drawingTime = getDrawingTime();
@@ -787,10 +791,8 @@ public class Workspace extends SmoothPagedView
                 CellLayout cl = (CellLayout) getChildAt(i);
                 cl.setX(cl.getX() + delta);
             }
-            snapToPage(newCurrentPage);
-            unshrink();
-
             setCurrentPage(newCurrentPage);
+            unshrink();
         }
     }
 
@@ -800,6 +802,7 @@ public class Workspace extends SmoothPagedView
 
     void unshrink(boolean animated) {
         if (mIsSmall) {
+            mIsSmall = false;
             AnimatorSet s = new AnimatorSet();
             final int screenCount = getChildCount();
 
@@ -877,7 +880,7 @@ public class Workspace extends SmoothPagedView
         CellLayout cellLayout;
         int originX = x - xOffset;
         int originY = y - yOffset;
-        if (mIsSmall) {
+        if (mIsSmall || mIsInUnshrinkAnimation) {
             cellLayout = findMatchingPageForDragOver(dragView, originX, originY);
             if (cellLayout == null) {
                 // cancel the drag if we're not over a mini-screen at time of drop
@@ -933,12 +936,13 @@ public class Workspace extends SmoothPagedView
     public void onDragEnter(DragSource source, int x, int y, int xOffset,
             int yOffset, DragView dragView, Object dragInfo) {
         getCurrentDropLayout().onDragEnter(dragView);
+        showOutlines();
     }
 
     public DropTarget getDropTargetDelegate(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
 
-        if (mIsSmall) {
+        if (mIsSmall || mIsInUnshrinkAnimation) {
             // If we're shrunken, don't let anyone drag on folders/etc  that are on the mini-screens
             return null;
         }
@@ -1050,6 +1054,7 @@ public class Workspace extends SmoothPagedView
                 mDragTargetLayout.onDragExit();
             }
             mDragTargetLayout = bestMatchingScreen;
+            // TODO: Should we be calling mDragTargetLayout.onDragEnter() here?
         }
         return bestMatchingScreen;
     }
@@ -1059,7 +1064,7 @@ public class Workspace extends SmoothPagedView
         CellLayout currentLayout;
         int originX = x - xOffset;
         int originY = y - yOffset;
-        if (mIsSmall) {
+        if (mIsSmall || mIsInUnshrinkAnimation) {
             currentLayout = findMatchingPageForDragOver(dragView, originX, originY);
 
             if (currentLayout == null) {
@@ -1103,23 +1108,27 @@ public class Workspace extends SmoothPagedView
                 }
             }
         }
-        if (currentLayout != mDragTargetLayout) {
-            if (mDragTargetLayout != null) {
-                mDragTargetLayout.onDragExit();
-                currentLayout.onDragEnter(dragView);
-            }
-            mDragTargetLayout = currentLayout;
-        }
 
-        // only visualize the drop locations for moving icons within the home screen on tablet
-        // on phone, we also visualize icons dragged in from All Apps
-        if ((!LauncherApplication.isScreenXLarge() || source == this)
-                && mDragTargetLayout != null) {
-            final View child = (mDragInfo == null) ? null : mDragInfo.cell;
-            int localOriginX = originX - (mDragTargetLayout.getLeft() - mScrollX);
-            int localOriginY = originY - (mDragTargetLayout.getTop() - mScrollY);
-            mDragTargetLayout.visualizeDropLocation(
-                    child, localOriginX, localOriginY, item.spanX, item.spanY);
+        // When touch is inside the scroll area, skip dragOver actions for the current screen
+        if (!mInScrollArea) {
+            if (currentLayout != mDragTargetLayout) {
+                if (mDragTargetLayout != null) {
+                    mDragTargetLayout.onDragExit();
+                }
+                currentLayout.onDragEnter(dragView);
+                mDragTargetLayout = currentLayout;
+            }
+
+            // only visualize the drop locations for moving icons within the home screen on tablet
+            // on phone, we also visualize icons dragged in from All Apps
+            if ((!LauncherApplication.isScreenXLarge() || source == this)
+                    && mDragTargetLayout != null) {
+                final View child = (mDragInfo == null) ? null : mDragInfo.cell;
+                int localOriginX = originX - (mDragTargetLayout.getLeft() - mScrollX);
+                int localOriginY = originY - (mDragTargetLayout.getTop() - mScrollY);
+                mDragTargetLayout.visualizeDropLocation(
+                        child, localOriginX, localOriginY, item.spanX, item.spanY);
+            }
         }
     }
 
@@ -1128,6 +1137,9 @@ public class Workspace extends SmoothPagedView
         if (mDragTargetLayout != null) {
             mDragTargetLayout.onDragExit();
             mDragTargetLayout = null;
+        }
+        if (!mIsPageMoving) {
+            hideOutlines();
         }
     }
 
@@ -1246,7 +1258,7 @@ public class Workspace extends SmoothPagedView
     public boolean acceptDrop(DragSource source, int x, int y,
             int xOffset, int yOffset, DragView dragView, Object dragInfo) {
         CellLayout layout;
-        if (mIsSmall) {
+        if (mIsSmall || mIsInUnshrinkAnimation) {
             layout = findMatchingPageForDragOver(dragView, x - xOffset, y - yOffset);
             if (layout == null) {
                 // cancel the drag if we're not over a mini-screen at time of drop
@@ -1330,15 +1342,38 @@ public class Workspace extends SmoothPagedView
 
     @Override
     public void scrollLeft() {
-        if (!mIsSmall) {
+        if (!mIsSmall && !mIsInUnshrinkAnimation) {
             super.scrollLeft();
         }
     }
 
     @Override
     public void scrollRight() {
-        if (!mIsSmall) {
+        if (!mIsSmall && !mIsInUnshrinkAnimation) {
             super.scrollRight();
+        }
+    }
+
+    @Override
+    public void onEnterScrollArea(int direction) {
+        mInScrollArea = true;
+        final int screen = getCurrentPage() + ((direction == DragController.SCROLL_LEFT) ? -1 : 1);
+        if (0 <= screen && screen < getChildCount()) {
+            ((CellLayout) getChildAt(screen)).setHover(true);
+        }
+
+        if (mDragTargetLayout != null) {
+            mDragTargetLayout.onDragExit();
+            mDragTargetLayout = null;
+        }
+    }
+
+    @Override
+    public void onExitScrollArea() {
+        mInScrollArea = false;
+        final int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            ((CellLayout) getChildAt(i)).setHover(false);
         }
     }
 
@@ -1525,12 +1560,10 @@ public class Workspace extends SmoothPagedView
     }
 
     void moveToDefaultScreen(boolean animate) {
-        if (animate) {
-            if (mIsSmall) {
-                unshrink(mDefaultPage);
-            } else {
-                snapToPage(mDefaultPage);
-            }
+        if (mIsSmall || mIsInUnshrinkAnimation) {
+            mLauncher.showWorkspace(animate, (CellLayout)getChildAt(mDefaultPage));
+        } else if (animate) {
+            snapToPage(mDefaultPage);
         } else {
             setCurrentPage(mDefaultPage);
         }

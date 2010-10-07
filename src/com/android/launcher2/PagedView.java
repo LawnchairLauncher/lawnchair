@@ -133,6 +133,8 @@ public abstract class PagedView extends ViewGroup {
     // (SmoothPagedView does this)
     protected boolean mDeferScrollUpdate = false;
 
+    protected boolean mIsPageMoving = false;
+
     /**
      * Simple cache mechanism for PagedViewIcon outlines.
      */
@@ -157,11 +159,6 @@ public abstract class PagedView extends ViewGroup {
 
     public interface PageSwitchListener {
         void onPageSwitch(View newPage, int newPageIndex);
-    }
-
-    public interface PageMovingListener {
-        void onPageBeginMoving();
-        void onPageEndMoving();
     }
 
     public PagedView(Context context) {
@@ -245,7 +242,9 @@ public abstract class PagedView extends ViewGroup {
         if (getChildCount() == 0) return;
 
         mCurrentPage = Math.max(0, Math.min(currentPage, getPageCount() - 1));
-        scrollTo(getChildOffset(mCurrentPage) - getRelativeChildOffset(mCurrentPage), 0);
+        int newX = getChildOffset(mCurrentPage) - getRelativeChildOffset(mCurrentPage);
+        scrollTo(newX, 0);
+        mScroller.setFinalX(newX);
 
         invalidate();
         notifyPageSwitchListener();
@@ -257,12 +256,22 @@ public abstract class PagedView extends ViewGroup {
         }
     }
 
-    // a method that subclasses can override to add behavior
-    protected void pageBeginMoving() {
+    private void pageBeginMoving() {
+        mIsPageMoving = true;
+        onPageBeginMoving();
+    }
+
+    private void pageEndMoving() {
+        onPageEndMoving();
+        mIsPageMoving = false;
     }
 
     // a method that subclasses can override to add behavior
-    protected void pageEndMoving() {
+    protected void onPageBeginMoving() {
+    }
+
+    // a method that subclasses can override to add behavior
+    protected void onPageEndMoving() {
     }
 
     /**
@@ -657,12 +666,9 @@ public abstract class PagedView extends ViewGroup {
 
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                // Release the drag
-                pageEndMoving();
                 mTouchState = TOUCH_STATE_REST;
                 mAllowLongPress = false;
                 mActivePointerId = INVALID_POINTER;
-
                 break;
 
             case MotionEvent.ACTION_POINTER_UP:

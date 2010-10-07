@@ -41,8 +41,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.LayoutAnimationController;
 
-import java.util.Arrays;
-
 public class CellLayout extends ViewGroup implements Dimmable {
     static final String TAG = "CellLayout";
 
@@ -75,12 +73,13 @@ public class CellLayout extends ViewGroup implements Dimmable {
     private OnTouchListener mInterceptTouchListener;
 
     private float mBackgroundAlpha;
-    private final Rect mBackgroundLayoutRect = new Rect();
 
     private Drawable mBackground;
     private Drawable mBackgroundMini;
     private Drawable mBackgroundMiniHover;
-    // If we're actively dragging something over this screen and it's small, mHover is true
+    private Drawable mBackgroundHover;
+
+    // If we're actively dragging something over this screen, mHover is true
     private boolean mHover = false;
 
     private final Point mDragCenter = new Point();
@@ -145,57 +144,59 @@ public class CellLayout extends ViewGroup implements Dimmable {
 
         mWallpaperManager = WallpaperManager.getInstance(context);
 
-        if (LauncherApplication.isScreenXLarge()) {
-            final Resources res = getResources();
+        final Resources res = getResources();
 
+        if (LauncherApplication.isScreenXLarge()) {
             mBackgroundMini = res.getDrawable(R.drawable.mini_home_screen_bg);
             mBackgroundMini.setFilterBitmap(true);
             mBackground = res.getDrawable(R.drawable.home_screen_bg);
             mBackground.setFilterBitmap(true);
             mBackgroundMiniHover = res.getDrawable(R.drawable.mini_home_screen_bg_hover);
             mBackgroundMiniHover.setFilterBitmap(true);
+            mBackgroundHover = res.getDrawable(R.drawable.home_screen_bg_hover);
+            mBackgroundHover.setFilterBitmap(true);
+        }
 
-            // Initialize the data structures used for the drag visualization.
+        // Initialize the data structures used for the drag visualization.
 
-            mDragRectDrawable = res.getDrawable(R.drawable.rounded_rect_green);
-            mCrosshairsDrawable = res.getDrawable(R.drawable.gardening_crosshairs);
-            Interpolator interp = new DecelerateInterpolator(2.5f); // Quint ease out
+        mDragRectDrawable = res.getDrawable(R.drawable.rounded_rect_green);
+        mCrosshairsDrawable = res.getDrawable(R.drawable.gardening_crosshairs);
+        Interpolator interp = new DecelerateInterpolator(2.5f); // Quint ease out
 
-            // Set up the animation for fading the crosshairs in and out
-            int animDuration = res.getInteger(R.integer.config_crosshairsFadeInTime);
-            mCrosshairsAnimator = new ValueAnimator<Float>(animDuration);
-            mCrosshairsAnimator.addUpdateListener(new AnimatorUpdateListener() {
+        // Set up the animation for fading the crosshairs in and out
+        int animDuration = res.getInteger(R.integer.config_crosshairsFadeInTime);
+        mCrosshairsAnimator = new ValueAnimator<Float>(animDuration);
+        mCrosshairsAnimator.addUpdateListener(new AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mCrosshairsVisibility = ((Float) animation.getAnimatedValue()).floatValue();
+                CellLayout.this.invalidate();
+            }
+        });
+        mCrosshairsAnimator.setInterpolator(interp);
+
+        for (int i = 0; i < mDragRects.length; i++) {
+            mDragRects[i] = new Rect();
+        }
+
+        // When dragging things around the home screens, we show a green outline of
+        // where the item will land. The outlines gradually fade out, leaving a trail
+        // behind the drag path.
+        // Set up all the animations that are used to implement this fading.
+        final int duration = res.getInteger(R.integer.config_dragOutlineFadeTime);
+        final int fromAlphaValue = 0;
+        final int toAlphaValue = res.getInteger(R.integer.config_dragOutlineMaxAlpha);
+        for (int i = 0; i < mDragRectAnims.length; i++) {
+            final InterruptibleInOutAnimator anim =
+                new InterruptibleInOutAnimator(duration, fromAlphaValue, toAlphaValue);
+            anim.setInterpolator(interp);
+            final int thisIndex = i;
+            anim.addUpdateListener(new AnimatorUpdateListener() {
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    mCrosshairsVisibility = ((Float) animation.getAnimatedValue()).floatValue();
-                    CellLayout.this.invalidate();
+                    mDragRectAlphas[thisIndex] = (Integer) animation.getAnimatedValue();
+                    CellLayout.this.invalidate(mDragRects[thisIndex]);
                 }
             });
-            mCrosshairsAnimator.setInterpolator(interp);
-
-            for (int i = 0; i < mDragRects.length; i++) {
-                mDragRects[i] = new Rect();
-            }
-
-            // When dragging things around the home screens, we show a green outline of
-            // where the item will land. The outlines gradually fade out, leaving a trail
-            // behind the drag path.
-            // Set up all the animations that are used to implement this fading.
-            final int duration = res.getInteger(R.integer.config_dragOutlineFadeTime);
-            final int fromAlphaValue = 0;
-            final int toAlphaValue = res.getInteger(R.integer.config_dragOutlineMaxAlpha);
-            for (int i = 0; i < mDragRectAnims.length; i++) {
-                final InterruptibleInOutAnimator anim =
-                    new InterruptibleInOutAnimator(duration, fromAlphaValue, toAlphaValue);
-                anim.setInterpolator(interp);
-                final int thisIndex = i;
-                anim.addUpdateListener(new AnimatorUpdateListener() {
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        mDragRectAlphas[thisIndex] = (Integer) animation.getAnimatedValue();
-                        CellLayout.this.invalidate(mDragRects[thisIndex]);
-                    }
-                });
-                mDragRectAnims[i] = anim;
-            }
+            mDragRectAnims[i] = anim;
         }
     }
 
@@ -215,27 +216,25 @@ public class CellLayout extends ViewGroup implements Dimmable {
         anim.start();
     }
 
+    public void drawChildren(Canvas canvas) {
+        super.dispatchDraw(canvas);
+    }
+
     @Override
-    public void dispatchDraw(Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
         if (mBackgroundAlpha > 0.0f) {
             Drawable bg;
-            if (mHover && getScaleX() < 0.5f) {
-                bg = mBackgroundMiniHover;
-            } else if (getScaleX() < 0.5f) {
-                bg = mBackgroundMini;
+            if (getScaleX() < 0.5f) {
+                bg = mHover ? mBackgroundMiniHover : mBackgroundMini;
             } else {
-                bg = mBackground;
+                bg = mHover ? mBackgroundHover : mBackground;
             }
             if (bg != null) {
                 bg.setAlpha((int) (mBackgroundAlpha * 255));
                 bg.draw(canvas);
             }
         }
-        super.dispatchDraw(canvas);
-    }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
         if (mCrosshairsVisibility > 0.0f) {
             final int countX = mCountX;
             final int countY = mCountY;
@@ -641,15 +640,17 @@ public class CellLayout extends ViewGroup implements Dimmable {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        mBackgroundLayoutRect.set(0, 0, w, h);
         if (mBackground != null) {
-            mBackground.setBounds(mBackgroundLayoutRect);
+            mBackground.setBounds(0, 0, w, h);
+        }
+        if (mBackgroundHover != null) {
+            mBackgroundHover.setBounds(0, 0, w, h);
         }
         if (mBackgroundMiniHover != null) {
-            mBackgroundMiniHover.setBounds(mBackgroundLayoutRect);
+            mBackgroundMiniHover.setBounds(0, 0, w, h);
         }
         if (mBackgroundMini != null) {
-            mBackgroundMini.setBounds(mBackgroundLayoutRect);
+            mBackgroundMini.setBounds(0, 0, w, h);
         }
     }
 
@@ -1016,7 +1017,6 @@ public class CellLayout extends ViewGroup implements Dimmable {
         mDragCell[1] = -1;
 
         setHover(false);
-        invalidate();
 
         // Fade out the drag indicators
         if (mCrosshairsAnimator != null) {

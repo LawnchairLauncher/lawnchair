@@ -175,6 +175,8 @@ public final class Launcher extends Activity
 
     /** The different states that Launcher can be in. */
     private enum State { WORKSPACE, ALL_APPS, CUSTOMIZE, OVERVIEW };
+    private State mState = State.WORKSPACE;
+    private AnimatorSet mStateAnimation;
 
     static final int APPWIDGET_HOST_ID = 1024;
 
@@ -239,7 +241,6 @@ public final class Launcher extends Activity
     private CharSequence[] mHotseatLabels = null;
 
     private Intent mAppMarketIntent = null;
-    private Intent mGlobalSearchIntent = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -931,21 +932,21 @@ public final class Launcher extends Activity
 
     @SuppressWarnings({"UnusedDeclaration"})
     public void previousScreen(View v) {
-        if (!isAllAppsVisible()) {
+        if (mState != State.ALL_APPS) {
             mWorkspace.scrollLeft();
         }
     }
 
     @SuppressWarnings({"UnusedDeclaration"})
     public void nextScreen(View v) {
-        if (!isAllAppsVisible()) {
+        if (mState != State.ALL_APPS) {
             mWorkspace.scrollRight();
         }
     }
 
     @SuppressWarnings({"UnusedDeclaration"})
     public void launchHotSeat(View v) {
-        if (isAllAppsVisible()) return;
+        if (mState == State.ALL_APPS) return;
 
         int index = -1;
         if (v.getId() == R.id.hotseat_left) {
@@ -1173,8 +1174,6 @@ public final class Launcher extends Activity
 
             boolean alreadyOnHome = ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
                         != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
-            boolean allAppsVisible = isAllAppsVisible();
-            boolean customizationDrawerVisible = isCustomizationDrawerVisible();
 
             // in all these cases, only animate if we're already on home
             if (LauncherApplication.isScreenXLarge()) {
@@ -1182,11 +1181,10 @@ public final class Launcher extends Activity
             }
             if (!mWorkspace.isDefaultPageShowing()) {
                 // on the phone, we don't animate the change to the workspace if all apps is visible
-                mWorkspace.moveToDefaultScreen(
-                        alreadyOnHome && (LauncherApplication.isScreenXLarge() || !allAppsVisible));
+                mWorkspace.moveToDefaultScreen(alreadyOnHome &&
+                        (LauncherApplication.isScreenXLarge() || mState != State.ALL_APPS));
             }
-            closeAllApps(alreadyOnHome && allAppsVisible);
-            hideCustomizationDrawer(alreadyOnHome);
+            showWorkspace(alreadyOnHome);
 
             final View v = getWindow().peekDecorView();
             if (v != null && v.getWindowToken() != null) {
@@ -1228,7 +1226,7 @@ public final class Launcher extends Activity
         }
 
         // TODO should not do this if the drawer is currently closing.
-        if (isAllAppsVisible()) {
+        if (mState == State.ALL_APPS) {
             outState.putBoolean(RUNTIME_STATE_ALL_APPS_FOLDER, true);
         }
 
@@ -1290,7 +1288,7 @@ public final class Launcher extends Activity
     public void startSearch(String initialQuery, boolean selectInitialQuery,
             Bundle appSearchData, boolean globalSearch) {
 
-        closeAllApps(true);
+        showWorkspace(true);
 
         if (initialQuery == null) {
             // Use any text typed in the launcher as the initial query
@@ -1408,11 +1406,11 @@ public final class Launcher extends Activity
     private void addItems() {
         if (LauncherApplication.isScreenXLarge()) {
             // Animate the widget chooser up from the bottom of the screen
-            if (!isCustomizationDrawerVisible()) {
+            if (mState != State.CUSTOMIZE) {
                 showCustomizationDrawer(true);
             }
         } else {
-            closeAllApps(true);
+            showWorkspace(true);
             showAddDialog(-1, -1);
         }
     }
@@ -1485,6 +1483,7 @@ public final class Launcher extends Activity
 
             Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
             pickIntent.putExtra(Intent.EXTRA_INTENT, mainIntent);
+            pickIntent.putExtra(Intent.EXTRA_TITLE, getText(R.string.title_select_application));
             startActivityForResultSafely(pickIntent, REQUEST_PICK_APPLICATION);
         } else {
             startActivityForResultSafely(intent, REQUEST_CREATE_SHORTCUT);
@@ -1614,7 +1613,7 @@ public final class Launcher extends Activity
     }
 
     private void startWallpaper() {
-        closeAllApps(true);
+        showWorkspace(true);
         final Intent pickWallpaper = new Intent(Intent.ACTION_SET_WALLPAPER);
         Intent chooser = Intent.createChooser(pickWallpaper,
                 getText(R.string.chooser_wallpaper));
@@ -1667,10 +1666,8 @@ public final class Launcher extends Activity
 
     @Override
     public void onBackPressed() {
-        if (isAllAppsVisible()) {
-            closeAllApps(true);
-        } else if (isCustomizationDrawerVisible()) {
-            hideCustomizationDrawer(true);
+        if (mState == State.ALL_APPS || mState == State.CUSTOMIZE) {
+            showWorkspace(true);
         } else {
             closeFolder();
         }
@@ -1736,8 +1733,8 @@ public final class Launcher extends Activity
         } else if (tag instanceof FolderInfo) {
             handleFolderClick((FolderInfo) tag);
         } else if (v == mHandleView) {
-            if (isAllAppsVisible()) {
-                closeAllApps(true);
+            if (mState == State.ALL_APPS) {
+                showWorkspace(true);
             } else {
                 showAllApps(true);
             }
@@ -1746,8 +1743,8 @@ public final class Launcher extends Activity
 
     public boolean onTouch(View v, MotionEvent event) {
         // this is an intercepted event being forwarded from mWorkspace;
-        // clicking anywhere on the workspace causes the drawer to slide down
-        hideCustomizationDrawer(true);
+        // clicking anywhere on the workspace causes the customization drawer to slide down
+        showWorkspace(true);
         return false;
     }
 
@@ -1757,13 +1754,7 @@ public final class Launcher extends Activity
      * @param v The view that was clicked.
      */
     public void onClickSearchButton(View v) {
-        if (mGlobalSearchIntent != null) {
-            View b = findViewById(R.id.search_button);
-            mGlobalSearchIntent.setSourceBounds(
-                    new Rect(b.getLeft(), b.getTop(), b.getRight(), b.getBottom()));
-            startActivitySafely(mGlobalSearchIntent, "global search");
-        }
-
+        startSearch(null, false, null, true);
     }
 
     /**
@@ -1899,21 +1890,21 @@ public final class Launcher extends Activity
     public boolean onLongClick(View v) {
         switch (v.getId()) {
             case R.id.previous_screen:
-                if (!isAllAppsVisible()) {
+                if (mState != State.ALL_APPS) {
                     mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                             HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                     showPreviews(v);
                 }
                 return true;
             case R.id.next_screen:
-                if (!isAllAppsVisible()) {
+                if (mState != State.ALL_APPS) {
                     mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                             HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                     showPreviews(v);
                 }
                 return true;
             case R.id.all_apps_button:
-                if (!isAllAppsVisible()) {
+                if (mState != State.ALL_APPS) {
                     mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                             HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                     showPreviews(v);
@@ -2035,7 +2026,7 @@ public final class Launcher extends Activity
             final Canvas c = new Canvas(bitmap);
             c.scale(scale, scale);
             c.translate(-cell.getLeftPadding(), -cell.getTopPadding());
-            cell.dispatchDraw(c);
+            cell.drawChildren(c);
 
             image.setBackgroundDrawable(resources.getDrawable(R.drawable.preview_background));
             image.setImageBitmap(bitmap);
@@ -2245,7 +2236,7 @@ public final class Launcher extends Activity
 
     // Now a part of LauncherModel.Callbacks. Used to reorder loading steps.
     public boolean isAllAppsVisible() {
-        return mAllAppsGrid != null && mAllAppsGrid.isVisible();
+        return mState == State.ALL_APPS;
     }
 
     // AllAppsView.Watcher
@@ -2407,14 +2398,15 @@ public final class Launcher extends Activity
             // toView should appear right at the end of the workspace shrink animation
             final int startDelay = res.getInteger(R.integer.config_workspaceShrinkTime) - duration;
 
-            AnimatorSet s = new AnimatorSet();
-            s.playTogether(scaleAnim, toolbarHideAnim);
-            s.play(scaleAnim).after(startDelay);
+            if (mStateAnimation != null) mStateAnimation.cancel();
+            mStateAnimation = new AnimatorSet();
+            mStateAnimation.playTogether(scaleAnim, toolbarHideAnim);
+            mStateAnimation.play(scaleAnim).after(startDelay);
 
             // Show the new toolbar buttons just as the main animation is ending
             final int fadeInTime = res.getInteger(R.integer.config_toolbarButtonFadeInTime);
-            s.play(toolbarShowAnim).after(duration + startDelay - fadeInTime);
-            s.start();
+            mStateAnimation.play(toolbarShowAnim).after(duration + startDelay - fadeInTime);
+            mStateAnimation.start();
         } else {
             toView.setTranslationX(0.0f);
             toView.setTranslationY(0.0f);
@@ -2446,12 +2438,13 @@ public final class Launcher extends Activity
         mWorkspace.unshrink(animated);
 
         if (animated) {
-            AnimatorSet s = new AnimatorSet();
+            if (mStateAnimation != null) mStateAnimation.cancel();
+            mStateAnimation = new AnimatorSet();
             ValueAnimator scaleAnim = new ObjectAnimator(duration, fromView,
                     new PropertyValuesHolder<Float>("scaleX", scaleFactor),
                     new PropertyValuesHolder<Float>("scaleY", scaleFactor));
             scaleAnim.setInterpolator(new AccelerateInterpolator());
-            s.addListener(new AnimatorListenerAdapter() {
+            mStateAnimation.addListener(new AnimatorListenerAdapter() {
                 public void onAnimationEnd(Animator animation) {
                     fromView.setVisibility(View.GONE);
                     fromView.setScaleX(1.0f);
@@ -2463,13 +2456,13 @@ public final class Launcher extends Activity
             AnimatorSet toolbarShowAnim = new AnimatorSet();
             hideAndShowToolbarButtons(State.WORKSPACE, toolbarShowAnim, toolbarHideAnim);
 
-            s.playTogether(scaleAnim, toolbarHideAnim);
+            mStateAnimation.playTogether(scaleAnim, toolbarHideAnim);
 
             // Show the new toolbar buttons at the very end of the whole animation
             final int fadeInTime = res.getInteger(R.integer.config_toolbarButtonFadeInTime);
             final int unshrinkTime = res.getInteger(R.integer.config_workspaceUnshrinkTime);
-            s.play(toolbarShowAnim).after(unshrinkTime - fadeInTime);
-            s.start();
+            mStateAnimation.play(toolbarShowAnim).after(unshrinkTime - fadeInTime);
+            mStateAnimation.start();
         } else {
             fromView.setVisibility(View.GONE);
             hideAndShowToolbarButtons(State.WORKSPACE, null, null);
@@ -2508,8 +2501,9 @@ public final class Launcher extends Activity
         }
 
         if (animated) {
-            AnimatorSet s = new AnimatorSet();
-            s.addListener(new AnimatorListenerAdapter() {
+            if (mStateAnimation != null) mStateAnimation.cancel();
+            mStateAnimation = new AnimatorSet();
+            mStateAnimation.addListener(new AnimatorListenerAdapter() {
                 public void onAnimationStart(Animator animation) {
                     toView.setVisibility(View.VISIBLE);
                     toView.setY(toViewStartY);
@@ -2523,15 +2517,15 @@ public final class Launcher extends Activity
             AnimatorSet toolbarShowAnim = new AnimatorSet();
             hideAndShowToolbarButtons(toState, toolbarShowAnim, toolbarHideAnim);
 
-            s.playTogether(
+            mStateAnimation.playTogether(
                     toolbarHideAnim,
                     new ObjectAnimator(duration, fromView, "y", fromViewStartY, fromViewEndY),
                     new ObjectAnimator(duration, toView, "y", toViewStartY, toViewEndY));
 
             // Show the new toolbar buttons just as the main animation is ending
             final int fadeInTime = res.getInteger(R.integer.config_toolbarButtonFadeInTime);
-            s.play(toolbarShowAnim).after(duration - fadeInTime);
-            s.start();
+            mStateAnimation.play(toolbarShowAnim).after(duration - fadeInTime);
+            mStateAnimation.start();
         } else {
             fromView.setY(fromViewEndY);
             fromView.setVisibility(View.GONE);
@@ -2542,11 +2536,11 @@ public final class Launcher extends Activity
     }
 
     void showAllApps(boolean animated) {
-        if (mAllAppsGrid.isVisible())
+        if (mState == State.ALL_APPS)
             return;
 
         if (LauncherApplication.isScreenXLarge()) {
-            if (isCustomizationDrawerVisible()) {
+            if (mState == State.CUSTOMIZE) {
                 cameraPan(State.CUSTOMIZE, State.ALL_APPS, animated);
             } else {
                 cameraZoomOut(State.ALL_APPS, animated);
@@ -2560,6 +2554,28 @@ public final class Launcher extends Activity
 
         // TODO: fade these two too
         mDeleteZone.setVisibility(View.GONE);
+        // Change the state *after* we've called all the transition code
+        mState = State.ALL_APPS;
+    }
+
+
+    void showWorkspace(boolean animated) {
+        showWorkspace(animated, null);
+    }
+
+    void showWorkspace(boolean animated, CellLayout layout) {
+        if (layout != null && animated) {
+            mWorkspace.unshrink(layout);
+        } else {
+            mWorkspace.unshrink(animated);
+        }
+        if (mState == State.ALL_APPS) {
+            closeAllApps(animated);
+        } else if (mState == State.CUSTOMIZE) {
+            hideCustomizationDrawer(animated);
+        }
+        // Change the state *after* we've called all the transition code
+        mState = State.WORKSPACE;
     }
 
     /**
@@ -2602,7 +2618,7 @@ public final class Launcher extends Activity
      *          - From another workspace
      */
     void closeAllApps(boolean animated) {
-        if (mAllAppsGrid.isVisible()) {
+        if (mState == State.ALL_APPS) {
             mWorkspace.setVisibility(View.VISIBLE);
             if (LauncherApplication.isScreenXLarge()) {
                 cameraZoomIn(State.ALL_APPS, animated);
@@ -2622,23 +2638,20 @@ public final class Launcher extends Activity
         // TODO
     }
 
-    private boolean isCustomizationDrawerVisible() {
-        return mHomeCustomizationDrawer != null &&
-                mHomeCustomizationDrawer.getVisibility() == View.VISIBLE;
-    }
-
     // Show the customization drawer (only exists in x-large configuration)
     private void showCustomizationDrawer(boolean animated) {
-        if (isAllAppsVisible()) {
+        if (mState == State.ALL_APPS) {
             cameraPan(State.ALL_APPS, State.CUSTOMIZE, animated);
         } else {
             cameraZoomOut(State.CUSTOMIZE, animated);
         }
+        // Change the state *after* we've called all the transition code
+        mState = State.CUSTOMIZE;
     }
 
     // Hide the customization drawer (only exists in x-large configuration)
     void hideCustomizationDrawer(boolean animated) {
-        if (isCustomizationDrawerVisible()) {
+        if (mState == State.CUSTOMIZE) {
             cameraZoomIn(State.CUSTOMIZE, animated);
         }
     }
@@ -2651,12 +2664,7 @@ public final class Launcher extends Activity
 
         if (itemInfo == null) {
             // No items are chosen in All Apps or Customize, so just zoom into the workspace
-            mWorkspace.unshrink(layout);
-            if (isAllAppsVisible()) {
-                closeAllApps(true);
-            } else if (isCustomizationDrawerVisible()) {
-                hideCustomizationDrawer(true);
-            }
+            showWorkspace(true, layout);
         } else {
             // Act as if the chosen item was dropped on the given CellLayout
             if (mWorkspace.addExternalItemToScreen(itemInfo, layout)) {
@@ -2668,56 +2676,60 @@ public final class Launcher extends Activity
         }
     }
 
-    /* Core logic for updating market and search button icons. Intent is used to resolve which
-     * activity to ask for an icon. Returns intent to launch the activity, or null if it wasn't
-     * resolved */
-    private Intent updateExternalIcon(int buttonId, Intent intent, int fallbackDrawableId) {
-        if (LauncherApplication.isScreenXLarge()) {
-            // Find the app market activity by resolving an intent.
-            // (If multiple app markets are installed, it will return the ResolverActivity.)
+    private void updateButtonWithIconFromExternalActivity(
+            int buttonId, ComponentName activityName, int fallbackDrawableId) {
+        ImageView button = (ImageView) findViewById(buttonId);
+        Drawable toolbarIcon = null;
+        try {
             PackageManager packageManager = getPackageManager();
-            ComponentName activityName = intent.resolveActivity(getPackageManager());
+            // Look for the toolbar icon specified in the activity meta-data
+            Bundle metaData = packageManager.getActivityInfo(
+                    activityName, PackageManager.GET_META_DATA).metaData;
+            if (metaData != null) {
+                int iconResId = metaData.getInt(TOOLBAR_ICON_METADATA_NAME);
+                if (iconResId != 0) {
+                    Resources res = packageManager.getResourcesForActivity(activityName);
+                    toolbarIcon = res.getDrawable(iconResId);
+                }
+            }
+        } catch (NameNotFoundException e) {
+            // Do nothing
+        }
+        // If we were unable to find the icon via the meta-data, use a generic one
+        if (toolbarIcon == null) {
+            button.setImageResource(fallbackDrawableId);
+        } else {
+            button.setImageDrawable(toolbarIcon);
+        }
+    }
+
+    private void updateGlobalSearchIcon() {
+        if (LauncherApplication.isScreenXLarge()) {
+            final SearchManager searchManager =
+                    (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+            ComponentName activityName = searchManager.getGlobalSearchActivity();
             if (activityName != null) {
-                ImageView button = (ImageView) findViewById(buttonId);
-                Drawable toolbarIcon = null;
-                try {
-                    // Look for the toolbar icon specified in the activity meta-data
-                    Bundle metaData = packageManager.getActivityInfo(
-                            activityName, PackageManager.GET_META_DATA).metaData;
-                    if (metaData != null) {
-                        int iconResId = metaData.getInt(TOOLBAR_ICON_METADATA_NAME);
-                        if (iconResId != 0) {
-                            Resources res = packageManager.getResourcesForActivity(activityName);
-                            toolbarIcon = res.getDrawable(iconResId);
-                        }
-                    }
-                } catch (NameNotFoundException e) {
-                    // Do nothing
-                }
-                // If we were unable to find the icon via the meta-data, use a generic one
-                if (toolbarIcon == null) {
-                    button.setImageResource(fallbackDrawableId);
-                } else {
-                    button.setImageDrawable(toolbarIcon);
-                }
-                return intent;
+                updateButtonWithIconFromExternalActivity(
+                        R.id.search_button, activityName, R.drawable.search_button_generic);
             }
         }
-        return null;
     }
+
     /**
      * Sets the app market icon (shown when all apps is visible on x-large screens)
      */
     private void updateAppMarketIcon() {
-        Intent intent = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_MARKET);
-        mAppMarketIntent = updateExternalIcon(
-                R.id.market_button, intent, R.drawable.app_market_generic);
-    }
-
-    private void updateGlobalSearchIcon() {
-        Intent intent = new Intent(SearchManager.INTENT_ACTION_GLOBAL_SEARCH);
-        mGlobalSearchIntent = updateExternalIcon(
-                R.id.search_button, intent, R.drawable.search_button_generic);
+        if (LauncherApplication.isScreenXLarge()) {
+            Intent intent = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_MARKET);
+            // Find the app market activity by resolving an intent.
+            // (If multiple app markets are installed, it will return the ResolverActivity.)
+            ComponentName activityName = intent.resolveActivity(getPackageManager());
+            if (activityName != null) {
+                mAppMarketIntent = intent;
+                updateButtonWithIconFromExternalActivity(
+                        R.id.market_button, activityName, R.drawable.app_market_generic);
+            }
+        }
     }
 
     /**
@@ -2836,8 +2848,7 @@ public final class Launcher extends Activity
                 if (mPaused || "lock".equals(reason)) {
                     animate = false;
                 }
-                closeAllApps(animate);
-                hideCustomizationDrawer(animate);
+                showWorkspace(animate);
             }
         }
     }
