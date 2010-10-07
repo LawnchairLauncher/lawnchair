@@ -46,6 +46,8 @@
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Genvejen \"<xliff:g id="NAME">%s</xliff:g>\" blev fjernet."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Genvejen \"<xliff:g id="NAME">%s</xliff:g>\" findes allerede."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Vælg genvej"</string>
+    <!-- no translation found for title_select_application (8031072293115454221) -->
+    <skip />
     <string name="title_select_live_folder" msgid="3753447798805166749">"Vælg mappe"</string>
     <string name="all_apps_button_label" msgid="3953036962111614813">"Alle programmer"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Start"</string>
