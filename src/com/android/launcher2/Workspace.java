@@ -110,10 +110,14 @@ public class Workspace extends SmoothPagedView
     private IconCache mIconCache;
     private DragController mDragController;
 
+    // These are temporary variables to prevent having to allocate a new object just to
+    // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
     private int[] mTempCell = new int[2];
     private int[] mTempEstimate = new int[2];
     private float[] mTempOriginXY = new float[2];
     private float[] mTempDragCoordinates = new float[2];
+    private float[] mTempTouchCoordinates = new float[2];
+    private float[] mTempCellLayoutCenterCoordinates = new float[2];
     private float[] mTempDragBottomRightCoordinates = new float[2];
     private Matrix mTempInverseMatrix = new Matrix();
 
@@ -855,7 +859,7 @@ public class Workspace extends SmoothPagedView
         int originX = x - xOffset;
         int originY = y - yOffset;
         if (mIsSmall || mIsInUnshrinkAnimation) {
-            cellLayout = findMatchingPageForDragOver(dragView, originX, originY);
+            cellLayout = findMatchingPageForDragOver(dragView, originX, originY, xOffset, yOffset);
             if (cellLayout == null) {
                 // cancel the drag if we're not over a mini-screen at time of drop
                 // TODO: maybe add a nice fade here?
@@ -864,7 +868,7 @@ public class Workspace extends SmoothPagedView
             // get originX and originY in the local coordinate system of the screen
             mTempOriginXY[0] = originX;
             mTempOriginXY[1] = originY;
-            mapPointGlobalToLocal(cellLayout, mTempOriginXY);
+            mapPointFromSelfToChild(cellLayout, mTempOriginXY);
             originX = (int)mTempOriginXY[0];
             originY = (int)mTempOriginXY[1];
         } else {
@@ -954,73 +958,146 @@ public class Workspace extends SmoothPagedView
         return null;
     }
 
-    private void mapPointGlobalToLocal(View v, float[] xy) {
-        xy[0] = xy[0] + mScrollX - v.getLeft();
-        xy[1] = xy[1] + mScrollY - v.getTop();
-        v.getMatrix().invert(mTempInverseMatrix);
-        mTempInverseMatrix.mapPoints(xy);
+    /*
+    *
+    * Convert the 2D coordinate xy from the parent View's coordinate space to this CellLayout's
+    * coordinate space. The argument xy is modified with the return result.
+    *
+    */
+   void mapPointFromSelfToChild(View v, float[] xy) {
+       mapPointFromSelfToChild(v, xy, null);
+   }
+
+   /*
+    *
+    * Convert the 2D coordinate xy from the parent View's coordinate space to this CellLayout's
+    * coordinate space. The argument xy is modified with the return result.
+    *
+    * if cachedInverseMatrix is not null, this method will just use that matrix instead of
+    * computing it itself; we use this to avoid redudant matrix inversions in
+    * findMatchingPageForDragOver
+    *
+    */
+   void mapPointFromSelfToChild(View v, float[] xy, Matrix cachedInverseMatrix) {
+       if (cachedInverseMatrix == null) {
+           v.getMatrix().invert(mTempInverseMatrix);
+           cachedInverseMatrix = mTempInverseMatrix;
+       }
+       xy[0] = xy[0] + mScrollX - v.getLeft();
+       xy[1] = xy[1] + mScrollY - v.getTop();
+       cachedInverseMatrix.mapPoints(xy);
+   }
+
+   /*
+    *
+    * Convert the 2D coordinate xy from this CellLayout's coordinate space to
+    * the parent View's coordinate space. The argument xy is modified with the return result.
+    *
+    */
+   void mapPointFromChildToSelf(View v, float[] xy) {
+       v.getMatrix().mapPoints(xy);
+       xy[0] -= (mScrollX - v.getLeft());
+       xy[1] -= (mScrollY - v.getTop());
+   }
+
+    static private float squaredDistance(float[] point1, float[] point2) {
+        float distanceX = point1[0] - point2[0];
+        float distanceY = point2[1] - point2[1];
+        return distanceX * distanceX + distanceY * distanceY;
     }
 
-    // xy = upper left corner of item being dragged
-    // bottomRightXy = lower right corner of item being dragged
-    // This method will see which mini-screen is most overlapped by the item being dragged, and
-    // return it. It will also transform the parameters xy and bottomRightXy into the local
-    // coordinate space of the returned screen
-    private CellLayout findMatchingPageForDragOver(DragView dragView, int originX, int originY) {
-        float x = originX + dragView.getScaledDragRegionXOffset();
-        float y = originY + dragView.getScaledDragRegionYOffset();
-        float right = x + dragView.getScaledDragRegionWidth();
-        float bottom = y + dragView.getScaledDragRegionHeight();
+    /*
+     *
+     * Returns true if the passed CellLayout cl overlaps with dragView
+     *
+     */
+    boolean overlaps(CellLayout cl, DragView dragView,
+            int dragViewX, int dragViewY, Matrix cachedInverseMatrix) {
+        // Transform the coordinates of the item being dragged to the CellLayout's coordinates
+        final float[] draggedItemTopLeft = mTempDragCoordinates;
+        draggedItemTopLeft[0] = dragViewX + dragView.getScaledDragRegionXOffset();
+        draggedItemTopLeft[1] = dragViewY + dragView.getScaledDragRegionYOffset();
+        final float[] draggedItemBottomRight = mTempDragBottomRightCoordinates;
+        draggedItemBottomRight[0] = draggedItemTopLeft[0] + dragView.getScaledDragRegionWidth();
+        draggedItemBottomRight[1] = draggedItemTopLeft[1] + dragView.getScaledDragRegionHeight();
 
-        // We loop through all the screens (ie CellLayouts) and see which one overlaps the most
-        // with the item being dragged.
+        // Transform the dragged item's top left coordinates
+        // to the CellLayout's local coordinates
+        mapPointFromSelfToChild(cl, draggedItemTopLeft, cachedInverseMatrix);
+        float overlapRegionLeft = Math.max(0f, draggedItemTopLeft[0]);
+        float overlapRegionTop = Math.max(0f, draggedItemTopLeft[1]);
+
+        if (overlapRegionLeft <= cl.getWidth() && overlapRegionTop >= 0) {
+            // Transform the dragged item's bottom right coordinates
+            // to the CellLayout's local coordinates
+            mapPointFromSelfToChild(cl, draggedItemBottomRight, cachedInverseMatrix);
+            float overlapRegionRight = Math.min(cl.getWidth(), draggedItemBottomRight[0]);
+            float overlapRegionBottom = Math.min(cl.getHeight(), draggedItemBottomRight[1]);
+
+            if (overlapRegionRight >= 0 && overlapRegionBottom <= cl.getHeight()) {
+                float overlap = (overlapRegionRight - overlapRegionLeft) *
+                         (overlapRegionBottom - overlapRegionTop);
+                if (overlap > 0) {
+                    return true;
+                }
+             }
+        }
+        return false;
+    }
+
+    /*
+     *
+     * This method returns the CellLayout that is currently being dragged to. In order to drag
+     * to a CellLayout, either the touch point must be directly over the CellLayout, or as a second
+     * strategy, we see if the dragView is overlapping any CellLayout and choose the closest one
+     *
+     * Return null if no CellLayout is currently being dragged over
+     *
+     */
+    private CellLayout findMatchingPageForDragOver(
+            DragView dragView, int originX, int originY, int offsetX, int offsetY) {
+        // We loop through all the screens (ie CellLayouts) and see which ones overlap
+        // with the item being dragged and then choose the one that's closest to the touch point
         final int screenCount = getChildCount();
         CellLayout bestMatchingScreen = null;
         float smallestDistSoFar = Float.MAX_VALUE;
-        final float[] xy = mTempDragCoordinates;
-        final float[] bottomRightXy = mTempDragBottomRightCoordinates;
+
         for (int i = 0; i < screenCount; i++) {
             CellLayout cl = (CellLayout)getChildAt(i);
-            // Transform the coordinates of the item being dragged to the CellLayout's coordinates
-            float left = cl.getLeft();
-            float top = cl.getTop();
-            xy[0] = x + mScrollX - left;
-            xy[1] = y + mScrollY - top;
 
-            bottomRightXy[0] = right + mScrollX - left;
-            bottomRightXy[1] = bottom + mScrollY - top;
+            final float[] touchXy = mTempTouchCoordinates;
+            touchXy[0] = originX + offsetX;
+            touchXy[1] = originY + offsetY;
 
+            // Transform the touch coordinates to the CellLayout's local coordinates
+            // If the touch point is within the bounds of the cell layout, we can return immediately
             cl.getMatrix().invert(mTempInverseMatrix);
-            mTempInverseMatrix.mapPoints(xy);
-            mTempInverseMatrix.mapPoints(bottomRightXy);
+            mapPointFromSelfToChild(cl, touchXy, mTempInverseMatrix);
 
-            float dragRegionX = xy[0];
-            float dragRegionY = xy[1];
-            float dragRegionRight = bottomRightXy[0];
-            float dragRegionBottom = bottomRightXy[1];
-            float dragRegionCenterX = (dragRegionX + dragRegionRight) / 2.0f;
-            float dragRegionCenterY = (dragRegionY + dragRegionBottom) / 2.0f;
+            if (touchXy[0] >= 0 && touchXy[0] <= cl.getWidth() &&
+                    touchXy[1] >= 0 && touchXy[1] <= cl.getHeight()) {
+                return cl;
+            }
 
-            // Find the overlapping region
-            float overlapLeft = Math.max(0f, dragRegionX);
-            float overlapTop = Math.max(0f, dragRegionY);
-            float overlapBottom = Math.min(cl.getHeight(), dragRegionBottom);
-            float overlapRight = Math.min(cl.getWidth(), dragRegionRight);
-            if (overlapRight >= 0 && overlapLeft <= cl.getWidth() &&
-                    (overlapTop >= 0 && overlapBottom <= cl.getHeight())) {
-                // Calculate the distance between the two centers
-                float distX = dragRegionCenterX - cl.getWidth()/2;
-                float distY = dragRegionCenterY - cl.getHeight()/2;
-                float dist = distX * distX + distY * distY;
+            if (overlaps(cl, dragView, originX, originY, mTempInverseMatrix)) {
+                // Get the center of the cell layout in screen coordinates
+                final float[] cellLayoutCenter = mTempCellLayoutCenterCoordinates;
+                cellLayoutCenter[0] = cl.getWidth()/2;
+                cellLayoutCenter[1] = cl.getHeight()/2;
+                mapPointFromChildToSelf(cl, cellLayoutCenter);
 
-                float overlap = (overlapRight - overlapLeft) * (overlapBottom - overlapTop);
+                touchXy[0] = originX + offsetX;
+                touchXy[1] = originY + offsetY;
 
-                // Calculate the closest overlapping region
-                if (overlap > 0 && dist < smallestDistSoFar) {
+                // Calculate the distance between the center of the CellLayout
+                // and the touch point
+                float dist = squaredDistance(touchXy, cellLayoutCenter);
+
+                if (dist < smallestDistSoFar) {
                     smallestDistSoFar = dist;
                     bestMatchingScreen = cl;
                 }
-             }
+            }
         }
 
         if (bestMatchingScreen != mDragTargetLayout) {
@@ -1039,7 +1116,8 @@ public class Workspace extends SmoothPagedView
         int originX = x - xOffset;
         int originY = y - yOffset;
         if (mIsSmall || mIsInUnshrinkAnimation) {
-            currentLayout = findMatchingPageForDragOver(dragView, originX, originY);
+            currentLayout = findMatchingPageForDragOver(
+                    dragView, originX, originY, xOffset, yOffset);
 
             if (currentLayout == null) {
                 return;
@@ -1049,7 +1127,7 @@ public class Workspace extends SmoothPagedView
             // get originX and originY in the local coordinate system of the screen
             mTempOriginXY[0] = originX;
             mTempOriginXY[1] = originY;
-            mapPointGlobalToLocal(currentLayout, mTempOriginXY);
+            mapPointFromSelfToChild(currentLayout, mTempOriginXY);
             originX = (int)mTempOriginXY[0];
             originY = (int)mTempOriginXY[1];
         } else {
@@ -1069,7 +1147,7 @@ public class Workspace extends SmoothPagedView
             }
         }
 
-        if (source != this) {
+        if (source instanceof AllAppsPagedView) {
             // This is a hack to fix the point used to determine which cell an icon from the all
             // apps screen is over
             if (item != null && item.spanX == 1 && currentLayout != null) {
@@ -1233,7 +1311,8 @@ public class Workspace extends SmoothPagedView
             int xOffset, int yOffset, DragView dragView, Object dragInfo) {
         CellLayout layout;
         if (mIsSmall || mIsInUnshrinkAnimation) {
-            layout = findMatchingPageForDragOver(dragView, x - xOffset, y - yOffset);
+            layout = findMatchingPageForDragOver(
+                    dragView, x - xOffset, y - yOffset, xOffset, yOffset);
             if (layout == null) {
                 // cancel the drag if we're not over a mini-screen at time of drop
                 return false;
