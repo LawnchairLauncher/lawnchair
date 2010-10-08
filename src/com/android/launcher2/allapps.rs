@@ -37,7 +37,6 @@ typedef struct VpConsts {
 VpConsts_t *vpConstants;
 
 
-#pragma rs export_var(COLUMNS_PER_PAGE_PORTRAIT, ROWS_PER_PAGE_PORTRAIT, COLUMNS_PER_PAGE_LANDSCAPE, ROWS_PER_PAGE_LANDSCAPE, gIconCount, gSelectedIconIndex, gSelectedIconTexture, gHomeButton, gTargetPos, gPFTexNearest, gPFTexMip, gPFTexMipAlpha, gPVCurve, gPS, gSMCell, gIconIDs, gLabelIDs, vpConstants)
 #pragma rs export_func(move, moveTo, setZoom, fling)
 
 
@@ -47,7 +46,7 @@ static float g_FrictionTable[9] = {10.f, 10.f, 11.f, 15.f, 15.f, 11.f, 10.f, 10.
 static float g_PhysicsTableSize = 7;
 
 static float gZoomTarget;
-static float gTargetPos;
+float gTargetPos;
 static float g_PosPage = 0.f;
 static float g_PosVelocity = 0.f;
 static float g_LastPositionX = 0.f;
