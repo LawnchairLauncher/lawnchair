@@ -91,13 +91,13 @@ public class CellLayout extends ViewGroup implements Dimmable {
     private Rect[] mDragRects = new Rect[8];
     private int[] mDragRectAlphas = new int[mDragRects.length];
     private InterruptibleInOutAnimator[] mDragRectAnims =
-        new InterruptibleInOutAnimator[mDragRects.length];
+            new InterruptibleInOutAnimator[mDragRects.length];
 
     // Used as an index into the above 3 arrays; indicates which is the most current value.
     private int mDragRectCurrent = 0;
 
     private Drawable mCrosshairsDrawable = null;
-    private ValueAnimator mCrosshairsAnimator = null;
+    private InterruptibleInOutAnimator mCrosshairsAnimator = null;
     private float mCrosshairsVisibility = 0.0f;
 
     // When a drag operation is in progress, holds the nearest cell to the touch point
@@ -165,7 +165,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
 
         // Set up the animation for fading the crosshairs in and out
         int animDuration = res.getInteger(R.integer.config_crosshairsFadeInTime);
-        mCrosshairsAnimator = new ValueAnimator<Float>(animDuration);
+        mCrosshairsAnimator = new InterruptibleInOutAnimator(animDuration, 0.0f, 1.0f);
         mCrosshairsAnimator.addUpdateListener(new AnimatorUpdateListener() {
             public void onAnimationUpdate(ValueAnimator animation) {
                 mCrosshairsVisibility = ((Float) animation.getAnimatedValue()).floatValue();
@@ -205,15 +205,6 @@ public class CellLayout extends ViewGroup implements Dimmable {
             invalidate();
         }
         mHover = value;
-    }
-
-    private void animateCrosshairsTo(float value) {
-        final ValueAnimator anim = mCrosshairsAnimator;
-        long fullDuration = getResources().getInteger(R.integer.config_crosshairsFadeInTime);
-        anim.setDuration(fullDuration - anim.getCurrentPlayTime());
-        anim.setValues(mCrosshairsVisibility, value);
-        anim.cancel();
-        anim.start();
     }
 
     public void drawChildren(Canvas canvas) {
@@ -809,6 +800,11 @@ public class CellLayout extends ViewGroup implements Dimmable {
                 mDragRectAnims[mDragRectCurrent].animateIn();
             }
         }
+
+        // If we are drawing crosshairs, the entire CellLayout needs to be invalidated
+        if (mCrosshairsDrawable != null) {
+            invalidate();
+        }
     }
 
     /**
@@ -1020,7 +1016,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
 
         // Fade out the drag indicators
         if (mCrosshairsAnimator != null) {
-            animateCrosshairsTo(0.0f);
+            mCrosshairsAnimator.animateOut();
         }
 
         mDragRectAnims[mDragRectCurrent].animateOut();
@@ -1070,7 +1066,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
     void onDragEnter(View dragView) {
         // Fade in the drag indicators
         if (mCrosshairsAnimator != null) {
-            animateCrosshairsTo(1.0f);
+            mCrosshairsAnimator.animateIn();
         }
     }
 
