@@ -18,6 +18,7 @@ package com.android.launcher2;
 
 import com.android.launcher.R;
 
+import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.WallpaperManager;
@@ -38,7 +39,6 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.Interpolator;
 import android.view.animation.LayoutAnimationController;
 
 public class CellLayout extends ViewGroup implements Dimmable {
@@ -161,7 +161,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
 
         mDragRectDrawable = res.getDrawable(R.drawable.rounded_rect_green);
         mCrosshairsDrawable = res.getDrawable(R.drawable.gardening_crosshairs);
-        Interpolator interp = new DecelerateInterpolator(2.5f); // Quint ease out
+        TimeInterpolator interp = new DecelerateInterpolator(2.5f); // Quint ease out
 
         // Set up the animation for fading the crosshairs in and out
         int animDuration = res.getInteger(R.integer.config_crosshairsFadeInTime);

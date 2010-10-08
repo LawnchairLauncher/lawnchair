@@ -649,14 +649,14 @@ public abstract class PagedView extends ViewGroup {
 
                 // check if this can be the beginning of a tap on the side of the pages
                 // to scroll the current page
-                if ((mTouchState != TOUCH_STATE_PREV_PAGE) &&
+                if ((mTouchState != TOUCH_STATE_PREV_PAGE) && !handlePagingClicks() &&
                         (mTouchState != TOUCH_STATE_NEXT_PAGE)) {
                     if (getChildCount() > 0) {
                         int width = getMeasuredWidth();
                         int offset = getRelativeChildOffset(mCurrentPage);
-                        if (x < offset) {
+                        if (x < offset - mPageSpacing) {
                             mTouchState = TOUCH_STATE_PREV_PAGE;
-                        } else if (x > (width - offset)) {
+                        } else if (x > (width - offset + mPageSpacing)) {
                             mTouchState = TOUCH_STATE_NEXT_PAGE;
                         }
                     }
@@ -739,6 +739,10 @@ public abstract class PagedView extends ViewGroup {
                 currentPage.cancelLongPress();
             }
         }
+    }
+
+    protected boolean handlePagingClicks() {
+        return false;
     }
 
     @Override
@@ -835,7 +839,7 @@ public abstract class PagedView extends ViewGroup {
                     mVelocityTracker.recycle();
                     mVelocityTracker = null;
                 }
-            } else if (mTouchState == TOUCH_STATE_PREV_PAGE) {
+            } else if (mTouchState == TOUCH_STATE_PREV_PAGE && !handlePagingClicks()) {
                 // at this point we have not moved beyond the touch slop
                 // (otherwise mTouchState would be TOUCH_STATE_SCROLLING), so
                 // we can just page
@@ -845,7 +849,7 @@ public abstract class PagedView extends ViewGroup {
                 } else {
                     snapToDestination();
                 }
-            } else if (mTouchState == TOUCH_STATE_NEXT_PAGE) {
+            } else if (mTouchState == TOUCH_STATE_NEXT_PAGE && !handlePagingClicks()) {
                 // at this point we have not moved beyond the touch slop
                 // (otherwise mTouchState would be TOUCH_STATE_SCROLLING), so
                 // we can just page
