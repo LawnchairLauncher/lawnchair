@@ -89,6 +89,8 @@ public class Workspace extends SmoothPagedView
 
     private boolean mWaitingToShrinkToBottom = false;
 
+    private boolean mPageMoving = false;
+
     /**
      * CellInfo for the cell that is currently being dragged
      */
@@ -207,6 +209,7 @@ public class Workspace extends SmoothPagedView
         if (!(child instanceof CellLayout)) {
             throw new IllegalArgumentException("A Workspace can only have CellLayout children.");
         }
+        ((CellLayout) child).setOnInterceptTouchListener(this);
         super.addView(child, index, params);
     }
 
@@ -215,6 +218,7 @@ public class Workspace extends SmoothPagedView
         if (!(child instanceof CellLayout)) {
             throw new IllegalArgumentException("A Workspace can only have CellLayout children.");
         }
+        ((CellLayout) child).setOnInterceptTouchListener(this);
         super.addView(child);
     }
 
@@ -223,6 +227,7 @@ public class Workspace extends SmoothPagedView
         if (!(child instanceof CellLayout)) {
             throw new IllegalArgumentException("A Workspace can only have CellLayout children.");
         }
+        ((CellLayout) child).setOnInterceptTouchListener(this);
         super.addView(child, index);
     }
 
@@ -231,6 +236,7 @@ public class Workspace extends SmoothPagedView
         if (!(child instanceof CellLayout)) {
             throw new IllegalArgumentException("A Workspace can only have CellLayout children.");
         }
+        ((CellLayout) child).setOnInterceptTouchListener(this);
         super.addView(child, width, height);
     }
 
@@ -239,6 +245,7 @@ public class Workspace extends SmoothPagedView
         if (!(child instanceof CellLayout)) {
             throw new IllegalArgumentException("A Workspace can only have CellLayout children.");
         }
+        ((CellLayout) child).setOnInterceptTouchListener(this);
         super.addView(child, params);
     }
 
@@ -367,6 +374,14 @@ public class Workspace extends SmoothPagedView
         if (mIsSmall || mIsInUnshrinkAnimation) {
             mLauncher.onWorkspaceClick((CellLayout) v);
             return true;
+        } else if (!mPageMoving) {
+            if (v == getChildAt(mCurrentPage - 1)) {
+                snapToPage(mCurrentPage - 1);
+                return true;
+            } else if (v == getChildAt(mCurrentPage + 1)) {
+                snapToPage(mCurrentPage + 1);
+                return true;
+            }
         }
         return false;
     }
@@ -399,15 +414,16 @@ public class Workspace extends SmoothPagedView
             enableChildrenCache(mCurrentPage - 1, mCurrentPage + 1);
         }
         showOutlines();
+        mPageMoving = true;
     }
 
     protected void onPageEndMoving() {
         clearChildrenCache();
-
         // Hide the outlines, as long as we're not dragging
         if (!mDragController.dragging()) {
             hideOutlines();
         }
+        mPageMoving = false;
     }
 
     @Override
@@ -444,10 +460,6 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    private float getScaleXForRotation(float degrees) {
-        return (float) (1.0f / Math.cos(Math.PI * degrees / 180.0f));
-    }
-
     public void showOutlines() {
         if (mBackgroundFadeOut != null) mBackgroundFadeOut.cancel();
         if (mBackgroundFadeIn != null) mBackgroundFadeIn.cancel();
@@ -479,62 +491,20 @@ public class Workspace extends SmoothPagedView
 
     @Override
     protected void screenScrolled(int screenCenter) {
-        CellLayout cur = (CellLayout) getChildAt(mCurrentPage);
-        CellLayout toRight = (CellLayout) getChildAt(mCurrentPage + 1);
-        CellLayout toLeft = (CellLayout) getChildAt(mCurrentPage - 1);
-
-        for (int i = 0; i < mCurrentPage - 1; i++) {
+        final int halfScreenSize = getMeasuredWidth() / 2;
+        for (int i = 0; i < getChildCount(); i++) {
             View v = getChildAt(i);
             if (v != null) {
-                v.setRotationY(WORKSPACE_ROTATION);
-                v.setScaleX(getScaleXForRotation(WORKSPACE_ROTATION));
-            }
-        }
-        for (int i = mCurrentPage + 1; i < getChildCount(); i++) {
-            View v = getChildAt(i);
-            if (v != null) {
-                v.setRotationY(-WORKSPACE_ROTATION);
-                v.setScaleX(getScaleXForRotation(-WORKSPACE_ROTATION));
-            }
-        }
+                int totalDistance = v.getMeasuredWidth() + mPageSpacing;
+                int delta = screenCenter - (getChildOffset(i) -
+                        getRelativeChildOffset(i) + halfScreenSize);
 
-        int halfScreenSize = getMeasuredWidth() / 2;
-        int pageWidth = cur.getMeasuredWidth();
-        int delta = screenCenter - (getChildOffset(mCurrentPage) -
-                getRelativeChildOffset(mCurrentPage) + halfScreenSize);
+                float scrollProgress = delta/(totalDistance*1.0f);
+                scrollProgress = Math.min(scrollProgress, 1.0f);
+                scrollProgress = Math.max(scrollProgress, -1.0f);
 
-        float scrollProgress = Math.abs(delta/(pageWidth*1.0f + mPageSpacing));
-        boolean scrollRight = (delta <= 0);
-
-        float rotation;
-
-        if (scrollRight) {
-            rotation = -scrollProgress * WORKSPACE_ROTATION;
-            cur.setRotationY(rotation);
-            cur.setScaleX(getScaleXForRotation(rotation));
-
-            if (toLeft != null) {
-                rotation = WORKSPACE_ROTATION * (1 - scrollProgress);
-                toLeft.setRotationY(rotation);
-                toLeft.setScaleX(getScaleXForRotation(rotation));
-            }
-            if (toRight != null) {
-                toRight.setRotationY(-WORKSPACE_ROTATION);
-                toRight.setScaleX(getScaleXForRotation(WORKSPACE_ROTATION));
-            }
-        } else {
-            rotation = scrollProgress * WORKSPACE_ROTATION;
-            cur.setRotationY(rotation);
-            cur.setScaleX(getScaleXForRotation(rotation));
-
-            if (toRight != null) {
-                rotation = -WORKSPACE_ROTATION * (1 - scrollProgress);
-                toRight.setRotationY(rotation);
-                toRight.setScaleX(getScaleXForRotation(rotation));
-            }
-            if (toLeft != null) {
-                toLeft.setRotationY(WORKSPACE_ROTATION);
-                toLeft.setScaleX(getScaleXForRotation(WORKSPACE_ROTATION));
+                float rotation = WORKSPACE_ROTATION * scrollProgress;
+                v.setRotationY(rotation);
             }
         }
     }
@@ -764,7 +734,6 @@ public class Workspace extends SmoothPagedView
             }
             // increment newX for the next screen
             newX += scaledPageWidth + extraScaledSpacing;
-            cl.setOnInterceptTouchListener(this);
         }
         setChildrenDrawnWithCacheEnabled(true);
     }
@@ -779,6 +748,11 @@ public class Workspace extends SmoothPagedView
             }
         }
         unshrink(newCurrentPage);
+    }
+
+    @Override
+    protected boolean handlePagingClicks() {
+        return true;
     }
 
     private void unshrink(int newCurrentPage) {
