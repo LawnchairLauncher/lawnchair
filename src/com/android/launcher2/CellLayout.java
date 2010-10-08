@@ -1110,9 +1110,12 @@ public class CellLayout extends ViewGroup implements Dimmable {
      * @param result An array of length 2 in which to store the result (may be null).
      */
     public int[] rectToCell(int width, int height, int[] result) {
+        return rectToCell(getResources(), width, height, result);
+    }
+
+    public static int[] rectToCell(Resources resources, int width, int height, int[] result) {
         // Always assume we're working with the smallest span to make sure we
         // reserve enough space in both orientations.
-        final Resources resources = getResources();
         int actualWidth = resources.getDimensionPixelSize(R.dimen.workspace_cell_width);
         int actualHeight = resources.getDimensionPixelSize(R.dimen.workspace_cell_height);
         int smallerSize = Math.min(actualWidth, actualHeight);
