@@ -653,10 +653,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             return true;
         }
 
-        if (mVelocityTracker == null) {
-            mVelocityTracker = VelocityTracker.obtain();
-        }
-        mVelocityTracker.addMovement(ev);
+        acquireVelocityTrackerAndAddMovement(ev);
         
         switch (action & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_MOVE: {
@@ -741,12 +738,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                 mTouchState = TOUCH_STATE_REST;
                 mActivePointerId = INVALID_POINTER;
                 mAllowLongPress = false;
-                
-                if (mVelocityTracker != null) {
-                    mVelocityTracker.recycle();
-                    mVelocityTracker = null;
-                }
-
+                releaseVelocityTracker();
                 break;
                 
             case MotionEvent.ACTION_POINTER_UP:
@@ -846,10 +838,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             return false; // We don't want the events.  Let them fall through to the all apps view.
         }
 
-        if (mVelocityTracker == null) {
-            mVelocityTracker = VelocityTracker.obtain();
-        }
-        mVelocityTracker.addMovement(ev);
+        acquireVelocityTrackerAndAddMovement(ev);
 
         final int action = ev.getAction();
 
@@ -922,18 +911,20 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                 } else {
                     snapToScreen(whichScreen, 0, true);
                 }
-
-                if (mVelocityTracker != null) {
-                    mVelocityTracker.recycle();
-                    mVelocityTracker = null;
-                }
             }
             mTouchState = TOUCH_STATE_REST;
             mActivePointerId = INVALID_POINTER;
+            releaseVelocityTracker();
             break;
         case MotionEvent.ACTION_CANCEL:
+            if (mTouchState == TOUCH_STATE_SCROLLING) {
+                final int screenWidth = getWidth();
+                final int whichScreen = (mScrollX + (screenWidth / 2)) / screenWidth;
+                snapToScreen(whichScreen, 0, true);
+            }
             mTouchState = TOUCH_STATE_REST;
             mActivePointerId = INVALID_POINTER;
+            releaseVelocityTracker();
             break;
         case MotionEvent.ACTION_POINTER_UP:
             onSecondaryPointerUp(ev);
@@ -943,6 +934,20 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         return true;
     }
     
+    private void acquireVelocityTrackerAndAddMovement(MotionEvent ev) {
+        if (mVelocityTracker == null) {
+            mVelocityTracker = VelocityTracker.obtain();
+        }
+        mVelocityTracker.addMovement(ev);
+    }
+
+    private void releaseVelocityTracker() {
+        if (mVelocityTracker != null) {
+            mVelocityTracker.recycle();
+            mVelocityTracker = null;
+        }
+    }
+
     void snapToScreen(int whichScreen) {
         snapToScreen(whichScreen, 0, false);
     }
