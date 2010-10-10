@@ -624,8 +624,10 @@ public class CustomizePagedView extends PagedView
             l.setOnLongClickListener(this);
 
             final Drawable icon = getWidgetIcon(info);
-            final int hSpan = mWorkspaceWidgetLayout.estimateCellHSpan(info.minWidth);
-            final int vSpan = mWorkspaceWidgetLayout.estimateCellHSpan(info.minHeight);
+
+            int[] spans = CellLayout.rectToCell(getResources(), info.minWidth, info.minHeight, null);
+            final int hSpan = spans[0];
+            final int vSpan = spans[1];
 
             ImageView image = (ImageView) l.findViewById(R.id.widget_preview);
             image.setMaxWidth(mMaxWidgetWidth);

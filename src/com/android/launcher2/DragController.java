@@ -16,8 +16,11 @@
 
 package com.android.launcher2;
 
+import com.android.launcher.R;
+
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
@@ -28,12 +31,11 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
 import java.util.ArrayList;
-
-import com.android.launcher.R;
 
 /**
  * Class for initiating a drag within a view or across multiple views.
@@ -123,6 +125,9 @@ public class DragController {
     private DropTarget mLastDropTarget;
 
     private InputMethodManager mInputMethodManager;
+
+    private int mLastTouch[] = new int[2];
+    private int mDistanceSinceScroll = 0;
 
     /**
      * Interface to receive notifications when a drag starts or stops
@@ -486,15 +491,24 @@ public class DragController {
         if (mDeleteRegion != null) {
             inDeleteRegion = mDeleteRegion.contains(x, y);
         }
+
+        // After a scroll, the touch point will still be in the scroll region.
+        // Rather than scrolling immediately, require a bit of twiddling to scroll again
+        final int slop = ViewConfiguration.get(mContext).getScaledWindowTouchSlop();
+        mDistanceSinceScroll +=
+            Math.sqrt(Math.pow(mLastTouch[0] - x, 2) + Math.pow(mLastTouch[1] - y, 2));
+        mLastTouch[0] = x;
+        mLastTouch[1] = y;
+
         if (!inDeleteRegion && x < mScrollZone) {
-            if (mScrollState == SCROLL_OUTSIDE_ZONE) {
+            if (mScrollState == SCROLL_OUTSIDE_ZONE && mDistanceSinceScroll > slop) {
                 mScrollState = SCROLL_WAITING_IN_ZONE;
                 mScrollRunnable.setDirection(SCROLL_LEFT);
                 mHandler.postDelayed(mScrollRunnable, SCROLL_DELAY);
                 mDragScroller.onEnterScrollArea(SCROLL_LEFT);
             }
         } else if (!inDeleteRegion && x > mScrollView.getWidth() - mScrollZone) {
-            if (mScrollState == SCROLL_OUTSIDE_ZONE) {
+            if (mScrollState == SCROLL_OUTSIDE_ZONE && mDistanceSinceScroll > slop) {
                 mScrollState = SCROLL_WAITING_IN_ZONE;
                 mScrollRunnable.setDirection(SCROLL_RIGHT);
                 mHandler.postDelayed(mScrollRunnable, SCROLL_DELAY);
@@ -696,6 +710,8 @@ public class DragController {
                     mDragScroller.scrollRight();
                 }
                 mScrollState = SCROLL_OUTSIDE_ZONE;
+                mDistanceSinceScroll = 0;
+                mDragScroller.onExitScrollArea();
             }
         }
 
