@@ -33,9 +33,12 @@ import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.IBinder;
@@ -135,6 +138,11 @@ public class Workspace extends SmoothPagedView
     private ShrinkPosition mShrunkenState;
 
     private boolean mInScrollArea = false;
+
+    private HolographicOutlineHelper mOutlineHelper = new HolographicOutlineHelper();
+    private Bitmap mDragOutline = null;
+    private Rect mTempRect = new Rect();
+    private int[] mTempXY = new int[2];
 
     /**
      * Used to inflate the Workspace from XML.
@@ -921,8 +929,70 @@ public class Workspace extends SmoothPagedView
         }
     }
 
+    /**
+     * Draw the View v into the given Canvas.
+     *
+     * @param v the view to draw
+     * @param destCanvas the canvas to draw on
+     * @param padding the horizontal and vertical padding to use when drawing
+     */
+    private void drawDragView(View v, Canvas destCanvas, int padding) {
+        final Rect clipRect = mTempRect;
+        v.getDrawingRect(clipRect);
+
+        // For a TextView, adjust the clip rect so that we don't include the text label
+        if (v instanceof TextView) {
+            final int iconHeight = ((TextView)v).getCompoundPaddingTop() - v.getPaddingTop();
+            clipRect.bottom = clipRect.top + iconHeight;
+        }
+
+        // Draw the View into the bitmap.
+        // The translate of scrollX and scrollY is necessary when drawing TextViews, because
+        // they set scrollX and scrollY to large values to achieve centered text
+
+        destCanvas.save();
+        destCanvas.translate(-v.getScrollX() + padding / 2, -v.getScrollY() + padding / 2);
+        destCanvas.clipRect(clipRect, Op.REPLACE);
+        v.draw(destCanvas);
+        destCanvas.restore();
+    }
+
+    /**
+     * Returns a new bitmap to be used as the object outline, e.g. to visualize the drop location.
+     * Responsibility for the bitmap is transferred to the caller.
+     */
+    private Bitmap createDragOutline(View v, Canvas canvas, int padding) {
+        final int outlineColor = getResources().getColor(R.color.drag_outline_color);
+        final Bitmap b = Bitmap.createBitmap(
+                v.getWidth() + padding, v.getHeight() + padding, Bitmap.Config.ARGB_8888);
+
+        canvas.setBitmap(b);
+        drawDragView(v, canvas, padding);
+        mOutlineHelper.applyExpensiveOuterOutline(b, canvas, outlineColor, true);
+
+        return b;
+    }
+
+    /**
+     * Returns a new bitmap to show when the given View is being dragged around.
+     * Responsibility for the bitmap is transferred to the caller.
+     */
+    private Bitmap createDragBitmap(View v, Canvas canvas, int padding) {
+        final int outlineColor = getResources().getColor(R.color.drag_outline_color);
+        final Bitmap b = Bitmap.createBitmap(
+                mDragOutline.getWidth(), mDragOutline.getHeight(), Bitmap.Config.ARGB_8888);
+
+        canvas.setBitmap(b);
+        canvas.drawBitmap(mDragOutline, 0, 0, null);
+        drawDragView(v, canvas, padding);
+        mOutlineHelper.applyGlow(b, canvas, outlineColor);
+
+        return b;
+    }
+
     void startDrag(CellLayout.CellInfo cellInfo) {
         View child = cellInfo.cell;
+        final int blurPadding = 40;
 
         // Make sure the drag was started by a long press as opposed to a long click.
         if (!child.isInTouchMode()) {
@@ -935,9 +1005,29 @@ public class Workspace extends SmoothPagedView
         CellLayout current = ((CellLayout) getChildAt(mCurrentPage));
 
         current.onDragChild(child);
-        mDragController.startDrag(child, this, child.getTag(), DragController.DRAG_ACTION_MOVE);
+
+        child.clearFocus();
+        child.setPressed(false);
+
+        final Canvas canvas = new Canvas();
+
+        // The outline is used to visualize where the item will land if dropped
+        mDragOutline = createDragOutline(child, canvas, blurPadding);
+
+        // The drag bitmap follows the touch point around on the screen
+        final Bitmap b = createDragBitmap(child, canvas, blurPadding);
+
+        final int bmpWidth = b.getWidth();
+        final int bmpHeight = b.getHeight();
+        child.getLocationOnScreen(mTempXY);
+        final int screenX = (int) mTempXY[0] + (child.getWidth() - bmpWidth) / 2;
+        final int screenY = (int) mTempXY[1] + (child.getHeight() - bmpHeight) / 2;
+        mDragController.startDrag(b, screenX, screenY, 0, 0, bmpWidth, bmpHeight, this,
+                child.getTag(), DragController.DRAG_ACTION_MOVE, null);
+        b.recycle();
+
         current.onDragEnter(child);
-        invalidate();
+        child.setVisibility(View.GONE);
     }
 
     void addApplicationShortcut(ShortcutInfo info, int screen, int cellX, int cellY,
@@ -1280,7 +1370,7 @@ public class Workspace extends SmoothPagedView
                 int localOriginX = originX - (mDragTargetLayout.getLeft() - mScrollX);
                 int localOriginY = originY - (mDragTargetLayout.getTop() - mScrollY);
                 mDragTargetLayout.visualizeDropLocation(
-                        child, localOriginX, localOriginY, item.spanX, item.spanY);
+                        child, mDragOutline, localOriginX, localOriginY, item.spanX, item.spanY);
             }
         }
     }
@@ -1320,6 +1410,8 @@ public class Workspace extends SmoothPagedView
     }
 
     // Drag from somewhere else
+    // NOTE: This can also be called when we are outside of a drag event, when we want
+    // to add an item to one of the workspace screens.
     private void onDropExternal(int x, int y, Object dragInfo,
             CellLayout cellLayout, boolean insertAtFirst) {
         int screen = indexOfChild(cellLayout);
@@ -1481,6 +1573,10 @@ public class Workspace extends SmoothPagedView
             }
         }
 
+        if (mDragInfo != null) {
+            mDragInfo.cell.setVisibility(View.VISIBLE);
+        }
+        mDragOutline = null;
         mDragInfo = null;
     }
 

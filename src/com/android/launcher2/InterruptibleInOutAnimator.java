@@ -16,6 +16,8 @@
 
 package com.android.launcher2;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.util.Log;
 
@@ -31,6 +33,10 @@ public class InterruptibleInOutAnimator extends ValueAnimator {
     private Object mOriginalFromValue;
     private Object mOriginalToValue;
 
+    private boolean mFirstRun = true;
+
+    private Object mTag = null;
+
     public InterruptibleInOutAnimator(long duration, Object fromValue, Object toValue) {
         super(duration, fromValue, toValue);
         mOriginalDuration = duration;
@@ -38,14 +44,17 @@ public class InterruptibleInOutAnimator extends ValueAnimator {
         mOriginalToValue = toValue;
     }
 
-    private void animate(Object fromValue, Object toValue) {
+    private void animateTo(Object toValue) {
         // This only makes sense when it's running in the opposite direction, or stopped.
         setDuration(mOriginalDuration - getCurrentPlayTime());
 
-        final Object startValue = isRunning() ? getAnimatedValue() : fromValue;
+        final Object startValue = mFirstRun ? mOriginalFromValue : getAnimatedValue();
         cancel();
-        setValues(startValue, toValue);
-        start();
+        if (startValue != toValue) {
+            setValues(startValue, toValue);
+            start();
+            mFirstRun = false;
+        }
     }
 
     /**
@@ -54,7 +63,7 @@ public class InterruptibleInOutAnimator extends ValueAnimator {
      * direction and animate for a correspondingly shorter duration.
      */
     public void animateIn() {
-        animate(mOriginalFromValue, mOriginalToValue);
+        animateTo(mOriginalToValue);
     }
 
     /**
@@ -64,6 +73,14 @@ public class InterruptibleInOutAnimator extends ValueAnimator {
      * direction and animate for a correspondingly shorter duration.
      */
     public void animateOut() {
-        animate(mOriginalToValue, mOriginalFromValue);
+        animateTo(mOriginalFromValue);
+    }
+
+    public void setTag(Object tag) {
+        mTag = tag;
+    }
+
+    public Object getTag() {
+        return mTag;
     }
 }
