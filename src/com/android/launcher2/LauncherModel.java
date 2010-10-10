@@ -151,6 +151,7 @@ public class LauncherModel extends BroadcastReceiver {
         item.cellX = cellX;
         item.cellY = cellY;
 
+        final Uri uri = LauncherSettings.Favorites.getContentUri(item.id, false);
         final ContentValues values = new ContentValues();
         final ContentResolver cr = context.getContentResolver();
 
@@ -159,7 +160,11 @@ public class LauncherModel extends BroadcastReceiver {
         values.put(LauncherSettings.Favorites.CELLY, item.cellY);
         values.put(LauncherSettings.Favorites.SCREEN, item.screen);
 
-        cr.update(LauncherSettings.Favorites.getContentUri(item.id, false), values, null, null);
+        new Thread("moveItemInDatabase") {
+            public void run() {
+                cr.update(uri, values, null, null);
+            }
+        }.start();
     }
 
     /**
