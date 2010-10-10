@@ -910,8 +910,12 @@ public class Workspace extends SmoothPagedView
                     cl.setRotationY(rotation);
                 }
             }
-            s.addListener(mUnshrinkAnimationListener);
-            s.start();
+            if (animated) {
+                // If we call this when we're not animated, onAnimationEnd is never called on
+                // the listener; make sure we only use the listener when we're actually animating
+                s.addListener(mUnshrinkAnimationListener);
+                s.start();
+            }
         }
     }
 
