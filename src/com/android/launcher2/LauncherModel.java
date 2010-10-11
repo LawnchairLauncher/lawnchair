@@ -48,8 +48,8 @@ import java.net.URISyntaxException;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -71,9 +71,13 @@ public class LauncherModel extends BroadcastReceiver {
     private final LauncherApplication mApp;
     private final Object mLock = new Object();
     private DeferredHandler mHandler = new DeferredHandler();
-    private HandlerThread mWorkerThread;
-    private Handler mWorker;
     private LoaderTask mLoaderTask;
+
+    private static final HandlerThread sWorkerThread = new HandlerThread("launcher-loader");
+    static {
+        sWorkerThread.start();
+    }
+    private static final Handler sWorker = new Handler(sWorkerThread.getLooper());
 
     // We start off with everything not loaded.  After that, we assume that
     // our monitoring of the package manager provides all updates and we never
@@ -116,10 +120,6 @@ public class LauncherModel extends BroadcastReceiver {
         mAllAppsLoadDelay = app.getResources().getInteger(R.integer.config_allAppsBatchLoadDelay);
 
         mBatchSize = app.getResources().getInteger(R.integer.config_allAppsBatchSize);
-
-        mWorkerThread = new HandlerThread("launcher-loader");
-        mWorkerThread.start();
-        mWorker = new Handler(mWorkerThread.getLooper());
     }
 
     public Bitmap getFallbackIcon() {
@@ -160,11 +160,11 @@ public class LauncherModel extends BroadcastReceiver {
         values.put(LauncherSettings.Favorites.CELLY, item.cellY);
         values.put(LauncherSettings.Favorites.SCREEN, item.screen);
 
-        new Thread("moveItemInDatabase") {
-            public void run() {
-                cr.update(uri, values, null, null);
-            }
-        }.start();
+        sWorker.post(new Runnable() {
+                public void run() {
+                    cr.update(uri, values, null, null);
+                }
+            });
     }
 
     /**
@@ -275,11 +275,11 @@ public class LauncherModel extends BroadcastReceiver {
     static void deleteItemFromDatabase(Context context, ItemInfo item) {
         final ContentResolver cr = context.getContentResolver();
         final Uri uriToDelete = LauncherSettings.Favorites.getContentUri(item.id, false);
-        new Thread("deleteItemFromDatabase") {
-            public void run() {
-                cr.delete(uriToDelete, null, null);
-            }
-        }.start();
+        sWorker.post(new Runnable() {
+                public void run() {
+                    cr.delete(uriToDelete, null, null);
+                }
+            });
     }
 
     /**
@@ -377,7 +377,7 @@ public class LauncherModel extends BroadcastReceiver {
                     oldTask.stopLocked();
                 }
                 mLoaderTask = new LoaderTask(context, isLaunching);
-                mWorker.post(mLoaderTask);
+                sWorker.post(mLoaderTask);
             }
         }
     }
@@ -1163,7 +1163,7 @@ public class LauncherModel extends BroadcastReceiver {
     }
 
     void enqueuePackageUpdated(PackageUpdatedTask task) {
-        mWorker.post(task);
+        sWorker.post(task);
     }
 
     private class PackageUpdatedTask implements Runnable {
