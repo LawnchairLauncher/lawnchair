@@ -747,10 +747,7 @@ public abstract class PagedView extends ViewGroup {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (mVelocityTracker == null) {
-            mVelocityTracker = VelocityTracker.obtain();
-        }
-        mVelocityTracker.addMovement(ev);
+        acquireVelocityTrackerAndAddMovement(ev);
 
         final int action = ev.getAction();
 
@@ -834,11 +831,6 @@ public abstract class PagedView extends ViewGroup {
                 } else {
                     snapToDestination();
                 }
-
-                if (mVelocityTracker != null) {
-                    mVelocityTracker.recycle();
-                    mVelocityTracker = null;
-                }
             } else if (mTouchState == TOUCH_STATE_PREV_PAGE && !handlePagingClicks()) {
                 // at this point we have not moved beyond the touch slop
                 // (otherwise mTouchState would be TOUCH_STATE_SCROLLING), so
@@ -862,11 +854,16 @@ public abstract class PagedView extends ViewGroup {
             }
             mTouchState = TOUCH_STATE_REST;
             mActivePointerId = INVALID_POINTER;
+            releaseVelocityTracker();
             break;
 
         case MotionEvent.ACTION_CANCEL:
+            if (mTouchState == TOUCH_STATE_SCROLLING) {
+                snapToDestination();
+            }
             mTouchState = TOUCH_STATE_REST;
             mActivePointerId = INVALID_POINTER;
+            releaseVelocityTracker();
             break;
 
         case MotionEvent.ACTION_POINTER_UP:
@@ -875,6 +872,20 @@ public abstract class PagedView extends ViewGroup {
         }
 
         return true;
+    }
+
+    private void acquireVelocityTrackerAndAddMovement(MotionEvent ev) {
+        if (mVelocityTracker == null) {
+            mVelocityTracker = VelocityTracker.obtain();
+        }
+        mVelocityTracker.addMovement(ev);
+    }
+
+    private void releaseVelocityTracker() {
+        if (mVelocityTracker != null) {
+            mVelocityTracker.recycle();
+            mVelocityTracker = null;
+        }
     }
 
     private void onSecondaryPointerUp(MotionEvent ev) {

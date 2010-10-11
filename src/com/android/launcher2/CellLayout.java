@@ -78,6 +78,8 @@ public class CellLayout extends ViewGroup implements Dimmable {
     private Drawable mBackgroundMini;
     private Drawable mBackgroundMiniHover;
     private Drawable mBackgroundHover;
+    private Drawable mBackgroundMiniAcceptsDrops;
+    private boolean mAcceptsDrops;
 
     // If we're actively dragging something over this screen, mHover is true
     private boolean mHover = false;
@@ -155,6 +157,9 @@ public class CellLayout extends ViewGroup implements Dimmable {
             mBackgroundMiniHover.setFilterBitmap(true);
             mBackgroundHover = res.getDrawable(R.drawable.home_screen_bg_hover);
             mBackgroundHover.setFilterBitmap(true);
+            mBackgroundMiniAcceptsDrops = res.getDrawable(
+                    R.drawable.mini_home_screen_bg_accepts_drops);
+            mBackgroundMiniAcceptsDrops.setFilterBitmap(true);
         }
 
         // Initialize the data structures used for the drag visualization.
@@ -202,9 +207,9 @@ public class CellLayout extends ViewGroup implements Dimmable {
 
     public void setHover(boolean value) {
         if (mHover != value) {
+            mHover = value;
             invalidate();
         }
-        mHover = value;
     }
 
     public void drawChildren(Canvas canvas) {
@@ -213,16 +218,25 @@ public class CellLayout extends ViewGroup implements Dimmable {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        // When we're large, we are either drawn in a "hover" state (ie when dragging an item to
+        // a neighboring page) or with just a normal background (if backgroundAlpha > 0.0f)
+        // When we're small, we are either drawn normally or in the "accepts drops" state (during
+        // a drag). However, we also drag the mini hover background *over* one of those two
+        // backgrounds
         if (mBackgroundAlpha > 0.0f) {
             Drawable bg;
             if (getScaleX() < 0.5f) {
-                bg = mHover ? mBackgroundMiniHover : mBackgroundMini;
+                bg = mAcceptsDrops ? mBackgroundMiniAcceptsDrops : mBackgroundMini;
             } else {
                 bg = mHover ? mBackgroundHover : mBackground;
             }
             if (bg != null) {
                 bg.setAlpha((int) (mBackgroundAlpha * 255));
                 bg.draw(canvas);
+            }
+            if (mHover && getScaleX() < 0.5f) {
+                mBackgroundMiniHover.setAlpha((int) (mBackgroundAlpha * 255));
+                mBackgroundMiniHover.draw(canvas);
             }
         }
 
@@ -329,6 +343,16 @@ public class CellLayout extends ViewGroup implements Dimmable {
             return true;
         }
         return false;
+    }
+    public void setAcceptsDrops(boolean acceptsDrops) {
+        if (mAcceptsDrops != acceptsDrops) {
+            mAcceptsDrops = acceptsDrops;
+            invalidate();
+        }
+    }
+
+    public boolean getAcceptsDrops() {
+        return mAcceptsDrops;
     }
 
     @Override
@@ -642,6 +666,9 @@ public class CellLayout extends ViewGroup implements Dimmable {
         }
         if (mBackgroundMini != null) {
             mBackgroundMini.setBounds(0, 0, w, h);
+        }
+        if (mBackgroundMiniAcceptsDrops != null) {
+            mBackgroundMiniAcceptsDrops.setBounds(0, 0, w, h);
         }
     }
 

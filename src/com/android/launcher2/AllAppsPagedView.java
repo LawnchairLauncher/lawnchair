@@ -224,6 +224,7 @@ public class AllAppsPagedView extends PagedView
         ApplicationInfo app = (ApplicationInfo) v.getTag();
         app = new ApplicationInfo(app);
 
+        mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1);
         mDragController.startDrag(v, this, app, DragController.DRAG_ACTION_COPY);
         return true;
     }
@@ -234,6 +235,7 @@ public class AllAppsPagedView extends PagedView
         if (target != this) {
             endChoiceMode();
         }
+        mLauncher.getWorkspace().onDragStopped();
     }
 
     @Override

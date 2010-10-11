@@ -146,7 +146,10 @@ public class AllApps3D extends RSSurfaceView
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
 
         if (sRS == null) {
-            sRS = createRenderScript(true);
+            RenderScriptGL.SurfaceConfig sc = new RenderScriptGL.SurfaceConfig();
+            sc.setDepth(16, 16);
+            sc.setAlpha(8, 8);
+            sRS = createRenderScript(sc);
         } else {
             createRenderScript(sRS);
         }
