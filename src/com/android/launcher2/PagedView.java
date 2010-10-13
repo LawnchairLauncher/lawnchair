@@ -406,6 +406,14 @@ public abstract class PagedView extends ViewGroup {
                     int halfChildWidth = (childWidth / 2);
                     int childCenter = getChildOffset(i) + halfChildWidth;
 
+                    // On the first layout, we may not have a width nor a proper offset, so for now
+                    // we should just assume full page width (and calculate the offset according to
+                    // that).
+                    if (childWidth <= 0) {
+                        childWidth = getMeasuredWidth();
+                        childCenter = (i * childWidth) + (childWidth / 2);
+                    }
+
                     int d = halfChildWidth;
                     int distanceFromScreenCenter = childCenter - screenCenter;
                     if (distanceFromScreenCenter > 0) {
@@ -418,6 +426,9 @@ public abstract class PagedView extends ViewGroup {
                         }
                     }
                     d += mPageSpacing;
+
+                    // Preventing potential divide-by-zero
+                    d = Math.max(1, d);
 
                     float dimAlpha = (float) (Math.abs(distanceFromScreenCenter)) / d;
                     dimAlpha = Math.max(0.0f, Math.min(1.0f, (dimAlpha * dimAlpha)));
@@ -1237,6 +1248,7 @@ public abstract class PagedView extends ViewGroup {
             // Load any pages that are necessary for the current window of views
             loadAssociatedPages(mCurrentPage);
             mDirtyPageAlpha = true;
+            updateAdjacentPagesAlpha();
             requestLayout();
         }
     }

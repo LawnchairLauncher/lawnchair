@@ -350,6 +350,9 @@ public final class Launcher extends Activity
                 }
             });
     
+            // TEMP: Working around a bug in tab host where the current tab does not initially have
+            // a highlight on it by selecting something else, then selecting the actual tab we want..
+            mHomeCustomizationDrawer.setCurrentTab(1);
             mHomeCustomizationDrawer.setCurrentTab(0);
         }
         setupViews();

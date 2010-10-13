@@ -717,8 +717,10 @@ public class Workspace extends SmoothPagedView
             finalAlpha = 0.0f;
             extraShrinkFactor = 0.1f;
         } else if (shrinkPosition == ShrinkPosition.SHRINK_TO_MIDDLE) {
-             newY = screenHeight / 2 - scaledPageHeight / 2;
-             finalAlpha = 1.0f;
+            newY = screenHeight / 2 - scaledPageHeight / 2;
+            finalAlpha = 1.0f;
+        } else if (shrinkPosition == ShrinkPosition.SHRINK_TO_TOP) {
+            newY = screenHeight / 10;
         }
 
         // We animate all the screens to the centered position in workspace
