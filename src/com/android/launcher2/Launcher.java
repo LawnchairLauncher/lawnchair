@@ -60,6 +60,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.os.SystemClock;
@@ -263,7 +264,8 @@ public final class Launcher extends Activity
         mAppWidgetHost.startListening();
 
         if (PROFILE_STARTUP) {
-            android.os.Debug.startMethodTracing("/sdcard/launcher");
+            android.os.Debug.startMethodTracing(
+                    Environment.getExternalStorageDirectory() + "/launcher");
         }
 
         loadHotseats();
@@ -348,6 +350,9 @@ public final class Launcher extends Activity
                 }
             });
     
+            // TEMP: Working around a bug in tab host where the current tab does not initially have
+            // a highlight on it by selecting something else, then selecting the actual tab we want..
+            mHomeCustomizationDrawer.setCurrentTab(1);
             mHomeCustomizationDrawer.setCurrentTab(0);
         }
         setupViews();

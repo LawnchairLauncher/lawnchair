@@ -127,6 +127,9 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
             }
         });
 
+        // TEMP: Working around a bug in tab host where the current tab does not initially have a
+        // highlight on it by selecting something else, then selecting the actual tab we want..
+        setCurrentTab(1);
         setCurrentTab(0);
 
         // It needs to be INVISIBLE so that it will be measured in the layout.

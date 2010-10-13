@@ -16,7 +16,6 @@
 <com.android.launcher2.AllAppsTabbed
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
-    android:background="#30000000"
     android:paddingTop="?android:attr/actionBarSize">
     <LinearLayout
         android:orientation="vertical"
@@ -37,8 +36,8 @@
                 android:id="@+id/all_apps_paged_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                launcher:cellCountX="7"
-                launcher:cellCountY="4"
+                launcher:cellCountX="5"
+                launcher:cellCountY="7"
                 launcher:pageLayoutPaddingTop="10dp"
                 launcher:pageLayoutPaddingBottom="10dp"
                 launcher:pageLayoutPaddingLeft="0dp"

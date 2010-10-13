@@ -69,7 +69,7 @@
 
     <!-- Customization Drawer -->
     <!-- The format string for the dimensions of a widget in the drawer -->
-    <string name="widget_dims_format">%1$d x %2$d</string>
+    <string name="widget_dims_format" translatable="false">%1$d x %2$d</string>
 
     <!-- Folders -->
     <skip />

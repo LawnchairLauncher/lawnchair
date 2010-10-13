@@ -23,6 +23,6 @@
     launcher:cellCountX="7"
     launcher:cellCountY="4"
     launcher:pageLayoutPaddingTop="10dp"
-    launcher:pageLayoutPaddingBottom="15dp"
+    launcher:pageLayoutPaddingBottom="25dp"
     launcher:pageLayoutPaddingLeft="20dp"
     launcher:pageLayoutPaddingRight="20dp" />

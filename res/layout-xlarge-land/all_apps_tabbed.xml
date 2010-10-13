@@ -16,7 +16,6 @@
 <com.android.launcher2.AllAppsTabbed
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
-    android:background="#30000000"
     android:paddingTop="?android:attr/actionBarSize">
     <LinearLayout
         android:orientation="vertical"
