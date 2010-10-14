@@ -18,6 +18,8 @@ package com.android.launcher2;
 
 import com.android.launcher.R;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
@@ -25,13 +27,16 @@ import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MotionEvent;
 import android.view.View;
@@ -86,17 +91,15 @@ public class CellLayout extends ViewGroup implements Dimmable {
 
     private final Point mDragCenter = new Point();
 
-    private Drawable mDragRectDrawable;
-
     // These arrays are used to implement the drag visualization on x-large screens.
-    // They are used as circular arrays, indexed by mDragRectCurrent.
-    private Rect[] mDragRects = new Rect[8];
-    private int[] mDragRectAlphas = new int[mDragRects.length];
-    private InterruptibleInOutAnimator[] mDragRectAnims =
-            new InterruptibleInOutAnimator[mDragRects.length];
+    // They are used as circular arrays, indexed by mDragOutlineCurrent.
+    private Point[] mDragOutlines = new Point[8];
+    private int[] mDragOutlineAlphas = new int[mDragOutlines.length];
+    private InterruptibleInOutAnimator[] mDragOutlineAnims =
+            new InterruptibleInOutAnimator[mDragOutlines.length];
 
     // Used as an index into the above 3 arrays; indicates which is the most current value.
-    private int mDragRectCurrent = 0;
+    private int mDragOutlineCurrent = 0;
 
     private Drawable mCrosshairsDrawable = null;
     private InterruptibleInOutAnimator mCrosshairsAnimator = null;
@@ -106,6 +109,8 @@ public class CellLayout extends ViewGroup implements Dimmable {
     private final int[] mDragCell = new int[2];
 
     private final WallpaperManager mWallpaperManager;
+
+    private boolean mDragging = false;
 
     public CellLayout(Context context) {
         this(context, null);
@@ -164,7 +169,6 @@ public class CellLayout extends ViewGroup implements Dimmable {
 
         // Initialize the data structures used for the drag visualization.
 
-        mDragRectDrawable = res.getDrawable(R.drawable.rounded_rect_green);
         mCrosshairsDrawable = res.getDrawable(R.drawable.gardening_crosshairs);
         TimeInterpolator interp = new DecelerateInterpolator(2.5f); // Quint ease out
 
@@ -179,8 +183,8 @@ public class CellLayout extends ViewGroup implements Dimmable {
         });
         mCrosshairsAnimator.setInterpolator(interp);
 
-        for (int i = 0; i < mDragRects.length; i++) {
-            mDragRects[i] = new Rect();
+        for (int i = 0; i < mDragOutlines.length; i++) {
+            mDragOutlines[i] = new Point(-1, -1);
         }
 
         // When dragging things around the home screens, we show a green outline of
@@ -190,18 +194,51 @@ public class CellLayout extends ViewGroup implements Dimmable {
         final int duration = res.getInteger(R.integer.config_dragOutlineFadeTime);
         final int fromAlphaValue = 0;
         final int toAlphaValue = res.getInteger(R.integer.config_dragOutlineMaxAlpha);
-        for (int i = 0; i < mDragRectAnims.length; i++) {
+
+        for (int i = 0; i < mDragOutlineAlphas.length; i++) {
+            mDragOutlineAlphas[i] = fromAlphaValue;
+        }
+
+        for (int i = 0; i < mDragOutlineAnims.length; i++) {
             final InterruptibleInOutAnimator anim =
                 new InterruptibleInOutAnimator(duration, fromAlphaValue, toAlphaValue);
             anim.setInterpolator(interp);
+
             final int thisIndex = i;
             anim.addUpdateListener(new AnimatorUpdateListener() {
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    mDragRectAlphas[thisIndex] = (Integer) animation.getAnimatedValue();
-                    CellLayout.this.invalidate(mDragRects[thisIndex]);
+                    final Bitmap outline = (Bitmap)anim.getTag();
+
+                    // If an animation is started and then stopped very quickly, we can still
+                    // get spurious updates we've cleared the tag. Guard against this.
+                    if (outline == null) {
+                        if (false) {
+                            Object val = animation.getAnimatedValue();
+                            Log.d(TAG, "anim " + thisIndex + " update: " + val +
+                                     ", isStopped " + anim.isStopped());
+                        }
+
+                        // Try to prevent it from continuing to run
+                        animation.cancel();
+                    } else {
+                        mDragOutlineAlphas[thisIndex] = (Integer) animation.getAnimatedValue();
+                        final int left = mDragOutlines[thisIndex].x;
+                        final int top = mDragOutlines[thisIndex].y;
+                        CellLayout.this.invalidate(left, top,
+                                left + outline.getWidth(), top + outline.getHeight());
+                    }
                 }
             });
-            mDragRectAnims[i] = anim;
+            // The animation holds a reference to the drag outline bitmap as long is it's
+            // running. This way the bitmap can be GCed when the animations are complete.
+            anim.addListener(new AnimatorListenerAdapter() {
+                public void onAnimationEnd(Animator animation) {
+                    if ((Integer) anim.getAnimatedValue() == 0) {
+                        anim.setTag(null);
+                    }
+                }
+            });
+            mDragOutlineAnims[i] = anim;
         }
     }
 
@@ -270,14 +307,16 @@ public class CellLayout extends ViewGroup implements Dimmable {
                 }
                 x += mCellWidth + mWidthGap;
             }
+        }
 
-            for (int i = 0; i < mDragRects.length; i++) {
-                int alpha = mDragRectAlphas[i];
-                if (alpha > 0) {
-                    mDragRectDrawable.setAlpha(alpha);
-                    mDragRectDrawable.setBounds(mDragRects[i]);
-                    mDragRectDrawable.draw(canvas);
-                }
+        final Paint paint = new Paint();
+        for (int i = 0; i < mDragOutlines.length; i++) {
+            final int alpha = mDragOutlineAlphas[i];
+            if (alpha > 0) {
+                final Point p = mDragOutlines[i];
+                final Bitmap b = (Bitmap) mDragOutlineAnims[i].getTag();
+                paint.setAlpha(alpha);
+                canvas.drawBitmap(b, p.x, p.y, paint);
             }
         }
     }
@@ -796,35 +835,40 @@ public class CellLayout extends ViewGroup implements Dimmable {
         result[1] = Math.max(0, result[1]); // Snap to top
     }
 
-    void visualizeDropLocation(View view, int originX, int originY, int spanX, int spanY) {
-        final int[] nearest = findNearestVacantArea(originX, originY, spanX, spanY, view, mDragCell);
-        mDragCenter.set(originX + (view.getWidth() / 2), originY + (view.getHeight() / 2));
+    void visualizeDropLocation(
+            View v, Bitmap dragOutline, int originX, int originY, int spanX, int spanY) {
+
+        final int[] nearest = findNearestVacantArea(originX, originY, spanX, spanY, v, mDragCell);
+        mDragCenter.set(originX + (v.getWidth() / 2), originY + (v.getHeight() / 2));
 
         if (nearest != null) {
             // Find the top left corner of the rect the object will occupy
             final int[] topLeft = mTmpPoint;
             cellToPoint(nearest[0], nearest[1], topLeft);
 
-            // Need to copy these, because the next call to cellToPoint will overwrite them
-            final int left = topLeft[0];
-            final int top = topLeft[1];
+            int left = topLeft[0];
+            int top = topLeft[1];
 
-            final Rect dragRect = mDragRects[mDragRectCurrent];
+            if (v.getParent() instanceof CellLayout) {
+                LayoutParams lp = (LayoutParams) v.getLayoutParams();
+                left += lp.leftMargin;
+                top += lp.topMargin;
+            }
 
-            if (dragRect.isEmpty() || left != dragRect.left || top != dragRect.top) {
-                // Now find the bottom right
-                final int[] bottomRight = mTmpPoint;
-                cellToPoint(nearest[0] + spanX - 1, nearest[1] + spanY - 1, bottomRight);
-                bottomRight[0] += mCellWidth;
-                bottomRight[1] += mCellHeight;
+            // Offsets due to the size difference between the View and the dragOutline
+            left += (v.getWidth() - dragOutline.getWidth()) / 2;
+            top += (v.getHeight() - dragOutline.getHeight()) / 2;
 
-                final int oldIndex = mDragRectCurrent;
-                mDragRectCurrent = (oldIndex + 1) % mDragRects.length;
+            final int oldIndex = mDragOutlineCurrent;
+            final Point lastPoint = mDragOutlines[oldIndex];
+            if (lastPoint.x != left || lastPoint.y != top) {
+                mDragOutlineCurrent = (oldIndex + 1) % mDragOutlines.length;
 
-                mDragRects[mDragRectCurrent].set(left, top, bottomRight[0], bottomRight[1]);
+                mDragOutlines[mDragOutlineCurrent].set(left, top);
 
-                mDragRectAnims[oldIndex].animateOut();
-                mDragRectAnims[mDragRectCurrent].animateIn();
+                mDragOutlineAnims[oldIndex].animateOut();
+                mDragOutlineAnims[mDragOutlineCurrent].setTag(dragOutline);
+                mDragOutlineAnims[mDragOutlineCurrent].animateIn();
             }
         }
 
@@ -1035,20 +1079,29 @@ public class CellLayout extends ViewGroup implements Dimmable {
      * Called when drag has left this CellLayout or has been completed (successfully or not)
      */
     void onDragExit() {
-        // Invalidate the drag data
-        mDragCell[0] = -1;
-        mDragCell[1] = -1;
+        // This can actually be called when we aren't in a drag, e.g. when adding a new
+        // item to this layout via the customize drawer.
+        // Guard against that case.
+        if (mDragging) {
+            mDragging = false;
 
-        setHover(false);
+            // Invalidate the drag data
+            mDragCell[0] = -1;
+            mDragCell[1] = -1;
 
-        // Fade out the drag indicators
-        if (mCrosshairsAnimator != null) {
-            mCrosshairsAnimator.animateOut();
+            setHover(false);
+
+            // Fade out the drag indicators
+            if (mCrosshairsAnimator != null) {
+                mCrosshairsAnimator.animateOut();
+            }
+
+            final int prev = mDragOutlineCurrent;
+            mDragOutlineAnims[prev].animateOut();
+            mDragOutlineCurrent = (prev + 1) % mDragOutlines.length;
+            mDragOutlines[mDragOutlineCurrent].set(-1, -1);
+            mDragOutlineAlphas[mDragOutlineCurrent] = 0;
         }
-
-        mDragRectAnims[mDragRectCurrent].animateOut();
-        mDragRectCurrent = (mDragRectCurrent + 1) % mDragRects.length;
-        mDragRects[mDragRectCurrent].setEmpty();
     }
 
     /**
@@ -1091,10 +1144,14 @@ public class CellLayout extends ViewGroup implements Dimmable {
      * or it may have begun on another layout.
      */
     void onDragEnter(View dragView) {
-        // Fade in the drag indicators
-        if (mCrosshairsAnimator != null) {
-            mCrosshairsAnimator.animateIn();
+        if (!mDragging) {
+//            Log.d(TAG, "Received onDragEnter while drag still active");
+            // Fade in the drag indicators
+            if (mCrosshairsAnimator != null) {
+                mCrosshairsAnimator.animateIn();
+            }
         }
+        mDragging = true;
     }
 
     /**

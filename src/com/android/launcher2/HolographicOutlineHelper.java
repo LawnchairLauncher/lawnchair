@@ -19,26 +19,42 @@ package com.android.launcher2;
 import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
+import android.graphics.MaskFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.TableMaskFilter;
 
 public class HolographicOutlineHelper {
     private final Paint mHolographicPaint = new Paint();
-    private final Paint mExpensiveBlurPaint = new Paint();
+    private final Paint mBlurPaint = new Paint();
     private final Paint mErasePaint = new Paint();
 
-    private static final BlurMaskFilter mThickOuterBlurMaskFilter = new BlurMaskFilter(6.0f,
-            BlurMaskFilter.Blur.OUTER);
-    private static final BlurMaskFilter mThinOuterBlurMaskFilter = new BlurMaskFilter(1.0f,
-            BlurMaskFilter.Blur.OUTER);
-    private static final BlurMaskFilter mThickInnerBlurMaskFilter = new BlurMaskFilter(4.0f,
-            BlurMaskFilter.Blur.NORMAL);
+    private static final BlurMaskFilter sLargeGlowBlurMaskFilter = new BlurMaskFilter(
+            10.0f, BlurMaskFilter.Blur.OUTER);
+    private static final BlurMaskFilter sThickOuterBlurMaskFilter = new BlurMaskFilter(
+            6.0f, BlurMaskFilter.Blur.OUTER);
+    private static final BlurMaskFilter sMediumOuterBlurMaskFilter = new BlurMaskFilter(
+            2.0f, BlurMaskFilter.Blur.OUTER);
+    private static final BlurMaskFilter sThinOuterBlurMaskFilter = new BlurMaskFilter(
+            1.0f, BlurMaskFilter.Blur.OUTER);
+
+    private static final BlurMaskFilter sThickInnerBlurMaskFilter = new BlurMaskFilter(
+            4.0f, BlurMaskFilter.Blur.NORMAL);
+    private static final BlurMaskFilter sThinInnerBlurMaskFilter = new BlurMaskFilter(
+            1.0f, BlurMaskFilter.Blur.INNER);
+
+    private static final MaskFilter sFineClipTable = TableMaskFilter.CreateClipTable(0, 20);
+    private static final MaskFilter sCoarseClipTable = TableMaskFilter.CreateClipTable(0, 200);
+
+    private int[] mTempOffset = new int[2];
 
     HolographicOutlineHelper() {
         mHolographicPaint.setFilterBitmap(true);
         mHolographicPaint.setAntiAlias(true);
-        mExpensiveBlurPaint.setFilterBitmap(true);
+        mBlurPaint.setFilterBitmap(true);
+        mBlurPaint.setAntiAlias(true);
         mErasePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
         mErasePaint.setFilterBitmap(true);
         mErasePaint.setAntiAlias(true);
@@ -65,6 +81,51 @@ public class HolographicOutlineHelper {
         }
     }
 
+    void applyGlow(Bitmap bitmap, Canvas canvas, int color) {
+        mBlurPaint.setMaskFilter(sThickOuterBlurMaskFilter);
+        Bitmap glow = bitmap.extractAlpha(mBlurPaint, mTempOffset);
+
+        // Use the clip table to make the glow heavier closer to the outline
+        mHolographicPaint.setMaskFilter(sCoarseClipTable);
+        mHolographicPaint.setAlpha(150);
+        mHolographicPaint.setColor(color);
+        canvas.drawBitmap(glow, mTempOffset[0], mTempOffset[1], mHolographicPaint);
+        glow.recycle();
+    }
+
+    /**
+     * Draws a solid outline around a bitmap, erasing the original pixels.
+     *
+     * @param bitmap The bitmap to modify
+     * @param canvas A canvas on the bitmap
+     * @param color The color to draw the outline and glow in
+     * @param removeOrig If true, punch out the original pixels to just leave the outline
+     */
+    void applyExpensiveOuterOutline(Bitmap bitmap, Canvas canvas, int color, boolean removeOrig) {
+        Bitmap originalImage = null;
+        if (removeOrig) {
+            originalImage = bitmap.extractAlpha();
+        }
+
+        // Compute an outer blur on the original bitmap
+        mBlurPaint.setMaskFilter(sMediumOuterBlurMaskFilter);
+        Bitmap outline = bitmap.extractAlpha(mBlurPaint, mTempOffset);
+
+        // Paint the blurred bitmap back into the canvas. Using the clip table causes any alpha
+        // pixels above a certain threshold to be rounded up to be fully opaque. This gives the
+        // effect of a thick outline, with a slight blur on the edge
+        mHolographicPaint.setColor(color);
+        mHolographicPaint.setMaskFilter(sFineClipTable);
+        canvas.drawBitmap(outline, mTempOffset[0], mTempOffset[1], mHolographicPaint);
+        outline.recycle();
+
+        if (removeOrig) {
+            // Finally, punch out the original pixels, leaving just the outline
+            canvas.drawBitmap(originalImage, 0, 0, mErasePaint);
+            originalImage.recycle();
+        }
+    }
+
     /**
      * Applies a more expensive and accurate outline to whatever is currently drawn in a specified
      * bitmap.
@@ -72,18 +133,18 @@ public class HolographicOutlineHelper {
     void applyExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas, int color,
             int outlineColor) {
         // calculate the outer blur first
-        mExpensiveBlurPaint.setMaskFilter(mThickOuterBlurMaskFilter);
+        mBlurPaint.setMaskFilter(sThickOuterBlurMaskFilter);
         int[] outerBlurOffset = new int[2];
-        Bitmap thickOuterBlur = srcDst.extractAlpha(mExpensiveBlurPaint, outerBlurOffset);
-        mExpensiveBlurPaint.setMaskFilter(mThinOuterBlurMaskFilter);
+        Bitmap thickOuterBlur = srcDst.extractAlpha(mBlurPaint, outerBlurOffset);
+        mBlurPaint.setMaskFilter(sThinOuterBlurMaskFilter);
         int[] thinOuterBlurOffset = new int[2];
-        Bitmap thinOuterBlur = srcDst.extractAlpha(mExpensiveBlurPaint, thinOuterBlurOffset);
+        Bitmap thinOuterBlur = srcDst.extractAlpha(mBlurPaint, thinOuterBlurOffset);
 
         // calculate the inner blur
         srcDstCanvas.drawColor(0xFF000000, PorterDuff.Mode.SRC_OUT);
-        mExpensiveBlurPaint.setMaskFilter(mThickInnerBlurMaskFilter);
+        mBlurPaint.setMaskFilter(sThickInnerBlurMaskFilter);
         int[] thickInnerBlurOffset = new int[2];
-        Bitmap thickInnerBlur = srcDst.extractAlpha(mExpensiveBlurPaint, thickInnerBlurOffset);
+        Bitmap thickInnerBlur = srcDst.extractAlpha(mBlurPaint, thickInnerBlurOffset);
 
         // mask out the inner blur
         srcDstCanvas.setBitmap(thickInnerBlur);

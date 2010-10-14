@@ -23,5 +23,5 @@
     <integer name="config_dragOutlineFadeTime">900</integer>
 
     <!-- The alpha value at which to show the most recent drop visualization outline. -->
-    <integer name="config_dragOutlineMaxAlpha">180</integer>
+    <integer name="config_dragOutlineMaxAlpha">128</integer>
 </resources>
