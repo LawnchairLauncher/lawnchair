@@ -66,27 +66,6 @@ public class CustomizePagedView extends PagedView
         ApplicationCustomization
     }
 
-    /**
-     * The linear layout used strictly for the widget tab of the customization tray
-     */
-    private class WidgetLayout extends LinearLayout {
-        public WidgetLayout(Context context) {
-            super(context);
-        }
-
-        @Override
-        public boolean onTouchEvent(MotionEvent event) {
-            // We eat up the touch events here, since the PagedView (which uses the same swiping
-            // touch code as Workspace previously) uses onInterceptTouchEvent() to determine when
-            // the user is scrolling between pages.  This means that if the pages themselves don't
-            // handle touch events, it gets forwarded up to PagedView itself, and it's own
-            // onTouchEvent() handling will prevent further intercept touch events from being called
-            // (it's the same view in that case).  This is not ideal, but to prevent more changes,
-            // we just always mark the touch event as handled.
-            return super.onTouchEvent(event) || true;
-        }
-    }
-
     private static final String TAG = "CustomizeWorkspace";
     private static final boolean DEBUG = false;
 
@@ -593,7 +572,7 @@ public class CustomizePagedView extends PagedView
         removeAllViews();
         int numPages = relayoutWidgets();
         for (int i = 0; i < numPages; ++i) {
-            LinearLayout layout = new WidgetLayout(getContext());
+            LinearLayout layout = new PagedViewWidgetLayout(getContext());
             layout.setGravity(Gravity.CENTER_HORIZONTAL);
 
             // Temporary change to prevent the last page from being too small (and items bleeding
