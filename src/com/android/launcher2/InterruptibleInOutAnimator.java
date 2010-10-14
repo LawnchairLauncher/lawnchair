@@ -18,6 +18,7 @@ package com.android.launcher2;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.util.Log;
 
@@ -28,10 +29,11 @@ import android.util.Log;
  * be exactly reversed. Using this class, both the 'in' and the 'out' animation use the
  * interpolator in the same direction.
  */
-public class InterruptibleInOutAnimator extends ValueAnimator {
+public class InterruptibleInOutAnimator {
     private long mOriginalDuration;
-    private Object mOriginalFromValue;
-    private Object mOriginalToValue;
+    private float mOriginalFromValue;
+    private float mOriginalToValue;
+    private ValueAnimator mAnimator;
 
     private boolean mFirstRun = true;
 
@@ -41,41 +43,41 @@ public class InterruptibleInOutAnimator extends ValueAnimator {
     private static final int IN = 1;
     private static final int OUT = 2;
 
+
     private int mDirection = STOPPED;
 
-    public InterruptibleInOutAnimator(long duration, Object fromValue, Object toValue) {
-        super(duration, fromValue, toValue);
+    public InterruptibleInOutAnimator(long duration, float fromValue, float toValue) {
+        mAnimator = ValueAnimator.ofFloat(fromValue, toValue).setDuration(duration);
         mOriginalDuration = duration;
         mOriginalFromValue = fromValue;
         mOriginalToValue = toValue;
     }
 
     private void animate(int direction) {
-        final long currentPlayTime = getCurrentPlayTime();
-        final Object toValue = (direction == IN) ? mOriginalToValue : mOriginalFromValue;
-        final Object startValue = mFirstRun ? mOriginalFromValue : getAnimatedValue();
+        final long currentPlayTime = mAnimator.getCurrentPlayTime();
+        final float toValue = (direction == IN) ? mOriginalToValue : mOriginalFromValue;
+        final float startValue = mFirstRun ? mOriginalFromValue :
+                ((Float) mAnimator.getAnimatedValue()).floatValue();
 
         // Make sure it's stopped before we modify any values
         cancel();
 
         if (startValue != toValue) {
             mDirection = direction;
-            setDuration(mOriginalDuration - currentPlayTime);
-            setValues(startValue, toValue);
-            start();
+            mAnimator.setDuration(mOriginalDuration - currentPlayTime);
+            mAnimator.setFloatValues(startValue, toValue);
+            mAnimator.start();
             mFirstRun = false;
         }
     }
 
-    @Override
     public void cancel() {
-        super.cancel();
+        mAnimator.cancel();
         mDirection = STOPPED;
     }
 
-    @Override
     public void end() {
-        super.end();
+        mAnimator.end();
         mDirection = STOPPED;
     }
 
@@ -111,5 +113,9 @@ public class InterruptibleInOutAnimator extends ValueAnimator {
 
     public Object getTag() {
         return mTag;
+    }
+
+    public ValueAnimator getAnimator() {
+        return mAnimator;
     }
 }

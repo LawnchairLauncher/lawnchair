@@ -94,7 +94,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
     // These arrays are used to implement the drag visualization on x-large screens.
     // They are used as circular arrays, indexed by mDragOutlineCurrent.
     private Point[] mDragOutlines = new Point[8];
-    private int[] mDragOutlineAlphas = new int[mDragOutlines.length];
+    private float[] mDragOutlineAlphas = new float[mDragOutlines.length];
     private InterruptibleInOutAnimator[] mDragOutlineAnims =
             new InterruptibleInOutAnimator[mDragOutlines.length];
 
@@ -175,13 +175,13 @@ public class CellLayout extends ViewGroup implements Dimmable {
         // Set up the animation for fading the crosshairs in and out
         int animDuration = res.getInteger(R.integer.config_crosshairsFadeInTime);
         mCrosshairsAnimator = new InterruptibleInOutAnimator(animDuration, 0.0f, 1.0f);
-        mCrosshairsAnimator.addUpdateListener(new AnimatorUpdateListener() {
+        mCrosshairsAnimator.getAnimator().addUpdateListener(new AnimatorUpdateListener() {
             public void onAnimationUpdate(ValueAnimator animation) {
                 mCrosshairsVisibility = ((Float) animation.getAnimatedValue()).floatValue();
                 CellLayout.this.invalidate();
             }
         });
-        mCrosshairsAnimator.setInterpolator(interp);
+        mCrosshairsAnimator.getAnimator().setInterpolator(interp);
 
         for (int i = 0; i < mDragOutlines.length; i++) {
             mDragOutlines[i] = new Point(-1, -1);
@@ -192,8 +192,8 @@ public class CellLayout extends ViewGroup implements Dimmable {
         // behind the drag path.
         // Set up all the animations that are used to implement this fading.
         final int duration = res.getInteger(R.integer.config_dragOutlineFadeTime);
-        final int fromAlphaValue = 0;
-        final int toAlphaValue = res.getInteger(R.integer.config_dragOutlineMaxAlpha);
+        final float fromAlphaValue = 0;
+        final float toAlphaValue = (float)res.getInteger(R.integer.config_dragOutlineMaxAlpha);
 
         for (int i = 0; i < mDragOutlineAlphas.length; i++) {
             mDragOutlineAlphas[i] = fromAlphaValue;
@@ -202,10 +202,9 @@ public class CellLayout extends ViewGroup implements Dimmable {
         for (int i = 0; i < mDragOutlineAnims.length; i++) {
             final InterruptibleInOutAnimator anim =
                 new InterruptibleInOutAnimator(duration, fromAlphaValue, toAlphaValue);
-            anim.setInterpolator(interp);
-
+            anim.getAnimator().setInterpolator(interp);
             final int thisIndex = i;
-            anim.addUpdateListener(new AnimatorUpdateListener() {
+            anim.getAnimator().addUpdateListener(new AnimatorUpdateListener() {
                 public void onAnimationUpdate(ValueAnimator animation) {
                     final Bitmap outline = (Bitmap)anim.getTag();
 
@@ -221,7 +220,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
                         // Try to prevent it from continuing to run
                         animation.cancel();
                     } else {
-                        mDragOutlineAlphas[thisIndex] = (Integer) animation.getAnimatedValue();
+                        mDragOutlineAlphas[thisIndex] = (Float) animation.getAnimatedValue();
                         final int left = mDragOutlines[thisIndex].x;
                         final int top = mDragOutlines[thisIndex].y;
                         CellLayout.this.invalidate(left, top,
@@ -231,9 +230,9 @@ public class CellLayout extends ViewGroup implements Dimmable {
             });
             // The animation holds a reference to the drag outline bitmap as long is it's
             // running. This way the bitmap can be GCed when the animations are complete.
-            anim.addListener(new AnimatorListenerAdapter() {
+            anim.getAnimator().addListener(new AnimatorListenerAdapter() {
                 public void onAnimationEnd(Animator animation) {
-                    if ((Integer) anim.getAnimatedValue() == 0) {
+                    if ((Float) ((ValueAnimator) animation).getAnimatedValue() == 0f) {
                         anim.setTag(null);
                     }
                 }
@@ -311,11 +310,11 @@ public class CellLayout extends ViewGroup implements Dimmable {
 
         final Paint paint = new Paint();
         for (int i = 0; i < mDragOutlines.length; i++) {
-            final int alpha = mDragOutlineAlphas[i];
+            final float alpha = mDragOutlineAlphas[i];
             if (alpha > 0) {
                 final Point p = mDragOutlines[i];
                 final Bitmap b = (Bitmap) mDragOutlineAnims[i].getTag();
-                paint.setAlpha(alpha);
+                paint.setAlpha((int)(alpha + .5f));
                 canvas.drawBitmap(b, p.x, p.y, paint);
             }
         }

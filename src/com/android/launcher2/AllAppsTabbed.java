@@ -103,7 +103,8 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
                 // animate the changing of the tab content by fading pages in and out
                 final int duration = 150;
                 final float alpha = mAllApps.getAlpha();
-                ValueAnimator alphaAnim = new ObjectAnimator(duration, mAllApps, "alpha", alpha, 0.0f);
+                ValueAnimator alphaAnim = ObjectAnimator.ofFloat(mAllApps, "alpha", alpha, 0.0f).
+                        setDuration(duration);
                 alphaAnim.addListener(new AnimatorListenerAdapter() {
                     public void onAnimationEnd(Animator animation) {
                         String tag = getCurrentTabTag();
@@ -118,9 +119,8 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
                         }
 
                         final float alpha = mAllApps.getAlpha();
-                        ValueAnimator alphaAnim =
-                            new ObjectAnimator(duration, mAllApps, "alpha", alpha, 1.0f);
-                        alphaAnim.start();
+                        ObjectAnimator.ofFloat(mAllApps, "alpha", alpha, 1.0f).
+                                setDuration(duration).start();
                     }
                 });
                 alphaAnim.start();

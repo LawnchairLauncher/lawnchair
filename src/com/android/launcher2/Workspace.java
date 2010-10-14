@@ -16,6 +16,7 @@
 
 package com.android.launcher2;
 
+import android.animation.AnimatorListenerAdapter;
 import com.android.launcher.R;
 
 import android.animation.Animator;
@@ -80,8 +81,8 @@ public class Workspace extends SmoothPagedView
     private static final int BACKGROUND_FADE_IN_DURATION = 100;
 
     // These animators are used to fade the background
-    private ObjectAnimator<Float> mBackgroundFadeInAnimation;
-    private ObjectAnimator<Float> mBackgroundFadeOutAnimation;
+    private ObjectAnimator mBackgroundFadeInAnimation;
+    private ObjectAnimator mBackgroundFadeOutAnimation;
     private float mBackgroundAlpha = 0;
 
     private final WallpaperManager mWallpaperManager;
@@ -194,15 +195,13 @@ public class Workspace extends SmoothPagedView
         LauncherApplication app = (LauncherApplication)context.getApplicationContext();
         mIconCache = app.getIconCache();
 
-        mUnshrinkAnimationListener = new AnimatorListener() {
+        mUnshrinkAnimationListener = new AnimatorListenerAdapter() {
             public void onAnimationStart(Animator animation) {
                 mIsInUnshrinkAnimation = true;
             }
             public void onAnimationEnd(Animator animation) {
                 mIsInUnshrinkAnimation = false;
             }
-            public void onAnimationCancel(Animator animation) {}
-            public void onAnimationRepeat(Animator animation) {}
         };
 
         mSnapVelocity = 600;
@@ -477,8 +476,8 @@ public class Workspace extends SmoothPagedView
         if (!mIsSmall && !mIsInUnshrinkAnimation) {
             if (mBackgroundFadeOutAnimation != null) mBackgroundFadeOutAnimation.cancel();
             if (mBackgroundFadeInAnimation != null) mBackgroundFadeInAnimation.cancel();
-            mBackgroundFadeInAnimation = new ObjectAnimator<Float>(BACKGROUND_FADE_IN_DURATION,
-                    this, new PropertyValuesHolder<Float>("backgroundAlpha", 1.0f));
+            mBackgroundFadeInAnimation = ObjectAnimator.ofFloat(this, "backgroundAlpha", 1.0f);
+            mBackgroundFadeInAnimation.setDuration(BACKGROUND_FADE_IN_DURATION);
             mBackgroundFadeInAnimation.start();
         }
     }
@@ -487,8 +486,8 @@ public class Workspace extends SmoothPagedView
         if (!mIsSmall && !mIsInUnshrinkAnimation) {
             if (mBackgroundFadeInAnimation != null) mBackgroundFadeInAnimation.cancel();
             if (mBackgroundFadeOutAnimation != null) mBackgroundFadeOutAnimation.cancel();
-            mBackgroundFadeOutAnimation = new ObjectAnimator<Float>(BACKGROUND_FADE_OUT_DURATION,
-                    this, new PropertyValuesHolder<Float>("backgroundAlpha", 0.0f));
+            mBackgroundFadeOutAnimation = ObjectAnimator.ofFloat(this, "backgroundAlpha", 0.0f);
+            mBackgroundFadeOutAnimation.setDuration(BACKGROUND_FADE_OUT_DURATION);
             mBackgroundFadeOutAnimation.setStartDelay(BACKGROUND_FADE_OUT_DELAY);
             mBackgroundFadeOutAnimation.start();
         }
@@ -750,16 +749,18 @@ public class Workspace extends SmoothPagedView
 
             if (animated) {
                 final int duration = res.getInteger(R.integer.config_workspaceShrinkTime);
-                new ObjectAnimator<Float>(duration, cl,
-                        new PropertyValuesHolder<Float>("x", newX),
-                        new PropertyValuesHolder<Float>("y", newY),
-                        new PropertyValuesHolder<Float>("scaleX",
+                ObjectAnimator anim = ObjectAnimator.ofPropertyValuesHolder(cl,
+                        PropertyValuesHolder.ofFloat("x", newX),
+                        PropertyValuesHolder.ofFloat("y", newY),
+                        PropertyValuesHolder.ofFloat("scaleX",
                                 SHRINK_FACTOR * rotationScaleX * extraShrinkFactor),
-                        new PropertyValuesHolder<Float>("scaleY",
+                        PropertyValuesHolder.ofFloat("scaleY",
                                 SHRINK_FACTOR * rotationScaleY * extraShrinkFactor),
-                        new PropertyValuesHolder<Float>("backgroundAlpha", finalAlpha),
-                        new PropertyValuesHolder<Float>("alpha", finalAlpha),
-                        new PropertyValuesHolder<Float>("rotationY", rotation)).start();
+                        PropertyValuesHolder.ofFloat("backgroundAlpha", finalAlpha),
+                        PropertyValuesHolder.ofFloat("alpha", finalAlpha),
+                        PropertyValuesHolder.ofFloat("rotationY", rotation));
+                anim.setDuration(duration);
+                anim.start();
             } else {
                 cl.setX((int)newX);
                 cl.setY((int)newY);
@@ -902,14 +903,15 @@ public class Workspace extends SmoothPagedView
                 }
 
                 if (animated) {
+
                     s.playTogether(
-                            new ObjectAnimator<Float>(duration, cl, "translationX", 0.0f),
-                            new ObjectAnimator<Float>(duration, cl, "translationY", 0.0f),
-                            new ObjectAnimator<Float>(duration, cl, "scaleX", 1.0f),
-                            new ObjectAnimator<Float>(duration, cl, "scaleY", 1.0f),
-                            new ObjectAnimator<Float>(duration, cl, "backgroundAlpha", 0.0f),
-                            new ObjectAnimator<Float>(duration, cl, "alpha", finalAlphaValue),
-                            new ObjectAnimator<Float>(duration, cl, "rotationY", rotation));
+                            ObjectAnimator.ofFloat(cl, "translationX", 0.0f).setDuration(duration),
+                            ObjectAnimator.ofFloat(cl, "translationY", 0.0f).setDuration(duration),
+                            ObjectAnimator.ofFloat(cl, "scaleX", 1.0f).setDuration(duration),
+                            ObjectAnimator.ofFloat(cl, "scaleY", 1.0f).setDuration(duration),
+                            ObjectAnimator.ofFloat(cl, "backgroundAlpha", 0.0f).setDuration(duration),
+                            ObjectAnimator.ofFloat(cl, "alpha", finalAlphaValue).setDuration(duration),
+                            ObjectAnimator.ofFloat(cl, "rotationY", rotation).setDuration(duration));
                 } else {
                     cl.setTranslationX(0.0f);
                     cl.setTranslationY(0.0f);
