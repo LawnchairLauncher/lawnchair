@@ -46,14 +46,12 @@
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"La scorciatoia \"<xliff:g id="NAME">%s</xliff:g>\" è stata rimossa."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Scorciatoia \"<xliff:g id="NAME">%s</xliff:g>\" già presente."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Seleziona scorciatoia"</string>
-    <!-- no translation found for title_select_application (8031072293115454221) -->
-    <skip />
+    <string name="title_select_application" msgid="8031072293115454221">"Seleziona applicazione"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"Seleziona cartella"</string>
     <string name="all_apps_button_label" msgid="3953036962111614813">"Tutte le applicazioni"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Home"</string>
     <string name="menu_add" msgid="3065046628354640854">"Aggiungi"</string>
-    <!-- no translation found for menu_manage_apps (2864265778240958621) -->
-    <skip />
+    <string name="menu_manage_apps" msgid="2864265778240958621">"Gestisci applicazioni"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"Sfondo"</string>
     <string name="menu_search" msgid="4826514464423239041">"Cerca"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"Notifiche"</string>
