@@ -36,4 +36,13 @@
          the drag view should be offset from the position of the original view. -->
     <integer name="config_dragViewOffsetX">0</integer>
     <integer name="config_dragViewOffsetY">12</integer>
+
+    <!-- When items are dropped on the mini screens in customize mode, we have a bounce animation
+         of the bright green hover outline, and then fade out the outline at the end. These are
+         the values used in that animation -->
+    <integer name="config_screenOnDropScalePercent">120</integer>
+    <integer name="config_screenOnDropScaleUpDuration">200</integer>
+    <integer name="config_screenOnDropScaleDownDuration">200</integer>
+    <integer name="config_screenOnDropAlphaFadeDelay">350</integer>
+    <integer name="config_screenOnDropAlphaFadeDuration">50</integer>
 </resources>
