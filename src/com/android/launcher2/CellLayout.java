@@ -1088,8 +1088,6 @@ public class CellLayout extends ViewGroup implements Dimmable {
             mDragCell[0] = -1;
             mDragCell[1] = -1;
 
-            setHover(false);
-
             // Fade out the drag indicators
             if (mCrosshairsAnimator != null) {
                 mCrosshairsAnimator.animateOut();
