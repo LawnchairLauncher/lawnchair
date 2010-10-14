@@ -17,20 +17,20 @@
 <TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
 
-    android:id="@+id/wallpaper_icon"
+    android:id="@+id/no_items_icon"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_vertical"
     android:paddingTop="2dip"
 
     android:textColor="#FFFFFFFF"
-    android:textSize="14sp"
+    android:textSize="15sp"
     android:shadowColor="#FF000000"
     android:shadowDx="0.0"
     android:shadowDy="1.0"
     android:shadowRadius="1.0"
-    android:drawableLeft="@drawable/ic_launcher_wallpaper"
-    android:drawablePadding="10dip"
+    android:drawableLeft="@drawable/ic_no_applications"
+    android:drawablePadding="0dip"
 
     android:maxLines="2"
     android:fadingEdge="horizontal" />

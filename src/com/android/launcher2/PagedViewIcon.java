@@ -137,7 +137,7 @@ public class PagedViewIcon extends TextView implements Checkable {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
-        if (mHolographicOutline == null) {
+        if (mIconCache != null && mHolographicOutline == null) {
             // update the clipping rect to be used in the holographic pass below
             getDrawingRect(mDrawableClipRect);
             mDrawableClipRect.bottom = getPaddingTop() + getCompoundPaddingTop();

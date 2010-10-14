@@ -67,6 +67,12 @@
     <!--  Tile of the tab for applications that were downloaded from market [CHAR_LIMIT=12] -->
     <string name="all_apps_tab_downloaded">Downloaded</string>
 
+    <!-- All Apps pane -->
+    <!-- Message to show when there are no games [CHAR_LIMIT=25] -->
+    <string name="all_apps_no_games">No games found.</string>
+    <!-- Message to show when there are no downloaded apps [CHAR_LIMIT=25] -->
+    <string name="all_apps_no_downloads">No downloaded apps found.</string>
+
     <!-- Customization Drawer -->
     <!-- The format string for the dimensions of a widget in the drawer -->
     <string name="widget_dims_format" translatable="false">%1$d x %2$d</string>

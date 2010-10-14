@@ -16,13 +16,16 @@
 
 package com.android.launcher2;
 
-import com.android.launcher.R;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.ActionMode;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,8 +35,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Checkable;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import com.android.launcher.R;
 
 /**
  * An implementation of PagedView that populates the pages of the workspace
@@ -341,8 +343,9 @@ public class AllAppsPagedView extends PagedView
 
     @Override
     public void syncPages() {
-        // ensure that we have the right number of pages
-        int numPages = (int) Math.ceil((float) mFilteredApps.size() / (mCellCountX * mCellCountY));
+        // ensure that we have the right number of pages (min of 1, since we have placeholders)
+        int numPages = Math.max(1,
+                (int) Math.ceil((float) mFilteredApps.size() / (mCellCountX * mCellCountY)));
         int curNumPages = getChildCount();
         // remove any extra pages after the "last" page
         int extraPageDiff = curNumPages - numPages;
@@ -364,41 +367,82 @@ public class AllAppsPagedView extends PagedView
 
     @Override
     public void syncPageItems(int page) {
-        // ensure that we have the right number of items on the pages
+        // Ensure that we have the right number of items on the pages
         final int cellsPerPage = mCellCountX * mCellCountY;
         final int startIndex = page * cellsPerPage;
         final int endIndex = Math.min(startIndex + cellsPerPage, mFilteredApps.size());
         PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(page);
 
-        final int curNumPageItems = layout.getChildCount();
-        final int numPageItems = endIndex - startIndex;
+        if (!mFilteredApps.isEmpty()) {
+            int curNumPageItems = layout.getChildCount();
+            int numPageItems = endIndex - startIndex;
 
-        // remove any extra items
-        int extraPageItemsDiff = curNumPageItems - numPageItems;
-        for (int i = 0; i < extraPageItemsDiff; ++i) {
-            layout.removeViewAt(numPageItems);
-        }
-        // add any necessary items
-        for (int i = curNumPageItems; i < numPageItems; ++i) {
-            TextView text = (TextView) mInflater.inflate(R.layout.all_apps_paged_view_application, layout, false);
-            text.setOnClickListener(this);
-            text.setOnLongClickListener(this);
+            // If we were previously an empty page, then restart anew
+            boolean wasEmptyPage = false;
+            if (curNumPageItems == 1) {
+                View icon = layout.getChildAt(0);
+                if (icon.getTag() == null) {
+                    wasEmptyPage = true;
+                }
+            }
 
-            layout.addViewToCellLayout(text, -1, i,
-                new PagedViewCellLayout.LayoutParams(0, 0, 1, 1));
-        }
+            if (wasEmptyPage) {
+                // Remove all the previous items
+                curNumPageItems = 0;
+                layout.removeAllViews();
+            } else {
+                // Remove any extra items
+                int extraPageItemsDiff = curNumPageItems - numPageItems;
+                for (int i = 0; i < extraPageItemsDiff; ++i) {
+                    layout.removeViewAt(numPageItems);
+                }
+            }
 
-        // actually reapply to the existing text views
-        for (int i = startIndex; i < endIndex; ++i) {
-            final int index = i - startIndex;
-            final ApplicationInfo info = mFilteredApps.get(i);
-            PagedViewIcon icon = (PagedViewIcon) layout.getChildAt(index);
-            icon.applyFromApplicationInfo(info, mPageViewIconCache);
+            // Add any necessary items
+            for (int i = curNumPageItems; i < numPageItems; ++i) {
+                TextView text = (TextView) mInflater.inflate(
+                        R.layout.all_apps_paged_view_application, layout, false);
+                text.setOnClickListener(this);
+                text.setOnLongClickListener(this);
 
-            PagedViewCellLayout.LayoutParams params = 
-                (PagedViewCellLayout.LayoutParams) icon.getLayoutParams();
-            params.cellX = index % mCellCountX;
-            params.cellY = index / mCellCountX;
+                layout.addViewToCellLayout(text, -1, i,
+                    new PagedViewCellLayout.LayoutParams(0, 0, 1, 1));
+            }
+
+            // Actually reapply to the existing text views
+            for (int i = startIndex; i < endIndex; ++i) {
+                final int index = i - startIndex;
+                final ApplicationInfo info = mFilteredApps.get(i);
+                PagedViewIcon icon = (PagedViewIcon) layout.getChildAt(index);
+                icon.applyFromApplicationInfo(info, mPageViewIconCache);
+
+                PagedViewCellLayout.LayoutParams params =
+                    (PagedViewCellLayout.LayoutParams) icon.getLayoutParams();
+                params.cellX = index % mCellCountX;
+                params.cellY = index / mCellCountX;
+            }
+
+            // Default to left-aligned icons
+            layout.enableCenteredContent(false);
+        } else {
+            // There are no items, so show the user a small message
+            TextView icon = (TextView) mInflater.inflate(
+                    R.layout.all_apps_no_items_placeholder, layout, false);
+            switch (mAppFilter) {
+            case ApplicationInfo.GAME_FLAG:
+                icon.setText(mContext.getString(R.string.all_apps_no_games));
+                break;
+            case ApplicationInfo.DOWNLOADED_FLAG:
+                icon.setText(mContext.getString(R.string.all_apps_no_downloads));
+                break;
+            default: break;
+            }
+
+            // Center-align the message
+            layout.enableCenteredContent(true);
+            layout.removeAllViews();
+            layout.addViewToCellLayout(icon, -1, 0,
+                    new PagedViewCellLayout.LayoutParams(0, 0, 2, 1));
         }
     }
 
