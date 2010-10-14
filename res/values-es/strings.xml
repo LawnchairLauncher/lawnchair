@@ -46,14 +46,12 @@
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Se ha eliminado el acceso directo \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"El acceso directo \"<xliff:g id="NAME">%s</xliff:g>\" ya existe."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Seleccionar acceso directo"</string>
-    <!-- no translation found for title_select_application (8031072293115454221) -->
-    <skip />
+    <string name="title_select_application" msgid="8031072293115454221">"Seleccionar aplicación"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"Seleccionar carpeta"</string>
     <string name="all_apps_button_label" msgid="3953036962111614813">"Todas las aplicaciones"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Inicio"</string>
     <string name="menu_add" msgid="3065046628354640854">"Añadir"</string>
-    <!-- no translation found for menu_manage_apps (2864265778240958621) -->
-    <skip />
+    <string name="menu_manage_apps" msgid="2864265778240958621">"Administrar aplicaciones"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"Fondo de pantalla"</string>
     <string name="menu_search" msgid="4826514464423239041">"Buscar con Google"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"Notificaciones"</string>

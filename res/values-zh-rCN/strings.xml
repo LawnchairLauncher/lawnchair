@@ -46,14 +46,12 @@
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"已删除“<xliff:g id="NAME">%s</xliff:g>”快捷方式。"</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"“<xliff:g id="NAME">%s</xliff:g>”快捷方式已存在。"</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"选择快捷方式"</string>
-    <!-- no translation found for title_select_application (8031072293115454221) -->
-    <skip />
+    <string name="title_select_application" msgid="8031072293115454221">"选择应用程序"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"选择文件夹"</string>
     <string name="all_apps_button_label" msgid="3953036962111614813">"所有应用程序"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"主屏幕"</string>
     <string name="menu_add" msgid="3065046628354640854">"添加"</string>
-    <!-- no translation found for menu_manage_apps (2864265778240958621) -->
-    <skip />
+    <string name="menu_manage_apps" msgid="2864265778240958621">"管理应用程序"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"壁纸"</string>
     <string name="menu_search" msgid="4826514464423239041">"搜索"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"通知"</string>
