@@ -817,8 +817,7 @@ public abstract class PagedView extends ViewGroup {
                 } else {
                     awakenScrollBars();
                 }
-            } else if ((mTouchState == TOUCH_STATE_PREV_PAGE) ||
-                    (mTouchState == TOUCH_STATE_NEXT_PAGE)) {
+            } else {
                 determineScrollingStart(ev);
             }
             break;
