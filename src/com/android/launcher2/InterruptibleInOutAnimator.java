@@ -37,6 +37,12 @@ public class InterruptibleInOutAnimator extends ValueAnimator {
 
     private Object mTag = null;
 
+    private static final int STOPPED = 0;
+    private static final int IN = 1;
+    private static final int OUT = 2;
+
+    private int mDirection = STOPPED;
+
     public InterruptibleInOutAnimator(long duration, Object fromValue, Object toValue) {
         super(duration, fromValue, toValue);
         mOriginalDuration = duration;
@@ -44,17 +50,40 @@ public class InterruptibleInOutAnimator extends ValueAnimator {
         mOriginalToValue = toValue;
     }
 
-    private void animateTo(Object toValue) {
-        // This only makes sense when it's running in the opposite direction, or stopped.
-        setDuration(mOriginalDuration - getCurrentPlayTime());
-
+    private void animate(int direction) {
+        final long currentPlayTime = getCurrentPlayTime();
+        final Object toValue = (direction == IN) ? mOriginalToValue : mOriginalFromValue;
         final Object startValue = mFirstRun ? mOriginalFromValue : getAnimatedValue();
+
+        // Make sure it's stopped before we modify any values
         cancel();
+
         if (startValue != toValue) {
+            mDirection = direction;
+            setDuration(mOriginalDuration - currentPlayTime);
             setValues(startValue, toValue);
             start();
             mFirstRun = false;
         }
+    }
+
+    @Override
+    public void cancel() {
+        super.cancel();
+        mDirection = STOPPED;
+    }
+
+    @Override
+    public void end() {
+        super.end();
+        mDirection = STOPPED;
+    }
+
+    /**
+     * Return true when the animation is not running and it hasn't even been started.
+     */
+    public boolean isStopped() {
+        return mDirection == STOPPED;
     }
 
     /**
@@ -63,7 +92,7 @@ public class InterruptibleInOutAnimator extends ValueAnimator {
      * direction and animate for a correspondingly shorter duration.
      */
     public void animateIn() {
-        animateTo(mOriginalToValue);
+        animate(IN);
     }
 
     /**
@@ -73,7 +102,7 @@ public class InterruptibleInOutAnimator extends ValueAnimator {
      * direction and animate for a correspondingly shorter duration.
      */
     public void animateOut() {
-        animateTo(mOriginalFromValue);
+        animate(OUT);
     }
 
     public void setTag(Object tag) {

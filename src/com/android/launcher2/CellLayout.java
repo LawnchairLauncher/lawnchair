@@ -212,6 +212,12 @@ public class CellLayout extends ViewGroup implements Dimmable {
                     // If an animation is started and then stopped very quickly, we can still
                     // get spurious updates we've cleared the tag. Guard against this.
                     if (outline == null) {
+                        if (false) {
+                            Object val = animation.getAnimatedValue();
+                            Log.d(TAG, "anim " + thisIndex + " update: " + val +
+                                     ", isStopped " + anim.isStopped());
+                        }
+
                         // Try to prevent it from continuing to run
                         animation.cancel();
                     } else {
@@ -1138,15 +1144,14 @@ public class CellLayout extends ViewGroup implements Dimmable {
      * or it may have begun on another layout.
      */
     void onDragEnter(View dragView) {
-        if (mDragging) {
+        if (!mDragging) {
 //            Log.d(TAG, "Received onDragEnter while drag still active");
+            // Fade in the drag indicators
+            if (mCrosshairsAnimator != null) {
+                mCrosshairsAnimator.animateIn();
+            }
         }
         mDragging = true;
-
-        // Fade in the drag indicators
-        if (mCrosshairsAnimator != null) {
-            mCrosshairsAnimator.animateIn();
-        }
     }
 
     /**
