@@ -29,6 +29,7 @@ public class LauncherApplication extends Application {
     public LauncherModel mModel;
     public IconCache mIconCache;
     private static boolean sIsScreenXLarge;
+    private static float sScreenDensity;
     private static final boolean ENABLE_ROTATION = false;
 
     @Override
@@ -40,6 +41,7 @@ public class LauncherApplication extends Application {
         mIconCache = new IconCache(this);
         mModel = new LauncherModel(this, mIconCache);
         sIsScreenXLarge = (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE;
+        sScreenDensity = getResources().getDisplayMetrics().density;
 
         // Register intent receivers
         IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
@@ -100,5 +102,9 @@ public class LauncherApplication extends Application {
 
     public static boolean isScreenXLarge() {
         return sIsScreenXLarge;
+    }
+
+    public static float getScreenDensity() {
+        return sScreenDensity;
     }
 }
