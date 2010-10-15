@@ -1004,7 +1004,7 @@ public class Workspace extends SmoothPagedView
         mDragInfo = cellInfo;
         mDragInfo.screen = mCurrentPage;
 
-        CellLayout current = ((CellLayout) getChildAt(mCurrentPage));
+        CellLayout current = getCurrentDropLayout();
 
         current.onDragChild(child);
 
@@ -1028,7 +1028,6 @@ public class Workspace extends SmoothPagedView
                 child.getTag(), DragController.DRAG_ACTION_MOVE, null);
         b.recycle();
 
-        current.onDragEnter(child);
         child.setVisibility(View.GONE);
     }
 
@@ -1102,8 +1101,11 @@ public class Workspace extends SmoothPagedView
 
     public void onDragEnter(DragSource source, int x, int y, int xOffset,
             int yOffset, DragView dragView, Object dragInfo) {
+        mDragTargetLayout = null; // Reset the drag state
+
         if (!mIsSmall) {
-            getCurrentDropLayout().onDragEnter(dragView);
+            mDragTargetLayout = getCurrentDropLayout();
+            mDragTargetLayout.onDragEnter(dragView);
             showOutlines();
         }
     }
@@ -1371,11 +1373,11 @@ public class Workspace extends SmoothPagedView
             int yOffset, DragView dragView, Object dragInfo) {
         if (mDragTargetLayout != null) {
             mDragTargetLayout.onDragExit();
-            mDragTargetLayout = null;
         }
         if (!mIsPageMoving) {
             hideOutlines();
         }
+        clearAllHovers();
     }
 
     private void onDropExternal(int x, int y, Object dragInfo,
@@ -1496,9 +1498,6 @@ public class Workspace extends SmoothPagedView
      */
     public boolean acceptDrop(DragSource source, int x, int y,
             int xOffset, int yOffset, DragView dragView, Object dragInfo) {
-        // call onDragOver one more time, in case the current layout has changed
-        onDragOver(source, x, y, xOffset, yOffset, dragView, dragInfo);
-
         if (mDragTargetLayout == null) {
             // cancel the drag if we're not over a screen at time of drop
             return false;
@@ -1611,14 +1610,18 @@ public class Workspace extends SmoothPagedView
         }
     }
 
+    private void clearAllHovers() {
+        final int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            ((CellLayout) getChildAt(i)).setHover(false);
+        }
+    }
+
     @Override
     public void onExitScrollArea() {
         if (mInScrollArea) {
             mInScrollArea = false;
-            final int childCount = getChildCount();
-            for (int i = 0; i < childCount; i++) {
-                ((CellLayout) getChildAt(i)).setHover(false);
-            }
+            clearAllHovers();
         }
     }
 

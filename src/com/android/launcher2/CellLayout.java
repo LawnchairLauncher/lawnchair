@@ -216,7 +216,6 @@ public class CellLayout extends ViewGroup implements Dimmable {
                             Log.d(TAG, "anim " + thisIndex + " update: " + val +
                                      ", isStopped " + anim.isStopped());
                         }
-
                         // Try to prevent it from continuing to run
                         animation.cancel();
                     } else {
@@ -837,10 +836,12 @@ public class CellLayout extends ViewGroup implements Dimmable {
     void visualizeDropLocation(
             View v, Bitmap dragOutline, int originX, int originY, int spanX, int spanY) {
 
+        final int oldDragCellX = mDragCell[0];
+        final int oldDragCellY = mDragCell[1];
         final int[] nearest = findNearestVacantArea(originX, originY, spanX, spanY, v, mDragCell);
         mDragCenter.set(originX + (v.getWidth() / 2), originY + (v.getHeight() / 2));
 
-        if (nearest != null) {
+        if (nearest != null && (nearest[0] != oldDragCellX || nearest[1] != oldDragCellY)) {
             // Find the top left corner of the rect the object will occupy
             final int[] topLeft = mTmpPoint;
             cellToPoint(nearest[0], nearest[1], topLeft);
@@ -859,16 +860,12 @@ public class CellLayout extends ViewGroup implements Dimmable {
             top += (v.getHeight() - dragOutline.getHeight()) / 2;
 
             final int oldIndex = mDragOutlineCurrent;
-            final Point lastPoint = mDragOutlines[oldIndex];
-            if (lastPoint.x != left || lastPoint.y != top) {
-                mDragOutlineCurrent = (oldIndex + 1) % mDragOutlines.length;
+            mDragOutlineAnims[oldIndex].animateOut();
+            mDragOutlineCurrent = (oldIndex + 1) % mDragOutlines.length;
 
-                mDragOutlines[mDragOutlineCurrent].set(left, top);
-
-                mDragOutlineAnims[oldIndex].animateOut();
-                mDragOutlineAnims[mDragOutlineCurrent].setTag(dragOutline);
-                mDragOutlineAnims[mDragOutlineCurrent].animateIn();
-            }
+            mDragOutlines[mDragOutlineCurrent].set(left, top);
+            mDragOutlineAnims[mDragOutlineCurrent].setTag(dragOutline);
+            mDragOutlineAnims[mDragOutlineCurrent].animateIn();
         }
 
         // If we are drawing crosshairs, the entire CellLayout needs to be invalidated
@@ -1084,21 +1081,19 @@ public class CellLayout extends ViewGroup implements Dimmable {
         if (mDragging) {
             mDragging = false;
 
-            // Invalidate the drag data
-            mDragCell[0] = -1;
-            mDragCell[1] = -1;
-
             // Fade out the drag indicators
             if (mCrosshairsAnimator != null) {
                 mCrosshairsAnimator.animateOut();
             }
-
-            final int prev = mDragOutlineCurrent;
-            mDragOutlineAnims[prev].animateOut();
-            mDragOutlineCurrent = (prev + 1) % mDragOutlines.length;
-            mDragOutlines[mDragOutlineCurrent].set(-1, -1);
-            mDragOutlineAlphas[mDragOutlineCurrent] = 0;
         }
+
+        // Invalidate the drag data
+        mDragCell[0] = -1;
+        mDragCell[1] = -1;
+        mDragOutlineAnims[mDragOutlineCurrent].animateOut();
+        mDragOutlineCurrent = (mDragOutlineCurrent + 1) % mDragOutlineAnims.length;
+
+        setHover(false);
     }
 
     /**
@@ -1115,14 +1110,12 @@ public class CellLayout extends ViewGroup implements Dimmable {
             lp.dropped = true;
             child.requestLayout();
         }
-        onDragExit();
     }
 
     void onDropAborted(View child) {
         if (child != null) {
             ((LayoutParams) child.getLayoutParams()).isDragging = false;
         }
-        onDragExit();
     }
 
     /**
@@ -1142,7 +1135,6 @@ public class CellLayout extends ViewGroup implements Dimmable {
      */
     void onDragEnter(View dragView) {
         if (!mDragging) {
-//            Log.d(TAG, "Received onDragEnter while drag still active");
             // Fade in the drag indicators
             if (mCrosshairsAnimator != null) {
                 mCrosshairsAnimator.animateIn();
