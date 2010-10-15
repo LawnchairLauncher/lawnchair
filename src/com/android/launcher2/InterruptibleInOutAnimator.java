@@ -43,7 +43,7 @@ public class InterruptibleInOutAnimator {
     private static final int IN = 1;
     private static final int OUT = 2;
 
-
+    // TODO: This isn't really necessary, but is here to help diagnose a bug in the drag viz
     private int mDirection = STOPPED;
 
     public InterruptibleInOutAnimator(long duration, float fromValue, float toValue) {
@@ -51,6 +51,12 @@ public class InterruptibleInOutAnimator {
         mOriginalDuration = duration;
         mOriginalFromValue = fromValue;
         mOriginalToValue = toValue;
+
+        mAnimator.addListener(new AnimatorListenerAdapter() {
+            public void onAnimationEnd(Animator animation) {
+                mDirection = STOPPED;
+            }
+        });
     }
 
     private void animate(int direction) {
@@ -62,13 +68,17 @@ public class InterruptibleInOutAnimator {
         // Make sure it's stopped before we modify any values
         cancel();
 
-        if (startValue != toValue) {
-            mDirection = direction;
-            mAnimator.setDuration(mOriginalDuration - currentPlayTime);
-            mAnimator.setFloatValues(startValue, toValue);
-            mAnimator.start();
-            mFirstRun = false;
-        }
+        // TODO: We don't really need to do the animation if startValue == toValue, but
+        // somehow that doesn't seem to work, possibly a quirk of the animation framework
+        mDirection = direction;
+
+        // Ensure we don't calculate a non-sensical duration
+        long duration = mOriginalDuration - currentPlayTime;
+        mAnimator.setDuration(Math.max(0, Math.min(duration, mOriginalDuration)));
+
+        mAnimator.setFloatValues(startValue, toValue);
+        mAnimator.start();
+        mFirstRun = false;
     }
 
     public void cancel() {
