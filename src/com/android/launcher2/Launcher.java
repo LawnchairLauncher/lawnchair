@@ -318,8 +318,9 @@ public final class Launcher extends Activity
                     // animate the changing of the tab content by fading pages in and out
                     final int duration = 150;
                     final float alpha = mCustomizePagedView.getAlpha();
-                    ValueAnimator alphaAnim = new ObjectAnimator(duration, mCustomizePagedView,
+                    ValueAnimator alphaAnim = ObjectAnimator.ofFloat(mCustomizePagedView,
                             "alpha", alpha, 0.0f);
+                    alphaAnim.setDuration(duration);
                     alphaAnim.addListener(new AnimatorListenerAdapter() {
                         public void onAnimationEnd(Animator animation) {
                             String tag = mHomeCustomizationDrawer.getCurrentTabTag();
@@ -341,8 +342,9 @@ public final class Launcher extends Activity
                             }
 
                             final float alpha = mCustomizePagedView.getAlpha();
-                            ValueAnimator alphaAnim = new ObjectAnimator(duration,
+                            ValueAnimator alphaAnim = ObjectAnimator.ofFloat(
                                     mCustomizePagedView, "alpha", alpha, 1.0f);
+                            alphaAnim.setDuration(duration);
                             alphaAnim.start();
                         }
                     });
@@ -2284,7 +2286,8 @@ public final class Launcher extends Activity
                 getResources().getInteger(R.integer.config_toolbarButtonFadeOutTime);
 
         if (seq != null) {
-            Animator anim = new ObjectAnimator<Float>(duration, view, "alpha", show ? 1.0f : 0.0f);
+            Animator anim = ObjectAnimator.ofFloat(view, "alpha", show ? 1.0f : 0.0f);
+            anim.setDuration(duration);
             anim.addListener(new AnimatorListenerAdapter() {
                 public void onAnimationStart(Animator animation) {
                     if (showing) showToolbarButton(view);
@@ -2383,9 +2386,10 @@ public final class Launcher extends Activity
         }
 
         if (animated) {
-            ValueAnimator scaleAnim = new ObjectAnimator(duration, toView,
-                    new PropertyValuesHolder<Float>("scaleX", scale, 1.0f),
-                    new PropertyValuesHolder<Float>("scaleY", scale, 1.0f));
+            ValueAnimator scaleAnim = ObjectAnimator.ofPropertyValuesHolder(toView,
+                    PropertyValuesHolder.ofFloat("scaleX", scale, 1.0f),
+                    PropertyValuesHolder.ofFloat("scaleY", scale, 1.0f));
+            scaleAnim.setDuration(duration);
             scaleAnim.setInterpolator(new DecelerateInterpolator());
             scaleAnim.addListener(new AnimatorListenerAdapter() {
                 public void onAnimationStart(Animator animation) {
@@ -2445,9 +2449,10 @@ public final class Launcher extends Activity
         if (animated) {
             if (mStateAnimation != null) mStateAnimation.cancel();
             mStateAnimation = new AnimatorSet();
-            ValueAnimator scaleAnim = new ObjectAnimator(duration, fromView,
-                    new PropertyValuesHolder<Float>("scaleX", scaleFactor),
-                    new PropertyValuesHolder<Float>("scaleY", scaleFactor));
+            ValueAnimator scaleAnim = ObjectAnimator.ofPropertyValuesHolder(fromView,
+                    PropertyValuesHolder.ofFloat("scaleX", scaleFactor),
+                    PropertyValuesHolder.ofFloat("scaleY", scaleFactor));
+            scaleAnim.setDuration(duration);
             scaleAnim.setInterpolator(new AccelerateInterpolator());
             mStateAnimation.addListener(new AnimatorListenerAdapter() {
                 public void onAnimationEnd(Animator animation) {
@@ -2522,10 +2527,13 @@ public final class Launcher extends Activity
             AnimatorSet toolbarShowAnim = new AnimatorSet();
             hideAndShowToolbarButtons(toState, toolbarShowAnim, toolbarHideAnim);
 
-            mStateAnimation.playTogether(
-                    toolbarHideAnim,
-                    new ObjectAnimator(duration, fromView, "y", fromViewStartY, fromViewEndY),
-                    new ObjectAnimator(duration, toView, "y", toViewStartY, toViewEndY));
+            ObjectAnimator fromAnim = ObjectAnimator.ofFloat(fromView, "y",
+                    fromViewStartY, fromViewEndY);
+            fromAnim.setDuration(duration);
+            ObjectAnimator toAnim = ObjectAnimator.ofFloat(toView, "y",
+                    toViewStartY, toViewEndY);
+            fromAnim.setDuration(duration);
+            mStateAnimation.playTogether(toolbarHideAnim, fromAnim, toAnim);
 
             // Show the new toolbar buttons just as the main animation is ending
             final int fadeInTime = res.getInteger(R.integer.config_toolbarButtonFadeInTime);
