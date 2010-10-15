@@ -80,7 +80,7 @@ public abstract class PagedView extends ViewGroup {
     protected final static int TOUCH_STATE_SCROLLING = 1;
     protected final static int TOUCH_STATE_PREV_PAGE = 2;
     protected final static int TOUCH_STATE_NEXT_PAGE = 3;
-    protected final static float ALPHA_QUANTIZE_LEVEL = 0.01f;
+    protected final static float ALPHA_QUANTIZE_LEVEL = 0.0001f;
 
     protected int mTouchState = TOUCH_STATE_REST;
 
