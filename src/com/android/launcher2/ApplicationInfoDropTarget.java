@@ -21,6 +21,7 @@ import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -98,9 +99,8 @@ public class ApplicationInfoDropTarget extends ImageView implements DropTarget, 
 
     public void onDragStart(DragSource source, Object info, int dragAction) {
         if (info != null) {
-            mActive = true;
-
             if (mManageVisibility) {
+                mActive = true;
                 // Only show the info icon when an application is selected
                 if (((ItemInfo)info).itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
                     setVisibility(VISIBLE);
@@ -111,7 +111,7 @@ public class ApplicationInfoDropTarget extends ImageView implements DropTarget, 
     }
 
     public boolean isDropEnabled() {
-        return true;
+        return mActive;
     }
 
     public void onDragEnd() {
@@ -121,6 +121,17 @@ public class ApplicationInfoDropTarget extends ImageView implements DropTarget, 
                 setVisibility(GONE);
                 mHandle.setVisibility(VISIBLE);
             }
+        }
+    }
+
+    @Override
+    public void getHitRect(Rect outRect) {
+        super.getHitRect(outRect);
+        if (LauncherApplication.isScreenXLarge()) {
+            outRect.top -= 50;
+            outRect.left -= 50;
+            outRect.bottom += 50;
+            outRect.right += 50;
         }
     }
 
