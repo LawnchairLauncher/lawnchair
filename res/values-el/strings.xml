@@ -51,7 +51,7 @@
     <string name="all_apps_button_label" msgid="3953036962111614813">"Όλες οι εφαρμογές"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Αρχική σελίδα"</string>
     <string name="menu_add" msgid="3065046628354640854">"Προσθήκη"</string>
-    <string name="menu_manage_apps" msgid="2864265778240958621">"Διαχείριση Εφαρμογών"</string>
+    <!-- outdated translation 2864265778240958621 -->     <string name="menu_manage_apps" msgid="2308685199463588895">"Διαχείριση Εφαρμογών"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"Ταπετσαρία"</string>
     <string name="menu_search" msgid="4826514464423239041">"Αναζήτηση"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"Ειδοποιήσεις"</string>
