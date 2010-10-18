@@ -23,6 +23,7 @@ import android.content.res.TypedArray;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
@@ -59,7 +60,8 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
     private int mOrientation;
     private DragController mDragController;
 
-    private final RectF mRegion = new RectF();
+    private final RectF mRegionF = new RectF();
+    private final Rect mRegion = new Rect();
     private TransitionDrawable mTransition;
     private final Paint mTrashPaint = new Paint();
 
@@ -158,11 +160,17 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
         final ItemInfo item = (ItemInfo) info;
         if (item != null) {
             mTrashMode = true;
-            final int[] location = mLocation;
-            getLocationOnScreen(location);
-            mRegion.set(location[0], location[1], location[0] + mRight - mLeft,
-                    location[1] + mBottom - mTop);
-            mDragController.setDeleteRegion(mRegion);
+            getHitRect(mRegion);
+            mRegionF.set(mRegion);
+
+            if (LauncherApplication.isScreenXLarge()) {
+                // This region will be a "dead zone" for scrolling; make it extend to the edge of
+                // the screen so users don't accidentally trigger a scroll while deleting items
+                mRegionF.top = mLauncher.getWorkspace().getTop();
+                mRegionF.right = mLauncher.getWorkspace().getRight();
+            }
+
+            mDragController.setDeleteRegion(mRegionF);
 
             // Make sure the icon is set to the default drawable, not the hover drawable
             mTransition.resetTransition();
@@ -192,6 +200,17 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
 
     public boolean isDropEnabled() {
         return true;
+    }
+
+    @Override
+    public void getHitRect(Rect outRect) {
+        super.getHitRect(outRect);
+        if (LauncherApplication.isScreenXLarge()) {
+            outRect.top -= 50;
+            outRect.left -= 50;
+            outRect.bottom += 50;
+            outRect.right += 50;
+        }
     }
 
     private void createAnimations() {
