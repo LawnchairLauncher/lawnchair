@@ -416,6 +416,11 @@ public class Workspace extends SmoothPagedView
         return super.onInterceptTouchEvent(ev);
     }
 
+    @Override
+    protected void determineScrollingStart(MotionEvent ev) {
+        if (!mIsSmall && !mIsInUnshrinkAnimation) super.determineScrollingStart(ev);
+    }
+
     protected void onPageBeginMoving() {
         if (mNextPage != INVALID_PAGE) {
             // we're snapping to a particular screen

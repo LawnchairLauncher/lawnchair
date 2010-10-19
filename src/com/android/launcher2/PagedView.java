@@ -715,7 +715,7 @@ public abstract class PagedView extends ViewGroup {
      * Determines if we should change the touch state to start scrolling after the
      * user moves their touch point too far.
      */
-    private void determineScrollingStart(MotionEvent ev) {
+    protected void determineScrollingStart(MotionEvent ev) {
         /*
          * Locally do absolute value. mLastMotionX is set to the y value
          * of the down event.
