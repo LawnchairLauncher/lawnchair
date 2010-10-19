@@ -13,6 +13,10 @@
   public void setBackgroundAlpha(float);
   public float getDimmableProgress();
   public void setDimmableProgress(float);
+  public float getHoverScale();
+  public void setHoverScale(float);
+  public float getHoverAlpha();
+  public void setHoverAlpha(float);
 }
 
 -keep class com.android.launcher2.DimmableBubbleTextView {
