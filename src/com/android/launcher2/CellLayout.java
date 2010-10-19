@@ -20,6 +20,8 @@ import com.android.launcher.R;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
@@ -34,6 +36,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -84,6 +87,10 @@ public class CellLayout extends ViewGroup implements Dimmable {
     private Drawable mBackgroundMiniHover;
     private Drawable mBackgroundHover;
     private Drawable mBackgroundMiniAcceptsDrops;
+    private Rect mBackgroundRect;
+    private Rect mHoverRect;
+    private float mHoverScale;
+    private float mHoverAlpha;
     private boolean mAcceptsDrops;
 
     // If we're actively dragging something over this screen, mHover is true
@@ -238,6 +245,69 @@ public class CellLayout extends ViewGroup implements Dimmable {
             });
             mDragOutlineAnims[i] = anim;
         }
+        mBackgroundRect = new Rect();
+        mHoverRect = new Rect();
+        setHoverScale(1.0f);
+        setHoverAlpha(1.0f);
+    }
+
+    private void updateHoverRect() {
+        float marginFraction = (mHoverScale - 1.0f) / 2.0f;
+        int marginX = (int) (marginFraction * (mBackgroundRect.right - mBackgroundRect.left));
+        int marginY = (int) (marginFraction * (mBackgroundRect.bottom - mBackgroundRect.top));
+        mHoverRect.set(mBackgroundRect.left - marginX, mBackgroundRect.top - marginY,
+                mBackgroundRect.right + marginX, mBackgroundRect.bottom + marginY);
+        invalidate();
+    }
+
+    public void setHoverScale(float scaleFactor) {
+        if (scaleFactor != mHoverScale) {
+            mHoverScale = scaleFactor;
+            updateHoverRect();
+        }
+    }
+
+    public float getHoverScale() {
+        return mHoverScale;
+    }
+
+    public float getHoverAlpha() {
+        return mHoverAlpha;
+    }
+
+    public void setHoverAlpha(float alpha) {
+        mHoverAlpha = alpha;
+        invalidate();
+    }
+
+    void animateDrop() {
+        if (LauncherApplication.isScreenXLarge()) {
+            Resources res = getResources();
+            float onDropScale = res.getInteger(R.integer.config_screenOnDropScalePercent) / 100.0f;
+            ObjectAnimator scaleUp = ObjectAnimator.ofFloat(this, "hoverScale", onDropScale);
+            scaleUp.setDuration(res.getInteger(R.integer.config_screenOnDropScaleUpDuration));
+            ObjectAnimator scaleDown = ObjectAnimator.ofFloat(this, "hoverScale", 1.0f);
+            scaleDown.setDuration(res.getInteger(R.integer.config_screenOnDropScaleDownDuration));
+            ObjectAnimator alphaFadeOut = ObjectAnimator.ofFloat(this, "hoverAlpha", 0.0f);
+
+            alphaFadeOut.setStartDelay(res.getInteger(R.integer.config_screenOnDropAlphaFadeDelay));
+            alphaFadeOut.setDuration(res.getInteger(R.integer.config_screenOnDropAlphaFadeDelay));
+
+            AnimatorSet bouncer = new AnimatorSet();
+            bouncer.play(scaleUp).before(scaleDown);
+            bouncer.play(scaleUp).with(alphaFadeOut);
+            bouncer.addListener(new AnimatorListenerAdapter() {
+                public void onAnimationStart(Animator animation) {
+                    setHover(true);
+                }
+                public void onAnimationEnd(Animator animation) {
+                    setHover(false);
+                    setHoverScale(1.0f);
+                    setHoverAlpha(1.0f);
+                }
+            });
+            bouncer.start();
+        }
     }
 
     public void setHover(boolean value) {
@@ -267,11 +337,31 @@ public class CellLayout extends ViewGroup implements Dimmable {
             }
             if (bg != null) {
                 bg.setAlpha((int) (mBackgroundAlpha * 255));
+                bg.setBounds(mBackgroundRect);
                 bg.draw(canvas);
             }
             if (mHover && getScaleX() < 0.5f) {
-                mBackgroundMiniHover.setAlpha((int) (mBackgroundAlpha * 255));
+                boolean modifiedClipRect = false;
+                if (mHoverScale > 1.0f) {
+                    // If the hover background's scale is greater than 1, we'll be drawing outside
+                    // the bounds of this CellLayout. Get around that by temporarily increasing the
+                    // size of the clip rect
+                    float marginFraction = (mHoverScale - 1.0f) / 2.0f;
+                    Rect clipRect = canvas.getClipBounds();
+                    int marginX = (int) (marginFraction * (clipRect.right - clipRect.left));
+                    int marginY = (int) (marginFraction * (clipRect.bottom - clipRect.top));
+                    canvas.save(Canvas.CLIP_SAVE_FLAG);
+                    canvas.clipRect(-marginX, -marginY,
+                            getWidth() + marginX, getHeight() + marginY, Region.Op.REPLACE);
+                    modifiedClipRect = true;
+                }
+
+                mBackgroundMiniHover.setAlpha((int) (mBackgroundAlpha * mHoverAlpha * 255));
+                mBackgroundMiniHover.setBounds(mHoverRect);
                 mBackgroundMiniHover.draw(canvas);
+                if (modifiedClipRect) {
+                    canvas.restore();
+                }
             }
         }
 
@@ -692,21 +782,8 @@ public class CellLayout extends ViewGroup implements Dimmable {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        if (mBackground != null) {
-            mBackground.setBounds(0, 0, w, h);
-        }
-        if (mBackgroundHover != null) {
-            mBackgroundHover.setBounds(0, 0, w, h);
-        }
-        if (mBackgroundMiniHover != null) {
-            mBackgroundMiniHover.setBounds(0, 0, w, h);
-        }
-        if (mBackgroundMini != null) {
-            mBackgroundMini.setBounds(0, 0, w, h);
-        }
-        if (mBackgroundMiniAcceptsDrops != null) {
-            mBackgroundMiniAcceptsDrops.setBounds(0, 0, w, h);
-        }
+        mBackgroundRect.set(0, 0, w, h);
+        updateHoverRect();
     }
 
     @Override

@@ -16,14 +16,14 @@
 
 package com.android.launcher2;
 
-import android.animation.AnimatorListenerAdapter;
 import com.android.launcher.R;
 
 import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.animation.Animator.AnimatorListener;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -36,7 +36,6 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.Region.Op;
@@ -414,6 +413,11 @@ public class Workspace extends SmoothPagedView
             return false;
         }
         return super.onInterceptTouchEvent(ev);
+    }
+
+    @Override
+    protected void determineScrollingStart(MotionEvent ev) {
+        if (!mIsSmall && !mIsInUnshrinkAnimation) super.determineScrollingStart(ev);
     }
 
     protected void onPageBeginMoving() {
@@ -1110,8 +1114,8 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    public DropTarget getDropTargetDelegate(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+    public DropTarget getDropTargetDelegate(DragSource source, int x, int y,
+            int xOffset, int yOffset, DragView dragView, Object dragInfo) {
 
         if (mIsSmall || mIsInUnshrinkAnimation) {
             // If we're shrunken, don't let anyone drag on folders/etc that are on the mini-screens
@@ -1430,6 +1434,7 @@ public class Workspace extends SmoothPagedView
                     throw new IllegalStateException("Unknown item type: " + info.itemType);
             }
             cellLayout.onDragExit();
+            cellLayout.animateDrop();
             return;
         }
 
@@ -1464,6 +1469,7 @@ public class Workspace extends SmoothPagedView
             addInScreen(view, indexOfChild(cellLayout), mTargetCell[0],
                     mTargetCell[1], info.spanX, info.spanY, insertAtFirst);
             cellLayout.onDropChild(view);
+            cellLayout.animateDrop();
             CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
 
             LauncherModel.addOrMoveItemInDatabase(mLauncher, info,
