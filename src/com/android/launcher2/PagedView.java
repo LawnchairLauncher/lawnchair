@@ -649,7 +649,7 @@ public abstract class PagedView extends ViewGroup {
                  * otherwise don't.  mScroller.isFinished should be false when
                  * being flinged.
                  */
-                final int xDist = (mScroller.getFinalX() - mScroller.getCurrX());
+                final int xDist = Math.abs(mScroller.getFinalX() - mScroller.getCurrX());
                 final boolean finishedScrolling = (mScroller.isFinished() || xDist < mTouchSlop);
                 if (finishedScrolling) {
                     mTouchState = TOUCH_STATE_REST;
