@@ -119,6 +119,9 @@ public class CellLayout extends ViewGroup implements Dimmable {
 
     private boolean mDragging = false;
 
+    private ObjectAnimator mDropAnim;
+    private TimeInterpolator mEaseOutInterpolator;
+
     public CellLayout(Context context) {
         this(context, null);
     }
@@ -177,7 +180,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
         // Initialize the data structures used for the drag visualization.
 
         mCrosshairsDrawable = res.getDrawable(R.drawable.gardening_crosshairs);
-        TimeInterpolator interp = new DecelerateInterpolator(2.5f); // Quint ease out
+        mEaseOutInterpolator = new DecelerateInterpolator(2.5f); // Quint ease out
 
         // Set up the animation for fading the crosshairs in and out
         int animDuration = res.getInteger(R.integer.config_crosshairsFadeInTime);
@@ -188,7 +191,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
                 CellLayout.this.invalidate();
             }
         });
-        mCrosshairsAnimator.getAnimator().setInterpolator(interp);
+        mCrosshairsAnimator.getAnimator().setInterpolator(mEaseOutInterpolator);
 
         for (int i = 0; i < mDragOutlines.length; i++) {
             mDragOutlines[i] = new Point(-1, -1);
@@ -209,7 +212,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
         for (int i = 0; i < mDragOutlineAnims.length; i++) {
             final InterruptibleInOutAnimator anim =
                 new InterruptibleInOutAnimator(duration, fromAlphaValue, toAlphaValue);
-            anim.getAnimator().setInterpolator(interp);
+            anim.getAnimator().setInterpolator(mEaseOutInterpolator);
             final int thisIndex = i;
             anim.getAnimator().addUpdateListener(new AnimatorUpdateListener() {
                 public void onAnimationUpdate(ValueAnimator animation) {
@@ -245,6 +248,10 @@ public class CellLayout extends ViewGroup implements Dimmable {
             });
             mDragOutlineAnims[i] = anim;
         }
+
+        mDropAnim = new ObjectAnimator();
+        mDropAnim.setInterpolator(mEaseOutInterpolator);
+
         mBackgroundRect = new Rect();
         mHoverRect = new Rect();
         setHoverScale(1.0f);
@@ -752,12 +759,46 @@ public class CellLayout extends ViewGroup implements Dimmable {
         }
     }
 
+    /**
+     * Animate a child of this CellLayout into its current layout position.
+     * The position to animate from is given by the oldX and oldY values in its LayoutParams.
+     */
+    private void animateChildIntoPosition(final View child) {
+        final Resources res = getResources();
+        final ObjectAnimator anim = mDropAnim;
+        final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
+        final float startX = lp.oldX - lp.x;
+        final float startY = lp.oldY - lp.y;
+
+        // Calculate the duration of the animation based on the object's distance
+        final float dist = (float) Math.sqrt(startX*startX + startY*startY);
+        final float maxDist = (float) res.getInteger(R.integer.config_dropAnimMaxDist);
+        final int duration = (int) (res.getInteger(R.integer.config_dropAnimMaxDuration)
+                * mEaseOutInterpolator.getInterpolation(dist / maxDist));
+
+        anim.cancel(); // Make sure it's not already running
+        anim.setDuration(duration);
+        anim.setTarget(child);
+        anim.setPropertyName("translationX");
+        anim.setFloatValues(startX, 0);
+
+        anim.removeAllUpdateListeners();
+        anim.addUpdateListener(new AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                // Set the value of translationY based on the current x value
+                final float translationX = (Float) anim.getAnimatedValue();
+                child.setTranslationY((startY / startX) * translationX);
+            }
+        });
+        anim.start();
+    }
+
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int count = getChildCount();
 
         for (int i = 0; i < count; i++) {
-            View child = getChildAt(i);
+            final View child = getChildAt(i);
             if (child.getVisibility() != GONE) {
 
                 CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
@@ -774,6 +815,8 @@ public class CellLayout extends ViewGroup implements Dimmable {
                     mWallpaperManager.sendWallpaperCommand(getWindowToken(), "android.home.drop",
                             cellXY[0] + childLeft + lp.width / 2,
                             cellXY[1] + childTop + lp.height / 2, 0, null);
+
+                    animateChildIntoPosition(child);
                 }
             }
         }
@@ -1176,7 +1219,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
     /**
      * Mark a child as having been dropped.
      * At the beginning of the drag operation, the child may have been on another
-     * screen, but it is reparented before this method is called.
+     * screen, but it is re-parented before this method is called.
      *
      * @param child The child that is being dropped
      */
@@ -1185,13 +1228,17 @@ public class CellLayout extends ViewGroup implements Dimmable {
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
             lp.isDragging = false;
             lp.dropped = true;
+            child.setVisibility(View.VISIBLE);
             child.requestLayout();
         }
     }
 
     void onDropAborted(View child) {
         if (child != null) {
-            ((LayoutParams) child.getLayoutParams()).isDragging = false;
+            LayoutParams lp = (LayoutParams) child.getLayoutParams();
+            lp.isDragging = false;
+            child.setVisibility(View.VISIBLE);
+            animateChildIntoPosition(child);
         }
     }
 
@@ -1203,6 +1250,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
     void onDragChild(View child) {
         LayoutParams lp = (LayoutParams) child.getLayoutParams();
         lp.isDragging = true;
+        child.setVisibility(View.GONE);
     }
 
     /**
@@ -1430,6 +1478,18 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         // Y coordinate of the view in the layout.
         @ViewDebug.ExportedProperty
         int y;
+
+        /**
+         * The old X coordinate of this item, relative to its current parent.
+         * Used to animate the item into its new position.
+         */
+        int oldX;
+
+        /**
+         * The old Y coordinate of this item, relative to its current parent.
+         * Used to animate the item into its new position.
+         */
+        int oldY;
 
         boolean dropped;
 
