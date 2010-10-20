@@ -49,6 +49,8 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LayoutAnimationController;
 
+import java.util.Arrays;
+
 public class CellLayout extends ViewGroup implements Dimmable {
     static final String TAG = "CellLayout";
 
@@ -107,6 +109,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
 
     // Used as an index into the above 3 arrays; indicates which is the most current value.
     private int mDragOutlineCurrent = 0;
+    private final Paint mDragOutlinePaint = new Paint();
 
     private Drawable mCrosshairsDrawable = null;
     private InterruptibleInOutAnimator mCrosshairsAnimator = null;
@@ -188,7 +191,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
         mCrosshairsAnimator.getAnimator().addUpdateListener(new AnimatorUpdateListener() {
             public void onAnimationUpdate(ValueAnimator animation) {
                 mCrosshairsVisibility = ((Float) animation.getAnimatedValue()).floatValue();
-                CellLayout.this.invalidate();
+                invalidate();
             }
         });
         mCrosshairsAnimator.getAnimator().setInterpolator(mEaseOutInterpolator);
@@ -205,9 +208,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
         final float fromAlphaValue = 0;
         final float toAlphaValue = (float)res.getInteger(R.integer.config_dragOutlineMaxAlpha);
 
-        for (int i = 0; i < mDragOutlineAlphas.length; i++) {
-            mDragOutlineAlphas[i] = fromAlphaValue;
-        }
+        Arrays.fill(mDragOutlineAlphas, fromAlphaValue);
 
         for (int i = 0; i < mDragOutlineAnims.length; i++) {
             final InterruptibleInOutAnimator anim =
@@ -404,7 +405,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
             }
         }
 
-        final Paint paint = new Paint();
+        final Paint paint = mDragOutlinePaint;
         for (int i = 0; i < mDragOutlines.length; i++) {
             final float alpha = mDragOutlineAlphas[i];
             if (alpha > 0) {

@@ -23,7 +23,6 @@ import android.graphics.MaskFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 import android.graphics.TableMaskFilter;
 
 public class HolographicOutlineHelper {
@@ -31,19 +30,24 @@ public class HolographicOutlineHelper {
     private final Paint mBlurPaint = new Paint();
     private final Paint mErasePaint = new Paint();
 
-    private static final BlurMaskFilter sLargeGlowBlurMaskFilter = new BlurMaskFilter(
-            10.0f, BlurMaskFilter.Blur.OUTER);
-    private static final BlurMaskFilter sThickOuterBlurMaskFilter = new BlurMaskFilter(
-            6.0f, BlurMaskFilter.Blur.OUTER);
-    private static final BlurMaskFilter sMediumOuterBlurMaskFilter = new BlurMaskFilter(
-            2.0f, BlurMaskFilter.Blur.OUTER);
-    private static final BlurMaskFilter sThinOuterBlurMaskFilter = new BlurMaskFilter(
-            1.0f, BlurMaskFilter.Blur.OUTER);
+    public static final int OUTER_BLUR_RADIUS;
 
-    private static final BlurMaskFilter sThickInnerBlurMaskFilter = new BlurMaskFilter(
-            4.0f, BlurMaskFilter.Blur.NORMAL);
-    private static final BlurMaskFilter sThinInnerBlurMaskFilter = new BlurMaskFilter(
-            1.0f, BlurMaskFilter.Blur.INNER);
+    private static final BlurMaskFilter sThickOuterBlurMaskFilter;
+    private static final BlurMaskFilter sMediumOuterBlurMaskFilter;
+    private static final BlurMaskFilter sThinOuterBlurMaskFilter;
+    private static final BlurMaskFilter sThickInnerBlurMaskFilter;
+
+    static {
+        final float scale = LauncherApplication.getScreenDensity();
+
+        OUTER_BLUR_RADIUS = (int) (scale * 6.0f);
+
+        sThickOuterBlurMaskFilter = new BlurMaskFilter(OUTER_BLUR_RADIUS,
+                BlurMaskFilter.Blur.OUTER);
+        sMediumOuterBlurMaskFilter = new BlurMaskFilter(scale * 2.0f, BlurMaskFilter.Blur.OUTER);
+        sThinOuterBlurMaskFilter = new BlurMaskFilter(scale * 1.0f, BlurMaskFilter.Blur.OUTER);
+        sThickInnerBlurMaskFilter = new BlurMaskFilter(scale * 4.0f, BlurMaskFilter.Blur.NORMAL);
+    }
 
     private static final MaskFilter sFineClipTable = TableMaskFilter.CreateClipTable(0, 20);
     private static final MaskFilter sCoarseClipTable = TableMaskFilter.CreateClipTable(0, 200);
@@ -81,7 +85,12 @@ public class HolographicOutlineHelper {
         }
     }
 
-    void applyGlow(Bitmap bitmap, Canvas canvas, int color) {
+    /**
+     * Apply an outer blur to the given bitmap.
+     * You should use OUTER_BLUR_RADIUS to ensure that the bitmap is big enough to draw
+     * the blur without clipping.
+     */
+    void applyOuterBlur(Bitmap bitmap, Canvas canvas, int color) {
         mBlurPaint.setMaskFilter(sThickOuterBlurMaskFilter);
         Bitmap glow = bitmap.extractAlpha(mBlurPaint, mTempOffset);
 

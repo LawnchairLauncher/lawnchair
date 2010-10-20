@@ -139,10 +139,10 @@ public class Workspace extends SmoothPagedView
 
     private boolean mInScrollArea = false;
 
-    private HolographicOutlineHelper mOutlineHelper = new HolographicOutlineHelper();
+    private final HolographicOutlineHelper mOutlineHelper = new HolographicOutlineHelper();
     private Bitmap mDragOutline = null;
-    private Rect mTempRect = new Rect();
-    private int[] mTempXY = new int[2];
+    private final Rect mTempRect = new Rect();
+    private final int[] mTempXY = new int[2];
 
     /**
      * Used to inflate the Workspace from XML.
@@ -991,14 +991,13 @@ public class Workspace extends SmoothPagedView
         canvas.setBitmap(b);
         canvas.drawBitmap(mDragOutline, 0, 0, null);
         drawDragView(v, canvas, padding);
-        mOutlineHelper.applyGlow(b, canvas, outlineColor);
+        mOutlineHelper.applyOuterBlur(b, canvas, outlineColor);
 
         return b;
     }
 
     void startDrag(CellLayout.CellInfo cellInfo) {
         View child = cellInfo.cell;
-        final int blurPadding = 40;
 
         // Make sure the drag was started by a long press as opposed to a long click.
         if (!child.isInTouchMode()) {
@@ -1017,11 +1016,14 @@ public class Workspace extends SmoothPagedView
 
         final Canvas canvas = new Canvas();
 
+        // We need to add extra padding to the bitmap to make room for the glow effect
+        final int bitmapPadding = HolographicOutlineHelper.OUTER_BLUR_RADIUS;
+
         // The outline is used to visualize where the item will land if dropped
-        mDragOutline = createDragOutline(child, canvas, blurPadding);
+        mDragOutline = createDragOutline(child, canvas, bitmapPadding);
 
         // The drag bitmap follows the touch point around on the screen
-        final Bitmap b = createDragBitmap(child, canvas, blurPadding);
+        final Bitmap b = createDragBitmap(child, canvas, bitmapPadding);
 
         final int bmpWidth = b.getWidth();
         final int bmpHeight = b.getHeight();
