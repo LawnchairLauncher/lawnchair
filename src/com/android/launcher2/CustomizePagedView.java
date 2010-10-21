@@ -334,35 +334,18 @@ public class CustomizePagedView extends PagedView
         }
 
         if (enterChoiceMode) {
-            if (v instanceof Checkable) {
-                final Checkable c = (Checkable) v;
-                final boolean wasChecked = c.isChecked();
-                resetCheckedGrandchildren();
-                c.setChecked(!wasChecked);
+            final ItemInfo itemInfo = (ItemInfo) v.getTag();
 
-                // End the current choice mode when we have no items selected
-                /*if (!c.isChecked()) {
-                    endChoiceMode();
-                } else if (isChoiceMode(CHOICE_MODE_NONE)) {
-                    endChoiceMode();
-                    startChoiceMode(CHOICE_MODE_SINGLE, this);
-                }*/
-                mChoiceMode = CHOICE_MODE_SINGLE;
+            Workspace w = mLauncher.getWorkspace();
+            int currentWorkspaceScreen = mLauncher.getCurrentWorkspaceScreen();
+            final CellLayout cl = (CellLayout)w.getChildAt(currentWorkspaceScreen);
 
-                Workspace w = mLauncher.getWorkspace();
-                int currentWorkspaceScreen = mLauncher.getCurrentWorkspaceScreen();
-                final CellLayout cl = (CellLayout)w.getChildAt(currentWorkspaceScreen);
-                cl.setHover(true);
-
-                animateClickFeedback(v, new Runnable() {
-                    @Override
-                    public void run() {
-                        cl.setHover(false);
-                        mLauncher.onWorkspaceClick(cl);
-                        mChoiceMode = CHOICE_MODE_NONE;
-                    }
-                });
-            }
+            animateClickFeedback(v, new Runnable() {
+                @Override
+                public void run() {
+                    mLauncher.addExternalItemToScreen(itemInfo, cl);
+                }
+            });
             return;
         }
 
