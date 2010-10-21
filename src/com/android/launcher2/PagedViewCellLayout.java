@@ -46,6 +46,8 @@ public class PagedViewCellLayout extends ViewGroup {
     private int mCellCountY;
     private int mCellWidth;
     private int mCellHeight;
+    private int mWidthGap;
+    private int mHeightGap;
     private static int sDefaultCellDimensions = 96;
 
     public PagedViewCellLayout(Context context) {
@@ -66,6 +68,7 @@ public class PagedViewCellLayout extends ViewGroup {
         mCellCountX = LauncherModel.getCellCountX();
         mCellCountY = LauncherModel.getCellCountY();
         mHolographicAlpha = 0.0f;
+        mWidthGap = mHeightGap = -1;
     }
 
     @Override
@@ -168,12 +171,17 @@ public class PagedViewCellLayout extends ViewGroup {
             paddingLeft += ((widthGap - minGap) * (mCellCountX - 1)) / 2;
         }
         */
-        widthGap = heightGap = minGap;
+        if (mWidthGap > -1 && mHeightGap > -1) {
+            widthGap = mWidthGap;
+            heightGap = mHeightGap;
+        } else {
+            widthGap = heightGap = minGap;
+        }
 
         int newWidth = mPaddingLeft + mPaddingRight + (mCellCountX * cellWidth) +
-            ((mCellCountX - 1) * minGap);
+            ((mCellCountX - 1) * widthGap);
         int newHeight = mPaddingTop + mPaddingBottom + (mCellCountY * cellHeight) +
-            ((mCellCountY - 1) * minGap);
+            ((mCellCountY - 1) * heightGap);
 
         final int count = getChildCount();
         for (int i = 0; i < count; i++) {
@@ -250,6 +258,11 @@ public class PagedViewCellLayout extends ViewGroup {
         mCellCountX = xCount;
         mCellCountY = yCount;
         requestLayout();
+    }
+
+    public void setGap(int widthGap, int heightGap) {
+        mWidthGap = widthGap;
+        mHeightGap = heightGap;
     }
 
     public void setCellDimensions(int width, int height) {

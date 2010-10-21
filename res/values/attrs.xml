@@ -66,6 +66,8 @@
         <attr name="checkedBlurColor" format="color" />
         <!-- The checked outline color of the holographic outline -->
         <attr name="checkedOutlineColor" format="color" />
+        <!-- The scaled icon dimension -->
+        <attr name="scaledIconSize" format="dimension" />
     </declare-styleable>
 
     <!-- PagedViewWidgetIcon specific attributes. These attributes are used to
@@ -84,6 +86,9 @@
         <attr name="cellCountX" />
         <!-- The number of vertical cells in a page -->
         <attr name="cellCountY" />
+        <!-- A spacing override for the icons within a page -->
+        <attr name="pageLayoutWidthGap" format="dimension" />
+        <attr name="pageLayoutHeightGap" format="dimension" />
         <!-- The padding of the pages that are dynamically created per page -->
         <attr name="pageLayoutPaddingTop" format="dimension" />
         <attr name="pageLayoutPaddingBottom" format="dimension" />

@@ -2669,24 +2669,14 @@ public final class Launcher extends Activity
         }
     }
 
-    void onWorkspaceClick(CellLayout layout) {
-        Object itemInfo = mAllAppsPagedView.getChosenItem();
-        if (itemInfo == null) {
-            itemInfo = mCustomizePagedView.getChosenItem();
+    void addExternalItemToScreen(ItemInfo itemInfo, CellLayout layout) {
+        if (!mWorkspace.addExternalItemToScreen(itemInfo, layout)) {
+            showOutOfSpaceMessage();
         }
+    }
 
-        if (itemInfo == null) {
-            // No items are chosen in All Apps or Customize, so just zoom into the workspace
-            showWorkspace(true, layout);
-        } else {
-            // Act as if the chosen item was dropped on the given CellLayout
-            if (mWorkspace.addExternalItemToScreen(itemInfo, layout)) {
-                mAllAppsPagedView.endChoiceMode();
-                mCustomizePagedView.endChoiceMode();
-            } else {
-                showOutOfSpaceMessage();
-            }
-        }
+    void onWorkspaceClick(CellLayout layout) {
+        showWorkspace(true, layout);
     }
 
     private void updateButtonWithIconFromExternalActivity(

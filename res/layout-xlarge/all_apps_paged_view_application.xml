@@ -22,6 +22,7 @@
     launcher:outlineColor="#FF8CD2FF"
     launcher:checkedBlurColor="#FFBBE83C"
     launcher:checkedOutlineColor="#FF8CD2FF"
+    launcher:scaledIconSize="64dp"
 
     android:id="@+id/application_icon"
     android:layout_width="match_parent"
@@ -30,7 +31,7 @@
     android:paddingTop="2dip"
 
     android:textColor="#FFFFFFFF"
-    android:textSize="14sp"
+    android:textSize="13sp"
     android:shadowColor="#FF000000"
     android:shadowDx="0.0"
     android:shadowDy="1.0"

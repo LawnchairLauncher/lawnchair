@@ -26,8 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:tabStripEnabled="false"
-            android:paddingBottom="10dp" />
+            android:tabStripEnabled="false" />
         <FrameLayout
             android:id="@android:id/tabcontent"
             android:layout_width="match_parent"
@@ -38,10 +37,12 @@
                 android:layout_height="match_parent"
                 launcher:cellCountX="5"
                 launcher:cellCountY="7"
-                launcher:pageLayoutPaddingTop="10dp"
+                launcher:pageLayoutWidthGap="36dp"
+                launcher:pageLayoutHeightGap="36dp"
+                launcher:pageLayoutPaddingTop="0dp"
                 launcher:pageLayoutPaddingBottom="10dp"
-                launcher:pageLayoutPaddingLeft="0dp"
-                launcher:pageLayoutPaddingRight="0dp">
+                launcher:pageLayoutPaddingLeft="20dp"
+                launcher:pageLayoutPaddingRight="20dp">
             </com.android.launcher2.AllAppsPagedView>
         </FrameLayout>
     </LinearLayout>

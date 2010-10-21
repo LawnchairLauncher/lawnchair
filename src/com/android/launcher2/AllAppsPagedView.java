@@ -358,6 +358,7 @@ public class AllAppsPagedView extends PagedView
             layout.setCellCount(mCellCountX, mCellCountY);
             layout.setPadding(mPageLayoutPaddingLeft, mPageLayoutPaddingTop,
                     mPageLayoutPaddingRight, mPageLayoutPaddingBottom);
+            layout.setGap(mPageLayoutWidthGap, mPageLayoutHeightGap);
             addView(layout);
         }
 
@@ -414,7 +415,7 @@ public class AllAppsPagedView extends PagedView
                 final int index = i - startIndex;
                 final ApplicationInfo info = mFilteredApps.get(i);
                 PagedViewIcon icon = (PagedViewIcon) layout.getChildAt(index);
-                icon.applyFromApplicationInfo(info, mPageViewIconCache);
+                icon.applyFromApplicationInfo(info, mPageViewIconCache, true);
 
                 PagedViewCellLayout.LayoutParams params =
                     (PagedViewCellLayout.LayoutParams) icon.getLayoutParams();
