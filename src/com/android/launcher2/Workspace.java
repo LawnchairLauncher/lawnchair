@@ -394,7 +394,7 @@ public class Workspace extends SmoothPagedView
     @Override
     void setCurrentPage(int currentPage) {
         super.setCurrentPage(currentPage);
-        updateWallpaperOffset(mScrollX);
+        updateWallpaperOffset();
     }
 
     /**
@@ -558,17 +558,23 @@ public class Workspace extends SmoothPagedView
         Launcher.setScreen(mCurrentPage);
     };
 
-    private void updateWallpaperOffset(int scrollRange) {
-        final boolean isStaticWallpaper = (mWallpaperManager != null) &&
-                (mWallpaperManager.getWallpaperInfo() == null);
-        if (LauncherApplication.isScreenXLarge() && !isStaticWallpaper) {
+    private void updateWallpaperOffset() {
+        if (LauncherApplication.isScreenXLarge()) {
             IBinder token = getWindowToken();
+            int scrollRange = getChildOffset(getChildCount() - 1) - getChildOffset(0);
             if (token != null) {
-                mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 0 );
+                mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 0);
+                float offset = mScrollX / (float) scrollRange;
                 mWallpaperManager.setWallpaperOffsets(getWindowToken(),
-                        Math.max(0.f, Math.min(mScrollX/(float)scrollRange, 1.f)), 0);
+                        Math.max(0.f, Math.min(offset, 1.0f)), 0);
             }
         }
+    }
+
+    @Override
+    public void computeScroll() {
+        super.computeScroll();
+        updateWallpaperOffset();
     }
 
     public void showOutlines() {
