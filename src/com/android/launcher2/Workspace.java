@@ -718,8 +718,8 @@ public class Workspace extends SmoothPagedView
 
         boolean isPortrait = getMeasuredHeight() > getMeasuredWidth();
         float newY = (isPortrait ?
-                getResources().getDimension(R.dimen.smallScreenVerticalMarginPortrait) :
-                getResources().getDimension(R.dimen.smallScreenVerticalMarginLandscape));
+                getResources().getDimension(R.dimen.allAppsSmallScreenVerticalMarginPortrait) :
+                getResources().getDimension(R.dimen.allAppsSmallScreenVerticalMarginLandscape));
         float finalAlpha = 1.0f;
         float extraShrinkFactor = 1.0f;
         if (shrinkPosition == ShrinkPosition.SHRINK_TO_BOTTOM_VISIBLE) {
@@ -735,7 +735,9 @@ public class Workspace extends SmoothPagedView
             newY = screenHeight / 2 - scaledPageHeight / 2;
             finalAlpha = 1.0f;
         } else if (shrinkPosition == ShrinkPosition.SHRINK_TO_TOP) {
-            newY = screenHeight / 10;
+            newY = (isPortrait ?
+                getResources().getDimension(R.dimen.customizeSmallScreenVerticalMarginPortrait) :
+                getResources().getDimension(R.dimen.customizeSmallScreenVerticalMarginLandscape));
         }
 
         // We animate all the screens to the centered position in workspace

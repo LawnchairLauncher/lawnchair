@@ -18,10 +18,9 @@
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
 
     android:layout_width="wrap_content"
-    android:layout_height="match_parent"
+    android:layout_height="425dp"
     android:paddingLeft="12.5dp"
     android:paddingRight="12.5dp"
-    android:paddingTop="40dp"
     android:paddingBottom="50dp"
     android:gravity="top"
     android:orientation="vertical"

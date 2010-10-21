@@ -131,7 +131,7 @@
     <TabHost
         android:id="@android:id/tabhost"
         android:layout_width="match_parent"
-        android:layout_height="550dip"
+        android:layout_height="800dip"
         android:layout_gravity="bottom">
         <LinearLayout
             android:orientation="vertical"
@@ -148,7 +148,7 @@
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="650dp">
              </FrameLayout>
           </LinearLayout>
     </TabHost>

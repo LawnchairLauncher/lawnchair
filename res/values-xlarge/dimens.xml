@@ -22,9 +22,15 @@
          apps and in customization mode -->
     <dimen name="smallScreenExtraSpacing">0dip</dimen>
 
-    <!-- vertical spacing between edge of screen and mini screen thumbnails -->
-    <dimen name="smallScreenVerticalMarginLandscape">30dip</dimen>
-    <dimen name="smallScreenVerticalMarginPortrait">60dip</dimen>
+    <!-- Vertical spacing between edge of screen and mini cell layouts when they
+         are minimized to the bottom in all apps -->
+    <dimen name="allAppsSmallScreenVerticalMarginLandscape">30dip</dimen>
+    <dimen name="allAppsSmallScreenVerticalMarginPortrait">60dip</dimen>
+
+    <!-- Vertical spacing between edge of screen and mini cell layouts when they
+         are minimized to the top when the customization drawer is showing -->
+    <dimen name="customizeSmallScreenVerticalMarginLandscape">70dip</dimen>
+    <dimen name="customizeSmallScreenVerticalMarginPortrait">180dip</dimen>
 
     <dimen name="toolbar_padding">10dip</dimen>
 
