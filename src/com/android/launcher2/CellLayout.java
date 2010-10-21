@@ -1374,24 +1374,6 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         return false;
     }
 
-    /**
-     * Update the array of occupied cells (mOccupied), and return a flattened copy of the array.
-     */
-    boolean[] getOccupiedCellsFlattened() {
-        final int xCount = mCountX;
-        final int yCount = mCountY;
-        final boolean[][] occupied = mOccupied;
-
-        final boolean[] flat = new boolean[xCount * yCount];
-        for (int y = 0; y < yCount; y++) {
-            for (int x = 0; x < xCount; x++) {
-                flat[y * xCount + x] = occupied[x][y];
-            }
-        }
-
-        return flat;
-    }
-
     private void clearOccupiedCells() {
         for (int x = 0; x < mCountX; x++) {
             for (int y = 0; y < mCountY; y++) {

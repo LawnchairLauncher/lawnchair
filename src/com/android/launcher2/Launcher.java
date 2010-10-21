@@ -150,8 +150,8 @@ public final class Launcher extends Activity
 
     // Type: int
     private static final String RUNTIME_STATE_CURRENT_SCREEN = "launcher.current_screen";
-    // Type: boolean
-    private static final String RUNTIME_STATE_ALL_APPS_FOLDER = "launcher.all_apps_folder";
+    // Type: int
+    private static final String RUNTIME_STATE = "launcher.state";
     // Type: long
     private static final String RUNTIME_STATE_USER_FOLDERS = "launcher.user_folder";
     // Type: int
@@ -802,6 +802,22 @@ public final class Launcher extends Activity
     }
 
     /**
+     * Given the integer (ordinal) value of a State enum instance, convert it to a variable of type
+     * State
+     */
+    private static State intToState(int stateOrdinal) {
+        State state = State.WORKSPACE;
+        final State[] stateValues = State.values();
+        for (int i = 0; i < stateValues.length; i++) {
+            if (stateValues[i].ordinal() == stateOrdinal) {
+                state = stateValues[i];
+                break;
+            }
+        }
+        return state;
+    }
+
+    /**
      * Restores the previous state, if it exists.
      *
      * @param savedState The previous state.
@@ -811,9 +827,12 @@ public final class Launcher extends Activity
             return;
         }
 
-        final boolean allApps = savedState.getBoolean(RUNTIME_STATE_ALL_APPS_FOLDER, false);
-        if (allApps) {
+        State state = intToState(savedState.getInt(RUNTIME_STATE, State.WORKSPACE.ordinal()));
+
+        if (state == State.ALL_APPS) {
             showAllApps(false);
+        } else if (state == State.CUSTOMIZE) {
+            showCustomizationDrawer(false);
         }
 
         final int currentScreen = savedState.getInt(RUNTIME_STATE_CURRENT_SCREEN, -1);
@@ -1232,10 +1251,7 @@ public final class Launcher extends Activity
             super.onSaveInstanceState(outState);
         }
 
-        // TODO should not do this if the drawer is currently closing.
-        if (mState == State.ALL_APPS) {
-            outState.putBoolean(RUNTIME_STATE_ALL_APPS_FOLDER, true);
-        }
+        outState.putInt(RUNTIME_STATE, mState.ordinal());
 
         if (mAddScreen > -1 && mWaitingForResult) {
             outState.putInt(RUNTIME_STATE_PENDING_ADD_SCREEN, mAddScreen);
@@ -2550,8 +2566,9 @@ public final class Launcher extends Activity
     }
 
     void showAllApps(boolean animated) {
-        if (mState == State.ALL_APPS)
+        if (mState == State.ALL_APPS) {
             return;
+        }
 
         if (LauncherApplication.isScreenXLarge()) {
             if (mState == State.CUSTOMIZE) {
