@@ -54,6 +54,7 @@ public class PagedViewIcon extends TextView implements Checkable {
 
     private Object mIconCacheKey;
     private PagedViewIconCache mIconCache;
+    private int mScaledIconSize;
 
     private int mAlpha;
     private int mHolographicAlpha;
@@ -82,6 +83,7 @@ public class PagedViewIcon extends TextView implements Checkable {
         mHoloOutlineColor = a.getColor(R.styleable.PagedViewIcon_outlineColor, 0);
         mCheckedBlurColor = a.getColor(R.styleable.PagedViewIcon_checkedBlurColor, 0);
         mCheckedOutlineColor = a.getColor(R.styleable.PagedViewIcon_checkedOutlineColor, 0);
+        mScaledIconSize = a.getDimensionPixelSize(R.styleable.PagedViewIcon_scaledIconSize, 64);
         a.recycle();
 
         if (sHolographicOutlineHelper == null) {
@@ -93,13 +95,21 @@ public class PagedViewIcon extends TextView implements Checkable {
         setBackgroundDrawable(null);
     }
 
-    public void applyFromApplicationInfo(ApplicationInfo info, PagedViewIconCache cache) {
+    public void applyFromApplicationInfo(ApplicationInfo info, PagedViewIconCache cache,
+            boolean scaleUp) {
         mIconCache = cache;
         mIconCacheKey = info;
         mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
 
+        Bitmap icon;
+        if (scaleUp) {
+            icon = Bitmap.createScaledBitmap(info.iconBitmap, mScaledIconSize,
+                    mScaledIconSize, true);
+        } else {
+            icon = info.iconBitmap;
+        }
         setCompoundDrawablesWithIntrinsicBounds(null,
-                new FastBitmapDrawable(info.iconBitmap), null, null);
+                new FastBitmapDrawable(icon), null, null);
         setText(info.title);
         setTag(info);
     }

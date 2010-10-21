@@ -96,6 +96,8 @@ public abstract class PagedView extends ViewGroup {
     protected int mPageLayoutPaddingBottom;
     protected int mPageLayoutPaddingLeft;
     protected int mPageLayoutPaddingRight;
+    protected int mPageLayoutWidthGap;
+    protected int mPageLayoutHeightGap;
     protected int mCellCountX;
     protected int mCellCountY;
 
@@ -184,6 +186,10 @@ public abstract class PagedView extends ViewGroup {
                 R.styleable.PagedView_pageLayoutPaddingLeft, 10);
         mPageLayoutPaddingRight = a.getDimensionPixelSize(
                 R.styleable.PagedView_pageLayoutPaddingRight, 10);
+        mPageLayoutWidthGap = a.getDimensionPixelSize(
+                R.styleable.PagedView_pageLayoutWidthGap, -1);
+        mPageLayoutHeightGap = a.getDimensionPixelSize(
+                R.styleable.PagedView_pageLayoutHeightGap, -1);
         a.recycle();
 
         setHapticFeedbackEnabled(false);

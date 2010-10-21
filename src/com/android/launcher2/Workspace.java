@@ -715,7 +715,10 @@ public class Workspace extends SmoothPagedView
         final int screenCount = getChildCount();
         float totalWidth = screenCount * scaledPageWidth + (screenCount - 1) * extraScaledSpacing;
 
-        float newY = getResources().getDimension(R.dimen.smallScreenVerticalMargin);
+        boolean isPortrait = getMeasuredHeight() > getMeasuredWidth();
+        float newY = (isPortrait ?
+                getResources().getDimension(R.dimen.smallScreenVerticalMarginPortrait) :
+                getResources().getDimension(R.dimen.smallScreenVerticalMarginLandscape));
         float finalAlpha = 1.0f;
         float extraShrinkFactor = 1.0f;
         if (shrinkPosition == ShrinkPosition.SHRINK_TO_BOTTOM_VISIBLE) {

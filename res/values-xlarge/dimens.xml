@@ -23,7 +23,8 @@
     <dimen name="smallScreenExtraSpacing">0dip</dimen>
 
     <!-- vertical spacing between edge of screen and mini screen thumbnails -->
-    <dimen name="smallScreenVerticalMargin">60dip</dimen>
+    <dimen name="smallScreenVerticalMarginLandscape">30dip</dimen>
+    <dimen name="smallScreenVerticalMarginPortrait">60dip</dimen>
 
     <dimen name="toolbar_padding">10dip</dimen>
 

@@ -722,7 +722,7 @@ public class CustomizePagedView extends PagedView
             final ApplicationInfo info = mApps.get(i);
             PagedViewIcon icon = (PagedViewIcon) mInflater.inflate(
                     R.layout.all_apps_paged_view_application, layout, false);
-            icon.applyFromApplicationInfo(info, mPageViewIconCache);
+            icon.applyFromApplicationInfo(info, mPageViewIconCache, false);
             icon.setOnClickListener(this);
             icon.setOnLongClickListener(this);
 
