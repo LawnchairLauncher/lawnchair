@@ -456,6 +456,11 @@ public class CellLayout extends ViewGroup implements Dimmable {
     }
 
     public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params) {
+        return addViewToCellLayout(child, index, childId, params, true);
+    }
+
+    public boolean addViewToCellLayout(
+            View child, int index, int childId, LayoutParams params, boolean markCells) {
         final LayoutParams lp = params;
 
         // Generate an id for each view, this assumes we have at most 256x256 cells
@@ -473,7 +478,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
             child.setAlpha(getAlpha());
             addView(child, index, lp);
 
-            markCellsAsOccupiedForView(child);
+            if (markCells) markCellsAsOccupiedForView(child);
 
             return true;
         }
@@ -498,6 +503,10 @@ public class CellLayout extends ViewGroup implements Dimmable {
     @Override
     public void removeAllViewsInLayout() {
         clearOccupiedCells();
+    }
+
+    public void removeViewWithoutMarkingCells(View view) {
+        super.removeView(view);
     }
 
     @Override

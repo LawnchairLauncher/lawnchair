@@ -1696,7 +1696,8 @@ public final class Launcher extends Activity
         folder.getInfo().opened = false;
         ViewGroup parent = (ViewGroup) folder.getParent();
         if (parent != null) {
-            parent.removeView(folder);
+            CellLayout cl = (CellLayout) parent;
+            cl.removeViewWithoutMarkingCells(folder);
             if (folder instanceof DropTarget) {
                 // Live folders aren't DropTargets.
                 mDragController.removeDropTarget((DropTarget)folder);

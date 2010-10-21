@@ -364,7 +364,8 @@ public class Workspace extends SmoothPagedView
 
         // Get the canonical child id to uniquely represent this view in this screen
         int childId = LauncherModel.getCellLayoutChildId(-1, screen, x, y, spanX, spanY);
-        if (!group.addViewToCellLayout(child, insert ? 0 : -1, childId, lp)) {
+        boolean markCellsAsOccupied = !(child instanceof Folder);
+        if (!group.addViewToCellLayout(child, insert ? 0 : -1, childId, lp, markCellsAsOccupied)) {
             // TODO: This branch occurs when the workspace is adding views
             // outside of the defined grid
             // maybe we should be deleting these items from the LauncherModel?
