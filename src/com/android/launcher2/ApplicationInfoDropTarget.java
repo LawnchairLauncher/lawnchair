@@ -99,10 +99,11 @@ public class ApplicationInfoDropTarget extends ImageView implements DropTarget, 
 
     public void onDragStart(DragSource source, Object info, int dragAction) {
         if (info != null) {
+            final int itemType = ((ItemInfo)info).itemType;
+            mActive = (itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION);
             if (mManageVisibility) {
-                mActive = true;
                 // Only show the info icon when an application is selected
-                if (((ItemInfo)info).itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+                if (mActive) {
                     setVisibility(VISIBLE);
                 }
                 mHandle.setVisibility(INVISIBLE);
@@ -128,10 +129,15 @@ public class ApplicationInfoDropTarget extends ImageView implements DropTarget, 
     public void getHitRect(Rect outRect) {
         super.getHitRect(outRect);
         if (LauncherApplication.isScreenXLarge()) {
-            outRect.top -= 50;
-            outRect.left -= 50;
-            outRect.bottom += 50;
-            outRect.right += 50;
+            // TODO: This is a temporary hack. mManageVisiblity = false when you're in CAB mode.
+            // In that case, this icon is more tightly spaced next to the delete icon so we want
+            // it to have a smaller drag region. When the new drag&drop system comes in, we'll
+            // dispatch the drag/drop by calculating what target you're overlapping
+            final int dragPadding = mManageVisibility ? 50 : 10;
+            outRect.top -= dragPadding;
+            outRect.left -= dragPadding;
+            outRect.bottom += dragPadding;
+            outRect.right += dragPadding;
         }
     }
 

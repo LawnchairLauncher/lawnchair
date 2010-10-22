@@ -1883,7 +1883,7 @@ public final class Launcher extends Activity
     }
 
     /**
-     * Opens the user fodler described by the specified tag. The opening of the folder
+     * Opens the user folder described by the specified tag. The opening of the folder
      * is animated relative to the specified View. If the View is null, no animation
      * is played.
      *
