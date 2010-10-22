@@ -15,8 +15,12 @@
 -->
 
 <resources>
-    <dimen name="workspace_cell_width">76dip</dimen>
-    <dimen name="workspace_cell_height">76dip</dimen>
+    <dimen name="workspace_cell_width">96dip</dimen>
+    <dimen name="workspace_cell_height">96dip</dimen>
+
+    <!-- Width/height gap overrides for the workspace -->
+    <dimen name="workspace_width_gap">0dp</dimen>
+    <dimen name="workspace_height_gap">0dp</dimen>
 
     <!-- extra horizontal spacing between mini screen thumbnails ie. in all
          apps and in customization mode -->
