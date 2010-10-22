@@ -46,7 +46,7 @@
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Ярлык \"<xliff:g id="NAME">%s</xliff:g>\" удален."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Ярлык \"<xliff:g id="NAME">%s</xliff:g>\" уже существует."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Выберите ярлык"</string>
-    <string name="title_select_application" msgid="8031072293115454221">"Выберите приложение"</string>
+    <string name="title_select_application" msgid="8031072293115454221">"Выбор приложения"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"Выбор папки"</string>
     <string name="all_apps_button_label" msgid="3953036962111614813">"Все приложения"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Главная"</string>
