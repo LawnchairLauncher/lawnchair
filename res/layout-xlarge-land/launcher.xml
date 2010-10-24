@@ -38,7 +38,7 @@
         launcher:defaultScreen="2"
         launcher:cellCountX="8"
         launcher:cellCountY="7"
-        launcher:pageSpacing="64dip">
+        launcher:pageSpacing="32dip">
 
         <include android:id="@+id/cell1" layout="@layout/workspace_screen" />
         <include android:id="@+id/cell2" layout="@layout/workspace_screen" />

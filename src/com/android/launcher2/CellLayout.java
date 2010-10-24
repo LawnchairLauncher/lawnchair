@@ -144,6 +144,8 @@ public class CellLayout extends ViewGroup implements Dimmable {
 
         mCellWidth = a.getDimensionPixelSize(R.styleable.CellLayout_cellWidth, 10);
         mCellHeight = a.getDimensionPixelSize(R.styleable.CellLayout_cellHeight, 10);
+        mWidthGap = a.getDimensionPixelSize(R.styleable.CellLayout_widthGap, -1);
+        mHeightGap = a.getDimensionPixelSize(R.styleable.CellLayout_heightGap, -1);
 
         mLeftPadding =
             a.getDimensionPixelSize(R.styleable.CellLayout_xAxisStartPadding, 10);
@@ -734,15 +736,17 @@ public class CellLayout extends ViewGroup implements Dimmable {
         int numWidthGaps = mCountX - 1;
         int numHeightGaps = mCountY - 1;
 
-        int vSpaceLeft = heightSpecSize - mTopPadding - mBottomPadding - (cellHeight * mCountY);
-        mHeightGap = vSpaceLeft / numHeightGaps;
+        if (mWidthGap < 0 || mHeightGap < 0) {
+            int vSpaceLeft = heightSpecSize - mTopPadding - mBottomPadding - (cellHeight * mCountY);
+            mHeightGap = vSpaceLeft / numHeightGaps;
 
-        int hSpaceLeft = widthSpecSize - mLeftPadding - mRightPadding - (cellWidth * mCountX);
-        mWidthGap = hSpaceLeft / numWidthGaps;
+            int hSpaceLeft = widthSpecSize - mLeftPadding - mRightPadding - (cellWidth * mCountX);
+            mWidthGap = hSpaceLeft / numWidthGaps;
 
-        // center it around the min gaps
-        int minGap = Math.min(mWidthGap, mHeightGap);
-        mWidthGap = mHeightGap = minGap;
+            // center it around the min gaps
+            int minGap = Math.min(mWidthGap, mHeightGap);
+            mWidthGap = mHeightGap = minGap;
+        }
 
         int count = getChildCount();
 
@@ -760,9 +764,9 @@ public class CellLayout extends ViewGroup implements Dimmable {
         }
         if (widthSpecMode == MeasureSpec.AT_MOST) {
             int newWidth = mLeftPadding + mRightPadding + (mCountX * cellWidth) +
-                ((mCountX - 1) * minGap);
+                ((mCountX - 1) * mWidthGap);
             int newHeight = mTopPadding + mBottomPadding + (mCountY * cellHeight) +
-                ((mCountY - 1) * minGap);
+                ((mCountY - 1) * mHeightGap);
             setMeasuredDimension(newWidth, newHeight);
         } else if (widthSpecMode == MeasureSpec.EXACTLY) {
             setMeasuredDimension(widthSpecSize, heightSpecSize);
