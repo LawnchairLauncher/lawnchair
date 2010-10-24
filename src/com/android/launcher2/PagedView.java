@@ -53,7 +53,9 @@ public abstract class PagedView extends ViewGroup {
     protected static final int INVALID_PAGE = -1;
 
     // the min drag distance for a fling to register, to prevent random page shifts
-    private static final int MIN_LENGTH_FOR_FLING = 50;
+    private static final int MIN_LENGTH_FOR_FLING = 25;
+    // The min drag distance to trigger a page shift (regardless of velocity)
+    private static final int MIN_LENGTH_FOR_MOVE = 200;
 
     private static final int PAGE_SNAP_ANIMATION_DURATION = 1000;
     protected static final float NANOTIME_DIV = 1000000000.0f;
@@ -836,12 +838,17 @@ public abstract class PagedView extends ViewGroup {
                 final VelocityTracker velocityTracker = mVelocityTracker;
                 velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
                 int velocityX = (int) velocityTracker.getXVelocity(activePointerId);
-                boolean isfling = Math.abs(mDownMotionX - x) > MIN_LENGTH_FOR_FLING;
+                final int deltaX = (int) (x - mDownMotionX);
+                boolean isfling = Math.abs(deltaX) > MIN_LENGTH_FOR_FLING;
+                boolean isSignificantMove = Math.abs(deltaX) > MIN_LENGTH_FOR_MOVE;
 
                 final int snapVelocity = mSnapVelocity;
-                if (isfling && velocityX > snapVelocity && mCurrentPage > 0) {
+                if ((isSignificantMove && deltaX > 0 ||
+                        (isfling && velocityX > snapVelocity)) &&
+                        mCurrentPage > 0) {
                     snapToPageWithVelocity(mCurrentPage - 1, velocityX);
-                } else if (isfling && velocityX < -snapVelocity &&
+                } else if ((isSignificantMove && deltaX < 0 ||
+                        (isfling && velocityX < -snapVelocity)) &&
                         mCurrentPage < getChildCount() - 1) {
                     snapToPageWithVelocity(mCurrentPage + 1, velocityX);
                 } else {
