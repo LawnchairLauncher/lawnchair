@@ -118,10 +118,10 @@ public class ApplicationInfoDropTarget extends ImageView implements DropTarget, 
     public void onDragEnd() {
         if (mActive) {
             mActive = false;
-            if (mManageVisibility) {
-                setVisibility(GONE);
-                mHandle.setVisibility(VISIBLE);
-            }
+        }
+        if (mManageVisibility) {
+            setVisibility(GONE);
+            mHandle.setVisibility(VISIBLE);
         }
     }
 
