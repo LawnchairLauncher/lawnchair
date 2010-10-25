@@ -430,9 +430,6 @@ public class AllAppsPagedView extends PagedView
             TextView icon = (TextView) mInflater.inflate(
                     R.layout.all_apps_no_items_placeholder, layout, false);
             switch (mAppFilter) {
-            case ApplicationInfo.GAME_FLAG:
-                icon.setText(mContext.getString(R.string.all_apps_no_games));
-                break;
             case ApplicationInfo.DOWNLOADED_FLAG:
                 icon.setText(mContext.getString(R.string.all_apps_no_downloads));
                 break;

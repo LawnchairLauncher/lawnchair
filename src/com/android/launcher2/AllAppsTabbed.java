@@ -39,8 +39,6 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
     private static final String TAG = "Launcher.AllAppsTabbed";
 
     private static final String TAG_ALL = "ALL";
-    private static final String TAG_APPS = "APPS";
-    private static final String TAG_GAMES = "GAMES";
     private static final String TAG_DOWNLOADED = "DOWNLOADED";
 
     private AllAppsPagedView mAllApps;
@@ -73,12 +71,6 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
         String label = mContext.getString(R.string.all_apps_tab_all);
         addTab(newTabSpec(TAG_ALL).setIndicator(label).setContent(contentFactory));
 
-        label = mContext.getString(R.string.all_apps_tab_apps);
-        addTab(newTabSpec(TAG_APPS).setIndicator(label).setContent(contentFactory));
-
-        label = mContext.getString(R.string.all_apps_tab_games);
-        addTab(newTabSpec(TAG_GAMES).setIndicator(label).setContent(contentFactory));
-
         label = mContext.getString(R.string.all_apps_tab_downloaded);
         addTab(newTabSpec(TAG_DOWNLOADED).setIndicator(label).setContent(contentFactory));
 
@@ -95,10 +87,6 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
                         String tag = getCurrentTabTag();
                         if (tag == TAG_ALL) {
                             mAllApps.setAppFilter(AllAppsPagedView.ALL_APPS_FLAG);
-                        } else if (tag == TAG_APPS) {
-                            mAllApps.setAppFilter(ApplicationInfo.APP_FLAG);
-                        } else if (tag == TAG_GAMES) {
-                            mAllApps.setAppFilter(ApplicationInfo.GAME_FLAG);
                         } else if (tag == TAG_DOWNLOADED) {
                             mAllApps.setAppFilter(ApplicationInfo.DOWNLOADED_FLAG);
                         }
