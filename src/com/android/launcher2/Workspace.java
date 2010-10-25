@@ -854,9 +854,6 @@ public class Workspace extends SmoothPagedView
     // never dragged over
     public void onDragStopped() {
         updateWhichPagesAcceptDrops(mShrunkenState);
-        if (mShrunkenState == ShrinkPosition.SHRINK_TO_BOTTOM_VISIBLE) {
-            shrink(ShrinkPosition.SHRINK_TO_BOTTOM_HIDDEN, true);
-        }
     }
 
     // We call this when we trigger an unshrink by clicking on the CellLayout cl
