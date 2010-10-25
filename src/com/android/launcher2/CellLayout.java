@@ -144,6 +144,8 @@ public class CellLayout extends ViewGroup implements Dimmable {
 
         mCellWidth = a.getDimensionPixelSize(R.styleable.CellLayout_cellWidth, 10);
         mCellHeight = a.getDimensionPixelSize(R.styleable.CellLayout_cellHeight, 10);
+        mWidthGap = a.getDimensionPixelSize(R.styleable.CellLayout_widthGap, -1);
+        mHeightGap = a.getDimensionPixelSize(R.styleable.CellLayout_heightGap, -1);
 
         mLeftPadding =
             a.getDimensionPixelSize(R.styleable.CellLayout_xAxisStartPadding, 10);
@@ -456,6 +458,11 @@ public class CellLayout extends ViewGroup implements Dimmable {
     }
 
     public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params) {
+        return addViewToCellLayout(child, index, childId, params, true);
+    }
+
+    public boolean addViewToCellLayout(
+            View child, int index, int childId, LayoutParams params, boolean markCells) {
         final LayoutParams lp = params;
 
         // Generate an id for each view, this assumes we have at most 256x256 cells
@@ -473,7 +480,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
             child.setAlpha(getAlpha());
             addView(child, index, lp);
 
-            markCellsAsOccupiedForView(child);
+            if (markCells) markCellsAsOccupiedForView(child);
 
             return true;
         }
@@ -498,6 +505,10 @@ public class CellLayout extends ViewGroup implements Dimmable {
     @Override
     public void removeAllViewsInLayout() {
         clearOccupiedCells();
+    }
+
+    public void removeViewWithoutMarkingCells(View view) {
+        super.removeView(view);
     }
 
     @Override
@@ -725,15 +736,17 @@ public class CellLayout extends ViewGroup implements Dimmable {
         int numWidthGaps = mCountX - 1;
         int numHeightGaps = mCountY - 1;
 
-        int vSpaceLeft = heightSpecSize - mTopPadding - mBottomPadding - (cellHeight * mCountY);
-        mHeightGap = vSpaceLeft / numHeightGaps;
+        if (mWidthGap < 0 || mHeightGap < 0) {
+            int vSpaceLeft = heightSpecSize - mTopPadding - mBottomPadding - (cellHeight * mCountY);
+            mHeightGap = vSpaceLeft / numHeightGaps;
 
-        int hSpaceLeft = widthSpecSize - mLeftPadding - mRightPadding - (cellWidth * mCountX);
-        mWidthGap = hSpaceLeft / numWidthGaps;
+            int hSpaceLeft = widthSpecSize - mLeftPadding - mRightPadding - (cellWidth * mCountX);
+            mWidthGap = hSpaceLeft / numWidthGaps;
 
-        // center it around the min gaps
-        int minGap = Math.min(mWidthGap, mHeightGap);
-        mWidthGap = mHeightGap = minGap;
+            // center it around the min gaps
+            int minGap = Math.min(mWidthGap, mHeightGap);
+            mWidthGap = mHeightGap = minGap;
+        }
 
         int count = getChildCount();
 
@@ -751,9 +764,9 @@ public class CellLayout extends ViewGroup implements Dimmable {
         }
         if (widthSpecMode == MeasureSpec.AT_MOST) {
             int newWidth = mLeftPadding + mRightPadding + (mCountX * cellWidth) +
-                ((mCountX - 1) * minGap);
+                ((mCountX - 1) * mWidthGap);
             int newHeight = mTopPadding + mBottomPadding + (mCountY * cellHeight) +
-                ((mCountY - 1) * minGap);
+                ((mCountY - 1) * mHeightGap);
             setMeasuredDimension(newWidth, newHeight);
         } else if (widthSpecMode == MeasureSpec.EXACTLY) {
             setMeasuredDimension(widthSpecSize, heightSpecSize);
@@ -1363,24 +1376,6 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         }
 
         return false;
-    }
-
-    /**
-     * Update the array of occupied cells (mOccupied), and return a flattened copy of the array.
-     */
-    boolean[] getOccupiedCellsFlattened() {
-        final int xCount = mCountX;
-        final int yCount = mCountY;
-        final boolean[][] occupied = mOccupied;
-
-        final boolean[] flat = new boolean[xCount * yCount];
-        for (int y = 0; y < yCount; y++) {
-            for (int x = 0; x < xCount; x++) {
-                flat[y * xCount + x] = occupied[x][y];
-            }
-        }
-
-        return flat;
     }
 
     private void clearOccupiedCells() {

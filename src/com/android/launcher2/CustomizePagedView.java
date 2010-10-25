@@ -539,6 +539,7 @@ public class CustomizePagedView extends PagedView
         layout.setCellCount(mCellCountX, mCellCountY);
         layout.setPadding(mPageLayoutPaddingLeft, mPageLayoutPaddingTop, mPageLayoutPaddingRight,
                 mPageLayoutPaddingBottom);
+        layout.setGap(mPageLayoutWidthGap, mPageLayoutHeightGap);
     }
 
     private void setupWorkspaceLayout() {
@@ -557,6 +558,8 @@ public class CustomizePagedView extends PagedView
         for (int i = 0; i < numPages; ++i) {
             LinearLayout layout = new PagedViewWidgetLayout(getContext());
             layout.setGravity(Gravity.CENTER_HORIZONTAL);
+            layout.setPadding(mPageLayoutPaddingLeft, mPageLayoutPaddingTop,
+                    mPageLayoutPaddingRight, mPageLayoutPaddingBottom);
 
             // Temporary change to prevent the last page from being too small (and items bleeding
             // onto it).  We can remove this once we properly fix the fading algorithm

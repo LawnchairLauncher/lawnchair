@@ -88,8 +88,6 @@ public class Workspace extends SmoothPagedView
 
     private int mDefaultPage;
 
-    private boolean mWaitingToShrinkToBottom = false;
-
     private boolean mPageMoving = false;
 
     /**
@@ -136,6 +134,8 @@ public class Workspace extends SmoothPagedView
     private enum ShrinkPosition {
         SHRINK_TO_TOP, SHRINK_TO_MIDDLE, SHRINK_TO_BOTTOM_HIDDEN, SHRINK_TO_BOTTOM_VISIBLE };
     private ShrinkPosition mShrunkenState;
+    private boolean mWaitingToShrink = false;
+    private ShrinkPosition mWaitingToShrinkPosition;
 
     private boolean mInScrollArea = false;
 
@@ -364,7 +364,8 @@ public class Workspace extends SmoothPagedView
 
         // Get the canonical child id to uniquely represent this view in this screen
         int childId = LauncherModel.getCellLayoutChildId(-1, screen, x, y, spanX, spanY);
-        if (!group.addViewToCellLayout(child, insert ? 0 : -1, childId, lp)) {
+        boolean markCellsAsOccupied = !(child instanceof Folder);
+        if (!group.addViewToCellLayout(child, insert ? 0 : -1, childId, lp, markCellsAsOccupied)) {
             // TODO: This branch occurs when the workspace is adding views
             // outside of the defined grid
             // maybe we should be deleting these items from the LauncherModel?
@@ -541,9 +542,9 @@ public class Workspace extends SmoothPagedView
 
         // if shrinkToBottom() is called on initialization, it has to be deferred
         // until after the first call to onLayout so that it has the correct width
-        if (mWaitingToShrinkToBottom) {
-            shrinkToBottom(false);
-            mWaitingToShrinkToBottom = false;
+        if (mWaitingToShrink) {
+            shrink(mWaitingToShrinkPosition, false);
+            mWaitingToShrink = false;
         }
 
         if (LauncherApplication.isInPlaceRotationEnabled()) {
@@ -664,15 +665,7 @@ public class Workspace extends SmoothPagedView
     }
 
     void shrinkToBottom(boolean animated) {
-        if (mFirstLayout) {
-            // (mFirstLayout == "first layout has not happened yet")
-            // if we get a call to shrink() as part of our initialization (for example, if
-            // Launcher is started in All Apps mode) then we need to wait for a layout call
-            // to get our width so we can layout the mini-screen views correctly
-            mWaitingToShrinkToBottom = true;
-        } else {
-            shrink(ShrinkPosition.SHRINK_TO_BOTTOM_HIDDEN, animated);
-        }
+        shrink(ShrinkPosition.SHRINK_TO_BOTTOM_HIDDEN, animated);
     }
 
     private float getYScaleForScreen(int screen) {
@@ -689,6 +682,15 @@ public class Workspace extends SmoothPagedView
 
     // we use this to shrink the workspace for the all apps view and the customize view
     private void shrink(ShrinkPosition shrinkPosition, boolean animated) {
+        if (mFirstLayout) {
+            // (mFirstLayout == "first layout has not happened yet")
+            // if we get a call to shrink() as part of our initialization (for example, if
+            // Launcher is started in All Apps mode) then we need to wait for a layout call
+            // to get our width so we can layout the mini-screen views correctly
+            mWaitingToShrink = true;
+            mWaitingToShrinkPosition = shrinkPosition;
+            return;
+        }
         mIsSmall = true;
         mShrunkenState = shrinkPosition;
 
@@ -717,8 +719,8 @@ public class Workspace extends SmoothPagedView
 
         boolean isPortrait = getMeasuredHeight() > getMeasuredWidth();
         float newY = (isPortrait ?
-                getResources().getDimension(R.dimen.smallScreenVerticalMarginPortrait) :
-                getResources().getDimension(R.dimen.smallScreenVerticalMarginLandscape));
+                getResources().getDimension(R.dimen.allAppsSmallScreenVerticalMarginPortrait) :
+                getResources().getDimension(R.dimen.allAppsSmallScreenVerticalMarginLandscape));
         float finalAlpha = 1.0f;
         float extraShrinkFactor = 1.0f;
         if (shrinkPosition == ShrinkPosition.SHRINK_TO_BOTTOM_VISIBLE) {
@@ -734,7 +736,9 @@ public class Workspace extends SmoothPagedView
             newY = screenHeight / 2 - scaledPageHeight / 2;
             finalAlpha = 1.0f;
         } else if (shrinkPosition == ShrinkPosition.SHRINK_TO_TOP) {
-            newY = screenHeight / 10;
+            newY = (isPortrait ?
+                getResources().getDimension(R.dimen.customizeSmallScreenVerticalMarginPortrait) :
+                getResources().getDimension(R.dimen.customizeSmallScreenVerticalMarginLandscape));
         }
 
         // We animate all the screens to the centered position in workspace
@@ -771,9 +775,9 @@ public class Workspace extends SmoothPagedView
             } else {
                 cl.setX((int)newX);
                 cl.setY((int)newY);
-                cl.setScaleX(SHRINK_FACTOR * rotationScaleX);
-                cl.setScaleY(SHRINK_FACTOR * rotationScaleY);
-                cl.setBackgroundAlpha(1.0f);
+                cl.setScaleX(SHRINK_FACTOR * rotationScaleX * extraShrinkFactor);
+                cl.setScaleY(SHRINK_FACTOR * rotationScaleY * extraShrinkFactor);
+                cl.setBackgroundAlpha(finalAlpha);
                 cl.setAlpha(finalAlpha);
                 cl.setRotationY(rotation);
             }
