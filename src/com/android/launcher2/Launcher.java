@@ -165,7 +165,6 @@ public final class Launcher extends Activity
     // tags for the customization tabs
     private static final String WIDGETS_TAG = "widgets";
     private static final String APPLICATIONS_TAG = "applications";
-    private static final String FOLDERS_TAG = "folders";
     private static final String SHORTCUTS_TAG = "shortcuts";
     private static final String WALLPAPERS_TAG = "wallpapers";
 
@@ -288,9 +287,6 @@ public final class Launcher extends Activity
             String applicationsLabel = getString(R.string.applications_tab_label);
             mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(APPLICATIONS_TAG)
                     .setIndicator(applicationsLabel).setContent(contentFactory));
-            String foldersLabel = getString(R.string.folders_tab_label);
-            mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(FOLDERS_TAG)
-                    .setIndicator(foldersLabel).setContent(contentFactory));
             String wallpapersLabel = getString(R.string.wallpapers_tab_label);
             mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(WALLPAPERS_TAG)
                     .setIndicator(wallpapersLabel).setContent(contentFactory));
@@ -316,9 +312,6 @@ public final class Launcher extends Activity
                             } else if (tag == APPLICATIONS_TAG) {
                                 mCustomizePagedView.setCustomizationFilter(
                                         CustomizePagedView.CustomizationType.ApplicationCustomization);
-                            } else if (tag == FOLDERS_TAG) {
-                                mCustomizePagedView.setCustomizationFilter(
-                                    CustomizePagedView.CustomizationType.FolderCustomization);
                             } else if (tag == WALLPAPERS_TAG) {
                                 mCustomizePagedView.setCustomizationFilter(
                                     CustomizePagedView.CustomizationType.WallpaperCustomization);
