@@ -16,24 +16,20 @@
 
 package com.android.launcher2;
 
-import java.util.ArrayList;
+import com.android.launcher.R;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TabHost;
-import android.widget.TabWidget;
-import android.widget.TextView;
 
-import com.android.launcher.R;
+import java.util.ArrayList;
 
 /**
  * Implements a tabbed version of AllApps2D.
@@ -86,18 +82,6 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
         label = mContext.getString(R.string.all_apps_tab_downloaded);
         addTab(newTabSpec(TAG_DOWNLOADED).setIndicator(label).setContent(contentFactory));
 
-        // TEMP: just styling the tab widget to be a bit nicer until we get the actual
-        // new assets
-        TabWidget tabWidget = getTabWidget();
-        for (int i = 0; i < tabWidget.getChildCount(); ++i) {
-            RelativeLayout tab = (RelativeLayout) tabWidget.getChildTabViewAt(i);
-            TextView text = (TextView) tab.getChildAt(1);
-            text.setTextSize(20.0f);
-            text.setPadding(20, 0, 20, 0);
-            text.setShadowLayer(1.0f, 0.0f, 1.0f, Color.BLACK);
-            tab.setBackgroundDrawable(null);
-        }
-
         setOnTabChangedListener(new OnTabChangeListener() {
             public void onTabChanged(String tabId) {
                 // animate the changing of the tab content by fading pages in and out
@@ -106,6 +90,7 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
                 ValueAnimator alphaAnim = ObjectAnimator.ofFloat(mAllApps, "alpha", alpha, 0.0f).
                         setDuration(duration);
                 alphaAnim.addListener(new AnimatorListenerAdapter() {
+                    @Override
                     public void onAnimationEnd(Animator animation) {
                         String tag = getCurrentTabTag();
                         if (tag == TAG_ALL) {
@@ -126,11 +111,6 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
                 alphaAnim.start();
             }
         });
-
-        // TEMP: Working around a bug in tab host where the current tab does not initially have a
-        // highlight on it by selecting something else, then selecting the actual tab we want..
-        setCurrentTab(1);
-        setCurrentTab(0);
 
         // It needs to be INVISIBLE so that it will be measured in the layout.
         // Otherwise the animations is messed up when we show it for the first time.
