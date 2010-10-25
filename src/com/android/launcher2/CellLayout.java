@@ -122,7 +122,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
 
     private boolean mDragging = false;
 
-    private ObjectAnimator mDropAnim;
+    private ValueAnimator mDropAnim;
     private TimeInterpolator mEaseOutInterpolator;
 
     public CellLayout(Context context) {
@@ -252,7 +252,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
             mDragOutlineAnims[i] = anim;
         }
 
-        mDropAnim = new ObjectAnimator();
+        mDropAnim = ValueAnimator.ofFloat(1.0f, 0.0f);
         mDropAnim.setInterpolator(mEaseOutInterpolator);
 
         mBackgroundRect = new Rect();
@@ -779,7 +779,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
      */
     private void animateChildIntoPosition(final View child) {
         final Resources res = getResources();
-        final ObjectAnimator anim = mDropAnim;
+        final ValueAnimator anim = mDropAnim;
         final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
         final float startX = lp.oldX - lp.x;
         final float startY = lp.oldY - lp.y;
@@ -790,18 +790,15 @@ public class CellLayout extends ViewGroup implements Dimmable {
         final int duration = (int) (res.getInteger(R.integer.config_dropAnimMaxDuration)
                 * mEaseOutInterpolator.getInterpolation(dist / maxDist));
 
-        anim.cancel(); // Make sure it's not already running
+        anim.end(); // Make sure it's not already running
         anim.setDuration(duration);
-        anim.setTarget(child);
-        anim.setPropertyName("translationX");
-        anim.setFloatValues(startX, 0);
-
+        anim.setFloatValues(1.0f, 0.0f);
         anim.removeAllUpdateListeners();
         anim.addUpdateListener(new AnimatorUpdateListener() {
             public void onAnimationUpdate(ValueAnimator animation) {
-                // Set the value of translationY based on the current x value
-                final float translationX = (Float) anim.getAnimatedValue();
-                child.setTranslationY((startY / startX) * translationX);
+                final float value = (Float) anim.getAnimatedValue();
+                child.setTranslationX(startX * value);
+                child.setTranslationY(startY * value);
             }
         });
         anim.start();
