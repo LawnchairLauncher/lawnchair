@@ -484,15 +484,18 @@ public class AllAppsPagedView extends PagedView
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
+        final Menu menu = mode.getMenu();
+
         // Re-parent the drop targets into the toolbar, and restore their layout params
+
         ApplicationInfoDropTarget infoButton =
-                (ApplicationInfoDropTarget) mLauncher.findViewById(R.id.info_button);
+                (ApplicationInfoDropTarget) menu.findItem(MENU_APP_INFO).getActionView();
         ((ViewGroup) infoButton.getParent()).removeView(infoButton);
         mOrigInfoButtonParent.addView(infoButton, mOrigInfoButtonLayoutParams);
         infoButton.setVisibility(View.GONE);
         infoButton.setManageVisibility(true);
 
-        DeleteZone deleteZone = (DeleteZone) mLauncher.findViewById(R.id.delete_zone);
+        DeleteZone deleteZone = (DeleteZone) menu.findItem(MENU_DELETE_APP).getActionView();
         ((ViewGroup) deleteZone.getParent()).removeView(deleteZone);
         mOrigDeleteZoneParent.addView(deleteZone, mOrigDeleteZoneLayoutParams);
         deleteZone.setVisibility(View.GONE);
