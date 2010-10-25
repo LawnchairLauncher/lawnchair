@@ -51,7 +51,7 @@
     <string name="all_apps_button_label" msgid="3953036962111614813">"모든 애플리케이션"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"홈"</string>
     <string name="menu_add" msgid="3065046628354640854">"추가"</string>
-    <!-- outdated translation 2864265778240958621 -->     <string name="menu_manage_apps" msgid="2308685199463588895">"애플리케이션 관리"</string>
+    <string name="menu_manage_apps" msgid="2308685199463588895">"애플리케이션 관리"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"배경화면"</string>
     <string name="menu_search" msgid="4826514464423239041">"검색"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"알림"</string>
