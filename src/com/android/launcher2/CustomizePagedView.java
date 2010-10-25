@@ -16,7 +16,10 @@
 
 package com.android.launcher2;
 
-import com.android.launcher.R;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -28,12 +31,11 @@ import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.graphics.Bitmap.Config;
 import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
-import android.provider.LiveFolders;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ActionMode;
@@ -41,18 +43,12 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import com.android.launcher.R;
 
 public class CustomizePagedView extends PagedView
     implements View.OnLongClickListener, View.OnClickListener,
@@ -60,7 +56,6 @@ public class CustomizePagedView extends PagedView
 
     public enum CustomizationType {
         WidgetCustomization,
-        FolderCustomization,
         ShortcutCustomization,
         WallpaperCustomization,
         ApplicationCustomization
@@ -89,7 +84,6 @@ public class CustomizePagedView extends PagedView
 
     // The raw sources of data for each of the different tabs of the customization page
     private List<AppWidgetProviderInfo> mWidgetList;
-    private List<ResolveInfo> mFolderList;
     private List<ResolveInfo> mShortcutList;
     private List<ResolveInfo> mWallpaperList;
     private List<ApplicationInfo> mApps;
@@ -256,18 +250,6 @@ public class CustomizePagedView extends PagedView
             }
         };
 
-        // get the list of live folder intents
-        Intent liveFolderIntent = new Intent(LiveFolders.ACTION_CREATE_LIVE_FOLDER);
-        mFolderList = mPackageManager.queryIntentActivities(liveFolderIntent, 0);
-
-        // manually create a separate entry for creating a folder in Launcher
-        ResolveInfo folder = new ResolveInfo();
-        folder.icon = R.drawable.ic_launcher_folder;
-        folder.labelRes = R.string.group_folder;
-        folder.resolvePackageName = context.getPackageName();
-        mFolderList.add(0, folder);
-        Collections.sort(mFolderList, resolveInfoComparator);
-
         // get the list of shortcuts
         Intent shortcutsIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
         mShortcutList = mPackageManager.queryIntentActivities(shortcutsIntent, 0);
@@ -319,10 +301,6 @@ public class CustomizePagedView extends PagedView
             break;
         case ApplicationCustomization:
             mChoiceModeTitleText = R.string.cab_app_selection_text;
-            enterChoiceMode = true;
-            break;
-        case FolderCustomization:
-            mChoiceModeTitleText = R.string.cab_folder_selection_text;
             enterChoiceMode = true;
             break;
         case ShortcutCustomization:
@@ -402,19 +380,6 @@ public class CustomizePagedView extends PagedView
 
             // Cleanup the icon
             b.recycle();
-            return true;
-        case FolderCustomization:
-            if (v.getTag() instanceof UserFolderInfo) {
-                // The UserFolderInfo tag is only really used for live folders
-                UserFolderInfo folderInfo = (UserFolderInfo) v.getTag();
-                mDragController.startDrag(
-                        v, this, folderInfo, DragController.DRAG_ACTION_COPY, null);
-            } else {
-                createItemInfo = (PendingAddItemInfo) v.getTag();
-                mDragController.startDrag(
-                        v, this, createItemInfo, DragController.DRAG_ACTION_COPY, null);
-            }
-            mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1);
             return true;
         case ShortcutCustomization:
             createItemInfo = (PendingAddItemInfo) v.getTag();
@@ -645,20 +610,6 @@ public class CustomizePagedView extends PagedView
             case WallpaperCustomization:
                 icon.setOnClickListener(this);
                 break;
-            case FolderCustomization:
-                if (info.labelRes != R.string.group_folder) {
-                    createItemInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER;
-                    createItemInfo.componentName = new ComponentName(info.activityInfo.packageName,
-                            info.activityInfo.name);
-                    icon.setTag(createItemInfo);
-                } else {
-                    UserFolderInfo folderInfo = new UserFolderInfo();
-                    folderInfo.title = getResources().getText(R.string.folder_name);
-                    icon.setTag(folderInfo);
-                }
-                icon.setOnClickListener(this);
-                icon.setOnLongClickListener(this);
-                break;
             case ShortcutCustomization:
                 createItemInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
                 createItemInfo.componentName = new ComponentName(info.activityInfo.packageName,
@@ -727,10 +678,6 @@ public class CustomizePagedView extends PagedView
         case WidgetCustomization:
             syncWidgetPages();
             break;
-        case FolderCustomization:
-            syncListPages(mFolderList);
-            centerPagedViewCellLayouts = true;
-            break;
         case ShortcutCustomization:
             syncListPages(mShortcutList);
             centerPagedViewCellLayouts = true;
@@ -772,9 +719,6 @@ public class CustomizePagedView extends PagedView
         switch (mCustomizationType) {
         case WidgetCustomization:
             syncWidgetPageItems(page);
-            break;
-        case FolderCustomization:
-            syncListPageItems(page, mFolderList);
             break;
         case ShortcutCustomization:
             syncListPageItems(page, mShortcutList);
