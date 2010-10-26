@@ -847,7 +847,9 @@ public class CellLayout extends ViewGroup implements Dimmable {
             final View view = getChildAt(i);
             view.setDrawingCacheEnabled(enabled);
             // Update the drawing caches
-            view.buildDrawingCache(true);
+            if (!view.isHardwareAccelerated()) {
+                view.buildDrawingCache(true);
+            }
         }
     }
 
