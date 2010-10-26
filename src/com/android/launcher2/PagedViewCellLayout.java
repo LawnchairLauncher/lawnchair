@@ -250,7 +250,9 @@ public class PagedViewCellLayout extends ViewGroup {
             final View view = getChildAt(i);
             view.setDrawingCacheEnabled(enabled);
             // Update the drawing caches
-            view.buildDrawingCache(true);
+            if (!view.isHardwareAccelerated()) {
+                view.buildDrawingCache(true);
+            }
         }
     }
 
