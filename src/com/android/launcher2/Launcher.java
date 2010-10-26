@@ -17,15 +17,15 @@
 
 package com.android.launcher2;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
 import com.android.common.Search;
 import com.android.launcher.R;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.animation.AnimatorSet;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -53,7 +53,6 @@ import android.content.res.TypedArray;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -90,11 +89,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabContentFactory;
-import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -168,7 +165,6 @@ public final class Launcher extends Activity
     // tags for the customization tabs
     private static final String WIDGETS_TAG = "widgets";
     private static final String APPLICATIONS_TAG = "applications";
-    private static final String FOLDERS_TAG = "folders";
     private static final String SHORTCUTS_TAG = "shortcuts";
     private static final String WALLPAPERS_TAG = "wallpapers";
 
@@ -291,27 +287,12 @@ public final class Launcher extends Activity
             String applicationsLabel = getString(R.string.applications_tab_label);
             mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(APPLICATIONS_TAG)
                     .setIndicator(applicationsLabel).setContent(contentFactory));
-            String foldersLabel = getString(R.string.folders_tab_label);
-            mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(FOLDERS_TAG)
-                    .setIndicator(foldersLabel).setContent(contentFactory));
             String wallpapersLabel = getString(R.string.wallpapers_tab_label);
             mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(WALLPAPERS_TAG)
                     .setIndicator(wallpapersLabel).setContent(contentFactory));
             String shortcutsLabel = getString(R.string.shortcuts_tab_label);
             mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(SHORTCUTS_TAG)
                     .setIndicator(shortcutsLabel).setContent(contentFactory));
-
-            // TEMP: just styling the tab widget to be a bit nicer until we get the actual
-            // new assets
-            TabWidget tabWidget = mHomeCustomizationDrawer.getTabWidget();
-            for (int i = 0; i < tabWidget.getChildCount(); ++i) {
-                RelativeLayout tab = (RelativeLayout) tabWidget.getChildTabViewAt(i);
-                TextView text = (TextView) tab.getChildAt(1);
-                text.setTextSize(20.0f);
-                text.setPadding(20, 0, 20, 0);
-                text.setShadowLayer(1.0f, 0.0f, 1.0f, Color.BLACK);
-                tab.setBackgroundDrawable(null);
-            }
 
             mHomeCustomizationDrawer.setOnTabChangedListener(new OnTabChangeListener() {
                 public void onTabChanged(String tabId) {
@@ -322,6 +303,7 @@ public final class Launcher extends Activity
                             "alpha", alpha, 0.0f);
                     alphaAnim.setDuration(duration);
                     alphaAnim.addListener(new AnimatorListenerAdapter() {
+                        @Override
                         public void onAnimationEnd(Animator animation) {
                             String tag = mHomeCustomizationDrawer.getCurrentTabTag();
                             if (tag == WIDGETS_TAG) {
@@ -330,9 +312,6 @@ public final class Launcher extends Activity
                             } else if (tag == APPLICATIONS_TAG) {
                                 mCustomizePagedView.setCustomizationFilter(
                                         CustomizePagedView.CustomizationType.ApplicationCustomization);
-                            } else if (tag == FOLDERS_TAG) {
-                                mCustomizePagedView.setCustomizationFilter(
-                                    CustomizePagedView.CustomizationType.FolderCustomization);
                             } else if (tag == WALLPAPERS_TAG) {
                                 mCustomizePagedView.setCustomizationFilter(
                                     CustomizePagedView.CustomizationType.WallpaperCustomization);
@@ -351,11 +330,6 @@ public final class Launcher extends Activity
                     alphaAnim.start();
                 }
             });
-    
-            // TEMP: Working around a bug in tab host where the current tab does not initially have
-            // a highlight on it by selecting something else, then selecting the actual tab we want..
-            mHomeCustomizationDrawer.setCurrentTab(1);
-            mHomeCustomizationDrawer.setCurrentTab(0);
         }
         setupViews();
 
@@ -424,6 +398,7 @@ public final class Launcher extends Activity
 
             final LocaleConfiguration localeConfiguration = sLocaleConfiguration;
             new Thread("WriteLocaleConfiguration") {
+                @Override
                 public void run() {
                     writeConfiguration(Launcher.this, localeConfiguration);
                 }
@@ -2306,9 +2281,11 @@ public final class Launcher extends Activity
             Animator anim = ObjectAnimator.ofFloat(view, "alpha", show ? 1.0f : 0.0f);
             anim.setDuration(duration);
             anim.addListener(new AnimatorListenerAdapter() {
+                @Override
                 public void onAnimationStart(Animator animation) {
                     if (showing) showToolbarButton(view);
                 }
+                @Override
                 public void onAnimationEnd(Animator animation) {
                     if (hiding) hideToolbarButton(view);
                 }
@@ -2409,6 +2386,7 @@ public final class Launcher extends Activity
             scaleAnim.setDuration(duration);
             scaleAnim.setInterpolator(new DecelerateInterpolator());
             scaleAnim.addListener(new AnimatorListenerAdapter() {
+                @Override
                 public void onAnimationStart(Animator animation) {
                     // Prepare the position
                     toView.setTranslationX(0.0f);
@@ -2472,6 +2450,7 @@ public final class Launcher extends Activity
             scaleAnim.setDuration(duration);
             scaleAnim.setInterpolator(new AccelerateInterpolator());
             mStateAnimation.addListener(new AnimatorListenerAdapter() {
+                @Override
                 public void onAnimationEnd(Animator animation) {
                     fromView.setVisibility(View.GONE);
                     fromView.setScaleX(1.0f);
@@ -2531,10 +2510,12 @@ public final class Launcher extends Activity
             if (mStateAnimation != null) mStateAnimation.cancel();
             mStateAnimation = new AnimatorSet();
             mStateAnimation.addListener(new AnimatorListenerAdapter() {
+                @Override
                 public void onAnimationStart(Animator animation) {
                     toView.setVisibility(View.VISIBLE);
                     toView.setY(toViewStartY);
                 }
+                @Override
                 public void onAnimationEnd(Animator animation) {
                     fromView.setVisibility(View.GONE);
                 }
