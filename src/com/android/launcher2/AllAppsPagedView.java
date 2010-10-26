@@ -443,7 +443,6 @@ public class AllAppsPagedView extends PagedView
                     new PagedViewCellLayout.LayoutParams(0, 0, 2, 1));
         }
     }
-
     @Override
     public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
         mode.setTitle(R.string.cab_app_selection_text);
@@ -459,6 +458,12 @@ public class AllAppsPagedView extends PagedView
         mOrigInfoButtonParent.removeView(infoButton);
         infoButton.setManageVisibility(false);
         infoButton.setVisibility(View.VISIBLE);
+        infoButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                final ApplicationInfo appInfo = (ApplicationInfo) getChosenItem();
+                mLauncher.startApplicationDetailsActivity(appInfo.componentName);
+            }
+        });
 
         DeleteZone deleteZone = (DeleteZone) mLauncher.findViewById(R.id.delete_zone);
         mOrigDeleteZoneParent = (ViewGroup) deleteZone.getParent();
@@ -466,6 +471,12 @@ public class AllAppsPagedView extends PagedView
         mOrigDeleteZoneParent.removeView(deleteZone);
         deleteZone.setManageVisibility(false);
         deleteZone.setVisibility(View.VISIBLE);
+        deleteZone.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                final ApplicationInfo appInfo = (ApplicationInfo) getChosenItem();
+                mLauncher.startApplicationUninstallActivity(appInfo);
+            }
+        });
 
         menu.add(0, MENU_APP_INFO, 0, R.string.cab_menu_app_info).setActionView(infoButton);
         menu.add(0, MENU_DELETE_APP, 0, R.string.cab_menu_delete_app).setActionView(deleteZone);
@@ -504,16 +515,7 @@ public class AllAppsPagedView extends PagedView
 
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        final int id = item.getItemId();
-
-        // Assumes that we are in CHOICE_MODE_SINGLE
-        final ApplicationInfo appInfo = (ApplicationInfo) getChosenItem();
-
-        if (id == MENU_APP_INFO) {
-            mLauncher.startApplicationDetailsActivity(appInfo.componentName);
-        } else if (id == MENU_DELETE_APP) {
-            mLauncher.startApplicationUninstallActivity(appInfo);
-        }
+        // This is never called. Because we use setActionView(), we handle our own click events.
         return false;
     }
 
