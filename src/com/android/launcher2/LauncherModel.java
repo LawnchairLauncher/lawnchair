@@ -108,6 +108,7 @@ public class LauncherModel extends BroadcastReceiver {
     private static int mCellCountY;
 
     public interface Callbacks {
+        public boolean setLoadOnResume();
         public int getCurrentWorkspaceScreen();
         public void startBinding();
         public void bindItems(ArrayList<ItemInfo> shortcuts, int start, int end);
@@ -433,7 +434,19 @@ public class LauncherModel extends BroadcastReceiver {
             String[] packages = intent.getStringArrayExtra(Intent.EXTRA_CHANGED_PACKAGE_LIST);
             enqueuePackageUpdated(new PackageUpdatedTask(PackageUpdatedTask.OP_ADD, packages));
             // Then, rebind everything.
-            startLoader(mApp, false);
+            boolean runLoader = true;
+            if (mCallbacks != null) {
+                Callbacks callbacks = mCallbacks.get();
+                if (callbacks != null) {
+                    // If they're paused, we can skip loading, because they'll do it again anyway
+                    if (callbacks.setLoadOnResume()) {
+                        runLoader = false;
+                    }
+                }
+            }
+            if (runLoader) {
+                startLoader(mApp, false);
+            }
 
         } else if (Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE.equals(action)) {
             String[] packages = intent.getStringArrayExtra(Intent.EXTRA_CHANGED_PACKAGE_LIST);
