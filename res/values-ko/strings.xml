@@ -29,17 +29,17 @@
     <string name="configure_wallpaper" msgid="2820186271419674623">"구성..."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"위젯"</string>
     <string name="folders_tab_label" msgid="1145293785541489736">"폴더"</string>
-    <!-- no translation found for shortcuts_tab_label (8640731503933155644) -->
-    <skip />
+    <string name="shortcuts_tab_label" msgid="8640731503933155644">"더보기"</string>
     <string name="wallpapers_tab_label" msgid="1617804870364119879">"배경화면"</string>
-    <!-- no translation found for applications_tab_label (9046797126882613707) -->
-    <skip />
+    <string name="applications_tab_label" msgid="9046797126882613707">"앱 바로가기"</string>
     <string name="wallpapers_temp_tab_text" msgid="1660218201190495279">"배경화면 탭이 됩니다."</string>
     <string name="all_apps_tab_all" msgid="2942727589595027258">"모두"</string>
     <string name="all_apps_tab_apps" msgid="5468972551904071712">"애플리케이션"</string>
     <string name="all_apps_tab_games" msgid="1855736784923494918">"게임"</string>
     <string name="all_apps_tab_downloaded" msgid="2300935549064726963">"다운로드앱"</string>
-    <!-- no translation found for widget_dims_format (412876472704567784) -->
+    <!-- no translation found for all_apps_no_games (5293893733372793696) -->
+    <skip />
+    <!-- no translation found for all_apps_no_downloads (6145042636084482299) -->
     <skip />
     <string name="rename_folder_label" msgid="5646236631298452787">"폴더 이름"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"폴더 이름 바꾸기"</string>
@@ -60,21 +60,23 @@
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"바로가기(\'<xliff:g id="NAME">%s</xliff:g>\')가 삭제되었습니다."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"바로가기(\'<xliff:g id="NAME">%s</xliff:g>\')가 이미 있습니다."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"바로가기 선택"</string>
+    <string name="title_select_application" msgid="8031072293115454221">"애플리케이션 선택"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"폴더 선택"</string>
-    <string name="all_apps_button_label" msgid="3953036962111614813">"모든 애플리케이션"</string>
+    <string name="all_apps_button_label" msgid="2578400570124163469">"애플리케이션"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"홈"</string>
     <string name="menu_add" msgid="3065046628354640854">"추가"</string>
+    <string name="menu_manage_apps" msgid="2308685199463588895">"애플리케이션 관리"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"배경화면"</string>
     <string name="menu_search" msgid="4826514464423239041">"검색"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"알림"</string>
     <string name="menu_gestures" msgid="514678675575912237">"동작"</string>
     <string name="menu_settings" msgid="6233960148378443661">"설정"</string>
-    <!-- no translation found for cab_menu_delete_app (1242619904941293871) -->
-    <skip />
-    <!-- no translation found for cab_menu_app_info (5180426909324882018) -->
-    <skip />
-    <!-- no translation found for cab_selection_text (8712157849499378915) -->
-    <skip />
+    <string name="cab_menu_delete_app" msgid="1242619904941293871">"애플리케이션 제거"</string>
+    <string name="cab_menu_app_info" msgid="5180426909324882018">"애플리케이션 세부정보"</string>
+    <string name="cab_app_selection_text" msgid="606113924828167756">"1개 애플리케이션 선택"</string>
+    <string name="cab_widget_selection_text" msgid="962527270506951955">"1개 위젯 선택"</string>
+    <string name="cab_folder_selection_text" msgid="8916111874189565067">"1개 폴더 선택"</string>
+    <string name="cab_shortcut_selection_text" msgid="8115847384500412878">"1개 바로가기 선택"</string>
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"바로가기 설치"</string>
     <string name="permdesc_install_shortcut" msgid="7429365847558984148">"애플리케이션이 사용자의 작업 없이 바로가기를 추가할 수 있도록 합니다."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"바로가기 제거"</string>

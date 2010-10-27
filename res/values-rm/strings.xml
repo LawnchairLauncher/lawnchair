@@ -47,7 +47,9 @@
     <skip />
     <!-- no translation found for all_apps_tab_downloaded (2300935549064726963) -->
     <skip />
-    <!-- no translation found for widget_dims_format (412876472704567784) -->
+    <!-- no translation found for all_apps_no_games (5293893733372793696) -->
+    <skip />
+    <!-- no translation found for all_apps_no_downloads (6145042636084482299) -->
     <skip />
     <string name="rename_folder_label" msgid="5646236631298452787">"Num da l\'ordinatur"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Renumnar l\'ordinatur"</string>
@@ -68,10 +70,14 @@
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"\"La scursanida \"\"<xliff:g id="NAME">%s</xliff:g>\"\" è vegnida stizzada.\""</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"\"La scursanida \"\"<xliff:g id="NAME">%s</xliff:g>\"\" exista gia.\""</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Tscherner ina cumbinaziun da tastas"</string>
+    <!-- no translation found for title_select_application (8031072293115454221) -->
+    <skip />
     <string name="title_select_live_folder" msgid="3753447798805166749">"Tscherner l\'ordinatur"</string>
-    <string name="all_apps_button_label" msgid="3953036962111614813">"Tut las applicaziuns"</string>
+    <!-- outdated translation 3953036962111614813 -->     <string name="all_apps_button_label" msgid="2578400570124163469">"Tut las applicaziuns"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Pagina da partenza"</string>
     <string name="menu_add" msgid="3065046628354640854">"Agiuntar"</string>
+    <!-- no translation found for menu_manage_apps (2308685199463588895) -->
+    <skip />
     <string name="menu_wallpaper" msgid="5837429080911269832">"Fund davos"</string>
     <string name="menu_search" msgid="4826514464423239041">"Tschertgar"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"Avis"</string>
@@ -81,7 +87,13 @@
     <skip />
     <!-- no translation found for cab_menu_app_info (5180426909324882018) -->
     <skip />
-    <!-- no translation found for cab_selection_text (8712157849499378915) -->
+    <!-- no translation found for cab_app_selection_text (606113924828167756) -->
+    <skip />
+    <!-- no translation found for cab_widget_selection_text (962527270506951955) -->
+    <skip />
+    <!-- no translation found for cab_folder_selection_text (8916111874189565067) -->
+    <skip />
+    <!-- no translation found for cab_shortcut_selection_text (8115847384500412878) -->
     <skip />
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"Installar scursanidas"</string>
     <string name="permdesc_install_shortcut" msgid="7429365847558984148">"Pussibilitescha ch\'ina applicaziun agiunta scursanidas senza l\'intervenziun da l\'utilisader."</string>
