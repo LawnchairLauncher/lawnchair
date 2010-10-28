@@ -707,7 +707,7 @@ public class Workspace extends SmoothPagedView
         mShrunkenState = shrinkPosition;
 
         // Stop any scrolling, move to the current page right away
-        setCurrentPage(mCurrentPage);
+        setCurrentPage((mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage);
         updateWhichPagesAcceptDrops(mShrunkenState);
 
         // we intercept and reject all touch events when we're small, so be sure to reset the state
