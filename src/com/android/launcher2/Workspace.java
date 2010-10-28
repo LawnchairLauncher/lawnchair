@@ -16,17 +16,16 @@
 
 package com.android.launcher2;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import com.android.launcher.R;
 
 import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
+import android.animation.Animator.AnimatorListener;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
@@ -60,7 +59,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.launcher.R;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -146,6 +146,7 @@ public class Workspace extends SmoothPagedView
     private ShrinkPosition mShrunkenState;
     private boolean mWaitingToShrink = false;
     private ShrinkPosition mWaitingToShrinkPosition;
+    private AnimatorSet mAnimator;
 
     private boolean mInScrollArea = false;
     private boolean mInDragMode = false;
@@ -215,11 +216,13 @@ public class Workspace extends SmoothPagedView
         mExternalDragOutlinePaint.setAntiAlias(true);
         setWillNotDraw(false);
 
-        mUnshrinkAnimationListener = new AnimatorListenerAdapter() {
+        mUnshrinkAnimationListener = new LauncherAnimatorListenerAdapter() {
+            @Override
             public void onAnimationStart(Animator animation) {
                 mIsInUnshrinkAnimation = true;
             }
-            public void onAnimationEnd(Animator animation) {
+            @Override
+            public void onAnimationEndOrCancel(Animator animation) {
                 mIsInUnshrinkAnimation = false;
             }
         };
@@ -785,6 +788,11 @@ public class Workspace extends SmoothPagedView
         // of the views accordingly
         newX -= (pageWidth - scaledPageWidth) / 2.0f;
         newY -= (pageHeight - scaledPageHeight) / 2.0f;
+
+        if (mAnimator != null) {
+            mAnimator.cancel();
+        }
+        mAnimator = new AnimatorSet();
         for (int i = 0; i < screenCount; i++) {
             CellLayout cl = (CellLayout) getChildAt(i);
 
@@ -805,7 +813,7 @@ public class Workspace extends SmoothPagedView
                         PropertyValuesHolder.ofFloat("alpha", finalAlpha),
                         PropertyValuesHolder.ofFloat("rotationY", rotation));
                 anim.setDuration(duration);
-                anim.start();
+                mAnimator.playTogether(anim);
             } else {
                 cl.setX((int)newX);
                 cl.setY((int)newY);
@@ -817,6 +825,9 @@ public class Workspace extends SmoothPagedView
             }
             // increment newX for the next screen
             newX += scaledPageWidth + extraScaledSpacing;
+        }
+        if (animated) {
+            mAnimator.start();
         }
         setChildrenDrawnWithCacheEnabled(true);
     }
@@ -929,7 +940,10 @@ public class Workspace extends SmoothPagedView
     void unshrink(boolean animated) {
         if (mIsSmall) {
             mIsSmall = false;
-            AnimatorSet s = new AnimatorSet();
+            if (mAnimator != null) {
+                mAnimator.cancel();
+            }
+            mAnimator = new AnimatorSet();
             final int screenCount = getChildCount();
 
             final int duration = getResources().getInteger(R.integer.config_workspaceUnshrinkTime);
@@ -945,8 +959,7 @@ public class Workspace extends SmoothPagedView
                 }
 
                 if (animated) {
-
-                    s.playTogether(
+                    mAnimator.playTogether(
                             ObjectAnimator.ofFloat(cl, "translationX", 0.0f).setDuration(duration),
                             ObjectAnimator.ofFloat(cl, "translationY", 0.0f).setDuration(duration),
                             ObjectAnimator.ofFloat(cl, "scaleX", 1.0f).setDuration(duration),
@@ -967,8 +980,8 @@ public class Workspace extends SmoothPagedView
             if (animated) {
                 // If we call this when we're not animated, onAnimationEnd is never called on
                 // the listener; make sure we only use the listener when we're actually animating
-                s.addListener(mUnshrinkAnimationListener);
-                s.start();
+                mAnimator.addListener(mUnshrinkAnimationListener);
+                mAnimator.start();
             }
         }
     }

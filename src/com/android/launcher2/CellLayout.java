@@ -16,7 +16,7 @@
 
 package com.android.launcher2;
 
-import java.util.Arrays;
+import com.android.launcher.R;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -26,7 +26,6 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.WallpaperManager;
-import android.content.ClipDescription;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -42,7 +41,6 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
@@ -51,7 +49,7 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LayoutAnimationController;
 
-import com.android.launcher.R;
+import java.util.Arrays;
 
 public class CellLayout extends ViewGroup implements Dimmable {
     static final String TAG = "CellLayout";
@@ -245,6 +243,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
             // The animation holds a reference to the drag outline bitmap as long is it's
             // running. This way the bitmap can be GCed when the animations are complete.
             anim.getAnimator().addListener(new AnimatorListenerAdapter() {
+                @Override
                 public void onAnimationEnd(Animator animation) {
                     if ((Float) ((ValueAnimator) animation).getAnimatedValue() == 0f) {
                         anim.setTag(null);
@@ -305,11 +304,13 @@ public class CellLayout extends ViewGroup implements Dimmable {
             AnimatorSet bouncer = new AnimatorSet();
             bouncer.play(scaleUp).before(scaleDown);
             bouncer.play(scaleUp).with(alphaFadeOut);
-            bouncer.addListener(new AnimatorListenerAdapter() {
+            bouncer.addListener(new LauncherAnimatorListenerAdapter() {
+                @Override
                 public void onAnimationStart(Animator animation) {
                     setHover(true);
                 }
-                public void onAnimationEnd(Animator animation) {
+                @Override
+                public void onAnimationEndOrCancel(Animator animation) {
                     setHover(false);
                     setHoverScale(1.0f);
                     setHoverAlpha(1.0f);
