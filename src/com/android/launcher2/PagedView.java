@@ -102,6 +102,7 @@ public abstract class PagedView extends ViewGroup {
     protected int mPageLayoutHeightGap;
     protected int mCellCountX;
     protected int mCellCountY;
+    protected boolean mCenterPagesVertically;
 
     protected static final int INVALID_POINTER = -1;
 
@@ -207,6 +208,7 @@ public abstract class PagedView extends ViewGroup {
         mPageViewIconCache = new PagedViewIconCache();
         mScroller = new Scroller(getContext());
         mCurrentPage = 0;
+        mCenterPagesVertically = true;
 
         final ViewConfiguration configuration = ViewConfiguration.get(getContext());
         mTouchSlop = configuration.getScaledTouchSlop();
@@ -394,7 +396,8 @@ public abstract class PagedView extends ViewGroup {
             final View child = getChildAt(i);
             if (child.getVisibility() != View.GONE) {
                 final int childWidth = child.getMeasuredWidth();
-                final int childHeight = (getMeasuredHeight() - child.getMeasuredHeight()) / 2;
+                final int childHeight = (mCenterPagesVertically ?
+                        (getMeasuredHeight() - child.getMeasuredHeight()) / 2 : 0);
                 child.layout(childLeft, childHeight,
                         childLeft + childWidth, childHeight + child.getMeasuredHeight());
                 childLeft += childWidth + mPageSpacing;

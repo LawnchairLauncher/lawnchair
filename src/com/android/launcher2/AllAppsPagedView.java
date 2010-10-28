@@ -94,6 +94,12 @@ public class AllAppsPagedView extends PagedView
     }
 
     @Override
+    protected void init() {
+        super.init();
+        mCenterPagesVertically = false;
+    }
+
+    @Override
     public void setLauncher(Launcher launcher) {
         mLauncher = launcher;
         mLauncher.setAllAppsPagedView(this);

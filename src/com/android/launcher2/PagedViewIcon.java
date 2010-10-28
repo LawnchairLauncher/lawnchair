@@ -156,12 +156,16 @@ public class PagedViewIcon extends TextView implements Checkable {
     }
 
     public void applyFromResolveInfo(ResolveInfo info, PackageManager packageManager,
-            PagedViewIconCache cache) {
+            PagedViewIconCache cache, boolean scaleUp) {
         mIconCache = cache;
         mIconCacheKey = info;
         mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
 
         mIcon = Utilities.createIconBitmap(info.loadIcon(packageManager), mContext);
+        if (scaleUp) {
+            mIcon = Bitmap.createScaledBitmap(mIcon, mScaledIconSize,
+                    mScaledIconSize, true);
+        }
         setCompoundDrawablesWithIntrinsicBounds(null, new FastBitmapDrawable(mIcon), null, null);
         setText(info.loadLabel(packageManager));
         setTag(info);

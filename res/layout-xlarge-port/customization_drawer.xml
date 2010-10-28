@@ -21,10 +21,10 @@
     android:layout_height="match_parent"
     launcher:widgetCellCountX="10"
     launcher:cellCountX="5"
-    launcher:cellCountY="5"
+    launcher:cellCountY="3"
     launcher:pageLayoutWidthGap="36dp"
-    launcher:pageLayoutHeightGap="36dp"
-    launcher:pageLayoutPaddingTop="25dp"
+    launcher:pageLayoutHeightGap="12dp"
+    launcher:pageLayoutPaddingTop="40dp"
     launcher:pageLayoutPaddingBottom="25dp"
     launcher:pageLayoutPaddingLeft="20dp"
     launcher:pageLayoutPaddingRight="20dp" />

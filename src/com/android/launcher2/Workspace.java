@@ -778,8 +778,7 @@ public class Workspace extends SmoothPagedView
             // We shrink and disappear to nothing in the case of all apps
             // (which is when we shrink to the bottom)
             newY = screenHeight - newY - scaledPageHeight;
-            finalAlpha = 0.0f;
-            extraShrinkFactor = 0.1f;
+            finalAlpha = 0.25f;
         } else if (shrinkPosition == ShrinkPosition.SHRINK_TO_MIDDLE) {
             newY = screenHeight / 2 - scaledPageHeight / 2;
             finalAlpha = 1.0f;
@@ -910,6 +909,9 @@ public class Workspace extends SmoothPagedView
     // never dragged over
     public void onDragStopped() {
         updateWhichPagesAcceptDrops(mShrunkenState);
+        if (mShrunkenState == ShrinkPosition.SHRINK_TO_BOTTOM_VISIBLE) {
+            shrink(ShrinkPosition.SHRINK_TO_BOTTOM_HIDDEN, true);
+        }
     }
 
     // We call this when we trigger an unshrink by clicking on the CellLayout cl
