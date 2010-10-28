@@ -22,20 +22,10 @@
     launcher:outlineColor="#FF8CD2FF"
     launcher:checkedBlurColor="#FFBBE83C"
     launcher:checkedOutlineColor="#FF8CD2FF"
-    launcher:scaledIconSize="64dp"
 
     android:id="@+id/application_icon"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    android:paddingTop="2dip"
 
-    android:textColor="#FFFFFFFF"
-    android:textSize="13sp"
-    android:shadowColor="#FF000000"
-    android:shadowDx="0.0"
-    android:shadowDy="1.0"
-    android:shadowRadius="1.0"
-
-    android:maxLines="2"
-    android:fadingEdge="horizontal" />
+    style="@style/WorkspaceIcon.Portrait" />

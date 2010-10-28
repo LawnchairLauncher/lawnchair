@@ -992,8 +992,12 @@ public final class Launcher extends Activity
     View createShortcut(int layoutResId, ViewGroup parent, ShortcutInfo info) {
         TextView favorite = (TextView) mInflater.inflate(layoutResId, parent, false);
 
+        // Temporarily, we are scaling up all shortcuts on the workspace
+        int scaledSize = parent.getResources().getDimensionPixelSize(R.dimen.temp_scaled_icon_size);
+        Bitmap b = Bitmap.createScaledBitmap(info.getIcon(mIconCache), scaledSize, scaledSize, true);
+
         favorite.setCompoundDrawablesWithIntrinsicBounds(null,
-                new FastBitmapDrawable(info.getIcon(mIconCache)),
+                new FastBitmapDrawable(b),
                 null, null);
         favorite.setText(info.title);
         favorite.setTag(info);

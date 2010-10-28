@@ -113,7 +113,9 @@ public class PagedViewIcon extends TextView implements Checkable {
         mHoloOutlineColor = a.getColor(R.styleable.PagedViewIcon_outlineColor, 0);
         mCheckedBlurColor = a.getColor(R.styleable.PagedViewIcon_checkedBlurColor, 0);
         mCheckedOutlineColor = a.getColor(R.styleable.PagedViewIcon_checkedOutlineColor, 0);
-        mScaledIconSize = a.getDimensionPixelSize(R.styleable.PagedViewIcon_scaledIconSize, 64);
+        mScaledIconSize =
+            context.getResources().getDimensionPixelSize(R.dimen.temp_scaled_icon_size);
+
         a.recycle();
 
         if (sHolographicOutlineHelper == null) {
