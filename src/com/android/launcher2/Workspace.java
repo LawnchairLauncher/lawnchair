@@ -39,7 +39,6 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -1281,11 +1280,30 @@ public class Workspace extends SmoothPagedView
             final int itemCount = data.getItemCount();
             for (int i = 0; i < itemCount; ++i) {
                 final Intent intent = data.getItem(i).getIntent();
-                if (intent != null && model.validateShortcutIntent(intent)) {
-                    ShortcutInfo info = model.infoFromShortcutIntent(mContext, intent, data.
-                            getIcon());
-                    onDropExternal(x, y, info, layout);
-                    newDropCount++;
+                if (intent != null) {
+                    Object info = null;
+                    if (model.validateShortcutIntent(intent)) {
+                        info = model.infoFromShortcutIntent(mContext, intent, data.getIcon());
+                    } else if (model.validateWidgetIntent(intent)) {
+                        final ComponentName component = ComponentName.unflattenFromString(
+                            intent.getStringExtra(InstallWidgetReceiver.EXTRA_APPWIDGET_COMPONENT));
+                        final AppWidgetProviderInfo appInfo =
+                            model.findAppWidgetProviderInfoWithComponent(mContext, component);
+
+                        PendingAddWidgetInfo createInfo = new PendingAddWidgetInfo();
+                        createInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
+                        createInfo.componentName = appInfo.provider;
+                        createInfo.minWidth = appInfo.minWidth;
+                        createInfo.minHeight = appInfo.minHeight;
+                        createInfo.configurationData = intent.getParcelableExtra(
+                                InstallWidgetReceiver.EXTRA_APPWIDGET_CONFIGURATION_DATA);
+                        info = createInfo;
+                    }
+
+                    if (info != null) {
+                        onDropExternal(x, y, info, layout);
+                        newDropCount++;
+                    }
                 }
             }
 
@@ -1552,7 +1570,7 @@ public class Workspace extends SmoothPagedView
         ItemInfo info = (ItemInfo) dragInfo;
 
         if (cl.findCellForSpan(mTempEstimate, info.spanX, info.spanY)) {
-            onDropExternal(0, 0, dragInfo, cl, false);
+            onDropExternal(-1, -1, dragInfo, cl, false);
             return true;
         }
         mLauncher.showOutOfSpaceMessage();
@@ -1574,7 +1592,7 @@ public class Workspace extends SmoothPagedView
             touchXY[1] = y;
             switch (info.itemType) {
                 case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
-                    mLauncher.addAppWidgetFromDrop(info.componentName, screen, touchXY);
+                    mLauncher.addAppWidgetFromDrop((PendingAddWidgetInfo) info, screen, touchXY);
                     break;
                 case LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER:
                     mLauncher.addLiveFolderFromDrop(info.componentName, screen, touchXY);
