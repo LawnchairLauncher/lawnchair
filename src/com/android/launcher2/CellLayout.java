@@ -16,7 +16,7 @@
 
 package com.android.launcher2;
 
-import com.android.launcher.R;
+import java.util.Arrays;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -26,6 +26,7 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.WallpaperManager;
+import android.content.ClipDescription;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -41,6 +42,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
@@ -49,7 +51,7 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LayoutAnimationController;
 
-import java.util.Arrays;
+import com.android.launcher.R;
 
 public class CellLayout extends ViewGroup implements Dimmable {
     static final String TAG = "CellLayout";
@@ -972,7 +974,11 @@ public class CellLayout extends ViewGroup implements Dimmable {
         final int oldDragCellX = mDragCell[0];
         final int oldDragCellY = mDragCell[1];
         final int[] nearest = findNearestVacantArea(originX, originY, spanX, spanY, v, mDragCell);
-        mDragCenter.set(originX + (v.getWidth() / 2), originY + (v.getHeight() / 2));
+        if (v != null) {
+            mDragCenter.set(originX + (v.getWidth() / 2), originY + (v.getHeight() / 2));
+        } else {
+            mDragCenter.set(originX, originY);
+        }
 
         if (nearest != null && (nearest[0] != oldDragCellX || nearest[1] != oldDragCellY)) {
             // Find the top left corner of the rect the object will occupy
@@ -982,15 +988,17 @@ public class CellLayout extends ViewGroup implements Dimmable {
             int left = topLeft[0];
             int top = topLeft[1];
 
-            if (v.getParent() instanceof CellLayout) {
-                LayoutParams lp = (LayoutParams) v.getLayoutParams();
-                left += lp.leftMargin;
-                top += lp.topMargin;
-            }
+            if (v != null) {
+                if (v.getParent() instanceof CellLayout) {
+                    LayoutParams lp = (LayoutParams) v.getLayoutParams();
+                    left += lp.leftMargin;
+                    top += lp.topMargin;
+                }
 
-            // Offsets due to the size difference between the View and the dragOutline
-            left += (v.getWidth() - dragOutline.getWidth()) / 2;
-            top += (v.getHeight() - dragOutline.getHeight()) / 2;
+                // Offsets due to the size difference between the View and the dragOutline
+                left += (v.getWidth() - dragOutline.getWidth()) / 2;
+                top += (v.getHeight() - dragOutline.getHeight()) / 2;
+            }
 
             final int oldIndex = mDragOutlineCurrent;
             mDragOutlineAnims[oldIndex].animateOut();
@@ -1271,7 +1279,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
      * It may have begun over this layout (in which case onDragChild is called first),
      * or it may have begun on another layout.
      */
-    void onDragEnter(View dragView) {
+    void onDragEnter() {
         if (!mDragging) {
             // Fade in the drag indicators
             if (mCrosshairsAnimator != null) {

@@ -108,6 +108,7 @@ public class LauncherModel extends BroadcastReceiver {
     private static int mCellCountY;
 
     public interface Callbacks {
+        public boolean setLoadOnResume();
         public int getCurrentWorkspaceScreen();
         public void startBinding();
         public void bindItems(ArrayList<ItemInfo> shortcuts, int start, int end);
@@ -433,7 +434,19 @@ public class LauncherModel extends BroadcastReceiver {
             String[] packages = intent.getStringArrayExtra(Intent.EXTRA_CHANGED_PACKAGE_LIST);
             enqueuePackageUpdated(new PackageUpdatedTask(PackageUpdatedTask.OP_ADD, packages));
             // Then, rebind everything.
-            startLoader(mApp, false);
+            boolean runLoader = true;
+            if (mCallbacks != null) {
+                Callbacks callbacks = mCallbacks.get();
+                if (callbacks != null) {
+                    // If they're paused, we can skip loading, because they'll do it again anyway
+                    if (callbacks.setLoadOnResume()) {
+                        runLoader = false;
+                    }
+                }
+            }
+            if (runLoader) {
+                startLoader(mApp, false);
+            }
 
         } else if (Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE.equals(action)) {
             String[] packages = intent.getStringArrayExtra(Intent.EXTRA_CHANGED_PACKAGE_LIST);
@@ -1500,14 +1513,25 @@ public class LauncherModel extends BroadcastReceiver {
     ShortcutInfo addShortcut(Context context, Intent data,
             int screen, int cellX, int cellY, boolean notify) {
 
-        final ShortcutInfo info = infoFromShortcutIntent(context, data);
+        final ShortcutInfo info = infoFromShortcutIntent(context, data, null);
         addItemToDatabase(context, info, LauncherSettings.Favorites.CONTAINER_DESKTOP,
                 screen, cellX, cellY, notify);
 
         return info;
     }
 
-    private ShortcutInfo infoFromShortcutIntent(Context context, Intent data) {
+    /**
+     * Ensures that a given shortcut intent actually has all the fields that we need to create a
+     * proper ShortcutInfo.
+     */
+    boolean validateShortcutIntent(Intent data) {
+        // We don't require Intent.EXTRA_SHORTCUT_ICON, since we can pull a default fallback icon
+        return InstallShortcutReceiver.ACTION_INSTALL_SHORTCUT.equals(data.getAction()) &&
+                (data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT) != null) &&
+                (data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME) != null);
+    }
+
+    ShortcutInfo infoFromShortcutIntent(Context context, Intent data, Bitmap fallbackIcon) {
         Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
         String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
         Parcelable bitmap = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
@@ -1540,8 +1564,12 @@ public class LauncherModel extends BroadcastReceiver {
         final ShortcutInfo info = new ShortcutInfo();
 
         if (icon == null) {
-            icon = getFallbackIcon();
-            info.usingFallbackIcon = true;
+            if (fallbackIcon != null) {
+                icon = fallbackIcon;
+            } else {
+                icon = getFallbackIcon();
+                info.usingFallbackIcon = true;
+            }
         }
         info.setIcon(icon);
 
