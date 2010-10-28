@@ -1144,6 +1144,10 @@ public final class Launcher extends Activity
         return mAppWidgetHost;
     }
 
+    public LauncherModel getModel() {
+        return mModel;
+    }
+
     void closeSystemDialogs() {
         getWindow().closeAllPanels();
 

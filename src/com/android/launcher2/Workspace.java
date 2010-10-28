@@ -16,7 +16,8 @@
 
 package com.android.launcher2;
 
-import com.android.launcher.R;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
@@ -27,6 +28,8 @@ import android.animation.PropertyValuesHolder;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
+import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -36,8 +39,11 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -45,12 +51,13 @@ import android.os.IBinder;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import com.android.launcher.R;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -144,6 +151,9 @@ public class Workspace extends SmoothPagedView
     private final Rect mTempRect = new Rect();
     private final int[] mTempXY = new int[2];
 
+    // Paint used to draw external drop outline
+    private final Paint mExternalDragOutlinePaint = new Paint();
+
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -193,6 +203,7 @@ public class Workspace extends SmoothPagedView
         Launcher.setScreen(mCurrentPage);
         LauncherApplication app = (LauncherApplication)context.getApplicationContext();
         mIconCache = app.getIconCache();
+        mExternalDragOutlinePaint.setAntiAlias(true);
 
         mUnshrinkAnimationListener = new AnimatorListenerAdapter() {
             public void onAnimationStart(Animator animation) {
@@ -984,6 +995,29 @@ public class Workspace extends SmoothPagedView
     }
 
     /**
+     * Creates a drag outline to represent a drop (that we don't have the actual information for
+     * yet).  May be changed in the future to alter the drop outline slightly depending on the
+     * clip description mime data.
+     */
+    private Bitmap createExternalDragOutline(Canvas canvas, int padding) {
+        Resources r = getResources();
+        final int outlineColor = r.getColor(R.color.drag_outline_color);
+        final int iconWidth = r.getDimensionPixelSize(R.dimen.workspace_cell_width);
+        final int iconHeight = r.getDimensionPixelSize(R.dimen.workspace_cell_height);
+        final int rectRadius = r.getDimensionPixelSize(R.dimen.external_drop_icon_rect_radius);
+        final int inset = (int) (Math.min(iconWidth, iconHeight) * 0.2f);
+        final Bitmap b = Bitmap.createBitmap(
+                iconWidth + padding, iconHeight + padding, Bitmap.Config.ARGB_8888);
+
+        canvas.setBitmap(b);
+        canvas.drawRoundRect(new RectF(inset, inset, iconWidth - inset, iconHeight - inset),
+                rectRadius, rectRadius, mExternalDragOutlinePaint);
+        mOutlineHelper.applyExpensiveOuterOutline(b, canvas, outlineColor, true);
+
+        return b;
+    }
+
+    /**
      * Returns a new bitmap to show when the given View is being dragged around.
      * Responsibility for the bitmap is transferred to the caller.
      */
@@ -1136,7 +1170,7 @@ public class Workspace extends SmoothPagedView
 
         if (!mIsSmall) {
             mDragTargetLayout = getCurrentDropLayout();
-            mDragTargetLayout.onDragEnter(dragView);
+            mDragTargetLayout.onDragEnter();
             showOutlines();
         }
     }
@@ -1180,6 +1214,88 @@ public class Workspace extends SmoothPagedView
             }
         }
         return null;
+    }
+
+    /**
+     * Global drag and drop handler
+     */
+    @Override
+    public boolean onDragEvent(DragEvent event) {
+        final CellLayout layout = (CellLayout) getChildAt(mCurrentPage);
+        final int[] pos = new int[2];
+        layout.getLocationOnScreen(pos);
+        // We need to offset the drag coordinates to layout coordinate space
+        final int x = (int) event.getX() - pos[0];
+        final int y = (int) event.getY() - pos[1];
+
+        switch (event.getAction()) {
+        case DragEvent.ACTION_DRAG_STARTED:
+            // Check if we have enough space on this screen to add a new shortcut
+            if (!layout.findCellForSpan(pos, 1, 1)) {
+                Toast.makeText(mContext, mContext.getString(R.string.out_of_space),
+                        Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            ClipDescription desc = event.getClipDescription();
+            if (desc.filterMimeTypes(ClipDescription.MIMETYPE_TEXT_INTENT) != null) {
+                // Create the drag outline
+                // We need to add extra padding to the bitmap to make room for the glow effect
+                final Canvas canvas = new Canvas();
+                final int bitmapPadding = HolographicOutlineHelper.OUTER_BLUR_RADIUS;
+                mDragOutline = createExternalDragOutline(canvas, bitmapPadding);
+
+                // Show the current page outlines to indicate that we can accept this drop
+                showOutlines();
+                layout.setHover(true);
+                layout.onDragEnter();
+                layout.visualizeDropLocation(null, mDragOutline, x, y, 1, 1);
+
+                return true;
+            }
+            break;
+        case DragEvent.ACTION_DRAG_LOCATION:
+            // Visualize the drop location
+            layout.visualizeDropLocation(null, mDragOutline, x, y, 1, 1);
+            return true;
+        case DragEvent.ACTION_DROP:
+            // Check if we have enough space on this screen to add a new shortcut
+            if (!layout.findCellForSpan(pos, 1, 1)) {
+                Toast.makeText(mContext, mContext.getString(R.string.out_of_space),
+                        Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            // Try and add any shortcuts
+            int newDropCount = 0;
+            final LauncherModel model = mLauncher.getModel();
+            final ClipData data = event.getClipData();
+            final int itemCount = data.getItemCount();
+            for (int i = 0; i < itemCount; ++i) {
+                final Intent intent = data.getItem(i).getIntent();
+                if (intent != null && model.validateShortcutIntent(intent)) {
+                    ShortcutInfo info = model.infoFromShortcutIntent(mContext, intent, data.
+                            getIcon());
+                    onDropExternal(x, y, info, layout);
+                    newDropCount++;
+                }
+            }
+
+            // Show error message if we couldn't accept any of the items
+            if (newDropCount <= 0) {
+                Toast.makeText(mContext, "Only Shortcut Intents accepted.",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            return true;
+        case DragEvent.ACTION_DRAG_ENDED:
+            // Hide the page outlines after the drop
+            layout.setHover(false);
+            layout.onDragExit();
+            hideOutlines();
+            return true;
+        }
+        return super.onDragEvent(event);
     }
 
     /*
@@ -1382,7 +1498,7 @@ public class Workspace extends SmoothPagedView
                     if (mDragTargetLayout != null) {
                         mDragTargetLayout.onDragExit();
                     }
-                    layout.onDragEnter(dragView);
+                    layout.onDragEnter();
                     mDragTargetLayout = layout;
                 }
 

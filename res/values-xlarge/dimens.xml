@@ -22,6 +22,9 @@
     <dimen name="workspace_width_gap">0dp</dimen>
     <dimen name="workspace_height_gap">0dp</dimen>
 
+    <!-- The corner radius to draw the external drop icon rounded rect -->
+    <dimen name="external_drop_icon_rect_radius">10dp</dimen>
+
     <!-- extra horizontal spacing between mini screen thumbnails ie. in all
          apps and in customization mode -->
     <dimen name="smallScreenExtraSpacing">0dip</dimen>
