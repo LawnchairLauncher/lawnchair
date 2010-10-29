@@ -125,7 +125,6 @@ public class CellLayout extends ViewGroup implements Dimmable {
 
     private boolean mDragging = false;
 
-    private ValueAnimator mDropAnim;
     private TimeInterpolator mEaseOutInterpolator;
 
     public CellLayout(Context context) {
@@ -254,9 +253,6 @@ public class CellLayout extends ViewGroup implements Dimmable {
             });
             mDragOutlineAnims[i] = anim;
         }
-
-        mDropAnim = ValueAnimator.ofFloat(1.0f, 0.0f);
-        mDropAnim.setInterpolator(mEaseOutInterpolator);
 
         mBackgroundRect = new Rect();
         mHoverRect = new Rect();
@@ -776,37 +772,6 @@ public class CellLayout extends ViewGroup implements Dimmable {
         }
     }
 
-    /**
-     * Animate a child of this CellLayout into its current layout position.
-     * The position to animate from is given by the oldX and oldY values in its LayoutParams.
-     */
-    private void animateChildIntoPosition(final View child) {
-        final Resources res = getResources();
-        final ValueAnimator anim = mDropAnim;
-        final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
-        final float startX = lp.oldX - lp.x;
-        final float startY = lp.oldY - lp.y;
-
-        // Calculate the duration of the animation based on the object's distance
-        final float dist = (float) Math.sqrt(startX*startX + startY*startY);
-        final float maxDist = (float) res.getInteger(R.integer.config_dropAnimMaxDist);
-        final int duration = (int) (res.getInteger(R.integer.config_dropAnimMaxDuration)
-                * mEaseOutInterpolator.getInterpolation(dist / maxDist));
-
-        anim.end(); // Make sure it's not already running
-        anim.setDuration(duration);
-        anim.setFloatValues(1.0f, 0.0f);
-        anim.removeAllUpdateListeners();
-        anim.addUpdateListener(new AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
-                final float value = (Float) anim.getAnimatedValue();
-                child.setTranslationX(startX * value);
-                child.setTranslationY(startY * value);
-            }
-        });
-        anim.start();
-    }
-
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int count = getChildCount();
@@ -830,7 +795,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
                             cellXY[0] + childLeft + lp.width / 2,
                             cellXY[1] + childTop + lp.height / 2, 0, null);
 
-                    animateChildIntoPosition(child);
+                    ((Workspace) mParent).animateViewIntoPosition(child);
                 }
             }
         }
@@ -1256,15 +1221,6 @@ public class CellLayout extends ViewGroup implements Dimmable {
             lp.dropped = true;
             child.setVisibility(View.VISIBLE);
             child.requestLayout();
-        }
-    }
-
-    void onDropAborted(View child) {
-        if (child != null) {
-            LayoutParams lp = (LayoutParams) child.getLayoutParams();
-            lp.isDragging = false;
-            child.setVisibility(View.VISIBLE);
-            animateChildIntoPosition(child);
         }
     }
 
