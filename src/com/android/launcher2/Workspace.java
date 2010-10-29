@@ -16,17 +16,20 @@
 
 package com.android.launcher2;
 
-import com.android.launcher.R;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
-import android.animation.Animator.AnimatorListener;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.app.AlertDialog;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -59,8 +62,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import com.android.launcher.R;
+import com.android.launcher2.InstallWidgetReceiver.WidgetMimeTypeHandlerData;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -1371,6 +1374,7 @@ public class Workspace extends SmoothPagedView
      */
     @Override
     public boolean onDragEvent(DragEvent event) {
+        final ClipDescription desc = event.getClipDescription();
         final CellLayout layout = (CellLayout) getChildAt(mCurrentPage);
         final int[] pos = new int[2];
         layout.getLocationOnScreen(pos);
@@ -1387,23 +1391,19 @@ public class Workspace extends SmoothPagedView
                 return false;
             }
 
-            ClipDescription desc = event.getClipDescription();
-            if (desc.filterMimeTypes(ClipDescription.MIMETYPE_TEXT_INTENT) != null) {
-                // Create the drag outline
-                // We need to add extra padding to the bitmap to make room for the glow effect
-                final Canvas canvas = new Canvas();
-                final int bitmapPadding = HolographicOutlineHelper.OUTER_BLUR_RADIUS;
-                mDragOutline = createExternalDragOutline(canvas, bitmapPadding);
+            // Create the drag outline
+            // We need to add extra padding to the bitmap to make room for the glow effect
+            final Canvas canvas = new Canvas();
+            final int bitmapPadding = HolographicOutlineHelper.OUTER_BLUR_RADIUS;
+            mDragOutline = createExternalDragOutline(canvas, bitmapPadding);
 
-                // Show the current page outlines to indicate that we can accept this drop
-                showOutlines();
-                layout.setHover(true);
-                layout.onDragEnter();
-                layout.visualizeDropLocation(null, mDragOutline, x, y, 1, 1);
+            // Show the current page outlines to indicate that we can accept this drop
+            showOutlines();
+            layout.setHover(true);
+            layout.onDragEnter();
+            layout.visualizeDropLocation(null, mDragOutline, x, y, 1, 1);
 
-                return true;
-            }
-            break;
+            return true;
         case DragEvent.ACTION_DRAG_LOCATION:
             // Visualize the drop location
             layout.visualizeDropLocation(null, mDragOutline, x, y, 1, 1);
@@ -1420,39 +1420,58 @@ public class Workspace extends SmoothPagedView
             int newDropCount = 0;
             final LauncherModel model = mLauncher.getModel();
             final ClipData data = event.getClipData();
-            final int itemCount = data.getItemCount();
-            for (int i = 0; i < itemCount; ++i) {
-                final Intent intent = data.getItem(i).getIntent();
-                if (intent != null) {
-                    Object info = null;
-                    if (model.validateShortcutIntent(intent)) {
-                        info = model.infoFromShortcutIntent(mContext, intent, data.getIcon());
-                    } else if (model.validateWidgetIntent(intent)) {
-                        final ComponentName component = ComponentName.unflattenFromString(
-                            intent.getStringExtra(InstallWidgetReceiver.EXTRA_APPWIDGET_COMPONENT));
-                        final AppWidgetProviderInfo appInfo =
-                            model.findAppWidgetProviderInfoWithComponent(mContext, component);
 
-                        PendingAddWidgetInfo createInfo = new PendingAddWidgetInfo();
-                        createInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
-                        createInfo.componentName = appInfo.provider;
-                        createInfo.minWidth = appInfo.minWidth;
-                        createInfo.minHeight = appInfo.minHeight;
-                        createInfo.configurationData = intent.getParcelableExtra(
-                                InstallWidgetReceiver.EXTRA_APPWIDGET_CONFIGURATION_DATA);
-                        info = createInfo;
-                    }
+            // We assume that the mime types are ordered in descending importance of
+            // representation. So we enumerate the list of mime types and alert the
+            // user if any widgets can handle the drop.  Only the most preferred
+            // representation will be handled.
+            pos[0] = x;
+            pos[1] = y;
+            final int mimeTypeCount = desc.getMimeTypeCount();
+            for (int j = 0; j < mimeTypeCount; ++j) {
+                final String mimeType = desc.getMimeType(j);
 
-                    if (info != null) {
-                        onDropExternal(x, y, info, layout);
-                        newDropCount++;
+                if (mimeType.equals(InstallShortcutReceiver.SHORTCUT_MIMETYPE)) {
+                    final Intent intent = data.getItem(j).getIntent();
+                    Object info = model.infoFromShortcutIntent(mContext, intent, data.getIcon());
+                    onDropExternal(x, y, info, layout);
+                } else {
+                    final List<WidgetMimeTypeHandlerData> widgets =
+                        model.resolveWidgetsForMimeType(mContext, mimeType);
+                    final int numWidgets = widgets.size();
+
+                    if (numWidgets == 0) {
+                        continue;
+                    } else if (numWidgets == 1) {
+                        // If there is only one item, then go ahead and add and configure
+                        // that widget
+                        final AppWidgetProviderInfo widgetInfo = widgets.get(0).widgetInfo;
+                        final PendingAddWidgetInfo createInfo =
+                                new PendingAddWidgetInfo(widgetInfo, mimeType, data);
+                        mLauncher.addAppWidgetFromDrop(createInfo, mCurrentPage, pos);
+                    } else if (numWidgets > 1) {
+                        // Show the widget picker dialog if there is more than one widget
+                        // that can handle this data type
+                        final InstallWidgetReceiver.WidgetListAdapter adapter =
+                            new InstallWidgetReceiver.WidgetListAdapter(mLauncher, mimeType,
+                                    data, widgets, layout, mCurrentPage, pos);
+                        final AlertDialog.Builder builder =
+                            new AlertDialog.Builder(mContext);
+                        builder.setAdapter(adapter, adapter);
+                        builder.setCancelable(true);
+                        builder.setTitle(mContext.getString(
+                                R.string.external_drop_widget_pick_title));
+                        builder.setIcon(R.drawable.ic_no_applications);
+                        builder.show();
                     }
                 }
+                newDropCount++;
+                break;
             }
 
             // Show error message if we couldn't accept any of the items
             if (newDropCount <= 0) {
-                Toast.makeText(mContext, "Only Shortcut Intents accepted.",
+                Toast.makeText(mContext, mContext.getString(R.string.external_drop_widget_error),
                         Toast.LENGTH_SHORT).show();
             }
 

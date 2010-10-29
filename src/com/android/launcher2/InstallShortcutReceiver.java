@@ -29,6 +29,10 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     public static final String ACTION_INSTALL_SHORTCUT =
             "com.android.launcher.action.INSTALL_SHORTCUT";
 
+    // A mime-type representing shortcut data
+    public static final String SHORTCUT_MIMETYPE =
+            "com.android.launcher/shortcut";
+
     private final int[] mCoordinates = new int[2];
 
     public void onReceive(Context context, Intent data) {
