@@ -72,8 +72,6 @@
         <attr name="checkedBlurColor" format="color" />
         <!-- The checked outline color of the holographic outline -->
         <attr name="checkedOutlineColor" format="color" />
-        <!-- The scaled icon dimension -->
-        <attr name="scaledIconSize" format="dimension" />
     </declare-styleable>
 
     <!-- PagedViewWidgetIcon specific attributes. These attributes are used to

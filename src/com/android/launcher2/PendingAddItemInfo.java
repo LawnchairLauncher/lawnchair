@@ -17,6 +17,7 @@
 package com.android.launcher2;
 
 import android.content.ComponentName;
+import android.os.Parcelable;
 
 /**
  * We pass this object with a drag from the customization tray
@@ -31,4 +32,8 @@ class PendingAddItemInfo extends ItemInfo {
 class PendingAddWidgetInfo extends PendingAddItemInfo {
     int minWidth;
     int minHeight;
+
+    // Any configuration data that we want to pass to a configuration activity when
+    // starting up a widget
+    Parcelable configurationData;
 }

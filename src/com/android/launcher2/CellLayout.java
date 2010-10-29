@@ -85,6 +85,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
     private OnTouchListener mInterceptTouchListener;
 
     private float mBackgroundAlpha;
+    private float mBackgroundAlphaMultiplier = 1.0f;
 
     private Drawable mBackground;
     private Drawable mBackgroundMini;
@@ -348,7 +349,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
                 bg = mHover ? mBackgroundHover : mBackground;
             }
             if (bg != null) {
-                bg.setAlpha((int) (mBackgroundAlpha * 255));
+                bg.setAlpha((int) (mBackgroundAlpha * mBackgroundAlphaMultiplier * 255));
                 bg.setBounds(mBackgroundRect);
                 bg.draw(canvas);
             }
@@ -862,6 +863,10 @@ public class CellLayout extends ViewGroup implements Dimmable {
 
     public float getBackgroundAlpha() {
         return mBackgroundAlpha;
+    }
+
+    public void setBackgroundAlphaMultiplier(float multiplier) {
+        mBackgroundAlphaMultiplier = multiplier;
     }
 
     public void setBackgroundAlpha(float alpha) {

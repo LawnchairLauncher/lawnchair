@@ -21,5 +21,5 @@
 
     <!-- Width/height gap overrides for the workspace -->
     <dimen name="workspace_width_gap">16dp</dimen>
-    <dimen name="workspace_height_gap">0dp</dimen>
+    <dimen name="workspace_height_gap">5dp</dimen>
 </resources>

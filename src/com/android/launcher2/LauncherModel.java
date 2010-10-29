@@ -52,16 +52,6 @@ import android.os.RemoteException;
 import android.os.SystemClock;
 import android.util.Log;
 
-import java.lang.ref.WeakReference;
-import java.net.URISyntaxException;
-import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-
 import com.android.launcher.R;
 
 /**
@@ -1527,8 +1517,34 @@ public class LauncherModel extends BroadcastReceiver {
     boolean validateShortcutIntent(Intent data) {
         // We don't require Intent.EXTRA_SHORTCUT_ICON, since we can pull a default fallback icon
         return InstallShortcutReceiver.ACTION_INSTALL_SHORTCUT.equals(data.getAction()) &&
-                (data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT) != null) &&
-                (data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME) != null);
+                (data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME) != null) &&
+                (data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT) != null);
+    }
+
+    /**
+     * Ensures that a given widget intent actually has all the fields that we need to create a
+     * proper widget.
+     */
+    boolean validateWidgetIntent(Intent data) {
+        // We don't require Intent.EXTRA_APPWIDGET_CONFIGURATION_DATA, since that will just be
+        // forwarded onto the widget's configuration activity if it exists
+        return InstallWidgetReceiver.ACTION_INSTALL_WIDGET.equals(data.getAction()) &&
+                (data.getStringExtra(InstallWidgetReceiver.EXTRA_APPWIDGET_COMPONENT) != null);
+    }
+
+    /**
+     * Attempts to find an AppWidgetProviderInfo that matches the given component.
+     */
+    AppWidgetProviderInfo findAppWidgetProviderInfoWithComponent(Context context,
+            ComponentName component) {
+        List<AppWidgetProviderInfo> widgets =
+            AppWidgetManager.getInstance(context).getInstalledProviders();
+        for (AppWidgetProviderInfo info : widgets) {
+            if (info.provider.equals(component)) {
+                return info;
+            }
+        }
+        return null;
     }
 
     ShortcutInfo infoFromShortcutIntent(Context context, Intent data, Bitmap fallbackIcon) {

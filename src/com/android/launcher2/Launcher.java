@@ -992,8 +992,12 @@ public final class Launcher extends Activity
     View createShortcut(int layoutResId, ViewGroup parent, ShortcutInfo info) {
         TextView favorite = (TextView) mInflater.inflate(layoutResId, parent, false);
 
+        // Temporarily, we are scaling up all shortcuts on the workspace
+        int scaledSize = parent.getResources().getDimensionPixelSize(R.dimen.temp_scaled_icon_size);
+        Bitmap b = Bitmap.createScaledBitmap(info.getIcon(mIconCache), scaledSize, scaledSize, true);
+
         favorite.setCompoundDrawablesWithIntrinsicBounds(null,
-                new FastBitmapDrawable(info.getIcon(mIconCache)),
+                new FastBitmapDrawable(b),
                 null, null);
         favorite.setText(info.title);
         favorite.setTag(info);
@@ -1079,8 +1083,10 @@ public final class Launcher extends Activity
         // For now, we don't save the coordinate where we dropped the icon because we're not
         // supporting spring-loaded mini-screens; however, leaving the ability to directly place
         // a widget on the home screen in case we want to add it in the future
-        final int[] touchXY = null;
-        //final int[] touchXY = mAddDropPosition;
+        int[] touchXY = null;
+        if (mAddDropPosition[0] > -1 && mAddDropPosition[1] > -1) {
+            touchXY = mAddDropPosition;
+        }
         boolean findNearestVacantAreaFailed = false;
         boolean foundCellSpan = false;
         if (touchXY != null) {
@@ -1425,7 +1431,7 @@ public final class Launcher extends Activity
         mAddDropPosition = null;
     }
 
-    void addAppWidgetFromDrop(ComponentName appWidgetProvider, int screen, int[] position) {
+    void addAppWidgetFromDrop(PendingAddWidgetInfo info, int screen, int[] position) {
         resetAddInfo();
         mAddScreen = screen;
 
@@ -1433,8 +1439,8 @@ public final class Launcher extends Activity
         mAddDropPosition = position;
 
         int appWidgetId = getAppWidgetHost().allocateAppWidgetId();
-        AppWidgetManager.getInstance(this).bindAppWidgetId(appWidgetId, appWidgetProvider);
-        addAppWidgetImpl(appWidgetId);
+        AppWidgetManager.getInstance(this).bindAppWidgetId(appWidgetId, info.componentName);
+        addAppWidgetImpl(appWidgetId, info);
     }
 
     private void manageApps() {
@@ -1446,10 +1452,10 @@ public final class Launcher extends Activity
         int appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
         // TODO: Is this log message meaningful?
         if (LOGD) Log.d(TAG, "dumping extras content=" + data.getExtras());
-        addAppWidgetImpl(appWidgetId);
+        addAppWidgetImpl(appWidgetId, null);
     }
 
-    void addAppWidgetImpl(int appWidgetId) {
+    void addAppWidgetImpl(int appWidgetId, PendingAddWidgetInfo info) {
         AppWidgetProviderInfo appWidget = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
 
         if (appWidget.configure != null) {
@@ -1457,6 +1463,10 @@ public final class Launcher extends Activity
             Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
             intent.setComponent(appWidget.configure);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+            if (info != null) {
+                intent.putExtra(InstallWidgetReceiver.EXTRA_APPWIDGET_CONFIGURATION_DATA,
+                        info.configurationData);
+            }
 
             startActivityForResultSafely(intent, REQUEST_CREATE_APPWIDGET);
         } else {

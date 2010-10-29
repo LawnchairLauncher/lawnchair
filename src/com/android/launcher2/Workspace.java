@@ -39,7 +39,6 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -78,9 +77,9 @@ public class Workspace extends SmoothPagedView
 
     // These are extra scale factors to apply to the mini home screens
     // so as to achieve the desired transform
-    private static final float EXTRA_SCALE_FACTOR_0 = 0.97f;
+    private static final float EXTRA_SCALE_FACTOR_0 = 0.972f;
     private static final float EXTRA_SCALE_FACTOR_1 = 1.0f;
-    private static final float EXTRA_SCALE_FACTOR_2 = 1.08f;
+    private static final float EXTRA_SCALE_FACTOR_2 = 1.10f;
 
     private static final int BACKGROUND_FADE_OUT_DELAY = 300;
     private static final int BACKGROUND_FADE_OUT_DURATION = 300;
@@ -145,6 +144,7 @@ public class Workspace extends SmoothPagedView
     private ShrinkPosition mWaitingToShrinkPosition;
 
     private boolean mInScrollArea = false;
+    private boolean mInDragMode = false;
 
     private final HolographicOutlineHelper mOutlineHelper = new HolographicOutlineHelper();
     private Bitmap mDragOutline = null;
@@ -213,7 +213,6 @@ public class Workspace extends SmoothPagedView
                 mIsInUnshrinkAnimation = false;
             }
         };
-
         mSnapVelocity = 600;
     }
 
@@ -305,7 +304,6 @@ public class Workspace extends SmoothPagedView
                 }
             }
         }
-
         return folders;
     }
 
@@ -525,9 +523,9 @@ public class Workspace extends SmoothPagedView
     protected void screenScrolled(int screenCenter) {
         final int halfScreenSize = getMeasuredWidth() / 2;
         for (int i = 0; i < getChildCount(); i++) {
-            View v = getChildAt(i);
-            if (v != null) {
-                int totalDistance = v.getMeasuredWidth() + mPageSpacing;
+            CellLayout cl = (CellLayout) getChildAt(i);
+            if (cl != null) {
+                int totalDistance = cl.getMeasuredWidth() + mPageSpacing;
                 int delta = screenCenter - (getChildOffset(i) -
                         getRelativeChildOffset(i) + halfScreenSize);
 
@@ -535,8 +533,11 @@ public class Workspace extends SmoothPagedView
                 scrollProgress = Math.min(scrollProgress, 1.0f);
                 scrollProgress = Math.max(scrollProgress, -1.0f);
 
+                float mult =  mInDragMode ? 1.0f : Math.abs(scrollProgress);
+                cl.setBackgroundAlphaMultiplier(mult);
+
                 float rotation = WORKSPACE_ROTATION * scrollProgress;
-                v.setRotationY(rotation);
+                cl.setRotationY(rotation);
             }
         }
     }
@@ -712,6 +713,9 @@ public class Workspace extends SmoothPagedView
         // we intercept and reject all touch events when we're small, so be sure to reset the state
         mTouchState = TOUCH_STATE_REST;
         mActivePointerId = INVALID_POINTER;
+
+        CellLayout currentPage = (CellLayout) getChildAt(mCurrentPage);
+        currentPage.setBackgroundAlphaMultiplier(1.0f);
 
         final Resources res = getResources();
         final int screenWidth = getWidth();
@@ -1172,6 +1176,9 @@ public class Workspace extends SmoothPagedView
             mDragTargetLayout = getCurrentDropLayout();
             mDragTargetLayout.onDragEnter();
             showOutlines();
+            mInDragMode = true;
+            CellLayout cl = (CellLayout) getChildAt(mCurrentPage);
+            cl.setBackgroundAlphaMultiplier(1.0f);
         }
     }
 
@@ -1273,11 +1280,30 @@ public class Workspace extends SmoothPagedView
             final int itemCount = data.getItemCount();
             for (int i = 0; i < itemCount; ++i) {
                 final Intent intent = data.getItem(i).getIntent();
-                if (intent != null && model.validateShortcutIntent(intent)) {
-                    ShortcutInfo info = model.infoFromShortcutIntent(mContext, intent, data.
-                            getIcon());
-                    onDropExternal(x, y, info, layout);
-                    newDropCount++;
+                if (intent != null) {
+                    Object info = null;
+                    if (model.validateShortcutIntent(intent)) {
+                        info = model.infoFromShortcutIntent(mContext, intent, data.getIcon());
+                    } else if (model.validateWidgetIntent(intent)) {
+                        final ComponentName component = ComponentName.unflattenFromString(
+                            intent.getStringExtra(InstallWidgetReceiver.EXTRA_APPWIDGET_COMPONENT));
+                        final AppWidgetProviderInfo appInfo =
+                            model.findAppWidgetProviderInfoWithComponent(mContext, component);
+
+                        PendingAddWidgetInfo createInfo = new PendingAddWidgetInfo();
+                        createInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
+                        createInfo.componentName = appInfo.provider;
+                        createInfo.minWidth = appInfo.minWidth;
+                        createInfo.minHeight = appInfo.minHeight;
+                        createInfo.configurationData = intent.getParcelableExtra(
+                                InstallWidgetReceiver.EXTRA_APPWIDGET_CONFIGURATION_DATA);
+                        info = createInfo;
+                    }
+
+                    if (info != null) {
+                        onDropExternal(x, y, info, layout);
+                        newDropCount++;
+                    }
                 }
             }
 
@@ -1523,6 +1549,7 @@ public class Workspace extends SmoothPagedView
         }
         if (!mIsPageMoving) {
             hideOutlines();
+            mInDragMode = false;
         }
         clearAllHovers();
     }
@@ -1543,7 +1570,7 @@ public class Workspace extends SmoothPagedView
         ItemInfo info = (ItemInfo) dragInfo;
 
         if (cl.findCellForSpan(mTempEstimate, info.spanX, info.spanY)) {
-            onDropExternal(0, 0, dragInfo, cl, false);
+            onDropExternal(-1, -1, dragInfo, cl, false);
             return true;
         }
         mLauncher.showOutOfSpaceMessage();
@@ -1565,7 +1592,7 @@ public class Workspace extends SmoothPagedView
             touchXY[1] = y;
             switch (info.itemType) {
                 case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
-                    mLauncher.addAppWidgetFromDrop(info.componentName, screen, touchXY);
+                    mLauncher.addAppWidgetFromDrop((PendingAddWidgetInfo) info, screen, touchXY);
                     break;
                 case LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER:
                     mLauncher.addLiveFolderFromDrop(info.componentName, screen, touchXY);
