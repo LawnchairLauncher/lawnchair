@@ -1252,26 +1252,30 @@ public class Workspace extends SmoothPagedView
                         mDragInfo.spanX, mDragInfo.spanY, cell, mDragTargetLayout,
                         mTargetCell);
 
-                int screen = indexOfChild(mDragTargetLayout);
-                if (screen != mDragInfo.screen) {
-                    final CellLayout originalCellLayout = (CellLayout) getChildAt(mDragInfo.screen);
-                    originalCellLayout.removeView(cell);
-                    addInScreen(cell, screen, mTargetCell[0], mTargetCell[1],
-                            mDragInfo.spanX, mDragInfo.spanY);
+                if (mTargetCell == null) {
+                    mLauncher.showOutOfSpaceMessage();
+                } else {
+                    int screen = indexOfChild(mDragTargetLayout);
+                    if (screen != mDragInfo.screen) {
+                        // Reparent the view
+                        ((CellLayout) getChildAt(mDragInfo.screen)).removeView(cell);
+                        addInScreen(cell, screen, mTargetCell[0], mTargetCell[1],
+                                mDragInfo.spanX, mDragInfo.spanY);
+                    }
+
+                    // update the item's position after drop
+                    final ItemInfo info = (ItemInfo) cell.getTag();
+                    CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell.getLayoutParams();
+                    mDragTargetLayout.onMove(cell, mTargetCell[0], mTargetCell[1]);
+                    lp.cellX = mTargetCell[0];
+                    lp.cellY = mTargetCell[1];
+                    cell.setId(LauncherModel.getCellLayoutChildId(-1, mDragInfo.screen,
+                            mTargetCell[0], mTargetCell[1], mDragInfo.spanX, mDragInfo.spanY));
+
+                    LauncherModel.moveItemInDatabase(mLauncher, info,
+                            LauncherSettings.Favorites.CONTAINER_DESKTOP, screen,
+                            lp.cellX, lp.cellY);
                 }
-
-                // update the item's position after drop
-                final ItemInfo info = (ItemInfo) cell.getTag();
-                CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell.getLayoutParams();
-                mDragTargetLayout.onMove(cell, mTargetCell[0], mTargetCell[1]);
-                lp.cellX = mTargetCell[0];
-                lp.cellY = mTargetCell[1];
-                cell.setId(LauncherModel.getCellLayoutChildId(-1, mDragInfo.screen,
-                        mTargetCell[0], mTargetCell[1], mDragInfo.spanX, mDragInfo.spanY));
-
-                LauncherModel.moveItemInDatabase(mLauncher, info,
-                        LauncherSettings.Favorites.CONTAINER_DESKTOP, screen,
-                        lp.cellX, lp.cellY);
             }
 
             final CellLayout parent = (CellLayout) cell.getParent();
