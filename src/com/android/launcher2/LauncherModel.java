@@ -424,24 +424,41 @@ public class LauncherModel extends BroadcastReceiver {
             String[] packages = intent.getStringArrayExtra(Intent.EXTRA_CHANGED_PACKAGE_LIST);
             enqueuePackageUpdated(new PackageUpdatedTask(PackageUpdatedTask.OP_ADD, packages));
             // Then, rebind everything.
-            boolean runLoader = true;
-            if (mCallbacks != null) {
-                Callbacks callbacks = mCallbacks.get();
-                if (callbacks != null) {
-                    // If they're paused, we can skip loading, because they'll do it again anyway
-                    if (callbacks.setLoadOnResume()) {
-                        runLoader = false;
-                    }
-                }
-            }
-            if (runLoader) {
-                startLoader(mApp, false);
-            }
-
+            startLoaderFromBackground();
         } else if (Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE.equals(action)) {
             String[] packages = intent.getStringArrayExtra(Intent.EXTRA_CHANGED_PACKAGE_LIST);
             enqueuePackageUpdated(new PackageUpdatedTask(
                         PackageUpdatedTask.OP_UNAVAILABLE, packages));
+        } else if (Intent.ACTION_LOCALE_CHANGED.equals(action)) {
+            // If we have changed locale we need to clear out the labels in all apps.
+            // Do this here because if the launcher activity is running it will be restarted.
+            // If it's not running startLoaderFromBackground will merely tell it that it needs
+            // to reload.  Either way, mAllAppsLoaded will be cleared so it re-reads everything
+            // next time.
+            mAllAppsLoaded = false;
+            startLoaderFromBackground();
+        }
+    }
+
+    /**
+     * When the launcher is in the background, it's possible for it to miss paired
+     * configuration changes.  So whenever we trigger the loader from the background
+     * tell the launcher that it needs to re-run the loader when it comes back instead
+     * of doing it now.
+     */
+    public void startLoaderFromBackground() {
+        boolean runLoader = false;
+        if (mCallbacks != null) {
+            Callbacks callbacks = mCallbacks.get();
+            if (callbacks != null) {
+                // Only actually run the loader if they're not paused.
+                if (!callbacks.setLoadOnResume()) {
+                    runLoader = true;
+                }
+            }
+        }
+        if (runLoader) {
+            startLoader(mApp, false);
         }
     }
 
