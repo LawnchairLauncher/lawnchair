@@ -52,6 +52,7 @@ public class LauncherApplication extends Application {
         filter = new IntentFilter();
         filter.addAction(Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE);
         filter.addAction(Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE);
+        filter.addAction(Intent.ACTION_LOCALE_CHANGED);
         registerReceiver(mModel, filter);
 
         // Register for changes to the favorites
