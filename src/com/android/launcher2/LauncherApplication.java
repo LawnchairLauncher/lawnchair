@@ -38,10 +38,12 @@ public class LauncherApplication extends Application {
 
         super.onCreate();
 
-        mIconCache = new IconCache(this);
-        mModel = new LauncherModel(this, mIconCache);
+        // set sIsScreenXLarge and sScreenDensity *before* creating icon cache
         sIsScreenXLarge = (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE;
         sScreenDensity = getResources().getDisplayMetrics().density;
+
+        mIconCache = new IconCache(this);
+        mModel = new LauncherModel(this, mIconCache);
 
         // Register intent receivers
         IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);

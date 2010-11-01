@@ -993,12 +993,6 @@ public final class Launcher extends Activity
 
         Bitmap b = info.getIcon(mIconCache);
 
-        if (LauncherApplication.isScreenXLarge()) {
-            // Temporarily, we are scaling up all shortcuts on the workspace
-            int scaledSize = getResources().getDimensionPixelSize(R.dimen.temp_scaled_icon_size);
-            b = Bitmap.createScaledBitmap(b, scaledSize, scaledSize, true);
-        }
-
         favorite.setCompoundDrawablesWithIntrinsicBounds(null,
                 new FastBitmapDrawable(b),
                 null, null);
@@ -1552,7 +1546,8 @@ public final class Launcher extends Activity
 
         // Create the view
         FolderIcon newFolder = FolderIcon.fromXml(R.layout.folder_icon, this,
-                (ViewGroup) mWorkspace.getChildAt(mWorkspace.getCurrentPage()), folderInfo);
+                (ViewGroup) mWorkspace.getChildAt(mWorkspace.getCurrentPage()),
+                folderInfo, mIconCache);
         mWorkspace.addInScreen(newFolder, screen, cellXY[0], cellXY[1], 1, 1, isWorkspaceLocked());
     }
 
@@ -2987,7 +2982,7 @@ public final class Launcher extends Activity
                 case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
                     final FolderIcon newFolder = FolderIcon.fromXml(R.layout.folder_icon, this,
                             (ViewGroup) workspace.getChildAt(workspace.getCurrentPage()),
-                            (UserFolderInfo) item);
+                            (UserFolderInfo) item, mIconCache);
                     workspace.addInScreen(newFolder, item.screen, item.cellX, item.cellY, 1, 1,
                             false);
                     break;

@@ -32,6 +32,9 @@
          button cluster in landscape) -->
     <dimen name="half_status_bar_height">12dip</dimen>
 
+    <!-- Size of icons in workspace -->
+    <dimen name="app_icon_size">50dp</dimen>
+
     <!-- height & width of the drop rectangle for the trash icon -->
     <dimen name="delete_zone_size">70dip</dimen>
     

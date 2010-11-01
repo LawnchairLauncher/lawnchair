@@ -48,14 +48,14 @@ public class FolderIcon extends DimmableBubbleTextView implements DropTarget {
     }
 
     static FolderIcon fromXml(int resId, Launcher launcher, ViewGroup group,
-            UserFolderInfo folderInfo) {
+            UserFolderInfo folderInfo, IconCache iconCache) {
 
         FolderIcon icon = (FolderIcon) LayoutInflater.from(launcher).inflate(resId, group, false);
 
         final Resources resources = launcher.getResources();
-        Drawable d = resources.getDrawable(R.drawable.ic_launcher_folder);
+        Drawable d = iconCache.getFullResIcon(resources, R.drawable.ic_launcher_folder);
         icon.mCloseIcon = d;
-        icon.mOpenIcon = resources.getDrawable(R.drawable.ic_launcher_folder_open);
+        icon.mOpenIcon = iconCache.getFullResIcon(resources, R.drawable.ic_launcher_folder_open);
         icon.setCompoundDrawablesWithIntrinsicBounds(null, d, null, null);
         icon.setText(folderInfo.title);
         icon.setTag(folderInfo);
