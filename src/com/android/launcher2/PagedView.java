@@ -755,7 +755,9 @@ public abstract class PagedView extends ViewGroup {
                 // by a distant descendant, so use the mAllowLongPress flag to block
                 // everything
                 final View currentPage = getPageAt(mCurrentPage);
-                currentPage.cancelLongPress();
+                if (currentPage != null) {
+                    currentPage.cancelLongPress();
+                }
             }
         }
     }

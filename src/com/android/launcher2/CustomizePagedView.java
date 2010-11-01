@@ -144,7 +144,7 @@ public class CustomizePagedView extends PagedView
         Collections.sort(mApps, LauncherModel.APP_NAME_COMPARATOR);
 
         // Update the widgets/shortcuts to reflect changes in the set of available apps
-        update();
+        invalidatePageDataAndIconCache();
     }
 
     /**
@@ -170,7 +170,7 @@ public class CustomizePagedView extends PagedView
         addAppsWithoutInvalidate(list);
 
         // Update the widgets/shortcuts to reflect changes in the set of available apps
-        update();
+        invalidatePageDataAndIconCache();
     }
 
     /**
@@ -197,7 +197,7 @@ public class CustomizePagedView extends PagedView
         removeAppsWithoutInvalidate(list);
 
         // Update the widgets/shortcuts to reflect changes in the set of available apps
-        update();
+        invalidatePageDataAndIconCache();
     }
 
     /**
@@ -212,7 +212,7 @@ public class CustomizePagedView extends PagedView
         addAppsWithoutInvalidate(list);
 
         // Update the widgets/shortcuts to reflect changes in the set of available apps
-        update();
+        invalidatePageDataAndIconCache();
     }
 
     /**
@@ -231,8 +231,6 @@ public class CustomizePagedView extends PagedView
     }
 
     public void update() {
-        Context context = getContext();
-
         // get the list of widgets
         mWidgetList = AppWidgetManager.getInstance(mLauncher).getInstalledProviders();
         Collections.sort(mWidgetList, new Comparator<AppWidgetProviderInfo>() {
@@ -260,7 +258,11 @@ public class CustomizePagedView extends PagedView
         mWallpaperList = mPackageManager.queryIntentActivities(wallpapersIntent, 0);
         Collections.sort(mWallpaperList, resolveInfoComparator);
 
-        // reset the icon cache
+        invalidatePageDataAndIconCache();
+    }
+
+    private void invalidatePageDataAndIconCache() {
+        // Reset the icon cache
         mPageViewIconCache.clear();
 
         // Refresh all the tabs

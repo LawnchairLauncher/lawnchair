@@ -18,14 +18,13 @@ package com.android.launcher2;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.ActionMode;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -294,7 +293,22 @@ public class AllAppsPagedView extends PagedView
     }
 
     private void removeAppsWithoutInvalidate(ArrayList<ApplicationInfo> list) {
-        // loop through all the apps and remove apps that have the same component
+        // End the choice mode if any of the items in the list that are being removed are
+        // currently selected
+        ArrayList<Checkable> checkedList = getCheckedGrandchildren();
+        HashSet<ApplicationInfo> checkedAppInfos = new HashSet<ApplicationInfo>();
+        for (Checkable checked : checkedList) {
+            PagedViewIcon icon = (PagedViewIcon) checked;
+            checkedAppInfos.add((ApplicationInfo) icon.getTag());
+        }
+        for (ApplicationInfo info : list) {
+            if (checkedAppInfos.contains(info)) {
+                endChoiceMode();
+                break;
+            }
+        }
+
+        // Loop through all the apps and remove apps that have the same component
         final int length = list.size();
         for (int i = 0; i < length; ++i) {
             final ApplicationInfo info = list.get(i);
