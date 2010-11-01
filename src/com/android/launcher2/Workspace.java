@@ -164,6 +164,9 @@ public class Workspace extends SmoothPagedView
     // Paint used to draw external drop outline
     private final Paint mExternalDragOutlinePaint = new Paint();
 
+    /** Used to trigger an animation as soon as the workspace stops scrolling. */
+    private Animator mAnimOnPageEndMoving = null;
+
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -462,6 +465,12 @@ public class Workspace extends SmoothPagedView
         if (!mDragController.dragging()) {
             hideOutlines();
         }
+        // Check for an animation that's waiting to be started
+        if (mAnimOnPageEndMoving != null) {
+            mAnimOnPageEndMoving.start();
+            mAnimOnPageEndMoving = null;
+        }
+
         mPageMoving = false;
     }
 
@@ -594,6 +603,8 @@ public class Workspace extends SmoothPagedView
             super.dispatchDraw(canvas);
 
             if (mDropView != null) {
+                // We are animating an item that was just dropped on the home screen.
+                // Render its View in the current animation position.
                 canvas.save(Canvas.MATRIX_SAVE_FLAG);
                 final int xPos = mDropViewPos[0] - mDropView.getScrollX();
                 final int yPos = mDropViewPos[1] - mDropView.getScrollY();
@@ -1143,8 +1154,6 @@ public class Workspace extends SmoothPagedView
         final CellLayout parent = (CellLayout) view.getParent();
         final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
 
-        mDropView = view;
-
         // Convert the animation params to be relative to the Workspace, not the CellLayout
         final int fromX = lp.oldX + parent.getLeft();
         final int fromY = lp.oldY + parent.getTop();
@@ -1156,18 +1165,21 @@ public class Workspace extends SmoothPagedView
         final float dist = (float) Math.sqrt(dx*dx + dy*dy);
         final Resources res = getResources();
         final float maxDist = (float) res.getInteger(R.integer.config_dropAnimMaxDist);
-        final int duration = (int) (res.getInteger(R.integer.config_dropAnimMaxDuration)
-                * mQuintEaseOutInterpolator.getInterpolation(dist / maxDist));
+        int duration = res.getInteger(R.integer.config_dropAnimMaxDuration);
+        if (dist < maxDist) {
+            duration *= mQuintEaseOutInterpolator.getInterpolation(dist / maxDist);
+        }
 
         // Lazy initialize the animation
         if (mDropAnim == null) {
             mDropAnim = new ValueAnimator();
             mDropAnim.setInterpolator(mQuintEaseOutInterpolator);
 
-            // Make the view invisible during the animation; we'll render it manually.
+            // The view is invisible during the animation; we render it manually.
             mDropAnim.addListener(new AnimatorListenerAdapter() {
                 public void onAnimationStart(Animator animation) {
-                    mDropView.setVisibility(View.INVISIBLE);
+                    // Set this here so that we don't render it until the animation begins
+                    mDropView = view;
                 }
 
                 public void onAnimationEnd(Animator animation) {
@@ -1180,6 +1192,7 @@ public class Workspace extends SmoothPagedView
         } else {
             mDropAnim.end(); // Make sure it's not already running
         }
+
         mDropAnim.setDuration(duration);
         mDropAnim.setFloatValues(0.0f, 1.0f);
         mDropAnim.removeAllUpdateListeners();
@@ -1196,7 +1209,15 @@ public class Workspace extends SmoothPagedView
                         mDropViewPos[0] + view.getWidth(), mDropViewPos[1] + view.getHeight());
             }
         });
-        mDropAnim.start();
+
+
+        view.setVisibility(View.INVISIBLE);
+
+        if (!mScroller.isFinished()) {
+            mAnimOnPageEndMoving = mDropAnim;
+        } else {
+            mDropAnim.start();
+        }
     }
 
     /**
@@ -1253,7 +1274,7 @@ public class Workspace extends SmoothPagedView
                         mTargetCell);
 
                 if (mTargetCell == null) {
-                    mLauncher.showOutOfSpaceMessage();
+                    snapToPage(mDragInfo.screen);
                 } else {
                     int screen = indexOfChild(mDragTargetLayout);
                     if (screen != mDragInfo.screen) {
