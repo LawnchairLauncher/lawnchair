@@ -16,15 +16,17 @@
 
 package com.android.launcher2;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import com.android.launcher.R;
 
 import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.animation.TimeInterpolator;
+import android.animation.ValueAnimator;
+import android.animation.Animator.AnimatorListener;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -53,10 +55,12 @@ import android.util.Log;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.launcher.R;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -142,6 +146,7 @@ public class Workspace extends SmoothPagedView
     private ShrinkPosition mShrunkenState;
     private boolean mWaitingToShrink = false;
     private ShrinkPosition mWaitingToShrinkPosition;
+    private AnimatorSet mAnimator;
 
     private boolean mInScrollArea = false;
     private boolean mInDragMode = false;
@@ -150,6 +155,11 @@ public class Workspace extends SmoothPagedView
     private Bitmap mDragOutline = null;
     private final Rect mTempRect = new Rect();
     private final int[] mTempXY = new int[2];
+
+    private ValueAnimator mDropAnim = null;
+    private TimeInterpolator mQuintEaseOutInterpolator = new DecelerateInterpolator(2.5f);
+    private View mDropView = null;
+    private int[] mDropViewPos = new int[] { -1, -1 };
 
     // Paint used to draw external drop outline
     private final Paint mExternalDragOutlinePaint = new Paint();
@@ -204,12 +214,15 @@ public class Workspace extends SmoothPagedView
         LauncherApplication app = (LauncherApplication)context.getApplicationContext();
         mIconCache = app.getIconCache();
         mExternalDragOutlinePaint.setAntiAlias(true);
+        setWillNotDraw(false);
 
-        mUnshrinkAnimationListener = new AnimatorListenerAdapter() {
+        mUnshrinkAnimationListener = new LauncherAnimatorListenerAdapter() {
+            @Override
             public void onAnimationStart(Animator animation) {
                 mIsInUnshrinkAnimation = true;
             }
-            public void onAnimationEnd(Animator animation) {
+            @Override
+            public void onAnimationEndOrCancel(Animator animation) {
                 mIsInUnshrinkAnimation = false;
             }
         };
@@ -579,6 +592,15 @@ public class Workspace extends SmoothPagedView
             }
         } else {
             super.dispatchDraw(canvas);
+
+            if (mDropView != null) {
+                canvas.save(Canvas.MATRIX_SAVE_FLAG);
+                final int xPos = mDropViewPos[0] - mDropView.getScrollX();
+                final int yPos = mDropViewPos[1] - mDropView.getScrollY();
+                canvas.translate(xPos, yPos);
+                mDropView.draw(canvas);
+                canvas.restore();
+            }
         }
     }
 
@@ -707,7 +729,7 @@ public class Workspace extends SmoothPagedView
         mShrunkenState = shrinkPosition;
 
         // Stop any scrolling, move to the current page right away
-        setCurrentPage(mCurrentPage);
+        setCurrentPage((mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage);
         updateWhichPagesAcceptDrops(mShrunkenState);
 
         // we intercept and reject all touch events when we're small, so be sure to reset the state
@@ -766,6 +788,11 @@ public class Workspace extends SmoothPagedView
         // of the views accordingly
         newX -= (pageWidth - scaledPageWidth) / 2.0f;
         newY -= (pageHeight - scaledPageHeight) / 2.0f;
+
+        if (mAnimator != null) {
+            mAnimator.cancel();
+        }
+        mAnimator = new AnimatorSet();
         for (int i = 0; i < screenCount; i++) {
             CellLayout cl = (CellLayout) getChildAt(i);
 
@@ -786,7 +813,7 @@ public class Workspace extends SmoothPagedView
                         PropertyValuesHolder.ofFloat("alpha", finalAlpha),
                         PropertyValuesHolder.ofFloat("rotationY", rotation));
                 anim.setDuration(duration);
-                anim.start();
+                mAnimator.playTogether(anim);
             } else {
                 cl.setX((int)newX);
                 cl.setY((int)newY);
@@ -798,6 +825,9 @@ public class Workspace extends SmoothPagedView
             }
             // increment newX for the next screen
             newX += scaledPageWidth + extraScaledSpacing;
+        }
+        if (animated) {
+            mAnimator.start();
         }
         setChildrenDrawnWithCacheEnabled(true);
     }
@@ -910,7 +940,10 @@ public class Workspace extends SmoothPagedView
     void unshrink(boolean animated) {
         if (mIsSmall) {
             mIsSmall = false;
-            AnimatorSet s = new AnimatorSet();
+            if (mAnimator != null) {
+                mAnimator.cancel();
+            }
+            mAnimator = new AnimatorSet();
             final int screenCount = getChildCount();
 
             final int duration = getResources().getInteger(R.integer.config_workspaceUnshrinkTime);
@@ -926,8 +959,7 @@ public class Workspace extends SmoothPagedView
                 }
 
                 if (animated) {
-
-                    s.playTogether(
+                    mAnimator.playTogether(
                             ObjectAnimator.ofFloat(cl, "translationX", 0.0f).setDuration(duration),
                             ObjectAnimator.ofFloat(cl, "translationY", 0.0f).setDuration(duration),
                             ObjectAnimator.ofFloat(cl, "scaleX", 1.0f).setDuration(duration),
@@ -948,8 +980,8 @@ public class Workspace extends SmoothPagedView
             if (animated) {
                 // If we call this when we're not animated, onAnimationEnd is never called on
                 // the listener; make sure we only use the listener when we're actually animating
-                s.addListener(mUnshrinkAnimationListener);
-                s.start();
+                mAnimator.addListener(mUnshrinkAnimationListener);
+                mAnimator.start();
             }
         }
     }
@@ -1052,6 +1084,7 @@ public class Workspace extends SmoothPagedView
         CellLayout current = getCurrentDropLayout();
 
         current.onDragChild(child);
+        child.setVisibility(View.GONE);
 
         child.clearFocus();
         child.setPressed(false);
@@ -1100,10 +1133,98 @@ public class Workspace extends SmoothPagedView
         viewX -= getResources().getInteger(R.integer.config_dragViewOffsetX);
         viewY -= getResources().getInteger(R.integer.config_dragViewOffsetY);
 
-        // Set its old pos (in the new parent's coordinates); the CellLayout will
-        // animate it from this position during the next layout pass
+        // Set its old pos (in the new parent's coordinates); it will be animated
+        // in animateViewIntoPosition after the next layout pass
         lp.oldX = viewX - (parent.getLeft() - mScrollX);
         lp.oldY = viewY - (parent.getTop() - mScrollY);
+    }
+
+    public void animateViewIntoPosition(final View view) {
+        final CellLayout parent = (CellLayout) view.getParent();
+        final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
+
+        mDropView = view;
+
+        // Convert the animation params to be relative to the Workspace, not the CellLayout
+        final int fromX = lp.oldX + parent.getLeft();
+        final int fromY = lp.oldY + parent.getTop();
+
+        final int dx = lp.x - lp.oldX;
+        final int dy = lp.y - lp.oldY;
+
+        // Calculate the duration of the animation based on the object's distance
+        final float dist = (float) Math.sqrt(dx*dx + dy*dy);
+        final Resources res = getResources();
+        final float maxDist = (float) res.getInteger(R.integer.config_dropAnimMaxDist);
+        final int duration = (int) (res.getInteger(R.integer.config_dropAnimMaxDuration)
+                * mQuintEaseOutInterpolator.getInterpolation(dist / maxDist));
+
+        // Lazy initialize the animation
+        if (mDropAnim == null) {
+            mDropAnim = new ValueAnimator();
+            mDropAnim.setInterpolator(mQuintEaseOutInterpolator);
+
+            // Make the view invisible during the animation; we'll render it manually.
+            mDropAnim.addListener(new AnimatorListenerAdapter() {
+                public void onAnimationStart(Animator animation) {
+                    mDropView.setVisibility(View.INVISIBLE);
+                }
+
+                public void onAnimationEnd(Animator animation) {
+                    if (mDropView != null) {
+                        mDropView.setVisibility(View.VISIBLE);
+                        mDropView = null;
+                    }
+                }
+            });
+        } else {
+            mDropAnim.end(); // Make sure it's not already running
+        }
+        mDropAnim.setDuration(duration);
+        mDropAnim.setFloatValues(0.0f, 1.0f);
+        mDropAnim.removeAllUpdateListeners();
+        mDropAnim.addUpdateListener(new AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                final float percent = (Float) animation.getAnimatedValue();
+                // Invalidate the old position
+                invalidate(mDropViewPos[0], mDropViewPos[1],
+                        mDropViewPos[0] + view.getWidth(), mDropViewPos[1] + view.getHeight());
+
+                mDropViewPos[0] = fromX + (int) (percent * dx + 0.5f);
+                mDropViewPos[1] = fromY + (int) (percent * dy + 0.5f);
+                invalidate(mDropViewPos[0], mDropViewPos[1],
+                        mDropViewPos[0] + view.getWidth(), mDropViewPos[1] + view.getHeight());
+            }
+        });
+        mDropAnim.start();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean acceptDrop(DragSource source, int x, int y,
+            int xOffset, int yOffset, DragView dragView, Object dragInfo) {
+
+        // If it's an external drop (e.g. from All Apps), check if it should be accepted
+        if (source != this) {
+            // Don't accept the drop if we're not over a screen at time of drop
+            if (mDragTargetLayout == null) {
+                return false;
+            }
+
+            final CellLayout.CellInfo dragCellInfo = mDragInfo;
+            final int spanX = dragCellInfo == null ? 1 : dragCellInfo.spanX;
+            final int spanY = dragCellInfo == null ? 1 : dragCellInfo.spanY;
+
+            final View ignoreView = dragCellInfo == null ? null : dragCellInfo.cell;
+
+            // Don't accept the drop if there's no room for the item
+            if (!mDragTargetLayout.findCellForSpanIgnoring(null, spanX, spanY, ignoreView)) {
+                mLauncher.showOutOfSpaceMessage();
+                return false;
+            }
+        }
+        return true;
     }
 
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
@@ -1111,16 +1232,6 @@ public class Workspace extends SmoothPagedView
 
         int originX = x - xOffset;
         int originY = y - yOffset;
-
-        if (mDragTargetLayout == null) {
-            // Cancel the drag if we're not over a screen at time of drop
-            if (mDragInfo != null) {
-                // Set its position so the parent can animate it back
-                final View parent = getChildAt(mDragInfo.screen);
-                setPositionForDropAnimation(dragView, originX, originY, parent, mDragInfo.cell);
-            }
-            return;
-        }
 
         if (mIsSmall || mIsInUnshrinkAnimation) {
             // get originX and originY in the local coordinate system of the screen
@@ -1134,37 +1245,45 @@ public class Workspace extends SmoothPagedView
         if (source != this) {
             onDropExternal(originX, originY, dragInfo, mDragTargetLayout);
         } else if (mDragInfo != null) {
-            // Move internally
             final View cell = mDragInfo.cell;
-            mTargetCell = findNearestVacantArea(originX, originY,
-                    mDragInfo.spanX, mDragInfo.spanY, cell, mDragTargetLayout,
-                    mTargetCell);
+            if (mDragTargetLayout != null) {
+                // Move internally
+                mTargetCell = findNearestVacantArea(originX, originY,
+                        mDragInfo.spanX, mDragInfo.spanY, cell, mDragTargetLayout,
+                        mTargetCell);
 
-            int screen = indexOfChild(mDragTargetLayout);
-            if (screen != mDragInfo.screen) {
-                final CellLayout originalCellLayout = (CellLayout) getChildAt(mDragInfo.screen);
-                originalCellLayout.removeView(cell);
-                addInScreen(cell, screen, mTargetCell[0], mTargetCell[1],
-                        mDragInfo.spanX, mDragInfo.spanY);
+                if (mTargetCell == null) {
+                    mLauncher.showOutOfSpaceMessage();
+                } else {
+                    int screen = indexOfChild(mDragTargetLayout);
+                    if (screen != mDragInfo.screen) {
+                        // Reparent the view
+                        ((CellLayout) getChildAt(mDragInfo.screen)).removeView(cell);
+                        addInScreen(cell, screen, mTargetCell[0], mTargetCell[1],
+                                mDragInfo.spanX, mDragInfo.spanY);
+                    }
+
+                    // update the item's position after drop
+                    final ItemInfo info = (ItemInfo) cell.getTag();
+                    CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell.getLayoutParams();
+                    mDragTargetLayout.onMove(cell, mTargetCell[0], mTargetCell[1]);
+                    lp.cellX = mTargetCell[0];
+                    lp.cellY = mTargetCell[1];
+                    cell.setId(LauncherModel.getCellLayoutChildId(-1, mDragInfo.screen,
+                            mTargetCell[0], mTargetCell[1], mDragInfo.spanX, mDragInfo.spanY));
+
+                    LauncherModel.moveItemInDatabase(mLauncher, info,
+                            LauncherSettings.Favorites.CONTAINER_DESKTOP, screen,
+                            lp.cellX, lp.cellY);
+                }
             }
-            mDragTargetLayout.onDropChild(cell);
 
-            // update the item's position after drop
-            final ItemInfo info = (ItemInfo) cell.getTag();
-            CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell.getLayoutParams();
-            mDragTargetLayout.onMove(cell, mTargetCell[0], mTargetCell[1]);
-            lp.cellX = mTargetCell[0];
-            lp.cellY = mTargetCell[1];
-            cell.setId(LauncherModel.getCellLayoutChildId(-1, mDragInfo.screen,
-                    mTargetCell[0], mTargetCell[1], mDragInfo.spanX, mDragInfo.spanY));
-
-            LauncherModel.moveItemInDatabase(mLauncher, info,
-                    LauncherSettings.Favorites.CONTAINER_DESKTOP, screen,
-                    lp.cellX, lp.cellY);
+            final CellLayout parent = (CellLayout) cell.getParent();
 
             // Prepare it to be animated into its new position
             // This must be called after the view has been re-parented
-            setPositionForDropAnimation(dragView, originX, originY, mDragTargetLayout, cell);
+            setPositionForDropAnimation(dragView, originX, originY, parent, cell);
+            parent.onDropChild(cell);
         }
     }
 
@@ -1670,30 +1789,6 @@ public class Workspace extends SmoothPagedView
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public boolean acceptDrop(DragSource source, int x, int y,
-            int xOffset, int yOffset, DragView dragView, Object dragInfo) {
-        if (mDragTargetLayout == null) {
-            // cancel the drag if we're not over a screen at time of drop
-            return false;
-        }
-
-        final CellLayout.CellInfo dragCellInfo = mDragInfo;
-        final int spanX = dragCellInfo == null ? 1 : dragCellInfo.spanX;
-        final int spanY = dragCellInfo == null ? 1 : dragCellInfo.spanY;
-
-        final View ignoreView = dragCellInfo == null ? null : dragCellInfo.cell;
-
-        if (mDragTargetLayout.findCellForSpanIgnoring(null, spanX, spanY, ignoreView)) {
-            return true;
-        } else {
-            mLauncher.showOutOfSpaceMessage();
-            return false;
-        }
-    }
-
-    /**
      * Calculate the nearest cell where the given object would be dropped.
      */
     private int[] findNearestVacantArea(int pixelX, int pixelY,
@@ -1733,7 +1828,7 @@ public class Workspace extends SmoothPagedView
                 // final Object tag = mDragInfo.cell.getTag();
             }
         } else if (mDragInfo != null) {
-            ((CellLayout) getChildAt(mDragInfo.screen)).onDropAborted(mDragInfo.cell);
+            ((CellLayout) getChildAt(mDragInfo.screen)).onDropChild(mDragInfo.cell);
         }
 
         mDragOutline = null;

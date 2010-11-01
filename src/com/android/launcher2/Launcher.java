@@ -21,7 +21,6 @@ import com.android.common.Search;
 import com.android.launcher.R;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
@@ -41,12 +40,12 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.Intent.ShortcutIconResource;
 import android.content.IntentFilter;
+import android.content.Intent.ShortcutIconResource;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -79,9 +78,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.View.OnLongClickListener;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
@@ -90,10 +89,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TabHost;
-import android.widget.TabHost.OnTabChangeListener;
-import android.widget.TabHost.TabContentFactory;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.TabHost.OnTabChangeListener;
+import android.widget.TabHost.TabContentFactory;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -303,9 +302,9 @@ public final class Launcher extends Activity
                     ValueAnimator alphaAnim = ObjectAnimator.ofFloat(mCustomizePagedView,
                             "alpha", alpha, 0.0f);
                     alphaAnim.setDuration(duration);
-                    alphaAnim.addListener(new AnimatorListenerAdapter() {
+                    alphaAnim.addListener(new LauncherAnimatorListenerAdapter() {
                         @Override
-                        public void onAnimationEnd(Animator animation) {
+                        public void onAnimationEndOrCancel(Animator animation) {
                             String tag = mHomeCustomizationDrawer.getCurrentTabTag();
                             if (tag == WIDGETS_TAG) {
                                 mCustomizePagedView.setCustomizationFilter(
@@ -2295,13 +2294,13 @@ public final class Launcher extends Activity
         if (seq != null) {
             Animator anim = ObjectAnimator.ofFloat(view, "alpha", show ? 1.0f : 0.0f);
             anim.setDuration(duration);
-            anim.addListener(new AnimatorListenerAdapter() {
+            anim.addListener(new LauncherAnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
                     if (showing) showToolbarButton(view);
                 }
                 @Override
-                public void onAnimationEnd(Animator animation) {
+                public void onAnimationEndOrCancel(Animator animation) {
                     if (hiding) hideToolbarButton(view);
                 }
             });
@@ -2388,7 +2387,7 @@ public final class Launcher extends Activity
 
         setPivotsForZoom(toView, toState, scale);
 
-        if (toState == State.ALL_APPS) {
+        if (toAllApps) {
             mWorkspace.shrinkToBottom(animated);
         } else {
             mWorkspace.shrinkToTop(animated);
@@ -2400,13 +2399,21 @@ public final class Launcher extends Activity
                     PropertyValuesHolder.ofFloat("scaleY", scale, 1.0f));
             scaleAnim.setDuration(duration);
             scaleAnim.setInterpolator(new DecelerateInterpolator());
-            scaleAnim.addListener(new AnimatorListenerAdapter() {
+            scaleAnim.addListener(new LauncherAnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
                     // Prepare the position
                     toView.setTranslationX(0.0f);
                     toView.setTranslationY(0.0f);
                     toView.setVisibility(View.VISIBLE);
+                }
+                @Override
+                public void onAnimationEndOrCancel(Animator animation) {
+                    // If we don't set the final scale values here, if this animation is cancelled
+                    // it will have the wrong scale value and subsequent cameraPan animations will
+                    // not fix that
+                    toView.setScaleX(1.0f);
+                    toView.setScaleY(1.0f);
                 }
             });
 
@@ -2464,12 +2471,10 @@ public final class Launcher extends Activity
                     PropertyValuesHolder.ofFloat("scaleY", scaleFactor));
             scaleAnim.setDuration(duration);
             scaleAnim.setInterpolator(new AccelerateInterpolator());
-            mStateAnimation.addListener(new AnimatorListenerAdapter() {
+            mStateAnimation.addListener(new LauncherAnimatorListenerAdapter() {
                 @Override
-                public void onAnimationEnd(Animator animation) {
+                public void onAnimationEndOrCancel(Animator animation) {
                     fromView.setVisibility(View.GONE);
-                    fromView.setScaleX(1.0f);
-                    fromView.setScaleY(1.0f);
                 }
             });
 
@@ -2524,14 +2529,14 @@ public final class Launcher extends Activity
         if (animated) {
             if (mStateAnimation != null) mStateAnimation.cancel();
             mStateAnimation = new AnimatorSet();
-            mStateAnimation.addListener(new AnimatorListenerAdapter() {
+            mStateAnimation.addListener(new LauncherAnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
                     toView.setVisibility(View.VISIBLE);
                     toView.setY(toViewStartY);
                 }
                 @Override
-                public void onAnimationEnd(Animator animation) {
+                public void onAnimationEndOrCancel(Animator animation) {
                     fromView.setVisibility(View.GONE);
                 }
             });
@@ -2543,8 +2548,11 @@ public final class Launcher extends Activity
             ObjectAnimator fromAnim = ObjectAnimator.ofFloat(fromView, "y",
                     fromViewStartY, fromViewEndY);
             fromAnim.setDuration(duration);
-            ObjectAnimator toAnim = ObjectAnimator.ofFloat(toView, "y",
-                    toViewStartY, toViewEndY);
+            ObjectAnimator toAnim = ObjectAnimator.ofPropertyValuesHolder(toView,
+                    PropertyValuesHolder.ofFloat("y", toViewStartY, toViewEndY),
+                    PropertyValuesHolder.ofFloat("scaleX", toView.getScaleX(), 1.0f),
+                    PropertyValuesHolder.ofFloat("scaleY", toView.getScaleY(), 1.0f)
+                    );
             fromAnim.setDuration(duration);
             mStateAnimation.playTogether(toolbarHideAnim, fromAnim, toAnim);
 
@@ -2556,6 +2564,8 @@ public final class Launcher extends Activity
             fromView.setY(fromViewEndY);
             fromView.setVisibility(View.GONE);
             toView.setY(toViewEndY);
+            toView.setScaleX(1.0f);
+            toView.setScaleY(1.0f);
             toView.setVisibility(View.VISIBLE);
             hideAndShowToolbarButtons(toState, null, null);
         }

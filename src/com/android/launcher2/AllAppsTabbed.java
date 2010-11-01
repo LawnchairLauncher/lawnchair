@@ -19,7 +19,6 @@ package com.android.launcher2;
 import com.android.launcher.R;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -81,9 +80,9 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
                 final float alpha = mAllApps.getAlpha();
                 ValueAnimator alphaAnim = ObjectAnimator.ofFloat(mAllApps, "alpha", alpha, 0.0f).
                         setDuration(duration);
-                alphaAnim.addListener(new AnimatorListenerAdapter() {
+                alphaAnim.addListener(new LauncherAnimatorListenerAdapter() {
                     @Override
-                    public void onAnimationEnd(Animator animation) {
+                    public void onAnimationEndOrCancel(Animator animation) {
                         String tag = getCurrentTabTag();
                         if (tag == TAG_ALL) {
                             mAllApps.setAppFilter(AllAppsPagedView.ALL_APPS_FLAG);

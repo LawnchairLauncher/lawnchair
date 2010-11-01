@@ -16,7 +16,7 @@
 
 package com.android.launcher2;
 
-import java.util.Arrays;
+import com.android.launcher.R;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -26,7 +26,6 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.WallpaperManager;
-import android.content.ClipDescription;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -42,7 +41,6 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
@@ -51,7 +49,7 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LayoutAnimationController;
 
-import com.android.launcher.R;
+import java.util.Arrays;
 
 public class CellLayout extends ViewGroup implements Dimmable {
     static final String TAG = "CellLayout";
@@ -125,7 +123,6 @@ public class CellLayout extends ViewGroup implements Dimmable {
 
     private boolean mDragging = false;
 
-    private ValueAnimator mDropAnim;
     private TimeInterpolator mEaseOutInterpolator;
 
     public CellLayout(Context context) {
@@ -246,6 +243,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
             // The animation holds a reference to the drag outline bitmap as long is it's
             // running. This way the bitmap can be GCed when the animations are complete.
             anim.getAnimator().addListener(new AnimatorListenerAdapter() {
+                @Override
                 public void onAnimationEnd(Animator animation) {
                     if ((Float) ((ValueAnimator) animation).getAnimatedValue() == 0f) {
                         anim.setTag(null);
@@ -254,9 +252,6 @@ public class CellLayout extends ViewGroup implements Dimmable {
             });
             mDragOutlineAnims[i] = anim;
         }
-
-        mDropAnim = ValueAnimator.ofFloat(1.0f, 0.0f);
-        mDropAnim.setInterpolator(mEaseOutInterpolator);
 
         mBackgroundRect = new Rect();
         mHoverRect = new Rect();
@@ -309,11 +304,13 @@ public class CellLayout extends ViewGroup implements Dimmable {
             AnimatorSet bouncer = new AnimatorSet();
             bouncer.play(scaleUp).before(scaleDown);
             bouncer.play(scaleUp).with(alphaFadeOut);
-            bouncer.addListener(new AnimatorListenerAdapter() {
+            bouncer.addListener(new LauncherAnimatorListenerAdapter() {
+                @Override
                 public void onAnimationStart(Animator animation) {
                     setHover(true);
                 }
-                public void onAnimationEnd(Animator animation) {
+                @Override
+                public void onAnimationEndOrCancel(Animator animation) {
                     setHover(false);
                     setHoverScale(1.0f);
                     setHoverAlpha(1.0f);
@@ -776,37 +773,6 @@ public class CellLayout extends ViewGroup implements Dimmable {
         }
     }
 
-    /**
-     * Animate a child of this CellLayout into its current layout position.
-     * The position to animate from is given by the oldX and oldY values in its LayoutParams.
-     */
-    private void animateChildIntoPosition(final View child) {
-        final Resources res = getResources();
-        final ValueAnimator anim = mDropAnim;
-        final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
-        final float startX = lp.oldX - lp.x;
-        final float startY = lp.oldY - lp.y;
-
-        // Calculate the duration of the animation based on the object's distance
-        final float dist = (float) Math.sqrt(startX*startX + startY*startY);
-        final float maxDist = (float) res.getInteger(R.integer.config_dropAnimMaxDist);
-        final int duration = (int) (res.getInteger(R.integer.config_dropAnimMaxDuration)
-                * mEaseOutInterpolator.getInterpolation(dist / maxDist));
-
-        anim.end(); // Make sure it's not already running
-        anim.setDuration(duration);
-        anim.setFloatValues(1.0f, 0.0f);
-        anim.removeAllUpdateListeners();
-        anim.addUpdateListener(new AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
-                final float value = (Float) anim.getAnimatedValue();
-                child.setTranslationX(startX * value);
-                child.setTranslationY(startY * value);
-            }
-        });
-        anim.start();
-    }
-
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int count = getChildCount();
@@ -830,7 +796,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
                             cellXY[0] + childLeft + lp.width / 2,
                             cellXY[1] + childTop + lp.height / 2, 0, null);
 
-                    animateChildIntoPosition(child);
+                    ((Workspace) mParent).animateViewIntoPosition(child);
                 }
             }
         }
@@ -1256,15 +1222,6 @@ public class CellLayout extends ViewGroup implements Dimmable {
             lp.dropped = true;
             child.setVisibility(View.VISIBLE);
             child.requestLayout();
-        }
-    }
-
-    void onDropAborted(View child) {
-        if (child != null) {
-            LayoutParams lp = (LayoutParams) child.getLayoutParams();
-            lp.isDragging = false;
-            child.setVisibility(View.VISIBLE);
-            animateChildIntoPosition(child);
         }
     }
 
