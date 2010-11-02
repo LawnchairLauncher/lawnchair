@@ -26,15 +26,7 @@
     android:id="@+id/customize_icon"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
-    android:paddingTop="2dip"
+    android:singleLine="false"
+    android:maxLines="1"
 
-    android:textColor="#FFFFFFFF"
-    android:textSize="14sp"
-    android:shadowColor="#FF000000"
-    android:shadowDx="0.0"
-    android:shadowDy="1.0"
-    android:shadowRadius="1.0"
-
-    android:maxLines="2"
-    android:fadingEdge="horizontal" />
+    style="@style/WorkspaceIcon.Landscape" />

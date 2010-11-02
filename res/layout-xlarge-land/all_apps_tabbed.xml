@@ -22,9 +22,10 @@
         android:layout_height="match_parent">
         <TabWidget
             android:id="@android:id/tabs"
-            android:layout_width="wrap_content"
+            android:layout_width="952dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:background="@drawable/tab_unselected_holo"
             android:tabStripEnabled="false" />
         <FrameLayout
             android:id="@android:id/tabcontent"
@@ -38,7 +39,7 @@
                 launcher:cellCountY="5"
                 launcher:pageLayoutWidthGap="36dp"
                 launcher:pageLayoutHeightGap="6dp"
-                launcher:pageLayoutPaddingTop="0dp"
+                launcher:pageLayoutPaddingTop="15dp"
                 launcher:pageLayoutPaddingBottom="15dp"
                 launcher:pageLayoutPaddingLeft="40dp"
                 launcher:pageLayoutPaddingRight="40dp">

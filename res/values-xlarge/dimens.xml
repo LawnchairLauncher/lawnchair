@@ -39,7 +39,7 @@
 
     <!-- Vertical spacing between edge of screen and mini cell layouts when they
          are minimized to the top when the customization drawer is showing -->
-    <dimen name="customizeSmallScreenVerticalMarginLandscape">70dip</dimen>
+    <dimen name="customizeSmallScreenVerticalMarginLandscape">90dip</dimen>
     <dimen name="customizeSmallScreenVerticalMarginPortrait">180dip</dimen>
 
     <dimen name="toolbar_padding">10dip</dimen>

@@ -33,6 +33,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
@@ -130,6 +131,12 @@ public class CustomizePagedView extends PagedView
         setupWorkspaceLayout();
     }
 
+    @Override
+    protected void init() {
+        super.init();
+        mCenterPagesVertically = false;
+    }
+
     public void setLauncher(Launcher launcher) {
         Context context = getContext();
         mLauncher = launcher;
@@ -144,7 +151,7 @@ public class CustomizePagedView extends PagedView
         Collections.sort(mApps, LauncherModel.APP_NAME_COMPARATOR);
 
         // Update the widgets/shortcuts to reflect changes in the set of available apps
-        update();
+        invalidatePageDataAndIconCache();
     }
 
     /**
@@ -170,7 +177,7 @@ public class CustomizePagedView extends PagedView
         addAppsWithoutInvalidate(list);
 
         // Update the widgets/shortcuts to reflect changes in the set of available apps
-        update();
+        invalidatePageDataAndIconCache();
     }
 
     /**
@@ -197,7 +204,7 @@ public class CustomizePagedView extends PagedView
         removeAppsWithoutInvalidate(list);
 
         // Update the widgets/shortcuts to reflect changes in the set of available apps
-        update();
+        invalidatePageDataAndIconCache();
     }
 
     /**
@@ -212,7 +219,7 @@ public class CustomizePagedView extends PagedView
         addAppsWithoutInvalidate(list);
 
         // Update the widgets/shortcuts to reflect changes in the set of available apps
-        update();
+        invalidatePageDataAndIconCache();
     }
 
     /**
@@ -231,8 +238,6 @@ public class CustomizePagedView extends PagedView
     }
 
     public void update() {
-        Context context = getContext();
-
         // get the list of widgets
         mWidgetList = AppWidgetManager.getInstance(mLauncher).getInstalledProviders();
         Collections.sort(mWidgetList, new Comparator<AppWidgetProviderInfo>() {
@@ -260,7 +265,11 @@ public class CustomizePagedView extends PagedView
         mWallpaperList = mPackageManager.queryIntentActivities(wallpapersIntent, 0);
         Collections.sort(mWallpaperList, resolveInfoComparator);
 
-        // reset the icon cache
+        invalidatePageDataAndIconCache();
+    }
+
+    private void invalidatePageDataAndIconCache() {
+        // Reset the icon cache
         mPageViewIconCache.clear();
 
         // Refresh all the tabs
@@ -438,6 +447,17 @@ public class CustomizePagedView extends PagedView
     }
 
     /**
+     * Helper function to draw a drawable to the specified canvas with the specified bounds.
+     */
+    private void renderDrawableToBitmap(Drawable d, Bitmap bitmap, int l, int t, int r, int b) {
+        if (bitmap != null) mCanvas.setBitmap(bitmap);
+        mCanvas.save();
+        d.setBounds(l, t, r, b);
+        d.draw(mCanvas);
+        mCanvas.restore();
+    }
+
+    /**
      * This method will extract the preview image specified by the widget developer (if it exists),
      * otherwise, it will try to generate a default image preview with the widget's package icon.
      * @return the drawable will be used and sized in the ImageView to represent the widget
@@ -451,28 +471,21 @@ public class CustomizePagedView extends PagedView
             if (drawable == null) {
                 Log.w(TAG, "Can't load icon drawable 0x" + Integer.toHexString(info.icon)
                         + " for provider: " + info.provider);
-            } else {
-                return drawable;
             }
         }
 
         // If we don't have a preview image, create a default one
+        final int minDim = mWorkspaceWidgetLayout.estimateCellWidth(1);
+        final int maxDim = mWorkspaceWidgetLayout.estimateCellWidth(3);
         if (drawable == null) {
             Resources resources = mLauncher.getResources();
 
             // Create a new bitmap to hold the widget preview
-            final int minDim = mWorkspaceWidgetLayout.estimateCellWidth(1);
-            final int maxDim = mWorkspaceWidgetLayout.estimateCellWidth(3);
             int width = (int) (Math.max(minDim, Math.min(maxDim, info.minWidth)) * sScaleFactor);
             int height = (int) (Math.max(minDim, Math.min(maxDim, info.minHeight)) * sScaleFactor);
-            Bitmap bitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
-            mCanvas.setBitmap(bitmap);
-            // For some reason, we must re-set the clip rect here, otherwise it will be wrong
-            mCanvas.clipRect(0, 0, width, height, Op.REPLACE);
-
-            Drawable background = resources.getDrawable(R.drawable.default_widget_preview);
-            background.setBounds(0, 0, width, height);
-            background.draw(mCanvas);
+            final Bitmap bitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+            final Drawable background = resources.getDrawable(R.drawable.default_widget_preview);
+            renderDrawableToBitmap(background, bitmap, 0, 0, width, height);
 
             // Draw the icon vertically centered, flush left
             try {
@@ -488,11 +501,32 @@ public class CustomizePagedView extends PagedView
 
                 final int iconSize = minDim / 2;
                 final int offset = iconSize / 4;
-                icon.setBounds(new Rect(offset, offset, offset + iconSize, offset + iconSize));
-                icon.draw(mCanvas);
+                final int offsetIconSize = offset + iconSize;
+                renderDrawableToBitmap(icon, null, offset, offset, offsetIconSize, offsetIconSize);
             } catch (Resources.NotFoundException e) {
                 // if we can't find the icon, then just don't draw it
             }
+
+            drawable = new FastBitmapDrawable(bitmap);
+        } else {
+            // Scale down the preview if necessary
+            final float aspect = (float) info.minWidth / info.minHeight;
+            final int boundedWidth = (int) Math.max(minDim, Math.min(maxDim, info.minWidth));
+            final int boundedHeight = (int) Math.max(minDim, Math.min(maxDim, info.minHeight));
+            final int scaledWidth = (int) (boundedWidth * sScaleFactor);
+            final int scaledHeight = (int) (boundedHeight * sScaleFactor);
+            int width;
+            int height;
+            if (scaledWidth > scaledHeight) {
+                width = scaledWidth;
+                height = (int) (width / aspect);
+            } else {
+                height = scaledHeight;
+                width = (int) (height * aspect);
+            }
+
+            final Bitmap bitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+            renderDrawableToBitmap(drawable, bitmap, 0, 0, width, height);
 
             drawable = new FastBitmapDrawable(bitmap);
         }
@@ -605,7 +639,7 @@ public class CustomizePagedView extends PagedView
 
             PagedViewIcon icon = (PagedViewIcon) mInflater.inflate(
                     R.layout.customize_paged_view_item, layout, false);
-            icon.applyFromResolveInfo(info, mPackageManager, mPageViewIconCache);
+            icon.applyFromResolveInfo(info, mPackageManager, mPageViewIconCache, true);
             switch (mCustomizationType) {
             case WallpaperCustomization:
                 icon.setOnClickListener(this);
@@ -659,7 +693,7 @@ public class CustomizePagedView extends PagedView
             final ApplicationInfo info = mApps.get(i);
             PagedViewIcon icon = (PagedViewIcon) mInflater.inflate(
                     R.layout.all_apps_paged_view_application, layout, false);
-            icon.applyFromApplicationInfo(info, mPageViewIconCache, false);
+            icon.applyFromApplicationInfo(info, mPageViewIconCache, true);
             icon.setOnClickListener(this);
             icon.setOnLongClickListener(this);
 
@@ -761,5 +795,4 @@ public class CustomizePagedView extends PagedView
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         return false;
     }
-
 }

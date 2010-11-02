@@ -29,11 +29,11 @@
 
     <style name="WorkspaceIcon.Portrait">
         <item name="android:drawablePadding">0dip</item>
-        <item name="android:paddingTop">1dip</item>
+        <item name="android:paddingTop">0dip</item>
     </style>
 
     <style name="WorkspaceIcon.Landscape">
         <item name="android:drawablePadding">0dip</item>
-        <item name="android:paddingTop">1dip</item>
+        <item name="android:paddingTop">0dip</item>
     </style>
 </resources>
