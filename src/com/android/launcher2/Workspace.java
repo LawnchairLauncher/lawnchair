@@ -1172,28 +1172,29 @@ public class Workspace extends SmoothPagedView
             duration *= mQuintEaseOutInterpolator.getInterpolation(dist / maxDist);
         }
 
-        // Lazy initialize the animation
-        if (mDropAnim == null) {
-            mDropAnim = new ValueAnimator();
-            mDropAnim.setInterpolator(mQuintEaseOutInterpolator);
-
-            // The view is invisible during the animation; we render it manually.
-            mDropAnim.addListener(new AnimatorListenerAdapter() {
-                public void onAnimationStart(Animator animation) {
-                    // Set this here so that we don't render it until the animation begins
-                    mDropView = view;
-                }
-
-                public void onAnimationEnd(Animator animation) {
-                    if (mDropView != null) {
-                        mDropView.setVisibility(View.VISIBLE);
-                        mDropView = null;
-                    }
-                }
-            });
-        } else {
-            mDropAnim.end(); // Make sure it's not already running
+        if (mDropAnim != null) {
+            // This should really be end(), but that will not be called synchronously,
+            // so instead we use LauncherAnimatorListenerAdapter.onAnimationEndOrCancel()
+            // and call cancel() here.
+            mDropAnim.cancel();
         }
+        mDropAnim = new ValueAnimator();
+        mDropAnim.setInterpolator(mQuintEaseOutInterpolator);
+
+        // The view is invisible during the animation; we render it manually.
+        mDropAnim.addListener(new LauncherAnimatorListenerAdapter() {
+            public void onAnimationStart(Animator animation) {
+                // Set this here so that we don't render it until the animation begins
+                mDropView = view;
+            }
+
+            public void onAnimationEndOrCancel(Animator animation) {
+                if (mDropView != null) {
+                    mDropView.setVisibility(View.VISIBLE);
+                    mDropView = null;
+                }
+            }
+        });
 
         mDropAnim.setDuration(duration);
         mDropAnim.setFloatValues(0.0f, 1.0f);
