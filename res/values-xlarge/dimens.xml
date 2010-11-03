@@ -25,8 +25,8 @@
     <!-- The corner radius to draw the external drop icon rounded rect -->
     <dimen name="external_drop_icon_rect_radius">10dp</dimen>
     
-    <!-- Temporary scaled icon size -->
-    <dimen name="temp_scaled_icon_size">72dp</dimen>
+    <!-- Size of icons in workspace -->
+    <dimen name="app_icon_size">72dp</dimen>
 
     <!-- extra horizontal spacing between mini screen thumbnails ie. in all
          apps and in customization mode -->

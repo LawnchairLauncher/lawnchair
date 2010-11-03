@@ -639,7 +639,8 @@ public class CustomizePagedView extends PagedView
 
             PagedViewIcon icon = (PagedViewIcon) mInflater.inflate(
                     R.layout.customize_paged_view_item, layout, false);
-            icon.applyFromResolveInfo(info, mPackageManager, mPageViewIconCache, true);
+            icon.applyFromResolveInfo(info, mPackageManager, mPageViewIconCache,
+                    ((LauncherApplication)mLauncher.getApplication()).getIconCache());
             switch (mCustomizationType) {
             case WallpaperCustomization:
                 icon.setOnClickListener(this);

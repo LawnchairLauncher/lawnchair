@@ -237,7 +237,7 @@ final class Utilities {
         final DisplayMetrics metrics = resources.getDisplayMetrics();
         final float density = metrics.density;
 
-        sIconWidth = sIconHeight = (int) resources.getDimension(android.R.dimen.app_icon_size);
+        sIconWidth = sIconHeight = (int) resources.getDimension(R.dimen.app_icon_size);
         sIconTextureWidth = sIconTextureHeight = sIconWidth + 2;
 
         sBlurPaint.setMaskFilter(new BlurMaskFilter(5 * density, BlurMaskFilter.Blur.NORMAL));

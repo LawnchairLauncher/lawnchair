@@ -1768,7 +1768,7 @@ public class Workspace extends SmoothPagedView
             break;
         case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
             view = FolderIcon.fromXml(R.layout.folder_icon, mLauncher,
-                    cellLayout, ((UserFolderInfo) info));
+                    cellLayout, (UserFolderInfo) info, mIconCache);
             break;
         default:
             throw new IllegalStateException("Unknown item type: " + info.itemType);

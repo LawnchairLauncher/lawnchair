@@ -16,14 +16,7 @@
 
 package com.android.launcher2;
 
-import java.lang.ref.WeakReference;
-import java.net.URISyntaxException;
-import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
+import com.android.launcher.R;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -52,7 +45,14 @@ import android.os.RemoteException;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.android.launcher.R;
+import java.lang.ref.WeakReference;
+import java.net.URISyntaxException;
+import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Maintains in-memory state of the Launcher. It is expected that there should be only one
@@ -119,7 +119,7 @@ public class LauncherModel extends BroadcastReceiver {
         mIconCache = iconCache;
 
         mDefaultIcon = Utilities.createIconBitmap(
-                app.getPackageManager().getDefaultActivityIcon(), app);
+                mIconCache.getFullResDefaultActivityIcon(), app);
 
         mAllAppsLoadDelay = app.getResources().getInteger(R.integer.config_allAppsBatchLoadDelay);
 
@@ -1469,7 +1469,8 @@ public class LauncherModel extends BroadcastReceiver {
                 Resources resources = packageManager.getResourcesForApplication(packageName);
                 if (resources != null) {
                     final int id = resources.getIdentifier(resourceName, null, null);
-                    icon = Utilities.createIconBitmap(resources.getDrawable(id), context);
+                    icon = Utilities.createIconBitmap(
+                            mIconCache.getFullResIcon(resources, id), context);
                 }
             } catch (Exception e) {
                 // drop this.  we have other places to look for icons
@@ -1587,7 +1588,8 @@ public class LauncherModel extends BroadcastReceiver {
                     Resources resources = packageManager.getResourcesForApplication(
                             iconResource.packageName);
                     final int id = resources.getIdentifier(iconResource.resourceName, null, null);
-                    icon = Utilities.createIconBitmap(resources.getDrawable(id), context);
+                    icon = Utilities.createIconBitmap(
+                            mIconCache.getFullResIcon(resources, id), context);
                 } catch (Exception e) {
                     Log.w(TAG, "Could not load shortcut icon: " + extra);
                 }
@@ -1614,7 +1616,7 @@ public class LauncherModel extends BroadcastReceiver {
         return info;
     }
 
-    private static void loadLiveFolderIcon(Context context, Cursor c, int iconTypeIndex,
+    private void loadLiveFolderIcon(Context context, Cursor c, int iconTypeIndex,
             int iconPackageIndex, int iconResourceIndex, LiveFolderInfo liveFolderInfo) {
 
         int iconType = c.getInt(iconTypeIndex);
@@ -1624,13 +1626,14 @@ public class LauncherModel extends BroadcastReceiver {
             String resourceName = c.getString(iconResourceIndex);
             PackageManager packageManager = context.getPackageManager();
             try {
-                Resources resources = packageManager.getResourcesForApplication(packageName);
-                final int id = resources.getIdentifier(resourceName, null, null);
-                liveFolderInfo.icon = Utilities.createIconBitmap(resources.getDrawable(id),
-                        context);
-            } catch (Exception e) {
+                Resources appResources = packageManager.getResourcesForApplication(packageName);
+                final int id = appResources.getIdentifier(resourceName, null, null);
                 liveFolderInfo.icon = Utilities.createIconBitmap(
-                        context.getResources().getDrawable(R.drawable.ic_launcher_folder),
+                        mIconCache.getFullResIcon(appResources, id), context);
+            } catch (Exception e) {
+                Resources resources = context.getResources();
+                liveFolderInfo.icon = Utilities.createIconBitmap(
+                        mIconCache.getFullResIcon(resources, R.drawable.ic_launcher_folder),
                         context);
             }
             liveFolderInfo.iconResource = new Intent.ShortcutIconResource();
@@ -1638,8 +1641,9 @@ public class LauncherModel extends BroadcastReceiver {
             liveFolderInfo.iconResource.resourceName = resourceName;
             break;
         default:
+            Resources resources = context.getResources();
             liveFolderInfo.icon = Utilities.createIconBitmap(
-                    context.getResources().getDrawable(R.drawable.ic_launcher_folder),
+                    mIconCache.getFullResIcon(resources, R.drawable.ic_launcher_folder),
                     context);
         }
     }
