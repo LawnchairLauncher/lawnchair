@@ -47,12 +47,12 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.Intent.ShortcutIconResource;
 import android.content.IntentFilter;
+import android.content.Intent.ShortcutIconResource;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -67,6 +67,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.os.SystemProperties;
@@ -85,24 +86,26 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.View.OnLongClickListener;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Advanceable;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TabHost;
-import android.widget.TabHost.OnTabChangeListener;
-import android.widget.TabHost.TabContentFactory;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.TabHost.OnTabChangeListener;
+import android.widget.TabHost.TabContentFactory;
 
 import com.android.common.Search;
 import com.android.launcher.R;
+
 
 /**
  * Default launcher application.
@@ -205,6 +208,7 @@ public final class Launcher extends Activity
     private HandleView mHandleView;
     private AllAppsView mAllAppsGrid;
     private TabHost mHomeCustomizationDrawer;
+    private boolean mAutoAdvanceRunning = false;
 
     private PagedView mAllAppsPagedView = null;
     private CustomizePagedView mCustomizePagedView = null;
@@ -228,6 +232,7 @@ public final class Launcher extends Activity
     private static LocaleConfiguration sLocaleConfiguration = null;
 
     private ArrayList<ItemInfo> mDesktopItems = new ArrayList<ItemInfo>();
+
     private static HashMap<Long, FolderInfo> sFolders = new HashMap<Long, FolderInfo>();
 
     private ImageView mPreviousView;
@@ -240,6 +245,15 @@ public final class Launcher extends Activity
     private CharSequence[] mHotseatLabels = null;
 
     private Intent mAppMarketIntent = null;
+
+    // Related to the auto-advancing of widgets
+    private final int ADVANCE_MSG = 1;
+    private final int mAdvanceInterval = 20000;
+    private final int mAdvanceStagger = 250;
+    private long mAutoAdvanceSentTime;
+    private long mAutoAdvanceTimeLeft = -1;
+    private HashMap<View, AppWidgetProviderInfo> mWidgetsToAdvance =
+        new HashMap<View, AppWidgetProviderInfo>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1060,7 +1074,6 @@ public final class Launcher extends Activity
         }
     }
 
-
     /**
      * Add a widget to the workspace.
      *
@@ -1133,16 +1146,126 @@ public final class Launcher extends Activity
 
             mWorkspace.addInScreen(launcherInfo.hostView, screen, cellXY[0], cellXY[1],
                     launcherInfo.spanX, launcherInfo.spanY, isWorkspaceLocked());
+
+            addWidgetToAutoAdvanceIfNeeded(launcherInfo.hostView, appWidgetInfo);
         }
     }
 
-    void showOutOfSpaceMessage() {
-        Toast.makeText(this, getString(R.string.out_of_space), Toast.LENGTH_SHORT).show();
+    private boolean mUserPresent = true;
+    private boolean mVisible = false;
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            if (Intent.ACTION_SCREEN_OFF.equals(action)) {
+                mUserPresent = false;
+                updateRunning();
+            } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
+                mUserPresent = true;
+                updateRunning();
+            }
+        }
+    };
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+        // Listen for broadcasts related to user-presence
+        final IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        filter.addAction(Intent.ACTION_USER_PRESENT);
+        registerReceiver(mReceiver, filter);
+
+        mVisible = true;
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mVisible = false;
+
+        unregisterReceiver(mReceiver);
+        updateRunning();
+    }
+
+    public void onWindowVisibilityChanged(int visibility) {
+        mVisible = visibility == View.VISIBLE;
+        updateRunning();
+    }
+
+    private void sendAdvanceMessage(long delay) {
+        mHandler.removeMessages(ADVANCE_MSG);
+        Message msg = mHandler.obtainMessage(ADVANCE_MSG);
+        mHandler.sendMessageDelayed(msg, delay);
+        mAutoAdvanceSentTime = System.currentTimeMillis();
+    }
+
+    private void updateRunning() {
+        boolean autoAdvanceRunning = mVisible && mUserPresent && !mWidgetsToAdvance.isEmpty();
+        if (autoAdvanceRunning != mAutoAdvanceRunning) {
+            mAutoAdvanceRunning = autoAdvanceRunning;
+            if (autoAdvanceRunning) {
+                long delay = mAutoAdvanceTimeLeft == -1 ? mAdvanceInterval : mAutoAdvanceTimeLeft;
+                sendAdvanceMessage(delay);
+            } else {
+                if (!mWidgetsToAdvance.isEmpty()) {
+                    mAutoAdvanceTimeLeft = Math.max(0, mAdvanceInterval -
+                            (System.currentTimeMillis() - mAutoAdvanceSentTime));
+                }
+                mHandler.removeMessages(ADVANCE_MSG);
+            }
+        }
+    }
+
+    private final Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == ADVANCE_MSG) {
+                int i = 0;
+                for (View key: mWidgetsToAdvance.keySet()) {
+                    final View v = key.findViewById(mWidgetsToAdvance.get(key).autoAdvanceViewId);
+                    final int delay = mAdvanceStagger * i;
+                    if (v instanceof Advanceable) {
+                       postDelayed(new Runnable() {
+                           public void run() {
+                               ((Advanceable) v).advance();
+                           }
+                       }, delay);
+                    }
+                    i++;
+                }
+                sendAdvanceMessage(mAdvanceInterval);
+            }
+        }
+    };
+
+    void addWidgetToAutoAdvanceIfNeeded(View hostView, AppWidgetProviderInfo appWidgetInfo) {
+        if (appWidgetInfo.autoAdvanceViewId == -1) return;
+        View v = hostView.findViewById(appWidgetInfo.autoAdvanceViewId);
+        if (v instanceof Advanceable) {
+            mWidgetsToAdvance.put(hostView, appWidgetInfo);
+            ((Advanceable) v).willBeAdvancedByHost();
+            updateRunning();
+        }
+    }
+
+    void removeWidgetToAutoAdvance(View hostView) {
+        if (mWidgetsToAdvance.containsKey(hostView)) {
+            mWidgetsToAdvance.remove(hostView);
+            updateRunning();
+        }
     }
 
     public void removeAppWidget(LauncherAppWidgetInfo launcherInfo) {
         mDesktopItems.remove(launcherInfo);
+        removeWidgetToAutoAdvance(launcherInfo.hostView);
         launcherInfo.hostView = null;
+    }
+
+    void showOutOfSpaceMessage() {
+        Toast.makeText(this, getString(R.string.out_of_space), Toast.LENGTH_SHORT).show();
     }
 
     public LauncherAppWidgetHost getAppWidgetHost() {
@@ -3063,6 +3186,8 @@ public final class Launcher extends Activity
 
         workspace.addInScreen(item.hostView, item.screen, item.cellX,
                 item.cellY, item.spanX, item.spanY, false);
+
+        addWidgetToAutoAdvanceIfNeeded(item.hostView, appWidgetInfo);
 
         workspace.requestLayout();
 

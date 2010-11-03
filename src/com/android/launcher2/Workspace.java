@@ -426,6 +426,10 @@ public class Workspace extends SmoothPagedView
         return false;
     }
 
+    protected void onWindowVisibilityChanged (int visibility) {
+        mLauncher.onWindowVisibilityChanged(visibility);
+    }
+
     @Override
     public boolean dispatchUnhandledMove(View focused, int direction) {
         if (mIsSmall || mIsInUnshrinkAnimation) {

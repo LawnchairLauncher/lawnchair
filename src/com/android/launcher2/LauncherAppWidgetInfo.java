@@ -37,7 +37,7 @@ class LauncherAppWidgetInfo extends ItemInfo {
     int appWidgetId = NO_ID;
 
     ComponentName providerName;
-    
+
     // TODO: Are these necessary here?
     int minWidth = -1;
     int minHeight = -1;
@@ -65,7 +65,7 @@ class LauncherAppWidgetInfo extends ItemInfo {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
         this.appWidgetId = appWidgetId;
     }
-    
+
     @Override
     void onAddToDatabase(ContentValues values) {
         super.onAddToDatabase(values);
