@@ -20,13 +20,24 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <TabWidget
-            android:id="@android:id/tabs"
+        <RelativeLayout
             android:layout_width="952dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:background="@drawable/tab_unselected_holo"
-            android:tabStripEnabled="false" />
+            android:background="@drawable/tab_unselected_holo">
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:tabStripEnabled="false" />
+            <ImageView
+                android:id="@+id/market_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:onClick="onClickAppMarketButton" />
+        </RelativeLayout>
         <FrameLayout
             android:id="@android:id/tabcontent"
             android:layout_width="match_parent"
@@ -34,7 +45,7 @@
             <com.android.launcher2.AllAppsPagedView
                 android:id="@+id/all_apps_paged_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 launcher:cellCountX="7"
                 launcher:cellCountY="5"
                 launcher:pageLayoutWidthGap="36dp"

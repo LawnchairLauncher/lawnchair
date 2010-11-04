@@ -210,55 +210,71 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
             // In that case, this icon is more tightly spaced next to the delete icon so we want
             // it to have a smaller drag region. When the new drag&drop system comes in, we'll
             // dispatch the drag/drop by calculating what target you're overlapping
-            final int dragPadding = mManageVisibility ? 50 : 10;
-            outRect.top -= dragPadding;
-            outRect.left -= dragPadding;
-            outRect.bottom += dragPadding;
-            outRect.right += dragPadding;
+            final int minPadding = R.dimen.delete_zone_min_padding;
+            final int maxPadding = R.dimen.delete_zone_max_padding;
+            final int outerDragPadding =
+                    getResources().getDimensionPixelSize(R.dimen.delete_zone_size);
+            final int innerDragPadding = getResources().getDimensionPixelSize(
+                    mManageVisibility ? maxPadding : minPadding);
+            outRect.top -= outerDragPadding;
+            outRect.left -= innerDragPadding;
+            outRect.bottom += outerDragPadding;
+            outRect.right += innerDragPadding;
         }
     }
 
     private void createAnimations() {
-        if (mInAnimation == null) {
-            mInAnimation = new FastAnimationSet();
-            final AnimationSet animationSet = mInAnimation;
-            animationSet.setInterpolator(new AccelerateInterpolator());
-            animationSet.addAnimation(new AlphaAnimation(0.0f, 1.0f));
-            if (mOrientation == ORIENTATION_HORIZONTAL) {
-                animationSet.addAnimation(new TranslateAnimation(Animation.ABSOLUTE, 0.0f,
-                        Animation.ABSOLUTE, 0.0f, Animation.RELATIVE_TO_SELF, 1.0f,
-                        Animation.RELATIVE_TO_SELF, 0.0f));
-            } else {
-                animationSet.addAnimation(new TranslateAnimation(Animation.RELATIVE_TO_SELF,
-                        1.0f, Animation.RELATIVE_TO_SELF, 0.0f, Animation.ABSOLUTE, 0.0f,
-                        Animation.ABSOLUTE, 0.0f));
-            }
-            animationSet.setDuration(ANIMATION_DURATION);
-        }
         if (mHandleInAnimation == null) {
             mHandleInAnimation = new AlphaAnimation(0.0f, 1.0f);
             mHandleInAnimation.setDuration(ANIMATION_DURATION);
         }
-        if (mOutAnimation == null) {
-            mOutAnimation = new FastAnimationSet();
-            final AnimationSet animationSet = mOutAnimation;
-            animationSet.setInterpolator(new AccelerateInterpolator());
-            animationSet.addAnimation(new AlphaAnimation(1.0f, 0.0f));
-            if (mOrientation == ORIENTATION_HORIZONTAL) {
-                animationSet.addAnimation(new FastTranslateAnimation(Animation.ABSOLUTE, 0.0f,
-                        Animation.ABSOLUTE, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f,
-                        Animation.RELATIVE_TO_SELF, 1.0f));
+
+        if (mInAnimation == null) {
+            mInAnimation = new FastAnimationSet();
+            if (!LauncherApplication.isScreenXLarge()) {
+                final AnimationSet animationSet = mInAnimation;
+                animationSet.setInterpolator(new AccelerateInterpolator());
+                animationSet.addAnimation(new AlphaAnimation(0.0f, 1.0f));
+                if (mOrientation == ORIENTATION_HORIZONTAL) {
+                    animationSet.addAnimation(new TranslateAnimation(Animation.ABSOLUTE, 0.0f,
+                            Animation.ABSOLUTE, 0.0f, Animation.RELATIVE_TO_SELF, 1.0f,
+                            Animation.RELATIVE_TO_SELF, 0.0f));
+                } else {
+                    animationSet.addAnimation(new TranslateAnimation(Animation.RELATIVE_TO_SELF,
+                            1.0f, Animation.RELATIVE_TO_SELF, 0.0f, Animation.ABSOLUTE, 0.0f,
+                            Animation.ABSOLUTE, 0.0f));
+                }
+                animationSet.setDuration(ANIMATION_DURATION);
             } else {
-                animationSet.addAnimation(new FastTranslateAnimation(Animation.RELATIVE_TO_SELF,
-                        0.0f, Animation.RELATIVE_TO_SELF, 1.0f, Animation.ABSOLUTE, 0.0f,
-                        Animation.ABSOLUTE, 0.0f));
+                mInAnimation.addAnimation(mHandleInAnimation);
             }
-            animationSet.setDuration(ANIMATION_DURATION);
         }
+
         if (mHandleOutAnimation == null) {
             mHandleOutAnimation = new AlphaAnimation(1.0f, 0.0f);
             mHandleOutAnimation.setFillAfter(true);
             mHandleOutAnimation.setDuration(ANIMATION_DURATION);
+        }
+
+        if (mOutAnimation == null) {
+            mOutAnimation = new FastAnimationSet();
+            if (!LauncherApplication.isScreenXLarge()) {
+                final AnimationSet animationSet = mOutAnimation;
+                animationSet.setInterpolator(new AccelerateInterpolator());
+                animationSet.addAnimation(new AlphaAnimation(1.0f, 0.0f));
+                if (mOrientation == ORIENTATION_HORIZONTAL) {
+                    animationSet.addAnimation(new FastTranslateAnimation(Animation.ABSOLUTE, 0.0f,
+                            Animation.ABSOLUTE, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f,
+                            Animation.RELATIVE_TO_SELF, 1.0f));
+                } else {
+                    animationSet.addAnimation(new FastTranslateAnimation(Animation.RELATIVE_TO_SELF,
+                            0.0f, Animation.RELATIVE_TO_SELF, 1.0f, Animation.ABSOLUTE, 0.0f,
+                            Animation.ABSOLUTE, 0.0f));
+                }
+                animationSet.setDuration(ANIMATION_DURATION);
+            } else {
+                mOutAnimation.addAnimation(mHandleOutAnimation);
+            }
         }
     }
 

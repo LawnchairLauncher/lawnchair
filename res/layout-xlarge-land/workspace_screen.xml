@@ -26,7 +26,7 @@
     launcher:cellHeight="@dimen/workspace_cell_height"
     launcher:widthGap="@dimen/workspace_width_gap"
     launcher:heightGap="@dimen/workspace_height_gap"
-    launcher:yAxisStartPadding="25dip"
-    launcher:yAxisEndPadding="25dip"
-    launcher:xAxisStartPadding="40dip"
-    launcher:xAxisEndPadding="40dip" />
+    launcher:yAxisStartPadding="15dip"
+    launcher:yAxisEndPadding="15dip"
+    launcher:xAxisStartPadding="25dip"
+    launcher:xAxisEndPadding="25dip" />

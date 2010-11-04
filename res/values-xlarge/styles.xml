@@ -35,5 +35,6 @@
     <style name="WorkspaceIcon.Landscape">
         <item name="android:drawablePadding">0dip</item>
         <item name="android:paddingTop">0dip</item>
+        <item name="android:includeFontPadding">false</item>
     </style>
 </resources>

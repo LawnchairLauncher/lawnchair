@@ -312,7 +312,6 @@ public final class Launcher extends Activity
             String shortcutsLabel = getString(R.string.shortcuts_tab_label);
             mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(SHORTCUTS_TAG)
                     .setIndicator(shortcutsLabel).setContent(contentFactory));
-
             mHomeCustomizationDrawer.setOnTabChangedListener(new OnTabChangeListener() {
                 public void onTabChanged(String tabId) {
                     // animate the changing of the tab content by fading pages in and out
@@ -876,6 +875,7 @@ public final class Launcher extends Activity
         }
 
         mWorkspace = (Workspace) dragLayer.findViewById(R.id.workspace);
+
         final Workspace workspace = mWorkspace;
         workspace.setHapticFeedbackEnabled(false);
 
@@ -2479,7 +2479,6 @@ public final class Launcher extends Activity
     private void hideAndShowToolbarButtons(State newState, AnimatorSet showSeq, AnimatorSet hideSeq) {
         final View searchButton = findViewById(R.id.search_button);
         final View allAppsButton = findViewById(R.id.all_apps_button);
-        final View marketButton = findViewById(R.id.market_button);
         final View configureButton = findViewById(R.id.configure_button);
 
         switch (newState) {
@@ -2487,20 +2486,16 @@ public final class Launcher extends Activity
             hideOrShowToolbarButton(true, searchButton, showSeq);
             hideOrShowToolbarButton(true, allAppsButton, showSeq);
             hideOrShowToolbarButton(true, configureButton, showSeq);
-            hideOrShowToolbarButton(false, marketButton, hideSeq);
             mDeleteZone.setHandle(allAppsButton);
             break;
         case ALL_APPS:
-            hideOrShowToolbarButton(true, configureButton, showSeq);
-            hideOrShowToolbarButton(true, marketButton, showSeq);
+            hideOrShowToolbarButton(false, configureButton, hideSeq);
             hideOrShowToolbarButton(false, searchButton, hideSeq);
             hideOrShowToolbarButton(false, allAppsButton, hideSeq);
-            mDeleteZone.setHandle(marketButton);
             break;
         case CUSTOMIZE:
-            hideOrShowToolbarButton(true, allAppsButton, showSeq);
+            hideOrShowToolbarButton(false, allAppsButton, hideSeq);
             hideOrShowToolbarButton(false, searchButton, hideSeq);
-            hideOrShowToolbarButton(false, marketButton, hideSeq);
             hideOrShowToolbarButton(false, configureButton, hideSeq);
             mDeleteZone.setHandle(allAppsButton);
             break;
@@ -2544,7 +2539,7 @@ public final class Launcher extends Activity
         setPivotsForZoom(toView, toState, scale);
 
         if (toAllApps) {
-            mWorkspace.shrinkToBottom(animated);
+            mWorkspace.shrinkToBottomHidden(animated);
         } else {
             mWorkspace.shrinkToTop(animated);
         }
@@ -2683,7 +2678,7 @@ public final class Launcher extends Activity
         mAllAppsPagedView.endChoiceMode();
 
         if (toState == State.ALL_APPS) {
-            mWorkspace.shrinkToBottom(animated);
+            mWorkspace.shrinkToBottomHidden(animated);
         } else {
             mWorkspace.shrinkToTop(animated);
         }
@@ -2754,6 +2749,7 @@ public final class Launcher extends Activity
 
         // TODO: fade these two too
         mDeleteZone.setVisibility(View.GONE);
+
         // Change the state *after* we've called all the transition code
         mState = State.ALL_APPS;
     }
@@ -2774,6 +2770,7 @@ public final class Launcher extends Activity
         } else if (mState == State.CUSTOMIZE) {
             hideCustomizationDrawer(animated);
         }
+
         // Change the state *after* we've called all the transition code
         mState = State.WORKSPACE;
     }

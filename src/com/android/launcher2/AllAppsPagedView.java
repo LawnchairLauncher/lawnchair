@@ -498,8 +498,10 @@ public class AllAppsPagedView extends PagedView
             }
         });
 
-        menu.add(0, MENU_APP_INFO, 0, R.string.cab_menu_app_info).setActionView(infoButton);
         menu.add(0, MENU_DELETE_APP, 0, R.string.cab_menu_delete_app).setActionView(deleteZone);
+        menu.add(0, MENU_APP_INFO, 0, R.string.cab_menu_app_info).setActionView(infoButton);
+
+        mLauncher.getWorkspace().shrinkToBottomVisible();
 
         return true;
     }
@@ -531,6 +533,8 @@ public class AllAppsPagedView extends PagedView
 
         mDragController.removeDropTarget(this);
         endChoiceMode();
+
+        mLauncher.getWorkspace().shrinkToBottomHidden();
     }
 
     @Override

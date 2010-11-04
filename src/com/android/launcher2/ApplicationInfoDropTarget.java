@@ -16,6 +16,8 @@
 
 package com.android.launcher2;
 
+import com.android.launcher.R;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Paint;
@@ -133,11 +135,16 @@ public class ApplicationInfoDropTarget extends ImageView implements DropTarget, 
             // In that case, this icon is more tightly spaced next to the delete icon so we want
             // it to have a smaller drag region. When the new drag&drop system comes in, we'll
             // dispatch the drag/drop by calculating what target you're overlapping
-            final int dragPadding = mManageVisibility ? 50 : 10;
-            outRect.top -= dragPadding;
-            outRect.left -= dragPadding;
-            outRect.bottom += dragPadding;
-            outRect.right += dragPadding;
+            final int minPadding = R.dimen.delete_zone_min_padding;
+            final int maxPadding = R.dimen.delete_zone_max_padding;
+            final int outerDragPadding =
+                    getResources().getDimensionPixelSize(R.dimen.delete_zone_size);
+            final int innerDragPadding = getResources().getDimensionPixelSize(
+                    mManageVisibility ? maxPadding : minPadding);
+            outRect.top -= outerDragPadding;
+            outRect.left -= innerDragPadding;
+            outRect.bottom += outerDragPadding;
+            outRect.right += outerDragPadding;
         }
     }
 
