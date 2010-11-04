@@ -605,6 +605,30 @@ public class Workspace extends SmoothPagedView
         } else {
             super.dispatchDraw(canvas);
 
+            final int width = getWidth();
+            final int height = getHeight();
+
+            // In portrait orientation, draw the glowing edge when dragging to adjacent screens
+            if (mInScrollArea && (height > width)) {
+                final int pageHeight = getChildAt(0).getHeight();
+
+                // This determines the height of the glowing edge: 90% of the page height
+                final int padding = (int) ((height - pageHeight) * 0.5f + pageHeight * 0.1f);
+
+                final CellLayout leftPage = (CellLayout) getChildAt(mCurrentPage - 1);
+                final CellLayout rightPage = (CellLayout) getChildAt(mCurrentPage + 1);
+
+                if (leftPage != null && leftPage.getHover()) {
+                    final Drawable d = getResources().getDrawable(R.drawable.page_hover_left);
+                    d.setBounds(mScrollX, padding, mScrollX + d.getIntrinsicWidth(), height - padding);
+                    d.draw(canvas);
+                } else if (rightPage != null && rightPage.getHover()) {
+                    final Drawable d = getResources().getDrawable(R.drawable.page_hover_right);
+                    d.setBounds(mScrollX + width - d.getIntrinsicWidth(), padding, mScrollX + width, height - padding);
+                    d.draw(canvas);
+                }
+            }
+
             if (mDropView != null) {
                 // We are animating an item that was just dropped on the home screen.
                 // Render its View in the current animation position.
@@ -1909,11 +1933,11 @@ public class Workspace extends SmoothPagedView
             final int screen = getCurrentPage() + ((direction == DragController.SCROLL_LEFT) ? -1 : 1);
             if (0 <= screen && screen < getChildCount()) {
                 ((CellLayout) getChildAt(screen)).setHover(true);
-            }
 
-            if (mDragTargetLayout != null) {
-                mDragTargetLayout.onDragExit();
-                mDragTargetLayout = null;
+                if (mDragTargetLayout != null) {
+                    mDragTargetLayout.onDragExit();
+                    mDragTargetLayout = null;
+                }
             }
         }
     }
