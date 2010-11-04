@@ -16,7 +16,14 @@
 
 package com.android.launcher2;
 
-import com.android.launcher.R;
+import java.lang.ref.WeakReference;
+import java.net.URISyntaxException;
+import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -45,14 +52,8 @@ import android.os.RemoteException;
 import android.os.SystemClock;
 import android.util.Log;
 
-import java.lang.ref.WeakReference;
-import java.net.URISyntaxException;
-import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
+import com.android.launcher.R;
+import com.android.launcher2.InstallWidgetReceiver.WidgetMimeTypeHandlerData;
 
 /**
  * Maintains in-memory state of the Launcher. It is expected that there should be only one
@@ -1529,28 +1530,6 @@ public class LauncherModel extends BroadcastReceiver {
     }
 
     /**
-     * Ensures that a given shortcut intent actually has all the fields that we need to create a
-     * proper ShortcutInfo.
-     */
-    boolean validateShortcutIntent(Intent data) {
-        // We don't require Intent.EXTRA_SHORTCUT_ICON, since we can pull a default fallback icon
-        return InstallShortcutReceiver.ACTION_INSTALL_SHORTCUT.equals(data.getAction()) &&
-                (data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME) != null) &&
-                (data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT) != null);
-    }
-
-    /**
-     * Ensures that a given widget intent actually has all the fields that we need to create a
-     * proper widget.
-     */
-    boolean validateWidgetIntent(Intent data) {
-        // We don't require Intent.EXTRA_APPWIDGET_CONFIGURATION_DATA, since that will just be
-        // forwarded onto the widget's configuration activity if it exists
-        return InstallWidgetReceiver.ACTION_INSTALL_WIDGET.equals(data.getAction()) &&
-                (data.getStringExtra(InstallWidgetReceiver.EXTRA_APPWIDGET_COMPONENT) != null);
-    }
-
-    /**
      * Attempts to find an AppWidgetProviderInfo that matches the given component.
      */
     AppWidgetProviderInfo findAppWidgetProviderInfoWithComponent(Context context,
@@ -1563,6 +1542,44 @@ public class LauncherModel extends BroadcastReceiver {
             }
         }
         return null;
+    }
+
+    /**
+     * Returns a list of all the widgets that can handle configuration with a particular mimeType.
+     */
+    List<WidgetMimeTypeHandlerData> resolveWidgetsForMimeType(Context context, String mimeType) {
+        final PackageManager packageManager = context.getPackageManager();
+        final List<WidgetMimeTypeHandlerData> supportedConfigurationActivities =
+            new ArrayList<WidgetMimeTypeHandlerData>();
+
+        final Intent supportsIntent =
+            new Intent(InstallWidgetReceiver.ACTION_SUPPORTS_CLIPDATA_MIMETYPE);
+        supportsIntent.setType(mimeType);
+
+        // Create a set of widget configuration components that we can test against
+        final List<AppWidgetProviderInfo> widgets =
+            AppWidgetManager.getInstance(context).getInstalledProviders();
+        final HashMap<ComponentName, AppWidgetProviderInfo> configurationComponentToWidget =
+            new HashMap<ComponentName, AppWidgetProviderInfo>();
+        for (AppWidgetProviderInfo info : widgets) {
+            configurationComponentToWidget.put(info.configure, info);
+        }
+
+        // Run through each of the intents that can handle this type of clip data, and cross
+        // reference them with the components that are actual configuration components
+        final List<ResolveInfo> activities = packageManager.queryIntentActivities(supportsIntent,
+                PackageManager.MATCH_DEFAULT_ONLY);
+        for (ResolveInfo info : activities) {
+            final ActivityInfo activityInfo = info.activityInfo;
+            final ComponentName infoComponent = new ComponentName(activityInfo.packageName,
+                    activityInfo.name);
+            if (configurationComponentToWidget.containsKey(infoComponent)) {
+                supportedConfigurationActivities.add(
+                        new InstallWidgetReceiver.WidgetMimeTypeHandlerData(info,
+                                configurationComponentToWidget.get(infoComponent)));
+            }
+        }
+        return supportedConfigurationActivities;
     }
 
     ShortcutInfo infoFromShortcutIntent(Context context, Intent data, Bitmap fallbackIcon) {

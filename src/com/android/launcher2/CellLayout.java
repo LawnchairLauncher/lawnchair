@@ -327,6 +327,10 @@ public class CellLayout extends ViewGroup implements Dimmable {
         }
     }
 
+    public boolean getHover() {
+        return mHover;
+    }
+
     public void drawChildren(Canvas canvas) {
         super.dispatchDraw(canvas);
     }

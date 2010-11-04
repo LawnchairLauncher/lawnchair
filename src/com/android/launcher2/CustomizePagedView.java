@@ -581,12 +581,8 @@ public class CustomizePagedView extends PagedView
         final int count = list.size();
         layout.removeAllViews();
         for (int i = 0; i < count; ++i) {
-            AppWidgetProviderInfo info = (AppWidgetProviderInfo) list.get(i);
-            PendingAddWidgetInfo createItemInfo = new PendingAddWidgetInfo();
-            createItemInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
-            createItemInfo.componentName = info.provider;
-            createItemInfo.minWidth = info.minWidth;
-            createItemInfo.minHeight = info.minHeight;
+            final AppWidgetProviderInfo info = (AppWidgetProviderInfo) list.get(i);
+            final PendingAddWidgetInfo createItemInfo = new PendingAddWidgetInfo(info, null, null);
 
             LinearLayout l = (LinearLayout) mInflater.inflate(
                     R.layout.customize_paged_view_widget, layout, false);

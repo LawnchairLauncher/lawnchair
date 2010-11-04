@@ -17,8 +17,13 @@
 
 package com.android.launcher2;
 
-import com.android.common.Search;
-import com.android.launcher.R;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -35,17 +40,19 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.Intent.ShortcutIconResource;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -78,9 +85,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.View.OnLongClickListener;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
@@ -89,18 +96,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TabHost;
-import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabContentFactory;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import com.android.common.Search;
+import com.android.launcher.R;
 
 /**
  * Default launcher application.
@@ -1461,8 +1463,33 @@ public final class Launcher extends Activity
             intent.setComponent(appWidget.configure);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             if (info != null) {
-                intent.putExtra(InstallWidgetReceiver.EXTRA_APPWIDGET_CONFIGURATION_DATA,
-                        info.configurationData);
+                if (info.mimeType != null && !info.mimeType.isEmpty()) {
+                    intent.putExtra(
+                            InstallWidgetReceiver.EXTRA_APPWIDGET_CONFIGURATION_DATA_MIME_TYPE,
+                            info.mimeType);
+
+                    final String mimeType = info.mimeType;
+                    final ClipData clipData = (ClipData) info.configurationData;
+                    final ClipDescription clipDesc = clipData.getDescription();
+                    for (int i = 0; i < clipDesc.getMimeTypeCount(); ++i) {
+                        if (clipDesc.getMimeType(i).equals(mimeType)) {
+                            final ClipData.Item item = clipData.getItem(i);
+                            final CharSequence stringData = item.getText();
+                            final Uri uriData = item.getUri();
+                            final Intent intentData = item.getIntent();
+                            final String key =
+                                InstallWidgetReceiver.EXTRA_APPWIDGET_CONFIGURATION_DATA;
+                            if (uriData != null) {
+                                intent.putExtra(key, uriData);
+                            } else if (intentData != null) {
+                                intent.putExtra(key, intentData);
+                            } else if (stringData != null) {
+                                intent.putExtra(key, stringData);
+                            }
+                            break;
+                        }
+                    }
+                }
             }
 
             startActivityForResultSafely(intent, REQUEST_CREATE_APPWIDGET);
