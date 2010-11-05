@@ -17,19 +17,30 @@
 
 <resources>
     <string-array name="wallpapers" translatable="false">
-        <item>wallpaper_street_lights</item>
-        <item>wallpaper_stream</item>
-        <item>wallpaper_phasebeam</item>
-        <item>wallpaper_pulse</item>
-        <item>wallpaper_nexusrain</item>
-        <item>wallpaper_stars</item>
-        <item>wallpaper_canyon</item>
+        <item>wallpaper_electric</item>
         <item>wallpaper_grass</item>
-        <item>wallpaper_zanzibar</item>
-        <item>wallpaper_cloud</item>
+        <item>wallpaper_canyon</item>
         <item>wallpaper_monumentvalley</item>
-        <item>wallpaper_mountains</item>
-        <item>wallpaper_sunset</item>
+        <item>wallpaper_tree</item>
+        <item>wallpaper_zanzibar</item>
+        <item>wallpaper_field</item>
+        <item>wallpaper_cloud</item>
+        <item>wallpaper_desert</item>
         <item>wallpaper_goldengate</item>
+        <item>wallpaper_despair</item>
+        <item>wallpaper_grass_night</item>
+        <item>wallpaper_galaxy</item>
+        <item>wallpaper_x67</item>
+        <item>wallpaper_nexusrain</item>
+        <item>wallpaper_nexuspattern</item>
+        <item>wallpaper_nexuswallpaper1</item>
+        <item>wallpaper_brown</item>
+        <item>wallpaper_pcut</item>
+        <item>wallpaper_bluedotgrid</item>
+        <item>wallpaper_hazybluedots</item>
+        <item>wallpaper_ropelights</item>
+        <item>wallpaper_gray</item>
+        <item>wallpaper_greengray</item>
+        <item>wallpaper_lightgrad</item>
     </string-array>
 </resources>
