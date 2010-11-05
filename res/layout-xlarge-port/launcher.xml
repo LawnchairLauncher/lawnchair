@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2010 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<com.android.launcher2.DragLayer
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
+
+    android:id="@+id/drag_layer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        layout="@layout/all_apps_tabbed"
+        android:id="@+id/all_apps_view"
+        android:layout_width="match_parent"
+        android:layout_height="1040dp"
+        android:layout_gravity="top"/>
+
+    <!-- The workspace contains 5 screens of cells -->
+    <com.android.launcher2.Workspace
+        android:id="@+id/workspace"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="?android:attr/actionBarSize"
+        launcher:defaultScreen="2"
+        launcher:cellCountX="8"
+        launcher:cellCountY="7"
+        launcher:pageSpacing="64dp">
+
+        <include android:id="@+id/cell1" layout="@layout/workspace_screen" />
+        <include android:id="@+id/cell2" layout="@layout/workspace_screen" />
+        <include android:id="@+id/cell3" layout="@layout/workspace_screen" />
+        <include android:id="@+id/cell4" layout="@layout/workspace_screen" />
+        <include android:id="@+id/cell5" layout="@layout/workspace_screen" />
+    </com.android.launcher2.Workspace>
+
+    <RelativeLayout
+        android:id="@+id/all_apps_button_cluster"
+        android:layout_width="fill_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:layout_gravity="top">
+
+        <ImageView
+            android:id="@+id/search_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="left"
+            android:layout_marginLeft="@dimen/toolbar_button_spacing"
+
+            android:onClick="onClickSearchButton"
+            android:focusable="true"
+            android:clickable="true"/>
+
+        <ImageView
+            android:id="@+id/configure_button"
+            android:src="@drawable/configure_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="@dimen/toolbar_button_spacing"
+            android:layout_marginRight="@dimen/toolbar_button_spacing"
+
+            android:onClick="onClickConfigureButton"
+            android:focusable="true"
+            android:clickable="true" />
+
+        <TextView
+            android:id="@+id/all_apps_button"
+            android:text="@string/all_apps_button_label"
+            android:background="@drawable/all_apps_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@id/configure_button"
+            android:layout_marginLeft="@dimen/toolbar_button_spacing"
+            android:layout_marginRight="@dimen/toolbar_button_spacing"
+            android:textSize="18dp"
+
+            android:onClick="onClickAllAppsButton"
+            android:focusable="true"
+            android:clickable="true" />
+
+        <!-- The button to bring up the installed app market.
+             The icon for this button will be dynamically set. -->
+        <ImageView
+            android:id="@+id/market_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignLeft="@id/all_apps_button"
+
+            android:onClick="onClickAppMarketButton"
+            android:focusable="false"
+            android:clickable="false"
+            android:visibility="gone"/>
+
+        <com.android.launcher2.DeleteZone
+            android:id="@+id/delete_zone"
+            android:src="@drawable/delete_zone_selector"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignLeft="@id/all_apps_button"
+
+            android:visibility="gone"
+            launcher:direction="horizontal" />
+
+        <com.android.launcher2.ApplicationInfoDropTarget
+            android:id="@+id/info_button"
+            android:src="@drawable/info_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignLeft="@id/configure_button"
+
+            android:visibility="gone"
+            android:focusable="true"
+            android:clickable="true" />
+
+    </RelativeLayout>
+
+    <TabHost
+        android:id="@android:id/tabhost"
+        android:layout_width="match_parent"
+        android:layout_height="800dp"
+        android:layout_gravity="bottom">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="700dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/tab_unselected_holo"
+                android:tabStripEnabled="false" />
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="650dp">
+             </FrameLayout>
+          </LinearLayout>
+    </TabHost>
+</com.android.launcher2.DragLayer>

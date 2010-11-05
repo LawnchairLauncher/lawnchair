@@ -18,13 +18,13 @@ package com.android.launcher2;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
 /**
- * A ViewGroup that coordinated dragging across its dscendants
+ * A ViewGroup that coordinates dragging across its descendants
  */
 public class DragLayer extends FrameLayout {
     DragController mDragController;
@@ -33,7 +33,7 @@ public class DragLayer extends FrameLayout {
      * Used to create a new DragLayer from XML.
      *
      * @param context The application's context.
-     * @param attrs The attribtues set containing the Workspace's customization values.
+     * @param attrs The attributes set containing the Workspace's customization values.
      */
     public DragLayer(Context context, AttributeSet attrs) {
         super(context, attrs);

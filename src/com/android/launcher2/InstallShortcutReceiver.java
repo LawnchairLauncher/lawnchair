@@ -16,18 +16,22 @@
 
 package com.android.launcher2;
 
+import java.util.ArrayList;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ContentResolver;
-import android.database.Cursor;
 import android.widget.Toast;
 
 import com.android.launcher.R;
 
 public class InstallShortcutReceiver extends BroadcastReceiver {
-    private static final String ACTION_INSTALL_SHORTCUT =
+    public static final String ACTION_INSTALL_SHORTCUT =
             "com.android.launcher.action.INSTALL_SHORTCUT";
+
+    // A mime-type representing shortcut data
+    public static final String SHORTCUT_MIMETYPE =
+            "com.android.launcher/shortcut";
 
     private final int[] mCoordinates = new int[2];
 
@@ -50,11 +54,6 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
 
         if (findEmptyCell(context, mCoordinates, screen)) {
-            CellLayout.CellInfo cell = new CellLayout.CellInfo();
-            cell.cellX = mCoordinates[0];
-            cell.cellY = mCoordinates[1];
-            cell.screen = screen;
-
             Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
 
             if (intent.getAction() == null) {
@@ -66,7 +65,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             boolean duplicate = data.getBooleanExtra(Launcher.EXTRA_SHORTCUT_DUPLICATE, true);
             if (duplicate || !LauncherModel.shortcutExists(context, name, intent)) {
                 ((LauncherApplication)context.getApplicationContext()).getModel()
-                        .addShortcut(context, data, cell, true);
+                        .addShortcut(context, data, screen, mCoordinates[0], mCoordinates[1], true);
                 Toast.makeText(context, context.getString(R.string.shortcut_installed, name),
                         Toast.LENGTH_SHORT).show();
             } else {
@@ -84,40 +83,26 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     }
 
     private static boolean findEmptyCell(Context context, int[] xy, int screen) {
-        final int xCount = Launcher.NUMBER_CELLS_X;
-        final int yCount = Launcher.NUMBER_CELLS_Y;
-
+        final int xCount = LauncherModel.getCellCountX();
+        final int yCount = LauncherModel.getCellCountY();
         boolean[][] occupied = new boolean[xCount][yCount];
 
-        final ContentResolver cr = context.getContentResolver();
-        Cursor c = cr.query(LauncherSettings.Favorites.CONTENT_URI,
-            new String[] { LauncherSettings.Favorites.CELLX, LauncherSettings.Favorites.CELLY,
-                    LauncherSettings.Favorites.SPANX, LauncherSettings.Favorites.SPANY },
-            LauncherSettings.Favorites.SCREEN + "=?",
-            new String[] { String.valueOf(screen) }, null);
-
-        final int cellXIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLX);
-        final int cellYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLY);
-        final int spanXIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SPANX);
-        final int spanYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SPANY);
-
-        try {
-            while (c.moveToNext()) {
-                int cellX = c.getInt(cellXIndex);
-                int cellY = c.getInt(cellYIndex);
-                int spanX = c.getInt(spanXIndex);
-                int spanY = c.getInt(spanYIndex);
-
+        ArrayList<ItemInfo> items = LauncherModel.getItemsInLocalCoordinates(context);
+        ItemInfo item = null;
+        int cellX, cellY, spanX, spanY;
+        for (int i = 0; i < items.size(); ++i) {
+            item = items.get(i);
+            if (item.screen == screen) {
+                cellX = item.cellX;
+                cellY = item.cellY;
+                spanX = item.spanX;
+                spanY = item.spanY;
                 for (int x = cellX; x < cellX + spanX && x < xCount; x++) {
                     for (int y = cellY; y < cellY + spanY && y < yCount; y++) {
                         occupied[x][y] = true;
                     }
                 }
             }
-        } catch (Exception e) {
-            return false;
-        } finally {
-            c.close();
         }
 
         return CellLayout.findVacantCell(xy, 1, 1, xCount, yCount, occupied);

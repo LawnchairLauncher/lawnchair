@@ -32,6 +32,10 @@
     <declare-styleable name="Workspace">
         <!-- The first screen the workspace should display. -->
         <attr name="defaultScreen" format="integer"  />
+        <!-- The number of horizontal cells in the CellLayout -->
+        <attr name="cellCountX" format="integer"  />
+        <!-- The number of vertical cells in the CellLayout -->
+        <attr name="cellCountY" format="integer"  />
     </declare-styleable>
     
     <!-- CellLayout specific attributes. These attributes are used to customize
@@ -42,17 +46,67 @@
         <!-- The height of a single cell -->
         <attr name="cellHeight" format="dimension"  />
         <!-- Padding to apply at the start of the long axis -->
-        <attr name="longAxisStartPadding" format="dimension"  />
+        <attr name="xAxisStartPadding" format="dimension"  />
         <!-- Padding to apply at the end of the long axis -->
-        <attr name="longAxisEndPadding" format="dimension"  />
+        <attr name="xAxisEndPadding" format="dimension"  />
         <!-- Padding to apply at the start of the short axis -->
-        <attr name="shortAxisStartPadding" format="dimension"  />
+        <attr name="yAxisStartPadding" format="dimension"  />
         <!-- Padding to apply at the end of the short axis -->
-        <attr name="shortAxisEndPadding" format="dimension"  />
-        <!-- Number of cells on the short axis of the CellLayout -->
-        <attr name="shortAxisCells" format="integer" />
-        <!-- Number of cells on the long axis of the CellLayout -->
-        <attr name="longAxisCells" format="integer" />
+        <attr name="yAxisEndPadding" format="dimension"  />
+        <!-- An override for the width and height gap to allow users to specify
+             a specific size for the page using spacing instead of resolving the
+             spacing from the width of the page -->
+        <attr name="widthGap" format="dimension" />
+        <attr name="heightGap" format="dimension" />
+
+    </declare-styleable>
+
+    <!-- PagedViewIcon specific attributes. These attributes are used to customize
+         a PagedViewIcon view in XML files. -->
+    <declare-styleable name="PagedViewIcon">
+        <!-- The blur color of the holographic outline -->
+        <attr name="blurColor" format="color" />
+        <!-- The outline color of the holographic outline -->
+        <attr name="outlineColor" format="color" />
+        <!-- The checked blur color of the holographic outline -->
+        <attr name="checkedBlurColor" format="color" />
+        <!-- The checked outline color of the holographic outline -->
+        <attr name="checkedOutlineColor" format="color" />
+    </declare-styleable>
+
+    <!-- PagedViewWidgetIcon specific attributes. These attributes are used to
+         customize a PagedViewWidgetIcon view in XML files. -->
+    <declare-styleable name="PagedViewWidgetIcon">
+        <!-- The checked blur color of the holographic outline -->
+        <attr name="checkedBlurColor" />
+        <!-- The checked outline color of the holographic outline -->
+        <attr name="checkedOutlineColor" />
+    </declare-styleable>
+
+    <!-- PagedView specific attributes. These attributes are used to customize
+         a PagedView view in XML files. -->
+    <declare-styleable name="PagedView">
+        <!-- The number of horizontal cells in a page -->
+        <attr name="cellCountX" />
+        <!-- The number of vertical cells in a page -->
+        <attr name="cellCountY" />
+        <!-- A spacing override for the icons within a page -->
+        <attr name="pageLayoutWidthGap" format="dimension" />
+        <attr name="pageLayoutHeightGap" format="dimension" />
+        <!-- The padding of the pages that are dynamically created per page -->
+        <attr name="pageLayoutPaddingTop" format="dimension" />
+        <attr name="pageLayoutPaddingBottom" format="dimension" />
+        <attr name="pageLayoutPaddingLeft" format="dimension" />
+        <attr name="pageLayoutPaddingRight" format="dimension" />
+        <!-- The space between adjacent pages of the PagedView. -->
+        <attr name="pageSpacing" format="dimension" />
+    </declare-styleable>
+
+    <!-- CustomizePagedView specific attributes. These attributes are used to customize
+         a CustomizePagedView view in XML files. -->
+    <declare-styleable name="CustomizePagedView">
+        <!-- The number of horizontal cells for the widget tab -->
+        <attr name="widgetCellCountX" format="integer" />
     </declare-styleable>
 
     <!-- DeleteZone specific attributes. These attributes are used to customize

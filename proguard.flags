@@ -2,6 +2,36 @@
   public void previousScreen(android.view.View);
   public void nextScreen(android.view.View);
   public void launchHotSeat(android.view.View);
+  public void onClickSearchButton(android.view.View);
+  public void onClickConfigureButton(android.view.View);
+  public void onClickAllAppsButton(android.view.View);
+  public void onClickAppMarketButton(android.view.View);
+}
+
+-keep class com.android.launcher2.CellLayout {
+  public float getBackgroundAlpha();
+  public void setBackgroundAlpha(float);
+  public float getDimmableProgress();
+  public void setDimmableProgress(float);
+  public float getHoverScale();
+  public void setHoverScale(float);
+  public float getHoverAlpha();
+  public void setHoverAlpha(float);
+}
+
+-keep class com.android.launcher2.DimmableBubbleTextView {
+  public float getDimmableProgress();
+  public void setDimmableProgress(float);
+}
+
+-keep class com.android.launcher2.DimmableAppWidgetHostView {
+  public float getDimmableProgress();
+  public void setDimmableProgress(float);
+}
+
+-keep class com.android.launcher2.Workspace {
+  public float getBackgroundAlpha();
+  public void setBackgroundAlpha(float);
 }
 
 -keep class com.android.launcher2.AllApps3D$Defines {

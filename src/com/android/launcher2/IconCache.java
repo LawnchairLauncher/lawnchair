@@ -16,13 +16,17 @@
 
 package com.android.launcher2;
 
+import com.android.launcher.R;
+
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.util.DisplayMetrics;
 
 import java.util.HashMap;
 
@@ -46,16 +50,49 @@ public class IconCache {
     private final Utilities.BubbleText mBubble;
     private final HashMap<ComponentName, CacheEntry> mCache =
             new HashMap<ComponentName, CacheEntry>(INITIAL_ICON_CACHE_CAPACITY);
+    private int mIconDpi;
 
     public IconCache(LauncherApplication context) {
         mContext = context;
         mPackageManager = context.getPackageManager();
         mBubble = new Utilities.BubbleText(context);
+        if (LauncherApplication.isScreenXLarge()) {
+            mIconDpi = DisplayMetrics.DENSITY_HIGH;
+        } else {
+            mIconDpi = context.getResources().getDisplayMetrics().densityDpi;
+        }
+        // need to set mIconDpi before getting default icon
         mDefaultIcon = makeDefaultIcon();
     }
 
+    public Drawable getFullResDefaultActivityIcon() {
+        return getFullResIcon(Resources.getSystem(),
+                com.android.internal.R.drawable.sym_def_app_icon);
+    }
+
+    public Drawable getFullResIcon(Resources resources, int iconId) {
+        return resources.getDrawableForDensity(iconId, mIconDpi);
+    }
+
+    public Drawable getFullResIcon(ResolveInfo info, PackageManager packageManager) {
+        Resources resources;
+        try {
+            resources = packageManager.getResourcesForApplication(
+                    info.activityInfo.applicationInfo);
+        } catch (PackageManager.NameNotFoundException e) {
+            resources = null;
+        }
+        if (resources != null) {
+            int iconId = info.activityInfo.getIconResource();
+            if (iconId != 0) {
+                return getFullResIcon(resources, iconId);
+            }
+        }
+        return getFullResDefaultActivityIcon();
+    }
+
     private Bitmap makeDefaultIcon() {
-        Drawable d = mPackageManager.getDefaultActivityIcon();
+        Drawable d = getFullResDefaultActivityIcon();
         Bitmap b = Bitmap.createBitmap(Math.max(d.getIntrinsicWidth(), 1),
                 Math.max(d.getIntrinsicHeight(), 1),
                 Bitmap.Config.ARGB_8888);
@@ -140,7 +177,7 @@ public class IconCache {
                 entry.title = info.activityInfo.name;
             }
             entry.icon = Utilities.createIconBitmap(
-                    info.activityInfo.loadIcon(mPackageManager), mContext);
+                    getFullResIcon(info, mPackageManager), mContext);
         }
         return entry;
     }

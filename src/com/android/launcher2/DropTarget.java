@@ -23,6 +23,12 @@ import android.graphics.Rect;
  *
  */
 public interface DropTarget {
+    /**
+     * Used to temporarily disable certain drop targets
+     *
+     * @return boolean specifying whether this drop target is currently enabled
+     */
+    boolean isDropEnabled();
 
     /**
      * Handle an object being dropped on the DropTarget
@@ -51,9 +57,28 @@ public interface DropTarget {
             DragView dragView, Object dragInfo);
 
     /**
+     * Allows a DropTarget to delegate drag and drop events to another object.
+     *
+     * Most subclasses will should just return null from this method.
+     *
+     * @param source DragSource where the drag started
+     * @param x X coordinate of the drop location
+     * @param y Y coordinate of the drop location
+     * @param xOffset Horizontal offset with the object being dragged where the original
+     *          touch happened
+     * @param yOffset Vertical offset with the object being dragged where the original
+     *          touch happened
+     * @param dragView The DragView that's being dragged around on screen.
+     * @param dragInfo Data associated with the object being dragged
+     *
+     * @return The DropTarget to delegate to, or null to not delegate to another object.
+     */
+    DropTarget getDropTargetDelegate(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo);
+
+    /**
      * Check if a drop action can occur at, or near, the requested location.
-     * This may be called repeatedly during a drag, so any calls should return
-     * quickly.
+     * This will be called just before onDrop.
      * 
      * @param source DragSource where the drag started
      * @param x X coordinate of the drop location
@@ -68,27 +93,6 @@ public interface DropTarget {
      */
     boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo);
-
-    /**
-     * Estimate the surface area where this object would land if dropped at the
-     * given location.
-     * 
-     * @param source DragSource where the drag started
-     * @param x X coordinate of the drop location
-     * @param y Y coordinate of the drop location
-     * @param xOffset Horizontal offset with the object being dragged where the
-     *            original touch happened
-     * @param yOffset Vertical offset with the object being dragged where the
-     *            original touch happened
-     * @param dragView The DragView that's being dragged around on screen.
-     * @param dragInfo Data associated with the object being dragged
-     * @param recycle {@link Rect} object to be possibly recycled.
-     * @return Estimated area that would be occupied if object was dropped at
-     *         the given location. Should return null if no estimate is found,
-     *         or if this target doesn't provide estimations.
-     */
-    Rect estimateDropLocation(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo, Rect recycle);
 
     // These methods are implemented in Views
     void getHitRect(Rect outRect);

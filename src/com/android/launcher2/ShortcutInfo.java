@@ -16,15 +16,13 @@
 
 package com.android.launcher2;
 
+import java.util.ArrayList;
+
 import android.content.ComponentName;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
-
-import java.util.ArrayList;
 
 /**
  * Represents a launchable icon on the workspaces and in folders.

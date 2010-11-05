@@ -21,11 +21,11 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.AbsListView;
-import android.widget.BaseAdapter;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 
@@ -148,7 +148,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
 
     void onClose() {
         final Workspace workspace = mLauncher.getWorkspace();
-        workspace.getChildAt(workspace.getCurrentScreen()).requestFocus();
+        workspace.getChildAt(workspace.getCurrentPage()).requestFocus();
     }
 
     void bind(FolderInfo info) {

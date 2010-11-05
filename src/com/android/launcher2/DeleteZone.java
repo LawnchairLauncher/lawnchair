@@ -16,24 +16,24 @@
 
 package com.android.launcher2;
 
-import android.widget.ImageView;
+import com.android.launcher.R;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
-import android.util.AttributeSet;
-import android.view.View;
-import android.view.animation.TranslateAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AlphaAnimation;
 import android.graphics.RectF;
 import android.graphics.drawable.TransitionDrawable;
-
-import com.android.launcher.R;
+import android.util.AttributeSet;
+import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.TranslateAnimation;
+import android.widget.ImageView;
 
 public class DeleteZone extends ImageView implements DropTarget, DragController.DragListener {
     private static final int ORIENTATION_HORIZONTAL = 1;
@@ -45,6 +45,13 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
     private Launcher mLauncher;
     private boolean mTrashMode;
 
+    /**
+     * If true, this View responsible for managing its own visibility, and that of its handle.
+     * This is generally the case, but it will be set to false when this is part of the
+     * Contextual Action Bar.
+     */
+    private boolean mManageVisibility = true;
+
     private AnimationSet mInAnimation;
     private AnimationSet mOutAnimation;
     private Animation mHandleInAnimation;
@@ -53,10 +60,13 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
     private int mOrientation;
     private DragController mDragController;
 
-    private final RectF mRegion = new RectF();
+    private final RectF mRegionF = new RectF();
+    private final Rect mRegion = new Rect();
     private TransitionDrawable mTransition;
-    private View mHandle;
     private final Paint mTrashPaint = new Paint();
+
+    /** The View that this view will replace. */
+    private View mHandle = null;
 
     public DeleteZone(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -71,6 +81,7 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DeleteZone, defStyle, 0);
         mOrientation = a.getInt(R.styleable.DeleteZone_direction, ORIENTATION_HORIZONTAL);
         a.recycle();
+
     }
 
     @Override
@@ -83,15 +94,15 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
             DragView dragView, Object dragInfo) {
         return true;
     }
-    
-    public Rect estimateDropLocation(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo, Rect recycle) {
-        return null;
-    }
 
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
         final ItemInfo item = (ItemInfo) dragInfo;
+
+        // On x-large screens, you can uninstall an app by dragging from all apps
+        if (item instanceof ApplicationInfo && LauncherApplication.isScreenXLarge()) {
+            mLauncher.startApplicationUninstallActivity((ApplicationInfo) item);
+        }
 
         if (item.container == -1) return;
 
@@ -99,15 +110,14 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
             if (item instanceof LauncherAppWidgetInfo) {
                 mLauncher.removeAppWidget((LauncherAppWidgetInfo) item);
             }
-        } else {
-            if (source instanceof UserFolder) {
-                final UserFolder userFolder = (UserFolder) source;
-                final UserFolderInfo userFolderInfo = (UserFolderInfo) userFolder.getInfo();
-                // Item must be a ShortcutInfo otherwise it couldn't have been in the folder
-                // in the first place.
-                userFolderInfo.remove((ShortcutInfo)item);
-            }
+        } else if (source instanceof UserFolder) {
+            final UserFolder userFolder = (UserFolder) source;
+            final UserFolderInfo userFolderInfo = (UserFolderInfo) userFolder.getInfo();
+            // Item must be a ShortcutInfo otherwise it couldn't have been in the folder
+            // in the first place.
+            userFolderInfo.remove((ShortcutInfo)item);
         }
+
         if (item instanceof UserFolderInfo) {
             final UserFolderInfo userFolderInfo = (UserFolderInfo)item;
             LauncherModel.deleteUserFolderContentsFromDatabase(mLauncher, userFolderInfo);
@@ -126,6 +136,7 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
                 }.start();
             }
         }
+
         LauncherModel.deleteItemFromDatabase(mLauncher, item);
     }
 
@@ -149,16 +160,27 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
         final ItemInfo item = (ItemInfo) info;
         if (item != null) {
             mTrashMode = true;
-            createAnimations();
-            final int[] location = mLocation;
-            getLocationOnScreen(location);
-            mRegion.set(location[0], location[1], location[0] + mRight - mLeft,
-                    location[1] + mBottom - mTop);
-            mDragController.setDeleteRegion(mRegion);
+            getHitRect(mRegion);
+            mRegionF.set(mRegion);
+
+            if (LauncherApplication.isScreenXLarge()) {
+                // This region will be a "dead zone" for scrolling; make it extend to the edge of
+                // the screen so users don't accidentally trigger a scroll while deleting items
+                mRegionF.top = mLauncher.getWorkspace().getTop();
+                mRegionF.right = mLauncher.getWorkspace().getRight();
+            }
+
+            mDragController.setDeleteRegion(mRegionF);
+
+            // Make sure the icon is set to the default drawable, not the hover drawable
             mTransition.resetTransition();
-            startAnimation(mInAnimation);
-            mHandle.startAnimation(mHandleOutAnimation);
-            setVisibility(VISIBLE);
+
+            if (mManageVisibility) {
+                createAnimations();
+                startAnimation(mInAnimation);
+                mHandle.startAnimation(mHandleOutAnimation);
+                setVisibility(VISIBLE);
+            }
         }
     }
 
@@ -166,9 +188,33 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
         if (mTrashMode) {
             mTrashMode = false;
             mDragController.setDeleteRegion(null);
-            startAnimation(mOutAnimation);
-            mHandle.startAnimation(mHandleInAnimation);
-            setVisibility(GONE);
+
+            if (mOutAnimation != null) startAnimation(mOutAnimation);
+            if (mHandleInAnimation != null) mHandle.startAnimation(mHandleInAnimation);
+
+            if (mManageVisibility) {
+                setVisibility(GONE);
+            }
+        }
+    }
+
+    public boolean isDropEnabled() {
+        return true;
+    }
+
+    @Override
+    public void getHitRect(Rect outRect) {
+        super.getHitRect(outRect);
+        if (LauncherApplication.isScreenXLarge()) {
+            // TODO: This is a temporary hack. mManageVisiblity = false when you're in CAB mode.
+            // In that case, this icon is more tightly spaced next to the delete icon so we want
+            // it to have a smaller drag region. When the new drag&drop system comes in, we'll
+            // dispatch the drag/drop by calculating what target you're overlapping
+            final int dragPadding = mManageVisibility ? 50 : 10;
+            outRect.top -= dragPadding;
+            outRect.left -= dragPadding;
+            outRect.bottom += dragPadding;
+            outRect.right += dragPadding;
         }
     }
 
@@ -228,6 +274,10 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
         mHandle = view;
     }
 
+    void setManageVisibility(boolean value) {
+        mManageVisibility = value;
+    }
+
     private static class FastTranslateAnimation extends TranslateAnimation {
         public FastTranslateAnimation(int fromXType, float fromXValue, int toXType, float toXValue,
                 int fromYType, float fromYValue, int toYType, float toYValue) {
@@ -260,5 +310,11 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
         public boolean willChangeBounds() {
             return false;
         }
+    }
+
+    @Override
+    public DropTarget getDropTargetDelegate(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo) {
+        return null;
     }
 }

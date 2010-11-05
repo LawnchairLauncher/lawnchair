@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2009 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<resources>
+    <dimen name="workspace_cell_width">96dip</dimen>
+    <dimen name="workspace_cell_height">96dip</dimen>
+
+    <!-- Width/height gap overrides for the workspace -->
+    <dimen name="workspace_width_gap">0dp</dimen>
+    <dimen name="workspace_height_gap">0dp</dimen>
+
+    <!-- The corner radius to draw the external drop icon rounded rect -->
+    <dimen name="external_drop_icon_rect_radius">10dp</dimen>
+    
+    <!-- Size of icons in workspace -->
+    <dimen name="app_icon_size">72dp</dimen>
+
+    <!-- extra horizontal spacing between mini screen thumbnails ie. in all
+         apps and in customization mode -->
+    <dimen name="smallScreenExtraSpacing">0dip</dimen>
+
+    <!-- Vertical spacing between edge of screen and mini cell layouts when they
+         are minimized to the bottom in all apps -->
+    <dimen name="allAppsSmallScreenVerticalMarginLandscape">30dip</dimen>
+    <dimen name="allAppsSmallScreenVerticalMarginPortrait">60dip</dimen>
+
+    <!-- Vertical spacing between edge of screen and mini cell layouts when they
+         are minimized to the top when the customization drawer is showing -->
+    <dimen name="customizeSmallScreenVerticalMarginLandscape">90dip</dimen>
+    <dimen name="customizeSmallScreenVerticalMarginPortrait">180dip</dimen>
+
+    <dimen name="toolbar_padding">10dip</dimen>
+
+    <dimen name="toolbar_button_spacing">20dip</dimen>
+</resources>

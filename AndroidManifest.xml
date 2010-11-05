@@ -66,7 +66,8 @@
         android:name="com.android.launcher2.LauncherApplication"
         android:process="@string/process"
         android:label="@string/application_name"
-        android:icon="@drawable/ic_launcher_home">
+        android:icon="@drawable/ic_launcher_home"
+        android:hardwareAccelerated="@bool/config_hardwareAccelerated">
 
         <activity
             android:name="com.android.launcher2.Launcher"
@@ -74,7 +75,6 @@
             android:clearTaskOnLaunch="true"
             android:stateNotNeeded="true"
             android:theme="@style/Theme"
-            android:screenOrientation="nosensor"
             android:windowSoftInputMode="stateUnspecified|adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

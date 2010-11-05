@@ -43,6 +43,46 @@
     <string name="activity_not_found">Application is not installed on your phone.</string>
     <!-- List item for configuring the current wallpaper -->
     <string name="configure_wallpaper">Configure...</string>
+    <!--  Labels for the tabs in the customize drawer -->
+    <string name="widgets_tab_label">Widgets</string>
+    <!--  Title of tab containing all possible folders (ie standard Folders and Live Folders) that 
+          can be added to the home screen -->
+    <string name="folders_tab_label">Folders</string>
+    <!--  Title of tab containing all possible shortcuts (eg Contacts, Bookmarks) that can be
+          added to the home screen -->
+    <string name="shortcuts_tab_label">More</string>
+    <!--  Title of tab for configuring wallpapers -->
+    <string name="wallpapers_tab_label">Wallpapers</string>
+    <!--  Title of tab for configuring applications -->
+    <string name="applications_tab_label">App Shortcuts</string>
+    <!--  Placeholder text, will be removed -->
+    <string name="wallpapers_temp_tab_text">This will be the wallpapers tab</string>
+    <!--  Labels for the tabs in All Apps -->
+    <!--  Title of the tab for all applications (includes games and non-games) [CHAR_LIMIT=12] -->
+    <string name="all_apps_tab_all">All</string>
+    <!--  Title of the tab for all applications *except* games [CHAR_LIMIT=12] -->
+    <string name="all_apps_tab_apps">Apps</string>
+    <!--  Title of the tab for applications labeled as games [CHAR_LIMIT=12] -->
+    <string name="all_apps_tab_games">Games</string>
+    <!--  Tile of the tab for applications that were downloaded from market [CHAR_LIMIT=12] -->
+    <string name="all_apps_tab_downloaded">Downloaded</string>
+
+    <!-- All Apps pane -->
+    <!-- Message to show when there are no games [CHAR_LIMIT=25] -->
+    <string name="all_apps_no_games">No games found.</string>
+    <!-- Message to show when there are no downloaded apps [CHAR_LIMIT=25] -->
+    <string name="all_apps_no_downloads">No downloaded apps found.</string>
+
+    <!-- Customization Drawer -->
+    <!-- The format string for the dimensions of a widget in the drawer -->
+    <string name="widget_dims_format" translatable="false">%1$d x %2$d</string>
+
+    <!-- External-drop widget pick label format string [CHAR_LIMIT=25] -->
+    <string name="external_drop_widget_pick_format" translatable="false">%1$s (%2$d x %3$d)</string>
+    <!-- External-drop widget error string -->
+    <string name="external_drop_widget_error">Could not install clipboard item</string>
+    <!-- External-drop widget pick title -->
+    <string name="external_drop_widget_pick_title">Select widget to create</string>
 
     <!-- Folders -->
     <skip />
@@ -93,8 +133,8 @@
     <!-- Title of dialog when user is selecting live folder to add to homescreen -->
     <string name="title_select_live_folder">Select folder</string>
 
-    <!-- All applications label for accessibilty (spoken when the button gets focus). -->
-    <string name="all_apps_button_label">All applications</string>
+    <!-- All applications label -->
+    <string name="all_apps_button_label">Apps</string>
     <!-- Label for button in all applications label to go back home (to the workspace / desktop)
          for accessibilty (spoken when the button gets focus). -->
     <string name="all_apps_home_button_label">Home</string>
@@ -115,6 +155,23 @@
     <string name="menu_gestures">Gestures</string>
     <!-- Noun, menu item used to show the system settings -->
     <string name="menu_settings">Settings</string>
+
+    <!--  Strings for the contextual action bar (CAB) in All Apps -->
+    <skip />
+    <!-- Describes the button for uninstalling the currently selected application.
+         Text is not displayed, but provided for accessibility. [CHAR_LIMIT=none] -->
+    <string name="cab_menu_delete_app">Uninstall application</string>
+    <!-- Describes the button for getting details/info about currently selected application.
+         Text is not displayed, but provided for accessibility. [CHAR_LIMIT=none] -->
+    <string name="cab_menu_app_info">Application details</string>
+    <!-- Appears in the CAB when an app is selected in All Apps or Customize mode. [CHAR_LIMIT=50] -->
+    <string name="cab_app_selection_text">1 application selected</string>
+    <!-- Appears in the CAB when a widget is selected in Customize mode. [CHAR_LIMIT=50] -->
+    <string name="cab_widget_selection_text">1 widget selected</string>
+    <!-- Appears in the CAB when a folder is selected in Customize mode. [CHAR_LIMIT=50] -->
+    <string name="cab_folder_selection_text">1 folder selected</string>
+    <!-- Appears in the CAB when a shortcut is selected in Customize mode. [CHAR_LIMIT=50] -->
+    <string name="cab_shortcut_selection_text">1 shortcut selected</string>
 
     <!-- Permissions: -->
     <skip />
@@ -151,4 +208,6 @@
     <string name="default_browser_url" translatable="false">
         http://www.google.com/m?client=ms-{CID}&amp;source=android-home-hotseat</string>
 
+    <!--  Text to inform the user that they can't uninstall a system application -->
+    <string name="uninstall_system_app_text">This is a system application and cannot be uninstalled.</string>
 </resources>

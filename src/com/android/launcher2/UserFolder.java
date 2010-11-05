@@ -3,10 +3,8 @@ package com.android.launcher2;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
 
 import com.android.launcher.R;
 
@@ -39,11 +37,6 @@ public class UserFolder extends Folder implements DropTarget {
         return (itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
                     itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT)
                 && item.container != mInfo.id;
-    }
-    
-    public Rect estimateDropLocation(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo, Rect recycle) {
-        return null;
     }
 
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
@@ -79,6 +72,10 @@ public class UserFolder extends Folder implements DropTarget {
         }
     }
 
+    public boolean isDropEnabled() {
+        return true;
+    }
+
     void bind(FolderInfo info) {
         super.bind(info);
         setContentAdapter(new ShortcutsAdapter(mContext, ((UserFolderInfo) info).contents));
@@ -90,5 +87,11 @@ public class UserFolder extends Folder implements DropTarget {
     void onOpen() {
         super.onOpen();
         requestFocus();
+    }
+
+    @Override
+    public DropTarget getDropTargetDelegate(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo) {
+        return null;
     }
 }

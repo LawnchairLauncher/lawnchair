@@ -20,6 +20,7 @@ import android.app.Application;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.os.Handler;
 import dalvik.system.VMRuntime;
@@ -27,12 +28,19 @@ import dalvik.system.VMRuntime;
 public class LauncherApplication extends Application {
     public LauncherModel mModel;
     public IconCache mIconCache;
+    private static boolean sIsScreenXLarge;
+    private static float sScreenDensity;
+    private static final boolean ENABLE_ROTATION = false;
 
     @Override
     public void onCreate() {
         VMRuntime.getRuntime().setMinimumHeapSize(4 * 1024 * 1024);
 
         super.onCreate();
+
+        // set sIsScreenXLarge and sScreenDensity *before* creating icon cache
+        sIsScreenXLarge = (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE;
+        sScreenDensity = getResources().getDisplayMetrics().density;
 
         mIconCache = new IconCache(this);
         mModel = new LauncherModel(this, mIconCache);
@@ -46,6 +54,7 @@ public class LauncherApplication extends Application {
         filter = new IntentFilter();
         filter.addAction(Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE);
         filter.addAction(Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE);
+        filter.addAction(Intent.ACTION_LOCALE_CHANGED);
         registerReceiver(mModel, filter);
 
         // Register for changes to the favorites
@@ -88,5 +97,17 @@ public class LauncherApplication extends Application {
 
     LauncherModel getModel() {
         return mModel;
+    }
+
+    public static boolean isInPlaceRotationEnabled() {
+        return sIsScreenXLarge && ENABLE_ROTATION;
+    }
+
+    public static boolean isScreenXLarge() {
+        return sIsScreenXLarge;
+    }
+
+    public static float getScreenDensity() {
+        return sScreenDensity;
     }
 }

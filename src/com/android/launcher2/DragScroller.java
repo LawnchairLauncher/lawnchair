@@ -23,4 +23,16 @@ package com.android.launcher2;
 public interface DragScroller {
     void scrollLeft();
     void scrollRight();
+
+    /**
+     * The touch point has entered the scroll area; a scroll is imminent.
+     *
+     * @param direction The scroll direction
+     */
+    void onEnterScrollArea(int direction);
+
+    /**
+     * The touch point has left the scroll area.
+     */
+    void onExitScrollArea();
 }

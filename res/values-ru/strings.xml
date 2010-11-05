@@ -27,6 +27,20 @@
     <string name="pick_wallpaper" msgid="5630222540525626723">"Обои"</string>
     <string name="activity_not_found" msgid="3571057450431950427">"Приложение не установлено на телефоне."</string>
     <string name="configure_wallpaper" msgid="2820186271419674623">"Настроить..."</string>
+    <string name="widgets_tab_label" msgid="9145860100000983599">"Виджеты"</string>
+    <string name="folders_tab_label" msgid="1145293785541489736">"Папки"</string>
+    <string name="shortcuts_tab_label" msgid="8640731503933155644">"Еще"</string>
+    <string name="wallpapers_tab_label" msgid="1617804870364119879">"Обои"</string>
+    <string name="applications_tab_label" msgid="9046797126882613707">"Ярлыки приложений"</string>
+    <string name="wallpapers_temp_tab_text" msgid="1660218201190495279">"Это будет вкладка обоев"</string>
+    <string name="all_apps_tab_all" msgid="2942727589595027258">"Все"</string>
+    <string name="all_apps_tab_apps" msgid="5468972551904071712">"Приложения"</string>
+    <string name="all_apps_tab_games" msgid="1855736784923494918">"Игры"</string>
+    <string name="all_apps_tab_downloaded" msgid="2300935549064726963">"Загруженные"</string>
+    <!-- no translation found for all_apps_no_games (5293893733372793696) -->
+    <skip />
+    <!-- no translation found for all_apps_no_downloads (6145042636084482299) -->
+    <skip />
     <string name="rename_folder_label" msgid="5646236631298452787">"Название папки"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Переименовать папку"</string>
     <string name="rename_action" msgid="6016003384693240896">"ОК"</string>
@@ -48,7 +62,7 @@
     <string name="title_select_shortcut" msgid="2858897527672831763">"Выберите ярлык"</string>
     <string name="title_select_application" msgid="8031072293115454221">"Выбор приложения"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"Выбор папки"</string>
-    <string name="all_apps_button_label" msgid="3953036962111614813">"Все приложения"</string>
+    <string name="all_apps_button_label" msgid="2578400570124163469">"Приложения"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Главная"</string>
     <string name="menu_add" msgid="3065046628354640854">"Добавить"</string>
     <string name="menu_manage_apps" msgid="2308685199463588895">"Управление приложениями"</string>
@@ -57,6 +71,12 @@
     <string name="menu_notifications" msgid="6424587053194766192">"Уведомления"</string>
     <string name="menu_gestures" msgid="514678675575912237">"Жесты"</string>
     <string name="menu_settings" msgid="6233960148378443661">"Настройки"</string>
+    <string name="cab_menu_delete_app" msgid="1242619904941293871">"Удалить приложение"</string>
+    <string name="cab_menu_app_info" msgid="5180426909324882018">"Сведения о приложении"</string>
+    <string name="cab_app_selection_text" msgid="606113924828167756">"Выбрано 1 приложение"</string>
+    <string name="cab_widget_selection_text" msgid="962527270506951955">"Выбран 1 виджет"</string>
+    <string name="cab_folder_selection_text" msgid="8916111874189565067">"Выбрана 1 папка"</string>
+    <string name="cab_shortcut_selection_text" msgid="8115847384500412878">"Выбран 1 ярлык"</string>
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"устанавливать ярлыки"</string>
     <string name="permdesc_install_shortcut" msgid="7429365847558984148">"Позволяет приложению добавлять ярлыки без вмешательства пользователя"</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"удалять ярлыки"</string>
@@ -66,4 +86,5 @@
     <string name="permlab_write_settings" msgid="1360567537236705628">"изменять настройки и ярлыки главного экрана"</string>
     <string name="permdesc_write_settings" msgid="1098648778383349818">"Позволяет приложению изменять настройки и ярлыки на главном экране."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Не удалось загрузить виджет"</string>
+    <string name="uninstall_system_app_text" msgid="7488523163288397451">"Это системное приложение. Удалить его невозможно."</string>
 </resources>

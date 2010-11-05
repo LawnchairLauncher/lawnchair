@@ -28,4 +28,9 @@
 
     <color name="gesture_color">#ff0563c1</color>
     <color name="uncertain_gesture_color">#ff848484</color>
+
+    <color name="app_info_filter">#A50000FE</color>
+    <color name="dimmed_view_color">#FF7F7F7F</color>
+
+    <color name="drag_outline_color">#9DBE12</color>
 </resources>

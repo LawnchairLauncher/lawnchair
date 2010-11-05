@@ -17,12 +17,11 @@
 package com.android.launcher2;
 
 import android.content.ComponentName;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -31,6 +30,7 @@ import java.util.ArrayList;
  * Represents an app in AllAppsView.
  */
 class ApplicationInfo extends ItemInfo {
+    private static final String TAG = "Launcher2.ApplicationInfo";
 
     /**
      * The application name.
@@ -54,6 +54,10 @@ class ApplicationInfo extends ItemInfo {
 
     ComponentName componentName;
 
+    static final int APP_FLAG = 1;
+    static final int GAME_FLAG = 2;
+    static final int DOWNLOADED_FLAG = 4;
+    int flags = 0;
 
     ApplicationInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
@@ -62,14 +66,31 @@ class ApplicationInfo extends ItemInfo {
     /**
      * Must not hold the Context.
      */
-    public ApplicationInfo(ResolveInfo info, IconCache iconCache) {
-        this.componentName = new ComponentName(
-                info.activityInfo.applicationInfo.packageName,
-                info.activityInfo.name);
+    public ApplicationInfo(PackageManager pm, ResolveInfo info, IconCache iconCache) {
+        final String packageName = info.activityInfo.applicationInfo.packageName;
 
+        this.componentName = new ComponentName(packageName, info.activityInfo.name);
         this.container = ItemInfo.NO_ID;
         this.setActivity(componentName,
                 Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+
+        try {
+            int appFlags = pm.getApplicationInfo(packageName, 0).flags;
+            if ((appFlags & android.content.pm.ApplicationInfo.FLAG_SYSTEM) == 0) {
+                flags |= DOWNLOADED_FLAG;
+            }
+            if ((appFlags & android.content.pm.ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0) {
+                flags |= DOWNLOADED_FLAG;
+            }
+            // TODO: Figure out how to determine what is a game
+
+            // If it's not a game, it's an app
+            if ((flags & GAME_FLAG) == 0) {
+                flags |= APP_FLAG;
+            }
+        } catch (NameNotFoundException e) {
+            Log.d(TAG, "PackageManager.getApplicationInfo failed for " + packageName);
+        }
 
         iconCache.getTitleAndIcon(this, info);
     }
@@ -79,6 +100,7 @@ class ApplicationInfo extends ItemInfo {
         componentName = info.componentName;
         title = info.title.toString();
         intent = new Intent(info.intent);
+        flags = info.flags;
     }
 
     /**

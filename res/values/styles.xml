@@ -18,7 +18,10 @@
 -->
 
 <resources>
-    <style name="Theme" parent="android:Theme.Wallpaper">
+    <style name="Theme.Base" parent="android:Theme.Wallpaper">
+    </style>
+
+    <style name="Theme" parent="Theme.Base">
         <item name="android:windowNoTitle">true</item>
     </style>
 

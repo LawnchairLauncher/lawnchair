@@ -17,6 +17,7 @@
 package com.android.launcher2;
 
 import android.graphics.drawable.Drawable;
+import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -26,6 +27,7 @@ class FastBitmapDrawable extends Drawable {
     private Bitmap mBitmap;
     private int mWidth;
     private int mHeight;
+    private final Paint mPaint = new Paint();
 
     FastBitmapDrawable(Bitmap b) {
         mBitmap = b;
@@ -39,7 +41,7 @@ class FastBitmapDrawable extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawBitmap(mBitmap, 0.0f, 0.0f, null);
+        canvas.drawBitmap(mBitmap, 0.0f, 0.0f, mPaint);
     }
 
     @Override
@@ -49,6 +51,7 @@ class FastBitmapDrawable extends Drawable {
 
     @Override
     public void setAlpha(int alpha) {
+        mPaint.setAlpha(alpha);
     }
 
     @Override

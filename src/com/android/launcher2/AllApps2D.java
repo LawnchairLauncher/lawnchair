@@ -16,31 +16,29 @@
 
 package com.android.launcher2;
 
+import com.android.launcher.R;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.Bitmap;
-import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.view.ViewConfiguration;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
-import com.android.launcher.R;
 
 public class AllApps2D
         extends RelativeLayout
@@ -58,7 +56,15 @@ public class AllApps2D
 
     private GridView mGrid;
 
+    /** All applications in the system (we might only be showing a subset) */
     private ArrayList<ApplicationInfo> mAllAppsList = new ArrayList<ApplicationInfo>();
+
+    /** Currently visible applications in the grid */
+    private ArrayList<ApplicationInfo> mVisibleAppsList = new ArrayList<ApplicationInfo>();
+
+    public enum AppType { APP, GAME, DOWNLOADED, ALL };
+
+    private AppType mCurrentFilter = AppType.ALL;
 
     // preserve compatibility with 3D all apps:
     //    0.0 -> hidden
@@ -120,30 +126,27 @@ public class AllApps2D
         setVisibility(View.GONE);
         setSoundEffectsEnabled(false);
 
-        mAppsAdapter = new AppsAdapter(getContext(), mAllAppsList);
-        mAppsAdapter.setNotifyOnChange(false);
+        mAppsAdapter = new AppsAdapter(getContext(), mVisibleAppsList);
     }
 
     @Override
     protected void onFinishInflate() {
-        setBackgroundColor(Color.BLACK);
-
         try {
             mGrid = (GridView)findViewWithTag("all_apps_2d_grid");
             if (mGrid == null) throw new Resources.NotFoundException();
             mGrid.setOnItemClickListener(this);
             mGrid.setOnItemLongClickListener(this);
-            mGrid.setBackgroundColor(Color.BLACK);
-            mGrid.setCacheColorHint(Color.BLACK);
             
+            // The home button is optional; some layouts might not use it
             ImageButton homeButton = (ImageButton) findViewWithTag("all_apps_2d_home");
-            if (homeButton == null) throw new Resources.NotFoundException();
-            homeButton.setOnClickListener(
-                new View.OnClickListener() {
-                    public void onClick(View v) {
-                        mLauncher.closeAllApps(true);
-                    }
-                });
+            if (homeButton != null) {
+                homeButton.setOnClickListener(
+                    new View.OnClickListener() {
+                        public void onClick(View v) {
+                            mLauncher.closeAllApps(true);
+                        }
+                    });
+            }
         } catch (Resources.NotFoundException e) {
             Log.e(TAG, "Can't find necessary layout elements for AllApps2D");
         }
@@ -250,19 +253,17 @@ public class AllApps2D
         return mZoom > 0.001f;
     }
 
-    @Override
-    public boolean isOpaque() {
-        return mZoom > 0.999f;
+    public boolean isAnimating() {
+        return (getAnimation() != null);
     }
 
     public void setApps(ArrayList<ApplicationInfo> list) {
         mAllAppsList.clear();
         addApps(list);
+        filterApps(mCurrentFilter);
     }
 
     public void addApps(ArrayList<ApplicationInfo> list) {
-//        Log.d(TAG, "addApps: " + list.size() + " apps: " + list.toString());
-
         final int N = list.size();
 
         for (int i=0; i<N; i++) {
@@ -274,11 +275,12 @@ public class AllApps2D
             }
             mAllAppsList.add(index, item);
         }
-        mAppsAdapter.notifyDataSetChanged();
+        filterApps(mCurrentFilter);
     }
 
     public void removeApps(ArrayList<ApplicationInfo> list) {
         final int N = list.size();
+
         for (int i=0; i<N; i++) {
             final ApplicationInfo item = list.get(i);
             int index = findAppByComponent(mAllAppsList, item);
@@ -289,13 +291,40 @@ public class AllApps2D
                 // Try to recover.  This should keep us from crashing for now.
             }
         }
-        mAppsAdapter.notifyDataSetChanged();
+        filterApps(mCurrentFilter);
     }
 
     public void updateApps(ArrayList<ApplicationInfo> list) {
         // Just remove and add, because they may need to be re-sorted.
         removeApps(list);
         addApps(list);
+    }
+
+    public void filterApps(AppType appType) {
+        mCurrentFilter = appType;
+
+        mAppsAdapter.setNotifyOnChange(false);
+        mVisibleAppsList.clear();
+        if (appType == AppType.ALL) {
+            mVisibleAppsList.addAll(mAllAppsList);
+        } else {
+            int searchFlags = 0;
+
+            if (appType == AppType.APP) {
+                searchFlags = ApplicationInfo.APP_FLAG;
+            } else if (appType == AppType.GAME) {
+                searchFlags = ApplicationInfo.GAME_FLAG;
+            } else if (appType == AppType.DOWNLOADED) {
+                searchFlags = ApplicationInfo.DOWNLOADED_FLAG;
+            }
+
+            for (ApplicationInfo info : mAllAppsList) {
+                if ((info.flags & searchFlags) != 0) {
+                    mVisibleAppsList.add(info);
+                }
+            }
+        }
+        mAppsAdapter.notifyDataSetChanged();
     }
 
     private static int findAppByComponent(ArrayList<ApplicationInfo> list, ApplicationInfo item) {

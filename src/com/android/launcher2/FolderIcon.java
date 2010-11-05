@@ -29,7 +29,7 @@ import com.android.launcher.R;
 /**
  * An icon that can appear on in the workspace representing an {@link UserFolder}.
  */
-public class FolderIcon extends BubbleTextView implements DropTarget {
+public class FolderIcon extends DimmableBubbleTextView implements DropTarget {
     private UserFolderInfo mInfo;
     private Launcher mLauncher;
     private Drawable mCloseIcon;
@@ -43,15 +43,19 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
         super(context);
     }
 
+    public boolean isDropEnabled() {
+        return !((Workspace)getParent().getParent()).isSmall();
+    }
+
     static FolderIcon fromXml(int resId, Launcher launcher, ViewGroup group,
-            UserFolderInfo folderInfo) {
+            UserFolderInfo folderInfo, IconCache iconCache) {
 
         FolderIcon icon = (FolderIcon) LayoutInflater.from(launcher).inflate(resId, group, false);
 
         final Resources resources = launcher.getResources();
-        Drawable d = resources.getDrawable(R.drawable.ic_launcher_folder);
+        Drawable d = iconCache.getFullResIcon(resources, R.drawable.ic_launcher_folder);
         icon.mCloseIcon = d;
-        icon.mOpenIcon = resources.getDrawable(R.drawable.ic_launcher_folder_open);
+        icon.mOpenIcon = iconCache.getFullResIcon(resources, R.drawable.ic_launcher_folder_open);
         icon.setCompoundDrawablesWithIntrinsicBounds(null, d, null, null);
         icon.setText(folderInfo.title);
         icon.setTag(folderInfo);
@@ -71,11 +75,6 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
                 && item.container != mInfo.id;
     }
 
-    public Rect estimateDropLocation(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo, Rect recycle) {
-        return null;
-    }
-
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
         ShortcutInfo item;
@@ -91,7 +90,9 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
 
     public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
-        setCompoundDrawablesWithIntrinsicBounds(null, mOpenIcon, null, null);
+        if (acceptDrop(source, x, y, xOffset, yOffset, dragView, dragInfo)) {
+            setCompoundDrawablesWithIntrinsicBounds(null, mOpenIcon, null, null);
+        }
     }
 
     public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
@@ -101,5 +102,11 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
     public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
         setCompoundDrawablesWithIntrinsicBounds(null, mCloseIcon, null, null);
+    }
+
+    @Override
+    public DropTarget getDropTargetDelegate(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo) {
+        return null;
     }
 }
