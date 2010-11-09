@@ -21,22 +21,25 @@
     android:orientation="vertical">
     
     <Button
-        android:id="@+id/folder_close"
-    	android:background="@drawable/box_launcher_top"
-        android:gravity="left|center_vertical"
-        android:textSize="14sp"
-        android:textColor="#404040"
-        android:textStyle="bold"
-        android:layout_width="match_parent"
-    	android:layout_height="wrap_content" />
+         android:id="@+id/folder_close"
+	   android:background="@drawable/box_launcher_top"
+         android:gravity="left|center_vertical"
+         android:textSize="14sp"
+         android:textColor="#404040"
+         android:textStyle="bold"
+         android:layout_width="match_parent"
+	   android:layout_height="wrap_content" />
 
-    <ListView
-        android:id="@id/folder_content"
-        android:layout_width="match_parent"
-    	android:layout_height="0dip"
-    	android:layout_weight="1"
-
-        android:cacheColorHint="#ff333333"
-        android:background="@drawable/box_launcher_bottom" />
+    <FrameLayout
+         android:layout_width="match_parent"
+	   android:layout_height="0dip"
+         android:layout_weight="1"
+         android:background="@drawable/box_launcher_bottom">
+        <ListView
+             android:id="@id/folder_content"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:cacheColorHint="#ff333333" />
+    </FrameLayout>
 
 </com.android.launcher2.LiveFolder>
