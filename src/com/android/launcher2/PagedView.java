@@ -248,8 +248,12 @@ public abstract class PagedView extends ViewGroup {
      * Sets the current page.
      */
     void setCurrentPage(int currentPage) {
-        if (!mScroller.isFinished()) mScroller.abortAnimation();
-        if (getChildCount() == 0) return;
+        if (!mScroller.isFinished()) {
+            mScroller.abortAnimation();
+        }
+        if (getChildCount() == 0 || currentPage == mCurrentPage) {
+            return;
+        }
 
         mCurrentPage = Math.max(0, Math.min(currentPage, getPageCount() - 1));
         int newX = getChildOffset(mCurrentPage) - getRelativeChildOffset(mCurrentPage);
