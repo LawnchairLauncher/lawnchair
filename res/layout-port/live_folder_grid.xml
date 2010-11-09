@@ -30,21 +30,25 @@
         android:layout_width="match_parent"
     	android:layout_height="wrap_content" />
 
-    <GridView
-        android:id="@id/folder_content"
-        android:layout_width="match_parent"
-    	android:layout_height="0dip"
-    	android:layout_weight="1"
+    <FrameLayout
+         android:layout_width="match_parent"
+	   android:layout_height="0dip"
+         android:layout_weight="1"
+         android:background="@drawable/box_launcher_bottom">
+        <GridView
+             android:id="@id/folder_content"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
 
-        android:cacheColorHint="#ff333333"
-        android:background="@drawable/box_launcher_bottom"
+             android:cacheColorHint="#ff333333"
 
-        android:scrollbarAlwaysDrawVerticalTrack="true"
-        android:scrollbarStyle="insideInset"
-        android:drawSelectorOnTop="false"
-        android:listSelector="@drawable/grid_selector"
+             android:scrollbarAlwaysDrawVerticalTrack="true"
+             android:scrollbarStyle="insideInset"
+             android:drawSelectorOnTop="false"
+             android:listSelector="@drawable/grid_selector"
 
-        android:verticalSpacing="10dip"
-        android:numColumns="4" />
+             android:verticalSpacing="10dip"
+             android:numColumns="4" />
+    </FrameLayout>
 
 </com.android.launcher2.LiveFolder>

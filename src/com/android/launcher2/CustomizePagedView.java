@@ -462,7 +462,7 @@ public class CustomizePagedView extends PagedView
      * otherwise, it will try to generate a default image preview with the widget's package icon.
      * @return the drawable will be used and sized in the ImageView to represent the widget
      */
-    private Drawable getWidgetIcon(AppWidgetProviderInfo info) {
+    private Drawable getWidgetPreview(AppWidgetProviderInfo info) {
         PackageManager packageManager = mLauncher.getPackageManager();
         String packageName = info.provider.getPackageName();
         Drawable drawable = null;
@@ -510,19 +510,21 @@ public class CustomizePagedView extends PagedView
             drawable = new FastBitmapDrawable(bitmap);
         } else {
             // Scale down the preview if necessary
-            final float aspect = (float) info.minWidth / info.minHeight;
-            final int boundedWidth = (int) Math.max(minDim, Math.min(maxDim, info.minWidth));
-            final int boundedHeight = (int) Math.max(minDim, Math.min(maxDim, info.minHeight));
-            final int scaledWidth = (int) (boundedWidth * sScaleFactor);
-            final int scaledHeight = (int) (boundedHeight * sScaleFactor);
+            final float imageWidth = drawable.getIntrinsicWidth();
+            final float imageHeight = drawable.getIntrinsicHeight();
+            final float aspect = (float) imageWidth / imageHeight;
+            final int scaledWidth =
+                (int) (Math.max(minDim, Math.min(maxDim, imageWidth)) * sScaleFactor);
+            final int scaledHeight =
+                (int) (Math.max(minDim, Math.min(maxDim, imageHeight)) * sScaleFactor);
             int width;
             int height;
-            if (scaledWidth > scaledHeight) {
+            if (aspect >= 1.0f) {
                 width = scaledWidth;
-                height = (int) (width / aspect);
+                height = (int) (((float) scaledWidth / imageWidth) * imageHeight);
             } else {
                 height = scaledHeight;
-                width = (int) (height * aspect);
+                width = (int) (((float) scaledHeight / imageHeight) * imageWidth);
             }
 
             final Bitmap bitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
@@ -590,7 +592,7 @@ public class CustomizePagedView extends PagedView
             l.setOnClickListener(this);
             l.setOnLongClickListener(this);
 
-            final Drawable icon = getWidgetIcon(info);
+            final Drawable icon = getWidgetPreview(info);
 
             int[] spans = CellLayout.rectToCell(getResources(), info.minWidth, info.minHeight, null);
             final int hSpan = spans[0];
