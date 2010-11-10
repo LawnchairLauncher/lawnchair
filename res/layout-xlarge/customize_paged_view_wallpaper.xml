@@ -15,7 +15,6 @@
 -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
 
     android:layout_width="wrap_content"
     android:layout_height="365dp"
@@ -23,14 +22,11 @@
     android:paddingRight="12.5dp"
     android:paddingBottom="50dp"
     android:gravity="top"
-    android:orientation="vertical"
+    android:orientation="vertical">
 
-    launcher:checkedBlurColor="#FFDAFF71"
-    launcher:checkedOutlineColor="#FFCFFF9C">
-
-    <!-- The icon of the widget. -->
+    <!-- The preview image for the wallpaper. -->
     <ImageView
-        android:id="@+id/widget_preview"
+        android:id="@+id/wallpaper_preview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1.0"
@@ -45,9 +41,9 @@
         android:paddingBottom="10dp"
         android:src="@drawable/widget_divider" />
 
-    <!-- The name of the widget. -->
+    <!-- The name of the wallpaper -->
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/widget_name"
+        android:id="@+id/wallpaper_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="left"
@@ -61,19 +57,4 @@
 
         android:maxLines="2"
         android:fadingEdge="horizontal" />
-
-    <!-- The original dimensions of the widget (can't be the same text as above due to different
-         style. -->
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/widget_dims"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="left"
-
-        android:textColor="#FF999999"
-        android:textSize="14sp"
-        android:shadowColor="#99000000"
-        android:shadowDx="0.0"
-        android:shadowDy="1.0"
-        android:shadowRadius="1.0" />
 </LinearLayout>

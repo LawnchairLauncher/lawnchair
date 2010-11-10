@@ -16,12 +16,13 @@
 
 package com.android.launcher2;
 
-import android.graphics.drawable.Drawable;
-import android.graphics.Paint;
-import android.graphics.PixelFormat;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
+import android.graphics.Paint;
+import android.graphics.PixelFormat;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 
 class FastBitmapDrawable extends Drawable {
     private Bitmap mBitmap;
@@ -41,7 +42,8 @@ class FastBitmapDrawable extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawBitmap(mBitmap, 0.0f, 0.0f, mPaint);
+        final Rect r = getBounds();
+        canvas.drawBitmap(mBitmap, r.left, r.top, mPaint);
     }
 
     @Override

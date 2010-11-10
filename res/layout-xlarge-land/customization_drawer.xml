@@ -19,6 +19,7 @@
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    launcher:wallpaperCellSpanX="4"
     launcher:widgetCellCountX="16"
     launcher:cellCountX="8"
     launcher:cellCountY="3"
