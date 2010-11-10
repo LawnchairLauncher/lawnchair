@@ -51,6 +51,10 @@
     <skip />
     <!-- no translation found for all_apps_no_downloads (6145042636084482299) -->
     <skip />
+    <!-- no translation found for external_drop_widget_error (7794528430439958736) -->
+    <skip />
+    <!-- no translation found for external_drop_widget_pick_title (4481311720134376218) -->
+    <skip />
     <string name="rename_folder_label" msgid="5646236631298452787">"Num da l\'ordinatur"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Renumnar l\'ordinatur"</string>
     <string name="rename_action" msgid="6016003384693240896">"OK"</string>
