@@ -49,4 +49,8 @@
     <integer name="config_screenOnDropScaleDownDuration">200</integer>
     <integer name="config_screenOnDropAlphaFadeDelay">350</integer>
     <integer name="config_screenOnDropAlphaFadeDuration">50</integer>
+
+    <!-- The slope, in percent, of the drag movement needed to drag an item out of the customization
+         drawer (y / x * 100%)  -->
+    <integer name="config_customizationDrawerDragSlopeThreshold">150</integer>
 </resources>

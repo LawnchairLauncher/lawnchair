@@ -44,6 +44,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -52,7 +53,7 @@ import android.widget.TextView;
 import com.android.launcher.R;
 
 public class CustomizePagedView extends PagedView
-    implements View.OnLongClickListener, View.OnClickListener,
+    implements View.OnLongClickListener, View.OnClickListener, View.OnTouchListener,
                 DragSource, ActionMode.Callback {
 
     public enum CustomizationType {
@@ -65,9 +66,12 @@ public class CustomizePagedView extends PagedView
     private static final String TAG = "CustomizeWorkspace";
     private static final boolean DEBUG = false;
 
+    private View mLastTouchedItem;
     private Launcher mLauncher;
     private DragController mDragController;
     private PackageManager mPackageManager;
+    private boolean mIsDragging;
+    private float mDragSlopeThreshold;
 
     private CustomizationType mCustomizationType;
 
@@ -131,6 +135,10 @@ public class CustomizePagedView extends PagedView
         mWidgetPages = new ArrayList<ArrayList<AppWidgetProviderInfo>>();
         mWorkspaceWidgetLayout = new PagedViewCellLayout(context);
         mInflater = LayoutInflater.from(context);
+
+        final Resources r = context.getResources();
+        mDragSlopeThreshold =
+            r.getInteger(R.integer.config_customizationDrawerDragSlopeThreshold) / 100.0f;
 
         setVisibility(View.GONE);
         setSoundEffectsEnabled(false);
@@ -373,11 +381,98 @@ public class CustomizePagedView extends PagedView
         if (!v.isInTouchMode()) return false;
         // Return early if we are still animating the pages
         if (mNextPage != INVALID_PAGE) return false;
+        return beginDragging(v);
+    }
 
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        mLastTouchedItem = v;
+        return false;
+    }
+
+    /*
+     * Determines if we should change the touch state to start scrolling after the
+     * user moves their touch point too far.
+     */
+    protected void determineScrollingStart(MotionEvent ev) {
+        if (!mIsDragging) super.determineScrollingStart(ev);
+    }
+
+    /*
+     * Determines if we should change the touch state to start dragging after the
+     * user moves their touch point far enough.
+     */
+    protected void determineDraggingStart(MotionEvent ev) {
+        /*
+         * Locally do absolute value. mLastMotionX is set to the y value
+         * of the down event.
+         */
+        final int pointerIndex = ev.findPointerIndex(mActivePointerId);
+        final float x = ev.getX(pointerIndex);
+        final float y = ev.getY(pointerIndex);
+        final int xDiff = (int) Math.abs(x - mLastMotionX);
+        final int yDiff = (int) Math.abs(y - mLastMotionY);
+
+        final int touchSlop = mTouchSlop;
+        boolean yMoved = yDiff > touchSlop;
+        boolean isUpwardMotion = (yDiff / (float) xDiff) > mDragSlopeThreshold;
+
+        if (isUpwardMotion && yMoved) {
+            // Drag if the user moved far enough along the Y axis
+            beginDragging(mLastTouchedItem);
+
+            // Cancel any pending longpress
+            if (mAllowLongPress) {
+                mAllowLongPress = false;
+                // Try canceling the long press. It could also have been scheduled
+                // by a distant descendant, so use the mAllowLongPress flag to block
+                // everything
+                final View currentPage = getPageAt(mCurrentPage);
+                if (currentPage != null) {
+                    currentPage.cancelLongPress();
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        final int action = ev.getAction();
+        switch (action & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_DOWN:
+                mIsDragging = false;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if (mTouchState != TOUCH_STATE_SCROLLING && !mIsDragging) {
+                    determineDraggingStart(ev);
+                }
+                break;
+        }
+        return super.onInterceptTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        final int action = ev.getAction();
+        switch (action & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_DOWN:
+                mIsDragging = false;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if (mTouchState != TOUCH_STATE_SCROLLING && !mIsDragging) {
+                    determineDraggingStart(ev);
+                }
+                break;
+        }
+        return super.onTouchEvent(ev);
+    }
+
+    private boolean beginDragging(View v) {
         // End the current choice mode before we start dragging anything
         if (isChoiceMode(CHOICE_MODE_SINGLE)) {
             endChoiceMode();
         }
+        mIsDragging = true;
 
         PendingAddItemInfo createItemInfo;
         switch (mCustomizationType) {
@@ -626,6 +721,7 @@ public class CustomizePagedView extends PagedView
                     R.layout.customize_paged_view_widget, layout, false);
             l.setTag(createItemInfo);
             l.setOnClickListener(this);
+            l.setOnTouchListener(this);
             l.setOnLongClickListener(this);
 
             final Drawable icon = getWidgetPreview(info);
@@ -729,6 +825,7 @@ public class CustomizePagedView extends PagedView
                         info.activityInfo.name);
                 icon.setTag(createItemInfo);
                 icon.setOnClickListener(this);
+                icon.setOnTouchListener(this);
                 icon.setOnLongClickListener(this);
                 break;
             default:
@@ -774,6 +871,7 @@ public class CustomizePagedView extends PagedView
                     R.layout.all_apps_paged_view_application, layout, false);
             icon.applyFromApplicationInfo(info, mPageViewIconCache, true);
             icon.setOnClickListener(this);
+            icon.setOnTouchListener(this);
             icon.setOnLongClickListener(this);
 
             final int index = i - startIndex;

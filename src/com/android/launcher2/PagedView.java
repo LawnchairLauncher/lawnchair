@@ -74,8 +74,8 @@ public abstract class PagedView extends ViewGroup {
     private VelocityTracker mVelocityTracker;
 
     private float mDownMotionX;
-    private float mLastMotionX;
-    private float mLastMotionY;
+    protected float mLastMotionX;
+    protected float mLastMotionY;
     private int mLastScreenCenter = -1;
 
     protected final static int TOUCH_STATE_REST = 0;
@@ -88,9 +88,9 @@ public abstract class PagedView extends ViewGroup {
 
     protected OnLongClickListener mLongClickListener;
 
-    private boolean mAllowLongPress = true;
+    protected boolean mAllowLongPress = true;
 
-    private int mTouchSlop;
+    protected int mTouchSlop;
     private int mPagingTouchSlop;
     private int mMaximumVelocity;
     protected int mPageSpacing;
