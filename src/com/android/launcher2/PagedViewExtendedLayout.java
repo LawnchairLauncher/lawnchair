@@ -22,20 +22,20 @@ import android.view.MotionEvent;
 import android.widget.LinearLayout;
 
 /**
- * The linear layout used strictly for the widget tab of the customization tray
+ * The linear layout used strictly for the widget/wallpaper tab of the customization tray
  */
-public class PagedViewWidgetLayout extends LinearLayout {
+public class PagedViewExtendedLayout extends LinearLayout {
     static final String TAG = "PagedViewWidgetLayout";
 
-    public PagedViewWidgetLayout(Context context) {
+    public PagedViewExtendedLayout(Context context) {
         this(context, null);
     }
 
-    public PagedViewWidgetLayout(Context context, AttributeSet attrs) {
+    public PagedViewExtendedLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public PagedViewWidgetLayout(Context context, AttributeSet attrs, int defStyle) {
+    public PagedViewExtendedLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 

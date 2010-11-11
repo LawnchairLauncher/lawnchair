@@ -37,9 +37,11 @@
     <string name="all_apps_tab_apps" msgid="5468972551904071712">"Programmer"</string>
     <string name="all_apps_tab_games" msgid="1855736784923494918">"Spil"</string>
     <string name="all_apps_tab_downloaded" msgid="2300935549064726963">"Downloadet"</string>
-    <!-- no translation found for all_apps_no_games (5293893733372793696) -->
+    <string name="all_apps_no_games" msgid="5293893733372793696">"Ingen spil."</string>
+    <string name="all_apps_no_downloads" msgid="6145042636084482299">"Ingen hentede programmer."</string>
+    <!-- no translation found for external_drop_widget_error (7794528430439958736) -->
     <skip />
-    <!-- no translation found for all_apps_no_downloads (6145042636084482299) -->
+    <!-- no translation found for external_drop_widget_pick_title (4481311720134376218) -->
     <skip />
     <string name="rename_folder_label" msgid="5646236631298452787">"Mappenavn"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Omdøb mappe"</string>

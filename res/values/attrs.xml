@@ -74,15 +74,6 @@
         <attr name="checkedOutlineColor" format="color" />
     </declare-styleable>
 
-    <!-- PagedViewWidgetIcon specific attributes. These attributes are used to
-         customize a PagedViewWidgetIcon view in XML files. -->
-    <declare-styleable name="PagedViewWidgetIcon">
-        <!-- The checked blur color of the holographic outline -->
-        <attr name="checkedBlurColor" />
-        <!-- The checked outline color of the holographic outline -->
-        <attr name="checkedOutlineColor" />
-    </declare-styleable>
-
     <!-- PagedView specific attributes. These attributes are used to customize
          a PagedView view in XML files. -->
     <declare-styleable name="PagedView">
@@ -105,6 +96,8 @@
     <!-- CustomizePagedView specific attributes. These attributes are used to customize
          a CustomizePagedView view in XML files. -->
     <declare-styleable name="CustomizePagedView">
+        <!-- The cell span of an item in the wallpapers tab -->
+        <attr name="wallpaperCellSpanX" format="integer" />
         <!-- The number of horizontal cells for the widget tab -->
         <attr name="widgetCellCountX" format="integer" />
     </declare-styleable>

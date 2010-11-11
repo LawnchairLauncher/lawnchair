@@ -77,11 +77,17 @@ public class CustomizePagedView extends PagedView
     // The mapping between the pages and the widgets that will be laid out on them
     private ArrayList<ArrayList<AppWidgetProviderInfo>> mWidgetPages;
 
-    // The max dimensions for the ImageView we use for displaying the widget
+    // The max dimensions for the ImageView we use for displaying a widget
     private int mMaxWidgetWidth;
 
-    // The max number of widget cells to take a "page" of widget
+    // The max number of widget cells to take a "page" of widgets
     private int mMaxWidgetsCellHSpan;
+
+    // The size of the items on the wallpaper tab
+    private int mWallpaperCellHSpan;
+
+    // The max dimensions for the ImageView we use for displaying a wallpaper
+    private int mMaxWallpaperWidth;
 
     // The raw sources of data for each of the different tabs of the customization page
     private List<AppWidgetProviderInfo> mWidgetList;
@@ -112,15 +118,15 @@ public class CustomizePagedView extends PagedView
         super(context, attrs, defStyle);
 
         TypedArray a;
-        a = context.obtainStyledAttributes(attrs, R.styleable.CustomizePagedView,
-                defStyle, 0);
+        a = context.obtainStyledAttributes(attrs, R.styleable.CustomizePagedView, defStyle, 0);
+        mWallpaperCellHSpan = a.getInt(R.styleable.CustomizePagedView_wallpaperCellSpanX, 4);
         mMaxWidgetsCellHSpan = a.getInt(R.styleable.CustomizePagedView_widgetCellCountX, 8);
         a.recycle();
         a = context.obtainStyledAttributes(attrs, R.styleable.PagedView, defStyle, 0);
         mCellCountX = a.getInt(R.styleable.PagedView_cellCountX, 7);
         mCellCountY = a.getInt(R.styleable.PagedView_cellCountY, 4);
-
         a.recycle();
+
         mCustomizationType = CustomizationType.WidgetCustomization;
         mWidgetPages = new ArrayList<ArrayList<AppWidgetProviderInfo>>();
         mWorkspaceWidgetLayout = new PagedViewCellLayout(context);
@@ -449,21 +455,58 @@ public class CustomizePagedView extends PagedView
     /**
      * Helper function to draw a drawable to the specified canvas with the specified bounds.
      */
-    private void renderDrawableToBitmap(Drawable d, Bitmap bitmap, int l, int t, int r, int b) {
+    private void renderDrawableToBitmap(Drawable d, Bitmap bitmap, int x, int y, int w, int h) {
         if (bitmap != null) mCanvas.setBitmap(bitmap);
         mCanvas.save();
-        d.setBounds(l, t, r, b);
+        d.setBounds(x, y, x+w, y+h);
         d.draw(mCanvas);
         mCanvas.restore();
     }
 
     /**
+     * This method will extract the preview image specified by the wallpaper source provider (if it
+     * exists) otherwise, it will try to generate a default image preview.
+     */
+    private Drawable getWallpaperPreview(ResolveInfo info) {
+        // To be implemented later: resolving the up-to-date wallpaper thumbnail
+
+        final int minDim = mWorkspaceWidgetLayout.estimateCellWidth(1);
+        final int dim = mWorkspaceWidgetLayout.estimateCellWidth(mWallpaperCellHSpan);
+        Resources resources = mLauncher.getResources();
+
+        // Create a new bitmap to hold the widget preview
+        int width = (int) (dim * sScaleFactor);
+        int height = (int) (dim * sScaleFactor);
+        final Bitmap bitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+        final Drawable background = resources.getDrawable(R.drawable.default_widget_preview);
+        renderDrawableToBitmap(background, bitmap, 0, 0, width, height);
+
+        // Draw the icon flush left
+        try {
+            final IconCache iconCache =
+                ((LauncherApplication) mLauncher.getApplication()).getIconCache();
+            Drawable icon = new FastBitmapDrawable(Utilities.createIconBitmap(
+                    iconCache.getFullResIcon(info, mPackageManager), mContext));
+
+            final int iconSize = minDim / 2;
+            final int offset = iconSize / 4;
+            renderDrawableToBitmap(icon, null, offset, offset, iconSize, iconSize);
+        } catch (Resources.NotFoundException e) {
+            // if we can't find the icon, then just don't draw it
+        }
+
+        Drawable drawable = new FastBitmapDrawable(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        return drawable;
+    }
+
+    /**
      * This method will extract the preview image specified by the widget developer (if it exists),
      * otherwise, it will try to generate a default image preview with the widget's package icon.
-     * @return the drawable will be used and sized in the ImageView to represent the widget
+     * @return the drawable that will be used and sized in the ImageView to represent the widget
      */
     private Drawable getWidgetPreview(AppWidgetProviderInfo info) {
-        PackageManager packageManager = mLauncher.getPackageManager();
+        final PackageManager packageManager = mPackageManager;
         String packageName = info.provider.getPackageName();
         Drawable drawable = null;
         if (info.previewImage != 0) {
@@ -487,9 +530,8 @@ public class CustomizePagedView extends PagedView
             final Drawable background = resources.getDrawable(R.drawable.default_widget_preview);
             renderDrawableToBitmap(background, bitmap, 0, 0, width, height);
 
-            // Draw the icon vertically centered, flush left
+            // Draw the icon flush left
             try {
-                Rect tmpRect = new Rect();
                 Drawable icon = null;
                 if (info.icon > 0) {
                     icon = packageManager.getDrawable(packageName, info.icon, null);
@@ -497,12 +539,10 @@ public class CustomizePagedView extends PagedView
                 if (icon == null) {
                     icon = resources.getDrawable(R.drawable.ic_launcher_application);
                 }
-                background.getPadding(tmpRect);
 
                 final int iconSize = minDim / 2;
                 final int offset = iconSize / 4;
-                final int offsetIconSize = offset + iconSize;
-                renderDrawableToBitmap(icon, null, offset, offset, offsetIconSize, offsetIconSize);
+                renderDrawableToBitmap(icon, null, offset, offset, iconSize, iconSize);
             } catch (Resources.NotFoundException e) {
                 // if we can't find the icon, then just don't draw it
             }
@@ -548,6 +588,7 @@ public class CustomizePagedView extends PagedView
         mWorkspaceWidgetLayout.setPadding(20, 10, 20, 0);
 
         mMaxWidgetWidth = mWorkspaceWidgetLayout.estimateCellWidth(sMaxWidgetCellHSpan);
+        mMaxWallpaperWidth = mWorkspaceWidgetLayout.estimateCellWidth(mWallpaperCellHSpan);
     }
 
     private void syncWidgetPages() {
@@ -557,7 +598,7 @@ public class CustomizePagedView extends PagedView
         removeAllViews();
         int numPages = relayoutWidgets();
         for (int i = 0; i < numPages; ++i) {
-            LinearLayout layout = new PagedViewWidgetLayout(getContext());
+            LinearLayout layout = new PagedViewExtendedLayout(getContext());
             layout.setGravity(Gravity.CENTER_HORIZONTAL);
             layout.setPadding(mPageLayoutPaddingLeft, mPageLayoutPaddingTop,
                     mPageLayoutPaddingRight, mPageLayoutPaddingBottom);
@@ -605,6 +646,58 @@ public class CustomizePagedView extends PagedView
             name.setText(info.label);
             TextView dims = (TextView) l.findViewById(R.id.widget_dims);
             dims.setText(mContext.getString(R.string.widget_dims_format, hSpan, vSpan));
+
+            layout.addView(l);
+        }
+    }
+
+    private void syncWallpaperPages() {
+        if (mWallpaperList == null) return;
+
+        // We need to repopulate the LinearLayout for the wallpaper pages
+        removeAllViews();
+        int numPages = (int) Math.ceil((float) (mWallpaperList.size() * mWallpaperCellHSpan) /
+                mMaxWidgetsCellHSpan);
+        for (int i = 0; i < numPages; ++i) {
+            LinearLayout layout = new PagedViewExtendedLayout(getContext());
+            layout.setGravity(Gravity.CENTER_HORIZONTAL);
+            layout.setPadding(mPageLayoutPaddingLeft, mPageLayoutPaddingTop,
+                    mPageLayoutPaddingRight, mPageLayoutPaddingBottom);
+
+            // Temporary change to prevent the last page from being too small (and items bleeding
+            // onto it).  We can remove this once we properly fix the fading algorithm
+            if (i < numPages - 1) {
+                addView(layout, new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT));
+            } else {
+                addView(layout, new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT));
+            }
+        }
+    }
+
+    private void syncWallpaperPageItems(int page) {
+        // Load the items on to the pages
+        LinearLayout layout = (LinearLayout) getChildAt(page);
+        layout.removeAllViews();
+        final int count = mWallpaperList.size();
+        for (int i = 0; i < count; ++i) {
+            final ResolveInfo info = mWallpaperList.get(i);
+
+            LinearLayout l = (LinearLayout) mInflater.inflate(
+                    R.layout.customize_paged_view_wallpaper, layout, false);
+            l.setTag(info);
+            l.setOnClickListener(this);
+
+            final Drawable icon = getWallpaperPreview(info);
+
+            ImageView image = (ImageView) l.findViewById(R.id.wallpaper_preview);
+            image.setMaxWidth(mMaxWidgetWidth);
+            image.setImageDrawable(icon);
+            TextView name = (TextView) l.findViewById(R.id.wallpaper_name);
+            name.setText(info.loadLabel(mPackageManager));
 
             layout.addView(l);
         }
@@ -716,8 +809,7 @@ public class CustomizePagedView extends PagedView
             centerPagedViewCellLayouts = true;
             break;
         case WallpaperCustomization:
-            syncListPages(mWallpaperList);
-            centerPagedViewCellLayouts = true;
+            syncWallpaperPages();
             break;
         case ApplicationCustomization:
             syncAppPages();
@@ -757,7 +849,7 @@ public class CustomizePagedView extends PagedView
             syncListPageItems(page, mShortcutList);
             break;
         case WallpaperCustomization:
-            syncListPageItems(page, mWallpaperList);
+            syncWallpaperPageItems(page);
             break;
         case ApplicationCustomization:
             syncAppPageItems(page);

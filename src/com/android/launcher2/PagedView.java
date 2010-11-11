@@ -621,6 +621,9 @@ public abstract class PagedView extends ViewGroup {
          * scrolling there.
          */
 
+        // Skip touch handling if there are no pages to swipe
+        if (getChildCount() <= 0) return super.onInterceptTouchEvent(ev);
+
         /*
          * Shortcut the most recurring case: the user is in the dragging
          * state and he is moving his finger.  We want to intercept this
@@ -775,6 +778,9 @@ public abstract class PagedView extends ViewGroup {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        // Skip touch handling if there are no pages to swipe
+        if (getChildCount() <= 0) return super.onTouchEvent(ev);
+
         acquireVelocityTrackerAndAddMovement(ev);
 
         final int action = ev.getAction();
