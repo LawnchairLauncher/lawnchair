@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import android.R.integer;
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
@@ -55,6 +55,7 @@ import android.os.IBinder;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.Pair;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -1045,7 +1046,7 @@ public class Workspace extends SmoothPagedView
 
         // For a TextView, adjust the clip rect so that we don't include the text label
         if (v instanceof TextView) {
-            final int iconHeight = ((TextView)v).getCompoundPaddingTop() - v.getPaddingTop();
+            final int iconHeight = ((TextView) v).getCompoundPaddingTop()
             clipRect.bottom = clipRect.top + iconHeight;
         }
 
@@ -1398,6 +1399,30 @@ public class Workspace extends SmoothPagedView
     }
 
     /**
+     * Tests to see if the drop will be accepted by Launcher, and if so, includes additional data
+     * in the returned structure related to the widgets that match the drop (or a null list if it is
+     * a shortcut drop).  If the drop is not accepted then a null structure is returned.
+     */
+    private Pair<Integer, List<WidgetMimeTypeHandlerData>> validateDrag(DragEvent event) {
+        final LauncherModel model = mLauncher.getModel();
+        final ClipDescription desc = event.getClipDescription();
+        final int mimeTypeCount = desc.getMimeTypeCount();
+        for (int i = 0; i < mimeTypeCount; ++i) {
+            final String mimeType = desc.getMimeType(i);
+            if (mimeType.equals(InstallShortcutReceiver.SHORTCUT_MIMETYPE)) {
+                return new Pair<Integer, List<WidgetMimeTypeHandlerData>>(i, null);
+            } else {
+                final List<WidgetMimeTypeHandlerData> widgets =
+                    model.resolveWidgetsForMimeType(mContext, mimeType);
+                if (widgets.size() > 0) {
+                    return new Pair<Integer, List<WidgetMimeTypeHandlerData>>(i, widgets);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * Global drag and drop handler
      */
     @Override
@@ -1411,10 +1436,22 @@ public class Workspace extends SmoothPagedView
         final int y = (int) event.getY() - pos[1];
 
         switch (event.getAction()) {
-        case DragEvent.ACTION_DRAG_STARTED:
-            // Check if we have enough space on this screen to add a new shortcut
-            if (!layout.findCellForSpan(pos, 1, 1)) {
-                Toast.makeText(mContext, mContext.getString(R.string.out_of_space),
+        case DragEvent.ACTION_DRAG_STARTED: {
+            // Validate this drag
+            Pair<Integer, List<WidgetMimeTypeHandlerData>> test = validateDrag(event);
+            if (test != null) {
+                boolean isShortcut = (test.second == null);
+                if (isShortcut) {
+                    // Check if we have enough space on this screen to add a new shortcut
+                    if (!layout.findCellForSpan(pos, 1, 1)) {
+                        Toast.makeText(mContext, mContext.getString(R.string.out_of_space),
+                                Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+                }
+            } else {
+                // Show error message if we couldn't accept any of the items
+                Toast.makeText(mContext, mContext.getString(R.string.external_drop_widget_error),
                         Toast.LENGTH_SHORT).show();
                 return false;
             }
@@ -1432,18 +1469,12 @@ public class Workspace extends SmoothPagedView
             layout.visualizeDropLocation(null, mDragOutline, x, y, 1, 1);
 
             return true;
+        }
         case DragEvent.ACTION_DRAG_LOCATION:
             // Visualize the drop location
             layout.visualizeDropLocation(null, mDragOutline, x, y, 1, 1);
             return true;
-        case DragEvent.ACTION_DROP:
-            // Check if we have enough space on this screen to add a new shortcut
-            if (!layout.findCellForSpan(pos, 1, 1)) {
-                Toast.makeText(mContext, mContext.getString(R.string.out_of_space),
-                        Toast.LENGTH_SHORT).show();
-                return false;
-            }
-
+        case DragEvent.ACTION_DROP: {
             // Try and add any shortcuts
             int newDropCount = 0;
             final LauncherModel model = mLauncher.getModel();
@@ -1455,29 +1486,25 @@ public class Workspace extends SmoothPagedView
             // representation will be handled.
             pos[0] = x;
             pos[1] = y;
-            final int mimeTypeCount = desc.getMimeTypeCount();
-            for (int j = 0; j < mimeTypeCount; ++j) {
-                final String mimeType = desc.getMimeType(j);
-
-                if (mimeType.equals(InstallShortcutReceiver.SHORTCUT_MIMETYPE)) {
-                    final Intent intent = data.getItem(j).getIntent();
+            Pair<Integer, List<WidgetMimeTypeHandlerData>> test = validateDrag(event);
+            if (test != null) {
+                final int index = test.first;
+                final List<WidgetMimeTypeHandlerData> widgets = test.second;
+                final boolean isShortcut = (widgets == null);
+                final String mimeType = desc.getMimeType(index);
+                if (isShortcut) {
+                    final Intent intent = data.getItem(index).getIntent();
                     Object info = model.infoFromShortcutIntent(mContext, intent, data.getIcon());
                     onDropExternal(x, y, info, layout);
                 } else {
-                    final List<WidgetMimeTypeHandlerData> widgets =
-                        model.resolveWidgetsForMimeType(mContext, mimeType);
-                    final int numWidgets = widgets.size();
-
-                    if (numWidgets == 0) {
-                        continue;
-                    } else if (numWidgets == 1) {
+                    if (widgets.size() == 1) {
                         // If there is only one item, then go ahead and add and configure
                         // that widget
                         final AppWidgetProviderInfo widgetInfo = widgets.get(0).widgetInfo;
                         final PendingAddWidgetInfo createInfo =
                                 new PendingAddWidgetInfo(widgetInfo, mimeType, data);
                         mLauncher.addAppWidgetFromDrop(createInfo, mCurrentPage, pos);
-                    } else if (numWidgets > 1) {
+                    } else {
                         // Show the widget picker dialog if there is more than one widget
                         // that can handle this data type
                         final InstallWidgetReceiver.WidgetListAdapter adapter =
@@ -1493,17 +1520,9 @@ public class Workspace extends SmoothPagedView
                         builder.show();
                     }
                 }
-                newDropCount++;
-                break;
             }
-
-            // Show error message if we couldn't accept any of the items
-            if (newDropCount <= 0) {
-                Toast.makeText(mContext, mContext.getString(R.string.external_drop_widget_error),
-                        Toast.LENGTH_SHORT).show();
-            }
-
             return true;
+        }
         case DragEvent.ACTION_DRAG_ENDED:
             // Hide the page outlines after the drop
             layout.setHover(false);
