@@ -228,6 +228,9 @@ public final class Launcher extends Activity
 
     private LauncherModel mModel;
     private IconCache mIconCache;
+    private boolean mUserPresent = true;
+    private boolean mVisible = false;
+    private boolean mAttached = false;
 
     private static LocaleConfiguration sLocaleConfiguration = null;
 
@@ -1151,9 +1154,6 @@ public final class Launcher extends Activity
         }
     }
 
-    private boolean mUserPresent = true;
-    private boolean mVisible = false;
-
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -1178,6 +1178,7 @@ public final class Launcher extends Activity
         filter.addAction(Intent.ACTION_USER_PRESENT);
         registerReceiver(mReceiver, filter);
 
+        mAttached = true;
         mVisible = true;
     }
 
@@ -1186,7 +1187,10 @@ public final class Launcher extends Activity
         super.onDetachedFromWindow();
         mVisible = false;
 
-        unregisterReceiver(mReceiver);
+        if (mAttached) {
+            unregisterReceiver(mReceiver);
+            mAttached = false;
+        }
         updateRunning();
     }
 
