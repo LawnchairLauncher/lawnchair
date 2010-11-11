@@ -839,6 +839,10 @@ public class CellLayout extends ViewGroup implements Dimmable {
         mBackgroundAlphaMultiplier = multiplier;
     }
 
+    public float getBackgroundAlphaMultiplier() {
+        return mBackgroundAlphaMultiplier;
+    }
+
     public void setBackgroundAlpha(float alpha) {
         mBackgroundAlpha = alpha;
         invalidate();

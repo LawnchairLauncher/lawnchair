@@ -558,12 +558,11 @@ public class Workspace extends SmoothPagedView
                 int delta = screenCenter - (getChildOffset(i) -
                         getRelativeChildOffset(i) + halfScreenSize);
 
-                float scrollProgress = delta/(totalDistance*1.0f);
+                float scrollProgress = delta / (totalDistance * 1.0f);
                 scrollProgress = Math.min(scrollProgress, 1.0f);
                 scrollProgress = Math.max(scrollProgress, -1.0f);
 
-                float mult =  mInDragMode ? 1.0f : Math.abs(scrollProgress);
-                cl.setBackgroundAlphaMultiplier(mult);
+                cl.setBackgroundAlphaMultiplier(Math.abs(scrollProgress));
 
                 float rotation = WORKSPACE_ROTATION * scrollProgress;
                 cl.setRotationY(rotation);
@@ -779,6 +778,9 @@ public class Workspace extends SmoothPagedView
         mActivePointerId = INVALID_POINTER;
 
         CellLayout currentPage = (CellLayout) getChildAt(mCurrentPage);
+        if (currentPage.getBackgroundAlphaMultiplier() < 1.0f) {
+            currentPage.setBackgroundAlpha(0.0f);
+        }
         currentPage.setBackgroundAlphaMultiplier(1.0f);
 
         final Resources res = getResources();
@@ -1351,8 +1353,6 @@ public class Workspace extends SmoothPagedView
             mDragTargetLayout.onDragEnter();
             showOutlines();
             mInDragMode = true;
-            CellLayout cl = (CellLayout) getChildAt(mCurrentPage);
-            cl.setBackgroundAlphaMultiplier(1.0f);
         }
     }
 
