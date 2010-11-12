@@ -848,17 +848,21 @@ public class Workspace extends SmoothPagedView
             if (animated) {
                 final int duration = res.getInteger(R.integer.config_workspaceShrinkTime);
                 ObjectAnimator anim = ObjectAnimator.ofPropertyValuesHolder(cl,
+                        PropertyValuesHolder.ofFloat("backgroundAlpha", finalAlpha),
+                        PropertyValuesHolder.ofFloat("alpha", finalAlpha),
+                        PropertyValuesHolder.ofFloat("rotationY", rotation));
+                anim.setDuration(duration);
+
+                ObjectAnimator animWithInterpolator = ObjectAnimator.ofPropertyValuesHolder(cl,
                         PropertyValuesHolder.ofFloat("x", newX),
                         PropertyValuesHolder.ofFloat("y", newY),
                         PropertyValuesHolder.ofFloat("scaleX",
                                 SHRINK_FACTOR * rotationScaleX * extraShrinkFactor),
                         PropertyValuesHolder.ofFloat("scaleY",
-                                SHRINK_FACTOR * rotationScaleY * extraShrinkFactor),
-                        PropertyValuesHolder.ofFloat("backgroundAlpha", finalAlpha),
-                        PropertyValuesHolder.ofFloat("alpha", finalAlpha),
-                        PropertyValuesHolder.ofFloat("rotationY", rotation));
-                anim.setDuration(duration);
-                mAnimator.playTogether(anim);
+                                SHRINK_FACTOR * rotationScaleY * extraShrinkFactor));
+                animWithInterpolator.setDuration(duration);
+                animWithInterpolator.setInterpolator(mZInterpolator);
+                mAnimator.playTogether(anim, animWithInterpolator);
             } else {
                 cl.setX((int)newX);
                 cl.setY((int)newY);
@@ -877,11 +881,26 @@ public class Workspace extends SmoothPagedView
         setChildrenDrawnWithCacheEnabled(true);
     }
 
+    private class ZInterpolator implements TimeInterpolator {
+        private final float focalLength = 0.2f;
+        public float getInterpolation(float input) { 
+            return (1.0f - focalLength / (focalLength + input)) / 
+                    (1.0f - focalLength / (focalLength + 1.0f));
+        }
+    }
+
+    private class InverseZInterpolator implements TimeInterpolator {
+        public float getInterpolation(float input) {
+            return 1 - mZInterpolator.getInterpolation(1 - input);
+        }
+    }
+
+    private final ZInterpolator mZInterpolator = new ZInterpolator();
+    private final InverseZInterpolator mInverseZInterpolator = new InverseZInterpolator();
 
     private void updateWhichPagesAcceptDrops(ShrinkPosition state) {
         updateWhichPagesAcceptDropsHelper(state, false, 1, 1);
     }
-
 
     private void updateWhichPagesAcceptDropsDuringDrag(ShrinkPosition state, int spanX, int spanY) {
         updateWhichPagesAcceptDropsHelper(state, true, spanX, spanY);
@@ -1007,14 +1026,20 @@ public class Workspace extends SmoothPagedView
                 }
 
                 if (animated) {
-                    mAnimator.playTogether(
-                            ObjectAnimator.ofFloat(cl, "translationX", 0.0f).setDuration(duration),
-                            ObjectAnimator.ofFloat(cl, "translationY", 0.0f).setDuration(duration),
-                            ObjectAnimator.ofFloat(cl, "scaleX", 1.0f).setDuration(duration),
-                            ObjectAnimator.ofFloat(cl, "scaleY", 1.0f).setDuration(duration),
-                            ObjectAnimator.ofFloat(cl, "backgroundAlpha", 0.0f).setDuration(duration),
-                            ObjectAnimator.ofFloat(cl, "alpha", finalAlphaValue).setDuration(duration),
-                            ObjectAnimator.ofFloat(cl, "rotationY", rotation).setDuration(duration));
+                    ObjectAnimator anim = ObjectAnimator.ofPropertyValuesHolder(cl,
+                            PropertyValuesHolder.ofFloat("backgroundAlpha", 0.0f),
+                            PropertyValuesHolder.ofFloat("alpha", finalAlphaValue),
+                            PropertyValuesHolder.ofFloat("rotationY", rotation));
+                    anim.setDuration(duration);
+
+                    ObjectAnimator animWithInterpolator = ObjectAnimator.ofPropertyValuesHolder(cl,
+                            PropertyValuesHolder.ofFloat("translationX", 0.0f),
+                            PropertyValuesHolder.ofFloat("translationY", 0.0f),
+                            PropertyValuesHolder.ofFloat("scaleX", 1.0f),
+                            PropertyValuesHolder.ofFloat("scaleY", 1.0f));
+                    animWithInterpolator.setDuration(duration);
+                    animWithInterpolator.setInterpolator(mInverseZInterpolator);
+                    mAnimator.playTogether(anim, animWithInterpolator);
                 } else {
                     cl.setTranslationX(0.0f);
                     cl.setTranslationY(0.0f);
