@@ -76,7 +76,8 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
         setOnTabChangedListener(new OnTabChangeListener() {
             public void onTabChanged(String tabId) {
                 // animate the changing of the tab content by fading pages in and out
-                final int duration = 150;
+                final Resources res = getResources();
+                final int duration = res.getInteger(R.integer.config_tabTransitionTime);
                 final float alpha = mAllApps.getAlpha();
                 ValueAnimator alphaAnim = ObjectAnimator.ofFloat(mAllApps, "alpha", alpha, 0.0f).
                         setDuration(duration);

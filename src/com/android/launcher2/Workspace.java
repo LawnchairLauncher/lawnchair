@@ -1046,8 +1046,8 @@ public class Workspace extends SmoothPagedView
 
         // For a TextView, adjust the clip rect so that we don't include the text label
         if (v instanceof TextView) {
-            final int iconHeight = ((TextView) v).getCompoundPaddingTop()
-            clipRect.bottom = clipRect.top + iconHeight;
+            final TextView tv = (TextView) v;
+            clipRect.bottom = clipRect.top + tv.getCompoundPaddingTop() - 1;
         }
 
         // Draw the View into the bitmap.
@@ -1844,7 +1844,8 @@ public class Workspace extends SmoothPagedView
         if (view == null) {
             cellLayout.onDragExit();
         } else {
-            mTargetCell = findNearestVacantArea(x, y, 1, 1, null, cellLayout, mTargetCell);
+            mTargetCell = new int[]{x, y};
+            cellLayout.findCellForSpan(mTargetCell, 1, 1);
             addInScreen(view, indexOfChild(cellLayout), mTargetCell[0],
                     mTargetCell[1], info.spanX, info.spanY, insertAtFirst);
             cellLayout.onDropChild(view);
