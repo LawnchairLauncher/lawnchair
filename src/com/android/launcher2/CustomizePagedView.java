@@ -289,6 +289,7 @@ public class CustomizePagedView extends PagedView
     public void setCustomizationFilter(CustomizationType filterType) {
         mCustomizationType = filterType;
         setCurrentPage(0);
+        updateCurrentPageScroll();
         invalidatePageData();
 
         // End the current choice mode so that we don't carry selections across tabs

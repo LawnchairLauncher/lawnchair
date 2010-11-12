@@ -316,7 +316,8 @@ public final class Launcher extends Activity
             mHomeCustomizationDrawer.setOnTabChangedListener(new OnTabChangeListener() {
                 public void onTabChanged(String tabId) {
                     // animate the changing of the tab content by fading pages in and out
-                    final int duration = 150;
+                    final Resources res = getResources();
+                    final int duration = res.getInteger(R.integer.config_tabTransitionTime);
                     final float alpha = mCustomizePagedView.getAlpha();
                     ValueAnimator alphaAnim = ObjectAnimator.ofFloat(mCustomizePagedView,
                             "alpha", alpha, 0.0f);

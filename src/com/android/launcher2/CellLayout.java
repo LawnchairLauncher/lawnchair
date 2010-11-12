@@ -839,6 +839,10 @@ public class CellLayout extends ViewGroup implements Dimmable {
         mBackgroundAlphaMultiplier = multiplier;
     }
 
+    public float getBackgroundAlphaMultiplier() {
+        return mBackgroundAlphaMultiplier;
+    }
+
     public void setBackgroundAlpha(float alpha) {
         mBackgroundAlpha = alpha;
         invalidate();
@@ -1034,15 +1038,15 @@ public class CellLayout extends ViewGroup implements Dimmable {
         final int countY = mCountY;
         final boolean[][] occupied = mOccupied;
 
-        for (int x = 0; x < countX - (spanX - 1); x++) {
+        for (int y = 0; y < countY - (spanY - 1); y++) {
             inner:
-            for (int y = 0; y < countY - (spanY - 1); y++) {
+            for (int x = 0; x < countX - (spanX - 1); x++) {
                 for (int i = 0; i < spanX; i++) {
                     for (int j = 0; j < spanY; j++) {
                         if (occupied[x + i][y + j]) {
-                            // small optimization: we can skip to below the row we just found
+                            // small optimization: we can skip to after the column we just found
                             // an occupied cell
-                            y += j;
+                            x += i;
                             continue inner;
                         }
                     }
@@ -1150,15 +1154,15 @@ public class CellLayout extends ViewGroup implements Dimmable {
                 endY = Math.min(endY, intersectY + (spanY - 1) + (spanY == 1 ? 1 : 0));
             }
 
-            for (int x = startX; x < endX; x++) {
+            for (int y = startY; y < endY && !foundCell; y++) {
                 inner:
-                for (int y = startY; y < endY; y++) {
+                for (int x = startX; x < endX; x++) {
                     for (int i = 0; i < spanX; i++) {
                         for (int j = 0; j < spanY; j++) {
                             if (mOccupied[x + i][y + j]) {
-                                // small optimization: we can skip to below the row we just found
+                                // small optimization: we can skip to after the column we just found
                                 // an occupied cell
-                                y += j;
+                                x += i;
                                 continue inner;
                             }
                         }

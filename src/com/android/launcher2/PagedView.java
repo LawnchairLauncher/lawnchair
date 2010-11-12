@@ -245,6 +245,17 @@ public abstract class PagedView extends ViewGroup {
     }
 
     /**
+     * Updates the scroll of the current page immediately to its final scroll position.  We use this
+     * in CustomizePagedView to allow tabs to share the same PagedView while resetting the scroll of
+     * the previous tab page.
+     */
+    protected void updateCurrentPageScroll() {
+        int newX = getChildOffset(mCurrentPage) - getRelativeChildOffset(mCurrentPage);
+        scrollTo(newX, 0);
+        mScroller.setFinalX(newX);
+    }
+
+    /**
      * Sets the current page.
      */
     void setCurrentPage(int currentPage) {
@@ -256,9 +267,7 @@ public abstract class PagedView extends ViewGroup {
         }
 
         mCurrentPage = Math.max(0, Math.min(currentPage, getPageCount() - 1));
-        int newX = getChildOffset(mCurrentPage) - getRelativeChildOffset(mCurrentPage);
-        scrollTo(newX, 0);
-        mScroller.setFinalX(newX);
+        updateCurrentPageScroll();
 
         invalidate();
         notifyPageSwitchListener();

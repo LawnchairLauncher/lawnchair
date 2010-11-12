@@ -5,6 +5,10 @@
     <!-- NB: This should be less than the workspaceShrinkTime as they happen together. -->
     <integer name="config_allAppsZoomInTime">350</integer>
 
+    <!-- Duration in milliseconds of the transition between tabs in the all apps/customize
+         tray -->
+    <integer name="config_tabTransitionTime">100</integer>
+
     <!-- Duration in milliseconds of the all apps zoom-out animation -->
     <!-- NB: This should be less than the workspaceUnshrinkTime as they happen together. -->
     <integer name="config_allAppsZoomOutTime">350</integer>
