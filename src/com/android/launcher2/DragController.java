@@ -584,6 +584,8 @@ public class DragController {
                 mDragSource.onDropCompleted((View) dropTarget, false);
                 return true;
             }
+        } else {
+            mDragSource.onDropCompleted(null, false);
         }
         return false;
     }
