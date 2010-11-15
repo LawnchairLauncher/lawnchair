@@ -56,6 +56,7 @@ import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Pair;
+import android.view.Display;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -1766,6 +1767,14 @@ public class Workspace extends SmoothPagedView
     private void onDropExternal(int x, int y, Object dragInfo,
             CellLayout cellLayout) {
         onDropExternal(x, y, dragInfo, cellLayout, false);
+    }
+
+    @Override
+    public void getHitRect(Rect outRect) {
+        // We want the workspace to have the whole area of the display (it will find the correct
+        // cell layout to drop to in the existing drag/drop logic.
+        final Display d = mLauncher.getWindowManager().getDefaultDisplay();
+        outRect.set(0, 0, d.getWidth(), d.getHeight());
     }
 
     /**
