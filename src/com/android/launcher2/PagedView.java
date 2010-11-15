@@ -27,7 +27,6 @@ import android.graphics.Rect;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -36,10 +35,9 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
+import android.view.animation.Animation.AnimationListener;
 import android.widget.Checkable;
-import android.widget.LinearLayout;
 import android.widget.Scroller;
 
 import com.android.launcher.R;
@@ -60,6 +58,8 @@ public abstract class PagedView extends ViewGroup {
     private static final int PAGE_SNAP_ANIMATION_DURATION = 750;
     protected static final float NANOTIME_DIV = 1000000000.0f;
 
+    private static final float OVERSCROLL_DAMP_FACTOR = 0.22f;
+
     // the velocity at which a fling gesture will cause us to snap to the next page
     protected int mSnapVelocity = 500;
 
@@ -70,6 +70,7 @@ public abstract class PagedView extends ViewGroup {
 
     protected int mCurrentPage;
     protected int mNextPage = INVALID_PAGE;
+    protected int mMaxScrollX;
     protected Scroller mScroller;
     private VelocityTracker mVelocityTracker;
 
@@ -103,6 +104,8 @@ public abstract class PagedView extends ViewGroup {
     protected int mCellCountX;
     protected int mCellCountY;
     protected boolean mCenterPagesVertically;
+    protected boolean mAllowOverScroll = true;
+    protected int mUnboundedScrollX;
 
     protected static final int INVALID_POINTER = -1;
 
@@ -312,8 +315,28 @@ public abstract class PagedView extends ViewGroup {
     }
 
     @Override
+    public void scrollBy(int x, int y) {
+        scrollTo(mUnboundedScrollX + x, mScrollY + y);
+    }
+
+    @Override
     public void scrollTo(int x, int y) {
-        super.scrollTo(x, y);
+        mUnboundedScrollX = x;
+
+        if (x < 0) {
+            super.scrollTo(0, y);
+            if (mAllowOverScroll) {
+                overScroll(x);
+            }
+        } else if (x > mMaxScrollX) {
+            super.scrollTo(mMaxScrollX, y);
+            if (mAllowOverScroll) {
+                overScroll(x - mMaxScrollX);
+            }
+        } else {
+            super.scrollTo(x, y);
+        }
+
         mTouchX = x;
         mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
     }
@@ -395,6 +418,7 @@ public abstract class PagedView extends ViewGroup {
             heightSize = maxChildHeight + verticalPadding;
         }
 
+        mMaxScrollX = getChildOffset(childCount - 1) - getRelativeChildOffset(childCount - 1);
         setMeasuredDimension(widthSize, heightSize);
     }
 
@@ -799,6 +823,16 @@ public abstract class PagedView extends ViewGroup {
         return false;
     }
 
+    protected void overScroll(float amount) {
+        int overScrollAmount = (int) Math.round(OVERSCROLL_DAMP_FACTOR * amount);
+        if (amount < 0) {
+            mScrollX = overScrollAmount;
+        } else {
+            mScrollX = mMaxScrollX + overScrollAmount;
+        }
+        invalidate();
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         // Skip touch handling if there are no pages to swipe
@@ -834,31 +868,13 @@ public abstract class PagedView extends ViewGroup {
                 final int deltaX = (int) (mLastMotionX - x);
                 mLastMotionX = x;
 
-                int sx = getScrollX();
-                if (deltaX < 0) {
-                    if (sx > 0) {
-                        mTouchX += Math.max(-mTouchX, deltaX);
-                        mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
-                        if (!mDeferScrollUpdate) {
-                            scrollBy(Math.max(-sx, deltaX), 0);
-                        } else {
-                            // This will trigger a call to computeScroll() on next drawChild() call
-                            invalidate();
-                        }
-                    }
-                } else if (deltaX > 0) {
-                    final int lastChildIndex = getChildCount() - 1;
-                    final int availableToScroll = getChildOffset(lastChildIndex) -
-                        getRelativeChildOffset(lastChildIndex) - sx;
-                    if (availableToScroll > 0) {
-                        mTouchX += Math.min(availableToScroll, deltaX);
-                        mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
-                        if (!mDeferScrollUpdate) {
-                            scrollBy(Math.min(availableToScroll, deltaX), 0);
-                        } else {
-                            // This will trigger a call to computeScroll() on next drawChild() call
-                            invalidate();
-                        }
+                if (deltaX != 0) {
+                    mTouchX += deltaX;
+                    mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
+                    if (!mDeferScrollUpdate) {
+                        scrollBy(deltaX, 0);
+                    } else {
+                        invalidate();
                     }
                 } else {
                     awakenScrollBars();
@@ -1042,7 +1058,7 @@ public abstract class PagedView extends ViewGroup {
         whichPage = Math.max(0, Math.min(whichPage, getPageCount() - 1));
 
         int newX = getChildOffset(whichPage) - getRelativeChildOffset(whichPage);
-        final int sX = getScrollX();
+        final int sX = mUnboundedScrollX;
         final int delta = newX - sX;
         snapToPage(whichPage, delta, duration);
     }
@@ -1063,7 +1079,7 @@ public abstract class PagedView extends ViewGroup {
         }
 
         if (!mScroller.isFinished()) mScroller.abortAnimation();
-        mScroller.startScroll(getScrollX(), 0, delta, 0, duration);
+        mScroller.startScroll(mUnboundedScrollX, 0, delta, 0, duration);
 
         // only load some associated pages
         loadAssociatedPages(mNextPage);
