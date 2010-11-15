@@ -39,6 +39,7 @@ public class BubbleTextView extends TextView {
 
     private final RectF mRect = new RectF();
     private Paint mPaint;
+    private int mPrevAlpha = -1;
 
     private boolean mBackgroundSizeChanged;
     private Drawable mBackground;
@@ -147,7 +148,11 @@ public class BubbleTextView extends TextView {
 
     @Override
     protected boolean onSetAlpha(int alpha) {
-        mPaint.setAlpha(alpha);
-        return super.onSetAlpha(alpha);
+        if (mPrevAlpha != alpha) {
+            mPrevAlpha = alpha;
+            mPaint.setAlpha(alpha);
+            super.onSetAlpha(alpha);
+        }
+        return true;
     }
 }
