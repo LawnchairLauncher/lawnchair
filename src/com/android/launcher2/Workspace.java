@@ -883,8 +883,8 @@ public class Workspace extends SmoothPagedView
 
     private class ZInterpolator implements TimeInterpolator {
         private final float focalLength = 0.2f;
-        public float getInterpolation(float input) { 
-            return (1.0f - focalLength / (focalLength + input)) / 
+        public float getInterpolation(float input) {
+            return (1.0f - focalLength / (focalLength + input)) /
                     (1.0f - focalLength / (focalLength + 1.0f));
         }
     }
