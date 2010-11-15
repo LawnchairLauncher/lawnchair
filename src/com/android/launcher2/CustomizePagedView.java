@@ -306,7 +306,7 @@ public class CustomizePagedView extends PagedView
         // Return early if this is not initiated from a touch
         if (!v.isInTouchMode()) return;
         // Return early if we are still animating the pages
-        if (mNextPage == INVALID_PAGE) return;
+        if (mNextPage != INVALID_PAGE) return;
 
         // On certain pages, we allow single tap to mark items as selected so that they can be
         // dropped onto the mini workspaces
@@ -372,7 +372,7 @@ public class CustomizePagedView extends PagedView
         // Return early if this is not initiated from a touch
         if (!v.isInTouchMode()) return false;
         // Return early if we are still animating the pages
-        if (mNextPage == INVALID_PAGE) return false;
+        if (mNextPage != INVALID_PAGE) return false;
 
         // End the current choice mode before we start dragging anything
         if (isChoiceMode(CHOICE_MODE_SINGLE)) {
