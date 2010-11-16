@@ -2515,14 +2515,16 @@ public final class Launcher extends Activity
      */
     private void setPivotsForZoom(View view, State state, float scaleFactor) {
         final int height = view.getHeight();
+
         view.setPivotX(view.getWidth() / 2.0f);
-        // Set pivotY so that at the starting zoom factor, the view is off-screen by a small margin
-        // Assumes that the view is normally anchored to either the top or bottom of the screen
-        final int margin = getResources().getInteger(R.integer.config_allAppsVerticalOffset);
+        // Set pivotY so that at the starting zoom factor, the view is partially
+        // visible. Modifying initialHeightFactor changes how much of the view is
+        // initially showing, and hence the perceived angle from which the view enters.
+        final float initialHeightFactor = 0.2f;
         if (state == State.ALL_APPS) {
-            view.setPivotY(height + ((view.getTop() + height) / scaleFactor) + margin);
+            view.setPivotY((1 + initialHeightFactor) * height);
         } else {
-            view.setPivotY(0.0f - (view.getTop() / scaleFactor) - margin);
+            view.setPivotY(-initialHeightFactor * height);
         }
     }
 
@@ -2552,7 +2554,8 @@ public final class Launcher extends Activity
                     PropertyValuesHolder.ofFloat("scaleX", scale, 1.0f),
                     PropertyValuesHolder.ofFloat("scaleY", scale, 1.0f));
             scaleAnim.setDuration(duration);
-            scaleAnim.setInterpolator(new DecelerateInterpolator());
+
+            scaleAnim.setInterpolator(new Workspace.ZoomOutInterpolator());
             scaleAnim.addListener(new LauncherAnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
@@ -2560,6 +2563,7 @@ public final class Launcher extends Activity
                     toView.setTranslationX(0.0f);
                     toView.setTranslationY(0.0f);
                     toView.setVisibility(View.VISIBLE);
+                    toView.setAlpha(1.0f);
                 }
                 @Override
                 public void onAnimationEndOrCancel(Animator animation) {
@@ -2624,8 +2628,12 @@ public final class Launcher extends Activity
                     PropertyValuesHolder.ofFloat("scaleX", scaleFactor),
                     PropertyValuesHolder.ofFloat("scaleY", scaleFactor));
             scaleAnim.setDuration(duration);
-            scaleAnim.setInterpolator(new AccelerateInterpolator());
-            mStateAnimation.addListener(new LauncherAnimatorListenerAdapter() {
+            scaleAnim.setInterpolator(new Workspace.ZoomInInterpolator());
+
+            ValueAnimator alphaAnim = ObjectAnimator.ofPropertyValuesHolder(fromView,
+                    PropertyValuesHolder.ofFloat("alpha", 1.0f, 0.0f));
+            alphaAnim.setDuration(res.getInteger(R.integer.config_allAppsFadeOutTime));
+            alphaAnim.addListener(new LauncherAnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEndOrCancel(Animator animation) {
                     fromView.setVisibility(View.GONE);
@@ -2636,7 +2644,7 @@ public final class Launcher extends Activity
             AnimatorSet toolbarShowAnim = new AnimatorSet();
             hideAndShowToolbarButtons(State.WORKSPACE, toolbarShowAnim, toolbarHideAnim);
 
-            mStateAnimation.playTogether(scaleAnim, toolbarHideAnim);
+            mStateAnimation.playTogether(scaleAnim, toolbarHideAnim, alphaAnim);
 
             // Show the new toolbar buttons at the very end of the whole animation
             final int fadeInTime = res.getInteger(R.integer.config_toolbarButtonFadeInTime);
@@ -2688,6 +2696,7 @@ public final class Launcher extends Activity
                 public void onAnimationStart(Animator animation) {
                     toView.setVisibility(View.VISIBLE);
                     toView.setY(toViewStartY);
+                    toView.setAlpha(1.0f);
                 }
                 @Override
                 public void onAnimationEndOrCancel(Animator animation) {
