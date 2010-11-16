@@ -54,16 +54,54 @@
         android:layout_height="?android:attr/actionBarSize"
         android:layout_gravity="top">
 
-        <ImageView
-            android:id="@+id/search_button"
+        <LinearLayout android:id="@+id/search_button_cluster"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="left"
-            android:layout_marginLeft="@dimen/toolbar_button_spacing"
+            android:layout_height="48dp"
+            android:gravity="bottom"
+            >
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp"
+                android:background="@drawable/textfield_start"
+                android:orientation="horizontal">
+                <!-- Global search icon -->
+                <ImageView
+                    android:id="@+id/search_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="12dp"
+                    android:src="@drawable/search_button_generic"
+                    android:background="@drawable/button_bg"
+                    android:onClick="onClickSearchButton"
+                    android:focusable="true"
+                    android:clickable="true"/>
+            </LinearLayout>
 
-            android:onClick="onClickSearchButton"
-            android:focusable="true"
-            android:clickable="true"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/textfield_end"
+                android:orientation="horizontal">
+                <!-- Voice search icon -->
+                <ImageView
+                    android:id="@+id/voice_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="12dp"
+                    android:src="@drawable/ic_voice_search"
+                    android:background="@drawable/button_bg"
+                    android:onClick="onClickVoiceButton"
+                    android:focusable="true"
+                    android:clickable="true"/>
+            </LinearLayout>
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/configure_button"
