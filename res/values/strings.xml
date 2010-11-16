@@ -79,9 +79,13 @@
 
     <!-- External-drop widget pick label format string [CHAR_LIMIT=25] -->
     <string name="external_drop_widget_pick_format" translatable="false">%1$s (%2$d x %3$d)</string>
-    <!-- External-drop widget error string -->
-    <string name="external_drop_widget_error">Could not install clipboard item</string>
-    <!-- External-drop widget pick title -->
+    <!-- External-drop widget error string.  This is the error that is shown
+         when you drag and item into the homescreen and it is unable to fit,
+         or an error is encountered. [CHAR_LIMIT=50] -->
+    <string name="external_drop_widget_error">Could not drop item onto this homescreen</string>
+    <!-- External-drop widget pick title.  This is shown as the title of the
+         dialog which allows you to pick which widgets to handle a particular
+         drop if there are multiple choices. [CHAR_LIMIT=35] -->
     <string name="external_drop_widget_pick_title">Select widget to create</string>
 
     <!-- Folders -->

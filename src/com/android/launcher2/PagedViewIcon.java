@@ -52,7 +52,7 @@ public class PagedViewIcon extends TextView implements Checkable {
     private Object mIconCacheKey;
     private PagedViewIconCache mIconCache;
 
-    private int mAlpha;
+    private int mAlpha = -1;
     private int mHolographicAlpha;
 
     private boolean mIsChecked;
@@ -162,9 +162,13 @@ public class PagedViewIcon extends TextView implements Checkable {
     public void setAlpha(float alpha) {
         final float viewAlpha = sHolographicOutlineHelper.viewAlphaInterpolator(alpha);
         final float holographicAlpha = sHolographicOutlineHelper.highlightAlphaInterpolator(alpha);
-        mAlpha = (int) (viewAlpha * 255);
-        mHolographicAlpha = (int) (holographicAlpha * 255);
-        super.setAlpha(viewAlpha);
+        int newViewAlpha = (int) (viewAlpha * 255);
+        int newHolographicAlpha = (int) (holographicAlpha * 255);
+        if ((mAlpha != newViewAlpha) || (mHolographicAlpha != newHolographicAlpha)) {
+            mAlpha = newViewAlpha;
+            mHolographicAlpha = newHolographicAlpha;
+            super.setAlpha(viewAlpha);
+        }
     }
 
     public void invalidateCheckedImage() {

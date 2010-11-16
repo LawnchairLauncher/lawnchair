@@ -303,9 +303,10 @@ public class CustomizePagedView extends PagedView
 
     @Override
     public void onClick(View v) {
-        if (!v.isInTouchMode()) {
-            return;
-        }
+        // Return early if this is not initiated from a touch
+        if (!v.isInTouchMode()) return;
+        // Return early if we are still animating the pages
+        if (mNextPage != INVALID_PAGE) return;
 
         // On certain pages, we allow single tap to mark items as selected so that they can be
         // dropped onto the mini workspaces
@@ -368,9 +369,10 @@ public class CustomizePagedView extends PagedView
 
     @Override
     public boolean onLongClick(View v) {
-        if (!v.isInTouchMode()) {
-            return false;
-        }
+        // Return early if this is not initiated from a touch
+        if (!v.isInTouchMode()) return false;
+        // Return early if we are still animating the pages
+        if (mNextPage != INVALID_PAGE) return false;
 
         // End the current choice mode before we start dragging anything
         if (isChoiceMode(CHOICE_MODE_SINGLE)) {
@@ -604,17 +606,9 @@ public class CustomizePagedView extends PagedView
             layout.setPadding(mPageLayoutPaddingLeft, mPageLayoutPaddingTop,
                     mPageLayoutPaddingRight, mPageLayoutPaddingBottom);
 
-            // Temporary change to prevent the last page from being too small (and items bleeding
-            // onto it).  We can remove this once we properly fix the fading algorithm
-            if (i < numPages - 1) {
-                addView(layout, new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT));
-            } else {
-                addView(layout, new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT));
-            }
+            addView(layout, new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT));
         }
     }
 
@@ -665,17 +659,9 @@ public class CustomizePagedView extends PagedView
             layout.setPadding(mPageLayoutPaddingLeft, mPageLayoutPaddingTop,
                     mPageLayoutPaddingRight, mPageLayoutPaddingBottom);
 
-            // Temporary change to prevent the last page from being too small (and items bleeding
-            // onto it).  We can remove this once we properly fix the fading algorithm
-            if (i < numPages - 1) {
-                addView(layout, new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT));
-            } else {
-                addView(layout, new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT));
-            }
+            addView(layout, new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT));
         }
     }
 

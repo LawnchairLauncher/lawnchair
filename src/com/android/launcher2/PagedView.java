@@ -57,7 +57,7 @@ public abstract class PagedView extends ViewGroup {
     // The min drag distance to trigger a page shift (regardless of velocity)
     private static final int MIN_LENGTH_FOR_MOVE = 200;
 
-    private static final int PAGE_SNAP_ANIMATION_DURATION = 1000;
+    private static final int PAGE_SNAP_ANIMATION_DURATION = 750;
     protected static final float NANOTIME_DIV = 1000000000.0f;
 
     // the velocity at which a fling gesture will cause us to snap to the next page
