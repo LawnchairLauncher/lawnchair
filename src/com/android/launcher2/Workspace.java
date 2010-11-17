@@ -170,6 +170,7 @@ public class Workspace extends SmoothPagedView
     // in all apps or customize mode)
     private boolean mIsSmall = false;
     private boolean mIsInUnshrinkAnimation = false;
+    private AnimatorListener mShrinkAnimationListener;
     private AnimatorListener mUnshrinkAnimationListener;
     enum ShrinkState { TOP, SPRING_LOADED, MIDDLE, BOTTOM_HIDDEN, BOTTOM_VISIBLE };
     private ShrinkState mShrinkState;
@@ -266,6 +267,7 @@ public class Workspace extends SmoothPagedView
             @Override
             public void onAnimationStart(Animator animation) {
                 mIsInUnshrinkAnimation = true;
+                disableCacheUpdates();
             }
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -273,6 +275,17 @@ public class Workspace extends SmoothPagedView
                 if (mShrinkState != ShrinkState.SPRING_LOADED) {
                     mDrawCustomizeTrayBackground = false;
                 }
+                enableCacheUpdates();
+            }
+        };
+        mShrinkAnimationListener = new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                disableCacheUpdates();
+            }
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                enableCacheUpdates();
             }
         };
         mSnapVelocity = 600;
@@ -746,6 +759,22 @@ public class Workspace extends SmoothPagedView
         }
     }
 
+    public void enableCacheUpdates() {
+        final int pageCount = getChildCount();
+        for (int i = 0; i < pageCount; i++) {
+            final CellLayout page = (CellLayout) getChildAt(i);
+            page.enableCacheUpdates();
+        }
+    }
+
+    public void disableCacheUpdates() {
+        final int pageCount = getChildCount();
+        for (int i = 0; i < pageCount; i++) {
+            final CellLayout page = (CellLayout) getChildAt(i);
+            page.disableCacheUpdates();
+        }
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         // Draw the background gradient if necessary
@@ -1066,12 +1095,14 @@ public class Workspace extends SmoothPagedView
                 cl.setBackgroundAlpha(finalAlpha);
                 cl.setAlpha(finalAlpha);
                 cl.setRotationY(rotation);
+                mShrinkAnimationListener.onAnimationEnd(null);
             }
             // increment newX for the next screen
             newX += scaledPageWidth + extraScaledSpacing;
         }
         setLayoutScale(1.0f);
         if (animated) {
+            mAnimator.addListener(mShrinkAnimationListener);
             mAnimator.start();
         }
         setChildrenDrawnWithCacheEnabled(true);
@@ -1297,6 +1328,7 @@ public class Workspace extends SmoothPagedView
                     cl.setBackgroundAlpha(0.0f);
                     cl.setAlpha(finalAlphaValue);
                     cl.setRotationY(rotation);
+                    mUnshrinkAnimationListener.onAnimationEnd(null);
                 }
             }
 
