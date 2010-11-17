@@ -847,11 +847,6 @@ public class Workspace extends SmoothPagedView
 
             if (animated) {
                 final int duration = res.getInteger(R.integer.config_workspaceShrinkTime);
-                ObjectAnimator anim = ObjectAnimator.ofPropertyValuesHolder(cl,
-                        PropertyValuesHolder.ofFloat("backgroundAlpha", finalAlpha),
-                        PropertyValuesHolder.ofFloat("alpha", finalAlpha),
-                        PropertyValuesHolder.ofFloat("rotationY", rotation));
-                anim.setDuration(duration);
 
                 ObjectAnimator animWithInterpolator = ObjectAnimator.ofPropertyValuesHolder(cl,
                         PropertyValuesHolder.ofFloat("x", newX),
@@ -859,10 +854,14 @@ public class Workspace extends SmoothPagedView
                         PropertyValuesHolder.ofFloat("scaleX",
                                 SHRINK_FACTOR * rotationScaleX * extraShrinkFactor),
                         PropertyValuesHolder.ofFloat("scaleY",
-                                SHRINK_FACTOR * rotationScaleY * extraShrinkFactor));
+                                SHRINK_FACTOR * rotationScaleY * extraShrinkFactor),
+                        PropertyValuesHolder.ofFloat("backgroundAlpha", finalAlpha),
+                        PropertyValuesHolder.ofFloat("alpha", finalAlpha),
+                        PropertyValuesHolder.ofFloat("rotationY", rotation));
+
                 animWithInterpolator.setDuration(duration);
-                animWithInterpolator.setInterpolator(mZInterpolator);
-                mAnimator.playTogether(anim, animWithInterpolator);
+                animWithInterpolator.setInterpolator(mZoomOutInterpolator);
+                mAnimator.playTogether(animWithInterpolator);
             } else {
                 cl.setX((int)newX);
                 cl.setY((int)newY);
@@ -881,22 +880,64 @@ public class Workspace extends SmoothPagedView
         setChildrenDrawnWithCacheEnabled(true);
     }
 
-    private class ZInterpolator implements TimeInterpolator {
-        private final float focalLength = 0.2f;
+    /*
+     * This interpolator emulates the rate at which the perceived scale of an object changes
+     * as its distance from a camera increases. When this interpolator is applied to a scale
+     * animation on a view, it evokes the sense that the object is shrinking due to moving away
+     * from the camera. 
+     */
+    static class ZInterpolator implements TimeInterpolator {
+        private float focalLength;
+
+        public ZInterpolator(float foc) {
+            focalLength = foc;
+        }
+
         public float getInterpolation(float input) {
             return (1.0f - focalLength / (focalLength + input)) /
-                    (1.0f - focalLength / (focalLength + 1.0f));
+                (1.0f - focalLength / (focalLength + 1.0f));
         }
     }
 
-    private class InverseZInterpolator implements TimeInterpolator {
+    /*
+     * The exact reverse of ZInterpolator.
+     */
+    static class InverseZInterpolator implements TimeInterpolator {
+        private ZInterpolator zInterpolator;
+        public InverseZInterpolator(float foc) {
+            zInterpolator = new ZInterpolator(foc);
+        }
         public float getInterpolation(float input) {
-            return 1 - mZInterpolator.getInterpolation(1 - input);
+            return 1 - zInterpolator.getInterpolation(1 - input);
         }
     }
 
-    private final ZInterpolator mZInterpolator = new ZInterpolator();
-    private final InverseZInterpolator mInverseZInterpolator = new InverseZInterpolator();
+    /*
+     * ZInterpolator compounded with an ease-out.
+     */
+    static class ZoomOutInterpolator implements TimeInterpolator {
+        private final ZInterpolator zInterpolator = new ZInterpolator(0.2f);
+        private final DecelerateInterpolator decelerate = new DecelerateInterpolator(1.5f);
+
+        public float getInterpolation(float input) {
+            return decelerate.getInterpolation(zInterpolator.getInterpolation(input));
+        }
+    }
+
+    /*
+     * InvereZInterpolator compounded with an ease-out.
+     */
+    static class ZoomInInterpolator implements TimeInterpolator {
+        private final InverseZInterpolator inverseZInterpolator = new InverseZInterpolator(0.35f);
+        private final DecelerateInterpolator decelerate = new DecelerateInterpolator(3.0f);
+
+        public float getInterpolation(float input) {
+            return decelerate.getInterpolation(inverseZInterpolator.getInterpolation(input));
+        }
+    }
+
+    private final ZoomOutInterpolator mZoomOutInterpolator = new ZoomOutInterpolator();
+    private final ZoomInInterpolator mZoomInInterpolator = new ZoomInInterpolator();
 
     private void updateWhichPagesAcceptDrops(ShrinkPosition state) {
         updateWhichPagesAcceptDropsHelper(state, false, 1, 1);
@@ -1026,20 +1067,18 @@ public class Workspace extends SmoothPagedView
                 }
 
                 if (animated) {
-                    ObjectAnimator anim = ObjectAnimator.ofPropertyValuesHolder(cl,
-                            PropertyValuesHolder.ofFloat("backgroundAlpha", 0.0f),
-                            PropertyValuesHolder.ofFloat("alpha", finalAlphaValue),
-                            PropertyValuesHolder.ofFloat("rotationY", rotation));
-                    anim.setDuration(duration);
 
                     ObjectAnimator animWithInterpolator = ObjectAnimator.ofPropertyValuesHolder(cl,
                             PropertyValuesHolder.ofFloat("translationX", 0.0f),
                             PropertyValuesHolder.ofFloat("translationY", 0.0f),
                             PropertyValuesHolder.ofFloat("scaleX", 1.0f),
-                            PropertyValuesHolder.ofFloat("scaleY", 1.0f));
+                            PropertyValuesHolder.ofFloat("scaleY", 1.0f),
+                            PropertyValuesHolder.ofFloat("backgroundAlpha", 0.0f),
+                            PropertyValuesHolder.ofFloat("alpha", finalAlphaValue),
+                            PropertyValuesHolder.ofFloat("rotationY", rotation));
                     animWithInterpolator.setDuration(duration);
-                    animWithInterpolator.setInterpolator(mInverseZInterpolator);
-                    mAnimator.playTogether(anim, animWithInterpolator);
+                    animWithInterpolator.setInterpolator(mZoomInInterpolator);
+                    mAnimator.playTogether(animWithInterpolator);
                 } else {
                     cl.setTranslationX(0.0f);
                     cl.setTranslationY(0.0f);

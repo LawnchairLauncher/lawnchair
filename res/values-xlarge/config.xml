@@ -1,9 +1,9 @@
 <resources>
     <!--  NOTE: Many of the all apps values here are also used for the customization drawer -->
 
-    <!-- Duration in milliseconds of the all apps zoom-in animation. -->
+    <!-- Duration in milliseconds of the all apps / configuration zoom-in animation. -->
     <!-- NB: This should be less than the workspaceShrinkTime as they happen together. -->
-    <integer name="config_allAppsZoomInTime">350</integer>
+    <integer name="config_allAppsZoomInTime">700</integer>
 
     <!-- Duration in milliseconds of the transition between tabs in the all apps/customize
          tray -->
@@ -14,16 +14,14 @@
     <integer name="config_allAppsZoomOutTime">350</integer>
 
     <!-- Scaling factor used in the all apps zooming animations -->
-    <integer name="config_allAppsZoomScaleFactor">5</integer>
-
-    <!-- The extra distance off-screen that all apps appears from -->
-    <integer name="config_allAppsVerticalOffset">200</integer>
+    <integer name="config_allAppsZoomScaleFactor">7</integer>
 
     <!-- Duration in milliseconds of the animations between all apps, customize, & home.
          NOTE: If these are changed, the toolbar animation times below should also be. -->
     <integer name="config_allAppsCameraPanTime">700</integer>
     <integer name="config_workspaceShrinkTime">700</integer>
-    <integer name="config_workspaceUnshrinkTime">700</integer>
+    <integer name="config_workspaceUnshrinkTime">350</integer>
+    <integer name="config_allAppsFadeOutTime">150</integer>
 
     <!-- Duration in milliseconds toolbar fade in and fade out animations.
          NOTE: Fade in and fade out time should together be less the transition
@@ -49,4 +47,8 @@
     <integer name="config_screenOnDropScaleDownDuration">200</integer>
     <integer name="config_screenOnDropAlphaFadeDelay">350</integer>
     <integer name="config_screenOnDropAlphaFadeDuration">50</integer>
+
+    <!-- The slope, in percent, of the drag movement needed to drag an item out of the customization
+         drawer (y / x * 100%)  -->
+    <integer name="config_customizationDrawerDragSlopeThreshold">150</integer>
 </resources>
