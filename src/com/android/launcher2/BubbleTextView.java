@@ -19,6 +19,7 @@ package com.android.launcher2;
 import android.widget.TextView;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
@@ -32,7 +33,7 @@ import com.android.launcher.R;
  * because we want to make the bubble taller than the text and TextView's clip is
  * too aggressive.
  */
-public class BubbleTextView extends TextView {
+public class BubbleTextView extends CacheableTextView {
     static final float CORNER_RADIUS = 8.0f;
     static final float PADDING_H = 5.0f;
     static final float PADDING_V = 1.0f;
@@ -75,6 +76,18 @@ public class BubbleTextView extends TextView {
         mPaddingH = PADDING_H * scale;
         //noinspection PointlessArithmeticExpression
         mPaddingV = PADDING_V * scale;
+    }
+
+    public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache) {
+        Bitmap b = info.getIcon(iconCache);
+
+        setCompoundDrawablesWithIntrinsicBounds(null,
+                new FastBitmapDrawable(b),
+                null, null);
+        setText(info.title);
+        buildAndEnableCache();
+        setTag(info);
+
     }
 
     @Override
@@ -129,7 +142,9 @@ public class BubbleTextView extends TextView {
                 top + layout.getLineTop(0) -  mPaddingV,
                 Math.min(left + layout.getLineRight(0) + mPaddingH, mScrollX + mRight - mLeft),
                 top + layout.getLineBottom(0) + mPaddingV);
-        canvas.drawRoundRect(rect, mCornerRadius, mCornerRadius, mPaint);
+        // TEMPORARILY DISABLE DRAWING ROUND RECT -- re-enable this when we tweak CacheableTextView
+        // to support padding so we can capture the "rounded" edges
+        //canvas.drawRoundRect(rect, mCornerRadius, mCornerRadius, mPaint);
 
         super.draw(canvas);
     }

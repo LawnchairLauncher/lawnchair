@@ -1038,17 +1038,9 @@ public final class Launcher extends Activity
      * @return A View inflated from layoutResId.
      */
     View createShortcut(int layoutResId, ViewGroup parent, ShortcutInfo info) {
-        TextView favorite = (TextView) mInflater.inflate(layoutResId, parent, false);
-
-        Bitmap b = info.getIcon(mIconCache);
-
-        favorite.setCompoundDrawablesWithIntrinsicBounds(null,
-                new FastBitmapDrawable(b),
-                null, null);
-        favorite.setText(info.title);
-        favorite.setTag(info);
+        BubbleTextView favorite = (BubbleTextView) mInflater.inflate(layoutResId, parent, false);
+        favorite.applyFromShortcutInfo(info, mIconCache);
         favorite.setOnClickListener(this);
-
         return favorite;
     }
 

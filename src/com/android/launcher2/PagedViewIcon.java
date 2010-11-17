@@ -39,7 +39,7 @@ import com.android.launcher2.PagedView.PagedViewIconCache;
  * An icon on a PagedView, specifically for items in the launcher's paged view (with compound
  * drawables on the top).
  */
-public class PagedViewIcon extends TextView implements Checkable {
+public class PagedViewIcon extends CacheableTextView implements Checkable {
     private static final String TAG = "PagedViewIcon";
 
     // holographic outline
@@ -138,6 +138,7 @@ public class PagedViewIcon extends TextView implements Checkable {
         mIcon = info.iconBitmap;
         setCompoundDrawablesWithIntrinsicBounds(null, new FastBitmapDrawable(mIcon), null, null);
         setText(info.title);
+        buildAndEnableCache();
         setTag(info);
 
         queueHolographicOutlineCreation();
@@ -153,6 +154,7 @@ public class PagedViewIcon extends TextView implements Checkable {
                 modelIconCache.getFullResIcon(info, packageManager), mContext);
         setCompoundDrawablesWithIntrinsicBounds(null, new FastBitmapDrawable(mIcon), null, null);
         setText(info.loadLabel(packageManager));
+        buildAndEnableCache();
         setTag(info);
 
         queueHolographicOutlineCreation();
