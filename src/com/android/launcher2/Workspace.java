@@ -155,7 +155,13 @@ public class Workspace extends SmoothPagedView
     private ShrinkPosition mWaitingToShrinkPosition;
     private AnimatorSet mAnimator;
 
+    /** Is the user is dragging an item near the edge of a page? */
     private boolean mInScrollArea = false;
+
+    /** If mInScrollArea is true, the direction of the scroll. */
+    private int mPendingScrollDirection = DragController.SCROLL_NONE;
+
+    private boolean mInDragMode = false;
 
     private final HolographicOutlineHelper mOutlineHelper = new HolographicOutlineHelper();
     private Bitmap mDragOutline = null;
@@ -1423,16 +1429,32 @@ public class Workspace extends SmoothPagedView
             onDropExternal(originX, originY, dragInfo, mDragTargetLayout);
         } else if (mDragInfo != null) {
             final View cell = mDragInfo.cell;
-            if (mDragTargetLayout != null) {
+            CellLayout dropTargetLayout = mDragTargetLayout;
+
+            // Handle the case where the user drops when in the scroll area.
+            // This is treated as a drop on the adjacent page.
+            if (dropTargetLayout == null && mInScrollArea) {
+                if (mPendingScrollDirection == DragController.SCROLL_LEFT) {
+                    dropTargetLayout = (CellLayout) getChildAt(mCurrentPage - 1);
+                } else if (mPendingScrollDirection == DragController.SCROLL_RIGHT) {
+                    dropTargetLayout = (CellLayout) getChildAt(mCurrentPage + 1);
+                }
+            }
+
+            if (dropTargetLayout != null) {
                 // Move internally
                 mTargetCell = findNearestVacantArea(originX, originY,
-                        mDragInfo.spanX, mDragInfo.spanY, cell, mDragTargetLayout,
+                        mDragInfo.spanX, mDragInfo.spanY, cell, dropTargetLayout,
                         mTargetCell);
 
-                if (mTargetCell == null) {
-                    snapToPage(mDragInfo.screen);
-                } else {
-                    int screen = indexOfChild(mDragTargetLayout);
+                final int screen = (mTargetCell == null) ?
+                        mDragInfo.screen : indexOfChild(dropTargetLayout);
+
+                if (screen != mCurrentPage) {
+                    snapToPage(screen);
+                }
+
+                if (mTargetCell != null) {
                     if (screen != mDragInfo.screen) {
                         // Reparent the view
                         ((CellLayout) getChildAt(mDragInfo.screen)).removeView(cell);
@@ -1443,7 +1465,7 @@ public class Workspace extends SmoothPagedView
                     // update the item's position after drop
                     final ItemInfo info = (ItemInfo) cell.getTag();
                     CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell.getLayoutParams();
-                    mDragTargetLayout.onMove(cell, mTargetCell[0], mTargetCell[1]);
+                    dropTargetLayout.onMove(cell, mTargetCell[0], mTargetCell[1]);
                     lp.cellX = mTargetCell[0];
                     lp.cellY = mTargetCell[1];
                     cell.setId(LauncherModel.getCellLayoutChildId(-1, mDragInfo.screen,
@@ -2079,9 +2101,13 @@ public class Workspace extends SmoothPagedView
     public void onEnterScrollArea(int direction) {
         if (!mIsSmall && !mIsInUnshrinkAnimation) {
             mInScrollArea = true;
-            final int screen = getCurrentPage() + ((direction == DragController.SCROLL_LEFT) ? -1 : 1);
-            if (0 <= screen && screen < getChildCount()) {
-                ((CellLayout) getChildAt(screen)).setHover(true);
+            mPendingScrollDirection = direction;
+
+            final int page = mCurrentPage + (direction == DragController.SCROLL_LEFT ? -1 : 1);
+            final CellLayout layout = (CellLayout) getChildAt(page);
+
+            if (layout != null) {
+                layout.setHover(true);
 
                 if (mDragTargetLayout != null) {
                     mDragTargetLayout.onDragExit();
@@ -2102,6 +2128,7 @@ public class Workspace extends SmoothPagedView
     public void onExitScrollArea() {
         if (mInScrollArea) {
             mInScrollArea = false;
+            mPendingScrollDirection = DragController.SCROLL_NONE;
             clearAllHovers();
         }
     }
