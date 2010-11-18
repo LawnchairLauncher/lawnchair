@@ -302,6 +302,8 @@ public class CustomizePagedView extends PagedView
 
         // End the current choice mode so that we don't carry selections across tabs
         endChoiceMode();
+        // Reset the touch item (if we are mid-dragging)
+        mLastTouchedItem = null;
     }
 
     @Override
@@ -417,7 +419,7 @@ public class CustomizePagedView extends PagedView
         boolean yMoved = yDiff > touchSlop;
         boolean isUpwardMotion = (yDiff / (float) xDiff) > mDragSlopeThreshold;
 
-        if (isUpwardMotion && yMoved) {
+        if (isUpwardMotion && yMoved && mLastTouchedItem != null) {
             // Drag if the user moved far enough along the Y axis
             beginDragging(mLastTouchedItem);
 
