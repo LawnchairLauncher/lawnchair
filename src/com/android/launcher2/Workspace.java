@@ -245,8 +245,12 @@ public class Workspace extends SmoothPagedView
         mExternalDragOutlinePaint.setAntiAlias(true);
         setWillNotDraw(false);
 
-        final Resources res = getResources();
-        mBackground = res.getDrawable(R.drawable.all_apps_bg_gradient);
+        try {
+            final Resources res = getResources();
+            mBackground = res.getDrawable(R.drawable.all_apps_bg_gradient);
+        } catch (Resources.NotFoundException e) {
+            // In this case, we will skip drawing background protection
+        }
 
         mUnshrinkAnimationListener = new LauncherAnimatorListenerAdapter() {
             @Override
@@ -583,6 +587,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public void showBackgroundGradient() {
+        if (mBackground == null) return;
         if (mBackgroundFadeOutAnimation != null) mBackgroundFadeOutAnimation.cancel();
         if (mBackgroundFadeInAnimation != null) mBackgroundFadeInAnimation.cancel();
         mBackgroundFadeInAnimation = ObjectAnimator.ofFloat(this, "backgroundAlpha", 1.0f);
@@ -591,6 +596,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public void hideBackgroundGradient() {
+        if (mBackground == null) return;
         if (mBackgroundFadeInAnimation != null) mBackgroundFadeInAnimation.cancel();
         if (mBackgroundFadeOutAnimation != null) mBackgroundFadeOutAnimation.cancel();
         mBackgroundFadeOutAnimation = ObjectAnimator.ofFloat(this, "backgroundAlpha", 0.0f);
@@ -683,7 +689,7 @@ public class Workspace extends SmoothPagedView
     @Override
     protected void onDraw(Canvas canvas) {
         // Draw the background gradient if necessary
-        if (mBackgroundAlpha > 0.0f) {
+        if (mBackground != null && mBackgroundAlpha > 0.0f) {
             mBackground.setAlpha((int) (mBackgroundAlpha * 255));
             mBackground.setBounds(mScrollX, 0, mScrollX + getMeasuredWidth(), getMeasuredHeight());
             mBackground.draw(canvas);
