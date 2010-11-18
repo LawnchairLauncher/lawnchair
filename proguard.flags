@@ -32,6 +32,8 @@
 -keep class com.android.launcher2.Workspace {
   public float getBackgroundAlpha();
   public void setBackgroundAlpha(float);
+  public float getChildrenOutlineAlpha();
+  public void setChildrenOutlineAlpha(float);
 }
 
 -keep class com.android.launcher2.AllApps3D$Defines {
