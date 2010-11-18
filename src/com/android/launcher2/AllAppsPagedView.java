@@ -533,8 +533,6 @@ public class AllAppsPagedView extends PagedView
 
         mDragController.removeDropTarget(this);
         endChoiceMode();
-
-        mLauncher.getWorkspace().shrinkToBottomHidden();
     }
 
     @Override
