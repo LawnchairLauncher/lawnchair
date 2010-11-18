@@ -92,13 +92,22 @@ public class Workspace extends SmoothPagedView
     private static final float EXTRA_SCALE_FACTOR_1 = 1.0f;
     private static final float EXTRA_SCALE_FACTOR_2 = 1.10f;
 
-    private static final int BACKGROUND_FADE_OUT_DELAY = 300;
-    private static final int BACKGROUND_FADE_OUT_DURATION = 300;
-    private static final int BACKGROUND_FADE_IN_DURATION = 100;
+    private static final int CHILDREN_OUTLINE_FADE_OUT_DELAY = 300;
+    private static final int CHILDREN_OUTLINE_FADE_OUT_DURATION = 300;
+    private static final int CHILDREN_OUTLINE_FADE_IN_DURATION = 100;
 
-    // These animators are used to fade the background
+    private static final int BACKGROUND_FADE_OUT_DURATION = 450;
+    private static final int BACKGROUND_FADE_IN_DURATION = 350;
+
+    // These animators are used to fade the children's outlines
+    private ObjectAnimator mChildrenOutlineFadeInAnimation;
+    private ObjectAnimator mChildrenOutlineFadeOutAnimation;
+    private float mChildrenOutlineAlpha = 0;
+
+    // These properties refer to the background protection gradient used for AllApps and Customize
     private ObjectAnimator mBackgroundFadeInAnimation;
     private ObjectAnimator mBackgroundFadeOutAnimation;
+    private Drawable mBackground;
     private float mBackgroundAlpha = 0;
 
     private final WallpaperManager mWallpaperManager;
@@ -235,6 +244,9 @@ public class Workspace extends SmoothPagedView
         mIconCache = app.getIconCache();
         mExternalDragOutlinePaint.setAntiAlias(true);
         setWillNotDraw(false);
+
+        final Resources res = getResources();
+        mBackground = res.getDrawable(R.drawable.all_apps_bg_gradient);
 
         mUnshrinkAnimationListener = new LauncherAnimatorListenerAdapter() {
             @Override
@@ -539,31 +551,56 @@ public class Workspace extends SmoothPagedView
 
     public void showOutlines() {
         if (!mIsSmall && !mIsInUnshrinkAnimation) {
-            if (mBackgroundFadeOutAnimation != null) mBackgroundFadeOutAnimation.cancel();
-            if (mBackgroundFadeInAnimation != null) mBackgroundFadeInAnimation.cancel();
-            mBackgroundFadeInAnimation = ObjectAnimator.ofFloat(this, "backgroundAlpha", 1.0f);
-            mBackgroundFadeInAnimation.setDuration(BACKGROUND_FADE_IN_DURATION);
-            mBackgroundFadeInAnimation.start();
+            if (mChildrenOutlineFadeOutAnimation != null) mChildrenOutlineFadeOutAnimation.cancel();
+            if (mChildrenOutlineFadeInAnimation != null) mChildrenOutlineFadeInAnimation.cancel();
+            mChildrenOutlineFadeInAnimation = ObjectAnimator.ofFloat(this, "childrenOutlineAlpha", 1.0f);
+            mChildrenOutlineFadeInAnimation.setDuration(CHILDREN_OUTLINE_FADE_IN_DURATION);
+            mChildrenOutlineFadeInAnimation.start();
         }
     }
 
     public void hideOutlines() {
         if (!mIsSmall && !mIsInUnshrinkAnimation) {
-            if (mBackgroundFadeInAnimation != null) mBackgroundFadeInAnimation.cancel();
-            if (mBackgroundFadeOutAnimation != null) mBackgroundFadeOutAnimation.cancel();
-            mBackgroundFadeOutAnimation = ObjectAnimator.ofFloat(this, "backgroundAlpha", 0.0f);
-            mBackgroundFadeOutAnimation.setDuration(BACKGROUND_FADE_OUT_DURATION);
-            mBackgroundFadeOutAnimation.setStartDelay(BACKGROUND_FADE_OUT_DELAY);
-            mBackgroundFadeOutAnimation.start();
+            if (mChildrenOutlineFadeInAnimation != null) mChildrenOutlineFadeInAnimation.cancel();
+            if (mChildrenOutlineFadeOutAnimation != null) mChildrenOutlineFadeOutAnimation.cancel();
+            mChildrenOutlineFadeOutAnimation = ObjectAnimator.ofFloat(this, "childrenOutlineAlpha", 0.0f);
+            mChildrenOutlineFadeOutAnimation.setDuration(CHILDREN_OUTLINE_FADE_OUT_DURATION);
+            mChildrenOutlineFadeOutAnimation.setStartDelay(CHILDREN_OUTLINE_FADE_OUT_DELAY);
+            mChildrenOutlineFadeOutAnimation.start();
         }
     }
 
-    public void setBackgroundAlpha(float alpha) {
-        mBackgroundAlpha = alpha;
+    public void setChildrenOutlineAlpha(float alpha) {
+        mChildrenOutlineAlpha = alpha;
         for (int i = 0; i < getChildCount(); i++) {
             CellLayout cl = (CellLayout) getChildAt(i);
             cl.setBackgroundAlpha(alpha);
         }
+    }
+
+    public float getChildrenOutlineAlpha() {
+        return mChildrenOutlineAlpha;
+    }
+
+    public void showBackgroundGradient() {
+        if (mBackgroundFadeOutAnimation != null) mBackgroundFadeOutAnimation.cancel();
+        if (mBackgroundFadeInAnimation != null) mBackgroundFadeInAnimation.cancel();
+        mBackgroundFadeInAnimation = ObjectAnimator.ofFloat(this, "backgroundAlpha", 1.0f);
+        mBackgroundFadeInAnimation.setDuration(BACKGROUND_FADE_IN_DURATION);
+        mBackgroundFadeInAnimation.start();
+    }
+
+    public void hideBackgroundGradient() {
+        if (mBackgroundFadeInAnimation != null) mBackgroundFadeInAnimation.cancel();
+        if (mBackgroundFadeOutAnimation != null) mBackgroundFadeOutAnimation.cancel();
+        mBackgroundFadeOutAnimation = ObjectAnimator.ofFloat(this, "backgroundAlpha", 0.0f);
+        mBackgroundFadeOutAnimation.setDuration(BACKGROUND_FADE_OUT_DURATION);
+        mBackgroundFadeOutAnimation.start();
+    }
+
+    public void setBackgroundAlpha(float alpha) {
+        mBackgroundAlpha = alpha;
+        invalidate();
     }
 
     public float getBackgroundAlpha() {
@@ -641,6 +678,18 @@ public class Workspace extends SmoothPagedView
             // needs to be refreshed
             setCurrentPage(getCurrentPage());
         }
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        // Draw the background gradient if necessary
+        if (mBackgroundAlpha > 0.0f) {
+            mBackground.setAlpha((int) (mBackgroundAlpha * 255));
+            mBackground.setBounds(mScrollX, 0, mScrollX + getMeasuredWidth(), getMeasuredHeight());
+            mBackground.draw(canvas);
+        }
+
+        super.onDraw(canvas);
     }
 
     @Override
@@ -822,6 +871,8 @@ public class Workspace extends SmoothPagedView
 
     // we use this to shrink the workspace for the all apps view and the customize view
     private void shrink(ShrinkPosition shrinkPosition, boolean animated) {
+        showBackgroundGradient();
+
         if (mFirstLayout) {
             // (mFirstLayout == "first layout has not happened yet")
             // if we get a call to shrink() as part of our initialization (for example, if
@@ -1103,6 +1154,8 @@ public class Workspace extends SmoothPagedView
     }
 
     void unshrink(boolean animated) {
+        hideBackgroundGradient();
+
         if (mIsSmall) {
             mIsSmall = false;
             if (mAnimator != null) {
