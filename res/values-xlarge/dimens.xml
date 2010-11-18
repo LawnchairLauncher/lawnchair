@@ -45,4 +45,9 @@
     <dimen name="toolbar_padding">10dip</dimen>
 
     <dimen name="toolbar_button_spacing">20dip</dimen>
+
+    <!-- height & width of the drop rectangle for the trash icon -->
+    <dimen name="delete_zone_size">50dip</dimen>
+    <dimen name="delete_zone_min_padding">10dip</dimen>
+    <dimen name="delete_zone_max_padding">20dip</dimen>
 </resources>

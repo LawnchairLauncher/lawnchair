@@ -22,19 +22,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        layout="@layout/all_apps_tabbed"
-        android:id="@+id/all_apps_view"
-        android:layout_width="match_parent"
-        android:layout_height="1040dp"
-        android:layout_gravity="top"/>
-
     <!-- The workspace contains 5 screens of cells -->
     <com.android.launcher2.Workspace
         android:id="@+id/workspace"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="?android:attr/actionBarSize"
+        android:paddingBottom="10dp"
         launcher:defaultScreen="2"
         launcher:cellCountX="8"
         launcher:cellCountY="7"
@@ -47,22 +41,67 @@
         <include android:id="@+id/cell5" layout="@layout/workspace_screen" />
     </com.android.launcher2.Workspace>
 
+    <include
+        layout="@layout/all_apps_tabbed"
+        android:id="@+id/all_apps_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="top"/>
+
     <RelativeLayout
         android:id="@+id/all_apps_button_cluster"
         android:layout_width="fill_parent"
         android:layout_height="?android:attr/actionBarSize"
         android:layout_gravity="top">
 
-        <ImageView
-            android:id="@+id/search_button"
+        <LinearLayout android:id="@+id/search_button_cluster"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="left"
-            android:layout_marginLeft="@dimen/toolbar_button_spacing"
+            android:layout_height="48dp"
+            android:gravity="bottom"
+            >
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp"
+                android:background="@drawable/textfield_start"
+                android:orientation="horizontal">
+                <!-- Global search icon -->
+                <ImageView
+                    android:id="@+id/search_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="12dp"
+                    android:src="@drawable/search_button_generic"
+                    android:background="@drawable/button_bg"
+                    android:onClick="onClickSearchButton"
+                    android:focusable="true"
+                    android:clickable="true"/>
+            </LinearLayout>
 
-            android:onClick="onClickSearchButton"
-            android:focusable="true"
-            android:clickable="true"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/textfield_end"
+                android:orientation="horizontal">
+                <!-- Voice search icon -->
+                <ImageView
+                    android:id="@+id/voice_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="12dp"
+                    android:src="@drawable/ic_voice_search"
+                    android:background="@drawable/button_bg"
+                    android:onClick="onClickVoiceButton"
+                    android:focusable="true"
+                    android:clickable="true"/>
+            </LinearLayout>
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/configure_button"
@@ -110,7 +149,7 @@
             android:src="@drawable/delete_zone_selector"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignLeft="@id/all_apps_button"
+            android:layout_alignRight="@id/all_apps_button"
 
             android:visibility="gone"
             launcher:direction="horizontal" />

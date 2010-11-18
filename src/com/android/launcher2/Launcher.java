@@ -73,6 +73,7 @@ import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.provider.LiveFolders;
 import android.provider.Settings;
+import android.speech.RecognizerIntent;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -312,7 +313,6 @@ public final class Launcher extends Activity
             String shortcutsLabel = getString(R.string.shortcuts_tab_label);
             mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(SHORTCUTS_TAG)
                     .setIndicator(shortcutsLabel).setContent(contentFactory));
-
             mHomeCustomizationDrawer.setOnTabChangedListener(new OnTabChangeListener() {
                 public void onTabChanged(String tabId) {
                     // animate the changing of the tab content by fading pages in and out
@@ -876,6 +876,7 @@ public final class Launcher extends Activity
         }
 
         mWorkspace = (Workspace) dragLayer.findViewById(R.id.workspace);
+
         final Workspace workspace = mWorkspace;
         workspace.setHapticFeedbackEnabled(false);
 
@@ -1925,6 +1926,21 @@ public final class Launcher extends Activity
     }
 
     /**
+     * Event handler for the voice button
+     *
+     * @param v The view that was clicked.
+     */
+    public void onClickVoiceButton(View v) {
+        startVoiceSearch();
+    }
+
+    private void startVoiceSearch() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    /**
      * Event handler for the "gear" button that appears on the home screen, which
      * enters home screen customization mode.
      *
@@ -2477,9 +2493,8 @@ public final class Launcher extends Activity
      * @param hideSeq AnimatorSet in which to put "hide" animations, or null.
      */
     private void hideAndShowToolbarButtons(State newState, AnimatorSet showSeq, AnimatorSet hideSeq) {
-        final View searchButton = findViewById(R.id.search_button);
+        final View searchButton = findViewById(R.id.search_button_cluster);
         final View allAppsButton = findViewById(R.id.all_apps_button);
-        final View marketButton = findViewById(R.id.market_button);
         final View configureButton = findViewById(R.id.configure_button);
 
         switch (newState) {
@@ -2487,20 +2502,16 @@ public final class Launcher extends Activity
             hideOrShowToolbarButton(true, searchButton, showSeq);
             hideOrShowToolbarButton(true, allAppsButton, showSeq);
             hideOrShowToolbarButton(true, configureButton, showSeq);
-            hideOrShowToolbarButton(false, marketButton, hideSeq);
             mDeleteZone.setHandle(allAppsButton);
             break;
         case ALL_APPS:
-            hideOrShowToolbarButton(true, configureButton, showSeq);
-            hideOrShowToolbarButton(true, marketButton, showSeq);
+            hideOrShowToolbarButton(false, configureButton, hideSeq);
             hideOrShowToolbarButton(false, searchButton, hideSeq);
             hideOrShowToolbarButton(false, allAppsButton, hideSeq);
-            mDeleteZone.setHandle(marketButton);
             break;
         case CUSTOMIZE:
-            hideOrShowToolbarButton(true, allAppsButton, showSeq);
+            hideOrShowToolbarButton(false, allAppsButton, hideSeq);
             hideOrShowToolbarButton(false, searchButton, hideSeq);
-            hideOrShowToolbarButton(false, marketButton, hideSeq);
             hideOrShowToolbarButton(false, configureButton, hideSeq);
             mDeleteZone.setHandle(allAppsButton);
             break;
@@ -2544,7 +2555,7 @@ public final class Launcher extends Activity
         setPivotsForZoom(toView, toState, scale);
 
         if (toAllApps) {
-            mWorkspace.shrinkToBottom(animated);
+            mWorkspace.shrinkToBottomHidden(animated);
         } else {
             mWorkspace.shrinkToTop(animated);
         }
@@ -2683,7 +2694,7 @@ public final class Launcher extends Activity
         mAllAppsPagedView.endChoiceMode();
 
         if (toState == State.ALL_APPS) {
-            mWorkspace.shrinkToBottom(animated);
+            mWorkspace.shrinkToBottomHidden(animated);
         } else {
             mWorkspace.shrinkToTop(animated);
         }
@@ -2754,6 +2765,7 @@ public final class Launcher extends Activity
 
         // TODO: fade these two too
         mDeleteZone.setVisibility(View.GONE);
+
         // Change the state *after* we've called all the transition code
         mState = State.ALL_APPS;
     }
@@ -2774,6 +2786,7 @@ public final class Launcher extends Activity
         } else if (mState == State.CUSTOMIZE) {
             hideCustomizationDrawer(animated);
         }
+
         // Change the state *after* we've called all the transition code
         mState = State.WORKSPACE;
     }
@@ -2901,6 +2914,21 @@ public final class Launcher extends Activity
             if (activityName != null) {
                 updateButtonWithIconFromExternalActivity(
                         R.id.search_button, activityName, R.drawable.search_button_generic);
+            } else {
+                findViewById(R.id.search_button).setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private void updateVoiceSearchIcon() {
+        if (LauncherApplication.isScreenXLarge()) {
+            Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
+            ComponentName activityName = intent.resolveActivity(getPackageManager());
+            if (activityName != null) {
+                updateButtonWithIconFromExternalActivity(
+                        R.id.voice_button, activityName, R.drawable.ic_voice_search);
+            } else {
+                findViewById(R.id.voice_button).setVisibility(View.GONE);
             }
         }
     }
@@ -3252,6 +3280,16 @@ public final class Launcher extends Activity
     }
 
     /**
+     * Updates the icons on the launcher that are affected by changes to the package list
+     * on the device.
+     */
+    private void updateIconsAffectedByPackageManagerChanges() {
+        updateAppMarketIcon();
+        updateGlobalSearchIcon();
+        updateVoiceSearchIcon();
+    }
+
+    /**
      * Add the icons for all apps.
      *
      * Implementation of the method from LauncherModel.Callbacks.
@@ -3261,8 +3299,7 @@ public final class Launcher extends Activity
         if (mCustomizePagedView != null) {
             mCustomizePagedView.setApps(apps);
         }
-        updateAppMarketIcon();
-        updateGlobalSearchIcon();
+        updateIconsAffectedByPackageManagerChanges();
     }
 
     /**
@@ -3277,8 +3314,7 @@ public final class Launcher extends Activity
         if (mCustomizePagedView != null) {
             mCustomizePagedView.addApps(apps);
         }
-        updateAppMarketIcon();
-        updateGlobalSearchIcon();
+        updateIconsAffectedByPackageManagerChanges();
     }
 
     /**
@@ -3294,8 +3330,7 @@ public final class Launcher extends Activity
         if (mCustomizePagedView != null) {
             mCustomizePagedView.updateApps(apps);
         }
-        updateAppMarketIcon();
-        updateGlobalSearchIcon();
+        updateIconsAffectedByPackageManagerChanges();
     }
 
     /**
@@ -3312,8 +3347,7 @@ public final class Launcher extends Activity
         if (mCustomizePagedView != null) {
             mCustomizePagedView.removeApps(apps);
         }
-        updateAppMarketIcon();
-        updateGlobalSearchIcon();
+        updateIconsAffectedByPackageManagerChanges();
     }
 
     /**

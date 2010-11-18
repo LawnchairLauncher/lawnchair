@@ -349,11 +349,16 @@ public abstract class PagedView extends ViewGroup {
             throw new IllegalStateException("Workspace can only be used in EXACTLY mode.");
         }
 
+        /* Allow the height to be set as WRAP_CONTENT. This allows the particular case
+         * of the All apps view on XLarge displays to not take up more space then it needs. Width
+         * is still not allowed to be set as WRAP_CONTENT since many parts of the code expect
+         * each page to have the same width.
+         */
         final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        final int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-        if (heightMode != MeasureSpec.EXACTLY) {
-            throw new IllegalStateException("Workspace can only be used in EXACTLY mode.");
-        }
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        int maxChildHeight = 0;
+
+        final int verticalPadding = mPaddingTop + mPaddingBottom;
 
         // The children are given the same width and height as the workspace
         // unless they were set to WRAP_CONTENT
@@ -380,9 +385,14 @@ public abstract class PagedView extends ViewGroup {
             final int childWidthMeasureSpec =
                 MeasureSpec.makeMeasureSpec(widthSize, childWidthMode);
             final int childHeightMeasureSpec =
-                MeasureSpec.makeMeasureSpec(heightSize, childHeightMode);
+                MeasureSpec.makeMeasureSpec(heightSize - verticalPadding, childHeightMode);
 
             child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
+            maxChildHeight = Math.max(maxChildHeight, child.getMeasuredHeight());
+        }
+
+        if (heightMode == MeasureSpec.AT_MOST) {
+            heightSize = maxChildHeight + verticalPadding;
         }
 
         setMeasuredDimension(widthSize, heightSize);
@@ -399,6 +409,7 @@ public abstract class PagedView extends ViewGroup {
             mFirstLayout = false;
         }
 
+        final int verticalPadding = mPaddingTop + mPaddingBottom;
         final int childCount = getChildCount();
         int childLeft = 0;
         if (childCount > 0) {
@@ -409,10 +420,13 @@ public abstract class PagedView extends ViewGroup {
             final View child = getChildAt(i);
             if (child.getVisibility() != View.GONE) {
                 final int childWidth = child.getMeasuredWidth();
-                final int childHeight = (mCenterPagesVertically ?
-                        (getMeasuredHeight() - child.getMeasuredHeight()) / 2 : 0);
-                child.layout(childLeft, childHeight,
-                        childLeft + childWidth, childHeight + child.getMeasuredHeight());
+                final int childHeight = child.getMeasuredHeight();
+                int childTop = mPaddingTop;
+                if (mCenterPagesVertically) {
+                    childTop += ((getMeasuredHeight() - verticalPadding) - childHeight) / 2;
+                }
+                child.layout(childLeft, childTop,
+                        childLeft + childWidth, childTop + childHeight);
                 childLeft += childWidth + mPageSpacing;
             }
         }

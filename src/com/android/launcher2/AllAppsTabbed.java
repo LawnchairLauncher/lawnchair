@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TabHost;
 
@@ -168,5 +169,13 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
     @Override
     public void surrender() {
         mAllApps.surrender();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (ev.getY() > mAllApps.getBottom()) {
+            return false;
+        }
+        return true;
     }
 }

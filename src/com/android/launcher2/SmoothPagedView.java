@@ -131,7 +131,7 @@ public abstract class SmoothPagedView extends PagedView {
         snapToPageWithVelocity(whichPage, 0, true);
     }
 
-    void snapToPageWithVelocity(int whichPage, int velocity, boolean settle) {
+    private void snapToPageWithVelocity(int whichPage, int velocity, boolean settle) {
             // if (!mScroller.isFinished()) return;
 
         whichPage = Math.max(0, Math.min(whichPage, getChildCount() - 1));
