@@ -138,7 +138,7 @@ public abstract class SmoothPagedView extends PagedView {
 
         final int screenDelta = Math.max(1, Math.abs(whichPage - mCurrentPage));
         final int newX = getChildOffset(whichPage) - getRelativeChildOffset(whichPage);
-        final int delta = newX - mScrollX;
+        final int delta = newX - mUnboundedScrollX;
         int duration;
         if (mScrollMode == OVERSHOOT_MODE) {
             duration = (screenDelta + 1) * 100;
@@ -180,8 +180,9 @@ public abstract class SmoothPagedView extends PagedView {
         if (!scrollComputed && mTouchState == TOUCH_STATE_SCROLLING) {
             final float now = System.nanoTime() / NANOTIME_DIV;
             final float e = (float) Math.exp((now - mSmoothingTime) / SMOOTHING_CONSTANT);
-            final float dx = mTouchX - mScrollX;
-            mScrollX += dx * e;
+
+            final float dx = mTouchX - mUnboundedScrollX;
+            scrollTo(Math.round(mUnboundedScrollX + dx * e), mScrollY);
             mSmoothingTime = now;
 
             // Keep generating points as long as we're more than 1px away from the target
@@ -189,5 +190,6 @@ public abstract class SmoothPagedView extends PagedView {
                 invalidate();
             }
         }
+
     }
 }

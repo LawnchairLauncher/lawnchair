@@ -36,10 +36,6 @@ typedef struct VpConsts {
 } VpConsts_t;
 VpConsts_t *vpConstants;
 
-
-#pragma rs export_func(move, moveTo, setZoom, fling)
-
-
 // Attraction to center values from page edge to page center.
 static float g_AttractionTable[9] = {20.f, 20.f, 20.f, 10.f, -10.f, -20.f, -20.f, -20.f, -20.f};
 static float g_FrictionTable[9] = {10.f, 10.f, 11.f, 15.f, 15.f, 11.f, 10.f, 10.f, 10.f};

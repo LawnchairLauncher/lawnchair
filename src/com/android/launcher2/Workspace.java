@@ -20,14 +20,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import android.R.integer;
 import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
+import android.animation.Animator.AnimatorListener;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.AlertDialog;
 import android.app.WallpaperManager;
@@ -92,8 +91,8 @@ public class Workspace extends SmoothPagedView
     private static final float EXTRA_SCALE_FACTOR_1 = 1.0f;
     private static final float EXTRA_SCALE_FACTOR_2 = 1.10f;
 
-    private static final int CHILDREN_OUTLINE_FADE_OUT_DELAY = 300;
-    private static final int CHILDREN_OUTLINE_FADE_OUT_DURATION = 300;
+    private static final int CHILDREN_OUTLINE_FADE_OUT_DELAY = 0;
+    private static final int CHILDREN_OUTLINE_FADE_OUT_DURATION = 375;
     private static final int CHILDREN_OUTLINE_FADE_IN_DURATION = 100;
 
     private static final int BACKGROUND_FADE_OUT_DURATION = 450;
@@ -109,6 +108,7 @@ public class Workspace extends SmoothPagedView
     private ObjectAnimator mBackgroundFadeOutAnimation;
     private Drawable mBackground;
     private float mBackgroundAlpha = 0;
+    private float mOverScrollMaxBackgroundAlpha = 0.0f;
 
     private final WallpaperManager mWallpaperManager;
 
@@ -245,8 +245,12 @@ public class Workspace extends SmoothPagedView
         mExternalDragOutlinePaint.setAntiAlias(true);
         setWillNotDraw(false);
 
-        final Resources res = getResources();
-        mBackground = res.getDrawable(R.drawable.all_apps_bg_gradient);
+        try {
+            final Resources res = getResources();
+            mBackground = res.getDrawable(R.drawable.all_apps_bg_gradient);
+        } catch (Resources.NotFoundException e) {
+            // In this case, we will skip drawing background protection
+        }
 
         mUnshrinkAnimationListener = new LauncherAnimatorListenerAdapter() {
             @Override
@@ -511,7 +515,7 @@ public class Workspace extends SmoothPagedView
             mAnimOnPageEndMoving.start();
             mAnimOnPageEndMoving = null;
         }
-
+        mOverScrollMaxBackgroundAlpha = 0.0f;
         mPageMoving = false;
     }
 
@@ -583,6 +587,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public void showBackgroundGradient() {
+        if (mBackground == null) return;
         if (mBackgroundFadeOutAnimation != null) mBackgroundFadeOutAnimation.cancel();
         if (mBackgroundFadeInAnimation != null) mBackgroundFadeInAnimation.cancel();
         mBackgroundFadeInAnimation = ObjectAnimator.ofFloat(this, "backgroundAlpha", 1.0f);
@@ -591,6 +596,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public void hideBackgroundGradient() {
+        if (mBackground == null) return;
         if (mBackgroundFadeInAnimation != null) mBackgroundFadeInAnimation.cancel();
         if (mBackgroundFadeOutAnimation != null) mBackgroundFadeOutAnimation.cancel();
         mBackgroundFadeOutAnimation = ObjectAnimator.ofFloat(this, "backgroundAlpha", 0.0f);
@@ -632,9 +638,51 @@ public class Workspace extends SmoothPagedView
         return (width - mTempFloat2[0]) * (degrees > 0.0f ? 1.0f : -1.0f);
     }
 
+    float backgroundAlphaInterpolator(float r) {
+        float pivotA = 0.1f;
+        float pivotB = 0.4f;
+        if (r < pivotA) {
+            return 0;
+        } else if (r > pivotB) {
+            return 1.0f;
+        } else {
+            return (r - pivotA)/(pivotB - pivotA);
+        }
+    }
+
+    float overScrollBackgroundAlphaInterpolator(float r) {
+        float threshold = 0.1f;
+
+        if (r > mOverScrollMaxBackgroundAlpha) {
+            mOverScrollMaxBackgroundAlpha = r;
+        } else if (r < mOverScrollMaxBackgroundAlpha) {
+            r = mOverScrollMaxBackgroundAlpha;
+        }
+
+        return Math.min(r / threshold, 1.0f);
+    }
+
+    protected void overScroll(float amount) {
+        final int lastChildIndex = getChildCount() - 1;
+
+        CellLayout cl;
+        if (amount < 0) {
+            cl = (CellLayout) getChildAt(0);
+        } else {
+            cl = (CellLayout) getChildAt(lastChildIndex);
+        }
+
+        final int totalDistance = cl.getMeasuredWidth() + mPageSpacing;
+        float r = 1.0f * amount / totalDistance;
+        float rotation = -WORKSPACE_ROTATION * r;
+        cl.setBackgroundAlphaMultiplier(overScrollBackgroundAlphaInterpolator(Math.abs(r)));
+        cl.setRotationY(rotation);
+    }
+
     @Override
     protected void screenScrolled(int screenCenter) {
         final int halfScreenSize = getMeasuredWidth() / 2;
+
         for (int i = 0; i < getChildCount(); i++) {
             CellLayout cl = (CellLayout) getChildAt(i);
             if (cl != null) {
@@ -646,11 +694,12 @@ public class Workspace extends SmoothPagedView
                 scrollProgress = Math.min(scrollProgress, 1.0f);
                 scrollProgress = Math.max(scrollProgress, -1.0f);
 
-                cl.setBackgroundAlphaMultiplier(Math.abs(scrollProgress));
+                cl.setBackgroundAlphaMultiplier(backgroundAlphaInterpolator(Math.abs(scrollProgress)));
 
                 float rotation = WORKSPACE_ROTATION * scrollProgress;
                 float translationX = getOffsetXForRotation(rotation, cl.getWidth(), cl.getHeight());
                 cl.setTranslationX(translationX);
+
                 cl.setRotationY(rotation);
             }
         }
@@ -683,7 +732,7 @@ public class Workspace extends SmoothPagedView
     @Override
     protected void onDraw(Canvas canvas) {
         // Draw the background gradient if necessary
-        if (mBackgroundAlpha > 0.0f) {
+        if (mBackground != null && mBackgroundAlpha > 0.0f) {
             mBackground.setAlpha((int) (mBackgroundAlpha * 255));
             mBackground.setBounds(mScrollX, 0, mScrollX + getMeasuredWidth(), getMeasuredHeight());
             mBackground.draw(canvas);
@@ -1424,7 +1473,6 @@ public class Workspace extends SmoothPagedView
                         mDropViewPos[0] + view.getWidth(), mDropViewPos[1] + view.getHeight());
             }
         });
-
 
         view.setVisibility(View.INVISIBLE);
 
