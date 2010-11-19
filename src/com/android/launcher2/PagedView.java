@@ -417,8 +417,12 @@ public abstract class PagedView extends ViewGroup {
         if (heightMode == MeasureSpec.AT_MOST) {
             heightSize = maxChildHeight + verticalPadding;
         }
+        if (childCount > 0) {
+            mMaxScrollX = getChildOffset(childCount - 1) - getRelativeChildOffset(childCount - 1);
+        } else {
+            mMaxScrollX = 0;
+        }
 
-        mMaxScrollX = getChildOffset(childCount - 1) - getRelativeChildOffset(childCount - 1);
         setMeasuredDimension(widthSize, heightSize);
     }
 
