@@ -1923,6 +1923,8 @@ public final class Launcher extends Activity
      */
     public void onClickSearchButton(View v) {
         startSearch(null, false, null, true);
+        // Use a custom animation for launching search
+        overridePendingTransition(R.anim.fade_in_fast, R.anim.fade_out_fast);
     }
 
     /**
