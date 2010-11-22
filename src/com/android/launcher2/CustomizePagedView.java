@@ -768,7 +768,10 @@ public class CustomizePagedView extends PagedView
         LinearLayout layout = (LinearLayout) getChildAt(page);
         layout.removeAllViews();
         final int count = mWallpaperList.size();
-        for (int i = 0; i < count; ++i) {
+        final int numItemsPerPage = mMaxWidgetsCellHSpan / mWallpaperCellHSpan;
+        final int startIndex = page * numItemsPerPage;
+        final int endIndex = Math.min(count, startIndex + numItemsPerPage);
+        for (int i = startIndex; i < endIndex; ++i) {
             final ResolveInfo info = mWallpaperList.get(i);
 
             LinearLayout l = (LinearLayout) mInflater.inflate(
