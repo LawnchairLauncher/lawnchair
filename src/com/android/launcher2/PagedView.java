@@ -36,6 +36,7 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.Interpolator;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.Checkable;
 import android.widget.Scroller;
@@ -55,10 +56,12 @@ public abstract class PagedView extends ViewGroup {
     // The min drag distance to trigger a page shift (regardless of velocity)
     private static final int MIN_LENGTH_FOR_MOVE = 200;
 
-    private static final int PAGE_SNAP_ANIMATION_DURATION = 750;
+    private static final int PAGE_SNAP_ANIMATION_DURATION = 550;
     protected static final float NANOTIME_DIV = 1000000000.0f;
 
-    private static final float OVERSCROLL_DAMP_FACTOR = 0.22f;
+    private static final float OVERSCROLL_DAMP_FACTOR = 0.08f;
+    private static final int MINIMUM_SNAP_VELOCITY = 2200;
+    private static final int MIN_FLING_VELOCITY = 250;
 
     // the velocity at which a fling gesture will cause us to snap to the next page
     protected int mSnapVelocity = 500;
@@ -209,7 +212,7 @@ public abstract class PagedView extends ViewGroup {
         mDirtyPageContent = new ArrayList<Boolean>();
         mDirtyPageContent.ensureCapacity(32);
         mPageViewIconCache = new PagedViewIconCache();
-        mScroller = new Scroller(getContext());
+        mScroller = new Scroller(getContext(), new ScrollInterpolator());
         mCurrentPage = 0;
         mCenterPagesVertically = true;
 
@@ -827,8 +830,22 @@ public abstract class PagedView extends ViewGroup {
         return false;
     }
 
+    // This curve determines how the effect of scrolling over the limits of the page dimishes
+    // as the user pulls further and further from the bounds
+    private float overScrollInfluenceCurve(float f) {
+        f -= 1.0f;
+        return f * f * f + 1.0f;
+    }
+
     protected void overScroll(float amount) {
-        int overScrollAmount = (int) Math.round(OVERSCROLL_DAMP_FACTOR * amount);
+        int screenSize = getMeasuredWidth();
+
+        float f = (amount / screenSize);
+
+        if (f == 0) return;
+        f = f / (Math.abs(f)) * (overScrollInfluenceCurve(Math.abs(f)));
+
+        int overScrollAmount = (int) Math.round(OVERSCROLL_DAMP_FACTOR * f * screenSize);
         if (amount < 0) {
             mScrollX = overScrollAmount;
         } else {
@@ -902,8 +919,7 @@ public abstract class PagedView extends ViewGroup {
 
                 final int snapVelocity = mSnapVelocity;
                 if ((isSignificantMove && deltaX > 0 ||
-                        (isfling && velocityX > snapVelocity)) &&
-                        mCurrentPage > 0) {
+                        (isfling && velocityX > snapVelocity)) && mCurrentPage > 0) {
                     snapToPageWithVelocity(mCurrentPage - 1, velocityX);
                 } else if ((isSignificantMove && deltaX < 0 ||
                         (isfling && velocityX < -snapVelocity)) &&
@@ -1048,10 +1064,58 @@ public abstract class PagedView extends ViewGroup {
         snapToPage(getPageNearestToCenterOfScreen(), PAGE_SNAP_ANIMATION_DURATION);
     }
 
+    private static class ScrollInterpolator implements Interpolator {
+        public ScrollInterpolator() {
+        }
+
+        public float getInterpolation(float t) {
+            t -= 1.0f;
+            return t*t*t*t*t + 1;
+        }
+    }
+
+    // We want the duration of the page snap animation to be influenced by the distance that
+    // the screen has to travel, however, we don't want this duration to be effected in a
+    // purely linear fashion. Instead, we use this method to moderate the effect that the distance
+    // of travel has on the overall snap duration.
+    float distanceInfluenceForSnapDuration(float f) {
+        f -= 0.5f; // center the values about 0.
+        f *= 0.3f * Math.PI / 2.0f;
+        return (float) Math.sin(f);
+    }
+
     protected void snapToPageWithVelocity(int whichPage, int velocity) {
-        // We ignore velocity in this implementation, but children (e.g. SmoothPagedView)
-        // can use it
-        snapToPage(whichPage);
+        whichPage = Math.max(0, Math.min(whichPage, getChildCount() - 1));
+        int halfScreenSize = getMeasuredWidth() / 2;
+
+        final int newX = getChildOffset(whichPage) - getRelativeChildOffset(whichPage);
+        int delta = newX - mUnboundedScrollX;
+        int duration = 0;
+
+        if (Math.abs(velocity) < MIN_FLING_VELOCITY) {
+            // If the velocity is low enough, then treat this more as an automatic page advance
+            // as opposed to an apparent physical response to flinging
+            snapToPage(whichPage, PAGE_SNAP_ANIMATION_DURATION);
+            return;
+        }
+
+        // Here we compute a "distance" that will be used in the computation of the overall
+        // snap duration. This is a function of the actual distance that needs to be traveled;
+        // we keep this value close to half screen size in order to reduce the variance in snap
+        // duration as a function of the distance the page needs to travel.
+        float distanceRatio = 1.0f * Math.abs(delta) / 2 * halfScreenSize;
+        float distance = halfScreenSize + halfScreenSize *
+                distanceInfluenceForSnapDuration(distanceRatio);
+
+        velocity = Math.abs(velocity);
+        velocity = Math.max(MINIMUM_SNAP_VELOCITY, velocity);
+
+        // we want the page's snap velocity to approximately match the velocity at which the
+        // user flings, so we scale the duration by a value near to the derivative of the scroll
+        // interpolator at zero, ie. 5. We use 6 to make it a little slower.
+        duration = 6 * Math.round(1000 * Math.abs(distance / velocity));
+
+        snapToPage(whichPage, delta, duration);
     }
 
     protected void snapToPage(int whichPage) {

@@ -109,6 +109,7 @@ public class Workspace extends SmoothPagedView
     private Drawable mBackground;
     private float mBackgroundAlpha = 0;
     private float mOverScrollMaxBackgroundAlpha = 0.0f;
+    private int mOverScrollPageIndex = -1;
 
     private final WallpaperManager mWallpaperManager;
 
@@ -268,9 +269,9 @@ public class Workspace extends SmoothPagedView
     @Override
     protected int getScrollMode() {
         if (LauncherApplication.isScreenXLarge()) {
-            return SmoothPagedView.QUINTIC_MODE;
+            return SmoothPagedView.X_LARGE_MODE;
         } else {
-            return SmoothPagedView.OVERSHOOT_MODE;
+            return SmoothPagedView.DEFAULT_MODE;
         }
     }
 
@@ -516,6 +517,7 @@ public class Workspace extends SmoothPagedView
             mAnimOnPageEndMoving = null;
         }
         mOverScrollMaxBackgroundAlpha = 0.0f;
+        mOverScrollPageIndex = -1;
         mPageMoving = false;
     }
 
@@ -653,7 +655,7 @@ public class Workspace extends SmoothPagedView
     }
 
     float overScrollBackgroundAlphaInterpolator(float r) {
-        float threshold = 0.1f;
+        float threshold = 0.08f;
 
         if (r > mOverScrollMaxBackgroundAlpha) {
             mOverScrollMaxBackgroundAlpha = r;
@@ -662,23 +664,6 @@ public class Workspace extends SmoothPagedView
         }
 
         return Math.min(r / threshold, 1.0f);
-    }
-
-    protected void overScroll(float amount) {
-        final int lastChildIndex = getChildCount() - 1;
-
-        CellLayout cl;
-        if (amount < 0) {
-            cl = (CellLayout) getChildAt(0);
-        } else {
-            cl = (CellLayout) getChildAt(lastChildIndex);
-        }
-
-        final int totalDistance = cl.getMeasuredWidth() + mPageSpacing;
-        float r = 1.0f * amount / totalDistance;
-        float rotation = -WORKSPACE_ROTATION * r;
-        cl.setBackgroundAlphaMultiplier(overScrollBackgroundAlphaInterpolator(Math.abs(r)));
-        cl.setRotationY(rotation);
     }
 
     @Override
@@ -696,7 +681,18 @@ public class Workspace extends SmoothPagedView
                 scrollProgress = Math.min(scrollProgress, 1.0f);
                 scrollProgress = Math.max(scrollProgress, -1.0f);
 
-                cl.setBackgroundAlphaMultiplier(backgroundAlphaInterpolator(Math.abs(scrollProgress)));
+                // If the current page (i) is being overscrolled, we use a different
+                // set of rules for setting the background alpha multiplier.
+                if ((mScrollX < 0 && i == 0) || (mScrollX > mMaxScrollX &&
+                        i == getChildCount() -1 )) {
+                    cl.setBackgroundAlphaMultiplier(
+                            overScrollBackgroundAlphaInterpolator(Math.abs(scrollProgress)));
+                    mOverScrollPageIndex = i;
+                } else if (mOverScrollPageIndex != i) {
+                    cl.setBackgroundAlphaMultiplier(
+                            backgroundAlphaInterpolator(Math.abs(scrollProgress)));
+
+                }
 
                 float rotation = WORKSPACE_ROTATION * scrollProgress;
                 float translationX = getOffsetXForRotation(rotation, cl.getWidth(), cl.getHeight());

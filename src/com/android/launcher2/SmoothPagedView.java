@@ -21,7 +21,6 @@ import android.util.AttributeSet;
 import android.view.animation.Interpolator;
 import android.widget.Scroller;
 
-
 public abstract class SmoothPagedView extends PagedView {
     private static final float SMOOTHING_SPEED = 0.75f;
     private static final float SMOOTHING_CONSTANT = (float) (0.016 / Math.log(SMOOTHING_SPEED));
@@ -29,8 +28,8 @@ public abstract class SmoothPagedView extends PagedView {
     private float mBaseLineFlingVelocity;
     private float mFlingVelocityInfluence;
 
-    static final int OVERSHOOT_MODE = 0;
-    static final int QUINTIC_MODE = 1;
+    static final int DEFAULT_MODE = 0;
+    static final int X_LARGE_MODE = 1;
 
     int mScrollMode;
 
@@ -60,16 +59,6 @@ public abstract class SmoothPagedView extends PagedView {
         }
     }
 
-    private static class QuinticInterpolator implements Interpolator {
-        public QuinticInterpolator() {
-        }
-
-        public float getInterpolation(float t) {
-            t -= 1.0f;
-            return t*t*t*t*t + 1;
-        }
-    }
-
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -93,12 +82,12 @@ public abstract class SmoothPagedView extends PagedView {
         mUsePagingTouchSlop = false;
 
         // This means that we'll take care of updating the scroll parameter ourselves (we do it
-        // in computeScroll)
-        mDeferScrollUpdate = true;
+        // in computeScroll), we only do this in the OVERSHOOT_MODE, ie. on phones
+        mDeferScrollUpdate = mScrollMode != X_LARGE_MODE;
     }
 
     protected int getScrollMode() {
-        return OVERSHOOT_MODE;
+        return DEFAULT_MODE;
     }
 
     /**
@@ -109,26 +98,30 @@ public abstract class SmoothPagedView extends PagedView {
         super.init();
 
         mScrollMode = getScrollMode();
-        if (mScrollMode == QUINTIC_MODE) {
-            mBaseLineFlingVelocity = 700.0f;
-            mFlingVelocityInfluence = 0.8f;
-            mScrollInterpolator = new QuinticInterpolator();
-        } else {  // QUINTIC_MODE
+        if (mScrollMode == DEFAULT_MODE) {
             mBaseLineFlingVelocity = 2500.0f;
             mFlingVelocityInfluence = 0.4f;
             mScrollInterpolator = new WorkspaceOvershootInterpolator();
+            mScroller = new Scroller(getContext(), mScrollInterpolator);
         }
-        mScroller = new Scroller(getContext(), mScrollInterpolator);
     }
 
     @Override
     protected void snapToDestination() {
-        snapToPageWithVelocity(getPageNearestToCenterOfScreen(), 0);
+        if (mScrollMode == X_LARGE_MODE) {
+            super.snapToDestination();
+        } else {
+            snapToPageWithVelocity(getPageNearestToCenterOfScreen(), 0);
+        }
     }
 
     @Override
     protected void snapToPageWithVelocity(int whichPage, int velocity) {
-        snapToPageWithVelocity(whichPage, 0, true);
+        if (mScrollMode == X_LARGE_MODE) {
+            super.snapToPageWithVelocity(whichPage, velocity);
+        } else {
+            snapToPageWithVelocity(whichPage, 0, true);
+        }
     }
 
     private void snapToPageWithVelocity(int whichPage, int velocity, boolean settle) {
@@ -139,23 +132,16 @@ public abstract class SmoothPagedView extends PagedView {
         final int screenDelta = Math.max(1, Math.abs(whichPage - mCurrentPage));
         final int newX = getChildOffset(whichPage) - getRelativeChildOffset(whichPage);
         final int delta = newX - mUnboundedScrollX;
-        int duration;
-        if (mScrollMode == OVERSHOOT_MODE) {
-            duration = (screenDelta + 1) * 100;
-        } else { // QUINTIC_MODE
-            duration = Math.round(Math.abs(delta) * 0.6f);
-        }
+        int duration = (screenDelta + 1) * 100;
 
         if (!mScroller.isFinished()) {
             mScroller.abortAnimation();
         }
 
-        if (mScrollMode == OVERSHOOT_MODE) {
-            if (settle) {
-                ((WorkspaceOvershootInterpolator) mScrollInterpolator).setDistance(screenDelta);
-            } else {
-                ((WorkspaceOvershootInterpolator) mScrollInterpolator).disableSettle();
-            }
+        if (settle) {
+            ((WorkspaceOvershootInterpolator) mScrollInterpolator).setDistance(screenDelta);
+        } else {
+            ((WorkspaceOvershootInterpolator) mScrollInterpolator).disableSettle();
         }
 
         velocity = Math.abs(velocity);
@@ -170,26 +156,33 @@ public abstract class SmoothPagedView extends PagedView {
 
     @Override
     protected void snapToPage(int whichPage) {
-        snapToPageWithVelocity(whichPage, 0, false);
+       if (mScrollMode == X_LARGE_MODE) {
+           super.snapToPage(whichPage);
+       } else {
+           snapToPageWithVelocity(whichPage, 0, false);
+       }
     }
 
     @Override
     public void computeScroll() {
-        boolean scrollComputed = computeScrollHelper();
+        if (mScrollMode == X_LARGE_MODE) {
+            super.computeScroll();
+        } else {
+            boolean scrollComputed = computeScrollHelper();
 
-        if (!scrollComputed && mTouchState == TOUCH_STATE_SCROLLING) {
-            final float now = System.nanoTime() / NANOTIME_DIV;
-            final float e = (float) Math.exp((now - mSmoothingTime) / SMOOTHING_CONSTANT);
+            if (!scrollComputed && mTouchState == TOUCH_STATE_SCROLLING) {
+                final float now = System.nanoTime() / NANOTIME_DIV;
+                final float e = (float) Math.exp((now - mSmoothingTime) / SMOOTHING_CONSTANT);
 
-            final float dx = mTouchX - mUnboundedScrollX;
-            scrollTo(Math.round(mUnboundedScrollX + dx * e), mScrollY);
-            mSmoothingTime = now;
+                final float dx = mTouchX - mUnboundedScrollX;
+                scrollTo(Math.round(mUnboundedScrollX + dx * e), mScrollY);
+                mSmoothingTime = now;
 
-            // Keep generating points as long as we're more than 1px away from the target
-            if (dx > 1.f || dx < -1.f) {
-                invalidate();
+                // Keep generating points as long as we're more than 1px away from the target
+                if (dx > 1.f || dx < -1.f) {
+                    invalidate();
+                }
             }
         }
-
     }
 }
