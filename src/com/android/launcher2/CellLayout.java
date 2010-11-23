@@ -1241,7 +1241,6 @@ public class CellLayout extends ViewGroup implements Dimmable {
     void onDragChild(View child) {
         LayoutParams lp = (LayoutParams) child.getLayoutParams();
         lp.isDragging = true;
-        child.setVisibility(View.GONE);
     }
 
     /**

@@ -19,6 +19,8 @@ package com.android.launcher2;
 
 import com.android.launcher.R;
 
+import android.animation.ValueAnimator;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -32,8 +34,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.WindowManagerImpl;
+import android.view.animation.DecelerateInterpolator;
 
-public class DragView extends View implements TweenCallback {
+public class DragView extends View {
     private Bitmap mBitmap;
     private Paint mPaint;
     private int mRegistrationX;
@@ -44,12 +47,20 @@ public class DragView extends View implements TweenCallback {
     private int mDragRegionWidth;
     private int mDragRegionHeight;
 
-    SymmetricalLinearTween mTween;
-    private float mScale;
-    private float mAnimationScale = 1.0f;
+    ValueAnimator mAnim;
+    private float mScale = 1.0f;
+    private float mOffsetX = 0.0f;
+    private float mOffsetY = 0.0f;
 
     private WindowManager.LayoutParams mLayoutParams;
     private WindowManager mWindowManager;
+
+    /**
+     * A callback to be called the first time this view is drawn.
+     * This allows the originator of the drag to dim or hide the original view as soon
+     * as the DragView is drawn.
+     */
+    private Runnable mOnDrawRunnable = null;
 
     /**
      * Construct the drag view.
@@ -70,20 +81,48 @@ public class DragView extends View implements TweenCallback {
         final int dragScale = res.getInteger(R.integer.config_dragViewExtraPixels);
 
         mWindowManager = WindowManagerImpl.getDefault();
-        
-        mTween = new SymmetricalLinearTween(false, 110 /*ms duration*/, this);
 
         Matrix scale = new Matrix();
-        float scaleFactor = width;
-        scaleFactor = mScale = (scaleFactor + dragScale) / scaleFactor;
-        scale.setScale(scaleFactor, scaleFactor);
+        final float scaleFactor = (width + dragScale) / width;
+        if (scaleFactor != 1.0f) {
+            scale.setScale(scaleFactor, scaleFactor);
+        }
+
+        final int offsetX = res.getInteger(R.integer.config_dragViewOffsetX);
+        final int offsetY = res.getInteger(R.integer.config_dragViewOffsetY);
+
+        // Animate the view into the correct position
+        mAnim = ValueAnimator.ofFloat(0.0f, 1.0f);
+        mAnim.setDuration(110);
+        mAnim.setInterpolator(new DecelerateInterpolator(2.5f));
+        mAnim.addUpdateListener(new AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                final float value = (Float) animation.getAnimatedValue();
+
+                final int deltaX = (int) ((value * offsetX) - mOffsetX);
+                final int deltaY = (int) ((value * offsetY) - mOffsetY);
+
+                mOffsetX += deltaX;
+                mOffsetY += deltaY;
+
+                if (getParent() == null) {
+                    animation.cancel();
+                } else {
+                    WindowManager.LayoutParams lp = mLayoutParams;
+                    lp.x += deltaX;
+                    lp.y += deltaY;
+                    mWindowManager.updateViewLayout(DragView.this, lp);
+                }
+            }
+        });
 
         mBitmap = Bitmap.createBitmap(bitmap, left, top, width, height, scale, true);
         setDragRegion(0, 0, width, height);
 
         // The point in our scaled bitmap that the touch events are located
-        mRegistrationX = registrationX + res.getInteger(R.integer.config_dragViewOffsetX);
-        mRegistrationY = registrationY + res.getInteger(R.integer.config_dragViewOffsetY);
+        mRegistrationX = registrationX;
+        mRegistrationY = registrationY;
     }
 
     public void setDragRegion(int left, int top, int width, int height) {
@@ -91,6 +130,10 @@ public class DragView extends View implements TweenCallback {
         mDragRegionTop = top;
         mDragRegionWidth = width;
         mDragRegionHeight = height;
+    }
+
+    public void setOnDrawRunnable(Runnable r) {
+        mOnDrawRunnable = r;
     }
 
     public int getScaledDragRegionXOffset() {
@@ -139,13 +182,15 @@ public class DragView extends View implements TweenCallback {
             p.setColor(0xaaffffff);
             canvas.drawRect(0, 0, getWidth(), getHeight(), p);
         }
-        float scale = mAnimationScale;
-        if (scale < 0.999f) { // allow for some float error
-            float width = mBitmap.getWidth();
-            float offset = (width-(width*scale))/2;
-            canvas.translate(offset, offset);
-            canvas.scale(scale, scale);
+
+        // Call the callback if we haven't already been detached
+        if (getParent() != null) {
+            if (mOnDrawRunnable != null) {
+                mOnDrawRunnable.run();
+                mOnDrawRunnable = null;
+            }
         }
+
         canvas.drawBitmap(mBitmap, 0.0f, 0.0f, mPaint);
     }
 
@@ -153,17 +198,6 @@ public class DragView extends View implements TweenCallback {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mBitmap.recycle();
-    }
-
-    public void onTweenValueChanged(float value, float oldValue) {
-        mAnimationScale = (1.0f+((mScale-1.0f)*value))/mScale;
-        invalidate();
-    }
-
-    public void onTweenStarted() {
-    }
-
-    public void onTweenFinished() {
     }
 
     public void setPaint(Paint paint) {
@@ -187,7 +221,7 @@ public class DragView extends View implements TweenCallback {
         lp = new WindowManager.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
-                touchX-mRegistrationX, touchY-mRegistrationY,
+                touchX - mRegistrationX, touchY - mRegistrationY,
                 WindowManager.LayoutParams.TYPE_APPLICATION_SUB_PANEL,
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                     | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
@@ -201,8 +235,7 @@ public class DragView extends View implements TweenCallback {
 
         mWindowManager.addView(this, lp);
 
-        mAnimationScale = 1.0f/mScale;
-        mTween.start(true);
+        mAnim.start();
     }
     
     /**
@@ -213,8 +246,8 @@ public class DragView extends View implements TweenCallback {
      */
     void move(int touchX, int touchY) {
         WindowManager.LayoutParams lp = mLayoutParams;
-        lp.x = touchX - mRegistrationX;
-        lp.y = touchY - mRegistrationY;
+        lp.x = touchX - mRegistrationX + (int) mOffsetX;
+        lp.y = touchY - mRegistrationY + (int) mOffsetY;
         mWindowManager.updateViewLayout(this, lp);
     }
 

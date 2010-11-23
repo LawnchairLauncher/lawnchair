@@ -237,6 +237,10 @@ public class AllAppsPagedView extends PagedView
     }
 
     @Override
+    public void onDragViewVisible() {
+    }
+
+    @Override
     public void onDropCompleted(View target, boolean success) {
         // close the choice action mode if we have a proper drop
         if (target != this) {

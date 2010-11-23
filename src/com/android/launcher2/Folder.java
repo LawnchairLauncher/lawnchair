@@ -108,11 +108,17 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         return true;
     }
 
+    @Override
     public void setDragController(DragController dragController) {
         mDragController = dragController;
     }
 
+    @Override
     public void onDropCompleted(View target, boolean success) {
+    }
+
+    @Override
+    public void onDragViewVisible() {
     }
 
     /**
