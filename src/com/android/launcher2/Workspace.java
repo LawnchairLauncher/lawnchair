@@ -95,7 +95,7 @@ public class Workspace extends SmoothPagedView
     private static final int CHILDREN_OUTLINE_FADE_OUT_DURATION = 375;
     private static final int CHILDREN_OUTLINE_FADE_IN_DURATION = 100;
 
-    private static final int BACKGROUND_FADE_OUT_DURATION = 450;
+    private static final int BACKGROUND_FADE_OUT_DURATION = 350;
     private static final int BACKGROUND_FADE_IN_DURATION = 350;
 
     // These animators are used to fade the children's outlines
@@ -591,6 +591,7 @@ public class Workspace extends SmoothPagedView
         if (mBackgroundFadeOutAnimation != null) mBackgroundFadeOutAnimation.cancel();
         if (mBackgroundFadeInAnimation != null) mBackgroundFadeInAnimation.cancel();
         mBackgroundFadeInAnimation = ObjectAnimator.ofFloat(this, "backgroundAlpha", 1.0f);
+        mBackgroundFadeInAnimation.setInterpolator(new DecelerateInterpolator(1.5f));
         mBackgroundFadeInAnimation.setDuration(BACKGROUND_FADE_IN_DURATION);
         mBackgroundFadeInAnimation.start();
     }
@@ -600,6 +601,7 @@ public class Workspace extends SmoothPagedView
         if (mBackgroundFadeInAnimation != null) mBackgroundFadeInAnimation.cancel();
         if (mBackgroundFadeOutAnimation != null) mBackgroundFadeOutAnimation.cancel();
         mBackgroundFadeOutAnimation = ObjectAnimator.ofFloat(this, "backgroundAlpha", 0.0f);
+        mBackgroundFadeOutAnimation.setInterpolator(new DecelerateInterpolator(1.5f));
         mBackgroundFadeOutAnimation.setDuration(BACKGROUND_FADE_OUT_DURATION);
         mBackgroundFadeOutAnimation.start();
     }
