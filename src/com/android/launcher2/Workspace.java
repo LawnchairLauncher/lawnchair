@@ -726,10 +726,12 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                         getLocationOnScreen(mTempCell);
                         // Send a tap to the wallpaper if the last down was on empty space
                         final int pointerIndex = ev.findPointerIndex(mActivePointerId);
-                        mWallpaperManager.sendWallpaperCommand(getWindowToken(), 
-                                "android.wallpaper.tap",
-                                mTempCell[0] + (int) ev.getX(pointerIndex),
-                                mTempCell[1] + (int) ev.getY(pointerIndex), 0, null);
+                        if (pointerIndex >= 0) {
+                            mWallpaperManager.sendWallpaperCommand(getWindowToken(),
+                                    "android.wallpaper.tap",
+                                    mTempCell[0] + (int) ev.getX(pointerIndex),
+                                    mTempCell[1] + (int) ev.getY(pointerIndex), 0, null);
+                        }
                     }
                 }
                 
