@@ -63,7 +63,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="16dp"
-                android:background="@drawable/textfield_start"
+                android:background="@drawable/textfield_home_start"
                 android:orientation="horizontal">
                 <!-- Global search icon -->
                 <ImageView
@@ -84,7 +84,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:background="@drawable/textfield_end"
+                android:background="@drawable/textfield_home_end"
                 android:orientation="horizontal">
                 <!-- Voice search icon -->
                 <ImageView
