@@ -213,6 +213,7 @@ public class AllApps3D extends RSSurfaceView
             destroyRenderScript();
             sRS = null;
             sRollo = null;
+            super.onDetachedFromWindow();
         }
     }
 
