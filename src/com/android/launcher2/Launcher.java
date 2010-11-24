@@ -1101,7 +1101,7 @@ public final class Launcher extends Activity
         // supporting spring-loaded mini-screens; however, leaving the ability to directly place
         // a widget on the home screen in case we want to add it in the future
         int[] touchXY = null;
-        if (mAddDropPosition[0] > -1 && mAddDropPosition[1] > -1) {
+        if (mAddDropPosition != null && mAddDropPosition[0] > -1 && mAddDropPosition[1] > -1) {
             touchXY = mAddDropPosition;
         }
         boolean findNearestVacantAreaFailed = false;
@@ -1114,15 +1114,12 @@ public final class Launcher extends Activity
             findNearestVacantAreaFailed = (result == null);
             foundCellSpan = !findNearestVacantAreaFailed;
         } else {
-            if (mAddIntersectCellX != -1 && mAddIntersectCellY != -1) {
-                // if we long pressed on an empty cell to bring up a menu,
-                // make sure we intersect the empty cell
-                foundCellSpan = layout.findCellForSpanThatIntersects(cellXY, spanXY[0], spanXY[1],
-                        mAddIntersectCellX, mAddIntersectCellY);
-            } else {
-                // if we went through the menu -> add, just find any spot
-                foundCellSpan = layout.findCellForSpan(cellXY, spanXY[0], spanXY[1]);
-            }
+            // if we long pressed on an empty cell to bring up a menu,
+            // make sure we intersect the empty cell
+            // if mAddIntersectCellX/Y are -1 (e.g. we used menu -> add) then
+            // findCellForSpanThatIntersects will just ignore them
+            foundCellSpan = layout.findCellForSpanThatIntersects(cellXY, spanXY[0], spanXY[1],
+                    mAddIntersectCellX, mAddIntersectCellY);
         }
 
         if (!foundCellSpan) {
@@ -2778,7 +2775,9 @@ public final class Launcher extends Activity
     }
 
     void showWorkspace(boolean animated, CellLayout layout) {
-        if (layout != null && animated) {
+        if (layout != null) {
+            // always animated, but that's ok since we never specify a layout and
+            // want no animation
             mWorkspace.unshrink(layout);
         } else {
             mWorkspace.unshrink(animated);

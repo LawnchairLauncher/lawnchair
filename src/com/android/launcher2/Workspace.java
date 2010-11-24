@@ -1168,24 +1168,14 @@ public class Workspace extends SmoothPagedView
         updateWhichPagesAcceptDrops(mShrunkenState);
     }
 
-    // We call this when we trigger an unshrink by clicking on the CellLayout cl
-    public void unshrink(CellLayout clThatWasClicked) {
-        int newCurrentPage = mCurrentPage;
-        final int screenCount = getChildCount();
-        for (int i = 0; i < screenCount; i++) {
-            if (getChildAt(i) == clThatWasClicked) {
-                newCurrentPage = i;
-            }
-        }
-        unshrink(newCurrentPage);
-    }
-
     @Override
     protected boolean handlePagingClicks() {
         return true;
     }
 
-    private void unshrink(int newCurrentPage) {
+    // We call this when we trigger an unshrink by clicking on the CellLayout cl
+    public void unshrink(CellLayout clThatWasClicked) {
+        int newCurrentPage = indexOfChild(clThatWasClicked);
         if (mIsSmall) {
             int newX = getChildOffset(newCurrentPage) - getRelativeChildOffset(newCurrentPage);
             int delta = newX - mScrollX;
@@ -1528,7 +1518,13 @@ public class Workspace extends SmoothPagedView
         }
 
         if (source != this) {
-            onDropExternal(originX, originY, dragInfo, mDragTargetLayout);
+            if (mIsSmall) {
+                // if we drag and drop to small screens, don't pass the touch x/y coords (when we
+                // enable spring-loaded adding, however, we do want to pass the touch x/y coords)
+                onDropExternal(-1, -1, dragInfo, mDragTargetLayout);
+            } else {
+                onDropExternal(originX, originY, dragInfo, mDragTargetLayout);
+            }
         } else if (mDragInfo != null) {
             final View cell = mDragInfo.cell;
             CellLayout dropTargetLayout = mDragTargetLayout;
@@ -2045,6 +2041,7 @@ public class Workspace extends SmoothPagedView
             PendingAddItemInfo info = (PendingAddItemInfo) dragInfo;
             // When dragging and dropping from customization tray, we deal with creating
             // widgets/shortcuts/folders in a slightly different way
+            // Only set touchXY if you are supporting spring loaded adding of items
             int[] touchXY = new int[2];
             touchXY[0] = x;
             touchXY[1] = y;
@@ -2063,38 +2060,37 @@ public class Workspace extends SmoothPagedView
             }
             cellLayout.onDragExit();
             cellLayout.animateDrop();
-            return;
-        }
-
-        // This is for other drag/drop cases, like dragging from All Apps
-        ItemInfo info = (ItemInfo) dragInfo;
-
-        View view = null;
-
-        switch (info.itemType) {
-        case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
-        case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-            if (info.container == NO_ID && info instanceof ApplicationInfo) {
-                // Came from all apps -- make a copy
-                info = new ShortcutInfo((ApplicationInfo) info);
-            }
-            view = mLauncher.createShortcut(R.layout.application, cellLayout,
-                    (ShortcutInfo) info);
-            break;
-        case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
-            view = FolderIcon.fromXml(R.layout.folder_icon, mLauncher,
-                    cellLayout, (UserFolderInfo) info, mIconCache);
-            break;
-        default:
-            throw new IllegalStateException("Unknown item type: " + info.itemType);
-        }
-
-        // If the view is null, it has already been added.
-        if (view == null) {
-            cellLayout.onDragExit();
         } else {
-            mTargetCell = new int[]{x, y};
-            cellLayout.findCellForSpan(mTargetCell, 1, 1);
+            // This is for other drag/drop cases, like dragging from All Apps
+            ItemInfo info = (ItemInfo) dragInfo;
+
+            View view = null;
+
+            switch (info.itemType) {
+            case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+            case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                if (info.container == NO_ID && info instanceof ApplicationInfo) {
+                    // Came from all apps -- make a copy
+                    info = new ShortcutInfo((ApplicationInfo) info);
+                }
+                view = mLauncher.createShortcut(R.layout.application, cellLayout,
+                        (ShortcutInfo) info);
+                break;
+            case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
+                view = FolderIcon.fromXml(R.layout.folder_icon, mLauncher,
+                        cellLayout, (UserFolderInfo) info, mIconCache);
+                break;
+            default:
+                throw new IllegalStateException("Unknown item type: " + info.itemType);
+            }
+
+            mTargetCell = new int[2];
+            if (x != -1 && y != -1) {
+                // when dragging and dropping, just find the closest free spot
+                cellLayout.findNearestVacantArea(x, y, 1, 1, mTargetCell);
+            } else {
+                cellLayout.findCellForSpan(mTargetCell, 1, 1);
+            }
             addInScreen(view, indexOfChild(cellLayout), mTargetCell[0],
                     mTargetCell[1], info.spanX, info.spanY, insertAtFirst);
             cellLayout.onDropChild(view);
