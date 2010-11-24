@@ -17,7 +17,13 @@
 package com.android.launcher2;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.FragmentTransaction;
 import android.app.WallpaperManager;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap;
@@ -28,27 +34,26 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Gallery;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.SpinnerAdapter;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 import com.android.launcher.R;
 
-public class WallpaperChooser extends Activity implements AdapterView.OnItemSelectedListener,
-        OnClickListener {
+public class WallpaperChooser extends Activity {
     private static final String TAG = "Launcher.WallpaperChooser";
 
-    private Gallery mGallery;
-    private ImageView mImageView;
-    private boolean mIsWallpaperSet;
-
-    private Bitmap mBitmap;
+    private ViewGroup mWallpaperChooserBase;
+    private ImageView mImageView = null;
+    private Bitmap mBitmap = null;
 
     private ArrayList<Integer> mThumbs;
     private ArrayList<Integer> mImages;
@@ -57,20 +62,35 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        /* We need some container to attach to in order for the fragment to be
+         * considered embedded, so inflate an empty FrameLayout and use that
+         * as the parent view
+         */
+        setContentView(R.layout.wallpaper_chooser_base);
+        mWallpaperChooserBase = (ViewGroup) findViewById(R.id.wallpaper_chooser_base);
 
         findWallpapers();
 
-        setContentView(R.layout.wallpaper_chooser);
+        DialogFragment newFragment = new WallpaperDialogFragment(this);
+        if (LauncherApplication.isScreenXLarge()) {
+            // Display a dialog instead of embedding the view in the activity
+            newFragment.show(getFragmentManager(), "dialog");
+        } else {
+            // Embed the fragment in the base view
+            FragmentTransaction ft = getFragmentManager().openTransaction();
+            ft.add(R.id.wallpaper_chooser_base, newFragment);
+            ft.commit();
+        }
+    }
 
-        mGallery = (Gallery) findViewById(R.id.gallery);
-        mGallery.setAdapter(new ImageAdapter(this));
-        mGallery.setOnItemSelectedListener(this);
-        mGallery.setCallbackDuringFling(false);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
-        findViewById(R.id.set).setOnClickListener(this);
-
-        mImageView = (ImageView) findViewById(R.id.wallpaper);
+        if (mLoader != null && mLoader.getStatus() != WallpaperLoader.Status.FINISHED) {
+            mLoader.cancel(true);
+            mLoader = null;
+        }
     }
 
     private void findWallpapers() {
@@ -105,40 +125,7 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mIsWallpaperSet = false;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        
-        if (mLoader != null && mLoader.getStatus() != WallpaperLoader.Status.FINISHED) {
-            mLoader.cancel(true);
-            mLoader = null;
-        }
-    }
-
-    public void onItemSelected(AdapterView parent, View v, int position, long id) {
-        if (mLoader != null && mLoader.getStatus() != WallpaperLoader.Status.FINISHED) {
-            mLoader.cancel();
-        }
-        mLoader = (WallpaperLoader) new WallpaperLoader().execute(position);
-    }
-
-    /*
-     * When using touch if you tap an image it triggers both the onItemClick and
-     * the onTouchEvent causing the wallpaper to be set twice. Ensure we only
-     * set the wallpaper once.
-     */
     private void selectWallpaper(int position) {
-        if (mIsWallpaperSet) {
-            return;
-        }
-
-        mIsWallpaperSet = true;
         try {
             WallpaperManager wpm = (WallpaperManager)getSystemService(WALLPAPER_SERVICE);
             wpm.setResource(mImages.get(position));
@@ -149,10 +136,95 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
         }
     }
 
-    public void onNothingSelected(AdapterView parent) {
+    private class WallpaperDialogFragment extends DialogFragment implements
+            AdapterView.OnItemSelectedListener, AdapterView.OnItemClickListener {
+        private Context mContext;
+
+        public WallpaperDialogFragment(Context context) {
+            super();
+            mContext = context;
+            setCancelable(true);
+        }
+
+        @Override
+        public void onDismiss(DialogInterface dialog) {
+            WallpaperChooser.this.finish();
+        }
+
+        /* This will only be called when in XLarge mode, since this Fragment is invoked like
+         * a dialog in that mode
+         */
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final View v = getLayoutInflater().inflate(
+                    R.layout.wallpaper_chooser, mWallpaperChooserBase, false);
+
+            GridView gridView = (GridView) v.findViewById(R.id.gallery);
+            gridView.setOnItemClickListener(this);
+            gridView.setAdapter(new ImageAdapter(WallpaperChooser.this));
+
+            final int viewInset =
+                    getResources().getDimensionPixelSize(R.dimen.alert_dialog_content_inset);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setCancelable(true);
+            builder.setNegativeButton(R.string.wallpaper_cancel, null);
+            builder.setTitle(R.string.pick_wallpaper);
+            builder.setView(gridView, viewInset, viewInset, viewInset, viewInset);
+            return builder.create();
+        }
+
+        /* This will be called on both XLarge and small screens, but since the dialog
+         * is already created on XLarge, we want to skip this view creation
+         */
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                Bundle savedInstanceState) {
+            /* Only generate a custom view if this fragment is being embedded in a view,
+             * i.e: on a small screen
+             */
+            if (!LauncherApplication.isScreenXLarge()) {
+                View view = inflater.inflate(R.layout.wallpaper_chooser, container, false);
+
+                final Gallery gallery = (Gallery) view.findViewById(R.id.gallery);
+                gallery.setCallbackDuringFling(false);
+                gallery.setOnItemSelectedListener(this);
+                gallery.setAdapter(new ImageAdapter(WallpaperChooser.this));
+
+                View setButton = view.findViewById(R.id.set);
+                setButton.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        selectWallpaper(gallery.getSelectedItemPosition());
+                    }
+                });
+                mImageView = (ImageView) view.findViewById(R.id.wallpaper);
+                return view;
+            }
+            return super.onCreateView(inflater, container, savedInstanceState);
+        }
+
+        // Click handler for the Dialog's GridView
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            selectWallpaper(position);
+        }
+
+        // Selection handler for the embedded Gallery view
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            if (mLoader != null && mLoader.getStatus() != WallpaperLoader.Status.FINISHED) {
+                mLoader.cancel();
+            }
+            mLoader = (WallpaperLoader) new WallpaperLoader().execute(position);
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+        }
     }
 
-    private class ImageAdapter extends BaseAdapter {
+    private class ImageAdapter extends BaseAdapter implements ListAdapter, SpinnerAdapter {
         private LayoutInflater mLayoutInflater;
 
         ImageAdapter(WallpaperChooser context) {
@@ -179,7 +251,7 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
             } else {
                 image = (ImageView) convertView;
             }
-            
+
             int thumbRes = mThumbs.get(position);
             image.setImageResource(thumbRes);
             Drawable thumbDrawable = image.getDrawable();
@@ -189,12 +261,9 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
                 Log.e(TAG, "Error decoding thumbnail resId=" + thumbRes + " for wallpaper #"
                         + position);
             }
+
             return image;
         }
-    }
-
-    public void onClick(View v) {
-        selectWallpaper(mGallery.getSelectedItemPosition());
     }
 
     class WallpaperLoader extends AsyncTask<Integer, Void, Bitmap> {
@@ -205,7 +274,8 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
             mOptions.inDither = false;
             mOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;            
         }
-        
+
+        @Override
         protected Bitmap doInBackground(Integer... params) {
             if (isCancelled()) return null;
             try {
@@ -225,17 +295,20 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
                 if (mBitmap != null) {
                     mBitmap.recycle();
                 }
-    
-                final ImageView view = mImageView;
-                view.setImageBitmap(b);
-    
-                mBitmap = b;
-    
-                final Drawable drawable = view.getDrawable();
-                drawable.setFilterBitmap(true);
-                drawable.setDither(true);
 
-                view.postInvalidate();
+                // This should always be the case, but check anyways
+                final ImageView view = mImageView;
+                if (view != null) {
+                    view.setImageBitmap(b);
+
+                    mBitmap = b;
+
+                    final Drawable drawable = view.getDrawable();
+                    drawable.setFilterBitmap(true);
+                    drawable.setDither(true);
+
+                    view.postInvalidate();
+                }
 
                 mLoader = null;
             } else {
