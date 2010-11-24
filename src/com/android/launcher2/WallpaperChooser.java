@@ -169,7 +169,7 @@ public class WallpaperChooser extends Activity {
             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
             builder.setCancelable(true);
             builder.setNegativeButton(R.string.wallpaper_cancel, null);
-            builder.setTitle(R.string.pick_wallpaper);
+            builder.setTitle(R.string.wallpaper_dialog_title);
             builder.setView(gridView, viewInset, viewInset, viewInset, viewInset);
             return builder.create();
         }

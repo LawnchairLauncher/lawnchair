@@ -18,7 +18,9 @@
 -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- Option in "Select wallpaper from" dialog box -->
-    <string name="pick_wallpaper">Select wallpaper</string>
+    <!-- Title of the wallpaper selection dialog [CHAR_LIMIT=40]-->
+    <string name="wallpaper_dialog_title">Select wallpaper</string>
+
+    <!-- Negative button text for the wallpaper selection dialog [CHAR_LIMIT=40]-->
     <string name="wallpaper_cancel">Cancel</string>
 </resources>
