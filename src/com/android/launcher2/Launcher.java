@@ -17,13 +17,9 @@
 
 package com.android.launcher2;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import com.android.common.Search;
+import com.android.launcher.R;
+import com.android.launcher2.Workspace.ShrinkState;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -59,7 +55,6 @@ import android.content.res.TypedArray;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -104,8 +99,13 @@ import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabContentFactory;
 
-import com.android.common.Search;
-import com.android.launcher.R;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -2621,9 +2621,9 @@ public final class Launcher extends Activity
         setPivotsForZoom(toView, toState, scale);
 
         if (toAllApps) {
-            mWorkspace.shrinkToBottomHidden(animated);
+            mWorkspace.shrink(ShrinkState.BOTTOM_HIDDEN, animated);
         } else {
-            mWorkspace.shrinkToTop(animated);
+            mWorkspace.shrink(ShrinkState.TOP, animated);
         }
 
         if (animated) {
@@ -2760,9 +2760,9 @@ public final class Launcher extends Activity
         mAllAppsPagedView.endChoiceMode();
 
         if (toState == State.ALL_APPS) {
-            mWorkspace.shrinkToBottomHidden(animated);
+            mWorkspace.shrink(Workspace.ShrinkState.BOTTOM_HIDDEN, animated);
         } else {
-            mWorkspace.shrinkToTop(animated);
+            mWorkspace.shrink(Workspace.ShrinkState.TOP, animated);
         }
 
         if (animated) {

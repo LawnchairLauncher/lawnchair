@@ -16,10 +16,7 @@
 
 package com.android.launcher2;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import com.android.launcher.R;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -31,11 +28,8 @@ import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Rect;
-import android.graphics.Region.Op;
+import android.graphics.Bitmap.Config;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -48,9 +42,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.android.launcher.R;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class CustomizePagedView extends PagedView
     implements View.OnLongClickListener, View.OnClickListener, View.OnTouchListener,
@@ -89,9 +85,6 @@ public class CustomizePagedView extends PagedView
 
     // The size of the items on the wallpaper tab
     private int mWallpaperCellHSpan;
-
-    // The max dimensions for the ImageView we use for displaying a wallpaper
-    private int mMaxWallpaperWidth;
 
     // The raw sources of data for each of the different tabs of the customization page
     private List<AppWidgetProviderInfo> mWidgetList;
@@ -473,6 +466,14 @@ public class CustomizePagedView extends PagedView
         return super.onTouchEvent(ev);
     }
 
+    Bitmap drawableToBitmap(Drawable d) {
+        Bitmap b = Bitmap.createBitmap(d.getIntrinsicWidth(), d.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        d.draw(c);
+        return b;
+    }
+
     private boolean beginDragging(View v) {
         // End the current choice mode before we start dragging anything
         if (isChoiceMode(CHOICE_MODE_SINGLE)) {
@@ -486,10 +487,7 @@ public class CustomizePagedView extends PagedView
             // Get the icon as the drag representation
             final LinearLayout l = (LinearLayout) v;
             final Drawable icon = ((ImageView) l.findViewById(R.id.widget_preview)).getDrawable();
-            Bitmap b = Bitmap.createBitmap(icon.getIntrinsicWidth(), icon.getIntrinsicHeight(),
-                    Bitmap.Config.ARGB_8888);
-            Canvas c = new Canvas(b);
-            icon.draw(c);
+            Bitmap b = drawableToBitmap(icon);
             PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo) v.getTag();
 
             mLauncher.getWorkspace().onDragStartedWithItemMinSize(
@@ -692,7 +690,6 @@ public class CustomizePagedView extends PagedView
         mWorkspaceWidgetLayout.setPadding(20, 10, 20, 0);
 
         mMaxWidgetWidth = mWorkspaceWidgetLayout.estimateCellWidth(sMaxWidgetCellHSpan);
-        mMaxWallpaperWidth = mWorkspaceWidgetLayout.estimateCellWidth(mWallpaperCellHSpan);
     }
 
     private void syncWidgetPages() {

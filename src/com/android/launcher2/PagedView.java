@@ -16,8 +16,7 @@
 
 package com.android.launcher2;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import com.android.launcher.R;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -41,7 +40,8 @@ import android.view.animation.Animation.AnimationListener;
 import android.widget.Checkable;
 import android.widget.Scroller;
 
-import com.android.launcher.R;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * An abstraction of the original Workspace which supports browsing through a
@@ -431,6 +431,18 @@ public abstract class PagedView extends ViewGroup {
         }
 
         setMeasuredDimension(widthSize, heightSize);
+    }
+
+    protected void moveToNewPageWithoutMovingCellLayouts(int newCurrentPage) {
+        int newX = getChildOffset(newCurrentPage) - getRelativeChildOffset(newCurrentPage);
+        int delta = newX - mScrollX;
+
+        final int screenCount = getChildCount();
+        for (int i = 0; i < screenCount; i++) {
+            CellLayout cl = (CellLayout) getChildAt(i);
+            cl.setX(cl.getX() + delta);
+        }
+        setCurrentPage(newCurrentPage);
     }
 
     @Override
