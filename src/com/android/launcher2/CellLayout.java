@@ -801,7 +801,10 @@ public class CellLayout extends ViewGroup implements Dimmable {
                             cellXY[0] + childLeft + lp.width / 2,
                             cellXY[1] + childTop + lp.height / 2, 0, null);
 
-                    ((Workspace) mParent).animateViewIntoPosition(child);
+                    if (lp.animateDrop) {
+                        lp.animateDrop = false;
+                        ((Workspace) mParent).animateViewIntoPosition(child);
+                    }
                 }
             }
         }
@@ -1224,11 +1227,12 @@ public class CellLayout extends ViewGroup implements Dimmable {
      *
      * @param child The child that is being dropped
      */
-    void onDropChild(View child) {
+    void onDropChild(View child, boolean animate) {
         if (child != null) {
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
             lp.isDragging = false;
             lp.dropped = true;
+            lp.animateDrop = animate;
             child.setVisibility(View.VISIBLE);
             child.requestLayout();
         }
@@ -1465,6 +1469,8 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         int oldY;
 
         boolean dropped;
+
+        boolean animateDrop;
 
         public LayoutParams(Context c, AttributeSet attrs) {
             super(c, attrs);

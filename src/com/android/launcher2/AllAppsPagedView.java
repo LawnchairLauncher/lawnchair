@@ -21,7 +21,11 @@ import com.android.launcher.R;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -258,8 +262,14 @@ public class AllAppsPagedView extends PagedView
         ApplicationInfo app = (ApplicationInfo) v.getTag();
         app = new ApplicationInfo(app);
 
-        mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1);
-        mDragController.startDrag(v, this, app, DragController.DRAG_ACTION_COPY);
+        // get icon (top compound drawable, index is 1)
+        final Drawable icon = ((TextView) v).getCompoundDrawables()[1];
+        Bitmap b = Bitmap.createBitmap(icon.getIntrinsicWidth(), icon.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        icon.draw(c);
+        mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1, b);
+        mDragController.startDrag(v, b, this, app, DragController.DRAG_ACTION_COPY, null);
         return true;
     }
 

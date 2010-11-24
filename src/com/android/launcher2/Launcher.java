@@ -176,7 +176,8 @@ public final class Launcher extends Activity
     private static final String TOOLBAR_ICON_METADATA_NAME = "com.android.launcher.toolbar_icon";
 
     /** The different states that Launcher can be in. */
-    private enum State { WORKSPACE, ALL_APPS, CUSTOMIZE, OVERVIEW };
+    private enum State { WORKSPACE, ALL_APPS, CUSTOMIZE, OVERVIEW,
+        CUSTOMIZE_SPRING_LOADED, ALL_APPS_SPRING_LOADED };
     private State mState = State.WORKSPACE;
     private AnimatorSet mStateAnimation;
 
@@ -1112,7 +1113,23 @@ public final class Launcher extends Activity
         final int[] cellXY = mTmpAddItemCellCoordinates;
         final CellLayout layout = (CellLayout) mWorkspace.getChildAt(screen);
 
-        if (!layout.findCellForSpanThatIntersects(cellXY, 1, 1, intersectCellX, intersectCellY)) {
+        int[] touchXY = null;
+        if (mAddDropPosition != null && mAddDropPosition[0] > -1 && mAddDropPosition[1] > -1) {
+            touchXY = mAddDropPosition;
+        }
+        boolean foundCellSpan = false;
+        if (touchXY != null) {
+            // when dragging and dropping, just find the closest free spot
+            CellLayout screenLayout = (CellLayout) mWorkspace.getChildAt(screen);
+            int[] result = screenLayout.findNearestVacantArea(
+                    touchXY[0], touchXY[1], 1, 1, cellXY);
+            foundCellSpan = (result != null);
+        } else {
+            foundCellSpan = layout.findCellForSpanThatIntersects(
+                    cellXY, 1, 1, intersectCellX, intersectCellY);
+        }
+
+        if (!foundCellSpan) {
             showOutOfSpaceMessage();
             return;
         }
@@ -1151,15 +1168,13 @@ public final class Launcher extends Activity
         if (mAddDropPosition != null && mAddDropPosition[0] > -1 && mAddDropPosition[1] > -1) {
             touchXY = mAddDropPosition;
         }
-        boolean findNearestVacantAreaFailed = false;
         boolean foundCellSpan = false;
         if (touchXY != null) {
             // when dragging and dropping, just find the closest free spot
             CellLayout screenLayout = (CellLayout) mWorkspace.getChildAt(screen);
             int[] result = screenLayout.findNearestVacantArea(
                     touchXY[0], touchXY[1], spanXY[0], spanXY[1], cellXY);
-            findNearestVacantAreaFailed = (result == null);
-            foundCellSpan = !findNearestVacantAreaFailed;
+            foundCellSpan = (result != null);
         } else {
             // if we long pressed on an empty cell to bring up a menu,
             // make sure we intersect the empty cell
@@ -1626,8 +1641,6 @@ public final class Launcher extends Activity
     void addAppWidgetFromDrop(PendingAddWidgetInfo info, int screen, int[] position) {
         resetAddInfo();
         mAddScreen = screen;
-
-        // only set mAddDropPosition if we dropped on home screen in "spring-loaded" manner
         mAddDropPosition = position;
 
         int appWidgetId = getAppWidgetHost().allocateAppWidgetId();
@@ -2685,6 +2698,10 @@ public final class Launcher extends Activity
      * @param animated If true, the transition will be animated.
      */
     private void cameraZoomIn(State fromState, boolean animated) {
+        cameraZoomIn(fromState, animated, false);
+    }
+
+    private void cameraZoomIn(State fromState, boolean animated, boolean springLoaded) {
         Resources res = getResources();
         int duration = res.getInteger(R.integer.config_allAppsZoomOutTime);
         float scaleFactor = (float) res.getInteger(R.integer.config_allAppsZoomScaleFactor);
@@ -2696,7 +2713,9 @@ public final class Launcher extends Activity
 
         setPivotsForZoom(fromView, fromState, scaleFactor);
 
-        mWorkspace.unshrink(animated);
+        if (!springLoaded) {
+            mWorkspace.unshrink(animated);
+        }
 
         if (animated) {
             if (mStateAnimation != null) mStateAnimation.cancel();
@@ -2719,7 +2738,9 @@ public final class Launcher extends Activity
 
             AnimatorSet toolbarHideAnim = new AnimatorSet();
             AnimatorSet toolbarShowAnim = new AnimatorSet();
-            hideAndShowToolbarButtons(State.WORKSPACE, toolbarShowAnim, toolbarHideAnim);
+            if (!springLoaded) {
+                hideAndShowToolbarButtons(State.WORKSPACE, toolbarShowAnim, toolbarHideAnim);
+            }
 
             mStateAnimation.playTogether(scaleAnim, toolbarHideAnim, alphaAnim);
 
@@ -2730,7 +2751,9 @@ public final class Launcher extends Activity
             mStateAnimation.start();
         } else {
             fromView.setVisibility(View.GONE);
-            hideAndShowToolbarButtons(State.WORKSPACE, null, null);
+            if (!springLoaded) {
+                hideAndShowToolbarButtons(State.WORKSPACE, null, null);
+            }
         }
     }
 
@@ -2859,6 +2882,33 @@ public final class Launcher extends Activity
         mState = State.WORKSPACE;
     }
 
+    void enterSpringLoadedDragMode(CellLayout layout) {
+        mWorkspace.enterSpringLoadedDragMode(layout);
+        if (mState == State.ALL_APPS) {
+            cameraZoomIn(State.ALL_APPS, true, true);
+            mState = State.ALL_APPS_SPRING_LOADED;
+        } else if (mState == State.CUSTOMIZE) {
+            cameraZoomIn(State.CUSTOMIZE, true, true);
+            mState = State.CUSTOMIZE_SPRING_LOADED;
+        }/* else {
+            // we're already in spring loaded mode; don't do anything
+        }*/
+    }
+
+    void exitSpringLoadedDragMode() {
+        if (mState == State.ALL_APPS_SPRING_LOADED) {
+            mWorkspace.exitSpringLoadedDragMode(Workspace.ShrinkState.BOTTOM_VISIBLE);
+            cameraZoomOut(State.ALL_APPS, true);
+            mState = State.ALL_APPS;
+        } else if (mState == State.CUSTOMIZE_SPRING_LOADED) {
+            mWorkspace.exitSpringLoadedDragMode(Workspace.ShrinkState.TOP);
+            cameraZoomOut(State.CUSTOMIZE, true);
+            mState = State.CUSTOMIZE;
+        }/* else {
+            // we're not in spring loaded mode; don't do anything
+        }*/
+    }
+
     /**
      * Things to test when changing this code.
      *   - Home from workspace
@@ -2899,7 +2949,7 @@ public final class Launcher extends Activity
      *          - From another workspace
      */
     void closeAllApps(boolean animated) {
-        if (mState == State.ALL_APPS) {
+        if (mState == State.ALL_APPS || mState == State.ALL_APPS_SPRING_LOADED) {
             mWorkspace.setVisibility(View.VISIBLE);
             if (LauncherApplication.isScreenXLarge()) {
                 cameraZoomIn(State.ALL_APPS, animated);
@@ -2932,7 +2982,7 @@ public final class Launcher extends Activity
 
     // Hide the customization drawer (only exists in x-large configuration)
     void hideCustomizationDrawer(boolean animated) {
-        if (mState == State.CUSTOMIZE) {
+        if (mState == State.CUSTOMIZE || mState == State.CUSTOMIZE_SPRING_LOADED) {
             cameraZoomIn(State.CUSTOMIZE, animated);
         }
     }

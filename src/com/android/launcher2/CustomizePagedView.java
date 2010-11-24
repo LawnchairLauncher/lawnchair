@@ -60,6 +60,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.android.launcher.R;
 
@@ -587,29 +588,46 @@ public class CustomizePagedView extends PagedView
         mIsDragging = true;
 
         switch (mCustomizationType) {
-        case WidgetCustomization:
+        case WidgetCustomization: {
             // Get the widget preview as the drag representation
+            final LinearLayout l = (LinearLayout) v;
+            final Drawable icon = ((ImageView) l.findViewById(R.id.widget_preview)).getDrawable();
+            Bitmap b = drawableToBitmap(icon);
             PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo) v.getTag();
             final View dragView = v.findViewById(R.id.widget_preview);
 
-            mLauncher.getWorkspace().onDragStartedWithItemMinSize(
-                    createWidgetInfo.minWidth, createWidgetInfo.minHeight);
-            mDragController.startDrag(dragView, this, createWidgetInfo, DragController.DRAG_ACTION_COPY, null);
+            int[] spanXY = CellLayout.rectToCell(
+                    getResources(), createWidgetInfo.minWidth, createWidgetInfo.minHeight, null);
+            createWidgetInfo.spanX = spanXY[0];
+            createWidgetInfo.spanY = spanXY[1];
+            mLauncher.getWorkspace().onDragStartedWithItemSpans(spanXY[0], spanXY[1], b);
+            mDragController.startDrag(
+                    v, b, this, createWidgetInfo, DragController.DRAG_ACTION_COPY, null);
 
             return true;
-        case ShortcutCustomization:
+        }
+        case ShortcutCustomization: {
+            // get icon (top compound drawable, index is 1)
+            final Drawable icon = ((TextView) v).getCompoundDrawables()[1];
+            Bitmap b = drawableToBitmap(icon);
             PendingAddItemInfo createItemInfo = (PendingAddItemInfo) v.getTag();
-            mDragController.startDrag(v, this, createItemInfo, DragController.DRAG_ACTION_COPY);
-            mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1);
+            mDragController.startDrag(
+                    v, b, this, createItemInfo, DragController.DRAG_ACTION_COPY, null);
+            mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1, b);
             return true;
-        case ApplicationCustomization:
+        }
+        case ApplicationCustomization: {
             // Pick up the application for dropping
+            // get icon (top compound drawable, index is 1)
+            final Drawable icon = ((TextView) v).getCompoundDrawables()[1];
+            Bitmap b = drawableToBitmap(icon);
             ApplicationInfo app = (ApplicationInfo) v.getTag();
             app = new ApplicationInfo(app);
 
-            mDragController.startDrag(v, this, app, DragController.DRAG_ACTION_COPY);
-            mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1);
+            mDragController.startDrag(v, b, this, app, DragController.DRAG_ACTION_COPY, null);
+            mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1, b);
             return true;
+        }
         }
         return false;
     }
