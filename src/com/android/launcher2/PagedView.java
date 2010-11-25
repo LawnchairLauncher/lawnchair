@@ -356,7 +356,11 @@ public abstract class PagedView extends ViewGroup {
             mCurrentPage = Math.max(0, Math.min(mNextPage, getPageCount() - 1));
             mNextPage = INVALID_PAGE;
             notifyPageSwitchListener();
-            pageEndMoving();
+            // We don't want to trigger a page end moving unless the page has settled
+            // and the user has stopped scrolling
+            if (mTouchState == TOUCH_STATE_REST) {
+                pageEndMoving();
+            }
             return true;
         }
         return false;
