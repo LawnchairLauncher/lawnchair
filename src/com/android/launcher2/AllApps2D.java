@@ -201,10 +201,16 @@ public class AllApps2D
         }
     }
 
+    @Override
     public void setDragController(DragController dragger) {
         mDragController = dragger;
     }
 
+    @Override
+    public void onDragViewVisible() {
+    }
+
+    @Override
     public void onDropCompleted(View target, boolean success) {
     }
 

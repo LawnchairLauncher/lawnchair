@@ -37,7 +37,7 @@
     <!-- When dragging items on the workspace, the number of pixels by which the position of
          the drag view should be offset from the position of the original view. -->
     <integer name="config_dragViewOffsetX">0</integer>
-    <integer name="config_dragViewOffsetY">12</integer>
+    <integer name="config_dragViewOffsetY">-12</integer>
 
     <!-- When items are dropped on the mini screens in customize mode, we have a bounce animation
          of the bright green hover outline, and then fade out the outline at the end. These are

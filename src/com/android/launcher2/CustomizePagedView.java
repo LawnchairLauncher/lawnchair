@@ -312,6 +312,10 @@ public class CustomizePagedView extends PagedView
     }
 
     @Override
+    public void onDragViewVisible() {
+    }
+
+    @Override
     public void onClick(View v) {
         // Return early if this is not initiated from a touch
         if (!v.isInTouchMode()) return;
@@ -490,16 +494,14 @@ public class CustomizePagedView extends PagedView
 
             mLauncher.getWorkspace().onDragStartedWithItemMinSize(
                     createWidgetInfo.minWidth, createWidgetInfo.minHeight);
-            mDragController.startDrag(v, b, this, createWidgetInfo, DragController.DRAG_ACTION_COPY,
-                    null);
+            mDragController.startDrag(v, b, this, createWidgetInfo, DragController.DRAG_ACTION_COPY, null);
 
             // Cleanup the icon
             b.recycle();
             return true;
         case ShortcutCustomization:
             createItemInfo = (PendingAddItemInfo) v.getTag();
-            mDragController.startDrag(
-                    v, this, createItemInfo, DragController.DRAG_ACTION_COPY, null);
+            mDragController.startDrag(v, this, createItemInfo, DragController.DRAG_ACTION_COPY);
             mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1);
             return true;
         case ApplicationCustomization:

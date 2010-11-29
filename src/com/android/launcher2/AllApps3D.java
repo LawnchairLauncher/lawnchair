@@ -192,6 +192,7 @@ public class AllApps3D extends RSSurfaceView
             destroyRenderScript();
             sRS = null;
             sRollo = null;
+            super.onDetachedFromWindow();
         }
     }
 
@@ -735,10 +736,16 @@ public class AllApps3D extends RSSurfaceView
         return false;
     }
 
+    @Override
     public void setDragController(DragController dragger) {
         mDragController = dragger;
     }
 
+    @Override
+    public void onDragViewVisible() {
+    }
+
+    @Override
     public void onDropCompleted(View target, boolean success) {
     }
 

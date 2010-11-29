@@ -109,6 +109,7 @@ public class Workspace extends SmoothPagedView
     private Drawable mBackground;
     private float mBackgroundAlpha = 0;
     private float mOverScrollMaxBackgroundAlpha = 0.0f;
+    private int mOverScrollPageIndex = -1;
 
     private final WallpaperManager mWallpaperManager;
 
@@ -268,9 +269,9 @@ public class Workspace extends SmoothPagedView
     @Override
     protected int getScrollMode() {
         if (LauncherApplication.isScreenXLarge()) {
-            return SmoothPagedView.QUINTIC_MODE;
+            return SmoothPagedView.X_LARGE_MODE;
         } else {
-            return SmoothPagedView.OVERSHOOT_MODE;
+            return SmoothPagedView.DEFAULT_MODE;
         }
     }
 
@@ -516,6 +517,7 @@ public class Workspace extends SmoothPagedView
             mAnimOnPageEndMoving = null;
         }
         mOverScrollMaxBackgroundAlpha = 0.0f;
+        mOverScrollPageIndex = -1;
         mPageMoving = false;
     }
 
@@ -653,7 +655,7 @@ public class Workspace extends SmoothPagedView
     }
 
     float overScrollBackgroundAlphaInterpolator(float r) {
-        float threshold = 0.1f;
+        float threshold = 0.08f;
 
         if (r > mOverScrollMaxBackgroundAlpha) {
             mOverScrollMaxBackgroundAlpha = r;
@@ -662,23 +664,6 @@ public class Workspace extends SmoothPagedView
         }
 
         return Math.min(r / threshold, 1.0f);
-    }
-
-    protected void overScroll(float amount) {
-        final int lastChildIndex = getChildCount() - 1;
-
-        CellLayout cl;
-        if (amount < 0) {
-            cl = (CellLayout) getChildAt(0);
-        } else {
-            cl = (CellLayout) getChildAt(lastChildIndex);
-        }
-
-        final int totalDistance = cl.getMeasuredWidth() + mPageSpacing;
-        float r = 1.0f * amount / totalDistance;
-        float rotation = -WORKSPACE_ROTATION * r;
-        cl.setBackgroundAlphaMultiplier(overScrollBackgroundAlphaInterpolator(Math.abs(r)));
-        cl.setRotationY(rotation);
     }
 
     @Override
@@ -696,7 +681,18 @@ public class Workspace extends SmoothPagedView
                 scrollProgress = Math.min(scrollProgress, 1.0f);
                 scrollProgress = Math.max(scrollProgress, -1.0f);
 
-                cl.setBackgroundAlphaMultiplier(backgroundAlphaInterpolator(Math.abs(scrollProgress)));
+                // If the current page (i) is being overscrolled, we use a different
+                // set of rules for setting the background alpha multiplier.
+                if ((mScrollX < 0 && i == 0) || (mScrollX > mMaxScrollX &&
+                        i == getChildCount() -1 )) {
+                    cl.setBackgroundAlphaMultiplier(
+                            overScrollBackgroundAlphaInterpolator(Math.abs(scrollProgress)));
+                    mOverScrollPageIndex = i;
+                } else if (mOverScrollPageIndex != i) {
+                    cl.setBackgroundAlphaMultiplier(
+                            backgroundAlphaInterpolator(Math.abs(scrollProgress)));
+
+                }
 
                 float rotation = WORKSPACE_ROTATION * scrollProgress;
                 float translationX = getOffsetXForRotation(rotation, cl.getWidth(), cl.getHeight());
@@ -1168,24 +1164,14 @@ public class Workspace extends SmoothPagedView
         updateWhichPagesAcceptDrops(mShrunkenState);
     }
 
-    // We call this when we trigger an unshrink by clicking on the CellLayout cl
-    public void unshrink(CellLayout clThatWasClicked) {
-        int newCurrentPage = mCurrentPage;
-        final int screenCount = getChildCount();
-        for (int i = 0; i < screenCount; i++) {
-            if (getChildAt(i) == clThatWasClicked) {
-                newCurrentPage = i;
-            }
-        }
-        unshrink(newCurrentPage);
-    }
-
     @Override
     protected boolean handlePagingClicks() {
         return true;
     }
 
-    private void unshrink(int newCurrentPage) {
+    // We call this when we trigger an unshrink by clicking on the CellLayout cl
+    public void unshrink(CellLayout clThatWasClicked) {
+        int newCurrentPage = indexOfChild(clThatWasClicked);
         if (mIsSmall) {
             int newX = getChildOffset(newCurrentPage) - getRelativeChildOffset(newCurrentPage);
             int delta = newX - mScrollX;
@@ -1360,7 +1346,6 @@ public class Workspace extends SmoothPagedView
         CellLayout current = getCurrentDropLayout();
 
         current.onDragChild(child);
-        child.setVisibility(View.GONE);
 
         child.clearFocus();
         child.setPressed(false);
@@ -1406,8 +1391,8 @@ public class Workspace extends SmoothPagedView
         // Based on the position of the drag view, find the top left of the original view
         int viewX = dragViewX + (dragView.getWidth() - child.getWidth()) / 2;
         int viewY = dragViewY + (dragView.getHeight() - child.getHeight()) / 2;
-        viewX -= getResources().getInteger(R.integer.config_dragViewOffsetX);
-        viewY -= getResources().getInteger(R.integer.config_dragViewOffsetY);
+        viewX += getResources().getInteger(R.integer.config_dragViewOffsetX);
+        viewY += getResources().getInteger(R.integer.config_dragViewOffsetY);
 
         // Set its old pos (in the new parent's coordinates); it will be animated
         // in animateViewIntoPosition after the next layout pass
@@ -1494,7 +1479,7 @@ public class Workspace extends SmoothPagedView
         // If it's an external drop (e.g. from All Apps), check if it should be accepted
         if (source != this) {
             // Don't accept the drop if we're not over a screen at time of drop
-            if (mDragTargetLayout == null) {
+            if (mDragTargetLayout == null || !mDragTargetLayout.getAcceptsDrops()) {
                 return false;
             }
 
@@ -1529,7 +1514,13 @@ public class Workspace extends SmoothPagedView
         }
 
         if (source != this) {
-            onDropExternal(originX, originY, dragInfo, mDragTargetLayout);
+            if (mIsSmall) {
+                // if we drag and drop to small screens, don't pass the touch x/y coords (when we
+                // enable spring-loaded adding, however, we do want to pass the touch x/y coords)
+                onDropExternal(-1, -1, dragInfo, mDragTargetLayout);
+            } else {
+                onDropExternal(originX, originY, dragInfo, mDragTargetLayout);
+            }
         } else if (mDragInfo != null) {
             final View cell = mDragInfo.cell;
             CellLayout dropTargetLayout = mDragTargetLayout;
@@ -1936,7 +1927,7 @@ public class Workspace extends SmoothPagedView
                         mDragTargetLayout.setHover(false);
                     }
                     mDragTargetLayout = layout;
-                    if (mDragTargetLayout != null) {
+                    if (mDragTargetLayout != null && mDragTargetLayout.getAcceptsDrops()) {
                         mDragTargetLayout.setHover(true);
                     }
                 }
@@ -2046,6 +2037,7 @@ public class Workspace extends SmoothPagedView
             PendingAddItemInfo info = (PendingAddItemInfo) dragInfo;
             // When dragging and dropping from customization tray, we deal with creating
             // widgets/shortcuts/folders in a slightly different way
+            // Only set touchXY if you are supporting spring loaded adding of items
             int[] touchXY = new int[2];
             touchXY[0] = x;
             touchXY[1] = y;
@@ -2064,38 +2056,37 @@ public class Workspace extends SmoothPagedView
             }
             cellLayout.onDragExit();
             cellLayout.animateDrop();
-            return;
-        }
-
-        // This is for other drag/drop cases, like dragging from All Apps
-        ItemInfo info = (ItemInfo) dragInfo;
-
-        View view = null;
-
-        switch (info.itemType) {
-        case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
-        case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-            if (info.container == NO_ID && info instanceof ApplicationInfo) {
-                // Came from all apps -- make a copy
-                info = new ShortcutInfo((ApplicationInfo) info);
-            }
-            view = mLauncher.createShortcut(R.layout.application, cellLayout,
-                    (ShortcutInfo) info);
-            break;
-        case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
-            view = FolderIcon.fromXml(R.layout.folder_icon, mLauncher,
-                    cellLayout, (UserFolderInfo) info, mIconCache);
-            break;
-        default:
-            throw new IllegalStateException("Unknown item type: " + info.itemType);
-        }
-
-        // If the view is null, it has already been added.
-        if (view == null) {
-            cellLayout.onDragExit();
         } else {
-            mTargetCell = new int[]{x, y};
-            cellLayout.findCellForSpan(mTargetCell, 1, 1);
+            // This is for other drag/drop cases, like dragging from All Apps
+            ItemInfo info = (ItemInfo) dragInfo;
+
+            View view = null;
+
+            switch (info.itemType) {
+            case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+            case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                if (info.container == NO_ID && info instanceof ApplicationInfo) {
+                    // Came from all apps -- make a copy
+                    info = new ShortcutInfo((ApplicationInfo) info);
+                }
+                view = mLauncher.createShortcut(R.layout.application, cellLayout,
+                        (ShortcutInfo) info);
+                break;
+            case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
+                view = FolderIcon.fromXml(R.layout.folder_icon, mLauncher,
+                        cellLayout, (UserFolderInfo) info, mIconCache);
+                break;
+            default:
+                throw new IllegalStateException("Unknown item type: " + info.itemType);
+            }
+
+            mTargetCell = new int[2];
+            if (x != -1 && y != -1) {
+                // when dragging and dropping, just find the closest free spot
+                cellLayout.findNearestVacantArea(x, y, 1, 1, mTargetCell);
+            } else {
+                cellLayout.findCellForSpan(mTargetCell, 1, 1);
+            }
             addInScreen(view, indexOfChild(cellLayout), mTargetCell[0],
                     mTargetCell[1], info.spanX, info.spanY, insertAtFirst);
             cellLayout.onDropChild(view);
@@ -2174,6 +2165,11 @@ public class Workspace extends SmoothPagedView
 
         mDragOutline = null;
         mDragInfo = null;
+    }
+
+    @Override
+    public void onDragViewVisible() {
+        ((View) mDragInfo.cell).setVisibility(View.GONE);
     }
 
     public boolean isDropEnabled() {

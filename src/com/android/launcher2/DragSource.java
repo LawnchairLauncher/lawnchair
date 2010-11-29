@@ -24,5 +24,12 @@ import android.view.View;
  */
 public interface DragSource {
     void setDragController(DragController dragger);
+
+    /**
+     * Callback from the DragController when it begins drawing the drag view.
+     * This allows the DragSource to dim or hide the original view.
+     */
+    void onDragViewVisible();
+
     void onDropCompleted(View target, boolean success);
 }

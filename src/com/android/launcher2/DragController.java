@@ -320,6 +320,13 @@ public class DragController {
         DragView dragView = mDragView = new DragView(mContext, b, registrationX, registrationY,
                 textureLeft, textureTop, textureWidth, textureHeight);
 
+        final DragSource dragSource = source;
+        dragView.setOnDrawRunnable(new Runnable() {
+            public void run() {
+                dragSource.onDragViewVisible();
+            };
+        });
+
         if (dragRegion != null) {
             dragView.setDragRegion(dragRegionLeft, dragRegion.top,
                     dragRegion.right - dragRegionLeft, dragRegion.bottom - dragRegionTop);

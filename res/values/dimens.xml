@@ -44,4 +44,8 @@
     <!-- the area at the edge of the screen that makes the workspace go left
          or right while you're dragging. -->
     <dimen name="scroll_zone">20dp</dimen>
+
+    <!-- How much the content view of an alert dialog should be inset (currently used
+        for the WallpaperChooser in XLarge mode) -->
+    <dimen name="alert_dialog_content_inset">15dp</dimen>
 </resources>
