@@ -50,7 +50,7 @@
                 launcher:cellCountY="5"
                 launcher:pageLayoutWidthGap="36dp"
                 launcher:pageLayoutHeightGap="6dp"
-                launcher:pageLayoutPaddingTop="15dp"
+                launcher:pageLayoutPaddingTop="20dp"
                 launcher:pageLayoutPaddingBottom="15dp"
                 launcher:pageLayoutPaddingLeft="40dp"
                 launcher:pageLayoutPaddingRight="40dp">

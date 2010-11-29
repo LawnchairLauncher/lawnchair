@@ -99,6 +99,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TabHost;
+import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
@@ -306,18 +307,27 @@ public final class Launcher extends Activity
                 }
             };
 
-            String widgetsLabel = getString(R.string.widgets_tab_label);
+
+            TextView tabView;
+            TabWidget tabWidget = (TabWidget)
+                    mHomeCustomizationDrawer.findViewById(com.android.internal.R.id.tabs);
+
+            tabView = (TextView) mInflater.inflate(R.layout.tab_widget_indicator, tabWidget, false);
+            tabView.setText(getString(R.string.widgets_tab_label));
             mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(WIDGETS_TAG)
-                    .setIndicator(widgetsLabel).setContent(contentFactory));
-            String applicationsLabel = getString(R.string.applications_tab_label);
+                    .setIndicator(tabView).setContent(contentFactory));
+            tabView = (TextView) mInflater.inflate(R.layout.tab_widget_indicator, tabWidget, false);
+            tabView.setText(getString(R.string.applications_tab_label));
             mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(APPLICATIONS_TAG)
-                    .setIndicator(applicationsLabel).setContent(contentFactory));
-            String wallpapersLabel = getString(R.string.wallpapers_tab_label);
+                    .setIndicator(tabView).setContent(contentFactory));
+            tabView = (TextView) mInflater.inflate(R.layout.tab_widget_indicator, tabWidget, false);
+            tabView.setText(getString(R.string.wallpapers_tab_label));
             mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(WALLPAPERS_TAG)
-                    .setIndicator(wallpapersLabel).setContent(contentFactory));
-            String shortcutsLabel = getString(R.string.shortcuts_tab_label);
+                    .setIndicator(tabView).setContent(contentFactory));
+            tabView = (TextView) mInflater.inflate(R.layout.tab_widget_indicator, tabWidget, false);
+            tabView.setText(getString(R.string.shortcuts_tab_label));
             mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(SHORTCUTS_TAG)
-                    .setIndicator(shortcutsLabel).setContent(contentFactory));
+                    .setIndicator(tabView).setContent(contentFactory));
             mHomeCustomizationDrawer.setOnTabChangedListener(new OnTabChangeListener() {
                 public void onTabChanged(String tabId) {
                     // animate the changing of the tab content by fading pages in and out
