@@ -107,6 +107,8 @@ public class Workspace extends SmoothPagedView
     private ObjectAnimator mBackgroundFadeInAnimation;
     private ObjectAnimator mBackgroundFadeOutAnimation;
     private Drawable mBackground;
+    private Drawable mCustomizeTrayBackground;
+    private boolean mDrawCustomizeTrayBackground;
     private float mBackgroundAlpha = 0;
     private float mOverScrollMaxBackgroundAlpha = 0.0f;
     private int mOverScrollPageIndex = -1;
@@ -249,6 +251,7 @@ public class Workspace extends SmoothPagedView
         try {
             final Resources res = getResources();
             mBackground = res.getDrawable(R.drawable.all_apps_bg_gradient);
+            mCustomizeTrayBackground = res.getDrawable(R.drawable.customize_bg_gradient);
         } catch (Resources.NotFoundException e) {
             // In this case, we will skip drawing background protection
         }
@@ -261,6 +264,7 @@ public class Workspace extends SmoothPagedView
             @Override
             public void onAnimationEndOrCancel(Animator animation) {
                 mIsInUnshrinkAnimation = false;
+                mDrawCustomizeTrayBackground = false;
             }
         };
         mSnapVelocity = 600;
@@ -588,7 +592,12 @@ public class Workspace extends SmoothPagedView
         return mChildrenOutlineAlpha;
     }
 
-    public void showBackgroundGradient() {
+    private void showBackgroundGradientForCustomizeTray() {
+        showBackgroundGradient();
+        mDrawCustomizeTrayBackground = true;
+    }
+
+    private void showBackgroundGradient() {
         if (mBackground == null) return;
         if (mBackgroundFadeOutAnimation != null) mBackgroundFadeOutAnimation.cancel();
         if (mBackgroundFadeInAnimation != null) mBackgroundFadeInAnimation.cancel();
@@ -598,7 +607,7 @@ public class Workspace extends SmoothPagedView
         mBackgroundFadeInAnimation.start();
     }
 
-    public void hideBackgroundGradient() {
+    private void hideBackgroundGradient() {
         if (mBackground == null) return;
         if (mBackgroundFadeInAnimation != null) mBackgroundFadeInAnimation.cancel();
         if (mBackgroundFadeOutAnimation != null) mBackgroundFadeOutAnimation.cancel();
@@ -731,9 +740,16 @@ public class Workspace extends SmoothPagedView
     protected void onDraw(Canvas canvas) {
         // Draw the background gradient if necessary
         if (mBackground != null && mBackgroundAlpha > 0.0f) {
-            mBackground.setAlpha((int) (mBackgroundAlpha * 255));
+            int alpha = (int) (mBackgroundAlpha * 255);
+            mBackground.setAlpha(alpha);
             mBackground.setBounds(mScrollX, 0, mScrollX + getMeasuredWidth(), getMeasuredHeight());
             mBackground.draw(canvas);
+            if (mDrawCustomizeTrayBackground) {
+                mCustomizeTrayBackground.setAlpha(alpha);
+                mCustomizeTrayBackground.setBounds(mScrollX, 0, mScrollX + getMeasuredWidth(),
+                        getMeasuredHeight());
+                mCustomizeTrayBackground.draw(canvas);
+            }
         }
 
         super.onDraw(canvas);
@@ -918,7 +934,6 @@ public class Workspace extends SmoothPagedView
 
     // we use this to shrink the workspace for the all apps view and the customize view
     private void shrink(ShrinkPosition shrinkPosition, boolean animated) {
-        showBackgroundGradient();
 
         if (mFirstLayout) {
             // (mFirstLayout == "first layout has not happened yet")
@@ -1039,6 +1054,12 @@ public class Workspace extends SmoothPagedView
             mAnimator.start();
         }
         setChildrenDrawnWithCacheEnabled(true);
+
+        if (shrinkPosition == ShrinkPosition.SHRINK_TO_TOP) {
+            showBackgroundGradientForCustomizeTray();
+        } else {
+            showBackgroundGradient();
+        }
     }
 
     /*
@@ -1191,8 +1212,6 @@ public class Workspace extends SmoothPagedView
     }
 
     void unshrink(boolean animated) {
-        hideBackgroundGradient();
-
         if (mIsSmall) {
             mIsSmall = false;
             if (mAnimator != null) {
@@ -1246,6 +1265,8 @@ public class Workspace extends SmoothPagedView
                 mAnimator.start();
             }
         }
+
+        hideBackgroundGradient();
     }
 
     /**
