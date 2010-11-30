@@ -259,6 +259,11 @@ public final class Launcher extends Activity
     private HashMap<View, AppWidgetProviderInfo> mWidgetsToAdvance =
         new HashMap<View, AppWidgetProviderInfo>();
 
+    // External icons saved in case of resource changes, orientation, etc.
+    private static Drawable sGlobalSearchIcon;
+    private static Drawable sVoiceSearchIcon;
+    private static Drawable sAppMarketIcon;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -374,6 +379,19 @@ public final class Launcher extends Activity
 
         IntentFilter filter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         registerReceiver(mCloseSystemDialogsReceiver, filter);
+
+        // If we have a saved version of these external icons, we load them up immediately
+        if (LauncherApplication.isScreenXLarge()) {
+            if (sGlobalSearchIcon != null) {
+                updateGlobalSearchIcon(sGlobalSearchIcon);
+            }
+            if (sVoiceSearchIcon != null) {
+                updateVoiceSearchIcon(sVoiceSearchIcon);
+            }
+            if (sAppMarketIcon != null) {
+                updateAppMarketIcon(sAppMarketIcon);
+            }
+        }
     }
 
     private void checkForLocaleChange() {
@@ -2880,7 +2898,8 @@ public final class Launcher extends Activity
         showWorkspace(true, layout);
     }
 
-    private void updateButtonWithIconFromExternalActivity(
+    // if successful in getting icon, return it; otherwise, set button to use default drawable
+    private Drawable updateButtonWithIconFromExternalActivity(
             int buttonId, ComponentName activityName, int fallbackDrawableId) {
         ImageView button = (ImageView) findViewById(buttonId);
         Drawable toolbarIcon = null;
@@ -2902,9 +2921,16 @@ public final class Launcher extends Activity
         // If we were unable to find the icon via the meta-data, use a generic one
         if (toolbarIcon == null) {
             button.setImageResource(fallbackDrawableId);
+            return null;
         } else {
             button.setImageDrawable(toolbarIcon);
+            return toolbarIcon;
         }
+    }
+
+    private void updateButtonWithDrawable(int buttonId, Drawable d) {
+        ImageView button = (ImageView) findViewById(buttonId);
+        button.setImageDrawable(d);
     }
 
     private void updateGlobalSearchIcon() {
@@ -2913,7 +2939,7 @@ public final class Launcher extends Activity
                     (SearchManager) getSystemService(Context.SEARCH_SERVICE);
             ComponentName activityName = searchManager.getGlobalSearchActivity();
             if (activityName != null) {
-                updateButtonWithIconFromExternalActivity(
+                sGlobalSearchIcon = updateButtonWithIconFromExternalActivity(
                         R.id.search_button, activityName, R.drawable.search_button_generic);
             } else {
                 findViewById(R.id.search_button).setVisibility(View.GONE);
@@ -2921,17 +2947,25 @@ public final class Launcher extends Activity
         }
     }
 
+    private void updateGlobalSearchIcon(Drawable d) {
+        updateButtonWithDrawable(R.id.search_button, d);
+    }
+
     private void updateVoiceSearchIcon() {
         if (LauncherApplication.isScreenXLarge()) {
             Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
             ComponentName activityName = intent.resolveActivity(getPackageManager());
             if (activityName != null) {
-                updateButtonWithIconFromExternalActivity(
+                sVoiceSearchIcon = updateButtonWithIconFromExternalActivity(
                         R.id.voice_button, activityName, R.drawable.ic_voice_search);
             } else {
                 findViewById(R.id.voice_button).setVisibility(View.GONE);
             }
         }
+    }
+
+    private void updateVoiceSearchIcon(Drawable d) {
+        updateButtonWithDrawable(R.id.voice_button, d);
     }
 
     /**
@@ -2945,10 +2979,14 @@ public final class Launcher extends Activity
             ComponentName activityName = intent.resolveActivity(getPackageManager());
             if (activityName != null) {
                 mAppMarketIntent = intent;
-                updateButtonWithIconFromExternalActivity(
+                sAppMarketIcon = updateButtonWithIconFromExternalActivity(
                         R.id.market_button, activityName, R.drawable.app_market_generic);
             }
         }
+    }
+
+    private void updateAppMarketIcon(Drawable d) {
+        updateButtonWithDrawable(R.id.market_button, d);
     }
 
     /**
