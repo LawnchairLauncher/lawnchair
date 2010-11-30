@@ -34,6 +34,7 @@ import android.widget.TextView;
 public class CacheableTextView extends TextView {
     private Bitmap mCache;
     private final Paint mCachePaint = new Paint();
+    private final Canvas mCacheCanvas = new Canvas();
 
     private int mPrevAlpha = -1;
     private boolean mIsBuildingCache;
@@ -57,6 +58,13 @@ public class CacheableTextView extends TextView {
         super(context, attrs, defStyle);
     }
 
+    protected int getVerticalPadding() {
+        return 0;
+    }
+    protected int getHorizontalPadding() {
+        return 0;
+    }
+
     public void buildAndEnableCache() {
         if (getLayout() == null) {
             mWaitingToGenerateCache = true;
@@ -64,32 +72,34 @@ public class CacheableTextView extends TextView {
         }
 
         final Layout layout = getLayout();
-
         final int left = getCompoundPaddingLeft();
         final int top = getExtendedPaddingTop();
-        mTextCacheLeft = layout.getLineLeft(0);
-        mTextCacheTop = top + layout.getLineTop(0) - mPaddingV;
+        final float prevAlpha = getAlpha();
+
+        int vPadding = getVerticalPadding();
+        int hPadding = getHorizontalPadding();
+
+        mTextCacheLeft = layout.getLineLeft(0) - hPadding;
+        mTextCacheTop = top + layout.getLineTop(0) - mPaddingV - vPadding;
 
         mRectLeft = mScrollX + getLeft();
         mRectTop = 0;
         mTextCacheScrollX = mScrollX;
 
         final float textCacheRight =
-            Math.min(left + layout.getLineRight(0) + mPaddingH, mScrollX + mRight - mLeft);
-        final float textCacheBottom = top + layout.getLineBottom(0) + mPaddingV;
+            Math.min(left + layout.getLineRight(0) + mPaddingH, mScrollX + mRight - mLeft) + hPadding;
+        final float textCacheBottom = top + layout.getLineBottom(0) + mPaddingV + vPadding;
 
         mCache = Bitmap.createBitmap((int) (textCacheRight - mTextCacheLeft),
                 (int) (textCacheBottom - mTextCacheTop), Config.ARGB_8888);
-        Canvas c = new Canvas(mCache);
-        c.translate(-mTextCacheLeft, -mTextCacheTop);
+        mCacheCanvas.setBitmap(mCache);
+        mCacheCanvas.translate(-mTextCacheLeft, -mTextCacheTop);
 
         mIsBuildingCache = true;
-        float alpha = getAlpha();
         setAlpha(1.0f);
-        draw(c);
-        setAlpha(alpha);
+        draw(mCacheCanvas);
+        setAlpha(prevAlpha);
         mIsBuildingCache = false;
-        mCachePaint.setFilterBitmap(true);
 
         // A hack-- we set the text to be one space (we don't make it empty just to avoid any
         // potential issues with text measurement, like line height, etc.) so that the text view

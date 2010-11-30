@@ -1281,9 +1281,14 @@ public class Workspace extends SmoothPagedView
         v.getDrawingRect(clipRect);
 
         // For a TextView, adjust the clip rect so that we don't include the text label
-        if (v instanceof TextView) {
+        if (v instanceof BubbleTextView) {
+            final BubbleTextView tv = (BubbleTextView) v;
+            clipRect.bottom = tv.getExtendedPaddingTop() - (int) BubbleTextView.PADDING_V +
+                    tv.getLayout().getLineTop(0);
+        } else if (v instanceof TextView) {
             final TextView tv = (TextView) v;
-            clipRect.bottom = clipRect.top + tv.getCompoundPaddingTop() - 1;
+            clipRect.bottom = tv.getExtendedPaddingTop() - tv.getCompoundDrawablePadding() +
+                    tv.getLayout().getLineTop(0);
         }
 
         // Draw the View into the bitmap.
