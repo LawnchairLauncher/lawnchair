@@ -16,7 +16,7 @@
 
 package com.android.launcher2;
 
-import com.android.launcher.R;
+import java.util.ArrayList;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
@@ -25,11 +25,14 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TabHost;
+import android.widget.TabWidget;
+import android.widget.TextView;
 
-import java.util.ArrayList;
+import com.android.launcher.R;
 
 /**
  * Implements a tabbed version of AllApps2D.
@@ -43,10 +46,12 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
 
     private AllAppsPagedView mAllApps;
     private Context mContext;
+    private final LayoutInflater mInflater;
 
     public AllAppsTabbed(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
+        mInflater = LayoutInflater.from(context);
     }
 
     @Override
@@ -68,11 +73,15 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
             }
         };
 
-        String label = mContext.getString(R.string.all_apps_tab_all);
-        addTab(newTabSpec(TAG_ALL).setIndicator(label).setContent(contentFactory));
+        TextView tabView;
+        TabWidget tabWidget = (TabWidget) findViewById(com.android.internal.R.id.tabs);
+        tabView = (TextView) mInflater.inflate(R.layout.tab_widget_indicator, tabWidget, false);
+        tabView.setText(mContext.getString(R.string.all_apps_tab_all));
+        addTab(newTabSpec(TAG_ALL).setIndicator(tabView).setContent(contentFactory));
 
-        label = mContext.getString(R.string.all_apps_tab_downloaded);
-        addTab(newTabSpec(TAG_DOWNLOADED).setIndicator(label).setContent(contentFactory));
+        tabView = (TextView) mInflater.inflate(R.layout.tab_widget_indicator, tabWidget, false);
+        tabView.setText(mContext.getString(R.string.all_apps_tab_downloaded));
+        addTab(newTabSpec(TAG_DOWNLOADED).setIndicator(tabView).setContent(contentFactory));
 
         setOnTabChangedListener(new OnTabChangeListener() {
             public void onTabChanged(String tabId) {
