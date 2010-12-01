@@ -52,7 +52,7 @@ public class PagedViewIcon extends CacheableTextView implements Checkable {
     private Object mIconCacheKey;
     private PagedViewIconCache mIconCache;
 
-    private int mAlpha = -1;
+    private int mAlpha;
     private int mHolographicAlpha;
 
     private boolean mIsChecked;
@@ -104,12 +104,13 @@ public class PagedViewIcon extends CacheableTextView implements Checkable {
 
     public PagedViewIcon(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PagedViewIcon, defStyle, 0);
+	mAlpha = 255;
         mHoloBlurColor = a.getColor(R.styleable.PagedViewIcon_blurColor, 0);
         mHoloOutlineColor = a.getColor(R.styleable.PagedViewIcon_outlineColor, 0);
         mCheckedBlurColor = a.getColor(R.styleable.PagedViewIcon_checkedBlurColor, 0);
         mCheckedOutlineColor = a.getColor(R.styleable.PagedViewIcon_checkedOutlineColor, 0);
-
         a.recycle();
 
         if (sHolographicOutlineHelper == null) {

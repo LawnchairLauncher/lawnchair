@@ -566,9 +566,15 @@ public abstract class PagedView extends ViewGroup {
             rightScreen = Math.min(getChildCount() - 1, rightScreen);
 
             final long drawingTime = getDrawingTime();
+            // Clip to the bounds
+            canvas.save();
+            canvas.clipRect(mScrollX, mScrollY, mScrollX + mRight - mLeft,
+                    mScrollY + mBottom - mTop);
+
             for (int i = leftScreen; i <= rightScreen; i++) {
                 drawChild(canvas, getChildAt(i), drawingTime);
             }
+            canvas.restore();
         }
     }
 

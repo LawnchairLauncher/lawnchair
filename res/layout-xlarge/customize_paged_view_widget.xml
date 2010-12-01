@@ -13,20 +13,21 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<LinearLayout
+<com.android.launcher2.PagedViewWidget
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
 
     android:layout_width="wrap_content"
     android:layout_height="365dp"
     android:paddingLeft="12.5dp"
+    android:paddingTop="12.5dp"
     android:paddingRight="12.5dp"
     android:paddingBottom="50dp"
     android:gravity="top"
     android:orientation="vertical"
 
-    launcher:checkedBlurColor="#FFDAFF71"
-    launcher:checkedOutlineColor="#FFCFFF9C">
+    launcher:blurColor="#FF6B8CF0"
+    launcher:outlineColor="#FF8CD2FF">
 
     <!-- The icon of the widget. -->
     <ImageView
@@ -76,4 +77,4 @@
         android:shadowDx="0.0"
         android:shadowDy="1.0"
         android:shadowRadius="1.0" />
-</LinearLayout>
+</com.android.launcher2.PagedViewWidget>

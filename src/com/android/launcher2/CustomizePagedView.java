@@ -569,7 +569,7 @@ public class CustomizePagedView extends PagedView
      * This method will extract the preview image specified by the wallpaper source provider (if it
      * exists) otherwise, it will try to generate a default image preview.
      */
-    private Drawable getWallpaperPreview(ResolveInfo info) {
+    private FastBitmapDrawable getWallpaperPreview(ResolveInfo info) {
         // To be implemented later: resolving the up-to-date wallpaper thumbnail
 
         final int minDim = mWorkspaceWidgetLayout.estimateCellWidth(1);
@@ -597,7 +597,7 @@ public class CustomizePagedView extends PagedView
             // if we can't find the icon, then just don't draw it
         }
 
-        Drawable drawable = new FastBitmapDrawable(bitmap);
+        FastBitmapDrawable drawable = new FastBitmapDrawable(bitmap);
         drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
         return drawable;
     }
@@ -607,10 +607,11 @@ public class CustomizePagedView extends PagedView
      * otherwise, it will try to generate a default image preview with the widget's package icon.
      * @return the drawable that will be used and sized in the ImageView to represent the widget
      */
-    private Drawable getWidgetPreview(AppWidgetProviderInfo info) {
+    private FastBitmapDrawable getWidgetPreview(AppWidgetProviderInfo info) {
         final PackageManager packageManager = mPackageManager;
         String packageName = info.provider.getPackageName();
         Drawable drawable = null;
+        FastBitmapDrawable newDrawable = null;
         if (info.previewImage != 0) {
             drawable = packageManager.getDrawable(packageName, info.previewImage, null);
             if (drawable == null) {
@@ -649,7 +650,7 @@ public class CustomizePagedView extends PagedView
                 // if we can't find the icon, then just don't draw it
             }
 
-            drawable = new FastBitmapDrawable(bitmap);
+            newDrawable = new FastBitmapDrawable(bitmap);
         } else {
             // Scale down the preview if necessary
             final float imageWidth = drawable.getIntrinsicWidth();
@@ -672,10 +673,11 @@ public class CustomizePagedView extends PagedView
             final Bitmap bitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
             renderDrawableToBitmap(drawable, bitmap, 0, 0, width, height);
 
-            drawable = new FastBitmapDrawable(bitmap);
+            newDrawable = new FastBitmapDrawable(bitmap);
         }
-        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-        return drawable;
+        newDrawable.setBounds(0, 0, newDrawable.getIntrinsicWidth(),
+                newDrawable.getIntrinsicHeight());
+        return newDrawable;
     }
 
     private void setupPage(PagedViewCellLayout layout) {
@@ -720,27 +722,17 @@ public class CustomizePagedView extends PagedView
         for (int i = 0; i < count; ++i) {
             final AppWidgetProviderInfo info = (AppWidgetProviderInfo) list.get(i);
             final PendingAddWidgetInfo createItemInfo = new PendingAddWidgetInfo(info, null, null);
+            final int[] cellSpans = CellLayout.rectToCell(getResources(), info.minWidth,
+                    info.minHeight, null);
+            final FastBitmapDrawable icon = getWidgetPreview(info);
 
-            LinearLayout l = (LinearLayout) mInflater.inflate(
+            PagedViewWidget l = (PagedViewWidget) mInflater.inflate(
                     R.layout.customize_paged_view_widget, layout, false);
+            l.applyFromAppWidgetProviderInfo(info, icon, mMaxWidgetWidth, cellSpans);
             l.setTag(createItemInfo);
             l.setOnClickListener(this);
             l.setOnTouchListener(this);
             l.setOnLongClickListener(this);
-
-            final Drawable icon = getWidgetPreview(info);
-
-            int[] spans = CellLayout.rectToCell(getResources(), info.minWidth, info.minHeight, null);
-            final int hSpan = spans[0];
-            final int vSpan = spans[1];
-
-            ImageView image = (ImageView) l.findViewById(R.id.widget_preview);
-            image.setMaxWidth(mMaxWidgetWidth);
-            image.setImageDrawable(icon);
-            TextView name = (TextView) l.findViewById(R.id.widget_name);
-            name.setText(info.label);
-            TextView dims = (TextView) l.findViewById(R.id.widget_dims);
-            dims.setText(mContext.getString(R.string.widget_dims_format, hSpan, vSpan));
 
             layout.addView(l);
         }
@@ -775,19 +767,13 @@ public class CustomizePagedView extends PagedView
         final int endIndex = Math.min(count, startIndex + numItemsPerPage);
         for (int i = startIndex; i < endIndex; ++i) {
             final ResolveInfo info = mWallpaperList.get(i);
+            final FastBitmapDrawable icon = getWallpaperPreview(info);
 
-            LinearLayout l = (LinearLayout) mInflater.inflate(
+            PagedViewWidget l = (PagedViewWidget) mInflater.inflate(
                     R.layout.customize_paged_view_wallpaper, layout, false);
+            l.applyFromWallpaperInfo(info, mPackageManager, icon, mMaxWidgetWidth);
             l.setTag(info);
             l.setOnClickListener(this);
-
-            final Drawable icon = getWallpaperPreview(info);
-
-            ImageView image = (ImageView) l.findViewById(R.id.wallpaper_preview);
-            image.setMaxWidth(mMaxWidgetWidth);
-            image.setImageDrawable(icon);
-            TextView name = (TextView) l.findViewById(R.id.wallpaper_name);
-            name.setText(info.loadLabel(mPackageManager));
 
             layout.addView(l);
         }
