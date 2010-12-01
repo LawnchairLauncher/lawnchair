@@ -48,8 +48,7 @@
 
     <!-- height & width of the drop rectangle for the trash icon -->
     <dimen name="delete_zone_size">50dip</dimen>
-    <dimen name="delete_zone_min_padding">10dip</dimen>
-    <dimen name="delete_zone_max_padding">20dip</dimen>
+    <dimen name="delete_zone_padding">20dip</dimen>
 
     <!-- dimensions for the wallpaper picker wallpaper thumbnail width -->
     <dimen name="wallpaper_small_width">170dp</dimen>

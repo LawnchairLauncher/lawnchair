@@ -59,6 +59,7 @@ import android.content.res.TypedArray;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -90,8 +91,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.View.OnLongClickListener;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Advanceable;
 import android.widget.EditText;
@@ -960,6 +959,29 @@ public final class Launcher extends Activity
         deleteZone.setHandle(findViewById(deleteZoneHandleId));
         dragController.addDragListener(deleteZone);
 
+        DeleteZone allAppsDeleteZone = (DeleteZone) findViewById(R.id.all_apps_delete_zone);
+        if (allAppsDeleteZone != null) {
+            allAppsDeleteZone.setLauncher(this);
+            allAppsDeleteZone.setDragController(dragController);
+            allAppsDeleteZone.setDragAndDropEnabled(false);
+            dragController.addDragListener(allAppsDeleteZone);
+            dragController.addDropTarget(allAppsDeleteZone);
+        }
+
+        ApplicationInfoDropTarget allAppsInfoTarget = (ApplicationInfoDropTarget)
+                findViewById(R.id.all_apps_info_target);
+        if (allAppsInfoTarget != null) {
+            allAppsInfoTarget.setLauncher(this);
+            dragController.addDragListener(allAppsInfoTarget);
+            allAppsInfoTarget.setDragColor(getResources().getColor(R.color.app_info_filter));
+            allAppsInfoTarget.setDragAndDropEnabled(false);
+            View marketButton = findViewById(R.id.market_button);
+            if (marketButton != null) {
+                marketButton.setBackgroundColor(Color.RED);
+                allAppsInfoTarget.setHandle(marketButton);
+            }
+        }
+
         ApplicationInfoDropTarget infoButton = (ApplicationInfoDropTarget)findViewById(R.id.info_button);
         if (infoButton != null) {
             infoButton.setLauncher(this);
@@ -977,6 +999,12 @@ public final class Launcher extends Activity
         dragController.addDropTarget(deleteZone);
         if (infoButton != null) {
             dragController.addDropTarget(infoButton);
+        }
+        if (allAppsInfoTarget != null) {
+            dragController.addDropTarget(allAppsInfoTarget);
+        }
+        if (allAppsDeleteZone != null) {
+            dragController.addDropTarget(allAppsDeleteZone);
         }
     }
 

@@ -24,12 +24,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import android.view.ActionMode;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Checkable;
 import android.widget.TextView;
@@ -42,7 +38,7 @@ import com.android.launcher.R;
  */
 public class AllAppsPagedView extends PagedView
         implements AllAppsView, View.OnClickListener, View.OnLongClickListener, DragSource,
-        DropTarget, ActionMode.Callback {
+        DropTarget {
 
     private static final String TAG = "AllAppsPagedView";
     private static final boolean DEBUG = false;
@@ -69,11 +65,6 @@ public class AllAppsPagedView extends PagedView
 
     private final LayoutInflater mInflater;
 
-    private ViewGroup mOrigInfoButtonParent;
-    private LayoutParams mOrigInfoButtonLayoutParams;
-
-    private ViewGroup mOrigDeleteZoneParent;
-    private LayoutParams mOrigDeleteZoneLayoutParams;
 
     public AllAppsPagedView(Context context) {
         this(context, null);
@@ -207,6 +198,47 @@ public class AllAppsPagedView extends PagedView
         }
     }
 
+    private void setupDragMode() {
+        mLauncher.getWorkspace().shrinkToBottomVisible();
+
+        ApplicationInfoDropTarget infoButton =
+                (ApplicationInfoDropTarget) mLauncher.findViewById(R.id.info_button);
+        infoButton.setDragAndDropEnabled(false);
+        DeleteZone deleteZone = (DeleteZone) mLauncher.findViewById(R.id.delete_zone);
+        deleteZone.setDragAndDropEnabled(false);
+
+        ApplicationInfoDropTarget allAppsInfoButton =
+                (ApplicationInfoDropTarget) mLauncher.findViewById(R.id.all_apps_info_target);
+        allAppsInfoButton.setDragAndDropEnabled(true);
+        DeleteZone allAppsDeleteZone = (DeleteZone)
+                mLauncher.findViewById(R.id.all_apps_delete_zone);
+        allAppsDeleteZone.setDragAndDropEnabled(true);
+    }
+
+    private void tearDownDragMode() {
+        post(new Runnable() {
+            // Once the drag operation has fully completed, hence the post, we want to disable the
+            // deleteZone and the appInfoButton in all apps, and re-enable the instance which
+            // live in the workspace
+            public void run() {
+                ApplicationInfoDropTarget infoButton =
+                    (ApplicationInfoDropTarget) mLauncher.findViewById(R.id.info_button);
+                infoButton.setDragAndDropEnabled(true);
+                DeleteZone deleteZone = (DeleteZone) mLauncher.findViewById(R.id.delete_zone);
+                deleteZone.setDragAndDropEnabled(true);
+
+                ApplicationInfoDropTarget allAppsInfoButton =
+                    (ApplicationInfoDropTarget) mLauncher.findViewById(R.id.all_apps_info_target);
+                allAppsInfoButton.setDragAndDropEnabled(false);
+                DeleteZone allAppsDeleteZone =
+                        (DeleteZone) mLauncher.findViewById(R.id.all_apps_delete_zone);
+                allAppsDeleteZone.setDragAndDropEnabled(false);
+            }
+        });
+        resetCheckedGrandchildren();
+        mDragController.removeDropTarget(this);
+    }
+
     @Override
     public boolean onLongClick(View v) {
         if (!v.isInTouchMode()) {
@@ -223,10 +255,8 @@ public class AllAppsPagedView extends PagedView
             c.toggle();
         }
 
-        // Start choice mode AFTER the item is selected
-        if (isChoiceMode(CHOICE_MODE_NONE)) {
-            startChoiceMode(CHOICE_MODE_SINGLE, this);
-        }
+        // Start drag mode after the item is selected
+        setupDragMode();
 
         ApplicationInfo app = (ApplicationInfo) v.getTag();
         app = new ApplicationInfo(app);
@@ -246,6 +276,7 @@ public class AllAppsPagedView extends PagedView
         if (target != this) {
             endChoiceMode();
         }
+        tearDownDragMode();
         mLauncher.getWorkspace().onDragStopped();
     }
 
@@ -466,83 +497,6 @@ public class AllAppsPagedView extends PagedView
             layout.addViewToCellLayout(icon, -1, 0,
                     new PagedViewCellLayout.LayoutParams(0, 0, 2, 1));
         }
-    }
-    @Override
-    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-        mode.setTitle(R.string.cab_app_selection_text);
-
-        // Until the workspace has a selection mode and the CAB supports drag-and-drop, we
-        // take a hybrid approach: grab the views from the workspace and stuff them into the CAB.
-        // When the action mode is done, restore the views to their original place in the toolbar.
-
-        ApplicationInfoDropTarget infoButton =
-                (ApplicationInfoDropTarget) mLauncher.findViewById(R.id.info_button);
-        mOrigInfoButtonParent = (ViewGroup) infoButton.getParent();
-        mOrigInfoButtonLayoutParams = infoButton.getLayoutParams();
-        mOrigInfoButtonParent.removeView(infoButton);
-        infoButton.setManageVisibility(false);
-        infoButton.setVisibility(View.VISIBLE);
-        infoButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                final ApplicationInfo appInfo = (ApplicationInfo) getChosenItem();
-                mLauncher.startApplicationDetailsActivity(appInfo.componentName);
-            }
-        });
-
-        DeleteZone deleteZone = (DeleteZone) mLauncher.findViewById(R.id.delete_zone);
-        mOrigDeleteZoneParent = (ViewGroup) deleteZone.getParent();
-        mOrigDeleteZoneLayoutParams = deleteZone.getLayoutParams();
-        mOrigDeleteZoneParent.removeView(deleteZone);
-        deleteZone.setManageVisibility(false);
-        deleteZone.setVisibility(View.VISIBLE);
-        deleteZone.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                final ApplicationInfo appInfo = (ApplicationInfo) getChosenItem();
-                mLauncher.startApplicationUninstallActivity(appInfo);
-            }
-        });
-
-        menu.add(0, MENU_DELETE_APP, 0, R.string.cab_menu_delete_app).setActionView(deleteZone);
-        menu.add(0, MENU_APP_INFO, 0, R.string.cab_menu_app_info).setActionView(infoButton);
-
-        mLauncher.getWorkspace().shrinkToBottomVisible();
-
-        return true;
-    }
-
-    @Override
-    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        mDragController.addDropTarget(this);
-        return true;
-    }
-
-    @Override
-    public void onDestroyActionMode(ActionMode mode) {
-        final Menu menu = mode.getMenu();
-
-        // Re-parent the drop targets into the toolbar, and restore their layout params
-
-        ApplicationInfoDropTarget infoButton =
-                (ApplicationInfoDropTarget) menu.findItem(MENU_APP_INFO).getActionView();
-        ((ViewGroup) infoButton.getParent()).removeView(infoButton);
-        mOrigInfoButtonParent.addView(infoButton, mOrigInfoButtonLayoutParams);
-        infoButton.setVisibility(View.GONE);
-        infoButton.setManageVisibility(true);
-
-        DeleteZone deleteZone = (DeleteZone) menu.findItem(MENU_DELETE_APP).getActionView();
-        ((ViewGroup) deleteZone.getParent()).removeView(deleteZone);
-        mOrigDeleteZoneParent.addView(deleteZone, mOrigDeleteZoneLayoutParams);
-        deleteZone.setVisibility(View.GONE);
-        deleteZone.setManageVisibility(true);
-
-        mDragController.removeDropTarget(this);
-        endChoiceMode();
-    }
-
-    @Override
-    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        // This is never called. Because we use setActionView(), we handle our own click events.
-        return false;
     }
 
     /*
