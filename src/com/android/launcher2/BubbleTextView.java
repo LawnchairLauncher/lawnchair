@@ -26,7 +26,6 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.text.Layout;
 import android.util.AttributeSet;
-import android.view.View.MeasureSpec;
 
 import com.android.launcher.R;
 
@@ -39,8 +38,6 @@ public class BubbleTextView extends CacheableTextView {
     static final float CORNER_RADIUS = 4.0f;
     static final float PADDING_H = 8.0f;
     static final float PADDING_V = 3.0f;
-
-    private int mAppCellWidth;
 
     private final RectF mRect = new RectF();
     private Paint mPaint;
@@ -78,7 +75,6 @@ public class BubbleTextView extends CacheableTextView {
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setColor(bubbleColor);
         mBubbleColorAlpha = Color.alpha(bubbleColor) / 255.0f;
-        mAppCellWidth = (int) res.getDimension(R.dimen.app_icon_size);
 
         final float scale = res.getDisplayMetrics().density;
         mCornerRadius = CORNER_RADIUS * scale;
@@ -163,20 +159,6 @@ public class BubbleTextView extends CacheableTextView {
         canvas.drawRoundRect(mRect, mCornerRadius, mCornerRadius, mPaint);
 
         super.draw(canvas);
-    }
-
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        if (w > 0 && h > 0) {
-            // Temporary Workaround: We need to set padding to compress the text so that we can draw
-            // a hotdog around it.  Currently, the background images prevent us from applying the
-            // padding in XML, so we are doing this programmatically
-            int d = w - mAppCellWidth;
-            int pL = d - (d / 2);
-            int pR = d - pL;
-            setPadding(pL, getPaddingTop(), pR, getPaddingBottom());
-        }
-        super.onSizeChanged(w, h, oldw, oldh);
     }
 
     @Override
