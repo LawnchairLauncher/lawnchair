@@ -90,22 +90,26 @@ public class CacheableTextView extends TextView {
             Math.min(left + layout.getLineRight(0) + mPaddingH, mScrollX + mRight - mLeft) + hPadding;
         final float textCacheBottom = top + layout.getLineBottom(0) + mPaddingV + vPadding;
 
-        mCache = Bitmap.createBitmap((int) (textCacheRight - mTextCacheLeft),
-                (int) (textCacheBottom - mTextCacheTop), Config.ARGB_8888);
-        mCacheCanvas.setBitmap(mCache);
-        mCacheCanvas.translate(-mTextCacheLeft, -mTextCacheTop);
+        int width = (int) (textCacheRight - mTextCacheLeft);
+        int height = (int) (textCacheBottom - mTextCacheTop);
 
-        mIsBuildingCache = true;
-        setAlpha(1.0f);
-        draw(mCacheCanvas);
-        setAlpha(prevAlpha);
-        mIsBuildingCache = false;
+        if (width != 0 && height != 0) {
+            mCache = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+            mCacheCanvas.setBitmap(mCache);
+            mCacheCanvas.translate(-mTextCacheLeft, -mTextCacheTop);
 
-        // A hack-- we set the text to be one space (we don't make it empty just to avoid any
-        // potential issues with text measurement, like line height, etc.) so that the text view
-        // doesn't draw it anymore, since it's been cached. We have to manually rebuild
-        // the cache whenever the text is changed (which is never in Launcher)
-        setText(" ");
+            mIsBuildingCache = true;
+            setAlpha(1.0f);
+            draw(mCacheCanvas);
+            setAlpha(prevAlpha);
+            mIsBuildingCache = false;
+
+            // A hack-- we set the text to be one space (we don't make it empty just to avoid any
+            // potential issues with text measurement, like line height, etc.) so that the text view
+            // doesn't draw it anymore, since it's been cached. We have to manually rebuild
+            // the cache whenever the text is changed (which is never in Launcher)
+            setText(" ");
+        }
     }
 
     public void draw(Canvas canvas) {
