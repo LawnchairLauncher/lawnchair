@@ -39,7 +39,7 @@ import com.android.launcher2.PagedView.PagedViewIconCache;
  * An icon on a PagedView, specifically for items in the launcher's paged view (with compound
  * drawables on the top).
  */
-public class PagedViewIcon extends TextView implements Checkable {
+public class PagedViewIcon extends CacheableTextView implements Checkable {
     private static final String TAG = "PagedViewIcon";
 
     // holographic outline
@@ -52,7 +52,7 @@ public class PagedViewIcon extends TextView implements Checkable {
     private Object mIconCacheKey;
     private PagedViewIconCache mIconCache;
 
-    private int mAlpha = -1;
+    private int mAlpha;
     private int mHolographicAlpha;
 
     private boolean mIsChecked;
@@ -104,12 +104,13 @@ public class PagedViewIcon extends TextView implements Checkable {
 
     public PagedViewIcon(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PagedViewIcon, defStyle, 0);
+	mAlpha = 255;
         mHoloBlurColor = a.getColor(R.styleable.PagedViewIcon_blurColor, 0);
         mHoloOutlineColor = a.getColor(R.styleable.PagedViewIcon_outlineColor, 0);
         mCheckedBlurColor = a.getColor(R.styleable.PagedViewIcon_checkedBlurColor, 0);
         mCheckedOutlineColor = a.getColor(R.styleable.PagedViewIcon_checkedOutlineColor, 0);
-
         a.recycle();
 
         if (sHolographicOutlineHelper == null) {
@@ -138,6 +139,7 @@ public class PagedViewIcon extends TextView implements Checkable {
         mIcon = info.iconBitmap;
         setCompoundDrawablesWithIntrinsicBounds(null, new FastBitmapDrawable(mIcon), null, null);
         setText(info.title);
+        buildAndEnableCache();
         setTag(info);
 
         queueHolographicOutlineCreation();
@@ -153,6 +155,7 @@ public class PagedViewIcon extends TextView implements Checkable {
                 modelIconCache.getFullResIcon(info, packageManager), mContext);
         setCompoundDrawablesWithIntrinsicBounds(null, new FastBitmapDrawable(mIcon), null, null);
         setText(info.loadLabel(packageManager));
+        buildAndEnableCache();
         setTag(info);
 
         queueHolographicOutlineCreation();

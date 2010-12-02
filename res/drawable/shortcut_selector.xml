@@ -19,7 +19,7 @@
 -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_pressed="true" android:drawable="@drawable/pressed_application_background" />
     <item android:state_window_focused="true" android:state_focused="true" android:drawable="@drawable/focused_application_background" />
-    <item android:state_window_focused="false" android:state_focused="true" android:drawable="@android:color/transparent" />
+    <item android:state_pressed="true" android:drawable="@drawable/pressed_application_background" />
+    <item android:drawable="@android:color/transparent" />
 </selector>

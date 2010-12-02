@@ -26,11 +26,13 @@ import android.graphics.drawable.Drawable;
 
 class FastBitmapDrawable extends Drawable {
     private Bitmap mBitmap;
+    private int mAlpha;
     private int mWidth;
     private int mHeight;
     private final Paint mPaint = new Paint();
 
     FastBitmapDrawable(Bitmap b) {
+	mAlpha = 255;
         mBitmap = b;
         if (b != null) {
             mWidth = mBitmap.getWidth();
@@ -53,7 +55,12 @@ class FastBitmapDrawable extends Drawable {
 
     @Override
     public void setAlpha(int alpha) {
+        mAlpha = alpha;
         mPaint.setAlpha(alpha);
+    }
+
+    public int getAlpha() {
+        return mAlpha;
     }
 
     @Override

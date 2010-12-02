@@ -16,8 +16,6 @@
 
 package com.android.launcher2;
 
-import com.android.launcher.R;
-
 import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Paint;
@@ -27,6 +25,8 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
+
+import com.android.launcher.R;
 
 /**
  * Implements a DropTarget which allows applications to be dropped on it,
@@ -41,7 +41,7 @@ public class ApplicationInfoDropTarget extends ImageView implements DropTarget, 
      * This is generally the case, but it will be set to false when this is part of the
      * Contextual Action Bar.
      */
-    private boolean mManageVisibility = true;
+    private boolean mDragAndDropEnabled = true;
 
     /** The view that this view should appear in the place of. */
     private View mHandle = null;
@@ -69,6 +69,7 @@ public class ApplicationInfoDropTarget extends ImageView implements DropTarget, 
         // acceptDrop is called just before onDrop. We do the work here, rather than
         // in onDrop, because it allows us to reject the drop (by returning false)
         // so that the object being dragged isn't removed from the home screen.
+        if (getVisibility() != VISIBLE) return false;
 
         ComponentName componentName = null;
         if (dragInfo instanceof ApplicationInfo) {
@@ -87,6 +88,7 @@ public class ApplicationInfoDropTarget extends ImageView implements DropTarget, 
 
     public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
+        if (!mDragAndDropEnabled) return;
         dragView.setPaint(mPaint);
     }
 
@@ -96,18 +98,20 @@ public class ApplicationInfoDropTarget extends ImageView implements DropTarget, 
 
     public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
+        if (!mDragAndDropEnabled) return;
         dragView.setPaint(null);
     }
 
     public void onDragStart(DragSource source, Object info, int dragAction) {
-        if (info != null) {
+        if (info != null && mDragAndDropEnabled) {
             final int itemType = ((ItemInfo)info).itemType;
             mActive = (itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION);
-            if (mManageVisibility) {
-                // Only show the info icon when an application is selected
-                if (mActive) {
-                    setVisibility(VISIBLE);
-                }
+
+            // Only show the info icon when an application is selected
+            if (mActive) {
+                setVisibility(VISIBLE);
+            }
+            if (mHandle != null) {
                 mHandle.setVisibility(INVISIBLE);
             }
         }
@@ -118,11 +122,13 @@ public class ApplicationInfoDropTarget extends ImageView implements DropTarget, 
     }
 
     public void onDragEnd() {
+        if (!mDragAndDropEnabled) return;
+
         if (mActive) {
             mActive = false;
         }
-        if (mManageVisibility) {
-            setVisibility(GONE);
+        setVisibility(GONE);
+        if (mHandle != null) {
             mHandle.setVisibility(VISIBLE);
         }
     }
@@ -131,16 +137,10 @@ public class ApplicationInfoDropTarget extends ImageView implements DropTarget, 
     public void getHitRect(Rect outRect) {
         super.getHitRect(outRect);
         if (LauncherApplication.isScreenXLarge()) {
-            // TODO: This is a temporary hack. mManageVisiblity = false when you're in CAB mode.
-            // In that case, this icon is more tightly spaced next to the delete icon so we want
-            // it to have a smaller drag region. When the new drag&drop system comes in, we'll
-            // dispatch the drag/drop by calculating what target you're overlapping
-            final int minPadding = R.dimen.delete_zone_min_padding;
-            final int maxPadding = R.dimen.delete_zone_max_padding;
+            final int padding = R.dimen.delete_zone_padding;
             final int outerDragPadding =
                     getResources().getDimensionPixelSize(R.dimen.delete_zone_size);
-            final int innerDragPadding = getResources().getDimensionPixelSize(
-                    mManageVisibility ? maxPadding : minPadding);
+            final int innerDragPadding = getResources().getDimensionPixelSize(padding);
             outRect.top -= outerDragPadding;
             outRect.left -= innerDragPadding;
             outRect.bottom += outerDragPadding;
@@ -156,8 +156,8 @@ public class ApplicationInfoDropTarget extends ImageView implements DropTarget, 
         mHandle = view;
     }
 
-    void setManageVisibility(boolean value) {
-        mManageVisibility = value;
+    void setDragAndDropEnabled(boolean enabled) {
+        mDragAndDropEnabled = enabled;
     }
 
     @Override

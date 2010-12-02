@@ -20,7 +20,7 @@
 <resources>
     <color name="window_background">#FF191919</color>
     <color name="grid_dark_background">#EB191919</color>     
-    <color name="bubble_dark_background">#B2191919</color>
+    <color name="bubble_dark_background">#20000000</color>
     <color name="delete_color_filter">#A5FF0000</color>
 
     <color name="appwidget_error_color">#FCCC</color>

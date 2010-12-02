@@ -31,12 +31,36 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:tabStripEnabled="false" />
-            <ImageView
-                android:id="@+id/market_button"
+            <FrameLayout
+                android:id="@+id/market_info_frame"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:onClick="onClickAppMarketButton" />
+                android:layout_centerVertical="true">
+                <com.android.launcher2.ApplicationInfoDropTarget
+                    android:id="@+id/all_apps_info_target"
+                    android:src="@drawable/info_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="invisible"/>
+                <ImageView
+                    android:id="@+id/market_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:onClick="onClickAppMarketButton"/>
+            </FrameLayout>
+            <com.android.launcher2.DeleteZone
+                android:id="@+id/all_apps_delete_zone"
+                android:src="@drawable/delete_zone_selector"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/market_info_frame"
+                android:layout_centerVertical="true"
+                android:visibility="invisible"
+                android:paddingRight="22dp"
+                launcher:direction="horizontal" />
         </RelativeLayout>
         <FrameLayout
             android:id="@android:id/tabcontent"

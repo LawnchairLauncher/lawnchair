@@ -125,7 +125,13 @@
             android:layout_toLeftOf="@id/configure_button"
             android:layout_marginLeft="@dimen/toolbar_button_spacing"
             android:layout_marginRight="@dimen/toolbar_button_spacing"
+            android:textColor="#CCFFFFFF"
             android:textSize="18dp"
+
+            android:shadowColor="#A0000000"
+            android:shadowDx="0.0"
+            android:shadowDy="0.0"
+            android:shadowRadius="2.0"
 
             android:onClick="onClickAllAppsButton"
             android:focusable="true"
