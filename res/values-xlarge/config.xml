@@ -26,8 +26,8 @@
     <!-- Duration in milliseconds toolbar fade in and fade out animations.
          NOTE: Fade in and fade out time should together be less the transition
          animations between all apps, customize, & the workspace. -->
-    <integer name="config_toolbarButtonFadeInTime">350</integer>
-    <integer name="config_toolbarButtonFadeOutTime">350</integer>
+    <integer name="config_toolbarButtonFadeInTime">100</integer>
+    <integer name="config_toolbarButtonFadeOutTime">100</integer>
 
     <!-- When dragging items on the workspace, how much bigger (in pixels) the dragged view
          should be, as compared to the original view. If 0, it will not be scaled at all.

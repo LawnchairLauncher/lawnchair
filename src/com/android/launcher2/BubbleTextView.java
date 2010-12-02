@@ -16,15 +16,17 @@
 
 package com.android.launcher2;
 
-import android.widget.TextView;
 import android.content.Context;
-import android.util.AttributeSet;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.text.Layout;
+import android.util.AttributeSet;
+import android.view.View.MeasureSpec;
 
 import com.android.launcher.R;
 
@@ -34,12 +36,15 @@ import com.android.launcher.R;
  * too aggressive.
  */
 public class BubbleTextView extends CacheableTextView {
-    static final float CORNER_RADIUS = 8.0f;
-    static final float PADDING_H = 5.0f;
-    static final float PADDING_V = 1.0f;
+    static final float CORNER_RADIUS = 4.0f;
+    static final float PADDING_H = 8.0f;
+    static final float PADDING_V = 3.0f;
+
+    private int mAppCellWidth;
 
     private final RectF mRect = new RectF();
     private Paint mPaint;
+    private float mBubbleColorAlpha;
     private int mPrevAlpha = -1;
 
     private boolean mBackgroundSizeChanged;
@@ -64,18 +69,29 @@ public class BubbleTextView extends CacheableTextView {
     }
 
     private void init() {
-        setFocusable(true);
         mBackground = getBackground();
+        setFocusable(true);
         setBackgroundDrawable(null);
 
+        final Resources res = getContext().getResources();
+        int bubbleColor = res.getColor(R.color.bubble_dark_background);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaint.setColor(getContext().getResources().getColor(R.color.bubble_dark_background));
+        mPaint.setColor(bubbleColor);
+        mBubbleColorAlpha = Color.alpha(bubbleColor) / 255.0f;
+        mAppCellWidth = (int) res.getDimension(R.dimen.app_icon_size);
 
-        final float scale = getContext().getResources().getDisplayMetrics().density;
+        final float scale = res.getDisplayMetrics().density;
         mCornerRadius = CORNER_RADIUS * scale;
         mPaddingH = PADDING_H * scale;
         //noinspection PointlessArithmeticExpression
         mPaddingV = PADDING_V * scale;
+    }
+
+    protected int getVerticalPadding() {
+        return (int) PADDING_V;
+    }
+    protected int getHorizontalPadding() {
+        return (int) PADDING_H;
     }
 
     public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache) {
@@ -133,39 +149,53 @@ public class BubbleTextView extends CacheableTextView {
             }
         }
 
+        // Draw the hotdog bubble
         final Layout layout = getLayout();
-        final RectF rect = mRect;
-        final int left = getCompoundPaddingLeft();
-        final int top = getExtendedPaddingTop();
+        final int offset = getExtendedPaddingTop();
+        final int paddingLeft = getPaddingLeft();
+        final int paddingRight = getPaddingRight();
+        final float left = layout.getLineLeft(0) + paddingLeft;
+        final float right = Math.min(layout.getLineRight(0) + paddingRight,
+                left + getWidth() - paddingLeft - paddingRight);
+        mRect.set(left - mPaddingH, offset + (int) layout.getLineTop(0) - mPaddingV,
+                right + mPaddingH, offset + (int) layout.getLineBottom(0) + mPaddingV);
 
-        rect.set(left + layout.getLineLeft(0) - mPaddingH,
-                top + layout.getLineTop(0) -  mPaddingV,
-                Math.min(left + layout.getLineRight(0) + mPaddingH, mScrollX + mRight - mLeft),
-                top + layout.getLineBottom(0) + mPaddingV);
-        // TEMPORARILY DISABLE DRAWING ROUND RECT -- re-enable this when we tweak CacheableTextView
-        // to support padding so we can capture the "rounded" edges
-        //canvas.drawRoundRect(rect, mCornerRadius, mCornerRadius, mPaint);
+        canvas.drawRoundRect(mRect, mCornerRadius, mCornerRadius, mPaint);
 
         super.draw(canvas);
     }
 
     @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        if (w > 0 && h > 0) {
+            // Temporary Workaround: We need to set padding to compress the text so that we can draw
+            // a hotdog around it.  Currently, the background images prevent us from applying the
+            // padding in XML, so we are doing this programmatically
+            int d = w - mAppCellWidth;
+            int pL = d - (d / 2);
+            int pR = d - pL;
+            setPadding(pL, getPaddingTop(), pR, getPaddingBottom());
+        }
+        super.onSizeChanged(w, h, oldw, oldh);
+    }
+
+    @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mBackground.setCallback(this);
+        if (mBackground != null) mBackground.setCallback(this);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mBackground.setCallback(null);
+        if (mBackground != null) mBackground.setCallback(null);
     }
 
     @Override
     protected boolean onSetAlpha(int alpha) {
         if (mPrevAlpha != alpha) {
             mPrevAlpha = alpha;
-            mPaint.setAlpha(alpha);
+            mPaint.setAlpha((int) (alpha * mBubbleColorAlpha));
             super.onSetAlpha(alpha);
         }
         return true;

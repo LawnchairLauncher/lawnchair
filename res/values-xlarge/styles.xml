@@ -31,12 +31,13 @@
     </style>
 
     <style name="WorkspaceIcon.Portrait">
-        <item name="android:drawablePadding">0dip</item>
+        <item name="android:drawablePadding">2dip</item>
         <item name="android:paddingTop">0dip</item>
+        <item name="android:includeFontPadding">false</item>
     </style>
 
     <style name="WorkspaceIcon.Landscape">
-        <item name="android:drawablePadding">0dip</item>
+        <item name="android:drawablePadding">2dip</item>
         <item name="android:paddingTop">0dip</item>
         <item name="android:includeFontPadding">false</item>
     </style>
