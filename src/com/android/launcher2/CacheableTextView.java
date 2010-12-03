@@ -18,9 +18,10 @@ package com.android.launcher2;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Bitmap.Config;
+import android.graphics.Rect;
 import android.text.Layout;
 import android.util.AttributeSet;
 import android.widget.TextView;
@@ -66,7 +67,13 @@ public class CacheableTextView extends TextView {
     }
 
     public void buildAndEnableCache() {
-        if (getLayout() == null) {
+        // Defers building the cache until the next draw to allow measuring
+        // and laying out.
+        buildAndEnableCache(false);
+    }
+
+    public void buildAndEnableCache(boolean isImmediate) {
+        if (getLayout() == null || !isImmediate) {
             mWaitingToGenerateCache = true;
             return;
         }
@@ -94,8 +101,20 @@ public class CacheableTextView extends TextView {
         int height = (int) (textCacheBottom - mTextCacheTop);
 
         if (width != 0 && height != 0) {
-            mCache = Bitmap.createBitmap(width, height, Config.ARGB_8888);
-            mCacheCanvas.setBitmap(mCache);
+            if (mCache != null) {
+                if (mCache.getWidth() != width || mCache.getHeight() != height) {
+                    mCache.recycle();
+                    mCache = null;
+                }
+            }
+            if (mCache == null) {
+                mCache = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+                mCacheCanvas.setBitmap(mCache);
+            } else {
+                mCacheCanvas.drawColor(0x00000000);
+            }
+
+            mCacheCanvas.save();
             mCacheCanvas.translate(-mTextCacheLeft, -mTextCacheTop);
 
             mIsBuildingCache = true;
@@ -103,6 +122,7 @@ public class CacheableTextView extends TextView {
             draw(mCacheCanvas);
             setAlpha(prevAlpha);
             mIsBuildingCache = false;
+            mCacheCanvas.restore();
 
             // A hack-- we set the text to be one space (we don't make it empty just to avoid any
             // potential issues with text measurement, like line height, etc.) so that the text view
@@ -114,10 +134,10 @@ public class CacheableTextView extends TextView {
 
     public void draw(Canvas canvas) {
         if (mWaitingToGenerateCache && !mIsBuildingCache) {
-            buildAndEnableCache();
+            buildAndEnableCache(true);
             mWaitingToGenerateCache = false;
         }
-        if (mCache != null) {
+        if (mCache != null && !mIsBuildingCache) {
             canvas.drawBitmap(mCache, mTextCacheLeft - mTextCacheScrollX + mScrollX,
                     mTextCacheTop, mCachePaint);
         }

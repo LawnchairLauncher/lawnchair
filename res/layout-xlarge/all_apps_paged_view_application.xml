@@ -28,4 +28,4 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
 
-    style="@style/WorkspaceIcon.Portrait" />
+    style="@style/WorkspaceIcon.AllApps" />
