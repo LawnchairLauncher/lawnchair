@@ -1324,8 +1324,7 @@ public class Workspace extends SmoothPagedView
 
         canvas.setBitmap(b);
         drawDragView(v, canvas, padding);
-        mOutlineHelper.applyExpensiveOuterOutline(b, canvas, outlineColor, true);
-
+        mOutlineHelper.applyMediumExpensiveOutlineWithBlur(b, canvas, outlineColor, outlineColor);
         return b;
     }
 
@@ -1347,8 +1346,7 @@ public class Workspace extends SmoothPagedView
         canvas.setBitmap(b);
         canvas.drawRoundRect(new RectF(inset, inset, iconWidth - inset, iconHeight - inset),
                 rectRadius, rectRadius, mExternalDragOutlinePaint);
-        mOutlineHelper.applyExpensiveOuterOutline(b, canvas, outlineColor, true);
-
+        mOutlineHelper.applyMediumExpensiveOutlineWithBlur(b, canvas, outlineColor, outlineColor);
         return b;
     }
 

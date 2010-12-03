@@ -81,7 +81,7 @@ public class PagedViewIcon extends CacheableTextView implements Checkable {
             Canvas holographicOutlineCanvas = new Canvas(holographicOutline);
             holographicOutlineCanvas.drawBitmap(icon.mIcon, 0, 0, mPaint);
 
-            sHolographicOutlineHelper.applyExpensiveOutlineWithBlur(holographicOutline,
+            sHolographicOutlineHelper.applyThickExpensiveOutlineWithBlur(holographicOutline,
                     holographicOutlineCanvas, icon.mHoloBlurColor, icon.mHoloOutlineColor);
 
             mHandler.post(new Runnable() {
@@ -235,7 +235,7 @@ public class PagedViewIcon extends CacheableTextView implements Checkable {
                 mPaint.setAlpha(255);
                 checkedOutlineCanvas.drawBitmap(mIcon, 0, 0, mPaint);
 
-                sHolographicOutlineHelper.applyExpensiveOutlineWithBlur(mCheckedOutline,
+                sHolographicOutlineHelper.applyThickExpensiveOutlineWithBlur(mCheckedOutline,
                         checkedOutlineCanvas, mCheckedBlurColor, mCheckedOutlineColor);
             } else {
                 invalidateCheckedImage();
