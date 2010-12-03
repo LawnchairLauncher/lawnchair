@@ -796,7 +796,8 @@ public class CellLayout extends ViewGroup implements Dimmable {
 
                     final int[] cellXY = mTmpCellXY;
                     getLocationOnScreen(cellXY);
-                    mWallpaperManager.sendWallpaperCommand(getWindowToken(), "android.home.drop",
+                    mWallpaperManager.sendWallpaperCommand(getWindowToken(),
+                            WallpaperManager.COMMAND_DROP,
                             cellXY[0] + childLeft + lp.width / 2,
                             cellXY[1] + childTop + lp.height / 2, 0, null);
 

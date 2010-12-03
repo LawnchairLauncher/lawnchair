@@ -542,10 +542,6 @@ public class Workspace extends SmoothPagedView
         Launcher.setScreen(mCurrentPage);
     };
 
-    private void updateWallpaperOffset() {
-        updateWallpaperOffset(getChildAt(getChildCount() - 1).getRight() - (mRight - mLeft));
-    }
-
     private void updateWallpaperOffset(int scrollRange) {
         final boolean isStaticWallpaper = (mWallpaperManager != null) &&
                 (mWallpaperManager.getWallpaperInfo() == null);
@@ -890,6 +886,21 @@ public class Workspace extends SmoothPagedView
         }
 
         return super.onTouchEvent(ev);
+    }
+
+    @Override
+    protected void onWallpaperTap(MotionEvent ev) {
+        final int[] position = mTempCell;
+        getLocationOnScreen(position);
+
+        int pointerIndex = ev.getActionIndex();
+        position[0] += (int) ev.getX(pointerIndex);
+        position[1] += (int) ev.getY(pointerIndex);
+
+        mWallpaperManager.sendWallpaperCommand(getWindowToken(),
+                ev.getAction() == MotionEvent.ACTION_UP
+                        ? WallpaperManager.COMMAND_TAP : WallpaperManager.COMMAND_SECONDARY_TAP,
+                position[0], position[1], 0, null);
     }
 
     public boolean isSmall() {

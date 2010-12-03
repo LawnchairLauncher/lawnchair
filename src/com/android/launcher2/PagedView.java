@@ -757,8 +757,9 @@ public abstract class PagedView extends ViewGroup {
                 break;
             }
 
-            case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
+                onWallpaperTap(ev);
+            case MotionEvent.ACTION_CANCEL:
                 mTouchState = TOUCH_STATE_REST;
                 mAllowLongPress = false;
                 mActivePointerId = INVALID_POINTER;
@@ -958,6 +959,8 @@ public abstract class PagedView extends ViewGroup {
                 } else {
                     snapToDestination();
                 }
+            } else {
+                onWallpaperTap(ev);
             }
             mTouchState = TOUCH_STATE_REST;
             mActivePointerId = INVALID_POINTER;
@@ -1011,6 +1014,12 @@ public abstract class PagedView extends ViewGroup {
                 mVelocityTracker.clear();
             }
         }
+        if (mTouchState == TOUCH_STATE_REST) {
+            onWallpaperTap(ev);
+        }
+    }
+
+    protected void onWallpaperTap(MotionEvent ev) {
     }
 
     @Override
