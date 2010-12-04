@@ -49,6 +49,10 @@
         <item name="android:paddingRight">5dip</item>
     </style>
 
+    <style name="WorkspaceIcon.AllApps">
+        <item name="android:background">@null</item>
+    </style>
+
     <style name="WorkspaceIcon.Portrait">
         <item name="android:drawablePadding">5dip</item>
         <item name="android:paddingTop">4dip</item>
