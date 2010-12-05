@@ -147,16 +147,18 @@ public class BubbleTextView extends CacheableTextView {
 
         // Draw the hotdog bubble
         final Layout layout = getLayout();
-        final int offset = getExtendedPaddingTop();
-        final int paddingLeft = getPaddingLeft();
-        final int paddingRight = getPaddingRight();
-        final float left = layout.getLineLeft(0) + paddingLeft;
-        final float right = Math.min(layout.getLineRight(0) + paddingRight,
-                left + getWidth() - paddingLeft - paddingRight);
-        mRect.set(left - mPaddingH, offset + (int) layout.getLineTop(0) - mPaddingV,
-                right + mPaddingH, offset + (int) layout.getLineBottom(0) + mPaddingV);
+        if (layout != null) {
+            final int offset = getExtendedPaddingTop();
+            final int paddingLeft = getPaddingLeft();
+            final int paddingRight = getPaddingRight();
+            final float left = layout.getLineLeft(0) + paddingLeft;
+            final float right = Math.min(layout.getLineRight(0) + paddingRight,
+                    left + getWidth() - paddingLeft - paddingRight);
+            mRect.set(left - mPaddingH, offset + (int) layout.getLineTop(0) - mPaddingV,
+                    right + mPaddingH, offset + (int) layout.getLineBottom(0) + mPaddingV);
 
-        canvas.drawRoundRect(mRect, mCornerRadius, mCornerRadius, mPaint);
+            canvas.drawRoundRect(mRect, mCornerRadius, mCornerRadius, mPaint);
+        }
 
         super.draw(canvas);
     }
