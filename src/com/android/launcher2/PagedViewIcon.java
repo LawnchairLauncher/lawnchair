@@ -122,12 +122,14 @@ public class PagedViewIcon extends CacheableTextView implements Checkable {
     }
 
     private void queueHolographicOutlineCreation() {
+        /* Temporarily disabling holographic outline creation.
         // Generate the outline in the background
         if (mHolographicOutline == null) {
             Message m = sWorker.obtainMessage(MESSAGE_CREATE_HOLOGRAPHIC_OUTLINE);
             m.obj = this;
             sWorker.sendMessage(m);
         }
+        */
     }
 
     public void applyFromApplicationInfo(ApplicationInfo info, PagedViewIconCache cache,
