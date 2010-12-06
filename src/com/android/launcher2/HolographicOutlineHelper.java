@@ -29,6 +29,7 @@ public class HolographicOutlineHelper {
     private final Paint mHolographicPaint = new Paint();
     private final Paint mBlurPaint = new Paint();
     private final Paint mErasePaint = new Paint();
+    private final Paint mAlphaClipPaint = new Paint();
 
     public static final int OUTER_BLUR_RADIUS;
 
@@ -36,6 +37,10 @@ public class HolographicOutlineHelper {
     private static final BlurMaskFilter sMediumOuterBlurMaskFilter;
     private static final BlurMaskFilter sThinOuterBlurMaskFilter;
     private static final BlurMaskFilter sThickInnerBlurMaskFilter;
+    private static final BlurMaskFilter sMediumInnerBlurMaskFilter;
+
+    private static final int THICK = 0;
+    private static final int MEDIUM = 1;
 
     static {
         final float scale = LauncherApplication.getScreenDensity();
@@ -47,6 +52,7 @@ public class HolographicOutlineHelper {
         sMediumOuterBlurMaskFilter = new BlurMaskFilter(scale * 2.0f, BlurMaskFilter.Blur.OUTER);
         sThinOuterBlurMaskFilter = new BlurMaskFilter(scale * 1.0f, BlurMaskFilter.Blur.OUTER);
         sThickInnerBlurMaskFilter = new BlurMaskFilter(scale * 4.0f, BlurMaskFilter.Blur.NORMAL);
+        sMediumInnerBlurMaskFilter = new BlurMaskFilter(scale * 2.0f, BlurMaskFilter.Blur.NORMAL);
     }
 
     private static final MaskFilter sFineClipTable = TableMaskFilter.CreateClipTable(0, 20);
@@ -62,6 +68,8 @@ public class HolographicOutlineHelper {
         mErasePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
         mErasePaint.setFilterBitmap(true);
         mErasePaint.setAntiAlias(true);
+        MaskFilter alphaClipTable = TableMaskFilter.CreateClipTable(180, 255);
+        mAlphaClipPaint.setMaskFilter(alphaClipTable);
     }
 
     /**
@@ -98,41 +106,9 @@ public class HolographicOutlineHelper {
         mHolographicPaint.setMaskFilter(sCoarseClipTable);
         mHolographicPaint.setAlpha(150);
         mHolographicPaint.setColor(color);
+
         canvas.drawBitmap(glow, mTempOffset[0], mTempOffset[1], mHolographicPaint);
         glow.recycle();
-    }
-
-    /**
-     * Draws a solid outline around a bitmap, erasing the original pixels.
-     *
-     * @param bitmap The bitmap to modify
-     * @param canvas A canvas on the bitmap
-     * @param color The color to draw the outline and glow in
-     * @param removeOrig If true, punch out the original pixels to just leave the outline
-     */
-    void applyExpensiveOuterOutline(Bitmap bitmap, Canvas canvas, int color, boolean removeOrig) {
-        Bitmap originalImage = null;
-        if (removeOrig) {
-            originalImage = bitmap.extractAlpha();
-        }
-
-        // Compute an outer blur on the original bitmap
-        mBlurPaint.setMaskFilter(sMediumOuterBlurMaskFilter);
-        Bitmap outline = bitmap.extractAlpha(mBlurPaint, mTempOffset);
-
-        // Paint the blurred bitmap back into the canvas. Using the clip table causes any alpha
-        // pixels above a certain threshold to be rounded up to be fully opaque. This gives the
-        // effect of a thick outline, with a slight blur on the edge
-        mHolographicPaint.setColor(color);
-        mHolographicPaint.setMaskFilter(sFineClipTable);
-        canvas.drawBitmap(outline, mTempOffset[0], mTempOffset[1], mHolographicPaint);
-        outline.recycle();
-
-        if (removeOrig) {
-            // Finally, punch out the original pixels, leaving just the outline
-            canvas.drawBitmap(originalImage, 0, 0, mErasePaint);
-            originalImage.recycle();
-        }
     }
 
     /**
@@ -140,24 +116,32 @@ public class HolographicOutlineHelper {
      * bitmap.
      */
     void applyExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas, int color,
-            int outlineColor) {
+            int outlineColor, int thickness) {
+
+        // We start by removing most of the alpha channel so as to ignore shadows, and
+        // other types of partial transparency when defining the shape of the object
+        Bitmap glowShape = srcDst.extractAlpha(mAlphaClipPaint, mTempOffset);
+
         // calculate the outer blur first
-        mBlurPaint.setMaskFilter(sThickOuterBlurMaskFilter);
+        mBlurPaint.setMaskFilter(thickness == THICK ? sThickOuterBlurMaskFilter :
+                                                      sMediumOuterBlurMaskFilter);
         int[] outerBlurOffset = new int[2];
-        Bitmap thickOuterBlur = srcDst.extractAlpha(mBlurPaint, outerBlurOffset);
+        Bitmap thickOuterBlur = glowShape.extractAlpha(mBlurPaint, outerBlurOffset);
         mBlurPaint.setMaskFilter(sThinOuterBlurMaskFilter);
         int[] thinOuterBlurOffset = new int[2];
-        Bitmap thinOuterBlur = srcDst.extractAlpha(mBlurPaint, thinOuterBlurOffset);
+        Bitmap thinOuterBlur = glowShape.extractAlpha(mBlurPaint, thinOuterBlurOffset);
 
         // calculate the inner blur
+        srcDstCanvas.setBitmap(glowShape);
         srcDstCanvas.drawColor(0xFF000000, PorterDuff.Mode.SRC_OUT);
-        mBlurPaint.setMaskFilter(sThickInnerBlurMaskFilter);
+        mBlurPaint.setMaskFilter(thickness == THICK ? sThickInnerBlurMaskFilter :
+                                                      sMediumInnerBlurMaskFilter);
         int[] thickInnerBlurOffset = new int[2];
-        Bitmap thickInnerBlur = srcDst.extractAlpha(mBlurPaint, thickInnerBlurOffset);
+        Bitmap thickInnerBlur = glowShape.extractAlpha(mBlurPaint, thickInnerBlurOffset);
 
         // mask out the inner blur
         srcDstCanvas.setBitmap(thickInnerBlur);
-        srcDstCanvas.drawBitmap(srcDst, -thickInnerBlurOffset[0],
+        srcDstCanvas.drawBitmap(glowShape, -thickInnerBlurOffset[0],
                 -thickInnerBlurOffset[1], mErasePaint);
         srcDstCanvas.drawRect(0, 0, -thickInnerBlurOffset[0], thickInnerBlur.getHeight(),
                 mErasePaint);
@@ -182,5 +166,17 @@ public class HolographicOutlineHelper {
         thinOuterBlur.recycle();
         thickOuterBlur.recycle();
         thickInnerBlur.recycle();
+        glowShape.recycle();
     }
+
+    void applyThickExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas, int color,
+            int outlineColor) {
+        applyExpensiveOutlineWithBlur(srcDst, srcDstCanvas, color, outlineColor, THICK);
+    }
+
+    void applyMediumExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas, int color,
+            int outlineColor) {
+        applyExpensiveOutlineWithBlur(srcDst, srcDstCanvas, color, outlineColor, MEDIUM);
+    }
+
 }

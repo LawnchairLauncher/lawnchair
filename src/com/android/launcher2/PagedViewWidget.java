@@ -80,7 +80,7 @@ public class PagedViewWidget extends LinearLayout {
             widget.mPreview.setAlpha(prevAlpha);
             widget.mHolographicOutlineCanvas.restore();
 
-            sHolographicOutlineHelper.applyExpensiveOutlineWithBlur(outline,
+            sHolographicOutlineHelper.applyThickExpensiveOutlineWithBlur(outline,
                     widget.mHolographicOutlineCanvas, widget.mHoloBlurColor,
                     widget.mHoloOutlineColor);
 

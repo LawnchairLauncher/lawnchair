@@ -29,7 +29,7 @@ import com.android.launcher.R;
 /**
  * An icon that can appear on in the workspace representing an {@link UserFolder}.
  */
-public class FolderIcon extends DimmableBubbleTextView implements DropTarget {
+public class FolderIcon extends BubbleTextView implements DropTarget {
     private UserFolderInfo mInfo;
     private Launcher mLauncher;
     private Drawable mCloseIcon;
