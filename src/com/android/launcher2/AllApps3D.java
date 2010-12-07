@@ -149,9 +149,10 @@ public class AllApps3D extends RSSurfaceView
             RenderScriptGL.SurfaceConfig sc = new RenderScriptGL.SurfaceConfig();
             sc.setDepth(16, 16);
             sc.setAlpha(8, 8);
-            sRS = createRenderScript(sc);
+            sRS = createRenderScriptGL(sc);
         } else {
-            createRenderScript(sRS);
+            // Is this even possible?
+            setRenderScriptGL(sRS);
         }
 
         final DisplayMetrics metrics = getResources().getDisplayMetrics();
@@ -175,8 +176,8 @@ public class AllApps3D extends RSSurfaceView
 
     public void surrender() {
         if (sRS != null) {
-            sRS.contextSetSurface(0, 0, null);
-            sRS.mMessageCallback = null;
+            sRS.setSurface(null, 0, 0);
+            sRS.setMessageHandler(null);
         }
         mSurrendered = true;
     }
@@ -186,10 +187,10 @@ public class AllApps3D extends RSSurfaceView
      */
     @Override
     protected void onDetachedFromWindow() {
-        sRS.mMessageCallback = null;
+        sRS.setMessageHandler(null);
         if (!mSurrendered) {
             Log.i(TAG, "onDetachedFromWindow");
-            destroyRenderScript();
+            destroyRenderScriptGL();
             sRS = null;
             sRollo = null;
             super.onDetachedFromWindow();
@@ -216,7 +217,7 @@ public class AllApps3D extends RSSurfaceView
         super.surfaceDestroyed(holder);
         // Without this, we leak mMessageCallback which leaks the context.
         if (!mSurrendered) {
-            sRS.mMessageCallback = null;
+            sRS.setMessageHandler(null);
         }
         // We may lose any callbacks that are pending, so make sure that we re-sync that
         // on the next surfaceChanged.
@@ -256,7 +257,8 @@ public class AllApps3D extends RSSurfaceView
 
         Log.d(TAG, "sc " + sRS);
         if (sRS != null) {
-            sRS.mMessageCallback = mMessageProc = new AAMessage();
+            mMessageProc = new AAMessage();
+            sRS.setMessageHandler(mMessageProc);
         }
 
         //long endTime = SystemClock.uptimeMillis();
@@ -901,7 +903,7 @@ public class AllApps3D extends RSSurfaceView
         return -1;
     }
 
-    class AAMessage extends RenderScript.RSMessage {
+    class AAMessage extends RenderScript.RSMessageHandler {
         public void run() {
             sRollo.mScrollPos = ((float)mData[0]) / (1 << 16);
             mVelocity = ((float)mData[1]) / (1 << 16);
@@ -944,12 +946,10 @@ public class AllApps3D extends RSSurfaceView
         private Allocation mHomeButtonPressed;
 
         private Allocation[] mIcons;
-        private int[] mIconIds;
-        private Allocation mAllocIconIds;
+        private Allocation mAllocIcons;
 
         private Allocation[] mLabels;
-        private int[] mLabelIds;
-        private Allocation mAllocLabelIds;
+        private Allocation mAllocLabels;
 
         private Bitmap mSelectionBitmap;
         private Canvas mSelectionCanvas;
@@ -966,13 +966,13 @@ public class AllApps3D extends RSSurfaceView
 
         void pause() {
             if (sRS != null) {
-                sRS.contextBindRootScript(null);
+                sRS.bindRootScript(null);
             }
         }
 
         void resume() {
             if (sRS != null) {
-                sRS.contextBindRootScript(mScript);
+                sRS.bindRootScript(mScript);
             }
         }
 
@@ -984,7 +984,7 @@ public class AllApps3D extends RSSurfaceView
             mRes = res;
             mWidth = width;
             mHeight = height;
-            mScript = new ScriptC_allapps(sRS, mRes, R.raw.allapps, true);
+            mScript = new ScriptC_allapps(sRS, mRes, R.raw.allapps);
 
             initProgramVertex();
             initProgramFragment();
@@ -992,9 +992,9 @@ public class AllApps3D extends RSSurfaceView
             initGl();
             initData();
 
-            mScript.bind_gIconIDs(mAllocIconIds);
-            mScript.bind_gLabelIDs(mAllocLabelIds);
-            sRS.contextBindRootScript(mScript);
+            mScript.bind_gIcons(mAllocIcons);
+            mScript.bind_gLabels(mAllocLabels);
+            sRS.bindRootScript(mScript);
         }
 
         public void initMesh() {
@@ -1070,7 +1070,7 @@ public class AllApps3D extends RSSurfaceView
             pvb.setTextureMatrixEnable(true);
             ProgramVertex pv = pvb.create();
             pv.bindAllocation(mPVA);
-            sRS.contextBindProgramVertex(pv);
+            sRS.bindProgramVertex(pv);
 
             mUniformAlloc = new ScriptField_VpConsts(sRS, 1);
             mScript.bind_vpConstants(mUniformAlloc);
@@ -1231,12 +1231,10 @@ public class AllApps3D extends RSSurfaceView
             }
 
             mIcons = new Allocation[count];
-            mIconIds = new int[allocCount];
-            mAllocIconIds = Allocation.createSized(sRS, Element.I32(sRS), allocCount);
+            mAllocIcons = Allocation.createSized(sRS, Element.ALLOCATION(sRS), allocCount);
 
             mLabels = new Allocation[count];
-            mLabelIds = new int[allocCount];
-            mAllocLabelIds = Allocation.createSized(sRS, Element.I32(sRS), allocCount);
+            mAllocLabels = Allocation.createSized(sRS, Element.ALLOCATION(sRS), allocCount);
 
             mScript.set_gIconCount(count);
             for (int i=0; i < count; i++) {
@@ -1263,17 +1261,9 @@ public class AllApps3D extends RSSurfaceView
                     Element.RGBA_8888(sRS), false);
             mLabels[index] = Allocation.createFromBitmap(sRS, item.titleBitmap,
                     Element.A_8(sRS), false);
-            mIconIds[index] = mIcons[index].getID();
-            mLabelIds[index] = mLabels[index].getID();
         }
 
         private void uploadAppIcon(int index, ApplicationInfo item) {
-            if (mIconIds[index] != mIcons[index].getID()) {
-                throw new IllegalStateException("uploadAppIcon index=" + index
-                    + " mIcons[index].getID=" + mIcons[index].getID()
-                    + " mIconsIds[index]=" + mIconIds[index]
-                    + " item=" + item);
-            }
             mIcons[index].uploadToTexture(true, 0);
             mLabels[index].uploadToTexture(true, 0);
         }
@@ -1284,24 +1274,18 @@ public class AllApps3D extends RSSurfaceView
          */
         private void reallocAppsList(int count) {
             Allocation[] icons = new Allocation[count];
-            int[] iconIds = new int[count];
-            mAllocIconIds = Allocation.createSized(sRS, Element.I32(sRS), count);
+            mAllocIcons = Allocation.createSized(sRS, Element.ALLOCATION(sRS), count);
 
             Allocation[] labels = new Allocation[count];
-            int[] labelIds = new int[count];
-            mAllocLabelIds = Allocation.createSized(sRS, Element.I32(sRS), count);
+            mAllocLabels = Allocation.createSized(sRS, Element.ALLOCATION(sRS), count);
 
             final int oldCount = sRollo.mScript.get_gIconCount();
 
             System.arraycopy(mIcons, 0, icons, 0, oldCount);
-            System.arraycopy(mIconIds, 0, iconIds, 0, oldCount);
             System.arraycopy(mLabels, 0, labels, 0, oldCount);
-            System.arraycopy(mLabelIds, 0, labelIds, 0, oldCount);
 
             mIcons = icons;
-            mIconIds = iconIds;
             mLabels = labels;
-            mLabelIds = labelIds;
         }
 
         /**
@@ -1312,9 +1296,7 @@ public class AllApps3D extends RSSurfaceView
             final int dest = index + 1;
 
             System.arraycopy(mIcons, index, mIcons, dest, count);
-            System.arraycopy(mIconIds, index, mIconIds, dest, count);
             System.arraycopy(mLabels, index, mLabels, dest, count);
-            System.arraycopy(mLabelIds, index, mLabelIds, dest, count);
 
             createAppIconAllocations(index, item);
             uploadAppIcon(index, item);
@@ -1330,17 +1312,13 @@ public class AllApps3D extends RSSurfaceView
             final int src = index + 1;
 
             System.arraycopy(mIcons, src, mIcons, index, count);
-            System.arraycopy(mIconIds, src, mIconIds, index, count);
             System.arraycopy(mLabels, src, mLabels, index, count);
-            System.arraycopy(mLabelIds, src, mLabelIds, index, count);
 
             mScript.set_gIconCount(mScript.get_gIconCount() - 1);
             final int last = mScript.get_gIconCount();
 
             mIcons[last] = null;
-            mIconIds[last] = 0;
             mLabels[last] = null;
-            mLabelIds[last] = 0;
         }
 
         /**
@@ -1348,12 +1326,14 @@ public class AllApps3D extends RSSurfaceView
          */
         private void saveAppsList() {
             // WTF: how could mScript be not null but mAllocIconIds null b/2460740.
-            if (mScript != null && mAllocIconIds != null) {
-                mAllocIconIds.data(mIconIds);
-                mAllocLabelIds.data(mLabelIds);
+            if (mScript != null && mAllocIcons != null) {
+                if (mIcons.length > 0) {
+                    mAllocIcons.copyFrom(mIcons);
+                    mAllocLabels.copyFrom(mLabels);
+                }
 
-                mScript.bind_gIconIDs(mAllocIconIds);
-                mScript.bind_gLabelIDs(mAllocLabelIds);
+                mScript.bind_gIcons(mAllocIcons);
+                mScript.bind_gLabels(mAllocLabels);
             }
         }
 
@@ -1462,14 +1442,6 @@ public class AllApps3D extends RSSurfaceView
             if (mIcons != null) {
                 Log.d(TAG, "sRollo.mIcons.length=" + mIcons.length);
             }
-            if (mIconIds != null) {
-                Log.d(TAG, "sRollo.mIconIds.length=" + mIconIds.length);
-            }
-            Log.d(TAG, "sRollo.mIconIds=" +  Arrays.toString(mIconIds));
-            if (mLabelIds != null) {
-                Log.d(TAG, "sRollo.mLabelIds.length=" + mLabelIds.length);
-            }
-            Log.d(TAG, "sRollo.mLabelIds=" +  Arrays.toString(mLabelIds));
             //Log.d(TAG, "sRollo.mState.newPositionX=" + mState.newPositionX);
             //Log.d(TAG, "sRollo.mState.newTouchDown=" + mState.newTouchDown);
             //Log.d(TAG, "sRollo.mState.flingVelocity=" + mState.flingVelocity);
@@ -1505,7 +1477,7 @@ public class AllApps3D extends RSSurfaceView
             sRollo.dumpState();
         }
         if (sRS != null) {
-            sRS.contextDump(0);
+            sRS.contextDump();
         }
     }
 }
