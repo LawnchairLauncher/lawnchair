@@ -977,7 +977,6 @@ public final class Launcher extends Activity
             allAppsInfoTarget.setDragAndDropEnabled(false);
             View marketButton = findViewById(R.id.market_button);
             if (marketButton != null) {
-                marketButton.setBackgroundColor(Color.RED);
                 allAppsInfoTarget.setHandle(marketButton);
             }
         }
@@ -1385,8 +1384,18 @@ public final class Launcher extends Activity
         // Do not call super here
         mSavedInstanceState = savedInstanceState;
 
+        // Restore the current AllApps drawer tab
+        if (mAllAppsGrid != null && mAllAppsGrid instanceof AllAppsTabbed) {
+            String cur = savedInstanceState.getString("allapps_currentTab");
+            if (cur != null) {
+                AllAppsTabbed tabhost = (AllAppsTabbed) mAllAppsGrid;
+                tabhost.setCurrentTabByTag(cur);
+            }
+        }
+
+        // Restore the current customization drawer tab
         if (mHomeCustomizationDrawer != null) {
-            String cur = savedInstanceState.getString("currentTab");
+            String cur = savedInstanceState.getString("customize_currentTab");
             if (cur != null) {
                 mHomeCustomizationDrawer.setCurrentTabByTag(cur);
             }
@@ -1423,10 +1432,20 @@ public final class Launcher extends Activity
             outState.putLong(RUNTIME_STATE_PENDING_FOLDER_RENAME_ID, mFolderInfo.id);
         }
 
+        // Save the current AllApps drawer tab
+        if (mAllAppsGrid != null && mAllAppsGrid instanceof AllAppsTabbed) {
+            AllAppsTabbed tabhost = (AllAppsTabbed) mAllAppsGrid;
+            String currentTabTag = tabhost.getCurrentTabTag();
+            if (currentTabTag != null) {
+                outState.putString("allapps_currentTab", currentTabTag);
+            }
+        }
+
+        // Save the current customization drawer tab
         if (mHomeCustomizationDrawer != null) {
             String currentTabTag = mHomeCustomizationDrawer.getCurrentTabTag();
             if (currentTabTag != null) {
-                outState.putString("currentTab", currentTabTag);
+                outState.putString("customize_currentTab", currentTabTag);
             }
         }
     }

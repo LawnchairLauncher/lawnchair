@@ -24,8 +24,8 @@ rs_program_vertex gPVCurve;
 rs_program_store gPS;
 rs_mesh gSMCell;
 
-rs_allocation *gIconIDs;
-rs_allocation *gLabelIDs;
+rs_allocation *gIcons;
+rs_allocation *gLabels;
 
 typedef struct VpConsts {
     rs_matrix4x4 Proj;
@@ -297,25 +297,25 @@ static void drawFrontGrid(float rowOffset, float p)
                     vpConstants->ImgSize.x = rsAllocationGetDimX(gSelectedIconTexture);
                     vpConstants->ImgSize.y = rsAllocationGetDimY(gSelectedIconTexture);
                     vpConstants->Position.y = y - (rsAllocationGetDimY(gSelectedIconTexture)
-                                                - rsAllocationGetDimY(gIconIDs[iconNum])) * 0.5f;
+                                                - rsAllocationGetDimY(gIcons[iconNum])) * 0.5f;
                     rsAllocationMarkDirty(g_VPConstAlloc);
                     rsgDrawMesh(gSMCell);
                 }
 
                 rsgBindProgramFragment(gPFTexMip);
-                vpConstants->ImgSize.x = rsAllocationGetDimX(gIconIDs[iconNum]);
-                vpConstants->ImgSize.y = rsAllocationGetDimY(gIconIDs[iconNum]);
+                vpConstants->ImgSize.x = rsAllocationGetDimX(gIcons[iconNum]);
+                vpConstants->ImgSize.y = rsAllocationGetDimY(gIcons[iconNum]);
                 vpConstants->Position.y = y - 0.2f;
                 rsAllocationMarkDirty(g_VPConstAlloc);
-                rsgBindTexture(gPFTexMip, 0, gIconIDs[iconNum]);
+                rsgBindTexture(gPFTexMip, 0, gIcons[iconNum]);
                 rsgDrawMesh(gSMCell);
 
                 rsgBindProgramFragment(gPFTexMipAlpha);
-                vpConstants->ImgSize.x = rsAllocationGetDimX(gLabelIDs[iconNum]);
-                vpConstants->ImgSize.y = rsAllocationGetDimY(gLabelIDs[iconNum]);
+                vpConstants->ImgSize.x = rsAllocationGetDimX(gLabels[iconNum]);
+                vpConstants->ImgSize.y = rsAllocationGetDimY(gLabels[iconNum]);
                 vpConstants->Position.y = y - 64.f - 0.2f;
                 rsAllocationMarkDirty(g_VPConstAlloc);
-                rsgBindTexture(gPFTexMipAlpha, 0, gLabelIDs[iconNum]);
+                rsgBindTexture(gPFTexMipAlpha, 0, gLabels[iconNum]);
                 rsgDrawMesh(gSMCell);
             }
             iconNum++;

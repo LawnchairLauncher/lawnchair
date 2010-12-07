@@ -120,12 +120,14 @@ public class PagedViewWidget extends LinearLayout {
     }
 
     private void queueHolographicOutlineCreation() {
+        /* Temporarily disabling holographic outline creation.
         // Generate the outline in the background
         if (mHolographicOutline == null) {
             Message m = sWorker.obtainMessage(MESSAGE_CREATE_HOLOGRAPHIC_OUTLINE);
             m.obj = this;
             sWorker.sendMessage(m);
         }
+        */
     }
 
     public void applyFromAppWidgetProviderInfo(AppWidgetProviderInfo info,
