@@ -977,7 +977,6 @@ public final class Launcher extends Activity
             allAppsInfoTarget.setDragAndDropEnabled(false);
             View marketButton = findViewById(R.id.market_button);
             if (marketButton != null) {
-                marketButton.setBackgroundColor(Color.RED);
                 allAppsInfoTarget.setHandle(marketButton);
             }
         }
