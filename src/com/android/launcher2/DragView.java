@@ -17,8 +17,6 @@
 
 package com.android.launcher2;
 
-import com.android.launcher.R;
-
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
@@ -35,6 +33,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.WindowManagerImpl;
 import android.view.animation.DecelerateInterpolator;
+
+import com.android.launcher.R;
 
 public class DragView extends View {
     private Bitmap mBitmap;

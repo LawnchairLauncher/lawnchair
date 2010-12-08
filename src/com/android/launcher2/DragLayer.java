@@ -17,17 +17,20 @@
 package com.android.launcher2;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 /**
  * A ViewGroup that coordinates dragging across its descendants
  */
 public class DragLayer extends FrameLayout {
-    DragController mDragController;
+    private DragController mDragController;
+    private int[] mTmpXY = new int[2];
 
     /**
      * Used to create a new DragLayer from XML.
@@ -61,5 +64,20 @@ public class DragLayer extends FrameLayout {
     @Override
     public boolean dispatchUnhandledMove(View focused, int direction) {
         return mDragController.dispatchUnhandledMove(focused, direction);
+    }
+
+    public View createDragView(Bitmap b, int xPos, int yPos) {
+        ImageView imageView = new ImageView(mContext);
+        imageView.setImageBitmap(b);
+        imageView.setX(xPos);
+        imageView.setY(yPos);
+        addView(imageView, b.getWidth(), b.getHeight());
+
+        return imageView;
+    }
+
+    public View createDragView(View v) {
+        v.getLocationOnScreen(mTmpXY);
+        return createDragView(mDragController.getViewBitmap(v), mTmpXY[0], mTmpXY[1]);
     }
 }

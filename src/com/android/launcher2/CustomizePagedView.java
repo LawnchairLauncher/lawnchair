@@ -16,10 +16,18 @@
 
 package com.android.launcher2;
 
-import com.android.launcher.R;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import org.xmlpull.v1.XmlPullParser;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.TimeInterpolator;
+import android.animation.Animator.AnimatorListener;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -48,13 +56,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import com.android.launcher.R;
 
 
 public class CustomizePagedView extends PagedView
@@ -111,6 +118,12 @@ public class CustomizePagedView extends PagedView
 
     private final Canvas mCanvas = new Canvas();
     private final LayoutInflater mInflater;
+
+    private final float mTmpFloatPos[] = new float[2];
+    private final float ANIMATION_SCALE = 0.5f;
+    private final int ANIMATION_DURATION = 400;
+    private TimeInterpolator mQuintEaseOutInterpolator = new DecelerateInterpolator(2.5f);
+    private ScaleAlphaInterpolator mScaleAlphaInterpolator = new ScaleAlphaInterpolator();
 
     public CustomizePagedView(Context context) {
         this(context, null, 0);
@@ -318,8 +331,84 @@ public class CustomizePagedView extends PagedView
     public void onDragViewVisible() {
     }
 
+    class ScaleAlphaInterpolator implements Interpolator {
+        public float getInterpolation(float input) {
+            float pivot = 0.5f;
+            if (input < pivot) {
+                return 0;
+            } else {
+                return (input - pivot)/(1 - pivot);
+            }
+        }
+    }
+
+    private void animateItemOntoScreen(View dragView,
+            final CellLayout layout, final ItemInfo info) {
+        mTmpFloatPos[0] = layout.getWidth() / 2;
+        mTmpFloatPos[1] = layout.getHeight() / 2;
+        mLauncher.getWorkspace().mapPointFromChildToSelf(layout, mTmpFloatPos);
+
+        final DragLayer dragLayer = (DragLayer) mLauncher.findViewById(R.id.drag_layer);
+        final View dragCopy = dragLayer.createDragView(dragView);
+        dragCopy.setAlpha(1.0f);
+
+        int dragViewWidth = dragView.getMeasuredWidth();
+        int dragViewHeight = dragView.getMeasuredHeight();
+        float heightOffset = 0;
+        float widthOffset = 0;
+
+        if (dragView instanceof ImageView) {
+            Drawable d = ((ImageView) dragView).getDrawable();
+            int width = d.getIntrinsicWidth();
+            int height = d.getIntrinsicHeight();
+
+            if ((1.0 * width / height) >= (1.0f * dragViewWidth) / dragViewHeight) {
+                float f = (dragViewWidth / (width * 1.0f));
+                heightOffset = ANIMATION_SCALE * (dragViewHeight - f * height) / 2;
+            } else {
+                float f = (dragViewHeight / (height * 1.0f));
+                widthOffset = ANIMATION_SCALE * (dragViewWidth - f * width) / 2;
+            }
+        }
+
+        float toX = mTmpFloatPos[0] - dragView.getMeasuredWidth() / 2 + widthOffset;
+        float toY = mTmpFloatPos[1] - dragView.getMeasuredHeight() / 2 + heightOffset;
+
+        ObjectAnimator posAnim = ObjectAnimator.ofPropertyValuesHolder(dragCopy,
+                PropertyValuesHolder.ofFloat("x", toX),
+                PropertyValuesHolder.ofFloat("y", toY));
+        posAnim.setInterpolator(mQuintEaseOutInterpolator);
+        posAnim.setDuration(ANIMATION_DURATION);
+
+        posAnim.addListener(new AnimatorListener() {
+            public void onAnimationCancel(Animator animation) {}
+            public void onAnimationRepeat(Animator animation) {}
+            public void onAnimationStart(Animator animation) {}
+
+            public void onAnimationEnd(Animator animation) {
+                dragLayer.removeView(dragCopy);
+                mLauncher.addExternalItemToScreen(info, layout);
+                post(new Runnable() {
+                    public void run() {
+                        layout.animateDrop();
+                    }
+                });
+            }
+        });
+
+        ObjectAnimator scaleAlphaAnim = ObjectAnimator.ofPropertyValuesHolder(dragCopy,
+                PropertyValuesHolder.ofFloat("alpha", 1.0f, 0.0f),
+                PropertyValuesHolder.ofFloat("scaleX", ANIMATION_SCALE),
+                PropertyValuesHolder.ofFloat("scaleY", ANIMATION_SCALE));
+        scaleAlphaAnim.setInterpolator(mScaleAlphaInterpolator);
+        scaleAlphaAnim.setDuration(ANIMATION_DURATION);
+
+        posAnim.start();
+        scaleAlphaAnim.start();
+    }
+
     @Override
-    public void onClick(View v) {
+    public void onClick(final View v) {
         // Return early if this is not initiated from a touch
         if (!v.isInTouchMode()) return;
         // Return early if we are still animating the pages
@@ -351,11 +440,12 @@ public class CustomizePagedView extends PagedView
             Workspace w = mLauncher.getWorkspace();
             int currentWorkspaceScreen = mLauncher.getCurrentWorkspaceScreen();
             final CellLayout cl = (CellLayout)w.getChildAt(currentWorkspaceScreen);
+            final View dragView = getDragView(v);
 
             animateClickFeedback(v, new Runnable() {
                 @Override
                 public void run() {
-                    mLauncher.addExternalItemToScreen(itemInfo, cl);
+                    animateItemOntoScreen(dragView, cl, itemInfo);
                 }
             });
             return;
@@ -484,6 +574,11 @@ public class CustomizePagedView extends PagedView
         return b;
     }
 
+    private View getDragView(View v) {
+        return (mCustomizationType == CustomizationType.WidgetCustomization) ?
+                v.findViewById(R.id.widget_preview) : v;
+    }
+
     private boolean beginDragging(View v) {
         // End the current choice mode before we start dragging anything
         if (isChoiceMode(CHOICE_MODE_SINGLE)) {
@@ -491,24 +586,19 @@ public class CustomizePagedView extends PagedView
         }
         mIsDragging = true;
 
-        PendingAddItemInfo createItemInfo;
         switch (mCustomizationType) {
         case WidgetCustomization:
-            // Get the icon as the drag representation
-            final LinearLayout l = (LinearLayout) v;
-            final Drawable icon = ((ImageView) l.findViewById(R.id.widget_preview)).getDrawable();
-            Bitmap b = drawableToBitmap(icon);
+            // Get the widget preview as the drag representation
             PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo) v.getTag();
+            final View dragView = v.findViewById(R.id.widget_preview);
 
             mLauncher.getWorkspace().onDragStartedWithItemMinSize(
                     createWidgetInfo.minWidth, createWidgetInfo.minHeight);
-            mDragController.startDrag(v, b, this, createWidgetInfo, DragController.DRAG_ACTION_COPY, null);
+            mDragController.startDrag(dragView, this, createWidgetInfo, DragController.DRAG_ACTION_COPY, null);
 
-            // Cleanup the icon
-            b.recycle();
             return true;
         case ShortcutCustomization:
-            createItemInfo = (PendingAddItemInfo) v.getTag();
+            PendingAddItemInfo createItemInfo = (PendingAddItemInfo) v.getTag();
             mDragController.startDrag(v, this, createItemInfo, DragController.DRAG_ACTION_COPY);
             mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1);
             return true;
@@ -881,7 +971,7 @@ public class CustomizePagedView extends PagedView
             PagedViewIcon icon = (PagedViewIcon) mInflater.inflate(
                     R.layout.customize_paged_view_item, layout, false);
             icon.applyFromResolveInfo(info, mPackageManager, mPageViewIconCache,
-                    ((LauncherApplication)mLauncher.getApplication()).getIconCache());
+                    ((LauncherApplication) mLauncher.getApplication()).getIconCache());
             switch (mCustomizationType) {
             case WallpaperCustomization:
                 icon.setOnClickListener(this);

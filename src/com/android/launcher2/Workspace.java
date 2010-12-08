@@ -16,8 +16,9 @@
 
 package com.android.launcher2;
 
-import com.android.launcher.R;
-import com.android.launcher2.InstallWidgetReceiver.WidgetMimeTypeHandlerData;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -63,9 +64,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import com.android.launcher.R;
+import com.android.launcher2.InstallWidgetReceiver.WidgetMimeTypeHandlerData;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -1518,9 +1518,9 @@ public class Workspace extends SmoothPagedView
             if (mIsSmall) {
                 // if we drag and drop to small screens, don't pass the touch x/y coords (when we
                 // enable spring-loaded adding, however, we do want to pass the touch x/y coords)
-                onDropExternal(-1, -1, dragInfo, mDragTargetLayout);
+                onDropExternal(-1, -1, dragInfo, mDragTargetLayout, false);
             } else {
-                onDropExternal(originX, originY, dragInfo, mDragTargetLayout);
+                onDropExternal(originX, originY, dragInfo, mDragTargetLayout, false);
             }
         } else if (mDragInfo != null) {
             final View cell = mDragInfo.cell;
@@ -1730,7 +1730,7 @@ public class Workspace extends SmoothPagedView
                 if (isShortcut) {
                     final Intent intent = data.getItem(index).getIntent();
                     Object info = model.infoFromShortcutIntent(mContext, intent, data.getIcon());
-                    onDropExternal(x, y, info, layout);
+                    onDropExternal(x, y, info, layout, false);
                 } else {
                     if (widgets.size() == 1) {
                         // If there is only one item, then go ahead and add and configure
@@ -1997,11 +1997,6 @@ public class Workspace extends SmoothPagedView
         clearAllHovers();
     }
 
-    private void onDropExternal(int x, int y, Object dragInfo,
-            CellLayout cellLayout) {
-        onDropExternal(x, y, dragInfo, cellLayout, false);
-    }
-
     @Override
     public void getHitRect(Rect outRect) {
         // We want the workspace to have the whole area of the display (it will find the correct
@@ -2012,25 +2007,25 @@ public class Workspace extends SmoothPagedView
 
     /**
      * Add the item specified by dragInfo to the given layout.
-     * This is basically the equivalent of onDropExternal, except it's not initiated
-     * by drag and drop.
      * @return true if successful
      */
-    public boolean addExternalItemToScreen(Object dragInfo, View layout) {
-        CellLayout cl = (CellLayout) layout;
-        ItemInfo info = (ItemInfo) dragInfo;
-
-        if (cl.findCellForSpan(mTempEstimate, info.spanX, info.spanY)) {
-            onDropExternal(-1, -1, dragInfo, cl, false);
+    public boolean addExternalItemToScreen(ItemInfo dragInfo, CellLayout layout) {
+        if (layout.findCellForSpan(mTempEstimate, dragInfo.spanX, dragInfo.spanY)) {
+            onDropExternal(-1, -1, (ItemInfo) dragInfo, (CellLayout) layout, false);
             return true;
         }
         mLauncher.showOutOfSpaceMessage();
         return false;
     }
 
-    // Drag from somewhere else
-    // NOTE: This can also be called when we are outside of a drag event, when we want
-    // to add an item to one of the workspace screens.
+    /**
+     * Drop an item that didn't originate on one of the workspace screens.
+     * It may have come from Launcher (e.g. from all apps or customize), or it may have
+     * come from another app altogether.
+     *
+     * NOTE: This can also be called when we are outside of a drag event, when we want
+     * to add an item to one of the workspace screens.
+     */
     private void onDropExternal(int x, int y, Object dragInfo,
             CellLayout cellLayout, boolean insertAtFirst) {
         int screen = indexOfChild(cellLayout);
@@ -2056,11 +2051,9 @@ public class Workspace extends SmoothPagedView
                     throw new IllegalStateException("Unknown item type: " + info.itemType);
             }
             cellLayout.onDragExit();
-            cellLayout.animateDrop();
         } else {
             // This is for other drag/drop cases, like dragging from All Apps
             ItemInfo info = (ItemInfo) dragInfo;
-
             View view = null;
 
             switch (info.itemType) {
@@ -2091,7 +2084,6 @@ public class Workspace extends SmoothPagedView
             addInScreen(view, indexOfChild(cellLayout), mTargetCell[0],
                     mTargetCell[1], info.spanX, info.spanY, insertAtFirst);
             cellLayout.onDropChild(view);
-            cellLayout.animateDrop();
             CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
 
             LauncherModel.addOrMoveItemInDatabase(mLauncher, info,
