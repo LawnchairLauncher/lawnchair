@@ -16,21 +16,25 @@
 
 package com.android.launcher2;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
+import com.android.launcher.R;
 
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.Checkable;
 import android.widget.TextView;
 
-import com.android.launcher.R;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 
 /**
  * An implementation of PagedView that populates the pages of the workspace
@@ -42,9 +46,6 @@ public class AllAppsPagedView extends PagedView
 
     private static final String TAG = "AllAppsPagedView";
     private static final boolean DEBUG = false;
-
-    private static final int MENU_DELETE_APP = 1;
-    private static final int MENU_APP_INFO = 2;
 
     private Launcher mLauncher;
     private DragController mDragController;
@@ -199,7 +200,7 @@ public class AllAppsPagedView extends PagedView
     }
 
     private void setupDragMode() {
-        mLauncher.getWorkspace().shrinkToBottomVisible();
+        mLauncher.getWorkspace().shrink(Workspace.ShrinkState.BOTTOM_VISIBLE);
 
         ApplicationInfoDropTarget infoButton =
                 (ApplicationInfoDropTarget) mLauncher.findViewById(R.id.info_button);
@@ -261,8 +262,14 @@ public class AllAppsPagedView extends PagedView
         ApplicationInfo app = (ApplicationInfo) v.getTag();
         app = new ApplicationInfo(app);
 
-        mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1);
-        mDragController.startDrag(v, this, app, DragController.DRAG_ACTION_COPY);
+        // get icon (top compound drawable, index is 1)
+        final Drawable icon = ((TextView) v).getCompoundDrawables()[1];
+        Bitmap b = Bitmap.createBitmap(icon.getIntrinsicWidth(), icon.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        icon.draw(c);
+        mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1, b);
+        mDragController.startDrag(v, b, this, app, DragController.DRAG_ACTION_COPY, null);
         return true;
     }
 

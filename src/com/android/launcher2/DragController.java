@@ -16,7 +16,7 @@
 
 package com.android.launcher2;
 
-import com.android.launcher.R;
+import java.util.ArrayList;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -34,7 +34,7 @@ import android.view.ViewConfiguration;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
-import java.util.ArrayList;
+import com.android.launcher.R;
 
 /**
  * Class for initiating a drag within a view or across multiple views.
@@ -340,7 +340,7 @@ public class DragController {
     /**
      * Draw the view into a bitmap.
      */
-    private Bitmap getViewBitmap(View v) {
+    Bitmap getViewBitmap(View v) {
         v.clearFocus();
         v.setPressed(false);
 
@@ -351,6 +351,8 @@ public class DragController {
         // for the duration of this operation
         int color = v.getDrawingCacheBackgroundColor();
         v.setDrawingCacheBackgroundColor(0);
+        float alpha = v.getAlpha();
+        v.setAlpha(1.0f);
 
         if (color != 0) {
             v.destroyDrawingCache();
@@ -366,6 +368,7 @@ public class DragController {
 
         // Restore the view
         v.destroyDrawingCache();
+        v.setAlpha(alpha);
         v.setWillNotCacheDrawing(willNotCache);
         v.setDrawingCacheBackgroundColor(color);
 

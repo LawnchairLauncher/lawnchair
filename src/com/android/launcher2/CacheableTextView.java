@@ -46,6 +46,7 @@ public class CacheableTextView extends TextView {
     float mRectLeft, mRectTop;
     private float mPaddingH = 0;
     private float mPaddingV = 0;
+    private CharSequence mText;
 
     public CacheableTextView(Context context) {
         super(context);
@@ -128,8 +129,13 @@ public class CacheableTextView extends TextView {
             // potential issues with text measurement, like line height, etc.) so that the text view
             // doesn't draw it anymore, since it's been cached. We have to manually rebuild
             // the cache whenever the text is changed (which is never in Launcher)
+            mText = getText();
             setText(" ");
         }
+    }
+
+    public CharSequence getText() {
+        return (mText == null) ? super.getText() : mText;
     }
 
     public void draw(Canvas canvas) {

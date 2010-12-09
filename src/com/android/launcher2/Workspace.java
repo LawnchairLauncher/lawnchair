@@ -81,6 +81,9 @@ public class Workspace extends SmoothPagedView
     // customization mode
     private static final float SHRINK_FACTOR = 0.16f;
 
+    // How much the screens shrink when we enter spring loaded drag mode
+    private static final float SPRING_LOADED_DRAG_SHRINK_FACTOR = 0.7f;
+
     // Y rotation to apply to the workspace screens
     private static final float WORKSPACE_ROTATION = 12.5f;
     private static final float WORKSPACE_TRANSLATION = 50.0f;
@@ -118,6 +121,7 @@ public class Workspace extends SmoothPagedView
     private int mDefaultPage;
 
     private boolean mPageMoving = false;
+    private boolean mIsDragInProcess = false;
 
     /**
      * CellInfo for the cell that is currently being dragged
@@ -149,6 +153,8 @@ public class Workspace extends SmoothPagedView
     private float[] mTempDragBottomRightCoordinates = new float[2];
     private Matrix mTempInverseMatrix = new Matrix();
 
+    private SpringLoadedDragController mSpringLoadedDragControllger;
+
     private static final int DEFAULT_CELL_COUNT_X = 4;
     private static final int DEFAULT_CELL_COUNT_Y = 4;
 
@@ -159,12 +165,12 @@ public class Workspace extends SmoothPagedView
     // in all apps or customize mode)
     private boolean mIsSmall = false;
     private boolean mIsInUnshrinkAnimation = false;
-    private AnimatorListener mUnshrinkAnimationListener;
-    private enum ShrinkPosition {
-        SHRINK_TO_TOP, SHRINK_TO_MIDDLE, SHRINK_TO_BOTTOM_HIDDEN, SHRINK_TO_BOTTOM_VISIBLE };
-    private ShrinkPosition mShrunkenState;
+    private AnimatorListener mShrinkAnimationListener, mUnshrinkAnimationListener;
+    enum ShrinkState { TOP, SPRING_LOADED, MIDDLE, BOTTOM_HIDDEN, BOTTOM_VISIBLE };
+    private ShrinkState mShrinkState;
+    private boolean mWasSpringLoadedOnDragExit = false;
     private boolean mWaitingToShrink = false;
-    private ShrinkPosition mWaitingToShrinkPosition;
+    private ShrinkState mWaitingToShrinkState;
     private AnimatorSet mAnimator;
 
     /** Is the user is dragging an item near the edge of a page? */
@@ -448,7 +454,7 @@ public class Workspace extends SmoothPagedView
         // this is an intercepted event being forwarded from a cell layout
         if (mIsSmall || mIsInUnshrinkAnimation) {
             // Only allow clicks on a CellLayout if it is visible
-            if (mShrunkenState != ShrinkPosition.SHRINK_TO_BOTTOM_HIDDEN) {
+            if (mShrinkState != ShrinkState.BOTTOM_HIDDEN) {
                 mLauncher.onWorkspaceClick((CellLayout) v);
             }
             return true;
@@ -481,7 +487,7 @@ public class Workspace extends SmoothPagedView
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (mIsSmall || mIsInUnshrinkAnimation) {
             if (mLauncher.isAllAppsVisible() &&
-                    mShrunkenState == ShrinkPosition.SHRINK_TO_BOTTOM_HIDDEN) {
+                    mShrinkState == ShrinkState.BOTTOM_HIDDEN) {
                 // Intercept this event so we can show the workspace in full view
                 // when it is clicked on and it is small
                 return true;
@@ -678,7 +684,7 @@ public class Workspace extends SmoothPagedView
         for (int i = 0; i < getChildCount(); i++) {
             CellLayout cl = (CellLayout) getChildAt(i);
             if (cl != null) {
-                int totalDistance = cl.getMeasuredWidth() + mPageSpacing;
+                int totalDistance = getScaledMeasuredWidth(cl) + mPageSpacing;
                 int delta = screenCenter - (getChildOffset(i) -
                         getRelativeChildOffset(i) + halfScreenSize);
 
@@ -721,7 +727,7 @@ public class Workspace extends SmoothPagedView
         // if shrinkToBottom() is called on initialization, it has to be deferred
         // until after the first call to onLayout so that it has the correct width
         if (mWaitingToShrink) {
-            shrink(mWaitingToShrinkPosition, false);
+            shrink(mWaitingToShrinkState, false);
             mWaitingToShrink = false;
         }
 
@@ -876,7 +882,7 @@ public class Workspace extends SmoothPagedView
             }
             setCurrentPage(mCurrentPage);
 
-            if (mShrunkenState == ShrinkPosition.SHRINK_TO_BOTTOM_HIDDEN) {
+            if (mShrinkState == ShrinkState.BOTTOM_HIDDEN) {
                 mLauncher.showWorkspace(true);
                 // Let the events fall through to the CellLayouts because if they are not
                 // hit, then we get a crash due to a missing ACTION_DOWN touch event
@@ -907,30 +913,6 @@ public class Workspace extends SmoothPagedView
         return mIsSmall;
     }
 
-    void shrinkToTop(boolean animated) {
-        shrink(ShrinkPosition.SHRINK_TO_TOP, animated);
-    }
-
-    void shrinkToMiddle() {
-        shrink(ShrinkPosition.SHRINK_TO_MIDDLE, true);
-    }
-
-    void shrinkToBottomHidden() {
-        shrinkToBottomHidden(true);
-    }
-
-    void shrinkToBottomVisible() {
-        shrinkToBottomVisible(true);
-    }
-
-    void shrinkToBottomHidden(boolean animated) {
-        shrink(ShrinkPosition.SHRINK_TO_BOTTOM_HIDDEN, animated);
-    }
-
-    void shrinkToBottomVisible(boolean animated) {
-        shrink(ShrinkPosition.SHRINK_TO_BOTTOM_VISIBLE, animated);
-    }
-
     private float getYScaleForScreen(int screen) {
         int x = Math.abs(screen - 2);
 
@@ -943,24 +925,29 @@ public class Workspace extends SmoothPagedView
         return 1.0f;
     }
 
-    // we use this to shrink the workspace for the all apps view and the customize view
-    private void shrink(ShrinkPosition shrinkPosition, boolean animated) {
+    public void shrink(ShrinkState shrinkState) {
+        shrink(shrinkState, true);
+    }
 
+    // we use this to shrink the workspace for the all apps view and the customize view
+    public void shrink(ShrinkState shrinkState, boolean animated) {
         if (mFirstLayout) {
             // (mFirstLayout == "first layout has not happened yet")
             // if we get a call to shrink() as part of our initialization (for example, if
             // Launcher is started in All Apps mode) then we need to wait for a layout call
             // to get our width so we can layout the mini-screen views correctly
             mWaitingToShrink = true;
-            mWaitingToShrinkPosition = shrinkPosition;
+            mWaitingToShrinkState = shrinkState;
             return;
         }
         mIsSmall = true;
-        mShrunkenState = shrinkPosition;
+        mShrinkState = shrinkState;
 
         // Stop any scrolling, move to the current page right away
         setCurrentPage((mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage);
-        updateWhichPagesAcceptDrops(mShrunkenState);
+        if (!mIsDragInProcess) {
+            updateWhichPagesAcceptDrops(mShrinkState);
+        }
 
         // we intercept and reject all touch events when we're small, so be sure to reset the state
         mTouchState = TOUCH_STATE_REST;
@@ -993,18 +980,18 @@ public class Workspace extends SmoothPagedView
                 getResources().getDimension(R.dimen.allAppsSmallScreenVerticalMarginLandscape));
         float finalAlpha = 1.0f;
         float extraShrinkFactor = 1.0f;
-        if (shrinkPosition == ShrinkPosition.SHRINK_TO_BOTTOM_VISIBLE) {
+        if (shrinkState == ShrinkState.BOTTOM_VISIBLE) {
              newY = screenHeight - newY - scaledPageHeight;
-        } else if (shrinkPosition == ShrinkPosition.SHRINK_TO_BOTTOM_HIDDEN) {
+        } else if (shrinkState == ShrinkState.BOTTOM_HIDDEN) {
 
             // We shrink and disappear to nothing in the case of all apps
             // (which is when we shrink to the bottom)
             newY = screenHeight - newY - scaledPageHeight;
             finalAlpha = 0.0f;
-        } else if (shrinkPosition == ShrinkPosition.SHRINK_TO_MIDDLE) {
+        } else if (shrinkState == ShrinkState.MIDDLE) {
             newY = screenHeight / 2 - scaledPageHeight / 2;
             finalAlpha = 1.0f;
-        } else if (shrinkPosition == ShrinkPosition.SHRINK_TO_TOP) {
+        } else if (shrinkState == ShrinkState.TOP) {
             newY = (isPortrait ?
                 getResources().getDimension(R.dimen.customizeSmallScreenVerticalMarginPortrait) :
                 getResources().getDimension(R.dimen.customizeSmallScreenVerticalMarginLandscape));
@@ -1061,12 +1048,13 @@ public class Workspace extends SmoothPagedView
             // increment newX for the next screen
             newX += scaledPageWidth + extraScaledSpacing;
         }
+        setLayoutScale(1.0f);
         if (animated) {
             mAnimator.start();
         }
         setChildrenDrawnWithCacheEnabled(true);
 
-        if (shrinkPosition == ShrinkPosition.SHRINK_TO_TOP) {
+        if (shrinkState == ShrinkState.TOP) {
             showBackgroundGradientForCustomizeTray();
         } else {
             showBackgroundGradient();
@@ -1132,30 +1120,30 @@ public class Workspace extends SmoothPagedView
     private final ZoomOutInterpolator mZoomOutInterpolator = new ZoomOutInterpolator();
     private final ZoomInInterpolator mZoomInInterpolator = new ZoomInInterpolator();
 
-    private void updateWhichPagesAcceptDrops(ShrinkPosition state) {
+    private void updateWhichPagesAcceptDrops(ShrinkState state) {
         updateWhichPagesAcceptDropsHelper(state, false, 1, 1);
     }
 
-    private void updateWhichPagesAcceptDropsDuringDrag(ShrinkPosition state, int spanX, int spanY) {
+    private void updateWhichPagesAcceptDropsDuringDrag(ShrinkState state, int spanX, int spanY) {
         updateWhichPagesAcceptDropsHelper(state, true, spanX, spanY);
     }
 
     private void updateWhichPagesAcceptDropsHelper(
-            ShrinkPosition state, boolean isDragHappening, int spanX, int spanY) {
+            ShrinkState state, boolean isDragHappening, int spanX, int spanY) {
         final int screenCount = getChildCount();
         for (int i = 0; i < screenCount; i++) {
             CellLayout cl = (CellLayout) getChildAt(i);
 
             switch (state) {
-                case SHRINK_TO_TOP:
+                case TOP:
                     if (!isDragHappening) {
                         boolean showDropHighlight = i == mCurrentPage;
                         cl.setAcceptsDrops(showDropHighlight);
                         break;
                     }
                     // otherwise, fall through below and mark non-full screens as accepting drops
-                case SHRINK_TO_BOTTOM_HIDDEN:
-                case SHRINK_TO_BOTTOM_VISIBLE:
+                case BOTTOM_HIDDEN:
+                case BOTTOM_VISIBLE:
                     if (!isDragHappening) {
                         // even if a drag isn't happening, we don't want to show a screen as
                         // accepting drops if it doesn't have at least one free cell
@@ -1167,7 +1155,7 @@ public class Workspace extends SmoothPagedView
                     break;
                 default:
                      throw new RuntimeException(
-                             "updateWhichPagesAcceptDropsHelper passed an unhandled ShrinkPosition");
+                             "updateWhichPagesAcceptDropsHelper passed an unhandled ShrinkState");
             }
         }
     }
@@ -1181,19 +1169,25 @@ public class Workspace extends SmoothPagedView
      * appearance).
      *
      */
-    public void onDragStartedWithItemSpans(int spanX, int spanY) {
-        updateWhichPagesAcceptDropsDuringDrag(mShrunkenState, spanX, spanY);
-    }
+    public void onDragStartedWithItemSpans(int spanX, int spanY, Bitmap b) {
+        mIsDragInProcess = true;
 
-    public void onDragStartedWithItemMinSize(int minWidth, int minHeight) {
-        int[] spanXY = CellLayout.rectToCell(getResources(), minWidth, minHeight, null);
-        onDragStartedWithItemSpans(spanXY[0], spanXY[1]);
+        final Canvas canvas = new Canvas();
+
+        // We need to add extra padding to the bitmap to make room for the glow effect
+        final int bitmapPadding = HolographicOutlineHelper.OUTER_BLUR_RADIUS;
+
+        // The outline is used to visualize where the item will land if dropped
+        mDragOutline = createDragOutline(b, canvas, bitmapPadding);
+
+        updateWhichPagesAcceptDropsDuringDrag(mShrinkState, spanX, spanY);
     }
 
     // we call this method whenever a drag and drop in Launcher finishes, even if Workspace was
     // never dragged over
     public void onDragStopped() {
-        updateWhichPagesAcceptDrops(mShrunkenState);
+        mIsDragInProcess = false;
+        updateWhichPagesAcceptDrops(mShrinkState);
     }
 
     @Override
@@ -1203,28 +1197,48 @@ public class Workspace extends SmoothPagedView
 
     // We call this when we trigger an unshrink by clicking on the CellLayout cl
     public void unshrink(CellLayout clThatWasClicked) {
+        unshrink(clThatWasClicked, false);
+    }
+
+    public void unshrink(CellLayout clThatWasClicked, boolean springLoaded) {
         int newCurrentPage = indexOfChild(clThatWasClicked);
         if (mIsSmall) {
-            int newX = getChildOffset(newCurrentPage) - getRelativeChildOffset(newCurrentPage);
-            int delta = newX - mScrollX;
-
-            final int screenCount = getChildCount();
-            for (int i = 0; i < screenCount; i++) {
-                CellLayout cl = (CellLayout) getChildAt(i);
-                cl.setX(cl.getX() + delta);
+            if (springLoaded) {
+                setLayoutScale(SPRING_LOADED_DRAG_SHRINK_FACTOR);
             }
-            setCurrentPage(newCurrentPage);
-            unshrink();
+            moveToNewPageWithoutMovingCellLayouts(newCurrentPage);
+            unshrink(true, springLoaded);
         }
     }
 
-    void unshrink() {
-        unshrink(true);
+
+    public void enterSpringLoadedDragMode(CellLayout clThatWasClicked) {
+        mShrinkState = ShrinkState.SPRING_LOADED;
+        unshrink(clThatWasClicked, true);
+        mDragTargetLayout.onDragEnter();
+    }
+
+    public void exitSpringLoadedDragMode(ShrinkState shrinkState) {
+        shrink(shrinkState);
+        if (mDragTargetLayout != null) {
+            mDragTargetLayout.onDragExit();
+        }
     }
 
     void unshrink(boolean animated) {
+        unshrink(animated, false);
+    }
+
+    void unshrink(boolean animated, boolean springLoaded) {
         if (mIsSmall) {
-            mIsSmall = false;
+            float finalScaleFactor = 1.0f;
+            float finalBackgroundAlpha = 0.0f;
+            if (springLoaded) {
+                finalScaleFactor = SPRING_LOADED_DRAG_SHRINK_FACTOR;
+                finalBackgroundAlpha = 1.0f;
+            } else {
+                mIsSmall = false;
+            }
             if (mAnimator != null) {
                 mAnimator.cancel();
             }
@@ -1250,9 +1264,9 @@ public class Workspace extends SmoothPagedView
                     ObjectAnimator animWithInterpolator = ObjectAnimator.ofPropertyValuesHolder(cl,
                             PropertyValuesHolder.ofFloat("translationX", translation),
                             PropertyValuesHolder.ofFloat("translationY", 0.0f),
-                            PropertyValuesHolder.ofFloat("scaleX", 1.0f),
-                            PropertyValuesHolder.ofFloat("scaleY", 1.0f),
-                            PropertyValuesHolder.ofFloat("backgroundAlpha", 0.0f),
+                            PropertyValuesHolder.ofFloat("scaleX", finalScaleFactor),
+                            PropertyValuesHolder.ofFloat("scaleY", finalScaleFactor),
+                            PropertyValuesHolder.ofFloat("backgroundAlpha", finalBackgroundAlpha),
                             PropertyValuesHolder.ofFloat("alpha", finalAlphaValue),
                             PropertyValuesHolder.ofFloat("rotationY", rotation));
                     animWithInterpolator.setDuration(duration);
@@ -1261,8 +1275,8 @@ public class Workspace extends SmoothPagedView
                 } else {
                     cl.setTranslationX(translation);
                     cl.setTranslationY(0.0f);
-                    cl.setScaleX(1.0f);
-                    cl.setScaleY(1.0f);
+                    cl.setScaleX(finalScaleFactor);
+                    cl.setScaleY(finalScaleFactor);
                     cl.setBackgroundAlpha(0.0f);
                     cl.setAlpha(finalAlphaValue);
                     cl.setRotationY(rotation);
@@ -1325,6 +1339,22 @@ public class Workspace extends SmoothPagedView
         canvas.setBitmap(b);
         drawDragView(v, canvas, padding);
         mOutlineHelper.applyMediumExpensiveOutlineWithBlur(b, canvas, outlineColor, outlineColor);
+        return b;
+    }
+
+    /**
+     * Returns a new bitmap to be used as the object outline, e.g. to visualize the drop location.
+     * Responsibility for the bitmap is transferred to the caller.
+     */
+    private Bitmap createDragOutline(Bitmap orig, Canvas canvas, int padding) {
+        final int outlineColor = getResources().getColor(R.color.drag_outline_color);
+        final Bitmap b = Bitmap.createBitmap(
+                orig.getWidth() + padding, orig.getHeight() + padding, Bitmap.Config.ARGB_8888);
+
+        canvas.setBitmap(b);
+        canvas.drawBitmap(orig, 0, 0, new Paint());
+        mOutlineHelper.applyMediumExpensiveOutlineWithBlur(b, canvas, outlineColor, outlineColor);
+
         return b;
     }
 
@@ -1549,12 +1579,12 @@ public class Workspace extends SmoothPagedView
         }
 
         if (source != this) {
-            if (mIsSmall) {
+            if (!mIsSmall || mWasSpringLoadedOnDragExit) {
+                onDropExternal(originX, originY, dragInfo, mDragTargetLayout, false);
+            } else {
                 // if we drag and drop to small screens, don't pass the touch x/y coords (when we
                 // enable spring-loaded adding, however, we do want to pass the touch x/y coords)
-                onDropExternal(-1, -1, dragInfo, mDragTargetLayout);
-            } else {
-                onDropExternal(originX, originY, dragInfo, mDragTargetLayout);
+                onDropExternal(-1, -1, dragInfo, mDragTargetLayout, false);
             }
         } else if (mDragInfo != null) {
             final View cell = mDragInfo.cell;
@@ -1611,7 +1641,8 @@ public class Workspace extends SmoothPagedView
             // Prepare it to be animated into its new position
             // This must be called after the view has been re-parented
             setPositionForDropAnimation(dragView, originX, originY, parent, cell);
-            parent.onDropChild(cell);
+            boolean animateDrop = !mWasSpringLoadedOnDragExit;
+            parent.onDropChild(cell, animateDrop);
         }
     }
 
@@ -1764,7 +1795,7 @@ public class Workspace extends SmoothPagedView
                 if (isShortcut) {
                     final Intent intent = data.getItem(index).getIntent();
                     Object info = model.infoFromShortcutIntent(mContext, intent, data.getIcon());
-                    onDropExternal(x, y, info, layout);
+                    onDropExternal(x, y, info, layout, false);
                 } else {
                     if (widgets.size() == 1) {
                         // If there is only one item, then go ahead and add and configure
@@ -1953,20 +1984,33 @@ public class Workspace extends SmoothPagedView
             CellLayout layout;
             int originX = x - xOffset;
             int originY = y - yOffset;
-            if (mIsSmall || mIsInUnshrinkAnimation) {
+            boolean shrunken = mIsSmall || mIsInUnshrinkAnimation;
+            if (shrunken) {
                 layout = findMatchingPageForDragOver(
                         dragView, originX, originY, xOffset, yOffset);
 
                 if (layout != mDragTargetLayout) {
                     if (mDragTargetLayout != null) {
                         mDragTargetLayout.setHover(false);
+                        mSpringLoadedDragControllger.onDragExit();
                     }
                     mDragTargetLayout = layout;
                     if (mDragTargetLayout != null && mDragTargetLayout.getAcceptsDrops()) {
                         mDragTargetLayout.setHover(true);
+                        mSpringLoadedDragControllger.onDragEnter(mDragTargetLayout);
                     }
                 }
             } else {
+                layout = getCurrentDropLayout();
+                if (layout != mDragTargetLayout) {
+                    if (mDragTargetLayout != null) {
+                        mDragTargetLayout.onDragExit();
+                    }
+                    layout.onDragEnter();
+                    mDragTargetLayout = layout;
+                }
+            }
+            if (!shrunken || mShrinkState == ShrinkState.SPRING_LOADED) {
                 layout = getCurrentDropLayout();
 
                 final ItemInfo item = (ItemInfo)dragInfo;
@@ -1998,23 +2042,12 @@ public class Workspace extends SmoothPagedView
                     }
                 }
 
-                if (layout != mDragTargetLayout) {
-                    if (mDragTargetLayout != null) {
-                        mDragTargetLayout.onDragExit();
-                    }
-                    layout.onDragEnter();
-                    mDragTargetLayout = layout;
-                }
-
-                // only visualize the drop locations for moving icons within the home screen on
-                // tablet on phone, we also visualize icons dragged in from All Apps
-                if ((!LauncherApplication.isScreenXLarge() || source == this)
-                        && mDragTargetLayout != null) {
+                if (mDragTargetLayout != null) {
                     final View child = (mDragInfo == null) ? null : mDragInfo.cell;
-                    int localOriginX = originX - (mDragTargetLayout.getLeft() - mScrollX);
-                    int localOriginY = originY - (mDragTargetLayout.getTop() - mScrollY);
+                    float[] localOrigin = { originX, originY };
+                    mapPointFromSelfToChild(mDragTargetLayout, localOrigin, null);
                     mDragTargetLayout.visualizeDropLocation(child, mDragOutline,
-                            localOriginX, localOriginY, item.spanX, item.spanY);
+                            (int) localOrigin[0], (int) localOrigin[1], item.spanX, item.spanY);
                 }
             }
         }
@@ -2022,18 +2055,17 @@ public class Workspace extends SmoothPagedView
 
     public void onDragExit(DragSource source, int x, int y, int xOffset,
             int yOffset, DragView dragView, Object dragInfo) {
+        mWasSpringLoadedOnDragExit = mShrinkState == ShrinkState.SPRING_LOADED;
         if (mDragTargetLayout != null) {
             mDragTargetLayout.onDragExit();
         }
         if (!mIsPageMoving) {
             hideOutlines();
         }
+        if (mShrinkState == ShrinkState.SPRING_LOADED) {
+            mLauncher.exitSpringLoadedDragMode();
+        }
         clearAllHovers();
-    }
-
-    private void onDropExternal(int x, int y, Object dragInfo,
-            CellLayout cellLayout) {
-        onDropExternal(x, y, dragInfo, cellLayout, false);
     }
 
     @Override
@@ -2046,25 +2078,25 @@ public class Workspace extends SmoothPagedView
 
     /**
      * Add the item specified by dragInfo to the given layout.
-     * This is basically the equivalent of onDropExternal, except it's not initiated
-     * by drag and drop.
      * @return true if successful
      */
-    public boolean addExternalItemToScreen(Object dragInfo, View layout) {
-        CellLayout cl = (CellLayout) layout;
-        ItemInfo info = (ItemInfo) dragInfo;
-
-        if (cl.findCellForSpan(mTempEstimate, info.spanX, info.spanY)) {
-            onDropExternal(-1, -1, dragInfo, cl, false);
+    public boolean addExternalItemToScreen(ItemInfo dragInfo, CellLayout layout) {
+        if (layout.findCellForSpan(mTempEstimate, dragInfo.spanX, dragInfo.spanY)) {
+            onDropExternal(-1, -1, (ItemInfo) dragInfo, (CellLayout) layout, false);
             return true;
         }
         mLauncher.showOutOfSpaceMessage();
         return false;
     }
 
-    // Drag from somewhere else
-    // NOTE: This can also be called when we are outside of a drag event, when we want
-    // to add an item to one of the workspace screens.
+    /**
+     * Drop an item that didn't originate on one of the workspace screens.
+     * It may have come from Launcher (e.g. from all apps or customize), or it may have
+     * come from another app altogether.
+     *
+     * NOTE: This can also be called when we are outside of a drag event, when we want
+     * to add an item to one of the workspace screens.
+     */
     private void onDropExternal(int x, int y, Object dragInfo,
             CellLayout cellLayout, boolean insertAtFirst) {
         int screen = indexOfChild(cellLayout);
@@ -2090,11 +2122,9 @@ public class Workspace extends SmoothPagedView
                     throw new IllegalStateException("Unknown item type: " + info.itemType);
             }
             cellLayout.onDragExit();
-            cellLayout.animateDrop();
         } else {
             // This is for other drag/drop cases, like dragging from All Apps
             ItemInfo info = (ItemInfo) dragInfo;
-
             View view = null;
 
             switch (info.itemType) {
@@ -2124,7 +2154,8 @@ public class Workspace extends SmoothPagedView
             }
             addInScreen(view, indexOfChild(cellLayout), mTargetCell[0],
                     mTargetCell[1], info.spanX, info.spanY, insertAtFirst);
-            cellLayout.onDropChild(view);
+            boolean animateDrop = !mWasSpringLoadedOnDragExit;
+            cellLayout.onDropChild(view, animateDrop);
             cellLayout.animateDrop();
             CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
 
@@ -2178,6 +2209,7 @@ public class Workspace extends SmoothPagedView
 
     void setLauncher(Launcher launcher) {
         mLauncher = launcher;
+        mSpringLoadedDragControllger = new SpringLoadedDragController(mLauncher);
     }
 
     public void setDragController(DragController dragController) {
@@ -2195,7 +2227,8 @@ public class Workspace extends SmoothPagedView
                 // final Object tag = mDragInfo.cell.getTag();
             }
         } else if (mDragInfo != null) {
-            ((CellLayout) getChildAt(mDragInfo.screen)).onDropChild(mDragInfo.cell);
+            boolean animateDrop = !mWasSpringLoadedOnDragExit;
+            ((CellLayout) getChildAt(mDragInfo.screen)).onDropChild(mDragInfo.cell, animateDrop);
         }
 
         mDragOutline = null;
@@ -2256,6 +2289,7 @@ public class Workspace extends SmoothPagedView
         for (int i = 0; i < childCount; i++) {
             ((CellLayout) getChildAt(i)).setHover(false);
         }
+        mSpringLoadedDragControllger.onDragExit();
     }
 
     @Override

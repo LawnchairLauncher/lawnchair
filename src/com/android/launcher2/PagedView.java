@@ -16,8 +16,7 @@
 
 package com.android.launcher2;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import com.android.launcher.R;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -41,7 +40,8 @@ import android.view.animation.Animation.AnimationListener;
 import android.widget.Checkable;
 import android.widget.Scroller;
 
-import com.android.launcher.R;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * An abstraction of the original Workspace which supports browsing through a
@@ -109,6 +109,9 @@ public abstract class PagedView extends ViewGroup {
     protected boolean mCenterPagesVertically;
     protected boolean mAllowOverScroll = true;
     protected int mUnboundedScrollX;
+
+    // parameter that adjusts the layout to be optimized for CellLayouts with that scale factor
+    protected float mLayoutScale = 1.0f;
 
     protected static final int INVALID_POINTER = -1;
 
@@ -268,7 +271,9 @@ public abstract class PagedView extends ViewGroup {
         if (!mScroller.isFinished()) {
             mScroller.abortAnimation();
         }
-        if (getChildCount() == 0 || currentPage == mCurrentPage) {
+        // don't introduce any checks like mCurrentPage == currentPage here-- if we change the
+        // the default
+        if (getChildCount() == 0) {
             return;
         }
 
@@ -433,6 +438,44 @@ public abstract class PagedView extends ViewGroup {
         setMeasuredDimension(widthSize, heightSize);
     }
 
+    protected void moveToNewPageWithoutMovingCellLayouts(int newCurrentPage) {
+        int newX = getChildOffset(newCurrentPage) - getRelativeChildOffset(newCurrentPage);
+        int delta = newX - mScrollX;
+
+        final int screenCount = getChildCount();
+        for (int i = 0; i < screenCount; i++) {
+            CellLayout cl = (CellLayout) getChildAt(i);
+            cl.setX(cl.getX() + delta);
+        }
+        setCurrentPage(newCurrentPage);
+    }
+
+    // A layout scale of 1.0f assumes that the CellLayouts, in their unshrunken state, have a
+    // scale of 1.0f. A layout scale of 0.8f assumes the CellLayouts have a scale of 0.8f, and
+    // tightens the layout accordingly
+    public void setLayoutScale(float childrenScale) {
+        mLayoutScale = childrenScale;
+
+        // Now we need to do a re-layout, but preserving absolute X and Y coordinates
+        int childCount = getChildCount();
+        float childrenX[] = new float[childCount];
+        float childrenY[] = new float[childCount];
+        for (int i = 0; i < childCount; i++) {
+            final View child = getChildAt(i);
+            childrenX[i] = child.getX();
+            childrenY[i] = child.getY();
+        }
+        onLayout(false, mLeft, mTop, mRight, mBottom);
+        for (int i = 0; i < childCount; i++) {
+            final View child = getChildAt(i);
+            child.setX(childrenX[i]);
+            child.setY(childrenY[i]);
+        }
+        // Also, the page offset has changed  (since the pages are now smaller);
+        // update the page offset, but again preserving absolute X and Y coordinates
+        moveToNewPageWithoutMovingCellLayouts(mCurrentPage);
+    }
+
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         if (mFirstLayout && mCurrentPage >= 0 && mCurrentPage < getChildCount()) {
@@ -454,16 +497,20 @@ public abstract class PagedView extends ViewGroup {
         for (int i = 0; i < childCount; i++) {
             final View child = getChildAt(i);
             if (child.getVisibility() != View.GONE) {
-                final int childWidth = child.getMeasuredWidth();
+                final int childWidth = getScaledMeasuredWidth(child);
                 final int childHeight = child.getMeasuredHeight();
                 int childTop = mPaddingTop;
                 if (mCenterPagesVertically) {
                     childTop += ((getMeasuredHeight() - verticalPadding) - childHeight) / 2;
                 }
+
                 child.layout(childLeft, childTop,
-                        childLeft + childWidth, childTop + childHeight);
+                        childLeft + child.getMeasuredWidth(), childTop + childHeight);
                 childLeft += childWidth + mPageSpacing;
             }
+        }
+        if (mFirstLayout && mCurrentPage >= 0 && mCurrentPage < getChildCount()) {
+            mFirstLayout = false;
         }
     }
 
@@ -475,7 +522,7 @@ public abstract class PagedView extends ViewGroup {
                 final int childCount = getChildCount();
                 for (int i = 0; i < childCount; ++i) {
                     View layout = (View) getChildAt(i);
-                    int childWidth = layout.getMeasuredWidth();
+                    int childWidth = getScaledMeasuredWidth(layout);
                     int halfChildWidth = (childWidth / 2);
                     int childCenter = getChildOffset(i) + halfChildWidth;
 
@@ -491,11 +538,11 @@ public abstract class PagedView extends ViewGroup {
                     int distanceFromScreenCenter = childCenter - screenCenter;
                     if (distanceFromScreenCenter > 0) {
                         if (i > 0) {
-                            d += getChildAt(i - 1).getMeasuredWidth() / 2;
+                            d += getScaledMeasuredWidth(getChildAt(i - 1)) / 2;
                         }
                     } else {
                         if (i < childCount - 1) {
-                            d += getChildAt(i + 1).getMeasuredWidth() / 2;
+                            d += getScaledMeasuredWidth(getChildAt(i + 1)) / 2;
                         }
                     }
                     d += mPageSpacing;
@@ -541,7 +588,7 @@ public abstract class PagedView extends ViewGroup {
         // page.
         final int pageCount = getChildCount();
         if (pageCount > 0) {
-            final int pageWidth = getChildAt(0).getMeasuredWidth();
+            final int pageWidth = getScaledMeasuredWidth(getChildAt(0));
             final int screenWidth = getMeasuredWidth();
             int x = getRelativeChildOffset(0) + pageWidth;
             int leftScreen = 0;
@@ -551,7 +598,7 @@ public abstract class PagedView extends ViewGroup {
                 x += pageWidth + mPageSpacing;
                 // replace above line with this if you don't assume all pages have same width as 0th
                 // page:
-                // x += getChildAt(leftScreen).getMeasuredWidth();
+                // x += getScaledMeasuredWidth(getChildAt(leftScreen));
             }
             rightScreen = leftScreen;
             while (x < mScrollX + screenWidth) {
@@ -560,7 +607,7 @@ public abstract class PagedView extends ViewGroup {
                 // replace above line with this if you don't assume all pages have same width as 0th
                 // page:
                 //if (rightScreen < pageCount) {
-                //    x += getChildAt(rightScreen).getMeasuredWidth();
+                //    x += getScaledMeasuredWidth(getChildAt(rightScreen));
                 //}
             }
             rightScreen = Math.min(getChildCount() - 1, rightScreen);
@@ -1037,7 +1084,7 @@ public abstract class PagedView extends ViewGroup {
         int right;
         for (int i = 0; i < childCount; ++i) {
             left = getRelativeChildOffset(i);
-            right = (left + getChildAt(i).getMeasuredWidth());
+            right = (left + getScaledMeasuredWidth(getChildAt(i)));
             if (left <= relativeOffset && relativeOffset <= right) {
                 return i;
             }
@@ -1055,9 +1102,13 @@ public abstract class PagedView extends ViewGroup {
 
         int offset = getRelativeChildOffset(0);
         for (int i = 0; i < index; ++i) {
-            offset += getChildAt(i).getMeasuredWidth() + mPageSpacing;
+            offset += getScaledMeasuredWidth(getChildAt(i)) + mPageSpacing;
         }
         return offset;
+    }
+
+    protected int getScaledMeasuredWidth(View child) {
+        return (int) (child.getMeasuredWidth() * mLayoutScale + 0.5f);
     }
 
     int getPageNearestToCenterOfScreen() {
@@ -1067,7 +1118,7 @@ public abstract class PagedView extends ViewGroup {
         final int childCount = getChildCount();
         for (int i = 0; i < childCount; ++i) {
             View layout = (View) getChildAt(i);
-            int childWidth = layout.getMeasuredWidth();
+            int childWidth = getScaledMeasuredWidth(layout);
             int halfChildWidth = (childWidth / 2);
             int childCenter = getChildOffset(i) + halfChildWidth;
             int distanceFromScreenCenter = Math.abs(childCenter - screenCenter);
