@@ -18,21 +18,29 @@ package com.android.launcher2;
 
 import com.android.launcher.R;
 
+import org.xmlpull.v1.XmlPullParser;
+
+import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Bitmap.Config;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.Slog;
+import android.util.TypedValue;
+import android.util.Xml;
 import android.view.ActionMode;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -47,6 +55,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
 
 public class CustomizePagedView extends PagedView
     implements View.OnLongClickListener, View.OnClickListener, View.OnTouchListener,
@@ -269,7 +278,8 @@ public class CustomizePagedView extends PagedView
 
         // get the list of wallpapers
         Intent wallpapersIntent = new Intent(Intent.ACTION_SET_WALLPAPER);
-        mWallpaperList = mPackageManager.queryIntentActivities(wallpapersIntent, 0);
+        mWallpaperList = mPackageManager.queryIntentActivities(wallpapersIntent,
+                PackageManager.GET_META_DATA);
         Collections.sort(mWallpaperList, resolveInfoComparator);
 
         invalidatePageDataAndIconCache();
@@ -563,6 +573,63 @@ public class CustomizePagedView extends PagedView
         mCanvas.restore();
     }
 
+    /*
+     * This method fetches an xml file specified in the manifest identified by
+     * WallpaperManager.WALLPAPER_PREVIEW_META_DATA). The xml file specifies
+     * an image which will be used as the wallpaper preview for an activity
+     * which responds to ACTION_SET_WALLPAPER. This image is returned and used
+     * in the customize drawer.
+     */
+    private Drawable parseWallpaperPreviewXml(ComponentName component, ResolveInfo ri) {
+        Drawable d = null;
+
+        ActivityInfo activityInfo = ri.activityInfo;
+        XmlResourceParser parser = null;
+        try {
+            parser = activityInfo.loadXmlMetaData(mPackageManager,
+                    WallpaperManager.WALLPAPER_PREVIEW_META_DATA);
+            if (parser == null) {
+                Slog.w(TAG, "No " + WallpaperManager.WALLPAPER_PREVIEW_META_DATA + " meta-data for "
+                        + "wallpaper provider '" + component + '\'');
+                return null;
+            }
+
+            AttributeSet attrs = Xml.asAttributeSet(parser);
+
+            int type;
+            while ((type=parser.next()) != XmlPullParser.END_DOCUMENT
+                    && type != XmlPullParser.START_TAG) {
+                // drain whitespace, comments, etc.
+            }
+
+            String nodeName = parser.getName();
+            if (!"wallpaper-preview".equals(nodeName)) {
+                Slog.w(TAG, "Meta-data does not start with wallpaper-preview tag for "
+                        + "wallpaper provider '" + component + '\'');
+                return null;
+            }
+
+            // If metaData was null, we would have returned earlier when getting
+            // the parser No need to do the check here
+            Resources res = mPackageManager.getResourcesForApplication(
+                    activityInfo.applicationInfo);
+
+            TypedArray sa = res.obtainAttributes(attrs,
+                    com.android.internal.R.styleable.WallpaperPreviewInfo);
+
+            TypedValue value = sa.peekValue(
+                    com.android.internal.R.styleable.WallpaperPreviewInfo_staticWallpaperPreview);
+            if (value == null) return null;
+
+            return res.getDrawable(value.resourceId);
+        } catch (Exception e) {
+            Slog.w(TAG, "XML parsing failed for wallpaper provider '" + component + '\'', e);
+            return null;
+        } finally {
+            if (parser != null) parser.close();
+        }
+    }
+
     /**
      * This method will extract the preview image specified by the wallpaper source provider (if it
      * exists) otherwise, it will try to generate a default image preview.
@@ -578,21 +645,31 @@ public class CustomizePagedView extends PagedView
         int width = (int) (dim * sScaleFactor);
         int height = (int) (dim * sScaleFactor);
         final Bitmap bitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
-        final Drawable background = resources.getDrawable(R.drawable.default_widget_preview);
+
+        Drawable background = parseWallpaperPreviewXml(
+                new ComponentName(info.activityInfo.packageName, info.activityInfo.name), info);
+        boolean foundCustomDrawable = background != null;
+
+        if (!foundCustomDrawable) {
+            background = resources.getDrawable(R.drawable.default_widget_preview);
+        }
+
         renderDrawableToBitmap(background, bitmap, 0, 0, width, height);
 
-        // Draw the icon flush left
-        try {
-            final IconCache iconCache =
-                ((LauncherApplication) mLauncher.getApplication()).getIconCache();
-            Drawable icon = new FastBitmapDrawable(Utilities.createIconBitmap(
-                    iconCache.getFullResIcon(info, mPackageManager), mContext));
+        // If we don't have a custom icon, we use the app icon on the default background
+        if (!foundCustomDrawable) {
+            try {
+                final IconCache iconCache =
+                    ((LauncherApplication) mLauncher.getApplication()).getIconCache();
+                Drawable icon = new FastBitmapDrawable(Utilities.createIconBitmap(
+                        iconCache.getFullResIcon(info, mPackageManager), mContext));
 
-            final int iconSize = minDim / 2;
-            final int offset = iconSize / 4;
-            renderDrawableToBitmap(icon, null, offset, offset, iconSize, iconSize);
-        } catch (Resources.NotFoundException e) {
-            // if we can't find the icon, then just don't draw it
+                final int iconSize = minDim / 2;
+                final int offset = iconSize / 4;
+                renderDrawableToBitmap(icon, null, offset, offset, iconSize, iconSize);
+            } catch (Resources.NotFoundException e) {
+                // if we can't find the icon, then just don't draw it
+            }
         }
 
         FastBitmapDrawable drawable = new FastBitmapDrawable(bitmap);
