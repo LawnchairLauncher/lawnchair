@@ -86,10 +86,10 @@
 
         <activity
             android:name="com.android.launcher2.WallpaperChooser"
+            style="@style/config_orientation"
             android:label="@string/pick_wallpaper"
             android:icon="@drawable/ic_launcher_wallpaper"
             android:theme="@style/Theme.WallpaperPicker"
-            android:screenOrientation="nosensor"
             android:finishOnCloseSystemDialogs="true">
             <intent-filter>
                 <action android:name="android.intent.action.SET_WALLPAPER" />

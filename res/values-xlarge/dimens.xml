@@ -51,5 +51,6 @@
     <dimen name="delete_zone_padding">20dip</dimen>
 
     <!-- dimensions for the wallpaper picker wallpaper thumbnail width -->
-    <dimen name="wallpaper_small_width">170dp</dimen>
+    <dimen name="wallpaper_chooser_grid_width">230dp</dimen>
+    <dimen name="wallpaper_chooser_grid_height">185dp</dimen>
 </resources>

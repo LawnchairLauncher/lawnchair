@@ -15,9 +15,9 @@
 -->
 
 <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/wallpaper_small_width"
-    android:layout_height="wrap_content"
-    android:padding="5dp"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/wallpaper_chooser_grid_height"
+    android:padding="6dp"
     android:scaleType="fitXY"
     android:adjustViewBounds="false"
     android:focusable="false" />

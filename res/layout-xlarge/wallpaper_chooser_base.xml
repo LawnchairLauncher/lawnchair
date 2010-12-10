@@ -18,13 +18,6 @@
 */
 -->
 
-<GridView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/gallery"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="400dp"
-    android:layout_gravity="center"
-    android:numColumns="3"
-    android:stretchMode="spacingWidth"
-    android:columnWidth="@dimen/wallpaper_chooser_grid_width"
-    android:verticalSpacing="15dp"
-    android:drawSelectorOnTop="false" />
+    android:layout_height="match_parent" />
