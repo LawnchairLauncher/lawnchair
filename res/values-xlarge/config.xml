@@ -51,6 +51,7 @@
     <!-- The slope, in percent, of the drag movement needed to drag an item out of the customization
          drawer (y / x * 100%)  -->
     <integer name="config_customizationDrawerDragSlopeThreshold">150</integer>
+    <integer name="config_allAppsDrawerDragSlopeThreshold">150</integer>
 
     <style name="config_orientation">
         <item name="@android:screenOrientation">unspecified</item>
