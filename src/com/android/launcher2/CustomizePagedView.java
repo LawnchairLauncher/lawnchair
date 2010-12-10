@@ -103,6 +103,9 @@ public class CustomizePagedView extends PagedView
     // The size of the items on the wallpaper tab
     private int mWallpaperCellHSpan;
 
+    // The max number of wallpaper cells to take a "page" of wallpaper items
+    private int mMaxWallpaperCellHSpan;
+
     // The raw sources of data for each of the different tabs of the customization page
     private List<AppWidgetProviderInfo> mWidgetList;
     private List<ResolveInfo> mShortcutList;
@@ -140,6 +143,7 @@ public class CustomizePagedView extends PagedView
         TypedArray a;
         a = context.obtainStyledAttributes(attrs, R.styleable.CustomizePagedView, defStyle, 0);
         mWallpaperCellHSpan = a.getInt(R.styleable.CustomizePagedView_wallpaperCellSpanX, 4);
+        mMaxWallpaperCellHSpan = a.getInt(R.styleable.CustomizePagedView_wallpaperCellCountX, 8);
         mMaxWidgetsCellHSpan = a.getInt(R.styleable.CustomizePagedView_widgetCellCountX, 8);
         a.recycle();
         a = context.obtainStyledAttributes(attrs, R.styleable.PagedView, defStyle, 0);
@@ -926,7 +930,7 @@ public class CustomizePagedView extends PagedView
         // We need to repopulate the LinearLayout for the wallpaper pages
         removeAllViews();
         int numPages = (int) Math.ceil((float) (mWallpaperList.size() * mWallpaperCellHSpan) /
-                mMaxWidgetsCellHSpan);
+                mMaxWallpaperCellHSpan);
         for (int i = 0; i < numPages; ++i) {
             LinearLayout layout = new PagedViewExtendedLayout(getContext());
             layout.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -944,7 +948,7 @@ public class CustomizePagedView extends PagedView
         LinearLayout layout = (LinearLayout) getChildAt(page);
         layout.removeAllViews();
         final int count = mWallpaperList.size();
-        final int numItemsPerPage = mMaxWidgetsCellHSpan / mWallpaperCellHSpan;
+        final int numItemsPerPage = mMaxWallpaperCellHSpan / mWallpaperCellHSpan;
         final int startIndex = page * numItemsPerPage;
         final int endIndex = Math.min(count, startIndex + numItemsPerPage);
         for (int i = startIndex; i < endIndex; ++i) {

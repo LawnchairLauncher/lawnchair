@@ -169,16 +169,16 @@ public class CellLayout extends ViewGroup implements Dimmable {
         final Resources res = getResources();
 
         if (LauncherApplication.isScreenXLarge()) {
-            mBackgroundMini = res.getDrawable(R.drawable.mini_home_screen_bg);
+            mBackgroundMini = res.getDrawable(R.drawable.homescreen_small_blue);
             mBackgroundMini.setFilterBitmap(true);
-            mBackground = res.getDrawable(R.drawable.home_screen_bg);
+            mBackground = res.getDrawable(R.drawable.homescreen_large_blue);
             mBackground.setFilterBitmap(true);
-            mBackgroundMiniHover = res.getDrawable(R.drawable.mini_home_screen_bg_hover);
+            mBackgroundMiniHover = res.getDrawable(R.drawable.homescreen_small_green_strong);
             mBackgroundMiniHover.setFilterBitmap(true);
-            mBackgroundHover = res.getDrawable(R.drawable.home_screen_bg_hover);
+            mBackgroundHover = res.getDrawable(R.drawable.homescreen_large_green_strong);
             mBackgroundHover.setFilterBitmap(true);
             mBackgroundMiniAcceptsDrops = res.getDrawable(
-                    R.drawable.mini_home_screen_bg_accepts_drops);
+                    R.drawable.homescreen_small_green);
             mBackgroundMiniAcceptsDrops.setFilterBitmap(true);
         }
 

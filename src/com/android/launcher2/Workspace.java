@@ -727,8 +727,14 @@ public class Workspace extends SmoothPagedView
         // if shrinkToBottom() is called on initialization, it has to be deferred
         // until after the first call to onLayout so that it has the correct width
         if (mWaitingToShrink) {
-            shrink(mWaitingToShrinkState, false);
-            mWaitingToShrink = false;
+            // shrink can trigger a synchronous onLayout call, so we
+            // post this to avoid a stack overflow / tangled onLayout calls
+            post(new Runnable() {
+                public void run() {
+                    shrink(mWaitingToShrinkState, false);
+                    mWaitingToShrink = false;
+                }
+            });
         }
 
         if (LauncherApplication.isInPlaceRotationEnabled()) {
@@ -753,7 +759,6 @@ public class Workspace extends SmoothPagedView
                 mCustomizeTrayBackground.draw(canvas);
             }
         }
-
         super.onDraw(canvas);
     }
 
