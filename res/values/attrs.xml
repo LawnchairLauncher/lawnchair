@@ -107,6 +107,8 @@
     <declare-styleable name="CustomizePagedView">
         <!-- The cell span of an item in the wallpapers tab -->
         <attr name="wallpaperCellSpanX" format="integer" />
+        <!-- The max cell span of all items in a particular wallpaper tab page -->
+        <attr name="wallpaperCellCountX" format="integer" />
         <!-- The number of horizontal cells for the widget tab -->
         <attr name="widgetCellCountX" format="integer" />
     </declare-styleable>
