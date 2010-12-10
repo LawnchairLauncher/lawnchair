@@ -24,10 +24,10 @@ import java.util.List;
 import org.xmlpull.v1.XmlPullParser;
 
 import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.TimeInterpolator;
-import android.animation.Animator.AnimatorListener;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -41,8 +41,9 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Bitmap.Config;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -571,10 +572,10 @@ public class CustomizePagedView extends PagedView
         return super.onTouchEvent(ev);
     }
 
-    Bitmap drawableToBitmap(Drawable d) {
-        Bitmap b = Bitmap.createBitmap(d.getIntrinsicWidth(), d.getIntrinsicHeight(),
-                Bitmap.Config.ARGB_8888);
+    Bitmap drawableToBitmap(Drawable d, View v) {
+        Bitmap b = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(b);
+        c.translate((v.getWidth() - d.getIntrinsicWidth()) / 2, v.getPaddingTop());
         d.draw(c);
         return b;
     }
@@ -595,10 +596,10 @@ public class CustomizePagedView extends PagedView
         case WidgetCustomization: {
             // Get the widget preview as the drag representation
             final LinearLayout l = (LinearLayout) v;
-            final Drawable icon = ((ImageView) l.findViewById(R.id.widget_preview)).getDrawable();
-            Bitmap b = drawableToBitmap(icon);
+            final ImageView i = (ImageView) l.findViewById(R.id.widget_preview);
+            final Drawable icon = i.getDrawable();
+            Bitmap b = drawableToBitmap(icon, i);
             PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo) v.getTag();
-            final View dragView = v.findViewById(R.id.widget_preview);
 
             int[] spanXY = CellLayout.rectToCell(
                     getResources(), createWidgetInfo.minWidth, createWidgetInfo.minHeight, null);
@@ -606,30 +607,35 @@ public class CustomizePagedView extends PagedView
             createWidgetInfo.spanY = spanXY[1];
             mLauncher.getWorkspace().onDragStartedWithItemSpans(spanXY[0], spanXY[1], b);
             mDragController.startDrag(
-                    v, b, this, createWidgetInfo, DragController.DRAG_ACTION_COPY, null);
-
+                    i, b, this, createWidgetInfo, DragController.DRAG_ACTION_COPY, null);
+            b.recycle();
             return true;
         }
         case ShortcutCustomization: {
             // get icon (top compound drawable, index is 1)
-            final Drawable icon = ((TextView) v).getCompoundDrawables()[1];
-            Bitmap b = drawableToBitmap(icon);
+            final TextView tv = (TextView) v;
+            final Drawable icon = tv.getCompoundDrawables()[1];
+            Bitmap b = drawableToBitmap(icon, tv);
             PendingAddItemInfo createItemInfo = (PendingAddItemInfo) v.getTag();
-            mDragController.startDrag(
-                    v, b, this, createItemInfo, DragController.DRAG_ACTION_COPY, null);
+
             mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1, b);
+            mDragController.startDrag(v, b, this, createItemInfo, DragController.DRAG_ACTION_COPY,
+                    null);
+            b.recycle();
             return true;
         }
         case ApplicationCustomization: {
             // Pick up the application for dropping
             // get icon (top compound drawable, index is 1)
-            final Drawable icon = ((TextView) v).getCompoundDrawables()[1];
-            Bitmap b = drawableToBitmap(icon);
+            final TextView tv = (TextView) v;
+            final Drawable icon = tv.getCompoundDrawables()[1];
+            Bitmap b = drawableToBitmap(icon, tv);
             ApplicationInfo app = (ApplicationInfo) v.getTag();
             app = new ApplicationInfo(app);
 
-            mDragController.startDrag(v, b, this, app, DragController.DRAG_ACTION_COPY, null);
             mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1, b);
+            mDragController.startDrag(v, b, this, app, DragController.DRAG_ACTION_COPY, null);
+            b.recycle();
             return true;
         }
         }
