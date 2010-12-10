@@ -53,8 +53,7 @@
     <skip />
     <!-- no translation found for external_drop_widget_error (4976816434597126575) -->
     <skip />
-    <!-- no translation found for external_drop_widget_pick_title (4481311720134376218) -->
-    <skip />
+    <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Pasirinkite norimą sukurti valdiklį"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Aplanko pavadinimas"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Sukurti aplankui naują pavadinimą"</string>
     <string name="rename_action" msgid="6016003384693240896">"Gerai"</string>
