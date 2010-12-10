@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -246,16 +247,6 @@ public class AllAppsPagedView extends PagedView
             return false;
         }
 
-        if (v instanceof Checkable) {
-            // In preparation for drag, we always reset the checked grand children regardless of
-            // what choice mode we are in
-            resetCheckedGrandchildren();
-
-            // Toggle the selection on the dragged app
-            Checkable c = (Checkable) v;
-            c.toggle();
-        }
-
         // Start drag mode after the item is selected
         setupDragMode();
 
@@ -263,13 +254,30 @@ public class AllAppsPagedView extends PagedView
         app = new ApplicationInfo(app);
 
         // get icon (top compound drawable, index is 1)
-        final Drawable icon = ((TextView) v).getCompoundDrawables()[1];
-        Bitmap b = Bitmap.createBitmap(icon.getIntrinsicWidth(), icon.getIntrinsicHeight(),
+        final TextView tv = (TextView) v;
+        final Drawable icon = tv.getCompoundDrawables()[1];
+        Bitmap b = Bitmap.createBitmap(v.getWidth(), v.getHeight(),
                 Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(b);
+        c.translate((v.getWidth() - icon.getIntrinsicWidth()) / 2, v.getPaddingTop());
         icon.draw(c);
+
+        // We toggle the checked state _after_ we create the view for the drag in case toggling the
+        // checked state changes the view's look
+        if (v instanceof Checkable) {
+            // In preparation for drag, we always reset the checked grand children regardless of
+            // what choice mode we are in
+            resetCheckedGrandchildren();
+
+            // Toggle the selection on the dragged app
+            Checkable checkable = (Checkable) v;
+            checkable.toggle();
+        }
+
+        // Start the drag
         mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1, b);
         mDragController.startDrag(v, b, this, app, DragController.DRAG_ACTION_COPY, null);
+        b.recycle();
         return true;
     }
 
