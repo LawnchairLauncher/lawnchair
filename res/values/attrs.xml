@@ -68,10 +68,6 @@
         <attr name="blurColor" format="color" />
         <!-- The outline color of the holographic outline -->
         <attr name="outlineColor" format="color" />
-        <!-- The checked blur color of the holographic outline -->
-        <attr name="checkedBlurColor" format="color" />
-        <!-- The checked outline color of the holographic outline -->
-        <attr name="checkedOutlineColor" format="color" />
     </declare-styleable>
 
     <!-- PagedViewWidget specific attributes. These attributes are used to

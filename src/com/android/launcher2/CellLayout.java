@@ -139,6 +139,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
         // A ViewGroup usually does not draw, but CellLayout needs to draw a rectangle to show
         // the user where a dragged item will land when dropped.
         setWillNotDraw(false);
+        setClipChildren(false);
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CellLayout, defStyle, 0);
 

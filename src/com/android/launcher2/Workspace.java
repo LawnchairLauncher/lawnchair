@@ -62,6 +62,7 @@ import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -116,6 +117,11 @@ public class Workspace extends SmoothPagedView
     private float mBackgroundAlpha = 0;
     private float mOverScrollMaxBackgroundAlpha = 0.0f;
     private int mOverScrollPageIndex = -1;
+
+    private View mCustomizationDrawer;
+    private View mCustomizationDrawerContent;
+    private int[] mCustomizationDrawerPos = new int[2];
+    private float[] mCustomizationDrawerTransformedPos = new float[2];
 
     private final WallpaperManager mWallpaperManager;
 
@@ -754,6 +760,21 @@ public class Workspace extends SmoothPagedView
             mBackground.setBounds(mScrollX, 0, mScrollX + getMeasuredWidth(), getMeasuredHeight());
             mBackground.draw(canvas);
             if (mDrawCustomizeTrayBackground) {
+                // Find out where to offset the gradient for the customization tray content
+                mCustomizationDrawer.getLocationOnScreen(mCustomizationDrawerPos);
+                final Matrix m = mCustomizationDrawer.getMatrix();
+                mCustomizationDrawerTransformedPos[0] = 0.0f;
+                mCustomizationDrawerTransformedPos[1] = mCustomizationDrawerContent.getTop();
+                m.mapPoints(mCustomizationDrawerTransformedPos);
+
+                // Draw the bg gradient
+                final int  offset = (int) (mCustomizationDrawerPos[1] +
+                        mCustomizationDrawerTransformedPos[1]);
+                mBackground.setBounds(mScrollX, offset, mScrollX + getMeasuredWidth(),
+                        offset + getMeasuredHeight());
+                mBackground.draw(canvas);
+
+                // Draw the bg glow
                 mCustomizeTrayBackground.setAlpha(alpha);
                 mCustomizeTrayBackground.setBounds(mScrollX, 0, mScrollX + getMeasuredWidth(),
                         getMeasuredHeight());
@@ -2216,6 +2237,10 @@ public class Workspace extends SmoothPagedView
     void setLauncher(Launcher launcher) {
         mLauncher = launcher;
         mSpringLoadedDragControllger = new SpringLoadedDragController(mLauncher);
+
+        mCustomizationDrawer = mLauncher.findViewById(R.id.customization_drawer);
+        mCustomizationDrawerContent =
+            mCustomizationDrawer.findViewById(com.android.internal.R.id.tabcontent);
     }
 
     public void setDragController(DragController dragController) {
