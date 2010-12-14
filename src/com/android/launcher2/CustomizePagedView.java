@@ -16,10 +16,7 @@
 
 package com.android.launcher2;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import com.android.launcher.R;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -55,7 +52,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -63,12 +59,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.launcher.R;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 
-public class CustomizePagedView extends PagedView
-    implements View.OnLongClickListener, View.OnClickListener, View.OnTouchListener,
-                DragSource, ActionMode.Callback {
+public class CustomizePagedView extends PagedViewWithDraggableItems
+    implements View.OnClickListener, DragSource, ActionMode.Callback {
 
     public enum CustomizationType {
         WidgetCustomization,
@@ -80,12 +78,9 @@ public class CustomizePagedView extends PagedView
     private static final String TAG = "CustomizeWorkspace";
     private static final boolean DEBUG = false;
 
-    private View mLastTouchedItem;
     private Launcher mLauncher;
     private DragController mDragController;
     private PackageManager mPackageManager;
-    private boolean mIsDragging;
-    private float mDragSlopeThreshold;
 
     private CustomizationType mCustomizationType;
 
@@ -158,8 +153,8 @@ public class CustomizePagedView extends PagedView
         mInflater = LayoutInflater.from(context);
 
         final Resources r = context.getResources();
-        mDragSlopeThreshold =
-            r.getInteger(R.integer.config_customizationDrawerDragSlopeThreshold) / 100.0f;
+        setDragSlopeThreshold(
+                r.getInteger(R.integer.config_customizationDrawerDragSlopeThreshold) / 100.0f);
 
         setVisibility(View.GONE);
         setSoundEffectsEnabled(false);
@@ -324,8 +319,6 @@ public class CustomizePagedView extends PagedView
 
         // End the current choice mode so that we don't carry selections across tabs
         endChoiceMode();
-        // Reset the touch item (if we are mid-dragging)
-        mLastTouchedItem = null;
     }
 
     @Override
@@ -480,98 +473,6 @@ public class CustomizePagedView extends PagedView
         }
     }
 
-    @Override
-    public boolean onLongClick(View v) {
-        // Return early if this is not initiated from a touch
-        if (!v.isInTouchMode()) return false;
-        // Return early if we are still animating the pages
-        if (mNextPage != INVALID_PAGE) return false;
-        return beginDragging(v);
-    }
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        mLastTouchedItem = v;
-        return false;
-    }
-
-    /*
-     * Determines if we should change the touch state to start scrolling after the
-     * user moves their touch point too far.
-     */
-    protected void determineScrollingStart(MotionEvent ev) {
-        if (!mIsDragging) super.determineScrollingStart(ev);
-    }
-
-    /*
-     * Determines if we should change the touch state to start dragging after the
-     * user moves their touch point far enough.
-     */
-    protected void determineDraggingStart(MotionEvent ev) {
-        /*
-         * Locally do absolute value. mLastMotionX is set to the y value
-         * of the down event.
-         */
-        final int pointerIndex = ev.findPointerIndex(mActivePointerId);
-        final float x = ev.getX(pointerIndex);
-        final float y = ev.getY(pointerIndex);
-        final int xDiff = (int) Math.abs(x - mLastMotionX);
-        final int yDiff = (int) Math.abs(y - mLastMotionY);
-
-        final int touchSlop = mTouchSlop;
-        boolean yMoved = yDiff > touchSlop;
-        boolean isUpwardMotion = (yDiff / (float) xDiff) > mDragSlopeThreshold;
-
-        if (isUpwardMotion && yMoved && mLastTouchedItem != null) {
-            // Drag if the user moved far enough along the Y axis
-            beginDragging(mLastTouchedItem);
-
-            // Cancel any pending longpress
-            if (mAllowLongPress) {
-                mAllowLongPress = false;
-                // Try canceling the long press. It could also have been scheduled
-                // by a distant descendant, so use the mAllowLongPress flag to block
-                // everything
-                final View currentPage = getPageAt(mCurrentPage);
-                if (currentPage != null) {
-                    currentPage.cancelLongPress();
-                }
-            }
-        }
-    }
-
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        final int action = ev.getAction();
-        switch (action & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_DOWN:
-                mIsDragging = false;
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (mTouchState != TOUCH_STATE_SCROLLING && !mIsDragging) {
-                    determineDraggingStart(ev);
-                }
-                break;
-        }
-        return super.onInterceptTouchEvent(ev);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        final int action = ev.getAction();
-        switch (action & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_DOWN:
-                mIsDragging = false;
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (mTouchState != TOUCH_STATE_SCROLLING && !mIsDragging) {
-                    determineDraggingStart(ev);
-                }
-                break;
-        }
-        return super.onTouchEvent(ev);
-    }
-
     Bitmap drawableToBitmap(Drawable d, View v) {
         Bitmap b = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(b);
@@ -585,12 +486,12 @@ public class CustomizePagedView extends PagedView
                 v.findViewById(R.id.widget_preview) : v;
     }
 
-    private boolean beginDragging(View v) {
+    protected boolean beginDragging(View v) {
         // End the current choice mode before we start dragging anything
         if (isChoiceMode(CHOICE_MODE_SINGLE)) {
             endChoiceMode();
         }
-        mIsDragging = true;
+        super.beginDragging(v);
 
         switch (mCustomizationType) {
         case WidgetCustomization: {

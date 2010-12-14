@@ -32,4 +32,8 @@
 
     <!-- The distance at which the animation should take the max duration -->
     <integer name="config_dropAnimMaxDist">800</integer>
+
+    <style name="config_orientation">
+        <item name="@android:screenOrientation">nosensor</item>
+    </style>
 </resources>

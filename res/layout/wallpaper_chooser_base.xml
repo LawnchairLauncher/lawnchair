@@ -19,7 +19,10 @@
 -->
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/wallpaper_chooser_base"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <fragment class="com.android.launcher2.WallpaperChooserDialogFragment"
+        android:id="@+id/wallpaper_chooser_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </FrameLayout>

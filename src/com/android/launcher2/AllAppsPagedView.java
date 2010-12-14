@@ -20,13 +20,13 @@ import com.android.launcher.R;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -41,9 +41,8 @@ import java.util.HashSet;
  * An implementation of PagedView that populates the pages of the workspace
  * with all of the user's applications.
  */
-public class AllAppsPagedView extends PagedView
-        implements AllAppsView, View.OnClickListener, View.OnLongClickListener, DragSource,
-        DropTarget {
+public class AllAppsPagedView extends PagedViewWithDraggableItems implements AllAppsView,
+    View.OnClickListener, DragSource, DropTarget {
 
     private static final String TAG = "AllAppsPagedView";
     private static final boolean DEBUG = false;
@@ -84,6 +83,10 @@ public class AllAppsPagedView extends PagedView
         mInflater = LayoutInflater.from(context);
         a.recycle();
         setSoundEffectsEnabled(false);
+
+        Resources r = context.getResources();
+        setDragSlopeThreshold(
+                r.getInteger(R.integer.config_allAppsDrawerDragSlopeThreshold) / 100.0f);
     }
 
     @Override
@@ -242,10 +245,11 @@ public class AllAppsPagedView extends PagedView
     }
 
     @Override
-    public boolean onLongClick(View v) {
+    protected boolean beginDragging(View v) {
         if (!v.isInTouchMode()) {
             return false;
         }
+        super.beginDragging(v);
 
         // Start drag mode after the item is selected
         setupDragMode();
@@ -475,6 +479,7 @@ public class AllAppsPagedView extends PagedView
                         R.layout.all_apps_paged_view_application, layout, false);
                 text.setOnClickListener(this);
                 text.setOnLongClickListener(this);
+                text.setOnTouchListener(this);
 
                 layout.addViewToCellLayout(text, -1, i,
                     new PagedViewCellLayout.LayoutParams(0, 0, 1, 1));
