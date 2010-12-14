@@ -45,7 +45,6 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
     View.OnClickListener, DragSource, DropTarget {
 
     private static final String TAG = "AllAppsPagedView";
-    private static final boolean DEBUG = false;
 
     private Launcher mLauncher;
     private DragController mDragController;

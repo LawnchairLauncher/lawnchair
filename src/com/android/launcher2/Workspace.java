@@ -160,7 +160,7 @@ public class Workspace extends SmoothPagedView
     private float[] mTempDragBottomRightCoordinates = new float[2];
     private Matrix mTempInverseMatrix = new Matrix();
 
-    private SpringLoadedDragController mSpringLoadedDragControllger;
+    private SpringLoadedDragController mSpringLoadedDragController;
 
     private static final int DEFAULT_CELL_COUNT_X = 4;
     private static final int DEFAULT_CELL_COUNT_Y = 4;
@@ -185,8 +185,6 @@ public class Workspace extends SmoothPagedView
 
     /** If mInScrollArea is true, the direction of the scroll. */
     private int mPendingScrollDirection = DragController.SCROLL_NONE;
-
-    private boolean mInDragMode = false;
 
     private final HolographicOutlineHelper mOutlineHelper = new HolographicOutlineHelper();
     private Bitmap mDragOutline = null;
@@ -2019,12 +2017,12 @@ public class Workspace extends SmoothPagedView
                 if (layout != mDragTargetLayout) {
                     if (mDragTargetLayout != null) {
                         mDragTargetLayout.setHover(false);
-                        mSpringLoadedDragControllger.onDragExit();
+                        mSpringLoadedDragController.onDragExit();
                     }
                     mDragTargetLayout = layout;
                     if (mDragTargetLayout != null && mDragTargetLayout.getAcceptsDrops()) {
                         mDragTargetLayout.setHover(true);
-                        mSpringLoadedDragControllger.onDragEnter(mDragTargetLayout);
+                        mSpringLoadedDragController.onDragEnter(mDragTargetLayout);
                     }
                 }
             } else {
@@ -2236,7 +2234,7 @@ public class Workspace extends SmoothPagedView
 
     void setLauncher(Launcher launcher) {
         mLauncher = launcher;
-        mSpringLoadedDragControllger = new SpringLoadedDragController(mLauncher);
+        mSpringLoadedDragController = new SpringLoadedDragController(mLauncher);
 
         mCustomizationDrawer = mLauncher.findViewById(R.id.customization_drawer);
         mCustomizationDrawerContent =
@@ -2320,7 +2318,7 @@ public class Workspace extends SmoothPagedView
         for (int i = 0; i < childCount; i++) {
             ((CellLayout) getChildAt(i)).setHover(false);
         }
-        mSpringLoadedDragControllger.onDragExit();
+        mSpringLoadedDragController.onDragExit();
     }
 
     @Override

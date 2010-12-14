@@ -55,7 +55,6 @@ public class HolographicOutlineHelper {
         sMediumInnerBlurMaskFilter = new BlurMaskFilter(scale * 2.0f, BlurMaskFilter.Blur.NORMAL);
     }
 
-    private static final MaskFilter sFineClipTable = TableMaskFilter.CreateClipTable(0, 20);
     private static final MaskFilter sCoarseClipTable = TableMaskFilter.CreateClipTable(0, 200);
 
     private int[] mTempOffset = new int[2];

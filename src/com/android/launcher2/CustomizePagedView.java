@@ -76,7 +76,6 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
     }
 
     private static final String TAG = "CustomizeWorkspace";
-    private static final boolean DEBUG = false;
 
     private Launcher mLauncher;
     private DragController mDragController;
