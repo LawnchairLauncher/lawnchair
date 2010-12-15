@@ -31,26 +31,30 @@ public class HolographicOutlineHelper {
     private final Paint mErasePaint = new Paint();
     private final Paint mAlphaClipPaint = new Paint();
 
-    public static final int OUTER_BLUR_RADIUS;
+    public static final int MAX_OUTER_BLUR_RADIUS;
 
+    private static final BlurMaskFilter sExtraThickOuterBlurMaskFilter;
     private static final BlurMaskFilter sThickOuterBlurMaskFilter;
     private static final BlurMaskFilter sMediumOuterBlurMaskFilter;
     private static final BlurMaskFilter sThinOuterBlurMaskFilter;
     private static final BlurMaskFilter sThickInnerBlurMaskFilter;
+    private static final BlurMaskFilter sExtraThickInnerBlurMaskFilter;
     private static final BlurMaskFilter sMediumInnerBlurMaskFilter;
 
     private static final int THICK = 0;
     private static final int MEDIUM = 1;
+    private static final int EXTRA_THICK = 2;
 
     static {
         final float scale = LauncherApplication.getScreenDensity();
 
-        OUTER_BLUR_RADIUS = (int) (scale * 6.0f);
+        MAX_OUTER_BLUR_RADIUS = (int) (scale * 12.0f);
 
-        sThickOuterBlurMaskFilter = new BlurMaskFilter(OUTER_BLUR_RADIUS,
-                BlurMaskFilter.Blur.OUTER);
+        sExtraThickOuterBlurMaskFilter = new BlurMaskFilter(scale * 12.0f, BlurMaskFilter.Blur.OUTER);
+        sThickOuterBlurMaskFilter = new BlurMaskFilter(scale * 6.0f, BlurMaskFilter.Blur.OUTER);
         sMediumOuterBlurMaskFilter = new BlurMaskFilter(scale * 2.0f, BlurMaskFilter.Blur.OUTER);
         sThinOuterBlurMaskFilter = new BlurMaskFilter(scale * 1.0f, BlurMaskFilter.Blur.OUTER);
+        sExtraThickInnerBlurMaskFilter = new BlurMaskFilter(scale * 6.0f, BlurMaskFilter.Blur.NORMAL);
         sThickInnerBlurMaskFilter = new BlurMaskFilter(scale * 4.0f, BlurMaskFilter.Blur.NORMAL);
         sMediumInnerBlurMaskFilter = new BlurMaskFilter(scale * 2.0f, BlurMaskFilter.Blur.NORMAL);
     }
@@ -122,19 +126,50 @@ public class HolographicOutlineHelper {
         Bitmap glowShape = srcDst.extractAlpha(mAlphaClipPaint, mTempOffset);
 
         // calculate the outer blur first
-        mBlurPaint.setMaskFilter(thickness == THICK ? sThickOuterBlurMaskFilter :
-                                                      sMediumOuterBlurMaskFilter);
+        BlurMaskFilter outerBlurMaskFilter;
+        switch (thickness) {
+            case EXTRA_THICK:
+                outerBlurMaskFilter = sExtraThickOuterBlurMaskFilter;
+                break;
+            case THICK:
+                outerBlurMaskFilter = sThickOuterBlurMaskFilter;
+                break;
+            case MEDIUM:
+                outerBlurMaskFilter = sMediumOuterBlurMaskFilter;
+                break;
+            default:
+                throw new RuntimeException("Invalid blur thickness");
+        }
+        mBlurPaint.setMaskFilter(outerBlurMaskFilter);
         int[] outerBlurOffset = new int[2];
         Bitmap thickOuterBlur = glowShape.extractAlpha(mBlurPaint, outerBlurOffset);
-        mBlurPaint.setMaskFilter(sThinOuterBlurMaskFilter);
-        int[] thinOuterBlurOffset = new int[2];
-        Bitmap thinOuterBlur = glowShape.extractAlpha(mBlurPaint, thinOuterBlurOffset);
+        if (thickness == EXTRA_THICK) {
+            mBlurPaint.setMaskFilter(sMediumOuterBlurMaskFilter);
+        } else {
+            mBlurPaint.setMaskFilter(sThinOuterBlurMaskFilter);
+        }
+
+        int[] brightOutlineOffset = new int[2];
+        Bitmap brightOutline = glowShape.extractAlpha(mBlurPaint, brightOutlineOffset);
 
         // calculate the inner blur
         srcDstCanvas.setBitmap(glowShape);
         srcDstCanvas.drawColor(0xFF000000, PorterDuff.Mode.SRC_OUT);
-        mBlurPaint.setMaskFilter(thickness == THICK ? sThickInnerBlurMaskFilter :
-                                                      sMediumInnerBlurMaskFilter);
+        BlurMaskFilter innerBlurMaskFilter;
+        switch (thickness) {
+            case EXTRA_THICK:
+                innerBlurMaskFilter = sExtraThickInnerBlurMaskFilter;
+                break;
+            case THICK:
+                innerBlurMaskFilter = sThickInnerBlurMaskFilter;
+                break;
+            case MEDIUM:
+                innerBlurMaskFilter = sMediumInnerBlurMaskFilter;
+                break;
+            default:
+                throw new RuntimeException("Invalid blur thickness");
+        }
+        mBlurPaint.setMaskFilter(innerBlurMaskFilter);
         int[] thickInnerBlurOffset = new int[2];
         Bitmap thickInnerBlur = glowShape.extractAlpha(mBlurPaint, thickInnerBlurOffset);
 
@@ -158,14 +193,19 @@ public class HolographicOutlineHelper {
 
         // draw the bright outline
         mHolographicPaint.setColor(outlineColor);
-        srcDstCanvas.drawBitmap(thinOuterBlur, thinOuterBlurOffset[0], thinOuterBlurOffset[1],
+        srcDstCanvas.drawBitmap(brightOutline, brightOutlineOffset[0], brightOutlineOffset[1],
                 mHolographicPaint);
 
         // cleanup
-        thinOuterBlur.recycle();
+        brightOutline.recycle();
         thickOuterBlur.recycle();
         thickInnerBlur.recycle();
         glowShape.recycle();
+    }
+
+    void applyExtraThickExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas, int color,
+            int outlineColor) {
+        applyExpensiveOutlineWithBlur(srcDst, srcDstCanvas, color, outlineColor, EXTRA_THICK);
     }
 
     void applyThickExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas, int color,
