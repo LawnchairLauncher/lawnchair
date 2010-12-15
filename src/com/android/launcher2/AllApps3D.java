@@ -1197,14 +1197,11 @@ public class AllApps3D extends RSSurfaceView
             mScript.set_ROWS_PER_PAGE_LANDSCAPE(Defines.ROWS_PER_PAGE_LANDSCAPE);
 
             mHomeButtonNormal = Allocation.createFromBitmapResource(sRS, mRes,
-                    R.drawable.home_button_normal, Element.RGBA_8888(sRS), false);
-            mHomeButtonNormal.uploadToTexture(0);
+                    R.drawable.home_button_normal);
             mHomeButtonFocused = Allocation.createFromBitmapResource(sRS, mRes,
-                    R.drawable.home_button_focused, Element.RGBA_8888(sRS), false);
-            mHomeButtonFocused.uploadToTexture(0);
+                    R.drawable.home_button_focused);
             mHomeButtonPressed = Allocation.createFromBitmapResource(sRS, mRes,
-                    R.drawable.home_button_pressed, Element.RGBA_8888(sRS), false);
-            mHomeButtonPressed.uploadToTexture(0);
+                    R.drawable.home_button_pressed);
 
             mScript.set_gHomeButton(mHomeButtonNormal);
 
@@ -1240,9 +1237,6 @@ public class AllApps3D extends RSSurfaceView
             for (int i=0; i < count; i++) {
                 createAppIconAllocations(i, list.get(i));
             }
-            for (int i=0; i < count; i++) {
-                uploadAppIcon(i, list.get(i));
-            }
             saveAppsList();
             android.util.Log.e("rs", "setApps");
             sRollo.resume();
@@ -1257,15 +1251,8 @@ public class AllApps3D extends RSSurfaceView
         }
 
         private void createAppIconAllocations(int index, ApplicationInfo item) {
-            mIcons[index] = Allocation.createFromBitmap(sRS, item.iconBitmap,
-                    Element.RGBA_8888(sRS), false);
-            mLabels[index] = Allocation.createFromBitmap(sRS, item.titleBitmap,
-                    Element.A_8(sRS), false);
-        }
-
-        private void uploadAppIcon(int index, ApplicationInfo item) {
-            mIcons[index].uploadToTexture(true, 0);
-            mLabels[index].uploadToTexture(true, 0);
+            mIcons[index] = Allocation.createFromBitmap(sRS, item.iconBitmap);
+            mLabels[index] = Allocation.createFromBitmap(sRS, item.titleBitmap);
         }
 
         /**
@@ -1299,7 +1286,6 @@ public class AllApps3D extends RSSurfaceView
             System.arraycopy(mLabels, index, mLabels, dest, count);
 
             createAppIconAllocations(index, item);
-            uploadAppIcon(index, item);
 
             mScript.set_gIconCount(mScript.get_gIconCount() + 1);
         }
@@ -1395,9 +1381,7 @@ public class AllApps3D extends RSSurfaceView
                         selectionBitmap.getWidth(), selectionBitmap.getHeight(),
                         pressed == SELECTED_PRESSED, info.iconBitmap);
 
-                Allocation si = Allocation.createFromBitmap(sRS, selectionBitmap,
-                        Element.RGBA_8888(sRS), false);
-                si.uploadToTexture(0);
+                Allocation si = Allocation.createFromBitmap(sRS, selectionBitmap);
                 mScript.set_gSelectedIconTexture(si);
 
                 if (prev != index) {
