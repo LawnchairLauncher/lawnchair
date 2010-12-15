@@ -261,9 +261,9 @@ public final class Launcher extends Activity
         new HashMap<View, AppWidgetProviderInfo>();
 
     // External icons saved in case of resource changes, orientation, etc.
-    private static Drawable sGlobalSearchIcon;
-    private static Drawable sVoiceSearchIcon;
-    private static Drawable sAppMarketIcon;
+    private static Drawable.ConstantState sGlobalSearchIcon;
+    private static Drawable.ConstantState sVoiceSearchIcon;
+    private static Drawable.ConstantState sAppMarketIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -2998,7 +2998,7 @@ public final class Launcher extends Activity
     }
 
     // if successful in getting icon, return it; otherwise, set button to use default drawable
-    private Drawable updateButtonWithIconFromExternalActivity(
+    private Drawable.ConstantState updateButtonWithIconFromExternalActivity(
             int buttonId, ComponentName activityName, int fallbackDrawableId) {
         ImageView button = (ImageView) findViewById(buttonId);
         Drawable toolbarIcon = null;
@@ -3023,13 +3023,13 @@ public final class Launcher extends Activity
             return null;
         } else {
             button.setImageDrawable(toolbarIcon);
-            return toolbarIcon;
+            return toolbarIcon.getConstantState();
         }
     }
 
-    private void updateButtonWithDrawable(int buttonId, Drawable d) {
+    private void updateButtonWithDrawable(int buttonId, Drawable.ConstantState d) {
         ImageView button = (ImageView) findViewById(buttonId);
-        button.setImageDrawable(d);
+        button.setImageDrawable(d.newDrawable(getResources()));
     }
 
     private void updateGlobalSearchIcon() {
@@ -3046,7 +3046,7 @@ public final class Launcher extends Activity
         }
     }
 
-    private void updateGlobalSearchIcon(Drawable d) {
+    private void updateGlobalSearchIcon(Drawable.ConstantState d) {
         updateButtonWithDrawable(R.id.search_button, d);
     }
 
@@ -3063,7 +3063,7 @@ public final class Launcher extends Activity
         }
     }
 
-    private void updateVoiceSearchIcon(Drawable d) {
+    private void updateVoiceSearchIcon(Drawable.ConstantState d) {
         updateButtonWithDrawable(R.id.voice_button, d);
     }
 
@@ -3084,7 +3084,7 @@ public final class Launcher extends Activity
         }
     }
 
-    private void updateAppMarketIcon(Drawable d) {
+    private void updateAppMarketIcon(Drawable.ConstantState d) {
         updateButtonWithDrawable(R.id.market_button, d);
     }
 
