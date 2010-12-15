@@ -275,7 +275,9 @@ public class Workspace extends SmoothPagedView
             @Override
             public void onAnimationEndOrCancel(Animator animation) {
                 mIsInUnshrinkAnimation = false;
-                mDrawCustomizeTrayBackground = false;
+                if (mShrinkState != ShrinkState.SPRING_LOADED) {
+                    mDrawCustomizeTrayBackground = false;
+                }
             }
         };
         mSnapVelocity = 600;
@@ -1316,7 +1318,9 @@ public class Workspace extends SmoothPagedView
             }
         }
 
-        hideBackgroundGradient();
+        if (!springLoaded) {
+            hideBackgroundGradient();
+        }
     }
 
     /**
