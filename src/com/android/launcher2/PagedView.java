@@ -595,20 +595,14 @@ public abstract class PagedView extends ViewGroup {
             int rightScreen = 0;
             while (x <= mScrollX) {
                 leftScreen++;
-                x += pageWidth + mPageSpacing;
-                // replace above line with this if you don't assume all pages have same width as 0th
-                // page:
-                // x += getScaledMeasuredWidth(getChildAt(leftScreen));
+                x += getScaledMeasuredWidth(getChildAt(leftScreen)) + mPageSpacing;
             }
             rightScreen = leftScreen;
-            while (x < mScrollX + screenWidth) {
+            while (x < mScrollX + screenWidth && rightScreen < pageCount) {
                 rightScreen++;
-                x += pageWidth + mPageSpacing;
-                // replace above line with this if you don't assume all pages have same width as 0th
-                // page:
-                //if (rightScreen < pageCount) {
-                //    x += getScaledMeasuredWidth(getChildAt(rightScreen));
-                //}
+                if (rightScreen < pageCount) {
+                    x += getScaledMeasuredWidth(getChildAt(rightScreen)) + mPageSpacing;
+                }
             }
             rightScreen = Math.min(getChildCount() - 1, rightScreen);
 
