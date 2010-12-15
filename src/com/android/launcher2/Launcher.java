@@ -294,7 +294,7 @@ public final class Launcher extends Activity
         checkForLocaleChange();
         setWallpaperDimension();
         setContentView(R.layout.launcher);
-        mHomeCustomizationDrawer = (TabHost) findViewById(com.android.internal.R.id.tabhost);
+        mHomeCustomizationDrawer = (TabHost) findViewById(R.id.customization_drawer);
         if (mHomeCustomizationDrawer != null) {
             mHomeCustomizationDrawer.setup();
 

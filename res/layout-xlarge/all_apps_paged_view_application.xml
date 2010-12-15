@@ -20,8 +20,6 @@
 
     launcher:blurColor="#FF6B8CF0"
     launcher:outlineColor="#FF8CD2FF"
-    launcher:checkedBlurColor="#FFBBE83C"
-    launcher:checkedOutlineColor="#FF8CD2FF"
 
     android:id="@+id/application_icon"
     android:layout_width="match_parent"

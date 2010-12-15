@@ -174,7 +174,7 @@
     </RelativeLayout>
 
     <TabHost
-        android:id="@android:id/tabhost"
+        android:id="@+id/customization_drawer"
         android:layout_width="match_parent"
         android:layout_height="800dp"
         android:layout_gravity="bottom">

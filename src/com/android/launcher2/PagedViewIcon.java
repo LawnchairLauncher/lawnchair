@@ -52,7 +52,7 @@ public class PagedViewIcon extends CacheableTextView implements Checkable {
     private Object mIconCacheKey;
     private PagedViewIconCache mIconCache;
 
-    private int mAlpha;
+    private int mAlpha = 255;
     private int mHolographicAlpha;
 
     private boolean mIsChecked;
@@ -64,8 +64,6 @@ public class PagedViewIcon extends CacheableTextView implements Checkable {
     // Highlight colors
     private int mHoloBlurColor;
     private int mHoloOutlineColor;
-    private int mCheckedBlurColor;
-    private int mCheckedOutlineColor;
 
     private static final HandlerThread sWorkerThread = new HandlerThread("pagedviewicon-helper");
     static {
@@ -110,11 +108,8 @@ public class PagedViewIcon extends CacheableTextView implements Checkable {
         super(context, attrs, defStyle);
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PagedViewIcon, defStyle, 0);
-	mAlpha = 255;
         mHoloBlurColor = a.getColor(R.styleable.PagedViewIcon_blurColor, 0);
         mHoloOutlineColor = a.getColor(R.styleable.PagedViewIcon_outlineColor, 0);
-        mCheckedBlurColor = a.getColor(R.styleable.PagedViewIcon_checkedBlurColor, 0);
-        mCheckedOutlineColor = a.getColor(R.styleable.PagedViewIcon_checkedOutlineColor, 0);
         a.recycle();
 
         if (sHolographicOutlineHelper == null) {
@@ -126,14 +121,12 @@ public class PagedViewIcon extends CacheableTextView implements Checkable {
     }
 
     private void queueHolographicOutlineCreation() {
-        /* Temporarily disabling holographic outline creation.
         // Generate the outline in the background
         if (mHolographicOutline == null) {
             Message m = sWorker.obtainMessage(MESSAGE_CREATE_HOLOGRAPHIC_OUTLINE);
             m.obj = this;
             sWorker.sendMessage(m);
         }
-        */
     }
 
     public void applyFromApplicationInfo(ApplicationInfo info, PagedViewIconCache cache,
@@ -248,7 +241,7 @@ public class PagedViewIcon extends CacheableTextView implements Checkable {
             if (mCheckedAlphaAnimator != null) {
                 mCheckedAlphaAnimator.cancel();
             }
-            mCheckedAlphaAnimator = ObjectAnimator.ofFloat(this, "alpha", alpha);
+            mCheckedAlphaAnimator = ObjectAnimator.ofFloat(this, "alpha", getAlpha(), alpha);
             mCheckedAlphaAnimator.setDuration(duration);
             mCheckedAlphaAnimator.start();
 

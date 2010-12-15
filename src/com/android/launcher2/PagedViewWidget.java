@@ -25,6 +25,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -78,6 +80,8 @@ public class PagedViewWidget extends LinearLayout {
             widget.mPreview.setAlpha(255);
             widget.mPreview.draw(widget.mHolographicOutlineCanvas);
             widget.mPreview.setAlpha(prevAlpha);
+            // Temporary workaround to make the default widget outlines visible
+            widget.mHolographicOutlineCanvas.drawColor(Color.argb(156, 0, 0, 0), Mode.SRC_OVER);
             widget.mHolographicOutlineCanvas.restore();
 
             sHolographicOutlineHelper.applyThickExpensiveOutlineWithBlur(outline,
@@ -120,14 +124,12 @@ public class PagedViewWidget extends LinearLayout {
     }
 
     private void queueHolographicOutlineCreation() {
-        /* Temporarily disabling holographic outline creation.
         // Generate the outline in the background
         if (mHolographicOutline == null) {
             Message m = sWorker.obtainMessage(MESSAGE_CREATE_HOLOGRAPHIC_OUTLINE);
             m.obj = this;
             sWorker.sendMessage(m);
         }
-        */
     }
 
     public void applyFromAppWidgetProviderInfo(AppWidgetProviderInfo info,

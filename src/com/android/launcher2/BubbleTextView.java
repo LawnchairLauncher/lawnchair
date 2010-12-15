@@ -36,6 +36,11 @@ import com.android.launcher.R;
  */
 public class BubbleTextView extends CacheableTextView {
     static final float CORNER_RADIUS = 4.0f;
+    static final float SHADOW_LARGE_RADIUS = 4.0f;
+    static final float SHADOW_SMALL_RADIUS = 1.75f;
+    static final float SHADOW_Y_OFFSET = 2.0f;
+    static final int SHADOW_LARGE_COLOUR = 0xCC000000;
+    static final int SHADOW_SMALL_COLOUR = 0xBB000000;
     static final float PADDING_H = 8.0f;
     static final float PADDING_V = 3.0f;
 
@@ -83,11 +88,17 @@ public class BubbleTextView extends CacheableTextView {
         mPaddingV = PADDING_V * scale;
     }
 
-    protected int getVerticalPadding() {
+    protected int getCacheTopPadding() {
         return (int) PADDING_V;
     }
-    protected int getHorizontalPadding() {
-        return (int) PADDING_H;
+    protected int getCacheBottomPadding() {
+        return (int) (PADDING_V + SHADOW_LARGE_RADIUS + SHADOW_Y_OFFSET);
+    }
+    protected int getCacheLeftPadding() {
+        return (int) (PADDING_H + SHADOW_LARGE_RADIUS);
+    }
+    protected int getCacheRightPadding() {
+        return (int) (PADDING_H + SHADOW_LARGE_RADIUS);
     }
 
     public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache) {
@@ -126,41 +137,34 @@ public class BubbleTextView extends CacheableTextView {
 
     @Override
     public void draw(Canvas canvas) {
-        final Drawable background = mBackground;
-        if (background != null) {
-            final int scrollX = mScrollX;
-            final int scrollY = mScrollY;
+        if (isBuildingCache()) {
+            // We enhance the shadow by drawing the shadow twice
+            this.setShadowLayer(SHADOW_LARGE_RADIUS, 0.0f, SHADOW_Y_OFFSET, SHADOW_LARGE_COLOUR);
+            super.draw(canvas);
+            this.setShadowLayer(SHADOW_SMALL_RADIUS, 0.0f, 0.0f, SHADOW_SMALL_COLOUR);
+            super.draw(canvas);
+        } else {
+            final Drawable background = mBackground;
+            if (background != null) {
+                final int scrollX = mScrollX;
+                final int scrollY = mScrollY;
 
-            if (mBackgroundSizeChanged) {
-                background.setBounds(0, 0,  mRight - mLeft, mBottom - mTop);
-                mBackgroundSizeChanged = false;
+                if (mBackgroundSizeChanged) {
+                    background.setBounds(0, 0,  mRight - mLeft, mBottom - mTop);
+                    mBackgroundSizeChanged = false;
+                }
+
+                if ((scrollX | scrollY) == 0) {
+                    background.draw(canvas);
+                } else {
+                    canvas.translate(scrollX, scrollY);
+                    background.draw(canvas);
+                    canvas.translate(-scrollX, -scrollY);
+                }
             }
 
-            if ((scrollX | scrollY) == 0) {
-                background.draw(canvas);
-            } else {
-                canvas.translate(scrollX, scrollY);
-                background.draw(canvas);
-                canvas.translate(-scrollX, -scrollY);
-            }
+            super.draw(canvas);
         }
-
-        // Draw the hotdog bubble
-        final Layout layout = getLayout();
-        if (layout != null) {
-            final int offset = getExtendedPaddingTop();
-            final int paddingLeft = getPaddingLeft();
-            final int paddingRight = getPaddingRight();
-            final float left = layout.getLineLeft(0) + paddingLeft;
-            final float right = Math.min(layout.getLineRight(0) + paddingRight,
-                    left + getWidth() - paddingLeft - paddingRight);
-            mRect.set(left - mPaddingH, offset + (int) layout.getLineTop(0) - mPaddingV,
-                    right + mPaddingH, offset + (int) layout.getLineBottom(0) + mPaddingV);
-
-            canvas.drawRoundRect(mRect, mCornerRadius, mCornerRadius, mPaint);
-        }
-
-        super.draw(canvas);
     }
 
     @Override

@@ -20,8 +20,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.text.Layout;
 import android.util.AttributeSet;
 import android.widget.TextView;
@@ -60,10 +60,16 @@ public class CacheableTextView extends TextView {
         super(context, attrs, defStyle);
     }
 
-    protected int getVerticalPadding() {
+    protected int getCacheTopPadding() {
         return 0;
     }
-    protected int getHorizontalPadding() {
+    protected int getCacheLeftPadding() {
+        return 0;
+    }
+    protected int getCacheRightPadding() {
+        return 0;
+    }
+    protected int getCacheBottomPadding() {
         return 0;
     }
 
@@ -84,21 +90,21 @@ public class CacheableTextView extends TextView {
         final int top = getExtendedPaddingTop();
         final float prevAlpha = getAlpha();
 
-        int vPadding = getVerticalPadding();
-        int hPadding = getHorizontalPadding();
-
-        mTextCacheLeft = layout.getLineLeft(0) - hPadding;
-        mTextCacheTop = top + layout.getLineTop(0) - mPaddingV - vPadding;
+        mTextCacheLeft = layout.getLineLeft(0) - getCacheLeftPadding();
+        mTextCacheTop = top + layout.getLineTop(0) - mPaddingV - getCacheTopPadding();
 
         mRectLeft = mScrollX + getLeft();
         mRectTop = 0;
         mTextCacheScrollX = mScrollX;
 
         final float textCacheRight =
-            Math.min(left + layout.getLineRight(0) + mPaddingH, mScrollX + mRight - mLeft) + hPadding;
-        final float textCacheBottom = top + layout.getLineBottom(0) + mPaddingV + vPadding;
+            Math.min(left + layout.getLineRight(0) + mPaddingH, mScrollX + mRight - mLeft) +
+            getCacheRightPadding();
+        final float textCacheBottom = top + layout.getLineBottom(0) + mPaddingV +
+            getCacheBottomPadding();
+        final float xCharWidth = getPaint().measureText("x");
 
-        int width = (int) (textCacheRight - mTextCacheLeft);
+        int width = (int) (textCacheRight - mTextCacheLeft + (2 * xCharWidth));
         int height = (int) (textCacheBottom - mTextCacheTop);
 
         if (width != 0 && height != 0) {
@@ -148,6 +154,10 @@ public class CacheableTextView extends TextView {
                     mTextCacheTop, mCachePaint);
         }
         super.draw(canvas);
+    }
+
+    protected boolean isBuildingCache() {
+        return mIsBuildingCache;
     }
 
     @Override
