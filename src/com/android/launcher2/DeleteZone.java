@@ -18,7 +18,6 @@ package com.android.launcher2;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
@@ -31,26 +30,15 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
-import android.widget.ImageView;
 
 import com.android.launcher.R;
 
-public class DeleteZone extends ImageView implements DropTarget, DragController.DragListener {
+public class DeleteZone extends IconDropTarget {
     private static final int ORIENTATION_HORIZONTAL = 1;
     private static final int TRANSITION_DURATION = 250;
     private static final int ANIMATION_DURATION = 200;
-
-    private final int[] mLocation = new int[2];
-    
-    private Launcher mLauncher;
-    private boolean mTrashMode;
-
-    /**
-     * If true, this View responsible for managing its own visibility, and that of its handle.
-     * This is generally the case, but it will be set to false when this is part of the
-     * Contextual Action Bar.
-     */
-    private boolean mDragAndDropEnabled = true;
+    private static final int XLARGE_TRANSITION_DURATION = 150;
+    private static final int XLARGE_ANIMATION_DURATION = 200;
 
     private AnimationSet mInAnimation;
     private AnimationSet mOutAnimation;
@@ -63,10 +51,6 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
     private final RectF mRegionF = new RectF();
     private final Rect mRegion = new Rect();
     private TransitionDrawable mTransition;
-    private final Paint mTrashPaint = new Paint();
-
-    /** The View that this view will replace. */
-    private View mHandle = null;
 
     public DeleteZone(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -75,8 +59,11 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
     public DeleteZone(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
+        mOuterDragPadding = getResources().getDimensionPixelSize(R.dimen.delete_zone_size);
+        mInnerDragPadding = getResources().getDimensionPixelSize(R.dimen.delete_zone_padding);
+
         final int srcColor = context.getResources().getColor(R.color.delete_color_filter);
-        mTrashPaint.setColorFilter(new PorterDuffColorFilter(srcColor, PorterDuff.Mode.SRC_ATOP));
+        mHoverPaint.setColorFilter(new PorterDuffColorFilter(srcColor, PorterDuff.Mode.SRC_ATOP));
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DeleteZone, defStyle, 0);
         mOrientation = a.getInt(R.styleable.DeleteZone_direction, ORIENTATION_HORIZONTAL);
@@ -143,26 +130,24 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
 
     public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
-        if (!mDragAndDropEnabled) return;
-        mTransition.reverseTransition(TRANSITION_DURATION);
-        dragView.setPaint(mTrashPaint);
-    }
-
-    public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+        if (mDragAndDropEnabled) {
+            mTransition.reverseTransition(getTransitionAnimationDuration());
+            super.onDragEnter(source, x, y, xOffset, yOffset, dragView, dragInfo);
+        }
     }
 
     public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
-        if (!mDragAndDropEnabled) return;
-        mTransition.reverseTransition(TRANSITION_DURATION);
-        dragView.setPaint(null);
+        if (mDragAndDropEnabled) {
+            mTransition.reverseTransition(getTransitionAnimationDuration());
+            super.onDragExit(source, x, y, xOffset, yOffset, dragView, dragInfo);
+        }
     }
 
     public void onDragStart(DragSource source, Object info, int dragAction) {
         final ItemInfo item = (ItemInfo) info;
         if (item != null && mDragAndDropEnabled) {
-            mTrashMode = true;
+            mActive = true;
             getHitRect(mRegion);
             mRegionF.set(mRegion);
 
@@ -188,8 +173,8 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
     }
 
     public void onDragEnd() {
-        if (mTrashMode && mDragAndDropEnabled) {
-            mTrashMode = false;
+        if (mActive && mDragAndDropEnabled) {
+            mActive = false;
             mDragController.setDeleteRegion(null);
 
             if (mOutAnimation != null) startAnimation(mOutAnimation);
@@ -200,33 +185,11 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
         }
     }
 
-    public boolean isDropEnabled() {
-        return true;
-    }
-
-    @Override
-    public void getHitRect(Rect outRect) {
-        super.getHitRect(outRect);
-        if (LauncherApplication.isScreenXLarge()) {
-            // TODO: This is a temporary hack. mManageVisiblity = false when you're in CAB mode.
-            // In that case, this icon is more tightly spaced next to the delete icon so we want
-            // it to have a smaller drag region. When the new drag&drop system comes in, we'll
-            // dispatch the drag/drop by calculating what target you're overlapping
-            final int padding = R.dimen.delete_zone_padding;
-            final int outerDragPadding =
-                    getResources().getDimensionPixelSize(R.dimen.delete_zone_size);
-            final int innerDragPadding = getResources().getDimensionPixelSize(padding);
-            outRect.top -= outerDragPadding;
-            outRect.left -= innerDragPadding;
-            outRect.bottom += outerDragPadding;
-            outRect.right += innerDragPadding;
-        }
-    }
-
     private void createAnimations() {
+        int duration = getAnimationDuration();
         if (mHandleInAnimation == null) {
             mHandleInAnimation = new AlphaAnimation(0.0f, 1.0f);
-            mHandleInAnimation.setDuration(ANIMATION_DURATION);
+            mHandleInAnimation.setDuration(duration);
         }
 
         if (mInAnimation == null) {
@@ -244,7 +207,7 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
                             1.0f, Animation.RELATIVE_TO_SELF, 0.0f, Animation.ABSOLUTE, 0.0f,
                             Animation.ABSOLUTE, 0.0f));
                 }
-                animationSet.setDuration(ANIMATION_DURATION);
+                animationSet.setDuration(duration);
             } else {
                 mInAnimation.addAnimation(mHandleInAnimation);
             }
@@ -253,7 +216,7 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
         if (mHandleOutAnimation == null) {
             mHandleOutAnimation = new AlphaAnimation(1.0f, 0.0f);
             mHandleOutAnimation.setFillAfter(true);
-            mHandleOutAnimation.setDuration(ANIMATION_DURATION);
+            mHandleOutAnimation.setDuration(duration);
         }
 
         if (mOutAnimation == null) {
@@ -271,27 +234,25 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
                             0.0f, Animation.RELATIVE_TO_SELF, 1.0f, Animation.ABSOLUTE, 0.0f,
                             Animation.ABSOLUTE, 0.0f));
                 }
-                animationSet.setDuration(ANIMATION_DURATION);
+                animationSet.setDuration(duration);
             } else {
                 mOutAnimation.addAnimation(mHandleOutAnimation);
             }
         }
     }
 
-    void setLauncher(Launcher launcher) {
-        mLauncher = launcher;
-    }
-
     void setDragController(DragController dragController) {
         mDragController = dragController;
     }
 
-    void setHandle(View view) {
-        mHandle = view;
+    private int getTransitionAnimationDuration() {
+        return LauncherApplication.isScreenXLarge() ?
+                XLARGE_TRANSITION_DURATION : TRANSITION_DURATION;
     }
 
-    void setDragAndDropEnabled(boolean enabled) {
-        mDragAndDropEnabled = enabled;
+    private int getAnimationDuration() {
+        return LauncherApplication.isScreenXLarge() ?
+                XLARGE_ANIMATION_DURATION : ANIMATION_DURATION;
     }
 
     private static class FastTranslateAnimation extends TranslateAnimation {
@@ -326,11 +287,5 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
         public boolean willChangeBounds() {
             return false;
         }
-    }
-
-    @Override
-    public DropTarget getDropTargetDelegate(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
-        return null;
     }
 }

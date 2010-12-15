@@ -601,6 +601,11 @@ public class Workspace extends SmoothPagedView
         return mChildrenOutlineAlpha;
     }
 
+    private void showBackgroundGradientForAllApps() {
+        showBackgroundGradient();
+        mDrawCustomizeTrayBackground = false;
+    }
+
     private void showBackgroundGradientForCustomizeTray() {
         showBackgroundGradient();
         mDrawCustomizeTrayBackground = true;
@@ -767,18 +772,18 @@ public class Workspace extends SmoothPagedView
                 mCustomizationDrawerTransformedPos[1] = mCustomizationDrawerContent.getTop();
                 m.mapPoints(mCustomizationDrawerTransformedPos);
 
+                // Draw the bg glow behind the gradient
+                mCustomizeTrayBackground.setAlpha(alpha);
+                mCustomizeTrayBackground.setBounds(mScrollX, 0, mScrollX + getMeasuredWidth(),
+                        getMeasuredHeight());
+                mCustomizeTrayBackground.draw(canvas);
+
                 // Draw the bg gradient
                 final int  offset = (int) (mCustomizationDrawerPos[1] +
                         mCustomizationDrawerTransformedPos[1]);
                 mBackground.setBounds(mScrollX, offset, mScrollX + getMeasuredWidth(),
                         offset + getMeasuredHeight());
                 mBackground.draw(canvas);
-
-                // Draw the bg glow
-                mCustomizeTrayBackground.setAlpha(alpha);
-                mCustomizeTrayBackground.setBounds(mScrollX, 0, mScrollX + getMeasuredWidth(),
-                        getMeasuredHeight());
-                mCustomizeTrayBackground.draw(canvas);
             }
         }
         super.onDraw(canvas);
@@ -1084,7 +1089,7 @@ public class Workspace extends SmoothPagedView
         if (shrinkState == ShrinkState.TOP) {
             showBackgroundGradientForCustomizeTray();
         } else {
-            showBackgroundGradient();
+            showBackgroundGradientForAllApps();
         }
     }
 
@@ -2241,8 +2246,10 @@ public class Workspace extends SmoothPagedView
         mSpringLoadedDragController = new SpringLoadedDragController(mLauncher);
 
         mCustomizationDrawer = mLauncher.findViewById(R.id.customization_drawer);
-        mCustomizationDrawerContent =
-            mCustomizationDrawer.findViewById(com.android.internal.R.id.tabcontent);
+        if (mCustomizationDrawer != null) {
+            mCustomizationDrawerContent =
+                mCustomizationDrawer.findViewById(com.android.internal.R.id.tabcontent);
+        }
     }
 
     public void setDragController(DragController dragController) {

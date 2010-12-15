@@ -16,15 +16,14 @@
 
 package com.android.launcher2;
 
+import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
+import android.animation.ObjectAnimator;
 import android.content.ComponentName;
 import android.content.Context;
-import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.view.View;
-import android.widget.ImageView;
 
 import com.android.launcher.R;
 
@@ -32,21 +31,12 @@ import com.android.launcher.R;
  * Implements a DropTarget which allows applications to be dropped on it,
  * in order to launch the application info for that app.
  */
-public class ApplicationInfoDropTarget extends ImageView implements DropTarget, DragController.DragListener {
-    private Launcher mLauncher;
-    private boolean mActive = false;
+public class ApplicationInfoDropTarget extends IconDropTarget {
+    private static final int sFadeInAnimationDuration = 200;
+    private static final int sFadeOutAnimationDuration = 100;
 
-    /**
-     * If true, this View responsible for managing its own visibility, and that of its handle.
-     * This is generally the case, but it will be set to false when this is part of the
-     * Contextual Action Bar.
-     */
-    private boolean mDragAndDropEnabled = true;
-
-    /** The view that this view should appear in the place of. */
-    private View mHandle = null;
-
-    private final Paint mPaint = new Paint();
+    private ObjectAnimator mFadeAnimator;
+    private ObjectAnimator mHandleFadeAnimator;
 
     public ApplicationInfoDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -54,13 +44,10 @@ public class ApplicationInfoDropTarget extends ImageView implements DropTarget, 
 
     public ApplicationInfoDropTarget(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-    }
 
-    /**
-     * Set the color that will be used as a filter over objects dragged over this object.
-     */
-    public void setDragColor(int color) {
-        mPaint.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP));
+        // Set the hover paint colour
+        int colour = getContext().getResources().getColor(R.color.app_info_filter);
+        mHoverPaint.setColorFilter(new PorterDuffColorFilter(colour, PorterDuff.Mode.SRC_ATOP));
     }
 
     public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset,
@@ -81,19 +68,10 @@ public class ApplicationInfoDropTarget extends ImageView implements DropTarget, 
         return false;
     }
 
-    public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
-
-    }
-
     public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
         if (!mDragAndDropEnabled) return;
-        dragView.setPaint(mPaint);
-    }
-
-    public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+        dragView.setPaint(mHoverPaint);
     }
 
     public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset,
@@ -106,63 +84,70 @@ public class ApplicationInfoDropTarget extends ImageView implements DropTarget, 
         if (info != null && mDragAndDropEnabled) {
             final int itemType = ((ItemInfo)info).itemType;
             mActive = (itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION);
-
-            // Only show the info icon when an application is selected
             if (mActive) {
+                // Fade in this icon
+                if (mFadeAnimator != null) mFadeAnimator.cancel();
+                mFadeAnimator = ObjectAnimator.ofFloat(this, "alpha", 0.0f, 1.0f);
+                mFadeAnimator.setDuration(sFadeInAnimationDuration);
+                mFadeAnimator.start();
                 setVisibility(VISIBLE);
-            }
-            if (mHandle != null) {
-                mHandle.setVisibility(INVISIBLE);
+
+                // Fade out the handle
+                if (mHandle != null) {
+                    if (mHandleFadeAnimator != null) mHandleFadeAnimator.cancel();
+                    mHandleFadeAnimator = ObjectAnimator.ofFloat(mHandle, "alpha", 0.0f);
+                    mHandleFadeAnimator.setDuration(sFadeOutAnimationDuration);
+                    mHandleFadeAnimator.addListener(new AnimatorListener() {
+                        public void onAnimationStart(Animator animation) {}
+                        public void onAnimationRepeat(Animator animation) {}
+                        public void onAnimationEnd(Animator animation) {
+                            onEndOrCancel();
+                        }
+                        public void onAnimationCancel(Animator animation) {
+                            onEndOrCancel();
+                        }
+                        private void onEndOrCancel() {
+                            mHandle.setVisibility(INVISIBLE);
+                            mHandleFadeAnimator = null;
+                        }
+                    });
+                    mHandleFadeAnimator.start();
+                }
             }
         }
-    }
-
-    public boolean isDropEnabled() {
-        return mActive;
     }
 
     public void onDragEnd() {
         if (!mDragAndDropEnabled) return;
+        if (mActive) mActive = false;
 
-        if (mActive) {
-            mActive = false;
-        }
-        setVisibility(GONE);
+        // Fade out this icon
+        if (mFadeAnimator != null) mFadeAnimator.cancel();
+        mFadeAnimator = ObjectAnimator.ofFloat(this, "alpha", 0.0f);
+        mFadeAnimator.setDuration(sFadeOutAnimationDuration);
+        mFadeAnimator.addListener(new AnimatorListener() {
+            public void onAnimationStart(Animator animation) {}
+            public void onAnimationRepeat(Animator animation) {}
+            public void onAnimationEnd(Animator animation) {
+                onEndOrCancel();
+            }
+            public void onAnimationCancel(Animator animation) {
+                onEndOrCancel();
+            }
+            private void onEndOrCancel() {
+                setVisibility(GONE);
+                mFadeAnimator = null;
+            }
+        });
+        mFadeAnimator.start();
+
+        // Fade in the handle
         if (mHandle != null) {
+            if (mHandleFadeAnimator != null) mHandleFadeAnimator.cancel();
+            mHandleFadeAnimator = ObjectAnimator.ofFloat(mHandle, "alpha", 1.0f);
+            mHandleFadeAnimator.setDuration(sFadeInAnimationDuration);
+            mHandleFadeAnimator.start();
             mHandle.setVisibility(VISIBLE);
         }
-    }
-
-    @Override
-    public void getHitRect(Rect outRect) {
-        super.getHitRect(outRect);
-        if (LauncherApplication.isScreenXLarge()) {
-            final int padding = R.dimen.delete_zone_padding;
-            final int outerDragPadding =
-                    getResources().getDimensionPixelSize(R.dimen.delete_zone_size);
-            final int innerDragPadding = getResources().getDimensionPixelSize(padding);
-            outRect.top -= outerDragPadding;
-            outRect.left -= innerDragPadding;
-            outRect.bottom += outerDragPadding;
-            outRect.right += outerDragPadding;
-        }
-    }
-
-    void setLauncher(Launcher launcher) {
-        mLauncher = launcher;
-    }
-
-    void setHandle(View view) {
-        mHandle = view;
-    }
-
-    void setDragAndDropEnabled(boolean enabled) {
-        mDragAndDropEnabled = enabled;
-    }
-
-    @Override
-    public DropTarget getDropTargetDelegate(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
-        return null;
     }
 }

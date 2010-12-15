@@ -974,7 +974,6 @@ public final class Launcher extends Activity
         if (allAppsInfoTarget != null) {
             allAppsInfoTarget.setLauncher(this);
             dragController.addDragListener(allAppsInfoTarget);
-            allAppsInfoTarget.setDragColor(getResources().getColor(R.color.app_info_filter));
             allAppsInfoTarget.setDragAndDropEnabled(false);
             View marketButton = findViewById(R.id.market_button);
             if (marketButton != null) {
@@ -986,7 +985,6 @@ public final class Launcher extends Activity
         if (infoButton != null) {
             infoButton.setLauncher(this);
             infoButton.setHandle(findViewById(R.id.configure_button));
-            infoButton.setDragColor(getResources().getColor(R.color.app_info_filter));
             dragController.addDragListener(infoButton);
         }
 
