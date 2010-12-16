@@ -601,6 +601,11 @@ public class Workspace extends SmoothPagedView
         return mChildrenOutlineAlpha;
     }
 
+    private void showBackgroundGradientForAllApps() {
+        showBackgroundGradient();
+        mDrawCustomizeTrayBackground = false;
+    }
+
     private void showBackgroundGradientForCustomizeTray() {
         showBackgroundGradient();
         mDrawCustomizeTrayBackground = true;
@@ -767,18 +772,18 @@ public class Workspace extends SmoothPagedView
                 mCustomizationDrawerTransformedPos[1] = mCustomizationDrawerContent.getTop();
                 m.mapPoints(mCustomizationDrawerTransformedPos);
 
+                // Draw the bg glow behind the gradient
+                mCustomizeTrayBackground.setAlpha(alpha);
+                mCustomizeTrayBackground.setBounds(mScrollX, 0, mScrollX + getMeasuredWidth(),
+                        getMeasuredHeight());
+                mCustomizeTrayBackground.draw(canvas);
+
                 // Draw the bg gradient
                 final int  offset = (int) (mCustomizationDrawerPos[1] +
                         mCustomizationDrawerTransformedPos[1]);
                 mBackground.setBounds(mScrollX, offset, mScrollX + getMeasuredWidth(),
                         offset + getMeasuredHeight());
                 mBackground.draw(canvas);
-
-                // Draw the bg glow
-                mCustomizeTrayBackground.setAlpha(alpha);
-                mCustomizeTrayBackground.setBounds(mScrollX, 0, mScrollX + getMeasuredWidth(),
-                        getMeasuredHeight());
-                mCustomizeTrayBackground.draw(canvas);
             }
         }
         super.onDraw(canvas);
@@ -1084,7 +1089,7 @@ public class Workspace extends SmoothPagedView
         if (shrinkState == ShrinkState.TOP) {
             showBackgroundGradientForCustomizeTray();
         } else {
-            showBackgroundGradient();
+            showBackgroundGradientForAllApps();
         }
     }
 
@@ -1202,7 +1207,7 @@ public class Workspace extends SmoothPagedView
         final Canvas canvas = new Canvas();
 
         // We need to add extra padding to the bitmap to make room for the glow effect
-        final int bitmapPadding = HolographicOutlineHelper.OUTER_BLUR_RADIUS;
+        final int bitmapPadding = HolographicOutlineHelper.MAX_OUTER_BLUR_RADIUS;
 
         // The outline is used to visualize where the item will land if dropped
         mDragOutline = createDragOutline(b, canvas, bitmapPadding);
@@ -1447,7 +1452,7 @@ public class Workspace extends SmoothPagedView
         final Canvas canvas = new Canvas();
 
         // We need to add extra padding to the bitmap to make room for the glow effect
-        final int bitmapPadding = HolographicOutlineHelper.OUTER_BLUR_RADIUS;
+        final int bitmapPadding = HolographicOutlineHelper.MAX_OUTER_BLUR_RADIUS;
 
         // The outline is used to visualize where the item will land if dropped
         mDragOutline = createDragOutline(child, canvas, bitmapPadding);
@@ -1788,7 +1793,7 @@ public class Workspace extends SmoothPagedView
             // Create the drag outline
             // We need to add extra padding to the bitmap to make room for the glow effect
             final Canvas canvas = new Canvas();
-            final int bitmapPadding = HolographicOutlineHelper.OUTER_BLUR_RADIUS;
+            final int bitmapPadding = HolographicOutlineHelper.MAX_OUTER_BLUR_RADIUS;
             mDragOutline = createExternalDragOutline(canvas, bitmapPadding);
 
             // Show the current page outlines to indicate that we can accept this drop
@@ -2241,8 +2246,10 @@ public class Workspace extends SmoothPagedView
         mSpringLoadedDragController = new SpringLoadedDragController(mLauncher);
 
         mCustomizationDrawer = mLauncher.findViewById(R.id.customization_drawer);
-        mCustomizationDrawerContent =
-            mCustomizationDrawer.findViewById(com.android.internal.R.id.tabcontent);
+        if (mCustomizationDrawer != null) {
+            mCustomizationDrawerContent =
+                mCustomizationDrawer.findViewById(com.android.internal.R.id.tabcontent);
+        }
     }
 
     public void setDragController(DragController dragController) {
