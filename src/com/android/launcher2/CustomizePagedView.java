@@ -599,8 +599,6 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
      * in the customize drawer.
      */
     private Drawable parseWallpaperPreviewXml(ComponentName component, ResolveInfo ri) {
-        Drawable d = null;
-
         ActivityInfo activityInfo = ri.activityInfo;
         XmlResourceParser parser = null;
         try {

@@ -42,9 +42,11 @@
     <dimen name="customizeSmallScreenVerticalMarginLandscape">90dip</dimen>
     <dimen name="customizeSmallScreenVerticalMarginPortrait">180dip</dimen>
 
-    <dimen name="toolbar_padding">10dip</dimen>
-
-    <dimen name="toolbar_button_spacing">20dip</dimen>
+    <dimen name="all_apps_drawable_padding">8dip</dimen>
+    <!--  toolbar divider height is 32dip plus 2*8dip for padding on top and bottom -->
+    <dimen name="toolbar_divider_height">48dip</dimen>
+    <dimen name="toolbar_button_vertical_padding">8dip</dimen>
+    <dimen name="toolbar_button_horizontal_padding">16dip</dimen>
 
     <!-- height & width of the drop rectangle for the trash icon -->
     <dimen name="delete_zone_size">50dip</dimen>

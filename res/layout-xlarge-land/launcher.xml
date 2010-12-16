@@ -105,26 +105,47 @@
 
         <ImageView
             android:id="@+id/configure_button"
-            android:src="@drawable/configure_button"
+            android:src="@drawable/ic_home_add_holo_dark"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
-            android:layout_marginLeft="@dimen/toolbar_button_spacing"
-            android:layout_marginRight="@dimen/toolbar_button_spacing"
+            android:paddingLeft="@dimen/toolbar_button_horizontal_padding"
+            android:paddingRight="@dimen/toolbar_button_horizontal_padding"
+            android:paddingTop="@dimen/toolbar_button_vertical_padding"
+            android:paddingBottom="@dimen/toolbar_button_vertical_padding"
+            android:background="@drawable/button_bg"
 
             android:onClick="onClickConfigureButton"
             android:focusable="true"
             android:clickable="true" />
+        <ImageView
+            android:id="@+id/divider"
+            android:src="@drawable/divider_launcher_holo"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/toolbar_divider_height"
+            android:layout_toLeftOf="@id/configure_button"
+            android:paddingTop="@dimen/toolbar_button_vertical_padding"
+            android:paddingBottom="@dimen/toolbar_button_vertical_padding"
 
+            android:onClick="onClickAllAppsButton"
+            android:focusable="true"
+            android:clickable="true" />
         <TextView
             android:id="@+id/all_apps_button"
             android:text="@string/all_apps_button_label"
-            android:background="@drawable/all_apps_button"
+            android:drawablePadding="@dimen/all_apps_drawable_padding"
+            android:drawableLeft="@drawable/ic_home_all_apps_holo_dark"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_toLeftOf="@id/configure_button"
-            android:layout_marginLeft="@dimen/toolbar_button_spacing"
-            android:layout_marginRight="@dimen/toolbar_button_spacing"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/divider"
+            android:paddingLeft="@dimen/toolbar_button_horizontal_padding"
+            android:paddingRight="@dimen/toolbar_button_horizontal_padding"
+            android:paddingTop="@dimen/toolbar_button_vertical_padding"
+            android:paddingBottom="@dimen/toolbar_button_vertical_padding"
+            android:background="@drawable/button_bg"
+            
+            android:gravity="center_horizontal|center_vertical"
             android:textColor="#CCFFFFFF"
             android:textSize="18sp"
 
@@ -136,23 +157,41 @@
             android:onClick="onClickAllAppsButton"
             android:focusable="true"
             android:clickable="true" />
-
+        <ImageView
+            android:id="@+id/divider_during_drag"
+            android:src="@drawable/divider_launcher_holo"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/toolbar_divider_height"
+            android:layout_toLeftOf="@id/configure_button"
+            android:paddingTop="@dimen/toolbar_button_vertical_padding"
+            android:paddingBottom="@dimen/toolbar_button_vertical_padding"
+            android:visibility="gone"/>
         <com.android.launcher2.DeleteZone
             android:id="@+id/delete_zone"
             android:src="@drawable/delete_zone_selector"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignRight="@id/all_apps_button"
+            android:paddingLeft="@dimen/toolbar_button_horizontal_padding"
+            android:paddingRight="@dimen/toolbar_button_horizontal_padding"
+            android:paddingTop="@dimen/toolbar_button_vertical_padding"
+            android:paddingBottom="@dimen/toolbar_button_vertical_padding"
+            android:background="@drawable/button_bg"
 
             android:visibility="gone"
             launcher:direction="horizontal" />
 
         <com.android.launcher2.ApplicationInfoDropTarget
             android:id="@+id/info_button"
-            android:src="@drawable/info_button"
+            android:src="@drawable/ic_home_info_holo_dark"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignLeft="@id/configure_button"
+            android:paddingLeft="@dimen/toolbar_button_horizontal_padding"
+            android:paddingRight="@dimen/toolbar_button_horizontal_padding"
+            android:paddingTop="@dimen/toolbar_button_vertical_padding"
+            android:paddingBottom="@dimen/toolbar_button_vertical_padding"
+            android:background="@drawable/button_bg"
 
             android:visibility="gone"
             android:focusable="true"

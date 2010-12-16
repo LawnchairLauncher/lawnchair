@@ -39,7 +39,7 @@
                 android:layout_centerVertical="true">
                 <com.android.launcher2.ApplicationInfoDropTarget
                     android:id="@+id/all_apps_info_target"
-                    android:src="@drawable/info_button"
+                    android:src="@drawable/ic_home_info_holo_dark"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
