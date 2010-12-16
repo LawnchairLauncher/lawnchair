@@ -1251,8 +1251,12 @@ public class AllApps3D extends RSSurfaceView
         }
 
         private void createAppIconAllocations(int index, ApplicationInfo item) {
-            mIcons[index] = Allocation.createFromBitmap(sRS, item.iconBitmap);
-            mLabels[index] = Allocation.createFromBitmap(sRS, item.titleBitmap);
+            mIcons[index] = Allocation.createFromBitmap(sRS, item.iconBitmap,
+                               Allocation.MipmapControl.MIPMAP_ON_SYNC_TO_TEXTURE,
+                               Allocation.USAGE_GRAPHICS_TEXTURE);
+            mLabels[index] = Allocation.createFromBitmap(sRS, item.titleBitmap,
+                               Allocation.MipmapControl.MIPMAP_ON_SYNC_TO_TEXTURE,
+                               Allocation.USAGE_GRAPHICS_TEXTURE);
         }
 
         /**
