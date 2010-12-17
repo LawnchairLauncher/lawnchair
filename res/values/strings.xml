@@ -40,7 +40,7 @@
     <!-- Option in "Select wallpaper from" dialog box -->
     <string name="pick_wallpaper">Wallpapers</string>
     <!-- Displayed when user selects a shortcut for an app that was uninstalled -->
-    <string name="activity_not_found">Application is not installed on your phone.</string>
+    <string name="activity_not_found">Application is not installed.</string>
     <!-- List item for configuring the current wallpaper -->
     <string name="configure_wallpaper">Configure...</string>
     <!--  Labels for the tabs in the customize drawer -->
