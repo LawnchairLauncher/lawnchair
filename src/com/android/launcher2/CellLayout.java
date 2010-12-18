@@ -304,13 +304,13 @@ public class CellLayout extends ViewGroup implements Dimmable {
             AnimatorSet bouncer = new AnimatorSet();
             bouncer.play(scaleUp).before(scaleDown);
             bouncer.play(scaleUp).with(alphaFadeOut);
-            bouncer.addListener(new LauncherAnimatorListenerAdapter() {
+            bouncer.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
                     setHover(true);
                 }
                 @Override
-                public void onAnimationEndOrCancel(Animator animation) {
+                public void onAnimationEnd(Animator animation) {
                     setHover(false);
                     setHoverScale(1.0f);
                     setHoverAlpha(1.0f);

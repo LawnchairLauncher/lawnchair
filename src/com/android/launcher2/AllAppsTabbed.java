@@ -16,9 +16,10 @@
 
 package com.android.launcher2;
 
-import java.util.ArrayList;
+import com.android.launcher.R;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -32,7 +33,7 @@ import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
-import com.android.launcher.R;
+import java.util.ArrayList;
 
 /**
  * Implements a tabbed version of AllApps2D.
@@ -91,9 +92,9 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
                 final float alpha = mAllApps.getAlpha();
                 ValueAnimator alphaAnim = ObjectAnimator.ofFloat(mAllApps, "alpha", alpha, 0.0f).
                         setDuration(duration);
-                alphaAnim.addListener(new LauncherAnimatorListenerAdapter() {
+                alphaAnim.addListener(new AnimatorListenerAdapter() {
                     @Override
-                    public void onAnimationEndOrCancel(Animator animation) {
+                    public void onAnimationEnd(Animator animation) {
                         String tag = getCurrentTabTag();
                         if (tag == TAG_ALL) {
                             mAllApps.setAppFilter(AllAppsPagedView.ALL_APPS_FLAG);
