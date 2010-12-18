@@ -16,22 +16,19 @@
 
 package com.android.launcher2;
 
-import com.android.launcher.R;
-
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.TextView;
+
 
 /**
  * Implements a DropTarget which allows applications to be dropped on it,
  * in order to launch the application info for that app.
  */
-public class IconDropTarget extends ImageView implements DropTarget, DragController.DragListener {
+public class IconDropTarget extends TextView implements DropTarget, DragController.DragListener {
     protected Launcher mLauncher;
 
     /**

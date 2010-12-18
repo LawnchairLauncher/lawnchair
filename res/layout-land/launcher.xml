@@ -86,7 +86,7 @@
         android:layout_gravity="right|center_vertical"
 
         android:scaleType="center"
-        android:src="@drawable/delete_zone_selector"
+        android:drawableLeft="@drawable/delete_zone_selector"
         android:visibility="invisible"
         launcher:direction="vertical"
         />

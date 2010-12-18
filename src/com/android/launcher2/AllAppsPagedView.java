@@ -204,10 +204,6 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
 
     private void setupDragMode() {
         mLauncher.getWorkspace().shrink(Workspace.ShrinkState.BOTTOM_VISIBLE);
-
-        DeleteZone deleteZone = (DeleteZone) mLauncher.findViewById(R.id.delete_zone);
-        deleteZone.setDragAndDropEnabled(false);
-
         DeleteZone allAppsDeleteZone = (DeleteZone)
                 mLauncher.findViewById(R.id.all_apps_delete_zone);
         allAppsDeleteZone.setDragAndDropEnabled(true);
@@ -223,9 +219,6 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
             // deleteZone and the appInfoButton in all apps, and re-enable the instance which
             // live in the workspace
             public void run() {
-                DeleteZone deleteZone = (DeleteZone) mLauncher.findViewById(R.id.delete_zone);
-                deleteZone.setDragAndDropEnabled(true);
-
                 DeleteZone allAppsDeleteZone =
                         (DeleteZone) mLauncher.findViewById(R.id.all_apps_delete_zone);
                 allAppsDeleteZone.setDragAndDropEnabled(false);

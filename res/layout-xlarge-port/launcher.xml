@@ -166,14 +166,24 @@
             android:visibility="gone"/>
         <com.android.launcher2.DeleteZone
             android:id="@+id/delete_zone"
-            android:src="@drawable/delete_zone_selector"
+            android:text="@string/delete_zone_label_workspace"
+            android:drawablePadding="@dimen/all_apps_drawable_padding"
+            android:drawableLeft="@drawable/delete_zone_selector"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/configure_button"
+            android:layout_alignRight="@id/configure_button"
             android:paddingLeft="@dimen/toolbar_button_horizontal_padding"
             android:paddingRight="@dimen/toolbar_button_horizontal_padding"
             android:paddingTop="@dimen/toolbar_button_vertical_padding"
             android:paddingBottom="@dimen/toolbar_button_vertical_padding"
+
+            android:gravity="center_horizontal|center_vertical"
+            android:textColor="@color/workspace_all_apps_and_delete_zone_text_color"
+            android:textSize="18sp"
+            android:shadowColor="@color/workspace_all_apps_and_delete_zone_text_shadow_color"
+            android:shadowDx="0.0"
+            android:shadowDy="0.0"
+            android:shadowRadius="2.0"
 
             android:visibility="gone"
             launcher:direction="horizontal" />

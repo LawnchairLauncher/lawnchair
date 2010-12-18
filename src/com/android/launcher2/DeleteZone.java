@@ -16,7 +16,10 @@
 
 package com.android.launcher2;
 
+import com.android.launcher.R;
+
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
@@ -31,14 +34,13 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
 
-import com.android.launcher.R;
-
 public class DeleteZone extends IconDropTarget {
     private static final int ORIENTATION_HORIZONTAL = 1;
     private static final int TRANSITION_DURATION = 250;
     private static final int ANIMATION_DURATION = 200;
     private static final int XLARGE_TRANSITION_DURATION = 150;
     private static final int XLARGE_ANIMATION_DURATION = 200;
+    private static final int LEFT_DRAWABLE = 0;
 
     private AnimationSet mInAnimation;
     private AnimationSet mOutAnimation;
@@ -51,6 +53,8 @@ public class DeleteZone extends IconDropTarget {
     private final RectF mRegionF = new RectF();
     private final Rect mRegion = new Rect();
     private TransitionDrawable mTransition;
+    private int mTextColor;
+    private int mDragTextColor;
 
     public DeleteZone(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -74,7 +78,14 @@ public class DeleteZone extends IconDropTarget {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mTransition = (TransitionDrawable) getDrawable();
+        mTransition = (TransitionDrawable) getCompoundDrawables()[LEFT_DRAWABLE];
+        if (LauncherApplication.isScreenXLarge()) {
+            mTransition.setCrossFadeEnabled(false);
+        }
+
+        Resources r = getResources();
+        mTextColor = r.getColor(R.color.workspace_all_apps_and_delete_zone_text_color);
+        mDragTextColor = r.getColor(R.color.workspace_delete_zone_drag_text_color);
     }
 
     public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset,
@@ -115,7 +126,6 @@ public class DeleteZone extends IconDropTarget {
             final LauncherAppWidgetInfo launcherAppWidgetInfo = (LauncherAppWidgetInfo) item;
             final LauncherAppWidgetHost appWidgetHost = mLauncher.getAppWidgetHost();
             if (appWidgetHost != null) {
-                final int appWidgetId = launcherAppWidgetInfo.appWidgetId;
                 // Deleting an app widget ID is a void call but writes to disk before returning
                 // to the caller...
                 new Thread("deleteAppWidgetId") {
@@ -133,6 +143,7 @@ public class DeleteZone extends IconDropTarget {
             DragView dragView, Object dragInfo) {
         if (mDragAndDropEnabled) {
             mTransition.reverseTransition(getTransitionAnimationDuration());
+            setTextColor(mDragTextColor);
             super.onDragEnter(source, x, y, xOffset, yOffset, dragView, dragInfo);
         }
     }
@@ -141,6 +152,7 @@ public class DeleteZone extends IconDropTarget {
             DragView dragView, Object dragInfo) {
         if (mDragAndDropEnabled) {
             mTransition.reverseTransition(getTransitionAnimationDuration());
+            setTextColor(mTextColor);
             super.onDragExit(source, x, y, xOffset, yOffset, dragView, dragInfo);
         }
     }

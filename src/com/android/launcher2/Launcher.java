@@ -2595,19 +2595,23 @@ public final class Launcher extends Activity
             hideOrShowToolbarButton(true, divider, showSeq);
             hideOrShowToolbarButton(true, configureButton, showSeq);
             mDeleteZone.setOverlappingViews(new View[] { allAppsButton, divider, configureButton });
+            mDeleteZone.setDragAndDropEnabled(true);
+            mDeleteZone.setText(getResources().getString(R.string.delete_zone_label_workspace));
             break;
         case ALL_APPS:
             hideOrShowToolbarButton(false, configureButton, hideSeq);
             hideOrShowToolbarButton(false, searchButton, hideSeq);
             hideOrShowToolbarButton(false, divider, hideSeq);
             hideOrShowToolbarButton(false, allAppsButton, hideSeq);
+            mDeleteZone.setDragAndDropEnabled(false);
+            mDeleteZone.setText(getResources().getString(R.string.delete_zone_label_all_apps));
             break;
         case CUSTOMIZE:
             hideOrShowToolbarButton(false, allAppsButton, hideSeq);
             hideOrShowToolbarButton(false, searchButton, hideSeq);
             hideOrShowToolbarButton(false, divider, hideSeq);
             hideOrShowToolbarButton(false, configureButton, hideSeq);
-            //mDeleteZone.setOverlappingView(configureButton);
+            mDeleteZone.setDragAndDropEnabled(false);
             break;
         }
     }
