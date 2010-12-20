@@ -73,6 +73,7 @@ public abstract class PagedView extends ViewGroup {
 
     protected int mCurrentPage;
     protected int mNextPage = INVALID_PAGE;
+    protected int mRestorePage = -1;
     protected int mMaxScrollX;
     protected Scroller mScroller;
     private VelocityTracker mVelocityTracker;
@@ -279,9 +280,8 @@ public abstract class PagedView extends ViewGroup {
 
         mCurrentPage = Math.max(0, Math.min(currentPage, getPageCount() - 1));
         updateCurrentPageScroll();
-
-        invalidate();
         notifyPageSwitchListener();
+        invalidate();
     }
 
     protected void notifyPageSwitchListener() {
@@ -1219,22 +1219,6 @@ public abstract class PagedView extends ViewGroup {
         invalidate();
     }
 
-    @Override
-    protected Parcelable onSaveInstanceState() {
-        final SavedState state = new SavedState(super.onSaveInstanceState());
-        state.currentPage = mCurrentPage;
-        return state;
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Parcelable state) {
-        SavedState savedState = (SavedState) state;
-        super.onRestoreInstanceState(savedState.getSuperState());
-        if (savedState.currentPage != -1) {
-            mCurrentPage = savedState.currentPage;
-        }
-    }
-
     public void scrollLeft() {
         if (mScroller.isFinished()) {
             if (mCurrentPage > 0) snapToPage(mCurrentPage - 1);
@@ -1417,6 +1401,10 @@ public abstract class PagedView extends ViewGroup {
         }
     }
 
+    public void setRestorePage(int restorePage) {
+        mRestorePage = restorePage;
+    }
+
     /**
      * This method is called ONLY to synchronize the number of pages that the paged view has.
      * To actually fill the pages with information, implement syncPageItems() below.  It is
@@ -1441,6 +1429,12 @@ public abstract class PagedView extends ViewGroup {
             mDirtyPageContent.clear();
             for (int i = 0; i < count; ++i) {
                 mDirtyPageContent.add(true);
+            }
+
+            // Use the restore page if necessary
+            if (mRestorePage > -1) {
+                mCurrentPage = mRestorePage;
+                mRestorePage = -1;
             }
 
             // Load any pages that are necessary for the current window of views
