@@ -2217,13 +2217,6 @@ public class Workspace extends SmoothPagedView
                 localPixelX, localPixelY, spanX, spanY, ignoreView, recycle);
     }
 
-    /**
-     * Estimate the size that a child with the given dimensions will take in the current screen.
-     */
-    void estimateChildSize(int minWidth, int minHeight, int[] result) {
-        ((CellLayout)getChildAt(mCurrentPage)).estimateChildSize(minWidth, minHeight, result);
-    }
-
     void setLauncher(Launcher launcher) {
         mLauncher = launcher;
         mSpringLoadedDragController = new SpringLoadedDragController(mLauncher);

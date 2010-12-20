@@ -21,7 +21,7 @@ import com.android.launcher.R;
 import org.xmlpull.v1.XmlPullParser;
 
 import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.TimeInterpolator;
@@ -40,7 +40,6 @@ import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -378,11 +377,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         posAnim.setInterpolator(mQuintEaseOutInterpolator);
         posAnim.setDuration(ANIMATION_DURATION);
 
-        posAnim.addListener(new AnimatorListener() {
-            public void onAnimationCancel(Animator animation) {}
-            public void onAnimationRepeat(Animator animation) {}
-            public void onAnimationStart(Animator animation) {}
-
+        posAnim.addListener(new AnimatorListenerAdapter() {
             public void onAnimationEnd(Animator animation) {
                 dragLayer.removeView(dragCopy);
                 mLauncher.addExternalItemToScreen(info, layout);
@@ -443,7 +438,12 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             animateClickFeedback(v, new Runnable() {
                 @Override
                 public void run() {
-                    animateItemOntoScreen(dragView, cl, itemInfo);
+                    cl.calculateSpans(itemInfo);
+                    if (cl.findCellForSpan(null, itemInfo.spanX, itemInfo.spanY)) {
+                        animateItemOntoScreen(dragView, cl, itemInfo);
+                    } else {
+                        mLauncher.showOutOfSpaceMessage();
+                    }
                 }
             });
             return;

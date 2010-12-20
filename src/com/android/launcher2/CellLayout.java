@@ -909,19 +909,6 @@ public class CellLayout extends ViewGroup implements Dimmable {
     }
 
     /**
-     * Estimate the size that a child with the given dimensions will take in the layout.
-     */
-    void estimateChildSize(int minWidth, int minHeight, int[] result) {
-        // Assuming it's placed at 0, 0, find where the bottom right cell will land
-        rectToCell(minWidth, minHeight, result);
-
-        // Then figure out the rect it will occupy
-        cellToRect(0, 0, result[0], result[1], mRectF);
-        result[0] = (int)mRectF.width();
-        result[1] = (int)mRectF.height();
-    }
-
-    /**
      * Estimate where the top left cell of the dragged item will land if it is dropped.
      *
      * @param originX The X value of the top left corner of the item
@@ -1319,6 +1306,29 @@ public class CellLayout extends ViewGroup implements Dimmable {
         result[0] = spanX;
         result[1] = spanY;
         return result;
+    }
+
+    /**
+     * Calculate the grid spans needed to fit given item
+     */
+    public void calculateSpans(ItemInfo info) {
+        final int minWidth;
+        final int minHeight;
+
+        if (info instanceof LauncherAppWidgetInfo) {
+            minWidth = ((LauncherAppWidgetInfo) info).minWidth;
+            minHeight = ((LauncherAppWidgetInfo) info).minHeight;
+        } else if (info instanceof PendingAddWidgetInfo) {
+            minWidth = ((PendingAddWidgetInfo) info).minWidth;
+            minHeight = ((PendingAddWidgetInfo) info).minHeight;
+        } else {
+            // It's not a widget, so it must be 1x1
+            info.spanX = info.spanY = 1;
+            return;
+        }
+        int[] spans = rectToCell(minWidth, minHeight, null);
+        info.spanX = spans[0];
+        info.spanY = spans[1];
     }
 
     /**
