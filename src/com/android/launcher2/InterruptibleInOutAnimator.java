@@ -52,9 +52,9 @@ public class InterruptibleInOutAnimator {
         mOriginalFromValue = fromValue;
         mOriginalToValue = toValue;
 
-        mAnimator.addListener(new LauncherAnimatorListenerAdapter() {
+        mAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEndOrCancel(Animator animation) {
+            public void onAnimationEnd(Animator animation) {
                 mDirection = STOPPED;
             }
         });

@@ -16,17 +16,17 @@
 
 package com.android.launcher2;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import com.android.launcher.R;
+import com.android.launcher2.InstallWidgetReceiver.WidgetMimeTypeHandlerData;
 
 import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
+import android.animation.Animator.AnimatorListener;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.AlertDialog;
 import android.app.WallpaperManager;
@@ -44,7 +44,6 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Camera;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -62,12 +61,12 @@ import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.launcher.R;
-import com.android.launcher2.InstallWidgetReceiver.WidgetMimeTypeHandlerData;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -267,13 +266,13 @@ public class Workspace extends SmoothPagedView
             // In this case, we will skip drawing background protection
         }
 
-        mUnshrinkAnimationListener = new LauncherAnimatorListenerAdapter() {
+        mUnshrinkAnimationListener = new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
                 mIsInUnshrinkAnimation = true;
             }
             @Override
-            public void onAnimationEndOrCancel(Animator animation) {
+            public void onAnimationEnd(Animator animation) {
                 mIsInUnshrinkAnimation = false;
                 if (mShrinkState != ShrinkState.SPRING_LOADED) {
                     mDrawCustomizeTrayBackground = false;
@@ -1520,22 +1519,19 @@ public class Workspace extends SmoothPagedView
         }
 
         if (mDropAnim != null) {
-            // This should really be end(), but that will not be called synchronously,
-            // so instead we use LauncherAnimatorListenerAdapter.onAnimationEndOrCancel()
-            // and call cancel() here.
-            mDropAnim.cancel();
+            mDropAnim.end();
         }
         mDropAnim = new ValueAnimator();
         mDropAnim.setInterpolator(mQuintEaseOutInterpolator);
 
         // The view is invisible during the animation; we render it manually.
-        mDropAnim.addListener(new LauncherAnimatorListenerAdapter() {
+        mDropAnim.addListener(new AnimatorListenerAdapter() {
             public void onAnimationStart(Animator animation) {
                 // Set this here so that we don't render it until the animation begins
                 mDropView = view;
             }
 
-            public void onAnimationEndOrCancel(Animator animation) {
+            public void onAnimationEnd(Animator animation) {
                 if (mDropView != null) {
                     mDropView.setVisibility(View.VISIBLE);
                     mDropView = null;

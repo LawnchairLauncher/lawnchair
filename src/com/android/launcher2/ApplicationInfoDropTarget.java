@@ -16,16 +16,18 @@
 
 package com.android.launcher2;
 
+import com.android.launcher.R;
+
 import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.Animator.AnimatorListener;
 import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.util.AttributeSet;
-
-import com.android.launcher.R;
+import android.view.View;
 
 /**
  * Implements a DropTarget which allows applications to be dropped on it,
@@ -35,8 +37,9 @@ public class ApplicationInfoDropTarget extends IconDropTarget {
     private static final int sFadeInAnimationDuration = 200;
     private static final int sFadeOutAnimationDuration = 100;
 
-    private ObjectAnimator mFadeAnimator;
+    private AnimatorSet mFadeAnimator;
     private ObjectAnimator mHandleFadeAnimator;
+    private boolean mHandleWasVisibleOnDragStart;
 
     public ApplicationInfoDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -87,13 +90,25 @@ public class ApplicationInfoDropTarget extends IconDropTarget {
             if (mActive) {
                 // Fade in this icon
                 if (mFadeAnimator != null) mFadeAnimator.cancel();
-                mFadeAnimator = ObjectAnimator.ofFloat(this, "alpha", 0.0f, 1.0f);
-                mFadeAnimator.setDuration(sFadeInAnimationDuration);
+                mFadeAnimator = new AnimatorSet();
+                Animator infoButtonAnimator = ObjectAnimator.ofFloat(this, "alpha", 0.0f, 1.0f);
+                infoButtonAnimator.setDuration(sFadeInAnimationDuration);
+
+                if (mHandle == mLauncher.findViewById(R.id.configure_button)) {
+                    final View divider = mLauncher.findViewById(R.id.divider_during_drag);
+                    divider.setVisibility(VISIBLE);
+                    Animator dividerAnimator = ObjectAnimator.ofFloat(divider, "alpha", 1.0f);
+                    dividerAnimator.setDuration(sFadeInAnimationDuration);
+                    mFadeAnimator.play(infoButtonAnimator).with(dividerAnimator);
+                } else {
+                    mFadeAnimator.play(infoButtonAnimator);
+                }
                 mFadeAnimator.start();
                 setVisibility(VISIBLE);
 
                 // Fade out the handle
                 if (mHandle != null) {
+                    mHandleWasVisibleOnDragStart = mHandle.getVisibility() == VISIBLE;
                     if (mHandleFadeAnimator != null) mHandleFadeAnimator.cancel();
                     mHandleFadeAnimator = ObjectAnimator.ofFloat(mHandle, "alpha", 0.0f);
                     mHandleFadeAnimator.setDuration(sFadeOutAnimationDuration);
@@ -123,8 +138,12 @@ public class ApplicationInfoDropTarget extends IconDropTarget {
 
         // Fade out this icon
         if (mFadeAnimator != null) mFadeAnimator.cancel();
-        mFadeAnimator = ObjectAnimator.ofFloat(this, "alpha", 0.0f);
-        mFadeAnimator.setDuration(sFadeOutAnimationDuration);
+        mFadeAnimator = new AnimatorSet();
+        Animator infoButtonAnimator = ObjectAnimator.ofFloat(this, "alpha", 0.0f);
+        infoButtonAnimator.setDuration(sFadeOutAnimationDuration);
+        final View divider = mLauncher.findViewById(R.id.divider_during_drag);
+        divider.setVisibility(VISIBLE);
+        Animator dividerAnimator = ObjectAnimator.ofFloat(divider, "alpha", 0.0f);
         mFadeAnimator.addListener(new AnimatorListener() {
             public void onAnimationStart(Animator animation) {}
             public void onAnimationRepeat(Animator animation) {}
@@ -136,13 +155,15 @@ public class ApplicationInfoDropTarget extends IconDropTarget {
             }
             private void onEndOrCancel() {
                 setVisibility(GONE);
+                divider.setVisibility(GONE);
                 mFadeAnimator = null;
             }
         });
+        mFadeAnimator.play(infoButtonAnimator).with(dividerAnimator);
         mFadeAnimator.start();
 
         // Fade in the handle
-        if (mHandle != null) {
+        if (mHandle != null && mHandleWasVisibleOnDragStart) {
             if (mHandleFadeAnimator != null) mHandleFadeAnimator.cancel();
             mHandleFadeAnimator = ObjectAnimator.ofFloat(mHandle, "alpha", 1.0f);
             mHandleFadeAnimator.setDuration(sFadeInAnimationDuration);

@@ -22,6 +22,7 @@ import com.android.launcher.R;
 import com.android.launcher2.Workspace.ShrinkState;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
@@ -337,9 +338,9 @@ public final class Launcher extends Activity
                     ValueAnimator alphaAnim = ObjectAnimator.ofFloat(mCustomizePagedView,
                             "alpha", alpha, 0.0f);
                     alphaAnim.setDuration(duration);
-                    alphaAnim.addListener(new LauncherAnimatorListenerAdapter() {
+                    alphaAnim.addListener(new AnimatorListenerAdapter() {
                         @Override
-                        public void onAnimationEndOrCancel(Animator animation) {
+                        public void onAnimationEnd(Animator animation) {
                             String tag = mHomeCustomizationDrawer.getCurrentTabTag();
                             if (tag == WIDGETS_TAG) {
                                 mCustomizePagedView.setCustomizationFilter(
@@ -2541,13 +2542,13 @@ public final class Launcher extends Activity
         if (seq != null) {
             Animator anim = ObjectAnimator.ofFloat(view, "alpha", show ? 1.0f : 0.0f);
             anim.setDuration(duration);
-            anim.addListener(new LauncherAnimatorListenerAdapter() {
+            anim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
                     if (showing) showToolbarButton(view);
                 }
                 @Override
-                public void onAnimationEndOrCancel(Animator animation) {
+                public void onAnimationEnd(Animator animation) {
                     if (hiding) hideToolbarButton(view);
                 }
             });
@@ -2572,23 +2573,27 @@ public final class Launcher extends Activity
     private void hideAndShowToolbarButtons(State newState, AnimatorSet showSeq, AnimatorSet hideSeq) {
         final View searchButton = findViewById(R.id.search_button_cluster);
         final View allAppsButton = findViewById(R.id.all_apps_button);
+        final View divider = findViewById(R.id.divider);
         final View configureButton = findViewById(R.id.configure_button);
 
         switch (newState) {
         case WORKSPACE:
             hideOrShowToolbarButton(true, searchButton, showSeq);
             hideOrShowToolbarButton(true, allAppsButton, showSeq);
+            hideOrShowToolbarButton(true, divider, showSeq);
             hideOrShowToolbarButton(true, configureButton, showSeq);
             mDeleteZone.setHandle(allAppsButton);
             break;
         case ALL_APPS:
             hideOrShowToolbarButton(false, configureButton, hideSeq);
             hideOrShowToolbarButton(false, searchButton, hideSeq);
+            hideOrShowToolbarButton(false, divider, hideSeq);
             hideOrShowToolbarButton(false, allAppsButton, hideSeq);
             break;
         case CUSTOMIZE:
             hideOrShowToolbarButton(false, allAppsButton, hideSeq);
             hideOrShowToolbarButton(false, searchButton, hideSeq);
+            hideOrShowToolbarButton(false, divider, hideSeq);
             hideOrShowToolbarButton(false, configureButton, hideSeq);
             mDeleteZone.setHandle(allAppsButton);
             break;
@@ -2644,7 +2649,7 @@ public final class Launcher extends Activity
             scaleAnim.setDuration(duration);
 
             scaleAnim.setInterpolator(new Workspace.ZoomOutInterpolator());
-            scaleAnim.addListener(new LauncherAnimatorListenerAdapter() {
+            scaleAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
                     // Prepare the position
@@ -2654,7 +2659,7 @@ public final class Launcher extends Activity
                     toView.setAlpha(1.0f);
                 }
                 @Override
-                public void onAnimationEndOrCancel(Animator animation) {
+                public void onAnimationEnd(Animator animation) {
                     // If we don't set the final scale values here, if this animation is cancelled
                     // it will have the wrong scale value and subsequent cameraPan animations will
                     // not fix that
@@ -2727,9 +2732,9 @@ public final class Launcher extends Activity
             ValueAnimator alphaAnim = ObjectAnimator.ofPropertyValuesHolder(fromView,
                     PropertyValuesHolder.ofFloat("alpha", 1.0f, 0.0f));
             alphaAnim.setDuration(res.getInteger(R.integer.config_allAppsFadeOutTime));
-            alphaAnim.addListener(new LauncherAnimatorListenerAdapter() {
+            alphaAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
-                public void onAnimationEndOrCancel(Animator animation) {
+                public void onAnimationEnd(Animator animation) {
                     fromView.setVisibility(View.GONE);
                 }
             });
@@ -2789,7 +2794,7 @@ public final class Launcher extends Activity
         if (animated) {
             if (mStateAnimation != null) mStateAnimation.cancel();
             mStateAnimation = new AnimatorSet();
-            mStateAnimation.addListener(new LauncherAnimatorListenerAdapter() {
+            mStateAnimation.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
                     toView.setVisibility(View.VISIBLE);
@@ -2797,7 +2802,7 @@ public final class Launcher extends Activity
                     toView.setAlpha(1.0f);
                 }
                 @Override
-                public void onAnimationEndOrCancel(Animator animation) {
+                public void onAnimationEnd(Animator animation) {
                     fromView.setVisibility(View.GONE);
                 }
             });
