@@ -198,9 +198,6 @@ public class Workspace extends SmoothPagedView
     // Paint used to draw external drop outline
     private final Paint mExternalDragOutlinePaint = new Paint();
 
-    /** Used to trigger an animation as soon as the workspace stops scrolling. */
-    private Animator mAnimOnPageEndMoving = null;
-
     // Camera and Matrix used to determine the final position of a neighboring CellLayout
     private final Matrix mMatrix = new Matrix();
     private final Camera mCamera = new Camera();
@@ -526,11 +523,6 @@ public class Workspace extends SmoothPagedView
         // Hide the outlines, as long as we're not dragging
         if (!mDragController.dragging()) {
             hideOutlines();
-        }
-        // Check for an animation that's waiting to be started
-        if (mAnimOnPageEndMoving != null) {
-            mAnimOnPageEndMoving.start();
-            mAnimOnPageEndMoving = null;
         }
         mOverScrollMaxBackgroundAlpha = 0.0f;
         mOverScrollPageIndex = -1;
@@ -1557,12 +1549,7 @@ public class Workspace extends SmoothPagedView
         });
 
         view.setVisibility(View.INVISIBLE);
-
-        if (!mScroller.isFinished()) {
-            mAnimOnPageEndMoving = mDropAnim;
-        } else {
-            mDropAnim.start();
-        }
+        mDropAnim.start();
     }
 
     /**
