@@ -49,8 +49,8 @@
     <dimen name="toolbar_button_horizontal_padding">16dip</dimen>
 
     <!-- height & width of the drop rectangle for the trash icon -->
-    <dimen name="delete_zone_size">50dip</dimen>
-    <dimen name="delete_zone_padding">20dip</dimen>
+    <dimen name="delete_zone_vertical_drag_padding">20dip</dimen>
+    <dimen name="delete_zone_horizontal_drag_padding">20dip</dimen>
 
     <!-- dimensions for the wallpaper picker wallpaper thumbnail width -->
     <dimen name="wallpaper_chooser_grid_width">230dp</dimen>

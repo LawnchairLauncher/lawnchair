@@ -59,15 +59,16 @@ public class DeleteZone extends IconDropTarget {
     public DeleteZone(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        mOuterDragPadding = getResources().getDimensionPixelSize(R.dimen.delete_zone_size);
-        mInnerDragPadding = getResources().getDimensionPixelSize(R.dimen.delete_zone_padding);
-
         final int srcColor = context.getResources().getColor(R.color.delete_color_filter);
         mHoverPaint.setColorFilter(new PorterDuffColorFilter(srcColor, PorterDuff.Mode.SRC_ATOP));
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DeleteZone, defStyle, 0);
         mOrientation = a.getInt(R.styleable.DeleteZone_direction, ORIENTATION_HORIZONTAL);
         a.recycle();
+
+        int tb = getResources().getDimensionPixelSize(R.dimen.delete_zone_vertical_drag_padding);
+        int lr = getResources().getDimensionPixelSize(R.dimen.delete_zone_horizontal_drag_padding);
+        setDragPadding(tb, lr, tb, lr);
     }
 
     @Override

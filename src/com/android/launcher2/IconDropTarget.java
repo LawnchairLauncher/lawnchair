@@ -16,17 +16,16 @@
 
 package com.android.launcher2;
 
-import android.content.ComponentName;
+import com.android.launcher.R;
+
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
-
-import com.android.launcher.R;
 
 /**
  * Implements a DropTarget which allows applications to be dropped on it,
@@ -51,9 +50,8 @@ public class IconDropTarget extends ImageView implements DropTarget, DragControl
     /** The paint applied to the drag view on hover */
     protected final Paint mHoverPaint = new Paint();
 
-    /** Drag zone padding */
-    protected int mInnerDragPadding;
-    protected int mOuterDragPadding;
+    /** Drag zone padding [T, R, B, L] */
+    protected final int mDragPadding[] = new int[4];
 
     public IconDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -62,6 +60,13 @@ public class IconDropTarget extends ImageView implements DropTarget, DragControl
     public IconDropTarget(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mDragAndDropEnabled = true;
+    }
+
+    protected void setDragPadding(int t, int r, int b, int l) {
+        mDragPadding[0] = t;
+        mDragPadding[1] = r;
+        mDragPadding[2] = b;
+        mDragPadding[3] = l;
     }
 
     void setLauncher(Launcher launcher) {
@@ -121,10 +126,10 @@ public class IconDropTarget extends ImageView implements DropTarget, DragControl
     public void getHitRect(Rect outRect) {
         super.getHitRect(outRect);
         if (LauncherApplication.isScreenXLarge()) {
-            outRect.top -= mOuterDragPadding;
-            outRect.left -= mInnerDragPadding;
-            outRect.bottom += mOuterDragPadding;
-            outRect.right += mOuterDragPadding;
+            outRect.top -= mDragPadding[0];
+            outRect.right += mDragPadding[1];
+            outRect.bottom += mDragPadding[2];
+            outRect.left -= mDragPadding[3];
         }
     }
 
