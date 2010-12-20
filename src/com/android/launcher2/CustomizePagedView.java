@@ -311,12 +311,18 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
 
     public void setCustomizationFilter(CustomizationType filterType) {
         mCustomizationType = filterType;
-        setCurrentPage(0);
-        updateCurrentPageScroll();
-        invalidatePageData();
+        if (getChildCount() > 0) {
+            setCurrentPage(0);
+            updateCurrentPageScroll();
+            invalidatePageData();
 
-        // End the current choice mode so that we don't carry selections across tabs
-        endChoiceMode();
+            // End the current choice mode so that we don't carry selections across tabs
+            endChoiceMode();
+        }
+    }
+
+    public CustomizationType getCustomizationFilter() {
+        return mCustomizationType;
     }
 
     @Override

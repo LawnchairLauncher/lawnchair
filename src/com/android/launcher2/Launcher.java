@@ -19,6 +19,7 @@ package com.android.launcher2;
 
 import com.android.common.Search;
 import com.android.launcher.R;
+import com.android.launcher2.CustomizePagedView.CustomizationType;
 import com.android.launcher2.Workspace.ShrinkState;
 
 import android.animation.Animator;
@@ -213,7 +214,7 @@ public final class Launcher extends Activity
     private TabHost mHomeCustomizationDrawer;
     private boolean mAutoAdvanceRunning = false;
 
-    private PagedView mAllAppsPagedView = null;
+    private AllAppsPagedView mAllAppsPagedView = null;
     private CustomizePagedView mCustomizePagedView = null;
 
     private Bundle mSavedState;
@@ -265,6 +266,19 @@ public final class Launcher extends Activity
     private static Drawable.ConstantState sGlobalSearchIcon;
     private static Drawable.ConstantState sVoiceSearchIcon;
     private static Drawable.ConstantState sAppMarketIcon;
+
+    private CustomizationType getCustomizeFilterForTabTag(String tag) {
+        if (tag.equals(WIDGETS_TAG)) {
+            return CustomizationType.WidgetCustomization;
+        } else if (tag.equals(APPLICATIONS_TAG)) {
+            return CustomizationType.ApplicationCustomization;
+        } else if (tag.equals(WALLPAPERS_TAG)) {
+            return CustomizePagedView.CustomizationType.WallpaperCustomization;
+        } else if (tag.equals(SHORTCUTS_TAG)) {
+            return CustomizePagedView.CustomizationType.ShortcutCustomization;
+        }
+        return CustomizationType.WidgetCustomization;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -331,39 +345,31 @@ public final class Launcher extends Activity
                     .setIndicator(tabView).setContent(contentFactory));
             mHomeCustomizationDrawer.setOnTabChangedListener(new OnTabChangeListener() {
                 public void onTabChanged(String tabId) {
-                    // animate the changing of the tab content by fading pages in and out
-                    final Resources res = getResources();
-                    final int duration = res.getInteger(R.integer.config_tabTransitionTime);
-                    final float alpha = mCustomizePagedView.getAlpha();
-                    ValueAnimator alphaAnim = ObjectAnimator.ofFloat(mCustomizePagedView,
-                            "alpha", alpha, 0.0f);
-                    alphaAnim.setDuration(duration);
-                    alphaAnim.addListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            String tag = mHomeCustomizationDrawer.getCurrentTabTag();
-                            if (tag == WIDGETS_TAG) {
-                                mCustomizePagedView.setCustomizationFilter(
-                                    CustomizePagedView.CustomizationType.WidgetCustomization);
-                            } else if (tag == APPLICATIONS_TAG) {
-                                mCustomizePagedView.setCustomizationFilter(
-                                        CustomizePagedView.CustomizationType.ApplicationCustomization);
-                            } else if (tag == WALLPAPERS_TAG) {
-                                mCustomizePagedView.setCustomizationFilter(
-                                    CustomizePagedView.CustomizationType.WallpaperCustomization);
-                            } else if (tag == SHORTCUTS_TAG) {
-                                mCustomizePagedView.setCustomizationFilter(
-                                        CustomizePagedView.CustomizationType.ShortcutCustomization);
-                            }
+                    final CustomizePagedView.CustomizationType newType =
+                        getCustomizeFilterForTabTag(tabId);
+                    if (newType != mCustomizePagedView.getCustomizationFilter()) {
+                        // animate the changing of the tab content by fading pages in and out
+                        final Resources res = getResources();
+                        final int duration = res.getInteger(R.integer.config_tabTransitionTime);
+                        final float alpha = mCustomizePagedView.getAlpha();
+                        ValueAnimator alphaAnim = ObjectAnimator.ofFloat(mCustomizePagedView,
+                                "alpha", alpha, 0.0f);
+                        alphaAnim.setDuration(duration);
+                        alphaAnim.addListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                String tag = mHomeCustomizationDrawer.getCurrentTabTag();
+                                mCustomizePagedView.setCustomizationFilter(newType);
 
-                            final float alpha = mCustomizePagedView.getAlpha();
-                            ValueAnimator alphaAnim = ObjectAnimator.ofFloat(
-                                    mCustomizePagedView, "alpha", alpha, 1.0f);
-                            alphaAnim.setDuration(duration);
-                            alphaAnim.start();
-                        }
-                    });
-                    alphaAnim.start();
+                                final float alpha = mCustomizePagedView.getAlpha();
+                                ValueAnimator alphaAnim = ObjectAnimator.ofFloat(
+                                        mCustomizePagedView, "alpha", alpha, 1.0f);
+                                alphaAnim.setDuration(duration);
+                                alphaAnim.start();
+                            }
+                        });
+                        alphaAnim.start();
+                    }
                 }
             });
         }
@@ -375,6 +381,9 @@ public final class Launcher extends Activity
 
         mSavedState = savedInstanceState;
         restoreState(mSavedState);
+
+        // Update customization drawer _after_ restoring the states
+        mCustomizePagedView.update();
 
         if (PROFILE_STARTUP) {
             android.os.Debug.stopMethodTracing();
@@ -879,6 +888,32 @@ public final class Launcher extends Activity
             mFolderInfo = mModel.getFolderById(this, sFolders, id);
             mRestoring = true;
         }
+
+        // Restore the current AllApps drawer tab
+        if (mAllAppsGrid != null && mAllAppsGrid instanceof AllAppsTabbed) {
+            String curTab = savedState.getString("allapps_currentTab");
+            if (curTab != null) {
+                AllAppsTabbed tabhost = (AllAppsTabbed) mAllAppsGrid;
+                tabhost.setCurrentTabByTag(curTab);
+            }
+            int curPage = savedState.getInt("allapps_currentPage", -1);
+            if (curPage > -1) {
+                mAllAppsPagedView.setRestorePage(curPage);
+            }
+        }
+
+        // Restore the current customization drawer tab
+        if (mHomeCustomizationDrawer != null) {
+            String curTab = savedState.getString("customize_currentTab");
+            if (curTab != null) {
+                // We set this directly so that there is no delay before the tab is set
+                mCustomizePagedView.setCustomizationFilter(getCustomizeFilterForTabTag(curTab));
+                mHomeCustomizationDrawer.setCurrentTabByTag(curTab);
+            }
+
+            // Note: currently we do not restore the page for the customization tray because unlike
+            // AllApps, the page content can change drastically
+        }
     }
 
     /**
@@ -924,7 +959,6 @@ public final class Launcher extends Activity
         if (mCustomizePagedView != null) {
             mCustomizePagedView.setLauncher(this);
             mCustomizePagedView.setDragController(dragController);
-            mCustomizePagedView.update();
         } else {
              ImageView hotseatLeft = (ImageView) findViewById(R.id.hotseat_left);
              hotseatLeft.setContentDescription(mHotseatLabels[0]);
@@ -1397,23 +1431,6 @@ public final class Launcher extends Activity
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         // Do not call super here
         mSavedInstanceState = savedInstanceState;
-
-        // Restore the current AllApps drawer tab
-        if (mAllAppsGrid != null && mAllAppsGrid instanceof AllAppsTabbed) {
-            String cur = savedInstanceState.getString("allapps_currentTab");
-            if (cur != null) {
-                AllAppsTabbed tabhost = (AllAppsTabbed) mAllAppsGrid;
-                tabhost.setCurrentTabByTag(cur);
-            }
-        }
-
-        // Restore the current customization drawer tab
-        if (mHomeCustomizationDrawer != null) {
-            String cur = savedInstanceState.getString("customize_currentTab");
-            if (cur != null) {
-                mHomeCustomizationDrawer.setCurrentTabByTag(cur);
-            }
-        }
     }
 
     @Override
@@ -1452,6 +1469,7 @@ public final class Launcher extends Activity
             String currentTabTag = tabhost.getCurrentTabTag();
             if (currentTabTag != null) {
                 outState.putString("allapps_currentTab", currentTabTag);
+                outState.putInt("allapps_currentPage", mAllAppsPagedView.getCurrentPage());
             }
         }
 
@@ -3261,7 +3279,7 @@ public final class Launcher extends Activity
         }
     }
 
-    void setAllAppsPagedView(PagedView view) {
+    void setAllAppsPagedView(AllAppsPagedView view) {
         mAllAppsPagedView = view;
     }
 
