@@ -937,7 +937,7 @@ public class AllApps3D extends RSSurfaceView
         ScriptC_allapps mScript;
 
         private Mesh mMesh;
-        private ProgramVertex.MatrixAllocation mPVA;
+        private ProgramVertexFixedFunction.Constants mPVA;
 
         private ScriptField_VpConsts mUniformAlloc;
 
@@ -1039,7 +1039,7 @@ public class AllApps3D extends RSSurfaceView
 
         void resize(int w, int h) {
             Matrix4f proj = getProjectionMatrix(w, h);
-            mPVA.loadProjection(proj);
+            mPVA.setProjection(proj);
 
             if (mUniformAlloc != null) {
                 ScriptField_VpConsts.Item i = new ScriptField_VpConsts.Item();
@@ -1063,20 +1063,20 @@ public class AllApps3D extends RSSurfaceView
         }
 
         private void initProgramVertex() {
-            mPVA = new ProgramVertex.MatrixAllocation(sRS);
+            mPVA = new ProgramVertexFixedFunction.Constants(sRS);
             resize(mWidth, mHeight);
 
-            ProgramVertex.Builder pvb = new ProgramVertex.Builder(sRS, null, null);
+            ProgramVertexFixedFunction.Builder pvb = new ProgramVertexFixedFunction.Builder(sRS);
             pvb.setTextureMatrixEnable(true);
             ProgramVertex pv = pvb.create();
-            pv.bindAllocation(mPVA);
+            ((ProgramVertexFixedFunction)pv).bindConstants(mPVA);
             sRS.bindProgramVertex(pv);
 
             mUniformAlloc = new ScriptField_VpConsts(sRS, 1);
             mScript.bind_vpConstants(mUniformAlloc);
 
             initMesh();
-            ProgramVertex.ShaderBuilder sb = new ProgramVertex.ShaderBuilder(sRS);
+            ProgramVertex.Builder sb = new ProgramVertex.Builder(sRS);
             String t = "varying vec4 varColor;\n" +
                     "varying vec2 varTex0;\n" +
                     "void main() {\n" +
@@ -1145,19 +1145,19 @@ public class AllApps3D extends RSSurfaceView
 
         private void initProgramFragment() {
             Sampler.Builder sb = new Sampler.Builder(sRS);
-            sb.setMin(Sampler.Value.LINEAR_MIP_LINEAR);
-            sb.setMag(Sampler.Value.NEAREST);
+            sb.setMinification(Sampler.Value.LINEAR_MIP_LINEAR);
+            sb.setMagnification(Sampler.Value.NEAREST);
             sb.setWrapS(Sampler.Value.CLAMP);
             sb.setWrapT(Sampler.Value.CLAMP);
             Sampler linear = sb.create();
 
-            sb.setMin(Sampler.Value.NEAREST);
-            sb.setMag(Sampler.Value.NEAREST);
+            sb.setMinification(Sampler.Value.NEAREST);
+            sb.setMagnification(Sampler.Value.NEAREST);
             Sampler nearest = sb.create();
 
-            ProgramFragment.Builder bf = new ProgramFragment.Builder(sRS);
-            bf.setTexture(ProgramFragment.Builder.EnvMode.MODULATE,
-                          ProgramFragment.Builder.Format.RGBA, 0);
+            ProgramFragmentFixedFunction.Builder bf = new ProgramFragmentFixedFunction.Builder(sRS);
+            bf.setTexture(ProgramFragmentFixedFunction.Builder.EnvMode.MODULATE,
+                          ProgramFragmentFixedFunction.Builder.Format.RGBA, 0);
             bf.setVaryingColor(true);
             ProgramFragment pfTexMip = bf.create();
             pfTexMip.bindSampler(linear, 0);
@@ -1166,8 +1166,8 @@ public class AllApps3D extends RSSurfaceView
             ProgramFragment pfTexNearest = bf.create();
             pfTexNearest.bindSampler(nearest, 0);
 
-            bf.setTexture(ProgramFragment.Builder.EnvMode.MODULATE,
-                          ProgramFragment.Builder.Format.ALPHA, 0);
+            bf.setTexture(ProgramFragmentFixedFunction.Builder.EnvMode.MODULATE,
+                          ProgramFragmentFixedFunction.Builder.Format.ALPHA, 0);
             bf.setVaryingColor(true);
             ProgramFragment pfTexMipAlpha = bf.create();
             pfTexMipAlpha.bindSampler(linear, 0);
@@ -1178,10 +1178,10 @@ public class AllApps3D extends RSSurfaceView
         }
 
         private void initProgramStore() {
-            ProgramStore.Builder bs = new ProgramStore.Builder(sRS, null, null);
+            ProgramStore.Builder bs = new ProgramStore.Builder(sRS);
             bs.setDepthFunc(ProgramStore.DepthFunc.ALWAYS);
-            bs.setColorMask(true,true,true,false);
-            bs.setDitherEnable(true);
+            bs.setColorMaskEnabled(true,true,true,false);
+            bs.setDitherEnabled(true);
             bs.setBlendFunc(ProgramStore.BlendSrcFunc.SRC_ALPHA,
                             ProgramStore.BlendDstFunc.ONE_MINUS_SRC_ALPHA);
             mScript.set_gPS(bs.create());
