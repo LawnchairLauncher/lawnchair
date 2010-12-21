@@ -149,10 +149,10 @@
             android:textColor="#CCFFFFFF"
             android:textSize="18sp"
 
-            android:shadowColor="#A0000000"
+            android:shadowColor="#DA000000"
             android:shadowDx="0.0"
             android:shadowDy="0.0"
-            android:shadowRadius="2.0"
+            android:shadowRadius="2.5"
 
             android:onClick="onClickAllAppsButton"
             android:focusable="true"
