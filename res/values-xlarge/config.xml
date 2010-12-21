@@ -1,6 +1,12 @@
 <resources>
     <!--  NOTE: Many of the all apps values here are also used for the customization drawer -->
 
+    <!-- Duration in milliseconds of the fade-in/out of the icons as they are being dragged
+         from the AllApps or Customization trays -->
+    <integer name="icon_allAppsCustomizeFadeInTime">150</integer>
+    <integer name="icon_allAppsCustomizeFadeOutTime">200</integer>
+    <integer name="icon_allAppsCustomizeFadeAlpha">102</integer>
+
     <!-- Duration in milliseconds of the all apps / configuration zoom-in animation. -->
     <!-- NB: This should be less than the workspaceShrinkTime as they happen together. -->
     <integer name="config_allAppsZoomInTime">700</integer>

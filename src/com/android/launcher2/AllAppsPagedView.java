@@ -263,6 +263,10 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
 
             // Toggle the selection on the dragged app
             Checkable checkable = (Checkable) v;
+
+            // Note: we toggle the checkable state to actually cause an alpha fade for the duration
+            // of the drag of the item.  (The fade-in will occur when all checked states are
+            // disabled when dragging ends)
             checkable.toggle();
         }
 

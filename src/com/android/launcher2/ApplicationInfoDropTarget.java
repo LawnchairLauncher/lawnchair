@@ -51,11 +51,15 @@ public class ApplicationInfoDropTarget extends IconDropTarget {
         int colour = getContext().getResources().getColor(R.color.app_info_filter);
         mHoverPaint.setColorFilter(new PorterDuffColorFilter(colour, PorterDuff.Mode.SRC_ATOP));
 
-        // For the application info drop target, we just ignore the left padding since we don't want
-        // to overlap with the delete zone padding
-        int tb = getResources().getDimensionPixelSize(R.dimen.delete_zone_vertical_drag_padding);
-        int lr = getResources().getDimensionPixelSize(R.dimen.delete_zone_horizontal_drag_padding);
-        setDragPadding(tb, lr, tb, 0);
+        if (LauncherApplication.isScreenXLarge()) {
+            // For the application info drop target, we just ignore the left padding since we don't want
+            // to overlap with the delete zone padding
+            int tb = getResources().getDimensionPixelSize(
+                    R.dimen.delete_zone_vertical_drag_padding);
+            int lr = getResources().getDimensionPixelSize(
+                    R.dimen.delete_zone_horizontal_drag_padding);
+            setDragPadding(tb, lr, tb, 0);
+        }
     }
 
     public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset,

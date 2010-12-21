@@ -88,13 +88,10 @@ public class BubbleTextView extends CacheableTextView {
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setColor(bubbleColor);
         mBubbleColorAlpha = Color.alpha(bubbleColor) / 255.0f;
-        mFocusedOutlineColor =
-            getResources().getColor(R.color.workspace_item_focused_outline_color);
-        mFocusedGlowColor = getResources().getColor(R.color.workspace_item_focused_glow_color);
-        mPressedOutlineColor =
-            getResources().getColor(R.color.workspace_item_pressed_outline_color);
-        mPressedGlowColor =
-            getResources().getColor(R.color.workspace_item_pressed_glow_color);
+        mFocusedOutlineColor = res.getColor(R.color.workspace_item_focused_outline_color);
+        mFocusedGlowColor = res.getColor(R.color.workspace_item_focused_glow_color);
+        mPressedOutlineColor = res.getColor(R.color.workspace_item_pressed_outline_color);
+        mPressedGlowColor = res.getColor(R.color.workspace_item_pressed_glow_color);
     }
 
     protected int getCacheTopPadding() {

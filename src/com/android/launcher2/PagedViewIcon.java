@@ -20,6 +20,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -57,9 +58,9 @@ public class PagedViewIcon extends CacheableTextView implements Checkable {
 
     private boolean mIsChecked;
     private ObjectAnimator mCheckedAlphaAnimator;
-    private final static float sCheckedAlpha = 0.4f;
-    private final static int sCheckedFadeInDuration = 150;
-    private final static int sCheckedFadeOutDuration = 200;
+    private float mCheckedAlpha = 1.0f;
+    private int mCheckedFadeInDuration;
+    private int mCheckedFadeOutDuration;
 
     // Highlight colors
     private int mHoloBlurColor;
@@ -114,6 +115,15 @@ public class PagedViewIcon extends CacheableTextView implements Checkable {
 
         if (sHolographicOutlineHelper == null) {
             sHolographicOutlineHelper = new HolographicOutlineHelper();
+        }
+
+        // Set up fade in/out constants
+        final Resources r = context.getResources();
+        final int alpha = r.getInteger(R.integer.icon_allAppsCustomizeFadeAlpha);
+        if (alpha > 0) {
+            mCheckedAlpha = r.getInteger(R.integer.icon_allAppsCustomizeFadeAlpha) / 256.0f;
+            mCheckedFadeInDuration = r.getInteger(R.integer.icon_allAppsCustomizeFadeInTime);
+            mCheckedFadeOutDuration = r.getInteger(R.integer.icon_allAppsCustomizeFadeOutTime);
         }
 
         setFocusable(true);
@@ -230,11 +240,11 @@ public class PagedViewIcon extends CacheableTextView implements Checkable {
             float alpha;
             int duration;
             if (mIsChecked) {
-                alpha = sCheckedAlpha;
-                duration = sCheckedFadeInDuration;
+                alpha = mCheckedAlpha;
+                duration = mCheckedFadeInDuration;
             } else {
                 alpha = 1.0f;
-                duration = sCheckedFadeOutDuration;
+                duration = mCheckedFadeOutDuration;
             }
 
             // Initialize the animator

@@ -70,9 +70,13 @@ public class DeleteZone extends IconDropTarget {
         mOrientation = a.getInt(R.styleable.DeleteZone_direction, ORIENTATION_HORIZONTAL);
         a.recycle();
 
-        int tb = getResources().getDimensionPixelSize(R.dimen.delete_zone_vertical_drag_padding);
-        int lr = getResources().getDimensionPixelSize(R.dimen.delete_zone_horizontal_drag_padding);
-        setDragPadding(tb, lr, tb, lr);
+        if (LauncherApplication.isScreenXLarge()) {
+            int tb = getResources().getDimensionPixelSize(
+                    R.dimen.delete_zone_vertical_drag_padding);
+            int lr = getResources().getDimensionPixelSize(
+                    R.dimen.delete_zone_horizontal_drag_padding);
+            setDragPadding(tb, lr, tb, lr);
+        }
     }
 
     @Override

@@ -16,34 +16,34 @@
 
 package com.android.launcher2;
 
+import android.animation.ObjectAnimator;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.PorterDuff.Mode;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.launcher.R;
-import com.android.launcher2.PagedView.PagedViewIconCache;
 
 /**
  * The linear layout used strictly for the widget/wallpaper tab of the customization tray
  */
-public class PagedViewWidget extends LinearLayout {
+public class PagedViewWidget extends LinearLayout implements Checkable {
     static final String TAG = "PagedViewWidgetLayout";
 
     private final Paint mPaint = new Paint();
@@ -58,6 +58,12 @@ public class PagedViewWidget extends LinearLayout {
     // Highlight colors
     private int mHoloBlurColor;
     private int mHoloOutlineColor;
+
+    private boolean mIsChecked;
+    private ObjectAnimator mCheckedAlphaAnimator;
+    private float mCheckedAlpha = 1.0f;
+    private int mCheckedFadeInDuration;
+    private int mCheckedFadeOutDuration;
 
     private static final HandlerThread sWorkerThread = new HandlerThread("pagedviewwidget-helper");
     static {
@@ -116,6 +122,15 @@ public class PagedViewWidget extends LinearLayout {
 
         if (sHolographicOutlineHelper == null) {
             sHolographicOutlineHelper = new HolographicOutlineHelper();
+        }
+
+        // Set up fade in/out constants
+        final Resources r = context.getResources();
+        final int alpha = r.getInteger(R.integer.icon_allAppsCustomizeFadeAlpha);
+        if (alpha > 0) {
+            mCheckedAlpha = r.getInteger(R.integer.icon_allAppsCustomizeFadeAlpha) / 256.0f;
+            mCheckedFadeInDuration = r.getInteger(R.integer.icon_allAppsCustomizeFadeInTime);
+            mCheckedFadeOutDuration = r.getInteger(R.integer.icon_allAppsCustomizeFadeOutTime);
         }
 
         setFocusable(true);
@@ -218,5 +233,42 @@ public class PagedViewWidget extends LinearLayout {
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         sWorker.removeMessages(MESSAGE_CREATE_HOLOGRAPHIC_OUTLINE, this);
+    }
+
+    @Override
+    public void setChecked(boolean checked) {
+        if (mIsChecked != checked) {
+            mIsChecked = checked;
+
+            float alpha;
+            int duration;
+            if (mIsChecked) {
+                alpha = mCheckedAlpha;
+                duration = mCheckedFadeInDuration;
+            } else {
+                alpha = 1.0f;
+                duration = mCheckedFadeOutDuration;
+            }
+
+            // Initialize the animator
+            if (mCheckedAlphaAnimator != null) {
+                mCheckedAlphaAnimator.cancel();
+            }
+            mCheckedAlphaAnimator = ObjectAnimator.ofFloat(this, "alpha", getAlpha(), alpha);
+            mCheckedAlphaAnimator.setDuration(duration);
+            mCheckedAlphaAnimator.start();
+
+            invalidate();
+        }
+    }
+
+    @Override
+    public boolean isChecked() {
+        return mIsChecked;
+    }
+
+    @Override
+    public void toggle() {
+        setChecked(!mIsChecked);
     }
 }

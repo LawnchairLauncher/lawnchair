@@ -54,6 +54,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
+import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -327,6 +328,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
 
     @Override
     public void onDropCompleted(View target, boolean success) {
+        resetCheckedGrandchildren();
         mLauncher.getWorkspace().onDragStopped();
     }
 
@@ -498,6 +500,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         }
         super.beginDragging(v);
 
+        boolean result = false;
         switch (mCustomizationType) {
         case WidgetCustomization: {
             // Get the widget preview as the drag representation
@@ -515,7 +518,8 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             mDragController.startDrag(
                     i, b, this, createWidgetInfo, DragController.DRAG_ACTION_COPY, null);
             b.recycle();
-            return true;
+            result = true;
+            break;
         }
         case ShortcutCustomization: {
             // get icon (top compound drawable, index is 1)
@@ -528,7 +532,8 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             mDragController.startDrag(v, b, this, createItemInfo, DragController.DRAG_ACTION_COPY,
                     null);
             b.recycle();
-            return true;
+            result = true;
+            break;
         }
         case ApplicationCustomization: {
             // Pick up the application for dropping
@@ -542,10 +547,28 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1, b);
             mDragController.startDrag(v, b, this, app, DragController.DRAG_ACTION_COPY, null);
             b.recycle();
-            return true;
+            result = true;
+            break;
         }
         }
-        return false;
+
+        // We toggle the checked state _after_ we create the view for the drag in case toggling the
+        // checked state changes the view's look
+        if (v instanceof Checkable) {
+            // In preparation for drag, we always reset the checked grand children regardless of
+            // what choice mode we are in
+            resetCheckedGrandchildren();
+
+            // Toggle the selection on the dragged app
+            Checkable checkable = (Checkable) v;
+
+            // Note: we toggle the checkable state to actually cause an alpha fade for the duration
+            // of the drag of the item.  (The fade-in will occur when all checked states are
+            // disabled when dragging ends)
+            checkable.toggle();
+        }
+
+        return result;
     }
 
     /**
