@@ -171,7 +171,7 @@ public class Workspace extends SmoothPagedView
     // in all apps or customize mode)
     private boolean mIsSmall = false;
     private boolean mIsInUnshrinkAnimation = false;
-    private AnimatorListener mShrinkAnimationListener, mUnshrinkAnimationListener;
+    private AnimatorListener mUnshrinkAnimationListener;
     enum ShrinkState { TOP, SPRING_LOADED, MIDDLE, BOTTOM_HIDDEN, BOTTOM_VISIBLE };
     private ShrinkState mShrinkState;
     private boolean mWasSpringLoadedOnDragExit = false;

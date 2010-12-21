@@ -35,8 +35,8 @@ public class IconDropTarget extends ImageView implements DropTarget, DragControl
     protected Launcher mLauncher;
 
     /**
-     * If true, this View responsible for managing its own visibility, and that of its handle.
-     * This is generally the case, but it will be set to false when this is part of the
+     * If true, this View responsible for managing its own visibility, and that of its overlapping
+     *  views. This is generally the case, but it will be set to false when this is part of the
      * Contextual Action Bar.
      */
     protected boolean mDragAndDropEnabled;
@@ -44,8 +44,8 @@ public class IconDropTarget extends ImageView implements DropTarget, DragControl
     /** Whether this drop target is active for the current drag */
     protected boolean mActive;
 
-    /** The view that this view should appear in the place of. */
-    protected View mHandle = null;
+    /** The views that this view should appear in the place of. */
+    protected View[] mOverlappingViews = null;
 
     /** The paint applied to the drag view on hover */
     protected final Paint mHoverPaint = new Paint();
@@ -73,8 +73,12 @@ public class IconDropTarget extends ImageView implements DropTarget, DragControl
         mLauncher = launcher;
     }
 
-    void setHandle(View view) {
-        mHandle = view;
+    void setOverlappingView(View view) {
+        mOverlappingViews = new View[] { view };
+    }
+    
+    void setOverlappingViews(View[] views) {
+        mOverlappingViews = views;
     }
 
     void setDragAndDropEnabled(boolean enabled) {

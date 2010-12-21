@@ -39,8 +39,6 @@ public class ApplicationInfoDropTarget extends IconDropTarget {
     private static final int sFadeOutAnimationDuration = 100;
 
     private AnimatorSet mFadeAnimator;
-    private ObjectAnimator mHandleFadeAnimator;
-    private boolean mHandleWasVisibleOnDragStart;
 
     public ApplicationInfoDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -62,7 +60,6 @@ public class ApplicationInfoDropTarget extends IconDropTarget {
 
     public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
-
         // acceptDrop is called just before onDrop. We do the work here, rather than
         // in onDrop, because it allows us to reject the drop (by returning false)
         // so that the object being dragged isn't removed from the home screen.
@@ -101,25 +98,18 @@ public class ApplicationInfoDropTarget extends IconDropTarget {
                 Animator infoButtonAnimator = ObjectAnimator.ofFloat(this, "alpha", 0.0f, 1.0f);
                 infoButtonAnimator.setDuration(sFadeInAnimationDuration);
 
-                if (mHandle == mLauncher.findViewById(R.id.configure_button)) {
-                    final View divider = mLauncher.findViewById(R.id.divider_during_drag);
-                    divider.setVisibility(VISIBLE);
-                    Animator dividerAnimator = ObjectAnimator.ofFloat(divider, "alpha", 1.0f);
-                    dividerAnimator.setDuration(sFadeInAnimationDuration);
-                    mFadeAnimator.play(infoButtonAnimator).with(dividerAnimator);
-                } else {
-                    mFadeAnimator.play(infoButtonAnimator);
-                }
-                mFadeAnimator.start();
+                mFadeAnimator.play(infoButtonAnimator);
+
                 setVisibility(VISIBLE);
 
-                // Fade out the handle
-                if (mHandle != null) {
-                    mHandleWasVisibleOnDragStart = mHandle.getVisibility() == VISIBLE;
-                    if (mHandleFadeAnimator != null) mHandleFadeAnimator.cancel();
-                    mHandleFadeAnimator = ObjectAnimator.ofFloat(mHandle, "alpha", 0.0f);
-                    mHandleFadeAnimator.setDuration(sFadeOutAnimationDuration);
-                    mHandleFadeAnimator.addListener(new AnimatorListener() {
+                // Fade out the overlapping views
+                if (mOverlappingViews != null) {
+                    for (View view : mOverlappingViews) {
+                        ObjectAnimator oa = ObjectAnimator.ofFloat(view, "alpha", 0.0f);
+                        oa.setDuration(sFadeOutAnimationDuration);
+                        mFadeAnimator.play(oa);
+                    }
+                    mFadeAnimator.addListener(new AnimatorListener() {
                         public void onAnimationStart(Animator animation) {}
                         public void onAnimationRepeat(Animator animation) {}
                         public void onAnimationEnd(Animator animation) {
@@ -129,12 +119,14 @@ public class ApplicationInfoDropTarget extends IconDropTarget {
                             onEndOrCancel();
                         }
                         private void onEndOrCancel() {
-                            mHandle.setVisibility(INVISIBLE);
-                            mHandleFadeAnimator = null;
+                            for (View view : mOverlappingViews) {
+                                view.setVisibility(INVISIBLE);
+                            }
+                            mFadeAnimator = null;
                         }
                     });
-                    mHandleFadeAnimator.start();
                 }
+                mFadeAnimator.start();
             }
         }
     }
@@ -148,9 +140,6 @@ public class ApplicationInfoDropTarget extends IconDropTarget {
         mFadeAnimator = new AnimatorSet();
         Animator infoButtonAnimator = ObjectAnimator.ofFloat(this, "alpha", 0.0f);
         infoButtonAnimator.setDuration(sFadeOutAnimationDuration);
-        final View divider = mLauncher.findViewById(R.id.divider_during_drag);
-        divider.setVisibility(VISIBLE);
-        Animator dividerAnimator = ObjectAnimator.ofFloat(divider, "alpha", 0.0f);
         mFadeAnimator.addListener(new AnimatorListener() {
             public void onAnimationStart(Animator animation) {}
             public void onAnimationRepeat(Animator animation) {}
@@ -162,20 +151,20 @@ public class ApplicationInfoDropTarget extends IconDropTarget {
             }
             private void onEndOrCancel() {
                 setVisibility(GONE);
-                divider.setVisibility(GONE);
                 mFadeAnimator = null;
             }
         });
-        mFadeAnimator.play(infoButtonAnimator).with(dividerAnimator);
-        mFadeAnimator.start();
+        mFadeAnimator.play(infoButtonAnimator);
 
-        // Fade in the handle
-        if (mHandle != null && mHandleWasVisibleOnDragStart) {
-            if (mHandleFadeAnimator != null) mHandleFadeAnimator.cancel();
-            mHandleFadeAnimator = ObjectAnimator.ofFloat(mHandle, "alpha", 1.0f);
-            mHandleFadeAnimator.setDuration(sFadeInAnimationDuration);
-            mHandleFadeAnimator.start();
-            mHandle.setVisibility(VISIBLE);
+        // Fade in the overlapping views
+        if (mOverlappingViews != null) {
+            for (View view : mOverlappingViews) {
+                ObjectAnimator oa = ObjectAnimator.ofFloat(view, "alpha", 1.0f);
+                oa.setDuration(sFadeInAnimationDuration);
+                mFadeAnimator.play(oa);
+                view.setVisibility(VISIBLE);
+            }
         }
+        mFadeAnimator.start();
     }
 }

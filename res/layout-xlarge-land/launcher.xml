@@ -171,21 +171,6 @@
             android:src="@drawable/delete_zone_selector"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignRight="@id/all_apps_button"
-            android:paddingLeft="@dimen/toolbar_button_horizontal_padding"
-            android:paddingRight="@dimen/toolbar_button_horizontal_padding"
-            android:paddingTop="@dimen/toolbar_button_vertical_padding"
-            android:paddingBottom="@dimen/toolbar_button_vertical_padding"
-            android:background="@drawable/button_bg"
-
-            android:visibility="gone"
-            launcher:direction="horizontal" />
-
-        <com.android.launcher2.ApplicationInfoDropTarget
-            android:id="@+id/info_button"
-            android:src="@drawable/ic_home_info_holo_dark"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_alignLeft="@id/configure_button"
             android:paddingLeft="@dimen/toolbar_button_horizontal_padding"
             android:paddingRight="@dimen/toolbar_button_horizontal_padding"
@@ -194,9 +179,7 @@
             android:background="@drawable/button_bg"
 
             android:visibility="gone"
-            android:focusable="true"
-            android:clickable="true" />
-
+            launcher:direction="horizontal" />
     </RelativeLayout>
 
     <TabHost

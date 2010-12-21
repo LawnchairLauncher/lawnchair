@@ -987,12 +987,16 @@ public final class Launcher extends Activity
         deleteZone.setLauncher(this);
         deleteZone.setDragController(dragController);
         int deleteZoneHandleId;
+
+        final View allAppsButton = findViewById(R.id.all_apps_button);
+        final View divider = findViewById(R.id.divider);
+        final View configureButton = findViewById(R.id.configure_button);
+
         if (LauncherApplication.isScreenXLarge()) {
-            deleteZoneHandleId = R.id.all_apps_button;
+            mDeleteZone.setOverlappingViews(new View[] { allAppsButton, divider, configureButton });
         } else {
-            deleteZoneHandleId = R.id.all_apps_button_cluster;
+            deleteZone.setOverlappingView(configureButton);
         }
-        deleteZone.setHandle(findViewById(deleteZoneHandleId));
         dragController.addDragListener(deleteZone);
 
         DeleteZone allAppsDeleteZone = (DeleteZone) findViewById(R.id.all_apps_delete_zone);
@@ -1012,15 +1016,8 @@ public final class Launcher extends Activity
             allAppsInfoTarget.setDragAndDropEnabled(false);
             View marketButton = findViewById(R.id.market_button);
             if (marketButton != null) {
-                allAppsInfoTarget.setHandle(marketButton);
+                allAppsInfoTarget.setOverlappingView(marketButton);
             }
-        }
-
-        ApplicationInfoDropTarget infoButton = (ApplicationInfoDropTarget)findViewById(R.id.info_button);
-        if (infoButton != null) {
-            infoButton.setLauncher(this);
-            infoButton.setHandle(findViewById(R.id.configure_button));
-            dragController.addDragListener(infoButton);
         }
 
         dragController.setDragScoller(workspace);
@@ -1030,9 +1027,6 @@ public final class Launcher extends Activity
         // The order here is bottom to top.
         dragController.addDropTarget(workspace);
         dragController.addDropTarget(deleteZone);
-        if (infoButton != null) {
-            dragController.addDropTarget(infoButton);
-        }
         if (allAppsInfoTarget != null) {
             dragController.addDropTarget(allAppsInfoTarget);
         }
@@ -2600,7 +2594,7 @@ public final class Launcher extends Activity
             hideOrShowToolbarButton(true, allAppsButton, showSeq);
             hideOrShowToolbarButton(true, divider, showSeq);
             hideOrShowToolbarButton(true, configureButton, showSeq);
-            mDeleteZone.setHandle(allAppsButton);
+            mDeleteZone.setOverlappingViews(new View[] { allAppsButton, divider, configureButton });
             break;
         case ALL_APPS:
             hideOrShowToolbarButton(false, configureButton, hideSeq);
@@ -2613,7 +2607,7 @@ public final class Launcher extends Activity
             hideOrShowToolbarButton(false, searchButton, hideSeq);
             hideOrShowToolbarButton(false, divider, hideSeq);
             hideOrShowToolbarButton(false, configureButton, hideSeq);
-            mDeleteZone.setHandle(allAppsButton);
+            //mDeleteZone.setOverlappingView(configureButton);
             break;
         }
     }

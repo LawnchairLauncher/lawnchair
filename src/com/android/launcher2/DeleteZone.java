@@ -166,8 +166,10 @@ public class DeleteZone extends IconDropTarget {
 
             createAnimations();
             startAnimation(mInAnimation);
-            if (mHandle != null) {
-                mHandle.startAnimation(mHandleOutAnimation);
+            if (mOverlappingViews != null) {
+                for (View view : mOverlappingViews) {
+                    view.startAnimation(mHandleOutAnimation);
+                }
             }
             setVisibility(VISIBLE);
         }
@@ -179,8 +181,10 @@ public class DeleteZone extends IconDropTarget {
             mDragController.setDeleteRegion(null);
 
             if (mOutAnimation != null) startAnimation(mOutAnimation);
-            if (mHandleInAnimation != null && mHandle != null) {
-                mHandle.startAnimation(mHandleInAnimation);
+            if (mHandleInAnimation != null && mOverlappingViews != null) {
+                for (View view : mOverlappingViews) {
+                    view.startAnimation(mHandleInAnimation);
+                }
             }
             setVisibility(GONE);
         }
