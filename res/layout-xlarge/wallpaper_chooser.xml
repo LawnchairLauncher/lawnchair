@@ -18,13 +18,34 @@
 */
 -->
 
-<GridView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/gallery"
-    android:layout_width="match_parent"
-    android:layout_height="400dp"
-    android:layout_gravity="center"
-    android:numColumns="3"
-    android:stretchMode="spacingWidth"
-    android:columnWidth="@dimen/wallpaper_chooser_grid_width"
-    android:verticalSpacing="15dp"
-    android:drawSelectorOnTop="false" />
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/wallpaper_list"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingLeft="24dp"
+    android:paddingRight="24dp"
+    android:paddingTop="24dp"
+    android:paddingBottom="24dp"
+    android:gravity="center">
+    <GridView
+        android:id="@+id/gallery"
+        android:layout_width="636dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:numColumns="3"
+        android:stretchMode="none"
+        android:columnWidth="@dimen/live_wallpaper_column_width"
+        android:verticalSpacing="0dp"
+        android:horizontalSpacing="0dp"
+        android:drawSelectorOnTop="false" />
+    <TextView
+        android:id="@android:id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:gravity="center"
+        android:visibility="gone"
+
+        android:text="@string/wallpaper_chooser_empty"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+</FrameLayout>

@@ -13,11 +13,16 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
-<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/wallpaper_chooser_grid_height"
-    android:padding="6dp"
-    android:scaleType="fitXY"
-    android:adjustViewBounds="false"
-    android:focusable="false" />
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/live_wallpaper_grid_item_padding">
+    <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/wallpaper_image"
+        android:layout_width="@dimen/wallpaper_chooser_grid_width"
+        android:layout_height="@dimen/wallpaper_chooser_grid_height"
+        android:scaleType="centerCrop"
+        android:adjustViewBounds="false"
+        android:focusable="false"
+        android:padding="0dp" />
+</FrameLayout>

@@ -21,6 +21,9 @@
     <!-- Title of the wallpaper selection dialog [CHAR_LIMIT=40]-->
     <string name="wallpaper_dialog_title">Select wallpaper</string>
 
+    <!-- Text to show when there are no wallpapers [CHAR_LIMIT=40]-->
+    <string name="wallpaper_chooser_empty">No wallpapers available</string>
+
     <!-- Negative button text for the wallpaper selection dialog [CHAR_LIMIT=40]-->
     <string name="wallpaper_cancel">Cancel</string>
 </resources>

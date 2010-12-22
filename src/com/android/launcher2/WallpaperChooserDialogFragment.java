@@ -37,6 +37,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.Gallery;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -120,10 +121,11 @@ public class WallpaperChooserDialogFragment extends DialogFragment implements
         final int viewInset =
                 getResources().getDimensionPixelSize(R.dimen.alert_dialog_content_inset);
 
+        FrameLayout wallPaperList = (FrameLayout) v.findViewById(R.id.wallpaper_list);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setNegativeButton(R.string.wallpaper_cancel, null);
         builder.setTitle(R.string.wallpaper_dialog_title);
-        builder.setView(gridView, viewInset, viewInset, viewInset, viewInset);
+        builder.setView(wallPaperList, viewInset, viewInset, viewInset, viewInset);
         return builder.create();
     }
 
@@ -241,13 +243,15 @@ public class WallpaperChooserDialogFragment extends DialogFragment implements
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
-            ImageView image;
+            View view;
 
             if (convertView == null) {
-                image = (ImageView) mLayoutInflater.inflate(R.layout.wallpaper_item, parent, false);
+                view = mLayoutInflater.inflate(R.layout.wallpaper_item, parent, false);
             } else {
-                image = (ImageView) convertView;
+                view = convertView;
             }
+
+            ImageView image = (ImageView) view.findViewById(R.id.wallpaper_image);
 
             int thumbRes = mThumbs.get(position);
             image.setImageResource(thumbRes);
@@ -259,7 +263,7 @@ public class WallpaperChooserDialogFragment extends DialogFragment implements
                         + position);
             }
 
-            return image;
+            return view;
         }
     }
 
