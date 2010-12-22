@@ -87,7 +87,6 @@ public class Workspace extends SmoothPagedView
 
     // Y rotation to apply to the workspace screens
     private static final float WORKSPACE_ROTATION = 12.5f;
-    private static final float WORKSPACE_TRANSLATION = 50.0f;
 
     // These are extra scale factors to apply to the mini home screens
     // so as to achieve the desired transform
@@ -807,11 +806,11 @@ public class Workspace extends SmoothPagedView
                 final CellLayout leftPage = (CellLayout) getChildAt(mCurrentPage - 1);
                 final CellLayout rightPage = (CellLayout) getChildAt(mCurrentPage + 1);
 
-                if (leftPage != null && leftPage.getHover()) {
+                if (leftPage != null && leftPage.getIsDragOverlapping()) {
                     final Drawable d = getResources().getDrawable(R.drawable.page_hover_left);
                     d.setBounds(mScrollX, padding, mScrollX + d.getIntrinsicWidth(), height - padding);
                     d.draw(canvas);
-                } else if (rightPage != null && rightPage.getHover()) {
+                } else if (rightPage != null && rightPage.getIsDragOverlapping()) {
                     final Drawable d = getResources().getDrawable(R.drawable.page_hover_right);
                     d.setBounds(mScrollX + width - d.getIntrinsicWidth(), padding, mScrollX + width, height - padding);
                     d.draw(canvas);
@@ -1156,15 +1155,10 @@ public class Workspace extends SmoothPagedView
         final int screenCount = getChildCount();
         for (int i = 0; i < screenCount; i++) {
             CellLayout cl = (CellLayout) getChildAt(i);
-
+            cl.setIsDragOccuring(isDragHappening);
             switch (state) {
                 case TOP:
-                    if (!isDragHappening) {
-                        boolean showDropHighlight = i == mCurrentPage;
-                        cl.setAcceptsDrops(showDropHighlight);
-                        break;
-                    }
-                    // otherwise, fall through below and mark non-full screens as accepting drops
+                    cl.setIsDefaultDropTarget(i == mCurrentPage);
                 case BOTTOM_HIDDEN:
                 case BOTTOM_VISIBLE:
                     if (!isDragHappening) {
@@ -1781,7 +1775,7 @@ public class Workspace extends SmoothPagedView
 
             // Show the current page outlines to indicate that we can accept this drop
             showOutlines();
-            layout.setHover(true);
+            layout.setIsDragOccuring(true);
             layout.onDragEnter();
             layout.visualizeDropLocation(null, mDragOutline, x, y, 1, 1);
 
@@ -1793,7 +1787,6 @@ public class Workspace extends SmoothPagedView
             return true;
         case DragEvent.ACTION_DROP: {
             // Try and add any shortcuts
-            int newDropCount = 0;
             final LauncherModel model = mLauncher.getModel();
             final ClipData data = event.getClipData();
 
@@ -1842,7 +1835,7 @@ public class Workspace extends SmoothPagedView
         }
         case DragEvent.ACTION_DRAG_ENDED:
             // Hide the page outlines after the drop
-            layout.setHover(false);
+            layout.setIsDragOccuring(false);
             layout.onDragExit();
             hideOutlines();
             return true;
@@ -2008,12 +2001,12 @@ public class Workspace extends SmoothPagedView
 
                 if (layout != mDragTargetLayout) {
                     if (mDragTargetLayout != null) {
-                        mDragTargetLayout.setHover(false);
+                        mDragTargetLayout.setIsDragOverlapping(false);
                         mSpringLoadedDragController.onDragExit();
                     }
                     mDragTargetLayout = layout;
                     if (mDragTargetLayout != null && mDragTargetLayout.getAcceptsDrops()) {
-                        mDragTargetLayout.setHover(true);
+                        mDragTargetLayout.setIsDragOverlapping(true);
                         mSpringLoadedDragController.onDragEnter(mDragTargetLayout);
                     }
                 }
@@ -2290,7 +2283,7 @@ public class Workspace extends SmoothPagedView
             final CellLayout layout = (CellLayout) getChildAt(page);
 
             if (layout != null) {
-                layout.setHover(true);
+                layout.setIsDragOverlapping(true);
 
                 if (mDragTargetLayout != null) {
                     mDragTargetLayout.onDragExit();
@@ -2303,7 +2296,7 @@ public class Workspace extends SmoothPagedView
     private void clearAllHovers() {
         final int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
-            ((CellLayout) getChildAt(i)).setHover(false);
+            ((CellLayout) getChildAt(i)).setIsDragOverlapping(false);
         }
         mSpringLoadedDragController.onDragExit();
     }

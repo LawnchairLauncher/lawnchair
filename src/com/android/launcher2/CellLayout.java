@@ -69,7 +69,6 @@ public class CellLayout extends ViewGroup implements Dimmable {
     private int mHeightGap;
 
     private final Rect mRect = new Rect();
-    private final RectF mRectF = new RectF();
     private final CellInfo mCellInfo = new CellInfo();
 
     // These are temporary variables to prevent having to allocate a new object just to
@@ -85,20 +84,24 @@ public class CellLayout extends ViewGroup implements Dimmable {
     private float mBackgroundAlpha;
     private float mBackgroundAlphaMultiplier = 1.0f;
 
-    private Drawable mBackground;
-    private Drawable mBackgroundMini;
-    private Drawable mBackgroundMiniHover;
-    private Drawable mBackgroundHover;
-    private Drawable mBackgroundMiniAcceptsDrops;
+    private Drawable mNormalBackground;
+    private Drawable mNormalGlowBackground;
+    private Drawable mActiveBackground;
+    private Drawable mActiveGlowBackground;
+    private Drawable mNormalBackgroundMini;
+    private Drawable mNormalGlowBackgroundMini;
+    private Drawable mActiveBackgroundMini;
+    private Drawable mActiveGlowBackgroundMini;
     private Rect mBackgroundRect;
-    private Rect mHoverRect;
-    private float mHoverScale;
-    private float mHoverAlpha;
-    private boolean mAcceptsDrops;
+    private Rect mGlowBackgroundRect;
+    private float mGlowBackgroundScale;
+    private float mGlowBackgroundAlpha;
 
-    // If we're actively dragging something over this screen, mHover is true
-    private boolean mHover = false;
-
+    private boolean mAcceptsDrops = false;
+    // If we're actively dragging something over this screen, mIsDragOverlapping is true
+    private boolean mIsDragOverlapping = false;
+    private boolean mIsDragOccuring = false;
+    private boolean mIsDefaultDropTarget = false;
     private final Point mDragCenter = new Point();
 
     // These arrays are used to implement the drag visualization on x-large screens.
@@ -169,17 +172,24 @@ public class CellLayout extends ViewGroup implements Dimmable {
         final Resources res = getResources();
 
         if (LauncherApplication.isScreenXLarge()) {
-            mBackgroundMini = res.getDrawable(R.drawable.homescreen_small_blue);
-            mBackgroundMini.setFilterBitmap(true);
-            mBackground = res.getDrawable(R.drawable.homescreen_large_blue);
-            mBackground.setFilterBitmap(true);
-            mBackgroundMiniHover = res.getDrawable(R.drawable.homescreen_small_green_strong);
-            mBackgroundMiniHover.setFilterBitmap(true);
-            mBackgroundHover = res.getDrawable(R.drawable.homescreen_large_green_strong);
-            mBackgroundHover.setFilterBitmap(true);
-            mBackgroundMiniAcceptsDrops = res.getDrawable(
-                    R.drawable.homescreen_small_green);
-            mBackgroundMiniAcceptsDrops.setFilterBitmap(true);
+            mNormalBackground = res.getDrawable(R.drawable.homescreen_large_blue);
+            mNormalGlowBackground = res.getDrawable(R.drawable.homescreen_large_blue_strong);
+            mActiveBackground = res.getDrawable(R.drawable.homescreen_large_green);
+            mActiveGlowBackground = res.getDrawable(R.drawable.homescreen_large_green_strong);
+
+            mNormalBackgroundMini = res.getDrawable(R.drawable.homescreen_small_blue);
+            mNormalGlowBackgroundMini = res.getDrawable(R.drawable.homescreen_small_blue_strong);
+            mActiveBackgroundMini = res.getDrawable(R.drawable.homescreen_small_green);
+            mActiveGlowBackgroundMini = res.getDrawable(R.drawable.homescreen_small_green_strong);
+
+            mNormalBackground.setFilterBitmap(true);
+            mNormalGlowBackground.setFilterBitmap(true);
+            mActiveBackground.setFilterBitmap(true);
+            mActiveGlowBackground.setFilterBitmap(true);
+            mNormalBackgroundMini.setFilterBitmap(true);
+            mNormalGlowBackgroundMini.setFilterBitmap(true);
+            mActiveBackgroundMini.setFilterBitmap(true);
+            mActiveGlowBackgroundMini.setFilterBitmap(true);
         }
 
         // Initialize the data structures used for the drag visualization.
@@ -254,37 +264,69 @@ public class CellLayout extends ViewGroup implements Dimmable {
         }
 
         mBackgroundRect = new Rect();
-        mHoverRect = new Rect();
+        mGlowBackgroundRect = new Rect();
         setHoverScale(1.0f);
         setHoverAlpha(1.0f);
     }
 
-    private void updateHoverRect() {
-        float marginFraction = (mHoverScale - 1.0f) / 2.0f;
+    public void setIsDefaultDropTarget(boolean isDefaultDropTarget) {
+        if (mIsDefaultDropTarget != isDefaultDropTarget) {
+            mIsDefaultDropTarget = isDefaultDropTarget;
+            invalidate();
+        }
+    }
+
+    public void setAcceptsDrops(boolean acceptsDrops) {
+        if (mAcceptsDrops != acceptsDrops) {
+            mAcceptsDrops = acceptsDrops;
+            invalidate();
+        }
+    }
+
+    void setIsDragOccuring(boolean isDragOccuring) {
+        if (mIsDragOccuring != isDragOccuring) {
+            mIsDragOccuring = isDragOccuring;
+            invalidate();
+        }
+    }
+
+    void setIsDragOverlapping(boolean isDragOverlapping) {
+        if (mIsDragOverlapping != isDragOverlapping) {
+            mIsDragOverlapping = isDragOverlapping;
+            invalidate();
+        }
+    }
+
+    boolean getIsDragOverlapping() {
+        return mIsDragOverlapping;
+    }
+
+    private void updateGlowRect() {
+        float marginFraction = (mGlowBackgroundScale - 1.0f) / 2.0f;
         int marginX = (int) (marginFraction * (mBackgroundRect.right - mBackgroundRect.left));
         int marginY = (int) (marginFraction * (mBackgroundRect.bottom - mBackgroundRect.top));
-        mHoverRect.set(mBackgroundRect.left - marginX, mBackgroundRect.top - marginY,
+        mGlowBackgroundRect.set(mBackgroundRect.left - marginX, mBackgroundRect.top - marginY,
                 mBackgroundRect.right + marginX, mBackgroundRect.bottom + marginY);
         invalidate();
     }
 
     public void setHoverScale(float scaleFactor) {
-        if (scaleFactor != mHoverScale) {
-            mHoverScale = scaleFactor;
-            updateHoverRect();
+        if (scaleFactor != mGlowBackgroundScale) {
+            mGlowBackgroundScale = scaleFactor;
+            updateGlowRect();
         }
     }
 
     public float getHoverScale() {
-        return mHoverScale;
+        return mGlowBackgroundScale;
     }
 
     public float getHoverAlpha() {
-        return mHoverAlpha;
+        return mGlowBackgroundAlpha;
     }
 
     public void setHoverAlpha(float alpha) {
-        mHoverAlpha = alpha;
+        mGlowBackgroundAlpha = alpha;
         invalidate();
     }
 
@@ -307,28 +349,17 @@ public class CellLayout extends ViewGroup implements Dimmable {
             bouncer.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
-                    setHover(true);
+                    setIsDragOverlapping(true);
                 }
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    setHover(false);
+                    setIsDragOverlapping(false);
                     setHoverScale(1.0f);
                     setHoverAlpha(1.0f);
                 }
             });
             bouncer.start();
         }
-    }
-
-    public void setHover(boolean value) {
-        if (mHover != value) {
-            mHover = value;
-            invalidate();
-        }
-    }
-
-    public boolean getHover() {
-        return mHover;
     }
 
     public void drawChildren(Canvas canvas) {
@@ -344,23 +375,30 @@ public class CellLayout extends ViewGroup implements Dimmable {
         // backgrounds
         if (mBackgroundAlpha > 0.0f) {
             Drawable bg;
-            if (getScaleX() < 0.5f) {
-                bg = mAcceptsDrops ? mBackgroundMiniAcceptsDrops : mBackgroundMini;
+            boolean mini = getScaleX() < 0.5f;
+
+            if (mIsDragOverlapping) {
+                // In the mini case, we draw the active_glow bg *over* the active background
+                bg = mini ? mActiveBackgroundMini : mActiveGlowBackground;
+            } else if (mIsDragOccuring && mAcceptsDrops) {
+                bg = mini ? mActiveBackgroundMini : mActiveBackground;
+            } else if (mIsDefaultDropTarget) {
+                bg = mini ? mNormalGlowBackgroundMini : mNormalGlowBackground;
             } else {
-                bg = mHover ? mBackgroundHover : mBackground;
+                bg = mini ? mNormalBackgroundMini : mNormalBackground;
             }
-            if (bg != null) {
-                bg.setAlpha((int) (mBackgroundAlpha * mBackgroundAlphaMultiplier * 255));
-                bg.setBounds(mBackgroundRect);
-                bg.draw(canvas);
-            }
-            if (mHover && getScaleX() < 0.5f) {
+
+            bg.setAlpha((int) (mBackgroundAlpha * mBackgroundAlphaMultiplier * 255));
+            bg.setBounds(mBackgroundRect);
+            bg.draw(canvas);
+
+            if (mini && mIsDragOverlapping) {
                 boolean modifiedClipRect = false;
-                if (mHoverScale > 1.0f) {
+                if (mGlowBackgroundScale > 1.0f) {
                     // If the hover background's scale is greater than 1, we'll be drawing outside
                     // the bounds of this CellLayout. Get around that by temporarily increasing the
                     // size of the clip rect
-                    float marginFraction = (mHoverScale - 1.0f) / 2.0f;
+                    float marginFraction = (mGlowBackgroundScale - 1.0f) / 2.0f;
                     Rect clipRect = canvas.getClipBounds();
                     int marginX = (int) (marginFraction * (clipRect.right - clipRect.left));
                     int marginY = (int) (marginFraction * (clipRect.bottom - clipRect.top));
@@ -370,9 +408,10 @@ public class CellLayout extends ViewGroup implements Dimmable {
                     modifiedClipRect = true;
                 }
 
-                mBackgroundMiniHover.setAlpha((int) (mBackgroundAlpha * mHoverAlpha * 255));
-                mBackgroundMiniHover.setBounds(mHoverRect);
-                mBackgroundMiniHover.draw(canvas);
+                mActiveGlowBackgroundMini.setAlpha(
+                        (int) (mBackgroundAlpha * mGlowBackgroundAlpha * 255));
+                mActiveGlowBackgroundMini.setBounds(mGlowBackgroundRect);
+                mActiveGlowBackgroundMini.draw(canvas);
                 if (modifiedClipRect) {
                     canvas.restore();
                 }
@@ -489,12 +528,6 @@ public class CellLayout extends ViewGroup implements Dimmable {
             return true;
         }
         return false;
-    }
-    public void setAcceptsDrops(boolean acceptsDrops) {
-        if (mAcceptsDrops != acceptsDrops) {
-            mAcceptsDrops = acceptsDrops;
-            invalidate();
-        }
     }
 
     public boolean getAcceptsDrops() {
@@ -814,7 +847,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         mBackgroundRect.set(0, 0, w, h);
-        updateHoverRect();
+        updateGlowRect();
     }
 
     @Override
@@ -1204,7 +1237,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
         mDragOutlineAnims[mDragOutlineCurrent].animateOut();
         mDragOutlineCurrent = (mDragOutlineCurrent + 1) % mDragOutlineAnims.length;
 
-        setHover(false);
+        setIsDragOverlapping(false);
     }
 
     /**
