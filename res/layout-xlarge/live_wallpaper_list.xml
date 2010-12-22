@@ -33,6 +33,10 @@
         android:verticalSpacing="0dp"
         android:horizontalSpacing="0dp"
         android:drawSelectorOnTop="false" />
+        <!--
+                android:text="@string/live_wallpaper_empty"
+        -->
+        
     <TextView
         android:id="@android:id/empty"
         android:layout_width="match_parent"
@@ -41,7 +45,6 @@
         android:gravity="center"
         android:visibility="gone"
 
-        android:text="@string/live_wallpaper_empty"
         android:textColor="#FFFFFFFF"
         android:textSize="14sp"
         android:shadowColor="#FF000000"
