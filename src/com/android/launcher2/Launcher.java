@@ -383,7 +383,9 @@ public final class Launcher extends Activity
         restoreState(mSavedState);
 
         // Update customization drawer _after_ restoring the states
-        mCustomizePagedView.update();
+        if (mCustomizePagedView != null) {
+            mCustomizePagedView.update();
+        }
 
         if (PROFILE_STARTUP) {
             android.os.Debug.stopMethodTracing();
