@@ -25,34 +25,21 @@
     <string name="chooser_wallpaper" msgid="5988031014201479733">"Vybrať tapetu z priečinka"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Nastaviť tapetu"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"Tapety"</string>
-    <string name="activity_not_found" msgid="3571057450431950427">"Aplikácia nie je v telefóne nainštalovaná."</string>
+    <!-- outdated translation 3571057450431950427 -->     <string name="activity_not_found" msgid="5591731020063337696">"Aplikácia nie je v telefóne nainštalovaná."</string>
     <string name="configure_wallpaper" msgid="2820186271419674623">"Konfigurovať..."</string>
-    <!-- no translation found for widgets_tab_label (9145860100000983599) -->
-    <skip />
-    <!-- no translation found for folders_tab_label (1145293785541489736) -->
-    <skip />
-    <!-- no translation found for shortcuts_tab_label (8640731503933155644) -->
-    <skip />
-    <!-- no translation found for wallpapers_tab_label (1617804870364119879) -->
-    <skip />
-    <!-- no translation found for applications_tab_label (9046797126882613707) -->
-    <skip />
-    <!-- no translation found for wallpapers_temp_tab_text (1660218201190495279) -->
-    <skip />
-    <!-- no translation found for all_apps_tab_all (2942727589595027258) -->
-    <skip />
-    <!-- no translation found for all_apps_tab_apps (5468972551904071712) -->
-    <skip />
-    <!-- no translation found for all_apps_tab_games (1855736784923494918) -->
-    <skip />
-    <!-- no translation found for all_apps_tab_downloaded (2300935549064726963) -->
-    <skip />
-    <!-- no translation found for all_apps_no_games (5293893733372793696) -->
-    <skip />
-    <!-- no translation found for all_apps_no_downloads (6145042636084482299) -->
-    <skip />
-    <!-- no translation found for external_drop_widget_error (4976816434597126575) -->
-    <skip />
+    <string name="widgets_tab_label" msgid="9145860100000983599">"Miniaplikácie"</string>
+    <string name="folders_tab_label" msgid="1145293785541489736">"Priečinky"</string>
+    <string name="shortcuts_tab_label" msgid="8640731503933155644">"Viac"</string>
+    <string name="wallpapers_tab_label" msgid="1617804870364119879">"Tapety"</string>
+    <string name="applications_tab_label" msgid="9046797126882613707">"Odkazy aplikácií"</string>
+    <string name="wallpapers_temp_tab_text" msgid="1660218201190495279">"Toto bude karta Tapety"</string>
+    <string name="all_apps_tab_all" msgid="2942727589595027258">"Všetky"</string>
+    <string name="all_apps_tab_apps" msgid="5468972551904071712">"Aplikácie"</string>
+    <string name="all_apps_tab_games" msgid="1855736784923494918">"Hry"</string>
+    <string name="all_apps_tab_downloaded" msgid="2300935549064726963">"Prevzaté"</string>
+    <string name="all_apps_no_games" msgid="5293893733372793696">"Nenašli sa žiadne hry."</string>
+    <string name="all_apps_no_downloads" msgid="6145042636084482299">"Žiadne prevz. aplikácie."</string>
+    <string name="external_drop_widget_error" msgid="4976816434597126575">"Položku sa nepodarilo pretiahnuť na túto plochu"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Vyberte miniaplikáciu"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Názov priečinka"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Premenovať priečinok"</string>
@@ -73,31 +60,27 @@
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Odkaz <xliff:g id="NAME">%s</xliff:g> bol odstránený."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Odkaz <xliff:g id="NAME">%s</xliff:g> už existuje."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Vyberte odkaz"</string>
-    <!-- no translation found for title_select_application (8031072293115454221) -->
-    <skip />
+    <string name="title_select_application" msgid="8031072293115454221">"Výber aplikácie"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"Vyberte priečinok"</string>
-    <!-- outdated translation 3953036962111614813 -->     <string name="all_apps_button_label" msgid="2578400570124163469">"Všetky aplikácie"</string>
+    <string name="all_apps_button_label" msgid="2578400570124163469">"Aplikácie"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Domovská stránka"</string>
-    <string name="menu_add" msgid="3065046628354640854">"Pridať"</string>
-    <!-- no translation found for menu_manage_apps (2308685199463588895) -->
+    <!-- no translation found for delete_zone_label_workspace (7153615831493049150) -->
     <skip />
+    <!-- no translation found for delete_zone_label_all_apps (2536335964588694907) -->
+    <skip />
+    <string name="menu_add" msgid="3065046628354640854">"Pridať"</string>
+    <string name="menu_manage_apps" msgid="2308685199463588895">"Spravovať aplikácie"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"Tapeta"</string>
     <string name="menu_search" msgid="4826514464423239041">"Hľadať"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"Upozornenia"</string>
     <string name="menu_gestures" msgid="514678675575912237">"Gestá"</string>
     <string name="menu_settings" msgid="6233960148378443661">"Nastavenia"</string>
-    <!-- no translation found for cab_menu_delete_app (1242619904941293871) -->
-    <skip />
-    <!-- no translation found for cab_menu_app_info (5180426909324882018) -->
-    <skip />
-    <!-- no translation found for cab_app_selection_text (606113924828167756) -->
-    <skip />
-    <!-- no translation found for cab_widget_selection_text (962527270506951955) -->
-    <skip />
-    <!-- no translation found for cab_folder_selection_text (8916111874189565067) -->
-    <skip />
-    <!-- no translation found for cab_shortcut_selection_text (8115847384500412878) -->
-    <skip />
+    <string name="cab_menu_delete_app" msgid="1242619904941293871">"Odinštalovať aplikáciu"</string>
+    <string name="cab_menu_app_info" msgid="5180426909324882018">"Podrobnosti o aplikácii"</string>
+    <string name="cab_app_selection_text" msgid="606113924828167756">"Vybratá 1 aplikácia"</string>
+    <string name="cab_widget_selection_text" msgid="962527270506951955">"Vybratá 1 miniaplikácia"</string>
+    <string name="cab_folder_selection_text" msgid="8916111874189565067">"Vybratý 1 priečinok"</string>
+    <string name="cab_shortcut_selection_text" msgid="8115847384500412878">"Vybratý 1 odkaz"</string>
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"inštalovať odkazy"</string>
     <string name="permdesc_install_shortcut" msgid="7429365847558984148">"Povoľuje aplikácii pridať odkaz bez zásahu používateľa."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"odinštalovať odkazy"</string>
@@ -107,6 +90,5 @@
     <string name="permlab_write_settings" msgid="1360567537236705628">"zápis nastavení a odkazov plochy"</string>
     <string name="permdesc_write_settings" msgid="1098648778383349818">"Povoľuje aplikácii zmeniť nastavenia a odkazy plochy."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Problém s načítaním miniaplikácií"</string>
-    <!-- no translation found for uninstall_system_app_text (7488523163288397451) -->
-    <skip />
+    <string name="uninstall_system_app_text" msgid="7488523163288397451">"Toto je systémová aplikácia a nie je možné ju odinštalovať."</string>
 </resources>

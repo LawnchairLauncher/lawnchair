@@ -25,7 +25,7 @@
     <string name="chooser_wallpaper" msgid="5988031014201479733">"Tscherner in fund davos"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Definir in fund davos"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"Maletgs da fund davos"</string>
-    <string name="activity_not_found" msgid="3571057450431950427">"L\'applicaziun n\'è betg installada sin quest telefonin."</string>
+    <!-- outdated translation 3571057450431950427 -->     <string name="activity_not_found" msgid="5591731020063337696">"L\'applicaziun n\'è betg installada sin quest telefonin."</string>
     <string name="configure_wallpaper" msgid="2820186271419674623">"Configurar…"</string>
     <!-- no translation found for widgets_tab_label (9145860100000983599) -->
     <skip />
@@ -79,6 +79,10 @@
     <string name="title_select_live_folder" msgid="3753447798805166749">"Tscherner l\'ordinatur"</string>
     <!-- outdated translation 3953036962111614813 -->     <string name="all_apps_button_label" msgid="2578400570124163469">"Tut las applicaziuns"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Pagina da partenza"</string>
+    <!-- no translation found for delete_zone_label_workspace (7153615831493049150) -->
+    <skip />
+    <!-- no translation found for delete_zone_label_all_apps (2536335964588694907) -->
+    <skip />
     <string name="menu_add" msgid="3065046628354640854">"Agiuntar"</string>
     <!-- no translation found for menu_manage_apps (2308685199463588895) -->
     <skip />

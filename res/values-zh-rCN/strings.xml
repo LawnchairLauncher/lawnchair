@@ -25,7 +25,7 @@
     <string name="chooser_wallpaper" msgid="5988031014201479733">"选择壁纸来源"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"设置壁纸"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"壁纸"</string>
-    <string name="activity_not_found" msgid="3571057450431950427">"您的手机上未安装应用程序。"</string>
+    <!-- outdated translation 3571057450431950427 -->     <string name="activity_not_found" msgid="5591731020063337696">"您的手机上未安装应用程序。"</string>
     <string name="configure_wallpaper" msgid="2820186271419674623">"配置..."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"窗口小部件"</string>
     <string name="folders_tab_label" msgid="1145293785541489736">"文件夹"</string>
@@ -64,6 +64,10 @@
     <string name="title_select_live_folder" msgid="3753447798805166749">"选择文件夹"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"应用程序"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"主屏幕"</string>
+    <!-- no translation found for delete_zone_label_workspace (7153615831493049150) -->
+    <skip />
+    <!-- no translation found for delete_zone_label_all_apps (2536335964588694907) -->
+    <skip />
     <string name="menu_add" msgid="3065046628354640854">"添加"</string>
     <string name="menu_manage_apps" msgid="2308685199463588895">"管理应用程序"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"壁纸"</string>

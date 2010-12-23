@@ -25,7 +25,7 @@
     <string name="chooser_wallpaper" msgid="5988031014201479733">"Seleziona sfondo da"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Imposta sfondo"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"Sfondi"</string>
-    <string name="activity_not_found" msgid="3571057450431950427">"Applicazione non installata sul telefono."</string>
+    <!-- outdated translation 3571057450431950427 -->     <string name="activity_not_found" msgid="5591731020063337696">"Applicazione non installata sul telefono."</string>
     <string name="configure_wallpaper" msgid="2820186271419674623">"Configura..."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widget"</string>
     <string name="folders_tab_label" msgid="1145293785541489736">"Cartelle"</string>
@@ -64,6 +64,10 @@
     <string name="title_select_live_folder" msgid="3753447798805166749">"Seleziona cartella"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Applicazioni"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Home"</string>
+    <!-- no translation found for delete_zone_label_workspace (7153615831493049150) -->
+    <skip />
+    <!-- no translation found for delete_zone_label_all_apps (2536335964588694907) -->
+    <skip />
     <string name="menu_add" msgid="3065046628354640854">"Aggiungi"</string>
     <string name="menu_manage_apps" msgid="2308685199463588895">"Gestisci applicazioni"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"Sfondo"</string>

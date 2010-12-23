@@ -25,7 +25,7 @@
     <string name="chooser_wallpaper" msgid="5988031014201479733">"Выбрать обои из:"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Установить обои"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"Обои"</string>
-    <string name="activity_not_found" msgid="3571057450431950427">"Приложение не установлено на телефоне."</string>
+    <!-- outdated translation 3571057450431950427 -->     <string name="activity_not_found" msgid="5591731020063337696">"Приложение не установлено на телефоне."</string>
     <string name="configure_wallpaper" msgid="2820186271419674623">"Настроить..."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Виджеты"</string>
     <string name="folders_tab_label" msgid="1145293785541489736">"Папки"</string>
@@ -64,6 +64,10 @@
     <string name="title_select_live_folder" msgid="3753447798805166749">"Выбор папки"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Приложения"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Главная"</string>
+    <!-- no translation found for delete_zone_label_workspace (7153615831493049150) -->
+    <skip />
+    <!-- no translation found for delete_zone_label_all_apps (2536335964588694907) -->
+    <skip />
     <string name="menu_add" msgid="3065046628354640854">"Добавить"</string>
     <string name="menu_manage_apps" msgid="2308685199463588895">"Управление приложениями"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"Обои"</string>

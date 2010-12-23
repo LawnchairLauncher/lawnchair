@@ -25,7 +25,7 @@
     <string name="chooser_wallpaper" msgid="5988031014201479733">"Achtergrond selecteren in"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Achtergrond instellen"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"Achtergronden"</string>
-    <string name="activity_not_found" msgid="3571057450431950427">"Deze toepassing is niet geïnstalleerd op uw telefoon."</string>
+    <!-- outdated translation 3571057450431950427 -->     <string name="activity_not_found" msgid="5591731020063337696">"Deze toepassing is niet geïnstalleerd op uw telefoon."</string>
     <string name="configure_wallpaper" msgid="2820186271419674623">"Configureren..."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widgets"</string>
     <string name="folders_tab_label" msgid="1145293785541489736">"Mappen"</string>
@@ -64,6 +64,10 @@
     <string name="title_select_live_folder" msgid="3753447798805166749">"Map selecteren"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Toepassingen"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Startpagina"</string>
+    <!-- no translation found for delete_zone_label_workspace (7153615831493049150) -->
+    <skip />
+    <!-- no translation found for delete_zone_label_all_apps (2536335964588694907) -->
+    <skip />
     <string name="menu_add" msgid="3065046628354640854">"Toevoegen"</string>
     <string name="menu_manage_apps" msgid="2308685199463588895">"Toepassingen beheren"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"Achtergrond"</string>
