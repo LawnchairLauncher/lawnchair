@@ -312,6 +312,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
 
     public void setCustomizationFilter(CustomizationType filterType) {
         mCustomizationType = filterType;
+        cancelDragging();
         if (getChildCount() > 0) {
             setCurrentPage(0);
             updateCurrentPageScroll();

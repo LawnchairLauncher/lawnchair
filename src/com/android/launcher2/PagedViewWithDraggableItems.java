@@ -54,13 +54,16 @@ public abstract class PagedViewWithDraggableItems extends PagedView
         return false;
     }
 
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
+    protected void cancelDragging() {
+        mIsDragging = false;
+        mLastTouchedItem = null;
+    }
+
+    private void handleTouchEvent(MotionEvent ev) {
         final int action = ev.getAction();
         switch (action & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
-                mIsDragging = false;
-                mLastTouchedItem = null;
+                cancelDragging();
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (mTouchState != TOUCH_STATE_SCROLLING && !mIsDragging) {
@@ -68,30 +71,24 @@ public abstract class PagedViewWithDraggableItems extends PagedView
                 }
                 break;
         }
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        handleTouchEvent(ev);
         return super.onInterceptTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        handleTouchEvent(ev);
+        return super.onTouchEvent(ev);
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         mLastTouchedItem = v;
         return false;
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        final int action = ev.getAction();
-        switch (action & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_DOWN:
-                mIsDragging = false;
-                mLastTouchedItem = null;
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (mTouchState != TOUCH_STATE_SCROLLING && !mIsDragging) {
-                    determineDraggingStart(ev);
-                }
-                break;
-        }
-        return super.onTouchEvent(ev);
     }
 
     @Override
