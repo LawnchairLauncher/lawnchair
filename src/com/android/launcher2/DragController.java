@@ -394,6 +394,9 @@ public class DragController {
      * Stop dragging without dropping.
      */
     public void cancelDrag() {
+        if (mDragging) {
+            mDragSource.onDropCompleted(null, false);
+        }
         endDrag();
     }
 
@@ -433,20 +436,20 @@ public class DragController {
         switch (action) {
             case MotionEvent.ACTION_MOVE:
                 break;
-
             case MotionEvent.ACTION_DOWN:
                 // Remember location of down touch
                 mMotionDownX = screenX;
                 mMotionDownY = screenY;
                 mLastDropTarget = null;
                 break;
-
-            case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
                 if (mDragging) {
                     drop(screenX, screenY);
                 }
                 endDrag();
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                cancelDrag();
                 break;
         }
 
@@ -568,10 +571,10 @@ public class DragController {
                 drop(screenX, screenY);
             }
             endDrag();
-
             break;
         case MotionEvent.ACTION_CANCEL:
             cancelDrag();
+            break;
         }
 
         return true;
