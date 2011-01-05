@@ -180,7 +180,8 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         Collections.sort(mApps, LauncherModel.APP_NAME_COMPARATOR);
 
         // Update the widgets/shortcuts to reflect changes in the set of available apps
-        invalidatePageDataAndIconCache();
+        mPageViewIconCache.retainAllApps(list);
+        invalidatePageData();
     }
 
     /**
@@ -206,7 +207,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         addAppsWithoutInvalidate(list);
 
         // Update the widgets/shortcuts to reflect changes in the set of available apps
-        invalidatePageDataAndIconCache();
+        invalidatePageData();
     }
 
     /**
@@ -221,7 +222,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             int removeIndex = findAppByComponent(mApps, info);
             if (removeIndex > -1) {
                 mApps.remove(removeIndex);
-                mPageViewIconCache.removeOutline(info);
+                mPageViewIconCache.removeOutline(new PagedViewIconCache.Key(info));
             }
         }
     }
@@ -233,7 +234,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         removeAppsWithoutInvalidate(list);
 
         // Update the widgets/shortcuts to reflect changes in the set of available apps
-        invalidatePageDataAndIconCache();
+        invalidatePageData();
     }
 
     /**
@@ -248,7 +249,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         addAppsWithoutInvalidate(list);
 
         // Update the widgets/shortcuts to reflect changes in the set of available apps
-        invalidatePageDataAndIconCache();
+        invalidatePageData();
     }
 
     /**
@@ -295,14 +296,10 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
                 PackageManager.GET_META_DATA);
         Collections.sort(mWallpaperList, resolveInfoComparator);
 
-        invalidatePageDataAndIconCache();
-    }
-
-    private void invalidatePageDataAndIconCache() {
-        // Reset the icon cache
-        mPageViewIconCache.clear();
-
-        // Refresh all the tabs
+        ArrayList<ResolveInfo> retainShortcutList = new ArrayList<ResolveInfo>(mShortcutList);
+        retainShortcutList.addAll(mWallpaperList);
+        mPageViewIconCache.retainAllShortcuts(retainShortcutList);
+        mPageViewIconCache.retainAllAppWidgets(mWidgetList);
         invalidatePageData();
     }
 
@@ -838,6 +835,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         LinearLayout layout = (LinearLayout) getChildAt(page);
         final ArrayList<AppWidgetProviderInfo> list = mWidgetPages.get(page);
         final int count = list.size();
+        final int numPages = getPageCount();
         layout.removeAllViews();
         for (int i = 0; i < count; ++i) {
             final AppWidgetProviderInfo info = (AppWidgetProviderInfo) list.get(i);
@@ -848,7 +846,8 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
 
             PagedViewWidget l = (PagedViewWidget) mInflater.inflate(
                     R.layout.customize_paged_view_widget, layout, false);
-            l.applyFromAppWidgetProviderInfo(info, icon, mMaxWidgetWidth, cellSpans);
+            l.applyFromAppWidgetProviderInfo(info, icon, mMaxWidgetWidth, cellSpans,
+                    mPageViewIconCache, (numPages > 1));
             l.setTag(createItemInfo);
             l.setOnClickListener(this);
             l.setOnTouchListener(this);
@@ -882,6 +881,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         LinearLayout layout = (LinearLayout) getChildAt(page);
         layout.removeAllViews();
         final int count = mWallpaperList.size();
+        final int numPages = getPageCount();
         final int numItemsPerPage = mMaxWallpaperCellHSpan / mWallpaperCellHSpan;
         final int startIndex = page * numItemsPerPage;
         final int endIndex = Math.min(count, startIndex + numItemsPerPage);
@@ -891,7 +891,8 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
 
             PagedViewWidget l = (PagedViewWidget) mInflater.inflate(
                     R.layout.customize_paged_view_wallpaper, layout, false);
-            l.applyFromWallpaperInfo(info, mPackageManager, icon, mMaxWidgetWidth);
+            l.applyFromWallpaperInfo(info, mPackageManager, icon, mMaxWidgetWidth,
+                    mPageViewIconCache, (numPages > 1));
             l.setTag(info);
             l.setOnClickListener(this);
 
@@ -914,10 +915,11 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
 
     private void syncListPageItems(int page, List<ResolveInfo> list) {
         // ensure that we have the right number of items on the pages
-        int numCells = mCellCountX * mCellCountY;
-        int startIndex = page * numCells;
-        int endIndex = Math.min(startIndex + numCells, list.size());
-        PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(page);
+        final int numPages = getPageCount();
+        final int numCells = mCellCountX * mCellCountY;
+        final int startIndex = page * numCells;
+        final int endIndex = Math.min(startIndex + numCells, list.size());
+        final PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(page);
         // TODO: we can optimize by just re-applying to existing views
         layout.removeAllViews();
         for (int i = startIndex; i < endIndex; ++i) {
@@ -927,7 +929,8 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             PagedViewIcon icon = (PagedViewIcon) mInflater.inflate(
                     R.layout.customize_paged_view_item, layout, false);
             icon.applyFromResolveInfo(info, mPackageManager, mPageViewIconCache,
-                    ((LauncherApplication) mLauncher.getApplication()).getIconCache());
+                    ((LauncherApplication) mLauncher.getApplication()).getIconCache(),
+                    (numPages > 1));
             switch (mCustomizationType) {
             case WallpaperCustomization:
                 icon.setOnClickListener(this);
@@ -972,17 +975,18 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         if (mApps == null) return;
 
         // ensure that we have the right number of items on the pages
-        int numCells = mCellCountX * mCellCountY;
-        int startIndex = page * numCells;
-        int endIndex = Math.min(startIndex + numCells, mApps.size());
-        PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(page);
+        final int numPages = getPageCount();
+        final int numCells = mCellCountX * mCellCountY;
+        final int startIndex = page * numCells;
+        final int endIndex = Math.min(startIndex + numCells, mApps.size());
+        final PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(page);
         // TODO: we can optimize by just re-applying to existing views
         layout.removeAllViews();
         for (int i = startIndex; i < endIndex; ++i) {
             final ApplicationInfo info = mApps.get(i);
             PagedViewIcon icon = (PagedViewIcon) mInflater.inflate(
                     R.layout.all_apps_paged_view_application, layout, false);
-            icon.applyFromApplicationInfo(info, mPageViewIconCache, true);
+            icon.applyFromApplicationInfo(info, mPageViewIconCache, true, (numPages > 1));
             icon.setOnClickListener(this);
             icon.setOnTouchListener(this);
             icon.setOnLongClickListener(this);

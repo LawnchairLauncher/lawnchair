@@ -32,7 +32,6 @@ import android.util.AttributeSet;
 import android.widget.Checkable;
 
 import com.android.launcher.R;
-import com.android.launcher2.PagedView.PagedViewIconCache;
 
 
 
@@ -50,7 +49,7 @@ public class PagedViewIcon extends CacheableTextView implements Checkable {
     private Bitmap mHolographicOutline;
     private Bitmap mIcon;
 
-    private Object mIconCacheKey;
+    private PagedViewIconCache.Key mIconCacheKey;
     private PagedViewIconCache mIconCache;
 
     private int mAlpha = 255;
@@ -140,26 +139,23 @@ public class PagedViewIcon extends CacheableTextView implements Checkable {
     }
 
     public void applyFromApplicationInfo(ApplicationInfo info, PagedViewIconCache cache,
-            boolean scaleUp) {
-        mIconCache = cache;
-        mIconCacheKey = info;
-        mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
-
+            boolean scaleUp, boolean createHolographicOutlines) {
         mIcon = info.iconBitmap;
         setCompoundDrawablesWithIntrinsicBounds(null, new FastBitmapDrawable(mIcon), null, null);
         setText(info.title);
         buildAndEnableCache();
         setTag(info);
 
-        queueHolographicOutlineCreation();
+        if (createHolographicOutlines) {
+            mIconCache = cache;
+            mIconCacheKey = new PagedViewIconCache.Key(info);
+            mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
+            queueHolographicOutlineCreation();
+        }
     }
 
     public void applyFromResolveInfo(ResolveInfo info, PackageManager packageManager,
-            PagedViewIconCache cache, IconCache modelIconCache) {
-        mIconCache = cache;
-        mIconCacheKey = info;
-        mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
-
+            PagedViewIconCache cache, IconCache modelIconCache, boolean createHolographicOutlines) {
         mIcon = Utilities.createIconBitmap(
                 modelIconCache.getFullResIcon(info, packageManager), mContext);
         setCompoundDrawablesWithIntrinsicBounds(null, new FastBitmapDrawable(mIcon), null, null);
@@ -167,7 +163,12 @@ public class PagedViewIcon extends CacheableTextView implements Checkable {
         buildAndEnableCache();
         setTag(info);
 
-        queueHolographicOutlineCreation();
+        if (createHolographicOutlines) {
+            mIconCache = cache;
+            mIconCacheKey = new PagedViewIconCache.Key(info);
+            mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
+            queueHolographicOutlineCreation();
+        }
     }
 
     @Override

@@ -322,7 +322,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
         mApps = list;
         Collections.sort(mApps, LauncherModel.APP_NAME_COMPARATOR);
         mFilteredApps = rebuildFilteredApps(mApps);
-        mPageViewIconCache.clear();
+        mPageViewIconCache.retainAllApps(list);
         invalidatePageData();
     }
 
@@ -367,7 +367,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
             int removeIndex = findAppByComponent(mApps, info);
             if (removeIndex > -1) {
                 mApps.remove(removeIndex);
-                mPageViewIconCache.removeOutline(info);
+                mPageViewIconCache.removeOutline(new PagedViewIconCache.Key(info));
             }
         }
         mFilteredApps = rebuildFilteredApps(mApps);
@@ -478,11 +478,12 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
             }
 
             // Actually reapply to the existing text views
+            final int numPages = getPageCount();
             for (int i = startIndex; i < endIndex; ++i) {
                 final int index = i - startIndex;
                 final ApplicationInfo info = mFilteredApps.get(i);
                 PagedViewIcon icon = (PagedViewIcon) layout.getChildAt(index);
-                icon.applyFromApplicationInfo(info, mPageViewIconCache, true);
+                icon.applyFromApplicationInfo(info, mPageViewIconCache, true, (numPages > 1));
 
                 PagedViewCellLayout.LayoutParams params =
                     (PagedViewCellLayout.LayoutParams) icon.getLayoutParams();

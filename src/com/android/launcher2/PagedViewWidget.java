@@ -52,6 +52,9 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
     private final Canvas mHolographicOutlineCanvas = new Canvas();
     private FastBitmapDrawable mPreview;
 
+    private PagedViewIconCache.Key mIconCacheKey;
+    private PagedViewIconCache mIconCache;
+
     private int mAlpha = 255;
     private int mHolographicAlpha;
 
@@ -97,6 +100,7 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
             mHandler.post(new Runnable() {
                 public void run() {
                     widget.mHolographicOutline = outline;
+                    widget.mIconCache.addOutline(widget.mIconCacheKey, outline);
                     widget.invalidate();
                 }
             });
@@ -140,7 +144,7 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
 
     private void queueHolographicOutlineCreation() {
         // Generate the outline in the background
-        if (mHolographicOutline == null) {
+        if (mHolographicOutline == null && mPreview != null) {
             Message m = sWorker.obtainMessage(MESSAGE_CREATE_HOLOGRAPHIC_OUTLINE);
             m.obj = this;
             sWorker.sendMessage(m);
@@ -148,7 +152,8 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
     }
 
     public void applyFromAppWidgetProviderInfo(AppWidgetProviderInfo info,
-            FastBitmapDrawable preview, int maxWidth, int[] cellSpan) {
+            FastBitmapDrawable preview, int maxWidth, int[] cellSpan,
+            PagedViewIconCache cache, boolean createHolographicOutline) {
         final ImageView image = (ImageView) findViewById(R.id.widget_preview);
         image.setMaxWidth(maxWidth);
         image.setImageDrawable(preview);
@@ -156,17 +161,30 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         name.setText(info.label);
         final TextView dims = (TextView) findViewById(R.id.widget_dims);
         dims.setText(mContext.getString(R.string.widget_dims_format, cellSpan[0], cellSpan[1]));
-        mPreview = preview;
+
+        if (createHolographicOutline) {
+            mIconCache = cache;
+            mIconCacheKey = new PagedViewIconCache.Key(info);
+            mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
+            mPreview = preview;
+        }
     }
 
     public void applyFromWallpaperInfo(ResolveInfo info, PackageManager packageManager,
-            FastBitmapDrawable preview, int maxWidth) {
+            FastBitmapDrawable preview, int maxWidth, PagedViewIconCache cache,
+            boolean createHolographicOutline) {
         ImageView image = (ImageView) findViewById(R.id.wallpaper_preview);
         image.setMaxWidth(maxWidth);
         image.setImageDrawable(preview);
         TextView name = (TextView) findViewById(R.id.wallpaper_name);
         name.setText(info.loadLabel(packageManager));
-        mPreview = preview;
+
+        if (createHolographicOutline) {
+            mIconCache = cache;
+            mIconCacheKey = new PagedViewIconCache.Key(info);
+            mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
+            mPreview = preview;
+        }
     }
 
     @Override

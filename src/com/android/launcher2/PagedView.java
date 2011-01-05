@@ -16,7 +16,10 @@
 
 package com.android.launcher2;
 
-import com.android.launcher.R;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -34,14 +37,13 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
-import android.view.animation.Animation.AnimationListener;
 import android.widget.Checkable;
 import android.widget.Scroller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import com.android.launcher.R;
 
 /**
  * An abstraction of the original Workspace which supports browsing through a
@@ -132,7 +134,10 @@ public abstract class PagedView extends ViewGroup {
     protected int mChoiceMode;
     private ActionMode mActionMode;
 
-    protected PagedViewIconCache mPageViewIconCache;
+    // NOTE: This is a shared icon cache across all the PagedViews.  Currently it is only used in
+    // AllApps and Customize, and allows them to share holographic icons for the application view
+    // (which is in both).
+    protected static PagedViewIconCache mPageViewIconCache = new PagedViewIconCache();
 
     // If true, syncPages and syncPageItems will be called to refresh pages
     protected boolean mContentIsRefreshable = true;
@@ -149,28 +154,6 @@ public abstract class PagedView extends ViewGroup {
     protected boolean mDeferScrollUpdate = false;
 
     protected boolean mIsPageMoving = false;
-
-    /**
-     * Simple cache mechanism for PagedViewIcon outlines.
-     */
-    class PagedViewIconCache {
-        private final HashMap<Object, Bitmap> iconOutlineCache = new HashMap<Object, Bitmap>();
-
-        public void clear() {
-            iconOutlineCache.clear();
-        }
-        public void addOutline(Object key, Bitmap b) {
-            iconOutlineCache.put(key, b);
-        }
-        public void removeOutline(Object key) {
-            if (iconOutlineCache.containsKey(key)) {
-                iconOutlineCache.remove(key);
-            }
-        }
-        public Bitmap getOutline(Object key) {
-            return iconOutlineCache.get(key);
-        }
-    }
 
     public interface PageSwitchListener {
         void onPageSwitch(View newPage, int newPageIndex);
@@ -215,7 +198,6 @@ public abstract class PagedView extends ViewGroup {
     protected void init() {
         mDirtyPageContent = new ArrayList<Boolean>();
         mDirtyPageContent.ensureCapacity(32);
-        mPageViewIconCache = new PagedViewIconCache();
         mScroller = new Scroller(getContext(), new ScrollInterpolator());
         mCurrentPage = 0;
         mCenterPagesVertically = true;
