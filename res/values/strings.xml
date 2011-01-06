@@ -143,12 +143,11 @@
          for accessibilty (spoken when the button gets focus). -->
     <string name="all_apps_home_button_label">Home</string>
     <!-- Label for trash icon on workspace. Meant to communicate the idea of removing the
-         icon/widget from the home screen, but not permanently. Contrast with the label for trash
-         icon in All Apps [CHAR_LIMIT=30] -->
+         icon/widget from the home screen, but not permanently. [CHAR_LIMIT=30] -->
     <string name="delete_zone_label_workspace">Remove</string>
     <!-- Label for trash icon in All Apps. The icon/widget will become completely unavailable on the
          device. [CHAR_LIMIT=30]-->
-    <string name="delete_zone_label_all_apps">Delete</string>
+    <string name="delete_zone_label_all_apps">Uninstall</string>
 
     <!-- Menus items: -->
     <skip />
