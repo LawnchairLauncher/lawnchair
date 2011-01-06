@@ -54,6 +54,12 @@
     <integer name="config_screenOnDropAlphaFadeDelay">350</integer>
     <integer name="config_screenOnDropAlphaFadeDuration">50</integer>
 
+    <!-- Workspace screens are cached to bitmaps only when they're smaller than a certain size
+         (maxScaleForUsingWorkspaceScreenBitmapCache), since the bitmap cache itself is smaller
+         than the view itself (workspaceScreenBitmapCacheScale)  -->
+    <integer name="config_workspaceScreenBitmapCacheScale">20</integer>
+    <integer name="config_maxScaleForUsingWorkspaceScreenBitmapCache">50</integer>
+
     <!-- The slope, in percent, of the drag movement needed to drag an item out of the customization
          drawer (y / x * 100%)  -->
     <integer name="config_customizationDrawerDragSlopeThreshold">150</integer>

@@ -37,6 +37,8 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
+import android.graphics.Bitmap.Config;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -96,6 +98,18 @@ public class CellLayout extends ViewGroup implements Dimmable {
     private Rect mGlowBackgroundRect;
     private float mGlowBackgroundScale;
     private float mGlowBackgroundAlpha;
+
+    private Bitmap mCache;
+    private Canvas mCacheCanvas;
+    private Rect mCacheRect;
+    private Paint mCachePaint;
+
+    private boolean mIsCacheEnabled = true;
+    private boolean mDisableCacheUpdates = false;
+    private boolean mForceCacheUpdate = false;
+    private boolean mIsCacheDirty = true;
+    private float mBitmapCacheScale;
+    private float mMaxScaleForUsingBitmapCache;
 
     private boolean mAcceptsDrops = false;
     // If we're actively dragging something over this screen, mIsDragOverlapping is true
@@ -265,20 +279,20 @@ public class CellLayout extends ViewGroup implements Dimmable {
 
         mBackgroundRect = new Rect();
         mGlowBackgroundRect = new Rect();
+        mCacheRect = new Rect();
         setHoverScale(1.0f);
         setHoverAlpha(1.0f);
+
+        mBitmapCacheScale =
+            res.getInteger(R.integer.config_workspaceScreenBitmapCacheScale) / 100.0f;
+        mMaxScaleForUsingBitmapCache =
+            res.getInteger(R.integer.config_maxScaleForUsingWorkspaceScreenBitmapCache) / 100.0f;
+        mCacheCanvas = new Canvas();
     }
 
     public void setIsDefaultDropTarget(boolean isDefaultDropTarget) {
         if (mIsDefaultDropTarget != isDefaultDropTarget) {
             mIsDefaultDropTarget = isDefaultDropTarget;
-            invalidate();
-        }
-    }
-
-    public void setAcceptsDrops(boolean acceptsDrops) {
-        if (mAcceptsDrops != acceptsDrops) {
-            mAcceptsDrops = acceptsDrops;
             invalidate();
         }
     }
@@ -364,6 +378,93 @@ public class CellLayout extends ViewGroup implements Dimmable {
 
     public void drawChildren(Canvas canvas) {
         super.dispatchDraw(canvas);
+    }
+
+    private void invalidateIfNeeded() {
+        if (mIsCacheDirty) {
+            // Force a redraw to update the cache if it's dirty
+            invalidate();
+        }
+    }
+
+    public void enableCache() {
+        mIsCacheEnabled = true;
+        invalidateIfNeeded();
+    }
+
+    public void disableCache() {
+        mIsCacheEnabled = false;
+    }
+
+    public void disableCacheUpdates() {
+        mDisableCacheUpdates = true;
+        // Force just one update before we enter a period of no cache updates
+        mForceCacheUpdate = true;
+    }
+
+    public void enableCacheUpdates() {
+        mDisableCacheUpdates = false;
+        invalidateIfNeeded();
+    }
+
+    private void invalidateCache() {
+        mIsCacheDirty = true;
+        invalidateIfNeeded();
+    }
+
+    public void updateCache() {
+        mCacheCanvas.drawColor(0x00000000, Mode.CLEAR);
+
+        float alpha = getAlpha();
+        setAlpha(1.0f);
+        drawChildren(mCacheCanvas);
+        setAlpha(alpha);
+
+        mIsCacheDirty = false;
+    }
+
+    public void dispatchDraw(Canvas canvas) {
+        final int count = getChildCount();
+
+        if (!mIsCacheDirty) {
+            // Check if one of the children (an icon or widget) is dirty
+            for (int i = 0; i < count; i++) {
+                final View child = getChildAt(i);
+                if (child.isDirty()) {
+                    mIsCacheDirty = true;
+                    break;
+                }
+            }
+        }
+
+        if (mForceCacheUpdate ||
+                (mIsCacheEnabled && !mDisableCacheUpdates)) {
+            // Sometimes we force a cache update-- this is used to make sure the cache will look as
+            // up-to-date as possible right when we disable cache updates
+            if (mIsCacheDirty) {
+                updateCache();
+            }
+            mForceCacheUpdate = false;
+        }
+
+        if (mIsCacheEnabled && getScaleX() < mMaxScaleForUsingBitmapCache) {
+            mCachePaint.setAlpha((int)(255*getAlpha()));
+            canvas.drawBitmap(mCache, mCacheRect, mBackgroundRect, mCachePaint);
+        } else {
+            super.dispatchDraw(canvas);
+        }
+    }
+
+    private void prepareCacheBitmap() {
+        if (mCache == null) {
+            mCache = Bitmap.createBitmap((int) (getWidth() * mBitmapCacheScale),
+                    (int) (getHeight() * mBitmapCacheScale), Config.ARGB_8888);
+
+            mCachePaint = new Paint();
+            mCachePaint.setFilterBitmap(true);
+            mCacheCanvas.setBitmap(mCache);
+            mCacheCanvas.scale(mBitmapCacheScale, mBitmapCacheScale);
+        }
     }
 
     @Override
@@ -523,11 +624,20 @@ public class CellLayout extends ViewGroup implements Dimmable {
             child.setAlpha(getAlpha());
             addView(child, index, lp);
 
+            // invalidate the cache to have it reflect the new item
+            invalidateCache();
             if (markCells) markCellsAsOccupiedForView(child);
 
             return true;
         }
         return false;
+    }
+
+    public void setAcceptsDrops(boolean acceptsDrops) {
+        if (mAcceptsDrops != acceptsDrops) {
+            mAcceptsDrops = acceptsDrops;
+            invalidate();
+        }
     }
 
     public boolean getAcceptsDrops() {
@@ -841,6 +951,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
                 }
             }
         }
+        prepareCacheBitmap();
     }
 
     @Override
@@ -848,6 +959,10 @@ public class CellLayout extends ViewGroup implements Dimmable {
         super.onSizeChanged(w, h, oldw, oldh);
         mBackgroundRect.set(0, 0, w, h);
         updateGlowRect();
+        mCacheRect.set(0, 0, (int) (mBitmapCacheScale * w), (int) (mBitmapCacheScale * h));
+        mCache = null;
+        prepareCacheBitmap();
+        invalidateCache();
     }
 
     @Override
