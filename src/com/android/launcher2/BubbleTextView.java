@@ -25,6 +25,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Region;
 import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -242,10 +243,17 @@ public class BubbleTextView extends CacheableTextView {
     @Override
     public void draw(Canvas canvas) {
         if (mPressedOrFocusedBackground != null && (isPressed() || isFocused())) {
+            // The blue glow can extend outside of our clip region, so we first temporarily expand
+            // the canvas's clip region
+            canvas.save(Canvas.CLIP_SAVE_FLAG);
+            int padding = HolographicOutlineHelper.MAX_OUTER_BLUR_RADIUS / 2;
+            canvas.clipRect(-padding + mScrollX, -padding + mScrollY,
+                    getWidth() + padding + mScrollX, getHeight() + padding + mScrollY,
+                    Region.Op.REPLACE);
+            // draw blue glow
             canvas.drawBitmap(mPressedOrFocusedBackground,
-                    mScrollX - HolographicOutlineHelper.MAX_OUTER_BLUR_RADIUS / 2,
-                    mScrollY - HolographicOutlineHelper.MAX_OUTER_BLUR_RADIUS / 2,
-                    mTempPaint);
+                    mScrollX - padding, mScrollY - padding, mTempPaint);
+            canvas.restore();
         }
         if (isBuildingCache()) {
             // We enhance the shadow by drawing the shadow twice
