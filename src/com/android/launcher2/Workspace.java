@@ -1621,6 +1621,13 @@ public class Workspace extends SmoothPagedView
             originY = (int)mTempOriginXY[1];
         }
 
+        // When you drag to a particular screen, make that the new current/default screen, so any
+        // subsequent taps add items to that screen
+        int dragTargetIndex = indexOfChild(mDragTargetLayout);
+        if (mCurrentPage != dragTargetIndex && (mIsSmall || mIsInUnshrinkAnimation)) {
+            moveToNewPageWithoutMovingCellLayouts(dragTargetIndex);
+        }
+
         if (source != this) {
             if (!mIsSmall || mWasSpringLoadedOnDragExit) {
                 onDropExternal(originX, originY, dragInfo, mDragTargetLayout, false);
