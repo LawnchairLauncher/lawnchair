@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+* Copyright (C) 2008 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name" msgid="8424725141379931883">"المشغل"</string>
+    <string name="uid_name" msgid="3371120195364560632">"تطبيقات Android المركزية"</string>
+    <string name="folder_name" msgid="4588446541914685904">"المجلد"</string>
+    <string name="chooser_wallpaper" msgid="5988031014201479733">"اختيار خلفية من"</string>
+    <string name="wallpaper_instructions" msgid="4215640646180727542">"تعيين خلفية"</string>
+    <string name="pick_wallpaper" msgid="5630222540525626723">"الخلفيات"</string>
+    <string name="activity_not_found" msgid="3571057450431950427">"لم يتم تثبيت التطبيق على هاتفك."</string>
+    <string name="configure_wallpaper" msgid="2820186271419674623">"تهيئة..."</string>
+    <string name="rename_folder_label" msgid="5646236631298452787">"اسم المجلد"</string>
+    <string name="rename_folder_title" msgid="4544573104191526550">"إعادة تسمية المجلد"</string>
+    <string name="rename_action" msgid="6016003384693240896">"موافق"</string>
+    <string name="cancel_action" msgid="3811860427489435048">"إلغاء"</string>
+    <string name="menu_item_add_item" msgid="6233177331075781114">"إضافة إلى الشاشة الرئيسية"</string>
+    <string name="group_applications" msgid="4118484163419674240">"التطبيقات"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"الاختصارات"</string>
+    <string name="group_folder" msgid="5143593791798929193">"مجلد جديد"</string>
+    <string name="group_live_folders" msgid="2664945399140647217">"مجلدات"</string>
+    <string name="group_widgets" msgid="6704978494073105844">"الأدوات"</string>
+    <string name="group_wallpapers" msgid="1568191644272224858">"الخلفيات"</string>
+    <string name="add_folder" msgid="3521088587367839879">"المجلد"</string>
+    <string name="add_clock" msgid="2337943840175865746">"الساعة"</string>
+    <string name="add_photo_frame" msgid="3154058437359487954">"إطار الصورة"</string>
+    <string name="out_of_space" msgid="8365249326091984698">"ليس هناك مساحة أخرى في هذه الشاشة الرئيسية."</string>
+    <string name="shortcut_installed" msgid="7071557296331322355">"تم إنشاء الاختصار \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
+    <string name="shortcut_uninstalled" msgid="2129499669449749995">"تمت إزالة الاختصار \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
+    <string name="shortcut_duplicate" msgid="4757756326465060694">"الاختصار \"<xliff:g id="NAME">%s</xliff:g>\" موجود فعلاً."</string>
+    <string name="title_select_shortcut" msgid="2858897527672831763">"تحديد اختصار"</string>
+    <string name="title_select_application" msgid="8031072293115454221">"تحديد تطبيق"</string>
+    <string name="title_select_live_folder" msgid="3753447798805166749">"تحديد مجلد"</string>
+    <string name="all_apps_button_label" msgid="3953036962111614813">"جميع التطبيقات"</string>
+    <string name="all_apps_home_button_label" msgid="1022222300329398558">"الرئيسية"</string>
+    <string name="menu_add" msgid="3065046628354640854">"إضافة"</string>
+    <string name="menu_manage_apps" msgid="2308685199463588895">"إدارة التطبيقات"</string>
+    <string name="menu_wallpaper" msgid="5837429080911269832">"خلفية"</string>
+    <string name="menu_search" msgid="4826514464423239041">"بحث"</string>
+    <string name="menu_notifications" msgid="6424587053194766192">"التنبيهات"</string>
+    <string name="menu_gestures" msgid="514678675575912237">"الإيماءات"</string>
+    <string name="menu_settings" msgid="6233960148378443661">"الإعدادات"</string>
+    <string name="permlab_install_shortcut" msgid="1201690825493376489">"اختصارات التثبيت"</string>
+    <string name="permdesc_install_shortcut" msgid="7429365847558984148">"للسماح للتطبيقات بإضافة الاختصارات بدون تدخل المستخدم."</string>
+    <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"إزالة الاختصارات"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="959972195916090900">"للسماح لتطبيق بإزالة الاختصارات بدون تدخل المستخدم."</string>
+    <string name="permlab_read_settings" msgid="3452408290738106747">"قراءة إعدادات الشاشة الرئيسية والاختصارات"</string>
+    <string name="permdesc_read_settings" msgid="8377434937176025492">"للسماح لتطبيق ما بقراءة الإعدادات والاختصارات في الشاشة الرئيسية."</string>
+    <string name="permlab_write_settings" msgid="1360567537236705628">"كتابة إعدادات الشاشة الرئيسية والاختصارات"</string>
+    <string name="permdesc_write_settings" msgid="1098648778383349818">"للسماح لتطبيق ما بتغيير الإعدادات والاختصارات في الشاشة الرئيسية."</string>
+    <string name="gadget_error_text" msgid="8359351016167075858">"حدثت مشكلة أثناء تحميل الأداة"</string>
+</resources>
