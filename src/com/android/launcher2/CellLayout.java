@@ -437,8 +437,9 @@ public class CellLayout extends ViewGroup implements Dimmable {
             }
         }
 
+        boolean useBitmapCache = mIsCacheEnabled && getScaleX() < mMaxScaleForUsingBitmapCache;
         if (mForceCacheUpdate ||
-                (mIsCacheEnabled && !mDisableCacheUpdates)) {
+                (useBitmapCache && !mDisableCacheUpdates)) {
             // Sometimes we force a cache update-- this is used to make sure the cache will look as
             // up-to-date as possible right when we disable cache updates
             if (mIsCacheDirty) {
@@ -447,7 +448,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
             mForceCacheUpdate = false;
         }
 
-        if (mIsCacheEnabled && getScaleX() < mMaxScaleForUsingBitmapCache) {
+        if (useBitmapCache) {
             mCachePaint.setAlpha((int)(255*getAlpha()));
             canvas.drawBitmap(mCache, mCacheRect, mBackgroundRect, mCachePaint);
         } else {
