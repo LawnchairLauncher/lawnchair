@@ -2221,7 +2221,7 @@ public final class Launcher extends Activity
 
         final View itemUnderLongClick = longClickCellInfo.cell;
 
-        if (mWorkspace.allowLongPress()) {
+        if (mWorkspace.allowLongPress() && !mDragController.isDragging()) {
             if (itemUnderLongClick == null) {
                 // User long pressed on empty space
                 mWorkspace.setAllowLongPress(false);
