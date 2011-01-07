@@ -474,7 +474,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
         // When we're small, we are either drawn normally or in the "accepts drops" state (during
         // a drag). However, we also drag the mini hover background *over* one of those two
         // backgrounds
-        if (mBackgroundAlpha > 0.0f) {
+        if (LauncherApplication.isScreenXLarge() && mBackgroundAlpha > 0.0f) {
             Drawable bg;
             boolean mini = getScaleX() < 0.5f;
 

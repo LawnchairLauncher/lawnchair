@@ -995,9 +995,9 @@ public final class Launcher extends Activity
         final View configureButton = findViewById(R.id.configure_button);
 
         if (LauncherApplication.isScreenXLarge()) {
-            mDeleteZone.setOverlappingViews(new View[] { allAppsButton, divider, configureButton });
+            deleteZone.setOverlappingViews(new View[] { allAppsButton, divider, configureButton });
         } else {
-            deleteZone.setOverlappingView(configureButton);
+            deleteZone.setOverlappingView(findViewById(R.id.all_apps_button_cluster));
         }
         dragController.addDragListener(deleteZone);
 
