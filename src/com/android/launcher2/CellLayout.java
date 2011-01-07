@@ -646,11 +646,13 @@ public class CellLayout extends ViewGroup implements Dimmable {
 
     @Override
     public void removeAllViews() {
+        super.removeAllViews();
         clearOccupiedCells();
     }
 
     @Override
     public void removeAllViewsInLayout() {
+        super.removeAllViewsInLayout();
         clearOccupiedCells();
     }
 
