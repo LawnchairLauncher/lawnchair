@@ -88,6 +88,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.View.OnLongClickListener;
+import android.view.accessibility.AccessibilityEvent;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Advanceable;
 import android.widget.EditText;
@@ -414,6 +415,21 @@ public final class Launcher extends Activity
                 updateAppMarketIcon(sAppMarketIcon);
             }
         }
+    }
+
+    @Override
+    public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
+        super.dispatchPopulateAccessibilityEvent(event);
+
+        // we want to take over text population so it is context dependent
+        event.getText().clear();
+        if (mState == State.ALL_APPS) {
+            event.getText().add(getString(R.string.all_apps_button_label));
+        } else if (mState == State.WORKSPACE) {
+            event.getText().add(getString(R.string.all_apps_home_button_label));
+        }
+
+        return true;
     }
 
     private void checkForLocaleChange() {
@@ -2878,8 +2894,10 @@ public final class Launcher extends Activity
 
         // Change the state *after* we've called all the transition code
         mState = State.ALL_APPS;
-    }
 
+        // send an accessibility event to announce the context change
+        getWindow().getDecorView().sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
+    }
 
     void showWorkspace(boolean animated) {
         showWorkspace(animated, null);
@@ -2901,6 +2919,9 @@ public final class Launcher extends Activity
 
         // Change the state *after* we've called all the transition code
         mState = State.WORKSPACE;
+
+        // send an accessibility event to announce the context change
+        getWindow().getDecorView().sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
     }
 
     void enterSpringLoadedDragMode(CellLayout layout) {
