@@ -39,7 +39,7 @@
     <string name="wallpaper_instructions">Set wallpaper</string>
     <!-- Option in "Select wallpaper from" dialog box -->
     <string name="pick_wallpaper">Wallpapers</string>
-    <!-- Displayed when user selects a shortcut for an app that was uninstalled -->
+    <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
     <string name="activity_not_found">Application is not installed.</string>
     <!-- List item for configuring the current wallpaper -->
     <string name="configure_wallpaper">Configure...</string>
