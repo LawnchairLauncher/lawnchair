@@ -33,6 +33,12 @@
     <!-- The distance at which the animation should take the max duration -->
     <integer name="config_dropAnimMaxDist">800</integer>
 
+    <!-- Workspace screens are cached to bitmaps only when they're smaller than a certain size
+         (maxScaleForUsingWorkspaceScreenBitmapCache), since the bitmap cache itself is smaller
+         than the view itself (workspaceScreenBitmapCacheScale)  -->
+    <integer name="config_workspaceScreenBitmapCacheScale">20</integer>
+    <integer name="config_maxScaleForUsingWorkspaceScreenBitmapCache">50</integer>
+
     <style name="config_orientation">
         <item name="@android:screenOrientation">nosensor</item>
     </style>
