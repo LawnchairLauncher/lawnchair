@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+* Copyright (C) 2008 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name" msgid="8424725141379931883">"Trình khởi chạy"</string>
+    <string name="uid_name" msgid="3371120195364560632">"Ứng dụng Lõi Android"</string>
+    <string name="folder_name" msgid="4588446541914685904">"Thư mục"</string>
+    <string name="chooser_wallpaper" msgid="5988031014201479733">"Chọn hình nền từ"</string>
+    <string name="wallpaper_instructions" msgid="4215640646180727542">"Đặt hình nền"</string>
+    <string name="pick_wallpaper" msgid="5630222540525626723">"Hình nền"</string>
+    <string name="activity_not_found" msgid="3571057450431950427">"Ứng dụng chưa được cài đặt trên điện thoại của bạn."</string>
+    <string name="configure_wallpaper" msgid="2820186271419674623">"Định cấu hình..."</string>
+    <string name="rename_folder_label" msgid="5646236631298452787">"Tên thư mục"</string>
+    <string name="rename_folder_title" msgid="4544573104191526550">"Đổi tên thư mục"</string>
+    <string name="rename_action" msgid="6016003384693240896">"OK"</string>
+    <string name="cancel_action" msgid="3811860427489435048">"Huỷ"</string>
+    <string name="menu_item_add_item" msgid="6233177331075781114">"Thêm vào Màn hình chính"</string>
+    <string name="group_applications" msgid="4118484163419674240">"Ứng dụng"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"Lối tắt"</string>
+    <string name="group_folder" msgid="5143593791798929193">"Thư mục mới"</string>
+    <string name="group_live_folders" msgid="2664945399140647217">"Thư mục"</string>
+    <string name="group_widgets" msgid="6704978494073105844">"Tiện ích"</string>
+    <string name="group_wallpapers" msgid="1568191644272224858">"Hình nền"</string>
+    <string name="add_folder" msgid="3521088587367839879">"Thư mục"</string>
+    <string name="add_clock" msgid="2337943840175865746">"Đồng hồ"</string>
+    <string name="add_photo_frame" msgid="3154058437359487954">"Khung ảnh"</string>
+    <string name="out_of_space" msgid="8365249326091984698">"Không còn khoảng trống trên Màn hình chính này."</string>
+    <string name="shortcut_installed" msgid="7071557296331322355">"Lối tắt \"<xliff:g id="NAME">%s</xliff:g>\" đã được tạo."</string>
+    <string name="shortcut_uninstalled" msgid="2129499669449749995">"Lối tắt \"<xliff:g id="NAME">%s</xliff:g>\" đã bị xoá."</string>
+    <string name="shortcut_duplicate" msgid="4757756326465060694">"Lối tắt \"<xliff:g id="NAME">%s</xliff:g>\" đã tồn tại."</string>
+    <string name="title_select_shortcut" msgid="2858897527672831763">"Chọn lối tắt"</string>
+    <string name="title_select_application" msgid="8031072293115454221">"Chọn ứng dụng"</string>
+    <string name="title_select_live_folder" msgid="3753447798805166749">"Chọn thư mục"</string>
+    <string name="all_apps_button_label" msgid="3953036962111614813">"Tât cả ứng dụng"</string>
+    <string name="all_apps_home_button_label" msgid="1022222300329398558">"Màn hình trang chủ"</string>
+    <string name="menu_add" msgid="3065046628354640854">"Thêm"</string>
+    <string name="menu_manage_apps" msgid="2308685199463588895">"Quản lý ứng dụng"</string>
+    <string name="menu_wallpaper" msgid="5837429080911269832">"Hình nền"</string>
+    <string name="menu_search" msgid="4826514464423239041">"Tìm kiếm"</string>
+    <string name="menu_notifications" msgid="6424587053194766192">"Thông báo"</string>
+    <string name="menu_gestures" msgid="514678675575912237">"Cử chỉ"</string>
+    <string name="menu_settings" msgid="6233960148378443661">"Cài đặt"</string>
+    <string name="permlab_install_shortcut" msgid="1201690825493376489">"cài đặt lối tắt"</string>
+    <string name="permdesc_install_shortcut" msgid="7429365847558984148">"Cho phép ứng dụng thêm lối tắt mà không cần sự can thiệp của người dùng."</string>
+    <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"gỡ cài đặt lối tắt"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="959972195916090900">"Cho phép ứng dụng xoá lối tắt mà không cần sự can thiệp của người dùng."</string>
+    <string name="permlab_read_settings" msgid="3452408290738106747">"đọc cài đặt Màn hình trang chủ và lối tắt"</string>
+    <string name="permdesc_read_settings" msgid="8377434937176025492">"Cho phép ứng dụng đọc cài đặt và lối tắt trên Màn hình trang chủ."</string>
+    <string name="permlab_write_settings" msgid="1360567537236705628">"ghi cài đặt Màn hình trang chủ và lối tắt"</string>
+    <string name="permdesc_write_settings" msgid="1098648778383349818">"Cho phép ứng dụng thay đổi cài đặt và lối tắt trên Màn hình trang chủ."</string>
+    <string name="gadget_error_text" msgid="8359351016167075858">"Sự cố khi tải tiện ích"</string>
+</resources>
