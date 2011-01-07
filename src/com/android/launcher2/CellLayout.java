@@ -53,7 +53,7 @@ import android.view.animation.LayoutAnimationController;
 
 import java.util.Arrays;
 
-public class CellLayout extends ViewGroup implements Dimmable {
+public class CellLayout extends ViewGroup implements Dimmable, VisibilityChangedListener {
     static final String TAG = "CellLayout";
 
     private int mCellWidth;
@@ -409,7 +409,11 @@ public class CellLayout extends ViewGroup implements Dimmable {
 
     private void invalidateCache() {
         mIsCacheDirty = true;
-        invalidateIfNeeded();
+        invalidate();
+    }
+
+    public void receiveVisibilityChangedMessage(View v) {
+        invalidateCache();
     }
 
     public void updateCache() {
@@ -620,10 +624,11 @@ public class CellLayout extends ViewGroup implements Dimmable {
 
             child.setId(childId);
 
-            // We might be in the middle or end of shrinking/fading to a dimmed view
-            // Make sure this view's alpha is set the same as all the rest of the views
-            child.setAlpha(getAlpha());
             addView(child, index, lp);
+            if (child instanceof VisibilityChangedBroadcaster) {
+                VisibilityChangedBroadcaster v = (VisibilityChangedBroadcaster) child;
+                v.setVisibilityChangedListener(this);
+            }
 
             // invalidate the cache to have it reflect the new item
             invalidateCache();
@@ -649,34 +654,40 @@ public class CellLayout extends ViewGroup implements Dimmable {
     public void removeAllViews() {
         super.removeAllViews();
         clearOccupiedCells();
+        invalidateCache();
     }
 
     @Override
     public void removeAllViewsInLayout() {
         super.removeAllViewsInLayout();
         clearOccupiedCells();
+        invalidateCache();
     }
 
     public void removeViewWithoutMarkingCells(View view) {
         super.removeView(view);
+        invalidateCache();
     }
 
     @Override
     public void removeView(View view) {
         markCellsAsUnoccupiedForView(view);
         super.removeView(view);
+        invalidateCache();
     }
 
     @Override
     public void removeViewAt(int index) {
         markCellsAsUnoccupiedForView(getChildAt(index));
         super.removeViewAt(index);
+        invalidateCache();
     }
 
     @Override
     public void removeViewInLayout(View view) {
         markCellsAsUnoccupiedForView(view);
         super.removeViewInLayout(view);
+        invalidateCache();
     }
 
     @Override
@@ -685,6 +696,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
             markCellsAsUnoccupiedForView(getChildAt(i));
         }
         super.removeViews(start, count);
+        invalidateCache();
     }
 
     @Override
@@ -693,6 +705,7 @@ public class CellLayout extends ViewGroup implements Dimmable {
             markCellsAsUnoccupiedForView(getChildAt(i));
         }
         super.removeViewsInLayout(start, count);
+        invalidateCache();
     }
 
     @Override
@@ -1712,4 +1725,15 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
                     + ", x=" + cellX + ", y=" + cellY + "]";
         }
     }
+}
+
+// Custom interfaces used to listen to "visibility changed" events of *children* of Views. Avoided
+// using "onVisibilityChanged" in the names because there's a method of that name in framework
+// (which can only can be used to listen to ancestors' "visibility changed" events)
+interface VisibilityChangedBroadcaster {
+    public void setVisibilityChangedListener(VisibilityChangedListener listener);
+}
+
+interface VisibilityChangedListener {
+    public void receiveVisibilityChangedMessage(View v);
 }
