@@ -949,7 +949,15 @@ public class CellLayout extends ViewGroup implements Dimmable {
 
                     if (lp.animateDrop) {
                         lp.animateDrop = false;
-                        ((Workspace) mParent).animateViewIntoPosition(child);
+
+                        // This call needs to be posted since it results in a requestLayout()
+                        // which shouldn't be called from within a layout pass (can cause a bad
+                        // state of the tree).
+                        post(new Runnable() {
+                            public void run() {
+                                ((Workspace) mParent).animateViewIntoPosition(child);
+                            }
+                        });
                     }
                 }
             }
