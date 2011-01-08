@@ -30,13 +30,14 @@ import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 
 /**
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
  * because we want to make the bubble taller than the text and TextView's clip is
  * too aggressive.
  */
-public class BubbleTextView extends CacheableTextView {
+public class BubbleTextView extends CacheableTextView implements VisibilityChangedBroadcaster {
     static final float CORNER_RADIUS = 4.0f;
     static final float SHADOW_LARGE_RADIUS = 4.0f;
     static final float SHADOW_SMALL_RADIUS = 1.75f;
@@ -63,6 +64,8 @@ public class BubbleTextView extends CacheableTextView {
 
     private boolean mBackgroundSizeChanged;
     private Drawable mBackground;
+
+    private VisibilityChangedListener mOnVisibilityChangedListener;
 
     public BubbleTextView(Context context) {
         super(context);
@@ -238,6 +241,18 @@ public class BubbleTextView extends CacheableTextView {
                 break;
         }
         return result;
+    }
+
+    public void setVisibilityChangedListener(VisibilityChangedListener listener) {
+        mOnVisibilityChangedListener = listener;
+    }
+
+    @Override
+    protected void onVisibilityChanged(View changedView, int visibility) {
+        if (mOnVisibilityChangedListener != null) {
+            mOnVisibilityChangedListener.receiveVisibilityChangedMessage(this);
+        }
+        super.onVisibilityChanged(changedView, visibility);
     }
 
     @Override
