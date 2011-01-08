@@ -390,6 +390,10 @@ public class DragController {
         return mDragging;
     }
 
+    public boolean isDragging() {
+        return mDragging;
+    }
+
     /**
      * Stop dragging without dropping.
      */

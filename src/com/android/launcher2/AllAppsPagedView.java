@@ -234,10 +234,8 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
 
     @Override
     protected boolean beginDragging(View v) {
-        if (!v.isInTouchMode()) {
-            return false;
-        }
-        super.beginDragging(v);
+        if (!v.isInTouchMode()) return false;
+        if (!super.beginDragging(v)) return false;
 
         // Start drag mode after the item is selected
         setupDragMode();

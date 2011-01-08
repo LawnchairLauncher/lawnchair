@@ -492,12 +492,13 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
     }
 
     protected boolean beginDragging(View v) {
+        if (!v.isInTouchMode()) return false;
+        if (!super.beginDragging(v)) return false;
+
         // End the current choice mode before we start dragging anything
         if (isChoiceMode(CHOICE_MODE_SINGLE)) {
             endChoiceMode();
         }
-        super.beginDragging(v);
-
         boolean result = false;
         switch (mCustomizationType) {
         case WidgetCustomization: {

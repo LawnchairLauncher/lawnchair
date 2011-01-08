@@ -50,8 +50,9 @@ public abstract class PagedViewWithDraggableItems extends PagedView
     }
 
     protected boolean beginDragging(View v) {
+        boolean wasDragging = mIsDragging;
         mIsDragging = true;
-        return false;
+        return !wasDragging;
     }
 
     protected void cancelDragging() {
