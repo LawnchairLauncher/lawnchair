@@ -43,15 +43,6 @@
         launcher:spanX="4"
         launcher:spanY="1" />
 
-    <appwidget
-        launcher:packageName="com.android.vending"
-        launcher:className="com.android.vending.MarketWidgetProvider"
-        launcher:screen="3"
-        launcher:x="1"
-        launcher:y="1"
-        launcher:spanX="2"
-        launcher:spanY="2" />
-
     <!--  Far-right screen [4] -->
 
 </favorites>
