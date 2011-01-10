@@ -1298,6 +1298,9 @@ public class Workspace extends SmoothPagedView
             for (int i = 0; i < screenCount; i++) {
                 final CellLayout cl = (CellLayout)getChildAt(i);
                 float finalAlphaValue = (i == mCurrentPage) ? 1.0f : 0.0f;
+                float finalAlphaMultiplierValue =
+                        ((i == mCurrentPage) && (mShrinkState != ShrinkState.SPRING_LOADED)) ?
+                        0.0f : 1.0f;
                 float rotation = 0.0f;
 
                 if (i < mCurrentPage) {
@@ -1315,6 +1318,8 @@ public class Workspace extends SmoothPagedView
                             PropertyValuesHolder.ofFloat("scaleX", finalScaleFactor),
                             PropertyValuesHolder.ofFloat("scaleY", finalScaleFactor),
                             PropertyValuesHolder.ofFloat("backgroundAlpha", finalBackgroundAlpha),
+                            PropertyValuesHolder.ofFloat("backgroundAlphaMultiplier",
+                                    finalAlphaMultiplierValue),
                             PropertyValuesHolder.ofFloat("alpha", finalAlphaValue),
                             PropertyValuesHolder.ofFloat("rotationY", rotation));
                     animWithInterpolator.setDuration(duration);
@@ -1326,6 +1331,7 @@ public class Workspace extends SmoothPagedView
                     cl.setScaleX(finalScaleFactor);
                     cl.setScaleY(finalScaleFactor);
                     cl.setBackgroundAlpha(0.0f);
+                    cl.setBackgroundAlphaMultiplier(finalAlphaMultiplierValue);
                     cl.setAlpha(finalAlphaValue);
                     cl.setRotationY(rotation);
                     mUnshrinkAnimationListener.onAnimationEnd(null);
