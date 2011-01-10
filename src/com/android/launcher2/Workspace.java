@@ -1516,6 +1516,10 @@ public class Workspace extends SmoothPagedView
         lp.oldY = viewY - (parent.getTop() - mScrollY);
     }
 
+    /*
+     * We should be careful that this method cannot result in any synchronous requestLayout()
+     * calls, as it is called from onLayout().
+     */
     public void animateViewIntoPosition(final View view) {
         final CellLayout parent = (CellLayout) view.getParent();
         final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
@@ -1574,7 +1578,6 @@ public class Workspace extends SmoothPagedView
             }
         });
 
-        view.setVisibility(View.INVISIBLE);
         mDropAnim.start();
     }
 

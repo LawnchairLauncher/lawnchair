@@ -963,14 +963,10 @@ public class CellLayout extends ViewGroup implements Dimmable, VisibilityChanged
                     if (lp.animateDrop) {
                         lp.animateDrop = false;
 
-                        // This call needs to be posted since it results in a requestLayout()
-                        // which shouldn't be called from within a layout pass (can cause a bad
-                        // state of the tree).
-                        post(new Runnable() {
-                            public void run() {
-                                ((Workspace) mParent).animateViewIntoPosition(child);
-                            }
-                        });
+                        // This call does not result in a requestLayout(), but at one point did.
+                        // We need to be cautious about any method calls within the layout pass
+                        // to insure we don't leave the view tree in a bad state.
+                        ((Workspace) mParent).animateViewIntoPosition(child);
                     }
                 }
             }
@@ -1392,7 +1388,7 @@ public class CellLayout extends ViewGroup implements Dimmable, VisibilityChanged
             lp.isDragging = false;
             lp.dropped = true;
             lp.animateDrop = animate;
-            child.setVisibility(View.VISIBLE);
+            child.setVisibility(View.INVISIBLE);
             child.requestLayout();
         }
     }
