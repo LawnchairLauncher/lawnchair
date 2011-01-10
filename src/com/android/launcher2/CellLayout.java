@@ -488,7 +488,7 @@ public class CellLayout extends ViewGroup implements Dimmable, VisibilityChanged
                 bg = mini ? mActiveBackgroundMini : mActiveGlowBackground;
             } else if (mIsDragOccuring && mAcceptsDrops) {
                 bg = mini ? mActiveBackgroundMini : mActiveBackground;
-            } else if (mIsDefaultDropTarget) {
+            } else if (mIsDragOccuring && mIsDefaultDropTarget) {
                 bg = mini ? mNormalGlowBackgroundMini : mNormalGlowBackground;
             } else {
                 bg = mini ? mNormalBackgroundMini : mNormalBackground;
