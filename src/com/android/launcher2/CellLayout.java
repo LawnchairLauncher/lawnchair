@@ -625,6 +625,7 @@ public class CellLayout extends ViewGroup implements Dimmable, VisibilityChanged
             child.setId(childId);
 
             addView(child, index, lp);
+            child.setAlpha(getAlpha());
             if (child instanceof VisibilityChangedBroadcaster) {
                 VisibilityChangedBroadcaster v = (VisibilityChangedBroadcaster) child;
                 v.setVisibilityChangedListener(this);
