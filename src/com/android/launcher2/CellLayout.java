@@ -973,6 +973,7 @@ public class CellLayout extends ViewGroup implements Dimmable, VisibilityChanged
             }
         }
         prepareCacheBitmap();
+        invalidateCache();
     }
 
     @Override
