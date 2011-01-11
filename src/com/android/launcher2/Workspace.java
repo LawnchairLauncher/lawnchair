@@ -780,9 +780,6 @@ public class Workspace extends SmoothPagedView
         // Draw the background gradient if necessary
         if (mBackground != null && mBackgroundAlpha > 0.0f) {
             int alpha = (int) (mBackgroundAlpha * 255);
-            mBackground.setAlpha(alpha);
-            mBackground.setBounds(mScrollX, 0, mScrollX + getMeasuredWidth(), getMeasuredHeight());
-            mBackground.draw(canvas);
             if (mDrawCustomizeTrayBackground) {
                 // Find out where to offset the gradient for the customization tray content
                 mCustomizationDrawer.getLocationOnScreen(mCustomizationDrawerPos);
@@ -800,8 +797,14 @@ public class Workspace extends SmoothPagedView
                 // Draw the bg gradient
                 final int  offset = (int) (mCustomizationDrawerPos[1] +
                         mCustomizationDrawerTransformedPos[1]);
+                mBackground.setAlpha(alpha);
                 mBackground.setBounds(mScrollX, offset, mScrollX + getMeasuredWidth(),
                         offset + getMeasuredHeight());
+                mBackground.draw(canvas);
+            } else {
+                mBackground.setAlpha(alpha);
+                mBackground.setBounds(mScrollX, 0, mScrollX + getMeasuredWidth(),
+                        getMeasuredHeight());
                 mBackground.draw(canvas);
             }
         }
