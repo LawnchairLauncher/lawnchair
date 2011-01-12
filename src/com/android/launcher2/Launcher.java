@@ -106,6 +106,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -1313,6 +1314,7 @@ public final class Launcher extends Activity
                             (System.currentTimeMillis() - mAutoAdvanceSentTime));
                 }
                 mHandler.removeMessages(ADVANCE_MSG);
+                mHandler.removeMessages(0); // Remove messages sent using postDelayed()
             }
         }
     }
@@ -1493,6 +1495,9 @@ public final class Launcher extends Activity
         } catch (NullPointerException ex) {
             Log.w(TAG, "problem while stopping AppWidgetHost during Launcher destruction", ex);
         }
+        mAppWidgetHost = null;
+
+        mWidgetsToAdvance.clear();
 
         TextKeyListener.getInstance().release();
 
@@ -1511,6 +1516,11 @@ public final class Launcher extends Activity
         }
 
         unregisterReceiver(mCloseSystemDialogsReceiver);
+
+        ((ViewGroup) mWorkspace.getParent()).removeAllViews();
+        mWorkspace.removeAllViews();
+        mWorkspace = null;
+        mDragController = null;
     }
 
     @Override
@@ -1977,6 +1987,7 @@ public final class Launcher extends Activity
         for (ItemInfo item: mDesktopItems) {
             item.unbind();
         }
+        mDesktopItems.clear();
     }
 
     /**

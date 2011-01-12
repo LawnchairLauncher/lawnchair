@@ -492,6 +492,9 @@ public class LauncherModel extends BroadcastReceiver {
                 mLoaderTask.stopLocked();
             }
         }
+        mItems.clear();
+        mAppWidgets.clear();
+        mFolders.clear();
     }
 
     /**
