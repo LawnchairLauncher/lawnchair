@@ -143,7 +143,6 @@ public class PagedViewIcon extends CacheableTextView implements Checkable {
         mIcon = info.iconBitmap;
         setCompoundDrawablesWithIntrinsicBounds(null, new FastBitmapDrawable(mIcon), null, null);
         setText(info.title);
-        buildAndEnableCache();
         setTag(info);
 
         if (createHolographicOutlines) {
@@ -160,7 +159,6 @@ public class PagedViewIcon extends CacheableTextView implements Checkable {
                 modelIconCache.getFullResIcon(info, packageManager), mContext);
         setCompoundDrawablesWithIntrinsicBounds(null, new FastBitmapDrawable(mIcon), null, null);
         setText(info.loadLabel(packageManager));
-        buildAndEnableCache();
         setTag(info);
 
         if (createHolographicOutlines) {

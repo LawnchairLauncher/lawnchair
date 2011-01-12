@@ -18,10 +18,9 @@ package com.android.launcher2;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Bitmap.Config;
 import android.text.Layout;
 import android.util.AttributeSet;
 import android.widget.TextView;
@@ -39,7 +38,7 @@ public class CacheableTextView extends TextView {
 
     private int mPrevAlpha = -1;
     private boolean mIsBuildingCache;
-    boolean mWaitingToGenerateCache;
+    boolean mIsTextCacheDirty;
     float mTextCacheLeft;
     float mTextCacheTop;
     float mTextCacheScrollX;
@@ -73,18 +72,12 @@ public class CacheableTextView extends TextView {
         return 0;
     }
 
-    public void buildAndEnableCache() {
-        // Defers building the cache until the next draw to allow measuring
-        // and laying out.
-        buildAndEnableCache(false);
+    public void setText(CharSequence text, BufferType type) {
+        super.setText(text, type);
+        mIsTextCacheDirty = true;
     }
 
-    public void buildAndEnableCache(boolean isImmediate) {
-        if (getLayout() == null || !isImmediate) {
-            mWaitingToGenerateCache = true;
-            return;
-        }
-
+    private void buildAndUpdateCache() {
         final Layout layout = getLayout();
         final int left = getCompoundPaddingLeft();
         final int top = getExtendedPaddingTop();
@@ -133,8 +126,7 @@ public class CacheableTextView extends TextView {
 
             // A hack-- we set the text to be one space (we don't make it empty just to avoid any
             // potential issues with text measurement, like line height, etc.) so that the text view
-            // doesn't draw it anymore, since it's been cached. We have to manually rebuild
-            // the cache whenever the text is changed (which is never in Launcher)
+            // doesn't draw it anymore, since it's been cached.
             mText = getText();
             setText(" ");
         }
@@ -145,9 +137,9 @@ public class CacheableTextView extends TextView {
     }
 
     public void draw(Canvas canvas) {
-        if (mWaitingToGenerateCache && !mIsBuildingCache) {
-            buildAndEnableCache(true);
-            mWaitingToGenerateCache = false;
+        if (mIsTextCacheDirty && !mIsBuildingCache) {
+            buildAndUpdateCache();
+            mIsTextCacheDirty = false;
         }
         if (mCache != null && !mIsBuildingCache) {
             canvas.drawBitmap(mCache, mTextCacheLeft - mTextCacheScrollX + mScrollX,
