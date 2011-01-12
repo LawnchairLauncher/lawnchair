@@ -118,7 +118,6 @@ public class BubbleTextView extends CacheableTextView implements VisibilityChang
                 new FastBitmapDrawable(b),
                 null, null);
         setText(info.title);
-        buildAndEnableCache();
         setTag(info);
     }
 
