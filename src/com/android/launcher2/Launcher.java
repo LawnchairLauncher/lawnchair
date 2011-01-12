@@ -550,12 +550,12 @@ public final class Launcher extends Activity
         WallpaperManager wpm = (WallpaperManager)getSystemService(WALLPAPER_SERVICE);
 
         Display display = getWindowManager().getDefaultDisplay();
-        // TODO: Put back when we decide about scrolling the wallpaper
-        // boolean isPortrait = display.getWidth() < display.getHeight();
-        // final int width = isPortrait ? display.getWidth() : display.getHeight();
-        // final int height = isPortrait ? display.getHeight() : display.getWidth();
-        wpm.suggestDesiredDimensions(Math.max(display.getWidth(), display.getHeight()),
-                Math.max(display.getWidth(), display.getHeight()));
+        boolean isPortrait = display.getWidth() < display.getHeight();
+        // find width and height when in portrait mode
+        final int width = isPortrait ? display.getWidth() : display.getHeight();
+        final int height = isPortrait ? display.getHeight() : display.getWidth();
+        wpm.suggestDesiredDimensions((int) (Math.max(width, height) * 1.5f),
+                Math.max(width, height));
     }
 
     // Note: This doesn't do all the client-id magic that BrowserProvider does
