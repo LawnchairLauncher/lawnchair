@@ -27,13 +27,13 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.SearchManager;
 import android.app.StatusBarManager;
-import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ActivityNotFoundException;
@@ -77,7 +77,6 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.Log;
-import android.view.Display;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -309,7 +308,6 @@ public final class Launcher extends Activity
 
         loadHotseats();
         checkForLocaleChange();
-        setWallpaperDimension();
         setContentView(R.layout.launcher);
         mHomeCustomizationDrawer = (TabHost) findViewById(R.id.customization_drawer);
         if (mHomeCustomizationDrawer != null) {
@@ -545,18 +543,6 @@ public final class Launcher extends Activity
         synchronized (sLock) {
             sScreen = screen;
         }
-    }
-
-    private void setWallpaperDimension() {
-        WallpaperManager wpm = (WallpaperManager)getSystemService(WALLPAPER_SERVICE);
-
-        Display display = getWindowManager().getDefaultDisplay();
-        boolean isPortrait = display.getWidth() < display.getHeight();
-        // find width and height when in portrait mode
-        final int width = isPortrait ? display.getWidth() : display.getHeight();
-        final int height = isPortrait ? display.getHeight() : display.getWidth();
-        wpm.suggestDesiredDimensions((int) (Math.max(width, height) * 1.5f),
-                Math.max(width, height));
     }
 
     // Note: This doesn't do all the client-id magic that BrowserProvider does
@@ -1002,6 +988,7 @@ public final class Launcher extends Activity
         workspace.setOnLongClickListener(this);
         workspace.setDragController(dragController);
         workspace.setLauncher(this);
+        workspace.setWallpaperDimension();
 
         deleteZone.setLauncher(this);
         deleteZone.setDragController(dragController);
@@ -1426,8 +1413,10 @@ public final class Launcher extends Activity
             }
             if (!mWorkspace.isDefaultPageShowing()) {
                 // on the phone, we don't animate the change to the workspace if all apps is visible
-                mWorkspace.moveToDefaultScreen(alreadyOnHome &&
-                        (LauncherApplication.isScreenXLarge() || mState != State.ALL_APPS));
+                boolean animate = alreadyOnHome &&
+                    (LauncherApplication.isScreenXLarge() || mState != State.ALL_APPS);
+                mWorkspace.moveToDefaultScreen(animate);
+                if (!animate) mWorkspace.updateWallpaperOffsetImmediately();
             }
             showWorkspace(alreadyOnHome);
 
@@ -2747,6 +2736,8 @@ public final class Launcher extends Activity
             toView.setVisibility(View.VISIBLE);
             hideAndShowToolbarButtons(toState, null, null);
         }
+        mWorkspace.setVerticalWallpaperOffset(toAllApps ?
+                Workspace.WallpaperVerticalOffset.TOP  : Workspace.WallpaperVerticalOffset.BOTTOM);
     }
 
     /**
@@ -2821,6 +2812,7 @@ public final class Launcher extends Activity
                 hideAndShowToolbarButtons(State.WORKSPACE, null, null);
             }
         }
+        mWorkspace.setVerticalWallpaperOffset(Workspace.WallpaperVerticalOffset.MIDDLE);
     }
 
     /**
@@ -2898,6 +2890,8 @@ public final class Launcher extends Activity
             toView.setVisibility(View.VISIBLE);
             hideAndShowToolbarButtons(toState, null, null);
         }
+        mWorkspace.setVerticalWallpaperOffset((toState == State.ALL_APPS) ?
+                Workspace.WallpaperVerticalOffset.TOP : Workspace.WallpaperVerticalOffset.BOTTOM);
     }
 
     void showAllApps(boolean animated) {
