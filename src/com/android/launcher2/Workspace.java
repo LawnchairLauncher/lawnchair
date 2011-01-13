@@ -1040,6 +1040,7 @@ public class Workspace extends SmoothPagedView
                 getResources().getDimension(R.dimen.allAppsSmallScreenVerticalMarginLandscape));
         float finalAlpha = 1.0f;
         float extraShrinkFactor = 1.0f;
+
         if (shrinkState == ShrinkState.BOTTOM_VISIBLE) {
              newY = screenHeight - newY - scaledPageHeight;
         } else if (shrinkState == ShrinkState.BOTTOM_HIDDEN) {
@@ -1057,6 +1058,13 @@ public class Workspace extends SmoothPagedView
                 getResources().getDimension(R.dimen.customizeSmallScreenVerticalMarginLandscape));
         }
 
+        int duration;
+        if (shrinkState == ShrinkState.BOTTOM_HIDDEN || shrinkState == ShrinkState.BOTTOM_VISIBLE) {
+            duration = res.getInteger(R.integer.config_allAppsWorkspaceShrinkTime);
+        } else {
+            duration = res.getInteger(R.integer.config_customizeWorkspaceShrinkTime);
+        }
+
         // We animate all the screens to the centered position in workspace
         // At the same time, the screens become greyed/dimmed
 
@@ -1071,17 +1079,16 @@ public class Workspace extends SmoothPagedView
         if (mAnimator != null) {
             mAnimator.cancel();
         }
+
         mAnimator = new AnimatorSet();
         for (int i = 0; i < screenCount; i++) {
-            CellLayout cl = (CellLayout) getChildAt(i);
+            final CellLayout cl = (CellLayout) getChildAt(i);
 
             float rotation = (-i + 2) * WORKSPACE_ROTATION;
             float rotationScaleX = (float) (1.0f / Math.cos(Math.PI * rotation / 180.0f));
             float rotationScaleY = getYScaleForScreen(i);
 
             if (animated) {
-                final int duration = res.getInteger(R.integer.config_workspaceShrinkTime);
-
                 ObjectAnimator animWithInterpolator = ObjectAnimator.ofPropertyValuesHolder(cl,
                         PropertyValuesHolder.ofFloat("x", newX),
                         PropertyValuesHolder.ofFloat("y", newY),
