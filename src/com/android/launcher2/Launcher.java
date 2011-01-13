@@ -89,6 +89,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.View.OnLongClickListener;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Advanceable;
 import android.widget.EditText;
@@ -2647,10 +2648,11 @@ public final class Launcher extends Activity
         // Set pivotY so that at the starting zoom factor, the view is partially
         // visible. Modifying initialHeightFactor changes how much of the view is
         // initially showing, and hence the perceived angle from which the view enters.
-        final float initialHeightFactor = 0.2f;
         if (state == State.ALL_APPS) {
-            view.setPivotY((1 + initialHeightFactor) * height);
+            final float initialHeightFactor = 0.165f;
+            view.setPivotY((1 - initialHeightFactor) * height);
         } else {
+            final float initialHeightFactor = 0.2f;
             view.setPivotY(-initialHeightFactor * height);
         }
     }
@@ -2663,15 +2665,23 @@ public final class Launcher extends Activity
      */
     private void cameraZoomOut(State toState, boolean animated) {
         final Resources res = getResources();
-        final int duration = res.getInteger(R.integer.config_allAppsZoomInTime);
-        final float scale = (float) res.getInteger(R.integer.config_allAppsZoomScaleFactor);
         final boolean toAllApps = (toState == State.ALL_APPS);
+
+        final int duration = toAllApps ?
+                res.getInteger(R.integer.config_allAppsZoomInTime) :
+                res.getInteger(R.integer.config_customizeZoomInTime);
+
+        final float scale = toAllApps ?
+                (float) res.getInteger(R.integer.config_allAppsZoomScaleFactor) :
+                (float) res.getInteger(R.integer.config_customizeZoomScaleFactor);
+
         final View toView = toAllApps ? (View) mAllAppsGrid : mHomeCustomizationDrawer;
 
         setPivotsForZoom(toView, toState, scale);
 
         if (toAllApps) {
             mWorkspace.shrink(ShrinkState.BOTTOM_HIDDEN, animated);
+            toView.setAlpha(0f);
         } else {
             mWorkspace.shrink(ShrinkState.TOP, animated);
         }
@@ -2680,7 +2690,16 @@ public final class Launcher extends Activity
             ValueAnimator scaleAnim = ObjectAnimator.ofPropertyValuesHolder(toView,
                     PropertyValuesHolder.ofFloat("scaleX", scale, 1.0f),
                     PropertyValuesHolder.ofFloat("scaleY", scale, 1.0f));
+
             scaleAnim.setDuration(duration);
+
+            if (toAllApps) {
+                ObjectAnimator alphaAnim = ObjectAnimator.ofPropertyValuesHolder(toView,
+                        PropertyValuesHolder.ofFloat("alpha", 1.0f));
+                alphaAnim.setInterpolator(new DecelerateInterpolator(1.5f));
+                alphaAnim.setDuration(duration);
+                alphaAnim.start();
+            }
 
             scaleAnim.setInterpolator(new Workspace.ZoomOutInterpolator());
             scaleAnim.addListener(new AnimatorListenerAdapter() {
@@ -2690,7 +2709,9 @@ public final class Launcher extends Activity
                     toView.setTranslationX(0.0f);
                     toView.setTranslationY(0.0f);
                     toView.setVisibility(View.VISIBLE);
-                    toView.setAlpha(1.0f);
+                    if (!toAllApps) {
+                        toView.setAlpha(1.0f);
+                    }
                 }
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -2707,7 +2728,7 @@ public final class Launcher extends Activity
             hideAndShowToolbarButtons(toState, toolbarShowAnim, toolbarHideAnim);
 
             // toView should appear right at the end of the workspace shrink animation
-            final int startDelay = res.getInteger(R.integer.config_workspaceShrinkTime) - duration;
+            final int startDelay = 0;
 
             if (mStateAnimation != null) mStateAnimation.cancel();
             mStateAnimation = new AnimatorSet();
@@ -2740,10 +2761,17 @@ public final class Launcher extends Activity
 
     private void cameraZoomIn(State fromState, boolean animated, boolean springLoaded) {
         Resources res = getResources();
-        int duration = res.getInteger(R.integer.config_allAppsZoomOutTime);
-        float scaleFactor = (float) res.getInteger(R.integer.config_allAppsZoomScaleFactor);
-        final View fromView =
-            (fromState == State.ALL_APPS) ? (View) mAllAppsGrid : mHomeCustomizationDrawer;
+        final boolean fromAllApps = (fromState == State.ALL_APPS);
+
+        int duration = fromAllApps ?
+            res.getInteger(R.integer.config_allAppsZoomOutTime) :
+            res.getInteger(R.integer.config_customizeZoomOutTime);
+
+        float scaleFactor = fromAllApps ?
+            (float) res.getInteger(R.integer.config_allAppsZoomScaleFactor) :
+            (float) res.getInteger(R.integer.config_customizeZoomScaleFactor);
+
+        final View fromView = fromAllApps ? (View) mAllAppsGrid : mHomeCustomizationDrawer;
 
         mCustomizePagedView.endChoiceMode();
         mAllAppsPagedView.endChoiceMode();
@@ -2766,6 +2794,7 @@ public final class Launcher extends Activity
             ValueAnimator alphaAnim = ObjectAnimator.ofPropertyValuesHolder(fromView,
                     PropertyValuesHolder.ofFloat("alpha", 1.0f, 0.0f));
             alphaAnim.setDuration(res.getInteger(R.integer.config_allAppsFadeOutTime));
+            alphaAnim.setInterpolator(new DecelerateInterpolator(1.5f));
             alphaAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
