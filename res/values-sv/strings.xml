@@ -64,9 +64,8 @@
     <string name="title_select_live_folder" msgid="3753447798805166749">"Välj mapp"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Program"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Startsida"</string>
-    <!-- no translation found for delete_zone_label_workspace (7153615831493049150) -->
-    <skip />
-    <!-- no translation found for delete_zone_label_all_apps (2536335964588694907) -->
+    <string name="delete_zone_label_workspace" msgid="7153615831493049150">"Ta bort"</string>
+    <!-- no translation found for delete_zone_label_all_apps (6664588234817475108) -->
     <skip />
     <string name="menu_add" msgid="3065046628354640854">"Lägg till"</string>
     <string name="menu_manage_apps" msgid="2308685199463588895">"Hantera appar"</string>
