@@ -31,8 +31,12 @@
     <string name="menu_wallpaper" msgid="7079815810001779627">"Fondo de pantalla"</string>
     <!-- XL -->
     <string name="permlab_uninstall_shortcut" msgid="9081019297773923949">"desinstalar accesos directos"</string>
+    <!-- XL -->
+    <string name="delete_zone_label_all_apps" msgid="192778192843793957">"Desinstalar"</string>
     <!-- XL xlarge -->
     <string name="wallpaper_dialog_title" msgid="8158909859337893047">"Seleccionar fondo de pantalla"</string>
     <!-- XL xlarge -->
     <string name="wallpaper_cancel" msgid="6726455585784483952">"Cancelar"</string>
+    <!-- XL xlarge -->
+    <string name="wallpaper_chooser_empty" msgid="8656678103211440583">"No hay fondos de pantalla disponibles"</string>
 </resources>
