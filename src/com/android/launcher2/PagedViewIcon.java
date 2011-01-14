@@ -39,7 +39,7 @@ import com.android.launcher.R;
  * An icon on a PagedView, specifically for items in the launcher's paged view (with compound
  * drawables on the top).
  */
-public class PagedViewIcon extends CacheableTextView implements Checkable {
+public class PagedViewIcon extends CachedTextView implements Checkable {
     private static final String TAG = "PagedViewIcon";
 
     // holographic outline

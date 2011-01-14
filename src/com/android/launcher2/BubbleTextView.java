@@ -37,7 +37,7 @@ import android.view.View;
  * because we want to make the bubble taller than the text and TextView's clip is
  * too aggressive.
  */
-public class BubbleTextView extends CacheableTextView implements VisibilityChangedBroadcaster {
+public class BubbleTextView extends CachedTextView implements VisibilityChangedBroadcaster {
     static final float CORNER_RADIUS = 4.0f;
     static final float SHADOW_LARGE_RADIUS = 4.0f;
     static final float SHADOW_SMALL_RADIUS = 1.75f;
