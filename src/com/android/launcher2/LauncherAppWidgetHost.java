@@ -36,4 +36,10 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
             AppWidgetProviderInfo appWidget) {
         return new LauncherAppWidgetHostView(context);
     }
+
+    @Override
+    public void stopListening() {
+        super.stopListening();
+        clearViews();
+    }
 }

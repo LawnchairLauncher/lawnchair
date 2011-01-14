@@ -150,4 +150,10 @@ public abstract class PagedViewWithDraggableItems extends PagedView
     public void setDragSlopeThreshold(float dragSlopeThreshold) {
         mDragSlopeThreshold = dragSlopeThreshold;
     }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        mLastTouchedItem = null;
+        super.onDetachedFromWindow();
+    }
 }
