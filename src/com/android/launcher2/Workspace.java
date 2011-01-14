@@ -203,6 +203,17 @@ public class Workspace extends SmoothPagedView
     private final Camera mCamera = new Camera();
     private final float mTempFloat2[] = new float[2];
 
+    enum WallpaperVerticalOffset { TOP, MIDDLE, BOTTOM };
+    int mWallpaperWidth;
+    int mWallpaperHeight;
+    float mTargetHorizontalWallpaperOffset = 0.0f;
+    float mTargetVerticalWallpaperOffset = 0.5f;
+    float mHorizontalWallpaperOffset = 0.0f;
+    float mVerticalWallpaperOffset = 0.5f;
+    long mLastWallpaperOffsetUpdateTime;
+    boolean mWallpaperOffsetDirty;
+    boolean mUpdateWallpaperOffsetImmediately = false;
+
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -387,17 +398,6 @@ public class Workspace extends SmoothPagedView
     }
 
     /**
-     * Sets the current screen.
-     *
-     * @param currentPage
-     */
-    @Override
-    void setCurrentPage(int currentPage) {
-        super.setCurrentPage(currentPage);
-        updateWallpaperOffset();
-    }
-
-    /**
      * Adds the specified child in the specified screen. The position and dimension of
      * the child are defined by x, y, spanX and spanY.
      *
@@ -558,23 +558,157 @@ public class Workspace extends SmoothPagedView
         Launcher.setScreen(mCurrentPage);
     };
 
-    private void updateWallpaperOffset() {
-        if (LauncherApplication.isScreenXLarge()) {
-            IBinder token = getWindowToken();
-            int scrollRange = getChildOffset(getChildCount() - 1) - getChildOffset(0);
-            if (token != null) {
-                mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 0);
-                float offset = mScrollX / (float) scrollRange;
-                mWallpaperManager.setWallpaperOffsets(getWindowToken(),
-                        Math.max(0.f, Math.min(offset, 1.0f)), 0);
-            }
+    // As a ratio of screen height, the total distance we want the parallax effect to span
+    // vertically
+    private float wallpaperTravelToScreenHeightRatio(int width, int height) {
+        return 1.1f;
+    }
+
+    // As a ratio of screen height, the total distance we want the parallax effect to span
+    // horizontally
+    private float wallpaperTravelToScreenWidthRatio(int width, int height) {
+        float aspectRatio = width / (float) height;
+
+        // At an aspect ratio of 16/10, the wallpaper parallax effect should span 1.5 * screen width
+        // At an aspect ratio of 10/16, the wallpaper parallax effect should span 1.2 * screen width
+        // We will use these two data points to extrapolate how much the wallpaper parallax effect
+        // to span (ie travel) at any aspect ratio:
+
+        final float ASPECT_RATIO_LANDSCAPE = 16/10f;
+        final float ASPECT_RATIO_PORTRAIT = 10/16f;
+        final float WALLPAPER_WIDTH_TO_SCREEN_RATIO_LANDSCAPE = 1.5f;
+        final float WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT = 1.2f;
+
+        // To find out the desired width at different aspect ratios, we use the following two
+        // formulas, where the coefficient on x is the aspect ratio (width/height):
+        //   (16/10)x + y = 1.5
+        //   (10/16)x + y = 1.2
+        // We solve for x and y and end up with a final formula:
+        final float x =
+            (WALLPAPER_WIDTH_TO_SCREEN_RATIO_LANDSCAPE - WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT) /
+            (ASPECT_RATIO_LANDSCAPE - ASPECT_RATIO_PORTRAIT);
+        final float y = WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT - x * ASPECT_RATIO_PORTRAIT;
+        return x * aspectRatio + y;
+    }
+
+    // The range of scroll values for Workspace
+    private int getScrollRange() {
+        return getChildOffset(getChildCount() - 1) - getChildOffset(0);
+    }
+
+    protected void setWallpaperDimension() {
+        WallpaperManager wpm =
+            (WallpaperManager) mLauncher.getSystemService(Context.WALLPAPER_SERVICE);
+
+        Display display = mLauncher.getWindowManager().getDefaultDisplay();
+        final int maxDim = Math.max(display.getWidth(), display.getHeight());
+        final int minDim = Math.min(display.getWidth(), display.getHeight());
+
+        // We need to ensure that there is enough extra space in the wallpaper for the intended
+        // parallax effects
+        mWallpaperWidth = (int) (maxDim * wallpaperTravelToScreenWidthRatio(maxDim, minDim));
+        mWallpaperHeight = (int)(maxDim * wallpaperTravelToScreenHeightRatio(maxDim, minDim));
+        wpm.suggestDesiredDimensions(mWallpaperWidth, mWallpaperHeight);
+    }
+
+    public void setVerticalWallpaperOffset(WallpaperVerticalOffset offsetPosition) {
+        float offset = 0.5f;
+        Display display = mLauncher.getWindowManager().getDefaultDisplay();
+        int wallpaperTravelHeight = (int) (display.getHeight() *
+                wallpaperTravelToScreenHeightRatio(display.getWidth(), display.getHeight()));
+        float offsetFromCenter = (wallpaperTravelHeight / mWallpaperHeight) / 2f;
+        switch (offsetPosition) {
+            case TOP:
+                offset = 0.5f - offsetFromCenter;
+                break;
+            case MIDDLE:
+                offset = 0.5f;
+                break;
+            case BOTTOM:
+                offset = 0.5f + offsetFromCenter;
+                break;
         }
+        mTargetVerticalWallpaperOffset = offset;
+        mWallpaperOffsetDirty = true;
+    }
+
+    private void updateHorizontalWallpaperOffset() {
+        if (LauncherApplication.isScreenXLarge()) {
+            Display display = mLauncher.getWindowManager().getDefaultDisplay();
+            // The wallpaper travel width is how far, from left to right, the wallpaper will move
+            // at this orientation (for example, in portrait mode we don't move all the way to the
+            // edges of the wallpaper, or otherwise the parallax effect would be too strong)
+            int wallpaperTravelWidth = (int) (display.getWidth() *
+                    wallpaperTravelToScreenWidthRatio(display.getWidth(), display.getHeight()));
+
+            // Account for overscroll: you only see the absolute edge of the wallpaper if
+            // you overscroll as far as you can in landscape mode
+            int overscrollOffset = (int) (maxOverScroll() * display.getWidth());
+            float overscrollRatio = overscrollOffset / (float) getScrollRange();
+            int scrollRangeWithOverscroll = getScrollRange() + 2 * overscrollOffset;
+
+            // Set wallpaper offset steps (1 / (number of screens - 1))
+            // We have 3 vertical offset states (centered, and then top/bottom aligned
+            // for all apps/customize)
+            mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 1.0f / (3 - 1));
+
+            float scrollProgress =
+                mScrollX / (float) scrollRangeWithOverscroll + overscrollRatio;
+            float offsetInDips = wallpaperTravelWidth * scrollProgress +
+                (mWallpaperWidth - wallpaperTravelWidth) / 2;
+            float offset = offsetInDips / (float) mWallpaperWidth;
+
+            mTargetHorizontalWallpaperOffset = Math.max(0f, Math.min(offset, 1.0f));
+            mWallpaperOffsetDirty = true;
+        }
+    }
+
+    public void updateWallpaperOffsetImmediately() {
+        mUpdateWallpaperOffsetImmediately = true;
+    }
+
+    private void updateWallpaperOffsets(boolean immediate) {
+        long currentTime = System.currentTimeMillis();
+        long millisecondsSinceLastUpdate = currentTime - mLastWallpaperOffsetUpdateTime;
+        millisecondsSinceLastUpdate = Math.min((long) (1000/30f), millisecondsSinceLastUpdate);
+        millisecondsSinceLastUpdate = Math.min(1L, millisecondsSinceLastUpdate);
+        final float PERCENT_TO_CATCH_UP_IN_100_MS_HORIZONTAL = 25f;
+        final float PERCENT_TO_CATCH_UP_IN_100_MS_VERTICAL = 25f;
+        final float UPDATE_THRESHOLD = 0.0001f;
+        float hOffsetDelta = mTargetHorizontalWallpaperOffset - mHorizontalWallpaperOffset;
+        float vOffsetDelta = mTargetVerticalWallpaperOffset - mVerticalWallpaperOffset;
+        boolean stopUpdating =
+            Math.abs(hOffsetDelta / mTargetHorizontalWallpaperOffset) < UPDATE_THRESHOLD &&
+            Math.abs(vOffsetDelta / mTargetVerticalWallpaperOffset) < UPDATE_THRESHOLD;
+
+        if (stopUpdating || immediate) {
+            mHorizontalWallpaperOffset = mTargetHorizontalWallpaperOffset;
+            mVerticalWallpaperOffset = mTargetVerticalWallpaperOffset;
+        } else {
+            float percentToCatchUpVertical =
+                millisecondsSinceLastUpdate / 100f * PERCENT_TO_CATCH_UP_IN_100_MS_VERTICAL;
+            float percentToCatchUpHorizontal =
+                millisecondsSinceLastUpdate / 100f * PERCENT_TO_CATCH_UP_IN_100_MS_HORIZONTAL;
+            mHorizontalWallpaperOffset += percentToCatchUpHorizontal * hOffsetDelta;
+            mVerticalWallpaperOffset +=
+                percentToCatchUpVertical * (mTargetVerticalWallpaperOffset - mVerticalWallpaperOffset);
+        }
+        IBinder token = getWindowToken();
+        if (token != null) {
+            mWallpaperManager.setWallpaperOffsets(getWindowToken(),
+                    mHorizontalWallpaperOffset, mVerticalWallpaperOffset);
+        }
+        if (!stopUpdating && !immediate) {
+            invalidate();
+            mWallpaperOffsetDirty = true;
+        }
+        mLastWallpaperOffsetUpdateTime = System.currentTimeMillis();
     }
 
     @Override
     public void computeScroll() {
         super.computeScroll();
-        updateWallpaperOffset();
+        updateHorizontalWallpaperOffset();
     }
 
     public void showOutlines() {
@@ -743,6 +877,9 @@ public class Workspace extends SmoothPagedView
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        if (mFirstLayout && mCurrentPage >= 0 && mCurrentPage < getChildCount()) {
+            mUpdateWallpaperOffsetImmediately = true;
+        }
         super.onLayout(changed, left, top, right, bottom);
 
         // if shrinkToBottom() is called on initialization, it has to be deferred
@@ -783,6 +920,12 @@ public class Workspace extends SmoothPagedView
 
     @Override
     protected void onDraw(Canvas canvas) {
+        if (mWallpaperOffsetDirty) {
+            updateWallpaperOffsets(mUpdateWallpaperOffsetImmediately);
+            mWallpaperOffsetDirty = false;
+            mUpdateWallpaperOffsetImmediately = false;
+        }
+
         // Draw the background gradient if necessary
         if (mBackground != null && mBackgroundAlpha > 0.0f) {
             int alpha = (int) (mBackgroundAlpha * 255);
