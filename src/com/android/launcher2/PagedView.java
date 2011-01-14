@@ -888,6 +888,14 @@ public abstract class PagedView extends ViewGroup {
         invalidate();
     }
 
+    protected float maxOverScroll() {
+        // Using the formula in overScroll, assuming that f = 1.0 (which it should generally not
+        // exceed). Used to find out how much extra wallpaper we need for the overscroll effect
+        float f = 1.0f;
+        f = f / (Math.abs(f)) * (overScrollInfluenceCurve(Math.abs(f)));
+        return OVERSCROLL_DAMP_FACTOR * f;
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         // Skip touch handling if there are no pages to swipe
