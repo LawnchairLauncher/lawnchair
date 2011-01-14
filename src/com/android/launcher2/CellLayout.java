@@ -1390,7 +1390,9 @@ public class CellLayout extends ViewGroup implements Dimmable, VisibilityChanged
             lp.isDragging = false;
             lp.dropped = true;
             lp.animateDrop = animate;
-            child.setVisibility(View.INVISIBLE);
+            if (animate) {
+                child.setVisibility(View.INVISIBLE);
+            }
             child.requestLayout();
         }
     }
