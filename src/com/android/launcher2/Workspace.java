@@ -1622,10 +1622,8 @@ public class Workspace extends SmoothPagedView
         }
 
         mDragInfo = cellInfo;
-        mDragInfo.screen = mCurrentPage;
 
-        CellLayout current = getCurrentDropLayout();
-
+        CellLayout current = (CellLayout) getChildAt(cellInfo.screen);
         current.onDragChild(child);
 
         child.clearFocus();
