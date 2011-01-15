@@ -417,7 +417,7 @@ public class CellLayout extends ViewGroup implements Dimmable, VisibilityChanged
     }
 
     public void updateCache() {
-        mCacheCanvas.drawColor(0x00000000, Mode.CLEAR);
+        mCacheCanvas.drawColor(0, Mode.CLEAR);
 
         float alpha = getAlpha();
         setAlpha(1.0f);
