@@ -184,7 +184,7 @@ public class HolographicOutlineHelper {
 
         // draw the inner and outer blur
         srcDstCanvas.setBitmap(srcDst);
-        srcDstCanvas.drawColor(0x00000000, PorterDuff.Mode.CLEAR);
+        srcDstCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
         mHolographicPaint.setColor(color);
         srcDstCanvas.drawBitmap(thickInnerBlur, thickInnerBlurOffset[0], thickInnerBlurOffset[1],
                 mHolographicPaint);

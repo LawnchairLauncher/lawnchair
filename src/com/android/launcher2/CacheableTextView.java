@@ -21,6 +21,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Bitmap.Config;
+import android.graphics.PorterDuff.Mode;
 import android.text.Layout;
 import android.util.AttributeSet;
 import android.widget.TextView;
@@ -111,7 +112,7 @@ public class CacheableTextView extends TextView {
                 mCache = Bitmap.createBitmap(width, height, Config.ARGB_8888);
                 mCacheCanvas.setBitmap(mCache);
             } else {
-                mCacheCanvas.drawColor(0x00000000);
+                mCacheCanvas.drawColor(0, Mode.CLEAR);
             }
 
             mCacheCanvas.save();
