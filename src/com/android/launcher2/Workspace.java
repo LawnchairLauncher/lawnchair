@@ -616,7 +616,7 @@ public class Workspace extends SmoothPagedView
         Display display = mLauncher.getWindowManager().getDefaultDisplay();
         int wallpaperTravelHeight = (int) (display.getHeight() *
                 wallpaperTravelToScreenHeightRatio(display.getWidth(), display.getHeight()));
-        float offsetFromCenter = (wallpaperTravelHeight / mWallpaperHeight) / 2f;
+        float offsetFromCenter = (wallpaperTravelHeight / (float) mWallpaperHeight) / 2f;
         switch (offsetPosition) {
             case TOP:
                 offset = 0.5f - offsetFromCenter;
