@@ -332,6 +332,8 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
             final int index = Collections.binarySearch(mApps, info, LauncherModel.APP_NAME_COMPARATOR);
             if (index < 0) {
                 mApps.add(-(index + 1), info);
+            } else {
+                mApps.add(index, info);
             }
         }
         mFilteredApps = rebuildFilteredApps(mApps);
