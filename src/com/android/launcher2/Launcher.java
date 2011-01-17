@@ -2681,7 +2681,6 @@ public final class Launcher extends Activity
 
         if (toAllApps) {
             mWorkspace.shrink(ShrinkState.BOTTOM_HIDDEN, animated);
-            toView.setAlpha(0f);
         } else {
             mWorkspace.shrink(ShrinkState.TOP, animated);
         }
@@ -2694,6 +2693,7 @@ public final class Launcher extends Activity
             scaleAnim.setDuration(duration);
 
             if (toAllApps) {
+                toView.setAlpha(0f);
                 ObjectAnimator alphaAnim = ObjectAnimator.ofPropertyValuesHolder(toView,
                         PropertyValuesHolder.ofFloat("alpha", 1.0f));
                 alphaAnim.setInterpolator(new DecelerateInterpolator(1.5f));
