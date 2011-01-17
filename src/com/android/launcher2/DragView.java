@@ -123,6 +123,14 @@ public class DragView extends View {
         // The point in our scaled bitmap that the touch events are located
         mRegistrationX = registrationX;
         mRegistrationY = registrationY;
+
+        // Force a measure, because Workspace uses getMeasuredHeight() before the layout pass
+        int ms = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        measure(ms, ms);
+    }
+
+    public float getOffsetY() {
+        return mOffsetY;
     }
 
     public void setDragRegion(int left, int top, int width, int height) {
