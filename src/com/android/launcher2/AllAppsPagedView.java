@@ -271,6 +271,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
         }
 
         // Start the drag
+        mLauncher.lockScreenOrientation();
         mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1, b);
         mDragController.startDrag(v, b, this, app, DragController.DRAG_ACTION_COPY, null);
         b.recycle();
@@ -289,6 +290,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
         }
         tearDownDragMode();
         mLauncher.getWorkspace().onDragStopped();
+        mLauncher.unlockScreenOrientation();
     }
 
     @Override

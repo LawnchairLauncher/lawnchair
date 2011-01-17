@@ -1648,6 +1648,7 @@ public class Workspace extends SmoothPagedView
         child.getLocationOnScreen(mTempXY);
         final int screenX = (int) mTempXY[0] + (child.getWidth() - bmpWidth) / 2;
         final int screenY = (int) mTempXY[1] + (child.getHeight() - bmpHeight) / 2;
+        mLauncher.lockScreenOrientation();
         mDragController.startDrag(b, screenX, screenY, 0, 0, bmpWidth, bmpHeight, this,
                 child.getTag(), DragController.DRAG_ACTION_MOVE, null);
         b.recycle();
@@ -2447,7 +2448,7 @@ public class Workspace extends SmoothPagedView
             boolean animateDrop = !mWasSpringLoadedOnDragExit;
             ((CellLayout) getChildAt(mDragInfo.screen)).onDropChild(mDragInfo.cell, animateDrop);
         }
-
+        mLauncher.unlockScreenOrientation();
         mDragOutline = null;
         mDragInfo = null;
     }
