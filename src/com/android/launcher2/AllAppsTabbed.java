@@ -48,6 +48,7 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
     private AllAppsPagedView mAllApps;
     private Context mContext;
     private final LayoutInflater mInflater;
+    private boolean mFirstLayout = true;
 
     public AllAppsTabbed(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -135,6 +136,11 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
 
     @Override
     public void setVisibility(int visibility) {
+        if (visibility == View.GONE && mFirstLayout) {
+            // It needs to be INVISIBLE so that it will be measured in the layout.
+            // Otherwise the animations is messed up when we show it for the first time.
+            visibility = View.INVISIBLE;
+        }
         final boolean isVisible = (visibility == View.VISIBLE); 
         super.setVisibility(visibility);
         float zoom = (isVisible ? 1.0f : 0.0f);
@@ -144,6 +150,12 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
     @Override
     public boolean isVisible() {
         return mAllApps.isVisible();
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        mFirstLayout = false;
+        super.onLayout(changed, l, t, r, b);
     }
 
     @Override
