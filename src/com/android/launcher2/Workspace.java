@@ -287,6 +287,7 @@ public class Workspace extends SmoothPagedView
                     mDrawCustomizeTrayBackground = false;
                 }
                 enableCacheUpdates();
+                mAnimator = null;
             }
         };
         mShrinkAnimationListener = new AnimatorListenerAdapter() {
@@ -297,6 +298,7 @@ public class Workspace extends SmoothPagedView
             @Override
             public void onAnimationEnd(Animator animation) {
                 enableCacheUpdates();
+                mAnimator = null;
             }
         };
         mSnapVelocity = 600;
