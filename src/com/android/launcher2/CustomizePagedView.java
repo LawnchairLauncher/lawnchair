@@ -328,6 +328,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
     public void onDropCompleted(View target, boolean success) {
         resetCheckedGrandchildren();
         mLauncher.getWorkspace().onDragStopped();
+        mLauncher.unlockScreenOrientation();
     }
 
     @Override
@@ -500,6 +501,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             endChoiceMode();
         }
         boolean result = false;
+        mLauncher.lockScreenOrientation();
         switch (mCustomizationType) {
         case WidgetCustomization: {
             // Get the widget preview as the drag representation
