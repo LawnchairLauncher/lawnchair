@@ -221,11 +221,13 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
             public void run() {
                 DeleteZone allAppsDeleteZone =
                         (DeleteZone) mLauncher.findViewById(R.id.all_apps_delete_zone);
-                allAppsDeleteZone.setDragAndDropEnabled(false);
+                // if onDestroy was called on Launcher, we might have already deleted the
+                // all apps delete zone / info button, so check if they are null
+                if (allAppsDeleteZone != null) allAppsDeleteZone.setDragAndDropEnabled(false);
 
                 ApplicationInfoDropTarget allAppsInfoButton =
                     (ApplicationInfoDropTarget) mLauncher.findViewById(R.id.all_apps_info_target);
-                allAppsInfoButton.setDragAndDropEnabled(false);
+                if (allAppsInfoButton != null) allAppsInfoButton.setDragAndDropEnabled(false);
             }
         });
         resetCheckedGrandchildren();
