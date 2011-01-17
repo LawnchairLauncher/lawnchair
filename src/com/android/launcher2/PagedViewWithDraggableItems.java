@@ -35,6 +35,7 @@ public abstract class PagedViewWithDraggableItems extends PagedView
     implements View.OnLongClickListener, View.OnTouchListener {
     private View mLastTouchedItem;
     private boolean mIsDragging;
+    private boolean mIsDragEnabled;
     private float mDragSlopeThreshold;
 
     public PagedViewWithDraggableItems(Context context) {
@@ -58,6 +59,7 @@ public abstract class PagedViewWithDraggableItems extends PagedView
     protected void cancelDragging() {
         mIsDragging = false;
         mLastTouchedItem = null;
+        mIsDragEnabled = false;
     }
 
     private void handleTouchEvent(MotionEvent ev) {
@@ -65,9 +67,10 @@ public abstract class PagedViewWithDraggableItems extends PagedView
         switch (action & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 cancelDragging();
+                mIsDragEnabled = true;
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (mTouchState != TOUCH_STATE_SCROLLING && !mIsDragging) {
+                if (mTouchState != TOUCH_STATE_SCROLLING && !mIsDragging && mIsDragEnabled) {
                     determineDraggingStart(ev);
                 }
                 break;
@@ -89,6 +92,7 @@ public abstract class PagedViewWithDraggableItems extends PagedView
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         mLastTouchedItem = v;
+        mIsDragEnabled = true;
         return false;
     }
 
@@ -153,7 +157,7 @@ public abstract class PagedViewWithDraggableItems extends PagedView
 
     @Override
     protected void onDetachedFromWindow() {
-        mLastTouchedItem = null;
+        cancelDragging();
         super.onDetachedFromWindow();
     }
 }
