@@ -17,17 +17,19 @@
 
 package com.android.launcher2;
 
-import com.android.common.Search;
-import com.android.launcher.R;
-import com.android.launcher2.CustomizePagedView.CustomizationType;
-import com.android.launcher2.Workspace.ShrinkState;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -45,12 +47,12 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.Intent.ShortcutIconResource;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -77,16 +79,18 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.Log;
+import android.view.Display;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.View.OnLongClickListener;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
@@ -96,20 +100,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TabHost;
+import android.widget.TabHost.OnTabChangeListener;
+import android.widget.TabHost.TabContentFactory;
 import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.TabHost.OnTabChangeListener;
-import android.widget.TabHost.TabContentFactory;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import com.android.common.Search;
+import com.android.launcher.R;
+import com.android.launcher2.CustomizePagedView.CustomizationType;
+import com.android.launcher2.Workspace.ShrinkState;
 
 
 /**
@@ -263,6 +263,10 @@ public final class Launcher extends Activity
     private long mAutoAdvanceTimeLeft = -1;
     private HashMap<View, AppWidgetProviderInfo> mWidgetsToAdvance =
         new HashMap<View, AppWidgetProviderInfo>();
+
+    // Determines how long to wait after a rotation before restoring the screen orientation to
+    // match the sensor state.
+    private final int mRestoreScreenOrientationDelay = 500;
 
     // External icons saved in case of resource changes, orientation, etc.
     private static Drawable.ConstantState sGlobalSearchIcon;
@@ -3572,6 +3576,49 @@ public final class Launcher extends Activity
         if (mCustomizePagedView != null) {
             mCustomizePagedView.update();
         }
+    }
+
+    private int mapConfigurationOriActivityInfoOri(int configOri) {
+        final Display d = getWindowManager().getDefaultDisplay();
+        int naturalOri = Configuration.ORIENTATION_LANDSCAPE;
+        switch (d.getRotation()) {
+        case Surface.ROTATION_0:
+        case Surface.ROTATION_180:
+            // We are currently in the same basic orientation as the natural orientation
+            naturalOri = configOri;
+            break;
+        case Surface.ROTATION_90:
+        case Surface.ROTATION_270:
+            // We are currently in the other basic orientation to the natural orientation
+            naturalOri = (configOri == Configuration.ORIENTATION_LANDSCAPE) ?
+                    Configuration.ORIENTATION_PORTRAIT : Configuration.ORIENTATION_LANDSCAPE;
+            break;
+        }
+
+        int[] oriMap = {
+                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT,
+                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE,
+                ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT,
+                ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
+        };
+        // Since the map starts at portrait, we need to offset if this device's natural orientation
+        // is landscape.
+        int indexOffset = 0;
+        if (naturalOri == Configuration.ORIENTATION_LANDSCAPE) {
+            indexOffset = 1;
+        }
+        return oriMap[(d.getRotation() + indexOffset) % 4];
+    }
+    public void lockScreenOrientation() {
+        setRequestedOrientation(mapConfigurationOriActivityInfoOri(getResources()
+                .getConfiguration().orientation));
+    }
+    public void unlockScreenOrientation() {
+        mHandler.postDelayed(new Runnable() {
+            public void run() {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+            }
+        }, mRestoreScreenOrientationDelay);
     }
 
     /**
