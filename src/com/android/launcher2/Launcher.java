@@ -1521,6 +1521,8 @@ public final class Launcher extends Activity
         mWorkspace.removeAllViews();
         mWorkspace = null;
         mDragController = null;
+
+        ValueAnimator.clearAllAnimations();
     }
 
     @Override
