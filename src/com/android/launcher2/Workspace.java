@@ -1439,6 +1439,7 @@ public class Workspace extends SmoothPagedView
     }
 
     void unshrink(boolean animated, boolean springLoaded) {
+        mWaitingToShrink = false;
         if (mIsSmall) {
             float finalScaleFactor = 1.0f;
             float finalBackgroundAlpha = 0.0f;
