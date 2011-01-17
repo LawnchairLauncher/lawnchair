@@ -16,8 +16,6 @@
 
 package com.android.launcher2;
 
-import com.android.launcher.R;
-
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;

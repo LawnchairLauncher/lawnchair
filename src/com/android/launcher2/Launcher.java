@@ -363,7 +363,6 @@ public final class Launcher extends Activity
                         alphaAnim.addListener(new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {
-                                String tag = mHomeCustomizationDrawer.getCurrentTabTag();
                                 mCustomizePagedView.setCustomizationFilter(newType);
 
                                 final float alpha = mCustomizePagedView.getAlpha();
@@ -997,7 +996,6 @@ public final class Launcher extends Activity
 
         deleteZone.setLauncher(this);
         deleteZone.setDragController(dragController);
-        int deleteZoneHandleId;
 
         final View allAppsButton = findViewById(R.id.all_apps_button);
         final View divider = findViewById(R.id.divider);
@@ -1074,7 +1072,6 @@ public final class Launcher extends Activity
         // reload these every tap; you never know when they might change
         loadHotseats();
         if (index >= 0 && index < mHotseats.length && mHotseats[index] != null) {
-            Intent intent = mHotseats[index];
             startActivitySafely(
                 mHotseats[index],
                 "hotseat"

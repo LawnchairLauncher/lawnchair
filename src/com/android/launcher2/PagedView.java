@@ -17,13 +17,9 @@
 package com.android.launcher2;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.TreeMap;
-import java.util.TreeSet;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Parcel;

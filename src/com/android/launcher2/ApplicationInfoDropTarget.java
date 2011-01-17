@@ -26,7 +26,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 

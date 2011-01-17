@@ -184,7 +184,6 @@ public class InstallWidgetReceiver {
 
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            final LauncherModel model = mLauncher.getModel();
             final AppWidgetProviderInfo widgetInfo = mActivities.get(which).widgetInfo;
 
             final PendingAddWidgetInfo createInfo = new PendingAddWidgetInfo(widgetInfo, mMimeType,

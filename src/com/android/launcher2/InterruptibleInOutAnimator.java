@@ -18,9 +18,7 @@ package com.android.launcher2;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.util.Log;
 
 /**
  * A convenience class for two-way animations, e.g. a fadeIn/fadeOut animation.
