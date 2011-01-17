@@ -308,8 +308,8 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
     }
 
     public void setCustomizationFilter(CustomizationType filterType) {
-        mCustomizationType = filterType;
         cancelDragging();
+        mCustomizationType = filterType;
         if (getChildCount() > 0) {
             setCurrentPage(0);
             updateCurrentPageScroll();
@@ -504,58 +504,64 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         mLauncher.lockScreenOrientation();
         switch (mCustomizationType) {
         case WidgetCustomization: {
-            // Get the widget preview as the drag representation
-            final LinearLayout l = (LinearLayout) v;
-            final ImageView i = (ImageView) l.findViewById(R.id.widget_preview);
-            final Drawable icon = i.getDrawable();
-            Bitmap b = drawableToBitmap(icon, i);
-            PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo) v.getTag();
+            if (v instanceof PagedViewWidget) {
+                // Get the widget preview as the drag representation
+                final LinearLayout l = (LinearLayout) v;
+                final ImageView i = (ImageView) l.findViewById(R.id.widget_preview);
+                final Drawable icon = i.getDrawable();
+                Bitmap b = drawableToBitmap(icon, i);
+                PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo) v.getTag();
 
-            int[] spanXY = CellLayout.rectToCell(
-                    getResources(), createWidgetInfo.minWidth, createWidgetInfo.minHeight, null);
-            createWidgetInfo.spanX = spanXY[0];
-            createWidgetInfo.spanY = spanXY[1];
-            mLauncher.getWorkspace().onDragStartedWithItemSpans(spanXY[0], spanXY[1], b);
-            mDragController.startDrag(
-                    i, b, this, createWidgetInfo, DragController.DRAG_ACTION_COPY, null);
-            b.recycle();
-            result = true;
+                int[] spanXY = CellLayout.rectToCell(
+                        getResources(), createWidgetInfo.minWidth, createWidgetInfo.minHeight, null);
+                createWidgetInfo.spanX = spanXY[0];
+                createWidgetInfo.spanY = spanXY[1];
+                mLauncher.getWorkspace().onDragStartedWithItemSpans(spanXY[0], spanXY[1], b);
+                mDragController.startDrag(
+                        i, b, this, createWidgetInfo, DragController.DRAG_ACTION_COPY, null);
+                b.recycle();
+                result = true;
+            }
             break;
         }
         case ShortcutCustomization: {
-            // get icon (top compound drawable, index is 1)
-            final TextView tv = (TextView) v;
-            final Drawable icon = tv.getCompoundDrawables()[1];
-            Bitmap b = drawableToBitmap(icon, tv);
-            PendingAddItemInfo createItemInfo = (PendingAddItemInfo) v.getTag();
+            if (v instanceof PagedViewIcon) {
+                // get icon (top compound drawable, index is 1)
+                final TextView tv = (TextView) v;
+                final Drawable icon = tv.getCompoundDrawables()[1];
+                Bitmap b = drawableToBitmap(icon, tv);
+                PendingAddItemInfo createItemInfo = (PendingAddItemInfo) v.getTag();
 
-            mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1, b);
-            mDragController.startDrag(v, b, this, createItemInfo, DragController.DRAG_ACTION_COPY,
-                    null);
-            b.recycle();
-            result = true;
+                mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1, b);
+                mDragController.startDrag(v, b, this, createItemInfo, DragController.DRAG_ACTION_COPY,
+                        null);
+                b.recycle();
+                result = true;
+            }
             break;
         }
         case ApplicationCustomization: {
-            // Pick up the application for dropping
-            // get icon (top compound drawable, index is 1)
-            final TextView tv = (TextView) v;
-            final Drawable icon = tv.getCompoundDrawables()[1];
-            Bitmap b = drawableToBitmap(icon, tv);
-            ApplicationInfo app = (ApplicationInfo) v.getTag();
-            app = new ApplicationInfo(app);
+            if (v instanceof PagedViewIcon) {
+                // Pick up the application for dropping
+                // get icon (top compound drawable, index is 1)
+                final TextView tv = (TextView) v;
+                final Drawable icon = tv.getCompoundDrawables()[1];
+                Bitmap b = drawableToBitmap(icon, tv);
+                ApplicationInfo app = (ApplicationInfo) v.getTag();
+                app = new ApplicationInfo(app);
 
-            mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1, b);
-            mDragController.startDrag(v, b, this, app, DragController.DRAG_ACTION_COPY, null);
-            b.recycle();
-            result = true;
+                mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1, b);
+                mDragController.startDrag(v, b, this, app, DragController.DRAG_ACTION_COPY, null);
+                b.recycle();
+                result = true;
+            }
             break;
         }
         }
 
         // We toggle the checked state _after_ we create the view for the drag in case toggling the
         // checked state changes the view's look
-        if (v instanceof Checkable) {
+        if (result && (v instanceof Checkable)) {
             // In preparation for drag, we always reset the checked grand children regardless of
             // what choice mode we are in
             resetCheckedGrandchildren();
