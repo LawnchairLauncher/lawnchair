@@ -797,18 +797,6 @@ public class CellLayout extends ViewGroup implements Dimmable, VisibilityChanged
     }
 
     /**
-     * Check if the row 'y' is empty from columns 'left' to 'right', inclusive.
-     */
-    private static boolean isRowEmpty(int y, int left, int right, boolean[][] occupied) {
-        for (int x = left; x <= right; x++) {
-            if (occupied[x][y]) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
      * Given a point, return the cell that strictly encloses that point
      * @param x X coordinate of the point
      * @param y Y coordinate of the point
@@ -1040,24 +1028,6 @@ public class CellLayout extends ViewGroup implements Dimmable, VisibilityChanged
         for (int i = 0; i < childCount; i++) {
             getChildAt(i).setAlpha(alpha);
         }
-    }
-
-    private boolean isVacantIgnoring(
-            int originX, int originY, int spanX, int spanY, View ignoreView) {
-        if (ignoreView != null) {
-            markCellsAsUnoccupiedForView(ignoreView);
-        }
-        boolean isVacant = true;
-        for (int i = 0; i < spanY; i++) {
-            if (!isRowEmpty(originY + i, originX, originX + spanX - 1, mOccupied)) {
-                isVacant = false;
-                break;
-            }
-        }
-        if (ignoreView != null) {
-            markCellsAsOccupiedForView(ignoreView);
-        }
-        return isVacant;
     }
 
     public View getChildAt(int x, int y) {
