@@ -33,6 +33,7 @@ import android.os.HandlerThread;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -159,8 +160,10 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         image.setImageDrawable(preview);
         final TextView name = (TextView) findViewById(R.id.widget_name);
         name.setText(info.label);
+        name.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         final TextView dims = (TextView) findViewById(R.id.widget_dims);
         dims.setText(mContext.getString(R.string.widget_dims_format, cellSpan[0], cellSpan[1]));
+        dims.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         if (createHolographicOutline) {
             mIconCache = cache;
@@ -178,6 +181,7 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         image.setImageDrawable(preview);
         TextView name = (TextView) findViewById(R.id.wallpaper_name);
         name.setText(info.loadLabel(packageManager));
+        name.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         if (createHolographicOutline) {
             mIconCache = cache;
