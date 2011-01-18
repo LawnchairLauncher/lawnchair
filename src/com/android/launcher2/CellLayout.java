@@ -1060,10 +1060,6 @@ public class CellLayout extends ViewGroup implements Dimmable, VisibilityChanged
         return isVacant;
     }
 
-    private boolean isVacant(int originX, int originY, int spanX, int spanY) {
-        return isVacantIgnoring(originX, originY, spanX, spanY, null);
-    }
-
     public View getChildAt(int x, int y) {
         final int count = getChildCount();
         for (int i = 0; i < count; i++) {

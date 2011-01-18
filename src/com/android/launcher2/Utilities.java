@@ -54,12 +54,10 @@ final class Utilities {
     private static int sIconTextureWidth = -1;
     private static int sIconTextureHeight = -1;
 
-    private static final Paint sPaint = new Paint();
     private static final Paint sBlurPaint = new Paint();
     private static final Paint sGlowColorPressedPaint = new Paint();
     private static final Paint sGlowColorFocusedPaint = new Paint();
     private static final Paint sDisabledPaint = new Paint();
-    private static final Rect sBounds = new Rect();
     private static final Rect sOldBounds = new Rect();
     private static final Canvas sCanvas = new Canvas();
 
