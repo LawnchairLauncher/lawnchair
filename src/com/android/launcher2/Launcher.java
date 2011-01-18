@@ -1714,7 +1714,7 @@ public final class Launcher extends Activity
                     final ClipDescription clipDesc = clipData.getDescription();
                     for (int i = 0; i < clipDesc.getMimeTypeCount(); ++i) {
                         if (clipDesc.getMimeType(i).equals(mimeType)) {
-                            final ClipData.Item item = clipData.getItem(i);
+                            final ClipData.Item item = clipData.getItemAt(i);
                             final CharSequence stringData = item.getText();
                             final Uri uriData = item.getUri();
                             final Intent intentData = item.getIntent();

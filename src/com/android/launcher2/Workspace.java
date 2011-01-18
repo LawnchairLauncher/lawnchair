@@ -2012,7 +2012,7 @@ public class Workspace extends SmoothPagedView
                 final boolean isShortcut = (widgets == null);
                 final String mimeType = desc.getMimeType(index);
                 if (isShortcut) {
-                    final Intent intent = data.getItem(index).getIntent();
+                    final Intent intent = data.getItemAt(index).getIntent();
                     Object info = model.infoFromShortcutIntent(mContext, intent, data.getIcon());
                     onDropExternal(x, y, info, layout, false);
                 } else {
