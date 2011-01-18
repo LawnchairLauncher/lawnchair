@@ -70,8 +70,8 @@
     <!-- All Apps pane -->
     <!-- Message to show when there are no games [CHAR_LIMIT=25] -->
     <string name="all_apps_no_games">No games found.</string>
-    <!-- Message to show when there are no downloaded apps [CHAR_LIMIT=25] -->
-    <string name="all_apps_no_downloads">No downloaded apps found.</string>
+    <!-- Message to show when there are no downloaded apps [CHAR_LIMIT=50] -->
+    <string name="all_apps_no_downloads">You have no downloaded applications.</string>
 
     <!-- Customization Drawer -->
     <!-- The format string for the dimensions of a widget in the drawer -->
