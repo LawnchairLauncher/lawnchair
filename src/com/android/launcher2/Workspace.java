@@ -2259,6 +2259,13 @@ public class Workspace extends SmoothPagedView
                                     dragView.getDragRegionHeight());
                         }
                     }
+                } else if (source == this) {
+                    // When dragging from the workspace, the drag view is slightly bigger than
+                    // the original view, and offset vertically. Adjust to account for this.
+                    final View origView = mDragInfo.cell;
+                    originX += (dragView.getMeasuredWidth() - origView.getWidth()) / 2;
+                    originY += (dragView.getMeasuredHeight() - origView.getHeight()) / 2
+                            + dragView.getOffsetY();
                 }
 
                 if (mDragTargetLayout != null) {
