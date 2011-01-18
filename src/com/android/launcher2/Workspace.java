@@ -599,9 +599,6 @@ public class Workspace extends SmoothPagedView
     }
 
     protected void setWallpaperDimension() {
-        WallpaperManager wpm =
-            (WallpaperManager) mLauncher.getSystemService(Context.WALLPAPER_SERVICE);
-
         Display display = mLauncher.getWindowManager().getDefaultDisplay();
         final int maxDim = Math.max(display.getWidth(), display.getHeight());
         final int minDim = Math.min(display.getWidth(), display.getHeight());
@@ -610,7 +607,7 @@ public class Workspace extends SmoothPagedView
         // parallax effects
         mWallpaperWidth = (int) (maxDim * wallpaperTravelToScreenWidthRatio(maxDim, minDim));
         mWallpaperHeight = (int)(maxDim * wallpaperTravelToScreenHeightRatio(maxDim, minDim));
-        wpm.suggestDesiredDimensions(mWallpaperWidth, mWallpaperHeight);
+        mWallpaperManager.suggestDesiredDimensions(mWallpaperWidth, mWallpaperHeight);
     }
 
     public void setVerticalWallpaperOffset(WallpaperVerticalOffset offsetPosition) {
