@@ -1482,11 +1482,16 @@ public class Workspace extends SmoothPagedView
                             PropertyValuesHolder.ofFloat("backgroundAlpha", finalBackgroundAlpha),
                             PropertyValuesHolder.ofFloat("backgroundAlphaMultiplier",
                                     finalAlphaMultiplierValue),
-                            PropertyValuesHolder.ofFloat("alpha", finalAlphaValue),
-                            PropertyValuesHolder.ofFloat("rotationY", rotation));
+                            PropertyValuesHolder.ofFloat("alpha", finalAlphaValue));
                     animWithInterpolator.setDuration(duration);
                     animWithInterpolator.setInterpolator(mZoomInInterpolator);
-                    mAnimator.playTogether(animWithInterpolator);
+
+                    ObjectAnimator rotationAnim = ObjectAnimator.ofPropertyValuesHolder(cl,
+                            PropertyValuesHolder.ofFloat("rotationY", rotation));
+                    rotationAnim.setDuration(duration);
+                    rotationAnim.setInterpolator(new DecelerateInterpolator(2.0f));
+
+                    mAnimator.playTogether(animWithInterpolator, rotationAnim);
                 } else {
                     cl.setTranslationX(translation);
                     cl.setTranslationY(0.0f);
