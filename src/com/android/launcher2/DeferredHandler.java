@@ -31,7 +31,7 @@ import android.os.MessageQueue;
  * This class is fifo.
  */
 public class DeferredHandler {
-    private LinkedList<Runnable> mQueue = new LinkedList();
+    private LinkedList<Runnable> mQueue = new LinkedList<Runnable>();
     private MessageQueue mMessageQueue = Looper.myQueue();
     private Impl mHandler = new Impl();
 
