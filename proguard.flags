@@ -20,21 +20,15 @@
   public void setHoverAlpha(float);
 }
 
--keep class com.android.launcher2.DimmableBubbleTextView {
-  public float getDimmableProgress();
-  public void setDimmableProgress(float);
-}
-
--keep class com.android.launcher2.DimmableAppWidgetHostView {
-  public float getDimmableProgress();
-  public void setDimmableProgress(float);
-}
-
 -keep class com.android.launcher2.Workspace {
   public float getBackgroundAlpha();
   public void setBackgroundAlpha(float);
   public float getChildrenOutlineAlpha();
   public void setChildrenOutlineAlpha(float);
+  public void setVerticalWallpaperOffset(float);
+  public float getVerticalWallpaperOffset();
+  public void setHorizontalWallpaperOffset(float);
+  public float getHorizontalWallpaperOffset();
 }
 
 -keep class com.android.launcher2.AllApps3D$Defines {
