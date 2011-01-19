@@ -20,7 +20,7 @@
     android:id="@+id/no_items_icon"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_vertical"
+    android:gravity="center"
     android:paddingTop="2dip"
 
     android:textColor="#FFFFFFFF"
@@ -29,7 +29,6 @@
     android:shadowDx="0.0"
     android:shadowDy="1.0"
     android:shadowRadius="1.0"
-    android:drawableLeft="@drawable/ic_no_applications"
     android:drawablePadding="0dip"
 
     android:maxLines="2"
