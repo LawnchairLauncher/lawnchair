@@ -206,13 +206,9 @@ public class Workspace extends SmoothPagedView
     enum WallpaperVerticalOffset { TOP, MIDDLE, BOTTOM };
     int mWallpaperWidth;
     int mWallpaperHeight;
-    float mTargetHorizontalWallpaperOffset = 0.0f;
-    float mTargetVerticalWallpaperOffset = 0.5f;
-    float mHorizontalWallpaperOffset = 0.0f;
-    float mVerticalWallpaperOffset = 0.5f;
-    long mLastWallpaperOffsetUpdateTime;
-    boolean mWallpaperOffsetDirty;
+    WallpaperOffsetInterpolator mWallpaperOffset;
     boolean mUpdateWallpaperOffsetImmediately = false;
+    boolean mSyncWallpaperOffsetWithScroll = true;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -283,6 +279,7 @@ public class Workspace extends SmoothPagedView
             @Override
             public void onAnimationEnd(Animator animation) {
                 mIsInUnshrinkAnimation = false;
+                mSyncWallpaperOffsetWithScroll = true;
                 if (mShrinkState != ShrinkState.SPRING_LOADED) {
                     mDrawCustomizeTrayBackground = false;
                 }
@@ -302,6 +299,7 @@ public class Workspace extends SmoothPagedView
             }
         };
         mSnapVelocity = 600;
+        mWallpaperOffset = new WallpaperOffsetInterpolator();
     }
 
     @Override
@@ -610,55 +608,48 @@ public class Workspace extends SmoothPagedView
         mWallpaperManager.suggestDesiredDimensions(mWallpaperWidth, mWallpaperHeight);
     }
 
-    public void setVerticalWallpaperOffset(WallpaperVerticalOffset offsetPosition) {
-        float offset = 0.5f;
-        Display display = mLauncher.getWindowManager().getDefaultDisplay();
-        int wallpaperTravelHeight = (int) (display.getHeight() *
-                wallpaperTravelToScreenHeightRatio(display.getWidth(), display.getHeight()));
-        float offsetFromCenter = (wallpaperTravelHeight / (float) mWallpaperHeight) / 2f;
-        switch (offsetPosition) {
-            case TOP:
-                offset = 0.5f - offsetFromCenter;
-                break;
-            case MIDDLE:
-                offset = 0.5f;
-                break;
-            case BOTTOM:
-                offset = 0.5f + offsetFromCenter;
-                break;
-        }
-        mTargetVerticalWallpaperOffset = offset;
-        mWallpaperOffsetDirty = true;
+    public void setVerticalWallpaperOffset(float offset) {
+        mWallpaperOffset.setFinalY(offset);
+    }
+    public float getVerticalWallpaperOffset() {
+        return mWallpaperOffset.getCurrY();
+    }
+    public void setHorizontalWallpaperOffset(float offset) {
+        mWallpaperOffset.setFinalX(offset);
+    }
+    public float getHorizontalWallpaperOffset() {
+        return mWallpaperOffset.getCurrX();
     }
 
-    private void updateHorizontalWallpaperOffset() {
+    private float wallpaperOffsetForCurrentScroll() {
+        Display display = mLauncher.getWindowManager().getDefaultDisplay();
+        // The wallpaper travel width is how far, from left to right, the wallpaper will move
+        // at this orientation (for example, in portrait mode we don't move all the way to the
+        // edges of the wallpaper, or otherwise the parallax effect would be too strong)
+        int wallpaperTravelWidth = (int) (display.getWidth() *
+                wallpaperTravelToScreenWidthRatio(display.getWidth(), display.getHeight()));
+
+        // Account for overscroll: you only see the absolute edge of the wallpaper if
+        // you overscroll as far as you can in landscape mode
+        int overscrollOffset = (int) (maxOverScroll() * display.getWidth());
+        float overscrollRatio = overscrollOffset / (float) getScrollRange();
+        int scrollRangeWithOverscroll = getScrollRange() + 2 * overscrollOffset;
+
+        // Set wallpaper offset steps (1 / (number of screens - 1))
+        // We have 3 vertical offset states (centered, and then top/bottom aligned
+        // for all apps/customize)
+        mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 1.0f / (3 - 1));
+
+        float scrollProgress =
+            mScrollX / (float) scrollRangeWithOverscroll + overscrollRatio;
+        float offsetInDips = wallpaperTravelWidth * scrollProgress +
+            (mWallpaperWidth - wallpaperTravelWidth) / 2;
+        float offset = offsetInDips / (float) mWallpaperWidth;
+        return offset;
+    }
+    private void syncWallpaperOffsetWithScroll() {
         if (LauncherApplication.isScreenXLarge()) {
-            Display display = mLauncher.getWindowManager().getDefaultDisplay();
-            // The wallpaper travel width is how far, from left to right, the wallpaper will move
-            // at this orientation (for example, in portrait mode we don't move all the way to the
-            // edges of the wallpaper, or otherwise the parallax effect would be too strong)
-            int wallpaperTravelWidth = (int) (display.getWidth() *
-                    wallpaperTravelToScreenWidthRatio(display.getWidth(), display.getHeight()));
-
-            // Account for overscroll: you only see the absolute edge of the wallpaper if
-            // you overscroll as far as you can in landscape mode
-            int overscrollOffset = (int) (maxOverScroll() * display.getWidth());
-            float overscrollRatio = overscrollOffset / (float) getScrollRange();
-            int scrollRangeWithOverscroll = getScrollRange() + 2 * overscrollOffset;
-
-            // Set wallpaper offset steps (1 / (number of screens - 1))
-            // We have 3 vertical offset states (centered, and then top/bottom aligned
-            // for all apps/customize)
-            mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 1.0f / (3 - 1));
-
-            float scrollProgress =
-                mScrollX / (float) scrollRangeWithOverscroll + overscrollRatio;
-            float offsetInDips = wallpaperTravelWidth * scrollProgress +
-                (mWallpaperWidth - wallpaperTravelWidth) / 2;
-            float offset = offsetInDips / (float) mWallpaperWidth;
-
-            mTargetHorizontalWallpaperOffset = Math.max(0f, Math.min(offset, 1.0f));
-            mWallpaperOffsetDirty = true;
+            mWallpaperOffset.setFinalX(wallpaperOffsetForCurrentScroll());
         }
     }
 
@@ -666,48 +657,112 @@ public class Workspace extends SmoothPagedView
         mUpdateWallpaperOffsetImmediately = true;
     }
 
-    private void updateWallpaperOffsets(boolean immediate) {
-        long currentTime = System.currentTimeMillis();
-        long millisecondsSinceLastUpdate = currentTime - mLastWallpaperOffsetUpdateTime;
-        millisecondsSinceLastUpdate = Math.min((long) (1000/30f), millisecondsSinceLastUpdate);
-        millisecondsSinceLastUpdate = Math.min(1L, millisecondsSinceLastUpdate);
-        final float PERCENT_TO_CATCH_UP_IN_100_MS_HORIZONTAL = 25f;
-        final float PERCENT_TO_CATCH_UP_IN_100_MS_VERTICAL = 25f;
-        final float UPDATE_THRESHOLD = 0.0001f;
-        float hOffsetDelta = mTargetHorizontalWallpaperOffset - mHorizontalWallpaperOffset;
-        float vOffsetDelta = mTargetVerticalWallpaperOffset - mVerticalWallpaperOffset;
-        boolean stopUpdating =
-            Math.abs(hOffsetDelta / mTargetHorizontalWallpaperOffset) < UPDATE_THRESHOLD &&
-            Math.abs(vOffsetDelta / mTargetVerticalWallpaperOffset) < UPDATE_THRESHOLD;
-
-        if (stopUpdating || immediate) {
-            mHorizontalWallpaperOffset = mTargetHorizontalWallpaperOffset;
-            mVerticalWallpaperOffset = mTargetVerticalWallpaperOffset;
+    private void updateWallpaperOffsets() {
+        boolean updateNow = false;
+        boolean keepUpdating = true;
+        if (mUpdateWallpaperOffsetImmediately) {
+            updateNow = true;
+            keepUpdating = false;
+            mWallpaperOffset.jumpToFinal();
+            mUpdateWallpaperOffsetImmediately = false;
         } else {
-            float percentToCatchUpVertical =
-                millisecondsSinceLastUpdate / 100f * PERCENT_TO_CATCH_UP_IN_100_MS_VERTICAL;
-            float percentToCatchUpHorizontal =
-                millisecondsSinceLastUpdate / 100f * PERCENT_TO_CATCH_UP_IN_100_MS_HORIZONTAL;
-            mHorizontalWallpaperOffset += percentToCatchUpHorizontal * hOffsetDelta;
-            mVerticalWallpaperOffset +=
-                percentToCatchUpVertical * (mTargetVerticalWallpaperOffset - mVerticalWallpaperOffset);
+            updateNow = keepUpdating = mWallpaperOffset.computeScrollOffset();
         }
-        IBinder token = getWindowToken();
-        if (token != null) {
-            mWallpaperManager.setWallpaperOffsets(getWindowToken(),
-                    mHorizontalWallpaperOffset, mVerticalWallpaperOffset);
+        if (updateNow) {
+            IBinder token = getWindowToken();
+            if (token != null) {
+                mWallpaperManager.setWallpaperOffsets(getWindowToken(),
+                        mWallpaperOffset.getCurrX(), mWallpaperOffset.getCurrY());
+            }
         }
-        if (!stopUpdating && !immediate) {
+        if (keepUpdating) {
             invalidate();
-            mWallpaperOffsetDirty = true;
         }
-        mLastWallpaperOffsetUpdateTime = System.currentTimeMillis();
+    }
+
+    class WallpaperOffsetInterpolator {
+        float mFinalHorizontalWallpaperOffset = 0.0f;
+        float mFinalVerticalWallpaperOffset = 0.5f;
+        float mHorizontalWallpaperOffset = 0.0f;
+        float mVerticalWallpaperOffset = 0.5f;
+        long mLastWallpaperOffsetUpdateTime;
+
+        public WallpaperOffsetInterpolator() {
+        }
+
+        public boolean computeScrollOffset() {
+            if (Float.compare(mHorizontalWallpaperOffset, mFinalHorizontalWallpaperOffset) == 0 &&
+                    Float.compare(mVerticalWallpaperOffset, mFinalVerticalWallpaperOffset) == 0) {
+                return false;
+            }
+            Display display = mLauncher.getWindowManager().getDefaultDisplay();
+            boolean isLandscape = display.getWidth() > display.getHeight();
+
+            long currentTime = System.currentTimeMillis();
+            long timeSinceLastUpdate = currentTime - mLastWallpaperOffsetUpdateTime;
+            timeSinceLastUpdate = Math.min((long) (1000/30f), timeSinceLastUpdate);
+            timeSinceLastUpdate = Math.max(1L, timeSinceLastUpdate);
+            // ie 75% in 100ms
+            float fractionToCatchUpIn1MsHorizontal = isLandscape ? 0.75f / 100 : 0.75f / 100;
+            float fractionToCatchUpIn1MsVertical = isLandscape ? 1.1f / 100 : 1.1f / 100;
+
+            final float UPDATE_THRESHOLD = 0.00001f;
+            float hOffsetDelta = mFinalHorizontalWallpaperOffset - mHorizontalWallpaperOffset;
+            float vOffsetDelta = mFinalVerticalWallpaperOffset - mVerticalWallpaperOffset;
+            boolean jumpToFinalValue =
+                Math.abs(hOffsetDelta / mFinalHorizontalWallpaperOffset) < UPDATE_THRESHOLD &&
+                Math.abs(vOffsetDelta / mFinalVerticalWallpaperOffset) < UPDATE_THRESHOLD;
+            if (jumpToFinalValue) {
+                mHorizontalWallpaperOffset = mFinalHorizontalWallpaperOffset;
+                mVerticalWallpaperOffset = mFinalVerticalWallpaperOffset;
+            } else {
+                float percentToCatchUpVertical =
+                    timeSinceLastUpdate * fractionToCatchUpIn1MsVertical;
+                float percentToCatchUpHorizontal =
+                    timeSinceLastUpdate * fractionToCatchUpIn1MsHorizontal;
+                mHorizontalWallpaperOffset += percentToCatchUpHorizontal * hOffsetDelta;
+                mVerticalWallpaperOffset += percentToCatchUpVertical * vOffsetDelta;
+            }
+            mLastWallpaperOffsetUpdateTime = System.currentTimeMillis();
+            return true;
+        }
+
+        public float getCurrX() {
+            return mHorizontalWallpaperOffset;
+        }
+
+        public float getFinalX() {
+            return mFinalHorizontalWallpaperOffset;
+        }
+
+        public float getCurrY() {
+            return mVerticalWallpaperOffset;
+        }
+
+        public float getFinalY() {
+            return mFinalVerticalWallpaperOffset;
+        }
+
+        public void setFinalX(float x) {
+            mFinalHorizontalWallpaperOffset = Math.max(0f, Math.min(x, 1.0f));
+        }
+
+        public void setFinalY(float y) {
+            mFinalVerticalWallpaperOffset = Math.max(0f, Math.min(y, 1.0f));
+        }
+
+        public void jumpToFinal() {
+            mHorizontalWallpaperOffset = mFinalHorizontalWallpaperOffset;
+            mVerticalWallpaperOffset = mFinalVerticalWallpaperOffset;
+        }
     }
 
     @Override
     public void computeScroll() {
         super.computeScroll();
-        updateHorizontalWallpaperOffset();
+        if (mSyncWallpaperOffsetWithScroll) {
+            syncWallpaperOffsetWithScroll();
+        }
     }
 
     public void showOutlines() {
@@ -856,7 +911,6 @@ public class Workspace extends SmoothPagedView
                 } else if (mOverScrollPageIndex != i) {
                     cl.setBackgroundAlphaMultiplier(
                             backgroundAlphaInterpolator(Math.abs(scrollProgress)));
-
                 }
 
                 float rotation = WORKSPACE_ROTATION * scrollProgress;
@@ -919,11 +973,7 @@ public class Workspace extends SmoothPagedView
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (mWallpaperOffsetDirty) {
-            updateWallpaperOffsets(mUpdateWallpaperOffsetImmediately);
-            mWallpaperOffsetDirty = false;
-            mUpdateWallpaperOffsetImmediately = false;
-        }
+        updateWallpaperOffsets();
 
         // Draw the background gradient if necessary
         if (mBackground != null && mBackgroundAlpha > 0.0f) {
@@ -1191,7 +1241,6 @@ public class Workspace extends SmoothPagedView
         if (shrinkState == ShrinkState.BOTTOM_VISIBLE) {
              newY = screenHeight - newY - scaledPageHeight;
         } else if (shrinkState == ShrinkState.BOTTOM_HIDDEN) {
-
             // We shrink and disappear to nothing in the case of all apps
             // (which is when we shrink to the bottom)
             newY = screenHeight - newY - scaledPageHeight;
@@ -1263,10 +1312,42 @@ public class Workspace extends SmoothPagedView
             // increment newX for the next screen
             newX += scaledPageWidth + extraScaledSpacing;
         }
+
+        float wallpaperOffset = 0.5f;
+        Display display = mLauncher.getWindowManager().getDefaultDisplay();
+        int wallpaperTravelHeight = (int) (display.getHeight() *
+                wallpaperTravelToScreenHeightRatio(display.getWidth(), display.getHeight()));
+        float offsetFromCenter = (wallpaperTravelHeight / (float) mWallpaperHeight) / 2f;
+        switch (shrinkState) {
+            case TOP:
+                wallpaperOffset = 0.5f + offsetFromCenter;
+                break;
+            case MIDDLE:
+            case SPRING_LOADED:
+                wallpaperOffset = 0.5f;
+                break;
+            case BOTTOM_HIDDEN:
+            case BOTTOM_VISIBLE:
+                wallpaperOffset = 0.5f - offsetFromCenter;
+                break;
+        }
+
         setLayoutScale(1.0f);
         if (animated) {
+            mSyncWallpaperOffsetWithScroll = false;
+            ObjectAnimator wallpaperAnim = ObjectAnimator.ofPropertyValuesHolder(this,
+                    PropertyValuesHolder.ofFloat("verticalWallpaperOffset", wallpaperOffset),
+                    PropertyValuesHolder.ofFloat("horizontalWallpaperOffset", 0.5f));
+            mAnimator.play(wallpaperAnim);
+
+            wallpaperAnim.setDuration(duration);
+            wallpaperAnim.setInterpolator(mZoomOutInterpolator);
             mAnimator.addListener(mShrinkAnimationListener);
             mAnimator.start();
+        } else {
+            setVerticalWallpaperOffset(wallpaperOffset);
+            setHorizontalWallpaperOffset(0.5f);
+            updateWallpaperOffsetImmediately();
         }
         setChildrenDrawnWithCacheEnabled(true);
 
@@ -1505,6 +1586,20 @@ public class Workspace extends SmoothPagedView
                     cl.setRotationY(rotation);
                     mUnshrinkAnimationListener.onAnimationEnd(null);
                 }
+            }
+            if (animated) {
+                ObjectAnimator wallpaperAnim = ObjectAnimator.ofPropertyValuesHolder(this,
+                        PropertyValuesHolder.ofFloat(
+                                "verticalWallpaperOffset", 0.5f),
+                        PropertyValuesHolder.ofFloat(
+                                "horizontalWallpaperOffset", wallpaperOffsetForCurrentScroll()));
+                mAnimator.play(wallpaperAnim);
+                wallpaperAnim.setDuration(duration);
+                wallpaperAnim.setInterpolator(mZoomInInterpolator);
+            } else {
+                setHorizontalWallpaperOffset(wallpaperOffsetForCurrentScroll());
+                setVerticalWallpaperOffset(0.5f);
+                updateWallpaperOffsetImmediately();
             }
 
             if (animated) {
