@@ -2750,8 +2750,6 @@ public final class Launcher extends Activity
             toView.setVisibility(View.VISIBLE);
             hideAndShowToolbarButtons(toState, null, null);
         }
-        mWorkspace.setVerticalWallpaperOffset(toAllApps ?
-                Workspace.WallpaperVerticalOffset.TOP  : Workspace.WallpaperVerticalOffset.BOTTOM);
     }
 
     /**
@@ -2826,7 +2824,6 @@ public final class Launcher extends Activity
                 hideAndShowToolbarButtons(State.WORKSPACE, null, null);
             }
         }
-        mWorkspace.setVerticalWallpaperOffset(Workspace.WallpaperVerticalOffset.MIDDLE);
     }
 
     /**
@@ -2904,8 +2901,6 @@ public final class Launcher extends Activity
             toView.setVisibility(View.VISIBLE);
             hideAndShowToolbarButtons(toState, null, null);
         }
-        mWorkspace.setVerticalWallpaperOffset((toState == State.ALL_APPS) ?
-                Workspace.WallpaperVerticalOffset.TOP : Workspace.WallpaperVerticalOffset.BOTTOM);
     }
 
     void showAllApps(boolean animated) {
