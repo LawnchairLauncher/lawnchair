@@ -1142,24 +1142,29 @@ public class Workspace extends SmoothPagedView
             mWaitingToShrinkState = shrinkState;
             return;
         }
-        mIsSmall = true;
-        mShrinkState = shrinkState;
-
         // Stop any scrolling, move to the current page right away
         setCurrentPage((mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage);
         if (!mIsDragInProcess) {
-            updateWhichPagesAcceptDrops(mShrinkState);
+            updateWhichPagesAcceptDrops(shrinkState);
         }
 
-        // we intercept and reject all touch events when we're small, so be sure to reset the state
-        mTouchState = TOUCH_STATE_REST;
-        mActivePointerId = INVALID_POINTER;
-
         CellLayout currentPage = (CellLayout) getChildAt(mCurrentPage);
+        if (currentPage == null) {
+            Log.w(TAG, "currentPage is NULL! mCurrentPage " + mCurrentPage
+                    + " mNextPage " + mNextPage);
+            return;
+        }
         if (currentPage.getBackgroundAlphaMultiplier() < 1.0f) {
             currentPage.setBackgroundAlpha(0.0f);
         }
         currentPage.setBackgroundAlphaMultiplier(1.0f);
+
+        mIsSmall = true;
+        mShrinkState = shrinkState;
+
+        // we intercept and reject all touch events when we're small, so be sure to reset the state
+        mTouchState = TOUCH_STATE_REST;
+        mActivePointerId = INVALID_POINTER;
 
         final Resources res = getResources();
         final int screenWidth = getWidth();
