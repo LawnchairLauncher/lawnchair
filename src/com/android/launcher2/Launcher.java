@@ -2231,7 +2231,9 @@ public final class Launcher extends Activity
                 mWorkspace.setAllowLongPress(false);
                 mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                         HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-                if (!LauncherApplication.isScreenXLarge()) {
+                if (LauncherApplication.isScreenXLarge()) {
+                    addItems();
+                } else {
                     showAddDialog(longClickCellInfo.cellX, longClickCellInfo.cellY);
                 }
             } else {
