@@ -53,7 +53,7 @@ import android.view.animation.LayoutAnimationController;
 
 import java.util.Arrays;
 
-public class CellLayout extends ViewGroup implements Dimmable, VisibilityChangedListener {
+public class CellLayout extends ViewGroup implements VisibilityChangedListener {
     static final String TAG = "CellLayout";
 
     private int mCellWidth;
@@ -566,20 +566,6 @@ public class CellLayout extends ViewGroup implements Dimmable, VisibilityChanged
                 canvas.drawBitmap(b, p.x, p.y, paint);
             }
         }
-    }
-
-    public void setDimmableProgress(float progress) {
-        for (int i = 0; i < getChildCount(); i++) {
-            Dimmable d = (Dimmable) getChildAt(i);
-            d.setDimmableProgress(progress);
-        }
-    }
-
-    public float getDimmableProgress() {
-        if (getChildCount() > 0) {
-            return ((Dimmable) getChildAt(0)).getDimmableProgress();
-        }
-        return 0.0f;
     }
 
     @Override
