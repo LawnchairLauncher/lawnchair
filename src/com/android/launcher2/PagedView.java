@@ -696,6 +696,20 @@ public abstract class PagedView extends ViewGroup {
         super.requestDisallowInterceptTouchEvent(disallowIntercept);
     }
 
+    /**
+     * Return true if a tap at (x, y) should trigger a flip to the previous page.
+     */
+    protected boolean hitsPreviousPage(float x, float y) {
+        return (x < getRelativeChildOffset(mCurrentPage) - mPageSpacing);
+    }
+
+    /**
+     * Return true if a tap at (x, y) should trigger a flip to the next page.
+     */
+    protected boolean hitsNextPage(float x, float y) {
+        return  (x > (getMeasuredWidth() - getRelativeChildOffset(mCurrentPage) + mPageSpacing));
+    }
+
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         /*
@@ -761,14 +775,11 @@ public abstract class PagedView extends ViewGroup {
 
                 // check if this can be the beginning of a tap on the side of the pages
                 // to scroll the current page
-                if ((mTouchState != TOUCH_STATE_PREV_PAGE) && !handlePagingClicks() &&
-                        (mTouchState != TOUCH_STATE_NEXT_PAGE)) {
+                if (mTouchState != TOUCH_STATE_PREV_PAGE && mTouchState != TOUCH_STATE_NEXT_PAGE) {
                     if (getChildCount() > 0) {
-                        int width = getMeasuredWidth();
-                        int offset = getRelativeChildOffset(mCurrentPage);
-                        if (x < offset - mPageSpacing) {
+                        if (hitsPreviousPage(x, y)) {
                             mTouchState = TOUCH_STATE_PREV_PAGE;
-                        } else if (x > (width - offset + mPageSpacing)) {
+                        } else if (hitsNextPage(x, y)) {
                             mTouchState = TOUCH_STATE_NEXT_PAGE;
                         }
                     }
@@ -854,10 +865,6 @@ public abstract class PagedView extends ViewGroup {
                 }
             }
         }
-    }
-
-    protected boolean handlePagingClicks() {
-        return false;
     }
 
     // This curve determines how the effect of scrolling over the limits of the page dimishes
@@ -966,7 +973,7 @@ public abstract class PagedView extends ViewGroup {
                 } else {
                     snapToDestination();
                 }
-            } else if (mTouchState == TOUCH_STATE_PREV_PAGE && !handlePagingClicks()) {
+            } else if (mTouchState == TOUCH_STATE_PREV_PAGE) {
                 // at this point we have not moved beyond the touch slop
                 // (otherwise mTouchState would be TOUCH_STATE_SCROLLING), so
                 // we can just page
@@ -976,7 +983,7 @@ public abstract class PagedView extends ViewGroup {
                 } else {
                     snapToDestination();
                 }
-            } else if (mTouchState == TOUCH_STATE_NEXT_PAGE && !handlePagingClicks()) {
+            } else if (mTouchState == TOUCH_STATE_NEXT_PAGE) {
                 // at this point we have not moved beyond the touch slop
                 // (otherwise mTouchState would be TOUCH_STATE_SCROLLING), so
                 // we can just page
