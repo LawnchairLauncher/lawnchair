@@ -1458,6 +1458,7 @@ public class Workspace extends SmoothPagedView
                     cl.setIsDefaultDropTarget(i == mCurrentPage);
                 case BOTTOM_HIDDEN:
                 case BOTTOM_VISIBLE:
+                case SPRING_LOADED:
                     if (!isDragHappening) {
                         // even if a drag isn't happening, we don't want to show a screen as
                         // accepting drops if it doesn't have at least one free cell
@@ -1468,8 +1469,7 @@ public class Workspace extends SmoothPagedView
                     cl.setAcceptsDrops(cl.findCellForSpan(null, spanX, spanY));
                     break;
                 default:
-                     throw new RuntimeException(
-                             "updateWhichPagesAcceptDropsHelper passed an unhandled ShrinkState");
+                     throw new RuntimeException("Unhandled ShrinkState " + state);
             }
         }
     }
@@ -1499,7 +1499,11 @@ public class Workspace extends SmoothPagedView
 
     // we call this method whenever a drag and drop in Launcher finishes, even if Workspace was
     // never dragged over
-    public void onDragStopped() {
+    public void onDragStopped(boolean success) {
+        // In the success case, DragController has already called onDragExit()
+        if (!success) {
+            doDragExit();
+        }
         mIsDragInProcess = false;
         updateWhichPagesAcceptDrops(mShrinkState);
     }

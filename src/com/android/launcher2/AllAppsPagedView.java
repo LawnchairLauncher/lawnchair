@@ -288,7 +288,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
             endChoiceMode();
         }
         tearDownDragMode();
-        mLauncher.getWorkspace().onDragStopped();
+        mLauncher.getWorkspace().onDragStopped(success);
         mLauncher.unlockScreenOrientation();
     }
 
