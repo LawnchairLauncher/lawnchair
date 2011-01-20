@@ -1347,7 +1347,7 @@ public final class Launcher extends Activity
         View v = hostView.findViewById(appWidgetInfo.autoAdvanceViewId);
         if (v instanceof Advanceable) {
             mWidgetsToAdvance.put(hostView, appWidgetInfo);
-            ((Advanceable) v).willBeAdvancedByHost();
+            ((Advanceable) v).fyiWillBeAdvancedByHostKThx();
             updateRunning();
         }
     }
