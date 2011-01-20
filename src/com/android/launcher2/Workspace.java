@@ -467,6 +467,36 @@ public class Workspace extends SmoothPagedView
         }
     }
 
+    /**
+     * Check if the point (x, y) hits a given page.
+     */
+    private boolean hitsPage(int index, float x, float y) {
+        final View page = getChildAt(index);
+        if (page != null) {
+            float[] localXY = { x, y };
+            mapPointFromSelfToChild(page, localXY);
+            return (localXY[0] >= 0 && localXY[0] < page.getWidth()
+                    && localXY[1] >= 0 && localXY[1] < page.getHeight());
+        }
+        return false;
+    }
+
+    @Override
+    protected boolean hitsPreviousPage(float x, float y) {
+        // mNextPage is set to INVALID_PAGE whenever we are stationary.
+        // Calculating "next page" this way ensures that you scroll to whatever page you tap on
+        final int current = (mNextPage == INVALID_PAGE) ? mCurrentPage : mNextPage;
+        return hitsPage(current - 1, x, y);
+    }
+
+    @Override
+    protected boolean hitsNextPage(float x, float y) {
+        // mNextPage is set to INVALID_PAGE whenever we are stationary.
+        // Calculating "next page" this way ensures that you scroll to whatever page you tap on
+        final int current = (mNextPage == INVALID_PAGE) ? mCurrentPage : mNextPage;
+        return hitsPage(current + 1, x, y);
+    }
+
     public boolean onTouch(View v, MotionEvent event) {
         // this is an intercepted event being forwarded from a cell layout
         if (mIsSmall || mIsInUnshrinkAnimation) {
@@ -475,14 +505,6 @@ public class Workspace extends SmoothPagedView
                 mLauncher.onWorkspaceClick((CellLayout) v);
             }
             return true;
-        } else if (!mPageMoving) {
-            if (v == getChildAt(mCurrentPage - 1)) {
-                snapToPage(mCurrentPage - 1);
-                return true;
-            } else if (v == getChildAt(mCurrentPage + 1)) {
-                snapToPage(mCurrentPage + 1);
-                return true;
-            }
         }
         return false;
     }
@@ -1394,11 +1416,6 @@ public class Workspace extends SmoothPagedView
     public void onDragStopped() {
         mIsDragInProcess = false;
         updateWhichPagesAcceptDrops(mShrinkState);
-    }
-
-    @Override
-    protected boolean handlePagingClicks() {
-        return true;
     }
 
     // We call this when we trigger an unshrink by clicking on the CellLayout cl
