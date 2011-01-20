@@ -1519,7 +1519,7 @@ public class Workspace extends SmoothPagedView
             if (springLoaded) {
                 setLayoutScale(SPRING_LOADED_DRAG_SHRINK_FACTOR);
             }
-            moveToNewPageWithoutMovingCellLayouts(newCurrentPage);
+            scrollToNewPageWithoutMovingPages(newCurrentPage);
             unshrink(true, springLoaded);
         }
     }
@@ -1811,7 +1811,7 @@ public class Workspace extends SmoothPagedView
      * calls, as it is called from onLayout().
      */
     public void animateViewIntoPosition(final View view) {
-        final CellLayout parent = (CellLayout) view.getParent();
+        final CellLayout parent = (CellLayout) view.getParent().getParent();
         final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
 
         // Convert the animation params to be relative to the Workspace, not the CellLayout
@@ -1918,7 +1918,7 @@ public class Workspace extends SmoothPagedView
         // subsequent taps add items to that screen
         int dragTargetIndex = indexOfChild(mDragTargetLayout);
         if (mCurrentPage != dragTargetIndex && (mIsSmall || mIsInUnshrinkAnimation)) {
-            moveToNewPageWithoutMovingCellLayouts(dragTargetIndex);
+            scrollToNewPageWithoutMovingPages(dragTargetIndex);
         }
 
         if (source != this) {
@@ -1979,7 +1979,7 @@ public class Workspace extends SmoothPagedView
                 }
             }
 
-            final CellLayout parent = (CellLayout) cell.getParent();
+            final CellLayout parent = (CellLayout) cell.getParent().getParent();
 
             // Prepare it to be animated into its new position
             // This must be called after the view has been re-parented
