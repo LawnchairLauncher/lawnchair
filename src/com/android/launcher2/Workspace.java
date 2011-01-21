@@ -2398,8 +2398,7 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    public void onDragExit(DragSource source, int x, int y, int xOffset,
-            int yOffset, DragView dragView, Object dragInfo) {
+    private void doDragExit() {
         mWasSpringLoadedOnDragExit = mShrinkState == ShrinkState.SPRING_LOADED;
         if (mDragTargetLayout != null) {
             mDragTargetLayout.onDragExit();
@@ -2411,6 +2410,11 @@ public class Workspace extends SmoothPagedView
             mLauncher.exitSpringLoadedDragMode();
         }
         clearAllHovers();
+    }
+
+    public void onDragExit(DragSource source, int x, int y, int xOffset,
+            int yOffset, DragView dragView, Object dragInfo) {
+        doDragExit();
     }
 
     @Override
@@ -2560,6 +2564,9 @@ public class Workspace extends SmoothPagedView
         mDragController = dragController;
     }
 
+    /**
+     * Called at the end of a drag which originated on the workspace.
+     */
     public void onDropCompleted(View target, boolean success) {
         if (success) {
             if (target != this && mDragInfo != null) {
@@ -2571,8 +2578,11 @@ public class Workspace extends SmoothPagedView
                 // final Object tag = mDragInfo.cell.getTag();
             }
         } else if (mDragInfo != null) {
-            boolean animateDrop = !mWasSpringLoadedOnDragExit;
-            ((CellLayout) getChildAt(mDragInfo.screen)).onDropChild(mDragInfo.cell, animateDrop);
+            // NOTE: When 'success' is true, onDragExit is called by the DragController before
+            // calling onDropCompleted(). We call it ourselves here, but maybe this should be
+            // moved into DragController.cancelDrag().
+            doDragExit();
+            ((CellLayout) getChildAt(mDragInfo.screen)).onDropChild(mDragInfo.cell, false);
         }
         mLauncher.unlockScreenOrientation();
         mDragOutline = null;
