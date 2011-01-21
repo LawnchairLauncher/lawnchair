@@ -60,12 +60,12 @@
     <!--  Labels for the tabs in All Apps -->
     <!--  Title of the tab for all applications (includes games and non-games) [CHAR_LIMIT=12] -->
     <string name="all_apps_tab_all">All</string>
-    <!--  Title of the tab for all applications *except* games [CHAR_LIMIT=12] -->
+    <!--  Title of the tab for all applications *except* games [CHAR_LIMIT=24] -->
     <string name="all_apps_tab_apps">Apps</string>
-    <!--  Title of the tab for applications labeled as games [CHAR_LIMIT=12] -->
+    <!--  Title of the tab for applications labeled as games [CHAR_LIMIT=24] -->
     <string name="all_apps_tab_games">Games</string>
-    <!--  Tile of the tab for applications that were downloaded from market [CHAR_LIMIT=12] -->
-    <string name="all_apps_tab_downloaded">Downloaded</string>
+    <!--  Tile of the tab for applications that were downloaded from market [CHAR_LIMIT=24] -->
+    <string name="all_apps_tab_downloaded">My Apps</string>
 
     <!-- All Apps pane -->
     <!-- Message to show when there are no games [CHAR_LIMIT=25] -->

@@ -1747,6 +1747,14 @@ public class LauncherModel extends BroadcastReceiver {
             return sCollator.compare(a.title.toString(), b.title.toString());
         }
     };
+    public static final Comparator<ApplicationInfo> APP_INSTALL_TIME_COMPARATOR
+            = new Comparator<ApplicationInfo>() {
+        public final int compare(ApplicationInfo a, ApplicationInfo b) {
+            if (a.firstInstallTime < b.firstInstallTime) return 1;
+            if (a.firstInstallTime > b.firstInstallTime) return -1;
+            return 0;
+        }
+    };
 
     public void dumpState() {
         Log.d(TAG, "mCallbacks=" + mCallbacks);
