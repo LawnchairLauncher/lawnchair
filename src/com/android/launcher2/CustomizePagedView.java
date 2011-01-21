@@ -327,7 +327,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
     @Override
     public void onDropCompleted(View target, boolean success) {
         resetCheckedGrandchildren();
-        mLauncher.getWorkspace().onDragStopped();
+        mLauncher.getWorkspace().onDragStopped(success);
         mLauncher.unlockScreenOrientation();
     }
 
