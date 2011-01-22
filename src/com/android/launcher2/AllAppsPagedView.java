@@ -314,6 +314,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
                     filteredApps.add(info);
                 }
             }
+            Collections.sort(filteredApps, LauncherModel.APP_INSTALL_TIME_COMPARATOR);
         }
         return filteredApps;
     }

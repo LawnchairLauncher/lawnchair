@@ -52,6 +52,11 @@ class ApplicationInfo extends ItemInfo {
      */
     Bitmap iconBitmap;
 
+    /**
+     * The time at which the app was first installed.
+     */
+    long firstInstallTime;
+
     ComponentName componentName;
 
     static final int APP_FLAG = 1;
@@ -82,6 +87,7 @@ class ApplicationInfo extends ItemInfo {
             if ((appFlags & android.content.pm.ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0) {
                 flags |= DOWNLOADED_FLAG;
             }
+            firstInstallTime = pm.getPackageInfo(packageName, 0).firstInstallTime;
             // TODO: Figure out how to determine what is a game
 
             // If it's not a game, it's an app
@@ -101,6 +107,7 @@ class ApplicationInfo extends ItemInfo {
         title = info.title.toString();
         intent = new Intent(info.intent);
         flags = info.flags;
+        firstInstallTime = info.firstInstallTime;
     }
 
     /**
@@ -128,7 +135,8 @@ class ApplicationInfo extends ItemInfo {
         Log.d(tag, label + " size=" + list.size());
         for (ApplicationInfo info: list) {
             Log.d(tag, "   title=\"" + info.title + "\" titleBitmap=" + info.titleBitmap
-                    + " iconBitmap=" + info.iconBitmap);
+                    + " iconBitmap=" + info.iconBitmap + " firstInstallTime="
+                    + info.firstInstallTime);
         }
     }
 
