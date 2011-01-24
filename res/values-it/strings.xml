@@ -25,7 +25,7 @@
     <string name="chooser_wallpaper" msgid="5988031014201479733">"Seleziona sfondo da"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Imposta sfondo"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"Sfondi"</string>
-    <!-- outdated translation 3571057450431950427 -->     <string name="activity_not_found" msgid="5591731020063337696">"Applicazione non installata sul telefono."</string>
+    <string name="activity_not_found" msgid="5591731020063337696">"Applicazione non installata."</string>
     <string name="configure_wallpaper" msgid="2820186271419674623">"Configura..."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widget"</string>
     <string name="folders_tab_label" msgid="1145293785541489736">"Cartelle"</string>
@@ -36,9 +36,9 @@
     <string name="all_apps_tab_all" msgid="2942727589595027258">"Tutte"</string>
     <string name="all_apps_tab_apps" msgid="5468972551904071712">"Applicazioni"</string>
     <string name="all_apps_tab_games" msgid="1855736784923494918">"Giochi"</string>
-    <string name="all_apps_tab_downloaded" msgid="2300935549064726963">"Scaricate"</string>
+    <!-- outdated translation 2300935549064726963 -->     <string name="all_apps_tab_downloaded" msgid="3335316755603669951">"Scaricate"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"Nessun gioco trovato."</string>
-    <string name="all_apps_no_downloads" msgid="6145042636084482299">"Nessuna appl. scaricata"</string>
+    <!-- outdated translation 6145042636084482299 -->     <string name="all_apps_no_downloads" msgid="2284720393234453761">"Nessuna appl. scaricata"</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Impossibile rilasciare elemento in schermata Home"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Seleziona il widget da creare"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nome cartella"</string>
@@ -65,8 +65,7 @@
     <string name="all_apps_button_label" msgid="2578400570124163469">"Applicazioni"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Home"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"Rimuovi"</string>
-    <!-- no translation found for delete_zone_label_all_apps (6664588234817475108) -->
-    <skip />
+    <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"Disinstalla"</string>
     <string name="menu_add" msgid="3065046628354640854">"Aggiungi"</string>
     <string name="menu_manage_apps" msgid="2308685199463588895">"Gestisci applicazioni"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"Sfondo"</string>
