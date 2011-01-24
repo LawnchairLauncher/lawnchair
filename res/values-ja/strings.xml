@@ -36,9 +36,9 @@
     <string name="all_apps_tab_all" msgid="2942727589595027258">"すべて"</string>
     <string name="all_apps_tab_apps" msgid="5468972551904071712">"アプリ"</string>
     <string name="all_apps_tab_games" msgid="1855736784923494918">"ゲーム"</string>
-    <string name="all_apps_tab_downloaded" msgid="2300935549064726963">"ダウンロード済み"</string>
+    <!-- outdated translation 2300935549064726963 -->     <string name="all_apps_tab_downloaded" msgid="3335316755603669951">"ダウンロード済み"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"ゲームなし"</string>
-    <string name="all_apps_no_downloads" msgid="6145042636084482299">"ダウンロードアプリなし"</string>
+    <!-- outdated translation 6145042636084482299 -->     <string name="all_apps_no_downloads" msgid="2284720393234453761">"ダウンロードアプリなし"</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"このホーム画面にアイテムをドロップできませんでした"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"作成するウィジェットを選択"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"フォルダ名"</string>
@@ -65,8 +65,7 @@
     <string name="all_apps_button_label" msgid="2578400570124163469">"アプリ"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"ホーム"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"削除"</string>
-    <!-- no translation found for delete_zone_label_all_apps (6664588234817475108) -->
-    <skip />
+    <!-- outdated translation 2536335964588694907 -->     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"削除"</string>
     <string name="menu_add" msgid="3065046628354640854">"追加"</string>
     <string name="menu_manage_apps" msgid="2308685199463588895">"アプリの管理"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"壁紙"</string>

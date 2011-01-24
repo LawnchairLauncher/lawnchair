@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="wallpaper_dialog_title" msgid="5764793286524787718">"Вибрати фоновий малюнок"</string>
-    <!-- no translation found for wallpaper_chooser_empty (7358237455389125747) -->
-    <skip />
+    <string name="wallpaper_chooser_empty" msgid="7358237455389125747">"Фонові малюнки не доступні"</string>
     <string name="wallpaper_cancel" msgid="6502936522490675611">"Скасувати"</string>
 </resources>
