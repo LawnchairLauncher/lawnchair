@@ -1963,7 +1963,7 @@ public final class Launcher extends Activity
 
     void closeFolder(Folder folder) {
         folder.getInfo().opened = false;
-        ViewGroup parent = (ViewGroup) folder.getParent();
+        ViewGroup parent = (ViewGroup) folder.getParent().getParent();
         if (parent != null) {
             CellLayout cl = (CellLayout) parent;
             cl.removeViewWithoutMarkingCells(folder);
@@ -2212,7 +2212,7 @@ public final class Launcher extends Activity
         }
 
         if (!(v instanceof CellLayout)) {
-            v = (View) v.getParent();
+            v = (View) v.getParent().getParent();
         }
 
 

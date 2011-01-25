@@ -109,7 +109,7 @@ public abstract class PagedView extends ViewGroup {
     protected boolean mAllowOverScroll = true;
     protected int mUnboundedScrollX;
 
-    // parameter that adjusts the layout to be optimized for CellLayouts with that scale factor
+    // parameter that adjusts the layout to be optimized for pages with that scale factor
     protected float mLayoutScale = 1.0f;
 
     protected static final int INVALID_POINTER = -1;
@@ -416,20 +416,20 @@ public abstract class PagedView extends ViewGroup {
         setMeasuredDimension(widthSize, heightSize);
     }
 
-    protected void moveToNewPageWithoutMovingCellLayouts(int newCurrentPage) {
+    protected void scrollToNewPageWithoutMovingPages(int newCurrentPage) {
         int newX = getChildOffset(newCurrentPage) - getRelativeChildOffset(newCurrentPage);
         int delta = newX - mScrollX;
 
-        final int screenCount = getChildCount();
-        for (int i = 0; i < screenCount; i++) {
-            CellLayout cl = (CellLayout) getChildAt(i);
-            cl.setX(cl.getX() + delta);
+        final int pageCount = getChildCount();
+        for (int i = 0; i < pageCount; i++) {
+            View page = (View) getChildAt(i);
+            page.setX(page.getX() + delta);
         }
         setCurrentPage(newCurrentPage);
     }
 
-    // A layout scale of 1.0f assumes that the CellLayouts, in their unshrunken state, have a
-    // scale of 1.0f. A layout scale of 0.8f assumes the CellLayouts have a scale of 0.8f, and
+    // A layout scale of 1.0f assumes that the pages, in their unshrunken state, have a
+    // scale of 1.0f. A layout scale of 0.8f assumes the pages have a scale of 0.8f, and
     // tightens the layout accordingly
     public void setLayoutScale(float childrenScale) {
         mLayoutScale = childrenScale;
@@ -451,7 +451,7 @@ public abstract class PagedView extends ViewGroup {
         }
         // Also, the page offset has changed  (since the pages are now smaller);
         // update the page offset, but again preserving absolute X and Y coordinates
-        moveToNewPageWithoutMovingCellLayouts(mCurrentPage);
+        scrollToNewPageWithoutMovingPages(mCurrentPage);
     }
 
     @Override

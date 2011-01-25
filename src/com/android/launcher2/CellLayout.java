@@ -25,7 +25,6 @@ import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
-import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -37,8 +36,6 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
-import android.graphics.Bitmap.Config;
-import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -53,7 +50,7 @@ import android.view.animation.LayoutAnimationController;
 
 import java.util.Arrays;
 
-public class CellLayout extends ViewGroup implements VisibilityChangedListener {
+public class CellLayout extends ViewGroup {
     static final String TAG = "CellLayout";
 
     private int mCellWidth;
@@ -99,18 +96,6 @@ public class CellLayout extends ViewGroup implements VisibilityChangedListener {
     private float mGlowBackgroundScale;
     private float mGlowBackgroundAlpha;
 
-    private Bitmap mCache;
-    private Canvas mCacheCanvas;
-    private Rect mCacheRect;
-    private Paint mCachePaint;
-
-    private boolean mIsCacheEnabled = true;
-    private boolean mDisableCacheUpdates = false;
-    private boolean mForceCacheUpdate = false;
-    private boolean mIsCacheDirty = true;
-    private float mBitmapCacheScale;
-    private float mMaxScaleForUsingBitmapCache;
-
     private boolean mAcceptsDrops = false;
     // If we're actively dragging something over this screen, mIsDragOverlapping is true
     private boolean mIsDragOverlapping = false;
@@ -136,11 +121,10 @@ public class CellLayout extends ViewGroup implements VisibilityChangedListener {
     // When a drag operation is in progress, holds the nearest cell to the touch point
     private final int[] mDragCell = new int[2];
 
-    private final WallpaperManager mWallpaperManager;
-
     private boolean mDragging = false;
 
     private TimeInterpolator mEaseOutInterpolator;
+    private CellLayoutChildren mChildren;
 
     public CellLayout(Context context) {
         this(context, null);
@@ -180,8 +164,6 @@ public class CellLayout extends ViewGroup implements VisibilityChangedListener {
         a.recycle();
 
         setAlwaysDrawnWithCacheEnabled(false);
-
-        mWallpaperManager = WallpaperManager.getInstance(context);
 
         final Resources res = getResources();
 
@@ -279,15 +261,13 @@ public class CellLayout extends ViewGroup implements VisibilityChangedListener {
 
         mBackgroundRect = new Rect();
         mGlowBackgroundRect = new Rect();
-        mCacheRect = new Rect();
         setHoverScale(1.0f);
         setHoverAlpha(1.0f);
 
-        mBitmapCacheScale =
-            res.getInteger(R.integer.config_workspaceScreenBitmapCacheScale) / 100.0f;
-        mMaxScaleForUsingBitmapCache =
-            res.getInteger(R.integer.config_maxScaleForUsingWorkspaceScreenBitmapCache) / 100.0f;
-        mCacheCanvas = new Canvas();
+        mChildren = new CellLayoutChildren(context);
+        mChildren.setCellDimensions(
+                mCellWidth, mCellHeight, mLeftPadding, mTopPadding, mWidthGap, mHeightGap);
+        addView(mChildren);
     }
 
     public void setIsDefaultDropTarget(boolean isDefaultDropTarget) {
@@ -376,100 +356,12 @@ public class CellLayout extends ViewGroup implements VisibilityChangedListener {
         }
     }
 
-    public void drawChildren(Canvas canvas) {
-        super.dispatchDraw(canvas);
-    }
-
-    private void invalidateIfNeeded() {
-        if (mIsCacheDirty) {
-            // Force a redraw to update the cache if it's dirty
-            invalidate();
-        }
-    }
-
-    public void enableCache() {
-        mIsCacheEnabled = true;
-        invalidateIfNeeded();
-    }
-
-    public void disableCache() {
-        mIsCacheEnabled = false;
-    }
-
     public void disableCacheUpdates() {
-        mDisableCacheUpdates = true;
-        // Force just one update before we enter a period of no cache updates
-        mForceCacheUpdate = true;
+        mChildren.disableCacheUpdates();
     }
 
     public void enableCacheUpdates() {
-        mDisableCacheUpdates = false;
-        invalidateIfNeeded();
-    }
-
-    private void invalidateCache() {
-        mIsCacheDirty = true;
-        invalidate();
-    }
-
-    public void receiveVisibilityChangedMessage(View v) {
-        invalidateCache();
-    }
-
-    public void updateCache() {
-        mCacheCanvas.drawColor(0, Mode.CLEAR);
-
-        float alpha = getAlpha();
-        setAlpha(1.0f);
-        drawChildren(mCacheCanvas);
-        setAlpha(alpha);
-
-        mIsCacheDirty = false;
-    }
-
-    public void dispatchDraw(Canvas canvas) {
-        final int count = getChildCount();
-
-        if (!mIsCacheDirty) {
-            // Check if one of the children (an icon or widget) is dirty
-            for (int i = 0; i < count; i++) {
-                final View child = getChildAt(i);
-                if (child.isDirty()) {
-                    mIsCacheDirty = true;
-                    break;
-                }
-            }
-        }
-
-        boolean useBitmapCache = mIsCacheEnabled && getScaleX() < mMaxScaleForUsingBitmapCache;
-        if (mForceCacheUpdate ||
-                (useBitmapCache && !mDisableCacheUpdates)) {
-            // Sometimes we force a cache update-- this is used to make sure the cache will look as
-            // up-to-date as possible right when we disable cache updates
-            if (mIsCacheDirty) {
-                updateCache();
-            }
-            mForceCacheUpdate = false;
-        }
-
-        if (useBitmapCache) {
-            mCachePaint.setAlpha((int)(255*getAlpha()));
-            canvas.drawBitmap(mCache, mCacheRect, mBackgroundRect, mCachePaint);
-        } else {
-            super.dispatchDraw(canvas);
-        }
-    }
-
-    private void prepareCacheBitmap() {
-        if (mCache == null) {
-            mCache = Bitmap.createBitmap((int) (getWidth() * mBitmapCacheScale),
-                    (int) (getHeight() * mBitmapCacheScale), Config.ARGB_8888);
-
-            mCachePaint = new Paint();
-            mCachePaint.setFilterBitmap(true);
-            mCacheCanvas.setBitmap(mCache);
-            mCacheCanvas.scale(mBitmapCacheScale, mBitmapCacheScale);
-        }
+        mChildren.enableCacheUpdates();
     }
 
     @Override
@@ -610,15 +502,8 @@ public class CellLayout extends ViewGroup implements VisibilityChangedListener {
 
             child.setId(childId);
 
-            addView(child, index, lp);
-            child.setAlpha(getAlpha());
-            if (child instanceof VisibilityChangedBroadcaster) {
-                VisibilityChangedBroadcaster v = (VisibilityChangedBroadcaster) child;
-                v.setVisibilityChangedListener(this);
-            }
+            mChildren.addView(child, index, lp);
 
-            // invalidate the cache to have it reflect the new item
-            invalidateCache();
             if (markCells) markCellsAsOccupiedForView(child);
 
             return true;
@@ -639,70 +524,56 @@ public class CellLayout extends ViewGroup implements VisibilityChangedListener {
 
     @Override
     public void removeAllViews() {
-        super.removeAllViews();
         clearOccupiedCells();
-        invalidateCache();
+        mChildren.removeAllViews();
     }
 
     @Override
     public void removeAllViewsInLayout() {
-        super.removeAllViewsInLayout();
         clearOccupiedCells();
-        invalidateCache();
+        mChildren.removeAllViewsInLayout();
     }
 
     public void removeViewWithoutMarkingCells(View view) {
-        super.removeView(view);
-        invalidateCache();
+        mChildren.removeViewWithoutMarkingCells(view);
     }
 
     @Override
     public void removeView(View view) {
         markCellsAsUnoccupiedForView(view);
-        super.removeView(view);
-        invalidateCache();
+        mChildren.removeView(view);
     }
 
     @Override
     public void removeViewAt(int index) {
-        markCellsAsUnoccupiedForView(getChildAt(index));
-        super.removeViewAt(index);
-        invalidateCache();
+        markCellsAsUnoccupiedForView(mChildren.getChildAt(index));
+        mChildren.removeViewAt(index);
     }
 
     @Override
     public void removeViewInLayout(View view) {
         markCellsAsUnoccupiedForView(view);
-        super.removeViewInLayout(view);
-        invalidateCache();
+        mChildren.removeViewInLayout(view);
     }
 
     @Override
     public void removeViews(int start, int count) {
         for (int i = start; i < start + count; i++) {
-            markCellsAsUnoccupiedForView(getChildAt(i));
+            markCellsAsUnoccupiedForView(mChildren.getChildAt(i));
         }
-        super.removeViews(start, count);
-        invalidateCache();
+        mChildren.removeViews(start, count);
     }
 
     @Override
     public void removeViewsInLayout(int start, int count) {
         for (int i = start; i < start + count; i++) {
-            markCellsAsUnoccupiedForView(getChildAt(i));
+            markCellsAsUnoccupiedForView(mChildren.getChildAt(i));
         }
-        super.removeViewsInLayout(start, count);
-        invalidateCache();
+        mChildren.removeViewsInLayout(start, count);
     }
 
-    @Override
-    public void requestChildFocus(View child, View focused) {
-        super.requestChildFocus(child, focused);
-        if (child != null) {
-            Rect r = new Rect();
-            child.getDrawingRect(r);
-            requestRectangleOnScreen(r);
-        }
+    public void drawChildren(Canvas canvas) {
+        mChildren.draw(canvas);
     }
 
     @Override
@@ -716,11 +587,11 @@ public class CellLayout extends ViewGroup implements VisibilityChangedListener {
         final Rect frame = mRect;
         final int x = touchX + mScrollX;
         final int y = touchY + mScrollY;
-        final int count = getChildCount();
+        final int count = mChildren.getChildCount();
 
         boolean found = false;
         for (int i = count - 1; i >= 0; i--) {
-            final View child = getChildAt(i);
+            final View child = mChildren.getChildAt(i);
 
             if ((child.getVisibility()) == VISIBLE || child.getAnimation() != null) {
                 child.getHitRect(frame);
@@ -752,7 +623,6 @@ public class CellLayout extends ViewGroup implements VisibilityChangedListener {
         }
         setTag(cellInfo);
     }
-
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -886,68 +756,35 @@ public class CellLayout extends ViewGroup implements VisibilityChangedListener {
             mWidthGap = mHeightGap = minGap;
         }
 
-        int count = getChildCount();
-
-        for (int i = 0; i < count; i++) {
-            View child = getChildAt(i);
-            LayoutParams lp = (LayoutParams) child.getLayoutParams();
-            lp.setup(cellWidth, cellHeight, mWidthGap, mHeightGap,
-                    mLeftPadding, mTopPadding);
-
-            int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(lp.width, MeasureSpec.EXACTLY);
-            int childheightMeasureSpec = MeasureSpec.makeMeasureSpec(lp.height,
-                    MeasureSpec.EXACTLY);
-
-            child.measure(childWidthMeasureSpec, childheightMeasureSpec);
-        }
+        // Initial values correspond to widthSpecMode == MeasureSpec.EXACTLY
+        int newWidth = widthSpecSize;
+        int newHeight = heightSpecSize;
         if (widthSpecMode == MeasureSpec.AT_MOST) {
-            int newWidth = mLeftPadding + mRightPadding + (mCountX * cellWidth) +
+            newWidth = mLeftPadding + mRightPadding + (mCountX * cellWidth) +
                 ((mCountX - 1) * mWidthGap);
-            int newHeight = mTopPadding + mBottomPadding + (mCountY * cellHeight) +
+            newHeight = mTopPadding + mBottomPadding + (mCountY * cellHeight) +
                 ((mCountY - 1) * mHeightGap);
             setMeasuredDimension(newWidth, newHeight);
-        } else if (widthSpecMode == MeasureSpec.EXACTLY) {
-            setMeasuredDimension(widthSpecSize, heightSpecSize);
         }
+
+        int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            View child = getChildAt(i);
+            int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(newWidth, MeasureSpec.EXACTLY);
+            int childheightMeasureSpec = MeasureSpec.makeMeasureSpec(newHeight,
+                    MeasureSpec.EXACTLY);
+            child.measure(childWidthMeasureSpec, childheightMeasureSpec);
+        }
+        setMeasuredDimension(newWidth, newHeight);
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int count = getChildCount();
-
         for (int i = 0; i < count; i++) {
-            final View child = getChildAt(i);
-            if (child.getVisibility() != GONE) {
-
-                CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
-
-                int childLeft = lp.x;
-                int childTop = lp.y;
-                child.layout(childLeft, childTop, childLeft + lp.width, childTop + lp.height);
-
-                if (lp.dropped) {
-                    lp.dropped = false;
-
-                    final int[] cellXY = mTmpCellXY;
-                    getLocationOnScreen(cellXY);
-                    mWallpaperManager.sendWallpaperCommand(getWindowToken(),
-                            WallpaperManager.COMMAND_DROP,
-                            cellXY[0] + childLeft + lp.width / 2,
-                            cellXY[1] + childTop + lp.height / 2, 0, null);
-
-                    if (lp.animateDrop) {
-                        lp.animateDrop = false;
-
-                        // This call does not result in a requestLayout(), but at one point did.
-                        // We need to be cautious about any method calls within the layout pass
-                        // to insure we don't leave the view tree in a bad state.
-                        ((Workspace) mParent).animateViewIntoPosition(child);
-                    }
-                }
-            }
+            View child = getChildAt(i);
+            child.layout(0, 0, r - l, b - t);
         }
-        prepareCacheBitmap();
-        invalidateCache();
     }
 
     @Override
@@ -955,28 +792,16 @@ public class CellLayout extends ViewGroup implements VisibilityChangedListener {
         super.onSizeChanged(w, h, oldw, oldh);
         mBackgroundRect.set(0, 0, w, h);
         updateGlowRect();
-        mCacheRect.set(0, 0, (int) (mBitmapCacheScale * w), (int) (mBitmapCacheScale * h));
-        mCache = null;
-        prepareCacheBitmap();
-        invalidateCache();
     }
 
     @Override
     protected void setChildrenDrawingCacheEnabled(boolean enabled) {
-        final int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            final View view = getChildAt(i);
-            view.setDrawingCacheEnabled(enabled);
-            // Update the drawing caches
-            if (!view.isHardwareAccelerated()) {
-                view.buildDrawingCache(true);
-            }
-        }
+        mChildren.setChildrenDrawingCacheEnabled(enabled);
     }
 
     @Override
     protected void setChildrenDrawnWithCacheEnabled(boolean enabled) {
-        super.setChildrenDrawnWithCacheEnabled(enabled);
+        mChildren.setChildrenDrawnWithCacheEnabled(enabled);
     }
 
     public float getBackgroundAlpha() {
@@ -1017,17 +842,7 @@ public class CellLayout extends ViewGroup implements VisibilityChangedListener {
     }
 
     public View getChildAt(int x, int y) {
-        final int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            View child = getChildAt(i);
-            LayoutParams lp = (LayoutParams) child.getLayoutParams();
-
-            if ((lp.cellX <= x) && (x < lp.cellX + lp.cellHSpan) &&
-                    (lp.cellY <= y) && (y < lp.cellY + lp.cellHSpan)) {
-                return child;
-            }
-        }
-        return null;
+        return mChildren.getChildAt(x, y);
     }
 
     /**
@@ -1506,13 +1321,13 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
     }
 
     private void markCellsAsOccupiedForView(View view) {
-        if (view == null || view.getParent() != this) return;
+        if (view == null || view.getParent() != mChildren) return;
         LayoutParams lp = (LayoutParams) view.getLayoutParams();
         markCellsForView(lp.cellX, lp.cellY, lp.cellHSpan, lp.cellVSpan, true);
     }
 
     private void markCellsAsUnoccupiedForView(View view) {
-        if (view == null || view.getParent() != this) return;
+        if (view == null || view.getParent() != mChildren) return;
         LayoutParams lp = (LayoutParams) view.getLayoutParams();
         markCellsForView(lp.cellX, lp.cellY, lp.cellHSpan, lp.cellVSpan, false);
     }
@@ -1675,15 +1490,4 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
                     + ", x=" + cellX + ", y=" + cellY + "]";
         }
     }
-}
-
-// Custom interfaces used to listen to "visibility changed" events of *children* of Views. Avoided
-// using "onVisibilityChanged" in the names because there's a method of that name in framework
-// (which can only can be used to listen to ancestors' "visibility changed" events)
-interface VisibilityChangedBroadcaster {
-    public void setVisibilityChangedListener(VisibilityChangedListener listener);
-}
-
-interface VisibilityChangedListener {
-    public void receiveVisibilityChangedMessage(View v);
 }
