@@ -305,6 +305,9 @@ public class CellLayout extends ViewGroup {
         if (scaleFactor != mGlowBackgroundScale) {
             mGlowBackgroundScale = scaleFactor;
             updateGlowRect();
+            if (getParent() != null) {
+                ((View) getParent()).invalidate();
+            }
         }
     }
 

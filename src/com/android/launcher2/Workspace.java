@@ -125,7 +125,6 @@ public class Workspace extends SmoothPagedView
 
     private int mDefaultPage;
 
-    private boolean mPageMoving = false;
     private boolean mIsDragInProcess = false;
 
     /**
@@ -549,7 +548,6 @@ public class Workspace extends SmoothPagedView
             enableChildrenCache(mCurrentPage - 1, mCurrentPage + 1);
         }
         showOutlines();
-        mPageMoving = true;
     }
 
     protected void onPageEndMoving() {
@@ -560,7 +558,6 @@ public class Workspace extends SmoothPagedView
         }
         mOverScrollMaxBackgroundAlpha = 0.0f;
         mOverScrollPageIndex = -1;
-        mPageMoving = false;
     }
 
     @Override
