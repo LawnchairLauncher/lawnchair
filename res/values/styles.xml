@@ -68,6 +68,28 @@
         <item name="android:layout_marginRight">10dip</item>
     </style>
 
+    <style name="TabIndicator">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingLeft">40dp</item>
+        <item name="android:paddingRight">40dp</item>
+        <item name="android:paddingTop">15dp</item>
+        <item name="android:paddingBottom">20dp</item>
+        <item name="android:textColor">@color/tab_widget_indicator_color</item>
+        <item name="android:background">@drawable/tab_widget_indicator_selector</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:shadowColor">#393939</item>
+        <item name="android:shadowDx">0.0</item>
+        <item name="android:shadowDy">1.0</item>
+        <item name="android:shadowRadius">1.0</item>
+    </style>
+
+    <style name="TabIndicator.Portrait">
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
+    </style>
+
     <style name="SearchButton" parent="@android:style/Widget.Button.Small">
         <item name="android:paddingTop">7dip</item>
         <item name="android:paddingBottom">9dip</item>
