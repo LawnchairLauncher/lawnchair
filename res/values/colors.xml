@@ -32,7 +32,7 @@
     <color name="app_info_filter">#A50000FE</color>
     <color name="dimmed_view_color">#FF7F7F7F</color>
 
-    <color name="drag_outline_color">#9DBE12</color>
+    <color name="drag_outline_color">#6595f9</color>
 
     <color name="workspace_item_pressed_outline_color">#6595f9</color>
     <color name="workspace_item_pressed_glow_color">#0997ff</color>
