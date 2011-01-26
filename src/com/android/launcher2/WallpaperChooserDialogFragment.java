@@ -111,6 +111,8 @@ public class WallpaperChooserDialogFragment extends DialogFragment implements
      */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        findWallpapers();
+
         final View v = getActivity().getLayoutInflater().inflate(
                 R.layout.wallpaper_chooser, null, false);
 
