@@ -209,6 +209,13 @@ public class Workspace extends SmoothPagedView
     boolean mUpdateWallpaperOffsetImmediately = false;
     boolean mSyncWallpaperOffsetWithScroll = true;
 
+    // info about the last drag
+    private DragView mLastDragView;
+    private int mLastDragOriginX;
+    private int mLastDragOriginY;
+    private int mLastDragXOffset;
+    private int mLastDragYOffset;
+
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -275,11 +282,19 @@ public class Workspace extends SmoothPagedView
                 mIsInUnshrinkAnimation = true;
                 disableCacheUpdates();
             }
+
             @Override
             public void onAnimationEnd(Animator animation) {
                 mIsInUnshrinkAnimation = false;
                 mSyncWallpaperOffsetWithScroll = true;
-                if (mShrinkState != ShrinkState.SPRING_LOADED) {
+                if (mShrinkState == ShrinkState.SPRING_LOADED) {
+                    View layout = null;
+                    if (mLastDragView != null) {
+                        layout = findMatchingPageForDragOver(mLastDragView, mLastDragOriginX,
+                                mLastDragOriginY, mLastDragXOffset, mLastDragYOffset);
+                    }
+                    mSpringLoadedDragController.onEnterSpringLoadedMode(layout == null);
+                } else {
                     mDrawCustomizeTrayBackground = false;
                 }
                 enableCacheUpdates();
@@ -1499,6 +1514,7 @@ public class Workspace extends SmoothPagedView
     // we call this method whenever a drag and drop in Launcher finishes, even if Workspace was
     // never dragged over
     public void onDragStopped(boolean success) {
+        mLastDragView = null;
         // In the success case, DragController has already called onDragExit()
         if (!success) {
             doDragExit();
@@ -2338,8 +2354,12 @@ public class Workspace extends SmoothPagedView
             int originY = y - yOffset;
             boolean shrunken = mIsSmall || mIsInUnshrinkAnimation;
             if (shrunken) {
-                layout = findMatchingPageForDragOver(
-                        dragView, originX, originY, xOffset, yOffset);
+                mLastDragView = dragView;
+                mLastDragOriginX = originX;
+                mLastDragOriginY = originY;
+                mLastDragXOffset = xOffset;
+                mLastDragYOffset = yOffset;
+                layout = findMatchingPageForDragOver(dragView, originX, originY, xOffset, yOffset);
 
                 if (layout != mDragTargetLayout) {
                     if (mDragTargetLayout != null) {
@@ -2349,7 +2369,8 @@ public class Workspace extends SmoothPagedView
                     mDragTargetLayout = layout;
                     if (mDragTargetLayout != null && mDragTargetLayout.getAcceptsDrops()) {
                         mDragTargetLayout.setIsDragOverlapping(true);
-                        mSpringLoadedDragController.onDragEnter(mDragTargetLayout);
+                        mSpringLoadedDragController.onDragEnter(
+                                mDragTargetLayout, mShrinkState == ShrinkState.SPRING_LOADED);
                     }
                 }
             } else {
