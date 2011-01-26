@@ -1148,10 +1148,7 @@ public final class Launcher extends Activity
         final int[] cellXY = mTmpAddItemCellCoordinates;
         final CellLayout layout = (CellLayout) mWorkspace.getChildAt(screen);
 
-        int[] touchXY = null;
-        if (mAddDropPosition != null && mAddDropPosition[0] > -1 && mAddDropPosition[1] > -1) {
-            touchXY = mAddDropPosition;
-        }
+        int[] touchXY = mAddDropPosition;
         boolean foundCellSpan = false;
         if (touchXY != null) {
             // when dragging and dropping, just find the closest free spot
@@ -1196,13 +1193,7 @@ public final class Launcher extends Activity
         // if we are placing widgets on a "spring-loaded" screen
         final int[] cellXY = mTmpAddItemCellCoordinates;
 
-        // For now, we don't save the coordinate where we dropped the icon because we're not
-        // supporting spring-loaded mini-screens; however, leaving the ability to directly place
-        // a widget on the home screen in case we want to add it in the future
-        int[] touchXY = null;
-        if (mAddDropPosition != null && mAddDropPosition[0] > -1 && mAddDropPosition[1] > -1) {
-            touchXY = mAddDropPosition;
-        }
+        int[] touchXY = mAddDropPosition;
         boolean foundCellSpan = false;
         if (touchXY != null) {
             // when dragging and dropping, just find the closest free spot
