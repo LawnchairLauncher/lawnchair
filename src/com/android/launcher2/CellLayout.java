@@ -1245,6 +1245,13 @@ public class CellLayout extends ViewGroup {
         return result;
     }
 
+    public int[] cellSpansToSize(int hSpans, int vSpans) {
+        int[] size = new int[2];
+        size[0] = hSpans * mCellWidth + (hSpans - 1) * mWidthGap;
+        size[1] = vSpans * mCellHeight + (vSpans - 1) * mHeightGap;
+        return size;
+    }
+
     /**
      * Calculate the grid spans needed to fit given item
      */

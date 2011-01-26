@@ -1488,8 +1488,10 @@ public class Workspace extends SmoothPagedView
         // We need to add extra padding to the bitmap to make room for the glow effect
         final int bitmapPadding = HolographicOutlineHelper.MAX_OUTER_BLUR_RADIUS;
 
+        CellLayout cl = (CellLayout) getChildAt(0);
+        int[] desiredSize = cl.cellSpansToSize(spanX, spanY);
         // The outline is used to visualize where the item will land if dropped
-        mDragOutline = createDragOutline(b, canvas, bitmapPadding);
+        mDragOutline = createDragOutline(b, canvas, bitmapPadding, desiredSize[0], desiredSize[1]);
 
         updateWhichPagesAcceptDropsDuringDrag(mShrinkState, spanX, spanY);
     }
@@ -1685,13 +1687,24 @@ public class Workspace extends SmoothPagedView
      * Returns a new bitmap to be used as the object outline, e.g. to visualize the drop location.
      * Responsibility for the bitmap is transferred to the caller.
      */
-    private Bitmap createDragOutline(Bitmap orig, Canvas canvas, int padding) {
+    private Bitmap createDragOutline(Bitmap orig, Canvas canvas, int padding, int w, int h) {
         final int outlineColor = getResources().getColor(R.color.drag_outline_color);
-        final Bitmap b = Bitmap.createBitmap(
-                orig.getWidth() + padding, orig.getHeight() + padding, Bitmap.Config.ARGB_8888);
-
+        final Bitmap b = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         canvas.setBitmap(b);
-        canvas.drawBitmap(orig, 0, 0, new Paint());
+
+        Rect src = new Rect(0, 0, orig.getWidth(), orig.getHeight());
+        float scaleFactor = Math.min((w - padding) / (float) orig.getWidth(),
+                (h - padding) / (float) orig.getHeight());
+        int scaledWidth = (int) (scaleFactor * orig.getWidth());
+        int scaledHeight = (int) (scaleFactor * orig.getHeight());
+        Rect dst = new Rect(0, 0, scaledWidth, scaledHeight);
+
+        // center the image
+        dst.offset((w - scaledWidth) / 2, (h - scaledHeight) / 2);
+
+        Paint p = new Paint();
+        p.setFilterBitmap(true);
+        canvas.drawBitmap(orig, src, dst, p);
         mOutlineHelper.applyMediumExpensiveOutlineWithBlur(b, canvas, outlineColor, outlineColor);
 
         return b;
@@ -2229,11 +2242,11 @@ public class Workspace extends SmoothPagedView
             int dragViewX, int dragViewY, Matrix cachedInverseMatrix) {
         // Transform the coordinates of the item being dragged to the CellLayout's coordinates
         final float[] draggedItemTopLeft = mTempDragCoordinates;
-        draggedItemTopLeft[0] = dragViewX + dragView.getScaledDragRegionXOffset();
-        draggedItemTopLeft[1] = dragViewY + dragView.getScaledDragRegionYOffset();
+        draggedItemTopLeft[0] = dragViewX;
+        draggedItemTopLeft[1] = dragViewY;
         final float[] draggedItemBottomRight = mTempDragBottomRightCoordinates;
-        draggedItemBottomRight[0] = draggedItemTopLeft[0] + dragView.getScaledDragRegionWidth();
-        draggedItemBottomRight[1] = draggedItemTopLeft[1] + dragView.getScaledDragRegionHeight();
+        draggedItemBottomRight[0] = draggedItemTopLeft[0] + dragView.getDragRegionWidth();
+        draggedItemBottomRight[1] = draggedItemTopLeft[1] + dragView.getDragRegionHeight();
 
         // Transform the dragged item's top left coordinates
         // to the CellLayout's local coordinates

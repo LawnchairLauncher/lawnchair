@@ -479,8 +479,9 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         }
     }
 
-    Bitmap drawableToBitmap(Drawable d, View v) {
-        Bitmap b = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
+    Bitmap drawableToBitmap(Drawable d, View v, boolean clipHeight) {
+        int height = clipHeight ? v.getPaddingTop() + d.getIntrinsicHeight() : v.getHeight();
+        Bitmap b = Bitmap.createBitmap(v.getWidth(), height, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(b);
         c.translate((v.getWidth() - d.getIntrinsicWidth()) / 2, v.getPaddingTop());
         d.draw(c);
@@ -508,8 +509,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
                 // Get the widget preview as the drag representation
                 final LinearLayout l = (LinearLayout) v;
                 final ImageView i = (ImageView) l.findViewById(R.id.widget_preview);
-                final Drawable icon = i.getDrawable();
-                Bitmap b = drawableToBitmap(icon, i);
+                Bitmap b = drawableToBitmap(i.getDrawable(), i, true);
                 PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo) v.getTag();
 
                 int[] spanXY = CellLayout.rectToCell(
@@ -529,7 +529,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
                 // get icon (top compound drawable, index is 1)
                 final TextView tv = (TextView) v;
                 final Drawable icon = tv.getCompoundDrawables()[1];
-                Bitmap b = drawableToBitmap(icon, tv);
+                Bitmap b = drawableToBitmap(icon, tv, false);
                 PendingAddItemInfo createItemInfo = (PendingAddItemInfo) v.getTag();
 
                 mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1, b);
@@ -546,7 +546,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
                 // get icon (top compound drawable, index is 1)
                 final TextView tv = (TextView) v;
                 final Drawable icon = tv.getCompoundDrawables()[1];
-                Bitmap b = drawableToBitmap(icon, tv);
+                Bitmap b = drawableToBitmap(icon, tv, false);
                 ApplicationInfo app = (ApplicationInfo) v.getTag();
                 app = new ApplicationInfo(app);
 
