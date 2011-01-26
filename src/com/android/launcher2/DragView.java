@@ -48,7 +48,6 @@ public class DragView extends View {
     private int mDragRegionHeight;
 
     ValueAnimator mAnim;
-    private float mScale = 1.0f;
     private float mOffsetX = 0.0f;
     private float mOffsetY = 0.0f;
 
@@ -142,22 +141,6 @@ public class DragView extends View {
 
     public void setOnDrawRunnable(Runnable r) {
         mOnDrawRunnable = r;
-    }
-
-    public int getScaledDragRegionXOffset() {
-        return -(int)((mScale - 1.0f) * mDragRegionWidth / 2);
-    }
-
-    public int getScaledDragRegionWidth() {
-        return (int)(mScale * mDragRegionWidth);
-    }
-
-    public int getScaledDragRegionYOffset() {
-        return -(int)((mScale - 1.0f) * mDragRegionHeight / 2);
-    }
-
-    public int getScaledDragRegionHeight() {
-        return (int)(mScale * mDragRegionWidth);
     }
 
     public int getDragRegionLeft() {
