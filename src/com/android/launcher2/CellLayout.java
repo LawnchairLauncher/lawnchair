@@ -84,7 +84,6 @@ public class CellLayout extends ViewGroup {
     private float mBackgroundAlphaMultiplier = 1.0f;
 
     private Drawable mNormalBackground;
-    private Drawable mNormalGlowBackground;
     private Drawable mActiveBackground;
     private Drawable mActiveGlowBackground;
     private Drawable mNormalBackgroundMini;
@@ -169,7 +168,6 @@ public class CellLayout extends ViewGroup {
 
         if (LauncherApplication.isScreenXLarge()) {
             mNormalBackground = res.getDrawable(R.drawable.homescreen_large_blue);
-            mNormalGlowBackground = res.getDrawable(R.drawable.homescreen_large_blue_strong);
             mActiveBackground = res.getDrawable(R.drawable.homescreen_large_green);
             mActiveGlowBackground = res.getDrawable(R.drawable.homescreen_large_green_strong);
 
@@ -179,7 +177,6 @@ public class CellLayout extends ViewGroup {
             mActiveGlowBackgroundMini = res.getDrawable(R.drawable.homescreen_small_green_strong);
 
             mNormalBackground.setFilterBitmap(true);
-            mNormalGlowBackground.setFilterBitmap(true);
             mActiveBackground.setFilterBitmap(true);
             mActiveGlowBackground.setFilterBitmap(true);
             mNormalBackgroundMini.setFilterBitmap(true);
@@ -380,8 +377,8 @@ public class CellLayout extends ViewGroup {
                 bg = mini ? mActiveBackgroundMini : mActiveGlowBackground;
             } else if (mIsDragOccuring && mAcceptsDrops) {
                 bg = mini ? mActiveBackgroundMini : mActiveBackground;
-            } else if (mIsDragOccuring && mIsDefaultDropTarget) {
-                bg = mini ? mNormalGlowBackgroundMini : mNormalGlowBackground;
+            } else if (mIsDefaultDropTarget && mini) {
+                bg = mNormalGlowBackgroundMini;
             } else {
                 bg = mini ? mNormalBackgroundMini : mNormalBackground;
             }
