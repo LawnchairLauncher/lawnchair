@@ -2607,7 +2607,9 @@ public final class Launcher extends Activity
      * @param hideSeq AnimatorSet in which to put "hide" animations, or null.
      */
     private void hideAndShowToolbarButtons(State newState, AnimatorSet showSeq, AnimatorSet hideSeq) {
-        final View searchButton = findViewById(R.id.search_button_cluster);
+        final View searchButton = findViewById(R.id.search_button);
+        final View searchDivider = findViewById(R.id.search_divider);
+        final View voiceSearchButton = findViewById(R.id.voice_button);
         final View allAppsButton = findViewById(R.id.all_apps_button);
         final View divider = findViewById(R.id.divider);
         final View configureButton = findViewById(R.id.configure_button);
@@ -2615,6 +2617,8 @@ public final class Launcher extends Activity
         switch (newState) {
         case WORKSPACE:
             hideOrShowToolbarButton(true, searchButton, showSeq);
+            hideOrShowToolbarButton(true, searchDivider, showSeq);
+            hideOrShowToolbarButton(true, voiceSearchButton, showSeq);
             hideOrShowToolbarButton(true, allAppsButton, showSeq);
             hideOrShowToolbarButton(true, divider, showSeq);
             hideOrShowToolbarButton(true, configureButton, showSeq);
@@ -2624,7 +2628,9 @@ public final class Launcher extends Activity
             break;
         case ALL_APPS:
             hideOrShowToolbarButton(false, configureButton, hideSeq);
+            hideOrShowToolbarButton(false, searchDivider, hideSeq);
             hideOrShowToolbarButton(false, searchButton, hideSeq);
+            hideOrShowToolbarButton(false, voiceSearchButton, hideSeq);
             hideOrShowToolbarButton(false, divider, hideSeq);
             hideOrShowToolbarButton(false, allAppsButton, hideSeq);
             mDeleteZone.setDragAndDropEnabled(false);
@@ -2632,7 +2638,9 @@ public final class Launcher extends Activity
             break;
         case CUSTOMIZE:
             hideOrShowToolbarButton(false, allAppsButton, hideSeq);
+            hideOrShowToolbarButton(false, searchDivider, hideSeq);
             hideOrShowToolbarButton(false, searchButton, hideSeq);
+            hideOrShowToolbarButton(false, voiceSearchButton, hideSeq);
             hideOrShowToolbarButton(false, divider, hideSeq);
             hideOrShowToolbarButton(false, configureButton, hideSeq);
             mDeleteZone.setDragAndDropEnabled(false);
@@ -3115,7 +3123,7 @@ public final class Launcher extends Activity
             ComponentName activityName = searchManager.getGlobalSearchActivity();
             if (activityName != null) {
                 sGlobalSearchIcon = updateButtonWithIconFromExternalActivity(
-                        R.id.search_button, activityName, R.drawable.search_button_generic);
+                        R.id.search_button, activityName, R.drawable.ic_generic_search);
             } else {
                 findViewById(R.id.search_button).setVisibility(View.GONE);
             }

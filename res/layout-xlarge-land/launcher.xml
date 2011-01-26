@@ -54,54 +54,51 @@
         android:layout_height="?android:attr/actionBarSize"
         android:layout_gravity="top">
 
-        <LinearLayout android:id="@+id/search_button_cluster"
+       <!-- Global search icon -->
+       <ImageView
+           android:id="@+id/search_button"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_alignParentTop="true"
+           android:layout_alignParentLeft="true"
+           android:paddingLeft="@dimen/toolbar_button_horizontal_padding"
+           android:paddingRight="@dimen/toolbar_button_horizontal_padding"
+           android:paddingTop="@dimen/toolbar_button_vertical_padding"
+           android:paddingBottom="@dimen/toolbar_button_vertical_padding"
+           android:src="@drawable/ic_generic_search"
+           android:background="@drawable/button_bg"
+           android:onClick="onClickSearchButton"
+           android:focusable="true"
+           android:clickable="true" />
+           
+        <ImageView
+            android:id="@+id/search_divider"
+            android:src="@drawable/divider_launcher_holo"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:gravity="bottom"
-            >
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="16dp"
-                android:background="@drawable/textfield_home_start"
-                android:orientation="horizontal">
-                <!-- Global search icon -->
-                <ImageView
-                    android:id="@+id/search_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="32dp"
-                    android:paddingTop="12dp"
-                    android:src="@drawable/search_button_generic"
-                    android:background="@drawable/button_bg"
-                    android:onClick="onClickSearchButton"
-                    android:focusable="true"
-                    android:clickable="true"/>
-            </LinearLayout>
+            android:layout_height="@dimen/toolbar_divider_height"
+            android:layout_toRightOf="@id/search_button"
+            android:paddingTop="@dimen/toolbar_button_vertical_padding"
+            android:paddingBottom="@dimen/toolbar_button_vertical_padding"
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@drawable/textfield_home_end"
-                android:orientation="horizontal">
-                <!-- Voice search icon -->
-                <ImageView
-                    android:id="@+id/voice_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:paddingLeft="24dp"
-                    android:paddingRight="24dp"
-                    android:paddingTop="12dp"
-                    android:src="@drawable/ic_voice_search"
-                    android:background="@drawable/button_bg"
-                    android:onClick="onClickVoiceButton"
-                    android:focusable="true"
-                    android:clickable="true"/>
-            </LinearLayout>
-        </LinearLayout>
+            android:onClick="onClickAllAppsButton"
+            android:focusable="true"
+            android:clickable="true" />
+
+        <!-- Voice search icon -->
+        <ImageView
+            android:id="@+id/voice_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/search_divider"
+            android:paddingLeft="@dimen/toolbar_button_horizontal_padding"
+            android:paddingRight="@dimen/toolbar_button_horizontal_padding"
+            android:paddingTop="@dimen/toolbar_button_vertical_padding"
+            android:paddingBottom="@dimen/toolbar_button_vertical_padding"
+            android:src="@drawable/ic_voice_search"
+            android:background="@drawable/button_bg"
+            android:onClick="onClickVoiceButton"
+            android:focusable="true"
+            android:clickable="true"/>
 
         <ImageView
             android:id="@+id/configure_button"
