@@ -2598,42 +2598,26 @@ public final class Launcher extends Activity
      * @param hideSeq AnimatorSet in which to put "hide" animations, or null.
      */
     private void hideAndShowToolbarButtons(State newState, AnimatorSet showSeq, AnimatorSet hideSeq) {
-        final View searchButton = findViewById(R.id.search_button);
-        final View searchDivider = findViewById(R.id.search_divider);
-        final View voiceSearchButton = findViewById(R.id.voice_button);
+        final View buttonCluster = findViewById(R.id.all_apps_button_cluster);
+
         final View allAppsButton = findViewById(R.id.all_apps_button);
         final View divider = findViewById(R.id.divider);
         final View configureButton = findViewById(R.id.configure_button);
 
         switch (newState) {
         case WORKSPACE:
-            hideOrShowToolbarButton(true, searchButton, showSeq);
-            hideOrShowToolbarButton(true, searchDivider, showSeq);
-            hideOrShowToolbarButton(true, voiceSearchButton, showSeq);
-            hideOrShowToolbarButton(true, allAppsButton, showSeq);
-            hideOrShowToolbarButton(true, divider, showSeq);
-            hideOrShowToolbarButton(true, configureButton, showSeq);
+            hideOrShowToolbarButton(true, buttonCluster, showSeq);
             mDeleteZone.setOverlappingViews(new View[] { allAppsButton, divider, configureButton });
             mDeleteZone.setDragAndDropEnabled(true);
             mDeleteZone.setText(getResources().getString(R.string.delete_zone_label_workspace));
             break;
         case ALL_APPS:
-            hideOrShowToolbarButton(false, configureButton, hideSeq);
-            hideOrShowToolbarButton(false, searchDivider, hideSeq);
-            hideOrShowToolbarButton(false, searchButton, hideSeq);
-            hideOrShowToolbarButton(false, voiceSearchButton, hideSeq);
-            hideOrShowToolbarButton(false, divider, hideSeq);
-            hideOrShowToolbarButton(false, allAppsButton, hideSeq);
+            hideOrShowToolbarButton(false, buttonCluster, hideSeq);
             mDeleteZone.setDragAndDropEnabled(false);
             mDeleteZone.setText(getResources().getString(R.string.delete_zone_label_all_apps));
             break;
         case CUSTOMIZE:
-            hideOrShowToolbarButton(false, allAppsButton, hideSeq);
-            hideOrShowToolbarButton(false, searchDivider, hideSeq);
-            hideOrShowToolbarButton(false, searchButton, hideSeq);
-            hideOrShowToolbarButton(false, voiceSearchButton, hideSeq);
-            hideOrShowToolbarButton(false, divider, hideSeq);
-            hideOrShowToolbarButton(false, configureButton, hideSeq);
+            hideOrShowToolbarButton(false, buttonCluster, hideSeq);
             mDeleteZone.setDragAndDropEnabled(false);
             break;
         }
