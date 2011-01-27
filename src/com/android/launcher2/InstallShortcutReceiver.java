@@ -55,25 +55,27 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
         if (findEmptyCell(context, mCoordinates, screen)) {
             Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
+            if (intent != null) {
+                if (intent.getAction() == null) {
+                    intent.setAction(Intent.ACTION_VIEW);
+                }
 
-            if (intent.getAction() == null) {
-                intent.setAction(Intent.ACTION_VIEW);
+                // By default, we allow for duplicate entries (located in
+                // different places)
+                boolean duplicate = data.getBooleanExtra(Launcher.EXTRA_SHORTCUT_DUPLICATE, true);
+                if (duplicate || !LauncherModel.shortcutExists(context, name, intent)) {
+                    LauncherApplication app = (LauncherApplication) context.getApplicationContext();
+                    app.getModel().addShortcut(context, data, screen, mCoordinates[0], 
+                            mCoordinates[1], true);
+                    Toast.makeText(context, context.getString(R.string.shortcut_installed, name),
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, context.getString(R.string.shortcut_duplicate, name),
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                return true;
             }
-
-            // By default, we allow for duplicate entries (located in
-            // different places)
-            boolean duplicate = data.getBooleanExtra(Launcher.EXTRA_SHORTCUT_DUPLICATE, true);
-            if (duplicate || !LauncherModel.shortcutExists(context, name, intent)) {
-                ((LauncherApplication)context.getApplicationContext()).getModel()
-                        .addShortcut(context, data, screen, mCoordinates[0], mCoordinates[1], true);
-                Toast.makeText(context, context.getString(R.string.shortcut_installed, name),
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(context, context.getString(R.string.shortcut_duplicate, name),
-                        Toast.LENGTH_SHORT).show();
-            }
-
-            return true;
         } else {
             Toast.makeText(context, context.getString(R.string.out_of_space),
                     Toast.LENGTH_SHORT).show();
