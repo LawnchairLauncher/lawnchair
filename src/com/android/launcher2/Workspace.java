@@ -297,6 +297,7 @@ public class Workspace extends SmoothPagedView
                 } else {
                     mDrawCustomizeTrayBackground = false;
                 }
+                mWallpaperOffset.setOverrideHorizontalCatchupConstant(false);
                 enableCacheUpdates();
                 mAnimator = null;
             }
@@ -308,6 +309,7 @@ public class Workspace extends SmoothPagedView
             }
             @Override
             public void onAnimationEnd(Animator animation) {
+                mWallpaperOffset.setOverrideHorizontalCatchupConstant(false);
                 enableCacheUpdates();
                 mAnimator = null;
             }
@@ -720,13 +722,30 @@ public class Workspace extends SmoothPagedView
         float mHorizontalWallpaperOffset = 0.0f;
         float mVerticalWallpaperOffset = 0.5f;
         long mLastWallpaperOffsetUpdateTime;
+        boolean mIsMovingFast;
+        boolean mOverrideHorizontalCatchupConstant;
+        float mHorizontalCatchupConstant = 0.35f;
+        float mVerticalCatchupConstant = 0.35f;
 
         public WallpaperOffsetInterpolator() {
+        }
+
+        public void setOverrideHorizontalCatchupConstant(boolean override) {
+            mOverrideHorizontalCatchupConstant = override;
+        }
+
+        public void setHorizontalCatchupConstant(float f) {
+            mHorizontalCatchupConstant = f;
+        }
+
+        public void setVerticalCatchupConstant(float f) {
+            mVerticalCatchupConstant = f;
         }
 
         public boolean computeScrollOffset() {
             if (Float.compare(mHorizontalWallpaperOffset, mFinalHorizontalWallpaperOffset) == 0 &&
                     Float.compare(mVerticalWallpaperOffset, mFinalVerticalWallpaperOffset) == 0) {
+                mIsMovingFast = false;
                 return false;
             }
             Display display = mLauncher.getWindowManager().getDefaultDisplay();
@@ -736,27 +755,44 @@ public class Workspace extends SmoothPagedView
             long timeSinceLastUpdate = currentTime - mLastWallpaperOffsetUpdateTime;
             timeSinceLastUpdate = Math.min((long) (1000/30f), timeSinceLastUpdate);
             timeSinceLastUpdate = Math.max(1L, timeSinceLastUpdate);
-            // ie 75% in 100ms
-            float fractionToCatchUpIn1MsHorizontal = isLandscape ? 0.75f / 100 : 0.75f / 100;
-            float fractionToCatchUpIn1MsVertical = isLandscape ? 1.1f / 100 : 1.1f / 100;
+
+            float xdiff = Math.abs(mFinalHorizontalWallpaperOffset - mHorizontalWallpaperOffset);
+            if (!mIsMovingFast && xdiff > 0.07) {
+                mIsMovingFast = true;
+            }
+
+            float fractionToCatchUpIn1MsHorizontal;
+            if (mOverrideHorizontalCatchupConstant) {
+                fractionToCatchUpIn1MsHorizontal = mHorizontalCatchupConstant;
+            } else if (mIsMovingFast) {
+                fractionToCatchUpIn1MsHorizontal = isLandscape ? 0.5f : 0.75f;
+            } else {
+                // slow
+                fractionToCatchUpIn1MsHorizontal = isLandscape ? 0.27f : 0.5f;
+            }
+            float fractionToCatchUpIn1MsVertical = mVerticalCatchupConstant;
+
+
+            fractionToCatchUpIn1MsHorizontal /= 33f;
+            fractionToCatchUpIn1MsVertical /= 33f;
 
             final float UPDATE_THRESHOLD = 0.00001f;
             float hOffsetDelta = mFinalHorizontalWallpaperOffset - mHorizontalWallpaperOffset;
             float vOffsetDelta = mFinalVerticalWallpaperOffset - mVerticalWallpaperOffset;
-            boolean jumpToFinalValue =
-                Math.abs(hOffsetDelta / mFinalHorizontalWallpaperOffset) < UPDATE_THRESHOLD &&
-                Math.abs(vOffsetDelta / mFinalVerticalWallpaperOffset) < UPDATE_THRESHOLD;
+            boolean jumpToFinalValue = Math.abs(hOffsetDelta) < UPDATE_THRESHOLD &&
+                Math.abs(vOffsetDelta) < UPDATE_THRESHOLD;
             if (jumpToFinalValue) {
                 mHorizontalWallpaperOffset = mFinalHorizontalWallpaperOffset;
                 mVerticalWallpaperOffset = mFinalVerticalWallpaperOffset;
             } else {
                 float percentToCatchUpVertical =
-                    timeSinceLastUpdate * fractionToCatchUpIn1MsVertical;
+                    Math.min(1.0f, timeSinceLastUpdate * fractionToCatchUpIn1MsVertical);
                 float percentToCatchUpHorizontal =
-                    timeSinceLastUpdate * fractionToCatchUpIn1MsHorizontal;
+                    Math.min(1.0f, timeSinceLastUpdate * fractionToCatchUpIn1MsHorizontal);
                 mHorizontalWallpaperOffset += percentToCatchUpHorizontal * hOffsetDelta;
                 mVerticalWallpaperOffset += percentToCatchUpVertical * vOffsetDelta;
             }
+
             mLastWallpaperOffsetUpdateTime = System.currentTimeMillis();
             return true;
         }
@@ -1352,18 +1388,31 @@ public class Workspace extends SmoothPagedView
         int wallpaperTravelHeight = (int) (display.getHeight() *
                 wallpaperTravelToScreenHeightRatio(display.getWidth(), display.getHeight()));
         float offsetFromCenter = (wallpaperTravelHeight / (float) mWallpaperHeight) / 2f;
+        boolean isLandscape = display.getWidth() > display.getHeight();
+
         switch (shrinkState) {
+            // animating in
             case TOP:
+                // customize
                 wallpaperOffset = 0.5f + offsetFromCenter;
+                mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.46f : 0.44f);
                 break;
             case MIDDLE:
             case SPRING_LOADED:
                 wallpaperOffset = 0.5f;
+                mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.34f : 0.32f);
                 break;
             case BOTTOM_HIDDEN:
             case BOTTOM_VISIBLE:
+                // allapps
                 wallpaperOffset = 0.5f - offsetFromCenter;
+                mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.34f : 0.32f);
                 break;
+        }
+
+        if (animated) {
+            mWallpaperOffset.setHorizontalCatchupConstant(0.46f);
+            mWallpaperOffset.setOverrideHorizontalCatchupConstant(true);
         }
 
         setLayoutScale(1.0f);
@@ -1576,6 +1625,7 @@ public class Workspace extends SmoothPagedView
             final int screenCount = getChildCount();
 
             final int duration = getResources().getInteger(R.integer.config_workspaceUnshrinkTime);
+
             for (int i = 0; i < screenCount; i++) {
                 final CellLayout cl = (CellLayout)getChildAt(i);
                 float finalAlphaValue = (i == mCurrentPage) ? 1.0f : 0.0f;
@@ -1623,26 +1673,54 @@ public class Workspace extends SmoothPagedView
                     mUnshrinkAnimationListener.onAnimationEnd(null);
                 }
             }
+            Display display = mLauncher.getWindowManager().getDefaultDisplay();
+            boolean isLandscape = display.getWidth() > display.getHeight();
+            switch (mShrinkState) {
+                // animating out
+                case TOP:
+                    // customize
+                    if (animated) {
+                        mWallpaperOffset.setHorizontalCatchupConstant(isLandscape ? 0.65f : 0.62f);
+                        mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.65f : 0.62f);
+                        mWallpaperOffset.setOverrideHorizontalCatchupConstant(true);
+                    }
+                    break;
+                case MIDDLE:
+                case SPRING_LOADED:
+                    if (animated) {
+                        mWallpaperOffset.setHorizontalCatchupConstant(isLandscape ? 0.49f : 0.46f);
+                        mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.49f : 0.46f);
+                        mWallpaperOffset.setOverrideHorizontalCatchupConstant(true);
+                    }
+                    break;
+                case BOTTOM_HIDDEN:
+                case BOTTOM_VISIBLE:
+                    // all apps
+                    if (animated) {
+                        mWallpaperOffset.setHorizontalCatchupConstant(isLandscape ? 0.49f : 0.46f);
+                        mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.49f : 0.46f);
+                        mWallpaperOffset.setOverrideHorizontalCatchupConstant(true);
+                    }
+                    break;
+            }
             if (animated) {
                 ObjectAnimator wallpaperAnim = ObjectAnimator.ofPropertyValuesHolder(this,
                         PropertyValuesHolder.ofFloat(
                                 "verticalWallpaperOffset", 0.5f),
                         PropertyValuesHolder.ofFloat(
                                 "horizontalWallpaperOffset", wallpaperOffsetForCurrentScroll()));
-                mAnimator.play(wallpaperAnim);
                 wallpaperAnim.setDuration(duration);
                 wallpaperAnim.setInterpolator(mZoomInInterpolator);
-            } else {
-                setHorizontalWallpaperOffset(wallpaperOffsetForCurrentScroll());
-                setVerticalWallpaperOffset(0.5f);
-                updateWallpaperOffsetImmediately();
-            }
+                mAnimator.play(wallpaperAnim);
 
-            if (animated) {
                 // If we call this when we're not animated, onAnimationEnd is never called on
                 // the listener; make sure we only use the listener when we're actually animating
                 mAnimator.addListener(mUnshrinkAnimationListener);
                 mAnimator.start();
+            } else {
+                setHorizontalWallpaperOffset(wallpaperOffsetForCurrentScroll());
+                setVerticalWallpaperOffset(0.5f);
+                updateWallpaperOffsetImmediately();
             }
         }
 
