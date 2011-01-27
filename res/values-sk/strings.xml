@@ -36,9 +36,9 @@
     <string name="all_apps_tab_all" msgid="2942727589595027258">"Všetky"</string>
     <string name="all_apps_tab_apps" msgid="5468972551904071712">"Aplikácie"</string>
     <string name="all_apps_tab_games" msgid="1855736784923494918">"Hry"</string>
-    <!-- outdated translation 2300935549064726963 -->     <string name="all_apps_tab_downloaded" msgid="3335316755603669951">"Prevzaté"</string>
+    <!-- outdated translation 7753043607780556423 -->     <string name="all_apps_tab_downloaded" msgid="3335316755603669951">"Prevzaté"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"Nenašli sa žiadne hry."</string>
-    <!-- outdated translation 6145042636084482299 -->     <string name="all_apps_no_downloads" msgid="2284720393234453761">"Žiadne prevz. aplikácie."</string>
+    <!-- outdated translation 6687010155766000796 -->     <string name="all_apps_no_downloads" msgid="2284720393234453761">"Neboli nájdené žiadne prevzaté aplikácie."</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Položku sa nepodarilo pretiahnuť na túto plochu"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Vyberte miniaplikáciu"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Názov priečinka"</string>
