@@ -25,6 +25,12 @@
     <!-- The alpha value at which to show the most recent drop visualization outline. -->
     <integer name="config_dragOutlineMaxAlpha">128</integer>
 
+    <!-- Workspace screens are cached to bitmaps only when they're smaller than a certain size
+         (maxScaleForUsingWorkspaceScreenBitmapCache), since the bitmap cache it self is smaller
+         than the view itself (workspaceScreenBitmapCacheScale)  -->
+    <integer name="config_workspaceScreenBitmapCacheScale">20</integer>
+    <integer name="config_maxScaleForUsingWorkspaceScreenBitmapCache">50</integer>
+
     <!-- Parameters controlling the animation for when an item is dropped on the home screen,
          and it animates from its old position to the new one. -->
 
