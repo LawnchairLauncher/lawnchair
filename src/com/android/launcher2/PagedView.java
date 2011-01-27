@@ -18,6 +18,10 @@ package com.android.launcher2;
 
 import java.util.ArrayList;
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -32,9 +36,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
-import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.Checkable;
 import android.widget.Scroller;
@@ -809,19 +810,15 @@ public abstract class PagedView extends ViewGroup {
 
     protected void animateClickFeedback(View v, final Runnable r) {
         // animate the view slightly to show click feedback running some logic after it is "pressed"
-        Animation anim = AnimationUtils.loadAnimation(getContext(), 
-                R.anim.paged_view_click_feedback);
-        anim.setAnimationListener(new AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {}
-            @Override
-            public void onAnimationRepeat(Animation animation) {
+        ObjectAnimator anim = (ObjectAnimator) AnimatorInflater.
+                loadAnimator(mContext, R.anim.paged_view_click_feedback);
+        anim.setTarget(v);
+        anim.addListener(new AnimatorListenerAdapter() {
+            public void onAnimationRepeat(Animator animation) {
                 r.run();
             }
-            @Override
-            public void onAnimationEnd(Animation animation) {}
         });
-        v.startAnimation(anim);
+        anim.start();
     }
 
     /*
