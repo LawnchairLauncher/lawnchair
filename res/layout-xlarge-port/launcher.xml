@@ -46,7 +46,7 @@
         android:id="@+id/all_apps_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="top"/>
+        android:layout_gravity="top" />
 
     <RelativeLayout
         android:id="@+id/all_apps_button_cluster"
@@ -75,13 +75,13 @@
             android:id="@+id/search_divider"
             android:src="@drawable/divider_launcher_holo"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/toolbar_divider_height"
+            android:layout_height="match_parent"
             android:layout_toRightOf="@id/search_button"
             android:paddingTop="@dimen/toolbar_button_vertical_padding"
             android:paddingBottom="@dimen/toolbar_button_vertical_padding"
 
-            android:onClick="onClickAllAppsButton"
-            android:focusable="true"
+            android:onClick="onClickSearchButton"
+            android:focusable="false"
             android:clickable="true" />
 
         <!-- Voice search icon -->
@@ -111,6 +111,7 @@
             android:paddingRight="@dimen/toolbar_button_horizontal_padding"
             android:paddingTop="@dimen/toolbar_button_vertical_padding"
             android:paddingBottom="@dimen/toolbar_button_vertical_padding"
+            android:background="@drawable/button_bg"
 
             android:onClick="onClickConfigureButton"
             android:focusable="true"
@@ -119,26 +120,27 @@
             android:id="@+id/divider"
             android:src="@drawable/divider_launcher_holo"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/toolbar_divider_height"
+            android:layout_height="match_parent"
             android:layout_toLeftOf="@id/configure_button"
             android:paddingTop="@dimen/toolbar_button_vertical_padding"
             android:paddingBottom="@dimen/toolbar_button_vertical_padding"
 
             android:onClick="onClickAllAppsButton"
-            android:focusable="true"
+            android:focusable="false"
             android:clickable="true" />
         <TextView
             android:id="@+id/all_apps_button"
             android:text="@string/all_apps_button_label"
-            android:drawablePadding="@dimen/all_apps_drawable_padding"
+            android:drawablePadding="@dimen/all_apps_button_drawable_padding"
             android:drawableLeft="@drawable/ic_home_all_apps_holo_dark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/divider"
             android:paddingLeft="@dimen/toolbar_button_horizontal_padding"
             android:paddingRight="@dimen/toolbar_button_horizontal_padding"
-            android:paddingTop="@dimen/toolbar_button_vertical_padding"
-            android:paddingBottom="@dimen/toolbar_button_vertical_padding"
+            android:paddingTop="@dimen/all_apps_button_vertical_padding"
+            android:paddingBottom="@dimen/all_apps_button_vertical_padding"
+            android:background="@drawable/button_bg"
             
             android:gravity="center_horizontal|center_vertical"
             android:textColor="#CCFFFFFF"
@@ -156,7 +158,7 @@
             android:id="@+id/divider_during_drag"
             android:src="@drawable/divider_launcher_holo"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/toolbar_divider_height"
+            android:layout_height="match_parent"
             android:layout_toLeftOf="@id/configure_button"
             android:paddingTop="@dimen/toolbar_button_vertical_padding"
             android:paddingBottom="@dimen/toolbar_button_vertical_padding"
@@ -164,7 +166,7 @@
         <com.android.launcher2.DeleteZone
             android:id="@+id/delete_zone"
             android:text="@string/delete_zone_label_workspace"
-            android:drawablePadding="@dimen/all_apps_drawable_padding"
+            android:drawablePadding="@dimen/delete_zone_drawable_padding"
             android:drawableLeft="@drawable/delete_zone_selector"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -173,6 +175,7 @@
             android:paddingRight="@dimen/toolbar_button_horizontal_padding"
             android:paddingTop="@dimen/toolbar_button_vertical_padding"
             android:paddingBottom="@dimen/toolbar_button_vertical_padding"
+            android:background="@drawable/button_bg"
 
             android:gravity="center_horizontal|center_vertical"
             android:textColor="@color/workspace_all_apps_and_delete_zone_text_color"
