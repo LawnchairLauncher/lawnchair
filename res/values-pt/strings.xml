@@ -31,7 +31,7 @@
     <string name="rename_folder_title" msgid="4544573104191526550">"Renomear pasta"</string>
     <string name="rename_action" msgid="6016003384693240896">"OK"</string>
     <string name="cancel_action" msgid="3811860427489435048">"Cancelar"</string>
-    <string name="menu_item_add_item" msgid="6233177331075781114">"Adicionar à tela da Página inicial"</string>
+    <string name="menu_item_add_item" msgid="6233177331075781114">"Adicionar à tela inicial"</string>
     <string name="group_applications" msgid="4118484163419674240">"Aplicativos"</string>
     <string name="group_shortcuts" msgid="9133529424900391877">"Atalhos"</string>
     <string name="group_folder" msgid="5143593791798929193">"Nova pasta"</string>
