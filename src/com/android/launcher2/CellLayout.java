@@ -50,7 +50,7 @@ import android.view.animation.LayoutAnimationController;
 
 import java.util.Arrays;
 
-public class CellLayout extends ViewGroup {
+public class CellLayout extends CachedViewGroup {
     static final String TAG = "CellLayout";
 
     private int mCellWidth;
@@ -363,14 +363,6 @@ public class CellLayout extends ViewGroup {
         }
     }
 
-    public void disableCacheUpdates() {
-        mChildren.disableCacheUpdates();
-    }
-
-    public void enableCacheUpdates() {
-        mChildren.enableCacheUpdates();
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
         // When we're large, we are either drawn in a "hover" state (ie when dragging an item to
@@ -542,7 +534,7 @@ public class CellLayout extends ViewGroup {
     }
 
     public void removeViewWithoutMarkingCells(View view) {
-        mChildren.removeViewWithoutMarkingCells(view);
+        mChildren.removeView(view);
     }
 
     @Override
