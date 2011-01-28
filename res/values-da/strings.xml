@@ -31,12 +31,12 @@
     <string name="folders_tab_label" msgid="1145293785541489736">"Mapper"</string>
     <string name="shortcuts_tab_label" msgid="8640731503933155644">"Flere"</string>
     <string name="wallpapers_tab_label" msgid="1617804870364119879">"Tapeter"</string>
-    <string name="applications_tab_label" msgid="9046797126882613707">"Programgenvej"</string>
+    <!-- outdated translation 7756968120518062632 -->     <string name="applications_tab_label" msgid="2991364240020736760">"Programgenvej"</string>
     <string name="wallpapers_temp_tab_text" msgid="1660218201190495279">"Dette er fanen for tapeter"</string>
     <string name="all_apps_tab_all" msgid="2942727589595027258">"Alle"</string>
     <string name="all_apps_tab_apps" msgid="5468972551904071712">"Programmer"</string>
     <string name="all_apps_tab_games" msgid="1855736784923494918">"Spil"</string>
-    <!-- outdated translation 7753043607780556423 -->     <string name="all_apps_tab_downloaded" msgid="3335316755603669951">"Downloadet"</string>
+    <!-- outdated translation 7753043607780556423 -->     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Downloadet"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"Ingen spil."</string>
     <!-- outdated translation 6687010155766000796 -->     <string name="all_apps_no_downloads" msgid="2284720393234453761">"Ingen hentede programmer."</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Kunne ikke slippe elementet på denne startskærm"</string>

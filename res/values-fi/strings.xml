@@ -31,12 +31,12 @@
     <string name="folders_tab_label" msgid="1145293785541489736">"Kansiot"</string>
     <string name="shortcuts_tab_label" msgid="8640731503933155644">"Lisää"</string>
     <string name="wallpapers_tab_label" msgid="1617804870364119879">"Taustakuvat"</string>
-    <string name="applications_tab_label" msgid="9046797126882613707">"Sovelluspikakuvakkeet"</string>
+    <!-- outdated translation 7756968120518062632 -->     <string name="applications_tab_label" msgid="2991364240020736760">"Sovelluspikakuvakkeet"</string>
     <string name="wallpapers_temp_tab_text" msgid="1660218201190495279">"Tämä on taustakuvavälilehti"</string>
     <string name="all_apps_tab_all" msgid="2942727589595027258">"Kaikki"</string>
     <string name="all_apps_tab_apps" msgid="5468972551904071712">"Sovellukset"</string>
     <string name="all_apps_tab_games" msgid="1855736784923494918">"Pelit"</string>
-    <!-- outdated translation 7753043607780556423 -->     <string name="all_apps_tab_downloaded" msgid="3335316755603669951">"Ladatut"</string>
+    <!-- outdated translation 7753043607780556423 -->     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Ladatut"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"Ei pelejä."</string>
     <!-- outdated translation 6687010155766000796 -->     <string name="all_apps_no_downloads" msgid="2284720393234453761">"Ei ladattuja sovelluksia."</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Kohdetta ei voi lisätä etusivulle"</string>
