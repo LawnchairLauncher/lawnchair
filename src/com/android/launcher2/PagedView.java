@@ -879,6 +879,11 @@ public abstract class PagedView extends ViewGroup {
         if (f == 0) return;
         f = f / (Math.abs(f)) * (overScrollInfluenceCurve(Math.abs(f)));
 
+        // Clamp this factor, f, to -1 < f < 1
+        if (Math.abs(f) >= 1) {
+            f /= Math.abs(f);
+        }
+
         int overScrollAmount = (int) Math.round(OVERSCROLL_DAMP_FACTOR * f * screenSize);
         if (amount < 0) {
             mScrollX = overScrollAmount;
