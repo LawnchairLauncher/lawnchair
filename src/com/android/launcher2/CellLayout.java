@@ -267,6 +267,13 @@ public class CellLayout extends ViewGroup {
         addView(mChildren);
     }
 
+    public CellLayoutChildren getChildrenLayout() {
+        if (getChildCount() > 0) {
+            return (CellLayoutChildren) getChildAt(0);
+        }
+        return null;
+    }
+
     public void setIsDefaultDropTarget(boolean isDefaultDropTarget) {
         if (mIsDefaultDropTarget != isDefaultDropTarget) {
             mIsDefaultDropTarget = isDefaultDropTarget;
