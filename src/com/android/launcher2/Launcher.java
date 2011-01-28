@@ -47,12 +47,12 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.Intent.ShortcutIconResource;
 import android.content.IntentFilter;
+import android.content.Intent.ShortcutIconResource;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -88,9 +88,9 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.View.OnLongClickListener;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
@@ -100,11 +100,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TabHost;
-import android.widget.TabHost.OnTabChangeListener;
-import android.widget.TabHost.TabContentFactory;
 import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.TabHost.OnTabChangeListener;
+import android.widget.TabHost.TabContentFactory;
 
 import com.android.common.Search;
 import com.android.launcher.R;
@@ -2684,7 +2684,7 @@ public final class Launcher extends Activity
                 toView.setAlpha(0f);
                 ObjectAnimator alphaAnim = ObjectAnimator.ofPropertyValuesHolder(toView,
                         PropertyValuesHolder.ofFloat("alpha", 1.0f));
-                alphaAnim.setInterpolator(new DecelerateInterpolator(1.5f));
+                alphaAnim.setInterpolator(new DecelerateInterpolator(1.0f));
                 alphaAnim.setDuration(duration);
                 alphaAnim.start();
             }
@@ -2782,7 +2782,7 @@ public final class Launcher extends Activity
             ValueAnimator alphaAnim = ObjectAnimator.ofPropertyValuesHolder(fromView,
                     PropertyValuesHolder.ofFloat("alpha", 1.0f, 0.0f));
             alphaAnim.setDuration(res.getInteger(R.integer.config_allAppsFadeOutTime));
-            alphaAnim.setInterpolator(new DecelerateInterpolator(1.5f));
+            alphaAnim.setInterpolator(new DecelerateInterpolator(2.0f));
             alphaAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
