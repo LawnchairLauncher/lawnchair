@@ -60,6 +60,7 @@ import android.view.Display;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -376,7 +377,7 @@ public class Workspace extends SmoothPagedView
      * @return The open folder on the current screen, or null if there is none
      */
     Folder getOpenFolder() {
-        CellLayout currentPage = (CellLayout) getChildAt(mCurrentPage);
+        ViewGroup currentPage = ((CellLayout) getChildAt(mCurrentPage)).getChildrenLayout();
         int count = currentPage.getChildCount();
         for (int i = 0; i < count; i++) {
             View child = currentPage.getChildAt(i);
@@ -394,7 +395,7 @@ public class Workspace extends SmoothPagedView
         ArrayList<Folder> folders = new ArrayList<Folder>(screenCount);
 
         for (int screen = 0; screen < screenCount; screen++) {
-            CellLayout currentPage = (CellLayout) getChildAt(screen);
+            ViewGroup currentPage = ((CellLayout) getChildAt(screen)).getChildrenLayout();
             int count = currentPage.getChildCount();
             for (int i = 0; i < count; i++) {
                 View child = currentPage.getChildAt(i);
@@ -2771,7 +2772,7 @@ public class Workspace extends SmoothPagedView
     public Folder getFolderForTag(Object tag) {
         final int screenCount = getChildCount();
         for (int screen = 0; screen < screenCount; screen++) {
-            CellLayout currentScreen = ((CellLayout) getChildAt(screen));
+            ViewGroup currentScreen = ((CellLayout) getChildAt(screen)).getChildrenLayout();
             int count = currentScreen.getChildCount();
             for (int i = 0; i < count; i++) {
                 View child = currentScreen.getChildAt(i);
@@ -2790,7 +2791,7 @@ public class Workspace extends SmoothPagedView
     public View getViewForTag(Object tag) {
         int screenCount = getChildCount();
         for (int screen = 0; screen < screenCount; screen++) {
-            CellLayout currentScreen = ((CellLayout) getChildAt(screen));
+            ViewGroup currentScreen = ((CellLayout) getChildAt(screen)).getChildrenLayout();
             int count = currentScreen.getChildCount();
             for (int i = 0; i < count; i++) {
                 View child = currentScreen.getChildAt(i);
@@ -2815,8 +2816,7 @@ public class Workspace extends SmoothPagedView
         }
 
         for (int i = 0; i < screenCount; i++) {
-            final CellLayoutChildren layout =
-                (CellLayoutChildren) ((CellLayout) getChildAt(i)).getChildAt(0);
+            final ViewGroup layout = ((CellLayout) getChildAt(i)).getChildrenLayout();
 
             // Avoid ANRs by treating each screen separately
             post(new Runnable() {
@@ -2921,7 +2921,7 @@ public class Workspace extends SmoothPagedView
     void updateShortcuts(ArrayList<ApplicationInfo> apps) {
         final int screenCount = getChildCount();
         for (int i = 0; i < screenCount; i++) {
-            final CellLayout layout = (CellLayout) getChildAt(i);
+            final ViewGroup layout = ((CellLayout) getChildAt(i)).getChildrenLayout();
             int childCount = layout.getChildCount();
             for (int j = 0; j < childCount; j++) {
                 final View view = layout.getChildAt(j);
