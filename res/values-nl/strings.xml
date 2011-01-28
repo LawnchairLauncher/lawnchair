@@ -31,12 +31,12 @@
     <string name="folders_tab_label" msgid="1145293785541489736">"Mappen"</string>
     <string name="shortcuts_tab_label" msgid="8640731503933155644">"Meer"</string>
     <string name="wallpapers_tab_label" msgid="1617804870364119879">"Achtergronden"</string>
-    <string name="applications_tab_label" msgid="9046797126882613707">"Toepassingssnelkoppelingen"</string>
+    <!-- outdated translation 7756968120518062632 -->     <string name="applications_tab_label" msgid="2991364240020736760">"Toepassingssnelkoppelingen"</string>
     <string name="wallpapers_temp_tab_text" msgid="1660218201190495279">"Dit wordt het tabblad \'Achtergronden\'"</string>
     <string name="all_apps_tab_all" msgid="2942727589595027258">"Alle"</string>
     <string name="all_apps_tab_apps" msgid="5468972551904071712">"Toepassingen"</string>
     <string name="all_apps_tab_games" msgid="1855736784923494918">"Games"</string>
-    <!-- outdated translation 7753043607780556423 -->     <string name="all_apps_tab_downloaded" msgid="3335316755603669951">"Gedownload"</string>
+    <!-- outdated translation 7753043607780556423 -->     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Gedownload"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"Geen games gevonden."</string>
     <!-- outdated translation 6687010155766000796 -->     <string name="all_apps_no_downloads" msgid="2284720393234453761">"Geen gedownloade toepassingen gevonden."</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Kan item niet neerzetten op dit startscherm"</string>
