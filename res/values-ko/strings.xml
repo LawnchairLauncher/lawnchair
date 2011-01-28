@@ -31,12 +31,12 @@
     <string name="folders_tab_label" msgid="1145293785541489736">"폴더"</string>
     <string name="shortcuts_tab_label" msgid="8640731503933155644">"더보기"</string>
     <string name="wallpapers_tab_label" msgid="1617804870364119879">"배경화면"</string>
-    <string name="applications_tab_label" msgid="9046797126882613707">"앱 바로가기"</string>
+    <!-- outdated translation 7756968120518062632 -->     <string name="applications_tab_label" msgid="2991364240020736760">"앱 바로가기"</string>
     <string name="wallpapers_temp_tab_text" msgid="1660218201190495279">"배경화면 탭이 됩니다."</string>
     <string name="all_apps_tab_all" msgid="2942727589595027258">"모두"</string>
     <string name="all_apps_tab_apps" msgid="5468972551904071712">"애플리케이션"</string>
     <string name="all_apps_tab_games" msgid="1855736784923494918">"게임"</string>
-    <!-- outdated translation 7753043607780556423 -->     <string name="all_apps_tab_downloaded" msgid="3335316755603669951">"다운로드됨"</string>
+    <!-- outdated translation 7753043607780556423 -->     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"다운로드됨"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"게임이 없습니다."</string>
     <!-- outdated translation 6687010155766000796 -->     <string name="all_apps_no_downloads" msgid="2284720393234453761">"다운로드한 애플리케이션이 없습니다."</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"홈 화면에 항목을 드롭할 수 없습니다."</string>
