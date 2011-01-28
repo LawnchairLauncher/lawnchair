@@ -2737,7 +2737,8 @@ public class Workspace extends SmoothPagedView
         }
 
         for (int i = 0; i < screenCount; i++) {
-            final CellLayout layout = (CellLayout) getChildAt(i);
+            final CellLayoutChildren layout =
+                (CellLayoutChildren) ((CellLayout) getChildAt(i)).getChildAt(0);
 
             // Avoid ANRs by treating each screen separately
             post(new Runnable() {
