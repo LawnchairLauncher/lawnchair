@@ -666,19 +666,27 @@ public class Workspace extends SmoothPagedView
         int wallpaperTravelWidth = (int) (display.getWidth() *
                 wallpaperTravelToScreenWidthRatio(display.getWidth(), display.getHeight()));
 
-        // Account for overscroll: you only see the absolute edge of the wallpaper if
-        // you overscroll as far as you can in landscape mode
-        int overscrollOffset = (int) (maxOverScroll() * display.getWidth());
-        float overscrollRatio = overscrollOffset / (float) getScrollRange();
-        int scrollRangeWithOverscroll = getScrollRange() + 2 * overscrollOffset;
-
         // Set wallpaper offset steps (1 / (number of screens - 1))
         // We have 3 vertical offset states (centered, and then top/bottom aligned
         // for all apps/customize)
         mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 1.0f / (3 - 1));
 
+        int scrollRange = getScrollRange();
+        float scrollProgressOffset = 0;
+
+        // Account for overscroll: you only see the absolute edge of the wallpaper if
+        // you overscroll as far as you can in landscape mode. Only do this for static wallpapers
+        // because live wallpapers (and probably 3rd party wallpaper providers) rely on the offset
+        // being even intervals from 0 to 1 (eg [0, 0.25, 0.5, 0.75, 1])
+        final boolean isStaticWallpaper = (mWallpaperManager.getWallpaperInfo() == null);
+        if (isStaticWallpaper) {
+            int overscrollOffset = (int) (maxOverScroll() * display.getWidth());
+            scrollProgressOffset += overscrollOffset / (float) getScrollRange();
+            scrollRange += 2 * overscrollOffset;
+        }
+
         float scrollProgress =
-            mScrollX / (float) scrollRangeWithOverscroll + overscrollRatio;
+            mScrollX / (float) scrollRange + scrollProgressOffset;
         float offsetInDips = wallpaperTravelWidth * scrollProgress +
             (mWallpaperWidth - wallpaperTravelWidth) / 2;
         float offset = offsetInDips / (float) mWallpaperWidth;
