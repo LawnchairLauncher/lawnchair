@@ -544,6 +544,11 @@ public class Workspace extends SmoothPagedView
                     mShrinkState == ShrinkState.BOTTOM_HIDDEN) {
                 // Intercept this event so we can show the workspace in full view
                 // when it is clicked on and it is small
+                AllAppsPagedView allApps = (AllAppsPagedView)
+                        mLauncher.findViewById(R.id.all_apps_paged_view);
+                if (allApps != null) {
+                    allApps.onInterceptTouchEvent(ev);
+                }
                 return true;
             }
             return false;
@@ -1206,22 +1211,29 @@ public class Workspace extends SmoothPagedView
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (mLauncher.isAllAppsVisible()) {
-            // Cancel any scrolling that is in progress.
-            if (!mScroller.isFinished()) {
-                mScroller.abortAnimation();
-            }
-            setCurrentPage(mCurrentPage);
+        AllAppsPagedView allApps = (AllAppsPagedView)
+                mLauncher.findViewById(R.id.all_apps_paged_view);
 
-            if (mShrinkState == ShrinkState.BOTTOM_HIDDEN) {
-                mLauncher.showWorkspace(true);
-                // Let the events fall through to the CellLayouts because if they are not
-                // hit, then we get a crash due to a missing ACTION_DOWN touch event
-            }
+        if (mLauncher.isAllAppsVisible() && mShrinkState == ShrinkState.BOTTOM_HIDDEN
+                && allApps != null) {
+            if (ev.getAction() == MotionEvent.ACTION_UP &&
+                    allApps.getTouchState() == TOUCH_STATE_REST) {
 
-            return false; // We don't want the events
+                // Cancel any scrolling that is in progress.
+                if (!mScroller.isFinished()) {
+                    mScroller.abortAnimation();
+                }
+                setCurrentPage(mCurrentPage);
+
+                if (mShrinkState == ShrinkState.BOTTOM_HIDDEN) {
+                    mLauncher.showWorkspace(true);
+                }
+                allApps.onTouchEvent(ev);
+                return true;
+            } else {
+                return allApps.onTouchEvent(ev);
+            }
         }
-
         return super.onTouchEvent(ev);
     }
 
