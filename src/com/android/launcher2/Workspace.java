@@ -2824,7 +2824,8 @@ public class Workspace extends SmoothPagedView
         }
 
         for (int i = 0; i < screenCount; i++) {
-            final ViewGroup layout = ((CellLayout) getChildAt(i)).getChildrenLayout();
+            final CellLayout layoutParent = (CellLayout) getChildAt(i);
+            final ViewGroup layout = layoutParent.getChildrenLayout();
 
             // Avoid ANRs by treating each screen separately
             post(new Runnable() {
@@ -2911,7 +2912,9 @@ public class Workspace extends SmoothPagedView
                     childCount = childrenToRemove.size();
                     for (int j = 0; j < childCount; j++) {
                         View child = childrenToRemove.get(j);
-                        layout.removeViewInLayout(child);
+                        // Note: We can not remove the view directly from CellLayoutChildren as this
+                        // does not re-mark the spaces as unoccupied.
+                        layoutParent.removeViewInLayout(child);
                         if (child instanceof DropTarget) {
                             mDragController.removeDropTarget((DropTarget)child);
                         }
