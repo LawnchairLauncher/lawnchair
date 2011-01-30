@@ -168,4 +168,3 @@ public class CellLayoutChildren extends ViewGroup {
         super.setChildrenDrawnWithCacheEnabled(enabled);
     }
 }
-}
