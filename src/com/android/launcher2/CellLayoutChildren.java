@@ -18,11 +18,12 @@ package com.android.launcher2;
 
 import android.app.WallpaperManager;
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.View.MeasureSpec;
 
-public class CellLayoutChildren extends CachedViewGroup {
+public class CellLayoutChildren extends ViewGroup {
     static final String TAG = "CellLayoutChildren";
 
     // These are temporary variables to prevent having to allocate a new object just to
@@ -94,7 +95,6 @@ public class CellLayoutChildren extends CachedViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             final View child = getChildAt(i);
