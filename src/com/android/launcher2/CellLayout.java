@@ -491,10 +491,6 @@ public class CellLayout extends ViewGroup {
         return mCountY;
     }
 
-    public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params) {
-        return addViewToCellLayout(child, index, childId, params, true);
-    }
-
     public boolean addViewToCellLayout(
             View child, int index, int childId, LayoutParams params, boolean markCells) {
         final LayoutParams lp = params;
