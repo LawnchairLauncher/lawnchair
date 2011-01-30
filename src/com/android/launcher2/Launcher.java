@@ -2783,10 +2783,12 @@ public final class Launcher extends Activity
                     PropertyValuesHolder.ofFloat("alpha", 1.0f, 0.0f));
             alphaAnim.setDuration(res.getInteger(R.integer.config_allAppsFadeOutTime));
             alphaAnim.setInterpolator(new DecelerateInterpolator(2.0f));
+            fromView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
             alphaAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     fromView.setVisibility(View.GONE);
+                    fromView.setLayerType(View.LAYER_TYPE_NONE, null);
                 }
             });
 
