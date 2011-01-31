@@ -2690,6 +2690,7 @@ public final class Launcher extends Activity
             }
 
             scaleAnim.setInterpolator(new Workspace.ZoomOutInterpolator());
+            toView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
             scaleAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
@@ -2706,6 +2707,7 @@ public final class Launcher extends Activity
                     // If we don't set the final scale values here, if this animation is cancelled
                     // it will have the wrong scale value and subsequent cameraPan animations will
                     // not fix that
+                    toView.setLayerType(View.LAYER_TYPE_NONE, null);
                     toView.setScaleX(1.0f);
                     toView.setScaleY(1.0f);
                 }
