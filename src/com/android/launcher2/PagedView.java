@@ -233,6 +233,10 @@ public abstract class PagedView extends ViewGroup {
         return getWidth();
     }
 
+    public int getTouchState() {
+        return mTouchState;
+    }
+
     /**
      * Updates the scroll of the current page immediately to its final scroll position.  We use this
      * in CustomizePagedView to allow tabs to share the same PagedView while resetting the scroll of
