@@ -38,7 +38,7 @@
     <string name="all_apps_tab_games" msgid="1855736784923494918">"Žaidimai"</string>
     <!-- outdated translation 7753043607780556423 -->     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Atsisiųsta"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"Nerasta žaidimų."</string>
-    <!-- outdated translation 6687010155766000796 -->     <string name="all_apps_no_downloads" msgid="2284720393234453761">"Nerasta atsisiųstų programų."</string>
+    <string name="all_apps_no_downloads" msgid="2284720393234453761">"Neturite atsisiųstų programų."</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Nepavyko pašalinti elemento šiame pagr. ekrane"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Pasirinkti norimą sukurti valdiklį"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Aplanko pavadinimas"</string>

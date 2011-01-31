@@ -38,7 +38,7 @@
     <string name="all_apps_tab_games" msgid="1855736784923494918">"Spēles"</string>
     <!-- outdated translation 7753043607780556423 -->     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Lejupielādētās"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"Nav nevienas spēles."</string>
-    <!-- outdated translation 6687010155766000796 -->     <string name="all_apps_no_downloads" msgid="2284720393234453761">"Nav lejupielādētu lietotņu."</string>
+    <string name="all_apps_no_downloads" msgid="2284720393234453761">"Nav ielādēta neviena lietojumprogramma."</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Nevarēja nomest vienumu šajā sākumekrānā."</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Atlasīt izveidojamo logrīku"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Mapes nosaukums"</string>
