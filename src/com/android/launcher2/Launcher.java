@@ -3476,6 +3476,15 @@ public final class Launcher extends Activity
             mSavedInstanceState = null;
         }
 
+        // Workaround a bug that occurs when rotating the device while the customization mode is
+        // open, we trigger a new layout on all the CellLayout children.
+        if (LauncherApplication.isScreenXLarge() && (mState == State.CUSTOMIZE)) {
+            final int childCount = mWorkspace.getChildCount();
+            for (int i = 0; i < childCount; ++i) {
+                mWorkspace.getChildAt(i).requestLayout();
+            }
+        }
+
         mWorkspaceLoading = false;
     }
 
