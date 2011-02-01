@@ -281,7 +281,6 @@ public class Workspace extends SmoothPagedView
             @Override
             public void onAnimationStart(Animator animation) {
                 mIsInUnshrinkAnimation = true;
-                disableCacheUpdates();
             }
 
             @Override
@@ -299,19 +298,13 @@ public class Workspace extends SmoothPagedView
                     mDrawCustomizeTrayBackground = false;
                 }
                 mWallpaperOffset.setOverrideHorizontalCatchupConstant(false);
-                enableCacheUpdates();
                 mAnimator = null;
             }
         };
         mShrinkAnimationListener = new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationStart(Animator animation) {
-                disableCacheUpdates();
-            }
-            @Override
             public void onAnimationEnd(Animator animation) {
                 mWallpaperOffset.setOverrideHorizontalCatchupConstant(false);
-                enableCacheUpdates();
                 mAnimator = null;
             }
         };
@@ -1036,22 +1029,6 @@ public class Workspace extends SmoothPagedView
             // When the device is rotated, the scroll position of the current screen
             // needs to be refreshed
             setCurrentPage(getCurrentPage());
-        }
-    }
-
-    public void enableCacheUpdates() {
-        final int pageCount = getChildCount();
-        for (int i = 0; i < pageCount; i++) {
-            final CellLayout page = (CellLayout) getChildAt(i);
-            page.enableCacheUpdates();
-        }
-    }
-
-    public void disableCacheUpdates() {
-        final int pageCount = getChildCount();
-        for (int i = 0; i < pageCount; i++) {
-            final CellLayout page = (CellLayout) getChildAt(i);
-            page.disableCacheUpdates();
         }
     }
 

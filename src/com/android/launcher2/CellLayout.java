@@ -50,7 +50,7 @@ import android.view.animation.LayoutAnimationController;
 
 import java.util.Arrays;
 
-public class CellLayout extends CachedViewGroup {
+public class CellLayout extends ViewGroup {
     static final String TAG = "CellLayout";
 
     private int mCellWidth;
