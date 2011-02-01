@@ -2690,7 +2690,10 @@ public final class Launcher extends Activity
             }
 
             scaleAnim.setInterpolator(new Workspace.ZoomOutInterpolator());
-            toView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            // Only use hardware layers in portrait mode, they don't give any gains in landscape
+            if (mWorkspace.getWidth() < mWorkspace.getHeight()) {
+                toView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            }
             scaleAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
