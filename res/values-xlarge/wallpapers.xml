@@ -17,7 +17,12 @@
 
 <resources>
     <string-array name="wallpapers" translatable="false">
-        <item>glow_wallpaper</item>
+	<item>bluecrystal</item>
+	<item>bluelinebots</item>
+	<item>bots</item>
+	<item>bucky</item>
+	<item>geonova</item>
         <item>city_wallpaper</item>
+	<item>lotus</item>
     </string-array>
 </resources>
