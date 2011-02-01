@@ -19,10 +19,12 @@
     <string-array name="wallpapers" translatable="false">
 	<item>bluecrystal</item>
 	<item>bluelinebots</item>
+	<item>glowy_hex</item>
 	<item>bots</item>
+	<item>flowerbot</item>
 	<item>bucky</item>
-	<item>geonova</item>
-        <item>city_wallpaper</item>
 	<item>lotus</item>
+	<item>city</item>
+	<item>village</item>
     </string-array>
 </resources>
