@@ -217,6 +217,13 @@ public class Workspace extends SmoothPagedView
     private int mLastDragXOffset;
     private int mLastDragYOffset;
 
+    // Variables relating to touch disambiguation (scrolling workspace vs. scrolling a widget)
+    private float mXDown;
+    private float mYDown;
+    final static float START_DAMPING_TOUCH_SLOP_ANGLE = (float) Math.PI / 6;
+    final static float MAX_SWIPE_ANGLE = (float) Math.PI / 3;
+    final static float TOUCH_SLOP_DAMPING_FACTOR = 4;
+
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -539,6 +546,11 @@ public class Workspace extends SmoothPagedView
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            mXDown = ev.getX();
+            mYDown = ev.getY();
+        }
+
         if (mIsSmall || mIsInUnshrinkAnimation) {
             if (mLauncher.isAllAppsVisible() &&
                     mShrinkState == ShrinkState.BOTTOM_HIDDEN) {
@@ -558,7 +570,34 @@ public class Workspace extends SmoothPagedView
 
     @Override
     protected void determineScrollingStart(MotionEvent ev) {
-        if (!mIsSmall && !mIsInUnshrinkAnimation) super.determineScrollingStart(ev);
+        float deltaX = Math.abs(ev.getX() - mXDown);
+        float deltaY = Math.abs(ev.getY() - mYDown);
+
+        if (Float.compare(deltaX, 0f) == 0) return;
+
+        float slope = deltaY / deltaX;
+        float theta = (float) Math.atan(slope);
+
+        if (deltaX > mTouchSlop || deltaY > mTouchSlop) {
+            cancelCurrentPageLongPress();
+        }
+
+        if (theta > MAX_SWIPE_ANGLE) {
+            // Above MAX_SWIPE_ANGLE, we don't want to ever start scrolling the workspace
+            return;
+        } else if (theta > START_DAMPING_TOUCH_SLOP_ANGLE) {
+            // Above START_DAMPING_TOUCH_SLOP_ANGLE and below MAX_SWIPE_ANGLE, we want to increase
+            // the touch slop to make it harder to begin scrolling the workspace. This results
+            // in vertically scrolling widgets to more easily. The higher the angle, the
+            // more we increase touch slop.
+            theta -= START_DAMPING_TOUCH_SLOP_ANGLE;
+            float extraRatio = (float)
+                    Math.sqrt((theta / (MAX_SWIPE_ANGLE - START_DAMPING_TOUCH_SLOP_ANGLE)));
+            super.determineScrollingStart(ev, 1 + TOUCH_SLOP_DAMPING_FACTOR * extraRatio);
+        } else {
+            // Below START_DAMPING_TOUCH_SLOP_ANGLE, we don't do anything special
+            super.determineScrollingStart(ev);
+        }
     }
 
     protected void onPageBeginMoving() {
