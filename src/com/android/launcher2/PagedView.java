@@ -1308,8 +1308,8 @@ public abstract class PagedView extends ViewGroup {
                 int lowerPageBound = getAssociatedLowerPageBound(page);
                 int upperPageBound = getAssociatedUpperPageBound(page);
                 for (int i = 0; i < count; ++i) {
-                    final ViewGroup layout = (ViewGroup) getChildAt(i);
-                    final int childCount = layout.getChildCount();
+                    Page layout = (Page) getChildAt(i);
+                    final int childCount = layout.getPageChildCount();
                     if (lowerPageBound <= i && i <= upperPageBound) {
                         if (mDirtyPageContent.get(i)) {
                             syncPageItems(i);
@@ -1317,7 +1317,7 @@ public abstract class PagedView extends ViewGroup {
                         }
                     } else {
                         if (childCount > 0) {
-                            layout.removeAllViews();
+                            layout.removeAllViewsOnPage();
                         }
                         mDirtyPageContent.set(i, true);
                     }
@@ -1358,10 +1358,10 @@ public abstract class PagedView extends ViewGroup {
         ArrayList<Checkable> checked = new ArrayList<Checkable>();
         final int childCount = getChildCount();
         for (int i = 0; i < childCount; ++i) {
-            final ViewGroup layout = (ViewGroup) getChildAt(i);
-            final int grandChildCount = layout.getChildCount();
+            Page layout = (Page) getChildAt(i);
+            final int grandChildCount = layout.getPageChildCount();
             for (int j = 0; j < grandChildCount; ++j) {
-                final View v = layout.getChildAt(j);
+                final View v = layout.getChildOnPageAt(j);
                 if (v instanceof Checkable && ((Checkable) v).isChecked()) {
                     checked.add((Checkable) v);
                 }
@@ -1378,10 +1378,10 @@ public abstract class PagedView extends ViewGroup {
         if (mChoiceMode == CHOICE_MODE_SINGLE) {
             final int childCount = getChildCount();
             for (int i = 0; i < childCount; ++i) {
-                final ViewGroup layout = (ViewGroup) getChildAt(i);
-                final int grandChildCount = layout.getChildCount();
+                Page layout = (Page) getChildAt(i);
+                final int grandChildCount = layout.getPageChildCount();
                 for (int j = 0; j < grandChildCount; ++j) {
-                    final View v = layout.getChildAt(j);
+                    final View v = layout.getChildOnPageAt(j);
                     if (v instanceof Checkable && ((Checkable) v).isChecked()) {
                         return (Checkable) v;
                     }

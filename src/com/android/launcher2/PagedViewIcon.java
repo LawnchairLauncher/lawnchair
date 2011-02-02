@@ -65,6 +65,8 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
     private int mHoloBlurColor;
     private int mHoloOutlineColor;
 
+    HolographicPagedViewIcon mHolographicOutlineView;
+
     private static final HandlerThread sWorkerThread = new HandlerThread("pagedviewicon-helper");
     static {
         sWorkerThread.start();
@@ -90,7 +92,7 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
                 public void run() {
                     icon.mHolographicOutline = holographicOutline;
                     icon.mIconCache.addOutline(icon.mIconCacheKey, holographicOutline);
-                    icon.invalidate();
+                    icon.getHolographicOutlineView().invalidate();
                 }
             });
         }
@@ -127,6 +129,15 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
 
         setFocusable(true);
         setBackgroundDrawable(null);
+        mHolographicOutlineView = new HolographicPagedViewIcon(context, this);
+    }
+
+    protected HolographicPagedViewIcon getHolographicOutlineView() {
+        return mHolographicOutlineView;
+    }
+
+    protected Bitmap getHolographicOutline() {
+        return mHolographicOutline;
     }
 
     private void queueHolographicOutlineCreation() {

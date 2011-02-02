@@ -17,7 +17,6 @@
 package com.android.launcher2;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,12 +28,8 @@ import android.view.ViewGroup;
  * which span multiple cells into a grid-like layout.  Also supports dimming
  * to give a preview of its contents.
  */
-public class PagedViewCellLayout extends ViewGroup {
+public class PagedViewCellLayout extends ViewGroup implements Page {
     static final String TAG = "PagedViewCellLayout";
-
-    private float mHolographicAlpha;
-
-    private boolean mCenterContent;
 
     private int mCellCountX;
     private int mCellCountY;
@@ -43,6 +38,8 @@ public class PagedViewCellLayout extends ViewGroup {
     private int mWidthGap;
     private int mHeightGap;
     private static int sDefaultCellDimensions = 96;
+    protected PagedViewCellLayoutChildren mChildren;
+    private PagedViewCellLayoutChildren mHolographicChildren;
 
     public PagedViewCellLayout(Context context) {
         this(context, null);
@@ -61,20 +58,25 @@ public class PagedViewCellLayout extends ViewGroup {
         mCellWidth = mCellHeight = sDefaultCellDimensions;
         mCellCountX = LauncherModel.getCellCountX();
         mCellCountY = LauncherModel.getCellCountY();
-        mHolographicAlpha = 0.0f;
         mWidthGap = mHeightGap = -1;
-    }
 
-    @Override
-    protected boolean onSetAlpha(int alpha) {
-        return true;
+        mChildren = new PagedViewCellLayoutChildren(context);
+        mChildren.setCellDimensions(mCellWidth, mCellHeight);
+        mChildren.setGap(mWidthGap, mHeightGap);
+
+        addView(mChildren);
+        mHolographicChildren = new PagedViewCellLayoutChildren(context);
+        mHolographicChildren.setAlpha(0f);
+        mHolographicChildren.setCellDimensions(mCellWidth, mCellHeight);
+        mHolographicChildren.setGap(mWidthGap, mHeightGap);
+
+        addView(mHolographicChildren);
     }
 
     @Override
     public void setAlpha(float alpha) {
-        mHolographicAlpha = 1.0f - alpha;
-        setChildrenAlpha(alpha);
-        super.setAlpha(alpha);
+        mChildren.setAlpha(alpha);
+        mHolographicChildren.setAlpha(1.0f - alpha);
     }
 
     @Override
@@ -103,28 +105,44 @@ public class PagedViewCellLayout extends ViewGroup {
             if (lp.cellVSpan < 0) lp.cellVSpan = mCellCountY;
 
             child.setId(childId);
+            mChildren.addView(child, index, lp);
 
-            // We might be in the middle or end of shrinking/fading to a dimmed view
-            // Make sure this view's alpha is set the same as all the rest of the views
-            child.setAlpha(1.0f - mHolographicAlpha);
-
-            addView(child, index, lp);
+            if (child instanceof PagedViewIcon) {
+                PagedViewIcon pagedViewIcon = (PagedViewIcon) child;
+                mHolographicChildren.addView(pagedViewIcon.getHolographicOutlineView(), index, lp);
+            }
             return true;
         }
         return false;
     }
 
     @Override
-    public void requestChildFocus(View child, View focused) {
-        super.requestChildFocus(child, focused);
-        if (child != null) {
-            Rect r = new Rect();
-            child.getDrawingRect(r);
-            requestRectangleOnScreen(r);
-        }
+    public void removeAllViewsOnPage() {
+        mChildren.removeAllViews();
+        mHolographicChildren.removeAllViews();
     }
 
     @Override
+    public void removeViewOnPageAt(int index) {
+        mChildren.removeViewAt(index);
+        mHolographicChildren.removeViewAt(index);
+    }
+
+    @Override
+    public int getPageChildCount() {
+        return mChildren.getChildCount();
+    }
+
+    @Override
+    public View getChildOnPageAt(int i) {
+        return mChildren.getChildAt(i);
+    }
+
+    @Override
+    public int indexOfChildOnPage(View v) {
+        return mChildren.indexOfChild(v);
+    }
+
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // TODO: currently ignoring padding
 
@@ -154,8 +172,6 @@ public class PagedViewCellLayout extends ViewGroup {
 
         // center it around the min gaps
         int minGap = Math.min(widthGap, heightGap);
-        int paddingLeft = mPaddingLeft;
-        int paddingTop = mPaddingTop;
         /*
         if (minGap < heightGap) {
             // vertical space has shrunken, so change padding accordingly
@@ -180,16 +196,10 @@ public class PagedViewCellLayout extends ViewGroup {
         final int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            PagedViewCellLayout.LayoutParams lp =
-                (PagedViewCellLayout.LayoutParams) child.getLayoutParams();
-            lp.setup(cellWidth, cellHeight, widthGap, heightGap,
-                    paddingLeft, paddingTop);
-
-            int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(lp.width,
-                    MeasureSpec.EXACTLY);
-            int childheightMeasureSpec = MeasureSpec.makeMeasureSpec(lp.height,
-                    MeasureSpec.EXACTLY);
-
+            int childWidthMeasureSpec =
+                MeasureSpec.makeMeasureSpec(newWidth, MeasureSpec.EXACTLY);
+            int childheightMeasureSpec =
+                MeasureSpec.makeMeasureSpec(newHeight, MeasureSpec.EXACTLY);
             child.measure(childWidthMeasureSpec, childheightMeasureSpec);
         }
 
@@ -199,32 +209,9 @@ public class PagedViewCellLayout extends ViewGroup {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int count = getChildCount();
-
-        int offsetX = 0;
-        if (mCenterContent) {
-            // determine the max width of all the rows and center accordingly
-            int maxRowWidth = 0;
-            for (int i = 0; i < count; i++) {
-                View child = getChildAt(i);
-                if (child.getVisibility() != GONE) {
-                    PagedViewCellLayout.LayoutParams lp =
-                        (PagedViewCellLayout.LayoutParams) child.getLayoutParams();
-                    maxRowWidth = Math.max(maxRowWidth, lp.x + lp.width);
-                }
-            }
-            offsetX = (getMeasuredWidth() / 2) - (maxRowWidth / 2);
-        }
-
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            if (child.getVisibility() != GONE) {
-                PagedViewCellLayout.LayoutParams lp =
-                    (PagedViewCellLayout.LayoutParams) child.getLayoutParams();
-
-                int childLeft = offsetX + lp.x;
-                int childTop = lp.y;
-                child.layout(childLeft, childTop, childLeft + lp.width, childTop + lp.height);
-            }
+            child.layout(0, 0, r - l, b - t);
         }
     }
 
@@ -234,20 +221,14 @@ public class PagedViewCellLayout extends ViewGroup {
     }
 
     public void enableCenteredContent(boolean enabled) {
-        mCenterContent = enabled;
+        mChildren.enableCenteredContent(enabled);
+        mHolographicChildren.enableCenteredContent(enabled);
     }
 
     @Override
     protected void setChildrenDrawingCacheEnabled(boolean enabled) {
-        final int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            final View view = getChildAt(i);
-            view.setDrawingCacheEnabled(enabled);
-            // Update the drawing caches
-            if (!view.isHardwareAccelerated()) {
-                view.buildDrawingCache(true);
-            }
-        }
+        mChildren.setChildrenDrawingCacheEnabled(enabled);
+        mHolographicChildren.setChildrenDrawingCacheEnabled(enabled);
     }
 
     public void setCellCount(int xCount, int yCount) {
@@ -259,23 +240,19 @@ public class PagedViewCellLayout extends ViewGroup {
     public void setGap(int widthGap, int heightGap) {
         mWidthGap = widthGap;
         mHeightGap = heightGap;
+        mChildren.setGap(widthGap, heightGap);
+        mHolographicChildren.setGap(widthGap, heightGap);
     }
 
     public void setCellDimensions(int width, int height) {
         mCellWidth = width;
         mCellHeight = height;
-        requestLayout();
+        mChildren.setCellDimensions(width, height);
+        mHolographicChildren.setCellDimensions(width, height);
     }
 
     public int getDefaultCellDimensions() {
         return sDefaultCellDimensions;
-    }
-
-    private void setChildrenAlpha(float alpha) {
-        final int childCount = getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            getChildAt(i).setAlpha(alpha);
-        }
     }
 
     public int[] getCellCountForDimensions(int width, int height) {
@@ -451,4 +428,12 @@ public class PagedViewCellLayout extends ViewGroup {
                 this.cellHSpan + ", " + this.cellVSpan + ")";
         }
     }
+}
+
+interface Page {
+    public int getPageChildCount();
+    public View getChildOnPageAt(int i);
+    public void removeAllViewsOnPage();
+    public void removeViewOnPageAt(int i);
+    public int indexOfChildOnPage(View v);
 }
