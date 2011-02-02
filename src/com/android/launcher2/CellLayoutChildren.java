@@ -44,6 +44,7 @@ public class CellLayoutChildren extends ViewGroup {
     public CellLayoutChildren(Context context) {
         super(context);
         mWallpaperManager = WallpaperManager.getInstance(context);
+        setLayerType(LAYER_TYPE_HARDWARE, null);
     }
 
     public void setCellDimensions(int cellWidth, int cellHeight,
