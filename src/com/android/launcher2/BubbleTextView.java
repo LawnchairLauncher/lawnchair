@@ -31,13 +31,14 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 /**
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
  * because we want to make the bubble taller than the text and TextView's clip is
  * too aggressive.
  */
-public class BubbleTextView extends CachedTextView implements VisibilityChangedBroadcaster {
+public class BubbleTextView extends TextView implements VisibilityChangedBroadcaster {
     static final float CORNER_RADIUS = 4.0f;
     static final float SHADOW_LARGE_RADIUS = 4.0f;
     static final float SHADOW_SMALL_RADIUS = 1.75f;
@@ -96,19 +97,6 @@ public class BubbleTextView extends CachedTextView implements VisibilityChangedB
         mFocusedGlowColor = res.getColor(R.color.workspace_item_focused_glow_color);
         mPressedOutlineColor = res.getColor(R.color.workspace_item_pressed_outline_color);
         mPressedGlowColor = res.getColor(R.color.workspace_item_pressed_glow_color);
-    }
-
-    protected int getCacheTopPadding() {
-        return (int) PADDING_V;
-    }
-    protected int getCacheBottomPadding() {
-        return (int) (PADDING_V + SHADOW_LARGE_RADIUS + SHADOW_Y_OFFSET);
-    }
-    protected int getCacheLeftPadding() {
-        return (int) (PADDING_H + SHADOW_LARGE_RADIUS);
-    }
-    protected int getCacheRightPadding() {
-        return (int) (PADDING_H + SHADOW_LARGE_RADIUS);
     }
 
     public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache) {
@@ -269,33 +257,34 @@ public class BubbleTextView extends CachedTextView implements VisibilityChangedB
                     mScrollX - padding, mScrollY - padding, mTempPaint);
             canvas.restore();
         }
-        if (isBuildingCache()) {
-            // We enhance the shadow by drawing the shadow twice
-            this.setShadowLayer(SHADOW_LARGE_RADIUS, 0.0f, SHADOW_Y_OFFSET, SHADOW_LARGE_COLOUR);
-            super.draw(canvas);
-            this.setShadowLayer(SHADOW_SMALL_RADIUS, 0.0f, 0.0f, SHADOW_SMALL_COLOUR);
-            super.draw(canvas);
-        } else {
-            final Drawable background = mBackground;
-            if (background != null) {
-                final int scrollX = mScrollX;
-                final int scrollY = mScrollY;
 
-                if (mBackgroundSizeChanged) {
-                    background.setBounds(0, 0,  mRight - mLeft, mBottom - mTop);
-                    mBackgroundSizeChanged = false;
-                }
+        final Drawable background = mBackground;
+        if (background != null) {
+            final int scrollX = mScrollX;
+            final int scrollY = mScrollY;
 
-                if ((scrollX | scrollY) == 0) {
-                    background.draw(canvas);
-                } else {
-                    canvas.translate(scrollX, scrollY);
-                    background.draw(canvas);
-                    canvas.translate(-scrollX, -scrollY);
-                }
+            if (mBackgroundSizeChanged) {
+                background.setBounds(0, 0,  mRight - mLeft, mBottom - mTop);
+                mBackgroundSizeChanged = false;
             }
-            super.draw(canvas);
+
+            if ((scrollX | scrollY) == 0) {
+                background.draw(canvas);
+            } else {
+                canvas.translate(scrollX, scrollY);
+                background.draw(canvas);
+                canvas.translate(-scrollX, -scrollY);
+            }
         }
+        // We enhance the shadow by drawing the shadow twice
+        setShadowLayer(SHADOW_LARGE_RADIUS, 0.0f, SHADOW_Y_OFFSET, SHADOW_LARGE_COLOUR);
+        super.draw(canvas);
+        canvas.save(Canvas.CLIP_SAVE_FLAG);
+        canvas.clipRect(mScrollX, mScrollY + getExtendedPaddingTop(), mScrollX + getWidth(),
+                mScrollY + getHeight(), Region.Op.REPLACE);
+        setShadowLayer(SHADOW_SMALL_RADIUS, 0.0f, 0.0f, SHADOW_SMALL_COLOUR);
+        super.draw(canvas);
+        canvas.restore();
     }
 
     @Override
