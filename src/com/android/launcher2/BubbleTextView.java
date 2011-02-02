@@ -97,6 +97,8 @@ public class BubbleTextView extends TextView implements VisibilityChangedBroadca
         mFocusedGlowColor = res.getColor(R.color.workspace_item_focused_glow_color);
         mPressedOutlineColor = res.getColor(R.color.workspace_item_pressed_outline_color);
         mPressedGlowColor = res.getColor(R.color.workspace_item_pressed_glow_color);
+
+        setShadowLayer(SHADOW_LARGE_RADIUS, 0.0f, SHADOW_Y_OFFSET, SHADOW_LARGE_COLOUR);
     }
 
     public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache) {
@@ -277,12 +279,12 @@ public class BubbleTextView extends TextView implements VisibilityChangedBroadca
             }
         }
         // We enhance the shadow by drawing the shadow twice
-        setShadowLayer(SHADOW_LARGE_RADIUS, 0.0f, SHADOW_Y_OFFSET, SHADOW_LARGE_COLOUR);
+        getPaint().setShadowLayer(SHADOW_LARGE_RADIUS, 0.0f, SHADOW_Y_OFFSET, SHADOW_LARGE_COLOUR);
         super.draw(canvas);
         canvas.save(Canvas.CLIP_SAVE_FLAG);
         canvas.clipRect(mScrollX, mScrollY + getExtendedPaddingTop(), mScrollX + getWidth(),
                 mScrollY + getHeight(), Region.Op.REPLACE);
-        setShadowLayer(SHADOW_SMALL_RADIUS, 0.0f, 0.0f, SHADOW_SMALL_COLOUR);
+        getPaint().setShadowLayer(SHADOW_SMALL_RADIUS, 0.0f, 0.0f, SHADOW_SMALL_COLOUR);
         super.draw(canvas);
         canvas.restore();
     }
