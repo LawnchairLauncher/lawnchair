@@ -306,9 +306,14 @@ public class Workspace extends SmoothPagedView
                 }
                 mWallpaperOffset.setOverrideHorizontalCatchupConstant(false);
                 mAnimator = null;
+                enableChildrenLayers(false);
             }
         };
         mShrinkAnimationListener = new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                enableChildrenLayers(true);
+            }
             @Override
             public void onAnimationEnd(Animator animation) {
                 mWallpaperOffset.setOverrideHorizontalCatchupConstant(false);
@@ -1251,6 +1256,25 @@ public class Workspace extends SmoothPagedView
             }
         }
         return super.onTouchEvent(ev);
+    }
+
+    protected void enableChildrenLayers(boolean enable) {
+        for (int i = 0; i < getPageCount(); i++) {
+            setChildrenLayersEnabled(enable);
+        }
+    }
+    @Override
+    protected void pageBeginMoving() {
+        enableChildrenLayers(true);
+        super.pageBeginMoving();
+    }
+
+    @Override
+    protected void pageEndMoving() {
+        if (!mIsSmall && !mIsInUnshrinkAnimation) {
+            enableChildrenLayers(false);
+        }
+        super.pageEndMoving();
     }
 
     @Override
