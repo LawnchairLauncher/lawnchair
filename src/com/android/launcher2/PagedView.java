@@ -825,11 +825,15 @@ public abstract class PagedView extends ViewGroup {
         anim.start();
     }
 
+    protected void determineScrollingStart(MotionEvent ev) {
+        determineScrollingStart(ev, 1.0f);
+    }
+
     /*
      * Determines if we should change the touch state to start scrolling after the
      * user moves their touch point too far.
      */
-    protected void determineScrollingStart(MotionEvent ev) {
+    protected void determineScrollingStart(MotionEvent ev, float touchSlopScale) {
         /*
          * Locally do absolute value. mLastMotionX is set to the y value
          * of the down event.
@@ -840,12 +844,12 @@ public abstract class PagedView extends ViewGroup {
         final int xDiff = (int) Math.abs(x - mLastMotionX);
         final int yDiff = (int) Math.abs(y - mLastMotionY);
 
-        final int touchSlop = mTouchSlop;
+        final int touchSlop = Math.round(touchSlopScale * mTouchSlop);
         boolean xPaged = xDiff > mPagingTouchSlop;
         boolean xMoved = xDiff > touchSlop;
         boolean yMoved = yDiff > touchSlop;
 
-        if (xMoved || yMoved) {
+        if (xMoved || xPaged || yMoved) {
             if (mUsePagingTouchSlop ? xPaged : xMoved) {
                 // Scroll if the user moved far enough along the X axis
                 mTouchState = TOUCH_STATE_SCROLLING;
@@ -855,15 +859,19 @@ public abstract class PagedView extends ViewGroup {
                 pageBeginMoving();
             }
             // Either way, cancel any pending longpress
-            if (mAllowLongPress) {
-                mAllowLongPress = false;
-                // Try canceling the long press. It could also have been scheduled
-                // by a distant descendant, so use the mAllowLongPress flag to block
-                // everything
-                final View currentPage = getPageAt(mCurrentPage);
-                if (currentPage != null) {
-                    currentPage.cancelLongPress();
-                }
+            cancelCurrentPageLongPress();
+        }
+    }
+
+    protected void cancelCurrentPageLongPress() {
+        if (mAllowLongPress) {
+            mAllowLongPress = false;
+            // Try canceling the long press. It could also have been scheduled
+            // by a distant descendant, so use the mAllowLongPress flag to block
+            // everything
+            final View currentPage = getPageAt(mCurrentPage);
+            if (currentPage != null) {
+                currentPage.cancelLongPress();
             }
         }
     }
