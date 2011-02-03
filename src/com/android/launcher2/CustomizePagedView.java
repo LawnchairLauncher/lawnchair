@@ -930,7 +930,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         final int endIndex = Math.min(startIndex + numCells, list.size());
         final PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(page);
         // TODO: we can optimize by just re-applying to existing views
-        layout.removeAllViews();
+        layout.removeAllViewsOnPage();
         for (int i = startIndex; i < endIndex; ++i) {
             ResolveInfo info = list.get(i);
             PendingAddItemInfo createItemInfo = new PendingAddItemInfo();
@@ -990,7 +990,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         final int endIndex = Math.min(startIndex + numCells, mApps.size());
         final PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(page);
         // TODO: we can optimize by just re-applying to existing views
-        layout.removeAllViews();
+        layout.removeAllViewsOnPage();
         for (int i = startIndex; i < endIndex; ++i) {
             final ApplicationInfo info = mApps.get(i);
             PagedViewIcon icon = (PagedViewIcon) mInflater.inflate(

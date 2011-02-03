@@ -19,12 +19,13 @@ package com.android.launcher2;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.LinearLayout;
 
 /**
  * The linear layout used strictly for the widget/wallpaper tab of the customization tray
  */
-public class PagedViewExtendedLayout extends LinearLayout {
+public class PagedViewExtendedLayout extends LinearLayout implements Page {
     static final String TAG = "PagedViewWidgetLayout";
 
     public PagedViewExtendedLayout(Context context) {
@@ -67,5 +68,30 @@ public class PagedViewExtendedLayout extends LinearLayout {
         for (int i = 0; i < childCount; i++) {
             getChildAt(i).setAlpha(alpha);
         }
+    }
+
+    @Override
+    public void removeAllViewsOnPage() {
+        removeAllViews();
+    }
+
+    @Override
+    public void removeViewOnPageAt(int index) {
+        removeViewAt(index);
+    }
+
+    @Override
+    public int getPageChildCount() {
+        return getChildCount();
+    }
+
+    @Override
+    public View getChildOnPageAt(int i) {
+        return getChildAt(i);
+    }
+
+    @Override
+    public int indexOfChildOnPage(View v) {
+        return indexOfChild(v);
     }
 }
