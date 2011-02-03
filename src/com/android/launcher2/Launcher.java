@@ -17,13 +17,10 @@
 
 package com.android.launcher2;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import com.android.common.Search;
+import com.android.launcher.R;
+import com.android.launcher2.CustomizePagedView.CustomizationType;
+import com.android.launcher2.Workspace.ShrinkState;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -31,6 +28,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -106,10 +104,13 @@ import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabContentFactory;
 
-import com.android.common.Search;
-import com.android.launcher.R;
-import com.android.launcher2.CustomizePagedView.CustomizationType;
-import com.android.launcher2.Workspace.ShrinkState;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -2674,22 +2675,36 @@ public final class Launcher extends Activity
         }
 
         if (animated) {
-            ValueAnimator scaleAnim = ObjectAnimator.ofPropertyValuesHolder(toView,
-                    PropertyValuesHolder.ofFloat("scaleX", scale, 1.0f),
-                    PropertyValuesHolder.ofFloat("scaleY", scale, 1.0f));
+            final float oldScaleX = toView.getScaleX();
+            final float oldScaleY = toView.getScaleY();
 
-            scaleAnim.setDuration(duration);
+            ValueAnimator scaleAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
+            scaleAnim.setInterpolator(new Workspace.ZoomOutInterpolator());
+            scaleAnim.addUpdateListener(new AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    final float b = (Float) animation.getAnimatedValue();
+                    final float a = 1f - b;
+                    ((View) toView.getParent()).fastInvalidate();
+                    toView.setFastScaleX(a * oldScaleX + b * 1f);
+                    toView.setFastScaleY(a * oldScaleY + b * 1f);
+                }
+            });
 
             if (toAllApps) {
                 toView.setAlpha(0f);
-                ObjectAnimator alphaAnim = ObjectAnimator.ofPropertyValuesHolder(toView,
-                        PropertyValuesHolder.ofFloat("alpha", 1.0f));
+                ValueAnimator alphaAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
                 alphaAnim.setInterpolator(new DecelerateInterpolator(1.0f));
-                alphaAnim.setDuration(duration);
+                alphaAnim.addUpdateListener(new AnimatorUpdateListener() {
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        final float b = (Float) animation.getAnimatedValue();
+                        final float a = 1f - b;
+                        // don't need to invalidate because we do so above
+                        toView.setFastAlpha(a * 0f + b * 1f);
+                    }
+                });
                 alphaAnim.start();
             }
 
-            scaleAnim.setInterpolator(new Workspace.ZoomOutInterpolator());
             // Only use hardware layers in portrait mode, they don't give any gains in landscape
             if (mWorkspace.getWidth() < mWorkspace.getHeight()) {
                 toView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
@@ -2760,7 +2775,7 @@ public final class Launcher extends Activity
             res.getInteger(R.integer.config_allAppsZoomOutTime) :
             res.getInteger(R.integer.config_customizeZoomOutTime);
 
-        float scaleFactor = fromAllApps ?
+        final float scaleFactor = fromAllApps ?
             (float) res.getInteger(R.integer.config_allAppsZoomScaleFactor) :
             (float) res.getInteger(R.integer.config_customizeZoomScaleFactor);
 
@@ -2778,16 +2793,33 @@ public final class Launcher extends Activity
         if (animated) {
             if (mStateAnimation != null) mStateAnimation.cancel();
             mStateAnimation = new AnimatorSet();
-            ValueAnimator scaleAnim = ObjectAnimator.ofPropertyValuesHolder(fromView,
-                    PropertyValuesHolder.ofFloat("scaleX", scaleFactor),
-                    PropertyValuesHolder.ofFloat("scaleY", scaleFactor));
-            scaleAnim.setDuration(duration);
-            scaleAnim.setInterpolator(new Workspace.ZoomInInterpolator());
 
-            ValueAnimator alphaAnim = ObjectAnimator.ofPropertyValuesHolder(fromView,
-                    PropertyValuesHolder.ofFloat("alpha", 1.0f, 0.0f));
+            final float oldScaleX = fromView.getScaleX();
+            final float oldScaleY = fromView.getScaleY();
+
+            ValueAnimator scaleAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
+            scaleAnim.setInterpolator(new Workspace.ZoomInInterpolator());
+            scaleAnim.addUpdateListener(new AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    final float b = (Float) animation.getAnimatedValue();
+                    final float a = 1f - b;
+                    ((View)fromView.getParent()).fastInvalidate();
+                    fromView.setFastScaleX(a * oldScaleX + b * scaleFactor);
+                    fromView.setFastScaleY(a * oldScaleY + b * scaleFactor);
+                }
+            });
+            ValueAnimator alphaAnim = ValueAnimator.ofFloat(0f, 1f);
             alphaAnim.setDuration(res.getInteger(R.integer.config_allAppsFadeOutTime));
             alphaAnim.setInterpolator(new DecelerateInterpolator(2.0f));
+            alphaAnim.addUpdateListener(new AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    final float b = (Float) animation.getAnimatedValue();
+                    final float a = 1f - b;
+                    // don't need to invalidate because we do so above
+                    fromView.setFastAlpha(a * 1f + b * 0f);
+                }
+            });
+
             fromView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
             alphaAnim.addListener(new AnimatorListenerAdapter() {
                 @Override

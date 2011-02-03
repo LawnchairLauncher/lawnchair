@@ -1363,24 +1363,24 @@ public class Workspace extends SmoothPagedView
         float totalWidth = screenCount * scaledPageWidth + (screenCount - 1) * extraScaledSpacing;
 
         boolean isPortrait = getMeasuredHeight() > getMeasuredWidth();
-        float newY = (isPortrait ?
+        float y = (isPortrait ?
                 getResources().getDimension(R.dimen.allAppsSmallScreenVerticalMarginPortrait) :
                 getResources().getDimension(R.dimen.allAppsSmallScreenVerticalMarginLandscape));
         float finalAlpha = 1.0f;
         float extraShrinkFactor = 1.0f;
 
         if (shrinkState == ShrinkState.BOTTOM_VISIBLE) {
-             newY = screenHeight - newY - scaledPageHeight;
+             y = screenHeight - y - scaledPageHeight;
         } else if (shrinkState == ShrinkState.BOTTOM_HIDDEN) {
             // We shrink and disappear to nothing in the case of all apps
             // (which is when we shrink to the bottom)
-            newY = screenHeight - newY - scaledPageHeight;
+            y = screenHeight - y - scaledPageHeight;
             finalAlpha = 0.0f;
         } else if (shrinkState == ShrinkState.MIDDLE) {
-            newY = screenHeight / 2 - scaledPageHeight / 2;
+            y = screenHeight / 2 - scaledPageHeight / 2;
             finalAlpha = 1.0f;
         } else if (shrinkState == ShrinkState.TOP) {
-            newY = (isPortrait ?
+            y = (isPortrait ?
                 getResources().getDimension(R.dimen.customizeSmallScreenVerticalMarginPortrait) :
                 getResources().getDimension(R.dimen.customizeSmallScreenVerticalMarginLandscape));
         }
@@ -1396,18 +1396,34 @@ public class Workspace extends SmoothPagedView
         // At the same time, the screens become greyed/dimmed
 
         // newX is initialized to the left-most position of the centered screens
-        float newX = mScroller.getFinalX() + screenWidth / 2 - totalWidth / 2;
+        float x = mScroller.getFinalX() + screenWidth / 2 - totalWidth / 2;
 
         // We are going to scale about the center of the view, so we need to adjust the positions
         // of the views accordingly
-        newX -= (pageWidth - scaledPageWidth) / 2.0f;
-        newY -= (pageHeight - scaledPageHeight) / 2.0f;
+        x -= (pageWidth - scaledPageWidth) / 2.0f;
+        y -= (pageHeight - scaledPageHeight) / 2.0f;
 
         if (mAnimator != null) {
             mAnimator.cancel();
         }
 
         mAnimator = new AnimatorSet();
+
+        final float[] oldXs = new float[getChildCount()];
+        final float[] oldYs = new float[getChildCount()];
+        final float[] oldScaleXs = new float[getChildCount()];
+        final float[] oldScaleYs = new float[getChildCount()];
+        final float[] oldBackgroundAlphas = new float[getChildCount()];
+        final float[] oldAlphas = new float[getChildCount()];
+        final float[] oldRotationYs = new float[getChildCount()];
+        final float[] newXs = new float[getChildCount()];
+        final float[] newYs = new float[getChildCount()];
+        final float[] newScaleXs = new float[getChildCount()];
+        final float[] newScaleYs = new float[getChildCount()];
+        final float[] newBackgroundAlphas = new float[getChildCount()];
+        final float[] newAlphas = new float[getChildCount()];
+        final float[] newRotationYs = new float[getChildCount()];
+
         for (int i = 0; i < screenCount; i++) {
             final CellLayout cl = (CellLayout) getChildAt(i);
 
@@ -1415,33 +1431,33 @@ public class Workspace extends SmoothPagedView
             float rotationScaleX = (float) (1.0f / Math.cos(Math.PI * rotation / 180.0f));
             float rotationScaleY = getYScaleForScreen(i);
 
-            if (animated) {
-                ObjectAnimator animWithInterpolator = ObjectAnimator.ofPropertyValuesHolder(cl,
-                        PropertyValuesHolder.ofFloat("x", newX),
-                        PropertyValuesHolder.ofFloat("y", newY),
-                        PropertyValuesHolder.ofFloat("scaleX",
-                                SHRINK_FACTOR * rotationScaleX * extraShrinkFactor),
-                        PropertyValuesHolder.ofFloat("scaleY",
-                                SHRINK_FACTOR * rotationScaleY * extraShrinkFactor),
-                        PropertyValuesHolder.ofFloat("backgroundAlpha", finalAlpha),
-                        PropertyValuesHolder.ofFloat("alpha", finalAlpha),
-                        PropertyValuesHolder.ofFloat("rotationY", rotation));
-
-                animWithInterpolator.setDuration(duration);
-                animWithInterpolator.setInterpolator(mZoomOutInterpolator);
-                mAnimator.playTogether(animWithInterpolator);
+            oldAlphas[i] = cl.getAlpha();
+            newAlphas[i] = finalAlpha;
+            if (animated && !(oldAlphas[i] == 0f && newAlphas[i] == 0f)) {
+                oldXs[i] = cl.getX();
+                oldYs[i] = cl.getY();
+                oldScaleXs[i] = cl.getScaleX();
+                oldScaleYs[i] = cl.getScaleY();
+                oldBackgroundAlphas[i] = cl.getBackgroundAlpha();
+                oldRotationYs[i] = cl.getRotationY();
+                newXs[i] = x;
+                newYs[i] = y;
+                newScaleXs[i] = SHRINK_FACTOR * rotationScaleX * extraShrinkFactor;
+                newScaleYs[i] = SHRINK_FACTOR * rotationScaleY * extraShrinkFactor;
+                newBackgroundAlphas[i] = finalAlpha;
+                newRotationYs[i] = rotation;
             } else {
-                cl.setX((int)newX);
-                cl.setY((int)newY);
+                cl.setX((int)x);
+                cl.setY((int)y);
                 cl.setScaleX(SHRINK_FACTOR * rotationScaleX * extraShrinkFactor);
                 cl.setScaleY(SHRINK_FACTOR * rotationScaleY * extraShrinkFactor);
                 cl.setBackgroundAlpha(finalAlpha);
                 cl.setAlpha(finalAlpha);
                 cl.setRotationY(rotation);
-                mShrinkAnimationListener.onAnimationEnd(null);
+                if (!animated) mShrinkAnimationListener.onAnimationEnd(null);
             }
             // increment newX for the next screen
-            newX += scaledPageWidth + extraScaledSpacing;
+            x += scaledPageWidth + extraScaledSpacing;
         }
 
         float wallpaperOffset = 0.5f;
@@ -1471,21 +1487,46 @@ public class Workspace extends SmoothPagedView
                 break;
         }
 
+        setLayoutScale(1.0f);
         if (animated) {
             mWallpaperOffset.setHorizontalCatchupConstant(0.46f);
             mWallpaperOffset.setOverrideHorizontalCatchupConstant(true);
-        }
 
-        setLayoutScale(1.0f);
-        if (animated) {
             mSyncWallpaperOffsetWithScroll = false;
-            ObjectAnimator wallpaperAnim = ObjectAnimator.ofPropertyValuesHolder(this,
-                    PropertyValuesHolder.ofFloat("verticalWallpaperOffset", wallpaperOffset),
-                    PropertyValuesHolder.ofFloat("horizontalWallpaperOffset", 0.5f));
-            mAnimator.play(wallpaperAnim);
 
-            wallpaperAnim.setDuration(duration);
-            wallpaperAnim.setInterpolator(mZoomOutInterpolator);
+            ValueAnimator animWithInterpolator =
+                ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
+            animWithInterpolator.setInterpolator(mZoomOutInterpolator);
+
+            final float oldHorizontalWallpaperOffset = getHorizontalWallpaperOffset();
+            final float oldVerticalWallpaperOffset = getVerticalWallpaperOffset();
+            final float newHorizontalWallpaperOffset = 0.5f;
+            final float newVerticalWallpaperOffset = wallpaperOffset;
+            animWithInterpolator.addUpdateListener(new AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    fastInvalidate();
+                    final float b = (Float) animation.getAnimatedValue();
+                    final float a = 1f - b;
+                    setHorizontalWallpaperOffset(
+                            a * oldHorizontalWallpaperOffset + b * newHorizontalWallpaperOffset);
+                    setVerticalWallpaperOffset(
+                            a * oldVerticalWallpaperOffset + b * newVerticalWallpaperOffset);
+                    for (int i = 0; i < screenCount; i++) {
+                        if (oldAlphas[i] == 0f && newAlphas[i] == 0f) continue;
+                        final CellLayout cl = (CellLayout) getChildAt(i);
+                        cl.fastInvalidate();
+                        cl.setFastX(a * oldXs[i] + b * newXs[i]);
+                        cl.setFastY(a * oldYs[i] + b * newYs[i]);
+                        cl.setFastScaleX(a * oldScaleXs[i] + b * newScaleXs[i]);
+                        cl.setFastScaleY(a * oldScaleYs[i] + b * newScaleYs[i]);
+                        cl.setFastBackgroundAlpha(
+                                a * oldBackgroundAlphas[i] + b * newBackgroundAlphas[i]);
+                        cl.setFastAlpha(a * oldAlphas[i] + b * newAlphas[i]);
+                        cl.setFastRotationY(a * oldRotationYs[i] + b * newRotationYs[i]);
+                    }
+                }
+            });
+            mAnimator.playTogether(animWithInterpolator);
             mAnimator.addListener(mShrinkAnimationListener);
             mAnimator.start();
         } else {
@@ -1687,6 +1728,23 @@ public class Workspace extends SmoothPagedView
 
             final int duration = getResources().getInteger(R.integer.config_workspaceUnshrinkTime);
 
+            final float[] oldTranslationXs = new float[getChildCount()];
+            final float[] oldTranslationYs = new float[getChildCount()];
+            final float[] oldScaleXs = new float[getChildCount()];
+            final float[] oldScaleYs = new float[getChildCount()];
+            final float[] oldBackgroundAlphas = new float[getChildCount()];
+            final float[] oldBackgroundAlphaMultipliers = new float[getChildCount()];
+            final float[] oldAlphas = new float[getChildCount()];
+            final float[] oldRotationYs = new float[getChildCount()];
+            final float[] newTranslationXs = new float[getChildCount()];
+            final float[] newTranslationYs = new float[getChildCount()];
+            final float[] newScaleXs = new float[getChildCount()];
+            final float[] newScaleYs = new float[getChildCount()];
+            final float[] newBackgroundAlphas = new float[getChildCount()];
+            final float[] newBackgroundAlphaMultipliers = new float[getChildCount()];
+            final float[] newAlphas = new float[getChildCount()];
+            final float[] newRotationYs = new float[getChildCount()];
+
             for (int i = 0; i < screenCount; i++) {
                 final CellLayout cl = (CellLayout)getChildAt(i);
                 float finalAlphaValue = (i == mCurrentPage) ? 1.0f : 0.0f;
@@ -1703,25 +1761,24 @@ public class Workspace extends SmoothPagedView
 
                 float translation = getOffsetXForRotation(rotation, cl.getWidth(), cl.getHeight());
 
-                if (animated) {
-                    ObjectAnimator animWithInterpolator = ObjectAnimator.ofPropertyValuesHolder(cl,
-                            PropertyValuesHolder.ofFloat("translationX", translation),
-                            PropertyValuesHolder.ofFloat("translationY", 0.0f),
-                            PropertyValuesHolder.ofFloat("scaleX", finalScaleFactor),
-                            PropertyValuesHolder.ofFloat("scaleY", finalScaleFactor),
-                            PropertyValuesHolder.ofFloat("backgroundAlpha", finalBackgroundAlpha),
-                            PropertyValuesHolder.ofFloat("backgroundAlphaMultiplier",
-                                    finalAlphaMultiplierValue),
-                            PropertyValuesHolder.ofFloat("alpha", finalAlphaValue));
-                    animWithInterpolator.setDuration(duration);
-                    animWithInterpolator.setInterpolator(mZoomInInterpolator);
+                oldAlphas[i] = cl.getAlpha();
+                newAlphas[i] = finalAlphaValue;
+                if (animated && !(oldAlphas[i] == 0f && newAlphas[i] == 0f)) {
+                    oldTranslationXs[i] = cl.getTranslationX();
+                    oldTranslationYs[i] = cl.getTranslationY();
+                    oldScaleXs[i] = cl.getScaleX();
+                    oldScaleYs[i] = cl.getScaleY();
+                    oldBackgroundAlphas[i] = cl.getBackgroundAlpha();
+                    oldBackgroundAlphaMultipliers[i] = cl.getBackgroundAlphaMultiplier();
+                    oldRotationYs[i] = cl.getRotationY();
 
-                    ObjectAnimator rotationAnim = ObjectAnimator.ofPropertyValuesHolder(cl,
-                            PropertyValuesHolder.ofFloat("rotationY", rotation));
-                    rotationAnim.setDuration(duration);
-                    rotationAnim.setInterpolator(new DecelerateInterpolator(2.0f));
-
-                    mAnimator.playTogether(animWithInterpolator, rotationAnim);
+                    newTranslationXs[i] = translation;
+                    newTranslationYs[i] = 0f;
+                    newScaleXs[i] = finalScaleFactor;
+                    newScaleYs[i] = finalScaleFactor;
+                    newBackgroundAlphas[i] = finalBackgroundAlpha;
+                    newBackgroundAlphaMultipliers[i] = finalAlphaMultiplierValue;
+                    newRotationYs[i] = rotation;
                 } else {
                     cl.setTranslationX(translation);
                     cl.setTranslationY(0.0f);
@@ -1731,7 +1788,7 @@ public class Workspace extends SmoothPagedView
                     cl.setBackgroundAlphaMultiplier(finalAlphaMultiplierValue);
                     cl.setAlpha(finalAlphaValue);
                     cl.setRotationY(rotation);
-                    mUnshrinkAnimationListener.onAnimationEnd(null);
+                    if (!animated) mUnshrinkAnimationListener.onAnimationEnd(null);
                 }
             }
             Display display = mLauncher.getWindowManager().getDefaultDisplay();
@@ -1765,15 +1822,59 @@ public class Workspace extends SmoothPagedView
                     break;
             }
             if (animated) {
-                ObjectAnimator wallpaperAnim = ObjectAnimator.ofPropertyValuesHolder(this,
-                        PropertyValuesHolder.ofFloat(
-                                "verticalWallpaperOffset", 0.5f),
-                        PropertyValuesHolder.ofFloat(
-                                "horizontalWallpaperOffset", wallpaperOffsetForCurrentScroll()));
-                wallpaperAnim.setDuration(duration);
-                wallpaperAnim.setInterpolator(mZoomInInterpolator);
-                mAnimator.play(wallpaperAnim);
+                ValueAnimator animWithInterpolator =
+                    ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
+                animWithInterpolator.setInterpolator(mZoomInInterpolator);
 
+                final float oldHorizontalWallpaperOffset = getHorizontalWallpaperOffset();
+                final float oldVerticalWallpaperOffset = getVerticalWallpaperOffset();
+                final float newHorizontalWallpaperOffset = wallpaperOffsetForCurrentScroll();
+                final float newVerticalWallpaperOffset = 0.5f;
+                animWithInterpolator.addUpdateListener(new AnimatorUpdateListener() {
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        fastInvalidate();
+                        final float b = (Float) animation.getAnimatedValue();
+                        final float a = 1f - b;
+                        setHorizontalWallpaperOffset(
+                                a * oldHorizontalWallpaperOffset + b * newHorizontalWallpaperOffset);
+                        setVerticalWallpaperOffset(
+                                a * oldVerticalWallpaperOffset + b * newVerticalWallpaperOffset);
+                        for (int i = 0; i < screenCount; i++) {
+                            if (oldAlphas[i] == 0f && newAlphas[i] == 0f) continue;
+                            final CellLayout cl = (CellLayout) getChildAt(i);
+                            cl.fastInvalidate();
+                            cl.setFastTranslationX(
+                                    a * oldTranslationXs[i] + b * newTranslationXs[i]);
+                            cl.setFastTranslationY(
+                                    a * oldTranslationYs[i] + b * newTranslationYs[i]);
+                            cl.setFastScaleX(a * oldScaleXs[i] + b * newScaleXs[i]);
+                            cl.setFastScaleY(a * oldScaleYs[i] + b * newScaleYs[i]);
+                            cl.setFastBackgroundAlpha(
+                                    a * oldBackgroundAlphas[i] + b * newBackgroundAlphas[i]);
+                            cl.setBackgroundAlphaMultiplier(a * oldBackgroundAlphaMultipliers[i] +
+                                    b * newBackgroundAlphaMultipliers[i]);
+                            cl.setFastAlpha(a * oldAlphas[i] + b * newAlphas[i]);
+                        }
+                    }
+                });
+
+                ValueAnimator rotationAnim =
+                    ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
+                rotationAnim.setInterpolator(new DecelerateInterpolator(2.0f));
+                rotationAnim.addUpdateListener(new AnimatorUpdateListener() {
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        // don't invalidate workspace because we did it above
+                        final float b = (Float) animation.getAnimatedValue();
+                        final float a = 1f - b;
+                        for (int i = 0; i < screenCount; i++) {
+                            if (oldAlphas[i] == 0f && newAlphas[i] == 0f) continue;
+                            final CellLayout cl = (CellLayout) getChildAt(i);
+                            cl.setFastRotationY(a * oldRotationYs[i] + b * newRotationYs[i]);
+                        }
+                    }
+                });
+
+                mAnimator.playTogether(animWithInterpolator, rotationAnim);
                 // If we call this when we're not animated, onAnimationEnd is never called on
                 // the listener; make sure we only use the listener when we're actually animating
                 mAnimator.addListener(mUnshrinkAnimationListener);
