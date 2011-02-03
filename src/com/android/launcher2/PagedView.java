@@ -273,12 +273,12 @@ public abstract class PagedView extends ViewGroup {
         }
     }
 
-    private void pageBeginMoving() {
+    protected void pageBeginMoving() {
         mIsPageMoving = true;
         onPageBeginMoving();
     }
 
-    private void pageEndMoving() {
+    protected void pageEndMoving() {
         onPageEndMoving();
         mIsPageMoving = false;
     }
