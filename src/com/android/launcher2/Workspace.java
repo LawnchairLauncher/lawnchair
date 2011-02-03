@@ -1260,7 +1260,7 @@ public class Workspace extends SmoothPagedView
 
     protected void enableChildrenLayers(boolean enable) {
         for (int i = 0; i < getPageCount(); i++) {
-            getChildAt(i).setChildrenLayersEnabled(enable);
+            ((ViewGroup)getChildAt(i)).setChildrenLayersEnabled(enable);
         }
     }
     @Override
