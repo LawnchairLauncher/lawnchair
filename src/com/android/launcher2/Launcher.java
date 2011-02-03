@@ -2919,6 +2919,10 @@ public final class Launcher extends Activity
         // Change the state *after* we've called all the transition code
         mState = State.ALL_APPS;
 
+        // Pause the auto-advance of widgets until we are out of AllApps
+        mUserPresent = false;
+        updateRunning();
+
         // send an accessibility event to announce the context change
         getWindow().getDecorView().sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
     }
@@ -2943,6 +2947,10 @@ public final class Launcher extends Activity
 
         // Change the state *after* we've called all the transition code
         mState = State.WORKSPACE;
+
+        // Resume the auto-advance of widgets
+        mUserPresent = true;
+        updateRunning();
 
         // send an accessibility event to announce the context change
         getWindow().getDecorView().sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
@@ -3044,6 +3052,10 @@ public final class Launcher extends Activity
         }
         // Change the state *after* we've called all the transition code
         mState = State.CUSTOMIZE;
+
+        // Pause the auto-advance of widgets until we are out of Customization drawer
+        mUserPresent = false;
+        updateRunning();
     }
 
     // Hide the customization drawer (only exists in x-large configuration)
