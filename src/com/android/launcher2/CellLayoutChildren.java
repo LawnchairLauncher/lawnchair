@@ -45,6 +45,9 @@ public class CellLayoutChildren extends ViewGroup {
         super(context);
         mWallpaperManager = WallpaperManager.getInstance(context);
         setLayerType(LAYER_TYPE_HARDWARE, null);
+
+        // Disable multitouch for the workspace
+        setMotionEventSplittingEnabled(false);
     }
 
     public void setCellDimensions(int cellWidth, int cellHeight,
