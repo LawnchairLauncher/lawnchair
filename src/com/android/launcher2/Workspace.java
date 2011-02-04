@@ -1435,7 +1435,7 @@ public class Workspace extends SmoothPagedView
 
             oldAlphas[i] = cl.getAlpha();
             newAlphas[i] = finalAlpha;
-            if (animated && !(oldAlphas[i] == 0f && newAlphas[i] == 0f)) {
+            if (animated) {
                 oldXs[i] = cl.getX();
                 oldYs[i] = cl.getY();
                 oldScaleXs[i] = cl.getScaleX();
@@ -1456,7 +1456,7 @@ public class Workspace extends SmoothPagedView
                 cl.setBackgroundAlpha(finalAlpha);
                 cl.setAlpha(finalAlpha);
                 cl.setRotationY(rotation);
-                if (!animated) mShrinkAnimationListener.onAnimationEnd(null);
+                mShrinkAnimationListener.onAnimationEnd(null);
             }
             // increment newX for the next screen
             x += scaledPageWidth + extraScaledSpacing;
@@ -1514,7 +1514,6 @@ public class Workspace extends SmoothPagedView
                     setVerticalWallpaperOffset(
                             a * oldVerticalWallpaperOffset + b * newVerticalWallpaperOffset);
                     for (int i = 0; i < screenCount; i++) {
-                        if (oldAlphas[i] == 0f && newAlphas[i] == 0f) continue;
                         final CellLayout cl = (CellLayout) getChildAt(i);
                         cl.fastInvalidate();
                         cl.setFastX(a * oldXs[i] + b * newXs[i]);
@@ -1624,6 +1623,9 @@ public class Workspace extends SmoothPagedView
                 case BOTTOM_HIDDEN:
                 case BOTTOM_VISIBLE:
                 case SPRING_LOADED:
+                    if (state != ShrinkState.TOP) {
+                        cl.setIsDefaultDropTarget(false);
+                    }
                     if (!isDragHappening) {
                         // even if a drag isn't happening, we don't want to show a screen as
                         // accepting drops if it doesn't have at least one free cell
@@ -1765,7 +1767,7 @@ public class Workspace extends SmoothPagedView
 
                 oldAlphas[i] = cl.getAlpha();
                 newAlphas[i] = finalAlphaValue;
-                if (animated && !(oldAlphas[i] == 0f && newAlphas[i] == 0f)) {
+                if (animated) {
                     oldTranslationXs[i] = cl.getTranslationX();
                     oldTranslationYs[i] = cl.getTranslationY();
                     oldScaleXs[i] = cl.getScaleX();
@@ -1790,7 +1792,7 @@ public class Workspace extends SmoothPagedView
                     cl.setBackgroundAlphaMultiplier(finalAlphaMultiplierValue);
                     cl.setAlpha(finalAlphaValue);
                     cl.setRotationY(rotation);
-                    if (!animated) mUnshrinkAnimationListener.onAnimationEnd(null);
+                    mUnshrinkAnimationListener.onAnimationEnd(null);
                 }
             }
             Display display = mLauncher.getWindowManager().getDefaultDisplay();
@@ -1842,7 +1844,6 @@ public class Workspace extends SmoothPagedView
                         setVerticalWallpaperOffset(
                                 a * oldVerticalWallpaperOffset + b * newVerticalWallpaperOffset);
                         for (int i = 0; i < screenCount; i++) {
-                            if (oldAlphas[i] == 0f && newAlphas[i] == 0f) continue;
                             final CellLayout cl = (CellLayout) getChildAt(i);
                             cl.fastInvalidate();
                             cl.setFastTranslationX(
@@ -1869,7 +1870,6 @@ public class Workspace extends SmoothPagedView
                         final float b = (Float) animation.getAnimatedValue();
                         final float a = 1f - b;
                         for (int i = 0; i < screenCount; i++) {
-                            if (oldAlphas[i] == 0f && newAlphas[i] == 0f) continue;
                             final CellLayout cl = (CellLayout) getChildAt(i);
                             cl.setFastRotationY(a * oldRotationYs[i] + b * newRotationYs[i]);
                         }
@@ -2182,11 +2182,13 @@ public class Workspace extends SmoothPagedView
             originY = (int)mTempOriginXY[1];
         }
 
-        // When you drag to a particular screen, make that the new current/default screen, so any
-        // subsequent taps add items to that screen
-        int dragTargetIndex = indexOfChild(mDragTargetLayout);
-        if (mCurrentPage != dragTargetIndex && (mIsSmall || mIsInUnshrinkAnimation)) {
-            scrollToNewPageWithoutMovingPages(dragTargetIndex);
+        // When you are in customization mode and drag to a particular screen, make that the
+        // new current/default screen, so any subsequent taps add items to that screen
+        if (!mLauncher.isAllAppsVisible()) {
+            int dragTargetIndex = indexOfChild(mDragTargetLayout);
+            if (mCurrentPage != dragTargetIndex && (mIsSmall || mIsInUnshrinkAnimation)) {
+                scrollToNewPageWithoutMovingPages(dragTargetIndex);
+            }
         }
 
         if (source != this) {
