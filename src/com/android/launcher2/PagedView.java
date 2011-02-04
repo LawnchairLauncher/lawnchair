@@ -544,9 +544,9 @@ public abstract class PagedView extends ViewGroup {
                         alpha = 1.0f;
                     }
 
-                    if (Float.compare(alpha, layout.getAlpha()) != 0) {
+                    //if (Float.compare(alpha, layout.getAlpha()) != 0) {
                         layout.setAlpha(alpha);
-                    }
+                    //}
                 }
                 mDirtyPageAlpha = false;
             }
