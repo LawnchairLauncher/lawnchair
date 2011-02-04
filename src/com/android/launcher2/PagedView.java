@@ -79,6 +79,7 @@ public abstract class PagedView extends ViewGroup {
 
     private float mDownMotionX;
     protected float mLastMotionX;
+    protected float mLastMotionXRemainder;
     protected float mLastMotionY;
     private int mLastScreenCenter = -1;
 
@@ -761,6 +762,7 @@ public abstract class PagedView extends ViewGroup {
                 mDownMotionX = x;
                 mLastMotionX = x;
                 mLastMotionY = y;
+                mLastMotionXRemainder = 0;
                 mActivePointerId = ev.getPointerId(0);
                 mAllowLongPress = true;
 
@@ -854,6 +856,7 @@ public abstract class PagedView extends ViewGroup {
                 // Scroll if the user moved far enough along the X axis
                 mTouchState = TOUCH_STATE_SCROLLING;
                 mLastMotionX = x;
+                mLastMotionXRemainder = 0;
                 mTouchX = mScrollX;
                 mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
                 pageBeginMoving();
@@ -934,6 +937,7 @@ public abstract class PagedView extends ViewGroup {
 
             // Remember where the motion event started
             mDownMotionX = mLastMotionX = ev.getX();
+            mLastMotionXRemainder = 0;
             mActivePointerId = ev.getPointerId(0);
             if (mTouchState == TOUCH_STATE_SCROLLING) {
                 pageBeginMoving();
@@ -945,17 +949,21 @@ public abstract class PagedView extends ViewGroup {
                 // Scroll to follow the motion event
                 final int pointerIndex = ev.findPointerIndex(mActivePointerId);
                 final float x = ev.getX(pointerIndex);
-                final int deltaX = (int) (mLastMotionX - x);
-                mLastMotionX = x;
+                final float deltaX = mLastMotionX + mLastMotionXRemainder - x;
 
-                if (deltaX != 0) {
+                // Only scroll and update mLastMotionX if we have moved some discrete amount.  We
+                // keep the remainder because we are actually testing if we've moved from the last
+                // scrolled position (which is discrete).
+                if (Math.abs(deltaX) >= 1.0f) {
                     mTouchX += deltaX;
                     mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
                     if (!mDeferScrollUpdate) {
-                        scrollBy(deltaX, 0);
+                        scrollBy((int) deltaX, 0);
                     } else {
                         invalidate();
                     }
+                    mLastMotionX = x;
+                    mLastMotionXRemainder = deltaX - (int) deltaX;
                 } else {
                     awakenScrollBars();
                 }
@@ -1057,6 +1065,7 @@ public abstract class PagedView extends ViewGroup {
             final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
             mLastMotionX = mDownMotionX = ev.getX(newPointerIndex);
             mLastMotionY = ev.getY(newPointerIndex);
+            mLastMotionXRemainder = 0;
             mActivePointerId = ev.getPointerId(newPointerIndex);
             if (mVelocityTracker != null) {
                 mVelocityTracker.clear();
