@@ -40,6 +40,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
     private static int sDefaultCellDimensions = 96;
     protected PagedViewCellLayoutChildren mChildren;
     private PagedViewCellLayoutChildren mHolographicChildren;
+    private boolean mUseHardwareLayers = false;
 
     public PagedViewCellLayout(Context context) {
         this(context, null);
@@ -73,10 +74,27 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         addView(mHolographicChildren);
     }
 
+    public void enableHardwareLayers() {
+        mUseHardwareLayers = true;
+    }
+
     @Override
     public void setAlpha(float alpha) {
         mChildren.setAlpha(alpha);
         mHolographicChildren.setAlpha(1.0f - alpha);
+    }
+
+    void destroyHardwareLayers() {
+        if (mUseHardwareLayers) {
+            mChildren.destroyHardwareLayer();
+            mHolographicChildren.destroyHardwareLayer();
+        }
+    }
+    void createHardwareLayers() {
+        if (mUseHardwareLayers) {
+            mChildren.createHardwareLayer();
+            mHolographicChildren.createHardwareLayer();
+        }
     }
 
     @Override
@@ -109,6 +127,9 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
 
             if (child instanceof PagedViewIcon) {
                 PagedViewIcon pagedViewIcon = (PagedViewIcon) child;
+                if (mUseHardwareLayers) {
+                    pagedViewIcon.disableCache();
+                }
                 mHolographicChildren.addView(pagedViewIcon.getHolographicOutlineView(), index, lp);
             }
             return true;
