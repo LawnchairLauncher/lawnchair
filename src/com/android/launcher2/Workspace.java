@@ -1580,7 +1580,7 @@ public class Workspace extends SmoothPagedView
      */
     static class ZoomOutInterpolator implements TimeInterpolator {
         private final ZInterpolator zInterpolator = new ZInterpolator(0.2f);
-        private final DecelerateInterpolator decelerate = new DecelerateInterpolator(1.5f);
+        private final DecelerateInterpolator decelerate = new DecelerateInterpolator(1.8f);
 
         public float getInterpolation(float input) {
             return decelerate.getInterpolation(zInterpolator.getInterpolation(input));
@@ -1815,8 +1815,8 @@ public class Workspace extends SmoothPagedView
                 case BOTTOM_VISIBLE:
                     // all apps
                     if (animated) {
-                        mWallpaperOffset.setHorizontalCatchupConstant(isLandscape ? 0.49f : 0.46f);
-                        mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.49f : 0.46f);
+                        mWallpaperOffset.setHorizontalCatchupConstant(isLandscape ? 0.65f : 0.65f);
+                        mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.65f : 0.65f);
                         mWallpaperOffset.setOverrideHorizontalCatchupConstant(true);
                     }
                     break;
