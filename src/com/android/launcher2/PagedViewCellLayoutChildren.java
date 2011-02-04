@@ -140,11 +140,6 @@ public class PagedViewCellLayoutChildren extends ViewGroup {
         }
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return super.onTouchEvent(event) || true;
-    }
-
     public void enableCenteredContent(boolean enabled) {
         mCenterContent = enabled;
     }
