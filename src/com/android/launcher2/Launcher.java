@@ -2675,9 +2675,6 @@ public final class Launcher extends Activity
         }
 
         if (animated) {
-            final float oldScaleX = toView.getScaleX();
-            final float oldScaleY = toView.getScaleY();
-
             ValueAnimator scaleAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
             scaleAnim.setInterpolator(new Workspace.ZoomOutInterpolator());
             scaleAnim.addUpdateListener(new AnimatorUpdateListener() {
@@ -2685,8 +2682,8 @@ public final class Launcher extends Activity
                     final float b = (Float) animation.getAnimatedValue();
                     final float a = 1f - b;
                     ((View) toView.getParent()).fastInvalidate();
-                    toView.setFastScaleX(a * oldScaleX + b * 1f);
-                    toView.setFastScaleY(a * oldScaleY + b * 1f);
+                    toView.setFastScaleX(a * scale + b * 1f);
+                    toView.setFastScaleY(a * scale + b * 1f);
                 }
             });
 
