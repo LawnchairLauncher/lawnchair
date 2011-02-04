@@ -40,6 +40,9 @@ public class DragLayer extends FrameLayout {
      */
     public DragLayer(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        // Disable multitouch across the workspace/all apps/customize tray
+        setMotionEventSplittingEnabled(false);
     }
 
     public void setDragController(DragController controller) {
