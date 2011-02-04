@@ -425,6 +425,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
         // add any necessary pages
         for (int i = curNumPages; i < numPages; ++i) {
             PagedViewCellLayout layout = new PagedViewCellLayout(getContext());
+            layout.enableHardwareLayers();
             layout.setCellCount(mCellCountX, mCellCountY);
             layout.setPadding(mPageLayoutPaddingLeft, mPageLayoutPaddingTop,
                     mPageLayoutPaddingRight, mPageLayoutPaddingBottom);

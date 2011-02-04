@@ -18,7 +18,6 @@ package com.android.launcher2;
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -39,7 +38,6 @@ public class PagedViewCellLayoutChildren extends ViewGroup {
 
     public PagedViewCellLayoutChildren(Context context) {
         super(context);
-        setLayerType(LAYER_TYPE_HARDWARE, null);
     }
 
     @Override
@@ -137,6 +135,17 @@ public class PagedViewCellLayoutChildren extends ViewGroup {
                 int childTop = lp.y;
                 child.layout(childLeft, childTop, childLeft + lp.width, childTop + lp.height);
             }
+        }
+    }
+
+    void destroyHardwareLayer() {
+        if (getLayerType() == LAYER_TYPE_HARDWARE) {
+            setLayerType(LAYER_TYPE_NONE, null);
+        }
+    }
+    void createHardwareLayer() {
+        if (getLayerType() == LAYER_TYPE_NONE) {
+            setLayerType(LAYER_TYPE_HARDWARE, null);
         }
     }
 
