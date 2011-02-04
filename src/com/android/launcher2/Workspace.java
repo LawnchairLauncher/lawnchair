@@ -2747,8 +2747,8 @@ public class Workspace extends SmoothPagedView
             // widgets/shortcuts/folders in a slightly different way
             // Only set touchXY if you are supporting spring loaded adding of items
             int[] touchXY = new int[2];
-            touchXY[0] = x;
-            touchXY[1] = y;
+            touchXY[0] = mSpringLoadedDropX;
+            touchXY[1] = mSpringLoadedDropY;
             switch (info.itemType) {
                 case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
                     mLauncher.addAppWidgetFromDrop((PendingAddWidgetInfo) info, screen, touchXY);
