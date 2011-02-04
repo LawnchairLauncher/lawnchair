@@ -154,8 +154,8 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
     private int getChildIndexForGrandChild(View v) {
         final int childCount = getChildCount();
         for (int i = 0; i < childCount; ++i) {
-            final PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(i);
-            if (layout.indexOfChild(v) > -1) {
+            final Page layout = (Page) getChildAt(i);
+            if (layout.indexOfChildOnPage(v) > -1) {
                 return i;
             }
         }
@@ -445,13 +445,13 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
         PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(page);
 
         if (!mFilteredApps.isEmpty()) {
-            int curNumPageItems = layout.getChildCount();
+            int curNumPageItems = layout.getPageChildCount();
             int numPageItems = endIndex - startIndex;
 
             // If we were previously an empty page, then restart anew
             boolean wasEmptyPage = false;
             if (curNumPageItems == 1) {
-                View icon = layout.getChildAt(0);
+                View icon = layout.getChildOnPageAt(0);
                 if (icon.getTag() == null) {
                     wasEmptyPage = true;
                 }
@@ -460,12 +460,12 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
             if (wasEmptyPage) {
                 // Remove all the previous items
                 curNumPageItems = 0;
-                layout.removeAllViews();
+                layout.removeAllViewsOnPage();
             } else {
                 // Remove any extra items
                 int extraPageItemsDiff = curNumPageItems - numPageItems;
                 for (int i = 0; i < extraPageItemsDiff; ++i) {
-                    layout.removeViewAt(numPageItems);
+                    layout.removeViewOnPageAt(numPageItems);
                 }
             }
 
@@ -486,7 +486,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
             for (int i = startIndex; i < endIndex; ++i) {
                 final int index = i - startIndex;
                 final ApplicationInfo info = mFilteredApps.get(i);
-                PagedViewIcon icon = (PagedViewIcon) layout.getChildAt(index);
+                PagedViewIcon icon = (PagedViewIcon) layout.getChildOnPageAt(index);
                 icon.applyFromApplicationInfo(info, mPageViewIconCache, true, (numPages > 1));
 
                 PagedViewCellLayout.LayoutParams params =
@@ -510,7 +510,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
 
             // Center-align the message
             layout.enableCenteredContent(true);
-            layout.removeAllViews();
+            layout.removeAllViewsOnPage();
             layout.addViewToCellLayout(icon, -1, 0,
                     new PagedViewCellLayout.LayoutParams(0, 0, 4, 1));
         }
