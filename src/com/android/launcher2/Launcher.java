@@ -2537,7 +2537,6 @@ public final class Launcher extends Activity
     }
     
     private void showToolbarButton(View button) {
-        button.setAlpha(1.0f);
         button.setVisibility(View.VISIBLE);
         button.setFocusable(true);
         button.setClickable(true);
@@ -2584,6 +2583,7 @@ public final class Launcher extends Activity
         } else {
             if (showing) {
                 showToolbarButton(view);
+                view.setAlpha(1f);
             } else {
                 hideToolbarButton(view);
             }
@@ -2638,7 +2638,7 @@ public final class Launcher extends Activity
         // visible. Modifying initialHeightFactor changes how much of the view is
         // initially showing, and hence the perceived angle from which the view enters.
         if (state == State.ALL_APPS) {
-            final float initialHeightFactor = 0.165f;
+            final float initialHeightFactor = 0.175f;
             view.setPivotY((1 - initialHeightFactor) * height);
         } else {
             final float initialHeightFactor = 0.2f;
@@ -2690,7 +2690,7 @@ public final class Launcher extends Activity
             if (toAllApps) {
                 toView.setAlpha(0f);
                 ValueAnimator alphaAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
-                alphaAnim.setInterpolator(new DecelerateInterpolator(1.0f));
+                alphaAnim.setInterpolator(new DecelerateInterpolator(1.5f));
                 alphaAnim.addUpdateListener(new AnimatorUpdateListener() {
                     public void onAnimationUpdate(ValueAnimator animation) {
                         final float b = (Float) animation.getAnimatedValue();
@@ -2807,7 +2807,7 @@ public final class Launcher extends Activity
             });
             ValueAnimator alphaAnim = ValueAnimator.ofFloat(0f, 1f);
             alphaAnim.setDuration(res.getInteger(R.integer.config_allAppsFadeOutTime));
-            alphaAnim.setInterpolator(new DecelerateInterpolator(2.0f));
+            alphaAnim.setInterpolator(new DecelerateInterpolator(1.5f));
             alphaAnim.addUpdateListener(new AnimatorUpdateListener() {
                 public void onAnimationUpdate(ValueAnimator animation) {
                     final float b = (Float) animation.getAnimatedValue();
