@@ -47,6 +47,7 @@ public class CachedTextView extends TextView {
     private float mPaddingH = 0;
     private float mPaddingV = 0;
     private CharSequence mText;
+    private boolean mEnabled = true;
 
     public CachedTextView(Context context) {
         super(context);
@@ -71,6 +72,10 @@ public class CachedTextView extends TextView {
     }
     protected int getCacheBottomPadding() {
         return 0;
+    }
+
+    public void disableCache() {
+        mEnabled = false;
     }
 
     public void setText(CharSequence text, BufferType type) {
@@ -138,7 +143,7 @@ public class CachedTextView extends TextView {
     }
 
     public void draw(Canvas canvas) {
-        if (mIsTextCacheDirty && !mIsBuildingCache) {
+        if (mEnabled && mIsTextCacheDirty && !mIsBuildingCache) {
             buildAndUpdateCache();
             mIsTextCacheDirty = false;
         }
