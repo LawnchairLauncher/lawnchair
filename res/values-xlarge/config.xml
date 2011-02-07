@@ -9,7 +9,7 @@
 
     <!-- Duration in milliseconds of the all apps / configuration zoom-in animation. -->
     <!-- NB: This should be less than the workspaceShrinkTime as they happen together. -->
-    <integer name="config_allAppsZoomInTime">900</integer>
+    <integer name="config_allAppsZoomInTime">1450</integer>
 
     <!-- Duration in milliseconds of the transition between tabs in the all apps/customize
          tray -->
@@ -17,10 +17,10 @@
 
     <!-- Duration in milliseconds of the all apps zoom-out animation -->
     <!-- NB: This should be less than the workspaceUnshrinkTime as they happen together. -->
-    <integer name="config_allAppsZoomOutTime">1400</integer>
+    <integer name="config_allAppsZoomOutTime">1200</integer>
 
     <!-- Scaling factor used in the all apps zooming animations -->
-    <integer name="config_allAppsZoomScaleFactor">10</integer>
+    <integer name="config_allAppsZoomScaleFactor">20</integer>
 
     <!-- Duration in milliseconds of the all apps / configuration zoom-in animation. -->
     <!-- NB: This should be less than the workspaceShrinkTime as they happen together. -->
@@ -36,16 +36,16 @@
     <!-- Duration in milliseconds of the animations between all apps, customize, & home.
          NOTE: If these are changed, the toolbar animation times below should also be. -->
     <integer name="config_allAppsCameraPanTime">700</integer>
-    <integer name="config_allAppsFadeOutTime">400</integer>
+    <integer name="config_allAppsFadeOutTime">500</integer>
     <integer name="config_customizeWorkspaceShrinkTime">800</integer>
-    <integer name="config_allAppsWorkspaceShrinkTime">950</integer>
-    <integer name="config_workspaceUnshrinkTime">450</integer>
+    <integer name="config_allAppsWorkspaceShrinkTime">1450</integer>
+    <integer name="config_workspaceUnshrinkTime">650</integer>
 
     <!-- Duration in milliseconds toolbar fade in and fade out animations.
          NOTE: Fade in and fade out time should together be less the transition
          animations between all apps, customize, & the workspace. -->
-    <integer name="config_toolbarButtonFadeInTime">100</integer>
-    <integer name="config_toolbarButtonFadeOutTime">100</integer>
+    <integer name="config_toolbarButtonFadeInTime">350</integer>
+    <integer name="config_toolbarButtonFadeOutTime">200</integer>
 
     <!-- When dragging items on the workspace, how much bigger (in pixels) the dragged view
          should be, as compared to the original view. If 0, it will not be scaled at all.
