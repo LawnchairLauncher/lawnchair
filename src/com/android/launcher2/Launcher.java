@@ -3397,6 +3397,10 @@ public final class Launcher extends Activity
                 }
             });
         }
+
+        // This wasn't being called before which resulted in a leak of AppWidgetHostViews (through
+        // mDesktopItems -> AppWidgetInfo -> hostView).
+        unbindDesktopItems();
     }
 
     /**
