@@ -224,6 +224,9 @@ public class Workspace extends SmoothPagedView
     final static float MAX_SWIPE_ANGLE = (float) Math.PI / 3;
     final static float TOUCH_SLOP_DAMPING_FACTOR = 4;
 
+    int mSpringLoadedDropX;
+    int mSpringLoadedDropY;
+
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -1316,6 +1319,14 @@ public class Workspace extends SmoothPagedView
 
     // we use this to shrink the workspace for the all apps view and the customize view
     public void shrink(ShrinkState shrinkState, boolean animated) {
+        // In the launcher interaction model, we're never in the state where we're shrunken and
+        // visible in the bottom of the screen, and then want to fade to being invisible.
+        // After spring loaded mode ends, this method was getting called twice, the first time
+        // with BOTTOM_VISIBLE (what we want) and a second time with BOTTOM_INVISIBLE (not
+        // what we want). As a temporary solution, we just change the second call to BOTTOM_VISIBLE
+        if (mIsSmall && mShrinkState == ShrinkState.BOTTOM_VISIBLE) {
+            shrinkState = ShrinkState.BOTTOM_VISIBLE;
+        }
         if (mFirstLayout) {
             // (mFirstLayout == "first layout has not happened yet")
             // if we get a call to shrink() as part of our initialization (for example, if
@@ -2670,6 +2681,8 @@ public class Workspace extends SmoothPagedView
                     final View child = (mDragInfo == null) ? null : mDragInfo.cell;
                     float[] localOrigin = { originX, originY };
                     mapPointFromSelfToChild(mDragTargetLayout, localOrigin, null);
+                    mSpringLoadedDropX = (int) localOrigin[0];
+                    mSpringLoadedDropY = (int) localOrigin[1];
                     mDragTargetLayout.visualizeDropLocation(child, mDragOutline,
                             (int) localOrigin[0], (int) localOrigin[1], item.spanX, item.spanY);
                 }
@@ -2776,7 +2789,12 @@ public class Workspace extends SmoothPagedView
             mTargetCell = new int[2];
             if (x != -1 && y != -1) {
                 // when dragging and dropping, just find the closest free spot
-                cellLayout.findNearestVacantArea(x, y, 1, 1, mTargetCell);
+
+                // When we get a drop in Spring Loaded mode, at this point we've already called
+                // onDragExit, which starts us shrinking again and screws up the transforms we
+                // need to get the right value. Instead, as a temporary solution, we've saved the
+                // proper point, mSpringLoadedDropX/Y, from the last onDragOver
+                cellLayout.findNearestVacantArea(mSpringLoadedDropX, mSpringLoadedDropY, 1, 1, mTargetCell);
             } else {
                 cellLayout.findCellForSpan(mTargetCell, 1, 1);
             }
