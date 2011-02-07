@@ -298,7 +298,7 @@ static void drawFrontGrid(float rowOffset, float p)
                     vpConstants->ImgSize.y = rsAllocationGetDimY(gSelectedIconTexture);
                     vpConstants->Position.y = y - (rsAllocationGetDimY(gSelectedIconTexture)
                                                 - rsAllocationGetDimY(gIcons[iconNum])) * 0.5f;
-                    rsAllocationMarkDirty(g_VPConstAlloc);
+                    rsgAllocationSyncAll(g_VPConstAlloc);
                     rsgDrawMesh(gSMCell);
                 }
 
@@ -306,7 +306,7 @@ static void drawFrontGrid(float rowOffset, float p)
                 vpConstants->ImgSize.x = rsAllocationGetDimX(gIcons[iconNum]);
                 vpConstants->ImgSize.y = rsAllocationGetDimY(gIcons[iconNum]);
                 vpConstants->Position.y = y - 0.2f;
-                rsAllocationMarkDirty(g_VPConstAlloc);
+                rsgAllocationSyncAll(g_VPConstAlloc);
                 rsgBindTexture(gPFTexMip, 0, gIcons[iconNum]);
                 rsgDrawMesh(gSMCell);
 
@@ -314,7 +314,7 @@ static void drawFrontGrid(float rowOffset, float p)
                 vpConstants->ImgSize.x = rsAllocationGetDimX(gLabels[iconNum]);
                 vpConstants->ImgSize.y = rsAllocationGetDimY(gLabels[iconNum]);
                 vpConstants->Position.y = y - 64.f - 0.2f;
-                rsAllocationMarkDirty(g_VPConstAlloc);
+                rsgAllocationSyncAll(g_VPConstAlloc);
                 rsgBindTexture(gPFTexMipAlpha, 0, gLabels[iconNum]);
                 rsgDrawMesh(gSMCell);
             }
