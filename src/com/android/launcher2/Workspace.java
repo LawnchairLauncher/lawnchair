@@ -108,8 +108,8 @@ public class Workspace extends SmoothPagedView
     private float mChildrenOutlineAlpha = 0;
 
     // These properties refer to the background protection gradient used for AllApps and Customize
-    private ObjectAnimator mBackgroundFadeInAnimation;
-    private ObjectAnimator mBackgroundFadeOutAnimation;
+    private ValueAnimator mBackgroundFadeInAnimation;
+    private ValueAnimator mBackgroundFadeOutAnimation;
     private Drawable mBackground;
     private Drawable mCustomizeTrayBackground;
     private boolean mDrawCustomizeTrayBackground;
@@ -938,7 +938,12 @@ public class Workspace extends SmoothPagedView
         if (mBackground == null) return;
         if (mBackgroundFadeOutAnimation != null) mBackgroundFadeOutAnimation.cancel();
         if (mBackgroundFadeInAnimation != null) mBackgroundFadeInAnimation.cancel();
-        mBackgroundFadeInAnimation = ObjectAnimator.ofFloat(this, "backgroundAlpha", 1.0f);
+        mBackgroundFadeInAnimation = ValueAnimator.ofFloat(getBackgroundAlpha(), 1f);
+        mBackgroundFadeInAnimation.addUpdateListener(new AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                setBackgroundAlpha(((Float) animation.getAnimatedValue()).floatValue());
+            }
+        });
         mBackgroundFadeInAnimation.setInterpolator(new DecelerateInterpolator(1.5f));
         mBackgroundFadeInAnimation.setDuration(BACKGROUND_FADE_IN_DURATION);
         mBackgroundFadeInAnimation.start();
@@ -948,7 +953,12 @@ public class Workspace extends SmoothPagedView
         if (mBackground == null) return;
         if (mBackgroundFadeInAnimation != null) mBackgroundFadeInAnimation.cancel();
         if (mBackgroundFadeOutAnimation != null) mBackgroundFadeOutAnimation.cancel();
-        mBackgroundFadeOutAnimation = ObjectAnimator.ofFloat(this, "backgroundAlpha", 0.0f);
+        mBackgroundFadeOutAnimation = ValueAnimator.ofFloat(getBackgroundAlpha(), 0f);
+        mBackgroundFadeOutAnimation.addUpdateListener(new AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                setBackgroundAlpha(((Float) animation.getAnimatedValue()).floatValue());
+            }
+        });
         mBackgroundFadeOutAnimation.setInterpolator(new DecelerateInterpolator(1.5f));
         mBackgroundFadeOutAnimation.setDuration(BACKGROUND_FADE_OUT_DURATION);
         mBackgroundFadeOutAnimation.start();
