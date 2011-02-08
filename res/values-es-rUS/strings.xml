@@ -36,7 +36,7 @@
     <string name="all_apps_tab_all" msgid="2942727589595027258">"Todos"</string>
     <string name="all_apps_tab_apps" msgid="5468972551904071712">"Aplicaciones"</string>
     <string name="all_apps_tab_games" msgid="1855736784923494918">"Juegos"</string>
-    <!-- outdated translation 7753043607780556423 -->     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Descargado"</string>
+    <!-- outdated translation 8787424814319499411 -->     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Mis aplicaciones"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"No se encontraron juegos."</string>
     <string name="all_apps_no_downloads" msgid="2284720393234453761">"No has descargado ninguna aplicación."</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"No se pudo colocar el elemento en esta pantalla principal"</string>

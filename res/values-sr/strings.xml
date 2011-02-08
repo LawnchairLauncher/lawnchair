@@ -38,7 +38,7 @@
     <string name="all_apps_tab_games" msgid="1855736784923494918">"Игре"</string>
     <!-- outdated translation 7753043607780556423 -->     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Преузето"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"Нису пронађене игре."</string>
-    <!-- outdated translation 6687010155766000796 -->     <string name="all_apps_no_downloads" msgid="2284720393234453761">"Нису пронађене преузете апликације"</string>
+    <string name="all_apps_no_downloads" msgid="2284720393234453761">"Немате ниједну преузету апликацију."</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Ставка није пребачена на овај почетни екран"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Изаберите виџет за креирање"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Име директоријума"</string>

@@ -38,7 +38,7 @@
     <string name="all_apps_tab_games" msgid="1855736784923494918">"Igre"</string>
     <!-- outdated translation 7753043607780556423 -->     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Preuzeto"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"Igre nisu pronađene."</string>
-    <!-- outdated translation 6687010155766000796 -->     <string name="all_apps_no_downloads" msgid="2284720393234453761">"Nema preuzetih aplikacija"</string>
+    <string name="all_apps_no_downloads" msgid="2284720393234453761">"Nemate preuzetih aplikacija"</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Nije bilo moguće spustiti stavku na početni zaslon"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Odabir widgeta za stvaranje"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Naziv mape"</string>
