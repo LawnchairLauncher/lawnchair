@@ -38,7 +38,7 @@
     <string name="all_apps_tab_games" msgid="1855736784923494918">"Jeux"</string>
     <!-- outdated translation 7753043607780556423 -->     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Téléchargées"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"Aucun jeu n\'a été trouvé."</string>
-    <!-- outdated translation 6687010155766000796 -->     <string name="all_apps_no_downloads" msgid="2284720393234453761">"Aucune application téléchargée trouvée"</string>
+    <string name="all_apps_no_downloads" msgid="2284720393234453761">"Vous n\'avez téléchargé aucune application."</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Impossible de déposer l\'élément sur l\'écran d\'accueil."</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Sélectionner le widget à créer"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nom du dossier"</string>

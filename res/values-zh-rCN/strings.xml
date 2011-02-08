@@ -38,7 +38,7 @@
     <string name="all_apps_tab_games" msgid="1855736784923494918">"游戏"</string>
     <!-- outdated translation 7753043607780556423 -->     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"已下载"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"未找到游戏。"</string>
-    <!-- outdated translation 6687010155766000796 -->     <string name="all_apps_no_downloads" msgid="2284720393234453761">"未找到已下载的应用程序。"</string>
+    <string name="all_apps_no_downloads" msgid="2284720393234453761">"您没有下载任何应用程序。"</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"无法将该项放到主屏幕上"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"选择窗口小部件进行创建"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"文件夹名称"</string>

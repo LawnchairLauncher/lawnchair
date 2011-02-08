@@ -38,7 +38,7 @@
     <string name="all_apps_tab_games" msgid="1855736784923494918">"Jogos"</string>
     <!-- outdated translation 7753043607780556423 -->     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Download concluído"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"Nenhum jogo encontrado."</string>
-    <!-- outdated translation 6687010155766000796 -->     <string name="all_apps_no_downloads" msgid="2284720393234453761">"Nenhum aplic. encontrado."</string>
+    <string name="all_apps_no_downloads" msgid="2284720393234453761">"Você não tem nenhum aplicativo transferido."</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Não foi possível soltar o item nesta tela inicial"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Selecione um widget para criar"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nome da pasta"</string>
