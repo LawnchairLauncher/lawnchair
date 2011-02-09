@@ -88,6 +88,7 @@ import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
@@ -1053,6 +1054,31 @@ public final class Launcher extends Activity
         mAllAppsButton = findViewById(R.id.all_apps_button);
         mDivider = findViewById(R.id.divider);
         mConfigureButton = findViewById(R.id.configure_button);
+
+        // We had previously set these click handlers in XML, but the first time we launched
+        // Configure or All Apps we had an extra 50ms of delay while the java reflection methods
+        // found the right handler. Setting the handlers directly here eliminates that cost.
+        if (mConfigureButton != null) {
+            mConfigureButton.setOnClickListener(new OnClickListener() {
+                public void onClick(View v) {
+                    onClickConfigureButton(v);
+                }
+            });
+        }
+        if (mDivider != null) {
+            mDivider.setOnClickListener(new OnClickListener() {
+                public void onClick(View v) {
+                    onClickAllAppsButton(v);
+                }
+            });
+        }
+        if (mAllAppsButton != null) {
+            mAllAppsButton.setOnClickListener(new OnClickListener() {
+                public void onClick(View v) {
+                    onClickAllAppsButton(v);
+                }
+            });
+        }
     }
 
     @SuppressWarnings({"UnusedDeclaration"})
@@ -2577,8 +2603,13 @@ public final class Launcher extends Activity
                 getResources().getInteger(R.integer.config_toolbarButtonFadeOutTime);
 
         if (seq != null) {
-            Animator anim = ObjectAnimator.ofFloat(view, "alpha", show ? 1.0f : 0.0f);
+            ValueAnimator anim = ValueAnimator.ofFloat(view.getAlpha(), show ? 1.0f : 0.0f);
             anim.setDuration(duration);
+            anim.addUpdateListener(new AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    view.setAlpha((Float) animation.getAnimatedValue());
+                }
+            });
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {

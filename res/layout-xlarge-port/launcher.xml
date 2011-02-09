@@ -113,7 +113,6 @@
             android:paddingBottom="@dimen/toolbar_button_vertical_padding"
             android:background="@drawable/button_bg"
 
-            android:onClick="onClickConfigureButton"
             android:focusable="true"
             android:clickable="true" />
         <ImageView
@@ -125,7 +124,6 @@
             android:paddingTop="@dimen/toolbar_button_vertical_padding"
             android:paddingBottom="@dimen/toolbar_button_vertical_padding"
 
-            android:onClick="onClickAllAppsButton"
             android:focusable="false"
             android:clickable="true" />
         <TextView
@@ -151,7 +149,6 @@
             android:shadowDy="0.0"
             android:shadowRadius="2.5"
 
-            android:onClick="onClickAllAppsButton"
             android:focusable="true"
             android:clickable="true" />
         <ImageView
