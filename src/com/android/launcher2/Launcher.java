@@ -2007,7 +2007,9 @@ public final class Launcher extends Activity
      * Re-listen when widgets are reset.
      */
     private void onAppWidgetReset() {
-        mAppWidgetHost.startListening();
+        if (mAppWidgetHost != null) {
+            mAppWidgetHost.startListening();
+        }
     }
 
     /**
