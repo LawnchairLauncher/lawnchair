@@ -44,6 +44,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Parcelable;
@@ -65,6 +66,7 @@ public class LauncherModel extends BroadcastReceiver {
     static final String TAG = "Launcher.Model";
 
     private static final int ITEMS_CHUNK = 6; // batch size for the workspace icons
+    private final boolean mAppsCanBeOnExternalStorage;
     private int mBatchSize; // 0 is all apps at once
     private int mAllAppsLoadDelay; // milliseconds between batches
 
@@ -115,6 +117,7 @@ public class LauncherModel extends BroadcastReceiver {
     }
 
     LauncherModel(LauncherApplication app, IconCache iconCache) {
+        mAppsCanBeOnExternalStorage = !Environment.isExternalStorageEmulated();
         mApp = app;
         mAllAppsList = new AllAppsList(iconCache);
         mIconCache = iconCache;
@@ -794,8 +797,6 @@ public class LauncherModel extends BroadcastReceiver {
                             }
 
                             if (info != null) {
-                                updateSavedIcon(context, info, c, iconIndex);
-
                                 info.intent = intent;
                                 info.id = c.getLong(idIndex);
                                 container = c.getInt(containerIndex);
@@ -820,6 +821,10 @@ public class LauncherModel extends BroadcastReceiver {
                                     folderInfo.add(info);
                                     break;
                                 }
+
+                                // now that we've loaded everthing re-save it with the
+                                // icon in case it disappears somehow.
+                                updateSavedIcon(context, info, c, iconIndex);
                             } else {
                                 // Failed to load the shortcut, probably because the
                                 // activity manager couldn't resolve it (maybe the app
@@ -1669,6 +1674,10 @@ public class LauncherModel extends BroadcastReceiver {
     }
 
     void updateSavedIcon(Context context, ShortcutInfo info, Cursor c, int iconIndex) {
+        // If apps can't be on SD, don't even bother.
+        if (!mAppsCanBeOnExternalStorage) {
+            return;
+        }
         // If this icon doesn't have a custom icon, check to see
         // what's stored in the DB, and if it doesn't match what
         // we're going to show, store what we are going to show back
@@ -1691,9 +1700,8 @@ public class LauncherModel extends BroadcastReceiver {
             }
             if (needSave) {
                 Log.d(TAG, "going to save icon bitmap for info=" + info);
-                // This is slower than is ideal, but this only happens either
-                // after the froyo OTA or when the app is updated with a new
-                // icon.
+                // This is slower than is ideal, but this only happens once
+                // or when the app is updated with a new icon.
                 updateItemInDatabase(context, info);
             }
         }
