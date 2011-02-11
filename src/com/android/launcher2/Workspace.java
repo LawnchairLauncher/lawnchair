@@ -2941,6 +2941,10 @@ public class Workspace extends SmoothPagedView
                     mDragTargetLayout.onDragExit();
                     mDragTargetLayout = null;
                 }
+                // In portrait, need to redraw the edge glow when entering the scroll area
+                if (getHeight() > getWidth()) {
+                    invalidate();
+                }
             }
         }
     }
@@ -2951,6 +2955,12 @@ public class Workspace extends SmoothPagedView
             ((CellLayout) getChildAt(i)).setIsDragOverlapping(false);
         }
         mSpringLoadedDragController.onDragExit();
+
+        // In portrait, workspace is responsible for drawing the edge glow on adjacent pages,
+        // so we need to redraw the workspace when this may have changed.
+        if (getHeight() > getWidth()) {
+            invalidate();
+        }
     }
 
     @Override
