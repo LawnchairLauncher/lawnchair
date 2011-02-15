@@ -61,6 +61,7 @@ public abstract class PagedView extends ViewGroup {
     private static final float OVERSCROLL_DAMP_FACTOR = 0.08f;
     private static final int MINIMUM_SNAP_VELOCITY = 2200;
     private static final int MIN_FLING_VELOCITY = 250;
+    private static final float RETURN_TO_ORIGINAL_PAGE_THRESHOLD = 0.33f;
 
     // the velocity at which a fling gesture will cause us to snap to the next page
     protected int mSnapVelocity = 500;
@@ -1000,20 +1001,22 @@ public abstract class PagedView extends ViewGroup {
                 velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
                 int velocityX = (int) velocityTracker.getXVelocity(activePointerId);
                 final int deltaX = (int) (x - mDownMotionX);
-                boolean isSignificantMove = mTotalMotionX > MIN_LENGTH_FOR_MOVE;
+                boolean isSignificantMove = Math.abs(deltaX) > MIN_LENGTH_FOR_MOVE;
                 final int snapVelocity = mSnapVelocity;
+
+                mTotalMotionX += Math.abs(mLastMotionX + mLastMotionXRemainder - x);
 
                 // In the case that the page is moved far to one direction and then is flung
                 // in the opposite direction, we use a threshold to determine whether we should
                 // just return to the starting page, or if we should skip one further.
                 boolean returnToOriginalPage = false;
                 final int pageWidth = getScaledMeasuredWidth(getChildAt(mCurrentPage));
-                if (Math.abs(deltaX) > pageWidth / 3 &&
+                if (Math.abs(deltaX) > pageWidth * RETURN_TO_ORIGINAL_PAGE_THRESHOLD &&
                         Math.signum(velocityX) != Math.signum(deltaX)) {
                     returnToOriginalPage = true;
                 }
 
-                boolean isFling = Math.abs(deltaX) > MIN_LENGTH_FOR_FLING &&
+                boolean isFling = mTotalMotionX > MIN_LENGTH_FOR_FLING &&
                         Math.abs(velocityX) > snapVelocity;
 
                 int finalPage;
