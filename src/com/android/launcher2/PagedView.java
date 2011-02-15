@@ -81,6 +81,7 @@ public abstract class PagedView extends ViewGroup {
     protected float mLastMotionX;
     protected float mLastMotionXRemainder;
     protected float mLastMotionY;
+    protected float mTotalMotionX;
     private int mLastScreenCenter = -1;
 
     protected final static int TOUCH_STATE_REST = 0;
@@ -777,6 +778,7 @@ public abstract class PagedView extends ViewGroup {
                 mLastMotionX = x;
                 mLastMotionY = y;
                 mLastMotionXRemainder = 0;
+                mTotalMotionX = 0;
                 mActivePointerId = ev.getPointerId(0);
                 mAllowLongPress = true;
 
@@ -952,6 +954,7 @@ public abstract class PagedView extends ViewGroup {
             // Remember where the motion event started
             mDownMotionX = mLastMotionX = ev.getX();
             mLastMotionXRemainder = 0;
+            mTotalMotionX = 0;
             mActivePointerId = ev.getPointerId(0);
             if (mTouchState == TOUCH_STATE_SCROLLING) {
                 pageBeginMoving();
@@ -964,6 +967,8 @@ public abstract class PagedView extends ViewGroup {
                 final int pointerIndex = ev.findPointerIndex(mActivePointerId);
                 final float x = ev.getX(pointerIndex);
                 final float deltaX = mLastMotionX + mLastMotionXRemainder - x;
+
+                mTotalMotionX += Math.abs(deltaX);
 
                 // Only scroll and update mLastMotionX if we have moved some discrete amount.  We
                 // keep the remainder because we are actually testing if we've moved from the last
@@ -995,17 +1000,35 @@ public abstract class PagedView extends ViewGroup {
                 velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
                 int velocityX = (int) velocityTracker.getXVelocity(activePointerId);
                 final int deltaX = (int) (x - mDownMotionX);
-                boolean isfling = Math.abs(deltaX) > MIN_LENGTH_FOR_FLING;
-                boolean isSignificantMove = Math.abs(deltaX) > MIN_LENGTH_FOR_MOVE;
-
+                boolean isSignificantMove = mTotalMotionX > MIN_LENGTH_FOR_MOVE;
                 final int snapVelocity = mSnapVelocity;
-                if ((isSignificantMove && deltaX > 0 ||
-                        (isfling && velocityX > snapVelocity)) && mCurrentPage > 0) {
-                    snapToPageWithVelocity(mCurrentPage - 1, velocityX);
-                } else if ((isSignificantMove && deltaX < 0 ||
-                        (isfling && velocityX < -snapVelocity)) &&
+
+                // In the case that the page is moved far to one direction and then is flung
+                // in the opposite direction, we use a threshold to determine whether we should
+                // just return to the starting page, or if we should skip one further.
+                boolean returnToOriginalPage = false;
+                final int pageWidth = getScaledMeasuredWidth(getChildAt(mCurrentPage));
+                if (Math.abs(deltaX) > pageWidth / 3 &&
+                        Math.signum(velocityX) != Math.signum(deltaX)) {
+                    returnToOriginalPage = true;
+                }
+
+                boolean isFling = Math.abs(deltaX) > MIN_LENGTH_FOR_FLING &&
+                        Math.abs(velocityX) > snapVelocity;
+
+                int finalPage;
+                // We give flings precedence over large moves, which is why we short-circuit our
+                // test for a large move if a fling has been registered. That is, a large
+                // move to the left and fling to the right will register as a fling to the right.
+                if (((isSignificantMove && deltaX > 0 && !isFling) ||
+                        (isFling && velocityX > 0)) && mCurrentPage > 0) {
+                    finalPage = returnToOriginalPage ? mCurrentPage : mCurrentPage - 1;
+                    snapToPageWithVelocity(finalPage, velocityX);
+                } else if (((isSignificantMove && deltaX < 0 && !isFling) ||
+                        (isFling && velocityX < 0)) &&
                         mCurrentPage < getChildCount() - 1) {
-                    snapToPageWithVelocity(mCurrentPage + 1, velocityX);
+                    finalPage = returnToOriginalPage ? mCurrentPage : mCurrentPage + 1;
+                    snapToPageWithVelocity(finalPage, velocityX);
                 } else {
                     snapToDestination();
                 }
