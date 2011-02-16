@@ -141,6 +141,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
     public void removeAllViewsOnPage() {
         mChildren.removeAllViews();
         mHolographicChildren.removeAllViews();
+        destroyHardwareLayers();
     }
 
     @Override

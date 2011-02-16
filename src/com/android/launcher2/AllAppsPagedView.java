@@ -515,6 +515,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
             layout.addViewToCellLayout(icon, -1, 0,
                     new PagedViewCellLayout.LayoutParams(0, 0, 4, 1));
         }
+        layout.createHardwareLayers();
     }
 
     /*
