@@ -598,21 +598,7 @@ public abstract class PagedView extends ViewGroup {
             canvas.clipRect(mScrollX, mScrollY, mScrollX + mRight - mLeft,
                     mScrollY + mBottom - mTop);
 
-            for (int i = 0; i < pageCount; i++) {
-                View child = getChildAt(i);
-                if (child != null && child instanceof PagedViewCellLayout) {
-                    boolean willBeDrawn = i >= leftScreen && i <= rightScreen;
-                    if (!willBeDrawn) {
-                        ((PagedViewCellLayout)child).destroyHardwareLayers();
-                    }
-                }
-            }
-
             for (int i = leftScreen; i <= rightScreen; i++) {
-                View child = getChildAt(i);
-                if (child != null && child instanceof PagedViewCellLayout) {
-                    ((PagedViewCellLayout)child).createHardwareLayers();
-                }
                 drawChild(canvas, getChildAt(i), drawingTime);
             }
             canvas.restore();
