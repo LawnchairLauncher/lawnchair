@@ -224,9 +224,6 @@ public class Workspace extends SmoothPagedView
     final static float MAX_SWIPE_ANGLE = (float) Math.PI / 3;
     final static float TOUCH_SLOP_DAMPING_FACTOR = 4;
 
-    int mSpringLoadedDropX;
-    int mSpringLoadedDropY;
-
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -1527,9 +1524,13 @@ public class Workspace extends SmoothPagedView
             final float newVerticalWallpaperOffset = wallpaperOffset;
             animWithInterpolator.addUpdateListener(new AnimatorUpdateListener() {
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    fastInvalidate();
                     final float b = (Float) animation.getAnimatedValue();
                     final float a = 1f - b;
+                    if (b == 0f) {
+                        // an optimization, and required for correct behavior.
+                        return;
+                    }
+                    fastInvalidate();
                     setHorizontalWallpaperOffset(
                             a * oldHorizontalWallpaperOffset + b * newHorizontalWallpaperOffset);
                     setVerticalWallpaperOffset(
@@ -1857,9 +1858,13 @@ public class Workspace extends SmoothPagedView
                 final float newVerticalWallpaperOffset = 0.5f;
                 animWithInterpolator.addUpdateListener(new AnimatorUpdateListener() {
                     public void onAnimationUpdate(ValueAnimator animation) {
-                        fastInvalidate();
                         final float b = (Float) animation.getAnimatedValue();
                         final float a = 1f - b;
+                        if (b == 0f) {
+                            // an optimization, but not required
+                            return;
+                        }
+                        fastInvalidate();
                         setHorizontalWallpaperOffset(
                                 a * oldHorizontalWallpaperOffset + b * newHorizontalWallpaperOffset);
                         setVerticalWallpaperOffset(
@@ -1890,6 +1895,10 @@ public class Workspace extends SmoothPagedView
                         // don't invalidate workspace because we did it above
                         final float b = (Float) animation.getAnimatedValue();
                         final float a = 1f - b;
+                        if (b == 0f) {
+                            // an optimization, but not required
+                            return;
+                        }
                         for (int i = 0; i < screenCount; i++) {
                             final CellLayout cl = (CellLayout) getChildAt(i);
                             cl.setFastRotationY(a * oldRotationYs[i] + b * newRotationYs[i]);
@@ -2190,9 +2199,9 @@ public class Workspace extends SmoothPagedView
 
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
-
-        int originX = x - xOffset;
-        int originY = y - yOffset;
+        boolean largeOrSpringLoaded = !mIsSmall || mWasSpringLoadedOnDragExit;
+        int originX = largeOrSpringLoaded ? x - xOffset : x - xOffset + dragView.getWidth() / 2;
+        int originY = largeOrSpringLoaded ? y - yOffset : y - yOffset + dragView.getHeight() / 2;
 
         if (mIsSmall || mIsInUnshrinkAnimation) {
             // get originX and originY in the local coordinate system of the screen
@@ -2201,6 +2210,10 @@ public class Workspace extends SmoothPagedView
             mapPointFromSelfToChild(mDragTargetLayout, mTempOriginXY);
             originX = (int)mTempOriginXY[0];
             originY = (int)mTempOriginXY[1];
+            if (!largeOrSpringLoaded) {
+               originX -= mDragTargetLayout.getCellWidth() / 2;
+               originY -= mDragTargetLayout.getCellHeight() / 2;
+            }
         }
 
         // When you are in customization mode and drag to a particular screen, make that the
@@ -2213,13 +2226,7 @@ public class Workspace extends SmoothPagedView
         }
 
         if (source != this) {
-            if (!mIsSmall || mWasSpringLoadedOnDragExit) {
-                onDropExternal(originX, originY, dragInfo, mDragTargetLayout, false);
-            } else {
-                // if we drag and drop to small screens, don't pass the touch x/y coords (when we
-                // enable spring-loaded adding, however, we do want to pass the touch x/y coords)
-                onDropExternal(-1, -1, dragInfo, mDragTargetLayout, false);
-            }
+            onDropExternal(new int[] { originX, originY }, dragInfo, mDragTargetLayout, false);
         } else if (mDragInfo != null) {
             final View cell = mDragInfo.cell;
             CellLayout dropTargetLayout = mDragTargetLayout;
@@ -2428,7 +2435,7 @@ public class Workspace extends SmoothPagedView
                 if (isShortcut) {
                     final Intent intent = data.getItemAt(index).getIntent();
                     Object info = model.infoFromShortcutIntent(mContext, intent, data.getIcon());
-                    onDropExternal(x, y, info, layout, false);
+                    onDropExternal(new int[] { x, y }, info, layout, false);
                 } else {
                     if (widgets.size() == 1) {
                         // If there is only one item, then go ahead and add and configure
@@ -2691,8 +2698,6 @@ public class Workspace extends SmoothPagedView
                     final View child = (mDragInfo == null) ? null : mDragInfo.cell;
                     float[] localOrigin = { originX, originY };
                     mapPointFromSelfToChild(mDragTargetLayout, localOrigin, null);
-                    mSpringLoadedDropX = (int) localOrigin[0];
-                    mSpringLoadedDropY = (int) localOrigin[1];
                     mDragTargetLayout.visualizeDropLocation(child, mDragOutline,
                             (int) localOrigin[0], (int) localOrigin[1], item.spanX, item.spanY);
                 }
@@ -2733,7 +2738,7 @@ public class Workspace extends SmoothPagedView
      */
     public boolean addExternalItemToScreen(ItemInfo dragInfo, CellLayout layout) {
         if (layout.findCellForSpan(mTempEstimate, dragInfo.spanX, dragInfo.spanY)) {
-            onDropExternal(-1, -1, (ItemInfo) dragInfo, (CellLayout) layout, false);
+            onDropExternal(null, (ItemInfo) dragInfo, (CellLayout) layout, false);
             return true;
         }
         mLauncher.showOutOfSpaceMessage();
@@ -2748,17 +2753,13 @@ public class Workspace extends SmoothPagedView
      * NOTE: This can also be called when we are outside of a drag event, when we want
      * to add an item to one of the workspace screens.
      */
-    private void onDropExternal(int x, int y, Object dragInfo,
+    private void onDropExternal(int[] touchXY, Object dragInfo,
             CellLayout cellLayout, boolean insertAtFirst) {
         int screen = indexOfChild(cellLayout);
         if (dragInfo instanceof PendingAddItemInfo) {
             PendingAddItemInfo info = (PendingAddItemInfo) dragInfo;
             // When dragging and dropping from customization tray, we deal with creating
             // widgets/shortcuts/folders in a slightly different way
-            // Only set touchXY if you are supporting spring loaded adding of items
-            int[] touchXY = new int[2];
-            touchXY[0] = mSpringLoadedDropX;
-            touchXY[1] = mSpringLoadedDropY;
             switch (info.itemType) {
                 case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
                     mLauncher.addAppWidgetFromDrop((PendingAddWidgetInfo) info, screen, touchXY);
@@ -2797,14 +2798,9 @@ public class Workspace extends SmoothPagedView
             }
 
             mTargetCell = new int[2];
-            if (x != -1 && y != -1) {
+            if (touchXY != null) {
                 // when dragging and dropping, just find the closest free spot
-
-                // When we get a drop in Spring Loaded mode, at this point we've already called
-                // onDragExit, which starts us shrinking again and screws up the transforms we
-                // need to get the right value. Instead, as a temporary solution, we've saved the
-                // proper point, mSpringLoadedDropX/Y, from the last onDragOver
-                cellLayout.findNearestVacantArea(mSpringLoadedDropX, mSpringLoadedDropY, 1, 1, mTargetCell);
+                cellLayout.findNearestVacantArea(touchXY[0], touchXY[1], 1, 1, mTargetCell);
             } else {
                 cellLayout.findCellForSpan(mTargetCell, 1, 1);
             }

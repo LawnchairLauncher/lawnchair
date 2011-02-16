@@ -479,12 +479,11 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         }
     }
 
-    Bitmap drawableToBitmap(Drawable d, View v, boolean clipHeight) {
-        int height = clipHeight ? v.getPaddingTop() + d.getIntrinsicHeight() : v.getHeight();
-        Bitmap b = Bitmap.createBitmap(v.getWidth(), height, Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(b);
-        c.translate((v.getWidth() - d.getIntrinsicWidth()) / 2, v.getPaddingTop());
-        d.draw(c);
+    Bitmap drawableToBitmap(Drawable d) {
+        int w = d.getIntrinsicWidth();
+        int h = d.getIntrinsicHeight();
+        Bitmap b = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        renderDrawableToBitmap(d, b, 0, 0, w, h);
         return b;
     }
 
@@ -509,7 +508,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
                 // Get the widget preview as the drag representation
                 final LinearLayout l = (LinearLayout) v;
                 final ImageView i = (ImageView) l.findViewById(R.id.widget_preview);
-                Bitmap b = drawableToBitmap(i.getDrawable(), i, true);
+                Bitmap b = drawableToBitmap(i.getDrawable());
                 PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo) v.getTag();
 
                 int[] spanXY = CellLayout.rectToCell(
@@ -529,7 +528,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
                 // get icon (top compound drawable, index is 1)
                 final TextView tv = (TextView) v;
                 final Drawable icon = tv.getCompoundDrawables()[1];
-                Bitmap b = drawableToBitmap(icon, tv, false);
+                Bitmap b = drawableToBitmap(icon);
                 PendingAddItemInfo createItemInfo = (PendingAddItemInfo) v.getTag();
 
                 mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1, b);
@@ -546,7 +545,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
                 // get icon (top compound drawable, index is 1)
                 final TextView tv = (TextView) v;
                 final Drawable icon = tv.getCompoundDrawables()[1];
-                Bitmap b = drawableToBitmap(icon, tv, false);
+                Bitmap b = drawableToBitmap(icon);
                 ApplicationInfo app = (ApplicationInfo) v.getTag();
                 app = new ApplicationInfo(app);
 
