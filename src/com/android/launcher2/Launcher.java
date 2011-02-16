@@ -182,7 +182,7 @@ public final class Launcher extends Activity
     private static final String TOOLBAR_ICON_METADATA_NAME = "com.android.launcher.toolbar_icon";
 
     /** The different states that Launcher can be in. */
-    private enum State { WORKSPACE, ALL_APPS, CUSTOMIZE, OVERVIEW,
+    private enum State { WORKSPACE, ALL_APPS, CUSTOMIZE,
         CUSTOMIZE_SPRING_LOADED, ALL_APPS_SPRING_LOADED };
     private State mState = State.WORKSPACE;
     private AnimatorSet mStateAnimation;
@@ -2574,7 +2574,7 @@ public final class Launcher extends Activity
         }
     }
     
-    private void showToolbarButton(View button) {
+    private void showAndEnableToolbarButton(View button) {
         button.setVisibility(View.VISIBLE);
         button.setFocusable(true);
         button.setClickable(true);
@@ -2584,6 +2584,9 @@ public final class Launcher extends Activity
         button.setAlpha(0.0f);
         // We can't set it to GONE, otherwise the RelativeLayout gets screwed up
         button.setVisibility(View.INVISIBLE);
+    }
+
+    private void disableToolbarButton(View button) {
         button.setFocusable(false);
         button.setClickable(false);
     }
@@ -2615,7 +2618,8 @@ public final class Launcher extends Activity
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
-                    if (showing) showToolbarButton(view);
+                    if (showing) showAndEnableToolbarButton(view);
+                    if (hiding) disableToolbarButton(view);
                 }
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -2625,9 +2629,10 @@ public final class Launcher extends Activity
             seq.play(anim);
         } else {
             if (showing) {
-                showToolbarButton(view);
+                showAndEnableToolbarButton(view);
                 view.setAlpha(1f);
             } else {
+                disableToolbarButton(view);
                 hideToolbarButton(view);
             }
         }
@@ -2885,94 +2890,13 @@ public final class Launcher extends Activity
         }
     }
 
-    /**
-     * Pan the camera in the vertical plane between 'fromView' and 'toView'.
-     * This is the transition used on xlarge screens to go between all apps and
-     * the home customization drawer.
-     * @param fromState The view to pan away from. Must be ALL_APPS or CUSTOMIZE.
-     * @param toState The view to pan into the frame. Must be ALL_APPS or CUSTOMIZE.
-     * @param animated If true, the transition will be animated.
-     */
-    private void cameraPan(State fromState, State toState, boolean animated) {
-        final Resources res = getResources();
-        final int duration = res.getInteger(R.integer.config_allAppsCameraPanTime);
-        final int workspaceHeight = mWorkspace.getHeight();
-
-        final boolean fromAllApps = (fromState == State.ALL_APPS);
-        final View fromView = fromAllApps ? (View) mAllAppsGrid : mHomeCustomizationDrawer;
-        final View toView = fromAllApps ? mHomeCustomizationDrawer : (View) mAllAppsGrid;
-
-        final float fromViewStartY = fromAllApps ? 0.0f : fromView.getY();
-        final float fromViewEndY = fromAllApps ? -fromView.getHeight() * 2 : workspaceHeight * 2;
-        final float toViewStartY = fromAllApps ? workspaceHeight * 2 : -toView.getHeight() * 2;
-        final float toViewEndY = fromAllApps ? workspaceHeight - toView.getHeight() : 0.0f;
-
-        mCustomizePagedView.endChoiceMode();
-        mAllAppsPagedView.endChoiceMode();
-
-        if (toState == State.ALL_APPS) {
-            mWorkspace.shrink(Workspace.ShrinkState.BOTTOM_HIDDEN, animated);
-        } else {
-            mWorkspace.shrink(Workspace.ShrinkState.TOP, animated);
-        }
-
-        if (animated) {
-            if (mStateAnimation != null) mStateAnimation.cancel();
-            mStateAnimation = new AnimatorSet();
-            mStateAnimation.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    toView.setVisibility(View.VISIBLE);
-                    toView.setY(toViewStartY);
-                    toView.setAlpha(1.0f);
-                }
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    fromView.setVisibility(View.GONE);
-                }
-            });
-
-            AnimatorSet toolbarHideAnim = new AnimatorSet();
-            AnimatorSet toolbarShowAnim = new AnimatorSet();
-            hideAndShowToolbarButtons(toState, toolbarShowAnim, toolbarHideAnim);
-
-            ObjectAnimator fromAnim = ObjectAnimator.ofFloat(fromView, "y",
-                    fromViewStartY, fromViewEndY);
-            fromAnim.setDuration(duration);
-            ObjectAnimator toAnim = ObjectAnimator.ofPropertyValuesHolder(toView,
-                    PropertyValuesHolder.ofFloat("y", toViewStartY, toViewEndY),
-                    PropertyValuesHolder.ofFloat("scaleX", toView.getScaleX(), 1.0f),
-                    PropertyValuesHolder.ofFloat("scaleY", toView.getScaleY(), 1.0f)
-                    );
-            fromAnim.setDuration(duration);
-            mStateAnimation.playTogether(toolbarHideAnim, fromAnim, toAnim);
-
-            // Show the new toolbar buttons just as the main animation is ending
-            final int fadeInTime = res.getInteger(R.integer.config_toolbarButtonFadeInTime);
-            mStateAnimation.play(toolbarShowAnim).after(duration - fadeInTime);
-            mStateAnimation.start();
-        } else {
-            fromView.setY(fromViewEndY);
-            fromView.setVisibility(View.GONE);
-            toView.setY(toViewEndY);
-            toView.setScaleX(1.0f);
-            toView.setScaleY(1.0f);
-            toView.setVisibility(View.VISIBLE);
-            hideAndShowToolbarButtons(toState, null, null);
-        }
-    }
-
     void showAllApps(boolean animated) {
-        if (mState == State.ALL_APPS) {
+        if (mState != State.WORKSPACE) {
             return;
         }
 
         if (LauncherApplication.isScreenXLarge()) {
-            if (mState == State.CUSTOMIZE) {
-                cameraPan(State.CUSTOMIZE, State.ALL_APPS, animated);
-            } else {
-                cameraZoomOut(State.ALL_APPS, animated);
-            }
+            cameraZoomOut(State.ALL_APPS, animated);
         } else {
             mAllAppsGrid.zoom(1.0f, animated);
         }
@@ -3112,11 +3036,12 @@ public final class Launcher extends Activity
 
     // Show the customization drawer (only exists in x-large configuration)
     private void showCustomizationDrawer(boolean animated) {
-        if (mState == State.ALL_APPS) {
-            cameraPan(State.ALL_APPS, State.CUSTOMIZE, animated);
-        } else {
-            cameraZoomOut(State.CUSTOMIZE, animated);
+        if (mState != State.WORKSPACE) {
+            return;
         }
+
+        cameraZoomOut(State.CUSTOMIZE, animated);
+
         // Change the state *after* we've called all the transition code
         mState = State.CUSTOMIZE;
 
