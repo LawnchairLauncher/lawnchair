@@ -280,6 +280,8 @@ public final class Launcher extends Activity
     private static Drawable.ConstantState sVoiceSearchIcon;
     private static Drawable.ConstantState sAppMarketIcon;
 
+    private BubbleTextView mWaitingForResume;
+
     private CustomizationType getCustomizeFilterForTabTag(String tag) {
         if (tag.equals(WIDGETS_TAG)) {
             return CustomizationType.WidgetCustomization;
@@ -760,6 +762,9 @@ public final class Launcher extends Activity
             mModel.startLoader(this, true);
             mRestoring = false;
             mOnResumeNeedsLoad = false;
+        }
+        if (mWaitingForResume != null) {
+            mWaitingForResume.setStayPressed(false);
         }
         // When we resume Launcher, a different Activity might be responsible for the app
         // market intent, so refresh the icon
@@ -2037,7 +2042,12 @@ public final class Launcher extends Activity
             v.getLocationOnScreen(pos);
             intent.setSourceBounds(new Rect(pos[0], pos[1],
                     pos[0] + v.getWidth(), pos[1] + v.getHeight()));
-            startActivitySafely(intent, tag);
+            boolean success = startActivitySafely(intent, tag);
+
+            if (success && v instanceof BubbleTextView) {
+                mWaitingForResume = (BubbleTextView) v;
+                mWaitingForResume.setStayPressed(true);
+            }
         } else if (tag instanceof FolderInfo) {
             handleFolderClick((FolderInfo) tag);
         } else if (v == mHandleView) {
@@ -2130,10 +2140,11 @@ public final class Launcher extends Activity
         }
     }
 
-    void startActivitySafely(Intent intent, Object tag) {
+    boolean startActivitySafely(Intent intent, Object tag) {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         try {
             startActivity(intent);
+            return true;
         } catch (ActivityNotFoundException e) {
             Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Unable to launch. tag=" + tag + " intent=" + intent, e);
@@ -2144,6 +2155,7 @@ public final class Launcher extends Activity
                     "or use the exported attribute for this activity. "
                     + "tag="+ tag + " intent=" + intent, e);
         }
+        return false;
     }
 
     void startActivityForResultSafely(Intent intent, int requestCode) {

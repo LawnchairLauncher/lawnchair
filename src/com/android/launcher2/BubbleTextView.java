@@ -66,6 +66,8 @@ public class BubbleTextView extends TextView implements VisibilityChangedBroadca
     private boolean mBackgroundSizeChanged;
     private Drawable mBackground;
 
+    private boolean mStayPressed;
+
     private VisibilityChangedListener mOnVisibilityChangedListener;
 
     public BubbleTextView(Context context) {
@@ -124,27 +126,37 @@ public class BubbleTextView extends TextView implements VisibilityChangedBroadca
         return who == mBackground || super.verifyDrawable(who);
     }
 
+    private void invalidatePressedOrFocusedBackground() {
+        int padding = HolographicOutlineHelper.MAX_OUTER_BLUR_RADIUS / 2;
+        ((View)getParent()).invalidate(getLeft() - padding, getTop() - padding,
+                getRight() + padding, getBottom() + padding);
+        invalidate();
+    }
+
     @Override
     protected void drawableStateChanged() {
         if (isPressed()) {
             // In this case, we have already created the pressed outline on ACTION_DOWN,
             // so we just need to do an invalidate to trigger draw
             if (!mDidInvalidateForPressedState) {
-                invalidate();
+                invalidatePressedOrFocusedBackground();
             }
         } else {
             // Otherwise, either clear the pressed/focused background, or create a background
             // for the focused state
             final boolean backgroundEmptyBefore = mPressedOrFocusedBackground == null;
-            mPressedOrFocusedBackground = null;
+            if (!mStayPressed) {
+                mPressedOrFocusedBackground = null;
+            }
             if (isFocused()) {
                 mPressedOrFocusedBackground = createGlowingOutline(
                         mTempCanvas, mFocusedGlowColor, mFocusedOutlineColor);
-                invalidate();
+                mStayPressed = false;
+                invalidatePressedOrFocusedBackground();
             }
             final boolean backgroundEmptyNow = mPressedOrFocusedBackground == null;
             if (!backgroundEmptyBefore && backgroundEmptyNow) {
-                invalidate();
+                invalidatePressedOrFocusedBackground();
             }
         }
 
@@ -244,9 +256,16 @@ public class BubbleTextView extends TextView implements VisibilityChangedBroadca
         super.onVisibilityChanged(changedView, visibility);
     }
 
+    void setStayPressed(boolean stayPressed) {
+        mStayPressed = stayPressed;
+        if (!stayPressed) {
+            mPressedOrFocusedBackground = null;
+        }
+        invalidatePressedOrFocusedBackground();
+    }
     @Override
     public void draw(Canvas canvas) {
-        if (mPressedOrFocusedBackground != null && (isPressed() || isFocused())) {
+        if (mPressedOrFocusedBackground != null && (isPressed() || isFocused() || mStayPressed)) {
             // The blue glow can extend outside of our clip region, so we first temporarily expand
             // the canvas's clip region
             canvas.save(Canvas.CLIP_SAVE_FLAG);
