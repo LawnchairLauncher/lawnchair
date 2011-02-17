@@ -1,42 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+* Copyright (C) 2010 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+ -->
+
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- XL -->
-    <string name="application_name" msgid="8444202179223900837">"Selector"</string>
-    <!-- XL -->
-    <string name="uid_name" msgid="2634595491534329164">"Aplicaciones del núcleo de Androide"</string>
-    <!-- XL -->
-    <string name="chooser_wallpaper" msgid="3766864787811545058">"Seleccionar fondo de pantalla desde"</string>
-    <!-- XL -->
-    <string name="pick_wallpaper" msgid="7392838767723380127">"Fondos de pantalla"</string>
-    <!-- XL -->
-    <string name="activity_not_found" msgid="742483216109058344">"La aplicación no está instalada."</string>
-    <!-- XL -->
-    <string name="wallpapers_tab_label" msgid="1659635260989419263">"Fondos de pantalla"</string>
-    <!-- XL -->
-    <string name="wallpapers_temp_tab_text" msgid="1406600851510062325">"Ésta será la pestaña para los fondos de pantalla"</string>
-    <!-- XL -->
-    <string name="all_apps_tab_apps" msgid="827864997519186499">"Google Apps"</string>
-    <!-- XL -->
-    <string name="all_apps_no_downloads" msgid="6687010155766000796">"No se encontraron apps."</string>
-    <!-- XL -->
-    <string name="group_wallpapers" msgid="5356616257147378618">"Fondos de pantalla"</string>
-    <!-- XL -->
-    <string name="all_apps_button_label" msgid="825988103463804114">"Google Apps"</string>
-    <!-- XL -->
-    <string name="all_apps_home_button_label" msgid="4573985169183891042">"Pantalla principal"</string>
-    <!-- XL -->
-    <string name="delete_zone_label_workspace" msgid="7170653385628744300">"Eliminar"</string>
-    <!-- XL -->
-    <string name="menu_wallpaper" msgid="7079815810001779627">"Fondo de pantalla"</string>
-    <!-- XL -->
-    <string name="permlab_uninstall_shortcut" msgid="9081019297773923949">"desinstalar accesos directos"</string>
-    <!-- XL -->
-    <string name="delete_zone_label_all_apps" msgid="192778192843793957">"Desinstalar"</string>
-    <!-- XL xlarge -->
-    <string name="wallpaper_dialog_title" msgid="8158909859337893047">"Seleccionar fondo de pantalla"</string>
-    <!-- XL xlarge -->
-    <string name="wallpaper_cancel" msgid="6726455585784483952">"Cancelar"</string>
-    <!-- XL xlarge -->
-    <string name="wallpaper_chooser_empty" msgid="8656678103211440583">"No hay fondos de pantalla disponibles"</string>
+    <string name="wallpaper_dialog_title" msgid="5764793286524787718">"Seleccionar fondo de pantalla"</string>
+    <string name="wallpaper_chooser_empty" msgid="7358237455389125747">"No hay fondos de pantalla disponibles"</string>
+    <string name="wallpaper_cancel" msgid="6502936522490675611">"Cancelar"</string>
 </resources>
