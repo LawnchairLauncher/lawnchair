@@ -546,6 +546,11 @@ public abstract class PagedView extends ViewGroup {
                         alpha = 1.0f;
                     }
 
+                    // Due to the way we're setting alpha on our children in PagedViewCellLayout,
+                    // this optimization causes alpha to not be properly updated sometimes (repro
+                    // case: in xlarge mode, swipe to second page in All Apps, then click on "My
+                    // Apps" tab. the page will have alpha 0 until you swipe it). Removing
+                    // optimization fixes the issue, but we should fix this in a better manner
                     //if (Float.compare(alpha, layout.getAlpha()) != 0) {
                         layout.setAlpha(alpha);
                     //}
