@@ -32,7 +32,7 @@
     <string name="rename_action" msgid="6016003384693240896">"OK"</string>
     <string name="cancel_action" msgid="3811860427489435048">"Avbryt"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"Lägg till på startsidan"</string>
-    <string name="group_applications" msgid="4118484163419674240">"Program"</string>
+    <string name="group_applications" msgid="4118484163419674240">"Appar"</string>
     <string name="group_shortcuts" msgid="9133529424900391877">"Genvägar"</string>
     <string name="group_folder" msgid="5143593791798929193">"Ny mapp"</string>
     <string name="group_live_folders" msgid="2664945399140647217">"Mappar"</string>
@@ -46,9 +46,9 @@
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Genvägen \"<xliff:g id="NAME">%s</xliff:g>\" har tagits bort."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Genvägen \"<xliff:g id="NAME">%s</xliff:g>\" finns redan."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Välj genväg"</string>
-    <string name="title_select_application" msgid="8031072293115454221">"Välj program"</string>
+    <string name="title_select_application" msgid="8031072293115454221">"Välj app"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"Välj mapp"</string>
-    <string name="all_apps_button_label" msgid="3953036962111614813">"Alla program"</string>
+    <string name="all_apps_button_label" msgid="3953036962111614813">"Alla appar"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Startsida"</string>
     <string name="menu_add" msgid="3065046628354640854">"Lägg till"</string>
     <string name="menu_manage_apps" msgid="2308685199463588895">"Hantera appar"</string>
