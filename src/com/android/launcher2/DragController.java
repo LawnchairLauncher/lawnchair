@@ -205,9 +205,7 @@ public class DragController {
         int screenX = loc[0];
         int screenY = loc[1];
 
-        startDrag(b, screenX, screenY, 0, 0, b.getWidth(), b.getHeight(),
-                source, dragInfo, dragAction, dragRegion);
-
+        startDrag(b, screenX, screenY, source, dragInfo, dragAction, dragRegion);
         b.recycle();
 
         if (dragAction == DRAG_ACTION_MOVE) {
@@ -236,8 +234,7 @@ public class DragController {
         int screenX = loc[0];
         int screenY = loc[1];
 
-        startDrag(bmp, screenX, screenY, 0, 0, bmp.getWidth(), bmp.getHeight(),
-                source, dragInfo, dragAction, dragRegion);
+        startDrag(bmp, screenX, screenY, source, dragInfo, dragAction, dragRegion);
 
         if (dragAction == DRAG_ACTION_MOVE) {
             v.setVisibility(View.GONE);
@@ -251,20 +248,14 @@ public class DragController {
      *          enlarged size.
      * @param screenX The x position on screen of the left-top of the bitmap.
      * @param screenY The y position on screen of the left-top of the bitmap.
-     * @param textureLeft The left edge of the region inside b to use.
-     * @param textureTop The top edge of the region inside b to use.
-     * @param textureWidth The width of the region inside b to use.
-     * @param textureHeight The height of the region inside b to use.
      * @param source An object representing where the drag originated
      * @param dragInfo The data associated with the object that is being dragged
      * @param dragAction The drag action: either {@link #DRAG_ACTION_MOVE} or
      *        {@link #DRAG_ACTION_COPY}
      */
     public void startDrag(Bitmap b, int screenX, int screenY,
-            int textureLeft, int textureTop, int textureWidth, int textureHeight,
             DragSource source, Object dragInfo, int dragAction) {
-        startDrag(b, screenX, screenY, textureLeft, textureTop, textureWidth, textureHeight,
-                source, dragInfo, dragAction, null);
+        startDrag(b, screenX, screenY, source, dragInfo, dragAction, null);
     }
 
     /**
@@ -274,10 +265,6 @@ public class DragController {
      *          enlarged size.
      * @param screenX The x position on screen of the left-top of the bitmap.
      * @param screenY The y position on screen of the left-top of the bitmap.
-     * @param textureLeft The left edge of the region inside b to use.
-     * @param textureTop The top edge of the region inside b to use.
-     * @param textureWidth The width of the region inside b to use.
-     * @param textureHeight The height of the region inside b to use.
      * @param source An object representing where the drag originated
      * @param dragInfo The data associated with the object that is being dragged
      * @param dragAction The drag action: either {@link #DRAG_ACTION_MOVE} or
@@ -286,7 +273,6 @@ public class DragController {
      *          Makes dragging feel more precise, e.g. you can clip out a transparent border
      */
     public void startDrag(Bitmap b, int screenX, int screenY,
-            int textureLeft, int textureTop, int textureWidth, int textureHeight,
             DragSource source, Object dragInfo, int dragAction, Rect dragRegion) {
         if (PROFILE_DRAWING_DURING_DRAG) {
             android.os.Debug.startMethodTracing("Launcher");
@@ -318,7 +304,7 @@ public class DragController {
         mVibrator.vibrate(VIBRATE_DURATION);
 
         DragView dragView = mDragView = new DragView(mContext, b, registrationX, registrationY,
-                textureLeft, textureTop, textureWidth, textureHeight);
+                0, 0, b.getWidth(), b.getHeight());
 
         final DragSource dragSource = source;
         dragView.setOnDrawRunnable(new Runnable() {
@@ -400,7 +386,7 @@ public class DragController {
     public void cancelDrag() {
         if (mDragging) {
             // Should we also be calling onDragExit() here?
-            mDragSource.onDropCompleted(null, false);
+            mDragSource.onDropCompleted(null, mDragInfo, false);
         }
         endDrag();
     }
@@ -596,14 +582,14 @@ public class DragController {
                     (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo)) {
                 dropTarget.onDrop(mDragSource, coordinates[0], coordinates[1],
                         (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo);
-                mDragSource.onDropCompleted((View) dropTarget, true);
+                mDragSource.onDropCompleted((View) dropTarget, mDragInfo, true);
                 return true;
             } else {
-                mDragSource.onDropCompleted((View) dropTarget, false);
+                mDragSource.onDropCompleted((View) dropTarget, mDragInfo, false);
                 return true;
             }
         } else {
-            mDragSource.onDropCompleted(null, false);
+            mDragSource.onDropCompleted(null, mDragInfo, false);
         }
         return false;
     }
@@ -714,6 +700,10 @@ public class DragController {
      */
     void setDeleteRegion(RectF region) {
         mDeleteRegion = region;
+    }
+
+    DragView getDragView() {
+        return mDragView;
     }
 
     private class ScrollRunnable implements Runnable {

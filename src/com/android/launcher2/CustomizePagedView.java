@@ -38,8 +38,9 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.Bitmap.Config;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -53,7 +54,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -120,9 +121,19 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
 
     private final float mTmpFloatPos[] = new float[2];
     private final float ANIMATION_SCALE = 0.5f;
-    private final int ANIMATION_DURATION = 400;
+
+    // The duration of the translation animation that occurs during you drag and drop
+    private final int TRANSLATE_ANIM_DURATION = 400;
+
+    // The duration of the scale & alpha animation that occurs during drag and drop
+    private final int DROP_ANIM_DURATION = 200;
+
     private TimeInterpolator mQuintEaseOutInterpolator = new DecelerateInterpolator(2.5f);
-    private ScaleAlphaInterpolator mScaleAlphaInterpolator = new ScaleAlphaInterpolator();
+
+    // The Bitmap used to generate the drag view
+    private Bitmap mDragBitmap;
+
+    private int[] mDragViewOrigin = new int[2];
 
     public CustomizePagedView(Context context) {
         this(context, null, 0);
@@ -324,37 +335,59 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         return mCustomizationType;
     }
 
-    @Override
-    public void onDropCompleted(View target, boolean success) {
-        resetCheckedGrandchildren();
+    /**
+     * Similar to resetCheckedGrandchildren, but allows us to specify that it's not animated.
+     * NOTE: This assumes that only a single item can be checked.
+     */
+    private void resetCheckedItem(boolean animated) {
+        Checkable checkable = getCheckedGrandchildren().get(0);
+        if (checkable instanceof PagedViewWidget) {
+            ((PagedViewWidget) checkable).setChecked(false, animated);
+        } else {
+            ((PagedViewIcon) checkable).setChecked(false, animated);
+        }
+    }
+
+    public void onDropCompleted(View target, Object dragInfo, boolean success) {
+        final DragLayer dragLayer = (DragLayer) mLauncher.findViewById(R.id.drag_layer);
+
+        // Create a view, identical to the drag view, that is only used for animating the
+        // item onto the home screen (or back to its original position, if the drop failed).
+        final int[] pos = new int[2];
+        mDragController.getDragView().getLocationOnScreen(pos);
+        final View animView = dragLayer.createDragView(mDragBitmap, pos[0], pos[1]);
+        animView.setVisibility(View.VISIBLE);
+
+        if (success) {
+            resetCheckedItem(true);
+            animateDropOntoScreen(animView, (ItemInfo) dragInfo, DROP_ANIM_DURATION, 0);
+        } else {
+            // Animate the icon/widget back to its original position
+            animateIntoPosition(animView, mDragViewOrigin[0], mDragViewOrigin[1], new Runnable() {
+                public void run() {
+                   resetCheckedItem(false);
+                   dragLayer.removeView(animView);
+                }
+            });
+        }
         mLauncher.getWorkspace().onDragStopped(success);
         mLauncher.unlockScreenOrientation();
+        mDragBitmap = null;
     }
 
     @Override
     public void onDragViewVisible() {
     }
 
-    class ScaleAlphaInterpolator implements Interpolator {
-        public float getInterpolation(float input) {
-            float pivot = 0.5f;
-            if (input < pivot) {
-                return 0;
-            } else {
-                return (input - pivot)/(1 - pivot);
-            }
-        }
-    }
-
+    /**
+     * Animates the given item onto the center of a home screen, and then scales the item to
+     * look as though it's disappearing onto that screen.
+     */
     private void animateItemOntoScreen(View dragView,
             final CellLayout layout, final ItemInfo info) {
         mTmpFloatPos[0] = layout.getWidth() / 2;
         mTmpFloatPos[1] = layout.getHeight() / 2;
         mLauncher.getWorkspace().mapPointFromChildToSelf(layout, mTmpFloatPos);
-
-        final DragLayer dragLayer = (DragLayer) mLauncher.findViewById(R.id.drag_layer);
-        final View dragCopy = dragLayer.createDragView(dragView);
-        dragCopy.setAlpha(1.0f);
 
         int dragViewWidth = dragView.getMeasuredWidth();
         int dragViewHeight = dragView.getMeasuredHeight();
@@ -374,37 +407,69 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
                 widthOffset = ANIMATION_SCALE * (dragViewWidth - f * width) / 2;
             }
         }
+        final float toX = mTmpFloatPos[0] - dragView.getMeasuredWidth() / 2 + widthOffset;
+        final float toY = mTmpFloatPos[1] - dragView.getMeasuredHeight() / 2 + heightOffset;
 
-        float toX = mTmpFloatPos[0] - dragView.getMeasuredWidth() / 2 + widthOffset;
-        float toY = mTmpFloatPos[1] - dragView.getMeasuredHeight() / 2 + heightOffset;
+        final DragLayer dragLayer = (DragLayer) mLauncher.findViewById(R.id.drag_layer);
+        final View dragCopy = dragLayer.createDragView(dragView);
+        dragCopy.setAlpha(1.0f);
 
-        ObjectAnimator posAnim = ObjectAnimator.ofPropertyValuesHolder(dragCopy,
-                PropertyValuesHolder.ofFloat("x", toX),
-                PropertyValuesHolder.ofFloat("y", toY));
-        posAnim.setInterpolator(mQuintEaseOutInterpolator);
-        posAnim.setDuration(ANIMATION_DURATION);
+        // Translate the item to the center of the appropriate home screen
+        animateIntoPosition(dragCopy, toX, toY, null);
 
-        posAnim.addListener(new AnimatorListenerAdapter() {
-            public void onAnimationEnd(Animator animation) {
-                dragLayer.removeView(dragCopy);
-                mLauncher.addExternalItemToScreen(info, layout);
-                post(new Runnable() {
-                    public void run() {
-                        layout.animateDrop();
-                    }
-                });
-            }
-        });
+        // The drop-onto-screen animation begins a bit later, but ends at the same time.
+        final int startDelay = TRANSLATE_ANIM_DURATION - DROP_ANIM_DURATION;
+        
+        // Scale down the icon and fade out the alpha
+        animateDropOntoScreen(dragCopy, info, DROP_ANIM_DURATION, startDelay);
+    }
 
-        ObjectAnimator scaleAlphaAnim = ObjectAnimator.ofPropertyValuesHolder(dragCopy,
+    /**
+     * Animation which scales the view down and animates its alpha, making it appear to disappear
+     * onto a home screen.
+     */
+    private void animateDropOntoScreen(
+            final View view, final ItemInfo info, int duration, int delay) {
+        final DragLayer dragLayer = (DragLayer) mLauncher.findViewById(R.id.drag_layer);
+        final CellLayout layout = mLauncher.getWorkspace().getCurrentDropLayout();
+
+        ObjectAnimator anim = ObjectAnimator.ofPropertyValuesHolder(view,
                 PropertyValuesHolder.ofFloat("alpha", 1.0f, 0.0f),
                 PropertyValuesHolder.ofFloat("scaleX", ANIMATION_SCALE),
                 PropertyValuesHolder.ofFloat("scaleY", ANIMATION_SCALE));
-        scaleAlphaAnim.setInterpolator(mScaleAlphaInterpolator);
-        scaleAlphaAnim.setDuration(ANIMATION_DURATION);
+        anim.setInterpolator(new LinearInterpolator());
+        if (delay > 0) {
+            anim.setStartDelay(delay);
+        }
+        anim.setDuration(duration);
+        anim.addListener(new AnimatorListenerAdapter() {
+            public void onAnimationEnd(Animator animation) {
+                dragLayer.removeView(view);
+                mLauncher.addExternalItemToScreen(info, layout);
+            }
+        });
+        anim.start();
+    }
 
-        posAnim.start();
-        scaleAlphaAnim.start();
+    /**
+     * Animates the x,y position of the view, and optionally execute a Runnable on animation end.
+     */
+    private void animateIntoPosition(
+            View view, float toX, float toY, final Runnable endRunnable) {
+        ObjectAnimator anim = ObjectAnimator.ofPropertyValuesHolder(view,
+                PropertyValuesHolder.ofFloat("x", toX),
+                PropertyValuesHolder.ofFloat("y", toY));
+        anim.setInterpolator(mQuintEaseOutInterpolator);
+        anim.setDuration(TRANSLATE_ANIM_DURATION);
+        if (endRunnable != null) {
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    endRunnable.run();
+                }
+            });
+        }
+        anim.start();
     }
 
     @Override
@@ -479,9 +544,10 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         }
     }
 
-    Bitmap drawableToBitmap(Drawable d) {
-        int w = d.getIntrinsicWidth();
-        int h = d.getIntrinsicHeight();
+    private Bitmap drawableToBitmap(Drawable d) {
+        final Rect bounds = d.getBounds();
+        final int w = bounds.width();
+        final int h = bounds.height();
         Bitmap b = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         renderDrawableToBitmap(d, b, 0, 0, w, h);
         return b;
@@ -500,6 +566,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         if (isChoiceMode(CHOICE_MODE_SINGLE)) {
             endChoiceMode();
         }
+        final Workspace workspace = mLauncher.getWorkspace();
         boolean result = false;
         mLauncher.lockScreenOrientation();
         switch (mCustomizationType) {
@@ -508,50 +575,44 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
                 // Get the widget preview as the drag representation
                 final LinearLayout l = (LinearLayout) v;
                 final ImageView i = (ImageView) l.findViewById(R.id.widget_preview);
-                Bitmap b = drawableToBitmap(i.getDrawable());
+                mDragBitmap = drawableToBitmap(i.getDrawable());
+                i.getLocationOnScreen(mDragViewOrigin);
                 PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo) v.getTag();
 
-                int[] spanXY = CellLayout.rectToCell(
-                        getResources(), createWidgetInfo.minWidth, createWidgetInfo.minHeight, null);
+                int[] spanXY = CellLayout.rectToCell(getResources(),
+                        createWidgetInfo.minWidth, createWidgetInfo.minHeight, null);
                 createWidgetInfo.spanX = spanXY[0];
                 createWidgetInfo.spanY = spanXY[1];
-                mLauncher.getWorkspace().onDragStartedWithItemSpans(spanXY[0], spanXY[1], b);
-                mDragController.startDrag(
-                        i, b, this, createWidgetInfo, DragController.DRAG_ACTION_COPY, null);
-                b.recycle();
+                workspace.onDragStartedWithItemSpans(spanXY[0], spanXY[1], mDragBitmap);
+                mDragController.startDrag(i, mDragBitmap, this, createWidgetInfo,
+                        DragController.DRAG_ACTION_COPY, null);
                 result = true;
             }
             break;
         }
-        case ShortcutCustomization: {
-            if (v instanceof PagedViewIcon) {
-                // get icon (top compound drawable, index is 1)
-                final TextView tv = (TextView) v;
-                final Drawable icon = tv.getCompoundDrawables()[1];
-                Bitmap b = drawableToBitmap(icon);
-                PendingAddItemInfo createItemInfo = (PendingAddItemInfo) v.getTag();
-
-                mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1, b);
-                mDragController.startDrag(v, b, this, createItemInfo, DragController.DRAG_ACTION_COPY,
-                        null);
-                b.recycle();
-                result = true;
-            }
-            break;
-        }
+        case ShortcutCustomization:
         case ApplicationCustomization: {
             if (v instanceof PagedViewIcon) {
-                // Pick up the application for dropping
                 // get icon (top compound drawable, index is 1)
                 final TextView tv = (TextView) v;
                 final Drawable icon = tv.getCompoundDrawables()[1];
-                Bitmap b = drawableToBitmap(icon);
-                ApplicationInfo app = (ApplicationInfo) v.getTag();
-                app = new ApplicationInfo(app);
+                mDragBitmap = drawableToBitmap(icon);
 
-                mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1, b);
-                mDragController.startDrag(v, b, this, app, DragController.DRAG_ACTION_COPY, null);
-                b.recycle();
+                Object dragInfo = v.getTag();
+                if (mCustomizationType == CustomizationType.ApplicationCustomization) {
+                    // TODO: Not sure why we have to copy this
+                    dragInfo = new ApplicationInfo((ApplicationInfo) dragInfo);
+                }
+                workspace.onDragStartedWithItemSpans(1, 1, mDragBitmap);
+
+                // Calculate where to place the drag view in order to align the icon pixels with
+                // the original view.
+                v.getLocationOnScreen(mDragViewOrigin);
+                mDragViewOrigin[0] += (v.getWidth() - icon.getIntrinsicWidth()) / 2;
+                mDragViewOrigin[1] += v.getPaddingTop();
+
+                mDragController.startDrag(mDragBitmap, mDragViewOrigin[0], mDragViewOrigin[1],
+                        this, dragInfo, DragController.DRAG_ACTION_COPY);
                 result = true;
             }
             break;
@@ -621,8 +682,10 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
     private void renderDrawableToBitmap(Drawable d, Bitmap bitmap, int x, int y, int w, int h) {
         if (bitmap != null) mCanvas.setBitmap(bitmap);
         mCanvas.save();
-        d.setBounds(x, y, x+w, y+h);
+        final Rect oldBounds = d.copyBounds();
+        d.setBounds(x, y, x + w, y + h);
         d.draw(mCanvas);
+        d.setBounds(oldBounds); // Restore the bounds
         mCanvas.restore();
     }
 

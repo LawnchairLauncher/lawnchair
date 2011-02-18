@@ -114,7 +114,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     }
 
     @Override
-    public void onDropCompleted(View target, boolean success) {
+    public void onDropCompleted(View target, Object dragInfo, boolean success) {
     }
 
     @Override
