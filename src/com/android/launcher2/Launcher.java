@@ -2427,6 +2427,10 @@ public final class Launcher extends Activity
         return mWorkspace;
     }
 
+    TabHost getCustomizationDrawer() {
+        return mHomeCustomizationDrawer;
+    }
+
     @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {

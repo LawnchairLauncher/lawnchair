@@ -32,7 +32,7 @@
         launcher:defaultScreen="2"
         launcher:cellCountX="8"
         launcher:cellCountY="7"
-        launcher:pageSpacing="64dp">
+        launcher:pageSpacing="@dimen/workspace_page_spacing">
 
         <include android:id="@+id/cell1" layout="@layout/workspace_screen" />
         <include android:id="@+id/cell2" layout="@layout/workspace_screen" />
@@ -70,7 +70,7 @@
            android:onClick="onClickSearchButton"
            android:focusable="true"
            android:clickable="true" />
-           
+
         <ImageView
             android:id="@+id/search_divider"
             android:src="@drawable/divider_launcher_holo"
@@ -139,7 +139,7 @@
             android:paddingTop="@dimen/all_apps_button_vertical_padding"
             android:paddingBottom="@dimen/all_apps_button_vertical_padding"
             android:background="@drawable/button_bg"
-            
+
             android:gravity="center_horizontal|center_vertical"
             android:textColor="#CCFFFFFF"
             android:textSize="18sp"
@@ -159,7 +159,7 @@
             android:layout_toLeftOf="@id/configure_button"
             android:paddingTop="@dimen/toolbar_button_vertical_padding"
             android:paddingBottom="@dimen/toolbar_button_vertical_padding"
-            android:visibility="gone"/>
+            android:visibility="gone" />
         <com.android.launcher2.DeleteZone
             android:id="@+id/delete_zone"
             android:text="@string/delete_zone_label_workspace"
@@ -189,7 +189,7 @@
     <TabHost
         android:id="@+id/customization_drawer"
         android:layout_width="match_parent"
-        android:layout_height="800dp"
+        android:layout_height="@dimen/customization_drawer_height"
         android:layout_gravity="bottom">
         <LinearLayout
             android:orientation="vertical"
@@ -197,7 +197,7 @@
             android:layout_height="match_parent">
             <TabWidget
                 android:id="@android:id/tabs"
-                android:layout_width="700dp"
+                android:layout_width="@dimen/customization_drawer_tab_widget_width"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/tab_unselected_holo"
@@ -205,7 +205,7 @@
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
-                android:layout_height="650dp">
+                android:layout_height="match_parent">
              </FrameLayout>
           </LinearLayout>
     </TabHost>

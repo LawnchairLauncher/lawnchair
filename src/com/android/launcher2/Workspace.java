@@ -23,7 +23,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.Animator.AnimatorListener;
@@ -62,6 +61,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.TabHost;
+import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -1327,6 +1328,19 @@ public class Workspace extends SmoothPagedView
         shrink(shrinkState, true);
     }
 
+    private int getCustomizeDrawerHeight() {
+        TabHost customizationDrawer = mLauncher.getCustomizationDrawer();
+        int height = customizationDrawer.getHeight();
+        TabWidget tabWidget = (TabWidget)
+            customizationDrawer.findViewById(com.android.internal.R.id.tabs);
+        if (tabWidget.getTabCount() > 0) {
+            TextView tabText = (TextView) tabWidget.getChildTabViewAt(0);
+            // subtract the empty space above the tab text
+            height -= ((tabWidget.getHeight() - tabText.getLineHeight())) / 2;
+        }
+        return height;
+    }
+
     // we use this to shrink the workspace for the all apps view and the customize view
     public void shrink(ShrinkState shrinkState, boolean animated) {
         // In the launcher interaction model, we're never in the state where we're shrunken and
@@ -1403,9 +1417,7 @@ public class Workspace extends SmoothPagedView
             y = screenHeight / 2 - scaledPageHeight / 2;
             finalAlpha = 1.0f;
         } else if (shrinkState == ShrinkState.TOP) {
-            y = (isPortrait ?
-                getResources().getDimension(R.dimen.customizeSmallScreenVerticalMarginPortrait) :
-                getResources().getDimension(R.dimen.customizeSmallScreenVerticalMarginLandscape));
+            y = (screenHeight - getCustomizeDrawerHeight() - scaledPageHeight) / 2;
         }
 
         int duration;

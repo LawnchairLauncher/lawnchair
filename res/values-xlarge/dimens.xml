@@ -37,11 +37,6 @@
     <dimen name="allAppsSmallScreenVerticalMarginLandscape">30dip</dimen>
     <dimen name="allAppsSmallScreenVerticalMarginPortrait">60dip</dimen>
 
-    <!-- Vertical spacing between edge of screen and mini cell layouts when they
-         are minimized to the top when the customization drawer is showing -->
-    <dimen name="customizeSmallScreenVerticalMarginLandscape">90dip</dimen>
-    <dimen name="customizeSmallScreenVerticalMarginPortrait">180dip</dimen>
-
     <dimen name="delete_zone_drawable_padding">8dip</dimen>
     <dimen name="all_apps_button_drawable_padding">0dip</dimen>
     <dimen name="all_apps_button_vertical_padding">4dip</dimen>

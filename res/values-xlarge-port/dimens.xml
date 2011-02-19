@@ -22,4 +22,9 @@
     <!-- Width/height gap overrides for the workspace -->
     <dimen name="workspace_width_gap">0dp</dimen>
     <dimen name="workspace_height_gap">32dp</dimen>
+
+    <dimen name="workspace_page_spacing">64dp</dimen>
+
+    <dimen name="customization_drawer_height">800dp</dimen>
+    <dimen name="customization_drawer_tab_widget_width">700dp</dimen>
 </resources>
