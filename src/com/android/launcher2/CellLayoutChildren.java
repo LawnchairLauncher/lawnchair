@@ -16,12 +16,14 @@
 
 package com.android.launcher2;
 
+import java.util.ArrayList;
+
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.graphics.Rect;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.MeasureSpec;
 
 public class CellLayoutChildren extends ViewGroup {
     static final String TAG = "CellLayoutChildren";
@@ -32,11 +34,11 @@ public class CellLayoutChildren extends ViewGroup {
 
     private final WallpaperManager mWallpaperManager;
 
-    private int mCellWidth;
-    private int mCellHeight;
-
     private int mLeftPadding;
     private int mTopPadding;
+
+    private int mCellWidth;
+    private int mCellHeight;
 
     private int mWidthGap;
     private int mHeightGap;
@@ -170,5 +172,103 @@ public class CellLayoutChildren extends ViewGroup {
     @Override
     protected void setChildrenDrawnWithCacheEnabled(boolean enabled) {
         super.setChildrenDrawnWithCacheEnabled(enabled);
+    }
+
+    private final ArrayList<AppWidgetResizeFrame> mResizeFrames = new  ArrayList<AppWidgetResizeFrame>();
+    private AppWidgetResizeFrame mCurrentResizeFrame;
+    private int mXDown, mYDown;
+    private boolean mIsWidgetBeingResized;
+
+    public void clearAllResizeFrames() {
+        for (AppWidgetResizeFrame frame: mResizeFrames) {
+            removeView(frame);
+        }
+        mResizeFrames.clear();
+    }
+
+    public boolean isWidgetBeingResized() {
+        return mIsWidgetBeingResized;
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        Rect hitRect = new Rect();
+
+        int x = (int) ev.getX();
+        int y = (int) ev.getY();
+
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            for (AppWidgetResizeFrame child: mResizeFrames) {
+                child.getHitRect(hitRect);
+                if (hitRect.contains(x, y)) {
+                    if (child.beginResizeIfPointInRegion(x - child.getLeft(), y - child.getTop())) {
+                        mCurrentResizeFrame = child;
+                        mIsWidgetBeingResized = true;
+                        mXDown = x;
+                        mYDown = y;
+                        requestDisallowInterceptTouchEvent(true);
+                        return true;
+                    }
+                }
+            }
+            mCurrentResizeFrame = null;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        boolean handled = false;
+        Rect hitRect = new Rect();
+        int action = ev.getAction();
+
+        int x = (int) ev.getX();
+        int y = (int) ev.getY();
+
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            for (AppWidgetResizeFrame child: mResizeFrames) {
+                child.getHitRect(hitRect);
+                if (hitRect.contains(x, y)) {
+                    if (child.beginResizeIfPointInRegion(x - child.getLeft(), y - child.getTop())) {
+                        mCurrentResizeFrame = child;
+                        mIsWidgetBeingResized = true;
+                        mXDown = x;
+                        mYDown = y;
+                        requestDisallowInterceptTouchEvent(true);
+                        return true;
+                    }
+                }
+            }
+            mCurrentResizeFrame = null;
+        }
+
+        // TODO: Need to handle ACTION_POINTER_UP / multi-touch
+        if (mCurrentResizeFrame != null) {
+            switch (action) {
+                case MotionEvent.ACTION_MOVE:
+                    mCurrentResizeFrame.visualizeResizeForDelta(x - mXDown, y - mYDown);
+                    break;
+                case MotionEvent.ACTION_CANCEL:
+                case MotionEvent.ACTION_UP: {
+                    mCurrentResizeFrame.commitResizeForDelta(x - mXDown, y - mYDown);
+                    mIsWidgetBeingResized = false;
+                    handled = true;
+                }
+            }
+        }
+        return handled;
+    }
+
+    public void addResizeFrame(ItemInfo itemInfo, LauncherAppWidgetHostView widget, CellLayout cellLayout) {
+        AppWidgetResizeFrame resizeFrame = new AppWidgetResizeFrame(getContext(),
+                itemInfo, widget, cellLayout);
+
+        CellLayout.LayoutParams lp = new CellLayout.LayoutParams(-1, -1, -1, -1);
+        lp.isLockedToGrid = false;
+
+        addView(resizeFrame, lp);
+        mResizeFrames.add(resizeFrame);
+
+        resizeFrame.snapToWidget(false);
     }
 }

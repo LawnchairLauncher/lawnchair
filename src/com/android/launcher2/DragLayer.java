@@ -16,6 +16,8 @@
 
 package com.android.launcher2;
 
+import com.android.launcher.R;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
@@ -56,6 +58,17 @@ public class DragLayer extends FrameLayout {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        // Here we need to detect if any touch event has occured which doesn't result
+        // in resizing a widget. In this case, we dismiss any visible resize frames.
+        post(new Runnable() {
+            public void run() {
+                Workspace w = (Workspace) findViewById(R.id.workspace);
+                CellLayout currentPage = (CellLayout) w.getChildAt(w.getCurrentPage());
+                if (!currentPage.getChildrenLayout().isWidgetBeingResized()) {
+                    currentPage.getChildrenLayout().clearAllResizeFrames();
+                }                
+            }
+        });
         return mDragController.onInterceptTouchEvent(ev);
     }
 

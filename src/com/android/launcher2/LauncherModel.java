@@ -177,6 +177,33 @@ public class LauncherModel extends BroadcastReceiver {
     }
 
     /**
+     * Resize an item in the DB to a new <spanX, spanY>
+     */
+    static void resizeItemInDatabase(Context context, ItemInfo item, int cellX, int cellY, 
+            int spanX, int spanY) {
+        item.spanX = spanX;
+        item.spanY = spanY;
+        item.cellX = cellX;
+        item.cellY = cellY;
+
+        final Uri uri = LauncherSettings.Favorites.getContentUri(item.id, false);
+        final ContentValues values = new ContentValues();
+        final ContentResolver cr = context.getContentResolver();
+
+        values.put(LauncherSettings.Favorites.CONTAINER, item.container);
+        values.put(LauncherSettings.Favorites.SPANX, spanX);
+        values.put(LauncherSettings.Favorites.SPANY, spanY);
+        values.put(LauncherSettings.Favorites.CELLX, cellX);
+        values.put(LauncherSettings.Favorites.CELLY, cellY);
+
+        sWorker.post(new Runnable() {
+                public void run() {
+                    cr.update(uri, values, null, null);
+                }
+            });
+    }
+
+    /**
      * Returns true if the shortcuts already exists in the database.
      * we identify a shortcut by its title and intent.
      */
