@@ -2070,8 +2070,8 @@ public class Workspace extends SmoothPagedView
         final int screenX = (int) mTempXY[0] + (child.getWidth() - bmpWidth) / 2;
         final int screenY = (int) mTempXY[1] + (child.getHeight() - bmpHeight) / 2;
         mLauncher.lockScreenOrientation();
-        mDragController.startDrag(b, screenX, screenY, 0, 0, bmpWidth, bmpHeight, this,
-                child.getTag(), DragController.DRAG_ACTION_MOVE, null);
+        mDragController.startDrag(
+                b, screenX, screenY, this, child.getTag(), DragController.DRAG_ACTION_MOVE);
         b.recycle();
     }
 
@@ -2226,6 +2226,11 @@ public class Workspace extends SmoothPagedView
         }
 
         if (source != this) {
+            if ((mIsSmall || mIsInUnshrinkAnimation) && !mLauncher.isAllAppsVisible()) {
+                // When the workspace is shrunk and the drop comes from customize, don't actually
+                // add the item to the screen -- customize will do this itself
+                return;
+            }
             onDropExternal(new int[] { originX, originY }, dragInfo, mDragTargetLayout, false);
         } else if (mDragInfo != null) {
             final View cell = mDragInfo.cell;
@@ -2821,11 +2826,8 @@ public class Workspace extends SmoothPagedView
      * Return the current {@link CellLayout}, correctly picking the destination
      * screen while a scroll is in progress.
      */
-    private CellLayout getCurrentDropLayout() {
-        // if we're currently small, use findMatchingPageForDragOver instead
-        if (mIsSmall) return null;
-        int index = mScroller.isFinished() ? mCurrentPage : mNextPage;
-        return (CellLayout) getChildAt(index);
+    public CellLayout getCurrentDropLayout() {
+        return (CellLayout) getChildAt(mNextPage == INVALID_PAGE ? mCurrentPage : mNextPage);
     }
 
     /**
@@ -2870,7 +2872,7 @@ public class Workspace extends SmoothPagedView
     /**
      * Called at the end of a drag which originated on the workspace.
      */
-    public void onDropCompleted(View target, boolean success) {
+    public void onDropCompleted(View target, Object dragInfo, boolean success) {
         if (success) {
             if (target != this && mDragInfo != null) {
                 final CellLayout cellLayout = (CellLayout) getChildAt(mDragInfo.screen);

@@ -282,7 +282,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
     }
 
     @Override
-    public void onDropCompleted(View target, boolean success) {
+    public void onDropCompleted(View target, Object dragInfo, boolean success) {
         // close the choice action mode if we have a proper drop
         if (target != this) {
             endChoiceMode();

@@ -64,7 +64,7 @@ public class UserFolder extends Folder implements DropTarget {
     }
 
     @Override
-    public void onDropCompleted(View target, boolean success) {
+    public void onDropCompleted(View target, Object dragInfo, boolean success) {
         if (success) {
             ShortcutsAdapter adapter = (ShortcutsAdapter)mContent.getAdapter();
             adapter.remove(mDragItem);

@@ -685,16 +685,14 @@ public class AllApps3D extends RSSurfaceView
                 && mCurrentIconIndex >= 0 && mCurrentIconIndex < mAllAppsList.size()) {
             ApplicationInfo app = mAllAppsList.get(mCurrentIconIndex);
 
-            Bitmap bmp = app.iconBitmap;
-            final int w = bmp.getWidth();
-            final int h = bmp.getHeight();
+            final Bitmap bmp = app.iconBitmap;
 
             // We don't really have an accurate location to use.  This will do.
-            int screenX = mMotionDownRawX - (w / 2);
-            int screenY = mMotionDownRawY - h;
+            int screenX = mMotionDownRawX - (bmp.getWidth() / 2);
+            int screenY = mMotionDownRawY - bmp.getHeight();
 
-            mDragController.startDrag(bmp, screenX, screenY,
-                    0, 0, w, h, this, app, DragController.DRAG_ACTION_COPY);
+            mDragController.startDrag(
+                    bmp, screenX, screenY, this, app, DragController.DRAG_ACTION_COPY);
 
             mLauncher.closeAllApps(true);
         }
@@ -748,7 +746,7 @@ public class AllApps3D extends RSSurfaceView
     }
 
     @Override
-    public void onDropCompleted(View target, boolean success) {
+    public void onDropCompleted(View target, Object dragInfo, boolean success) {
     }
 
     /**

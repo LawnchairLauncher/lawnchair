@@ -31,5 +31,5 @@ public interface DragSource {
      */
     void onDragViewVisible();
 
-    void onDropCompleted(View target, boolean success);
+    void onDropCompleted(View target, Object dragInfo, boolean success);
 }

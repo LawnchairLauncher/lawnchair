@@ -3069,9 +3069,15 @@ public final class Launcher extends Activity
         }
     }
 
-    void addExternalItemToScreen(ItemInfo itemInfo, CellLayout layout) {
+    /**
+     * Add an item from all apps or customize onto the given workspace screen.
+     * If layout is null, add to the current screen.
+     */
+    void addExternalItemToScreen(ItemInfo itemInfo, final CellLayout layout) {
         if (!mWorkspace.addExternalItemToScreen(itemInfo, layout)) {
             showOutOfSpaceMessage();
+        } else {
+            layout.animateDrop();
         }
     }
 

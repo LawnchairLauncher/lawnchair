@@ -257,8 +257,7 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         sWorker.removeMessages(MESSAGE_CREATE_HOLOGRAPHIC_OUTLINE, this);
     }
 
-    @Override
-    public void setChecked(boolean checked) {
+    void setChecked(boolean checked, boolean animate) {
         if (mIsChecked != checked) {
             mIsChecked = checked;
 
@@ -276,12 +275,21 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
             if (mCheckedAlphaAnimator != null) {
                 mCheckedAlphaAnimator.cancel();
             }
-            mCheckedAlphaAnimator = ObjectAnimator.ofFloat(this, "alpha", getAlpha(), alpha);
-            mCheckedAlphaAnimator.setDuration(duration);
-            mCheckedAlphaAnimator.start();
+            if (animate) {
+                mCheckedAlphaAnimator = ObjectAnimator.ofFloat(this, "alpha", getAlpha(), alpha);
+                mCheckedAlphaAnimator.setDuration(duration);
+                mCheckedAlphaAnimator.start();
+            } else {
+                setAlpha(alpha);
+            }
 
             invalidate();
         }
+    }
+
+    @Override
+    public void setChecked(boolean checked) {
+        setChecked(checked, true);
     }
 
     @Override

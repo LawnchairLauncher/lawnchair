@@ -211,7 +211,7 @@ public class AllApps2D
     }
 
     @Override
-    public void onDropCompleted(View target, boolean success) {
+    public void onDropCompleted(View target, Object dragInfo, boolean success) {
     }
 
     /**
