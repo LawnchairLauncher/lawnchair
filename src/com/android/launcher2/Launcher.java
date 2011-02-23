@@ -1443,16 +1443,14 @@ public final class Launcher extends Activity
             boolean alreadyOnHome = ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
                         != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 
-            // in all these cases, only animate if we're already on home
+            // In all these cases, only animate if we're already on home
+
             if (LauncherApplication.isScreenXLarge()) {
                 mWorkspace.unshrink(alreadyOnHome);
             }
-            if (!mWorkspace.isDefaultPageShowing()) {
-                // on the phone, we don't animate the change to the workspace if all apps is visible
-                boolean animate = alreadyOnHome &&
-                    (LauncherApplication.isScreenXLarge() || mState != State.ALL_APPS);
-                mWorkspace.moveToDefaultScreen(animate);
-                if (!animate) mWorkspace.updateWallpaperOffsetImmediately();
+
+            if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isDefaultPageShowing()) {
+                mWorkspace.moveToDefaultScreen(true);
             }
             showWorkspace(alreadyOnHome);
 
