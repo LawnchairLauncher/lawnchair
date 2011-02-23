@@ -13,14 +13,18 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<TabHost xmlns:android="http://schemas.android.com/apk/res/android">
+<com.android.launcher2.CustomizeTrayTabHost
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <!-- The layout_width of this RelativeLayout gets overwritten in
+             CustomizeTrayTabHost.onFinishInflate -->
         <TabWidget
             android:id="@android:id/tabs"
-            android:layout_width="@dimen/customization_drawer_tab_widget_width"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/tab_unselected_holo"
@@ -29,6 +33,21 @@
             android:id="@android:id/tabcontent"
             android:layout_width="match_parent"
             android:layout_height="@dimen/customization_drawer_content_height">
+            <com.android.launcher2.CustomizePagedView
+                android:id="@+id/customization_drawer_tab_contents"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                launcher:wallpaperCellSpanX="@integer/customization_drawer_contents_wallpaperCellSpanX"
+                launcher:wallpaperCellCountX="@integer/customization_drawer_contents_wallpaperCellCountX"
+                launcher:widgetCellCountX="@integer/customization_drawer_contents_widgetCellCountX"
+                launcher:cellCountX="@integer/customization_drawer_contents_cellCountX"
+                launcher:cellCountY="@integer/customization_drawer_contents_cellCountY"
+                launcher:pageLayoutWidthGap="@dimen/customization_drawer_contents_pageLayoutWidthGap"
+                launcher:pageLayoutHeightGap="12dp"
+                launcher:pageLayoutPaddingTop="40dp"
+                launcher:pageLayoutPaddingBottom="25dp"
+                launcher:pageLayoutPaddingLeft="20dp"
+                launcher:pageLayoutPaddingRight="20dp" />
          </FrameLayout>
       </LinearLayout>
-</TabHost>
+</com.android.launcher2.CustomizeTrayTabHost>

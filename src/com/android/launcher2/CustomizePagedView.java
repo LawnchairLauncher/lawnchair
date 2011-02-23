@@ -140,6 +140,8 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
 
     private int[] mDragViewOrigin = new int[2];
 
+    private int mPageContentWidth;
+
     public CustomizePagedView(Context context) {
         this(context, null, 0);
     }
@@ -171,6 +173,11 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         setDragSlopeThreshold(
                 r.getInteger(R.integer.config_customizationDrawerDragSlopeThreshold) / 100.0f);
         mMinPageWidth = r.getDimensionPixelSize(R.dimen.customization_drawer_content_min_width);
+
+        // Create a dummy page and set it up to find out the content width (used by our parent)
+        PagedViewCellLayout layout = new PagedViewCellLayout(getContext());
+        setupPage(layout);
+        mPageContentWidth = layout.getContentWidth();
 
         setVisibility(View.GONE);
         setSoundEffectsEnabled(false);
@@ -1161,6 +1168,10 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             syncAppPageItems(page);
             break;
         }
+    }
+
+    int getPageContentWidth() {
+        return mPageContentWidth;
     }
 
     @Override
