@@ -65,6 +65,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
     private final LayoutInflater mInflater;
     private boolean mAllowHardwareLayerCreation;
 
+    private int mPageContentWidth;
 
     public AllAppsPagedView(Context context) {
         this(context, null);
@@ -88,6 +89,11 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
         Resources r = context.getResources();
         setDragSlopeThreshold(
                 r.getInteger(R.integer.config_allAppsDrawerDragSlopeThreshold) / 100.0f);
+
+        // Create a dummy page and set it up to find out the content width (used by our parent)
+        PagedViewCellLayout layout = new PagedViewCellLayout(getContext());
+        setupPage(layout);
+        mPageContentWidth = layout.getContentWidth();
     }
 
     @Override
@@ -318,6 +324,10 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
         mLauncher.unlockScreenOrientation();
     }
 
+    int getPageContentWidth() {
+        return mPageContentWidth;
+    }
+
     @Override
     public boolean isVisible() {
         return mZoom > 0.001f;
@@ -440,6 +450,13 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
         // do nothing?
     }
 
+    private void setupPage(PagedViewCellLayout layout) {
+        layout.setCellCount(mCellCountX, mCellCountY);
+        layout.setPadding(mPageLayoutPaddingLeft, mPageLayoutPaddingTop, mPageLayoutPaddingRight,
+                mPageLayoutPaddingBottom);
+        layout.setGap(mPageLayoutWidthGap, mPageLayoutHeightGap);
+    }
+
     @Override
     public void syncPages() {
         // ensure that we have the right number of pages (min of 1, since we have placeholders)
@@ -449,7 +466,6 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
         // remove any extra pages after the "last" page
         int extraPageDiff = curNumPages - numPages;
         for (int i = 0; i < extraPageDiff; ++i) {
-            PagedViewCellLayout page = (PagedViewCellLayout) getChildAt(numPages);
             removeViewAt(numPages);
         }
         // add any necessary pages
@@ -458,10 +474,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
             if (mAllowHardwareLayerCreation) {
                 layout.allowHardwareLayerCreation();
             }
-            layout.setCellCount(mCellCountX, mCellCountY);
-            layout.setPadding(mPageLayoutPaddingLeft, mPageLayoutPaddingTop,
-                    mPageLayoutPaddingRight, mPageLayoutPaddingBottom);
-            layout.setGap(mPageLayoutWidthGap, mPageLayoutHeightGap);
+            setupPage(layout);
             addView(layout);
         }
 
