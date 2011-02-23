@@ -79,6 +79,8 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
         mCellCountX = a.getInt(R.styleable.PagedView_cellCountX, 6);
         mCellCountY = a.getInt(R.styleable.PagedView_cellCountY, 4);
         mInflater = LayoutInflater.from(context);
+        mApps = new ArrayList<ApplicationInfo>();
+        mFilteredApps = new ArrayList<ApplicationInfo>();
         a.recycle();
         setSoundEffectsEnabled(false);
 
@@ -390,12 +392,14 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
     }
 
     private int findAppByComponent(ArrayList<ApplicationInfo> list, ApplicationInfo item) {
-        ComponentName removeComponent = item.intent.getComponent();
-        final int length = list.size();
-        for (int i = 0; i < length; ++i) {
-            ApplicationInfo info = list.get(i);
-            if (info.intent.getComponent().equals(removeComponent)) {
-                return i;
+        if (item != null && item.intent != null) {
+            ComponentName removeComponent = item.intent.getComponent();
+            final int length = list.size();
+            for (int i = 0; i < length; ++i) {
+                ApplicationInfo info = list.get(i);
+                if (info.intent.getComponent().equals(removeComponent)) {
+                    return i;
+                }
             }
         }
         return -1;
