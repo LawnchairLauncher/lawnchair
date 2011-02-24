@@ -31,14 +31,14 @@
     <string name="folders_tab_label" msgid="1145293785541489736">"Mappar"</string>
     <string name="shortcuts_tab_label" msgid="8640731503933155644">"Mer"</string>
     <string name="wallpapers_tab_label" msgid="1617804870364119879">"Bakgrundsbilder"</string>
-    <!-- outdated translation 7756968120518062632 -->     <string name="applications_tab_label" msgid="2991364240020736760">"Genvägar för appar"</string>
+    <string name="applications_tab_label" msgid="2991364240020736760">"Genvägar för appar"</string>
     <string name="wallpapers_temp_tab_text" msgid="1660218201190495279">"Det här kommer att vara fliken för bakgrundsbilder"</string>
     <string name="all_apps_tab_all" msgid="2942727589595027258">"Alla"</string>
     <string name="all_apps_tab_apps" msgid="5468972551904071712">"Appar"</string>
     <string name="all_apps_tab_games" msgid="1855736784923494918">"Spel"</string>
-    <!-- outdated translation 7753043607780556423 -->     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Hämtade"</string>
+    <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Mina appar"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"Inga spel hittades."</string>
-    <!-- outdated translation 6687010155766000796 -->     <string name="all_apps_no_downloads" msgid="2284720393234453761">"Inga hämtade appar."</string>
+    <string name="all_apps_no_downloads" msgid="2284720393234453761">"Du har inte hämtat några appar."</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Objektet kunde inte släppas på den här startsidan"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Välj en widget att skapa"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Mappnamn"</string>
