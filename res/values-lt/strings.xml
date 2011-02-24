@@ -31,12 +31,12 @@
     <string name="folders_tab_label" msgid="1145293785541489736">"Aplankai"</string>
     <string name="shortcuts_tab_label" msgid="8640731503933155644">"Daugiau"</string>
     <string name="wallpapers_tab_label" msgid="1617804870364119879">"Darbalaukio fonai"</string>
-    <!-- outdated translation 9046797126882613707 -->     <string name="applications_tab_label" msgid="2991364240020736760">"Spartieji programos klavišai"</string>
+    <string name="applications_tab_label" msgid="2991364240020736760">"Spartieji programos klavišai"</string>
     <string name="wallpapers_temp_tab_text" msgid="1660218201190495279">"Tai bus darbalaukio fonų skirtukas"</string>
     <string name="all_apps_tab_all" msgid="2942727589595027258">"Visos"</string>
     <string name="all_apps_tab_apps" msgid="5468972551904071712">"Apps"</string>
     <string name="all_apps_tab_games" msgid="1855736784923494918">"Žaidimai"</string>
-    <!-- outdated translation 3335316755603669951 -->     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Mano programos"</string>
+    <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Mano programos"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"Nerasta žaidimų."</string>
     <string name="all_apps_no_downloads" msgid="2284720393234453761">"Neturite atsisiųstų programų."</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Nepavyko pašalinti elemento šiame pagr. ekrane"</string>
