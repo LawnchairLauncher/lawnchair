@@ -262,6 +262,9 @@ public class Workspace extends SmoothPagedView
         setHapticFeedbackEnabled(false);
 
         initWorkspace();
+
+        // Disable multitouch across the workspace/all apps/customize tray
+        setMotionEventSplittingEnabled(true);
     }
 
     /**
