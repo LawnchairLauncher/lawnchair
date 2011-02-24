@@ -2767,7 +2767,7 @@ public final class Launcher extends Activity
             });
 
             if (toAllApps) {
-                toView.setAlpha(0f);
+                toView.setFastAlpha(0f);
                 ValueAnimator alphaAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
                 alphaAnim.setInterpolator(new DecelerateInterpolator(1.5f));
                 alphaAnim.addUpdateListener(new AnimatorUpdateListener() {
@@ -2781,9 +2781,8 @@ public final class Launcher extends Activity
                 alphaAnim.start();
             }
 
-            // Only use hardware layers in portrait mode, they don't give any gains in landscape
-            if (mWorkspace.getWidth() < mWorkspace.getHeight()) {
-                toView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            if (toView instanceof LauncherAnimatable) {
+                ((LauncherAnimatable) toView).onLauncherAnimationStart();
             }
             scaleAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -2793,7 +2792,7 @@ public final class Launcher extends Activity
                     toView.setTranslationY(0.0f);
                     toView.setVisibility(View.VISIBLE);
                     if (!toAllApps) {
-                        toView.setAlpha(1.0f);
+                        toView.setFastAlpha(1.0f);
                     }
                 }
                 @Override
@@ -2801,9 +2800,11 @@ public final class Launcher extends Activity
                     // If we don't set the final scale values here, if this animation is cancelled
                     // it will have the wrong scale value and subsequent cameraPan animations will
                     // not fix that
-                    toView.setLayerType(View.LAYER_TYPE_NONE, null);
                     toView.setScaleX(1.0f);
                     toView.setScaleY(1.0f);
+                    if (toView instanceof LauncherAnimatable) {
+                        ((LauncherAnimatable) toView).onLauncherAnimationEnd();
+                    }
                 }
             });
 
@@ -2895,13 +2896,16 @@ public final class Launcher extends Activity
                     fromView.setFastAlpha(a * 1f + b * 0f);
                 }
             });
-
-            fromView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            if (fromView instanceof LauncherAnimatable) {
+                ((LauncherAnimatable) fromView).onLauncherAnimationStart();
+            }
             alphaAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     fromView.setVisibility(View.GONE);
-                    fromView.setLayerType(View.LAYER_TYPE_NONE, null);
+                    if (fromView instanceof LauncherAnimatable) {
+                        ((LauncherAnimatable) fromView).onLauncherAnimationEnd();
+                    }
                 }
             });
 
@@ -3713,4 +3717,9 @@ public final class Launcher extends Activity
         mAllAppsGrid.dumpState();
         Log.d(TAG, "END launcher2 dump state");
     }
+}
+
+interface LauncherAnimatable {
+    void onLauncherAnimationStart();
+    void onLauncherAnimationEnd();
 }

@@ -792,7 +792,7 @@ public class Workspace extends SmoothPagedView
             }
         }
         if (keepUpdating) {
-            invalidate();
+            fastInvalidate();
         }
     }
 
@@ -1167,8 +1167,9 @@ public class Workspace extends SmoothPagedView
             final long drawingTime = getDrawingTime();
             for (int i = 0; i < pageCount; i++) {
                 final View page = (View) getChildAt(i);
-
-                drawChild(canvas, page, drawingTime);
+                if (page.getVisibility() == VISIBLE && page.getAlpha() != 0f) {
+                    drawChild(canvas, page, drawingTime);
+                }
             }
         } else {
             super.dispatchDraw(canvas);

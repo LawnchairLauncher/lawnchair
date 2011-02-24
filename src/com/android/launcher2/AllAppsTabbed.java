@@ -29,16 +29,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
+import android.widget.TabHost.OnTabChangeListener;
+import android.widget.TabHost.TabContentFactory;
 
 import java.util.ArrayList;
 
 /**
  * Implements a tabbed version of AllApps2D.
  */
-public class AllAppsTabbed extends TabHost implements AllAppsView {
+public class AllAppsTabbed extends TabHost implements AllAppsView, LauncherAnimatable {
 
     private static final String TAG = "Launcher.AllAppsTabbed";
 
@@ -46,6 +49,7 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
     private static final String TAG_DOWNLOADED = "DOWNLOADED";
 
     private AllAppsPagedView mAllApps;
+    private View mTabBar;
     private Context mContext;
     private final LayoutInflater mInflater;
     private boolean mFirstLayout = true;
@@ -64,6 +68,8 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
         try {
             mAllApps = (AllAppsPagedView) findViewById(R.id.all_apps_paged_view);
             if (mAllApps == null) throw new Resources.NotFoundException();
+            mTabBar = findViewById(R.id.all_apps_tab_bar);
+            if (mTabBar == null) throw new Resources.NotFoundException();
         } catch (Resources.NotFoundException e) {
             Log.e(TAG, "Can't find necessary layout elements for AllAppsTabbed");
         }
@@ -161,6 +167,28 @@ public class AllAppsTabbed extends TabHost implements AllAppsView {
     @Override
     public boolean isAnimating() {
         return (getAnimation() != null);
+    }
+
+    @Override
+    public void setFastAlpha(float alpha) {
+        final ViewGroup allAppsParent = (ViewGroup) mAllApps.getParent();
+        final ViewGroup tabBarParent = (ViewGroup) mAllApps.getParent();
+        mAllApps.setFastAlpha(alpha);
+        allAppsParent.fastInvalidate();
+        mTabBar.setFastAlpha(alpha);
+        tabBarParent.fastInvalidate();
+    }
+
+    @Override
+    public void onLauncherAnimationStart() {
+        mTabBar.setLayerType(LAYER_TYPE_HARDWARE, null);
+        mAllApps.setLayerType(LAYER_TYPE_HARDWARE, null);
+    }
+
+    @Override
+    public void onLauncherAnimationEnd() {
+        mTabBar.setLayerType(LAYER_TYPE_NONE, null);
+        mAllApps.setLayerType(LAYER_TYPE_NONE, null);
     }
 
     @Override

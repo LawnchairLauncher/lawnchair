@@ -9,7 +9,7 @@
 
     <!-- Duration in milliseconds of the all apps / configuration zoom-in animation. -->
     <!-- NB: This should be less than the workspaceShrinkTime as they happen together. -->
-    <integer name="config_allAppsZoomInTime">1450</integer>
+    <integer name="config_allAppsZoomInTime">1211</integer>
 
     <!-- Duration in milliseconds of the transition between tabs in the all apps/customize
          tray -->
@@ -37,7 +37,7 @@
          NOTE: If these are changed, the toolbar animation times below should also be. -->
     <integer name="config_allAppsFadeOutTime">500</integer>
     <integer name="config_customizeWorkspaceShrinkTime">800</integer>
-    <integer name="config_allAppsWorkspaceShrinkTime">1450</integer>
+    <integer name="config_allAppsWorkspaceShrinkTime">1211</integer>
     <integer name="config_workspaceUnshrinkTime">650</integer>
 
     <!-- Duration in milliseconds toolbar fade in and fade out animations.
