@@ -419,8 +419,8 @@ public class Workspace extends SmoothPagedView
         return folders;
     }
 
-    boolean isDefaultPageShowing() {
-        return mCurrentPage == mDefaultPage;
+    boolean isTouchActive() {
+        return mTouchState != TOUCH_STATE_REST;
     }
 
     /**

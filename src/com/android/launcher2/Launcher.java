@@ -1449,7 +1449,7 @@ public final class Launcher extends Activity
                 mWorkspace.unshrink(alreadyOnHome);
             }
 
-            if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isDefaultPageShowing()) {
+            if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive()) {
                 mWorkspace.moveToDefaultScreen(true);
             }
             showWorkspace(alreadyOnHome);
