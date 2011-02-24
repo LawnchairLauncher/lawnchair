@@ -128,8 +128,11 @@ public class BubbleTextView extends TextView implements VisibilityChangedBroadca
 
     private void invalidatePressedOrFocusedBackground() {
         int padding = HolographicOutlineHelper.MAX_OUTER_BLUR_RADIUS / 2;
-        ((View)getParent()).invalidate(getLeft() - padding, getTop() - padding,
-                getRight() + padding, getBottom() + padding);
+        View parent = (View) getParent();
+        if (parent != null) {
+            parent.invalidate(getLeft() - padding, getTop() - padding,
+                    getRight() + padding, getBottom() + padding);
+        }
         invalidate();
     }
 
