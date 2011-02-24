@@ -31,12 +31,12 @@
     <string name="folders_tab_label" msgid="1145293785541489736">"Thư mục"</string>
     <string name="shortcuts_tab_label" msgid="8640731503933155644">"Khác"</string>
     <string name="wallpapers_tab_label" msgid="1617804870364119879">"Hình nền"</string>
-    <!-- outdated translation 9046797126882613707 -->     <string name="applications_tab_label" msgid="2991364240020736760">"Lối tắt ứng dụng"</string>
+    <string name="applications_tab_label" msgid="2991364240020736760">"Lối tắt ứng dụng"</string>
     <string name="wallpapers_temp_tab_text" msgid="1660218201190495279">"Đây sẽ là tab hình nền"</string>
     <string name="all_apps_tab_all" msgid="2942727589595027258">"Tất cả"</string>
     <string name="all_apps_tab_apps" msgid="5468972551904071712">"Ứng dụng"</string>
     <string name="all_apps_tab_games" msgid="1855736784923494918">"Trò chơi"</string>
-    <!-- outdated translation 3335316755603669951 -->     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"ƯD của tôi"</string>
+    <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Ứng dụng của tôi"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"Không tìm thấy trò chơi."</string>
     <string name="all_apps_no_downloads" msgid="2284720393234453761">"Bạn không có ứng dụng nào được tải xuống."</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Không thể thả mục vào màn hình chính này"</string>
