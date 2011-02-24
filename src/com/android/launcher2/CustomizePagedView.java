@@ -1109,7 +1109,14 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         }
 
         // bound the current page
-        setCurrentPage(Math.max(0, Math.min(childCount - 1, getCurrentPage())));
+        requestLayout();
+        post(new Runnable() {
+            @Override
+            public void run() {
+                setCurrentPage(Math.max(0, Math.min(childCount - 1, getCurrentPage())));
+                forceUpdateAdjacentPagesAlpha();
+            }
+        });
     }
 
     @Override

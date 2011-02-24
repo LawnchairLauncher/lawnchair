@@ -500,6 +500,11 @@ public abstract class PagedView extends ViewGroup {
         }
     }
 
+    protected void forceUpdateAdjacentPagesAlpha() {
+        mDirtyPageAlpha = true;
+        updateAdjacentPagesAlpha();
+    }
+
     protected void updateAdjacentPagesAlpha() {
         if (mFadeInAdjacentScreens) {
             if (mDirtyPageAlpha || (mTouchState == TOUCH_STATE_SCROLLING) || !mScroller.isFinished()) {
