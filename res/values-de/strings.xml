@@ -62,7 +62,7 @@
     <string name="title_select_shortcut" msgid="2858897527672831763">"Tastenkürzel auswählen"</string>
     <string name="title_select_application" msgid="8031072293115454221">"Anwendung auswählen"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"Ordner auswählen"</string>
-    <string name="all_apps_button_label" msgid="2578400570124163469">"Anwendungen"</string>
+    <string name="all_apps_button_label" msgid="2578400570124163469">"Apps"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Startseite"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"Entfernen"</string>
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"Deinstallieren"</string>
