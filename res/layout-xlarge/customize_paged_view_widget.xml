@@ -18,13 +18,11 @@
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
 
     android:layout_width="wrap_content"
-    android:layout_height="365dp"
-    android:paddingLeft="12.5dp"
-    android:paddingTop="12.5dp"
-    android:paddingRight="12.5dp"
-    android:paddingBottom="50dp"
-    android:gravity="top"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
     android:orientation="vertical"
+    android:paddingRight="25dp"
+    android:paddingBottom="50dp"
 
     launcher:blurColor="#FF6B8CF0"
     launcher:outlineColor="#FF8CD2FF">
@@ -34,7 +32,8 @@
         android:id="@+id/widget_preview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1.0"
+        android:layout_weight="1"
+        android:adjustViewBounds="true"
         android:scaleType="fitStart" />
 
     <!-- The divider image. -->
@@ -42,6 +41,7 @@
         android:id="@+id/divider"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_weight="0"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:src="@drawable/widget_divider" />
@@ -51,6 +51,7 @@
         android:id="@+id/widget_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_weight="0"
         android:gravity="left"
 
         android:textColor="#FFFFFFFF"
@@ -69,6 +70,7 @@
         android:id="@+id/widget_dims"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_weight="0"
         android:gravity="left"
 
         android:textColor="#FF999999"

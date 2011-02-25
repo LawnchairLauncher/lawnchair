@@ -32,6 +32,7 @@ public class HolographicOutlineHelper {
     private final Paint mAlphaClipPaint = new Paint();
 
     public static final int MAX_OUTER_BLUR_RADIUS;
+    public static final int MIN_OUTER_BLUR_RADIUS;
 
     private static final BlurMaskFilter sExtraThickOuterBlurMaskFilter;
     private static final BlurMaskFilter sThickOuterBlurMaskFilter;
@@ -48,6 +49,7 @@ public class HolographicOutlineHelper {
     static {
         final float scale = LauncherApplication.getScreenDensity();
 
+        MIN_OUTER_BLUR_RADIUS = (int) (scale * 1.0f);
         MAX_OUTER_BLUR_RADIUS = (int) (scale * 12.0f);
 
         sExtraThickOuterBlurMaskFilter = new BlurMaskFilter(scale * 12.0f, BlurMaskFilter.Blur.OUTER);

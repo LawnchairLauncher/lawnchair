@@ -100,6 +100,7 @@ public abstract class PagedView extends ViewGroup {
     protected int mTouchSlop;
     private int mPagingTouchSlop;
     private int mMaximumVelocity;
+    private int mMinimumWidth;
     protected int mPageSpacing;
     protected int mPageLayoutPaddingTop;
     protected int mPageLayoutPaddingBottom;
@@ -175,13 +176,13 @@ public abstract class PagedView extends ViewGroup {
                 R.styleable.PagedView, defStyle, 0);
         mPageSpacing = a.getDimensionPixelSize(R.styleable.PagedView_pageSpacing, 0);
         mPageLayoutPaddingTop = a.getDimensionPixelSize(
-                R.styleable.PagedView_pageLayoutPaddingTop, 10);
+                R.styleable.PagedView_pageLayoutPaddingTop, 0);
         mPageLayoutPaddingBottom = a.getDimensionPixelSize(
-                R.styleable.PagedView_pageLayoutPaddingBottom, 10);
+                R.styleable.PagedView_pageLayoutPaddingBottom, 0);
         mPageLayoutPaddingLeft = a.getDimensionPixelSize(
-                R.styleable.PagedView_pageLayoutPaddingLeft, 10);
+                R.styleable.PagedView_pageLayoutPaddingLeft, 0);
         mPageLayoutPaddingRight = a.getDimensionPixelSize(
-                R.styleable.PagedView_pageLayoutPaddingRight, 10);
+                R.styleable.PagedView_pageLayoutPaddingRight, 0);
         mPageLayoutWidthGap = a.getDimensionPixelSize(
                 R.styleable.PagedView_pageLayoutWidthGap, -1);
         mPageLayoutHeightGap = a.getDimensionPixelSize(
@@ -1138,8 +1139,16 @@ public abstract class PagedView extends ViewGroup {
         return -1;
     }
 
+    protected void setMinimumWidthOverride(int minimumWidth) {
+        mMinimumWidth = minimumWidth;
+    }
+
+    protected int getChildWidth(int index) {
+        return Math.max(mMinimumWidth, getChildAt(index).getMeasuredWidth());
+    }
+
     protected int getRelativeChildOffset(int index) {
-        return (getMeasuredWidth() - getChildAt(index).getMeasuredWidth()) / 2;
+        return (getMeasuredWidth() - getChildWidth(index)) / 2;
     }
 
     protected int getChildOffset(int index) {
@@ -1154,7 +1163,7 @@ public abstract class PagedView extends ViewGroup {
     }
 
     protected int getScaledMeasuredWidth(View child) {
-        return (int) (child.getMeasuredWidth() * mLayoutScale + 0.5f);
+        return (int) (Math.max(mMinimumWidth, child.getMeasuredWidth()) * mLayoutScale + 0.5f);
     }
 
     int getPageNearestToCenterOfScreen() {

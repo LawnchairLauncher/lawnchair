@@ -21,7 +21,7 @@
     android:layout_height="match_parent"
     launcher:wallpaperCellSpanX="3"
     launcher:wallpaperCellCountX="9"
-    launcher:widgetCellCountX="10"
+    launcher:widgetCellCountX="9"
     launcher:cellCountX="5"
     launcher:cellCountY="3"
     launcher:pageLayoutWidthGap="36dp"

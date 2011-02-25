@@ -40,6 +40,7 @@ import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Bitmap.Config;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -89,6 +90,10 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
 
     // The mapping between the pages and the widgets that will be laid out on them
     private ArrayList<ArrayList<AppWidgetProviderInfo>> mWidgetPages;
+
+    // This is used if we want to set a min width on pages so that things inside them left align to
+    // a fixed size
+    private int mMinPageWidth;
 
     // The max dimensions for the ImageView we use for displaying a widget
     private int mMaxWidgetWidth;
@@ -165,6 +170,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         final Resources r = context.getResources();
         setDragSlopeThreshold(
                 r.getInteger(R.integer.config_customizationDrawerDragSlopeThreshold) / 100.0f);
+        mMinPageWidth = r.getDimensionPixelSize(R.dimen.customization_drawer_content_min_width);
 
         setVisibility(View.GONE);
         setSoundEffectsEnabled(false);
@@ -544,12 +550,12 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         }
     }
 
-    private Bitmap drawableToBitmap(Drawable d) {
+    private Bitmap drawableToBitmap(Drawable d, float scaleX, float scaleY) {
         final Rect bounds = d.getBounds();
         final int w = bounds.width();
         final int h = bounds.height();
         Bitmap b = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        renderDrawableToBitmap(d, b, 0, 0, w, h);
+        renderDrawableToBitmap(d, b, 0, 0, w, h, scaleX, scaleY);
         return b;
     }
 
@@ -575,7 +581,13 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
                 // Get the widget preview as the drag representation
                 final LinearLayout l = (LinearLayout) v;
                 final ImageView i = (ImageView) l.findViewById(R.id.widget_preview);
-                mDragBitmap = drawableToBitmap(i.getDrawable());
+
+                // Calculate how much to scale the drag preview
+                RectF tmpScaleRect = new RectF(0,0,1,1);
+                i.getImageMatrix().mapRect(tmpScaleRect);
+
+                mDragBitmap = drawableToBitmap(i.getDrawable(), tmpScaleRect.right,
+                        tmpScaleRect.bottom);
                 i.getLocationOnScreen(mDragViewOrigin);
                 PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo) v.getTag();
 
@@ -596,7 +608,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
                 // get icon (top compound drawable, index is 1)
                 final TextView tv = (TextView) v;
                 final Drawable icon = tv.getCompoundDrawables()[1];
-                mDragBitmap = drawableToBitmap(icon);
+                mDragBitmap = drawableToBitmap(icon, 1.0f, 1.0f);
 
                 Object dragInfo = v.getTag();
                 if (mCustomizationType == CustomizationType.ApplicationCustomization) {
@@ -679,9 +691,11 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
     /**
      * Helper function to draw a drawable to the specified canvas with the specified bounds.
      */
-    private void renderDrawableToBitmap(Drawable d, Bitmap bitmap, int x, int y, int w, int h) {
+    private void renderDrawableToBitmap(Drawable d, Bitmap bitmap, int x, int y, int w, int h,
+            float scaleX, float scaleY) {
         if (bitmap != null) mCanvas.setBitmap(bitmap);
         mCanvas.save();
+        mCanvas.scale(scaleX, scaleY);
         final Rect oldBounds = d.copyBounds();
         d.setBounds(x, y, x + w, y + h);
         d.draw(mCanvas);
@@ -768,7 +782,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             background = resources.getDrawable(R.drawable.default_widget_preview);
         }
 
-        renderDrawableToBitmap(background, bitmap, 0, 0, width, height);
+        renderDrawableToBitmap(background, bitmap, 0, 0, width, height, 1.0f, 1.0f);
 
         // If we don't have a custom icon, we use the app icon on the default background
         if (!foundCustomDrawable) {
@@ -780,7 +794,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
 
                 final int iconSize = minDim / 2;
                 final int offset = iconSize / 4;
-                renderDrawableToBitmap(icon, null, offset, offset, iconSize, iconSize);
+                renderDrawableToBitmap(icon, null, offset, offset, iconSize, iconSize, 1.0f, 1.0f);
             } catch (Resources.NotFoundException e) {
                 // if we can't find the icon, then just don't draw it
             }
@@ -820,7 +834,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             int height = (int) (Math.max(minDim, Math.min(maxDim, info.minHeight)) * sScaleFactor);
             final Bitmap bitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
             final Drawable background = resources.getDrawable(R.drawable.default_widget_preview);
-            renderDrawableToBitmap(background, bitmap, 0, 0, width, height);
+            renderDrawableToBitmap(background, bitmap, 0, 0, width, height, 1.0f, 1.0f);
 
             // Draw the icon flush left
             try {
@@ -834,7 +848,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
 
                 final int iconSize = minDim / 2;
                 final int offset = iconSize / 4;
-                renderDrawableToBitmap(icon, null, offset, offset, iconSize, iconSize);
+                renderDrawableToBitmap(icon, null, offset, offset, iconSize, iconSize, 1.0f, 1.0f);
             } catch (Resources.NotFoundException e) {
                 // if we can't find the icon, then just don't draw it
             }
@@ -860,7 +874,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             }
 
             final Bitmap bitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
-            renderDrawableToBitmap(drawable, bitmap, 0, 0, width, height);
+            renderDrawableToBitmap(drawable, bitmap, 0, 0, width, height, 1.0f, 1.0f);
 
             newDrawable = new FastBitmapDrawable(bitmap);
         }
@@ -917,6 +931,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
 
             PagedViewWidget l = (PagedViewWidget) mInflater.inflate(
                     R.layout.customize_paged_view_widget, layout, false);
+
             l.applyFromAppWidgetProviderInfo(info, icon, mMaxWidgetWidth, cellSpans,
                     mPageViewIconCache, (numPages > 1));
             l.setTag(createItemInfo);
@@ -1072,10 +1087,12 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
 
     @Override
     public void syncPages() {
+        boolean enforceMinimumPagedWidths = false;
         boolean centerPagedViewCellLayouts = false;
         switch (mCustomizationType) {
         case WidgetCustomization:
             syncWidgetPages();
+            enforceMinimumPagedWidths = true;
             break;
         case ShortcutCustomization:
             syncListPages(mShortcutList);
@@ -1083,6 +1100,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             break;
         case WallpaperCustomization:
             syncWallpaperPages();
+            enforceMinimumPagedWidths = true;
             break;
         case ApplicationCustomization:
             syncAppPages();
@@ -1108,7 +1126,12 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             }
         }
 
-        // bound the current page
+        // Set a min page width for PagedView layout if we have more than a single page
+        if (enforceMinimumPagedWidths) {
+            setMinimumWidthOverride((childCount > 1) ? mMinPageWidth : 0);
+        }
+
+        // Bound the current page index
         requestLayout();
         post(new Runnable() {
             @Override

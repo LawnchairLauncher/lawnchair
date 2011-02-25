@@ -27,7 +27,11 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
@@ -52,6 +56,10 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
     private Bitmap mHolographicOutline;
     private final Canvas mHolographicOutlineCanvas = new Canvas();
     private FastBitmapDrawable mPreview;
+    private ImageView mPreviewImageView;
+    private final RectF mTmpScaleRect = new RectF();
+    private final Rect mEraseStrokeRect = new Rect();
+    private final Paint mEraseStrokeRectPaint = new Paint();
 
     private PagedViewIconCache.Key mIconCacheKey;
     private PagedViewIconCache mIconCache;
@@ -81,8 +89,11 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         public void handleMessage(Message msg) {
             final PagedViewWidget widget = (PagedViewWidget) msg.obj;
             final int prevAlpha = widget.mPreview.getAlpha();
-            final Bitmap outline = Bitmap.createBitmap(widget.getWidth(), widget.getHeight(),
-                    Bitmap.Config.ARGB_8888);
+            final int width = Math.max(widget.mPreview.getIntrinsicWidth(),
+                    widget.getMeasuredWidth());
+            final int height = Math.max(widget.mPreview.getIntrinsicHeight(),
+                    widget.getMeasuredHeight());
+            final Bitmap outline = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
             widget.mHolographicOutlineCanvas.setBitmap(outline);
             widget.mHolographicOutlineCanvas.save();
@@ -93,6 +104,12 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
             // Temporary workaround to make the default widget outlines visible
             widget.mHolographicOutlineCanvas.drawColor(Color.argb(156, 0, 0, 0), Mode.SRC_OVER);
             widget.mHolographicOutlineCanvas.restore();
+
+            // To account for the fact that some previews run up straight to the edge (we subtract
+            // the edge from the holographic preview (before we apply the holograph)
+            widget.mEraseStrokeRect.set(0, 0, width, height);
+            widget.mHolographicOutlineCanvas.drawRect(widget.mEraseStrokeRect,
+                    widget.mEraseStrokeRectPaint);
 
             sHolographicOutlineHelper.applyThickExpensiveOutlineWithBlur(outline,
                     widget.mHolographicOutlineCanvas, widget.mHoloBlurColor,
@@ -123,6 +140,11 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
                 defStyle, 0);
         mHoloBlurColor = a.getColor(R.styleable.PagedViewWidget_blurColor, 0);
         mHoloOutlineColor = a.getColor(R.styleable.PagedViewWidget_outlineColor, 0);
+        mEraseStrokeRectPaint.setStyle(Paint.Style.STROKE);
+        mEraseStrokeRectPaint.setStrokeWidth(HolographicOutlineHelper.MIN_OUTER_BLUR_RADIUS);
+        mEraseStrokeRectPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+        mEraseStrokeRectPaint.setFilterBitmap(true);
+        mEraseStrokeRectPaint.setAntiAlias(true);
         a.recycle();
 
         if (sHolographicOutlineHelper == null) {
@@ -158,6 +180,7 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         final ImageView image = (ImageView) findViewById(R.id.widget_preview);
         image.setMaxWidth(maxWidth);
         image.setImageDrawable(preview);
+        mPreviewImageView = image;
         final TextView name = (TextView) findViewById(R.id.widget_name);
         name.setText(info.label);
         name.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
@@ -179,6 +202,7 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         ImageView image = (ImageView) findViewById(R.id.wallpaper_preview);
         image.setMaxWidth(maxWidth);
         image.setImageDrawable(preview);
+        mPreviewImageView = image;
         TextView name = (TextView) findViewById(R.id.wallpaper_name);
         name.setText(info.loadLabel(packageManager));
         name.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
@@ -211,8 +235,15 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
 
         // draw any blended overlays
         if (mHolographicOutline != null && mHolographicAlpha > 0) {
+            // Calculate how much to scale the holographic preview
+            mTmpScaleRect.set(0,0,1,1);
+            mPreviewImageView.getImageMatrix().mapRect(mTmpScaleRect);
+
             mPaint.setAlpha(mHolographicAlpha);
+            canvas.save();
+            canvas.scale(mTmpScaleRect.right, mTmpScaleRect.bottom);
             canvas.drawBitmap(mHolographicOutline, 0, 0, mPaint);
+            canvas.restore();
         }
     }
 

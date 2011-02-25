@@ -26,5 +26,7 @@
     <dimen name="workspace_page_spacing">64dp</dimen>
 
     <dimen name="customization_drawer_height">800dp</dimen>
+    <dimen name="customization_drawer_content_height">420dp</dimen>
+    <dimen name="customization_drawer_content_min_width">640dp</dimen>
     <dimen name="customization_drawer_tab_widget_width">700dp</dimen>
 </resources>
