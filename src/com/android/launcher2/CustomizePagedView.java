@@ -337,14 +337,15 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
 
     /**
      * Similar to resetCheckedGrandchildren, but allows us to specify that it's not animated.
-     * NOTE: This assumes that only a single item can be checked.
      */
     private void resetCheckedItem(boolean animated) {
-        Checkable checkable = getCheckedGrandchildren().get(0);
-        if (checkable instanceof PagedViewWidget) {
-            ((PagedViewWidget) checkable).setChecked(false, animated);
-        } else {
-            ((PagedViewIcon) checkable).setChecked(false, animated);
+        final Checkable checkable = getSingleCheckedGrandchild();
+        if (checkable != null) {
+            if (checkable instanceof PagedViewWidget) {
+                ((PagedViewWidget) checkable).setChecked(false, animated);
+            } else {
+                ((PagedViewIcon) checkable).setChecked(false, animated);
+            }
         }
     }
 
@@ -353,8 +354,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
 
         // Create a view, identical to the drag view, that is only used for animating the
         // item onto the home screen (or back to its original position, if the drop failed).
-        final int[] pos = new int[2];
-        mDragController.getDragView().getLocationOnScreen(pos);
+        final int[] pos = mDragController.getDragView().getPosition(null);
         final View animView = dragLayer.createDragView(mDragBitmap, pos[0], pos[1]);
         animView.setVisibility(View.VISIBLE);
 

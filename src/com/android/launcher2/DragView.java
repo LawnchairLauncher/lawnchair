@@ -245,5 +245,13 @@ public class DragView extends View {
     void remove() {
         mWindowManager.removeView(this);
     }
+
+    int[] getPosition(int[] result) {
+        WindowManager.LayoutParams lp = mLayoutParams;
+        if (result == null) result = new int[2];
+        result[0] = lp.x;
+        result[1] = lp.y;
+        return result;
+    }
 }
 
