@@ -55,7 +55,7 @@ public class AppWidgetResizeFrame extends FrameLayout {
         mItemInfo = itemInfo;
         mCellLayout = cellLayout;
         mWidgetView = widgetView;
-        mResizeMode = widgetView.getAppWidgetInfo().resizableMode;
+        mResizeMode = widgetView.getAppWidgetInfo().resizeMode;
         
         final AppWidgetProviderInfo info = widgetView.getAppWidgetInfo();
         int[] result = mCellLayout.rectToCell(info.minWidth, info.minHeight, null);
