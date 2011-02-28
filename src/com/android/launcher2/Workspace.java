@@ -690,7 +690,11 @@ public class Workspace extends SmoothPagedView
         // parallax effects
         mWallpaperWidth = (int) (maxDim * wallpaperTravelToScreenWidthRatio(maxDim, minDim));
         mWallpaperHeight = (int)(maxDim * wallpaperTravelToScreenHeightRatio(maxDim, minDim));
-        mWallpaperManager.suggestDesiredDimensions(mWallpaperWidth, mWallpaperHeight);
+        new Thread("setWallpaperDimension") {
+            public void run() {
+                mWallpaperManager.suggestDesiredDimensions(mWallpaperWidth, mWallpaperHeight);
+            }
+        }.start();
     }
 
     public void setVerticalWallpaperOffset(float offset) {

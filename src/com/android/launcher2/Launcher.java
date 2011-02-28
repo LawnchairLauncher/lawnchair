@@ -1223,7 +1223,7 @@ public final class Launcher extends Activity
      * @param appWidgetId The app widget id
      * @param cellInfo The position on screen where to create the widget.
      */
-    private void completeAddAppWidget(int appWidgetId, int screen) {
+    private void completeAddAppWidget(final int appWidgetId, int screen) {
         AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
 
         // Calculate the grid spans needed to fit this widget
@@ -1253,7 +1253,16 @@ public final class Launcher extends Activity
         }
 
         if (!foundCellSpan) {
-            if (appWidgetId != -1) mAppWidgetHost.deleteAppWidgetId(appWidgetId);
+            if (appWidgetId != -1) {
+                // Deleting an app widget ID is a void call but writes to disk before returning
+                // to the caller...
+                final LauncherAppWidgetHost appWidgetHost = mAppWidgetHost;
+                new Thread("deleteAppWidgetId") {
+                    public void run() {
+                        mAppWidgetHost.deleteAppWidgetId(appWidgetId);
+                    }
+                }.start();
+            }
             showOutOfSpaceMessage();
             return;
         }
