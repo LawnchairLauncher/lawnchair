@@ -122,8 +122,4 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
         }
         super.onVisibilityChanged(changedView, visibility);
     }
-
-    public int getResizableMode() {
-        return getAppWidgetInfo().resizableMode;
-    }
 }
