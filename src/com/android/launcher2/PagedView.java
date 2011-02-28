@@ -30,6 +30,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.ActionMode;
+import android.view.InputDevice;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -1075,6 +1077,35 @@ public abstract class PagedView extends ViewGroup {
         }
 
         return true;
+    }
+
+    @Override
+    public boolean onGenericMotionEvent(MotionEvent event) {
+        if ((event.getSource() & InputDevice.SOURCE_CLASS_POINTER) != 0) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_SCROLL: {
+                    // Handle mouse (or ext. device) by shifting the page depending on the scroll
+                    final float vscroll;
+                    final float hscroll;
+                    if ((event.getMetaState() & KeyEvent.META_SHIFT_ON) != 0) {
+                        vscroll = 0;
+                        hscroll = event.getAxisValue(MotionEvent.AXIS_VSCROLL);
+                    } else {
+                        vscroll = -event.getAxisValue(MotionEvent.AXIS_VSCROLL);
+                        hscroll = event.getAxisValue(MotionEvent.AXIS_HSCROLL);
+                    }
+                    if (hscroll != 0 || vscroll != 0) {
+                        if (hscroll > 0 || vscroll > 0) {
+                            scrollRight();
+                        } else {
+                            scrollLeft();
+                        }
+                        return true;
+                    }
+                }
+            }
+        }
+        return super.onGenericMotionEvent(event);
     }
 
     private void acquireVelocityTrackerAndAddMovement(MotionEvent ev) {
