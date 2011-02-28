@@ -3567,8 +3567,12 @@ public final class Launcher extends Activity
     public void bindAppsUpdated(ArrayList<ApplicationInfo> apps) {
         setLoadOnResume();
         removeDialog(DIALOG_CREATE_SHORTCUT);
-        mWorkspace.updateShortcuts(apps);
-        mAllAppsGrid.updateApps(apps);
+        if (mWorkspace != null) {
+            mWorkspace.updateShortcuts(apps);
+        }
+        if (mAllAppsGrid != null) {
+            mAllAppsGrid.updateApps(apps);
+        }
         if (mCustomizePagedView != null) {
             mCustomizePagedView.updateApps(apps);
         }
