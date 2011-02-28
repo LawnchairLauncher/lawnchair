@@ -587,11 +587,11 @@ public class CellLayout extends ViewGroup {
         boolean found = false;
         for (int i = count - 1; i >= 0; i--) {
             final View child = mChildren.getChildAt(i);
+            final LayoutParams lp = (LayoutParams) child.getLayoutParams();
 
-            if ((child.getVisibility()) == VISIBLE || child.getAnimation() != null) {
+            if ((child.getVisibility() == VISIBLE || child.getAnimation() != null) && lp.isLockedToGrid) {
                 child.getHitRect(frame);
                 if (frame.contains(x, y)) {
-                    final LayoutParams lp = (LayoutParams) child.getLayoutParams();
                     cellInfo.cell = child;
                     cellInfo.cellX = lp.cellX;
                     cellInfo.cellY = lp.cellY;
@@ -701,6 +701,14 @@ public class CellLayout extends ViewGroup {
 
     int getCellHeight() {
         return mCellHeight;
+    }
+
+    int getWidthGap() {
+        return mWidthGap;
+    }
+
+    int getHeightGap() {
+        return mHeightGap;
     }
 
     int getLeftPadding() {
@@ -1332,19 +1340,68 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         }
     }
 
+    public void getExpandabilityArrayForView(View view, int[] expandability) {
+        final LayoutParams lp = (LayoutParams) view.getLayoutParams();        
+        boolean flag;
+
+        // Left
+        expandability[0] = 0;
+        for (int x = lp.cellX - 1; x >= 0; x--) {
+            flag = false;
+            for (int y = lp.cellY; y < lp.cellY + lp.cellVSpan; y++) {
+                if (mOccupied[x][y]) flag = true;
+            }
+            if (flag) break;
+            expandability[0]++;
+        }
+
+        // Top
+        expandability[1] = 0;
+        for (int y = lp.cellY - 1; y >= 0; y--) {
+            flag = false;
+            for (int x = lp.cellX; x < lp.cellX + lp.cellHSpan; x++) {
+                if (mOccupied[x][y]) flag = true;
+            }
+            if (flag) break;
+            expandability[1]++;
+        } 
+
+        // Right   
+        expandability[2] = 0;
+        for (int x = lp.cellX + lp.cellHSpan; x < mCountX; x++) {
+            flag = false;
+            for (int y = lp.cellY; y < lp.cellY + lp.cellVSpan; y++) {
+                if (mOccupied[x][y]) flag = true;
+            }
+            if (flag) break;
+            expandability[2]++;
+        } 
+
+        // Bottom
+        expandability[3] = 0;
+        for (int y = lp.cellY + lp.cellVSpan; y < mCountY; y++) {
+            flag = false;
+            for (int x = lp.cellX; x < lp.cellX + lp.cellHSpan; x++) {
+                if (mOccupied[x][y]) flag = true;
+            }
+            if (flag) break;
+            expandability[3]++;
+        } 
+    }
+
     public void onMove(View view, int newCellX, int newCellY) {
         LayoutParams lp = (LayoutParams) view.getLayoutParams();
         markCellsAsUnoccupiedForView(view);
         markCellsForView(newCellX, newCellY, lp.cellHSpan, lp.cellVSpan, true);
     }
 
-    private void markCellsAsOccupiedForView(View view) {
+    public void markCellsAsOccupiedForView(View view) {
         if (view == null || view.getParent() != mChildren) return;
         LayoutParams lp = (LayoutParams) view.getLayoutParams();
         markCellsForView(lp.cellX, lp.cellY, lp.cellHSpan, lp.cellVSpan, true);
     }
 
-    private void markCellsAsUnoccupiedForView(View view) {
+    public void markCellsAsUnoccupiedForView(View view) {
         if (view == null || view.getParent() != mChildren) return;
         LayoutParams lp = (LayoutParams) view.getLayoutParams();
         markCellsForView(lp.cellX, lp.cellY, lp.cellHSpan, lp.cellVSpan, false);
@@ -1409,6 +1466,8 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         @ViewDebug.ExportedProperty
         public int cellVSpan;
 
+        public boolean isLockedToGrid = true;
+
         /**
          * Is this item currently being dragged
          */
@@ -1467,19 +1526,52 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
 
         public void setup(int cellWidth, int cellHeight, int widthGap, int heightGap,
                 int hStartPadding, int vStartPadding) {
+            if (isLockedToGrid) {
+                final int myCellHSpan = cellHSpan;
+                final int myCellVSpan = cellVSpan;
+                final int myCellX = cellX;
+                final int myCellY = cellY;
+    
+                width = myCellHSpan * cellWidth + ((myCellHSpan - 1) * widthGap) -
+                        leftMargin - rightMargin;
+                height = myCellVSpan * cellHeight + ((myCellVSpan - 1) * heightGap) -
+                        topMargin - bottomMargin;
+    
+                x = hStartPadding + myCellX * (cellWidth + widthGap) + leftMargin;
+                y = vStartPadding + myCellY * (cellHeight + heightGap) + topMargin;
+            }
+        }
 
-            final int myCellHSpan = cellHSpan;
-            final int myCellVSpan = cellVSpan;
-            final int myCellX = cellX;
-            final int myCellY = cellY;
+        public void setWidth(int width) {
+            this.width = width;
+        }
 
-            width = myCellHSpan * cellWidth + ((myCellHSpan - 1) * widthGap) -
-                    leftMargin - rightMargin;
-            height = myCellVSpan * cellHeight + ((myCellVSpan - 1) * heightGap) -
-                    topMargin - bottomMargin;
+        public int getWidth() {
+            return width;
+        }
 
-            x = hStartPadding + myCellX * (cellWidth + widthGap) + leftMargin;
-            y = vStartPadding + myCellY * (cellHeight + heightGap) + topMargin;
+        public void setHeight(int height) {
+            this.height = height;
+        }
+
+        public int getHeight() {
+            return height;
+        }
+
+        public void setX(int x) {
+            this.x = x;
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public void setY(int y) {
+            this.y = y;
+        }
+
+        public int getY() {
+            return y;
         }
 
         public String toString() {

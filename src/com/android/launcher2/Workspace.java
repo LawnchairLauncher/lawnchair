@@ -2291,6 +2291,24 @@ public class Workspace extends SmoothPagedView
                     cell.setId(LauncherModel.getCellLayoutChildId(-1, mDragInfo.screen,
                             mTargetCell[0], mTargetCell[1], mDragInfo.spanX, mDragInfo.spanY));
 
+                    if (cell instanceof LauncherAppWidgetHostView) {
+                        final CellLayoutChildren children = dropTargetLayout.getChildrenLayout();
+                        final CellLayout cellLayout = dropTargetLayout;
+                        // We post this call so that the widget has a chance to be placed
+                        // in its final location
+
+                        final LauncherAppWidgetHostView hostView = (LauncherAppWidgetHostView) cell;
+                        AppWidgetProviderInfo pinfo = hostView.getAppWidgetInfo();
+                        if (pinfo.resizableMode != AppWidgetProviderInfo.RESIZE_NONE) {
+                            post(new Runnable() {
+                                public void run() {
+                                    children.addResizeFrame(info, hostView, 
+                                            cellLayout);
+                                }
+                            });
+                        }
+                    }
+
                     LauncherModel.moveItemInDatabase(mLauncher, info,
                             LauncherSettings.Favorites.CONTAINER_DESKTOP, screen,
                             lp.cellX, lp.cellY);
@@ -2329,7 +2347,7 @@ public class Workspace extends SmoothPagedView
         // would land in a cell occupied by a DragTarget (e.g. a Folder),
         // then drag events should be handled by that child.
 
-        ItemInfo item = (ItemInfo)dragInfo;
+        ItemInfo item = (ItemInfo) dragInfo;
         CellLayout currentLayout = getCurrentDropLayout();
 
         int dragPointX, dragPointY;

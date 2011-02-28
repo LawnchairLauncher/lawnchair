@@ -72,7 +72,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
         // Otherwise continue letting touch events fall through to children
         return false;
     }
-    
+
     class CheckForLongPress implements Runnable {
         private int mOriginalWindowAttachCount;
 
@@ -121,5 +121,9 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
             mOnVisibilityChangedListener.receiveVisibilityChangedMessage(this);
         }
         super.onVisibilityChanged(changedView, visibility);
+    }
+
+    public int getResizableMode() {
+        return getAppWidgetInfo().resizableMode;
     }
 }
