@@ -203,11 +203,21 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
         }
     }
 
-    private void setupDragMode() {
+    private void setupDragMode(ApplicationInfo info) {
         mLauncher.getWorkspace().shrink(Workspace.ShrinkState.BOTTOM_VISIBLE);
-        DeleteZone allAppsDeleteZone = (DeleteZone)
-                mLauncher.findViewById(R.id.all_apps_delete_zone);
-        allAppsDeleteZone.setDragAndDropEnabled(true);
+
+        // Only show the uninstall button if the app is uninstallable.
+        if ((info.flags & ApplicationInfo.DOWNLOADED_FLAG) != 0) {
+            DeleteZone allAppsDeleteZone = (DeleteZone)
+                    mLauncher.findViewById(R.id.all_apps_delete_zone);
+            allAppsDeleteZone.setDragAndDropEnabled(true);
+
+            if ((info.flags & ApplicationInfo.UPDATED_SYSTEM_APP_FLAG) != 0) {
+                allAppsDeleteZone.setText(R.string.delete_zone_label_all_apps_system_app);
+            } else {
+                allAppsDeleteZone.setText(R.string.delete_zone_label_all_apps);
+            }
+        }
 
         ApplicationInfoDropTarget allAppsInfoButton =
                 (ApplicationInfoDropTarget) mLauncher.findViewById(R.id.all_apps_info_target);
@@ -240,11 +250,11 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
         if (!v.isInTouchMode()) return false;
         if (!super.beginDragging(v)) return false;
 
-        // Start drag mode after the item is selected
-        setupDragMode();
-
         ApplicationInfo app = (ApplicationInfo) v.getTag();
         app = new ApplicationInfo(app);
+
+        // Start drag mode after the item is selected
+        setupDragMode(app);
 
         // get icon (top compound drawable, index is 1)
         final TextView tv = (TextView) v;

@@ -313,19 +313,9 @@ public class AllApps2D
         mVisibleAppsList.clear();
         if (appType == AppType.ALL) {
             mVisibleAppsList.addAll(mAllAppsList);
-        } else {
-            int searchFlags = 0;
-
-            if (appType == AppType.APP) {
-                searchFlags = ApplicationInfo.APP_FLAG;
-            } else if (appType == AppType.GAME) {
-                searchFlags = ApplicationInfo.GAME_FLAG;
-            } else if (appType == AppType.DOWNLOADED) {
-                searchFlags = ApplicationInfo.DOWNLOADED_FLAG;
-            }
-
+        } else if (appType == AppType.DOWNLOADED) {
             for (ApplicationInfo info : mAllAppsList) {
-                if ((info.flags & searchFlags) != 0) {
+                if ((info.flags & ApplicationInfo.DOWNLOADED_FLAG) != 0) {
                     mVisibleAppsList.add(info);
                 }
             }

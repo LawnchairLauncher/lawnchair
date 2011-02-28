@@ -53,7 +53,6 @@
             </FrameLayout>
             <com.android.launcher2.DeleteZone
                 android:id="@+id/all_apps_delete_zone"
-                android:text="@string/delete_zone_label_all_apps"
                 android:drawablePadding="@dimen/delete_zone_drawable_padding"
                 android:drawableLeft="@drawable/delete_zone_selector"
                 android:layout_width="wrap_content"

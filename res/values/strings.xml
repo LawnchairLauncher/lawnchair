@@ -149,6 +149,10 @@
          device. [CHAR_LIMIT=30]-->
     <string name="delete_zone_label_all_apps">Uninstall</string>
 
+    <!-- Label for trash icon in All Apps, when an updated system app is selected. The update will
+         be uninstalled. [CHAR_LIMIT=30] -->
+    <string name="delete_zone_label_all_apps_system_app">Uninstall update</string>
+
     <!-- Menus items: -->
     <skip />
     <!-- Verb, menu item used to add an item on the desktop -->

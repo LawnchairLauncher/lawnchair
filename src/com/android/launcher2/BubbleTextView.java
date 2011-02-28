@@ -171,9 +171,8 @@ public class BubbleTextView extends TextView implements VisibilityChangedBroadca
     }
 
     /**
-     * Draw the View v into the given Canvas.
+     * Draw this BubbleTextView into the given Canvas.
      *
-     * @param v the view to draw
      * @param destCanvas the canvas to draw on
      * @param padding the horizontal and vertical padding to use when drawing
      */
