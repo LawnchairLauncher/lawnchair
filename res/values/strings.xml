@@ -72,6 +72,8 @@
     <string name="all_apps_no_games">No games found.</string>
     <!-- Message to show when there are no downloaded apps [CHAR_LIMIT=50] -->
     <string name="all_apps_no_downloads">You have no downloaded applications.</string>
+    <!-- Market button text [CHAR LIMIT=32] -->
+    <string name="market">Shop</string>
 
     <!-- Customization Drawer -->
     <!-- The format string for the dimensions of a widget in the drawer -->

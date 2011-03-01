@@ -44,12 +44,20 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:visibility="invisible"/>
-                <ImageView
+                <TextView
                     android:id="@+id/market_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:onClick="onClickAppMarketButton"/>
+                    android:gravity="center"
+                    android:paddingRight="22dp"
+                    android:text="@string/market"
+                    android:textColor="@color/workspace_all_apps_and_delete_zone_text_color"
+                    android:textSize="18sp"
+                    android:shadowColor="@color/workspace_all_apps_and_delete_zone_text_shadow_color"
+                    android:shadowDx="0.0"
+                    android:shadowDy="0.0"
+                    android:shadowRadius="2.0" />
             </FrameLayout>
             <com.android.launcher2.DeleteZone
                 android:id="@+id/all_apps_delete_zone"
@@ -64,7 +72,7 @@
                 android:paddingRight="22dp"
                 launcher:direction="horizontal"
 
-                android:gravity="center_horizontal|center_vertical"
+                android:gravity="center"
                 android:textColor="@color/workspace_all_apps_and_delete_zone_text_color"
                 android:textSize="18sp"
                 android:shadowColor="@color/workspace_all_apps_and_delete_zone_text_shadow_color"
