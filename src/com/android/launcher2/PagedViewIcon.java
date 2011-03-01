@@ -141,13 +141,15 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
         return mHolographicOutline;
     }
 
-    private void queueHolographicOutlineCreation() {
+    private boolean queueHolographicOutlineCreation() {
         // Generate the outline in the background
         if (mHolographicOutline == null) {
             Message m = sWorker.obtainMessage(MESSAGE_CREATE_HOLOGRAPHIC_OUTLINE);
             m.obj = this;
             sWorker.sendMessage(m);
+            return true;
         }
+        return false;
     }
 
     public void applyFromApplicationInfo(ApplicationInfo info, PagedViewIconCache cache,
@@ -161,7 +163,9 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
             mIconCache = cache;
             mIconCacheKey = new PagedViewIconCache.Key(info);
             mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
-            queueHolographicOutlineCreation();
+            if (!queueHolographicOutlineCreation()) {
+                getHolographicOutlineView().invalidate();
+            }
         }
     }
 
@@ -177,7 +181,9 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
             mIconCache = cache;
             mIconCacheKey = new PagedViewIconCache.Key(info);
             mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
-            queueHolographicOutlineCreation();
+            if (!queueHolographicOutlineCreation()) {
+                getHolographicOutlineView().invalidate();
+            }
         }
     }
 
