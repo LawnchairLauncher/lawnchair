@@ -1039,6 +1039,11 @@ public final class Launcher extends Activity
             View marketButton = findViewById(R.id.market_button);
             if (marketButton != null) {
                 allAppsInfoTarget.setOverlappingView(marketButton);
+                marketButton.setOnClickListener(new OnClickListener() {
+                    public void onClick(View v) {
+                        onClickAppMarketButton(v);
+                    }
+                });
             }
         }
 
@@ -3104,11 +3109,7 @@ public final class Launcher extends Activity
         showWorkspace(true, layout);
     }
 
-    // if successful in getting icon, return it; otherwise, set button to use default drawable
-    private Drawable.ConstantState updateButtonWithIconFromExternalActivity(
-            int buttonId, ComponentName activityName, int fallbackDrawableId) {
-        ImageView button = (ImageView) findViewById(buttonId);
-        Drawable toolbarIcon = null;
+    private Drawable getExternalPackageToolbarIcon(ComponentName activityName) {
         try {
             PackageManager packageManager = getPackageManager();
             // Look for the toolbar icon specified in the activity meta-data
@@ -3118,12 +3119,37 @@ public final class Launcher extends Activity
                 int iconResId = metaData.getInt(TOOLBAR_ICON_METADATA_NAME);
                 if (iconResId != 0) {
                     Resources res = packageManager.getResourcesForActivity(activityName);
-                    toolbarIcon = res.getDrawable(iconResId);
+                    return res.getDrawable(iconResId);
                 }
             }
         } catch (NameNotFoundException e) {
             // Do nothing
         }
+        return null;
+    }
+
+    // if successful in getting icon, return it; otherwise, set button to use default drawable
+    private Drawable.ConstantState updateTextButtonWithIconFromExternalActivity(
+            int buttonId, ComponentName activityName, int fallbackDrawableId) {
+        TextView button = (TextView) findViewById(buttonId);
+        Drawable toolbarIcon = getExternalPackageToolbarIcon(activityName);
+
+        // If we were unable to find the icon via the meta-data, use a generic one
+        if (toolbarIcon == null) {
+            button.setCompoundDrawablesWithIntrinsicBounds(fallbackDrawableId, 0, 0, 0);
+            return null;
+        } else {
+            button.setCompoundDrawablesWithIntrinsicBounds(toolbarIcon, null, null, null);
+            return toolbarIcon.getConstantState();
+        }
+    }
+
+    // if successful in getting icon, return it; otherwise, set button to use default drawable
+    private Drawable.ConstantState updateButtonWithIconFromExternalActivity(
+            int buttonId, ComponentName activityName, int fallbackDrawableId) {
+        ImageView button = (ImageView) findViewById(buttonId);
+        Drawable toolbarIcon = getExternalPackageToolbarIcon(activityName);
+
         // If we were unable to find the icon via the meta-data, use a generic one
         if (toolbarIcon == null) {
             button.setImageResource(fallbackDrawableId);
@@ -3132,6 +3158,11 @@ public final class Launcher extends Activity
             button.setImageDrawable(toolbarIcon);
             return toolbarIcon.getConstantState();
         }
+    }
+
+    private void updateTextButtonWithDrawable(int buttonId, Drawable.ConstantState d) {
+        TextView button = (TextView) findViewById(buttonId);
+        button.setCompoundDrawables(d.newDrawable(getResources()), null, null, null);
     }
 
     private void updateButtonWithDrawable(int buttonId, Drawable.ConstantState d) {
@@ -3185,14 +3216,14 @@ public final class Launcher extends Activity
             ComponentName activityName = intent.resolveActivity(getPackageManager());
             if (activityName != null) {
                 mAppMarketIntent = intent;
-                sAppMarketIcon = updateButtonWithIconFromExternalActivity(
+                sAppMarketIcon = updateTextButtonWithIconFromExternalActivity(
                         R.id.market_button, activityName, R.drawable.app_market_generic);
             }
         }
     }
 
     private void updateAppMarketIcon(Drawable.ConstantState d) {
-        updateButtonWithDrawable(R.id.market_button, d);
+        updateTextButtonWithDrawable(R.id.market_button, d);
     }
 
     /**
