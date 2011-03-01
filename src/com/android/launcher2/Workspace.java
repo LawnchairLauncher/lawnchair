@@ -896,7 +896,7 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    public void showOutlines() {
+    void showOutlines() {
         if (!mIsSmall && !mIsInUnshrinkAnimation) {
             if (mChildrenOutlineFadeOutAnimation != null) mChildrenOutlineFadeOutAnimation.cancel();
             if (mChildrenOutlineFadeInAnimation != null) mChildrenOutlineFadeInAnimation.cancel();
@@ -906,7 +906,7 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    public void hideOutlines() {
+    void hideOutlines() {
         if (!mIsSmall && !mIsInUnshrinkAnimation) {
             if (mChildrenOutlineFadeInAnimation != null) mChildrenOutlineFadeInAnimation.cancel();
             if (mChildrenOutlineFadeOutAnimation != null) mChildrenOutlineFadeOutAnimation.cancel();
@@ -914,6 +914,12 @@ public class Workspace extends SmoothPagedView
             mChildrenOutlineFadeOutAnimation.setDuration(CHILDREN_OUTLINE_FADE_OUT_DURATION);
             mChildrenOutlineFadeOutAnimation.setStartDelay(CHILDREN_OUTLINE_FADE_OUT_DELAY);
             mChildrenOutlineFadeOutAnimation.start();
+        }
+    }
+
+    public void showOutlinesTemporarily() {
+        if (!mIsPageMoving && !isTouchActive()) {
+            snapToPage(mCurrentPage);
         }
     }
 

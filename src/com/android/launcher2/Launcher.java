@@ -251,6 +251,7 @@ public final class Launcher extends Activity
 
     private static HashMap<Long, FolderInfo> sFolders = new HashMap<Long, FolderInfo>();
 
+    // The "signpost" images along the bottom of the screen (only in some layouts)
     private ImageView mPreviousView;
     private ImageView mNextView;
 
@@ -1691,6 +1692,12 @@ public final class Launcher extends Activity
         return mWorkspaceLoading || mWaitingForResult;
     }
 
+    // Is the workspace preview (brought up by long-pressing on a signpost icon) visible?
+    private boolean isPreviewVisible() {
+        return (mPreviousView != null && mPreviousView.getTag() != null) ||
+                (mNextView != null && mNextView.getTag() != null);
+    }
+
     private void addItems() {
         if (LauncherApplication.isScreenXLarge()) {
             // Animate the widget chooser up from the bottom of the screen
@@ -1984,13 +1991,14 @@ public final class Launcher extends Activity
     public void onBackPressed() {
         if (mState == State.ALL_APPS || mState == State.CUSTOMIZE) {
             showWorkspace(true);
-        } else {
+        } else if (mWorkspace.getOpenFolder() != null) {
             closeFolder();
-        }
-        // Some launcher layouts don't have a previous and next view
-        if (mPreviousView != null) {
+        } else if (isPreviewVisible()) {
             dismissPreview(mPreviousView);
             dismissPreview(mNextView);
+        } else {
+            // Back button is a no-op here, but give at least some feedback for the button press
+            mWorkspace.showOutlinesTemporarily();
         }
     }
 
