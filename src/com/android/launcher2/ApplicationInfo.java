@@ -59,9 +59,9 @@ class ApplicationInfo extends ItemInfo {
 
     ComponentName componentName;
 
-    static final int APP_FLAG = 1;
-    static final int GAME_FLAG = 2;
-    static final int DOWNLOADED_FLAG = 4;
+    static final int DOWNLOADED_FLAG = 1;
+    static final int UPDATED_SYSTEM_APP_FLAG = 2;
+
     int flags = 0;
 
     ApplicationInfo() {
@@ -83,17 +83,12 @@ class ApplicationInfo extends ItemInfo {
             int appFlags = pm.getApplicationInfo(packageName, 0).flags;
             if ((appFlags & android.content.pm.ApplicationInfo.FLAG_SYSTEM) == 0) {
                 flags |= DOWNLOADED_FLAG;
-            }
-            if ((appFlags & android.content.pm.ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0) {
-                flags |= DOWNLOADED_FLAG;
+
+                if ((appFlags & android.content.pm.ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0) {
+                    flags |= UPDATED_SYSTEM_APP_FLAG;
+                }
             }
             firstInstallTime = pm.getPackageInfo(packageName, 0).firstInstallTime;
-            // TODO: Figure out how to determine what is a game
-
-            // If it's not a game, it's an app
-            if ((flags & GAME_FLAG) == 0) {
-                flags |= APP_FLAG;
-            }
         } catch (NameNotFoundException e) {
             Log.d(TAG, "PackageManager.getApplicationInfo failed for " + packageName);
         }
