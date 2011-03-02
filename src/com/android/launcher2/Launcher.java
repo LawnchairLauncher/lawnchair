@@ -418,15 +418,12 @@ public final class Launcher extends Activity
 
         // If we have a saved version of these external icons, we load them up immediately
         if (LauncherApplication.isScreenXLarge()) {
-            if (sGlobalSearchIcon != null) {
-                updateGlobalSearchIcon(sGlobalSearchIcon);
+            if (sGlobalSearchIcon == null || sVoiceSearchIcon == null || sAppMarketIcon == null) {
+                updateIconsAffectedByPackageManagerChanges();
             }
-            if (sVoiceSearchIcon != null) {
-                updateVoiceSearchIcon(sVoiceSearchIcon);
-            }
-            if (sAppMarketIcon != null) {
-                updateAppMarketIcon(sAppMarketIcon);
-            }
+            updateGlobalSearchIcon(sGlobalSearchIcon);
+            updateVoiceSearchIcon(sVoiceSearchIcon);
+            updateAppMarketIcon(sAppMarketIcon);
         }
     }
 
