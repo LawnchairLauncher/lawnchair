@@ -36,7 +36,7 @@
     <string name="all_apps_tab_all" msgid="2942727589595027258">"Alle"</string>
     <string name="all_apps_tab_apps" msgid="5468972551904071712">"Toepassingen"</string>
     <string name="all_apps_tab_games" msgid="1855736784923494918">"Games"</string>
-    <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Mijn toepassingen"</string>
+    <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Mijn apps"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"Geen games gevonden."</string>
     <string name="all_apps_no_downloads" msgid="2284720393234453761">"U heeft geen gedownloade toepassingen."</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Kan item niet neerzetten op dit startscherm"</string>
