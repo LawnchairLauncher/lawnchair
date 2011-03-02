@@ -2245,6 +2245,10 @@ public final class Launcher extends Activity
     }
 
     public boolean onLongClick(View v) {
+        if (mState != State.WORKSPACE) {
+            return false;
+        }
+
         switch (v.getId()) {
             case R.id.previous_screen:
                 if (mState != State.ALL_APPS) {
@@ -2276,7 +2280,6 @@ public final class Launcher extends Activity
         if (!(v instanceof CellLayout)) {
             v = (View) v.getParent().getParent();
         }
-
 
         resetAddInfo();
         CellLayout.CellInfo longClickCellInfo = (CellLayout.CellInfo) v.getTag();

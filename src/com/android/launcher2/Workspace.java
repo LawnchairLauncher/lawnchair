@@ -76,7 +76,8 @@ import java.util.List;
  * interact with. A workspace is meant to be used with a fixed width only.
  */
 public class Workspace extends SmoothPagedView
-        implements DropTarget, DragSource, DragScroller, View.OnTouchListener {
+        implements DropTarget, DragSource, DragScroller, View.OnTouchListener,
+        View.OnClickListener {
     @SuppressWarnings({"UnusedDeclaration"})
     private static final String TAG = "Launcher.Workspace";
 
@@ -343,6 +344,8 @@ public class Workspace extends SmoothPagedView
             throw new IllegalArgumentException("A Workspace can only have CellLayout children.");
         }
         ((CellLayout) child).setOnInterceptTouchListener(this);
+        child.setOnClickListener(this);
+        child.setClickable(true);
         super.addView(child, index, params);
     }
 
@@ -352,6 +355,8 @@ public class Workspace extends SmoothPagedView
             throw new IllegalArgumentException("A Workspace can only have CellLayout children.");
         }
         ((CellLayout) child).setOnInterceptTouchListener(this);
+        child.setOnClickListener(this);
+        child.setClickable(true);
         super.addView(child);
     }
 
@@ -361,6 +366,8 @@ public class Workspace extends SmoothPagedView
             throw new IllegalArgumentException("A Workspace can only have CellLayout children.");
         }
         ((CellLayout) child).setOnInterceptTouchListener(this);
+        child.setOnClickListener(this);
+        child.setClickable(true);
         super.addView(child, index);
     }
 
@@ -370,6 +377,8 @@ public class Workspace extends SmoothPagedView
             throw new IllegalArgumentException("A Workspace can only have CellLayout children.");
         }
         ((CellLayout) child).setOnInterceptTouchListener(this);
+        child.setOnClickListener(this);
+        child.setClickable(true);
         super.addView(child, width, height);
     }
 
@@ -379,6 +388,8 @@ public class Workspace extends SmoothPagedView
             throw new IllegalArgumentException("A Workspace can only have CellLayout children.");
         }
         ((CellLayout) child).setOnInterceptTouchListener(this);
+        child.setOnClickListener(this);
+        child.setClickable(true);
         super.addView(child, params);
     }
 
@@ -521,16 +532,25 @@ public class Workspace extends SmoothPagedView
         return hitsPage(current + 1, x, y);
     }
 
+    /**
+     * Called directly from a CellLayout (not by the framework), after we've been added as a
+     * listener via setOnInterceptTouchEventListener(). This allows us to tell the CellLayout
+     * that it should intercept touch events, which is not something that is normally supported.
+     */
+    @Override
     public boolean onTouch(View v, MotionEvent event) {
-        // this is an intercepted event being forwarded from a cell layout
-        if (mIsSmall || mIsInUnshrinkAnimation) {
-            // Only allow clicks on a CellLayout if it is visible
-            if (mShrinkState != ShrinkState.BOTTOM_HIDDEN) {
-                mLauncher.onWorkspaceClick((CellLayout) v);
-            }
-            return true;
+        return (mIsSmall || mIsInUnshrinkAnimation);
+    }
+
+    /**
+     * Handle a click event on a CellLayout.
+     */
+    @Override
+    public void onClick(View cellLayout) {
+        // Only allow clicks on a CellLayout if it is shrunken and visible.
+        if ((mIsSmall || mIsInUnshrinkAnimation) && mShrinkState != ShrinkState.BOTTOM_HIDDEN) {
+            mLauncher.onWorkspaceClick((CellLayout) cellLayout);
         }
-        return false;
     }
 
     protected void onWindowVisibilityChanged (int visibility) {
@@ -554,8 +574,7 @@ public class Workspace extends SmoothPagedView
         }
 
         if (mIsSmall || mIsInUnshrinkAnimation) {
-            if (mLauncher.isAllAppsVisible() &&
-                    mShrinkState == ShrinkState.BOTTOM_HIDDEN) {
+            if (mLauncher.isAllAppsVisible() && mShrinkState == ShrinkState.BOTTOM_HIDDEN) {
                 // Intercept this event so we can show the workspace in full view
                 // when it is clicked on and it is small
                 AllAppsPagedView allApps = (AllAppsPagedView)
