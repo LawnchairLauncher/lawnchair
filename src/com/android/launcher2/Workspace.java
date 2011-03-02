@@ -2706,7 +2706,13 @@ public class Workspace extends SmoothPagedView
                         mSpringLoadedDragController.onDragExit();
                     }
                     mDragTargetLayout = layout;
-                    if (mDragTargetLayout != null && mDragTargetLayout.getAcceptsDrops()) {
+                    // In spring-loaded mode, we still want the user to be able to hover over a
+                    // full screen (which is traditionally set to not accept drops) if they want to
+                    // get to pages beyond the screen that is full.
+                    boolean allowDragOver = (mDragTargetLayout != null) &&
+                            (mDragTargetLayout.getAcceptsDrops() ||
+                                    (mShrinkState == ShrinkState.SPRING_LOADED));
+                    if (allowDragOver) {
                         mDragTargetLayout.setIsDragOverlapping(true);
                         mSpringLoadedDragController.onDragEnter(
                                 mDragTargetLayout, mShrinkState == ShrinkState.SPRING_LOADED);
