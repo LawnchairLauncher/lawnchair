@@ -557,6 +557,9 @@ public class DragController {
             handleMoveEvent(screenX, screenY);
             break;
         case MotionEvent.ACTION_UP:
+            // Ensure that we've processed a move event at the current pointer location.
+            handleMoveEvent(screenX, screenY);
+
             mHandler.removeCallbacks(mScrollRunnable);
             if (mDragging) {
                 drop(screenX, screenY);
@@ -571,10 +574,11 @@ public class DragController {
         return true;
     }
 
-    private boolean drop(float x, float y) {
+    private void drop(float x, float y) {
         final int[] coordinates = mCoordinatesTemp;
-        DropTarget dropTarget = findDropTarget((int) x, (int) y, coordinates);
+        final DropTarget dropTarget = findDropTarget((int) x, (int) y, coordinates);
 
+        boolean accepted = false;
         if (dropTarget != null) {
             dropTarget.onDragExit(mDragSource, coordinates[0], coordinates[1],
                     (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo);
@@ -582,16 +586,10 @@ public class DragController {
                     (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo)) {
                 dropTarget.onDrop(mDragSource, coordinates[0], coordinates[1],
                         (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo);
-                mDragSource.onDropCompleted((View) dropTarget, mDragInfo, true);
-                return true;
-            } else {
-                mDragSource.onDropCompleted((View) dropTarget, mDragInfo, false);
-                return true;
+                accepted = true;
             }
-        } else {
-            mDragSource.onDropCompleted(null, mDragInfo, false);
         }
-        return false;
+        mDragSource.onDropCompleted((View) dropTarget, mDragInfo, accepted);
     }
 
     private DropTarget findDropTarget(int x, int y, int[] dropCoordinates) {
