@@ -33,19 +33,21 @@ public class AppWidgetResizeFrame extends FrameLayout {
     private int mBaselineX;
     private int mBaselineY;
     private int mResizeMode;
-    
+
     private int mRunningHInc;
     private int mRunningVInc;
     private int mMinHSpan;
     private int mMinVSpan;
     private int mDeltaX;
     private int mDeltaY;
+    private int mBackgroundPadding;
+    private int mTouchTargetWidth;
 
     private int mExpandability[] = new int[4];
 
-    final int BORDER_WIDTH = 50;
-    final int FRAME_MARGIN = 15;
     final int SNAP_DURATION = 150;
+    final int BACKGROUND_PADDING = 24;
+    final float DIMMED_HANDLE_ALPHA = 0.3f;
 
     public AppWidgetResizeFrame(Context context, ItemInfo itemInfo, 
             LauncherAppWidgetHostView widgetView, CellLayout cellLayout) {
@@ -56,36 +58,36 @@ public class AppWidgetResizeFrame extends FrameLayout {
         mCellLayout = cellLayout;
         mWidgetView = widgetView;
         mResizeMode = widgetView.getAppWidgetInfo().resizeMode;
-        
+
         final AppWidgetProviderInfo info = widgetView.getAppWidgetInfo();
         int[] result = mCellLayout.rectToCell(info.minWidth, info.minHeight, null);
         mMinHSpan = result[0];
         mMinVSpan = result[1];
 
-        setBackgroundResource(R.drawable.resize_frame);
+        setBackgroundResource(R.drawable.widget_resize_frame_holo);
         setPadding(0, 0, 0, 0);
 
         LayoutParams lp;
         mLeftHandle = new ImageView(context);
-        mLeftHandle.setImageResource(R.drawable.h_handle);
+        mLeftHandle.setImageResource(R.drawable.widget_resize_handle_left);
         lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 
                 Gravity.LEFT | Gravity.CENTER_VERTICAL);
         addView(mLeftHandle, lp);
 
         mRightHandle = new ImageView(context);
-        mRightHandle.setImageResource(R.drawable.h_handle);
+        mRightHandle.setImageResource(R.drawable.widget_resize_handle_right);
         lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 
                 Gravity.RIGHT | Gravity.CENTER_VERTICAL);
         addView(mRightHandle, lp);
 
         mTopHandle = new ImageView(context);
-        mTopHandle.setImageResource(R.drawable.v_handle);
+        mTopHandle.setImageResource(R.drawable.widget_resize_handle_top);
         lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 
                 Gravity.CENTER_HORIZONTAL | Gravity.TOP);
         addView(mTopHandle, lp);
 
         mBottomHandle = new ImageView(context);
-        mBottomHandle.setImageResource(R.drawable.v_handle);
+        mBottomHandle.setImageResource(R.drawable.widget_resize_handle_bottom);
         lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 
                 Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
         addView(mBottomHandle, lp);
@@ -96,16 +98,20 @@ public class AppWidgetResizeFrame extends FrameLayout {
         } else if (mResizeMode == AppWidgetProviderInfo.RESIZE_VERTICAL) {
             mLeftHandle.setVisibility(GONE);
             mRightHandle.setVisibility(GONE);
-        }        
+        }
+
+        final float density = mContext.getResources().getDisplayMetrics().density;
+        mBackgroundPadding = (int) Math.ceil(density * BACKGROUND_PADDING);
+        mTouchTargetWidth = 2 * mBackgroundPadding;
     }
 
     public boolean beginResizeIfPointInRegion(int x, int y) {
         boolean horizontalActive = (mResizeMode & AppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0;
         boolean verticalActive = (mResizeMode & AppWidgetProviderInfo.RESIZE_VERTICAL) != 0;
-        mLeftBorderActive = (x < BORDER_WIDTH) && horizontalActive;
-        mRightBorderActive = (x > getWidth() - BORDER_WIDTH) && horizontalActive;
-        mTopBorderActive = (y < BORDER_WIDTH) && verticalActive;
-        mBottomBorderActive = (y > getHeight() - BORDER_WIDTH) && verticalActive;
+        mLeftBorderActive = (x < mTouchTargetWidth) && horizontalActive;
+        mRightBorderActive = (x > getWidth() - mTouchTargetWidth) && horizontalActive;
+        mTopBorderActive = (y < mTouchTargetWidth) && verticalActive;
+        mBottomBorderActive = (y > getHeight() - mTouchTargetWidth) && verticalActive;
 
         boolean anyBordersActive = mLeftBorderActive || mRightBorderActive
                 || mTopBorderActive || mBottomBorderActive;
@@ -118,30 +124,31 @@ public class AppWidgetResizeFrame extends FrameLayout {
         mRunningVInc = 0;
 
         if (anyBordersActive) {
-            mLeftHandle.setAlpha(mLeftBorderActive ? 1.0f : 0.5f);
-            mRightHandle.setAlpha(mRightBorderActive ? 1.0f : 0.5f);
-            mTopHandle.setAlpha(mTopBorderActive ? 1.0f : 0.5f);
-            mBottomHandle.setAlpha(mBottomBorderActive ? 1.0f : 0.5f);
+            mLeftHandle.setAlpha(mLeftBorderActive ? 1.0f : DIMMED_HANDLE_ALPHA);
+            mRightHandle.setAlpha(mRightBorderActive ? 1.0f :DIMMED_HANDLE_ALPHA);
+            mTopHandle.setAlpha(mTopBorderActive ? 1.0f : DIMMED_HANDLE_ALPHA);
+            mBottomHandle.setAlpha(mBottomBorderActive ? 1.0f : DIMMED_HANDLE_ALPHA);
         }
         mCellLayout.getExpandabilityArrayForView(mWidgetView, mExpandability);
+
         return anyBordersActive;
     }
 
     public void updateDeltas(int deltaX, int deltaY) {
         if (mLeftBorderActive) {
             mDeltaX = Math.max(-mBaselineX, deltaX); 
-            mDeltaX = Math.min(mBaselineWidth - 2*BORDER_WIDTH, mDeltaX);
+            mDeltaX = Math.min(mBaselineWidth - 2 * mTouchTargetWidth, mDeltaX);
         } else if (mRightBorderActive) {
             mDeltaX = Math.min(mCellLayout.getWidth() - (mBaselineX + mBaselineWidth), deltaX);
-            mDeltaX = Math.max(-mBaselineWidth + 2*BORDER_WIDTH, mDeltaX);
+            mDeltaX = Math.max(-mBaselineWidth + 2 * mTouchTargetWidth, mDeltaX);
         }
 
         if (mTopBorderActive) {
             mDeltaY = Math.max(-mBaselineY, deltaY);
-            mDeltaY = Math.min(mBaselineHeight - 2*BORDER_WIDTH, mDeltaY);
+            mDeltaY = Math.min(mBaselineHeight - 2 * mTouchTargetWidth, mDeltaY);
         } else if (mBottomBorderActive) {
             mDeltaY = Math.min(mCellLayout.getHeight() - (mBaselineY + mBaselineHeight), deltaY);
-            mDeltaY = Math.max(-mBaselineHeight + 2*BORDER_WIDTH, mDeltaY);
+            mDeltaY = Math.max(-mBaselineHeight + 2 * mTouchTargetWidth, mDeltaY);
         }
     }
 
@@ -167,11 +174,6 @@ public class AppWidgetResizeFrame extends FrameLayout {
     }
 
     private void resizeWidgetIfNeeded() {
-        // TODO: these computations probably aren't quite right... think about them
-
-        //System.out.println("runningIncX before: " + mRunningHInc);
-        //System.out.println("runningIncY before: " + mRunningVInc);
-        
         int xThreshold = mCellLayout.getCellWidth() + mCellLayout.getWidthGap();
         int yThreshold = mCellLayout.getCellHeight() + mCellLayout.getHeightGap();
 
@@ -224,11 +226,7 @@ public class AppWidgetResizeFrame extends FrameLayout {
             lp.cellY += cellYInc;
         }
 
-        try {
-            mCellLayout.getExpandabilityArrayForView(mWidgetView, mExpandability);
-        } catch (Exception e) {
-            System.out.println("Problem!");
-        }
+        mCellLayout.getExpandabilityArrayForView(mWidgetView, mExpandability);
 
         // Update the cells occupied by this widget
         mCellLayout.markCellsAsOccupiedForView(mWidgetView);
@@ -253,10 +251,20 @@ public class AppWidgetResizeFrame extends FrameLayout {
     public void snapToWidget(boolean animate) {
         final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
 
-        final int newWidth = mWidgetView.getWidth() + 2 * FRAME_MARGIN;
-        final int newHeight = mWidgetView.getHeight() + 2 * FRAME_MARGIN;
-        final int newX = mWidgetView.getLeft() - FRAME_MARGIN;
-        final int newY = mWidgetView.getTop() - FRAME_MARGIN;
+        int newWidth = mWidgetView.getWidth() + 2 * mBackgroundPadding;
+        int newHeight = mWidgetView.getHeight() + 2 * mBackgroundPadding;
+        int newX = mWidgetView.getLeft() - mBackgroundPadding;
+        int newY = mWidgetView.getTop() - mBackgroundPadding;
+
+        // We need to make sure the frame stays within the bounds of the CellLayout
+        if (newY < 0) {
+            newHeight -= -newY;
+            newY = 0;
+        }
+        if (newY + newHeight > mCellLayout.getHeight()) {
+            newHeight -= newY + newHeight - mCellLayout.getHeight();
+        }
+
         if (!animate) {
             lp.width = newWidth;
             lp.height = newHeight;
