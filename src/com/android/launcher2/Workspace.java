@@ -114,6 +114,7 @@ public class Workspace extends SmoothPagedView
     private ValueAnimator mBackgroundFadeOutAnimation;
     private Drawable mBackground;
     private Drawable mCustomizeTrayBackground;
+    boolean mDrawBackground;
     private boolean mDrawCustomizeTrayBackground;
     private float mBackgroundAlpha = 0;
     private float mOverScrollMaxBackgroundAlpha = 0.0f;
@@ -125,6 +126,7 @@ public class Workspace extends SmoothPagedView
     private float[] mCustomizationDrawerTransformedPos = new float[2];
 
     private final WallpaperManager mWallpaperManager;
+    private IBinder mWindowToken;
 
     private int mDefaultPage;
 
@@ -785,9 +787,8 @@ public class Workspace extends SmoothPagedView
             updateNow = keepUpdating = mWallpaperOffset.computeScrollOffset();
         }
         if (updateNow) {
-            IBinder token = getWindowToken();
-            if (token != null) {
-                mWallpaperManager.setWallpaperOffsets(getWindowToken(),
+            if (mWindowToken != null) {
+                mWallpaperManager.setWallpaperOffsets(mWindowToken,
                         mWallpaperOffset.getCurrX(), mWallpaperOffset.getCurrY());
             }
         }
@@ -954,6 +955,13 @@ public class Workspace extends SmoothPagedView
         return mChildrenOutlineAlpha;
     }
 
+    void disableBackground() {
+        mDrawBackground = false;
+    }
+    void enableBackground() {
+        mDrawBackground = true;
+    }
+
     private void showBackgroundGradientForAllApps() {
         showBackgroundGradient();
         mDrawCustomizeTrayBackground = false;
@@ -995,8 +1003,10 @@ public class Workspace extends SmoothPagedView
     }
 
     public void setBackgroundAlpha(float alpha) {
-        mBackgroundAlpha = alpha;
-        invalidate();
+        if (alpha != mBackgroundAlpha) {
+            mBackgroundAlpha = alpha;
+            invalidate();
+        }
     }
 
     public float getBackgroundAlpha() {
@@ -1090,8 +1100,13 @@ public class Workspace extends SmoothPagedView
 
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        mWindowToken = getWindowToken();
         computeScroll();
-        mDragController.setWindowToken(getWindowToken());
+        mDragController.setWindowToken(mWindowToken);
+    }
+
+    protected void onDetachedFromWindow() {
+        mWindowToken = null;
     }
 
     @Override
@@ -1126,7 +1141,7 @@ public class Workspace extends SmoothPagedView
         updateWallpaperOffsets();
 
         // Draw the background gradient if necessary
-        if (mBackground != null && mBackgroundAlpha > 0.0f) {
+        if (mBackground != null && mBackgroundAlpha > 0.0f && mDrawBackground) {
             int alpha = (int) (mBackgroundAlpha * 255);
             if (mDrawCustomizeTrayBackground) {
                 // Find out where to offset the gradient for the customization tray content

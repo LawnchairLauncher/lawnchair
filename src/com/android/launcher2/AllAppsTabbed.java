@@ -49,7 +49,8 @@ public class AllAppsTabbed extends TabHost implements AllAppsView, LauncherAnima
     private static final String TAG_DOWNLOADED = "DOWNLOADED";
 
     private AllAppsPagedView mAllApps;
-    private View mTabBar;
+    private AllAppsBackground mBackground;
+    private Launcher mLauncher;
     private Context mContext;
     private final LayoutInflater mInflater;
     private boolean mFirstLayout = true;
@@ -68,8 +69,8 @@ public class AllAppsTabbed extends TabHost implements AllAppsView, LauncherAnima
         try {
             mAllApps = (AllAppsPagedView) findViewById(R.id.all_apps_paged_view);
             if (mAllApps == null) throw new Resources.NotFoundException();
-            mTabBar = findViewById(R.id.all_apps_tab_bar);
-            if (mTabBar == null) throw new Resources.NotFoundException();
+            mBackground = (AllAppsBackground) findViewById(R.id.all_apps_background);
+            if (mBackground == null) throw new Resources.NotFoundException();
         } catch (Resources.NotFoundException e) {
             Log.e(TAG, "Can't find necessary layout elements for AllAppsTabbed");
         }
@@ -126,6 +127,7 @@ public class AllAppsTabbed extends TabHost implements AllAppsView, LauncherAnima
     @Override
     public void setLauncher(Launcher launcher) {
         mAllApps.setLauncher(launcher);
+        mLauncher = launcher;
     }
 
     @Override
@@ -170,25 +172,21 @@ public class AllAppsTabbed extends TabHost implements AllAppsView, LauncherAnima
     }
 
     @Override
-    public void setFastAlpha(float alpha) {
-        final ViewGroup allAppsParent = (ViewGroup) mAllApps.getParent();
-        final ViewGroup tabBarParent = (ViewGroup) mAllApps.getParent();
-        mAllApps.setFastAlpha(alpha);
-        allAppsParent.fastInvalidate();
-        mTabBar.setFastAlpha(alpha);
-        tabBarParent.fastInvalidate();
-    }
-
-    @Override
     public void onLauncherAnimationStart() {
-        mTabBar.setLayerType(LAYER_TYPE_HARDWARE, null);
-        mAllApps.setLayerType(LAYER_TYPE_HARDWARE, null);
+        // Turn on hardware layers for performance
+        setLayerType(LAYER_TYPE_HARDWARE, null);
+        // Re-enable the rendering of the dimmed background in All Apps for performance reasons
+        mLauncher.getWorkspace().disableBackground();
+        mBackground.setVisibility(VISIBLE);
     }
 
     @Override
     public void onLauncherAnimationEnd() {
-        mTabBar.setLayerType(LAYER_TYPE_NONE, null);
-        mAllApps.setLayerType(LAYER_TYPE_NONE, null);
+        setLayerType(LAYER_TYPE_NONE, null);
+        // Move the rendering of the dimmed background to workspace after the all apps animation
+        // is done, so that the background is not rendered *above* the mini workspace screens
+        mLauncher.getWorkspace().enableBackground();
+        mBackground.setVisibility(GONE);
     }
 
     @Override

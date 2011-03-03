@@ -330,7 +330,7 @@ public final class Launcher extends Activity
 
             // share the same customization workspace across all the tabs
             mCustomizePagedView = (CustomizePagedView) mInflater.inflate(
-                    R.layout.customization_drawer, mHomeCustomizationDrawer, false);
+                    R.layout.customization_drawer_tab_contents, mHomeCustomizationDrawer, false);
             TabContentFactory contentFactory = new TabContentFactory() {
                 public View createTabContent(String tag) {
                     return mCustomizePagedView;
@@ -2738,6 +2738,9 @@ public final class Launcher extends Activity
         final int duration = toAllApps ?
                 res.getInteger(R.integer.config_allAppsZoomInTime) :
                 res.getInteger(R.integer.config_customizeZoomInTime);
+        final int fadeDuration = toAllApps ?
+                res.getInteger(R.integer.config_allAppsFadeInTime) :
+                res.getInteger(R.integer.config_customizeFadeInTime);
 
         final float scale = toAllApps ?
                 (float) res.getInteger(R.integer.config_allAppsZoomScaleFactor) :
@@ -2768,7 +2771,7 @@ public final class Launcher extends Activity
 
             if (toAllApps) {
                 toView.setFastAlpha(0f);
-                ValueAnimator alphaAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
+                ValueAnimator alphaAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(fadeDuration);
                 alphaAnim.setInterpolator(new DecelerateInterpolator(1.5f));
                 alphaAnim.addUpdateListener(new AnimatorUpdateListener() {
                     public void onAnimationUpdate(ValueAnimator animation) {
