@@ -39,6 +39,8 @@
     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Le mie applicazioni"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"Nessun gioco trovato."</string>
     <string name="all_apps_no_downloads" msgid="2284720393234453761">"Non hai applicazioni scaricate."</string>
+    <!-- no translation found for market (2652226429823445833) -->
+    <skip />
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Impossibile rilasciare elemento in schermata Home"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Seleziona il widget da creare"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nome cartella"</string>

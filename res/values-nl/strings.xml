@@ -36,9 +36,11 @@
     <string name="all_apps_tab_all" msgid="2942727589595027258">"Alle"</string>
     <string name="all_apps_tab_apps" msgid="5468972551904071712">"Toepassingen"</string>
     <string name="all_apps_tab_games" msgid="1855736784923494918">"Games"</string>
-    <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Mijn toepassingen"</string>
+    <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Mijn apps"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"Geen games gevonden."</string>
     <string name="all_apps_no_downloads" msgid="2284720393234453761">"U heeft geen gedownloade toepassingen."</string>
+    <!-- no translation found for market (2652226429823445833) -->
+    <skip />
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Kan item niet neerzetten op dit startscherm"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Widget selecteren om te maken"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Mapnaam"</string>

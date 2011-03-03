@@ -39,6 +39,8 @@
     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Aking mga app"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"Walang nakitang mga laro."</string>
     <string name="all_apps_no_downloads" msgid="2284720393234453761">"Wala kang mga na-download na application."</string>
+    <!-- no translation found for market (2652226429823445833) -->
+    <skip />
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Hindi ma-drop ang item sa homescreen na ito"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Pumili ng widget na lilikhain"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Pangalan ng folder"</string>
