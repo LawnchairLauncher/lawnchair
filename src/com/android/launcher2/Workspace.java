@@ -114,7 +114,7 @@ public class Workspace extends SmoothPagedView
     private ValueAnimator mBackgroundFadeOutAnimation;
     private Drawable mBackground;
     private Drawable mCustomizeTrayBackground;
-    boolean mDrawBackground;
+    boolean mDrawBackground = true;
     private boolean mDrawCustomizeTrayBackground;
     private float mBackgroundAlpha = 0;
     private float mOverScrollMaxBackgroundAlpha = 0.0f;
