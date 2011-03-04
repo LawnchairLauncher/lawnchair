@@ -1790,6 +1790,11 @@ public class Workspace extends SmoothPagedView
         }
     }
 
+    public void exitWidgetResizeMode() {
+        final CellLayout currentLayout = (CellLayout) getChildAt(getCurrentPage());
+        currentLayout.getChildrenLayout().clearAllResizeFrames();
+    }
+
     void unshrink(boolean animated) {
         unshrink(animated, false);
     }
