@@ -589,7 +589,8 @@ public class CellLayout extends ViewGroup {
             final View child = mChildren.getChildAt(i);
             final LayoutParams lp = (LayoutParams) child.getLayoutParams();
 
-            if ((child.getVisibility() == VISIBLE || child.getAnimation() != null) && lp.isLockedToGrid) {
+            if ((child.getVisibility() == VISIBLE || child.getAnimation() != null) &&
+                    lp.isLockedToGrid) {
                 child.getHitRect(frame);
                 if (frame.contains(x, y)) {
                     cellInfo.cell = child;
@@ -1340,53 +1341,54 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         }
     }
 
+    /**
+     * Given a view, determines how much that view can be expanded in all directions, in terms of
+     * whether or not there are other items occupying adjacent cells. Used by the
+     * AppWidgetResizeFrame to determine how the widget can be resized.
+     */
     public void getExpandabilityArrayForView(View view, int[] expandability) {
-        final LayoutParams lp = (LayoutParams) view.getLayoutParams();        
+        final LayoutParams lp = (LayoutParams) view.getLayoutParams();
         boolean flag;
 
-        // Left
-        expandability[0] = 0;
+        expandability[AppWidgetResizeFrame.LEFT] = 0;
         for (int x = lp.cellX - 1; x >= 0; x--) {
             flag = false;
             for (int y = lp.cellY; y < lp.cellY + lp.cellVSpan; y++) {
                 if (mOccupied[x][y]) flag = true;
             }
             if (flag) break;
-            expandability[0]++;
+            expandability[AppWidgetResizeFrame.LEFT]++;
         }
 
-        // Top
-        expandability[1] = 0;
+        expandability[AppWidgetResizeFrame.TOP] = 0;
         for (int y = lp.cellY - 1; y >= 0; y--) {
             flag = false;
             for (int x = lp.cellX; x < lp.cellX + lp.cellHSpan; x++) {
                 if (mOccupied[x][y]) flag = true;
             }
             if (flag) break;
-            expandability[1]++;
-        } 
+            expandability[AppWidgetResizeFrame.TOP]++;
+        }
 
-        // Right   
-        expandability[2] = 0;
+        expandability[AppWidgetResizeFrame.RIGHT] = 0;
         for (int x = lp.cellX + lp.cellHSpan; x < mCountX; x++) {
             flag = false;
             for (int y = lp.cellY; y < lp.cellY + lp.cellVSpan; y++) {
                 if (mOccupied[x][y]) flag = true;
             }
             if (flag) break;
-            expandability[2]++;
-        } 
+            expandability[AppWidgetResizeFrame.RIGHT]++;
+        }
 
-        // Bottom
-        expandability[3] = 0;
+        expandability[AppWidgetResizeFrame.BOTTOM] = 0;
         for (int y = lp.cellY + lp.cellVSpan; y < mCountY; y++) {
             flag = false;
             for (int x = lp.cellX; x < lp.cellX + lp.cellHSpan; x++) {
                 if (mOccupied[x][y]) flag = true;
             }
             if (flag) break;
-            expandability[3]++;
-        } 
+            expandability[AppWidgetResizeFrame.BOTTOM]++;
+        }
     }
 
     public void onMove(View view, int newCellX, int newCellY) {
@@ -1466,6 +1468,10 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         @ViewDebug.ExportedProperty
         public int cellVSpan;
 
+        /**
+         * Indicates whether the item will set its x, y, width and height parameters freely,
+         * or whether these will be computed based on cellX, cellY, cellHSpan and cellVSpan.
+         */
         public boolean isLockedToGrid = true;
 
         /**
@@ -1531,12 +1537,11 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
                 final int myCellVSpan = cellVSpan;
                 final int myCellX = cellX;
                 final int myCellY = cellY;
-    
+
                 width = myCellHSpan * cellWidth + ((myCellHSpan - 1) * widthGap) -
                         leftMargin - rightMargin;
                 height = myCellVSpan * cellHeight + ((myCellVSpan - 1) * heightGap) -
                         topMargin - bottomMargin;
-    
                 x = hStartPadding + myCellX * (cellWidth + widthGap) + leftMargin;
                 y = vStartPadding + myCellY * (cellHeight + heightGap) + topMargin;
             }
