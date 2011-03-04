@@ -89,7 +89,7 @@
 
         android:focusable="false"
         android:clickable="true" />
-    <TextView
+    <com.android.launcher2.StrokedTextView
         android:id="@+id/all_apps_button"
         android:text="@string/all_apps_button_label"
         android:drawablePadding="@dimen/all_apps_button_drawable_padding"
@@ -106,6 +106,10 @@
         android:gravity="center_horizontal|center_vertical"
         android:textColor="#CCFFFFFF"
         android:textSize="18sp"
+
+        launcher:strokeColor="#991e3157"
+        launcher:strokeTextColor="#DDFFFFFF"
+        launcher:strokeWidth="2.5"
 
         android:shadowColor="#DA000000"
         android:shadowDx="0.0"
