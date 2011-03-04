@@ -61,6 +61,16 @@
 
     </declare-styleable>
 
+    <!-- StrokedTextView specific attributes. -->
+    <declare-styleable name="StrokedTextView">
+        <!-- The color of the stroke outline -->
+        <attr name="strokeColor" format="color" />
+        <!-- The color of the text -->
+        <attr name="strokeTextColor" format="color" />
+        <!-- The width of the stroke -->
+        <attr name="strokeWidth" format="float" />
+    </declare-styleable>
+
     <!-- PagedViewIcon specific attributes. These attributes are used to customize
          a PagedViewIcon view in XML files. -->
     <declare-styleable name="PagedViewIcon">
