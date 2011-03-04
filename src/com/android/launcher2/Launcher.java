@@ -421,9 +421,6 @@ public final class Launcher extends Activity
             if (sGlobalSearchIcon == null || sVoiceSearchIcon == null || sAppMarketIcon == null) {
                 updateIconsAffectedByPackageManagerChanges();
             }
-            updateGlobalSearchIcon(sGlobalSearchIcon);
-            updateVoiceSearchIcon(sVoiceSearchIcon);
-            updateAppMarketIcon(sAppMarketIcon);
         }
     }
 
