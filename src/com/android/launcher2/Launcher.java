@@ -26,7 +26,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.Activity;
@@ -282,6 +281,17 @@ public final class Launcher extends Activity
     private static Drawable.ConstantState sAppMarketIcon;
 
     private BubbleTextView mWaitingForResume;
+
+    private static ArrayList<PendingAddArguments> sPendingAddList
+            = new ArrayList<PendingAddArguments>();
+
+    private static class PendingAddArguments {
+        int requestCode;
+        Intent intent;
+        int screen;
+        int cellX;
+        int cellY;
+    }
 
     private CustomizationType getCustomizeFilterForTabTag(String tag) {
         if (tag.equals(WIDGETS_TAG)) {
@@ -698,8 +708,38 @@ public final class Launcher extends Activity
         }
     }
 
+    private void completeAdd(PendingAddArguments args) {
+        switch (args.requestCode) {
+            case REQUEST_PICK_APPLICATION:
+                completeAddApplication(args.intent, args.screen, args.cellX, args.cellY);
+                break;
+            case REQUEST_PICK_SHORTCUT:
+                processShortcut(args.intent);
+                break;
+            case REQUEST_CREATE_SHORTCUT:
+                completeAddShortcut(args.intent, args.screen, args.cellX, args.cellY);
+                break;
+            case REQUEST_PICK_LIVE_FOLDER:
+                addLiveFolder(args.intent);
+                break;
+            case REQUEST_CREATE_LIVE_FOLDER:
+                completeAddLiveFolder(args.intent, args.screen, args.cellX, args.cellY);
+                break;
+            case REQUEST_PICK_APPWIDGET:
+                addAppWidgetFromPick(args.intent);
+                break;
+            case REQUEST_CREATE_APPWIDGET:
+                int appWidgetId = args.intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+                completeAddAppWidget(appWidgetId, args.screen);
+                break;
+            case REQUEST_PICK_WALLPAPER:
+                // We just wanted the activity result here so we can clear mWaitingForResult
+                break;
+        }
+    }
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(final int requestCode, int resultCode, final Intent data) {
         mWaitingForResult = false;
 
         // The pattern used here is that a user PICKs a specific application,
@@ -709,33 +749,18 @@ public final class Launcher extends Activity
         // launch over to the Music app to actually CREATE_SHORTCUT.
 
         if (resultCode == RESULT_OK && mAddScreen != -1) {
-            switch (requestCode) {
-                case REQUEST_PICK_APPLICATION:
-                    completeAddApplication(
-                            this, data, mAddScreen, mAddIntersectCellX, mAddIntersectCellY);
-                    break;
-                case REQUEST_PICK_SHORTCUT:
-                    processShortcut(data);
-                    break;
-                case REQUEST_CREATE_SHORTCUT:
-                    completeAddShortcut(data, mAddScreen, mAddIntersectCellX, mAddIntersectCellY);
-                    break;
-                case REQUEST_PICK_LIVE_FOLDER:
-                    addLiveFolder(data);
-                    break;
-                case REQUEST_CREATE_LIVE_FOLDER:
-                    completeAddLiveFolder(data, mAddScreen, mAddIntersectCellX, mAddIntersectCellY);
-                    break;
-                case REQUEST_PICK_APPWIDGET:
-                    addAppWidgetFromPick(data);
-                    break;
-                case REQUEST_CREATE_APPWIDGET:
-                    int appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-                    completeAddAppWidget(appWidgetId, mAddScreen);
-                    break;
-                case REQUEST_PICK_WALLPAPER:
-                    // We just wanted the activity result here so we can clear mWaitingForResult
-                    break;
+            final PendingAddArguments args = new PendingAddArguments();
+            args.requestCode = requestCode;
+            args.intent = data;
+            args.screen = mAddScreen;
+            args.cellX = mAddIntersectCellX;
+            args.cellY = mAddIntersectCellY;
+
+            // If the loader is still running, defer the add until it is done.
+            if (isWorkspaceLocked()) {
+                sPendingAddList.add(args);
+            } else {
+                completeAdd(args);
             }
         } else if ((requestCode == REQUEST_PICK_APPWIDGET ||
                 requestCode == REQUEST_CREATE_APPWIDGET) && resultCode == RESULT_CANCELED &&
@@ -1155,7 +1180,7 @@ public final class Launcher extends Activity
      * @param data The intent describing the application.
      * @param cellInfo The position on screen where to create the shortcut.
      */
-    void completeAddApplication(Context context, Intent data, int screen,
+    void completeAddApplication(Intent data, int screen,
             int intersectCellX, int intersectCellY) {
         final int[] cellXY = mTmpAddItemCellCoordinates;
         final CellLayout layout = (CellLayout) mWorkspace.getChildAt(screen);
@@ -1165,8 +1190,7 @@ public final class Launcher extends Activity
             return;
         }
 
-        final ShortcutInfo info = mModel.getShortcutInfo(context.getPackageManager(),
-                data, context);
+        final ShortcutInfo info = mModel.getShortcutInfo(getPackageManager(), data, this);
 
         if (info != null) {
             info.setActivity(data.getComponent(), Intent.FLAG_ACTIVITY_NEW_TASK |
@@ -3571,6 +3595,13 @@ public final class Launcher extends Activity
         }
 
         mWorkspaceLoading = false;
+
+        // If we received the result of any pending adds while the loader was running (e.g. the
+        // widget configuration forced an orientation change), process them now.
+        for (int i = 0; i < sPendingAddList.size(); i++) {
+            completeAdd(sPendingAddList.get(i));
+        }
+        sPendingAddList.clear();
     }
 
     /**
