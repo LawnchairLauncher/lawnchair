@@ -177,9 +177,9 @@ public class LauncherModel extends BroadcastReceiver {
     }
 
     /**
-     * Resize an item in the DB to a new <spanX, spanY>
+     * Resize an item in the DB to a new <spanX, spanY, cellX, cellY>
      */
-    static void resizeItemInDatabase(Context context, ItemInfo item, int cellX, int cellY, 
+    static void resizeItemInDatabase(Context context, ItemInfo item, int cellX, int cellY,
             int spanX, int spanY) {
         item.spanX = spanX;
         item.spanY = spanY;
