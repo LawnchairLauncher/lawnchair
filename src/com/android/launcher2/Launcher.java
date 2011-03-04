@@ -1482,6 +1482,7 @@ public final class Launcher extends Activity
                 mWorkspace.unshrink(alreadyOnHome);
             }
 
+            mWorkspace.exitWidgetResizeMode();
             if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive()) {
                 mWorkspace.moveToDefaultScreen(true);
             }
@@ -2020,6 +2021,8 @@ public final class Launcher extends Activity
             dismissPreview(mPreviousView);
             dismissPreview(mNextView);
         } else {
+            mWorkspace.exitWidgetResizeMode();
+
             // Back button is a no-op here, but give at least some feedback for the button press
             mWorkspace.showOutlinesTemporarily();
         }

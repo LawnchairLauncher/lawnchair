@@ -63,12 +63,13 @@ public class DragLayer extends FrameLayout {
         // dismiss any visible resize frames.
         final Workspace w = (Workspace) findViewById(R.id.workspace);
         final CellLayout currentPage = (CellLayout) w.getChildAt(w.getCurrentPage());
+        final CellLayoutChildren childrenLayout = currentPage.getChildrenLayout();
 
-        if (currentPage.getChildrenLayout().hasResizeFrames()) {
+        if (childrenLayout.hasResizeFrames() && !childrenLayout.isWidgetBeingResized()) {
             post(new Runnable() {
                 public void run() {
-                    if (!currentPage.getChildrenLayout().isWidgetBeingResized()) {
-                        currentPage.getChildrenLayout().clearAllResizeFrames();
+                    if (!childrenLayout.isWidgetBeingResized()) {
+                        childrenLayout.clearAllResizeFrames();
                     }
                 }
             });
