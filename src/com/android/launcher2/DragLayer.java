@@ -58,17 +58,21 @@ public class DragLayer extends FrameLayout {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        // Here we need to detect if any touch event has occured which doesn't result
-        // in resizing a widget. In this case, we dismiss any visible resize frames.
-        post(new Runnable() {
-            public void run() {
-                Workspace w = (Workspace) findViewById(R.id.workspace);
-                CellLayout currentPage = (CellLayout) w.getChildAt(w.getCurrentPage());
-                if (!currentPage.getChildrenLayout().isWidgetBeingResized()) {
-                    currentPage.getChildrenLayout().clearAllResizeFrames();
-                }                
-            }
-        });
+        // If the current CellLayoutChildren has a resize frame, we need to detect if any touch
+        // event has occurred which doesn't result in resizing a widget. In this case, we
+        // dismiss any visible resize frames.
+        final Workspace w = (Workspace) findViewById(R.id.workspace);
+        final CellLayout currentPage = (CellLayout) w.getChildAt(w.getCurrentPage());
+
+        if (currentPage.getChildrenLayout().hasResizeFrames()) {
+            post(new Runnable() {
+                public void run() {
+                    if (!currentPage.getChildrenLayout().isWidgetBeingResized()) {
+                        currentPage.getChildrenLayout().clearAllResizeFrames();
+                    }
+                }
+            });
+        }
         return mDragController.onInterceptTouchEvent(ev);
     }
 
