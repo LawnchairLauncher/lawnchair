@@ -63,6 +63,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
     private int mAppFilter = ALL_APPS_FLAG;
 
     private final LayoutInflater mInflater;
+    private boolean mAllowHardwareLayerCreation;
 
 
     public AllAppsPagedView(Context context) {
@@ -95,6 +96,22 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
         mCenterPagesVertically = false;
     }
 
+    void allowHardwareLayerCreation() {
+        // This is called after the first time we launch into All Apps. Before that point,
+        // there's no need for hardware layers here since there's a hardware layer set on the
+        // parent, AllAppsTabbed, during the AllApps transition -- creating hardware layers here
+        // before the animation is done slows down the animation
+        if (mAllowHardwareLayerCreation) {
+            return;
+        }
+        mAllowHardwareLayerCreation = true;
+        int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            PagedViewCellLayout page = (PagedViewCellLayout) getChildAt(i);
+            page.allowHardwareLayerCreation();
+        }
+    }
+
     @Override
     public void setLauncher(Launcher launcher) {
         mLauncher = launcher;
@@ -121,8 +138,6 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
         cancelLongPress();
 
         if (isVisible()) {
-            getParent().bringChildToFront(this);
-            setVisibility(View.VISIBLE);
             if (animate) {
                 startAnimation(AnimationUtils.loadAnimation(getContext(),
                         R.anim.all_apps_2d_fade_in));
@@ -141,7 +156,6 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
 
     protected void onAnimationEnd() {
         if (!isVisible()) {
-            setVisibility(View.GONE);
             mZoom = 0.0f;
 
             endChoiceMode();
@@ -388,6 +402,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
         }
         mFilteredApps = rebuildFilteredApps(mApps);
     }
+
     @Override
     public void removeApps(ArrayList<ApplicationInfo> list) {
         removeAppsWithoutInvalidate(list);
@@ -434,12 +449,15 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
         // remove any extra pages after the "last" page
         int extraPageDiff = curNumPages - numPages;
         for (int i = 0; i < extraPageDiff; ++i) {
+            PagedViewCellLayout page = (PagedViewCellLayout) getChildAt(numPages);
             removeViewAt(numPages);
         }
         // add any necessary pages
         for (int i = curNumPages; i < numPages; ++i) {
             PagedViewCellLayout layout = new PagedViewCellLayout(getContext());
-            layout.enableHardwareLayers();
+            if (mAllowHardwareLayerCreation) {
+                layout.allowHardwareLayerCreation();
+            }
             layout.setCellCount(mCellCountX, mCellCountY);
             layout.setPadding(mPageLayoutPaddingLeft, mPageLayoutPaddingTop,
                     mPageLayoutPaddingRight, mPageLayoutPaddingBottom);

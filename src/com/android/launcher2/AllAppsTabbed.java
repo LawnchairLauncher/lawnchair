@@ -41,7 +41,7 @@ import java.util.ArrayList;
 /**
  * Implements a tabbed version of AllApps2D.
  */
-public class AllAppsTabbed extends TabHost implements AllAppsView, LauncherAnimatable {
+public class AllAppsTabbed extends TabHost implements AllAppsView, LauncherTransitionable {
 
     private static final String TAG = "Launcher.AllAppsTabbed";
 
@@ -172,21 +172,36 @@ public class AllAppsTabbed extends TabHost implements AllAppsView, LauncherAnima
     }
 
     @Override
-    public void onLauncherAnimationStart() {
-        // Turn on hardware layers for performance
-        setLayerType(LAYER_TYPE_HARDWARE, null);
-        // Re-enable the rendering of the dimmed background in All Apps for performance reasons
-        mLauncher.getWorkspace().disableBackground();
-        mBackground.setVisibility(VISIBLE);
+    public void onLauncherTransitionStart(Animator animation) {
+        if (animation != null) {
+            // Turn on hardware layers for performance
+            setLayerType(LAYER_TYPE_HARDWARE, null);
+            // Re-enable the rendering of the dimmed background in All Apps for performance reasons
+            mLauncher.getWorkspace().disableBackground();
+            mBackground.setVisibility(VISIBLE);
+            // just a sanity check that we don't build a layer before a call to onLayout
+            if (!mFirstLayout) {
+                // force building the layer at the beginning of the animation, so you don't get a
+                // blip early in the animation
+                buildLayer();
+            }
+        }
     }
 
     @Override
-    public void onLauncherAnimationEnd() {
-        setLayerType(LAYER_TYPE_NONE, null);
+    public void onLauncherTransitionEnd(Animator animation) {
+        if (animation != null) {
+            setLayerType(LAYER_TYPE_NONE, null);
+            // To improve the performance of the first time All Apps is run, we initially keep
+            // hardware layers in AllAppsPagedView disabled since AllAppsTabbed itself is drawn in a
+            // hardware layer, and creating additional hardware layers slows down the animation. We
+            // create them here, after the animation is over.
+        }
         // Move the rendering of the dimmed background to workspace after the all apps animation
         // is done, so that the background is not rendered *above* the mini workspace screens
         mLauncher.getWorkspace().enableBackground();
         mBackground.setVisibility(GONE);
+        mAllApps.allowHardwareLayerCreation();
     }
 
     @Override

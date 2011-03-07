@@ -1513,6 +1513,11 @@ public class Workspace extends SmoothPagedView
 
             oldAlphas[i] = cl.getAlpha();
             newAlphas[i] = finalAlpha;
+            if (animated && (oldAlphas[i] != 0f || newAlphas[i] != 0f)) {
+                // if the CellLayout will be visible during the animation, force building its
+                // hardware layer immediately so we don't see a blip later in the animation
+                cl.buildChildrenLayer();
+            }
             if (animated) {
                 oldXs[i] = cl.getX();
                 oldYs[i] = cl.getY();

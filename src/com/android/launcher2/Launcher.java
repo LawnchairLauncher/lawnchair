@@ -2781,7 +2781,7 @@ public final class Launcher extends Activity
         }
 
         if (animated) {
-            ValueAnimator scaleAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
+            final ValueAnimator scaleAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
             scaleAnim.setInterpolator(new Workspace.ZoomOutInterpolator());
             scaleAnim.addUpdateListener(new AnimatorUpdateListener() {
                 public void onAnimationUpdate(ValueAnimator animation) {
@@ -2808,8 +2808,8 @@ public final class Launcher extends Activity
                 alphaAnim.start();
             }
 
-            if (toView instanceof LauncherAnimatable) {
-                ((LauncherAnimatable) toView).onLauncherAnimationStart();
+            if (toView instanceof LauncherTransitionable) {
+                ((LauncherTransitionable) toView).onLauncherTransitionStart(scaleAnim);
             }
             scaleAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -2829,8 +2829,8 @@ public final class Launcher extends Activity
                     // not fix that
                     toView.setScaleX(1.0f);
                     toView.setScaleY(1.0f);
-                    if (toView instanceof LauncherAnimatable) {
-                        ((LauncherAnimatable) toView).onLauncherAnimationEnd();
+                    if (toView instanceof LauncherTransitionable) {
+                        ((LauncherTransitionable) toView).onLauncherTransitionEnd(scaleAnim);
                     }
                 }
             });
@@ -2857,6 +2857,10 @@ public final class Launcher extends Activity
             toView.setScaleX(1.0f);
             toView.setScaleY(1.0f);
             toView.setVisibility(View.VISIBLE);
+            if (toView instanceof LauncherTransitionable) {
+                ((LauncherTransitionable) toView).onLauncherTransitionStart(null);
+                ((LauncherTransitionable) toView).onLauncherTransitionEnd(null);
+            }
             hideAndShowToolbarButtons(toState, null, null);
         }
     }
@@ -2912,7 +2916,7 @@ public final class Launcher extends Activity
                     fromView.setFastScaleY(a * oldScaleY + b * scaleFactor);
                 }
             });
-            ValueAnimator alphaAnim = ValueAnimator.ofFloat(0f, 1f);
+            final ValueAnimator alphaAnim = ValueAnimator.ofFloat(0f, 1f);
             alphaAnim.setDuration(res.getInteger(R.integer.config_allAppsFadeOutTime));
             alphaAnim.setInterpolator(new DecelerateInterpolator(1.5f));
             alphaAnim.addUpdateListener(new AnimatorUpdateListener() {
@@ -2923,15 +2927,15 @@ public final class Launcher extends Activity
                     fromView.setFastAlpha(a * 1f + b * 0f);
                 }
             });
-            if (fromView instanceof LauncherAnimatable) {
-                ((LauncherAnimatable) fromView).onLauncherAnimationStart();
+            if (fromView instanceof LauncherTransitionable) {
+                ((LauncherTransitionable) fromView).onLauncherTransitionStart(alphaAnim);
             }
             alphaAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     fromView.setVisibility(View.GONE);
-                    if (fromView instanceof LauncherAnimatable) {
-                        ((LauncherAnimatable) fromView).onLauncherAnimationEnd();
+                    if (fromView instanceof LauncherTransitionable) {
+                        ((LauncherTransitionable) fromView).onLauncherTransitionEnd(alphaAnim);
                     }
                 }
             });
@@ -2951,6 +2955,10 @@ public final class Launcher extends Activity
             mStateAnimation.start();
         } else {
             fromView.setVisibility(View.GONE);
+            if (fromView instanceof LauncherTransitionable) {
+                ((LauncherTransitionable) fromView).onLauncherTransitionStart(null);
+                ((LauncherTransitionable) fromView).onLauncherTransitionEnd(null);
+            }
             if (!springLoaded) {
                 hideAndShowToolbarButtons(State.WORKSPACE, null, null);
             }
@@ -3753,7 +3761,7 @@ public final class Launcher extends Activity
     }
 }
 
-interface LauncherAnimatable {
-    void onLauncherAnimationStart();
-    void onLauncherAnimationEnd();
+interface LauncherTransitionable {
+    void onLauncherTransitionStart(Animator animation);
+    void onLauncherTransitionEnd(Animator animation);
 }
