@@ -16,11 +16,14 @@
 
 package com.android.launcher2;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TabHost;
 
-public class CustomizeTrayTabHost extends TabHost implements LauncherAnimatable {
+public class CustomizeTrayTabHost extends TabHost implements LauncherTransitionable {
+    private boolean mFirstLayout = true;
+
     public CustomizeTrayTabHost(Context context) {
         super(context);
     }
@@ -30,12 +33,28 @@ public class CustomizeTrayTabHost extends TabHost implements LauncherAnimatable 
     }
 
     @Override
-    public void onLauncherAnimationStart() {
-        setLayerType(LAYER_TYPE_HARDWARE, null);
+    public void onLauncherTransitionStart(Animator animation) {
+        if (animation != null) {
+            setLayerType(LAYER_TYPE_HARDWARE, null);
+            // just a sanity check that we don't build a layer before a call to onLayout
+            if (!mFirstLayout) {
+                // force building the layer at the beginning of the animation, so you don't get a
+                // blip early in the animation
+                buildLayer();
+            }
+        }
     }
 
     @Override
-    public void onLauncherAnimationEnd() {
-        setLayerType(LAYER_TYPE_NONE, null);
+    public void onLauncherTransitionEnd(Animator animation) {
+        if (animation != null) {
+            setLayerType(LAYER_TYPE_NONE, null);
+        }
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        mFirstLayout = false;
+        super.onLayout(changed, l, t, r, b);
     }
 }

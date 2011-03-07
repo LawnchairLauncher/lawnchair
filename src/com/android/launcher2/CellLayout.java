@@ -571,6 +571,10 @@ public class CellLayout extends ViewGroup {
         mChildren.draw(canvas);
     }
 
+    void buildChildrenLayer() {
+        mChildren.buildLayer();
+    }
+
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();

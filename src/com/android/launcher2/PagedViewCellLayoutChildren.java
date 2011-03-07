@@ -139,12 +139,12 @@ public class PagedViewCellLayoutChildren extends ViewGroup {
     }
 
     void destroyHardwareLayer() {
-        if (getLayerType() == LAYER_TYPE_HARDWARE) {
+        if (getLayerType() != LAYER_TYPE_NONE) {
             setLayerType(LAYER_TYPE_NONE, null);
         }
     }
     void createHardwareLayer() {
-        if (getLayerType() == LAYER_TYPE_NONE) {
+        if (getLayerType() != LAYER_TYPE_HARDWARE) {
             setLayerType(LAYER_TYPE_HARDWARE, null);
         }
     }

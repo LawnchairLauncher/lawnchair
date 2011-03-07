@@ -40,7 +40,8 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
     private static int sDefaultCellDimensions = 96;
     protected PagedViewCellLayoutChildren mChildren;
     private PagedViewCellLayoutChildren mHolographicChildren;
-    private boolean mUseHardwareLayers = false;
+    private boolean mAllowHardwareLayerCreation = false;
+    private boolean mCreateHardwareLayersIfAllowed = false;
 
     public PagedViewCellLayout(Context context) {
         this(context, null);
@@ -74,8 +75,17 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         addView(mHolographicChildren);
     }
 
-    public void enableHardwareLayers() {
-        mUseHardwareLayers = true;
+    public void allowHardwareLayerCreation() {
+        // This is called after the first time we launch into All Apps. Before that point,
+        // there's no need for hardware layers here since there's a hardware layer set on the
+        // parent, AllAppsTabbed, during the AllApps transition -- creating hardware layers here
+        // before the animation is done slows down the animation
+        if (!mAllowHardwareLayerCreation) {
+            mAllowHardwareLayerCreation = true;
+            if (mCreateHardwareLayersIfAllowed) {
+                createHardwareLayers();
+            }
+        }
     }
 
     @Override
@@ -85,13 +95,18 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
     }
 
     void destroyHardwareLayers() {
-        if (mUseHardwareLayers) {
+        // called when a page is no longer visible (triggered by loadAssociatedPages ->
+        // removeAllViewsOnPage)
+        mCreateHardwareLayersIfAllowed = false;
+        if (mAllowHardwareLayerCreation) {
             mChildren.destroyHardwareLayer();
             mHolographicChildren.destroyHardwareLayer();
         }
     }
     void createHardwareLayers() {
-        if (mUseHardwareLayers) {
+        // called when a page is visible (triggered by loadAssociatedPages -> syncPageItems)
+        mCreateHardwareLayersIfAllowed = true;
+        if (mAllowHardwareLayerCreation) {
             mChildren.createHardwareLayer();
             mHolographicChildren.createHardwareLayer();
         }
@@ -127,7 +142,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
 
             if (child instanceof PagedViewIcon) {
                 PagedViewIcon pagedViewIcon = (PagedViewIcon) child;
-                if (mUseHardwareLayers) {
+                if (mAllowHardwareLayerCreation) {
                     pagedViewIcon.disableCache();
                 }
                 mHolographicChildren.addView(pagedViewIcon.getHolographicOutlineView(), index, lp);
