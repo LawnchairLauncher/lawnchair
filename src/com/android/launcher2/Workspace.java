@@ -733,11 +733,15 @@ public class Workspace extends SmoothPagedView
 
     private float wallpaperOffsetForCurrentScroll() {
         Display display = mLauncher.getWindowManager().getDefaultDisplay();
+        final boolean isStaticWallpaper = (mWallpaperManager.getWallpaperInfo() == null);
         // The wallpaper travel width is how far, from left to right, the wallpaper will move
         // at this orientation (for example, in portrait mode we don't move all the way to the
         // edges of the wallpaper, or otherwise the parallax effect would be too strong)
         int wallpaperTravelWidth = (int) (display.getWidth() *
                 wallpaperTravelToScreenWidthRatio(display.getWidth(), display.getHeight()));
+        if (!isStaticWallpaper) {
+            wallpaperTravelWidth = mWallpaperWidth;
+        }
 
         // Set wallpaper offset steps (1 / (number of screens - 1))
         // We have 3 vertical offset states (centered, and then top/bottom aligned
@@ -751,7 +755,6 @@ public class Workspace extends SmoothPagedView
         // you overscroll as far as you can in landscape mode. Only do this for static wallpapers
         // because live wallpapers (and probably 3rd party wallpaper providers) rely on the offset
         // being even intervals from 0 to 1 (eg [0, 0.25, 0.5, 0.75, 1])
-        final boolean isStaticWallpaper = (mWallpaperManager.getWallpaperInfo() == null);
         if (isStaticWallpaper) {
             int overscrollOffset = (int) (maxOverScroll() * display.getWidth());
             scrollProgressOffset += overscrollOffset / (float) getScrollRange();
@@ -761,7 +764,7 @@ public class Workspace extends SmoothPagedView
         float scrollProgress =
             mScrollX / (float) scrollRange + scrollProgressOffset;
         float offsetInDips = wallpaperTravelWidth * scrollProgress +
-            (mWallpaperWidth - wallpaperTravelWidth) / 2;
+            (mWallpaperWidth - wallpaperTravelWidth) / 2; // center it
         float offset = offsetInDips / (float) mWallpaperWidth;
         return offset;
     }
