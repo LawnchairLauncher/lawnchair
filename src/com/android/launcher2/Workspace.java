@@ -1184,8 +1184,9 @@ public class Workspace extends SmoothPagedView
             final int pageCount = getChildCount();
             final long drawingTime = getDrawingTime();
             for (int i = 0; i < pageCount; i++) {
-                final View page = (View) getChildAt(i);
-                if (page.getVisibility() == VISIBLE && page.getAlpha() != 0f) {
+                final CellLayout page = (CellLayout) getChildAt(i);
+                if (page.getVisibility() == VISIBLE
+                        && (page.getAlpha() != 0f || page.getBackgroundAlpha() != 0f)) {
                     drawChild(canvas, page, drawingTime);
                 }
             }
