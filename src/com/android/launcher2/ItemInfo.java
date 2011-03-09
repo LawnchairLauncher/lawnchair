@@ -81,6 +81,11 @@ class ItemInfo {
      */
     boolean isGesture = false;
 
+    /**
+     * The position of the item in a drag-and-drop operation.
+     */
+    int[] dropPos = null;
+
     ItemInfo() {
     }
 

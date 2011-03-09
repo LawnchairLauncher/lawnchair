@@ -452,6 +452,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             public void onAnimationEnd(Animator animation) {
                 dragLayer.removeView(view);
                 mLauncher.addExternalItemToScreen(info, layout);
+                info.dropPos = null;
             }
         });
         anim.start();
