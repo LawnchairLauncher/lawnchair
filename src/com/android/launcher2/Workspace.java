@@ -2296,12 +2296,14 @@ public class Workspace extends SmoothPagedView
         }
 
         if (source != this) {
+            final int[] touchXY = new int[] { originX, originY };
             if ((mIsSmall || mIsInUnshrinkAnimation) && !mLauncher.isAllAppsVisible()) {
                 // When the workspace is shrunk and the drop comes from customize, don't actually
                 // add the item to the screen -- customize will do this itself
+                ((ItemInfo) dragInfo).dropPos = touchXY;
                 return;
             }
-            onDropExternal(new int[] { originX, originY }, dragInfo, mDragTargetLayout, false);
+            onDropExternal(touchXY, dragInfo, mDragTargetLayout, false);
         } else if (mDragInfo != null) {
             final View cell = mDragInfo.cell;
             CellLayout dropTargetLayout = mDragTargetLayout;
@@ -2837,7 +2839,7 @@ public class Workspace extends SmoothPagedView
      */
     public boolean addExternalItemToScreen(ItemInfo dragInfo, CellLayout layout) {
         if (layout.findCellForSpan(mTempEstimate, dragInfo.spanX, dragInfo.spanY)) {
-            onDropExternal(null, (ItemInfo) dragInfo, (CellLayout) layout, false);
+            onDropExternal(dragInfo.dropPos, (ItemInfo) dragInfo, (CellLayout) layout, false);
             return true;
         }
         mLauncher.showOutOfSpaceMessage();
