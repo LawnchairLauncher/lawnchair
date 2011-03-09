@@ -177,8 +177,11 @@ public class AllAppsTabbed extends TabHost implements AllAppsView, LauncherTrans
             // Turn on hardware layers for performance
             setLayerType(LAYER_TYPE_HARDWARE, null);
             // Re-enable the rendering of the dimmed background in All Apps for performance reasons
-            mLauncher.getWorkspace().disableBackground();
-            mBackground.setVisibility(VISIBLE);
+            // if we're fading it in
+            if (mLauncher.getWorkspace().getBackgroundAlpha() == 0f) {
+                mLauncher.getWorkspace().disableBackground();
+                mBackground.setVisibility(VISIBLE);
+            }
             // just a sanity check that we don't build a layer before a call to onLayout
             if (!mFirstLayout) {
                 // force building the layer at the beginning of the animation, so you don't get a
@@ -199,8 +202,10 @@ public class AllAppsTabbed extends TabHost implements AllAppsView, LauncherTrans
         }
         // Move the rendering of the dimmed background to workspace after the all apps animation
         // is done, so that the background is not rendered *above* the mini workspace screens
-        mLauncher.getWorkspace().enableBackground();
-        mBackground.setVisibility(GONE);
+        if (mBackground.getVisibility() != GONE) {
+            mLauncher.getWorkspace().enableBackground();
+            mBackground.setVisibility(GONE);
+        }
         mAllApps.allowHardwareLayerCreation();
     }
 
