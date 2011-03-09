@@ -152,8 +152,14 @@ public class BubbleTextView extends TextView implements VisibilityChangedBroadca
                 mPressedOrFocusedBackground = null;
             }
             if (isFocused()) {
-                mPressedOrFocusedBackground = createGlowingOutline(
-                        mTempCanvas, mFocusedGlowColor, mFocusedOutlineColor);
+                if (mLayout == null) {
+                    // In some cases, we get focus before we have been layed out. Set the
+                    // background to null so that it will get created when the view is drawn.
+                    mPressedOrFocusedBackground = null;
+                } else {
+                    mPressedOrFocusedBackground = createGlowingOutline(
+                            mTempCanvas, mFocusedGlowColor, mFocusedOutlineColor);
+                }
                 mStayPressed = false;
                 invalidatePressedOrFocusedBackground();
             }
@@ -190,7 +196,7 @@ public class BubbleTextView extends TextView implements VisibilityChangedBroadca
         destCanvas.save();
         destCanvas.translate(-getScrollX() + padding / 2, -getScrollY() + padding / 2);
         destCanvas.clipRect(clipRect, Op.REPLACE);
-        draw(destCanvas);
+        drawImpl(destCanvas, true);
         destCanvas.restore();
     }
 
@@ -265,8 +271,19 @@ public class BubbleTextView extends TextView implements VisibilityChangedBroadca
         }
         invalidatePressedOrFocusedBackground();
     }
+
     @Override
     public void draw(Canvas canvas) {
+        drawImpl(canvas, false);
+    }
+
+    private void drawImpl(Canvas canvas, boolean preventRecursion) {
+        // If the View is focused but the focused background hasn't been created yet, create it now
+        if (!preventRecursion && isFocused() && mPressedOrFocusedBackground == null) {
+            mPressedOrFocusedBackground = createGlowingOutline(
+                    mTempCanvas, mFocusedGlowColor, mFocusedOutlineColor);
+        }
+
         if (mPressedOrFocusedBackground != null && (isPressed() || isFocused() || mStayPressed)) {
             // The blue glow can extend outside of our clip region, so we first temporarily expand
             // the canvas's clip region
