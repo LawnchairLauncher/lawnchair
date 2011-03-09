@@ -48,7 +48,8 @@ public class AppWidgetResizeFrame extends FrameLayout {
 
     final int SNAP_DURATION = 150;
     final int BACKGROUND_PADDING = 24;
-    final float DIMMED_HANDLE_ALPHA = 0.3f;
+    final float DIMMED_HANDLE_ALPHA = 0f;
+    final float RESIZE_THRESHOLD = 0.66f;
 
     public static final int LEFT = 0;
     public static final int TOP = 1;
@@ -193,10 +194,20 @@ public class AppWidgetResizeFrame extends FrameLayout {
         int xThreshold = mCellLayout.getCellWidth() + mCellLayout.getWidthGap();
         int yThreshold = mCellLayout.getCellHeight() + mCellLayout.getHeightGap();
 
-        int hSpanInc = (int) Math.round(1.0f * mDeltaX / xThreshold) - mRunningHInc;
-        int vSpanInc = (int) Math.round(1.0f * mDeltaY / yThreshold) - mRunningVInc;
+        float hSpanIncF = 1.0f * mDeltaX / xThreshold - mRunningHInc;
+        float vSpanIncF = 1.0f * mDeltaY / yThreshold - mRunningVInc;
+
+        int hSpanInc = 0;
+        int vSpanInc = 0;
         int cellXInc = 0;
         int cellYInc = 0;
+
+        if (Math.abs(hSpanIncF) > RESIZE_THRESHOLD) {
+            hSpanInc = Math.round(hSpanIncF);
+        }
+        if (Math.abs(vSpanIncF) > RESIZE_THRESHOLD) {
+            vSpanInc = Math.round(vSpanIncF);
+        }
 
         if (hSpanInc == 0 && vSpanInc == 0) return;
 
