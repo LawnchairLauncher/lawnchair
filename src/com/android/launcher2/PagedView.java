@@ -738,6 +738,7 @@ public abstract class PagedView extends ViewGroup {
          * If we return true, onTouchEvent will be called and we do the actual
          * scrolling there.
          */
+        acquireVelocityTrackerAndAddMovement(ev);
 
         // Skip touch handling if there are no pages to swipe
         if (getChildCount() <= 0) return super.onInterceptTouchEvent(ev);
@@ -816,10 +817,12 @@ public abstract class PagedView extends ViewGroup {
                 mTouchState = TOUCH_STATE_REST;
                 mAllowLongPress = false;
                 mActivePointerId = INVALID_POINTER;
+                releaseVelocityTracker();
                 break;
 
             case MotionEvent.ACTION_POINTER_UP:
                 onSecondaryPointerUp(ev);
+                releaseVelocityTracker();
                 break;
         }
 
@@ -871,6 +874,7 @@ public abstract class PagedView extends ViewGroup {
             if (mUsePagingTouchSlop ? xPaged : xMoved) {
                 // Scroll if the user moved far enough along the X axis
                 mTouchState = TOUCH_STATE_SCROLLING;
+                mTotalMotionX += Math.abs(mLastMotionX - x);
                 mLastMotionX = x;
                 mLastMotionXRemainder = 0;
                 mTouchX = mScrollX;
