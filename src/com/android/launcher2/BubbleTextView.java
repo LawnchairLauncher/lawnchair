@@ -126,23 +126,13 @@ public class BubbleTextView extends TextView implements VisibilityChangedBroadca
         return who == mBackground || super.verifyDrawable(who);
     }
 
-    private void invalidatePressedOrFocusedBackground() {
-        int padding = HolographicOutlineHelper.MAX_OUTER_BLUR_RADIUS / 2;
-        View parent = (View) getParent();
-        if (parent != null) {
-            parent.invalidate(getLeft() - padding, getTop() - padding,
-                    getRight() + padding, getBottom() + padding);
-        }
-        invalidate();
-    }
-
     @Override
     protected void drawableStateChanged() {
         if (isPressed()) {
             // In this case, we have already created the pressed outline on ACTION_DOWN,
             // so we just need to do an invalidate to trigger draw
             if (!mDidInvalidateForPressedState) {
-                invalidatePressedOrFocusedBackground();
+                setCellLayoutPressedOrFocusedIcon();
             }
         } else {
             // Otherwise, either clear the pressed/focused background, or create a background
@@ -161,11 +151,11 @@ public class BubbleTextView extends TextView implements VisibilityChangedBroadca
                             mTempCanvas, mFocusedGlowColor, mFocusedOutlineColor);
                 }
                 mStayPressed = false;
-                invalidatePressedOrFocusedBackground();
+                setCellLayoutPressedOrFocusedIcon();
             }
             final boolean backgroundEmptyNow = mPressedOrFocusedBackground == null;
             if (!backgroundEmptyBefore && backgroundEmptyNow) {
-                invalidatePressedOrFocusedBackground();
+                setCellLayoutPressedOrFocusedIcon();
             }
         }
 
@@ -196,7 +186,7 @@ public class BubbleTextView extends TextView implements VisibilityChangedBroadca
         destCanvas.save();
         destCanvas.translate(-getScrollX() + padding / 2, -getScrollY() + padding / 2);
         destCanvas.clipRect(clipRect, Op.REPLACE);
-        drawImpl(destCanvas, true);
+        draw(destCanvas);
         destCanvas.restore();
     }
 
@@ -269,35 +259,25 @@ public class BubbleTextView extends TextView implements VisibilityChangedBroadca
         if (!stayPressed) {
             mPressedOrFocusedBackground = null;
         }
-        invalidatePressedOrFocusedBackground();
+        setCellLayoutPressedOrFocusedIcon();
+    }
+
+    void setCellLayoutPressedOrFocusedIcon() {
+        CellLayoutChildren parent = (CellLayoutChildren) getParent();
+        CellLayout cellLayout = (CellLayout) parent.getParent();
+        cellLayout.setPressedOrFocusedIcon((mPressedOrFocusedBackground != null) ? this : null);
+    }
+
+    Bitmap getPressedOrFocusedBackground() {
+        return mPressedOrFocusedBackground;
+    }
+
+    int getPressedOrFocusedBackgroundPadding() {
+        return HolographicOutlineHelper.MAX_OUTER_BLUR_RADIUS / 2;
     }
 
     @Override
     public void draw(Canvas canvas) {
-        drawImpl(canvas, false);
-    }
-
-    private void drawImpl(Canvas canvas, boolean preventRecursion) {
-        // If the View is focused but the focused background hasn't been created yet, create it now
-        if (!preventRecursion && isFocused() && mPressedOrFocusedBackground == null) {
-            mPressedOrFocusedBackground = createGlowingOutline(
-                    mTempCanvas, mFocusedGlowColor, mFocusedOutlineColor);
-        }
-
-        if (mPressedOrFocusedBackground != null && (isPressed() || isFocused() || mStayPressed)) {
-            // The blue glow can extend outside of our clip region, so we first temporarily expand
-            // the canvas's clip region
-            canvas.save(Canvas.CLIP_SAVE_FLAG);
-            int padding = HolographicOutlineHelper.MAX_OUTER_BLUR_RADIUS / 2;
-            canvas.clipRect(-padding + mScrollX, -padding + mScrollY,
-                    getWidth() + padding + mScrollX, getHeight() + padding + mScrollY,
-                    Region.Op.REPLACE);
-            // draw blue glow
-            canvas.drawBitmap(mPressedOrFocusedBackground,
-                    mScrollX - padding, mScrollY - padding, mTempPaint);
-            canvas.restore();
-        }
-
         final Drawable background = mBackground;
         if (background != null) {
             final int scrollX = mScrollX;

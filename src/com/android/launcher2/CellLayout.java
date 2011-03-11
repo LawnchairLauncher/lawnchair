@@ -113,6 +113,8 @@ public class CellLayout extends ViewGroup {
     private int mDragOutlineCurrent = 0;
     private final Paint mDragOutlinePaint = new Paint();
 
+    private BubbleTextView mPressedOrFocusedIcon;
+
     private Drawable mCrosshairsDrawable = null;
     private InterruptibleInOutAnimator mCrosshairsAnimator = null;
     private float mCrosshairsVisibility = 0.0f;
@@ -265,6 +267,27 @@ public class CellLayout extends ViewGroup {
         mChildren.setCellDimensions(
                 mCellWidth, mCellHeight, mLeftPadding, mTopPadding, mWidthGap, mHeightGap);
         addView(mChildren);
+    }
+
+    private void invalidateBubbleTextView(BubbleTextView icon) {
+        final int padding = icon.getPressedOrFocusedBackgroundPadding();
+        invalidate(icon.getLeft() - padding,
+                icon.getTop() - padding,
+                icon.getRight() + padding,
+                icon.getBottom() + padding);
+    }
+
+    void setPressedOrFocusedIcon(BubbleTextView icon) {
+        // We draw the pressed or focused BubbleTextView's background in CellLayout because it
+        // requires an expanded clip rect (due to the glow's blur radius)
+        BubbleTextView oldIcon = mPressedOrFocusedIcon;
+        mPressedOrFocusedIcon = icon;
+        if (oldIcon != null) {
+            invalidateBubbleTextView(oldIcon);
+        }
+        if (mPressedOrFocusedIcon != null) {
+            invalidateBubbleTextView(mPressedOrFocusedIcon);
+        }
     }
 
     public CellLayoutChildren getChildrenLayout() {
@@ -455,6 +478,19 @@ public class CellLayout extends ViewGroup {
                 final Bitmap b = (Bitmap) mDragOutlineAnims[i].getTag();
                 paint.setAlpha((int)(alpha + .5f));
                 canvas.drawBitmap(b, p.x, p.y, paint);
+            }
+        }
+
+        // We draw the pressed or focused BubbleTextView's background in CellLayout because it
+        // requires an expanded clip rect (due to the glow's blur radius)
+        if (mPressedOrFocusedIcon != null) {
+            final int padding = mPressedOrFocusedIcon.getPressedOrFocusedBackgroundPadding();
+            final Bitmap b = mPressedOrFocusedIcon.getPressedOrFocusedBackground();
+            if (b != null) {
+                canvas.drawBitmap(b,
+                        mPressedOrFocusedIcon.getLeft() - padding,
+                        mPressedOrFocusedIcon.getTop() - padding,
+                        null);
             }
         }
     }
