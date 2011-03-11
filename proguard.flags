@@ -20,7 +20,7 @@
   public void setHoverAlpha(float);
 }
 
--keep class com.android.launcher2.CellLayout$LayoutParams {
+-keep class com.android.launcher2.DragLayer$LayoutParams {
   public void setWidth(int);
   public int getWidth();
   public void setHeight(int);

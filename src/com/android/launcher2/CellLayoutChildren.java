@@ -43,12 +43,6 @@ public class CellLayoutChildren extends ViewGroup {
     private int mWidthGap;
     private int mHeightGap;
 
-    // Variables relating to resizing widgets
-    private final ArrayList<AppWidgetResizeFrame> mResizeFrames =
-            new ArrayList<AppWidgetResizeFrame>();
-    private AppWidgetResizeFrame mCurrentResizeFrame;
-    private int mXDown, mYDown;
-
     public CellLayoutChildren(Context context) {
         super(context);
         mWallpaperManager = WallpaperManager.getInstance(context);
@@ -175,96 +169,5 @@ public class CellLayoutChildren extends ViewGroup {
     @Override
     protected void setChildrenDrawnWithCacheEnabled(boolean enabled) {
         super.setChildrenDrawnWithCacheEnabled(enabled);
-    }
-
-    public void clearAllResizeFrames() {
-        for (AppWidgetResizeFrame frame: mResizeFrames) {
-            removeView(frame);
-        }
-        mResizeFrames.clear();
-    }
-
-    public boolean hasResizeFrames() {
-        return mResizeFrames.size() > 0;
-    }
-
-    public boolean isWidgetBeingResized() {
-        return mCurrentResizeFrame != null;
-    }
-
-    private boolean handleTouchDown(MotionEvent ev) {
-        Rect hitRect = new Rect();
-
-        int x = (int) ev.getX();
-        int y = (int) ev.getY();
-
-        for (AppWidgetResizeFrame child: mResizeFrames) {
-            child.getHitRect(hitRect);
-            if (hitRect.contains(x, y)) {
-                if (child.beginResizeIfPointInRegion(x - child.getLeft(), y - child.getTop())) {
-                    mCurrentResizeFrame = child;
-                    mXDown = x;
-                    mYDown = y;
-                    requestDisallowInterceptTouchEvent(true);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            if (handleTouchDown(ev)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        boolean handled = false;
-        int action = ev.getAction();
-
-        int x = (int) ev.getX();
-        int y = (int) ev.getY();
-
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-                if (handleTouchDown(ev)) {
-                    return true;
-                }
-            }
-        }
-
-        if (mCurrentResizeFrame != null) {
-            handled = true;
-            switch (action) {
-                case MotionEvent.ACTION_MOVE:
-                    mCurrentResizeFrame.visualizeResizeForDelta(x - mXDown, y - mYDown);
-                    break;
-                case MotionEvent.ACTION_CANCEL:
-                case MotionEvent.ACTION_UP:
-                    mCurrentResizeFrame.commitResizeForDelta(x - mXDown, y - mYDown);
-                    mCurrentResizeFrame = null;
-            }
-        }
-        return handled;
-    }
-
-    public void addResizeFrame(ItemInfo itemInfo, LauncherAppWidgetHostView widget,
-            CellLayout cellLayout) {
-        AppWidgetResizeFrame resizeFrame = new AppWidgetResizeFrame(getContext(),
-                itemInfo, widget, cellLayout);
-
-        CellLayout.LayoutParams lp = new CellLayout.LayoutParams(-1, -1, -1, -1);
-        lp.isLockedToGrid = false;
-
-        addView(resizeFrame, lp);
-        mResizeFrames.add(resizeFrame);
-
-        resizeFrame.snapToWidget(false);
     }
 }

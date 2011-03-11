@@ -1800,8 +1800,8 @@ public class Workspace extends SmoothPagedView
     }
 
     public void exitWidgetResizeMode() {
-        final CellLayout currentLayout = (CellLayout) getChildAt(getCurrentPage());
-        currentLayout.getChildrenLayout().clearAllResizeFrames();
+        DragLayer dragLayer = (DragLayer) mLauncher.findViewById(R.id.drag_layer);
+        dragLayer.clearAllResizeFrames();
     }
 
     void unshrink(boolean animated) {
@@ -2353,7 +2353,6 @@ public class Workspace extends SmoothPagedView
                             mTargetCell[0], mTargetCell[1], mDragInfo.spanX, mDragInfo.spanY));
 
                     if (cell instanceof LauncherAppWidgetHostView) {
-                        final CellLayoutChildren children = dropTargetLayout.getChildrenLayout();
                         final CellLayout cellLayout = dropTargetLayout;
                         // We post this call so that the widget has a chance to be placed
                         // in its final location
@@ -2363,7 +2362,9 @@ public class Workspace extends SmoothPagedView
                         if (pinfo.resizeMode != AppWidgetProviderInfo.RESIZE_NONE) {
                             post(new Runnable() {
                                 public void run() {
-                                    children.addResizeFrame(info, hostView, 
+                                    DragLayer dragLayer = (DragLayer)
+                                            mLauncher.findViewById(R.id.drag_layer);
+                                    dragLayer.addResizeFrame(info, hostView,
                                             cellLayout);
                                 }
                             });
