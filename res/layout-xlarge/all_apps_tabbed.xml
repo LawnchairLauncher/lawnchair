@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <RelativeLayout
-            android:layout_width="952dp"
+            android:layout_width="@dimen/all_apps_tabbed_width"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/tab_unselected_holo">
@@ -91,14 +91,14 @@
                 android:id="@+id/all_apps_paged_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                launcher:cellCountX="7"
-                launcher:cellCountY="5"
-                launcher:pageLayoutWidthGap="36dp"
-                launcher:pageLayoutHeightGap="6dp"
-                launcher:pageLayoutPaddingTop="20dp"
-                launcher:pageLayoutPaddingBottom="15dp"
-                launcher:pageLayoutPaddingLeft="40dp"
-                launcher:pageLayoutPaddingRight="40dp">
+                launcher:cellCountX="@integer/all_apps_view_cellCountX"
+                launcher:cellCountY="@integer/all_apps_view_cellCountY"
+                launcher:pageLayoutWidthGap="@dimen/all_apps_view_pageLayoutWidthGap"
+                launcher:pageLayoutHeightGap="@dimen/all_apps_view_pageLayoutHeightGap"
+                launcher:pageLayoutPaddingTop="@dimen/all_apps_view_pageLayoutPaddingTop"
+                launcher:pageLayoutPaddingBottom="@dimen/all_apps_view_pageLayoutPaddingBottom"
+                launcher:pageLayoutPaddingLeft="@dimen/all_apps_view_pageLayoutPaddingLeft"
+                launcher:pageLayoutPaddingRight="@dimen/all_apps_view_pageLayoutPaddingRight">
             </com.android.launcher2.AllAppsPagedView>
         </FrameLayout>
     </LinearLayout>
