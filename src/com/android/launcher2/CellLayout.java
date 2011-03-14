@@ -1587,38 +1587,6 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
             }
         }
 
-        public void setWidth(int width) {
-            this.width = width;
-        }
-
-        public int getWidth() {
-            return width;
-        }
-
-        public void setHeight(int height) {
-            this.height = height;
-        }
-
-        public int getHeight() {
-            return height;
-        }
-
-        public void setX(int x) {
-            this.x = x;
-        }
-
-        public int getX() {
-            return x;
-        }
-
-        public void setY(int y) {
-            this.y = y;
-        }
-
-        public int getY() {
-            return y;
-        }
-
         public String toString() {
             return "(" + this.cellX + ", " + this.cellY + ")";
         }

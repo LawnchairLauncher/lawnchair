@@ -18,6 +18,8 @@ public class AppWidgetResizeFrame extends FrameLayout {
     private ItemInfo mItemInfo;
     private LauncherAppWidgetHostView mWidgetView;
     private CellLayout mCellLayout;
+    private DragLayer mDragLayer;
+    private Workspace mWorkspace;
     private ImageView mLeftHandle;
     private ImageView mRightHandle;
     private ImageView mTopHandle;
@@ -57,7 +59,7 @@ public class AppWidgetResizeFrame extends FrameLayout {
     public static final int BOTTOM = 3;
 
     public AppWidgetResizeFrame(Context context, ItemInfo itemInfo, 
-            LauncherAppWidgetHostView widgetView, CellLayout cellLayout) {
+            LauncherAppWidgetHostView widgetView, CellLayout cellLayout, DragLayer dragLayer) {
 
         super(context);
         mContext = context;
@@ -65,6 +67,8 @@ public class AppWidgetResizeFrame extends FrameLayout {
         mCellLayout = cellLayout;
         mWidgetView = widgetView;
         mResizeMode = widgetView.getAppWidgetInfo().resizeMode;
+        mDragLayer = dragLayer;
+        mWorkspace = (Workspace) dragLayer.findViewById(R.id.workspace);
 
         final AppWidgetProviderInfo info = widgetView.getAppWidgetInfo();
         int[] result = mCellLayout.rectToCell(info.minWidth, info.minHeight, null);
@@ -150,7 +154,7 @@ public class AppWidgetResizeFrame extends FrameLayout {
             mDeltaX = Math.max(-mBaselineX, deltaX); 
             mDeltaX = Math.min(mBaselineWidth - 2 * mTouchTargetWidth, mDeltaX);
         } else if (mRightBorderActive) {
-            mDeltaX = Math.min(mCellLayout.getWidth() - (mBaselineX + mBaselineWidth), deltaX);
+            mDeltaX = Math.min(mDragLayer.getWidth() - (mBaselineX + mBaselineWidth), deltaX);
             mDeltaX = Math.max(-mBaselineWidth + 2 * mTouchTargetWidth, mDeltaX);
         }
 
@@ -158,7 +162,7 @@ public class AppWidgetResizeFrame extends FrameLayout {
             mDeltaY = Math.max(-mBaselineY, deltaY);
             mDeltaY = Math.min(mBaselineHeight - 2 * mTouchTargetWidth, mDeltaY);
         } else if (mBottomBorderActive) {
-            mDeltaY = Math.min(mCellLayout.getHeight() - (mBaselineY + mBaselineHeight), deltaY);
+            mDeltaY = Math.min(mDragLayer.getHeight() - (mBaselineY + mBaselineHeight), deltaY);
             mDeltaY = Math.max(-mBaselineHeight + 2 * mTouchTargetWidth, mDeltaY);
         }
     }
@@ -168,7 +172,8 @@ public class AppWidgetResizeFrame extends FrameLayout {
      */
     public void visualizeResizeForDelta(int deltaX, int deltaY) {
         updateDeltas(deltaX, deltaY);
-        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
+        DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
+
         if (mLeftBorderActive) {
             lp.x = mBaselineX + mDeltaX;
             lp.width = mBaselineWidth - mDeltaX;
@@ -261,6 +266,7 @@ public class AppWidgetResizeFrame extends FrameLayout {
 
         // Update the cells occupied by this widget
         mCellLayout.markCellsAsOccupiedForView(mWidgetView);
+        mWidgetView.requestLayout();
     }
 
     /**
@@ -284,20 +290,22 @@ public class AppWidgetResizeFrame extends FrameLayout {
     }
 
     public void snapToWidget(boolean animate) {
-        final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
+        final DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
+        int xOffset = mCellLayout.getLeft() - mWorkspace.getScrollX();
+        int yOffset = mCellLayout.getTop() - mWorkspace.getScrollY();
 
         int newWidth = mWidgetView.getWidth() + 2 * mBackgroundPadding;
         int newHeight = mWidgetView.getHeight() + 2 * mBackgroundPadding;
-        int newX = mWidgetView.getLeft() - mBackgroundPadding;
-        int newY = mWidgetView.getTop() - mBackgroundPadding;
+        int newX = mWidgetView.getLeft() - mBackgroundPadding + xOffset;
+        int newY = mWidgetView.getTop() - mBackgroundPadding + yOffset;
 
         // We need to make sure the frame stays within the bounds of the CellLayout
         if (newY < 0) {
             newHeight -= -newY;
             newY = 0;
         }
-        if (newY + newHeight > mCellLayout.getHeight()) {
-            newHeight -= newY + newHeight - mCellLayout.getHeight();
+        if (newY + newHeight > mDragLayer.getHeight()) {
+            newHeight -= newY + newHeight - mDragLayer.getHeight();
         }
 
         if (!animate) {
