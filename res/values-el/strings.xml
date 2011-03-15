@@ -33,12 +33,14 @@
     <string name="wallpapers_tab_label" msgid="1617804870364119879">"Ταπετσαρίες"</string>
     <string name="applications_tab_label" msgid="2991364240020736760">"Συντομεύσεις εφαρμογών"</string>
     <string name="wallpapers_temp_tab_text" msgid="1660218201190495279">"Αυτή θα είναι η καρτέλα ταπετσαριών"</string>
-    <string name="all_apps_tab_all" msgid="2942727589595027258">"Κάθε ηλικία"</string>
+    <string name="all_apps_tab_all" msgid="2942727589595027258">"Όλες"</string>
     <string name="all_apps_tab_apps" msgid="5468972551904071712">"Εφαρμογές"</string>
     <string name="all_apps_tab_games" msgid="1855736784923494918">"Παιχνίδια"</string>
     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Οι εφαρμογές μου"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"Δεν βρέθηκαν παιχνίδια."</string>
     <string name="all_apps_no_downloads" msgid="2284720393234453761">"Δεν υπάρχουν εφαρμογές από λήψη."</string>
+    <!-- no translation found for market (2652226429823445833) -->
+    <skip />
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Δεν έγινε η απόθ. του στοιχείου στην αρχική οθόνη"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Επιλογή γραφ. στοιχείου δημιουργίας"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Όνομα φακέλου"</string>

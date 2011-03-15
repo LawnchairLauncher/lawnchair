@@ -39,6 +39,8 @@
     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"My apps"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"No games found."</string>
     <string name="all_apps_no_downloads" msgid="2284720393234453761">"You have no downloaded applications."</string>
+    <!-- no translation found for market (2652226429823445833) -->
+    <skip />
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Could not drop item onto this home screen"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Select widget to create"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Folder name"</string>
