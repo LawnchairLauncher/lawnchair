@@ -39,6 +39,8 @@
     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Les meves aplicacions"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"No s\'ha trobat cap joc."</string>
     <string name="all_apps_no_downloads" msgid="2284720393234453761">"No has baixat cap aplicació."</string>
+    <!-- no translation found for market (2652226429823445833) -->
+    <skip />
     <string name="external_drop_widget_error" msgid="4976816434597126575">"No s\'ha pogut trasll. l\'element a la pant. d\'inici"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Selecciona un widget per crear-lo"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nom de la carpeta"</string>

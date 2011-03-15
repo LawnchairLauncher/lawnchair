@@ -39,6 +39,8 @@
     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Mis aplicaciones"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"No se encontraron juegos."</string>
     <string name="all_apps_no_downloads" msgid="2284720393234453761">"No has descargado ninguna aplicación."</string>
+    <!-- no translation found for market (2652226429823445833) -->
+    <skip />
     <string name="external_drop_widget_error" msgid="4976816434597126575">"No se pudo colocar el elemento en esta pantalla principal"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Seleccionar widget para crear"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nombre de carpeta"</string>
@@ -84,7 +86,7 @@
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"instalar accesos directos"</string>
     <string name="permdesc_install_shortcut" msgid="7429365847558984148">"Permite a una aplicación agregar accesos directos sin intervención del usuario."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"desinstalar papel tapiz"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="959972195916090900">"Permite a una aplicación suprimir accesos directos sin intervención del usuario."</string>
+    <string name="permdesc_uninstall_shortcut" msgid="959972195916090900">"Permite a una aplicación eliminar accesos directos sin intervención del usuario."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"leer configuración y accesos directos de la página principal"</string>
     <string name="permdesc_read_settings" msgid="8377434937176025492">"Permite a una aplicación leer la configuración y los accesos directos de la página principal."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"escribir configuración y accesos directos de la página principal"</string>

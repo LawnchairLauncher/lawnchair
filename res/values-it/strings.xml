@@ -39,6 +39,8 @@
     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Le mie applicazioni"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"Nessun gioco trovato."</string>
     <string name="all_apps_no_downloads" msgid="2284720393234453761">"Non hai applicazioni scaricate."</string>
+    <!-- no translation found for market (2652226429823445833) -->
+    <skip />
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Impossibile rilasciare elemento in schermata Home"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Seleziona il widget da creare"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nome cartella"</string>
@@ -56,7 +58,7 @@
     <string name="add_clock" msgid="2337943840175865746">"Orologio"</string>
     <string name="add_photo_frame" msgid="3154058437359487954">"Cornice immagini"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Spazio nella schermata Home esaurito."</string>
-    <string name="shortcut_installed" msgid="7071557296331322355">"Scoriciatoia \"<xliff:g id="NAME">%s</xliff:g>\" creata."</string>
+    <string name="shortcut_installed" msgid="7071557296331322355">"Scorciatoia \"<xliff:g id="NAME">%s</xliff:g>\" creata."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"La scorciatoia \"<xliff:g id="NAME">%s</xliff:g>\" è stata rimossa."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Scorciatoia \"<xliff:g id="NAME">%s</xliff:g>\" già presente."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Seleziona scorciatoia"</string>
