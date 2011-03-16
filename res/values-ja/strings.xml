@@ -39,8 +39,7 @@
     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"マイアプリ"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"ゲームなし"</string>
     <string name="all_apps_no_downloads" msgid="2284720393234453761">"ダウンロードしたアプリケーションはありません。"</string>
-    <!-- no translation found for market (2652226429823445833) -->
-    <skip />
+    <string name="market" msgid="2652226429823445833">"ショップ"</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"このホーム画面にアイテムをドロップできませんでした"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"作成するウィジェットを選択"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"フォルダ名"</string>
@@ -68,8 +67,7 @@
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"ホーム"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"削除"</string>
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"アンインストール"</string>
-    <!-- no translation found for delete_zone_label_all_apps_system_app (3683920959591819044) -->
-    <skip />
+    <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"アップデートをアンインストール"</string>
     <string name="menu_add" msgid="3065046628354640854">"追加"</string>
     <string name="menu_manage_apps" msgid="2308685199463588895">"アプリの管理"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"壁紙"</string>

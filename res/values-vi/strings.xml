@@ -39,8 +39,7 @@
     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Ứng dụng của tôi"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"Không tìm thấy trò chơi."</string>
     <string name="all_apps_no_downloads" msgid="2284720393234453761">"Bạn không có ứng dụng nào được tải xuống."</string>
-    <!-- no translation found for market (2652226429823445833) -->
-    <skip />
+    <string name="market" msgid="2652226429823445833">"Mua hàng"</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Không thể thả mục vào màn hình chính này"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Chọn tiện ích để tạo"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Tên thư mục"</string>
@@ -68,8 +67,7 @@
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Màn hình trang chủ"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"Xóa"</string>
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"Gỡ cài đặt"</string>
-    <!-- no translation found for delete_zone_label_all_apps_system_app (3683920959591819044) -->
-    <skip />
+    <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"Gỡ cài đặt cập nhật"</string>
     <string name="menu_add" msgid="3065046628354640854">"Thêm"</string>
     <string name="menu_manage_apps" msgid="2308685199463588895">"Quản lý ứng dụng"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"Hình nền"</string>
