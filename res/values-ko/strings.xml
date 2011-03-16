@@ -39,8 +39,7 @@
     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"내 애플리케이션"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"게임이 없습니다."</string>
     <string name="all_apps_no_downloads" msgid="2284720393234453761">"다운로드한 애플리케이션이 없습니다."</string>
-    <!-- no translation found for market (2652226429823445833) -->
-    <skip />
+    <string name="market" msgid="2652226429823445833">"쇼핑"</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"홈 화면에 항목을 드롭할 수 없습니다."</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"만들 위젯 선택"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"폴더 이름"</string>
@@ -68,8 +67,7 @@
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"홈"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"삭제"</string>
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"제거"</string>
-    <!-- no translation found for delete_zone_label_all_apps_system_app (3683920959591819044) -->
-    <skip />
+    <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"업데이트 제거"</string>
     <string name="menu_add" msgid="3065046628354640854">"추가"</string>
     <string name="menu_manage_apps" msgid="2308685199463588895">"애플리케이션 관리"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"배경화면"</string>

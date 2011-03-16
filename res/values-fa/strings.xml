@@ -39,8 +39,7 @@
     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"برنامه های من"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"هیچ بازی پیدا نشد."</string>
     <string name="all_apps_no_downloads" msgid="2284720393234453761">"شما هیچ برنامه کاربردی دانلود شده ای ندارید."</string>
-    <!-- no translation found for market (2652226429823445833) -->
-    <skip />
+    <string name="market" msgid="2652226429823445833">"فروشگاه"</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"نمی توان موردی در این صفحه اصلی انداخت"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"انتخاب ابزارک جهت ایجاد"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"نام پوشه"</string>
@@ -68,8 +67,7 @@
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"صفحه اصلی"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"حذف"</string>
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"حذف نصب"</string>
-    <!-- no translation found for delete_zone_label_all_apps_system_app (3683920959591819044) -->
-    <skip />
+    <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"حذف نصب به روزرسانی"</string>
     <string name="menu_add" msgid="3065046628354640854">"افزودن"</string>
     <string name="menu_manage_apps" msgid="2308685199463588895">"مدیریت برنامه ها"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"تصویر زمینه"</string>

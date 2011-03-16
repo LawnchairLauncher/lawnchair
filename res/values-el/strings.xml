@@ -39,8 +39,7 @@
     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Οι εφαρμογές μου"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"Δεν βρέθηκαν παιχνίδια."</string>
     <string name="all_apps_no_downloads" msgid="2284720393234453761">"Δεν υπάρχουν εφαρμογές από λήψη."</string>
-    <!-- no translation found for market (2652226429823445833) -->
-    <skip />
+    <string name="market" msgid="2652226429823445833">"Αγορές"</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Δεν έγινε η απόθ. του στοιχείου στην αρχική οθόνη"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Επιλογή γραφ. στοιχείου δημιουργίας"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Όνομα φακέλου"</string>
@@ -68,8 +67,7 @@
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Αρχική σελίδα"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"Κατάργηση"</string>
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"Κατάργηση εγκατάστασης"</string>
-    <!-- no translation found for delete_zone_label_all_apps_system_app (3683920959591819044) -->
-    <skip />
+    <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"Κατάργηση εγκατάστασης ενημέρωσης"</string>
     <string name="menu_add" msgid="3065046628354640854">"Προσθήκη"</string>
     <string name="menu_manage_apps" msgid="2308685199463588895">"Διαχείριση εφαρμογών"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"Ταπετσαρία"</string>

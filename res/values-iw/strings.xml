@@ -39,8 +39,7 @@
     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"היישומים שלי"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"לא נמצאו משחקים."</string>
     <string name="all_apps_no_downloads" msgid="2284720393234453761">"לא הורדת יישומים."</string>
-    <!-- no translation found for market (2652226429823445833) -->
-    <skip />
+    <string name="market" msgid="2652226429823445833">"קנה"</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"אין אפשרות להניח פריט במסך בית זה"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"בחר widget כדי ליצור"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"שם תיקיה"</string>
@@ -68,8 +67,7 @@
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"דף הבית"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"הסר"</string>
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"הסר התקנה"</string>
-    <!-- no translation found for delete_zone_label_all_apps_system_app (3683920959591819044) -->
-    <skip />
+    <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"הסר את התקנת העדכון"</string>
     <string name="menu_add" msgid="3065046628354640854">"הוסף"</string>
     <string name="menu_manage_apps" msgid="2308685199463588895">"נהל יישומים"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"טפט"</string>
