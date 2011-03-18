@@ -1177,6 +1177,9 @@ public abstract class PagedView extends ViewGroup {
     protected void setMinimumWidthOverride(int minimumWidth) {
         mMinimumWidth = minimumWidth;
     }
+    protected void resetMinimumWidthOverride() {
+        mMinimumWidth = 0;
+    }
 
     protected int getChildWidth(int index) {
         return Math.max(mMinimumWidth, getChildAt(index).getMeasuredWidth());
