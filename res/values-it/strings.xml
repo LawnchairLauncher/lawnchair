@@ -42,7 +42,7 @@
     <string name="add_clock" msgid="2337943840175865746">"Orologio"</string>
     <string name="add_photo_frame" msgid="3154058437359487954">"Cornice immagini"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Spazio nella schermata Home esaurito."</string>
-    <string name="shortcut_installed" msgid="7071557296331322355">"Scoriciatoia \"<xliff:g id="NAME">%s</xliff:g>\" creata."</string>
+    <string name="shortcut_installed" msgid="7071557296331322355">"Scorciatoia \"<xliff:g id="NAME">%s</xliff:g>\" creata."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"La scorciatoia \"<xliff:g id="NAME">%s</xliff:g>\" è stata rimossa."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Scorciatoia \"<xliff:g id="NAME">%s</xliff:g>\" già presente."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Seleziona scorciatoia"</string>

@@ -60,7 +60,7 @@
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"instalar accesos directos"</string>
     <string name="permdesc_install_shortcut" msgid="7429365847558984148">"Permite a una aplicación agregar accesos directos sin intervención del usuario."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"desinstalar papel tapiz"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="959972195916090900">"Permite a una aplicación suprimir accesos directos sin intervención del usuario."</string>
+    <string name="permdesc_uninstall_shortcut" msgid="959972195916090900">"Permite a una aplicación eliminar accesos directos sin intervención del usuario."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"leer configuración y accesos directos de la página principal"</string>
     <string name="permdesc_read_settings" msgid="8377434937176025492">"Permite a una aplicación leer la configuración y los accesos directos de la página principal."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"escribir configuración y accesos directos de la página principal"</string>
