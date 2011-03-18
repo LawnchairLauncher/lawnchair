@@ -1708,26 +1708,32 @@ public class Workspace extends SmoothPagedView
         for (int i = 0; i < screenCount; i++) {
             CellLayout cl = (CellLayout) getChildAt(i);
             cl.setIsDragOccuring(isDragHappening);
-            switch (state) {
-                case TOP:
-                    cl.setIsDefaultDropTarget(i == mCurrentPage);
-                case BOTTOM_HIDDEN:
-                case BOTTOM_VISIBLE:
-                case SPRING_LOADED:
-                    if (state != ShrinkState.TOP) {
-                        cl.setIsDefaultDropTarget(false);
-                    }
-                    if (!isDragHappening) {
-                        // even if a drag isn't happening, we don't want to show a screen as
-                        // accepting drops if it doesn't have at least one free cell
-                        spanX = 1;
-                        spanY = 1;
-                    }
-                    // the page accepts drops if we can find at least one empty spot
-                    cl.setAcceptsDrops(cl.findCellForSpan(null, spanX, spanY));
-                    break;
-                default:
-                     throw new RuntimeException("Unhandled ShrinkState " + state);
+            if (state == null) {
+                // If we are not in a shrunken state, mark all cell layouts as droppable (if they
+                // have the space)
+                cl.setAcceptsDrops(cl.findCellForSpan(null, spanX, spanY));
+            } else {
+                switch (state) {
+                    case TOP:
+                        cl.setIsDefaultDropTarget(i == mCurrentPage);
+                    case BOTTOM_HIDDEN:
+                    case BOTTOM_VISIBLE:
+                    case SPRING_LOADED:
+                        if (state != ShrinkState.TOP) {
+                            cl.setIsDefaultDropTarget(false);
+                        }
+                        if (!isDragHappening) {
+                            // even if a drag isn't happening, we don't want to show a screen as
+                            // accepting drops if it doesn't have at least one free cell
+                            spanX = 1;
+                            spanY = 1;
+                        }
+                        // the page accepts drops if we can find at least one empty spot
+                        cl.setAcceptsDrops(cl.findCellForSpan(null, spanX, spanY));
+                        break;
+                    default:
+                         throw new RuntimeException("Unhandled ShrinkState " + state);
+                }
             }
         }
     }

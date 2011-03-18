@@ -350,7 +350,7 @@ public class AllApps3D extends RSSurfaceView
             if (mArrowNavigation) {
                 if (mLastSelection == SELECTION_HOME) {
                     reallyPlaySoundEffect(SoundEffectConstants.CLICK);
-                    mLauncher.closeAllApps(true);
+                    mLauncher.showWorkspace(true);
                 } else {
                     int whichApp = sRollo.mScript.get_gSelectedIconIndex();
                     if (whichApp >= 0) {
@@ -637,7 +637,7 @@ public class AllApps3D extends RSSurfaceView
                     if ((isPortrait && y > mTouchYBorders[mTouchYBorders.length-1]) ||
                         (!isPortrait && x > mTouchXBorders[mTouchXBorders.length-1])) {
                         reallyPlaySoundEffect(SoundEffectConstants.CLICK);
-                        mLauncher.closeAllApps(true);
+                        mLauncher.showWorkspace(true);
                     }
                     sRollo.setHomeSelected(SELECTED_NONE);
                 }
@@ -691,10 +691,12 @@ public class AllApps3D extends RSSurfaceView
             int screenX = mMotionDownRawX - (bmp.getWidth() / 2);
             int screenY = mMotionDownRawY - bmp.getHeight();
 
+            mLauncher.lockScreenOrientation();
+            mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1, bmp);
             mDragController.startDrag(
                     bmp, screenX, screenY, this, app, DragController.DRAG_ACTION_COPY);
 
-            mLauncher.closeAllApps(true);
+            mLauncher.showWorkspace(true);
         }
         return true;
     }
@@ -747,6 +749,8 @@ public class AllApps3D extends RSSurfaceView
 
     @Override
     public void onDropCompleted(View target, Object dragInfo, boolean success) {
+        mLauncher.getWorkspace().onDragStopped(success);
+        mLauncher.unlockScreenOrientation();
     }
 
     /**

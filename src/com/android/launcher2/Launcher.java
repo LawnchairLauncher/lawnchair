@@ -3106,7 +3106,7 @@ public final class Launcher extends Activity
                 mAllAppsGrid.zoom(0.0f, animated);
             }
             ((View)mAllAppsGrid).setFocusable(false);
-            mWorkspace.getChildAt(mWorkspace.getCurrentPage()).requestFocus();
+            ((CellLayout) mWorkspace.getChildAt(mWorkspace.getCurrentPage())).getChildrenLayout().requestFocus();
         }
     }
 

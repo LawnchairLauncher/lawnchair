@@ -143,7 +143,7 @@ public class AllApps2D
                 homeButton.setOnClickListener(
                     new View.OnClickListener() {
                         public void onClick(View v) {
-                            mLauncher.closeAllApps(true);
+                            mLauncher.showWorkspace(true);
                         }
                     });
             }
@@ -167,7 +167,7 @@ public class AllApps2D
 
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
-                mLauncher.closeAllApps(true);
+                mLauncher.showWorkspace(true);
                 break;
             default:
                 return false;
@@ -190,7 +190,7 @@ public class AllApps2D
         app = new ApplicationInfo(app);
 
         mDragController.startDrag(view, this, app, DragController.DRAG_ACTION_COPY);
-        mLauncher.closeAllApps(true);
+        mLauncher.showWorkspace(true);
 
         return true;
     }
