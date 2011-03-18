@@ -43,7 +43,10 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
     }
 
     public boolean isDropEnabled() {
-        return !((Workspace)getParent().getParent()).isSmall();
+        final ViewGroup cellLayoutChildren = (ViewGroup) getParent();
+        final ViewGroup cellLayout = (ViewGroup) cellLayoutChildren.getParent();
+        final Workspace workspace = (Workspace) cellLayout.getParent();
+        return !workspace.isSmall();
     }
 
     static FolderIcon fromXml(int resId, Launcher launcher, ViewGroup group,
