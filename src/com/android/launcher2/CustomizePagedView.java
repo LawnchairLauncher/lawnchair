@@ -1128,8 +1128,10 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         }
 
         // Set a min page width for PagedView layout if we have more than a single page
-        if (enforceMinimumPagedWidths) {
-            setMinimumWidthOverride((childCount > 1) ? mMinPageWidth : 0);
+        if (enforceMinimumPagedWidths && childCount > 1) {
+            setMinimumWidthOverride(mMinPageWidth);
+        } else {
+            resetMinimumWidthOverride();
         }
 
         // Bound the current page index
