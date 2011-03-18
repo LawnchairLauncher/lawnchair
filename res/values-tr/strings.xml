@@ -31,7 +31,7 @@
     <string name="rename_folder_title" msgid="4544573104191526550">"Klasörü yeniden adlandır"</string>
     <string name="rename_action" msgid="6016003384693240896">"Tamam"</string>
     <string name="cancel_action" msgid="3811860427489435048">"İptal"</string>
-    <string name="menu_item_add_item" msgid="6233177331075781114">"Ana ekrana ekle"</string>
+    <string name="menu_item_add_item" msgid="6233177331075781114">"Ana Sayfaya ekle"</string>
     <string name="group_applications" msgid="4118484163419674240">"Uygulamalar"</string>
     <string name="group_shortcuts" msgid="9133529424900391877">"Kısayollar"</string>
     <string name="group_folder" msgid="5143593791798929193">"Yeni klasör"</string>
@@ -41,7 +41,7 @@
     <string name="add_folder" msgid="3521088587367839879">"Klasör"</string>
     <string name="add_clock" msgid="2337943840175865746">"Saat"</string>
     <string name="add_photo_frame" msgid="3154058437359487954">"Resim çerçevesi"</string>
-    <string name="out_of_space" msgid="8365249326091984698">"Bu Ana ekranda başka yer yok."</string>
+    <string name="out_of_space" msgid="8365249326091984698">"Bu Ana Sayfada yer yok."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"\"<xliff:g id="NAME">%s</xliff:g>\" kısayolu oluşturuldu."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"\"<xliff:g id="NAME">%s</xliff:g>\" kısayolu kaldırıldı."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"\"<xliff:g id="NAME">%s</xliff:g>\" kısayolu zaten var."</string>
