@@ -289,6 +289,10 @@ public abstract class PagedView extends ViewGroup {
         mIsPageMoving = false;
     }
 
+    protected boolean isPageMoving() {
+        return mIsPageMoving;
+    }
+
     // a method that subclasses can override to add behavior
     protected void onPageBeginMoving() {
     }

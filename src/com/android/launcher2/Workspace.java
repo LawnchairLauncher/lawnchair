@@ -213,6 +213,7 @@ public class Workspace extends SmoothPagedView
     WallpaperOffsetInterpolator mWallpaperOffset;
     boolean mUpdateWallpaperOffsetImmediately = false;
     boolean mSyncWallpaperOffsetWithScroll = true;
+    private Runnable mDelayedResizeRunnable;
 
     // info about the last drag
     private DragView mLastDragView;
@@ -645,6 +646,11 @@ public class Workspace extends SmoothPagedView
         }
         mOverScrollMaxBackgroundAlpha = 0.0f;
         mOverScrollPageIndex = -1;
+
+        if (mDelayedResizeRunnable != null) {
+            mDelayedResizeRunnable.run();
+            mDelayedResizeRunnable = null;
+        }
     }
 
     @Override
@@ -2366,12 +2372,21 @@ public class Workspace extends SmoothPagedView
                         final LauncherAppWidgetHostView hostView = (LauncherAppWidgetHostView) cell;
                         AppWidgetProviderInfo pinfo = hostView.getAppWidgetInfo();
                         if (pinfo.resizeMode != AppWidgetProviderInfo.RESIZE_NONE) {
-                            post(new Runnable() {
+                            final Runnable resizeRunnable = new Runnable() {
                                 public void run() {
                                     DragLayer dragLayer = (DragLayer)
                                             mLauncher.findViewById(R.id.drag_layer);
                                     dragLayer.addResizeFrame(info, hostView,
                                             cellLayout);
+                                }
+                            };
+                            post(new Runnable() {
+                                public void run() {
+                                    if (!isPageMoving()) {
+                                        resizeRunnable.run();
+                                    } else {
+                                        mDelayedResizeRunnable = resizeRunnable;
+                                    }
                                 }
                             });
                         }
