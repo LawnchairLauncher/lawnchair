@@ -91,9 +91,6 @@ public class LauncherModel extends BroadcastReceiver {
 
     private AllAppsList mAllAppsList; // only access in worker thread
     private IconCache mIconCache;
-    final ArrayList<ItemInfo> mItems = new ArrayList<ItemInfo>();
-    final ArrayList<LauncherAppWidgetInfo> mAppWidgets = new ArrayList<LauncherAppWidgetInfo>();
-    final HashMap<Long, FolderInfo> mFolders = new HashMap<Long, FolderInfo>();
 
     private Bitmap mDefaultIcon;
 
@@ -522,9 +519,6 @@ public class LauncherModel extends BroadcastReceiver {
                 mLoaderTask.stopLocked();
             }
         }
-        mItems.clear();
-        mAppWidgets.clear();
-        mFolders.clear();
     }
 
     /**
@@ -539,6 +533,10 @@ public class LauncherModel extends BroadcastReceiver {
         private boolean mIsLaunching;
         private boolean mStopped;
         private boolean mLoadAndBindStepFinished;
+
+        final ArrayList<ItemInfo> mItems = new ArrayList<ItemInfo>();
+        final ArrayList<LauncherAppWidgetInfo> mAppWidgets = new ArrayList<LauncherAppWidgetInfo>();
+        final HashMap<Long, FolderInfo> mFolders = new HashMap<Long, FolderInfo>();
 
         LoaderTask(Context context, boolean isLaunching) {
             mContext = context;
@@ -1294,6 +1292,7 @@ public class LauncherModel extends BroadcastReceiver {
             Log.d(TAG, "mLoaderTask.mIsLaunching=" + mIsLaunching);
             Log.d(TAG, "mLoaderTask.mStopped=" + mStopped);
             Log.d(TAG, "mLoaderTask.mLoadAndBindStepFinished=" + mLoadAndBindStepFinished);
+            Log.d(TAG, "mItems size=" + mItems.size());
         }
     }
 
@@ -1797,7 +1796,6 @@ public class LauncherModel extends BroadcastReceiver {
         ApplicationInfo.dumpApplicationInfoList(TAG, "mAllAppsList.added", mAllAppsList.added);
         ApplicationInfo.dumpApplicationInfoList(TAG, "mAllAppsList.removed", mAllAppsList.removed);
         ApplicationInfo.dumpApplicationInfoList(TAG, "mAllAppsList.modified", mAllAppsList.modified);
-        Log.d(TAG, "mItems size=" + mItems.size());
         if (mLoaderTask != null) {
             mLoaderTask.dumpState();
         } else {
