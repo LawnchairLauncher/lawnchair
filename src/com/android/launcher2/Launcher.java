@@ -2713,10 +2713,8 @@ public final class Launcher extends Activity
         if (animated) {
             final ValueAnimator scaleAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
             scaleAnim.setInterpolator(new Workspace.ZoomOutInterpolator());
-            scaleAnim.addUpdateListener(new AnimatorUpdateListener() {
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    final float b = (Float) animation.getAnimatedValue();
-                    final float a = 1f - b;
+            scaleAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
+                public void onAnimationUpdate(float a, float b) {
                     ((View) toView.getParent()).fastInvalidate();
                     toView.setFastScaleX(a * scale + b * 1f);
                     toView.setFastScaleY(a * scale + b * 1f);
@@ -2727,10 +2725,8 @@ public final class Launcher extends Activity
                 toView.setFastAlpha(0f);
                 ValueAnimator alphaAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(fadeDuration);
                 alphaAnim.setInterpolator(new DecelerateInterpolator(1.5f));
-                alphaAnim.addUpdateListener(new AnimatorUpdateListener() {
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        final float b = (Float) animation.getAnimatedValue();
-                        final float a = 1f - b;
+                alphaAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
+                    public void onAnimationUpdate(float a, float b) {
                         // don't need to invalidate because we do so above
                         toView.setFastAlpha(a * 0f + b * 1f);
                     }
@@ -2827,7 +2823,6 @@ public final class Launcher extends Activity
         if (!springLoaded) {
             mWorkspace.unshrink(animated);
         }
-
         if (animated) {
             if (mStateAnimation != null) mStateAnimation.cancel();
             mStateAnimation = new AnimatorSet();
@@ -2837,10 +2832,8 @@ public final class Launcher extends Activity
 
             ValueAnimator scaleAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
             scaleAnim.setInterpolator(new Workspace.ZoomInInterpolator());
-            scaleAnim.addUpdateListener(new AnimatorUpdateListener() {
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    final float b = (Float) animation.getAnimatedValue();
-                    final float a = 1f - b;
+            scaleAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
+                public void onAnimationUpdate(float a, float b) {
                     ((View)fromView.getParent()).fastInvalidate();
                     fromView.setFastScaleX(a * oldScaleX + b * scaleFactor);
                     fromView.setFastScaleY(a * oldScaleY + b * scaleFactor);
@@ -2849,10 +2842,8 @@ public final class Launcher extends Activity
             final ValueAnimator alphaAnim = ValueAnimator.ofFloat(0f, 1f);
             alphaAnim.setDuration(res.getInteger(R.integer.config_allAppsFadeOutTime));
             alphaAnim.setInterpolator(new DecelerateInterpolator(1.5f));
-            alphaAnim.addUpdateListener(new AnimatorUpdateListener() {
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    final float b = (Float) animation.getAnimatedValue();
-                    final float a = 1f - b;
+            alphaAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
+                public void onAnimationUpdate(float a, float b) {
                     // don't need to invalidate because we do so above
                     fromView.setFastAlpha(a * 1f + b * 0f);
                 }

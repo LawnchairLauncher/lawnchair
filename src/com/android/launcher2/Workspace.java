@@ -1597,10 +1597,8 @@ public class Workspace extends SmoothPagedView
             final float oldVerticalWallpaperOffset = getVerticalWallpaperOffset();
             final float newHorizontalWallpaperOffset = 0.5f;
             final float newVerticalWallpaperOffset = wallpaperOffset;
-            animWithInterpolator.addUpdateListener(new AnimatorUpdateListener() {
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    final float b = (Float) animation.getAnimatedValue();
-                    final float a = 1f - b;
+            animWithInterpolator.addUpdateListener(new LauncherAnimatorUpdateListener() {
+                public void onAnimationUpdate(float a, float b) {
                     if (b == 0f) {
                         // an optimization, and required for correct behavior.
                         return;
@@ -1942,10 +1940,8 @@ public class Workspace extends SmoothPagedView
                 final float oldVerticalWallpaperOffset = getVerticalWallpaperOffset();
                 final float newHorizontalWallpaperOffset = wallpaperOffsetForCurrentScroll();
                 final float newVerticalWallpaperOffset = 0.5f;
-                animWithInterpolator.addUpdateListener(new AnimatorUpdateListener() {
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        final float b = (Float) animation.getAnimatedValue();
-                        final float a = 1f - b;
+                animWithInterpolator.addUpdateListener(new LauncherAnimatorUpdateListener() {
+                    public void onAnimationUpdate(float a, float b) {
                         if (b == 0f) {
                             // an optimization, but not required
                             return;
@@ -1976,11 +1972,9 @@ public class Workspace extends SmoothPagedView
                 ValueAnimator rotationAnim =
                     ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
                 rotationAnim.setInterpolator(new DecelerateInterpolator(2.0f));
-                rotationAnim.addUpdateListener(new AnimatorUpdateListener() {
-                    public void onAnimationUpdate(ValueAnimator animation) {
+                rotationAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
+                    public void onAnimationUpdate(float a, float b) {
                         // don't invalidate workspace because we did it above
-                        final float b = (Float) animation.getAnimatedValue();
-                        final float a = 1f - b;
                         if (b == 0f) {
                             // an optimization, but not required
                             return;
