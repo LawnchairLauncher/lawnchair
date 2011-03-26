@@ -956,13 +956,15 @@ public class CellLayout extends ViewGroup {
             int top = topLeft[1];
 
             if (v != null) {
-                if (v.getParent() instanceof CellLayout) {
-                    LayoutParams lp = (LayoutParams) v.getLayoutParams();
-                    left += lp.leftMargin;
-                    top += lp.topMargin;
-                }
+                // When drawing the drag outline, it did not account for margin offsets
+                // added by the view's parent.
+                MarginLayoutParams lp = (MarginLayoutParams) v.getLayoutParams();
+                left += lp.leftMargin;
+                top += lp.topMargin;
 
-                // Offsets due to the size difference between the View and the dragOutline
+                // Offsets due to the size difference between the View and the dragOutline.
+                // There is a size difference to account for the outer blur, which may lie
+                // outside the bounds of the view.
                 left += (v.getWidth() - dragOutline.getWidth()) / 2;
                 top += (v.getHeight() - dragOutline.getHeight()) / 2;
             }
