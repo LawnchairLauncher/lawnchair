@@ -12,12 +12,6 @@
           Should be an even number, for pixel alignment. -->
     <integer name="config_dragViewExtraPixels">40</integer>
 
-    <!-- When dragging items on the workspace, the number of pixels by which the position of
-         the drag view should be offset from the position of the original view.
-         Setting to 1/2 of config_dragViewExtraPixels keeps it centered on its old position. -->
-    <integer name="config_dragViewOffsetX">20</integer>
-    <integer name="config_dragViewOffsetY">20</integer>
-
     <!-- The duration (in ms) of the fade animation on the object outlines, used when
          we are dragging objects around on the home screen. -->
     <integer name="config_dragOutlineFadeTime">900</integer>

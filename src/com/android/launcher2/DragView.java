@@ -87,8 +87,8 @@ public class DragView extends View {
             scale.setScale(scaleFactor, scaleFactor);
         }
 
-        final int offsetX = res.getInteger(R.integer.config_dragViewOffsetX);
-        final int offsetY = res.getInteger(R.integer.config_dragViewOffsetY);
+        final int offsetX = res.getDimensionPixelSize(R.dimen.dragViewOffsetX);
+        final int offsetY = res.getDimensionPixelSize(R.dimen.dragViewOffsetY);
 
         // Animate the view into the correct position
         mAnim = ValueAnimator.ofFloat(0.0f, 1.0f);

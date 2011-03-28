@@ -2175,8 +2175,8 @@ public class Workspace extends SmoothPagedView
         // Based on the position of the drag view, find the top left of the original view
         int viewX = dragViewX + (dragView.getWidth() - child.getWidth()) / 2;
         int viewY = dragViewY + (dragView.getHeight() - child.getHeight()) / 2;
-        viewX += getResources().getInteger(R.integer.config_dragViewOffsetX);
-        viewY += getResources().getInteger(R.integer.config_dragViewOffsetY);
+        viewX += getResources().getDimensionPixelSize(R.dimen.dragViewOffsetX);
+        viewY += getResources().getDimensionPixelSize(R.dimen.dragViewOffsetY);
 
         // Set its old pos (in the new parent's coordinates); it will be animated
         // in animateViewIntoPosition after the next layout pass
