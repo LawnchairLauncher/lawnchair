@@ -2173,8 +2173,8 @@ public class Workspace extends SmoothPagedView
         final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
 
         // Based on the position of the drag view, find the top left of the original view
-        int viewX = dragViewX + (dragView.getWidth() - child.getWidth()) / 2;
-        int viewY = dragViewY + (dragView.getHeight() - child.getHeight()) / 2;
+        int viewX = dragViewX + (dragView.getWidth() - child.getMeasuredWidth()) / 2;
+        int viewY = dragViewY + (dragView.getHeight() - child.getMeasuredHeight()) / 2;
         viewX += getResources().getDimensionPixelSize(R.dimen.dragViewOffsetX);
         viewY += getResources().getDimensionPixelSize(R.dimen.dragViewOffsetY);
 
@@ -2313,7 +2313,7 @@ public class Workspace extends SmoothPagedView
                 ((ItemInfo) dragInfo).dropPos = touchXY;
                 return;
             }
-            onDropExternal(touchXY, dragInfo, mDragTargetLayout, false);
+            onDropExternal(touchXY, dragInfo, mDragTargetLayout, false, dragView, originX, originY);
         } else if (mDragInfo != null) {
             final View cell = mDragInfo.cell;
             CellLayout dropTargetLayout = mDragTargetLayout;
@@ -2866,6 +2866,11 @@ public class Workspace extends SmoothPagedView
         return false;
     }
 
+    private void onDropExternal(int[] touchXY, Object dragInfo,
+            CellLayout cellLayout, boolean insertAtFirst) {
+        onDropExternal(touchXY, dragInfo, cellLayout, insertAtFirst, null, 0, 0);
+    }
+
     /**
      * Drop an item that didn't originate on one of the workspace screens.
      * It may have come from Launcher (e.g. from all apps or customize), or it may have
@@ -2875,7 +2880,8 @@ public class Workspace extends SmoothPagedView
      * to add an item to one of the workspace screens.
      */
     private void onDropExternal(int[] touchXY, Object dragInfo,
-            CellLayout cellLayout, boolean insertAtFirst) {
+            CellLayout cellLayout, boolean insertAtFirst, DragView dragView,
+            int dragViewX, int dragViewY) {
         int screen = indexOfChild(cellLayout);
         if (dragInfo instanceof PendingAddItemInfo) {
             PendingAddItemInfo info = (PendingAddItemInfo) dragInfo;
@@ -2931,6 +2937,11 @@ public class Workspace extends SmoothPagedView
             cellLayout.onDropChild(view, animateDrop);
             cellLayout.animateDrop();
             CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
+            cellLayout.getChildrenLayout().measureChild(view);
+
+            if (dragView != null) {
+                setPositionForDropAnimation(dragView, dragViewX, dragViewY, cellLayout, view);
+            }
 
             LauncherModel.addOrMoveItemInDatabase(mLauncher, info,
                     LauncherSettings.Favorites.CONTAINER_DESKTOP, screen,

@@ -75,25 +75,29 @@ public class CellLayoutChildren extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        final int cellWidth = mCellWidth;
-        final int cellHeight = mCellHeight;
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
-
-            lp.setup(cellWidth, cellHeight, mWidthGap, mHeightGap,
-                    mLeftPadding, mTopPadding);
-
-            int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(lp.width, MeasureSpec.EXACTLY);
-            int childheightMeasureSpec = MeasureSpec.makeMeasureSpec(lp.height,
-                    MeasureSpec.EXACTLY);
-
-            child.measure(childWidthMeasureSpec, childheightMeasureSpec);
+            measureChild(child);
         }
         int widthSpecSize = MeasureSpec.getSize(widthMeasureSpec);
         int heightSpecSize =  MeasureSpec.getSize(heightMeasureSpec);
         setMeasuredDimension(widthSpecSize, heightSpecSize);
+    }
+
+    public void measureChild(View child) {
+        final int cellWidth = mCellWidth;
+        final int cellHeight = mCellHeight;
+        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
+
+        lp.setup(cellWidth, cellHeight, mWidthGap, mHeightGap,
+                mLeftPadding, mTopPadding);
+
+        int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(lp.width, MeasureSpec.EXACTLY);
+        int childheightMeasureSpec = MeasureSpec.makeMeasureSpec(lp.height,
+                MeasureSpec.EXACTLY);
+
+        child.measure(childWidthMeasureSpec, childheightMeasureSpec);
     }
 
     @Override
