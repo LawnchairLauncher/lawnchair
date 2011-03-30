@@ -16,8 +16,10 @@
 
 package com.android.launcher2;
 
-import com.android.launcher.R;
-
+import android.animation.AnimatorSet;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -29,10 +31,9 @@ import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
+
+import com.android.launcher.R;
 
 public class DeleteZone extends IconDropTarget {
     private static final int ORIENTATION_HORIZONTAL = 1;
@@ -42,10 +43,8 @@ public class DeleteZone extends IconDropTarget {
     private static final int XLARGE_ANIMATION_DURATION = 200;
     private static final int LEFT_DRAWABLE = 0;
 
-    private AnimationSet mInAnimation;
-    private AnimationSet mOutAnimation;
-    private Animation mHandleInAnimation;
-    private Animation mHandleOutAnimation;
+    private AnimatorSet mInAnimation;
+    private AnimatorSet mOutAnimation;
 
     private int mOrientation;
     private DragController mDragController;
@@ -181,10 +180,10 @@ public class DeleteZone extends IconDropTarget {
             mTransition.resetTransition();
 
             createAnimations();
-            startAnimation(mInAnimation);
+            mInAnimation.start();
             if (mOverlappingViews != null) {
                 for (View view : mOverlappingViews) {
-                    view.startAnimation(mHandleOutAnimation);
+                    createOutAlphaAnim(view).start();
                 }
             }
             setVisibility(VISIBLE);
@@ -196,68 +195,72 @@ public class DeleteZone extends IconDropTarget {
             mActive = false;
             mDragController.setDeleteRegion(null);
 
-            if (mOutAnimation != null) startAnimation(mOutAnimation);
-            if (mHandleInAnimation != null && mOverlappingViews != null) {
+            mOutAnimation.start();
+            if (mOverlappingViews != null) {
                 for (View view : mOverlappingViews) {
-                    view.startAnimation(mHandleInAnimation);
+                    createInAlphaAnim(view).start();
                 }
             }
-            setVisibility(GONE);
         }
+    }
+
+    private Animator createAlphaAnim(View v, float start, float end) {
+        Animator anim = ObjectAnimator.ofFloat(v, "alpha", start, end);
+        anim.setDuration(getAnimationDuration());
+        return anim;
+    }
+    private Animator createInAlphaAnim(View v) {
+        return createAlphaAnim(v, 0f, 1f);
+    }
+    private Animator createOutAlphaAnim(View v) {
+        return createAlphaAnim(v, 1f, 0f);
     }
 
     private void createAnimations() {
         int duration = getAnimationDuration();
-        if (mHandleInAnimation == null) {
-            mHandleInAnimation = new AlphaAnimation(0.0f, 1.0f);
-            mHandleInAnimation.setDuration(duration);
-        }
 
+        Animator inAlphaAnim = createInAlphaAnim(this);
         if (mInAnimation == null) {
-            mInAnimation = new FastAnimationSet();
+            mInAnimation = new AnimatorSet();
+            mInAnimation.setInterpolator(new AccelerateInterpolator());
+            mInAnimation.setDuration(duration);
             if (!LauncherApplication.isScreenXLarge()) {
-                final AnimationSet animationSet = mInAnimation;
-                animationSet.setInterpolator(new AccelerateInterpolator());
-                animationSet.addAnimation(new AlphaAnimation(0.0f, 1.0f));
+                Animator translateAnim;
                 if (mOrientation == ORIENTATION_HORIZONTAL) {
-                    animationSet.addAnimation(new TranslateAnimation(Animation.ABSOLUTE, 0.0f,
-                            Animation.ABSOLUTE, 0.0f, Animation.RELATIVE_TO_SELF, 1.0f,
-                            Animation.RELATIVE_TO_SELF, 0.0f));
+                    translateAnim = ObjectAnimator.ofFloat(this, "translationY", 
+                            getMeasuredWidth(), 0f);
                 } else {
-                    animationSet.addAnimation(new TranslateAnimation(Animation.RELATIVE_TO_SELF,
-                            1.0f, Animation.RELATIVE_TO_SELF, 0.0f, Animation.ABSOLUTE, 0.0f,
-                            Animation.ABSOLUTE, 0.0f));
+                    translateAnim = ObjectAnimator.ofFloat(this, "translationX", 
+                            getMeasuredHeight(), 0f);
                 }
-                animationSet.setDuration(duration);
+                mInAnimation.playTogether(translateAnim, inAlphaAnim);
             } else {
-                mInAnimation.addAnimation(mHandleInAnimation);
+                mInAnimation.play(inAlphaAnim);
             }
         }
 
-        if (mHandleOutAnimation == null) {
-            mHandleOutAnimation = new AlphaAnimation(1.0f, 0.0f);
-            mHandleOutAnimation.setFillAfter(true);
-            mHandleOutAnimation.setDuration(duration);
-        }
-
+        Animator outAlphaAnim = createOutAlphaAnim(this);
         if (mOutAnimation == null) {
-            mOutAnimation = new FastAnimationSet();
+            mOutAnimation = new AnimatorSet();
+            mOutAnimation.setInterpolator(new AccelerateInterpolator());
+            mOutAnimation.setDuration(duration);
             if (!LauncherApplication.isScreenXLarge()) {
-                final AnimationSet animationSet = mOutAnimation;
-                animationSet.setInterpolator(new AccelerateInterpolator());
-                animationSet.addAnimation(new AlphaAnimation(1.0f, 0.0f));
+                Animator translateAnim;
                 if (mOrientation == ORIENTATION_HORIZONTAL) {
-                    animationSet.addAnimation(new FastTranslateAnimation(Animation.ABSOLUTE, 0.0f,
-                            Animation.ABSOLUTE, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f,
-                            Animation.RELATIVE_TO_SELF, 1.0f));
+                    translateAnim = ObjectAnimator.ofFloat(this, "translationY", 0f, 
+                            getMeasuredWidth());
                 } else {
-                    animationSet.addAnimation(new FastTranslateAnimation(Animation.RELATIVE_TO_SELF,
-                            0.0f, Animation.RELATIVE_TO_SELF, 1.0f, Animation.ABSOLUTE, 0.0f,
-                            Animation.ABSOLUTE, 0.0f));
+                    translateAnim = ObjectAnimator.ofFloat(this, "translationX", 0f, 
+                            getMeasuredHeight());
                 }
-                animationSet.setDuration(duration);
+                mOutAnimation.playTogether(translateAnim, outAlphaAnim);
             } else {
-                mOutAnimation.addAnimation(mHandleOutAnimation);
+                mOutAnimation.addListener(new AnimatorListenerAdapter() {
+                    public void onAnimationEnd(Animator animation) {
+                        setVisibility(GONE);
+                    }
+                });
+                mOutAnimation.play(outAlphaAnim);
             }
         }
     }
@@ -274,39 +277,5 @@ public class DeleteZone extends IconDropTarget {
     private int getAnimationDuration() {
         return LauncherApplication.isScreenXLarge() ?
                 XLARGE_ANIMATION_DURATION : ANIMATION_DURATION;
-    }
-
-    private static class FastTranslateAnimation extends TranslateAnimation {
-        public FastTranslateAnimation(int fromXType, float fromXValue, int toXType, float toXValue,
-                int fromYType, float fromYValue, int toYType, float toYValue) {
-            super(fromXType, fromXValue, toXType, toXValue,
-                    fromYType, fromYValue, toYType, toYValue);
-        }
-
-        @Override
-        public boolean willChangeTransformationMatrix() {
-            return true;
-        }
-
-        @Override
-        public boolean willChangeBounds() {
-            return false;
-        }
-    }
-
-    private static class FastAnimationSet extends AnimationSet {
-        FastAnimationSet() {
-            super(false);
-        }
-
-        @Override
-        public boolean willChangeTransformationMatrix() {
-            return true;
-        }
-
-        @Override
-        public boolean willChangeBounds() {
-            return false;
-        }
     }
 }
