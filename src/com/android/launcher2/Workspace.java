@@ -1073,6 +1073,9 @@ public class Workspace extends SmoothPagedView
 
     @Override
     protected void screenScrolled(int screenCenter) {
+        // If the screen is not xlarge, then don't rotate the CellLayouts
+        if (!LauncherApplication.isScreenXLarge()) return;
+
         final int halfScreenSize = getMeasuredWidth() / 2;
 
         for (int i = 0; i < getChildCount(); i++) {
