@@ -341,6 +341,10 @@ public class AllApps2D
     
     public void surrender() {
     }
+
+    public void reset() {
+        // Do nothing
+    }
 }
 
 

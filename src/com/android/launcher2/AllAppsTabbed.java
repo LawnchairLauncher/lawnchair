@@ -248,6 +248,10 @@ public class AllAppsTabbed extends TabHost implements AllAppsView, LauncherTrans
         mAllApps.surrender();
     }
 
+    public void reset() {
+        mAllApps.reset();
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (ev.getY() > mAllApps.getBottom()) {

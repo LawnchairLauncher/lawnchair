@@ -450,6 +450,11 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
         // do nothing?
     }
 
+    public void reset() {
+        setCurrentPage(0);
+        invalidatePageData();
+    }
+
     private void setupPage(PagedViewCellLayout layout) {
         layout.setCellCount(mCellCountX, mCellCountY);
         layout.setPadding(mPageLayoutPaddingLeft, mPageLayoutPaddingTop, mPageLayoutPaddingRight,

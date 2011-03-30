@@ -1470,4 +1470,8 @@ public class AllApps3D extends RSSurfaceView
             sRS.contextDump();
         }
     }
+
+    public void reset() {
+        // Do nothing
+    }
 }

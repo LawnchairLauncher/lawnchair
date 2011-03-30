@@ -41,6 +41,9 @@ public interface AllAppsView {
 
     public void updateApps(ArrayList<ApplicationInfo> list);
     
+    // Resets the AllApps page to the front
+    public void reset();
+
     public void dumpState();
 
     public void surrender();

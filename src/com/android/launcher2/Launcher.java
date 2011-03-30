@@ -1253,6 +1253,11 @@ public final class Launcher extends Activity
             if (Intent.ACTION_SCREEN_OFF.equals(action)) {
                 mUserPresent = false;
                 updateRunning();
+
+                // Reset AllApps to it's initial state
+                if (mAllAppsGrid != null) {
+                    mAllAppsGrid.reset();
+                }
             } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
                 mUserPresent = true;
                 updateRunning();
@@ -1423,6 +1428,11 @@ public final class Launcher extends Activity
                 InputMethodManager imm = (InputMethodManager)getSystemService(
                         INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            }
+
+            // Reset AllApps to it's initial state
+            if (mAllAppsGrid != null) {
+                mAllAppsGrid.reset();
             }
         }
     }
