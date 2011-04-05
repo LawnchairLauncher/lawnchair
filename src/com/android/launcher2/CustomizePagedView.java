@@ -172,12 +172,12 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         final Resources r = context.getResources();
         setDragSlopeThreshold(
                 r.getInteger(R.integer.config_customizationDrawerDragSlopeThreshold) / 100.0f);
-        mMinPageWidth = r.getDimensionPixelSize(R.dimen.customization_drawer_content_min_width);
 
         // Create a dummy page and set it up to find out the content width (used by our parent)
         PagedViewCellLayout layout = new PagedViewCellLayout(getContext());
         setupPage(layout);
         mPageContentWidth = layout.getContentWidth();
+        mMinPageWidth = layout.getWidthBeforeFirstLayout();
 
         setVisibility(View.GONE);
         setSoundEffectsEnabled(false);

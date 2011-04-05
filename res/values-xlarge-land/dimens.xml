@@ -27,8 +27,6 @@
 
     <dimen name="customization_drawer_height">480dp</dimen>
     <dimen name="customization_drawer_content_height">420dp</dimen>
-    <dimen name="customization_drawer_content_min_width">952dp</dimen>
-    <dimen name="customization_drawer_tab_widget_width">952dp</dimen>
 
     <integer name="all_apps_view_cellCountX">7</integer>
     <integer name="all_apps_view_cellCountY">5</integer>
