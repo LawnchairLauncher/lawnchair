@@ -24,9 +24,10 @@
 
     launcher:cellWidth="@dimen/workspace_cell_width"
     launcher:cellHeight="@dimen/workspace_cell_height"
-    launcher:widthGap="@dimen/workspace_width_gap"
-    launcher:heightGap="@dimen/workspace_height_gap"
-    launcher:yAxisStartPadding="25dip"
-    launcher:yAxisEndPadding="25dip"
-    launcher:xAxisStartPadding="15dip"
-    launcher:xAxisEndPadding="15dip"/>
+    launcher:widthGap="@dimen/workspace_width_gap_port"
+    launcher:heightGap="@dimen/workspace_height_gap_port"
+
+    launcher:xAxisStartPadding="@dimen/workspace_x_axis_start_padding_port"
+    launcher:xAxisEndPadding="@dimen/workspace_x_axis_end_padding_port"
+    launcher:yAxisStartPadding="@dimen/workspace_y_axis_start_padding_port"
+    launcher:yAxisEndPadding="@dimen/workspace_y_axis_end_padding_port" />

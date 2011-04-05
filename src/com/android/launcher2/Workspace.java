@@ -52,6 +52,7 @@ import android.graphics.drawable.Drawable;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Display;
@@ -255,10 +256,54 @@ public class Workspace extends SmoothPagedView
 
         mWallpaperManager = WallpaperManager.getInstance(context);
 
+        int cellCountX = DEFAULT_CELL_COUNT_X;
+        int cellCountY = DEFAULT_CELL_COUNT_Y;
+
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.Workspace, defStyle, 0);
-        int cellCountX = a.getInt(R.styleable.Workspace_cellCountX, DEFAULT_CELL_COUNT_X);
-        int cellCountY = a.getInt(R.styleable.Workspace_cellCountY, DEFAULT_CELL_COUNT_Y);
+
+        if (LauncherApplication.isScreenLarge()) {
+            final Resources res = context.getResources();
+            final DisplayMetrics dm = res.getDisplayMetrics();
+            float widthDp = dm.widthPixels / dm.density;
+            float heightDp = dm.heightPixels / dm.density;
+
+            final float statusBarHeight = res.getDimension(R.dimen.status_bar_height);
+            TypedArray actionBarSizeTypedArray =
+                context.obtainStyledAttributes(new int[] { android.R.attr.actionBarSize });
+            float actionBarHeight = actionBarSizeTypedArray.getDimension(0, 0f);
+
+            if (heightDp > widthDp) {
+                float temp = widthDp;
+                widthDp = heightDp;
+                heightDp = temp;
+            }
+            int cellCountXLand = 1;
+            int cellCountXPort = 1;
+            while (2*mPageSpacing + CellLayout.widthInLandscape(res, cellCountXLand + 1) <= widthDp) {
+                cellCountXLand++;
+            }
+            while (CellLayout.widthInPortrait(res, cellCountXPort + 1) <= heightDp) {
+                cellCountXPort++;
+            }
+            cellCountX = Math.min(cellCountXLand, cellCountXPort);
+
+            int cellCountYLand = 1;
+            int cellCountYPort = 1;
+            while (statusBarHeight + actionBarHeight +
+                    CellLayout.heightInLandscape(res, cellCountYLand + 1) <= heightDp) {
+                cellCountYLand++;
+            }
+            while (statusBarHeight + actionBarHeight +
+                    CellLayout.heightInPortrait(res, cellCountYPort + 1) <= widthDp) {
+                cellCountYPort++;
+            }
+            cellCountY = Math.min(cellCountYLand, cellCountYPort);
+        }
+
+        // if the value is manually specified, use that instead
+        cellCountX = a.getInt(R.styleable.Workspace_cellCountX, cellCountX);
+        cellCountY = a.getInt(R.styleable.Workspace_cellCountY, cellCountY);
         mDefaultPage = a.getInt(R.styleable.Workspace_defaultScreen, 1);
         a.recycle();
 
