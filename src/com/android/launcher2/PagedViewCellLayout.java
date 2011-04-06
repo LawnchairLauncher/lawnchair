@@ -248,10 +248,10 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         // the right edge of the content of the rightmost icon
 
         // icons are centered within cells, find out how much padding that accounts for
-        return getWidthBeforeLayout() - (mCellWidth - Utilities.getIconContentSize());
+        return getWidthBeforeFirstLayout() - (mCellWidth - Utilities.getIconContentSize());
     }
 
-    int getWidthBeforeLayout() {
+    int getWidthBeforeFirstLayout() {
         return mCellCountX * mCellWidth + (mCellCountX - 1) * mWidthGap;
     }
 
