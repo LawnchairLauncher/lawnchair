@@ -66,6 +66,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
     private boolean mAllowHardwareLayerCreation;
 
     private int mPageContentWidth;
+    private boolean mHasMadeSuccessfulDrop;
 
     public AllAppsPagedView(Context context) {
         this(context, null);
@@ -136,6 +137,10 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
             setCurrentPage(0);
             invalidatePageData();
         }
+    }
+
+    void resetSuccessfulDropFlag() {
+        mHasMadeSuccessfulDrop = false;
     }
 
     @Override
@@ -322,6 +327,12 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
         tearDownDragMode();
         mLauncher.getWorkspace().onDragStopped(success);
         mLauncher.unlockScreenOrientation();
+
+        if (!success && !mHasMadeSuccessfulDrop) {
+            mLauncher.getWorkspace().shrink(Workspace.ShrinkState.BOTTOM_HIDDEN);
+        } else {
+            mHasMadeSuccessfulDrop |= success;
+        }
     }
 
     int getPageContentWidth() {

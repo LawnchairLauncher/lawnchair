@@ -1401,14 +1401,6 @@ public class Workspace extends SmoothPagedView
 
     // we use this to shrink the workspace for the all apps view and the customize view
     public void shrink(ShrinkState shrinkState, boolean animated) {
-        // In the launcher interaction model, we're never in the state where we're shrunken and
-        // visible in the bottom of the screen, and then want to fade to being invisible.
-        // After spring loaded mode ends, this method was getting called twice, the first time
-        // with BOTTOM_VISIBLE (what we want) and a second time with BOTTOM_INVISIBLE (not
-        // what we want). As a temporary solution, we just change the second call to BOTTOM_VISIBLE
-        if (mIsSmall && mShrinkState == ShrinkState.BOTTOM_VISIBLE) {
-            shrinkState = ShrinkState.BOTTOM_VISIBLE;
-        }
         if (mFirstLayout) {
             // (mFirstLayout == "first layout has not happened yet")
             // if we get a call to shrink() as part of our initialization (for example, if

@@ -2695,7 +2695,7 @@ public final class Launcher extends Activity
      * of the screen.
      * @param toState The state to zoom out to. Must be ALL_APPS or CUSTOMIZE.
      */
-    private void cameraZoomOut(State toState, boolean animated) {
+    private void cameraZoomOut(State toState, boolean animated, boolean springLoaded) {
         final Resources res = getResources();
         final boolean toAllApps = (toState == State.ALL_APPS);
 
@@ -2715,7 +2715,15 @@ public final class Launcher extends Activity
         setPivotsForZoom(toView, toState, scale);
 
         if (toAllApps) {
-            mWorkspace.shrink(ShrinkState.BOTTOM_HIDDEN, animated);
+            if (!springLoaded) {
+                mWorkspace.shrink(ShrinkState.BOTTOM_HIDDEN, animated);
+
+                // Everytime we launch into AllApps, we reset the successful drop flag which
+                // controls when it should hide/show the mini workspaces
+                mAllAppsPagedView.resetSuccessfulDropFlag();
+            } else {
+                mWorkspace.shrink(ShrinkState.BOTTOM_VISIBLE, animated);
+            }
         } else {
             mWorkspace.shrink(ShrinkState.TOP, animated);
         }
@@ -2807,10 +2815,6 @@ public final class Launcher extends Activity
      * @param fromState The current state (must be ALL_APPS or CUSTOMIZE).
      * @param animated If true, the transition will be animated.
      */
-    private void cameraZoomIn(State fromState, boolean animated) {
-        cameraZoomIn(fromState, animated, false);
-    }
-
     private void cameraZoomIn(State fromState, boolean animated, boolean springLoaded) {
         Resources res = getResources();
         final boolean fromAllApps = (fromState == State.ALL_APPS);
@@ -2902,7 +2906,7 @@ public final class Launcher extends Activity
         }
 
         if (LauncherApplication.isScreenXLarge()) {
-            cameraZoomOut(State.ALL_APPS, animated);
+            cameraZoomOut(State.ALL_APPS, animated, false);
         } else {
             mAllAppsGrid.zoom(1.0f, animated);
         }
@@ -2956,11 +2960,11 @@ public final class Launcher extends Activity
     void enterSpringLoadedDragMode(CellLayout layout) {
         mWorkspace.enterSpringLoadedDragMode(layout);
         if (mState == State.ALL_APPS) {
-            cameraZoomIn(State.ALL_APPS, true, true);
             mState = State.ALL_APPS_SPRING_LOADED;
+            cameraZoomIn(State.ALL_APPS, true, true);
         } else if (mState == State.CUSTOMIZE) {
-            cameraZoomIn(State.CUSTOMIZE, true, true);
             mState = State.CUSTOMIZE_SPRING_LOADED;
+            cameraZoomIn(State.CUSTOMIZE, true, true);
         }/* else {
             // we're already in spring loaded mode; don't do anything
         }*/
@@ -2969,11 +2973,11 @@ public final class Launcher extends Activity
     void exitSpringLoadedDragMode() {
         if (mState == State.ALL_APPS_SPRING_LOADED) {
             mWorkspace.exitSpringLoadedDragMode(Workspace.ShrinkState.BOTTOM_VISIBLE);
-            cameraZoomOut(State.ALL_APPS, true);
+            cameraZoomOut(State.ALL_APPS, true, true);
             mState = State.ALL_APPS;
         } else if (mState == State.CUSTOMIZE_SPRING_LOADED) {
             mWorkspace.exitSpringLoadedDragMode(Workspace.ShrinkState.TOP);
-            cameraZoomOut(State.CUSTOMIZE, true);
+            cameraZoomOut(State.CUSTOMIZE, true, true);
             mState = State.CUSTOMIZE;
         }/* else {
             // we're not in spring loaded mode; don't do anything
@@ -3023,7 +3027,7 @@ public final class Launcher extends Activity
         if (mState == State.ALL_APPS || mState == State.ALL_APPS_SPRING_LOADED) {
             mWorkspace.setVisibility(View.VISIBLE);
             if (LauncherApplication.isScreenXLarge()) {
-                cameraZoomIn(State.ALL_APPS, animated);
+                cameraZoomIn(State.ALL_APPS, animated, false);
             } else {
                 mAllAppsGrid.zoom(0.0f, animated);
             }
@@ -3046,7 +3050,7 @@ public final class Launcher extends Activity
             return;
         }
 
-        cameraZoomOut(State.CUSTOMIZE, animated);
+        cameraZoomOut(State.CUSTOMIZE, animated, false);
 
         // Change the state *after* we've called all the transition code
         mState = State.CUSTOMIZE;
@@ -3059,7 +3063,7 @@ public final class Launcher extends Activity
     // Hide the customization drawer (only exists in x-large configuration)
     void hideCustomizationDrawer(boolean animated) {
         if (mState == State.CUSTOMIZE || mState == State.CUSTOMIZE_SPRING_LOADED) {
-            cameraZoomIn(State.CUSTOMIZE, animated);
+            cameraZoomIn(State.CUSTOMIZE, animated, false);
         }
     }
 
