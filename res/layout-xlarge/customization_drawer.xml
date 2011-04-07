@@ -32,7 +32,7 @@
         <FrameLayout
             android:id="@android:id/tabcontent"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/customization_drawer_content_height">
+            android:layout_height="match_parent">
             <com.android.launcher2.CustomizePagedView
                 android:id="@+id/customization_drawer_tab_contents"
                 android:layout_width="match_parent"
@@ -47,7 +47,8 @@
                 launcher:pageLayoutPaddingTop="40dp"
                 launcher:pageLayoutPaddingBottom="25dp"
                 launcher:pageLayoutPaddingLeft="20dp"
-                launcher:pageLayoutPaddingRight="20dp" />
+                launcher:pageLayoutPaddingRight="20dp"
+                launcher:pageLayoutMaxHeight="@dimen/customization_drawer_content_height" />
          </FrameLayout>
       </LinearLayout>
 </com.android.launcher2.CustomizeTrayTabHost>
