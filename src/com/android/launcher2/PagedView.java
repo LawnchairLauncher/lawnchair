@@ -110,6 +110,7 @@ public abstract class PagedView extends ViewGroup {
     protected int mPageLayoutPaddingRight;
     protected int mPageLayoutWidthGap;
     protected int mPageLayoutHeightGap;
+    protected int mPageLayoutMaxHeight;
     protected int mCellCountX;
     protected int mCellCountY;
     protected boolean mCenterPagesVertically;
@@ -189,6 +190,8 @@ public abstract class PagedView extends ViewGroup {
                 R.styleable.PagedView_pageLayoutWidthGap, -1);
         mPageLayoutHeightGap = a.getDimensionPixelSize(
                 R.styleable.PagedView_pageLayoutHeightGap, -1);
+        mPageLayoutMaxHeight = a.getDimensionPixelSize(
+                R.styleable.PagedView_pageLayoutMaxHeight, -1);
         a.recycle();
 
         setHapticFeedbackEnabled(false);
@@ -387,6 +390,10 @@ public abstract class PagedView extends ViewGroup {
         int maxChildHeight = 0;
 
         final int verticalPadding = mPaddingTop + mPaddingBottom;
+
+        if (mPageLayoutMaxHeight != -1) {
+            heightSize = Math.min(mPageLayoutMaxHeight, heightSize);
+        }
 
         // The children are given the same width and height as the workspace
         // unless they were set to WRAP_CONTENT

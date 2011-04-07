@@ -104,6 +104,7 @@
         <attr name="pageLayoutPaddingBottom" format="dimension" />
         <attr name="pageLayoutPaddingLeft" format="dimension" />
         <attr name="pageLayoutPaddingRight" format="dimension" />
+        <attr name="pageLayoutMaxHeight" format="dimension" />
         <!-- The space between adjacent pages of the PagedView. -->
         <attr name="pageSpacing" format="dimension" />
     </declare-styleable>
