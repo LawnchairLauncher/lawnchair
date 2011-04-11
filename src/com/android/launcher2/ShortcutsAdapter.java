@@ -30,7 +30,7 @@ import com.android.launcher.R;
 /**
  * GridView adapter to show the list of applications and shortcuts
  */
-public class ShortcutsAdapter  extends ArrayAdapter<ShortcutInfo> {
+public class ShortcutsAdapter extends ArrayAdapter<ShortcutInfo> {
     private final LayoutInflater mInflater;
     private final IconCache mIconCache;
 

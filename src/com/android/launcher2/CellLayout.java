@@ -1600,7 +1600,7 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
     // 2. When long clicking on an empty cell in a CellLayout, we save information about the
     //    cellX and cellY coordinates and which page was clicked. We then set this as a tag on
     //    the CellLayout that was long clicked
-    static final class CellInfo implements ContextMenu.ContextMenuInfo {
+    static final class CellInfo {
         View cell;
         int cellX = -1;
         int cellY = -1;

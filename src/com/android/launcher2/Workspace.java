@@ -341,58 +341,41 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    @Override
-    public void addView(View child, int index, LayoutParams params) {
+    private void onAddView(View child) {
         if (!(child instanceof CellLayout)) {
             throw new IllegalArgumentException("A Workspace can only have CellLayout children.");
         }
         ((CellLayout) child).setOnInterceptTouchListener(this);
         child.setOnClickListener(this);
         child.setClickable(true);
+    }
+    @Override
+    public void addView(View child, int index, LayoutParams params) {
+        onAddView(child);
         super.addView(child, index, params);
     }
 
     @Override
     public void addView(View child) {
-        if (!(child instanceof CellLayout)) {
-            throw new IllegalArgumentException("A Workspace can only have CellLayout children.");
-        }
-        ((CellLayout) child).setOnInterceptTouchListener(this);
-        child.setOnClickListener(this);
-        child.setClickable(true);
+        onAddView(child);
         super.addView(child);
     }
 
     @Override
     public void addView(View child, int index) {
-        if (!(child instanceof CellLayout)) {
-            throw new IllegalArgumentException("A Workspace can only have CellLayout children.");
-        }
-        ((CellLayout) child).setOnInterceptTouchListener(this);
-        child.setOnClickListener(this);
-        child.setClickable(true);
+        onAddView(child);
         super.addView(child, index);
     }
 
     @Override
     public void addView(View child, int width, int height) {
-        if (!(child instanceof CellLayout)) {
-            throw new IllegalArgumentException("A Workspace can only have CellLayout children.");
-        }
-        ((CellLayout) child).setOnInterceptTouchListener(this);
-        child.setOnClickListener(this);
-        child.setClickable(true);
+        onAddView(child);
         super.addView(child, width, height);
     }
 
     @Override
     public void addView(View child, LayoutParams params) {
-        if (!(child instanceof CellLayout)) {
-            throw new IllegalArgumentException("A Workspace can only have CellLayout children.");
-        }
-        ((CellLayout) child).setOnInterceptTouchListener(this);
-        child.setOnClickListener(this);
-        child.setClickable(true);
+        onAddView(child);
         super.addView(child, params);
     }
 
