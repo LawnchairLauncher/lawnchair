@@ -95,7 +95,7 @@ public class CellLayout extends ViewGroup {
     private float mGlowBackgroundScale;
     private float mGlowBackgroundAlpha;
 
-    private boolean mAcceptsDrops = false;
+    private boolean mAcceptsDrops = true;
     // If we're actively dragging something over this screen, mIsDragOverlapping is true
     private boolean mIsDragOverlapping = false;
     private boolean mIsDragOccuring = false;
@@ -1010,13 +1010,14 @@ public class CellLayout extends ViewGroup {
      * @param pixelY The Y location at which you want to search for a vacant area.
      * @param spanX Horizontal span of the object.
      * @param spanY Vertical span of the object.
-     * @param ignoreView Considers space occupied by this view as unoccupied
-     * @param result Previously returned value to possibly recycle.
+     * @param ignoreOccupied If true, the result can be an occupied cell
+     * @param result Array in which to place the result, or null (in which case a new array will
+     *        be allocated)
      * @return The X, Y cell of a vacant area that can contain this object,
      *         nearest the requested location.
      */
-    int[] findNearestVacantArea(
-            int pixelX, int pixelY, int spanX, int spanY, View ignoreView, int[] result) {
+    int[] findNearestArea(int pixelX, int pixelY, int spanX, int spanY, View ignoreView,
+            boolean ignoreOccupied, int[] result) {
         // mark space take by ignoreView as available (method checks if ignoreView is null)
         markCellsAsUnoccupiedForView(ignoreView);
 
@@ -1031,13 +1032,15 @@ public class CellLayout extends ViewGroup {
         for (int y = 0; y < countY - (spanY - 1); y++) {
             inner:
             for (int x = 0; x < countX - (spanX - 1); x++) {
-                for (int i = 0; i < spanX; i++) {
-                    for (int j = 0; j < spanY; j++) {
-                        if (occupied[x + i][y + j]) {
-                            // small optimization: we can skip to after the column we just found
-                            // an occupied cell
-                            x += i;
-                            continue inner;
+                if (ignoreOccupied) {
+                    for (int i = 0; i < spanX; i++) {
+                        for (int j = 0; j < spanY; j++) {
+                            if (occupied[x + i][y + j]) {
+                                // small optimization: we can skip to after the column we
+                                // just found an occupied cell
+                                x += i;
+                                continue inner;
+                            }
                         }
                     }
                 }
@@ -1062,6 +1065,42 @@ public class CellLayout extends ViewGroup {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Find a vacant area that will fit the given bounds nearest the requested
+     * cell location. Uses Euclidean distance to score multiple vacant areas.
+     *
+     * @param pixelX The X location at which you want to search for a vacant area.
+     * @param pixelY The Y location at which you want to search for a vacant area.
+     * @param spanX Horizontal span of the object.
+     * @param spanY Vertical span of the object.
+     * @param ignoreView Considers space occupied by this view as unoccupied
+     * @param result Previously returned value to possibly recycle.
+     * @return The X, Y cell of a vacant area that can contain this object,
+     *         nearest the requested location.
+     */
+    int[] findNearestVacantArea(
+            int pixelX, int pixelY, int spanX, int spanY, View ignoreView, int[] result) {
+        return findNearestArea(pixelX, pixelY, spanX, spanY, ignoreView, true, result);
+    }
+
+    /**
+     * Find a starting cell position that will fit the given bounds nearest the requested
+     * cell location. Uses Euclidean distance to score multiple vacant areas.
+     *
+     * @param pixelX The X location at which you want to search for a vacant area.
+     * @param pixelY The Y location at which you want to search for a vacant area.
+     * @param spanX Horizontal span of the object.
+     * @param spanY Vertical span of the object.
+     * @param ignoreView Considers space occupied by this view as unoccupied
+     * @param result Previously returned value to possibly recycle.
+     * @return The X, Y cell of a vacant area that can contain this object,
+     *         nearest the requested location.
+     */
+    int[] findNearestArea(
+            int pixelX, int pixelY, int spanX, int spanY, int[] result) {
+        return findNearestArea(pixelX, pixelY, spanX, spanY, null, false, result);
     }
 
     boolean existsEmptyCell() {

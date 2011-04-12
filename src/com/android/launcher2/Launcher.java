@@ -107,7 +107,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-
 /**
  * Default launcher application.
  */
@@ -315,7 +314,6 @@ public final class Launcher extends Activity
             // share the same customization workspace across all the tabs
             mCustomizePagedView = (CustomizePagedView) findViewById(
                     R.id.customization_drawer_tab_contents);
-
         }
         setupViews();
 
@@ -1803,7 +1801,7 @@ public final class Launcher extends Activity
         }
     }
 
-    void addFolder(int screen, int intersectCellX, int intersectCellY) {
+    FolderIcon addFolder(int screen, int intersectCellX, int intersectCellY) {
         UserFolderInfo folderInfo = new UserFolderInfo();
         folderInfo.title = getText(R.string.folder_name);
 
@@ -1811,7 +1809,7 @@ public final class Launcher extends Activity
         final int[] cellXY = mTmpAddItemCellCoordinates;
         if (!layout.findCellForSpanThatIntersects(cellXY, 1, 1, intersectCellX, intersectCellY)) {
             showOutOfSpaceMessage();
-            return;
+            return null;
         }
 
         // Update the model
@@ -1825,6 +1823,7 @@ public final class Launcher extends Activity
                 (ViewGroup) mWorkspace.getChildAt(mWorkspace.getCurrentPage()),
                 folderInfo, mIconCache);
         mWorkspace.addInScreen(newFolder, screen, cellXY[0], cellXY[1], 1, 1, isWorkspaceLocked());
+        return newFolder;
     }
 
     void removeFolder(FolderInfo folder) {
@@ -3377,6 +3376,8 @@ public final class Launcher extends Activity
      */
     public void startBinding() {
         final Workspace workspace = mWorkspace;
+
+        mWorkspace.clearDropTargets();
         int count = workspace.getChildCount();
         for (int i = 0; i < count; i++) {
             // Use removeAllViewsInLayout() to avoid an extra requestLayout() and invalidate().

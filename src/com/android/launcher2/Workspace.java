@@ -2333,12 +2333,38 @@ public class Workspace extends SmoothPagedView
 
             if (dropTargetLayout != null) {
                 // Move internally
-                mTargetCell = findNearestVacantArea(originX, originY,
-                        mDragInfo.spanX, mDragInfo.spanY, cell, dropTargetLayout,
+
+                // First we find the cell nearest to point at which the item is dropped, without
+                // any consideration to whether there is an item there.
+                mTargetCell = findNearestArea(originX, originY,
+                        mDragInfo.spanX, mDragInfo.spanY, dropTargetLayout,
                         mTargetCell);
 
                 final int screen = (mTargetCell == null) ?
                         mDragInfo.screen : indexOfChild(dropTargetLayout);
+
+                View v = dropTargetLayout.getChildAt(mTargetCell[0], mTargetCell[1]);
+                boolean hasMoved = !(mDragInfo.cellX == mTargetCell[0] &&
+                        mDragInfo.cellY == mTargetCell[1]);
+
+                // If the item being dropped is a shortcut and the nearest drop cell also contains
+                // a shortcut, then create a folder with the two shortcuts.
+                if (v != null && (v.getTag() instanceof ShortcutInfo) &&
+                        dragInfo instanceof ShortcutInfo && hasMoved) {
+                    ShortcutInfo info1 = (ShortcutInfo) v.getTag();
+                    ShortcutInfo info2 = (ShortcutInfo) dragInfo;
+                    dropTargetLayout.removeView(v);
+                    FolderIcon fi = mLauncher.addFolder(screen, mTargetCell[0], mTargetCell[1]);
+                    fi.addItem(info1);
+                    fi.addItem(info2);
+                    return;
+                }
+
+                // Aside from the special case where we're dropping a shortcut onto a shortcut,
+                // we need to find the nearest cell location that is vacant
+                mTargetCell = findNearestVacantArea(originX, originY,
+                        mDragInfo.spanX, mDragInfo.spanY, cell, dropTargetLayout,
+                        mTargetCell);
 
                 if (screen != mCurrentPage) {
                     snapToPage(screen);
@@ -2984,6 +3010,20 @@ public class Workspace extends SmoothPagedView
                 localPixelX, localPixelY, spanX, spanY, ignoreView, recycle);
     }
 
+    /**
+     * Calculate the nearest cell where the given object would be dropped.
+     */
+    private int[] findNearestArea(int pixelX, int pixelY,
+            int spanX, int spanY,CellLayout layout, int[] recycle) {
+
+        int localPixelX = pixelX - (layout.getLeft() - mScrollX);
+        int localPixelY = pixelY - (layout.getTop() - mScrollY);
+
+        // Find the best target drop location
+        return layout.findNearestArea(
+                localPixelX, localPixelY, spanX, spanY, recycle);
+    }
+
     void setLauncher(Launcher launcher) {
         mLauncher = launcher;
         mSpringLoadedDragController = new SpringLoadedDragController(mLauncher);
@@ -3134,6 +3174,21 @@ public class Workspace extends SmoothPagedView
         return null;
     }
 
+    void clearDropTargets() {
+        final int screenCount = getChildCount();
+
+        for (int i = 0; i < screenCount; i++) {
+            final CellLayout layoutParent = (CellLayout) getChildAt(i);
+            final ViewGroup layout = layoutParent.getChildrenLayout();
+            int childCount = layout.getChildCount();
+            for (int j = 0; j < childCount; j++) {
+                View v = layout.getChildAt(j);
+                if (v instanceof DropTarget) {
+                    mDragController.removeDropTarget((DropTarget) v);
+                }
+            }
+        }
+    }
 
     void removeItems(final ArrayList<ApplicationInfo> apps) {
         final int screenCount = getChildCount();
