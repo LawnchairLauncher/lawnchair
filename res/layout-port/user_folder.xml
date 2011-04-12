@@ -14,7 +14,9 @@
      limitations under the License.
 -->
 
-<com.android.launcher2.UserFolder xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.launcher2.UserFolder
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
     android:orientation="vertical">
         
     <Button
@@ -29,15 +31,22 @@
 
     <FrameLayout
          android:layout_width="match_parent"
-	   android:layout_height="0dip"
+         android:layout_height="0dip"
          android:layout_weight="1"
          android:background="@drawable/box_launcher_bottom">
-        <GridView
+        <com.android.launcher2.CellLayout
              android:id="@id/folder_content"
              android:layout_width="match_parent"
-	       android:layout_height="match_parent"
+             android:layout_height="match_parent"
 
              android:cacheColorHint="#ff333333"
+
+             launcher:cellWidth="@dimen/folder_cell_width"
+             launcher:cellHeight="@dimen/folder_cell_height"
+             launcher:xAxisStartPadding="0dip"
+             launcher:xAxisEndPadding="0dip"
+             launcher:yAxisStartPadding="0dip"
+             launcher:yAxisEndPadding="0dip"
 
              android:scrollbarAlwaysDrawVerticalTrack="true"
              android:scrollbarStyle="insideInset"

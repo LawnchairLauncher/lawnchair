@@ -1520,6 +1520,14 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         }
     }
 
+    public boolean isOccupied(int x, int y) {
+        if (x < mCountX && y < mCountY) {
+            return mOccupied[x][y];
+        } else {
+            throw new RuntimeException("Position exceeds the bound of this CellLayout");
+        }
+    }
+
     @Override
     public ViewGroup.LayoutParams generateLayoutParams(AttributeSet attrs) {
         return new CellLayout.LayoutParams(getContext(), attrs);

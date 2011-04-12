@@ -91,6 +91,8 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
         } else {
             item = (ShortcutInfo)dragInfo;
         }
+        item.cellX = -1;
+        item.cellY = -1;
         addItem(item);
     }
 

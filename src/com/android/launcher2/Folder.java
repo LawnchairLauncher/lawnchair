@@ -37,7 +37,6 @@ import com.android.launcher.R;
 public class Folder extends LinearLayout implements DragSource, OnItemLongClickListener,
         OnItemClickListener, OnClickListener, View.OnLongClickListener {
 
-    protected AbsListView mContent;
     protected DragController mDragController;
     
     protected Launcher mLauncher;
@@ -66,10 +65,6 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mContent = (AbsListView) findViewById(R.id.folder_content);
-        mContent.setOnItemClickListener(this);
-        mContent.setOnItemLongClickListener(this);
-        
         mCloseButton = (Button) findViewById(R.id.folder_close);
         mCloseButton.setOnClickListener(this);
         mCloseButton.setOnLongClickListener(this);
@@ -121,18 +116,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     public void onDragViewVisible() {
     }
 
-    /**
-     * Sets the adapter used to populate the content area. The adapter must only
-     * contains ShortcutInfo items.
-     *
-     * @param adapter The list of applications to display in the folder.
-     */
-    void setContentAdapter(BaseAdapter adapter) {
-        mContent.setAdapter(adapter);
-    }
-
     void notifyDataSetChanged() {
-        ((BaseAdapter) mContent.getAdapter()).notifyDataSetChanged();
     }
 
     void setLauncher(Launcher launcher) {
@@ -146,10 +130,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         return mInfo;
     }
 
-    // When the folder opens, we need to refresh the GridView's selection by
-    // forcing a layout
     void onOpen() {
-        mContent.requestLayout();
     }
 
     void onClose() {

@@ -17,4 +17,6 @@
 <resources>
     <dimen name="workspace_cell_width">80dip</dimen>
     <dimen name="workspace_cell_height">100dip</dimen>
+    <dimen name="folder_cell_width">74dip</dimen>
+    <dimen name="folder_cell_height">86dip</dimen>
 </resources>

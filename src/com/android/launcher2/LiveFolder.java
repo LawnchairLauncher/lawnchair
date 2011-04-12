@@ -22,10 +22,12 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.net.Uri;
 import android.provider.LiveFolders;
 import android.os.AsyncTask;
 import android.database.Cursor;
+import android.widget.GridView;
 
 import java.lang.ref.WeakReference;
 
@@ -33,6 +35,7 @@ import com.android.launcher.R;
 
 public class LiveFolder extends Folder {
     private AsyncTask<LiveFolderInfo,Void,Cursor> mLoadingTask;
+    protected GridView mContent;
 
     public LiveFolder(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -42,6 +45,15 @@ public class LiveFolder extends Folder {
         final int layout = isDisplayModeList(folderInfo) ?
                 R.layout.live_folder_list : R.layout.live_folder_grid;
         return (LiveFolder) LayoutInflater.from(context).inflate(layout, null);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        mContent = (GridView) findViewById(R.id.folder_content);
+        mContent.setOnItemClickListener(this);
+        mContent.setOnItemLongClickListener(this);
     }
 
     private static boolean isDisplayModeList(FolderInfo folderInfo) {
@@ -68,6 +80,21 @@ public class LiveFolder extends Folder {
         }
     }
 
+    /**
+     * Sets the adapter used to populate the content area. The adapter must only
+     * contains ShortcutInfo items.
+     *
+     * @param adapter The list of applications to display in the folder.
+     */
+    void setContentAdapter(BaseAdapter adapter) {
+        mContent.setAdapter(adapter);
+    }
+
+    @Override
+    void notifyDataSetChanged() {
+        ((BaseAdapter) mContent.getAdapter()).notifyDataSetChanged();
+    }
+
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         return false;
@@ -84,6 +111,9 @@ public class LiveFolder extends Folder {
     @Override
     void onOpen() {
         super.onOpen();
+        // When the folder opens, we need to refresh the GridView's selection by
+        // forcing a layout
+        mContent.requestLayout();
         requestFocus();
     }
 
