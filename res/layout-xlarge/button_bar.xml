@@ -34,7 +34,8 @@
         android:onClick="onClickSearchButton"
 
         android:focusable="true"
-        android:clickable="true" />
+        android:clickable="true"
+        android:contentDescription="@string/accessibility_search_button" />
 
     <ImageView
         android:id="@+id/search_divider"
@@ -64,7 +65,8 @@
         android:onClick="onClickVoiceButton"
 
         android:focusable="true"
-        android:clickable="true"/>
+        android:clickable="true"
+        android:contentDescription="@string/accessibility_voice_search_button" />
 
     <!-- AllApps icon -->
     <com.android.launcher2.StrokedTextView
@@ -79,7 +81,7 @@
         android:paddingRight="@dimen/toolbar_button_horizontal_padding"
         android:paddingTop="@dimen/all_apps_button_vertical_padding"
         android:paddingBottom="@dimen/all_apps_button_vertical_padding"
-       android:background="@drawable/button_bg"
+        android:background="@drawable/button_bg"
 
         android:gravity="center_horizontal|center_vertical"
         android:textColor="#CCFFFFFF"
@@ -95,7 +97,8 @@
         android:shadowRadius="2.5"
 
         android:focusable="true"
-        android:clickable="true" />
+        android:clickable="true"
+        android:contentDescription="@string/accessibility_all_apps_button" />
 
     <ImageView
         android:id="@+id/all_apps_divider"
@@ -123,7 +126,7 @@
         android:paddingBottom="@dimen/toolbar_button_vertical_padding"
         android:background="@drawable/button_bg"
         android:focusable="true"
- />
+        android:contentDescription="@string/accessibility_customize_button" />
 
     <!-- Delete icon -->
     <com.android.launcher2.DeleteZone
@@ -152,5 +155,5 @@
         launcher:direction="horizontal"
 
         android:focusable="true"
- />
+        android:contentDescription="@string/accessibility_delete_button" />
 </RelativeLayout>

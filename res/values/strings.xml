@@ -151,6 +151,17 @@
          device. [CHAR_LIMIT=30]-->
     <string name="delete_zone_label_all_apps">Uninstall</string>
 
+    <!-- Accessibility: Search button -->
+    <string name="accessibility_search_button">Search</string>
+    <!-- Accessibility: Voice Search button -->
+    <string name="accessibility_voice_search_button">Voice Search</string>
+    <!-- Accessibility: AllApps button -->
+    <string name="accessibility_all_apps_button">Applications</string>
+    <!-- Accessibility: Customize button -->
+    <string name="accessibility_customize_button">Customize</string>
+    <!-- Accessibility: Delete button -->
+    <string name="accessibility_delete_button">Remove</string>
+
     <!-- Label for trash icon in All Apps, when an updated system app is selected. The update will
          be uninstalled. [CHAR_LIMIT=30] -->
     <string name="delete_zone_label_all_apps_system_app">Uninstall update</string>
