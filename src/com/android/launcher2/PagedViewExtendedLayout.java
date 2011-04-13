@@ -26,7 +26,7 @@ import android.widget.LinearLayout;
  * The linear layout used strictly for the widget/wallpaper tab of the customization tray
  */
 public class PagedViewExtendedLayout extends LinearLayout implements Page {
-    static final String TAG = "PagedViewWidgetLayout";
+    static final String TAG = "PagedViewExtendedLayout";
 
     public PagedViewExtendedLayout(Context context) {
         this(context, null);

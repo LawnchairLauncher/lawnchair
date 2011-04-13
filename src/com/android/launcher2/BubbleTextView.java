@@ -29,6 +29,7 @@ import android.graphics.Region;
 import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -87,8 +88,6 @@ public class BubbleTextView extends TextView implements VisibilityChangedBroadca
 
     private void init() {
         mBackground = getBackground();
-        setFocusable(true);
-        setBackgroundDrawable(null);
 
         final Resources res = getContext().getResources();
         int bubbleColor = res.getColor(R.color.bubble_dark_background);
@@ -329,5 +328,17 @@ public class BubbleTextView extends TextView implements VisibilityChangedBroadca
             super.onSetAlpha(alpha);
         }
         return true;
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        return FocusHelper.handleBubbleTextViewKeyEvent(this, keyCode, event)
+                || super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        return FocusHelper.handleBubbleTextViewKeyEvent(this, keyCode, event)
+                || super.onKeyUp(keyCode, event);
     }
 }

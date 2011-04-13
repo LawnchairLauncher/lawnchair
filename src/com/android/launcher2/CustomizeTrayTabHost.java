@@ -16,8 +16,7 @@
 
 package com.android.launcher2;
 
-import com.android.launcher.R;
-import com.android.launcher2.CustomizePagedView.CustomizationType;
+import java.util.Random;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -28,9 +27,13 @@ import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
+
+import com.android.launcher.R;
+import com.android.launcher2.CustomizePagedView.CustomizationType;
 
 public class CustomizeTrayTabHost extends TabHost implements LauncherTransitionable  {
     // tags for the customization tabs
@@ -69,7 +72,8 @@ public class CustomizeTrayTabHost extends TabHost implements LauncherTransitiona
 
         tabView = (TextView) mInflater.inflate(R.layout.tab_widget_indicator, tabWidget, false);
         tabView.setText(mContext.getString(R.string.widgets_tab_label));
-        addTab(newTabSpec(WIDGETS_TAG).setIndicator(tabView).setContent(contentFactory));
+        addTab(newTabSpec(WIDGETS_TAG)
+                .setIndicator(tabView).setContent(contentFactory));
         tabView = (TextView) mInflater.inflate(R.layout.tab_widget_indicator, tabWidget, false);
         tabView.setText(mContext.getString(R.string.applications_tab_label));
         addTab(newTabSpec(APPLICATIONS_TAG)
@@ -82,6 +86,7 @@ public class CustomizeTrayTabHost extends TabHost implements LauncherTransitiona
         tabView.setText(mContext.getString(R.string.shortcuts_tab_label));
         addTab(newTabSpec(SHORTCUTS_TAG)
                 .setIndicator(tabView).setContent(contentFactory));
+
         setOnTabChangedListener(new OnTabChangeListener() {
             public void onTabChanged(String tabId) {
                 final CustomizePagedView.CustomizationType newType =
@@ -147,6 +152,14 @@ public class CustomizeTrayTabHost extends TabHost implements LauncherTransitiona
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         mFirstLayout = false;
         super.onLayout(changed, l, t, r, b);
+    }
+
+    @Override
+    public int getDescendantFocusability() {
+        if (getVisibility() != View.VISIBLE) {
+            return ViewGroup.FOCUS_BLOCK_DESCENDANTS;
+        }
+        return super.getDescendantFocusability();
     }
 
     CustomizationType getCustomizeFilterForTabTag(String tag) {

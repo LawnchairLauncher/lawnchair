@@ -29,11 +29,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Implements a tabbed version of AllApps2D.
@@ -80,6 +82,7 @@ public class AllAppsTabbed extends TabHost implements AllAppsView, LauncherTrans
         };
 
         // Create the tabs and wire them up properly
+        AllAppsTabKeyEventListener keyListener = new AllAppsTabKeyEventListener();
         TextView tabView;
         TabWidget tabWidget = (TabWidget) findViewById(com.android.internal.R.id.tabs);
         tabView = (TextView) mInflater.inflate(R.layout.tab_widget_indicator, tabWidget, false);
@@ -89,6 +92,12 @@ public class AllAppsTabbed extends TabHost implements AllAppsView, LauncherTrans
         tabView = (TextView) mInflater.inflate(R.layout.tab_widget_indicator, tabWidget, false);
         tabView.setText(mContext.getString(R.string.all_apps_tab_downloaded));
         addTab(newTabSpec(TAG_DOWNLOADED).setIndicator(tabView).setContent(contentFactory));
+
+        // Setup the key listener to jump between the last tab view and the market icon
+        View lastTab = tabWidget.getChildTabViewAt(tabWidget.getTabCount() - 1);
+        lastTab.setOnKeyListener(keyListener);
+        View shopButton = findViewById(R.id.market_button);
+        shopButton.setOnKeyListener(keyListener);
 
         setOnTabChangedListener(new OnTabChangeListener() {
             public void onTabChanged(String tabId) {
@@ -258,5 +267,13 @@ public class AllAppsTabbed extends TabHost implements AllAppsView, LauncherTrans
             return false;
         }
         return true;
+    }
+
+    @Override
+    public int getDescendantFocusability() {
+        if (getVisibility() != View.VISIBLE) {
+            return ViewGroup.FOCUS_BLOCK_DESCENDANTS;
+        }
+        return super.getDescendantFocusability();
     }
 }

@@ -206,7 +206,7 @@ public final class Launcher extends Activity
     private CustomizeTrayTabHost mHomeCustomizationDrawer;
     private boolean mAutoAdvanceRunning = false;
 
-    private View mButtonCluster;
+    private ViewGroup mButtonCluster;
     private View mAllAppsButton;
     private View mDivider;
     private View mConfigureButton;
@@ -771,8 +771,10 @@ public final class Launcher extends Activity
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        boolean handled = super.onKeyDown(keyCode, event);
-        if (!handled && acceptFilter() && keyCode != KeyEvent.KEYCODE_ENTER) {
+        final int uniChar = event.getUnicodeChar();
+        final boolean handled = super.onKeyDown(keyCode, event);
+        final boolean isKeyNotWhitespace = uniChar > 0 && !Character.isWhitespace(uniChar);
+        if (!handled && acceptFilter() && isKeyNotWhitespace) {
             boolean gotKey = TextKeyListener.getInstance().onKeyDown(mWorkspace, mDefaultKeySsb,
                     keyCode, event);
             if (gotKey && mDefaultKeySsb != null && mDefaultKeySsb.length() > 0) {
@@ -960,7 +962,7 @@ public final class Launcher extends Activity
         deleteZone.setDragController(dragController);
 
         final View allAppsButton = findViewById(R.id.all_apps_button);
-        final View divider = findViewById(R.id.divider);
+        final View divider = findViewById(R.id.all_apps_divider);
         final View configureButton = findViewById(R.id.configure_button);
 
         if (LauncherApplication.isScreenXLarge()) {
@@ -1009,10 +1011,15 @@ public final class Launcher extends Activity
         if (allAppsDeleteZone != null) {
             dragController.addDropTarget(allAppsDeleteZone);
         }
-        mButtonCluster = findViewById(R.id.all_apps_button_cluster);
+        mButtonCluster = (ViewGroup) findViewById(R.id.all_apps_button_cluster);
+        View.OnKeyListener listener = new ButtonBarKeyEventListener();
+        int buttonCount = mButtonCluster.getChildCount();
+        for (int i = 0; i < buttonCount; ++i) {
+            mButtonCluster.getChildAt(i).setOnKeyListener(listener);
+        }
 
         mAllAppsButton = findViewById(R.id.all_apps_button);
-        mDivider = findViewById(R.id.divider);
+        mDivider = findViewById(R.id.all_apps_divider);
         mConfigureButton = findViewById(R.id.configure_button);
 
         // We had previously set these click handlers in XML, but the first time we launched
@@ -2576,7 +2583,6 @@ public final class Launcher extends Activity
     
     private void showAndEnableToolbarButton(View button) {
         button.setVisibility(View.VISIBLE);
-        button.setFocusable(true);
         button.setClickable(true);
     }
 
@@ -2587,7 +2593,6 @@ public final class Launcher extends Activity
     }
 
     private void disableToolbarButton(View button) {
-        button.setFocusable(false);
         button.setClickable(false);
     }
 
@@ -3146,14 +3151,20 @@ public final class Launcher extends Activity
 
     private void updateGlobalSearchIcon() {
         if (LauncherApplication.isScreenXLarge()) {
+            final View searchButton = findViewById(R.id.search_button);
+            final View searchDivider = findViewById(R.id.search_divider);
+
             final SearchManager searchManager =
                     (SearchManager) getSystemService(Context.SEARCH_SERVICE);
             ComponentName activityName = searchManager.getGlobalSearchActivity();
             if (activityName != null) {
                 sGlobalSearchIcon = updateButtonWithIconFromExternalActivity(
                         R.id.search_button, activityName, R.drawable.ic_generic_search);
+                searchButton.setVisibility(View.VISIBLE);
+                searchDivider.setVisibility(View.VISIBLE);
             } else {
-                findViewById(R.id.search_button).setVisibility(View.GONE);
+                searchButton.setVisibility(View.GONE);
+                searchDivider.setVisibility(View.GONE);
             }
         }
     }
@@ -3164,13 +3175,19 @@ public final class Launcher extends Activity
 
     private void updateVoiceSearchIcon() {
         if (LauncherApplication.isScreenXLarge()) {
+            final View searchDivider = findViewById(R.id.search_divider);
+            final View voiceButton = findViewById(R.id.voice_button);
+
             Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
             ComponentName activityName = intent.resolveActivity(getPackageManager());
             if (activityName != null) {
                 sVoiceSearchIcon = updateButtonWithIconFromExternalActivity(
                         R.id.voice_button, activityName, R.drawable.ic_voice_search);
+                searchDivider.setVisibility(View.VISIBLE);
+                voiceButton.setVisibility(View.VISIBLE);
             } else {
-                findViewById(R.id.voice_button).setVisibility(View.GONE);
+                searchDivider.setVisibility(View.GONE);
+                voiceButton.setVisibility(View.GONE);
             }
         }
     }

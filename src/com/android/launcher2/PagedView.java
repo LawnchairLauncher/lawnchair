@@ -1166,7 +1166,7 @@ public abstract class PagedView extends ViewGroup {
     public void requestChildFocus(View child, View focused) {
         super.requestChildFocus(child, focused);
         int page = indexOfChild(child);
-        if (page >= 0 && !isInTouchMode()) {
+        if (page >= 0 && page != getCurrentPage() && !isInTouchMode()) {
             snapToPage(page);
         }
     }

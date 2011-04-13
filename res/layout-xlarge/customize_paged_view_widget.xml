@@ -25,7 +25,10 @@
     android:paddingBottom="50dp"
 
     launcher:blurColor="#FF6B8CF0"
-    launcher:outlineColor="#FF8CD2FF">
+    launcher:outlineColor="#FF8CD2FF"
+
+    android:background="@drawable/focusable_view_bg"
+    android:focusable="true">
 
     <!-- The icon of the widget. -->
     <ImageView
