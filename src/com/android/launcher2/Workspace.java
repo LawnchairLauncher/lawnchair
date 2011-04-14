@@ -1236,6 +1236,14 @@ public class Workspace extends SmoothPagedView
     }
 
     @Override
+    public int getDescendantFocusability() {
+        if (mIsSmall) {
+            return ViewGroup.FOCUS_BLOCK_DESCENDANTS;
+        }
+        return super.getDescendantFocusability();
+    }
+
+    @Override
     public void addFocusables(ArrayList<View> views, int direction, int focusableMode) {
         if (!mLauncher.isAllAppsVisible()) {
             final Folder openFolder = getOpenFolder();

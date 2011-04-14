@@ -36,6 +36,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Checkable;
@@ -225,6 +226,18 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         // (it's the same view in that case).  This is not ideal, but to prevent more changes,
         // we just always mark the touch event as handled.
         return super.onTouchEvent(event) || true;
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        return FocusHelper.handlePagedViewWidgetKeyEvent(this, keyCode, event)
+                || super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        return FocusHelper.handlePagedViewWidgetKeyEvent(this, keyCode, event)
+                || super.onKeyUp(keyCode, event);
     }
 
     @Override

@@ -31,6 +31,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.widget.Checkable;
 import android.widget.TextView;
 
@@ -128,8 +129,6 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
             mCheckedFadeOutDuration = r.getInteger(R.integer.icon_allAppsCustomizeFadeOutTime);
         }
 
-        setFocusable(true);
-        setBackgroundDrawable(null);
         mHolographicOutlineView = new HolographicPagedViewIcon(context, this);
     }
 
@@ -242,6 +241,18 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         sWorker.removeMessages(MESSAGE_CREATE_HOLOGRAPHIC_OUTLINE, this);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        return FocusHelper.handlePagedViewIconKeyEvent(this, keyCode, event)
+                || super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        return FocusHelper.handlePagedViewIconKeyEvent(this, keyCode, event)
+                || super.onKeyUp(keyCode, event);
     }
 
     @Override

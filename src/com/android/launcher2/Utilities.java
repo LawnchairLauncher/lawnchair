@@ -16,6 +16,8 @@
 
 package com.android.launcher2;
 
+import java.util.Random;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -388,5 +390,9 @@ final class Utilities {
             n <<= 1;
         }
         return n;
+    }
+
+    static int generateRandomId() {
+        return new Random(System.currentTimeMillis()).nextInt(1 << 24);
     }
 }

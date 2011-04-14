@@ -18,10 +18,11 @@ package com.android.launcher2;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Bitmap.Config;
 import android.graphics.PorterDuff.Mode;
+import android.graphics.drawable.Drawable;
 import android.text.Layout;
 import android.util.AttributeSet;
 import android.widget.TextView;
@@ -163,6 +164,16 @@ public class CachedTextView extends TextView {
         if (mPrevAlpha != alpha) {
             mPrevAlpha = alpha;
             mCachePaint.setAlpha(alpha);
+
+            // We manually update the drawables alpha since the default TextView implementation may
+            // not do this if there is a background set (which we may due to the focus bg)
+            final Drawable[] dr = getCompoundDrawables();
+            for (int i = 0; i < dr.length; ++i) {
+                if (dr[i] != null) {
+                    dr[i].mutate().setAlpha(alpha);
+                }
+            }
+
             super.onSetAlpha(alpha);
         }
         return true;

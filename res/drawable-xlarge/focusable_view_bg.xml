@@ -14,19 +14,6 @@
      limitations under the License.
 -->
 
-<com.android.launcher2.PagedViewIcon
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
-
-    launcher:blurColor="#FF6B8CF0"
-    launcher:outlineColor="#FF8CD2FF"
-
-    style="@style/WorkspaceIcon.AllApps"
-
-    android:id="@+id/application_icon"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center_horizontal"
-
-    android:focusable="true"
-    android:background="@drawable/focusable_view_bg" />
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true" android:drawable="@drawable/focused_bg" />
+</selector>

@@ -25,4 +25,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    style="@style/WorkspaceIcon.Landscape" />
+    style="@style/WorkspaceIcon.Landscape"
+
+    android:background="@drawable/focusable_view_bg"
+    android:focusable="true" />

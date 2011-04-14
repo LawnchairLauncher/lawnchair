@@ -20,7 +20,8 @@
 
     android:id="@+id/drag_layer"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:focusable="false">
 
     <!-- The workspace contains 5 screens of cells -->
     <com.android.launcher2.Workspace
@@ -41,17 +42,17 @@
         <include android:id="@+id/cell5" layout="@layout/workspace_screen" />
     </com.android.launcher2.Workspace>
 
+    <include layout="@layout/button_bar"
+        android:id="@+id/all_apps_button_cluster"
+        android:layout_width="fill_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:layout_gravity="top" />
+
     <include
         layout="@layout/all_apps_tabbed"
         android:id="@+id/all_apps_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="top" />
-
-    <include layout="@layout/button_bar"
-        android:id="@+id/all_apps_button_cluster"
-        android:layout_width="fill_parent"
-        android:layout_height="?android:attr/actionBarSize"
         android:layout_gravity="top" />
 
     <include layout="@layout/customization_drawer"

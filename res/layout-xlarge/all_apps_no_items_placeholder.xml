@@ -32,4 +32,5 @@
     android:drawablePadding="0dip"
 
     android:maxLines="2"
-    android:fadingEdge="horizontal" />
+    android:fadingEdge="horizontal"
+    android:focusable="false" />

@@ -180,6 +180,14 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         return mChildren.indexOfChild(v);
     }
 
+    public int getCellCountX() {
+        return mCellCountX;
+    }
+
+    public int getCellCountY() {
+        return mCellCountY;
+    }
+
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // TODO: currently ignoring padding
 

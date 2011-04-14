@@ -488,8 +488,6 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
 
     @Override
     public void onClick(final View v) {
-        // Return early if this is not initiated from a touch
-        if (!v.isInTouchMode()) return;
         // Return early if we are still animating the pages
         if (mNextPage != INVALID_PAGE) return;
 

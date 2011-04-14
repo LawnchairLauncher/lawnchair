@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/tab_unselected_holo">
-            <TabWidget
+            <com.android.launcher2.FocusOnlyTabWidget
                 android:id="@android:id/tabs"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -50,7 +50,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:visibility="invisible"/>
+                    android:visibility="invisible"
+                    android:background="@drawable/focusable_view_bg"
+                    android:focusable="true" />
                 <TextView
                     android:id="@+id/market_button"
                     android:layout_width="wrap_content"
@@ -64,7 +66,9 @@
                     android:shadowColor="@color/workspace_all_apps_and_delete_zone_text_shadow_color"
                     android:shadowDx="0.0"
                     android:shadowDy="0.0"
-                    android:shadowRadius="2.0" />
+                    android:shadowRadius="2.0"
+                    android:background="@drawable/focusable_view_bg"
+                    android:focusable="true" />
             </FrameLayout>
             <com.android.launcher2.DeleteZone
                 android:id="@+id/all_apps_delete_zone"
@@ -84,7 +88,10 @@
                 android:shadowColor="@color/workspace_all_apps_and_delete_zone_text_shadow_color"
                 android:shadowDx="0.0"
                 android:shadowDy="0.0"
-                android:shadowRadius="2.0" />
+                android:shadowRadius="2.0"
+
+                android:background="@drawable/focusable_view_bg"
+                android:focusable="true" />
         </RelativeLayout>
         <FrameLayout
             android:id="@android:id/tabcontent"
