@@ -22,8 +22,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/all_apps" />
-
     <!-- The workspace contains 5 screens of cells -->
     <com.android.launcher2.Workspace
         android:id="@+id/workspace"
@@ -40,6 +38,12 @@
         <include android:id="@+id/cell5" layout="@layout/workspace_screen" />
                 
     </com.android.launcher2.Workspace>
+
+    <include layout="@layout/apps_customize_pane"
+        android:id="@+id/apps_customize_pane"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible" />
 
     <ImageView
         android:id="@+id/previous_screen"

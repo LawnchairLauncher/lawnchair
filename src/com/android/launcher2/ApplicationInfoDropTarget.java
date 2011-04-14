@@ -162,10 +162,13 @@ public class ApplicationInfoDropTarget extends IconDropTarget {
         // Fade in the overlapping views
         if (mOverlappingViews != null) {
             for (View view : mOverlappingViews) {
-                ObjectAnimator oa = ObjectAnimator.ofFloat(view, "alpha", 1.0f);
-                oa.setDuration(sFadeInAnimationDuration);
-                mFadeAnimator.play(oa);
-                view.setVisibility(VISIBLE);
+                // Check whether the views are enabled first, before trying to fade them in
+                if (view.isEnabled()) {
+                    ObjectAnimator oa = ObjectAnimator.ofFloat(view, "alpha", 1.0f);
+                    oa.setDuration(sFadeInAnimationDuration);
+                    mFadeAnimator.play(oa);
+                    view.setVisibility(VISIBLE);
+                }
             }
         }
         mFadeAnimator.start();

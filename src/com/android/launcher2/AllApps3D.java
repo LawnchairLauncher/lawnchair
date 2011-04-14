@@ -208,8 +208,10 @@ public class AllApps3D extends RSSurfaceView
         setSoundEffectsEnabled(old);
     }
 
-    public void setLauncher(Launcher launcher) {
+    @Override
+    public void setup(Launcher launcher, DragController dragController) {
         mLauncher = launcher;
+        mDragController = dragController;
     }
 
     @Override
@@ -736,11 +738,6 @@ public class AllApps3D extends RSSurfaceView
             }
         }
         return false;
-    }
-
-    @Override
-    public void setDragController(DragController dragger) {
-        mDragController = dragger;
     }
 
     @Override

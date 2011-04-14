@@ -1059,6 +1059,8 @@ public class Workspace extends SmoothPagedView
     @Override
     protected void screenScrolled(int screenCenter) {
         // If the screen is not xlarge, then don't rotate the CellLayouts
+        // NOTE: If we don't update the side pages alpha, then we should not hide the side pages.
+        //       see unshrink().
         if (!LauncherApplication.isScreenXLarge()) return;
 
         final int halfScreenSize = getMeasuredWidth() / 2;
@@ -1257,19 +1259,6 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            // (In XLarge mode, the workspace is shrunken below all apps, and responds to taps
-            // ie when you click on a mini-screen, it zooms back to that screen)
-            if (!LauncherApplication.isScreenXLarge() && mLauncher.isAllAppsVisible()) {
-                return false;
-            }
-        }
-
-        return super.dispatchTouchEvent(ev);
-    }
-
     void enableChildrenCache(int fromPage, int toPage) {
         if (fromPage > toPage) {
             final int temp = fromPage;
@@ -1299,27 +1288,32 @@ public class Workspace extends SmoothPagedView
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        AllAppsPagedView allApps = (AllAppsPagedView)
-                mLauncher.findViewById(R.id.all_apps_paged_view);
-
-        if (mLauncher.isAllAppsVisible() && mShrinkState == ShrinkState.BOTTOM_HIDDEN
-                && allApps != null) {
-            if (ev.getAction() == MotionEvent.ACTION_UP &&
-                    allApps.getTouchState() == TOUCH_STATE_REST) {
-
-                // Cancel any scrolling that is in progress.
-                if (!mScroller.isFinished()) {
-                    mScroller.abortAnimation();
-                }
-                setCurrentPage(mCurrentPage);
-
-                if (mShrinkState == ShrinkState.BOTTOM_HIDDEN) {
-                    mLauncher.showWorkspace(true);
-                }
-                allApps.onTouchEvent(ev);
-                return true;
+        if (mLauncher.isAllAppsVisible() && mShrinkState == ShrinkState.BOTTOM_HIDDEN) {
+            PagedView appsPane;
+            if (LauncherApplication.isScreenXLarge()) {
+                appsPane = (PagedView) mLauncher.findViewById(R.id.all_apps_paged_view);
             } else {
-                return allApps.onTouchEvent(ev);
+                appsPane = (PagedView) mLauncher.findViewById(R.id.apps_customize_pane_content);
+            }
+
+            if (appsPane != null) {
+                if (ev.getAction() == MotionEvent.ACTION_UP &&
+                        appsPane.getTouchState() == TOUCH_STATE_REST) {
+
+                    // Cancel any scrolling that is in progress.
+                    if (!mScroller.isFinished()) {
+                        mScroller.abortAnimation();
+                    }
+                    setCurrentPage(mCurrentPage);
+
+                    if (mShrinkState == ShrinkState.BOTTOM_HIDDEN) {
+                        mLauncher.showWorkspace(true);
+                    }
+                    appsPane.onTouchEvent(ev);
+                    return true;
+                } else {
+                    return appsPane.onTouchEvent(ev);
+                }
             }
         }
         return super.onTouchEvent(ev);
@@ -1465,7 +1459,7 @@ public class Workspace extends SmoothPagedView
 
         int duration;
         if (shrinkState == ShrinkState.BOTTOM_HIDDEN || shrinkState == ShrinkState.BOTTOM_VISIBLE) {
-            duration = res.getInteger(R.integer.config_allAppsWorkspaceShrinkTime);
+            duration = res.getInteger(R.integer.config_appsCustomizeWorkspaceShrinkTime);
         } else {
             duration = res.getInteger(R.integer.config_customizeWorkspaceShrinkTime);
         }
@@ -1859,17 +1853,24 @@ public class Workspace extends SmoothPagedView
 
             for (int i = 0; i < screenCount; i++) {
                 final CellLayout cl = (CellLayout)getChildAt(i);
-                float finalAlphaValue = (i == mCurrentPage) ? 1.0f : 0.0f;
+                float finalAlphaValue = 0f;
+                float rotation = 0f;
+                if (LauncherApplication.isScreenXLarge()) {
+                    finalAlphaValue = (i == mCurrentPage) ? 1.0f : 0.0f;
+
+                    if (i < mCurrentPage) {
+                        rotation = WORKSPACE_ROTATION;
+                    } else if (i > mCurrentPage) {
+                        rotation = -WORKSPACE_ROTATION;
+                    }
+                } else {
+                    // Don't hide the side panes on the phone if we don't also update the side pages
+                    // alpha.  See screenScrolled().
+                    finalAlphaValue = 1f;
+                }
                 float finalAlphaMultiplierValue =
                         ((i == mCurrentPage) && (mShrinkState != ShrinkState.SPRING_LOADED)) ?
                         0.0f : 1.0f;
-                float rotation = 0.0f;
-
-                if (i < mCurrentPage) {
-                    rotation = WORKSPACE_ROTATION;
-                } else if (i > mCurrentPage) {
-                    rotation = -WORKSPACE_ROTATION;
-                }
 
                 float translation = getOffsetXForRotation(rotation, cl.getWidth(), cl.getHeight());
 
@@ -2878,16 +2879,21 @@ public class Workspace extends SmoothPagedView
                         mSpringLoadedDragController.onDragExit();
                     }
                     mDragTargetLayout = layout;
-                    // In spring-loaded mode, we still want the user to be able to hover over a
-                    // full screen (which is traditionally set to not accept drops) if they want to
-                    // get to pages beyond the screen that is full.
-                    boolean allowDragOver = (mDragTargetLayout != null) &&
-                            (mDragTargetLayout.getAcceptsDrops() ||
-                                    (mShrinkState == ShrinkState.SPRING_LOADED));
-                    if (allowDragOver) {
-                        mDragTargetLayout.setIsDragOverlapping(true);
-                        mSpringLoadedDragController.onDragEnter(
-                                mDragTargetLayout, mShrinkState == ShrinkState.SPRING_LOADED);
+
+                    // Workaround the fact that we don't actually want spring-loaded mode in phone
+                    // UI yet.
+                    if (LauncherApplication.isScreenXLarge()) {
+                        // In spring-loaded mode, we still want the user to be able to hover over a
+                        // full screen (which is traditionally set to not accept drops) if they want
+                        // to get to pages beyond the screen that is full.
+                        boolean allowDragOver = (mDragTargetLayout != null) &&
+                                (mDragTargetLayout.getAcceptsDrops() ||
+                                        (mShrinkState == ShrinkState.SPRING_LOADED));
+                        if (allowDragOver) {
+                            mDragTargetLayout.setIsDragOverlapping(true);
+                            mSpringLoadedDragController.onDragEnter(
+                                    mDragTargetLayout, mShrinkState == ShrinkState.SPRING_LOADED);
+                        }
                     }
                 }
             } else {

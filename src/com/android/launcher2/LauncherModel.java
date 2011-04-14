@@ -1789,6 +1789,28 @@ public class LauncherModel extends BroadcastReceiver {
             return 0;
         }
     };
+    public static final Comparator<AppWidgetProviderInfo> WIDGET_NAME_COMPARATOR
+            = new Comparator<AppWidgetProviderInfo>() {
+        public final int compare(AppWidgetProviderInfo a, AppWidgetProviderInfo b) {
+            return sCollator.compare(a.label.toString(), b.label.toString());
+        }
+    };
+    public static class ShortcutNameComparator implements Comparator<ResolveInfo> {
+        private PackageManager mPackageManager;
+        private HashMap<Object, String> mLabelCache;
+        ShortcutNameComparator(PackageManager pm) {
+            mPackageManager = pm;
+            mLabelCache = new HashMap<Object, String>();
+        }
+        public final int compare(ResolveInfo a, ResolveInfo b) {
+            String labelA, labelB;
+            if (mLabelCache.containsKey(a)) labelA = mLabelCache.get(a);
+            else labelA = a.loadLabel(mPackageManager).toString();
+            if (mLabelCache.containsKey(b)) labelB = mLabelCache.get(b);
+            else labelB = b.loadLabel(mPackageManager).toString();
+            return sCollator.compare(labelA, labelB);
+        }
+    };
 
     public void dumpState() {
         Log.d(TAG, "mCallbacks=" + mCallbacks);

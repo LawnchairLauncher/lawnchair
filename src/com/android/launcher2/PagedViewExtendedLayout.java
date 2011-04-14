@@ -40,6 +40,22 @@ public class PagedViewExtendedLayout extends LinearLayout implements Page {
         super(context, attrs, defStyle);
     }
 
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (LauncherApplication.isScreenXLarge()) {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        } else {
+            // PagedView currently has issues with different-sized pages since it calculates the
+            // offset of each page to scroll to before it updates the actual size of each page
+            // (which canchange depending on the content if the contains aren't a fixed size).
+            // We work around this by having a minimum size on each widget page).
+            int widthSpecSize = Math.max(getSuggestedMinimumWidth(),
+                    MeasureSpec.getSize(widthMeasureSpec));
+            int widthSpecMode = MeasureSpec.AT_MOST;
+            super.onMeasure(MeasureSpec.makeMeasureSpec(widthSpecSize, widthSpecMode),
+                    heightMeasureSpec);
+        }
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         // We eat up the touch events here, since the PagedView (which uses the same swiping
@@ -93,5 +109,12 @@ public class PagedViewExtendedLayout extends LinearLayout implements Page {
     @Override
     public int indexOfChildOnPage(View v) {
         return indexOfChild(v);
+    }
+
+    public static class LayoutParams extends LinearLayout.LayoutParams {
+        public LayoutParams() {
+            super(LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT);
+        }
     }
 }

@@ -17,11 +17,14 @@
 package com.android.launcher2;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
+
+import com.android.launcher.R;
 
 /**
  * An abstraction of the original CellLayout which supports laying out items
@@ -37,7 +40,6 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
     private int mCellHeight;
     private int mWidthGap;
     private int mHeightGap;
-    private static int sDefaultCellDimensions = 96;
     protected PagedViewCellLayoutChildren mChildren;
     private PagedViewCellLayoutChildren mHolographicChildren;
     private boolean mAllowHardwareLayerCreation = false;
@@ -57,7 +59,9 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         setAlwaysDrawnWithCacheEnabled(false);
 
         // setup default cell parameters
-        mCellWidth = mCellHeight = sDefaultCellDimensions;
+        Resources resources = context.getResources();
+        mCellWidth = resources.getDimensionPixelSize(R.dimen.apps_customize_cell_width);
+        mCellHeight = resources.getDimensionPixelSize(R.dimen.apps_customize_cell_height);
         mCellCountX = LauncherModel.getCellCountX();
         mCellCountY = LauncherModel.getCellCountY();
         mWidthGap = mHeightGap = -1;
@@ -252,11 +256,15 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
     }
 
     int getContentWidth() {
-        // Return the distance from the left edge of the content of the leftmost icon to
-        // the right edge of the content of the rightmost icon
+        if (LauncherApplication.isScreenXLarge()) {
+            // Return the distance from the left edge of the content of the leftmost icon to
+            // the right edge of the content of the rightmost icon
 
-        // icons are centered within cells, find out how much padding that accounts for
-        return getWidthBeforeFirstLayout() - (mCellWidth - Utilities.getIconContentSize());
+            // icons are centered within cells, find out how much padding that accounts for
+            return getWidthBeforeFirstLayout() - (mCellWidth - Utilities.getIconContentSize());
+        } else {
+            return getWidthBeforeFirstLayout() + mPaddingLeft + mPaddingRight;
+        }
     }
 
     int getWidthBeforeFirstLayout() {
@@ -268,7 +276,12 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            child.layout(0, 0, r - l, b - t);
+            if (LauncherApplication.isScreenXLarge()) {
+                child.layout(0, 0, r - l, b - t);
+            } else {
+                child.layout(mPaddingLeft, mPaddingTop, getMeasuredWidth() - mPaddingRight,
+                        getMeasuredHeight() - mPaddingBottom);
+            }
         }
     }
 
@@ -457,8 +470,13 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
             height = myCellVSpan * cellHeight + ((myCellVSpan - 1) * heightGap) -
                     topMargin - bottomMargin;
 
-            x = hStartPadding + myCellX * (cellWidth + widthGap) + leftMargin;
-            y = vStartPadding + myCellY * (cellHeight + heightGap) + topMargin;
+            if (LauncherApplication.isScreenXLarge()) {
+                x = hStartPadding + myCellX * (cellWidth + widthGap) + leftMargin;
+                y = vStartPadding + myCellY * (cellHeight + heightGap) + topMargin;
+            } else {
+                x = myCellX * (cellWidth + widthGap) + leftMargin;
+                y = myCellY * (cellHeight + heightGap) + topMargin;
+            }
         }
 
         public Object getTag() {

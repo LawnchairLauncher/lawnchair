@@ -35,17 +35,17 @@
     </style>
     
     <style name="WorkspaceIcon">
-        <item name="android:textSize">13dip</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:ellipsize">marquee</item>
-        <item name="android:shadowColor">#B0000000</item>
-        <item name="android:shadowRadius">2.0</item>
-        <item name="android:textColor">#FFF</item>
-        <item name="android:gravity">center_horizontal</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:paddingLeft">5dip</item>
         <item name="android:paddingRight">5dip</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:textSize">13dip</item>
+        <item name="android:textColor">#FFF</item>
+        <item name="android:shadowRadius">2.0</item>
+        <item name="android:shadowColor">#B0000000</item>
     </style>
 
     <style name="WorkspaceIcon.AllApps">
@@ -54,7 +54,7 @@
 
     <style name="WorkspaceIcon.Portrait">
         <item name="android:drawablePadding">5dip</item>
-        <item name="android:paddingTop">4dip</item>
+        <item name="android:paddingTop">0dip</item>
         <item name="android:layout_marginLeft">3dip</item>
         <item name="android:layout_marginRight">3dip</item>
         <item name="android:layout_marginTop">13dip</item>
@@ -72,12 +72,12 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:gravity">center</item>
-        <item name="android:paddingLeft">40dp</item>
-        <item name="android:paddingRight">40dp</item>
-        <item name="android:paddingTop">15dp</item>
-        <item name="android:paddingBottom">20dp</item>
-        <item name="android:textColor">@color/tab_widget_indicator_color</item>
+        <item name="android:paddingLeft">30dp</item>
+        <item name="android:paddingRight">30dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">15dp</item>
         <item name="android:background">@drawable/tab_widget_indicator_selector</item>
+        <item name="android:textColor">@color/tab_widget_indicator_color</item>
         <item name="android:textSize">20sp</item>
         <item name="android:shadowColor">#393939</item>
         <item name="android:shadowDx">0.0</item>
@@ -85,16 +85,34 @@
         <item name="android:shadowRadius">1.0</item>
     </style>
 
-    <style name="TabIndicator.Portrait">
-        <item name="android:paddingLeft">20dp</item>
-        <item name="android:paddingRight">20dp</item>
-    </style>
-
     <style name="SearchButton" parent="@android:style/Widget.Button.Small">
         <item name="android:paddingTop">7dip</item>
         <item name="android:paddingBottom">9dip</item>
         <item name="android:paddingLeft">10dip</item>
         <item name="android:paddingRight">10dip</item>
+    </style>
+
+    <style name="MarketButton">
+        <item name="android:paddingRight">20dp</item>
+        <item name="android:text">@string/market</item>
+        <item name="android:textColor">@color/workspace_all_apps_and_delete_zone_text_color</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:shadowColor">@color/workspace_all_apps_and_delete_zone_text_shadow_color</item>
+        <item name="android:shadowDx">0.0</item>
+        <item name="android:shadowDy">0.0</item>
+        <item name="android:shadowRadius">2.0</item>
+    </style>
+
+    <style name="DeleteZone">
+        <item name="android:drawableLeft">@drawable/delete_zone_selector</item>
+        <item name="android:drawablePadding">@dimen/delete_zone_drawable_padding</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="android:textColor">@color/workspace_all_apps_and_delete_zone_text_color</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:shadowColor">@color/workspace_all_apps_and_delete_zone_text_shadow_color</item>
+        <item name="android:shadowDx">0.0</item>
+        <item name="android:shadowDy">0.0</item>
+        <item name="android:shadowRadius">2.0</item>
     </style>
 
     <style name="HotseatButton">
@@ -116,4 +134,7 @@
         <item name="android:background">@drawable/hotseat_bg_right</item>
     </style>
 
+    <style name="config_orientation">
+        <item name="@android:screenOrientation">nosensor</item>
+    </style>
 </resources>

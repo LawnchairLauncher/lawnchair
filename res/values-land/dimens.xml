@@ -20,4 +20,13 @@
     <dimen name="folder_cell_width">100dip</dimen>
     <dimen name="folder_cell_height">74dip</dimen>
     <dimen name="button_bar_height">62dip</dimen>
+
+    <integer name="all_apps_view_cellCountX">6</integer>
+    <integer name="all_apps_view_cellCountY">3</integer>
+    <dimen name="all_apps_view_pageLayoutWidthGap">10dp</dimen>
+    <dimen name="all_apps_view_pageLayoutHeightGap">5dp</dimen>
+    <dimen name="all_apps_view_pageLayoutPaddingTop">10dp</dimen>
+    <dimen name="all_apps_view_pageLayoutPaddingBottom">10dp</dimen>
+    <dimen name="all_apps_view_pageLayoutPaddingLeft">2dp</dimen>
+    <dimen name="all_apps_view_pageLayoutPaddingRight">2dp</dimen>
 </resources>

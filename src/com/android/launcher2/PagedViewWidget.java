@@ -154,14 +154,15 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
 
         // Set up fade in/out constants
         final Resources r = context.getResources();
-        final int alpha = r.getInteger(R.integer.icon_allAppsCustomizeFadeAlpha);
+        final int alpha = r.getInteger(R.integer.config_dragAppsCustomizeIconFadeAlpha);
         if (alpha > 0) {
-            mCheckedAlpha = r.getInteger(R.integer.icon_allAppsCustomizeFadeAlpha) / 256.0f;
-            mCheckedFadeInDuration = r.getInteger(R.integer.icon_allAppsCustomizeFadeInTime);
-            mCheckedFadeOutDuration = r.getInteger(R.integer.icon_allAppsCustomizeFadeOutTime);
+            mCheckedAlpha = r.getInteger(R.integer.config_dragAppsCustomizeIconFadeAlpha) / 256.0f;
+            mCheckedFadeInDuration =
+                r.getInteger(R.integer.config_dragAppsCustomizeIconFadeInDuration);
+            mCheckedFadeOutDuration =
+                r.getInteger(R.integer.config_dragAppsCustomizeIconFadeOutDuration);
         }
 
-        setFocusable(true);
         setWillNotDraw(false);
         setClipToPadding(false);
     }

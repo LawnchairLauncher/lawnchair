@@ -1,10 +1,41 @@
 <resources>
-    <integer name="config_allAppsFadeInTime">700</integer>
-    <integer name="config_allAppsFadeOutTime">700</integer>
-    <integer name="config_allAppsBatchLoadDelay">0</integer>
-    <integer name="config_allAppsBatchSize">0</integer>
+<!-- System -->
     <bool name="config_hardwareAccelerated">false</bool>
 
+<!-- AllApps/Customize/AppsCustomize -->
+    <!-- Fade in/out duration of icons being dragged from the trays -->
+    <integer name="config_dragAppsCustomizeIconFadeInDuration">150</integer>
+    <integer name="config_dragAppsCustomizeIconFadeOutDuration">200</integer>
+    <integer name="config_dragAppsCustomizeIconFadeAlpha">100</integer>
+    <integer name="config_workspaceUnshrinkTime">650</integer>
+
+    <!-- Fade/zoom in/out duration & scale in the AllApps transition.
+         Note: This should be less than the workspaceShrinkTime as they happen together. -->
+    <integer name="config_appsCustomizeZoomInTime">1000</integer>
+    <integer name="config_appsCustomizeZoomOutTime">1200</integer>
+    <integer name="config_appsCustomizeZoomScaleFactor">20</integer>
+    <integer name="config_appsCustomizeFadeInTime">250</integer>
+    <integer name="config_appsCustomizeFadeOutTime">500</integer>
+    <integer name="config_appsCustomizeWorkspaceShrinkTime">1000</integer>
+
+    <!-- Tab transition animation duration -->
+    <integer name="config_tabTransitionDuration">100</integer>
+
+    <!-- The slope, in percent, of the drag movement needed to drag an item out of
+         AppsCustomize (y / x * 100%)  -->
+    <integer name="config_appsCustomizeDragSlopeThreshold">150</integer>
+
+    <!-- Fade in/out duration of toolbar/button bar icons.
+         Note: In + Out duration together should be less the duration of the transition
+               between AllApps, Customize & the Workspace. -->
+    <integer name="config_toolbarButtonFadeInTime">350</integer>
+    <integer name="config_toolbarButtonFadeOutTime">200</integer>
+
+    <!-- Batch loading for loading in LauncherModel -->
+    <integer name="config_allAppsBatchLoadDelay">0</integer>
+    <integer name="config_allAppsBatchSize">0</integer>
+
+<!-- Workspace -->
     <integer name="config_crosshairsFadeInTime">600</integer>
 
     <!--  When dragging an item on the workspace, how much bigger (in pixels) the dragged view
@@ -32,8 +63,4 @@
          than the view itself (workspaceScreenBitmapCacheScale)  -->
     <integer name="config_workspaceScreenBitmapCacheScale">20</integer>
     <integer name="config_maxScaleForUsingWorkspaceScreenBitmapCache">50</integer>
-
-    <style name="config_orientation">
-        <item name="@android:screenOrientation">nosensor</item>
-    </style>
 </resources>

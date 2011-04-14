@@ -158,8 +158,10 @@ public class AllApps2D
         this(context, attrs);
     }
 
-    public void setLauncher(Launcher launcher) {
+    @Override
+    public void setup(Launcher launcher, DragController dragController) {
         mLauncher = launcher;
+        mDragController = dragController;
     }
 
     public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -199,11 +201,6 @@ public class AllApps2D
         if (gainFocus) {
             mGrid.requestFocus();
         }
-    }
-
-    @Override
-    public void setDragController(DragController dragger) {
-        mDragController = dragger;
     }
 
     @Override

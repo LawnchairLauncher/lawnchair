@@ -29,6 +29,7 @@ import android.graphics.Rect;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.InputDevice;
 import android.view.KeyEvent;
@@ -50,6 +51,7 @@ import com.android.launcher.R;
  */
 public abstract class PagedView extends ViewGroup {
     private static final String TAG = "PagedView";
+    private static final boolean DEBUG = false;
     protected static final int INVALID_PAGE = -1;
 
     // the min drag distance for a fling to register, to prevent random page shifts
@@ -397,6 +399,7 @@ public abstract class PagedView extends ViewGroup {
 
         // The children are given the same width and height as the workspace
         // unless they were set to WRAP_CONTENT
+        if (DEBUG) Log.d(TAG, "PagedView.onMeasure(): " + widthSize + ", " + heightSize);
         final int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
             // disallowing padding in paged view (just pass 0)
@@ -424,6 +427,8 @@ public abstract class PagedView extends ViewGroup {
 
             child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
             maxChildHeight = Math.max(maxChildHeight, child.getMeasuredHeight());
+            if (DEBUG) Log.d(TAG, "\tmeasure-child" + i + ": " + child.getMeasuredWidth() + ", "
+                    + child.getMeasuredHeight());
         }
 
         if (heightMode == MeasureSpec.AT_MOST) {
@@ -478,6 +483,7 @@ public abstract class PagedView extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        if (DEBUG) Log.d(TAG, "PagedView.onLayout()");
         if (mFirstLayout && mCurrentPage >= 0 && mCurrentPage < getChildCount()) {
             setHorizontalScrollBarEnabled(false);
             int newX = getChildOffset(mCurrentPage) - getRelativeChildOffset(mCurrentPage);
@@ -491,6 +497,8 @@ public abstract class PagedView extends ViewGroup {
         final int childCount = getChildCount();
         int childLeft = 0;
         if (childCount > 0) {
+            if (DEBUG) Log.d(TAG, "getRelativeChildOffset(): " + getMeasuredWidth() + ", "
+                    + getChildWidth(0));
             childLeft = getRelativeChildOffset(0);
         }
 
@@ -504,6 +512,7 @@ public abstract class PagedView extends ViewGroup {
                     childTop += ((getMeasuredHeight() - verticalPadding) - childHeight) / 2;
                 }
 
+                if (DEBUG) Log.d(TAG, "\tlayout-child" + i + ": " + childLeft + ", " + childTop);
                 child.layout(childLeft, childTop,
                         childLeft + child.getMeasuredWidth(), childTop + childHeight);
                 childLeft += childWidth + mPageSpacing;
@@ -993,6 +1002,7 @@ public abstract class PagedView extends ViewGroup {
                     mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
                     if (!mDeferScrollUpdate) {
                         scrollBy((int) deltaX, 0);
+                        if (DEBUG) Log.d(TAG, "onTouchEvent().Scrolling: " + deltaX);
                     } else {
                         invalidate();
                     }
@@ -1262,6 +1272,9 @@ public abstract class PagedView extends ViewGroup {
         whichPage = Math.max(0, Math.min(whichPage, getChildCount() - 1));
         int halfScreenSize = getMeasuredWidth() / 2;
 
+        if (DEBUG) Log.d(TAG, "snapToPage.getChildOffset(): " + getChildOffset(whichPage));
+        if (DEBUG) Log.d(TAG, "snapToPageWithVelocity.getRelativeChildOffset(): "
+                + getMeasuredWidth() + ", " + getChildWidth(whichPage));
         final int newX = getChildOffset(whichPage) - getRelativeChildOffset(whichPage);
         int delta = newX - mUnboundedScrollX;
         int duration = 0;
@@ -1299,6 +1312,9 @@ public abstract class PagedView extends ViewGroup {
     protected void snapToPage(int whichPage, int duration) {
         whichPage = Math.max(0, Math.min(whichPage, getPageCount() - 1));
 
+        if (DEBUG) Log.d(TAG, "snapToPage.getChildOffset(): " + getChildOffset(whichPage));
+        if (DEBUG) Log.d(TAG, "snapToPage.getRelativeChildOffset(): " + getMeasuredWidth() + ", "
+                + getChildWidth(whichPage));
         int newX = getChildOffset(whichPage) - getRelativeChildOffset(whichPage);
         final int sX = mUnboundedScrollX;
         final int delta = newX - sX;
@@ -1410,6 +1426,8 @@ public abstract class PagedView extends ViewGroup {
             if (page < count) {
                 int lowerPageBound = getAssociatedLowerPageBound(page);
                 int upperPageBound = getAssociatedUpperPageBound(page);
+                if (DEBUG) Log.d(TAG, "loadAssociatedPages: " + lowerPageBound + "/"
+                        + upperPageBound);
                 for (int i = 0; i < count; ++i) {
                     Page layout = (Page) getChildAt(i);
                     final int childCount = layout.getPageChildCount();

@@ -23,9 +23,7 @@ public interface AllAppsView {
         public void zoomed(float zoom);
     }
 
-    public void setLauncher(Launcher launcher);
-
-    public void setDragController(DragController dragger);
+    public void setup(Launcher launcher, DragController dragController);
 
     public void zoom(float zoom, boolean animate);
 

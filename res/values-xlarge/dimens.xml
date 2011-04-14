@@ -15,6 +15,8 @@
 -->
 
 <resources>
+    <dimen name="apps_customize_cell_width">96dp</dimen>
+    <dimen name="apps_customize_cell_height">96dp</dimen>
     <dimen name="workspace_cell_width">96dip</dimen>
     <dimen name="workspace_cell_height">96dip</dimen>
 
@@ -40,7 +42,6 @@
     <dimen name="allAppsSmallScreenVerticalMarginLandscape">30dip</dimen>
     <dimen name="allAppsSmallScreenVerticalMarginPortrait">60dip</dimen>
 
-    <dimen name="delete_zone_drawable_padding">8dip</dimen>
     <dimen name="all_apps_button_drawable_padding">0dip</dimen>
     <dimen name="all_apps_button_vertical_padding">4dip</dimen>
 

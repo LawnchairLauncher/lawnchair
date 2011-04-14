@@ -103,7 +103,7 @@ public class AllAppsTabbed extends TabHost implements AllAppsView, LauncherTrans
             public void onTabChanged(String tabId) {
                 // animate the changing of the tab content by fading pages in and out
                 final Resources res = getResources();
-                final int duration = res.getInteger(R.integer.config_tabTransitionTime);
+                final int duration = res.getInteger(R.integer.config_tabTransitionDuration);
                 final float alpha = mAllApps.getAlpha();
                 ValueAnimator alphaAnim = ObjectAnimator.ofFloat(mAllApps, "alpha", alpha, 0.0f).
                         setDuration(duration);
@@ -143,14 +143,9 @@ public class AllAppsTabbed extends TabHost implements AllAppsView, LauncherTrans
     }
 
     @Override
-    public void setLauncher(Launcher launcher) {
-        mAllApps.setLauncher(launcher);
+    public void setup(Launcher launcher, DragController dragController) {
         mLauncher = launcher;
-    }
-
-    @Override
-    public void setDragController(DragController dragger) {
-        mAllApps.setDragController(dragger);
+        mAllApps.setup(launcher, dragController);
     }
 
     @Override

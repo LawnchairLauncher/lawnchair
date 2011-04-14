@@ -90,7 +90,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
 
         Resources r = context.getResources();
         setDragSlopeThreshold(
-                r.getInteger(R.integer.config_allAppsDrawerDragSlopeThreshold) / 100.0f);
+                r.getInteger(R.integer.config_appsCustomizeDragSlopeThreshold) / 100.0f);
 
         // Create a dummy page and set it up to find out the content width (used by our parent)
         PagedViewCellLayout layout = new PagedViewCellLayout(getContext());
@@ -121,14 +121,10 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
     }
 
     @Override
-    public void setLauncher(Launcher launcher) {
+    public void setup(Launcher launcher, DragController dragController) {
         mLauncher = launcher;
         mLauncher.setAllAppsPagedView(this);
-    }
-
-    @Override
-    public void setDragController(DragController dragger) {
-        mDragController = dragger;
+        mDragController = dragController;
     }
 
     public void setAppFilter(int filterType) {

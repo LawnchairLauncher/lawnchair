@@ -94,7 +94,7 @@ public class CustomizeTrayTabHost extends TabHost implements LauncherTransitiona
                 if (newType != customizePagedView.getCustomizationFilter()) {
                     // animate the changing of the tab content by fading pages in and out
                     final Resources res = getResources();
-                    final int duration = res.getInteger(R.integer.config_tabTransitionTime);
+                    final int duration = res.getInteger(R.integer.config_tabTransitionDuration);
                     final float alpha = customizePagedView.getAlpha();
                     ValueAnimator alphaAnim = ObjectAnimator.ofFloat(customizePagedView,
                             "alpha", alpha, 0.0f);

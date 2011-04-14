@@ -53,11 +53,13 @@
         android:id="@+id/all_apps_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="top" />
+        android:layout_gravity="top"
+        android:visibility="invisible" />
 
     <include layout="@layout/customization_drawer"
         android:id="@+id/customization_drawer"
         android:layout_width="match_parent"
         android:layout_height="@dimen/customization_drawer_height"
-        android:layout_gravity="bottom" />
+        android:layout_gravity="bottom"
+        android:visibility="invisible" />
 </com.android.launcher2.DragLayer>

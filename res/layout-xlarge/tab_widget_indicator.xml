@@ -16,4 +16,4 @@
 
 <com.android.launcher2.AccessibleTabView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/TabIndicator" />
+    style="@style/TabIndicator.Wide" />

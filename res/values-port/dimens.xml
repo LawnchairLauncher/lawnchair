@@ -19,4 +19,13 @@
     <dimen name="workspace_cell_height">100dip</dimen>
     <dimen name="folder_cell_width">74dip</dimen>
     <dimen name="folder_cell_height">86dip</dimen>
+
+    <integer name="all_apps_view_cellCountX">4</integer>
+    <integer name="all_apps_view_cellCountY">5</integer>
+    <dimen name="all_apps_view_pageLayoutWidthGap">3dp</dimen>
+    <dimen name="all_apps_view_pageLayoutHeightGap">12dp</dimen>
+    <dimen name="all_apps_view_pageLayoutPaddingTop">15dp</dimen>
+    <dimen name="all_apps_view_pageLayoutPaddingBottom">15dp</dimen>
+    <dimen name="all_apps_view_pageLayoutPaddingLeft">0dp</dimen>
+    <dimen name="all_apps_view_pageLayoutPaddingRight">0dp</dimen>
 </resources>

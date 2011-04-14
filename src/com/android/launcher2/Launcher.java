@@ -169,7 +169,7 @@ public final class Launcher extends Activity
     private static final String TOOLBAR_ICON_METADATA_NAME = "com.android.launcher.toolbar_icon";
 
     /** The different states that Launcher can be in. */
-    private enum State { WORKSPACE, ALL_APPS, CUSTOMIZE,
+    private enum State { WORKSPACE, APPS_CUSTOMIZE, ALL_APPS, CUSTOMIZE,
         CUSTOMIZE_SPRING_LOADED, ALL_APPS_SPRING_LOADED };
     private State mState = State.WORKSPACE;
     private AnimatorSet mStateAnimation;
@@ -202,6 +202,8 @@ public final class Launcher extends Activity
     private DeleteZone mDeleteZone;
     private HandleView mHandleView;
     private AllAppsView mAllAppsGrid;
+    private AppsCustomizeTabHost mAppsCustomizeTabHost;
+    private AppsCustomizePagedView mAppsCustomizeContent;
     private CustomizeTrayTabHost mHomeCustomizationDrawer;
     private boolean mAutoAdvanceRunning = false;
 
@@ -328,6 +330,9 @@ public final class Launcher extends Activity
         if (mCustomizePagedView != null) {
             mCustomizePagedView.update();
         }
+        if (mAppsCustomizeContent != null) {
+            mAppsCustomizeContent.onPackagesUpdated();
+        }
 
         if (PROFILE_STARTUP) {
             android.os.Debug.stopMethodTracing();
@@ -359,21 +364,6 @@ public final class Launcher extends Activity
                 updateAppMarketIcon(sAppMarketIcon);
             }
         }
-    }
-
-    @Override
-    public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
-        super.dispatchPopulateAccessibilityEvent(event);
-
-        // we want to take over text population so it is context dependent
-        event.getText().clear();
-        if (mState == State.ALL_APPS) {
-            event.getText().add(getString(R.string.all_apps_button_label));
-        } else if (mState == State.WORKSPACE) {
-            event.getText().add(getString(R.string.all_apps_home_button_label));
-        }
-
-        return true;
     }
 
     private void checkForLocaleChange() {
@@ -736,7 +726,12 @@ public final class Launcher extends Activity
     public Object onRetainNonConfigurationInstance() {
         // Flag the loader to stop early before switching
         mModel.stopLoader();
-        mAllAppsGrid.surrender();
+        if (mAllAppsGrid != null) {
+            mAllAppsGrid.surrender();
+        }
+        if (mAppsCustomizeContent != null) {
+            mAppsCustomizeContent.surrender();
+        }
         return Boolean.TRUE;
     }
 
@@ -832,7 +827,7 @@ public final class Launcher extends Activity
 
         State state = intToState(savedState.getInt(RUNTIME_STATE, State.WORKSPACE.ordinal()));
 
-        if (state == State.ALL_APPS) {
+        if (state == State.ALL_APPS || state == State.APPS_CUSTOMIZE) {
             showAllApps(false);
         } else if (state == State.CUSTOMIZE) {
             showCustomizationDrawer(false);
@@ -885,6 +880,20 @@ public final class Launcher extends Activity
             // Note: currently we do not restore the page for the customization tray because unlike
             // AllApps, the page content can change drastically
         }
+
+        // Restore the AppsCustomize tab
+        if (mAppsCustomizeTabHost != null) {
+            String curTab = savedState.getString("apps_customize_currentTab");
+            if (curTab != null) {
+             // We set this directly so that there is no delay before the tab is set
+                mAppsCustomizeContent.setContentType(
+                        mAppsCustomizeTabHost.getContentTypeForTabTag(curTab));
+                mAppsCustomizeTabHost.setCurrentTabByTag(curTab);
+            }
+
+            // Note: currently we do not restore the page for the AppsCustomize pane because the
+            // change in layout can drastically affect the saved page index
+        }
     }
 
     /**
@@ -896,18 +905,17 @@ public final class Launcher extends Activity
         DragLayer dragLayer = (DragLayer) findViewById(R.id.drag_layer);
         dragLayer.setDragController(dragController);
 
-        mAllAppsGrid = (AllAppsView)dragLayer.findViewById(R.id.all_apps_view);
-        mAllAppsGrid.setLauncher(this);
-        mAllAppsGrid.setDragController(dragController);
-        ((View) mAllAppsGrid).setWillNotDraw(false); // We don't want a hole punched in our window.
-        // Manage focusability manually since this thing is always visible (in non-xlarge)
-        ((View) mAllAppsGrid).setFocusable(false);
-
         if (LauncherApplication.isScreenXLarge()) {
-            // They need to be INVISIBLE initially so that they will be measured in the layout.
-            // Otherwise the animations are messed up when we show them for the first time.
-            ((View) mAllAppsGrid).setVisibility(View.INVISIBLE);
-            mHomeCustomizationDrawer.setVisibility(View.INVISIBLE);
+            mAllAppsGrid = (AllAppsView)dragLayer.findViewById(R.id.all_apps_view);
+            mAllAppsGrid.setup(this, dragController);
+            // We don't want a hole punched in our window.
+            ((View) mAllAppsGrid).setWillNotDraw(false);
+        } else {
+            mAppsCustomizeTabHost = (AppsCustomizeTabHost)
+                    findViewById(R.id.apps_customize_pane);
+            mAppsCustomizeContent = (AppsCustomizePagedView)
+                    mAppsCustomizeTabHost.findViewById(R.id.apps_customize_pane_content);
+            mAppsCustomizeContent.setup(this, dragController);
         }
 
         mWorkspace = (Workspace) dragLayer.findViewById(R.id.workspace);
@@ -923,7 +931,6 @@ public final class Launcher extends Activity
             // we don't use handle view in xlarge mode
             mHandleView = (HandleView)handleView;
             mHandleView.setLauncher(this);
-            mHandleView.setOnClickListener(this);
             mHandleView.setOnLongClickListener(this);
         }
 
@@ -985,15 +992,17 @@ public final class Launcher extends Activity
             allAppsInfoTarget.setLauncher(this);
             dragController.addDragListener(allAppsInfoTarget);
             allAppsInfoTarget.setDragAndDropEnabled(false);
-            View marketButton = findViewById(R.id.market_button);
-            if (marketButton != null) {
+        }
+        View marketButton = findViewById(R.id.market_button);
+        if (marketButton != null) {
+            if (allAppsInfoTarget != null) {
                 allAppsInfoTarget.setOverlappingView(marketButton);
-                marketButton.setOnClickListener(new OnClickListener() {
-                    public void onClick(View v) {
-                        onClickAppMarketButton(v);
-                    }
-                });
             }
+            marketButton.setOnClickListener(new OnClickListener() {
+                public void onClick(View v) {
+                    onClickAppMarketButton(v);
+                }
+            });
         }
 
         dragController.setDragScoller(workspace);
@@ -1048,14 +1057,14 @@ public final class Launcher extends Activity
 
     @SuppressWarnings({"UnusedDeclaration"})
     public void previousScreen(View v) {
-        if (mState != State.ALL_APPS) {
+        if (mState != State.ALL_APPS && mState != State.APPS_CUSTOMIZE) {
             mWorkspace.scrollLeft();
         }
     }
 
     @SuppressWarnings({"UnusedDeclaration"})
     public void nextScreen(View v) {
-        if (mState != State.ALL_APPS) {
+        if (mState != State.ALL_APPS && mState != State.APPS_CUSTOMIZE) {
             mWorkspace.scrollRight();
         }
     }
@@ -1263,6 +1272,9 @@ public final class Launcher extends Activity
                 if (mAllAppsGrid != null) {
                     mAllAppsGrid.reset();
                 }
+                if (mAppsCustomizeContent != null) {
+                    mAppsCustomizeContent.reset();
+                }
             } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
                 mUserPresent = true;
                 updateRunning();
@@ -1417,11 +1429,7 @@ public final class Launcher extends Activity
                         != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 
             // In all these cases, only animate if we're already on home
-
-            if (LauncherApplication.isScreenXLarge()) {
-                mWorkspace.unshrink(alreadyOnHome);
-            }
-
+            mWorkspace.unshrink(alreadyOnHome);
             mWorkspace.exitWidgetResizeMode();
             if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive()) {
                 mWorkspace.moveToDefaultScreen(true);
@@ -1438,6 +1446,9 @@ public final class Launcher extends Activity
             // Reset AllApps to it's initial state
             if (mAllAppsGrid != null) {
                 mAllAppsGrid.reset();
+            }
+            if (mAppsCustomizeContent != null) {
+                mAppsCustomizeContent.reset();
             }
         }
     }
@@ -1487,12 +1498,18 @@ public final class Launcher extends Activity
                 outState.putInt("allapps_currentPage", mAllAppsPagedView.getCurrentPage());
             }
         }
-
         // Save the current customization drawer tab
         if (mHomeCustomizationDrawer != null) {
             String currentTabTag = mHomeCustomizationDrawer.getCurrentTabTag();
             if (currentTabTag != null) {
                 outState.putString("customize_currentTab", currentTabTag);
+            }
+        }
+        // Save the current AppsCustomize tab
+        if (mAppsCustomizeTabHost != null) {
+            String currentTabTag = mAppsCustomizeTabHost.getCurrentTabTag();
+            if (currentTabTag != null) {
+                outState.putString("apps_customize_currentTab", currentTabTag);
             }
         }
     }
@@ -1603,22 +1620,28 @@ public final class Launcher extends Activity
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        // If all apps is animating, don't show the menu, because we don't know
-        // which one to show.
-        if (mAllAppsGrid.isAnimating()) {
-            return false;
+        if (mAllAppsGrid != null) {
+            // If all apps is animating, don't show the menu, because we don't know
+            // which one to show.
+            if (mAllAppsGrid.isAnimating()) {
+                return false;
+            }
+
+            // Only show the add and wallpaper options when we're not in all apps.
+            boolean visible = !mAllAppsGrid.isVisible();
+            menu.setGroupVisible(MENU_GROUP_ADD, visible);
+            menu.setGroupVisible(MENU_GROUP_WALLPAPER, visible);
+
+            // Disable add if the workspace is full.
+            if (visible) {
+                CellLayout layout = (CellLayout) mWorkspace.getChildAt(mWorkspace.getCurrentPage());
+                menu.setGroupEnabled(MENU_GROUP_ADD, layout.existsEmptyCell());
+            }
         }
 
-        // Only show the add and wallpaper options when we're not in all apps.
-        boolean visible = !mAllAppsGrid.isVisible();
-        menu.setGroupVisible(MENU_GROUP_ADD, visible);
-        menu.setGroupVisible(MENU_GROUP_WALLPAPER, visible);
-
-        // Disable add if the workspace is full.
-        if (visible) {
-            CellLayout layout = (CellLayout) mWorkspace.getChildAt(mWorkspace.getCurrentPage());
-            menu.setGroupEnabled(MENU_GROUP_ADD, layout.existsEmptyCell());
-        }
+        // TODO-APPS_CUSTOMIZE: Remove this for the phone UI at some point, along with all the menu
+        // related code?
+        if (mAppsCustomizeContent != null && mAppsCustomizeContent.isAnimating()) return false;
 
         return true;
     }
@@ -1959,7 +1982,7 @@ public final class Launcher extends Activity
 
     @Override
     public void onBackPressed() {
-        if (mState == State.ALL_APPS || mState == State.CUSTOMIZE) {
+        if (mState == State.ALL_APPS || mState == State.CUSTOMIZE || mState == State.APPS_CUSTOMIZE) {
             showWorkspace(true);
         } else if (mWorkspace.getOpenFolder() != null) {
             closeFolder();
@@ -2218,21 +2241,21 @@ public final class Launcher extends Activity
 
         switch (v.getId()) {
             case R.id.previous_screen:
-                if (mState != State.ALL_APPS) {
+                if (mState != State.ALL_APPS && mState != State.APPS_CUSTOMIZE) {
                     mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                             HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                     showPreviews(v);
                 }
                 return true;
             case R.id.next_screen:
-                if (mState != State.ALL_APPS) {
+                if (mState != State.ALL_APPS && mState != State.APPS_CUSTOMIZE) {
                     mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                             HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                     showPreviews(v);
                 }
                 return true;
             case R.id.all_apps_button:
-                if (mState != State.ALL_APPS) {
+                if (mState != State.ALL_APPS && mState != State.APPS_CUSTOMIZE) {
                     mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                             HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                     showPreviews(v);
@@ -2569,7 +2592,7 @@ public final class Launcher extends Activity
 
     // Now a part of LauncherModel.Callbacks. Used to reorder loading steps.
     public boolean isAllAppsVisible() {
-        return mState == State.ALL_APPS;
+        return (mState == State.ALL_APPS) || (mState == State.APPS_CUSTOMIZE);
     }
 
     // AllAppsView.Watcher
@@ -2582,17 +2605,12 @@ public final class Launcher extends Activity
     
     private void showAndEnableToolbarButton(View button) {
         button.setVisibility(View.VISIBLE);
-        button.setClickable(true);
     }
 
     private void hideToolbarButton(View button) {
-        button.setAlpha(0.0f);
         // We can't set it to GONE, otherwise the RelativeLayout gets screwed up
         button.setVisibility(View.INVISIBLE);
-    }
-
-    private void disableToolbarButton(View button) {
-        button.setClickable(false);
+        button.setAlpha(0.0f);
     }
 
     /**
@@ -2623,7 +2641,6 @@ public final class Launcher extends Activity
                 @Override
                 public void onAnimationStart(Animator animation) {
                     if (showing) showAndEnableToolbarButton(view);
-                    if (hiding) disableToolbarButton(view);
                 }
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -2636,7 +2653,6 @@ public final class Launcher extends Activity
                 showAndEnableToolbarButton(view);
                 view.setAlpha(1f);
             } else {
-                disableToolbarButton(view);
                 hideToolbarButton(view);
             }
         }
@@ -2654,15 +2670,18 @@ public final class Launcher extends Activity
         switch (newState) {
         case WORKSPACE:
             hideOrShowToolbarButton(true, mButtonCluster, showSeq);
-            mDeleteZone.setOverlappingViews(
-                    new View[] { mAllAppsButton, mDivider, mConfigureButton });
             mDeleteZone.setDragAndDropEnabled(true);
-            mDeleteZone.setText(getResources().getString(R.string.delete_zone_label_workspace));
+            if (LauncherApplication.isScreenXLarge()) {
+                mDeleteZone.setText(getResources().getString(R.string.delete_zone_label_workspace));
+            }
             break;
         case ALL_APPS:
+        case APPS_CUSTOMIZE:
             hideOrShowToolbarButton(false, mButtonCluster, hideSeq);
             mDeleteZone.setDragAndDropEnabled(false);
-            mDeleteZone.setText(getResources().getString(R.string.delete_zone_label_all_apps));
+            if (LauncherApplication.isScreenXLarge()) {
+                mDeleteZone.setText(getResources().getString(R.string.delete_zone_label_all_apps));
+            }
             break;
         case CUSTOMIZE:
             hideOrShowToolbarButton(false, mButtonCluster, hideSeq);
@@ -2684,7 +2703,7 @@ public final class Launcher extends Activity
         // Set pivotY so that at the starting zoom factor, the view is partially
         // visible. Modifying initialHeightFactor changes how much of the view is
         // initially showing, and hence the perceived angle from which the view enters.
-        if (state == State.ALL_APPS) {
+        if (state == State.ALL_APPS || state == State.APPS_CUSTOMIZE) {
             final float initialHeightFactor = 0.175f;
             view.setPivotY((1 - initialHeightFactor) * height);
         } else {
@@ -2701,20 +2720,28 @@ public final class Launcher extends Activity
      */
     private void cameraZoomOut(State toState, boolean animated, boolean springLoaded) {
         final Resources res = getResources();
-        final boolean toAllApps = (toState == State.ALL_APPS);
+        final boolean toAllApps = (toState == State.ALL_APPS)
+                || (toState == State.APPS_CUSTOMIZE);
 
-        final int duration = toAllApps ?
-                res.getInteger(R.integer.config_allAppsZoomInTime) :
-                res.getInteger(R.integer.config_customizeZoomInTime);
-        final int fadeDuration = toAllApps ?
-                res.getInteger(R.integer.config_allAppsFadeInTime) :
-                res.getInteger(R.integer.config_customizeFadeInTime);
+        final int duration = (toAllApps ?
+                res.getInteger(R.integer.config_appsCustomizeZoomInTime) :
+                res.getInteger(R.integer.config_customizeZoomInTime));
+        final int fadeDuration = (toAllApps ?
+                res.getInteger(R.integer.config_appsCustomizeFadeInTime) :
+                res.getInteger(R.integer.config_customizeFadeInTime));
 
         final float scale = toAllApps ?
-                (float) res.getInteger(R.integer.config_allAppsZoomScaleFactor) :
+                (float) res.getInteger(R.integer.config_appsCustomizeZoomScaleFactor) :
                 (float) res.getInteger(R.integer.config_customizeZoomScaleFactor);
 
-        final View toView = toAllApps ? (View) mAllAppsGrid : mHomeCustomizationDrawer;
+        View tmpView;
+        if (toAllApps) {
+            tmpView = (LauncherApplication.isScreenXLarge())
+                    ? (View) mAllAppsGrid : mAppsCustomizeTabHost;
+        } else {
+            tmpView = mHomeCustomizationDrawer;
+        }
+        final View toView = tmpView;
 
         setPivotsForZoom(toView, toState, scale);
 
@@ -2722,9 +2749,11 @@ public final class Launcher extends Activity
             if (!springLoaded) {
                 mWorkspace.shrink(ShrinkState.BOTTOM_HIDDEN, animated);
 
-                // Everytime we launch into AllApps, we reset the successful drop flag which
-                // controls when it should hide/show the mini workspaces
-                mAllAppsPagedView.resetSuccessfulDropFlag();
+                if (LauncherApplication.isScreenXLarge()) {
+                    // Everytime we launch into AllApps, we reset the successful drop flag which
+                    // controls when it should hide/show the mini workspaces
+                    mAllAppsPagedView.resetSuccessfulDropFlag();
+                }
             } else {
                 mWorkspace.shrink(ShrinkState.BOTTOM_VISIBLE, animated);
             }
@@ -2766,6 +2795,7 @@ public final class Launcher extends Activity
                     toView.setTranslationX(0.0f);
                     toView.setTranslationY(0.0f);
                     toView.setVisibility(View.VISIBLE);
+                    toView.bringToFront();
                     if (!toAllApps) {
                         toView.setFastAlpha(1.0f);
                     }
@@ -2805,6 +2835,7 @@ public final class Launcher extends Activity
             toView.setScaleX(1.0f);
             toView.setScaleY(1.0f);
             toView.setVisibility(View.VISIBLE);
+            toView.bringToFront();
             if (toView instanceof LauncherTransitionable) {
                 ((LauncherTransitionable) toView).onLauncherTransitionStart(null);
                 ((LauncherTransitionable) toView).onLauncherTransitionEnd(null);
@@ -2821,20 +2852,30 @@ public final class Launcher extends Activity
      */
     private void cameraZoomIn(State fromState, boolean animated, boolean springLoaded) {
         Resources res = getResources();
-        final boolean fromAllApps = (fromState == State.ALL_APPS);
+        final boolean fromAllApps = (fromState == State.ALL_APPS)
+                || (fromState == State.APPS_CUSTOMIZE);
 
         int duration = fromAllApps ?
-            res.getInteger(R.integer.config_allAppsZoomOutTime) :
+            res.getInteger(R.integer.config_appsCustomizeZoomOutTime) :
             res.getInteger(R.integer.config_customizeZoomOutTime);
 
         final float scaleFactor = fromAllApps ?
-            (float) res.getInteger(R.integer.config_allAppsZoomScaleFactor) :
+            (float) res.getInteger(R.integer.config_appsCustomizeZoomScaleFactor) :
             (float) res.getInteger(R.integer.config_customizeZoomScaleFactor);
 
-        final View fromView = fromAllApps ? (View) mAllAppsGrid : mHomeCustomizationDrawer;
+        View tmpView;
+        if (fromAllApps) {
+            tmpView = (LauncherApplication.isScreenXLarge())
+                    ? (View) mAllAppsGrid : mAppsCustomizeTabHost;
+        } else {
+            tmpView = mHomeCustomizationDrawer;
+        }
+        final View fromView = tmpView;
 
-        mCustomizePagedView.endChoiceMode();
-        mAllAppsPagedView.endChoiceMode();
+        if (LauncherApplication.isScreenXLarge()) {
+            mCustomizePagedView.endChoiceMode();
+            mAllAppsPagedView.endChoiceMode();
+        }
 
         setPivotsForZoom(fromView, fromState, scaleFactor);
 
@@ -2858,7 +2899,7 @@ public final class Launcher extends Activity
                 }
             });
             final ValueAnimator alphaAnim = ValueAnimator.ofFloat(0f, 1f);
-            alphaAnim.setDuration(res.getInteger(R.integer.config_allAppsFadeOutTime));
+            alphaAnim.setDuration(res.getInteger(R.integer.config_appsCustomizeFadeOutTime));
             alphaAnim.setInterpolator(new DecelerateInterpolator(1.5f));
             alphaAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
                 public void onAnimationUpdate(float a, float b) {
@@ -2904,34 +2945,6 @@ public final class Launcher extends Activity
         }
     }
 
-    void showAllApps(boolean animated) {
-        if (mState != State.WORKSPACE) {
-            return;
-        }
-
-        if (LauncherApplication.isScreenXLarge()) {
-            cameraZoomOut(State.ALL_APPS, animated, false);
-        } else {
-            mAllAppsGrid.zoom(1.0f, animated);
-        }
-
-        ((View) mAllAppsGrid).setFocusable(true);
-        ((View) mAllAppsGrid).requestFocus();
-
-        // TODO: fade these two too
-        mDeleteZone.setVisibility(View.GONE);
-
-        // Change the state *after* we've called all the transition code
-        mState = State.ALL_APPS;
-
-        // Pause the auto-advance of widgets until we are out of AllApps
-        mUserPresent = false;
-        updateRunning();
-
-        // send an accessibility event to announce the context change
-        getWindow().getDecorView().sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
-    }
-
     void showWorkspace(boolean animated) {
         showWorkspace(animated, null);
     }
@@ -2944,7 +2957,7 @@ public final class Launcher extends Activity
         } else {
             mWorkspace.unshrink(animated);
         }
-        if (mState == State.ALL_APPS) {
+        if (mState == State.ALL_APPS || mState == State.APPS_CUSTOMIZE) {
             closeAllApps(animated);
         } else if (mState == State.CUSTOMIZE) {
             hideCustomizationDrawer(animated);
@@ -2963,9 +2976,13 @@ public final class Launcher extends Activity
 
     void enterSpringLoadedDragMode(CellLayout layout) {
         mWorkspace.enterSpringLoadedDragMode(layout);
-        if (mState == State.ALL_APPS) {
+        if (mState == State.ALL_APPS || mState == State.APPS_CUSTOMIZE) {
             mState = State.ALL_APPS_SPRING_LOADED;
-            cameraZoomIn(State.ALL_APPS, true, true);
+            if (LauncherApplication.isScreenXLarge()) {
+                cameraZoomIn(State.ALL_APPS, true, true);
+            } else {
+                cameraZoomIn(State.APPS_CUSTOMIZE, true, true);
+            }
         } else if (mState == State.CUSTOMIZE) {
             mState = State.CUSTOMIZE_SPRING_LOADED;
             cameraZoomIn(State.CUSTOMIZE, true, true);
@@ -2977,8 +2994,13 @@ public final class Launcher extends Activity
     void exitSpringLoadedDragMode() {
         if (mState == State.ALL_APPS_SPRING_LOADED) {
             mWorkspace.exitSpringLoadedDragMode(Workspace.ShrinkState.BOTTOM_VISIBLE);
-            cameraZoomOut(State.ALL_APPS, true, true);
-            mState = State.ALL_APPS;
+            if (LauncherApplication.isScreenXLarge()) {
+                cameraZoomOut(State.ALL_APPS, true, true);
+                mState = State.ALL_APPS;
+            } else {
+                cameraZoomOut(State.APPS_CUSTOMIZE, true, true);
+                mState = State.APPS_CUSTOMIZE;
+            }
         } else if (mState == State.CUSTOMIZE_SPRING_LOADED) {
             mWorkspace.exitSpringLoadedDragMode(Workspace.ShrinkState.TOP);
             cameraZoomOut(State.CUSTOMIZE, true, true);
@@ -2986,6 +3008,34 @@ public final class Launcher extends Activity
         }/* else {
             // we're not in spring loaded mode; don't do anything
         }*/
+    }
+
+    void showAllApps(boolean animated) {
+        if (mState != State.WORKSPACE) return;
+        if (LauncherApplication.isScreenXLarge()) {
+            cameraZoomOut(State.ALL_APPS, animated, false);
+            ((View) mAllAppsGrid).requestFocus();
+
+            // TODO: fade these two too
+            mDeleteZone.setVisibility(View.GONE);
+
+            // Change the state *after* we've called all the transition code
+            mState = State.ALL_APPS;
+        } else {
+            View appsCustomizePane = findViewById(R.id.apps_customize_pane);
+            cameraZoomOut(State.APPS_CUSTOMIZE, animated, false);
+            appsCustomizePane.requestFocus();
+
+            // Change the state *after* we've called all the transition code
+            mState = State.APPS_CUSTOMIZE;
+        }
+
+        // Pause the auto-advance of widgets until we are out of AllApps
+        mUserPresent = false;
+        updateRunning();
+
+        // Send an accessibility event to announce the context change
+        getWindow().getDecorView().sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
     }
 
     /**
@@ -3028,15 +3078,22 @@ public final class Launcher extends Activity
      *          - From another workspace
      */
     void closeAllApps(boolean animated) {
-        if (mState == State.ALL_APPS || mState == State.ALL_APPS_SPRING_LOADED) {
-            mWorkspace.setVisibility(View.VISIBLE);
-            if (LauncherApplication.isScreenXLarge()) {
+        if (LauncherApplication.isScreenXLarge()) {
+            if (mState == State.ALL_APPS || mState == State.ALL_APPS_SPRING_LOADED) {
+                mWorkspace.setVisibility(View.VISIBLE);
                 cameraZoomIn(State.ALL_APPS, animated, false);
-            } else {
-                mAllAppsGrid.zoom(0.0f, animated);
+
+                // Set focus to the AllApps button
+                findViewById(R.id.all_apps_button).requestFocus();
             }
-            ((View)mAllAppsGrid).setFocusable(false);
-            ((CellLayout) mWorkspace.getChildAt(mWorkspace.getCurrentPage())).getChildrenLayout().requestFocus();
+        } else {
+            if (mState == State.APPS_CUSTOMIZE || mState == State.ALL_APPS_SPRING_LOADED) {
+                mWorkspace.setVisibility(View.VISIBLE);
+                cameraZoomIn(State.APPS_CUSTOMIZE, animated, false);
+
+                // Set focus to the AllApps button
+                findViewById(R.id.all_apps_button).requestFocus();
+            }
         }
     }
 
@@ -3068,6 +3125,9 @@ public final class Launcher extends Activity
     void hideCustomizationDrawer(boolean animated) {
         if (mState == State.CUSTOMIZE || mState == State.CUSTOMIZE_SPRING_LOADED) {
             cameraZoomIn(State.CUSTOMIZE, animated, false);
+
+            // Set focus to the customize button
+            findViewById(R.id.configure_button).requestFocus();
         }
     }
 
@@ -3199,16 +3259,21 @@ public final class Launcher extends Activity
      * Sets the app market icon (shown when all apps is visible on x-large screens)
      */
     private void updateAppMarketIcon() {
-        if (LauncherApplication.isScreenXLarge()) {
-            Intent intent = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_MARKET);
-            // Find the app market activity by resolving an intent.
-            // (If multiple app markets are installed, it will return the ResolverActivity.)
-            ComponentName activityName = intent.resolveActivity(getPackageManager());
-            if (activityName != null) {
-                mAppMarketIntent = intent;
-                sAppMarketIcon = updateTextButtonWithIconFromExternalActivity(
-                        R.id.market_button, activityName, R.drawable.app_market_generic);
-            }
+        final View marketButton = findViewById(R.id.market_button);
+        Intent intent = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_MARKET);
+        // Find the app market activity by resolving an intent.
+        // (If multiple app markets are installed, it will return the ResolverActivity.)
+        ComponentName activityName = intent.resolveActivity(getPackageManager());
+        if (activityName != null) {
+            mAppMarketIntent = intent;
+            sAppMarketIcon = updateTextButtonWithIconFromExternalActivity(
+                    R.id.market_button, activityName, R.drawable.app_market_generic);
+            marketButton.setVisibility(View.VISIBLE);
+        } else {
+            // We should hide and disable the view so that we don't try and restore the visibility
+            // of it when we swap between drag & normal states from IconDropTarget subclasses.
+            marketButton.setVisibility(View.GONE);
+            marketButton.setEnabled(false);
         }
     }
 
@@ -3584,7 +3649,12 @@ public final class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void bindAllApplications(ArrayList<ApplicationInfo> apps) {
-        mAllAppsGrid.setApps(apps);
+        if (mAllAppsGrid != null) {
+            mAllAppsGrid.setApps(apps);
+        }
+        if (mAppsCustomizeContent != null) {
+            mAppsCustomizeContent.setApps(apps);
+        }
         if (mCustomizePagedView != null) {
             mCustomizePagedView.setApps(apps);
         }
@@ -3599,7 +3669,12 @@ public final class Launcher extends Activity
     public void bindAppsAdded(ArrayList<ApplicationInfo> apps) {
         setLoadOnResume();
         removeDialog(DIALOG_CREATE_SHORTCUT);
-        mAllAppsGrid.addApps(apps);
+        if (mAllAppsGrid != null) {
+            mAllAppsGrid.addApps(apps);
+        }
+        if (mAppsCustomizeContent != null) {
+            mAppsCustomizeContent.addApps(apps);
+        }
         if (mCustomizePagedView != null) {
             mCustomizePagedView.addApps(apps);
         }
@@ -3620,6 +3695,9 @@ public final class Launcher extends Activity
         if (mAllAppsGrid != null) {
             mAllAppsGrid.updateApps(apps);
         }
+        if (mAppsCustomizeContent != null) {
+            mAppsCustomizeContent.updateApps(apps);
+        }
         if (mCustomizePagedView != null) {
             mCustomizePagedView.updateApps(apps);
         }
@@ -3636,7 +3714,12 @@ public final class Launcher extends Activity
         if (permanent) {
             mWorkspace.removeItems(apps);
         }
-        mAllAppsGrid.removeApps(apps);
+        if (mAllAppsGrid != null) {
+            mAllAppsGrid.removeApps(apps);
+        }
+        if (mAppsCustomizeContent != null) {
+            mAppsCustomizeContent.removeApps(apps);
+        }
         if (mCustomizePagedView != null) {
             mCustomizePagedView.removeApps(apps);
         }
@@ -3650,6 +3733,9 @@ public final class Launcher extends Activity
         // update the customization drawer contents
         if (mCustomizePagedView != null) {
             mCustomizePagedView.update();
+        }
+        if (mAppsCustomizeContent != null) {
+            mAppsCustomizeContent.onPackagesUpdated();
         }
     }
 
@@ -3709,7 +3795,12 @@ public final class Launcher extends Activity
         Log.d(TAG, "mDesktopItems.size=" + mDesktopItems.size());
         Log.d(TAG, "sFolders.size=" + sFolders.size());
         mModel.dumpState();
-        mAllAppsGrid.dumpState();
+        if (mAllAppsGrid != null) {
+            mAllAppsGrid.dumpState();
+        }
+        if (mAppsCustomizeContent != null) {
+            mAppsCustomizeContent.dumpState();
+        }
         Log.d(TAG, "END launcher2 dump state");
     }
 }

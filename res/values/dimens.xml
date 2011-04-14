@@ -15,7 +15,15 @@
 -->
 
 <resources>
+<!-- AllApps/Customize/AppsCustomize -->
+    <!-- Size of icons in Workspace/AppsCustomize -->
+    <dimen name="app_icon_size">50dp</dimen>
+    <dimen name="apps_customize_cell_width">68dp</dimen>
+    <dimen name="apps_customize_cell_height">68dp</dimen>
     <dimen name="title_texture_width">120px</dimen>
+
+    <!-- height of the tab bar in AppsCustomize -->
+    <dimen name="apps_customize_tab_bar_height">56dp</dimen>
 
     <!-- height of the bottom row of controls -->
     <dimen name="button_bar_height">56dip</dimen>
@@ -23,6 +31,24 @@
     <!-- so we have access to this dimension in landscape mode even though
          button_bar_height changes -->
     <dimen name="button_bar_height_portrait">56dip</dimen>
+
+    <!-- extra horizontal spacing between mini screen thumbnails ie. in all
+         apps and in customization mode -->
+    <dimen name="smallScreenExtraSpacing">0dip</dimen>
+
+    <!-- Vertical spacing between edge of screen and mini cell layouts when they
+         are minimized to the bottom in all apps -->
+    <dimen name="allAppsSmallScreenVerticalMarginLandscape">30dip</dimen>
+    <dimen name="allAppsSmallScreenVerticalMarginPortrait">60dip</dimen>
+
+    <!-- height & width of the drop rectangle for the trash icon -->
+    <dimen name="delete_zone_size">70dip</dimen>
+
+    <!-- delete_zone_size_full - button_bar_height_portrait -->
+    <dimen name="delete_zone_padding">14dip</dimen>
+
+    <!-- padding between the delete zone drawable and text -->
+    <dimen name="delete_zone_drawable_padding">8dip</dimen>
 
     <!-- roughly a status bar (for vertically centering the all apps
          home icon in landscape) -->
@@ -32,15 +58,7 @@
          button cluster in landscape) -->
     <dimen name="half_status_bar_height">12dip</dimen>
 
-    <!-- Size of icons in workspace -->
-    <dimen name="app_icon_size">50dp</dimen>
-
-    <!-- height & width of the drop rectangle for the trash icon -->
-    <dimen name="delete_zone_size">70dip</dimen>
-    
-    <!-- delete_zone_size_full - button_bar_height_portrait -->
-    <dimen name="delete_zone_padding">14dip</dimen>
-
+<!-- Dragging -->
     <!-- the area at the edge of the screen that makes the workspace go left
          or right while you're dragging. -->
     <dimen name="scroll_zone">20dp</dimen>
