@@ -26,6 +26,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
+import android.graphics.Rect;
 import android.os.IBinder;
 import android.view.Gravity;
 import android.view.View;
@@ -42,10 +43,7 @@ public class DragView extends View {
     private int mRegistrationX;
     private int mRegistrationY;
 
-    private int mDragRegionLeft = 0;
-    private int mDragRegionTop = 0;
-    private int mDragRegionWidth;
-    private int mDragRegionHeight;
+    private Rect mDragRegion = null;
 
     ValueAnimator mAnim;
     private float mOffsetX = 0.0f;
@@ -117,7 +115,7 @@ public class DragView extends View {
         });
 
         mBitmap = Bitmap.createBitmap(bitmap, left, top, width, height, scale, true);
-        setDragRegion(0, 0, width, height);
+        setDragRegion(new Rect(0, 0, width, height));
 
         // The point in our scaled bitmap that the touch events are located
         mRegistrationX = registrationX;
@@ -132,31 +130,32 @@ public class DragView extends View {
         return mOffsetY;
     }
 
-    public void setDragRegion(int left, int top, int width, int height) {
-        mDragRegionLeft = left;
-        mDragRegionTop = top;
-        mDragRegionWidth = width;
-        mDragRegionHeight = height;
-    }
-
     public void setOnDrawRunnable(Runnable r) {
         mOnDrawRunnable = r;
     }
 
     public int getDragRegionLeft() {
-        return mDragRegionLeft;
+        return mDragRegion.left;
     }
 
     public int getDragRegionTop() {
-        return mDragRegionTop;
+        return mDragRegion.top;
     }
 
     public int getDragRegionWidth() {
-        return mDragRegionWidth;
+        return mDragRegion.width();
     }
 
     public int getDragRegionHeight() {
-        return mDragRegionHeight;
+        return mDragRegion.height();
+    }
+
+    public void setDragRegion(Rect r) {
+        mDragRegion = r;
+    }
+
+    public Rect getDragRegion() {
+        return mDragRegion;
     }
 
     @Override

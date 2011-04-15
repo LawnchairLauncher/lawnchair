@@ -24,6 +24,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -285,6 +286,16 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
         c.translate((v.getWidth() - icon.getIntrinsicWidth()) / 2, v.getPaddingTop());
         icon.draw(c);
 
+        Rect dragRect = null;
+        if (v instanceof TextView) {
+            int iconSize = getResources().getDimensionPixelSize(R.dimen.app_icon_size);
+            int top = v.getPaddingTop();
+            int left = (b.getWidth() - iconSize) / 2;
+            int right = left + iconSize;
+            int bottom = top + iconSize;
+            dragRect = new Rect(left, top, right, bottom);
+        }
+
         // We toggle the checked state _after_ we create the view for the drag in case toggling the
         // checked state changes the view's look
         if (v instanceof Checkable) {
@@ -304,7 +315,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
         // Start the drag
         mLauncher.lockScreenOrientation();
         mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1, b);
-        mDragController.startDrag(v, b, this, app, DragController.DRAG_ACTION_COPY, null);
+        mDragController.startDrag(v, b, this, app, DragController.DRAG_ACTION_COPY, dragRect);
         b.recycle();
         return true;
     }

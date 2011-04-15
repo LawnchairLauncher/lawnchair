@@ -155,6 +155,7 @@ public class Workspace extends SmoothPagedView
     // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
     private int[] mTempCell = new int[2];
     private int[] mTempEstimate = new int[2];
+    private float[] mDragViewVisualCenter = new float[2];
     private float[] mTempOriginXY = new float[2];
     private float[] mTempDragCoordinates = new float[2];
     private float[] mTempTouchCoordinates = new float[2];
@@ -2149,12 +2150,23 @@ public class Workspace extends SmoothPagedView
 
         final int bmpWidth = b.getWidth();
         final int bmpHeight = b.getHeight();
+
         child.getLocationOnScreen(mTempXY);
         final int screenX = (int) mTempXY[0] + (child.getWidth() - bmpWidth) / 2;
         final int screenY = (int) mTempXY[1] + (child.getHeight() - bmpHeight) / 2;
-        mLauncher.lockScreenOrientation();
-        mDragController.startDrag(
-                b, screenX, screenY, this, child.getTag(), DragController.DRAG_ACTION_MOVE);
+
+        Rect dragRect = null;
+        if (child instanceof BubbleTextView) {
+            int iconSize = getResources().getDimensionPixelSize(R.dimen.app_icon_size);
+            int top = child.getPaddingTop();
+            int left = (bmpWidth - iconSize) / 2;
+            int right = left + iconSize;
+            int bottom = top + iconSize;
+            dragRect = new Rect(left, top, right, bottom);
+        }
+
+        mDragController.startDrag(b, screenX, screenY, this, child.getTag(),
+                DragController.DRAG_ACTION_MOVE, dragRect);
         b.recycle();
     }
 
@@ -2178,8 +2190,6 @@ public class Workspace extends SmoothPagedView
         // Based on the position of the drag view, find the top left of the original view
         int viewX = dragViewX + (dragView.getWidth() - child.getMeasuredWidth()) / 2;
         int viewY = dragViewY + (dragView.getHeight() - child.getMeasuredHeight()) / 2;
-        viewX += getResources().getDimensionPixelSize(R.dimen.dragViewOffsetX);
-        viewY += getResources().getDimensionPixelSize(R.dimen.dragViewOffsetY);
 
         // Set its old pos (in the new parent's coordinates); it will be animated
         // in animateViewIntoPosition after the next layout pass
@@ -2282,22 +2292,12 @@ public class Workspace extends SmoothPagedView
 
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
-        boolean largeOrSpringLoaded = !mIsSmall || mWasSpringLoadedOnDragExit;
-        int originX = largeOrSpringLoaded ? x - xOffset : x - xOffset + dragView.getWidth() / 2;
-        int originY = largeOrSpringLoaded ? y - yOffset : y - yOffset + dragView.getHeight() / 2;
 
-        if (mIsSmall || mIsInUnshrinkAnimation) {
-            // get originX and originY in the local coordinate system of the screen
-            mTempOriginXY[0] = originX;
-            mTempOriginXY[1] = originY;
-            mapPointFromSelfToChild(mDragTargetLayout, mTempOriginXY);
-            originX = (int)mTempOriginXY[0];
-            originY = (int)mTempOriginXY[1];
-            if (!largeOrSpringLoaded) {
-               originX -= mDragTargetLayout.getCellWidth() / 2;
-               originY -= mDragTargetLayout.getCellHeight() / 2;
-            }
-        }
+        mDragViewVisualCenter = getDragViewVisualCenter(x, y, xOffset, yOffset, dragView,
+                mDragViewVisualCenter);
+
+        // We want the point to be mapped to the dragTarget.
+        mapPointFromSelfToChild(mDragTargetLayout, mDragViewVisualCenter, null);
 
         // When you are in customization mode and drag to a particular screen, make that the
         // new current/default screen, so any subsequent taps add items to that screen
@@ -2309,14 +2309,15 @@ public class Workspace extends SmoothPagedView
         }
 
         if (source != this) {
-            final int[] touchXY = new int[] { originX, originY };
+            final int[] touchXY = new int[] { (int) mDragViewVisualCenter[0],
+                    (int) mDragViewVisualCenter[1] };
             if ((mIsSmall || mIsInUnshrinkAnimation) && !mLauncher.isAllAppsVisible()) {
                 // When the workspace is shrunk and the drop comes from customize, don't actually
                 // add the item to the screen -- customize will do this itself
                 ((ItemInfo) dragInfo).dropPos = touchXY;
                 return;
             }
-            onDropExternal(touchXY, dragInfo, mDragTargetLayout, false, dragView, originX, originY);
+            onDropExternal(touchXY, dragInfo, mDragTargetLayout, false, dragView);
         } else if (mDragInfo != null) {
             final View cell = mDragInfo.cell;
             CellLayout dropTargetLayout = mDragTargetLayout;
@@ -2336,9 +2337,9 @@ public class Workspace extends SmoothPagedView
 
                 // First we find the cell nearest to point at which the item is dropped, without
                 // any consideration to whether there is an item there.
-                mTargetCell = findNearestArea(originX, originY,
-                        mDragInfo.spanX, mDragInfo.spanY, dropTargetLayout,
-                        mTargetCell);
+                mTargetCell = findNearestArea((int) mDragViewVisualCenter[0],
+                        (int) mDragViewVisualCenter[1], mDragInfo.spanX, mDragInfo.spanY,
+                        dropTargetLayout, mTargetCell);
 
                 final int screen = (mTargetCell == null) ?
                         mDragInfo.screen : indexOfChild(dropTargetLayout);
@@ -2362,9 +2363,9 @@ public class Workspace extends SmoothPagedView
 
                 // Aside from the special case where we're dropping a shortcut onto a shortcut,
                 // we need to find the nearest cell location that is vacant
-                mTargetCell = findNearestVacantArea(originX, originY,
-                        mDragInfo.spanX, mDragInfo.spanY, cell, dropTargetLayout,
-                        mTargetCell);
+                mTargetCell = findNearestVacantArea((int) mDragViewVisualCenter[0],
+                        (int) mDragViewVisualCenter[1], mDragInfo.spanX, mDragInfo.spanY, cell,
+                        dropTargetLayout, mTargetCell);
 
                 if (screen != mCurrentPage) {
                     snapToPage(screen);
@@ -2423,12 +2424,28 @@ public class Workspace extends SmoothPagedView
 
             final CellLayout parent = (CellLayout) cell.getParent().getParent();
 
+            int loc[] = new int[2];
+            getViewLocationRelativeToSelf(dragView, loc);
+
             // Prepare it to be animated into its new position
             // This must be called after the view has been re-parented
-            setPositionForDropAnimation(dragView, originX, originY, parent, cell);
+            setPositionForDropAnimation(dragView, loc[0], loc[1], parent, cell);
             boolean animateDrop = !mWasSpringLoadedOnDragExit;
             parent.onDropChild(cell, animateDrop);
         }
+    }
+
+    private void getViewLocationRelativeToSelf(View v, int[] location) {
+        getLocationOnScreen(location);
+        int x = location[0];
+        int y = location[1];
+
+        v.getLocationOnScreen(location);
+        int vX = location[0];
+        int vY = location[1];
+
+        location[0] = vX - x;
+        location[1] = vY - y;
     }
 
     public void onDragEnter(DragSource source, int x, int y, int xOffset,
@@ -2659,11 +2676,11 @@ public class Workspace extends SmoothPagedView
        xy[1] -= (mScrollY - v.getTop());
    }
 
-    static private float squaredDistance(float[] point1, float[] point2) {
+   static private float squaredDistance(float[] point1, float[] point2) {
         float distanceX = point1[0] - point2[0];
         float distanceY = point2[1] - point2[1];
         return distanceX * distanceX + distanceY * distanceY;
-    }
+   }
 
     /*
      *
@@ -2761,21 +2778,57 @@ public class Workspace extends SmoothPagedView
         return bestMatchingScreen;
     }
 
+    // This is used to compute the visual center of the dragView. This point is then
+    // used to visualize drop locations and determine where to drop an item. The idea is that
+    // the visual center represents the user's interpretation of where the item is, and hence
+    // is the appropriate point to use when determining drop location.
+    private float[] getDragViewVisualCenter(int x, int y, int xOffset, int yOffset,
+            DragView dragView, float[] recycle) {
+        float res[];
+        if (recycle == null) {
+            res = new float[2];
+        } else {
+            res = recycle;
+        }
+
+        // First off, the drag view has been shifted in a way that is not represented in the
+        // x and y values or the x/yOffsets. Here we account for that shift.
+        x += getResources().getDimensionPixelSize(R.dimen.dragViewOffsetX);
+        y += getResources().getDimensionPixelSize(R.dimen.dragViewOffsetY);
+
+        // These represent the visual top and left of drag view if a dragRect was provided.
+        // If a dragRect was not provided, then they correspond to the actual view left and
+        // top, as the dragRect is in that case taken to be the entire dragView.
+        // R.dimen.dragViewOffsetY.
+        int left = x - xOffset;
+        int top = y - yOffset;
+
+        // In order to find the visual center, we shift by half the dragRect
+        res[0] = left + dragView.getDragRegion().width() / 2;
+        res[1] = top + dragView.getDragRegion().height() / 2;
+
+        return res;
+    }
+
     public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
         // When touch is inside the scroll area, skip dragOver actions for the current screen
         if (!mInScrollArea) {
             CellLayout layout;
-            int originX = x - xOffset;
-            int originY = y - yOffset;
+            int left = x - xOffset;
+            int top = y - yOffset;
+
+            mDragViewVisualCenter = getDragViewVisualCenter(x, y, xOffset, yOffset, dragView,
+                    mDragViewVisualCenter);
+
             boolean shrunken = mIsSmall || mIsInUnshrinkAnimation;
             if (shrunken) {
                 mLastDragView = dragView;
-                mLastDragOriginX = originX;
-                mLastDragOriginY = originY;
+                mLastDragOriginX = left;
+                mLastDragOriginY = top;
                 mLastDragXOffset = xOffset;
                 mLastDragYOffset = yOffset;
-                layout = findMatchingPageForDragOver(dragView, originX, originY, xOffset, yOffset);
+                layout = findMatchingPageForDragOver(dragView, left, top, xOffset, yOffset);
 
                 if (layout != mDragTargetLayout) {
                     if (mDragTargetLayout != null) {
@@ -2821,35 +2874,14 @@ public class Workspace extends SmoothPagedView
                     }
                 }
 
-                if (source instanceof AllAppsPagedView) {
-                    // This is a hack to fix the point used to determine which cell an icon from
-                    // the all apps screen is over
-                    if (item != null && item.spanX == 1 && layout != null) {
-                        int dragRegionLeft = (dragView.getWidth() - layout.getCellWidth()) / 2;
-
-                        originX += dragRegionLeft - dragView.getDragRegionLeft();
-                        if (dragView.getDragRegionWidth() != layout.getCellWidth()) {
-                            dragView.setDragRegion(dragView.getDragRegionLeft(),
-                                    dragView.getDragRegionTop(),
-                                    layout.getCellWidth(),
-                                    dragView.getDragRegionHeight());
-                        }
-                    }
-                } else if (source == this) {
-                    // When dragging from the workspace, the drag view is slightly bigger than
-                    // the original view, and offset vertically. Adjust to account for this.
-                    final View origView = mDragInfo.cell;
-                    originX += (dragView.getMeasuredWidth() - origView.getWidth()) / 2;
-                    originY += (dragView.getMeasuredHeight() - origView.getHeight()) / 2
-                            + dragView.getOffsetY();
-                }
-
                 if (mDragTargetLayout != null) {
                     final View child = (mDragInfo == null) ? null : mDragInfo.cell;
-                    float[] localOrigin = { originX, originY };
-                    mapPointFromSelfToChild(mDragTargetLayout, localOrigin, null);
+                    // We want the point to be mapped to the dragTarget.
+                    mapPointFromSelfToChild(mDragTargetLayout, mDragViewVisualCenter, null);
                     mDragTargetLayout.visualizeDropLocation(child, mDragOutline,
-                            (int) localOrigin[0], (int) localOrigin[1], item.spanX, item.spanY);
+                            (int) mDragViewVisualCenter[0],
+                            (int) mDragViewVisualCenter[1],
+                            item.spanX, item.spanY);
                 }
             }
         }
@@ -2897,7 +2929,7 @@ public class Workspace extends SmoothPagedView
 
     private void onDropExternal(int[] touchXY, Object dragInfo,
             CellLayout cellLayout, boolean insertAtFirst) {
-        onDropExternal(touchXY, dragInfo, cellLayout, insertAtFirst, null, 0, 0);
+        onDropExternal(touchXY, dragInfo, cellLayout, insertAtFirst, null);
     }
 
     /**
@@ -2909,8 +2941,7 @@ public class Workspace extends SmoothPagedView
      * to add an item to one of the workspace screens.
      */
     private void onDropExternal(int[] touchXY, Object dragInfo,
-            CellLayout cellLayout, boolean insertAtFirst, DragView dragView,
-            int dragViewX, int dragViewY) {
+            CellLayout cellLayout, boolean insertAtFirst, DragView dragView) {
         int screen = indexOfChild(cellLayout);
         if (dragInfo instanceof PendingAddItemInfo) {
             PendingAddItemInfo info = (PendingAddItemInfo) dragInfo;
@@ -2956,7 +2987,8 @@ public class Workspace extends SmoothPagedView
             mTargetCell = new int[2];
             if (touchXY != null) {
                 // when dragging and dropping, just find the closest free spot
-                cellLayout.findNearestVacantArea(touchXY[0], touchXY[1], 1, 1, mTargetCell);
+                mTargetCell = findNearestVacantArea(touchXY[0], touchXY[1], 1, 1, null, cellLayout,
+                        mTargetCell);
             } else {
                 cellLayout.findCellForSpan(mTargetCell, 1, 1);
             }
@@ -2969,7 +3001,11 @@ public class Workspace extends SmoothPagedView
             cellLayout.getChildrenLayout().measureChild(view);
 
             if (dragView != null) {
-                setPositionForDropAnimation(dragView, dragViewX, dragViewY, cellLayout, view);
+                // we have the visual center of the drag view, we need to find the actual
+                // left and top of the dragView.
+                int loc[] = new int[2];
+                getViewLocationRelativeToSelf(dragView, loc);
+                setPositionForDropAnimation(dragView, loc[0], loc[1], cellLayout, view);
             }
 
             LauncherModel.addOrMoveItemInDatabase(mLauncher, info,
@@ -2998,30 +3034,24 @@ public class Workspace extends SmoothPagedView
 
     /**
      * Calculate the nearest cell where the given object would be dropped.
+     *
+     * pixelX and pixelY should be in the coordinate system of layout
      */
     private int[] findNearestVacantArea(int pixelX, int pixelY,
             int spanX, int spanY, View ignoreView, CellLayout layout, int[] recycle) {
-
-        int localPixelX = pixelX - (layout.getLeft() - mScrollX);
-        int localPixelY = pixelY - (layout.getTop() - mScrollY);
-
-        // Find the best target drop location
         return layout.findNearestVacantArea(
-                localPixelX, localPixelY, spanX, spanY, ignoreView, recycle);
+                pixelX, pixelY, spanX, spanY, ignoreView, recycle);
     }
 
     /**
      * Calculate the nearest cell where the given object would be dropped.
+     *
+     * pixelX and pixelY should be in the coordinate system of layout
      */
     private int[] findNearestArea(int pixelX, int pixelY,
-            int spanX, int spanY,CellLayout layout, int[] recycle) {
-
-        int localPixelX = pixelX - (layout.getLeft() - mScrollX);
-        int localPixelY = pixelY - (layout.getTop() - mScrollY);
-
-        // Find the best target drop location
+            int spanX, int spanY, CellLayout layout, int[] recycle) {
         return layout.findNearestArea(
-                localPixelX, localPixelY, spanX, spanY, recycle);
+                pixelX, pixelY, spanX, spanY, recycle);
     }
 
     void setLauncher(Launcher launcher) {

@@ -73,10 +73,10 @@ public class DragController {
     private boolean mDragging;
 
     /** X coordinate of the down event. */
-    private float mMotionDownX;
+    private int mMotionDownX;
 
     /** Y coordinate of the down event. */
-    private float mMotionDownY;
+    private int mMotionDownY;
 
     /** Info about the screen for clamping. */
     private DisplayMetrics mDisplayMetrics = new DisplayMetrics();
@@ -85,10 +85,10 @@ public class DragController {
     private View mOriginator;
 
     /** X offset from the upper-left corner of the cell to where we touched.  */
-    private float mTouchOffsetX;
+    private int mTouchOffsetX;
 
     /** Y offset from the upper-left corner of the cell to where we touched.  */
-    private float mTouchOffsetY;
+    private int mTouchOffsetY;
 
     /** the area at the edge of the screen that makes the workspace go left
      *   or right while you're dragging.
@@ -289,13 +289,14 @@ public class DragController {
             listener.onDragStart(source, dragInfo, dragAction);
         }
 
-        int registrationX = ((int)mMotionDownX) - screenX;
-        int registrationY = ((int)mMotionDownY) - screenY;
+        final int registrationX = ((int)mMotionDownX) - screenX;
+        final int registrationY = ((int)mMotionDownY) - screenY;
 
         final int dragRegionLeft = dragRegion == null ? 0 : dragRegion.left;
         final int dragRegionTop = dragRegion == null ? 0 : dragRegion.top;
-        mTouchOffsetX = mMotionDownX - screenX - dragRegionLeft;
-        mTouchOffsetY = mMotionDownY - screenY - dragRegionTop;
+
+        mTouchOffsetX = mMotionDownX - (screenX + dragRegionLeft);
+        mTouchOffsetY = mMotionDownY - (screenY + dragRegionTop);
 
         mDragging = true;
         mDragSource = source;
@@ -314,8 +315,7 @@ public class DragController {
         });
 
         if (dragRegion != null) {
-            dragView.setDragRegion(dragRegionLeft, dragRegion.top,
-                    dragRegion.right - dragRegionLeft, dragRegion.bottom - dragRegionTop);
+            dragView.setDragRegion(new Rect(dragRegion));
         }
 
         dragView.show(mWindowToken, (int)mMotionDownX, (int)mMotionDownY);
