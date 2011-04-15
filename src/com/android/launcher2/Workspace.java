@@ -2273,6 +2273,48 @@ public class Workspace extends SmoothPagedView
         return true;
     }
 
+    boolean createUserFolderIfNecessary(View newView, CellLayout target, int originX,
+            int originY, boolean external) {
+        int spanX = mDragInfo != null ? mDragInfo.spanX : 1;
+        int spanY = mDragInfo != null ? mDragInfo.spanY : 1;
+
+        // First we find the cell nearest to point at which the item is dropped, without
+        // any consideration to whether there is an item there.
+        mTargetCell = findNearestArea(originX, originY,
+                spanX, spanY, target,
+                mTargetCell);
+
+        View v = target.getChildAt(mTargetCell[0], mTargetCell[1]);
+        boolean hasntMoved = mDragInfo != null && (mDragInfo.cellX == mTargetCell[0] &&
+                mDragInfo.cellY == mTargetCell[1]);
+
+        if (v == null || hasntMoved) return false;
+
+        final int screen = (mTargetCell == null) ?
+                mDragInfo.screen : indexOfChild(target);
+
+        boolean aboveShortcut = (v.getTag() instanceof ShortcutInfo);
+        boolean willBecomeShortcut = (newView.getTag() instanceof ShortcutInfo);
+
+        if (aboveShortcut && willBecomeShortcut) {
+            ShortcutInfo sourceInfo = (ShortcutInfo) newView.getTag();
+            ShortcutInfo destInfo = (ShortcutInfo) v.getTag();
+            // if the drag started here, we need to remove it from the workspace
+            if (!external) {
+                int fromScreen = mDragInfo.screen;
+                CellLayout sourceLayout = (CellLayout) getChildAt(fromScreen);
+                sourceLayout.removeView(newView);
+            }
+
+            target.removeView(v);
+            FolderIcon fi = mLauncher.addFolder(screen, mTargetCell[0], mTargetCell[1]);
+            fi.addItem(destInfo);
+            fi.addItem(sourceInfo);
+            return true;
+        }
+        return false;
+    }
+
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
 
@@ -2317,30 +2359,13 @@ public class Workspace extends SmoothPagedView
 
             if (dropTargetLayout != null) {
                 // Move internally
-
-                // First we find the cell nearest to point at which the item is dropped, without
-                // any consideration to whether there is an item there.
-                mTargetCell = findNearestArea((int) mDragViewVisualCenter[0],
-                        (int) mDragViewVisualCenter[1], mDragInfo.spanX, mDragInfo.spanY,
-                        dropTargetLayout, mTargetCell);
-
                 final int screen = (mTargetCell == null) ?
                         mDragInfo.screen : indexOfChild(dropTargetLayout);
 
-                View v = dropTargetLayout.getChildAt(mTargetCell[0], mTargetCell[1]);
-                boolean hasMoved = !(mDragInfo.cellX == mTargetCell[0] &&
-                        mDragInfo.cellY == mTargetCell[1]);
-
                 // If the item being dropped is a shortcut and the nearest drop cell also contains
                 // a shortcut, then create a folder with the two shortcuts.
-                if (v != null && (v.getTag() instanceof ShortcutInfo) &&
-                        dragInfo instanceof ShortcutInfo && hasMoved) {
-                    ShortcutInfo info1 = (ShortcutInfo) v.getTag();
-                    ShortcutInfo info2 = (ShortcutInfo) dragInfo;
-                    dropTargetLayout.removeView(v);
-                    FolderIcon fi = mLauncher.addFolder(screen, mTargetCell[0], mTargetCell[1]);
-                    fi.addItem(info1);
-                    fi.addItem(info2);
+                if (createUserFolderIfNecessary(cell, dropTargetLayout,
+                        (int) mDragViewVisualCenter[0], (int) mDragViewVisualCenter[1], false)) {
                     return;
                 }
 
@@ -2965,6 +2990,13 @@ public class Workspace extends SmoothPagedView
                 break;
             default:
                 throw new IllegalStateException("Unknown item type: " + info.itemType);
+            }
+
+            // If the item being dropped is a shortcut and the nearest drop cell also contains
+            // a shortcut, then create a folder with the two shortcuts.
+            if (touchXY != null && createUserFolderIfNecessary(view, cellLayout, touchXY[0],
+                  touchXY[1], true)) {
+                return;
             }
 
             mTargetCell = new int[2];
