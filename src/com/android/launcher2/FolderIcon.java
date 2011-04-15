@@ -77,6 +77,11 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
                 && item.container != mInfo.id;
     }
 
+    public void addItem(ShortcutInfo item) {
+        mInfo.add(item);
+        LauncherModel.addOrMoveItemInDatabase(mLauncher, item, mInfo.id, 0, 0, 0);
+    }
+
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
         ShortcutInfo item;
@@ -86,8 +91,7 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
         } else {
             item = (ShortcutInfo)dragInfo;
         }
-        mInfo.add(item);
-        LauncherModel.addOrMoveItemInDatabase(mLauncher, item, mInfo.id, 0, 0, 0);
+        addItem(item);
     }
 
     public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
