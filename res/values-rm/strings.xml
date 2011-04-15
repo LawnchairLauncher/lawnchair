@@ -85,6 +85,16 @@
     <skip />
     <!-- no translation found for delete_zone_label_all_apps (6664588234817475108) -->
     <skip />
+    <!-- no translation found for accessibility_search_button (816822994629942611) -->
+    <skip />
+    <!-- no translation found for accessibility_voice_search_button (3938249215065842475) -->
+    <skip />
+    <!-- no translation found for accessibility_all_apps_button (1595097919145716305) -->
+    <skip />
+    <!-- no translation found for accessibility_customize_button (585539669413531163) -->
+    <skip />
+    <!-- no translation found for accessibility_delete_button (3628162007991023603) -->
+    <skip />
     <!-- no translation found for delete_zone_label_all_apps_system_app (3683920959591819044) -->
     <skip />
     <string name="menu_add" msgid="3065046628354640854">"Agiuntar"</string>
