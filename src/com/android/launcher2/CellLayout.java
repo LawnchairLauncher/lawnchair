@@ -736,6 +736,22 @@ public class CellLayout extends ViewGroup {
         result[1] = vStartPadding + cellY * (mCellHeight + mHeightGap);
     }
 
+    /**
+     * Given a cell coordinate, return the point that represents the upper left corner of that cell
+     *
+     * @param cellX X coordinate of the cell
+     * @param cellY Y coordinate of the cell
+     *
+     * @param result Array of 2 ints to hold the x and y coordinate of the point
+     */
+    void cellToCenterPoint(int cellX, int cellY, int[] result) {
+        final int hStartPadding = getLeftPadding();
+        final int vStartPadding = getTopPadding();
+
+        result[0] = hStartPadding + cellX * (mCellWidth + mWidthGap) + mCellWidth / 2;
+        result[1] = vStartPadding + cellY * (mCellHeight + mHeightGap) + mCellHeight / 2;
+    }
+
     int getCellWidth() {
         return mCellWidth;
     }
@@ -1021,6 +1037,12 @@ public class CellLayout extends ViewGroup {
         // mark space take by ignoreView as available (method checks if ignoreView is null)
         markCellsAsUnoccupiedForView(ignoreView);
 
+        // For items with a spanX / spanY > 1, the passed in point (pixelX, pixelY) corresponds
+        // to the center of the item, but we are searching based on the top-left cell, so
+        // we translate the point over to correspond to the top-left.
+        pixelX -= (mCellWidth + mWidthGap) * (spanX - 1) / 2f;
+        pixelY -= (mCellHeight + mHeightGap) * (spanY - 1) / 2f;
+
         // Keep track of best-scoring drop area
         final int[] bestXY = result != null ? result : new int[2];
         double bestDistance = Double.MAX_VALUE;
@@ -1045,7 +1067,7 @@ public class CellLayout extends ViewGroup {
                     }
                 }
                 final int[] cellXY = mTmpCellXY;
-                cellToPoint(x, y, cellXY);
+                cellToCenterPoint(x, y, cellXY);
 
                 double distance = Math.sqrt(Math.pow(cellXY[0] - pixelX, 2)
                         + Math.pow(cellXY[1] - pixelY, 2));
