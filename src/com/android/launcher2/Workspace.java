@@ -16,8 +16,9 @@
 
 package com.android.launcher2;
 
-import com.android.launcher.R;
-import com.android.launcher2.InstallWidgetReceiver.WidgetMimeTypeHandlerData;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -66,9 +67,8 @@ import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import com.android.launcher.R;
+import com.android.launcher2.InstallWidgetReceiver.WidgetMimeTypeHandlerData;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -1730,14 +1730,26 @@ public class Workspace extends SmoothPagedView
     }
 
     /*
-     *
-     * We call these methods (onDragStartedWithItemSpans/onDragStartedWithItemMinSize) whenever we
-     * start a drag in Launcher, regardless of whether the drag has ever entered the Workspace
-     *
-     * These methods mark the appropriate pages as accepting drops (which alters their visual
-     * appearance).
-     *
-     */
+    *
+    * We call these methods (onDragStartedWithItemSpans/onDragStartedWithSize) whenever we
+    * start a drag in Launcher, regardless of whether the drag has ever entered the Workspace
+    *
+    * These methods mark the appropriate pages as accepting drops (which alters their visual
+    * appearance).
+    *
+    */
+    public void onDragStartedWithItem(View v) {
+        mIsDragInProcess = true;
+
+        final Canvas canvas = new Canvas();
+
+        // We need to add extra padding to the bitmap to make room for the glow effect
+        final int bitmapPadding = HolographicOutlineHelper.MAX_OUTER_BLUR_RADIUS;
+
+        // The outline is used to visualize where the item will land if dropped
+        mDragOutline = createDragOutline(v, canvas, bitmapPadding);
+    }
+
     public void onDragStartedWithItemSpans(int spanX, int spanY, Bitmap b) {
         mIsDragInProcess = true;
 
@@ -1747,9 +1759,11 @@ public class Workspace extends SmoothPagedView
         final int bitmapPadding = HolographicOutlineHelper.MAX_OUTER_BLUR_RADIUS;
 
         CellLayout cl = (CellLayout) getChildAt(0);
-        int[] desiredSize = cl.cellSpansToSize(spanX, spanY);
+
+        int[] size = cl.cellSpansToSize(spanX, spanY);
+
         // The outline is used to visualize where the item will land if dropped
-        mDragOutline = createDragOutline(b, canvas, bitmapPadding, desiredSize[0], desiredSize[1]);
+        mDragOutline = createDragOutline(b, canvas, bitmapPadding, size[0], size[1]);
 
         updateWhichPagesAcceptDropsDuringDrag(mShrinkState, spanX, spanY);
     }
