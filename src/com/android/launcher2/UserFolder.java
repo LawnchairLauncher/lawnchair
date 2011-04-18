@@ -1,18 +1,15 @@
 package com.android.launcher2;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.GridView;
 import android.widget.TextView;
 
 import com.android.launcher.R;
-import java.util.ArrayList;
 
 /**
  * Folder which contains applications or shortcuts chosen by the user.
@@ -81,7 +78,9 @@ public class UserFolder extends Folder implements DropTarget {
                 return false;
             }
 
+            mLauncher.getWorkspace().onDragStartedWithItem(v);
             mDragController.startDrag(v, this, item, DragController.DRAG_ACTION_COPY);
+
             mLauncher.closeFolder(this);
             mDragItem = item;
 

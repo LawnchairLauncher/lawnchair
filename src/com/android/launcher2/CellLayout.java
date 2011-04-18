@@ -16,7 +16,7 @@
 
 package com.android.launcher2;
 
-import com.android.launcher.R;
+import java.util.Arrays;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -39,7 +39,6 @@ import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
@@ -48,7 +47,7 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LayoutAnimationController;
 
-import java.util.Arrays;
+import com.android.launcher.R;
 
 public class CellLayout extends ViewGroup {
     static final String TAG = "CellLayout";
@@ -983,6 +982,10 @@ public class CellLayout extends ViewGroup {
                 // outside the bounds of the view.
                 left += (v.getWidth() - dragOutline.getWidth()) / 2;
                 top += (v.getHeight() - dragOutline.getHeight()) / 2;
+            } else {
+                // Center the drag outline in the cell
+                left += (mCellWidth - dragOutline.getWidth()) / 2;
+                top += (mCellHeight - dragOutline.getHeight()) / 2;
             }
 
             final int oldIndex = mDragOutlineCurrent;
