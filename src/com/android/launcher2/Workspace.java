@@ -131,6 +131,7 @@ public class Workspace extends SmoothPagedView
     private int mDefaultPage;
 
     private boolean mIsDragInProcess = false;
+    private boolean mIsDraggingOverIcon = false;
 
     /**
      * CellInfo for the cell that is currently being dragged
@@ -2287,6 +2288,25 @@ public class Workspace extends SmoothPagedView
         return true;
     }
 
+    boolean willCreateUserFolder(ItemInfo info, CellLayout target, int originX, int originY) {
+        mTargetCell = findNearestArea(originX, originY,
+                1, 1, target,
+                mTargetCell);
+
+        View v = target.getChildAt(mTargetCell[0], mTargetCell[1]);
+        boolean hasntMoved = mDragInfo != null && (mDragInfo.cellX == mTargetCell[0] &&
+                mDragInfo.cellY == mTargetCell[1]);
+
+        if (v == null || hasntMoved) return false;
+
+        boolean aboveShortcut = (v.getTag() instanceof ShortcutInfo);
+        boolean willBecomeShortcut =
+            (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
+            info.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT);
+
+        return (aboveShortcut && willBecomeShortcut);
+    }
+
     boolean createUserFolderIfNecessary(View newView, CellLayout target, int originX,
             int originY, boolean external) {
         int spanX = mDragInfo != null ? mDragInfo.spanX : 1;
@@ -2900,10 +2920,19 @@ public class Workspace extends SmoothPagedView
                     final View child = (mDragInfo == null) ? null : mDragInfo.cell;
                     // We want the point to be mapped to the dragTarget.
                     mapPointFromSelfToChild(mDragTargetLayout, mDragViewVisualCenter, null);
-                    mDragTargetLayout.visualizeDropLocation(child, mDragOutline,
-                            (int) mDragViewVisualCenter[0],
-                            (int) mDragViewVisualCenter[1],
-                            item.spanX, item.spanY);
+                    ItemInfo info = (ItemInfo) dragInfo;
+
+                    if (!willCreateUserFolder(info, mDragTargetLayout,
+                            (int) mDragViewVisualCenter[0], (int) mDragViewVisualCenter[1])) {
+                        mIsDraggingOverIcon = false;
+                        mDragTargetLayout.visualizeDropLocation(child, mDragOutline,
+                                (int) mDragViewVisualCenter[0],
+                                (int) mDragViewVisualCenter[1],
+                                item.spanX, item.spanY);
+                    } else if (!mIsDraggingOverIcon) {
+                        mIsDraggingOverIcon = true;
+                        mDragTargetLayout.clearDragOutlines();
+                    }
                 }
             }
         }

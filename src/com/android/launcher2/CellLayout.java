@@ -1003,6 +1003,13 @@ public class CellLayout extends ViewGroup {
         }
     }
 
+    public void clearDragOutlines() {
+        final int oldIndex = mDragOutlineCurrent;
+        mDragOutlineAnims[oldIndex].animateOut();
+        mDragCell[0] = -1;
+        mDragCell[1] = -1;
+    }
+
     /**
      * Find a vacant area that will fit the given bounds nearest the requested
      * cell location. Uses Euclidean distance to score multiple vacant areas.
