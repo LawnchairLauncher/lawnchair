@@ -66,7 +66,7 @@ public class CellLayoutChildren extends ViewGroup {
             CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
 
             if ((lp.cellX <= x) && (x < lp.cellX + lp.cellHSpan) &&
-                    (lp.cellY <= y) && (y < lp.cellY + lp.cellHSpan)) {
+                    (lp.cellY <= y) && (y < lp.cellY + lp.cellVSpan)) {
                 return child;
             }
         }
