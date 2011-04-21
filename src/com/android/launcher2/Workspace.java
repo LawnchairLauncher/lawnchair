@@ -471,6 +471,10 @@ public class Workspace extends SmoothPagedView
             lp.cellVSpan = spanY;
         }
 
+        if (spanX < 0 && spanY < 0) {
+            lp.isLockedToGrid = false;
+        }
+
         // Get the canonical child id to uniquely represent this view in this screen
         int childId = LauncherModel.getCellLayoutChildId(-1, screen, x, y, spanX, spanY);
         boolean markCellsAsOccupied = !(child instanceof Folder);
@@ -2189,10 +2193,12 @@ public class Workspace extends SmoothPagedView
         int viewX = dragViewX + (dragView.getWidth() - child.getMeasuredWidth()) / 2;
         int viewY = dragViewY + (dragView.getHeight() - child.getMeasuredHeight()) / 2;
 
+        CellLayout layout = (CellLayout) parent;
+
         // Set its old pos (in the new parent's coordinates); it will be animated
         // in animateViewIntoPosition after the next layout pass
-        lp.oldX = viewX - (parent.getLeft() - mScrollX);
-        lp.oldY = viewY - (parent.getTop() - mScrollY);
+        lp.oldX = viewX - (layout.getLeft() + layout.getLeftPadding() - mScrollX);
+        lp.oldY = viewY - (layout.getTop() + layout.getTopPadding() - mScrollY);
     }
 
     /*
@@ -2204,8 +2210,8 @@ public class Workspace extends SmoothPagedView
         final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
 
         // Convert the animation params to be relative to the Workspace, not the CellLayout
-        final int fromX = lp.oldX + parent.getLeft();
-        final int fromY = lp.oldY + parent.getTop();
+        final int fromX = lp.oldX + parent.getLeft() + parent.getLeftPadding();
+        final int fromY = lp.oldY + parent.getTop() + parent.getTopPadding();
 
         final int dx = lp.x - lp.oldX;
         final int dy = lp.y - lp.oldY;

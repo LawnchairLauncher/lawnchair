@@ -1983,14 +1983,22 @@ public final class Launcher extends Activity
 
     void closeFolder(Folder folder) {
         folder.getInfo().opened = false;
+
         ViewGroup parent = (ViewGroup) folder.getParent().getParent();
         if (parent != null) {
             CellLayout cl = (CellLayout) parent;
-            cl.removeViewWithoutMarkingCells(folder);
+            if (!(folder instanceof UserFolder)) {
+                // User folders will remove themselves
+                cl.removeViewWithoutMarkingCells(folder);
+            }
             if (folder instanceof DropTarget) {
                 // Live folders aren't DropTargets.
                 mDragController.removeDropTarget((DropTarget)folder);
             }
+        }
+        if (folder instanceof UserFolder) {
+            UserFolder uf = (UserFolder) folder;
+            uf.animateClosed();
         }
         folder.onClose();
     }
@@ -2207,6 +2215,10 @@ public final class Launcher extends Activity
         folderInfo.opened = true;
 
         mWorkspace.addInFullScreen(openFolder, folderInfo.screen);
+        if (openFolder instanceof UserFolder) {
+            UserFolder uf = (UserFolder) openFolder;
+            uf.animateOpen();
+        }
 
         openFolder.onOpen();
     }

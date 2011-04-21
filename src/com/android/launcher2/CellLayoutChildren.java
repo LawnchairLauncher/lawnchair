@@ -34,9 +34,6 @@ public class CellLayoutChildren extends ViewGroup {
 
     private final WallpaperManager mWallpaperManager;
 
-    private int mLeftPadding;
-    private int mTopPadding;
-
     private int mCellWidth;
     private int mCellHeight;
 
@@ -49,12 +46,9 @@ public class CellLayoutChildren extends ViewGroup {
         setLayerType(LAYER_TYPE_HARDWARE, null);
     }
 
-    public void setCellDimensions(int cellWidth, int cellHeight,
-            int leftPadding, int topPadding, int widthGap, int heightGap ) {
+    public void setCellDimensions(int cellWidth, int cellHeight, int widthGap, int heightGap ) {
         mCellWidth = cellWidth;
         mCellHeight = cellHeight;
-        mLeftPadding = leftPadding;
-        mTopPadding = topPadding;
         mWidthGap = widthGap;
         mHeightGap = heightGap;
     }
@@ -90,9 +84,7 @@ public class CellLayoutChildren extends ViewGroup {
         final int cellHeight = mCellHeight;
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
 
-        lp.setup(cellWidth, cellHeight, mWidthGap, mHeightGap,
-                mLeftPadding, mTopPadding);
-
+        lp.setup(cellWidth, cellHeight, mWidthGap, mHeightGap);
         int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(lp.width, MeasureSpec.EXACTLY);
         int childheightMeasureSpec = MeasureSpec.makeMeasureSpec(lp.height,
                 MeasureSpec.EXACTLY);

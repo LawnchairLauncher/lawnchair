@@ -31,6 +31,17 @@
   public int getY();
 }
 
+-keep class com.android.launcher2.CellLayout$LayoutParams {
+  public void setWidth(int);
+  public int getWidth();
+  public void setHeight(int);
+  public int getHeight();
+  public void setX(int);
+  public int getX();
+  public void setY(int);
+  public int getY();
+}
+
 -keep class com.android.launcher2.Workspace {
   public float getBackgroundAlpha();
   public void setBackgroundAlpha(float);
