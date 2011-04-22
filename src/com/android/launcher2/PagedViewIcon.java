@@ -57,6 +57,7 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
     private int mAlpha = 255;
     private int mHolographicAlpha;
 
+    private boolean mHolographicEffectsEnabled;
     private boolean mIsChecked;
     private ObjectAnimator mCheckedAlphaAnimator;
     private float mCheckedAlpha = 1.0f;
@@ -132,6 +133,7 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
         }
 
         mHolographicOutlineView = new HolographicPagedViewIcon(context, this);
+        mHolographicEffectsEnabled = isHardwareAccelerated();
     }
 
     protected HolographicPagedViewIcon getHolographicOutlineView() {
@@ -164,7 +166,7 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
             mIconCache = cache;
             mIconCacheKey = new PagedViewIconCache.Key(info);
             mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
-            if (!queueHolographicOutlineCreation()) {
+            if (mHolographicEffectsEnabled && !queueHolographicOutlineCreation()) {
                 getHolographicOutlineView().invalidate();
             }
         }
@@ -182,7 +184,7 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
             mIconCache = cache;
             mIconCacheKey = new PagedViewIconCache.Key(info);
             mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
-            if (!queueHolographicOutlineCreation()) {
+            if (mHolographicEffectsEnabled && !queueHolographicOutlineCreation()) {
                 getHolographicOutlineView().invalidate();
             }
         }
@@ -218,7 +220,8 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
 
         // draw any blended overlays
         if (mCheckedOutline == null) {
-            if (mHolographicOutline != null && mHolographicAlpha > 0) {
+            if (mHolographicEffectsEnabled && mHolographicOutline != null
+                    && mHolographicAlpha > 0) {
                 mPaint.setAlpha(mHolographicAlpha);
                 overlay = mHolographicOutline;
             }

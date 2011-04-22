@@ -760,7 +760,8 @@ public class Workspace extends SmoothPagedView
         return offset;
     }
     private void syncWallpaperOffsetWithScroll() {
-        if (LauncherApplication.isScreenXLarge()) {
+        final boolean enableWallpaperEffects = isHardwareAccelerated();
+        if (enableWallpaperEffects) {
             mWallpaperOffset.setFinalX(wallpaperOffsetForCurrentScroll());
         }
     }
@@ -1544,30 +1545,35 @@ public class Workspace extends SmoothPagedView
         float offsetFromCenter = (wallpaperTravelHeight / (float) mWallpaperHeight) / 2f;
         boolean isLandscape = display.getWidth() > display.getHeight();
 
-        switch (shrinkState) {
-            // animating in
-            case TOP:
-                // customize
-                wallpaperOffset = 0.5f + offsetFromCenter;
-                mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.46f : 0.44f);
-                break;
-            case MIDDLE:
-            case SPRING_LOADED:
-                wallpaperOffset = 0.5f;
-                mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.34f : 0.32f);
-                break;
-            case BOTTOM_HIDDEN:
-            case BOTTOM_VISIBLE:
-                // allapps
-                wallpaperOffset = 0.5f - offsetFromCenter;
-                mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.34f : 0.32f);
-                break;
+        final boolean enableWallpaperEffects = isHardwareAccelerated();
+        if (enableWallpaperEffects) {
+            switch (shrinkState) {
+                // animating in
+                case TOP:
+                    // customize
+                    wallpaperOffset = 0.5f + offsetFromCenter;
+                    mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.46f : 0.44f);
+                    break;
+                case MIDDLE:
+                case SPRING_LOADED:
+                    wallpaperOffset = 0.5f;
+                    mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.34f : 0.32f);
+                    break;
+                case BOTTOM_HIDDEN:
+                case BOTTOM_VISIBLE:
+                    // allapps
+                    wallpaperOffset = 0.5f - offsetFromCenter;
+                    mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.34f : 0.32f);
+                    break;
+            }
         }
 
         setLayoutScale(1.0f);
         if (animated) {
-            mWallpaperOffset.setHorizontalCatchupConstant(0.46f);
-            mWallpaperOffset.setOverrideHorizontalCatchupConstant(true);
+            if (enableWallpaperEffects) {
+                mWallpaperOffset.setHorizontalCatchupConstant(0.46f);
+                mWallpaperOffset.setOverrideHorizontalCatchupConstant(true);
+            }
 
             mSyncWallpaperOffsetWithScroll = false;
 
@@ -1586,10 +1592,12 @@ public class Workspace extends SmoothPagedView
                         return;
                     }
                     fastInvalidate();
-                    setHorizontalWallpaperOffset(
+                    if (enableWallpaperEffects) {
+                        setHorizontalWallpaperOffset(
                             a * oldHorizontalWallpaperOffset + b * newHorizontalWallpaperOffset);
-                    setVerticalWallpaperOffset(
+                        setVerticalWallpaperOffset(
                             a * oldVerticalWallpaperOffset + b * newVerticalWallpaperOffset);
+                    }
                     for (int i = 0; i < screenCount; i++) {
                         final CellLayout cl = (CellLayout) getChildAt(i);
                         cl.fastInvalidate();
@@ -1607,7 +1615,7 @@ public class Workspace extends SmoothPagedView
             mAnimator.playTogether(animWithInterpolator);
             mAnimator.addListener(mShrinkAnimationListener);
             mAnimator.start();
-        } else {
+        } else if (enableWallpaperEffects) {
             setVerticalWallpaperOffset(wallpaperOffset);
             setHorizontalWallpaperOffset(0.5f);
             updateWallpaperOffsetImmediately();
@@ -1906,33 +1914,36 @@ public class Workspace extends SmoothPagedView
             }
             Display display = mLauncher.getWindowManager().getDefaultDisplay();
             boolean isLandscape = display.getWidth() > display.getHeight();
-            switch (mShrinkState) {
-                // animating out
-                case TOP:
-                    // customize
-                    if (animated) {
-                        mWallpaperOffset.setHorizontalCatchupConstant(isLandscape ? 0.65f : 0.62f);
-                        mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.65f : 0.62f);
-                        mWallpaperOffset.setOverrideHorizontalCatchupConstant(true);
-                    }
-                    break;
-                case MIDDLE:
-                case SPRING_LOADED:
-                    if (animated) {
-                        mWallpaperOffset.setHorizontalCatchupConstant(isLandscape ? 0.49f : 0.46f);
-                        mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.49f : 0.46f);
-                        mWallpaperOffset.setOverrideHorizontalCatchupConstant(true);
-                    }
-                    break;
-                case BOTTOM_HIDDEN:
-                case BOTTOM_VISIBLE:
-                    // all apps
-                    if (animated) {
-                        mWallpaperOffset.setHorizontalCatchupConstant(isLandscape ? 0.65f : 0.65f);
-                        mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.65f : 0.65f);
-                        mWallpaperOffset.setOverrideHorizontalCatchupConstant(true);
-                    }
-                    break;
+            final boolean enableWallpaperEffects = isHardwareAccelerated();
+            if (enableWallpaperEffects) {
+                switch (mShrinkState) {
+                    // animating out
+                    case TOP:
+                        // customize
+                        if (animated) {
+                            mWallpaperOffset.setHorizontalCatchupConstant(isLandscape ? 0.65f : 0.62f);
+                            mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.65f : 0.62f);
+                            mWallpaperOffset.setOverrideHorizontalCatchupConstant(true);
+                        }
+                        break;
+                    case MIDDLE:
+                    case SPRING_LOADED:
+                        if (animated) {
+                            mWallpaperOffset.setHorizontalCatchupConstant(isLandscape ? 0.49f : 0.46f);
+                            mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.49f : 0.46f);
+                            mWallpaperOffset.setOverrideHorizontalCatchupConstant(true);
+                        }
+                        break;
+                    case BOTTOM_HIDDEN:
+                    case BOTTOM_VISIBLE:
+                        // all apps
+                        if (animated) {
+                            mWallpaperOffset.setHorizontalCatchupConstant(isLandscape ? 0.65f : 0.65f);
+                            mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.65f : 0.65f);
+                            mWallpaperOffset.setOverrideHorizontalCatchupConstant(true);
+                        }
+                        break;
+                }
             }
             if (animated) {
                 ValueAnimator animWithInterpolator =
@@ -1950,10 +1961,12 @@ public class Workspace extends SmoothPagedView
                             return;
                         }
                         fastInvalidate();
-                        setHorizontalWallpaperOffset(
-                                a * oldHorizontalWallpaperOffset + b * newHorizontalWallpaperOffset);
-                        setVerticalWallpaperOffset(
-                                a * oldVerticalWallpaperOffset + b * newVerticalWallpaperOffset);
+                        if (enableWallpaperEffects) {
+                            setHorizontalWallpaperOffset(a * oldHorizontalWallpaperOffset
+                                    + b * newHorizontalWallpaperOffset);
+                            setVerticalWallpaperOffset(a * oldVerticalWallpaperOffset
+                                    + b * newVerticalWallpaperOffset);
+                        }
                         for (int i = 0; i < screenCount; i++) {
                             final CellLayout cl = (CellLayout) getChildAt(i);
                             cl.fastInvalidate();
@@ -1995,9 +2008,11 @@ public class Workspace extends SmoothPagedView
                 mAnimator.addListener(mUnshrinkAnimationListener);
                 mAnimator.start();
             } else {
-                setHorizontalWallpaperOffset(wallpaperOffsetForCurrentScroll());
-                setVerticalWallpaperOffset(0.5f);
-                updateWallpaperOffsetImmediately();
+                if (enableWallpaperEffects) {
+                    setHorizontalWallpaperOffset(wallpaperOffsetForCurrentScroll());
+                    setVerticalWallpaperOffset(0.5f);
+                    updateWallpaperOffsetImmediately();
+                }
             }
         }
 

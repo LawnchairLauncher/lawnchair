@@ -41,7 +41,6 @@ public class HolographicPagedViewIcon extends TextView  {
     @Override
     protected void onDraw(Canvas canvas) {
         Bitmap overlay = mOriginalIcon.getHolographicOutline();
-
         if (overlay != null) {
             final int offset = getScrollX();
             final int compoundPaddingLeft = getCompoundPaddingLeft();
