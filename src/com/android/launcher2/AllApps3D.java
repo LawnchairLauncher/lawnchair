@@ -155,13 +155,6 @@ public class AllApps3D extends RSSurfaceView
             setRenderScriptGL(sRS);
         }
 
-        final DisplayMetrics metrics = getResources().getDisplayMetrics();
-        final boolean isPortrait = metrics.widthPixels < metrics.heightPixels;
-        mColumnsPerPage = isPortrait ? Defines.COLUMNS_PER_PAGE_PORTRAIT :
-                Defines.COLUMNS_PER_PAGE_LANDSCAPE;
-        mRowsPerPage = isPortrait ? Defines.ROWS_PER_PAGE_PORTRAIT :
-                Defines.ROWS_PER_PAGE_LANDSCAPE;
-
         if (sRollo != null) {
             sRollo.mAllApps = this;
             sRollo.mRes = getResources();
@@ -232,6 +225,12 @@ public class AllApps3D extends RSSurfaceView
         //long startTime = SystemClock.uptimeMillis();
 
         super.surfaceChanged(holder, format, w, h);
+
+        final boolean isPortrait = w < h;
+        mColumnsPerPage = isPortrait ? Defines.COLUMNS_PER_PAGE_PORTRAIT :
+                Defines.COLUMNS_PER_PAGE_LANDSCAPE;
+        mRowsPerPage = isPortrait ? Defines.ROWS_PER_PAGE_PORTRAIT :
+                Defines.ROWS_PER_PAGE_LANDSCAPE;
 
         if (mSurrendered) return;
 
@@ -1046,13 +1045,16 @@ public class AllApps3D extends RSSurfaceView
                 i.ScaleOffset.x = (2.f / 480.f);
                 i.ScaleOffset.y = 0;
                 i.ScaleOffset.z = -((float)w / 2) - 0.25f;
-                i.ScaleOffset.w = -380.25f;
-                i.BendPos.x = 120.f;
-                i.BendPos.y = 680.f;
-                if (w > h) {
-                    i.ScaleOffset.z = 40.f;
-                    i.ScaleOffset.w = h - 40.f;
-                    i.BendPos.y = 1.f;
+                if (w < h) {
+                    // portrait
+                    i.ScaleOffset.w = -380.25f;
+                    i.BendPos.x = 120.f;        // bottom of screen
+                    i.BendPos.y = h - 82.f;     // top of screen
+                } else {
+                    // landscape
+                    i.ScaleOffset.w = -206.25f;
+                    i.BendPos.x = 50.f;
+                    i.BendPos.y = h - 30.f;
                 }
                 mUniformAlloc.set(i, 0, true);
             }
@@ -1092,7 +1094,7 @@ public class AllApps3D extends RSSurfaceView
                     "  float aDy = cos(bendAngle);\n" +
                     "  float aDz = sin(bendAngle);\n" +
 
-                    "  float scale = (2.0 / 480.0);\n" +
+                    "  float scale = (2.0 / " + mWidth + ".0);\n" +
                     "  float x = UNI_Position.x + UNI_ImgSize.x * (1.0 - ani) * (ATTRIB_position.x - 0.5);\n" +
                     "  float ys= UNI_Position.y + UNI_ImgSize.y * (1.0 - ani) * ATTRIB_position.y;\n" +
                     "  float y = 0.0;\n" +
