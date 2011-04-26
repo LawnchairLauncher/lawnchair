@@ -2179,6 +2179,7 @@ public class Workspace extends SmoothPagedView
             dragRect = new Rect(left, top, right, bottom);
         }
 
+        mLauncher.lockScreenOrientation();
         mDragController.startDrag(b, screenX, screenY, this, child.getTag(),
                 DragController.DRAG_ACTION_MOVE, dragRect);
         b.recycle();
