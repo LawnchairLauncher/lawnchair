@@ -853,7 +853,7 @@ public class CellLayout extends ViewGroup {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            child.layout(mLeftPadding, mTopPadding, r - mRightPadding , b - mBottomPadding);
+            child.layout(mLeftPadding, mTopPadding, r - l - mRightPadding , b - t - mBottomPadding);
         }
     }
 
