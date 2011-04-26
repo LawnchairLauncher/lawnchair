@@ -67,16 +67,11 @@
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Página inicial"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"Remover"</string>
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"Desinstalar"</string>
-    <!-- no translation found for accessibility_search_button (816822994629942611) -->
-    <skip />
-    <!-- no translation found for accessibility_voice_search_button (3938249215065842475) -->
-    <skip />
-    <!-- no translation found for accessibility_all_apps_button (1595097919145716305) -->
-    <skip />
-    <!-- no translation found for accessibility_customize_button (585539669413531163) -->
-    <skip />
-    <!-- no translation found for accessibility_delete_button (3628162007991023603) -->
-    <skip />
+    <string name="accessibility_search_button" msgid="816822994629942611">"Pesquisar"</string>
+    <string name="accessibility_voice_search_button" msgid="3938249215065842475">"Pesquisa por Voz"</string>
+    <string name="accessibility_all_apps_button" msgid="1595097919145716305">"Aplicações"</string>
+    <string name="accessibility_customize_button" msgid="585539669413531163">"Personalizar"</string>
+    <string name="accessibility_delete_button" msgid="3628162007991023603">"Remover"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"Desinstalar atualização"</string>
     <string name="menu_add" msgid="3065046628354640854">"Adicionar"</string>
     <string name="menu_manage_apps" msgid="2308685199463588895">"Gerir aplicações"</string>
