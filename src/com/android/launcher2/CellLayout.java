@@ -263,17 +263,16 @@ public class CellLayout extends ViewGroup {
         setHoverAlpha(1.0f);
 
         mChildren = new CellLayoutChildren(context);
-        mChildren.setCellDimensions(
-                mCellWidth, mCellHeight, mLeftPadding, mTopPadding, mWidthGap, mHeightGap);
+        mChildren.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
         addView(mChildren);
     }
 
     private void invalidateBubbleTextView(BubbleTextView icon) {
         final int padding = icon.getPressedOrFocusedBackgroundPadding();
-        invalidate(icon.getLeft() - padding,
-                icon.getTop() - padding,
-                icon.getRight() + padding,
-                icon.getBottom() + padding);
+        invalidate(icon.getLeft() + getLeftPadding() - padding,
+                icon.getTop() + getTopPadding() - padding,
+                icon.getRight() + getLeftPadding() + padding,
+                icon.getBottom() + getTopPadding() + padding);
     }
 
     void setPressedOrFocusedIcon(BubbleTextView icon) {
@@ -487,8 +486,8 @@ public class CellLayout extends ViewGroup {
             final Bitmap b = mPressedOrFocusedIcon.getPressedOrFocusedBackground();
             if (b != null) {
                 canvas.drawBitmap(b,
-                        mPressedOrFocusedIcon.getLeft() - padding,
-                        mPressedOrFocusedIcon.getTop() - padding,
+                        mPressedOrFocusedIcon.getLeft() + getLeftPadding() - padding,
+                        mPressedOrFocusedIcon.getTop() + getTopPadding() - padding,
                         null);
             }
         }
@@ -783,6 +782,18 @@ public class CellLayout extends ViewGroup {
         return mBottomPadding;
     }
 
+    Rect getContentRect(Rect r) {
+        if (r == null) {
+            r = new Rect();
+        }
+        int left = getPaddingLeft();
+        int top = getPaddingTop();
+        int right = left + getWidth() - mLeftPadding - mRightPadding;
+        int bottom = top + getHeight() - mTopPadding - mBottomPadding;
+        r.set(left, top, right, bottom);
+        return r;
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // TODO: currently ignoring padding
@@ -842,7 +853,7 @@ public class CellLayout extends ViewGroup {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            child.layout(0, 0, r - l, b - t);
+            child.layout(mLeftPadding, mTopPadding, r - mRightPadding , b - mBottomPadding);
         }
     }
 
@@ -1651,8 +1662,7 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
             this.cellVSpan = cellVSpan;
         }
 
-        public void setup(int cellWidth, int cellHeight, int widthGap, int heightGap,
-                int hStartPadding, int vStartPadding) {
+        public void setup(int cellWidth, int cellHeight, int widthGap, int heightGap) {
             if (isLockedToGrid) {
                 final int myCellHSpan = cellHSpan;
                 final int myCellVSpan = cellVSpan;
@@ -1663,13 +1673,45 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
                         leftMargin - rightMargin;
                 height = myCellVSpan * cellHeight + ((myCellVSpan - 1) * heightGap) -
                         topMargin - bottomMargin;
-                x = hStartPadding + myCellX * (cellWidth + widthGap) + leftMargin;
-                y = vStartPadding + myCellY * (cellHeight + heightGap) + topMargin;
+                x = myCellX * (cellWidth + widthGap) + leftMargin;
+                y = myCellY * (cellHeight + heightGap) + topMargin;
             }
         }
 
         public String toString() {
             return "(" + this.cellX + ", " + this.cellY + ")";
+        }
+
+        public void setWidth(int width) {
+            this.width = width;
+        }
+
+        public int getWidth() {
+            return width;
+        }
+
+        public void setHeight(int height) {
+            this.height = height;
+        }
+
+        public int getHeight() {
+            return height;
+        }
+
+        public void setX(int x) {
+            this.x = x;
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public void setY(int y) {
+            this.y = y;
+        }
+
+        public int getY() {
+            return y;
         }
     }
 

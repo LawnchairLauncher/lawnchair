@@ -2,7 +2,17 @@ package com.android.launcher2;
 
 import java.util.ArrayList;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
+import android.animation.Animator.AnimatorListener;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -18,23 +28,30 @@ import com.android.launcher.R;
 public class UserFolder extends Folder implements DropTarget {
     private static final String TAG = "Launcher.UserFolder";
 
+    static final int STATE_NONE = -1;
+    static final int STATE_SMALL = 0;
+    static final int STATE_ANIMATING = 1;
+    static final int STATE_OPEN = 2;
+
+    private int mExpandDuration;
     protected CellLayout mContent;
     private final LayoutInflater mInflater;
     private final IconCache mIconCache;
+    private int mState = STATE_NONE;
 
     public UserFolder(Context context, AttributeSet attrs) {
         super(context, attrs);
         mInflater = LayoutInflater.from(context);
         mIconCache = ((LauncherApplication)context.getApplicationContext()).getIconCache();
+        mExpandDuration = getResources().getInteger(R.integer.config_folderAnimDuration);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-
         mContent = (CellLayout) findViewById(R.id.folder_content);
     }
-    
+
     /**
      * Creates a new UserFolder, inflated from R.layout.user_folder.
      *
@@ -44,6 +61,115 @@ public class UserFolder extends Folder implements DropTarget {
      */
     static UserFolder fromXml(Context context) {
         return (UserFolder) LayoutInflater.from(context).inflate(R.layout.user_folder, null);
+    }
+
+    /**
+     * This method is intended to make the UserFolder to be visually identical in size and position
+     * to its associated FolderIcon. This allows for a seamless transition into the expanded state.
+     */
+    private void positionAndSizeAsIcon() {
+        if (!(getParent() instanceof CellLayoutChildren)) return;
+
+        CellLayoutChildren clc = (CellLayoutChildren) getParent();
+        CellLayout cellLayout = (CellLayout) clc.getParent();
+
+        FolderIcon fi = (FolderIcon) cellLayout.getChildAt(mInfo.cellX, mInfo.cellY);
+        CellLayout.LayoutParams iconLp = (CellLayout.LayoutParams) fi.getLayoutParams();
+        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
+
+        lp.width = iconLp.width;
+        lp.height = iconLp.height;
+        lp.x = iconLp.x;
+        lp.y = iconLp.y;
+
+        mContent.setAlpha(0f);
+        mState = STATE_SMALL;
+    }
+
+    public void animateOpen() {
+        if (mState != STATE_SMALL) {
+            positionAndSizeAsIcon();
+        }
+        if (!(getParent() instanceof CellLayoutChildren)) return;
+
+        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
+
+        CellLayoutChildren clc = (CellLayoutChildren) getParent();
+        CellLayout cellLayout = (CellLayout) clc.getParent();
+        Rect r = cellLayout.getContentRect(null);
+
+        PropertyValuesHolder width = PropertyValuesHolder.ofInt("width", r.width());
+        PropertyValuesHolder height = PropertyValuesHolder.ofInt("height", r.height());
+        PropertyValuesHolder x = PropertyValuesHolder.ofInt("x", 0);
+        PropertyValuesHolder y = PropertyValuesHolder.ofInt("y", 0);
+
+        ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(lp, width, height, x, y);
+        oa.addUpdateListener(new AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                requestLayout();
+            }
+        });
+
+        PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 1.0f);
+        ObjectAnimator oaContentAlpha = ObjectAnimator.ofPropertyValuesHolder(mContent, alpha);
+
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(oa, oaContentAlpha);
+        set.setDuration(mExpandDuration);
+        set.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                mState = STATE_ANIMATING;
+            }
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mState = STATE_SMALL;
+            }
+        });
+        set.start();
+    }
+
+    public void animateClosed() {
+        if (!(getParent() instanceof CellLayoutChildren)) return;
+
+        CellLayoutChildren clc = (CellLayoutChildren) getParent();
+        final CellLayout cellLayout = (CellLayout) clc.getParent();
+
+        FolderIcon fi = (FolderIcon) cellLayout.getChildAt(mInfo.cellX, mInfo.cellY);
+        CellLayout.LayoutParams iconLp = (CellLayout.LayoutParams) fi.getLayoutParams();
+        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
+
+        PropertyValuesHolder width = PropertyValuesHolder.ofInt("width", iconLp.width);
+        PropertyValuesHolder height = PropertyValuesHolder.ofInt("height", iconLp.height);
+        PropertyValuesHolder x = PropertyValuesHolder.ofInt("x",iconLp.x);
+        PropertyValuesHolder y = PropertyValuesHolder.ofInt("y", iconLp.y);
+
+        ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(lp, width, height, x, y);
+        oa.addUpdateListener(new AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                requestLayout();
+            }
+        });
+
+        PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 0f);
+        ObjectAnimator oaContentAlpha = ObjectAnimator.ofPropertyValuesHolder(mContent, alpha);
+
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(oa, oaContentAlpha);
+        set.setDuration(mExpandDuration);
+
+        set.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                cellLayout.removeViewWithoutMarkingCells(UserFolder.this);
+                mState = STATE_OPEN;
+            }
+            @Override
+            public void onAnimationStart(Animator animation) {
+                mState = STATE_ANIMATING;
+            }
+        });
+        set.start();
     }
 
     @Override
