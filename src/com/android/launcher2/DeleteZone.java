@@ -16,9 +16,9 @@
 
 package com.android.launcher2;
 
-import android.animation.AnimatorSet;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
@@ -31,7 +31,6 @@ import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.TranslateAnimation;
 
 import com.android.launcher.R;
 
@@ -113,18 +112,18 @@ public class DeleteZone extends IconDropTarget {
             if (item instanceof LauncherAppWidgetInfo) {
                 mLauncher.removeAppWidget((LauncherAppWidgetInfo) item);
             }
-        } else if (source instanceof UserFolder) {
-            final UserFolder userFolder = (UserFolder) source;
-            final UserFolderInfo userFolderInfo = (UserFolderInfo) userFolder.getInfo();
+        } else if (source instanceof Folder) {
+            final Folder folder = (Folder) source;
+            final FolderInfo folderInfo = (FolderInfo) folder.getInfo();
             // Item must be a ShortcutInfo otherwise it couldn't have been in the folder
             // in the first place.
-            userFolderInfo.remove((ShortcutInfo)item);
+            folderInfo.remove((ShortcutInfo)item);
         }
 
-        if (item instanceof UserFolderInfo) {
-            final UserFolderInfo userFolderInfo = (UserFolderInfo)item;
-            LauncherModel.deleteUserFolderContentsFromDatabase(mLauncher, userFolderInfo);
-            mLauncher.removeFolder(userFolderInfo);
+        if (item instanceof FolderInfo) {
+            final FolderInfo folderInfo = (FolderInfo)item;
+            LauncherModel.deleteFolderContentsFromDatabase(mLauncher, folderInfo);
+            mLauncher.removeFolder(folderInfo);
         } else if (item instanceof LauncherAppWidgetInfo) {
             final LauncherAppWidgetInfo launcherAppWidgetInfo = (LauncherAppWidgetInfo) item;
             final LauncherAppWidgetHost appWidgetHost = mLauncher.getAppWidgetHost();

@@ -16,12 +16,15 @@
 
 package com.android.launcher2;
 
+import java.util.ArrayList;
+
+import android.content.ContentValues;
 
 /**
  * Represents a folder containing shortcuts or apps.
  */
 class FolderInfo extends ItemInfo {
-    
+
     /**
      * Whether this folder has been opened
      */
@@ -31,4 +34,37 @@ class FolderInfo extends ItemInfo {
      * The folder name.
      */
     CharSequence title;
+
+    /**
+     * The apps and shortcuts
+     */
+    ArrayList<ShortcutInfo> contents = new ArrayList<ShortcutInfo>();
+
+    FolderInfo() {
+        itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
+    }
+
+    /**
+     * Add an app or shortcut
+     *
+     * @param item
+     */
+    public void add(ShortcutInfo item) {
+        contents.add(item);
+    }
+
+    /**
+     * Remove an app or shortcut. Does not change the DB.
+     *
+     * @param item
+     */
+    public void remove(ShortcutInfo item) {
+        contents.remove(item);
+    }
+
+    @Override
+    void onAddToDatabase(ContentValues values) {
+        super.onAddToDatabase(values);
+        values.put(LauncherSettings.Favorites.TITLE, title.toString());
+    }
 }

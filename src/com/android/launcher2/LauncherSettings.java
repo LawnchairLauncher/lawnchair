@@ -16,8 +16,8 @@
 
 package com.android.launcher2;
 
-import android.provider.BaseColumns;
 import android.net.Uri;
+import android.provider.BaseColumns;
 
 /**
  * Settings related utilities.
@@ -169,11 +169,15 @@ class LauncherSettings {
         /**
          * The favorite is a user created folder
          */
-        static final int ITEM_TYPE_USER_FOLDER = 2;
+        static final int ITEM_TYPE_FOLDER = 2;
 
         /**
-         * The favorite is a live folder
-         */
+        * The favorite is a live folder
+        *
+        * Note: live folders can no longer be added to Launcher, and any live folders which
+        * exist within the launcher database will be ignored when loading.  That said, these
+        * entries in the database may still exist, and are not automatically stripped.
+        */
         static final int ITEM_TYPE_LIVE_FOLDER = 3;
 
         /**

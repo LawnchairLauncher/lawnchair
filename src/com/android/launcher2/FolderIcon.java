@@ -29,7 +29,7 @@ import com.android.launcher.R;
  * An icon that can appear on in the workspace representing an {@link UserFolder}.
  */
 public class FolderIcon extends BubbleTextView implements DropTarget {
-    private UserFolderInfo mInfo;
+    private FolderInfo mInfo;
     private Launcher mLauncher;
     private Drawable mCloseIcon;
     private Drawable mOpenIcon;
@@ -50,7 +50,7 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
     }
 
     static FolderIcon fromXml(int resId, Launcher launcher, ViewGroup group,
-            UserFolderInfo folderInfo, IconCache iconCache) {
+            FolderInfo folderInfo, IconCache iconCache) {
 
         FolderIcon icon = (FolderIcon) LayoutInflater.from(launcher).inflate(resId, group, false);
 

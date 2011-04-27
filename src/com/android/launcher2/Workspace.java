@@ -38,7 +38,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ProviderInfo;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -50,7 +49,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -3030,9 +3028,6 @@ public class Workspace extends SmoothPagedView
                 case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
                     mLauncher.addAppWidgetFromDrop((PendingAddWidgetInfo) info, screen, touchXY);
                     break;
-                case LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER:
-                    mLauncher.addLiveFolderFromDrop(info.componentName, screen, touchXY);
-                    break;
                 case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                     mLauncher.processShortcutFromDrop(info.componentName, screen, touchXY);
                     break;
@@ -3055,9 +3050,9 @@ public class Workspace extends SmoothPagedView
                 view = mLauncher.createShortcut(R.layout.application, cellLayout,
                         (ShortcutInfo) info);
                 break;
-            case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
+            case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                 view = FolderIcon.fromXml(R.layout.folder_icon, mLauncher,
-                        cellLayout, (UserFolderInfo) info, mIconCache);
+                        cellLayout, (FolderInfo) info, mIconCache);
                 break;
             default:
                 throw new IllegalStateException("Unknown item type: " + info.itemType);
@@ -3345,8 +3340,8 @@ public class Workspace extends SmoothPagedView
                                     }
                                 }
                             }
-                        } else if (tag instanceof UserFolderInfo) {
-                            final UserFolderInfo info = (UserFolderInfo) tag;
+                        } else if (tag instanceof FolderInfo) {
+                            final FolderInfo info = (FolderInfo) tag;
                             final ArrayList<ShortcutInfo> contents = info.contents;
                             final ArrayList<ShortcutInfo> toRemove = new ArrayList<ShortcutInfo>(1);
                             final int contentsCount = contents.size();
@@ -3373,20 +3368,6 @@ public class Workspace extends SmoothPagedView
                                 final Folder folder = getOpenFolder();
                                 if (folder != null)
                                     folder.notifyDataSetChanged();
-                            }
-                        } else if (tag instanceof LiveFolderInfo) {
-                            final LiveFolderInfo info = (LiveFolderInfo) tag;
-                            final Uri uri = info.uri;
-                            final ProviderInfo providerInfo = manager.resolveContentProvider(
-                                    uri.getAuthority(), 0);
-
-                            if (providerInfo != null) {
-                                for (String packageName: packageNames) {
-                                    if (packageName.equals(providerInfo.packageName)) {
-                                        LauncherModel.deleteItemFromDatabase(mLauncher, info);
-                                        childrenToRemove.add(view);
-                                    }
-                                }
                             }
                         } else if (tag instanceof LauncherAppWidgetInfo) {
                             final LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) tag;

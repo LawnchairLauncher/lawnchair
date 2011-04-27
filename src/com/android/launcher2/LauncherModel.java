@@ -37,7 +37,6 @@ import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ProviderInfo;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -268,8 +267,7 @@ public class LauncherModel extends BroadcastReceiver {
         Cursor c = cr.query(LauncherSettings.Favorites.CONTENT_URI, null,
                 "_id=? and (itemType=? or itemType=?)",
                 new String[] { String.valueOf(id),
-                        String.valueOf(LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER),
-                        String.valueOf(LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER) }, null);
+                        String.valueOf(LauncherSettings.Favorites.ITEM_TYPE_FOLDER)}, null);
 
         try {
             if (c.moveToFirst()) {
@@ -282,11 +280,8 @@ public class LauncherModel extends BroadcastReceiver {
 
                 FolderInfo folderInfo = null;
                 switch (c.getInt(itemTypeIndex)) {
-                    case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
-                        folderInfo = findOrMakeUserFolder(folderList, id);
-                        break;
-                    case LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER:
-                        folderInfo = findOrMakeLiveFolder(folderList, id);
+                    case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
+                        folderInfo = findOrMakeFolder(folderList, id);
                         break;
                 }
 
@@ -388,7 +383,7 @@ public class LauncherModel extends BroadcastReceiver {
     /**
      * Remove the contents of the specified folder from the database
      */
-    static void deleteUserFolderContentsFromDatabase(Context context, UserFolderInfo info) {
+    static void deleteFolderContentsFromDatabase(Context context, FolderInfo info) {
         final ContentResolver cr = context.getContentResolver();
 
         cr.delete(LauncherSettings.Favorites.getContentUri(info.id, false), null, null);
@@ -841,8 +836,8 @@ public class LauncherModel extends BroadcastReceiver {
                                     break;
                                 default:
                                     // Item is in a user folder
-                                    UserFolderInfo folderInfo =
-                                            findOrMakeUserFolder(mFolders, container);
+                                    FolderInfo folderInfo =
+                                            findOrMakeFolder(mFolders, container);
                                     folderInfo.add(info);
                                     break;
                                 }
@@ -862,9 +857,9 @@ public class LauncherModel extends BroadcastReceiver {
                             }
                             break;
 
-                        case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
+                        case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                             id = c.getLong(idIndex);
-                            UserFolderInfo folderInfo = findOrMakeUserFolder(mFolders, id);
+                            FolderInfo folderInfo = findOrMakeFolder(mFolders, id);
 
                             folderInfo.title = c.getString(titleIndex);
                             folderInfo.id = id;
@@ -885,57 +880,6 @@ public class LauncherModel extends BroadcastReceiver {
                             }
 
                             mFolders.put(folderInfo.id, folderInfo);
-                            break;
-
-                        case LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER:
-                            id = c.getLong(idIndex);
-                            Uri uri = Uri.parse(c.getString(uriIndex));
-
-                            // Make sure the live folder exists
-                            final ProviderInfo providerInfo =
-                                    context.getPackageManager().resolveContentProvider(
-                                            uri.getAuthority(), 0);
-
-                            if (providerInfo == null && !isSafeMode) {
-                                itemsToRemove.add(id);
-                            } else {
-                                LiveFolderInfo liveFolderInfo = findOrMakeLiveFolder(mFolders, id);
-                                intentDescription = c.getString(intentIndex);
-                                intent = null;
-                                if (intentDescription != null) {
-                                    try {
-                                        intent = Intent.parseUri(intentDescription, 0);
-                                    } catch (URISyntaxException e) {
-                                        // Ignore, a live folder might not have a base intent
-                                    }
-                                }
-
-                                liveFolderInfo.title = c.getString(titleIndex);
-                                liveFolderInfo.id = id;
-                                liveFolderInfo.uri = uri;
-                                container = c.getInt(containerIndex);
-                                liveFolderInfo.container = container;
-                                liveFolderInfo.screen = c.getInt(screenIndex);
-                                liveFolderInfo.cellX = c.getInt(cellXIndex);
-                                liveFolderInfo.cellY = c.getInt(cellYIndex);
-                                liveFolderInfo.baseIntent = intent;
-                                liveFolderInfo.displayMode = c.getInt(displayModeIndex);
-
-                                // check & update map of what's occupied
-                                if (!checkItemPlacement(occupied, liveFolderInfo)) {
-                                    break;
-                                }
-
-                                loadLiveFolderIcon(context, c, iconTypeIndex, iconPackageIndex,
-                                        iconResourceIndex, liveFolderInfo);
-
-                                switch (container) {
-                                    case LauncherSettings.Favorites.CONTAINER_DESKTOP:
-                                        mItems.add(liveFolderInfo);
-                                        break;
-                                }
-                                mFolders.put(liveFolderInfo.id, liveFolderInfo);
-                            }
                             break;
 
                         case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
@@ -1667,38 +1611,6 @@ public class LauncherModel extends BroadcastReceiver {
         return info;
     }
 
-    private void loadLiveFolderIcon(Context context, Cursor c, int iconTypeIndex,
-            int iconPackageIndex, int iconResourceIndex, LiveFolderInfo liveFolderInfo) {
-
-        int iconType = c.getInt(iconTypeIndex);
-        switch (iconType) {
-        case LauncherSettings.Favorites.ICON_TYPE_RESOURCE:
-            String packageName = c.getString(iconPackageIndex);
-            String resourceName = c.getString(iconResourceIndex);
-            PackageManager packageManager = context.getPackageManager();
-            try {
-                Resources appResources = packageManager.getResourcesForApplication(packageName);
-                final int id = appResources.getIdentifier(resourceName, null, null);
-                liveFolderInfo.icon = Utilities.createIconBitmap(
-                        mIconCache.getFullResIcon(appResources, id), context);
-            } catch (Exception e) {
-                Resources resources = context.getResources();
-                liveFolderInfo.icon = Utilities.createIconBitmap(
-                        mIconCache.getFullResIcon(resources, R.drawable.ic_launcher_folder),
-                        context);
-            }
-            liveFolderInfo.iconResource = new Intent.ShortcutIconResource();
-            liveFolderInfo.iconResource.packageName = packageName;
-            liveFolderInfo.iconResource.resourceName = resourceName;
-            break;
-        default:
-            Resources resources = context.getResources();
-            liveFolderInfo.icon = Utilities.createIconBitmap(
-                    mIconCache.getFullResIcon(resources, R.drawable.ic_launcher_folder),
-                    context);
-        }
-    }
-
     void updateSavedIcon(Context context, ShortcutInfo info, Cursor c, int iconIndex) {
         // If apps can't be on SD, don't even bother.
         if (!mAppsCanBeOnExternalStorage) {
@@ -1734,33 +1646,18 @@ public class LauncherModel extends BroadcastReceiver {
     }
 
     /**
-     * Return an existing UserFolderInfo object if we have encountered this ID previously,
+     * Return an existing FolderInfo object if we have encountered this ID previously,
      * or make a new one.
      */
-    private static UserFolderInfo findOrMakeUserFolder(HashMap<Long, FolderInfo> folders, long id) {
+    private static FolderInfo findOrMakeFolder(HashMap<Long, FolderInfo> folders, long id) {
         // See if a placeholder was created for us already
         FolderInfo folderInfo = folders.get(id);
-        if (folderInfo == null || !(folderInfo instanceof UserFolderInfo)) {
+        if (folderInfo == null) {
             // No placeholder -- create a new instance
-            folderInfo = new UserFolderInfo();
+            folderInfo = new FolderInfo();
             folders.put(id, folderInfo);
         }
-        return (UserFolderInfo) folderInfo;
-    }
-
-    /**
-     * Return an existing UserFolderInfo object if we have encountered this ID previously, or make a
-     * new one.
-     */
-    private static LiveFolderInfo findOrMakeLiveFolder(HashMap<Long, FolderInfo> folders, long id) {
-        // See if a placeholder was created for us already
-        FolderInfo folderInfo = folders.get(id);
-        if (folderInfo == null || !(folderInfo instanceof LiveFolderInfo)) {
-            // No placeholder -- create a new instance
-            folderInfo = new LiveFolderInfo();
-            folders.put(id, folderInfo);
-        }
-        return (LiveFolderInfo) folderInfo;
+        return folderInfo;
     }
 
     private static String getLabel(PackageManager manager, ActivityInfo activityInfo) {

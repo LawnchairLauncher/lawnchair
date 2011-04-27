@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 
-<com.android.launcher2.UserFolder
+<com.android.launcher2.Folder
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
     android:orientation="vertical">
@@ -57,4 +57,4 @@
              android:numColumns="4" />
     </FrameLayout>
 
-</com.android.launcher2.UserFolder>
+</com.android.launcher2.Folder>

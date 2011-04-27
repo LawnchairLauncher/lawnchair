@@ -17,9 +17,13 @@
 
 package com.android.launcher2;
 
-import com.android.common.Search;
-import com.android.launcher.R;
-import com.android.launcher2.Workspace.ShrinkState;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -63,10 +67,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Parcelable;
 import android.os.SystemClock;
 import android.os.SystemProperties;
-import android.provider.LiveFolders;
 import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.text.Selection;
@@ -99,13 +101,9 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import com.android.common.Search;
+import com.android.launcher.R;
+import com.android.launcher2.Workspace.ShrinkState;
 
 /**
  * Default launcher application.
@@ -131,11 +129,9 @@ public final class Launcher extends Activity
     private static final int MENU_SETTINGS = MENU_NOTIFICATIONS + 1;
 
     private static final int REQUEST_CREATE_SHORTCUT = 1;
-    private static final int REQUEST_CREATE_LIVE_FOLDER = 4;
     private static final int REQUEST_CREATE_APPWIDGET = 5;
     private static final int REQUEST_PICK_APPLICATION = 6;
     private static final int REQUEST_PICK_SHORTCUT = 7;
-    private static final int REQUEST_PICK_LIVE_FOLDER = 8;
     private static final int REQUEST_PICK_APPWIDGET = 9;
     private static final int REQUEST_PICK_WALLPAPER = 10;
 
@@ -154,7 +150,7 @@ public final class Launcher extends Activity
     // Type: int
     private static final String RUNTIME_STATE = "launcher.state";
     // Type: long
-    private static final String RUNTIME_STATE_USER_FOLDERS = "launcher.user_folder";
+    private static final String RUNTIME_STATE_FOLDERS = "launcher.folder";
     // Type: int
     private static final String RUNTIME_STATE_PENDING_ADD_SCREEN = "launcher.add_screen";
     // Type: int
@@ -635,12 +631,6 @@ public final class Launcher extends Activity
                 break;
             case REQUEST_CREATE_SHORTCUT:
                 completeAddShortcut(args.intent, args.screen, args.cellX, args.cellY);
-                break;
-            case REQUEST_PICK_LIVE_FOLDER:
-                addLiveFolder(args.intent);
-                break;
-            case REQUEST_CREATE_LIVE_FOLDER:
-                completeAddLiveFolder(args.intent, args.screen, args.cellX, args.cellY);
                 break;
             case REQUEST_PICK_APPWIDGET:
                 addAppWidgetFromPick(args.intent);
@@ -1471,7 +1461,7 @@ public final class Launcher extends Activity
                 final FolderInfo info = folders.get(i).getInfo();
                 ids[i] = info.id;
             }
-            outState.putLongArray(RUNTIME_STATE_USER_FOLDERS, ids);
+            outState.putLongArray(RUNTIME_STATE_FOLDERS, ids);
         } else {
             super.onSaveInstanceState(outState);
         }
@@ -1808,31 +1798,8 @@ public final class Launcher extends Activity
         startActivityForResult(intent, REQUEST_PICK_WALLPAPER);
     }
 
-    void addLiveFolderFromDrop(ComponentName componentName, int screen, int[] position) {
-        resetAddInfo();
-        mAddScreen = screen;
-        mAddDropPosition = position;
-
-        Intent createFolderIntent = new Intent(LiveFolders.ACTION_CREATE_LIVE_FOLDER);
-        createFolderIntent.setComponent(componentName);
-
-        addLiveFolder(createFolderIntent);
-    }
-
-    void addLiveFolder(Intent intent) { // YYY add screen intersect etc. parameters here
-        // Handle case where user selected "Folder"
-        String folderName = getResources().getString(R.string.group_folder);
-        String shortcutName = intent.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
-
-        if (folderName != null && folderName.equals(shortcutName)) {
-            addFolder(mAddScreen, mAddIntersectCellX, mAddIntersectCellY);
-        } else {
-            startActivityForResultSafely(intent, REQUEST_CREATE_LIVE_FOLDER);
-        }
-    }
-
     FolderIcon addFolder(int screen, int intersectCellX, int intersectCellY) {
-        UserFolderInfo folderInfo = new UserFolderInfo();
+        FolderInfo folderInfo = new FolderInfo();
         folderInfo.title = getText(R.string.folder_name);
 
         final CellLayout layout = (CellLayout) mWorkspace.getChildAt(screen);
@@ -1858,67 +1825,6 @@ public final class Launcher extends Activity
 
     void removeFolder(FolderInfo folder) {
         sFolders.remove(folder.id);
-    }
-
-    private void completeAddLiveFolder(
-            Intent data, int screen, int intersectCellX, int intersectCellY) {
-        final CellLayout layout = (CellLayout) mWorkspace.getChildAt(screen);
-        final int[] cellXY = mTmpAddItemCellCoordinates;
-        if (!layout.findCellForSpanThatIntersects(cellXY, 1, 1, intersectCellX, intersectCellY)) {
-            showOutOfSpaceMessage();
-            return;
-        }
-
-        final LiveFolderInfo info = addLiveFolder(this, data, screen, cellXY[0], cellXY[1], false);
-
-        if (!mRestoring) {
-            final View view = LiveFolderIcon.fromXml(R.layout.live_folder_icon, this,
-                (ViewGroup) mWorkspace.getChildAt(mWorkspace.getCurrentPage()), info);
-            mWorkspace.addInScreen(view, screen, cellXY[0], cellXY[1], 1, 1, isWorkspaceLocked());
-        }
-    }
-
-    static LiveFolderInfo addLiveFolder(Context context, Intent data,
-            int screen, int cellX, int cellY, boolean notify) {
-
-        Intent baseIntent = data.getParcelableExtra(LiveFolders.EXTRA_LIVE_FOLDER_BASE_INTENT);
-        String name = data.getStringExtra(LiveFolders.EXTRA_LIVE_FOLDER_NAME);
-
-        Drawable icon = null;
-        Intent.ShortcutIconResource iconResource = null;
-
-        Parcelable extra = data.getParcelableExtra(LiveFolders.EXTRA_LIVE_FOLDER_ICON);
-        if (extra != null && extra instanceof Intent.ShortcutIconResource) {
-            try {
-                iconResource = (Intent.ShortcutIconResource) extra;
-                final PackageManager packageManager = context.getPackageManager();
-                Resources resources = packageManager.getResourcesForApplication(
-                        iconResource.packageName);
-                final int id = resources.getIdentifier(iconResource.resourceName, null, null);
-                icon = resources.getDrawable(id);
-            } catch (Exception e) {
-                Log.w(TAG, "Could not load live folder icon: " + extra);
-            }
-        }
-
-        if (icon == null) {
-            icon = context.getResources().getDrawable(R.drawable.ic_launcher_folder);
-        }
-
-        final LiveFolderInfo info = new LiveFolderInfo();
-        info.icon = Utilities.createIconBitmap(icon, context);
-        info.title = name;
-        info.iconResource = iconResource;
-        info.uri = data.getData();
-        info.baseIntent = baseIntent;
-        info.displayMode = data.getIntExtra(LiveFolders.EXTRA_LIVE_FOLDER_DISPLAY_MODE,
-                LiveFolders.DISPLAY_MODE_GRID);
-
-        LauncherModel.addItemToDatabase(context, info, LauncherSettings.Favorites.CONTAINER_DESKTOP,
-                screen, cellX, cellY, notify);
-        sFolders.put(info.id, info);
-
-        return info;
     }
 
     private void showNotifications() {
@@ -2010,19 +1916,10 @@ public final class Launcher extends Activity
         ViewGroup parent = (ViewGroup) folder.getParent().getParent();
         if (parent != null) {
             CellLayout cl = (CellLayout) parent;
-            if (!(folder instanceof UserFolder)) {
-                // User folders will remove themselves
-                cl.removeViewWithoutMarkingCells(folder);
-            }
-            if (folder instanceof DropTarget) {
-                // Live folders aren't DropTargets.
-                mDragController.removeDropTarget((DropTarget)folder);
-            }
+            mDragController.removeDropTarget((DropTarget)folder);
         }
-        if (folder instanceof UserFolder) {
-            UserFolder uf = (UserFolder) folder;
-            uf.animateClosed();
-        }
+
+        folder.animateClosed();
         folder.onClose();
     }
 
@@ -2221,15 +2118,7 @@ public final class Launcher extends Activity
      * @param folderInfo The FolderInfo describing the folder to open.
      */
     public void openFolder(FolderInfo folderInfo) {
-        Folder openFolder;
-
-        if (folderInfo instanceof UserFolderInfo) {
-            openFolder = UserFolder.fromXml(this);
-        } else if (folderInfo instanceof LiveFolderInfo) {
-            openFolder = com.android.launcher2.LiveFolder.fromXml(this, folderInfo);
-        } else {
-            return;
-        }
+        Folder openFolder = Folder.fromXml(this);
 
         openFolder.setDragController(mDragController);
         openFolder.setLauncher(this);
@@ -2238,10 +2127,7 @@ public final class Launcher extends Activity
         folderInfo.opened = true;
 
         mWorkspace.addInFullScreen(openFolder, folderInfo.screen);
-        if (openFolder instanceof UserFolder) {
-            UserFolder uf = (UserFolder) openFolder;
-            uf.animateOpen();
-        }
+        openFolder.animateOpen();
 
         openFolder.onOpen();
     }
@@ -3359,31 +3245,6 @@ public final class Launcher extends Activity
                     break;
                 }
 
-                case AddAdapter.ITEM_LIVE_FOLDER: {
-                    // Insert extra item to handle inserting folder
-                    Bundle bundle = new Bundle();
-
-                    ArrayList<String> shortcutNames = new ArrayList<String>();
-                    shortcutNames.add(res.getString(R.string.group_folder));
-                    bundle.putStringArrayList(Intent.EXTRA_SHORTCUT_NAME, shortcutNames);
-
-                    ArrayList<ShortcutIconResource> shortcutIcons =
-                            new ArrayList<ShortcutIconResource>();
-                    shortcutIcons.add(ShortcutIconResource.fromContext(Launcher.this,
-                            R.drawable.ic_launcher_folder));
-                    bundle.putParcelableArrayList(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, shortcutIcons);
-
-                    Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
-                    pickIntent.putExtra(Intent.EXTRA_INTENT,
-                            new Intent(LiveFolders.ACTION_CREATE_LIVE_FOLDER));
-                    pickIntent.putExtra(Intent.EXTRA_TITLE,
-                            getText(R.string.title_select_live_folder));
-                    pickIntent.putExtras(bundle);
-
-                    startActivityForResult(pickIntent, REQUEST_PICK_LIVE_FOLDER);
-                    break;
-                }
-
                 case AddAdapter.ITEM_WALLPAPER: {
                     startWallpaper();
                     break;
@@ -3521,19 +3382,11 @@ public final class Launcher extends Activity
                     workspace.addInScreen(shortcut, item.screen, item.cellX, item.cellY, 1, 1,
                             false);
                     break;
-                case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
+                case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                     final FolderIcon newFolder = FolderIcon.fromXml(R.layout.folder_icon, this,
                             (ViewGroup) workspace.getChildAt(workspace.getCurrentPage()),
-                            (UserFolderInfo) item, mIconCache);
+                            (FolderInfo) item, mIconCache);
                     workspace.addInScreen(newFolder, item.screen, item.cellX, item.cellY, 1, 1,
-                            false);
-                    break;
-                case LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER:
-                    final FolderIcon newLiveFolder = LiveFolderIcon.fromXml(
-                            R.layout.live_folder_icon, this,
-                            (ViewGroup) workspace.getChildAt(workspace.getCurrentPage()),
-                            (LiveFolderInfo) item);
-                    workspace.addInScreen(newLiveFolder, item.screen, item.cellX, item.cellY, 1, 1,
                             false);
                     break;
             }
@@ -3604,9 +3457,9 @@ public final class Launcher extends Activity
                 mWorkspace.getChildAt(mWorkspace.getCurrentPage()).requestFocus();
             }
 
-            final long[] userFolders = mSavedState.getLongArray(RUNTIME_STATE_USER_FOLDERS);
-            if (userFolders != null) {
-                for (long folderId : userFolders) {
+            final long[] folders = mSavedState.getLongArray(RUNTIME_STATE_FOLDERS);
+            if (folders != null) {
+                for (long folderId : folders) {
                     final FolderInfo info = sFolders.get(folderId);
                     if (info != null) {
                         openFolder(info);
