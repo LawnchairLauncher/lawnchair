@@ -88,9 +88,27 @@ public class LauncherModel extends BroadcastReceiver {
 
     private WeakReference<Callbacks> mCallbacks;
 
-    private AllAppsList mAllAppsList; // only access in worker thread
-    private IconCache mIconCache;
+    // < only access in worker thread >
+    private AllAppsList mAllAppsList;
 
+    // sItemsIdMap maps *all* the ItemInfos (shortcuts, folders, and widgets) created by
+    // LauncherModel to their ids
+    static final HashMap<Long, ItemInfo> sItemsIdMap = new HashMap<Long, ItemInfo>();
+
+    // sItems is passed to bindItems, which expects a list of all folders and shortcuts created by
+    //       LauncherModel that are directly on the home screen (however, no widgets or shortcuts
+    //       within folders).
+    static final ArrayList<ItemInfo> sItems = new ArrayList<ItemInfo>();
+
+    // sAppWidgets is all LauncherAppWidgetInfo created by LauncherModel. Passed to bindAppWidget()
+    static final ArrayList<LauncherAppWidgetInfo> sAppWidgets =
+        new ArrayList<LauncherAppWidgetInfo>();
+
+    // sFolders is all FolderInfos created by LauncherModel. Passed to bindFolders()
+    static final HashMap<Long, FolderInfo> sFolders = new HashMap<Long, FolderInfo>();
+    // </ only access in worker thread >
+
+    private IconCache mIconCache;
     private Bitmap mDefaultIcon;
 
     private static int mCellCountX;
@@ -148,9 +166,8 @@ public class LauncherModel extends BroadcastReceiver {
     /**
      * Move an item in the DB to a new <container, screen, cellX, cellY>
      */
-    static void moveItemInDatabase(Context context, ItemInfo item, long container, int screen,
-            int cellX, int cellY) {
-
+    static void moveItemInDatabase(Context context, final ItemInfo item, final long container,
+            final int screen, final int cellX, final int cellY) {
         item.container = container;
         item.screen = screen;
         item.cellX = cellX;
@@ -168,6 +185,24 @@ public class LauncherModel extends BroadcastReceiver {
         sWorker.post(new Runnable() {
                 public void run() {
                     cr.update(uri, values, null, null);
+                    ItemInfo modelItem = sItemsIdMap.get(item.id);
+                    if (item != modelItem) {
+                        // the modelItem needs to match up perfectly with item if our model is to be
+                        // consistent with the database-- for now, just require modelItem == item
+                        throw new RuntimeException("Error: ItemInfo passed to moveItemInDatabase " +
+                                "doesn't match original");
+                    }
+
+                    // Items are added/removed from the corresponding FolderInfo elsewhere, such
+                    // as in Workspace.onDrop. Here, we just add/remove them from the list of items
+                    // that are on the desktop, as appropriate
+                    if (modelItem.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                        if (!sItems.contains(modelItem)) {
+                            sItems.add(modelItem);
+                        }
+                    } else {
+                        sItems.remove(modelItem);
+                    }
                 }
             });
     }
@@ -175,8 +210,8 @@ public class LauncherModel extends BroadcastReceiver {
     /**
      * Resize an item in the DB to a new <spanX, spanY, cellX, cellY>
      */
-    static void resizeItemInDatabase(Context context, ItemInfo item, int cellX, int cellY,
-            int spanX, int spanY) {
+    static void resizeItemInDatabase(Context context, final ItemInfo item, final int cellX,
+            final int cellY, final int spanX, final int spanY) {
         item.spanX = spanX;
         item.spanY = spanY;
         item.cellX = cellX;
@@ -195,6 +230,13 @@ public class LauncherModel extends BroadcastReceiver {
         sWorker.post(new Runnable() {
                 public void run() {
                     cr.update(uri, values, null, null);
+                    ItemInfo modelItem = sItemsIdMap.get(item.id);
+                    if (item != modelItem) {
+                        // the modelItem needs to match up perfectly with item if our model is to be
+                        // consistent with the database-- for now, just require modelItem == item
+                        throw new RuntimeException("Error: ItemInfo passed to moveItemInDatabase " +
+                            "doesn't match original");
+                    }
                 }
             });
     }
@@ -316,14 +358,37 @@ public class LauncherModel extends BroadcastReceiver {
         final ContentResolver cr = context.getContentResolver();
         item.onAddToDatabase(values);
 
+        Launcher l = (Launcher) context;
+        LauncherApplication app = (LauncherApplication) l.getApplication();
+        item.id = app.getLauncherProvider().generateNewId();
+        values.put(LauncherSettings.Favorites._ID, item.id);
         item.updateValuesWithCoordinates(values, cellX, cellY);
 
-        Uri result = cr.insert(notify ? LauncherSettings.Favorites.CONTENT_URI :
-            LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION, values);
+        sWorker.post(new Runnable() {
+            public void run() {
+                cr.insert(notify ? LauncherSettings.Favorites.CONTENT_URI :
+                        LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION, values);
 
-        if (result != null) {
-            item.id = Integer.parseInt(result.getPathSegments().get(1));
-        }
+                sItemsIdMap.put(item.id, item);
+                switch (item.itemType) {
+                    case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
+                        sFolders.put(item.id, (FolderInfo) item);
+                        if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                            sItems.add(item);
+                        }
+                        break;
+                    case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+                    case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                        if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                            sItems.add(item);
+                        }
+                        break;
+                    case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+                        sAppWidgets.add((LauncherAppWidgetInfo) item);
+                        break;
+                }
+            }
+        });
     }
 
     /**
@@ -355,14 +420,26 @@ public class LauncherModel extends BroadcastReceiver {
     /**
      * Update an item to the database in a specified container.
      */
-    static void updateItemInDatabase(Context context, ItemInfo item) {
+    static void updateItemInDatabase(Context context, final ItemInfo item) {
         final ContentValues values = new ContentValues();
         final ContentResolver cr = context.getContentResolver();
 
         item.onAddToDatabase(values);
         item.updateValuesWithCoordinates(values, item.cellX, item.cellY);
 
-        cr.update(LauncherSettings.Favorites.getContentUri(item.id, false), values, null, null);
+        sWorker.post(new Runnable() {
+            public void run() {
+                cr.update(LauncherSettings.Favorites.getContentUri(item.id, false),
+                        values, null, null);
+                final ItemInfo modelItem = sItemsIdMap.get(item.id);
+                if (item != modelItem) {
+                    // the modelItem needs to match up perfectly with item if our model is to be
+                    // consistent with the database-- for now, just require modelItem == item
+                    throw new RuntimeException("Error: ItemInfo passed to moveItemInDatabase " +
+                        "doesn't match original");
+                }
+            }
+        });
     }
 
     /**
@@ -370,43 +447,50 @@ public class LauncherModel extends BroadcastReceiver {
      * @param context
      * @param item
      */
-    static void deleteItemFromDatabase(Context context, ItemInfo item) {
+    static void deleteItemFromDatabase(Context context, final ItemInfo item) {
         final ContentResolver cr = context.getContentResolver();
         final Uri uriToDelete = LauncherSettings.Favorites.getContentUri(item.id, false);
         sWorker.post(new Runnable() {
                 public void run() {
                     cr.delete(uriToDelete, null, null);
+                    switch (item.itemType) {
+                        case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
+                            sFolders.remove(item.id);
+                            sItems.remove(item);
+                            break;
+                        case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+                        case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                            sItems.remove(item);
+                            break;
+                        case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+                            sAppWidgets.remove((LauncherAppWidgetInfo) item);
+                            break;
+                    }
+                    sItemsIdMap.remove(item.id);
                 }
             });
-    }
-
-    static void deleteFolderContentsFromDatabase(Context context, final FolderInfo info) {
-        deleteFolderContentsFromDatabase(context, info, false);
     }
 
     /**
      * Remove the contents of the specified folder from the database
      */
-    static void deleteFolderContentsFromDatabase(Context context, final FolderInfo info,
-            boolean post) {
-        // TODO: this post flag is temporary to fix an ordering of commands issue. In future, 
-        // all db operations will be moved to the worker thread, so this can be discarded at
-        // that time.
+    static void deleteFolderContentsFromDatabase(Context context, final FolderInfo info) {
         final ContentResolver cr = context.getContentResolver();
 
-        if (!post) {
-            cr.delete(LauncherSettings.Favorites.getContentUri(info.id, false), null, null);
-            cr.delete(LauncherSettings.Favorites.CONTENT_URI,
-                    LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
-        } else {
-            sWorker.post(new Runnable() {
+        sWorker.post(new Runnable() {
                 public void run() {
                     cr.delete(LauncherSettings.Favorites.getContentUri(info.id, false), null, null);
+                    sItemsIdMap.remove(info.id);
+                    sFolders.remove(info.id);
+                    sItems.remove(info);
+
                     cr.delete(LauncherSettings.Favorites.CONTENT_URI,
                             LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
+                    for (ItemInfo childInfo : info.contents) {
+                        sItemsIdMap.remove(childInfo.id);
+                    }
                 }
             });
-        }
     }
 
     /**
@@ -547,10 +631,6 @@ public class LauncherModel extends BroadcastReceiver {
         private boolean mStopped;
         private boolean mLoadAndBindStepFinished;
 
-        final ArrayList<ItemInfo> mItems = new ArrayList<ItemInfo>();
-        final ArrayList<LauncherAppWidgetInfo> mAppWidgets = new ArrayList<LauncherAppWidgetInfo>();
-        final HashMap<Long, FolderInfo> mFolders = new HashMap<Long, FolderInfo>();
-
         LoaderTask(Context context, boolean isLaunching) {
             mContext = context;
             mIsLaunching = isLaunching;
@@ -562,14 +642,10 @@ public class LauncherModel extends BroadcastReceiver {
 
         private void loadAndBindWorkspace() {
             // Load the workspace
-
-            // For now, just always reload the workspace.  It's ~100 ms vs. the
-            // binding which takes many hundreds of ms.
-            // We can reconsider.
             if (DEBUG_LOADERS) {
                 Log.d(TAG, "loadAndBindWorkspace mWorkspaceLoaded=" + mWorkspaceLoaded);
             }
-            if (true || !mWorkspaceLoaded) {
+            if (!mWorkspaceLoaded) {
                 loadWorkspace();
                 if (mStopped) {
                     return;
@@ -743,9 +819,10 @@ public class LauncherModel extends BroadcastReceiver {
             final AppWidgetManager widgets = AppWidgetManager.getInstance(context);
             final boolean isSafeMode = manager.isSafeMode();
 
-            mItems.clear();
-            mAppWidgets.clear();
-            mFolders.clear();
+            sItems.clear();
+            sAppWidgets.clear();
+            sFolders.clear();
+            sItemsIdMap.clear();
 
             final ArrayList<Long> itemsToRemove = new ArrayList<Long>();
 
@@ -834,15 +911,16 @@ public class LauncherModel extends BroadcastReceiver {
 
                                 switch (container) {
                                 case LauncherSettings.Favorites.CONTAINER_DESKTOP:
-                                    mItems.add(info);
+                                    sItems.add(info);
                                     break;
                                 default:
                                     // Item is in a user folder
                                     FolderInfo folderInfo =
-                                            findOrMakeFolder(mFolders, container);
+                                            findOrMakeFolder(sFolders, container);
                                     folderInfo.add(info);
                                     break;
                                 }
+                                sItemsIdMap.put(info.id, info);
 
                                 // now that we've loaded everthing re-save it with the
                                 // icon in case it disappears somehow.
@@ -861,7 +939,7 @@ public class LauncherModel extends BroadcastReceiver {
 
                         case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                             id = c.getLong(idIndex);
-                            FolderInfo folderInfo = findOrMakeFolder(mFolders, id);
+                            FolderInfo folderInfo = findOrMakeFolder(sFolders, id);
 
                             folderInfo.title = c.getString(titleIndex);
                             folderInfo.id = id;
@@ -877,11 +955,12 @@ public class LauncherModel extends BroadcastReceiver {
                             }
                             switch (container) {
                                 case LauncherSettings.Favorites.CONTAINER_DESKTOP:
-                                    mItems.add(folderInfo);
+                                    sItems.add(folderInfo);
                                     break;
                             }
 
-                            mFolders.put(folderInfo.id, folderInfo);
+                            sItemsIdMap.put(folderInfo.id, folderInfo);
+                            sFolders.put(folderInfo.id, folderInfo);
                             break;
 
                         case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
@@ -918,8 +997,8 @@ public class LauncherModel extends BroadcastReceiver {
                                 if (!checkItemPlacement(occupied, appWidgetInfo)) {
                                     break;
                                 }
-
-                                mAppWidgets.add(appWidgetInfo);
+                                sItemsIdMap.put(appWidgetInfo.id, appWidgetInfo);
+                                sAppWidgets.add(appWidgetInfo);
                             }
                             break;
                         }
@@ -993,7 +1072,7 @@ public class LauncherModel extends BroadcastReceiver {
                 }
             });
             // Add the items to the workspace.
-            N = mItems.size();
+            N = sItems.size();
             for (int i=0; i<N; i+=ITEMS_CHUNK) {
                 final int start = i;
                 final int chunkSize = (i+ITEMS_CHUNK <= N) ? ITEMS_CHUNK : (N-i);
@@ -1001,7 +1080,7 @@ public class LauncherModel extends BroadcastReceiver {
                     public void run() {
                         Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                         if (callbacks != null) {
-                            callbacks.bindItems(mItems, start, start+chunkSize);
+                            callbacks.bindItems(sItems, start, start+chunkSize);
                         }
                     }
                 });
@@ -1010,7 +1089,7 @@ public class LauncherModel extends BroadcastReceiver {
                 public void run() {
                     Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                     if (callbacks != null) {
-                        callbacks.bindFolders(mFolders);
+                        callbacks.bindFolders(sFolders);
                     }
                 }
             });
@@ -1028,10 +1107,10 @@ public class LauncherModel extends BroadcastReceiver {
             // is just a hint for the order, and if it's wrong, we'll be okay.
             // TODO: instead, we should have that push the current screen into here.
             final int currentScreen = oldCallbacks.getCurrentWorkspaceScreen();
-            N = mAppWidgets.size();
+            N = sAppWidgets.size();
             // once for the current screen
             for (int i=0; i<N; i++) {
-                final LauncherAppWidgetInfo widget = mAppWidgets.get(i);
+                final LauncherAppWidgetInfo widget = sAppWidgets.get(i);
                 if (widget.screen == currentScreen) {
                     mHandler.post(new Runnable() {
                         public void run() {
@@ -1045,7 +1124,7 @@ public class LauncherModel extends BroadcastReceiver {
             }
             // once for the other screens
             for (int i=0; i<N; i++) {
-                final LauncherAppWidgetInfo widget = mAppWidgets.get(i);
+                final LauncherAppWidgetInfo widget = sAppWidgets.get(i);
                 if (widget.screen != currentScreen) {
                     mHandler.post(new Runnable() {
                         public void run() {
@@ -1238,7 +1317,7 @@ public class LauncherModel extends BroadcastReceiver {
             Log.d(TAG, "mLoaderTask.mIsLaunching=" + mIsLaunching);
             Log.d(TAG, "mLoaderTask.mStopped=" + mStopped);
             Log.d(TAG, "mLoaderTask.mLoadAndBindStepFinished=" + mLoadAndBindStepFinished);
-            Log.d(TAG, "mItems size=" + mItems.size());
+            Log.d(TAG, "mItems size=" + sItems.size());
         }
     }
 
