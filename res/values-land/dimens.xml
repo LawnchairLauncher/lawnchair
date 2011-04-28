@@ -29,4 +29,9 @@
     <dimen name="all_apps_view_pageLayoutPaddingBottom">10dp</dimen>
     <dimen name="all_apps_view_pageLayoutPaddingLeft">2dp</dimen>
     <dimen name="all_apps_view_pageLayoutPaddingRight">2dp</dimen>
+
+    <dimen name="apps_customize_widget_cell_width_gap">30dp</dimen>
+    <dimen name="apps_customize_widget_cell_height_gap">0dp</dimen>
+    <integer name="apps_customize_widget_cell_count_x">3</integer>
+    <integer name="apps_customize_widget_cell_count_y">1</integer>
 </resources>

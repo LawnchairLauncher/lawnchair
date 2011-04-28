@@ -267,8 +267,12 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         }
     }
 
+    int getContentHeight() {
+        return mCellCountY * mCellHeight + (mCellCountY - 1) * Math.max(0, mHeightGap);
+    }
+
     int getWidthBeforeFirstLayout() {
-        return mCellCountX * mCellWidth + (mCellCountX - 1) * mWidthGap;
+        return mCellCountX * mCellWidth + (mCellCountX - 1) * Math.max(0, mWidthGap);
     }
 
     @Override
