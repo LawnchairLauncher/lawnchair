@@ -995,8 +995,10 @@ public class CellLayout extends ViewGroup {
                 top += (v.getHeight() - dragOutline.getHeight()) / 2;
             } else {
                 // Center the drag outline in the cell
-                left += (mCellWidth - dragOutline.getWidth()) / 2;
-                top += (mCellHeight - dragOutline.getHeight()) / 2;
+                left += ((mCellWidth * spanX) + ((spanX - 1) * mWidthGap)
+                        - dragOutline.getWidth()) / 2;
+                top += ((mCellHeight * spanY) + ((spanY - 1) * mHeightGap)
+                        - dragOutline.getHeight()) / 2;
             }
 
             final int oldIndex = mDragOutlineCurrent;

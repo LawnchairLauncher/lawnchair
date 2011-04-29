@@ -180,7 +180,9 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
             FastBitmapDrawable preview, int maxWidth, int[] cellSpan,
             PagedViewIconCache cache, boolean createHolographicOutline) {
         final ImageView image = (ImageView) findViewById(R.id.widget_preview);
-        image.setMaxWidth(maxWidth);
+        if (maxWidth > -1) {
+            image.setMaxWidth(maxWidth);
+        }
         image.setImageDrawable(preview);
         mPreviewImageView = image;
         final TextView name = (TextView) findViewById(R.id.widget_name);

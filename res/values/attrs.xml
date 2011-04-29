@@ -109,6 +109,19 @@
         <attr name="pageSpacing" format="dimension" />
     </declare-styleable>
 
+    <!-- AppsCustomizePagedView specific attributes.  These attributes are used to
+         customize an AppsCustomizePagedView in xml files. -->
+    <declare-styleable name="AppsCustomizePagedView">
+        <!-- Horizontal spacing between widgets -->
+        <attr name="widgetCellWidthGap" format="dimension" />
+        <!-- Vertical spacing between widgets -->
+        <attr name="widgetCellHeightGap" format="dimension" />
+        <!-- Number of widgets horizontally -->
+        <attr name="widgetCountX" format="integer" />
+        <!-- Number of widgets vertically -->
+        <attr name="widgetCountY" format="integer" />
+    </declare-styleable>
+
     <!-- CustomizePagedView specific attributes. These attributes are used to customize
          a CustomizePagedView view in XML files. -->
     <declare-styleable name="CustomizePagedView">
