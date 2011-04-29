@@ -23,7 +23,6 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.os.Handler;
-import dalvik.system.VMRuntime;
 
 public class LauncherApplication extends Application {
     public LauncherModel mModel;
@@ -34,8 +33,6 @@ public class LauncherApplication extends Application {
 
     @Override
     public void onCreate() {
-        VMRuntime.getRuntime().setMinimumHeapSize(4 * 1024 * 1024);
-
         super.onCreate();
 
         // set sIsScreenXLarge and sScreenDensity *before* creating icon cache

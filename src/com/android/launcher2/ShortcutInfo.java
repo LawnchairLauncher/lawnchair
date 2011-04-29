@@ -148,12 +148,6 @@ class ShortcutInfo extends ItemInfo {
         return "ShortcutInfo(title=" + title.toString() + ")";
     }
 
-    @Override
-    void unbind() {
-        super.unbind();
-    }
-
-
     public static void dumpShortcutInfoList(String tag, String label,
             ArrayList<ShortcutInfo> list) {
         Log.d(tag, label + " size=" + list.size());

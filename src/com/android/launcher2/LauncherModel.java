@@ -1566,13 +1566,11 @@ public class LauncherModel extends BroadcastReceiver {
         Parcelable bitmap = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
 
         Bitmap icon = null;
-        boolean filtered = false;
         boolean customIcon = false;
         ShortcutIconResource iconResource = null;
 
         if (bitmap != null && bitmap instanceof Bitmap) {
             icon = Utilities.createIconBitmap(new FastBitmapDrawable((Bitmap)bitmap), context);
-            filtered = true;
             customIcon = true;
         } else {
             Parcelable extra = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
