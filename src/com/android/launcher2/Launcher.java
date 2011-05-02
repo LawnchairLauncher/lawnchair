@@ -1543,6 +1543,10 @@ public final class Launcher extends Activity
         ValueAnimator.clearAllAnimations();
     }
 
+    public DragController getDragController() {
+        return mDragController;
+    }
+
     @Override
     public void startActivityForResult(Intent intent, int requestCode) {
         if (requestCode >= 0) mWaitingForResult = true;
@@ -1964,7 +1968,10 @@ public final class Launcher extends Activity
                 mWaitingForResume.setStayPressed(true);
             }
         } else if (tag instanceof FolderInfo) {
-            handleFolderClick((FolderInfo) tag);
+            if (v instanceof FolderIcon) {
+                FolderIcon fi = (FolderIcon) v;
+                handleFolderClick(fi);
+            }
         } else if (v == mHandleView) {
             if (mState == State.ALL_APPS) {
                 showWorkspace(true);
@@ -2086,15 +2093,16 @@ public final class Launcher extends Activity
         }
     }
 
-    private void handleFolderClick(FolderInfo folderInfo) {
-        if (!folderInfo.opened) {
+    private void handleFolderClick(FolderIcon folderIcon) {
+        final FolderInfo info = folderIcon.mInfo;
+        if (!info.opened) {
             // Close any open folder
             closeFolder();
             // Open the requested folder
-            openFolder(folderInfo);
+            openFolder(folderIcon);
         } else {
             // Find the open folder...
-            Folder openFolder = mWorkspace.getFolderForTag(folderInfo);
+            Folder openFolder = mWorkspace.getFolderForTag(info);
             int folderScreen;
             if (openFolder != null) {
                 folderScreen = mWorkspace.getPageForView(openFolder);
@@ -2104,7 +2112,7 @@ public final class Launcher extends Activity
                     // Close any folder open on the current screen
                     closeFolder();
                     // Pull the folder onto this screen
-                    openFolder(folderInfo);
+                    openFolder(folderIcon);
                 }
             }
         }
@@ -2117,19 +2125,15 @@ public final class Launcher extends Activity
      *
      * @param folderInfo The FolderInfo describing the folder to open.
      */
-    public void openFolder(FolderInfo folderInfo) {
-        Folder openFolder = Folder.fromXml(this);
+    public void openFolder(FolderIcon folderIcon) {
+        Folder folder = folderIcon.mFolder;
+        FolderInfo info = folder.mInfo;
 
-        openFolder.setDragController(mDragController);
-        openFolder.setLauncher(this);
+        info.opened = true;
 
-        openFolder.bind(folderInfo);
-        folderInfo.opened = true;
-
-        mWorkspace.addInFullScreen(openFolder, folderInfo.screen);
-        openFolder.animateOpen();
-
-        openFolder.onOpen();
+        mWorkspace.addInFullScreen(folder, info.screen);
+        folder.animateOpen();
+        folder.onOpen();
     }
 
     public boolean onLongClick(View v) {
@@ -2469,7 +2473,9 @@ public final class Launcher extends Activity
                     final FolderIcon folderIcon = (FolderIcon)
                             mWorkspace.getViewForTag(mFolderInfo);
                     if (folderIcon != null) {
-                        folderIcon.setText(name);
+                        // TODO: At some point we'll probably want some version of setting
+                        // the text for a folder icon.
+                        //folderIcon.setText(name);
                         getWorkspace().requestLayout();
                     } else {
                         lockAllApps();
@@ -3461,8 +3467,10 @@ public final class Launcher extends Activity
             if (folders != null) {
                 for (long folderId : folders) {
                     final FolderInfo info = sFolders.get(folderId);
-                    if (info != null) {
-                        openFolder(info);
+                    final FolderIcon folderIcon = (FolderIcon)
+                        mWorkspace.getViewForTag(info);
+                    if (folderIcon != null) {
+                        openFolder(folderIcon);
                     }
                 }
                 final Folder openFolder = mWorkspace.getOpenFolder();

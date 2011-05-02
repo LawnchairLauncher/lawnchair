@@ -17,7 +17,8 @@
 <com.android.launcher2.Folder
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/folder_bg">
     
     <Button
         android:id="@+id/folder_close"
@@ -32,8 +33,7 @@
     <FrameLayout
          android:layout_width="match_parent"
          android:layout_height="0dip"
-         android:layout_weight="1"
-         android:background="@drawable/box_launcher_bottom">
+         android:layout_weight="1">
 
         <com.android.launcher2.CellLayout
              android:id="@id/folder_content"

@@ -40,6 +40,8 @@ class FolderInfo extends ItemInfo {
      */
     ArrayList<ShortcutInfo> contents = new ArrayList<ShortcutInfo>();
 
+    ArrayList<FolderListener> listeners = new ArrayList<FolderListener>();
+
     FolderInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
     }
@@ -51,6 +53,9 @@ class FolderInfo extends ItemInfo {
      */
     public void add(ShortcutInfo item) {
         contents.add(item);
+        for (int i = 0; i < listeners.size(); i++) {
+            listeners.get(i).onAdd(item);
+        }
     }
 
     /**
@@ -60,11 +65,29 @@ class FolderInfo extends ItemInfo {
      */
     public void remove(ShortcutInfo item) {
         contents.remove(item);
+        for (int i = 0; i < listeners.size(); i++) {
+            listeners.get(i).onRemove(item);
+        }
     }
 
     @Override
     void onAddToDatabase(ContentValues values) {
         super.onAddToDatabase(values);
         values.put(LauncherSettings.Favorites.TITLE, title.toString());
+    }
+
+    void addListener(FolderListener listener) {
+        listeners.add(listener);
+    }
+
+    void removeListener(FolderListener listener) {
+        if (listeners.contains(listener)) {
+            listeners.remove(listener);
+        }
+    }
+
+    interface FolderListener {
+        public void onAdd(ShortcutInfo item);
+        public void onRemove(ShortcutInfo item);
     }
 }
