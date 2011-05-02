@@ -69,7 +69,7 @@
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"Deinstallieren"</string>
     <string name="accessibility_search_button" msgid="816822994629942611">"Suchen"</string>
     <string name="accessibility_voice_search_button" msgid="3938249215065842475">"Sprachsuche"</string>
-    <string name="accessibility_all_apps_button" msgid="1595097919145716305">"Anwendungen"</string>
+    <string name="accessibility_all_apps_button" msgid="1595097919145716305">"Apps"</string>
     <string name="accessibility_customize_button" msgid="585539669413531163">"Anpassen"</string>
     <string name="accessibility_delete_button" msgid="3628162007991023603">"Entfernen"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"Update deinstallieren"</string>
