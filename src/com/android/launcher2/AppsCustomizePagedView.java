@@ -362,14 +362,16 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     protected boolean beginDragging(View v) {
         if (!super.beginDragging(v)) return false;
 
+        // Hide the pane so that the user can drop onto the workspace, we must do this first,
+        // due to how the drop target layout is computed when we start dragging to the workspace.
+        mLauncher.showWorkspace(true);
+
         if (v instanceof PagedViewIcon) {
             beginDraggingApplication(v);
         } else if (v instanceof PagedViewWidget) {
             beginDraggingWidget(v);
         }
 
-        // Hide the pane so that the user can drop onto the workspace
-        mLauncher.showWorkspace(true);
         return true;
     }
     private void endDragging(boolean success) {
@@ -401,6 +403,27 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     @Override
     public void onDropCompleted(View target, Object dragInfo, boolean success) {
         endDragging(success);
+
+        // Display an error message if the drag failed due to there not being enough space on the
+        // target layout we were dropping on.
+        if (!success) {
+            boolean showOutOfSpaceMessage = false;
+            if (target instanceof Workspace) {
+                int currentScreen = mLauncher.getCurrentWorkspaceScreen();
+                Workspace workspace = (Workspace) target;
+                CellLayout layout = (CellLayout) workspace.getChildAt(currentScreen);
+                ItemInfo itemInfo = (ItemInfo) dragInfo;
+                if (layout != null) {
+                    layout.calculateSpans(itemInfo);
+                    showOutOfSpaceMessage =
+                            !layout.findCellForSpan(null, itemInfo.spanX, itemInfo.spanY);
+                }
+            }
+            // TODO-APPS_CUSTOMIZE: We need to handle this for folders as well later.
+            if (showOutOfSpaceMessage) {
+                mLauncher.showOutOfSpaceMessage();
+            }
+        }
     }
 
     public void setContentType(ContentType type) {
@@ -717,8 +740,15 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
     @Override
     public void reset() {
-        setCurrentPage(0);
-        invalidatePageData();
+        if (mContentType != ContentType.Applications) {
+            // Reset to the first page of the Apps pane
+            AppsCustomizeTabHost tabs = (AppsCustomizeTabHost)
+                    mLauncher.findViewById(R.id.apps_customize_pane);
+            tabs.setCurrentTabByTag(tabs.getTabTagForContentType(ContentType.Applications));
+        } else {
+            setCurrentPage(0);
+            invalidatePageData();
+        }
     }
     @Override
     public void dumpState() {

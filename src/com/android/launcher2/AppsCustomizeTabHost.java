@@ -96,6 +96,18 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     }
 
     /**
+     * Returns the tab tag for a given content type.
+     */
+    public String getTabTagForContentType(AppsCustomizePagedView.ContentType type) {
+        if (type == AppsCustomizePagedView.ContentType.Applications) {
+            return APPS_TAB_TAG;
+        } else if (type == AppsCustomizePagedView.ContentType.Widgets) {
+            return WIDGETS_TAB_TAG;
+        }
+        return APPS_TAB_TAG;
+    }
+
+    /**
      * Disable focus on anything under this view in the hierarchy if we are not visible.
      */
     @Override

@@ -2391,7 +2391,9 @@ public class Workspace extends SmoothPagedView
         if (source != this) {
             final int[] touchXY = new int[] { (int) mDragViewVisualCenter[0],
                     (int) mDragViewVisualCenter[1] };
-            if ((mIsSmall || mIsInUnshrinkAnimation) && !mLauncher.isAllAppsVisible()) {
+            if (LauncherApplication.isScreenXLarge()
+                    && (mIsSmall || mIsInUnshrinkAnimation)
+                    && !mLauncher.isAllAppsVisible()) {
                 // When the workspace is shrunk and the drop comes from customize, don't actually
                 // add the item to the screen -- customize will do this itself
                 ((ItemInfo) dragInfo).dropPos = touchXY;
@@ -2893,7 +2895,7 @@ public class Workspace extends SmoothPagedView
                 mLastDragYOffset = yOffset;
                 layout = findMatchingPageForDragOver(dragView, left, top, xOffset, yOffset);
 
-                if (layout != mDragTargetLayout) {
+                if (layout != null && layout != mDragTargetLayout) {
                     if (mDragTargetLayout != null) {
                         mDragTargetLayout.setIsDragOverlapping(false);
                         mSpringLoadedDragController.onDragExit();
