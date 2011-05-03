@@ -291,8 +291,8 @@ public class AppWidgetResizeFrame extends FrameLayout {
 
     public void snapToWidget(boolean animate) {
         final DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
-        int xOffset = mCellLayout.getLeft() - mWorkspace.getScrollX();
-        int yOffset = mCellLayout.getTop() - mWorkspace.getScrollY();
+        int xOffset = mCellLayout.getLeft() + mCellLayout.getLeftPadding() - mWorkspace.getScrollX();
+        int yOffset = mCellLayout.getTop() + mCellLayout.getTopPadding() - mWorkspace.getScrollY();
 
         int newWidth = mWidgetView.getWidth() + 2 * mBackgroundPadding;
         int newHeight = mWidgetView.getHeight() + 2 * mBackgroundPadding;
