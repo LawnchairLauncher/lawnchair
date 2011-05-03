@@ -2035,7 +2035,8 @@ public class Workspace extends SmoothPagedView
         v.getDrawingRect(clipRect);
 
         // For a TextView, adjust the clip rect so that we don't include the text label
-        if (v instanceof BubbleTextView) {
+        if (v instanceof FolderIcon) {
+        } else if (v instanceof BubbleTextView) {
             final BubbleTextView tv = (BubbleTextView) v;
             clipRect.bottom = tv.getExtendedPaddingTop() - (int) BubbleTextView.PADDING_V +
                     tv.getLayout().getLineTop(0);
@@ -2172,7 +2173,7 @@ public class Workspace extends SmoothPagedView
         final int screenY = (int) mTempXY[1] + (child.getHeight() - bmpHeight) / 2;
 
         Rect dragRect = null;
-        if (child instanceof BubbleTextView) {
+        if ((child instanceof BubbleTextView) && !(child instanceof FolderIcon)) {
             int iconSize = getResources().getDimensionPixelSize(R.dimen.app_icon_size);
             int top = child.getPaddingTop();
             int left = (bmpWidth - iconSize) / 2;
@@ -2363,6 +2364,10 @@ public class Workspace extends SmoothPagedView
 
             target.removeView(v);
             FolderIcon fi = mLauncher.addFolder(screen, mTargetCell[0], mTargetCell[1]);
+            destInfo.cellX = -1;
+            destInfo.cellY = -1;
+            sourceInfo.cellX = -1;
+            sourceInfo.cellY = -1;
             fi.addItem(destInfo);
             fi.addItem(sourceInfo);
             return true;

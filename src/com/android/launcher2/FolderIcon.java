@@ -18,21 +18,27 @@ package com.android.launcher2;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.android.launcher.R;
+import com.android.launcher2.FolderInfo.FolderListener;
 
 /**
  * An icon that can appear on in the workspace representing an {@link UserFolder}.
  */
-public class FolderIcon extends BubbleTextView implements DropTarget {
-    private FolderInfo mInfo;
+public class FolderIcon extends FrameLayout implements DropTarget, FolderListener {
     private Launcher mLauncher;
-    private Drawable mCloseIcon;
-    private Drawable mOpenIcon;
+    Folder mFolder;
+    FolderInfo mInfo;
+
+    private static final int NUM_ITEMS_IN_PREVIEW = 4;
+    private static final float ICON_ANGLE = 15f;
 
     public FolderIcon(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -55,16 +61,21 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
         FolderIcon icon = (FolderIcon) LayoutInflater.from(launcher).inflate(resId, group, false);
 
         final Resources resources = launcher.getResources();
-        Drawable d = iconCache.getFullResIcon(resources, R.drawable.ic_launcher_folder);
-        icon.mCloseIcon = d;
-        icon.mOpenIcon = iconCache.getFullResIcon(resources, R.drawable.ic_launcher_folder_open);
-        icon.setCompoundDrawablesWithIntrinsicBounds(null, d, null, null);
-        icon.setText(folderInfo.title);
+        Drawable d = iconCache.getFullResIcon(resources, R.drawable.folder_bg);
+        icon.setBackgroundDrawable(d);
         icon.setTag(folderInfo);
         icon.setOnClickListener(launcher);
         icon.mInfo = folderInfo;
         icon.mLauncher = launcher;
-        
+
+        Folder folder = Folder.fromXml(launcher);
+        folder.setDragController(launcher.getDragController());
+        folder.setLauncher(launcher);
+        folder.bind(folderInfo);
+        icon.mFolder = folder;
+
+        folderInfo.addListener(icon);
+
         return icon;
     }
 
@@ -79,7 +90,7 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
 
     public void addItem(ShortcutInfo item) {
         mInfo.add(item);
-        LauncherModel.addOrMoveItemInDatabase(mLauncher, item, mInfo.id, 0, 0, 0);
+        LauncherModel.addOrMoveItemInDatabase(mLauncher, item, mInfo.id, 0, item.cellX, item.cellY);
     }
 
     public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
@@ -98,9 +109,6 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
 
     public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
-        if (acceptDrop(source, x, y, xOffset, yOffset, dragView, dragInfo)) {
-            setCompoundDrawablesWithIntrinsicBounds(null, mOpenIcon, null, null);
-        }
     }
 
     public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
@@ -109,12 +117,56 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
 
     public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
-        setCompoundDrawablesWithIntrinsicBounds(null, mCloseIcon, null, null);
     }
 
     @Override
     public DropTarget getDropTargetDelegate(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
         return null;
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        if (mFolder == null) return;
+        if (mFolder.getItemCount() == 0) return;
+
+        canvas.save();
+        TextView v = (TextView) mFolder.getItemAt(0);
+        Drawable d = v.getCompoundDrawables()[1];
+
+        canvas.translate( (getMeasuredWidth() - d.getIntrinsicWidth()) / 2,
+                (getMeasuredHeight() - d.getIntrinsicHeight()) / 2);
+
+        canvas.translate(d.getIntrinsicWidth() / 2, d.getIntrinsicHeight() / 2);
+        canvas.rotate(ICON_ANGLE);
+
+        canvas.translate(-d.getIntrinsicWidth() / 2, -d.getIntrinsicHeight() / 2);
+
+        for (int i = Math.max(0, mFolder.getItemCount() - NUM_ITEMS_IN_PREVIEW);
+                i < mFolder.getItemCount(); i++) {
+            v = (TextView) mFolder.getItemAt(i);
+            d = v.getCompoundDrawables()[1];
+
+            if (d != null) {
+                d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+                d.draw(canvas);
+            }
+
+            canvas.translate(d.getIntrinsicWidth() / 2, d.getIntrinsicHeight() / 2);
+            canvas.rotate(-ICON_ANGLE);
+            canvas.translate(-d.getIntrinsicWidth() / 2, -d.getIntrinsicHeight() / 2);
+        }
+
+        canvas.restore();
+    }
+
+    public void onAdd(ShortcutInfo item) {
+        invalidate();
+        requestLayout();
+    }
+
+    public void onRemove(ShortcutInfo item) {
+        invalidate();
+        requestLayout();
     }
 }
