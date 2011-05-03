@@ -200,6 +200,26 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         }
     }
 
+    public void applyFromResolveInfo(PackageManager pm, ResolveInfo info,
+            FastBitmapDrawable preview, PagedViewIconCache cache, boolean createHolographicOutline){
+        final ImageView image = (ImageView) findViewById(R.id.widget_preview);
+        image.setImageDrawable(preview);
+        mPreviewImageView = image;
+        final TextView name = (TextView) findViewById(R.id.widget_name);
+        name.setText(info.loadLabel(pm));
+        name.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        final TextView dims = (TextView) findViewById(R.id.widget_dims);
+        dims.setText(mContext.getString(R.string.widget_dims_format, 1, 1));
+        dims.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+
+        if (createHolographicOutline) {
+            mIconCache = cache;
+            mIconCacheKey = new PagedViewIconCache.Key(info);
+            mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
+            mPreview = preview;
+        }
+    }
+
     public void applyFromWallpaperInfo(ResolveInfo info, PackageManager packageManager,
             FastBitmapDrawable preview, int maxWidth, PagedViewIconCache cache,
             boolean createHolographicOutline) {

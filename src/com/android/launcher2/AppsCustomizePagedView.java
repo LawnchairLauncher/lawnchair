@@ -37,10 +37,10 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.LruCache;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,14 +74,20 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     // Content
     private ContentType mContentType;
     private ArrayList<ApplicationInfo> mApps;
-    private List<AppWidgetProviderInfo> mWidgets;
-    private List<ResolveInfo> mShortcuts;
+    private List<Object> mWidgets;
+
+    // Caching
+    private Drawable mDefaultWidgetBackground;
+    private final int sWidgetPreviewCacheSize = 1 * 1024 * 1024; // 1 MiB
+    private LruCache<Object, Bitmap> mWidgetPreviewCache;
 
     // Dimens
     private int mContentWidth;
     private int mMaxWidgetSpan, mMinWidgetSpan;
     private int mWidgetCellWidthGap, mWidgetCellHeightGap;
     private int mWidgetCountX, mWidgetCountY;
+    private final int mWidgetPreviewIconPaddedDimension;
+    private final float sWidgetPreviewIconPaddingPercentage = 0.25f;
     private PagedViewCellLayout mWidgetSpacingLayout;
 
     // Animations
@@ -95,8 +101,16 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mPackageManager = context.getPackageManager();
         mContentType = ContentType.Applications;
         mApps = new ArrayList<ApplicationInfo>();
-        mWidgets = new ArrayList<AppWidgetProviderInfo>();
-        mShortcuts = new ArrayList<ResolveInfo>();
+        mWidgets = new ArrayList<Object>();
+        mWidgetPreviewCache = new LruCache<Object, Bitmap>(sWidgetPreviewCacheSize) {
+            protected int sizeOf(Object key, Bitmap value) {
+                return value.getByteCount();
+            }
+        };
+
+        // Save the default widget preview background
+        Resources resources = context.getResources();
+        mDefaultWidgetBackground = resources.getDrawable(R.drawable.default_widget_preview);
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PagedView, 0, 0);
         mCellCountX = a.getInt(R.styleable.PagedView_cellCountX, 6);
@@ -121,6 +135,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // preview can be before applying the widget scaling
         mMinWidgetSpan = 1;
         mMaxWidgetSpan = 3;
+
+        // The padding on the non-matched dimension for the default widget preview icons
+        // (top + bottom)
+        int iconSize = resources.getDimensionPixelSize(R.dimen.app_icon_size);
+        mWidgetPreviewIconPaddedDimension =
+            (int) (iconSize * (1 + (2 * sWidgetPreviewIconPaddingPercentage)));
     }
 
     @Override
@@ -134,14 +154,13 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     public void onPackagesUpdated() {
-        // Get the list of widgets
-        mWidgets = AppWidgetManager.getInstance(mLauncher).getInstalledProviders();
-        Collections.sort(mWidgets, LauncherModel.WIDGET_NAME_COMPARATOR);
-
-        // Get the list of shortcuts
+        // Get the list of widgets and shortcuts
+        mWidgets.clear();
+        mWidgets.addAll(AppWidgetManager.getInstance(mLauncher).getInstalledProviders());
         Intent shortcutsIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
-        mShortcuts = mPackageManager.queryIntentActivities(shortcutsIntent, 0);
-        Collections.sort(mShortcuts, new LauncherModel.ShortcutNameComparator(mPackageManager));
+        mWidgets.addAll(mPackageManager.queryIntentActivities(shortcutsIntent, 0));
+        Collections.sort(mWidgets,
+                new LauncherModel.WidgetAndShortcutNameComparator(mPackageManager));
     }
 
     /**
@@ -338,23 +357,38 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private void beginDraggingWidget(View v) {
         // Get the widget preview as the drag representation
         ImageView image = (ImageView) v.findViewById(R.id.widget_preview);
-        PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo) v.getTag();
+        PendingAddItemInfo createItemInfo = (PendingAddItemInfo) v.getTag();
 
         // Compose the drag image
+        Bitmap b;
         Drawable preview = image.getDrawable();
         int w = preview.getIntrinsicWidth();
         int h = preview.getIntrinsicHeight();
-        Bitmap b = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        renderDrawableToBitmap(preview, b, 0, 0, w, h, 1, 1);
+        if (createItemInfo instanceof PendingAddWidgetInfo) {
+            PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo) createItemInfo;
+            int[] spanXY = CellLayout.rectToCell(getResources(),
+                    createWidgetInfo.minWidth, createWidgetInfo.minHeight, null);
+            createItemInfo.spanX = spanXY[0];
+            createItemInfo.spanY = spanXY[1];
+
+            b = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+            renderDrawableToBitmap(preview, b, 0, 0, w, h, 1, 1);
+        } else {
+            // Workaround for the fact that we don't keep the original ResolveInfo associated with
+            // the shortcut around.  To get the icon, we just render the preview image (which has
+            // the shortcut icon) to a new drag bitmap that clips the non-icon space.
+            b = Bitmap.createBitmap(mWidgetPreviewIconPaddedDimension,
+                    mWidgetPreviewIconPaddedDimension, Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(b);
+            preview.draw(c);
+            createItemInfo.spanX = createItemInfo.spanY = 1;
+        }
 
         // Start the drag
-        int[] spanXY = CellLayout.rectToCell(getResources(),
-                createWidgetInfo.minWidth, createWidgetInfo.minHeight, null);
-        createWidgetInfo.spanX = spanXY[0];
-        createWidgetInfo.spanY = spanXY[1];
         mLauncher.lockScreenOrientation();
-        mLauncher.getWorkspace().onDragStartedWithItemSpans(spanXY[0], spanXY[1], b);
-        mDragController.startDrag(image, b, this, createWidgetInfo,
+        mLauncher.getWorkspace().onDragStartedWithItemSpans(createItemInfo.spanX,
+                createItemInfo.spanY, b);
+        mDragController.startDrag(image, b, this, createItemInfo,
                 DragController.DRAG_ACTION_COPY, null);
         b.recycle();
     }
@@ -502,8 +536,40 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         d.setBounds(oldBounds); // Restore the bounds
         c.restore();
     }
+    private FastBitmapDrawable getShortcutPreview(ResolveInfo info, int cellWidth, int cellHeight) {
+        // Return the cached version if necessary
+        Bitmap cachedBitmap = mWidgetPreviewCache.get(info);
+        if (cachedBitmap != null) {
+            return new FastBitmapDrawable(cachedBitmap);
+        }
+
+        Resources resources = mLauncher.getResources();
+        int iconSize = resources.getDimensionPixelSize(R.dimen.app_icon_size);
+        // We only need to make it wide enough so as not allow the preview to be scaled
+        int expectedWidth = cellWidth;
+        int expectedHeight = mWidgetPreviewIconPaddedDimension;
+        int offset = (int) (iconSize * sWidgetPreviewIconPaddingPercentage);
+
+        // Render the icon
+        Bitmap preview = Bitmap.createBitmap(expectedWidth, expectedHeight, Config.ARGB_8888);
+        IconCache cache = ((LauncherApplication) mLauncher.getApplication()).getIconCache();
+        Drawable icon = cache.getFullResIcon(info, mPackageManager);
+        renderDrawableToBitmap(mDefaultWidgetBackground, preview, 0, 0,
+                mWidgetPreviewIconPaddedDimension, mWidgetPreviewIconPaddedDimension, 1f, 1f);
+        renderDrawableToBitmap(icon, preview, offset, offset, iconSize, iconSize, 1f, 1f);
+        FastBitmapDrawable iconDrawable = new FastBitmapDrawable(preview);
+        iconDrawable.setBounds(0, 0, expectedWidth, expectedHeight);
+        mWidgetPreviewCache.put(info, preview);
+        return iconDrawable;
+    }
     private FastBitmapDrawable getWidgetPreview(AppWidgetProviderInfo info, int cellHSpan,
             int cellVSpan, int cellWidth, int cellHeight) {
+        // Return the cached version if necessary
+        Bitmap cachedBitmap = mWidgetPreviewCache.get(info);
+        if (cachedBitmap != null) {
+            return new FastBitmapDrawable(cachedBitmap);
+        }
+
         // Calculate the size of the drawable
         cellHSpan = Math.max(mMinWidgetSpan, Math.min(mMaxWidgetSpan, cellHSpan));
         cellVSpan = Math.max(mMinWidgetSpan, Math.min(mMaxWidgetSpan, cellVSpan));
@@ -543,23 +609,29 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 renderDrawableToBitmap(drawable, preview, 0, 0, newWidth, newHeight, 1f, 1f);
                 newDrawable = new FastBitmapDrawable(preview);
                 newDrawable.setBounds(0, 0, newWidth, newHeight);
+                mWidgetPreviewCache.put(info, preview);
             }
         }
 
         // Generate a preview image if we couldn't load one
         if (drawable == null) {
-            // The icon itself takes up space, so update expected width/height to have min of 2
-            cellHSpan = Math.max(2, cellHSpan);
-            cellVSpan = Math.max(2, cellVSpan);
-            expectedWidth = (int) (widgetPreviewScale
-                    * mWidgetSpacingLayout.estimateCellWidth(cellHSpan));
-            expectedHeight = (int) (widgetPreviewScale
-                    * mWidgetSpacingLayout.estimateCellHeight(cellVSpan));
+            Resources resources = mLauncher.getResources();
+            int iconSize = resources.getDimensionPixelSize(R.dimen.app_icon_size);
+
+            // Specify the dimensions of the bitmap
+            if (info.minWidth >= info.minHeight) {
+                expectedWidth = cellWidth;
+                expectedHeight = mWidgetPreviewIconPaddedDimension;
+            } else {
+                // Note that in vertical widgets, we might not have enough space due to the text
+                // label, so be conservative and use the width as a height bound
+                expectedWidth = mWidgetPreviewIconPaddedDimension;
+                expectedHeight = cellWidth;
+            }
 
             Bitmap preview = Bitmap.createBitmap(expectedWidth, expectedHeight, Config.ARGB_8888);
-            Resources resources = mLauncher.getResources();
-            Drawable background = resources.getDrawable(R.drawable.default_widget_preview);
-            renderDrawableToBitmap(background, preview, 0, 0, expectedWidth, expectedHeight, 1f,1f);
+            renderDrawableToBitmap(mDefaultWidgetBackground, preview, 0, 0, expectedWidth,
+                    expectedHeight, 1f,1f);
 
             // Draw the icon in the top left corner
             try {
@@ -567,13 +639,13 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 if (info.icon > 0) icon = mPackageManager.getDrawable(packageName, info.icon, null);
                 if (icon == null) icon = resources.getDrawable(R.drawable.ic_launcher_application);
 
-                int iconSize = resources.getDimensionPixelSize(R.dimen.app_icon_size);
-                int offset = iconSize / 4;
+                int offset = (int) (iconSize * sWidgetPreviewIconPaddingPercentage);
                 renderDrawableToBitmap(icon, preview, offset, offset, iconSize, iconSize, 1f, 1f);
             } catch (Resources.NotFoundException e) {}
 
             newDrawable = new FastBitmapDrawable(preview);
             newDrawable.setBounds(0, 0, expectedWidth, expectedHeight);
+            mWidgetPreviewCache.put(info, preview);
         }
         return newDrawable;
     }
@@ -602,16 +674,31 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         int cellHeight = ((mWidgetSpacingLayout.getContentHeight() - mPageLayoutHeightGap
                 - ((mWidgetCountY - 1) * mWidgetCellHeightGap)) / mWidgetCountY);
         for (int i = 0; i < Math.min(numWidgetsPerPage, mWidgets.size() - offset); ++i) {
-            AppWidgetProviderInfo info = (AppWidgetProviderInfo) mWidgets.get(offset + i);
-            PendingAddWidgetInfo createItemInfo = new PendingAddWidgetInfo(info, null, null);
-            final int[] cellSpans = CellLayout.rectToCell(getResources(), info.minWidth,
-                    info.minHeight, null);
-            FastBitmapDrawable preview = getWidgetPreview(info, cellSpans[0], cellSpans[1],
-                    cellWidth, cellHeight);
+            Object rawInfo = mWidgets.get(offset + i);
+            PendingAddItemInfo createItemInfo = null;
             PagedViewWidget widget = (PagedViewWidget) mLayoutInflater.inflate(
                     R.layout.apps_customize_widget, layout, false);
-            widget.applyFromAppWidgetProviderInfo(info, preview, -1, cellSpans, null, false);
-            widget.setTag(createItemInfo);
+            if (rawInfo instanceof AppWidgetProviderInfo) {
+                // Fill in the widget information
+                AppWidgetProviderInfo info = (AppWidgetProviderInfo) rawInfo;
+                createItemInfo = new PendingAddWidgetInfo(info, null, null);
+                final int[] cellSpans = CellLayout.rectToCell(getResources(), info.minWidth,
+                        info.minHeight, null);
+                FastBitmapDrawable preview = getWidgetPreview(info, cellSpans[0], cellSpans[1],
+                        cellWidth, cellHeight);
+                widget.applyFromAppWidgetProviderInfo(info, preview, -1, cellSpans, null, false);
+                widget.setTag(createItemInfo);
+            } else if (rawInfo instanceof ResolveInfo) {
+                // Fill in the shortcuts information
+                ResolveInfo info = (ResolveInfo) rawInfo;
+                createItemInfo = new PendingAddItemInfo();
+                createItemInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+                createItemInfo.componentName = new ComponentName(info.activityInfo.packageName,
+                        info.activityInfo.name);
+                FastBitmapDrawable preview = getShortcutPreview(info, cellWidth, cellHeight);
+                widget.applyFromResolveInfo(mPackageManager, info, preview, null, false);
+                widget.setTag(createItemInfo);
+            }
             widget.setOnClickListener(this);
             widget.setOnLongClickListener(this);
             widget.setOnTouchListener(this);
@@ -757,13 +844,20 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         dumpAppWidgetProviderInfoList(LOG_TAG, "mWidgets", mWidgets);
     }
     private void dumpAppWidgetProviderInfoList(String tag, String label,
-            List<AppWidgetProviderInfo> list) {
+            List<Object> list) {
         Log.d(tag, label + " size=" + list.size());
-        for (AppWidgetProviderInfo info: list) {
-            Log.d(tag, "   label=\"" + info.label + "\" previewImage=" + info.previewImage
-                    + " resizeMode=" + info.resizeMode + " configure=" + info.configure
-                    + " initialLayout=" + info.initialLayout
-                    + " minWidth=" + info.minWidth + " minHeight=" + info.minHeight);
+        for (Object i: list) {
+            if (i instanceof AppWidgetProviderInfo) {
+                AppWidgetProviderInfo info = (AppWidgetProviderInfo) i;
+                Log.d(tag, "   label=\"" + info.label + "\" previewImage=" + info.previewImage
+                        + " resizeMode=" + info.resizeMode + " configure=" + info.configure
+                        + " initialLayout=" + info.initialLayout
+                        + " minWidth=" + info.minWidth + " minHeight=" + info.minHeight);
+            } else if (i instanceof ResolveInfo) {
+                ResolveInfo info = (ResolveInfo) i;
+                Log.d(tag, "   label=\"" + info.loadLabel(mPackageManager) + "\" icon="
+                        + info.icon);
+            }
         }
     }
     @Override
