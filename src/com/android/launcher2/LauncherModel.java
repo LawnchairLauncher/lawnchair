@@ -1658,17 +1658,6 @@ public class LauncherModel extends BroadcastReceiver {
         return folderInfo;
     }
 
-    private static String getLabel(PackageManager manager, ActivityInfo activityInfo) {
-        String label = activityInfo.loadLabel(manager).toString();
-        if (label == null) {
-            label = manager.getApplicationLabel(activityInfo.applicationInfo).toString();
-            if (label == null) {
-                label = activityInfo.name;
-            }
-        }
-        return label;
-    }
-
     private static final Collator sCollator = Collator.getInstance();
     public static final Comparator<ApplicationInfo> APP_NAME_COMPARATOR
             = new Comparator<ApplicationInfo>() {
