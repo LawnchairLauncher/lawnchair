@@ -1078,7 +1078,8 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             final ApplicationInfo info = mApps.get(i);
             PagedViewIcon icon = (PagedViewIcon) mInflater.inflate(
                     R.layout.all_apps_paged_view_application, layout, false);
-            icon.applyFromApplicationInfo(info, mPageViewIconCache, true, (numPages > 1));
+            icon.applyFromApplicationInfo(
+                    info, mPageViewIconCache, true, isHardwareAccelerated() && (numPages > 1));
             icon.setOnClickListener(this);
             icon.setOnTouchListener(this);
             icon.setOnLongClickListener(this);

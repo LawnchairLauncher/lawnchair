@@ -33,7 +33,6 @@ import android.os.Message;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.widget.Checkable;
-import android.widget.TextView;
 
 
 
@@ -57,7 +56,6 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
     private int mAlpha = 255;
     private int mHolographicAlpha;
 
-    private boolean mHolographicEffectsEnabled;
     private boolean mIsChecked;
     private ObjectAnimator mCheckedAlphaAnimator;
     private float mCheckedAlpha = 1.0f;
@@ -133,7 +131,6 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
         }
 
         mHolographicOutlineView = new HolographicPagedViewIcon(context, this);
-        mHolographicEffectsEnabled = isHardwareAccelerated();
     }
 
     protected HolographicPagedViewIcon getHolographicOutlineView() {
@@ -166,7 +163,7 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
             mIconCache = cache;
             mIconCacheKey = new PagedViewIconCache.Key(info);
             mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
-            if (mHolographicEffectsEnabled && !queueHolographicOutlineCreation()) {
+            if (!queueHolographicOutlineCreation()) {
                 getHolographicOutlineView().invalidate();
             }
         }
@@ -184,7 +181,7 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
             mIconCache = cache;
             mIconCacheKey = new PagedViewIconCache.Key(info);
             mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
-            if (mHolographicEffectsEnabled && !queueHolographicOutlineCreation()) {
+            if (!queueHolographicOutlineCreation()) {
                 getHolographicOutlineView().invalidate();
             }
         }
@@ -220,7 +217,7 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
 
         // draw any blended overlays
         if (mCheckedOutline == null) {
-            if (mHolographicEffectsEnabled && mHolographicOutline != null
+            if (canvas.isHardwareAccelerated() && mHolographicOutline != null
                     && mHolographicAlpha > 0) {
                 mPaint.setAlpha(mHolographicAlpha);
                 overlay = mHolographicOutline;

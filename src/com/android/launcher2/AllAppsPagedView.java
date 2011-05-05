@@ -556,7 +556,8 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
                 final int index = i - startIndex;
                 final ApplicationInfo info = mFilteredApps.get(i);
                 PagedViewIcon icon = (PagedViewIcon) layout.getChildOnPageAt(index);
-                icon.applyFromApplicationInfo(info, mPageViewIconCache, true, (numPages > 1));
+                icon.applyFromApplicationInfo(
+                        info, mPageViewIconCache, true, isHardwareAccelerated() && (numPages > 1));
 
                 PagedViewCellLayout.LayoutParams params =
                     (PagedViewCellLayout.LayoutParams) icon.getLayoutParams();

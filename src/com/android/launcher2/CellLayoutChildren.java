@@ -16,12 +16,9 @@
 
 package com.android.launcher2;
 
-import java.util.ArrayList;
-
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.graphics.Rect;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 

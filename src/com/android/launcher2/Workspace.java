@@ -155,7 +155,6 @@ public class Workspace extends SmoothPagedView
     private int[] mTempCell = new int[2];
     private int[] mTempEstimate = new int[2];
     private float[] mDragViewVisualCenter = new float[2];
-    private float[] mTempOriginXY = new float[2];
     private float[] mTempDragCoordinates = new float[2];
     private float[] mTempTouchCoordinates = new float[2];
     private float[] mTempCellLayoutCenterCoordinates = new float[2];
