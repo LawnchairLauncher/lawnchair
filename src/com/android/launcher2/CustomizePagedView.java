@@ -301,13 +301,8 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             }
         });
 
-        Comparator<ResolveInfo> resolveInfoComparator = new Comparator<ResolveInfo>() {
-            @Override
-            public int compare(ResolveInfo object1, ResolveInfo object2) {
-                return object1.loadLabel(mPackageManager).toString().compareTo(
-                        object2.loadLabel(mPackageManager).toString());
-            }
-        };
+        LauncherModel.ShortcutNameComparator resolveInfoComparator =
+                new LauncherModel.ShortcutNameComparator(mPackageManager);
 
         // get the list of shortcuts
         Intent shortcutsIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);

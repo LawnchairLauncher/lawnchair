@@ -2191,7 +2191,7 @@ public final class Launcher extends Activity
                 if (LauncherApplication.isScreenXLarge()) {
                     addItems();
                 } else {
-                    showAddDialog(longClickCellInfo.cellX, longClickCellInfo.cellY);
+                    startWallpaper();
                 }
             } else {
                 if (!(itemUnderLongClick instanceof Folder)) {

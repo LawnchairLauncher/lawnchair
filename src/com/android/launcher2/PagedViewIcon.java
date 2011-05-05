@@ -19,6 +19,7 @@ package com.android.launcher2;
 import com.android.launcher.R;
 
 import android.animation.ObjectAnimator;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -171,8 +172,8 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
 
     public void applyFromResolveInfo(ResolveInfo info, PackageManager packageManager,
             PagedViewIconCache cache, IconCache modelIconCache, boolean createHolographicOutlines) {
-        mIcon = Utilities.createIconBitmap(
-                modelIconCache.getFullResIcon(info, packageManager), mContext);
+        ComponentName cn = new ComponentName(info.activityInfo.packageName, info.activityInfo.name);
+        mIcon = modelIconCache.getIcon(cn, info);
         setCompoundDrawablesWithIntrinsicBounds(null, new FastBitmapDrawable(mIcon), null, null);
         setText(info.loadLabel(packageManager));
         setTag(info);

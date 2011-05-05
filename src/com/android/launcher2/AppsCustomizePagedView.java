@@ -80,6 +80,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private Drawable mDefaultWidgetBackground;
     private final int sWidgetPreviewCacheSize = 1 * 1024 * 1024; // 1 MiB
     private LruCache<Object, Bitmap> mWidgetPreviewCache;
+    private IconCache mIconCache;
 
     // Dimens
     private int mContentWidth;
@@ -102,6 +103,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mContentType = ContentType.Applications;
         mApps = new ArrayList<ApplicationInfo>();
         mWidgets = new ArrayList<Object>();
+        mIconCache = ((LauncherApplication) context.getApplicationContext()).getIconCache();
         mWidgetPreviewCache = new LruCache<Object, Bitmap>(sWidgetPreviewCacheSize) {
             protected int sizeOf(Object key, Bitmap value) {
                 return value.getByteCount();
@@ -553,8 +555,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         // Render the icon
         Bitmap preview = Bitmap.createBitmap(expectedWidth, expectedHeight, Config.ARGB_8888);
-        IconCache cache = ((LauncherApplication) mLauncher.getApplication()).getIconCache();
-        Drawable icon = cache.getFullResIcon(info, mPackageManager);
+        Drawable icon = mIconCache.getFullResIcon(info, mPackageManager);
         renderDrawableToBitmap(mDefaultWidgetBackground, preview, 0, 0,
                 mWidgetPreviewIconPaddedDimension, mWidgetPreviewIconPaddedDimension, 1f, 1f);
         renderDrawableToBitmap(icon, preview, offset, offset, iconSize, iconSize, 1f, 1f);
