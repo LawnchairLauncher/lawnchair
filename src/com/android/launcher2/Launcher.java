@@ -2218,11 +2218,12 @@ public final class Launcher extends Activity
                     for (int i = 0; i < count; i++) {
                         ((ImageView) group.getChildAt(i)).setImageDrawable(null);
                     }
-                    ArrayList<Bitmap> bitmaps = (ArrayList<Bitmap>) v.getTag(R.id.icon);
+                    ArrayList<Bitmap> bitmaps =
+                        (ArrayList<Bitmap>) v.getTag(R.id.all_apps_button_cluster);
                     for (Bitmap bitmap : bitmaps) bitmap.recycle();
 
                     v.setTag(R.id.workspace, null);
-                    v.setTag(R.id.icon, null);
+                    v.setTag(R.id.all_apps_button_cluster, null);
                     window.setOnDismissListener(null);
                 }
             });
@@ -2314,7 +2315,7 @@ public final class Launcher extends Activity
 
         anchor.setTag(p);
         anchor.setTag(R.id.workspace, preview);
-        anchor.setTag(R.id.icon, bitmaps);
+        anchor.setTag(R.id.all_apps_button_cluster, bitmaps);
     }
 
     class PreviewTouchHandler implements View.OnClickListener, Runnable, View.OnFocusChangeListener {
