@@ -1881,7 +1881,14 @@ public class Workspace extends SmoothPagedView
                         ((i == mCurrentPage) && (mShrinkState != ShrinkState.SPRING_LOADED)) ?
                         0.0f : 1.0f;
 
-                float translation = getOffsetXForRotation(rotation, cl.getWidth(), cl.getHeight());
+                float translation = 0f;
+
+                // If the screen is not xlarge, then don't rotate the CellLayouts
+                // NOTE: If we don't update the side pages alpha, then we should not hide the side
+                //       pages. see unshrink().
+                if (LauncherApplication.isScreenXLarge()) {
+                    translation = getOffsetXForRotation(rotation, cl.getWidth(), cl.getHeight());
+                }
 
                 oldAlphas[i] = cl.getAlpha();
                 newAlphas[i] = finalAlphaValue;
@@ -1951,10 +1958,13 @@ public class Workspace extends SmoothPagedView
                     ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
                 animWithInterpolator.setInterpolator(mZoomInInterpolator);
 
-                final float oldHorizontalWallpaperOffset = getHorizontalWallpaperOffset();
-                final float oldVerticalWallpaperOffset = getVerticalWallpaperOffset();
-                final float newHorizontalWallpaperOffset = wallpaperOffsetForCurrentScroll();
-                final float newVerticalWallpaperOffset = 0.5f;
+                final float oldHorizontalWallpaperOffset = enableWallpaperEffects ?
+                        getHorizontalWallpaperOffset() : 0;
+                final float oldVerticalWallpaperOffset = enableWallpaperEffects ?
+                        getVerticalWallpaperOffset() : 0;
+                final float newHorizontalWallpaperOffset = enableWallpaperEffects ?
+                        wallpaperOffsetForCurrentScroll() : 0;
+                final float newVerticalWallpaperOffset = enableWallpaperEffects ? 0.5f : 0;
                 animWithInterpolator.addUpdateListener(new LauncherAnimatorUpdateListener() {
                     public void onAnimationUpdate(float a, float b) {
                         if (b == 0f) {

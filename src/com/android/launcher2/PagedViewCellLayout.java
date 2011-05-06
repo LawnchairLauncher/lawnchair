@@ -129,7 +129,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
     }
 
     public boolean addViewToCellLayout(View child, int index, int childId,
-            PagedViewCellLayout.LayoutParams params) {
+            PagedViewCellLayout.LayoutParams params, boolean createHolographicOutlines) {
         final PagedViewCellLayout.LayoutParams lp = params;
 
         // Generate an id for each view, this assumes we have at most 256x256 cells
@@ -149,7 +149,10 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
                 if (mAllowHardwareLayerCreation) {
                     pagedViewIcon.disableCache();
                 }
-                mHolographicChildren.addView(pagedViewIcon.getHolographicOutlineView(), index, lp);
+                if (createHolographicOutlines) {
+                    mHolographicChildren.addView(pagedViewIcon.getHolographicOutlineView(),
+                            index, lp);
+                }
             }
             return true;
         }

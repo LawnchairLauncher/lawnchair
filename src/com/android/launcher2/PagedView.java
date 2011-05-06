@@ -531,7 +531,8 @@ public abstract class PagedView extends ViewGroup {
     protected void updateAdjacentPagesAlpha() {
         if (mFadeInAdjacentScreens) {
             if (mDirtyPageAlpha || (mTouchState == TOUCH_STATE_SCROLLING) || !mScroller.isFinished()) {
-                int halfScreenSize = getMeasuredWidth() / 2;
+                int screenWidth = getMeasuredWidth();
+                int halfScreenSize = screenWidth / 2;
                 int screenCenter = mScrollX + halfScreenSize;
                 final int childCount = getChildCount();
                 for (int i = 0; i < childCount; ++i) {
@@ -544,7 +545,7 @@ public abstract class PagedView extends ViewGroup {
                     // we should just assume full page width (and calculate the offset according to
                     // that).
                     if (childWidth <= 0) {
-                        childWidth = getMeasuredWidth();
+                        childWidth = screenWidth;
                         childCenter = (i * childWidth) + (childWidth / 2);
                     }
 
@@ -1203,7 +1204,11 @@ public abstract class PagedView extends ViewGroup {
     }
 
     protected int getChildWidth(int index) {
-        return Math.max(mMinimumWidth, getChildAt(index).getMeasuredWidth());
+        // This functions are called enough times that it actually makes a difference in the
+        // profiler -- so just inline the max() here
+        final int measuredWidth = getChildAt(index).getMeasuredWidth();
+        final int minWidth = mMinimumWidth;
+        return (minWidth > measuredWidth) ? minWidth : measuredWidth;
     }
 
     protected int getRelativeChildOffset(int index) {
@@ -1222,7 +1227,12 @@ public abstract class PagedView extends ViewGroup {
     }
 
     protected int getScaledMeasuredWidth(View child) {
-        return (int) (Math.max(mMinimumWidth, child.getMeasuredWidth()) * mLayoutScale + 0.5f);
+        // This functions are called enough times that it actually makes a difference in the
+        // profiler -- so just inline the max() here
+        final int measuredWidth = child.getMeasuredWidth();
+        final int minWidth = mMinimumWidth;
+        final int maxWidth = (minWidth > measuredWidth) ? minWidth : measuredWidth;
+        return (int) (maxWidth * mLayoutScale + 0.5f);
     }
 
     int getPageNearestToCenterOfScreen() {

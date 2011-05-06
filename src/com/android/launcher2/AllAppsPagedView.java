@@ -508,6 +508,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
     @Override
     public void syncPageItems(int page) {
         // Ensure that we have the right number of items on the pages
+        final int numPages = getPageCount();
         final int cellsPerPage = mCellCountX * mCellCountY;
         final int startIndex = page * cellsPerPage;
         final int endIndex = Math.min(startIndex + cellsPerPage, mFilteredApps.size());
@@ -540,6 +541,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
 
             // Add any necessary items
             for (int i = curNumPageItems; i < numPageItems; ++i) {
+                final boolean createHolographicOutlines = isHardwareAccelerated() && (numPages > 1);
                 TextView text = (TextView) mInflater.inflate(
                         R.layout.all_apps_paged_view_application, layout, false);
                 text.setOnClickListener(this);
@@ -547,17 +549,17 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
                 text.setOnTouchListener(this);
 
                 layout.addViewToCellLayout(text, -1, i,
-                    new PagedViewCellLayout.LayoutParams(0, 0, 1, 1));
+                    new PagedViewCellLayout.LayoutParams(0, 0, 1, 1), createHolographicOutlines);
             }
 
             // Actually reapply to the existing text views
-            final int numPages = getPageCount();
             for (int i = startIndex; i < endIndex; ++i) {
                 final int index = i - startIndex;
                 final ApplicationInfo info = mFilteredApps.get(i);
+                final boolean createHolographicOutlines = isHardwareAccelerated() && (numPages > 1);
                 PagedViewIcon icon = (PagedViewIcon) layout.getChildOnPageAt(index);
                 icon.applyFromApplicationInfo(
-                        info, mPageViewIconCache, true, isHardwareAccelerated() && (numPages > 1));
+                        info, mPageViewIconCache, true, createHolographicOutlines);
 
                 PagedViewCellLayout.LayoutParams params =
                     (PagedViewCellLayout.LayoutParams) icon.getLayoutParams();
@@ -579,10 +581,11 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
             }
 
             // Center-align the message
+            final boolean createHolographicOutlines = isHardwareAccelerated() && (numPages > 1);
             layout.enableCenteredContent(true);
             layout.removeAllViewsOnPage();
             layout.addViewToCellLayout(icon, -1, 0,
-                    new PagedViewCellLayout.LayoutParams(0, 0, 4, 1));
+                    new PagedViewCellLayout.LayoutParams(0, 0, 4, 1), createHolographicOutlines);
         }
         layout.createHardwareLayers();
     }

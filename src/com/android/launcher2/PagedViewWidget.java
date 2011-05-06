@@ -64,6 +64,7 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
 
     private PagedViewIconCache.Key mIconCacheKey;
     private PagedViewIconCache mIconCache;
+    private String mDimensionsFormatString;
 
     private int mAlpha = 255;
     private int mHolographicAlpha;
@@ -162,6 +163,7 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
             mCheckedFadeOutDuration =
                 r.getInteger(R.integer.config_dragAppsCustomizeIconFadeOutDuration);
         }
+        mDimensionsFormatString = r.getString(R.string.widget_dims_format);
 
         setWillNotDraw(false);
         setClipToPadding(false);
@@ -189,7 +191,7 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         name.setText(info.label);
         name.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         final TextView dims = (TextView) findViewById(R.id.widget_dims);
-        dims.setText(mContext.getString(R.string.widget_dims_format, cellSpan[0], cellSpan[1]));
+        dims.setText(String.format(mDimensionsFormatString, cellSpan[0], cellSpan[1]));
         dims.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         if (createHolographicOutline) {
@@ -209,7 +211,7 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         name.setText(info.loadLabel(pm));
         name.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         final TextView dims = (TextView) findViewById(R.id.widget_dims);
-        dims.setText(mContext.getString(R.string.widget_dims_format, 1, 1));
+        dims.setText(String.format(mDimensionsFormatString, 1, 1));
         dims.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         if (createHolographicOutline) {

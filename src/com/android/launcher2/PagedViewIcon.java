@@ -16,8 +16,6 @@
 
 package com.android.launcher2;
 
-import com.android.launcher.R;
-
 import android.animation.ObjectAnimator;
 import android.content.ComponentName;
 import android.content.Context;
@@ -33,8 +31,10 @@ import android.os.HandlerThread;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.Checkable;
 
+import com.android.launcher.R;
 
 
 /**

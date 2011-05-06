@@ -929,12 +929,13 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             final int[] cellSpans = CellLayout.rectToCell(getResources(), info.minWidth,
                     info.minHeight, null);
             final FastBitmapDrawable icon = getWidgetPreview(info);
+            final boolean createHolographicOutlines = isHardwareAccelerated() && (numPages > 1);
 
             PagedViewWidget l = (PagedViewWidget) mInflater.inflate(
                     R.layout.customize_paged_view_widget, layout, false);
 
             l.applyFromAppWidgetProviderInfo(info, icon, mMaxWidgetWidth, cellSpans,
-                    mPageViewIconCache, (numPages > 1));
+                    mPageViewIconCache, createHolographicOutlines);
             l.setTag(createItemInfo);
             l.setOnClickListener(this);
             l.setOnTouchListener(this);
@@ -975,11 +976,12 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         for (int i = startIndex; i < endIndex; ++i) {
             final ResolveInfo info = mWallpaperList.get(i);
             final FastBitmapDrawable icon = getWallpaperPreview(info);
+            final boolean createHolographicOutlines = isHardwareAccelerated() && (numPages > 1);
 
             PagedViewWidget l = (PagedViewWidget) mInflater.inflate(
                     R.layout.customize_paged_view_wallpaper, layout, false);
             l.applyFromWallpaperInfo(info, mPackageManager, icon, mMaxWidgetWidth,
-                    mPageViewIconCache, (numPages > 1));
+                    mPageViewIconCache, createHolographicOutlines);
             l.setTag(info);
             l.setOnClickListener(this);
 
@@ -1012,12 +1014,13 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         for (int i = startIndex; i < endIndex; ++i) {
             ResolveInfo info = list.get(i);
             PendingAddItemInfo createItemInfo = new PendingAddItemInfo();
+            final boolean createHolographicOutlines = isHardwareAccelerated() && (numPages > 1);
 
             PagedViewIcon icon = (PagedViewIcon) mInflater.inflate(
                     R.layout.customize_paged_view_item, layout, false);
             icon.applyFromResolveInfo(info, mPackageManager, mPageViewIconCache,
                     ((LauncherApplication) mLauncher.getApplication()).getIconCache(),
-                    (numPages > 1));
+                    createHolographicOutlines);
             switch (mCustomizationType) {
             case WallpaperCustomization:
                 icon.setOnClickListener(this);
@@ -1039,7 +1042,8 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             final int x = index % mCellCountX;
             final int y = index / mCellCountX;
             setupPage(layout);
-            layout.addViewToCellLayout(icon, -1, i, new PagedViewCellLayout.LayoutParams(x,y, 1,1));
+            layout.addViewToCellLayout(icon, -1, i, new PagedViewCellLayout.LayoutParams(x,y, 1,1),
+                    createHolographicOutlines);
         }
     }
 
@@ -1071,10 +1075,11 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         layout.removeAllViewsOnPage();
         for (int i = startIndex; i < endIndex; ++i) {
             final ApplicationInfo info = mApps.get(i);
+            final boolean createHolographicOutlines = isHardwareAccelerated() && (numPages > 1);
             PagedViewIcon icon = (PagedViewIcon) mInflater.inflate(
                     R.layout.all_apps_paged_view_application, layout, false);
             icon.applyFromApplicationInfo(
-                    info, mPageViewIconCache, true, isHardwareAccelerated() && (numPages > 1));
+                    info, mPageViewIconCache, true, createHolographicOutlines);
             icon.setOnClickListener(this);
             icon.setOnTouchListener(this);
             icon.setOnLongClickListener(this);
@@ -1083,7 +1088,8 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             final int x = index % mCellCountX;
             final int y = index / mCellCountX;
             setupPage(layout);
-            layout.addViewToCellLayout(icon, -1, i, new PagedViewCellLayout.LayoutParams(x,y, 1,1));
+            layout.addViewToCellLayout(icon, -1, i, new PagedViewCellLayout.LayoutParams(x,y, 1,1),
+                    createHolographicOutlines);
         }
     }
 

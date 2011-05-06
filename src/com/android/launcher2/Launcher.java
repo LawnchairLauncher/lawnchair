@@ -896,7 +896,7 @@ public final class Launcher extends Activity
         dragLayer.setDragController(dragController);
 
         if (LauncherApplication.isScreenXLarge()) {
-            mAllAppsGrid = (AllAppsView)dragLayer.findViewById(R.id.all_apps_view);
+            mAllAppsGrid = (AllAppsView) dragLayer.findViewById(R.id.all_apps_view);
             mAllAppsGrid.setup(this, dragController);
             // We don't want a hole punched in our window.
             ((View) mAllAppsGrid).setWillNotDraw(false);

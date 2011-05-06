@@ -44,6 +44,7 @@ import android.util.LruCache;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
@@ -471,17 +472,28 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     /*
      * Apps PagedView implementation
      */
+    private void setVisibilityOnChildren(ViewGroup layout, int visibility) {
+        int childCount = layout.getChildCount();
+        for (int i = 0; i < childCount; ++i) {
+            layout.getChildAt(i).setVisibility(visibility);
+        }
+    }
     private void setupPage(PagedViewCellLayout layout) {
         layout.setCellCount(mCellCountX, mCellCountY);
         layout.setGap(mPageLayoutWidthGap, mPageLayoutHeightGap);
         layout.setPadding(mPageLayoutPaddingLeft, mPageLayoutPaddingTop,
                 mPageLayoutPaddingRight, mPageLayoutPaddingBottom);
 
-        // We force a measure here to get around the fact that when we do layout calculations
-        // immediately after syncing, we don't have a proper width.
+        // Note: We force a measure here to get around the fact that when we do layout calculations
+        // immediately after syncing, we don't have a proper width.  That said, we already know the
+        // expected page width, so we can actually optimize by hiding all the TextView-based
+        // children that are expensive to measure, and let that happen naturally later.
+        setVisibilityOnChildren(layout, View.GONE);
         int widthSpec = MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.AT_MOST);
         int heightSpec = MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.AT_MOST);
+        layout.setMinimumWidth(getPageContentWidth());
         layout.measure(widthSpec, heightSpec);
+        setVisibilityOnChildren(layout, View.VISIBLE);
     }
     public void syncAppsPages() {
         // Ensure that we have the right number of pages
@@ -514,8 +526,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             int index = i - startIndex;
             int x = index % mCellCountX;
             int y = index / mCellCountX;
-            setupPage(layout);
-            layout.addViewToCellLayout(icon, -1, i, new PagedViewCellLayout.LayoutParams(x,y, 1,1));
+            layout.addViewToCellLayout(icon, -1, i, new PagedViewCellLayout.LayoutParams(x,y, 1,1),
+                    isHardwareAccelerated() && (numPages > 1));
         }
     }
     /*
@@ -525,7 +537,17 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         layout.setGravity(Gravity.LEFT);
         layout.setPadding(mPageLayoutPaddingLeft, mPageLayoutPaddingTop,
                 mPageLayoutPaddingRight, mPageLayoutPaddingBottom);
+
+        // Note: We force a measure here to get around the fact that when we do layout calculations
+        // immediately after syncing, we don't have a proper width.  That said, we already know the
+        // expected page width, so we can actually optimize by hiding all the TextView-based
+        // children that are expensive to measure, and let that happen naturally later.
+        setVisibilityOnChildren(layout, View.GONE);
+        int widthSpec = MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.AT_MOST);
+        int heightSpec = MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.AT_MOST);
         layout.setMinimumWidth(getPageContentWidth());
+        layout.measure(widthSpec, heightSpec);
+        setVisibilityOnChildren(layout, View.VISIBLE);
     }
     private void renderDrawableToBitmap(Drawable d, Bitmap bitmap, int x, int y, int w, int h,
             float scaleX, float scaleY) {

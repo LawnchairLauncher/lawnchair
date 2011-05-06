@@ -652,22 +652,6 @@ public class LauncherModel extends BroadcastReceiver {
                     mLoaderTask = null;
                 }
             }
-
-            // Trigger a gc to try to clean up after the stuff is done, since the
-            // renderscript allocations aren't charged to the java heap.
-            if (mStopped) {
-                mHandler.post(new Runnable() {
-                        public void run() {
-                            System.gc();
-                        }
-                    });
-            } else {
-                mHandler.postIdle(new Runnable() {
-                        public void run() {
-                            System.gc();
-                        }
-                    });
-            }
         }
 
         public void stopLocked() {
