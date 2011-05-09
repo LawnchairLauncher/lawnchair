@@ -2391,7 +2391,9 @@ public class Workspace extends SmoothPagedView
                 mDragViewVisualCenter);
 
         // We want the point to be mapped to the dragTarget.
-        mapPointFromSelfToChild(mDragTargetLayout, mDragViewVisualCenter, null);
+        if (mDragTargetLayout != null) {
+            mapPointFromSelfToChild(mDragTargetLayout, mDragViewVisualCenter, null);
+        }
 
         // When you are in customization mode and drag to a particular screen, make that the
         // new current/default screen, so any subsequent taps add items to that screen
@@ -2405,8 +2407,7 @@ public class Workspace extends SmoothPagedView
         if (source != this) {
             final int[] touchXY = new int[] { (int) mDragViewVisualCenter[0],
                     (int) mDragViewVisualCenter[1] };
-            if (LauncherApplication.isScreenXLarge()
-                    && (mIsSmall || mIsInUnshrinkAnimation)
+            if (LauncherApplication.isScreenXLarge() && (mIsSmall || mIsInUnshrinkAnimation)
                     && !mLauncher.isAllAppsVisible()) {
                 // When the workspace is shrunk and the drop comes from customize, don't actually
                 // add the item to the screen -- customize will do this itself
@@ -2417,10 +2418,12 @@ public class Workspace extends SmoothPagedView
         } else if (mDragInfo != null) {
             final View cell = mDragInfo.cell;
             CellLayout dropTargetLayout = mDragTargetLayout;
+            boolean dropInscrollArea = false;
 
             // Handle the case where the user drops when in the scroll area.
             // This is treated as a drop on the adjacent page.
             if (dropTargetLayout == null && mInScrollArea) {
+                dropInscrollArea = true;
                 if (mPendingScrollDirection == DragController.SCROLL_LEFT) {
                     dropTargetLayout = (CellLayout) getChildAt(mCurrentPage - 1);
                 } else if (mPendingScrollDirection == DragController.SCROLL_RIGHT) {
@@ -2435,7 +2438,7 @@ public class Workspace extends SmoothPagedView
 
                 // If the item being dropped is a shortcut and the nearest drop cell also contains
                 // a shortcut, then create a folder with the two shortcuts.
-                if (createUserFolderIfNecessary(cell, dropTargetLayout,
+                if (!dropInscrollArea && createUserFolderIfNecessary(cell, dropTargetLayout,
                         (int) mDragViewVisualCenter[0], (int) mDragViewVisualCenter[1], false)) {
                     return;
                 }
