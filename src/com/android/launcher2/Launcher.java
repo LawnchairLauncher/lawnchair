@@ -935,8 +935,11 @@ public final class Launcher extends Activity
              hotseatRight.setContentDescription(mHotseatLabels[1]);
              hotseatRight.setImageDrawable(mHotseatIcons[1]);
 
+             View.OnKeyListener listener = new IndicatorKeyEventListener();
              mPreviousView = (ImageView) dragLayer.findViewById(R.id.previous_screen);
+             mPreviousView.setOnKeyListener(listener);
              mNextView = (ImageView) dragLayer.findViewById(R.id.next_screen);
+             mNextView.setOnKeyListener(listener);
 
              Drawable previous = mPreviousView.getDrawable();
              Drawable next = mNextView.getDrawable();
@@ -1009,7 +1012,14 @@ public final class Launcher extends Activity
             dragController.addDropTarget(allAppsDeleteZone);
         }
         mButtonCluster = (ViewGroup) findViewById(R.id.all_apps_button_cluster);
-        View.OnKeyListener listener = new ButtonBarKeyEventListener();
+        View.OnKeyListener listener = null;
+        if (LauncherApplication.isScreenXLarge()) {
+            // For tablets, AllApps lives in the button bar at the top
+            listener = new ButtonBarKeyEventListener();
+        } else {
+            // For phones, AppsCustomize lives in the "dock" at the bottom
+            listener = new DockKeyEventListener();
+        }
         int buttonCount = mButtonCluster.getChildCount();
         for (int i = 0; i < buttonCount; ++i) {
             mButtonCluster.getChildAt(i).setOnKeyListener(listener);
@@ -2678,6 +2688,7 @@ public final class Launcher extends Activity
             });
 
             if (toAllApps) {
+                toView.setVisibility(View.VISIBLE);
                 toView.setFastAlpha(0f);
                 ValueAnimator alphaAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(fadeDuration);
                 alphaAnim.setInterpolator(new DecelerateInterpolator(1.5f));

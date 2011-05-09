@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import android.content.res.Configuration;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,27 @@ class ButtonBarKeyEventListener implements View.OnKeyListener {
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         return FocusHelper.handleButtonBarButtonKeyEvent(v, keyCode, event);
+    }
+}
+
+/**
+ * A keyboard listener we set on the indicator buttons.
+ */
+class IndicatorKeyEventListener implements View.OnKeyListener {
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        return FocusHelper.handleIndicatorButtonKeyEvent(v, keyCode, event);
+    }
+}
+
+/**
+ * A keyboard listener we set on all the dock buttons.
+ */
+class DockKeyEventListener implements View.OnKeyListener {
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        final Configuration configuration = v.getResources().getConfiguration();
+        return FocusHelper.handleDockButtonKeyEvent(v, keyCode, event, configuration.orientation);
     }
 }
 
@@ -107,6 +129,7 @@ public class FocusHelper {
 
     /**
      * Handles key events in a PageViewExtendedLayout containing PagedViewWidgets.
+     * To be deprecated.
      */
     static boolean handlePagedViewWidgetKeyEvent(PagedViewWidget w, int keyCode, KeyEvent e) {
         if (!LauncherApplication.isScreenXLarge()) return false;
@@ -223,6 +246,136 @@ public class FocusHelper {
     }
 
     /**
+     * Handles key events in a PageViewExtendedLayout containing PagedViewWidgets.
+     */
+    static boolean handlePagedViewGridLayoutWidgetKeyEvent(PagedViewWidget w, int keyCode,
+            KeyEvent e) {
+
+        final PagedViewGridLayout parent = (PagedViewGridLayout) w.getParent();
+        final ViewGroup container = (ViewGroup) parent.getParent();
+        final TabHost tabHost = findTabHostParent(container);
+        final TabWidget tabs = (TabWidget) tabHost.findViewById(com.android.internal.R.id.tabs);
+        final int widgetIndex = parent.indexOfChild(w);
+        final int widgetCount = parent.getChildCount();
+        final int pageIndex = container.indexOfChild(parent);
+        final int pageCount = container.getChildCount();
+        final int cellCountX = parent.getCellCountX();
+        final int cellCountY = parent.getCellCountY();
+        final int x = widgetIndex % cellCountX;
+        final int y = widgetIndex / cellCountX;
+
+        final int action = e.getAction();
+        final boolean handleKeyEvent = (action != KeyEvent.ACTION_UP);
+        PagedViewGridLayout newParent = null;
+        boolean wasHandled = false;
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+                if (handleKeyEvent) {
+                    // Select the previous widget or the last widget on the previous page
+                    if (widgetIndex > 0) {
+                        parent.getChildAt(widgetIndex - 1).requestFocus();
+                    } else {
+                        if (pageIndex > 0) {
+                            newParent = (PagedViewGridLayout)
+                                    container.getChildAt(pageIndex - 1);
+                            newParent.getChildAt(newParent.getChildCount() - 1).requestFocus();
+                        }
+                    }
+                }
+                wasHandled = true;
+                break;
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                if (handleKeyEvent) {
+                    // Select the next widget or the first widget on the next page
+                    if (widgetIndex < (widgetCount - 1)) {
+                        parent.getChildAt(widgetIndex + 1).requestFocus();
+                    } else {
+                        if (pageIndex < (pageCount - 1)) {
+                            newParent = (PagedViewGridLayout)
+                                    container.getChildAt(pageIndex + 1);
+                            newParent.getChildAt(0).requestFocus();
+                        }
+                    }
+                }
+                wasHandled = true;
+                break;
+            case KeyEvent.KEYCODE_DPAD_UP:
+                if (handleKeyEvent) {
+                    // Select the closest icon in the previous row, otherwise select the tab bar
+                    if (y > 0) {
+                        int newWidgetIndex = ((y - 1) * cellCountX) + x;
+                        parent.getChildAt(newWidgetIndex).requestFocus();
+                    } else {
+                        tabs.requestFocus();
+                    }
+                }
+                wasHandled = true;
+                break;
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+                if (handleKeyEvent) {
+                    // Select the closest icon in the previous row, otherwise do nothing
+                    if (y < (cellCountY - 1)) {
+                        int newWidgetIndex = Math.min(widgetCount - 1, ((y + 1) * cellCountX) + x);
+                        parent.getChildAt(newWidgetIndex).requestFocus();
+                    }
+                }
+                wasHandled = true;
+                break;
+            case KeyEvent.KEYCODE_ENTER:
+            case KeyEvent.KEYCODE_DPAD_CENTER:
+                if (handleKeyEvent) {
+                    // Simulate a click on the widget
+                    View.OnClickListener clickListener = (View.OnClickListener) container;
+                    clickListener.onClick(w);
+                }
+                wasHandled = true;
+                break;
+            case KeyEvent.KEYCODE_PAGE_UP:
+                if (handleKeyEvent) {
+                    // Select the first item on the previous page, or the first item on this page
+                    // if there is no previous page
+                    if (pageIndex > 0) {
+                        newParent = (PagedViewGridLayout) container.getChildAt(pageIndex - 1);
+                        newParent.getChildAt(0).requestFocus();
+                    } else {
+                        parent.getChildAt(0).requestFocus();
+                    }
+                }
+                wasHandled = true;
+                break;
+            case KeyEvent.KEYCODE_PAGE_DOWN:
+                if (handleKeyEvent) {
+                    // Select the first item on the next page, or the last item on this page
+                    // if there is no next page
+                    if (pageIndex < (pageCount - 1)) {
+                        newParent = (PagedViewGridLayout) container.getChildAt(pageIndex + 1);
+                        newParent.getChildAt(0).requestFocus();
+                    } else {
+                        parent.getChildAt(widgetCount - 1).requestFocus();
+                    }
+                }
+                wasHandled = true;
+                break;
+            case KeyEvent.KEYCODE_MOVE_HOME:
+                if (handleKeyEvent) {
+                    // Select the first item on this page
+                    parent.getChildAt(0).requestFocus();
+                }
+                wasHandled = true;
+                break;
+            case KeyEvent.KEYCODE_MOVE_END:
+                if (handleKeyEvent) {
+                    // Select the last item on this page
+                    parent.getChildAt(widgetCount - 1).requestFocus();
+                }
+                wasHandled = true;
+                break;
+            default: break;
+        }
+        return wasHandled;
+    }
+
+    /**
      * Private helper method to get the PagedViewCellLayoutChildren given a PagedViewCellLayout
      * index.
      */
@@ -236,8 +389,6 @@ public class FocusHelper {
      * Handles key events in a PageViewCellLayout containing PagedViewIcons.
      */
     static boolean handlePagedViewIconKeyEvent(PagedViewIcon v, int keyCode, KeyEvent e) {
-        if (!LauncherApplication.isScreenXLarge()) return false;
-
         final PagedViewCellLayoutChildren parent = (PagedViewCellLayoutChildren) v.getParent();
         final PagedViewCellLayout parentLayout = (PagedViewCellLayout) parent.getParent();
         // Note we have an extra parent because of the
@@ -423,7 +574,7 @@ public class FocusHelper {
     }
 
     /**
-     * Handles key events in a the workspace button bar.
+     * Handles key events in the workspace button bar.
      */
     static boolean handleButtonBarButtonKeyEvent(View v, int keyCode, KeyEvent e) {
         if (!LauncherApplication.isScreenXLarge()) return false;
@@ -504,6 +655,141 @@ public class FocusHelper {
                         workspace.requestFocus();
                     }
                 }
+                wasHandled = true;
+                break;
+            default: break;
+        }
+        return wasHandled;
+    }
+
+    /**
+     * Handles key events in the prev/next indicators.
+     */
+    static boolean handleIndicatorButtonKeyEvent(View v, int keyCode, KeyEvent e) {
+        final ViewGroup launcher = (ViewGroup) v.getParent();
+        final Workspace workspace = (Workspace) launcher.findViewById(R.id.workspace);
+        final ViewGroup hotseat = (ViewGroup) launcher.findViewById(R.id.all_apps_button_cluster);
+        final View previousIndicator = launcher.findViewById(R.id.previous_screen);
+        final View nextIndicator = launcher.findViewById(R.id.next_screen);
+        final int pageIndex = workspace.getCurrentPage();
+        final int pageCount = workspace.getChildCount();
+
+        final int action = e.getAction();
+        final boolean handleKeyEvent = (action != KeyEvent.ACTION_UP);
+        boolean wasHandled = false;
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+                if (handleKeyEvent) {
+                    if (v == previousIndicator) {
+                        if (pageIndex > 0) {
+                            // Snap to previous page and clear focus
+                            workspace.snapToPage(pageIndex - 1);
+                        }
+                    } else if (v == nextIndicator) {
+                        // Select the last button in the hot seat
+                        hotseat.getChildAt(hotseat.getChildCount() - 1).requestFocus();
+                    }
+                }
+                wasHandled = true;
+                break;
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                if (handleKeyEvent) {
+                    if (v == previousIndicator) {
+                        // Select the first button in the hot seat
+                        hotseat.getChildAt(0).requestFocus();
+                    } else if (v == nextIndicator) {
+                        if (pageIndex < (pageCount - 1)) {
+                            // Snap to next page and clear focus
+                            workspace.snapToPage(pageIndex + 1);
+                        }
+                    }
+                }
+                wasHandled = true;
+                break;
+            case KeyEvent.KEYCODE_DPAD_UP:
+                if (handleKeyEvent) {
+                    // Select the first bubble text view in the current page of the workspace
+                    final CellLayout layout = (CellLayout) workspace.getChildAt(pageIndex);
+                    final CellLayoutChildren children = layout.getChildrenLayout();
+                    final View newIcon = getBubbleTextViewInDirection(layout, children, -1, 1);
+                    if (newIcon != null) {
+                        newIcon.requestFocus();
+                    } else {
+                        workspace.requestFocus();
+                    }
+                }
+                wasHandled = true;
+                break;
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+                // Do nothing
+                wasHandled = true;
+                break;
+            default: break;
+        }
+        return wasHandled;
+    }
+
+    /**
+     * Handles key events in the workspace dock (bottom of the screen).
+     */
+    static boolean handleDockButtonKeyEvent(View v, int keyCode, KeyEvent e, int orientation) {
+        final ViewGroup parent = (ViewGroup) v.getParent();
+        final ViewGroup launcher = (ViewGroup) parent.getParent();
+        final Workspace workspace = (Workspace) launcher.findViewById(R.id.workspace);
+        final int buttonIndex = parent.indexOfChild(v);
+        final int buttonCount = parent.getChildCount();
+        final int pageIndex = workspace.getCurrentPage();
+        final int pageCount = workspace.getChildCount();
+        final View previousIndicator = launcher.findViewById(R.id.previous_screen);
+        final View nextIndicator = launcher.findViewById(R.id.next_screen);
+
+        // NOTE: currently we don't special case for the phone UI in different
+        // orientations, even though the dock is on the side in landscape mode.  This
+        // is to ensure that accessibility consistency is maintained across rotations.
+
+        final int action = e.getAction();
+        final boolean handleKeyEvent = (action != KeyEvent.ACTION_UP);
+        boolean wasHandled = false;
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+                if (handleKeyEvent) {
+
+                    // Select the previous button, otherwise select the previous page indicator
+                    if (buttonIndex > 0) {
+                        parent.getChildAt(buttonIndex - 1).requestFocus();
+                    } else {
+                        previousIndicator.requestFocus();
+                    }
+                }
+                wasHandled = true;
+                break;
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                if (handleKeyEvent) {
+                    // Select the next button, otherwise select the next page indicator
+                    if (buttonIndex < (buttonCount - 1)) {
+                        parent.getChildAt(buttonIndex + 1).requestFocus();
+                    } else {
+                        nextIndicator.requestFocus();
+                    }
+                }
+                wasHandled = true;
+                break;
+            case KeyEvent.KEYCODE_DPAD_UP:
+                if (handleKeyEvent) {
+                    // Select the first bubble text view in the current page of the workspace
+                    final CellLayout layout = (CellLayout) workspace.getChildAt(pageIndex);
+                    final CellLayoutChildren children = layout.getChildrenLayout();
+                    final View newIcon = getBubbleTextViewInDirection(layout, children, -1, 1);
+                    if (newIcon != null) {
+                        newIcon.requestFocus();
+                    } else {
+                        workspace.requestFocus();
+                    }
+                }
+                wasHandled = true;
+                break;
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+                // Do nothing
                 wasHandled = true;
                 break;
             default: break;
@@ -618,8 +904,6 @@ public class FocusHelper {
      * Handles key events in a Workspace containing BubbleTextView.
      */
     static boolean handleBubbleTextViewKeyEvent(BubbleTextView v, int keyCode, KeyEvent e) {
-        if (!LauncherApplication.isScreenXLarge()) return false;
-
         CellLayoutChildren parent = (CellLayoutChildren) v.getParent();
         final CellLayout layout = (CellLayout) parent.getParent();
         final Workspace workspace = (Workspace) layout.getParent();

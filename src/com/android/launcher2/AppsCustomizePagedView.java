@@ -533,8 +533,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     /*
      * Widgets PagedView implementation
      */
-    private void setupPage(PagedViewExtendedLayout layout) {
-        layout.setGravity(Gravity.LEFT);
+    private void setupPage(PagedViewGridLayout layout) {
         layout.setPadding(mPageLayoutPaddingLeft, mPageLayoutPaddingTop,
                 mPageLayoutPaddingRight, mPageLayoutPaddingBottom);
 
@@ -679,18 +678,17 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         int numWidgetsPerPage = mWidgetCountX * mWidgetCountY;
         int numPages = (int) Math.ceil(mWidgets.size() / (float) numWidgetsPerPage);
         for (int i = 0; i < numPages; ++i) {
-            PagedViewExtendedLayout layout = new PagedViewExtendedLayout(context);
+            PagedViewGridLayout layout = new PagedViewGridLayout(context, mWidgetCountX,
+                    mWidgetCountY);
             setupPage(layout);
             addView(layout);
         }
     }
     public void syncWidgetPageItems(int page) {
-        Context context = getContext();
-        PagedViewExtendedLayout layout = (PagedViewExtendedLayout) getChildAt(page);
+        PagedViewGridLayout layout = (PagedViewGridLayout) getChildAt(page);
         layout.removeAllViews();
 
         // Calculate the dimensions of each cell we are giving to each widget
-        FrameLayout container = new FrameLayout(context);
         int numWidgetsPerPage = mWidgetCountX * mWidgetCountY;
         int offset = page * numWidgetsPerPage;
         int cellWidth = ((mWidgetSpacingLayout.getContentWidth() - mPageLayoutWidthGap
@@ -728,15 +726,14 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             widget.setOnTouchListener(this);
 
             // Layout each widget
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(cellWidth, cellHeight);
             int ix = i % mWidgetCountX;
             int iy = i / mWidgetCountX;
+            PagedViewGridLayout.LayoutParams lp = new PagedViewGridLayout.LayoutParams(cellWidth,
+                    cellHeight);
             lp.leftMargin = (ix * cellWidth) + (ix * mWidgetCellWidthGap);
             lp.topMargin = (iy * cellHeight) + (iy * mWidgetCellHeightGap);
-            container.addView(widget, lp);
+            layout.addView(widget, lp);
         }
-        layout.addView(container, new LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
     }
     @Override
     public void syncPages() {
