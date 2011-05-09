@@ -15,4 +15,6 @@
 -->
 
 <com.android.launcher2.BubbleTextView xmlns:android="http://schemas.android.com/apk/res/android"
-   style="@style/WorkspaceIcon.Portrait" />
+   style="@style/WorkspaceIcon.Portrait"
+   android:focusable="true"
+   android:background="@drawable/focusable_view_bg" />

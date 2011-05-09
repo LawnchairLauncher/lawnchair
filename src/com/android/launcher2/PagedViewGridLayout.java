@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 The Android Open Source Project
+ * Copyright (C) 2011 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,44 +17,44 @@
 package com.android.launcher2;
 
 import android.content.Context;
-import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.MeasureSpec;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 /**
- * The linear layout used strictly for the widget/wallpaper tab of the customization tray.
- * To be deprecated.
+ * The grid based layout used strictly for the widget/wallpaper tab of the AppsCustomize pane
  */
-public class PagedViewExtendedLayout extends LinearLayout implements Page {
-    static final String TAG = "PagedViewExtendedLayout";
+public class PagedViewGridLayout extends FrameLayout implements Page {
+    static final String TAG = "PagedViewGridLayout";
 
-    public PagedViewExtendedLayout(Context context) {
-        this(context, null);
+    private int mCellCountX;
+    private int mCellCountY;
+
+    public PagedViewGridLayout(Context context, int cellCountX, int cellCountY) {
+        super(context, null, 0);
+        mCellCountX = cellCountX;
+        mCellCountY = cellCountY;
     }
 
-    public PagedViewExtendedLayout(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+    int getCellCountX() {
+        return mCellCountX;
     }
-
-    public PagedViewExtendedLayout(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
+    int getCellCountY() {
+        return mCellCountY;
     }
 
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (LauncherApplication.isScreenXLarge()) {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        } else {
-            // PagedView currently has issues with different-sized pages since it calculates the
-            // offset of each page to scroll to before it updates the actual size of each page
-            // (which canchange depending on the content if the contains aren't a fixed size).
-            // We work around this by having a minimum size on each widget page).
-            int widthSpecSize = Math.max(getSuggestedMinimumWidth(),
-                    MeasureSpec.getSize(widthMeasureSpec));
-            int widthSpecMode = MeasureSpec.AT_MOST;
-            super.onMeasure(MeasureSpec.makeMeasureSpec(widthSpecSize, widthSpecMode),
-                    heightMeasureSpec);
-        }
+        // PagedView currently has issues with different-sized pages since it calculates the
+        // offset of each page to scroll to before it updates the actual size of each page
+        // (which can change depending on the content if the contents aren't a fixed size).
+        // We work around this by having a minimum size on each widget page).
+        int widthSpecSize = Math.max(getSuggestedMinimumWidth(),
+                MeasureSpec.getSize(widthMeasureSpec));
+        int widthSpecMode = MeasureSpec.AT_MOST;
+        super.onMeasure(MeasureSpec.makeMeasureSpec(widthSpecSize, widthSpecMode),
+                heightMeasureSpec);
     }
 
     @Override
@@ -112,10 +112,9 @@ public class PagedViewExtendedLayout extends LinearLayout implements Page {
         return indexOfChild(v);
     }
 
-    public static class LayoutParams extends LinearLayout.LayoutParams {
-        public LayoutParams() {
-            super(LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.MATCH_PARENT);
+    public static class LayoutParams extends FrameLayout.LayoutParams {
+        public LayoutParams(int width, int height) {
+            super(width, height);
         }
     }
 }
