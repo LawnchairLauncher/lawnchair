@@ -541,7 +541,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
 
             // Add any necessary items
             for (int i = curNumPageItems; i < numPageItems; ++i) {
-                final boolean createHolographicOutlines = isHardwareAccelerated() && (numPages > 1);
+                final boolean createHolographicOutlines = (numPages > 1);
                 TextView text = (TextView) mInflater.inflate(
                         R.layout.all_apps_paged_view_application, layout, false);
                 text.setOnClickListener(this);
@@ -556,7 +556,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
             for (int i = startIndex; i < endIndex; ++i) {
                 final int index = i - startIndex;
                 final ApplicationInfo info = mFilteredApps.get(i);
-                final boolean createHolographicOutlines = isHardwareAccelerated() && (numPages > 1);
+                final boolean createHolographicOutlines = (numPages > 1);
                 PagedViewIcon icon = (PagedViewIcon) layout.getChildOnPageAt(index);
                 icon.applyFromApplicationInfo(
                         info, mPageViewIconCache, true, createHolographicOutlines);
@@ -581,7 +581,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
             }
 
             // Center-align the message
-            final boolean createHolographicOutlines = isHardwareAccelerated() && (numPages > 1);
+            final boolean createHolographicOutlines = (numPages > 1);
             layout.enableCenteredContent(true);
             layout.removeAllViewsOnPage();
             layout.addViewToCellLayout(icon, -1, 0,

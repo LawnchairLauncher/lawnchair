@@ -929,7 +929,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             final int[] cellSpans = CellLayout.rectToCell(getResources(), info.minWidth,
                     info.minHeight, null);
             final FastBitmapDrawable icon = getWidgetPreview(info);
-            final boolean createHolographicOutlines = isHardwareAccelerated() && (numPages > 1);
+            final boolean createHolographicOutlines = (numPages > 1);
 
             PagedViewWidget l = (PagedViewWidget) mInflater.inflate(
                     R.layout.customize_paged_view_widget, layout, false);
@@ -976,7 +976,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         for (int i = startIndex; i < endIndex; ++i) {
             final ResolveInfo info = mWallpaperList.get(i);
             final FastBitmapDrawable icon = getWallpaperPreview(info);
-            final boolean createHolographicOutlines = isHardwareAccelerated() && (numPages > 1);
+            final boolean createHolographicOutlines = (numPages > 1);
 
             PagedViewWidget l = (PagedViewWidget) mInflater.inflate(
                     R.layout.customize_paged_view_wallpaper, layout, false);
@@ -1014,7 +1014,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         for (int i = startIndex; i < endIndex; ++i) {
             ResolveInfo info = list.get(i);
             PendingAddItemInfo createItemInfo = new PendingAddItemInfo();
-            final boolean createHolographicOutlines = isHardwareAccelerated() && (numPages > 1);
+            final boolean createHolographicOutlines = (numPages > 1);
 
             PagedViewIcon icon = (PagedViewIcon) mInflater.inflate(
                     R.layout.customize_paged_view_item, layout, false);
@@ -1075,7 +1075,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         layout.removeAllViewsOnPage();
         for (int i = startIndex; i < endIndex; ++i) {
             final ApplicationInfo info = mApps.get(i);
-            final boolean createHolographicOutlines = isHardwareAccelerated() && (numPages > 1);
+            final boolean createHolographicOutlines = (numPages > 1);
             PagedViewIcon icon = (PagedViewIcon) mInflater.inflate(
                     R.layout.all_apps_paged_view_application, layout, false);
             icon.applyFromApplicationInfo(
