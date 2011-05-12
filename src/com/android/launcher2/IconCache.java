@@ -54,7 +54,7 @@ public class IconCache {
         mContext = context;
         mPackageManager = context.getPackageManager();
         mBubble = new Utilities.BubbleText(context);
-        if (LauncherApplication.isScreenXLarge()) {
+        if (LauncherApplication.isScreenLarge()) {
             mIconDpi = DisplayMetrics.DENSITY_HIGH;
         } else {
             mIconDpi = context.getResources().getDisplayMetrics().densityDpi;

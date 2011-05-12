@@ -243,7 +243,7 @@ final class Utilities {
         final float density = metrics.density;
 
         sIconWidth = sIconHeight = (int) resources.getDimension(R.dimen.app_icon_size);
-        if (LauncherApplication.isScreenXLarge()) {
+        if (LauncherApplication.isScreenLarge()) {
             sIconContentSize = (int) resources.getDimension(R.dimen.app_icon_content_size);
         }
         sIconTextureWidth = sIconTextureHeight = sIconWidth + 2;

@@ -319,7 +319,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                     public void run() {
                         cl.calculateSpans(itemInfo);
                         if (cl.findCellForSpan(null, itemInfo.spanX, itemInfo.spanY)) {
-                            if (LauncherApplication.isScreenXLarge()) {
+                            if (LauncherApplication.isScreenLarge()) {
                                 animateItemOntoScreen(dragView, cl, itemInfo);
                             } else {
                                 mLauncher.addExternalItemToScreen(itemInfo, cl);

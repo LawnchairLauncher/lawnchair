@@ -167,7 +167,7 @@ public class CellLayout extends ViewGroup {
 
         final Resources res = getResources();
 
-        if (LauncherApplication.isScreenXLarge()) {
+        if (LauncherApplication.isScreenLarge()) {
             mNormalBackground = res.getDrawable(R.drawable.homescreen_large_blue);
             mActiveBackground = res.getDrawable(R.drawable.homescreen_large_green);
             mActiveGlowBackground = res.getDrawable(R.drawable.homescreen_large_green_strong);
@@ -353,7 +353,7 @@ public class CellLayout extends ViewGroup {
     }
 
     void animateDrop() {
-        if (LauncherApplication.isScreenXLarge()) {
+        if (LauncherApplication.isScreenLarge()) {
             Resources res = getResources();
             float onDropScale = res.getInteger(R.integer.config_screenOnDropScalePercent) / 100.0f;
             ObjectAnimator scaleUp = ObjectAnimator.ofFloat(this, "hoverScale", onDropScale);
@@ -391,7 +391,7 @@ public class CellLayout extends ViewGroup {
         // When we're small, we are either drawn normally or in the "accepts drops" state (during
         // a drag). However, we also drag the mini hover background *over* one of those two
         // backgrounds
-        if (LauncherApplication.isScreenXLarge() && mBackgroundAlpha > 0.0f) {
+        if (LauncherApplication.isScreenLarge() && mBackgroundAlpha > 0.0f) {
             Drawable bg;
             boolean mini = getScaleX() < 0.5f;
 

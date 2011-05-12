@@ -249,7 +249,7 @@ public class Workspace extends SmoothPagedView
         super(context, attrs, defStyle);
         mContentIsRefreshable = false;
 
-        if (!LauncherApplication.isScreenXLarge()) {
+        if (!LauncherApplication.isScreenLarge()) {
             mFadeInAdjacentScreens = false;
         }
 
@@ -333,7 +333,7 @@ public class Workspace extends SmoothPagedView
 
     @Override
     protected int getScrollMode() {
-        if (LauncherApplication.isScreenXLarge()) {
+        if (LauncherApplication.isScreenLarge()) {
             return SmoothPagedView.X_LARGE_MODE;
         } else {
             return SmoothPagedView.DEFAULT_MODE;
@@ -1063,7 +1063,7 @@ public class Workspace extends SmoothPagedView
         // If the screen is not xlarge, then don't rotate the CellLayouts
         // NOTE: If we don't update the side pages alpha, then we should not hide the side pages.
         //       see unshrink().
-        if (!LauncherApplication.isScreenXLarge()) return;
+        if (!LauncherApplication.isScreenLarge()) return;
 
         final int halfScreenSize = getMeasuredWidth() / 2;
 
@@ -1292,7 +1292,7 @@ public class Workspace extends SmoothPagedView
     public boolean onTouchEvent(MotionEvent ev) {
         if (mLauncher.isAllAppsVisible() && mShrinkState == ShrinkState.BOTTOM_HIDDEN) {
             PagedView appsPane;
-            if (LauncherApplication.isScreenXLarge()) {
+            if (LauncherApplication.isScreenLarge()) {
                 appsPane = (PagedView) mLauncher.findViewById(R.id.all_apps_paged_view);
             } else {
                 appsPane = (PagedView) mLauncher.findViewById(R.id.apps_customize_pane_content);
@@ -1864,7 +1864,7 @@ public class Workspace extends SmoothPagedView
                 final CellLayout cl = (CellLayout)getChildAt(i);
                 float finalAlphaValue = 0f;
                 float rotation = 0f;
-                if (LauncherApplication.isScreenXLarge()) {
+                if (LauncherApplication.isScreenLarge()) {
                     finalAlphaValue = (i == mCurrentPage) ? 1.0f : 0.0f;
 
                     if (i < mCurrentPage) {
@@ -1886,7 +1886,7 @@ public class Workspace extends SmoothPagedView
                 // If the screen is not xlarge, then don't rotate the CellLayouts
                 // NOTE: If we don't update the side pages alpha, then we should not hide the side
                 //       pages. see unshrink().
-                if (LauncherApplication.isScreenXLarge()) {
+                if (LauncherApplication.isScreenLarge()) {
                     translation = getOffsetXForRotation(rotation, cl.getWidth(), cl.getHeight());
                 }
 
@@ -2407,7 +2407,7 @@ public class Workspace extends SmoothPagedView
         if (source != this) {
             final int[] touchXY = new int[] { (int) mDragViewVisualCenter[0],
                     (int) mDragViewVisualCenter[1] };
-            if (LauncherApplication.isScreenXLarge() && (mIsSmall || mIsInUnshrinkAnimation)
+            if (LauncherApplication.isScreenLarge() && (mIsSmall || mIsInUnshrinkAnimation)
                     && !mLauncher.isAllAppsVisible()) {
                 // When the workspace is shrunk and the drop comes from customize, don't actually
                 // add the item to the screen -- customize will do this itself
@@ -2921,7 +2921,7 @@ public class Workspace extends SmoothPagedView
 
                     // Workaround the fact that we don't actually want spring-loaded mode in phone
                     // UI yet.
-                    if (LauncherApplication.isScreenXLarge()) {
+                    if (LauncherApplication.isScreenLarge()) {
                         // In spring-loaded mode, we still want the user to be able to hover over a
                         // full screen (which is traditionally set to not accept drops) if they want
                         // to get to pages beyond the screen that is full.

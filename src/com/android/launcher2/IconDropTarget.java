@@ -126,7 +126,7 @@ public class IconDropTarget extends TextView implements DropTarget, DragControll
     @Override
     public void getHitRect(Rect outRect) {
         super.getHitRect(outRect);
-        if (LauncherApplication.isScreenXLarge()) {
+        if (LauncherApplication.isScreenLarge()) {
             outRect.top -= mDragPadding[0];
             outRect.right += mDragPadding[1];
             outRect.bottom += mDragPadding[2];

@@ -42,7 +42,7 @@ public class PagedViewExtendedLayout extends LinearLayout implements Page {
     }
 
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (LauncherApplication.isScreenXLarge()) {
+        if (LauncherApplication.isScreenLarge()) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         } else {
             // PagedView currently has issues with different-sized pages since it calculates the

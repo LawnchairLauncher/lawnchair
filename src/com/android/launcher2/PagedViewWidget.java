@@ -257,7 +257,7 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (LauncherApplication.isScreenXLarge()) {
+        if (LauncherApplication.isScreenLarge()) {
             return FocusHelper.handlePagedViewWidgetKeyEvent(this, keyCode, event)
                     || super.onKeyDown(keyCode, event);
         } else {
@@ -268,7 +268,7 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (LauncherApplication.isScreenXLarge()) {
+        if (LauncherApplication.isScreenLarge()) {
             return FocusHelper.handlePagedViewWidgetKeyEvent(this, keyCode, event)
                     || super.onKeyUp(keyCode, event);
         } else {

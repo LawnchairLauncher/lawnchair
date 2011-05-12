@@ -346,7 +346,7 @@ public final class Launcher extends Activity
         registerReceiver(mCloseSystemDialogsReceiver, filter);
 
         // If we have a saved version of these external icons, we load them up immediately
-        if (LauncherApplication.isScreenXLarge()) {
+        if (LauncherApplication.isScreenLarge()) {
             if (sGlobalSearchIcon == null || sVoiceSearchIcon == null || sAppMarketIcon == null) {
                 updateIconsAffectedByPackageManagerChanges();
             }
@@ -895,7 +895,7 @@ public final class Launcher extends Activity
         DragLayer dragLayer = (DragLayer) findViewById(R.id.drag_layer);
         dragLayer.setDragController(dragController);
 
-        if (LauncherApplication.isScreenXLarge()) {
+        if (LauncherApplication.isScreenLarge()) {
             mAllAppsGrid = (AllAppsView) dragLayer.findViewById(R.id.all_apps_view);
             mAllAppsGrid.setup(this, dragController);
             // We don't want a hole punched in our window.
@@ -963,7 +963,7 @@ public final class Launcher extends Activity
         final View divider = findViewById(R.id.all_apps_divider);
         final View configureButton = findViewById(R.id.configure_button);
 
-        if (LauncherApplication.isScreenXLarge()) {
+        if (LauncherApplication.isScreenLarge()) {
             deleteZone.setOverlappingViews(new View[] { allAppsButton, divider, configureButton });
         } else {
             deleteZone.setOverlappingView(findViewById(R.id.all_apps_button_cluster));
@@ -1013,7 +1013,7 @@ public final class Launcher extends Activity
         }
         mButtonCluster = (ViewGroup) findViewById(R.id.all_apps_button_cluster);
         View.OnKeyListener listener = null;
-        if (LauncherApplication.isScreenXLarge()) {
+        if (LauncherApplication.isScreenLarge()) {
             // For tablets, AllApps lives in the button bar at the top
             listener = new ButtonBarKeyEventListener();
         } else {
@@ -1695,7 +1695,7 @@ public final class Launcher extends Activity
     }
 
     private void addItems() {
-        if (LauncherApplication.isScreenXLarge()) {
+        if (LauncherApplication.isScreenLarge()) {
             // Animate the widget chooser up from the bottom of the screen
             if (mState != State.CUSTOMIZE) {
                 showCustomizationDrawer(true);
@@ -2198,7 +2198,7 @@ public final class Launcher extends Activity
                 mWorkspace.setAllowLongPress(false);
                 mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                         HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-                if (LauncherApplication.isScreenXLarge()) {
+                if (LauncherApplication.isScreenLarge()) {
                     addItems();
                 } else {
                     startWallpaper();
@@ -2513,7 +2513,7 @@ public final class Launcher extends Activity
     // AllAppsView.Watcher
     public void zoomed(float zoom) {
         // In XLarge view, we zoom down the workspace below all apps so it's still visible
-        if (zoom == 1.0f && !LauncherApplication.isScreenXLarge()) {
+        if (zoom == 1.0f && !LauncherApplication.isScreenLarge()) {
             mWorkspace.setVisibility(View.GONE);
         }
     }
@@ -2586,7 +2586,7 @@ public final class Launcher extends Activity
         case WORKSPACE:
             hideOrShowToolbarButton(true, mButtonCluster, showSeq);
             mDeleteZone.setDragAndDropEnabled(true);
-            if (LauncherApplication.isScreenXLarge()) {
+            if (LauncherApplication.isScreenLarge()) {
                 mDeleteZone.setText(getResources().getString(R.string.delete_zone_label_workspace));
             }
             break;
@@ -2594,7 +2594,7 @@ public final class Launcher extends Activity
         case APPS_CUSTOMIZE:
             hideOrShowToolbarButton(false, mButtonCluster, hideSeq);
             mDeleteZone.setDragAndDropEnabled(false);
-            if (LauncherApplication.isScreenXLarge()) {
+            if (LauncherApplication.isScreenLarge()) {
                 mDeleteZone.setText(getResources().getString(R.string.delete_zone_label_all_apps));
             }
             break;
@@ -2651,7 +2651,7 @@ public final class Launcher extends Activity
 
         View tmpView;
         if (toAllApps) {
-            tmpView = (LauncherApplication.isScreenXLarge())
+            tmpView = (LauncherApplication.isScreenLarge())
                     ? (View) mAllAppsGrid : mAppsCustomizeTabHost;
         } else {
             tmpView = mHomeCustomizationDrawer;
@@ -2664,7 +2664,7 @@ public final class Launcher extends Activity
             if (!springLoaded) {
                 mWorkspace.shrink(ShrinkState.BOTTOM_HIDDEN, animated);
 
-                if (LauncherApplication.isScreenXLarge()) {
+                if (LauncherApplication.isScreenLarge()) {
                     // Everytime we launch into AllApps, we reset the successful drop flag which
                     // controls when it should hide/show the mini workspaces
                     mAllAppsPagedView.resetSuccessfulDropFlag();
@@ -2781,14 +2781,14 @@ public final class Launcher extends Activity
 
         View tmpView;
         if (fromAllApps) {
-            tmpView = (LauncherApplication.isScreenXLarge())
+            tmpView = (LauncherApplication.isScreenLarge())
                     ? (View) mAllAppsGrid : mAppsCustomizeTabHost;
         } else {
             tmpView = mHomeCustomizationDrawer;
         }
         final View fromView = tmpView;
 
-        if (LauncherApplication.isScreenXLarge()) {
+        if (LauncherApplication.isScreenLarge()) {
             mCustomizePagedView.endChoiceMode();
             mAllAppsPagedView.endChoiceMode();
         }
@@ -2894,7 +2894,7 @@ public final class Launcher extends Activity
         mWorkspace.enterSpringLoadedDragMode(layout);
         if (mState == State.ALL_APPS || mState == State.APPS_CUSTOMIZE) {
             mState = State.ALL_APPS_SPRING_LOADED;
-            if (LauncherApplication.isScreenXLarge()) {
+            if (LauncherApplication.isScreenLarge()) {
                 cameraZoomIn(State.ALL_APPS, true, true);
             } else {
                 cameraZoomIn(State.APPS_CUSTOMIZE, true, true);
@@ -2910,7 +2910,7 @@ public final class Launcher extends Activity
     void exitSpringLoadedDragMode() {
         if (mState == State.ALL_APPS_SPRING_LOADED) {
             mWorkspace.exitSpringLoadedDragMode(Workspace.ShrinkState.BOTTOM_VISIBLE);
-            if (LauncherApplication.isScreenXLarge()) {
+            if (LauncherApplication.isScreenLarge()) {
                 cameraZoomOut(State.ALL_APPS, true, true);
                 mState = State.ALL_APPS;
             } else {
@@ -2928,7 +2928,7 @@ public final class Launcher extends Activity
 
     void showAllApps(boolean animated) {
         if (mState != State.WORKSPACE) return;
-        if (LauncherApplication.isScreenXLarge()) {
+        if (LauncherApplication.isScreenLarge()) {
             cameraZoomOut(State.ALL_APPS, animated, false);
             ((View) mAllAppsGrid).requestFocus();
 
@@ -2994,7 +2994,7 @@ public final class Launcher extends Activity
      *          - From another workspace
      */
     void closeAllApps(boolean animated) {
-        if (LauncherApplication.isScreenXLarge()) {
+        if (LauncherApplication.isScreenLarge()) {
             if (mState == State.ALL_APPS || mState == State.ALL_APPS_SPRING_LOADED) {
                 mWorkspace.setVisibility(View.VISIBLE);
                 cameraZoomIn(State.ALL_APPS, animated, false);
@@ -3125,7 +3125,7 @@ public final class Launcher extends Activity
     }
 
     private void updateGlobalSearchIcon() {
-        if (LauncherApplication.isScreenXLarge()) {
+        if (LauncherApplication.isScreenLarge()) {
             final View searchButton = findViewById(R.id.search_button);
             final View searchDivider = findViewById(R.id.search_divider);
 
@@ -3149,7 +3149,7 @@ public final class Launcher extends Activity
     }
 
     private void updateVoiceSearchIcon() {
-        if (LauncherApplication.isScreenXLarge()) {
+        if (LauncherApplication.isScreenLarge()) {
             final View searchDivider = findViewById(R.id.search_divider);
             final View voiceButton = findViewById(R.id.voice_button);
 
@@ -3501,7 +3501,7 @@ public final class Launcher extends Activity
 
         // Workaround a bug that occurs when rotating the device while the customization mode is
         // open, we trigger a new layout on all the CellLayout children.
-        if (LauncherApplication.isScreenXLarge() && (mState == State.CUSTOMIZE)) {
+        if (LauncherApplication.isScreenLarge() && (mState == State.CUSTOMIZE)) {
             final int childCount = mWorkspace.getChildCount();
             for (int i = 0; i < childCount; ++i) {
                 mWorkspace.getChildAt(i).requestLayout();

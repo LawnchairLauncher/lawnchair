@@ -259,7 +259,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
     }
 
     int getContentWidth() {
-        if (LauncherApplication.isScreenXLarge()) {
+        if (LauncherApplication.isScreenLarge()) {
             // Return the distance from the left edge of the content of the leftmost icon to
             // the right edge of the content of the rightmost icon
 
@@ -283,7 +283,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            if (LauncherApplication.isScreenXLarge()) {
+            if (LauncherApplication.isScreenLarge()) {
                 child.layout(0, 0, r - l, b - t);
             } else {
                 child.layout(mPaddingLeft, mPaddingTop, getMeasuredWidth() - mPaddingRight,
@@ -477,7 +477,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
             height = myCellVSpan * cellHeight + ((myCellVSpan - 1) * heightGap) -
                     topMargin - bottomMargin;
 
-            if (LauncherApplication.isScreenXLarge()) {
+            if (LauncherApplication.isScreenLarge()) {
                 x = hStartPadding + myCellX * (cellWidth + widthGap) + leftMargin;
                 y = vStartPadding + myCellY * (cellHeight + heightGap) + topMargin;
             } else {

@@ -50,7 +50,7 @@ public class ApplicationInfoDropTarget extends IconDropTarget {
         int colour = getContext().getResources().getColor(R.color.app_info_filter);
         mHoverPaint.setColorFilter(new PorterDuffColorFilter(colour, PorterDuff.Mode.SRC_ATOP));
 
-        if (LauncherApplication.isScreenXLarge()) {
+        if (LauncherApplication.isScreenLarge()) {
             // For the application info drop target, we just ignore the left padding since we don't want
             // to overlap with the delete zone padding
             int tb = getResources().getDimensionPixelSize(

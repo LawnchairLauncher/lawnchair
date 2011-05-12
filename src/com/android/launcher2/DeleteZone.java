@@ -68,7 +68,7 @@ public class DeleteZone extends IconDropTarget {
         mOrientation = a.getInt(R.styleable.DeleteZone_direction, ORIENTATION_HORIZONTAL);
         a.recycle();
 
-        if (LauncherApplication.isScreenXLarge()) {
+        if (LauncherApplication.isScreenLarge()) {
             int tb = getResources().getDimensionPixelSize(
                     R.dimen.delete_zone_vertical_drag_padding);
             int lr = getResources().getDimensionPixelSize(
@@ -81,7 +81,7 @@ public class DeleteZone extends IconDropTarget {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mTransition = (TransitionDrawable) getCompoundDrawables()[LEFT_DRAWABLE];
-        if (LauncherApplication.isScreenXLarge()) {
+        if (LauncherApplication.isScreenLarge()) {
             mTransition.setCrossFadeEnabled(false);
         }
 
@@ -102,7 +102,7 @@ public class DeleteZone extends IconDropTarget {
         final ItemInfo item = (ItemInfo) dragInfo;
 
         // On x-large screens, you can uninstall an app by dragging from all apps
-        if (item instanceof ApplicationInfo && LauncherApplication.isScreenXLarge()) {
+        if (item instanceof ApplicationInfo && LauncherApplication.isScreenLarge()) {
             mLauncher.startApplicationUninstallActivity((ApplicationInfo) item);
         }
 
@@ -166,7 +166,7 @@ public class DeleteZone extends IconDropTarget {
             getHitRect(mRegion);
             mRegionF.set(mRegion);
 
-            if (LauncherApplication.isScreenXLarge()) {
+            if (LauncherApplication.isScreenLarge()) {
                 // This region will be a "dead zone" for scrolling; make it extend to the edge of
                 // the screen so users don't accidentally trigger a scroll while deleting items
                 mRegionF.top = mLauncher.getWorkspace().getTop();
@@ -223,7 +223,7 @@ public class DeleteZone extends IconDropTarget {
             mInAnimation = new AnimatorSet();
             mInAnimation.setInterpolator(new AccelerateInterpolator());
             mInAnimation.setDuration(duration);
-            if (!LauncherApplication.isScreenXLarge()) {
+            if (!LauncherApplication.isScreenLarge()) {
                 Animator translateAnim;
                 if (mOrientation == ORIENTATION_HORIZONTAL) {
                     translateAnim = ObjectAnimator.ofFloat(this, "translationY", 
@@ -243,7 +243,7 @@ public class DeleteZone extends IconDropTarget {
             mOutAnimation = new AnimatorSet();
             mOutAnimation.setInterpolator(new AccelerateInterpolator());
             mOutAnimation.setDuration(duration);
-            if (!LauncherApplication.isScreenXLarge()) {
+            if (!LauncherApplication.isScreenLarge()) {
                 Animator translateAnim;
                 if (mOrientation == ORIENTATION_HORIZONTAL) {
                     translateAnim = ObjectAnimator.ofFloat(this, "translationY", 0f, 
@@ -269,12 +269,12 @@ public class DeleteZone extends IconDropTarget {
     }
 
     private int getTransitionAnimationDuration() {
-        return LauncherApplication.isScreenXLarge() ?
+        return LauncherApplication.isScreenLarge() ?
                 XLARGE_TRANSITION_DURATION : TRANSITION_DURATION;
     }
 
     private int getAnimationDuration() {
-        return LauncherApplication.isScreenXLarge() ?
+        return LauncherApplication.isScreenLarge() ?
                 XLARGE_ANIMATION_DURATION : ANIMATION_DURATION;
     }
 }

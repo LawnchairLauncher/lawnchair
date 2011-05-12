@@ -27,7 +27,7 @@ import android.os.Handler;
 public class LauncherApplication extends Application {
     public LauncherModel mModel;
     public IconCache mIconCache;
-    private static boolean sIsScreenXLarge;
+    private static boolean sIsScreenLarge;
     private static float sScreenDensity;
     private static final boolean ENABLE_ROTATION = false;
 
@@ -36,7 +36,9 @@ public class LauncherApplication extends Application {
         super.onCreate();
 
         // set sIsScreenXLarge and sScreenDensity *before* creating icon cache
-        sIsScreenXLarge = (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE;
+        final int screenSize = getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK;
+        sIsScreenLarge = screenSize == Configuration.SCREENLAYOUT_SIZE_LARGE ||
+            screenSize == Configuration.SCREENLAYOUT_SIZE_XLARGE;
         sScreenDensity = getResources().getDisplayMetrics().density;
 
         mIconCache = new IconCache(this);
@@ -97,11 +99,11 @@ public class LauncherApplication extends Application {
     }
 
     public static boolean isInPlaceRotationEnabled() {
-        return sIsScreenXLarge && ENABLE_ROTATION;
+        return sIsScreenLarge && ENABLE_ROTATION;
     }
 
-    public static boolean isScreenXLarge() {
-        return sIsScreenXLarge;
+    public static boolean isScreenLarge() {
+        return sIsScreenLarge;
     }
 
     public static float getScreenDensity() {

@@ -132,7 +132,7 @@ public class FocusHelper {
      * To be deprecated.
      */
     static boolean handlePagedViewWidgetKeyEvent(PagedViewWidget w, int keyCode, KeyEvent e) {
-        if (!LauncherApplication.isScreenXLarge()) return false;
+        if (!LauncherApplication.isScreenLarge()) return false;
 
         final PagedViewExtendedLayout parent = (PagedViewExtendedLayout) w.getParent();
         final ViewGroup container = (ViewGroup) parent.getParent();
@@ -522,7 +522,7 @@ public class FocusHelper {
      * Handles key events in the tab widget.
      */
     static boolean handleTabKeyEvent(AccessibleTabView v, int keyCode, KeyEvent e) {
-        if (!LauncherApplication.isScreenXLarge()) return false;
+        if (!LauncherApplication.isScreenLarge()) return false;
 
         final FocusOnlyTabWidget parent = (FocusOnlyTabWidget) v.getParent();
         final TabHost tabHost = findTabHostParent(parent);
@@ -577,7 +577,7 @@ public class FocusHelper {
      * Handles key events in the workspace button bar.
      */
     static boolean handleButtonBarButtonKeyEvent(View v, int keyCode, KeyEvent e) {
-        if (!LauncherApplication.isScreenXLarge()) return false;
+        if (!LauncherApplication.isScreenLarge()) return false;
 
         final ViewGroup parent = (ViewGroup) v.getParent();
         final ViewGroup launcher = (ViewGroup) parent.getParent();
