@@ -20,19 +20,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.xmlpull.v1.XmlPullParser;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -41,15 +46,15 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.LruCache;
-import android.view.Gravity;
+import android.util.Slog;
+import android.util.TypedValue;
+import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.launcher.R;
@@ -63,7 +68,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
      */
     public enum ContentType {
         Applications,
-        Widgets
+        Widgets,
+        Wallpapers
     }
 
     // Refs
@@ -76,6 +82,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private ContentType mContentType;
     private ArrayList<ApplicationInfo> mApps;
     private List<Object> mWidgets;
+    private List<ResolveInfo> mWallpapers;
 
     // Caching
     private Drawable mDefaultWidgetBackground;
@@ -86,8 +93,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     // Dimens
     private int mContentWidth;
     private int mMaxWidgetSpan, mMinWidgetSpan;
-    private int mWidgetCellWidthGap, mWidgetCellHeightGap;
+    private int mCellWidthGap, mCellHeightGap;
     private int mWidgetCountX, mWidgetCountY;
+    private int mWallpaperCountX, mWallpaperCountY;
     private final int mWidgetPreviewIconPaddedDimension;
     private final float sWidgetPreviewIconPaddingPercentage = 0.25f;
     private PagedViewCellLayout mWidgetSpacingLayout;
@@ -104,6 +112,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mContentType = ContentType.Applications;
         mApps = new ArrayList<ApplicationInfo>();
         mWidgets = new ArrayList<Object>();
+        mWallpapers = new ArrayList<ResolveInfo>();
         mIconCache = ((LauncherApplication) context.getApplicationContext()).getIconCache();
         mWidgetPreviewCache = new LruCache<Object, Bitmap>(sWidgetPreviewCacheSize) {
             protected int sizeOf(Object key, Bitmap value) {
@@ -120,12 +129,14 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mCellCountY = a.getInt(R.styleable.PagedView_cellCountY, 4);
         a.recycle();
         a = context.obtainStyledAttributes(attrs, R.styleable.AppsCustomizePagedView, 0, 0);
-        mWidgetCellWidthGap =
+        mCellWidthGap =
             a.getDimensionPixelSize(R.styleable.AppsCustomizePagedView_widgetCellWidthGap, 10);
-        mWidgetCellHeightGap =
+        mCellHeightGap =
             a.getDimensionPixelSize(R.styleable.AppsCustomizePagedView_widgetCellHeightGap, 10);
         mWidgetCountX = a.getInt(R.styleable.AppsCustomizePagedView_widgetCountX, 2);
         mWidgetCountY = a.getInt(R.styleable.AppsCustomizePagedView_widgetCountY, 2);
+        mWallpaperCountX = a.getInt(R.styleable.AppsCustomizePagedView_wallpaperCountX, 2);
+        mWallpaperCountY = a.getInt(R.styleable.AppsCustomizePagedView_wallpaperCountY, 2);
         a.recycle();
 
         // Create a dummy page that we can use to approximate the cell dimensions of widgets and
@@ -164,6 +175,13 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mWidgets.addAll(mPackageManager.queryIntentActivities(shortcutsIntent, 0));
         Collections.sort(mWidgets,
                 new LauncherModel.WidgetAndShortcutNameComparator(mPackageManager));
+
+        // Get the list of wallpapers
+        Intent wallpapersIntent = new Intent(Intent.ACTION_SET_WALLPAPER);
+        mWallpapers = mPackageManager.queryIntentActivities(wallpapersIntent,
+                PackageManager.GET_META_DATA);
+        Collections.sort(mWallpapers,
+                new LauncherModel.ShortcutNameComparator(mPackageManager));
     }
 
     /**
@@ -275,30 +293,47 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 }
             });
         } else if (v instanceof PagedViewWidget) {
-            Workspace w = mLauncher.getWorkspace();
-            int currentWorkspaceScreen = mLauncher.getCurrentWorkspaceScreen();
-            final CellLayout cl = (CellLayout) w.getChildAt(currentWorkspaceScreen);
-            final View dragView = v.findViewById(R.id.widget_preview);
-            final ItemInfo itemInfo = (ItemInfo) v.getTag();
-            animateClickFeedback(v, new Runnable() {
-                @Override
-                public void run() {
-                    cl.calculateSpans(itemInfo);
-                    if (cl.findCellForSpan(null, itemInfo.spanX, itemInfo.spanY)) {
-                        if (LauncherApplication.isScreenXLarge()) {
-                            animateItemOntoScreen(dragView, cl, itemInfo);
-                        } else {
-                            mLauncher.addExternalItemToScreen(itemInfo, cl);
-                            itemInfo.dropPos = null;
-                        }
-
-                        // Hide the pane so we can see the workspace we dropped on
-                        mLauncher.showWorkspace(true);
-                    } else {
-                        mLauncher.showOutOfSpaceMessage();
+            final ResolveInfo info = (ResolveInfo) v.getTag();
+            if (mWallpapers.contains(info)) {
+                // Start the wallpaper picker
+                animateClickFeedback(v, new Runnable() {
+                    @Override
+                    public void run() {
+                        // add the shortcut
+                        Intent createWallpapersIntent = new Intent(Intent.ACTION_SET_WALLPAPER);
+                        ComponentName name = new ComponentName(info.activityInfo.packageName,
+                                info.activityInfo.name);
+                        createWallpapersIntent.setComponent(name);
+                        mLauncher.processWallpaper(createWallpapersIntent);
                     }
-                }
-            });
+                });
+            } else {
+                // Add the widget to the current workspace screen
+                Workspace w = mLauncher.getWorkspace();
+                int currentWorkspaceScreen = mLauncher.getCurrentWorkspaceScreen();
+                final CellLayout cl = (CellLayout) w.getChildAt(currentWorkspaceScreen);
+                final View dragView = v.findViewById(R.id.widget_preview);
+                final ItemInfo itemInfo = (ItemInfo) v.getTag();
+                animateClickFeedback(v, new Runnable() {
+                    @Override
+                    public void run() {
+                        cl.calculateSpans(itemInfo);
+                        if (cl.findCellForSpan(null, itemInfo.spanX, itemInfo.spanY)) {
+                            if (LauncherApplication.isScreenXLarge()) {
+                                animateItemOntoScreen(dragView, cl, itemInfo);
+                            } else {
+                                mLauncher.addExternalItemToScreen(itemInfo, cl);
+                                itemInfo.dropPos = null;
+                            }
+
+                            // Hide the pane so we can see the workspace we dropped on
+                            mLauncher.showWorkspace(true);
+                        } else {
+                            mLauncher.showOutOfSpaceMessage();
+                        }
+                    }
+                });
+            }
         }
     }
 
@@ -692,9 +727,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         int numWidgetsPerPage = mWidgetCountX * mWidgetCountY;
         int offset = page * numWidgetsPerPage;
         int cellWidth = ((mWidgetSpacingLayout.getContentWidth() - mPageLayoutWidthGap
-                - ((mWidgetCountX - 1) * mWidgetCellWidthGap)) / mWidgetCountX);
+                - ((mWidgetCountX - 1) * mCellWidthGap)) / mWidgetCountX);
         int cellHeight = ((mWidgetSpacingLayout.getContentHeight() - mPageLayoutHeightGap
-                - ((mWidgetCountY - 1) * mWidgetCellHeightGap)) / mWidgetCountY);
+                - ((mWidgetCountY - 1) * mCellHeightGap)) / mWidgetCountY);
         for (int i = 0; i < Math.min(numWidgetsPerPage, mWidgets.size() - offset); ++i) {
             Object rawInfo = mWidgets.get(offset + i);
             PendingAddItemInfo createItemInfo = null;
@@ -730,11 +765,166 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             int iy = i / mWidgetCountX;
             PagedViewGridLayout.LayoutParams lp = new PagedViewGridLayout.LayoutParams(cellWidth,
                     cellHeight);
-            lp.leftMargin = (ix * cellWidth) + (ix * mWidgetCellWidthGap);
-            lp.topMargin = (iy * cellHeight) + (iy * mWidgetCellHeightGap);
+            lp.leftMargin = (ix * cellWidth) + (ix * mCellWidthGap);
+            lp.topMargin = (iy * cellHeight) + (iy * mCellHeightGap);
             layout.addView(widget, lp);
         }
     }
+
+    /*
+     * This method fetches an xml file specified in the manifest identified by
+     * WallpaperManager.WALLPAPER_PREVIEW_META_DATA). The xml file specifies
+     * an image which will be used as the wallpaper preview for an activity
+     * which responds to ACTION_SET_WALLPAPER. This image is returned and used
+     * in the customize drawer.
+     */
+    private Drawable parseWallpaperPreviewXml(ResolveInfo ri) {
+        ActivityInfo activityInfo = ri.activityInfo;
+        XmlResourceParser parser = null;
+        ComponentName component = new ComponentName(ri.activityInfo.packageName,
+                ri.activityInfo.name);
+        try {
+            parser = activityInfo.loadXmlMetaData(mPackageManager,
+                    WallpaperManager.WALLPAPER_PREVIEW_META_DATA);
+            if (parser == null) {
+                Slog.w(LOG_TAG, "No " + WallpaperManager.WALLPAPER_PREVIEW_META_DATA
+                        + " meta-data for " + "wallpaper provider '" + component + '\'');
+                return null;
+            }
+
+            AttributeSet attrs = Xml.asAttributeSet(parser);
+
+            int type;
+            while ((type=parser.next()) != XmlPullParser.END_DOCUMENT
+                    && type != XmlPullParser.START_TAG) {
+                // drain whitespace, comments, etc.
+            }
+
+            String nodeName = parser.getName();
+            if (!"wallpaper-preview".equals(nodeName)) {
+                Slog.w(LOG_TAG, "Meta-data does not start with wallpaper-preview tag for "
+                        + "wallpaper provider '" + component + '\'');
+                return null;
+            }
+
+            // If metaData was null, we would have returned earlier when getting
+            // the parser No need to do the check here
+            Resources res = mPackageManager.getResourcesForApplication(
+                    activityInfo.applicationInfo);
+
+            TypedArray sa = res.obtainAttributes(attrs,
+                    com.android.internal.R.styleable.WallpaperPreviewInfo);
+
+            TypedValue value = sa.peekValue(
+                    com.android.internal.R.styleable.WallpaperPreviewInfo_staticWallpaperPreview);
+            if (value == null) return null;
+
+            return res.getDrawable(value.resourceId);
+        } catch (Exception e) {
+            Slog.w(LOG_TAG, "XML parsing failed for wallpaper provider '" + component + '\'', e);
+            return null;
+        } finally {
+            if (parser != null) parser.close();
+        }
+    }
+    private FastBitmapDrawable getWallpaperPreview(ResolveInfo info, int cellWidth, int cellHeight){
+        // Return the cached version if necessary
+        Bitmap cachedBitmap = mWidgetPreviewCache.get(info);
+        if (cachedBitmap != null) {
+            return new FastBitmapDrawable(cachedBitmap);
+        }
+
+        // Get the preview
+        Resources resources = getContext().getResources();
+        Drawable wallpaperPreview = parseWallpaperPreviewXml(info);
+        Drawable wallpaperIcon = null;
+        int expectedWidth;
+        int expectedHeight;
+        if (wallpaperPreview != null) {
+            expectedWidth = wallpaperPreview.getIntrinsicWidth();
+            expectedHeight = wallpaperPreview.getIntrinsicHeight();
+        } else {
+            wallpaperPreview = mDefaultWidgetBackground;
+            expectedWidth = expectedHeight = Math.min(cellWidth, cellHeight);
+
+            // Draw the icon in the top left corner
+            String packageName = info.activityInfo.packageName;
+            try {
+                if (info.icon > 0) {
+                    wallpaperIcon = mPackageManager.getDrawable(packageName, info.icon, null);
+                }
+                if (wallpaperIcon == null) {
+                    wallpaperIcon = resources.getDrawable(R.drawable.ic_launcher_application);
+                }
+            } catch (Resources.NotFoundException e) {}
+        }
+
+        // Create the bitmap
+        Bitmap preview = Bitmap.createBitmap(expectedWidth, expectedHeight, Config.ARGB_8888);
+        renderDrawableToBitmap(wallpaperPreview, preview, 0, 0, expectedWidth, expectedHeight,
+                1f, 1f);
+        if (wallpaperIcon != null) {
+            int iconSize = resources.getDimensionPixelSize(R.dimen.app_icon_size);
+            int offset = (int) (iconSize * sWidgetPreviewIconPaddingPercentage);
+            renderDrawableToBitmap(wallpaperIcon, preview, offset, offset, iconSize, iconSize,
+                    1f, 1f);
+        }
+
+        FastBitmapDrawable previewDrawable = new FastBitmapDrawable(preview);
+        previewDrawable.setBounds(0, 0, expectedWidth, expectedHeight);
+        mWidgetPreviewCache.put(info, preview);
+        return previewDrawable;
+    }
+    /*
+     * Wallpapers PagedView implementation
+     */
+    public void syncWallpaperPages() {
+        // Ensure that we have the right number of pages
+        Context context = getContext();
+        int numWidgetsPerPage = mWallpaperCountX * mWallpaperCountY;
+        int numPages = (int) Math.ceil(mWallpapers.size() / (float) numWidgetsPerPage);
+        for (int i = 0; i < numPages; ++i) {
+            PagedViewGridLayout layout = new PagedViewGridLayout(context, mWallpaperCountX,
+                    mWallpaperCountY);
+            setupPage(layout);
+            addView(layout);
+        }
+    }
+    public void syncWallpaperPageItems(int page) {
+        PagedViewGridLayout layout = (PagedViewGridLayout) getChildAt(page);
+        layout.removeAllViews();
+
+        // Calculate the dimensions of each cell we are giving to each widget
+        int numWidgetsPerPage = mWallpaperCountX * mWallpaperCountY;
+        int offset = page * numWidgetsPerPage;
+        int cellWidth = ((mWidgetSpacingLayout.getContentWidth() - mPageLayoutWidthGap
+                - ((mWallpaperCountX - 1) * mCellWidthGap)) / mWallpaperCountX);
+        int cellHeight = ((mWidgetSpacingLayout.getContentHeight() - mPageLayoutHeightGap
+                - ((mWallpaperCountY - 1) * mCellHeightGap)) / mWallpaperCountY);
+        for (int i = 0; i < Math.min(numWidgetsPerPage, mWallpapers.size() - offset); ++i) {
+            ResolveInfo info = mWallpapers.get(offset + i);
+            PagedViewWidget widget = (PagedViewWidget) mLayoutInflater.inflate(
+                    R.layout.apps_customize_wallpaper, layout, false);
+
+            // Fill in the shortcuts information
+            FastBitmapDrawable preview = getWallpaperPreview(info, cellWidth, cellHeight);
+            widget.applyFromResolveInfo(mPackageManager, info, preview, null, false);
+            widget.setTag(info);
+            widget.setOnClickListener(this);
+            widget.setOnLongClickListener(this);
+            widget.setOnTouchListener(this);
+
+            // Layout each widget
+            int ix = i % mWallpaperCountX;
+            int iy = i / mWallpaperCountX;
+            PagedViewGridLayout.LayoutParams lp = new PagedViewGridLayout.LayoutParams(cellWidth,
+                    cellHeight);
+            lp.leftMargin = (ix * cellWidth) + (ix * mCellWidthGap);
+            lp.topMargin = (iy * cellHeight) + (iy * mCellHeightGap);
+            layout.addView(widget, lp);
+        }
+    }
+
     @Override
     public void syncPages() {
         removeAllViews();
@@ -744,6 +934,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             break;
         case Widgets:
             syncWidgetPages();
+            break;
+        case Wallpapers:
+            syncWallpaperPages();
             break;
         }
     }
@@ -755,6 +948,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             break;
         case Widgets:
             syncWidgetPageItems(page);
+            break;
+        case Wallpapers:
+            syncWallpaperPageItems(page);
             break;
         }
     }

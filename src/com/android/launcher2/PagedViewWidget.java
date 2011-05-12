@@ -211,8 +211,10 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         name.setText(info.loadLabel(pm));
         name.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         final TextView dims = (TextView) findViewById(R.id.widget_dims);
-        dims.setText(String.format(mDimensionsFormatString, 1, 1));
-        dims.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        if (dims != null) {
+            dims.setText(String.format(mDimensionsFormatString, 1, 1));
+            dims.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
 
         if (createHolographicOutline) {
             mIconCache = cache;
