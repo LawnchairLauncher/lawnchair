@@ -100,6 +100,18 @@
                 android:resource="@xml/wallpaper_picker_preview" />
         </activity>
 
+        <activity android:name="com.android.launcher2.RocketLauncher"
+            android:label="@string/dream_name"
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
+            android:hardwareAccelerated="true"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DREAM" />
+            </intent-filter>
+        </activity>
+
         <!-- Intent received used to install shortcuts from other applications -->
         <receiver
             android:name="com.android.launcher2.InstallShortcutReceiver"

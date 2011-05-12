@@ -244,4 +244,7 @@
 
     <!--  Text to inform the user that they can't uninstall a system application -->
     <string name="uninstall_system_app_text">This is a system application and cannot be uninstalled.</string>
+
+    <!-- Title of the Android Dreams (screensaver) module -->
+    <string name="dream_name">Rocket Launcher</string>
 </resources>
