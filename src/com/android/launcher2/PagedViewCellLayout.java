@@ -247,9 +247,12 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         // Return the distance from the left edge of the content of the leftmost icon to
         // the right edge of the content of the rightmost icon
 
-        // icons are centered within cells, find out how much offset that accounts for
-        int iconHorizontalOffset = (mCellWidth - Utilities.getIconContentSize());
-        return mCellCountX * mCellWidth + (mCellCountX - 1) * mWidthGap - iconHorizontalOffset;
+        // icons are centered within cells, find out how much padding that accounts for
+        return getWidthBeforeFirstLayout() - (mCellWidth - Utilities.getIconContentSize());
+    }
+
+    int getWidthBeforeFirstLayout() {
+        return mCellCountX * mCellWidth + (mCellCountX - 1) * mWidthGap;
     }
 
     @Override
