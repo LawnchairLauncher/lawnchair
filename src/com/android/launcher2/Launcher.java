@@ -19,13 +19,11 @@ package com.android.launcher2;
 
 import com.android.common.Search;
 import com.android.launcher.R;
-import com.android.launcher2.CustomizePagedView.CustomizationType;
 import com.android.launcher2.Workspace.ShrinkState;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.Activity;
@@ -98,11 +96,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TabHost;
-import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.TabHost.OnTabChangeListener;
-import android.widget.TabHost.TabContentFactory;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -172,12 +167,6 @@ public final class Launcher extends Activity
     // Type: long
     private static final String RUNTIME_STATE_PENDING_FOLDER_RENAME_ID = "launcher.rename_folder_id";
 
-    // tags for the customization tabs
-    private static final String WIDGETS_TAG = "widgets";
-    private static final String APPLICATIONS_TAG = "applications";
-    private static final String SHORTCUTS_TAG = "shortcuts";
-    private static final String WALLPAPERS_TAG = "wallpapers";
-
     private static final String TOOLBAR_ICON_METADATA_NAME = "com.android.launcher.toolbar_icon";
 
     /** The different states that Launcher can be in. */
@@ -214,7 +203,7 @@ public final class Launcher extends Activity
     private DeleteZone mDeleteZone;
     private HandleView mHandleView;
     private AllAppsView mAllAppsGrid;
-    private TabHost mHomeCustomizationDrawer;
+    private CustomizeTrayTabHost mHomeCustomizationDrawer;
     private boolean mAutoAdvanceRunning = false;
 
     private View mButtonCluster;
@@ -293,19 +282,6 @@ public final class Launcher extends Activity
         int cellY;
     }
 
-    private CustomizationType getCustomizeFilterForTabTag(String tag) {
-        if (tag.equals(WIDGETS_TAG)) {
-            return CustomizationType.WidgetCustomization;
-        } else if (tag.equals(APPLICATIONS_TAG)) {
-            return CustomizationType.ApplicationCustomization;
-        } else if (tag.equals(WALLPAPERS_TAG)) {
-            return CustomizePagedView.CustomizationType.WallpaperCustomization;
-        } else if (tag.equals(SHORTCUTS_TAG)) {
-            return CustomizePagedView.CustomizationType.ShortcutCustomization;
-        }
-        return CustomizationType.WidgetCustomization;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -334,68 +310,12 @@ public final class Launcher extends Activity
         loadHotseats();
         checkForLocaleChange();
         setContentView(R.layout.launcher);
-        mHomeCustomizationDrawer = (TabHost) findViewById(R.id.customization_drawer);
+        mHomeCustomizationDrawer = (CustomizeTrayTabHost) findViewById(R.id.customization_drawer);
         if (mHomeCustomizationDrawer != null) {
-            mHomeCustomizationDrawer.setup();
-
             // share the same customization workspace across all the tabs
-            mCustomizePagedView = (CustomizePagedView) mInflater.inflate(
-                    R.layout.customization_drawer_tab_contents, mHomeCustomizationDrawer, false);
-            TabContentFactory contentFactory = new TabContentFactory() {
-                public View createTabContent(String tag) {
-                    return mCustomizePagedView;
-                }
-            };
+            mCustomizePagedView = (CustomizePagedView) findViewById(
+                    R.id.customization_drawer_tab_contents);
 
-
-            TextView tabView;
-            TabWidget tabWidget = (TabWidget)
-                    mHomeCustomizationDrawer.findViewById(com.android.internal.R.id.tabs);
-
-            tabView = (TextView) mInflater.inflate(R.layout.tab_widget_indicator, tabWidget, false);
-            tabView.setText(getString(R.string.widgets_tab_label));
-            mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(WIDGETS_TAG)
-                    .setIndicator(tabView).setContent(contentFactory));
-            tabView = (TextView) mInflater.inflate(R.layout.tab_widget_indicator, tabWidget, false);
-            tabView.setText(getString(R.string.applications_tab_label));
-            mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(APPLICATIONS_TAG)
-                    .setIndicator(tabView).setContent(contentFactory));
-            tabView = (TextView) mInflater.inflate(R.layout.tab_widget_indicator, tabWidget, false);
-            tabView.setText(getString(R.string.wallpapers_tab_label));
-            mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(WALLPAPERS_TAG)
-                    .setIndicator(tabView).setContent(contentFactory));
-            tabView = (TextView) mInflater.inflate(R.layout.tab_widget_indicator, tabWidget, false);
-            tabView.setText(getString(R.string.shortcuts_tab_label));
-            mHomeCustomizationDrawer.addTab(mHomeCustomizationDrawer.newTabSpec(SHORTCUTS_TAG)
-                    .setIndicator(tabView).setContent(contentFactory));
-            mHomeCustomizationDrawer.setOnTabChangedListener(new OnTabChangeListener() {
-                public void onTabChanged(String tabId) {
-                    final CustomizePagedView.CustomizationType newType =
-                        getCustomizeFilterForTabTag(tabId);
-                    if (newType != mCustomizePagedView.getCustomizationFilter()) {
-                        // animate the changing of the tab content by fading pages in and out
-                        final Resources res = getResources();
-                        final int duration = res.getInteger(R.integer.config_tabTransitionTime);
-                        final float alpha = mCustomizePagedView.getAlpha();
-                        ValueAnimator alphaAnim = ObjectAnimator.ofFloat(mCustomizePagedView,
-                                "alpha", alpha, 0.0f);
-                        alphaAnim.setDuration(duration);
-                        alphaAnim.addListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                mCustomizePagedView.setCustomizationFilter(newType);
-
-                                final float alpha = mCustomizePagedView.getAlpha();
-                                ValueAnimator alphaAnim = ObjectAnimator.ofFloat(
-                                        mCustomizePagedView, "alpha", alpha, 1.0f);
-                                alphaAnim.setDuration(duration);
-                                alphaAnim.start();
-                            }
-                        });
-                        alphaAnim.start();
-                    }
-                }
-            });
         }
         setupViews();
 
@@ -957,7 +877,8 @@ public final class Launcher extends Activity
             String curTab = savedState.getString("customize_currentTab");
             if (curTab != null) {
                 // We set this directly so that there is no delay before the tab is set
-                mCustomizePagedView.setCustomizationFilter(getCustomizeFilterForTabTag(curTab));
+                mCustomizePagedView.setCustomizationFilter(
+                        mHomeCustomizationDrawer.getCustomizeFilterForTabTag(curTab));
                 mHomeCustomizationDrawer.setCurrentTabByTag(curTab);
             }
 

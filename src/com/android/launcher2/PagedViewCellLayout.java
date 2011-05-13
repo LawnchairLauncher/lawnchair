@@ -243,6 +243,15 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         setMeasuredDimension(newWidth, newHeight);
     }
 
+    int getContentWidth() {
+        // Return the distance from the left edge of the content of the leftmost icon to
+        // the right edge of the content of the rightmost icon
+
+        // icons are centered within cells, find out how much offset that accounts for
+        int iconHorizontalOffset = (mCellWidth - Utilities.getIconContentSize());
+        return mCellCountX * mCellWidth + (mCellCountX - 1) * mWidthGap - iconHorizontalOffset;
+    }
+
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int count = getChildCount();
@@ -279,17 +288,6 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         mHeightGap = heightGap;
         mChildren.setGap(widthGap, heightGap);
         mHolographicChildren.setGap(widthGap, heightGap);
-    }
-
-    public void setCellDimensions(int width, int height) {
-        mCellWidth = width;
-        mCellHeight = height;
-        mChildren.setCellDimensions(width, height);
-        mHolographicChildren.setCellDimensions(width, height);
-    }
-
-    public int getDefaultCellDimensions() {
-        return sDefaultCellDimensions;
     }
 
     public int[] getCellCountForDimensions(int width, int height) {
