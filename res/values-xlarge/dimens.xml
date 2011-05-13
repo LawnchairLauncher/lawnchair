@@ -28,6 +28,9 @@
     <!-- Size of icons in workspace -->
     <dimen name="app_icon_size">72dp</dimen>
 
+    <!-- Size of content of icons in workspace, as specified by the android icon guidelines -->
+    <dimen name="app_icon_content_size">60dp</dimen>
+
     <!-- extra horizontal spacing between mini screen thumbnails ie. in all
          apps and in customization mode -->
     <dimen name="smallScreenExtraSpacing">0dip</dimen>

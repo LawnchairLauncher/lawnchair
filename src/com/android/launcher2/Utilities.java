@@ -51,6 +51,7 @@ final class Utilities {
 
     private static int sIconWidth = -1;
     private static int sIconHeight = -1;
+    private static int sIconContentSize = -1;
     private static int sIconTextureWidth = -1;
     private static int sIconTextureHeight = -1;
 
@@ -89,6 +90,10 @@ final class Utilities {
 
     static int sColors[] = { 0xffff0000, 0xff00ff00, 0xff0000ff };
     static int sColorIndex = 0;
+
+    static int getIconContentSize() {
+        return sIconContentSize;
+    }
 
     /**
      * Returns a bitmap suitable for the all apps view.  The bitmap will be a power
@@ -236,6 +241,9 @@ final class Utilities {
         final float density = metrics.density;
 
         sIconWidth = sIconHeight = (int) resources.getDimension(R.dimen.app_icon_size);
+        if (LauncherApplication.isScreenXLarge()) {
+            sIconContentSize = (int) resources.getDimension(R.dimen.app_icon_content_size);
+        }
         sIconTextureWidth = sIconTextureHeight = sIconWidth + 2;
 
         sBlurPaint.setMaskFilter(new BlurMaskFilter(5 * density, BlurMaskFilter.Blur.NORMAL));

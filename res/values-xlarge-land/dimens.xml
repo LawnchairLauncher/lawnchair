@@ -30,7 +30,6 @@
     <dimen name="customization_drawer_content_min_width">952dp</dimen>
     <dimen name="customization_drawer_tab_widget_width">952dp</dimen>
 
-    <dimen name="all_apps_tabbed_width">952dp</dimen>
     <integer name="all_apps_view_cellCountX">7</integer>
     <integer name="all_apps_view_cellCountY">5</integer>
     <dimen name="all_apps_view_pageLayoutWidthGap">36dp</dimen>
@@ -39,4 +38,11 @@
     <dimen name="all_apps_view_pageLayoutPaddingBottom">14dp</dimen>
     <dimen name="all_apps_view_pageLayoutPaddingLeft">40dp</dimen>
     <dimen name="all_apps_view_pageLayoutPaddingRight">40dp</dimen>
+
+    <integer name="customization_drawer_contents_wallpaperCellSpanX">3</integer>
+    <integer name="customization_drawer_contents_wallpaperCellCountX">12</integer>
+    <integer name="customization_drawer_contents_widgetCellCountX">14</integer>
+    <integer name="customization_drawer_contents_cellCountX">8</integer>
+    <integer name="customization_drawer_contents_cellCountY">3</integer>
+    <dimen name="customization_drawer_contents_pageLayoutWidthGap">32dp</dimen>
 </resources>

@@ -24,8 +24,11 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <!-- The layout_width of this RelativeLayout gets overwritten in
+             AllAppsTabbed.onFinishInflate -->
         <RelativeLayout
-            android:layout_width="@dimen/all_apps_tabbed_width"
+            android:id="@+id/all_apps_tab_bar"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/tab_unselected_holo">
