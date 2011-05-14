@@ -389,10 +389,13 @@ public class Workspace extends SmoothPagedView
         if (!(child instanceof CellLayout)) {
             throw new IllegalArgumentException("A Workspace can only have CellLayout children.");
         }
-        ((CellLayout) child).setOnInterceptTouchListener(this);
-        child.setOnClickListener(this);
-        child.setClickable(true);
+        CellLayout cl = ((CellLayout) child);
+        cl.setOnInterceptTouchListener(this);
+        cl.setOnClickListener(this);
+        cl.setClickable(true);
+        cl.enableHardwareLayers();
     }
+
     @Override
     public void addView(View child, int index, LayoutParams params) {
         onAddView(child);

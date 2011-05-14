@@ -28,6 +28,8 @@ import java.util.List;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.Activity;
@@ -265,6 +267,8 @@ public final class Launcher extends Activity
     private static Drawable.ConstantState sGlobalSearchIcon;
     private static Drawable.ConstantState sVoiceSearchIcon;
     private static Drawable.ConstantState sAppMarketIcon;
+
+    private DragLayer mDragLayer;
 
     private BubbleTextView mWaitingForResume;
 
@@ -894,6 +898,8 @@ public final class Launcher extends Activity
 
         DragLayer dragLayer = (DragLayer) findViewById(R.id.drag_layer);
         dragLayer.setDragController(dragController);
+        dragLayer.setLauncher(this);
+        mDragLayer = dragLayer;
 
         if (LauncherApplication.isScreenLarge()) {
             mAllAppsGrid = (AllAppsView) dragLayer.findViewById(R.id.all_apps_view);
@@ -1917,10 +1923,11 @@ public final class Launcher extends Activity
         }
     }
 
-    private void closeFolder() {
+    public void closeFolder() {
         Folder folder = mWorkspace.getOpenFolder();
         if (folder != null) {
             closeFolder(folder);
+            mDragLayer.setCurrentFolder(null);
         }
     }
 
@@ -1930,6 +1937,8 @@ public final class Launcher extends Activity
         ViewGroup parent = (ViewGroup) folder.getParent().getParent();
         if (parent != null) {
             CellLayout cl = (CellLayout) parent;
+            FolderIcon fi = (FolderIcon) cl.getChildAt(folder.mInfo.cellX, folder.mInfo.cellY);
+            shrinkAndFadeInFolderIcon(fi);
             mDragController.removeDropTarget((DropTarget)folder);
         }
 
@@ -2128,6 +2137,26 @@ public final class Launcher extends Activity
         }
     }
 
+    private void growAndFadeOutFolderIcon(FolderIcon fi) {
+        PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 0);
+        PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.5f);
+        PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.5f);
+
+        ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(fi, alpha, scaleX, scaleY);
+        oa.setDuration(getResources().getInteger(R.integer.config_folderAnimDuration));
+        oa.start();
+    }
+
+    private void shrinkAndFadeInFolderIcon(FolderIcon fi) {
+        PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 1.0f);
+        PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.0f);
+        PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.0f);
+
+        ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(fi, alpha, scaleX, scaleY);
+        oa.setDuration(getResources().getInteger(R.integer.config_folderAnimDuration));
+        oa.start();
+    }
+
     /**
      * Opens the user folder described by the specified tag. The opening of the folder
      * is animated relative to the specified View. If the View is null, no animation
@@ -2139,9 +2168,11 @@ public final class Launcher extends Activity
         Folder folder = folderIcon.mFolder;
         FolderInfo info = folder.mInfo;
 
+        growAndFadeOutFolderIcon(folderIcon);
         info.opened = true;
 
         mWorkspace.addInFullScreen(folder, info.screen);
+        mDragLayer.setCurrentFolder(folder);
         folder.animateOpen();
         folder.onOpen();
     }

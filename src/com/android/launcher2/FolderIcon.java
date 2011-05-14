@@ -16,6 +16,12 @@
 
 package com.android.launcher2;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -40,6 +46,11 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
     private static final int NUM_ITEMS_IN_PREVIEW = 4;
     private static final float ICON_ANGLE = 15f;
 
+    int mOriginalWidth;
+    int mOriginalHeight;
+    int mOriginalX;
+    int mOriginalY;
+
     public FolderIcon(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -61,7 +72,7 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
         FolderIcon icon = (FolderIcon) LayoutInflater.from(launcher).inflate(resId, group, false);
 
         final Resources resources = launcher.getResources();
-        Drawable d = iconCache.getFullResIcon(resources, R.drawable.folder_bg);
+        Drawable d = iconCache.getFullResIcon(resources, R.drawable.portal_ring_inner_holo);
         icon.setBackgroundDrawable(d);
         icon.setTag(folderInfo);
         icon.setOnClickListener(launcher);
@@ -71,6 +82,7 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
         Folder folder = Folder.fromXml(launcher);
         folder.setDragController(launcher.getDragController());
         folder.setLauncher(launcher);
+        folder.setFolderIcon(icon);
         folder.bind(folderInfo);
         icon.mFolder = folder;
 
@@ -83,9 +95,9 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
             DragView dragView, Object dragInfo) {
         final ItemInfo item = (ItemInfo) dragInfo;
         final int itemType = item.itemType;
-        return (itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
-                itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT)
-                && item.container != mInfo.id;
+        return ((itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
+                itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) &&
+                !mFolder.isFull());
     }
 
     public void addItem(ShortcutInfo item) {
@@ -107,8 +119,32 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
         addItem(item);
     }
 
+    void saveState(CellLayout.LayoutParams lp) {
+        mOriginalWidth = lp.width;
+        mOriginalHeight = lp.height;
+        mOriginalX = lp.x;
+        mOriginalY = lp.y;
+    }
+
     public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
+        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
+        lp.isLockedToGrid = false;
+        saveState(lp);
+
+        PropertyValuesHolder width = PropertyValuesHolder.ofInt("width", (int) (1.1 * lp.width));
+        PropertyValuesHolder height = PropertyValuesHolder.ofInt("height", (int) (1.1 * lp.height));
+        PropertyValuesHolder newX = PropertyValuesHolder.ofInt("x", lp.x - (int) (0.05 * lp.width));
+        PropertyValuesHolder newY = PropertyValuesHolder.ofInt("y", lp.y - (int) (0.05 * lp.height));
+        ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(lp, width, height, newX, newY);
+        oa.addUpdateListener(new AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                invalidate();
+                requestLayout();
+            }
+        });
+        oa.setDuration(50);
+        oa.start();
     }
 
     public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
@@ -117,6 +153,28 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
 
     public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
+        final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
+        lp.isLockedToGrid = false;
+
+        PropertyValuesHolder width = PropertyValuesHolder.ofInt("width", mOriginalWidth);
+        PropertyValuesHolder height = PropertyValuesHolder.ofInt("height", mOriginalHeight);
+        PropertyValuesHolder newX = PropertyValuesHolder.ofInt("x", mOriginalX);
+        PropertyValuesHolder newY = PropertyValuesHolder.ofInt("y", mOriginalY);
+        ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(lp, width, height, newX, newY);
+        oa.addUpdateListener(new AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                invalidate();
+                requestLayout();
+            }
+        });
+        oa.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                lp.isLockedToGrid = true;
+            }
+        });
+        oa.setDuration(50);
+        oa.start();
     }
 
     @Override

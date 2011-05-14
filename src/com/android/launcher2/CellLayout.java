@@ -321,6 +321,16 @@ public class CellLayout extends ViewGroup {
         return heightGap * (numCells - 1) + cellHeight * numCells + (crosshairsSize + 1) / 2;
     }
 
+    public void enableHardwareLayers() {
+        mChildren.enableHardwareLayers();
+    }
+
+    public void setGridSize(int x, int y) {
+        mCountX = x;
+        mCountY = y;
+        mOccupied = new boolean[mCountX][mCountY];
+    }
+
     private void invalidateBubbleTextView(BubbleTextView icon) {
         final int padding = icon.getPressedOrFocusedBackgroundPadding();
         invalidate(icon.getLeft() + getLeftPadding() - padding,
@@ -870,10 +880,10 @@ public class CellLayout extends ViewGroup {
 
         if (mWidthGap < 0 || mHeightGap < 0) {
             int vSpaceLeft = heightSpecSize - mTopPadding - mBottomPadding - (cellHeight * mCountY);
-            mHeightGap = vSpaceLeft / numHeightGaps;
+            mHeightGap = numHeightGaps > 0 ? vSpaceLeft / numHeightGaps : 0;
 
             int hSpaceLeft = widthSpecSize - mLeftPadding - mRightPadding - (cellWidth * mCountX);
-            mWidthGap = hSpaceLeft / numWidthGaps;
+            mWidthGap = numWidthGaps > 0 ? hSpaceLeft / numWidthGaps : 0;
 
             // center it around the min gaps
             int minGap = Math.min(mWidthGap, mHeightGap);
@@ -894,9 +904,10 @@ public class CellLayout extends ViewGroup {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(newWidth, MeasureSpec.EXACTLY);
-            int childheightMeasureSpec = MeasureSpec.makeMeasureSpec(newHeight,
-                    MeasureSpec.EXACTLY);
+            int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(newWidth - mLeftPadding -
+                    mRightPadding, MeasureSpec.EXACTLY);
+            int childheightMeasureSpec = MeasureSpec.makeMeasureSpec(newHeight - mTopPadding -
+                    mBottomPadding, MeasureSpec.EXACTLY);
             child.measure(childWidthMeasureSpec, childheightMeasureSpec);
         }
         setMeasuredDimension(newWidth, newHeight);
@@ -1025,6 +1036,13 @@ public class CellLayout extends ViewGroup {
             mDragCenter.set(originX + (v.getWidth() / 2), originY + (v.getHeight() / 2));
         } else {
             mDragCenter.set(originX, originY);
+        }
+
+        if (dragOutline == null && v == null) {
+            if (mCrosshairsDrawable != null) {
+                invalidate();
+            }
+            return;
         }
 
         if (nearest != null && (nearest[0] != oldDragCellX || nearest[1] != oldDragCellY)) {
@@ -1492,8 +1510,8 @@ public class CellLayout extends ViewGroup {
     static boolean findVacantCell(int[] vacant, int spanX, int spanY,
             int xCount, int yCount, boolean[][] occupied) {
 
-        for (int x = 0; x < xCount; x++) {
-            for (int y = 0; y < yCount; y++) {
+        for (int y = 0; y < yCount; y++) {
+            for (int x = 0; x < xCount; x++) {
                 boolean available = !occupied[x][y];
 out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
                     for (int j = y; j < y + spanY - 1 && y < yCount; j++) {
@@ -1595,6 +1613,16 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
                 mOccupied[x][y] = value;
             }
         }
+    }
+
+    public int getDesiredWidth() {
+        return mLeftPadding + mRightPadding + (mCountX * mCellWidth) +
+                (Math.max((mCountX - 1), 0) * mWidthGap);
+    }
+
+    public int getDesiredHeight()  {
+        return mTopPadding + mBottomPadding + (mCountY * mCellHeight) +
+                (Math.max((mCountY - 1), 0) * mHeightGap);
     }
 
     public boolean isOccupied(int x, int y) {

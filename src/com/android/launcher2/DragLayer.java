@@ -42,6 +42,8 @@ public class DragLayer extends FrameLayout {
             new ArrayList<AppWidgetResizeFrame>();
     private AppWidgetResizeFrame mCurrentResizeFrame;
     private int mXDown, mYDown;
+    private Folder mCurrentFolder = null;
+    private Launcher mLauncher;
 
     /**
      * Used to create a new DragLayer from XML.
@@ -79,6 +81,18 @@ public class DragLayer extends FrameLayout {
                     mYDown = y;
                     requestDisallowInterceptTouchEvent(true);
                     return true;
+                }
+            }
+        }
+        if (mCurrentFolder != null) {
+            mCurrentFolder.getHitRect(hitRect);
+            int[] screenPos = new int[2];
+            View parent = (View) mCurrentFolder.getParent();
+            if (parent != null) {
+                parent.getLocationOnScreen(screenPos);
+                hitRect.offset(screenPos[0], screenPos[1]);
+                if (!hitRect.contains(x, y)) {
+                    mLauncher.closeFolder();
                 }
             }
         }
@@ -236,5 +250,13 @@ public class DragLayer extends FrameLayout {
         mResizeFrames.add(resizeFrame);
 
         resizeFrame.snapToWidget(false);
+    }
+
+    public void setLauncher(Launcher l) {
+        mLauncher = l;
+    }
+
+    public void setCurrentFolder(Folder f) {
+        mCurrentFolder = f;
     }
 }

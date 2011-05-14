@@ -40,6 +40,9 @@ public class CellLayoutChildren extends ViewGroup {
     public CellLayoutChildren(Context context) {
         super(context);
         mWallpaperManager = WallpaperManager.getInstance(context);
+    }
+
+    public void enableHardwareLayers() {
         setLayerType(LAYER_TYPE_HARDWARE, null);
     }
 
