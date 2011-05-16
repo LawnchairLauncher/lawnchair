@@ -169,7 +169,11 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
     @Override
     public void removeViewOnPageAt(int index) {
         mChildren.removeViewAt(index);
-        mHolographicChildren.removeViewAt(index);
+        // Holographic icons are disabled in certain cases (on lower hardware, or if there is only
+        // one page), so check before we try and remove the view at a specified index.
+        if (mHolographicChildren.getChildAt(index) != null) {
+            mHolographicChildren.removeViewAt(index);
+        }
     }
 
     @Override
