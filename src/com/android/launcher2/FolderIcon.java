@@ -45,11 +45,22 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
 
     private static final int NUM_ITEMS_IN_PREVIEW = 4;
     private static final float ICON_ANGLE = 15f;
+    private static final int CONSUMPTION_ANIMATION_DURATION = 60;
+    private static final float INNER_RING_GROWTH_FACTOR = 0.1f;
+    private static final float OUTER_RING_BASELINE_SCALE = 0.7f;
+    private static final float OUTER_RING_GROWTH_FACTOR = 0.3f;
 
-    int mOriginalWidth;
-    int mOriginalHeight;
-    int mOriginalX;
-    int mOriginalY;
+    public static Drawable sFolderOuterRingDrawable = null;
+
+    private int mOriginalWidth = -1;
+    private int mOriginalHeight = -1;
+    private int mOriginalX = -1;
+    private int mOriginalY = -1;
+    private boolean mIsAnimating = false;
+
+    private int mFolderLocX;
+    private int mFolderLocY;
+    private float mOuterRingScale;
 
     public FolderIcon(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -87,17 +98,25 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
         icon.mFolder = folder;
 
         folderInfo.addListener(icon);
+        if (sFolderOuterRingDrawable == null) {
+            sFolderOuterRingDrawable =
+                    launcher.getResources().getDrawable(R.drawable.portal_ring_outer_holo);
+        }
 
         return icon;
+    }
+
+    private boolean willAcceptItem(ItemInfo item) {
+        final int itemType = item.itemType;
+        return ((itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
+                itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) &&
+                !mFolder.isFull() && item != mInfo);
     }
 
     public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
         final ItemInfo item = (ItemInfo) dragInfo;
-        final int itemType = item.itemType;
-        return ((itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
-                itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) &&
-                !mFolder.isFull());
+        return willAcceptItem(item);
     }
 
     public void addItem(ShortcutInfo item) {
@@ -126,25 +145,101 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
         mOriginalY = lp.y;
     }
 
-    public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+    private void animateToAcceptState() {
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
+
         lp.isLockedToGrid = false;
         saveState(lp);
 
-        PropertyValuesHolder width = PropertyValuesHolder.ofInt("width", (int) (1.1 * lp.width));
-        PropertyValuesHolder height = PropertyValuesHolder.ofInt("height", (int) (1.1 * lp.height));
-        PropertyValuesHolder newX = PropertyValuesHolder.ofInt("x", lp.x - (int) (0.05 * lp.width));
-        PropertyValuesHolder newY = PropertyValuesHolder.ofInt("y", lp.y - (int) (0.05 * lp.height));
-        ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(lp, width, height, newX, newY);
+        int newWidth = (int) ((1 + INNER_RING_GROWTH_FACTOR) * lp.width);
+        int newHeight = (int) ((1 + INNER_RING_GROWTH_FACTOR) * lp.width);
+        int newX = lp.x - (int) ((INNER_RING_GROWTH_FACTOR / 2) * lp.width);
+        int newY = lp.y - (int) ((INNER_RING_GROWTH_FACTOR / 2) * lp.height);
+        PropertyValuesHolder width = PropertyValuesHolder.ofInt("width", newWidth);
+        PropertyValuesHolder height = PropertyValuesHolder.ofInt("height",newHeight);
+        PropertyValuesHolder x = PropertyValuesHolder.ofInt("x", newX);
+        PropertyValuesHolder y = PropertyValuesHolder.ofInt("y", newY);
+        ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(lp, width, height, x, y);
+        oa.setDuration(CONSUMPTION_ANIMATION_DURATION);
         oa.addUpdateListener(new AnimatorUpdateListener() {
             public void onAnimationUpdate(ValueAnimator animation) {
-                invalidate();
                 requestLayout();
+                invalidate();
             }
         });
-        oa.setDuration(50);
+        oa.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                mIsAnimating = true;
+            }
+        });
+        ValueAnimator outerRingScale = ValueAnimator.ofFloat(0f, 1f);
+        outerRingScale.setDuration(CONSUMPTION_ANIMATION_DURATION);
+        outerRingScale.addUpdateListener(new AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                final float percent = (Float) animation.getAnimatedValue();
+                mOuterRingScale = OUTER_RING_BASELINE_SCALE + percent * OUTER_RING_GROWTH_FACTOR;
+                mLauncher.getWorkspace().invalidate();
+            }
+        });
+
+        outerRingScale.start();
         oa.start();
+    }
+
+    private void animateToNaturalState() {
+        final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
+        lp.isLockedToGrid = false;
+
+        PropertyValuesHolder width = PropertyValuesHolder.ofInt("width", mOriginalWidth);
+        PropertyValuesHolder height = PropertyValuesHolder.ofInt("height", mOriginalHeight);
+        PropertyValuesHolder x = PropertyValuesHolder.ofInt("x", mOriginalX);
+        PropertyValuesHolder y = PropertyValuesHolder.ofInt("y", mOriginalY);
+        ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(lp, width, height, x, y);
+        oa.addUpdateListener(new AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                requestLayout();
+                invalidate();
+            }
+        });
+        oa.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                lp.isLockedToGrid = true;
+                mIsAnimating = false;
+            }
+        });
+
+        ValueAnimator outerRingScale = ValueAnimator.ofFloat(0f, 1f);
+        outerRingScale.setDuration(CONSUMPTION_ANIMATION_DURATION);
+        outerRingScale.addUpdateListener(new AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                final float percent = (Float) animation.getAnimatedValue();
+                mOuterRingScale = OUTER_RING_BASELINE_SCALE + OUTER_RING_GROWTH_FACTOR
+                        - percent * OUTER_RING_GROWTH_FACTOR;
+                mLauncher.getWorkspace().invalidate();
+            }
+        });
+
+        oa.setDuration(CONSUMPTION_ANIMATION_DURATION);
+        oa.start();
+    }
+
+    private void determineFolderLocationInWorkspace() {
+        int tvLocation[] = new int[2];
+        int wsLocation[] = new int[2];
+        getLocationOnScreen(tvLocation);
+        mLauncher.getWorkspace().getLocationOnScreen(wsLocation);
+        mFolderLocX = tvLocation[0] - wsLocation[0] + getMeasuredWidth() / 2;
+        mFolderLocY = tvLocation[1] - wsLocation[1] + getMeasuredHeight() / 2;
+    }
+
+    public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
+            DragView dragView, Object dragInfo) {
+        if (!willAcceptItem((ItemInfo) dragInfo)) return;
+        determineFolderLocationInWorkspace();
+        mLauncher.getWorkspace().showFolderAccept(this);
+        animateToAcceptState();
     }
 
     public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
@@ -153,34 +248,24 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
 
     public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
-        final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
-        lp.isLockedToGrid = false;
-
-        PropertyValuesHolder width = PropertyValuesHolder.ofInt("width", mOriginalWidth);
-        PropertyValuesHolder height = PropertyValuesHolder.ofInt("height", mOriginalHeight);
-        PropertyValuesHolder newX = PropertyValuesHolder.ofInt("x", mOriginalX);
-        PropertyValuesHolder newY = PropertyValuesHolder.ofInt("y", mOriginalY);
-        ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(lp, width, height, newX, newY);
-        oa.addUpdateListener(new AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
-                invalidate();
-                requestLayout();
-            }
-        });
-        oa.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                lp.isLockedToGrid = true;
-            }
-        });
-        oa.setDuration(50);
-        oa.start();
+        if (!willAcceptItem((ItemInfo) dragInfo)) return;
+        mLauncher.getWorkspace().hideFolderAccept(this);
+        animateToNaturalState();
     }
 
     @Override
     public DropTarget getDropTargetDelegate(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
         return null;
+    }
+
+    public void getFolderLocation(int[] loc) {
+        loc[0] = mFolderLocX;
+        loc[1] = mFolderLocY;
+    }
+
+    public float getOuterRingScale() {
+        return mOuterRingScale;
     }
 
     @Override
@@ -192,12 +277,23 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
         TextView v = (TextView) mFolder.getItemAt(0);
         Drawable d = v.getCompoundDrawables()[1];
 
-        canvas.translate( (getMeasuredWidth() - d.getIntrinsicWidth()) / 2,
-                (getMeasuredHeight() - d.getIntrinsicHeight()) / 2);
+        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
+        if (mOriginalWidth < 0 || mOriginalHeight < 0) {
+            mOriginalWidth = getMeasuredWidth();
+            mOriginalHeight = getMeasuredHeight();
+        }
 
+        int xShift = (mOriginalWidth - d.getIntrinsicWidth()) / 2;
+        int yShift = (mOriginalHeight - d.getIntrinsicHeight()) / 2;
+
+        if (mIsAnimating) {
+            xShift -= lp.x - mOriginalX;
+            yShift -= lp.y - mOriginalY;
+        }
+
+        canvas.translate(xShift, yShift);
         canvas.translate(d.getIntrinsicWidth() / 2, d.getIntrinsicHeight() / 2);
         canvas.rotate(ICON_ANGLE);
-
         canvas.translate(-d.getIntrinsicWidth() / 2, -d.getIntrinsicHeight() / 2);
 
         for (int i = Math.max(0, mFolder.getItemCount() - NUM_ITEMS_IN_PREVIEW);

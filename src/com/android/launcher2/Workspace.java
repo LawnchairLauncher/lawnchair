@@ -161,6 +161,7 @@ public class Workspace extends SmoothPagedView
     private float[] mTempCellLayoutCenterCoordinates = new float[2];
     private float[] mTempDragBottomRightCoordinates = new float[2];
     private Matrix mTempInverseMatrix = new Matrix();
+    private int[] mTempLocation = new int[2];
 
     private SpringLoadedDragController mSpringLoadedDragController;
 
@@ -221,6 +222,8 @@ public class Workspace extends SmoothPagedView
     private int mLastDragOriginY;
     private int mLastDragXOffset;
     private int mLastDragYOffset;
+
+    private ArrayList<FolderIcon> mFolderOuterRings = new ArrayList<FolderIcon>();
 
     // Variables relating to touch disambiguation (scrolling workspace vs. scrolling a widget)
     private float mXDown;
@@ -1185,6 +1188,16 @@ public class Workspace extends SmoothPagedView
         }
     }
 
+    public void showFolderAccept(FolderIcon fi) {
+        mFolderOuterRings.add(fi);
+    }
+
+    public void hideFolderAccept(FolderIcon fi) {
+        if (mFolderOuterRings.contains(fi)) {
+            mFolderOuterRings.remove(fi);
+        }
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         updateWallpaperOffsets();
@@ -1219,6 +1232,19 @@ public class Workspace extends SmoothPagedView
                         getMeasuredHeight());
                 mBackground.draw(canvas);
             }
+        }
+
+        // The folder outer ring image(s)
+        for (int i = 0; i < mFolderOuterRings.size(); i++) {
+            FolderIcon fi = mFolderOuterRings.get(i);
+            final Drawable d = FolderIcon.sFolderOuterRingDrawable;
+            final int width = (int) (d.getIntrinsicWidth() * fi.getOuterRingScale());
+            final int height = (int) (d.getIntrinsicHeight() * fi.getOuterRingScale());
+            fi.getFolderLocation(mTempLocation);
+            final int x = mTempLocation[0] + mScrollX - width / 2;
+            final int y = mTempLocation[1] + mScrollY - height / 2;
+            d.setBounds(x, y, x + width, y + height);
+            d.draw(canvas);
         }
         super.onDraw(canvas);
     }
