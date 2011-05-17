@@ -1042,8 +1042,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             final int x = index % mCellCountX;
             final int y = index / mCellCountX;
             setupPage(layout);
-            layout.addViewToCellLayout(icon, -1, i, new PagedViewCellLayout.LayoutParams(x,y, 1,1),
-                    createHolographicOutlines);
+            layout.addViewToCellLayout(icon, -1, i, new PagedViewCellLayout.LayoutParams(x,y, 1,1));
         }
     }
 
@@ -1088,8 +1087,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             final int x = index % mCellCountX;
             final int y = index / mCellCountX;
             setupPage(layout);
-            layout.addViewToCellLayout(icon, -1, i, new PagedViewCellLayout.LayoutParams(x,y, 1,1),
-                    createHolographicOutlines);
+            layout.addViewToCellLayout(icon, -1, i, new PagedViewCellLayout.LayoutParams(x,y, 1,1));
         }
     }
 

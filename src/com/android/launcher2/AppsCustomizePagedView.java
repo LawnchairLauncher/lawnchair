@@ -561,8 +561,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             int index = i - startIndex;
             int x = index % mCellCountX;
             int y = index / mCellCountX;
-            layout.addViewToCellLayout(icon, -1, i, new PagedViewCellLayout.LayoutParams(x,y, 1,1),
-                    isHardwareAccelerated() && (numPages > 1));
+            layout.addViewToCellLayout(icon, -1, i, new PagedViewCellLayout.LayoutParams(x,y, 1,1));
         }
     }
     /*

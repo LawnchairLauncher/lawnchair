@@ -153,16 +153,29 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
         return false;
     }
 
+    public void loadHolographicIcon() {
+        if (mHolographicOutline == null) {
+            mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
+            if (!queueHolographicOutlineCreation()) {
+                getHolographicOutlineView().invalidate();
+            }
+        }
+    }
+    public void clearHolographicIcon() {
+        mHolographicOutline = null;
+        getHolographicOutlineView().invalidate();
+    }
+
     public void applyFromApplicationInfo(ApplicationInfo info, PagedViewIconCache cache,
             boolean scaleUp, boolean createHolographicOutlines) {
+        mIconCache = cache;
+        mIconCacheKey = new PagedViewIconCache.Key(info);
         mIcon = info.iconBitmap;
         setCompoundDrawablesWithIntrinsicBounds(null, new FastBitmapDrawable(mIcon), null, null);
         setText(info.title);
         setTag(info);
 
         if (createHolographicOutlines) {
-            mIconCache = cache;
-            mIconCacheKey = new PagedViewIconCache.Key(info);
             mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
             if (!queueHolographicOutlineCreation()) {
                 getHolographicOutlineView().invalidate();
@@ -217,13 +230,7 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
         Bitmap overlay = null;
 
         // draw any blended overlays
-        if (mCheckedOutline == null) {
-            if (canvas.isHardwareAccelerated() && mHolographicOutline != null
-                    && mHolographicAlpha > 0) {
-                mPaint.setAlpha(mHolographicAlpha);
-                overlay = mHolographicOutline;
-            }
-        } else {
+        if (mCheckedOutline != null) {
             mPaint.setAlpha(255);
             overlay = mCheckedOutline;
         }

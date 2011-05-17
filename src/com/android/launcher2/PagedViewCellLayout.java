@@ -128,8 +128,17 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         }
     }
 
+    /** Syncs the holographic icon views to the child icon views */
+    public void reloadHolographicIcons(boolean createHolographicOutlines) {
+        if (createHolographicOutlines) {
+            mChildren.loadHolographicOutlines();
+        } else {
+            mChildren.clearHolographicOutlines();
+        }
+    }
+
     public boolean addViewToCellLayout(View child, int index, int childId,
-            PagedViewCellLayout.LayoutParams params, boolean createHolographicOutlines) {
+            PagedViewCellLayout.LayoutParams params) {
         final PagedViewCellLayout.LayoutParams lp = params;
 
         // Generate an id for each view, this assumes we have at most 256x256 cells
@@ -149,10 +158,8 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
                 if (mAllowHardwareLayerCreation) {
                     pagedViewIcon.disableCache();
                 }
-                if (createHolographicOutlines) {
-                    mHolographicChildren.addView(pagedViewIcon.getHolographicOutlineView(),
-                            index, lp);
-                }
+                mHolographicChildren.addView(pagedViewIcon.getHolographicOutlineView(),
+                        index, lp);
             }
             return true;
         }
@@ -169,11 +176,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
     @Override
     public void removeViewOnPageAt(int index) {
         mChildren.removeViewAt(index);
-        // Holographic icons are disabled in certain cases (on lower hardware, or if there is only
-        // one page), so check before we try and remove the view at a specified index.
-        if (mHolographicChildren.getChildAt(index) != null) {
-            mHolographicChildren.removeViewAt(index);
-        }
+        mHolographicChildren.removeViewAt(index);
     }
 
     @Override

@@ -165,4 +165,26 @@ public class PagedViewCellLayoutChildren extends ViewGroup {
             }
         }
     }
+
+    public void loadHolographicOutlines() {
+        int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            View view = getChildAt(i);
+            if (view instanceof PagedViewIcon) {
+                PagedViewIcon icon = (PagedViewIcon) view;
+                icon.loadHolographicIcon();
+            }
+        }
+    }
+
+    public void clearHolographicOutlines() {
+        int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            View view = getChildAt(i);
+            if (view instanceof PagedViewIcon) {
+                PagedViewIcon icon = (PagedViewIcon) view;
+                icon.clearHolographicIcon();
+            }
+        }
+    }
 }
