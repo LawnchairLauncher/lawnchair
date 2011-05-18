@@ -25,7 +25,6 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
-import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -81,6 +80,8 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     private int mMaxCountX;
     private int mMaxCountY;
     private Rect mNewSize = new Rect();
+    private ArrayList<View> mItemsInReadingOrder = new ArrayList<View>();
+    boolean mItemsInvalidated = false;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -213,9 +214,10 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     void bind(FolderInfo info) {
         mInfo = info;
         ArrayList<ShortcutInfo> children = info.contents;
+        setupContentForNumItems(children.size());
         for (int i = 0; i < children.size(); i++) {
             ShortcutInfo child = (ShortcutInfo) children.get(i);
-            onAdd(child);
+            createAndAddShortcut(child);
         }
         mInfo.addListener(this);
     }
@@ -460,25 +462,27 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
 
         int countX = mContent.getCountX();
         int countY = mContent.getCountY();
-        if (countX * countY < count) {
-            // Current grid is too small, expand it
-            if (countX <= countY && countX < mMaxCountX) {
-                countX++;
-            } else if (countY < mMaxCountY) {
-                countY++;
-            }
-            if (countY == 0) countY++;
+        boolean done = false;
 
-            mContent.setGridSize(countX, countY);
-        } else if ((countX - 1) * countY >= count || (countY - 1) * countX >= count) {
-            // Current grid is too big, shrink it
-            if (countX <= countY) {
-                countY--;
-            } else {
-                countX--;
+        while (!done) {
+            int oldCountX = countX;
+            int oldCountY = countY;
+            if (countX * countY < count) {
+                // Current grid is too small, expand it
+                if (countX <= countY && countX < mMaxCountX) {
+                    countX++;
+                } else if (countY < mMaxCountY) {
+                    countY++;
+                }
+                if (countY == 0) countY++;
+            } else if ((countY - 1) * countX >= count && countY >= countX) {
+                countY = Math.max(0, countY - 1);
+            } else if ((countX - 1) * countY >= count) {
+                countX = Math.max(0, countX - 1);
             }
-            mContent.setGridSize(countX, countY);
+            done = countX == oldCountX && countY == oldCountY;
         }
+        mContent.setGridSize(countX, countY);
         arrangeChildren(list);
     }
 
@@ -531,7 +535,6 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     }
 
     private void setupContentForNumItems(int count) {
-
         setupContentDimension(count);
 
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
@@ -561,10 +564,14 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
             info.cellY = vacant[1];
             boolean insert = false;
             mContent.addViewToCellLayout(v, insert ? 0 : -1, (int)info.id, lp, true);
+            LauncherModel.addOrMoveItemInDatabase(mLauncher, info, mInfo.id, 0,
+                    info.cellX, info.cellY);
         }
+        mItemsInvalidated = true;
     }
 
     public void onAdd(ShortcutInfo item) {
+        mItemsInvalidated = true;
         if (!findAndSetEmptyCells(item)) {
             // The current layout is full, can we expand it?
             setupContentForNumItems(getItemCount() + 1);
@@ -581,19 +588,6 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         return mContent.getChildrenLayout().getChildAt(index);
     }
 
-    private ArrayList<View> getItemsInReadingOrder() {
-        ArrayList<View> list = new ArrayList<View>();
-        for (int j = 0; j < mContent.getCountY(); j++) {
-            for (int i = 0; i < mContent.getCountX(); i++) {
-                View v = mContent.getChildAt(i, j);
-                if (v != null) {
-                    list.add(v);
-                }
-            }
-        }
-        return list;
-    }
-
     private void onCloseComplete() {
         if (mRearrangeOnClose) {
             setupContentForNumItems(getItemCount());
@@ -602,6 +596,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     }
 
     public void onRemove(ShortcutInfo item) {
+        mItemsInvalidated = true;
         View v = mContent.getChildAt(mDragItemPosition[0], mDragItemPosition[1]);
         mContent.removeView(v);
         if (mState == STATE_ANIMATING) {
@@ -609,5 +604,21 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         } else {
             setupContentForNumItems(getItemCount());
         }
+    }
+
+    public ArrayList<View> getItemsInReadingOrder() {
+        if (mItemsInvalidated) {
+            mItemsInReadingOrder.clear();
+            for (int j = 0; j < mContent.getCountY(); j++) {
+                for (int i = 0; i < mContent.getCountX(); i++) {
+                    View v = mContent.getChildAt(i, j);
+                    if (v != null) {
+                        mItemsInReadingOrder.add(v);
+                    }
+                }
+            }
+            mItemsInvalidated = false;
+        }
+        return mItemsInReadingOrder;
     }
 }

@@ -112,12 +112,6 @@ public class DeleteZone extends IconDropTarget {
             if (item instanceof LauncherAppWidgetInfo) {
                 mLauncher.removeAppWidget((LauncherAppWidgetInfo) item);
             }
-        } else if (source instanceof Folder) {
-            final Folder folder = (Folder) source;
-            final FolderInfo folderInfo = (FolderInfo) folder.getInfo();
-            // Item must be a ShortcutInfo otherwise it couldn't have been in the folder
-            // in the first place.
-            folderInfo.remove((ShortcutInfo)item);
         }
 
         if (item instanceof FolderInfo) {
