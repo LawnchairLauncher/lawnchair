@@ -1234,15 +1234,26 @@ public class Workspace extends SmoothPagedView
             }
         }
 
-        // The folder outer ring image(s)
+        // The folder outer / inner ring image(s)
         for (int i = 0; i < mFolderOuterRings.size(); i++) {
+
+            // Draw outer ring
             FolderIcon fi = mFolderOuterRings.get(i);
-            final Drawable d = FolderIcon.sFolderOuterRingDrawable;
-            final int width = (int) (d.getIntrinsicWidth() * fi.getOuterRingScale());
-            final int height = (int) (d.getIntrinsicHeight() * fi.getOuterRingScale());
+            Drawable d = FolderIcon.sFolderOuterRingDrawable;
+            int width = (int) (d.getIntrinsicWidth() * fi.getOuterRingScale());
+            int height = (int) (d.getIntrinsicHeight() * fi.getOuterRingScale());
             fi.getFolderLocation(mTempLocation);
-            final int x = mTempLocation[0] + mScrollX - width / 2;
-            final int y = mTempLocation[1] + mScrollY - height / 2;
+            int x = mTempLocation[0] + mScrollX - width / 2;
+            int y = mTempLocation[1] + mScrollY - height / 2;
+            d.setBounds(x, y, x + width, y + height);
+            d.draw(canvas);
+
+            // Draw inner ring
+            d = FolderIcon.sFolderInnerRingDrawable;
+            width = (int) (fi.getMeasuredWidth() * fi.getInnerRingScale());
+            height = (int) (fi.getMeasuredHeight() * fi.getInnerRingScale());
+            x = mTempLocation[0] + mScrollX - width / 2;
+            y = mTempLocation[1] + mScrollY - height / 2;
             d.setBounds(x, y, x + width, y + height);
             d.draw(canvas);
         }
