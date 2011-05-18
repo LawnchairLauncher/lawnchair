@@ -16,6 +16,8 @@
 
 package com.android.launcher2;
 
+import java.util.ArrayList;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
@@ -27,6 +29,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -265,13 +268,14 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
         int yShift = (mOriginalHeight - d.getIntrinsicHeight()) / 2;
         canvas.translate(xShift, yShift);
 
-        for (int i = Math.max(0, mFolder.getItemCount() - NUM_ITEMS_IN_PREVIEW);
-                i < mFolder.getItemCount(); i++) {
-            v = (TextView) mFolder.getItemAt(i);
+        ArrayList<View> items = mFolder.getItemsInReadingOrder();
+        int firstItemIndex = Math.max(0, items.size() - NUM_ITEMS_IN_PREVIEW);
+        for (int i = firstItemIndex; i < mFolder.getItemCount(); i++) {
+            v = (TextView) items.get(i);
             d = v.getCompoundDrawables()[1];
 
             canvas.translate(d.getIntrinsicWidth() / 2, d.getIntrinsicHeight() / 2);
-            canvas.rotate(i == 0 ? ICON_ANGLE : -ICON_ANGLE);
+            canvas.rotate(i == firstItemIndex ? ICON_ANGLE : -ICON_ANGLE);
             canvas.translate(-d.getIntrinsicWidth() / 2, -d.getIntrinsicHeight() / 2);
 
             if (d != null) {
