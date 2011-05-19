@@ -58,6 +58,9 @@
     <integer name="config_dragViewOffsetX">0</integer>
     <integer name="config_dragViewOffsetY">-12</integer>
 
+    <!-- When shrinking the workspace, this is the percentage of its original size. -->
+    <integer name="config_workspaceShrinkPercent">17</integer>
+
     <!-- When items are dropped on the mini screens in customize mode, we have a bounce animation
          of the bright green hover outline, and then fade out the outline at the end. These are
          the values used in that animation -->

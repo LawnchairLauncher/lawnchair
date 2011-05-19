@@ -65,9 +65,10 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
     private final LayoutInflater mInflater;
     private boolean mAllowHardwareLayerCreation;
 
-    private boolean mFirstMeasure = true;
-
     private int mPageContentWidth;
+
+    private int mLastMeasureWidth = -1;
+    private int mLastMeasureHeight = -1;
 
     public AllAppsPagedView(Context context) {
         this(context, null);
@@ -80,8 +81,6 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
     public AllAppsPagedView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PagedView, defStyle, 0);
-        mCellCountX = a.getInt(R.styleable.PagedView_cellCountX, 6);
-        mCellCountY = a.getInt(R.styleable.PagedView_cellCountY, 4);
         mInflater = LayoutInflater.from(context);
         mApps = new ArrayList<ApplicationInfo>();
         mFilteredApps = new ArrayList<ApplicationInfo>();
@@ -106,27 +105,76 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        final int width = MeasureSpec.getSize(widthMeasureSpec);
+        final int height = MeasureSpec.getSize(heightMeasureSpec);
 
-        final int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-        final int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-
-        if (mFirstMeasure) {
-            mFirstMeasure = false;
-
-            // TODO: actually calculate mCellCountX/mCellCountY as some function of
-            // widthSize and heightSize
-            //mCellCountX = ?;
-            //mCellCountY = ?;
-
-            // Since mCellCountX/mCellCountY changed, we need to update the pages
-            invalidatePageData();
-
+        if (mLastMeasureWidth != width || mLastMeasureHeight != height) {
             // Create a dummy page and set it up to find out the content width (used by our parent)
             PagedViewCellLayout layout = new PagedViewCellLayout(getContext());
             setupPage(layout);
             mPageContentWidth = layout.getContentWidth();
+
+            mCellCountX = determineCellCountX(width, layout);
+            mCellCountY = determineCellCountY(height, layout);
+            mLastMeasureWidth = width;
+            mLastMeasureHeight = height;
         }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        if (mFirstLayout) {
+            invalidatePageData();
+
+            // invalidatePageData() is what causes the child pages to be created. We need the
+            // children to be measured before layout, so force a new measure here.
+            measure(MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.EXACTLY));
+        }
+        super.onLayout(changed, left, top, right, bottom);
+    }
+
+    private int determineCellCountX(int availableWidth, PagedViewCellLayout layout) {
+        int cellCountX = 0;
+        final int cellWidth = layout.getCellWidth();
+
+        // Subtract padding for current page and adjacent pages
+        availableWidth -= mPageLayoutPaddingLeft * 2 + mPageLayoutPaddingRight * 2;
+
+        availableWidth -= cellWidth; // Assume at least one column
+        cellCountX = 1 + availableWidth / (cellWidth + mPageLayoutWidthGap);
+        availableWidth = availableWidth % (cellWidth + mPageLayoutWidthGap);
+
+        // Ensures that we show at least 30% of the holo icons on each side
+        final int minLeftoverWidth = (int) (cellWidth * 0.6f);
+
+        // Reserve room for the holo outlines
+        if (cellCountX <= 4) {
+            // When we're really tight on space, just pack the icons a bit closer together
+            final int missingWidth = minLeftoverWidth - availableWidth;
+            if (missingWidth > 0) {
+                mPageLayoutWidthGap -= Math.ceil(missingWidth * 1.0f / (cellCountX - 1));
+            }
+        } else {
+            if (cellCountX >= 8) {
+                // Carve out a few extra columns for very large widths
+                cellCountX = (int) (cellCountX * 0.9f);
+            } else if (availableWidth < minLeftoverWidth) {
+                cellCountX -= 1;
+            }
+        }
+        return cellCountX;
+    }
+
+    private int determineCellCountY(int availableHeight, PagedViewCellLayout layout) {
+        final int cellHeight = layout.getCellHeight();
+        final int screenHeight = mLauncher.getResources().getDisplayMetrics().heightPixels;
+
+        availableHeight -= mPageLayoutPaddingTop + mPageLayoutPaddingBottom;
+        availableHeight -= cellHeight; // Assume at least one row
+        availableHeight -= screenHeight * 0.16f;
+        return (1 + availableHeight / (cellHeight + mPageLayoutHeightGap));
     }
 
     void allowHardwareLayerCreation() {
@@ -486,7 +534,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
 
     @Override
     public void syncPages() {
-        if (mFirstMeasure) {
+        if (mCellCountX <= 0 || mCellCountY <= 0) {
             // We don't know our size yet, which means we haven't calculated cell count x/y;
             // onMeasure will call us once we figure out our size
             return;
