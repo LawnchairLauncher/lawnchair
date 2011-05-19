@@ -270,7 +270,7 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
 
         ArrayList<View> items = mFolder.getItemsInReadingOrder();
         int firstItemIndex = Math.max(0, items.size() - NUM_ITEMS_IN_PREVIEW);
-        for (int i = firstItemIndex; i < mFolder.getItemCount(); i++) {
+        for (int i = firstItemIndex; i < items.size(); i++) {
             v = (TextView) items.get(i);
             d = v.getCompoundDrawables()[1];
 
