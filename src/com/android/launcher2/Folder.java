@@ -219,6 +219,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
             ShortcutInfo child = (ShortcutInfo) children.get(i);
             createAndAddShortcut(child);
         }
+        mItemsInvalidated = true;
         mInfo.addListener(this);
     }
 
