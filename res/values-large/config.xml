@@ -21,6 +21,9 @@
          Should be an even number, for pixel alignment. -->
     <integer name="config_dragViewExtraPixels">0</integer>
 
+    <!-- When shrinking the workspace, this is the percentage of its original size. -->
+    <integer name="config_workspaceShrinkPercent">17</integer>
+
     <!-- When items are dropped on the mini screens in customize mode, we have a bounce animation
          of the bright green hover outline, and then fade out the outline at the end. These are
          the values used in that animation -->

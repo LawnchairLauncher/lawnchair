@@ -113,8 +113,8 @@ public abstract class PagedView extends ViewGroup {
     protected int mPageLayoutWidthGap;
     protected int mPageLayoutHeightGap;
     protected int mPageLayoutMaxHeight;
-    protected int mCellCountX;
-    protected int mCellCountY;
+    protected int mCellCountX = -1;
+    protected int mCellCountY = -1;
     protected boolean mCenterPagesVertically;
     protected boolean mAllowOverScroll = true;
     protected int mUnboundedScrollX;
@@ -1549,7 +1549,7 @@ public abstract class PagedView extends ViewGroup {
      */
     public abstract void syncPageItems(int page);
 
-    public void invalidatePageData() {
+    protected void invalidatePageData() {
         if (mContentIsRefreshable) {
             // Update all the pages
             syncPages();
