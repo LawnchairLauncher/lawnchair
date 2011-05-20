@@ -82,10 +82,6 @@ public class Workspace extends SmoothPagedView
     @SuppressWarnings({"UnusedDeclaration"})
     private static final String TAG = "Launcher.Workspace";
 
-    // This is how much the workspace shrinks when we enter all apps or
-    // customization mode
-    private static final float SHRINK_FACTOR = 0.16f;
-
     // How much the screens shrink when we enter spring loaded drag mode
     private static final float SPRING_LOADED_DRAG_SHRINK_FACTOR = 0.7f;
 
@@ -1482,12 +1478,15 @@ public class Workspace extends SmoothPagedView
         final int screenWidth = getWidth();
         final int screenHeight = getHeight();
 
+        // How much the workspace shrinks when we enter all apps or customization mode
+        final float shrinkFactor = res.getInteger(R.integer.config_workspaceShrinkPercent) / 100.0f;
+
         // Making the assumption that all pages have the same width as the 0th
         final int pageWidth = getChildAt(0).getMeasuredWidth();
         final int pageHeight = getChildAt(0).getMeasuredHeight();
 
-        final int scaledPageWidth = (int) (SHRINK_FACTOR * pageWidth);
-        final int scaledPageHeight = (int) (SHRINK_FACTOR * pageHeight);
+        final int scaledPageWidth = (int) (shrinkFactor * pageWidth);
+        final int scaledPageHeight = (int) (shrinkFactor * pageHeight);
         final float extraScaledSpacing = res.getDimension(R.dimen.smallScreenExtraSpacing);
 
         final int screenCount = getChildCount();
@@ -1538,20 +1537,21 @@ public class Workspace extends SmoothPagedView
 
         mAnimator = new AnimatorSet();
 
-        final float[] oldXs = new float[getChildCount()];
-        final float[] oldYs = new float[getChildCount()];
-        final float[] oldScaleXs = new float[getChildCount()];
-        final float[] oldScaleYs = new float[getChildCount()];
-        final float[] oldBackgroundAlphas = new float[getChildCount()];
-        final float[] oldAlphas = new float[getChildCount()];
-        final float[] oldRotationYs = new float[getChildCount()];
-        final float[] newXs = new float[getChildCount()];
-        final float[] newYs = new float[getChildCount()];
-        final float[] newScaleXs = new float[getChildCount()];
-        final float[] newScaleYs = new float[getChildCount()];
-        final float[] newBackgroundAlphas = new float[getChildCount()];
-        final float[] newAlphas = new float[getChildCount()];
-        final float[] newRotationYs = new float[getChildCount()];
+        final int childCount = getChildCount();
+        final float[] oldXs = new float[childCount];
+        final float[] oldYs = new float[childCount];
+        final float[] oldScaleXs = new float[childCount];
+        final float[] oldScaleYs = new float[childCount];
+        final float[] oldBackgroundAlphas = new float[childCount];
+        final float[] oldAlphas = new float[childCount];
+        final float[] oldRotationYs = new float[childCount];
+        final float[] newXs = new float[childCount];
+        final float[] newYs = new float[childCount];
+        final float[] newScaleXs = new float[childCount];
+        final float[] newScaleYs = new float[childCount];
+        final float[] newBackgroundAlphas = new float[childCount];
+        final float[] newAlphas = new float[childCount];
+        final float[] newRotationYs = new float[childCount];
 
         for (int i = 0; i < screenCount; i++) {
             final CellLayout cl = (CellLayout) getChildAt(i);
@@ -1576,15 +1576,15 @@ public class Workspace extends SmoothPagedView
                 oldRotationYs[i] = cl.getRotationY();
                 newXs[i] = x;
                 newYs[i] = y;
-                newScaleXs[i] = SHRINK_FACTOR * rotationScaleX * extraShrinkFactor;
-                newScaleYs[i] = SHRINK_FACTOR * rotationScaleY * extraShrinkFactor;
+                newScaleXs[i] = shrinkFactor * rotationScaleX * extraShrinkFactor;
+                newScaleYs[i] = shrinkFactor * rotationScaleY * extraShrinkFactor;
                 newBackgroundAlphas[i] = finalAlpha;
                 newRotationYs[i] = rotation;
             } else {
                 cl.setX((int)x);
                 cl.setY((int)y);
-                cl.setScaleX(SHRINK_FACTOR * rotationScaleX * extraShrinkFactor);
-                cl.setScaleY(SHRINK_FACTOR * rotationScaleY * extraShrinkFactor);
+                cl.setScaleX(shrinkFactor * rotationScaleX * extraShrinkFactor);
+                cl.setScaleY(shrinkFactor * rotationScaleY * extraShrinkFactor);
                 cl.setBackgroundAlpha(finalAlpha);
                 cl.setAlpha(finalAlpha);
                 cl.setRotationY(rotation);

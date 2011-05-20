@@ -75,6 +75,14 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         addView(mHolographicChildren);
     }
 
+    public int getCellWidth() {
+        return mCellWidth;
+    }
+
+    public int getCellHeight() {
+        return mCellHeight;
+    }
+
     public void allowHardwareLayerCreation() {
         // This is called after the first time we launch into All Apps. Before that point,
         // there's no need for hardware layers here since there's a hardware layer set on the
