@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2008 The Android Open Source Project
+<!-- Copyright (C) 2011 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,20 +14,17 @@
      limitations under the License.
 -->
 
-<com.android.launcher2.CellLayout
+<!-- The workspace contains 5 screens of cells -->
+<com.android.launcher2.Workspace
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
-
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:hapticFeedbackEnabled="false"
-
-    launcher:cellWidth="@dimen/workspace_cell_width"
-    launcher:cellHeight="@dimen/workspace_cell_height"
-    launcher:widthGap="@dimen/workspace_width_gap_land"
-    launcher:heightGap="@dimen/workspace_height_gap_land"
-
-    launcher:xAxisStartPadding="@dimen/workspace_x_axis_start_padding_land"
-    launcher:xAxisEndPadding="@dimen/workspace_x_axis_end_padding_land"
-    launcher:yAxisStartPadding="@dimen/workspace_y_axis_start_padding_land"
-    launcher:yAxisEndPadding="@dimen/workspace_y_axis_end_padding_land" />
+    android:paddingTop="?android:attr/actionBarSize"
+    android:paddingBottom="10dp"
+    launcher:defaultScreen="2"
+    launcher:pageSpacing="@dimen/workspace_page_spacing_port">
+      <include android:id="@+id/cell1" layout="@layout/workspace_screen" />
+      <include android:id="@+id/cell2" layout="@layout/workspace_screen" />
+      <include android:id="@+id/cell3" layout="@layout/workspace_screen" />
+      <include android:id="@+id/cell4" layout="@layout/workspace_screen" />
+      <include android:id="@+id/cell5" layout="@layout/workspace_screen" />
+</com.android.launcher2.Workspace>
