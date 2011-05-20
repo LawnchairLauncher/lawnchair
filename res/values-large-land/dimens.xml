@@ -22,8 +22,6 @@
     <dimen name="customization_drawer_height">480dp</dimen>
     <dimen name="customization_drawer_content_height">420dp</dimen>
 
-    <integer name="all_apps_view_cellCountX">7</integer>
-    <integer name="all_apps_view_cellCountY">5</integer>
     <dimen name="all_apps_view_pageLayoutWidthGap">36dp</dimen>
     <dimen name="all_apps_view_pageLayoutHeightGap">6dp</dimen>
     <dimen name="all_apps_view_pageLayoutPaddingTop">20dp</dimen>
