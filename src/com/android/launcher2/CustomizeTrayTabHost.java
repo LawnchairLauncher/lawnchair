@@ -110,17 +110,6 @@ public class CustomizeTrayTabHost extends TabHost implements LauncherTransitiona
                 }
             }
         });
-
-        // Set the width of the tab bar properly
-        int pageWidth = customizePagedView.getPageContentWidth();
-        TabWidget customizeTabBar = (TabWidget) findViewById(com.android.internal.R.id.tabs);
-        if (customizeTabBar == null) throw new Resources.NotFoundException();
-        int tabWidgetPadding = 0;
-        final int childCount = tabWidget.getChildCount();
-        if (childCount > 0) {
-            tabWidgetPadding += tabWidget.getChildAt(0).getPaddingLeft() * 2;
-        }
-        customizeTabBar.getLayoutParams().width = pageWidth + tabWidgetPadding;
     }
 
     @Override
@@ -145,7 +134,23 @@ public class CustomizeTrayTabHost extends TabHost implements LauncherTransitiona
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        mFirstLayout = false;
+        if (mFirstLayout) {
+            mFirstLayout = false;
+
+            final CustomizePagedView customizePagedView =
+                (CustomizePagedView) findViewById(R.id.customization_drawer_tab_contents);
+            TabWidget tabWidget = (TabWidget) findViewById(com.android.internal.R.id.tabs);
+            // Set the width of the tab bar properly
+            int pageWidth = customizePagedView.getPageContentWidth();
+            TabWidget customizeTabBar = (TabWidget) findViewById(com.android.internal.R.id.tabs);
+            if (customizeTabBar == null) throw new Resources.NotFoundException();
+            int tabWidgetPadding = 0;
+            final int childCount = tabWidget.getChildCount();
+            if (childCount > 0) {
+                tabWidgetPadding += tabWidget.getChildAt(0).getPaddingLeft() * 2;
+            }
+            customizeTabBar.getLayoutParams().width = pageWidth + tabWidgetPadding;
+        }
         super.onLayout(changed, l, t, r, b);
     }
 

@@ -117,16 +117,6 @@ public class AllAppsTabbed extends TabHost implements AllAppsView, LauncherTrans
             }
         });
 
-        // Set the width of the tab bar properly
-        int pageWidth = mAllApps.getPageContentWidth();
-        View allAppsTabBar = (View) findViewById(R.id.all_apps_tab_bar);
-        if (allAppsTabBar == null) throw new Resources.NotFoundException();
-        int tabWidgetPadding = 0;
-        final int childCount = tabWidget.getChildCount();
-        if (childCount > 0) {
-            tabWidgetPadding += tabWidget.getChildAt(0).getPaddingLeft() * 2;
-        }
-        allAppsTabBar.getLayoutParams().width = pageWidth + tabWidgetPadding;
 
         // It needs to be INVISIBLE so that it will be measured in the layout.
         // Otherwise the animations is messed up when we show it for the first time.
@@ -171,7 +161,20 @@ public class AllAppsTabbed extends TabHost implements AllAppsView, LauncherTrans
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        mFirstLayout = false;
+        if (mFirstLayout) {
+            mFirstLayout = false;
+            // Set the width of the tab bar properly
+            int pageWidth = mAllApps.getPageContentWidth();
+            TabWidget tabWidget = (TabWidget) findViewById(com.android.internal.R.id.tabs);
+            View allAppsTabBar = (View) findViewById(R.id.all_apps_tab_bar);
+            if (allAppsTabBar == null) throw new Resources.NotFoundException();
+            int tabWidgetPadding = 0;
+            final int childCount = tabWidget.getChildCount();
+            if (childCount > 0) {
+                tabWidgetPadding += tabWidget.getChildAt(0).getPaddingLeft() * 2;
+            }
+            allAppsTabBar.getLayoutParams().width = pageWidth + tabWidgetPadding;
+        }
         super.onLayout(changed, l, t, r, b);
     }
 
