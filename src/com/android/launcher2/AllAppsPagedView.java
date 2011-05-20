@@ -65,6 +65,8 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
     private final LayoutInflater mInflater;
     private boolean mAllowHardwareLayerCreation;
 
+    private boolean mFirstMeasure = true;
+
     private int mPageContentWidth;
 
     public AllAppsPagedView(Context context) {
@@ -100,6 +102,31 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
     protected void init() {
         super.init();
         mCenterPagesVertically = false;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        final int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        final int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+
+        if (mFirstMeasure) {
+            mFirstMeasure = false;
+
+            // TODO: actually calculate mCellCountX/mCellCountY as some function of
+            // widthSize and heightSize
+            //mCellCountX = ?;
+            //mCellCountY = ?;
+
+            // Since mCellCountX/mCellCountY changed, we need to update the pages
+            invalidatePageData();
+
+            // Create a dummy page and set it up to find out the content width (used by our parent)
+            PagedViewCellLayout layout = new PagedViewCellLayout(getContext());
+            setupPage(layout);
+            mPageContentWidth = layout.getContentWidth();
+        }
     }
 
     void allowHardwareLayerCreation() {
@@ -459,6 +486,11 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
 
     @Override
     public void syncPages() {
+        if (mFirstMeasure) {
+            // We don't know our size yet, which means we haven't calculated cell count x/y;
+            // onMeasure will call us once we figure out our size
+            return;
+        }
         // ensure that we have the right number of pages (min of 1, since we have placeholders)
         int numPages = Math.max(1,
                 (int) Math.ceil((float) mFilteredApps.size() / (mCellCountX * mCellCountY)));
