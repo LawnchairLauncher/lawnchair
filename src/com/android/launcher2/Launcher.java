@@ -930,6 +930,7 @@ public final class Launcher extends Activity
         if (mCustomizePagedView != null) {
             mCustomizePagedView.setLauncher(this);
             mCustomizePagedView.setDragController(dragController);
+            mCustomizePagedView.setAllAppsPagedView(mAllAppsPagedView);
         } else {
              ImageView hotseatLeft = (ImageView) findViewById(R.id.hotseat_left);
              hotseatLeft.setContentDescription(mHotseatLabels[0]);
