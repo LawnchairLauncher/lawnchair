@@ -72,6 +72,8 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
     private int mLastMeasureWidth = -1;
     private int mLastMeasureHeight = -1;
 
+    private int mMaxCellCountY;
+
     public AllAppsPagedView(Context context) {
         this(context, null);
     }
@@ -89,9 +91,10 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
         a.recycle();
         setSoundEffectsEnabled(false);
 
-        Resources r = context.getResources();
+        final Resources r = context.getResources();
         setDragSlopeThreshold(
                 r.getInteger(R.integer.config_appsCustomizeDragSlopeThreshold) / 100.0f);
+        mMaxCellCountY = r.getInteger(R.integer.all_apps_view_maxCellCountY);
     }
 
     @Override
@@ -171,7 +174,19 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
         availableHeight -= mPageLayoutPaddingTop + mPageLayoutPaddingBottom;
         availableHeight -= cellHeight; // Assume at least one row
         availableHeight -= screenHeight * 0.16f;
-        return (1 + availableHeight / (cellHeight + mPageLayoutHeightGap));
+        if (availableHeight > 0) {
+            return Math.min(mMaxCellCountY,
+                    1 + availableHeight / (cellHeight + mPageLayoutHeightGap));
+        }
+        return 0;
+    }
+
+    int getCellCountX() {
+        return mCellCountX;
+    }
+
+    int getCellCountY() {
+        return mCellCountY;
     }
 
     void allowHardwareLayerCreation() {
