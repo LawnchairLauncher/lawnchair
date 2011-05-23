@@ -24,7 +24,7 @@
 
     launcher:cellWidth="@dimen/workspace_cell_width"
     launcher:cellHeight="@dimen/workspace_cell_height"
-    launcher:xAxisStartPadding="65dip"
-    launcher:xAxisEndPadding="65dip"
+    launcher:xAxisStartPadding="48dip"
+    launcher:xAxisEndPadding="0dip"
     launcher:yAxisStartPadding="0dip"
     launcher:yAxisEndPadding="0dip"/>
