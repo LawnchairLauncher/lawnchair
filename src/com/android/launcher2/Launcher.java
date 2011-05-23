@@ -3211,7 +3211,7 @@ public final class Launcher extends Activity
         // Find the app market activity by resolving an intent.
         // (If multiple app markets are installed, it will return the ResolverActivity.)
         ComponentName activityName = intent.resolveActivity(getPackageManager());
-        if (activityName != null) {
+        if (activityName != null && LauncherApplication.isScreenLarge()) {
             mAppMarketIntent = intent;
             sAppMarketIcon = updateTextButtonWithIconFromExternalActivity(
                     R.id.market_button, activityName, R.drawable.app_market_generic);
