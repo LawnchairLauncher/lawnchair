@@ -293,20 +293,22 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 }
             });
         } else if (v instanceof PagedViewWidget) {
-            final ResolveInfo info = (ResolveInfo) v.getTag();
-            if (mWallpapers.contains(info)) {
-                // Start the wallpaper picker
-                animateClickFeedback(v, new Runnable() {
-                    @Override
-                    public void run() {
-                        // add the shortcut
-                        Intent createWallpapersIntent = new Intent(Intent.ACTION_SET_WALLPAPER);
-                        ComponentName name = new ComponentName(info.activityInfo.packageName,
-                                info.activityInfo.name);
-                        createWallpapersIntent.setComponent(name);
-                        mLauncher.processWallpaper(createWallpapersIntent);
-                    }
-                });
+            if (v.getTag() instanceof ResolveInfo) {
+                final ResolveInfo info = (ResolveInfo) v.getTag();
+                if (mWallpapers.contains(info)) {
+                    // Start the wallpaper picker
+                    animateClickFeedback(v, new Runnable() {
+                        @Override
+                        public void run() {
+                            // add the shortcut
+                            Intent createWallpapersIntent = new Intent(Intent.ACTION_SET_WALLPAPER);
+                            ComponentName name = new ComponentName(info.activityInfo.packageName,
+                                    info.activityInfo.name);
+                            createWallpapersIntent.setComponent(name);
+                            mLauncher.processWallpaper(createWallpapersIntent);
+                        }
+                    });
+                }
             } else {
                 // Add the widget to the current workspace screen
                 Workspace w = mLauncher.getWorkspace();
