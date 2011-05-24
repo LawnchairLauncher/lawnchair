@@ -42,6 +42,6 @@
     <include layout="@layout/customization_drawer"
         android:id="@+id/customization_drawer"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/customization_drawer_height"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom" />
 </com.android.launcher2.DragLayer>
