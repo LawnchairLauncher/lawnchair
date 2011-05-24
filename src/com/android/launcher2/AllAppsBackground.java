@@ -25,8 +25,8 @@ import android.util.AttributeSet;
 import android.view.View;
 
 /**
- * An implementation of PagedView that populates the pages of the workspace
- * with all of the user's applications.
+ * The background for AllApps which moves independently of the AllApps tray (for example, when we
+ * transition between AllApps and the Workspace while in spring-loaded mode).
  */
 public class AllAppsBackground extends View {
     private Drawable mBackground;

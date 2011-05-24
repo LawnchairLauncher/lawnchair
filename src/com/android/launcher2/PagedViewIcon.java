@@ -31,7 +31,6 @@ import android.os.HandlerThread;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
-import android.view.View;
 import android.widget.Checkable;
 
 import com.android.launcher.R;

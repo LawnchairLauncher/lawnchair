@@ -71,7 +71,7 @@ public class CellLayout extends ViewGroup {
 
     // These are temporary variables to prevent having to allocate a new object just to
     // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
-    private final int[] mTmpCellXY = new int[2];
+    private final int[] mTmpXY = new int[2];
     private final int[] mTmpPoint = new int[2];
     private final PointF mTmpPointF = new PointF();
 
@@ -694,6 +694,14 @@ public class CellLayout extends ViewGroup {
             if ((child.getVisibility() == VISIBLE || child.getAnimation() != null) &&
                     lp.isLockedToGrid) {
                 child.getHitRect(frame);
+
+                // The child hit rect is relative to the CellLayoutChildren parent, so we need to
+                // offset that by this CellLayout's padding to test an (x,y) point that is relative
+                // to this view.
+                final int tmpXY[] = mTmpXY;
+                child.getLocationOnScreen(tmpXY);
+                frame.offset(mLeftPadding, mTopPadding);
+
                 if (frame.contains(x, y)) {
                     cellInfo.cell = child;
                     cellInfo.cellX = lp.cellX;
@@ -708,7 +716,7 @@ public class CellLayout extends ViewGroup {
         }
 
         if (!found) {
-            final int cellXY[] = mTmpCellXY;
+            final int cellXY[] = mTmpXY;
             pointToCellExact(x, y, cellXY);
 
             cellInfo.cell = null;
@@ -1161,7 +1169,7 @@ public class CellLayout extends ViewGroup {
                         }
                     }
                 }
-                final int[] cellXY = mTmpCellXY;
+                final int[] cellXY = mTmpXY;
                 cellToCenterPoint(x, y, cellXY);
 
                 double distance = Math.sqrt(Math.pow(cellXY[0] - pixelX, 2)
