@@ -35,6 +35,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
 import com.android.launcher.R;
+import com.android.launcher2.DropTarget.DragObject;
 
 /**
  * Class for initiating a drag within a view or across multiple views.
@@ -84,25 +85,12 @@ public class DragController {
     /** Original view that is being dragged.  */
     private View mOriginator;
 
-    /** X offset from the upper-left corner of the cell to where we touched.  */
-    private int mTouchOffsetX;
-
-    /** Y offset from the upper-left corner of the cell to where we touched.  */
-    private int mTouchOffsetY;
-
     /** the area at the edge of the screen that makes the workspace go left
      *   or right while you're dragging.
      */
     private int mScrollZone;
 
-    /** Where the drag originated */
-    private DragSource mDragSource;
-
-    /** The data associated with the object being dragged */
-    private Object mDragInfo;
-
-    /** The view that moves around while you drag.  */
-    private DragView mDragView;
+    private DropTarget.DragObject mDragObject = new DropTarget.DragObject();
 
     /** Who can receive drop events */
     private ArrayList<DropTarget> mDropTargets = new ArrayList<DropTarget>();
@@ -295,17 +283,17 @@ public class DragController {
         final int dragRegionLeft = dragRegion == null ? 0 : dragRegion.left;
         final int dragRegionTop = dragRegion == null ? 0 : dragRegion.top;
 
-        mTouchOffsetX = mMotionDownX - (screenX + dragRegionLeft);
-        mTouchOffsetY = mMotionDownY - (screenY + dragRegionTop);
-
         mDragging = true;
-        mDragSource = source;
-        mDragInfo = dragInfo;
+
+        mDragObject.xOffset = mMotionDownX - (screenX + dragRegionLeft);
+        mDragObject.yOffset = mMotionDownY - (screenY + dragRegionTop);
+        mDragObject.dragSource = source;
+        mDragObject.dragInfo = dragInfo;
 
         mVibrator.vibrate(VIBRATE_DURATION);
 
-        DragView dragView = mDragView = new DragView(mContext, b, registrationX, registrationY,
-                0, 0, b.getWidth(), b.getHeight());
+        final DragView dragView = mDragObject.dragView = new DragView(mContext, b, registrationX,
+                registrationY, 0, 0, b.getWidth(), b.getHeight());
 
         final DragSource dragSource = source;
         dragView.setOnDrawRunnable(new Runnable() {
@@ -386,7 +374,7 @@ public class DragController {
     public void cancelDrag() {
         if (mDragging) {
             // Should we also be calling onDragExit() here?
-            mDragSource.onDropCompleted(null, mDragInfo, false);
+            mDragObject.dragSource.onDropCompleted(null, mDragObject.dragInfo, false);
         }
         endDrag();
     }
@@ -400,9 +388,9 @@ public class DragController {
             for (DragListener listener : mListeners) {
                 listener.onDragEnd();
             }
-            if (mDragView != null) {
-                mDragView.remove();
-                mDragView = null;
+            if (mDragObject.dragView != null) {
+                mDragObject.dragView.remove();
+                mDragObject.dragView = null;
             }
         }
     }
@@ -459,33 +447,29 @@ public class DragController {
     }
 
     private void handleMoveEvent(int x, int y) {
-        mDragView.move(x, y);
+        mDragObject.dragView.move(x, y);
 
         // Drop on someone?
         final int[] coordinates = mCoordinatesTemp;
         DropTarget dropTarget = findDropTarget(x, y, coordinates);
+        mDragObject.x = coordinates[0];
+        mDragObject.y = coordinates[1];
         if (dropTarget != null) {
-            DropTarget delegate = dropTarget.getDropTargetDelegate(
-                    mDragSource, coordinates[0], coordinates[1],
-                    (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo);
+            DropTarget delegate = dropTarget.getDropTargetDelegate(mDragObject);
             if (delegate != null) {
                 dropTarget = delegate;
             }
 
             if (mLastDropTarget != dropTarget) {
                 if (mLastDropTarget != null) {
-                    mLastDropTarget.onDragExit(mDragSource, coordinates[0], coordinates[1],
-                        (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo);
+                    mLastDropTarget.onDragExit(mDragObject);
                 }
-                dropTarget.onDragEnter(mDragSource, coordinates[0], coordinates[1],
-                    (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo);
+                dropTarget.onDragEnter(mDragObject);
             }
-            dropTarget.onDragOver(mDragSource, coordinates[0], coordinates[1],
-                    (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo);
+            dropTarget.onDragOver(mDragObject);
         } else {
             if (mLastDropTarget != null) {
-                mLastDropTarget.onDragExit(mDragSource, coordinates[0], coordinates[1],
-                    (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo);
+                mLastDropTarget.onDragExit(mDragObject);
             }
         }
         mLastDropTarget = dropTarget;
@@ -578,18 +562,18 @@ public class DragController {
         final int[] coordinates = mCoordinatesTemp;
         final DropTarget dropTarget = findDropTarget((int) x, (int) y, coordinates);
 
+        mDragObject.x = coordinates[0];
+        mDragObject.y = coordinates[1];
         boolean accepted = false;
         if (dropTarget != null) {
-            dropTarget.onDragExit(mDragSource, coordinates[0], coordinates[1],
-                    (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo);
-            if (dropTarget.acceptDrop(mDragSource, coordinates[0], coordinates[1],
-                    (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo)) {
-                dropTarget.onDrop(mDragSource, coordinates[0], coordinates[1],
-                        (int) mTouchOffsetX, (int) mTouchOffsetY, mDragView, mDragInfo);
+            dropTarget.onDragExit(mDragObject);
+            if (dropTarget.acceptDrop(mDragObject)) {
+                dropTarget.onDrop(mDragObject);
                 accepted = true;
             }
         }
-        mDragSource.onDropCompleted((View) dropTarget, mDragInfo, accepted);
+        mDragObject.dragSource.onDropCompleted((View) dropTarget, mDragObject.dragInfo, accepted);
+
     }
 
     private DropTarget findDropTarget(int x, int y, int[] dropCoordinates) {
@@ -608,9 +592,10 @@ public class DragController {
             target.getLocationOnScreen(dropCoordinates);
             r.offset(dropCoordinates[0] - target.getLeft(), dropCoordinates[1] - target.getTop());
 
+            mDragObject.x = x;
+            mDragObject.y = y;
             if (r.contains(x, y)) {
-                DropTarget delegate = target.getDropTargetDelegate(mDragSource,
-                        x, y, (int)mTouchOffsetX, (int)mTouchOffsetY, mDragView, mDragInfo);
+                DropTarget delegate = target.getDropTargetDelegate(mDragObject);
                 if (delegate != null) {
                     target = delegate;
                     target.getLocationOnScreen(dropCoordinates);
@@ -701,7 +686,7 @@ public class DragController {
     }
 
     DragView getDragView() {
-        return mDragView;
+        return mDragObject.dragView;
     }
 
     private class ScrollRunnable implements Runnable {

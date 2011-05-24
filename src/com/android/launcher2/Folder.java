@@ -363,25 +363,23 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         bind(mInfo);
     }
 
-    public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
-        final ItemInfo item = (ItemInfo) dragInfo;
+    public boolean acceptDrop(DragObject d) {
+        final ItemInfo item = (ItemInfo) d.dragInfo;
         final int itemType = item.itemType;
         return ((itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
                     itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) &&
                     !isFull());
     }
 
-    public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+    public void onDrop(DragObject d) {
         ShortcutInfo item;
-        if (dragInfo instanceof ApplicationInfo) {
+        if (d.dragInfo instanceof ApplicationInfo) {
             // Came from all apps -- make a copy
-            item = ((ApplicationInfo)dragInfo).makeShortcut();
+            item = ((ApplicationInfo) d.dragInfo).makeShortcut();
             item.spanX = 1;
             item.spanY = 1;
         } else {
-            item = (ShortcutInfo)dragInfo;
+            item = (ShortcutInfo) d.dragInfo;
         }
         mInfo.add(item);
         LauncherModel.addOrMoveItemInDatabase(mLauncher, item, mInfo.id, 0, item.cellX, item.cellY);
@@ -417,19 +415,16 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         mContent.addViewToCellLayout(textView, insert ? 0 : -1, (int)item.id, lp, true);
     }
 
-    public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+    public void onDragEnter(DragObject d) {
         mContent.onDragEnter();
     }
 
-    public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
-        float[] r = mapPointFromScreenToContent(x, y, null);
+    public void onDragOver(DragObject d) {
+        float[] r = mapPointFromScreenToContent(d.x, d.y, null);
         mContent.visualizeDropLocation(null, null, (int) r[0], (int) r[1], 1, 1);
     }
 
-    public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+    public void onDragExit(DragObject d) {
         mContent.onDragExit();
     }
 
@@ -453,8 +448,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         return true;
     }
 
-    public DropTarget getDropTargetDelegate(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+    public DropTarget getDropTargetDelegate(DragObject d) {
         return null;
     }
 

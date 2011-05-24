@@ -23,6 +23,30 @@ import android.graphics.Rect;
  *
  */
 public interface DropTarget {
+
+    class DragObject {
+        public int x = -1;
+        public int y = -1;
+
+        /** X offset from the upper-left corner of the cell to where we touched.  */
+        public int xOffset = -1;
+
+        /** Y offset from the upper-left corner of the cell to where we touched.  */
+        public int yOffset = -1;
+
+        /** The view that moves around while you drag.  */
+        public DragView dragView = null;
+
+        /** The data associated with the object being dragged */
+        public Object dragInfo = null;
+
+        /** Where the drag originated */
+        public DragSource dragSource = null;
+
+        public DragObject() {
+        }
+    }
+
     /**
      * Used to temporarily disable certain drop targets
      *
@@ -44,17 +68,13 @@ public interface DropTarget {
      * @param dragInfo Data associated with the object being dragged
      * 
      */
-    void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo);
-    
-    void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo);
+    void onDrop(DragObject dragObject);
 
-    void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo);
+    void onDragEnter(DragObject dragObject);
 
-    void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo);
+    void onDragOver(DragObject dragObject);
+
+    void onDragExit(DragObject dragObject);
 
     /**
      * Allows a DropTarget to delegate drag and drop events to another object.
@@ -73,8 +93,7 @@ public interface DropTarget {
      *
      * @return The DropTarget to delegate to, or null to not delegate to another object.
      */
-    DropTarget getDropTargetDelegate(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo);
+    DropTarget getDropTargetDelegate(DragObject dragObject);
 
     /**
      * Check if a drop action can occur at, or near, the requested location.
@@ -91,8 +110,7 @@ public interface DropTarget {
      * @param dragInfo Data associated with the object being dragged
      * @return True if the drop will be accepted, false otherwise.
      */
-    boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo);
+    boolean acceptDrop(DragObject dragObject);
 
     // These methods are implemented in Views
     void getHitRect(Rect outRect);
