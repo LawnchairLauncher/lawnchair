@@ -41,8 +41,13 @@ public class CustomizeTrayTabHost extends TabHost implements LauncherTransitiona
 
     private boolean mFirstLayout = true;
 
+    // How much of the vertical space this control should attempt to fill
+    private float mVerticalFillPercentage;
+
     private final LayoutInflater mInflater;
     private Context mContext;
+
+    private CustomizePagedView mCustomizePagedView;
 
     public CustomizeTrayTabHost(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -52,15 +57,17 @@ public class CustomizeTrayTabHost extends TabHost implements LauncherTransitiona
 
     @Override
     protected void onFinishInflate() {
+        final Resources res = getResources();
+
         setup();
 
-        final CustomizePagedView customizePagedView =
+        mCustomizePagedView =
             (CustomizePagedView) findViewById(R.id.customization_drawer_tab_contents);
 
         // Configure tabs
         TabContentFactory contentFactory = new TabContentFactory() {
             public View createTabContent(String tag) {
-                return customizePagedView;
+                return mCustomizePagedView;
             }
         };
 
@@ -82,26 +89,30 @@ public class CustomizeTrayTabHost extends TabHost implements LauncherTransitiona
         tabView.setText(mContext.getString(R.string.shortcuts_tab_label));
         addTab(newTabSpec(SHORTCUTS_TAG)
                 .setIndicator(tabView).setContent(contentFactory));
+
+        mVerticalFillPercentage =
+                res.getInteger(R.integer.customization_drawer_verticalFillPercentage) / 100f;
+
         setOnTabChangedListener(new OnTabChangeListener() {
             public void onTabChanged(String tabId) {
                 final CustomizePagedView.CustomizationType newType =
                     getCustomizeFilterForTabTag(tabId);
-                if (newType != customizePagedView.getCustomizationFilter()) {
+                if (newType != mCustomizePagedView.getCustomizationFilter()) {
                     // animate the changing of the tab content by fading pages in and out
                     final Resources res = getResources();
                     final int duration = res.getInteger(R.integer.config_tabTransitionTime);
-                    final float alpha = customizePagedView.getAlpha();
-                    ValueAnimator alphaAnim = ObjectAnimator.ofFloat(customizePagedView,
+                    final float alpha = mCustomizePagedView.getAlpha();
+                    ValueAnimator alphaAnim = ObjectAnimator.ofFloat(mCustomizePagedView,
                             "alpha", alpha, 0.0f);
                     alphaAnim.setDuration(duration);
                     alphaAnim.addListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                            customizePagedView.setCustomizationFilter(newType);
+                            mCustomizePagedView.setCustomizationFilter(newType);
 
-                            final float alpha = customizePagedView.getAlpha();
+                            final float alpha = mCustomizePagedView.getAlpha();
                             ValueAnimator alphaAnim = ObjectAnimator.ofFloat(
-                                    customizePagedView, "alpha", alpha, 1.0f);
+                                    mCustomizePagedView, "alpha", alpha, 1.0f);
                             alphaAnim.setDuration(duration);
                             alphaAnim.start();
                         }
@@ -129,6 +140,22 @@ public class CustomizeTrayTabHost extends TabHost implements LauncherTransitiona
     public void onLauncherTransitionEnd(Animator animation) {
         if (animation != null) {
             setLayerType(LAYER_TYPE_NONE, null);
+        }
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        // If there's extra room, try to grow to fill it
+        if (MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.AT_MOST) {
+            final int availableHeight = MeasureSpec.getSize(heightMeasureSpec);
+            final int finalHeight = Math.max(getMeasuredHeight(),
+                        (int) (availableHeight * mVerticalFillPercentage));
+
+            // Measure a second time with EXACTLY so that we get sized correctly
+            heightMeasureSpec = MeasureSpec.makeMeasureSpec(finalHeight, MeasureSpec.EXACTLY);
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }
     }
 

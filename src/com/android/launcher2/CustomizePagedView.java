@@ -108,6 +108,9 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
     // The max number of wallpaper cells to take a "page" of wallpaper items
     private int mMaxWallpaperCellHSpan;
 
+    // The maximum number of rows in a paged view.
+    private int mMaxCellCountY;
+
     // The raw sources of data for each of the different tabs of the customization page
     private List<AppWidgetProviderInfo> mWidgetList;
     private List<ResolveInfo> mShortcutList;
@@ -143,7 +146,10 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
 
     private int[] mDragViewOrigin = new int[2];
 
-    private int mPageContentWidth;
+    private int mPageContentWidth = -1;
+    private int mPageContentHeight = -1;
+
+    private AllAppsPagedView mAllAppsPagedView;
 
     public CustomizePagedView(Context context) {
         this(context, null, 0);
@@ -162,10 +168,6 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         mMaxWallpaperCellHSpan = a.getInt(R.styleable.CustomizePagedView_wallpaperCellCountX, 8);
         mMaxWidgetsCellHSpan = a.getInt(R.styleable.CustomizePagedView_widgetCellCountX, 8);
         a.recycle();
-        a = context.obtainStyledAttributes(attrs, R.styleable.PagedView, defStyle, 0);
-        mCellCountX = a.getInt(R.styleable.PagedView_cellCountX, 7);
-        mCellCountY = a.getInt(R.styleable.PagedView_cellCountY, 4);
-        a.recycle();
 
         mCustomizationType = CustomizationType.WidgetCustomization;
         mWidgetPages = new ArrayList<ArrayList<AppWidgetProviderInfo>>();
@@ -175,6 +177,8 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         final Resources r = context.getResources();
         setDragSlopeThreshold(
                 r.getInteger(R.integer.config_customizationDrawerDragSlopeThreshold) / 100.0f);
+
+        mMaxCellCountY = r.getInteger(R.integer.customization_drawer_contents_maxCellCountY);
 
         setVisibility(View.GONE);
         setSoundEffectsEnabled(false);
@@ -188,35 +192,54 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    protected void onMeasure(int widthSpec, int heightSpec) {
+        // Base the size of this control on the size of the All Apps view.
+        final int cellCountX = mAllAppsPagedView.getCellCountX();
+        final int cellCountY = Math.min(mAllAppsPagedView.getCellCountY(), mMaxCellCountY);
 
-        final int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-        final int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        if (cellCountX != mCellCountX || cellCountY != mCellCountY) {
+            mCellCountX = cellCountX;
+            mCellCountY = cellCountY;
 
-        if (mFirstMeasure) {
-            mFirstMeasure = false;
-
-            // TODO: actually calculate mCellCountX/mCellCountY as some function of
-            // widthSize and heightSize
-            //mCellCountX = ?
-            //mCellCountY = ?
-
-            // Since mCellCountX/mCellCountY changed, we need to update the pages
-            invalidatePageData();
-
-            // Create a dummy page and set it up to find out the content width (used by our parent)
+            // Create a dummy page and set it up to determine our size.
+            // The size is based on the app shortcuts tab having the same dimensions as All Apps.
             PagedViewCellLayout layout = new PagedViewCellLayout(getContext());
             setupPage(layout);
             mPageContentWidth = layout.getContentWidth();
+            mPageContentHeight = layout.getContentHeight();
             mMinPageWidth = layout.getWidthBeforeFirstLayout();
         }
+        if (mPageContentHeight > 0) {
+            // Lock our height to the size of the page content
+            final int h = mPageContentHeight + mPageLayoutPaddingTop + mPageLayoutPaddingBottom;
+            heightSpec = MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY);
+        }
+        super.onMeasure(widthSpec, heightSpec);
+        mFirstMeasure = false;
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        if (mFirstLayout) {
+            invalidatePageData();
+
+            // invalidatePageData() is what causes the child pages to be created. We need the
+            // children to be measured before layout, so force a new measure here.
+            measure(MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.EXACTLY));
+        }
+        super.onLayout(changed, left, top, right, bottom);
+        mFirstLayout = false;
     }
 
     public void setLauncher(Launcher launcher) {
         Context context = getContext();
         mLauncher = launcher;
         mPackageManager = context.getPackageManager();
+    }
+
+    public void setAllAppsPagedView(AllAppsPagedView view) {
+        mAllAppsPagedView = view;
     }
 
     /**
