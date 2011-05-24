@@ -88,4 +88,14 @@
      the drag view should be offset from the position of the original view. -->
     <dimen name="dragViewOffsetX">0dp</dimen>
     <dimen name="dragViewOffsetY">-12dp</dimen>
+
+    <!-- The actual number of rows/columns will be determined dynamically based on the screen
+         size, but in portrait we want to cap the rows at 3, otherwise it looks weird. -->
+    <integer name="customization_drawer_contents_maxCellCountY">3</integer>
+
+    <!-- The percentage of vertical space that the customize tray should try to fill. -->
+    <integer name="customization_drawer_verticalFillPercentage">65</integer>
+
+    <!-- Max number of rows in all apps, because too many looks weird. -->
+    <integer name="all_apps_view_maxCellCountY">6</integer>
 </resources>

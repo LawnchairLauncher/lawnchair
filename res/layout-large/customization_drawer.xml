@@ -40,15 +40,12 @@
                 launcher:wallpaperCellSpanX="@integer/customization_drawer_contents_wallpaperCellSpanX"
                 launcher:wallpaperCellCountX="@integer/customization_drawer_contents_wallpaperCellCountX"
                 launcher:widgetCellCountX="@integer/customization_drawer_contents_widgetCellCountX"
-                launcher:cellCountX="@integer/customization_drawer_contents_cellCountX"
-                launcher:cellCountY="@integer/customization_drawer_contents_cellCountY"
                 launcher:pageLayoutWidthGap="@dimen/customization_drawer_contents_pageLayoutWidthGap"
-                launcher:pageLayoutHeightGap="12dp"
-                launcher:pageLayoutPaddingTop="40dp"
-                launcher:pageLayoutPaddingBottom="25dp"
-                launcher:pageLayoutPaddingLeft="20dp"
-                launcher:pageLayoutPaddingRight="20dp"
-                launcher:pageLayoutMaxHeight="@dimen/customization_drawer_content_height" />
+                launcher:pageLayoutHeightGap="@dimen/customization_drawer_contents_pageLayoutHeightGap"
+                launcher:pageLayoutPaddingTop="@dimen/customization_drawer_contents_pageLayoutPaddingTop"
+                launcher:pageLayoutPaddingBottom="@dimen/customization_drawer_contents_pageLayoutPaddingBottom"
+                launcher:pageLayoutPaddingLeft="@dimen/customization_drawer_contents_pageLayoutPaddingLeft"
+                launcher:pageLayoutPaddingRight="@dimen/customization_drawer_contents_pageLayoutPaddingRight" />
          </FrameLayout>
       </LinearLayout>
 </com.android.launcher2.CustomizeTrayTabHost>
