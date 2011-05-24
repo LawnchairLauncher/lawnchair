@@ -18,6 +18,7 @@ package com.android.launcher2;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -167,6 +168,22 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         setDragSlopeThreshold(r.getInteger(R.integer.config_appsCustomizeDragSlopeThreshold)/100f);
     }
 
+    /** Removes and returns the ResolveInfo with the specified ComponentName */
+    private ResolveInfo removeResolveInfoWithComponentName(List<ResolveInfo> list,
+            ComponentName cn) {
+        Iterator<ResolveInfo> iter = list.iterator();
+        while (iter.hasNext()) {
+            ResolveInfo rinfo = iter.next();
+            ActivityInfo info = rinfo.activityInfo;
+            ComponentName c = new ComponentName(info.packageName, info.name);
+            if (c.equals(cn)) {
+                iter.remove();
+                return rinfo;
+            }
+        }
+        return null;
+    }
+
     public void onPackagesUpdated() {
         // Get the list of widgets and shortcuts
         mWidgets.clear();
@@ -182,6 +199,20 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 PackageManager.GET_META_DATA);
         Collections.sort(mWallpapers,
                 new LauncherModel.ShortcutNameComparator(mPackageManager));
+        // Move Live Wallpapers to the front of the list
+        Context c = getContext();
+        ResolveInfo liveWallpapers = removeResolveInfoWithComponentName(mWallpapers,
+            new ComponentName(c.getString(R.string.live_wallpaper_picker_package_name),
+                c.getString(R.string.live_wallpaper_picker_class_name)));
+        if (liveWallpapers != null) {
+            mWallpapers.add(0, liveWallpapers);
+        }
+        // Move Wallpapers to the front of the list
+        ResolveInfo wallpapers = removeResolveInfoWithComponentName(mWallpapers,
+            new ComponentName(c.getPackageName(), WallpaperChooser.class.getName()));
+        if (wallpapers != null) {
+            mWallpapers.add(0, wallpapers);
+        }
     }
 
     /**
