@@ -2379,11 +2379,10 @@ public class Workspace extends SmoothPagedView
     /**
      * {@inheritDoc}
      */
-    public boolean acceptDrop(DragSource source, int x, int y,
-            int xOffset, int yOffset, DragView dragView, Object dragInfo) {
+    public boolean acceptDrop(DragObject d) {
 
         // If it's an external drop (e.g. from All Apps), check if it should be accepted
-        if (source != this) {
+        if (d.dragSource != this) {
             // Don't accept the drop if we're not over a screen at time of drop
             if (mDragTargetLayout == null || !mDragTargetLayout.getAcceptsDrops()) {
                 return false;
@@ -2469,10 +2468,9 @@ public class Workspace extends SmoothPagedView
         return false;
     }
 
-    public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+    public void onDrop(DragObject d) {
 
-        mDragViewVisualCenter = getDragViewVisualCenter(x, y, xOffset, yOffset, dragView,
+        mDragViewVisualCenter = getDragViewVisualCenter(d.x, d.y, d.xOffset, d.yOffset, d.dragView,
                 mDragViewVisualCenter);
 
         // We want the point to be mapped to the dragTarget.
@@ -2489,17 +2487,17 @@ public class Workspace extends SmoothPagedView
             }
         }
 
-        if (source != this) {
+        if (d.dragSource != this) {
             final int[] touchXY = new int[] { (int) mDragViewVisualCenter[0],
                     (int) mDragViewVisualCenter[1] };
             if (LauncherApplication.isScreenLarge() && (mIsSmall || mIsInUnshrinkAnimation)
                     && !mLauncher.isAllAppsVisible()) {
                 // When the workspace is shrunk and the drop comes from customize, don't actually
                 // add the item to the screen -- customize will do this itself
-                ((ItemInfo) dragInfo).dropPos = touchXY;
+                ((ItemInfo) d.dragInfo).dropPos = touchXY;
                 return;
             }
-            onDropExternal(touchXY, dragInfo, mDragTargetLayout, false, dragView);
+            onDropExternal(touchXY, d.dragInfo, mDragTargetLayout, false, d.dragView);
         } else if (mDragInfo != null) {
             final View cell = mDragInfo.cell;
             CellLayout dropTargetLayout = mDragTargetLayout;
@@ -2592,11 +2590,11 @@ public class Workspace extends SmoothPagedView
             final CellLayout parent = (CellLayout) cell.getParent().getParent();
 
             int loc[] = new int[2];
-            getViewLocationRelativeToSelf(dragView, loc);
+            getViewLocationRelativeToSelf(d.dragView, loc);
 
             // Prepare it to be animated into its new position
             // This must be called after the view has been re-parented
-            setPositionForDropAnimation(dragView, loc[0], loc[1], parent, cell);
+            setPositionForDropAnimation(d.dragView, loc[0], loc[1], parent, cell);
             boolean animateDrop = !mWasSpringLoadedOnDragExit;
             parent.onDropChild(cell, animateDrop);
         }
@@ -2615,8 +2613,7 @@ public class Workspace extends SmoothPagedView
         location[1] = vY - y;
     }
 
-    public void onDragEnter(DragSource source, int x, int y, int xOffset,
-            int yOffset, DragView dragView, Object dragInfo) {
+    public void onDragEnter(DragObject d) {
         mDragTargetLayout = null; // Reset the drag state
 
         if (!mIsSmall) {
@@ -2626,8 +2623,7 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    public DropTarget getDropTargetDelegate(DragSource source, int x, int y,
-            int xOffset, int yOffset, DragView dragView, Object dragInfo) {
+    public DropTarget getDropTargetDelegate(DragObject d) {
 
         if (mIsSmall || mIsInUnshrinkAnimation) {
             // If we're shrunken, don't let anyone drag on folders/etc that are on the mini-screens
@@ -2637,18 +2633,18 @@ public class Workspace extends SmoothPagedView
         // would land in a cell occupied by a DragTarget (e.g. a Folder),
         // then drag events should be handled by that child.
 
-        ItemInfo item = (ItemInfo) dragInfo;
+        ItemInfo item = (ItemInfo) d.dragInfo;
         CellLayout currentLayout = getCurrentDropLayout();
 
         int dragPointX, dragPointY;
         if (item.spanX == 1 && item.spanY == 1) {
             // For a 1x1, calculate the drop cell exactly as in onDragOver
-            dragPointX = x - xOffset;
-            dragPointY = y - yOffset;
+            dragPointX = d.x - d.xOffset;
+            dragPointY = d.y - d.yOffset;
         } else {
             // Otherwise, use the exact drag coordinates
-            dragPointX = x;
-            dragPointY = y;
+            dragPointX = d.x;
+            dragPointY = d.y;
         }
         dragPointX += mScrollX - currentLayout.getLeft();
         dragPointY += mScrollY - currentLayout.getTop();
@@ -2660,7 +2656,7 @@ public class Workspace extends SmoothPagedView
         View child = currentLayout.getChildAt(cellXY[0], cellXY[1]);
         if (child instanceof DropTarget) {
             DropTarget target = (DropTarget)child;
-            if (target.acceptDrop(source, x, y, xOffset, yOffset, dragView, dragInfo)) {
+            if (target.acceptDrop(d)) {
                 return target;
             }
         }
@@ -2977,25 +2973,24 @@ public class Workspace extends SmoothPagedView
         return res;
     }
 
-    public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+    public void onDragOver(DragObject d) {
         // When touch is inside the scroll area, skip dragOver actions for the current screen
         if (!mInScrollArea) {
             CellLayout layout;
-            int left = x - xOffset;
-            int top = y - yOffset;
+            int left = d.x - d.xOffset;
+            int top = d.y - d.yOffset;
 
-            mDragViewVisualCenter = getDragViewVisualCenter(x, y, xOffset, yOffset, dragView,
-                    mDragViewVisualCenter);
+            mDragViewVisualCenter = getDragViewVisualCenter(d.x, d.y, d.xOffset, d.yOffset,
+                    d.dragView, mDragViewVisualCenter);
 
             boolean shrunken = mIsSmall || mIsInUnshrinkAnimation;
             if (shrunken) {
-                mLastDragView = dragView;
+                mLastDragView = d.dragView;
                 mLastDragOriginX = left;
                 mLastDragOriginY = top;
-                mLastDragXOffset = xOffset;
-                mLastDragYOffset = yOffset;
-                layout = findMatchingPageForDragOver(dragView, left, top, xOffset, yOffset);
+                mLastDragXOffset = d.xOffset;
+                mLastDragYOffset = d.yOffset;
+                layout = findMatchingPageForDragOver(d.dragView, left, top, d.xOffset, d.yOffset);
 
                 if (layout != null && layout != mDragTargetLayout) {
                     if (mDragTargetLayout != null) {
@@ -3033,9 +3028,9 @@ public class Workspace extends SmoothPagedView
             if (!shrunken || mShrinkState == ShrinkState.SPRING_LOADED) {
                 layout = getCurrentDropLayout();
 
-                final ItemInfo item = (ItemInfo)dragInfo;
-                if (dragInfo instanceof LauncherAppWidgetInfo) {
-                    LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo)dragInfo;
+                final ItemInfo item = (ItemInfo) d.dragInfo;
+                if (d.dragInfo instanceof LauncherAppWidgetInfo) {
+                    LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) d.dragInfo;
 
                     if (widgetInfo.spanX == -1) {
                         // Calculate the grid spans needed to fit this widget
@@ -3050,7 +3045,7 @@ public class Workspace extends SmoothPagedView
                     final View child = (mDragInfo == null) ? null : mDragInfo.cell;
                     // We want the point to be mapped to the dragTarget.
                     mapPointFromSelfToChild(mDragTargetLayout, mDragViewVisualCenter, null);
-                    ItemInfo info = (ItemInfo) dragInfo;
+                    ItemInfo info = (ItemInfo) d.dragInfo;
 
                     if (!willCreateUserFolder(info, mDragTargetLayout,
                             (int) mDragViewVisualCenter[0], (int) mDragViewVisualCenter[1])) {
@@ -3082,8 +3077,7 @@ public class Workspace extends SmoothPagedView
         clearAllHovers();
     }
 
-    public void onDragExit(DragSource source, int x, int y, int xOffset,
-            int yOffset, DragView dragView, Object dragInfo) {
+    public void onDragExit(DragObject d) {
         doDragExit();
     }
 

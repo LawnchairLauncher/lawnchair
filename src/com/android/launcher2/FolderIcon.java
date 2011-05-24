@@ -58,8 +58,6 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
 
     private int mOriginalWidth = -1;
     private int mOriginalHeight = -1;
-    private int mOriginalX = -1;
-    private int mOriginalY = -1;
 
     private int mFolderLocX;
     private int mFolderLocY;
@@ -121,9 +119,8 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
                 !mFolder.isFull() && item != mInfo);
     }
 
-    public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
-        final ItemInfo item = (ItemInfo) dragInfo;
+    public boolean acceptDrop(DragObject d) {
+        final ItemInfo item = (ItemInfo) d.dragInfo;
         return willAcceptItem(item);
     }
 
@@ -132,14 +129,13 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
         LauncherModel.addOrMoveItemInDatabase(mLauncher, item, mInfo.id, 0, item.cellX, item.cellY);
     }
 
-    public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+    public void onDrop(DragObject d) {
         ShortcutInfo item;
-        if (dragInfo instanceof ApplicationInfo) {
+        if (d.dragInfo instanceof ApplicationInfo) {
             // Came from all apps -- make a copy
-            item = ((ApplicationInfo)dragInfo).makeShortcut();
+            item = ((ApplicationInfo) d.dragInfo).makeShortcut();
         } else {
-            item = (ShortcutInfo)dragInfo;
+            item = (ShortcutInfo) d.dragInfo;
         }
         item.cellX = -1;
         item.cellY = -1;
@@ -149,8 +145,6 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
     void saveState(CellLayout.LayoutParams lp) {
         mOriginalWidth = lp.width;
         mOriginalHeight = lp.height;
-        mOriginalX = lp.x;
-        mOriginalY = lp.y;
     }
 
     private void animateToAcceptState() {
@@ -213,27 +207,22 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
         mFolderLocY = tvLocation[1] - wsLocation[1] + getMeasuredHeight() / 2;
     }
 
-    public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
-        if (!willAcceptItem((ItemInfo) dragInfo)) return;
+    public void onDragEnter(DragObject d) {
+        if (!willAcceptItem((ItemInfo) d.dragInfo)) return;
         determineFolderLocationInWorkspace();
         mLauncher.getWorkspace().showFolderAccept(this);
         animateToAcceptState();
     }
 
-    public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+    public void onDragOver(DragObject d) {
     }
 
-    public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
-        if (!willAcceptItem((ItemInfo) dragInfo)) return;
+    public void onDragExit(DragObject d) {
+        if (!willAcceptItem((ItemInfo) d.dragInfo)) return;
         animateToNaturalState();
     }
 
-    @Override
-    public DropTarget getDropTargetDelegate(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+    public DropTarget getDropTargetDelegate(DragObject d) {
         return null;
     }
 

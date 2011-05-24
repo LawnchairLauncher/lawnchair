@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 
 import com.android.launcher.R;
+import com.android.launcher2.DropTarget.DragObject;
 
 public class DeleteZone extends IconDropTarget {
     private static final int ORIENTATION_HORIZONTAL = 1;
@@ -90,16 +91,14 @@ public class DeleteZone extends IconDropTarget {
         mDragTextColor = r.getColor(R.color.workspace_delete_zone_drag_text_color);
     }
 
-    public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+    public boolean acceptDrop(DragObject d) {
         return true;
     }
 
-    public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+    public void onDrop(DragObject d) {
         if (!mDragAndDropEnabled) return;
 
-        final ItemInfo item = (ItemInfo) dragInfo;
+        final ItemInfo item = (ItemInfo) d.dragInfo;
 
         // On x-large screens, you can uninstall an app by dragging from all apps
         if (item instanceof ApplicationInfo && LauncherApplication.isScreenLarge()) {
@@ -135,21 +134,19 @@ public class DeleteZone extends IconDropTarget {
         LauncherModel.deleteItemFromDatabase(mLauncher, item);
     }
 
-    public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+    public void onDragEnter(DragObject d) {
         if (mDragAndDropEnabled) {
             mTransition.reverseTransition(getTransitionAnimationDuration());
             setTextColor(mDragTextColor);
-            super.onDragEnter(source, x, y, xOffset, yOffset, dragView, dragInfo);
+            super.onDragEnter(d);
         }
     }
 
-    public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+    public void onDragExit(DragObject d) {
         if (mDragAndDropEnabled) {
             mTransition.reverseTransition(getTransitionAnimationDuration());
             setTextColor(mTextColor);
-            super.onDragExit(source, x, y, xOffset, yOffset, dragView, dragInfo);
+            super.onDragExit(d);
         }
     }
 

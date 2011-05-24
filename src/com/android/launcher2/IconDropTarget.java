@@ -82,32 +82,27 @@ public class IconDropTarget extends TextView implements DropTarget, DragControll
         mDragAndDropEnabled = enabled;
     }
 
-    public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+    public boolean acceptDrop(DragObject d) {
         return false;
     }
 
-    public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+    public void onDrop(DragObject d) {
         // Do nothing
     }
 
-    public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+    public void onDragEnter(DragObject d) {
         if (mDragAndDropEnabled) {
-            dragView.setPaint(mHoverPaint);
+            d.dragView.setPaint(mHoverPaint);
         }
     }
 
-    public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+    public void onDragOver(DragObject d) {
         // Do nothing
     }
 
-    public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+    public void onDragExit(DragObject d) {
         if (mDragAndDropEnabled) {
-            dragView.setPaint(null);
+            d.dragView.setPaint(null);
         }
     }
 
@@ -135,8 +130,7 @@ public class IconDropTarget extends TextView implements DropTarget, DragControll
     }
 
     @Override
-    public DropTarget getDropTargetDelegate(DragSource source, int x, int y, int xOffset,
-            int yOffset, DragView dragView, Object dragInfo) {
+    public DropTarget getDropTargetDelegate(DragObject d) {
         return null;
     }
 }

@@ -17,6 +17,7 @@
 package com.android.launcher2;
 
 import com.android.launcher.R;
+import com.android.launcher2.DropTarget.DragObject;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -686,28 +687,16 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
      * We don't actually use AllAppsPagedView as a drop target... it's only used to intercept a drop
      * to the workspace.
      */
-    @Override
-    public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+    public boolean acceptDrop(DragObject d) {
         return false;
     }
-    @Override
-    public DropTarget getDropTargetDelegate(DragSource source, int x, int y, int xOffset,
-            int yOffset, DragView dragView, Object dragInfo) {
+    public DropTarget getDropTargetDelegate(DragObject d) {
         return null;
     }
-    @Override
-    public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {}
-    @Override
-    public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {}
-    @Override
-    public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {}
-    @Override
-    public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {}
+    public void onDragEnter(DragObject d) {}
+    public void onDragExit(DragObject d) {}
+    public void onDragOver(DragObject d) {}
+    public void onDrop(DragObject d) {}
 
     public boolean isDropEnabled() {
         return true;

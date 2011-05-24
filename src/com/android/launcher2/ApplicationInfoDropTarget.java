@@ -17,6 +17,7 @@
 package com.android.launcher2;
 
 import com.android.launcher.R;
+import com.android.launcher2.DropTarget.DragObject;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -61,33 +62,30 @@ public class ApplicationInfoDropTarget extends IconDropTarget {
         }
     }
 
-    public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+    public boolean acceptDrop(DragObject d) {
         // acceptDrop is called just before onDrop. We do the work here, rather than
         // in onDrop, because it allows us to reject the drop (by returning false)
         // so that the object being dragged isn't removed from the home screen.
         if (getVisibility() != VISIBLE) return false;
 
         ComponentName componentName = null;
-        if (dragInfo instanceof ApplicationInfo) {
-            componentName = ((ApplicationInfo)dragInfo).componentName;
-        } else if (dragInfo instanceof ShortcutInfo) {
-            componentName = ((ShortcutInfo)dragInfo).intent.getComponent();
+        if (d.dragInfo instanceof ApplicationInfo) {
+            componentName = ((ApplicationInfo) d.dragInfo).componentName;
+        } else if (d.dragInfo instanceof ShortcutInfo) {
+            componentName = ((ShortcutInfo) d.dragInfo).intent.getComponent();
         }
         mLauncher.startApplicationDetailsActivity(componentName);
         return false;
     }
 
-    public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+    public void onDragEnter(DragObject d) {
         if (!mDragAndDropEnabled) return;
-        dragView.setPaint(mHoverPaint);
+        d.dragView.setPaint(mHoverPaint);
     }
 
-    public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+    public void onDragExit(DragObject d) {
         if (!mDragAndDropEnabled) return;
-        dragView.setPaint(null);
+        d.dragView.setPaint(null);
     }
 
     public void onDragStart(DragSource source, Object info, int dragAction) {
