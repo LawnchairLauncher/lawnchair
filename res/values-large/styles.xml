@@ -50,6 +50,9 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="CustomizeTabIndicator.Wide" parent="TabIndicator.Wide">
+    </style>
+
     <style name="config_orientation">
         <item name="@android:screenOrientation">unspecified</item>
     </style>

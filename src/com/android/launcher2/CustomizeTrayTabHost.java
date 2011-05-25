@@ -77,19 +77,23 @@ public class CustomizeTrayTabHost extends TabHost implements LauncherTransitiona
         TextView tabView;
         TabWidget tabWidget = (TabWidget) findViewById(com.android.internal.R.id.tabs);
 
-        tabView = (TextView) mInflater.inflate(R.layout.tab_widget_indicator, tabWidget, false);
+        tabView = (TextView) mInflater.inflate(
+                R.layout.customize_tab_widget_indicator, tabWidget, false);
         tabView.setText(mContext.getString(R.string.widgets_tab_label));
         addTab(newTabSpec(WIDGETS_TAG)
                 .setIndicator(tabView).setContent(contentFactory));
-        tabView = (TextView) mInflater.inflate(R.layout.tab_widget_indicator, tabWidget, false);
+        tabView = (TextView) mInflater.inflate(
+                R.layout.customize_tab_widget_indicator, tabWidget, false);
         tabView.setText(mContext.getString(R.string.applications_tab_label));
         addTab(newTabSpec(APPLICATIONS_TAG)
                 .setIndicator(tabView).setContent(contentFactory));
-        tabView = (TextView) mInflater.inflate(R.layout.tab_widget_indicator, tabWidget, false);
+        tabView = (TextView) mInflater.inflate(
+                R.layout.customize_tab_widget_indicator, tabWidget, false);
         tabView.setText(mContext.getString(R.string.wallpapers_tab_label));
         addTab(newTabSpec(WALLPAPERS_TAG)
                 .setIndicator(tabView).setContent(contentFactory));
-        tabView = (TextView) mInflater.inflate(R.layout.tab_widget_indicator, tabWidget, false);
+        tabView = (TextView) mInflater.inflate(
+                R.layout.customize_tab_widget_indicator, tabWidget, false);
         tabView.setText(mContext.getString(R.string.shortcuts_tab_label));
         addTab(newTabSpec(SHORTCUTS_TAG)
                 .setIndicator(tabView).setContent(contentFactory));
