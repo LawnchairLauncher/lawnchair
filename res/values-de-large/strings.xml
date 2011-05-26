@@ -19,7 +19,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="wallpaper_dialog_title" msgid="5764793286524787718">"Hintergrund auswählen"</string>
-    <string name="wallpaper_chooser_empty" msgid="7358237455389125747">"Keine Hintergründe verfügbar"</string>
-    <string name="wallpaper_cancel" msgid="6502936522490675611">"Abbrechen"</string>
+    <string name="wallpaper_dialog_title" msgid="8362944198120933329">"Hintergrund auswählen"</string>
+    <string name="wallpaper_chooser_empty" msgid="6543937491391049913">"Keine Hintergründe verfügbar"</string>
+    <string name="wallpaper_cancel" msgid="5942480248232268588">"Abbrechen"</string>
 </resources>
