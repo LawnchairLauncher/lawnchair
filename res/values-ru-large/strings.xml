@@ -19,7 +19,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="wallpaper_dialog_title" msgid="5764793286524787718">"Выберите обои"</string>
-    <string name="wallpaper_chooser_empty" msgid="7358237455389125747">"Нет доступных обоев"</string>
-    <string name="wallpaper_cancel" msgid="6502936522490675611">"Отмена"</string>
+    <string name="wallpaper_dialog_title" msgid="8362944198120933329">"Выберите обои"</string>
+    <string name="wallpaper_chooser_empty" msgid="6543937491391049913">"Нет доступных обоев"</string>
+    <string name="wallpaper_cancel" msgid="5942480248232268588">"Отмена"</string>
 </resources>
