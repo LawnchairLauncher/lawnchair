@@ -19,7 +19,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="wallpaper_dialog_title" msgid="5764793286524787718">"Pasirinkti darbalaukio foną"</string>
-    <string name="wallpaper_chooser_empty" msgid="7358237455389125747">"Nepasiekiami jokie darbalaukio fonai"</string>
-    <string name="wallpaper_cancel" msgid="6502936522490675611">"Atšaukti"</string>
+    <string name="wallpaper_dialog_title" msgid="8362944198120933329">"Pasirinkti darbalaukio foną"</string>
+    <string name="wallpaper_chooser_empty" msgid="6543937491391049913">"Negalimi jokie darbalaukio fonai"</string>
+    <string name="wallpaper_cancel" msgid="5942480248232268588">"Atšaukti"</string>
 </resources>
