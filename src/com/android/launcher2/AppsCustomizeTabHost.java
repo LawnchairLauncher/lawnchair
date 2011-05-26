@@ -42,6 +42,13 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         mLayoutInflater = LayoutInflater.from(context);
     }
 
+    void selectAppsTab() {
+        setCurrentTabByTag(APPS_TAB_TAG);
+    }
+    void selectWidgetsTab() {
+        setCurrentTabByTag(WIDGETS_TAB_TAG);
+    }
+
     /**
      * Setup the tab host and create all necessary tabs.
      */

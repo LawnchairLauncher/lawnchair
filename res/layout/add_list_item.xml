@@ -18,7 +18,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="?android:attr/listPreferredItemHeight"
-    android:textAppearance="?android:attr/textAppearanceLargeInverse"
+    android:textAppearance="?android:attr/textAppearanceLarge"
     android:gravity="center_vertical"
     android:drawablePadding="14dip"
     android:paddingLeft="15dip"

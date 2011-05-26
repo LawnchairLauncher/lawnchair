@@ -25,8 +25,10 @@ import org.xmlpull.v1.XmlPullParser;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -53,10 +55,12 @@ import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.launcher.R;
 
@@ -341,31 +345,21 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                     });
                 }
             } else {
-                // Add the widget to the current workspace screen
-                Workspace w = mLauncher.getWorkspace();
-                int currentWorkspaceScreen = mLauncher.getCurrentWorkspaceScreen();
-                final CellLayout cl = (CellLayout) w.getChildAt(currentWorkspaceScreen);
-                final View dragView = v.findViewById(R.id.widget_preview);
-                final ItemInfo itemInfo = (ItemInfo) v.getTag();
-                animateClickFeedback(v, new Runnable() {
-                    @Override
-                    public void run() {
-                        cl.calculateSpans(itemInfo);
-                        if (cl.findCellForSpan(null, itemInfo.spanX, itemInfo.spanY)) {
-                            if (LauncherApplication.isScreenLarge()) {
-                                animateItemOntoScreen(dragView, cl, itemInfo);
-                            } else {
-                                mLauncher.addExternalItemToScreen(itemInfo, cl);
-                                itemInfo.dropPos = null;
-                            }
+                // Let the user know that they have to long press to add a widget
+                Toast.makeText(getContext(), R.string.long_press_widget_to_add,
+                        Toast.LENGTH_SHORT).show();
 
-                            // Hide the pane so we can see the workspace we dropped on
-                            mLauncher.showWorkspace(true);
-                        } else {
-                            mLauncher.showOutOfSpaceMessage();
-                        }
-                    }
-                });
+                // Create a little animation to show that the widget can move
+                float offsetY = getResources().getDimensionPixelSize(R.dimen.dragViewOffsetY);
+                final ImageView p = (ImageView) v.findViewById(R.id.widget_preview);
+                AnimatorSet bounce = new AnimatorSet();
+                ValueAnimator tyuAnim = ObjectAnimator.ofFloat(p, "translationY", offsetY);
+                tyuAnim.setDuration(125);
+                ValueAnimator tydAnim = ObjectAnimator.ofFloat(p, "translationY", 0f);
+                tydAnim.setDuration(100);
+                bounce.play(tyuAnim).before(tydAnim);
+                bounce.setInterpolator(new AccelerateInterpolator());
+                bounce.start();
             }
         }
     }

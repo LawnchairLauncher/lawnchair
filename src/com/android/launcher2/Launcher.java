@@ -2230,11 +2230,7 @@ public final class Launcher extends Activity
                 mWorkspace.setAllowLongPress(false);
                 mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                         HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-                if (LauncherApplication.isScreenLarge()) {
-                    addItems();
-                } else {
-                    startWallpaper();
-                }
+                addItems();
             } else {
                 if (!(itemUnderLongClick instanceof Folder)) {
                     // User long pressed on an item
@@ -2970,9 +2966,8 @@ public final class Launcher extends Activity
             // Change the state *after* we've called all the transition code
             mState = State.ALL_APPS;
         } else {
-            View appsCustomizePane = findViewById(R.id.apps_customize_pane);
             cameraZoomOut(State.APPS_CUSTOMIZE, animated, false);
-            appsCustomizePane.requestFocus();
+            mAppsCustomizeTabHost.requestFocus();
 
             // Change the state *after* we've called all the transition code
             mState = State.APPS_CUSTOMIZE;
@@ -3252,11 +3247,10 @@ public final class Launcher extends Activity
         Dialog createDialog() {
             mAdapter = new AddAdapter(Launcher.this);
 
-            final AlertDialog.Builder builder = new AlertDialog.Builder(Launcher.this);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(Launcher.this, 
+                    AlertDialog.THEME_HOLO_DARK);
             builder.setTitle(getString(R.string.menu_item_add_item));
             builder.setAdapter(mAdapter, this);
-
-            builder.setInverseBackgroundForced(true);
 
             AlertDialog dialog = builder.create();
             dialog.setOnCancelListener(this);
@@ -3272,6 +3266,8 @@ public final class Launcher extends Activity
         }
 
         public void onDismiss(DialogInterface dialog) {
+            mWaitingForResult = false;
+            cleanup();
         }
 
         private void cleanup() {
@@ -3289,22 +3285,26 @@ public final class Launcher extends Activity
             Resources res = getResources();
             cleanup();
 
-            switch (which) {
+            AddAdapter.ListItem item = (AddAdapter.ListItem) mAdapter.getItem(which);
+            switch (item.actionTag) {
                 case AddAdapter.ITEM_SHORTCUT: {
                     pickShortcut();
                     break;
                 }
-
-                case AddAdapter.ITEM_APPWIDGET: {
-                    int appWidgetId = Launcher.this.mAppWidgetHost.allocateAppWidgetId();
-
-                    Intent pickIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_PICK);
-                    pickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-                    // start the pick activity
-                    startActivityForResult(pickIntent, REQUEST_PICK_APPWIDGET);
+                case AddAdapter.ITEM_APPLICATION: {
+                    if (mAppsCustomizeTabHost != null) {
+                        mAppsCustomizeTabHost.selectAppsTab();
+                    }
+                    showAllApps(true);
                     break;
                 }
-
+                case AddAdapter.ITEM_APPWIDGET: {
+                    if (mAppsCustomizeTabHost != null) {
+                        mAppsCustomizeTabHost.selectWidgetsTab();
+                    }
+                    showAllApps(true);
+                    break;
+                }
                 case AddAdapter.ITEM_WALLPAPER: {
                     startWallpaper();
                     break;
