@@ -24,6 +24,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.util.Pair;
 import android.util.DisplayMetrics;
 
 import java.util.HashMap;
@@ -186,5 +187,17 @@ public class IconCache {
             entry.icon = Utilities.createIconBitmap(icon, mContext);
         }
         return entry;
+    }
+
+    public HashMap<ComponentName,Bitmap> getAllIcons() {
+        synchronized (mCache) {
+            HashMap<ComponentName,Bitmap> set = new HashMap<ComponentName,Bitmap>();
+            int i = 0;
+            for (ComponentName cn : mCache.keySet()) {
+                final CacheEntry e = mCache.get(cn);
+                set.put(cn, e.icon);
+            }
+            return set;
+        }
     }
 }
