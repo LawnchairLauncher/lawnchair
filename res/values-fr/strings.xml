@@ -19,6 +19,8 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- no translation found for live_wallpaper_picker_class_name (2908396359221567921) -->
+    <skip />
     <string name="application_name" msgid="8424725141379931883">"Lanceur d\'applications"</string>
     <string name="uid_name" msgid="3371120195364560632">"Applications de base Android"</string>
     <string name="folder_name" msgid="4588446541914685904">"Dossier"</string>

@@ -20,6 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="wallpaper_dialog_title" msgid="8362944198120933329">"Chọn hình nền"</string>
-    <string name="wallpaper_chooser_empty" msgid="6543937491391049913">"Không có sẵn hình nền nào"</string>
+    <string name="wallpaper_chooser_empty" msgid="6543937491391049913">"Không có hình nền nào"</string>
     <string name="wallpaper_cancel" msgid="5942480248232268588">"Hủy"</string>
 </resources>

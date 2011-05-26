@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+* Copyright (C) 2008 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- no translation found for live_wallpaper_picker_class_name (2908396359221567921) -->
+    <skip />
+    <!-- outdated translation 5865630159700533006 -->     <string name="application_name" msgid="8424725141379931883">"Laman Utama"</string>
+    <string name="uid_name" msgid="3371120195364560632">"Apl Teras Android"</string>
+    <string name="folder_name" msgid="4588446541914685904">"Folder"</string>
+    <string name="chooser_wallpaper" msgid="5988031014201479733">"Pilih kertas dinding daripada"</string>
+    <string name="wallpaper_instructions" msgid="4215640646180727542">"Tetapkan kertas dinding"</string>
+    <!-- outdated translation 2674908923379130941 -->     <string name="pick_wallpaper" msgid="5630222540525626723">"Galeri Kertas Dinding"</string>
+    <!-- outdated translation 3571057450431950427 -->     <string name="activity_not_found" msgid="5591731020063337696">"Aplikasi tidak dipasang pada telefon anda."</string>
+    <!-- no translation found for configure_wallpaper (2820186271419674623) -->
+    <skip />
+    <!-- no translation found for widgets_tab_label (9145860100000983599) -->
+    <skip />
+    <!-- no translation found for folders_tab_label (1145293785541489736) -->
+    <skip />
+    <!-- no translation found for shortcuts_tab_label (8640731503933155644) -->
+    <skip />
+    <!-- no translation found for wallpapers_tab_label (1617804870364119879) -->
+    <skip />
+    <!-- no translation found for applications_tab_label (2991364240020736760) -->
+    <skip />
+    <!-- no translation found for wallpapers_temp_tab_text (1660218201190495279) -->
+    <skip />
+    <!-- no translation found for all_apps_tab_all (2942727589595027258) -->
+    <skip />
+    <!-- no translation found for all_apps_tab_apps (5468972551904071712) -->
+    <skip />
+    <!-- no translation found for all_apps_tab_games (1855736784923494918) -->
+    <skip />
+    <!-- no translation found for all_apps_tab_downloaded (1488049110598641387) -->
+    <skip />
+    <!-- no translation found for all_apps_no_games (5293893733372793696) -->
+    <skip />
+    <!-- no translation found for all_apps_no_downloads (2284720393234453761) -->
+    <skip />
+    <!-- no translation found for market (2652226429823445833) -->
+    <skip />
+    <!-- no translation found for external_drop_widget_error (4976816434597126575) -->
+    <skip />
+    <!-- no translation found for external_drop_widget_pick_title (4481311720134376218) -->
+    <skip />
+    <string name="rename_folder_label" msgid="5646236631298452787">"Nama folder"</string>
+    <string name="rename_folder_title" msgid="4544573104191526550">"Namakan semula folder"</string>
+    <string name="rename_action" msgid="6016003384693240896">"OK"</string>
+    <string name="cancel_action" msgid="3811860427489435048">"Batal"</string>
+    <string name="menu_item_add_item" msgid="6233177331075781114">"Tambah ke Skrin utama"</string>
+    <string name="group_applications" msgid="4118484163419674240">"Aplikasi"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"Pintasan"</string>
+    <string name="group_folder" msgid="5143593791798929193">"Folder baru"</string>
+    <string name="group_live_folders" msgid="2664945399140647217">"Folder"</string>
+    <string name="group_widgets" msgid="6704978494073105844">"Widget"</string>
+    <string name="group_wallpapers" msgid="1568191644272224858">"Kertas dinding"</string>
+    <string name="add_folder" msgid="3521088587367839879">"Folder"</string>
+    <string name="add_clock" msgid="2337943840175865746">"Jam"</string>
+    <string name="add_photo_frame" msgid="3154058437359487954">"Bingkai gambar"</string>
+    <string name="out_of_space" msgid="8365249326091984698">"Tiada lagi ruang pada skrin Utama ini"</string>
+    <!-- no translation found for shortcut_installed (7071557296331322355) -->
+    <skip />
+    <!-- no translation found for shortcut_uninstalled (2129499669449749995) -->
+    <skip />
+    <!-- no translation found for shortcut_duplicate (4757756326465060694) -->
+    <skip />
+    <string name="title_select_shortcut" msgid="2858897527672831763">"Pilih pintasan"</string>
+    <!-- no translation found for title_select_application (8031072293115454221) -->
+    <skip />
+    <string name="title_select_live_folder" msgid="3753447798805166749">"Pilih folder"</string>
+    <!-- no translation found for all_apps_button_label (2578400570124163469) -->
+    <skip />
+    <!-- no translation found for all_apps_home_button_label (1022222300329398558) -->
+    <skip />
+    <!-- no translation found for delete_zone_label_workspace (7153615831493049150) -->
+    <skip />
+    <!-- no translation found for delete_zone_label_all_apps (6664588234817475108) -->
+    <skip />
+    <!-- no translation found for accessibility_search_button (816822994629942611) -->
+    <skip />
+    <!-- no translation found for accessibility_voice_search_button (3938249215065842475) -->
+    <skip />
+    <!-- no translation found for accessibility_all_apps_button (1595097919145716305) -->
+    <skip />
+    <!-- no translation found for accessibility_customize_button (585539669413531163) -->
+    <skip />
+    <!-- no translation found for accessibility_delete_button (3628162007991023603) -->
+    <skip />
+    <!-- no translation found for delete_zone_label_all_apps_system_app (3683920959591819044) -->
+    <skip />
+    <string name="menu_add" msgid="3065046628354640854">"Tambah"</string>
+    <!-- no translation found for menu_manage_apps (2308685199463588895) -->
+    <skip />
+    <string name="menu_wallpaper" msgid="5837429080911269832">"Kertas dinding"</string>
+    <string name="menu_search" msgid="4826514464423239041">"Cari"</string>
+    <string name="menu_notifications" msgid="6424587053194766192">"Pemberitahuan"</string>
+    <string name="menu_gestures" msgid="514678675575912237">"Gerak isyarat"</string>
+    <string name="menu_settings" msgid="6233960148378443661">"Tetapan"</string>
+    <!-- no translation found for cab_menu_delete_app (1242619904941293871) -->
+    <skip />
+    <!-- no translation found for cab_menu_app_info (5180426909324882018) -->
+    <skip />
+    <!-- no translation found for cab_app_selection_text (606113924828167756) -->
+    <skip />
+    <!-- no translation found for cab_widget_selection_text (962527270506951955) -->
+    <skip />
+    <!-- no translation found for cab_folder_selection_text (8916111874189565067) -->
+    <skip />
+    <!-- no translation found for cab_shortcut_selection_text (8115847384500412878) -->
+    <skip />
+    <string name="permlab_install_shortcut" msgid="1201690825493376489">"pasang pintasan"</string>
+    <string name="permdesc_install_shortcut" msgid="7429365847558984148">"Membenarkan aplikasi menambah pintasan tanpa campur tangan pengguna."</string>
+    <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"nyahpasang pintasan"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="959972195916090900">"Membenarkan aplikasi mengalih keluar pintasan tanpa campur tangan pengguna."</string>
+    <string name="permlab_read_settings" msgid="3452408290738106747">"membaca tetapan dan pintasan Laman Utama"</string>
+    <string name="permdesc_read_settings" msgid="8377434937176025492">"Membenarkan aplikasi untuk membaca tetapan dan pintasan di Laman Utama."</string>
+    <string name="permlab_write_settings" msgid="1360567537236705628">"menulis tetapan dan pintasan Laman Utama"</string>
+    <string name="permdesc_write_settings" msgid="1098648778383349818">"Membenarkan aplikasi untuk menukar tetapan dan pintasan di Laman Utama."</string>
+    <string name="gadget_error_text" msgid="8359351016167075858">"Masalah memuatkan widget"</string>
+    <!-- no translation found for uninstall_system_app_text (7488523163288397451) -->
+    <skip />
+</resources>
