@@ -74,6 +74,10 @@
     <!--  Tile of the tab for applications that were downloaded from market [CHAR_LIMIT=24] -->
     <string name="all_apps_tab_downloaded">My apps</string>
 
+    <!-- AppsCustomize pane -->
+    <!-- Message to tell the user to long-press on a widget to add it [CHAR_LIMIT=50] -->
+    <string name="long_press_widget_to_add">Long-press to pick up a widget</string>
+
     <!-- All Apps pane -->
     <!-- Message to show when there are no games [CHAR_LIMIT=25] -->
     <string name="all_apps_no_games">No games found.</string>
