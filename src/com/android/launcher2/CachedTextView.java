@@ -107,7 +107,7 @@ public class CachedTextView extends TextView {
         int width = (int) (textCacheRight - mTextCacheLeft + (2 * xCharWidth));
         int height = (int) (textCacheBottom - mTextCacheTop);
 
-        if (width != 0 && height != 0) {
+        if (width > 0 && height > 0) {
             if (mCache != null) {
                 if (mCache.getWidth() != width || mCache.getHeight() != height) {
                     mCache.recycle();
