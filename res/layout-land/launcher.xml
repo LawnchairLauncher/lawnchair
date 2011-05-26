@@ -41,6 +41,12 @@
 
     </com.android.launcher2.Workspace>
 
+    <include layout="@layout/qsb_bar"
+        android:id="@+id/qsb_bar"
+        android:layout_width="@dimen/qsb_bar_height"
+        android:layout_height="match_parent"
+        android:layout_gravity="left" />
+
     <include layout="@layout/apps_customize_pane"
         android:id="@+id/apps_customize_pane"
         android:layout_width="match_parent"

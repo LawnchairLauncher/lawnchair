@@ -68,6 +68,23 @@
         <item name="android:layout_marginRight">10dip</item>
     </style>
 
+    <style name="SearchBar">
+        <item name="android:orientation">horizontal</item>
+    </style>
+    <style name="SearchButton">
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:paddingTop">@dimen/toolbar_button_vertical_padding</item>
+        <item name="android:paddingBottom">@dimen/toolbar_button_vertical_padding</item>
+        <item name="android:paddingLeft">@dimen/toolbar_button_horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/toolbar_button_horizontal_padding</item>
+    </style>
+    <style name="SearchButtonDivider">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">center_vertical</item>
+    </style>
+
+
     <style name="TabIndicator">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
@@ -83,13 +100,6 @@
         <item name="android:shadowDx">0.0</item>
         <item name="android:shadowDy">1.0</item>
         <item name="android:shadowRadius">1.0</item>
-    </style>
-
-    <style name="SearchButton" parent="@android:style/Widget.Button.Small">
-        <item name="android:paddingTop">7dip</item>
-        <item name="android:paddingBottom">9dip</item>
-        <item name="android:paddingLeft">10dip</item>
-        <item name="android:paddingRight">10dip</item>
     </style>
 
     <style name="MarketButton">
