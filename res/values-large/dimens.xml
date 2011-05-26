@@ -62,9 +62,6 @@
     <integer name="land_all_apps_view_cellCountX">7</integer>
     <integer name="land_all_apps_view_cellCountY">5</integer>
 
-    <dimen name="toolbar_button_vertical_padding">12dip</dimen>
-    <dimen name="toolbar_button_horizontal_padding">16dip</dimen>
-
     <!-- height & width of the drop rectangle for the trash icon -->
     <dimen name="delete_zone_vertical_drag_padding">20dip</dimen>
     <dimen name="delete_zone_horizontal_drag_padding">20dip</dimen>

@@ -15,6 +15,13 @@
 -->
 
 <resources>
+<!-- Workspace -->
+    <dimen name="qsb_bar_height">56dp</dimen>
+
+<!-- QSB -->
+    <dimen name="toolbar_button_vertical_padding">12dip</dimen>
+    <dimen name="toolbar_button_horizontal_padding">16dip</dimen>
+
 <!-- AllApps/Customize/AppsCustomize -->
     <!-- Size of icons in Workspace/AppsCustomize -->
     <dimen name="app_icon_size">50dp</dimen>

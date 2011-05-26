@@ -18,6 +18,23 @@
 -->
 
 <resources>
+<!-- Search Bar -->
+    <style name="SearchBar">
+        <item name="android:orientation">vertical</item>
+    </style>
+    <style name="SearchButton">
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:paddingTop">@dimen/toolbar_button_vertical_padding</item>
+        <item name="android:paddingBottom">@dimen/toolbar_button_vertical_padding</item>
+        <item name="android:paddingLeft">@dimen/toolbar_button_horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/toolbar_button_horizontal_padding</item>
+    </style>
+    <style name="SearchButtonDivider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
+
     <style name="HotseatButton">
         <item name="android:paddingTop">12dip</item>
         <item name="android:paddingBottom">12dip</item>

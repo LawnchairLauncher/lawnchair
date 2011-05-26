@@ -3157,22 +3157,34 @@ public final class Launcher extends Activity
     }
 
     private void updateGlobalSearchIcon() {
-        if (LauncherApplication.isScreenLarge()) {
-            final View searchButton = findViewById(R.id.search_button);
-            final View searchDivider = findViewById(R.id.search_divider);
+        final ImageView searchButton = (ImageView) findViewById(R.id.search_button);
+        final View searchDivider = findViewById(R.id.search_divider);
 
-            final SearchManager searchManager =
-                    (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-            ComponentName activityName = searchManager.getGlobalSearchActivity();
-            if (activityName != null) {
+        final SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        ComponentName activityName = searchManager.getGlobalSearchActivity();
+        if (activityName != null) {
+            // In landscape mode on the Phone UI, we only have enough space to show the magnifying
+            // glass icon
+            boolean iconLoaded = false;
+            if (!LauncherApplication.isScreenLarge()) {
+                // TODO-APPS_CUSTOMIZE: Remove when the QSB fixes itself?
+                int orientation = getResources().getConfiguration().orientation;
+                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    searchButton.setImageResource(R.drawable.ic_generic_search);
+                    iconLoaded = true;
+                    sGlobalSearchIcon = null;
+                }
+            }
+            if (!iconLoaded) {
                 sGlobalSearchIcon = updateButtonWithIconFromExternalActivity(
                         R.id.search_button, activityName, R.drawable.ic_generic_search);
-                searchButton.setVisibility(View.VISIBLE);
-                searchDivider.setVisibility(View.VISIBLE);
-            } else {
-                searchButton.setVisibility(View.GONE);
-                searchDivider.setVisibility(View.GONE);
             }
+            searchButton.setVisibility(View.VISIBLE);
+            searchDivider.setVisibility(View.VISIBLE);
+        } else {
+            searchButton.setVisibility(View.GONE);
+            searchDivider.setVisibility(View.GONE);
         }
     }
 
@@ -3181,21 +3193,19 @@ public final class Launcher extends Activity
     }
 
     private void updateVoiceSearchIcon() {
-        if (LauncherApplication.isScreenLarge()) {
-            final View searchDivider = findViewById(R.id.search_divider);
-            final View voiceButton = findViewById(R.id.voice_button);
+        final View searchDivider = findViewById(R.id.search_divider);
+        final View voiceButton = findViewById(R.id.voice_button);
 
-            Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
-            ComponentName activityName = intent.resolveActivity(getPackageManager());
-            if (activityName != null) {
-                sVoiceSearchIcon = updateButtonWithIconFromExternalActivity(
-                        R.id.voice_button, activityName, R.drawable.ic_voice_search);
-                searchDivider.setVisibility(View.VISIBLE);
-                voiceButton.setVisibility(View.VISIBLE);
-            } else {
-                searchDivider.setVisibility(View.GONE);
-                voiceButton.setVisibility(View.GONE);
-            }
+        Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
+        ComponentName activityName = intent.resolveActivity(getPackageManager());
+        if (activityName != null) {
+            sVoiceSearchIcon = updateButtonWithIconFromExternalActivity(
+                    R.id.voice_button, activityName, R.drawable.ic_voice_search);
+            searchDivider.setVisibility(View.VISIBLE);
+            voiceButton.setVisibility(View.VISIBLE);
+        } else {
+            searchDivider.setVisibility(View.GONE);
+            voiceButton.setVisibility(View.GONE);
         }
     }
 

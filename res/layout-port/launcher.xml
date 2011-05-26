@@ -36,8 +36,13 @@
         <include android:id="@+id/cell3" layout="@layout/workspace_screen" />
         <include android:id="@+id/cell4" layout="@layout/workspace_screen" />
         <include android:id="@+id/cell5" layout="@layout/workspace_screen" />
-                
     </com.android.launcher2.Workspace>
+
+    <include layout="@layout/qsb_bar"
+        android:id="@+id/qsb_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/qsb_bar_height"
+        android:layout_gravity="top" />
 
     <include layout="@layout/apps_customize_pane"
         android:id="@+id/apps_customize_pane"
