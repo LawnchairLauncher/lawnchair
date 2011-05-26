@@ -1,5 +1,4 @@
-#
-# Copyright (C) 2008 The Android Open Source Project
+# Copyright (C) 2011 The Android Open Source Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,28 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-ifneq ($(TARGET_SIMULATOR),true)
-
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
-LOCAL_MODULE_TAGS := optional
+# We only want this apk build for tests.
+LOCAL_MODULE_TAGS := tests
 
-LOCAL_STATIC_JAVA_LIBRARIES := android-common
+LOCAL_JAVA_LIBRARIES := android.test.runner
 
-LOCAL_SRC_FILES := $(call all-java-files-under, src) $(call all-renderscript-files-under, src)
+LOCAL_SRC_FILES := $(call all-java-files-under, src)
 
+LOCAL_PACKAGE_NAME := LauncherRotationStressTest
 
-LOCAL_PACKAGE_NAME := Launcher2
 LOCAL_CERTIFICATE := shared
 
-LOCAL_OVERRIDES_PACKAGES := Home
+LOCAL_INSTRUMENTATION_FOR := Launcher2
 
-LOCAL_PROGUARD_FLAG_FILES := proguard.flags
+LOCAL_SDK_VERSION := current
 
 include $(BUILD_PACKAGE)
-
-include $(call all-subdir-makefiles)
-
-endif
