@@ -69,6 +69,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
 
     private int mLastMeasureWidth = -1;
     private int mLastMeasureHeight = -1;
+    private boolean mWaitingToInitPages = true;
 
     private int mMaxCellCountY;
 
@@ -121,13 +122,16 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
             mCellCountY = determineCellCountY(height, layout);
             mLastMeasureWidth = width;
             mLastMeasureHeight = height;
+            removeAllViews();
+            invalidatePageData();
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        if (mFirstLayout) {
+        if (mWaitingToInitPages) {
+            mWaitingToInitPages = false;
             invalidatePageData();
 
             // invalidatePageData() is what causes the child pages to be created. We need the
@@ -548,12 +552,17 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
     }
 
     @Override
-    public void syncPages() {
-        if (mCellCountX <= 0 || mCellCountY <= 0) {
+    protected void invalidatePageData() {
+        if (mWaitingToInitPages || mCellCountX <= 0 || mCellCountY <= 0) {
             // We don't know our size yet, which means we haven't calculated cell count x/y;
             // onMeasure will call us once we figure out our size
             return;
         }
+        super.invalidatePageData();
+    }
+
+    @Override
+    public void syncPages() {
         // ensure that we have the right number of pages (min of 1, since we have placeholders)
         int numPages = Math.max(1,
                 (int) Math.ceil((float) mFilteredApps.size() / (mCellCountX * mCellCountY)));
