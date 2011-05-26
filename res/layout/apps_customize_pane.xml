@@ -94,9 +94,7 @@
                 launcher:widgetCellWidthGap="@dimen/apps_customize_widget_cell_width_gap"
                 launcher:widgetCellHeightGap="@dimen/apps_customize_widget_cell_height_gap"
                 launcher:widgetCountX="@integer/apps_customize_widget_cell_count_x"
-                launcher:widgetCountY="@integer/apps_customize_widget_cell_count_y"
-                launcher:wallpaperCountX="@integer/apps_customize_wallpaper_cell_count_x"
-                launcher:wallpaperCountY="@integer/apps_customize_wallpaper_cell_count_y" />
+                launcher:widgetCountY="@integer/apps_customize_widget_cell_count_y" />
          </FrameLayout>
       </LinearLayout>
 </com.android.launcher2.AppsCustomizeTabHost>
