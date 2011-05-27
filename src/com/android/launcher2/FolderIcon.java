@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -45,13 +46,31 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
     Folder mFolder;
     FolderInfo mInfo;
 
+    // The number of icons to display in the
     private static final int NUM_ITEMS_IN_PREVIEW = 4;
-    private static final float ICON_ANGLE = 15f;
     private static final int CONSUMPTION_ANIMATION_DURATION = 100;
+
+    // The degree to which the inner ring grows when accepting drop
     private static final float INNER_RING_GROWTH_FACTOR = 0.1f;
-    private static final float OUTER_RING_BASELINE_SCALE = 0.7f;
-    private static final float OUTER_RING_GROWTH_FACTOR = 0.3f;
+
+    // The degree to which the inner ring is scaled in its natural state
     private static final float INNER_RING_BASELINE_SCALE = 1.0f;
+
+    // The degree to which the outer ring grows when accepting drop
+    private static final float OUTER_RING_BASELINE_SCALE = 0.7f;
+
+    // The degree to which the outer ring is scaled in its natural state
+    private static final float OUTER_RING_GROWTH_FACTOR = 0.3f;
+
+    // The amount of vertical spread between items in the stack [0...1]
+    private static final float PERSPECTIVE_SHIFT_FACTOR = 0.18f;
+
+    // The degree to which the item in the back of the stack is scaled [0...1]
+    // (0 means it's not scaled at all, 1 means it's scaled to nothing)
+    private static final float PERSPECTIVE_SCALE_FACTOR = 0.3f;
+
+    // The percentage of the FolderIcons view that will be dedicated to the items preview
+    private static final float SPACE_PERCENTAGE_FOR_ICONS = 0.8f;
 
     public static Drawable sFolderOuterRingDrawable = null;
     public static Drawable sFolderInnerRingDrawable = null;
@@ -148,8 +167,6 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
     }
 
     private void animateToAcceptState() {
-        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
-
         ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
         va.setDuration(CONSUMPTION_ANIMATION_DURATION);
         va.addUpdateListener(new AnimatorUpdateListener() {
@@ -253,24 +270,46 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
             mOriginalHeight = getMeasuredHeight();
         }
 
-        int xShift = (mOriginalWidth - d.getIntrinsicWidth()) / 2;
-        int yShift = (mOriginalHeight - d.getIntrinsicHeight()) / 2;
-        canvas.translate(xShift, yShift);
+        int unscaledHeight = (int) (d.getIntrinsicHeight() * (1 + PERSPECTIVE_SHIFT_FACTOR));
+        float baselineIconScale = SPACE_PERCENTAGE_FOR_ICONS / (unscaledHeight / (mOriginalHeight * 1.0f));
+
+        int baselineHeight = (int) (d.getIntrinsicHeight() * baselineIconScale);
+        int totalStackHeight = (int) (baselineHeight * (1 + PERSPECTIVE_SHIFT_FACTOR));
+        int baselineWidth = (int) (d.getIntrinsicWidth() * baselineIconScale);
+        float maxPerpectiveShift = baselineHeight * PERSPECTIVE_SHIFT_FACTOR;
 
         ArrayList<View> items = mFolder.getItemsInReadingOrder();
         int firstItemIndex = Math.max(0, items.size() - NUM_ITEMS_IN_PREVIEW);
+
+        int xShift = (int) (mOriginalWidth - baselineWidth) / 2;
+        int yShift = (int) (mOriginalHeight - totalStackHeight) / 2;
+        canvas.translate(xShift, yShift);
         for (int i = firstItemIndex; i < items.size(); i++) {
+            int index = i - firstItemIndex;
+            index += Math.max(0, NUM_ITEMS_IN_PREVIEW - items.size());
+
+            float r = (index * 1.0f) / (NUM_ITEMS_IN_PREVIEW - 1);
+            float scale = (1 - PERSPECTIVE_SCALE_FACTOR * (1 - r));
+            r = (float) Math.pow(r, 2);
+
+            float transY = r * maxPerpectiveShift;
+            float transX = (1 - scale) * baselineWidth / 2.0f;
+
             v = (TextView) items.get(i);
             d = v.getCompoundDrawables()[1];
 
-            canvas.translate(d.getIntrinsicWidth() / 2, d.getIntrinsicHeight() / 2);
-            canvas.rotate(i == firstItemIndex ? ICON_ANGLE : -ICON_ANGLE);
-            canvas.translate(-d.getIntrinsicWidth() / 2, -d.getIntrinsicHeight() / 2);
+            canvas.save();
+            canvas.translate(transX, transY);
+            canvas.scale(baselineIconScale * scale, baselineIconScale * scale);
 
+            int overlayAlpha = (int) (80 * (1 - r));
             if (d != null) {
                 d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+                d.setColorFilter(Color.argb(overlayAlpha, 0, 0, 0), PorterDuff.Mode.SRC_ATOP);
                 d.draw(canvas);
+                d.clearColorFilter();
             }
+            canvas.restore();
         }
 
         canvas.restore();
