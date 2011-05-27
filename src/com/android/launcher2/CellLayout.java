@@ -280,33 +280,6 @@ public class CellLayout extends ViewGroup {
         return  widthGap * (numCells - 1) + cellWidth * numCells + crosshairsSize;
     }
 
-    static int widthInLandscape(Resources r, int numCells) {
-        // We use this method from Workspace to figure out how many rows/columns Launcher should
-        // have. We ignore the left/right padding on CellLayout because it turns out in our design
-        // the padding extends outside the visible screen size, but it looked fine anyway.
-        // However, we make sure there's at least enough space for the crosshairs at either
-        // edge to be rendered (half the crosshair is sticking out on either side)
-        int cellWidth = r.getDimensionPixelSize(R.dimen.workspace_cell_width);
-        int widthGap = r.getDimensionPixelSize(R.dimen.workspace_width_gap_land);
-        int crosshairsSize = r.getDrawable(R.drawable.gardening_crosshairs).getIntrinsicWidth();
-
-        return widthGap * (numCells - 1) + cellWidth * numCells + crosshairsSize;
-    }
-
-    static int heightInPortrait(Resources r, int numCells) {
-        // We use this method from Workspace to figure out how many rows/columns Launcher should
-        // have. We ignore the left/right padding on CellLayout because it turns out in our design
-        // the padding extends outside the visible screen size, but it looked fine anyway.
-        // However, we make sure there's at least enough space for the crosshairs at the bottom
-        // to be rendered (half the crosshair is sticking out); we don't worry about the top
-        // crosshair since it can bleed into the action bar space
-        int cellHeight = r.getDimensionPixelSize(R.dimen.workspace_cell_height);
-        int heightGap = r.getDimensionPixelSize(R.dimen.workspace_height_gap_port);
-        int crosshairsSize = r.getDrawable(R.drawable.gardening_crosshairs).getIntrinsicHeight();
-
-        return heightGap * (numCells - 1) + cellHeight * numCells + (crosshairsSize + 1) / 2;
-    }
-
     static int heightInLandscape(Resources r, int numCells) {
         // We use this method from Workspace to figure out how many rows/columns Launcher should
         // have. We ignore the left/right padding on CellLayout because it turns out in our design
