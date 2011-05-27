@@ -163,18 +163,28 @@ public class AllAppsTabbed extends TabHost implements AllAppsView, LauncherTrans
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         if (mFirstLayout) {
             mFirstLayout = false;
-            // Set the width of the tab bar properly
-            int pageWidth = mAllApps.getPageContentWidth();
-            TabWidget tabWidget = (TabWidget) findViewById(com.android.internal.R.id.tabs);
-            View allAppsTabBar = (View) findViewById(R.id.all_apps_tab_bar);
-            if (allAppsTabBar == null) throw new Resources.NotFoundException();
-            int tabWidgetPadding = 0;
-            final int childCount = tabWidget.getChildCount();
-            if (childCount > 0) {
-                tabWidgetPadding += tabWidget.getChildAt(0).getPaddingLeft() * 2;
-            }
-            allAppsTabBar.getLayoutParams().width = pageWidth + tabWidgetPadding;
         }
+        // Set the width of the tab bar properly
+        int pageWidth = mAllApps.getPageContentWidth();
+        TabWidget tabWidget = (TabWidget) findViewById(com.android.internal.R.id.tabs);
+        View allAppsTabBar = (View) findViewById(R.id.all_apps_tab_bar);
+        if (allAppsTabBar == null) throw new Resources.NotFoundException();
+        int tabWidgetPadding = 0;
+        final int childCount = tabWidget.getChildCount();
+        if (childCount > 0) {
+            tabWidgetPadding += tabWidget.getChildAt(0).getPaddingLeft() * 2;
+        }
+
+        int newWidth = Math.min(getMeasuredWidth(), pageWidth + tabWidgetPadding);
+        if (newWidth != allAppsTabBar.getLayoutParams().width) {
+            allAppsTabBar.getLayoutParams().width = newWidth;
+            post(new Runnable() {
+                    public void run() {
+                        requestLayout();
+                    }
+                });
+        }
+
         super.onLayout(changed, l, t, r, b);
     }
 
