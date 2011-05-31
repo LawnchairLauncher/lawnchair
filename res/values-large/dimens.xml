@@ -95,4 +95,10 @@
 
     <!-- Max number of rows in all apps, because too many looks weird. -->
     <integer name="all_apps_view_maxCellCountY">6</integer>
+
+    <!-- Padding applied to AppWidgets -->
+    <dimen name="app_widget_padding_left">12dp</dimen>
+    <dimen name="app_widget_padding_right">12dp</dimen>
+    <dimen name="app_widget_padding_top">4dp</dimen>
+    <dimen name="app_widget_padding_bottom">20dp</dimen>
 </resources>

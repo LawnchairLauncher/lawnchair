@@ -18,6 +18,7 @@ package com.android.launcher2;
 
 import android.appwidget.AppWidgetHostView;
 import android.content.Context;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,8 +40,15 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
     public LauncherAppWidgetHostView(Context context) {
         super(context);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        Resources r = context.getResources();
+        // We add necessary padding to the AppWidgetHostView
+        setPadding(r.getDimensionPixelSize(R.dimen.app_widget_padding_left),
+                r.getDimensionPixelSize(R.dimen.app_widget_padding_top),
+                r.getDimensionPixelSize(R.dimen.app_widget_padding_right),
+                r.getDimensionPixelSize(R.dimen.app_widget_padding_bottom));
     }
-    
+
     @Override
     protected View getErrorView() {
         return mInflater.inflate(R.layout.appwidget_error, this, false);
