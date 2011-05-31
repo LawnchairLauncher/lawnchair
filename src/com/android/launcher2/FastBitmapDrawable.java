@@ -49,6 +49,11 @@ class FastBitmapDrawable extends Drawable {
     }
 
     @Override
+    public void setColorFilter(ColorFilter cf) {
+        mPaint.setColorFilter(cf);
+    }
+
+    @Override
     public int getOpacity() {
         return PixelFormat.TRANSLUCENT;
     }
@@ -61,10 +66,6 @@ class FastBitmapDrawable extends Drawable {
 
     public int getAlpha() {
         return mAlpha;
-    }
-
-    @Override
-    public void setColorFilter(ColorFilter cf) {
     }
 
     @Override

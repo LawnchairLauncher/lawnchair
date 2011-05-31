@@ -26,6 +26,7 @@ import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -81,6 +82,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     private int mMaxCountY;
     private Rect mNewSize = new Rect();
     private ArrayList<View> mItemsInReadingOrder = new ArrayList<View>();
+    private Drawable mIconDrawable;
     boolean mItemsInvalidated = false;
 
     /**
@@ -144,6 +146,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
             mDragController.startDrag(v, this, item, DragController.DRAG_ACTION_COPY);
             mDragItemPosition[0] = item.cellX;
             mDragItemPosition[1] = item.cellY;
+            mIconDrawable = ((TextView) v).getCompoundDrawables()[1];
             mInfo.remove(item);
 
             mDragItem = item;
@@ -152,6 +155,10 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
             mLauncher.showRenameDialog(mInfo);
         }
         return true;
+    }
+
+    public Drawable getDragDrawable() {
+        return mIconDrawable;
     }
 
     /**
