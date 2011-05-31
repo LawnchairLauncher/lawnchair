@@ -53,7 +53,6 @@ import android.net.Uri;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Display;
@@ -259,42 +258,28 @@ public class Workspace extends SmoothPagedView
                 R.styleable.Workspace, defStyle, 0);
 
         if (LauncherApplication.isScreenXLarge()) {
+            // Determine number of rows/columns dynamically
+            // TODO: This code currently fails on tablets with an aspect ratio < 1.3.
+            // Around that ratio we should make cells the same size in portrait and
+            // landscape
             final Resources res = context.getResources();
-            final DisplayMetrics dm = res.getDisplayMetrics();
-            float widthDp = dm.widthPixels / dm.density;
-            float heightDp = dm.heightPixels / dm.density;
 
-            final float statusBarHeight = res.getDimension(R.dimen.status_bar_height);
             TypedArray actionBarSizeTypedArray =
                 context.obtainStyledAttributes(new int[] { android.R.attr.actionBarSize });
-            float actionBarHeight = actionBarSizeTypedArray.getDimension(0, 0f);
+            final float actionBarHeight = actionBarSizeTypedArray.getDimension(0, 0f);
+            final float systemBarHeight = res.getDimension(R.dimen.status_bar_height);
+            final float smallestScreenDim = res.getConfiguration().smallestScreenWidthDp;
 
-            if (heightDp > widthDp) {
-                float temp = widthDp;
-                widthDp = heightDp;
-                heightDp = temp;
+            cellCountX = 1;
+            while (CellLayout.widthInPortrait(res, cellCountX + 1) <= smallestScreenDim) {
+                cellCountX++;
             }
-            int cellCountXLand = 1;
-            int cellCountXPort = 1;
-            while (2*mPageSpacing + CellLayout.widthInLandscape(res, cellCountXLand + 1) <= widthDp) {
-                cellCountXLand++;
-            }
-            while (CellLayout.widthInPortrait(res, cellCountXPort + 1) <= heightDp) {
-                cellCountXPort++;
-            }
-            cellCountX = Math.min(cellCountXLand, cellCountXPort);
 
-            int cellCountYLand = 1;
-            int cellCountYPort = 1;
-            while (statusBarHeight + actionBarHeight +
-                    CellLayout.heightInLandscape(res, cellCountYLand + 1) <= heightDp) {
-                cellCountYLand++;
+            cellCountY = 1;
+            while (actionBarHeight + CellLayout.heightInLandscape(res, cellCountY + 1)
+                <= smallestScreenDim - systemBarHeight) {
+                cellCountY++;
             }
-            while (statusBarHeight + actionBarHeight +
-                    CellLayout.heightInPortrait(res, cellCountYPort + 1) <= widthDp) {
-                cellCountYPort++;
-            }
-            cellCountY = Math.min(cellCountYLand, cellCountYPort);
         }
 
         // if the value is manually specified, use that instead
