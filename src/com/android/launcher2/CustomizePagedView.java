@@ -210,8 +210,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             mPageContentWidth = layout.getContentWidth();
             mPageContentHeight = layout.getContentHeight();
             mMinPageWidth = layout.getWidthBeforeFirstLayout();
-            removeAllViews();
-            invalidatePageData();
+            postInvalidatePageData(true);
         }
         if (mPageContentHeight > 0) {
             // Lock our height to the size of the page content
@@ -226,12 +225,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         if (mWaitingToInitPages) {
             mWaitingToInitPages = false;
-            invalidatePageData();
-
-            // invalidatePageData() is what causes the child pages to be created. We need the
-            // children to be measured before layout, so force a new measure here.
-            measure(MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.EXACTLY),
-                    MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.EXACTLY));
+            postInvalidatePageData(false);
         }
         super.onLayout(changed, left, top, right, bottom);
         mFirstLayout = false;
