@@ -48,7 +48,7 @@ public class ApplicationInfoDropTarget extends IconDropTarget {
         super(context, attrs, defStyle);
 
         // Set the hover paint colour
-        int colour = getContext().getResources().getColor(R.color.app_info_filter);
+        int colour = getContext().getResources().getColor(R.color.info_target_hover_tint);
         mHoverPaint.setColorFilter(new PorterDuffColorFilter(colour, PorterDuff.Mode.SRC_ATOP));
 
         if (LauncherApplication.isScreenLarge()) {

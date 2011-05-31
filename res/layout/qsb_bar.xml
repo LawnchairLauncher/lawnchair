@@ -13,17 +13,17 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<FrameLayout
+<com.android.launcher2.SearchDropTargetBar
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
     android:focusable="false">
 
     <!-- Search buttons container -->
     <LinearLayout
+        style="@style/SearchDropTargetBar"
         android:id="@+id/qsb_search_bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="@style/SearchBar">
+        android:layout_height="match_parent">
        <!-- Global search icon -->
        <ImageView
             style="@style/SearchButton"
@@ -61,10 +61,32 @@
 
     <!-- Drag specific targets container -->
     <LinearLayout
+        style="@style/SearchDropTargetBar"
         android:id="@+id/drag_target_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FF00FF00"
-        android:visibility="gone">
+        android:alpha="0">
+
+        <FrameLayout
+            style="@style/DropTargetButtonContainer"
+            android:layout_weight="1">
+            <!-- Delete target -->
+            <com.android.launcher2.DeleteDropTarget
+                style="@style/DropTargetButton"
+                android:id="@+id/delete_target"
+                android:text="@string/delete_zone_label_workspace"
+                android:drawableLeft="@drawable/delete_zone_selector" />
+        </FrameLayout>
+
+        <FrameLayout
+            style="@style/DropTargetButtonContainer"
+            android:layout_weight="1">
+            <!-- Info target -->
+            <com.android.launcher2.InfoDropTarget
+                style="@style/DropTargetButton"
+                android:id="@+id/info_target"
+                android:text="@string/info_target_label"
+                android:drawableLeft="@drawable/ic_home_info_holo_dark" />
+        </FrameLayout>
     </LinearLayout>
-</FrameLayout>
+</com.android.launcher2.SearchDropTargetBar>

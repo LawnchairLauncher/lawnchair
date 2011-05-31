@@ -3233,7 +3233,7 @@ public class Workspace extends SmoothPagedView
                 pixelX, pixelY, spanX, spanY, recycle);
     }
 
-    void setLauncher(Launcher launcher) {
+    void setup(Launcher launcher, DragController dragController) {
         mLauncher = launcher;
         mSpringLoadedDragController = new SpringLoadedDragController(mLauncher);
 
@@ -3242,9 +3242,6 @@ public class Workspace extends SmoothPagedView
             mCustomizationDrawerContent =
                 mCustomizationDrawer.findViewById(com.android.internal.R.id.tabcontent);
         }
-    }
-
-    public void setDragController(DragController dragController) {
         mDragController = dragController;
     }
 

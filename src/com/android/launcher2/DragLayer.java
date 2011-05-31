@@ -58,7 +58,8 @@ public class DragLayer extends FrameLayout {
         setMotionEventSplittingEnabled(false);
     }
 
-    public void setDragController(DragController controller) {
+    public void setup(Launcher launcher, DragController controller) {
+        mLauncher = launcher;
         mDragController = controller;
     }
     
@@ -250,10 +251,6 @@ public class DragLayer extends FrameLayout {
         mResizeFrames.add(resizeFrame);
 
         resizeFrame.snapToWidget(false);
-    }
-
-    public void setLauncher(Launcher l) {
-        mLauncher = l;
     }
 
     public void setCurrentFolder(Folder f) {
