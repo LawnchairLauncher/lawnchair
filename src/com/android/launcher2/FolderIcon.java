@@ -78,10 +78,7 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
     private int mOriginalWidth = -1;
     private int mOriginalHeight = -1;
 
-    private int mFolderLocX;
-    private int mFolderLocY;
-    private float mOuterRingScale;
-    private float mInnerRingScale;
+    FolderRingAnimator mFolderRingAnimator = null;
 
     public FolderIcon(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -117,18 +114,107 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
         folder.setFolderIcon(icon);
         folder.bind(folderInfo);
         icon.mFolder = folder;
-
+        icon.mFolderRingAnimator = new FolderRingAnimator(launcher, icon);
         folderInfo.addListener(icon);
-        if (sFolderOuterRingDrawable == null) {
-            sFolderOuterRingDrawable =
-                    launcher.getResources().getDrawable(R.drawable.portal_ring_outer_holo);
+
+        return icon;
+    }
+
+    public static class FolderRingAnimator {
+        public int mFolderLocX;
+        public int mFolderLocY;
+        public float mOuterRingScale;
+        public float mInnerRingScale;
+        public FolderIcon mFolderIcon = null;
+        private Launcher mLauncher;
+
+        public FolderRingAnimator(Launcher launcher, FolderIcon folderIcon) {
+            mLauncher = launcher;
+            mFolderIcon = folderIcon;
+            if (sFolderOuterRingDrawable == null) {
+                sFolderOuterRingDrawable =
+                        launcher.getResources().getDrawable(R.drawable.portal_ring_outer_holo);
+            }
+            if (sFolderInnerRingDrawable == null) {
+                sFolderInnerRingDrawable =
+                        launcher.getResources().getDrawable(R.drawable.portal_ring_inner_holo);
+            }
         }
 
-        if (sFolderInnerRingDrawable == null) {
-            sFolderInnerRingDrawable =
-                    launcher.getResources().getDrawable(R.drawable.portal_ring_inner_holo);
+        public void setLocation(int x, int y) {
+            mFolderLocX = x;
+            mFolderLocY = y;
         }
-        return icon;
+
+        public void animateToAcceptState() {
+            ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
+            va.setDuration(CONSUMPTION_ANIMATION_DURATION);
+            va.addUpdateListener(new AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    final float percent = (Float) animation.getAnimatedValue();
+                    mOuterRingScale = OUTER_RING_BASELINE_SCALE + percent * OUTER_RING_GROWTH_FACTOR;
+                    mInnerRingScale = INNER_RING_BASELINE_SCALE + percent * INNER_RING_GROWTH_FACTOR;
+                    mLauncher.getWorkspace().invalidate();
+                    if (mFolderIcon != null) {
+                        mFolderIcon.invalidate();
+                    }
+                }
+            });
+            va.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    // Instead of setting the background drawable to null, we set the color to
+                    // transparent. Setting the background drawable to null results in onDraw
+                    // not getting called.
+                    if (mFolderIcon != null) {
+                        mFolderIcon.setBackgroundColor(Color.TRANSPARENT);
+                        mFolderIcon.requestLayout();
+                    }
+                }
+            });
+            va.start();
+        }
+
+        public void animateToNaturalState() {
+            ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
+            va.setDuration(CONSUMPTION_ANIMATION_DURATION);
+            va.addUpdateListener(new AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    final float percent = (Float) animation.getAnimatedValue();
+                    mOuterRingScale = OUTER_RING_BASELINE_SCALE + OUTER_RING_GROWTH_FACTOR
+                            - percent * OUTER_RING_GROWTH_FACTOR;
+                    mInnerRingScale = INNER_RING_BASELINE_SCALE + INNER_RING_GROWTH_FACTOR
+                            - percent * INNER_RING_GROWTH_FACTOR;
+                    mLauncher.getWorkspace().invalidate();
+                    if (mFolderIcon != null) {
+                        mFolderIcon.invalidate();
+                    }
+                }
+            });
+            va.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    if (mFolderIcon != null) {
+                        mFolderIcon.setBackgroundDrawable(sFolderInnerRingDrawable);
+                    }
+                    mLauncher.getWorkspace().hideFolderAccept(FolderRingAnimator.this);
+                }
+            });
+            va.start();
+        }
+
+        public void getLocation(int[] loc) {
+            loc[0] = mFolderLocX;
+            loc[1] = mFolderLocY;
+        }
+
+        public float getOuterRingScale() {
+            return mOuterRingScale;
+        }
+
+        public float getInnerRingScale() {
+            return mInnerRingScale;
+        }
     }
 
     private boolean willAcceptItem(ItemInfo item) {
@@ -166,69 +252,22 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
         mOriginalHeight = lp.height;
     }
 
-    private void animateToAcceptState() {
-        ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
-        va.setDuration(CONSUMPTION_ANIMATION_DURATION);
-        va.addUpdateListener(new AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
-                final float percent = (Float) animation.getAnimatedValue();
-                mOuterRingScale = OUTER_RING_BASELINE_SCALE + percent * OUTER_RING_GROWTH_FACTOR;
-                mInnerRingScale = INNER_RING_BASELINE_SCALE + percent * INNER_RING_GROWTH_FACTOR;
-                mLauncher.getWorkspace().invalidate();
-                invalidate();
-            }
-        });
-        va.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                // Instead of setting the background drawable to null, we set the color to
-                // transparent. Setting the background drawable to null results in onDraw
-                // not getting called.
-                setBackgroundColor(Color.TRANSPARENT);
-                requestLayout();
-            }
-        });
-        va.start();
-    }
-
-    private void animateToNaturalState() {
-        ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
-        va.setDuration(CONSUMPTION_ANIMATION_DURATION);
-        va.addUpdateListener(new AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
-                final float percent = (Float) animation.getAnimatedValue();
-                mOuterRingScale = OUTER_RING_BASELINE_SCALE + OUTER_RING_GROWTH_FACTOR
-                        - percent * OUTER_RING_GROWTH_FACTOR;
-                mInnerRingScale = INNER_RING_BASELINE_SCALE + INNER_RING_GROWTH_FACTOR
-                        - percent * INNER_RING_GROWTH_FACTOR;
-                mLauncher.getWorkspace().invalidate();
-                invalidate();
-            }
-        });
-        va.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                setBackgroundDrawable(sFolderInnerRingDrawable);
-                mLauncher.getWorkspace().hideFolderAccept(FolderIcon.this);
-            }
-        });
-        va.start();
-    }
-
     private void determineFolderLocationInWorkspace() {
         int tvLocation[] = new int[2];
         int wsLocation[] = new int[2];
         getLocationOnScreen(tvLocation);
         mLauncher.getWorkspace().getLocationOnScreen(wsLocation);
-        mFolderLocX = tvLocation[0] - wsLocation[0] + getMeasuredWidth() / 2;
-        mFolderLocY = tvLocation[1] - wsLocation[1] + getMeasuredHeight() / 2;
+
+        int x = tvLocation[0] - wsLocation[0] + getMeasuredWidth() / 2;
+        int y = tvLocation[1] - wsLocation[1] + getMeasuredHeight() / 2;
+        mFolderRingAnimator.setLocation(x, y);
     }
 
     public void onDragEnter(DragObject d) {
         if (!willAcceptItem((ItemInfo) d.dragInfo)) return;
         determineFolderLocationInWorkspace();
-        mLauncher.getWorkspace().showFolderAccept(this);
-        animateToAcceptState();
+        mLauncher.getWorkspace().showFolderAccept(mFolderRingAnimator);
+        mFolderRingAnimator.animateToAcceptState();
     }
 
     public void onDragOver(DragObject d) {
@@ -236,24 +275,11 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
 
     public void onDragExit(DragObject d) {
         if (!willAcceptItem((ItemInfo) d.dragInfo)) return;
-        animateToNaturalState();
+        mFolderRingAnimator.animateToNaturalState();
     }
 
     public DropTarget getDropTargetDelegate(DragObject d) {
         return null;
-    }
-
-    public void getFolderLocation(int[] loc) {
-        loc[0] = mFolderLocX;
-        loc[1] = mFolderLocY;
-    }
-
-    public float getOuterRingScale() {
-        return mOuterRingScale;
-    }
-
-    public float getInnerRingScale() {
-        return mInnerRingScale;
     }
 
     @Override

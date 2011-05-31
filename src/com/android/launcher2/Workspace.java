@@ -67,6 +67,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.launcher.R;
+import com.android.launcher2.FolderIcon.FolderRingAnimator;
 import com.android.launcher2.InstallWidgetReceiver.WidgetMimeTypeHandlerData;
 
 /**
@@ -219,7 +220,16 @@ public class Workspace extends SmoothPagedView
     private int mLastDragXOffset;
     private int mLastDragYOffset;
 
-    private ArrayList<FolderIcon> mFolderOuterRings = new ArrayList<FolderIcon>();
+    private ArrayList<FolderRingAnimator> mFolderOuterRings = new ArrayList<FolderRingAnimator>();
+
+    // Variables relating to the creation of user folders by hovering shortcuts over shortcuts
+    private static final int FOLDER_CREATION_TIMEOUT = 400;
+    private final Alarm mFolderCreationAlarm = new Alarm();
+    private FolderRingAnimator mDragFolderRingAnimator = null;
+    private View mLastDragOverView = null;
+    private boolean mCreateUserFolderOnDrop = false;
+    private int mCellWidth = -1;
+    private int mCellHeight = -1;
 
     // Variables relating to touch disambiguation (scrolling workspace vs. scrolling a widget)
     private float mXDown;
@@ -896,7 +906,6 @@ public class Workspace extends SmoothPagedView
             }
             float fractionToCatchUpIn1MsVertical = mVerticalCatchupConstant;
 
-
             fractionToCatchUpIn1MsHorizontal /= 33f;
             fractionToCatchUpIn1MsVertical /= 33f;
 
@@ -1184,14 +1193,15 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    public void showFolderAccept(FolderIcon fi) {
-        mFolderOuterRings.add(fi);
+    public void showFolderAccept(FolderRingAnimator fra) {
+        mFolderOuterRings.add(fra);
     }
 
-    public void hideFolderAccept(FolderIcon fi) {
-        if (mFolderOuterRings.contains(fi)) {
-            mFolderOuterRings.remove(fi);
+    public void hideFolderAccept(FolderRingAnimator fra) {
+        if (mFolderOuterRings.contains(fra)) {
+            mFolderOuterRings.remove(fra);
         }
+        invalidate();
     }
 
     @Override
@@ -1234,24 +1244,28 @@ public class Workspace extends SmoothPagedView
         for (int i = 0; i < mFolderOuterRings.size(); i++) {
 
             // Draw outer ring
-            FolderIcon fi = mFolderOuterRings.get(i);
+            FolderRingAnimator fra = mFolderOuterRings.get(i);
             Drawable d = FolderIcon.sFolderOuterRingDrawable;
-            int width = (int) (d.getIntrinsicWidth() * fi.getOuterRingScale());
-            int height = (int) (d.getIntrinsicHeight() * fi.getOuterRingScale());
-            fi.getFolderLocation(mTempLocation);
+            int width = (int) (d.getIntrinsicWidth() * fra.getOuterRingScale());
+            int height = (int) (d.getIntrinsicHeight() * fra.getOuterRingScale());
+            fra.getLocation(mTempLocation);
             int x = mTempLocation[0] + mScrollX - width / 2;
             int y = mTempLocation[1] + mScrollY - height / 2;
             d.setBounds(x, y, x + width, y + height);
             d.draw(canvas);
 
             // Draw inner ring
-            d = FolderIcon.sFolderInnerRingDrawable;
-            width = (int) (fi.getMeasuredWidth() * fi.getInnerRingScale());
-            height = (int) (fi.getMeasuredHeight() * fi.getInnerRingScale());
-            x = mTempLocation[0] + mScrollX - width / 2;
-            y = mTempLocation[1] + mScrollY - height / 2;
-            d.setBounds(x, y, x + width, y + height);
-            d.draw(canvas);
+            if (fra.mFolderIcon != null) {
+                int folderWidth = fra.mFolderIcon != null ? fra.mFolderIcon.getMeasuredWidth() : mCellWidth;
+                int folderHeight = fra.mFolderIcon != null ? fra.mFolderIcon.getMeasuredWidth() : mCellHeight;
+                d = FolderIcon.sFolderInnerRingDrawable;
+                width = (int) (folderWidth * fra.getInnerRingScale());
+                height = (int) (folderHeight * fra.getInnerRingScale());
+                x = mTempLocation[0] + mScrollX - width / 2;
+                y = mTempLocation[1] + mScrollY - height / 2;
+                d.setBounds(x, y, x + width, y + height);
+                d.draw(canvas);
+            }
         }
         super.onDraw(canvas);
     }
@@ -2404,9 +2418,7 @@ public class Workspace extends SmoothPagedView
     }
 
     boolean willCreateUserFolder(ItemInfo info, CellLayout target, int originX, int originY) {
-        mTargetCell = findNearestArea(originX, originY,
-                1, 1, target,
-                mTargetCell);
+        mTargetCell = findNearestArea(originX, originY, 1, 1, target, mTargetCell);
 
         View v = target.getChildAt(mTargetCell[0], mTargetCell[1]);
         boolean hasntMoved = mDragInfo != null && (mDragInfo.cellX == mTargetCell[0] &&
@@ -2437,8 +2449,8 @@ public class Workspace extends SmoothPagedView
         boolean hasntMoved = mDragInfo != null && (mDragInfo.cellX == mTargetCell[0] &&
                 mDragInfo.cellY == mTargetCell[1]);
 
-        if (v == null || hasntMoved) return false;
-
+        if (v == null || hasntMoved || !mCreateUserFolderOnDrop) return false;
+        mCreateUserFolderOnDrop = false;
         final int screen = (mTargetCell == null) ?
                 mDragInfo.screen : indexOfChild(target);
 
@@ -3047,24 +3059,83 @@ public class Workspace extends SmoothPagedView
                     mapPointFromSelfToChild(mDragTargetLayout, mDragViewVisualCenter, null);
                     ItemInfo info = (ItemInfo) d.dragInfo;
 
-                    if (!willCreateUserFolder(info, mDragTargetLayout,
-                            (int) mDragViewVisualCenter[0], (int) mDragViewVisualCenter[1])) {
+                    boolean willCreateUserFolder = willCreateUserFolder(info, mDragTargetLayout,
+                            (int) mDragViewVisualCenter[0], (int) mDragViewVisualCenter[1]);
+
+                    View newDropOver = null;
+                    if (willCreateUserFolder) {
+                        newDropOver = mDragTargetLayout.getChildAt(mTargetCell[0], mTargetCell[1]);
+                    }
+
+                    if (newDropOver != mLastDragOverView || !willCreateUserFolder) {
+                        if (mDragFolderRingAnimator != null && mCreateUserFolderOnDrop) {
+                            mDragFolderRingAnimator.animateToNaturalState();
+                        }
+                        mCreateUserFolderOnDrop = false;
+                        mFolderCreationAlarm.cancelAlarm();
                         mIsDraggingOverIcon = false;
+                    }
+
+                    if (willCreateUserFolder && !mIsDraggingOverIcon) {
+                        mIsDraggingOverIcon = true;
+
+                        mLastDragOverView = mDragTargetLayout.getChildAt(mTargetCell[0], mTargetCell[1]);
+                        mFolderCreationAlarm.setOnAlarmListener(new FolderCreationAlarmListener(mLastDragOverView));
+                        mFolderCreationAlarm.setAlarm(FOLDER_CREATION_TIMEOUT);
+
+                        mDragTargetLayout.clearDragOutlines();
+                    }
+
+                    if (!mCreateUserFolderOnDrop) {
                         mDragTargetLayout.visualizeDropLocation(child, mDragOutline,
                                 (int) mDragViewVisualCenter[0],
                                 (int) mDragViewVisualCenter[1],
                                 item.spanX, item.spanY);
-                    } else if (!mIsDraggingOverIcon) {
-                        mIsDraggingOverIcon = true;
-                        mDragTargetLayout.clearDragOutlines();
                     }
                 }
             }
         }
     }
 
+    class FolderCreationAlarmListener implements OnAlarmListener {
+        View v;
+
+        public FolderCreationAlarmListener(View v) {
+            this.v = v;
+        }
+
+        public void onAlarm(Alarm alarm) {
+            int tvLocation[] = new int[2];
+            int wsLocation[] = new int[2];
+            v.getLocationOnScreen(tvLocation);
+            getLocationOnScreen(wsLocation);
+
+            if (mCellWidth < 0 || mCellHeight < 0) {
+                mCellWidth = mDragTargetLayout.getCellWidth();
+                mCellHeight = mDragTargetLayout.getCellHeight();
+            }
+            int x = tvLocation[0] - wsLocation[0] + mCellWidth / 2;
+            int y = tvLocation[1] - wsLocation[1] + mCellHeight / 2;
+
+            if (mDragFolderRingAnimator == null) {
+                mDragFolderRingAnimator = new FolderRingAnimator(mLauncher, null);
+            }
+            mDragFolderRingAnimator.setLocation(x, y);
+            mDragFolderRingAnimator.animateToAcceptState();
+            showFolderAccept(mDragFolderRingAnimator);
+            mCreateUserFolderOnDrop = true;
+            mDragTargetLayout.clearDragOutlines();
+        }
+    }
+
     private void doDragExit() {
         mWasSpringLoadedOnDragExit = mShrinkState == ShrinkState.SPRING_LOADED;
+
+        if (mDragFolderRingAnimator != null && mCreateUserFolderOnDrop) {
+            mDragFolderRingAnimator.animateToNaturalState();
+        }
+        mFolderCreationAlarm.cancelAlarm();
+
         if (mDragTargetLayout != null) {
             mDragTargetLayout.onDragExit();
         }
