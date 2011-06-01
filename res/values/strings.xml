@@ -21,16 +21,16 @@
     <!-- Manifest configuration. -->
     <skip />
     <!-- Do not translate. android:sharedUserId of this application. -->
-    <string name="sharedUserId" translate="false"><xliff:g id="x"></xliff:g></string>
+    <string name="sharedUserId" translatable="false"><xliff:g id="x"></xliff:g></string>
     <!-- Do not translate. android:process of this application. -->
-    <string name="process" translate="false"><xliff:g id="x"></xliff:g></string>
+    <string name="process" translatable="false"><xliff:g id="x"></xliff:g></string>
     
     <!-- Do not translate. We wish to prioritize the Wallpaper and Live Wallpaper pickers,
          but because they are in a different package, we need to reference the component in
          a non language-dependent way.  If the Live Wallpaper picker component name changes
          this will have to be updated as well. -->
-    <string name="live_wallpaper_picker_package_name" translate="false">com.android.wallpaper.livepicker</string>
-    <string name="live_wallpaper_picker_class_name" translate="false">com.android.wallpaper.livepicker.LiveWallpaperActivity</string>
+    <string name="live_wallpaper_picker_package_name" translatable="false">com.android.wallpaper.livepicker</string>
+    <string name="live_wallpaper_picker_class_name" translatable="false">com.android.wallpaper.livepicker.LiveWallpaperActivity</string>
 
     <!-- General -->
     <skip />
