@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
@@ -35,6 +36,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     private static final String WIDGETS_TAB_TAG = "WIDGETS";
 
     private final LayoutInflater mLayoutInflater;
+    private AppsCustomizePagedView mAppsCustomizePane;
 
     public AppsCustomizeTabHost(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -57,15 +59,16 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         setup();
 
         final ViewGroup tabs = (ViewGroup) findViewById(com.android.internal.R.id.tabs);
-        final AppsCustomizePagedView content = (AppsCustomizePagedView)
+        final AppsCustomizePagedView appsCustomizePane = (AppsCustomizePagedView)
                 findViewById(R.id.apps_customize_pane_content);
-        if (tabs == null || content == null) throw new Resources.NotFoundException();
+        mAppsCustomizePane = appsCustomizePane;
+        if (tabs == null || mAppsCustomizePane == null) throw new Resources.NotFoundException();
 
         // Configure the tabs content factory to return the same paged view (that we change the
         // content filter on)
         TabContentFactory contentFactory = new TabContentFactory() {
             public View createTabContent(String tag) {
-                return content;
+                return appsCustomizePane;
             }
         };
 
@@ -80,14 +83,22 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         setOnTabChangedListener(this);
 
         // Set the width of the tab bar to match the content (for now)
-        tabs.getLayoutParams().width = content.getPageContentWidth();
+        tabs.getLayoutParams().width = mAppsCustomizePane.getPageContentWidth();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        // Intercept all touch events up to the bottom of the AppsCustomizePane so they do not fall
+        // through to the workspace and trigger showWorkspace()
+        if (event.getY() < mAppsCustomizePane.getBottom()) {
+            return true;
+        }
+        return super.onTouchEvent(event);
     }
 
     @Override
     public void onTabChanged(String tabId) {
-        final AppsCustomizePagedView content = (AppsCustomizePagedView)
-                findViewById(R.id.apps_customize_pane_content);
-        content.setContentType(getContentTypeForTabTag(tabId));
+        mAppsCustomizePane.setContentType(getContentTypeForTabTag(tabId));
     }
 
     /**

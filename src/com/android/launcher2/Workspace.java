@@ -623,10 +623,15 @@ public class Workspace extends SmoothPagedView
             if (mLauncher.isAllAppsVisible() && mShrinkState == ShrinkState.BOTTOM_HIDDEN) {
                 // Intercept this event so we can show the workspace in full view
                 // when it is clicked on and it is small
-                AllAppsPagedView allApps = (AllAppsPagedView)
-                        mLauncher.findViewById(R.id.all_apps_paged_view);
-                if (allApps != null) {
-                    allApps.onInterceptTouchEvent(ev);
+                PagedView appsPane = null;
+                if (LauncherApplication.isScreenLarge()) {
+                    appsPane = (PagedView) mLauncher.findViewById(R.id.all_apps_paged_view);
+                } else {
+                    appsPane = (PagedView) mLauncher.findViewById(R.id.apps_customize_pane_content);
+                }
+
+                if (appsPane != null) {
+                    appsPane.onInterceptTouchEvent(ev);
                 }
                 return true;
             }
