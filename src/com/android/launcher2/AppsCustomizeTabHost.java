@@ -33,7 +33,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
 
     private static final String APPS_TAB_TAG = "APPS";
     private static final String WIDGETS_TAB_TAG = "WIDGETS";
-    private static final String WALLPAPERS_TAB_TAG = "WALLPAPERS";
 
     private final LayoutInflater mLayoutInflater;
 
@@ -78,9 +77,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         tabView = (TextView) mLayoutInflater.inflate(R.layout.tab_widget_indicator, tabs, false);
         tabView.setText(mContext.getString(R.string.widgets_tab_label));
         addTab(newTabSpec(WIDGETS_TAB_TAG).setIndicator(tabView).setContent(contentFactory));
-        tabView = (TextView) mLayoutInflater.inflate(R.layout.tab_widget_indicator, tabs, false);
-        tabView.setText(mContext.getString(R.string.wallpapers_tab_label));
-        addTab(newTabSpec(WALLPAPERS_TAB_TAG).setIndicator(tabView).setContent(contentFactory));
         setOnTabChangedListener(this);
 
         // Set the width of the tab bar to match the content (for now)
@@ -102,8 +98,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             return AppsCustomizePagedView.ContentType.Applications;
         } else if (tag.equals(WIDGETS_TAB_TAG)) {
             return AppsCustomizePagedView.ContentType.Widgets;
-        } else if (tag.equals(WALLPAPERS_TAB_TAG)) {
-            return AppsCustomizePagedView.ContentType.Wallpapers;
         }
         return AppsCustomizePagedView.ContentType.Applications;
     }
@@ -116,8 +110,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             return APPS_TAB_TAG;
         } else if (type == AppsCustomizePagedView.ContentType.Widgets) {
             return WIDGETS_TAB_TAG;
-        } else if (type == AppsCustomizePagedView.ContentType.Wallpapers) {
-            return WALLPAPERS_TAB_TAG;
         }
         return APPS_TAB_TAG;
     }

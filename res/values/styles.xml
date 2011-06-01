@@ -103,8 +103,8 @@
     </style>
 
     <style name="MarketButton">
-        <item name="android:paddingRight">20dp</item>
-        <item name="android:text">@string/market</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:paddingRight">5dp</item>
         <item name="android:textColor">@color/workspace_all_apps_and_delete_zone_text_color</item>
         <item name="android:textSize">18sp</item>
         <item name="android:shadowColor">@color/workspace_all_apps_and_delete_zone_text_shadow_color</item>
