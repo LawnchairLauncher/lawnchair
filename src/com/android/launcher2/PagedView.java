@@ -113,8 +113,8 @@ public abstract class PagedView extends ViewGroup {
     protected int mPageLayoutWidthGap;
     protected int mPageLayoutHeightGap;
     protected int mPageLayoutMaxHeight;
-    protected int mCellCountX = -1;
-    protected int mCellCountY = -1;
+    protected int mCellCountX = 0;
+    protected int mCellCountY = 0;
     protected boolean mCenterPagesVertically;
     protected boolean mAllowOverScroll = true;
     protected int mUnboundedScrollX;

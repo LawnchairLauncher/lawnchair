@@ -151,6 +151,8 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
 
     private AllAppsPagedView mAllAppsPagedView;
 
+    private boolean mWaitingToInitPages = true;
+
     public CustomizePagedView(Context context) {
         this(context, null, 0);
     }
@@ -208,6 +210,8 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             mPageContentWidth = layout.getContentWidth();
             mPageContentHeight = layout.getContentHeight();
             mMinPageWidth = layout.getWidthBeforeFirstLayout();
+            removeAllViews();
+            invalidatePageData();
         }
         if (mPageContentHeight > 0) {
             // Lock our height to the size of the page content
@@ -220,7 +224,8 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        if (mFirstLayout) {
+        if (mWaitingToInitPages) {
+            mWaitingToInitPages = false;
             invalidatePageData();
 
             // invalidatePageData() is what causes the child pages to be created. We need the
@@ -1138,12 +1143,17 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
     }
 
     @Override
-    public void syncPages() {
-        if (mFirstMeasure) {
+    protected void invalidatePageData() {
+        if (mWaitingToInitPages || mCellCountX <= 0 || mCellCountY <= 0) {
             // We don't know our size yet, which means we haven't calculated cell count x/y;
             // onMeasure will call us once we figure out our size
             return;
         }
+        super.invalidatePageData();
+    }
+
+    @Override
+    public void syncPages() {
         boolean enforceMinimumPagedWidths = false;
         boolean centerPagedViewCellLayouts = false;
         switch (mCustomizationType) {
