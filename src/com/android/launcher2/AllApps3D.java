@@ -16,12 +16,6 @@
 
 package com.android.launcher2;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-
-import com.android.launcher.R;
-
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
@@ -29,9 +23,20 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
-import android.renderscript.*;
+import android.renderscript.Allocation;
+import android.renderscript.Element;
+import android.renderscript.Matrix4f;
+import android.renderscript.Mesh;
+import android.renderscript.ProgramFragment;
+import android.renderscript.ProgramFragmentFixedFunction;
+import android.renderscript.ProgramStore;
+import android.renderscript.ProgramVertex;
+import android.renderscript.ProgramVertexFixedFunction;
+import android.renderscript.RSSurfaceView;
+import android.renderscript.RenderScript;
+import android.renderscript.RenderScriptGL;
+import android.renderscript.Sampler;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -41,6 +46,13 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityEvent;
+
+import com.android.launcher.R;
+import com.android.launcher2.DropTarget.DragObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class AllApps3D extends RSSurfaceView
         implements AllAppsView, View.OnClickListener, View.OnLongClickListener, DragSource {
@@ -744,7 +756,7 @@ public class AllApps3D extends RSSurfaceView
     }
 
     @Override
-    public void onDropCompleted(View target, Object dragInfo, boolean success) {
+    public void onDropCompleted(View target, DragObject d, boolean success) {
         mLauncher.getWorkspace().onDragStopped(success);
         mLauncher.unlockScreenOrientation();
     }

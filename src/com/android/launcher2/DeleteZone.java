@@ -33,7 +33,6 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 
 import com.android.launcher.R;
-import com.android.launcher2.DropTarget.DragObject;
 
 public class DeleteZone extends IconDropTarget {
     private static final int ORIENTATION_HORIZONTAL = 1;

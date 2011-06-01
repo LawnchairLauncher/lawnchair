@@ -17,14 +17,6 @@
 
 package com.android.launcher2;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -106,6 +98,14 @@ import android.widget.Toast;
 import com.android.common.Search;
 import com.android.launcher.R;
 import com.android.launcher2.Workspace.ShrinkState;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Default launcher application.

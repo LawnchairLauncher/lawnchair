@@ -16,9 +16,6 @@
 
 package com.android.launcher2;
 
-import com.android.launcher.R;
-import com.android.launcher2.DropTarget.DragObject;
-
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
@@ -33,6 +30,8 @@ import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.Checkable;
 import android.widget.TextView;
+
+import com.android.launcher.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -412,7 +411,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
     }
 
     @Override
-    public void onDropCompleted(View target, Object dragInfo, boolean success) {
+    public void onDropCompleted(View target, DragObject d, boolean success) {
         // close the choice action mode if we have a proper drop
         if (target != this) {
             endChoiceMode();

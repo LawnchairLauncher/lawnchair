@@ -16,8 +16,6 @@
 
 package com.android.launcher2;
 
-import java.util.ArrayList;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
@@ -36,12 +34,15 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.launcher.R;
+import com.android.launcher2.DropTarget.DragObject;
 import com.android.launcher2.FolderInfo.FolderListener;
+
+import java.util.ArrayList;
 
 /**
  * An icon that can appear on in the workspace representing an {@link UserFolder}.
  */
-public class FolderIcon extends FrameLayout implements DropTarget, FolderListener {
+public class FolderIcon extends FrameLayout implements FolderListener {
     private Launcher mLauncher;
     Folder mFolder;
     FolderInfo mInfo;
@@ -63,7 +64,7 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
     private static final float OUTER_RING_GROWTH_FACTOR = 0.3f;
 
     // The amount of vertical spread between items in the stack [0...1]
-    private static final float PERSPECTIVE_SHIFT_FACTOR = 0.18f;
+    private static final float PERSPECTIVE_SHIFT_FACTOR = 0.3f;
 
     // The degree to which the item in the back of the stack is scaled [0...1]
     // (0 means it's not scaled at all, 1 means it's scaled to nothing)
@@ -71,9 +72,6 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
 
     // The percentage of the FolderIcons view that will be dedicated to the items preview
     private static final float SPACE_PERCENTAGE_FOR_ICONS = 0.8f;
-
-    public static Drawable sFolderOuterRingDrawable = null;
-    public static Drawable sFolderInnerRingDrawable = null;
 
     private int mOriginalWidth = -1;
     private int mOriginalHeight = -1;
@@ -127,29 +125,43 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
         public float mInnerRingScale;
         public FolderIcon mFolderIcon = null;
         private Launcher mLauncher;
+        public Drawable mOuterRingDrawable = null;
+        public Drawable mInnerRingDrawable = null;
+        public static Drawable sSharedOuterRingDrawable = null;
+        public static Drawable sSharedInnerRingDrawable = null;
+        private ValueAnimator mAcceptAnimator;
+        private ValueAnimator mNeutralAnimator;
 
         public FolderRingAnimator(Launcher launcher, FolderIcon folderIcon) {
             mLauncher = launcher;
             mFolderIcon = folderIcon;
-            if (sFolderOuterRingDrawable == null) {
-                sFolderOuterRingDrawable =
+            mOuterRingDrawable =
+                    launcher.getResources().getDrawable(R.drawable.portal_ring_outer_holo);
+            mInnerRingDrawable =
+                    launcher.getResources().getDrawable(R.drawable.portal_ring_inner_holo);
+            if (sSharedOuterRingDrawable == null) {
+                sSharedOuterRingDrawable =
                         launcher.getResources().getDrawable(R.drawable.portal_ring_outer_holo);
             }
-            if (sFolderInnerRingDrawable == null) {
-                sFolderInnerRingDrawable =
+            if (sSharedInnerRingDrawable == null) {
+                sSharedInnerRingDrawable =
                         launcher.getResources().getDrawable(R.drawable.portal_ring_inner_holo);
             }
         }
 
+        // Location is expressed in window coordinates
         public void setLocation(int x, int y) {
             mFolderLocX = x;
             mFolderLocY = y;
         }
 
         public void animateToAcceptState() {
-            ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
-            va.setDuration(CONSUMPTION_ANIMATION_DURATION);
-            va.addUpdateListener(new AnimatorUpdateListener() {
+            if (mNeutralAnimator != null) {
+                mNeutralAnimator.cancel();
+            }
+            mAcceptAnimator = ValueAnimator.ofFloat(0f, 1f);
+            mAcceptAnimator.setDuration(CONSUMPTION_ANIMATION_DURATION);
+            mAcceptAnimator.addUpdateListener(new AnimatorUpdateListener() {
                 public void onAnimationUpdate(ValueAnimator animation) {
                     final float percent = (Float) animation.getAnimatedValue();
                     mOuterRingScale = OUTER_RING_BASELINE_SCALE + percent * OUTER_RING_GROWTH_FACTOR;
@@ -160,25 +172,24 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
                     }
                 }
             });
-            va.addListener(new AnimatorListenerAdapter() {
+            mAcceptAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
-                public void onAnimationEnd(Animator animation) {
-                    // Instead of setting the background drawable to null, we set the color to
-                    // transparent. Setting the background drawable to null results in onDraw
-                    // not getting called.
+                public void onAnimationStart(Animator animation) {
                     if (mFolderIcon != null) {
-                        mFolderIcon.setBackgroundColor(Color.TRANSPARENT);
-                        mFolderIcon.requestLayout();
+                        mFolderIcon.setBackgroundDrawable(null);
                     }
                 }
             });
-            va.start();
+            mAcceptAnimator.start();
         }
 
         public void animateToNaturalState() {
-            ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
-            va.setDuration(CONSUMPTION_ANIMATION_DURATION);
-            va.addUpdateListener(new AnimatorUpdateListener() {
+            if (mAcceptAnimator != null) {
+                mAcceptAnimator.cancel();
+            }
+            mNeutralAnimator = ValueAnimator.ofFloat(0f, 1f);
+            mNeutralAnimator.setDuration(CONSUMPTION_ANIMATION_DURATION);
+            mNeutralAnimator.addUpdateListener(new AnimatorUpdateListener() {
                 public void onAnimationUpdate(ValueAnimator animation) {
                     final float percent = (Float) animation.getAnimatedValue();
                     mOuterRingScale = OUTER_RING_BASELINE_SCALE + OUTER_RING_GROWTH_FACTOR
@@ -191,18 +202,19 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
                     }
                 }
             });
-            va.addListener(new AnimatorListenerAdapter() {
+            mNeutralAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     if (mFolderIcon != null) {
-                        mFolderIcon.setBackgroundDrawable(sFolderInnerRingDrawable);
+                        mFolderIcon.setBackgroundDrawable(mInnerRingDrawable);
                     }
                     mLauncher.getWorkspace().hideFolderAccept(FolderRingAnimator.this);
                 }
             });
-            va.start();
+            mNeutralAnimator.start();
         }
 
+        // Location is expressed in window coordinates
         public void getLocation(int[] loc) {
             loc[0] = mFolderLocX;
             loc[1] = mFolderLocY;
@@ -224,27 +236,14 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
                 !mFolder.isFull() && item != mInfo);
     }
 
-    public boolean acceptDrop(DragObject d) {
-        final ItemInfo item = (ItemInfo) d.dragInfo;
+    public boolean acceptDrop(Object dragInfo) {
+        final ItemInfo item = (ItemInfo) dragInfo;
         return willAcceptItem(item);
     }
 
     public void addItem(ShortcutInfo item) {
         mInfo.add(item);
         LauncherModel.addOrMoveItemInDatabase(mLauncher, item, mInfo.id, 0, item.cellX, item.cellY);
-    }
-
-    public void onDrop(DragObject d) {
-        ShortcutInfo item;
-        if (d.dragInfo instanceof ApplicationInfo) {
-            // Came from all apps -- make a copy
-            item = ((ApplicationInfo) d.dragInfo).makeShortcut();
-        } else {
-            item = (ShortcutInfo) d.dragInfo;
-        }
-        item.cellX = -1;
-        item.cellY = -1;
-        addItem(item);
     }
 
     void saveState(CellLayout.LayoutParams lp) {
@@ -255,27 +254,40 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
     private void determineFolderLocationInWorkspace() {
         int tvLocation[] = new int[2];
         int wsLocation[] = new int[2];
-        getLocationOnScreen(tvLocation);
-        mLauncher.getWorkspace().getLocationOnScreen(wsLocation);
+        getLocationInWindow(tvLocation);
+        mLauncher.getWorkspace().getLocationInWindow(wsLocation);
 
         int x = tvLocation[0] - wsLocation[0] + getMeasuredWidth() / 2;
         int y = tvLocation[1] - wsLocation[1] + getMeasuredHeight() / 2;
         mFolderRingAnimator.setLocation(x, y);
     }
 
-    public void onDragEnter(DragObject d) {
-        if (!willAcceptItem((ItemInfo) d.dragInfo)) return;
+    public void onDragEnter(Object dragInfo) {
+        if (!willAcceptItem((ItemInfo) dragInfo)) return;
         determineFolderLocationInWorkspace();
         mLauncher.getWorkspace().showFolderAccept(mFolderRingAnimator);
         mFolderRingAnimator.animateToAcceptState();
     }
 
-    public void onDragOver(DragObject d) {
+    public void onDragOver(Object dragInfo) {
     }
 
-    public void onDragExit(DragObject d) {
-        if (!willAcceptItem((ItemInfo) d.dragInfo)) return;
+    public void onDragExit(Object dragInfo) {
+        if (!willAcceptItem((ItemInfo) dragInfo)) return;
         mFolderRingAnimator.animateToNaturalState();
+    }
+
+    public void onDrop(Object dragInfo) {
+        ShortcutInfo item;
+        if (dragInfo instanceof ApplicationInfo) {
+            // Came from all apps -- make a copy
+            item = ((ApplicationInfo) dragInfo).makeShortcut();
+        } else {
+            item = (ShortcutInfo) dragInfo;
+        }
+        item.cellX = -1;
+        item.cellY = -1;
+        addItem(item);
     }
 
     public DropTarget getDropTargetDelegate(DragObject d) {
@@ -283,7 +295,7 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void dispatchDraw(Canvas canvas) {
         if (mFolder == null) return;
         if (mFolder.getItemCount() == 0) return;
 
@@ -337,7 +349,6 @@ public class FolderIcon extends FrameLayout implements DropTarget, FolderListene
             }
             canvas.restore();
         }
-
         canvas.restore();
     }
 

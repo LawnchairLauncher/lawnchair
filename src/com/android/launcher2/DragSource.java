@@ -18,6 +18,8 @@ package com.android.launcher2;
 
 import android.view.View;
 
+import com.android.launcher2.DropTarget.DragObject;
+
 /**
  * Interface defining an object that can originate a drag.
  *
@@ -29,5 +31,5 @@ public interface DragSource {
      */
     void onDragViewVisible();
 
-    void onDropCompleted(View target, Object dragInfo, boolean success);
+    void onDropCompleted(View target, DragObject d, boolean success);
 }

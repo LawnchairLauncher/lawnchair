@@ -16,8 +16,6 @@
 
 package com.android.launcher2;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
@@ -35,7 +33,8 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
 import com.android.launcher.R;
-import com.android.launcher2.DropTarget.DragObject;
+
+import java.util.ArrayList;
 
 /**
  * Class for initiating a drag within a view or across multiple views.
@@ -374,7 +373,7 @@ public class DragController {
     public void cancelDrag() {
         if (mDragging) {
             // Should we also be calling onDragExit() here?
-            mDragObject.dragSource.onDropCompleted(null, mDragObject.dragInfo, false);
+            mDragObject.dragSource.onDropCompleted(null, mDragObject, false);
         }
         endDrag();
     }
@@ -572,8 +571,7 @@ public class DragController {
                 accepted = true;
             }
         }
-        mDragObject.dragSource.onDropCompleted((View) dropTarget, mDragObject.dragInfo, accepted);
-
+        mDragObject.dragSource.onDropCompleted((View) dropTarget, mDragObject, accepted);
     }
 
     private DropTarget findDropTarget(int x, int y, int[] dropCoordinates) {

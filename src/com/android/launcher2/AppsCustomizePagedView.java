@@ -16,11 +16,6 @@
 
 package com.android.launcher2;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -38,9 +33,9 @@ import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.Bitmap.Config;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -56,6 +51,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.launcher.R;
+import com.android.launcher2.DropTarget.DragObject;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 public class AppsCustomizePagedView extends PagedViewWithDraggableItems implements
         AllAppsView, View.OnClickListener, DragSource {
@@ -448,7 +449,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     @Override
     public void onDragViewVisible() {}
     @Override
-    public void onDropCompleted(View target, Object dragInfo, boolean success) {
+    public void onDropCompleted(View target, DragObject d, boolean success) {
         endDragging(success);
 
         // Display an error message if the drag failed due to there not being enough space on the
@@ -459,7 +460,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 int currentScreen = mLauncher.getCurrentWorkspaceScreen();
                 Workspace workspace = (Workspace) target;
                 CellLayout layout = (CellLayout) workspace.getChildAt(currentScreen);
-                ItemInfo itemInfo = (ItemInfo) dragInfo;
+                ItemInfo itemInfo = (ItemInfo) d.dragInfo;
                 if (layout != null) {
                     layout.calculateSpans(itemInfo);
                     showOutOfSpaceMessage =

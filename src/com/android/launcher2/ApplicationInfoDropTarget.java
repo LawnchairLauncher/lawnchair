@@ -16,9 +16,6 @@
 
 package com.android.launcher2;
 
-import com.android.launcher.R;
-import com.android.launcher2.DropTarget.DragObject;
-
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -29,6 +26,8 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.util.AttributeSet;
 import android.view.View;
+
+import com.android.launcher.R;
 
 /**
  * Implements a DropTarget which allows applications to be dropped on it,

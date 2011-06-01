@@ -16,8 +16,6 @@
 
 package com.android.launcher2;
 
-import java.util.Arrays;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -48,6 +46,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LayoutAnimationController;
 
 import com.android.launcher.R;
+
+import java.util.Arrays;
 
 public class CellLayout extends ViewGroup {
     static final String TAG = "CellLayout";
@@ -1150,12 +1150,12 @@ public class CellLayout extends ViewGroup {
         // re-mark space taken by ignoreView as occupied
         markCellsAsOccupiedForView(ignoreView);
 
-        // Return null if no suitable location found
-        if (bestDistance < Double.MAX_VALUE) {
-            return bestXY;
-        } else {
-            return null;
+        // Return -1, -1 if no suitable location found
+        if (bestDistance == Double.MAX_VALUE) {
+            bestXY[0] = -1;
+            bestXY[1] = -1;
         }
+        return bestXY;
     }
 
     /**

@@ -16,10 +16,6 @@
 
 package com.android.launcher2;
 
-import com.android.launcher.R;
-
-import org.xmlpull.v1.XmlPullParser;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -54,13 +50,17 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.MeasureSpec;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.android.launcher.R;
+import com.android.launcher2.DropTarget.DragObject;
+
+import org.xmlpull.v1.XmlPullParser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -402,7 +402,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         }
     }
 
-    public void onDropCompleted(View target, Object dragInfo, boolean success) {
+    public void onDropCompleted(View target, DragObject d, boolean success) {
         final DragLayer dragLayer = (DragLayer) mLauncher.findViewById(R.id.drag_layer);
 
         // Create a view, identical to the drag view, that is only used for animating the
@@ -413,7 +413,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
 
         if (success) {
             resetCheckedItem(true);
-            animateDropOntoScreen(animView, (ItemInfo) dragInfo, DROP_ANIM_DURATION, 0);
+            animateDropOntoScreen(animView, (ItemInfo) d.dragInfo, DROP_ANIM_DURATION, 0);
         } else {
             // Animate the icon/widget back to its original position
             animateIntoPosition(animView, mDragViewOrigin[0], mDragViewOrigin[1], new Runnable() {

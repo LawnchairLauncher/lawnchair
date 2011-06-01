@@ -16,8 +16,6 @@
 
 package com.android.launcher2;
 
-import com.android.launcher.R;
-
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
@@ -36,6 +34,9 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.android.launcher.R;
+import com.android.launcher2.DropTarget.DragObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -208,7 +209,7 @@ public class AllApps2D
     }
 
     @Override
-    public void onDropCompleted(View target, Object dragInfo, boolean success) {
+    public void onDropCompleted(View target, DragObject d, boolean success) {
     }
 
     /**
