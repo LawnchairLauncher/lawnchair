@@ -62,7 +62,7 @@ public class DeleteZone extends IconDropTarget {
     public DeleteZone(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        final int srcColor = context.getResources().getColor(R.color.delete_color_filter);
+        final int srcColor = context.getResources().getColor(R.color.delete_target_hover_tint);
         mHoverPaint.setColorFilter(new PorterDuffColorFilter(srcColor, PorterDuff.Mode.SRC_ATOP));
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DeleteZone, defStyle, 0);

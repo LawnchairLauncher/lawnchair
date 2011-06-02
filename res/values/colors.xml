@@ -18,10 +18,14 @@
 */
 -->
 <resources>
+    <!-- The color tints to apply to the text and drag view when hovering
+         over the delete target or the info target -->
+    <color name="delete_target_hover_tint">#A5FF0000</color>
+    <color name="info_target_hover_tint">#A50000FE</color>
+
     <color name="window_background">#FF191919</color>
     <color name="grid_dark_background">#EB191919</color>     
     <color name="bubble_dark_background">#20000000</color>
-    <color name="delete_color_filter">#A5FF0000</color>
 
     <color name="appwidget_error_color">#FCCC</color>
     <color name="snag_callout_color">#F444</color>
@@ -29,7 +33,6 @@
     <color name="gesture_color">#ff0563c1</color>
     <color name="uncertain_gesture_color">#ff848484</color>
 
-    <color name="app_info_filter">#A50000FE</color>
     <color name="dimmed_view_color">#FF7F7F7F</color>
 
     <color name="drag_outline_color">#6595f9</color>

@@ -199,6 +199,7 @@ public final class Launcher extends Activity
 
     private DeleteZone mDeleteZone;
     private HandleView mHandleView;
+    private SearchDropTargetBar mSearchDeleteBar;
     private AllAppsView mAllAppsGrid;
     private AppsCustomizeTabHost mAppsCustomizeTabHost;
     private AppsCustomizePagedView mAppsCustomizeContent;
@@ -896,128 +897,110 @@ public final class Launcher extends Activity
     private void setupViews() {
         final DragController dragController = mDragController;
 
-        DragLayer dragLayer = (DragLayer) findViewById(R.id.drag_layer);
-        dragLayer.setDragController(dragController);
-        dragLayer.setLauncher(this);
-        mDragLayer = dragLayer;
+        mDragLayer = (DragLayer) findViewById(R.id.drag_layer);
+        mWorkspace = (Workspace) mDragLayer.findViewById(R.id.workspace);
 
+        // Setup the drag layer
+        mDragLayer.setup(this, dragController);
+
+        // Setup the workspace
+        mWorkspace.setHapticFeedbackEnabled(false);
+        mWorkspace.setOnLongClickListener(this);
+        mWorkspace.setup(this, dragController);
+        mWorkspace.setWallpaperDimension();
+
+        // Setup the different configurations
+        DeleteZone allAppsDeleteZone = null;
+        ApplicationInfoDropTarget allAppsInfoTarget = null;
         if (LauncherApplication.isScreenLarge()) {
-            mAllAppsGrid = (AllAppsView) dragLayer.findViewById(R.id.all_apps_view);
+            // Setup AllApps
+            mAllAppsGrid = (AllAppsView) mDragLayer.findViewById(R.id.all_apps_view);
             mAllAppsGrid.setup(this, dragController);
             // We don't want a hole punched in our window.
             ((View) mAllAppsGrid).setWillNotDraw(false);
-        } else {
-            mAppsCustomizeTabHost = (AppsCustomizeTabHost)
-                    findViewById(R.id.apps_customize_pane);
-            mAppsCustomizeContent = (AppsCustomizePagedView)
-                    mAppsCustomizeTabHost.findViewById(R.id.apps_customize_pane_content);
-            mAppsCustomizeContent.setup(this, dragController);
-        }
 
-        mWorkspace = (Workspace) dragLayer.findViewById(R.id.workspace);
-
-        final Workspace workspace = mWorkspace;
-        workspace.setHapticFeedbackEnabled(false);
-
-        DeleteZone deleteZone = (DeleteZone) dragLayer.findViewById(R.id.delete_zone);
-        mDeleteZone = deleteZone;
-
-        View handleView = findViewById(R.id.all_apps_button);
-        if (handleView != null && handleView instanceof HandleView) {
-            // we don't use handle view in xlarge mode
-            mHandleView = (HandleView)handleView;
-            mHandleView.setLauncher(this);
-            mHandleView.setOnLongClickListener(this);
-        }
-
-        if (mCustomizePagedView != null) {
+            // Setup Customize
             mCustomizePagedView.setLauncher(this);
             mCustomizePagedView.setDragController(dragController);
             mCustomizePagedView.setAllAppsPagedView(mAllAppsPagedView);
-        } else {
-             ImageView hotseatLeft = (ImageView) findViewById(R.id.hotseat_left);
-             hotseatLeft.setContentDescription(mHotseatLabels[0]);
-             hotseatLeft.setImageDrawable(mHotseatIcons[0]);
-             ImageView hotseatRight = (ImageView) findViewById(R.id.hotseat_right);
-             hotseatRight.setContentDescription(mHotseatLabels[1]);
-             hotseatRight.setImageDrawable(mHotseatIcons[1]);
 
-             View.OnKeyListener listener = new IndicatorKeyEventListener();
-             mPreviousView = (ImageView) dragLayer.findViewById(R.id.previous_screen);
-             mPreviousView.setOnKeyListener(listener);
-             mNextView = (ImageView) dragLayer.findViewById(R.id.next_screen);
-             mNextView.setOnKeyListener(listener);
+            // Setup DeleteZone
+            mDeleteZone = (DeleteZone) mDragLayer.findViewById(R.id.delete_zone);
+            mDeleteZone.setLauncher(this);
+            mDeleteZone.setDragController(dragController);
 
-             Drawable previous = mPreviousView.getDrawable();
-             Drawable next = mNextView.getDrawable();
-             mWorkspace.setIndicators(previous, next);
+            // Setup the top-right Apps/Customize buttons
+            mAllAppsButton = findViewById(R.id.all_apps_button);
+            mDivider = findViewById(R.id.all_apps_divider);
+            mConfigureButton = findViewById(R.id.configure_button);
+            mDeleteZone.setOverlappingViews(new View[] { mAllAppsButton, mDivider,
+                    mConfigureButton });
 
-             mPreviousView.setHapticFeedbackEnabled(false);
-             mPreviousView.setOnLongClickListener(this);
-             mNextView.setHapticFeedbackEnabled(false);
-             mNextView.setOnLongClickListener(this);
-        }
-
-        workspace.setOnLongClickListener(this);
-        workspace.setDragController(dragController);
-        workspace.setLauncher(this);
-        workspace.setWallpaperDimension();
-
-        deleteZone.setLauncher(this);
-        deleteZone.setDragController(dragController);
-
-        final View allAppsButton = findViewById(R.id.all_apps_button);
-        final View divider = findViewById(R.id.all_apps_divider);
-        final View configureButton = findViewById(R.id.configure_button);
-
-        if (LauncherApplication.isScreenLarge()) {
-            deleteZone.setOverlappingViews(new View[] { allAppsButton, divider, configureButton });
-        } else {
-            deleteZone.setOverlappingView(findViewById(R.id.all_apps_button_cluster));
-        }
-        dragController.addDragListener(deleteZone);
-
-        DeleteZone allAppsDeleteZone = (DeleteZone) findViewById(R.id.all_apps_delete_zone);
-        if (allAppsDeleteZone != null) {
+            // Setup the AllApps Delete toolbar button
+            allAppsDeleteZone = (DeleteZone) findViewById(R.id.all_apps_delete_zone);
             allAppsDeleteZone.setLauncher(this);
             allAppsDeleteZone.setDragController(dragController);
             allAppsDeleteZone.setDragAndDropEnabled(false);
-            dragController.addDragListener(allAppsDeleteZone);
-            dragController.addDropTarget(allAppsDeleteZone);
-        }
 
-        ApplicationInfoDropTarget allAppsInfoTarget = (ApplicationInfoDropTarget)
-                findViewById(R.id.all_apps_info_target);
-        if (allAppsInfoTarget != null) {
+            // Setup the AllApps Info toolbar button
+            allAppsInfoTarget = (ApplicationInfoDropTarget) findViewById(R.id.all_apps_info_target);
             allAppsInfoTarget.setLauncher(this);
-            dragController.addDragListener(allAppsInfoTarget);
             allAppsInfoTarget.setDragAndDropEnabled(false);
-        }
-        View marketButton = findViewById(R.id.market_button);
-        if (marketButton != null) {
-            if (allAppsInfoTarget != null) {
-                allAppsInfoTarget.setOverlappingView(marketButton);
-            }
+
+            // Setup the AllApps Market toolbar button
+            View marketButton = findViewById(R.id.market_button);
+            allAppsInfoTarget.setOverlappingView(marketButton);
             marketButton.setOnClickListener(new OnClickListener() {
                 public void onClick(View v) {
                     onClickAppMarketButton(v);
                 }
             });
+        } else {
+            // Get the search/delete bar
+            mSearchDeleteBar = (SearchDropTargetBar) mDragLayer.findViewById(R.id.qsb_bar);
+
+            // Setup AppsCustomize
+            mAppsCustomizeTabHost = (AppsCustomizeTabHost)
+                    findViewById(R.id.apps_customize_pane);
+            mAppsCustomizeContent = (AppsCustomizePagedView)
+                    mAppsCustomizeTabHost.findViewById(R.id.apps_customize_pane_content);
+            mAppsCustomizeContent.setup(this, dragController);
+
+            // Setup AppsCustomize button
+            mHandleView = (HandleView) mDragLayer.findViewById(R.id.all_apps_button);
+            mHandleView.setLauncher(this);
+            mHandleView.setOnLongClickListener(this);
+            mHandleView.setOnClickListener(new OnClickListener() {
+                public void onClick(View v) {
+                    onClickAllAppsButton(v);
+                }
+            });
+
+            // Setup Hotseat
+            ImageView hotseatLeft = (ImageView) findViewById(R.id.hotseat_left);
+            hotseatLeft.setContentDescription(mHotseatLabels[0]);
+            hotseatLeft.setImageDrawable(mHotseatIcons[0]);
+            ImageView hotseatRight = (ImageView) findViewById(R.id.hotseat_right);
+            hotseatRight.setContentDescription(mHotseatLabels[1]);
+            hotseatRight.setImageDrawable(mHotseatIcons[1]);
+
+            View.OnKeyListener listener = new IndicatorKeyEventListener();
+            mPreviousView = (ImageView) mDragLayer.findViewById(R.id.previous_screen);
+            mPreviousView.setOnKeyListener(listener);
+            mNextView = (ImageView) mDragLayer.findViewById(R.id.next_screen);
+            mNextView.setOnKeyListener(listener);
+
+            Drawable previous = mPreviousView.getDrawable();
+            Drawable next = mNextView.getDrawable();
+            mWorkspace.setIndicators(previous, next);
+
+            mPreviousView.setHapticFeedbackEnabled(false);
+            mPreviousView.setOnLongClickListener(this);
+            mNextView.setHapticFeedbackEnabled(false);
+            mNextView.setOnLongClickListener(this);
         }
 
-        dragController.setDragScoller(workspace);
-        dragController.setScrollView(dragLayer);
-        dragController.setMoveTarget(workspace);
-
-        // The order here is bottom to top.
-        dragController.addDropTarget(workspace);
-        dragController.addDropTarget(deleteZone);
-        if (allAppsInfoTarget != null) {
-            dragController.addDropTarget(allAppsInfoTarget);
-        }
-        if (allAppsDeleteZone != null) {
-            dragController.addDropTarget(allAppsDeleteZone);
-        }
+        // Setup keylistener for button cluster
         mButtonCluster = (ViewGroup) findViewById(R.id.all_apps_button_cluster);
         View.OnKeyListener listener = null;
         if (LauncherApplication.isScreenLarge()) {
@@ -1032,33 +1015,25 @@ public final class Launcher extends Activity
             mButtonCluster.getChildAt(i).setOnKeyListener(listener);
         }
 
-        mAllAppsButton = findViewById(R.id.all_apps_button);
-        mDivider = findViewById(R.id.all_apps_divider);
-        mConfigureButton = findViewById(R.id.configure_button);
-
-        // We had previously set these click handlers in XML, but the first time we launched
-        // Configure or All Apps we had an extra 50ms of delay while the java reflection methods
-        // found the right handler. Setting the handlers directly here eliminates that cost.
-        if (mConfigureButton != null) {
-            mConfigureButton.setOnClickListener(new OnClickListener() {
-                public void onClick(View v) {
-                    onClickConfigureButton(v);
-                }
-            });
+        // Setup the drag controller (the drop targets have to be added in reverse order)
+        dragController.setDragScoller(mWorkspace);
+        dragController.setScrollView(mDragLayer);
+        dragController.setMoveTarget(mWorkspace);
+        dragController.addDropTarget(mWorkspace);
+        if (mDeleteZone != null) {
+            dragController.addDragListener(mDeleteZone);
+            dragController.addDropTarget(mDeleteZone);
         }
-        if (mDivider != null) {
-            mDivider.setOnClickListener(new OnClickListener() {
-                public void onClick(View v) {
-                    onClickAllAppsButton(v);
-                }
-            });
+        if (mSearchDeleteBar != null) {
+            mSearchDeleteBar.setup(this, dragController);
         }
-        if (mAllAppsButton != null) {
-            mAllAppsButton.setOnClickListener(new OnClickListener() {
-                public void onClick(View v) {
-                    onClickAllAppsButton(v);
-                }
-            });
+        if (allAppsDeleteZone != null) {
+            dragController.addDragListener(allAppsDeleteZone);
+            dragController.addDropTarget(allAppsDeleteZone);
+        }
+        if (allAppsInfoTarget != null) {
+            dragController.addDragListener(allAppsInfoTarget);
+            dragController.addDropTarget(allAppsInfoTarget);
         }
     }
 
@@ -2613,22 +2588,30 @@ public final class Launcher extends Activity
         switch (newState) {
         case WORKSPACE:
             hideOrShowToolbarButton(true, mButtonCluster, showSeq);
-            mDeleteZone.setDragAndDropEnabled(true);
-            if (LauncherApplication.isScreenLarge()) {
-                mDeleteZone.setText(getResources().getString(R.string.delete_zone_label_workspace));
+            if (mDeleteZone != null) {
+                mDeleteZone.setDragAndDropEnabled(true);
+                if (LauncherApplication.isScreenLarge()) {
+                    mDeleteZone.setText(
+                            getResources().getString(R.string.delete_zone_label_workspace));
+                }
             }
             break;
         case ALL_APPS:
         case APPS_CUSTOMIZE:
             hideOrShowToolbarButton(false, mButtonCluster, hideSeq);
-            mDeleteZone.setDragAndDropEnabled(false);
-            if (LauncherApplication.isScreenLarge()) {
-                mDeleteZone.setText(getResources().getString(R.string.delete_zone_label_all_apps));
+            if (mDeleteZone != null) {
+                mDeleteZone.setDragAndDropEnabled(false);
+                if (LauncherApplication.isScreenLarge()) {
+                    mDeleteZone.setText(
+                            getResources().getString(R.string.delete_zone_label_all_apps));
+                }
             }
             break;
         case CUSTOMIZE:
             hideOrShowToolbarButton(false, mButtonCluster, hideSeq);
-            mDeleteZone.setDragAndDropEnabled(false);
+            if (mDeleteZone != null) {
+                mDeleteZone.setDragAndDropEnabled(false);
+            }
             break;
         }
     }
@@ -2960,8 +2943,9 @@ public final class Launcher extends Activity
             cameraZoomOut(State.ALL_APPS, animated, false);
             ((View) mAllAppsGrid).requestFocus();
 
-            // TODO: fade these two too
-            mDeleteZone.setVisibility(View.GONE);
+            if (mDeleteZone != null) {
+                mDeleteZone.setVisibility(View.GONE);
+            }
 
             // Change the state *after* we've called all the transition code
             mState = State.ALL_APPS;
