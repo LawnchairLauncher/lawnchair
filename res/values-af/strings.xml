@@ -19,8 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- no translation found for live_wallpaper_picker_class_name (2908396359221567921) -->
-    <skip />
     <!-- no translation found for application_name (8424725141379931883) -->
     <skip />
     <string name="uid_name" msgid="3371120195364560632">"Android Kernprogramme"</string>
@@ -54,6 +52,8 @@
     <!-- no translation found for all_apps_tab_games (1855736784923494918) -->
     <skip />
     <!-- no translation found for all_apps_tab_downloaded (1488049110598641387) -->
+    <skip />
+    <!-- no translation found for long_press_widget_to_add (4307462194057715796) -->
     <skip />
     <!-- no translation found for all_apps_no_games (5293893733372793696) -->
     <skip />
@@ -101,6 +101,12 @@
     <!-- no translation found for delete_zone_label_workspace (7153615831493049150) -->
     <skip />
     <!-- no translation found for delete_zone_label_all_apps (6664588234817475108) -->
+    <skip />
+    <!-- no translation found for delete_target_label (665300185123139530) -->
+    <skip />
+    <!-- no translation found for delete_target_uninstall_label (748894921183769150) -->
+    <skip />
+    <!-- no translation found for info_target_label (6175926565900432067) -->
     <skip />
     <!-- no translation found for accessibility_search_button (816822994629942611) -->
     <skip />
@@ -151,5 +157,7 @@
     <string name="permdesc_write_settings" msgid="1098648778383349818">"Stel program in staat om die instellings en kortpaaie in Tuis te verander."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Kon nie legstuk laai nie"</string>
     <!-- no translation found for uninstall_system_app_text (7488523163288397451) -->
+    <skip />
+    <!-- no translation found for dream_name (2847171357608437154) -->
     <skip />
 </resources>

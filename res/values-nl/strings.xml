@@ -19,8 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- no translation found for live_wallpaper_picker_class_name (2908396359221567921) -->
-    <skip />
     <string name="application_name" msgid="8424725141379931883">"Launcher"</string>
     <string name="uid_name" msgid="3371120195364560632">"Android-kerntoepassingen"</string>
     <string name="folder_name" msgid="4588446541914685904">"Map"</string>
@@ -39,6 +37,7 @@
     <string name="all_apps_tab_apps" msgid="5468972551904071712">"Apps"</string>
     <string name="all_apps_tab_games" msgid="1855736784923494918">"Games"</string>
     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Mijn apps"</string>
+    <string name="long_press_widget_to_add" msgid="4307462194057715796">"Druk lang om een widget op te halen"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"Geen games gevonden."</string>
     <string name="all_apps_no_downloads" msgid="2284720393234453761">"U heeft geen gedownloade apps."</string>
     <string name="market" msgid="2652226429823445833">"Winkel"</string>
@@ -69,6 +68,12 @@
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Startpagina"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"Verwijderen"</string>
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"Verwijderen"</string>
+    <!-- no translation found for delete_target_label (665300185123139530) -->
+    <skip />
+    <!-- no translation found for delete_target_uninstall_label (748894921183769150) -->
+    <skip />
+    <!-- no translation found for info_target_label (6175926565900432067) -->
+    <skip />
     <string name="accessibility_search_button" msgid="816822994629942611">"Zoeken"</string>
     <string name="accessibility_voice_search_button" msgid="3938249215065842475">"Spraakgestuurd zoeken"</string>
     <string name="accessibility_all_apps_button" msgid="1595097919145716305">"Apps"</string>
@@ -98,4 +103,5 @@
     <string name="permdesc_write_settings" msgid="1098648778383349818">"Hiermee kan een app de instellingen en snelkoppelingen op de startpagina wijzigen."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Probleem bij het laden van widget"</string>
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"Dit is een systeemtoepassing die niet kan worden verwijderd."</string>
+    <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
 </resources>
