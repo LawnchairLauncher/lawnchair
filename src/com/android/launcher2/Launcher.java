@@ -950,11 +950,6 @@ public final class Launcher extends Activity
             // Setup the AllApps Market toolbar button
             View marketButton = findViewById(R.id.market_button);
             allAppsInfoTarget.setOverlappingView(marketButton);
-            marketButton.setOnClickListener(new OnClickListener() {
-                public void onClick(View v) {
-                    onClickAppMarketButton(v);
-                }
-            });
         } else {
             // Get the search/delete bar
             mSearchDeleteBar = (SearchDropTargetBar) mDragLayer.findViewById(R.id.qsb_bar);
