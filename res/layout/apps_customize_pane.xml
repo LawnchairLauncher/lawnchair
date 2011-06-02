@@ -67,12 +67,14 @@
                 <TextView
                     style="@style/MarketButton"
                     android:id="@+id/market_button"
+                    android:onClick="onClickAppMarketButton"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:background="@drawable/tab_widget_indicator_selector"
-                    android:focusable="true" />
+                    android:focusable="true"
+                    android:clickable="true" />
             </FrameLayout>
         </FrameLayout>
         <FrameLayout

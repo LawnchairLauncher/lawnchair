@@ -55,6 +55,7 @@
                     android:focusable="true" />
                 <TextView
                     android:id="@+id/market_button"
+                    android:onClick="onClickAppMarketButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -68,7 +69,8 @@
                     android:shadowDy="0.0"
                     android:shadowRadius="2.0"
                     android:background="@drawable/focusable_view_bg"
-                    android:focusable="true" />
+                    android:focusable="true"
+                    android:clickable="true" />
             </FrameLayout>
             <com.android.launcher2.DeleteZone
                 android:id="@+id/all_apps_delete_zone"
