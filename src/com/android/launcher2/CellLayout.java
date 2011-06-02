@@ -167,24 +167,22 @@ public class CellLayout extends ViewGroup {
 
         final Resources res = getResources();
 
-        if (LauncherApplication.isScreenLarge()) {
-            mNormalBackground = res.getDrawable(R.drawable.homescreen_large_blue);
-            mActiveBackground = res.getDrawable(R.drawable.homescreen_large_green);
-            mActiveGlowBackground = res.getDrawable(R.drawable.homescreen_large_green_strong);
+        mNormalBackground = res.getDrawable(R.drawable.homescreen_large_blue);
+        mActiveBackground = res.getDrawable(R.drawable.homescreen_large_green);
+        mActiveGlowBackground = res.getDrawable(R.drawable.homescreen_large_green_strong);
 
-            mNormalBackgroundMini = res.getDrawable(R.drawable.homescreen_small_blue);
-            mNormalGlowBackgroundMini = res.getDrawable(R.drawable.homescreen_small_blue_strong);
-            mActiveBackgroundMini = res.getDrawable(R.drawable.homescreen_small_green);
-            mActiveGlowBackgroundMini = res.getDrawable(R.drawable.homescreen_small_green_strong);
+        mNormalBackgroundMini = res.getDrawable(R.drawable.homescreen_small_blue);
+        mNormalGlowBackgroundMini = res.getDrawable(R.drawable.homescreen_small_blue_strong);
+        mActiveBackgroundMini = res.getDrawable(R.drawable.homescreen_small_green);
+        mActiveGlowBackgroundMini = res.getDrawable(R.drawable.homescreen_small_green_strong);
 
-            mNormalBackground.setFilterBitmap(true);
-            mActiveBackground.setFilterBitmap(true);
-            mActiveGlowBackground.setFilterBitmap(true);
-            mNormalBackgroundMini.setFilterBitmap(true);
-            mNormalGlowBackgroundMini.setFilterBitmap(true);
-            mActiveBackgroundMini.setFilterBitmap(true);
-            mActiveGlowBackgroundMini.setFilterBitmap(true);
-        }
+        mNormalBackground.setFilterBitmap(true);
+        mActiveBackground.setFilterBitmap(true);
+        mActiveGlowBackground.setFilterBitmap(true);
+        mNormalBackgroundMini.setFilterBitmap(true);
+        mNormalGlowBackgroundMini.setFilterBitmap(true);
+        mActiveBackgroundMini.setFilterBitmap(true);
+        mActiveGlowBackgroundMini.setFilterBitmap(true);
 
         // Initialize the data structures used for the drag visualization.
 
@@ -383,35 +381,33 @@ public class CellLayout extends ViewGroup {
     }
 
     void animateDrop() {
-        if (LauncherApplication.isScreenLarge()) {
-            Resources res = getResources();
-            float onDropScale = res.getInteger(R.integer.config_screenOnDropScalePercent) / 100.0f;
-            ObjectAnimator scaleUp = ObjectAnimator.ofFloat(this, "hoverScale", onDropScale);
-            scaleUp.setDuration(res.getInteger(R.integer.config_screenOnDropScaleUpDuration));
-            ObjectAnimator scaleDown = ObjectAnimator.ofFloat(this, "hoverScale", 1.0f);
-            scaleDown.setDuration(res.getInteger(R.integer.config_screenOnDropScaleDownDuration));
-            ObjectAnimator alphaFadeOut = ObjectAnimator.ofFloat(this, "hoverAlpha", 0.0f);
+        Resources res = getResources();
+        float onDropScale = res.getInteger(R.integer.config_screenOnDropScalePercent) / 100.0f;
+        ObjectAnimator scaleUp = ObjectAnimator.ofFloat(this, "hoverScale", onDropScale);
+        scaleUp.setDuration(res.getInteger(R.integer.config_screenOnDropScaleUpDuration));
+        ObjectAnimator scaleDown = ObjectAnimator.ofFloat(this, "hoverScale", 1.0f);
+        scaleDown.setDuration(res.getInteger(R.integer.config_screenOnDropScaleDownDuration));
+        ObjectAnimator alphaFadeOut = ObjectAnimator.ofFloat(this, "hoverAlpha", 0.0f);
 
-            alphaFadeOut.setStartDelay(res.getInteger(R.integer.config_screenOnDropAlphaFadeDelay));
-            alphaFadeOut.setDuration(res.getInteger(R.integer.config_screenOnDropAlphaFadeDelay));
+        alphaFadeOut.setStartDelay(res.getInteger(R.integer.config_screenOnDropAlphaFadeDelay));
+        alphaFadeOut.setDuration(res.getInteger(R.integer.config_screenOnDropAlphaFadeDuration));
 
-            AnimatorSet bouncer = new AnimatorSet();
-            bouncer.play(scaleUp).before(scaleDown);
-            bouncer.play(scaleUp).with(alphaFadeOut);
-            bouncer.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    setIsDragOverlapping(true);
-                }
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    setIsDragOverlapping(false);
-                    setHoverScale(1.0f);
-                    setHoverAlpha(1.0f);
-                }
-            });
-            bouncer.start();
-        }
+        AnimatorSet bouncer = new AnimatorSet();
+        bouncer.play(scaleUp).before(scaleDown);
+        bouncer.play(scaleUp).with(alphaFadeOut);
+        bouncer.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                setIsDragOverlapping(true);
+            }
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                setIsDragOverlapping(false);
+                setHoverScale(1.0f);
+                setHoverAlpha(1.0f);
+            }
+        });
+        bouncer.start();
     }
 
     @Override
@@ -421,7 +417,7 @@ public class CellLayout extends ViewGroup {
         // When we're small, we are either drawn normally or in the "accepts drops" state (during
         // a drag). However, we also drag the mini hover background *over* one of those two
         // backgrounds
-        if (LauncherApplication.isScreenLarge() && mBackgroundAlpha > 0.0f) {
+        if (mBackgroundAlpha > 0.0f) {
             Drawable bg;
             boolean mini = getScaleX() < 0.5f;
 

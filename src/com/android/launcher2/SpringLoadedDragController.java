@@ -26,8 +26,6 @@ public class SpringLoadedDragController implements OnAlarmListener {
     // the screen the user is currently hovering over, if any
     private CellLayout mScreen;
     private Launcher mLauncher;
-    boolean mFinishedAnimation = false;
-    boolean mWaitingToReenter = false;
 
     public SpringLoadedDragController(Launcher launcher) {
         mLauncher = launcher;
@@ -35,35 +33,25 @@ public class SpringLoadedDragController implements OnAlarmListener {
         mAlarm.setOnAlarmListener(this);
     }
 
-    public void onDragEnter(CellLayout cl, boolean isSpringLoaded) {
+    public void cancel() {
+        mAlarm.cancelAlarm();
+    }
+
+    // Set a new alarm to expire for the screen that we are hovering over now
+    public void setAlarm(CellLayout cl) {
+        if (mScreen != cl) {
+            mAlarm.setAlarm(ENTER_SPRING_LOAD_HOVER_TIME);
+        }
         mScreen = cl;
-        mAlarm.setAlarm(ENTER_SPRING_LOAD_HOVER_TIME);
-        mFinishedAnimation = isSpringLoaded;
-        mWaitingToReenter = false;
-    }
-
-    public void onEnterSpringLoadedMode(boolean waitToReenter) {
-        mFinishedAnimation = true;
-        mWaitingToReenter = waitToReenter;
-    }
-
-    public void onDragExit() {
-        if (mScreen != null) {
-            mScreen.onDragExit();
-        }
-        mScreen = null;
-        if (mFinishedAnimation && !mWaitingToReenter) {
-            mAlarm.setAlarm(EXIT_SPRING_LOAD_HOVER_TIME);
-        }
     }
 
     // this is called when our timer runs out
     public void onAlarm(Alarm alarm) {
         if (mScreen != null) {
-            // we're currently hovering over a screen
-            mLauncher.enterSpringLoadedDragMode(mScreen);
-        } else {
-            mLauncher.exitSpringLoadedDragMode();
+            // Snap to the screen that we are hovering over now
+            Workspace w = mLauncher.getWorkspace();
+            int page = w.indexOfChild(mScreen);
+            w.snapToPage(page);
         }
     }
 }

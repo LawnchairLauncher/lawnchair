@@ -6,6 +6,8 @@
     <integer name="config_customizeZoomOutTime">600</integer>
     <integer name="config_customizeZoomScaleFactor">7</integer>
     <integer name="config_customizeFadeInTime">800</integer>
+    <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
+    <integer name="config_workspaceSpringLoadShrinkPercentage">70</integer>
 
     <!-- The slope, in percent, of the drag movement needed to drag an item out of
          Customize (y / x * 100%)  -->
@@ -24,12 +26,4 @@
     <!-- When shrinking the workspace, this is the percentage of its original size. -->
     <integer name="config_workspaceShrinkPercent">17</integer>
 
-    <!-- When items are dropped on the mini screens in customize mode, we have a bounce animation
-         of the bright green hover outline, and then fade out the outline at the end. These are
-         the values used in that animation -->
-    <integer name="config_screenOnDropScalePercent">120</integer>
-    <integer name="config_screenOnDropScaleUpDuration">200</integer>
-    <integer name="config_screenOnDropScaleDownDuration">200</integer>
-    <integer name="config_screenOnDropAlphaFadeDelay">350</integer>
-    <integer name="config_screenOnDropAlphaFadeDuration">50</integer>
 </resources>

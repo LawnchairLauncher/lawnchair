@@ -410,9 +410,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     protected boolean beginDragging(View v) {
         if (!super.beginDragging(v)) return false;
 
-        // Hide the pane so that the user can drop onto the workspace, we must do this first,
-        // due to how the drop target layout is computed when we start dragging to the workspace.
-        mLauncher.showWorkspace(true);
 
         if (v instanceof PagedViewIcon) {
             beginDraggingApplication(v);
@@ -420,6 +417,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             beginDraggingWidget(v);
         }
 
+        // Go into spring loaded mode
+        int currentPageIndex = mLauncher.getWorkspace().getCurrentPage();
+        CellLayout currentPage = (CellLayout) mLauncher.getWorkspace().getChildAt(currentPageIndex);
+        mLauncher.enterSpringLoadedDragMode(currentPage);
         return true;
     }
     private void endDragging(boolean success) {
@@ -439,8 +440,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 if (allAppsInfoButton != null) allAppsInfoButton.setDragAndDropEnabled(false);
             }
         });
+        mLauncher.exitSpringLoadedDragMode();
         mLauncher.getWorkspace().onDragStopped(success);
         mLauncher.unlockScreenOrientation();
+
     }
 
     /*
@@ -779,6 +782,34 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
      */
     public int getPageContentWidth() {
         return mContentWidth;
+    }
+
+    @Override
+    protected void onPageBeginMoving() {
+        /* TO BE ENABLED LATER
+        setChildrenDrawnWithCacheEnabled(true);
+        for (int i = 0; i < getChildCount(); ++i) {
+            View v = getChildAt(i);
+            if (v instanceof PagedViewCellLayout) {
+                ((PagedViewCellLayout) v).setChildrenDrawingCacheEnabled(true);
+            }
+        }
+        */
+        super.onPageBeginMoving();
+    }
+
+    @Override
+    protected void onPageEndMoving() {
+        /* TO BE ENABLED LATER
+        for (int i = 0; i < getChildCount(); ++i) {
+            View v = getChildAt(i);
+            if (v instanceof PagedViewCellLayout) {
+                ((PagedViewCellLayout) v).setChildrenDrawingCacheEnabled(false);
+            }
+        }
+        setChildrenDrawnWithCacheEnabled(false);
+        */
+        super.onPageEndMoving();
     }
 
     /*
