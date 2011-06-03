@@ -19,8 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- no translation found for live_wallpaper_picker_class_name (2908396359221567921) -->
-    <skip />
     <string name="application_name" msgid="8424725141379931883">"راه انداز"</string>
     <string name="uid_name" msgid="3371120195364560632">"برنامه های Android Core"</string>
     <string name="folder_name" msgid="4588446541914685904">"پوشه"</string>
@@ -39,6 +37,7 @@
     <string name="all_apps_tab_apps" msgid="5468972551904071712">"برنامه های کاربردی"</string>
     <string name="all_apps_tab_games" msgid="1855736784923494918">"بازی ها"</string>
     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"برنامه های من"</string>
+    <string name="long_press_widget_to_add" msgid="4307462194057715796">"برای انتخاب ابزارک، برای مدت طولانی فشار دهید"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"هیچ بازی پیدا نشد."</string>
     <string name="all_apps_no_downloads" msgid="2284720393234453761">"شما هیچ برنامه کاربردی دانلود شده ای ندارید."</string>
     <string name="market" msgid="2652226429823445833">"فروشگاه"</string>
@@ -69,6 +68,12 @@
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"صفحه اصلی"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"حذف"</string>
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"حذف نصب"</string>
+    <!-- no translation found for delete_target_label (665300185123139530) -->
+    <skip />
+    <!-- no translation found for delete_target_uninstall_label (748894921183769150) -->
+    <skip />
+    <!-- no translation found for info_target_label (6175926565900432067) -->
+    <skip />
     <string name="accessibility_search_button" msgid="816822994629942611">"جستجو"</string>
     <string name="accessibility_voice_search_button" msgid="3938249215065842475">"جستجوی صوتی"</string>
     <string name="accessibility_all_apps_button" msgid="1595097919145716305">"برنامه های کاربردی"</string>
@@ -98,4 +103,5 @@
     <string name="permdesc_write_settings" msgid="1098648778383349818">"به برنامه کاربردی اجازه می دهد تنظیمات و میانبرها را در صفحه اصلی تغییر دهد."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"مشکل در بارگیری ابزارک"</string>
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"این یک برنامه سیستمی است و لغو نصب نمی شود."</string>
+    <string name="dream_name" msgid="2847171357608437154">"پرتاب کننده موشک"</string>
 </resources>
