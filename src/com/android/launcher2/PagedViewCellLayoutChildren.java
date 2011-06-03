@@ -92,8 +92,8 @@ public class PagedViewCellLayoutChildren extends ViewGroup {
             PagedViewCellLayout.LayoutParams lp =
                 (PagedViewCellLayout.LayoutParams) child.getLayoutParams();
             lp.setup(mCellWidth, mCellHeight, mWidthGap, mHeightGap,
-                    ((ViewGroup)getParent()).getPaddingLeft(),
-                    ((ViewGroup)getParent()).getPaddingTop());
+                    getPaddingLeft(),
+                    getPaddingTop());
 
             int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(lp.width,
                     MeasureSpec.EXACTLY);
@@ -111,18 +111,21 @@ public class PagedViewCellLayoutChildren extends ViewGroup {
         int count = getChildCount();
 
         int offsetX = 0;
-        if (mCenterContent) {
+        if (mCenterContent && count > 0) {
             // determine the max width of all the rows and center accordingly
-            int maxRowWidth = 0;
+            int maxRowX = 0;
+            int minRowX = Integer.MAX_VALUE;
             for (int i = 0; i < count; i++) {
                 View child = getChildAt(i);
                 if (child.getVisibility() != GONE) {
                     PagedViewCellLayout.LayoutParams lp =
                         (PagedViewCellLayout.LayoutParams) child.getLayoutParams();
-                    maxRowWidth = Math.max(maxRowWidth, lp.x + lp.width);
+                    minRowX = Math.min(minRowX, lp.x);
+                    maxRowX = Math.max(maxRowX, lp.x + lp.width);
                 }
             }
-            offsetX = (getMeasuredWidth() / 2) - (maxRowWidth / 2);
+            int maxRowWidth = maxRowX - minRowX;
+            offsetX = (getMeasuredWidth() - maxRowWidth) / 2;
         }
 
         for (int i = 0; i < count; i++) {
