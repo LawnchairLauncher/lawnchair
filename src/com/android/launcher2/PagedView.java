@@ -1549,6 +1549,18 @@ public abstract class PagedView extends ViewGroup {
      */
     public abstract void syncPageItems(int page);
 
+    protected void postInvalidatePageData(final boolean clearViews) {
+        post(new Runnable() {
+                // post the call to avoid a call to requestLayout from a layout pass
+                public void run() {
+                    if (clearViews) {
+                        removeAllViews();
+                    }
+                    invalidatePageData();
+                }
+            });
+    }
+
     protected void invalidatePageData() {
         if (mContentIsRefreshable) {
             // Update all the pages
