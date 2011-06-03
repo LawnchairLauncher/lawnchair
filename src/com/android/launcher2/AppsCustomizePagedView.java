@@ -528,7 +528,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             PagedViewIcon icon = (PagedViewIcon) mLayoutInflater.inflate(
                     R.layout.apps_customize_application, layout, false);
             icon.applyFromApplicationInfo(
-                    info, mPageViewIconCache, true, isHardwareAccelerated() && (numPages > 1));
+                    info, mPageViewIconCache, true, (numPages > 1));
             icon.setOnClickListener(this);
             icon.setOnLongClickListener(this);
             icon.setOnTouchListener(this);
@@ -699,6 +699,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         // Calculate the dimensions of each cell we are giving to each widget
         int numWidgetsPerPage = mWidgetCountX * mWidgetCountY;
+        int numPages = (int) Math.ceil(mWidgets.size() / (float) numWidgetsPerPage);
         int offset = page * numWidgetsPerPage;
         int cellWidth = ((mWidgetSpacingLayout.getContentWidth() - mPageLayoutWidthGap
                 - ((mWidgetCountX - 1) * mCellWidthGap)) / mWidgetCountX);
@@ -717,7 +718,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                         info.minHeight, null);
                 FastBitmapDrawable preview = getWidgetPreview(info, cellSpans[0], cellSpans[1],
                         cellWidth, cellHeight);
-                widget.applyFromAppWidgetProviderInfo(info, preview, -1, cellSpans, null, false);
+                widget.applyFromAppWidgetProviderInfo(info, preview, -1, cellSpans, 
+                        mPageViewIconCache, (numPages > 1));
                 widget.setTag(createItemInfo);
             } else if (rawInfo instanceof ResolveInfo) {
                 // Fill in the shortcuts information
@@ -727,7 +729,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 createItemInfo.componentName = new ComponentName(info.activityInfo.packageName,
                         info.activityInfo.name);
                 FastBitmapDrawable preview = getShortcutPreview(info, cellWidth, cellHeight);
-                widget.applyFromResolveInfo(mPackageManager, info, preview, null, false);
+                widget.applyFromResolveInfo(mPackageManager, info, preview, mPageViewIconCache, 
+                        (numPages > 1));
                 widget.setTag(createItemInfo);
             }
             widget.setOnClickListener(this);
