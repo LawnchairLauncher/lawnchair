@@ -84,7 +84,7 @@ public class CustomizeTrayTabHost extends TabHost implements LauncherTransitiona
                 .setIndicator(tabView).setContent(contentFactory));
         tabView = (TextView) mInflater.inflate(
                 R.layout.customize_tab_widget_indicator, tabWidget, false);
-        tabView.setText(mContext.getString(R.string.applications_tab_label));
+        tabView.setText(mContext.getString(R.string.all_apps_tab_apps));
         addTab(newTabSpec(APPLICATIONS_TAG)
                 .setIndicator(tabView).setContent(contentFactory));
         tabView = (TextView) mInflater.inflate(
