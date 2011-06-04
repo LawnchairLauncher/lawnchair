@@ -211,8 +211,6 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
     }
 
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        // TODO: currently ignoring padding
-
         int widthSpecMode = MeasureSpec.getMode(widthMeasureSpec);
         int widthSpecSize = MeasureSpec.getSize(widthMeasureSpec);
 
@@ -255,10 +253,8 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
             widthGap = heightGap = minGap;
         }
 
-        int newWidth = mPaddingLeft + mPaddingRight + (mCellCountX * cellWidth) +
-            ((mCellCountX - 1) * widthGap);
-        int newHeight = mPaddingTop + mPaddingBottom + (mCellCountY * cellHeight) +
-            ((mCellCountY - 1) * heightGap);
+        int newWidth = (mCellCountX * cellWidth) + ((mCellCountX - 1) * widthGap);
+        int newHeight = (mCellCountY * cellHeight) + ((mCellCountY - 1) * heightGap);
 
         final int count = getChildCount();
         for (int i = 0; i < count; i++) {
@@ -270,7 +266,8 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
             child.measure(childWidthMeasureSpec, childheightMeasureSpec);
         }
 
-        setMeasuredDimension(newWidth, newHeight);
+        setMeasuredDimension(newWidth + mPaddingLeft + mPaddingRight,
+            newHeight + mPaddingTop + mPaddingBottom);
     }
 
     int getContentWidth() {
@@ -304,12 +301,8 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            if (LauncherApplication.isScreenLarge()) {
-                child.layout(0, 0, r - l, b - t);
-            } else {
-                child.layout(mPaddingLeft, mPaddingTop, getMeasuredWidth() - mPaddingRight,
-                        getMeasuredHeight() - mPaddingBottom);
-            }
+            child.layout(mPaddingLeft, mPaddingTop,
+                r - l - mPaddingRight, b - t - mPaddingBottom);
         }
     }
 
