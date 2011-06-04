@@ -172,7 +172,9 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
 
         availableHeight -= mPageLayoutPaddingTop + mPageLayoutPaddingBottom;
         availableHeight -= cellHeight; // Assume at least one row
-        availableHeight -= screenHeight * 0.16f;
+        Resources r = getContext().getResources();
+        float scaleFactor = r.getInteger(R.integer.config_allAppsZoomScaleFactor) / 100f;
+        availableHeight -= screenHeight * scaleFactor;
         if (availableHeight > 0) {
             return Math.min(mMaxCellCountY,
                     1 + availableHeight / (cellHeight + mPageLayoutHeightGap));
