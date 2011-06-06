@@ -37,7 +37,7 @@
     <string name="all_apps_tab_apps" msgid="5468972551904071712">"Ứng dụng"</string>
     <string name="all_apps_tab_games" msgid="1855736784923494918">"Trò chơi"</string>
     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Ứng dụng của tôi"</string>
-    <string name="long_press_widget_to_add" msgid="4307462194057715796">"Nhấn lâu để chọn tiện ích con"</string>
+    <string name="long_press_widget_to_add" msgid="4307462194057715796">"Nhấn và giữ để chọn tiện ích con"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"Không tìm thấy trò chơi."</string>
     <string name="all_apps_no_downloads" msgid="2284720393234453761">"Bạn không có ứng dụng nào được tải xuống."</string>
     <string name="market" msgid="2652226429823445833">"Mua hàng"</string>

@@ -37,7 +37,7 @@
     <string name="all_apps_tab_apps" msgid="5468972551904071712">"Приложения"</string>
     <string name="all_apps_tab_games" msgid="1855736784923494918">"Игры"</string>
     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Мои приложения"</string>
-    <string name="long_press_widget_to_add" msgid="4307462194057715796">"Длительное нажатие позволит выбрать виджет"</string>
+    <string name="long_press_widget_to_add" msgid="4307462194057715796">"Нажмите и удерживайте, чтобы выбрать виджет"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"Игр не найдено."</string>
     <string name="all_apps_no_downloads" msgid="2284720393234453761">"У вас нет загруженных приложений."</string>
     <string name="market" msgid="2652226429823445833">"Маркет"</string>

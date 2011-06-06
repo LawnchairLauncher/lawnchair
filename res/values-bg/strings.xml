@@ -37,7 +37,7 @@
     <string name="all_apps_tab_apps" msgid="5468972551904071712">"Приложения"</string>
     <string name="all_apps_tab_games" msgid="1855736784923494918">"Игри"</string>
     <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Моите приложения"</string>
-    <string name="long_press_widget_to_add" msgid="4307462194057715796">"Натиснете продълж. за избор на приспособление"</string>
+    <string name="long_press_widget_to_add" msgid="4307462194057715796">"Натиснете дълго за избор на приспособление"</string>
     <string name="all_apps_no_games" msgid="5293893733372793696">"Няма намерени игри."</string>
     <string name="all_apps_no_downloads" msgid="2284720393234453761">"Нямате изтеглени приложения."</string>
     <string name="market" msgid="2652226429823445833">"Магазин"</string>
