@@ -86,7 +86,7 @@ public class DeleteDropTarget extends IconDropTarget {
         boolean isVisible = true;
         boolean isUninstall = false;
 
-        // If we are dragging a widget from AppsCustomize , hide the delete target
+        // If we are dragging a widget from AppsCustomize, hide the delete target
         if (isAllAppsWidget(source, info)) {
             isVisible = false;
         }

@@ -42,15 +42,50 @@
         <item name="android:includeFontPadding">false</item>
     </style>
 
+    <style name="WidgetDivider">
+        <item name="android:visibility">visible</item>
+    </style>
+
     <style name="TabIndicator.Wide">
         <item name="android:paddingLeft">40dp</item>
         <item name="android:paddingRight">40dp</item>
-        <item name="android:paddingTop">15dp</item>
+        <item name="android:paddingTop">10dp</item>
         <item name="android:paddingBottom">20dp</item>
         <item name="android:textSize">20sp</item>
     </style>
 
     <style name="CustomizeTabIndicator.Wide" parent="TabIndicator.Wide">
+    </style>
+
+
+    <!-- QSB Search / Drop Target bar -->
+    <style name="SearchDropTargetBar">
+        <item name="android:orientation">horizontal</item>
+    </style>
+    <style name="SearchButton">
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:paddingTop">@dimen/toolbar_button_vertical_padding</item>
+        <item name="android:paddingBottom">@dimen/toolbar_button_vertical_padding</item>
+        <item name="android:paddingLeft">@dimen/toolbar_button_horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/toolbar_button_horizontal_padding</item>
+    </style>
+    <style name="SearchButtonDivider">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">center_vertical</item>
+    </style>
+    <style name="DropTargetButtonContainer">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+    <style name="DropTargetButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:drawablePadding">7.5dp</item>
+        <item name="android:paddingTop">@dimen/toolbar_button_vertical_padding</item>
+        <item name="android:paddingBottom">@dimen/toolbar_button_vertical_padding</item>
     </style>
 
     <style name="config_orientation">

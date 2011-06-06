@@ -28,7 +28,7 @@ import android.widget.TextView;
  * Implements a DropTarget which allows applications to be dropped on it,
  * in order to launch the application info for that app.
  */
-public class IconDropTarget extends TextView implements DropTarget, DragController.DragListener {
+public class IconDropTarget extends StrokedTextView implements DropTarget, DragController.DragListener {
     protected Launcher mLauncher;
 
     /**

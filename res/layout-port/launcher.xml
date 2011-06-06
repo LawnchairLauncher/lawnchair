@@ -40,7 +40,7 @@
 
     <include layout="@layout/qsb_bar"
         android:id="@+id/qsb_bar"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/qsb_bar_height"
         android:layout_gravity="top" />
 

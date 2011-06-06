@@ -208,7 +208,6 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
     @Override
     public void setup(Launcher launcher, DragController dragController) {
         mLauncher = launcher;
-        mLauncher.setAllAppsPagedView(this);
         mDragController = dragController;
     }
 

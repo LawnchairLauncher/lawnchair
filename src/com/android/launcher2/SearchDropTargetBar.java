@@ -33,8 +33,9 @@ import com.android.launcher.R;
 public class SearchDropTargetBar extends FrameLayout implements DragController.DragListener {
 
     private static final int sTransitionInDuration = 275;
-    private static final int sTransitionOutDuration = 200;
+    private static final int sTransitionOutDuration = 100;
 
+    private boolean mIsSearchBarHidden;
     private View mQSBSearchBar;
     private View mDropTargetBar;
     private IconDropTarget mInfoDropTarget;
@@ -70,19 +71,53 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
     }
 
     /*
+     * Shows and hides the search bar.
+     */
+    public void showSearchBar(boolean animated) {
+        if (animated) {
+            mQSBSearchBar.animate().alpha(1f).setDuration(sTransitionInDuration);
+        } else {
+            mQSBSearchBar.setAlpha(1f);
+        }
+        mIsSearchBarHidden = false;
+    }
+    public void hideSearchBar(boolean animated) {
+        if (animated) {
+            mQSBSearchBar.animate().alpha(0f).setDuration(sTransitionOutDuration);
+        } else {
+            mQSBSearchBar.setAlpha(0f);
+        }
+        mIsSearchBarHidden = true;
+    }
+
+    /*
+     * Gets various transition durations.
+     */
+    public int getTransitionInDuration() {
+        return sTransitionInDuration;
+    }
+    public int getTransitionOutDuration() {
+        return sTransitionOutDuration;
+    }
+
+    /*
      * DragController.DragListener implementation
      */
     @Override
     public void onDragStart(DragSource source, Object info, int dragAction) {
         // Animate out the QSB search bar, and animate in the drop target bar
-        mQSBSearchBar.animate().alpha(0f).setDuration(sTransitionOutDuration);
         mDropTargetBar.animate().alpha(1f).setDuration(sTransitionInDuration);
+        if (!mIsSearchBarHidden) {
+            mQSBSearchBar.animate().alpha(0f).setDuration(sTransitionOutDuration);
+        }
     }
 
     @Override
     public void onDragEnd() {
         // Restore the QSB search bar, and animate out the drop target bar
         mDropTargetBar.animate().alpha(0f).setDuration(sTransitionOutDuration);
-        mQSBSearchBar.animate().alpha(1f).setDuration(sTransitionInDuration);
+        if (!mIsSearchBarHidden) {
+            mQSBSearchBar.animate().alpha(1f).setDuration(sTransitionInDuration);
+        }
     }
 }

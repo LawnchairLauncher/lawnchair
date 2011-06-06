@@ -19,7 +19,7 @@
     android:focusable="false">
 
     <!-- Search buttons container -->
-    <LinearLayout
+    <RelativeLayout
         style="@style/SearchDropTargetBar"
         android:id="@+id/qsb_search_bar"
         android:layout_width="match_parent"
@@ -30,6 +30,8 @@
             android:id="@+id/search_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
             android:src="@drawable/ic_generic_search"
             android:background="@drawable/button_bg"
             android:onClick="onClickSearchButton"
@@ -40,6 +42,7 @@
         <ImageView
             style="@style/SearchButtonDivider"
             android:id="@+id/search_divider"
+            android:layout_toRightOf="@+id/search_button"
             android:src="@drawable/divider_launcher_holo"
             android:onClick="onClickSearchButton"
             android:focusable="false"
@@ -51,13 +54,47 @@
             android:id="@+id/voice_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/search_divider"
             android:src="@drawable/ic_voice_search"
             android:background="@drawable/button_bg"
             android:onClick="onClickVoiceButton"
             android:focusable="true"
             android:clickable="true"
             android:contentDescription="@string/accessibility_voice_search_button" />
-    </LinearLayout>
+
+        <!-- AppsCustomize icon -->
+        <com.android.launcher2.StrokedTextView
+            android:id="@+id/all_apps_button"
+            android:onClick="onClickAllAppsButton"
+            android:drawableLeft="@drawable/ic_home_all_apps_holo_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/all_apps_divider"
+            android:paddingLeft="@dimen/toolbar_button_horizontal_padding"
+            android:paddingRight="@dimen/toolbar_button_horizontal_padding"
+            android:paddingTop="@dimen/all_apps_button_vertical_padding"
+            android:paddingBottom="@dimen/all_apps_button_vertical_padding"
+            android:background="@drawable/button_bg"
+
+            android:gravity="center"
+            android:textColor="#CCFFFFFF"
+            android:textSize="18sp"
+
+            launcher:strokeColor="#991e3157"
+            launcher:strokeTextColor="#DDFFFFFF"
+            launcher:strokeWidth="2.5"
+
+            android:shadowColor="#DA000000"
+            android:shadowDx="0.0"
+            android:shadowDy="0.0"
+            android:shadowRadius="2.5"
+
+            android:focusable="true"
+            android:clickable="true"
+            android:contentDescription="@string/accessibility_all_apps_button" />
+    </RelativeLayout>
 
     <!-- Drag specific targets container -->
     <LinearLayout

@@ -77,7 +77,6 @@ public abstract class PagedView extends ViewGroup {
 
     protected int mCurrentPage;
     protected int mNextPage = INVALID_PAGE;
-    protected int mRestorePage = -1;
     protected int mMaxScrollX;
     protected Scroller mScroller;
     private VelocityTracker mVelocityTracker;
@@ -112,7 +111,6 @@ public abstract class PagedView extends ViewGroup {
     protected int mPageLayoutPaddingRight;
     protected int mPageLayoutWidthGap;
     protected int mPageLayoutHeightGap;
-    protected int mPageLayoutMaxHeight;
     protected int mCellCountX = 0;
     protected int mCellCountY = 0;
     protected boolean mCenterPagesVertically;
@@ -161,6 +159,9 @@ public abstract class PagedView extends ViewGroup {
 
     protected boolean mIsPageMoving = false;
 
+    // All syncs and layout passes are deferred until data is ready.
+    protected boolean mIsDataReady = false;
+
     public interface PageSwitchListener {
         void onPageSwitch(View newPage, int newPageIndex);
     }
@@ -192,8 +193,6 @@ public abstract class PagedView extends ViewGroup {
                 R.styleable.PagedView_pageLayoutWidthGap, -1);
         mPageLayoutHeightGap = a.getDimensionPixelSize(
                 R.styleable.PagedView_pageLayoutHeightGap, -1);
-        mPageLayoutMaxHeight = a.getDimensionPixelSize(
-                R.styleable.PagedView_pageLayoutMaxHeight, -1);
         a.recycle();
 
         setHapticFeedbackEnabled(false);
@@ -224,6 +223,17 @@ public abstract class PagedView extends ViewGroup {
     }
 
     /**
+     * Called by subclasses to mark that data is ready, and that we can begin loading and laying
+     * out pages.
+     */
+    protected void setDataIsReady() {
+        mIsDataReady = true;
+    }
+    protected boolean isDataReady() {
+        return mIsDataReady;
+    }
+
+    /**
      * Returns the index of the currently displayed page.
      *
      * @return The index of the currently displayed page.
@@ -242,10 +252,6 @@ public abstract class PagedView extends ViewGroup {
 
     int getScrollWidth() {
         return getWidth();
-    }
-
-    public int getTouchState() {
-        return mTouchState;
     }
 
     /**
@@ -376,6 +382,11 @@ public abstract class PagedView extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (!mIsDataReady) {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            return;
+        }
+
         final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         final int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         if (widthMode != MeasureSpec.EXACTLY) {
@@ -393,9 +404,6 @@ public abstract class PagedView extends ViewGroup {
 
         final int verticalPadding = mPaddingTop + mPaddingBottom;
 
-        if (mPageLayoutMaxHeight != -1) {
-            heightSize = Math.min(mPageLayoutMaxHeight, heightSize);
-        }
 
         // The children are given the same width and height as the workspace
         // unless they were set to WRAP_CONTENT
@@ -489,6 +497,10 @@ public abstract class PagedView extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        if (!mIsDataReady) {
+            return;
+        }
+
         if (DEBUG) Log.d(TAG, "PagedView.onLayout()");
         if (mFirstLayout && mCurrentPage >= 0 && mCurrentPage < getChildCount()) {
             setHorizontalScrollBarEnabled(false);
@@ -560,10 +572,14 @@ public abstract class PagedView extends ViewGroup {
                     if (distanceFromScreenCenter > 0) {
                         if (i > 0) {
                             d += getScaledMeasuredWidth(getChildAt(i - 1)) / 2;
+                        } else {
+                            continue;
                         }
                     } else {
                         if (i < childCount - 1) {
                             d += getScaledMeasuredWidth(getChildAt(i + 1)) / 2;
+                        } else {
+                            continue;
                         }
                     }
                     d += mPageSpacing;
@@ -839,7 +855,6 @@ public abstract class PagedView extends ViewGroup {
             }
 
             case MotionEvent.ACTION_UP:
-                onWallpaperTap(ev);
             case MotionEvent.ACTION_CANCEL:
                 mTouchState = TOUCH_STATE_REST;
                 mAllowLongPress = false;
@@ -1176,8 +1191,7 @@ public abstract class PagedView extends ViewGroup {
         }
     }
 
-    protected void onWallpaperTap(MotionEvent ev) {
-    }
+    protected void onWallpaperTap(MotionEvent ev) {}
 
     @Override
     public void requestChildFocus(View child, View focused) {
@@ -1537,10 +1551,6 @@ public abstract class PagedView extends ViewGroup {
         }
     }
 
-    public void setRestorePage(int restorePage) {
-        mRestorePage = restorePage;
-    }
-
     /**
      * This method is called ONLY to synchronize the number of pages that the paged view has.
      * To actually fill the pages with information, implement syncPageItems() below.  It is
@@ -1568,6 +1578,10 @@ public abstract class PagedView extends ViewGroup {
     }
 
     protected void invalidatePageData() {
+        if (!mIsDataReady) {
+            return;
+        }
+
         if (mContentIsRefreshable) {
             // Update all the pages
             syncPages();
@@ -1577,12 +1591,6 @@ public abstract class PagedView extends ViewGroup {
             mDirtyPageContent.clear();
             for (int i = 0; i < count; ++i) {
                 mDirtyPageContent.add(true);
-            }
-
-            // Use the restore page if necessary
-            if (mRestorePage > -1) {
-                mCurrentPage = mRestorePage;
-                mRestorePage = -1;
             }
 
             // Load any pages that are necessary for the current window of views

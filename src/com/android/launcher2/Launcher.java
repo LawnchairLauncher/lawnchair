@@ -23,7 +23,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -40,12 +39,12 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.Intent.ShortcutIconResource;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -79,10 +78,9 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
@@ -91,7 +89,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -167,8 +164,7 @@ public final class Launcher extends Activity
     private static final String TOOLBAR_ICON_METADATA_NAME = "com.android.launcher.toolbar_icon";
 
     /** The different states that Launcher can be in. */
-    private enum State { WORKSPACE, APPS_CUSTOMIZE, ALL_APPS, CUSTOMIZE,
-        APPS_CUSTOMIZE_SPRING_LOADED };
+    private enum State { WORKSPACE, APPS_CUSTOMIZE, APPS_CUSTOMIZE_SPRING_LOADED };
     private State mState = State.WORKSPACE;
     private AnimatorSet mStateAnimation;
 
@@ -198,21 +194,12 @@ public final class Launcher extends Activity
     private FolderInfo mFolderInfo;
 
     private DeleteZone mDeleteZone;
-    private HandleView mHandleView;
-    private SearchDropTargetBar mSearchDeleteBar;
-    private AllAppsView mAllAppsGrid;
-    private AppsCustomizeTabHost mAppsCustomizeTabHost;
-    private AppsCustomizePagedView mAppsCustomizeContent;
-    private CustomizeTrayTabHost mHomeCustomizationDrawer;
-    private boolean mAutoAdvanceRunning = false;
-
     private ViewGroup mButtonCluster;
     private View mAllAppsButton;
-    private View mDivider;
-    private View mConfigureButton;
-
-    private AllAppsPagedView mAllAppsPagedView = null;
-    private CustomizePagedView mCustomizePagedView = null;
+    private SearchDropTargetBar mSearchDeleteBar;
+    private AppsCustomizeTabHost mAppsCustomizeTabHost;
+    private AppsCustomizePagedView mAppsCustomizeContent;
+    private boolean mAutoAdvanceRunning = false;
 
     private Bundle mSavedState;
 
@@ -287,13 +274,6 @@ public final class Launcher extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (LauncherApplication.isInPlaceRotationEnabled()) {
-            // hide the status bar (temporary until we get the status bar design figured out)
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-        }
-
         LauncherApplication app = ((LauncherApplication)getApplication());
         mModel = app.setLauncher(this);
         mIconCache = app.getIconCache();
@@ -312,12 +292,6 @@ public final class Launcher extends Activity
         loadHotseats();
         checkForLocaleChange();
         setContentView(R.layout.launcher);
-        mHomeCustomizationDrawer = (CustomizeTrayTabHost) findViewById(R.id.customization_drawer);
-        if (mHomeCustomizationDrawer != null) {
-            // share the same customization workspace across all the tabs
-            mCustomizePagedView = (CustomizePagedView) findViewById(
-                    R.id.customization_drawer_tab_contents);
-        }
         setupViews();
 
         registerContentObservers();
@@ -328,9 +302,6 @@ public final class Launcher extends Activity
         restoreState(mSavedState);
 
         // Update customization drawer _after_ restoring the states
-        if (mCustomizePagedView != null) {
-            mCustomizePagedView.update();
-        }
         if (mAppsCustomizeContent != null) {
             mAppsCustomizeContent.onPackagesUpdated();
         }
@@ -351,19 +322,17 @@ public final class Launcher extends Activity
         registerReceiver(mCloseSystemDialogsReceiver, filter);
 
         // If we have a saved version of these external icons, we load them up immediately
-        if (LauncherApplication.isScreenLarge()) {
-            if (sGlobalSearchIcon == null || sVoiceSearchIcon == null || sAppMarketIcon == null) {
-                updateIconsAffectedByPackageManagerChanges();
-            }
-            if (sGlobalSearchIcon != null) {
-                 updateGlobalSearchIcon(sGlobalSearchIcon);
-            }
-            if (sVoiceSearchIcon != null) {
-                updateVoiceSearchIcon(sVoiceSearchIcon);
-            }
-            if (sAppMarketIcon != null) {
-                updateAppMarketIcon(sAppMarketIcon);
-            }
+        if (sGlobalSearchIcon == null || sVoiceSearchIcon == null || sAppMarketIcon == null) {
+            updateIconsAffectedByPackageManagerChanges();
+        }
+        if (sGlobalSearchIcon != null) {
+             updateGlobalSearchIcon(sGlobalSearchIcon);
+        }
+        if (sVoiceSearchIcon != null) {
+            updateVoiceSearchIcon(sVoiceSearchIcon);
+        }
+        if (sAppMarketIcon != null) {
+            updateAppMarketIcon(sAppMarketIcon);
         }
     }
 
@@ -721,9 +690,6 @@ public final class Launcher extends Activity
     public Object onRetainNonConfigurationInstance() {
         // Flag the loader to stop early before switching
         mModel.stopLoader();
-        if (mAllAppsGrid != null) {
-            mAllAppsGrid.surrender();
-        }
         if (mAppsCustomizeContent != null) {
             mAppsCustomizeContent.surrender();
         }
@@ -822,10 +788,8 @@ public final class Launcher extends Activity
 
         State state = intToState(savedState.getInt(RUNTIME_STATE, State.WORKSPACE.ordinal()));
 
-        if (state == State.ALL_APPS || state == State.APPS_CUSTOMIZE) {
+        if (state == State.APPS_CUSTOMIZE) {
             showAllApps(false);
-        } else if (state == State.CUSTOMIZE) {
-            showCustomizationDrawer(false);
         }
 
         final int currentScreen = savedState.getInt(RUNTIME_STATE_CURRENT_SCREEN, -1);
@@ -849,38 +813,12 @@ public final class Launcher extends Activity
             mRestoring = true;
         }
 
-        // Restore the current AllApps drawer tab
-        if (mAllAppsGrid != null && mAllAppsGrid instanceof AllAppsTabbed) {
-            String curTab = savedState.getString("allapps_currentTab");
-            if (curTab != null) {
-                AllAppsTabbed tabhost = (AllAppsTabbed) mAllAppsGrid;
-                tabhost.setCurrentTabByTag(curTab);
-            }
-            int curPage = savedState.getInt("allapps_currentPage", -1);
-            if (curPage > -1) {
-                mAllAppsPagedView.setRestorePage(curPage);
-            }
-        }
-
-        // Restore the current customization drawer tab
-        if (mHomeCustomizationDrawer != null) {
-            String curTab = savedState.getString("customize_currentTab");
-            if (curTab != null) {
-                // We set this directly so that there is no delay before the tab is set
-                mCustomizePagedView.setCustomizationFilter(
-                        mHomeCustomizationDrawer.getCustomizeFilterForTabTag(curTab));
-                mHomeCustomizationDrawer.setCurrentTabByTag(curTab);
-            }
-
-            // Note: currently we do not restore the page for the customization tray because unlike
-            // AllApps, the page content can change drastically
-        }
 
         // Restore the AppsCustomize tab
         if (mAppsCustomizeTabHost != null) {
             String curTab = savedState.getString("apps_customize_currentTab");
             if (curTab != null) {
-             // We set this directly so that there is no delay before the tab is set
+                // We set this directly so that there is no delay before the tab is set
                 mAppsCustomizeContent.setContentType(
                         mAppsCustomizeTabHost.getContentTypeForTabTag(curTab));
                 mAppsCustomizeTabHost.setCurrentTabByTag(curTab);
@@ -909,67 +847,29 @@ public final class Launcher extends Activity
         mWorkspace.setup(this, dragController);
         mWorkspace.setWallpaperDimension();
 
-        // Setup the different configurations
-        DeleteZone allAppsDeleteZone = null;
-        ApplicationInfoDropTarget allAppsInfoTarget = null;
-        if (LauncherApplication.isScreenLarge()) {
-            // Setup AllApps
-            mAllAppsGrid = (AllAppsView) mDragLayer.findViewById(R.id.all_apps_view);
-            mAllAppsGrid.setup(this, dragController);
-            // We don't want a hole punched in our window.
-            ((View) mAllAppsGrid).setWillNotDraw(false);
+        // Get the search/delete bar
+        mSearchDeleteBar = (SearchDropTargetBar) mDragLayer.findViewById(R.id.qsb_bar);
 
-            // Setup Customize
-            mCustomizePagedView.setLauncher(this);
-            mCustomizePagedView.setDragController(dragController);
-            mCustomizePagedView.setAllAppsPagedView(mAllAppsPagedView);
+        // Setup AppsCustomize
+        mAppsCustomizeTabHost = (AppsCustomizeTabHost)
+                findViewById(R.id.apps_customize_pane);
+        mAppsCustomizeContent = (AppsCustomizePagedView)
+                mAppsCustomizeTabHost.findViewById(R.id.apps_customize_pane_content);
+        mAppsCustomizeContent.setup(this, dragController);
 
-            // Setup DeleteZone
-            mDeleteZone = (DeleteZone) mDragLayer.findViewById(R.id.delete_zone);
-            mDeleteZone.setLauncher(this);
-            mDeleteZone.setDragController(dragController);
+        // Setup AppsCustomize button
+        mAllAppsButton = mDragLayer.findViewById(R.id.all_apps_button);
+        mAllAppsButton.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                onClickAllAppsButton(v);
+            }
+        });
 
-            // Setup the top-right Apps/Customize buttons
-            mAllAppsButton = findViewById(R.id.all_apps_button);
-            mDivider = findViewById(R.id.all_apps_divider);
-            mConfigureButton = findViewById(R.id.configure_button);
-            mDeleteZone.setOverlappingViews(new View[] { mAllAppsButton, mDivider,
-                    mConfigureButton });
-
-            // Setup the AllApps Delete toolbar button
-            allAppsDeleteZone = (DeleteZone) findViewById(R.id.all_apps_delete_zone);
-            allAppsDeleteZone.setLauncher(this);
-            allAppsDeleteZone.setDragController(dragController);
-            allAppsDeleteZone.setDragAndDropEnabled(false);
-
-            // Setup the AllApps Info toolbar button
-            allAppsInfoTarget = (ApplicationInfoDropTarget) findViewById(R.id.all_apps_info_target);
-            allAppsInfoTarget.setLauncher(this);
-            allAppsInfoTarget.setDragAndDropEnabled(false);
-
-            // Setup the AllApps Market toolbar button
-            View marketButton = findViewById(R.id.market_button);
-            allAppsInfoTarget.setOverlappingView(marketButton);
-        } else {
-            // Get the search/delete bar
-            mSearchDeleteBar = (SearchDropTargetBar) mDragLayer.findViewById(R.id.qsb_bar);
-
-            // Setup AppsCustomize
-            mAppsCustomizeTabHost = (AppsCustomizeTabHost)
-                    findViewById(R.id.apps_customize_pane);
-            mAppsCustomizeContent = (AppsCustomizePagedView)
-                    mAppsCustomizeTabHost.findViewById(R.id.apps_customize_pane_content);
-            mAppsCustomizeContent.setup(this, dragController);
-
-            // Setup AppsCustomize button
-            mHandleView = (HandleView) mDragLayer.findViewById(R.id.all_apps_button);
-            mHandleView.setLauncher(this);
-            mHandleView.setOnLongClickListener(this);
-            mHandleView.setOnClickListener(new OnClickListener() {
-                public void onClick(View v) {
-                    onClickAllAppsButton(v);
-                }
-            });
+        if (!LauncherApplication.isScreenLarge()) {
+            // Setup AppsCustomize button on the phone
+            HandleView handleView = (HandleView) mAllAppsButton;
+            handleView.setLauncher(this);
+            handleView.setOnLongClickListener(this);
 
             // Setup Hotseat
             ImageView hotseatLeft = (ImageView) findViewById(R.id.hotseat_left);
@@ -995,19 +895,21 @@ public final class Launcher extends Activity
             mNextView.setOnLongClickListener(this);
         }
 
-        // Setup keylistener for button cluster
-        mButtonCluster = (ViewGroup) findViewById(R.id.all_apps_button_cluster);
-        View.OnKeyListener listener = null;
-        if (LauncherApplication.isScreenLarge()) {
-            // For tablets, AllApps lives in the button bar at the top
-            listener = new ButtonBarKeyEventListener();
-        } else {
-            // For phones, AppsCustomize lives in the "dock" at the bottom
-            listener = new DockKeyEventListener();
-        }
-        int buttonCount = mButtonCluster.getChildCount();
-        for (int i = 0; i < buttonCount; ++i) {
-            mButtonCluster.getChildAt(i).setOnKeyListener(listener);
+        if (!LauncherApplication.isScreenLarge()) {
+            // Setup keylistener for button cluster
+            mButtonCluster = (ViewGroup) findViewById(R.id.all_apps_button_cluster);
+            View.OnKeyListener listener = null;
+            if (LauncherApplication.isScreenLarge()) {
+                // For tablets, AllApps lives in the button bar at the top
+                listener = new ButtonBarKeyEventListener();
+            } else {
+                // For phones, AppsCustomize lives in the "dock" at the bottom
+                listener = new DockKeyEventListener();
+            }
+            int buttonCount = mButtonCluster.getChildCount();
+            for (int i = 0; i < buttonCount; ++i) {
+                mButtonCluster.getChildAt(i).setOnKeyListener(listener);
+            }
         }
 
         // Setup the drag controller (the drop targets have to be added in reverse order)
@@ -1015,40 +917,28 @@ public final class Launcher extends Activity
         dragController.setScrollView(mDragLayer);
         dragController.setMoveTarget(mWorkspace);
         dragController.addDropTarget(mWorkspace);
-        if (mDeleteZone != null) {
-            dragController.addDragListener(mDeleteZone);
-            dragController.addDropTarget(mDeleteZone);
-        }
         if (mSearchDeleteBar != null) {
             mSearchDeleteBar.setup(this, dragController);
-        }
-        if (allAppsDeleteZone != null) {
-            dragController.addDragListener(allAppsDeleteZone);
-            dragController.addDropTarget(allAppsDeleteZone);
-        }
-        if (allAppsInfoTarget != null) {
-            dragController.addDragListener(allAppsInfoTarget);
-            dragController.addDropTarget(allAppsInfoTarget);
         }
     }
 
     @SuppressWarnings({"UnusedDeclaration"})
     public void previousScreen(View v) {
-        if (mState != State.ALL_APPS && mState != State.APPS_CUSTOMIZE) {
+        if (mState != State.APPS_CUSTOMIZE) {
             mWorkspace.scrollLeft();
         }
     }
 
     @SuppressWarnings({"UnusedDeclaration"})
     public void nextScreen(View v) {
-        if (mState != State.ALL_APPS && mState != State.APPS_CUSTOMIZE) {
+        if (mState != State.APPS_CUSTOMIZE) {
             mWorkspace.scrollRight();
         }
     }
 
     @SuppressWarnings({"UnusedDeclaration"})
     public void launchHotSeat(View v) {
-        if (mState == State.ALL_APPS) return;
+        if (mState == State.APPS_CUSTOMIZE) return;
 
         int index = -1;
         if (v.getId() == R.id.hotseat_left) {
@@ -1246,9 +1136,6 @@ public final class Launcher extends Activity
                 updateRunning();
 
                 // Reset AllApps to it's initial state
-                if (mAllAppsGrid != null) {
-                    mAllAppsGrid.reset();
-                }
                 if (mAppsCustomizeContent != null) {
                     mAppsCustomizeContent.reset();
                 }
@@ -1421,9 +1308,6 @@ public final class Launcher extends Activity
             }
 
             // Reset AllApps to it's initial state
-            if (mAllAppsGrid != null) {
-                mAllAppsGrid.reset();
-            }
             if (mAppsCustomizeContent != null) {
                 mAppsCustomizeContent.reset();
             }
@@ -1466,22 +1350,6 @@ public final class Launcher extends Activity
             outState.putLong(RUNTIME_STATE_PENDING_FOLDER_RENAME_ID, mFolderInfo.id);
         }
 
-        // Save the current AllApps drawer tab
-        if (mAllAppsGrid != null && mAllAppsGrid instanceof AllAppsTabbed) {
-            AllAppsTabbed tabhost = (AllAppsTabbed) mAllAppsGrid;
-            String currentTabTag = tabhost.getCurrentTabTag();
-            if (currentTabTag != null) {
-                outState.putString("allapps_currentTab", currentTabTag);
-                outState.putInt("allapps_currentPage", mAllAppsPagedView.getCurrentPage());
-            }
-        }
-        // Save the current customization drawer tab
-        if (mHomeCustomizationDrawer != null) {
-            String currentTabTag = mHomeCustomizationDrawer.getCurrentTabTag();
-            if (currentTabTag != null) {
-                outState.putString("customize_currentTab", currentTabTag);
-            }
-        }
         // Save the current AppsCustomize tab
         if (mAppsCustomizeTabHost != null) {
             String currentTabTag = mAppsCustomizeTabHost.getCurrentTabTag();
@@ -1605,25 +1473,6 @@ public final class Launcher extends Activity
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        if (mAllAppsGrid != null) {
-            // If all apps is animating, don't show the menu, because we don't know
-            // which one to show.
-            if (mAllAppsGrid.isAnimating()) {
-                return false;
-            }
-
-            // Only show the add and wallpaper options when we're not in all apps.
-            boolean visible = !mAllAppsGrid.isVisible();
-            menu.setGroupVisible(MENU_GROUP_ADD, visible);
-            menu.setGroupVisible(MENU_GROUP_WALLPAPER, visible);
-
-            // Disable add if the workspace is full.
-            if (visible) {
-                CellLayout layout = (CellLayout) mWorkspace.getChildAt(mWorkspace.getCurrentPage());
-                menu.setGroupEnabled(MENU_GROUP_ADD, layout.existsEmptyCell());
-            }
-        }
-
         // TODO-APPS_CUSTOMIZE: Remove this for the phone UI at some point, along with all the menu
         // related code?
         if (mAppsCustomizeContent != null && mAppsCustomizeContent.isAnimating()) return false;
@@ -1676,15 +1525,8 @@ public final class Launcher extends Activity
     }
 
     private void addItems() {
-        if (LauncherApplication.isScreenLarge()) {
-            // Animate the widget chooser up from the bottom of the screen
-            if (mState != State.CUSTOMIZE) {
-                showCustomizationDrawer(true);
-            }
-        } else {
-            showWorkspace(true);
-            showAddDialog(-1, -1);
-        }
+        showWorkspace(true);
+        showAddDialog(-1, -1);
     }
 
     private void resetAddInfo() {
@@ -1883,7 +1725,7 @@ public final class Launcher extends Activity
 
     @Override
     public void onBackPressed() {
-        if (mState == State.ALL_APPS || mState == State.CUSTOMIZE || mState == State.APPS_CUSTOMIZE) {
+        if (mState == State.APPS_CUSTOMIZE) {
             showWorkspace(true);
         } else if (mWorkspace.getOpenFolder() != null) {
             closeFolder();
@@ -1966,8 +1808,8 @@ public final class Launcher extends Activity
                 FolderIcon fi = (FolderIcon) v;
                 handleFolderClick(fi);
             }
-        } else if (v == mHandleView) {
-            if (mState == State.ALL_APPS) {
+        } else if (v == mAllAppsButton) {
+            if (mState == State.APPS_CUSTOMIZE) {
                 showWorkspace(true);
             } else {
                 showAllApps(true);
@@ -2159,21 +2001,21 @@ public final class Launcher extends Activity
 
         switch (v.getId()) {
             case R.id.previous_screen:
-                if (mState != State.ALL_APPS && mState != State.APPS_CUSTOMIZE) {
+                if (mState != State.APPS_CUSTOMIZE) {
                     mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                             HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                     showPreviews(v);
                 }
                 return true;
             case R.id.next_screen:
-                if (mState != State.ALL_APPS && mState != State.APPS_CUSTOMIZE) {
+                if (mState != State.APPS_CUSTOMIZE) {
                     mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                             HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                     showPreviews(v);
                 }
                 return true;
             case R.id.all_apps_button:
-                if (mState != State.ALL_APPS && mState != State.APPS_CUSTOMIZE) {
+                if (mState != State.APPS_CUSTOMIZE) {
                     mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                             HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                     showPreviews(v);
@@ -2357,10 +2199,6 @@ public final class Launcher extends Activity
         return mWorkspace;
     }
 
-    TabHost getCustomizationDrawer() {
-        return mHomeCustomizationDrawer;
-    }
-
     @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
@@ -2509,116 +2347,20 @@ public final class Launcher extends Activity
 
     // Now a part of LauncherModel.Callbacks. Used to reorder loading steps.
     public boolean isAllAppsVisible() {
-        return (mState == State.ALL_APPS) || (mState == State.APPS_CUSTOMIZE);
+        return (mState == State.APPS_CUSTOMIZE);
     }
 
     // AllAppsView.Watcher
     public void zoomed(float zoom) {
-        // In XLarge view, we zoom down the workspace below all apps so it's still visible
-        if (zoom == 1.0f && !LauncherApplication.isScreenLarge()) {
+        if (zoom == 1.0f) {
             mWorkspace.setVisibility(View.GONE);
-        }
-    }
-    
-    private void showAndEnableToolbarButton(View button) {
-        button.setVisibility(View.VISIBLE);
-    }
-
-    private void hideToolbarButton(View button) {
-        // We can't set it to GONE, otherwise the RelativeLayout gets screwed up
-        button.setVisibility(View.INVISIBLE);
-        button.setAlpha(0.0f);
-    }
-
-    /**
-     * Helper function for showing or hiding a toolbar button, possibly animated.
-     *
-     * @param show If true, create an animation to the show the item. Otherwise, hide it.
-     * @param view The toolbar button to be animated
-     * @param seq A AnimatorSet that will be used to animate the transition. If null, the
-     * transition will not be animated.
-     */
-    private void hideOrShowToolbarButton(boolean show, final View view, AnimatorSet seq) {
-        final boolean showing = show;
-        final boolean hiding = !show;
-
-        final int duration = show ?
-                getResources().getInteger(R.integer.config_toolbarButtonFadeInTime) :
-                getResources().getInteger(R.integer.config_toolbarButtonFadeOutTime);
-
-        if (seq != null) {
-            ValueAnimator anim = ValueAnimator.ofFloat(view.getAlpha(), show ? 1.0f : 0.0f);
-            anim.setDuration(duration);
-            anim.addUpdateListener(new AnimatorUpdateListener() {
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    view.setAlpha((Float) animation.getAnimatedValue());
-                }
-            });
-            anim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    if (showing) showAndEnableToolbarButton(view);
-                }
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    if (hiding) hideToolbarButton(view);
-                }
-            });
-            seq.play(anim);
-        } else {
-            if (showing) {
-                showAndEnableToolbarButton(view);
-                view.setAlpha(1f);
-            } else {
-                hideToolbarButton(view);
-            }
-        }
-    }
-
-    /**
-     * Show/hide the appropriate toolbar buttons for newState.
-     * If showSeq or hideSeq is null, the transition will be done immediately (not animated).
-     *
-     * @param newState The state that is being switched to
-     * @param showSeq AnimatorSet in which to put "show" animations, or null.
-     * @param hideSeq AnimatorSet in which to put "hide" animations, or null.
-     */
-    private void hideAndShowToolbarButtons(State newState, AnimatorSet showSeq, AnimatorSet hideSeq) {
-        switch (newState) {
-        case WORKSPACE:
-            hideOrShowToolbarButton(true, mButtonCluster, showSeq);
-            if (mDeleteZone != null) {
-                mDeleteZone.setDragAndDropEnabled(true);
-                if (LauncherApplication.isScreenLarge()) {
-                    mDeleteZone.setText(
-                            getResources().getString(R.string.delete_zone_label_workspace));
-                }
-            }
-            break;
-        case ALL_APPS:
-        case APPS_CUSTOMIZE:
-            hideOrShowToolbarButton(false, mButtonCluster, hideSeq);
-            if (mDeleteZone != null) {
-                mDeleteZone.setDragAndDropEnabled(false);
-                if (LauncherApplication.isScreenLarge()) {
-                    mDeleteZone.setText(
-                            getResources().getString(R.string.delete_zone_label_all_apps));
-                }
-            }
-            break;
-        case CUSTOMIZE:
-            hideOrShowToolbarButton(false, mButtonCluster, hideSeq);
-            if (mDeleteZone != null) {
-                mDeleteZone.setDragAndDropEnabled(false);
-            }
-            break;
         }
     }
 
     /**
      * Helper method for the cameraZoomIn/cameraZoomOut animations
      * @param view The view being animated
-     * @param state The state that we are moving in or out of -- either ALL_APPS or CUSTOMIZE
+     * @param state The state that we are moving in or out of (eg. APPS_CUSTOMIZE)
      * @param scaleFactor The scale factor used for the zoom
      */
     private void setPivotsForZoom(View view, State state, float scaleFactor) {
@@ -2628,7 +2370,7 @@ public final class Launcher extends Activity
         // Set pivotY so that at the starting zoom factor, the view is partially
         // visible. Modifying initialHeightFactor changes how much of the view is
         // initially showing, and hence the perceived angle from which the view enters.
-        if (state == State.ALL_APPS || state == State.APPS_CUSTOMIZE) {
+        if (state == State.APPS_CUSTOMIZE) {
             final float initialHeightFactor = 0.175f;
             view.setPivotY((1 - initialHeightFactor) * height);
         } else {
@@ -2641,57 +2383,30 @@ public final class Launcher extends Activity
      * Zoom the camera out from the workspace to reveal 'toView'.
      * Assumes that the view to show is anchored at either the very top or very bottom
      * of the screen.
-     * @param toState The state to zoom out to. Must be ALL_APPS or CUSTOMIZE.
+     * @param toState The state to zoom out to. Must be APPS_CUSTOMIZE.
      */
     private void cameraZoomOut(State toState, boolean animated, boolean springLoaded) {
         final Resources res = getResources();
-        final boolean toAllApps = (toState == State.ALL_APPS)
-                || (toState == State.APPS_CUSTOMIZE);
 
-        final int duration = (toAllApps ?
-                res.getInteger(R.integer.config_appsCustomizeZoomInTime) :
-                res.getInteger(R.integer.config_customizeZoomInTime));
-        final int fadeDuration = (toAllApps ?
-                res.getInteger(R.integer.config_appsCustomizeFadeInTime) :
-                res.getInteger(R.integer.config_customizeFadeInTime));
-
-        final float scale = toAllApps ?
-                (float) res.getInteger(R.integer.config_appsCustomizeZoomScaleFactor) :
-                (float) res.getInteger(R.integer.config_customizeZoomScaleFactor);
-
-        View tmpView;
-        if (toAllApps) {
-            tmpView = (LauncherApplication.isScreenLarge())
-                    ? (View) mAllAppsGrid : mAppsCustomizeTabHost;
-        } else {
-            tmpView = mHomeCustomizationDrawer;
-        }
-        final View toView = tmpView;
+        final int duration = res.getInteger(R.integer.config_appsCustomizeZoomInTime);
+        final int fadeDuration = res.getInteger(R.integer.config_appsCustomizeFadeInTime);
+        final float scale = (float) res.getInteger(R.integer.config_appsCustomizeZoomScaleFactor);
+        final View toView = mAppsCustomizeTabHost;
 
         setPivotsForZoom(toView, toState, scale);
 
-        if (toAllApps) {
-            if (springLoaded) {
-                if (toState == State.APPS_CUSTOMIZE) {
-                    // Shrink workspaces away if going back to AppsCustomize from spring loaded mode
-                    mWorkspace.shrink(ShrinkState.BOTTOM_HIDDEN, animated);
-                } else {
-                    // Shrink workspaces to bottom if going back to AllApps from spring loaded mode
-                    mWorkspace.shrink(ShrinkState.BOTTOM_VISIBLE, animated);
-                }
-            } else {
-                // Shrink workspaces away if going to AllApps/AppsCustomize from workspace
-                mWorkspace.shrink(ShrinkState.BOTTOM_HIDDEN, animated);
 
-                if (LauncherApplication.isScreenLarge()) {
-                    // Everytime we launch into AllApps, we reset the successful drop flag which
-                    // controls when it should hide/show the mini workspaces
-                    mAllAppsPagedView.resetSuccessfulDropFlag();
-                }
+        if (springLoaded) {
+            if (toState == State.APPS_CUSTOMIZE) {
+                // Shrink workspaces away if going back to AppsCustomize from spring loaded mode
+                mWorkspace.shrink(ShrinkState.BOTTOM_HIDDEN, animated);
+            } else {
+                // Shrink workspaces to bottom if going back to AllApps from spring loaded mode
+                mWorkspace.shrink(ShrinkState.BOTTOM_VISIBLE, animated);
             }
         } else {
-            // In Customize mode, shrink the workspaces to the top
-            mWorkspace.shrink(ShrinkState.TOP, animated);
+            // Shrink workspaces away if going to AllApps/AppsCustomize from workspace
+            mWorkspace.shrink(ShrinkState.BOTTOM_HIDDEN, animated);
         }
 
         if (animated) {
@@ -2705,19 +2420,17 @@ public final class Launcher extends Activity
                 }
             });
 
-            if (toAllApps) {
-                toView.setVisibility(View.VISIBLE);
-                toView.setFastAlpha(0f);
-                ValueAnimator alphaAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(fadeDuration);
-                alphaAnim.setInterpolator(new DecelerateInterpolator(1.5f));
-                alphaAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
-                    public void onAnimationUpdate(float a, float b) {
-                        // don't need to invalidate because we do so above
-                        toView.setFastAlpha(a * 0f + b * 1f);
-                    }
-                });
-                alphaAnim.start();
-            }
+            toView.setVisibility(View.VISIBLE);
+            toView.setFastAlpha(0f);
+            ValueAnimator alphaAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(fadeDuration);
+            alphaAnim.setInterpolator(new DecelerateInterpolator(1.5f));
+            alphaAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
+                public void onAnimationUpdate(float a, float b) {
+                    // don't need to invalidate because we do so above
+                    toView.setFastAlpha(a * 0f + b * 1f);
+                }
+            });
+            alphaAnim.start();
 
             if (toView instanceof LauncherTransitionable) {
                 ((LauncherTransitionable) toView).onLauncherTransitionStart(scaleAnim);
@@ -2730,9 +2443,6 @@ public final class Launcher extends Activity
                     toView.setTranslationY(0.0f);
                     toView.setVisibility(View.VISIBLE);
                     toView.bringToFront();
-                    if (!toAllApps) {
-                        toView.setFastAlpha(1.0f);
-                    }
                 }
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -2747,21 +2457,12 @@ public final class Launcher extends Activity
                 }
             });
 
-            AnimatorSet toolbarHideAnim = new AnimatorSet();
-            AnimatorSet toolbarShowAnim = new AnimatorSet();
-            hideAndShowToolbarButtons(toState, toolbarShowAnim, toolbarHideAnim);
-
             // toView should appear right at the end of the workspace shrink animation
             final int startDelay = 0;
 
             if (mStateAnimation != null) mStateAnimation.cancel();
             mStateAnimation = new AnimatorSet();
-            mStateAnimation.playTogether(scaleAnim, toolbarHideAnim);
             mStateAnimation.play(scaleAnim).after(startDelay);
-
-            // Show the new toolbar buttons just as the main animation is ending
-            final int fadeInTime = res.getInteger(R.integer.config_toolbarButtonFadeInTime);
-            mStateAnimation.play(toolbarShowAnim).after(duration + startDelay - fadeInTime);
             mStateAnimation.start();
         } else {
             toView.setTranslationX(0.0f);
@@ -2774,42 +2475,22 @@ public final class Launcher extends Activity
                 ((LauncherTransitionable) toView).onLauncherTransitionStart(null);
                 ((LauncherTransitionable) toView).onLauncherTransitionEnd(null);
             }
-            hideAndShowToolbarButtons(toState, null, null);
         }
     }
 
     /**
      * Zoom the camera back into the workspace, hiding 'fromView'.
      * This is the opposite of cameraZoomOut.
-     * @param fromState The current state (must be ALL_APPS or CUSTOMIZE).
+     * @param fromState The current state (must be APPS_CUSTOMIZE).
      * @param animated If true, the transition will be animated.
      */
     private void cameraZoomIn(State fromState, boolean animated, boolean springLoaded) {
         Resources res = getResources();
-        final boolean fromAllApps = (fromState == State.ALL_APPS)
-                || (fromState == State.APPS_CUSTOMIZE);
 
-        int duration = fromAllApps ?
-            res.getInteger(R.integer.config_appsCustomizeZoomOutTime) :
-            res.getInteger(R.integer.config_customizeZoomOutTime);
-
-        final float scaleFactor = fromAllApps ?
-            (float) res.getInteger(R.integer.config_appsCustomizeZoomScaleFactor) :
-            (float) res.getInteger(R.integer.config_customizeZoomScaleFactor);
-
-        View tmpView;
-        if (fromAllApps) {
-            tmpView = (LauncherApplication.isScreenLarge())
-                    ? (View) mAllAppsGrid : mAppsCustomizeTabHost;
-        } else {
-            tmpView = mHomeCustomizationDrawer;
-        }
-        final View fromView = tmpView;
-
-        if (LauncherApplication.isScreenLarge()) {
-            mCustomizePagedView.endChoiceMode();
-            mAllAppsPagedView.endChoiceMode();
-        }
+        final int duration = res.getInteger(R.integer.config_appsCustomizeZoomOutTime);
+        final float scaleFactor = (float)
+                res.getInteger(R.integer.config_appsCustomizeZoomScaleFactor);
+        final View fromView = mAppsCustomizeTabHost;
 
         setPivotsForZoom(fromView, fromState, scaleFactor);
 
@@ -2854,27 +2535,13 @@ public final class Launcher extends Activity
                 }
             });
 
-            AnimatorSet toolbarHideAnim = new AnimatorSet();
-            AnimatorSet toolbarShowAnim = new AnimatorSet();
-            if (!springLoaded) {
-                hideAndShowToolbarButtons(State.WORKSPACE, toolbarShowAnim, toolbarHideAnim);
-            }
-
-            mStateAnimation.playTogether(scaleAnim, toolbarHideAnim, alphaAnim);
-
-            // Show the new toolbar buttons at the very end of the whole animation
-            final int fadeInTime = res.getInteger(R.integer.config_toolbarButtonFadeInTime);
-            final int unshrinkTime = res.getInteger(R.integer.config_workspaceUnshrinkTime);
-            mStateAnimation.play(toolbarShowAnim).after(unshrinkTime - fadeInTime);
+            mStateAnimation.playTogether(scaleAnim, alphaAnim);
             mStateAnimation.start();
         } else {
             fromView.setVisibility(View.GONE);
             if (fromView instanceof LauncherTransitionable) {
                 ((LauncherTransitionable) fromView).onLauncherTransitionStart(null);
                 ((LauncherTransitionable) fromView).onLauncherTransitionEnd(null);
-            }
-            if (!springLoaded) {
-                hideAndShowToolbarButtons(State.WORKSPACE, null, null);
             }
         }
     }
@@ -2891,10 +2558,8 @@ public final class Launcher extends Activity
         } else {
             mWorkspace.unshrink(animated);
         }
-        if (mState == State.ALL_APPS || mState == State.APPS_CUSTOMIZE) {
+        if (mState == State.APPS_CUSTOMIZE) {
             closeAllApps(animated);
-        } else if (mState == State.CUSTOMIZE) {
-            hideCustomizationDrawer(animated);
         }
 
         // Change the state *after* we've called all the transition code
@@ -2915,40 +2580,67 @@ public final class Launcher extends Activity
         if (mState == State.APPS_CUSTOMIZE) {
             mState = State.APPS_CUSTOMIZE_SPRING_LOADED;
             cameraZoomIn(State.APPS_CUSTOMIZE, true, true);
-        } else {
-            // Do nothing
         }
+        // Otherwise, we are not in spring loaded mode, so don't do anything.
     }
 
     void exitSpringLoadedDragMode() {
         if (mState == State.APPS_CUSTOMIZE_SPRING_LOADED) {
-            mWorkspace.exitSpringLoadedDragMode(Workspace.ShrinkState.BOTTOM_HIDDEN);
+            mWorkspace.exitSpringLoadedDragMode(Workspace.ShrinkState.BOTTOM_VISIBLE);
             cameraZoomOut(State.APPS_CUSTOMIZE, true, true);
             mState = State.APPS_CUSTOMIZE;
-        } else {
-            // Do nothing
+        }
+        // Otherwise, we are not in spring loaded mode, so don't do anything.
+    }
+
+    /**
+     * Shows the dock/hotseat area.
+     */
+    void showDock(boolean animated) {
+        if (!LauncherApplication.isScreenLarge()) {
+            if (animated) {
+                int duration = mSearchDeleteBar.getTransitionInDuration();
+                mButtonCluster.animate().alpha(1f).setDuration(duration);
+                mPreviousView.animate().alpha(1f).setDuration(duration);
+                mNextView.animate().alpha(1f).setDuration(duration);
+            } else {
+                mButtonCluster.setAlpha(1f);
+                mPreviousView.setAlpha(1f);
+                mNextView.setAlpha(1f);
+            }
+        }
+    }
+
+    /**
+     * Hides the dock/hotseat area.
+     */
+    void hideDock(boolean animated) {
+        if (!LauncherApplication.isScreenLarge()) {
+            if (animated) {
+                int duration = mSearchDeleteBar.getTransitionOutDuration();
+                mButtonCluster.animate().alpha(0f).setDuration(duration);
+                mPreviousView.animate().alpha(0f).setDuration(duration);
+                mNextView.animate().alpha(0f).setDuration(duration);
+            } else {
+                mButtonCluster.setAlpha(0f);
+                mPreviousView.setAlpha(0f);
+                mNextView.setAlpha(0f);
+            }
         }
     }
 
     void showAllApps(boolean animated) {
         if (mState != State.WORKSPACE) return;
-        if (LauncherApplication.isScreenLarge()) {
-            cameraZoomOut(State.ALL_APPS, animated, false);
-            ((View) mAllAppsGrid).requestFocus();
 
-            if (mDeleteZone != null) {
-                mDeleteZone.setVisibility(View.GONE);
-            }
+        cameraZoomOut(State.APPS_CUSTOMIZE, animated, false);
+        mAppsCustomizeTabHost.requestFocus();
 
-            // Change the state *after* we've called all the transition code
-            mState = State.ALL_APPS;
-        } else {
-            cameraZoomOut(State.APPS_CUSTOMIZE, animated, false);
-            mAppsCustomizeTabHost.requestFocus();
+        // Hide the search bar and dock
+        mSearchDeleteBar.hideSearchBar(animated);
+        hideDock(animated);
 
-            // Change the state *after* we've called all the transition code
-            mState = State.APPS_CUSTOMIZE;
-        }
+        // Change the state *after* we've called all the transition code
+        mState = State.APPS_CUSTOMIZE;
 
         // Pause the auto-advance of widgets until we are out of AllApps
         mUserPresent = false;
@@ -2998,22 +2690,16 @@ public final class Launcher extends Activity
      *          - From another workspace
      */
     void closeAllApps(boolean animated) {
-        if (LauncherApplication.isScreenLarge()) {
-            if (mState == State.ALL_APPS) {
-                mWorkspace.setVisibility(View.VISIBLE);
-                cameraZoomIn(State.ALL_APPS, animated, false);
+        if (mState == State.APPS_CUSTOMIZE || mState == State.APPS_CUSTOMIZE_SPRING_LOADED) {
+            mWorkspace.setVisibility(View.VISIBLE);
+            cameraZoomIn(State.APPS_CUSTOMIZE, animated, false);
 
-                // Set focus to the AllApps button
-                findViewById(R.id.all_apps_button).requestFocus();
-            }
-        } else {
-            if (mState == State.APPS_CUSTOMIZE || mState == State.APPS_CUSTOMIZE_SPRING_LOADED) {
-                mWorkspace.setVisibility(View.VISIBLE);
-                cameraZoomIn(State.APPS_CUSTOMIZE, animated, false);
+            // Show the search bar and dock
+            mSearchDeleteBar.showSearchBar(animated);
+            showDock(animated);
 
-                // Set focus to the AllApps button
-                findViewById(R.id.all_apps_button).requestFocus();
-            }
+            // Set focus to the AppsCustomize button
+            findViewById(R.id.all_apps_button).requestFocus();
         }
     }
 
@@ -3023,32 +2709,6 @@ public final class Launcher extends Activity
 
     void unlockAllApps() {
         // TODO
-    }
-
-    // Show the customization drawer (only exists in x-large configuration)
-    private void showCustomizationDrawer(boolean animated) {
-        if (mState != State.WORKSPACE) {
-            return;
-        }
-
-        cameraZoomOut(State.CUSTOMIZE, animated, false);
-
-        // Change the state *after* we've called all the transition code
-        mState = State.CUSTOMIZE;
-
-        // Pause the auto-advance of widgets until we are out of Customization drawer
-        mUserPresent = false;
-        updateRunning();
-    }
-
-    // Hide the customization drawer (only exists in x-large configuration)
-    void hideCustomizationDrawer(boolean animated) {
-        if (mState == State.CUSTOMIZE) {
-            cameraZoomIn(State.CUSTOMIZE, animated, false);
-
-            // Set focus to the customize button
-            findViewById(R.id.configure_button).requestFocus();
-        }
     }
 
     /**
@@ -3361,9 +3021,6 @@ public final class Launcher extends Activity
         }
     }
 
-    void setAllAppsPagedView(AllAppsPagedView view) {
-        mAllAppsPagedView = view;
-    }
 
     /**
      * Refreshes the shortcuts shown on the workspace.
@@ -3518,15 +3175,6 @@ public final class Launcher extends Activity
             mSavedInstanceState = null;
         }
 
-        // Workaround a bug that occurs when rotating the device while the customization mode is
-        // open, we trigger a new layout on all the CellLayout children.
-        if (LauncherApplication.isScreenLarge() && (mState == State.CUSTOMIZE)) {
-            final int childCount = mWorkspace.getChildCount();
-            for (int i = 0; i < childCount; ++i) {
-                mWorkspace.getChildAt(i).requestLayout();
-            }
-        }
-
         mWorkspaceLoading = false;
 
         // If we received the result of any pending adds while the loader was running (e.g. the
@@ -3553,14 +3201,8 @@ public final class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void bindAllApplications(ArrayList<ApplicationInfo> apps) {
-        if (mAllAppsGrid != null) {
-            mAllAppsGrid.setApps(apps);
-        }
         if (mAppsCustomizeContent != null) {
             mAppsCustomizeContent.setApps(apps);
-        }
-        if (mCustomizePagedView != null) {
-            mCustomizePagedView.setApps(apps);
         }
         updateIconsAffectedByPackageManagerChanges();
     }
@@ -3573,14 +3215,9 @@ public final class Launcher extends Activity
     public void bindAppsAdded(ArrayList<ApplicationInfo> apps) {
         setLoadOnResume();
         removeDialog(DIALOG_CREATE_SHORTCUT);
-        if (mAllAppsGrid != null) {
-            mAllAppsGrid.addApps(apps);
-        }
+
         if (mAppsCustomizeContent != null) {
             mAppsCustomizeContent.addApps(apps);
-        }
-        if (mCustomizePagedView != null) {
-            mCustomizePagedView.addApps(apps);
         }
         updateIconsAffectedByPackageManagerChanges();
     }
@@ -3596,14 +3233,9 @@ public final class Launcher extends Activity
         if (mWorkspace != null) {
             mWorkspace.updateShortcuts(apps);
         }
-        if (mAllAppsGrid != null) {
-            mAllAppsGrid.updateApps(apps);
-        }
+
         if (mAppsCustomizeContent != null) {
             mAppsCustomizeContent.updateApps(apps);
-        }
-        if (mCustomizePagedView != null) {
-            mCustomizePagedView.updateApps(apps);
         }
         updateIconsAffectedByPackageManagerChanges();
     }
@@ -3618,14 +3250,9 @@ public final class Launcher extends Activity
         if (permanent) {
             mWorkspace.removeItems(apps);
         }
-        if (mAllAppsGrid != null) {
-            mAllAppsGrid.removeApps(apps);
-        }
+
         if (mAppsCustomizeContent != null) {
             mAppsCustomizeContent.removeApps(apps);
-        }
-        if (mCustomizePagedView != null) {
-            mCustomizePagedView.removeApps(apps);
         }
         updateIconsAffectedByPackageManagerChanges();
     }
@@ -3634,10 +3261,7 @@ public final class Launcher extends Activity
      * A number of packages were updated.
      */
     public void bindPackagesUpdated() {
-        // update the customization drawer contents
-        if (mCustomizePagedView != null) {
-            mCustomizePagedView.update();
-        }
+
         if (mAppsCustomizeContent != null) {
             mAppsCustomizeContent.onPackagesUpdated();
         }
@@ -3699,9 +3323,7 @@ public final class Launcher extends Activity
         Log.d(TAG, "mDesktopItems.size=" + mDesktopItems.size());
         Log.d(TAG, "sFolders.size=" + sFolders.size());
         mModel.dumpState();
-        if (mAllAppsGrid != null) {
-            mAllAppsGrid.dumpState();
-        }
+
         if (mAppsCustomizeContent != null) {
             mAppsCustomizeContent.dumpState();
         }

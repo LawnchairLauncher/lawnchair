@@ -16,10 +16,6 @@
 <com.android.launcher2.AppsCustomizeTabHost
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher">
-    <com.android.launcher2.AllAppsBackground
-        android:id="@+id/all_apps_background"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -28,57 +24,33 @@
              with the text in the tabs in AppsCustomizeTabHost. -->
         <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/apps_customize_tab_bar_height"
+            android:layout_height="@dimen/qsb_bar_height"
             android:layout_gravity="center_horizontal">
             <com.android.launcher2.FocusOnlyTabWidget
                 android:id="@android:id/tabs"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="left"
                 android:background="@drawable/tab_unselected_holo"
                 android:tabStripEnabled="false" />
-            <FrameLayout
+            <TextView
+                style="@style/MarketButton"
+                android:id="@+id/market_button"
+                android:onClick="onClickAppMarketButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_gravity="right">
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:visibility="gone">
-                    <com.android.launcher2.ApplicationInfoDropTarget
-                        android:id="@+id/all_apps_info_target"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:drawableLeft="@drawable/ic_home_info_holo_dark"
-                        android:background="@drawable/focusable_view_bg"
-                        android:focusable="true"
-                        android:visibility="gone" />
-                    <com.android.launcher2.DeleteZone
-                        style="@style/DeleteZone"
-                        android:id="@+id/all_apps_delete_zone"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:background="@drawable/focusable_view_bg"
-                        android:focusable="true"
-                        android:visibility="gone"
-                        launcher:direction="horizontal" />
-                </LinearLayout>
-                <TextView
-                    style="@style/MarketButton"
-                    android:id="@+id/market_button"
-                    android:onClick="onClickAppMarketButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:background="@drawable/tab_widget_indicator_selector"
-                    android:focusable="true"
-                    android:clickable="true" />
-            </FrameLayout>
+                android:layout_gravity="right"
+                android:gravity="center"
+                android:text="@string/market"
+                android:textColor="@color/workspace_all_apps_and_delete_zone_text_color"
+                android:textSize="18sp"
+                android:shadowColor="@color/workspace_all_apps_and_delete_zone_text_shadow_color"
+                android:shadowDx="0.0"
+                android:shadowDy="0.0"
+                android:shadowRadius="2.0"
+                android:background="@drawable/tab_widget_indicator_selector"
+                android:focusable="true"
+                android:clickable="true" />
         </FrameLayout>
         <FrameLayout
             android:id="@android:id/tabcontent"
@@ -87,7 +59,7 @@
             <com.android.launcher2.AppsCustomizePagedView
                 android:id="@+id/apps_customize_pane_content"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 launcher:cellCountX="@integer/all_apps_view_cellCountX"
                 launcher:cellCountY="@integer/all_apps_view_cellCountY"
                 launcher:pageLayoutWidthGap="@dimen/all_apps_view_pageLayoutWidthGap"

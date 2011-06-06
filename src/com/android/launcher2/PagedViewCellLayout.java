@@ -40,6 +40,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
     private int mCellHeight;
     private int mWidthGap;
     private int mHeightGap;
+    private float mPeekWidth;
     protected PagedViewCellLayoutChildren mChildren;
     private PagedViewCellLayoutChildren mHolographicChildren;
     private boolean mAllowHardwareLayerCreation = false;
@@ -62,6 +63,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         Resources resources = context.getResources();
         mCellWidth = resources.getDimensionPixelSize(R.dimen.apps_customize_cell_width);
         mCellHeight = resources.getDimensionPixelSize(R.dimen.apps_customize_cell_height);
+        mPeekWidth = resources.getDimensionPixelSize(R.dimen.apps_customize_peek_width);
         mCellCountX = LauncherModel.getCellCountX();
         mCellCountY = LauncherModel.getCellCountY();
         mWidthGap = mHeightGap = -1;
@@ -229,11 +231,11 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
 
         int vSpaceLeft = heightSpecSize - mPaddingTop
                 - mPaddingBottom - (cellHeight * mCellCountY);
-        int heightGap = vSpaceLeft / numHeightGaps;
+        int heightGap = (numHeightGaps <= 0) ? 0 : (vSpaceLeft / numHeightGaps);
 
         int hSpaceLeft = widthSpecSize - mPaddingLeft
                 - mPaddingRight - (cellWidth * mCellCountX);
-        int widthGap = hSpaceLeft / numWidthGaps;
+        int widthGap = (numWidthGaps <= 0) ? 0 : (hSpaceLeft / numWidthGaps);
 
         // center it around the min gaps
         int minGap = Math.min(widthGap, heightGap);
@@ -271,15 +273,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
     }
 
     int getContentWidth() {
-        if (LauncherApplication.isScreenLarge()) {
-            // Return the distance from the left edge of the content of the leftmost icon to
-            // the right edge of the content of the rightmost icon
-
-            // icons are centered within cells, find out how much padding that accounts for
-            return getWidthBeforeFirstLayout() - (mCellWidth - Utilities.getIconContentSize());
-        } else {
-            return getWidthBeforeFirstLayout() + mPaddingLeft + mPaddingRight;
-        }
+        return getWidthBeforeFirstLayout() + mPaddingLeft + mPaddingRight;
     }
 
     int getContentHeight() {
@@ -308,7 +302,20 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        return super.onTouchEvent(event) || true;
+        boolean result = super.onTouchEvent(event);
+        int count = getPageChildCount();
+        if (count > 0) {
+            // We only intercept the touch if we are tapping in empty space after the final row
+            View child = getChildOnPageAt(count - 1);
+            int bottom = child.getBottom();
+            int numRows = (int) Math.ceil((float) getPageChildCount() / getCellCountX());
+            if (numRows < getCellCountY()) {
+                // Add a little bit of buffer if there is room for another row
+                bottom += mCellHeight / 2;
+            }
+            result = result || (event.getY() < bottom);
+        }
+        return result;
     }
 
     public void enableCenteredContent(boolean enabled) {
@@ -361,16 +368,37 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
      * Estimates the number of cells that the specified width would take up.
      */
     public int estimateCellHSpan(int width) {
-        // TODO: we need to take widthGap into effect
-        return (width + mCellWidth) / mCellWidth;
+        // The space for a page assuming that we want to show half of a column of the previous and
+        // next pages is the width - left padding (current & next page) - right padding (previous &
+        // current page) - half cell width (for previous and next pages)
+        int availWidth = (int) (width - (2 * mPaddingLeft + 2 * mPaddingRight) - (2 * mPeekWidth));
+
+        // We know that we have to fit N cells with N-1 width gaps, so we just juggle to solve for N
+        int n = Math.max(1, (availWidth + mWidthGap) / (mCellWidth + mWidthGap));
+
+        // We don't do anything fancy to determine if we squeeze another row in.
+        return n;
     }
 
     /**
      * Estimates the number of cells that the specified height would take up.
      */
     public int estimateCellVSpan(int height) {
-        // TODO: we need to take heightGap into effect
-        return (height + mCellHeight) / mCellHeight;
+        // The space for a page is the height - top padding (current page) - bottom padding (current
+        // page)
+        int availHeight = height - (mPaddingTop + mPaddingBottom);
+
+        // We know that we have to fit N cells with N-1 height gaps, so we juggle to solve for N
+        int n = Math.max(1, (availHeight + mHeightGap) / (mCellHeight + mHeightGap));
+
+        // We don't do anything fancy to determine if we squeeze another row in.
+        return n;
+    }
+
+    public void calculateCellCount(int width, int height, int maxCellCountX, int maxCellCountY) {
+        mCellCountX = Math.min(maxCellCountX, estimateCellHSpan(width));
+        mCellCountY = Math.min(maxCellCountY, estimateCellVSpan(height));
+        requestLayout();
     }
 
     /**

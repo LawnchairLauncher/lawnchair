@@ -59,14 +59,15 @@ public class PagedViewGridLayout extends FrameLayout implements Page {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        // We eat up the touch events here, since the PagedView (which uses the same swiping
-        // touch code as Workspace previously) uses onInterceptTouchEvent() to determine when
-        // the user is scrolling between pages.  This means that if the pages themselves don't
-        // handle touch events, it gets forwarded up to PagedView itself, and it's own
-        // onTouchEvent() handling will prevent further intercept touch events from being called
-        // (it's the same view in that case).  This is not ideal, but to prevent more changes,
-        // we just always mark the touch event as handled.
-        return super.onTouchEvent(event) || true;
+        boolean result = super.onTouchEvent(event);
+        int count = getPageChildCount();
+        if (count > 0) {
+            // We only intercept the touch if we are tapping in empty space after the final row
+            View child = getChildOnPageAt(count - 1);
+            int bottom = child.getBottom();
+            result = result || (event.getY() < bottom);
+        }
+        return result;
     }
 
     @Override

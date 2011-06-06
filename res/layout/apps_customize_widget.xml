@@ -38,6 +38,17 @@
         android:adjustViewBounds="true"
         android:scaleType="fitStart" />
 
+    <!-- The divider image. -->
+    <ImageView
+        style="WidgetDivider"
+        android:id="@+id/divider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:src="@drawable/widget_divider" />
+
     <!-- The name of the widget. -->
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/widget_name"

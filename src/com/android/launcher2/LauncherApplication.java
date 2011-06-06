@@ -29,7 +29,6 @@ public class LauncherApplication extends Application {
     public IconCache mIconCache;
     private static boolean sIsScreenLarge;
     private static float sScreenDensity;
-    private static final boolean ENABLE_ROTATION = false;
 
     @Override
     public void onCreate() {
@@ -96,10 +95,6 @@ public class LauncherApplication extends Application {
 
     LauncherModel getModel() {
         return mModel;
-    }
-
-    public static boolean isInPlaceRotationEnabled() {
-        return sIsScreenLarge && ENABLE_ROTATION;
     }
 
     public static boolean isScreenLarge() {

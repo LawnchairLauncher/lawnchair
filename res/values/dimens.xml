@@ -27,6 +27,10 @@
     <dimen name="app_icon_size">50dp</dimen>
     <dimen name="apps_customize_cell_width">68dp</dimen>
     <dimen name="apps_customize_cell_height">68dp</dimen>
+    <!-- In portrat/normal, we peek only 1/8th the app cell width -->
+    <dimen name="apps_customize_peek_width">9dp</dimen>
+    <dimen name="apps_customize_widget_cell_width_gap">10dp</dimen>
+    <dimen name="apps_customize_widget_cell_height_gap">10dp</dimen>
     <dimen name="title_texture_width">120px</dimen>
 
     <!-- height of the tab bar in AppsCustomize -->

@@ -16,6 +16,7 @@
 
 package com.android.launcher2;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.AttributeSet;
@@ -36,6 +37,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     private static final String WIDGETS_TAB_TAG = "WIDGETS";
 
     private final LayoutInflater mLayoutInflater;
+    private ViewGroup mTabs;
     private AppsCustomizePagedView mAppsCustomizePane;
 
     public AppsCustomizeTabHost(Context context, AttributeSet attrs) {
@@ -43,6 +45,9 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         mLayoutInflater = LayoutInflater.from(context);
     }
 
+    /**
+     * Convenience methods to select specific tabs
+     */
     void selectAppsTab() {
         setCurrentTabByTag(APPS_TAB_TAG);
     }
@@ -61,6 +66,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         final ViewGroup tabs = (ViewGroup) findViewById(com.android.internal.R.id.tabs);
         final AppsCustomizePagedView appsCustomizePane = (AppsCustomizePagedView)
                 findViewById(R.id.apps_customize_pane_content);
+        mTabs = tabs;
         mAppsCustomizePane = appsCustomizePane;
         if (tabs == null || mAppsCustomizePane == null) throw new Resources.NotFoundException();
 
@@ -81,9 +87,18 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         tabView.setText(mContext.getString(R.string.widgets_tab_label));
         addTab(newTabSpec(WIDGETS_TAB_TAG).setIndicator(tabView).setContent(contentFactory));
         setOnTabChangedListener(this);
+    }
 
-        // Set the width of the tab bar to match the content (for now)
-        tabs.getLayoutParams().width = mAppsCustomizePane.getPageContentWidth();
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        boolean remeasureTabWidth = (mTabs.getLayoutParams().width <= 0);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        // Set the width of the tab list to the content width
+        if (remeasureTabWidth) {
+            mTabs.getLayoutParams().width = mAppsCustomizePane.getPageContentWidth();
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        }
     }
 
     @Override
@@ -138,11 +153,21 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
 
     /* LauncherTransitionable overrides */
     @Override
-    public void onLauncherTransitionStart(android.animation.Animator animation) {
-        // TODO-APPS_CUSTOMIZE: see AllAppsTabbed.onLauncherTransitionStart();
+    public void onLauncherTransitionStart(Animator animation) {
+        if (animation != null) {
+            // Turn on hardware layers for performance
+            setLayerType(LAYER_TYPE_HARDWARE, null);
+
+            // force building the layer at the beginning of the animation, so you don't get a
+            // blip early in the animation
+            buildLayer();
+        }
     }
+
     @Override
-    public void onLauncherTransitionEnd(android.animation.Animator animation) {
-        // TODO-APPS_CUSTOMIZE: see AllAppsTabbed.onLauncherTransitionEnd();
+    public void onLauncherTransitionEnd(Animator animation) {
+        if (animation != null) {
+            setLayerType(LAYER_TYPE_NONE, null);
+        }
     }
 }

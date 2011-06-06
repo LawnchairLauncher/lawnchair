@@ -15,11 +15,18 @@
 -->
 
 <resources>
+    <dimen name="apps_customize_cell_width">96dp</dimen>
+    <dimen name="apps_customize_cell_height">96dp</dimen>
+    <!-- The amount of space to account for the next/prev pages when
+         calculating the number of columns to fit a page.
+         In portrait/large we use apps_customize_cell_width / 8. -->
+    <dimen name="apps_customize_peek_width">12dp</dimen>
+
     <!-- the area at the edge of the screen that makes the workspace go left
          or right while you're dragging. -->
     <dimen name="scroll_zone">40dp</dimen>
 
-    <dimen name="all_apps_view_pageLayoutWidthGap">36dp</dimen>
+    <dimen name="all_apps_view_pageLayoutWidthGap">24dp</dimen>
     <dimen name="all_apps_view_pageLayoutHeightGap">36dp</dimen>
     <dimen name="all_apps_view_pageLayoutPaddingTop">25dp</dimen>
     <dimen name="all_apps_view_pageLayoutPaddingBottom">10dp</dimen>

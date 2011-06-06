@@ -106,17 +106,12 @@ public class Workspace extends SmoothPagedView
     private ValueAnimator mBackgroundFadeInAnimation;
     private ValueAnimator mBackgroundFadeOutAnimation;
     private Drawable mBackground;
-    private Drawable mCustomizeTrayBackground;
     boolean mDrawBackground = true;
-    private boolean mDrawCustomizeTrayBackground;
     private float mBackgroundAlpha = 0;
     private float mOverScrollMaxBackgroundAlpha = 0.0f;
     private int mOverScrollPageIndex = -1;
 
-    private View mCustomizationDrawer;
-    private View mCustomizationDrawerContent;
-    private int[] mCustomizationDrawerPos = new int[2];
-    private float[] mCustomizationDrawerTransformedPos = new float[2];
+
 
     private final WallpaperManager mWallpaperManager;
     private IBinder mWindowToken;
@@ -173,7 +168,7 @@ public class Workspace extends SmoothPagedView
     private boolean mIsInUnshrinkAnimation = false;
     private AnimatorListener mShrinkAnimationListener;
     private AnimatorListener mUnshrinkAnimationListener;
-    enum ShrinkState { TOP, SPRING_LOADED, MIDDLE, BOTTOM_HIDDEN, BOTTOM_VISIBLE };
+    enum ShrinkState { SPRING_LOADED, MIDDLE, BOTTOM_HIDDEN, BOTTOM_VISIBLE };
     private ShrinkState mShrinkState;
     private boolean mWaitingToShrink = false;
     private ShrinkState mWaitingToShrinkState;
@@ -257,6 +252,9 @@ public class Workspace extends SmoothPagedView
         super(context, attrs, defStyle);
         mContentIsRefreshable = false;
 
+        // With workspace, data is available straight from the get-go
+        setDataIsReady();
+
         if (!LauncherApplication.isScreenLarge()) {
             mFadeInAdjacentScreens = false;
         }
@@ -330,7 +328,6 @@ public class Workspace extends SmoothPagedView
         try {
             final Resources res = getResources();
             mBackground = res.getDrawable(R.drawable.all_apps_bg_gradient);
-            mCustomizeTrayBackground = res.getDrawable(R.drawable.customize_bg_gradient);
         } catch (Resources.NotFoundException e) {
             // In this case, we will skip drawing background protection
         }
@@ -345,8 +342,12 @@ public class Workspace extends SmoothPagedView
             public void onAnimationEnd(Animator animation) {
                 mIsInUnshrinkAnimation = false;
                 mSyncWallpaperOffsetWithScroll = true;
-                if (mShrinkState != ShrinkState.SPRING_LOADED) {
-                    mDrawCustomizeTrayBackground = false;
+                if (mShrinkState == ShrinkState.SPRING_LOADED) {
+                    View layout = null;
+                    if (mLastDragView != null) {
+                        layout = findMatchingPageForDragOver(mLastDragView, mLastDragOriginX,
+                                mLastDragOriginY, mLastDragXOffset, mLastDragYOffset);
+                    }
                 }
                 mWallpaperOffset.setOverrideHorizontalCatchupConstant(false);
                 mAnimator = null;
@@ -598,24 +599,6 @@ public class Workspace extends SmoothPagedView
             mYDown = ev.getY();
         }
 
-        if (mIsSmall || mIsInUnshrinkAnimation) {
-            if (mLauncher.isAllAppsVisible() && mShrinkState == ShrinkState.BOTTOM_HIDDEN) {
-                // Intercept this event so we can show the workspace in full view
-                // when it is clicked on and it is small
-                PagedView appsPane = null;
-                if (LauncherApplication.isScreenLarge()) {
-                    appsPane = (PagedView) mLauncher.findViewById(R.id.all_apps_paged_view);
-                } else {
-                    appsPane = (PagedView) mLauncher.findViewById(R.id.apps_customize_pane_content);
-                }
-
-                if (appsPane != null) {
-                    appsPane.onInterceptTouchEvent(ev);
-                }
-                return true;
-            }
-            return false;
-        }
         return super.onInterceptTouchEvent(ev);
     }
 
@@ -1000,12 +983,6 @@ public class Workspace extends SmoothPagedView
 
     private void showBackgroundGradientForAllApps() {
         showBackgroundGradient();
-        mDrawCustomizeTrayBackground = false;
-    }
-
-    private void showBackgroundGradientForCustomizeTray() {
-        showBackgroundGradient();
-        mDrawCustomizeTrayBackground = true;
     }
 
     private void showBackgroundGradient() {
@@ -1169,12 +1146,6 @@ public class Workspace extends SmoothPagedView
                 }
             });
         }
-
-        if (LauncherApplication.isInPlaceRotationEnabled()) {
-            // When the device is rotated, the scroll position of the current screen
-            // needs to be refreshed
-            setCurrentPage(getCurrentPage());
-        }
     }
 
     public void showFolderAccept(FolderRingAnimator fra) {
@@ -1195,33 +1166,10 @@ public class Workspace extends SmoothPagedView
         // Draw the background gradient if necessary
         if (mBackground != null && mBackgroundAlpha > 0.0f && mDrawBackground) {
             int alpha = (int) (mBackgroundAlpha * 255);
-            if (mDrawCustomizeTrayBackground) {
-                // Find out where to offset the gradient for the customization tray content
-                mCustomizationDrawer.getLocationOnScreen(mCustomizationDrawerPos);
-                final Matrix m = mCustomizationDrawer.getMatrix();
-                mCustomizationDrawerTransformedPos[0] = 0.0f;
-                mCustomizationDrawerTransformedPos[1] = mCustomizationDrawerContent.getTop();
-                m.mapPoints(mCustomizationDrawerTransformedPos);
-
-                // Draw the bg glow behind the gradient
-                mCustomizeTrayBackground.setAlpha(alpha);
-                mCustomizeTrayBackground.setBounds(mScrollX, 0, mScrollX + getMeasuredWidth(),
-                        getMeasuredHeight());
-                mCustomizeTrayBackground.draw(canvas);
-
-                // Draw the bg gradient
-                final int  offset = (int) (mCustomizationDrawerPos[1] +
-                        mCustomizationDrawerTransformedPos[1]);
-                mBackground.setAlpha(alpha);
-                mBackground.setBounds(mScrollX, offset, mScrollX + getMeasuredWidth(),
-                        offset + getMeasuredHeight());
-                mBackground.draw(canvas);
-            } else {
-                mBackground.setAlpha(alpha);
-                mBackground.setBounds(mScrollX, 0, mScrollX + getMeasuredWidth(),
-                        getMeasuredHeight());
-                mBackground.draw(canvas);
-            }
+            mBackground.setAlpha(alpha);
+            mBackground.setBounds(mScrollX, 0, mScrollX + getMeasuredWidth(),
+                    getMeasuredHeight());
+            mBackground.draw(canvas);
         }
 
         // The folder outer / inner ring image(s)
@@ -1401,39 +1349,6 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        if (mLauncher.isAllAppsVisible() && mShrinkState == ShrinkState.BOTTOM_HIDDEN) {
-            PagedView appsPane;
-            if (LauncherApplication.isScreenLarge()) {
-                appsPane = (PagedView) mLauncher.findViewById(R.id.all_apps_paged_view);
-            } else {
-                appsPane = (PagedView) mLauncher.findViewById(R.id.apps_customize_pane_content);
-            }
-
-            if (appsPane != null) {
-                if (ev.getAction() == MotionEvent.ACTION_UP &&
-                        appsPane.getTouchState() == TOUCH_STATE_REST) {
-
-                    // Cancel any scrolling that is in progress.
-                    if (!mScroller.isFinished()) {
-                        mScroller.abortAnimation();
-                    }
-                    setCurrentPage(mCurrentPage);
-
-                    if (mShrinkState == ShrinkState.BOTTOM_HIDDEN) {
-                        mLauncher.showWorkspace(true);
-                    }
-                    appsPane.onTouchEvent(ev);
-                    return true;
-                } else {
-                    return appsPane.onTouchEvent(ev);
-                }
-            }
-        }
-        return super.onTouchEvent(ev);
-    }
-
     protected void enableChildrenLayers(boolean enable) {
         for (int i = 0; i < getPageCount(); i++) {
             ((ViewGroup)getChildAt(i)).setChildrenLayersEnabled(enable);
@@ -1488,18 +1403,6 @@ public class Workspace extends SmoothPagedView
         shrink(shrinkState, true);
     }
 
-    private int getCustomizeDrawerHeight() {
-        TabHost customizationDrawer = mLauncher.getCustomizationDrawer();
-        int height = customizationDrawer.getHeight();
-        TabWidget tabWidget = (TabWidget)
-            customizationDrawer.findViewById(com.android.internal.R.id.tabs);
-        if (tabWidget.getTabCount() > 0) {
-            TextView tabText = (TextView) tabWidget.getChildTabViewAt(0);
-            // subtract the empty space above the tab text
-            height -= ((tabWidget.getHeight() - tabText.getLineHeight())) / 2;
-        }
-        return height;
-    }
 
     // we use this to shrink the workspace for the all apps view and the customize view
     public void shrink(ShrinkState shrinkState, boolean animated) {
@@ -1571,8 +1474,6 @@ public class Workspace extends SmoothPagedView
         } else if (shrinkState == ShrinkState.MIDDLE) {
             y = screenHeight / 2 - scaledPageHeight / 2;
             finalAlpha = 1.0f;
-        } else if (shrinkState == ShrinkState.TOP) {
-            y = (screenHeight - getCustomizeDrawerHeight() - scaledPageHeight) / 2;
         }
 
         int duration;
@@ -1667,11 +1568,6 @@ public class Workspace extends SmoothPagedView
         if (enableWallpaperEffects) {
             switch (shrinkState) {
                 // animating in
-                case TOP:
-                    // customize
-                    wallpaperOffset = 0.5f + offsetFromCenter;
-                    mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.46f : 0.44f);
-                    break;
                 case MIDDLE:
                 case SPRING_LOADED:
                     wallpaperOffset = 0.5f;
@@ -1740,11 +1636,7 @@ public class Workspace extends SmoothPagedView
         }
         setChildrenDrawnWithCacheEnabled(true);
 
-        if (shrinkState == ShrinkState.TOP) {
-            showBackgroundGradientForCustomizeTray();
-        } else {
-            showBackgroundGradientForAllApps();
-        }
+        showBackgroundGradientForAllApps();
     }
 
     /*
@@ -1826,14 +1718,10 @@ public class Workspace extends SmoothPagedView
                 cl.setAcceptsDrops(cl.findCellForSpan(null, spanX, spanY));
             } else {
                 switch (state) {
-                    case TOP:
-                        cl.setIsDefaultDropTarget(i == mCurrentPage);
                     case BOTTOM_HIDDEN:
                     case BOTTOM_VISIBLE:
                     case SPRING_LOADED:
-                        if (state != ShrinkState.TOP) {
-                            cl.setIsDefaultDropTarget(false);
-                        }
+                        cl.setIsDefaultDropTarget(false);
                         if (!isDragHappening) {
                             // even if a drag isn't happening, we don't want to show a screen as
                             // accepting drops if it doesn't have at least one free cell
@@ -2045,14 +1933,6 @@ public class Workspace extends SmoothPagedView
             if (enableWallpaperEffects) {
                 switch (mShrinkState) {
                     // animating out
-                    case TOP:
-                        // customize
-                        if (animated) {
-                            mWallpaperOffset.setHorizontalCatchupConstant(isLandscape ? 0.65f : 0.62f);
-                            mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.65f : 0.62f);
-                            mWallpaperOffset.setOverrideHorizontalCatchupConstant(true);
-                        }
-                        break;
                     case MIDDLE:
                     case SPRING_LOADED:
                         if (animated) {
@@ -2541,13 +2421,6 @@ public class Workspace extends SmoothPagedView
         if (d.dragSource != this) {
             final int[] touchXY = new int[] { (int) mDragViewVisualCenter[0],
                     (int) mDragViewVisualCenter[1] };
-            if (LauncherApplication.isScreenLarge() && (mIsSmall || mIsInUnshrinkAnimation)
-                    && !mLauncher.isAllAppsVisible()) {
-                // When the workspace is shrunk and the drop comes from customize, don't actually
-                // add the item to the screen -- customize will do this itself
-                ((ItemInfo) d.dragInfo).dropPos = touchXY;
-                return;
-            }
             onDropExternal(touchXY, d.dragInfo, dropTargetLayout, false, d.dragView);
         } else if (mDragInfo != null) {
             final View cell = mDragInfo.cell;
@@ -3367,12 +3240,6 @@ public class Workspace extends SmoothPagedView
     void setup(Launcher launcher, DragController dragController) {
         mLauncher = launcher;
         mSpringLoadedDragController = new SpringLoadedDragController(mLauncher);
-
-        mCustomizationDrawer = mLauncher.findViewById(R.id.customization_drawer);
-        if (mCustomizationDrawer != null) {
-            mCustomizationDrawerContent =
-                mCustomizationDrawer.findViewById(com.android.internal.R.id.tabcontent);
-        }
         mDragController = dragController;
     }
 
