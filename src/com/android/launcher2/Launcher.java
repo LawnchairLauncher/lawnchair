@@ -1495,6 +1495,11 @@ public final class Launcher extends Activity
     public void onDestroy() {
         super.onDestroy();
 
+        // Stop callbacks from LauncherModel
+        LauncherApplication app = ((LauncherApplication) getApplication());
+        mModel.stopLoader();
+        app.setLauncher(null);
+
         try {
             mAppWidgetHost.stopListening();
         } catch (NullPointerException ex) {
@@ -1506,7 +1511,6 @@ public final class Launcher extends Activity
 
         TextKeyListener.getInstance().release();
 
-        mModel.stopLoader();
 
         unbindDesktopItems();
 

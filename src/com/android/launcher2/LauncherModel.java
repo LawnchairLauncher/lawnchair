@@ -1301,7 +1301,8 @@ public class LauncherModel extends BroadcastReceiver {
                 final ArrayList<ApplicationInfo> addedFinal = added;
                 mHandler.post(new Runnable() {
                     public void run() {
-                        if (callbacks == mCallbacks.get()) {
+                        Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
+                        if (callbacks == cb && cb != null) {
                             callbacks.bindAppsAdded(addedFinal);
                         }
                     }
@@ -1311,7 +1312,8 @@ public class LauncherModel extends BroadcastReceiver {
                 final ArrayList<ApplicationInfo> modifiedFinal = modified;
                 mHandler.post(new Runnable() {
                     public void run() {
-                        if (callbacks == mCallbacks.get()) {
+                        Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
+                        if (callbacks == cb && cb != null) {
                             callbacks.bindAppsUpdated(modifiedFinal);
                         }
                     }
@@ -1322,7 +1324,8 @@ public class LauncherModel extends BroadcastReceiver {
                 final ArrayList<ApplicationInfo> removedFinal = removed;
                 mHandler.post(new Runnable() {
                     public void run() {
-                        if (callbacks == mCallbacks.get()) {
+                        Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
+                        if (callbacks == cb && cb != null) {
                             callbacks.bindAppsRemoved(removedFinal, permanent);
                         }
                     }
@@ -1332,7 +1335,8 @@ public class LauncherModel extends BroadcastReceiver {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if (callbacks == mCallbacks.get()) {
+                    Callbacks cb = mCallbacks != null ? mCallbacks.get() : null;
+                    if (callbacks == cb && cb != null) {
                         callbacks.bindPackagesUpdated();
                     }
                 }
