@@ -1270,7 +1270,7 @@ public abstract class PagedView extends ViewGroup {
         // snap duration. This is a function of the actual distance that needs to be traveled;
         // we keep this value close to half screen size in order to reduce the variance in snap
         // duration as a function of the distance the page needs to travel.
-        float distanceRatio = 1.0f * Math.abs(delta) / 2 * halfScreenSize;
+        float distanceRatio = Math.min(1f, 1.0f * Math.abs(delta) / (2 * halfScreenSize));
         float distance = halfScreenSize + halfScreenSize *
                 distanceInfluenceForSnapDuration(distanceRatio);
 
@@ -1279,8 +1279,8 @@ public abstract class PagedView extends ViewGroup {
 
         // we want the page's snap velocity to approximately match the velocity at which the
         // user flings, so we scale the duration by a value near to the derivative of the scroll
-        // interpolator at zero, ie. 5. We use 6 to make it a little slower.
-        duration = 6 * Math.round(1000 * Math.abs(distance / velocity));
+        // interpolator at zero, ie. 5. We use 4 to make it a little slower.
+        duration = 4 * Math.round(1000 * Math.abs(distance / velocity));
 
         snapToPage(whichPage, delta, duration);
     }
