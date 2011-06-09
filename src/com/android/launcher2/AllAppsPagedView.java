@@ -70,6 +70,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
     private int mLastMeasureWidth = -1;
     private int mLastMeasureHeight = -1;
     private boolean mWaitingToInitPages = true;
+    private boolean mWaitingToDetermineRowsAndColumns = true;
 
     private int mMaxCellCountY;
 
@@ -129,8 +130,8 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        if (mWaitingToInitPages) {
-            mWaitingToInitPages = false;
+        if (mWaitingToDetermineRowsAndColumns) {
+            mWaitingToDetermineRowsAndColumns = false;
             postInvalidatePageData(false);
         }
         super.onLayout(changed, left, top, right, bottom);
@@ -451,6 +452,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
         Collections.sort(mApps, LauncherModel.APP_NAME_COMPARATOR);
         mFilteredApps = rebuildFilteredApps(mApps);
         mPageViewIconCache.retainAllApps(list);
+        mWaitingToInitPages = false;
         invalidatePageData();
     }
 
@@ -549,7 +551,8 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
 
     @Override
     protected void invalidatePageData() {
-        if (mWaitingToInitPages || mCellCountX <= 0 || mCellCountY <= 0) {
+        if (mWaitingToDetermineRowsAndColumns ||
+            mWaitingToInitPages || mCellCountX <= 0 || mCellCountY <= 0) {
             // We don't know our size yet, which means we haven't calculated cell count x/y;
             // onMeasure will call us once we figure out our size
             return;
