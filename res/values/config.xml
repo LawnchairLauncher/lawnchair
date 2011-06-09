@@ -5,6 +5,16 @@
     <integer name="config_dragAppsCustomizeIconFadeOutDuration">200</integer>
     <integer name="config_dragAppsCustomizeIconFadeAlpha">100</integer>
     <integer name="config_workspaceUnshrinkTime">650</integer>
+    <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
+    <integer name="config_workspaceSpringLoadShrinkPercentage">80</integer>
+    <!-- When items are dropped on the mini screens in customize mode, we have a bounce animation
+         of the bright green hover outline, and then fade out the outline at the end. These are
+         the values used in that animation -->
+    <integer name="config_screenOnDropScalePercent">120</integer>
+    <integer name="config_screenOnDropScaleUpDuration">200</integer>
+    <integer name="config_screenOnDropScaleDownDuration">200</integer>
+    <integer name="config_screenOnDropAlphaFadeDelay">350</integer>
+    <integer name="config_screenOnDropAlphaFadeDuration">50</integer>
 
     <!-- Fade/zoom in/out duration & scale in the AllApps transition.
          Note: This should be less than the workspaceShrinkTime as they happen together. -->

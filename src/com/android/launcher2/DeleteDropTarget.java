@@ -126,7 +126,7 @@ public class DeleteDropTarget extends IconDropTarget {
     public void onDragExit(DragObject d) {
         super.onDragExit(d);
 
-        mIcon.reverseTransition(sTransitionDuration);
+        mIcon.resetTransition();
         setTextColor(mDefaultTextColor);
     }
 

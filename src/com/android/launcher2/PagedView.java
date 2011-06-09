@@ -62,7 +62,7 @@ public abstract class PagedView extends ViewGroup {
     private static final int PAGE_SNAP_ANIMATION_DURATION = 550;
     protected static final float NANOTIME_DIV = 1000000000.0f;
 
-    private static final float OVERSCROLL_DAMP_FACTOR = 0.08f;
+    private static final float OVERSCROLL_DAMP_FACTOR = 0.14f;
     private static final int MINIMUM_SNAP_VELOCITY = 2200;
     private static final int MIN_FLING_VELOCITY = 250;
     private static final float RETURN_TO_ORIGINAL_PAGE_THRESHOLD = 0.33f;
@@ -470,12 +470,18 @@ public abstract class PagedView extends ViewGroup {
             childrenX[i] = child.getX();
             childrenY[i] = child.getY();
         }
-        onLayout(false, mLeft, mTop, mRight, mBottom);
+        // Trigger a full re-layout (never just call onLayout directly!)
+        int widthSpec = MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.EXACTLY);
+        int heightSpec = MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.EXACTLY);
+        requestLayout();
+        measure(widthSpec, heightSpec);
+        layout(mLeft, mTop, mRight, mBottom);
         for (int i = 0; i < childCount; i++) {
             final View child = getChildAt(i);
             child.setX(childrenX[i]);
             child.setY(childrenY[i]);
         }
+
         // Also, the page offset has changed  (since the pages are now smaller);
         // update the page offset, but again preserving absolute X and Y coordinates
         scrollToNewPageWithoutMovingPages(mCurrentPage);

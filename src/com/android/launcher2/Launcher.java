@@ -168,7 +168,7 @@ public final class Launcher extends Activity
 
     /** The different states that Launcher can be in. */
     private enum State { WORKSPACE, APPS_CUSTOMIZE, ALL_APPS, CUSTOMIZE,
-        CUSTOMIZE_SPRING_LOADED, ALL_APPS_SPRING_LOADED };
+        APPS_CUSTOMIZE_SPRING_LOADED };
     private State mState = State.WORKSPACE;
     private AnimatorSet mStateAnimation;
 
@@ -2671,7 +2671,16 @@ public final class Launcher extends Activity
         setPivotsForZoom(toView, toState, scale);
 
         if (toAllApps) {
-            if (!springLoaded) {
+            if (springLoaded) {
+                if (toState == State.APPS_CUSTOMIZE) {
+                    // Shrink workspaces away if going back to AppsCustomize from spring loaded mode
+                    mWorkspace.shrink(ShrinkState.BOTTOM_HIDDEN, animated);
+                } else {
+                    // Shrink workspaces to bottom if going back to AllApps from spring loaded mode
+                    mWorkspace.shrink(ShrinkState.BOTTOM_VISIBLE, animated);
+                }
+            } else {
+                // Shrink workspaces away if going to AllApps/AppsCustomize from workspace
                 mWorkspace.shrink(ShrinkState.BOTTOM_HIDDEN, animated);
 
                 if (LauncherApplication.isScreenLarge()) {
@@ -2679,10 +2688,9 @@ public final class Launcher extends Activity
                     // controls when it should hide/show the mini workspaces
                     mAllAppsPagedView.resetSuccessfulDropFlag();
                 }
-            } else {
-                mWorkspace.shrink(ShrinkState.BOTTOM_VISIBLE, animated);
             }
         } else {
+            // In Customize mode, shrink the workspaces to the top
             mWorkspace.shrink(ShrinkState.TOP, animated);
         }
 
@@ -2901,39 +2909,25 @@ public final class Launcher extends Activity
     }
 
     void enterSpringLoadedDragMode(CellLayout layout) {
+        // Enter spring loaded mode on a new layout
         mWorkspace.enterSpringLoadedDragMode(layout);
-        if (mState == State.ALL_APPS || mState == State.APPS_CUSTOMIZE) {
-            mState = State.ALL_APPS_SPRING_LOADED;
-            if (LauncherApplication.isScreenLarge()) {
-                cameraZoomIn(State.ALL_APPS, true, true);
-            } else {
-                cameraZoomIn(State.APPS_CUSTOMIZE, true, true);
-            }
-        } else if (mState == State.CUSTOMIZE) {
-            mState = State.CUSTOMIZE_SPRING_LOADED;
-            cameraZoomIn(State.CUSTOMIZE, true, true);
-        }/* else {
-            // we're already in spring loaded mode; don't do anything
-        }*/
+
+        if (mState == State.APPS_CUSTOMIZE) {
+            mState = State.APPS_CUSTOMIZE_SPRING_LOADED;
+            cameraZoomIn(State.APPS_CUSTOMIZE, true, true);
+        } else {
+            // Do nothing
+        }
     }
 
     void exitSpringLoadedDragMode() {
-        if (mState == State.ALL_APPS_SPRING_LOADED) {
-            mWorkspace.exitSpringLoadedDragMode(Workspace.ShrinkState.BOTTOM_VISIBLE);
-            if (LauncherApplication.isScreenLarge()) {
-                cameraZoomOut(State.ALL_APPS, true, true);
-                mState = State.ALL_APPS;
-            } else {
-                cameraZoomOut(State.APPS_CUSTOMIZE, true, true);
-                mState = State.APPS_CUSTOMIZE;
-            }
-        } else if (mState == State.CUSTOMIZE_SPRING_LOADED) {
-            mWorkspace.exitSpringLoadedDragMode(Workspace.ShrinkState.TOP);
-            cameraZoomOut(State.CUSTOMIZE, true, true);
-            mState = State.CUSTOMIZE;
-        }/* else {
-            // we're not in spring loaded mode; don't do anything
-        }*/
+        if (mState == State.APPS_CUSTOMIZE_SPRING_LOADED) {
+            mWorkspace.exitSpringLoadedDragMode(Workspace.ShrinkState.BOTTOM_HIDDEN);
+            cameraZoomOut(State.APPS_CUSTOMIZE, true, true);
+            mState = State.APPS_CUSTOMIZE;
+        } else {
+            // Do nothing
+        }
     }
 
     void showAllApps(boolean animated) {
@@ -3005,7 +2999,7 @@ public final class Launcher extends Activity
      */
     void closeAllApps(boolean animated) {
         if (LauncherApplication.isScreenLarge()) {
-            if (mState == State.ALL_APPS || mState == State.ALL_APPS_SPRING_LOADED) {
+            if (mState == State.ALL_APPS) {
                 mWorkspace.setVisibility(View.VISIBLE);
                 cameraZoomIn(State.ALL_APPS, animated, false);
 
@@ -3013,7 +3007,7 @@ public final class Launcher extends Activity
                 findViewById(R.id.all_apps_button).requestFocus();
             }
         } else {
-            if (mState == State.APPS_CUSTOMIZE || mState == State.ALL_APPS_SPRING_LOADED) {
+            if (mState == State.APPS_CUSTOMIZE || mState == State.APPS_CUSTOMIZE_SPRING_LOADED) {
                 mWorkspace.setVisibility(View.VISIBLE);
                 cameraZoomIn(State.APPS_CUSTOMIZE, animated, false);
 
@@ -3049,7 +3043,7 @@ public final class Launcher extends Activity
 
     // Hide the customization drawer (only exists in x-large configuration)
     void hideCustomizationDrawer(boolean animated) {
-        if (mState == State.CUSTOMIZE || mState == State.CUSTOMIZE_SPRING_LOADED) {
+        if (mState == State.CUSTOMIZE) {
             cameraZoomIn(State.CUSTOMIZE, animated, false);
 
             // Set focus to the customize button

@@ -87,7 +87,7 @@ public abstract class SmoothPagedView extends PagedView {
     }
 
     protected int getScrollMode() {
-        return DEFAULT_MODE;
+        return X_LARGE_MODE;
     }
 
     /**

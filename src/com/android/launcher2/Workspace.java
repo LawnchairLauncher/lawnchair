@@ -16,13 +16,17 @@
 
 package com.android.launcher2;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
 import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
-import android.animation.Animator.AnimatorListener;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.AlertDialog;
 import android.app.WallpaperManager;
@@ -48,6 +52,7 @@ import android.graphics.drawable.Drawable;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Display;
@@ -65,10 +70,6 @@ import com.android.launcher.R;
 import com.android.launcher2.FolderIcon.FolderRingAnimator;
 import com.android.launcher2.InstallWidgetReceiver.WidgetMimeTypeHandlerData;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
  * Each page contains a number of icons, folders or widgets the user can
@@ -79,9 +80,6 @@ public class Workspace extends SmoothPagedView
         View.OnClickListener {
     @SuppressWarnings({"UnusedDeclaration"})
     private static final String TAG = "Launcher.Workspace";
-
-    // How much the screens shrink when we enter spring loaded drag mode
-    private static final float SPRING_LOADED_DRAG_SHRINK_FACTOR = 0.7f;
 
     // Y rotation to apply to the workspace screens
     private static final float WORKSPACE_ROTATION = 12.5f;
@@ -161,6 +159,7 @@ public class Workspace extends SmoothPagedView
     private int[] mTempLocation = new int[2];
 
     private SpringLoadedDragController mSpringLoadedDragController;
+    private float mSpringLoadedShrinkFactor;
 
     private static final int DEFAULT_CELL_COUNT_X = 4;
     private static final int DEFAULT_CELL_COUNT_Y = 4;
@@ -176,7 +175,6 @@ public class Workspace extends SmoothPagedView
     private AnimatorListener mUnshrinkAnimationListener;
     enum ShrinkState { TOP, SPRING_LOADED, MIDDLE, BOTTOM_HIDDEN, BOTTOM_VISIBLE };
     private ShrinkState mShrinkState;
-    private boolean mWasSpringLoadedOnDragExit = false;
     private boolean mWaitingToShrink = false;
     private ShrinkState mWaitingToShrinkState;
     private AnimatorSet mAnimator;
@@ -271,12 +269,15 @@ public class Workspace extends SmoothPagedView
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.Workspace, defStyle, 0);
 
+        final Resources res = context.getResources();
         if (LauncherApplication.isScreenLarge()) {
             // Determine number of rows/columns dynamically
             // TODO: This code currently fails on tablets with an aspect ratio < 1.3.
             // Around that ratio we should make cells the same size in portrait and
             // landscape
-            final Resources res = context.getResources();
+            final DisplayMetrics dm = res.getDisplayMetrics();
+            float widthDp = dm.widthPixels / dm.density;
+            float heightDp = dm.heightPixels / dm.density;
 
             TypedArray actionBarSizeTypedArray =
                 context.obtainStyledAttributes(new int[] { android.R.attr.actionBarSize });
@@ -295,6 +296,9 @@ public class Workspace extends SmoothPagedView
                 cellCountY++;
             }
         }
+
+        mSpringLoadedShrinkFactor =
+            res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
 
         // if the value is manually specified, use that instead
         cellCountX = a.getInt(R.styleable.Workspace_cellCountX, cellCountX);
@@ -341,14 +345,7 @@ public class Workspace extends SmoothPagedView
             public void onAnimationEnd(Animator animation) {
                 mIsInUnshrinkAnimation = false;
                 mSyncWallpaperOffsetWithScroll = true;
-                if (mShrinkState == ShrinkState.SPRING_LOADED) {
-                    View layout = null;
-                    if (mLastDragView != null) {
-                        layout = findMatchingPageForDragOver(mLastDragView, mLastDragOriginX,
-                                mLastDragOriginY, mLastDragXOffset, mLastDragYOffset);
-                    }
-                    mSpringLoadedDragController.onEnterSpringLoadedMode(layout == null);
-                } else {
+                if (mShrinkState != ShrinkState.SPRING_LOADED) {
                     mDrawCustomizeTrayBackground = false;
                 }
                 mWallpaperOffset.setOverrideHorizontalCatchupConstant(false);
@@ -373,11 +370,7 @@ public class Workspace extends SmoothPagedView
 
     @Override
     protected int getScrollMode() {
-        if (LauncherApplication.isScreenLarge()) {
-            return SmoothPagedView.X_LARGE_MODE;
-        } else {
-            return SmoothPagedView.DEFAULT_MODE;
-        }
+        return SmoothPagedView.X_LARGE_MODE;
     }
 
     private void onAddView(View child) {
@@ -1917,7 +1910,7 @@ public class Workspace extends SmoothPagedView
         int newCurrentPage = indexOfChild(clThatWasClicked);
         if (mIsSmall) {
             if (springLoaded) {
-                setLayoutScale(SPRING_LOADED_DRAG_SHRINK_FACTOR);
+                setLayoutScale(mSpringLoadedShrinkFactor);
             }
             scrollToNewPageWithoutMovingPages(newCurrentPage);
             unshrink(true, springLoaded);
@@ -1928,13 +1921,17 @@ public class Workspace extends SmoothPagedView
     public void enterSpringLoadedDragMode(CellLayout clThatWasClicked) {
         mShrinkState = ShrinkState.SPRING_LOADED;
         unshrink(clThatWasClicked, true);
+        mDragTargetLayout = getCurrentDropLayout();
         mDragTargetLayout.onDragEnter();
+        mDragTargetLayout.setIsDragOverlapping(true);
+        showOutlines();
     }
 
     public void exitSpringLoadedDragMode(ShrinkState shrinkState) {
         shrink(shrinkState);
         if (mDragTargetLayout != null) {
             mDragTargetLayout.onDragExit();
+            mDragTargetLayout = null;
         }
     }
 
@@ -1953,7 +1950,7 @@ public class Workspace extends SmoothPagedView
             float finalScaleFactor = 1.0f;
             float finalBackgroundAlpha = 0.0f;
             if (springLoaded) {
-                finalScaleFactor = SPRING_LOADED_DRAG_SHRINK_FACTOR;
+                finalScaleFactor = mSpringLoadedShrinkFactor;
                 finalBackgroundAlpha = 1.0f;
             } else {
                 mIsSmall = false;
@@ -2001,9 +1998,7 @@ public class Workspace extends SmoothPagedView
                     // alpha.  See screenScrolled().
                     finalAlphaValue = 1f;
                 }
-                float finalAlphaMultiplierValue =
-                        ((i == mCurrentPage) && (mShrinkState != ShrinkState.SPRING_LOADED)) ?
-                        0.0f : 1.0f;
+                float finalAlphaMultiplierValue = 1f;
 
                 float translation = 0f;
 
@@ -2650,8 +2645,7 @@ public class Workspace extends SmoothPagedView
             // Prepare it to be animated into its new position
             // This must be called after the view has been re-parented
             setPositionForDropAnimation(d.dragView, loc[0], loc[1], parent, cell);
-            boolean animateDrop = !mWasSpringLoadedOnDragExit;
-            parent.onDropChild(cell, animateDrop);
+            parent.onDropChild(cell, true);
         }
     }
 
@@ -2669,8 +2663,12 @@ public class Workspace extends SmoothPagedView
     }
 
     public void onDragEnter(DragObject d) {
-        mDragTargetLayout = null; // Reset the drag state
         mLastDragOverView = null;
+        if (mDragTargetLayout != null) {
+            mDragTargetLayout.onDragExit();
+            mDragTargetLayout = null; // Reset the drag state
+        }
+
         if (!mIsSmall) {
             mDragTargetLayout = getCurrentDropLayout();
             mDragTargetLayout.onDragEnter();
@@ -3050,24 +3048,21 @@ public class Workspace extends SmoothPagedView
                 if (layout != null && layout != mDragTargetLayout) {
                     if (mDragTargetLayout != null) {
                         mDragTargetLayout.setIsDragOverlapping(false);
-                        mSpringLoadedDragController.onDragExit();
+                        mDragTargetLayout.clearDragOutlines();
                     }
                     mDragTargetLayout = layout;
 
-                    // Workaround the fact that we don't actually want spring-loaded mode in phone
-                    // UI yet.
-                    if (LauncherApplication.isScreenLarge()) {
-                        // In spring-loaded mode, we still want the user to be able to hover over a
-                        // full screen (which is traditionally set to not accept drops) if they want
-                        // to get to pages beyond the screen that is full.
-                        boolean allowDragOver = (mDragTargetLayout != null) &&
-                                (mDragTargetLayout.getAcceptsDrops() ||
-                                        (mShrinkState == ShrinkState.SPRING_LOADED));
-                        if (allowDragOver) {
-                            mDragTargetLayout.setIsDragOverlapping(true);
-                            mSpringLoadedDragController.onDragEnter(
-                                    mDragTargetLayout, mShrinkState == ShrinkState.SPRING_LOADED);
+                    // In spring-loaded mode, we still want the user to be able to hover over a
+                    // full screen (which is traditionally set to not accept drops) if they want
+                    // to get to pages beyond the screen that is full.
+                    boolean isInSpringLoadedMode = (mShrinkState == ShrinkState.SPRING_LOADED);
+                    boolean allowDragOver = (mDragTargetLayout != null) &&
+                            (mDragTargetLayout.getAcceptsDrops() || isInSpringLoadedMode);
+                    if (allowDragOver) {
+                        if (isInSpringLoadedMode) {
+                            mSpringLoadedDragController.setAlarm(mDragTargetLayout);
                         }
+                        mDragTargetLayout.setIsDragOverlapping(true);
                     }
                 }
             } else {
@@ -3185,7 +3180,6 @@ public class Workspace extends SmoothPagedView
     }
 
     private void doDragExit(DragObject d) {
-        mWasSpringLoadedOnDragExit = mShrinkState == ShrinkState.SPRING_LOADED;
         if (mDragFolderRingAnimator != null && mCreateUserFolderOnDrop) {
             mDragFolderRingAnimator.animateToNaturalState();
         }
@@ -3201,9 +3195,6 @@ public class Workspace extends SmoothPagedView
         }
         if (!mIsPageMoving) {
             hideOutlines();
-        }
-        if (mShrinkState == ShrinkState.SPRING_LOADED) {
-            mLauncher.exitSpringLoadedDragMode();
         }
         clearAllHovers();
     }
@@ -3311,8 +3302,7 @@ public class Workspace extends SmoothPagedView
             }
             addInScreen(view, indexOfChild(cellLayout), mTargetCell[0],
                     mTargetCell[1], info.spanX, info.spanY, insertAtFirst);
-            boolean animateDrop = !mWasSpringLoadedOnDragExit;
-            cellLayout.onDropChild(view, animateDrop);
+            cellLayout.onDropChild(view, false);
             cellLayout.animateDrop();
             CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
             cellLayout.getChildrenLayout().measureChild(view);
@@ -3467,7 +3457,6 @@ public class Workspace extends SmoothPagedView
         for (int i = 0; i < childCount; i++) {
             ((CellLayout) getChildAt(i)).setIsDragOverlapping(false);
         }
-        mSpringLoadedDragController.onDragExit();
 
         // In portrait, workspace is responsible for drawing the edge glow on adjacent pages,
         // so we need to redraw the workspace when this may have changed.
