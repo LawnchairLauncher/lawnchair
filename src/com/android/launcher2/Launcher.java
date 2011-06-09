@@ -3102,6 +3102,7 @@ public final class Launcher extends Activity
     private Drawable.ConstantState updateTextButtonWithIconFromExternalActivity(
             int buttonId, ComponentName activityName, int fallbackDrawableId) {
         TextView button = (TextView) findViewById(buttonId);
+        if (button == null) return null;
         Drawable toolbarIcon = getExternalPackageToolbarIcon(activityName);
 
         // If we were unable to find the icon via the meta-data, use a generic one
@@ -3118,6 +3119,7 @@ public final class Launcher extends Activity
     private Drawable.ConstantState updateButtonWithIconFromExternalActivity(
             int buttonId, ComponentName activityName, int fallbackDrawableId) {
         ImageView button = (ImageView) findViewById(buttonId);
+        if (button == null) return null;
         Drawable toolbarIcon = getExternalPackageToolbarIcon(activityName);
 
         // If we were unable to find the icon via the meta-data, use a generic one
@@ -3132,11 +3134,13 @@ public final class Launcher extends Activity
 
     private void updateTextButtonWithDrawable(int buttonId, Drawable.ConstantState d) {
         TextView button = (TextView) findViewById(buttonId);
+        if (button == null) return;
         button.setCompoundDrawables(d.newDrawable(getResources()), null, null, null);
     }
 
     private void updateButtonWithDrawable(int buttonId, Drawable.ConstantState d) {
         ImageView button = (ImageView) findViewById(buttonId);
+        if (button == null) return;
         button.setImageDrawable(d.newDrawable(getResources()));
     }
 
