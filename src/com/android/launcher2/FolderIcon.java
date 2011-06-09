@@ -316,7 +316,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         int baselineWidth = (int) (d.getIntrinsicWidth() * baselineIconScale);
         float maxPerpectiveShift = baselineHeight * PERSPECTIVE_SHIFT_FACTOR;
 
-        ArrayList<View> items = mFolder.getItemsInReadingOrder();
+        ArrayList<View> items = mFolder.getItemsInReadingOrder(false);
         int firstItemIndex = Math.max(0, items.size() - NUM_ITEMS_IN_PREVIEW);
 
         int xShift = (int) (mOriginalWidth - baselineWidth) / 2;
@@ -350,6 +350,11 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             canvas.restore();
         }
         canvas.restore();
+    }
+
+    public void onItemsChanged() {
+        invalidate();
+        requestLayout();
     }
 
     public void onAdd(ShortcutInfo item) {

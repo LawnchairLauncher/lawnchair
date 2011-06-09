@@ -84,6 +84,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     private ArrayList<View> mItemsInReadingOrder = new ArrayList<View>();
     private Drawable mIconDrawable;
     boolean mItemsInvalidated = false;
+    ShortcutInfo mCurrentDragInfo;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -147,7 +148,10 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
             mDragItemPosition[0] = item.cellX;
             mDragItemPosition[1] = item.cellY;
             mIconDrawable = ((TextView) v).getCompoundDrawables()[1];
-            mInfo.remove(item);
+
+            mCurrentDragInfo = item;
+            mItemsInvalidated = true;
+            mInfo.itemsChanged();
 
             mDragItem = item;
         } else {
@@ -388,8 +392,13 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         } else {
             item = (ShortcutInfo) d.dragInfo;
         }
+
+        // Dragged from self onto self
+        if (item == mCurrentDragInfo) {
+            mInfo.remove(item);
+        }
+
         mInfo.add(item);
-        LauncherModel.addOrMoveItemInDatabase(mLauncher, item, mInfo.id, 0, item.cellX, item.cellY);
     }
 
     protected boolean findAndSetEmptyCells(ShortcutInfo item) {
@@ -397,8 +406,6 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         if (mContent.findCellForSpan(emptyCell, item.spanX, item.spanY)) {
             item.cellX = emptyCell[0];
             item.cellY = emptyCell[1];
-            LauncherModel.addOrMoveItemInDatabase(
-                    mLauncher, item, mInfo.id, 0, item.cellX, item.cellY);
             return true;
         } else {
             return false;
@@ -449,6 +456,21 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     }
 
     public void onDropCompleted(View target, DragObject d, boolean success) {
+        if (!success) {
+            if (d.dragView != null) {
+                if (target instanceof CellLayout) {
+                    // TODO: we should animate the item back to the folder in this case
+                }
+            }
+            mCurrentDragInfo = null;
+            mItemsInvalidated = true;
+            mInfo.itemsChanged();
+        } else {
+            if (target != this) {
+                mInfo.remove(mCurrentDragInfo);
+                mCurrentDragInfo = null;
+            }
+        }
     }
 
     public boolean isDropEnabled() {
@@ -580,6 +602,8 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
             findAndSetEmptyCells(item);
         }
         createAndAddShortcut(item);
+        LauncherModel.addOrMoveItemInDatabase(
+                mLauncher, item, mInfo.id, 0, item.cellX, item.cellY);
     }
 
     public int getItemCount() {
@@ -608,14 +632,24 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         }
     }
 
+    public void onItemsChanged() {
+    }
+
     public ArrayList<View> getItemsInReadingOrder() {
+        return getItemsInReadingOrder(true);
+    }
+
+    public ArrayList<View> getItemsInReadingOrder(boolean includeCurrentDragItem) {
         if (mItemsInvalidated) {
             mItemsInReadingOrder.clear();
             for (int j = 0; j < mContent.getCountY(); j++) {
                 for (int i = 0; i < mContent.getCountX(); i++) {
                     View v = mContent.getChildAt(i, j);
                     if (v != null) {
-                        mItemsInReadingOrder.add(v);
+                        ShortcutInfo info = (ShortcutInfo) v.getTag();
+                        if (info != mCurrentDragInfo || includeCurrentDragItem) {
+                            mItemsInReadingOrder.add(v);
+                        }
                     }
                 }
             }
