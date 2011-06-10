@@ -86,8 +86,15 @@ class FolderInfo extends ItemInfo {
         }
     }
 
+    void itemsChanged() {
+        for (int i = 0; i < listeners.size(); i++) {
+            listeners.get(i).onItemsChanged();
+        }
+    }
+
     interface FolderListener {
         public void onAdd(ShortcutInfo item);
         public void onRemove(ShortcutInfo item);
+        public void onItemsChanged();
     }
 }

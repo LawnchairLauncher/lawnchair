@@ -2345,23 +2345,11 @@ public class Workspace extends SmoothPagedView
         lp.oldY = viewY - (layout.getTop() + layout.getTopPadding() - mScrollY);
     }
 
-    /*
-     * We should be careful that this method cannot result in any synchronous requestLayout()
-     * calls, as it is called from onLayout().
-     */
-    public void animateViewIntoPosition(final View view) {
-        final CellLayout parent = (CellLayout) view.getParent().getParent();
-        final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
-
-        // Convert the animation params to be relative to the Workspace, not the CellLayout
-        final int fromX = lp.oldX + parent.getLeft() + parent.getLeftPadding();
-        final int fromY = lp.oldY + parent.getTop() + parent.getTopPadding();
-
-        final int dx = lp.x - lp.oldX;
-        final int dy = lp.y - lp.oldY;
+    public void animateViewIntoPosition(final View view, final int fromX, final int fromY, 
+            final int dX, final int dY, final Runnable animationEndRunnable) {
 
         // Calculate the duration of the animation based on the object's distance
-        final float dist = (float) Math.sqrt(dx*dx + dy*dy);
+        final float dist = (float) Math.sqrt(dX*dX + dY*dY);
         final Resources res = getResources();
         final float maxDist = (float) res.getInteger(R.integer.config_dropAnimMaxDist);
         int duration = res.getInteger(R.integer.config_dropAnimMaxDuration);
@@ -2383,10 +2371,7 @@ public class Workspace extends SmoothPagedView
             }
 
             public void onAnimationEnd(Animator animation) {
-                if (mDropView != null) {
-                    mDropView.setVisibility(View.VISIBLE);
-                    mDropView = null;
-                }
+                animationEndRunnable.run();
             }
         });
 
@@ -2400,14 +2385,40 @@ public class Workspace extends SmoothPagedView
                 invalidate(mDropViewPos[0], mDropViewPos[1],
                         mDropViewPos[0] + view.getWidth(), mDropViewPos[1] + view.getHeight());
 
-                mDropViewPos[0] = fromX + (int) (percent * dx + 0.5f);
-                mDropViewPos[1] = fromY + (int) (percent * dy + 0.5f);
+                mDropViewPos[0] = fromX + (int) (percent * dX + 0.5f);
+                mDropViewPos[1] = fromY + (int) (percent * dY + 0.5f);
                 invalidate(mDropViewPos[0], mDropViewPos[1],
                         mDropViewPos[0] + view.getWidth(), mDropViewPos[1] + view.getHeight());
             }
         });
 
         mDropAnim.start();
+    }
+
+    /*
+     * We should be careful that this method cannot result in any synchronous requestLayout()
+     * calls, as it is called from onLayout().
+     */
+    public void animateViewIntoPosition(final View view) {
+        final CellLayout parent = (CellLayout) view.getParent().getParent();
+        final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
+
+        // Convert the animation params to be relative to the Workspace, not the CellLayout
+        final int fromX = lp.oldX + parent.getLeft() + parent.getLeftPadding();
+        final int fromY = lp.oldY + parent.getTop() + parent.getTopPadding();
+
+        final int dx = lp.x - lp.oldX;
+        final int dy = lp.y - lp.oldY;
+
+        Runnable animationEndRunnable = new Runnable() {
+            public void run() {
+                if (mDropView != null) {
+                    mDropView.setVisibility(View.VISIBLE);
+                    mDropView = null;
+                }
+            }
+        };
+        animateViewIntoPosition(view, fromX, fromY, dx, dy, animationEndRunnable);
     }
 
     /**
@@ -2525,6 +2536,7 @@ public class Workspace extends SmoothPagedView
                 scrollToNewPageWithoutMovingPages(dragTargetIndex);
             }
         }
+        CellLayout dropTargetLayout = mDragTargetLayout;
 
         if (d.dragSource != this) {
             final int[] touchXY = new int[] { (int) mDragViewVisualCenter[0],
@@ -2536,22 +2548,9 @@ public class Workspace extends SmoothPagedView
                 ((ItemInfo) d.dragInfo).dropPos = touchXY;
                 return;
             }
-            onDropExternal(touchXY, d.dragInfo, mDragTargetLayout, false, d.dragView);
+            onDropExternal(touchXY, d.dragInfo, dropTargetLayout, false, d.dragView);
         } else if (mDragInfo != null) {
             final View cell = mDragInfo.cell;
-            CellLayout dropTargetLayout = mDragTargetLayout;
-            boolean dropInscrollArea = false;
-
-            // Handle the case where the user drops when in the scroll area.
-            // This is treated as a drop on the adjacent page.
-            if (dropTargetLayout == null && mInScrollArea) {
-                dropInscrollArea = true;
-                if (mPendingScrollDirection == DragController.SCROLL_LEFT) {
-                    dropTargetLayout = (CellLayout) getChildAt(mCurrentPage - 1);
-                } else if (mPendingScrollDirection == DragController.SCROLL_RIGHT) {
-                    dropTargetLayout = (CellLayout) getChildAt(mCurrentPage + 1);
-                }
-            }
 
             if (dropTargetLayout != null) {
                 // Move internally
@@ -2565,8 +2564,9 @@ public class Workspace extends SmoothPagedView
                 mTargetCell = findNearestArea((int) mDragViewVisualCenter[0], (int)
                         mDragViewVisualCenter[1], spanX, spanY, dropTargetLayout, mTargetCell);
                 // If the item being dropped is a shortcut and the nearest drop
-                // cell also contains
-                // a shortcut, then create a folder with the two shortcuts.
+                // cell also contains a shortcut, then create a folder with the two shortcuts.
+                boolean dropInscrollArea = mCurrentPage != screen;
+
                 if (!dropInscrollArea && createUserFolderIfNecessary(cell, dropTargetLayout,
                         mTargetCell, false)) {
                     return;
@@ -2583,7 +2583,7 @@ public class Workspace extends SmoothPagedView
                         (int) mDragViewVisualCenter[1], mDragInfo.spanX, mDragInfo.spanY, cell,
                         dropTargetLayout, mTargetCell);
 
-                if (screen != mCurrentPage) {
+                if (dropInscrollArea && mShrinkState != ShrinkState.SPRING_LOADED) {
                     snapToPage(screen);
                 }
 
@@ -2594,6 +2594,7 @@ public class Workspace extends SmoothPagedView
                         addInScreen(cell, screen, mTargetCell[0], mTargetCell[1], mDragInfo.spanX,
                                 mDragInfo.spanY);
                     }
+
 
                     // update the item's position after drop
                     final ItemInfo info = (ItemInfo) cell.getTag();
@@ -2649,7 +2650,7 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    private void getViewLocationRelativeToSelf(View v, int[] location) {
+    public void getViewLocationRelativeToSelf(View v, int[] location) {
         getLocationOnScreen(location);
         int x = location[0];
         int y = location[1];
@@ -3108,7 +3109,6 @@ public class Workspace extends SmoothPagedView
                     if (dragOverView != mLastDragOverView) {
                         cancelFolderCreation();
                         if (mLastDragOverView != null && mLastDragOverView instanceof FolderIcon) {
-
                             ((FolderIcon) mLastDragOverView).onDragExit(d.dragInfo);
                         }
                     }
@@ -3240,6 +3240,9 @@ public class Workspace extends SmoothPagedView
     private void onDropExternal(int[] touchXY, Object dragInfo,
             CellLayout cellLayout, boolean insertAtFirst, DragView dragView) {
         int screen = indexOfChild(cellLayout);
+        if (screen != mCurrentPage && mShrinkState != ShrinkState.SPRING_LOADED) {
+            snapToPage(screen);
+        }
         if (dragInfo instanceof PendingAddItemInfo) {
             PendingAddItemInfo info = (PendingAddItemInfo) dragInfo;
             // When dragging and dropping from customization tray, we deal with creating
@@ -3442,7 +3445,7 @@ public class Workspace extends SmoothPagedView
 
                 if (mDragTargetLayout != null) {
                     mDragTargetLayout.onDragExit();
-                    mDragTargetLayout = null;
+                    mDragTargetLayout = layout;
                 }
                 // In portrait, need to redraw the edge glow when entering the scroll area
                 if (getHeight() > getWidth()) {
