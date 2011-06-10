@@ -48,11 +48,11 @@ public class PagedViewIconCache {
             final ComponentInfo ci = info.activityInfo != null ? info.activityInfo :
                 info.serviceInfo;
             mComponentName = new ComponentName(ci.packageName, ci.name);
-            mType = Type.AppWidgetProviderInfoKey;
+            mType = Type.ResolveInfoKey;
         }
         public Key(AppWidgetProviderInfo info) {
             mComponentName = info.provider;
-            mType = Type.ResolveInfoKey;
+            mType = Type.AppWidgetProviderInfoKey;
         }
 
         private ComponentName getComponentName() {
