@@ -730,8 +730,9 @@ public class Workspace extends SmoothPagedView
 
     protected void setWallpaperDimension() {
         Display display = mLauncher.getWindowManager().getDefaultDisplay();
-        final int maxDim = Math.max(display.getWidth(), display.getHeight());
-        final int minDim = Math.min(display.getWidth(), display.getHeight());
+        int height = display.getHeight() + (int) getResources().getDimension(R.dimen.status_bar_height);
+        final int maxDim = Math.max(display.getWidth(), height);
+        final int minDim = Math.min(display.getWidth(), height);
 
         // We need to ensure that there is enough extra space in the wallpaper for the intended
         // parallax effects
