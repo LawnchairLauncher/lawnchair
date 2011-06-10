@@ -28,10 +28,6 @@
         launcher:spanY="1" />
         
     <!--  Middle screen [2] -->
-    <search
-        launcher:screen="2"
-        launcher:x="0"
-        launcher:y="0" />
 
     <!--  Right screen [3] -->
     <appwidget
