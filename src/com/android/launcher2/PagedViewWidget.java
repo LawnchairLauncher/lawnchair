@@ -61,9 +61,6 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
     private final Rect mEraseStrokeRect = new Rect();
     private final Paint mEraseStrokeRectPaint = new Paint();
 
-    private PagedViewIconCache.Key mIconCacheKey;
-    private PagedViewIconCache mIconCache;
-
     private int mAlpha = 255;
     private int mHolographicAlpha;
 
@@ -118,7 +115,6 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
             mHandler.post(new Runnable() {
                 public void run() {
                     widget.mHolographicOutline = outline;
-                    widget.mIconCache.addOutline(widget.mIconCacheKey, outline);
                     widget.invalidate();
                 }
             });
@@ -189,9 +185,6 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         dims.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         if (createHolographicOutline) {
-            mIconCache = cache;
-            mIconCacheKey = new PagedViewIconCache.Key(info);
-            mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
             mPreview = preview;
         }
     }
@@ -208,9 +201,6 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         name.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         if (createHolographicOutline) {
-            mIconCache = cache;
-            mIconCacheKey = new PagedViewIconCache.Key(info);
-            mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
             mPreview = preview;
         }
     }

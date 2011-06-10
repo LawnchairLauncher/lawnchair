@@ -20,6 +20,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 /**
@@ -27,6 +28,8 @@ import android.widget.LinearLayout;
  */
 public class PagedViewExtendedLayout extends LinearLayout implements Page {
     static final String TAG = "PagedViewWidgetLayout";
+    float mChildrenAlpha = 1f;
+    private boolean mHasFixedWidth;
 
     public PagedViewExtendedLayout(Context context) {
         this(context, null);
@@ -38,6 +41,24 @@ public class PagedViewExtendedLayout extends LinearLayout implements Page {
 
     public PagedViewExtendedLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+    }
+
+    public void setHasFixedWidth(boolean hasFixedWidth) {
+        mHasFixedWidth = hasFixedWidth;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (mHasFixedWidth) {
+            // PagedView currently has issues with different-sized pages since it calculates the
+            // offset of each page to scroll to before it updates the actual size of each page
+            // (which canchange depending on the content if the contains aren't a fixed size).
+            // We work around this by having a fixed size on each widget page).
+            int widthSpecSize = getSuggestedMinimumWidth();
+            int widthSpecMode = MeasureSpec.EXACTLY;
+            widthMeasureSpec = MeasureSpec.makeMeasureSpec(widthSpecSize, widthSpecMode);
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override
@@ -59,6 +80,7 @@ public class PagedViewExtendedLayout extends LinearLayout implements Page {
 
     @Override
     public void setAlpha(float alpha) {
+        mChildrenAlpha = alpha;
         setChildrenAlpha(alpha);
         super.setAlpha(alpha);
     }
@@ -68,6 +90,37 @@ public class PagedViewExtendedLayout extends LinearLayout implements Page {
         for (int i = 0; i < childCount; i++) {
             getChildAt(i).setAlpha(alpha);
         }
+    }
+
+    @Override
+    public void addView(View child, int index, ViewGroup.LayoutParams params) {
+        super.addView(child, index, params);
+        child.setAlpha(mChildrenAlpha);
+    }
+
+
+    @Override
+    public void addView(View child, ViewGroup.LayoutParams params) {
+        super.addView(child, params);
+        child.setAlpha(mChildrenAlpha);
+    }
+
+    @Override
+    public void addView(View child, int index) {
+        super.addView(child, index);
+        child.setAlpha(mChildrenAlpha);
+    }
+
+    @Override
+    public void addView(View child) {
+        super.addView(child);
+        child.setAlpha(mChildrenAlpha);
+    }
+
+    @Override
+    public void addView(View child, int width, int height) {
+        super.addView(child, width, height);
+        child.setAlpha(mChildrenAlpha);
     }
 
     @Override
