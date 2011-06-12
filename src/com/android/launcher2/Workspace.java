@@ -45,6 +45,7 @@ import android.graphics.Camera;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region.Op;
@@ -61,8 +62,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.TabHost;
-import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -720,8 +719,13 @@ public class Workspace extends SmoothPagedView
 
     protected void setWallpaperDimension() {
         Display display = mLauncher.getWindowManager().getDefaultDisplay();
-        final int maxDim = Math.max(display.getWidth(), display.getHeight());
-        final int minDim = Math.min(display.getWidth(), display.getHeight());
+        Point displaySize = new Point();
+        display.getSize(displaySize);
+        if (LauncherApplication.isScreenLarge()) {
+            displaySize.y += (int) getResources().getDimension(R.dimen.status_bar_height);
+        }
+        final int maxDim = Math.max(displaySize.x, displaySize.y);
+        final int minDim = Math.min(displaySize.x, displaySize.y);
 
         // We need to ensure that there is enough extra space in the wallpaper for the intended
         // parallax effects

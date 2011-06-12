@@ -104,32 +104,28 @@
         android:layout_height="match_parent"
         android:alpha="0">
 
-        <FrameLayout
+        <com.android.launcher2.DeleteDropTarget
             style="@style/DropTargetButtonContainer"
+            android:id="@+id/delete_target"
             android:layout_weight="1">
             <!-- Delete target -->
-            <com.android.launcher2.DeleteDropTarget
+            <TextView
                 style="@style/DropTargetButton"
-                android:id="@+id/delete_target"
+                android:id="@+id/delete_target_text"
                 android:text="@string/delete_zone_label_workspace"
-                android:drawableLeft="@drawable/delete_zone_selector"
-                launcher:strokeColor="#991e3157"
-                launcher:strokeTextColor="#DDFFFFFF"
-                launcher:strokeWidth="2.5" />
-        </FrameLayout>
+                android:drawableLeft="@drawable/delete_zone_selector" />
+        </com.android.launcher2.DeleteDropTarget>
 
-        <FrameLayout
+        <com.android.launcher2.InfoDropTarget
             style="@style/DropTargetButtonContainer"
+            android:id="@+id/info_target"
             android:layout_weight="1">
             <!-- Info target -->
-            <com.android.launcher2.InfoDropTarget
+            <TextView
                 style="@style/DropTargetButton"
-                android:id="@+id/info_target"
+                android:id="@+id/info_target_text"
                 android:text="@string/info_target_label"
-                android:drawableLeft="@drawable/ic_home_info_holo_dark"
-                launcher:strokeColor="#991e3157"
-                launcher:strokeTextColor="#DDFFFFFF"
-                launcher:strokeWidth="2.5" />
-        </FrameLayout>
+                android:drawableLeft="@drawable/ic_home_info_holo_dark" />
+        </com.android.launcher2.InfoDropTarget>
     </LinearLayout>
 </com.android.launcher2.SearchDropTargetBar>

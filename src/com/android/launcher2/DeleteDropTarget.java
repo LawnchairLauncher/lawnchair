@@ -16,23 +16,22 @@
 
 package com.android.launcher2;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.android.launcher.R;
 
-public class DeleteDropTarget extends IconDropTarget {
+public class DeleteDropTarget extends ButtonDropTarget {
 
-    private static final int sTransitionDuration = 0;
-
-    private TransitionDrawable mIcon;
-    private int mDefaultTextColor;
+    private TextView mText;
     private int mHoverColor = 0xFFFF0000;
 
     public DeleteDropTarget(Context context, AttributeSet attrs) {
@@ -48,14 +47,15 @@ public class DeleteDropTarget extends IconDropTarget {
         super.onFinishInflate();
 
         // Get the drawable
-        mIcon = (TransitionDrawable) getCompoundDrawables()[0];
+        mText = (TextView) findViewById(R.id.delete_target_text);
 
         // Get the hover color
         Resources r = getResources();
-        mDefaultTextColor = getTextColors().getDefaultColor();
         mHoverColor = r.getColor(R.color.delete_target_hover_tint);
         mHoverPaint.setColorFilter(new PorterDuffColorFilter(
                 mHoverColor, PorterDuff.Mode.SRC_ATOP));
+        setBackgroundColor(mHoverColor);
+        getBackground().setAlpha(0);
     }
 
     private boolean isAllAppsApplication(DragSource source, Object info) {
@@ -82,7 +82,6 @@ public class DeleteDropTarget extends IconDropTarget {
 
     @Override
     public void onDragStart(DragSource source, Object info, int dragAction) {
-        ItemInfo item = (ItemInfo) info;
         boolean isVisible = true;
         boolean isUninstall = false;
 
@@ -103,9 +102,9 @@ public class DeleteDropTarget extends IconDropTarget {
         }
 
         mActive = isVisible;
-        ((ViewGroup) getParent()).setVisibility(isVisible ? View.VISIBLE : View.GONE);
-        if (getText().length() > 0) {
-            setText(isUninstall ? R.string.delete_target_uninstall_label
+        setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        if (mText.getText().length() > 0) {
+            mText.setText(isUninstall ? R.string.delete_target_uninstall_label
                 : R.string.delete_target_label);
         }
     }
@@ -119,15 +118,18 @@ public class DeleteDropTarget extends IconDropTarget {
     public void onDragEnter(DragObject d) {
         super.onDragEnter(d);
 
-        mIcon.startTransition(sTransitionDuration);
-        setTextColor(mHoverColor);
+        ObjectAnimator anim = ObjectAnimator.ofInt(getBackground(), "alpha",
+                Color.alpha(mHoverColor));
+        anim.setDuration(mTransitionDuration);
+        anim.start();
     }
 
     public void onDragExit(DragObject d) {
         super.onDragExit(d);
 
-        mIcon.resetTransition();
-        setTextColor(mDefaultTextColor);
+        ObjectAnimator anim = ObjectAnimator.ofInt(getBackground(), "alpha", 0);
+        anim.setDuration(mTransitionDuration);
+        anim.start();
     }
 
     public void onDrop(DragObject d) {

@@ -17,9 +17,6 @@
 package com.android.launcher2;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -38,8 +35,8 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
     private boolean mIsSearchBarHidden;
     private View mQSBSearchBar;
     private View mDropTargetBar;
-    private IconDropTarget mInfoDropTarget;
-    private IconDropTarget mDeleteDropTarget;
+    private ButtonDropTarget mInfoDropTarget;
+    private ButtonDropTarget mDeleteDropTarget;
 
     public SearchDropTargetBar(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -57,6 +54,7 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         dragController.addDropTarget(mDeleteDropTarget);
         mInfoDropTarget.setLauncher(launcher);
         mDeleteDropTarget.setLauncher(launcher);
+        mDropTargetBar.setBackgroundColor(0x33000000);
     }
 
     @Override
@@ -66,8 +64,8 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         // Get the individual components
         mQSBSearchBar = findViewById(R.id.qsb_search_bar);
         mDropTargetBar = findViewById(R.id.drag_target_bar);
-        mInfoDropTarget = (IconDropTarget) mDropTargetBar.findViewById(R.id.info_target);
-        mDeleteDropTarget = (IconDropTarget) mDropTargetBar.findViewById(R.id.delete_target);
+        mInfoDropTarget = (ButtonDropTarget) mDropTargetBar.findViewById(R.id.info_target);
+        mDeleteDropTarget = (ButtonDropTarget) mDropTargetBar.findViewById(R.id.delete_target);
     }
 
     /*

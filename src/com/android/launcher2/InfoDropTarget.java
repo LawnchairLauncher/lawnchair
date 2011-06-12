@@ -16,20 +16,20 @@
 
 package com.android.launcher2;
 
+import android.animation.ObjectAnimator;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.android.launcher.R;
 
-public class InfoDropTarget extends IconDropTarget {
+public class InfoDropTarget extends ButtonDropTarget {
 
-    private int mDefaultTextColor;
     private int mHoverColor = 0xFF0000FF;
 
     public InfoDropTarget(Context context, AttributeSet attrs) {
@@ -46,10 +46,11 @@ public class InfoDropTarget extends IconDropTarget {
 
         // Get the hover color
         Resources r = getResources();
-        mDefaultTextColor = getTextColors().getDefaultColor();
         mHoverColor = r.getColor(R.color.info_target_hover_tint);
         mHoverPaint.setColorFilter(new PorterDuffColorFilter(
                 mHoverColor, PorterDuff.Mode.SRC_ATOP));
+        setBackgroundColor(mHoverColor);
+        getBackground().setAlpha(0);
     }
 
     private boolean isApplication(Object info) {
@@ -85,7 +86,7 @@ public class InfoDropTarget extends IconDropTarget {
         }
 
         mActive = isVisible;
-        ((ViewGroup) getParent()).setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -97,12 +98,17 @@ public class InfoDropTarget extends IconDropTarget {
     public void onDragEnter(DragObject d) {
         super.onDragEnter(d);
 
-        setTextColor(mHoverColor);
+        ObjectAnimator anim = ObjectAnimator.ofInt(getBackground(), "alpha",
+                Color.alpha(mHoverColor));
+        anim.setDuration(mTransitionDuration);
+        anim.start();
     }
 
     public void onDragExit(DragObject d) {
         super.onDragExit(d);
 
-        setTextColor(mDefaultTextColor);
+        ObjectAnimator anim = ObjectAnimator.ofInt(getBackground(), "alpha", 0);
+        anim.setDuration(mTransitionDuration);
+        anim.start();
     }
 }
