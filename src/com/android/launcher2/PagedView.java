@@ -139,11 +139,6 @@ public abstract class PagedView extends ViewGroup {
     protected int mChoiceMode;
     private ActionMode mActionMode;
 
-    // NOTE: This is a shared icon cache across all the PagedViews.  Currently it is only used in
-    // AllApps and Customize, and allows them to share holographic icons for the application view
-    // (which is in both).
-    protected static PagedViewIconCache mPageViewIconCache = new PagedViewIconCache();
-
     // If true, syncPages and syncPageItems will be called to refresh pages
     protected boolean mContentIsRefreshable = true;
 
@@ -169,6 +164,9 @@ public abstract class PagedView extends ViewGroup {
     private static final int sScrollIndicatorFadeInDuration = 150;
     private static final int sScrollIndicatorFastFadeOutDuration = 50;
     private static final int sScrollIndicatorFadeOutDuration = 650;
+
+    // If set, will defer loading associated pages until the scrolling settles
+    private boolean mDeferLoadAssociatedPagesAfterScroll;
 
     public interface PageSwitchListener {
         void onPageSwitch(View newPage, int newPageIndex);
@@ -375,6 +373,13 @@ public abstract class PagedView extends ViewGroup {
             mCurrentPage = Math.max(0, Math.min(mNextPage, getPageCount() - 1));
             mNextPage = INVALID_PAGE;
             notifyPageSwitchListener();
+
+            // Load the associated pages if necessary
+            if (mDeferLoadAssociatedPagesAfterScroll) {
+                loadAssociatedPages(mCurrentPage);
+                mDeferLoadAssociatedPagesAfterScroll = false;
+            }
+
             // We don't want to trigger a page end moving unless the page has settled
             // and the user has stopped scrolling
             if (mTouchState == TOUCH_STATE_REST) {
@@ -1380,8 +1385,13 @@ public abstract class PagedView extends ViewGroup {
         if (!mScroller.isFinished()) mScroller.abortAnimation();
         mScroller.startScroll(mUnboundedScrollX, 0, delta, 0, duration);
 
-        // only load some associated pages
-        loadAssociatedPages(mNextPage);
+        // Load associated pages immediately if someone else is handling the scroll, otherwise defer
+        // loading associated pages until the scroll settles
+        if (mDeferScrollUpdate) {
+            loadAssociatedPages(mNextPage);
+        } else {
+            mDeferLoadAssociatedPagesAfterScroll = true;
+        }
         notifyPageSwitchListener();
         invalidate();
     }

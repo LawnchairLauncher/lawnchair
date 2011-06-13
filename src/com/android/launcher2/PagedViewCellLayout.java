@@ -104,8 +104,8 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
 
     @Override
     public void setAlpha(float alpha) {
-        mChildren.setAlpha(alpha);
-        mHolographicChildren.setAlpha(1.0f - alpha);
+        mChildren.setAlpha(HolographicOutlineHelper.viewAlphaInterpolator(alpha));
+        mHolographicChildren.setAlpha(HolographicOutlineHelper.highlightAlphaInterpolator(alpha));
     }
 
     void destroyHardwareLayers() {
@@ -135,15 +135,6 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         for (int i = 0; i < count; i++) {
             final View child = getChildAt(i);
             child.cancelLongPress();
-        }
-    }
-
-    /** Syncs the holographic icon views to the child icon views */
-    public void reloadHolographicIcons(boolean createHolographicOutlines) {
-        if (createHolographicOutlines) {
-            mChildren.loadHolographicOutlines();
-        } else {
-            mChildren.clearHolographicOutlines();
         }
     }
 

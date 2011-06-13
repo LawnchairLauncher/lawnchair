@@ -462,7 +462,6 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
         mApps = list;
         Collections.sort(mApps, LauncherModel.APP_NAME_COMPARATOR);
         mFilteredApps = rebuildFilteredApps(mApps);
-        mPageViewIconCache.retainAllApps(list);
         invalidatePageData();
     }
 
@@ -509,7 +508,6 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
             int removeIndex = findAppByComponent(mApps, info);
             if (removeIndex > -1) {
                 mApps.remove(removeIndex);
-                mPageViewIconCache.removeOutline(new PagedViewIconCache.Key(info));
             }
         }
         mFilteredApps = rebuildFilteredApps(mApps);
@@ -576,6 +574,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
 
     @Override
     public void syncPages() {
+        /*
         // ensure that we have the right number of pages (min of 1, since we have placeholders)
         int numPages = Math.max(1,
                 (int) Math.ceil((float) mFilteredApps.size() / (mCellCountX * mCellCountY)));
@@ -597,10 +596,12 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
 
         // bound the current page
         setCurrentPage(Math.max(0, Math.min(numPages - 1, getCurrentPage())));
+        */
     }
 
     @Override
     public void syncPageItems(int page) {
+        /*
         // Ensure that we have the right number of items on the pages
         final int numPages = getPageCount();
         final int cellsPerPage = mCellCountX * mCellCountY;
@@ -652,7 +653,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
                 final ApplicationInfo info = mFilteredApps.get(i);
                 PagedViewIcon icon = (PagedViewIcon) layout.getChildOnPageAt(index);
                 icon.applyFromApplicationInfo(
-                        info, mPageViewIconCache, true, createHolographicOutlines);
+                        info, null, true, createHolographicOutlines);
 
                 PagedViewCellLayout.LayoutParams params =
                     (PagedViewCellLayout.LayoutParams) icon.getLayoutParams();
@@ -684,6 +685,7 @@ public class AllAppsPagedView extends PagedViewWithDraggableItems implements All
                     new PagedViewCellLayout.LayoutParams(0, 0, 4, 1));
         }
         layout.createHardwareLayers();
+        */
     }
 
     /*

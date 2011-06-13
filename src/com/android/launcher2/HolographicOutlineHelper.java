@@ -81,15 +81,15 @@ public class HolographicOutlineHelper {
      * Returns the interpolated holographic highlight alpha for the effect we want when scrolling
      * pages.
      */
-    public float highlightAlphaInterpolator(float r) {
-        float maxAlpha = 0.8f;
+    public static float highlightAlphaInterpolator(float r) {
+        float maxAlpha = 0.6f;
         return (float) Math.pow(maxAlpha * (1.0f - r), 1.5f);
     }
 
     /**
      * Returns the interpolated view alpha for the effect we want when scrolling pages.
      */
-    public float viewAlphaInterpolator(float r) {
+    public static float viewAlphaInterpolator(float r) {
         final float pivot = 0.95f;
         if (r < pivot) {
             return (float) Math.pow(r / pivot, 1.5f);

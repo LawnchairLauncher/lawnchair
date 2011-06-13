@@ -249,7 +249,6 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
         Collections.sort(mApps, LauncherModel.APP_NAME_COMPARATOR);
 
         // Update the widgets/shortcuts to reflect changes in the set of available apps
-        mPageViewIconCache.retainAllApps(list);
         invalidatePageData();
     }
 
@@ -291,7 +290,6 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             int removeIndex = findAppByComponent(mApps, info);
             if (removeIndex > -1) {
                 mApps.remove(removeIndex);
-                mPageViewIconCache.removeOutline(new PagedViewIconCache.Key(info));
             }
         }
     }
@@ -362,8 +360,6 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
 
         ArrayList<ResolveInfo> retainShortcutList = new ArrayList<ResolveInfo>(mShortcutList);
         retainShortcutList.addAll(mWallpaperList);
-        mPageViewIconCache.retainAllShortcuts(retainShortcutList);
-        mPageViewIconCache.retainAllAppWidgets(mWidgetList);
         invalidatePageData();
     }
 
@@ -944,6 +940,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
     }
 
     private void syncWidgetPages() {
+        /*
         if (mWidgetList == null) return;
 
         // we need to repopulate with the LinearLayout layout for the widget pages
@@ -959,9 +956,11 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.MATCH_PARENT));
         }
+        */
     }
 
     private void syncWidgetPageItems(int page) {
+        /*
         // ensure that we have the right number of items on the pages
         LinearLayout layout = (LinearLayout) getChildAt(page);
         final ArrayList<AppWidgetProviderInfo> list = mWidgetPages.get(page);
@@ -980,7 +979,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
                     R.layout.customize_paged_view_widget, layout, false);
 
             l.applyFromAppWidgetProviderInfo(info, icon, mMaxWidgetWidth, cellSpans,
-                    mPageViewIconCache, createHolographicOutlines);
+                    null, createHolographicOutlines);
             l.setTag(createItemInfo);
             l.setOnClickListener(this);
             l.setOnTouchListener(this);
@@ -988,9 +987,11 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
 
             layout.addView(l);
         }
+        */
     }
 
     private void syncWallpaperPages() {
+        /*
         if (mWallpaperList == null) return;
 
         // We need to repopulate the LinearLayout for the wallpaper pages
@@ -1007,9 +1008,11 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.MATCH_PARENT));
         }
+        */
     }
 
     private void syncWallpaperPageItems(int page) {
+        /*
         // Load the items on to the pages
         LinearLayout layout = (LinearLayout) getChildAt(page);
         layout.removeAllViews();
@@ -1026,15 +1029,17 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             PagedViewWidget l = (PagedViewWidget) mInflater.inflate(
                     R.layout.customize_paged_view_wallpaper, layout, false);
             l.applyFromWallpaperInfo(info, mPackageManager, icon, mMaxWidgetWidth,
-                    mPageViewIconCache, createHolographicOutlines);
+                    null, createHolographicOutlines);
             l.setTag(info);
             l.setOnClickListener(this);
 
             layout.addView(l);
         }
+        */
     }
 
     private void syncListPages(List<ResolveInfo> list) {
+        /*
         // we need to repopulate with PagedViewCellLayouts
         removeAllViews();
 
@@ -1045,9 +1050,11 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             setupPage(layout);
             addView(layout);
         }
+        */
     }
 
     private void syncListPageItems(int page, List<ResolveInfo> list) {
+        /*
         // ensure that we have the right number of items on the pages
         final int numPages = getPageCount();
         final int numCells = mCellCountX * mCellCountY;
@@ -1063,7 +1070,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
 
             PagedViewIcon icon = (PagedViewIcon) mInflater.inflate(
                     R.layout.customize_paged_view_item, layout, false);
-            icon.applyFromResolveInfo(info, mPackageManager, mPageViewIconCache,
+            icon.applyFromResolveInfo(info, mPackageManager, null,
                     ((LauncherApplication) mLauncher.getApplication()).getIconCache(),
                     createHolographicOutlines);
             switch (mCustomizationType) {
@@ -1089,9 +1096,11 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             setupPage(layout);
             layout.addViewToCellLayout(icon, -1, i, new PagedViewCellLayout.LayoutParams(x,y, 1,1));
         }
+        */
     }
 
     private void syncAppPages() {
+        /*
         if (mApps == null) return;
 
         // We need to repopulate with PagedViewCellLayouts
@@ -1104,9 +1113,11 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             setupPage(layout);
             addView(layout);
         }
+        */
     }
 
     private void syncAppPageItems(int page) {
+        /*
         if (mApps == null) return;
 
         // ensure that we have the right number of items on the pages
@@ -1123,7 +1134,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             PagedViewIcon icon = (PagedViewIcon) mInflater.inflate(
                     R.layout.all_apps_paged_view_application, layout, false);
             icon.applyFromApplicationInfo(
-                    info, mPageViewIconCache, true, createHolographicOutlines);
+                    info, null, true, createHolographicOutlines);
             icon.setOnClickListener(this);
             icon.setOnTouchListener(this);
             icon.setOnLongClickListener(this);
@@ -1134,6 +1145,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             setupPage(layout);
             layout.addViewToCellLayout(icon, -1, i, new PagedViewCellLayout.LayoutParams(x,y, 1,1));
         }
+        */
     }
 
     @Override
@@ -1148,6 +1160,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
 
     @Override
     public void syncPages() {
+        /*
         boolean enforceMinimumPagedWidths = false;
         boolean centerPagedViewCellLayouts = false;
         switch (mCustomizationType) {
@@ -1203,10 +1216,12 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
                 forceUpdateAdjacentPagesAlpha();
             }
         });
+        */
     }
 
     @Override
     public void syncPageItems(int page) {
+        /*
         switch (mCustomizationType) {
         case WidgetCustomization:
             syncWidgetPageItems(page);
@@ -1221,6 +1236,7 @@ public class CustomizePagedView extends PagedViewWithDraggableItems
             syncAppPageItems(page);
             break;
         }
+        */
     }
 
     int getPageContentWidth() {

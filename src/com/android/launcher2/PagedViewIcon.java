@@ -45,13 +45,9 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
 
     // holographic outline
     private final Paint mPaint = new Paint();
-    private static HolographicOutlineHelper sHolographicOutlineHelper;
     private Bitmap mCheckedOutline;
     private Bitmap mHolographicOutline;
     private Bitmap mIcon;
-
-    private PagedViewIconCache.Key mIconCacheKey;
-    private PagedViewIconCache mIconCache;
 
     private int mAlpha = 255;
     private int mHolographicAlpha;
@@ -62,42 +58,8 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
     private int mCheckedFadeInDuration;
     private int mCheckedFadeOutDuration;
 
-    // Highlight colors
-    private int mHoloBlurColor;
-    private int mHoloOutlineColor;
-
     HolographicPagedViewIcon mHolographicOutlineView;
-
-    private static final HandlerThread sWorkerThread = new HandlerThread("pagedviewicon-helper");
-    static {
-        sWorkerThread.start();
-    }
-
-    private static final int MESSAGE_CREATE_HOLOGRAPHIC_OUTLINE = 1;
-
-    private static final Handler sWorker = new Handler(sWorkerThread.getLooper()) {
-        private DeferredHandler mHandler = new DeferredHandler();
-        private Paint mPaint = new Paint();
-        public void handleMessage(Message msg) {
-            final PagedViewIcon icon = (PagedViewIcon) msg.obj;
-
-            final Bitmap holographicOutline = Bitmap.createBitmap(
-                    icon.mIcon.getWidth(), icon.mIcon.getHeight(), Bitmap.Config.ARGB_8888);
-            Canvas holographicOutlineCanvas = new Canvas(holographicOutline);
-            holographicOutlineCanvas.drawBitmap(icon.mIcon, 0, 0, mPaint);
-
-            sHolographicOutlineHelper.applyThickExpensiveOutlineWithBlur(holographicOutline,
-                    holographicOutlineCanvas, icon.mHoloBlurColor, icon.mHoloOutlineColor);
-
-            mHandler.post(new Runnable() {
-                public void run() {
-                    icon.mHolographicOutline = holographicOutline;
-                    icon.mIconCache.addOutline(icon.mIconCacheKey, holographicOutline);
-                    icon.getHolographicOutlineView().invalidate();
-                }
-            });
-        }
-    };
+    private HolographicOutlineHelper mHolographicOutlineHelper;
 
     public PagedViewIcon(Context context) {
         this(context, null);
@@ -109,15 +71,6 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
 
     public PagedViewIcon(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PagedViewIcon, defStyle, 0);
-        mHoloBlurColor = a.getColor(R.styleable.PagedViewIcon_blurColor, 0);
-        mHoloOutlineColor = a.getColor(R.styleable.PagedViewIcon_outlineColor, 0);
-        a.recycle();
-
-        if (sHolographicOutlineHelper == null) {
-            sHolographicOutlineHelper = new HolographicOutlineHelper();
-        }
 
         // Set up fade in/out constants
         final Resources r = context.getResources();
@@ -141,69 +94,34 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
         return mHolographicOutline;
     }
 
-    private boolean queueHolographicOutlineCreation() {
-        // Generate the outline in the background
-        if (mHolographicOutline == null) {
-            Message m = sWorker.obtainMessage(MESSAGE_CREATE_HOLOGRAPHIC_OUTLINE);
-            m.obj = this;
-            sWorker.sendMessage(m);
-            return true;
-        }
-        return false;
-    }
-
-    public void loadHolographicIcon() {
-        if (mHolographicOutline == null) {
-            mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
-            if (!queueHolographicOutlineCreation()) {
-                getHolographicOutlineView().invalidate();
-            }
-        }
-    }
-    public void clearHolographicIcon() {
-        mHolographicOutline = null;
-        getHolographicOutlineView().invalidate();
-    }
-
-    public void applyFromApplicationInfo(ApplicationInfo info, PagedViewIconCache cache,
-            boolean scaleUp, boolean createHolographicOutlines) {
-        mIconCache = cache;
-        mIconCacheKey = new PagedViewIconCache.Key(info);
+    public void applyFromApplicationInfo(ApplicationInfo info, boolean scaleUp,
+            HolographicOutlineHelper holoOutlineHelper) {
+        mHolographicOutlineHelper = holoOutlineHelper;
         mIcon = info.iconBitmap;
         setCompoundDrawablesWithIntrinsicBounds(null, new FastBitmapDrawable(mIcon), null, null);
         setText(info.title);
         setTag(info);
-
-        if (createHolographicOutlines) {
-            mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
-            if (!queueHolographicOutlineCreation()) {
-                getHolographicOutlineView().invalidate();
-            }
-        }
     }
 
     public void applyFromResolveInfo(ResolveInfo info, PackageManager packageManager,
-            PagedViewIconCache cache, IconCache modelIconCache, boolean createHolographicOutlines) {
+            IconCache modelIconCache, HolographicOutlineHelper holoOutlineHelper) {
+        mHolographicOutlineHelper = holoOutlineHelper;
         ComponentName cn = new ComponentName(info.activityInfo.packageName, info.activityInfo.name);
         mIcon = modelIconCache.getIcon(cn, info);
         setCompoundDrawablesWithIntrinsicBounds(null, new FastBitmapDrawable(mIcon), null, null);
         setText(info.loadLabel(packageManager));
         setTag(info);
+    }
 
-        if (createHolographicOutlines) {
-            mIconCache = cache;
-            mIconCacheKey = new PagedViewIconCache.Key(info);
-            mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
-            if (!queueHolographicOutlineCreation()) {
-                getHolographicOutlineView().invalidate();
-            }
-        }
+    public void setHolographicOutline(Bitmap holoOutline) {
+        mHolographicOutline = holoOutline;
+        getHolographicOutlineView().invalidate();
     }
 
     @Override
     public void setAlpha(float alpha) {
-        final float viewAlpha = sHolographicOutlineHelper.viewAlphaInterpolator(alpha);
-        final float holographicAlpha = sHolographicOutlineHelper.highlightAlphaInterpolator(alpha);
+        final float viewAlpha = mHolographicOutlineHelper.viewAlphaInterpolator(alpha);
+        final float holographicAlpha = mHolographicOutlineHelper.highlightAlphaInterpolator(alpha);
         int newViewAlpha = (int) (viewAlpha * 255);
         int newHolographicAlpha = (int) (holographicAlpha * 255);
         if ((mAlpha != newViewAlpha) || (mHolographicAlpha != newHolographicAlpha)) {
@@ -244,12 +162,6 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
                     mPaddingTop,
                     mPaint);
         }
-    }
-
-    @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        sWorker.removeMessages(MESSAGE_CREATE_HOLOGRAPHIC_OUTLINE, this);
     }
 
     @Override

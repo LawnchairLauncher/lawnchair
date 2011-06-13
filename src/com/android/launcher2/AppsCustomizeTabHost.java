@@ -17,6 +17,8 @@
 package com.android.launcher2;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.AttributeSet;
@@ -24,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewPropertyAnimator;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
@@ -121,7 +124,26 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
 
     @Override
     public void onTabChanged(String tabId) {
-        mAppsCustomizePane.setContentType(getContentTypeForTabTag(tabId));
+        final AppsCustomizePagedView.ContentType type = getContentTypeForTabTag(tabId);
+        if (!mAppsCustomizePane.isContentType(type)) {
+            // Animate the changing of the tab content by fading pages in and out
+            final Resources res = getResources();
+            final int duration = res.getInteger(R.integer.config_tabTransitionDuration);
+
+            ObjectAnimator anim = ObjectAnimator.ofFloat(mAppsCustomizePane, "alpha", 0f);
+            anim.setDuration(duration);
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(android.animation.Animator animation) {
+                    mAppsCustomizePane.setContentType(type);
+
+                    ObjectAnimator anim = ObjectAnimator.ofFloat(mAppsCustomizePane, "alpha", 1f);
+                    anim.setDuration(duration);
+                    anim.start();
+                }
+            });
+            anim.start();
+        }
     }
 
     /**

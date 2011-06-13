@@ -53,79 +53,21 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
     static final String TAG = "PagedViewWidgetLayout";
 
     private final Paint mPaint = new Paint();
-    private static HolographicOutlineHelper sHolographicOutlineHelper;
     private Bitmap mHolographicOutline;
-    private final Canvas mHolographicOutlineCanvas = new Canvas();
-    private FastBitmapDrawable mPreview;
+    private HolographicOutlineHelper mHolographicOutlineHelper;
     private ImageView mPreviewImageView;
     private final RectF mTmpScaleRect = new RectF();
-    private final Rect mEraseStrokeRect = new Rect();
-    private final Paint mEraseStrokeRectPaint = new Paint();
 
-    private PagedViewIconCache.Key mIconCacheKey;
-    private PagedViewIconCache mIconCache;
     private String mDimensionsFormatString;
 
     private int mAlpha = 255;
     private int mHolographicAlpha;
-
-    // Highlight colors
-    private int mHoloBlurColor;
-    private int mHoloOutlineColor;
 
     private boolean mIsChecked;
     private ObjectAnimator mCheckedAlphaAnimator;
     private float mCheckedAlpha = 1.0f;
     private int mCheckedFadeInDuration;
     private int mCheckedFadeOutDuration;
-
-    private static final HandlerThread sWorkerThread = new HandlerThread("pagedviewwidget-helper");
-    static {
-        sWorkerThread.start();
-    }
-
-    private static final int MESSAGE_CREATE_HOLOGRAPHIC_OUTLINE = 1;
-
-    private static final Handler sWorker = new Handler(sWorkerThread.getLooper()) {
-        private DeferredHandler mHandler = new DeferredHandler();
-        public void handleMessage(Message msg) {
-            final PagedViewWidget widget = (PagedViewWidget) msg.obj;
-            final int prevAlpha = widget.mPreview.getAlpha();
-            final int width = Math.max(widget.mPreview.getIntrinsicWidth(),
-                    widget.getMeasuredWidth());
-            final int height = Math.max(widget.mPreview.getIntrinsicHeight(),
-                    widget.getMeasuredHeight());
-            final Bitmap outline = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-
-            widget.mHolographicOutlineCanvas.setBitmap(outline);
-            widget.mHolographicOutlineCanvas.save();
-            widget.mHolographicOutlineCanvas.translate(widget.mPaddingLeft, widget.mPaddingTop);
-            widget.mPreview.setAlpha(255);
-            widget.mPreview.draw(widget.mHolographicOutlineCanvas);
-            widget.mPreview.setAlpha(prevAlpha);
-            // Temporary workaround to make the default widget outlines visible
-            widget.mHolographicOutlineCanvas.drawColor(Color.argb(156, 0, 0, 0), Mode.SRC_OVER);
-            widget.mHolographicOutlineCanvas.restore();
-
-            // To account for the fact that some previews run up straight to the edge (we subtract
-            // the edge from the holographic preview (before we apply the holograph)
-            widget.mEraseStrokeRect.set(0, 0, width, height);
-            widget.mHolographicOutlineCanvas.drawRect(widget.mEraseStrokeRect,
-                    widget.mEraseStrokeRectPaint);
-
-            sHolographicOutlineHelper.applyThickExpensiveOutlineWithBlur(outline,
-                    widget.mHolographicOutlineCanvas, widget.mHoloBlurColor,
-                    widget.mHoloOutlineColor);
-
-            mHandler.post(new Runnable() {
-                public void run() {
-                    widget.mHolographicOutline = outline;
-                    widget.mIconCache.addOutline(widget.mIconCacheKey, outline);
-                    widget.invalidate();
-                }
-            });
-        }
-    };
 
     public PagedViewWidget(Context context) {
         this(context, null);
@@ -137,21 +79,6 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
 
     public PagedViewWidget(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PagedViewWidget,
-                defStyle, 0);
-        mHoloBlurColor = a.getColor(R.styleable.PagedViewWidget_blurColor, 0);
-        mHoloOutlineColor = a.getColor(R.styleable.PagedViewWidget_outlineColor, 0);
-        mEraseStrokeRectPaint.setStyle(Paint.Style.STROKE);
-        mEraseStrokeRectPaint.setStrokeWidth(HolographicOutlineHelper.MIN_OUTER_BLUR_RADIUS);
-        mEraseStrokeRectPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
-        mEraseStrokeRectPaint.setFilterBitmap(true);
-        mEraseStrokeRectPaint.setAntiAlias(true);
-        a.recycle();
-
-        if (sHolographicOutlineHelper == null) {
-            sHolographicOutlineHelper = new HolographicOutlineHelper();
-        }
 
         // Set up fade in/out constants
         final Resources r = context.getResources();
@@ -169,18 +96,10 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         setClipToPadding(false);
     }
 
-    private void queueHolographicOutlineCreation() {
-        // Generate the outline in the background
-        if (mHolographicOutline == null && mPreview != null) {
-            Message m = sWorker.obtainMessage(MESSAGE_CREATE_HOLOGRAPHIC_OUTLINE);
-            m.obj = this;
-            sWorker.sendMessage(m);
-        }
-    }
-
     public void applyFromAppWidgetProviderInfo(AppWidgetProviderInfo info,
             FastBitmapDrawable preview, int maxWidth, int[] cellSpan,
-            PagedViewIconCache cache, boolean createHolographicOutline) {
+            HolographicOutlineHelper holoOutlineHelper) {
+        mHolographicOutlineHelper = holoOutlineHelper;
         final ImageView image = (ImageView) findViewById(R.id.widget_preview);
         if (maxWidth > -1) {
             image.setMaxWidth(maxWidth);
@@ -198,17 +117,11 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         if (!LauncherApplication.isScreenLarge()) {
             findViewById(R.id.divider).setVisibility(View.GONE);
         }
-
-        if (createHolographicOutline) {
-            mIconCache = cache;
-            mIconCacheKey = new PagedViewIconCache.Key(info);
-            mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
-            mPreview = preview;
-        }
     }
 
     public void applyFromResolveInfo(PackageManager pm, ResolveInfo info,
-            FastBitmapDrawable preview, PagedViewIconCache cache, boolean createHolographicOutline){
+            FastBitmapDrawable preview, HolographicOutlineHelper holoOutlineHelper) {
+        mHolographicOutlineHelper = holoOutlineHelper;
         final ImageView image = (ImageView) findViewById(R.id.widget_preview);
         image.setImageDrawable(preview);
         mPreviewImageView = image;
@@ -225,18 +138,11 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         if (!LauncherApplication.isScreenLarge()) {
             findViewById(R.id.divider).setVisibility(View.GONE);
         }
-
-        if (createHolographicOutline) {
-            mIconCache = cache;
-            mIconCacheKey = new PagedViewIconCache.Key(info);
-            mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
-            mPreview = preview;
-        }
     }
 
     public void applyFromWallpaperInfo(ResolveInfo info, PackageManager packageManager,
-            FastBitmapDrawable preview, int maxWidth, PagedViewIconCache cache,
-            boolean createHolographicOutline) {
+            FastBitmapDrawable preview, int maxWidth, HolographicOutlineHelper holoOutlineHelper) {
+        mHolographicOutlineHelper = holoOutlineHelper;
         ImageView image = (ImageView) findViewById(R.id.wallpaper_preview);
         image.setMaxWidth(maxWidth);
         image.setImageDrawable(preview);
@@ -249,13 +155,11 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         if (!LauncherApplication.isScreenLarge()) {
             findViewById(R.id.divider).setVisibility(View.GONE);
         }
+    }
 
-        if (createHolographicOutline) {
-            mIconCache = cache;
-            mIconCacheKey = new PagedViewIconCache.Key(info);
-            mHolographicOutline = mIconCache.getOutline(mIconCacheKey);
-            mPreview = preview;
-        }
+    public void setHolographicOutline(Bitmap holoOutline) {
+        mHolographicOutline = holoOutline;
+        invalidate();
     }
 
     @Override
@@ -307,10 +211,16 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         return true;
     }
 
+    private void setChildrenAlpha(float alpha) {
+        final int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            getChildAt(i).setAlpha(alpha);
+        }
+    }
     @Override
     public void setAlpha(float alpha) {
-        final float viewAlpha = sHolographicOutlineHelper.viewAlphaInterpolator(alpha);
-        final float holographicAlpha = sHolographicOutlineHelper.highlightAlphaInterpolator(alpha);
+        final float viewAlpha = mHolographicOutlineHelper.viewAlphaInterpolator(alpha);
+        final float holographicAlpha = mHolographicOutlineHelper.highlightAlphaInterpolator(alpha);
         int newViewAlpha = (int) (viewAlpha * 255);
         int newHolographicAlpha = (int) (holographicAlpha * 255);
         if ((mAlpha != newViewAlpha) || (mHolographicAlpha != newHolographicAlpha)) {
@@ -319,28 +229,6 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
             setChildrenAlpha(viewAlpha);
             super.setAlpha(viewAlpha);
         }
-    }
-
-    private void setChildrenAlpha(float alpha) {
-        final int childCount = getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            getChildAt(i).setAlpha(alpha);
-        }
-    }
-
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        if (w > 0 && h > 0) {
-            queueHolographicOutlineCreation();
-        }
-
-        super.onSizeChanged(w, h, oldw, oldh);
-    }
-
-    @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        sWorker.removeMessages(MESSAGE_CREATE_HOLOGRAPHIC_OUTLINE, this);
     }
 
     void setChecked(boolean checked, boolean animate) {
