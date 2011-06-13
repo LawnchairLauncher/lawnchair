@@ -2555,42 +2555,6 @@ public class Workspace extends SmoothPagedView
     }
 
     public DropTarget getDropTargetDelegate(DragObject d) {
-
-        if (mIsSmall || mIsInUnshrinkAnimation) {
-            // If we're shrunken, don't let anyone drag on folders/etc that are on the mini-screens
-            return null;
-        }
-        // We may need to delegate the drag to a child view. If a 1x1 item
-        // would land in a cell occupied by a DragTarget (e.g. a Folder),
-        // then drag events should be handled by that child.
-
-        ItemInfo item = (ItemInfo) d.dragInfo;
-        CellLayout currentLayout = getCurrentDropLayout();
-
-        int dragPointX, dragPointY;
-        if (item.spanX == 1 && item.spanY == 1) {
-            // For a 1x1, calculate the drop cell exactly as in onDragOver
-            dragPointX = d.x - d.xOffset;
-            dragPointY = d.y - d.yOffset;
-        } else {
-            // Otherwise, use the exact drag coordinates
-            dragPointX = d.x;
-            dragPointY = d.y;
-        }
-        dragPointX += mScrollX - currentLayout.getLeft();
-        dragPointY += mScrollY - currentLayout.getTop();
-
-        // If we are dragging over a cell that contains a DropTarget that will
-        // accept the drop, delegate to that DropTarget.
-        final int[] cellXY = mTempCell;
-        currentLayout.estimateDropCell(dragPointX, dragPointY, item.spanX, item.spanY, cellXY);
-        View child = currentLayout.getChildAt(cellXY[0], cellXY[1]);
-        if (child instanceof DropTarget) {
-            DropTarget target = (DropTarget)child;
-            if (target.acceptDrop(d)) {
-                return target;
-            }
-        }
         return null;
     }
 
@@ -3559,5 +3523,4 @@ public class Workspace extends SmoothPagedView
     @Override
     public void syncPageItems(int page) {
     }
-
 }

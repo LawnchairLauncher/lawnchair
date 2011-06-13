@@ -23,6 +23,7 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -54,11 +55,6 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     protected Launcher mLauncher;
 
     protected FolderInfo mInfo;
-    
-    /**
-     * Which item is being dragged
-     */
-    protected ShortcutInfo mDragItem;
 
     private static final String TAG = "Launcher.Folder";
 
@@ -75,6 +71,8 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     private int[] mDragItemPosition = new int[2];
     private static final int FULL_GROW = 0;
     private static final int PARTIAL_GROW = 1;
+    private static final int REORDER_ANIMATION_DURATION = 230;
+    private static final int ON_EXIT_CLOSE_DELAY = 800;
     private int mMode = PARTIAL_GROW;
     private boolean mRearrangeOnClose = false;
     private FolderIcon mFolderIcon;
@@ -84,7 +82,14 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     private ArrayList<View> mItemsInReadingOrder = new ArrayList<View>();
     private Drawable mIconDrawable;
     boolean mItemsInvalidated = false;
-    ShortcutInfo mCurrentDragInfo;
+    private ShortcutInfo mCurrentDragInfo;
+    private View mCurrentDragView;
+    boolean mSuppressOnAdd = false;
+    private int[] mTargetCell = new int[2];
+    private int[] mPreviousTargetCell = new int[2];
+    private int[] mEmptyCell = new int[2];
+    private Alarm mReorderAlarm = new Alarm();
+    private Alarm mOnExitAlarm = new Alarm();
 
     /**
      * Used to inflate the Workspace from XML.
@@ -136,8 +141,6 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     public boolean onLongClick(View v) {
         Object tag = v.getTag();
         if (tag instanceof ShortcutInfo) {
-            mLauncher.closeFolder(this);
-
             ShortcutInfo item = (ShortcutInfo) tag;
             if (!v.isInTouchMode()) {
                 return false;
@@ -150,10 +153,11 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
             mIconDrawable = ((TextView) v).getCompoundDrawables()[1];
 
             mCurrentDragInfo = item;
-            mItemsInvalidated = true;
-            mInfo.itemsChanged();
-
-            mDragItem = item;
+            mEmptyCell[0] = item.cellX;
+            mEmptyCell[1] = item.cellY;
+            mCurrentDragView = v;
+            mContent.removeView(mCurrentDragView);
+            mInfo.remove(item);
         } else {
             mLauncher.closeFolder(this);
             mLauncher.showRenameDialog(mInfo);
@@ -182,8 +186,6 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
 
         mDragController.startDrag(view, this, app, DragController.DRAG_ACTION_COPY);
         mLauncher.closeFolder(this);
-        mDragItem = app;
-
         return true;
     }
 
@@ -382,25 +384,6 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
                     !isFull());
     }
 
-    public void onDrop(DragObject d) {
-        ShortcutInfo item;
-        if (d.dragInfo instanceof ApplicationInfo) {
-            // Came from all apps -- make a copy
-            item = ((ApplicationInfo) d.dragInfo).makeShortcut();
-            item.spanX = 1;
-            item.spanY = 1;
-        } else {
-            item = (ShortcutInfo) d.dragInfo;
-        }
-
-        // Dragged from self onto self
-        if (item == mCurrentDragInfo) {
-            mInfo.remove(item);
-        }
-
-        mInfo.add(item);
-    }
-
     protected boolean findAndSetEmptyCells(ShortcutInfo item) {
         int[] emptyCell = new int[2];
         if (mContent.findCellForSpan(emptyCell, item.spanX, item.spanY)) {
@@ -430,46 +413,135 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     }
 
     public void onDragEnter(DragObject d) {
+        mPreviousTargetCell[0] = -1;
+        mPreviousTargetCell[1] = -1;
         mContent.onDragEnter();
+        mOnExitAlarm.cancelAlarm();
+    }
+
+    OnAlarmListener mReorderAlarmListener = new OnAlarmListener() {
+        public void onAlarm(Alarm alarm) {
+            realTimeReorder(mEmptyCell, mTargetCell);
+        }
+    };
+
+    boolean readingOrderGreaterThan(int[] v1, int[] v2) {
+        if (v1[1] > v2[1] || (v1[1] == v2[1] && v1[0] > v2[0])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void realTimeReorder(int[] empty, int[] target) {
+        boolean wrap;
+        int startX;
+        int endX;
+        int startY;
+        if (readingOrderGreaterThan(target, empty)) {
+            wrap = empty[0] >= mContent.getCountX() - 1;
+            startY = wrap ? empty[1] + 1 : empty[1];
+            for (int y = startY; y <= target[1]; y++) {
+                startX = y == empty[1] ? empty[0] + 1 : 0;
+                endX = y < target[1] ? mContent.getCountX() - 1 : target[0];
+                for (int x = startX; x <= endX; x++) {
+                    View v = mContent.getChildAt(x,y);
+                    if (mContent.animateChildToPosition(v, empty[0], empty[1],
+                            REORDER_ANIMATION_DURATION)) {
+                        empty[0] = x;
+                        empty[1] = y;
+                    }
+                }
+            }
+        } else {
+            wrap = empty[0] == 0;
+            startY = wrap ? empty[1] - 1 : empty[1];
+            for (int y = startY; y >= target[1]; y--) {
+                startX = y == empty[1] ? empty[0] - 1 : mContent.getCountX() - 1;
+                endX = y > target[1] ? 0 : target[0];
+                for (int x = startX; x >= endX; x--) {
+                    View v = mContent.getChildAt(x,y);
+                    if (mContent.animateChildToPosition(v, empty[0], empty[1],
+                            REORDER_ANIMATION_DURATION)) {
+                        empty[0] = x;
+                        empty[1] = y;
+                    }
+                }
+            }
+        }
     }
 
     public void onDragOver(DragObject d) {
-        float[] r = mapPointFromScreenToContent(d.x, d.y, null);
-        mContent.visualizeDropLocation(null, null, (int) r[0], (int) r[1], 1, 1);
+        float[] r = getDragViewVisualCenter(d.x, d.y, d.xOffset, d.yOffset, d.dragView, null);
+        mTargetCell = mContent.findNearestArea((int) r[0], (int) r[1], 1, 1, mTargetCell);
+
+        if (mTargetCell[0] != mPreviousTargetCell[0] || mTargetCell[1] != mPreviousTargetCell[1]) {
+            mReorderAlarm.cancelAlarm();
+            mReorderAlarm.setOnAlarmListener(mReorderAlarmListener);
+            mReorderAlarm.setAlarm(150);
+            mPreviousTargetCell[0] = mTargetCell[0];
+            mPreviousTargetCell[1] = mTargetCell[1];
+        }
     }
 
+    // This is used to compute the visual center of the dragView. The idea is that
+    // the visual center represents the user's interpretation of where the item is, and hence
+    // is the appropriate point to use when determining drop location.
+    private float[] getDragViewVisualCenter(int x, int y, int xOffset, int yOffset,
+            DragView dragView, float[] recycle) {
+        float res[];
+        if (recycle == null) {
+            res = new float[2];
+        } else {
+            res = recycle;
+        }
+
+        // These represent the visual top and left of drag view if a dragRect was provided.
+        // If a dragRect was not provided, then they correspond to the actual view left and
+        // top, as the dragRect is in that case taken to be the entire dragView.
+        // R.dimen.dragViewOffsetY.
+        int left = x - xOffset;
+        int top = y - yOffset;
+
+        // In order to find the visual center, we shift by half the dragRect
+        res[0] = left + dragView.getDragRegion().width() / 2;
+        res[1] = top + dragView.getDragRegion().height() / 2;
+
+        return res;
+    }
+
+    OnAlarmListener mOnExitAlarmListener = new OnAlarmListener() {
+        public void onAlarm(Alarm alarm) {
+            mLauncher.closeFolder(Folder.this);
+            mCurrentDragInfo = null;
+            mCurrentDragView = null;
+            mSuppressOnAdd = false;
+            mRearrangeOnClose = true;
+        }
+    };
+
     public void onDragExit(DragObject d) {
+        // We only close the folder if this is a true drag exit, ie. not because a drop
+        // has occurred above the folder.
+        if (!d.dragComplete) {
+            mOnExitAlarm.setOnAlarmListener(mOnExitAlarmListener);
+            mOnExitAlarm.setAlarm(ON_EXIT_CLOSE_DELAY);
+        }
+        mReorderAlarm.cancelAlarm();
         mContent.onDragExit();
     }
 
-    public float[] mapPointFromScreenToContent(int x, int y, float[] r) {
-        if (r == null) {
-            r = new float[2];
-        }
-
-        int[] screenLocation = new int[2];
-        mContent.getLocationOnScreen(screenLocation);
-
-        r[0] = x - screenLocation[0];
-        r[1] = y - screenLocation[1];
-        return r;
-    }
-
     public void onDropCompleted(View target, DragObject d, boolean success) {
+        mCurrentDragInfo = null;
+        mCurrentDragView = null;
+        mSuppressOnAdd = false;
         if (!success) {
             if (d.dragView != null) {
                 if (target instanceof CellLayout) {
                     // TODO: we should animate the item back to the folder in this case
                 }
             }
-            mCurrentDragInfo = null;
-            mItemsInvalidated = true;
-            mInfo.itemsChanged();
-        } else {
-            if (target != this) {
-                mInfo.remove(mCurrentDragInfo);
-                mCurrentDragInfo = null;
-            }
+            // TODO: if the drag fails, we need to re-add the item
         }
     }
 
@@ -594,18 +666,6 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         mItemsInvalidated = true;
     }
 
-    public void onAdd(ShortcutInfo item) {
-        mItemsInvalidated = true;
-        if (!findAndSetEmptyCells(item)) {
-            // The current layout is full, can we expand it?
-            setupContentForNumItems(getItemCount() + 1);
-            findAndSetEmptyCells(item);
-        }
-        createAndAddShortcut(item);
-        LauncherModel.addOrMoveItemInDatabase(
-                mLauncher, item, mInfo.id, 0, item.cellX, item.cellY);
-    }
-
     public int getItemCount() {
         return mContent.getChildrenLayout().getChildCount();
     }
@@ -621,8 +681,46 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         }
     }
 
+    public void onDrop(DragObject d) {
+        ShortcutInfo item;
+        if (d.dragInfo instanceof ApplicationInfo) {
+            // Came from all apps -- make a copy
+            item = ((ApplicationInfo) d.dragInfo).makeShortcut();
+            item.spanX = 1;
+            item.spanY = 1;
+        } else {
+            item = (ShortcutInfo) d.dragInfo;
+        }
+        // Dragged from self onto self
+        if (item == mCurrentDragInfo) {
+            ShortcutInfo si = (ShortcutInfo) mCurrentDragView.getTag();
+            CellLayout.LayoutParams lp = (CellLayout.LayoutParams) mCurrentDragView.getLayoutParams();
+            si.cellX = lp.cellX = mEmptyCell[0];
+            si.cellX = lp.cellY = mEmptyCell[1];
+            mContent.addViewToCellLayout(mCurrentDragView, -1, (int)item.id, lp, true);
+            mSuppressOnAdd = true;
+            mItemsInvalidated = true;
+            setupContentDimension(getItemCount());
+        }
+        mInfo.add(item);
+    }
+
+    public void onAdd(ShortcutInfo item) {
+        mItemsInvalidated = true;
+        if (mSuppressOnAdd) return;
+        if (!findAndSetEmptyCells(item)) {
+            // The current layout is full, can we expand it?
+            setupContentForNumItems(getItemCount() + 1);
+            findAndSetEmptyCells(item);
+        }
+        createAndAddShortcut(item);
+        LauncherModel.addOrMoveItemInDatabase(
+                mLauncher, item, mInfo.id, 0, item.cellX, item.cellY);
+    }
+
     public void onRemove(ShortcutInfo item) {
         mItemsInvalidated = true;
+        if (item == mCurrentDragInfo) return;
         View v = mContent.getChildAt(mDragItemPosition[0], mDragItemPosition[1]);
         mContent.removeView(v);
         if (mState == STATE_ANIMATING) {

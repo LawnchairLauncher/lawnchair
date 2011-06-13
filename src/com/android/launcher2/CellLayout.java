@@ -20,6 +20,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
@@ -48,6 +49,7 @@ import android.view.animation.LayoutAnimationController;
 import com.android.launcher.R;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class CellLayout extends ViewGroup {
     static final String TAG = "CellLayout";
@@ -117,6 +119,9 @@ public class CellLayout extends ViewGroup {
     private Drawable mCrosshairsDrawable = null;
     private InterruptibleInOutAnimator mCrosshairsAnimator = null;
     private float mCrosshairsVisibility = 0.0f;
+
+    private HashMap<CellLayout.LayoutParams, ObjectAnimator> mReorderAnimators = new
+            HashMap<CellLayout.LayoutParams, ObjectAnimator>();
 
     // When a drag operation is in progress, holds the nearest cell to the touch point
     private final int[] mDragCell = new int[2];
@@ -964,6 +969,64 @@ public class CellLayout extends ViewGroup {
 
     public View getChildAt(int x, int y) {
         return mChildren.getChildAt(x, y);
+    }
+
+    public boolean animateChildToPosition(final View child, int cellX, int cellY, int duration) {
+        CellLayoutChildren clc = getChildrenLayout();
+        if (clc.indexOfChild(child) != -1 && !mOccupied[cellX][cellY]) {
+            final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+            final ItemInfo info = (ItemInfo) child.getTag();
+
+            // We cancel any existing animations
+            if (mReorderAnimators.containsKey(lp)) {
+                mReorderAnimators.get(lp).cancel();
+                mReorderAnimators.remove(lp);
+            }
+
+            int oldX = lp.x;
+            int oldY = lp.y;
+            mOccupied[lp.cellX][lp.cellY] = false;
+            mOccupied[cellX][cellY] = true;
+
+            lp.isLockedToGrid = true;
+            lp.cellX = info.cellX = cellX;
+            lp.cellY = info.cellY = cellY;
+            clc.setupLp(lp);
+            lp.isLockedToGrid = false;
+            int newX = lp.x;
+            int newY = lp.y;
+
+            PropertyValuesHolder x = PropertyValuesHolder.ofInt("x", oldX, newX);
+            PropertyValuesHolder y = PropertyValuesHolder.ofInt("y", oldY, newY);
+            ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(lp, x, y);
+            oa.setDuration(duration);
+            mReorderAnimators.put(lp, oa);
+            oa.addUpdateListener(new AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    child.requestLayout();
+                }
+            });
+            oa.addListener(new AnimatorListenerAdapter() {
+                boolean cancelled = false;
+                public void onAnimationEnd(Animator animation) {
+                    // If the animation was cancelled, it means that another animation
+                    // has interrupted this one, and we don't want to lock the item into
+                    // place just yet.
+                    if (!cancelled) {
+                        lp.isLockedToGrid = true;
+                    }
+                    if (mReorderAnimators.containsKey(lp)) {
+                        mReorderAnimators.remove(lp);
+                    }
+                }
+                public void onAnimationCancel(Animator animation) {
+                    cancelled = true;
+                }
+            });
+            oa.start();
+            return true;
+        }
+        return false;
     }
 
     /**

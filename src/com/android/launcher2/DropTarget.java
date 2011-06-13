@@ -34,6 +34,12 @@ public interface DropTarget {
         /** Y offset from the upper-left corner of the cell to where we touched.  */
         public int yOffset = -1;
 
+        /** This indicates whether a drag is in final stages, either drop or cancel. It
+         * differentiates onDragExit, since this is called when the drag is ending, above
+         * the current drag target, or when the drag moves off the current drag object.
+         */
+        public boolean dragComplete = false;
+
         /** The view that moves around while you drag.  */
         public DragView dragView = null;
 

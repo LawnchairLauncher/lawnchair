@@ -284,6 +284,7 @@ public class DragController {
 
         mDragging = true;
 
+        mDragObject.dragComplete = false;
         mDragObject.xOffset = mMotionDownX - (screenX + dragRegionLeft);
         mDragObject.yOffset = mMotionDownY - (screenY + dragRegionTop);
         mDragObject.dragSource = source;
@@ -373,6 +374,7 @@ public class DragController {
     public void cancelDrag() {
         if (mDragging) {
             // Should we also be calling onDragExit() here?
+            mDragObject.dragComplete = true;
             mDragObject.dragSource.onDropCompleted(null, mDragObject, false);
         }
         endDrag();
@@ -565,6 +567,7 @@ public class DragController {
         mDragObject.y = coordinates[1];
         boolean accepted = false;
         if (dropTarget != null) {
+            mDragObject.dragComplete = true;
             dropTarget.onDragExit(mDragObject);
             if (dropTarget.acceptDrop(mDragObject)) {
                 dropTarget.onDrop(mDragObject);

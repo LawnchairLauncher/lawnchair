@@ -79,6 +79,10 @@ public class CellLayoutChildren extends ViewGroup {
         setMeasuredDimension(widthSpecSize, heightSpecSize);
     }
 
+    public void setupLp(CellLayout.LayoutParams lp) {
+        lp.setup(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
+    }
+
     public void measureChild(View child) {
         final int cellWidth = mCellWidth;
         final int cellHeight = mCellHeight;
