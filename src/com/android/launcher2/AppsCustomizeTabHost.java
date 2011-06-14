@@ -25,6 +25,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
+import android.widget.TabWidget;
 import android.widget.TextView;
 
 import com.android.launcher.R;
@@ -63,7 +64,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         // Setup the tab host
         setup();
 
-        final ViewGroup tabs = (ViewGroup) findViewById(com.android.internal.R.id.tabs);
+        final TabWidget tabs = (TabWidget) findViewById(com.android.internal.R.id.tabs);
         final AppsCustomizePagedView appsCustomizePane = (AppsCustomizePagedView)
                 findViewById(R.id.apps_customize_pane_content);
         mTabs = tabs;
@@ -87,6 +88,13 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         tabView.setText(mContext.getString(R.string.widgets_tab_label));
         addTab(newTabSpec(WIDGETS_TAB_TAG).setIndicator(tabView).setContent(contentFactory));
         setOnTabChangedListener(this);
+
+        // Setup the key listener to jump between the last tab view and the market icon
+        AppsCustomizeTabKeyEventListener keyListener = new AppsCustomizeTabKeyEventListener();
+        View lastTab = tabs.getChildTabViewAt(tabs.getTabCount() - 1);
+        lastTab.setOnKeyListener(keyListener);
+        View shopButton = findViewById(R.id.market_button);
+        shopButton.setOnKeyListener(keyListener);
     }
 
     @Override

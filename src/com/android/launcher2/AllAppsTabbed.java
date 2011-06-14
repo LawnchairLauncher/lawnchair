@@ -81,7 +81,7 @@ public class AllAppsTabbed extends TabHost implements AllAppsView, LauncherTrans
         };
 
         // Create the tabs and wire them up properly
-        AllAppsTabKeyEventListener keyListener = new AllAppsTabKeyEventListener();
+        AppsCustomizeTabKeyEventListener keyListener = new AppsCustomizeTabKeyEventListener();
         TextView tabView;
         TabWidget tabWidget = (TabWidget) findViewById(com.android.internal.R.id.tabs);
         tabView = (TextView) mInflater.inflate(R.layout.tab_widget_indicator, tabWidget, false);
