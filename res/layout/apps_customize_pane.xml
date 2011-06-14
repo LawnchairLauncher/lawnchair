@@ -72,6 +72,15 @@
                 launcher:widgetCellHeightGap="@dimen/apps_customize_widget_cell_height_gap"
                 launcher:widgetCountX="@integer/apps_customize_widget_cell_count_x"
                 launcher:widgetCountY="@integer/apps_customize_widget_cell_count_y" />
+            <ImageView
+                android:id="@+id/paged_view_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:visibility="gone"
+                android:alpha="0"
+                android:scaleType="fitXY"
+                android:src="@drawable/paged_view_indicator" />
          </FrameLayout>
       </LinearLayout>
 </com.android.launcher2.AppsCustomizeTabHost>

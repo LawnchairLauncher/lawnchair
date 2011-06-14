@@ -39,6 +39,15 @@
         <include android:id="@+id/cell4" layout="@layout/workspace_screen" />
         <include android:id="@+id/cell5" layout="@layout/workspace_screen" />
     </com.android.launcher2.Workspace>
+    <ImageView
+        android:id="@+id/paged_view_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:visibility="gone"
+        android:alpha="0"
+        android:scaleType="fitXY"
+        android:src="@drawable/paged_view_indicator" />
 
     <include layout="@layout/qsb_bar"
         android:id="@+id/qsb_bar"
