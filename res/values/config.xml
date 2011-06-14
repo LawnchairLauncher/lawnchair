@@ -1,4 +1,5 @@
 <resources>
+    <bool name="config_hardwareAccelerated">true</bool>
 <!-- AllApps/Customize/AppsCustomize -->
     <!-- Fade in/out duration of icons being dragged from the trays -->
     <integer name="config_dragAppsCustomizeIconFadeInDuration">150</integer>
