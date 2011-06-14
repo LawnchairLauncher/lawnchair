@@ -41,6 +41,7 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.animation.Interpolator;
 import android.widget.Checkable;
+import android.widget.ImageView;
 import android.widget.Scroller;
 
 import com.android.launcher.R;
@@ -161,6 +162,13 @@ public abstract class PagedView extends ViewGroup {
 
     // All syncs and layout passes are deferred until data is ready.
     protected boolean mIsDataReady = false;
+
+    // Scrolling indicator
+    private ImageView mScrollIndicator;
+    private boolean mHasScrollIndicator = true;
+    private static final int sScrollIndicatorFadeInDuration = 150;
+    private static final int sScrollIndicatorFastFadeOutDuration = 50;
+    private static final int sScrollIndicatorFadeOutDuration = 650;
 
     public interface PageSwitchListener {
         void onPageSwitch(View newPage, int newPageIndex);
@@ -306,10 +314,12 @@ public abstract class PagedView extends ViewGroup {
 
     // a method that subclasses can override to add behavior
     protected void onPageBeginMoving() {
+        showScrollingIndicator();
     }
 
     // a method that subclasses can override to add behavior
     protected void onPageEndMoving() {
+        hideScrollingIndicator(false);
     }
 
     /**
@@ -612,6 +622,7 @@ public abstract class PagedView extends ViewGroup {
     }
 
     protected void screenScrolled(int screenCenter) {
+        updateScrollingIndicator();
     }
 
     @Override
@@ -1583,6 +1594,8 @@ public abstract class PagedView extends ViewGroup {
         }
 
         if (mContentIsRefreshable) {
+            hideScrollingIndicator(true);
+
             // Update all the pages
             syncPages();
 
@@ -1599,5 +1612,81 @@ public abstract class PagedView extends ViewGroup {
             updateAdjacentPagesAlpha();
             requestLayout();
         }
+    }
+
+    private ImageView getScrollingIndicator() {
+        // We use mHasScrollIndicator to prevent future lookups if there is no sibling indicator
+        // found
+        if (mHasScrollIndicator && mScrollIndicator == null) {
+            ViewGroup parent = (ViewGroup) getParent();
+            mScrollIndicator = (ImageView) (parent.findViewById(R.id.paged_view_indicator));
+            mHasScrollIndicator = mScrollIndicator != null;
+            if (mHasScrollIndicator) {
+                mScrollIndicator.setVisibility(View.VISIBLE);
+            }
+        }
+        return mScrollIndicator;
+    }
+
+    protected boolean isScrollingIndicatorEnabled() {
+        return true;
+    }
+
+    protected void showScrollingIndicator() {
+        if (LauncherApplication.isScreenLarge()) return;
+        if (getChildCount() <= 1) return;
+        if (!isScrollingIndicatorEnabled()) return;
+
+        getScrollingIndicator();
+        if (mScrollIndicator != null) {
+            // Update the width of the indicator to the approx. width of each page in the full bar
+            mScrollIndicator.getLayoutParams().width = getPageWidthForScrollingIndicator() / getChildCount();
+            mScrollIndicator.requestLayout();
+
+            // Fade the indicator in
+            updateScrollingIndicatorPosition();
+            mScrollIndicator.animate().alpha(1f).setDuration(sScrollIndicatorFadeInDuration);
+        }
+    }
+
+    protected void hideScrollingIndicator(boolean immediately) {
+        if (LauncherApplication.isScreenLarge()) return;
+        if (getChildCount() <= 1) return;
+        if (!isScrollingIndicatorEnabled()) return;
+
+        getScrollingIndicator();
+        if (mScrollIndicator != null) {
+            // Fade the indicator out
+            updateScrollingIndicatorPosition();
+            mScrollIndicator.animate().alpha(0f).setDuration(immediately ?
+                    sScrollIndicatorFastFadeOutDuration : sScrollIndicatorFadeOutDuration);
+        }
+    }
+
+    private void updateScrollingIndicator() {
+        if (LauncherApplication.isScreenLarge()) return;
+        if (getChildCount() <= 1) return;
+        if (!isScrollingIndicatorEnabled()) return;
+
+        getScrollingIndicator();
+        if (mScrollIndicator != null) {
+            updateScrollingIndicatorPosition();
+        }
+    }
+
+    protected int getPageWidthForScrollingIndicator() {
+        return getMeasuredWidth();
+    }
+
+    private void updateScrollingIndicatorPosition() {
+        // We can make the page width smaller to make it look more centered
+        int pageWidth = getPageWidthForScrollingIndicator();
+        int pageOffset = (getMeasuredWidth() - pageWidth) / 2;
+        int maxPageWidth = getChildCount() * pageWidth;
+        float offset = (float) getScrollX() / maxPageWidth;
+        int indicatorWidth = pageWidth / getChildCount();
+        int indicatorCenterOffset = indicatorWidth / 2 - mScrollIndicator.getMeasuredWidth() / 2;
+        int indicatorPos = (int) (offset * pageWidth) + pageOffset + indicatorCenterOffset;
+        mScrollIndicator.setTranslationX(indicatorPos);
     }
 }

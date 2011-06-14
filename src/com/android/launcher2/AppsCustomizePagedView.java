@@ -84,7 +84,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private IconCache mIconCache;
 
     // Dimens
-    private Runnable mOnSizeChangedCallback;
     private int mContentWidth;
     private int mMaxWidgetSpan, mMinWidgetSpan;
     private int mWidgetWidthGap, mWidgetHeightGap;
@@ -190,11 +189,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mWidgetCountY = Math.max(1, (int) Math.round(mCellCountY / 3f));
         mContentWidth = mWidgetSpacingLayout.getContentWidth();
 
-        // Notify our parent so that we can synchronize the tab bar width to this page width
-        if (mOnSizeChangedCallback != null) {
-            mOnSizeChangedCallback.run();
-        }
-
         invalidatePageData();
     }
 
@@ -211,10 +205,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
 
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-
-    public void setOnSizeChangedCallback(Runnable r) {
-        mOnSizeChangedCallback = r;
     }
 
     /** Removes and returns the ResolveInfo with the specified ComponentName */
@@ -885,5 +875,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     public void surrender() {
         // TODO: If we are in the middle of any process (ie. for holographic outlines, etc) we
         // should stop this now.
+    }
+
+    @Override
+    protected int getPageWidthForScrollingIndicator() {
+        return getPageContentWidth();
     }
 }

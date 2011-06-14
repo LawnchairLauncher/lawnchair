@@ -635,7 +635,14 @@ public class Workspace extends SmoothPagedView
         }
     }
 
+    @Override
+    protected boolean isScrollingIndicatorEnabled() {
+        return mShrinkState != ShrinkState.SPRING_LOADED;
+    }
+
     protected void onPageBeginMoving() {
+        super.onPageBeginMoving();
+
         if (mNextPage != INVALID_PAGE) {
             // we're snapping to a particular screen
             enableChildrenCache(mCurrentPage, mNextPage);
@@ -644,14 +651,23 @@ public class Workspace extends SmoothPagedView
             // swipe it either left or right (but we won't advance by more than one screen)
             enableChildrenCache(mCurrentPage - 1, mCurrentPage + 1);
         }
-        showOutlines();
+
+        // Only show page outlines as we pan if we are on large screen
+        if (LauncherApplication.isScreenLarge()) {
+            showOutlines();
+        }
     }
 
     protected void onPageEndMoving() {
+        super.onPageEndMoving();
+
         clearChildrenCache();
         // Hide the outlines, as long as we're not dragging
         if (!mDragController.dragging()) {
-            hideOutlines();
+            // Only hide page outlines as we pan if we are on large screen
+            if (LauncherApplication.isScreenLarge()) {
+                hideOutlines();
+            }
         }
         mOverScrollMaxBackgroundAlpha = 0.0f;
         mOverScrollPageIndex = -1;
@@ -1081,6 +1097,8 @@ public class Workspace extends SmoothPagedView
 
     @Override
     protected void screenScrolled(int screenCenter) {
+        super.screenScrolled(screenCenter);
+
         // If the screen is not xlarge, then don't rotate the CellLayouts
         // NOTE: If we don't update the side pages alpha, then we should not hide the side pages.
         //       see unshrink().
@@ -1424,6 +1442,9 @@ public class Workspace extends SmoothPagedView
         if (!mIsDragInProcess) {
             updateWhichPagesAcceptDrops(shrinkState);
         }
+
+        // Hide the scrollbar
+        hideScrollingIndicator(true);
 
         CellLayout currentPage = (CellLayout) getChildAt(mCurrentPage);
         if (currentPage == null) {
