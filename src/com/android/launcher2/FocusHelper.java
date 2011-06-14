@@ -16,10 +16,6 @@
 
 package com.android.launcher2;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-
 import android.content.res.Configuration;
 import android.view.KeyEvent;
 import android.view.View;
@@ -29,6 +25,10 @@ import android.widget.TabHost;
 import android.widget.TabWidget;
 
 import com.android.launcher.R;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * A keyboard listener we set on all the button bar buttons.
@@ -62,13 +62,13 @@ class DockKeyEventListener implements View.OnKeyListener {
 }
 
 /**
- * A keyboard listener we set on the last tab button in AllApps to jump to then
+ * A keyboard listener we set on the last tab button in AppsCustomize to jump to then
  * market icon and vice versa.
  */
-class AllAppsTabKeyEventListener implements View.OnKeyListener {
+class AppsCustomizeTabKeyEventListener implements View.OnKeyListener {
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
-        return FocusHelper.handleAllAppsTabKeyEvent(v, keyCode, event);
+        return FocusHelper.handleAppsCustomizeTabKeyEvent(v, keyCode, event);
     }
 }
 
@@ -85,9 +85,9 @@ public class FocusHelper {
     }
 
     /**
-     * Handles key events in a AllApps tab between the last tab view and the shop button.
+     * Handles key events in a AppsCustomize tab between the last tab view and the shop button.
      */
-    static boolean handleAllAppsTabKeyEvent(View v, int keyCode, KeyEvent e) {
+    static boolean handleAppsCustomizeTabKeyEvent(View v, int keyCode, KeyEvent e) {
         final TabHost tabHost = findTabHostParent(v);
         final ViewGroup contents = (ViewGroup)
                 tabHost.findViewById(com.android.internal.R.id.tabcontent);
@@ -125,124 +125,6 @@ public class FocusHelper {
      */
     private static boolean isVisible(View v) {
         return v.getVisibility() == View.VISIBLE;
-    }
-
-    /**
-     * Handles key events in a PageViewExtendedLayout containing PagedViewWidgets.
-     * To be deprecated.
-     */
-    static boolean handlePagedViewWidgetKeyEvent(PagedViewWidget w, int keyCode, KeyEvent e) {
-        if (!LauncherApplication.isScreenLarge()) return false;
-
-        final PagedViewExtendedLayout parent = (PagedViewExtendedLayout) w.getParent();
-        final ViewGroup container = (ViewGroup) parent.getParent();
-        final TabHost tabHost = findTabHostParent(container);
-        final TabWidget tabs = (TabWidget) tabHost.findViewById(com.android.internal.R.id.tabs);
-        final int widgetIndex = parent.indexOfChild(w);
-        final int widgetCount = parent.getChildCount();
-        final int pageIndex = container.indexOfChild(parent);
-        final int pageCount = container.getChildCount();
-
-        final int action = e.getAction();
-        final boolean handleKeyEvent = (action != KeyEvent.ACTION_UP);
-        PagedViewExtendedLayout newParent = null;
-        boolean wasHandled = false;
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_DPAD_LEFT:
-                if (handleKeyEvent) {
-                    // Select the previous widget or the last widget on the previous page
-                    if (widgetIndex > 0) {
-                        parent.getChildAt(widgetIndex - 1).requestFocus();
-                    } else {
-                        if (pageIndex > 0) {
-                            newParent = (PagedViewExtendedLayout)
-                                    container.getChildAt(pageIndex - 1);
-                            newParent.getChildAt(newParent.getChildCount() - 1).requestFocus();
-                        }
-                    }
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_DPAD_RIGHT:
-                if (handleKeyEvent) {
-                    // Select the next widget or the first widget on the next page
-                    if (widgetIndex < (widgetCount - 1)) {
-                        parent.getChildAt(widgetIndex + 1).requestFocus();
-                    } else {
-                        if (pageIndex < (pageCount - 1)) {
-                            newParent = (PagedViewExtendedLayout)
-                                    container.getChildAt(pageIndex + 1);
-                            newParent.getChildAt(0).requestFocus();
-                        }
-                    }
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_DPAD_UP:
-                if (handleKeyEvent) {
-                    // Select widgets tab on the tab bar
-                    tabs.requestFocus();
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_DPAD_DOWN:
-                if (handleKeyEvent) {
-                    // TODO: Should focus the global search bar
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_ENTER:
-            case KeyEvent.KEYCODE_DPAD_CENTER:
-                if (handleKeyEvent) {
-                    // Simulate a click on the widget
-                    View.OnClickListener clickListener = (View.OnClickListener) container;
-                    clickListener.onClick(w);
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_PAGE_UP:
-                if (handleKeyEvent) {
-                    // Select the first item on the previous page, or the first item on this page
-                    // if there is no previous page
-                    if (pageIndex > 0) {
-                        newParent = (PagedViewExtendedLayout) container.getChildAt(pageIndex - 1);
-                        newParent.getChildAt(0).requestFocus();
-                    } else {
-                        parent.getChildAt(0).requestFocus();
-                    }
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_PAGE_DOWN:
-                if (handleKeyEvent) {
-                    // Select the first item on the next page, or the last item on this page
-                    // if there is no next page
-                    if (pageIndex < (pageCount - 1)) {
-                        newParent = (PagedViewExtendedLayout) container.getChildAt(pageIndex + 1);
-                        newParent.getChildAt(0).requestFocus();
-                    } else {
-                        parent.getChildAt(widgetCount - 1).requestFocus();
-                    }
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_MOVE_HOME:
-                if (handleKeyEvent) {
-                    // Select the first item on this page
-                    parent.getChildAt(0).requestFocus();
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_MOVE_END:
-                if (handleKeyEvent) {
-                    // Select the last item on this page
-                    parent.getChildAt(widgetCount - 1).requestFocus();
-                }
-                wasHandled = true;
-                break;
-            default: break;
-        }
-        return wasHandled;
     }
 
     /**
@@ -908,7 +790,7 @@ public class FocusHelper {
         final CellLayout layout = (CellLayout) parent.getParent();
         final Workspace workspace = (Workspace) layout.getParent();
         final ViewGroup launcher = (ViewGroup) workspace.getParent();
-        final ViewGroup tabs = (ViewGroup) launcher.findViewById(R.id.all_apps_button_cluster);
+        final ViewGroup tabs = (ViewGroup) launcher.findViewById(R.id.qsb_bar);
         int iconIndex = parent.indexOfChild(v);
         int iconCount = parent.getChildCount();
         int pageIndex = workspace.indexOfChild(layout);
