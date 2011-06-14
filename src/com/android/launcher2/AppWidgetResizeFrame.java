@@ -7,6 +7,7 @@ import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
+import android.content.res.Resources;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -29,6 +30,11 @@ public class AppWidgetResizeFrame extends FrameLayout {
     private boolean mRightBorderActive;
     private boolean mTopBorderActive;
     private boolean mBottomBorderActive;
+
+    private int mWidgetPaddingLeft;
+    private int mWidgetPaddingRight;
+    private int mWidgetPaddingTop;
+    private int mWidgetPaddingBottom;
 
     private int mBaselineWidth;
     private int mBaselineHeight;
@@ -102,6 +108,12 @@ public class AppWidgetResizeFrame extends FrameLayout {
         lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 
                 Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
         addView(mBottomHandle, lp);
+
+        Resources r = context.getResources();
+        mWidgetPaddingLeft = r.getDimensionPixelSize(R.dimen.app_widget_padding_left);
+        mWidgetPaddingTop = r.getDimensionPixelSize(R.dimen.app_widget_padding_top);
+        mWidgetPaddingRight = r.getDimensionPixelSize(R.dimen.app_widget_padding_right);
+        mWidgetPaddingBottom = r.getDimensionPixelSize(R.dimen.app_widget_padding_bottom);
 
         if (mResizeMode == AppWidgetProviderInfo.RESIZE_HORIZONTAL) {
             mTopHandle.setVisibility(GONE);
@@ -294,10 +306,13 @@ public class AppWidgetResizeFrame extends FrameLayout {
         int xOffset = mCellLayout.getLeft() + mCellLayout.getLeftPadding() - mWorkspace.getScrollX();
         int yOffset = mCellLayout.getTop() + mCellLayout.getTopPadding() - mWorkspace.getScrollY();
 
-        int newWidth = mWidgetView.getWidth() + 2 * mBackgroundPadding;
-        int newHeight = mWidgetView.getHeight() + 2 * mBackgroundPadding;
-        int newX = mWidgetView.getLeft() - mBackgroundPadding + xOffset;
-        int newY = mWidgetView.getTop() - mBackgroundPadding + yOffset;
+        int newWidth = mWidgetView.getWidth() + 2 * mBackgroundPadding - mWidgetPaddingLeft -
+                mWidgetPaddingRight;
+        int newHeight = mWidgetView.getHeight() + 2 * mBackgroundPadding - mWidgetPaddingTop -
+                mWidgetPaddingBottom;
+
+        int newX = mWidgetView.getLeft() - mBackgroundPadding + xOffset + mWidgetPaddingLeft;
+        int newY = mWidgetView.getTop() - mBackgroundPadding + yOffset + mWidgetPaddingTop;
 
         // We need to make sure the frame stays within the bounds of the CellLayout
         if (newY < 0) {
