@@ -61,7 +61,7 @@
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Genvejen \"<xliff:g id="NAME">%s</xliff:g>\" blev fjernet."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Genvejen \"<xliff:g id="NAME">%s</xliff:g>\" findes allerede."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Vælg genvej"</string>
-    <string name="title_select_application" msgid="8031072293115454221">"Vælg program"</string>
+    <string name="title_select_application" msgid="8031072293115454221">"Vælg applikation"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"Vælg mappe"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Programmer"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Start"</string>
@@ -69,26 +69,26 @@
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"Afinstaller"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"Afinstaller opdatering"</string>
     <string name="menu_add" msgid="3065046628354640854">"Tilføj"</string>
-    <string name="menu_manage_apps" msgid="2308685199463588895">"Administrer programmer"</string>
+    <string name="menu_manage_apps" msgid="2308685199463588895">"Administrer apps"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"Tapet"</string>
     <string name="menu_search" msgid="4826514464423239041">"Søg"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"Meddelelser"</string>
     <string name="menu_gestures" msgid="514678675575912237">"Gestus"</string>
     <string name="menu_settings" msgid="6233960148378443661">"Indstillinger"</string>
-    <string name="cab_menu_delete_app" msgid="1242619904941293871">"Afinstaller program"</string>
+    <string name="cab_menu_delete_app" msgid="1242619904941293871">"Afinstaller applikation"</string>
     <string name="cab_menu_app_info" msgid="5180426909324882018">"Programoplysninger"</string>
-    <string name="cab_app_selection_text" msgid="606113924828167756">"1 program er valgt"</string>
+    <string name="cab_app_selection_text" msgid="606113924828167756">"1 applikation er valgt"</string>
     <string name="cab_widget_selection_text" msgid="962527270506951955">"1 widget er valgt"</string>
     <string name="cab_folder_selection_text" msgid="8916111874189565067">"1 mappe er valgt"</string>
     <string name="cab_shortcut_selection_text" msgid="8115847384500412878">"1 genvej er valgt"</string>
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"installer genveje"</string>
-    <string name="permdesc_install_shortcut" msgid="7429365847558984148">"Tillader, at et program tilføjer genveje uden brugerindgriben."</string>
+    <string name="permdesc_install_shortcut" msgid="7429365847558984148">"Tillader, at en applikation tilføjer genveje uden brugerindgriben."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"afinstaller genveje"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="959972195916090900">"Tillader, at et program fjerner genveje uden brugerindgriben."</string>
+    <string name="permdesc_uninstall_shortcut" msgid="959972195916090900">"Tillader, at en applikation fjerner genveje uden brugerindgriben."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"læs indstillinger og genveje for Start"</string>
-    <string name="permdesc_read_settings" msgid="8377434937176025492">"Tillader, at et program læser indstillingerne og genvejene i Start."</string>
+    <string name="permdesc_read_settings" msgid="8377434937176025492">"Tillader, at en applikation læser indstillingerne og genvejene i Start."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"skriv indstillinger og genveje for Start"</string>
-    <string name="permdesc_write_settings" msgid="1098648778383349818">"Tillader, at et program ændrer indstillingerne og genvejene i Start."</string>
+    <string name="permdesc_write_settings" msgid="1098648778383349818">"Tillader, at en applikation ændrer indstillingerne og genvejene i Start."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Der er problemer med indlæsning af widget"</string>
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"Dette er et systemprogram, som ikke kan afinstalleres."</string>
 </resources>
