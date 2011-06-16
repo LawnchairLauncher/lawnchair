@@ -112,11 +112,6 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         final TextView dims = (TextView) findViewById(R.id.widget_dims);
         dims.setText(String.format(mDimensionsFormatString, cellSpan[0], cellSpan[1]));
         dims.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        
-        // Hide the divider in the Phone UI.
-        if (!LauncherApplication.isScreenLarge()) {
-            findViewById(R.id.divider).setVisibility(View.GONE);
-        }
     }
 
     public void applyFromResolveInfo(PackageManager pm, ResolveInfo info,
@@ -132,11 +127,6 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         if (dims != null) {
             dims.setText(String.format(mDimensionsFormatString, 1, 1));
             dims.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        }
-        
-        // Hide the divider in the Phone UI.
-        if (!LauncherApplication.isScreenLarge()) {
-            findViewById(R.id.divider).setVisibility(View.GONE);
         }
     }
 
@@ -184,7 +174,8 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
             mPaint.setAlpha(mHolographicAlpha);
             canvas.save();
             canvas.scale(mTmpScaleRect.right, mTmpScaleRect.bottom);
-            canvas.drawBitmap(mHolographicOutline, 0, 0, mPaint);
+            canvas.drawBitmap(mHolographicOutline, mPreviewImageView.getLeft(),
+                    mPreviewImageView.getTop(), mPaint);
             canvas.restore();
         }
     }

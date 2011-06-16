@@ -43,6 +43,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -237,7 +238,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
      * This differs from isDataReady as this is the test done if isDataReady is not set.
      */
     private boolean testDataReady() {
-        return !mApps.isEmpty() && !mWidgets.isEmpty();
+        // We only do this test once, and we default to the Applications page, so we only really
+        // have to wait for there to be apps.
+        return !mApps.isEmpty();
     }
 
     protected void onDataReady(int width, int height) {
@@ -512,7 +515,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // expected page width, so we can actually optimize by hiding all the TextView-based
         // children that are expensive to measure, and let that happen naturally later.
         setVisibilityOnChildren(layout, View.GONE);
-        int widthSpec = MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.AT_MOST);
+        int widthSpec = MeasureSpec.makeMeasureSpec(getPageContentWidth(), MeasureSpec.AT_MOST);
         int heightSpec = MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.AT_MOST);
         layout.setMinimumWidth(getPageContentWidth());
         layout.measure(widthSpec, heightSpec);
@@ -892,10 +895,13 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             // Layout each widget
             int ix = i % mWidgetCountX;
             int iy = i / mWidgetCountX;
-            PagedViewGridLayout.LayoutParams lp = new PagedViewGridLayout.LayoutParams(cellWidth,
-                    cellHeight);
-            lp.leftMargin = (ix * cellWidth) + (ix * mWidgetWidthGap);
-            lp.topMargin = (iy * cellHeight) + (iy * mWidgetHeightGap);
+            GridLayout.LayoutParams lp = new GridLayout.LayoutParams(
+                    new GridLayout.Group(iy, 1, GridLayout.LEFT),
+                    new GridLayout.Group(ix, 1, GridLayout.TOP));
+            lp.width = cellWidth;
+            lp.height = cellHeight;
+            if (ix > 0) lp.leftMargin = mWidgetWidthGap;
+            if (iy > 0) lp.topMargin = mWidgetHeightGap;
             layout.addView(widget, lp);
         }
 

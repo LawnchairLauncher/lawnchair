@@ -23,6 +23,7 @@
         <!-- The layout_width of the tab bar gets overriden to align the content
              with the text in the tabs in AppsCustomizeTabHost. -->
         <FrameLayout
+            android:id="@+id/tabs_container"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/qsb_bar_height"
             android:layout_gravity="center_horizontal">
