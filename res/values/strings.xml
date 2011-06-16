@@ -83,8 +83,9 @@
     <string name="all_apps_no_games">No games found.</string>
     <!-- Message to show when there are no downloaded apps [CHAR_LIMIT=50] -->
     <string name="all_apps_no_downloads">You have no downloaded applications.</string>
-    <!-- Market button text.  The market button has no text in the Phone UI. [CHAR LIMIT=32] -->
-    <string name="market"></string>
+    <!-- Market button text.  The market button text is removed in Launcher.java 
+         in the Phone UI. [CHAR LIMIT=32] -->
+    <string name="market">Shop</string>
 
     <!-- Customization Drawer -->
     <!-- The format string for the dimensions of a widget in the drawer -->

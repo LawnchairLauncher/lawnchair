@@ -193,6 +193,11 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         final TextView dims = (TextView) findViewById(R.id.widget_dims);
         dims.setText(String.format(mDimensionsFormatString, cellSpan[0], cellSpan[1]));
         dims.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        
+        // Hide the divider in the Phone UI.
+        if (!LauncherApplication.isScreenLarge()) {
+            findViewById(R.id.divider).setVisibility(View.GONE);
+        }
 
         if (createHolographicOutline) {
             mIconCache = cache;
@@ -215,6 +220,11 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
             dims.setText(String.format(mDimensionsFormatString, 1, 1));
             dims.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
+        
+        // Hide the divider in the Phone UI.
+        if (!LauncherApplication.isScreenLarge()) {
+            findViewById(R.id.divider).setVisibility(View.GONE);
+        }
 
         if (createHolographicOutline) {
             mIconCache = cache;
@@ -234,6 +244,11 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         TextView name = (TextView) findViewById(R.id.wallpaper_name);
         name.setText(info.loadLabel(packageManager));
         name.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        
+        // Hide the divider in the Phone UI.
+        if (!LauncherApplication.isScreenLarge()) {
+            findViewById(R.id.divider).setVisibility(View.GONE);
+        }
 
         if (createHolographicOutline) {
             mIconCache = cache;

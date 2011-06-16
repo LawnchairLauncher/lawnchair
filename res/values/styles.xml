@@ -68,10 +68,6 @@
         <item name="android:layout_marginRight">10dip</item>
     </style>
 
-    <style name="WidgetDivider">
-        <item name="android:visibility">gone</item>
-    </style>
-
     <style name="SearchDropTargetBar">
         <item name="android:orientation">horizontal</item>
     </style>
