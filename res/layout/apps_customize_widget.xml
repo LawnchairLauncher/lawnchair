@@ -38,9 +38,9 @@
         android:adjustViewBounds="true"
         android:scaleType="fitStart" />
 
-    <!-- The divider image. -->
+    <!-- The divider image.
+         This view is removed in PagedViewWidget.java in the Phone UI. -->
     <ImageView
-        style="WidgetDivider"
         android:id="@+id/divider"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

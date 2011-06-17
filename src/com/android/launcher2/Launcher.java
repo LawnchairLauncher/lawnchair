@@ -2846,7 +2846,7 @@ public final class Launcher extends Activity
     }
 
     /**
-     * Sets the app market icon (shown when all apps is visible on x-large screens)
+     * Sets the app market icon
      */
     private void updateAppMarketIcon() {
         final View marketButton = findViewById(R.id.market_button);
@@ -2859,6 +2859,11 @@ public final class Launcher extends Activity
             sAppMarketIcon = updateTextButtonWithIconFromExternalActivity(
                     R.id.market_button, activityName, R.drawable.app_market_generic);
             marketButton.setVisibility(View.VISIBLE);
+            
+            // Remove the shop icon text in the Phone UI
+            if (!LauncherApplication.isScreenLarge()) {
+                ((TextView) marketButton).setText("");
+            }
         } else {
             // We should hide and disable the view so that we don't try and restore the visibility
             // of it when we swap between drag & normal states from IconDropTarget subclasses.
