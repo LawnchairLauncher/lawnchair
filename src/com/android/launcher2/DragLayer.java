@@ -25,6 +25,7 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -62,13 +63,13 @@ public class DragLayer extends FrameLayout {
         mLauncher = launcher;
         mDragController = controller;
     }
-    
+
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         return mDragController.dispatchKeyEvent(event) || super.dispatchKeyEvent(event);
     }
 
-    private boolean handleTouchDown(MotionEvent ev) {
+    private boolean handleTouchDown(MotionEvent ev, boolean intercept) {
         Rect hitRect = new Rect();
         int x = (int) ev.getX();
         int y = (int) ev.getY();
@@ -85,16 +86,20 @@ public class DragLayer extends FrameLayout {
                 }
             }
         }
-        if (mCurrentFolder != null) {
-            mCurrentFolder.getHitRect(hitRect);
-            int[] screenPos = new int[2];
-            View parent = (View) mCurrentFolder.getParent();
-            if (parent != null) {
-                parent.getLocationOnScreen(screenPos);
-                hitRect.offset(screenPos[0], screenPos[1]);
+
+        if (mCurrentFolder != null && intercept) {
+            if (mCurrentFolder.isEditingName()) {
+                getDescendantRectRelativeToSelf(mCurrentFolder.getEditTextRegion(), hitRect);
                 if (!hitRect.contains(x, y)) {
-                    mLauncher.closeFolder();
+                    mCurrentFolder.dismissEditingName();
+                    return true;
                 }
+            }
+
+            getDescendantRectRelativeToSelf(mCurrentFolder, hitRect);
+            if (!hitRect.contains(x, y)) {
+                mLauncher.closeFolder();
+                return true;
             }
         }
         return false;
@@ -103,7 +108,7 @@ public class DragLayer extends FrameLayout {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            if (handleTouchDown(ev)) {
+            if (handleTouchDown(ev, true)) {
                 return true;
             }
         }
@@ -121,7 +126,7 @@ public class DragLayer extends FrameLayout {
 
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-                if (handleTouchDown(ev)) {
+                if (handleTouchDown(ev, false)) {
                     return true;
                 }
             }
@@ -141,6 +146,18 @@ public class DragLayer extends FrameLayout {
         }
         if (handled) return true;
         return mDragController.onTouchEvent(ev);
+    }
+
+    private void getDescendantRectRelativeToSelf(View descendant, Rect r) {
+        descendant.getHitRect(r);
+
+        ViewParent viewParent = descendant.getParent();
+        while (viewParent instanceof View && viewParent != this) {
+            final View view = (View)viewParent;
+            r.offset(view.getLeft() + (int) (view.getTranslationX() + 0.5f) - view.getScrollX(),
+                    view.getTop() + (int) (view.getTranslationY() + 0.5f) - view.getScrollY());
+            viewParent = view.getParent();
+        }
     }
 
     @Override

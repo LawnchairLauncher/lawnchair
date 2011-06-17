@@ -64,6 +64,10 @@ class FastBitmapDrawable extends Drawable {
         mPaint.setAlpha(alpha);
     }
 
+    public void setFilterBitmap(boolean filterBitmap) {
+        mPaint.setFilterBitmap(filterBitmap);
+    }
+
     public int getAlpha() {
         return mAlpha;
     }

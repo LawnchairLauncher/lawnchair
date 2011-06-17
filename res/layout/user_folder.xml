@@ -17,16 +17,20 @@
 <com.android.launcher2.Folder
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/folder_padding"
+    android:paddingRight="@dimen/folder_padding"
+    android:paddingTop="@dimen/folder_padding"
+    android:paddingBottom="0dp"
     android:orientation="vertical"
     android:background="@drawable/portal_container_holo">
 
     <com.android.launcher2.CellLayout
-        android:id="@id/folder_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-
+        android:id="@+id/folder_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:cacheColorHint="#ff333333"
-
         android:hapticFeedbackEnabled="false"
         launcher:widthGap="@dimen/workspace_width_gap"
         launcher:heightGap="@dimen/workspace_height_gap"
@@ -36,4 +40,18 @@
         launcher:xAxisEndPadding="0dip"
         launcher:yAxisStartPadding="8dip"
         launcher:yAxisEndPadding="8dip"/>
+
+    <EditText
+        android:id="@+id/folder_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="@dimen/folder_content_name_gap"
+        android:paddingBottom="@dimen/folder_padding"
+        android:background="#00000000"
+        android:hint="@string/default_folder_name"
+        android:textSize="16sp"
+        android:textColor="#FFF"
+        android:gravity="center_horizontal"
+        android:singleLine="true"/>
 </com.android.launcher2.Folder>

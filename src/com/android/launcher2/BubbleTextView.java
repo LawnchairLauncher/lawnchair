@@ -262,10 +262,12 @@ public class BubbleTextView extends TextView implements VisibilityChangedBroadca
     }
 
     void setCellLayoutPressedOrFocusedIcon() {
-        CellLayoutChildren parent = (CellLayoutChildren) getParent();
-        if (parent != null) {
-            CellLayout layout = (CellLayout) parent.getParent();
-            layout.setPressedOrFocusedIcon((mPressedOrFocusedBackground != null) ? this : null);
+        if (getParent() instanceof CellLayoutChildren) {
+            CellLayoutChildren parent = (CellLayoutChildren) getParent();
+            if (parent != null) {
+                CellLayout layout = (CellLayout) parent.getParent();
+                layout.setPressedOrFocusedIcon((mPressedOrFocusedBackground != null) ? this : null);
+            }
         }
     }
 
