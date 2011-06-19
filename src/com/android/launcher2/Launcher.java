@@ -2109,10 +2109,10 @@ public final class Launcher extends Activity
 
         int width = cell.getWidth();
         int height = cell.getHeight();
-        int x = cell.getLeftPadding();
-        int y = cell.getTopPadding();
-        width -= (x + cell.getRightPadding());
-        height -= (y + cell.getBottomPadding());
+        int x = cell.getPaddingLeft();
+        int y = cell.getPaddingTop();
+        width -= (x + cell.getPaddingRight());
+        height -= (y + cell.getPaddingBottom());
 
         float scale = w / width;
 
@@ -2135,7 +2135,7 @@ public final class Launcher extends Activity
 
             final Canvas c = new Canvas(bitmap);
             c.scale(scale, scale);
-            c.translate(-cell.getLeftPadding(), -cell.getTopPadding());
+            c.translate(-cell.getPaddingLeft(), -cell.getPaddingTop());
             cell.drawChildren(c);
 
             image.setBackgroundDrawable(resources.getDrawable(R.drawable.preview_background));

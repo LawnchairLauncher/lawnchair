@@ -37,35 +37,45 @@
     <style name="WorkspaceIcon">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="android:paddingLeft">5dip</item>
-        <item name="android:paddingRight">5dip</item>
+        <item name="android:layout_gravity">center</item>
         <item name="android:gravity">center_horizontal</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">marquee</item>
-        <item name="android:textSize">13dip</item>
+        <item name="android:textSize">12dip</item>
         <item name="android:textColor">#FFF</item>
         <item name="android:shadowRadius">2.0</item>
         <item name="android:shadowColor">#B0000000</item>
     </style>
 
-    <style name="WorkspaceIcon.AllApps">
+    <style name="WorkspaceIcon.AppsCustomize">
         <item name="android:background">@null</item>
+        <item name="android:drawablePadding">0dp</item>
+        <item name="android:includeFontPadding">false</item>
     </style>
 
     <style name="WorkspaceIcon.Portrait">
-        <item name="android:drawablePadding">5dip</item>
-        <item name="android:paddingTop">0dip</item>
-        <item name="android:layout_marginLeft">3dip</item>
-        <item name="android:layout_marginRight">3dip</item>
-        <item name="android:layout_marginTop">13dip</item>
-        <item name="android:layout_marginBottom">8dip</item>
+        <item name="android:drawablePadding">4dp</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingRight">4dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
     </style>
 
     <style name="WorkspaceIcon.Landscape">
-        <item name="android:drawablePadding">3dip</item>
-        <item name="android:paddingTop">2dip</item>
-        <item name="android:layout_marginLeft">10dip</item>
-        <item name="android:layout_marginRight">10dip</item>
+        <item name="android:drawablePadding">0dp</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingRight">4dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">4dp</item>
+    </style>
+    <style name="WorkspaceIcon.Portrait.Folder">
+        <item name="android:drawablePadding">0dp</item>
+        <item name="android:paddingTop">0dp</item>
+    </style>
+
+    <style name="WorkspaceIcon.Landscape.Folder">
+        <item name="android:drawablePadding">0dp</item>
+        <item name="android:paddingTop">0dp</item>
     </style>
 
     <style name="SearchDropTargetBar">

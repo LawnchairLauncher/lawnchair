@@ -19,8 +19,12 @@
     <dimen name="toolbar_button_vertical_padding">12dip</dimen>
     <dimen name="toolbar_button_horizontal_padding">12dip</dimen>
 
-    <dimen name="workspace_cell_width">106dip</dimen>
-    <dimen name="workspace_cell_height">74dip</dimen>
+<!-- Workspace -->
+    <dimen name="workspace_left_padding">@dimen/qsb_bar_height</dimen>
+    <dimen name="workspace_right_padding">@dimen/button_bar_height</dimen>
+    <dimen name="workspace_top_padding">0dp</dimen>
+    <dimen name="workspace_bottom_padding">0dp</dimen>
+
     <dimen name="folder_cell_width">100dip</dimen>
     <dimen name="folder_cell_height">74dip</dimen>
     <dimen name="button_bar_height">62dip</dimen>
@@ -29,11 +33,12 @@
     <integer name="all_apps_view_cellCountY">3</integer>
     <dimen name="all_apps_view_pageLayoutWidthGap">10dp</dimen>
     <dimen name="all_apps_view_pageLayoutHeightGap">5dp</dimen>
-    <dimen name="all_apps_view_pageLayoutPaddingTop">10dp</dimen>
-    <dimen name="all_apps_view_pageLayoutPaddingBottom">10dp</dimen>
+    <dimen name="all_apps_view_pageLayoutPaddingTop">4dp</dimen>
+    <dimen name="all_apps_view_pageLayoutPaddingBottom">4dp</dimen>
     <dimen name="all_apps_view_pageLayoutPaddingLeft">2dp</dimen>
     <dimen name="all_apps_view_pageLayoutPaddingRight">2dp</dimen>
 
+<!-- AppsCustomize -->
     <dimen name="apps_customize_widget_cell_width_gap">30dp</dimen>
     <dimen name="apps_customize_widget_cell_height_gap">0dp</dimen>
     <integer name="apps_customize_widget_cell_count_x">3</integer>

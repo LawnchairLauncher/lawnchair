@@ -30,16 +30,16 @@
         android:id="@+id/folder_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingLeft="0dip"
+        android:paddingRight="0dip"
+        android:paddingTop="8dip"
+        android:paddingBottom="8dip"
         android:cacheColorHint="#ff333333"
         android:hapticFeedbackEnabled="false"
         launcher:widthGap="@dimen/folder_width_gap"
         launcher:heightGap="@dimen/folder_height_gap"
         launcher:cellWidth="@dimen/workspace_cell_width"
-        launcher:cellHeight="@dimen/workspace_cell_height"
-        launcher:xAxisStartPadding="0dip"
-        launcher:xAxisEndPadding="0dip"
-        launcher:yAxisStartPadding="8dip"
-        launcher:yAxisEndPadding="8dip"/>
+        launcher:cellHeight="@dimen/workspace_cell_height" />
 
     <EditText
         android:id="@+id/folder_name"

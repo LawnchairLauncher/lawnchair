@@ -45,20 +45,13 @@
         <attr name="cellWidth" format="dimension"  />
         <!-- The height of a single cell -->
         <attr name="cellHeight" format="dimension"  />
-        <!-- Padding to apply at the start of the long axis -->
-        <attr name="xAxisStartPadding" format="dimension"  />
-        <!-- Padding to apply at the end of the long axis -->
-        <attr name="xAxisEndPadding" format="dimension"  />
-        <!-- Padding to apply at the start of the short axis -->
-        <attr name="yAxisStartPadding" format="dimension"  />
-        <!-- Padding to apply at the end of the short axis -->
-        <attr name="yAxisEndPadding" format="dimension"  />
         <!-- An override for the width and height gap to allow users to specify
              a specific size for the page using spacing instead of resolving the
              spacing from the width of the page -->
         <attr name="widthGap" format="dimension" />
         <attr name="heightGap" format="dimension" />
-
+        <!-- The max gap size for each dimension -->
+        <attr name="maxGap" format="dimension" />
     </declare-styleable>
 
     <!-- StrokedTextView specific attributes. -->

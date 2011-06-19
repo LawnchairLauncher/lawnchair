@@ -20,14 +20,14 @@
 
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/workspace_left_padding"
+    android:paddingRight="@dimen/workspace_right_padding"
+    android:paddingTop="@dimen/workspace_top_padding"
+    android:paddingBottom="@dimen/workspace_bottom_padding"
     android:hapticFeedbackEnabled="false"
 
     launcher:cellWidth="@dimen/workspace_cell_width"
     launcher:cellHeight="@dimen/workspace_cell_height"
-    launcher:widthGap="@dimen/workspace_width_gap_land"
-    launcher:heightGap="@dimen/workspace_height_gap_land"
-
-    launcher:xAxisStartPadding="@dimen/workspace_x_axis_start_padding_land"
-    launcher:xAxisEndPadding="@dimen/workspace_x_axis_end_padding_land"
-    launcher:yAxisStartPadding="@dimen/workspace_y_axis_start_padding_land"
-    launcher:yAxisEndPadding="@dimen/workspace_y_axis_end_padding_land" />
+    launcher:widthGap="@dimen/workspace_width_gap"
+    launcher:heightGap="@dimen/workspace_height_gap"
+    launcher:maxGap="@dimen/workspace_max_gap" />

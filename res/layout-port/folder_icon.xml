@@ -28,5 +28,5 @@
         android:src="@drawable/portal_ring_inner_holo"/>
     <com.android.launcher2.BubbleTextView
         android:id="@+id/folder_name"
-        style="@style/WorkspaceIcon.Portrait"/>
+        style="@style/WorkspaceIcon.Portrait.Folder"/>
 </com.android.launcher2.FolderIcon>

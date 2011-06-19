@@ -114,7 +114,7 @@ final class Utilities {
                         width = (int) (height * ratio);
                     }
                 } else if (sourceWidth < width && sourceHeight < height) {
-                    // It's small, use the size they gave us.
+                    // Don't scale up the icon
                     width = sourceWidth;
                     height = sourceHeight;
                 }
@@ -224,7 +224,7 @@ final class Utilities {
         if (LauncherApplication.isScreenLarge()) {
             sIconContentSize = (int) resources.getDimension(R.dimen.app_icon_content_size);
         }
-        sIconTextureWidth = sIconTextureHeight = sIconWidth + 2;
+        sIconTextureWidth = sIconTextureHeight = sIconWidth;
 
         sBlurPaint.setMaskFilter(new BlurMaskFilter(5 * density, BlurMaskFilter.Blur.NORMAL));
         sGlowColorPressedPaint.setColor(0xffffc300);

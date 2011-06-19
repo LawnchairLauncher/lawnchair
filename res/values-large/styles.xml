@@ -18,6 +18,42 @@
 -->
 
 <resources>
+<!-- Workspace -->
+    <style name="WorkspaceIcon.Portrait">
+        <item name="android:drawablePadding">4dp</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingRight">4dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:textSize">13dip</item>
+    </style>
+    <style name="WorkspaceIcon.Portrait.Folder">
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingRight">4dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:textSize">13dip</item>
+    </style>
+    <style name="WorkspaceIcon.Landscape">
+        <item name="android:drawablePadding">4dp</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingRight">4dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:textSize">13dip</item>
+    </style>
+    <style name="WorkspaceIcon.Landscape.Folder">
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingRight">4dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:textSize">13dip</item>
+    </style>
+    <style name="WorkspaceIcon.AppsCustomize">
+        <item name="android:drawablePadding">2dp</item>
+        <item name="android:textSize">13dip</item>
+    </style>
+
     <style name="Theme" parent="android:Theme.Holo">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionModeOverlay">true</item>
@@ -29,18 +65,6 @@
 
     <style name="Theme.WallpaperPicker">
         <item name="android:screenOrientation">unspecified</item>
-    </style>
-
-    <style name="WorkspaceIcon.Portrait">
-        <item name="android:drawablePadding">2dip</item>
-        <item name="android:paddingTop">0dip</item>
-        <item name="android:includeFontPadding">false</item>
-    </style>
-
-    <style name="WorkspaceIcon.Landscape">
-        <item name="android:drawablePadding">2dip</item>
-        <item name="android:paddingTop">0dip</item>
-        <item name="android:includeFontPadding">false</item>
     </style>
 
     <style name="TabIndicator.Wide">

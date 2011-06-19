@@ -2238,8 +2238,8 @@ public class Workspace extends SmoothPagedView
 
         // Set its old pos (in the new parent's coordinates); it will be animated
         // in animateViewIntoPosition after the next layout pass
-        lp.oldX = viewX - (layout.getLeft() + layout.getLeftPadding() - mScrollX);
-        lp.oldY = viewY - (layout.getTop() + layout.getTopPadding() - mScrollY);
+        lp.oldX = viewX - (layout.getLeft() + layout.getPaddingLeft() - mScrollX);
+        lp.oldY = viewY - (layout.getTop() + layout.getPaddingTop() - mScrollY);
     }
 
     public void animateViewIntoPosition(final View view, final int fromX, final int fromY, 
@@ -2301,8 +2301,8 @@ public class Workspace extends SmoothPagedView
         final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
 
         // Convert the animation params to be relative to the Workspace, not the CellLayout
-        final int fromX = lp.oldX + parent.getLeft() + parent.getLeftPadding();
-        final int fromY = lp.oldY + parent.getTop() + parent.getTopPadding();
+        final int fromX = lp.oldX + parent.getLeft() + parent.getPaddingLeft();
+        final int fromY = lp.oldY + parent.getTop() + parent.getPaddingTop();
 
         final int dx = lp.x - lp.oldX;
         final int dy = lp.y - lp.oldY;

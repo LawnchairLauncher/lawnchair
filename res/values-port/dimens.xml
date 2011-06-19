@@ -15,15 +15,22 @@
 -->
 
 <resources>
-    <dimen name="workspace_cell_width">80dip</dimen>
-    <dimen name="workspace_cell_height">100dip</dimen>
+<!-- Workspace -->
+    <dimen name="workspace_left_padding">0dp</dimen>
+    <dimen name="workspace_right_padding">0dp</dimen>
+    <!-- NOTE: This padding is the @dimen/qsb_bar_height + some padding -->
+    <dimen name="workspace_top_padding">60dp</dimen>
+    <!-- NOTE: This padding is the @dimen/button_bar_height + some padding
+         for signposting -->
+    <dimen name="workspace_bottom_padding">64dp</dimen>
+
     <dimen name="folder_cell_width">74dip</dimen>
     <dimen name="folder_cell_height">86dip</dimen>
 
     <integer name="all_apps_view_cellCountX">4</integer>
     <integer name="all_apps_view_cellCountY">5</integer>
-    <dimen name="all_apps_view_pageLayoutWidthGap">3dp</dimen>
-    <dimen name="all_apps_view_pageLayoutHeightGap">12dp</dimen>
+    <dimen name="all_apps_view_pageLayoutWidthGap">0dp</dimen>
+    <dimen name="all_apps_view_pageLayoutHeightGap">8dp</dimen>
     <dimen name="all_apps_view_pageLayoutPaddingTop">15dp</dimen>
     <dimen name="all_apps_view_pageLayoutPaddingBottom">15dp</dimen>
     <dimen name="all_apps_view_pageLayoutPaddingLeft">0dp</dimen>

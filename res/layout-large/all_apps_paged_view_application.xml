@@ -21,7 +21,7 @@
     launcher:blurColor="#FF6B8CF0"
     launcher:outlineColor="#FF8CD2FF"
 
-    style="@style/WorkspaceIcon.AllApps"
+    style="@style/WorkspaceIcon.AppsCustomize"
 
     android:id="@+id/application_icon"
     android:layout_width="match_parent"

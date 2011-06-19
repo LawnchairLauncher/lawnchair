@@ -54,19 +54,17 @@ import java.util.HashMap;
 public class CellLayout extends ViewGroup {
     static final String TAG = "CellLayout";
 
+    private int mOriginalCellWidth;
+    private int mOriginalCellHeight;
     private int mCellWidth;
     private int mCellHeight;
-
-    private int mLeftPadding;
-    private int mRightPadding;
-    private int mTopPadding;
-    private int mBottomPadding;
 
     private int mCountX;
     private int mCountY;
 
     private int mWidthGap;
     private int mHeightGap;
+    private int mMaxGap;
 
     private final Rect mRect = new Rect();
     private final CellInfo mCellInfo = new CellInfo();
@@ -148,19 +146,13 @@ public class CellLayout extends ViewGroup {
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CellLayout, defStyle, 0);
 
-        mCellWidth = a.getDimensionPixelSize(R.styleable.CellLayout_cellWidth, 10);
-        mCellHeight = a.getDimensionPixelSize(R.styleable.CellLayout_cellHeight, 10);
-        mWidthGap = a.getDimensionPixelSize(R.styleable.CellLayout_widthGap, -1);
-        mHeightGap = a.getDimensionPixelSize(R.styleable.CellLayout_heightGap, -1);
-
-        mLeftPadding =
-            a.getDimensionPixelSize(R.styleable.CellLayout_xAxisStartPadding, 10);
-        mRightPadding =
-            a.getDimensionPixelSize(R.styleable.CellLayout_xAxisEndPadding, 10);
-        mTopPadding =
-            a.getDimensionPixelSize(R.styleable.CellLayout_yAxisStartPadding, 10);
-        mBottomPadding =
-            a.getDimensionPixelSize(R.styleable.CellLayout_yAxisEndPadding, 10);
+        mOriginalCellWidth =
+            mCellWidth = a.getDimensionPixelSize(R.styleable.CellLayout_cellWidth, 10);
+        mOriginalCellHeight =
+            mCellHeight = a.getDimensionPixelSize(R.styleable.CellLayout_cellHeight, 10);
+        mWidthGap = a.getDimensionPixelSize(R.styleable.CellLayout_widthGap, 0);
+        mHeightGap = a.getDimensionPixelSize(R.styleable.CellLayout_heightGap, 0);
+        mMaxGap = a.getDimensionPixelSize(R.styleable.CellLayout_maxGap, 0);
 
         mCountX = LauncherModel.getCellCountX();
         mCountY = LauncherModel.getCellCountY();
@@ -275,9 +267,10 @@ public class CellLayout extends ViewGroup {
         // have. We ignore the left/right padding on CellLayout because it turns out in our design
         // the padding extends outside the visible screen size, but it looked fine anyway.
         int cellWidth = r.getDimensionPixelSize(R.dimen.workspace_cell_width);
-        int widthGap = r.getDimensionPixelSize(R.dimen.workspace_width_gap_port);
+        int minGap = Math.min(r.getDimensionPixelSize(R.dimen.workspace_width_gap),
+                r.getDimensionPixelSize(R.dimen.workspace_height_gap));
 
-        return  widthGap * (numCells - 1) + cellWidth * numCells;
+        return  minGap * (numCells - 1) + cellWidth * numCells;
     }
 
     static int heightInLandscape(Resources r, int numCells) {
@@ -285,9 +278,10 @@ public class CellLayout extends ViewGroup {
         // have. We ignore the left/right padding on CellLayout because it turns out in our design
         // the padding extends outside the visible screen size, but it looked fine anyway.
         int cellHeight = r.getDimensionPixelSize(R.dimen.workspace_cell_height);
-        int heightGap = r.getDimensionPixelSize(R.dimen.workspace_height_gap_land);
+        int minGap = Math.min(r.getDimensionPixelSize(R.dimen.workspace_width_gap),
+                r.getDimensionPixelSize(R.dimen.workspace_height_gap));
 
-        return heightGap * (numCells - 1) + cellHeight * numCells;
+        return minGap * (numCells - 1) + cellHeight * numCells;
     }
 
     public void enableHardwareLayers() {
@@ -303,10 +297,10 @@ public class CellLayout extends ViewGroup {
 
     private void invalidateBubbleTextView(BubbleTextView icon) {
         final int padding = icon.getPressedOrFocusedBackgroundPadding();
-        invalidate(icon.getLeft() + getLeftPadding() - padding,
-                icon.getTop() + getTopPadding() - padding,
-                icon.getRight() + getLeftPadding() + padding,
-                icon.getBottom() + getTopPadding() + padding);
+        invalidate(icon.getLeft() + getPaddingLeft() - padding,
+                icon.getTop() + getPaddingTop() - padding,
+                icon.getRight() + getPaddingLeft() + padding,
+                icon.getBottom() + getPaddingTop() + padding);
     }
 
     void setPressedOrFocusedIcon(BubbleTextView icon) {
@@ -480,9 +474,9 @@ public class CellLayout extends ViewGroup {
             final int width = d.getIntrinsicWidth();
             final int height = d.getIntrinsicHeight();
 
-            int x = getLeftPadding() - (mWidthGap / 2) - (width / 2);
+            int x = getPaddingLeft() - (mWidthGap / 2) - (width / 2);
             for (int col = 0; col <= countX; col++) {
-                int y = getTopPadding() - (mHeightGap / 2) - (height / 2);
+                int y = getPaddingTop() - (mHeightGap / 2) - (height / 2);
                 for (int row = 0; row <= countY; row++) {
                     mTmpPointF.set(x - mDragCenter.x, y - mDragCenter.y);
                     float dist = mTmpPointF.length();
@@ -518,8 +512,8 @@ public class CellLayout extends ViewGroup {
             final Bitmap b = mPressedOrFocusedIcon.getPressedOrFocusedBackground();
             if (b != null) {
                 canvas.drawBitmap(b,
-                        mPressedOrFocusedIcon.getLeft() + getLeftPadding() - padding,
-                        mPressedOrFocusedIcon.getTop() + getTopPadding() - padding,
+                        mPressedOrFocusedIcon.getLeft() + getPaddingLeft() - padding,
+                        mPressedOrFocusedIcon.getTop() + getPaddingTop() - padding,
                         null);
             }
         }
@@ -668,7 +662,7 @@ public class CellLayout extends ViewGroup {
                 // to this view.
                 final int tmpXY[] = mTmpXY;
                 child.getLocationOnScreen(tmpXY);
-                frame.offset(mLeftPadding, mTopPadding);
+                frame.offset(mPaddingLeft, mPaddingTop);
 
                 if (frame.contains(x, y)) {
                     cellInfo.cell = child;
@@ -733,8 +727,8 @@ public class CellLayout extends ViewGroup {
      * @param result Array of 2 ints to hold the x and y coordinate of the cell
      */
     void pointToCellExact(int x, int y, int[] result) {
-        final int hStartPadding = getLeftPadding();
-        final int vStartPadding = getTopPadding();
+        final int hStartPadding = getPaddingLeft();
+        final int vStartPadding = getPaddingTop();
 
         result[0] = (x - hStartPadding) / (mCellWidth + mWidthGap);
         result[1] = (y - vStartPadding) / (mCellHeight + mHeightGap);
@@ -767,8 +761,8 @@ public class CellLayout extends ViewGroup {
      * @param result Array of 2 ints to hold the x and y coordinate of the point
      */
     void cellToPoint(int cellX, int cellY, int[] result) {
-        final int hStartPadding = getLeftPadding();
-        final int vStartPadding = getTopPadding();
+        final int hStartPadding = getPaddingLeft();
+        final int vStartPadding = getPaddingTop();
 
         result[0] = hStartPadding + cellX * (mCellWidth + mWidthGap);
         result[1] = vStartPadding + cellY * (mCellHeight + mHeightGap);
@@ -783,8 +777,8 @@ public class CellLayout extends ViewGroup {
      * @param result Array of 2 ints to hold the x and y coordinate of the point
      */
     void cellToCenterPoint(int cellX, int cellY, int[] result) {
-        final int hStartPadding = getLeftPadding();
-        final int vStartPadding = getTopPadding();
+        final int hStartPadding = getPaddingLeft();
+        final int vStartPadding = getPaddingTop();
 
         result[0] = hStartPadding + cellX * (mCellWidth + mWidthGap) + mCellWidth / 2;
         result[1] = vStartPadding + cellY * (mCellHeight + mHeightGap) + mCellHeight / 2;
@@ -806,30 +800,14 @@ public class CellLayout extends ViewGroup {
         return mHeightGap;
     }
 
-    int getLeftPadding() {
-        return mLeftPadding;
-    }
-
-    int getTopPadding() {
-        return mTopPadding;
-    }
-
-    int getRightPadding() {
-        return mRightPadding;
-    }
-
-    int getBottomPadding() {
-        return mBottomPadding;
-    }
-
     Rect getContentRect(Rect r) {
         if (r == null) {
             r = new Rect();
         }
         int left = getPaddingLeft();
         int top = getPaddingTop();
-        int right = left + getWidth() - mLeftPadding - mRightPadding;
-        int bottom = top + getHeight() - mTopPadding - mBottomPadding;
+        int right = left + getWidth() - mPaddingLeft - mPaddingRight;
+        int bottom = top + getHeight() - mPaddingTop - mPaddingBottom;
         r.set(left, top, right, bottom);
         return r;
     }
@@ -848,31 +826,31 @@ public class CellLayout extends ViewGroup {
             throw new RuntimeException("CellLayout cannot have UNSPECIFIED dimensions");
         }
 
-        final int cellWidth = mCellWidth;
-        final int cellHeight = mCellHeight;
-
         int numWidthGaps = mCountX - 1;
         int numHeightGaps = mCountY - 1;
 
         if (mWidthGap < 0 || mHeightGap < 0) {
-            int vSpaceLeft = heightSpecSize - mTopPadding - mBottomPadding - (cellHeight * mCountY);
-            mHeightGap = numHeightGaps > 0 ? vSpaceLeft / numHeightGaps : 0;
+            int hSpace = widthSpecSize - mPaddingLeft - mPaddingRight;
+            int vSpace = heightSpecSize - mPaddingTop - mPaddingBottom;
+            int hFreeSpace = hSpace - (mCountX * mOriginalCellWidth);
+            int vFreeSpace = vSpace - (mCountY * mOriginalCellHeight);
+            mWidthGap = Math.min(mMaxGap, numWidthGaps > 0 ? (hFreeSpace / numWidthGaps) : 0);
+            mHeightGap = Math.min(mMaxGap,numHeightGaps > 0 ? (vFreeSpace / numHeightGaps) : 0);
+            int remainingHSpace = hFreeSpace - (numWidthGaps * mWidthGap);
+            int remainingVSpace = vFreeSpace - (numHeightGaps * mHeightGap);
+            mCellWidth = mOriginalCellWidth + remainingHSpace / mCountX;
+            mCellHeight = mOriginalCellHeight + remainingVSpace / mCountY;
 
-            int hSpaceLeft = widthSpecSize - mLeftPadding - mRightPadding - (cellWidth * mCountX);
-            mWidthGap = numWidthGaps > 0 ? hSpaceLeft / numWidthGaps : 0;
-
-            // center it around the min gaps
-            int minGap = Math.min(mWidthGap, mHeightGap);
-            mWidthGap = mHeightGap = minGap;
+            mChildren.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
         }
 
         // Initial values correspond to widthSpecMode == MeasureSpec.EXACTLY
         int newWidth = widthSpecSize;
         int newHeight = heightSpecSize;
         if (widthSpecMode == MeasureSpec.AT_MOST) {
-            newWidth = mLeftPadding + mRightPadding + (mCountX * cellWidth) +
+            newWidth = mPaddingLeft + mPaddingRight + (mCountX * mCellWidth) +
                 ((mCountX - 1) * mWidthGap);
-            newHeight = mTopPadding + mBottomPadding + (mCountY * cellHeight) +
+            newHeight = mPaddingTop + mPaddingBottom + (mCountY * mCellHeight) +
                 ((mCountY - 1) * mHeightGap);
             setMeasuredDimension(newWidth, newHeight);
         }
@@ -880,10 +858,10 @@ public class CellLayout extends ViewGroup {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(newWidth - mLeftPadding -
-                    mRightPadding, MeasureSpec.EXACTLY);
-            int childheightMeasureSpec = MeasureSpec.makeMeasureSpec(newHeight - mTopPadding -
-                    mBottomPadding, MeasureSpec.EXACTLY);
+            int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(newWidth - mPaddingLeft -
+                    mPaddingRight, MeasureSpec.EXACTLY);
+            int childheightMeasureSpec = MeasureSpec.makeMeasureSpec(newHeight - mPaddingTop -
+                    mPaddingBottom, MeasureSpec.EXACTLY);
             child.measure(childWidthMeasureSpec, childheightMeasureSpec);
         }
         setMeasuredDimension(newWidth, newHeight);
@@ -894,7 +872,8 @@ public class CellLayout extends ViewGroup {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            child.layout(mLeftPadding, mTopPadding, r - l - mRightPadding , b - t - mBottomPadding);
+            child.layout(mPaddingLeft, mPaddingTop,
+                    r - l - mPaddingRight, b - t - mPaddingBottom);
         }
     }
 
@@ -1460,8 +1439,8 @@ public class CellLayout extends ViewGroup {
         final int widthGap = mWidthGap;
         final int heightGap = mHeightGap;
 
-        final int hStartPadding = getLeftPadding();
-        final int vStartPadding = getTopPadding();
+        final int hStartPadding = getPaddingLeft();
+        final int vStartPadding = getPaddingTop();
 
         int width = cellHSpan * cellWidth + ((cellHSpan - 1) * widthGap);
         int height = cellVSpan * cellHeight + ((cellVSpan - 1) * heightGap);
@@ -1656,12 +1635,12 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
     }
 
     public int getDesiredWidth() {
-        return mLeftPadding + mRightPadding + (mCountX * mCellWidth) +
+        return mPaddingLeft + mPaddingRight + (mCountX * mCellWidth) +
                 (Math.max((mCountX - 1), 0) * mWidthGap);
     }
 
     public int getDesiredHeight()  {
-        return mTopPadding + mBottomPadding + (mCountY * mCellHeight) +
+        return mPaddingTop + mPaddingBottom + (mCountY * mCellHeight) +
                 (Math.max((mCountY - 1), 0) * mHeightGap);
     }
 
