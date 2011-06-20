@@ -68,12 +68,9 @@
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Pàgina d\'inici"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"Elimina"</string>
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"Desinstal·la"</string>
-    <!-- no translation found for delete_target_label (665300185123139530) -->
-    <skip />
-    <!-- no translation found for delete_target_uninstall_label (748894921183769150) -->
-    <skip />
-    <!-- no translation found for info_target_label (6175926565900432067) -->
-    <skip />
+    <string name="delete_target_label" msgid="665300185123139530">"Elimina"</string>
+    <string name="delete_target_uninstall_label" msgid="748894921183769150">"Desinstal·la"</string>
+    <string name="info_target_label" msgid="6175926565900432067">"Gestiona"</string>
     <string name="accessibility_search_button" msgid="816822994629942611">"Cerca"</string>
     <string name="accessibility_voice_search_button" msgid="3938249215065842475">"Cerca per veu"</string>
     <string name="accessibility_all_apps_button" msgid="1595097919145716305">"Aplicacions"</string>

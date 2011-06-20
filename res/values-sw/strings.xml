@@ -28,8 +28,7 @@
     <!-- no translation found for wallpaper_instructions (4215640646180727542) -->
     <skip />
     <string name="pick_wallpaper" msgid="5630222540525626723">"Taswira"</string>
-    <!-- no translation found for activity_not_found (5591731020063337696) -->
-    <skip />
+    <string name="activity_not_found" msgid="5591731020063337696">"Programu bado haijasakinishwa."</string>
     <string name="configure_wallpaper" msgid="2820186271419674623">"Weka mipangilio.."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Wijeti"</string>
     <string name="folders_tab_label" msgid="1145293785541489736">"Mafolda"</string>
@@ -45,16 +44,13 @@
     <skip />
     <!-- no translation found for long_press_widget_to_add (4307462194057715796) -->
     <skip />
-    <!-- no translation found for all_apps_no_games (5293893733372793696) -->
-    <skip />
+    <string name="all_apps_no_games" msgid="5293893733372793696">"Hakuna michezo iliyopatikana."</string>
     <!-- no translation found for all_apps_no_downloads (2284720393234453761) -->
     <skip />
     <!-- no translation found for market (2652226429823445833) -->
     <skip />
-    <!-- no translation found for external_drop_widget_error (4976816434597126575) -->
-    <skip />
-    <!-- no translation found for external_drop_widget_pick_title (4481311720134376218) -->
-    <skip />
+    <string name="external_drop_widget_error" msgid="4976816434597126575">"Haikuweza kudondosha kipengee kwenye skrini hii ya maskani"</string>
+    <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Chagua wijeti ili kuunda"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Jina la folda"</string>
     <!-- no translation found for rename_folder_title (4544573104191526550) -->
     <skip />
@@ -85,10 +81,8 @@
     <string name="title_select_live_folder" msgid="3753447798805166749">"Chagua folda"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Programu"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Nyumbani"</string>
-    <!-- no translation found for delete_zone_label_workspace (7153615831493049150) -->
-    <skip />
-    <!-- no translation found for delete_zone_label_all_apps (6664588234817475108) -->
-    <skip />
+    <string name="delete_zone_label_workspace" msgid="7153615831493049150">"Ondoa"</string>
+    <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"Ondoa"</string>
     <!-- no translation found for delete_target_label (665300185123139530) -->
     <skip />
     <!-- no translation found for delete_target_uninstall_label (748894921183769150) -->
@@ -109,8 +103,7 @@
     <skip />
     <!-- no translation found for menu_add (3065046628354640854) -->
     <skip />
-    <!-- no translation found for menu_manage_apps (2308685199463588895) -->
-    <skip />
+    <string name="menu_manage_apps" msgid="2308685199463588895">"Dhibiti programu"</string>
     <!-- no translation found for menu_wallpaper (5837429080911269832) -->
     <skip />
     <!-- no translation found for menu_search (4826514464423239041) -->

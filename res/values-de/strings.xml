@@ -68,12 +68,9 @@
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Startseite"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"Entfernen"</string>
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"Deinstallieren"</string>
-    <!-- no translation found for delete_target_label (665300185123139530) -->
-    <skip />
-    <!-- no translation found for delete_target_uninstall_label (748894921183769150) -->
-    <skip />
-    <!-- no translation found for info_target_label (6175926565900432067) -->
-    <skip />
+    <string name="delete_target_label" msgid="665300185123139530">"Entfernen"</string>
+    <string name="delete_target_uninstall_label" msgid="748894921183769150">"Deinstallieren"</string>
+    <string name="info_target_label" msgid="6175926565900432067">"Verwalten"</string>
     <string name="accessibility_search_button" msgid="816822994629942611">"Suchen"</string>
     <string name="accessibility_voice_search_button" msgid="3938249215065842475">"Sprachsuche"</string>
     <string name="accessibility_all_apps_button" msgid="1595097919145716305">"Apps"</string>
@@ -94,13 +91,13 @@
     <string name="cab_folder_selection_text" msgid="8916111874189565067">"1 Ordner ausgewählt"</string>
     <string name="cab_shortcut_selection_text" msgid="8115847384500412878">"1 Verknüpfung ausgewählt"</string>
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"Verknüpfungen installieren"</string>
-    <string name="permdesc_install_shortcut" msgid="7429365847558984148">"Ermöglicht einer Anwendung das Hinzufügen von Verknüpfungen ohne Eingriff des Nutzers."</string>
+    <string name="permdesc_install_shortcut" msgid="7429365847558984148">"Ermöglicht einer App das Hinzufügen von Verknüpfungen ohne Eingriff des Nutzers."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"Verknüpfungen deinstallieren"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="959972195916090900">"Ermöglicht einer Anwendung das Entfernen von Verknüpfungen ohne Eingriff des Nutzers."</string>
+    <string name="permdesc_uninstall_shortcut" msgid="959972195916090900">"Ermöglicht einer App das Entfernen von Verknüpfungen ohne Eingriff des Nutzers."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"Einstellungen und Shortcuts für Startseite lesen"</string>
-    <string name="permdesc_read_settings" msgid="8377434937176025492">"Ermöglicht einer Anwendung, die Einstellungen und Shortcuts auf der Startseite zu lesen."</string>
+    <string name="permdesc_read_settings" msgid="8377434937176025492">"Ermöglicht einer App, die Einstellungen und Shortcuts auf der Startseite zu lesen."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"Einstellungen und Shortcuts für Startseite schreiben"</string>
-    <string name="permdesc_write_settings" msgid="1098648778383349818">"Ermöglicht einer Anwendung, die Einstellungen und Shortcuts auf der Startseite zu ändern."</string>
+    <string name="permdesc_write_settings" msgid="1098648778383349818">"Ermöglicht einer App, die Einstellungen und Shortcuts auf der Startseite zu ändern."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Problem beim Laden des Widgets"</string>
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"Dies ist eine Systemanwendung, die nicht deinstalliert werden kann."</string>
     <string name="dream_name" msgid="2847171357608437154">"Raketenstartgerät"</string>
