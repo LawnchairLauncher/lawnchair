@@ -26,11 +26,4 @@
 
     <!-- Negative button text for the wallpaper selection dialog [CHAR_LIMIT=40]-->
     <string name="wallpaper_cancel">Cancel</string>
-
-    <!-- Label for delete drop target. [CHAR_LIMIT=30] -->
-    <string name="delete_target_label">Remove</string>
-    <!-- Label for uninstall drop target. [CHAR_LIMIT=30]-->
-    <string name="delete_target_uninstall_label">Uninstall</string>
-    <!-- Label for the info icon. [CHAR_LIMIT=30] -->
-    <string name="info_target_label">Manage</string>
 </resources>

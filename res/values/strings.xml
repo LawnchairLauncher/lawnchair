@@ -168,7 +168,7 @@
     <!-- Label for uninstall drop target. [CHAR_LIMIT=30]-->
     <string name="delete_target_uninstall_label">Uninstall</string>
     <!-- Label for the info icon. [CHAR_LIMIT=30] -->
-    <string name="info_target_label">Manage</string>
+    <string name="info_target_label">App info</string>
 
     <!-- Accessibility: Search button -->
     <string name="accessibility_search_button">Search</string>

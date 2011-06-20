@@ -18,6 +18,7 @@ package com.android.launcher2;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -56,6 +57,14 @@ public class DeleteDropTarget extends ButtonDropTarget {
                 mHoverColor, PorterDuff.Mode.SRC_ATOP));
         setBackgroundColor(mHoverColor);
         getBackground().setAlpha(0);
+
+        // Remove the text in the Phone UI in landscape
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (!LauncherApplication.isScreenLarge()) {
+                mText.setText("");
+            }
+        }
     }
 
     private boolean isAllAppsApplication(DragSource source, Object info) {

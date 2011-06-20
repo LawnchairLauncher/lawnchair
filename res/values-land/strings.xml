@@ -20,11 +20,4 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Manifest configuration. -->
     <skip />
-
-    <!-- Label for delete drop target. [CHAR_LIMIT=30] -->
-    <string name="delete_target_label"></string>
-    <!-- Label for uninstall drop target. [CHAR_LIMIT=30]-->
-    <string name="delete_target_uninstall_label"></string>
-    <!-- Label for the info icon. [CHAR_LIMIT=30] -->
-    <string name="info_target_label"></string>
 </resources>

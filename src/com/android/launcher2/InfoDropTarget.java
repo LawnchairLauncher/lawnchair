@@ -19,17 +19,20 @@ package com.android.launcher2;
 import android.animation.ObjectAnimator;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.TextView;
 
 import com.android.launcher.R;
 
 public class InfoDropTarget extends ButtonDropTarget {
 
+    private TextView mText;
     private int mHoverColor = 0xFF0000FF;
 
     public InfoDropTarget(Context context, AttributeSet attrs) {
@@ -44,6 +47,8 @@ public class InfoDropTarget extends ButtonDropTarget {
     protected void onFinishInflate() {
         super.onFinishInflate();
 
+        mText = (TextView) findViewById(R.id.info_target_text);
+
         // Get the hover color
         Resources r = getResources();
         mHoverColor = r.getColor(R.color.info_target_hover_tint);
@@ -51,11 +56,18 @@ public class InfoDropTarget extends ButtonDropTarget {
                 mHoverColor, PorterDuff.Mode.SRC_ATOP));
         setBackgroundColor(mHoverColor);
         getBackground().setAlpha(0);
+
+        // Remove the text in the Phone UI in landscape
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (!LauncherApplication.isScreenLarge()) {
+                mText.setText("");
+            }
+        }
     }
 
-    private boolean isApplication(Object info) {
-        if (info instanceof ApplicationInfo) return true;
-        return (((ItemInfo) info).itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION);
+    private boolean isAllAppsApplication(DragSource source, Object info) {
+        return (source instanceof AppsCustomizePagedView) && (info instanceof ApplicationInfo);
     }
 
     @Override
@@ -77,11 +89,10 @@ public class InfoDropTarget extends ButtonDropTarget {
 
     @Override
     public void onDragStart(DragSource source, Object info, int dragAction) {
-        ItemInfo item = (ItemInfo) info;
         boolean isVisible = true;
 
         // If we are dragging a widget or shortcut, hide the info target
-        if (!isApplication(info)) {
+        if (!isAllAppsApplication(source, info)) {
             isVisible = false;
         }
 

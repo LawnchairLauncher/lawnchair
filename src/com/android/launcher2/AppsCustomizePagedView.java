@@ -508,15 +508,17 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
     private void renderDrawableToBitmap(Drawable d, Bitmap bitmap, int x, int y, int w, int h,
             float scaleX, float scaleY) {
-        Canvas c = new Canvas();
-        if (bitmap != null) c.setBitmap(bitmap);
-        c.save();
-        c.scale(scaleX, scaleY);
-        Rect oldBounds = d.copyBounds();
-        d.setBounds(x, y, x + w, y + h);
-        d.draw(c);
-        d.setBounds(oldBounds); // Restore the bounds
-        c.restore();
+        if (bitmap != null) {
+            Canvas c = new Canvas();
+            c.setBitmap(bitmap);
+            c.save();
+            c.scale(scaleX, scaleY);
+            Rect oldBounds = d.copyBounds();
+            d.setBounds(x, y, x + w, y + h);
+            d.draw(c);
+            d.setBounds(oldBounds); // Restore the bounds
+            c.restore();
+        }
     }
     private FastBitmapDrawable getShortcutPreview(ResolveInfo info, int cellWidth, int cellHeight) {
         // Return the cached version if necessary
