@@ -18,9 +18,6 @@
 -->
 
 <resources>
-    <style name="Theme.WallpaperPicker" parent="@*android:Theme.Holo.Dialog.NoFrame">
-    </style>
-
     <style name="Theme" parent="android:Theme.Holo">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionModeOverlay">true</item>
@@ -28,6 +25,10 @@
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowShowWallpaper">true</item>
+    </style>
+
+    <style name="Theme.WallpaperPicker">
+        <item name="android:screenOrientation">unspecified</item>
     </style>
 
     <style name="WorkspaceIcon.Portrait">
@@ -82,9 +83,5 @@
         <item name="android:drawablePadding">7.5dp</item>
         <item name="android:textColor">#FFFFFFFF</item>
         <item name="android:textSize">16sp</item>
-    </style>
-
-    <style name="config_orientation">
-        <item name="@android:screenOrientation">unspecified</item>
     </style>
 </resources>

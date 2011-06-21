@@ -18,8 +18,8 @@
 -->
 
 <resources>
-    <style name="Theme.WallpaperPicker" parent="android:Theme">
-        <item name="android:windowNoTitle">true</item>
+    <style name="Theme.WallpaperPicker">
+        <item name="android:screenOrientation">nosensor</item>
     </style>
 
     <style name="Theme.Base" parent="android:Theme.Wallpaper">
@@ -154,9 +154,5 @@
     <style name="HotseatButton.Right">
         <item name="android:layout_marginRight">4dip</item>
         <item name="android:background">@drawable/hotseat_bg_right</item>
-    </style>
-
-    <style name="config_orientation">
-        <item name="@android:screenOrientation">nosensor</item>
     </style>
 </resources>

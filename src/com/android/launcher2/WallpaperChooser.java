@@ -33,6 +33,8 @@ public class WallpaperChooser extends Activity {
 
         Fragment fragmentView =
                 getFragmentManager().findFragmentById(R.id.wallpaper_chooser_fragment);
+        // TODO: The following code is currently not exercised. Leaving it here in case it
+        // needs to be revived again.
         if (fragmentView == null) {
             /* When the screen is XLarge, the fragment is not included in the layout, so show it
              * as a dialog

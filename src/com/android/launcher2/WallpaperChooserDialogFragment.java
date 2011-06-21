@@ -15,8 +15,6 @@
  */
 package com.android.launcher2;
 
-import com.android.launcher.R;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -27,14 +25,17 @@ import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
@@ -43,6 +44,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.SpinnerAdapter;
+
+import com.android.launcher.R;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,12 +58,12 @@ public class WallpaperChooserDialogFragment extends DialogFragment implements
             + "WallpaperChooserDialogFragment.EMBEDDED_KEY";
 
     private boolean mEmbedded;
-    private ImageView mImageView = null;
     private Bitmap mBitmap = null;
 
     private ArrayList<Integer> mThumbs;
     private ArrayList<Integer> mImages;
     private WallpaperLoader mLoader;
+    private WallpaperDrawable mWallpaperDrawable = new WallpaperDrawable();
 
     public static WallpaperChooserDialogFragment newInstance() {
         WallpaperChooserDialogFragment fragment = new WallpaperChooserDialogFragment();
@@ -113,6 +116,9 @@ public class WallpaperChooserDialogFragment extends DialogFragment implements
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         findWallpapers();
 
+        // TODO: The following code is not exercised right now and may be removed
+        // if the dialog version is not needed.
+        /*
         final View v = getActivity().getLayoutInflater().inflate(
                 R.layout.wallpaper_chooser, null, false);
 
@@ -122,13 +128,15 @@ public class WallpaperChooserDialogFragment extends DialogFragment implements
 
         final int viewInset =
                 getResources().getDimensionPixelSize(R.dimen.alert_dialog_content_inset);
-
+        
         FrameLayout wallPaperList = (FrameLayout) v.findViewById(R.id.wallpaper_list);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setNegativeButton(R.string.wallpaper_cancel, null);
         builder.setTitle(R.string.wallpaper_dialog_title);
-        builder.setView(wallPaperList, viewInset, viewInset, viewInset, viewInset);
-        return builder.create();
+        builder.setView(wallPaperList,
+        viewInset, viewInset, viewInset, viewInset); return builder.create();
+        */
+        return null;
     }
 
     @Override
@@ -142,6 +150,7 @@ public class WallpaperChooserDialogFragment extends DialogFragment implements
          */
         if (mEmbedded) {
             View view = inflater.inflate(R.layout.wallpaper_chooser, container, false);
+            view.setBackgroundDrawable(mWallpaperDrawable);
 
             final Gallery gallery = (Gallery) view.findViewById(R.id.gallery);
             gallery.setCallbackDuringFling(false);
@@ -155,7 +164,6 @@ public class WallpaperChooserDialogFragment extends DialogFragment implements
                     selectWallpaper(gallery.getSelectedItemPosition());
                 }
             });
-            mImageView = (ImageView) view.findViewById(R.id.wallpaper);
             return view;
         }
         return null;
@@ -299,20 +307,9 @@ public class WallpaperChooserDialogFragment extends DialogFragment implements
                     mBitmap.recycle();
                 }
 
-                // This should always be the case, but check anyways
-                final ImageView view = mImageView;
-                if (view != null) {
-                    view.setImageBitmap(b);
-
-                    mBitmap = b;
-
-                    final Drawable drawable = view.getDrawable();
-                    drawable.setFilterBitmap(true);
-                    drawable.setDither(true);
-
-                    view.postInvalidate();
-                }
-
+                mBitmap = b;
+                mWallpaperDrawable.setBitmap(b);
+                getView().postInvalidate();
                 mLoader = null;
             } else {
                b.recycle();
@@ -322,6 +319,49 @@ public class WallpaperChooserDialogFragment extends DialogFragment implements
         void cancel() {
             mOptions.requestCancelDecode();
             super.cancel(true);
+        }
+    }
+
+    /**
+     * Custom drawable that centers the bitmap fed to it.
+     */
+    static class WallpaperDrawable extends Drawable {
+
+        Bitmap mBitmap;
+        int mIntrinsicWidth;
+        int mIntrinsicHeight;
+
+        /* package */void setBitmap(Bitmap bitmap) {
+            mBitmap = bitmap;
+            if (mBitmap == null)
+                return;
+            mIntrinsicWidth = mBitmap.getWidth();
+            mIntrinsicHeight = mBitmap.getHeight();
+        }
+
+        @Override
+        public void draw(Canvas canvas) {
+            if (mBitmap == null) return;
+            int width = canvas.getWidth();
+            int height = canvas.getHeight();
+            int x = (width - mIntrinsicWidth) / 2;
+            int y = (height - mIntrinsicHeight) / 2;
+            canvas.drawBitmap(mBitmap, x, y, null);
+        }
+
+        @Override
+        public int getOpacity() {
+            return android.graphics.PixelFormat.OPAQUE;
+        }
+
+        @Override
+        public void setAlpha(int alpha) {
+            // Ignore
+        }
+
+        @Override
+        public void setColorFilter(ColorFilter cf) {
+            // Ignore
         }
     }
 }
