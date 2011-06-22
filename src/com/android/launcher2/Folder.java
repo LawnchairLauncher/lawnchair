@@ -99,6 +99,8 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     private Alarm mOnExitAlarm = new Alarm();
     private TextView mFolderName;
     private int mFolderNameHeight;
+    private static String sDefaultFolderName;
+    private Rect mHitRect = new Rect();
 
     private boolean mIsEditingName = false;
     private InputMethodManager mInputMethodManager;
@@ -122,6 +124,10 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
 
         Resources res = getResources();
         mExpandDuration = res.getInteger(R.integer.config_folderAnimDuration);
+
+        if (sDefaultFolderName == null) {
+            sDefaultFolderName = res.getString(R.string.folder_name);
+        }
     }
 
     @Override
@@ -142,6 +148,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         mFolderName.setCustomSelectionActionModeCallback(mActionModeCallback);
         mFolderName.setCursorVisible(false);
         mFolderName.setOnEditorActionListener(this);
+        mFolderName.setSelectAllOnFocus(true);
     }
 
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
@@ -183,7 +190,6 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         }
     }
 
-    private Rect mHitRect = new Rect();
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mFolderName.getHitRect(mHitRect);
@@ -322,7 +328,12 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         }
         mItemsInvalidated = true;
         mInfo.addListener(this);
-        mFolderName.setText(mInfo.title);
+
+        if (sDefaultFolderName != mInfo.title) {
+            mFolderName.setText(mInfo.title);
+        } else {
+            mFolderName.setText("");
+        }
     }
 
     /**

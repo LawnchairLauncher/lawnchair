@@ -97,4 +97,6 @@
     <dimen name="folder_preview_padding">4dp</dimen>
     <dimen name="folder_padding">18dp</dimen>
     <dimen name="folder_content_name_gap">10dp</dimen>
+    <dimen name="folder_width_gap">0dp</dimen>
+    <dimen name="folder_height_gap">0dp</dimen>
 </resources>
