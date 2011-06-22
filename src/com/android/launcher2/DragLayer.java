@@ -16,8 +16,6 @@
 
 package com.android.launcher2;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
@@ -29,7 +27,7 @@ import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.android.launcher.R;
+import java.util.ArrayList;
 
 /**
  * A ViewGroup that coordinates dragging across its descendants
@@ -43,7 +41,6 @@ public class DragLayer extends FrameLayout {
             new ArrayList<AppWidgetResizeFrame>();
     private AppWidgetResizeFrame mCurrentResizeFrame;
     private int mXDown, mYDown;
-    private Folder mCurrentFolder = null;
     private Launcher mLauncher;
 
     /**
@@ -87,16 +84,17 @@ public class DragLayer extends FrameLayout {
             }
         }
 
-        if (mCurrentFolder != null && intercept) {
-            if (mCurrentFolder.isEditingName()) {
-                getDescendantRectRelativeToSelf(mCurrentFolder.getEditTextRegion(), hitRect);
+        Folder currentFolder = mLauncher.getWorkspace().getOpenFolder();
+        if (currentFolder != null && intercept) {
+            if (currentFolder.isEditingName()) {
+                getDescendantRectRelativeToSelf(currentFolder.getEditTextRegion(), hitRect);
                 if (!hitRect.contains(x, y)) {
-                    mCurrentFolder.dismissEditingName();
+                    currentFolder.dismissEditingName();
                     return true;
                 }
             }
 
-            getDescendantRectRelativeToSelf(mCurrentFolder, hitRect);
+            getDescendantRectRelativeToSelf(currentFolder, hitRect);
             if (!hitRect.contains(x, y)) {
                 mLauncher.closeFolder();
                 return true;
@@ -268,9 +266,5 @@ public class DragLayer extends FrameLayout {
         mResizeFrames.add(resizeFrame);
 
         resizeFrame.snapToWidget(false);
-    }
-
-    public void setCurrentFolder(Folder f) {
-        mCurrentFolder = f;
     }
 }

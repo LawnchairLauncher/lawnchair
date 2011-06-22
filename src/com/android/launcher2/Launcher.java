@@ -1749,7 +1749,6 @@ public final class Launcher extends Activity
         Folder folder = mWorkspace.getOpenFolder();
         if (folder != null) {
             closeFolder(folder);
-            mDragLayer.setCurrentFolder(null);
         }
     }
 
@@ -1763,7 +1762,6 @@ public final class Launcher extends Activity
             shrinkAndFadeInFolderIcon(fi);
             mDragController.removeDropTarget((DropTarget)folder);
         }
-
         folder.animateClosed();
     }
 
@@ -1993,7 +1991,6 @@ public final class Launcher extends Activity
         info.opened = true;
 
         mWorkspace.addInFullScreen(folder, info.screen);
-        mDragLayer.setCurrentFolder(folder);
         folder.animateOpen();
         folder.onOpen();
     }

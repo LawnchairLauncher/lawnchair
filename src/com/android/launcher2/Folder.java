@@ -615,7 +615,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
 
     OnAlarmListener mOnExitAlarmListener = new OnAlarmListener() {
         public void onAlarm(Alarm alarm) {
-            mLauncher.closeFolder(Folder.this);
+            mLauncher.closeFolder();
             mCurrentDragInfo = null;
             mCurrentDragView = null;
             mSuppressOnAdd = false;
