@@ -1728,7 +1728,12 @@ public final class Launcher extends Activity
         if (mState == State.APPS_CUSTOMIZE) {
             showWorkspace(true);
         } else if (mWorkspace.getOpenFolder() != null) {
-            closeFolder();
+            Folder openFolder = mWorkspace.getOpenFolder();
+            if (openFolder.isEditingName()) {
+                openFolder.dismissEditingName();
+            } else {
+                closeFolder();
+            }
         } else if (isPreviewVisible()) {
             dismissPreview(mPreviousView);
             dismissPreview(mNextView);
@@ -1760,7 +1765,6 @@ public final class Launcher extends Activity
         }
 
         folder.animateClosed();
-        folder.onClose();
     }
 
     /**

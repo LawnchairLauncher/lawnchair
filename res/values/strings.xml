@@ -254,9 +254,12 @@
     <string name="default_browser_url" translatable="false">
         http://www.google.com/m?client=ms-{CID}&amp;source=android-home-hotseat</string>
 
-    <!--  Text to inform the user that they can't uninstall a system application -->
+    <!-- Text to inform the user that they can't uninstall a system application -->
     <string name="uninstall_system_app_text">This is a system application and cannot be uninstalled.</string>
 
     <!-- Title of the Android Dreams (screensaver) module -->
     <string name="dream_name">Rocket Launcher</string>
+
+    <!-- Default folder title -->
+    <string name="default_folder_name">Unnamed Folder</string>
 </resources>

@@ -298,6 +298,7 @@ public class CellLayout extends ViewGroup {
         mCountX = x;
         mCountY = y;
         mOccupied = new boolean[mCountX][mCountY];
+        requestLayout();
     }
 
     private void invalidateBubbleTextView(BubbleTextView icon) {
@@ -971,7 +972,8 @@ public class CellLayout extends ViewGroup {
         return mChildren.getChildAt(x, y);
     }
 
-    public boolean animateChildToPosition(final View child, int cellX, int cellY, int duration) {
+    public boolean animateChildToPosition(final View child, int cellX, int cellY, int duration,
+            int delay) {
         CellLayoutChildren clc = getChildrenLayout();
         if (clc.indexOfChild(child) != -1 && !mOccupied[cellX][cellY]) {
             final LayoutParams lp = (LayoutParams) child.getLayoutParams();
@@ -995,6 +997,10 @@ public class CellLayout extends ViewGroup {
             lp.isLockedToGrid = false;
             int newX = lp.x;
             int newY = lp.y;
+
+            lp.x = oldX;
+            lp.y = oldY;
+            child.requestLayout();
 
             PropertyValuesHolder x = PropertyValuesHolder.ofInt("x", oldX, newX);
             PropertyValuesHolder y = PropertyValuesHolder.ofInt("y", oldY, newY);
@@ -1023,6 +1029,7 @@ public class CellLayout extends ViewGroup {
                     cancelled = true;
                 }
             });
+            oa.setStartDelay(delay);
             oa.start();
             return true;
         }

@@ -1196,11 +1196,12 @@ public class Workspace extends SmoothPagedView
             View currentPage = getChildAt(getCurrentPage());
             Matrix m = currentPage.getMatrix();
 
-            // Draw outer ring
             FolderRingAnimator fra = mFolderOuterRings.get(i);
+
+            // Draw outer ring
             Drawable d = FolderRingAnimator.sSharedOuterRingDrawable;
-            int width = (int) (d.getIntrinsicWidth() * fra.getOuterRingScale());
-            int height = (int) (d.getIntrinsicHeight() * fra.getOuterRingScale());
+            int width = (int) fra.getOuterRingSize();
+            int height = width;
             fra.getLocation(mTempLocation);
 
             // First we map the folder's location from window coordinates to its containing
@@ -1223,34 +1224,28 @@ public class Workspace extends SmoothPagedView
             canvas.restore();
 
             // Draw inner ring
-            if (fra.mFolderIcon != null) {
-                int folderWidth = fra.mFolderIcon != null ?
-                        fra.mFolderIcon.getMeasuredWidth() : mCellWidth;
-                int folderHeight = fra.mFolderIcon != null ?
-                        fra.mFolderIcon.getMeasuredWidth() : mCellHeight;
-                d = FolderRingAnimator.sSharedInnerRingDrawable;
-                width = (int) (folderWidth * fra.getInnerRingScale());
-                height = (int) (folderHeight * fra.getInnerRingScale());
+            d = FolderRingAnimator.sSharedInnerRingDrawable;
+            width = (int) fra.getInnerRingSize();
+            height = width;
 
-                // First we map the folder's location from window coordinates to its containing
-                // CellLayout's coordinates. Then we transform the coordinates according to the
-                // CellLayout's transform. Finally, we map this back into the coordinates of the
-                // the window (ie. Workspace).
-                x = mTempLocation[0] + mScrollX - width / 2 - currentPage.getLeft();
-                y = mTempLocation[1] + mScrollY - height / 2 - currentPage.getTop();
-                mTempFloatTuple[0] = x;
-                mTempFloatTuple[1] = y;
-                m.mapPoints(mTempFloatTuple);
-                x = (int) (mTempFloatTuple[0]) + currentPage.getLeft();
-                y = (int) (mTempFloatTuple[1]) + currentPage.getTop();
+            // First we map the folder's location from window coordinates to its containing
+            // CellLayout's coordinates. Then we transform the coordinates according to the
+            // CellLayout's transform. Finally, we map this back into the coordinates of the
+            // the window (ie. Workspace).
+            x = mTempLocation[0] + mScrollX - width / 2 - currentPage.getLeft();
+            y = mTempLocation[1] + mScrollY - height / 2 - currentPage.getTop();
+            mTempFloatTuple[0] = x;
+            mTempFloatTuple[1] = y;
+            m.mapPoints(mTempFloatTuple);
+            x = (int) (mTempFloatTuple[0]) + currentPage.getLeft();
+            y = (int) (mTempFloatTuple[1]) + currentPage.getTop();
 
-                canvas.save();
-                canvas.translate(x, y);
-                d.setBounds(0, 0, (int) (width * currentPage.getScaleX()),
-                        (int) (height * currentPage.getScaleY()));
-                d.draw(canvas);
-                canvas.restore();
-            }
+            canvas.save();
+            canvas.translate(x, y);
+            d.setBounds(0, 0, (int) (width * currentPage.getScaleX()),
+                    (int) (height * currentPage.getScaleY()));
+            d.draw(canvas);
+            canvas.restore();
         }
         super.onDraw(canvas);
     }
@@ -3022,8 +3017,9 @@ public class Workspace extends SmoothPagedView
                 mCellWidth = mDragTargetLayout.getCellWidth();
                 mCellHeight = mDragTargetLayout.getCellHeight();
             }
+
             int x = tvLocation[0] - wsLocation[0] + v.getMeasuredWidth() / 2;
-            int y = tvLocation[1] - wsLocation[1] + v.getMeasuredHeight() / 2;
+            int y = tvLocation[1] - wsLocation[1] + FolderRingAnimator.sPreviewSize / 2;
 
             if (mDragFolderRingAnimator == null) {
                 mDragFolderRingAnimator = new FolderRingAnimator(mLauncher, null);

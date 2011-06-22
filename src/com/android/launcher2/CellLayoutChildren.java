@@ -83,6 +83,7 @@ public class CellLayoutChildren extends ViewGroup {
         lp.setup(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
     }
 
+
     public void measureChild(View child) {
         final int cellWidth = mCellWidth;
         final int cellHeight = mCellHeight;
@@ -92,7 +93,6 @@ public class CellLayoutChildren extends ViewGroup {
         int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(lp.width, MeasureSpec.EXACTLY);
         int childheightMeasureSpec = MeasureSpec.makeMeasureSpec(lp.height,
                 MeasureSpec.EXACTLY);
-
         child.measure(childWidthMeasureSpec, childheightMeasureSpec);
     }
 

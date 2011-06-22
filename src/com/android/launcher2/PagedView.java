@@ -692,7 +692,7 @@ public abstract class PagedView extends ViewGroup {
         }
         View v = getPageAt(focusablePage);
         if (v != null) {
-            v.requestFocus(direction, previouslyFocusedRect);
+            return v.requestFocus(direction, previouslyFocusedRect);
         }
         return false;
     }
