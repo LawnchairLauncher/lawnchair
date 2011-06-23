@@ -158,9 +158,6 @@ public class Workspace extends SmoothPagedView
     private static final int DEFAULT_CELL_COUNT_X = 4;
     private static final int DEFAULT_CELL_COUNT_Y = 4;
 
-    private Drawable mPreviousIndicator;
-    private Drawable mNextIndicator;
-
     // State variable that indicates whether the pages are small (ie when you're
     // in all apps or customize mode)
     private boolean mIsSmall = false;
@@ -681,17 +678,6 @@ public class Workspace extends SmoothPagedView
     @Override
     protected void notifyPageSwitchListener() {
         super.notifyPageSwitchListener();
-
-        if (mPreviousIndicator != null) {
-            // if we know the next page, we show the indication for it right away; it looks
-            // weird if the indicators are lagging
-            int page = mNextPage;
-            if (page == INVALID_PAGE) {
-                page = mCurrentPage;
-            }
-            mPreviousIndicator.setLevel(page);
-            mNextIndicator.setLevel(page);
-        }
         Launcher.setScreen(mCurrentPage);
     };
 
@@ -3521,13 +3507,6 @@ public class Workspace extends SmoothPagedView
             setCurrentPage(mDefaultPage);
         }
         getChildAt(mDefaultPage).requestFocus();
-    }
-
-    void setIndicators(Drawable previous, Drawable next) {
-        mPreviousIndicator = previous;
-        mNextIndicator = next;
-        previous.setLevel(mCurrentPage);
-        next.setLevel(mCurrentPage);
     }
 
     @Override

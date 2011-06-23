@@ -226,10 +226,6 @@ public final class Launcher extends Activity
 
     private static HashMap<Long, FolderInfo> sFolders = new HashMap<Long, FolderInfo>();
 
-    // The "signpost" images along the bottom of the screen (only in some layouts)
-    private ImageView mPreviousView;
-    private ImageView mNextView;
-
     // Hotseats (quick-launch icons next to AllApps)
     private String[] mHotseatConfig = null;
     private Intent[] mHotseats = null;
@@ -675,13 +671,6 @@ public final class Launcher extends Activity
     @Override
     protected void onPause() {
         super.onPause();
-        // Some launcher layouts don't have a previous and next view
-        if (mPreviousView != null) {
-            dismissPreview(mPreviousView);
-        }
-        if (mNextView != null) {
-            dismissPreview(mNextView);
-        }
         mPaused = true;
         mDragController.cancelDrag();
     }
@@ -878,21 +867,6 @@ public final class Launcher extends Activity
             ImageView hotseatRight = (ImageView) findViewById(R.id.hotseat_right);
             hotseatRight.setContentDescription(mHotseatLabels[1]);
             hotseatRight.setImageDrawable(mHotseatIcons[1]);
-
-            View.OnKeyListener listener = new IndicatorKeyEventListener();
-            mPreviousView = (ImageView) mDragLayer.findViewById(R.id.previous_screen);
-            mPreviousView.setOnKeyListener(listener);
-            mNextView = (ImageView) mDragLayer.findViewById(R.id.next_screen);
-            mNextView.setOnKeyListener(listener);
-
-            Drawable previous = mPreviousView.getDrawable();
-            Drawable next = mNextView.getDrawable();
-            mWorkspace.setIndicators(previous, next);
-
-            mPreviousView.setHapticFeedbackEnabled(false);
-            mPreviousView.setOnLongClickListener(this);
-            mNextView.setHapticFeedbackEnabled(false);
-            mNextView.setOnLongClickListener(this);
         }
 
         if (!LauncherApplication.isScreenLarge()) {
@@ -1383,15 +1357,6 @@ public final class Launcher extends Activity
         unbindDesktopItems();
 
         getContentResolver().unregisterContentObserver(mWidgetObserver);
-
-        // Some launcher layouts don't have a previous and next view
-        if (mPreviousView != null) {
-            dismissPreview(mPreviousView);
-        }
-        if (mNextView != null) {
-            dismissPreview(mNextView);
-        }
-
         unregisterReceiver(mCloseSystemDialogsReceiver);
 
         ((ViewGroup) mWorkspace.getParent()).removeAllViews();
@@ -1516,12 +1481,6 @@ public final class Launcher extends Activity
 
     public boolean isWorkspaceLocked() {
         return mWorkspaceLoading || mWaitingForResult;
-    }
-
-    // Is the workspace preview (brought up by long-pressing on a signpost icon) visible?
-    private boolean isPreviewVisible() {
-        return (mPreviousView != null && mPreviousView.getTag() != null) ||
-                (mNextView != null && mNextView.getTag() != null);
     }
 
     private void addItems() {
@@ -1734,9 +1693,6 @@ public final class Launcher extends Activity
             } else {
                 closeFolder();
             }
-        } else if (isPreviewVisible()) {
-            dismissPreview(mPreviousView);
-            dismissPreview(mNextView);
         } else {
             mWorkspace.exitWidgetResizeMode();
 
@@ -2001,20 +1957,6 @@ public final class Launcher extends Activity
         }
 
         switch (v.getId()) {
-            case R.id.previous_screen:
-                if (mState != State.APPS_CUSTOMIZE) {
-                    mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
-                            HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-                    showPreviews(v);
-                }
-                return true;
-            case R.id.next_screen:
-                if (mState != State.APPS_CUSTOMIZE) {
-                    mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
-                            HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-                    showPreviews(v);
-                }
-                return true;
             case R.id.all_apps_button:
                 if (mState != State.APPS_CUSTOMIZE) {
                     mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
@@ -2602,12 +2544,8 @@ public final class Launcher extends Activity
             if (animated) {
                 int duration = mSearchDeleteBar.getTransitionInDuration();
                 mButtonCluster.animate().alpha(1f).setDuration(duration);
-                mPreviousView.animate().alpha(1f).setDuration(duration);
-                mNextView.animate().alpha(1f).setDuration(duration);
             } else {
                 mButtonCluster.setAlpha(1f);
-                mPreviousView.setAlpha(1f);
-                mNextView.setAlpha(1f);
             }
         }
     }
@@ -2620,12 +2558,8 @@ public final class Launcher extends Activity
             if (animated) {
                 int duration = mSearchDeleteBar.getTransitionOutDuration();
                 mButtonCluster.animate().alpha(0f).setDuration(duration);
-                mPreviousView.animate().alpha(0f).setDuration(duration);
-                mNextView.animate().alpha(0f).setDuration(duration);
             } else {
                 mButtonCluster.setAlpha(0f);
-                mPreviousView.setAlpha(0f);
-                mNextView.setAlpha(0f);
             }
         }
     }
