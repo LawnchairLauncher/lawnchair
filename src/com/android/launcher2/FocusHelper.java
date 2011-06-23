@@ -41,16 +41,6 @@ class ButtonBarKeyEventListener implements View.OnKeyListener {
 }
 
 /**
- * A keyboard listener we set on the indicator buttons.
- */
-class IndicatorKeyEventListener implements View.OnKeyListener {
-    @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-        return FocusHelper.handleIndicatorButtonKeyEvent(v, keyCode, event);
-    }
-}
-
-/**
  * A keyboard listener we set on all the dock buttons.
  */
 class DockKeyEventListener implements View.OnKeyListener {
@@ -545,73 +535,6 @@ public class FocusHelper {
     }
 
     /**
-     * Handles key events in the prev/next indicators.
-     */
-    static boolean handleIndicatorButtonKeyEvent(View v, int keyCode, KeyEvent e) {
-        final ViewGroup launcher = (ViewGroup) v.getParent();
-        final Workspace workspace = (Workspace) launcher.findViewById(R.id.workspace);
-        final ViewGroup hotseat = (ViewGroup) launcher.findViewById(R.id.all_apps_button_cluster);
-        final View previousIndicator = launcher.findViewById(R.id.previous_screen);
-        final View nextIndicator = launcher.findViewById(R.id.next_screen);
-        final int pageIndex = workspace.getCurrentPage();
-        final int pageCount = workspace.getChildCount();
-
-        final int action = e.getAction();
-        final boolean handleKeyEvent = (action != KeyEvent.ACTION_UP);
-        boolean wasHandled = false;
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_DPAD_LEFT:
-                if (handleKeyEvent) {
-                    if (v == previousIndicator) {
-                        if (pageIndex > 0) {
-                            // Snap to previous page and clear focus
-                            workspace.snapToPage(pageIndex - 1);
-                        }
-                    } else if (v == nextIndicator) {
-                        // Select the last button in the hot seat
-                        hotseat.getChildAt(hotseat.getChildCount() - 1).requestFocus();
-                    }
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_DPAD_RIGHT:
-                if (handleKeyEvent) {
-                    if (v == previousIndicator) {
-                        // Select the first button in the hot seat
-                        hotseat.getChildAt(0).requestFocus();
-                    } else if (v == nextIndicator) {
-                        if (pageIndex < (pageCount - 1)) {
-                            // Snap to next page and clear focus
-                            workspace.snapToPage(pageIndex + 1);
-                        }
-                    }
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_DPAD_UP:
-                if (handleKeyEvent) {
-                    // Select the first bubble text view in the current page of the workspace
-                    final CellLayout layout = (CellLayout) workspace.getChildAt(pageIndex);
-                    final CellLayoutChildren children = layout.getChildrenLayout();
-                    final View newIcon = getBubbleTextViewInDirection(layout, children, -1, 1);
-                    if (newIcon != null) {
-                        newIcon.requestFocus();
-                    } else {
-                        workspace.requestFocus();
-                    }
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_DPAD_DOWN:
-                // Do nothing
-                wasHandled = true;
-                break;
-            default: break;
-        }
-        return wasHandled;
-    }
-
-    /**
      * Handles key events in the workspace dock (bottom of the screen).
      */
     static boolean handleDockButtonKeyEvent(View v, int keyCode, KeyEvent e, int orientation) {
@@ -622,8 +545,6 @@ public class FocusHelper {
         final int buttonCount = parent.getChildCount();
         final int pageIndex = workspace.getCurrentPage();
         final int pageCount = workspace.getChildCount();
-        final View previousIndicator = launcher.findViewById(R.id.previous_screen);
-        final View nextIndicator = launcher.findViewById(R.id.next_screen);
 
         // NOTE: currently we don't special case for the phone UI in different
         // orientations, even though the dock is on the side in landscape mode.  This
@@ -635,23 +556,22 @@ public class FocusHelper {
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_LEFT:
                 if (handleKeyEvent) {
-
-                    // Select the previous button, otherwise select the previous page indicator
+                    // Select the previous button, otherwise snap to the previous page
                     if (buttonIndex > 0) {
                         parent.getChildAt(buttonIndex - 1).requestFocus();
                     } else {
-                        previousIndicator.requestFocus();
+                        workspace.snapToPage(pageIndex - 1);
                     }
                 }
                 wasHandled = true;
                 break;
             case KeyEvent.KEYCODE_DPAD_RIGHT:
                 if (handleKeyEvent) {
-                    // Select the next button, otherwise select the next page indicator
+                    // Select the next button, otherwise snap to the next page
                     if (buttonIndex < (buttonCount - 1)) {
                         parent.getChildAt(buttonIndex + 1).requestFocus();
                     } else {
-                        nextIndicator.requestFocus();
+                        workspace.snapToPage(pageIndex + 1);
                     }
                 }
                 wasHandled = true;
