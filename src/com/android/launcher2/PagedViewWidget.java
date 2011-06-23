@@ -140,23 +140,6 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         }
     }
 
-    public void applyFromWallpaperInfo(ResolveInfo info, PackageManager packageManager,
-            FastBitmapDrawable preview, int maxWidth, HolographicOutlineHelper holoOutlineHelper) {
-        mHolographicOutlineHelper = holoOutlineHelper;
-        ImageView image = (ImageView) findViewById(R.id.wallpaper_preview);
-        image.setMaxWidth(maxWidth);
-        image.setImageDrawable(preview);
-        mPreviewImageView = image;
-        TextView name = (TextView) findViewById(R.id.wallpaper_name);
-        name.setText(info.loadLabel(packageManager));
-        name.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        
-        // Hide the divider in the Phone UI.
-        if (!LauncherApplication.isScreenLarge()) {
-            findViewById(R.id.divider).setVisibility(View.GONE);
-        }
-    }
-
     public void setHolographicOutline(Bitmap holoOutline) {
         mHolographicOutline = holoOutline;
         invalidate();

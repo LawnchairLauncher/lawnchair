@@ -33,9 +33,6 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -64,6 +61,7 @@ import java.util.List;
 interface AsyncTaskCallback {
     void run(AppsCustomizeAsyncTask task, AsyncTaskPageData data);
 }
+
 /**
  * The data needed to perform either of the custom AsyncTasks.
  */
@@ -72,8 +70,8 @@ class AsyncTaskPageData {
             AsyncTaskCallback postR) {
         page = p;
         items = l;
-        srcImages = si;
-        images = new ArrayList<Bitmap>();
+        sourceImages = si;
+        generatedImages = new ArrayList<Bitmap>();
         cellWidth = cellHeight = -1;
         doInBackgroundCallback = bgR;
         postExecuteCallback = postR;
@@ -82,7 +80,7 @@ class AsyncTaskPageData {
             AsyncTaskCallback postR) {
         page = p;
         items = l;
-        images = new ArrayList<Bitmap>();
+        generatedImages = new ArrayList<Bitmap>();
         cellWidth = cw;
         cellHeight = ch;
         doInBackgroundCallback = bgR;
@@ -90,13 +88,14 @@ class AsyncTaskPageData {
     }
     int page;
     ArrayList<Object> items;
-    ArrayList<Bitmap> srcImages;
-    ArrayList<Bitmap> images;
+    ArrayList<Bitmap> sourceImages;
+    ArrayList<Bitmap> generatedImages;
     int cellWidth;
     int cellHeight;
     AsyncTaskCallback doInBackgroundCallback;
     AsyncTaskCallback postExecuteCallback;
 }
+
 /**
  * A generic template for an async task used in AppsCustomize.
  */
@@ -130,22 +129,6 @@ class AppsCustomizeAsyncTask extends AsyncTask<AsyncTaskPageData, Void, AsyncTas
     int page;
     AppsCustomizePagedView.ContentType pageContentType;
     int threadPriority;
-}
-/**
- * An AsyncTask that loads widget previews from package manager in the background.
- */
-class LoadWidgetPreviewsTask extends AppsCustomizeAsyncTask {
-    LoadWidgetPreviewsTask(int p, AppsCustomizePagedView.ContentType t) {
-        super(p, t);
-    }
-}
-/**
- * An AsyncTask that generates holgoraphic outlines for a specified set of bitmaps.
- */
-class GenerateHoloOutlinesTask extends AppsCustomizeAsyncTask {
-    GenerateHoloOutlinesTask(int p, AppsCustomizePagedView.ContentType t) {
-        super(p, t);
-    }
 }
 
 /**
@@ -462,22 +445,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         return true;
     }
     private void endDragging(boolean success) {
-        post(new Runnable() {
-            // Once the drag operation has fully completed, hence the post, we want to disable the
-            // deleteZone and the appInfoButton in all apps, and re-enable the instance which
-            // live in the workspace
-            public void run() {
-                // if onDestroy was called on Launcher, we might have already deleted the
-                // all apps delete zone / info button, so check if they are null
-                DeleteZone allAppsDeleteZone =
-                        (DeleteZone) mLauncher.findViewById(R.id.all_apps_delete_zone);
-                ApplicationInfoDropTarget allAppsInfoButton =
-                    (ApplicationInfoDropTarget) mLauncher.findViewById(R.id.all_apps_info_target);
-
-                if (allAppsDeleteZone != null) allAppsDeleteZone.setDragAndDropEnabled(false);
-                if (allAppsInfoButton != null) allAppsInfoButton.setDragAndDropEnabled(false);
-            }
-        });
         mLauncher.exitSpringLoadedDragMode();
         mLauncher.getWorkspace().onDragStopped(success);
         mLauncher.unlockScreenOrientation();
@@ -624,7 +591,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         while (iter.hasNext()) {
             AppsCustomizeAsyncTask task = (AppsCustomizeAsyncTask) iter.next();
             int taskPage = task.page;
-            if (taskPage < (mCurrentPage - 2) || taskPage > (mCurrentPage + 2)) {
+            if (taskPage < getAssociatedLowerPageBound(mCurrentPage) ||
+                    taskPage > getAssociatedUpperPageBound(mCurrentPage)) {
                 task.cancel(false);
                 iter.remove();
             } else {
@@ -641,7 +609,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
                     // Load each of the widget/shortcut previews
                     ArrayList<Object> items = data.items;
-                    ArrayList<Bitmap> images = data.images;
+                    ArrayList<Bitmap> images = data.generatedImages;
                     int count = items.size();
                     int cellWidth = data.cellWidth;
                     int cellHeight = data.cellHeight;
@@ -655,12 +623,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                             AppWidgetProviderInfo info = (AppWidgetProviderInfo) rawInfo;
                             int[] cellSpans = CellLayout.rectToCell(getResources(),
                                     info.minWidth, info.minHeight, null);
-                            images.add(getWidgetPreviewInBackground(info, cellSpans[0],cellSpans[1],
+                            images.add(getWidgetPreview(info, cellSpans[0],cellSpans[1],
                                     cellWidth, cellHeight));
                         } else if (rawInfo instanceof ResolveInfo) {
                             // Fill in the shortcuts information
                             ResolveInfo info = (ResolveInfo) rawInfo;
-                            images.add(getShortcutPreviewInBackground(info, cellWidth, cellHeight));
+                            images.add(getShortcutPreview(info, cellWidth, cellHeight));
                         }
                     }
                 }
@@ -676,7 +644,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         });
 
         // Ensure that the task is appropriately prioritized and runs in parallel
-        LoadWidgetPreviewsTask t = new LoadWidgetPreviewsTask(page, mContentType);
+        AppsCustomizeAsyncTask t = new AppsCustomizeAsyncTask(page, mContentType);
         t.setThreadPriority(getThreadPriorityForPage(page));
         t.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, pageData);
         mRunningTasks.add(t);
@@ -693,8 +661,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                     // Ensure that this task starts running at the correct priority
                     task.syncThreadPriority();
 
-                    ArrayList<Bitmap> images = data.images;
-                    ArrayList<Bitmap> srcImages = data.srcImages;
+                    ArrayList<Bitmap> images = data.generatedImages;
+                    ArrayList<Bitmap> srcImages = data.sourceImages;
                     int count = srcImages.size();
                     Canvas c = new Canvas();
                     for (int i = 0; i < count && !task.isCancelled(); ++i) {
@@ -726,8 +694,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             });
 
         // Ensure that the outline task always runs in the background, serially
-        GenerateHoloOutlinesTask t =
-            new GenerateHoloOutlinesTask(page, mContentType);
+        AppsCustomizeAsyncTask t =
+            new AppsCustomizeAsyncTask(page, mContentType);
         t.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
         t.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, pageData);
         mRunningTasks.add(t);
@@ -762,7 +730,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             d.setBounds(oldBounds); // Restore the bounds
         }
     }
-    private Bitmap getShortcutPreviewInBackground(ResolveInfo info, int cellWidth,
+    private Bitmap getShortcutPreview(ResolveInfo info, int cellWidth,
             int cellHeight) {
         Resources resources = mLauncher.getResources();
         int iconSize = resources.getDimensionPixelSize(R.dimen.app_icon_size);
@@ -776,7 +744,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         renderDrawableToBitmap(icon, preview, 0, 0, iconSize, iconSize, 1f, 1f);
         return preview;
     }
-    private Bitmap getWidgetPreviewInBackground(AppWidgetProviderInfo info,
+    private Bitmap getWidgetPreview(AppWidgetProviderInfo info,
             int cellHSpan, int cellVSpan, int cellWidth, int cellHeight) {
 
         // Calculate the size of the drawable
@@ -901,7 +869,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 createItemInfo = new PendingAddWidgetInfo(info, null, null);
                 int[] cellSpans = CellLayout.rectToCell(getResources(),
                         info.minWidth, info.minHeight, null);
-                FastBitmapDrawable preview = new FastBitmapDrawable(data.images.get(i));
+                FastBitmapDrawable preview = new FastBitmapDrawable(data.generatedImages.get(i));
                 widget.applyFromAppWidgetProviderInfo(info, preview, -1, cellSpans, 
                         mHolographicOutlineHelper);
                 widget.setTag(createItemInfo);
@@ -912,7 +880,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 createItemInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
                 createItemInfo.componentName = new ComponentName(info.activityInfo.packageName,
                         info.activityInfo.name);
-                FastBitmapDrawable preview = new FastBitmapDrawable(data.images.get(i));
+                FastBitmapDrawable preview = new FastBitmapDrawable(data.generatedImages.get(i));
                 widget.applyFromResolveInfo(mPackageManager, info, preview,
                         mHolographicOutlineHelper);
                 widget.setTag(createItemInfo);
@@ -933,7 +901,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         invalidate();
         forceUpdateAdjacentPagesAlpha();
-        prepareGenerateHoloOutlinesTask(data.page, data.items, data.images);
+        prepareGenerateHoloOutlinesTask(data.page, data.items, data.generatedImages);
     }
     private void onHolographicPageItemsLoaded(AsyncTaskPageData data) {
         // Invalidate early to short-circuit children invalidates
@@ -946,13 +914,13 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             int count = cl.getPageChildCount();
             for (int i = 0; i < count; ++i) {
                 PagedViewIcon icon = (PagedViewIcon) cl.getChildOnPageAt(i);
-                icon.setHolographicOutline(data.images.get(i));
+                icon.setHolographicOutline(data.generatedImages.get(i));
             }
         } else {
             int count = layout.getChildCount();
             for (int i = 0; i < count; ++i) {
                 View v = layout.getChildAt(i);
-                ((PagedViewWidget) v).setHolographicOutline(data.images.get(i));
+                ((PagedViewWidget) v).setHolographicOutline(data.generatedImages.get(i));
             }
         }
     }

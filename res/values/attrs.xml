@@ -114,24 +114,6 @@
         <attr name="widgetCountY" format="integer" />
     </declare-styleable>
 
-    <!-- CustomizePagedView specific attributes. These attributes are used to customize
-         a CustomizePagedView view in XML files. -->
-    <declare-styleable name="CustomizePagedView">
-        <!-- The cell span of an item in the wallpapers tab -->
-        <attr name="wallpaperCellSpanX" format="integer" />
-        <!-- The max cell span of all items in a particular wallpaper tab page -->
-        <attr name="wallpaperCellCountX" format="integer" />
-        <!-- The number of horizontal cells for the widget tab -->
-        <attr name="widgetCellCountX" format="integer" />
-    </declare-styleable>
-
-    <!-- DeleteZone specific attributes. These attributes are used to customize
-         a DeleteZone view in XML files. -->
-    <declare-styleable name="DeleteZone">
-        <!-- Orientation of the delete zone. -->
-        <attr name="direction" />
-    </declare-styleable>
-
     <!-- HandleView specific attributes. These attributes are used to customize
          a HandleView view in XML files. -->
     <declare-styleable name="HandleView">

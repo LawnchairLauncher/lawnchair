@@ -193,7 +193,6 @@ public final class Launcher extends Activity
 
     private FolderInfo mFolderInfo;
 
-    private DeleteZone mDeleteZone;
     private ViewGroup mButtonCluster;
     private View mAllAppsButton;
     private SearchDropTargetBar mSearchDeleteBar;

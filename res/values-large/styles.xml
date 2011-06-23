@@ -75,10 +75,6 @@
         <item name="android:textSize">20sp</item>
     </style>
 
-    <style name="CustomizeTabIndicator.Wide" parent="TabIndicator.Wide">
-    </style>
-
-
     <!-- QSB Search / Drop Target bar -->
     <style name="SearchDropTargetBar">
         <item name="android:orientation">horizontal</item>

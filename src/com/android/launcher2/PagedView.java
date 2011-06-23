@@ -166,7 +166,7 @@ public abstract class PagedView extends ViewGroup {
     private static final int sScrollIndicatorFadeOutDuration = 650;
 
     // If set, will defer loading associated pages until the scrolling settles
-    private boolean mDeferLoadAssociatedPagesAfterScroll;
+    private boolean mDeferLoadAssociatedPagesUntilScrollCompletes;
 
     public interface PageSwitchListener {
         void onPageSwitch(View newPage, int newPageIndex);
@@ -375,9 +375,9 @@ public abstract class PagedView extends ViewGroup {
             notifyPageSwitchListener();
 
             // Load the associated pages if necessary
-            if (mDeferLoadAssociatedPagesAfterScroll) {
+            if (mDeferLoadAssociatedPagesUntilScrollCompletes) {
                 loadAssociatedPages(mCurrentPage);
-                mDeferLoadAssociatedPagesAfterScroll = false;
+                mDeferLoadAssociatedPagesUntilScrollCompletes = false;
             }
 
             // We don't want to trigger a page end moving unless the page has settled
@@ -1390,7 +1390,7 @@ public abstract class PagedView extends ViewGroup {
         if (mDeferScrollUpdate) {
             loadAssociatedPages(mNextPage);
         } else {
-            mDeferLoadAssociatedPagesAfterScroll = true;
+            mDeferLoadAssociatedPagesUntilScrollCompletes = true;
         }
         notifyPageSwitchListener();
         invalidate();

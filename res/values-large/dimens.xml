@@ -39,7 +39,6 @@
     
     <!-- Size of icons in workspace -->
     <dimen name="app_icon_size">72dp</dimen>
-
     <!-- Size of content of icons in workspace, as specified by the android icon guidelines -->
     <dimen name="app_icon_content_size">60dp</dimen>
 
@@ -54,9 +53,6 @@
 
     <dimen name="all_apps_button_drawable_padding">0dip</dimen>
     <dimen name="all_apps_button_vertical_padding">4dip</dimen>
-
-    <integer name="land_all_apps_view_cellCountX">7</integer>
-    <integer name="land_all_apps_view_cellCountY">5</integer>
 
     <!-- height & width of the drop rectangle for the trash icon -->
     <dimen name="delete_zone_vertical_drag_padding">20dip</dimen>
@@ -81,16 +77,6 @@
      the drag view should be offset from the position of the original view. -->
     <dimen name="dragViewOffsetX">0dp</dimen>
     <dimen name="dragViewOffsetY">-12dp</dimen>
-
-    <!-- The actual number of rows/columns will be determined dynamically based on the screen
-         size, but in portrait we want to cap the rows at 3, otherwise it looks weird. -->
-    <integer name="customization_drawer_contents_maxCellCountY">3</integer>
-
-    <!-- The percentage of vertical space that the customize tray should try to fill. -->
-    <integer name="customization_drawer_verticalFillPercentage">65</integer>
-
-    <!-- Max number of rows in all apps, because too many looks weird. -->
-    <integer name="all_apps_view_maxCellCountY">6</integer>
 
 <!-- Workspace grid -->
     <!-- Padding applied to AppWidgets -->

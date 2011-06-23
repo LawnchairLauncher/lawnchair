@@ -33,16 +33,4 @@
     <dimen name="all_apps_view_pageLayoutPaddingBottom">14dp</dimen>
     <dimen name="all_apps_view_pageLayoutPaddingLeft">40dp</dimen>
     <dimen name="all_apps_view_pageLayoutPaddingRight">40dp</dimen>
-
-    <!-- Dimensions for customize should generally be the same as all apps, or very similar. -->
-    <dimen name="customization_drawer_contents_pageLayoutWidthGap">32dp</dimen>
-    <dimen name="customization_drawer_contents_pageLayoutHeightGap">12dp</dimen>
-    <dimen name="customization_drawer_contents_pageLayoutPaddingTop">20dp</dimen>
-    <dimen name="customization_drawer_contents_pageLayoutPaddingBottom">20dp</dimen>
-    <dimen name="customization_drawer_contents_pageLayoutPaddingLeft">40dp</dimen>
-    <dimen name="customization_drawer_contents_pageLayoutPaddingRight">40dp</dimen>
-
-    <integer name="customization_drawer_contents_wallpaperCellSpanX">3</integer>
-    <integer name="customization_drawer_contents_wallpaperCellCountX">12</integer>
-    <integer name="customization_drawer_contents_widgetCellCountX">14</integer>
 </resources>

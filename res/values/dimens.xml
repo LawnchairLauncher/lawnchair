@@ -57,12 +57,6 @@
     <dimen name="allAppsSmallScreenVerticalMarginLandscape">30dip</dimen>
     <dimen name="allAppsSmallScreenVerticalMarginPortrait">60dip</dimen>
 
-    <!-- height & width of the drop rectangle for the trash icon -->
-    <dimen name="delete_zone_size">70dip</dimen>
-
-    <!-- delete_zone_size_full - button_bar_height_portrait -->
-    <dimen name="delete_zone_padding">14dip</dimen>
-
     <!-- padding between the delete zone drawable and text -->
     <dimen name="delete_zone_drawable_padding">8dip</dimen>
 
