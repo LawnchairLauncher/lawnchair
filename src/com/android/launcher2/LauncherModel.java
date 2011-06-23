@@ -380,15 +380,33 @@ public class LauncherModel extends BroadcastReceiver {
             });
     }
 
+    static void deleteFolderContentsFromDatabase(Context context, final FolderInfo info) {
+        deleteFolderContentsFromDatabase(context, info, false);
+    }
+
     /**
      * Remove the contents of the specified folder from the database
      */
-    static void deleteFolderContentsFromDatabase(Context context, FolderInfo info) {
+    static void deleteFolderContentsFromDatabase(Context context, final FolderInfo info,
+            boolean post) {
+        // TODO: this post flag is temporary to fix an ordering of commands issue. In future, 
+        // all db operations will be moved to the worker thread, so this can be discarded at
+        // that time.
         final ContentResolver cr = context.getContentResolver();
 
-        cr.delete(LauncherSettings.Favorites.getContentUri(info.id, false), null, null);
-        cr.delete(LauncherSettings.Favorites.CONTENT_URI,
-                LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
+        if (!post) {
+            cr.delete(LauncherSettings.Favorites.getContentUri(info.id, false), null, null);
+            cr.delete(LauncherSettings.Favorites.CONTENT_URI,
+                    LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
+        } else {
+            sWorker.post(new Runnable() {
+                public void run() {
+                    cr.delete(LauncherSettings.Favorites.getContentUri(info.id, false), null, null);
+                    cr.delete(LauncherSettings.Favorites.CONTENT_URI,
+                            LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
+                }
+            });
+        }
     }
 
     /**

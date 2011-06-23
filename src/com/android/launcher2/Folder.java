@@ -329,7 +329,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         mItemsInvalidated = true;
         mInfo.addListener(this);
 
-        if (sDefaultFolderName != mInfo.title) {
+        if (!sDefaultFolderName.contentEquals(mInfo.title)) {
             mFolderName.setText(mInfo.title);
         } else {
             mFolderName.setText("");
@@ -784,6 +784,42 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
             setupContentForNumItems(getItemCount());
             mRearrangeOnClose = false;
         }
+        if (getItemCount() <= 1) {
+            replaceFolderWithFinalItem();
+        }
+    }
+
+    private void replaceFolderWithFinalItem() {
+        ItemInfo finalItem = null;
+
+        if (getItemCount() == 1) {
+            finalItem = mInfo.contents.get(0);
+        }
+
+        // Remove the folder completely
+        final CellLayout cellLayout = (CellLayout)
+                mLauncher.getWorkspace().getChildAt(mInfo.screen);
+        cellLayout.removeView(mFolderIcon);
+        if (mFolderIcon instanceof DropTarget) {
+            mDragController.removeDropTarget((DropTarget) mFolderIcon);
+        }
+        mLauncher.removeFolder(mInfo);
+
+        if (finalItem != null) {
+            LauncherModel.addOrMoveItemInDatabase(mLauncher, finalItem,
+                    LauncherSettings.Favorites.CONTAINER_DESKTOP, mInfo.screen,
+                    mInfo.cellX, mInfo.cellY);
+        }
+        LauncherModel.deleteFolderContentsFromDatabase(mLauncher, mInfo, true);
+
+        // Add the last remaining child to the workspace in place of the folder
+        if (finalItem != null) {
+            View child = mLauncher.createShortcut(R.layout.application, cellLayout,
+                    (ShortcutInfo) finalItem);
+
+            mLauncher.getWorkspace().addInScreen(child, mInfo.screen, mInfo.cellX, mInfo.cellY, 
+                    mInfo.spanX, mInfo.spanY);
+        }
     }
 
     public void onDrop(DragObject d) {
@@ -832,6 +868,9 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
             mRearrangeOnClose = true;
         } else {
             setupContentForNumItems(getItemCount());
+        }
+        if (getItemCount() <= 1) {
+            replaceFolderWithFinalItem();
         }
     }
 
