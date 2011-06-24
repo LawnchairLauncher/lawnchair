@@ -382,8 +382,6 @@ public class FolderIcon extends LinearLayout implements FolderListener {
     }
 
     public void onTitleChanged(CharSequence title) {
-        mFolderName.setText(title);
-        mFolderName.invalidate();
-        mFolderName.requestLayout();
+        mFolderName.setText(title.toString());
     }
 }
