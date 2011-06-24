@@ -19,14 +19,13 @@ package com.android.launcher2;
 import android.content.Context;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.MeasureSpec;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
+import android.widget.GridLayout;
 
 /**
  * The grid based layout used strictly for the widget/wallpaper tab of the AppsCustomize pane
  */
-public class PagedViewGridLayout extends FrameLayout implements Page {
+public class PagedViewGridLayout extends GridLayout implements Page {
     static final String TAG = "PagedViewGridLayout";
 
     private int mCellCountX;
@@ -36,6 +35,7 @@ public class PagedViewGridLayout extends FrameLayout implements Page {
         super(context, null, 0);
         mCellCountX = cellCountX;
         mCellCountY = cellCountY;
+        setColumnCount(mCellCountX);
     }
 
     int getCellCountX() {
@@ -50,9 +50,9 @@ public class PagedViewGridLayout extends FrameLayout implements Page {
         // offset of each page to scroll to before it updates the actual size of each page
         // (which can change depending on the content if the contents aren't a fixed size).
         // We work around this by having a minimum size on each widget page).
-        int widthSpecSize = Math.max(getSuggestedMinimumWidth(),
+        int widthSpecSize = Math.min(getSuggestedMinimumWidth(),
                 MeasureSpec.getSize(widthMeasureSpec));
-        int widthSpecMode = MeasureSpec.AT_MOST;
+        int widthSpecMode = MeasureSpec.EXACTLY;
         super.onMeasure(MeasureSpec.makeMeasureSpec(widthSpecSize, widthSpecMode),
                 heightMeasureSpec);
     }

@@ -323,7 +323,7 @@ public class Workspace extends SmoothPagedView
 
         try {
             final Resources res = getResources();
-            mBackground = res.getDrawable(R.drawable.all_apps_bg_gradient);
+            mBackground = res.getDrawable(R.drawable.apps_customize_bg);
         } catch (Resources.NotFoundException e) {
             // In this case, we will skip drawing background protection
         }
@@ -2549,7 +2549,12 @@ public class Workspace extends SmoothPagedView
         if (!mIsSmall) {
             mDragTargetLayout = getCurrentDropLayout();
             mDragTargetLayout.onDragEnter();
-            showOutlines();
+
+            // Because we don't have space in the Phone UI (the CellLayouts run to the edge) we
+            // don't need to show the outlines
+            if (!LauncherApplication.isScreenLarge()) {
+                showOutlines();
+            }
         }
     }
 

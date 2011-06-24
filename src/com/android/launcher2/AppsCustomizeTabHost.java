@@ -39,9 +39,11 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
 
     private static final String APPS_TAB_TAG = "APPS";
     private static final String WIDGETS_TAB_TAG = "WIDGETS";
+    private static final int sTabBarFadeInDuration = 150;
 
     private final LayoutInflater mLayoutInflater;
     private ViewGroup mTabs;
+    private ViewGroup mTabsContainer;
     private AppsCustomizePagedView mAppsCustomizePane;
 
     public AppsCustomizeTabHost(Context context, AttributeSet attrs) {
@@ -67,10 +69,12 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         // Setup the tab host
         setup();
 
+        final ViewGroup tabsContainer = (ViewGroup) findViewById(R.id.tabs_container);
         final TabWidget tabs = (TabWidget) findViewById(com.android.internal.R.id.tabs);
         final AppsCustomizePagedView appsCustomizePane = (AppsCustomizePagedView)
                 findViewById(R.id.apps_customize_pane_content);
         mTabs = tabs;
+        mTabsContainer = tabsContainer;
         mAppsCustomizePane = appsCustomizePane;
         if (tabs == null || mAppsCustomizePane == null) throw new Resources.NotFoundException();
 
@@ -98,6 +102,9 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         lastTab.setOnKeyListener(keyListener);
         View shopButton = findViewById(R.id.market_button);
         shopButton.setOnKeyListener(keyListener);
+
+        // Hide the tab bar until we measure
+        mTabsContainer.setAlpha(0f);
     }
 
     @Override
@@ -107,9 +114,15 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
 
         // Set the width of the tab list to the content width
         if (remeasureTabWidth) {
-            mTabs.getLayoutParams().width = mAppsCustomizePane.getPageContentWidth();
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            int contentWidth = mAppsCustomizePane.getPageContentWidth();
+            if (contentWidth > 0) {
+                // Set the width and show the tab bar (if we have a loading graphic, we can switch
+                // it off here)
+                mTabs.getLayoutParams().width = contentWidth;
+                mTabsContainer.animate().alpha(1f).setDuration(sTabBarFadeInDuration);
+            }
         }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override
