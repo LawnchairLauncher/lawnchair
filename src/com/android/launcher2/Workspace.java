@@ -3404,9 +3404,9 @@ public class Workspace extends SmoothPagedView
                         } else if (tag instanceof FolderInfo) {
                             final FolderInfo info = (FolderInfo) tag;
                             final ArrayList<ShortcutInfo> contents = info.contents;
-                            final ArrayList<ShortcutInfo> toRemove = new ArrayList<ShortcutInfo>(1);
                             final int contentsCount = contents.size();
-                            boolean removedFromFolder = false;
+                            final ArrayList<ShortcutInfo> appsToRemoveFromFolder =
+                                    new ArrayList<ShortcutInfo>();
 
                             for (int k = 0; k < contentsCount; k++) {
                                 final ShortcutInfo appInfo = contents.get(k);
@@ -3416,19 +3416,14 @@ public class Workspace extends SmoothPagedView
                                 if (Intent.ACTION_MAIN.equals(intent.getAction()) && name != null) {
                                     for (String packageName: packageNames) {
                                         if (packageName.equals(name.getPackageName())) {
-                                            toRemove.add(appInfo);
-                                            LauncherModel.deleteItemFromDatabase(mLauncher, appInfo);
-                                            removedFromFolder = true;
+                                            appsToRemoveFromFolder.add(appInfo);
                                         }
                                     }
                                 }
                             }
-
-                            contents.removeAll(toRemove);
-                            if (removedFromFolder) {
-                                final Folder folder = getOpenFolder();
-                                if (folder != null)
-                                    folder.notifyDataSetChanged();
+                            for (ShortcutInfo item: appsToRemoveFromFolder) {
+                                info.remove(item);
+                                LauncherModel.deleteItemFromDatabase(mLauncher, item);
                             }
                         } else if (tag instanceof LauncherAppWidgetInfo) {
                             final LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) tag;

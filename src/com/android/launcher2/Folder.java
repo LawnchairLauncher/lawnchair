@@ -76,7 +76,6 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     private final LayoutInflater mInflater;
     private final IconCache mIconCache;
     private int mState = STATE_NONE;
-    private int[] mDragItemPosition = new int[2];
     private static final int FULL_GROW = 0;
     private static final int PARTIAL_GROW = 1;
     private static final int REORDER_ANIMATION_DURATION = 230;
@@ -213,8 +212,6 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
 
             mLauncher.getWorkspace().onDragStartedWithItem(v);
             mDragController.startDrag(v, this, item, DragController.DRAG_ACTION_COPY);
-            mDragItemPosition[0] = item.cellX;
-            mDragItemPosition[1] = item.cellY;
             mIconDrawable = ((TextView) v).getCompoundDrawables()[1];
 
             mCurrentDragInfo = item;
@@ -865,7 +862,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     public void onRemove(ShortcutInfo item) {
         mItemsInvalidated = true;
         if (item == mCurrentDragInfo) return;
-        View v = mContent.getChildAt(mDragItemPosition[0], mDragItemPosition[1]);
+        View v = getViewForInfo(item);
         mContent.removeView(v);
         if (mState == STATE_ANIMATING) {
             mRearrangeOnClose = true;
@@ -875,6 +872,18 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         if (getItemCount() <= 1) {
             replaceFolderWithFinalItem();
         }
+    }
+
+    private View getViewForInfo(ShortcutInfo item) {
+        for (int j = 0; j < mContent.getCountY(); j++) {
+            for (int i = 0; i < mContent.getCountX(); i++) {
+                View v = mContent.getChildAt(i, j);
+                if (v.getTag() == item) {
+                    return v;
+                }
+            }
+        }
+        return null;
     }
 
     public void onItemsChanged() {
