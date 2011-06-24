@@ -77,13 +77,14 @@ class AsyncTaskPageData {
         doInBackgroundCallback = bgR;
         postExecuteCallback = postR;
     }
-    AsyncTaskPageData(int p, ArrayList<Object> l, int cw, int ch, AsyncTaskCallback bgR,
+    AsyncTaskPageData(int p, ArrayList<Object> l, int cw, int ch, int ccx, AsyncTaskCallback bgR,
             AsyncTaskCallback postR) {
         page = p;
         items = l;
         generatedImages = new ArrayList<Bitmap>();
         cellWidth = cw;
         cellHeight = ch;
+        cellCountX = ccx;
         doInBackgroundCallback = bgR;
         postExecuteCallback = postR;
     }
@@ -93,6 +94,7 @@ class AsyncTaskPageData {
     ArrayList<Bitmap> generatedImages;
     int cellWidth;
     int cellHeight;
+    int cellCountX;
     AsyncTaskCallback doInBackgroundCallback;
     AsyncTaskCallback postExecuteCallback;
 }
@@ -156,7 +158,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     // Content
     private ContentType mContentType;
     private ArrayList<ApplicationInfo> mApps;
-    private List<Object> mWidgets;
+    private ArrayList<Object> mWidgets;
+    private ArrayList<Object> mShortcuts;
 
     // Caching
     private Canvas mCanvas;
@@ -165,9 +168,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     // Dimens
     private int mContentWidth;
+    private int mAppIconSize;
     private int mMaxWidgetSpan, mMinWidgetSpan;
-    private int mWidgetWidthGap, mWidgetHeightGap;
     private int mWidgetCountX, mWidgetCountY;
+    private int mWidgetWidthGap, mWidgetHeightGap;
+    private int mShortcutCountX, mShortcutCountY;
+    private int mShortcutWidthGap, mShortcutHeightGap;
     private final int mWidgetPreviewIconPaddedDimension;
     private final float sWidgetPreviewIconPaddingPercentage = 0.25f;
     private PagedViewCellLayout mWidgetSpacingLayout;
@@ -183,6 +189,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mContentType = ContentType.Applications;
         mApps = new ArrayList<ApplicationInfo>();
         mWidgets = new ArrayList<Object>();
+        mShortcuts = new ArrayList<Object>();
         mIconCache = ((LauncherApplication) context.getApplicationContext()).getIconCache();
         mHolographicOutlineHelper = new HolographicOutlineHelper();
         mCanvas = new Canvas();
@@ -191,6 +198,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // Save the default widget preview background
         Resources resources = context.getResources();
         mDefaultWidgetBackground = resources.getDrawable(R.drawable.default_widget_preview);
+        mAppIconSize = getResources().getDimensionPixelSize(R.dimen.app_icon_size);
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PagedView, 0, 0);
         // TODO-APPS_CUSTOMIZE: remove these unnecessary attrs after
@@ -214,9 +222,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         // The padding on the non-matched dimension for the default widget preview icons
         // (top + bottom)
-        int iconSize = resources.getDimensionPixelSize(R.dimen.app_icon_size);
         mWidgetPreviewIconPaddedDimension =
-            (int) (iconSize * (1 + (2 * sWidgetPreviewIconPaddingPercentage)));
+            (int) (mAppIconSize * (1 + (2 * sWidgetPreviewIconPaddingPercentage)));
     }
 
     @Override
@@ -266,6 +273,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mCellCountY = mWidgetSpacingLayout.getCellCountY();
         mWidgetCountX = Math.max(1, (int) Math.round(mCellCountX / 2f));
         mWidgetCountY = Math.max(1, (int) Math.round(mCellCountY / 3f));
+        mShortcutCountX = Math.max(1, (int) Math.round(mCellCountX / 2f));
+        mShortcutCountY = Math.max(1, (int) Math.round(mCellCountY / 2f));
+
         mContentWidth = mWidgetSpacingLayout.getContentWidth();
 
         invalidatePageData();
@@ -305,6 +315,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     public void onPackagesUpdated() {
         // Get the list of widgets and shortcuts
         mWidgets.clear();
+        mShortcuts.clear();
         List<AppWidgetProviderInfo> widgets =
             AppWidgetManager.getInstance(mLauncher).getInstalledProviders();
         Collections.sort(widgets,
@@ -314,7 +325,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         Collections.sort(shortcuts,
                 new LauncherModel.WidgetAndShortcutNameComparator(mPackageManager));
         mWidgets.addAll(widgets);
-        mWidgets.addAll(shortcuts);
+        mShortcuts.addAll(shortcuts);
 
         // The next layout pass will trigger data-ready if both widgets and apps are set, so request
         // a layout to do this test and invalidate the page data when ready.
@@ -376,11 +387,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // Compose the visible rect of the drag image
         Rect dragRect = null;
         if (v instanceof TextView) {
-            int iconSize = getResources().getDimensionPixelSize(R.dimen.app_icon_size);
             int top = v.getPaddingTop();
-            int left = (b.getWidth() - iconSize) / 2;
-            int right = left + iconSize;
-            int bottom = top + iconSize;
+            int left = (b.getWidth() - mAppIconSize) / 2;
+            int right = left + mAppIconSize;
+            int bottom = top + mAppIconSize;
             dragRect = new Rect(left, top, right, bottom);
         }
 
@@ -588,7 +598,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
      * Creates and executes a new AsyncTask to load a page of widget previews.
      */
     private void prepareLoadWidgetPreviewsTask(int page, ArrayList<Object> widgets,
-            int cellWidth, int cellHeight) {
+            int cellWidth, int cellHeight, int cellCountX) {
         // Prune all tasks that are no longer needed
         Iterator<AppsCustomizeAsyncTask> iter = mRunningTasks.iterator();
         while (iter.hasNext()) {
@@ -604,7 +614,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
 
         AsyncTaskPageData pageData = new AsyncTaskPageData(page, widgets, cellWidth, cellHeight,
-            new AsyncTaskCallback() {
+            cellCountX, new AsyncTaskCallback() {
                 @Override
                 public void run(AppsCustomizeAsyncTask task, AsyncTaskPageData data) {
                     // Ensure that this task starts running at the correct priority
@@ -733,18 +743,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             d.setBounds(oldBounds); // Restore the bounds
         }
     }
-    private Bitmap getShortcutPreview(ResolveInfo info, int cellWidth,
-            int cellHeight) {
-        Resources resources = mLauncher.getResources();
-        int iconSize = resources.getDimensionPixelSize(R.dimen.app_icon_size);
-        // We only need to make it wide enough so as not allow the preview to be scaled
-        int expectedWidth = cellWidth;
-        int expectedHeight = mWidgetPreviewIconPaddedDimension;
-
+    private Bitmap getShortcutPreview(ResolveInfo info, int cellWidth, int cellHeight) {
         // Render the icon
-        Bitmap preview = Bitmap.createBitmap(expectedWidth, expectedHeight, Config.ARGB_8888);
+        Bitmap preview = Bitmap.createBitmap(cellWidth, mAppIconSize, Config.ARGB_8888);
         Drawable icon = mIconCache.getFullResIcon(info, mPackageManager);
-        renderDrawableToBitmap(icon, preview, 0, 0, iconSize, iconSize, 1f, 1f);
+        renderDrawableToBitmap(icon, preview, 0, 0, mAppIconSize, mAppIconSize, 1f, 1f);
         return preview;
     }
     private Bitmap getWidgetPreview(AppWidgetProviderInfo info,
@@ -793,7 +796,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // Generate a preview image if we couldn't load one
         if (drawable == null) {
             Resources resources = mLauncher.getResources();
-            int iconSize = resources.getDimensionPixelSize(R.dimen.app_icon_size);
 
             // Specify the dimensions of the bitmap
             if (info.minWidth >= info.minHeight) {
@@ -816,8 +818,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 if (info.icon > 0) icon = mPackageManager.getDrawable(packageName, info.icon, null);
                 if (icon == null) icon = resources.getDrawable(R.drawable.ic_launcher_application);
 
-                int offset = (int) (iconSize * sWidgetPreviewIconPaddingPercentage);
-                renderDrawableToBitmap(icon, preview, offset, offset, iconSize, iconSize, 1f, 1f);
+                int offset = (int) (mAppIconSize * sWidgetPreviewIconPaddingPercentage);
+                renderDrawableToBitmap(icon, preview, offset, offset,
+                        mAppIconSize, mAppIconSize, 1f, 1f);
             } catch (Resources.NotFoundException e) {}
         }
         return preview;
@@ -825,32 +828,49 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     public void syncWidgetPages() {
         // Ensure that we have the right number of pages
         Context context = getContext();
-        int numWidgetsPerPage = mWidgetCountX * mWidgetCountY;
-        int numPages = (int) Math.ceil(mWidgets.size() / (float) numWidgetsPerPage);
-        for (int i = 0; i < numPages; ++i) {
-            PagedViewGridLayout layout = new PagedViewGridLayout(context, mWidgetCountX,
-                    mWidgetCountY);
-            setupPage(layout);
-            addView(layout);
+        int[] countX = { mWidgetCountX, mShortcutCountX };
+        int[] countY = { mWidgetCountY, mShortcutCountY };
+        Object[] collection = { mWidgets, mShortcuts };
+        for (int i = 0; i < 2; ++i) {
+            ArrayList<Object> list = (ArrayList<Object>) collection[i];
+            int numItemsPerPage = countX[i] * countY[i];
+            int numItemPages = (int) Math.ceil(list.size() / (float) numItemsPerPage);
+            for (int j = 0; j < numItemPages; ++j) {
+                PagedViewGridLayout layout = new PagedViewGridLayout(context, countX[i],
+                        countY[i]);
+                setupPage(layout);
+                addView(layout);
+            }
         }
     }
     public void syncWidgetPageItems(int page) {
-        // Calculate the dimensions of each cell we are giving to each widget
-        ArrayList<Object> widgets = new ArrayList<Object>();
-        int cellWidth = ((mWidgetSpacingLayout.getContentWidth()
-                - mPageLayoutPaddingLeft - mPageLayoutPaddingRight
-                - ((mWidgetCountX - 1) * mWidgetWidthGap)) / mWidgetCountX);
-        int cellHeight = ((mWidgetSpacingLayout.getContentHeight()
-                - mPageLayoutPaddingTop - mPageLayoutPaddingBottom
-                - ((mWidgetCountY - 1) * mWidgetHeightGap)) / mWidgetCountY);
+        int[] countX = { mWidgetCountX, mShortcutCountX };
+        int[] countY = { mWidgetCountY, mShortcutCountY };
+        int[] widthGap = { mWidgetWidthGap, mWidgetWidthGap };
+        int[] heightGap = { mWidgetHeightGap, mWidgetHeightGap };
+        int[] numItemsPerPage = { mWidgetCountX * mWidgetCountY,
+                mShortcutCountX * mShortcutCountY };
+        Object[] collection = { mWidgets, mShortcuts };
+        int contentWidth = mWidgetSpacingLayout.getContentWidth();
+        int contentHeight = mWidgetSpacingLayout.getContentHeight();
+        int numWidgetPages = (int) Math.ceil(mWidgets.size() / (float) numItemsPerPage[0]);
+        int[] offsets = { page * numItemsPerPage[0], (page - numWidgetPages) * numItemsPerPage[1] };
+        int index = (page < numWidgetPages ? 0 : 1);
 
-        int numWidgetsPerPage = mWidgetCountX * mWidgetCountY;
-        int offset = page * numWidgetsPerPage;
-        for (int i = offset; i < Math.min(offset + numWidgetsPerPage, mWidgets.size()); ++i) {
-            widgets.add(mWidgets.get(i));
+        // Calculate the dimensions of each cell we are giving to each widget
+        ArrayList<Object> list = (ArrayList<Object>) collection[index];
+        ArrayList<Object> items = new ArrayList<Object>();
+        int cellWidth = ((contentWidth - mPageLayoutPaddingLeft - mPageLayoutPaddingRight
+                - ((countX[index] - 1) * widthGap[index])) / countX[index]);
+        int cellHeight = ((contentHeight - mPageLayoutPaddingTop - mPageLayoutPaddingBottom
+                - ((countY[index] - 1) * heightGap[index])) / countY[index]);
+
+        int offset = offsets[index];
+        for (int i = offset; i < Math.min(offset + numItemsPerPage[index], list.size()); ++i) {
+            items.add(list.get(i));
         }
 
-        prepareLoadWidgetPreviewsTask(page, widgets, cellWidth, cellHeight);
+        prepareLoadWidgetPreviewsTask(page, items, cellWidth, cellHeight, countX[index]);
     }
     private void onSyncWidgetPageItems(AsyncTaskPageData data) {
         int page = data.page;
@@ -861,6 +881,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         int count = items.size();
         int cellWidth = data.cellWidth;
         int cellHeight = data.cellHeight;
+        int cellCountX = data.cellCountX;
         for (int i = 0; i < count; ++i) {
             Object rawInfo = items.get(i);
             PendingAddItemInfo createItemInfo = null;
@@ -893,8 +914,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             widget.setOnTouchListener(this);
 
             // Layout each widget
-            int ix = i % mWidgetCountX;
-            int iy = i / mWidgetCountX;
+            int ix = i % cellCountX;
+            int iy = i / cellCountX;
             GridLayout.LayoutParams lp = new GridLayout.LayoutParams(
                     new GridLayout.Group(iy, 1, GridLayout.LEFT),
                     new GridLayout.Group(ix, 1, GridLayout.TOP));
@@ -1089,9 +1110,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // TODO: Dump information related to current list of Applications, Widgets, etc.
         ApplicationInfo.dumpApplicationInfoList(LOG_TAG, "mApps", mApps);
         dumpAppWidgetProviderInfoList(LOG_TAG, "mWidgets", mWidgets);
+        dumpAppWidgetProviderInfoList(LOG_TAG, "mShortcuts", mShortcuts);
     }
     private void dumpAppWidgetProviderInfoList(String tag, String label,
-            List<Object> list) {
+            ArrayList<Object> list) {
         Log.d(tag, label + " size=" + list.size());
         for (Object i: list) {
             if (i instanceof AppWidgetProviderInfo) {

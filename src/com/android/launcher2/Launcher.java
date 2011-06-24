@@ -2864,7 +2864,10 @@ public final class Launcher extends Activity
             AddAdapter.ListItem item = (AddAdapter.ListItem) mAdapter.getItem(which);
             switch (item.actionTag) {
                 case AddAdapter.ITEM_SHORTCUT: {
-                    pickShortcut();
+                    if (mAppsCustomizeTabHost != null) {
+                        mAppsCustomizeTabHost.selectWidgetsTab();
+                    }
+                    showAllApps(true);
                     break;
                 }
                 case AddAdapter.ITEM_APPLICATION: {

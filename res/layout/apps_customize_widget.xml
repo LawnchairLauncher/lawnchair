@@ -41,16 +41,16 @@
             android:layout_height="wrap_content"
             android:layout_weight="0"
             android:gravity="left|bottom"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:fadingEdge="horizontal"
 
             android:textColor="#FFBBBBBB"
             android:textSize="14sp"
             android:shadowColor="#FF000000"
             android:shadowDx="0.0"
             android:shadowDy="1.0"
-            android:shadowRadius="1.0"
-
-            android:maxLines="2"
-            android:fadingEdge="horizontal" />
+            android:shadowRadius="1.0" />
 
         <!-- The original dimensions of the widget (can't be the same text as above due to different
              style. -->
@@ -73,7 +73,7 @@
     <ImageView
         android:id="@+id/widget_preview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:adjustViewBounds="true"
         android:scaleType="fitStart" />
