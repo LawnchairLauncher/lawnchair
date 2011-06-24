@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.ActionMode;
 import android.view.KeyEvent;
@@ -149,6 +150,8 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         mFolderName.setCursorVisible(false);
         mFolderName.setOnEditorActionListener(this);
         mFolderName.setSelectAllOnFocus(true);
+        mFolderName.setInputType(mFolderName.getInputType() |
+                InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
     }
 
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
