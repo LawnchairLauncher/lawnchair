@@ -67,6 +67,11 @@ interface AsyncTaskCallback {
  * The data needed to perform either of the custom AsyncTasks.
  */
 class AsyncTaskPageData {
+    enum Type {
+        LoadWidgetPreviewData,
+        LoadHolographicIconsData
+    }
+
     AsyncTaskPageData(int p, ArrayList<Object> l, ArrayList<Bitmap> si, AsyncTaskCallback bgR,
             AsyncTaskCallback postR) {
         page = p;
@@ -103,10 +108,11 @@ class AsyncTaskPageData {
  * A generic template for an async task used in AppsCustomize.
  */
 class AppsCustomizeAsyncTask extends AsyncTask<AsyncTaskPageData, Void, AsyncTaskPageData> {
-    AppsCustomizeAsyncTask(int p, AppsCustomizePagedView.ContentType t) {
+    AppsCustomizeAsyncTask(int p, AppsCustomizePagedView.ContentType t, AsyncTaskPageData.Type ty) {
         page = p;
         pageContentType = t;
         threadPriority = Process.THREAD_PRIORITY_DEFAULT;
+        dataType = ty;
     }
     @Override
     protected AsyncTaskPageData doInBackground(AsyncTaskPageData... params) {
@@ -129,6 +135,7 @@ class AppsCustomizeAsyncTask extends AsyncTask<AsyncTaskPageData, Void, AsyncTas
     }
 
     // The page that this async task is associated with
+    AsyncTaskPageData.Type dataType;
     int page;
     AppsCustomizePagedView.ContentType pageContentType;
     int threadPriority;
@@ -314,6 +321,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     public void onPackagesUpdated() {
         // Get the list of widgets and shortcuts
+        boolean wasEmpty = mWidgets.isEmpty() && mShortcuts.isEmpty();
         mWidgets.clear();
         mShortcuts.clear();
         List<AppWidgetProviderInfo> widgets =
@@ -327,9 +335,13 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mWidgets.addAll(widgets);
         mShortcuts.addAll(shortcuts);
 
-        // The next layout pass will trigger data-ready if both widgets and apps are set, so request
-        // a layout to do this test and invalidate the page data when ready.
-        if (testDataReady()) requestLayout();
+        if (wasEmpty) {
+            // The next layout pass will trigger data-ready if both widgets and apps are set, so request
+            // a layout to do this test and invalidate the page data when ready.
+            if (testDataReady()) requestLayout();
+        } else {
+            invalidatePageData();
+        }
     }
 
     @Override
@@ -548,6 +560,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         int startIndex = page * numCells;
         int endIndex = Math.min(startIndex + numCells, mApps.size());
         PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(page);
+
         layout.removeAllViewsOnPage();
         ArrayList<Object> items = new ArrayList<Object>();
         ArrayList<Bitmap> images = new ArrayList<Bitmap>();
@@ -604,7 +617,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         while (iter.hasNext()) {
             AppsCustomizeAsyncTask task = (AppsCustomizeAsyncTask) iter.next();
             int taskPage = task.page;
-            if (taskPage < getAssociatedLowerPageBound(mCurrentPage) ||
+            if ((taskPage == page) ||
+                    taskPage < getAssociatedLowerPageBound(mCurrentPage) ||
                     taskPage > getAssociatedUpperPageBound(mCurrentPage)) {
                 task.cancel(false);
                 iter.remove();
@@ -650,6 +664,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 @Override
                 public void run(AppsCustomizeAsyncTask task, AsyncTaskPageData data) {
                     mRunningTasks.remove(task);
+                    if (task.isCancelled()) return;
                     if (task.page > getPageCount()) return;
                     if (task.pageContentType != mContentType) return;
                     onSyncWidgetPageItems(data);
@@ -657,7 +672,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         });
 
         // Ensure that the task is appropriately prioritized and runs in parallel
-        AppsCustomizeAsyncTask t = new AppsCustomizeAsyncTask(page, mContentType);
+        AppsCustomizeAsyncTask t = new AppsCustomizeAsyncTask(page, mContentType,
+                AsyncTaskPageData.Type.LoadWidgetPreviewData);
         t.setThreadPriority(getThreadPriorityForPage(page));
         t.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, pageData);
         mRunningTasks.add(t);
@@ -667,6 +683,18 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
      */
     private void prepareGenerateHoloOutlinesTask(int page, ArrayList<Object> items,
             ArrayList<Bitmap> images) {
+        // Prune old tasks for this page
+        Iterator<AppsCustomizeAsyncTask> iter = mRunningTasks.iterator();
+        while (iter.hasNext()) {
+            AppsCustomizeAsyncTask task = (AppsCustomizeAsyncTask) iter.next();
+            int taskPage = task.page;
+            if ((taskPage == page) &&
+                    (task.dataType == AsyncTaskPageData.Type.LoadHolographicIconsData)) {
+                task.cancel(false);
+                iter.remove();
+            }
+        }
+
         AsyncTaskPageData pageData = new AsyncTaskPageData(page, items, images,
             new AsyncTaskCallback() {
                 @Override
@@ -700,6 +728,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 @Override
                 public void run(AppsCustomizeAsyncTask task, AsyncTaskPageData data) {
                     mRunningTasks.remove(task);
+                    if (task.isCancelled()) return;
                     if (task.page > getPageCount()) return;
                     if (task.pageContentType != mContentType) return;
                     onHolographicPageItemsLoaded(data);
@@ -708,7 +737,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         // Ensure that the outline task always runs in the background, serially
         AppsCustomizeAsyncTask t =
-            new AppsCustomizeAsyncTask(page, mContentType);
+            new AppsCustomizeAsyncTask(page, mContentType,
+                    AsyncTaskPageData.Type.LoadHolographicIconsData);
         t.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
         t.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, pageData);
         mRunningTasks.add(t);
@@ -939,12 +969,14 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         if (layout instanceof PagedViewCellLayout) {
             PagedViewCellLayout cl = (PagedViewCellLayout) layout;
             int count = cl.getPageChildCount();
+            if (count != data.generatedImages.size()) return;
             for (int i = 0; i < count; ++i) {
                 PagedViewIcon icon = (PagedViewIcon) cl.getChildOnPageAt(i);
                 icon.setHolographicOutline(data.generatedImages.get(i));
             }
         } else {
             int count = layout.getChildCount();
+            if (count != data.generatedImages.size()) return;
             for (int i = 0; i < count; ++i) {
                 View v = layout.getChildAt(i);
                 ((PagedViewWidget) v).setHolographicOutline(data.generatedImages.get(i));
@@ -955,6 +987,15 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     @Override
     public void syncPages() {
         removeAllViews();
+
+        // Remove all background asyc tasks if we are loading content anew
+        Iterator<AppsCustomizeAsyncTask> iter = mRunningTasks.iterator();
+        while (iter.hasNext()) {
+            AppsCustomizeAsyncTask task = (AppsCustomizeAsyncTask) iter.next();
+            task.cancel(false);
+            iter.remove();
+        }
+
         switch (mContentType) {
         case Applications:
             syncAppsPages();
@@ -1037,8 +1078,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mApps = list;
         Collections.sort(mApps, LauncherModel.APP_NAME_COMPARATOR);
 
-        // The next layout pass will trigger data-ready if both widgets and apps are set, so request
-        // a layout to do this test and invalidate the page data when ready.
+        // The next layout pass will trigger data-ready if both widgets and apps are set, so 
+        // request a layout to do this test and invalidate the page data when ready.
         if (testDataReady()) requestLayout();
     }
     private void addAppsWithoutInvalidate(ArrayList<ApplicationInfo> list) {
