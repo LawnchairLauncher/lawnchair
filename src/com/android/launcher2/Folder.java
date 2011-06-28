@@ -328,11 +328,23 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     void bind(FolderInfo info) {
         mInfo = info;
         ArrayList<ShortcutInfo> children = info.contents;
+        ArrayList<ShortcutInfo> overflow = new ArrayList<ShortcutInfo>();
         setupContentForNumItems(children.size());
         for (int i = 0; i < children.size(); i++) {
             ShortcutInfo child = (ShortcutInfo) children.get(i);
-            createAndAddShortcut(child);
+            if (!createAndAddShortcut(child)) {
+                overflow.add(child);
+            }
         }
+
+        // If our folder has too many items we prune them from the list. This is an issue 
+        // when upgrading from the old Folders implementation which could contain an unlimited
+        // number of items.
+        for (ShortcutInfo item: overflow) {
+            mInfo.remove(item);
+            LauncherModel.deleteItemFromDatabase(mLauncher, item);
+        }
+
         mItemsInvalidated = true;
         mInfo.addListener(this);
 
@@ -499,7 +511,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         }
     }
 
-    protected void createAndAddShortcut(ShortcutInfo item) {
+    protected boolean createAndAddShortcut(ShortcutInfo item) {
         final TextView textView =
             (TextView) mInflater.inflate(R.layout.application_boxed, this, false);
         textView.setCompoundDrawablesWithIntrinsicBounds(null,
@@ -510,10 +522,21 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         textView.setOnClickListener(this);
         textView.setOnLongClickListener(this);
 
+        // We need to check here to verify that the given item's location isn't already occupied
+        // by another item. If it is, we need to find the next available slot and assign
+        // it that position. This is an issue when upgrading from the old Folders implementation
+        // which could contain an unlimited number of items.
+        if (mContent.getChildAt(item.cellX, item.cellY) != null) {
+            if (!findAndSetEmptyCells(item)) {
+                return false;
+            }
+        }
+
         CellLayout.LayoutParams lp =
             new CellLayout.LayoutParams(item.cellX, item.cellY, item.spanX, item.spanY);
         boolean insert = false;
         mContent.addViewToCellLayout(textView, insert ? 0 : -1, (int)item.id, lp, true);
+        return true;
     }
 
     public void onDragEnter(DragObject d) {
