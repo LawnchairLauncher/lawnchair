@@ -48,7 +48,7 @@ public class HolographicPagedViewIcon extends TextView  {
             int hspace = getWidth() - compoundPaddingRight - compoundPaddingLeft;
             canvas.drawBitmap(overlay,
                     offset + compoundPaddingLeft + (hspace - overlay.getWidth()) / 2,
-                    mPaddingTop,
+                    mOriginalIcon.getPaddingTop(),
                     mPaint);
         }
     }

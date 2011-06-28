@@ -291,6 +291,7 @@ public abstract class PagedView extends ViewGroup {
 
         mCurrentPage = Math.max(0, Math.min(currentPage, getPageCount() - 1));
         updateCurrentPageScroll();
+        updateScrollingIndicator();
         notifyPageSwitchListener();
         invalidate();
     }
@@ -1618,6 +1619,9 @@ public abstract class PagedView extends ViewGroup {
     }
 
     protected void invalidatePageData() {
+        invalidatePageData(-1);
+    }
+    protected void invalidatePageData(int currentPage) {
         if (!mIsDataReady) {
             return;
         }
@@ -1625,6 +1629,16 @@ public abstract class PagedView extends ViewGroup {
         if (mContentIsRefreshable) {
             // Update all the pages
             syncPages();
+
+            // We must force a measure after we've loaded the pages to update the content width and
+            // to determine the full scroll width
+            measure(MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.EXACTLY));
+
+            // Set a new page as the current page if necessary
+            if (currentPage > -1) {
+                setCurrentPage(currentPage);
+            }
 
             // Mark each of the pages as dirty
             final int count = getChildCount();
@@ -1659,14 +1673,16 @@ public abstract class PagedView extends ViewGroup {
         return !LauncherApplication.isScreenLarge();
     }
 
+    Runnable hideScrollingIndicatorRunnable = new Runnable() {
+        @Override
+        public void run() {
+            hideScrollingIndicator(false);
+        }
+    };
     protected void flashScrollingIndicator() {
+        removeCallbacks(hideScrollingIndicatorRunnable);
         showScrollingIndicator();
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                hideScrollingIndicator(false);
-            }
-        }, sScrollIndicatorFlashDuration);
+        postDelayed(hideScrollingIndicatorRunnable, sScrollIndicatorFlashDuration);
     }
 
     protected void showScrollingIndicator() {

@@ -181,6 +181,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private int mWidgetWidthGap, mWidgetHeightGap;
     private int mShortcutCountX, mShortcutCountY;
     private int mShortcutWidthGap, mShortcutHeightGap;
+    private int mNumWidgetPages, mNumShortcutPages;
     private final int mWidgetPreviewIconPaddedDimension;
     private final float sWidgetPreviewIconPaddingPercentage = 0.25f;
     private PagedViewCellLayout mWidgetSpacingLayout;
@@ -287,12 +288,16 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mShortcutCountX = Math.max(1, (int) Math.round(mCellCountX / 2f));
         mShortcutCountY = Math.max(1, (int) Math.round(mCellCountY / 2f));
 
+        mNumWidgetPages = (int) Math.ceil(mWidgets.size() /
+                (float) (mWidgetCountX * mWidgetCountY));
+        mNumShortcutPages = (int) Math.ceil(mShortcuts.size() /
+                (float) (mShortcutCountX * mShortcutCountY));
+
         // Force a measure to update recalculate the gaps
         int widthSpec = MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.AT_MOST);
         int heightSpec = MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.AT_MOST);
         mWidgetSpacingLayout.measure(widthSpec, heightSpec);
         mContentWidth = mWidgetSpacingLayout.getContentWidth();
-
         invalidatePageData();
     }
 
@@ -495,12 +500,18 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     public void setContentType(ContentType type) {
         mContentType = type;
-        setCurrentPage(0);
-        invalidatePageData();
+        invalidatePageData(0);
     }
 
     public boolean isContentType(ContentType type) {
         return (mContentType == type);
+    }
+
+    public void setCurrentPageToWidgets() {
+        invalidatePageData(0);
+    }
+    public void setCurrentPageToShortcuts() {
+        invalidatePageData(mNumWidgetPages);
     }
 
     /*
@@ -848,14 +859,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         Context context = getContext();
         int[] countX = { mWidgetCountX, mShortcutCountX };
         int[] countY = { mWidgetCountY, mShortcutCountY };
-        Object[] collection = { mWidgets, mShortcuts };
+        int[] numPages = { mNumWidgetPages, mNumShortcutPages };
         for (int i = 0; i < 2; ++i) {
-            ArrayList<Object> list = (ArrayList<Object>) collection[i];
-            int numItemsPerPage = countX[i] * countY[i];
-            int numItemPages = (int) Math.ceil(list.size() / (float) numItemsPerPage);
-            for (int j = 0; j < numItemPages; ++j) {
-                PagedViewGridLayout layout = new PagedViewGridLayout(context, countX[i],
-                        countY[i]);
+            for (int j = 0; j < numPages[i]; ++j) {
+                PagedViewGridLayout layout = new PagedViewGridLayout(context, countX[i], countY[i]);
                 setupPage(layout);
                 addView(layout);
             }
@@ -1130,10 +1137,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             // Reset to the first page of the Apps pane
             AppsCustomizeTabHost tabs = (AppsCustomizeTabHost)
                     mLauncher.findViewById(R.id.apps_customize_pane);
-            tabs.setCurrentTabByTag(tabs.getTabTagForContentType(ContentType.Applications));
+            tabs.selectAppsTab();
         } else if (getCurrentPage() != 0) {
-            setCurrentPage(0);
-            invalidatePageData();
+            invalidatePageData(0);
         }
     }
     @Override

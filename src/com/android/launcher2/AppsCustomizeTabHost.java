@@ -52,12 +52,29 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     }
 
     /**
-     * Convenience methods to select specific tabs
+     * Convenience methods to select specific tabs.  We want to set the content type immediately
+     * in these cases, but we note that we still call setCurrentTabByTag() so that the tab view
+     * reflects the new content (but doesn't do the animation and logic associated with changing
+     * tabs manually).
      */
+    private void setContentTypeImmediate(AppsCustomizePagedView.ContentType type) {
+        onTabChangedStart();
+        onTabChangedEnd(type);
+    }
     void selectAppsTab() {
+        setContentTypeImmediate(AppsCustomizePagedView.ContentType.Applications);
         setCurrentTabByTag(APPS_TAB_TAG);
     }
     void selectWidgetsTab() {
+        setContentTypeImmediate(AppsCustomizePagedView.ContentType.Widgets);
+        mAppsCustomizePane.setCurrentPageToWidgets();
+
+        setCurrentTabByTag(WIDGETS_TAB_TAG);
+    }
+    void selectShortcutsTab() {
+        setContentTypeImmediate(AppsCustomizePagedView.ContentType.Widgets);
+        mAppsCustomizePane.setCurrentPageToShortcuts();
+
         setCurrentTabByTag(WIDGETS_TAB_TAG);
     }
 
@@ -135,6 +152,13 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         return super.onTouchEvent(event);
     }
 
+    private void onTabChangedStart() {
+        mAppsCustomizePane.hideScrollingIndicator(false);
+    }
+    private void onTabChangedEnd(AppsCustomizePagedView.ContentType type) {
+        mAppsCustomizePane.setContentType(type);
+    }
+
     @Override
     public void onTabChanged(String tabId) {
         final AppsCustomizePagedView.ContentType type = getContentTypeForTabTag(tabId);
@@ -148,11 +172,11 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(android.animation.Animator animation) {
-                    mAppsCustomizePane.hideScrollingIndicator(false);
+                    onTabChangedStart();
                 }
                 @Override
                 public void onAnimationEnd(android.animation.Animator animation) {
-                    mAppsCustomizePane.setContentType(type);
+                    onTabChangedEnd(type);
 
                     ObjectAnimator anim = ObjectAnimator.ofFloat(mAppsCustomizePane, "alpha", 1f);
                     anim.setDuration(duration);
@@ -206,7 +230,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
 
     /* LauncherTransitionable overrides */
     @Override
-    public void onLauncherTransitionStart(Animator animation) {
+    public void onLauncherTransitionStart(Animator animation, boolean toWorkspace) {
         // isHardwareAccelerated() checks if we're attached to a window and if that
         // window is HW accelerated-- we were sometimes not attached to a window
         // and buildLayer was throwing an IllegalStateException
@@ -221,11 +245,13 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     }
 
     @Override
-    public void onLauncherTransitionEnd(Animator animation) {
+    public void onLauncherTransitionEnd(Animator animation, boolean toWorkspace) {
         if (animation != null) {
             setLayerType(LAYER_TYPE_NONE, null);
         }
 
-        mAppsCustomizePane.flashScrollingIndicator();
+        if (!toWorkspace) {
+            mAppsCustomizePane.flashScrollingIndicator();
+        }
     }
 }

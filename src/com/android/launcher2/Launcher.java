@@ -2088,7 +2088,7 @@ public final class Launcher extends Activity
             alphaAnim.start();
 
             if (toView instanceof LauncherTransitionable) {
-                ((LauncherTransitionable) toView).onLauncherTransitionStart(scaleAnim);
+                ((LauncherTransitionable) toView).onLauncherTransitionStart(scaleAnim, false);
             }
             scaleAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -2107,7 +2107,7 @@ public final class Launcher extends Activity
                     toView.setScaleX(1.0f);
                     toView.setScaleY(1.0f);
                     if (toView instanceof LauncherTransitionable) {
-                        ((LauncherTransitionable) toView).onLauncherTransitionEnd(scaleAnim);
+                        ((LauncherTransitionable) toView).onLauncherTransitionEnd(scaleAnim, false);
                     }
 
                     if (!springLoaded && !LauncherApplication.isScreenLarge()) {
@@ -2132,8 +2132,8 @@ public final class Launcher extends Activity
             toView.setVisibility(View.VISIBLE);
             toView.bringToFront();
             if (toView instanceof LauncherTransitionable) {
-                ((LauncherTransitionable) toView).onLauncherTransitionStart(null);
-                ((LauncherTransitionable) toView).onLauncherTransitionEnd(null);
+                ((LauncherTransitionable) toView).onLauncherTransitionStart(null, false);
+                ((LauncherTransitionable) toView).onLauncherTransitionEnd(null, false);
 
                 if (!springLoaded && !LauncherApplication.isScreenLarge()) {
                     // Hide the workspace scrollbar
@@ -2188,22 +2188,16 @@ public final class Launcher extends Activity
                 }
             });
             if (fromView instanceof LauncherTransitionable) {
-                ((LauncherTransitionable) fromView).onLauncherTransitionStart(alphaAnim);
+                ((LauncherTransitionable) fromView).onLauncherTransitionStart(alphaAnim, true);
             }
             alphaAnim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(android.animation.Animator animation) {
-                    if (!springLoaded && !LauncherApplication.isScreenLarge()) {
-                        // Show the workspace scrollbar
-                        mWorkspace.flashScrollingIndicator();
-                    }
-                }
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     fromView.setVisibility(View.GONE);
                     if (fromView instanceof LauncherTransitionable) {
-                        ((LauncherTransitionable) fromView).onLauncherTransitionEnd(alphaAnim);
+                        ((LauncherTransitionable) fromView).onLauncherTransitionEnd(alphaAnim,true);
                     }
+                    mWorkspace.flashScrollingIndicator();
                 }
             });
 
@@ -2212,8 +2206,8 @@ public final class Launcher extends Activity
         } else {
             fromView.setVisibility(View.GONE);
             if (fromView instanceof LauncherTransitionable) {
-                ((LauncherTransitionable) fromView).onLauncherTransitionStart(null);
-                ((LauncherTransitionable) fromView).onLauncherTransitionEnd(null);
+                ((LauncherTransitionable) fromView).onLauncherTransitionStart(null, true);
+                ((LauncherTransitionable) fromView).onLauncherTransitionEnd(null, true);
 
                 if (!springLoaded && !LauncherApplication.isScreenLarge()) {
                     // Flash the workspace scrollbar
@@ -2565,7 +2559,6 @@ public final class Launcher extends Activity
 
             final AlertDialog.Builder builder = new AlertDialog.Builder(Launcher.this, 
                     AlertDialog.THEME_HOLO_DARK);
-            builder.setTitle(getString(R.string.menu_item_add_item));
             builder.setAdapter(mAdapter, this);
 
             AlertDialog dialog = builder.create();
@@ -2604,7 +2597,7 @@ public final class Launcher extends Activity
             switch (item.actionTag) {
                 case AddAdapter.ITEM_SHORTCUT: {
                     if (mAppsCustomizeTabHost != null) {
-                        mAppsCustomizeTabHost.selectWidgetsTab();
+                        mAppsCustomizeTabHost.selectShortcutsTab();
                     }
                     showAllApps(true);
                     break;
@@ -2991,6 +2984,6 @@ public final class Launcher extends Activity
 }
 
 interface LauncherTransitionable {
-    void onLauncherTransitionStart(Animator animation);
-    void onLauncherTransitionEnd(Animator animation);
+    void onLauncherTransitionStart(Animator animation, boolean toWorkspace);
+    void onLauncherTransitionEnd(Animator animation, boolean toWorkspace);
 }

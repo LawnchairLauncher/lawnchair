@@ -81,6 +81,9 @@
     <string name="menu_item_add_item">Add to Home screen</string>
     <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all apps -->
     <string name="group_applications">Applications</string>
+    <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all shortcut
+s -->
+    <string name="group_shortcuts">Shortcuts</string>
     <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all widgets/gadgets -->
     <string name="group_widgets">Widgets</string>
     <!-- Options in "Add to Home" dialog box; Title of the group containing the list of apps that can set the wallpaper-->
