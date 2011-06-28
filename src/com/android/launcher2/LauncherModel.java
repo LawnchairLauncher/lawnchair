@@ -16,6 +16,7 @@
 
 package com.android.launcher2;
 
+import android.app.SearchManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.BroadcastReceiver;
@@ -129,6 +130,7 @@ public class LauncherModel extends BroadcastReceiver {
         public void bindAppsRemoved(ArrayList<ApplicationInfo> apps, boolean permanent);
         public void bindPackagesUpdated();
         public boolean isAllAppsVisible();
+        public void bindSearchablesChanged();
     }
 
     LauncherModel(LauncherApplication app, IconCache iconCache) {
@@ -513,6 +515,7 @@ public class LauncherModel extends BroadcastReceiver {
      * Call from the handler for ACTION_PACKAGE_ADDED, ACTION_PACKAGE_REMOVED and
      * ACTION_PACKAGE_CHANGED.
      */
+    @Override
     public void onReceive(Context context, Intent intent) {
         if (DEBUG_LOADERS) Log.d(TAG, "onReceive intent=" + intent);
 
@@ -570,6 +573,9 @@ public class LauncherModel extends BroadcastReceiver {
             mAllAppsLoaded = false;
             mWorkspaceLoaded = false;
             startLoaderFromBackground();
+        } else if (SearchManager.INTENT_GLOBAL_SEARCH_ACTIVITY_CHANGED.equals(action)) {
+            Callbacks callbacks = mCallbacks.get();
+            callbacks.bindSearchablesChanged();
         }
     }
 

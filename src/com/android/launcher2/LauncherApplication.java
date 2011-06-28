@@ -17,6 +17,7 @@
 package com.android.launcher2;
 
 import android.app.Application;
+import android.app.SearchManager;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -56,6 +57,9 @@ public class LauncherApplication extends Application {
         filter.addAction(Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE);
         filter.addAction(Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE);
         filter.addAction(Intent.ACTION_LOCALE_CHANGED);
+        registerReceiver(mModel, filter);
+        filter = new IntentFilter();
+        filter.addAction(SearchManager.INTENT_GLOBAL_SEARCH_ACTIVITY_CHANGED);
         registerReceiver(mModel, filter);
 
         // Register for changes to the favorites
