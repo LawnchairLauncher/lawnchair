@@ -244,5 +244,5 @@
     <string name="dream_name">Rocket Launcher</string>
 
     <!-- Default folder title -->
-    <string name="default_folder_name">Unnamed Folder</string>
+    <string name="folder_hint_text">Unnamed Folder</string>
 </resources>

@@ -1417,9 +1417,6 @@ public class Workspace extends SmoothPagedView
         }
         // Stop any scrolling, move to the current page right away
         setCurrentPage((mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage);
-        if (!mIsDragInProcess) {
-            updateWhichPagesAcceptDrops(shrinkState);
-        }
 
         // Hide the scrollbar
         hideScrollingIndicator(true);
@@ -1701,46 +1698,6 @@ public class Workspace extends SmoothPagedView
     private final ZoomOutInterpolator mZoomOutInterpolator = new ZoomOutInterpolator();
     private final ZoomInInterpolator mZoomInInterpolator = new ZoomInInterpolator();
 
-    private void updateWhichPagesAcceptDrops(ShrinkState state) {
-        updateWhichPagesAcceptDropsHelper(state, false, 1, 1);
-    }
-
-    private void updateWhichPagesAcceptDropsDuringDrag(ShrinkState state, int spanX, int spanY) {
-        updateWhichPagesAcceptDropsHelper(state, true, spanX, spanY);
-    }
-
-    private void updateWhichPagesAcceptDropsHelper(
-            ShrinkState state, boolean isDragHappening, int spanX, int spanY) {
-        final int screenCount = getChildCount();
-        for (int i = 0; i < screenCount; i++) {
-            CellLayout cl = (CellLayout) getChildAt(i);
-            cl.setIsDragOccuring(isDragHappening);
-            if (state == null) {
-                // If we are not in a shrunken state, mark all cell layouts as droppable (if they
-                // have the space)
-                cl.setAcceptsDrops(cl.findCellForSpan(null, spanX, spanY));
-            } else {
-                switch (state) {
-                    case BOTTOM_HIDDEN:
-                    case BOTTOM_VISIBLE:
-                    case SPRING_LOADED:
-                        cl.setIsDefaultDropTarget(false);
-                        if (!isDragHappening) {
-                            // even if a drag isn't happening, we don't want to show a screen as
-                            // accepting drops if it doesn't have at least one free cell
-                            spanX = 1;
-                            spanY = 1;
-                        }
-                        // the page accepts drops if we can find at least one empty spot
-                        cl.setAcceptsDrops(cl.findCellForSpan(null, spanX, spanY));
-                        break;
-                    default:
-                         throw new RuntimeException("Unhandled ShrinkState " + state);
-                }
-            }
-        }
-    }
-
     /*
     *
     * We call these methods (onDragStartedWithItemSpans/onDragStartedWithSize) whenever we
@@ -1776,8 +1733,6 @@ public class Workspace extends SmoothPagedView
 
         // The outline is used to visualize where the item will land if dropped
         mDragOutline = createDragOutline(b, canvas, bitmapPadding, size[0], size[1]);
-
-        updateWhichPagesAcceptDropsDuringDrag(mShrinkState, spanX, spanY);
     }
 
     // we call this method whenever a drag and drop in Launcher finishes, even if Workspace was
@@ -1789,7 +1744,6 @@ public class Workspace extends SmoothPagedView
             doDragExit(null);
         }
         mIsDragInProcess = false;
-        updateWhichPagesAcceptDrops(mShrinkState);
     }
 
     // We call this when we trigger an unshrink by clicking on the CellLayout cl
@@ -2308,17 +2262,30 @@ public class Workspace extends SmoothPagedView
      * {@inheritDoc}
      */
     public boolean acceptDrop(DragObject d) {
-
         // If it's an external drop (e.g. from All Apps), check if it should be accepted
         if (d.dragSource != this) {
             // Don't accept the drop if we're not over a screen at time of drop
-            if (mDragTargetLayout == null || !mDragTargetLayout.getAcceptsDrops()) {
+            if (mDragTargetLayout == null) {
                 return false;
             }
+
+            mDragViewVisualCenter = getDragViewVisualCenter(d.x, d.y, d.xOffset, d.yOffset,
+                    d.dragView, mDragViewVisualCenter);
 
             final CellLayout.CellInfo dragCellInfo = mDragInfo;
             final int spanX = dragCellInfo == null ? 1 : dragCellInfo.spanX;
             final int spanY = dragCellInfo == null ? 1 : dragCellInfo.spanY;
+
+            mTargetCell = findNearestArea((int) mDragViewVisualCenter[0],
+                    (int) mDragViewVisualCenter[1], spanX, spanY, mDragTargetLayout, mTargetCell);
+
+            if (willCreateUserFolder((ItemInfo) d.dragInfo, mDragTargetLayout, mTargetCell, true)) {
+                return true;
+            }
+            if (willAddToExistingUserFolder((ItemInfo) d.dragInfo, mDragTargetLayout,
+                    mTargetCell)) {
+                return true;
+            }
 
             final View ignoreView = dragCellInfo == null ? null : dragCellInfo.cell;
 
@@ -2331,18 +2298,34 @@ public class Workspace extends SmoothPagedView
         return true;
     }
 
-    boolean willCreateUserFolder(ItemInfo info, View v, int[] targetCell) {
+    boolean willCreateUserFolder(ItemInfo info, CellLayout target, int[] targetCell,
+            boolean considerTimeout) {
+        View dropOverView = target.getChildAt(targetCell[0], targetCell[1]);
+
         boolean hasntMoved = mDragInfo != null
                 && (mDragInfo.cellX == targetCell[0] && mDragInfo.cellY == targetCell[1]);
 
-        if (v == null || hasntMoved) return false;
+        if (dropOverView == null || hasntMoved || (considerTimeout && !mCreateUserFolderOnDrop)) {
+            return false;
+        }
 
-        boolean aboveShortcut = (v.getTag() instanceof ShortcutInfo);
+        boolean aboveShortcut = (dropOverView.getTag() instanceof ShortcutInfo);
         boolean willBecomeShortcut =
                 (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
                 info.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT);
 
         return (aboveShortcut && willBecomeShortcut);
+    }
+
+    boolean willAddToExistingUserFolder(Object dragInfo, CellLayout target, int[] targetCell) {
+        View dropOverView = target.getChildAt(targetCell[0], targetCell[1]);
+        if (dropOverView instanceof FolderIcon) {
+            FolderIcon fi = (FolderIcon) dropOverView;
+            if (fi.acceptDrop(dragInfo)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     boolean createUserFolderIfNecessary(View newView, CellLayout target,
@@ -2381,9 +2364,9 @@ public class Workspace extends SmoothPagedView
         return false;
     }
 
-    boolean addToExistingFolderIfNecessary(View newView, CellLayout target, int[] tagetCell,
+    boolean addToExistingFolderIfNecessary(View newView, CellLayout target, int[] targetCell,
             Object dragInfo, boolean external) {
-        View dropOverView = target.getChildAt(tagetCell[0], tagetCell[1]);
+        View dropOverView = target.getChildAt(targetCell[0], targetCell[1]);
         if (dropOverView instanceof FolderIcon) {
             FolderIcon fi = (FolderIcon) dropOverView;
             if (fi.acceptDrop(dragInfo)) {
@@ -2402,7 +2385,6 @@ public class Workspace extends SmoothPagedView
     }
 
     public void onDrop(DragObject d) {
-
         mDragViewVisualCenter = getDragViewVisualCenter(d.x, d.y, d.xOffset, d.yOffset, d.dragView,
                 mDragViewVisualCenter);
 
@@ -2902,8 +2884,7 @@ public class Workspace extends SmoothPagedView
                     // full screen (which is traditionally set to not accept drops) if they want
                     // to get to pages beyond the screen that is full.
                     boolean isInSpringLoadedMode = (mShrinkState == ShrinkState.SPRING_LOADED);
-                    boolean allowDragOver = (mDragTargetLayout != null) &&
-                            (mDragTargetLayout.getAcceptsDrops() || isInSpringLoadedMode);
+                    boolean allowDragOver = (mDragTargetLayout != null);
                     if (allowDragOver) {
                         if (isInSpringLoadedMode) {
                             mSpringLoadedDragController.setAlarm(mDragTargetLayout);
@@ -2948,8 +2929,8 @@ public class Workspace extends SmoothPagedView
                     final View dragOverView = mDragTargetLayout.getChildAt(mTargetCell[0],
                             mTargetCell[1]);
 
-                    boolean userFolderPending = willCreateUserFolder(info, dragOverView,
-                            mTargetCell);
+                    boolean userFolderPending = willCreateUserFolder(info, mDragTargetLayout,
+                            mTargetCell, false);
                     boolean isOverFolder = dragOverView instanceof FolderIcon;
                     if (dragOverView != mLastDragOverView) {
                         cancelFolderCreation();
