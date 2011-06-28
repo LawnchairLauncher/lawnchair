@@ -573,10 +573,6 @@ public class CellLayout extends ViewGroup {
         }
     }
 
-    public boolean getAcceptsDrops() {
-        return mAcceptsDrops;
-    }
-
     @Override
     public void removeAllViews() {
         clearOccupiedCells();

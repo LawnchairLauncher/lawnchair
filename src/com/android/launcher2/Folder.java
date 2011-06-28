@@ -99,11 +99,13 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     private Alarm mOnExitAlarm = new Alarm();
     private TextView mFolderName;
     private int mFolderNameHeight;
-    private static String sDefaultFolderName;
     private Rect mHitRect = new Rect();
 
     private boolean mIsEditingName = false;
     private InputMethodManager mInputMethodManager;
+
+    private static String sDefaultFolderName;
+    private static String sHintText;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -127,6 +129,9 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
 
         if (sDefaultFolderName == null) {
             sDefaultFolderName = res.getString(R.string.folder_name);
+        }
+        if (sHintText == null) {
+            sHintText = res.getString(R.string.folder_hint_text);
         }
     }
 
@@ -229,6 +234,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     }
 
     public void startEditingFolderName() {
+        mFolderName.setHint("");
         mFolderName.setCursorVisible(true);
         mIsEditingName = true;
     }
@@ -239,6 +245,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     }
 
     public void doneEditingFolderName(boolean commit) {
+        mFolderName.setHint(sHintText);
         mInfo.setTitle(mFolderName.getText());
         LauncherModel.updateItemInDatabase(mLauncher, mInfo);
         mFolderName.setCursorVisible(false);
