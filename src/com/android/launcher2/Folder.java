@@ -513,7 +513,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
 
     protected boolean createAndAddShortcut(ShortcutInfo item) {
         final TextView textView =
-            (TextView) mInflater.inflate(R.layout.application_boxed, this, false);
+            (TextView) mInflater.inflate(R.layout.application, this, false);
         textView.setCompoundDrawablesWithIntrinsicBounds(null,
                 new FastBitmapDrawable(item.getIcon(mIconCache)), null, null);
         textView.setText(item.title);
