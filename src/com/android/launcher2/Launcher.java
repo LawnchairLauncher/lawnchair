@@ -1297,14 +1297,10 @@ public final class Launcher extends Activity
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt(RUNTIME_STATE_CURRENT_SCREEN, mWorkspace.getCurrentPage());
 
-        final ArrayList<Folder> folders = mWorkspace.getOpenFolders();
-        if (folders.size() > 0) {
-            final int count = folders.size();
-            long[] ids = new long[count];
-            for (int i = 0; i < count; i++) {
-                final FolderInfo info = folders.get(i).getInfo();
-                ids[i] = info.id;
-            }
+        final Folder folder = mWorkspace.getOpenFolder();
+        if (folder != null) {
+            long[] ids = new long[1];
+            ids[0] = folder.getInfo().id;
             outState.putLongArray(RUNTIME_STATE_FOLDERS, ids);
         } else {
             super.onSaveInstanceState(outState);
@@ -1712,7 +1708,7 @@ public final class Launcher extends Activity
 
         ViewGroup parent = (ViewGroup) folder.getParent().getParent();
         if (parent != null) {
-            CellLayout cl = (CellLayout) parent;
+            CellLayout cl = (CellLayout) mWorkspace.getChildAt(folder.mInfo.screen);
             FolderIcon fi = (FolderIcon) cl.getChildAt(folder.mInfo.cellX, folder.mInfo.cellY);
             shrinkAndFadeInFolderIcon(fi);
             mDragController.removeDropTarget((DropTarget)folder);
@@ -1945,7 +1941,9 @@ public final class Launcher extends Activity
         growAndFadeOutFolderIcon(folderIcon);
         info.opened = true;
 
-        mWorkspace.addInFullScreen(folder, info.screen);
+        mDragLayer.addView(folder);
+        mDragController.addDropTarget((DropTarget) folder);
+
         folder.animateOpen();
         folder.onOpen();
     }

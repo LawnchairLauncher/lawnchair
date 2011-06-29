@@ -415,10 +415,10 @@ public class Workspace extends SmoothPagedView
      * @return The open folder on the current screen, or null if there is none
      */
     Folder getOpenFolder() {
-        ViewGroup currentPage = ((CellLayout) getChildAt(mCurrentPage)).getChildrenLayout();
-        int count = currentPage.getChildCount();
+        DragLayer dragLayer = (DragLayer) mLauncher.findViewById(R.id.drag_layer);
+        int count = dragLayer.getChildCount();
         for (int i = 0; i < count; i++) {
-            View child = currentPage.getChildAt(i);
+            View child = dragLayer.getChildAt(i);
             if (child instanceof Folder) {
                 Folder folder = (Folder) child;
                 if (folder.getInfo().opened)
@@ -426,26 +426,6 @@ public class Workspace extends SmoothPagedView
             }
         }
         return null;
-    }
-
-    ArrayList<Folder> getOpenFolders() {
-        final int screenCount = getChildCount();
-        ArrayList<Folder> folders = new ArrayList<Folder>(screenCount);
-
-        for (int screen = 0; screen < screenCount; screen++) {
-            ViewGroup currentPage = ((CellLayout) getChildAt(screen)).getChildrenLayout();
-            int count = currentPage.getChildCount();
-            for (int i = 0; i < count; i++) {
-                View child = currentPage.getChildAt(i);
-                if (child instanceof Folder) {
-                    Folder folder = (Folder) child;
-                    if (folder.getInfo().opened)
-                        folders.add(folder);
-                    break;
-                }
-            }
-        }
-        return folders;
     }
 
     boolean isTouchActive() {

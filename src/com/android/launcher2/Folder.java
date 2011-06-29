@@ -100,6 +100,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     private TextView mFolderName;
     private int mFolderNameHeight;
     private Rect mHitRect = new Rect();
+    private Rect mTempRect = new Rect();
 
     private boolean mIsEditingName = false;
     private InputMethodManager mInputMethodManager;
@@ -118,8 +119,8 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         setAlwaysDrawnWithCacheEnabled(false);
         mInflater = LayoutInflater.from(context);
         mIconCache = ((LauncherApplication)context.getApplicationContext()).getIconCache();
-        mMaxCountX = LauncherModel.getCellCountX() - 1;
-        mMaxCountY = LauncherModel.getCellCountY() - 1;
+        mMaxCountX = LauncherModel.getCellCountX();
+        mMaxCountY = LauncherModel.getCellCountY();
 
         mInputMethodManager = (InputMethodManager)
                 mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -319,9 +320,8 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     }
 
     void onClose() {
-        CellLayoutChildren clc = (CellLayoutChildren) getParent();
-        final CellLayout cellLayout = (CellLayout) clc.getParent();
-        cellLayout.removeViewWithoutMarkingCells(Folder.this);
+        DragLayer parent = (DragLayer) getParent();
+        parent.removeView(Folder.this);
         clearFocus();
     }
 
@@ -373,8 +373,8 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     private void positionAndSizeAsIcon() {
         if (!(getParent() instanceof CellLayoutChildren)) return;
 
-        CellLayout.LayoutParams iconLp = (CellLayout.LayoutParams) mFolderIcon.getLayoutParams();
-        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
+        DragLayer.LayoutParams iconLp = (DragLayer.LayoutParams) mFolderIcon.getLayoutParams();
+        DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
 
         if (mMode == PARTIAL_GROW) {
             setScaleX(0.8f);
@@ -394,10 +394,10 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         if (mState != STATE_SMALL) {
             positionAndSizeAsIcon();
         }
-        if (!(getParent() instanceof CellLayoutChildren)) return;
+        if (!(getParent() instanceof DragLayer)) return;
 
         ObjectAnimator oa;
-        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
+        DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
 
         centerAboutIcon();
         if (mMode == PARTIAL_GROW) {
@@ -439,7 +439,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     }
 
     public void animateClosed() {
-        if (!(getParent() instanceof CellLayoutChildren)) return;
+        if (!(getParent() instanceof DragLayer)) return;
 
         ObjectAnimator oa;
         if (mMode == PARTIAL_GROW) {
@@ -448,8 +448,8 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
             PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 0.9f);
             oa = ObjectAnimator.ofPropertyValuesHolder(this, alpha, scaleX, scaleY);
         } else {
-            CellLayout.LayoutParams iconLp = (CellLayout.LayoutParams) mFolderIcon.getLayoutParams();
-            CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
+            DragLayer.LayoutParams iconLp = (DragLayer.LayoutParams) mFolderIcon.getLayoutParams();
+            DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
 
             PropertyValuesHolder width = PropertyValuesHolder.ofInt("width", iconLp.width);
             PropertyValuesHolder height = PropertyValuesHolder.ofInt("height", iconLp.height);
@@ -720,25 +720,26 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     }
 
     private void centerAboutIcon() {
-        CellLayout.LayoutParams iconLp = (CellLayout.LayoutParams) mFolderIcon.getLayoutParams();
-        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
+        DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
 
         int width = getPaddingLeft() + getPaddingRight() + mContent.getDesiredWidth();
         // Technically there is no padding at the bottom, but we add space equal to the padding
         // and have to account for that here.
         int height = getPaddingTop() + mContent.getDesiredHeight() + mFolderNameHeight;
+        DragLayer parent = (DragLayer) mLauncher.findViewById(R.id.drag_layer);
 
-        int centerX = iconLp.x + iconLp.width / 2;
-        int centerY = iconLp.y + iconLp.height / 2;
+        parent.getDescendantRectRelativeToSelf(mFolderIcon, mTempRect);
+
+        int centerX = mTempRect.centerX();
+        int centerY = mTempRect.centerY();
         int centeredLeft = centerX - width / 2;
         int centeredTop = centerY - height / 2;
 
-        CellLayoutChildren clc = (CellLayoutChildren) getParent();
         int parentWidth = 0;
         int parentHeight = 0;
-        if (clc != null) {
-            parentWidth = clc.getMeasuredWidth();
-            parentHeight = clc.getMeasuredHeight();
+        if (parent != null) {
+            parentWidth = parent.getMeasuredWidth();
+            parentHeight = parent.getMeasuredHeight();
         }
 
         int left = Math.min(Math.max(0, centeredLeft), parentWidth - width);
@@ -768,10 +769,10 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     private void setupContentForNumItems(int count) {
         setupContentDimension(count);
 
-        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
+        DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
         if (lp == null) {
-            lp = new CellLayout.LayoutParams(0, 0, -1, -1);
-            lp.isLockedToGrid = false;
+            lp = new DragLayer.LayoutParams(0, 0);
+            lp.customPosition = true;
             setLayoutParams(lp);
         }
         centerAboutIcon();

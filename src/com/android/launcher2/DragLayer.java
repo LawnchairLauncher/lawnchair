@@ -146,7 +146,7 @@ public class DragLayer extends FrameLayout {
         return mDragController.onTouchEvent(ev);
     }
 
-    private void getDescendantRectRelativeToSelf(View descendant, Rect r) {
+    public void getDescendantRectRelativeToSelf(View descendant, Rect r) {
         descendant.getHitRect(r);
 
         ViewParent viewParent = descendant.getParent();
