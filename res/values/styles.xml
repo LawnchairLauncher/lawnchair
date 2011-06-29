@@ -80,6 +80,8 @@
 
     <style name="SearchDropTargetBar">
         <item name="android:orientation">horizontal</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
     </style>
     <style name="SearchButton">
         <item name="android:layout_gravity">center_vertical</item>
