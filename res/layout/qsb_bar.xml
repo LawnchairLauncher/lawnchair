@@ -63,8 +63,6 @@
     <LinearLayout
         style="@style/SearchDropTargetBar"
         android:id="@+id/drag_target_bar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:alpha="0">
 
         <com.android.launcher2.DeleteDropTarget
