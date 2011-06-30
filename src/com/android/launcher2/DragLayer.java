@@ -16,16 +16,26 @@
 
 package com.android.launcher2;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.TimeInterpolator;
+import android.animation.ValueAnimator;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
+import com.android.launcher.R;
 
 import java.util.ArrayList;
 
@@ -36,12 +46,19 @@ public class DragLayer extends FrameLayout {
     private DragController mDragController;
     private int[] mTmpXY = new int[2];
 
+    private int mXDown, mYDown;
+    private Launcher mLauncher;
+
     // Variables relating to resizing widgets
     private final ArrayList<AppWidgetResizeFrame> mResizeFrames =
             new ArrayList<AppWidgetResizeFrame>();
     private AppWidgetResizeFrame mCurrentResizeFrame;
-    private int mXDown, mYDown;
-    private Launcher mLauncher;
+
+    // Variables relating to animation of views after drop
+    private ValueAnimator mDropAnim = null;
+    private TimeInterpolator mQuintEaseOutInterpolator = new DecelerateInterpolator(2.5f);
+    private int[] mDropViewPos = new int[] { -1, -1 };
+    private View mDropView = null;
 
     /**
      * Used to create a new DragLayer from XML.
@@ -148,14 +165,33 @@ public class DragLayer extends FrameLayout {
 
     public void getDescendantRectRelativeToSelf(View descendant, Rect r) {
         descendant.getHitRect(r);
+        mTmpXY[0] = 0;
+        mTmpXY[1] = 0;
+        getDescendantCoordRelativeToSelf(descendant, mTmpXY);
+        r.offset(mTmpXY[0], mTmpXY[1]);
+    }
 
+    public void getDescendantCoordRelativeToSelf(View descendant, int[] coord) {
         ViewParent viewParent = descendant.getParent();
         while (viewParent instanceof View && viewParent != this) {
             final View view = (View)viewParent;
-            r.offset(view.getLeft() + (int) (view.getTranslationX() + 0.5f) - view.getScrollX(),
-                    view.getTop() + (int) (view.getTranslationY() + 0.5f) - view.getScrollY());
+            coord[0] += view.getLeft() + (int) (view.getTranslationX() + 0.5f) - view.getScrollX();
+            coord[1] += view.getTop() + (int) (view.getTranslationY() + 0.5f) - view.getScrollY();
             viewParent = view.getParent();
         }
+    }
+
+    public void getViewLocationRelativeToSelf(View v, int[] location) {
+        getLocationOnScreen(location);
+        int x = location[0];
+        int y = location[1];
+
+        v.getLocationOnScreen(location);
+        int vX = location[0];
+        int vY = location[1];
+
+        location[0] = vX - x;
+        location[1] = vY - y;
     }
 
     @Override
@@ -266,5 +302,95 @@ public class DragLayer extends FrameLayout {
         mResizeFrames.add(resizeFrame);
 
         resizeFrame.snapToWidget(false);
+    }
+
+    public void animateViewIntoPosition(DragView dragView, final View child) {
+        ((CellLayoutChildren) child.getParent()).measureChild(child);
+        CellLayout.LayoutParams lp =  (CellLayout.LayoutParams) child.getLayoutParams();
+
+        int[] loc = new int[2];
+        getViewLocationRelativeToSelf(dragView, loc);
+
+        int coord[] = new int[2];
+        coord[0] = lp.x;
+        coord[1] = lp.y;
+        getDescendantCoordRelativeToSelf(child, coord);
+
+        final int fromX = loc[0] + (dragView.getWidth() - child.getMeasuredWidth())  / 2;
+        final int fromY = loc[1] + (dragView.getHeight() - child.getMeasuredHeight())  / 2;
+        final int dx = coord[0] - fromX;
+        final int dy = coord[1] - fromY;
+
+        child.setVisibility(INVISIBLE);
+        animateViewIntoPosition(child, fromX, fromY, dx, dy);
+    }
+
+    private void animateViewIntoPosition(final View view, final int fromX, final int fromY,
+            final int dX, final int dY) {
+
+        // Calculate the duration of the animation based on the object's distance
+        final float dist = (float) Math.sqrt(dX*dX + dY*dY);
+        final Resources res = getResources();
+        final float maxDist = (float) res.getInteger(R.integer.config_dropAnimMaxDist);
+        int duration = res.getInteger(R.integer.config_dropAnimMaxDuration);
+        if (dist < maxDist) {
+            duration *= mQuintEaseOutInterpolator.getInterpolation(dist / maxDist);
+        }
+
+        if (mDropAnim != null) {
+            mDropAnim.end();
+        }
+        mDropAnim = new ValueAnimator();
+        mDropAnim.setInterpolator(mQuintEaseOutInterpolator);
+
+        // The view is invisible during the animation; we render it manually.
+        mDropAnim.addListener(new AnimatorListenerAdapter() {
+            public void onAnimationStart(Animator animation) {
+                // Set this here so that we don't render it until the animation begins
+                mDropView = view;
+            }
+
+            public void onAnimationEnd(Animator animation) {
+                if (mDropView != null) {
+                    mDropView.setVisibility(View.VISIBLE);
+                    mDropView = null;
+                }
+            }
+        });
+
+        mDropAnim.setDuration(duration);
+        mDropAnim.setFloatValues(0.0f, 1.0f);
+        mDropAnim.removeAllUpdateListeners();
+        mDropAnim.addUpdateListener(new AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                final float percent = (Float) animation.getAnimatedValue();
+                // Invalidate the old position
+                int width = view.getMeasuredWidth();
+                int height = view.getMeasuredHeight();
+                invalidate(mDropViewPos[0], mDropViewPos[1],
+                        mDropViewPos[0] + width, mDropViewPos[1] + height);
+
+                mDropViewPos[0] = fromX + (int) (percent * dX + 0.5f);
+                mDropViewPos[1] = fromY + (int) (percent * dY + 0.5f);
+                invalidate(mDropViewPos[0], mDropViewPos[1],
+                        mDropViewPos[0] + width, mDropViewPos[1] + height);
+            }
+        });
+        mDropAnim.start();
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        super.dispatchDraw(canvas);
+        if (mDropView != null) {
+            // We are animating an item that was just dropped on the home screen.
+            // Render its View in the current animation position.
+            canvas.save(Canvas.MATRIX_SAVE_FLAG);
+            final int xPos = mDropViewPos[0] - mDropView.getScrollX();
+            final int yPos = mDropViewPos[1] - mDropView.getScrollY();
+            canvas.translate(xPos, yPos);
+            mDropView.draw(canvas);
+            canvas.restore();
+        }
     }
 }

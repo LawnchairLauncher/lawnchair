@@ -227,7 +227,7 @@ public class DragView extends View {
 
         mAnim.start();
     }
-    
+
     /**
      * Move the window containing this view.
      *

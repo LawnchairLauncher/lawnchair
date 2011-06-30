@@ -153,7 +153,6 @@ public class CellLayout extends ViewGroup {
         mWidthGap = a.getDimensionPixelSize(R.styleable.CellLayout_widthGap, 0);
         mHeightGap = a.getDimensionPixelSize(R.styleable.CellLayout_heightGap, 0);
         mMaxGap = a.getDimensionPixelSize(R.styleable.CellLayout_maxGap, 0);
-
         mCountX = LauncherModel.getCellCountX();
         mCountY = LauncherModel.getCellCountY();
         mOccupied = new boolean[mCountX][mCountY];
@@ -1384,13 +1383,11 @@ public class CellLayout extends ViewGroup {
      *
      * @param child The child that is being dropped
      */
-    void onDropChild(View child, boolean animate) {
+    void onDropChild(View child) {
         if (child != null) {
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
             lp.isDragging = false;
             lp.dropped = true;
-            lp.animateDrop = animate;
-            child.setVisibility(animate ? View.INVISIBLE : View.VISIBLE);
             child.requestLayout();
         }
     }
@@ -1717,21 +1714,7 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         @ViewDebug.ExportedProperty
         int y;
 
-        /**
-         * The old X coordinate of this item, relative to its current parent.
-         * Used to animate the item into its new position.
-         */
-        int oldX;
-
-        /**
-         * The old Y coordinate of this item, relative to its current parent.
-         * Used to animate the item into its new position.
-         */
-        int oldY;
-
         boolean dropped;
-
-        boolean animateDrop;
 
         public LayoutParams(Context c, AttributeSet attrs) {
             super(c, attrs);

@@ -81,9 +81,6 @@ public class DragController {
     /** Info about the screen for clamping. */
     private DisplayMetrics mDisplayMetrics = new DisplayMetrics();
 
-    /** Original view that is being dragged.  */
-    private View mOriginator;
-
     /** the area at the edge of the screen that makes the workspace go left
      *   or right while you're dragging.
      */
@@ -178,8 +175,6 @@ public class DragController {
      */
     public void startDrag(View v, DragSource source, Object dragInfo, int dragAction,
             Rect dragRegion) {
-        mOriginator = v;
-
         Bitmap b = getViewBitmap(v);
 
         if (b == null) {
@@ -214,8 +209,6 @@ public class DragController {
      */
     public void startDrag(View v, Bitmap bmp, DragSource source, Object dragInfo, int dragAction,
             Rect dragRegion) {
-        mOriginator = v;
-
         int[] loc = mCoordinatesTemp;
         v.getLocationOnScreen(loc);
         int screenX = loc[0];
@@ -383,9 +376,6 @@ public class DragController {
     private void endDrag() {
         if (mDragging) {
             mDragging = false;
-            if (mOriginator != null) {
-                mOriginator.setVisibility(View.VISIBLE);
-            }
             for (DragListener listener : mListeners) {
                 listener.onDragEnd();
             }

@@ -117,15 +117,6 @@ public class CellLayoutChildren extends ViewGroup {
                             WallpaperManager.COMMAND_DROP,
                             cellXY[0] + childLeft + lp.width / 2,
                             cellXY[1] + childTop + lp.height / 2, 0, null);
-
-                    if (lp.animateDrop) {
-                        lp.animateDrop = false;
-
-                        // This call does not result in a requestLayout(), but at one point did.
-                        // We need to be cautious about any method calls within the layout pass
-                        // to insure we don't leave the view tree in a bad state.
-                        ((Workspace) mParent.getParent()).animateViewIntoPosition(child);
-                    }
                 }
             }
         }

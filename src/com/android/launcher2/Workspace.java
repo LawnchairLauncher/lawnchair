@@ -16,17 +16,13 @@
 
 package com.android.launcher2;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-
 import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
+import android.animation.Animator.AnimatorListener;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.AlertDialog;
 import android.app.WallpaperManager;
@@ -45,7 +41,6 @@ import android.graphics.Camera;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region.Op;
@@ -68,6 +63,10 @@ import android.widget.Toast;
 import com.android.launcher.R;
 import com.android.launcher2.FolderIcon.FolderRingAnimator;
 import com.android.launcher2.InstallWidgetReceiver.WidgetMimeTypeHandlerData;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -180,11 +179,6 @@ public class Workspace extends SmoothPagedView
     private Bitmap mDragOutline = null;
     private final Rect mTempRect = new Rect();
     private final int[] mTempXY = new int[2];
-
-    private ValueAnimator mDropAnim = null;
-    private TimeInterpolator mQuintEaseOutInterpolator = new DecelerateInterpolator(2.5f);
-    private View mDropView = null;
-    private int[] mDropViewPos = new int[] { -1, -1 };
 
     // Paint used to draw external drop outline
     private final Paint mExternalDragOutlinePaint = new Paint();
@@ -415,7 +409,7 @@ public class Workspace extends SmoothPagedView
      * @return The open folder on the current screen, or null if there is none
      */
     Folder getOpenFolder() {
-        DragLayer dragLayer = (DragLayer) mLauncher.findViewById(R.id.drag_layer);
+        DragLayer dragLayer = mLauncher.getDragLayer();
         int count = dragLayer.getChildCount();
         for (int i = 0; i < count; i++) {
             View child = dragLayer.getChildAt(i);
@@ -1255,17 +1249,6 @@ public class Workspace extends SmoothPagedView
                     d.draw(canvas);
                 }
             }
-
-            if (mDropView != null) {
-                // We are animating an item that was just dropped on the home screen.
-                // Render its View in the current animation position.
-                canvas.save(Canvas.MATRIX_SAVE_FLAG);
-                final int xPos = mDropViewPos[0] - mDropView.getScrollX();
-                final int yPos = mDropViewPos[1] - mDropView.getScrollY();
-                canvas.translate(xPos, yPos);
-                mDropView.draw(canvas);
-                canvas.restore();
-            }
         }
     }
 
@@ -1761,7 +1744,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public void exitWidgetResizeMode() {
-        DragLayer dragLayer = (DragLayer) mLauncher.findViewById(R.id.drag_layer);
+        DragLayer dragLayer = mLauncher.getDragLayer();
         dragLayer.clearAllResizeFrames();
     }
 
@@ -2146,98 +2129,6 @@ public class Workspace extends SmoothPagedView
                 cellXY[0], cellXY[1]);
     }
 
-    private void setPositionForDropAnimation(
-            View dragView, int dragViewX, int dragViewY, View parent, View child) {
-        final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
-
-        // Based on the position of the drag view, find the top left of the original view
-        int viewX = dragViewX + (dragView.getWidth() - child.getMeasuredWidth()) / 2;
-        int viewY = dragViewY + (dragView.getHeight() - child.getMeasuredHeight()) / 2;
-
-        CellLayout layout = (CellLayout) parent;
-
-        // Set its old pos (in the new parent's coordinates); it will be animated
-        // in animateViewIntoPosition after the next layout pass
-        lp.oldX = viewX - (layout.getLeft() + layout.getPaddingLeft() - mScrollX);
-        lp.oldY = viewY - (layout.getTop() + layout.getPaddingTop() - mScrollY);
-    }
-
-    public void animateViewIntoPosition(final View view, final int fromX, final int fromY, 
-            final int dX, final int dY, final Runnable animationEndRunnable) {
-
-        // Calculate the duration of the animation based on the object's distance
-        final float dist = (float) Math.sqrt(dX*dX + dY*dY);
-        final Resources res = getResources();
-        final float maxDist = (float) res.getInteger(R.integer.config_dropAnimMaxDist);
-        int duration = res.getInteger(R.integer.config_dropAnimMaxDuration);
-        if (dist < maxDist) {
-            duration *= mQuintEaseOutInterpolator.getInterpolation(dist / maxDist);
-        }
-
-        if (mDropAnim != null) {
-            mDropAnim.end();
-        }
-        mDropAnim = new ValueAnimator();
-        mDropAnim.setInterpolator(mQuintEaseOutInterpolator);
-
-        // The view is invisible during the animation; we render it manually.
-        mDropAnim.addListener(new AnimatorListenerAdapter() {
-            public void onAnimationStart(Animator animation) {
-                // Set this here so that we don't render it until the animation begins
-                mDropView = view;
-            }
-
-            public void onAnimationEnd(Animator animation) {
-                animationEndRunnable.run();
-            }
-        });
-
-        mDropAnim.setDuration(duration);
-        mDropAnim.setFloatValues(0.0f, 1.0f);
-        mDropAnim.removeAllUpdateListeners();
-        mDropAnim.addUpdateListener(new AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
-                final float percent = (Float) animation.getAnimatedValue();
-                // Invalidate the old position
-                invalidate(mDropViewPos[0], mDropViewPos[1],
-                        mDropViewPos[0] + view.getWidth(), mDropViewPos[1] + view.getHeight());
-
-                mDropViewPos[0] = fromX + (int) (percent * dX + 0.5f);
-                mDropViewPos[1] = fromY + (int) (percent * dY + 0.5f);
-                invalidate(mDropViewPos[0], mDropViewPos[1],
-                        mDropViewPos[0] + view.getWidth(), mDropViewPos[1] + view.getHeight());
-            }
-        });
-
-        mDropAnim.start();
-    }
-
-    /*
-     * We should be careful that this method cannot result in any synchronous requestLayout()
-     * calls, as it is called from onLayout().
-     */
-    public void animateViewIntoPosition(final View view) {
-        final CellLayout parent = (CellLayout) view.getParent().getParent();
-        final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
-
-        // Convert the animation params to be relative to the Workspace, not the CellLayout
-        final int fromX = lp.oldX + parent.getLeft() + parent.getPaddingLeft();
-        final int fromY = lp.oldY + parent.getTop() + parent.getPaddingTop();
-
-        final int dx = lp.x - lp.oldX;
-        final int dy = lp.y - lp.oldY;
-
-        Runnable animationEndRunnable = new Runnable() {
-            public void run() {
-                if (mDropView != null) {
-                    mDropView.setVisibility(View.VISIBLE);
-                    mDropView = null;
-                }
-            }
-        };
-        animateViewIntoPosition(view, fromX, fromY, dx, dy, animationEndRunnable);
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -2453,8 +2344,7 @@ public class Workspace extends SmoothPagedView
                         if (pinfo.resizeMode != AppWidgetProviderInfo.RESIZE_NONE) {
                             final Runnable resizeRunnable = new Runnable() {
                                 public void run() {
-                                    DragLayer dragLayer =
-                                            (DragLayer) mLauncher.findViewById(R.id.drag_layer);
+                                    DragLayer dragLayer = mLauncher.getDragLayer();
                                     dragLayer.addResizeFrame(info, hostView, cellLayout);
                                 }
                             };
@@ -2478,13 +2368,10 @@ public class Workspace extends SmoothPagedView
 
             final CellLayout parent = (CellLayout) cell.getParent().getParent();
 
-            int loc[] = new int[2];
-            getViewLocationRelativeToSelf(d.dragView, loc);
-
             // Prepare it to be animated into its new position
             // This must be called after the view has been re-parented
-            setPositionForDropAnimation(d.dragView, loc[0], loc[1], parent, cell);
-            parent.onDropChild(cell, true);
+            mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, cell);
+            parent.onDropChild(cell);
         }
     }
 
@@ -3112,17 +2999,13 @@ public class Workspace extends SmoothPagedView
             }
             addInScreen(view, indexOfChild(cellLayout), mTargetCell[0],
                     mTargetCell[1], info.spanX, info.spanY, insertAtFirst);
-            cellLayout.onDropChild(view, false);
+            cellLayout.onDropChild(view);
             cellLayout.animateDrop();
             CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
             cellLayout.getChildrenLayout().measureChild(view);
 
             if (dragView != null) {
-                // we have the visual center of the drag view, we need to find the actual
-                // left and top of the dragView.
-                int loc[] = new int[2];
-                getViewLocationRelativeToSelf(dragView, loc);
-                setPositionForDropAnimation(dragView, loc[0], loc[1], cellLayout, view);
+                mLauncher.getDragLayer().animateViewIntoPosition(dragView, view);
             }
 
             LauncherModel.addOrMoveItemInDatabase(mLauncher, info,
@@ -3195,7 +3078,7 @@ public class Workspace extends SmoothPagedView
             // calling onDropCompleted(). We call it ourselves here, but maybe this should be
             // moved into DragController.cancelDrag().
             doDragExit(null);
-            ((CellLayout) getChildAt(mDragInfo.screen)).onDropChild(mDragInfo.cell, false);
+            ((CellLayout) getChildAt(mDragInfo.screen)).onDropChild(mDragInfo.cell);
         }
         mLauncher.unlockScreenOrientation();
         mDragOutline = null;

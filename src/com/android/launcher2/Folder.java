@@ -224,10 +224,14 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
             mEmptyCell[0] = item.cellX;
             mEmptyCell[1] = item.cellY;
             mCurrentDragView = v;
-            mContent.removeView(mCurrentDragView);
-            mInfo.remove(item);
+
         }
         return true;
+    }
+
+    public void onDragViewVisible() {
+        mContent.removeView(mCurrentDragView);
+        mInfo.remove(mCurrentDragInfo);
     }
 
     public boolean isEditingName() {
@@ -292,9 +296,6 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
 
     public void setDragController(DragController dragController) {
         mDragController = dragController;
-    }
-
-    public void onDragViewVisible() {
     }
 
     void setLauncher(Launcher launcher) {
@@ -542,7 +543,6 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     public void onDragEnter(DragObject d) {
         mPreviousTargetCell[0] = -1;
         mPreviousTargetCell[1] = -1;
-        mContent.onDragEnter();
         mOnExitAlarm.cancelAlarm();
     }
 
@@ -661,7 +661,6 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
             mOnExitAlarm.setAlarm(ON_EXIT_CLOSE_DELAY);
         }
         mReorderAlarm.cancelAlarm();
-        mContent.onDragExit();
     }
 
     public void onDropCompleted(View target, DragObject d, boolean success) {
@@ -841,7 +840,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
                     LauncherSettings.Favorites.CONTAINER_DESKTOP, mInfo.screen,
                     mInfo.cellX, mInfo.cellY);
         }
-        LauncherModel.deleteFolderContentsFromDatabase(mLauncher, mInfo, true);
+        LauncherModel.deleteItemFromDatabase(mLauncher, mInfo);
 
         // Add the last remaining child to the workspace in place of the folder
         if (finalItem != null) {
@@ -870,9 +869,9 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
             si.cellX = lp.cellX = mEmptyCell[0];
             si.cellX = lp.cellY = mEmptyCell[1];
             mContent.addViewToCellLayout(mCurrentDragView, -1, (int)item.id, lp, true);
-            mSuppressOnAdd = true;
-            mItemsInvalidated = true;
+            mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, mCurrentDragView);
             setupContentDimension(getItemCount());
+            mSuppressOnAdd = true;
         }
         mInfo.add(item);
     }
