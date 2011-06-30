@@ -19,6 +19,7 @@ package com.android.launcher2;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
@@ -36,10 +37,13 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
 
     private int mCellCountX;
     private int mCellCountY;
+    private int mOriginalCellWidth;
+    private int mOriginalCellHeight;
     private int mCellWidth;
     private int mCellHeight;
     private int mWidthGap;
     private int mHeightGap;
+    private int mMaxGap;
     private float mPeekWidth;
     protected PagedViewCellLayoutChildren mChildren;
     private PagedViewCellLayoutChildren mHolographicChildren;
@@ -61,12 +65,15 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
 
         // setup default cell parameters
         Resources resources = context.getResources();
-        mCellWidth = resources.getDimensionPixelSize(R.dimen.apps_customize_cell_width);
-        mCellHeight = resources.getDimensionPixelSize(R.dimen.apps_customize_cell_height);
+        mOriginalCellWidth = mCellWidth =
+            resources.getDimensionPixelSize(R.dimen.apps_customize_cell_width);
+        mOriginalCellHeight = mCellHeight =
+            resources.getDimensionPixelSize(R.dimen.apps_customize_cell_height);
         mPeekWidth = resources.getDimensionPixelSize(R.dimen.apps_customize_peek_width);
         mCellCountX = LauncherModel.getCellCountX();
         mCellCountY = LauncherModel.getCellCountY();
         mWidthGap = mHeightGap = -1;
+        mMaxGap = resources.getDimensionPixelSize(R.dimen.apps_customize_max_gap);
 
         mChildren = new PagedViewCellLayoutChildren(context);
         mChildren.setCellDimensions(mCellWidth, mCellHeight);
@@ -214,53 +221,47 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
             throw new RuntimeException("CellLayout cannot have UNSPECIFIED dimensions");
         }
 
-        final int cellWidth = mCellWidth;
-        final int cellHeight = mCellHeight;
+
 
         int numWidthGaps = mCellCountX - 1;
         int numHeightGaps = mCellCountY - 1;
 
-        int vSpaceLeft = heightSpecSize - mPaddingTop
-                - mPaddingBottom - (cellHeight * mCellCountY);
-        int heightGap = (numHeightGaps <= 0) ? 0 : (vSpaceLeft / numHeightGaps);
+        if (mWidthGap < 0 || mHeightGap < 0) {
+            int hSpace = widthSpecSize - mPaddingLeft - mPaddingRight;
+            int vSpace = heightSpecSize - mPaddingTop - mPaddingBottom;
+            int hFreeSpace = hSpace - (mCellCountX * mOriginalCellWidth);
+            int vFreeSpace = vSpace - (mCellCountY * mOriginalCellHeight);
+            mWidthGap = Math.min(mMaxGap, numWidthGaps > 0 ? (hFreeSpace / numWidthGaps) : 0);
+            mHeightGap = Math.min(mMaxGap,numHeightGaps > 0 ? (vFreeSpace / numHeightGaps) : 0);
 
-        int hSpaceLeft = widthSpecSize - mPaddingLeft
-                - mPaddingRight - (cellWidth * mCellCountX);
-        int widthGap = (numWidthGaps <= 0) ? 0 : (hSpaceLeft / numWidthGaps);
-
-        // center it around the min gaps
-        int minGap = Math.min(widthGap, heightGap);
-        /*
-        if (minGap < heightGap) {
-            // vertical space has shrunken, so change padding accordingly
-            paddingTop += ((heightGap - minGap) * (mCellCountY - 1)) / 2;
-        } else if (minGap < widthGap) {
-            // horizontal space has shrunken, so change padding accordingly
-            paddingLeft += ((widthGap - minGap) * (mCellCountX - 1)) / 2;
-        }
-        */
-        if (mWidthGap > -1 && mHeightGap > -1) {
-            widthGap = mWidthGap;
-            heightGap = mHeightGap;
-        } else {
-            widthGap = heightGap = minGap;
+            mChildren.setGap(mWidthGap, mHeightGap);
+            mHolographicChildren.setGap(mWidthGap, mHeightGap);
         }
 
-        int newWidth = (mCellCountX * cellWidth) + ((mCellCountX - 1) * widthGap);
-        int newHeight = (mCellCountY * cellHeight) + ((mCellCountY - 1) * heightGap);
+        // Initial values correspond to widthSpecMode == MeasureSpec.EXACTLY
+        int newWidth = widthSpecSize;
+        int newHeight = heightSpecSize;
+        if (widthSpecMode == MeasureSpec.AT_MOST) {
+            newWidth = mPaddingLeft + mPaddingRight + (mCellCountX * mCellWidth) +
+                ((mCellCountX - 1) * mWidthGap);
+            newHeight = mPaddingTop + mPaddingBottom + (mCellCountY * mCellHeight) +
+                ((mCellCountY - 1) * mHeightGap);
+            setMeasuredDimension(newWidth, newHeight);
+        }
 
         final int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
             int childWidthMeasureSpec =
-                MeasureSpec.makeMeasureSpec(newWidth, MeasureSpec.EXACTLY);
+                MeasureSpec.makeMeasureSpec(newWidth - mPaddingLeft -
+                        mPaddingRight, MeasureSpec.EXACTLY);
             int childheightMeasureSpec =
-                MeasureSpec.makeMeasureSpec(newHeight, MeasureSpec.EXACTLY);
+                MeasureSpec.makeMeasureSpec(newHeight - mPaddingTop -
+                        mPaddingBottom, MeasureSpec.EXACTLY);
             child.measure(childWidthMeasureSpec, childheightMeasureSpec);
         }
 
-        setMeasuredDimension(newWidth + mPaddingLeft + mPaddingRight,
-            newHeight + mPaddingTop + mPaddingBottom);
+        setMeasuredDimension(newWidth, newHeight);
     }
 
     int getContentWidth() {

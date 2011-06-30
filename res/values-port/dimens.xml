@@ -29,12 +29,12 @@
 
     <integer name="all_apps_view_cellCountX">4</integer>
     <integer name="all_apps_view_cellCountY">5</integer>
-    <dimen name="all_apps_view_pageLayoutWidthGap">0dp</dimen>
-    <dimen name="all_apps_view_pageLayoutHeightGap">8dp</dimen>
+    <dimen name="all_apps_view_pageLayoutWidthGap">-1dp</dimen>
+    <dimen name="all_apps_view_pageLayoutHeightGap">-1dp</dimen>
     <dimen name="all_apps_view_pageLayoutPaddingTop">15dp</dimen>
     <dimen name="all_apps_view_pageLayoutPaddingBottom">15dp</dimen>
-    <dimen name="all_apps_view_pageLayoutPaddingLeft">0dp</dimen>
-    <dimen name="all_apps_view_pageLayoutPaddingRight">0dp</dimen>
+    <dimen name="all_apps_view_pageLayoutPaddingLeft">5dp</dimen>
+    <dimen name="all_apps_view_pageLayoutPaddingRight">5dp</dimen>
 
     <dimen name="apps_customize_widget_cell_width_gap">20dp</dimen>
     <dimen name="apps_customize_widget_cell_height_gap">10dp</dimen>
