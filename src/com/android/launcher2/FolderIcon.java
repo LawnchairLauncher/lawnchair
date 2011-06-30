@@ -95,6 +95,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         icon.mFolderName = (BubbleTextView) icon.findViewById(R.id.folder_name);
         icon.mFolderName.setText(folderInfo.title);
         icon.mPreviewBackground = (ImageView) icon.findViewById(R.id.preview_background);
+        icon.mPreviewBackground.setContentDescription(folderInfo.title);
 
         icon.setTag(folderInfo);
         icon.setOnClickListener(launcher);
@@ -383,5 +384,6 @@ public class FolderIcon extends LinearLayout implements FolderListener {
 
     public void onTitleChanged(CharSequence title) {
         mFolderName.setText(title.toString());
+        mPreviewBackground.setContentDescription(title.toString());
     }
 }

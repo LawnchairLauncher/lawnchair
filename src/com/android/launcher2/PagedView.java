@@ -16,8 +16,6 @@
 
 package com.android.launcher2;
 
-import java.util.ArrayList;
-
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
@@ -39,12 +37,16 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.Interpolator;
 import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.Scroller;
 
 import com.android.launcher.R;
+
+import java.util.ArrayList;
 
 /**
  * An abstraction of the original Workspace which supports browsing through a
@@ -1698,5 +1700,50 @@ public abstract class PagedView extends ViewGroup {
         int indicatorCenterOffset = indicatorWidth / 2 - mScrollIndicator.getMeasuredWidth() / 2;
         int indicatorPos = (int) (offset * pageWidth) + pageOffset + indicatorCenterOffset;
         mScrollIndicator.setTranslationX(indicatorPos);
+    }
+
+    /* Accessibility */
+    @Override
+    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
+        info.setScrollable(true);
+    }
+
+    @Override
+    public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
+        super.onInitializeAccessibilityEvent(event);
+        event.setScrollable(true);
+        if (event.getEventType() == AccessibilityEvent.TYPE_VIEW_SCROLLED) {
+            event.setFromIndex(mCurrentPage);
+            event.setToIndex(mCurrentPage);
+            event.setItemCount(getChildCount());
+        }
+    }
+
+    @Override
+    public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
+        // Do not append text content to scroll events they are fired frequently
+        // and the client has already received another event type with the text.
+        if (event.getEventType() != AccessibilityEvent.TYPE_VIEW_SCROLLED) {
+            super.dispatchPopulateAccessibilityEvent(event);
+        }
+
+        onPopulateAccessibilityEvent(event);
+        return false;
+    }
+
+    @Override
+    public void onPopulateAccessibilityEvent(AccessibilityEvent event) {
+        super.onPopulateAccessibilityEvent(event);
+
+        if (event.getEventType() == AccessibilityEvent.TYPE_VIEW_SCROLLED) {
+            event.getText().add(getCurrentPageDescription());
+        }
+    }
+
+    protected String getCurrentPageDescription() {
+        int page = (mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage;
+        return String.format(mContext.getString(R.string.default_scroll_format),
+                page + 1, getChildCount());
     }
 }

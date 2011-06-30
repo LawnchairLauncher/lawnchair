@@ -105,6 +105,7 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
             image.setMaxWidth(maxWidth);
         }
         image.setImageDrawable(preview);
+        image.setContentDescription(info.label);
         mPreviewImageView = image;
         final TextView name = (TextView) findViewById(R.id.widget_name);
         name.setText(info.label);
@@ -117,11 +118,13 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
     public void applyFromResolveInfo(PackageManager pm, ResolveInfo info,
             FastBitmapDrawable preview, HolographicOutlineHelper holoOutlineHelper) {
         mHolographicOutlineHelper = holoOutlineHelper;
+        CharSequence label = info.loadLabel(pm);
         final ImageView image = (ImageView) findViewById(R.id.widget_preview);
         image.setImageDrawable(preview);
+        image.setContentDescription(label);
         mPreviewImageView = image;
         final TextView name = (TextView) findViewById(R.id.widget_name);
-        name.setText(info.loadLabel(pm));
+        name.setText(label);
         name.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         final TextView dims = (TextView) findViewById(R.id.widget_dims);
         if (dims != null) {

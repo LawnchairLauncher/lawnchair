@@ -3477,4 +3477,11 @@ public class Workspace extends SmoothPagedView
     @Override
     public void syncPageItems(int page) {
     }
+
+    @Override
+    protected String getCurrentPageDescription() {
+        int page = (mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage;
+        return String.format(mContext.getString(R.string.workspace_scroll_format),
+                page + 1, getChildCount());
+    }
 }

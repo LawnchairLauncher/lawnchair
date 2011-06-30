@@ -1192,4 +1192,19 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         final int count = getChildCount();
         return Math.min(page + 2, count - 1);
     }
+
+    @Override
+    protected String getCurrentPageDescription() {
+        int page = (mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage;
+        int stringId = R.string.default_scroll_format;
+        switch (mContentType) {
+        case Applications:
+            stringId = R.string.apps_customize_apps_scroll_format;
+            break;
+        case Widgets:
+            stringId = R.string.apps_customize_widgets_scroll_format;
+            break;
+        }
+        return String.format(mContext.getString(stringId), page + 1, getChildCount());
+    }
 }
