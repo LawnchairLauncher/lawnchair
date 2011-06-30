@@ -283,6 +283,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mShortcutCountX = Math.max(1, (int) Math.round(mCellCountX / 2f));
         mShortcutCountY = Math.max(1, (int) Math.round(mCellCountY / 2f));
 
+        // Force a measure to update recalculate the gaps
+        int widthSpec = MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.AT_MOST);
+        int heightSpec = MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.AT_MOST);
+        mWidgetSpacingLayout.measure(widthSpec, heightSpec);
         mContentWidth = mWidgetSpacingLayout.getContentWidth();
 
         invalidatePageData();
@@ -537,7 +541,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // expected page width, so we can actually optimize by hiding all the TextView-based
         // children that are expensive to measure, and let that happen naturally later.
         setVisibilityOnChildren(layout, View.GONE);
-        int widthSpec = MeasureSpec.makeMeasureSpec(getPageContentWidth(), MeasureSpec.AT_MOST);
+        int widthSpec = MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.AT_MOST);
         int heightSpec = MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.AT_MOST);
         layout.setMinimumWidth(getPageContentWidth());
         layout.measure(widthSpec, heightSpec);
