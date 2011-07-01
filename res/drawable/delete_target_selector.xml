@@ -19,6 +19,6 @@
 -->
 
 <transition xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/ic_home_delete_holo_dark"  />
-    <item android:drawable="@drawable/ic_home_delete_hover_holo_dark"  />
+    <item android:drawable="@drawable/ic_launcher_trashcan_normal_holo"  />
+    <item android:drawable="@drawable/ic_launcher_trashcan_active_holo"  />
 </transition>

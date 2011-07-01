@@ -113,7 +113,7 @@
                 style="@style/DropTargetButton"
                 android:id="@+id/delete_target_text"
                 android:text="@string/delete_zone_label_workspace"
-                android:drawableLeft="@drawable/delete_zone_selector" />
+                android:drawableLeft="@drawable/delete_target_selector" />
         </com.android.launcher2.DeleteDropTarget>
 
         <com.android.launcher2.InfoDropTarget
@@ -125,7 +125,7 @@
                 style="@style/DropTargetButton"
                 android:id="@+id/info_target_text"
                 android:text="@string/info_target_label"
-                android:drawableLeft="@drawable/ic_home_info_holo_dark" />
+                android:drawableLeft="@drawable/info_target_selector" />
         </com.android.launcher2.InfoDropTarget>
     </LinearLayout>
 </com.android.launcher2.SearchDropTargetBar>

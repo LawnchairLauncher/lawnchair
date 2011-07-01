@@ -163,9 +163,9 @@ public class CellLayout extends ViewGroup {
 
         final Resources res = getResources();
 
-        mNormalBackground = res.getDrawable(R.drawable.homescreen_large_blue);
-        mActiveBackground = res.getDrawable(R.drawable.homescreen_large_green);
-        mActiveGlowBackground = res.getDrawable(R.drawable.homescreen_large_green_strong);
+        mNormalBackground = res.getDrawable(R.drawable.homescreen_blue_normal_holo);
+        mActiveBackground = res.getDrawable(R.drawable.homescreen_green_normal_holo);
+        mActiveGlowBackground = res.getDrawable(R.drawable.homescreen_green_strong_holo);
 
         mNormalBackgroundMini = res.getDrawable(R.drawable.homescreen_small_blue);
         mNormalGlowBackgroundMini = res.getDrawable(R.drawable.homescreen_small_blue_strong);

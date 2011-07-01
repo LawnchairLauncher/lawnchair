@@ -136,7 +136,7 @@
         android:id="@+id/delete_zone"
         android:text="@string/delete_zone_label_workspace"
         android:drawablePadding="@dimen/delete_zone_drawable_padding"
-        android:drawableLeft="@drawable/delete_zone_selector"
+        android:drawableLeft="@drawable/delete_target_selector"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/configure_button"

@@ -16,16 +16,14 @@
 
 package com.android.launcher2;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.android.launcher.R;
@@ -33,6 +31,7 @@ import com.android.launcher.R;
 public class DeleteDropTarget extends ButtonDropTarget {
 
     private TextView mText;
+    private TransitionDrawable mDrawable;
     private int mHoverColor = 0xFFFF0000;
 
     public DeleteDropTarget(Context context, AttributeSet attrs) {
@@ -55,8 +54,8 @@ public class DeleteDropTarget extends ButtonDropTarget {
         mHoverColor = r.getColor(R.color.delete_target_hover_tint);
         mHoverPaint.setColorFilter(new PorterDuffColorFilter(
                 mHoverColor, PorterDuff.Mode.SRC_ATOP));
-        setBackgroundColor(mHoverColor);
-        getBackground().setAlpha(0);
+        mDrawable = (TransitionDrawable) mText.getCompoundDrawables()[0];
+        mDrawable.setCrossFadeEnabled(true);
 
         // Remove the text in the Phone UI in landscape
         int orientation = getResources().getConfiguration().orientation;
@@ -127,18 +126,13 @@ public class DeleteDropTarget extends ButtonDropTarget {
     public void onDragEnter(DragObject d) {
         super.onDragEnter(d);
 
-        ObjectAnimator anim = ObjectAnimator.ofInt(getBackground(), "alpha",
-                Color.alpha(mHoverColor));
-        anim.setDuration(mTransitionDuration);
-        anim.start();
+        mDrawable.startTransition(mTransitionDuration);
     }
 
     public void onDragExit(DragObject d) {
         super.onDragExit(d);
 
-        ObjectAnimator anim = ObjectAnimator.ofInt(getBackground(), "alpha", 0);
-        anim.setDuration(mTransitionDuration);
-        anim.start();
+        mDrawable.resetTransition();
     }
 
     public void onDrop(DragObject d) {

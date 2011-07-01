@@ -1240,11 +1240,11 @@ public class Workspace extends SmoothPagedView
                 final CellLayout rightPage = (CellLayout) getChildAt(mCurrentPage + 1);
 
                 if (leftPage != null && leftPage.getIsDragOverlapping()) {
-                    final Drawable d = getResources().getDrawable(R.drawable.page_hover_left);
+                    final Drawable d = getResources().getDrawable(R.drawable.page_hover_left_holo);
                     d.setBounds(mScrollX, padding, mScrollX + d.getIntrinsicWidth(), height - padding);
                     d.draw(canvas);
                 } else if (rightPage != null && rightPage.getIsDragOverlapping()) {
-                    final Drawable d = getResources().getDrawable(R.drawable.page_hover_right);
+                    final Drawable d = getResources().getDrawable(R.drawable.page_hover_right_holo);
                     d.setBounds(mScrollX + width - d.getIntrinsicWidth(), padding, mScrollX + width, height - padding);
                     d.draw(canvas);
                 }

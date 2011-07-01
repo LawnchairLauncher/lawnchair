@@ -2809,7 +2809,7 @@ public final class Launcher extends Activity
         if (activityName != null) {
             mAppMarketIntent = intent;
             sAppMarketIcon = updateTextButtonWithIconFromExternalActivity(
-                    R.id.market_button, activityName, R.drawable.app_market_generic);
+                    R.id.market_button, activityName, R.drawable.ic_launcher_market_holo);
             marketButton.setVisibility(View.VISIBLE);
             
             // Remove the shop icon text in the Phone UI
