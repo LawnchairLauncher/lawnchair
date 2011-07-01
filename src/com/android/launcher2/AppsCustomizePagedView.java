@@ -460,22 +460,21 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     protected boolean beginDragging(View v) {
         if (!super.beginDragging(v)) return false;
 
+        // Go into spring loaded mode (must happen before we startDrag())
+        int currentPageIndex = mLauncher.getWorkspace().getCurrentPage();
+        CellLayout currentPage = (CellLayout) mLauncher.getWorkspace().getChildAt(currentPageIndex);
+        mLauncher.enterSpringLoadedDragMode(currentPage);
 
         if (v instanceof PagedViewIcon) {
             beginDraggingApplication(v);
         } else if (v instanceof PagedViewWidget) {
             beginDraggingWidget(v);
         }
-
-        // Go into spring loaded mode
-        int currentPageIndex = mLauncher.getWorkspace().getCurrentPage();
-        CellLayout currentPage = (CellLayout) mLauncher.getWorkspace().getChildAt(currentPageIndex);
-        mLauncher.enterSpringLoadedDragMode(currentPage);
         return true;
     }
     private void endDragging(boolean success) {
-        mLauncher.exitSpringLoadedDragMode();
         mLauncher.getWorkspace().onDragStopped(success);
+        mLauncher.exitSpringLoadedDragMode();
         mLauncher.unlockScreenOrientation();
 
     }

@@ -1403,6 +1403,21 @@ public class CellLayout extends ViewGroup {
     }
 
     /**
+     * A drag event has begun over this layout.
+     * It may have begun over this layout (in which case onDragChild is called first),
+     * or it may have begun on another layout.
+     */
+    void onDragEnter() {
+        if (!mDragging) {
+            // Fade in the drag indicators
+            if (mCrosshairsAnimator != null) {
+                mCrosshairsAnimator.animateIn();
+            }
+        }
+        mDragging = true;
+    }
+
+    /**
      * Called when drag has left this CellLayout or has been completed (successfully or not)
      */
     void onDragExit() {
@@ -1451,21 +1466,6 @@ public class CellLayout extends ViewGroup {
     void onDragChild(View child) {
         LayoutParams lp = (LayoutParams) child.getLayoutParams();
         lp.isDragging = true;
-    }
-
-    /**
-     * A drag event has begun over this layout.
-     * It may have begun over this layout (in which case onDragChild is called first),
-     * or it may have begun on another layout.
-     */
-    void onDragEnter() {
-        if (!mDragging) {
-            // Fade in the drag indicators
-            if (mCrosshairsAnimator != null) {
-                mCrosshairsAnimator.animateIn();
-            }
-        }
-        mDragging = true;
     }
 
     /**

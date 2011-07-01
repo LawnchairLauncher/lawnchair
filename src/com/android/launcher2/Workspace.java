@@ -198,10 +198,6 @@ public class Workspace extends SmoothPagedView
 
     // info about the last drag
     private DragView mLastDragView;
-    private int mLastDragOriginX;
-    private int mLastDragOriginY;
-    private int mLastDragXOffset;
-    private int mLastDragYOffset;
 
     // Variables relating to the creation of user folders by hovering shortcuts over shortcuts
     private static final int FOLDER_CREATION_TIMEOUT = 250;
@@ -330,13 +326,6 @@ public class Workspace extends SmoothPagedView
             public void onAnimationEnd(Animator animation) {
                 mIsInUnshrinkAnimation = false;
                 mSyncWallpaperOffsetWithScroll = true;
-                if (mShrinkState == ShrinkState.SPRING_LOADED) {
-                    View layout = null;
-                    if (mLastDragView != null) {
-                        layout = findMatchingPageForDragOver(mLastDragView, mLastDragOriginX,
-                                mLastDragOriginY, mLastDragXOffset, mLastDragYOffset);
-                    }
-                }
                 mWallpaperOffset.setOverrideHorizontalCatchupConstant(false);
                 mAnimator = null;
                 enableChildrenLayers(false);
@@ -1157,11 +1146,9 @@ public class Workspace extends SmoothPagedView
         } else {
             super.dispatchDraw(canvas);
 
-            final int width = getWidth();
-            final int height = getHeight();
-
-            // In portrait orientation, draw the glowing edge when dragging to adjacent screens
-            if (mInScrollArea && (height > width)) {
+            if (mInScrollArea && !LauncherApplication.isScreenLarge()) {
+                final int width = getWidth();
+                final int height = getHeight();
                 final int pageHeight = getChildAt(0).getHeight();
 
                 // This determines the height of the glowing edge: 90% of the page height
@@ -1629,7 +1616,6 @@ public class Workspace extends SmoothPagedView
     // we call this method whenever a drag and drop in Launcher finishes, even if Workspace was
     // never dragged over
     public void onDragStopped(boolean success) {
-        mLastDragView = null;
         // In the success case, DragController has already called onDragExit()
         if (!success) {
             doDragExit(null);
@@ -1657,18 +1643,10 @@ public class Workspace extends SmoothPagedView
     public void enterSpringLoadedDragMode(CellLayout clThatWasClicked) {
         mShrinkState = ShrinkState.SPRING_LOADED;
         unshrink(clThatWasClicked, true);
-        mDragTargetLayout = getCurrentDropLayout();
-        mDragTargetLayout.onDragEnter();
-        mDragTargetLayout.setIsDragOverlapping(true);
-        showOutlines();
     }
 
     public void exitSpringLoadedDragMode(ShrinkState shrinkState) {
         shrink(shrinkState);
-        if (mDragTargetLayout != null) {
-            mDragTargetLayout.onDragExit();
-            mDragTargetLayout = null;
-        }
     }
 
     public void exitWidgetResizeMode() {
@@ -2323,22 +2301,43 @@ public class Workspace extends SmoothPagedView
     }
 
     public void onDragEnter(DragObject d) {
-        mLastDragOverView = null;
         if (mDragTargetLayout != null) {
+            mDragTargetLayout.setIsDragOverlapping(false);
             mDragTargetLayout.onDragExit();
-            mDragTargetLayout = null; // Reset the drag state
         }
+        mDragTargetLayout = getCurrentDropLayout();
+        mDragTargetLayout.setIsDragOverlapping(true);
+        mDragTargetLayout.onDragEnter();
+        mLastDragView = d.dragView;
 
-        if (!mIsSmall) {
-            mDragTargetLayout = getCurrentDropLayout();
-            mDragTargetLayout.onDragEnter();
-
-            // Because we don't have space in the Phone UI (the CellLayouts run to the edge) we
-            // don't need to show the outlines
-            if (!LauncherApplication.isScreenLarge()) {
-                showOutlines();
-            }
+        // Because we don't have space in the Phone UI (the CellLayouts run to the edge) we
+        // don't need to show the outlines
+        if (LauncherApplication.isScreenLarge()) {
+            showOutlines();
         }
+    }
+
+    private void doDragExit(DragObject d) {
+        // Clean up folders
+        cleanupFolderCreation(d);
+
+        // Reset the scroll area and previous drag target
+        onResetScrollArea();
+
+        if (mDragTargetLayout != null) {
+            mDragTargetLayout.setIsDragOverlapping(false);
+            mDragTargetLayout.onDragExit();
+        }
+        mLastDragView = null;
+        mLastDragOverView = null;
+
+        if (!mIsPageMoving) {
+            hideOutlines();
+        }
+    }
+
+    public void onDragExit(DragObject d) {
+        doDragExit(d);
     }
 
     public DropTarget getDropTargetDelegate(DragObject d) {
@@ -2577,6 +2576,10 @@ public class Workspace extends SmoothPagedView
      */
     private CellLayout findMatchingPageForDragOver(
             DragView dragView, int originX, int originY, int offsetX, int offsetY) {
+        return findMatchingPageForDragOver(dragView, originX, originY, offsetX, offsetY, false);
+    }
+    private CellLayout findMatchingPageForDragOver(
+            DragView dragView, int originX, int originY, int offsetX, int offsetY, boolean exact) {
         // We loop through all the screens (ie CellLayouts) and see which ones overlap
         // with the item being dragged and then choose the one that's closest to the touch point
         final int screenCount = getChildCount();
@@ -2600,7 +2603,7 @@ public class Workspace extends SmoothPagedView
                 return cl;
             }
 
-            if (overlaps(cl, dragView, originX, originY, mTempInverseMatrix)) {
+            if (!exact && overlaps(cl, dragView, originX, originY, mTempInverseMatrix)) {
                 // Get the center of the cell layout in screen coordinates
                 final float[] cellLayoutCenter = mTempCellLayoutCenterCoordinates;
                 cellLayoutCenter[0] = cl.getWidth()/2;
@@ -2656,112 +2659,113 @@ public class Workspace extends SmoothPagedView
     }
 
     public void onDragOver(DragObject d) {
-        // When touch is inside the scroll area, skip dragOver actions for the current screen
-        if (!mInScrollArea) {
-            CellLayout layout;
+        // Skip drag over events while we are dragging over side pages
+        if (mInScrollArea) return;
+        if (mIsInUnshrinkAnimation) return;
+
+        CellLayout layout;
+        ItemInfo item = (ItemInfo) d.dragInfo;
+
+        // Ensure that we have proper spans for the item that we are dropping
+        if (item.spanX < 0 || item.spanY < 0) throw new RuntimeException("Improper spans found");
+
+        // Identify whether we have dragged over a side page
+        if (mIsSmall) {
             int left = d.x - d.xOffset;
             int top = d.y - d.yOffset;
+            layout = findMatchingPageForDragOver(d.dragView, left, top, d.xOffset, d.yOffset, true);
+            if (layout != mDragTargetLayout) {
+                // Cancel all intermediate folder states
+                cleanupFolderCreation(d);
+
+                if (mDragTargetLayout != null) {
+                    mDragTargetLayout.setIsDragOverlapping(false);
+                    mDragTargetLayout.onDragExit();
+                }
+                mDragTargetLayout = layout;
+                if (mDragTargetLayout != null) {
+                    mDragTargetLayout.setIsDragOverlapping(true);
+                    mDragTargetLayout.onDragEnter();
+                } else {
+                    mLastDragOverView = null;
+                }
+
+                boolean isInSpringLoadedMode = (mShrinkState == ShrinkState.SPRING_LOADED);
+                if (isInSpringLoadedMode) {
+                    mSpringLoadedDragController.setAlarm(mDragTargetLayout);
+                }
+            }
+        } else {
+            layout = getCurrentDropLayout();
+            if (layout != mDragTargetLayout) {
+                if (mDragTargetLayout != null) {
+                    mDragTargetLayout.setIsDragOverlapping(false);
+                    mDragTargetLayout.onDragExit();
+                }
+                mDragTargetLayout = layout;
+                mDragTargetLayout.setIsDragOverlapping(true);
+                mDragTargetLayout.onDragEnter();
+            }
+        }
+
+        // Handle the drag over
+        if (mDragTargetLayout != null) {
+            final View child = (mDragInfo == null) ? null : mDragInfo.cell;
 
             mDragViewVisualCenter = getDragViewVisualCenter(d.x, d.y, d.xOffset, d.yOffset,
                     d.dragView, mDragViewVisualCenter);
 
-            boolean shrunken = mIsSmall || mIsInUnshrinkAnimation;
-            if (shrunken) {
-                mLastDragView = d.dragView;
-                mLastDragOriginX = left;
-                mLastDragOriginY = top;
-                mLastDragXOffset = d.xOffset;
-                mLastDragYOffset = d.yOffset;
-                layout = findMatchingPageForDragOver(d.dragView, left, top, d.xOffset, d.yOffset);
+            // We want the point to be mapped to the dragTarget.
+            mapPointFromSelfToChild(mDragTargetLayout, mDragViewVisualCenter, null);
+            ItemInfo info = (ItemInfo) d.dragInfo;
 
-                if (layout != null && layout != mDragTargetLayout) {
-                    if (mDragTargetLayout != null) {
-                        mDragTargetLayout.setIsDragOverlapping(false);
-                        mDragTargetLayout.clearDragOutlines();
-                    }
-                    mDragTargetLayout = layout;
+            mTargetCell = findNearestArea((int) mDragViewVisualCenter[0],
+                    (int) mDragViewVisualCenter[1], 1, 1, mDragTargetLayout, mTargetCell);
+            final View dragOverView = mDragTargetLayout.getChildAt(mTargetCell[0],
+                    mTargetCell[1]);
 
-                    // In spring-loaded mode, we still want the user to be able to hover over a
-                    // full screen (which is traditionally set to not accept drops) if they want
-                    // to get to pages beyond the screen that is full.
-                    boolean isInSpringLoadedMode = (mShrinkState == ShrinkState.SPRING_LOADED);
-                    boolean allowDragOver = (mDragTargetLayout != null);
-                    if (allowDragOver) {
-                        if (isInSpringLoadedMode) {
-                            mSpringLoadedDragController.setAlarm(mDragTargetLayout);
-                        }
-                        mDragTargetLayout.setIsDragOverlapping(true);
-                    }
-                }
-            } else {
-                layout = getCurrentDropLayout();
-                if (layout != mDragTargetLayout) {
-                    if (mDragTargetLayout != null) {
-                        mDragTargetLayout.onDragExit();
-                    }
-                    layout.onDragEnter();
-                    mDragTargetLayout = layout;
+            boolean userFolderPending = willCreateUserFolder(info, mDragTargetLayout,
+                    mTargetCell, false);
+            boolean isOverFolder = dragOverView instanceof FolderIcon;
+            if (dragOverView != mLastDragOverView) {
+                cancelFolderCreation();
+                if (mLastDragOverView != null && mLastDragOverView instanceof FolderIcon) {
+                    ((FolderIcon) mLastDragOverView).onDragExit(d.dragInfo);
                 }
             }
-            if (!shrunken || mShrinkState == ShrinkState.SPRING_LOADED) {
-                layout = getCurrentDropLayout();
 
-                final ItemInfo item = (ItemInfo) d.dragInfo;
-                if (d.dragInfo instanceof LauncherAppWidgetInfo) {
-                    LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) d.dragInfo;
+            if (userFolderPending && dragOverView != mLastDragOverView) {
+                mFolderCreationAlarm.setOnAlarmListener(new
+                        FolderCreationAlarmListener(mDragTargetLayout, mTargetCell[0], mTargetCell[1]));
+                mFolderCreationAlarm.setAlarm(FOLDER_CREATION_TIMEOUT);
+            }
 
-                    if (widgetInfo.spanX == -1) {
-                        // Calculate the grid spans needed to fit this widget
-                        int[] spans = layout.rectToCell(widgetInfo.minWidth,
-                                widgetInfo.minHeight, null);
-                        item.spanX = spans[0];
-                        item.spanY = spans[1];
-                    }
-                }
-
+            if (dragOverView != mLastDragOverView && isOverFolder) {
+                ((FolderIcon) dragOverView).onDragEnter(d.dragInfo);
                 if (mDragTargetLayout != null) {
-                    final View child = (mDragInfo == null) ? null : mDragInfo.cell;
-                    // We want the point to be mapped to the dragTarget.
-                    mapPointFromSelfToChild(mDragTargetLayout, mDragViewVisualCenter, null);
-                    ItemInfo info = (ItemInfo) d.dragInfo;
-
-                    mTargetCell = findNearestArea((int) mDragViewVisualCenter[0],
-                            (int) mDragViewVisualCenter[1], 1, 1, mDragTargetLayout, mTargetCell);
-                    final View dragOverView = mDragTargetLayout.getChildAt(mTargetCell[0],
-                            mTargetCell[1]);
-
-                    boolean userFolderPending = willCreateUserFolder(info, mDragTargetLayout,
-                            mTargetCell, false);
-                    boolean isOverFolder = dragOverView instanceof FolderIcon;
-                    if (dragOverView != mLastDragOverView) {
-                        cancelFolderCreation();
-                        if (mLastDragOverView != null && mLastDragOverView instanceof FolderIcon) {
-                            ((FolderIcon) mLastDragOverView).onDragExit(d.dragInfo);
-                        }
-                    }
-
-                    if (userFolderPending && dragOverView != mLastDragOverView) {
-                        mFolderCreationAlarm.setOnAlarmListener(new
-                                FolderCreationAlarmListener(mDragTargetLayout, mTargetCell[0], mTargetCell[1]));
-                        mFolderCreationAlarm.setAlarm(FOLDER_CREATION_TIMEOUT);
-                    }
-
-                    if (dragOverView != mLastDragOverView && isOverFolder) {
-                        ((FolderIcon) dragOverView).onDragEnter(d.dragInfo);
-                        if (mDragTargetLayout != null) {
-                            mDragTargetLayout.clearDragOutlines();
-                        }
-                    }
-                    mLastDragOverView = dragOverView;
-
-                    if (!mCreateUserFolderOnDrop && !isOverFolder) {
-                        mDragTargetLayout.visualizeDropLocation(child, mDragOutline,
-                                (int) mDragViewVisualCenter[0], (int) mDragViewVisualCenter[1],
-                                item.spanX, item.spanY);
-                    }
+                    mDragTargetLayout.clearDragOutlines();
                 }
+            }
+            mLastDragOverView = dragOverView;
+
+            if (!mCreateUserFolderOnDrop && !isOverFolder) {
+                mDragTargetLayout.visualizeDropLocation(child, mDragOutline,
+                        (int) mDragViewVisualCenter[0], (int) mDragViewVisualCenter[1],
+                        item.spanX, item.spanY);
             }
         }
+    }
+
+    private void cleanupFolderCreation(DragObject d) {
+        if (mDragFolderRingAnimator != null && mCreateUserFolderOnDrop) {
+            mDragFolderRingAnimator.animateToNaturalState();
+        }
+        if (mLastDragOverView != null && mLastDragOverView instanceof FolderIcon) {
+            if (d != null) {
+                ((FolderIcon) mLastDragOverView).onDragExit(d.dragInfo);
+            }
+        }
+        mFolderCreationAlarm.cancelAlarm();
     }
 
     private void cancelFolderCreation() {
@@ -2794,30 +2798,6 @@ public class Workspace extends SmoothPagedView
             layout.clearDragOutlines();
             mCreateUserFolderOnDrop = true;
         }
-    }
-
-    private void doDragExit(DragObject d) {
-        if (mDragFolderRingAnimator != null && mCreateUserFolderOnDrop) {
-            mDragFolderRingAnimator.animateToNaturalState();
-        }
-        if (mLastDragOverView != null && mLastDragOverView instanceof FolderIcon) {
-            if (d != null) {
-                ((FolderIcon) mLastDragOverView).onDragExit(d.dragInfo);
-            }
-        }
-        mFolderCreationAlarm.cancelAlarm();
-
-        if (mDragTargetLayout != null) {
-            mDragTargetLayout.onDragExit();
-        }
-        if (!mIsPageMoving) {
-            hideOutlines();
-        }
-        clearAllHovers();
-    }
-
-    public void onDragExit(DragObject d) {
-        doDragExit(d);
     }
 
     @Override
@@ -3056,40 +3036,50 @@ public class Workspace extends SmoothPagedView
             cancelFolderCreation();
 
             if (layout != null) {
-                layout.setIsDragOverlapping(true);
-
+                // Exit the current layout and mark the overlapping layout
                 if (mDragTargetLayout != null) {
+                    mDragTargetLayout.setIsDragOverlapping(false);
                     mDragTargetLayout.onDragExit();
-                    mDragTargetLayout = layout;
                 }
-                // In portrait, need to redraw the edge glow when entering the scroll area
-                if (getHeight() > getWidth()) {
-                    invalidate();
-                }
+                mDragTargetLayout = layout;
+                mDragTargetLayout.setIsDragOverlapping(true);
+
+                // Workspace is responsible for drawing the edge glow on adjacent pages,
+                // so we need to redraw the workspace when this may have changed.
+                invalidate();
             }
-        }
-    }
-
-    private void clearAllHovers() {
-        final int childCount = getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            ((CellLayout) getChildAt(i)).setIsDragOverlapping(false);
-        }
-
-        // In portrait, workspace is responsible for drawing the edge glow on adjacent pages,
-        // so we need to redraw the workspace when this may have changed.
-        if (getHeight() > getWidth()) {
-            invalidate();
         }
     }
 
     @Override
     public void onExitScrollArea() {
         if (mInScrollArea) {
-            mInScrollArea = false;
+            if (mDragTargetLayout != null) {
+                // Unmark the overlapping layout and re-enter the current layout
+                mDragTargetLayout.setIsDragOverlapping(false);
+                mDragTargetLayout = getCurrentDropLayout();
+                mDragTargetLayout.onDragEnter();
+
+                // Workspace is responsible for drawing the edge glow on adjacent pages,
+                // so we need to redraw the workspace when this may have changed.
+                invalidate();
+            }
             mPendingScrollDirection = DragController.SCROLL_NONE;
-            clearAllHovers();
+            mInScrollArea = false;
         }
+    }
+
+    private void onResetScrollArea() {
+        if (mDragTargetLayout != null) {
+            // Unmark the overlapping layout
+            mDragTargetLayout.setIsDragOverlapping(false);
+
+            // Workspace is responsible for drawing the edge glow on adjacent pages,
+            // so we need to redraw the workspace when this may have changed.
+            invalidate();
+        }
+        mPendingScrollDirection = DragController.SCROLL_NONE;
+        mInScrollArea = false;
     }
 
     public Folder getFolderForTag(Object tag) {

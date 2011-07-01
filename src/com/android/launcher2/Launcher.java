@@ -2322,7 +2322,7 @@ public final class Launcher extends Activity
      * of the screen.
      * @param toState The state to zoom out to. Must be APPS_CUSTOMIZE.
      */
-    private void cameraZoomOut(State toState, boolean animated, boolean springLoaded) {
+    private void cameraZoomOut(State toState, boolean animated, final boolean springLoaded) {
         final Resources res = getResources();
 
         final int duration = res.getInteger(R.integer.config_appsCustomizeZoomInTime);
@@ -2381,9 +2381,11 @@ public final class Launcher extends Activity
                     toView.setVisibility(View.VISIBLE);
                     toView.bringToFront();
 
-                    // Hide the workspace scrollbar
-                    mWorkspace.hideScrollingIndicator(true);
-                    mWorkspace.hideScrollIndicatorTrack();
+                    if (!springLoaded && !LauncherApplication.isScreenLarge()) {
+                        // Hide the workspace scrollbar
+                        mWorkspace.hideScrollingIndicator(true);
+                        mWorkspace.hideScrollIndicatorTrack();
+                    }
                 }
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -2416,9 +2418,11 @@ public final class Launcher extends Activity
                 ((LauncherTransitionable) toView).onLauncherTransitionStart(null);
                 ((LauncherTransitionable) toView).onLauncherTransitionEnd(null);
 
-                // Hide the workspace scrollbar
-                mWorkspace.hideScrollingIndicator(true);
-                mWorkspace.hideScrollIndicatorTrack();
+                if (!springLoaded && !LauncherApplication.isScreenLarge()) {
+                    // Hide the workspace scrollbar
+                    mWorkspace.hideScrollingIndicator(true);
+                    mWorkspace.hideScrollIndicatorTrack();
+                }
             }
         }
     }
@@ -2429,7 +2433,7 @@ public final class Launcher extends Activity
      * @param fromState The current state (must be APPS_CUSTOMIZE).
      * @param animated If true, the transition will be animated.
      */
-    private void cameraZoomIn(State fromState, boolean animated, boolean springLoaded) {
+    private void cameraZoomIn(State fromState, boolean animated, final boolean springLoaded) {
         Resources res = getResources();
 
         final int duration = res.getInteger(R.integer.config_appsCustomizeZoomOutTime);
@@ -2477,9 +2481,11 @@ public final class Launcher extends Activity
                     if (fromView instanceof LauncherTransitionable) {
                         ((LauncherTransitionable) fromView).onLauncherTransitionEnd(alphaAnim);
 
-                        // Show the workspace scrollbar
-                        mWorkspace.showScrollIndicatorTrack();
-                        mWorkspace.flashScrollingIndicator();
+                        if (!springLoaded && !LauncherApplication.isScreenLarge()) {
+                            // Show the workspace scrollbar
+                            mWorkspace.showScrollIndicatorTrack();
+                            mWorkspace.flashScrollingIndicator();
+                        }
                     }
                 }
             });
@@ -2492,9 +2498,11 @@ public final class Launcher extends Activity
                 ((LauncherTransitionable) fromView).onLauncherTransitionStart(null);
                 ((LauncherTransitionable) fromView).onLauncherTransitionEnd(null);
 
-                // Show the workspace scrollbar
-                mWorkspace.showScrollIndicatorTrack();
-                mWorkspace.flashScrollingIndicator();
+                if (!springLoaded && !LauncherApplication.isScreenLarge()) {
+                    // Show the workspace scrollbar
+                    mWorkspace.showScrollIndicatorTrack();
+                    mWorkspace.flashScrollingIndicator();
+                }
             }
         }
     }
@@ -2527,12 +2535,10 @@ public final class Launcher extends Activity
     }
 
     void enterSpringLoadedDragMode(CellLayout layout) {
-        // Enter spring loaded mode on a new layout
-        mWorkspace.enterSpringLoadedDragMode(layout);
-
         if (mState == State.APPS_CUSTOMIZE) {
-            mState = State.APPS_CUSTOMIZE_SPRING_LOADED;
+            mWorkspace.enterSpringLoadedDragMode(layout);
             cameraZoomIn(State.APPS_CUSTOMIZE, true, true);
+            mState = State.APPS_CUSTOMIZE_SPRING_LOADED;
         }
         // Otherwise, we are not in spring loaded mode, so don't do anything.
     }

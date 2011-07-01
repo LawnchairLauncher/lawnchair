@@ -80,6 +80,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
+                android:visibility="gone"
+                android:alpha="0"
                 android:scaleType="fitXY"
                 android:src="@drawable/hotseat_track_holo" />
             <ImageView

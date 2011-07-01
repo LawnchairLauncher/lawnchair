@@ -150,6 +150,8 @@ class ItemInfo {
 
     @Override
     public String toString() {
-        return "Item(id=" + this.id + " type=" + this.itemType + ")";
+        return "Item(id=" + this.id + " type=" + this.itemType + " container=" + this.container
+            + " screen=" + screen + " cellX=" + cellX + " cellY=" + cellY + " spanX=" + spanX
+            + " spanY=" + spanY + " isGesture=" + isGesture + " dropPos=" + dropPos + ")";
     }
 }

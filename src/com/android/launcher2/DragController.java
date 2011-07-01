@@ -366,7 +366,9 @@ public class DragController {
      */
     public void cancelDrag() {
         if (mDragging) {
-            // Should we also be calling onDragExit() here?
+            if (mLastDropTarget != null) {
+                mLastDropTarget.onDragExit(mDragObject);
+            }
             mDragObject.dragComplete = true;
             mDragObject.dragSource.onDropCompleted(null, mDragObject, false);
         }
