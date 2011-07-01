@@ -2387,6 +2387,10 @@ public final class Launcher extends Activity
                     toView.setTranslationY(0.0f);
                     toView.setVisibility(View.VISIBLE);
                     toView.bringToFront();
+
+                    // Hide the workspace scrollbar
+                    mWorkspace.hideScrollingIndicator(true);
+                    mWorkspace.hideScrollIndicatorTrack();
                 }
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -2418,6 +2422,10 @@ public final class Launcher extends Activity
             if (toView instanceof LauncherTransitionable) {
                 ((LauncherTransitionable) toView).onLauncherTransitionStart(null);
                 ((LauncherTransitionable) toView).onLauncherTransitionEnd(null);
+
+                // Hide the workspace scrollbar
+                mWorkspace.hideScrollingIndicator(true);
+                mWorkspace.hideScrollIndicatorTrack();
             }
         }
     }
@@ -2475,6 +2483,10 @@ public final class Launcher extends Activity
                     fromView.setVisibility(View.GONE);
                     if (fromView instanceof LauncherTransitionable) {
                         ((LauncherTransitionable) fromView).onLauncherTransitionEnd(alphaAnim);
+
+                        // Show the workspace scrollbar
+                        mWorkspace.showScrollIndicatorTrack();
+                        mWorkspace.flashScrollingIndicator();
                     }
                 }
             });
@@ -2486,6 +2498,10 @@ public final class Launcher extends Activity
             if (fromView instanceof LauncherTransitionable) {
                 ((LauncherTransitionable) fromView).onLauncherTransitionStart(null);
                 ((LauncherTransitionable) fromView).onLauncherTransitionEnd(null);
+
+                // Show the workspace scrollbar
+                mWorkspace.showScrollIndicatorTrack();
+                mWorkspace.flashScrollingIndicator();
             }
         }
     }

@@ -162,10 +162,12 @@ public abstract class PagedView extends ViewGroup {
 
     // Scrolling indicator
     private ImageView mScrollIndicator;
+    private ImageView mScrollTrack;
     private boolean mHasScrollIndicator = true;
     private static final int sScrollIndicatorFadeInDuration = 150;
     private static final int sScrollIndicatorFastFadeOutDuration = 50;
     private static final int sScrollIndicatorFadeOutDuration = 650;
+    private static final int sScrollIndicatorFlashDuration = 650;
 
     // If set, will defer loading associated pages until the scrolling settles
     private boolean mDeferLoadAssociatedPagesUntilScrollCompletes;
@@ -1606,8 +1608,6 @@ public abstract class PagedView extends ViewGroup {
         }
 
         if (mContentIsRefreshable) {
-            hideScrollingIndicator(true);
-
             // Update all the pages
             syncPages();
 
@@ -1644,6 +1644,16 @@ public abstract class PagedView extends ViewGroup {
         return true;
     }
 
+    protected void flashScrollingIndicator() {
+        showScrollingIndicator();
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                hideScrollingIndicator(false);
+            }
+        }, sScrollIndicatorFlashDuration);
+    }
+
     protected void showScrollingIndicator() {
         if (LauncherApplication.isScreenLarge()) return;
         if (getChildCount() <= 1) return;
@@ -1651,13 +1661,9 @@ public abstract class PagedView extends ViewGroup {
 
         getScrollingIndicator();
         if (mScrollIndicator != null) {
-            // Update the width of the indicator to the approx. width of each page in the full bar
-            mScrollIndicator.getLayoutParams().width = getPageWidthForScrollingIndicator() / getChildCount();
-            mScrollIndicator.requestLayout();
-
             // Fade the indicator in
             updateScrollingIndicatorPosition();
-            mScrollIndicator.animate().alpha(1f).setDuration(sScrollIndicatorFadeInDuration);
+            mScrollIndicator.animate().alpha(1f).setDuration(sScrollIndicatorFadeInDuration).start();
         }
     }
 
@@ -1671,7 +1677,7 @@ public abstract class PagedView extends ViewGroup {
             // Fade the indicator out
             updateScrollingIndicatorPosition();
             mScrollIndicator.animate().alpha(0f).setDuration(immediately ?
-                    sScrollIndicatorFastFadeOutDuration : sScrollIndicatorFadeOutDuration);
+                    sScrollIndicatorFastFadeOutDuration : sScrollIndicatorFadeOutDuration).start();
         }
     }
 
@@ -1700,6 +1706,33 @@ public abstract class PagedView extends ViewGroup {
         int indicatorCenterOffset = indicatorWidth / 2 - mScrollIndicator.getMeasuredWidth() / 2;
         int indicatorPos = (int) (offset * pageWidth) + pageOffset + indicatorCenterOffset;
         mScrollIndicator.setTranslationX(indicatorPos);
+        mScrollIndicator.invalidate();
+    }
+
+    private ImageView getScrollingIndicatorTrack() {
+        if (mScrollTrack == null) {
+            ViewGroup parent = (ViewGroup) getParent();
+            mScrollTrack = (ImageView) (parent.findViewById(R.id.paged_view_indicator_track));
+        }
+        return mScrollTrack;
+    }
+
+    public void showScrollIndicatorTrack() {
+        if (!LauncherApplication.isScreenLarge()) {
+            getScrollingIndicatorTrack();
+            if (mScrollTrack != null) {
+                mScrollTrack.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    public void hideScrollIndicatorTrack() {
+        if (!LauncherApplication.isScreenLarge()) {
+            getScrollingIndicatorTrack();
+            if (mScrollTrack != null) {
+                mScrollTrack.setVisibility(View.GONE);
+            }
+        }
     }
 
     /* Accessibility */

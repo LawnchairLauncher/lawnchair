@@ -1381,9 +1381,6 @@ public class Workspace extends SmoothPagedView
         // Stop any scrolling, move to the current page right away
         setCurrentPage((mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage);
 
-        // Hide the scrollbar
-        hideScrollingIndicator(true);
-
         CellLayout currentPage = (CellLayout) getChildAt(mCurrentPage);
         if (currentPage == null) {
             Log.w(TAG, "currentPage is NULL! mCurrentPage " + mCurrentPage

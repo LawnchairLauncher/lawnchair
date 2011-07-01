@@ -76,6 +76,13 @@
                 launcher:widgetCountY="@integer/apps_customize_widget_cell_count_y"
                 launcher:maxGap="@dimen/workspace_max_gap" />
             <ImageView
+                android:id="@+id/paged_view_indicator_track"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:scaleType="fitXY"
+                android:src="@drawable/hotseat_track_holo" />
+            <ImageView
                 android:id="@+id/paged_view_indicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -83,7 +90,7 @@
                 android:visibility="gone"
                 android:alpha="0"
                 android:scaleType="fitXY"
-                android:src="@drawable/paged_view_indicator" />
+                android:src="@drawable/hotseat_scrubber_holo" />
          </FrameLayout>
       </LinearLayout>
 </com.android.launcher2.AppsCustomizeTabHost>
