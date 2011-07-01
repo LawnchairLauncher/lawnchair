@@ -1980,8 +1980,7 @@ public class Workspace extends SmoothPagedView
         v.getDrawingRect(clipRect);
 
         // For a TextView, adjust the clip rect so that we don't include the text label
-        if (v instanceof FolderIcon) {
-        } else if (v instanceof BubbleTextView) {
+        if (v instanceof BubbleTextView) {
             final BubbleTextView tv = (BubbleTextView) v;
             clipRect.bottom = tv.getExtendedPaddingTop() - (int) BubbleTextView.PADDING_V +
                     tv.getLayout().getLineTop(0);
@@ -1989,6 +1988,8 @@ public class Workspace extends SmoothPagedView
             final TextView tv = (TextView) v;
             clipRect.bottom = tv.getExtendedPaddingTop() - tv.getCompoundDrawablePadding() +
                     tv.getLayout().getLineTop(0);
+        } else if (v instanceof FolderIcon) {
+            clipRect.bottom = getResources().getDimensionPixelSize(R.dimen.folder_preview_size);
         }
 
         // Draw the View into the bitmap.
@@ -2118,13 +2119,16 @@ public class Workspace extends SmoothPagedView
         final int screenY = (int) mTempXY[1] + (child.getHeight() - bmpHeight) / 2;
 
         Rect dragRect = null;
-        if ((child instanceof BubbleTextView) && !(child instanceof FolderIcon)) {
+        if (child instanceof BubbleTextView) {
             int iconSize = getResources().getDimensionPixelSize(R.dimen.app_icon_size);
             int top = child.getPaddingTop();
             int left = (bmpWidth - iconSize) / 2;
             int right = left + iconSize;
             int bottom = top + iconSize;
             dragRect = new Rect(left, top, right, bottom);
+        } else if (child instanceof FolderIcon) {
+            int previewSize = getResources().getDimensionPixelSize(R.dimen.folder_preview_size);
+            dragRect = new Rect(0, 0, child.getWidth(), previewSize);
         }
 
         mLauncher.lockScreenOrientation();

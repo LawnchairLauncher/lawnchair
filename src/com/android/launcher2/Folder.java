@@ -744,6 +744,12 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
 
         int left = Math.min(Math.max(0, centeredLeft), parentWidth - width);
         int top = Math.min(Math.max(0, centeredTop), parentHeight - height);
+        if (width >= parentWidth) {
+            left = (parentWidth - width) / 2;
+        }
+        if (height >= parentHeight) {
+            top = (parentHeight - height) / 2;
+        }
 
         int folderPivotX = width / 2 + (centeredLeft - left);
         int folderPivotY = height / 2 + (centeredTop - top);
