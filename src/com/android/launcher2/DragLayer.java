@@ -32,6 +32,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -57,8 +59,10 @@ public class DragLayer extends FrameLayout {
     // Variables relating to animation of views after drop
     private ValueAnimator mDropAnim = null;
     private TimeInterpolator mQuintEaseOutInterpolator = new DecelerateInterpolator(2.5f);
-    private int[] mDropViewPos = new int[] { -1, -1 };
     private View mDropView = null;
+    private int[] mDropViewPos = new int[2];
+    private float mDropViewScale;
+    private float mDropViewAlpha;
 
     /**
      * Used to create a new DragLayer from XML.
@@ -181,17 +185,19 @@ public class DragLayer extends FrameLayout {
         }
     }
 
-    public void getViewLocationRelativeToSelf(View v, int[] location) {
-        getLocationOnScreen(location);
-        int x = location[0];
-        int y = location[1];
+    public void getViewRectRelativeToSelf(View v, Rect r) {
+        int[] loc = new int[2];
+        getLocationOnScreen(loc);
+        int x = loc[0];
+        int y = loc[1];
 
-        v.getLocationOnScreen(location);
-        int vX = location[0];
-        int vY = location[1];
+        v.getLocationOnScreen(loc);
+        int vX = loc[0];
+        int vY = loc[1];
 
-        location[0] = vX - x;
-        location[1] = vY - y;
+        int left = vX - x;
+        int top = vY - y;
+        r.set(left, top, left + v.getMeasuredWidth(), top + v.getMeasuredHeight());
     }
 
     @Override
@@ -308,55 +314,59 @@ public class DragLayer extends FrameLayout {
         ((CellLayoutChildren) child.getParent()).measureChild(child);
         CellLayout.LayoutParams lp =  (CellLayout.LayoutParams) child.getLayoutParams();
 
-        int[] loc = new int[2];
-        getViewLocationRelativeToSelf(dragView, loc);
+        Rect r = new Rect();
+        getViewRectRelativeToSelf(dragView, r);
 
         int coord[] = new int[2];
         coord[0] = lp.x;
         coord[1] = lp.y;
         getDescendantCoordRelativeToSelf(child, coord);
 
-        final int fromX = loc[0] + (dragView.getWidth() - child.getMeasuredWidth())  / 2;
-        final int fromY = loc[1] + (dragView.getHeight() - child.getMeasuredHeight())  / 2;
-        final int dx = coord[0] - fromX;
-        final int dy = coord[1] - fromY;
-
+        final int fromX = r.left + (dragView.getWidth() - child.getMeasuredWidth())  / 2;
+        final int fromY = r.top + (dragView.getHeight() - child.getMeasuredHeight())  / 2;
         child.setVisibility(INVISIBLE);
-        animateViewIntoPosition(child, fromX, fromY, dx, dy);
+        animateViewIntoPosition(child, fromX, fromY, coord[0], coord[1]);
     }
 
     private void animateViewIntoPosition(final View view, final int fromX, final int fromY,
-            final int dX, final int dY) {
+            final int toX, final int toY) {
+        Rect from = new Rect(fromX, fromY, fromX + view.getMeasuredWidth(), fromY + view.getMeasuredHeight());
+        Rect to = new Rect(toX, toY, toX + view.getMeasuredWidth(), toY + view.getMeasuredHeight());
+        animateView(view, from, to, 1f, -1);
+    }
 
+    public void animateView(final View view, final Rect from, final Rect to,
+            final float finalAlpha, int duration) {
+        animateView(view, from, to, finalAlpha, 1.0f, duration, null, null);
+    }
+
+    public void animateView(final View view, final Rect from, final Rect to, final float finalAlpha,
+            final float finalScale, int duration, final Interpolator motionInterpolator,
+            final Interpolator alphaInterpolator) {
         // Calculate the duration of the animation based on the object's distance
-        final float dist = (float) Math.sqrt(dX*dX + dY*dY);
+        final float dist = (float) Math.sqrt(Math.pow(to.left - from.left, 2) +
+                Math.pow(to.top - from.top, 2));
         final Resources res = getResources();
         final float maxDist = (float) res.getInteger(R.integer.config_dropAnimMaxDist);
-        int duration = res.getInteger(R.integer.config_dropAnimMaxDuration);
-        if (dist < maxDist) {
-            duration *= mQuintEaseOutInterpolator.getInterpolation(dist / maxDist);
+
+        // If duration < 0, this is a cue to compute the duration based on the distance
+        if (duration < 0) {
+            duration = res.getInteger(R.integer.config_dropAnimMaxDuration);
+            if (dist < maxDist) {
+                duration *= mQuintEaseOutInterpolator.getInterpolation(dist / maxDist);
+            }
         }
 
         if (mDropAnim != null) {
             mDropAnim.end();
         }
+
+        mDropView = view;
+        final float initialAlpha = view.getAlpha();
         mDropAnim = new ValueAnimator();
-        mDropAnim.setInterpolator(mQuintEaseOutInterpolator);
-
-        // The view is invisible during the animation; we render it manually.
-        mDropAnim.addListener(new AnimatorListenerAdapter() {
-            public void onAnimationStart(Animator animation) {
-                // Set this here so that we don't render it until the animation begins
-                mDropView = view;
-            }
-
-            public void onAnimationEnd(Animator animation) {
-                if (mDropView != null) {
-                    mDropView.setVisibility(View.VISIBLE);
-                    mDropView = null;
-                }
-            }
-        });
+        if (alphaInterpolator == null || motionInterpolator == null) {
+            mDropAnim.setInterpolator(mQuintEaseOutInterpolator);
+        }
 
         mDropAnim.setDuration(duration);
         mDropAnim.setFloatValues(0.0f, 1.0f);
@@ -370,10 +380,25 @@ public class DragLayer extends FrameLayout {
                 invalidate(mDropViewPos[0], mDropViewPos[1],
                         mDropViewPos[0] + width, mDropViewPos[1] + height);
 
-                mDropViewPos[0] = fromX + (int) (percent * dX + 0.5f);
-                mDropViewPos[1] = fromY + (int) (percent * dY + 0.5f);
+                float alphaPercent = alphaInterpolator == null ? percent :
+                        alphaInterpolator.getInterpolation(percent);
+                float motionPercent = motionInterpolator == null ? percent :
+                        motionInterpolator.getInterpolation(percent);
+
+                mDropViewPos[0] = from.left + (int) ((to.left - from.left) * motionPercent);
+                mDropViewPos[1] = from.top + (int) ((to.top - from.top) * motionPercent);
+                mDropViewScale = percent * finalScale + (1 - percent);
+                mDropViewAlpha = alphaPercent * finalAlpha + (1 - alphaPercent) * initialAlpha;
                 invalidate(mDropViewPos[0], mDropViewPos[1],
                         mDropViewPos[0] + width, mDropViewPos[1] + height);
+            }
+        });
+        mDropAnim.addListener(new AnimatorListenerAdapter() {
+            public void onAnimationEnd(Animator animation) {
+                if (mDropView != null) {
+                    mDropView.setVisibility(View.VISIBLE);
+                    mDropView = null;
+                }
             }
         });
         mDropAnim.start();
@@ -388,7 +413,12 @@ public class DragLayer extends FrameLayout {
             canvas.save(Canvas.MATRIX_SAVE_FLAG);
             final int xPos = mDropViewPos[0] - mDropView.getScrollX();
             final int yPos = mDropViewPos[1] - mDropView.getScrollY();
+            int width = mDropView.getMeasuredWidth();
+            int height = mDropView.getMeasuredHeight();
             canvas.translate(xPos, yPos);
+            canvas.translate((1 - mDropViewScale) * width / 2, (1 - mDropViewScale) * height / 2);
+            canvas.scale(mDropViewScale, mDropViewScale);
+            mDropView.setAlpha(mDropViewAlpha);
             mDropView.draw(canvas);
             canvas.restore();
         }
