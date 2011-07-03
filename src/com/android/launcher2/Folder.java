@@ -86,6 +86,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
     private int mMaxCountX;
     private int mMaxCountY;
     private Rect mNewSize = new Rect();
+    private Rect mIconRect = new Rect();
     private ArrayList<View> mItemsInReadingOrder = new ArrayList<View>();
     private Drawable mIconDrawable;
     boolean mItemsInvalidated = false;
@@ -134,6 +135,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         if (sHintText == null) {
             sHintText = res.getString(R.string.folder_hint_text);
         }
+        setLayerType(LAYER_TYPE_HARDWARE, null);
     }
 
     @Override
@@ -141,7 +143,6 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         super.onFinishInflate();
         mContent = (CellLayout) findViewById(R.id.folder_content);
         mContent.setGridSize(0, 0);
-        mContent.enableHardwareLayers();
         mFolderName = (TextView) findViewById(R.id.folder_name);
 
         // We find out how tall the text view wants to be (it is set to wrap_content), so that
@@ -372,9 +373,8 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
      * to its associated FolderIcon. This allows for a seamless transition into the expanded state.
      */
     private void positionAndSizeAsIcon() {
-        if (!(getParent() instanceof CellLayoutChildren)) return;
+        if (!(getParent() instanceof DragLayer)) return;
 
-        DragLayer.LayoutParams iconLp = (DragLayer.LayoutParams) mFolderIcon.getLayoutParams();
         DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
 
         if (mMode == PARTIAL_GROW) {
@@ -382,19 +382,19 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
             setScaleY(0.8f);
             setAlpha(0f);
         } else {
-            lp.width = iconLp.width;
-            lp.height = iconLp.height;
-            lp.x = iconLp.x;
-            lp.y = iconLp.y;
+            mLauncher.getDragLayer().getDescendantRectRelativeToSelf(mFolderIcon, mIconRect);
+            lp.width = mIconRect.width();
+            lp.height = mIconRect.height();
+            lp.x = mIconRect.left;
+            lp.y = mIconRect.top;
             mContent.setAlpha(0);
         }
         mState = STATE_SMALL;
     }
 
     public void animateOpen() {
-        if (mState != STATE_SMALL) {
-            positionAndSizeAsIcon();
-        }
+        positionAndSizeAsIcon();
+
         if (!(getParent() instanceof DragLayer)) return;
 
         ObjectAnimator oa;
@@ -449,13 +449,12 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
             PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 0.9f);
             oa = ObjectAnimator.ofPropertyValuesHolder(this, alpha, scaleX, scaleY);
         } else {
-            DragLayer.LayoutParams iconLp = (DragLayer.LayoutParams) mFolderIcon.getLayoutParams();
             DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
 
-            PropertyValuesHolder width = PropertyValuesHolder.ofInt("width", iconLp.width);
-            PropertyValuesHolder height = PropertyValuesHolder.ofInt("height", iconLp.height);
-            PropertyValuesHolder x = PropertyValuesHolder.ofInt("x",iconLp.x);
-            PropertyValuesHolder y = PropertyValuesHolder.ofInt("y", iconLp.y);
+            PropertyValuesHolder width = PropertyValuesHolder.ofInt("width", mIconRect.width());
+            PropertyValuesHolder height = PropertyValuesHolder.ofInt("height", mIconRect.height());
+            PropertyValuesHolder x = PropertyValuesHolder.ofInt("x", mIconRect.left);
+            PropertyValuesHolder y = PropertyValuesHolder.ofInt("y", mIconRect.top);
             oa = ObjectAnimator.ofPropertyValuesHolder(lp, width, height, x, y);
             oa.addUpdateListener(new AnimatorUpdateListener() {
                 public void onAnimationUpdate(ValueAnimator animation) {
@@ -645,13 +644,17 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
 
     OnAlarmListener mOnExitAlarmListener = new OnAlarmListener() {
         public void onAlarm(Alarm alarm) {
-            mLauncher.closeFolder();
-            mCurrentDragInfo = null;
-            mCurrentDragView = null;
-            mSuppressOnAdd = false;
-            mRearrangeOnClose = true;
+            completeDragExit();
         }
     };
+
+    private void completeDragExit() {
+        mLauncher.closeFolder();
+        mCurrentDragInfo = null;
+        mCurrentDragView = null;
+        mSuppressOnAdd = false;
+        mRearrangeOnClose = true;
+    }
 
     public void onDragExit(DragObject d) {
         // We only close the folder if this is a true drag exit, ie. not because a drop
@@ -674,6 +677,11 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
                 }
             }
             // TODO: if the drag fails, we need to re-add the item
+        } else {
+            if (target != this) {
+                mOnExitAlarm.cancelAlarm();
+                completeDragExit();
+            }
         }
     }
 

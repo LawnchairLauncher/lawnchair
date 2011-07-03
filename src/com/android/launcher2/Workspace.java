@@ -2237,12 +2237,12 @@ public class Workspace extends SmoothPagedView
     }
 
     boolean addToExistingFolderIfNecessary(View newView, CellLayout target, int[] targetCell,
-            Object dragInfo, boolean external) {
+            DragObject d, boolean external) {
         View dropOverView = target.getChildAt(targetCell[0], targetCell[1]);
         if (dropOverView instanceof FolderIcon) {
             FolderIcon fi = (FolderIcon) dropOverView;
-            if (fi.acceptDrop(dragInfo)) {
-                fi.onDrop(dragInfo);
+            if (fi.acceptDrop(d.dragInfo)) {
+                fi.onDrop(d);
 
                 // if the drag started here, we need to remove it from the workspace
                 if (!external) {
@@ -2278,7 +2278,7 @@ public class Workspace extends SmoothPagedView
         if (d.dragSource != this) {
             final int[] touchXY = new int[] { (int) mDragViewVisualCenter[0],
                     (int) mDragViewVisualCenter[1] };
-            onDropExternal(touchXY, d.dragInfo, dropTargetLayout, false, d.dragView);
+            onDropExternal(touchXY, d.dragInfo, dropTargetLayout, false, d);
         } else if (mDragInfo != null) {
             final View cell = mDragInfo.cell;
 
@@ -2302,8 +2302,7 @@ public class Workspace extends SmoothPagedView
                     return;
                 }
 
-                if (addToExistingFolderIfNecessary(cell, dropTargetLayout, mTargetCell,
-                        d.dragInfo, false)) {
+                if (addToExistingFolderIfNecessary(cell, dropTargetLayout, mTargetCell, d, false)) {
                     return;
                 }
 
@@ -2933,7 +2932,7 @@ public class Workspace extends SmoothPagedView
      * to add an item to one of the workspace screens.
      */
     private void onDropExternal(int[] touchXY, Object dragInfo,
-            CellLayout cellLayout, boolean insertAtFirst, DragView dragView) {
+            CellLayout cellLayout, boolean insertAtFirst, DragObject d) {
         int screen = indexOfChild(cellLayout);
         if (screen != mCurrentPage && mShrinkState != ShrinkState.SPRING_LOADED) {
             snapToPage(screen);
@@ -2986,7 +2985,7 @@ public class Workspace extends SmoothPagedView
                 if (createUserFolderIfNecessary(view, cellLayout, mTargetCell, true)) {
                     return;
                 }
-                if (addToExistingFolderIfNecessary(view, cellLayout, mTargetCell, dragInfo, true)) {
+                if (addToExistingFolderIfNecessary(view, cellLayout, mTargetCell, d, true)) {
                     return;
                 }
             }
@@ -3005,13 +3004,13 @@ public class Workspace extends SmoothPagedView
             CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
             cellLayout.getChildrenLayout().measureChild(view);
 
-            if (dragView != null) {
-                mLauncher.getDragLayer().animateViewIntoPosition(dragView, view);
-            }
-
             LauncherModel.addOrMoveItemInDatabase(mLauncher, info,
                     LauncherSettings.Favorites.CONTAINER_DESKTOP, screen,
                     lp.cellX, lp.cellY);
+
+            if (d.dragView != null) {
+                mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, view);
+            }
         }
     }
 

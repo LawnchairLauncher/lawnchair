@@ -25,11 +25,14 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -276,17 +279,30 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         mFolderRingAnimator.animateToNaturalState();
     }
 
-    public void onDrop(Object dragInfo) {
+    public void onDrop(DragObject d) {
         ShortcutInfo item;
-        if (dragInfo instanceof ApplicationInfo) {
+        if (d.dragInfo instanceof ApplicationInfo) {
             // Came from all apps -- make a copy
-            item = ((ApplicationInfo) dragInfo).makeShortcut();
+            item = ((ApplicationInfo) d.dragInfo).makeShortcut();
         } else {
-            item = (ShortcutInfo) dragInfo;
+            item = (ShortcutInfo) d.dragInfo;
         }
         item.cellX = -1;
         item.cellY = -1;
         addItem(item);
+        DragLayer dragLayer = mLauncher.getDragLayer();
+        Rect from = new Rect();
+        dragLayer.getViewRectRelativeToSelf(d.dragView, from);
+        Rect to = new Rect();
+        dragLayer.getDescendantRectRelativeToSelf(this, to);
+
+        int previewSize = FolderRingAnimator.sPreviewSize;
+        int vanishingPointX = (int) (previewSize * 0.7);
+        int vanishingPointY = (int) (previewSize * (1 - 0.88f));
+        to.offset(vanishingPointX - previewSize / 2 , vanishingPointY - previewSize / 2);
+
+        dragLayer.animateView(d.dragView, from, to, 0f, 0.2f, 400, new DecelerateInterpolator(2),
+                new AccelerateInterpolator(2));
     }
 
     public DropTarget getDropTargetDelegate(DragObject d) {
@@ -323,19 +339,16 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         float maxPerspectiveShift = baselineSize * PERSPECTIVE_SHIFT_FACTOR;
 
         ArrayList<View> items = mFolder.getItemsInReadingOrder(false);
-        int firstItemIndex = Math.max(0, items.size() - NUM_ITEMS_IN_PREVIEW);
 
         int xShift = (mOriginalWidth - 2 * halfAvailableSpace) / 2;
         int yShift = previewPadding;
         canvas.translate(xShift, yShift);
-        for (int i = firstItemIndex; i < items.size(); i++) {
-            int index = i - firstItemIndex;
-            index += Math.max(0, NUM_ITEMS_IN_PREVIEW - items.size());
+        int nItemsInPreview = Math.min(items.size(), NUM_ITEMS_IN_PREVIEW);
+        for (int i = nItemsInPreview - 1; i >= 0; i--) {
+            int index = NUM_ITEMS_IN_PREVIEW - i - 1;
 
             float r = (index * 1.0f) / (NUM_ITEMS_IN_PREVIEW - 1);
             float scale = (1 - PERSPECTIVE_SCALE_FACTOR * (1 - r));
-
-            //r = (float) Math.pow(r, 2);
 
             float offset = (1 - r) * maxPerspectiveShift;
             float scaledSize = scale * baselineSize;

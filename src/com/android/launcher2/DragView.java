@@ -195,6 +195,16 @@ public class DragView extends View {
         invalidate();
     }
 
+    @Override
+    public void setAlpha(float alpha) {
+        super.setAlpha(alpha);
+        if (mPaint == null) {
+            mPaint = new Paint();
+        }
+        mPaint.setAlpha((int) (255 * alpha));
+        invalidate();
+    }
+
     /**
      * Create a window containing this view and show it.
      *
@@ -242,7 +252,11 @@ public class DragView extends View {
     }
 
     void remove() {
-        mWindowManager.removeView(this);
+        post(new Runnable() {
+            public void run() {
+                mWindowManager.removeView(DragView.this);
+            }
+        });
     }
 
     int[] getPosition(int[] result) {
