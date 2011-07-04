@@ -56,10 +56,10 @@ public class FolderIcon extends LinearLayout implements FolderListener {
     private static final int CONSUMPTION_ANIMATION_DURATION = 100;
 
     // The degree to which the inner ring grows when accepting drop
-    private static final float INNER_RING_GROWTH_FACTOR = 0.1f;
+    private static final float INNER_RING_GROWTH_FACTOR = 0.15f;
 
     // The degree to which the outer ring is scaled in its natural state
-    private static final float OUTER_RING_GROWTH_FACTOR = 0.4f;
+    private static final float OUTER_RING_GROWTH_FACTOR = 0.3f;
 
     // The amount of vertical spread between items in the stack [0...1]
     private static final float PERSPECTIVE_SHIFT_FACTOR = 0.24f;
@@ -112,18 +112,19 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         folder.bind(folderInfo);
         icon.mFolder = folder;
         icon.mFolderRingAnimator = new FolderRingAnimator(launcher, icon);
+
         folderInfo.addListener(icon);
 
         return icon;
     }
 
     public static class FolderRingAnimator {
-        public int mFolderLocX;
-        public int mFolderLocY;
+        public int mCellX;
+        public int mCellY;
+        private CellLayout mCellLayout;
         public float mOuterRingSize;
         public float mInnerRingSize;
         public FolderIcon mFolderIcon = null;
-        private Launcher mLauncher;
         public Drawable mOuterRingDrawable = null;
         public Drawable mInnerRingDrawable = null;
         public static Drawable sSharedOuterRingDrawable = null;
@@ -135,7 +136,6 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         private ValueAnimator mNeutralAnimator;
 
         public FolderRingAnimator(Launcher launcher, FolderIcon folderIcon) {
-            mLauncher = launcher;
             mFolderIcon = folderIcon;
             Resources res = launcher.getResources();
             mOuterRingDrawable = res.getDrawable(R.drawable.portal_ring_outer_holo);
@@ -153,12 +153,6 @@ public class FolderIcon extends LinearLayout implements FolderListener {
             }
         }
 
-        // Location is expressed in window coordinates
-        public void setLocation(int x, int y) {
-            mFolderLocX = x;
-            mFolderLocY = y;
-        }
-
         public void animateToAcceptState() {
             if (mNeutralAnimator != null) {
                 mNeutralAnimator.cancel();
@@ -170,9 +164,8 @@ public class FolderIcon extends LinearLayout implements FolderListener {
                     final float percent = (Float) animation.getAnimatedValue();
                     mOuterRingSize = (1 + percent * OUTER_RING_GROWTH_FACTOR) * sPreviewSize;
                     mInnerRingSize = (1 + percent * INNER_RING_GROWTH_FACTOR) * sPreviewSize;
-                    mLauncher.getWorkspace().invalidate();
-                    if (mFolderIcon != null) {
-                        mFolderIcon.invalidate();
+                    if (mCellLayout != null) {
+                        mCellLayout.invalidate();
                     }
                 }
             });
@@ -198,28 +191,39 @@ public class FolderIcon extends LinearLayout implements FolderListener {
                     final float percent = (Float) animation.getAnimatedValue();
                     mOuterRingSize = (1 + (1 - percent) * OUTER_RING_GROWTH_FACTOR) * sPreviewSize;
                     mInnerRingSize = (1 + (1 - percent) * INNER_RING_GROWTH_FACTOR) * sPreviewSize;
-                    mLauncher.getWorkspace().invalidate();
-                    if (mFolderIcon != null) {
-                        mFolderIcon.invalidate();
+                    if (mCellLayout != null) {
+                        mCellLayout.invalidate();
                     }
                 }
             });
             mNeutralAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
+                    if (mCellLayout != null) {
+                        mCellLayout.hideFolderAccept(FolderRingAnimator.this);
+                    }
                     if (mFolderIcon != null) {
                         mFolderIcon.mPreviewBackground.setVisibility(VISIBLE);
                     }
-                    mLauncher.getWorkspace().hideFolderAccept(FolderRingAnimator.this);
                 }
             });
             mNeutralAnimator.start();
         }
 
         // Location is expressed in window coordinates
-        public void getLocation(int[] loc) {
-            loc[0] = mFolderLocX;
-            loc[1] = mFolderLocY;
+        public void getCell(int[] loc) {
+            loc[0] = mCellX;
+            loc[1] = mCellY;
+        }
+
+        // Location is expressed in window coordinates
+        public void setCell(int x, int y) {
+            mCellX = x;
+            mCellY = y;
+        }
+
+        public void setCellLayout(CellLayout layout) {
+            mCellLayout = layout;
         }
 
         public float getOuterRingSize() {
@@ -253,22 +257,14 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         mOriginalHeight = lp.height;
     }
 
-    private void determineFolderLocationInWorkspace() {
-        int tvLocation[] = new int[2];
-        int wsLocation[] = new int[2];
-        getLocationInWindow(tvLocation);
-        mLauncher.getWorkspace().getLocationInWindow(wsLocation);
-
-        int x = tvLocation[0] - wsLocation[0] + getMeasuredWidth() / 2;
-        int y = tvLocation[1] - wsLocation[1] + FolderRingAnimator.sPreviewSize / 2;
-        mFolderRingAnimator.setLocation(x, y);
-    }
-
     public void onDragEnter(Object dragInfo) {
         if (!willAcceptItem((ItemInfo) dragInfo)) return;
-        determineFolderLocationInWorkspace();
-        mLauncher.getWorkspace().showFolderAccept(mFolderRingAnimator);
+        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
+        CellLayout layout = (CellLayout) getParent().getParent();
+        mFolderRingAnimator.setCell(lp.cellX, lp.cellY);
+        mFolderRingAnimator.setCellLayout(layout);
         mFolderRingAnimator.animateToAcceptState();
+        layout.showFolderAccept(mFolderRingAnimator);
     }
 
     public void onDragOver(Object dragInfo) {
@@ -341,7 +337,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         ArrayList<View> items = mFolder.getItemsInReadingOrder(false);
 
         int xShift = (mOriginalWidth - 2 * halfAvailableSpace) / 2;
-        int yShift = previewPadding;
+        int yShift = previewPadding + getPaddingTop();
         canvas.translate(xShift, yShift);
         int nItemsInPreview = Math.min(items.size(), NUM_ITEMS_IN_PREVIEW);
         for (int i = nItemsInPreview - 1; i >= 0; i--) {
