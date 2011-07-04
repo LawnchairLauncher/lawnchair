@@ -2748,22 +2748,8 @@ public final class Launcher extends Activity
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         ComponentName activityName = searchManager.getGlobalSearchActivity();
         if (activityName != null) {
-            // In landscape mode on the Phone UI, we only have enough space to show the magnifying
-            // glass icon
-            boolean iconLoaded = false;
-            if (!LauncherApplication.isScreenLarge()) {
-                // TODO-APPS_CUSTOMIZE: Remove when the QSB fixes itself?
-                int orientation = getResources().getConfiguration().orientation;
-                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    searchButton.setImageResource(R.drawable.ic_generic_search);
-                    iconLoaded = true;
-                    sGlobalSearchIcon = null;
-                }
-            }
-            if (!iconLoaded) {
-                sGlobalSearchIcon = updateButtonWithIconFromExternalActivity(
-                        R.id.search_button, activityName, R.drawable.ic_generic_search);
-            }
+            sGlobalSearchIcon = updateButtonWithIconFromExternalActivity(
+                    R.id.search_button, activityName, R.drawable.ic_generic_search);
             searchButton.setVisibility(View.VISIBLE);
             searchDivider.setVisibility(View.VISIBLE);
         } else {
