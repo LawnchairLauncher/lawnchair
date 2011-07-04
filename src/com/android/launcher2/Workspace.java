@@ -3025,12 +3025,20 @@ public class Workspace extends SmoothPagedView
         if (!mIsSmall && !mIsInUnshrinkAnimation) {
             super.scrollLeft();
         }
+        Folder openFolder = getOpenFolder();
+        if (openFolder != null) {
+            openFolder.completeDragExit();
+        }
     }
 
     @Override
     public void scrollRight() {
         if (!mIsSmall && !mIsInUnshrinkAnimation) {
             super.scrollRight();
+        }
+        Folder openFolder = getOpenFolder();
+        if (openFolder != null) {
+            openFolder.completeDragExit();
         }
     }
 

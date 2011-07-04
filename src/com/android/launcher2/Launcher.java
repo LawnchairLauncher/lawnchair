@@ -148,8 +148,6 @@ public final class Launcher extends Activity
     private static final String RUNTIME_STATE_CURRENT_SCREEN = "launcher.current_screen";
     // Type: int
     private static final String RUNTIME_STATE = "launcher.state";
-    // Type: long
-    private static final String RUNTIME_STATE_FOLDERS = "launcher.folder";
     // Type: int
     private static final String RUNTIME_STATE_PENDING_ADD_SCREEN = "launcher.add_screen";
     // Type: int
@@ -1266,6 +1264,8 @@ public final class Launcher extends Activity
             // also will cancel mWaitingForResult.
             closeSystemDialogs();
 
+            closeFolder();
+
             boolean alreadyOnHome = ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
                         != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 
@@ -1300,15 +1300,7 @@ public final class Launcher extends Activity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt(RUNTIME_STATE_CURRENT_SCREEN, mWorkspace.getCurrentPage());
-
-        final Folder folder = mWorkspace.getOpenFolder();
-        if (folder != null) {
-            long[] ids = new long[1];
-            ids[0] = folder.getInfo().id;
-            outState.putLongArray(RUNTIME_STATE_FOLDERS, ids);
-        } else {
-            super.onSaveInstanceState(outState);
-        }
+        super.onSaveInstanceState(outState);
 
         outState.putInt(RUNTIME_STATE, mState.ordinal());
 
@@ -3096,23 +3088,6 @@ public final class Launcher extends Activity
             if (!mWorkspace.hasFocus()) {
                 mWorkspace.getChildAt(mWorkspace.getCurrentPage()).requestFocus();
             }
-
-            final long[] folders = mSavedState.getLongArray(RUNTIME_STATE_FOLDERS);
-            if (folders != null) {
-                for (long folderId : folders) {
-                    final FolderInfo info = sFolders.get(folderId);
-                    final FolderIcon folderIcon = (FolderIcon)
-                        mWorkspace.getViewForTag(info);
-                    if (folderIcon != null) {
-                        openFolder(folderIcon);
-                    }
-                }
-                final Folder openFolder = mWorkspace.getOpenFolder();
-                if (openFolder != null) {
-                    openFolder.requestFocus();
-                }
-            }
-
             mSavedState = null;
         }
 

@@ -648,7 +648,7 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         }
     };
 
-    private void completeDragExit() {
+    public void completeDragExit() {
         mLauncher.closeFolder();
         mCurrentDragInfo = null;
         mCurrentDragView = null;
