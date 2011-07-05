@@ -203,8 +203,6 @@ public class Workspace extends SmoothPagedView
     private int mLastDragXOffset;
     private int mLastDragYOffset;
 
-    private ArrayList<FolderRingAnimator> mFolderOuterRings = new ArrayList<FolderRingAnimator>();
-
     // Variables relating to the creation of user folders by hovering shortcuts over shortcuts
     private static final int FOLDER_CREATION_TIMEOUT = 250;
     private final Alarm mFolderCreationAlarm = new Alarm();
@@ -1127,17 +1125,6 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    public void showFolderAccept(FolderRingAnimator fra) {
-        mFolderOuterRings.add(fra);
-    }
-
-    public void hideFolderAccept(FolderRingAnimator fra) {
-        if (mFolderOuterRings.contains(fra)) {
-            mFolderOuterRings.remove(fra);
-        }
-        invalidate();
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
         updateWallpaperOffsets();
@@ -1151,62 +1138,6 @@ public class Workspace extends SmoothPagedView
             mBackground.draw(canvas);
         }
 
-        // The folder outer / inner ring image(s)
-        for (int i = 0; i < mFolderOuterRings.size(); i++) {
-            View currentPage = getChildAt(getCurrentPage());
-            Matrix m = currentPage.getMatrix();
-
-            FolderRingAnimator fra = mFolderOuterRings.get(i);
-
-            // Draw outer ring
-            Drawable d = FolderRingAnimator.sSharedOuterRingDrawable;
-            int width = (int) fra.getOuterRingSize();
-            int height = width;
-            fra.getLocation(mTempLocation);
-
-            // First we map the folder's location from window coordinates to its containing
-            // CellLayout's coordinates. Then we transform the coordinates according to the
-            // CellLayout's transform. Finally, we map this back into the coordinates of the
-            // the window (ie. Workspace).
-            int x = mTempLocation[0] + mScrollX - width / 2 - currentPage.getLeft();
-            int y = mTempLocation[1] + mScrollY - height / 2 - currentPage.getTop();
-            mTempFloatTuple[0] = x;
-            mTempFloatTuple[1] = y;
-            m.mapPoints(mTempFloatTuple);
-            x = (int) (mTempFloatTuple[0]) + currentPage.getLeft();
-            y = (int) (mTempFloatTuple[1]) + currentPage.getTop();
-
-            canvas.save();
-            canvas.translate(x, y);
-            d.setBounds(0, 0, (int) (width * currentPage.getScaleX()),
-                    (int) (height * currentPage.getScaleY()));
-            d.draw(canvas);
-            canvas.restore();
-
-            // Draw inner ring
-            d = FolderRingAnimator.sSharedInnerRingDrawable;
-            width = (int) fra.getInnerRingSize();
-            height = width;
-
-            // First we map the folder's location from window coordinates to its containing
-            // CellLayout's coordinates. Then we transform the coordinates according to the
-            // CellLayout's transform. Finally, we map this back into the coordinates of the
-            // the window (ie. Workspace).
-            x = mTempLocation[0] + mScrollX - width / 2 - currentPage.getLeft();
-            y = mTempLocation[1] + mScrollY - height / 2 - currentPage.getTop();
-            mTempFloatTuple[0] = x;
-            mTempFloatTuple[1] = y;
-            m.mapPoints(mTempFloatTuple);
-            x = (int) (mTempFloatTuple[0]) + currentPage.getLeft();
-            y = (int) (mTempFloatTuple[1]) + currentPage.getTop();
-
-            canvas.save();
-            canvas.translate(x, y);
-            d.setBounds(0, 0, (int) (width * currentPage.getScaleX()),
-                    (int) (height * currentPage.getScaleY()));
-            d.draw(canvas);
-            canvas.restore();
-        }
         super.onDraw(canvas);
     }
 
@@ -2808,12 +2739,11 @@ public class Workspace extends SmoothPagedView
 
                     if (userFolderPending && dragOverView != mLastDragOverView) {
                         mFolderCreationAlarm.setOnAlarmListener(new
-                                FolderCreationAlarmListener(dragOverView));
+                                FolderCreationAlarmListener(mDragTargetLayout, mTargetCell[0], mTargetCell[1]));
                         mFolderCreationAlarm.setAlarm(FOLDER_CREATION_TIMEOUT);
                     }
 
                     if (dragOverView != mLastDragOverView && isOverFolder) {
-
                         ((FolderIcon) dragOverView).onDragEnter(d.dragInfo);
                         if (mDragTargetLayout != null) {
                             mDragTargetLayout.clearDragOutlines();
@@ -2840,36 +2770,26 @@ public class Workspace extends SmoothPagedView
     }
 
     class FolderCreationAlarmListener implements OnAlarmListener {
-        View v;
+        CellLayout layout;
+        int cellX;
+        int cellY;
 
-        public FolderCreationAlarmListener(View v) {
-            this.v = v;
+        public FolderCreationAlarmListener(CellLayout layout, int cellX, int cellY) {
+            this.layout = layout;
+            this.cellX = cellX;
+            this.cellY = cellY;
         }
 
         public void onAlarm(Alarm alarm) {
-            int tvLocation[] = new int[2];
-            int wsLocation[] = new int[2];
-            v.getLocationInWindow(tvLocation);
-            getLocationInWindow(wsLocation);
-
-            if (mCellWidth < 0 || mCellHeight < 0 && mDragTargetLayout != null) {
-                mCellWidth = mDragTargetLayout.getCellWidth();
-                mCellHeight = mDragTargetLayout.getCellHeight();
-            }
-
-            int x = tvLocation[0] - wsLocation[0] + v.getMeasuredWidth() / 2;
-            int y = tvLocation[1] - wsLocation[1] + FolderRingAnimator.sPreviewSize / 2;
-
             if (mDragFolderRingAnimator == null) {
                 mDragFolderRingAnimator = new FolderRingAnimator(mLauncher, null);
             }
-            mDragFolderRingAnimator.setLocation(x, y);
+            mDragFolderRingAnimator.setCell(cellX, cellY);
+            mDragFolderRingAnimator.setCellLayout(layout);
             mDragFolderRingAnimator.animateToAcceptState();
-            showFolderAccept(mDragFolderRingAnimator);
+            layout.showFolderAccept(mDragFolderRingAnimator);
+            layout.clearDragOutlines();
             mCreateUserFolderOnDrop = true;
-            if (mDragTargetLayout != null) {
-                mDragTargetLayout.clearDragOutlines();
-            }
         }
     }
 
