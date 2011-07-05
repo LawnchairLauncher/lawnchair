@@ -1585,19 +1585,20 @@ public final class Launcher extends Activity
         startActivityForResult(intent, REQUEST_PICK_WALLPAPER);
     }
 
-    FolderIcon addFolder(int screen, int intersectCellX, int intersectCellY) {
-        FolderInfo folderInfo = new FolderInfo();
+    FolderIcon addFolder(final int screen, int intersectCellX, int intersectCellY) {
+        final FolderInfo folderInfo = new FolderInfo();
         folderInfo.title = getText(R.string.folder_name);
 
         final CellLayout layout = (CellLayout) mWorkspace.getChildAt(screen);
         final int[] cellXY = mTmpAddItemCellCoordinates;
-        if (!layout.findCellForSpanThatIntersects(cellXY, 1, 1, intersectCellX, intersectCellY)) {
+        if (!layout.findCellForSpanThatIntersects(cellXY, 1, 1,
+                intersectCellX, intersectCellY)) {
             showOutOfSpaceMessage();
             return null;
         }
 
         // Update the model
-        LauncherModel.addItemToDatabase(this, folderInfo,
+        LauncherModel.addItemToDatabase(Launcher.this, folderInfo,
                 LauncherSettings.Favorites.CONTAINER_DESKTOP,
                 screen, cellXY[0], cellXY[1], false);
         sFolders.put(folderInfo.id, folderInfo);

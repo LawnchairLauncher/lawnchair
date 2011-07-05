@@ -54,6 +54,8 @@ public class FolderIcon extends LinearLayout implements FolderListener {
     // The number of icons to display in the
     private static final int NUM_ITEMS_IN_PREVIEW = 3;
     private static final int CONSUMPTION_ANIMATION_DURATION = 100;
+    private static final int DROP_IN_ANIMATION_DURATION = 400;
+    private static final int INITIAL_ITEM_ANIMATION_DURATION = 150;
 
     // The degree to which the inner ring grows when accepting drop
     private static final float INNER_RING_GROWTH_FACTOR = 0.15f;
@@ -68,12 +70,24 @@ public class FolderIcon extends LinearLayout implements FolderListener {
     // (0 means it's not scaled at all, 1 means it's scaled to nothing)
     private static final float PERSPECTIVE_SCALE_FACTOR = 0.35f;
 
-    private int mOriginalWidth = -1;
-    private int mOriginalHeight = -1;
     private ImageView mPreviewBackground;
     private BubbleTextView mFolderName;
 
     FolderRingAnimator mFolderRingAnimator = null;
+
+    // These variables are all associated with the drawing of the preview; they are stored
+    // as member variables for shared usage and to avoid computation on each frame
+    private int mIntrinsicIconSize;
+    private float mBaselineIconScale;
+    private int mBaselineIconSize;
+    private int mAvailableSpaceInPreview;
+    private int mTotalWidth = -1;
+    private int mPreviewOffsetX;
+    private int mPreviewOffsetY;
+    private float mMaxPerspectiveShift;
+    boolean mAnimating = false;
+    private PreviewItemDrawingParams mParams = new PreviewItemDrawingParams(0, 0, 0, 0);
+    private PreviewItemDrawingParams mAnimParams = new PreviewItemDrawingParams(0, 0, 0, 0);
 
     public FolderIcon(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -92,6 +106,12 @@ public class FolderIcon extends LinearLayout implements FolderListener {
 
     static FolderIcon fromXml(int resId, Launcher launcher, ViewGroup group,
             FolderInfo folderInfo, IconCache iconCache) {
+
+        if (INITIAL_ITEM_ANIMATION_DURATION >= DROP_IN_ANIMATION_DURATION) {
+            throw new IllegalStateException("DROP_IN_ANIMATION_DURATION must be greater than " +
+                    "INITIAL_ITEM_ANIMATION_DURATION, as sequencing of adding first two items " +
+                    "is dependent on this");
+        }
 
         FolderIcon icon = (FolderIcon) LayoutInflater.from(launcher).inflate(resId, group, false);
 
@@ -252,11 +272,6 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         LauncherModel.addOrMoveItemInDatabase(mLauncher, item, mInfo.id, 0, item.cellX, item.cellY);
     }
 
-    void saveState(CellLayout.LayoutParams lp) {
-        mOriginalWidth = lp.width;
-        mOriginalHeight = lp.height;
-    }
-
     public void onDragEnter(Object dragInfo) {
         if (!willAcceptItem((ItemInfo) dragInfo)) return;
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
@@ -270,9 +285,59 @@ public class FolderIcon extends LinearLayout implements FolderListener {
     public void onDragOver(Object dragInfo) {
     }
 
+    public void performCreateAnimation(final ShortcutInfo destInfo, final View destView,
+            final ShortcutInfo srcInfo, final View srcView, Rect dstRect) {
+
+        Drawable animateDrawable = ((TextView) destView).getCompoundDrawables()[1];
+        computePreviewDrawingParams(animateDrawable.getIntrinsicWidth(), destView.getMeasuredWidth());
+        // This will animate the dragView (srcView) into the new folder
+        onDrop(srcInfo, srcView, dstRect, 1);
+
+        // This will animate the first item from it's position as an icon into its
+        // position as the first item in the preview
+        animateFirstItem(animateDrawable, DROP_IN_ANIMATION_DURATION);
+
+        postDelayed(new Runnable() {
+            public void run() {
+                addItem(destInfo);
+            }
+        }, INITIAL_ITEM_ANIMATION_DURATION);
+    }
+
     public void onDragExit(Object dragInfo) {
         if (!willAcceptItem((ItemInfo) dragInfo)) return;
         mFolderRingAnimator.animateToNaturalState();
+    }
+
+    private void onDrop(final ShortcutInfo item, View animateView, Rect finalRect, int index) {
+        item.cellX = -1;
+        item.cellY = -1;
+        DragLayer dragLayer = mLauncher.getDragLayer();
+        Rect from = new Rect();
+        dragLayer.getViewRectRelativeToSelf(animateView, from);
+        Rect to = finalRect;
+        if (to == null) {
+            to = new Rect();
+            dragLayer.getDescendantRectRelativeToSelf(this, to);
+        }
+
+        if (animateView.getMeasuredWidth() != to.width() ||
+                animateView.getMeasuredHeight() != to.height()) {
+            int offsetX = (animateView.getMeasuredWidth() - to.width()) / 2;
+            int offsetY = (animateView.getMeasuredHeight() - to.height()) / 2;
+            to.offset(-offsetX, -offsetY);
+        }
+        float scale = adjustFinalScreenRectForIndex(to, index);
+
+        float finalAlpha = index < NUM_ITEMS_IN_PREVIEW ? 0.5f : 0f;
+
+        dragLayer.animateView(animateView, from, to, finalAlpha, scale, DROP_IN_ANIMATION_DURATION,
+                new DecelerateInterpolator(2), new AccelerateInterpolator(2));
+        postDelayed(new Runnable() {
+            public void run() {
+                addItem(item);
+            }
+        }, DROP_IN_ANIMATION_DURATION);
     }
 
     public void onDrop(DragObject d) {
@@ -283,26 +348,109 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         } else {
             item = (ShortcutInfo) d.dragInfo;
         }
-        item.cellX = -1;
-        item.cellY = -1;
-        addItem(item);
-        DragLayer dragLayer = mLauncher.getDragLayer();
-        Rect from = new Rect();
-        dragLayer.getViewRectRelativeToSelf(d.dragView, from);
-        Rect to = new Rect();
-        dragLayer.getDescendantRectRelativeToSelf(this, to);
-
-        int previewSize = FolderRingAnimator.sPreviewSize;
-        int vanishingPointX = (int) (previewSize * 0.7);
-        int vanishingPointY = (int) (previewSize * (1 - 0.88f));
-        to.offset(vanishingPointX - previewSize / 2 , vanishingPointY - previewSize / 2);
-
-        dragLayer.animateView(d.dragView, from, to, 0f, 0.2f, 400, new DecelerateInterpolator(2),
-                new AccelerateInterpolator(2));
+        onDrop(item, d.dragView, null, mInfo.contents.size());
     }
 
     public DropTarget getDropTargetDelegate(DragObject d) {
         return null;
+    }
+
+    private void computePreviewDrawingParams(int drawableSize, int totalSize) {
+        if (mIntrinsicIconSize != drawableSize || mTotalWidth != totalSize) {
+            mIntrinsicIconSize = drawableSize;
+            mTotalWidth = totalSize;
+
+            final int previewSize = FolderRingAnimator.sPreviewSize;
+            final int previewPadding = FolderRingAnimator.sPreviewPadding;
+
+            mAvailableSpaceInPreview = (previewSize - 2 * previewPadding);
+            // cos(45) = 0.707  + ~= 0.1) = 0.8f
+            int adjustedAvailableSpace = (int) ((mAvailableSpaceInPreview / 2) * (1 + 0.8f));
+
+            int unscaledHeight = (int) (mIntrinsicIconSize * (1 + PERSPECTIVE_SHIFT_FACTOR));
+            mBaselineIconScale = (1.0f * adjustedAvailableSpace / unscaledHeight);
+
+            mBaselineIconSize = (int) (mIntrinsicIconSize * mBaselineIconScale);
+            mMaxPerspectiveShift = mBaselineIconSize * PERSPECTIVE_SHIFT_FACTOR;
+
+            mPreviewOffsetX = (mTotalWidth - mAvailableSpaceInPreview) / 2;
+            mPreviewOffsetY = previewPadding;
+        }
+    }
+
+    private void computePreviewDrawingParams(Drawable d) {
+        computePreviewDrawingParams(d.getIntrinsicWidth(), getMeasuredWidth());
+    }
+
+    class PreviewItemDrawingParams {
+        PreviewItemDrawingParams(float transX, float transY, float scale, int overlayAlpha) {
+            this.transX = transX;
+            this.transY = transY;
+            this.scale = scale;
+            this.overlayAlpha = overlayAlpha;
+        }
+        float transX;
+        float transY;
+        float scale;
+        int overlayAlpha;
+        Drawable drawable;
+    }
+
+    private float adjustFinalScreenRectForIndex(Rect r, int index) {
+        mParams = computePreviewItemDrawingParams(Math.min(NUM_ITEMS_IN_PREVIEW, index), mParams);
+
+        mParams.transX += mPreviewOffsetX;
+        mParams.transY += mPreviewOffsetY;
+        float offsetX = mParams.transX + (mParams.scale * mIntrinsicIconSize) / 2 - mTotalWidth / 2;
+        float offsetY = mParams.transY + (mParams.scale * mIntrinsicIconSize) / 2 - mTotalWidth / 2;
+
+        r.offset((int) offsetX, (int) offsetY);
+        return mParams.scale;
+    }
+
+    private PreviewItemDrawingParams computePreviewItemDrawingParams(int index,
+            PreviewItemDrawingParams params) {
+        index = NUM_ITEMS_IN_PREVIEW - index - 1;
+        float r = (index * 1.0f) / (NUM_ITEMS_IN_PREVIEW - 1);
+        float scale = (1 - PERSPECTIVE_SCALE_FACTOR * (1 - r));
+
+        float offset = (1 - r) * mMaxPerspectiveShift;
+        float scaledSize = scale * mBaselineIconSize;
+        float scaleOffsetCorrection = (1 - scale) * mBaselineIconSize;
+
+        // We want to imagine our coordinates from the bottom left, growing up and to the
+        // right. This is natural for the x-axis, but for the y-axis, we have to invert things.
+        float transY = mAvailableSpaceInPreview - (offset + scaledSize + scaleOffsetCorrection);
+        float transX = offset + scaleOffsetCorrection;
+        float totalScale = mBaselineIconScale * scale;
+        final int overlayAlpha = (int) (80 * (1 - r));
+
+        if (params == null) {
+            params = new PreviewItemDrawingParams(transX, transY, totalScale, overlayAlpha);
+        } else {
+            params.transX = transX;
+            params.transY = transY;
+            params.scale = totalScale;
+            params.overlayAlpha = overlayAlpha;
+        }
+        return params;
+    }
+
+    private void drawPreviewItem(Canvas canvas, PreviewItemDrawingParams params) {
+        canvas.save();
+        canvas.translate(params.transX + mPreviewOffsetX, params.transY + mPreviewOffsetY);
+        canvas.scale(params.scale, params.scale);
+        Drawable d = params.drawable;
+
+        if (d != null) {
+            d.setBounds(0, 0, mIntrinsicIconSize, mIntrinsicIconSize);
+            d.setFilterBitmap(true);
+            d.setColorFilter(Color.argb(params.overlayAlpha, 0, 0, 0), PorterDuff.Mode.SRC_ATOP);
+            d.draw(canvas);
+            d.clearColorFilter();
+            d.setFilterBitmap(false);
+        }
+        canvas.restore();
     }
 
     @Override
@@ -310,70 +458,68 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         super.dispatchDraw(canvas);
 
         if (mFolder == null) return;
-        if (mFolder.getItemCount() == 0) return;
-
-        canvas.save();
-        TextView v = (TextView) mFolder.getItemAt(0);
-        Drawable d = v.getCompoundDrawables()[1];
-        int intrinsicIconSize = d.getIntrinsicHeight();
-
-        if (mOriginalWidth < 0 || mOriginalHeight < 0) {
-            mOriginalWidth = getMeasuredWidth();
-            mOriginalHeight = getMeasuredHeight();
-        }
-        final int previewSize = FolderRingAnimator.sPreviewSize;
-        final int previewPadding = FolderRingAnimator.sPreviewPadding;
-
-        int halfAvailableSpace = (previewSize - 2 * previewPadding) / 2;
-        // cos(45) = 0.707  + ~= 0.1)
-        int availableSpace = (int) (halfAvailableSpace * (1 + 0.8f));
-
-        int unscaledHeight = (int) (intrinsicIconSize * (1 + PERSPECTIVE_SHIFT_FACTOR));
-        float baselineIconScale = (1.0f * availableSpace / unscaledHeight);
-
-        int baselineSize = (int) (intrinsicIconSize * baselineIconScale);
-        float maxPerspectiveShift = baselineSize * PERSPECTIVE_SHIFT_FACTOR;
+        if (mFolder.getItemCount() == 0 && !mAnimating) return;
 
         ArrayList<View> items = mFolder.getItemsInReadingOrder(false);
+        Drawable d;
+        TextView v;
 
-        int xShift = (mOriginalWidth - 2 * halfAvailableSpace) / 2;
-        int yShift = previewPadding + getPaddingTop();
-        canvas.translate(xShift, yShift);
-        int nItemsInPreview = Math.min(items.size(), NUM_ITEMS_IN_PREVIEW);
-        for (int i = nItemsInPreview - 1; i >= 0; i--) {
-            int index = NUM_ITEMS_IN_PREVIEW - i - 1;
-
-            float r = (index * 1.0f) / (NUM_ITEMS_IN_PREVIEW - 1);
-            float scale = (1 - PERSPECTIVE_SCALE_FACTOR * (1 - r));
-
-            float offset = (1 - r) * maxPerspectiveShift;
-            float scaledSize = scale * baselineSize;
-            float scaleOffsetCorrection = (1 - scale) * baselineSize;
-
-            // We want to imagine our coordinates from the bottom left, growing up and to the
-            // right. This is natural for the x-axis, but for the y-axis, we have to invert things.
-            float transY = 2 * halfAvailableSpace - (offset + scaledSize + scaleOffsetCorrection);
-            float transX = offset + scaleOffsetCorrection;
-
-            v = (TextView) items.get(i);
+        // Update our drawing parameters if necessary
+        if (mAnimating) {
+            computePreviewDrawingParams(mAnimParams.drawable);
+        } else {
+            v = (TextView) items.get(0);
             d = v.getCompoundDrawables()[1];
-
-            canvas.save();
-            canvas.translate(transX, transY);
-            canvas.scale(baselineIconScale * scale, baselineIconScale * scale);
-
-            int overlayAlpha = (int) (80 * (1 - r));
-            if (d != null) {
-                d.setBounds(0, 0, intrinsicIconSize, intrinsicIconSize);
-                d.setFilterBitmap(true);
-                d.setColorFilter(Color.argb(overlayAlpha, 0, 0, 0), PorterDuff.Mode.SRC_ATOP);
-                d.draw(canvas);
-                d.clearColorFilter();
-                d.setFilterBitmap(false);
-            }
-            canvas.restore();
+            computePreviewDrawingParams(d);
         }
-        canvas.restore();
+
+        int nItemsInPreview = Math.min(items.size(), NUM_ITEMS_IN_PREVIEW);
+        if (!mAnimating) {
+            for (int i = nItemsInPreview - 1; i >= 0; i--) {
+                v = (TextView) items.get(i);
+                d = v.getCompoundDrawables()[1];
+
+                mParams = computePreviewItemDrawingParams(i, mParams);
+                mParams.drawable = d;
+                drawPreviewItem(canvas, mParams);
+            }
+        } else {
+            drawPreviewItem(canvas, mAnimParams);
+        }
+    }
+
+    private void animateFirstItem(final Drawable d, int duration) {
+        computePreviewDrawingParams(d);
+        final PreviewItemDrawingParams finalParams = computePreviewItemDrawingParams(0, null);
+
+        final float scale0 = 1.0f;
+        final float transX0 = 0;
+        final float transY0 = 0;
+        mAnimParams.drawable = d;
+
+        ValueAnimator va = ValueAnimator.ofFloat(0f, 1.0f);
+        va.addUpdateListener(new AnimatorUpdateListener(){
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float progress = (Float) animation.getAnimatedValue();
+
+                mAnimParams.transX = transX0 + progress * (finalParams.transX - transX0);
+                mAnimParams.transY = transY0 + progress * (finalParams.transY - transY0);
+                mAnimParams.scale = scale0 + progress * (finalParams.scale - scale0);
+                invalidate();
+            }
+        });
+        va.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                mAnimating = true;
+            }
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mAnimating = false;
+            }
+        });
+        va.setDuration(duration);
+        va.start();
     }
 
     public void onItemsChanged() {

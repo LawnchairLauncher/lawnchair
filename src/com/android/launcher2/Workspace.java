@@ -2132,7 +2132,7 @@ public class Workspace extends SmoothPagedView
     }
 
     boolean createUserFolderIfNecessary(View newView, CellLayout target,
-            int[] targetCell, boolean external) {
+            int[] targetCell, boolean external, DragView dragView) {
         View v = target.getChildAt(targetCell[0], targetCell[1]);
         boolean hasntMoved = mDragInfo != null
                 && (mDragInfo.cellX == targetCell[0] && mDragInfo.cellY == targetCell[1]);
@@ -2154,14 +2154,17 @@ public class Workspace extends SmoothPagedView
                 sourceLayout.removeView(newView);
             }
 
+            Rect folderLocation = new Rect();
+            mLauncher.getDragLayer().getDescendantRectRelativeToSelf(v, folderLocation);
             target.removeView(v);
+
             FolderIcon fi = mLauncher.addFolder(screen, targetCell[0], targetCell[1]);
             destInfo.cellX = -1;
             destInfo.cellY = -1;
             sourceInfo.cellX = -1;
             sourceInfo.cellY = -1;
-            fi.addItem(destInfo);
-            fi.addItem(sourceInfo);
+
+            fi.performCreateAnimation(destInfo, v, sourceInfo, dragView, folderLocation);
             return true;
         }
         return false;
@@ -2229,7 +2232,7 @@ public class Workspace extends SmoothPagedView
                 boolean dropInscrollArea = mCurrentPage != screen;
 
                 if (!dropInscrollArea && createUserFolderIfNecessary(cell, dropTargetLayout,
-                        mTargetCell, false)) {
+                        mTargetCell, false, d.dragView)) {
                     return;
                 }
 
@@ -2902,7 +2905,7 @@ public class Workspace extends SmoothPagedView
             if (touchXY != null) {
                 mTargetCell = findNearestArea((int) touchXY[0], (int) touchXY[1], spanX, spanY,
                         cellLayout, mTargetCell);
-                if (createUserFolderIfNecessary(view, cellLayout, mTargetCell, true)) {
+                if (createUserFolderIfNecessary(view, cellLayout, mTargetCell, true, d.dragView)) {
                     return;
                 }
                 if (addToExistingFolderIfNecessary(view, cellLayout, mTargetCell, d, true)) {

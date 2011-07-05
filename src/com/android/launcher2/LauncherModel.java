@@ -305,8 +305,8 @@ public class LauncherModel extends BroadcastReceiver {
      * Add an item to the database in a specified container. Sets the container, screen, cellX and
      * cellY fields of the item. Also assigns an ID to the item.
      */
-    static void addItemToDatabase(Context context, ItemInfo item, long container,
-            int screen, int cellX, int cellY, boolean notify) {
+    static void addItemToDatabase(Context context, final ItemInfo item, long container,
+            int screen, int cellX, int cellY, final boolean notify) {
         item.container = container;
         item.screen = screen;
         item.cellX = cellX;
@@ -319,7 +319,7 @@ public class LauncherModel extends BroadcastReceiver {
         item.updateValuesWithCoordinates(values, cellX, cellY);
 
         Uri result = cr.insert(notify ? LauncherSettings.Favorites.CONTENT_URI :
-                LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION, values);
+            LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION, values);
 
         if (result != null) {
             item.id = Integer.parseInt(result.getPathSegments().get(1));
