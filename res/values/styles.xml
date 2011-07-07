@@ -29,6 +29,10 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
+    <style name="AppsCustomizeScrollTrack">
+        <item name="android:visibility">visible</item>
+    </style>
+
     <style name="AnimationPreview">
         <item name="android:windowEnterAnimation">@anim/fade_in_fast</item>
         <item name="android:windowExitAnimation">@anim/fade_out_fast</item>

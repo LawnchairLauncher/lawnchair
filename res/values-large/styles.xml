@@ -18,6 +18,11 @@
 -->
 
 <resources>
+<!-- AppsCustomize -->
+    <style name="AppsCustomizeScrollTrack">
+        <item name="android:visibility">gone</item>
+    </style>
+
 <!-- Workspace -->
     <style name="ScrollIndicatorTrack">
         <item name="android:visibility">gone</item>

@@ -79,6 +79,7 @@
                 launcher:maxGap="@dimen/workspace_max_gap" />
 
             <include
+                style="@style/AppsCustomizeScrollTrack"
                 android:id="@+id/paged_view_indicator_track"
                 layout="@layout/scroll_indicator_track"
                 android:layout_width="match_parent"
