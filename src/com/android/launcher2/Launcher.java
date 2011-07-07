@@ -2748,12 +2748,12 @@ public final class Launcher extends Activity
         ComponentName activityName = searchManager.getGlobalSearchActivity();
         if (activityName != null) {
             sGlobalSearchIcon = updateButtonWithIconFromExternalActivity(
-                    R.id.search_button, activityName, R.drawable.ic_generic_search);
+                    R.id.search_button, activityName, R.drawable.ic_search_normal_holo);
             searchButton.setVisibility(View.VISIBLE);
-            searchDivider.setVisibility(View.VISIBLE);
+            if (searchDivider != null) searchDivider.setVisibility(View.VISIBLE);
         } else {
             searchButton.setVisibility(View.GONE);
-            searchDivider.setVisibility(View.GONE);
+            if (searchDivider != null) searchDivider.setVisibility(View.GONE);
         }
     }
 
@@ -2769,11 +2769,11 @@ public final class Launcher extends Activity
         ComponentName activityName = intent.resolveActivity(getPackageManager());
         if (activityName != null) {
             sVoiceSearchIcon = updateButtonWithIconFromExternalActivity(
-                    R.id.voice_button, activityName, R.drawable.ic_voice_search);
-            searchDivider.setVisibility(View.VISIBLE);
+                    R.id.voice_button, activityName, R.drawable.ic_voice_search_holo);
+            if (searchDivider != null) searchDivider.setVisibility(View.VISIBLE);
             voiceButton.setVisibility(View.VISIBLE);
         } else {
-            searchDivider.setVisibility(View.GONE);
+            if (searchDivider != null) searchDivider.setVisibility(View.GONE);
             voiceButton.setVisibility(View.GONE);
         }
     }

@@ -15,6 +15,10 @@
 -->
 
 <resources>
+<!-- QSB -->
+    <dimen name="toolbar_button_vertical_padding">12dip</dimen>
+    <dimen name="toolbar_button_horizontal_padding">12dip</dimen>
+
 <!-- Workspace -->
     <dimen name="qsb_bar_height">56dp</dimen>
 

@@ -19,6 +19,11 @@
 
 <resources>
 <!-- Workspace -->
+    <style name="ScrollIndicatorTrack">
+        <item name="android:visibility">gone</item>
+        <item name="android:alpha">0</item>
+    </style>
+
     <style name="WorkspaceIcon.Portrait">
         <item name="android:drawablePadding">4dp</item>
         <item name="android:paddingLeft">4dp</item>
@@ -78,6 +83,8 @@
     <!-- QSB Search / Drop Target bar -->
     <style name="SearchDropTargetBar">
         <item name="android:orientation">horizontal</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
     </style>
     <style name="SearchButton">
         <item name="android:layout_gravity">center_vertical</item>

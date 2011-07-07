@@ -1641,7 +1641,7 @@ public abstract class PagedView extends ViewGroup {
     }
 
     protected boolean isScrollingIndicatorEnabled() {
-        return true;
+        return !LauncherApplication.isScreenLarge();
     }
 
     protected void flashScrollingIndicator() {
@@ -1655,7 +1655,6 @@ public abstract class PagedView extends ViewGroup {
     }
 
     protected void showScrollingIndicator() {
-        if (LauncherApplication.isScreenLarge()) return;
         if (getChildCount() <= 1) return;
         if (!isScrollingIndicatorEnabled()) return;
 
@@ -1668,7 +1667,6 @@ public abstract class PagedView extends ViewGroup {
     }
 
     protected void hideScrollingIndicator(boolean immediately) {
-        if (LauncherApplication.isScreenLarge()) return;
         if (getChildCount() <= 1) return;
         if (!isScrollingIndicatorEnabled()) return;
 
@@ -1682,7 +1680,6 @@ public abstract class PagedView extends ViewGroup {
     }
 
     private void updateScrollingIndicator() {
-        if (LauncherApplication.isScreenLarge()) return;
         if (getChildCount() <= 1) return;
         if (!isScrollingIndicatorEnabled()) return;
 
@@ -1692,19 +1689,19 @@ public abstract class PagedView extends ViewGroup {
         }
     }
 
-    protected int getPageWidthForScrollingIndicator() {
-        return getMeasuredWidth();
-    }
-
     private void updateScrollingIndicatorPosition() {
+        if (!isScrollingIndicatorEnabled()) return;
+
         // We can make the page width smaller to make it look more centered
-        int pageWidth = getPageWidthForScrollingIndicator();
-        int pageOffset = (getMeasuredWidth() - pageWidth) / 2;
-        int maxPageWidth = getChildCount() * pageWidth;
+        getScrollingIndicatorTrack();
+        int pageWidth = mScrollTrack.getMeasuredWidth() - mScrollTrack.getPaddingLeft() -
+                mScrollTrack.getPaddingRight();
+        int maxPageWidth = getChildCount() * getMeasuredWidth();
         float offset = (float) getScrollX() / maxPageWidth;
         int indicatorWidth = pageWidth / getChildCount();
         int indicatorCenterOffset = indicatorWidth / 2 - mScrollIndicator.getMeasuredWidth() / 2;
-        int indicatorPos = (int) (offset * pageWidth) + pageOffset + indicatorCenterOffset;
+        int indicatorPos = (int) (offset * pageWidth) + mScrollTrack.getPaddingLeft() +
+                indicatorCenterOffset;
         mScrollIndicator.setTranslationX(indicatorPos);
         mScrollIndicator.invalidate();
     }
@@ -1718,20 +1715,20 @@ public abstract class PagedView extends ViewGroup {
     }
 
     public void showScrollIndicatorTrack() {
-        if (!LauncherApplication.isScreenLarge()) {
-            getScrollingIndicatorTrack();
-            if (mScrollTrack != null) {
-                mScrollTrack.setVisibility(View.VISIBLE);
-            }
+        if (!isScrollingIndicatorEnabled()) return;
+
+        getScrollingIndicatorTrack();
+        if (mScrollTrack != null) {
+            mScrollTrack.setVisibility(View.VISIBLE);
         }
     }
 
     public void hideScrollIndicatorTrack() {
-        if (!LauncherApplication.isScreenLarge()) {
-            getScrollingIndicatorTrack();
-            if (mScrollTrack != null) {
-                mScrollTrack.setVisibility(View.GONE);
-            }
+        if (!isScrollingIndicatorEnabled()) return;
+
+        getScrollingIndicatorTrack();
+        if (mScrollTrack != null) {
+            mScrollTrack.setVisibility(View.GONE);
         }
     }
 
