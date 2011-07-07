@@ -19,18 +19,14 @@ package com.android.launcher2;
 
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
-import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.IBinder;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.WindowManagerImpl;
 import android.view.animation.DecelerateInterpolator;
@@ -44,13 +40,13 @@ public class DragView extends View {
     private int mRegistrationY;
 
     private Rect mDragRegion = null;
+    private DragLayer mDragLayer = null;
 
     ValueAnimator mAnim;
     private float mOffsetX = 0.0f;
     private float mOffsetY = 0.0f;
 
-    private WindowManager.LayoutParams mLayoutParams;
-    private WindowManager mWindowManager;
+    private DragLayer.LayoutParams mLayoutParams;
 
     /**
      * A callback to be called the first time this view is drawn.
@@ -65,19 +61,18 @@ public class DragView extends View {
      * The registration point is the point inside our view that the touch events should
      * be centered upon.
      *
-     * @param context A context
+     * @param launcher The Launcher instance
      * @param bitmap The view that we're dragging around.  We scale it up when we draw it.
      * @param registrationX The x coordinate of the registration point.
      * @param registrationY The y coordinate of the registration point.
      */
-    public DragView(Context context, Bitmap bitmap, int registrationX, int registrationY,
+    public DragView(Launcher launcher, Bitmap bitmap, int registrationX, int registrationY,
             int left, int top, int width, int height) {
-        super(context);
+        super(launcher);
+        mDragLayer = launcher.getDragLayer();
 
         final Resources res = getResources();
         final int dragScale = res.getInteger(R.integer.config_dragViewExtraPixels);
-
-        mWindowManager = WindowManagerImpl.getDefault();
 
         Matrix scale = new Matrix();
         final float scaleFactor = (width + dragScale) / width;
@@ -106,10 +101,10 @@ public class DragView extends View {
                 if (getParent() == null) {
                     animation.cancel();
                 } else {
-                    WindowManager.LayoutParams lp = mLayoutParams;
+                    DragLayer.LayoutParams lp = mLayoutParams;
                     lp.x += deltaX;
                     lp.y += deltaY;
-                    mWindowManager.updateViewLayout(DragView.this, lp);
+                    mDragLayer.requestLayout();
                 }
             }
         });
@@ -209,58 +204,45 @@ public class DragView extends View {
      * Create a window containing this view and show it.
      *
      * @param windowToken obtained from v.getWindowToken() from one of your views
-     * @param touchX the x coordinate the user touched in screen coordinates
-     * @param touchY the y coordinate the user touched in screen coordinates
+     * @param touchX the x coordinate the user touched in DragLayer coordinates
+     * @param touchY the y coordinate the user touched in DragLayer coordinates
      */
-    public void show(IBinder windowToken, int touchX, int touchY) {
-        WindowManager.LayoutParams lp;
-        int pixelFormat;
-
-        pixelFormat = PixelFormat.TRANSLUCENT;
-
-        lp = new WindowManager.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                touchX - mRegistrationX, touchY - mRegistrationY,
-                WindowManager.LayoutParams.TYPE_APPLICATION_SUB_PANEL,
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                    | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-                    /*| WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM*/,
-                pixelFormat);
-//        lp.token = mStatusBarView.getWindowToken();
-        lp.gravity = Gravity.LEFT | Gravity.TOP;
-        lp.token = windowToken;
-        lp.setTitle("DragView");
+    public void show(int touchX, int touchY) {
+        mDragLayer.addView(this);
+        DragLayer.LayoutParams lp = new DragLayer.LayoutParams(0, 0);
+        lp.width = mBitmap.getWidth();
+        lp.height = mBitmap.getHeight();
+        lp.x = touchX - mRegistrationX;
+        lp.y = touchY - mRegistrationY;
+        lp.customPosition = true;
+        setLayoutParams(lp);
         mLayoutParams = lp;
-
-        mWindowManager.addView(this, lp);
-
         mAnim.start();
     }
 
     /**
      * Move the window containing this view.
      *
-     * @param touchX the x coordinate the user touched in screen coordinates
-     * @param touchY the y coordinate the user touched in screen coordinates
+     * @param touchX the x coordinate the user touched in DragLayer coordinates
+     * @param touchY the y coordinate the user touched in DragLayer coordinates
      */
     void move(int touchX, int touchY) {
-        WindowManager.LayoutParams lp = mLayoutParams;
+        DragLayer.LayoutParams lp = mLayoutParams;
         lp.x = touchX - mRegistrationX + (int) mOffsetX;
         lp.y = touchY - mRegistrationY + (int) mOffsetY;
-        mWindowManager.updateViewLayout(this, lp);
+        mDragLayer.requestLayout();
     }
 
     void remove() {
         post(new Runnable() {
             public void run() {
-                mWindowManager.removeView(DragView.this);
+                mDragLayer.removeView(DragView.this);
             }
         });
     }
 
     int[] getPosition(int[] result) {
-        WindowManager.LayoutParams lp = mLayoutParams;
+        DragLayer.LayoutParams lp = mLayoutParams;
         if (result == null) result = new int[2];
         result[0] = lp.x;
         result[1] = lp.y;

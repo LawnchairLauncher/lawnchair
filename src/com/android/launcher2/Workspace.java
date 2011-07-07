@@ -205,8 +205,6 @@ public class Workspace extends SmoothPagedView
     private FolderRingAnimator mDragFolderRingAnimator = null;
     private View mLastDragOverView = null;
     private boolean mCreateUserFolderOnDrop = false;
-    private int mCellWidth = -1;
-    private int mCellHeight = -1;
 
     // Variables relating to touch disambiguation (scrolling workspace vs. scrolling a widget)
     private float mXDown;
@@ -1284,7 +1282,6 @@ public class Workspace extends SmoothPagedView
         shrink(shrinkState, true);
     }
 
-
     // we use this to shrink the workspace for the all apps view and the customize view
     public void shrink(ShrinkState shrinkState, boolean animated) {
         if (mFirstLayout) {
@@ -2003,9 +2000,9 @@ public class Workspace extends SmoothPagedView
         final int bmpWidth = b.getWidth();
         final int bmpHeight = b.getHeight();
 
-        child.getLocationOnScreen(mTempXY);
-        final int screenX = (int) mTempXY[0] + (child.getWidth() - bmpWidth) / 2;
-        final int screenY = (int) mTempXY[1] + (child.getHeight() - bmpHeight) / 2;
+        mLauncher.getDragLayer().getLocationInDragLayer(child, mTempXY);
+        final int dragLayerX = (int) mTempXY[0] + (child.getWidth() - bmpWidth) / 2;
+        final int dragLayerY = (int) mTempXY[1] + (child.getHeight() - bmpHeight) / 2;
 
         Rect dragRect = null;
         if (child instanceof BubbleTextView) {
@@ -2021,7 +2018,7 @@ public class Workspace extends SmoothPagedView
         }
 
         mLauncher.lockScreenOrientation();
-        mDragController.startDrag(b, screenX, screenY, this, child.getTag(),
+        mDragController.startDrag(b, dragLayerX, dragLayerY, this, child.getTag(),
                 DragController.DRAG_ACTION_MOVE, dragRect);
         b.recycle();
     }
@@ -2288,11 +2285,11 @@ public class Workspace extends SmoothPagedView
     }
 
     public void getViewLocationRelativeToSelf(View v, int[] location) {
-        getLocationOnScreen(location);
+        getLocationInWindow(location);
         int x = location[0];
         int y = location[1];
 
-        v.getLocationOnScreen(location);
+        v.getLocationInWindow(location);
         int vX = location[0];
         int vY = location[1];
 
@@ -3287,5 +3284,9 @@ public class Workspace extends SmoothPagedView
         int page = (mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage;
         return String.format(mContext.getString(R.string.workspace_scroll_format),
                 page + 1, getChildCount());
+    }
+
+    public void getLocationInDragLayer(int[] loc) {
+        mLauncher.getDragLayer().getLocationInDragLayer(this, loc);
     }
 }

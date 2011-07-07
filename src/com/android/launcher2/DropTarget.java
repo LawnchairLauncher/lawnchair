@@ -120,7 +120,7 @@ public interface DropTarget {
 
     // These methods are implemented in Views
     void getHitRect(Rect outRect);
-    void getLocationOnScreen(int[] loc);
+    void getLocationInDragLayer(int[] loc);
     int getLeft();
     int getTop();
 }

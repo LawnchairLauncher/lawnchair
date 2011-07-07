@@ -55,7 +55,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
     private static final int NUM_ITEMS_IN_PREVIEW = 3;
     private static final int CONSUMPTION_ANIMATION_DURATION = 100;
     private static final int DROP_IN_ANIMATION_DURATION = 400;
-    private static final int INITIAL_ITEM_ANIMATION_DURATION = 150;
+    private static final int INITIAL_ITEM_ANIMATION_DURATION = 350;
 
     // The degree to which the inner ring grows when accepting drop
     private static final float INNER_RING_GROWTH_FACTOR = 0.15f;
@@ -295,7 +295,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
 
         // This will animate the first item from it's position as an icon into its
         // position as the first item in the preview
-        animateFirstItem(animateDrawable, DROP_IN_ANIMATION_DURATION);
+        animateFirstItem(animateDrawable, INITIAL_ITEM_ANIMATION_DURATION);
 
         postDelayed(new Runnable() {
             public void run() {
@@ -332,7 +332,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         float finalAlpha = index < NUM_ITEMS_IN_PREVIEW ? 0.5f : 0f;
 
         dragLayer.animateView(animateView, from, to, finalAlpha, scale, DROP_IN_ANIMATION_DURATION,
-                new DecelerateInterpolator(2), new AccelerateInterpolator(2));
+                new DecelerateInterpolator(2), new AccelerateInterpolator(2), null, false);
         postDelayed(new Runnable() {
             public void run() {
                 addItem(item);
