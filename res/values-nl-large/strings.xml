@@ -22,10 +22,4 @@
     <string name="wallpaper_dialog_title" msgid="8362944198120933329">"Achtergrond selecteren"</string>
     <string name="wallpaper_chooser_empty" msgid="6543937491391049913">"Geen achtergronden beschikbaar"</string>
     <string name="wallpaper_cancel" msgid="5942480248232268588">"Annuleren"</string>
-    <!-- no translation found for delete_target_label (8606333546746264268) -->
-    <skip />
-    <!-- no translation found for delete_target_uninstall_label (8093737231143968191) -->
-    <skip />
-    <!-- no translation found for info_target_label (1446068913893791331) -->
-    <skip />
 </resources>

@@ -37,15 +37,7 @@
     <!-- no translation found for applications_tab_label (2991364240020736760) -->
     <skip />
     <string name="wallpapers_temp_tab_text" msgid="1660218201190495279">"Dit sal die muurpapier-oortjie wees"</string>
-    <string name="all_apps_tab_all" msgid="2942727589595027258">"Alle"</string>
-    <string name="all_apps_tab_apps" msgid="5468972551904071712">"Programme"</string>
-    <string name="all_apps_tab_games" msgid="1855736784923494918">"Speletjies"</string>
-    <!-- no translation found for all_apps_tab_downloaded (1488049110598641387) -->
-    <skip />
     <!-- no translation found for long_press_widget_to_add (4307462194057715796) -->
-    <skip />
-    <string name="all_apps_no_games" msgid="5293893733372793696">"Geen speletjies gevind nie."</string>
-    <!-- no translation found for all_apps_no_downloads (2284720393234453761) -->
     <skip />
     <!-- no translation found for market (2652226429823445833) -->
     <skip />
@@ -87,7 +79,7 @@
     <skip />
     <!-- no translation found for delete_target_uninstall_label (748894921183769150) -->
     <skip />
-    <!-- no translation found for info_target_label (6175926565900432067) -->
+    <!-- no translation found for info_target_label (4019495079517426980) -->
     <skip />
     <!-- no translation found for accessibility_search_button (816822994629942611) -->
     <skip />
@@ -132,5 +124,7 @@
     <string name="gadget_error_text" msgid="8359351016167075858">"Kon nie legstuk laai nie"</string>
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"Dit is \'n stelselprogram en kan nie gedeïnstalleer word nie."</string>
     <!-- no translation found for dream_name (2847171357608437154) -->
+    <skip />
+    <!-- no translation found for folder_hint_text (8633351560105748141) -->
     <skip />
 </resources>

@@ -33,13 +33,7 @@
     <string name="wallpapers_tab_label" msgid="1617804870364119879">"วอลเปเปอร์"</string>
     <string name="applications_tab_label" msgid="2991364240020736760">"ทางลัดของแอปพลิเคชัน"</string>
     <string name="wallpapers_temp_tab_text" msgid="1660218201190495279">"นี่จะเป็นแท็บวอลเปเปอร์"</string>
-    <string name="all_apps_tab_all" msgid="2942727589595027258">"ทั้งหมด"</string>
-    <string name="all_apps_tab_apps" msgid="5468972551904071712">"แอปพลิเคชัน"</string>
-    <string name="all_apps_tab_games" msgid="1855736784923494918">"เกม"</string>
-    <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"แอปพลิเคชันของฉัน"</string>
     <string name="long_press_widget_to_add" msgid="4307462194057715796">"กดค้างเพื่อรับวิดเจ็ต"</string>
-    <string name="all_apps_no_games" msgid="5293893733372793696">"ไม่พบเกม"</string>
-    <string name="all_apps_no_downloads" msgid="2284720393234453761">"คุณไม่ได้ดาวน์โหลดแอปพลิเคชันไว้"</string>
     <string name="market" msgid="2652226429823445833">"ร้าน"</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"ไม่สามารถวางรายการลงในหน้าจอหลักนี้ได้"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"เลือกวิดเจ็ตที่จะสร้าง"</string>
@@ -70,7 +64,7 @@
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"ถอนการติดตั้ง"</string>
     <string name="delete_target_label" msgid="665300185123139530">"นำออก"</string>
     <string name="delete_target_uninstall_label" msgid="748894921183769150">"ถอนการติดตั้ง"</string>
-    <string name="info_target_label" msgid="6175926565900432067">"จัดการ"</string>
+    <string name="info_target_label" msgid="4019495079517426980">"ข้อมูลแอปพลิเคชัน"</string>
     <string name="accessibility_search_button" msgid="816822994629942611">"ค้นหา"</string>
     <string name="accessibility_voice_search_button" msgid="3938249215065842475">"Voice Search"</string>
     <string name="accessibility_all_apps_button" msgid="1595097919145716305">"แอปพลิเคชัน"</string>
@@ -101,4 +95,6 @@
     <string name="gadget_error_text" msgid="8359351016167075858">"มีปัญหาขณะโหลดวิดเจ็ต"</string>
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"นี่เป็นแอปพลิเคชันระบบและไม่สามารถถอนการติดตั้งได้"</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
+    <!-- no translation found for folder_hint_text (8633351560105748141) -->
+    <skip />
 </resources>
