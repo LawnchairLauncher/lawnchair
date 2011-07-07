@@ -1179,11 +1179,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // should stop this now.
     }
 
-    @Override
-    protected int getPageWidthForScrollingIndicator() {
-        return getPageContentWidth();
-    }
-
     /*
      * We load an extra page on each side to prevent flashes from scrolling and loading of the
      * widget previews in the background with the AsyncTasks.

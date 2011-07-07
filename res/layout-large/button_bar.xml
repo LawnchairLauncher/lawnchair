@@ -29,7 +29,7 @@
         android:paddingRight="@dimen/toolbar_button_horizontal_padding"
         android:paddingTop="@dimen/toolbar_button_vertical_padding"
         android:paddingBottom="@dimen/toolbar_button_vertical_padding"
-        android:src="@drawable/ic_generic_search"
+        android:src="@drawable/ic_search_normal_holo"
         android:background="@drawable/button_bg"
         android:onClick="onClickSearchButton"
 
@@ -60,7 +60,7 @@
         android:paddingRight="@dimen/toolbar_button_horizontal_padding"
         android:paddingTop="@dimen/toolbar_button_vertical_padding"
         android:paddingBottom="@dimen/toolbar_button_vertical_padding"
-        android:src="@drawable/ic_voice_search"
+        android:src="@drawable/ic_voice_search_holo"
         android:background="@drawable/button_bg"
         android:onClick="onClickVoiceButton"
 

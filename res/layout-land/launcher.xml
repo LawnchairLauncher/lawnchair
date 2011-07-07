@@ -40,22 +40,18 @@
         <include android:id="@+id/cell5" layout="@layout/workspace_screen" />
     </com.android.launcher2.Workspace>
 
-    <ImageView
+    <include
         android:id="@+id/paged_view_indicator_track"
+        layout="@layout/scroll_indicator_track"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:scaleType="fitXY"
-        android:src="@drawable/hotseat_track_holo" />
-    <ImageView
+        android:layout_gravity="bottom" />
+    <include
         android:id="@+id/paged_view_indicator"
+        layout="@layout/scroll_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:visibility="gone"
-        android:alpha="0"
-        android:scaleType="fitXY"
-        android:src="@drawable/hotseat_scrubber_holo" />
+        android:layout_gravity="bottom" />
 
     <include layout="@layout/qsb_bar"
         android:id="@+id/qsb_bar"

@@ -19,45 +19,8 @@
     android:focusable="false">
 
     <!-- Search buttons container -->
-    <LinearLayout
-        style="@style/SearchDropTargetBar"
-        android:id="@+id/qsb_search_bar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-       <!-- Global search icon -->
-       <ImageView
-            style="@style/SearchButton"
-            android:id="@+id/search_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_generic_search"
-            android:background="@drawable/button_bg"
-            android:onClick="onClickSearchButton"
-            android:focusable="true"
-            android:clickable="true"
-            android:contentDescription="@string/accessibility_search_button" />
-
-        <ImageView
-            style="@style/SearchButtonDivider"
-            android:id="@+id/search_divider"
-            android:src="@drawable/divider_launcher_holo"
-            android:onClick="onClickSearchButton"
-            android:focusable="false"
-            android:clickable="true" />
-
-        <!-- Voice search icon -->
-        <ImageView
-            style="@style/SearchButton"
-            android:id="@+id/voice_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_voice_search"
-            android:background="@drawable/button_bg"
-            android:onClick="onClickVoiceButton"
-            android:focusable="true"
-            android:clickable="true"
-            android:contentDescription="@string/accessibility_voice_search_button" />
-    </LinearLayout>
+    <include android:id="@+id/qsb_search_bar"
+        layout="@layout/search_bar" />
 
     <!-- Drag specific targets container -->
     <LinearLayout
