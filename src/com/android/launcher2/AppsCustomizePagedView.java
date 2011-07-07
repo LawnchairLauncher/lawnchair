@@ -765,7 +765,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         layout.measure(widthSpec, heightSpec);
         setVisibilityOnChildren(layout, View.VISIBLE);
     }
-    private synchronized void renderDrawableToBitmap(Drawable d, Bitmap bitmap, int x, int y, int w, int h,
+    private void renderDrawableToBitmap(Drawable d, Bitmap bitmap, int x, int y, int w, int h,
             float scaleX, float scaleY) {
         if (bitmap != null) {
             Canvas c = new Canvas(bitmap);
