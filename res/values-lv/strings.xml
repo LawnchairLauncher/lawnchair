@@ -33,13 +33,7 @@
     <string name="wallpapers_tab_label" msgid="1617804870364119879">"Fona tapetes"</string>
     <string name="applications_tab_label" msgid="2991364240020736760">"Lietotņu saīsnes"</string>
     <string name="wallpapers_temp_tab_text" msgid="1660218201190495279">"Šī būs fona tapetes cilne"</string>
-    <string name="all_apps_tab_all" msgid="2942727589595027258">"Visas"</string>
-    <string name="all_apps_tab_apps" msgid="5468972551904071712">"Lietotnes"</string>
-    <string name="all_apps_tab_games" msgid="1855736784923494918">"Spēles"</string>
-    <string name="all_apps_tab_downloaded" msgid="1488049110598641387">"Manas lietotnes"</string>
     <string name="long_press_widget_to_add" msgid="4307462194057715796">"Lai izvēlētos logrīku, turiet to nospiestu."</string>
-    <string name="all_apps_no_games" msgid="5293893733372793696">"Nav nevienas spēles."</string>
-    <string name="all_apps_no_downloads" msgid="2284720393234453761">"Nav ielādēta neviena lietojumprogramma."</string>
     <string name="market" msgid="2652226429823445833">"Iepirkties"</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Nevarēja nomest vienumu šajā sākumekrānā."</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Atlasīt izveidojamo logrīku"</string>
@@ -70,7 +64,7 @@
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"Atinstalēt"</string>
     <string name="delete_target_label" msgid="665300185123139530">"Noņemt"</string>
     <string name="delete_target_uninstall_label" msgid="748894921183769150">"Atinstalēt"</string>
-    <string name="info_target_label" msgid="6175926565900432067">"Pārvaldīt"</string>
+    <string name="info_target_label" msgid="4019495079517426980">"Lietotnes informācija"</string>
     <string name="accessibility_search_button" msgid="816822994629942611">"Meklēt"</string>
     <string name="accessibility_voice_search_button" msgid="3938249215065842475">"Balss meklēšana"</string>
     <string name="accessibility_all_apps_button" msgid="1595097919145716305">"Lietojumprogrammas"</string>
@@ -101,4 +95,6 @@
     <string name="gadget_error_text" msgid="8359351016167075858">"Radās problēma, ielādējot logrīku"</string>
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"Šī ir sistēmas lietojumprogramma un to nevar atinstalēt."</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
+    <!-- no translation found for folder_hint_text (8633351560105748141) -->
+    <skip />
 </resources>

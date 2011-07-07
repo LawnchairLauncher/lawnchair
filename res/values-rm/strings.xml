@@ -39,19 +39,7 @@
     <skip />
     <!-- no translation found for wallpapers_temp_tab_text (1660218201190495279) -->
     <skip />
-    <!-- no translation found for all_apps_tab_all (2942727589595027258) -->
-    <skip />
-    <!-- no translation found for all_apps_tab_apps (5468972551904071712) -->
-    <skip />
-    <!-- no translation found for all_apps_tab_games (1855736784923494918) -->
-    <skip />
-    <!-- no translation found for all_apps_tab_downloaded (1488049110598641387) -->
-    <skip />
     <!-- no translation found for long_press_widget_to_add (4307462194057715796) -->
-    <skip />
-    <!-- no translation found for all_apps_no_games (5293893733372793696) -->
-    <skip />
-    <!-- no translation found for all_apps_no_downloads (2284720393234453761) -->
     <skip />
     <!-- no translation found for market (2652226429823445833) -->
     <skip />
@@ -91,7 +79,7 @@
     <skip />
     <!-- no translation found for delete_target_uninstall_label (748894921183769150) -->
     <skip />
-    <!-- no translation found for info_target_label (6175926565900432067) -->
+    <!-- no translation found for info_target_label (4019495079517426980) -->
     <skip />
     <!-- no translation found for accessibility_search_button (816822994629942611) -->
     <skip />
@@ -137,5 +125,7 @@
     <!-- no translation found for uninstall_system_app_text (7488523163288397451) -->
     <skip />
     <!-- no translation found for dream_name (2847171357608437154) -->
+    <skip />
+    <!-- no translation found for folder_hint_text (8633351560105748141) -->
     <skip />
 </resources>
