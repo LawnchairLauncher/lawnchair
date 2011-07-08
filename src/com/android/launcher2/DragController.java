@@ -61,7 +61,7 @@ public class DragController {
     static final int SCROLL_LEFT = 0;
     static final int SCROLL_RIGHT = 1;
 
-    private Context mContext;
+    private Launcher mLauncher;
     private Handler mHandler;
     private final Vibrator mVibrator = new Vibrator();
 
@@ -77,9 +77,6 @@ public class DragController {
 
     /** Y coordinate of the down event. */
     private int mMotionDownY;
-
-    /** Info about the screen for clamping. */
-    private DisplayMetrics mDisplayMetrics = new DisplayMetrics();
 
     /** the area at the edge of the screen that makes the workspace go left
      *   or right while you're dragging.
@@ -139,10 +136,10 @@ public class DragController {
      *
      * @param context The application's context.
      */
-    public DragController(Context context) {
-        mContext = context;
+    public DragController(Launcher launcher) {
+        mLauncher = launcher;
         mHandler = new Handler();
-        mScrollZone = context.getResources().getDimensionPixelSize(R.dimen.scroll_zone);
+        mScrollZone = launcher.getResources().getDimensionPixelSize(R.dimen.scroll_zone);
     }
 
     public boolean dragging() {
@@ -183,11 +180,11 @@ public class DragController {
         }
 
         int[] loc = mCoordinatesTemp;
-        v.getLocationOnScreen(loc);
-        int screenX = loc[0];
-        int screenY = loc[1];
+        mLauncher.getDragLayer().getLocationInDragLayer(v, loc);
+        int dragLayerX = loc[0];
+        int dragLayerY = loc[1];
 
-        startDrag(b, screenX, screenY, source, dragInfo, dragAction, dragRegion);
+        startDrag(b, dragLayerX, dragLayerY, source, dragInfo, dragAction, dragRegion);
         b.recycle();
 
         if (dragAction == DRAG_ACTION_MOVE) {
@@ -210,11 +207,11 @@ public class DragController {
     public void startDrag(View v, Bitmap bmp, DragSource source, Object dragInfo, int dragAction,
             Rect dragRegion) {
         int[] loc = mCoordinatesTemp;
-        v.getLocationOnScreen(loc);
-        int screenX = loc[0];
-        int screenY = loc[1];
+        mLauncher.getDragLayer().getLocationInDragLayer(v, loc);
+        int dragLayerX = loc[0];
+        int dragLayerY = loc[1];
 
-        startDrag(bmp, screenX, screenY, source, dragInfo, dragAction, dragRegion);
+        startDrag(bmp, dragLayerX, dragLayerY, source, dragInfo, dragAction, dragRegion);
 
         if (dragAction == DRAG_ACTION_MOVE) {
             v.setVisibility(View.GONE);
@@ -226,16 +223,16 @@ public class DragController {
      *
      * @param b The bitmap to display as the drag image.  It will be re-scaled to the
      *          enlarged size.
-     * @param screenX The x position on screen of the left-top of the bitmap.
-     * @param screenY The y position on screen of the left-top of the bitmap.
+     * @param dragLayerX The x position in the DragLayer of the left-top of the bitmap.
+     * @param dragLayerY The y position in the DragLayer of the left-top of the bitmap.
      * @param source An object representing where the drag originated
      * @param dragInfo The data associated with the object that is being dragged
      * @param dragAction The drag action: either {@link #DRAG_ACTION_MOVE} or
      *        {@link #DRAG_ACTION_COPY}
      */
-    public void startDrag(Bitmap b, int screenX, int screenY,
+    public void startDrag(Bitmap b, int dragLayerX, int dragLayerY,
             DragSource source, Object dragInfo, int dragAction) {
-        startDrag(b, screenX, screenY, source, dragInfo, dragAction, null);
+        startDrag(b, dragLayerX, dragLayerY, source, dragInfo, dragAction, null);
     }
 
     /**
@@ -243,8 +240,8 @@ public class DragController {
      *
      * @param b The bitmap to display as the drag image.  It will be re-scaled to the
      *          enlarged size.
-     * @param screenX The x position on screen of the left-top of the bitmap.
-     * @param screenY The y position on screen of the left-top of the bitmap.
+     * @param dragLayerX The x position in the DragLayer of the left-top of the bitmap.
+     * @param dragLayerY The y position in the DragLayer of the left-top of the bitmap.
      * @param source An object representing where the drag originated
      * @param dragInfo The data associated with the object that is being dragged
      * @param dragAction The drag action: either {@link #DRAG_ACTION_MOVE} or
@@ -252,7 +249,7 @@ public class DragController {
      * @param dragRegion Coordinates within the bitmap b for the position of item being dragged.
      *          Makes dragging feel more precise, e.g. you can clip out a transparent border
      */
-    public void startDrag(Bitmap b, int screenX, int screenY,
+    public void startDrag(Bitmap b, int dragLayerX, int dragLayerY,
             DragSource source, Object dragInfo, int dragAction, Rect dragRegion) {
         if (PROFILE_DRAWING_DURING_DRAG) {
             android.os.Debug.startMethodTracing("Launcher");
@@ -261,7 +258,7 @@ public class DragController {
         // Hide soft keyboard, if visible
         if (mInputMethodManager == null) {
             mInputMethodManager = (InputMethodManager)
-                    mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    mLauncher.getSystemService(Context.INPUT_METHOD_SERVICE);
         }
         mInputMethodManager.hideSoftInputFromWindow(mWindowToken, 0);
 
@@ -269,8 +266,8 @@ public class DragController {
             listener.onDragStart(source, dragInfo, dragAction);
         }
 
-        final int registrationX = ((int)mMotionDownX) - screenX;
-        final int registrationY = ((int)mMotionDownY) - screenY;
+        final int registrationX = mMotionDownX - dragLayerX;
+        final int registrationY = mMotionDownY - dragLayerY;
 
         final int dragRegionLeft = dragRegion == null ? 0 : dragRegion.left;
         final int dragRegionTop = dragRegion == null ? 0 : dragRegion.top;
@@ -278,14 +275,14 @@ public class DragController {
         mDragging = true;
 
         mDragObject.dragComplete = false;
-        mDragObject.xOffset = mMotionDownX - (screenX + dragRegionLeft);
-        mDragObject.yOffset = mMotionDownY - (screenY + dragRegionTop);
+        mDragObject.xOffset = mMotionDownX - (dragLayerX + dragRegionLeft);
+        mDragObject.yOffset = mMotionDownY - (dragLayerY + dragRegionTop);
         mDragObject.dragSource = source;
         mDragObject.dragInfo = dragInfo;
 
         mVibrator.vibrate(VIBRATE_DURATION);
 
-        final DragView dragView = mDragObject.dragView = new DragView(mContext, b, registrationX,
+        final DragView dragView = mDragObject.dragView = new DragView(mLauncher, b, registrationX,
                 registrationY, 0, 0, b.getWidth(), b.getHeight());
 
         final DragSource dragSource = source;
@@ -299,9 +296,8 @@ public class DragController {
             dragView.setDragRegion(new Rect(dragRegion));
         }
 
-        dragView.show(mWindowToken, (int)mMotionDownX, (int)mMotionDownY);
-
-        handleMoveEvent((int) mMotionDownX, (int) mMotionDownY);
+        dragView.show(mMotionDownX, mMotionDownY);
+        handleMoveEvent(mMotionDownX, mMotionDownY);
     }
 
     /**
@@ -398,25 +394,21 @@ public class DragController {
         }
         final int action = ev.getAction();
 
-        if (action == MotionEvent.ACTION_DOWN) {
-            recordScreenSize();
-        }
-
-        final int screenX = clamp((int)ev.getRawX(), 0, mDisplayMetrics.widthPixels);
-        final int screenY = clamp((int)ev.getRawY(), 0, mDisplayMetrics.heightPixels);
+        final int dragLayerX = (int) ev.getX();
+        final int dragLayerY = (int) ev.getY();
 
         switch (action) {
             case MotionEvent.ACTION_MOVE:
                 break;
             case MotionEvent.ACTION_DOWN:
                 // Remember location of down touch
-                mMotionDownX = screenX;
-                mMotionDownY = screenY;
+                mMotionDownX = dragLayerX;
+                mMotionDownY = dragLayerY;
                 mLastDropTarget = null;
                 break;
             case MotionEvent.ACTION_UP:
                 if (mDragging) {
-                    drop(screenX, screenY);
+                    drop(dragLayerX, dragLayerY);
                 }
                 endDrag();
                 break;
@@ -475,7 +467,7 @@ public class DragController {
 
         // After a scroll, the touch point will still be in the scroll region.
         // Rather than scrolling immediately, require a bit of twiddling to scroll again
-        final int slop = ViewConfiguration.get(mContext).getScaledWindowTouchSlop();
+        final int slop = ViewConfiguration.get(mLauncher).getScaledWindowTouchSlop();
         mDistanceSinceScroll +=
             Math.sqrt(Math.pow(mLastTouch[0] - x, 2) + Math.pow(mLastTouch[1] - y, 2));
         mLastTouch[0] = x;
@@ -514,16 +506,16 @@ public class DragController {
         }
 
         final int action = ev.getAction();
-        final int screenX = clamp((int)ev.getRawX(), 0, mDisplayMetrics.widthPixels);
-        final int screenY = clamp((int)ev.getRawY(), 0, mDisplayMetrics.heightPixels);
+        final int dragLayerX = (int) ev.getX();
+        final int dragLayerY = (int) ev.getY();
 
         switch (action) {
         case MotionEvent.ACTION_DOWN:
             // Remember where the motion event started
-            mMotionDownX = screenX;
-            mMotionDownY = screenY;
+            mMotionDownX = dragLayerX;
+            mMotionDownY = dragLayerY;
 
-            if ((screenX < mScrollZone) || (screenX > mScrollView.getWidth() - mScrollZone)) {
+            if ((dragLayerX < mScrollZone) || (dragLayerX > mScrollView.getWidth() - mScrollZone)) {
                 mScrollState = SCROLL_WAITING_IN_ZONE;
                 mHandler.postDelayed(mScrollRunnable, SCROLL_DELAY);
             } else {
@@ -531,15 +523,15 @@ public class DragController {
             }
             break;
         case MotionEvent.ACTION_MOVE:
-            handleMoveEvent(screenX, screenY);
+            handleMoveEvent(dragLayerX, dragLayerY);
             break;
         case MotionEvent.ACTION_UP:
             // Ensure that we've processed a move event at the current pointer location.
-            handleMoveEvent(screenX, screenY);
+            handleMoveEvent(dragLayerX, dragLayerY);
 
             mHandler.removeCallbacks(mScrollRunnable);
             if (mDragging) {
-                drop(screenX, screenY);
+                drop(dragLayerX, dragLayerY);
             }
             endDrag();
             break;
@@ -581,8 +573,8 @@ public class DragController {
 
             target.getHitRect(r);
 
-            // Convert the hit rect to screen coordinates
-            target.getLocationOnScreen(dropCoordinates);
+            // Convert the hit rect to DragLayer coordinates
+            target.getLocationInDragLayer(dropCoordinates);
             r.offset(dropCoordinates[0] - target.getLeft(), dropCoordinates[1] - target.getTop());
 
             mDragObject.x = x;
@@ -591,7 +583,7 @@ public class DragController {
                 DropTarget delegate = target.getDropTargetDelegate(mDragObject);
                 if (delegate != null) {
                     target = delegate;
-                    target.getLocationOnScreen(dropCoordinates);
+                    target.getLocationInDragLayer(dropCoordinates);
                 }
 
                 // Make dropCoordinates relative to the DropTarget
@@ -602,28 +594,6 @@ public class DragController {
             }
         }
         return null;
-    }
-
-    /**
-     * Get the screen size so we can clamp events to the screen size so even if
-     * you drag off the edge of the screen, we find something.
-     */
-    private void recordScreenSize() {
-        ((WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE))
-                .getDefaultDisplay().getMetrics(mDisplayMetrics);
-    }
-
-    /**
-     * Clamp val to be &gt;= min and &lt; max.
-     */
-    private static int clamp(int val, int min, int max) {
-        if (val < min) {
-            return min;
-        } else if (val >= max) {
-            return max - 1;
-        } else {
-            return val;
-        }
     }
 
     public void setDragScoller(DragScroller scroller) {
@@ -672,7 +642,7 @@ public class DragController {
     /**
      * Specifies the delete region.  We won't scroll on touch events over the delete region.
      *
-     * @param region The rectangle in screen coordinates of the delete region.
+     * @param region The rectangle in DragLayer coordinates of the delete region.
      */
     void setDeleteRegion(RectF region) {
         mDeleteRegion = region;

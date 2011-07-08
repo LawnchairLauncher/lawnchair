@@ -18,12 +18,12 @@ package com.android.launcher2;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -33,9 +33,7 @@ import android.view.View;
 import android.view.ViewParent;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
-import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import com.android.launcher.R;
 
@@ -58,8 +56,10 @@ public class DragLayer extends FrameLayout {
 
     // Variables relating to animation of views after drop
     private ValueAnimator mDropAnim = null;
-    private TimeInterpolator mQuintEaseOutInterpolator = new DecelerateInterpolator(2.5f);
+    private ValueAnimator mFadeOutAnim = null;
+    private TimeInterpolator mCubicEaseOutInterpolator = new DecelerateInterpolator(1.5f);
     private View mDropView = null;
+
     private int[] mDropViewPos = new int[2];
     private float mDropViewScale;
     private float mDropViewAlpha;
@@ -168,14 +168,16 @@ public class DragLayer extends FrameLayout {
     }
 
     public void getDescendantRectRelativeToSelf(View descendant, Rect r) {
-        descendant.getHitRect(r);
         mTmpXY[0] = 0;
         mTmpXY[1] = 0;
         getDescendantCoordRelativeToSelf(descendant, mTmpXY);
-        r.offset(mTmpXY[0], mTmpXY[1]);
+        r.set(mTmpXY[0], mTmpXY[1],
+                mTmpXY[0] + descendant.getWidth(), mTmpXY[1] + descendant.getHeight());
     }
 
-    public void getDescendantCoordRelativeToSelf(View descendant, int[] coord) {
+    private void getDescendantCoordRelativeToSelf(View descendant, int[] coord) {
+        coord[0] += descendant.getLeft();
+        coord[1] += descendant.getTop();
         ViewParent viewParent = descendant.getParent();
         while (viewParent instanceof View && viewParent != this) {
             final View view = (View)viewParent;
@@ -185,13 +187,19 @@ public class DragLayer extends FrameLayout {
         }
     }
 
+    public void getLocationInDragLayer(View child, int[] loc) {
+        loc[0] = 0;
+        loc[1] = 0;
+        getDescendantCoordRelativeToSelf(child, loc);
+    }
+
     public void getViewRectRelativeToSelf(View v, Rect r) {
         int[] loc = new int[2];
-        getLocationOnScreen(loc);
+        getLocationInWindow(loc);
         int x = loc[0];
         int y = loc[1];
 
-        v.getLocationOnScreen(loc);
+        v.getLocationInWindow(loc);
         int vX = loc[0];
         int vY = loc[1];
 
@@ -203,21 +211,6 @@ public class DragLayer extends FrameLayout {
     @Override
     public boolean dispatchUnhandledMove(View focused, int direction) {
         return mDragController.dispatchUnhandledMove(focused, direction);
-    }
-
-    public View createDragView(Bitmap b, int xPos, int yPos) {
-        ImageView imageView = new ImageView(mContext);
-        imageView.setImageBitmap(b);
-        imageView.setX(xPos);
-        imageView.setY(yPos);
-        addView(imageView, b.getWidth(), b.getHeight());
-
-        return imageView;
-    }
-
-    public View createDragView(View v) {
-        v.getLocationOnScreen(mTmpXY);
-        return createDragView(mDragController.getViewBitmap(v), mTmpXY[0], mTmpXY[1]);
     }
 
     public static class LayoutParams extends FrameLayout.LayoutParams {
@@ -320,29 +313,40 @@ public class DragLayer extends FrameLayout {
         int coord[] = new int[2];
         coord[0] = lp.x;
         coord[1] = lp.y;
-        getDescendantCoordRelativeToSelf(child, coord);
+        // Since the child hasn't necessarily been laid out, we force the lp to be updated with
+        // the correct coordinates and use these to determine the final location
+        getDescendantCoordRelativeToSelf((View) child.getParent(), coord);
+        int toX = coord[0] - (dragView.getWidth() - child.getMeasuredWidth()) / 2;
+        int toY = coord[1] - (dragView.getHeight() - child.getMeasuredHeight()) / 2;
 
         final int fromX = r.left + (dragView.getWidth() - child.getMeasuredWidth())  / 2;
         final int fromY = r.top + (dragView.getHeight() - child.getMeasuredHeight())  / 2;
         child.setVisibility(INVISIBLE);
-        animateViewIntoPosition(child, fromX, fromY, coord[0], coord[1]);
+        child.setAlpha(0);
+        Runnable onCompleteRunnable = new Runnable() {
+            public void run() {
+                child.setVisibility(VISIBLE);
+                ObjectAnimator oa = ObjectAnimator.ofFloat(child, "alpha", 0f, 1f);
+                oa.setDuration(60);
+                oa.start();
+            }
+        };
+        animateViewIntoPosition(dragView, fromX, fromY, toX, toY, onCompleteRunnable, true);
     }
 
     private void animateViewIntoPosition(final View view, final int fromX, final int fromY,
-            final int toX, final int toY) {
-        Rect from = new Rect(fromX, fromY, fromX + view.getMeasuredWidth(), fromY + view.getMeasuredHeight());
+            final int toX, final int toY, Runnable onCompleteRunnable, boolean fadeOut) {
+        Rect from = new Rect(fromX, fromY, fromX +
+                view.getMeasuredWidth(), fromY + view.getMeasuredHeight());
         Rect to = new Rect(toX, toY, toX + view.getMeasuredWidth(), toY + view.getMeasuredHeight());
-        animateView(view, from, to, 1f, -1);
-    }
+        animateView(view, from, to, 1f, 1.0f, -1, null, null, onCompleteRunnable, true);
 
-    public void animateView(final View view, final Rect from, final Rect to,
-            final float finalAlpha, int duration) {
-        animateView(view, from, to, finalAlpha, 1.0f, duration, null, null);
     }
 
     public void animateView(final View view, final Rect from, final Rect to, final float finalAlpha,
             final float finalScale, int duration, final Interpolator motionInterpolator,
-            final Interpolator alphaInterpolator) {
+            final Interpolator alphaInterpolator, final Runnable onCompleteRunnable,
+            final boolean fadeOut) {
         // Calculate the duration of the animation based on the object's distance
         final float dist = (float) Math.sqrt(Math.pow(to.left - from.left, 2) +
                 Math.pow(to.top - from.top, 2));
@@ -353,19 +357,19 @@ public class DragLayer extends FrameLayout {
         if (duration < 0) {
             duration = res.getInteger(R.integer.config_dropAnimMaxDuration);
             if (dist < maxDist) {
-                duration *= mQuintEaseOutInterpolator.getInterpolation(dist / maxDist);
+                duration *= mCubicEaseOutInterpolator.getInterpolation(dist / maxDist);
             }
         }
 
         if (mDropAnim != null) {
-            mDropAnim.end();
+            mDropAnim.cancel();
         }
 
         mDropView = view;
         final float initialAlpha = view.getAlpha();
         mDropAnim = new ValueAnimator();
         if (alphaInterpolator == null || motionInterpolator == null) {
-            mDropAnim.setInterpolator(mQuintEaseOutInterpolator);
+            mDropAnim.setInterpolator(mCubicEaseOutInterpolator);
         }
 
         mDropAnim.setDuration(duration);
@@ -395,13 +399,40 @@ public class DragLayer extends FrameLayout {
         });
         mDropAnim.addListener(new AnimatorListenerAdapter() {
             public void onAnimationEnd(Animator animation) {
-                if (mDropView != null) {
-                    mDropView.setVisibility(View.VISIBLE);
+                if (onCompleteRunnable != null) {
+                    onCompleteRunnable.run();
+                }
+                if (fadeOut) {
+                    fadeOutDragView();
+                } else {
                     mDropView = null;
                 }
             }
         });
         mDropAnim.start();
+    }
+
+    private void fadeOutDragView() {
+        mFadeOutAnim = new ValueAnimator();
+        mFadeOutAnim.setDuration(150);
+        mFadeOutAnim.setFloatValues(0f, 1f);
+        mFadeOutAnim.removeAllUpdateListeners();
+        mFadeOutAnim.addUpdateListener(new AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                final float percent = (Float) animation.getAnimatedValue();
+                mDropViewAlpha = 1 - percent;
+                int width = mDropView.getMeasuredWidth();
+                int height = mDropView.getMeasuredHeight();
+                invalidate(mDropViewPos[0], mDropViewPos[1],
+                        mDropViewPos[0] + width, mDropViewPos[1] + height);
+            }
+        });
+        mFadeOutAnim.addListener(new AnimatorListenerAdapter() {
+            public void onAnimationEnd(Animator animation) {
+                mDropView = null;
+            }
+        });
+        mFadeOutAnim.start();
     }
 
     @Override

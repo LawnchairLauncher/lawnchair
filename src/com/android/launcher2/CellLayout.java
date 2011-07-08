@@ -706,8 +706,6 @@ public class CellLayout extends ViewGroup {
                 // The child hit rect is relative to the CellLayoutChildren parent, so we need to
                 // offset that by this CellLayout's padding to test an (x,y) point that is relative
                 // to this view.
-                final int tmpXY[] = mTmpXY;
-                child.getLocationOnScreen(tmpXY);
                 frame.offset(mPaddingLeft, mPaddingTop);
 
                 if (frame.contains(x, y)) {

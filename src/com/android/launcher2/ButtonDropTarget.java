@@ -90,4 +90,8 @@ public class ButtonDropTarget extends FrameLayout implements DropTarget, DragCon
     public DropTarget getDropTargetDelegate(DragObject d) {
         return null;
     }
+
+    public void getLocationInDragLayer(int[] loc) {
+        mLauncher.getDragLayer().getLocationInDragLayer(this, loc);
+    }
 }
