@@ -1137,6 +1137,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         addAppsWithoutInvalidate(list);
         invalidatePageData();
     }
+
     @Override
     public void reset() {
         if (mContentType != ContentType.Applications) {
@@ -1144,7 +1145,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             AppsCustomizeTabHost tabs = (AppsCustomizeTabHost)
                     mLauncher.findViewById(R.id.apps_customize_pane);
             tabs.setCurrentTabByTag(tabs.getTabTagForContentType(ContentType.Applications));
-        } else {
+        } else if (getCurrentPage() != 0) {
             setCurrentPage(0);
             invalidatePageData();
         }

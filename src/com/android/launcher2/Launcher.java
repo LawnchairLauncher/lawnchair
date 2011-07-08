@@ -1284,7 +1284,7 @@ public final class Launcher extends Activity
                 imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
             }
 
-            // Reset AllApps to it's initial state
+            // Reset AllApps to its initial state
             if (mAppsCustomizeContent != null) {
                 mAppsCustomizeContent.reset();
             }
