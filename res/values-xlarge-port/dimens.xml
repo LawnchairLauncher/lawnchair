@@ -22,5 +22,5 @@
 
     <!-- We can also afford to have a slightly wider portrait layout in
          xlarge -->
-    <dimen name="all_apps_view_pageLayoutWidthGap">36dp</dimen>
+    <dimen name="apps_customize_pageLayoutWidthGap">36dp</dimen>
 </resources>

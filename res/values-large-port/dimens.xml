@@ -22,6 +22,7 @@
          calculating the number of columns to fit a page.
          In portrait/large we use apps_customize_cell_width / 8. -->
     <dimen name="apps_customize_peek_width">12dp</dimen>
+    <dimen name="workspace_page_spacing">64dp</dimen>
 
 <!-- Workspace -->
     <!-- the area at the edge of the screen that makes the workspace go left
@@ -35,10 +36,10 @@
     <dimen name="workspace_width_gap">0dp</dimen>
     <dimen name="workspace_height_gap">32dp</dimen>
 
-    <dimen name="all_apps_view_pageLayoutWidthGap">24dp</dimen>
-    <dimen name="all_apps_view_pageLayoutHeightGap">36dp</dimen>
-    <dimen name="all_apps_view_pageLayoutPaddingTop">25dp</dimen>
-    <dimen name="all_apps_view_pageLayoutPaddingBottom">10dp</dimen>
-    <dimen name="all_apps_view_pageLayoutPaddingLeft">20dp</dimen>
-    <dimen name="all_apps_view_pageLayoutPaddingRight">20dp</dimen>
+    <dimen name="apps_customize_pageLayoutWidthGap">24dp</dimen>
+    <dimen name="apps_customize_pageLayoutHeightGap">36dp</dimen>
+    <dimen name="apps_customize_pageLayoutPaddingTop">25dp</dimen>
+    <dimen name="apps_customize_pageLayoutPaddingBottom">10dp</dimen>
+    <dimen name="apps_customize_pageLayoutPaddingLeft">20dp</dimen>
+    <dimen name="apps_customize_pageLayoutPaddingRight">20dp</dimen>
 </resources>

@@ -167,6 +167,8 @@ public final class Launcher extends Activity
     private AnimatorSet mStateAnimation;
 
     static final int APPWIDGET_HOST_ID = 1024;
+    private static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT = 300;
+    private static final int EXIT_SPRINGLOADED_MODE_LONG_TIMEOUT = 600;
 
     private static final Object sLock = new Object();
     private static int sScreen = DEFAULT_SCREEN;
@@ -592,7 +594,11 @@ public final class Launcher extends Activity
         }
     }
 
-    private void completeAdd(PendingAddArguments args) {
+    /**
+     * Returns whether we should delay spring loaded mode -- for shortcuts and widgets that have
+     * a configuration step, this allows the proper animations to run after other transitions.
+     */
+    private boolean completeAdd(PendingAddArguments args) {
         switch (args.requestCode) {
             case REQUEST_PICK_APPLICATION:
                 completeAddApplication(args.intent, args.screen, args.cellX, args.cellY);
@@ -602,22 +608,24 @@ public final class Launcher extends Activity
                 break;
             case REQUEST_CREATE_SHORTCUT:
                 completeAddShortcut(args.intent, args.screen, args.cellX, args.cellY);
-                break;
+                return true;
             case REQUEST_PICK_APPWIDGET:
                 addAppWidgetFromPick(args.intent);
                 break;
             case REQUEST_CREATE_APPWIDGET:
                 int appWidgetId = args.intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
                 completeAddAppWidget(appWidgetId, args.screen);
-                break;
+                return true;
             case REQUEST_PICK_WALLPAPER:
                 // We just wanted the activity result here so we can clear mWaitingForResult
                 break;
         }
+        return false;
     }
 
     @Override
     protected void onActivityResult(final int requestCode, int resultCode, final Intent data) {
+        boolean delayExitSpringLoadedMode = false;
         mWaitingForResult = false;
 
         // The pattern used here is that a user PICKs a specific application,
@@ -638,17 +646,21 @@ public final class Launcher extends Activity
             if (isWorkspaceLocked()) {
                 sPendingAddList.add(args);
             } else {
-                completeAdd(args);
+                delayExitSpringLoadedMode = completeAdd(args);
             }
         } else if ((requestCode == REQUEST_PICK_APPWIDGET ||
-                requestCode == REQUEST_CREATE_APPWIDGET) && resultCode == RESULT_CANCELED &&
-                data != null) {
-            // Clean up the appWidgetId if we canceled
-            int appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-            if (appWidgetId != -1) {
-                mAppWidgetHost.deleteAppWidgetId(appWidgetId);
+                requestCode == REQUEST_CREATE_APPWIDGET) && resultCode == RESULT_CANCELED) {
+            if (data != null) {
+                // Clean up the appWidgetId if we canceled
+                int appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+                if (appWidgetId != -1) {
+                    mAppWidgetHost.deleteAppWidgetId(appWidgetId);
+                }
             }
         }
+
+        // Exit spring loaded mode if necessary after cancelling the configuration of a widget
+        exitSpringLoadedDragModeDelayed(delayExitSpringLoadedMode);
     }
 
     @Override
@@ -1549,6 +1561,9 @@ public final class Launcher extends Activity
         } else {
             // Otherwise just add it
             completeAddAppWidget(appWidgetId, mAddScreen);
+
+            // Exit spring loaded mode if necessary after adding the widget
+            exitSpringLoadedDragModeDelayed(false);
         }
     }
 
@@ -2541,7 +2556,16 @@ public final class Launcher extends Activity
         }
         // Otherwise, we are not in spring loaded mode, so don't do anything.
     }
-
+    void exitSpringLoadedDragModeDelayed(boolean extendedDelay) {
+        mWorkspace.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                exitSpringLoadedDragMode();
+            }
+        }, (extendedDelay ?
+                EXIT_SPRINGLOADED_MODE_LONG_TIMEOUT :
+                EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT));
+    }
     void exitSpringLoadedDragMode() {
         if (mState == State.APPS_CUSTOMIZE_SPRING_LOADED) {
             mWorkspace.exitSpringLoadedDragMode(Workspace.ShrinkState.BOTTOM_VISIBLE);
@@ -2671,10 +2695,6 @@ public final class Launcher extends Activity
         } else {
             layout.animateDrop();
         }
-    }
-
-    void onWorkspaceClick(CellLayout layout) {
-        showWorkspace(true, layout);
     }
 
     private Drawable getExternalPackageToolbarIcon(ComponentName activityName) {

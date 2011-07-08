@@ -286,12 +286,13 @@ public class FolderIcon extends LinearLayout implements FolderListener {
     }
 
     public void performCreateAnimation(final ShortcutInfo destInfo, final View destView,
-            final ShortcutInfo srcInfo, final View srcView, Rect dstRect) {
+            final ShortcutInfo srcInfo, final View srcView, Rect dstRect,
+            Runnable postAnimationRunnable) {
 
         Drawable animateDrawable = ((TextView) destView).getCompoundDrawables()[1];
         computePreviewDrawingParams(animateDrawable.getIntrinsicWidth(), destView.getMeasuredWidth());
         // This will animate the dragView (srcView) into the new folder
-        onDrop(srcInfo, srcView, dstRect, 1);
+        onDrop(srcInfo, srcView, dstRect, 1, postAnimationRunnable);
 
         // This will animate the first item from it's position as an icon into its
         // position as the first item in the preview
@@ -309,7 +310,8 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         mFolderRingAnimator.animateToNaturalState();
     }
 
-    private void onDrop(final ShortcutInfo item, View animateView, Rect finalRect, int index) {
+    private void onDrop(final ShortcutInfo item, View animateView, Rect finalRect, int index,
+            Runnable postAnimationRunnable) {
         item.cellX = -1;
         item.cellY = -1;
         DragLayer dragLayer = mLauncher.getDragLayer();
@@ -332,7 +334,8 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         float finalAlpha = index < NUM_ITEMS_IN_PREVIEW ? 0.5f : 0f;
 
         dragLayer.animateView(animateView, from, to, finalAlpha, scale, DROP_IN_ANIMATION_DURATION,
-                new DecelerateInterpolator(2), new AccelerateInterpolator(2), null, false);
+                new DecelerateInterpolator(2), new AccelerateInterpolator(2), postAnimationRunnable,
+                false);
         postDelayed(new Runnable() {
             public void run() {
                 addItem(item);
@@ -348,7 +351,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         } else {
             item = (ShortcutInfo) d.dragInfo;
         }
-        onDrop(item, d.dragView, null, mInfo.contents.size());
+        onDrop(item, d.dragView, null, mInfo.contents.size(), d.postAnimationRunnable);
     }
 
     public DropTarget getDropTargetDelegate(DragObject d) {

@@ -175,16 +175,25 @@ public class DragLayer extends FrameLayout {
                 mTmpXY[0] + descendant.getWidth(), mTmpXY[1] + descendant.getHeight());
     }
 
-    private void getDescendantCoordRelativeToSelf(View descendant, int[] coord) {
-        coord[0] += descendant.getLeft();
-        coord[1] += descendant.getTop();
+    private float getDescendantCoordRelativeToSelf(View descendant, int[] coord) {
+        float scale = 1.0f;
+        float[] pt = {coord[0], coord[1]};
+        descendant.getMatrix().mapPoints(pt);
+        scale *= descendant.getScaleX();
+        pt[0] += descendant.getLeft();
+        pt[1] += descendant.getTop();
         ViewParent viewParent = descendant.getParent();
         while (viewParent instanceof View && viewParent != this) {
             final View view = (View)viewParent;
-            coord[0] += view.getLeft() + (int) (view.getTranslationX() + 0.5f) - view.getScrollX();
-            coord[1] += view.getTop() + (int) (view.getTranslationY() + 0.5f) - view.getScrollY();
+            view.getMatrix().mapPoints(pt);
+            scale *= view.getScaleX();
+            pt[0] += view.getLeft() - view.getScrollX();
+            pt[1] += view.getTop() - view.getScrollY();
             viewParent = view.getParent();
         }
+        coord[0] = (int) pt[0];
+        coord[1] = (int) pt[1];
+        return scale;
     }
 
     public void getLocationInDragLayer(View child, int[] loc) {
@@ -304,6 +313,10 @@ public class DragLayer extends FrameLayout {
     }
 
     public void animateViewIntoPosition(DragView dragView, final View child) {
+        animateViewIntoPosition(dragView, child, null);
+    }
+    public void animateViewIntoPosition(DragView dragView, final View child,
+            final Runnable onFinishAnimationRunnable) {
         ((CellLayoutChildren) child.getParent()).measureChild(child);
         CellLayout.LayoutParams lp =  (CellLayout.LayoutParams) child.getLayoutParams();
 
@@ -311,13 +324,15 @@ public class DragLayer extends FrameLayout {
         getViewRectRelativeToSelf(dragView, r);
 
         int coord[] = new int[2];
-        coord[0] = lp.x;
-        coord[1] = lp.y;
+        coord[0] = lp.x + (lp.width / 2);
+        coord[1] = lp.y + (lp.height / 2);
         // Since the child hasn't necessarily been laid out, we force the lp to be updated with
         // the correct coordinates and use these to determine the final location
-        getDescendantCoordRelativeToSelf((View) child.getParent(), coord);
-        int toX = coord[0] - (dragView.getWidth() - child.getMeasuredWidth()) / 2;
-        int toY = coord[1] - (dragView.getHeight() - child.getMeasuredHeight()) / 2;
+        float scale = getDescendantCoordRelativeToSelf((View) child.getParent(), coord);
+        int toX = coord[0] - lp.width / 2;
+        int toY = coord[1] - lp.height / 2;
+        toX -= (dragView.getWidth() - child.getMeasuredWidth()) / 2;
+        toY -= (dragView.getHeight() - child.getMeasuredHeight()) / 2;
 
         final int fromX = r.left + (dragView.getWidth() - child.getMeasuredWidth())  / 2;
         final int fromY = r.top + (dragView.getHeight() - child.getMeasuredHeight())  / 2;
@@ -328,19 +343,39 @@ public class DragLayer extends FrameLayout {
                 child.setVisibility(VISIBLE);
                 ObjectAnimator oa = ObjectAnimator.ofFloat(child, "alpha", 0f, 1f);
                 oa.setDuration(60);
+                oa.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(android.animation.Animator animation) {
+                        if (onFinishAnimationRunnable != null) {
+                            onFinishAnimationRunnable.run();
+                        }
+                    }
+                });
                 oa.start();
             }
         };
-        animateViewIntoPosition(dragView, fromX, fromY, toX, toY, onCompleteRunnable, true);
+        animateViewIntoPosition(dragView, fromX, fromY, toX, toY, scale, onCompleteRunnable, true);
+    }
+
+    /* Just fade out in place */
+    public void animateViewOut(DragView dragView, Runnable onFinishAnimationRunnable) {
+        Rect r = new Rect();
+        getViewRectRelativeToSelf(dragView, r);
+        final int fromX = r.left;
+        final int fromY = r.top;
+        final int toX = fromX;
+        final int toY = fromY;
+        animateViewIntoPosition(dragView, fromX, fromY, toX, toY, 1.0f, onFinishAnimationRunnable,
+                true);
     }
 
     private void animateViewIntoPosition(final View view, final int fromX, final int fromY,
-            final int toX, final int toY, Runnable onCompleteRunnable, boolean fadeOut) {
+            final int toX, final int toY, float finalScale, Runnable onCompleteRunnable,
+            boolean fadeOut) {
         Rect from = new Rect(fromX, fromY, fromX +
                 view.getMeasuredWidth(), fromY + view.getMeasuredHeight());
         Rect to = new Rect(toX, toY, toX + view.getMeasuredWidth(), toY + view.getMeasuredHeight());
-        animateView(view, from, to, 1f, 1.0f, -1, null, null, onCompleteRunnable, true);
-
+        animateView(view, from, to, 1f, finalScale, -1, null, null, onCompleteRunnable, true);
     }
 
     public void animateView(final View view, final Rect from, final Rect to, final float finalAlpha,

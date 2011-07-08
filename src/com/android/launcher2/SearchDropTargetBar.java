@@ -62,7 +62,6 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         dragController.addDropTarget(mDeleteDropTarget);
         mInfoDropTarget.setLauncher(launcher);
         mDeleteDropTarget.setLauncher(launcher);
-        mDropTargetBar.setBackgroundColor(0x33000000);
     }
 
     @Override

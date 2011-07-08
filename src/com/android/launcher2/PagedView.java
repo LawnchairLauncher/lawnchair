@@ -368,8 +368,11 @@ public abstract class PagedView extends ViewGroup {
     // we moved this functionality to a helper function so SmoothPagedView can reuse it
     protected boolean computeScrollHelper() {
         if (mScroller.computeScrollOffset()) {
-            mDirtyPageAlpha = true;
-            scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
+            // Don't bother scrolling if the page does not need to be moved
+            if (mScrollX != mScroller.getCurrX() || mScrollY != mScroller.getCurrY()) {
+                mDirtyPageAlpha = true;
+                scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
+            }
             invalidate();
             return true;
         } else if (mNextPage != INVALID_PAGE) {
@@ -652,7 +655,7 @@ public abstract class PagedView extends ViewGroup {
         if (pageCount > 0) {
             final int pageWidth = getScaledMeasuredWidth(getChildAt(0));
             final int screenWidth = getMeasuredWidth();
-            int x = getRelativeChildOffset(0) + pageWidth;
+            int x = getScaledRelativeChildOffset(0) + pageWidth;
             int leftScreen = 0;
             int rightScreen = 0;
             while (x <= mScrollX) {
@@ -1253,6 +1256,10 @@ public abstract class PagedView extends ViewGroup {
 
     protected int getRelativeChildOffset(int index) {
         return (getMeasuredWidth() - getChildWidth(index)) / 2;
+    }
+
+    protected int getScaledRelativeChildOffset(int index) {
+        return (getMeasuredWidth() - getScaledMeasuredWidth(getChildAt(index))) / 2;
     }
 
     protected int getChildOffset(int index) {

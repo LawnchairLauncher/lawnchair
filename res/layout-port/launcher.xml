@@ -29,7 +29,8 @@
         android:layout_height="match_parent"
         launcher:defaultScreen="2"
         launcher:cellCountX="4"
-        launcher:cellCountY="4">
+        launcher:cellCountY="4"
+        launcher:pageSpacing="@dimen/workspace_page_spacing">
 
         <include android:id="@+id/cell1" layout="@layout/workspace_screen" />
         <include android:id="@+id/cell2" layout="@layout/workspace_screen" />

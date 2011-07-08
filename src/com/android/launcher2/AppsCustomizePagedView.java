@@ -472,9 +472,13 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
         return true;
     }
-    private void endDragging(boolean success) {
+    private void endDragging(View target, boolean success) {
         mLauncher.getWorkspace().onDragStopped(success);
-        mLauncher.exitSpringLoadedDragMode();
+        if (!success || target != mLauncher.getWorkspace()) {
+            // Exit spring loaded mode if we have not successfully dropped or have not handled the
+            // drop in Workspace
+            mLauncher.exitSpringLoadedDragMode();
+        }
         mLauncher.unlockScreenOrientation();
 
     }
@@ -486,7 +490,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     public void onDragViewVisible() {}
     @Override
     public void onDropCompleted(View target, DragObject d, boolean success) {
-        endDragging(success);
+        endDragging(target, success);
 
         // Display an error message if the drag failed due to there not being enough space on the
         // target layout we were dropping on.

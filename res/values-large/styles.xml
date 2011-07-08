@@ -77,7 +77,7 @@
         <item name="android:screenOrientation">unspecified</item>
     </style>
 
-    <style name="TabIndicator.Wide">
+    <style name="TabIndicator.AppsCustomize">
         <item name="android:paddingLeft">40dp</item>
         <item name="android:paddingRight">40dp</item>
         <item name="android:paddingTop">10dp</item>
@@ -115,5 +115,9 @@
         <item name="android:drawablePadding">7.5dp</item>
         <item name="android:textColor">#FFFFFFFF</item>
         <item name="android:textSize">16sp</item>
+        <item name="android:shadowColor">#393939</item>
+        <item name="android:shadowDx">0.0</item>
+        <item name="android:shadowDy">0.0</item>
+        <item name="android:shadowRadius">2.0</item>
     </style>
 </resources>

@@ -51,12 +51,6 @@
         <item name="android:shadowColor">#B0000000</item>
     </style>
 
-    <style name="WorkspaceIcon.AppsCustomize">
-        <item name="android:background">@null</item>
-        <item name="android:drawablePadding">0dp</item>
-        <item name="android:includeFontPadding">false</item>
-    </style>
-
     <style name="WorkspaceIcon.Portrait">
         <item name="android:drawablePadding">4dp</item>
         <item name="android:paddingLeft">4dp</item>
@@ -72,14 +66,28 @@
         <item name="android:paddingTop">2dp</item>
         <item name="android:paddingBottom">4dp</item>
     </style>
+
     <style name="WorkspaceIcon.Portrait.Folder">
         <item name="android:drawablePadding">0dp</item>
         <item name="android:paddingTop">0dp</item>
     </style>
-
     <style name="WorkspaceIcon.Landscape.Folder">
         <item name="android:drawablePadding">0dp</item>
         <item name="android:paddingTop">0dp</item>
+    </style>
+
+    <style name="WorkspaceIcon.Portrait.AppsCustomize">
+        <item name="android:background">@null</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">0dp</item>
+        <item name="android:drawablePadding">0dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+    <style name="WorkspaceIcon.Landscape.AppsCustomize">
+        <item name="android:background">@null</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:drawablePadding">0dp</item>
+        <item name="android:includeFontPadding">false</item>
     </style>
 
     <style name="SearchDropTargetBar">
@@ -111,6 +119,10 @@
         <item name="android:drawablePadding">7.5dp</item>
         <item name="android:textColor">#FFFFFFFF</item>
         <item name="android:textSize">16sp</item>
+        <item name="android:shadowColor">#393939</item>
+        <item name="android:shadowDx">0.0</item>
+        <item name="android:shadowDy">0.0</item>
+        <item name="android:shadowRadius">2.0</item>
     </style>
 
     <style name="TabIndicator">
@@ -128,6 +140,9 @@
         <item name="android:shadowDx">0.0</item>
         <item name="android:shadowDy">1.0</item>
         <item name="android:shadowRadius">1.0</item>
+    </style>
+    <style name="TabIndicator.AppsCustomize">
+        <!-- Overridden in values-land -->
     </style>
 
     <style name="MarketButton">

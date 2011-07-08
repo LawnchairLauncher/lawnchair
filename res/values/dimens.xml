@@ -29,18 +29,16 @@
     <dimen name="toolbar_button_horizontal_padding">12dip</dimen>
 
 <!-- AllApps/Customize/AppsCustomize -->
-    <!-- Size of icons in Workspace/AppsCustomize -->
+    <dimen name="apps_customize_tab_bar_height">56dp</dimen>
     <dimen name="app_icon_size">56dp</dimen>
+    <!-- The width can be 72dp because we don't have L/R padding -->
     <dimen name="apps_customize_cell_width">72dp</dimen>
-    <dimen name="apps_customize_cell_height">72dp</dimen>
+    <dimen name="apps_customize_cell_height">80dp</dimen>
     <dimen name="apps_customize_peek_width">0dp</dimen>
     <dimen name="apps_customize_max_gap">18dp</dimen>
     <dimen name="apps_customize_widget_cell_width_gap">10dp</dimen>
     <dimen name="apps_customize_widget_cell_height_gap">10dp</dimen>
     <dimen name="title_texture_width">120px</dimen>
-
-    <!-- height of the tab bar in AppsCustomize -->
-    <dimen name="apps_customize_tab_bar_height">56dp</dimen>
 
     <!-- height of the bottom row of controls -->
     <dimen name="button_bar_height">56dip</dimen>

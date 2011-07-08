@@ -21,7 +21,7 @@
     android:paddingTop="?android:attr/actionBarSize"
     android:paddingBottom="10dp"
     launcher:defaultScreen="2"
-    launcher:pageSpacing="@dimen/workspace_page_spacing_port">
+    launcher:pageSpacing="@dimen/workspace_page_spacing">
       <include android:id="@+id/cell1" layout="@layout/workspace_screen" />
       <include android:id="@+id/cell2" layout="@layout/workspace_screen" />
       <include android:id="@+id/cell3" layout="@layout/workspace_screen" />

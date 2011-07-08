@@ -49,6 +49,9 @@ public interface DropTarget {
         /** Where the drag originated */
         public DragSource dragSource = null;
 
+        /** Post drag animation runnable */
+        public Runnable postAnimationRunnable = null;
+
         public DragObject() {
         }
     }

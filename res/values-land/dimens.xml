@@ -24,21 +24,25 @@
     <dimen name="workspace_right_padding">@dimen/button_bar_height</dimen>
     <dimen name="workspace_top_padding">0dp</dimen>
     <dimen name="workspace_bottom_padding">0dp</dimen>
+    <dimen name="workspace_page_spacing">8dp</dimen>
 
     <dimen name="folder_cell_width">100dip</dimen>
     <dimen name="folder_cell_height">74dip</dimen>
     <dimen name="button_bar_height">62dip</dimen>
 
-    <integer name="all_apps_view_cellCountX">6</integer>
-    <integer name="all_apps_view_cellCountY">3</integer>
-    <dimen name="all_apps_view_pageLayoutWidthGap">-1dp</dimen>
-    <dimen name="all_apps_view_pageLayoutHeightGap">-1dp</dimen>
-    <dimen name="all_apps_view_pageLayoutPaddingTop">5dp</dimen>
-    <dimen name="all_apps_view_pageLayoutPaddingBottom">5dp</dimen>
-    <dimen name="all_apps_view_pageLayoutPaddingLeft">5dp</dimen>
-    <dimen name="all_apps_view_pageLayoutPaddingRight">5dp</dimen>
-
 <!-- AppsCustomize -->
+    <dimen name="apps_customize_cell_width">80dp</dimen>
+    <!-- The width can be 76dp because we don't have B padding -->
+    <dimen name="apps_customize_cell_height">76dp</dimen>
+    <integer name="apps_customize_cellCountX">6</integer>
+    <integer name="apps_customize_cellCountY">3</integer>
+    <dimen name="apps_customize_pageLayoutWidthGap">-1dp</dimen>
+    <dimen name="apps_customize_pageLayoutHeightGap">-1dp</dimen>
+    <dimen name="apps_customize_pageLayoutPaddingTop">5dp</dimen>
+    <dimen name="apps_customize_pageLayoutPaddingBottom">5dp</dimen>
+    <dimen name="apps_customize_pageLayoutPaddingLeft">5dp</dimen>
+    <dimen name="apps_customize_pageLayoutPaddingRight">5dp</dimen>
+    <dimen name="apps_customize_tab_bar_height">42dp</dimen>
     <dimen name="apps_customize_widget_cell_width_gap">30dp</dimen>
     <dimen name="apps_customize_widget_cell_height_gap">5dp</dimen>
     <integer name="apps_customize_widget_cell_count_x">3</integer>

@@ -25,10 +25,8 @@
     <dimen name="workspace_cell_width">96dip</dimen>
     <dimen name="workspace_cell_height">96dip</dimen>
 
-    <dimen name="workspace_page_spacing_land">50dp</dimen>
-    <dimen name="workspace_page_spacing_port">64dp</dimen>
-
 <!-- AppsCustomize -->
+    <dimen name="apps_customize_tab_bar_height">56dp</dimen>
     <dimen name="apps_customize_cell_width">96dp</dimen>
     <dimen name="apps_customize_cell_height">96dp</dimen>
     <!-- The amount of space to account for the next/prev pages when
