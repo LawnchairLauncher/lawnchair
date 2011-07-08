@@ -32,6 +32,7 @@ import android.content.res.XmlResourceParser;
 import android.content.res.TypedArray;
 import android.content.pm.PackageManager;
 import android.content.pm.ActivityInfo;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
@@ -80,11 +81,12 @@ public class LauncherProvider extends ContentProvider {
     static final Uri CONTENT_APPWIDGET_RESET_URI =
             Uri.parse("content://" + AUTHORITY + "/appWidgetReset");
     
-    private SQLiteOpenHelper mOpenHelper;
+    private DatabaseHelper mOpenHelper;
 
     @Override
     public boolean onCreate() {
         mOpenHelper = new DatabaseHelper(getContext());
+        ((LauncherApplication) getContext()).setLauncherProvider(this);
         return true;
     }
 
@@ -113,12 +115,20 @@ public class LauncherProvider extends ContentProvider {
         return result;
     }
 
+    private static long dbInsertAndCheck(DatabaseHelper helper,
+            SQLiteDatabase db, String table, String nullColumnHack, ContentValues values) {
+        if (!values.containsKey(LauncherSettings.Favorites._ID)) {
+            throw new RuntimeException("Error: attempting to add item without specifying an id");
+        }
+        return db.insert(table, nullColumnHack, values);
+    }
+
     @Override
     public Uri insert(Uri uri, ContentValues initialValues) {
         SqlArguments args = new SqlArguments(uri);
 
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        final long rowId = db.insert(args.table, null, initialValues);
+        final long rowId = dbInsertAndCheck(mOpenHelper, db, args.table, null, initialValues);
         if (rowId <= 0) return null;
 
         uri = ContentUris.withAppendedId(uri, rowId);
@@ -136,7 +146,9 @@ public class LauncherProvider extends ContentProvider {
         try {
             int numValues = values.length;
             for (int i = 0; i < numValues; i++) {
-                if (db.insert(args.table, null, values[i]) < 0) return 0;
+                if (dbInsertAndCheck(mOpenHelper, db, args.table, null, values[i]) < 0) {
+                    return 0;
+                }
             }
             db.setTransactionSuccessful();
         } finally {
@@ -176,6 +188,10 @@ public class LauncherProvider extends ContentProvider {
         }
     }
 
+    public long generateNewId() {
+        return mOpenHelper.generateNewId();
+    }
+
     private static class DatabaseHelper extends SQLiteOpenHelper {
         private static final String TAG_FAVORITES = "favorites";
         private static final String TAG_FAVORITE = "favorite";
@@ -186,11 +202,13 @@ public class LauncherProvider extends ContentProvider {
         
         private final Context mContext;
         private final AppWidgetHost mAppWidgetHost;
+        private long mMaxId = -1;
 
         DatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
             mContext = context;
             mAppWidgetHost = new AppWidgetHost(context, Launcher.APPWIDGET_HOST_ID);
+            mMaxId = initializeMaxId(getWritableDatabase());
         }
 
         /**
@@ -207,7 +225,9 @@ public class LauncherProvider extends ContentProvider {
         @Override
         public void onCreate(SQLiteDatabase db) {
             if (LOGD) Log.d(TAG, "creating new launcher database");
-            
+
+            mMaxId = 1;
+
             db.execSQL("CREATE TABLE favorites (" +
                     "_id INTEGER PRIMARY KEY," +
                     "title TEXT," +
@@ -253,7 +273,7 @@ public class LauncherProvider extends ContentProvider {
             try {
                 cursor = resolver.query(uri, null, null, null, null);
             } catch (Exception e) {
-	            // Ignore
+                // Ignore
             }
 
             // We already have a favorites database in the old provider
@@ -321,7 +341,7 @@ public class LauncherProvider extends ContentProvider {
             try {
                 int numValues = rows.length;
                 for (i = 0; i < numValues; i++) {
-                    if (db.insert(TABLE_FAVORITES, null, rows[i]) < 0) {
+                    if (dbInsertAndCheck(this, db, TABLE_FAVORITES, null, rows[i]) < 0) {
                         return 0;
                     } else {
                         total++;
@@ -535,7 +555,36 @@ public class LauncherProvider extends ContentProvider {
                     c.close();
                 }
             }
-            
+        }
+
+        // Generates a new ID to use for an object in your database. This method should be only
+        // called from the main UI thread. As an exception, we do call it when we call the
+        // constructor from the worker thread; however, this doesn't extend until after the
+        // constructor is called, and we only pass a reference to LauncherProvider to LauncherApp
+        // after that point
+        public long generateNewId() {
+            if (mMaxId < 0) {
+                throw new RuntimeException("Error: max id was not initialized");
+            }
+            mMaxId += 1;
+            return mMaxId;
+        }
+
+        private long initializeMaxId(SQLiteDatabase db) {
+            Cursor c = db.rawQuery("SELECT MAX(_id) FROM favorites", null);
+
+            // get the result
+            final int maxIdIndex = 0;
+            long id = -1;
+            if (c != null && c.moveToNext()) {
+                id = c.getLong(maxIdIndex);
+            }
+
+            if (id == -1) {
+                throw new RuntimeException("Error: could not query max id");
+            }
+
+            return id;
         }
 
         /**
@@ -712,7 +761,8 @@ public class LauncherProvider extends ContentProvider {
                 values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_APPLICATION);
                 values.put(Favorites.SPANX, 1);
                 values.put(Favorites.SPANY, 1);
-                db.insert(TABLE_FAVORITES, null, values);
+                values.put(Favorites._ID, generateNewId());
+                dbInsertAndCheck(this, db, TABLE_FAVORITES, null, values);
             } catch (PackageManager.NameNotFoundException e) {
                 Log.w(TAG, "Unable to add favorite: " + packageName +
                         "/" + className, e);
@@ -804,7 +854,8 @@ public class LauncherProvider extends ContentProvider {
                 values.put(Favorites.SPANX, spanX);
                 values.put(Favorites.SPANY, spanY);
                 values.put(Favorites.APPWIDGET_ID, appWidgetId);
-                db.insert(TABLE_FAVORITES, null, values);
+                values.put(Favorites._ID, generateNewId());
+                dbInsertAndCheck(this, db, TABLE_FAVORITES, null, values);
 
                 allocatedAppWidgets = true;
                 
@@ -847,8 +898,8 @@ public class LauncherProvider extends ContentProvider {
             values.put(Favorites.ICON_TYPE, Favorites.ICON_TYPE_RESOURCE);
             values.put(Favorites.ICON_PACKAGE, mContext.getPackageName());
             values.put(Favorites.ICON_RESOURCE, r.getResourceName(iconResId));
-
-            db.insert(TABLE_FAVORITES, null, values);
+            values.put(Favorites._ID, generateNewId());
+            dbInsertAndCheck(this, db, TABLE_FAVORITES, null, values);
 
             return true;
         }

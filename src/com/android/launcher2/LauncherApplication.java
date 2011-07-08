@@ -24,11 +24,14 @@ import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.os.Handler;
 
+import java.lang.ref.WeakReference;
+
 public class LauncherApplication extends Application {
     public LauncherModel mModel;
     public IconCache mIconCache;
     private static boolean sIsScreenLarge;
     private static float sScreenDensity;
+    WeakReference<LauncherProvider> mLauncherProvider;
 
     @Override
     public void onCreate() {
@@ -95,6 +98,14 @@ public class LauncherApplication extends Application {
 
     LauncherModel getModel() {
         return mModel;
+    }
+
+    void setLauncherProvider(LauncherProvider provider) {
+        mLauncherProvider = new WeakReference<LauncherProvider>(provider);
+    }
+
+    LauncherProvider getLauncherProvider() {
+        return mLauncherProvider.get();
     }
 
     public static boolean isScreenLarge() {
