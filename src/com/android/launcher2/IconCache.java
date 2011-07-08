@@ -69,13 +69,15 @@ public class IconCache {
                 com.android.internal.R.mipmap.sym_def_app_icon);
     }
 
-    public Drawable getFullResIcon(Resources resources, int iconId)
-            throws Resources.NotFoundException {
-        return resources.getDrawableForDensity(iconId, mIconDpi);
+    public Drawable getFullResIcon(Resources resources, int iconId) {
+        try {
+            return resources.getDrawableForDensity(iconId, mIconDpi);
+        } catch (Resources.NotFoundException e) {
+            return getFullResDefaultActivityIcon();
+        }
     }
 
-    public Drawable getFullResIcon(ResolveInfo info, PackageManager packageManager)
-            throws Resources.NotFoundException {
+    public Drawable getFullResIcon(ResolveInfo info, PackageManager packageManager) {
         Resources resources;
         try {
             resources = packageManager.getResourcesForApplication(
@@ -178,13 +180,8 @@ public class IconCache {
                 entry.title = info.activityInfo.name;
             }
 
-            Drawable icon;
-            try {
-                icon = getFullResIcon(info, mPackageManager);
-            } catch (Resources.NotFoundException e) {
-                icon = getFullResDefaultActivityIcon();
-            }
-            entry.icon = Utilities.createIconBitmap(icon, mContext);
+            entry.icon = Utilities.createIconBitmap(
+                    getFullResIcon(info, mPackageManager), mContext);
         }
         return entry;
     }
