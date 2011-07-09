@@ -1066,7 +1066,6 @@ public final class Launcher extends Activity
             if (appWidgetId != -1) {
                 // Deleting an app widget ID is a void call but writes to disk before returning
                 // to the caller...
-                final LauncherAppWidgetHost appWidgetHost = mAppWidgetHost;
                 new Thread("deleteAppWidgetId") {
                     public void run() {
                         mAppWidgetHost.deleteAppWidgetId(appWidgetId);
@@ -2861,7 +2860,6 @@ public final class Launcher extends Activity
          * Handle the action clicked in the "Add to home" dialog.
          */
         public void onClick(DialogInterface dialog, int which) {
-            Resources res = getResources();
             cleanup();
 
             AddAdapter.ListItem item = (AddAdapter.ListItem) mAdapter.getItem(which);

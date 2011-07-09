@@ -109,15 +109,10 @@ public class Workspace extends SmoothPagedView
     private float mOverScrollMaxBackgroundAlpha = 0.0f;
     private int mOverScrollPageIndex = -1;
 
-
-
     private final WallpaperManager mWallpaperManager;
     private IBinder mWindowToken;
 
     private int mDefaultPage;
-
-    private boolean mIsDragInProcess = false;
-    private boolean mIsDraggingOverIcon = false;
 
     /**
      * CellInfo for the cell that is currently being dragged
@@ -147,9 +142,7 @@ public class Workspace extends SmoothPagedView
     private float[] mTempTouchCoordinates = new float[2];
     private float[] mTempCellLayoutCenterCoordinates = new float[2];
     private float[] mTempDragBottomRightCoordinates = new float[2];
-    private float[] mTempFloatTuple = new float[2];
     private Matrix mTempInverseMatrix = new Matrix();
-    private int[] mTempLocation = new int[2];
 
     private SpringLoadedDragController mSpringLoadedDragController;
     private float mSpringLoadedShrinkFactor;
@@ -172,9 +165,6 @@ public class Workspace extends SmoothPagedView
     /** Is the user is dragging an item near the edge of a page? */
     private boolean mInScrollArea = false;
 
-    /** If mInScrollArea is true, the direction of the scroll. */
-    private int mPendingScrollDirection = DragController.SCROLL_NONE;
-
     private final HolographicOutlineHelper mOutlineHelper = new HolographicOutlineHelper();
     private Bitmap mDragOutline = null;
     private final Rect mTempRect = new Rect();
@@ -195,9 +185,6 @@ public class Workspace extends SmoothPagedView
     boolean mUpdateWallpaperOffsetImmediately = false;
     boolean mSyncWallpaperOffsetWithScroll = true;
     private Runnable mDelayedResizeRunnable;
-
-    // info about the last drag
-    private DragView mLastDragView;
 
     // Variables relating to the creation of user folders by hovering shortcuts over shortcuts
     private static final int FOLDER_CREATION_TIMEOUT = 250;
@@ -255,10 +242,6 @@ public class Workspace extends SmoothPagedView
             // TODO: This code currently fails on tablets with an aspect ratio < 1.3.
             // Around that ratio we should make cells the same size in portrait and
             // landscape
-            final DisplayMetrics dm = res.getDisplayMetrics();
-            float widthDp = dm.widthPixels / dm.density;
-            float heightDp = dm.heightPixels / dm.density;
-
             TypedArray actionBarSizeTypedArray =
                 context.obtainStyledAttributes(new int[] { android.R.attr.actionBarSize });
             final float actionBarHeight = actionBarSizeTypedArray.getDimension(0, 0f);
@@ -1586,8 +1569,6 @@ public class Workspace extends SmoothPagedView
     *
     */
     public void onDragStartedWithItem(View v) {
-        mIsDragInProcess = true;
-
         final Canvas canvas = new Canvas();
 
         // We need to add extra padding to the bitmap to make room for the glow effect
@@ -1598,8 +1579,6 @@ public class Workspace extends SmoothPagedView
     }
 
     public void onDragStartedWithItemSpans(int spanX, int spanY, Bitmap b) {
-        mIsDragInProcess = true;
-
         final Canvas canvas = new Canvas();
 
         // We need to add extra padding to the bitmap to make room for the glow effect
@@ -1620,7 +1599,6 @@ public class Workspace extends SmoothPagedView
         if (!success) {
             doDragExit(null);
         }
-        mIsDragInProcess = false;
     }
 
     // We call this when we trigger an unshrink by clicking on the CellLayout cl
@@ -2311,7 +2289,6 @@ public class Workspace extends SmoothPagedView
         mDragTargetLayout = getCurrentDropLayout();
         mDragTargetLayout.setIsDragOverlapping(true);
         mDragTargetLayout.onDragEnter();
-        mLastDragView = d.dragView;
 
         // Because we don't have space in the Phone UI (the CellLayouts run to the edge) we
         // don't need to show the outlines
@@ -2331,7 +2308,6 @@ public class Workspace extends SmoothPagedView
             mDragTargetLayout.setIsDragOverlapping(false);
             mDragTargetLayout.onDragExit();
         }
-        mLastDragView = null;
         mLastDragOverView = null;
 
         if (!mIsPageMoving) {
@@ -2577,10 +2553,6 @@ public class Workspace extends SmoothPagedView
      * Return null if no CellLayout is currently being dragged over
      *
      */
-    private CellLayout findMatchingPageForDragOver(
-            DragView dragView, int originX, int originY, int offsetX, int offsetY) {
-        return findMatchingPageForDragOver(dragView, originX, originY, offsetX, offsetY, false);
-    }
     private CellLayout findMatchingPageForDragOver(
             DragView dragView, int originX, int originY, int offsetX, int offsetY, boolean exact) {
         // We loop through all the screens (ie CellLayouts) and see which ones overlap
@@ -3032,7 +3004,6 @@ public class Workspace extends SmoothPagedView
     public void onEnterScrollArea(int direction) {
         if (!mIsSmall && !mIsInUnshrinkAnimation) {
             mInScrollArea = true;
-            mPendingScrollDirection = direction;
 
             final int page = mCurrentPage + (direction == DragController.SCROLL_LEFT ? -1 : 1);
             final CellLayout layout = (CellLayout) getChildAt(page);
@@ -3067,7 +3038,6 @@ public class Workspace extends SmoothPagedView
                 // so we need to redraw the workspace when this may have changed.
                 invalidate();
             }
-            mPendingScrollDirection = DragController.SCROLL_NONE;
             mInScrollArea = false;
         }
     }
@@ -3081,7 +3051,6 @@ public class Workspace extends SmoothPagedView
             // so we need to redraw the workspace when this may have changed.
             invalidate();
         }
-        mPendingScrollDirection = DragController.SCROLL_NONE;
         mInScrollArea = false;
     }
 
