@@ -888,6 +888,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             si.cellX = lp.cellY = mEmptyCell[1];
             mContent.addViewToCellLayout(mCurrentDragView, -1, (int)item.id, lp, true);
             mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, mCurrentDragView);
+            mItemsInvalidated = true;
             setupContentDimension(getItemCount());
             mSuppressOnAdd = true;
         }
