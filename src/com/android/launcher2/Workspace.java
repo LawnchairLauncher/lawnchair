@@ -1439,7 +1439,10 @@ public class Workspace extends SmoothPagedView
         float offsetFromCenter = (wallpaperTravelHeight / (float) mWallpaperHeight) / 2f;
         boolean isLandscape = display.getWidth() > display.getHeight();
 
-        final boolean enableWallpaperEffects = isHardwareAccelerated();
+        // on phones, don't scroll the wallpaper horizontally or vertically when switching
+        // to/from all apps
+        final boolean enableWallpaperEffects =
+            isHardwareAccelerated() && LauncherApplication.isScreenLarge();
         if (enableWallpaperEffects) {
             switch (shrinkState) {
                 // animating in
@@ -1752,7 +1755,10 @@ public class Workspace extends SmoothPagedView
             }
             Display display = mLauncher.getWindowManager().getDefaultDisplay();
             boolean isLandscape = display.getWidth() > display.getHeight();
-            final boolean enableWallpaperEffects = isHardwareAccelerated();
+            // on phones, don't scroll the wallpaper horizontally or vertically when switching
+            // to/from all apps
+            final boolean enableWallpaperEffects =
+                isHardwareAccelerated() && LauncherApplication.isScreenLarge();
             if (enableWallpaperEffects) {
                 switch (mShrinkState) {
                     // animating out
