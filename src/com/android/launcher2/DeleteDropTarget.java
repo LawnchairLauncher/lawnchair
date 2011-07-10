@@ -72,11 +72,14 @@ public class DeleteDropTarget extends ButtonDropTarget {
     private boolean isAllAppsWidget(DragSource source, Object info) {
         return (source instanceof AppsCustomizePagedView) && (info instanceof PendingAddWidgetInfo);
     }
-    private boolean isWorkspaceApplication(DragObject d) {
-        return (d.dragSource instanceof Workspace) && (d.dragInfo instanceof ShortcutInfo);
+    private boolean isDragSourceWorkspaceOrFolder(DragObject d) {
+        return (d.dragSource instanceof Workspace) || (d.dragSource instanceof Folder);
     }
-    private boolean isWorkspaceWidget(DragObject d) {
-        return (d.dragSource instanceof Workspace) && (d.dragInfo instanceof LauncherAppWidgetInfo);
+    private boolean isWorkspaceOrFolderApplication(DragObject d) {
+        return isDragSourceWorkspaceOrFolder(d) && (d.dragInfo instanceof ShortcutInfo);
+    }
+    private boolean isWorkspaceOrFolderWidget(DragObject d) {
+        return isDragSourceWorkspaceOrFolder(d) && (d.dragInfo instanceof LauncherAppWidgetInfo);
     }
     private boolean isWorkspaceFolder(DragObject d) {
         return (d.dragSource instanceof Workspace) && (d.dragInfo instanceof FolderInfo);
@@ -141,14 +144,14 @@ public class DeleteDropTarget extends ButtonDropTarget {
         if (isAllAppsApplication(d.dragSource, item)) {
             // Uninstall the application if it is being dragged from AppsCustomize
             mLauncher.startApplicationUninstallActivity((ApplicationInfo) item);
-        } else if (isWorkspaceApplication(d)) {
+        } else if (isWorkspaceOrFolderApplication(d)) {
             LauncherModel.deleteItemFromDatabase(mLauncher, item);
         } else if (isWorkspaceFolder(d)) {
             // Remove the folder from the workspace and delete the contents from launcher model
             FolderInfo folderInfo = (FolderInfo) item;
             mLauncher.removeFolder(folderInfo);
             LauncherModel.deleteFolderContentsFromDatabase(mLauncher, folderInfo);
-        } else if (isWorkspaceWidget(d)) {
+        } else if (isWorkspaceOrFolderWidget(d)) {
             // Remove the widget from the workspace
             mLauncher.removeAppWidget((LauncherAppWidgetInfo) item);
             LauncherModel.deleteItemFromDatabase(mLauncher, item);
