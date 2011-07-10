@@ -1466,7 +1466,7 @@ public class Workspace extends SmoothPagedView
                         // an optimization, and required for correct behavior.
                         return;
                     }
-                    fastInvalidate();
+                    invalidate();
                     if (enableWallpaperEffects) {
                         setHorizontalWallpaperOffset(
                             a * oldHorizontalWallpaperOffset + b * newHorizontalWallpaperOffset);
