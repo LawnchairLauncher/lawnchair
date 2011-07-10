@@ -301,13 +301,17 @@ public abstract class PagedView extends ViewGroup {
     }
 
     protected void pageBeginMoving() {
-        mIsPageMoving = true;
-        onPageBeginMoving();
+        if (!mIsPageMoving) {
+            mIsPageMoving = true;
+            onPageBeginMoving();
+        }
     }
 
     protected void pageEndMoving() {
-        onPageEndMoving();
-        mIsPageMoving = false;
+        if (mIsPageMoving) {
+            mIsPageMoving = false;
+            onPageEndMoving();
+        }
     }
 
     protected boolean isPageMoving() {

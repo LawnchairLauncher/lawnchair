@@ -94,7 +94,7 @@ import android.widget.Toast;
 
 import com.android.common.Search;
 import com.android.launcher.R;
-import com.android.launcher2.Workspace.ShrinkState;
+import com.android.launcher2.Workspace.State;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -845,7 +845,7 @@ public final class Launcher extends Activity
         mWorkspace.setHapticFeedbackEnabled(false);
         mWorkspace.setOnLongClickListener(this);
         mWorkspace.setup(this, dragController);
-        mWorkspace.setWallpaperDimension();
+        dragController.addDragListener(mWorkspace);
 
         // Get the search/delete bar
         mSearchDeleteBar = (SearchDropTargetBar) mDragLayer.findViewById(R.id.qsb_bar);
@@ -2341,19 +2341,8 @@ public final class Launcher extends Activity
 
         setPivotsForZoom(toView, toState, scale);
 
-
-        if (springLoaded) {
-            if (toState == State.APPS_CUSTOMIZE) {
-                // Shrink workspaces away if going back to AppsCustomize from spring loaded mode
-                mWorkspace.shrink(ShrinkState.BOTTOM_HIDDEN, animated);
-            } else {
-                // Shrink workspaces to bottom if going back to AllApps from spring loaded mode
-                mWorkspace.shrink(ShrinkState.BOTTOM_VISIBLE, animated);
-            }
-        } else {
-            // Shrink workspaces away if going to AllApps/AppsCustomize from workspace
-            mWorkspace.shrink(ShrinkState.BOTTOM_HIDDEN, animated);
-        }
+        // Shrink workspaces away if going to AppsCustomize from workspace
+        mWorkspace.shrink(Workspace.State.SMALL, animated);
 
         if (animated) {
             final ValueAnimator scaleAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
@@ -2563,7 +2552,7 @@ public final class Launcher extends Activity
     }
     void exitSpringLoadedDragMode() {
         if (mState == State.APPS_CUSTOMIZE_SPRING_LOADED) {
-            mWorkspace.exitSpringLoadedDragMode(Workspace.ShrinkState.BOTTOM_VISIBLE);
+            mWorkspace.exitSpringLoadedDragMode(Workspace.State.SMALL);
             cameraZoomOut(State.APPS_CUSTOMIZE, true, true);
             mState = State.APPS_CUSTOMIZE;
         }

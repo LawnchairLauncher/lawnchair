@@ -74,7 +74,8 @@ import java.util.List;
  * interact with. A workspace is meant to be used with a fixed width only.
  */
 public class Workspace extends SmoothPagedView
-        implements DropTarget, DragSource, DragScroller, View.OnTouchListener {
+        implements DropTarget, DragSource, DragScroller, View.OnTouchListener,
+        DragController.DragListener {
     @SuppressWarnings({"UnusedDeclaration"})
     private static final String TAG = "Launcher.Workspace";
 
@@ -151,15 +152,21 @@ public class Workspace extends SmoothPagedView
 
     // State variable that indicates whether the pages are small (ie when you're
     // in all apps or customize mode)
-    private boolean mIsSmall = false;
-    private boolean mIsInUnshrinkAnimation = false;
+
+    enum State { NORMAL, SPRING_LOADED, SMALL };
+    private State mState;
+    private boolean mIsSwitchingState = false;
+
+    private boolean mSwitchStateAfterFirstLayout = false;
+    private State mStateAfterFirstLayout;
+
+    private AnimatorSet mAnimator;
     private AnimatorListener mShrinkAnimationListener;
     private AnimatorListener mUnshrinkAnimationListener;
-    enum ShrinkState { SPRING_LOADED, MIDDLE, BOTTOM_HIDDEN, BOTTOM_VISIBLE };
-    private ShrinkState mShrinkState;
-    private boolean mWaitingToShrink = false;
-    private ShrinkState mWaitingToShrinkState;
-    private AnimatorSet mAnimator;
+
+    boolean mAnimatingViewIntoPlace = false;
+    boolean mIsDragOccuring = false;
+    boolean mChildrenLayersEnabled = true;
 
     /** Is the user is dragging an item near the edge of a page? */
     private boolean mInScrollArea = false;
@@ -277,6 +284,16 @@ public class Workspace extends SmoothPagedView
         setMotionEventSplittingEnabled(true);
     }
 
+    public void onDragStart(DragSource source, Object info, int dragAction) {
+        mIsDragOccuring = true;
+        updateChildrenLayersEnabled();
+    }
+
+    public void onDragEnd() {
+        mIsDragOccuring = false;
+        updateChildrenLayersEnabled();
+    }
+
     /**
      * Initializes various states for this workspace.
      */
@@ -299,25 +316,26 @@ public class Workspace extends SmoothPagedView
         mUnshrinkAnimationListener = new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                mIsInUnshrinkAnimation = true;
+                mIsSwitchingState = true;
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                mIsInUnshrinkAnimation = false;
+                mIsSwitchingState = false;
                 mSyncWallpaperOffsetWithScroll = true;
                 mWallpaperOffset.setOverrideHorizontalCatchupConstant(false);
                 mAnimator = null;
-                enableChildrenLayers(false);
+                updateChildrenLayersEnabled();
             }
         };
         mShrinkAnimationListener = new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                enableChildrenLayers(true);
+                mIsSwitchingState = true;
             }
             @Override
             public void onAnimationEnd(Animator animation) {
+                mIsSwitchingState = false;
                 mWallpaperOffset.setOverrideHorizontalCatchupConstant(false);
                 mAnimator = null;
             }
@@ -501,7 +519,7 @@ public class Workspace extends SmoothPagedView
      */
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        return (mIsSmall || mIsInUnshrinkAnimation);
+        return (isSmall() || mIsSwitchingState);
     }
 
     protected void onWindowVisibilityChanged (int visibility) {
@@ -510,7 +528,7 @@ public class Workspace extends SmoothPagedView
 
     @Override
     public boolean dispatchUnhandledMove(View focused, int direction) {
-        if (mIsSmall || mIsInUnshrinkAnimation) {
+        if (isSmall() || mIsSwitchingState) {
             // when the home screens are shrunken, shouldn't allow side-scrolling
             return false;
         }
@@ -529,7 +547,7 @@ public class Workspace extends SmoothPagedView
 
     @Override
     protected void determineScrollingStart(MotionEvent ev) {
-        if (!mIsSmall && !mIsInUnshrinkAnimation) {
+        if (!isSmall() && !mIsSwitchingState) {
             float deltaX = Math.abs(ev.getX() - mXDown);
             float deltaY = Math.abs(ev.getY() - mYDown);
 
@@ -563,19 +581,23 @@ public class Workspace extends SmoothPagedView
 
     @Override
     protected boolean isScrollingIndicatorEnabled() {
-        return mShrinkState != ShrinkState.SPRING_LOADED;
+        return mState != State.SPRING_LOADED;
     }
 
     protected void onPageBeginMoving() {
         super.onPageBeginMoving();
 
-        if (mNextPage != INVALID_PAGE) {
-            // we're snapping to a particular screen
-            enableChildrenCache(mCurrentPage, mNextPage);
+        if (isHardwareAccelerated()) {
+            updateChildrenLayersEnabled();
         } else {
-            // this is when user is actively dragging a particular screen, they might
-            // swipe it either left or right (but we won't advance by more than one screen)
-            enableChildrenCache(mCurrentPage - 1, mCurrentPage + 1);
+            if (mNextPage != INVALID_PAGE) {
+                // we're snapping to a particular screen
+                enableChildrenCache(mCurrentPage, mNextPage);
+            } else {
+                // this is when user is actively dragging a particular screen, they might
+                // swipe it either left or right (but we won't advance by more than one screen)
+                enableChildrenCache(mCurrentPage - 1, mCurrentPage + 1);
+            }
         }
 
         // Only show page outlines as we pan if we are on large screen
@@ -587,7 +609,12 @@ public class Workspace extends SmoothPagedView
     protected void onPageEndMoving() {
         super.onPageEndMoving();
 
-        clearChildrenCache();
+        if (isHardwareAccelerated()) {
+            updateChildrenLayersEnabled();
+        } else {
+            clearChildrenCache();
+        }
+
         // Hide the outlines, as long as we're not dragging
         if (!mDragController.dragging()) {
             // Only hide page outlines as we pan if we are on large screen
@@ -868,7 +895,7 @@ public class Workspace extends SmoothPagedView
     }
 
     void showOutlines() {
-        if (!mIsSmall && !mIsInUnshrinkAnimation) {
+        if (!isSmall() && !mIsSwitchingState) {
             if (mChildrenOutlineFadeOutAnimation != null) mChildrenOutlineFadeOutAnimation.cancel();
             if (mChildrenOutlineFadeInAnimation != null) mChildrenOutlineFadeInAnimation.cancel();
             mChildrenOutlineFadeInAnimation = ObjectAnimator.ofFloat(this, "childrenOutlineAlpha", 1.0f);
@@ -878,7 +905,7 @@ public class Workspace extends SmoothPagedView
     }
 
     void hideOutlines() {
-        if (!mIsSmall && !mIsInUnshrinkAnimation) {
+        if (!isSmall() && !mIsSwitchingState) {
             if (mChildrenOutlineFadeInAnimation != null) mChildrenOutlineFadeInAnimation.cancel();
             if (mChildrenOutlineFadeOutAnimation != null) mChildrenOutlineFadeOutAnimation.cancel();
             mChildrenOutlineFadeOutAnimation = ObjectAnimator.ofFloat(this, "childrenOutlineAlpha", 0.0f);
@@ -1070,13 +1097,13 @@ public class Workspace extends SmoothPagedView
 
         // if shrinkToBottom() is called on initialization, it has to be deferred
         // until after the first call to onLayout so that it has the correct width
-        if (mWaitingToShrink) {
+        if (mSwitchStateAfterFirstLayout) {
+            mSwitchStateAfterFirstLayout = false;
             // shrink can trigger a synchronous onLayout call, so we
             // post this to avoid a stack overflow / tangled onLayout calls
             post(new Runnable() {
                 public void run() {
-                    shrink(mWaitingToShrinkState, false);
-                    mWaitingToShrink = false;
+                    shrink(mStateAfterFirstLayout, false);
                 }
             });
         }
@@ -1140,7 +1167,7 @@ public class Workspace extends SmoothPagedView
 
     @Override
     public int getDescendantFocusability() {
-        if (mIsSmall) {
+        if (isSmall()) {
             return ViewGroup.FOCUS_BLOCK_DESCENDANTS;
         }
         return super.getDescendantFocusability();
@@ -1156,6 +1183,10 @@ public class Workspace extends SmoothPagedView
                 super.addFocusables(views, direction, focusableMode);
             }
         }
+    }
+
+    public boolean isSmall() {
+        return mState == State.SMALL;
     }
 
     void enableChildrenCache(int fromPage, int toPage) {
@@ -1185,23 +1216,24 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    protected void enableChildrenLayers(boolean enable) {
-        for (int i = 0; i < getPageCount(); i++) {
-            ((ViewGroup)getChildAt(i)).setChildrenLayersEnabled(enable);
-        }
-    }
-    @Override
-    protected void pageBeginMoving() {
-        enableChildrenLayers(true);
-        super.pageBeginMoving();
+    private boolean childLayersEnabled() {
+        boolean isSmallOrSpringloaded =
+            isSmall() || mIsSwitchingState || mState == State.SPRING_LOADED;
+        return isSmallOrSpringloaded || isPageMoving() || mIsDragOccuring;
     }
 
-    @Override
-    protected void pageEndMoving() {
-        if (!mIsSmall && !mIsInUnshrinkAnimation) {
-            enableChildrenLayers(false);
+    private void updateChildrenLayersEnabled() {
+        boolean small =
+            isSmall() || mIsSwitchingState || mState == State.SPRING_LOADED;
+        boolean dragging = mAnimatingViewIntoPlace || mIsDragOccuring;
+        boolean enableChildrenLayers = small || dragging || isPageMoving();
+
+        if (enableChildrenLayers != mChildrenLayersEnabled) {
+            mChildrenLayersEnabled = enableChildrenLayers;
+            for (int i = 0; i < getPageCount(); i++) {
+                ((ViewGroup)getChildAt(i)).setChildrenLayersEnabled(enableChildrenLayers);
+            }
         }
-        super.pageEndMoving();
     }
 
     @Override
@@ -1219,10 +1251,6 @@ public class Workspace extends SmoothPagedView
                 position[0], position[1], 0, null);
     }
 
-    public boolean isSmall() {
-        return mIsSmall;
-    }
-
     private float getYScaleForScreen(int screen) {
         int x = Math.abs(screen - 2);
 
@@ -1235,21 +1263,22 @@ public class Workspace extends SmoothPagedView
         return 1.0f;
     }
 
-    public void shrink(ShrinkState shrinkState) {
+    public void shrink(State shrinkState) {
         shrink(shrinkState, true);
     }
 
     // we use this to shrink the workspace for the all apps view and the customize view
-    public void shrink(ShrinkState shrinkState, boolean animated) {
+    public void shrink(State shrinkState, boolean animated) {
         if (mFirstLayout) {
             // (mFirstLayout == "first layout has not happened yet")
             // if we get a call to shrink() as part of our initialization (for example, if
             // Launcher is started in All Apps mode) then we need to wait for a layout call
             // to get our width so we can layout the mini-screen views correctly
-            mWaitingToShrink = true;
-            mWaitingToShrinkState = shrinkState;
+            mSwitchStateAfterFirstLayout = true;
+            mStateAfterFirstLayout = shrinkState;
             return;
         }
+
         // Stop any scrolling, move to the current page right away
         setCurrentPage((mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage);
 
@@ -1264,8 +1293,8 @@ public class Workspace extends SmoothPagedView
         }
         currentPage.setBackgroundAlphaMultiplier(1.0f);
 
-        mIsSmall = true;
-        mShrinkState = shrinkState;
+        mState = shrinkState;
+        updateChildrenLayersEnabled();
 
         // we intercept and reject all touch events when we're small, so be sure to reset the state
         mTouchState = TOUCH_STATE_REST;
@@ -1296,24 +1325,11 @@ public class Workspace extends SmoothPagedView
         float finalAlpha = 1.0f;
         float extraShrinkFactor = 1.0f;
 
-        if (shrinkState == ShrinkState.BOTTOM_VISIBLE) {
-             y = screenHeight - y - scaledPageHeight;
-        } else if (shrinkState == ShrinkState.BOTTOM_HIDDEN) {
-            // We shrink and disappear to nothing in the case of all apps
-            // (which is when we shrink to the bottom)
-            y = screenHeight - y - scaledPageHeight;
-            finalAlpha = 0.0f;
-        } else if (shrinkState == ShrinkState.MIDDLE) {
-            y = screenHeight / 2 - scaledPageHeight / 2;
-            finalAlpha = 1.0f;
-        }
+        // We shrink and disappear to nothing
+        y = screenHeight - y - scaledPageHeight;
+        finalAlpha = 0.0f;
 
-        int duration;
-        if (shrinkState == ShrinkState.BOTTOM_HIDDEN || shrinkState == ShrinkState.BOTTOM_VISIBLE) {
-            duration = res.getInteger(R.integer.config_appsCustomizeWorkspaceShrinkTime);
-        } else {
-            duration = res.getInteger(R.integer.config_customizeWorkspaceShrinkTime);
-        }
+        int duration = res.getInteger(R.integer.config_appsCustomizeWorkspaceShrinkTime);
 
         // We animate all the screens to the centered position in workspace
         // At the same time, the screens become greyed/dimmed
@@ -1403,13 +1419,11 @@ public class Workspace extends SmoothPagedView
         if (enableWallpaperEffects) {
             switch (shrinkState) {
                 // animating in
-                case MIDDLE:
                 case SPRING_LOADED:
                     wallpaperOffset = 0.5f;
                     mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.34f : 0.32f);
                     break;
-                case BOTTOM_HIDDEN:
-                case BOTTOM_VISIBLE:
+                case SMALL:
                     // allapps
                     wallpaperOffset = 0.5f - offsetFromCenter;
                     mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.34f : 0.32f);
@@ -1582,7 +1596,7 @@ public class Workspace extends SmoothPagedView
 
     public void unshrink(CellLayout clThatWasClicked, boolean springLoaded) {
         int newCurrentPage = indexOfChild(clThatWasClicked);
-        if (mIsSmall) {
+        if (isSmall()) {
             if (springLoaded) {
                 setLayoutScale(mSpringLoadedShrinkFactor);
             }
@@ -1593,11 +1607,10 @@ public class Workspace extends SmoothPagedView
 
 
     public void enterSpringLoadedDragMode(CellLayout clThatWasClicked) {
-        mShrinkState = ShrinkState.SPRING_LOADED;
         unshrink(clThatWasClicked, true);
     }
 
-    public void exitSpringLoadedDragMode(ShrinkState shrinkState) {
+    public void exitSpringLoadedDragMode(State shrinkState) {
         shrink(shrinkState);
     }
 
@@ -1611,15 +1624,14 @@ public class Workspace extends SmoothPagedView
     }
 
     void unshrink(boolean animated, boolean springLoaded) {
-        mWaitingToShrink = false;
-        if (mIsSmall) {
+        if (isSmall()) {
             float finalScaleFactor = 1.0f;
             float finalBackgroundAlpha = 0.0f;
             if (springLoaded) {
                 finalScaleFactor = mSpringLoadedShrinkFactor;
                 finalBackgroundAlpha = 1.0f;
             } else {
-                mIsSmall = false;
+                mState = springLoaded ? State.SPRING_LOADED : State.NORMAL;
             }
             if (mAnimator != null) {
                 mAnimator.cancel();
@@ -1712,9 +1724,8 @@ public class Workspace extends SmoothPagedView
             final boolean enableWallpaperEffects =
                 isHardwareAccelerated() && LauncherApplication.isScreenLarge();
             if (enableWallpaperEffects) {
-                switch (mShrinkState) {
+                switch (mState) {
                     // animating out
-                    case MIDDLE:
                     case SPRING_LOADED:
                         if (animated) {
                             mWallpaperOffset.setHorizontalCatchupConstant(isLandscape ? 0.49f : 0.46f);
@@ -1722,8 +1733,7 @@ public class Workspace extends SmoothPagedView
                             mWallpaperOffset.setOverrideHorizontalCatchupConstant(true);
                         }
                         break;
-                    case BOTTOM_HIDDEN:
-                    case BOTTOM_VISIBLE:
+                    case SMALL:
                         // all apps
                         if (animated) {
                             mWallpaperOffset.setHorizontalCatchupConstant(isLandscape ? 0.65f : 0.65f);
@@ -2145,7 +2155,7 @@ public class Workspace extends SmoothPagedView
         // new current/default screen, so any subsequent taps add items to that screen
         if (!mLauncher.isAllAppsVisible()) {
             int dragTargetIndex = indexOfChild(mDragTargetLayout);
-            if (mCurrentPage != dragTargetIndex && (mIsSmall || mIsInUnshrinkAnimation)) {
+            if (mCurrentPage != dragTargetIndex && (isSmall() || mIsSwitchingState)) {
                 scrollToNewPageWithoutMovingPages(dragTargetIndex);
             }
         }
@@ -2188,7 +2198,7 @@ public class Workspace extends SmoothPagedView
                         (int) mDragViewVisualCenter[1], mDragInfo.spanX, mDragInfo.spanY, cell,
                         dropTargetLayout, mTargetCell);
 
-                if (dropInscrollArea && mShrinkState != ShrinkState.SPRING_LOADED) {
+                if (dropInscrollArea && mState != State.SPRING_LOADED) {
                     snapToPage(screen);
                 }
 
@@ -2246,7 +2256,16 @@ public class Workspace extends SmoothPagedView
 
             // Prepare it to be animated into its new position
             // This must be called after the view has been re-parented
-            mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, cell);
+            final Runnable disableHardwareLayersRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    mAnimatingViewIntoPlace = false;
+                    updateChildrenLayersEnabled();
+                }
+            };
+            mAnimatingViewIntoPlace = true;
+            mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, cell,
+                    disableHardwareLayersRunnable);
             parent.onDropChild(cell);
         }
     }
@@ -2618,7 +2637,7 @@ public class Workspace extends SmoothPagedView
     public void onDragOver(DragObject d) {
         // Skip drag over events while we are dragging over side pages
         if (mInScrollArea) return;
-        if (mIsInUnshrinkAnimation) return;
+        if (mIsSwitchingState) return;
 
         CellLayout layout;
         ItemInfo item = (ItemInfo) d.dragInfo;
@@ -2627,7 +2646,7 @@ public class Workspace extends SmoothPagedView
         if (item.spanX < 0 || item.spanY < 0) throw new RuntimeException("Improper spans found");
 
         // Identify whether we have dragged over a side page
-        if (mIsSmall) {
+        if (isSmall()) {
             int left = d.x - d.xOffset;
             int top = d.y - d.yOffset;
             layout = findMatchingPageForDragOver(d.dragView, left, top, d.xOffset, d.yOffset, true);
@@ -2647,7 +2666,7 @@ public class Workspace extends SmoothPagedView
                     mLastDragOverView = null;
                 }
 
-                boolean isInSpringLoadedMode = (mShrinkState == ShrinkState.SPRING_LOADED);
+                boolean isInSpringLoadedMode = (mState == State.SPRING_LOADED);
                 if (isInSpringLoadedMode) {
                     mSpringLoadedDragController.setAlarm(mDragTargetLayout);
                 }
@@ -2800,7 +2819,7 @@ public class Workspace extends SmoothPagedView
             }
         };
         final int screen = indexOfChild(cellLayout);
-        if (screen != mCurrentPage && mShrinkState != ShrinkState.SPRING_LOADED) {
+        if (screen != mCurrentPage && mState != State.SPRING_LOADED) {
             snapToPage(screen);
         }
         if (dragInfo instanceof PendingAddItemInfo) {
@@ -2940,6 +2959,12 @@ public class Workspace extends SmoothPagedView
         mLauncher = launcher;
         mSpringLoadedDragController = new SpringLoadedDragController(mLauncher);
         mDragController = dragController;
+
+
+        // hardware layers on children are enabled on startup, but should be disabled until
+        // needed
+        updateChildrenLayersEnabled();
+        setWallpaperDimension();
     }
 
     /**
@@ -2947,13 +2972,14 @@ public class Workspace extends SmoothPagedView
      */
     public void onDropCompleted(View target, DragObject d, boolean success) {
         if (success) {
-            if (target != this && mDragInfo != null) {
-                final CellLayout cellLayout = (CellLayout) getChildAt(mDragInfo.screen);
-                cellLayout.removeView(mDragInfo.cell);
-                if (mDragInfo.cell instanceof DropTarget) {
-                    mDragController.removeDropTarget((DropTarget) mDragInfo.cell);
+            if (target != this) {
+                if (mDragInfo != null) {
+                    final CellLayout cellLayout = (CellLayout) getChildAt(mDragInfo.screen);
+                    cellLayout.removeView(mDragInfo.cell);
+                    if (mDragInfo.cell instanceof DropTarget) {
+                        mDragController.removeDropTarget((DropTarget) mDragInfo.cell);
+                    }
                 }
-                // final Object tag = mDragInfo.cell.getTag();
             }
         } else if (mDragInfo != null) {
             // NOTE: When 'success' is true, onDragExit is called by the DragController before
@@ -2984,7 +3010,7 @@ public class Workspace extends SmoothPagedView
 
     @Override
     public void scrollLeft() {
-        if (!mIsSmall && !mIsInUnshrinkAnimation) {
+        if (!isSmall() && !mIsSwitchingState) {
             super.scrollLeft();
         }
         Folder openFolder = getOpenFolder();
@@ -2995,7 +3021,7 @@ public class Workspace extends SmoothPagedView
 
     @Override
     public void scrollRight() {
-        if (!mIsSmall && !mIsInUnshrinkAnimation) {
+        if (!isSmall() && !mIsSwitchingState) {
             super.scrollRight();
         }
         Folder openFolder = getOpenFolder();
@@ -3006,7 +3032,7 @@ public class Workspace extends SmoothPagedView
 
     @Override
     public void onEnterScrollArea(int direction) {
-        if (!mIsSmall && !mIsInUnshrinkAnimation) {
+        if (!isSmall() && !mIsSwitchingState) {
             mInScrollArea = true;
 
             final int page = mCurrentPage + (direction == DragController.SCROLL_LEFT ? -1 : 1);
@@ -3239,7 +3265,7 @@ public class Workspace extends SmoothPagedView
     }
 
     void moveToDefaultScreen(boolean animate) {
-        if (mIsSmall || mIsInUnshrinkAnimation) {
+        if (isSmall() || mIsSwitchingState) {
             mLauncher.showWorkspace(animate, (CellLayout)getChildAt(mDefaultPage));
         } else if (animate) {
             snapToPage(mDefaultPage);

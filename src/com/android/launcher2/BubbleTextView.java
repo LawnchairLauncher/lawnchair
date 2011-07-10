@@ -56,7 +56,6 @@ public class BubbleTextView extends TextView implements VisibilityChangedBroadca
     private final HolographicOutlineHelper mOutlineHelper = new HolographicOutlineHelper();
     private final Canvas mTempCanvas = new Canvas();
     private final Rect mTempRect = new Rect();
-    private final Paint mTempPaint = new Paint();
     private boolean mDidInvalidateForPressedState;
     private Bitmap mPressedOrFocusedBackground;
     private int mFocusedOutlineColor;
