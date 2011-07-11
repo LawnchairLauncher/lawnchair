@@ -1751,7 +1751,7 @@ public class Workspace extends SmoothPagedView
                             // an optimization, but not required
                             return;
                         }
-                        fastInvalidate();
+                        invalidate();
                         if (enableWallpaperEffects) {
                             setHorizontalWallpaperOffset(a * oldHorizontalWallpaperOffset
                                     + b * newHorizontalWallpaperOffset);
@@ -3110,7 +3110,6 @@ public class Workspace extends SmoothPagedView
 
     void removeItems(final ArrayList<ApplicationInfo> apps) {
         final int screenCount = getChildCount();
-        final PackageManager manager = getContext().getPackageManager();
         final AppWidgetManager widgets = AppWidgetManager.getInstance(getContext());
 
         final HashSet<String> packageNames = new HashSet<String>();
