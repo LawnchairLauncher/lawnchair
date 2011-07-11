@@ -110,6 +110,9 @@ public class DragController {
     private int mLastTouch[] = new int[2];
     private int mDistanceSinceScroll = 0;
 
+    private int mTmpPoint[] = new int[2];
+    private Rect mDragLayerRect = new Rect();
+
     /**
      * Interface to receive notifications when a drag starts or stops
      */
@@ -385,6 +388,16 @@ public class DragController {
     }
 
     /**
+     * Clamps the position to the drag layer bounds.
+     */
+    private int[] getClampedDragLayerPos(float x, float y) {
+        mLauncher.getDragLayer().getLocalVisibleRect(mDragLayerRect);
+        mTmpPoint[0] = (int) Math.max(mDragLayerRect.left, Math.min(x, mDragLayerRect.right - 1));
+        mTmpPoint[1] = (int) Math.max(mDragLayerRect.top, Math.min(y, mDragLayerRect.bottom - 1));
+        return mTmpPoint;
+    }
+
+    /**
      * Call this from a drag source view.
      */
     public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -394,8 +407,9 @@ public class DragController {
         }
         final int action = ev.getAction();
 
-        final int dragLayerX = (int) ev.getX();
-        final int dragLayerY = (int) ev.getY();
+        final int[] dragLayerPos = getClampedDragLayerPos(ev.getX(), ev.getY());
+        final int dragLayerX = dragLayerPos[0];
+        final int dragLayerY = dragLayerPos[1];
 
         switch (action) {
             case MotionEvent.ACTION_MOVE:
@@ -506,8 +520,9 @@ public class DragController {
         }
 
         final int action = ev.getAction();
-        final int dragLayerX = (int) ev.getX();
-        final int dragLayerY = (int) ev.getY();
+        final int[] dragLayerPos = getClampedDragLayerPos(ev.getX(), ev.getY());
+        final int dragLayerX = dragLayerPos[0];
+        final int dragLayerY = dragLayerPos[1];
 
         switch (action) {
         case MotionEvent.ACTION_DOWN:
