@@ -26,7 +26,7 @@
     <LinearLayout
         style="@style/SearchDropTargetBar"
         android:id="@+id/drag_target_bar"
-        android:alpha="0">
+        android:visibility="gone">
 
         <com.android.launcher2.DeleteDropTarget
             style="@style/DropTargetButtonContainer"

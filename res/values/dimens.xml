@@ -43,6 +43,9 @@
     <!-- height of the bottom row of controls -->
     <dimen name="button_bar_height">56dip</dimen>
 
+    <!-- Drag padding to add to the drop targets -->
+    <dimen name="drop_target_drag_padding">20dp</dimen>
+
     <!-- so we have access to this dimension in landscape mode even though
          button_bar_height changes -->
     <dimen name="button_bar_height_portrait">56dip</dimen>

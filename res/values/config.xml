@@ -1,5 +1,6 @@
 <resources>
     <bool name="config_hardwareAccelerated">true</bool>
+
 <!-- AllApps/Customize/AppsCustomize -->
     <!-- The alpha of the AppsCustomize bg in spring loaded mode -->
     <integer name="config_appsCustomizeSpringLoadedBgAlpha">45</integer>
@@ -46,6 +47,9 @@
     <integer name="config_allAppsBatchSize">0</integer>
 
 <!-- Workspace -->
+    <!-- Whether or not the drop targets drop down as opposed to fade in -->
+    <bool name="config_useDropTargetDownTransition">true</bool>
+
     <!-- The transition duration for the background of the drop targets -->
     <integer name="config_dropTargetBgTransitionDuration">100</integer>
 

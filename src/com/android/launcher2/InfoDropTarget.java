@@ -18,6 +18,7 @@ package com.android.launcher2;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.PorterDuff;
@@ -32,6 +33,7 @@ import com.android.launcher.R;
 public class InfoDropTarget extends ButtonDropTarget {
 
     private TextView mText;
+    private ColorStateList mOriginalTextColor;
     private TransitionDrawable mDrawable;
     private int mHoverColor = 0xFF0000FF;
 
@@ -48,6 +50,7 @@ public class InfoDropTarget extends ButtonDropTarget {
         super.onFinishInflate();
 
         mText = (TextView) findViewById(R.id.info_target_text);
+        mOriginalTextColor = mText.getTextColors();
 
         // Get the hover color
         Resources r = getResources();
@@ -98,6 +101,7 @@ public class InfoDropTarget extends ButtonDropTarget {
 
         mActive = isVisible;
         mDrawable.resetTransition();
+        mText.setTextColor(mOriginalTextColor);
         setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
@@ -111,6 +115,7 @@ public class InfoDropTarget extends ButtonDropTarget {
         super.onDragEnter(d);
 
         mDrawable.startTransition(mTransitionDuration);
+        mText.setTextColor(mHoverColor);
     }
 
     public void onDragExit(DragObject d) {
@@ -118,6 +123,7 @@ public class InfoDropTarget extends ButtonDropTarget {
 
         if (!d.dragComplete) {
             mDrawable.resetTransition();
+            mText.setTextColor(mOriginalTextColor);
         }
     }
 }
