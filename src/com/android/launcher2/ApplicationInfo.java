@@ -38,11 +38,6 @@ class ApplicationInfo extends ItemInfo {
     CharSequence title;
 
     /**
-     * A bitmap of the application's text in the bubble.
-     */
-    Bitmap titleBitmap;
-
-    /**
      * The intent used to start the application.
      */
     Intent intent;
@@ -129,8 +124,8 @@ class ApplicationInfo extends ItemInfo {
             ArrayList<ApplicationInfo> list) {
         Log.d(tag, label + " size=" + list.size());
         for (ApplicationInfo info: list) {
-            Log.d(tag, "   title=\"" + info.title + "\" titleBitmap=" + info.titleBitmap
-                    + " iconBitmap=" + info.iconBitmap + " firstInstallTime="
+            Log.d(tag, "   title=\"" + info.title + "\" iconBitmap="
+                    + info.iconBitmap + " firstInstallTime="
                     + info.firstInstallTime);
         }
     }
