@@ -1314,6 +1314,9 @@ public final class Launcher extends Activity
         super.onSaveInstanceState(outState);
 
         outState.putInt(RUNTIME_STATE, mState.ordinal());
+        // We close any open folder since it will not be re-opened, and we need to make sure
+        // this state is reflected.
+        closeFolder();
 
         if (mAddScreen > -1 && mWaitingForResult) {
             outState.putInt(RUNTIME_STATE_PENDING_ADD_SCREEN, mAddScreen);
