@@ -833,19 +833,25 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // Generate a preview image if we couldn't load one
         if (drawable == null) {
             Resources resources = mLauncher.getResources();
+            int bitmapWidth;
+            int bitmapHeight;
 
-            // Specify the dimensions of the bitmap
-            if (info.minWidth >= info.minHeight) {
-                expectedWidth = cellWidth;
-                expectedHeight = mWidgetPreviewIconPaddedDimension;
+            // Specify the dimensions of the bitmap (since we are using a default preview bg with 
+            // the full icon, we only imply the aspect ratio of the widget)
+            if (cellHSpan == cellVSpan) {
+                bitmapWidth = bitmapHeight = cellWidth;
+                expectedWidth = expectedHeight = mWidgetPreviewIconPaddedDimension;
+            } else if (cellHSpan >= cellVSpan) {
+                bitmapWidth = expectedWidth = cellWidth;
+                bitmapHeight = expectedHeight = mWidgetPreviewIconPaddedDimension;
             } else {
                 // Note that in vertical widgets, we might not have enough space due to the text
                 // label, so be conservative and use the width as a height bound
-                expectedWidth = mWidgetPreviewIconPaddedDimension;
-                expectedHeight = cellWidth;
+                bitmapWidth = expectedWidth = mWidgetPreviewIconPaddedDimension;
+                bitmapHeight = expectedHeight = cellWidth;
             }
 
-            preview = Bitmap.createBitmap(expectedWidth, expectedHeight, Config.ARGB_8888);
+            preview = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Config.ARGB_8888);
             renderDrawableToBitmap(mDefaultWidgetBackground, preview, 0, 0, expectedWidth,
                     expectedHeight, 1f,1f);
 
