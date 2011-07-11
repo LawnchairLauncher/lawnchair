@@ -40,7 +40,6 @@ public class IconCache {
     private static class CacheEntry {
         public Bitmap icon;
         public String title;
-        public Bitmap titleBitmap;
     }
 
     private final Bitmap mDefaultIcon;
@@ -129,12 +128,8 @@ public class IconCache {
     public void getTitleAndIcon(ApplicationInfo application, ResolveInfo info) {
         synchronized (mCache) {
             CacheEntry entry = cacheLocked(application.componentName, info);
-            if (entry.titleBitmap == null) {
-                entry.titleBitmap = mBubble.createTextBitmap(entry.title);
-            }
 
             application.title = entry.title;
-            application.titleBitmap = entry.titleBitmap;
             application.iconBitmap = entry.icon;
         }
     }
