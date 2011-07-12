@@ -97,6 +97,7 @@ public class InfoDropTarget extends ButtonDropTarget {
         }
 
         mActive = isVisible;
+        mDrawable.resetTransition();
         setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
@@ -115,6 +116,8 @@ public class InfoDropTarget extends ButtonDropTarget {
     public void onDragExit(DragObject d) {
         super.onDragExit(d);
 
-        mDrawable.resetTransition();
+        if (!d.dragComplete) {
+            mDrawable.resetTransition();
+        }
     }
 }

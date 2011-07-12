@@ -113,6 +113,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         }
 
         mActive = isVisible;
+        mDrawable.resetTransition();
         setVisibility(isVisible ? View.VISIBLE : View.GONE);
         if (mText.getText().length() > 0) {
             mText.setText(isUninstall ? R.string.delete_target_uninstall_label
@@ -135,7 +136,9 @@ public class DeleteDropTarget extends ButtonDropTarget {
     public void onDragExit(DragObject d) {
         super.onDragExit(d);
 
-        mDrawable.resetTransition();
+        if (!d.dragComplete) {
+            mDrawable.resetTransition();
+        }
     }
 
     public void onDrop(DragObject d) {

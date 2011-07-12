@@ -33,7 +33,7 @@ import com.android.launcher.R;
 public class SearchDropTargetBar extends FrameLayout implements DragController.DragListener {
 
     private static final int sTransitionInDuration = 275;
-    private static final int sTransitionOutDuration = 100;
+    private static final int sTransitionOutDuration = 125;
 
     private ObjectAnimator mDropTargetBarFadeInAnim;
     private ObjectAnimator mDropTargetBarFadeOutAnim;
