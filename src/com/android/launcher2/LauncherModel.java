@@ -86,7 +86,6 @@ public class LauncherModel extends BroadcastReceiver {
     // need to do a requery.  These are only ever touched from the loader thread.
     private boolean mWorkspaceLoaded;
     private boolean mAllAppsLoaded;
-    private Locale mLocale;
 
     private WeakReference<Callbacks> mCallbacks;
 
@@ -569,6 +568,7 @@ public class LauncherModel extends BroadcastReceiver {
             // to reload.  Either way, mAllAppsLoaded will be cleared so it re-reads everything
             // next time.
             mAllAppsLoaded = false;
+            mWorkspaceLoaded = false;
             startLoaderFromBackground();
         }
     }
@@ -655,11 +655,7 @@ public class LauncherModel extends BroadcastReceiver {
             if (DEBUG_LOADERS) {
                 Log.d(TAG, "loadAndBindWorkspace mWorkspaceLoaded=" + mWorkspaceLoaded);
             }
-            Locale l = mContext.getResources().getConfiguration().locale;
-            if (mLocale != null && !l.equals(mLocale)) {
-                mWorkspaceLoaded = false;
-            }
-            mLocale = l;
+
             if (!mWorkspaceLoaded) {
                 loadWorkspace();
                 if (mStopped) {
