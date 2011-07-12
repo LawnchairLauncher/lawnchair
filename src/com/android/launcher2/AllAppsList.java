@@ -91,7 +91,7 @@ class AllAppsList {
 
         if (matches.size() > 0) {
             for (ResolveInfo info : matches) {
-                add(new ApplicationInfo(context.getPackageManager(), info, mIconCache));
+                add(new ApplicationInfo(context.getPackageManager(), info, mIconCache, null));
             }
         }
     }
@@ -142,10 +142,10 @@ class AllAppsList {
                         info.activityInfo.applicationInfo.packageName,
                         info.activityInfo.name);
                 if (applicationInfo == null) {
-                    add(new ApplicationInfo(context.getPackageManager(), info, mIconCache));
+                    add(new ApplicationInfo(context.getPackageManager(), info, mIconCache, null));
                 } else {
                     mIconCache.remove(applicationInfo.componentName);
-                    mIconCache.getTitleAndIcon(applicationInfo, info);
+                    mIconCache.getTitleAndIcon(applicationInfo, info, null);
                     modified.add(applicationInfo);
                 }
             }

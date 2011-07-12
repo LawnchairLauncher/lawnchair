@@ -19,12 +19,13 @@ package com.android.launcher2;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Represents an app in AllAppsView.
@@ -66,7 +67,8 @@ class ApplicationInfo extends ItemInfo {
     /**
      * Must not hold the Context.
      */
-    public ApplicationInfo(PackageManager pm, ResolveInfo info, IconCache iconCache) {
+    public ApplicationInfo(PackageManager pm, ResolveInfo info, IconCache iconCache,
+            HashMap<Object, CharSequence> labelCache) {
         final String packageName = info.activityInfo.applicationInfo.packageName;
 
         this.componentName = new ComponentName(packageName, info.activityInfo.name);
@@ -88,9 +90,9 @@ class ApplicationInfo extends ItemInfo {
             Log.d(TAG, "PackageManager.getApplicationInfo failed for " + packageName);
         }
 
-        iconCache.getTitleAndIcon(this, info);
+        iconCache.getTitleAndIcon(this, info, labelCache);
     }
-    
+
     public ApplicationInfo(ApplicationInfo info) {
         super(info);
         componentName = info.componentName;

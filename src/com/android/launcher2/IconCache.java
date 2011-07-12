@@ -125,9 +125,10 @@ public class IconCache {
     /**
      * Fill in "application" with the icon and label for "info."
      */
-    public void getTitleAndIcon(ApplicationInfo application, ResolveInfo info) {
+    public void getTitleAndIcon(ApplicationInfo application, ResolveInfo info,
+            HashMap<Object, CharSequence> labelCache) {
         synchronized (mCache) {
-            CacheEntry entry = cacheLocked(application.componentName, info);
+            CacheEntry entry = cacheLocked(application.componentName, info, labelCache);
 
             application.title = entry.title;
             application.iconBitmap = entry.icon;
@@ -143,7 +144,7 @@ public class IconCache {
                 return mDefaultIcon;
             }
 
-            CacheEntry entry = cacheLocked(component, resolveInfo);
+            CacheEntry entry = cacheLocked(component, resolveInfo, null);
             return entry.icon;
         }
     }
@@ -154,7 +155,7 @@ public class IconCache {
                 return null;
             }
 
-            CacheEntry entry = cacheLocked(component, resolveInfo);
+            CacheEntry entry = cacheLocked(component, resolveInfo, null);
             return entry.icon;
         }
     }
@@ -163,14 +164,22 @@ public class IconCache {
         return mDefaultIcon == icon;
     }
 
-    private CacheEntry cacheLocked(ComponentName componentName, ResolveInfo info) {
+    private CacheEntry cacheLocked(ComponentName componentName, ResolveInfo info,
+            HashMap<Object, CharSequence> labelCache) {
         CacheEntry entry = mCache.get(componentName);
         if (entry == null) {
             entry = new CacheEntry();
 
             mCache.put(componentName, entry);
 
-            entry.title = info.loadLabel(mPackageManager).toString();
+            if (labelCache != null && labelCache.containsKey(info)) {
+                entry.title = labelCache.get(info).toString();
+            } else {
+                entry.title = info.loadLabel(mPackageManager).toString();
+                if (labelCache != null) {
+                    labelCache.put(info, entry.title);
+                }
+            }
             if (entry.title == null) {
                 entry.title = info.activityInfo.name;
             }

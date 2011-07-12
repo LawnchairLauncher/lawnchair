@@ -630,10 +630,12 @@ public class LauncherModel extends BroadcastReceiver {
         private boolean mIsLaunching;
         private boolean mStopped;
         private boolean mLoadAndBindStepFinished;
+        private HashMap<Object, CharSequence> mLabelCache;
 
         LoaderTask(Context context, boolean isLaunching) {
             mContext = context;
             mIsLaunching = isLaunching;
+            mLabelCache = new HashMap<Object, CharSequence>();
         }
 
         boolean isLaunching() {
@@ -888,7 +890,7 @@ public class LauncherModel extends BroadcastReceiver {
 
                             if (itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
                                 info = getShortcutInfo(manager, intent, context, c, iconIndex,
-                                        titleIndex);
+                                        titleIndex, mLabelCache);
                             } else {
                                 info = getShortcutInfo(c, context, iconTypeIndex,
                                         iconPackageIndex, iconResourceIndex, iconIndex,
@@ -1249,7 +1251,7 @@ public class LauncherModel extends BroadcastReceiver {
 
                     final long sortTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
                     Collections.sort(apps,
-                            new ResolveInfo.DisplayNameComparator(packageManager));
+                            new LauncherModel.ShortcutNameComparator(packageManager, mLabelCache));
                     if (DEBUG_LOADERS) {
                         Log.d(TAG, "sort took "
                                 + (SystemClock.uptimeMillis()-sortTime) + "ms");
@@ -1261,7 +1263,8 @@ public class LauncherModel extends BroadcastReceiver {
                 startIndex = i;
                 for (int j=0; i<N && j<batchSize; j++) {
                     // This builds the icon bitmaps.
-                    mAllAppsList.add(new ApplicationInfo(packageManager, apps.get(i), mIconCache));
+                    mAllAppsList.add(new ApplicationInfo(packageManager, apps.get(i),
+                            mIconCache, mLabelCache));
                     i++;
                 }
 
@@ -1446,7 +1449,7 @@ public class LauncherModel extends BroadcastReceiver {
      * doesn't have a Cursor, but
      */
     public ShortcutInfo getShortcutInfo(PackageManager manager, Intent intent, Context context) {
-        return getShortcutInfo(manager, intent, context, null, -1, -1);
+        return getShortcutInfo(manager, intent, context, null, -1, -1, null);
     }
 
     /**
@@ -1455,7 +1458,7 @@ public class LauncherModel extends BroadcastReceiver {
      * If c is not null, then it will be used to fill in missing data like the title and icon.
      */
     public ShortcutInfo getShortcutInfo(PackageManager manager, Intent intent, Context context,
-            Cursor c, int iconIndex, int titleIndex) {
+            Cursor c, int iconIndex, int titleIndex, HashMap<Object, CharSequence> labelCache) {
         Bitmap icon = null;
         final ShortcutInfo info = new ShortcutInfo();
 
@@ -1490,7 +1493,14 @@ public class LauncherModel extends BroadcastReceiver {
 
         // from the resource
         if (resolveInfo != null) {
-            info.title = resolveInfo.activityInfo.loadLabel(manager);
+            if (labelCache != null && labelCache.containsKey(resolveInfo)) {
+                info.title = labelCache.get(resolveInfo);
+            } else {
+                info.title = resolveInfo.activityInfo.loadLabel(manager);
+                if (labelCache != null) {
+                    labelCache.put(resolveInfo, info.title);
+                }
+            }
         }
         // from the db
         if (info.title == null) {
@@ -1766,17 +1776,31 @@ public class LauncherModel extends BroadcastReceiver {
     };
     public static class ShortcutNameComparator implements Comparator<ResolveInfo> {
         private PackageManager mPackageManager;
-        private HashMap<Object, String> mLabelCache;
+        private HashMap<Object, CharSequence> mLabelCache;
         ShortcutNameComparator(PackageManager pm) {
             mPackageManager = pm;
-            mLabelCache = new HashMap<Object, String>();
+            mLabelCache = new HashMap<Object, CharSequence>();
+        }
+        ShortcutNameComparator(PackageManager pm, HashMap<Object, CharSequence> labelCache) {
+            mPackageManager = pm;
+            mLabelCache = labelCache;
         }
         public final int compare(ResolveInfo a, ResolveInfo b) {
-            String labelA, labelB;
-            if (mLabelCache.containsKey(a)) labelA = mLabelCache.get(a);
-            else labelA = a.loadLabel(mPackageManager).toString();
-            if (mLabelCache.containsKey(b)) labelB = mLabelCache.get(b);
-            else labelB = b.loadLabel(mPackageManager).toString();
+            CharSequence labelA, labelB;
+            if (mLabelCache.containsKey(a)) {
+                labelA = mLabelCache.get(a);
+            } else {
+                labelA = a.loadLabel(mPackageManager).toString();
+
+                mLabelCache.put(a, labelA);
+            }
+            if (mLabelCache.containsKey(b)) {
+                labelB = mLabelCache.get(b);
+            } else {
+                labelB = b.loadLabel(mPackageManager).toString();
+
+                mLabelCache.put(b, labelB);
+            }
             return sCollator.compare(labelA, labelB);
         }
     };
@@ -1789,14 +1813,22 @@ public class LauncherModel extends BroadcastReceiver {
         }
         public final int compare(Object a, Object b) {
             String labelA, labelB;
-            if (mLabelCache.containsKey(a)) labelA = mLabelCache.get(a);
-            else labelA = (a instanceof AppWidgetProviderInfo) ?
+            if (mLabelCache.containsKey(a)) {
+                labelA = mLabelCache.get(a);
+            } else {
+                labelA = (a instanceof AppWidgetProviderInfo) ?
                     ((AppWidgetProviderInfo) a).label :
                     ((ResolveInfo) a).loadLabel(mPackageManager).toString();
-            if (mLabelCache.containsKey(b)) labelB = mLabelCache.get(b);
-            else labelB = (b instanceof AppWidgetProviderInfo) ?
+                mLabelCache.put(a, labelA);
+            }
+            if (mLabelCache.containsKey(b)) {
+                labelB = mLabelCache.get(b);
+            } else {
+                labelB = (b instanceof AppWidgetProviderInfo) ?
                     ((AppWidgetProviderInfo) b).label :
                     ((ResolveInfo) b).loadLabel(mPackageManager).toString();
+                mLabelCache.put(b, labelB);
+            }
             return sCollator.compare(labelA, labelB);
         }
     };

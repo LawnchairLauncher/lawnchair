@@ -103,16 +103,6 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
         setTag(info);
     }
 
-    public void applyFromResolveInfo(ResolveInfo info, PackageManager packageManager,
-            IconCache modelIconCache, HolographicOutlineHelper holoOutlineHelper) {
-        mHolographicOutlineHelper = holoOutlineHelper;
-        ComponentName cn = new ComponentName(info.activityInfo.packageName, info.activityInfo.name);
-        mIcon = modelIconCache.getIcon(cn, info);
-        setCompoundDrawablesWithIntrinsicBounds(null, new FastBitmapDrawable(mIcon), null, null);
-        setText(info.loadLabel(packageManager));
-        setTag(info);
-    }
-
     public void setHolographicOutline(Bitmap holoOutline) {
         mHolographicOutline = holoOutline;
         getHolographicOutlineView().invalidate();
@@ -120,8 +110,8 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
 
     @Override
     public void setAlpha(float alpha) {
-        final float viewAlpha = mHolographicOutlineHelper.viewAlphaInterpolator(alpha);
-        final float holographicAlpha = mHolographicOutlineHelper.highlightAlphaInterpolator(alpha);
+        final float viewAlpha = HolographicOutlineHelper.viewAlphaInterpolator(alpha);
+        final float holographicAlpha = HolographicOutlineHelper.highlightAlphaInterpolator(alpha);
         int newViewAlpha = (int) (viewAlpha * 255);
         int newHolographicAlpha = (int) (holographicAlpha * 255);
         if ((mAlpha != newViewAlpha) || (mHolographicAlpha != newHolographicAlpha)) {
