@@ -16,15 +16,6 @@
 
 package com.android.launcher2;
 
-import java.lang.ref.WeakReference;
-import java.net.URISyntaxException;
-import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.BroadcastReceiver;
@@ -54,6 +45,16 @@ import android.util.Log;
 
 import com.android.launcher.R;
 import com.android.launcher2.InstallWidgetReceiver.WidgetMimeTypeHandlerData;
+
+import java.lang.ref.WeakReference;
+import java.net.URISyntaxException;
+import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Maintains in-memory state of the Launcher. It is expected that there should be only one
@@ -85,6 +86,7 @@ public class LauncherModel extends BroadcastReceiver {
     // need to do a requery.  These are only ever touched from the loader thread.
     private boolean mWorkspaceLoaded;
     private boolean mAllAppsLoaded;
+    private Locale mLocale;
 
     private WeakReference<Callbacks> mCallbacks;
 
@@ -653,6 +655,11 @@ public class LauncherModel extends BroadcastReceiver {
             if (DEBUG_LOADERS) {
                 Log.d(TAG, "loadAndBindWorkspace mWorkspaceLoaded=" + mWorkspaceLoaded);
             }
+            Locale l = mContext.getResources().getConfiguration().locale;
+            if (mLocale != null && !l.equals(mLocale)) {
+                mWorkspaceLoaded = false;
+            }
+            mLocale = l;
             if (!mWorkspaceLoaded) {
                 loadWorkspace();
                 if (mStopped) {
