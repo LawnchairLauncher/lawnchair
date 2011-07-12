@@ -99,6 +99,12 @@ class FolderInfo extends ItemInfo {
         }
     }
 
+    @Override
+    void unbind() {
+        super.unbind();
+        listeners.clear();
+    }
+
     interface FolderListener {
         public void onAdd(ShortcutInfo item);
         public void onRemove(ShortcutInfo item);

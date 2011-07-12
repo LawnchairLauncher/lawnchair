@@ -98,7 +98,7 @@ public class LauncherModel extends BroadcastReceiver {
     // sItems is passed to bindItems, which expects a list of all folders and shortcuts created by
     //       LauncherModel that are directly on the home screen (however, no widgets or shortcuts
     //       within folders).
-    static final ArrayList<ItemInfo> sItems = new ArrayList<ItemInfo>();
+    static final ArrayList<ItemInfo> sWorkspaceItems = new ArrayList<ItemInfo>();
 
     // sAppWidgets is all LauncherAppWidgetInfo created by LauncherModel. Passed to bindAppWidget()
     static final ArrayList<LauncherAppWidgetInfo> sAppWidgets =
@@ -146,6 +146,12 @@ public class LauncherModel extends BroadcastReceiver {
 
     public Bitmap getFallbackIcon() {
         return Bitmap.createBitmap(mDefaultIcon);
+    }
+
+    public static void unbindWorkspaceItems() {
+        for (ItemInfo item: sWorkspaceItems) {
+            item.unbind();
+        }
     }
 
     /**
@@ -197,11 +203,11 @@ public class LauncherModel extends BroadcastReceiver {
                     // as in Workspace.onDrop. Here, we just add/remove them from the list of items
                     // that are on the desktop, as appropriate
                     if (modelItem.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                        if (!sItems.contains(modelItem)) {
-                            sItems.add(modelItem);
+                        if (!sWorkspaceItems.contains(modelItem)) {
+                            sWorkspaceItems.add(modelItem);
                         }
                     } else {
-                        sItems.remove(modelItem);
+                        sWorkspaceItems.remove(modelItem);
                     }
                 }
             });
@@ -374,13 +380,13 @@ public class LauncherModel extends BroadcastReceiver {
                     case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                         sFolders.put(item.id, (FolderInfo) item);
                         if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                            sItems.add(item);
+                            sWorkspaceItems.add(item);
                         }
                         break;
                     case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                     case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                         if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                            sItems.add(item);
+                            sWorkspaceItems.add(item);
                         }
                         break;
                     case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
@@ -456,11 +462,11 @@ public class LauncherModel extends BroadcastReceiver {
                     switch (item.itemType) {
                         case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                             sFolders.remove(item.id);
-                            sItems.remove(item);
+                            sWorkspaceItems.remove(item);
                             break;
                         case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                         case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                            sItems.remove(item);
+                            sWorkspaceItems.remove(item);
                             break;
                         case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
                             sAppWidgets.remove((LauncherAppWidgetInfo) item);
@@ -482,7 +488,7 @@ public class LauncherModel extends BroadcastReceiver {
                     cr.delete(LauncherSettings.Favorites.getContentUri(info.id, false), null, null);
                     sItemsIdMap.remove(info.id);
                     sFolders.remove(info.id);
-                    sItems.remove(info);
+                    sWorkspaceItems.remove(info);
 
                     cr.delete(LauncherSettings.Favorites.CONTENT_URI,
                             LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
@@ -821,7 +827,7 @@ public class LauncherModel extends BroadcastReceiver {
             final AppWidgetManager widgets = AppWidgetManager.getInstance(context);
             final boolean isSafeMode = manager.isSafeMode();
 
-            sItems.clear();
+            sWorkspaceItems.clear();
             sAppWidgets.clear();
             sFolders.clear();
             sItemsIdMap.clear();
@@ -913,7 +919,7 @@ public class LauncherModel extends BroadcastReceiver {
 
                                 switch (container) {
                                 case LauncherSettings.Favorites.CONTAINER_DESKTOP:
-                                    sItems.add(info);
+                                    sWorkspaceItems.add(info);
                                     break;
                                 default:
                                     // Item is in a user folder
@@ -957,7 +963,7 @@ public class LauncherModel extends BroadcastReceiver {
                             }
                             switch (container) {
                                 case LauncherSettings.Favorites.CONTAINER_DESKTOP:
-                                    sItems.add(folderInfo);
+                                    sWorkspaceItems.add(folderInfo);
                                     break;
                             }
 
@@ -1074,7 +1080,7 @@ public class LauncherModel extends BroadcastReceiver {
                 }
             });
             // Add the items to the workspace.
-            N = sItems.size();
+            N = sWorkspaceItems.size();
             for (int i=0; i<N; i+=ITEMS_CHUNK) {
                 final int start = i;
                 final int chunkSize = (i+ITEMS_CHUNK <= N) ? ITEMS_CHUNK : (N-i);
@@ -1082,7 +1088,7 @@ public class LauncherModel extends BroadcastReceiver {
                     public void run() {
                         Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                         if (callbacks != null) {
-                            callbacks.bindItems(sItems, start, start+chunkSize);
+                            callbacks.bindItems(sWorkspaceItems, start, start+chunkSize);
                         }
                     }
                 });
@@ -1320,7 +1326,7 @@ public class LauncherModel extends BroadcastReceiver {
             Log.d(TAG, "mLoaderTask.mIsLaunching=" + mIsLaunching);
             Log.d(TAG, "mLoaderTask.mStopped=" + mStopped);
             Log.d(TAG, "mLoaderTask.mLoadAndBindStepFinished=" + mLoadAndBindStepFinished);
-            Log.d(TAG, "mItems size=" + sItems.size());
+            Log.d(TAG, "mItems size=" + sWorkspaceItems.size());
         }
     }
 

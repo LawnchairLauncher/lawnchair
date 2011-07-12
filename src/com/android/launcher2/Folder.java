@@ -54,13 +54,11 @@ import java.util.ArrayList;
 public class Folder extends LinearLayout implements DragSource, View.OnClickListener,
         View.OnLongClickListener, DropTarget, FolderListener, TextView.OnEditorActionListener {
 
-    protected DragController mDragController;
-
-    protected Launcher mLauncher;
-
-    protected FolderInfo mInfo;
-
     private static final String TAG = "Launcher.Folder";
+
+    protected DragController mDragController;
+    protected Launcher mLauncher;
+    protected FolderInfo mInfo;
 
     static final int STATE_NONE = -1;
     static final int STATE_SMALL = 0;
@@ -132,6 +130,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         if (sHintText == null) {
             sHintText = res.getString(R.string.folder_hint_text);
         }
+
+        mLauncher = (Launcher) context;
     }
 
     @Override
@@ -284,10 +284,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     public void setDragController(DragController dragController) {
         mDragController = dragController;
-    }
-
-    void setLauncher(Launcher launcher) {
-        mLauncher = launcher;
     }
 
     void setFolderIcon(FolderIcon icon) {

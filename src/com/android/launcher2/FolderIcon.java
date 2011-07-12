@@ -127,7 +127,6 @@ public class FolderIcon extends LinearLayout implements FolderListener {
 
         Folder folder = Folder.fromXml(launcher);
         folder.setDragController(launcher.getDragController());
-        folder.setLauncher(launcher);
         folder.setFolderIcon(icon);
         folder.bind(folderInfo);
         icon.mFolder = folder;

@@ -144,7 +144,13 @@ class ItemInfo {
             values.put(LauncherSettings.Favorites.ICON, data);
         }
     }
-    
+
+    /**
+     * It is very important that sub-classes implement this if they contain any references
+     * to the activity (anything in the view hierarchy etc.). If not, leaks can result since
+     * ItemInfo objects persist across rotation and can hence leak by holding stale references
+     * to the old view hierarchy / activity.
+     */
     void unbind() {
     }
 
