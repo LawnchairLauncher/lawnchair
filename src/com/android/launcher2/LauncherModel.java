@@ -1763,7 +1763,11 @@ public class LauncherModel extends BroadcastReceiver {
     public static final Comparator<ApplicationInfo> APP_NAME_COMPARATOR
             = new Comparator<ApplicationInfo>() {
         public final int compare(ApplicationInfo a, ApplicationInfo b) {
-            return sCollator.compare(a.title.toString(), b.title.toString());
+            int result = sCollator.compare(a.title.toString(), b.title.toString());
+            if (result == 0) {
+                result = a.componentName.compareTo(b.componentName);
+            }
+            return result;
         }
     };
     public static final Comparator<ApplicationInfo> APP_INSTALL_TIME_COMPARATOR
