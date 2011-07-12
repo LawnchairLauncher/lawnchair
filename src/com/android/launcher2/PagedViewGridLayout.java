@@ -35,7 +35,6 @@ public class PagedViewGridLayout extends GridLayout implements Page {
         super(context, null, 0);
         mCellCountX = cellCountX;
         mCellCountY = cellCountY;
-        setColumnCount(mCellCountX);
     }
 
     int getCellCountX() {

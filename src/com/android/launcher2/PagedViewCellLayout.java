@@ -221,8 +221,6 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
             throw new RuntimeException("CellLayout cannot have UNSPECIFIED dimensions");
         }
 
-
-
         int numWidthGaps = mCellCountX - 1;
         int numHeightGaps = mCellCountY - 1;
 
