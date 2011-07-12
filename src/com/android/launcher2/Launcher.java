@@ -221,8 +221,6 @@ public final class Launcher extends Activity
 
     private static LocaleConfiguration sLocaleConfiguration = null;
 
-    private ArrayList<ItemInfo> mDesktopItems = new ArrayList<ItemInfo>();
-
     private static HashMap<Long, FolderInfo> sFolders = new HashMap<Long, FolderInfo>();
 
     // Hotseats (quick-launch icons next to AllApps)
@@ -1098,8 +1096,6 @@ public final class Launcher extends Activity
                 screen, cellXY[0], cellXY[1], false);
 
         if (!mRestoring) {
-            mDesktopItems.add(launcherInfo);
-
             // Perform actual inflation because we're live
             launcherInfo.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
 
@@ -1228,7 +1224,6 @@ public final class Launcher extends Activity
     }
 
     public void removeAppWidget(LauncherAppWidgetInfo launcherInfo) {
-        mDesktopItems.remove(launcherInfo);
         removeWidgetToAutoAdvance(launcherInfo.hostView);
         launcherInfo.hostView = null;
     }
@@ -1359,7 +1354,7 @@ public final class Launcher extends Activity
         TextKeyListener.getInstance().release();
 
 
-        unbindDesktopItems();
+        unbindWorkspaceItems();
 
         getContentResolver().unregisterContentObserver(mWidgetObserver);
         unregisterReceiver(mCloseSystemDialogsReceiver);
@@ -1743,11 +1738,8 @@ public final class Launcher extends Activity
      * Go through the and disconnect any of the callbacks in the drawables and the views or we
      * leak the previous Home screen on orientation change.
      */
-    private void unbindDesktopItems() {
-        for (ItemInfo item: mDesktopItems) {
-            item.unbind();
-        }
-        mDesktopItems.clear();
+    private void unbindWorkspaceItems() {
+        LauncherModel.unbindWorkspaceItems();
     }
 
     /**
@@ -3016,9 +3008,8 @@ public final class Launcher extends Activity
             });
         }
 
-        // This wasn't being called before which resulted in a leak of AppWidgetHostViews (through
-        // mDesktopItems -> AppWidgetInfo -> hostView).
-        unbindDesktopItems();
+        // This wasn't being called before which resulted in a leak of AppWidgetHostViews
+        unbindWorkspaceItems();
     }
 
     /**
@@ -3034,7 +3025,6 @@ public final class Launcher extends Activity
 
         for (int i=start; i<end; i++) {
             final ItemInfo item = shortcuts.get(i);
-            mDesktopItems.add(item);
             switch (item.itemType) {
                 case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                 case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
@@ -3095,8 +3085,6 @@ public final class Launcher extends Activity
         addWidgetToAutoAdvanceIfNeeded(item.hostView, appWidgetInfo);
 
         workspace.requestLayout();
-
-        mDesktopItems.add(item);
 
         if (DEBUG_WIDGETS) {
             Log.d(TAG, "bound widget id="+item.appWidgetId+" in "
@@ -3269,7 +3257,6 @@ public final class Launcher extends Activity
         Log.d(TAG, "mRestoring=" + mRestoring);
         Log.d(TAG, "mWaitingForResult=" + mWaitingForResult);
         Log.d(TAG, "mSavedInstanceState=" + mSavedInstanceState);
-        Log.d(TAG, "mDesktopItems.size=" + mDesktopItems.size());
         Log.d(TAG, "sFolders.size=" + sFolders.size());
         mModel.dumpState();
 
