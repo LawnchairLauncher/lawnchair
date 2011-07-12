@@ -179,12 +179,6 @@ public class DragView extends View {
         canvas.drawBitmap(mBitmap, 0.0f, 0.0f, mPaint);
     }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        mBitmap.recycle();
-    }
-
     public void setPaint(Paint paint) {
         mPaint = paint;
         invalidate();
