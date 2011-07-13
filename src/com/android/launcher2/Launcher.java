@@ -2706,7 +2706,9 @@ public final class Launcher extends Activity
                 }
             }
         } catch (NameNotFoundException e) {
-            // Do nothing
+            // This can happen if the activity defines an invalid drawable
+            Log.w(TAG, "Failed to load toolbar icon; " + activityName.flattenToShortString() +
+                    " not found", e);
         } catch (Resources.NotFoundException nfe) {
             // This can happen if the activity defines an invalid drawable
             Log.w(TAG, "Failed to load toolbar icon from " + activityName.flattenToShortString(),
