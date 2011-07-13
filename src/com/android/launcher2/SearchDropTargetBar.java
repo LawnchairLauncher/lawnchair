@@ -18,10 +18,14 @@ package com.android.launcher2;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 
 import com.android.launcher.R;
@@ -32,11 +36,11 @@ import com.android.launcher.R;
  */
 public class SearchDropTargetBar extends FrameLayout implements DragController.DragListener {
 
-    private static final int sTransitionInDuration = 275;
-    private static final int sTransitionOutDuration = 125;
+    private static final int sTransitionInDuration = 200;
+    private static final int sTransitionOutDuration = 175;
 
-    private ObjectAnimator mDropTargetBarFadeInAnim;
-    private ObjectAnimator mDropTargetBarFadeOutAnim;
+    private AnimatorSet mDropTargetBarFadeInAnim;
+    private AnimatorSet mDropTargetBarFadeOutAnim;
     private ObjectAnimator mQSBSearchBarFadeInAnim;
     private ObjectAnimator mQSBSearchBarFadeOutAnim;
 
@@ -45,6 +49,7 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
     private View mDropTargetBar;
     private ButtonDropTarget mInfoDropTarget;
     private ButtonDropTarget mDeleteDropTarget;
+    private int mBarHeight;
 
     public SearchDropTargetBar(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -73,9 +78,21 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         mDropTargetBar = findViewById(R.id.drag_target_bar);
         mInfoDropTarget = (ButtonDropTarget) mDropTargetBar.findViewById(R.id.info_target);
         mDeleteDropTarget = (ButtonDropTarget) mDropTargetBar.findViewById(R.id.delete_target);
+        mBarHeight = getResources().getDimensionPixelSize(R.dimen.qsb_bar_height);
+
+        boolean enableDropDownDropTargets =
+            getResources().getBoolean(R.bool.config_useDropTargetDownTransition);
 
         // Create the various fade animations
-        mDropTargetBarFadeInAnim = ObjectAnimator.ofFloat(mDropTargetBar, "alpha", 1f);
+        mDropTargetBar.setAlpha(0f);
+        ObjectAnimator fadeInAlphaAnim = ObjectAnimator.ofFloat(mDropTargetBar, "alpha", 1f);
+        fadeInAlphaAnim.setInterpolator(new DecelerateInterpolator());
+        mDropTargetBarFadeInAnim = new AnimatorSet();
+        AnimatorSet.Builder fadeInAnimators = mDropTargetBarFadeInAnim.play(fadeInAlphaAnim);
+        if (enableDropDownDropTargets) {
+            mDropTargetBar.setTranslationY(-mBarHeight);
+            fadeInAnimators.with(ObjectAnimator.ofFloat(mDropTargetBar, "translationY", 0f));
+        }
         mDropTargetBarFadeInAnim.setDuration(sTransitionInDuration);
         mDropTargetBarFadeInAnim.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -83,12 +100,20 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
                 mDropTargetBar.setVisibility(View.VISIBLE);
             }
         });
-        mDropTargetBarFadeOutAnim = ObjectAnimator.ofFloat(mDropTargetBar, "alpha", 0f);
+        ObjectAnimator fadeOutAlphaAnim = ObjectAnimator.ofFloat(mDropTargetBar, "alpha", 0f);
+        fadeOutAlphaAnim.setInterpolator(new AccelerateInterpolator());
+        mDropTargetBarFadeOutAnim = new AnimatorSet();
+        AnimatorSet.Builder fadeOutAnimators = mDropTargetBarFadeOutAnim.play(fadeOutAlphaAnim);
+        if (enableDropDownDropTargets) {
+            fadeOutAnimators.with(ObjectAnimator.ofFloat(mDropTargetBar, "translationY",
+                    -mBarHeight));
+        }
         mDropTargetBarFadeOutAnim.setDuration(sTransitionOutDuration);
         mDropTargetBarFadeOutAnim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 mDropTargetBar.setVisibility(View.GONE);
+                mDropTargetBar.setLayerType(View.LAYER_TYPE_NONE, null);
             }
         });
         mQSBSearchBarFadeInAnim = ObjectAnimator.ofFloat(mQSBSearchBar, "alpha", 1f);
@@ -156,8 +181,12 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
     @Override
     public void onDragStart(DragSource source, Object info, int dragAction) {
         // Animate out the QSB search bar, and animate in the drop target bar
+        mDropTargetBar.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        mDropTargetBar.buildLayer();
+        mDropTargetBarFadeOutAnim.cancel();
         mDropTargetBarFadeInAnim.start();
         if (!mIsSearchBarHidden) {
+            mQSBSearchBarFadeInAnim.cancel();
             mQSBSearchBarFadeOutAnim.start();
         }
     }
@@ -165,8 +194,10 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
     @Override
     public void onDragEnd() {
         // Restore the QSB search bar, and animate out the drop target bar
+        mDropTargetBarFadeInAnim.cancel();
         mDropTargetBarFadeOutAnim.start();
         if (!mIsSearchBarHidden) {
+            mQSBSearchBarFadeOutAnim.cancel();
             mQSBSearchBarFadeInAnim.start();
         }
     }

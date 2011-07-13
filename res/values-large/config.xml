@@ -18,6 +18,9 @@
     <integer name="config_customizeWorkspaceShrinkTime">800</integer>
 
 <!-- Workspace -->
+    <!-- Whether or not the drop targets drop down as opposed to fade in -->
+    <bool name="config_useDropTargetDownTransition">true</bool>
+
     <!-- When dragging items on the workspace, how much bigger (in pixels) the dragged view
          should be, as compared to the original view. If 0, it will not be scaled at all.
          Should be an even number, for pixel alignment. -->

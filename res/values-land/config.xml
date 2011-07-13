@@ -1,0 +1,5 @@
+<resources>
+<!-- Workspace -->
+    <!-- Whether or not the drop targets drop down as opposed to fade in -->
+    <bool name="config_useDropTargetDownTransition">false</bool>
+</resources>

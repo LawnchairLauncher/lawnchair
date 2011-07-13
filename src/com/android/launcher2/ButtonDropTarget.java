@@ -17,6 +17,7 @@
 package com.android.launcher2;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
@@ -32,6 +33,7 @@ public class ButtonDropTarget extends FrameLayout implements DropTarget, DragCon
     protected final int mTransitionDuration;
 
     protected Launcher mLauncher;
+    private int mBottomDragPadding;
 
     /** Whether this drop target is active for the current drag */
     protected boolean mActive;
@@ -46,8 +48,9 @@ public class ButtonDropTarget extends FrameLayout implements DropTarget, DragCon
     public ButtonDropTarget(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        mTransitionDuration =
-            context.getResources().getInteger(R.integer.config_dropTargetBgTransitionDuration);
+        Resources r = getResources();
+        mTransitionDuration = r.getInteger(R.integer.config_dropTargetBgTransitionDuration);
+        mBottomDragPadding = r.getDimensionPixelSize(R.dimen.drop_target_drag_padding);
     }
 
     void setLauncher(Launcher launcher) {
@@ -84,6 +87,12 @@ public class ButtonDropTarget extends FrameLayout implements DropTarget, DragCon
 
     public void onDragEnd() {
         // Do nothing
+    }
+
+    @Override
+    public void getHitRect(android.graphics.Rect outRect) {
+        super.getHitRect(outRect);
+        outRect.bottom += mBottomDragPadding;
     }
 
     @Override

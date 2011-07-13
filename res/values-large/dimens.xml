@@ -56,10 +56,6 @@
     <dimen name="all_apps_button_drawable_padding">0dip</dimen>
     <dimen name="all_apps_button_vertical_padding">4dip</dimen>
 
-    <!-- height & width of the drop rectangle for the trash icon -->
-    <dimen name="delete_zone_vertical_drag_padding">20dip</dimen>
-    <dimen name="delete_zone_horizontal_drag_padding">20dip</dimen>
-
     <!-- roughly a status bar (for determining how many rows of icons are in home) -->
     <dimen name="status_bar_height">48dip</dimen>
 
