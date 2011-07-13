@@ -385,37 +385,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     protected void determineDraggingStart(android.view.MotionEvent ev) {
         // Disable dragging by pulling an app down for now.
     }
+
     private void beginDraggingApplication(View v) {
-        // Make a copy of the ApplicationInfo
-        ApplicationInfo appInfo = new ApplicationInfo((ApplicationInfo) v.getTag());
-
-        // Compose the drag image (top compound drawable, index is 1)
-        final TextView tv = (TextView) v;
-        final Drawable icon = tv.getCompoundDrawables()[1];
-        Bitmap b = Bitmap.createBitmap(v.getWidth(), v.getHeight(),
-                Bitmap.Config.ARGB_8888);
-        mCanvas.setBitmap(b);
-        mCanvas.save();
-        mCanvas.translate((v.getWidth() - icon.getIntrinsicWidth()) / 2, v.getPaddingTop());
-        icon.draw(mCanvas);
-        mCanvas.restore();
-
-        // Compose the visible rect of the drag image
-        Rect dragRect = null;
-        if (v instanceof TextView) {
-            int top = v.getPaddingTop();
-            int left = (b.getWidth() - mAppIconSize) / 2;
-            int right = left + mAppIconSize;
-            int bottom = top + mAppIconSize;
-            dragRect = new Rect(left, top, right, bottom);
-        }
-
-        // Start the drag
-        mLauncher.lockScreenOrientation();
-        mLauncher.getWorkspace().onDragStartedWithItemSpans(1, 1, b);
-        mDragController.startDrag(v, b, this, appInfo, DragController.DRAG_ACTION_COPY, dragRect);
-        b.recycle();
+        mLauncher.getWorkspace().onDragStartedWithItem(v);
+        mLauncher.getWorkspace().beginDragShared(v, this);
     }
+
     private void beginDraggingWidget(View v) {
         // Get the widget preview as the drag representation
         ImageView image = (ImageView) v.findViewById(R.id.widget_preview);

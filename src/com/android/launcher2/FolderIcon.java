@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -286,12 +287,13 @@ public class FolderIcon extends LinearLayout implements FolderListener {
 
     public void performCreateAnimation(final ShortcutInfo destInfo, final View destView,
             final ShortcutInfo srcInfo, final View srcView, Rect dstRect,
-            Runnable postAnimationRunnable) {
+            float scaleRelativeToDragLayer, Runnable postAnimationRunnable) {
 
         Drawable animateDrawable = ((TextView) destView).getCompoundDrawables()[1];
         computePreviewDrawingParams(animateDrawable.getIntrinsicWidth(), destView.getMeasuredWidth());
+
         // This will animate the dragView (srcView) into the new folder
-        onDrop(srcInfo, srcView, dstRect, 1, postAnimationRunnable);
+        onDrop(srcInfo, srcView, dstRect, scaleRelativeToDragLayer, 1, postAnimationRunnable);
 
         // This will animate the first item from it's position as an icon into its
         // position as the first item in the preview
@@ -309,8 +311,8 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         mFolderRingAnimator.animateToNaturalState();
     }
 
-    private void onDrop(final ShortcutInfo item, View animateView, Rect finalRect, int index,
-            Runnable postAnimationRunnable) {
+    private void onDrop(final ShortcutInfo item, View animateView, Rect finalRect,
+            float scaleRelativeToDragLayer, int index, Runnable postAnimationRunnable) {
         item.cellX = -1;
         item.cellY = -1;
         DragLayer dragLayer = mLauncher.getDragLayer();
@@ -319,22 +321,22 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         Rect to = finalRect;
         if (to == null) {
             to = new Rect();
-            dragLayer.getDescendantRectRelativeToSelf(this, to);
+            scaleRelativeToDragLayer = dragLayer.getDescendantRectRelativeToSelf(this, to);
         }
 
-        if (animateView.getMeasuredWidth() != to.width() ||
-                animateView.getMeasuredHeight() != to.height()) {
-            int offsetX = (animateView.getMeasuredWidth() - to.width()) / 2;
-            int offsetY = (animateView.getMeasuredHeight() - to.height()) / 2;
-            to.offset(-offsetX, -offsetY);
-        }
-        float scale = adjustFinalScreenRectForIndex(to, index);
+        int[] center = new int[2];
+        float scale = getLocalCenterForIndex(index, center);
+        center[0] = (int) Math.round(scaleRelativeToDragLayer * center[0]);
+        center[1] = (int) Math.round(scaleRelativeToDragLayer * center[1]);
+
+        to.offset(center[0] - animateView.getMeasuredWidth() / 2,
+                center[1] - animateView.getMeasuredHeight() / 2);
 
         float finalAlpha = index < NUM_ITEMS_IN_PREVIEW ? 0.5f : 0f;
 
-        dragLayer.animateView(animateView, from, to, finalAlpha, scale, DROP_IN_ANIMATION_DURATION,
-                new DecelerateInterpolator(2), new AccelerateInterpolator(2), postAnimationRunnable,
-                false);
+        dragLayer.animateView(animateView, from, to, finalAlpha, scale * scaleRelativeToDragLayer,
+                DROP_IN_ANIMATION_DURATION, new DecelerateInterpolator(2),
+                new AccelerateInterpolator(2), postAnimationRunnable, false);
         postDelayed(new Runnable() {
             public void run() {
                 addItem(item);
@@ -350,7 +352,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         } else {
             item = (ShortcutInfo) d.dragInfo;
         }
-        onDrop(item, d.dragView, null, mInfo.contents.size(), d.postAnimationRunnable);
+        onDrop(item, d.dragView, null, 1.0f, mInfo.contents.size(), d.postAnimationRunnable);
     }
 
     public DropTarget getDropTargetDelegate(DragObject d) {
@@ -398,15 +400,16 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         Drawable drawable;
     }
 
-    private float adjustFinalScreenRectForIndex(Rect r, int index) {
+    private float getLocalCenterForIndex(int index, int[] center) {
         mParams = computePreviewItemDrawingParams(Math.min(NUM_ITEMS_IN_PREVIEW, index), mParams);
 
         mParams.transX += mPreviewOffsetX;
         mParams.transY += mPreviewOffsetY;
-        float offsetX = mParams.transX + (mParams.scale * mIntrinsicIconSize) / 2 - mTotalWidth / 2;
-        float offsetY = mParams.transY + (mParams.scale * mIntrinsicIconSize) / 2 - mTotalWidth / 2;
+        float offsetX = mParams.transX + (mParams.scale * mIntrinsicIconSize) / 2;
+        float offsetY = mParams.transY + (mParams.scale * mIntrinsicIconSize) / 2;
 
-        r.offset((int) offsetX, (int) offsetY);
+        center[0] = (int) Math.round(offsetX);
+        center[1] = (int) Math.round(offsetY);
         return mParams.scale;
     }
 
