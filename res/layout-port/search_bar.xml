@@ -20,19 +20,24 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/qsb_bar_height">
    <!-- Global search icon -->
-   <ImageView
+   <LinearLayout
         style="@style/SearchButton"
-        android:id="@+id/search_button"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/ic_search_normal_holo"
+        android:layout_toLeftOf="@+id/voice_button"
         android:background="@drawable/button_bg"
         android:onClick="onClickSearchButton"
         android:focusable="true"
         android:clickable="true"
-        android:contentDescription="@string/accessibility_search_button" />
+        android:contentDescription="@string/accessibility_search_button">
+       <ImageView
+            android:id="@+id/search_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_search_normal_holo" />
+    </LinearLayout>
 
     <!-- Voice search icon -->
     <ImageView
