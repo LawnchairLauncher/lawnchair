@@ -90,6 +90,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private int[] mTargetCell = new int[2];
     private int[] mPreviousTargetCell = new int[2];
     private int[] mEmptyCell = new int[2];
+    private int[] mTempXY = new int[2];
     private Alarm mReorderAlarm = new Alarm();
     private Alarm mOnExitAlarm = new Alarm();
     private TextView mFolderName;
@@ -205,14 +206,13 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             }
 
             mLauncher.getWorkspace().onDragStartedWithItem(v);
-            mDragController.startDrag(v, this, item, DragController.DRAG_ACTION_COPY);
+            mLauncher.getWorkspace().beginDragShared(v, this);
             mIconDrawable = ((TextView) v).getCompoundDrawables()[1];
 
             mCurrentDragInfo = item;
             mEmptyCell[0] = item.cellX;
             mEmptyCell[1] = item.cellY;
             mCurrentDragView = v;
-
         }
         return true;
     }
@@ -267,18 +267,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
      */
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        return true;
-    }
-
-    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        if (!view.isInTouchMode()) {
-            return false;
-        }
-
-        ShortcutInfo app = (ShortcutInfo) parent.getItemAtPosition(position);
-
-        mDragController.startDrag(view, this, app, DragController.DRAG_ACTION_COPY);
-        mLauncher.closeFolder(this);
         return true;
     }
 

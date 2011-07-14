@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -34,6 +35,7 @@ import android.view.ViewParent;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.android.launcher.R;
 
@@ -167,12 +169,13 @@ public class DragLayer extends FrameLayout {
         return mDragController.onTouchEvent(ev);
     }
 
-    public void getDescendantRectRelativeToSelf(View descendant, Rect r) {
+    public float getDescendantRectRelativeToSelf(View descendant, Rect r) {
         mTmpXY[0] = 0;
         mTmpXY[1] = 0;
-        getDescendantCoordRelativeToSelf(descendant, mTmpXY);
+        float scale = getDescendantCoordRelativeToSelf(descendant, mTmpXY);
         r.set(mTmpXY[0], mTmpXY[1],
                 mTmpXY[0] + descendant.getWidth(), mTmpXY[1] + descendant.getHeight());
+        return scale;
     }
 
     private float getDescendantCoordRelativeToSelf(View descendant, int[] coord) {
@@ -315,6 +318,7 @@ public class DragLayer extends FrameLayout {
     public void animateViewIntoPosition(DragView dragView, final View child) {
         animateViewIntoPosition(dragView, child, null);
     }
+
     public void animateViewIntoPosition(DragView dragView, final View child,
             final Runnable onFinishAnimationRunnable) {
         ((CellLayoutChildren) child.getParent()).measureChild(child);
@@ -324,18 +328,30 @@ public class DragLayer extends FrameLayout {
         getViewRectRelativeToSelf(dragView, r);
 
         int coord[] = new int[2];
-        coord[0] = lp.x + (lp.width / 2);
-        coord[1] = lp.y + (lp.height / 2);
+        coord[0] = lp.x;
+        coord[1] = lp.y;
         // Since the child hasn't necessarily been laid out, we force the lp to be updated with
-        // the correct coordinates and use these to determine the final location
+        // the correct coordinates (above) and use these to determine the final location
         float scale = getDescendantCoordRelativeToSelf((View) child.getParent(), coord);
-        int toX = coord[0] - lp.width / 2;
-        int toY = coord[1] - lp.height / 2;
-        toX -= (dragView.getWidth() - child.getMeasuredWidth()) / 2;
-        toY -= (dragView.getHeight() - child.getMeasuredHeight()) / 2;
+        int toX = coord[0];
+        int toY = coord[1];
+        if (child instanceof TextView) {
+            TextView tv = (TextView) child;
+            Drawable d = tv.getCompoundDrawables()[1];
 
-        final int fromX = r.left + (dragView.getWidth() - child.getMeasuredWidth())  / 2;
-        final int fromY = r.top + (dragView.getHeight() - child.getMeasuredHeight())  / 2;
+            // Center in the y coordinate about the target's drawable
+            toY += Math.round(scale * tv.getPaddingTop());
+            toY -= (dragView.getHeight() - (int) Math.round(scale * d.getIntrinsicHeight())) / 2;
+            // Center in the x coordinate about the target's drawable
+            toX -= (dragView.getMeasuredWidth() - Math.round(scale * child.getMeasuredWidth())) / 2;
+        } else {
+            toY -= (Math.round(scale * (dragView.getHeight() - child.getMeasuredHeight()))) / 2;
+            toX -= (Math.round(scale * (dragView.getMeasuredWidth()
+                    - child.getMeasuredWidth()))) / 2;
+        }
+
+        final int fromX = r.left;
+        final int fromY = r.top;
         child.setVisibility(INVISIBLE);
         child.setAlpha(0);
         Runnable onCompleteRunnable = new Runnable() {
@@ -400,6 +416,10 @@ public class DragLayer extends FrameLayout {
             mDropAnim.cancel();
         }
 
+        if (mFadeOutAnim != null) {
+            mFadeOutAnim.cancel();
+        }
+
         mDropView = view;
         final float initialAlpha = view.getAlpha();
         mDropAnim = new ValueAnimator();
@@ -424,8 +444,8 @@ public class DragLayer extends FrameLayout {
                 float motionPercent = motionInterpolator == null ? percent :
                         motionInterpolator.getInterpolation(percent);
 
-                mDropViewPos[0] = from.left + (int) ((to.left - from.left) * motionPercent);
-                mDropViewPos[1] = from.top + (int) ((to.top - from.top) * motionPercent);
+                mDropViewPos[0] = from.left + (int) Math.round(((to.left - from.left) * motionPercent));
+                mDropViewPos[1] = from.top + (int) Math.round(((to.top - from.top) * motionPercent));
                 mDropViewScale = percent * finalScale + (1 - percent);
                 mDropViewAlpha = alphaPercent * finalAlpha + (1 - alphaPercent) * initialAlpha;
                 invalidate(mDropViewPos[0], mDropViewPos[1],

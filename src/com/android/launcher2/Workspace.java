@@ -39,6 +39,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Camera;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -1828,32 +1829,57 @@ public class Workspace extends SmoothPagedView
      * @param destCanvas the canvas to draw on
      * @param padding the horizontal and vertical padding to use when drawing
      */
-    private void drawDragView(View v, Canvas destCanvas, int padding) {
+    private void drawDragView(View v, Canvas destCanvas, int padding, boolean pruneToDrawable) {
         final Rect clipRect = mTempRect;
         v.getDrawingRect(clipRect);
 
-        // For a TextView, adjust the clip rect so that we don't include the text label
-        if (v instanceof BubbleTextView) {
-            final BubbleTextView tv = (BubbleTextView) v;
-            clipRect.bottom = tv.getExtendedPaddingTop() - (int) BubbleTextView.PADDING_V +
-                    tv.getLayout().getLineTop(0);
-        } else if (v instanceof TextView) {
-            final TextView tv = (TextView) v;
-            clipRect.bottom = tv.getExtendedPaddingTop() - tv.getCompoundDrawablePadding() +
-                    tv.getLayout().getLineTop(0);
-        } else if (v instanceof FolderIcon) {
-            clipRect.bottom = getResources().getDimensionPixelSize(R.dimen.folder_preview_size);
+        destCanvas.save();
+        if (v instanceof TextView && pruneToDrawable) {
+            Drawable d = ((TextView) v).getCompoundDrawables()[1];
+            clipRect.set(0, 0, d.getIntrinsicWidth() + padding, d.getIntrinsicHeight() + padding);
+            destCanvas.translate(padding / 2, padding / 2);
+            d.draw(destCanvas);
+        } else {
+            if (v instanceof FolderIcon) {
+                clipRect.bottom = getResources().getDimensionPixelSize(R.dimen.folder_preview_size);
+            } else if (v instanceof BubbleTextView) {
+                final BubbleTextView tv = (BubbleTextView) v;
+                clipRect.bottom = tv.getExtendedPaddingTop() - (int) BubbleTextView.PADDING_V +
+                        tv.getLayout().getLineTop(0);
+            } else if (v instanceof TextView) {
+                final TextView tv = (TextView) v;
+                clipRect.bottom = tv.getExtendedPaddingTop() - tv.getCompoundDrawablePadding() +
+                        tv.getLayout().getLineTop(0);
+            }
+            destCanvas.translate(-v.getScrollX() + padding / 2, -v.getScrollY() + padding / 2);
+            destCanvas.clipRect(clipRect, Op.REPLACE);
+            v.draw(destCanvas);
+        }
+        destCanvas.restore();
+    }
+
+    /**
+     * Returns a new bitmap to show when the given View is being dragged around.
+     * Responsibility for the bitmap is transferred to the caller.
+     */
+    public Bitmap createDragBitmap(View v, Canvas canvas, int padding) {
+        final int outlineColor = getResources().getColor(R.color.drag_outline_color);
+        Bitmap b;
+
+        if (v instanceof TextView) {
+            Drawable d = ((TextView) v).getCompoundDrawables()[1];
+            b = Bitmap.createBitmap(d.getIntrinsicWidth() + padding,
+                    d.getIntrinsicHeight() + padding, Bitmap.Config.ARGB_8888);
+        } else {
+            b = Bitmap.createBitmap(
+                    v.getWidth() + padding, v.getHeight() + padding, Bitmap.Config.ARGB_8888);
         }
 
-        // Draw the View into the bitmap.
-        // The translate of scrollX and scrollY is necessary when drawing TextViews, because
-        // they set scrollX and scrollY to large values to achieve centered text
+        canvas.setBitmap(b);
+        drawDragView(v, canvas, padding, true);
+        mOutlineHelper.applyOuterBlur(b, canvas, outlineColor);
 
-        destCanvas.save();
-        destCanvas.translate(-v.getScrollX() + padding / 2, -v.getScrollY() + padding / 2);
-        destCanvas.clipRect(clipRect, Op.REPLACE);
-        v.draw(destCanvas);
-        destCanvas.restore();
+        return b;
     }
 
     /**
@@ -1866,7 +1892,7 @@ public class Workspace extends SmoothPagedView
                 v.getWidth() + padding, v.getHeight() + padding, Bitmap.Config.ARGB_8888);
 
         canvas.setBitmap(b);
-        drawDragView(v, canvas, padding);
+        drawDragView(v, canvas, padding, false);
         mOutlineHelper.applyMediumExpensiveOutlineWithBlur(b, canvas, outlineColor, outlineColor);
         return b;
     }
@@ -1920,23 +1946,6 @@ public class Workspace extends SmoothPagedView
         return b;
     }
 
-    /**
-     * Returns a new bitmap to show when the given View is being dragged around.
-     * Responsibility for the bitmap is transferred to the caller.
-     */
-    private Bitmap createDragBitmap(View v, Canvas canvas, int padding) {
-        final int outlineColor = getResources().getColor(R.color.drag_outline_color);
-        final Bitmap b = Bitmap.createBitmap(
-                mDragOutline.getWidth(), mDragOutline.getHeight(), Bitmap.Config.ARGB_8888);
-
-        canvas.setBitmap(b);
-        canvas.drawBitmap(mDragOutline, 0, 0, null);
-        drawDragView(v, canvas, padding);
-        mOutlineHelper.applyOuterBlur(b, canvas, outlineColor);
-
-        return b;
-    }
-
     void startDrag(CellLayout.CellInfo cellInfo) {
         View child = cellInfo.cell;
 
@@ -1960,9 +1969,15 @@ public class Workspace extends SmoothPagedView
 
         // The outline is used to visualize where the item will land if dropped
         mDragOutline = createDragOutline(child, canvas, bitmapPadding);
+        beginDragShared(child, this);
+    }
+
+    public void beginDragShared(View child, DragSource source) {
+        // We need to add extra padding to the bitmap to make room for the glow effect
+        final int bitmapPadding = HolographicOutlineHelper.MAX_OUTER_BLUR_RADIUS;
 
         // The drag bitmap follows the touch point around on the screen
-        final Bitmap b = createDragBitmap(child, canvas, bitmapPadding);
+        final Bitmap b = createDragBitmap(child, new Canvas(), bitmapPadding);
 
         final int bmpWidth = b.getWidth();
         final int bmpHeight = b.getHeight();
@@ -1984,10 +1999,10 @@ public class Workspace extends SmoothPagedView
             dragRect = new Rect(0, 0, child.getWidth(), previewSize);
         }
 
-        mLauncher.lockScreenOrientation();
-        mDragController.startDrag(b, dragLayerX, dragLayerY, this, child.getTag(),
+        mDragController.startDrag(b, dragLayerX, dragLayerY, source, child.getTag(),
                 DragController.DRAG_ACTION_MOVE, dragRect);
         b.recycle();
+        mLauncher.lockScreenOrientation();
     }
 
     void addApplicationShortcut(ShortcutInfo info, int screen, int cellX, int cellY,
@@ -2106,7 +2121,7 @@ public class Workspace extends SmoothPagedView
             }
 
             Rect folderLocation = new Rect();
-            mLauncher.getDragLayer().getDescendantRectRelativeToSelf(v, folderLocation);
+            float scale = mLauncher.getDragLayer().getDescendantRectRelativeToSelf(v, folderLocation);
             target.removeView(v);
 
             FolderIcon fi = mLauncher.addFolder(screen, targetCell[0], targetCell[1]);
@@ -2115,7 +2130,7 @@ public class Workspace extends SmoothPagedView
             sourceInfo.cellX = -1;
             sourceInfo.cellY = -1;
 
-            fi.performCreateAnimation(destInfo, v, sourceInfo, dragView, folderLocation,
+            fi.performCreateAnimation(destInfo, v, sourceInfo, dragView, folderLocation, scale,
                     postAnimationRunnable);
             return true;
         }
