@@ -1048,7 +1048,17 @@ public final class Launcher extends Activity
 
         // Calculate the grid spans needed to fit this widget
         CellLayout layout = (CellLayout) mWorkspace.getChildAt(screen);
-        int[] spanXY = layout.rectToCell(appWidgetInfo.minWidth, appWidgetInfo.minHeight, null);
+
+        // We want to account for the extra amount of padding that we are adding to the widget
+        // to ensure that it gets the full amount of space that it has requested
+        Resources r = getResources();
+        int requiredWidth = appWidgetInfo.minWidth +
+                r.getDimensionPixelSize(R.dimen.app_widget_padding_left) +
+                r.getDimensionPixelSize(R.dimen.app_widget_padding_right);
+        int requiredHeight = appWidgetInfo.minHeight + 
+                r.getDimensionPixelSize(R.dimen.app_widget_padding_top) +
+                r.getDimensionPixelSize(R.dimen.app_widget_padding_bottom);
+        int[] spanXY = layout.rectToCell(requiredWidth, requiredHeight, null);
 
         // Try finding open space on Launcher screen
         // We have saved the position to which the widget was dragged-- this really only matters
