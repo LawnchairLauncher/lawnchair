@@ -732,8 +732,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         int centeredTop = centerY - height / 2;
 
         // We first fetch the currently visible CellLayoutChildren
-        int page = mLauncher.getWorkspace().getCurrentPage();
-        CellLayout currentPage = (CellLayout) mLauncher.getWorkspace().getChildAt(page);
+        CellLayout currentPage = mLauncher.getWorkspace().getCurrentDropLayout();
         CellLayoutChildren boundingLayout = currentPage.getChildrenLayout();
         Rect bounds = new Rect();
         parent.getDescendantRectRelativeToSelf(boundingLayout, bounds);
@@ -851,8 +850,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         }
 
         // Remove the folder completely
-        final CellLayout cellLayout = (CellLayout)
-                mLauncher.getWorkspace().getChildAt(mInfo.screen);
+        CellLayout cellLayout = mLauncher.getCellLayout(mInfo.container, mInfo.screen);
         cellLayout.removeView(mFolderIcon);
         if (mFolderIcon instanceof DropTarget) {
             mDragController.removeDropTarget((DropTarget) mFolderIcon);
@@ -860,9 +858,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mLauncher.removeFolder(mInfo);
 
         if (finalItem != null) {
-            LauncherModel.addOrMoveItemInDatabase(mLauncher, finalItem,
-                    LauncherSettings.Favorites.CONTAINER_DESKTOP, mInfo.screen,
-                    mInfo.cellX, mInfo.cellY);
+            LauncherModel.addOrMoveItemInDatabase(mLauncher, finalItem, mInfo.container,
+                    mInfo.screen, mInfo.cellX, mInfo.cellY);
         }
         LauncherModel.deleteItemFromDatabase(mLauncher, mInfo);
 
@@ -871,8 +868,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             View child = mLauncher.createShortcut(R.layout.application, cellLayout,
                     (ShortcutInfo) finalItem);
 
-            mLauncher.getWorkspace().addInScreen(child, mInfo.screen, mInfo.cellX, mInfo.cellY, 
-                    mInfo.spanX, mInfo.spanY);
+            mLauncher.getWorkspace().addInScreen(child, mInfo.container, mInfo.screen, mInfo.cellX,
+                    mInfo.cellY, mInfo.spanX, mInfo.spanY);
         }
     }
 

@@ -18,15 +18,9 @@
 <!-- Workspace -->
     <dimen name="workspace_left_padding">0dp</dimen>
     <dimen name="workspace_right_padding">0dp</dimen>
-    <!-- NOTE: This padding is the @dimen/qsb_bar_height + some padding -->
-    <dimen name="workspace_top_padding">60dp</dimen>
-    <!-- NOTE: This padding is the @dimen/button_bar_height + some padding
-         for signposting -->
-    <dimen name="workspace_bottom_padding">64dp</dimen>
+    <dimen name="workspace_top_padding">@dimen/qsb_bar_height</dimen>
+    <dimen name="workspace_bottom_padding">@dimen/button_bar_height</dimen>
     <dimen name="workspace_page_spacing">8dp</dimen>
-
-    <dimen name="folder_cell_width">74dip</dimen>
-    <dimen name="folder_cell_height">86dip</dimen>
 
     <integer name="apps_customize_cellCountX">4</integer>
     <integer name="apps_customize_cellCountY">5</integer>

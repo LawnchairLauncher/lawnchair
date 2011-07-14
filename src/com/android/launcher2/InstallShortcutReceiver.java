@@ -65,7 +65,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 boolean duplicate = data.getBooleanExtra(Launcher.EXTRA_SHORTCUT_DUPLICATE, true);
                 if (duplicate || !LauncherModel.shortcutExists(context, name, intent)) {
                     LauncherApplication app = (LauncherApplication) context.getApplicationContext();
-                    app.getModel().addShortcut(context, data, screen, mCoordinates[0], 
+                    app.getModel().addShortcut(context, data,
+                            LauncherSettings.Favorites.CONTAINER_DESKTOP, screen, mCoordinates[0],
                             mCoordinates[1], true);
                     Toast.makeText(context, context.getString(R.string.shortcut_installed, name),
                             Toast.LENGTH_SHORT).show();
@@ -94,14 +95,16 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         int cellX, cellY, spanX, spanY;
         for (int i = 0; i < items.size(); ++i) {
             item = items.get(i);
-            if (item.screen == screen) {
-                cellX = item.cellX;
-                cellY = item.cellY;
-                spanX = item.spanX;
-                spanY = item.spanY;
-                for (int x = cellX; x < cellX + spanX && x < xCount; x++) {
-                    for (int y = cellY; y < cellY + spanY && y < yCount; y++) {
-                        occupied[x][y] = true;
+            if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                if (item.screen == screen) {
+                    cellX = item.cellX;
+                    cellY = item.cellY;
+                    spanX = item.spanX;
+                    spanY = item.spanY;
+                    for (int x = cellX; x < cellX + spanX && x < xCount; x++) {
+                        for (int y = cellY; y < cellY + spanY && y < yCount; y++) {
+                            occupied[x][y] = true;
+                        }
                     }
                 }
             }

@@ -65,11 +65,11 @@ public class LauncherProvider extends ContentProvider {
     private static final boolean LOGD = false;
 
     private static final String DATABASE_NAME = "launcher.db";
-    
-    private static final int DATABASE_VERSION = 8;
+
+    private static final int DATABASE_VERSION = 9;
 
     static final String AUTHORITY = "com.android.launcher2.settings";
-    
+
     static final String TABLE_FAVORITES = "favorites";
     static final String PARAMETER_NOTIFY = "notify";
 
@@ -199,7 +199,7 @@ public class LauncherProvider extends ContentProvider {
         private static final String TAG_SEARCH = "search";
         private static final String TAG_APPWIDGET = "appwidget";
         private static final String TAG_SHORTCUT = "shortcut";
-        
+
         private final Context mContext;
         private final AppWidgetHost mAppWidgetHost;
         private long mMaxId = -1;
@@ -208,7 +208,12 @@ public class LauncherProvider extends ContentProvider {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
             mContext = context;
             mAppWidgetHost = new AppWidgetHost(context, Launcher.APPWIDGET_HOST_ID);
-            mMaxId = initializeMaxId(getWritableDatabase());
+
+            // In the case where neither onCreate nor onUpgrade gets called, we read the maxId from
+            // the DB here
+            if (mMaxId == -1) {
+                mMaxId = initializeMaxId(getWritableDatabase());
+            }
         }
 
         /**
@@ -254,10 +259,10 @@ public class LauncherProvider extends ContentProvider {
                 mAppWidgetHost.deleteHost();
                 sendAppWidgetResetNotify();
             }
-            
+
             if (!convertDatabase(db)) {
                 // Populate favorites table with initial favorites
-                loadFavorites(db);
+                loadFavorites(db, ItemInfo.NO_ID);
             }
         }
 
@@ -425,6 +430,18 @@ public class LauncherProvider extends ContentProvider {
                 // resample the images each time.
                 normalizeIcons(db);
                 version = 8;
+            }
+
+            if (version < 9) {
+                // The max id is not yet set at this point (onUpgrade is triggered in the ctor
+                // before it gets a change to get set, so we need to read it here when we use it)
+                if (mMaxId == -1) {
+                    mMaxId = initializeMaxId(db);
+                }
+
+                // Add default hotseat icons
+                loadFavorites(db, LauncherSettings.Favorites.CONTAINER_HOTSEAT);
+                version = 9;
             }
 
             if (version != DATABASE_VERSION) {
@@ -672,8 +689,9 @@ public class LauncherProvider extends ContentProvider {
          * Loads the default set of favorite packages from an xml file.
          *
          * @param db The database to write the values into
+         * @param filterContainerId The specific container id of items to load
          */
-        private int loadFavorites(SQLiteDatabase db) {
+        private int loadFavorites(SQLiteDatabase db, long filterContainerId) {
             Intent intent = new Intent(Intent.ACTION_MAIN, null);
             intent.addCategory(Intent.CATEGORY_LAUNCHER);
             ContentValues values = new ContentValues();
@@ -700,26 +718,42 @@ public class LauncherProvider extends ContentProvider {
 
                     TypedArray a = mContext.obtainStyledAttributes(attrs, R.styleable.Favorite);
 
-                    values.clear();                    
-                    values.put(LauncherSettings.Favorites.CONTAINER,
-                            LauncherSettings.Favorites.CONTAINER_DESKTOP);
-                    values.put(LauncherSettings.Favorites.SCREEN,
-                            a.getString(R.styleable.Favorite_screen));
-                    values.put(LauncherSettings.Favorites.CELLX,
-                            a.getString(R.styleable.Favorite_x));
-                    values.put(LauncherSettings.Favorites.CELLY,
-                            a.getString(R.styleable.Favorite_y));
+                    long container = LauncherSettings.Favorites.CONTAINER_DESKTOP;
+                    if (a.hasValue(R.styleable.Favorite_container)) {
+                        container = Long.valueOf(a.getString(R.styleable.Favorite_container));
+                    }
+                    if (filterContainerId == ItemInfo.NO_ID || filterContainerId == container) {
+                        String screen = a.getString(R.styleable.Favorite_screen);
+                        String x = a.getString(R.styleable.Favorite_x);
+                        String y = a.getString(R.styleable.Favorite_y);
 
-                    if (TAG_FAVORITE.equals(name)) {
-                        added = addAppShortcut(db, values, a, packageManager, intent);
-                    } else if (TAG_SEARCH.equals(name)) {
-                        added = addSearchWidget(db, values);
-                    } else if (TAG_CLOCK.equals(name)) {
-                        added = addClockWidget(db, values);
-                    } else if (TAG_APPWIDGET.equals(name)) {
-                        added = addAppWidget(db, values, a, packageManager);
-                    } else if (TAG_SHORTCUT.equals(name)) {
-                        added = addUriShortcut(db, values, a);
+                        // If we are adding to the hotset, the screen is used as the position in the
+                        // hotset. This screen can't be at position 0 because AllApps is in the
+                        // zeroth position.
+                        if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
+                                Integer.valueOf(screen) <= 0) {
+                            throw new RuntimeException("Invalid screen position for hotseat item");
+                        }
+
+                        values.clear();
+                        values.put(LauncherSettings.Favorites.CONTAINER, container);
+                        values.put(LauncherSettings.Favorites.SCREEN, screen);
+                        values.put(LauncherSettings.Favorites.CELLX, x);
+                        values.put(LauncherSettings.Favorites.CELLY, y);
+
+                        System.out.println("Adding item to container: " + container);
+
+                        if (TAG_FAVORITE.equals(name)) {
+                            added = addAppShortcut(db, values, a, packageManager, intent);
+                        } else if (TAG_SEARCH.equals(name)) {
+                            added = addSearchWidget(db, values);
+                        } else if (TAG_CLOCK.equals(name)) {
+                            added = addClockWidget(db, values);
+                        } else if (TAG_APPWIDGET.equals(name)) {
+                            added = addAppWidget(db, values, a, packageManager);
+                        } else if (TAG_SHORTCUT.equals(name)) {
+                            added = addUriShortcut(db, values, a);
+                        }
                     }
 
                     if (added) i++;
@@ -729,6 +763,8 @@ public class LauncherProvider extends ContentProvider {
             } catch (XmlPullParserException e) {
                 Log.w(TAG, "Got exception parsing favorites.", e);
             } catch (IOException e) {
+                Log.w(TAG, "Got exception parsing favorites.", e);
+            } catch (RuntimeException e) {
                 Log.w(TAG, "Got exception parsing favorites.", e);
             }
 

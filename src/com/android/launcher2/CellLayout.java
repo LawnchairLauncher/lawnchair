@@ -1863,6 +1863,7 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         int spanX;
         int spanY;
         int screen;
+        long container;
         boolean valid;
 
         @Override

@@ -40,8 +40,8 @@
         android:id="@+id/workspace"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="horizontal"
-        android:fadeScrollbars="true"
+        android:paddingLeft="@dimen/qsb_bar_height"
+        android:paddingRight="@dimen/button_bar_height"
         launcher:defaultScreen="2"
         launcher:cellCountX="4"
         launcher:cellCountY="4"
@@ -66,31 +66,11 @@
         android:layout_height="match_parent"
         android:visibility="invisible" />
 
-    <RelativeLayout
-        android:id="@+id/all_apps_button_cluster"
-        android:layout_height="fill_parent"
-        android:layout_width="@dimen/button_bar_height_portrait"
-        android:layout_gravity="right|center_vertical"
-        android:layout_marginBottom="@dimen/half_status_bar_height">
-        <ImageView
-            android:id="@+id/hotseat_left"
-            style="@style/HotseatButton.Left"
-            android:layout_below="@id/all_apps_button"
-            android:src="@drawable/hotseat_phone"
-            android:onClick="launchHotSeat" />
-        <com.android.launcher2.HandleView
-            style="@style/HotseatButton"
-            android:id="@+id/all_apps_button"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/all_apps_button"
-            launcher:direction="vertical" />
-        <ImageView
-            android:id="@+id/hotseat_right"
-            style="@style/HotseatButton.Right"
-            android:layout_above="@id/all_apps_button"
-            android:src="@drawable/hotseat_browser"
-            android:onClick="launchHotSeat" />
+    <include layout="@layout/hotseat"
+        android:id="@+id/hotseat"
+        android:layout_width="@dimen/button_bar_height"
+        android:layout_height="match_parent"
+        android:layout_gravity="right" />
 
-    </RelativeLayout>
+
 </com.android.launcher2.DragLayer>

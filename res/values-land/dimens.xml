@@ -17,7 +17,7 @@
 <resources>
 <!-- QSB -->
     <dimen name="toolbar_button_vertical_padding">12dip</dimen>
-    <dimen name="toolbar_button_horizontal_padding">12dip</dimen>
+    <dimen name="toolbar_button_horizontal_padding">10dip</dimen>
 
 <!-- Workspace -->
     <dimen name="workspace_left_padding">@dimen/qsb_bar_height</dimen>
@@ -27,10 +27,6 @@
     <dimen name="workspace_page_spacing">8dp</dimen>
     <dimen name="scroll_track_padding_left">@dimen/qsb_bar_height</dimen>
     <dimen name="scroll_track_padding_right">@dimen/button_bar_height</dimen>
-
-    <dimen name="folder_cell_width">100dip</dimen>
-    <dimen name="folder_cell_height">74dip</dimen>
-    <dimen name="button_bar_height">62dip</dimen>
 
 <!-- AppsCustomize -->
     <dimen name="apps_customize_cell_width">80dp</dimen>

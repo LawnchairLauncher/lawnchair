@@ -178,17 +178,24 @@ public class LauncherModel extends BroadcastReceiver {
     static void moveItemInDatabase(Context context, final ItemInfo item, final long container,
             final int screen, final int cellX, final int cellY) {
         item.container = container;
-        item.screen = screen;
         item.cellX = cellX;
         item.cellY = cellY;
+        // We store hotseat items in canonical form which is this orientation invariant position
+        // in the hotseat
+        if (context instanceof Launcher && screen < 0 &&
+                container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            item.screen = ((Launcher) context).getHotseat().getOrderInHotseat(cellX, cellY);
+        } else {
+            item.screen = screen;
+        }
 
         final Uri uri = LauncherSettings.Favorites.getContentUri(item.id, false);
         final ContentValues values = new ContentValues();
         final ContentResolver cr = context.getContentResolver();
 
         values.put(LauncherSettings.Favorites.CONTAINER, item.container);
-        values.put(LauncherSettings.Favorites.CELLX, cellX);
-        values.put(LauncherSettings.Favorites.CELLY, cellY);
+        values.put(LauncherSettings.Favorites.CELLX, item.cellX);
+        values.put(LauncherSettings.Favorites.CELLY, item.cellY);
         values.put(LauncherSettings.Favorites.SCREEN, item.screen);
 
         sWorker.post(new Runnable() {
@@ -205,7 +212,8 @@ public class LauncherModel extends BroadcastReceiver {
                     // Items are added/removed from the corresponding FolderInfo elsewhere, such
                     // as in Workspace.onDrop. Here, we just add/remove them from the list of items
                     // that are on the desktop, as appropriate
-                    if (modelItem.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                    if (modelItem.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
+                            modelItem.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
                         if (!sWorkspaceItems.contains(modelItem)) {
                             sWorkspaceItems.add(modelItem);
                         }
@@ -356,12 +364,19 @@ public class LauncherModel extends BroadcastReceiver {
      * Add an item to the database in a specified container. Sets the container, screen, cellX and
      * cellY fields of the item. Also assigns an ID to the item.
      */
-    static void addItemToDatabase(Context context, final ItemInfo item, long container,
-            int screen, int cellX, int cellY, final boolean notify) {
+    static void addItemToDatabase(Context context, final ItemInfo item, final long container,
+            final int screen, final int cellX, final int cellY, final boolean notify) {
         item.container = container;
-        item.screen = screen;
         item.cellX = cellX;
         item.cellY = cellY;
+        // We store hotseat items in canonical form which is this orientation invariant position
+        // in the hotseat
+        if (context instanceof Launcher && screen < 0 &&
+                container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            item.screen = ((Launcher) context).getHotseat().getOrderInHotseat(cellX, cellY);
+        } else {
+            item.screen = screen;
+        }
 
         final ContentValues values = new ContentValues();
         final ContentResolver cr = context.getContentResolver();
@@ -371,7 +386,7 @@ public class LauncherModel extends BroadcastReceiver {
         LauncherApplication app = (LauncherApplication) l.getApplication();
         item.id = app.getLauncherProvider().generateNewId();
         values.put(LauncherSettings.Favorites._ID, item.id);
-        item.updateValuesWithCoordinates(values, cellX, cellY);
+        item.updateValuesWithCoordinates(values, item.cellX, item.cellY);
 
         sWorker.post(new Runnable() {
             public void run() {
@@ -382,13 +397,11 @@ public class LauncherModel extends BroadcastReceiver {
                 switch (item.itemType) {
                     case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                         sFolders.put(item.id, (FolderInfo) item);
-                        if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                            sWorkspaceItems.add(item);
-                        }
-                        break;
+                        // Fall through
                     case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                     case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                        if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                        if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
+                                item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
                             sWorkspaceItems.add(item);
                         }
                         break;
@@ -404,8 +417,8 @@ public class LauncherModel extends BroadcastReceiver {
      * Creates a new unique child id, for a given cell span across all layouts.
      */
     static int getCellLayoutChildId(
-            int cellId, int screen, int localCellX, int localCellY, int spanX, int spanY) {
-        return ((cellId & 0xFF) << 24)
+            long container, int screen, int localCellX, int localCellY, int spanX, int spanY) {
+        return (((int) container & 0xFF) << 24)
                 | (screen & 0xFF) << 16 | (localCellX & 0xFF) << 8 | (localCellY & 0xFF);
     }
 
@@ -928,6 +941,7 @@ public class LauncherModel extends BroadcastReceiver {
 
                                 switch (container) {
                                 case LauncherSettings.Favorites.CONTAINER_DESKTOP:
+                                case LauncherSettings.Favorites.CONTAINER_HOTSEAT:
                                     sWorkspaceItems.add(info);
                                     break;
                                 default:
@@ -972,6 +986,7 @@ public class LauncherModel extends BroadcastReceiver {
                             }
                             switch (container) {
                                 case LauncherSettings.Favorites.CONTAINER_DESKTOP:
+                                case LauncherSettings.Favorites.CONTAINER_HOTSEAT:
                                     sWorkspaceItems.add(folderInfo);
                                     break;
                             }
@@ -1003,9 +1018,10 @@ public class LauncherModel extends BroadcastReceiver {
                                 appWidgetInfo.spanY = c.getInt(spanYIndex);
 
                                 container = c.getInt(containerIndex);
-                                if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                                if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP &&
+                                    container != LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
                                     Log.e(TAG, "Widget found where container "
-                                            + "!= CONTAINER_DESKTOP -- ignoring!");
+                                        + "!= CONTAINER_DESKTOP nor CONTAINER_HOTSEAT - ignoring!");
                                     continue;
                                 }
                                 appWidgetInfo.container = c.getInt(containerIndex);
@@ -1607,12 +1623,10 @@ public class LauncherModel extends BroadcastReceiver {
         }
     }
 
-    ShortcutInfo addShortcut(Context context, Intent data,
-            int screen, int cellX, int cellY, boolean notify) {
-
+    ShortcutInfo addShortcut(Context context, Intent data, long container, int screen,
+            int cellX, int cellY, boolean notify) {
         final ShortcutInfo info = infoFromShortcutIntent(context, data, null);
-        addItemToDatabase(context, info, LauncherSettings.Favorites.CONTAINER_DESKTOP,
-                screen, cellX, cellY, notify);
+        addItemToDatabase(context, info, container, screen, cellX, cellY, notify);
 
         return info;
     }

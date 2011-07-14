@@ -15,13 +15,19 @@
 -->
 
 <favorites xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher">
-    <!--  Far-left screen [0] -->
+    <!-- Far-left screen [0] -->
 
-    <!--  Left screen [1] -->
-        
-    <!--  Middle screen [2] -->
+    <!-- Left screen [1] -->
 
-    <!--  Right screen [3] -->
+    <!-- Middle screen [2] -->
+    <favorite
+        launcher:packageName="com.google.android.camera"
+        launcher:className="com.android.camera.Camera"
+        launcher:screen="2"
+        launcher:x="0"
+        launcher:y="3" />
+
+    <!-- Right screen [3] -->
     <appwidget
         launcher:packageName="com.android.music"
         launcher:className="com.android.music.MediaAppWidgetProvider"
@@ -31,6 +37,29 @@
         launcher:spanX="4"
         launcher:spanY="1" />
 
-    <!--  Far-right screen [4] -->
+    <!-- Far-right screen [4] -->
+
+    <!-- Hotseat (We use the screen as the position of the item in the hotseat) -->
+    <favorite
+        launcher:packageName="com.android.contacts"
+        launcher:className="com.android.contacts.activities.DialtactsActivity"
+        launcher:container="-101"
+        launcher:screen="1"
+        launcher:x="0"
+        launcher:y="0" />
+    <favorite
+        launcher:packageName="com.android.contacts"
+        launcher:className="com.android.contacts.activities.PeopleActivity"
+        launcher:container="-101"
+        launcher:screen="2"
+        launcher:x="0"
+        launcher:y="0" />
+    <favorite
+        launcher:packageName="com.android.browser"
+        launcher:className="com.android.browser.BrowserActivity"
+        launcher:container="-101"
+        launcher:screen="3"
+        launcher:x="0"
+        launcher:y="0" />
 
 </favorites>

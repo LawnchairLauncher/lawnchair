@@ -36,7 +36,8 @@
             android:id="@+id/search_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_search_normal_holo" />
+            android:src="@drawable/ic_search_normal_holo"
+            android:adjustViewBounds="true" />
     </LinearLayout>
 
     <!-- Voice search icon -->
@@ -48,6 +49,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:src="@drawable/ic_voice_search_holo"
+        android:adjustViewBounds="true"
         android:background="@drawable/button_bg"
         android:onClick="onClickVoiceButton"
         android:focusable="true"

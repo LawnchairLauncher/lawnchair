@@ -41,13 +41,13 @@ class ButtonBarKeyEventListener implements View.OnKeyListener {
 }
 
 /**
- * A keyboard listener we set on all the dock buttons.
+ * A keyboard listener we set on all the hotseat buttons.
  */
-class DockKeyEventListener implements View.OnKeyListener {
+class HotseatKeyEventListener implements View.OnKeyListener {
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         final Configuration configuration = v.getResources().getConfiguration();
-        return FocusHelper.handleDockButtonKeyEvent(v, keyCode, event, configuration.orientation);
+        return FocusHelper.handleHotseatButtonKeyEvent(v, keyCode, event, configuration.orientation);
     }
 }
 
@@ -535,9 +535,9 @@ public class FocusHelper {
     }
 
     /**
-     * Handles key events in the workspace dock (bottom of the screen).
+     * Handles key events in the workspace hotseat (bottom of the screen).
      */
-    static boolean handleDockButtonKeyEvent(View v, int keyCode, KeyEvent e, int orientation) {
+    static boolean handleHotseatButtonKeyEvent(View v, int keyCode, KeyEvent e, int orientation) {
         final ViewGroup parent = (ViewGroup) v.getParent();
         final ViewGroup launcher = (ViewGroup) parent.getParent();
         final Workspace workspace = (Workspace) launcher.findViewById(R.id.workspace);
@@ -547,7 +547,7 @@ public class FocusHelper {
         final int pageCount = workspace.getChildCount();
 
         // NOTE: currently we don't special case for the phone UI in different
-        // orientations, even though the dock is on the side in landscape mode.  This
+        // orientations, even though the hotseat is on the side in landscape mode.  This
         // is to ensure that accessibility consistency is maintained across rotations.
 
         final int action = e.getAction();
