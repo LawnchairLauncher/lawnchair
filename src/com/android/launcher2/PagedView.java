@@ -925,6 +925,9 @@ public abstract class PagedView extends ViewGroup {
          * of the down event.
          */
         final int pointerIndex = ev.findPointerIndex(mActivePointerId);
+        if (pointerIndex == -1) {
+            return;
+        }
         final float x = ev.getX(pointerIndex);
         final float y = ev.getY(pointerIndex);
         final int xDiff = (int) Math.abs(x - mLastMotionX);
