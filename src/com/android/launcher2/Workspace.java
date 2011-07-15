@@ -1984,7 +1984,8 @@ public class Workspace extends SmoothPagedView
 
         mLauncher.getDragLayer().getLocationInDragLayer(child, mTempXY);
         final int dragLayerX = (int) mTempXY[0] + (child.getWidth() - bmpWidth) / 2;
-        final int dragLayerY = (int) mTempXY[1] + (child.getHeight() - bmpHeight) / 2;
+        int dragLayerY = (int) mTempXY[1] + (child.getHeight() - bmpHeight) / 2;
+        dragLayerY -= (child.getHeight() - b.getHeight()) / 2;
 
         Rect dragRect = null;
         if (child instanceof BubbleTextView) {
