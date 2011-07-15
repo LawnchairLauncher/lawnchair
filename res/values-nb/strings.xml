@@ -72,7 +72,7 @@
     <string name="accessibility_delete_button" msgid="3628162007991023603">"Fjern"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"Avinstaller oppdateringen"</string>
     <string name="menu_add" msgid="3065046628354640854">"Legg til"</string>
-    <string name="menu_manage_apps" msgid="2308685199463588895">"Administrer programmer"</string>
+    <string name="menu_manage_apps" msgid="2308685199463588895">"Administrer apper"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"Bakgrunnsbilde"</string>
     <string name="menu_search" msgid="4826514464423239041">"Søk"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"Varslinger"</string>
