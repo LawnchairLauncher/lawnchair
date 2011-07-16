@@ -2072,8 +2072,8 @@ public class Workspace extends SmoothPagedView
             boolean considerTimeout) {
         View dropOverView = target.getChildAt(targetCell[0], targetCell[1]);
 
-        boolean hasntMoved = mDragInfo != null
-                && (mDragInfo.cellX == targetCell[0] && mDragInfo.cellY == targetCell[1]);
+        boolean hasntMoved = mDragInfo != null && (mDragInfo.cellX == targetCell[0] &&
+                mDragInfo.cellY == targetCell[1]) && mDragInfo.screen == indexOfChild(target);
 
         if (dropOverView == null || hasntMoved || (considerTimeout && !mCreateUserFolderOnDrop)) {
             return false;
