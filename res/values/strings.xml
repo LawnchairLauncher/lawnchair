@@ -39,7 +39,7 @@
     <!-- Name for all applications running as this uid. -->
     <string name="uid_name">Android Core Apps</string>
     <!-- Default folder name -->
-    <string name="folder_name">Folder</string>
+    <string name="folder_name"></string>
     <!-- Title of dialog that appears after user selects Wallpaper from menu -->
     <string name="chooser_wallpaper">Select wallpaper from</string>
     <!-- Button label on Wallpaper Gallery screen; user selects this button to set a specific wallpaper -->
