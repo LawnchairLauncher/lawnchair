@@ -2834,33 +2834,72 @@ public class Workspace extends SmoothPagedView
                 mLauncher.exitSpringLoadedDragModeDelayed(false);
             }
         };
+
+        ItemInfo info = (ItemInfo) dragInfo;
+        int spanX = info.spanX;
+        int spanY = info.spanY;
+        if (mDragInfo != null) {
+            spanX = mDragInfo.spanX;
+            spanY = mDragInfo.spanY;
+        }
+
         final int screen = indexOfChild(cellLayout);
         if (screen != mCurrentPage && mState != State.SPRING_LOADED) {
             snapToPage(screen);
         }
-        if (dragInfo instanceof PendingAddItemInfo) {
-            final PendingAddItemInfo info = (PendingAddItemInfo) dragInfo;
-            mLauncher.getDragLayer().animateViewOut(d.dragView, new Runnable() {
+
+        if (info instanceof PendingAddItemInfo) {
+            final PendingAddItemInfo pendingInfo = (PendingAddItemInfo) dragInfo;
+
+            Runnable onAnimationCompleteRunnable = new Runnable() {
                 @Override
                 public void run() {
                     // When dragging and dropping from customization tray, we deal with creating
                     // widgets/shortcuts/folders in a slightly different way
-                    switch (info.itemType) {
+                    switch (pendingInfo.itemType) {
                     case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
-                        mLauncher.addAppWidgetFromDrop((PendingAddWidgetInfo) info, screen, touchXY);
+                        mLauncher.addAppWidgetFromDrop((PendingAddWidgetInfo) pendingInfo,
+                                screen, touchXY);
                         break;
                     case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                        mLauncher.processShortcutFromDrop(info.componentName, screen, touchXY);
+                        mLauncher.processShortcutFromDrop(pendingInfo.componentName,
+                                screen, touchXY);
                         break;
                     default:
-                        throw new IllegalStateException("Unknown item type: " + info.itemType);
+                        throw new IllegalStateException("Unknown item type: " +
+                                pendingInfo.itemType);
                     }
                     cellLayout.onDragExit();
                 }
-            });
+            };
+
+            // Now we animate the dragView, (ie. the widget or shortcut preview) into its final
+            // location and size on the home screen.
+
+            // The target cell is also calculated later in Launcher when the widget is actually
+            // added, however, we do it here as well to find out where to animate to. The re-use
+            // of this computation required to much restructuring.
+            mTargetCell = findNearestVacantArea(touchXY[0], touchXY[1], spanX, spanY, null,
+                    cellLayout, mTargetCell);
+
+            int loc[] = new int[2];
+            cellLayout.cellToPoint(mTargetCell[0], mTargetCell[1], loc);
+
+            RectF r = new RectF();
+            cellLayout.cellToRect(mTargetCell[0], mTargetCell[1], spanX, spanY, r);
+            float cellLayoutScale =
+                    mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(cellLayout, loc);
+
+            float dragViewScale =  r.width() / d.dragView.getMeasuredWidth();
+            // The animation will scale the dragView about its center, so we need to center about
+            // the final location.
+            loc[0] -= (d.dragView.getMeasuredWidth() - cellLayoutScale * r.width()) / 2;
+            loc[1] -= (d.dragView.getMeasuredHeight() - cellLayoutScale * r.height()) / 2;
+
+            mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, loc,
+                    dragViewScale * cellLayoutScale, onAnimationCompleteRunnable);
         } else {
             // This is for other drag/drop cases, like dragging from All Apps
-            ItemInfo info = (ItemInfo) dragInfo;
             View view = null;
 
             switch (info.itemType) {
@@ -2879,16 +2918,6 @@ public class Workspace extends SmoothPagedView
                 break;
             default:
                 throw new IllegalStateException("Unknown item type: " + info.itemType);
-            }
-
-            int spanX = 1;
-            int spanY = 1;
-            if (mDragInfo != null) {
-                spanX = mDragInfo.spanX;
-                spanY = mDragInfo.spanY;
-            } else {
-                spanX = info.spanX;
-                spanY = info.spanY;
             }
 
             // First we find the cell nearest to point at which the item is
