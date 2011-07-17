@@ -169,6 +169,13 @@ public class DragLayer extends FrameLayout {
         return mDragController.onTouchEvent(ev);
     }
 
+    /**
+     * Determine the rect of the descendant in this DragLayer's coordinates
+     *
+     * @param descendant The descendant whose coordinates we want to find.
+     * @param r The rect into which to place the results.
+     * @return The factor by which this descendant is scaled relative to this DragLayer.
+     */
     public float getDescendantRectRelativeToSelf(View descendant, Rect r) {
         mTmpXY[0] = 0;
         mTmpXY[1] = 0;
@@ -178,6 +185,20 @@ public class DragLayer extends FrameLayout {
         return scale;
     }
 
+    public void getLocationInDragLayer(View child, int[] loc) {
+        loc[0] = 0;
+        loc[1] = 0;
+        getDescendantCoordRelativeToSelf(child, loc);
+    }
+
+    /**
+     * Given a coordinate relative to the descendant, find the coordinate in this DragLayer's
+     * coordinates.
+     *
+     * @param descendant The descendant to which the passed coordinate is relative.
+     * @param coord The coordinate that we want mapped.
+     * @return The factor by which this descendant is scaled relative to this DragLayer.
+     */
     public float getDescendantCoordRelativeToSelf(View descendant, int[] coord) {
         float scale = 1.0f;
         float[] pt = {coord[0], coord[1]};
@@ -197,12 +218,6 @@ public class DragLayer extends FrameLayout {
         coord[0] = (int) pt[0];
         coord[1] = (int) pt[1];
         return scale;
-    }
-
-    public void getLocationInDragLayer(View child, int[] loc) {
-        loc[0] = 0;
-        loc[1] = 0;
-        getDescendantCoordRelativeToSelf(child, loc);
     }
 
     public void getViewRectRelativeToSelf(View v, Rect r) {

@@ -730,20 +730,24 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         int centeredLeft = centerX - width / 2;
         int centeredTop = centerY - height / 2;
 
-        int parentWidth = 0;
-        int parentHeight = 0;
-        if (parent != null) {
-            parentWidth = parent.getMeasuredWidth();
-            parentHeight = parent.getMeasuredHeight();
-        }
+        // We first fetch the currently visible CellLayoutChildren
+        int page = mLauncher.getWorkspace().getCurrentPage();
+        CellLayout currentPage = (CellLayout) mLauncher.getWorkspace().getChildAt(page);
+        CellLayoutChildren boundingLayout = currentPage.getChildrenLayout();
+        Rect bounds = new Rect();
+        parent.getDescendantRectRelativeToSelf(boundingLayout, bounds);
 
-        int left = Math.min(Math.max(0, centeredLeft), parentWidth - width);
-        int top = Math.min(Math.max(0, centeredTop), parentHeight - height);
-        if (width >= parentWidth) {
-            left = (parentWidth - width) / 2;
+        // We need to bound the folder to the currently visible CellLayoutChildren
+        int left = Math.min(Math.max(bounds.left, centeredLeft),
+                bounds.left + bounds.width() - width);
+        int top = Math.min(Math.max(bounds.top, centeredTop),
+                bounds.top + bounds.height() - height);
+        // If the folder doesn't fit within the bounds, center it about the desired bounds
+        if (width >= bounds.width()) {
+            left = bounds.left + (bounds.width() - width) / 2;
         }
-        if (height >= parentHeight) {
-            top = (parentHeight - height) / 2;
+        if (height >= bounds.height()) {
+            top = bounds.top + (bounds.height() - height) / 2;
         }
 
         int folderPivotX = width / 2 + (centeredLeft - left);
