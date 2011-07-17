@@ -1187,7 +1187,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public boolean isSmall() {
-        return mState == State.SMALL;
+        return mState == State.SMALL || mState == State.SPRING_LOADED;
     }
 
     void enableChildrenCache(int fromPage, int toPage) {
@@ -1631,8 +1631,9 @@ public class Workspace extends SmoothPagedView
             if (springLoaded) {
                 finalScaleFactor = mSpringLoadedShrinkFactor;
                 finalBackgroundAlpha = 1.0f;
+                mState = State.SPRING_LOADED;
             } else {
-                mState = springLoaded ? State.SPRING_LOADED : State.NORMAL;
+                mState = State.NORMAL;
             }
             if (mAnimator != null) {
                 mAnimator.cancel();
