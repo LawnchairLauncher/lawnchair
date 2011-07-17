@@ -178,7 +178,7 @@ public class DragLayer extends FrameLayout {
         return scale;
     }
 
-    private float getDescendantCoordRelativeToSelf(View descendant, int[] coord) {
+    public float getDescendantCoordRelativeToSelf(View descendant, int[] coord) {
         float scale = 1.0f;
         float[] pt = {coord[0], coord[1]};
         descendant.getMatrix().mapPoints(pt);
@@ -319,6 +319,17 @@ public class DragLayer extends FrameLayout {
         animateViewIntoPosition(dragView, child, null);
     }
 
+    public void animateViewIntoPosition(DragView dragView, final int[] pos, float scale,
+            Runnable onFinishRunnable) {
+        Rect r = new Rect();
+        getViewRectRelativeToSelf(dragView, r);
+        final int fromX = r.left;
+        final int fromY = r.top;
+
+        animateViewIntoPosition(dragView, fromX, fromY, pos[0], pos[1], scale,
+                onFinishRunnable, true);
+    }
+
     public void animateViewIntoPosition(DragView dragView, final View child,
             final Runnable onFinishAnimationRunnable) {
         ((CellLayoutChildren) child.getParent()).measureChild(child);
@@ -373,18 +384,6 @@ public class DragLayer extends FrameLayout {
         animateViewIntoPosition(dragView, fromX, fromY, toX, toY, scale, onCompleteRunnable, true);
     }
 
-    /* Just fade out in place */
-    public void animateViewOut(DragView dragView, Runnable onFinishAnimationRunnable) {
-        Rect r = new Rect();
-        getViewRectRelativeToSelf(dragView, r);
-        final int fromX = r.left;
-        final int fromY = r.top;
-        final int toX = fromX;
-        final int toY = fromY;
-        animateViewIntoPosition(dragView, fromX, fromY, toX, toY, 1.0f, onFinishAnimationRunnable,
-                true);
-    }
-
     private void animateViewIntoPosition(final View view, final int fromX, final int fromY,
             final int toX, final int toY, float finalScale, Runnable onCompleteRunnable,
             boolean fadeOut) {
@@ -394,6 +393,24 @@ public class DragLayer extends FrameLayout {
         animateView(view, from, to, 1f, finalScale, -1, null, null, onCompleteRunnable, true);
     }
 
+    /**
+     * This method animates a view at the end of a drag and drop animation.
+     *
+     * @param view The view to be animated. This view is drawn directly into DragLayer, and so
+     *        doesn't need to be a child of DragLayer.
+     * @param from The initial location of the view. Only the left and top parameters are used.
+     * @param to The final location of the view. Only the left and top parameters are used. This
+     *        location doesn't account for scaling, and so should be centered about the desired
+     *        final location (including scaling).
+     * @param finalAlpha The final alpha of the view, in case we want it to fade as it animates.
+     * @param finalScale The final scale of the view. The view is scaled about its center.
+     * @param duration The duration of the animation.
+     * @param motionInterpolator The interpolator to use for the location of the view.
+     * @param alphaInterpolator The interpolator to use for the alpha of the view.
+     * @param onCompleteRunnable Optional runnable to run on animation completion.
+     * @param fadeOut Whether or not to fade out the view once the animation completes. If true,
+     *        the runnable will execute after the view is faded out.
+     */
     public void animateView(final View view, final Rect from, final Rect to, final float finalAlpha,
             final float finalScale, int duration, final Interpolator motionInterpolator,
             final Interpolator alphaInterpolator, final Runnable onCompleteRunnable,
