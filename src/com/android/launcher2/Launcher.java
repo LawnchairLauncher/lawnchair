@@ -1217,7 +1217,7 @@ public final class Launcher extends Activity
     };
 
     void addWidgetToAutoAdvanceIfNeeded(View hostView, AppWidgetProviderInfo appWidgetInfo) {
-        if (appWidgetInfo.autoAdvanceViewId == -1) return;
+        if (appWidgetInfo == null || appWidgetInfo.autoAdvanceViewId == -1) return;
         View v = hostView.findViewById(appWidgetInfo.autoAdvanceViewId);
         if (v instanceof Advanceable) {
             mWidgetsToAdvance.put(hostView, appWidgetInfo);
