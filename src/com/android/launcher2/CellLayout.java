@@ -64,6 +64,8 @@ public class CellLayout extends ViewGroup {
     private int mCountX;
     private int mCountY;
 
+    private int mOriginalWidthGap;
+    private int mOriginalHeightGap;
     private int mWidthGap;
     private int mHeightGap;
     private int mMaxGap;
@@ -155,8 +157,8 @@ public class CellLayout extends ViewGroup {
             mCellWidth = a.getDimensionPixelSize(R.styleable.CellLayout_cellWidth, 10);
         mOriginalCellHeight =
             mCellHeight = a.getDimensionPixelSize(R.styleable.CellLayout_cellHeight, 10);
-        mWidthGap = a.getDimensionPixelSize(R.styleable.CellLayout_widthGap, 0);
-        mHeightGap = a.getDimensionPixelSize(R.styleable.CellLayout_heightGap, 0);
+        mWidthGap = mOriginalWidthGap = a.getDimensionPixelSize(R.styleable.CellLayout_widthGap, 0);
+        mHeightGap = mOriginalHeightGap = a.getDimensionPixelSize(R.styleable.CellLayout_heightGap, 0);
         mMaxGap = a.getDimensionPixelSize(R.styleable.CellLayout_maxGap, 0);
         mCountX = LauncherModel.getCellCountX();
         mCountY = LauncherModel.getCellCountY();
@@ -872,7 +874,7 @@ public class CellLayout extends ViewGroup {
         int numWidthGaps = mCountX - 1;
         int numHeightGaps = mCountY - 1;
 
-        if (mWidthGap < 0 || mHeightGap < 0) {
+        if (mOriginalWidthGap < 0 || mOriginalHeightGap < 0) {
             int hSpace = widthSpecSize - mPaddingLeft - mPaddingRight;
             int vSpace = heightSpecSize - mPaddingTop - mPaddingBottom;
             int hFreeSpace = hSpace - (mCountX * mOriginalCellWidth);
@@ -885,6 +887,9 @@ public class CellLayout extends ViewGroup {
             mCellHeight = mOriginalCellHeight + remainingVSpace / mCountY;
 
             mChildren.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
+        } else {
+            mWidthGap = mOriginalWidthGap;
+            mHeightGap = mOriginalHeightGap;
         }
 
         // Initial values correspond to widthSpecMode == MeasureSpec.EXACTLY

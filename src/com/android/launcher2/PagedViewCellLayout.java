@@ -41,6 +41,8 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
     private int mOriginalCellHeight;
     private int mCellWidth;
     private int mCellHeight;
+    private int mOriginalWidthGap;
+    private int mOriginalHeightGap;
     private int mWidthGap;
     private int mHeightGap;
     private int mMaxGap;
@@ -72,7 +74,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         mPeekWidth = resources.getDimensionPixelSize(R.dimen.apps_customize_peek_width);
         mCellCountX = LauncherModel.getCellCountX();
         mCellCountY = LauncherModel.getCellCountY();
-        mWidthGap = mHeightGap = -1;
+        mOriginalHeightGap = mOriginalHeightGap = mWidthGap = mHeightGap = -1;
         mMaxGap = resources.getDimensionPixelSize(R.dimen.apps_customize_max_gap);
 
         mChildren = new PagedViewCellLayoutChildren(context);
@@ -221,12 +223,10 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
             throw new RuntimeException("CellLayout cannot have UNSPECIFIED dimensions");
         }
 
-
-
         int numWidthGaps = mCellCountX - 1;
         int numHeightGaps = mCellCountY - 1;
 
-        if (mWidthGap < 0 || mHeightGap < 0) {
+        if (mOriginalWidthGap < 0 || mOriginalHeightGap < 0) {
             int hSpace = widthSpecSize - mPaddingLeft - mPaddingRight;
             int vSpace = heightSpecSize - mPaddingTop - mPaddingBottom;
             int hFreeSpace = hSpace - (mCellCountX * mOriginalCellWidth);
@@ -236,6 +236,9 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
 
             mChildren.setGap(mWidthGap, mHeightGap);
             mHolographicChildren.setGap(mWidthGap, mHeightGap);
+        } else {
+            mWidthGap = mOriginalWidthGap;
+            mHeightGap = mOriginalHeightGap;
         }
 
         // Initial values correspond to widthSpecMode == MeasureSpec.EXACTLY

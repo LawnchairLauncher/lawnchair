@@ -35,6 +35,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.MeasureSpec;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
@@ -781,6 +782,23 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             setLayoutParams(lp);
         }
         centerAboutIcon();
+    }
+
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int width = getPaddingLeft() + getPaddingRight() + mContent.getDesiredWidth();
+        // Technically there is no padding at the bottom, but we add space equal to the padding
+        // and have to account for that here.
+        int height = getPaddingTop() + mContent.getDesiredHeight() + mFolderNameHeight;
+
+        int contentWidthSpec = MeasureSpec.makeMeasureSpec(mContent.getDesiredWidth(),
+                MeasureSpec.EXACTLY);
+        int contentHeightSpec = MeasureSpec.makeMeasureSpec(mContent.getDesiredHeight(),
+                MeasureSpec.EXACTLY);
+        mContent.measure(contentWidthSpec, contentHeightSpec);
+
+        mFolderName.measure(contentWidthSpec,
+                MeasureSpec.makeMeasureSpec(mFolderNameHeight, MeasureSpec.EXACTLY));
+        setMeasuredDimension(width, height);
     }
 
     private void arrangeChildren(ArrayList<View> list) {
