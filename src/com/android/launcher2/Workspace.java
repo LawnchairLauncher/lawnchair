@@ -288,11 +288,13 @@ public class Workspace extends SmoothPagedView
     public void onDragStart(DragSource source, Object info, int dragAction) {
         mIsDragOccuring = true;
         updateChildrenLayersEnabled();
+        mLauncher.lockScreenOrientation();
     }
 
     public void onDragEnd() {
         mIsDragOccuring = false;
         updateChildrenLayersEnabled();
+        mLauncher.unlockScreenOrientation();
     }
 
     /**
@@ -2004,7 +2006,6 @@ public class Workspace extends SmoothPagedView
         mDragController.startDrag(b, dragLayerX, dragLayerY, source, child.getTag(),
                 DragController.DRAG_ACTION_MOVE, dragRect);
         b.recycle();
-        mLauncher.lockScreenOrientation();
     }
 
     void addApplicationShortcut(ShortcutInfo info, int screen, int cellX, int cellY,
@@ -3034,7 +3035,6 @@ public class Workspace extends SmoothPagedView
             doDragExit(null);
             ((CellLayout) getChildAt(mDragInfo.screen)).onDropChild(mDragInfo.cell);
         }
-        mLauncher.unlockScreenOrientation();
         mDragOutline = null;
         mDragInfo = null;
     }
