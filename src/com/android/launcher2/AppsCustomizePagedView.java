@@ -734,15 +734,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 mPageLayoutPaddingRight, mPageLayoutPaddingBottom);
 
         // Note: We force a measure here to get around the fact that when we do layout calculations
-        // immediately after syncing, we don't have a proper width.  That said, we already know the
-        // expected page width, so we can actually optimize by hiding all the TextView-based
-        // children that are expensive to measure, and let that happen naturally later.
-        setVisibilityOnChildren(layout, View.GONE);
+        // immediately after syncing, we don't have a proper width.
         int widthSpec = MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.AT_MOST);
         int heightSpec = MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.AT_MOST);
         layout.setMinimumWidth(getPageContentWidth());
         layout.measure(widthSpec, heightSpec);
-        setVisibilityOnChildren(layout, View.VISIBLE);
     }
     private void renderDrawableToBitmap(Drawable d, Bitmap bitmap, int x, int y, int w, int h,
             float scaleX, float scaleY) {
@@ -893,7 +889,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private void onSyncWidgetPageItems(AsyncTaskPageData data) {
         int page = data.page;
         PagedViewGridLayout layout = (PagedViewGridLayout) getChildAt(page);
-        layout.removeAllViews();
+        // Only set the column count once we have items
+        layout.setColumnCount(layout.getCellCountX());
 
         ArrayList<Object> items = data.items;
         int count = items.size();
@@ -935,8 +932,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             int ix = i % cellCountX;
             int iy = i / cellCountX;
             GridLayout.LayoutParams lp = new GridLayout.LayoutParams(
-                    new GridLayout.Group(iy, 1, GridLayout.LEFT),
-                    new GridLayout.Group(ix, 1, GridLayout.TOP));
+                    GridLayout.spec(iy, GridLayout.LEFT, GridLayout.CAN_STRETCH),
+                    GridLayout.spec(ix, GridLayout.TOP, GridLayout.CAN_STRETCH));
             lp.width = cellWidth;
             lp.height = cellHeight;
             if (ix > 0) lp.leftMargin = mWidgetWidthGap;
