@@ -161,11 +161,11 @@ public abstract class PagedView extends ViewGroup {
     protected boolean mIsDataReady = false;
 
     // Scrolling indicator
+    private android.animation.ValueAnimator mScrollIndicatorAnimator;
     private ImageView mScrollIndicator;
     private ImageView mScrollTrack;
     private boolean mHasScrollIndicator = true;
     private static final int sScrollIndicatorFadeInDuration = 150;
-    private static final int sScrollIndicatorFastFadeOutDuration = 50;
     private static final int sScrollIndicatorFadeOutDuration = 650;
     private static final int sScrollIndicatorFlashDuration = 650;
 
@@ -258,10 +258,6 @@ public abstract class PagedView extends ViewGroup {
 
     View getPageAt(int index) {
         return getChildAt(index);
-    }
-
-    int getScrollWidth() {
-        return getWidth();
     }
 
     /**
@@ -1676,7 +1672,13 @@ public abstract class PagedView extends ViewGroup {
         if (mScrollIndicator != null) {
             // Fade the indicator in
             updateScrollingIndicatorPosition();
-            mScrollIndicator.animate().alpha(1f).setDuration(sScrollIndicatorFadeInDuration).start();
+            mScrollIndicator.setVisibility(View.VISIBLE);
+            if (mScrollIndicatorAnimator != null) {
+                mScrollIndicatorAnimator.cancel();
+            }
+            mScrollIndicatorAnimator = ObjectAnimator.ofFloat(mScrollIndicator, "alpha", 1f);
+            mScrollIndicatorAnimator.setDuration(sScrollIndicatorFadeInDuration);
+            mScrollIndicatorAnimator.start();
         }
     }
 
@@ -1688,9 +1690,39 @@ public abstract class PagedView extends ViewGroup {
         if (mScrollIndicator != null) {
             // Fade the indicator out
             updateScrollingIndicatorPosition();
-            mScrollIndicator.animate().alpha(0f).setDuration(immediately ?
-                    sScrollIndicatorFastFadeOutDuration : sScrollIndicatorFadeOutDuration).start();
+            if (mScrollIndicatorAnimator != null) {
+                mScrollIndicatorAnimator.cancel();
+            }
+            if (immediately) {
+                mScrollIndicator.setVisibility(View.GONE);
+                mScrollIndicator.setAlpha(0f);
+            } else {
+                mScrollIndicatorAnimator = ObjectAnimator.ofFloat(mScrollIndicator, "alpha", 0f);
+                mScrollIndicatorAnimator.setDuration(sScrollIndicatorFadeOutDuration);
+                mScrollIndicatorAnimator.addListener(new AnimatorListenerAdapter() {
+                    private boolean cancelled = false;
+                    @Override
+                    public void onAnimationCancel(android.animation.Animator animation) {
+                        cancelled = true;
+                    }
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        if (!cancelled) {
+                            mScrollIndicator.setVisibility(View.GONE);
+                        }
+                    }
+                });
+                mScrollIndicatorAnimator.start();
+            }
         }
+    }
+
+    /**
+     * To be overridden by subclasses to determine whether the scroll indicator should stretch to
+     * fill its space on the track or not.
+     */
+    protected boolean hasElasticScrollIndicator() {
+        return false;
     }
 
     private void updateScrollingIndicator() {
@@ -1706,16 +1738,35 @@ public abstract class PagedView extends ViewGroup {
     private void updateScrollingIndicatorPosition() {
         if (!isScrollingIndicatorEnabled()) return;
 
-        // We can make the page width smaller to make it look more centered
+        int numPages = getChildCount();
+        int pageWidth = getMeasuredWidth();
+        int maxPageWidth = (numPages * getMeasuredWidth()) + ((numPages - 1) * mPageSpacing);
+        int trackWidth = pageWidth;
+        int indicatorWidth = mScrollIndicator.getMeasuredWidth() -
+                mScrollIndicator.getPaddingLeft() - mScrollIndicator.getPaddingRight();
+        int paddingLeft = 0;
+        int paddingRight = 0;
+
+        // Get the track properties
         getScrollingIndicatorTrack();
-        int pageWidth = mScrollTrack.getMeasuredWidth() - mScrollTrack.getPaddingLeft() -
-                mScrollTrack.getPaddingRight();
-        int maxPageWidth = getChildCount() * getMeasuredWidth();
+        if (mScrollTrack != null) {
+            paddingLeft = mScrollTrack.getPaddingLeft();
+            paddingRight = mScrollTrack.getPaddingRight();
+            trackWidth = mScrollTrack.getMeasuredWidth() - paddingLeft - paddingRight;
+        }
+
         float offset = (float) getScrollX() / maxPageWidth;
-        int indicatorWidth = pageWidth / getChildCount();
-        int indicatorCenterOffset = indicatorWidth / 2 - mScrollIndicator.getMeasuredWidth() / 2;
-        int indicatorPos = (int) (offset * pageWidth) + mScrollTrack.getPaddingLeft() +
-                indicatorCenterOffset;
+        int indicatorSpace = trackWidth / numPages;
+        int indicatorPos = (int) (offset * trackWidth) + paddingLeft;
+        if (hasElasticScrollIndicator()) {
+            if (mScrollIndicator.getMeasuredWidth() != indicatorSpace) {
+                mScrollIndicator.getLayoutParams().width = indicatorSpace;
+                mScrollIndicator.requestLayout();
+            }
+        } else {
+            int indicatorCenterOffset = indicatorSpace / 2 - indicatorWidth / 2;
+            indicatorPos += indicatorCenterOffset;
+        }
         mScrollIndicator.setTranslationX(indicatorPos);
         mScrollIndicator.invalidate();
     }

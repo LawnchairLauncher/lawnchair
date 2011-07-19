@@ -29,15 +29,11 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
-    <style name="AppsCustomizeScrollTrack">
-        <item name="android:visibility">visible</item>
-    </style>
-
     <style name="AnimationPreview">
         <item name="android:windowEnterAnimation">@anim/fade_in_fast</item>
         <item name="android:windowExitAnimation">@anim/fade_out_fast</item>
     </style>
-    
+
     <style name="WorkspaceIcon">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
