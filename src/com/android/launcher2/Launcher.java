@@ -317,6 +317,7 @@ public final class Launcher extends Activity
         // If we have a saved version of these external icons, we load them up immediately
         if (sGlobalSearchIcon == null || sVoiceSearchIcon == null || sAppMarketIcon == null) {
             updateIconsAffectedByPackageManagerChanges();
+            updateGlobalSearchIcon();
         }
         if (sGlobalSearchIcon != null) {
              updateGlobalSearchIcon(sGlobalSearchIcon);
@@ -3133,8 +3134,12 @@ public final class Launcher extends Activity
      */
     private void updateIconsAffectedByPackageManagerChanges() {
         updateAppMarketIcon();
-        updateGlobalSearchIcon();
         updateVoiceSearchIcon();
+    }
+
+    @Override
+    public void bindSearchablesChanged() {
+        updateGlobalSearchIcon();
     }
 
     /**
@@ -3147,6 +3152,7 @@ public final class Launcher extends Activity
             mAppsCustomizeContent.setApps(apps);
         }
         updateIconsAffectedByPackageManagerChanges();
+        updateGlobalSearchIcon();
     }
 
     /**
