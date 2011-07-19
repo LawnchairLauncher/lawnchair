@@ -2446,7 +2446,7 @@ public class Workspace extends SmoothPagedView
                         final AppWidgetProviderInfo widgetInfo = widgets.get(0).widgetInfo;
                         final PendingAddWidgetInfo createInfo =
                                 new PendingAddWidgetInfo(widgetInfo, mimeType, data);
-                        mLauncher.addAppWidgetFromDrop(createInfo, mCurrentPage, pos);
+                        mLauncher.addAppWidgetFromDrop(createInfo, mCurrentPage, null, pos);
                     } else {
                         // Show the widget picker dialog if there is more than one widget
                         // that can handle this data type
@@ -2853,6 +2853,8 @@ public class Workspace extends SmoothPagedView
         if (info instanceof PendingAddItemInfo) {
             final PendingAddItemInfo pendingInfo = (PendingAddItemInfo) dragInfo;
 
+            mTargetCell = findNearestVacantArea(touchXY[0], touchXY[1], spanX, spanY, null,
+                    cellLayout, mTargetCell);
             Runnable onAnimationCompleteRunnable = new Runnable() {
                 @Override
                 public void run() {
@@ -2861,11 +2863,11 @@ public class Workspace extends SmoothPagedView
                     switch (pendingInfo.itemType) {
                     case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
                         mLauncher.addAppWidgetFromDrop((PendingAddWidgetInfo) pendingInfo,
-                                screen, touchXY);
+                                screen, mTargetCell, null);
                         break;
                     case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                         mLauncher.processShortcutFromDrop(pendingInfo.componentName,
-                                screen, touchXY);
+                                screen, mTargetCell, null);
                         break;
                     default:
                         throw new IllegalStateException("Unknown item type: " +
@@ -2877,13 +2879,6 @@ public class Workspace extends SmoothPagedView
 
             // Now we animate the dragView, (ie. the widget or shortcut preview) into its final
             // location and size on the home screen.
-
-            // The target cell is also calculated later in Launcher when the widget is actually
-            // added, however, we do it here as well to find out where to animate to. The re-use
-            // of this computation required to much restructuring.
-            mTargetCell = findNearestVacantArea(touchXY[0], touchXY[1], spanX, spanY, null,
-                    cellLayout, mTargetCell);
-
             int loc[] = new int[2];
             cellLayout.cellToPoint(mTargetCell[0], mTargetCell[1], loc);
 

@@ -151,9 +151,9 @@ public final class Launcher extends Activity
     // Type: int
     private static final String RUNTIME_STATE_PENDING_ADD_SCREEN = "launcher.add_screen";
     // Type: int
-    private static final String RUNTIME_STATE_PENDING_ADD_CELL_X = "launcher.add_cellX";
+    private static final String RUNTIME_STATE_PENDING_ADD_CELL_X = "launcher.add_cell_x";
     // Type: int
-    private static final String RUNTIME_STATE_PENDING_ADD_CELL_Y = "launcher.add_cellY";
+    private static final String RUNTIME_STATE_PENDING_ADD_CELL_Y = "launcher.add_cell_y";
     // Type: boolean
     private static final String RUNTIME_STATE_PENDING_FOLDER_RENAME = "launcher.rename_folder";
     // Type: long
@@ -186,8 +186,8 @@ public final class Launcher extends Activity
     private LauncherAppWidgetHost mAppWidgetHost;
 
     private int mAddScreen = -1;
-    private int mAddIntersectCellX = -1;
-    private int mAddIntersectCellY = -1;
+    private int mAddCellX = -1;
+    private int mAddCellY = -1;
     private int[] mAddDropPosition;
     private int[] mTmpAddItemCellCoordinates = new int[2];
 
@@ -632,14 +632,13 @@ public final class Launcher extends Activity
 
         // For example, the user would PICK_SHORTCUT for "Music playlist", and we
         // launch over to the Music app to actually CREATE_SHORTCUT.
-
         if (resultCode == RESULT_OK && mAddScreen != -1) {
             final PendingAddArguments args = new PendingAddArguments();
             args.requestCode = requestCode;
             args.intent = data;
             args.screen = mAddScreen;
-            args.cellX = mAddIntersectCellX;
-            args.cellY = mAddIntersectCellY;
+            args.cellX = mAddCellX;
+            args.cellY = mAddCellY;
 
             // If the loader is still running, defer the add until it is done.
             if (isWorkspaceLocked()) {
@@ -802,8 +801,8 @@ public final class Launcher extends Activity
 
         if (addScreen > -1) {
             mAddScreen = addScreen;
-            mAddIntersectCellX = savedState.getInt(RUNTIME_STATE_PENDING_ADD_CELL_X);
-            mAddIntersectCellY = savedState.getInt(RUNTIME_STATE_PENDING_ADD_CELL_Y);
+            mAddCellX = savedState.getInt(RUNTIME_STATE_PENDING_ADD_CELL_X);
+            mAddCellY = savedState.getInt(RUNTIME_STATE_PENDING_ADD_CELL_Y);
             mRestoring = true;
         }
 
@@ -977,12 +976,15 @@ public final class Launcher extends Activity
      * @param data The intent describing the application.
      * @param cellInfo The position on screen where to create the shortcut.
      */
-    void completeAddApplication(Intent data, int screen,
-            int intersectCellX, int intersectCellY) {
+    void completeAddApplication(Intent data, int screen, int cellX, int cellY) {
         final int[] cellXY = mTmpAddItemCellCoordinates;
         final CellLayout layout = (CellLayout) mWorkspace.getChildAt(screen);
 
-        if (!layout.findCellForSpanThatIntersects(cellXY, 1, 1, intersectCellX, intersectCellY)) {
+        // First we check if we already know the exact location where we want to add this item.
+        if (cellX >= 0 && cellY >= 0) {
+            cellXY[0] = cellX;
+            cellXY[1] = cellY;
+        } else if (!layout.findCellForSpan(cellXY, 1, 1)) {
             showOutOfSpaceMessage();
             return;
         }
@@ -994,7 +996,7 @@ public final class Launcher extends Activity
                     Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             info.container = ItemInfo.NO_ID;
             mWorkspace.addApplicationShortcut(info, screen, cellXY[0], cellXY[1],
-                    isWorkspaceLocked(), mAddIntersectCellX, mAddIntersectCellY);
+                    isWorkspaceLocked(), cellX, cellY);
         } else {
             Log.e(TAG, "Couldn't find ActivityInfo for selected application: " + data);
         }
@@ -1006,22 +1008,26 @@ public final class Launcher extends Activity
      * @param data The intent describing the shortcut.
      * @param cellInfo The position on screen where to create the shortcut.
      */
-    private void completeAddShortcut(Intent data, int screen,
-            int intersectCellX, int intersectCellY) {
+    private void completeAddShortcut(Intent data, int screen, int cellX, int cellY) {
         final int[] cellXY = mTmpAddItemCellCoordinates;
         final CellLayout layout = (CellLayout) mWorkspace.getChildAt(screen);
 
         int[] touchXY = mAddDropPosition;
         boolean foundCellSpan = false;
-        if (touchXY != null) {
+
+        // First we check if we already know the exact location where we want to add this item.
+        if (cellX >= 0 && cellY >= 0) {
+            cellXY[0] = cellX;
+            cellXY[1] = cellY;
+            foundCellSpan = true;
+        } else if (touchXY != null) {
             // when dragging and dropping, just find the closest free spot
             CellLayout screenLayout = (CellLayout) mWorkspace.getChildAt(screen);
             int[] result = screenLayout.findNearestVacantArea(
                     touchXY[0], touchXY[1], 1, 1, cellXY);
             foundCellSpan = (result != null);
         } else {
-            foundCellSpan = layout.findCellForSpanThatIntersects(
-                    cellXY, 1, 1, intersectCellX, intersectCellY);
+            foundCellSpan = layout.findCellForSpan(cellXY, 1, 1);
         }
 
         if (!foundCellSpan) {
@@ -1068,19 +1074,18 @@ public final class Launcher extends Activity
 
         int[] touchXY = mAddDropPosition;
         boolean foundCellSpan = false;
-        if (touchXY != null) {
+        if (mAddCellX >= 0 && mAddCellY >= 0) {
+            cellXY[0] = mAddCellX;
+            cellXY[1] = mAddCellY;
+            foundCellSpan = true;
+        } else if (touchXY != null) {
             // when dragging and dropping, just find the closest free spot
             CellLayout screenLayout = (CellLayout) mWorkspace.getChildAt(screen);
             int[] result = screenLayout.findNearestVacantArea(
                     touchXY[0], touchXY[1], spanXY[0], spanXY[1], cellXY);
             foundCellSpan = (result != null);
         } else {
-            // if we long pressed on an empty cell to bring up a menu,
-            // make sure we intersect the empty cell
-            // if mAddIntersectCellX/Y are -1 (e.g. we used menu -> add) then
-            // findCellForSpanThatIntersects will just ignore them
-            foundCellSpan = layout.findCellForSpanThatIntersects(cellXY, spanXY[0], spanXY[1],
-                    mAddIntersectCellX, mAddIntersectCellY);
+            foundCellSpan = layout.findCellForSpan(cellXY, spanXY[0], spanXY[1]);
         }
 
         if (!foundCellSpan) {
@@ -1326,8 +1331,8 @@ public final class Launcher extends Activity
 
         if (mAddScreen > -1 && mWaitingForResult) {
             outState.putInt(RUNTIME_STATE_PENDING_ADD_SCREEN, mAddScreen);
-            outState.putInt(RUNTIME_STATE_PENDING_ADD_CELL_X, mAddIntersectCellX);
-            outState.putInt(RUNTIME_STATE_PENDING_ADD_CELL_Y, mAddIntersectCellY);
+            outState.putInt(RUNTIME_STATE_PENDING_ADD_CELL_X, mAddCellX);
+            outState.putInt(RUNTIME_STATE_PENDING_ADD_CELL_Y, mAddCellY);
         }
 
         if (mFolderInfo != null && mWaitingForResult) {
@@ -1496,24 +1501,14 @@ public final class Launcher extends Activity
 
     private void addItems() {
         showWorkspace(true);
-        showAddDialog(-1, -1);
+        showAddDialog();
     }
 
     private void resetAddInfo() {
         mAddScreen = -1;
-        mAddIntersectCellX = -1;
-        mAddIntersectCellY = -1;
+        mAddCellX = -1;
+        mAddCellY = -1;
         mAddDropPosition = null;
-    }
-
-    void addAppWidgetFromDrop(PendingAddWidgetInfo info, int screen, int[] position) {
-        resetAddInfo();
-        mAddScreen = screen;
-        mAddDropPosition = position;
-
-        int appWidgetId = getAppWidgetHost().allocateAppWidgetId();
-        AppWidgetManager.getInstance(this).bindAppWidgetId(appWidgetId, info.componentName);
-        addAppWidgetImpl(appWidgetId, info);
     }
 
     private void manageApps() {
@@ -1576,14 +1571,50 @@ public final class Launcher extends Activity
         }
     }
 
-    void processShortcutFromDrop(ComponentName componentName, int screen, int[] position) {
+    /**
+     * Process a shortcut drop.
+     *
+     * @param componentName The name of the component
+     * @param screen The screen where it should be added
+     * @param cell The cell it should be added to, optional
+     * @param position The location on the screen where it was dropped, optional
+     */
+    void processShortcutFromDrop(ComponentName componentName, int screen, int[] cell, int[] loc) {
         resetAddInfo();
         mAddScreen = screen;
-        mAddDropPosition = position;
+        mAddDropPosition = loc;
+
+        if (cell != null) {
+            mAddCellX = cell[0];
+            mAddCellY = cell[1];
+        }
 
         Intent createShortcutIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
         createShortcutIntent.setComponent(componentName);
         processShortcut(createShortcutIntent);
+    }
+
+    /**
+     * Process a widget drop.
+     *
+     * @param info The PendingAppWidgetInfo of the widget being added.
+     * @param screen The screen where it should be added
+     * @param cell The cell it should be added to, optional
+     * @param position The location on the screen where it was dropped, optional
+     */
+    void addAppWidgetFromDrop(PendingAddWidgetInfo info, int screen, int[] cell, int[] loc) {
+        resetAddInfo();
+        mAddScreen = screen;
+        mAddDropPosition = loc;
+
+        if (cell != null) {
+            mAddCellX = cell[0];
+            mAddCellY = cell[1];
+        }
+
+        int appWidgetId = getAppWidgetHost().allocateAppWidgetId();
+        AppWidgetManager.getInstance(this).bindAppWidgetId(appWidgetId, info.componentName);
+        addAppWidgetImpl(appWidgetId, info);
     }
 
     void processShortcut(Intent intent) {
@@ -1608,29 +1639,21 @@ public final class Launcher extends Activity
         startActivityForResult(intent, REQUEST_PICK_WALLPAPER);
     }
 
-    FolderIcon addFolder(final int screen, int intersectCellX, int intersectCellY) {
+    FolderIcon addFolder(final int screen, int cellX, int cellY) {
         final FolderInfo folderInfo = new FolderInfo();
         folderInfo.title = getText(R.string.folder_name);
-
-        final CellLayout layout = (CellLayout) mWorkspace.getChildAt(screen);
-        final int[] cellXY = mTmpAddItemCellCoordinates;
-        if (!layout.findCellForSpanThatIntersects(cellXY, 1, 1,
-                intersectCellX, intersectCellY)) {
-            showOutOfSpaceMessage();
-            return null;
-        }
 
         // Update the model
         LauncherModel.addItemToDatabase(Launcher.this, folderInfo,
                 LauncherSettings.Favorites.CONTAINER_DESKTOP,
-                screen, cellXY[0], cellXY[1], false);
+                screen, cellX, cellY, false);
         sFolders.put(folderInfo.id, folderInfo);
 
         // Create the view
         FolderIcon newFolder = FolderIcon.fromXml(R.layout.folder_icon, this,
                 (ViewGroup) mWorkspace.getChildAt(mWorkspace.getCurrentPage()),
                 folderInfo, mIconCache);
-        mWorkspace.addInScreen(newFolder, screen, cellXY[0], cellXY[1], 1, 1, isWorkspaceLocked());
+        mWorkspace.addInScreen(newFolder, screen, cellX, cellY, 1, 1, isWorkspaceLocked());
         return newFolder;
     }
 
@@ -2009,8 +2032,6 @@ public final class Launcher extends Activity
                     // User long pressed on an item
                     mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                             HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-                    mAddIntersectCellX = longClickCellInfo.cellX;
-                    mAddIntersectCellY = longClickCellInfo.cellY;
                     mWorkspace.startDrag(longClickCellInfo);
                 }
             }
@@ -2190,10 +2211,8 @@ public final class Launcher extends Activity
         showDialog(DIALOG_RENAME_FOLDER);
     }
 
-    private void showAddDialog(int intersectX, int intersectY) {
+    private void showAddDialog() {
         resetAddInfo();
-        mAddIntersectCellX = intersectX;
-        mAddIntersectCellY = intersectY;
         mAddScreen = mWorkspace.getCurrentPage();
         mWaitingForResult = true;
         showDialog(DIALOG_CREATE_SHORTCUT);

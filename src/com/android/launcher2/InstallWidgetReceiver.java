@@ -188,7 +188,7 @@ public class InstallWidgetReceiver {
 
             final PendingAddWidgetInfo createInfo = new PendingAddWidgetInfo(widgetInfo, mMimeType,
                     mClipData);
-            mLauncher.addAppWidgetFromDrop(createInfo, mTargetLayoutScreen, mTargetLayoutPos);
+            mLauncher.addAppWidgetFromDrop(createInfo, mTargetLayoutScreen, null, mTargetLayoutPos);
         }
     }
 }
