@@ -50,6 +50,7 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
     private ButtonDropTarget mInfoDropTarget;
     private ButtonDropTarget mDeleteDropTarget;
     private int mBarHeight;
+    private boolean mDeferOnDragEnd = false;
 
     public SearchDropTargetBar(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -79,6 +80,9 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         mInfoDropTarget = (ButtonDropTarget) mDropTargetBar.findViewById(R.id.info_target);
         mDeleteDropTarget = (ButtonDropTarget) mDropTargetBar.findViewById(R.id.delete_target);
         mBarHeight = getResources().getDimensionPixelSize(R.dimen.qsb_bar_height);
+
+        mInfoDropTarget.setSearchDropTargetBar(this);
+        mDeleteDropTarget.setSearchDropTargetBar(this);
 
         boolean enableDropDownDropTargets =
             getResources().getBoolean(R.bool.config_useDropTargetDownTransition);
@@ -191,14 +195,22 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         }
     }
 
+    public void deferOnDragEnd() {
+        mDeferOnDragEnd = true;
+    }
+
     @Override
     public void onDragEnd() {
-        // Restore the QSB search bar, and animate out the drop target bar
-        mDropTargetBarFadeInAnim.cancel();
-        mDropTargetBarFadeOutAnim.start();
-        if (!mIsSearchBarHidden) {
-            mQSBSearchBarFadeOutAnim.cancel();
-            mQSBSearchBarFadeInAnim.start();
+        if (!mDeferOnDragEnd) {
+            // Restore the QSB search bar, and animate out the drop target bar
+            mDropTargetBarFadeInAnim.cancel();
+            mDropTargetBarFadeOutAnim.start();
+            if (!mIsSearchBarHidden) {
+                mQSBSearchBarFadeOutAnim.cancel();
+                mQSBSearchBarFadeInAnim.start();
+            }
+        } else {
+            mDeferOnDragEnd = false;
         }
     }
 }

@@ -21,6 +21,7 @@ import android.content.res.Resources;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.android.launcher.R;
 
@@ -34,6 +35,8 @@ public class ButtonDropTarget extends FrameLayout implements DropTarget, DragCon
 
     protected Launcher mLauncher;
     private int mBottomDragPadding;
+    protected TextView mText;
+    protected SearchDropTargetBar mSearchDropTargetBar;
 
     /** Whether this drop target is active for the current drag */
     protected boolean mActive;
@@ -61,8 +64,11 @@ public class ButtonDropTarget extends FrameLayout implements DropTarget, DragCon
         return false;
     }
 
+    public void setSearchDropTargetBar(SearchDropTargetBar searchDropTargetBar) {
+        mSearchDropTargetBar = searchDropTargetBar;
+    }
+
     public void onDrop(DragObject d) {
-        // Do nothing
     }
 
     public void onDragEnter(DragObject d) {

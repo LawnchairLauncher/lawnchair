@@ -22,16 +22,19 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.Rect;
 import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
 import com.android.launcher.R;
 
 public class DeleteDropTarget extends ButtonDropTarget {
 
-    private TextView mText;
+    private static int DELETE_ANIMATION_DURATION = 220;
     private ColorStateList mOriginalTextColor;
     private TransitionDrawable mDrawable;
     private int mHoverColor = 0xFFFF0000;
@@ -147,7 +150,37 @@ public class DeleteDropTarget extends ButtonDropTarget {
         }
     }
 
-    public void onDrop(DragObject d) {
+    private void animateToTrashAndCompleteDrop(final DragObject d) {
+        DragLayer dragLayer = mLauncher.getDragLayer();
+        Rect from = new Rect();
+        Rect to = new Rect();
+        dragLayer.getViewRectRelativeToSelf(d.dragView, from);
+        dragLayer.getViewRectRelativeToSelf(mText, to);
+
+        int width = mDrawable.getIntrinsicWidth();
+        int height = mDrawable.getIntrinsicHeight();
+        to.set(to.left, to.top, to.left + width, to.bottom);
+
+        // Center the destination rect about the trash icon
+        int xOffset = (int) -(d.dragView.getMeasuredWidth() - width) / 2;
+        int yOffset = (int) -(d.dragView.getMeasuredHeight() - height) / 2;
+        to.offset(xOffset, yOffset);
+
+        mSearchDropTargetBar.deferOnDragEnd();
+        Runnable onAnimationEndRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mSearchDropTargetBar.onDragEnd();
+                mLauncher.exitSpringLoadedDragMode();
+                completeDrop(d);
+            }
+        };
+        dragLayer.animateView(d.dragView, from, to, 0f, 0.1f,
+                DELETE_ANIMATION_DURATION, new DecelerateInterpolator(2),
+                new AccelerateInterpolator(2), onAnimationEndRunnable, false);
+    }
+
+    private void completeDrop(DragObject d) {
         ItemInfo item = (ItemInfo) d.dragInfo;
 
         if (isAllAppsApplication(d.dragSource, item)) {
@@ -177,5 +210,9 @@ public class DeleteDropTarget extends ButtonDropTarget {
                 }.start();
             }
         }
+    }
+
+    public void onDrop(DragObject d) {
+        animateToTrashAndCompleteDrop(d);
     }
 }
