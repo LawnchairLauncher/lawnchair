@@ -350,6 +350,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     @Override
     public void onClick(View v) {
+        // When we have exited all apps or are in transition, disregard clicks
+        if (!mLauncher.isAllAppsCustomizeOpen() ||
+                mLauncher.getWorkspace().isSwitchingState()) return;
+
         if (v instanceof PagedViewIcon) {
             // Animate some feedback to the click
             final ApplicationInfo appInfo = (ApplicationInfo) v.getTag();
@@ -459,11 +463,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     }
 
-    /*
-     * DragSource implementation
-     */
-    @Override
-    public void onDragViewVisible() {}
     @Override
     public void onDropCompleted(View target, DragObject d, boolean success) {
         endDragging(target, success);

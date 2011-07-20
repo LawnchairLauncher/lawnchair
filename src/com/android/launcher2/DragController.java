@@ -23,13 +23,11 @@ import android.graphics.RectF;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Vibrator;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
 import com.android.launcher.R;
@@ -287,13 +285,6 @@ public class DragController {
 
         final DragView dragView = mDragObject.dragView = new DragView(mLauncher, b, registrationX,
                 registrationY, 0, 0, b.getWidth(), b.getHeight());
-
-        final DragSource dragSource = source;
-        dragView.setOnDrawRunnable(new Runnable() {
-            public void run() {
-                dragSource.onDragViewVisible();
-            };
-        });
 
         if (dragRegion != null) {
             dragView.setDragRegion(new Rect(dragRegion));

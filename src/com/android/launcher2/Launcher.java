@@ -2418,6 +2418,10 @@ public final class Launcher extends Activity
         // Otherwise, we are not in spring loaded mode, so don't do anything.
     }
 
+    public boolean isAllAppsCustomizeOpen() {
+        return mState == State.APPS_CUSTOMIZE;
+    }
+
     /**
      * Shows the hotseat area.
      */

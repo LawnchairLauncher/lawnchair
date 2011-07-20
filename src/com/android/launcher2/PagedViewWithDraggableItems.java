@@ -37,17 +37,19 @@ public abstract class PagedViewWithDraggableItems extends PagedView
     private boolean mIsDragging;
     private boolean mIsDragEnabled;
     private float mDragSlopeThreshold;
+    private Launcher mLauncher;
 
     public PagedViewWithDraggableItems(Context context) {
-        super(context, null);
+        this(context, null);
     }
 
     public PagedViewWithDraggableItems(Context context, AttributeSet attrs) {
-        super(context, attrs, 0);
+        this(context, attrs, 0);
     }
 
     public PagedViewWithDraggableItems(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        mLauncher = (Launcher) context;
     }
 
     protected boolean beginDragging(View v) {
@@ -102,9 +104,12 @@ public abstract class PagedViewWithDraggableItems extends PagedView
         if (!v.isInTouchMode()) return false;
         // Return early if we are still animating the pages
         if (mNextPage != INVALID_PAGE) return false;
+        // When we have exited all apps or are in transition, disregard long clicks
+        if (!mLauncher.isAllAppsCustomizeOpen() ||
+                mLauncher.getWorkspace().isSwitchingState()) return false;
+
         return beginDragging(v);
     }
-
 
     /*
      * Determines if we should change the touch state to start scrolling after the

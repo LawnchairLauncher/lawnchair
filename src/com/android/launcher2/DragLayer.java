@@ -215,8 +215,8 @@ public class DragLayer extends FrameLayout {
             pt[1] += view.getTop() - view.getScrollY();
             viewParent = view.getParent();
         }
-        coord[0] = (int) pt[0];
-        coord[1] = (int) pt[1];
+        coord[0] = (int) Math.round(pt[0]);
+        coord[1] = (int) Math.round(pt[1]);
         return scale;
     }
 

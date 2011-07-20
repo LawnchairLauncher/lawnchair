@@ -214,13 +214,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mEmptyCell[0] = item.cellX;
             mEmptyCell[1] = item.cellY;
             mCurrentDragView = v;
+
+            mContent.removeView(mCurrentDragView);
+            mInfo.remove(mCurrentDragInfo);
         }
         return true;
-    }
-
-    public void onDragViewVisible() {
-        mContent.removeView(mCurrentDragView);
-        mInfo.remove(mCurrentDragInfo);
     }
 
     public boolean isEditingName() {
@@ -890,7 +888,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             si.cellX = lp.cellX = mEmptyCell[0];
             si.cellX = lp.cellY = mEmptyCell[1];
             mContent.addViewToCellLayout(mCurrentDragView, -1, (int)item.id, lp, true);
-            mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, mCurrentDragView);
+            if (d.dragView.hasDrawn()) {
+                mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, mCurrentDragView);
+            } else {
+                mCurrentDragView.setVisibility(VISIBLE);
+            }
             mItemsInvalidated = true;
             setupContentDimension(getItemCount());
             mSuppressOnAdd = true;

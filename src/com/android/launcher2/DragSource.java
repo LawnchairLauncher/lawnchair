@@ -25,11 +25,5 @@ import com.android.launcher2.DropTarget.DragObject;
  *
  */
 public interface DragSource {
-    /**
-     * Callback from the DragController when it begins drawing the drag view.
-     * This allows the DragSource to dim or hide the original view.
-     */
-    void onDragViewVisible();
-
     void onDropCompleted(View target, DragObject d, boolean success);
 }

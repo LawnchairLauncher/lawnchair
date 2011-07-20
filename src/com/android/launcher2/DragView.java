@@ -41,19 +41,13 @@ public class DragView extends View {
 
     private Rect mDragRegion = null;
     private DragLayer mDragLayer = null;
+    private boolean mHasDrawn = false;
 
     ValueAnimator mAnim;
     private float mOffsetX = 0.0f;
     private float mOffsetY = 0.0f;
 
     private DragLayer.LayoutParams mLayoutParams;
-
-    /**
-     * A callback to be called the first time this view is drawn.
-     * This allows the originator of the drag to dim or hide the original view as soon
-     * as the DragView is drawn.
-     */
-    private Runnable mOnDrawRunnable = null;
 
     /**
      * Construct the drag view.
@@ -125,10 +119,6 @@ public class DragView extends View {
         return mOffsetY;
     }
 
-    public void setOnDrawRunnable(Runnable r) {
-        mOnDrawRunnable = r;
-    }
-
     public int getDragRegionLeft() {
         return mDragRegion.left;
     }
@@ -168,20 +158,17 @@ public class DragView extends View {
             canvas.drawRect(0, 0, getWidth(), getHeight(), p);
         }
 
-        // Call the callback if we haven't already been detached
-        if (getParent() != null) {
-            if (mOnDrawRunnable != null) {
-                mOnDrawRunnable.run();
-                mOnDrawRunnable = null;
-            }
-        }
-
+        mHasDrawn = true;
         canvas.drawBitmap(mBitmap, 0.0f, 0.0f, mPaint);
     }
 
     public void setPaint(Paint paint) {
         mPaint = paint;
         invalidate();
+    }
+
+    public boolean hasDrawn() {
+        return mHasDrawn;
     }
 
     @Override

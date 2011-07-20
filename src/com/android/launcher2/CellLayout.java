@@ -1454,20 +1454,9 @@ public class CellLayout extends ViewGroup {
     void onDropChild(View child) {
         if (child != null) {
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
-            lp.isDragging = false;
             lp.dropped = true;
             child.requestLayout();
         }
-    }
-
-    /**
-     * Start dragging the specified child
-     *
-     * @param child The child that is being dragged
-     */
-    void onDragChild(View child) {
-        LayoutParams lp = (LayoutParams) child.getLayoutParams();
-        lp.isDragging = true;
     }
 
     /**
@@ -1754,11 +1743,6 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
          * or whether these will be computed based on cellX, cellY, cellHSpan and cellVSpan.
          */
         public boolean isLockedToGrid = true;
-
-        /**
-         * Is this item currently being dragged
-         */
-        public boolean isDragging;
 
         // X coordinate of the view in the layout.
         @ViewDebug.ExportedProperty

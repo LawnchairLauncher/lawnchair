@@ -539,6 +539,10 @@ public class Workspace extends SmoothPagedView
         return (isSmall() || mIsSwitchingState);
     }
 
+    public boolean isSwitchingState() {
+        return mIsSwitchingState;
+    }
+
     protected void onWindowVisibilityChanged (int visibility) {
         mLauncher.onWindowVisibilityChanged(visibility);
     }
@@ -1972,9 +1976,7 @@ public class Workspace extends SmoothPagedView
         }
 
         mDragInfo = cellInfo;
-
-        CellLayout current = getParentCellLayoutForView(cellInfo.cell);
-        current.onDragChild(child);
+        child.setVisibility(GONE);
 
         child.clearFocus();
         child.setPressed(false);
@@ -2001,8 +2003,7 @@ public class Workspace extends SmoothPagedView
 
         mLauncher.getDragLayer().getLocationInDragLayer(child, mTempXY);
         final int dragLayerX = (int) mTempXY[0] + (child.getWidth() - bmpWidth) / 2;
-        int dragLayerY = (int) mTempXY[1] + (child.getHeight() - bmpHeight) / 2;
-        dragLayerY -= (child.getHeight() - b.getHeight()) / 2;
+        int dragLayerY = mTempXY[1] - bitmapPadding / 2;
 
         Rect dragRect = null;
         if (child instanceof BubbleTextView) {
@@ -2011,6 +2012,7 @@ public class Workspace extends SmoothPagedView
             int left = (bmpWidth - iconSize) / 2;
             int right = left + iconSize;
             int bottom = top + iconSize;
+            dragLayerY += top;
             dragRect = new Rect(left, top, right, bottom);
         } else if (child instanceof FolderIcon) {
             int previewSize = getResources().getDimensionPixelSize(R.dimen.folder_preview_size);
@@ -2310,8 +2312,12 @@ public class Workspace extends SmoothPagedView
                 }
             };
             mAnimatingViewIntoPlace = true;
-            mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, cell,
-                    disableHardwareLayersRunnable);
+            if (d.dragView.hasDrawn()) {
+                mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, cell,
+                        disableHardwareLayersRunnable);
+            } else {
+                cell.setVisibility(VISIBLE);
+            }
             parent.onDropChild(cell);
         }
     }
@@ -3090,11 +3096,6 @@ public class Workspace extends SmoothPagedView
         }
         mDragOutline = null;
         mDragInfo = null;
-    }
-
-    @Override
-    public void onDragViewVisible() {
-        ((View) mDragInfo.cell).setVisibility(View.GONE);
     }
 
     public boolean isDropEnabled() {
