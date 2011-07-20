@@ -53,7 +53,6 @@
     <dimen name="allAppsSmallScreenVerticalMarginLandscape">30dip</dimen>
     <dimen name="allAppsSmallScreenVerticalMarginPortrait">60dip</dimen>
 
-    <dimen name="all_apps_button_drawable_padding">0dip</dimen>
     <dimen name="all_apps_button_vertical_padding">4dip</dimen>
 
     <!-- roughly a status bar (for determining how many rows of icons are in home) -->
@@ -63,9 +62,6 @@
     <dimen name="wallpaper_chooser_grid_width">196dp</dimen>
     <dimen name="wallpaper_chooser_grid_height">140dp</dimen>
     <dimen name="live_wallpaper_grid_item_padding">8dip</dimen>
-
-    <!-- live_wallpaper_grid_item_width + 2 * live_wallpaper_grid_item_padding-->
-    <dimen name="live_wallpaper_column_width">212dip</dimen>
 
     <!-- How much the content view of an alert dialog should be inset (currently used
         for the WallpaperChooser in XLarge mode) -->

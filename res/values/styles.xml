@@ -29,11 +29,6 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
-    <style name="AnimationPreview">
-        <item name="android:windowEnterAnimation">@anim/fade_in_fast</item>
-        <item name="android:windowExitAnimation">@anim/fade_out_fast</item>
-    </style>
-
     <style name="WorkspaceIcon">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
@@ -150,24 +145,5 @@
         <item name="android:shadowDx">0.0</item>
         <item name="android:shadowDy">0.0</item>
         <item name="android:shadowRadius">2.0</item>
-    </style>
-
-    <style name="HotseatButton">
-        <item name="android:paddingLeft">12dip</item>
-        <item name="android:paddingRight">12dip</item>
-        <item name="android:background">@drawable/hotseat_bg_center</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">fill_parent</item>
-        <item name="android:scaleType">center</item>
-        <item name="android:focusable">true</item>
-        <item name="android:clickable">true</item>
-    </style>
-    <style name="HotseatButton.Left">
-        <item name="android:layout_marginLeft">4dip</item>
-        <item name="android:background">@drawable/hotseat_bg_left</item>
-    </style>
-    <style name="HotseatButton.Right">
-        <item name="android:layout_marginRight">4dip</item>
-        <item name="android:background">@drawable/hotseat_bg_right</item>
     </style>
 </resources>

@@ -23,17 +23,9 @@
     <color name="delete_target_hover_tint">#DAFF0000</color>
     <color name="info_target_hover_tint">#DA0099CC</color>
 
-    <color name="window_background">#FF191919</color>
-    <color name="grid_dark_background">#EB191919</color>     
     <color name="bubble_dark_background">#20000000</color>
 
     <color name="appwidget_error_color">#FCCC</color>
-    <color name="snag_callout_color">#F444</color>
-
-    <color name="gesture_color">#ff0563c1</color>
-    <color name="uncertain_gesture_color">#ff848484</color>
-
-    <color name="dimmed_view_color">#FF7F7F7F</color>
 
     <color name="drag_outline_color">#6595f9</color>
 
@@ -44,5 +36,4 @@
 
     <color name="workspace_all_apps_and_delete_zone_text_color">#CCFFFFFF</color>
     <color name="workspace_all_apps_and_delete_zone_text_shadow_color">#A0000000</color>
-    <color name="workspace_delete_zone_drag_text_color">#FFFF0000</color>
 </resources>

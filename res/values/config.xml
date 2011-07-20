@@ -36,12 +36,6 @@
          AppsCustomize (y / x * 100%)  -->
     <integer name="config_appsCustomizeDragSlopeThreshold">150</integer>
 
-    <!-- Fade in/out duration of toolbar/button bar icons.
-         Note: In + Out duration together should be less the duration of the transition
-               between AllApps, Customize & the Workspace. -->
-    <integer name="config_toolbarButtonFadeInTime">350</integer>
-    <integer name="config_toolbarButtonFadeOutTime">200</integer>
-
     <!-- Batch loading for loading in LauncherModel -->
     <integer name="config_allAppsBatchLoadDelay">0</integer>
     <integer name="config_allAppsBatchSize">0</integer>
