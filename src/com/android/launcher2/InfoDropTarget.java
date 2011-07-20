@@ -32,7 +32,6 @@ import com.android.launcher.R;
 
 public class InfoDropTarget extends ButtonDropTarget {
 
-    private TextView mText;
     private ColorStateList mOriginalTextColor;
     private TransitionDrawable mDrawable;
     private int mHoverColor = 0xFF0000FF;

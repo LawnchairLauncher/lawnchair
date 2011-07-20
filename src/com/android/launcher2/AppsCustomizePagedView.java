@@ -449,7 +449,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
     private void endDragging(View target, boolean success) {
         mLauncher.getWorkspace().onDragStopped(success);
-        if (!success || target != mLauncher.getWorkspace()) {
+        if (!success || (target != mLauncher.getWorkspace() &&
+                !(target instanceof DeleteDropTarget))) {
             // Exit spring loaded mode if we have not successfully dropped or have not handled the
             // drop in Workspace
             mLauncher.exitSpringLoadedDragMode();
