@@ -1131,6 +1131,7 @@ public final class Launcher extends Activity
             final String action = intent.getAction();
             if (Intent.ACTION_SCREEN_OFF.equals(action)) {
                 mUserPresent = false;
+                mDragLayer.clearAllResizeFrames();
                 updateRunning();
 
                 // Reset AllApps to it's initial state
@@ -1162,6 +1163,7 @@ public final class Launcher extends Activity
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mVisible = false;
+        mDragLayer.clearAllResizeFrames();
 
         if (mAttached) {
             unregisterReceiver(mReceiver);
