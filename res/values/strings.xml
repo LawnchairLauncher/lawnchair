@@ -24,13 +24,6 @@
     <string name="sharedUserId" translatable="false"><xliff:g id="x"></xliff:g></string>
     <!-- Do not translate. android:process of this application. -->
     <string name="process" translatable="false"><xliff:g id="x"></xliff:g></string>
-    
-    <!-- Do not translate. We wish to prioritize the Wallpaper and Live Wallpaper pickers,
-         but because they are in a different package, we need to reference the component in
-         a non language-dependent way.  If the Live Wallpaper picker component name changes
-         this will have to be updated as well. -->
-    <string name="live_wallpaper_picker_package_name" translatable="false">com.android.wallpaper.livepicker</string>
-    <string name="live_wallpaper_picker_class_name" translatable="false">com.android.wallpaper.livepicker.LiveWallpaperActivity</string>
 
     <!-- General -->
     <skip />
@@ -40,30 +33,10 @@
     <string name="uid_name">Android Core Apps</string>
     <!-- Default folder name -->
     <string name="folder_name"></string>
-    <!-- Title of dialog that appears after user selects Wallpaper from menu -->
-    <string name="chooser_wallpaper">Select wallpaper from</string>
-    <!-- Button label on Wallpaper Gallery screen; user selects this button to set a specific wallpaper -->
-    <string name="wallpaper_instructions">Set wallpaper</string>
-    <!-- Option in "Select wallpaper from" dialog box -->
-    <string name="pick_wallpaper">Wallpapers</string>
     <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
     <string name="activity_not_found">Application is not installed.</string>
-    <!-- List item for configuring the current wallpaper -->
-    <string name="configure_wallpaper">Configure...</string>
     <!--  Labels for the tabs in the customize drawer -->
     <string name="widgets_tab_label">Widgets</string>
-    <!--  Title of tab containing all possible folders (ie standard Folders and Live Folders) that 
-          can be added to the home screen -->
-    <string name="folders_tab_label">Folders</string>
-    <!--  Title of tab containing all possible shortcuts (eg Contacts, Bookmarks) that can be
-          added to the home screen -->
-    <string name="shortcuts_tab_label">More</string>
-    <!--  Title of tab for configuring wallpapers -->
-    <string name="wallpapers_tab_label">Wallpapers</string>
-    <!--  Title of tab for configuring applications -->
-    <string name="applications_tab_label">App shortcuts</string>
-    <!--  Placeholder text, will be removed -->
-    <string name="wallpapers_temp_tab_text">This will be the wallpapers tab</string>
 
     <!-- AppsCustomize pane -->
     <!-- Message to tell the user to long-press on a widget to add it [CHAR_LIMIT=50] -->
@@ -102,22 +75,10 @@
     <string name="menu_item_add_item">Add to Home screen</string>
     <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all apps -->
     <string name="group_applications">Applications</string>
-    <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all shortcuts -->
-    <string name="group_shortcuts">Shortcuts</string>
-    <!-- Options in "Add to Home" dialog box; Title of the folder gadget -->
-    <string name="group_folder">New folder</string>
-    <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all live folders -->
-    <string name="group_live_folders">Folders</string>
     <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all widgets/gadgets -->
     <string name="group_widgets">Widgets</string>
     <!-- Options in "Add to Home" dialog box; Title of the group containing the list of apps that can set the wallpaper-->
     <string name="group_wallpapers">Wallpapers</string>
-    <!-- Options in "Add to Home" dialog box; Name of the Folder widget-->
-    <string name="add_folder">Folder</string>
-    <!-- Options in "Add to Home" dialog box; Name of the Clock widget-->
-    <string name="add_clock">Clock</string>
-    <!-- Options in "Add to Home" dialog box; Name of the Picture frame widget-->
-    <string name="add_photo_frame">Picture frame</string>
     <!-- Error message when user has filled a home screen, possibly not used -->
     <string name="out_of_space">No more room on this Home screen.</string>
     <!-- Error message when user tries to drop an invalid item on the hotseat -->
@@ -133,8 +94,6 @@
     <string name="title_select_shortcut">Select shortcut</string>
     <!-- Title of dialog when user is selecting an application to add to homescreen -->
     <string name="title_select_application">Select application</string>
-    <!-- Title of dialog when user is selecting live folder to add to homescreen -->
-    <string name="title_select_live_folder">Select folder</string>
 
     <!-- All applications label -->
     <string name="all_apps_button_label">Apps</string>
@@ -161,8 +120,6 @@
     <string name="accessibility_voice_search_button">Voice Search</string>
     <!-- Accessibility: AllApps button -->
     <string name="accessibility_all_apps_button">Applications</string>
-    <!-- Accessibility: Customize button -->
-    <string name="accessibility_customize_button">Customize</string>
     <!-- Accessibility: Delete button -->
     <string name="accessibility_delete_button">Remove</string>
 
@@ -182,8 +139,6 @@
     <string name="menu_search">Search</string>
     <!-- Noun, menu item used to bring down the notifications shade -->
     <string name="menu_notifications">Notifications</string>
-    <!-- Noun, menu item used to show the gestures settings -->
-    <string name="menu_gestures">Gestures</string>
     <!-- Noun, menu item used to show the system settings -->
     <string name="menu_settings">Settings</string>
 

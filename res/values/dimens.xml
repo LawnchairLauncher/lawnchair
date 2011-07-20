@@ -47,10 +47,6 @@
     <!-- Drag padding to add to the drop targets -->
     <dimen name="drop_target_drag_padding">20dp</dimen>
 
-    <!-- so we have access to this dimension in landscape mode even though
-         button_bar_height changes -->
-    <dimen name="button_bar_height_portrait">80dip</dimen>
-
     <!-- extra horizontal spacing between mini screen thumbnails ie. in all
          apps and in customization mode -->
     <dimen name="smallScreenExtraSpacing">0dip</dimen>
@@ -66,10 +62,6 @@
     <!-- roughly a status bar (for vertically centering the all apps
          home icon in landscape) -->
     <dimen name="status_bar_height">25dip</dimen>
-
-    <!-- roughly half a status bar (for vertically centering the right-hand
-         button cluster in landscape) -->
-    <dimen name="half_status_bar_height">12dip</dimen>
 
 <!-- Dragging -->
     <!-- the area at the edge of the screen that makes the workspace go left

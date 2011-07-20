@@ -31,16 +31,6 @@ import java.util.Collections;
 import java.util.Comparator;
 
 /**
- * A keyboard listener we set on all the button bar buttons.
- */
-class ButtonBarKeyEventListener implements View.OnKeyListener {
-    @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-        return FocusHelper.handleButtonBarButtonKeyEvent(v, keyCode, event);
-    }
-}
-
-/**
  * A keyboard listener we set on all the hotseat buttons.
  */
 class HotseatKeyEventListener implements View.OnKeyListener {
@@ -437,95 +427,6 @@ public class FocusHelper {
                 if (handleKeyEvent) {
                     // Select the content view
                     contents.requestFocus();
-                }
-                wasHandled = true;
-                break;
-            default: break;
-        }
-        return wasHandled;
-    }
-
-    /**
-     * Handles key events in the workspace button bar.
-     */
-    static boolean handleButtonBarButtonKeyEvent(View v, int keyCode, KeyEvent e) {
-        if (!LauncherApplication.isScreenLarge()) return false;
-
-        final ViewGroup parent = (ViewGroup) v.getParent();
-        final ViewGroup launcher = (ViewGroup) parent.getParent();
-        final Workspace workspace = (Workspace) launcher.findViewById(R.id.workspace);
-        final int buttonIndex = parent.indexOfChild(v);
-        final int buttonCount = parent.getChildCount();
-        final int pageIndex = workspace.getCurrentPage();
-        final int pageCount = workspace.getChildCount();
-        final int firstButtonIndex = parent.indexOfChild(parent.findViewById(R.id.search_button));
-        final int lastButtonIndex = parent.indexOfChild(parent.findViewById(R.id.configure_button));
-
-        final int action = e.getAction();
-        final boolean handleKeyEvent = (action != KeyEvent.ACTION_UP);
-        boolean wasHandled = false;
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_DPAD_LEFT:
-                if (handleKeyEvent) {
-                    // Select the previous button, otherwise do nothing (since the button bar is
-                    // static)
-                    if (buttonIndex > firstButtonIndex) {
-                        int newButtonIndex = buttonIndex - 1;
-                        while (newButtonIndex >= firstButtonIndex) {
-                            View prev = parent.getChildAt(newButtonIndex);
-                            if (isVisible(prev) && prev.isFocusable()) {
-                                prev.requestFocus();
-                                break;
-                            }
-                            --newButtonIndex;
-                        }
-                    } else {
-                        if (pageIndex > 0) {
-                            // Snap to previous page and clear focus
-                            workspace.snapToPage(pageIndex - 1);
-                        }
-                    }
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_DPAD_RIGHT:
-                if (handleKeyEvent) {
-                    // Select the next button, otherwise do nothing (since the button bar is
-                    // static)
-                    if (buttonIndex < lastButtonIndex) {
-                        int newButtonIndex = buttonIndex + 1;
-                        while (newButtonIndex <= lastButtonIndex) {
-                            View next = parent.getChildAt(newButtonIndex);
-                            if (isVisible(next) && next.isFocusable()) {
-                                next.requestFocus();
-                                break;
-                            }
-                            ++newButtonIndex;
-                        }
-                    } else {
-                        if (pageIndex < (pageCount - 1)) {
-                            // Snap to next page and clear focus
-                            workspace.snapToPage(pageIndex + 1);
-                        }
-                    }
-                }
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_DPAD_UP:
-                // Do nothing
-                wasHandled = true;
-                break;
-            case KeyEvent.KEYCODE_DPAD_DOWN:
-                if (handleKeyEvent) {
-                    // Select the first bubble text view in the current page of the workspace
-                    final CellLayout layout = (CellLayout) workspace.getChildAt(pageIndex);
-                    final CellLayoutChildren children = layout.getChildrenLayout();
-                    final View newIcon = getBubbleTextViewInDirection(layout, children, -1, 1);
-                    if (newIcon != null) {
-                        newIcon.requestFocus();
-                    } else {
-                        workspace.requestFocus();
-                    }
                 }
                 wasHandled = true;
                 break;
