@@ -4,9 +4,9 @@
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
      You may obtain a copy of the License at
-  
+
           http://www.apache.org/licenses/LICENSE-2.0
-  
+
      Unless required by applicable law or agreed to in writing, software
      distributed under the License is distributed on an "AS IS" BASIS,
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,6 +21,23 @@
     android:id="@+id/drag_layer"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <!-- Keep these behind the workspace so that they are not visible when
+         we go into AllApps -->
+    <include
+        android:id="@+id/paged_view_indicator_track"
+        layout="@layout/scroll_indicator_track"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/button_bar_height" />
+    <include
+        android:id="@+id/paged_view_indicator"
+        layout="@layout/scroll_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/button_bar_height" />
 
     <!-- The workspace contains 5 screens of cells -->
     <com.android.launcher2.Workspace
@@ -38,21 +55,6 @@
         <include android:id="@+id/cell4" layout="@layout/workspace_screen" />
         <include android:id="@+id/cell5" layout="@layout/workspace_screen" />
     </com.android.launcher2.Workspace>
-
-    <include
-        android:id="@+id/paged_view_indicator_track"
-        layout="@layout/scroll_indicator_track"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="@dimen/button_bar_height" />
-    <include
-        android:id="@+id/paged_view_indicator"
-        layout="@layout/scroll_indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="@dimen/button_bar_height" />
 
     <include layout="@layout/qsb_bar"
         android:id="@+id/qsb_bar"

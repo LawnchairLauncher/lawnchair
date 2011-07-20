@@ -2410,12 +2410,6 @@ public final class Launcher extends Activity
                     toView.setTranslationY(0.0f);
                     toView.setVisibility(View.VISIBLE);
                     toView.bringToFront();
-
-                    if (!springLoaded && !LauncherApplication.isScreenLarge()) {
-                        // Hide the workspace scrollbar
-                        mWorkspace.hideScrollingIndicator(true);
-                        mWorkspace.hideScrollIndicatorTrack();
-                    }
                 }
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -2426,6 +2420,12 @@ public final class Launcher extends Activity
                     toView.setScaleY(1.0f);
                     if (toView instanceof LauncherTransitionable) {
                         ((LauncherTransitionable) toView).onLauncherTransitionEnd(scaleAnim);
+                    }
+
+                    if (!springLoaded && !LauncherApplication.isScreenLarge()) {
+                        // Hide the workspace scrollbar
+                        mWorkspace.hideScrollingIndicator(true);
+                        mWorkspace.hideScrollIndicatorTrack();
                     }
                 }
             });
@@ -2506,16 +2506,18 @@ public final class Launcher extends Activity
             }
             alphaAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
+                public void onAnimationStart(android.animation.Animator animation) {
+                    if (!springLoaded && !LauncherApplication.isScreenLarge()) {
+                        // Show the workspace scrollbar
+                        mWorkspace.showScrollIndicatorTrack();
+                        mWorkspace.flashScrollingIndicator();
+                    }
+                }
+                @Override
                 public void onAnimationEnd(Animator animation) {
                     fromView.setVisibility(View.GONE);
                     if (fromView instanceof LauncherTransitionable) {
                         ((LauncherTransitionable) fromView).onLauncherTransitionEnd(alphaAnim);
-
-                        if (!springLoaded && !LauncherApplication.isScreenLarge()) {
-                            // Show the workspace scrollbar
-                            mWorkspace.showScrollIndicatorTrack();
-                            mWorkspace.flashScrollingIndicator();
-                        }
                     }
                 }
             });

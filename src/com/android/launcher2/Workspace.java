@@ -3334,4 +3334,11 @@ public class Workspace extends SmoothPagedView
     public void getLocationInDragLayer(int[] loc) {
         mLauncher.getDragLayer().getLocationInDragLayer(this, loc);
     }
+
+    /**
+     * Return true because we want the scrolling indicator to stretch to fit the space.
+     */
+    protected boolean hasElasticScrollIndicator() {
+        return true;
+    }
 }

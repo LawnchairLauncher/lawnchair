@@ -147,6 +147,10 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             anim.setDuration(duration);
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
+                public void onAnimationStart(android.animation.Animator animation) {
+                    mAppsCustomizePane.hideScrollingIndicator(false);
+                }
+                @Override
                 public void onAnimationEnd(android.animation.Animator animation) {
                     mAppsCustomizePane.setContentType(type);
 

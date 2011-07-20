@@ -16,7 +16,7 @@
 <ImageView
     xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
-    android:paddingLeft="@dimen/scroll_track_padding"
-    android:paddingRight="@dimen/scroll_track_padding"
+    android:paddingLeft="@dimen/scroll_track_padding_left"
+    android:paddingRight="@dimen/scroll_track_padding_right"
     android:scaleType="fitXY"
     android:src="@drawable/hotseat_track_holo" />
