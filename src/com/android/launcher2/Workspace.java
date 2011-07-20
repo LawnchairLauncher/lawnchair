@@ -2611,7 +2611,7 @@ public class Workspace extends SmoothPagedView
      *
      */
     private CellLayout findMatchingPageForDragOver(
-            DragView dragView, int originX, int originY, int offsetX, int offsetY, boolean exact) {
+            DragView dragView, float originX, float originY, boolean exact) {
         // We loop through all the screens (ie CellLayouts) and see which ones overlap
         // with the item being dragged and then choose the one that's closest to the touch point
         final int screenCount = getChildCount();
@@ -2621,10 +2621,7 @@ public class Workspace extends SmoothPagedView
         for (int i = 0; i < screenCount; i++) {
             CellLayout cl = (CellLayout) getChildAt(i);
 
-            final float[] touchXy = mTempTouchCoordinates;
-            touchXy[0] = originX + offsetX;
-            touchXy[1] = originY + offsetY;
-
+            final float[] touchXy = {originX, originY};
             // Transform the touch coordinates to the CellLayout's local coordinates
             // If the touch point is within the bounds of the cell layout, we can return immediately
             cl.getMatrix().invert(mTempInverseMatrix);
@@ -2635,15 +2632,15 @@ public class Workspace extends SmoothPagedView
                 return cl;
             }
 
-            if (!exact && overlaps(cl, dragView, originX, originY, mTempInverseMatrix)) {
+            if (!exact && overlaps(cl, dragView, (int) originX, (int) originY, mTempInverseMatrix)) {
                 // Get the center of the cell layout in screen coordinates
                 final float[] cellLayoutCenter = mTempCellLayoutCenterCoordinates;
                 cellLayoutCenter[0] = cl.getWidth()/2;
                 cellLayoutCenter[1] = cl.getHeight()/2;
                 mapPointFromChildToSelf(cl, cellLayoutCenter);
 
-                touchXy[0] = originX + offsetX;
-                touchXy[1] = originY + offsetY;
+                touchXy[0] = originX;
+                touchXy[1] = originY;
 
                 // Calculate the distance between the center of the CellLayout
                 // and the touch point
@@ -2701,11 +2698,15 @@ public class Workspace extends SmoothPagedView
         // Ensure that we have proper spans for the item that we are dropping
         if (item.spanX < 0 || item.spanY < 0) throw new RuntimeException("Improper spans found");
 
+        mDragViewVisualCenter = getDragViewVisualCenter(d.x, d.y, d.xOffset, d.yOffset,
+                d.dragView, mDragViewVisualCenter);
+
         // Identify whether we have dragged over a side page
         if (isSmall()) {
             int left = d.x - d.xOffset;
             int top = d.y - d.yOffset;
-            layout = findMatchingPageForDragOver(d.dragView, left, top, d.xOffset, d.yOffset, true);
+            layout = findMatchingPageForDragOver(d.dragView, mDragViewVisualCenter[0],
+                    mDragViewVisualCenter[1], true);
             if (layout != mDragTargetLayout) {
                 // Cancel all intermediate folder states
                 cleanupFolderCreation(d);
@@ -2753,9 +2754,6 @@ public class Workspace extends SmoothPagedView
         // Handle the drag over
         if (mDragTargetLayout != null) {
             final View child = (mDragInfo == null) ? null : mDragInfo.cell;
-
-            mDragViewVisualCenter = getDragViewVisualCenter(d.x, d.y, d.xOffset, d.yOffset,
-                    d.dragView, mDragViewVisualCenter);
 
             // We want the point to be mapped to the dragTarget.
             if (mLauncher.isHotseatLayout(mDragTargetLayout)) {
