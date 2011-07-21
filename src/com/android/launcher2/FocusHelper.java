@@ -31,9 +31,19 @@ import java.util.Collections;
 import java.util.Comparator;
 
 /**
+ * A keyboard listener we set on all the workspace icons.
+ */
+class BubbleTextViewKeyEventListener implements View.OnKeyListener {
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        return FocusHelper.handleBubbleTextViewKeyEvent((BubbleTextView) v, keyCode, event);
+    }
+}
+
+/**
  * A keyboard listener we set on all the hotseat buttons.
  */
-class HotseatKeyEventListener implements View.OnKeyListener {
+class HotseatBubbleTextViewKeyEventListener implements View.OnKeyListener {
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         final Configuration configuration = v.getResources().getConfiguration();
@@ -612,6 +622,7 @@ public class FocusHelper {
         final Workspace workspace = (Workspace) layout.getParent();
         final ViewGroup launcher = (ViewGroup) workspace.getParent();
         final ViewGroup tabs = (ViewGroup) launcher.findViewById(R.id.qsb_bar);
+        final ViewGroup hotseat = (ViewGroup) launcher.findViewById(R.id.hotseat);
         int iconIndex = parent.indexOfChild(v);
         int iconCount = parent.getChildCount();
         int pageIndex = workspace.indexOfChild(layout);
@@ -678,11 +689,13 @@ public class FocusHelper {
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
                 if (handleKeyEvent) {
-                    // Select the closest icon in the next line, otherwise select the tab bar
+                    // Select the closest icon in the next line, otherwise select the button bar
                     View newIcon = getClosestBubbleTextViewOnLine(layout, parent, v, 1);
                     if (newIcon != null) {
                         newIcon.requestFocus();
                         wasHandled = true;
+                    } else if (hotseat != null) {
+                        hotseat.requestFocus();
                     }
                 }
                 break;

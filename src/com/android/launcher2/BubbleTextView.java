@@ -330,16 +330,4 @@ public class BubbleTextView extends TextView implements VisibilityChangedBroadca
         }
         return true;
     }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return FocusHelper.handleBubbleTextViewKeyEvent(this, keyCode, event)
-                || super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        return FocusHelper.handleBubbleTextViewKeyEvent(this, keyCode, event)
-                || super.onKeyUp(keyCode, event);
-    }
 }

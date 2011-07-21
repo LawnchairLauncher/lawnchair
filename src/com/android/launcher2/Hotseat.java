@@ -57,6 +57,7 @@ public class Hotseat extends FrameLayout {
 
     public void setup(Launcher launcher) {
         mLauncher = launcher;
+        setOnKeyListener(new HotseatBubbleTextViewKeyEventListener());
     }
 
     CellLayout getLayout() {
@@ -96,11 +97,14 @@ public class Hotseat extends FrameLayout {
                 inflater.inflate(R.layout.application, mContent, false);
         allAppsButton.setCompoundDrawablesWithIntrinsicBounds(null,
                 context.getResources().getDrawable(R.drawable.apps_hotseat_button), null, null);
-        // button.setText(context.getString(R.string.all_apps_button_label));
+        // allAppsButton.setText(context.getString(R.string.all_apps_button_label));
+        allAppsButton.setContentDescription(context.getString(R.string.all_apps_button_label));
         allAppsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(android.view.View v) {
-                mLauncher.showAllApps(true);
+                if (mLauncher != null) {
+                    mLauncher.showAllApps(true);
+                }
             }
         });
 
