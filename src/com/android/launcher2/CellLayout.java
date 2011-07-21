@@ -715,7 +715,6 @@ public class CellLayout extends ViewGroup {
                     cellInfo.cellY = lp.cellY;
                     cellInfo.spanX = lp.cellHSpan;
                     cellInfo.spanY = lp.cellVSpan;
-                    cellInfo.valid = true;
                     found = true;
                     break;
                 }
@@ -731,8 +730,6 @@ public class CellLayout extends ViewGroup {
             cellInfo.cellY = cellXY[1];
             cellInfo.spanX = 1;
             cellInfo.spanY = 1;
-            cellInfo.valid = cellXY[0] >= 0 && cellXY[1] >= 0 && cellXY[0] < mCountX &&
-                    cellXY[1] < mCountY && !mOccupied[cellXY[0]][cellXY[1]];
         }
         setTag(cellInfo);
     }
@@ -753,7 +750,6 @@ public class CellLayout extends ViewGroup {
             cellInfo.cellY = -1;
             cellInfo.spanX = 0;
             cellInfo.spanY = 0;
-            cellInfo.valid = false;
             setTag(cellInfo);
         }
 
@@ -1848,7 +1844,6 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         int spanY;
         int screen;
         long container;
-        boolean valid;
 
         @Override
         public String toString() {

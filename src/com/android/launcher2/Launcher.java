@@ -1950,7 +1950,7 @@ public final class Launcher extends Activity
         resetAddInfo();
         CellLayout.CellInfo longClickCellInfo = (CellLayout.CellInfo) v.getTag();
         // This happens when long clicking an item with the dpad/trackball
-        if (longClickCellInfo == null || !longClickCellInfo.valid) {
+        if (longClickCellInfo == null) {
             return true;
         }
 
