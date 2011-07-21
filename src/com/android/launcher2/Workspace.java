@@ -2120,8 +2120,12 @@ public class Workspace extends SmoothPagedView
     boolean createUserFolderIfNecessary(View newView, long container, CellLayout target,
             int[] targetCell, boolean external, DragView dragView, Runnable postAnimationRunnable) {
         View v = target.getChildAt(targetCell[0], targetCell[1]);
-        boolean hasntMoved = mDragInfo != null
-                && (mDragInfo.cellX == targetCell[0] && mDragInfo.cellY == targetCell[1]);
+        boolean hasntMoved = false;
+        if (mDragInfo != null) {
+            CellLayout cellParent = getParentCellLayoutForView(mDragInfo.cell);
+            hasntMoved = (mDragInfo.cellX == targetCell[0] &&
+                    mDragInfo.cellY == targetCell[1]) && (cellParent == target);
+        }
 
         if (v == null || hasntMoved || !mCreateUserFolderOnDrop) return false;
         mCreateUserFolderOnDrop = false;
