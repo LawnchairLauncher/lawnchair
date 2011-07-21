@@ -453,6 +453,7 @@ public class Workspace extends SmoothPagedView
         final CellLayout layout;
         if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             layout = mLauncher.getHotseat().getLayout();
+            child.setOnKeyListener(null);
 
             if (screen < 0) {
                 screen = mLauncher.getHotseat().getOrderInHotseat(x, y);
@@ -464,6 +465,7 @@ public class Workspace extends SmoothPagedView
             }
         } else {
             layout = (CellLayout) getChildAt(screen);
+            child.setOnKeyListener(new BubbleTextViewKeyEventListener());
         }
 
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();

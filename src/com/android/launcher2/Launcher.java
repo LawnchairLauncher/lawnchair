@@ -2874,6 +2874,13 @@ public final class Launcher extends Activity
         final Workspace workspace = mWorkspace;
         for (int i=start; i<end; i++) {
             final ItemInfo item = shortcuts.get(i);
+
+            // Short circuit if we are loading dock items for a configuration which has no dock
+            if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
+                    mHotseat == null) {
+                continue;
+            }
+
             switch (item.itemType) {
                 case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                 case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
