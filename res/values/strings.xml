@@ -33,6 +33,12 @@
     <string name="uid_name">Android Core Apps</string>
     <!-- Default folder name -->
     <string name="folder_name"></string>
+    <!-- Title of dialog that appears after user selects Wallpaper from menu -->
+    <string name="chooser_wallpaper">Select wallpaper from</string>
+    <!-- Button label on Wallpaper Gallery screen; user selects this button to set a specific wallpaper -->
+    <string name="wallpaper_instructions">Set wallpaper</string>
+    <!-- Option in "Select wallpaper from" dialog box -->
+    <string name="pick_wallpaper">Wallpapers</string>
     <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
     <string name="activity_not_found">Application is not installed.</string>
     <!--  Labels for the tabs in the customize drawer -->
