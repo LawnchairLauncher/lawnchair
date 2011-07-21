@@ -207,6 +207,30 @@ public class Workspace extends SmoothPagedView
     final static float MAX_SWIPE_ANGLE = (float) Math.PI / 3;
     final static float TOUCH_SLOP_DAMPING_FACTOR = 4;
 
+    // These variables are used for storing the initial and final values during workspace animations
+    private float mCurrentScaleX;
+    private float mCurrentScaleY;
+    private float mCurrentRotationY;
+    private float mCurrentTranslationX;
+    private float mCurrentTranslationY;
+    private float[] mOldTranslationXs;
+    private float[] mOldTranslationYs;
+    private float[] mOldScaleXs;
+    private float[] mOldScaleYs;
+    private float[] mOldBackgroundAlphas;
+    private float[] mOldBackgroundAlphaMultipliers;
+    private float[] mOldAlphas;
+    private float[] mOldRotationYs;
+    private float[] mNewTranslationXs;
+    private float[] mNewTranslationYs;
+    private float[] mNewScaleXs;
+    private float[] mNewScaleYs;
+    private float[] mNewBackgroundAlphas;
+    private float[] mNewBackgroundAlphaMultipliers;
+    private float[] mNewAlphas;
+    private float[] mNewRotationYs;
+    private float mTransitionProgress;
+
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -1370,20 +1394,7 @@ public class Workspace extends SmoothPagedView
         mAnimator = new AnimatorSet();
 
         final int childCount = getChildCount();
-        final float[] oldXs = new float[childCount];
-        final float[] oldYs = new float[childCount];
-        final float[] oldScaleXs = new float[childCount];
-        final float[] oldScaleYs = new float[childCount];
-        final float[] oldBackgroundAlphas = new float[childCount];
-        final float[] oldAlphas = new float[childCount];
-        final float[] oldRotationYs = new float[childCount];
-        final float[] newXs = new float[childCount];
-        final float[] newYs = new float[childCount];
-        final float[] newScaleXs = new float[childCount];
-        final float[] newScaleYs = new float[childCount];
-        final float[] newBackgroundAlphas = new float[childCount];
-        final float[] newAlphas = new float[childCount];
-        final float[] newRotationYs = new float[childCount];
+        initAnimationArrays();
 
         for (int i = 0; i < screenCount; i++) {
             final CellLayout cl = (CellLayout) getChildAt(i);
@@ -1392,26 +1403,26 @@ public class Workspace extends SmoothPagedView
             float rotationScaleX = (float) (1.0f / Math.cos(Math.PI * rotation / 180.0f));
             float rotationScaleY = getYScaleForScreen(i);
 
-            oldAlphas[i] = cl.getAlpha();
-            newAlphas[i] = finalAlpha;
-            if (animated && (oldAlphas[i] != 0f || newAlphas[i] != 0f)) {
+            mOldAlphas[i] = cl.getAlpha();
+            mNewAlphas[i] = finalAlpha;
+            if (animated && (mOldAlphas[i] != 0f || mNewAlphas[i] != 0f)) {
                 // if the CellLayout will be visible during the animation, force building its
                 // hardware layer immediately so we don't see a blip later in the animation
                 cl.buildChildrenLayer();
             }
             if (animated) {
-                oldXs[i] = cl.getX();
-                oldYs[i] = cl.getY();
-                oldScaleXs[i] = cl.getScaleX();
-                oldScaleYs[i] = cl.getScaleY();
-                oldBackgroundAlphas[i] = cl.getBackgroundAlpha();
-                oldRotationYs[i] = cl.getRotationY();
-                newXs[i] = x;
-                newYs[i] = y;
-                newScaleXs[i] = shrinkFactor * rotationScaleX * extraShrinkFactor;
-                newScaleYs[i] = shrinkFactor * rotationScaleY * extraShrinkFactor;
-                newBackgroundAlphas[i] = finalAlpha;
-                newRotationYs[i] = rotation;
+                mOldTranslationXs[i] = cl.getX();
+                mOldTranslationYs[i] = cl.getY();
+                mOldScaleXs[i] = cl.getScaleX();
+                mOldScaleYs[i] = cl.getScaleY();
+                mOldBackgroundAlphas[i] = cl.getBackgroundAlpha();
+                mOldRotationYs[i] = cl.getRotationY();
+                mNewTranslationXs[i] = x;
+                mNewTranslationYs[i] = y;
+                mNewScaleXs[i] = shrinkFactor * rotationScaleX * extraShrinkFactor;
+                mNewScaleYs[i] = shrinkFactor * rotationScaleY * extraShrinkFactor;
+                mNewBackgroundAlphas[i] = finalAlpha;
+                mNewRotationYs[i] = rotation;
             } else {
                 cl.setX((int)x);
                 cl.setY((int)y);
@@ -1471,6 +1482,7 @@ public class Workspace extends SmoothPagedView
             final float newVerticalWallpaperOffset = wallpaperOffset;
             animWithInterpolator.addUpdateListener(new LauncherAnimatorUpdateListener() {
                 public void onAnimationUpdate(float a, float b) {
+                    mTransitionProgress = b;
                     if (b == 0f) {
                         // an optimization, and required for correct behavior.
                         return;
@@ -1485,14 +1497,14 @@ public class Workspace extends SmoothPagedView
                     for (int i = 0; i < screenCount; i++) {
                         final CellLayout cl = (CellLayout) getChildAt(i);
                         cl.fastInvalidate();
-                        cl.setFastX(a * oldXs[i] + b * newXs[i]);
-                        cl.setFastY(a * oldYs[i] + b * newYs[i]);
-                        cl.setFastScaleX(a * oldScaleXs[i] + b * newScaleXs[i]);
-                        cl.setFastScaleY(a * oldScaleYs[i] + b * newScaleYs[i]);
+                        cl.setFastX(a * mOldTranslationXs[i] + b * mNewTranslationXs[i]);
+                        cl.setFastY(a * mOldTranslationYs[i] + b * mNewTranslationYs[i]);
+                        cl.setFastScaleX(a * mOldScaleXs[i] + b * mNewScaleXs[i]);
+                        cl.setFastScaleY(a * mOldScaleYs[i] + b * mNewScaleYs[i]);
                         cl.setFastBackgroundAlpha(
-                                a * oldBackgroundAlphas[i] + b * newBackgroundAlphas[i]);
-                        cl.setFastAlpha(a * oldAlphas[i] + b * newAlphas[i]);
-                        cl.setFastRotationY(a * oldRotationYs[i] + b * newRotationYs[i]);
+                                a * mOldBackgroundAlphas[i] + b * mNewBackgroundAlphas[i]);
+                        cl.setFastAlpha(a * mOldAlphas[i] + b * mNewAlphas[i]);
+                        cl.setFastRotationY(a * mOldRotationYs[i] + b * mNewRotationYs[i]);
                     }
                 }
             });
@@ -1644,6 +1656,27 @@ public class Workspace extends SmoothPagedView
         unshrink(animated, false);
     }
 
+    private void initAnimationArrays() {
+        final int childCount = getChildCount();
+        if (mOldTranslationXs != null) return;
+        mOldTranslationXs = new float[childCount];
+        mOldTranslationYs = new float[childCount];
+        mOldScaleXs = new float[childCount];
+        mOldScaleYs = new float[childCount];
+        mOldBackgroundAlphas = new float[childCount];
+        mOldBackgroundAlphaMultipliers = new float[childCount];
+        mOldAlphas = new float[childCount];
+        mOldRotationYs = new float[childCount];
+        mNewTranslationXs = new float[childCount];
+        mNewTranslationYs = new float[childCount];
+        mNewScaleXs = new float[childCount];
+        mNewScaleYs = new float[childCount];
+        mNewBackgroundAlphas = new float[childCount];
+        mNewBackgroundAlphaMultipliers = new float[childCount];
+        mNewAlphas = new float[childCount];
+        mNewRotationYs = new float[childCount];
+    }
+
     void unshrink(boolean animated, boolean springLoaded) {
         if (isSmall()) {
             float finalScaleFactor = 1.0f;
@@ -1661,26 +1694,9 @@ public class Workspace extends SmoothPagedView
 
             mAnimator = new AnimatorSet();
             final int screenCount = getChildCount();
+            initAnimationArrays();
 
             final int duration = getResources().getInteger(R.integer.config_workspaceUnshrinkTime);
-
-            final float[] oldTranslationXs = new float[getChildCount()];
-            final float[] oldTranslationYs = new float[getChildCount()];
-            final float[] oldScaleXs = new float[getChildCount()];
-            final float[] oldScaleYs = new float[getChildCount()];
-            final float[] oldBackgroundAlphas = new float[getChildCount()];
-            final float[] oldBackgroundAlphaMultipliers = new float[getChildCount()];
-            final float[] oldAlphas = new float[getChildCount()];
-            final float[] oldRotationYs = new float[getChildCount()];
-            final float[] newTranslationXs = new float[getChildCount()];
-            final float[] newTranslationYs = new float[getChildCount()];
-            final float[] newScaleXs = new float[getChildCount()];
-            final float[] newScaleYs = new float[getChildCount()];
-            final float[] newBackgroundAlphas = new float[getChildCount()];
-            final float[] newBackgroundAlphaMultipliers = new float[getChildCount()];
-            final float[] newAlphas = new float[getChildCount()];
-            final float[] newRotationYs = new float[getChildCount()];
-
             for (int i = 0; i < screenCount; i++) {
                 final CellLayout cl = (CellLayout)getChildAt(i);
                 float finalAlphaValue = 0f;
@@ -1709,24 +1725,24 @@ public class Workspace extends SmoothPagedView
                     translation = getOffsetXForRotation(rotation, cl.getWidth(), cl.getHeight());
                 }
 
-                oldAlphas[i] = cl.getAlpha();
-                newAlphas[i] = finalAlphaValue;
+                mOldAlphas[i] = cl.getAlpha();
+                mNewAlphas[i] = finalAlphaValue;
                 if (animated) {
-                    oldTranslationXs[i] = cl.getTranslationX();
-                    oldTranslationYs[i] = cl.getTranslationY();
-                    oldScaleXs[i] = cl.getScaleX();
-                    oldScaleYs[i] = cl.getScaleY();
-                    oldBackgroundAlphas[i] = cl.getBackgroundAlpha();
-                    oldBackgroundAlphaMultipliers[i] = cl.getBackgroundAlphaMultiplier();
-                    oldRotationYs[i] = cl.getRotationY();
+                    mOldTranslationXs[i] = cl.getTranslationX();
+                    mOldTranslationYs[i] = cl.getTranslationY();
+                    mOldScaleXs[i] = cl.getScaleX();
+                    mOldScaleYs[i] = cl.getScaleY();
+                    mOldBackgroundAlphas[i] = cl.getBackgroundAlpha();
+                    mOldBackgroundAlphaMultipliers[i] = cl.getBackgroundAlphaMultiplier();
+                    mOldRotationYs[i] = cl.getRotationY();
 
-                    newTranslationXs[i] = translation;
-                    newTranslationYs[i] = 0f;
-                    newScaleXs[i] = finalScaleFactor;
-                    newScaleYs[i] = finalScaleFactor;
-                    newBackgroundAlphas[i] = finalBackgroundAlpha;
-                    newBackgroundAlphaMultipliers[i] = finalAlphaMultiplierValue;
-                    newRotationYs[i] = rotation;
+                    mNewTranslationXs[i] = translation;
+                    mNewTranslationYs[i] = 0f;
+                    mNewScaleXs[i] = finalScaleFactor;
+                    mNewScaleYs[i] = finalScaleFactor;
+                    mNewBackgroundAlphas[i] = finalBackgroundAlpha;
+                    mNewBackgroundAlphaMultipliers[i] = finalAlphaMultiplierValue;
+                    mNewRotationYs[i] = rotation;
                 } else {
                     cl.setTranslationX(translation);
                     cl.setTranslationY(0.0f);
@@ -1779,6 +1795,7 @@ public class Workspace extends SmoothPagedView
                 final float newVerticalWallpaperOffset = enableWallpaperEffects ? 0.5f : 0;
                 animWithInterpolator.addUpdateListener(new LauncherAnimatorUpdateListener() {
                     public void onAnimationUpdate(float a, float b) {
+                        mTransitionProgress = b;
                         if (b == 0f) {
                             // an optimization, but not required
                             return;
@@ -1794,16 +1811,16 @@ public class Workspace extends SmoothPagedView
                             final CellLayout cl = (CellLayout) getChildAt(i);
                             cl.fastInvalidate();
                             cl.setFastTranslationX(
-                                    a * oldTranslationXs[i] + b * newTranslationXs[i]);
+                                    a * mOldTranslationXs[i] + b * mNewTranslationXs[i]);
                             cl.setFastTranslationY(
-                                    a * oldTranslationYs[i] + b * newTranslationYs[i]);
-                            cl.setFastScaleX(a * oldScaleXs[i] + b * newScaleXs[i]);
-                            cl.setFastScaleY(a * oldScaleYs[i] + b * newScaleYs[i]);
+                                    a * mOldTranslationYs[i] + b * mNewTranslationYs[i]);
+                            cl.setFastScaleX(a * mOldScaleXs[i] + b * mNewScaleXs[i]);
+                            cl.setFastScaleY(a * mOldScaleYs[i] + b * mNewScaleYs[i]);
                             cl.setFastBackgroundAlpha(
-                                    a * oldBackgroundAlphas[i] + b * newBackgroundAlphas[i]);
-                            cl.setBackgroundAlphaMultiplier(a * oldBackgroundAlphaMultipliers[i] +
-                                    b * newBackgroundAlphaMultipliers[i]);
-                            cl.setFastAlpha(a * oldAlphas[i] + b * newAlphas[i]);
+                                    a * mOldBackgroundAlphas[i] + b * mNewBackgroundAlphas[i]);
+                            cl.setBackgroundAlphaMultiplier(a * mOldBackgroundAlphaMultipliers[i] +
+                                    b * mNewBackgroundAlphaMultipliers[i]);
+                            cl.setFastAlpha(a * mOldAlphas[i] + b * mNewAlphas[i]);
                         }
                     }
                 });
@@ -1820,7 +1837,7 @@ public class Workspace extends SmoothPagedView
                         }
                         for (int i = 0; i < screenCount; i++) {
                             final CellLayout cl = (CellLayout) getChildAt(i);
-                            cl.setFastRotationY(a * oldRotationYs[i] + b * newRotationYs[i]);
+                            cl.setFastRotationY(a * mOldRotationYs[i] + b * mNewRotationYs[i]);
                         }
                     }
                 });
@@ -2035,6 +2052,10 @@ public class Workspace extends SmoothPagedView
                 cellXY[1]);
     }
 
+    public boolean transitionStateShouldAllowDrop() {
+        return (!isSwitchingState() || mTransitionProgress > 0.5f);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -2045,6 +2066,7 @@ public class Workspace extends SmoothPagedView
             if (mDragTargetLayout == null) {
                 return false;
             }
+            if (!transitionStateShouldAllowDrop()) return false;
 
             mDragViewVisualCenter = getDragViewVisualCenter(d.x, d.y, d.xOffset, d.yOffset,
                     d.dragView, mDragViewVisualCenter);
@@ -2944,8 +2966,10 @@ public class Workspace extends SmoothPagedView
 
             RectF r = new RectF();
             cellLayout.cellToRect(mTargetCell[0], mTargetCell[1], spanX, spanY, r);
+            setFinalTransitionTransform(cellLayout);
             float cellLayoutScale =
                     mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(cellLayout, loc);
+            resetTransitionTransform(cellLayout);
 
             float dragViewScale =  r.width() / d.dragView.getMeasuredWidth();
             // The animation will scale the dragView about its center, so we need to center about
@@ -3010,9 +3034,45 @@ public class Workspace extends SmoothPagedView
                     lp.cellX, lp.cellY);
 
             if (d.dragView != null) {
+                // We wrap the animation call in the temporary set and reset of the current
+                // cellLayout to its final transform -- this means we animate the drag view to
+                // the correct final location.
+                setFinalTransitionTransform(cellLayout);
                 mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, view,
-                    exitSpringLoadedRunnable);
+                        exitSpringLoadedRunnable);
+                resetTransitionTransform(cellLayout);
             }
+        }
+    }
+
+    public void setFinalTransitionTransform(CellLayout layout) {
+        if (isSwitchingState()) {
+            int index = indexOfChild(layout);
+            mCurrentScaleX = layout.getScaleX();
+            mCurrentScaleY = layout.getScaleY();
+            mCurrentTranslationX = layout.getTranslationX();
+            mCurrentTranslationY = layout.getTranslationY();
+            mCurrentRotationY = layout.getRotationY();
+            layout.setScaleX(mNewScaleXs[index]);
+            layout.setScaleY(mNewScaleYs[index]);
+            layout.setTranslationX(mNewTranslationXs[index]);
+            layout.setTranslationY(mNewTranslationYs[index]);
+            layout.setRotationY(mNewRotationYs[index]);
+        }
+    }
+    public void resetTransitionTransform(CellLayout layout) {
+        if (isSwitchingState()) {
+            int index = indexOfChild(layout);
+            mCurrentScaleX = layout.getScaleX();
+            mCurrentScaleY = layout.getScaleY();
+            mCurrentTranslationX = layout.getTranslationX();
+            mCurrentTranslationY = layout.getTranslationY();
+            mCurrentRotationY = layout.getRotationY();
+            layout.setScaleX(mCurrentScaleX);
+            layout.setScaleY(mCurrentScaleY);
+            layout.setTranslationX(mCurrentTranslationX);
+            layout.setTranslationY(mCurrentTranslationY);
+            layout.setRotationY(mCurrentRotationY);
         }
     }
 
