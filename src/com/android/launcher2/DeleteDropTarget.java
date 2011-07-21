@@ -34,7 +34,7 @@ import com.android.launcher.R;
 
 public class DeleteDropTarget extends ButtonDropTarget {
 
-    private static int DELETE_ANIMATION_DURATION = 220;
+    private static int DELETE_ANIMATION_DURATION = 250;
     private ColorStateList mOriginalTextColor;
     private TransitionDrawable mDrawable;
     private int mHoverColor = 0xFFFF0000;
@@ -175,9 +175,9 @@ public class DeleteDropTarget extends ButtonDropTarget {
                 completeDrop(d);
             }
         };
-        dragLayer.animateView(d.dragView, from, to, 0f, 0.1f,
+        dragLayer.animateView(d.dragView, from, to, 0.1f, 0.1f,
                 DELETE_ANIMATION_DURATION, new DecelerateInterpolator(2),
-                new AccelerateInterpolator(2), onAnimationEndRunnable, false);
+                new DecelerateInterpolator(1.5f), onAnimationEndRunnable, false);
     }
 
     private void completeDrop(DragObject d) {

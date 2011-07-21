@@ -321,7 +321,10 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         Rect to = finalRect;
         if (to == null) {
             to = new Rect();
+            Workspace workspace = mLauncher.getWorkspace();
+            workspace.setFinalTransitionTransform((CellLayout) getParent().getParent());
             scaleRelativeToDragLayer = dragLayer.getDescendantRectRelativeToSelf(this, to);
+            workspace.resetTransitionTransform((CellLayout) getParent().getParent());
         }
 
         int[] center = new int[2];
