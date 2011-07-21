@@ -40,12 +40,12 @@ import android.os.Process;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.GridLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.launcher.R;
@@ -244,8 +244,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     @Override
-    protected void onWallpaperTap(android.view.MotionEvent ev) {
-        mLauncher.showWorkspace(true);
+    protected void onWallpaperTap(MotionEvent ev) {
+        int action = ev.getAction();
+        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_DOWN) {
+            // Dismiss AppsCustomize if we tap
+            mLauncher.showWorkspace(true);
+        }
     }
 
     /**

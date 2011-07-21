@@ -1233,11 +1233,11 @@ public final class Launcher extends Activity
                         != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 
             // In all these cases, only animate if we're already on home
-            mWorkspace.unshrink(alreadyOnHome);
             mWorkspace.exitWidgetResizeMode();
             if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive()) {
                 mWorkspace.moveToDefaultScreen(true);
             }
+            exitSpringLoadedDragMode();
             showWorkspace(alreadyOnHome);
 
             final View v = getWindow().peekDecorView();

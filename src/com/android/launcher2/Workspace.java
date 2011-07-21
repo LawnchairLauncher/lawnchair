@@ -164,6 +164,10 @@ public class Workspace extends SmoothPagedView
     private AnimatorSet mAnimator;
     private AnimatorListener mShrinkAnimationListener;
     private AnimatorListener mUnshrinkAnimationListener;
+    // Working around the face that cancelled animations may not actually be cancelled if they
+    // are cancelled before starting
+    private boolean mShrinkAnimationEnabled;
+    private boolean mUnshrinkAnimationEnabled;
 
     boolean mAnimatingViewIntoPlace = false;
     boolean mIsDragOccuring = false;
@@ -1394,6 +1398,9 @@ public class Workspace extends SmoothPagedView
         }
 
         mAnimator = new AnimatorSet();
+        // Workaround the AnimatorSet cancel bug...
+        mUnshrinkAnimationEnabled = false;
+        mShrinkAnimationEnabled = true;
 
         final int childCount = getChildCount();
         initAnimationArrays();
@@ -1484,6 +1491,7 @@ public class Workspace extends SmoothPagedView
             final float newVerticalWallpaperOffset = wallpaperOffset;
             animWithInterpolator.addUpdateListener(new LauncherAnimatorUpdateListener() {
                 public void onAnimationUpdate(float a, float b) {
+                    if (!mShrinkAnimationEnabled) return;
                     mTransitionProgress = b;
                     if (b == 0f) {
                         // an optimization, and required for correct behavior.
@@ -1695,6 +1703,11 @@ public class Workspace extends SmoothPagedView
             }
 
             mAnimator = new AnimatorSet();
+
+            // Workaround the AnimatorSet cancel bug...
+            mShrinkAnimationEnabled = false;
+            mUnshrinkAnimationEnabled = true;
+
             final int screenCount = getChildCount();
             initAnimationArrays();
 
@@ -1797,6 +1810,7 @@ public class Workspace extends SmoothPagedView
                 final float newVerticalWallpaperOffset = enableWallpaperEffects ? 0.5f : 0;
                 animWithInterpolator.addUpdateListener(new LauncherAnimatorUpdateListener() {
                     public void onAnimationUpdate(float a, float b) {
+                        if (!mUnshrinkAnimationEnabled) return;
                         mTransitionProgress = b;
                         if (b == 0f) {
                             // an optimization, but not required
@@ -1832,6 +1846,7 @@ public class Workspace extends SmoothPagedView
                 rotationAnim.setInterpolator(new DecelerateInterpolator(2.0f));
                 rotationAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
                     public void onAnimationUpdate(float a, float b) {
+                        if (!mUnshrinkAnimationEnabled) return;
                         // don't invalidate workspace because we did it above
                         if (b == 0f) {
                             // an optimization, but not required
@@ -3469,12 +3484,12 @@ public class Workspace extends SmoothPagedView
     }
 
     void moveToDefaultScreen(boolean animate) {
-        if (isSmall() || mIsSwitchingState) {
-            mLauncher.showWorkspace(animate, (CellLayout) getChildAt(mDefaultPage));
-        } else if (animate) {
-            snapToPage(mDefaultPage);
-        } else {
-            setCurrentPage(mDefaultPage);
+        if (!isSmall()) {
+            if (animate) {
+                snapToPage(mDefaultPage);
+            } else {
+                setCurrentPage(mDefaultPage);
+            }
         }
         getChildAt(mDefaultPage).requestFocus();
     }
