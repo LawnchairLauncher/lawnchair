@@ -163,7 +163,8 @@ public abstract class PagedView extends ViewGroup {
     // Scrolling indicator
     private android.animation.ValueAnimator mScrollIndicatorAnimator;
     private ImageView mScrollIndicator;
-    private ImageView mScrollTrack;
+    private int mScrollIndicatorPaddingLeft;
+    private int mScrollIndicatorPaddingRight;
     private boolean mHasScrollIndicator = true;
     private static final int sScrollIndicatorFadeInDuration = 150;
     private static final int sScrollIndicatorFadeOutDuration = 650;
@@ -203,6 +204,10 @@ public abstract class PagedView extends ViewGroup {
                 R.styleable.PagedView_pageLayoutWidthGap, -1);
         mPageLayoutHeightGap = a.getDimensionPixelSize(
                 R.styleable.PagedView_pageLayoutHeightGap, -1);
+        mScrollIndicatorPaddingLeft =
+            a.getDimensionPixelSize(R.styleable.PagedView_scrollIndicatorPaddingLeft, 0);
+        mScrollIndicatorPaddingRight =
+            a.getDimensionPixelSize(R.styleable.PagedView_scrollIndicatorPaddingRight, 0);
         a.recycle();
 
         setHapticFeedbackEnabled(false);
@@ -1741,23 +1746,13 @@ public abstract class PagedView extends ViewGroup {
         int numPages = getChildCount();
         int pageWidth = getMeasuredWidth();
         int maxPageWidth = (numPages * getMeasuredWidth()) + ((numPages - 1) * mPageSpacing);
-        int trackWidth = pageWidth;
+        int trackWidth = pageWidth - mScrollIndicatorPaddingLeft - mScrollIndicatorPaddingRight;
         int indicatorWidth = mScrollIndicator.getMeasuredWidth() -
                 mScrollIndicator.getPaddingLeft() - mScrollIndicator.getPaddingRight();
-        int paddingLeft = 0;
-        int paddingRight = 0;
-
-        // Get the track properties
-        getScrollingIndicatorTrack();
-        if (mScrollTrack != null) {
-            paddingLeft = mScrollTrack.getPaddingLeft();
-            paddingRight = mScrollTrack.getPaddingRight();
-            trackWidth = mScrollTrack.getMeasuredWidth() - paddingLeft - paddingRight;
-        }
 
         float offset = (float) getScrollX() / maxPageWidth;
         int indicatorSpace = trackWidth / numPages;
-        int indicatorPos = (int) (offset * trackWidth) + paddingLeft;
+        int indicatorPos = (int) (offset * trackWidth) + mScrollIndicatorPaddingLeft;
         if (hasElasticScrollIndicator()) {
             if (mScrollIndicator.getMeasuredWidth() != indicatorSpace) {
                 mScrollIndicator.getLayoutParams().width = indicatorSpace;
@@ -1771,30 +1766,10 @@ public abstract class PagedView extends ViewGroup {
         mScrollIndicator.invalidate();
     }
 
-    private ImageView getScrollingIndicatorTrack() {
-        if (mScrollTrack == null) {
-            ViewGroup parent = (ViewGroup) getParent();
-            mScrollTrack = (ImageView) (parent.findViewById(R.id.paged_view_indicator_track));
-        }
-        return mScrollTrack;
-    }
-
     public void showScrollIndicatorTrack() {
-        if (!isScrollingIndicatorEnabled()) return;
-
-        getScrollingIndicatorTrack();
-        if (mScrollTrack != null) {
-            mScrollTrack.setVisibility(View.VISIBLE);
-        }
     }
 
     public void hideScrollIndicatorTrack() {
-        if (!isScrollingIndicatorEnabled()) return;
-
-        getScrollingIndicatorTrack();
-        if (mScrollTrack != null) {
-            mScrollTrack.setVisibility(View.GONE);
-        }
     }
 
     /* Accessibility */

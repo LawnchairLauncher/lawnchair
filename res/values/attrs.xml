@@ -108,6 +108,9 @@
         <attr name="pageLayoutPaddingRight" format="dimension" />
         <!-- The space between adjacent pages of the PagedView. -->
         <attr name="pageSpacing" format="dimension" />
+        <!-- The padding for the scroll indicator area -->
+        <attr name="scrollIndicatorPaddingLeft" format="dimension" />
+        <attr name="scrollIndicatorPaddingRight" format="dimension" />
     </declare-styleable>
 
     <!-- AppsCustomizePagedView specific attributes.  These attributes are used to

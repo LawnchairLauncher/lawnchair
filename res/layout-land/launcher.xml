@@ -23,11 +23,12 @@
     android:layout_height="match_parent">
 
     <include
-        android:id="@+id/paged_view_indicator_track"
-        layout="@layout/scroll_indicator_track"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom" />
+        android:id="@+id/dock_divider"
+        layout="@layout/dock_divider"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginRight="@dimen/button_bar_height"
+        android:layout_gravity="right" />
     <include
         android:id="@+id/paged_view_indicator"
         layout="@layout/scroll_indicator"
@@ -45,7 +46,9 @@
         launcher:defaultScreen="2"
         launcher:cellCountX="4"
         launcher:cellCountY="4"
-        launcher:pageSpacing="@dimen/workspace_page_spacing">
+        launcher:pageSpacing="@dimen/workspace_page_spacing"
+        launcher:scrollIndicatorPaddingLeft="@dimen/qsb_bar_height"
+        launcher:scrollIndicatorPaddingRight="@dimen/button_bar_height">
 
         <include android:id="@+id/cell1" layout="@layout/workspace_screen" />
         <include android:id="@+id/cell2" layout="@layout/workspace_screen" />
@@ -71,6 +74,4 @@
         android:layout_width="@dimen/button_bar_height"
         android:layout_height="match_parent"
         android:layout_gravity="right" />
-
-
 </com.android.launcher2.DragLayer>
