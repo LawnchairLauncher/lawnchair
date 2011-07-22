@@ -2244,7 +2244,9 @@ public class Workspace extends SmoothPagedView
 
             if (continueDrop && dropTargetLayout != null) {
                 // Move internally
-                long container = mLauncher.isHotseatLayout(dropTargetLayout) ?
+                boolean hasMovedLayouts = (getParentCellLayoutForView(cell) != dropTargetLayout);
+                boolean hasMovedIntoHotseat = mLauncher.isHotseatLayout(dropTargetLayout);
+                long container = hasMovedIntoHotseat ?
                         LauncherSettings.Favorites.CONTAINER_HOTSEAT :
                         LauncherSettings.Favorites.CONTAINER_DESKTOP;
                 int screen = (mTargetCell[0] < 0) ?
@@ -2257,8 +2259,7 @@ public class Workspace extends SmoothPagedView
                         mDragViewVisualCenter[1], spanX, spanY, dropTargetLayout, mTargetCell);
                 // If the item being dropped is a shortcut and the nearest drop
                 // cell also contains a shortcut, then create a folder with the two shortcuts.
-                boolean dropInscrollArea = mCurrentPage != screen && screen > -1;
-
+                boolean dropInscrollArea = hasMovedLayouts && !hasMovedIntoHotseat;
                 if (!dropInscrollArea && createUserFolderIfNecessary(cell, container,
                         dropTargetLayout, mTargetCell, false, d.dragView, null)) {
                     return;
@@ -2280,7 +2281,7 @@ public class Workspace extends SmoothPagedView
 
 
                 if (mTargetCell[0] >= 0 && mTargetCell[1] >= 0) {
-                    if (screen != mDragInfo.screen) {
+                    if (hasMovedLayouts) {
                         // Reparent the view
                         getParentCellLayoutForView(cell).removeView(cell);
                         addInScreen(cell, container, screen, mTargetCell[0], mTargetCell[1],
