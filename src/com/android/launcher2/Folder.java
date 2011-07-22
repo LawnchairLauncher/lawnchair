@@ -35,12 +35,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.MeasureSpec;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -717,9 +715,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
 
         int width = getPaddingLeft() + getPaddingRight() + mContent.getDesiredWidth();
-        // Technically there is no padding at the bottom, but we add space equal to the padding
-        // and have to account for that here.
-        int height = getPaddingTop() + mContent.getDesiredHeight() + mFolderNameHeight;
+        int height = getPaddingTop() + getPaddingBottom() + mContent.getDesiredHeight()
+                + mFolderNameHeight;
         DragLayer parent = (DragLayer) mLauncher.findViewById(R.id.drag_layer);
 
         parent.getDescendantRectRelativeToSelf(mFolderIcon, mTempRect);
@@ -783,9 +780,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = getPaddingLeft() + getPaddingRight() + mContent.getDesiredWidth();
-        // Technically there is no padding at the bottom, but we add space equal to the padding
-        // and have to account for that here.
-        int height = getPaddingTop() + mContent.getDesiredHeight() + mFolderNameHeight;
+        int height = getPaddingTop() + getPaddingBottom() + mContent.getDesiredHeight()
+                + mFolderNameHeight;
 
         int contentWidthSpec = MeasureSpec.makeMeasureSpec(mContent.getDesiredWidth(),
                 MeasureSpec.EXACTLY);

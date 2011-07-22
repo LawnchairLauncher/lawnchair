@@ -19,10 +19,6 @@
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/folder_padding"
-    android:paddingRight="@dimen/folder_padding"
-    android:paddingTop="@dimen/folder_padding"
-    android:paddingBottom="0dp"
     android:orientation="vertical"
     android:background="@drawable/portal_container_holo">
 
@@ -32,14 +28,14 @@
         android:layout_height="wrap_content"
         android:paddingLeft="0dip"
         android:paddingRight="0dip"
-        android:paddingTop="8dip"
-        android:paddingBottom="8dip"
+        android:paddingTop="0dip"
+        android:paddingBottom="0dip"
         android:cacheColorHint="#ff333333"
         android:hapticFeedbackEnabled="false"
         launcher:widthGap="@dimen/folder_width_gap"
         launcher:heightGap="@dimen/folder_height_gap"
-        launcher:cellWidth="@dimen/workspace_cell_width"
-        launcher:cellHeight="@dimen/workspace_cell_height" />
+        launcher:cellWidth="@dimen/folder_cell_width"
+        launcher:cellHeight="@dimen/folder_cell_height" />
 
     <EditText
         android:id="@+id/folder_name"
@@ -47,7 +43,6 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:paddingTop="@dimen/folder_content_name_gap"
-        android:paddingBottom="@dimen/folder_padding"
         android:background="#00000000"
         android:hint="@string/folder_hint_text"
         android:textSize="16sp"

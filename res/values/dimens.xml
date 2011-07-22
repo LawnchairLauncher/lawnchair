@@ -22,6 +22,8 @@
     <dimen name="workspace_width_gap">-1dp</dimen>
     <dimen name="workspace_height_gap">-1dp</dimen>
     <dimen name="workspace_max_gap">8dp</dimen>
+    <dimen name="folder_cell_width">74dp</dimen>
+    <dimen name="folder_cell_height">80dp</dimen>
     <dimen name="scroll_track_padding_left">12dp</dimen>
     <dimen name="scroll_track_padding_right">12dp</dimen>
 
@@ -84,8 +86,7 @@
     <dimen name="folder_preview_size">64dp</dimen>
     <!-- The amount that the preview contents are inset from the preview background -->
     <dimen name="folder_preview_padding">4dp</dimen>
-    <dimen name="folder_padding">18dp</dimen>
-    <dimen name="folder_content_name_gap">10dp</dimen>
+    <dimen name="folder_content_name_gap">8dp</dimen>
     <dimen name="folder_width_gap">0dp</dimen>
     <dimen name="folder_height_gap">0dp</dimen>
 </resources>
