@@ -207,7 +207,10 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     /* LauncherTransitionable overrides */
     @Override
     public void onLauncherTransitionStart(Animator animation) {
-        if (animation != null) {
+        // isHardwareAccelerated() checks if we're attached to a window and if that
+        // window is HW accelerated-- we were sometimes not attached to a window
+        // and buildLayer was throwing an IllegalStateException
+        if (animation != null && isHardwareAccelerated()) {
             // Turn on hardware layers for performance
             setLayerType(LAYER_TYPE_HARDWARE, null);
 
