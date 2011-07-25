@@ -1,4 +1,6 @@
 <resources>
+    <bool name="config_largeHeap">true</bool>
+
 <!-- AllApps/Customize/AppsCustomize -->
     <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
     <integer name="config_workspaceSpringLoadShrinkPercentage">90</integer>
