@@ -2593,14 +2593,18 @@ public final class Launcher extends Activity
         ImageView button = (ImageView) findViewById(buttonId);
         Drawable toolbarIcon = getExternalPackageToolbarIcon(activityName);
 
-        // If we were unable to find the icon via the meta-data, use a generic one
-        if (toolbarIcon == null) {
-            button.setImageResource(fallbackDrawableId);
-            return null;
-        } else {
-            button.setImageDrawable(toolbarIcon);
-            return toolbarIcon.getConstantState();
+        if (button != null) {
+            // If we were unable to find the icon via the meta-data, use a
+            // generic one
+            if (toolbarIcon == null) {
+                button.setImageResource(fallbackDrawableId);
+            } else {
+                button.setImageDrawable(toolbarIcon);
+            }
         }
+
+        return toolbarIcon != null ? toolbarIcon.getConstantState() : null;
+
     }
 
     private void updateTextButtonWithDrawable(int buttonId, Drawable.ConstantState d) {
