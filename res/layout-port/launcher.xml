@@ -25,12 +25,12 @@
     <!-- Keep these behind the workspace so that they are not visible when
          we go into AllApps -->
     <include
-        android:id="@+id/paged_view_indicator_track"
-        layout="@layout/scroll_indicator_track"
+        android:id="@+id/dock_divider"
+        layout="@layout/dock_divider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="@dimen/button_bar_height" />
+        android:layout_marginBottom="@dimen/button_bar_height"
+        android:layout_gravity="bottom" />
     <include
         android:id="@+id/paged_view_indicator"
         layout="@layout/scroll_indicator"
@@ -47,7 +47,9 @@
         launcher:defaultScreen="2"
         launcher:cellCountX="4"
         launcher:cellCountY="4"
-        launcher:pageSpacing="@dimen/workspace_page_spacing">
+        launcher:pageSpacing="@dimen/workspace_page_spacing"
+        launcher:scrollIndicatorPaddingLeft="@dimen/dock_divider_padding_left"
+        launcher:scrollIndicatorPaddingRight="@dimen/dock_divider_padding_right">
 
         <include android:id="@+id/cell1" layout="@layout/workspace_screen" />
         <include android:id="@+id/cell2" layout="@layout/workspace_screen" />
@@ -71,9 +73,6 @@
     <include layout="@layout/hotseat"
         android:id="@+id/hotseat"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/button_bar_height"
+        android:layout_height="@dimen/button_bar_height_plus_padding"
         android:layout_gravity="bottom" />
-
-
-
 </com.android.launcher2.DragLayer>

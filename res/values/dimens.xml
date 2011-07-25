@@ -24,8 +24,10 @@
     <dimen name="workspace_max_gap">8dp</dimen>
     <dimen name="folder_cell_width">74dp</dimen>
     <dimen name="folder_cell_height">80dp</dimen>
-    <dimen name="scroll_track_padding_left">12dp</dimen>
-    <dimen name="scroll_track_padding_right">12dp</dimen>
+    <dimen name="dock_divider_padding_left">12dp</dimen>
+    <dimen name="dock_divider_padding_right">12dp</dimen>
+    <dimen name="dock_divider_padding_top">0dp</dimen>
+    <dimen name="dock_divider_padding_bottom">0dp</dimen>
 
 <!-- QSB -->
     <dimen name="toolbar_button_vertical_padding">0dip</dimen>
@@ -45,6 +47,10 @@
 
     <!-- height of the bottom row of controls -->
     <dimen name="button_bar_height">80dip</dimen>
+    <!-- Because portal animations go beyond the bounds of an icon, we need
+         to make the dock layout slightly larger than the button_bar_height -->
+    <dimen name="button_bar_height_padding">8dp</dimen>
+    <dimen name="button_bar_height_plus_padding">88dp</dimen>
 
     <!-- Drag padding to add to the drop targets -->
     <dimen name="drop_target_drag_padding">20dp</dimen>
