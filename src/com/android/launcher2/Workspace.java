@@ -991,38 +991,59 @@ public class Workspace extends SmoothPagedView
         mDrawBackground = true;
     }
 
-    private void showBackgroundGradientForAllApps() {
-        showBackgroundGradient();
+    private void showBackgroundGradientForAllApps(boolean animated) {
+        showBackgroundGradient(animated);
     }
 
-    private void showBackgroundGradient() {
+    private void showBackgroundGradient(boolean animated) {
         if (mBackground == null) return;
-        if (mBackgroundFadeOutAnimation != null) mBackgroundFadeOutAnimation.cancel();
-        if (mBackgroundFadeInAnimation != null) mBackgroundFadeInAnimation.cancel();
-        mBackgroundFadeInAnimation = ValueAnimator.ofFloat(getBackgroundAlpha(), 1f);
-        mBackgroundFadeInAnimation.addUpdateListener(new AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
-                setBackgroundAlpha(((Float) animation.getAnimatedValue()).floatValue());
-            }
-        });
-        mBackgroundFadeInAnimation.setInterpolator(new DecelerateInterpolator(1.5f));
-        mBackgroundFadeInAnimation.setDuration(BACKGROUND_FADE_IN_DURATION);
-        mBackgroundFadeInAnimation.start();
+        if (mBackgroundFadeOutAnimation != null) {
+            mBackgroundFadeOutAnimation.cancel();
+            mBackgroundFadeOutAnimation = null;
+        }
+        if (mBackgroundFadeInAnimation != null) {
+            mBackgroundFadeInAnimation.cancel();
+            mBackgroundFadeInAnimation = null;
+        }
+        final float finalAlpha = 1f;
+        if (animated) {
+            mBackgroundFadeInAnimation = ValueAnimator.ofFloat(getBackgroundAlpha(), finalAlpha);
+            mBackgroundFadeInAnimation.addUpdateListener(new AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    setBackgroundAlpha(((Float) animation.getAnimatedValue()).floatValue());
+                }
+            });
+            mBackgroundFadeInAnimation.setInterpolator(new DecelerateInterpolator(1.5f));
+            mBackgroundFadeInAnimation.setDuration(BACKGROUND_FADE_IN_DURATION);
+            mBackgroundFadeInAnimation.start();
+        } else {
+            setBackgroundAlpha(finalAlpha);
+        }
     }
 
-    private void hideBackgroundGradient(float finalAlpha) {
+    private void hideBackgroundGradient(float finalAlpha, boolean animated) {
         if (mBackground == null) return;
-        if (mBackgroundFadeInAnimation != null) mBackgroundFadeInAnimation.cancel();
-        if (mBackgroundFadeOutAnimation != null) mBackgroundFadeOutAnimation.cancel();
-        mBackgroundFadeOutAnimation = ValueAnimator.ofFloat(getBackgroundAlpha(), finalAlpha);
-        mBackgroundFadeOutAnimation.addUpdateListener(new AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
-                setBackgroundAlpha(((Float) animation.getAnimatedValue()).floatValue());
-            }
-        });
-        mBackgroundFadeOutAnimation.setInterpolator(new DecelerateInterpolator(1.5f));
-        mBackgroundFadeOutAnimation.setDuration(BACKGROUND_FADE_OUT_DURATION);
-        mBackgroundFadeOutAnimation.start();
+        if (mBackgroundFadeInAnimation != null) {
+            mBackgroundFadeInAnimation.cancel();
+            mBackgroundFadeInAnimation = null;
+        }
+        if (mBackgroundFadeOutAnimation != null) {
+            mBackgroundFadeOutAnimation.cancel();
+            mBackgroundFadeOutAnimation = null;
+        }
+        if (animated) {
+            mBackgroundFadeOutAnimation = ValueAnimator.ofFloat(getBackgroundAlpha(), finalAlpha);
+            mBackgroundFadeOutAnimation.addUpdateListener(new AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    setBackgroundAlpha(((Float) animation.getAnimatedValue()).floatValue());
+                }
+            });
+            mBackgroundFadeOutAnimation.setInterpolator(new DecelerateInterpolator(1.5f));
+            mBackgroundFadeOutAnimation.setDuration(BACKGROUND_FADE_OUT_DURATION);
+            mBackgroundFadeOutAnimation.start();
+        } else {
+            setBackgroundAlpha(finalAlpha);
+        }
     }
 
     public void setBackgroundAlpha(float alpha) {
@@ -1523,7 +1544,7 @@ public class Workspace extends SmoothPagedView
         }
         setChildrenDrawnWithCacheEnabled(true);
 
-        showBackgroundGradientForAllApps();
+        showBackgroundGradientForAllApps(animated);
     }
 
     @Override
@@ -1876,7 +1897,7 @@ public class Workspace extends SmoothPagedView
         }
 
         hideBackgroundGradient(springLoaded ? getResources().getInteger(
-                R.integer.config_appsCustomizeSpringLoadedBgAlpha) / 100f : 0f);
+                R.integer.config_appsCustomizeSpringLoadedBgAlpha) / 100f : 0f, animated);
     }
 
     /**

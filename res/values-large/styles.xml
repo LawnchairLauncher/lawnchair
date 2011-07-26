@@ -54,13 +54,8 @@
         <item name="android:textSize">13dip</item>
     </style>
 
-    <style name="Theme" parent="android:Theme.Holo">
-        <item name="android:windowNoTitle">true</item>
+    <style name="Theme" parent="android:Theme.Holo.Wallpaper.NoTitleBar">
         <item name="android:windowActionModeOverlay">true</item>
-
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:colorBackgroundCacheHint">@null</item>
-        <item name="android:windowShowWallpaper">true</item>
     </style>
 
     <style name="Theme.WallpaperPicker">
