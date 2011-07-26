@@ -21,18 +21,12 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="8424725141379931883">"Launcher"</string>
     <string name="uid_name" msgid="3371120195364560632">"Android-kerneprogrammer"</string>
-    <string name="folder_name" msgid="4588446541914685904">"Mappe"</string>
+    <string name="folder_name" msgid="8551881338202938211"></string>
     <string name="chooser_wallpaper" msgid="5988031014201479733">"Vælg tapet fra"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Angiv tapet"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"Tapeter"</string>
     <string name="activity_not_found" msgid="5591731020063337696">"Applikationen er ikke installeret."</string>
-    <string name="configure_wallpaper" msgid="2820186271419674623">"Konfigurer ..."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widgets"</string>
-    <string name="folders_tab_label" msgid="1145293785541489736">"Mapper"</string>
-    <string name="shortcuts_tab_label" msgid="8640731503933155644">"Flere"</string>
-    <string name="wallpapers_tab_label" msgid="1617804870364119879">"Tapeter"</string>
-    <string name="applications_tab_label" msgid="2991364240020736760">"Programgenveje"</string>
-    <string name="wallpapers_temp_tab_text" msgid="1660218201190495279">"Dette er fanen for tapeter"</string>
     <string name="long_press_widget_to_add" msgid="4307462194057715796">"Tryk længe for at tilføje en widget"</string>
     <string name="market" msgid="2652226429823445833">"Butik"</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Kunne ikke slippe elementet på denne startskærm"</string>
@@ -43,21 +37,16 @@
     <string name="cancel_action" msgid="3811860427489435048">"Annuller"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"Føj til Startskærm"</string>
     <string name="group_applications" msgid="4118484163419674240">"Programmer"</string>
-    <string name="group_shortcuts" msgid="9133529424900391877">"Genveje"</string>
-    <string name="group_folder" msgid="5143593791798929193">"Ny mappe"</string>
-    <string name="group_live_folders" msgid="2664945399140647217">"Mapper"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Widgets"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Tapeter"</string>
-    <string name="add_folder" msgid="3521088587367839879">"Mappe"</string>
-    <string name="add_clock" msgid="2337943840175865746">"Ur"</string>
-    <string name="add_photo_frame" msgid="3154058437359487954">"Billedramme"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Der er ikke mere plads på Startskærmen."</string>
+    <!-- no translation found for invalid_hotseat_item (6545340627805449250) -->
+    <skip />
     <string name="shortcut_installed" msgid="7071557296331322355">"Genvejen \"<xliff:g id="NAME">%s</xliff:g>\" blev oprettet."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Genvejen \"<xliff:g id="NAME">%s</xliff:g>\" blev fjernet."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Genvejen \"<xliff:g id="NAME">%s</xliff:g>\" findes allerede."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Vælg genvej"</string>
     <string name="title_select_application" msgid="8031072293115454221">"Vælg applikation"</string>
-    <string name="title_select_live_folder" msgid="3753447798805166749">"Vælg mappe"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Programmer"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Start"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"Fjern"</string>
@@ -68,7 +57,6 @@
     <string name="accessibility_search_button" msgid="816822994629942611">"Søg"</string>
     <string name="accessibility_voice_search_button" msgid="3938249215065842475">"Stemmesøgning"</string>
     <string name="accessibility_all_apps_button" msgid="1595097919145716305">"Programmer"</string>
-    <string name="accessibility_customize_button" msgid="585539669413531163">"Tilpas"</string>
     <string name="accessibility_delete_button" msgid="3628162007991023603">"Fjern"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"Afinstaller opdatering"</string>
     <string name="menu_add" msgid="3065046628354640854">"Tilføj"</string>
@@ -76,7 +64,6 @@
     <string name="menu_wallpaper" msgid="5837429080911269832">"Tapet"</string>
     <string name="menu_search" msgid="4826514464423239041">"Søg"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"Meddelelser"</string>
-    <string name="menu_gestures" msgid="514678675575912237">"Gestus"</string>
     <string name="menu_settings" msgid="6233960148378443661">"Indstillinger"</string>
     <string name="cab_menu_delete_app" msgid="1242619904941293871">"Afinstaller applikation"</string>
     <string name="cab_menu_app_info" msgid="5180426909324882018">"Programoplysninger"</string>
@@ -95,6 +82,5 @@
     <string name="gadget_error_text" msgid="8359351016167075858">"Der er problemer med indlæsning af widget"</string>
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"Dette er et systemprogram, som ikke kan afinstalleres."</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
-    <!-- no translation found for folder_hint_text (8633351560105748141) -->
-    <skip />
+    <string name="folder_hint_text" msgid="8633351560105748141">"Unavngiven mappe"</string>
 </resources>
