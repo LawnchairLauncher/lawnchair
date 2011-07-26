@@ -20,6 +20,7 @@ import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -161,7 +162,8 @@ public abstract class PagedView extends ViewGroup {
     protected boolean mIsDataReady = false;
 
     // Scrolling indicator
-    private android.animation.ValueAnimator mScrollIndicatorAnimator;
+    private ValueAnimator mScrollIndicatorAnimator;
+    private android.animation.ValueAnimator mDockDividerAnimator;
     private ImageView mScrollIndicator;
     private int mScrollIndicatorPaddingLeft;
     private int mScrollIndicatorPaddingRight;
@@ -1734,6 +1736,55 @@ public abstract class PagedView extends ViewGroup {
                     }
                 });
                 mScrollIndicatorAnimator.start();
+            }
+        }
+    }
+
+    void showDockDivider(boolean immediately) {
+        final ViewGroup parent = (ViewGroup) getParent();
+        final View divider = (ImageView) (parent.findViewById(R.id.dock_divider));
+        if (divider != null) {
+            divider.setVisibility(View.VISIBLE);
+            if (mDockDividerAnimator != null) {
+                mDockDividerAnimator.cancel();
+            }
+            if (immediately) {
+                divider.setAlpha(1f);
+            } else {
+                mDockDividerAnimator = ObjectAnimator.ofFloat(divider, "alpha", 1f);
+                mDockDividerAnimator.setDuration(sScrollIndicatorFadeInDuration);
+                mDockDividerAnimator.start();
+            }
+        }
+    }
+
+    void hideDockDivider(boolean immediately) {
+        final ViewGroup parent = (ViewGroup) getParent();
+        final View divider = (ImageView) (parent.findViewById(R.id.dock_divider));
+        if (divider != null) {
+            if (mDockDividerAnimator != null) {
+                mDockDividerAnimator.cancel();
+            }
+            if (immediately) {
+                divider.setVisibility(View.GONE);
+                divider.setAlpha(0f);
+            } else {
+                mDockDividerAnimator = ObjectAnimator.ofFloat(divider, "alpha", 0f);
+                mDockDividerAnimator.setDuration(sScrollIndicatorFadeOutDuration);
+                mDockDividerAnimator.addListener(new AnimatorListenerAdapter() {
+                    private boolean cancelled = false;
+                    @Override
+                    public void onAnimationCancel(android.animation.Animator animation) {
+                        cancelled = true;
+                    }
+                    @Override
+                    public void onAnimationEnd(android.animation.Animator animation) {
+                        if (!cancelled) {
+                            divider.setVisibility(View.GONE);
+                        }
+                    }
+                });
+                mDockDividerAnimator.start();
             }
         }
     }
