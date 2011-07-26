@@ -2113,6 +2113,7 @@ public final class Launcher extends Activity
                     if (!springLoaded && !LauncherApplication.isScreenLarge()) {
                         // Hide the workspace scrollbar
                         mWorkspace.hideScrollingIndicator(true);
+                        mWorkspace.hideDockDivider(true);
                     }
                 }
             });
@@ -2138,6 +2139,7 @@ public final class Launcher extends Activity
                 if (!springLoaded && !LauncherApplication.isScreenLarge()) {
                     // Hide the workspace scrollbar
                     mWorkspace.hideScrollingIndicator(true);
+                    mWorkspace.hideDockDivider(true);
                 }
             }
         }
@@ -2192,6 +2194,12 @@ public final class Launcher extends Activity
             }
             alphaAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
+                public void onAnimationStart(android.animation.Animator animation) {
+                    if (!springLoaded) {
+                        mWorkspace.showDockDivider(false);
+                    }
+                }
+                @Override
                 public void onAnimationEnd(Animator animation) {
                     fromView.setVisibility(View.GONE);
                     if (fromView instanceof LauncherTransitionable) {
@@ -2211,6 +2219,7 @@ public final class Launcher extends Activity
 
                 if (!springLoaded && !LauncherApplication.isScreenLarge()) {
                     // Flash the workspace scrollbar
+                    mWorkspace.showDockDivider(true);
                     mWorkspace.flashScrollingIndicator();
                 }
             }
