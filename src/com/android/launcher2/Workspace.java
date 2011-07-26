@@ -1369,16 +1369,12 @@ public class Workspace extends SmoothPagedView
         final int screenCount = getChildCount();
         float totalWidth = screenCount * scaledPageWidth + (screenCount - 1) * extraScaledSpacing;
 
+        // We shrink and disappear to nothing
         boolean isPortrait = getMeasuredHeight() > getMeasuredWidth();
-        float y = (isPortrait ?
+        float y = screenHeight - scaledPageHeight - (isPortrait ?
                 getResources().getDimension(R.dimen.allAppsSmallScreenVerticalMarginPortrait) :
                 getResources().getDimension(R.dimen.allAppsSmallScreenVerticalMarginLandscape));
-        float finalAlpha = 1.0f;
-        float extraShrinkFactor = 1.0f;
-
-        // We shrink and disappear to nothing
-        y = screenHeight - y - scaledPageHeight;
-        finalAlpha = 0.0f;
+        float finalAlpha = 0.0f;
 
         int duration = res.getInteger(R.integer.config_appsCustomizeWorkspaceShrinkTime);
 
@@ -1402,7 +1398,6 @@ public class Workspace extends SmoothPagedView
         mUnshrinkAnimationEnabled = false;
         mShrinkAnimationEnabled = true;
 
-        final int childCount = getChildCount();
         initAnimationArrays();
 
         for (int i = 0; i < screenCount; i++) {
@@ -1428,17 +1423,17 @@ public class Workspace extends SmoothPagedView
                 mOldRotationYs[i] = cl.getRotationY();
                 mNewTranslationXs[i] = x;
                 mNewTranslationYs[i] = y;
-                mNewScaleXs[i] = shrinkFactor * rotationScaleX * extraShrinkFactor;
-                mNewScaleYs[i] = shrinkFactor * rotationScaleY * extraShrinkFactor;
+                mNewScaleXs[i] = shrinkFactor * rotationScaleX;
+                mNewScaleYs[i] = shrinkFactor * rotationScaleY;
                 mNewBackgroundAlphas[i] = finalAlpha;
                 mNewRotationYs[i] = rotation;
             } else {
                 cl.setX((int)x);
                 cl.setY((int)y);
-                cl.setScaleX(shrinkFactor * rotationScaleX * extraShrinkFactor);
-                cl.setScaleY(shrinkFactor * rotationScaleY * extraShrinkFactor);
+                cl.setScaleX(shrinkFactor * rotationScaleX);
+                cl.setScaleY(shrinkFactor * rotationScaleY);
                 cl.setBackgroundAlpha(finalAlpha);
-                cl.setAlpha(finalAlpha);
+                cl.setFastAlpha(finalAlpha);
                 cl.setRotationY(rotation);
                 mShrinkAnimationListener.onAnimationEnd(null);
             }
@@ -1529,6 +1524,13 @@ public class Workspace extends SmoothPagedView
         setChildrenDrawnWithCacheEnabled(true);
 
         showBackgroundGradientForAllApps();
+    }
+
+    @Override
+    protected void updateAdjacentPagesAlpha() {
+        if (!isSmall()) {
+            super.updateAdjacentPagesAlpha();
+        }
     }
 
     /*
