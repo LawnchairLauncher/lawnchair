@@ -18,8 +18,10 @@
 <!-- Workspace -->
     <dimen name="workspace_left_padding">0dp</dimen>
     <dimen name="workspace_right_padding">0dp</dimen>
-    <dimen name="workspace_top_padding">@dimen/qsb_bar_height</dimen>
-    <dimen name="workspace_bottom_padding">@dimen/button_bar_height</dimen>
+    <!-- We use the qsb_bar_height (48dp) + 12dp extra padding -->
+    <dimen name="workspace_top_padding">60dp</dimen>
+    <!-- We use the button_bar_height (80dp) + 12dp extra padding -->
+    <dimen name="workspace_bottom_padding">96dp</dimen>
     <dimen name="workspace_page_spacing">8dp</dimen>
 
     <integer name="apps_customize_cellCountX">4</integer>
