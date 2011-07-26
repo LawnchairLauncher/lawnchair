@@ -21,18 +21,12 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="8424725141379931883">"Trình khởi chạy"</string>
     <string name="uid_name" msgid="3371120195364560632">"Ứng dụng Lõi Android"</string>
-    <string name="folder_name" msgid="4588446541914685904">"Thư mục"</string>
+    <string name="folder_name" msgid="8551881338202938211"></string>
     <string name="chooser_wallpaper" msgid="5988031014201479733">"Chọn hình nền từ"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Đặt hình nền"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"Hình nền"</string>
     <string name="activity_not_found" msgid="5591731020063337696">"Ứng dụng chưa được cài đặt."</string>
-    <string name="configure_wallpaper" msgid="2820186271419674623">"Định cấu hình..."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Tiện ích"</string>
-    <string name="folders_tab_label" msgid="1145293785541489736">"Thư mục"</string>
-    <string name="shortcuts_tab_label" msgid="8640731503933155644">"Khác"</string>
-    <string name="wallpapers_tab_label" msgid="1617804870364119879">"Hình nền"</string>
-    <string name="applications_tab_label" msgid="2991364240020736760">"Lối tắt ứng dụng"</string>
-    <string name="wallpapers_temp_tab_text" msgid="1660218201190495279">"Đây sẽ là tab hình nền"</string>
     <string name="long_press_widget_to_add" msgid="4307462194057715796">"Nhấn và giữ để chọn tiện ích con"</string>
     <string name="market" msgid="2652226429823445833">"Mua hàng"</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Không thể thả mục vào màn hình chính này"</string>
@@ -43,21 +37,16 @@
     <string name="cancel_action" msgid="3811860427489435048">"Hủy"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"Thêm vào Màn hình chính"</string>
     <string name="group_applications" msgid="4118484163419674240">"Ứng dụng"</string>
-    <string name="group_shortcuts" msgid="9133529424900391877">"Lối tắt"</string>
-    <string name="group_folder" msgid="5143593791798929193">"Thư mục mới"</string>
-    <string name="group_live_folders" msgid="2664945399140647217">"Thư mục"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Tiện ích"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Hình nền"</string>
-    <string name="add_folder" msgid="3521088587367839879">"Thư mục"</string>
-    <string name="add_clock" msgid="2337943840175865746">"Đồng hồ"</string>
-    <string name="add_photo_frame" msgid="3154058437359487954">"Khung ảnh"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Không còn khoảng trống trên Màn hình chính này."</string>
+    <!-- no translation found for invalid_hotseat_item (6545340627805449250) -->
+    <skip />
     <string name="shortcut_installed" msgid="7071557296331322355">"Lối tắt \"<xliff:g id="NAME">%s</xliff:g>\" đã được tạo."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Lối tắt \"<xliff:g id="NAME">%s</xliff:g>\" đã bị xoá."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Lối tắt \"<xliff:g id="NAME">%s</xliff:g>\" đã tồn tại."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Chọn lối tắt"</string>
     <string name="title_select_application" msgid="8031072293115454221">"Chọn ứng dụng"</string>
-    <string name="title_select_live_folder" msgid="3753447798805166749">"Chọn thư mục"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Ứng dụng"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Màn hình trang chủ"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"Xóa"</string>
@@ -68,7 +57,6 @@
     <string name="accessibility_search_button" msgid="816822994629942611">"Tìm kiếm"</string>
     <string name="accessibility_voice_search_button" msgid="3938249215065842475">"Tìm kiếm bằng giọng nói"</string>
     <string name="accessibility_all_apps_button" msgid="1595097919145716305">"Ứng dụng"</string>
-    <string name="accessibility_customize_button" msgid="585539669413531163">"Tùy chỉnh"</string>
     <string name="accessibility_delete_button" msgid="3628162007991023603">"Xóa"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"Gỡ cài đặt cập nhật"</string>
     <string name="menu_add" msgid="3065046628354640854">"Thêm"</string>
@@ -76,7 +64,6 @@
     <string name="menu_wallpaper" msgid="5837429080911269832">"Hình nền"</string>
     <string name="menu_search" msgid="4826514464423239041">"Tìm kiếm"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"Thông báo"</string>
-    <string name="menu_gestures" msgid="514678675575912237">"Cử chỉ"</string>
     <string name="menu_settings" msgid="6233960148378443661">"Cài đặt"</string>
     <string name="cab_menu_delete_app" msgid="1242619904941293871">"Gỡ cài đặt ứng dụng"</string>
     <string name="cab_menu_app_info" msgid="5180426909324882018">"Chi tiết ứng dụng"</string>
@@ -95,6 +82,5 @@
     <string name="gadget_error_text" msgid="8359351016167075858">"Sự cố khi tải tiện ích"</string>
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"Đây là ứng dụng hệ thống và không thể gỡ cài đặt."</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
-    <!-- no translation found for folder_hint_text (8633351560105748141) -->
-    <skip />
+    <string name="folder_hint_text" msgid="8633351560105748141">"Thư mục chưa đặt tên"</string>
 </resources>
