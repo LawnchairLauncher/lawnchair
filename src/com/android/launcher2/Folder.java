@@ -27,6 +27,8 @@ import android.content.res.Resources;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.InputType;
+import android.text.Selection;
+import android.text.Spannable;
 import android.util.AttributeSet;
 import android.view.ActionMode;
 import android.view.KeyEvent;
@@ -240,6 +242,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         LauncherModel.updateItemInDatabase(mLauncher, mInfo);
         mFolderName.setCursorVisible(false);
         mFolderName.clearFocus();
+        Selection.setSelection((Spannable) mFolderName.getText(), 0, 0);
         mIsEditingName = false;
     }
 
