@@ -1581,6 +1581,9 @@ public final class Launcher extends Activity
      * @param v The view representing the clicked shortcut.
      */
     public void onClick(View v) {
+        // Make sure that rogue clicks don't get through while allapps is launching
+        if (mWorkspace.isSwitchingState()) return;
+
         Object tag = v.getTag();
         if (tag instanceof ShortcutInfo) {
             // Open shortcut
@@ -2318,6 +2321,7 @@ public final class Launcher extends Activity
         // Pause the auto-advance of widgets until we are out of AllApps
         mUserPresent = false;
         updateRunning();
+        closeFolder();
 
         // Send an accessibility event to announce the context change
         getWindow().getDecorView().sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
