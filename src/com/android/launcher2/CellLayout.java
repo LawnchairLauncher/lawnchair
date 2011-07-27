@@ -85,6 +85,7 @@ public class CellLayout extends ViewGroup {
     private OnTouchListener mInterceptTouchListener;
 
     private ArrayList<FolderRingAnimator> mFolderOuterRings = new ArrayList<FolderRingAnimator>();
+    private int[] mFolderLeaveBehindCell = {-1, -1};
 
     private float mBackgroundAlpha;
     private float mBackgroundAlphaMultiplier = 1.0f;
@@ -557,6 +558,22 @@ public class CellLayout extends ViewGroup {
             d.draw(canvas);
             canvas.restore();
         }
+
+        if (mFolderLeaveBehindCell[0] >= 0 && mFolderLeaveBehindCell[1] >= 0) {
+            Drawable d = FolderIcon.sSharedFolderLeaveBehind;
+            int width = d.getIntrinsicWidth();
+            int height = d.getIntrinsicHeight();
+
+            cellToPoint(mFolderLeaveBehindCell[0], mFolderLeaveBehindCell[1], mTempLocation);
+            int centerX = mTempLocation[0] + mCellWidth / 2;
+            int centerY = mTempLocation[1] + FolderRingAnimator.sPreviewSize / 2;
+
+            canvas.save();
+            canvas.translate(centerX - width / 2, centerY - width / 2);
+            d.setBounds(0, 0, width, height);
+            d.draw(canvas);
+            canvas.restore();
+        }
     }
 
     public void showFolderAccept(FolderRingAnimator fra) {
@@ -567,6 +584,18 @@ public class CellLayout extends ViewGroup {
         if (mFolderOuterRings.contains(fra)) {
             mFolderOuterRings.remove(fra);
         }
+        invalidate();
+    }
+
+    public void setFolderLeaveBehindCell(int x, int y) {
+        mFolderLeaveBehindCell[0] = x;
+        mFolderLeaveBehindCell[1] = y;
+        invalidate();
+    }
+
+    public void clearFolderLeaveBehind() {
+        mFolderLeaveBehindCell[0] = -1;
+        mFolderLeaveBehindCell[1] = -1;
         invalidate();
     }
 

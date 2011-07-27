@@ -71,6 +71,8 @@ public class FolderIcon extends LinearLayout implements FolderListener {
     // (0 means it's not scaled at all, 1 means it's scaled to nothing)
     private static final float PERSPECTIVE_SCALE_FACTOR = 0.35f;
 
+    public static Drawable sSharedFolderLeaveBehind = null;
+
     private ImageView mPreviewBackground;
     private BubbleTextView mFolderName;
 
@@ -134,6 +136,11 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         icon.mFolderRingAnimator = new FolderRingAnimator(launcher, icon);
 
         folderInfo.addListener(icon);
+
+        Resources res = launcher.getResources();
+        if (sSharedFolderLeaveBehind == null) {
+            sSharedFolderLeaveBehind = res.getDrawable(R.drawable.portal_ring_rest);
+        }
 
         return icon;
     }
@@ -259,7 +266,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         final int itemType = item.itemType;
         return ((itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
                 itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) &&
-                !mFolder.isFull() && item != mInfo);
+                !mFolder.isFull() && item != mInfo && !mInfo.opened);
     }
 
     public boolean acceptDrop(Object dragInfo) {

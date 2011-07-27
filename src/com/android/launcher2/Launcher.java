@@ -1754,6 +1754,12 @@ public final class Launcher extends Activity
         PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.5f);
         PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.5f);
 
+        FolderInfo info = (FolderInfo) fi.getTag();
+        if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            CellLayout cl = (CellLayout) fi.getParent().getParent();
+            cl.setFolderLeaveBehindCell(info.cellX, info.cellY);
+        }
+
         ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(fi, alpha, scaleX, scaleY);
         oa.setDuration(getResources().getInteger(R.integer.config_folderAnimDuration));
         oa.start();
@@ -1764,8 +1770,23 @@ public final class Launcher extends Activity
         PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.0f);
         PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.0f);
 
+        FolderInfo info = (FolderInfo) fi.getTag();
+        CellLayout cl = null;
+        if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            cl = (CellLayout) fi.getParent().getParent();
+        }
+
+        final CellLayout layout = cl;
         ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(fi, alpha, scaleX, scaleY);
         oa.setDuration(getResources().getInteger(R.integer.config_folderAnimDuration));
+        oa.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (layout != null) {
+                    layout.clearFolderLeaveBehind();
+                }
+            }
+        });
         oa.start();
     }
 
