@@ -116,7 +116,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
 
         FolderIcon icon = (FolderIcon) LayoutInflater.from(launcher).inflate(resId, group, false);
 
-        icon.mFolderName = (BubbleTextView) icon.findViewById(R.id.folder_name);
+        icon.mFolderName = (BubbleTextView) icon.findViewById(R.id.folder_icon_name);
         icon.mFolderName.setText(folderInfo.title);
         icon.mPreviewBackground = (ImageView) icon.findViewById(R.id.preview_background);
         icon.mPreviewBackground.setContentDescription(folderInfo.title);
