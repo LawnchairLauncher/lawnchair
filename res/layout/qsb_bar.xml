@@ -28,28 +28,26 @@
         android:id="@+id/drag_target_bar"
         android:visibility="gone">
 
-        <com.android.launcher2.DeleteDropTarget
+        <FrameLayout
             style="@style/DropTargetButtonContainer"
-            android:id="@+id/delete_target"
             android:layout_weight="1">
             <!-- Delete target -->
-            <TextView
+            <com.android.launcher2.DeleteDropTarget
                 style="@style/DropTargetButton"
                 android:id="@+id/delete_target_text"
                 android:text="@string/delete_zone_label_workspace"
                 android:drawableLeft="@drawable/delete_target_selector" />
-        </com.android.launcher2.DeleteDropTarget>
+        </FrameLayout>
 
-        <com.android.launcher2.InfoDropTarget
+        <FrameLayout
             style="@style/DropTargetButtonContainer"
-            android:id="@+id/info_target"
             android:layout_weight="1">
             <!-- Info target -->
-            <TextView
+            <com.android.launcher2.InfoDropTarget
                 style="@style/DropTargetButton"
                 android:id="@+id/info_target_text"
                 android:text="@string/info_target_label"
                 android:drawableLeft="@drawable/info_target_selector" />
-        </com.android.launcher2.InfoDropTarget>
+        </FrameLayout>
     </LinearLayout>
 </com.android.launcher2.SearchDropTargetBar>

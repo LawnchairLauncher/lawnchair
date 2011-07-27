@@ -24,10 +24,10 @@
     <dimen name="workspace_max_gap">8dp</dimen>
     <dimen name="folder_cell_width">74dp</dimen>
     <dimen name="folder_cell_height">80dp</dimen>
-    <dimen name="dock_divider_padding_left">12dp</dimen>
-    <dimen name="dock_divider_padding_right">12dp</dimen>
-    <dimen name="dock_divider_padding_top">0dp</dimen>
-    <dimen name="dock_divider_padding_bottom">0dp</dimen>
+    <dimen name="workspace_divider_padding_left">12dp</dimen>
+    <dimen name="workspace_divider_padding_right">12dp</dimen>
+    <dimen name="workspace_divider_padding_top">0dp</dimen>
+    <dimen name="workspace_divider_padding_bottom">0dp</dimen>
 
 <!-- QSB -->
     <dimen name="toolbar_button_vertical_padding">0dip</dimen>
@@ -53,7 +53,7 @@
     <dimen name="button_bar_height_plus_padding">88dp</dimen>
 
     <!-- Drag padding to add to the drop targets -->
-    <dimen name="drop_target_drag_padding">20dp</dimen>
+    <dimen name="drop_target_drag_padding">40dp</dimen>
 
     <!-- extra horizontal spacing between mini screen thumbnails ie. in all
          apps and in customization mode -->

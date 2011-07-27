@@ -25,10 +25,10 @@
     <dimen name="workspace_top_padding">0dp</dimen>
     <dimen name="workspace_bottom_padding">0dp</dimen>
     <dimen name="workspace_page_spacing">8dp</dimen>
-    <dimen name="dock_divider_padding_left">0dp</dimen>
-    <dimen name="dock_divider_padding_right">0dp</dimen>
-    <dimen name="dock_divider_padding_top">12dp</dimen>
-    <dimen name="dock_divider_padding_bottom">12dp</dimen>
+    <dimen name="workspace_divider_padding_left">0dp</dimen>
+    <dimen name="workspace_divider_padding_right">0dp</dimen>
+    <dimen name="workspace_divider_padding_top">12dp</dimen>
+    <dimen name="workspace_divider_padding_bottom">12dp</dimen>
 
 <!-- AppsCustomize -->
     <dimen name="apps_customize_cell_width">80dp</dimen>

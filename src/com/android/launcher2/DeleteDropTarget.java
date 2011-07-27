@@ -26,9 +26,8 @@ import android.graphics.Rect;
 import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
+import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.TextView;
 
 import com.android.launcher.R;
 
@@ -52,22 +51,21 @@ public class DeleteDropTarget extends ButtonDropTarget {
         super.onFinishInflate();
 
         // Get the drawable
-        mText = (TextView) findViewById(R.id.delete_target_text);
-        mOriginalTextColor = mText.getTextColors();
+        mOriginalTextColor = getTextColors();
 
         // Get the hover color
         Resources r = getResources();
         mHoverColor = r.getColor(R.color.delete_target_hover_tint);
         mHoverPaint.setColorFilter(new PorterDuffColorFilter(
                 mHoverColor, PorterDuff.Mode.SRC_ATOP));
-        mDrawable = (TransitionDrawable) mText.getCompoundDrawables()[0];
+        mDrawable = (TransitionDrawable) getCompoundDrawables()[0];
         mDrawable.setCrossFadeEnabled(true);
 
         // Remove the text in the Phone UI in landscape
         int orientation = getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             if (!LauncherApplication.isScreenLarge()) {
-                mText.setText("");
+                setText("");
             }
         }
     }
@@ -120,10 +118,10 @@ public class DeleteDropTarget extends ButtonDropTarget {
 
         mActive = isVisible;
         mDrawable.resetTransition();
-        mText.setTextColor(mOriginalTextColor);
-        setVisibility(isVisible ? View.VISIBLE : View.GONE);
-        if (mText.getText().length() > 0) {
-            mText.setText(isUninstall ? R.string.delete_target_uninstall_label
+        setTextColor(mOriginalTextColor);
+        ((ViewGroup) getParent()).setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        if (getText().length() > 0) {
+            setText(isUninstall ? R.string.delete_target_uninstall_label
                 : R.string.delete_target_label);
         }
     }
@@ -138,7 +136,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         super.onDragEnter(d);
 
         mDrawable.startTransition(mTransitionDuration);
-        mText.setTextColor(mHoverColor);
+        setTextColor(mHoverColor);
     }
 
     public void onDragExit(DragObject d) {
@@ -146,7 +144,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
 
         if (!d.dragComplete) {
             mDrawable.resetTransition();
-            mText.setTextColor(mOriginalTextColor);
+            setTextColor(mOriginalTextColor);
         }
     }
 
@@ -155,11 +153,12 @@ public class DeleteDropTarget extends ButtonDropTarget {
         Rect from = new Rect();
         Rect to = new Rect();
         dragLayer.getViewRectRelativeToSelf(d.dragView, from);
-        dragLayer.getViewRectRelativeToSelf(mText, to);
+        dragLayer.getViewRectRelativeToSelf(this, to);
 
         int width = mDrawable.getIntrinsicWidth();
         int height = mDrawable.getIntrinsicHeight();
-        to.set(to.left, to.top, to.left + width, to.bottom);
+        to.set(to.left + getPaddingLeft(), to.top + getPaddingTop(),
+                to.left + getPaddingLeft() + width, to.bottom);
 
         // Center the destination rect about the trash icon
         int xOffset = (int) -(d.dragView.getMeasuredWidth() - width) / 2;

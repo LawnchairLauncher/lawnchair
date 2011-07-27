@@ -16,9 +16,9 @@
 <ImageView
     xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
-    android:paddingLeft="@dimen/dock_divider_padding_left"
-    android:paddingRight="@dimen/dock_divider_padding_right"
-    android:paddingTop="@dimen/dock_divider_padding_top"
-    android:paddingBottom="@dimen/dock_divider_padding_bottom"
+    android:paddingLeft="@dimen/workspace_divider_padding_left"
+    android:paddingRight="@dimen/workspace_divider_padding_right"
+    android:paddingTop="@dimen/workspace_divider_padding_top"
+    android:paddingBottom="@dimen/workspace_divider_padding_bottom"
     android:scaleType="fitXY"
     android:src="@drawable/hotseat_track_holo" />

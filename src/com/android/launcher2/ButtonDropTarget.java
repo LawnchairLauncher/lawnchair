@@ -29,7 +29,7 @@ import com.android.launcher.R;
 /**
  * Implements a DropTarget.
  */
-public class ButtonDropTarget extends FrameLayout implements DropTarget, DragController.DragListener {
+public class ButtonDropTarget extends TextView implements DropTarget, DragController.DragListener {
 
     protected final int mTransitionDuration;
 
