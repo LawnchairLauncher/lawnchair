@@ -143,7 +143,7 @@ class LauncherSettings {
 
         /**
          * The X coordinate of the cell holding the favorite
-         * (if container is CONTAINER_DESKTOP or CONTAINER_DOCK)
+         * (if container is CONTAINER_HOTSEAT or CONTAINER_HOTSEAT)
          * <P>Type: INTEGER</P>
          */
         static final String CELLX = "cellX";
