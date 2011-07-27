@@ -28,8 +28,8 @@
     <integer name="apps_customize_cellCountY">5</integer>
     <dimen name="apps_customize_pageLayoutWidthGap">-1dp</dimen>
     <dimen name="apps_customize_pageLayoutHeightGap">-1dp</dimen>
-    <dimen name="apps_customize_pageLayoutPaddingTop">15dp</dimen>
-    <dimen name="apps_customize_pageLayoutPaddingBottom">15dp</dimen>
+    <dimen name="apps_customize_pageLayoutPaddingTop">10dp</dimen>
+    <dimen name="apps_customize_pageLayoutPaddingBottom">10dp</dimen>
     <dimen name="apps_customize_pageLayoutPaddingLeft">5dp</dimen>
     <dimen name="apps_customize_pageLayoutPaddingRight">5dp</dimen>
 

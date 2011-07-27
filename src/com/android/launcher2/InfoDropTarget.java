@@ -26,7 +26,7 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.TextView;
+import android.view.ViewGroup;
 
 import com.android.launcher.R;
 
@@ -48,22 +48,21 @@ public class InfoDropTarget extends ButtonDropTarget {
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mText = (TextView) findViewById(R.id.info_target_text);
-        mOriginalTextColor = mText.getTextColors();
+        mOriginalTextColor = getTextColors();
 
         // Get the hover color
         Resources r = getResources();
         mHoverColor = r.getColor(R.color.info_target_hover_tint);
         mHoverPaint.setColorFilter(new PorterDuffColorFilter(
                 mHoverColor, PorterDuff.Mode.SRC_ATOP));
-        mDrawable = (TransitionDrawable) mText.getCompoundDrawables()[0];
+        mDrawable = (TransitionDrawable) getCompoundDrawables()[0];
         mDrawable.setCrossFadeEnabled(true);
 
         // Remove the text in the Phone UI in landscape
         int orientation = getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             if (!LauncherApplication.isScreenLarge()) {
-                mText.setText("");
+                setText("");
             }
         }
     }
@@ -100,8 +99,8 @@ public class InfoDropTarget extends ButtonDropTarget {
 
         mActive = isVisible;
         mDrawable.resetTransition();
-        mText.setTextColor(mOriginalTextColor);
-        setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        setTextColor(mOriginalTextColor);
+        ((ViewGroup) getParent()).setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -114,7 +113,7 @@ public class InfoDropTarget extends ButtonDropTarget {
         super.onDragEnter(d);
 
         mDrawable.startTransition(mTransitionDuration);
-        mText.setTextColor(mHoverColor);
+        setTextColor(mHoverColor);
     }
 
     public void onDragExit(DragObject d) {
@@ -122,7 +121,7 @@ public class InfoDropTarget extends ButtonDropTarget {
 
         if (!d.dragComplete) {
             mDrawable.resetTransition();
-            mText.setTextColor(mOriginalTextColor);
+            setTextColor(mOriginalTextColor);
         }
     }
 }

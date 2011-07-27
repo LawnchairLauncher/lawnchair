@@ -58,6 +58,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -109,6 +110,7 @@ public class Workspace extends SmoothPagedView
     private float mBackgroundAlpha = 0;
     private float mOverScrollMaxBackgroundAlpha = 0.0f;
     private int mOverScrollPageIndex = -1;
+    private AnimatorSet mDividerAnimator;
 
     private final WallpaperManager mWallpaperManager;
     private IBinder mWindowToken;
@@ -3541,5 +3543,67 @@ public class Workspace extends SmoothPagedView
      */
     protected boolean hasElasticScrollIndicator() {
         return true;
+    }
+
+    void showDockDivider(boolean immediately) {
+        final ViewGroup parent = (ViewGroup) getParent();
+        final View qsbDivider = (ImageView) (parent.findViewById(R.id.qsb_divider));
+        final View dockDivider = (ImageView) (parent.findViewById(R.id.dock_divider));
+        if (qsbDivider != null && dockDivider != null) {
+            qsbDivider.setVisibility(View.VISIBLE);
+            dockDivider.setVisibility(View.VISIBLE);
+            if (mDividerAnimator != null) {
+                mDividerAnimator.cancel();
+                mDividerAnimator = null;
+            }
+            if (immediately) {
+                qsbDivider.setAlpha(1f);
+                dockDivider.setAlpha(1f);
+            } else {
+                mDividerAnimator = new AnimatorSet();
+                mDividerAnimator.playTogether(ObjectAnimator.ofFloat(qsbDivider, "alpha", 1f),
+                        ObjectAnimator.ofFloat(dockDivider, "alpha", 1f));
+                mDividerAnimator.setDuration(sScrollIndicatorFadeInDuration);
+                mDividerAnimator.start();
+            }
+        }
+    }
+
+    void hideDockDivider(boolean immediately) {
+        final ViewGroup parent = (ViewGroup) getParent();
+        final View qsbDivider = (ImageView) (parent.findViewById(R.id.qsb_divider));
+        final View dockDivider = (ImageView) (parent.findViewById(R.id.dock_divider));
+        if (qsbDivider != null && dockDivider != null) {
+            if (mDividerAnimator != null) {
+                mDividerAnimator.cancel();
+                mDividerAnimator = null;
+            }
+            if (immediately) {
+                qsbDivider.setVisibility(View.GONE);
+                dockDivider.setVisibility(View.GONE);
+                qsbDivider.setAlpha(0f);
+                dockDivider.setAlpha(0f);
+            } else {
+                mDividerAnimator = new AnimatorSet();
+                mDividerAnimator.playTogether(ObjectAnimator.ofFloat(qsbDivider, "alpha", 0f),
+                        ObjectAnimator.ofFloat(dockDivider, "alpha", 0f));
+                mDividerAnimator.addListener(new AnimatorListenerAdapter() {
+                    private boolean cancelled = false;
+                    @Override
+                    public void onAnimationCancel(android.animation.Animator animation) {
+                        cancelled = true;
+                    }
+                    @Override
+                    public void onAnimationEnd(android.animation.Animator animation) {
+                        if (!cancelled) {
+                            qsbDivider.setVisibility(View.GONE);
+                            dockDivider.setVisibility(View.GONE);
+                        }
+                    }
+                });
+                mDividerAnimator.setDuration(sScrollIndicatorFadeOutDuration);
+                mDividerAnimator.start();
+            }
+        }
     }
 }

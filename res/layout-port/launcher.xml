@@ -25,8 +25,15 @@
     <!-- Keep these behind the workspace so that they are not visible when
          we go into AllApps -->
     <include
+        android:id="@+id/qsb_divider"
+        layout="@layout/workspace_divider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/qsb_bar_height"
+        android:layout_gravity="top" />
+    <include
         android:id="@+id/dock_divider"
-        layout="@layout/dock_divider"
+        layout="@layout/workspace_divider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/button_bar_height"
@@ -48,8 +55,8 @@
         launcher:cellCountX="4"
         launcher:cellCountY="4"
         launcher:pageSpacing="@dimen/workspace_page_spacing"
-        launcher:scrollIndicatorPaddingLeft="@dimen/dock_divider_padding_left"
-        launcher:scrollIndicatorPaddingRight="@dimen/dock_divider_padding_right">
+        launcher:scrollIndicatorPaddingLeft="@dimen/workspace_divider_padding_left"
+        launcher:scrollIndicatorPaddingRight="@dimen/workspace_divider_padding_right">
 
         <include android:id="@+id/cell1" layout="@layout/workspace_screen" />
         <include android:id="@+id/cell2" layout="@layout/workspace_screen" />
