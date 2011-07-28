@@ -17,9 +17,8 @@
 <com.android.launcher2.CellLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
+    style="@style/WorkspaceScreen"
 
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:paddingLeft="@dimen/workspace_left_padding"
     android:paddingRight="@dimen/workspace_right_padding"
     android:paddingTop="@dimen/workspace_top_padding"

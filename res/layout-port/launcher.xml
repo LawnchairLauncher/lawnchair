@@ -51,6 +51,8 @@
         android:id="@+id/workspace"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingTop="@dimen/qsb_bar_height"
+        android:paddingBottom="@dimen/button_bar_height"
         launcher:defaultScreen="2"
         launcher:cellCountX="4"
         launcher:cellCountY="4"

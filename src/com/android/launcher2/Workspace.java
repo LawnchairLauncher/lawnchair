@@ -261,7 +261,10 @@ public class Workspace extends SmoothPagedView
         setDataIsReady();
 
         if (!LauncherApplication.isScreenLarge()) {
-            mFadeInAdjacentScreens = false;
+            mCenterPagesVertically = false;
+            if (!LauncherApplication.isScreenLandscape(context)) {
+                mFadeInAdjacentScreens = false;
+            }
         }
 
         mWallpaperManager = WallpaperManager.getInstance(context);
@@ -1335,7 +1338,7 @@ public class Workspace extends SmoothPagedView
     }
 
     // we use this to shrink the workspace for the all apps view and the customize view
-    public void shrink(State shrinkState, boolean animated) {
+    public void shrink(final State shrinkState, boolean animated) {
         if (mFirstLayout) {
             // (mFirstLayout == "first layout has not happened yet")
             // if we get a call to shrink() as part of our initialization (for example, if
@@ -1527,6 +1530,14 @@ public class Workspace extends SmoothPagedView
                         cl.setFastAlpha(a * mOldAlphas[i] + b * mNewAlphas[i]);
                         cl.setFastRotationY(a * mOldRotationYs[i] + b * mNewRotationYs[i]);
                     }
+
+                    // Shrink the hotset the same amount we are shrinking the screens
+                    if (shrinkState == State.SPRING_LOADED && mLauncher.getHotseat() != null) {
+                        View hotseat = mLauncher.getHotseat().getLayout();
+                        hotseat.fastInvalidate();
+                        hotseat.setFastScaleX(a * mOldScaleXs[0] + b * mNewScaleXs[0]);
+                        hotseat.setFastScaleY(a * mOldScaleXs[0] + b * mNewScaleXs[0]);
+                    }
                 }
             });
             mAnimator.playTogether(animWithInterpolator);
@@ -1705,7 +1716,7 @@ public class Workspace extends SmoothPagedView
         mNewRotationYs = new float[childCount];
     }
 
-    void unshrink(boolean animated, boolean springLoaded) {
+    void unshrink(boolean animated, final boolean springLoaded) {
         if (mFirstLayout) {
             // (mFirstLayout == "first layout has not happened yet")
             // cancel any pending shrinks that were set earlier
@@ -1742,18 +1753,22 @@ public class Workspace extends SmoothPagedView
                 final CellLayout cl = (CellLayout)getChildAt(i);
                 float finalAlphaValue = 0f;
                 float rotation = 0f;
-                if (LauncherApplication.isScreenLarge()) {
-                    finalAlphaValue = (i == mCurrentPage) ? 1.0f : 0.0f;
 
+                // Set the final alpha depending on whether we are fading side pages.  On phone ui,
+                // we don't do any of the rotation, or the fading alpha in portrait.  See the
+                // ctor and screenScrolled().
+                if (mFadeInAdjacentScreens) {
+                    finalAlphaValue = (i == mCurrentPage) ? 1f : 0f;
+                } else {
+                    finalAlphaValue = 1f;
+                }
+
+                if (LauncherApplication.isScreenLarge()) {
                     if (i < mCurrentPage) {
                         rotation = WORKSPACE_ROTATION;
                     } else if (i > mCurrentPage) {
                         rotation = -WORKSPACE_ROTATION;
                     }
-                } else {
-                    // Don't hide the side panes on the phone if we don't also update the side pages
-                    // alpha.  See screenScrolled().
-                    finalAlphaValue = 1f;
                 }
                 float finalAlphaMultiplierValue = 1f;
 
@@ -1863,6 +1878,14 @@ public class Workspace extends SmoothPagedView
                             cl.setBackgroundAlphaMultiplier(a * mOldBackgroundAlphaMultipliers[i] +
                                     b * mNewBackgroundAlphaMultipliers[i]);
                             cl.setFastAlpha(a * mOldAlphas[i] + b * mNewAlphas[i]);
+                        }
+
+                        // Unshrink the hotset the same amount we are unshrinking the screens
+                        if (mLauncher.getHotseat() != null) {
+                            View hotseat = mLauncher.getHotseat().getLayout();
+                            hotseat.fastInvalidate();
+                            hotseat.setFastScaleX(a * mOldScaleXs[0] + b * mNewScaleXs[0]);
+                            hotseat.setFastScaleY(a * mOldScaleXs[0] + b * mNewScaleXs[0]);
                         }
                     }
                 });
@@ -2259,7 +2282,8 @@ public class Workspace extends SmoothPagedView
         // new current/default screen, so any subsequent taps add items to that screen
         if (!mLauncher.isAllAppsVisible()) {
             int dragTargetIndex = indexOfChild(mDragTargetLayout);
-            if (mCurrentPage != dragTargetIndex && (isSmall() || mIsSwitchingState)) {
+            if (dragTargetIndex > -1 && mCurrentPage != dragTargetIndex &&
+                    (isSmall() || mIsSwitchingState)) {
                 scrollToNewPageWithoutMovingPages(dragTargetIndex);
             }
         }
@@ -2767,19 +2791,27 @@ public class Workspace extends SmoothPagedView
         if (mInScrollArea) return;
         if (mIsSwitchingState) return;
 
+        Rect r = new Rect();
         CellLayout layout = null;
         ItemInfo item = (ItemInfo) d.dragInfo;
 
         // Ensure that we have proper spans for the item that we are dropping
         if (item.spanX < 0 || item.spanY < 0) throw new RuntimeException("Improper spans found");
-
         mDragViewVisualCenter = getDragViewVisualCenter(d.x, d.y, d.xOffset, d.yOffset,
-                d.dragView, mDragViewVisualCenter);
+            d.dragView, mDragViewVisualCenter);
 
         // Identify whether we have dragged over a side page
         if (isSmall()) {
-            layout = findMatchingPageForDragOver(d.dragView, mDragViewVisualCenter[0],
+            if (mLauncher.getHotseat() != null) {
+                mLauncher.getHotseat().getHitRect(r);
+                if (r.contains(d.x, d.y)) {
+                    layout = mLauncher.getHotseat().getLayout();
+                }
+            }
+            if (layout == null) {
+                layout = findMatchingPageForDragOver(d.dragView, mDragViewVisualCenter[0],
                     mDragViewVisualCenter[1], true);
+            }
             if (layout != mDragTargetLayout) {
                 // Cancel all intermediate folder states
                 cleanupFolderCreation(d);
@@ -2798,12 +2830,15 @@ public class Workspace extends SmoothPagedView
 
                 boolean isInSpringLoadedMode = (mState == State.SPRING_LOADED);
                 if (isInSpringLoadedMode) {
-                    mSpringLoadedDragController.setAlarm(mDragTargetLayout);
+                    if (mLauncher.isHotseatLayout(layout)) {
+                        mSpringLoadedDragController.cancel();
+                    } else {
+                        mSpringLoadedDragController.setAlarm(mDragTargetLayout);
+                    }
                 }
             }
         } else {
             // Test to see if we are over the hotseat otherwise just use the current page
-            Rect r = new Rect();
             if (mLauncher.getHotseat() != null) {
                 mLauncher.getHotseat().getHitRect(r);
                 if (r.contains(d.x, d.y)) {

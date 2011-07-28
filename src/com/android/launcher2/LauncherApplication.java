@@ -19,6 +19,7 @@ package com.android.launcher2;
 import android.app.Application;
 import android.app.SearchManager;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
@@ -114,6 +115,11 @@ public class LauncherApplication extends Application {
 
     public static boolean isScreenLarge() {
         return sIsScreenLarge;
+    }
+
+    public static boolean isScreenLandscape(Context context) {
+        return context.getResources().getConfiguration().orientation ==
+            Configuration.ORIENTATION_LANDSCAPE;
     }
 
     public static float getScreenDensity() {

@@ -15,11 +15,11 @@
 -->
 
 <!-- The workspace contains 5 screens of cells -->
+
 <com.android.launcher2.Workspace
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
-    android:paddingTop="?android:attr/actionBarSize"
-    android:paddingBottom="10dp"
+    android:paddingTop="@dimen/workspace_content_large_only_top_margin"
     launcher:defaultScreen="2"
     launcher:pageSpacing="@dimen/workspace_page_spacing">
       <include android:id="@+id/cell1" layout="@layout/workspace_screen" />

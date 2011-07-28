@@ -578,9 +578,9 @@ public abstract class PagedView extends ViewGroup {
     protected void updateAdjacentPagesAlpha() {
         if (mFadeInAdjacentScreens) {
             if (mDirtyPageAlpha || (mTouchState == TOUCH_STATE_SCROLLING) || !mScroller.isFinished()) {
-                int screenWidth = getMeasuredWidth();
+                int screenWidth = getMeasuredWidth() - mPaddingLeft - mPaddingRight;
                 int halfScreenSize = screenWidth / 2;
-                int screenCenter = mScrollX + halfScreenSize;
+                int screenCenter = mScrollX + halfScreenSize + mPaddingLeft;
                 final int childCount = getChildCount();
                 for (int i = 0; i < childCount; ++i) {
                     View layout = (View) getChildAt(i);
@@ -1265,11 +1265,13 @@ public abstract class PagedView extends ViewGroup {
     }
 
     protected int getRelativeChildOffset(int index) {
-        return (getMeasuredWidth() - getChildWidth(index)) / 2;
+        int padding = mPaddingLeft + mPaddingRight;
+        return mPaddingLeft + (getMeasuredWidth() - padding - getChildWidth(index)) / 2;
     }
-
     protected int getScaledRelativeChildOffset(int index) {
-        return (getMeasuredWidth() - getScaledMeasuredWidth(getChildAt(index))) / 2;
+        int padding = mPaddingLeft + mPaddingRight;
+        return mPaddingLeft + (getMeasuredWidth() - padding -
+                getScaledMeasuredWidth(getChildAt(index))) / 2;
     }
 
     protected int getChildOffset(int index) {
@@ -1762,7 +1764,7 @@ public abstract class PagedView extends ViewGroup {
 
         int numPages = getChildCount();
         int pageWidth = getMeasuredWidth();
-        int maxPageWidth = (numPages * getMeasuredWidth()) + ((numPages - 1) * mPageSpacing);
+        int maxPageWidth = (numPages * getChildWidth(0)) + ((numPages - 1) * mPageSpacing);
         int trackWidth = pageWidth - mScrollIndicatorPaddingLeft - mScrollIndicatorPaddingRight;
         int indicatorWidth = mScrollIndicator.getMeasuredWidth() -
                 mScrollIndicator.getPaddingLeft() - mScrollIndicator.getPaddingRight();

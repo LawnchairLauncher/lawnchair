@@ -183,7 +183,9 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
                     anim.addListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(android.animation.Animator animation) {
-                            mAppsCustomizePane.flashScrollingIndicator();
+                            if (!LauncherApplication.isScreenLarge()) {
+                                mAppsCustomizePane.flashScrollingIndicator();
+                            }
                         }
                     });
                     anim.start();
@@ -250,7 +252,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             setLayerType(LAYER_TYPE_NONE, null);
         }
 
-        if (!toWorkspace) {
+        if (!toWorkspace && !LauncherApplication.isScreenLarge()) {
             mAppsCustomizePane.flashScrollingIndicator();
         }
     }

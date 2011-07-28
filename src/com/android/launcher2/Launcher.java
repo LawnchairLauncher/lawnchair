@@ -2040,6 +2040,7 @@ public final class Launcher extends Activity
 
         // Shrink workspaces away if going to AppsCustomize from workspace
         mWorkspace.shrink(Workspace.State.SMALL, animated);
+        hideHotseat(animated);
 
         if (animated) {
             final ValueAnimator scaleAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
@@ -2141,6 +2142,7 @@ public final class Launcher extends Activity
         if (!springLoaded) {
             mWorkspace.unshrink(animated);
         }
+        showHotseat(animated);
         if (animated) {
             if (mStateAnimation != null) mStateAnimation.cancel();
             mStateAnimation = new AnimatorSet();
@@ -2297,7 +2299,6 @@ public final class Launcher extends Activity
 
         // Hide the search bar and hotseat
         mSearchDeleteBar.hideSearchBar(animated);
-        hideHotseat(animated);
 
         // Change the state *after* we've called all the transition code
         mState = State.APPS_CUSTOMIZE;
@@ -2357,7 +2358,6 @@ public final class Launcher extends Activity
 
             // Show the search bar and hotseat
             mSearchDeleteBar.showSearchBar(animated);
-            showHotseat(animated);
 
             // Set focus to the AppsCustomize button
             if (mAllAppsButton != null) {

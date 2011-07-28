@@ -18,6 +18,11 @@
 -->
 
 <resources>
+<!-- Workspace -->
+    <style name="WorkspaceScreen">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
 <!-- Search Bar -->
     <style name="SearchDropTargetBar">
         <item name="android:orientation">vertical</item>

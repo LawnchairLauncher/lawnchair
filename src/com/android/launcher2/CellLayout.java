@@ -906,11 +906,6 @@ public class CellLayout extends ViewGroup {
             int vFreeSpace = vSpace - (mCountY * mOriginalCellHeight);
             mWidthGap = Math.min(mMaxGap, numWidthGaps > 0 ? (hFreeSpace / numWidthGaps) : 0);
             mHeightGap = Math.min(mMaxGap,numHeightGaps > 0 ? (vFreeSpace / numHeightGaps) : 0);
-            int remainingHSpace = hFreeSpace - (numWidthGaps * mWidthGap);
-            int remainingVSpace = vFreeSpace - (numHeightGaps * mHeightGap);
-            mCellWidth = mOriginalCellWidth + remainingHSpace / mCountX;
-            mCellHeight = mOriginalCellHeight + remainingVSpace / mCountY;
-
             mChildren.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
         } else {
             mWidthGap = mOriginalWidthGap;
