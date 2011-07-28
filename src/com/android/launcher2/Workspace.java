@@ -140,7 +140,6 @@ public class Workspace extends SmoothPagedView
     private int[] mTempEstimate = new int[2];
     private float[] mDragViewVisualCenter = new float[2];
     private float[] mTempDragCoordinates = new float[2];
-    private float[] mTempTouchCoordinates = new float[2];
     private float[] mTempCellLayoutCenterCoordinates = new float[2];
     private float[] mTempDragBottomRightCoordinates = new float[2];
     private Matrix mTempInverseMatrix = new Matrix();
@@ -1288,12 +1287,6 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    private boolean childLayersEnabled() {
-        boolean isSmallOrSpringloaded =
-            isSmall() || mIsSwitchingState || mState == State.SPRING_LOADED;
-        return isSmallOrSpringloaded || isPageMoving() || mIsDragOccuring;
-    }
-
     private void updateChildrenLayersEnabled() {
         boolean small =
             isSmall() || mIsSwitchingState || mState == State.SPRING_LOADED;
@@ -1711,6 +1704,14 @@ public class Workspace extends SmoothPagedView
     }
 
     void unshrink(boolean animated, boolean springLoaded) {
+        if (mFirstLayout) {
+            // (mFirstLayout == "first layout has not happened yet")
+            // cancel any pending shrinks that were set earlier
+            mSwitchStateAfterFirstLayout = false;
+            mStateAfterFirstLayout = State.NORMAL;
+            return;
+        }
+
         if (isSmall()) {
             float finalScaleFactor = 1.0f;
             float finalBackgroundAlpha = 0.0f;
@@ -2056,7 +2057,6 @@ public class Workspace extends SmoothPagedView
         final Bitmap b = createDragBitmap(child, new Canvas(), bitmapPadding);
 
         final int bmpWidth = b.getWidth();
-        final int bmpHeight = b.getHeight();
 
         mLauncher.getDragLayer().getLocationInDragLayer(child, mTempXY);
         final int dragLayerX = (int) mTempXY[0] + (child.getWidth() - bmpWidth) / 2;
@@ -2776,8 +2776,6 @@ public class Workspace extends SmoothPagedView
 
         // Identify whether we have dragged over a side page
         if (isSmall()) {
-            int left = d.x - d.xOffset;
-            int top = d.y - d.yOffset;
             layout = findMatchingPageForDragOver(d.dragView, mDragViewVisualCenter[0],
                     mDragViewVisualCenter[1], true);
             if (layout != mDragTargetLayout) {
@@ -3107,7 +3105,6 @@ public class Workspace extends SmoothPagedView
     }
     public void resetTransitionTransform(CellLayout layout) {
         if (isSwitchingState()) {
-            int index = indexOfChild(layout);
             mCurrentScaleX = layout.getScaleX();
             mCurrentScaleY = layout.getScaleY();
             mCurrentTranslationX = layout.getTranslationX();
@@ -3338,7 +3335,6 @@ public class Workspace extends SmoothPagedView
             int count = layout.getChildCount();
             for (int i = 0; i < count; i++) {
                 View child = layout.getChildAt(i);
-                CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
                 if (child instanceof Folder) {
                     Folder f = (Folder) child;
                     if (f.getInfo() == tag && f.getInfo().opened) {
@@ -3378,7 +3374,6 @@ public class Workspace extends SmoothPagedView
     }
 
     void removeItems(final ArrayList<ApplicationInfo> apps) {
-        final int screenCount = getChildCount();
         final AppWidgetManager widgets = AppWidgetManager.getInstance(getContext());
 
         final HashSet<String> packageNames = new HashSet<String>();
