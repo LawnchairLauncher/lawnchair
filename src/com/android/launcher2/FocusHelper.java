@@ -139,6 +139,9 @@ public class FocusHelper {
         final int action = e.getAction();
         final boolean handleKeyEvent = (action != KeyEvent.ACTION_UP);
         PagedViewGridLayout newParent = null;
+        // Now that we load items in the bg asynchronously, we can't just focus
+        // child siblings willy-nilly
+        View child = null;
         boolean wasHandled = false;
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_LEFT:
@@ -150,7 +153,8 @@ public class FocusHelper {
                         if (pageIndex > 0) {
                             newParent = (PagedViewGridLayout)
                                     container.getChildAt(pageIndex - 1);
-                            newParent.getChildAt(newParent.getChildCount() - 1).requestFocus();
+                            child = newParent.getChildAt(newParent.getChildCount() - 1);
+                            if (child != null) child.requestFocus();
                         }
                     }
                 }
@@ -165,7 +169,8 @@ public class FocusHelper {
                         if (pageIndex < (pageCount - 1)) {
                             newParent = (PagedViewGridLayout)
                                     container.getChildAt(pageIndex + 1);
-                            newParent.getChildAt(0).requestFocus();
+                            child = newParent.getChildAt(0);
+                            if (child != null) child.requestFocus();
                         }
                     }
                 }
@@ -176,7 +181,8 @@ public class FocusHelper {
                     // Select the closest icon in the previous row, otherwise select the tab bar
                     if (y > 0) {
                         int newWidgetIndex = ((y - 1) * cellCountX) + x;
-                        parent.getChildAt(newWidgetIndex).requestFocus();
+                        child = parent.getChildAt(newWidgetIndex);
+                        if (child != null) child.requestFocus();
                     } else {
                         tabs.requestFocus();
                     }
@@ -188,7 +194,8 @@ public class FocusHelper {
                     // Select the closest icon in the previous row, otherwise do nothing
                     if (y < (cellCountY - 1)) {
                         int newWidgetIndex = Math.min(widgetCount - 1, ((y + 1) * cellCountX) + x);
-                        parent.getChildAt(newWidgetIndex).requestFocus();
+                        child = parent.getChildAt(newWidgetIndex);
+                        if (child != null) child.requestFocus();
                     }
                 }
                 wasHandled = true;
@@ -208,10 +215,11 @@ public class FocusHelper {
                     // if there is no previous page
                     if (pageIndex > 0) {
                         newParent = (PagedViewGridLayout) container.getChildAt(pageIndex - 1);
-                        newParent.getChildAt(0).requestFocus();
+                        child = newParent.getChildAt(0);
                     } else {
-                        parent.getChildAt(0).requestFocus();
+                        child = parent.getChildAt(0);
                     }
+                    if (child != null) child.requestFocus();
                 }
                 wasHandled = true;
                 break;
@@ -221,17 +229,19 @@ public class FocusHelper {
                     // if there is no next page
                     if (pageIndex < (pageCount - 1)) {
                         newParent = (PagedViewGridLayout) container.getChildAt(pageIndex + 1);
-                        newParent.getChildAt(0).requestFocus();
+                        child = newParent.getChildAt(0);
                     } else {
-                        parent.getChildAt(widgetCount - 1).requestFocus();
+                        child = parent.getChildAt(widgetCount - 1);
                     }
+                    if (child != null) child.requestFocus();
                 }
                 wasHandled = true;
                 break;
             case KeyEvent.KEYCODE_MOVE_HOME:
                 if (handleKeyEvent) {
                     // Select the first item on this page
-                    parent.getChildAt(0).requestFocus();
+                    child = parent.getChildAt(0);
+                    if (child != null) child.requestFocus();
                 }
                 wasHandled = true;
                 break;
