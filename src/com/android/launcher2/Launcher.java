@@ -212,12 +212,6 @@ public final class Launcher extends Activity
 
     private static HashMap<Long, FolderInfo> sFolders = new HashMap<Long, FolderInfo>();
 
-    // Hotseats (quick-launch icons next to AllApps)
-    private String[] mHotseatConfig = null;
-    private Intent[] mHotseats = null;
-    private Drawable[] mHotseatIcons = null;
-    private CharSequence[] mHotseatLabels = null;
-
     private Intent mAppMarketIntent = null;
 
     // Related to the auto-advancing of widgets
@@ -434,16 +428,6 @@ public final class Launcher extends Activity
         synchronized (sLock) {
             sScreen = screen;
         }
-    }
-
-    // Note: This doesn't do all the client-id magic that BrowserProvider does
-    // in Browser. (http://b/2425179)
-    private Uri getDefaultBrowserUri() {
-        String url = getString(R.string.default_browser_url);
-        if (url.indexOf("{CID}") != -1) {
-            url = url.replace("{CID}", "android-google");
-        }
-        return Uri.parse(url);
     }
 
     /**
@@ -1920,27 +1904,6 @@ public final class Launcher extends Activity
         mPendingAddInfo.screen = mWorkspace.getCurrentPage();
         mWaitingForResult = true;
         showDialog(DIALOG_CREATE_SHORTCUT);
-    }
-
-    private void pickShortcut() {
-        // Insert extra item to handle picking application
-        Bundle bundle = new Bundle();
-
-        ArrayList<String> shortcutNames = new ArrayList<String>();
-        shortcutNames.add(getString(R.string.group_applications));
-        bundle.putStringArrayList(Intent.EXTRA_SHORTCUT_NAME, shortcutNames);
-
-        ArrayList<ShortcutIconResource> shortcutIcons = new ArrayList<ShortcutIconResource>();
-        shortcutIcons.add(ShortcutIconResource.fromContext(Launcher.this,
-                        R.drawable.ic_launcher_application));
-        bundle.putParcelableArrayList(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, shortcutIcons);
-
-        Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
-        pickIntent.putExtra(Intent.EXTRA_INTENT, new Intent(Intent.ACTION_CREATE_SHORTCUT));
-        pickIntent.putExtra(Intent.EXTRA_TITLE, getText(R.string.title_select_shortcut));
-        pickIntent.putExtras(bundle);
-
-        startActivityForResult(pickIntent, REQUEST_PICK_SHORTCUT);
     }
 
     private class RenameFolder {
