@@ -100,6 +100,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private Rect mTempRect = new Rect();
     private boolean mFirstOpen = true;
 
+    // Internal variable to track whether the folder was destroyed due to only a single
+    // item remaining
+    private boolean mDestroyed = false;
+
     private boolean mIsEditingName = false;
     private InputMethodManager mInputMethodManager;
 
@@ -514,7 +518,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // by another item. If it is, we need to find the next available slot and assign
         // it that position. This is an issue when upgrading from the old Folders implementation
         // which could contain an unlimited number of items.
-        if (mContent.getChildAt(item.cellX, item.cellY) != null) {
+        if (mContent.getChildAt(item.cellX, item.cellY) != null ||
+                item.cellX < 0 || item.cellY < 0) {
             if (!findAndSetEmptyCells(item)) {
                 return false;
             }
@@ -658,17 +663,16 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mCurrentDragInfo = null;
         mCurrentDragView = null;
         mSuppressOnAdd = false;
+        if (target != this) {
+            mOnExitAlarm.cancelAlarm();
+            completeDragExit();
+        }
+
         if (!success) {
-            if (d.dragView != null) {
-                if (target instanceof CellLayout) {
-                    // TODO: we should animate the item back to the folder in this case
-                }
-            }
-            // TODO: if the drag fails, we need to re-add the item
-        } else {
-            if (target != this) {
-                mOnExitAlarm.cancelAlarm();
-                completeDragExit();
+            if (!mDestroyed) {
+                mFolderIcon.onDrop(d);
+            } else {
+                // TODO: if the folder was removed, recreate it
             }
         }
     }
@@ -842,6 +846,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private void replaceFolderWithFinalItem() {
         ItemInfo finalItem = null;
 
+        mDestroyed = true;
         if (getItemCount() == 1) {
             finalItem = mInfo.contents.get(0);
         }
