@@ -18,7 +18,8 @@ package com.android.launcher2;
 
 public class SpringLoadedDragController implements OnAlarmListener {
     // how long the user must hover over a mini-screen before it unshrinks
-    final long ENTER_SPRING_LOAD_HOVER_TIME = 1000;
+    final long ENTER_SPRING_LOAD_HOVER_TIME = 550;
+    final long ENTER_SPRING_LOAD_CANCEL_HOVER_TIME = 950;
     final long EXIT_SPRING_LOAD_HOVER_TIME = 200;
 
     Alarm mAlarm;
@@ -40,7 +41,8 @@ public class SpringLoadedDragController implements OnAlarmListener {
     // Set a new alarm to expire for the screen that we are hovering over now
     public void setAlarm(CellLayout cl) {
         mAlarm.cancelAlarm();
-        mAlarm.setAlarm(ENTER_SPRING_LOAD_HOVER_TIME);
+        mAlarm.setAlarm((cl == null) ? ENTER_SPRING_LOAD_CANCEL_HOVER_TIME :
+            ENTER_SPRING_LOAD_HOVER_TIME);
         mScreen = cl;
     }
 

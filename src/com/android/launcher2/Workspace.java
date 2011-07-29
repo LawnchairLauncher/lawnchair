@@ -1539,14 +1539,6 @@ public class Workspace extends SmoothPagedView
                         cl.setFastAlpha(a * mOldAlphas[i] + b * mNewAlphas[i]);
                         cl.setFastRotationY(a * mOldRotationYs[i] + b * mNewRotationYs[i]);
                     }
-
-                    // Shrink the hotset the same amount we are shrinking the screens
-                    if (shrinkState == State.SPRING_LOADED && mLauncher.getHotseat() != null) {
-                        View hotseat = mLauncher.getHotseat().getLayout();
-                        hotseat.fastInvalidate();
-                        hotseat.setFastScaleX(a * mOldScaleXs[0] + b * mNewScaleXs[0]);
-                        hotseat.setFastScaleY(a * mOldScaleXs[0] + b * mNewScaleXs[0]);
-                    }
                 }
             });
             mAnimator.playTogether(animWithInterpolator);
@@ -1820,6 +1812,14 @@ public class Workspace extends SmoothPagedView
                     mUnshrinkAnimationListener.onAnimationEnd(null);
                 }
             }
+
+            // Unshrink the hotset the same amount we are unshrinking the screens
+            if (mLauncher.getHotseat() != null) {
+                View hotseat = mLauncher.getHotseat().getLayout();
+                hotseat.setScaleX(finalScaleFactor);
+                hotseat.setScaleY(finalScaleFactor);
+            }
+
             Display display = mLauncher.getWindowManager().getDefaultDisplay();
             boolean isLandscape = display.getWidth() > display.getHeight();
             // on phones, don't scroll the wallpaper horizontally or vertically when switching
@@ -1887,14 +1887,6 @@ public class Workspace extends SmoothPagedView
                             cl.setBackgroundAlphaMultiplier(a * mOldBackgroundAlphaMultipliers[i] +
                                     b * mNewBackgroundAlphaMultipliers[i]);
                             cl.setFastAlpha(a * mOldAlphas[i] + b * mNewAlphas[i]);
-                        }
-
-                        // Unshrink the hotset the same amount we are unshrinking the screens
-                        if (mLauncher.getHotseat() != null) {
-                            View hotseat = mLauncher.getHotseat().getLayout();
-                            hotseat.fastInvalidate();
-                            hotseat.setFastScaleX(a * mOldScaleXs[0] + b * mNewScaleXs[0]);
-                            hotseat.setFastScaleY(a * mOldScaleXs[0] + b * mNewScaleXs[0]);
                         }
                     }
                 });
@@ -2333,8 +2325,7 @@ public class Workspace extends SmoothPagedView
                         mDragViewVisualCenter[1], spanX, spanY, dropTargetLayout, mTargetCell);
                 // If the item being dropped is a shortcut and the nearest drop
                 // cell also contains a shortcut, then create a folder with the two shortcuts.
-                boolean dropInscrollArea = hasMovedLayouts && !hasMovedIntoHotseat;
-                if (!dropInscrollArea && createUserFolderIfNecessary(cell, container,
+                if (!mInScrollArea && createUserFolderIfNecessary(cell, container,
                         dropTargetLayout, mTargetCell, false, d.dragView, null)) {
                     return;
                 }
@@ -2349,7 +2340,7 @@ public class Workspace extends SmoothPagedView
                         (int) mDragViewVisualCenter[1], mDragInfo.spanX, mDragInfo.spanY, cell,
                         dropTargetLayout, mTargetCell);
 
-                if (dropInscrollArea && mState != State.SPRING_LOADED) {
+                if (mInScrollArea && !hasMovedIntoHotseat && mState != State.SPRING_LOADED) {
                     snapScreen = screen;
                     snapToPage(screen);
                 }
@@ -3304,7 +3295,16 @@ public class Workspace extends SmoothPagedView
     }
 
     @Override
-    public void onEnterScrollArea(int direction) {
+    public void onEnterScrollArea(int x, int y, int direction) {
+        // Ignore the scroll area if we are dragging over the hot seat
+        if (mLauncher.getHotseat() != null) {
+            Rect r = new Rect();
+            mLauncher.getHotseat().getHitRect(r);
+            if (r.contains(x, y)) {
+                return;
+            }
+        }
+
         if (!isSmall() && !mIsSwitchingState) {
             mInScrollArea = true;
 

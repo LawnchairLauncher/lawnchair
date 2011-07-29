@@ -30,7 +30,7 @@ public interface DragScroller {
      *
      * @param direction The scroll direction
      */
-    void onEnterScrollArea(int direction);
+    void onEnterScrollArea(int x, int y, int direction);
 
     /**
      * The touch point has left the scroll area.

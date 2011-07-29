@@ -483,14 +483,14 @@ public class DragController {
                 mScrollState = SCROLL_WAITING_IN_ZONE;
                 mScrollRunnable.setDirection(SCROLL_LEFT);
                 mHandler.postDelayed(mScrollRunnable, SCROLL_DELAY);
-                mDragScroller.onEnterScrollArea(SCROLL_LEFT);
+                mDragScroller.onEnterScrollArea(x, y, SCROLL_LEFT);
             }
         } else if (!inDeleteRegion && x > mScrollView.getWidth() - mScrollZone) {
             if (mScrollState == SCROLL_OUTSIDE_ZONE && mDistanceSinceScroll > slop) {
                 mScrollState = SCROLL_WAITING_IN_ZONE;
                 mScrollRunnable.setDirection(SCROLL_RIGHT);
                 mHandler.postDelayed(mScrollRunnable, SCROLL_DELAY);
-                mDragScroller.onEnterScrollArea(SCROLL_RIGHT);
+                mDragScroller.onEnterScrollArea(x, y, SCROLL_RIGHT);
             }
         } else {
             if (mScrollState == SCROLL_WAITING_IN_ZONE) {
