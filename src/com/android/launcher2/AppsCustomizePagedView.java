@@ -39,6 +39,7 @@ import android.os.AsyncTask;
 import android.os.Process;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -943,10 +944,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             int ix = i % cellCountX;
             int iy = i / cellCountX;
             GridLayout.LayoutParams lp = new GridLayout.LayoutParams(
-                    GridLayout.spec(iy, GridLayout.LEFT, GridLayout.CAN_STRETCH),
-                    GridLayout.spec(ix, GridLayout.TOP, GridLayout.CAN_STRETCH));
+                    GridLayout.spec(iy, GridLayout.LEFT),
+                    GridLayout.spec(ix, GridLayout.TOP));
             lp.width = cellWidth;
             lp.height = cellHeight;
+            lp.setGravity(Gravity.TOP | Gravity.LEFT);
             if (ix > 0) lp.leftMargin = mWidgetWidthGap;
             if (iy > 0) lp.topMargin = mWidgetHeightGap;
             layout.addView(widget, lp);
