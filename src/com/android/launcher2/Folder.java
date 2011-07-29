@@ -91,7 +91,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private int[] mTargetCell = new int[2];
     private int[] mPreviousTargetCell = new int[2];
     private int[] mEmptyCell = new int[2];
-    private int[] mTempXY = new int[2];
     private Alarm mReorderAlarm = new Alarm();
     private Alarm mOnExitAlarm = new Alarm();
     private TextView mFolderName;
@@ -99,10 +98,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private Rect mHitRect = new Rect();
     private Rect mTempRect = new Rect();
     private boolean mFirstOpen = true;
-
-    // Internal variable to track whether the folder was destroyed due to only a single
-    // item remaining
-    private boolean mDestroyed = false;
+    private boolean mDragInProgress = false;
+    private boolean mDeleteFolderOnDropCompleted = false;
+    private boolean mSuppressFolderDeletion = false;
+    private boolean mItemAddedBackToSelf = false;
 
     private boolean mIsEditingName = false;
     private InputMethodManager mInputMethodManager;
@@ -221,6 +220,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
             mContent.removeView(mCurrentDragView);
             mInfo.remove(mCurrentDragInfo);
+            mDragInProgress = true;
+            mItemAddedBackToSelf = false;
         }
         return true;
     }
@@ -660,20 +661,38 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     public void onDropCompleted(View target, DragObject d, boolean success) {
+        if (success) {
+            if (mDeleteFolderOnDropCompleted && !mItemAddedBackToSelf) {
+                replaceFolderWithFinalItem();
+            }
+        } else {
+            // The drag failed, we need to return the item to the folder
+            mFolderIcon.onDrop(d);
+
+            // We're going to trigger a "closeFolder" which may occur before this item has
+            // been added back to the folder -- this could cause the folder to be deleted
+            if (mOnExitAlarm.alarmPending()) {
+                mSuppressFolderDeletion = true;
+            }
+        }
+
+        if (target != this) {
+            if (mOnExitAlarm.alarmPending()) {
+                mOnExitAlarm.cancelAlarm();
+                completeDragExit();
+            }
+        }
+        mDeleteFolderOnDropCompleted = false;
+        mDragInProgress = false;
+        mItemAddedBackToSelf = false;
         mCurrentDragInfo = null;
         mCurrentDragView = null;
         mSuppressOnAdd = false;
-        if (target != this) {
-            mOnExitAlarm.cancelAlarm();
-            completeDragExit();
-        }
+    }
 
-        if (!success) {
-            if (!mDestroyed) {
-                mFolderIcon.onDrop(d);
-            } else {
-                // TODO: if the folder was removed, recreate it
-            }
+    public void notifyDrop() {
+        if (mDragInProgress) {
+            mItemAddedBackToSelf = true;
         }
     }
 
@@ -839,14 +858,18 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mRearrangeOnClose = false;
         }
         if (getItemCount() <= 1) {
-            replaceFolderWithFinalItem();
+            if (!mDragInProgress && !mSuppressFolderDeletion) {
+                replaceFolderWithFinalItem();
+            } else if (mDragInProgress) {
+                mDeleteFolderOnDropCompleted = true;
+            }
         }
+        mSuppressFolderDeletion = false;
     }
 
     private void replaceFolderWithFinalItem() {
         ItemInfo finalItem = null;
 
-        mDestroyed = true;
         if (getItemCount() == 1) {
             finalItem = mInfo.contents.get(0);
         }

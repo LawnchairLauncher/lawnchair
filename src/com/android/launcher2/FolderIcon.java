@@ -329,8 +329,16 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         if (to == null) {
             to = new Rect();
             Workspace workspace = mLauncher.getWorkspace();
+            // Set cellLayout and this to it's final state to compute final animation locations
             workspace.setFinalTransitionTransform((CellLayout) getParent().getParent());
+            float scaleX = getScaleX();
+            float scaleY = getScaleY();
+            setScaleX(1.0f);
+            setScaleY(1.0f);
             scaleRelativeToDragLayer = dragLayer.getDescendantRectRelativeToSelf(this, to);
+            // Finished computing final animation locations, restore current state
+            setScaleX(scaleX);
+            setScaleY(scaleY);
             workspace.resetTransitionTransform((CellLayout) getParent().getParent());
         }
 
@@ -362,6 +370,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         } else {
             item = (ShortcutInfo) d.dragInfo;
         }
+        mFolder.notifyDrop();
         onDrop(item, d.dragView, null, 1.0f, mInfo.contents.size(), d.postAnimationRunnable);
     }
 

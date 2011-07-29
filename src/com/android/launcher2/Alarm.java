@@ -28,6 +28,7 @@ public class Alarm implements Runnable{
 
     private Handler mHandler;
     private OnAlarmListener mAlarmListener;
+    private boolean mAlarmPending = false;
 
     public Alarm() {
         mHandler = new Handler();
@@ -41,6 +42,7 @@ public class Alarm implements Runnable{
     // it's overwritten and only the new alarm setting is used
     public void setAlarm(long millisecondsInFuture) {
         long currentTime = System.currentTimeMillis();
+        mAlarmPending = true;
         mAlarmTriggerTime = currentTime + millisecondsInFuture;
         if (!mWaitingForCallback) {
             mHandler.postDelayed(this, mAlarmTriggerTime - currentTime);
@@ -50,6 +52,7 @@ public class Alarm implements Runnable{
 
     public void cancelAlarm() {
         mAlarmTriggerTime = 0;
+        mAlarmPending = false;
     }
 
     // this is called when our timer runs out
@@ -63,11 +66,16 @@ public class Alarm implements Runnable{
                 mHandler.postDelayed(this, Math.max(0, mAlarmTriggerTime - currentTime));
                 mWaitingForCallback = true;
             } else {
+                mAlarmPending = false;
                 if (mAlarmListener != null) {
                     mAlarmListener.onAlarm(this);
                 }
             }
         }
+    }
+
+    public boolean alarmPending() {
+        return mAlarmPending;
     }
 }
 
