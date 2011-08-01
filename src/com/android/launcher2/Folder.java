@@ -101,7 +101,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private boolean mDragInProgress = false;
     private boolean mDeleteFolderOnDropCompleted = false;
     private boolean mSuppressFolderDeletion = false;
-    private boolean mItemAddedBackToSelf = false;
+    private boolean mItemAddedBackToSelfViaIcon = false;
 
     private boolean mIsEditingName = false;
     private InputMethodManager mInputMethodManager;
@@ -221,7 +221,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mContent.removeView(mCurrentDragView);
             mInfo.remove(mCurrentDragInfo);
             mDragInProgress = true;
-            mItemAddedBackToSelf = false;
+            mItemAddedBackToSelfViaIcon = false;
         }
         return true;
     }
@@ -295,12 +295,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // forcing a layout
         // TODO: find out if this is still necessary
         mContent.requestLayout();
-    }
-
-    void onClose() {
-        DragLayer parent = (DragLayer) getParent();
-        parent.removeView(Folder.this);
-        clearFocus();
     }
 
     void bind(FolderInfo info) {
@@ -465,7 +459,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         oa.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                onClose();
                 onCloseComplete();
                 mState = STATE_SMALL;
             }
@@ -662,7 +655,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     public void onDropCompleted(View target, DragObject d, boolean success) {
         if (success) {
-            if (mDeleteFolderOnDropCompleted && !mItemAddedBackToSelf) {
+            if (mDeleteFolderOnDropCompleted && !mItemAddedBackToSelfViaIcon) {
                 replaceFolderWithFinalItem();
             }
         } else {
@@ -684,7 +677,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         }
         mDeleteFolderOnDropCompleted = false;
         mDragInProgress = false;
-        mItemAddedBackToSelf = false;
+        mItemAddedBackToSelfViaIcon = false;
         mCurrentDragInfo = null;
         mCurrentDragView = null;
         mSuppressOnAdd = false;
@@ -692,7 +685,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     public void notifyDrop() {
         if (mDragInProgress) {
-            mItemAddedBackToSelf = true;
+            mItemAddedBackToSelfViaIcon = true;
         }
     }
 
@@ -853,6 +846,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     private void onCloseComplete() {
+        DragLayer parent = (DragLayer) getParent();
+        parent.removeView(Folder.this);
+        clearFocus();
+
         if (mRearrangeOnClose) {
             setupContentForNumItems(getItemCount());
             mRearrangeOnClose = false;
@@ -908,7 +905,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         } else {
             item = (ShortcutInfo) d.dragInfo;
         }
-        // Dragged from self onto self
+        // Dragged from self onto self, currently this is the only path possible, however
+        // we keep this as a distinct code path.
         if (item == mCurrentDragInfo) {
             ShortcutInfo si = (ShortcutInfo) mCurrentDragView.getTag();
             CellLayout.LayoutParams lp = (CellLayout.LayoutParams) mCurrentDragView.getLayoutParams();
@@ -929,6 +927,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     public void onAdd(ShortcutInfo item) {
         mItemsInvalidated = true;
+        // If the item was dropped onto this open folder, we have done the work associated
+        // with adding the item to the folder, as indicated by mSuppressOnAdd being set
         if (mSuppressOnAdd) return;
         if (!findAndSetEmptyCells(item)) {
             // The current layout is full, can we expand it?
@@ -942,6 +942,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     public void onRemove(ShortcutInfo item) {
         mItemsInvalidated = true;
+        // If this item is being dragged from this open folder, we have already handled
+        // the work associated with removing the item, so we don't have to do anything here.
         if (item == mCurrentDragInfo) return;
         View v = getViewForInfo(item);
         mContent.removeView(v);
