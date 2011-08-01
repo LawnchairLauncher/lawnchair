@@ -1289,6 +1289,10 @@ public class Workspace extends SmoothPagedView
         for (int i = 0; i < screenCount; i++) {
             final CellLayout layout = (CellLayout) getChildAt(i);
             layout.setChildrenDrawnWithCacheEnabled(false);
+            // In software mode, we don't want the items to continue to be drawn into bitmaps
+            if (!isHardwareAccelerated()) {
+                layout.setChildrenDrawingCacheEnabled(false);
+            }
         }
     }
 

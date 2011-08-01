@@ -150,7 +150,7 @@ public class CellLayoutChildren extends ViewGroup {
             final View view = getChildAt(i);
             view.setDrawingCacheEnabled(enabled);
             // Update the drawing caches
-            if (!view.isHardwareAccelerated()) {
+            if (!view.isHardwareAccelerated() && enabled) {
                 view.buildDrawingCache(true);
             }
         }
