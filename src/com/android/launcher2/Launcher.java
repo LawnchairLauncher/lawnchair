@@ -500,7 +500,7 @@ public final class Launcher extends Activity
         }
 
         // Exit spring loaded mode if necessary after cancelling the configuration of a widget
-        exitSpringLoadedDragModeDelayed(delayExitSpringLoadedMode);
+        exitSpringLoadedDragModeDelayed((resultCode != RESULT_CANCELED), delayExitSpringLoadedMode);
     }
 
     @Override
@@ -1197,36 +1197,7 @@ public final class Launcher extends Activity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (isWorkspaceLocked()) {
-            return false;
-        }
-
         super.onCreateOptionsMenu(menu);
-
-        menu.add(MENU_GROUP_ADD, MENU_ADD, 0, R.string.menu_add)
-                .setIcon(android.R.drawable.ic_menu_add)
-                .setAlphabeticShortcut('A');
-        menu.add(0, MENU_MANAGE_APPS, 0, R.string.menu_manage_apps)
-                .setIcon(android.R.drawable.ic_menu_manage)
-                .setAlphabeticShortcut('M');
-        menu.add(MENU_GROUP_WALLPAPER, MENU_WALLPAPER_SETTINGS, 0, R.string.menu_wallpaper)
-                 .setIcon(android.R.drawable.ic_menu_gallery)
-                 .setAlphabeticShortcut('W');
-        menu.add(0, MENU_SEARCH, 0, R.string.menu_search)
-                .setIcon(android.R.drawable.ic_search_category_default)
-                .setAlphabeticShortcut(SearchManager.MENU_KEY);
-        menu.add(0, MENU_NOTIFICATIONS, 0, R.string.menu_notifications)
-                .setIcon(com.android.internal.R.drawable.ic_menu_notifications)
-                .setAlphabeticShortcut('N');
-
-        final Intent settings = new Intent(android.provider.Settings.ACTION_SETTINGS);
-        settings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-
-        menu.add(0, MENU_SETTINGS, 0, R.string.menu_settings)
-                .setIcon(android.R.drawable.ic_menu_preferences).setAlphabeticShortcut('P')
-                .setIntent(settings);
-
         return true;
     }
 
@@ -1234,10 +1205,7 @@ public final class Launcher extends Activity
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        // TODO-APPS_CUSTOMIZE: Remove this for the phone UI at some point, along with all the menu
-        // related code?
-        if (mAppsCustomizeContent != null && mAppsCustomizeContent.isAnimating()) return false;
-
+        startWallpaper();
         return true;
     }
 
@@ -1348,7 +1316,7 @@ public final class Launcher extends Activity
             completeAddAppWidget(appWidgetId, info.container, info.screen);
 
             // Exit spring loaded mode if necessary after adding the widget
-            exitSpringLoadedDragModeDelayed(false);
+            exitSpringLoadedDragModeDelayed(true, false);
         }
     }
 
@@ -1630,16 +1598,6 @@ public final class Launcher extends Activity
     }
 
     /**
-     * Event handler for the "gear" button that appears on the home screen, which
-     * enters home screen customization mode.
-     *
-     * @param v The view that was clicked.
-     */
-    public void onClickConfigureButton(View v) {
-        addItems();
-    }
-
-    /**
      * Event handler for the "grid" button that appears on the home screen, which
      * enters all apps mode.
      *
@@ -1824,7 +1782,7 @@ public final class Launcher extends Activity
                 // User long pressed on empty space
                 mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                         HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-                addItems();
+                startWallpaper();
             } else {
                 if (!(itemUnderLongClick instanceof Folder)) {
                     // User long pressed on an item
@@ -2238,11 +2196,14 @@ public final class Launcher extends Activity
         }
         // Otherwise, we are not in spring loaded mode, so don't do anything.
     }
-    void exitSpringLoadedDragModeDelayed(boolean extendedDelay) {
+    void exitSpringLoadedDragModeDelayed(final boolean successfulDrop, boolean extendedDelay) {
         mWorkspace.postDelayed(new Runnable() {
             @Override
             public void run() {
                 exitSpringLoadedDragMode();
+                if (successfulDrop) {
+                    showWorkspace(true);
+                }
             }
         }, (extendedDelay ?
                 EXIT_SPRINGLOADED_MODE_LONG_TIMEOUT :
@@ -2580,13 +2541,6 @@ public final class Launcher extends Activity
 
             AddAdapter.ListItem item = (AddAdapter.ListItem) mAdapter.getItem(which);
             switch (item.actionTag) {
-                case AddAdapter.ITEM_SHORTCUT: {
-                    if (mAppsCustomizeTabHost != null) {
-                        mAppsCustomizeTabHost.selectShortcutsTab();
-                    }
-                    showAllApps(true);
-                    break;
-                }
                 case AddAdapter.ITEM_APPLICATION: {
                     if (mAppsCustomizeTabHost != null) {
                         mAppsCustomizeTabHost.selectAppsTab();
