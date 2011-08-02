@@ -243,12 +243,14 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     public void doneEditingFolderName(boolean commit) {
         mFolderName.setHint(sHintText);
-        mInfo.setTitle(mFolderName.getText());
         LauncherModel.updateItemInDatabase(mLauncher, mInfo);
         mFolderName.setCursorVisible(false);
         mFolderName.clearFocus();
         Selection.setSelection((Spannable) mFolderName.getText(), 0, 0);
         mIsEditingName = false;
+        // Convert to a string here to ensure that no other state associated with the text field
+        // gets saved.
+        mInfo.setTitle(mFolderName.getText().toString());
     }
 
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
