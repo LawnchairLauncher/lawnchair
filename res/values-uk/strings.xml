@@ -37,11 +37,11 @@
     <string name="cancel_action" msgid="3811860427489435048">"Скасувати"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"Додати до Головної"</string>
     <string name="group_applications" msgid="4118484163419674240">"Програми"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"Ярлики"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Віджети"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Фонові мал."</string>
     <string name="out_of_space" msgid="8365249326091984698">"Немає більше місця на гол. екрані."</string>
-    <!-- no translation found for invalid_hotseat_item (6545340627805449250) -->
-    <skip />
+    <string name="invalid_hotseat_item" msgid="6545340627805449250">"Цей віджет завеликий для Hotseat."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"Ярлик \"<xliff:g id="NAME">%s</xliff:g>\" створено."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Ярлик \"<xliff:g id="NAME">%s</xliff:g>\" видалено."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Ярлик \"<xliff:g id="NAME">%s</xliff:g>\" уже існує."</string>

@@ -37,11 +37,11 @@
     <string name="cancel_action" msgid="3811860427489435048">"Mégse"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"Hozzáadás a főoldalhoz"</string>
     <string name="group_applications" msgid="4118484163419674240">"Alkalmazások"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"Parancsikonok"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Modulok"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Háttérképek"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Nincs több hely ezen a főoldalon."</string>
-    <!-- no translation found for invalid_hotseat_item (6545340627805449250) -->
-    <skip />
+    <string name="invalid_hotseat_item" msgid="6545340627805449250">"Ez a modul túl nagy a hotseat számára."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"\"<xliff:g id="NAME">%s</xliff:g>\" parancsikon létrehozva."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"A(z) \"<xliff:g id="NAME">%s</xliff:g>\" parancsikon eltávolításra került."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"\"<xliff:g id="NAME">%s</xliff:g>\" parancsikon már létezik."</string>

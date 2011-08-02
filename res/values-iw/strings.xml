@@ -37,6 +37,7 @@
     <string name="cancel_action" msgid="3811860427489435048">"ביטול"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"הוסף למסך דף הבית"</string>
     <string name="group_applications" msgid="4118484163419674240">"יישומים"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"קיצורי דרך"</string>
     <string name="group_widgets" msgid="6704978494073105844">"רכיבי Widget"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"טפטים"</string>
     <string name="out_of_space" msgid="8365249326091984698">"אין עוד מקום במסך דף הבית הזה."</string>

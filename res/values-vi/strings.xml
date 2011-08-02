@@ -37,11 +37,11 @@
     <string name="cancel_action" msgid="3811860427489435048">"Hủy"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"Thêm vào Màn hình chính"</string>
     <string name="group_applications" msgid="4118484163419674240">"Ứng dụng"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"Lối tắt"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Tiện ích"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Hình nền"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Không còn khoảng trống trên Màn hình chính này."</string>
-    <!-- no translation found for invalid_hotseat_item (6545340627805449250) -->
-    <skip />
+    <string name="invalid_hotseat_item" msgid="6545340627805449250">"Tiện ích con này quá lớn cho điểm giới hạn."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"Lối tắt \"<xliff:g id="NAME">%s</xliff:g>\" đã được tạo."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Lối tắt \"<xliff:g id="NAME">%s</xliff:g>\" đã bị xoá."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Lối tắt \"<xliff:g id="NAME">%s</xliff:g>\" đã tồn tại."</string>

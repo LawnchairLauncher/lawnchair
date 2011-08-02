@@ -37,6 +37,7 @@
     <string name="cancel_action" msgid="3811860427489435048">"Отмена"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"Добавить на главный экран"</string>
     <string name="group_applications" msgid="4118484163419674240">"Приложения"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"Ярлыки"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Виджеты"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Обои"</string>
     <string name="out_of_space" msgid="8365249326091984698">"На этом главном экране нет свободного места."</string>

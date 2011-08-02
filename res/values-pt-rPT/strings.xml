@@ -37,6 +37,7 @@
     <string name="cancel_action" msgid="3811860427489435048">"Cancelar"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"Adicionar ao ecrã principal"</string>
     <string name="group_applications" msgid="4118484163419674240">"Aplicações"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"Atalhos"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Widgets"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Imagens de fundo"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Não existe espaço suficiente neste ecrã principal."</string>
@@ -82,5 +83,5 @@
     <string name="gadget_error_text" msgid="8359351016167075858">"Erro ao carregar o widget"</string>
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"É uma aplicação de sistema e não pode ser desinstalada."</string>
     <string name="dream_name" msgid="2847171357608437154">"Lança-mísseis"</string>
-    <string name="folder_hint_text" msgid="8633351560105748141">"Pasta Sem Nome"</string>
+    <string name="folder_hint_text" msgid="8633351560105748141">"Pasta sem nome"</string>
 </resources>
