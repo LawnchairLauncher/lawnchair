@@ -44,6 +44,7 @@
     <skip />
     <string name="menu_item_add_item" msgid="6233177331075781114">"ወደ መነሻ ማያ አክል"</string>
     <string name="group_applications" msgid="4118484163419674240">"መተግበሪያዎች"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"አቋራጮች"</string>
     <string name="group_widgets" msgid="6704978494073105844">"ፍርግሞች"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"ልጣፍ"</string>
     <!-- no translation found for out_of_space (8365249326091984698) -->

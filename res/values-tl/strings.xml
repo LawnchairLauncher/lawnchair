@@ -37,11 +37,11 @@
     <string name="cancel_action" msgid="3811860427489435048">"Kanselahin"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"Idagdag sa Home screen"</string>
     <string name="group_applications" msgid="4118484163419674240">"Mga Application"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"Mga Shortcut"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Mga Widget"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Mga Wallpaper"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Wala nang lugar sa Home screen na ito."</string>
-    <!-- no translation found for invalid_hotseat_item (6545340627805449250) -->
-    <skip />
+    <string name="invalid_hotseat_item" msgid="6545340627805449250">"Masyadong malaki ang widget na ito para sa hotseat."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"Nalikha ang shortcut na \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Inalis ang shortcut na \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Umiiral na ang shortcut na \"<xliff:g id="NAME">%s</xliff:g>\"."</string>

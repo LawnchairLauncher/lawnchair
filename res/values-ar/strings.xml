@@ -37,11 +37,11 @@
     <string name="cancel_action" msgid="3811860427489435048">"إلغاء"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"إضافة إلى الشاشة الرئيسية"</string>
     <string name="group_applications" msgid="4118484163419674240">"التطبيقات"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"الاختصارات"</string>
     <string name="group_widgets" msgid="6704978494073105844">"الأدوات"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"الخلفيات"</string>
     <string name="out_of_space" msgid="8365249326091984698">"ليس هناك مساحة أخرى في هذه الشاشة الرئيسية."</string>
-    <!-- no translation found for invalid_hotseat_item (6545340627805449250) -->
-    <skip />
+    <string name="invalid_hotseat_item" msgid="6545340627805449250">"حجم هذه الأداة كبير للغاية بحيث لا يتسع له الموقع المهم."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"تم إنشاء الاختصار \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"تمت إزالة الاختصار \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"الاختصار \"<xliff:g id="NAME">%s</xliff:g>\" موجود فعلاً."</string>

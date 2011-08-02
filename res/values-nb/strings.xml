@@ -37,11 +37,11 @@
     <string name="cancel_action" msgid="3811860427489435048">"Avbryt"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"Legg til skrivebord"</string>
     <string name="group_applications" msgid="4118484163419674240">"Applikasjoner"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"Snarveier"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Skrivebordselementer"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Bakgrunner"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Ikke nok plass på skrivebordet."</string>
-    <!-- no translation found for invalid_hotseat_item (6545340627805449250) -->
-    <skip />
+    <string name="invalid_hotseat_item" msgid="6545340627805449250">"Denne modulen er for stor for hotseat-feltet."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"Opprettet snarveien «<xliff:g id="NAME">%s</xliff:g>»."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Fjernet snarveien «<xliff:g id="NAME">%s</xliff:g>»."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Snarveien «<xliff:g id="NAME">%s</xliff:g>» fins allerede."</string>

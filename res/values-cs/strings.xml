@@ -37,6 +37,7 @@
     <string name="cancel_action" msgid="3811860427489435048">"Zrušit"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"Přidat na plochu"</string>
     <string name="group_applications" msgid="4118484163419674240">"Aplikace"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"Zástupce"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Widgety"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Tapety"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Na této ploše již není místo."</string>

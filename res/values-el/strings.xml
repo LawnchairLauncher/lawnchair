@@ -37,11 +37,11 @@
     <string name="cancel_action" msgid="3811860427489435048">"Ακύρωση"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"Προσθήκη στην αρχική οθόνη"</string>
     <string name="group_applications" msgid="4118484163419674240">"Εφαρμογές"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"Συντομεύσεις"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Γραφικά στοιχεία"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Ταπετσαρίες"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Δεν υπάρχει χώρος σε αυτήν την αρχική οθόνη."</string>
-    <!-- no translation found for invalid_hotseat_item (6545340627805449250) -->
-    <skip />
+    <string name="invalid_hotseat_item" msgid="6545340627805449250">"Αυτό το γραφικό στοιχείο είναι πολύ μεγάλο για το hotseat."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"Δημιουργήθηκε η συντόμευση \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Η συντόμευση \"<xliff:g id="NAME">%s</xliff:g>\" καταργήθηκε."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Η συντόμευση \"<xliff:g id="NAME">%s</xliff:g>\" υπάρχει ήδη."</string>
@@ -82,6 +82,5 @@
     <string name="gadget_error_text" msgid="8359351016167075858">"Παρουσιάστηκε πρόβλημα στη φόρτωση του γραφικού στοιχείου"</string>
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"Αυτή είναι εφαρμογή του συστήματος και δεν είναι δυνατή η κατάργηση της εγκατάστασής της."</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
-    <!-- no translation found for folder_hint_text (8633351560105748141) -->
-    <skip />
+    <string name="folder_hint_text" msgid="8633351560105748141">"Φάκελος χωρίς όνομα"</string>
 </resources>

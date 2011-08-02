@@ -37,11 +37,11 @@
     <string name="cancel_action" msgid="3811860427489435048">"Annuller"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"Føj til Startskærm"</string>
     <string name="group_applications" msgid="4118484163419674240">"Programmer"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"Genveje"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Widgets"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Tapeter"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Der er ikke mere plads på Startskærmen."</string>
-    <!-- no translation found for invalid_hotseat_item (6545340627805449250) -->
-    <skip />
+    <string name="invalid_hotseat_item" msgid="6545340627805449250">"Denne widget er for stor til hotseat."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"Genvejen \"<xliff:g id="NAME">%s</xliff:g>\" blev oprettet."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Genvejen \"<xliff:g id="NAME">%s</xliff:g>\" blev fjernet."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Genvejen \"<xliff:g id="NAME">%s</xliff:g>\" findes allerede."</string>
