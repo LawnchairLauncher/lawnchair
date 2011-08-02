@@ -342,10 +342,15 @@ public class DragLayer extends FrameLayout {
         final int fromY = r.top;
 
         animateViewIntoPosition(dragView, fromX, fromY, pos[0], pos[1], scale,
-                onFinishRunnable, true);
+                onFinishRunnable, true, -1);
     }
 
     public void animateViewIntoPosition(DragView dragView, final View child,
+            final Runnable onFinishAnimationRunnable) {
+        animateViewIntoPosition(dragView, child, -1, onFinishAnimationRunnable);
+    }
+
+    public void animateViewIntoPosition(DragView dragView, final View child, int duration,
             final Runnable onFinishAnimationRunnable) {
         ((CellLayoutChildren) child.getParent()).measureChild(child);
         CellLayout.LayoutParams lp =  (CellLayout.LayoutParams) child.getLayoutParams();
@@ -396,16 +401,17 @@ public class DragLayer extends FrameLayout {
                 oa.start();
             }
         };
-        animateViewIntoPosition(dragView, fromX, fromY, toX, toY, scale, onCompleteRunnable, true);
+        animateViewIntoPosition(dragView, fromX, fromY, toX, toY, scale,
+                onCompleteRunnable, true, duration);
     }
 
     private void animateViewIntoPosition(final View view, final int fromX, final int fromY,
             final int toX, final int toY, float finalScale, Runnable onCompleteRunnable,
-            boolean fadeOut) {
+            boolean fadeOut, int duration) {
         Rect from = new Rect(fromX, fromY, fromX +
                 view.getMeasuredWidth(), fromY + view.getMeasuredHeight());
         Rect to = new Rect(toX, toY, toX + view.getMeasuredWidth(), toY + view.getMeasuredHeight());
-        animateView(view, from, to, 1f, finalScale, -1, null, null, onCompleteRunnable, true);
+        animateView(view, from, to, 1f, finalScale, duration, null, null, onCompleteRunnable, true);
     }
 
     /**

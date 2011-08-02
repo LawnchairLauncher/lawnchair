@@ -97,6 +97,8 @@ public class Workspace extends SmoothPagedView
     private static final int BACKGROUND_FADE_OUT_DURATION = 350;
     private static final int BACKGROUND_FADE_IN_DURATION = 350;
 
+    private static final int ADJACENT_SCREEN_DROP_DURATION = 300;
+
     // These animators are used to fade the children's outlines
     private ObjectAnimator mChildrenOutlineFadeInAnimation;
     private ObjectAnimator mChildrenOutlineFadeOutAnimation;
@@ -213,6 +215,9 @@ public class Workspace extends SmoothPagedView
     final static float TOUCH_SLOP_DAMPING_FACTOR = 4;
 
     // These variables are used for storing the initial and final values during workspace animations
+    private int mSavedScrollX;
+    private float mSavedRotationY;
+    private float mSavedTranslationX;
     private float mCurrentScaleX;
     private float mCurrentScaleY;
     private float mCurrentRotationY;
@@ -2293,6 +2298,7 @@ public class Workspace extends SmoothPagedView
         }
         CellLayout dropTargetLayout = mDragTargetLayout;
 
+        int snapScreen = -1;
         if (d.dragSource != this) {
             final int[] touchXY = new int[] { (int) mDragViewVisualCenter[0],
                     (int) mDragViewVisualCenter[1] };
@@ -2344,9 +2350,9 @@ public class Workspace extends SmoothPagedView
                         dropTargetLayout, mTargetCell);
 
                 if (dropInscrollArea && mState != State.SPRING_LOADED) {
+                    snapScreen = screen;
                     snapToPage(screen);
                 }
-
 
                 if (mTargetCell[0] >= 0 && mTargetCell[1] >= 0) {
                     if (hasMovedLayouts) {
@@ -2410,12 +2416,37 @@ public class Workspace extends SmoothPagedView
             };
             mAnimatingViewIntoPlace = true;
             if (d.dragView.hasDrawn()) {
-                mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, cell,
+                int duration = snapScreen < 0 ? -1 : ADJACENT_SCREEN_DROP_DURATION;
+                setFinalScrollForPageChange(snapScreen);
+                mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, cell, duration,
                         disableHardwareLayersRunnable);
+                resetFinalScrollForPageChange(snapScreen);
             } else {
                 cell.setVisibility(VISIBLE);
             }
             parent.onDropChild(cell);
+        }
+    }
+
+    public void setFinalScrollForPageChange(int screen) {
+        if (screen >= 0) {
+            mSavedScrollX = getScrollX();
+            CellLayout cl = (CellLayout) getChildAt(screen);
+            mSavedTranslationX = cl.getTranslationX();
+            mSavedRotationY = cl.getRotationY();
+            final int newX = getChildOffset(screen) - getRelativeChildOffset(screen);
+            setScrollX(newX);
+            cl.setTranslationX(0f);
+            cl.setRotationY(0f);
+        }
+    }
+
+    public void resetFinalScrollForPageChange(int screen) {
+        if (screen >= 0) {
+            CellLayout cl = (CellLayout) getChildAt(screen);
+            setScrollX(mSavedScrollX);
+            cl.setTranslationX(mSavedTranslationX);
+            cl.setRotationY(mSavedRotationY);
         }
     }
 
