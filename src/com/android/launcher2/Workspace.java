@@ -3017,7 +3017,7 @@ public class Workspace extends SmoothPagedView
         final Runnable exitSpringLoadedRunnable = new Runnable() {
             @Override
             public void run() {
-                mLauncher.exitSpringLoadedDragModeDelayed(false);
+                mLauncher.exitSpringLoadedDragModeDelayed(true, false);
             }
         };
 

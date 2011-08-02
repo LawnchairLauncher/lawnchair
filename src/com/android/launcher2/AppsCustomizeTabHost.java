@@ -71,12 +71,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
 
         setCurrentTabByTag(WIDGETS_TAB_TAG);
     }
-    void selectShortcutsTab() {
-        setContentTypeImmediate(AppsCustomizePagedView.ContentType.Widgets);
-        mAppsCustomizePane.setCurrentPageToShortcuts();
-
-        setCurrentTabByTag(WIDGETS_TAB_TAG);
-    }
 
     /**
      * Setup the tab host and create all necessary tabs.

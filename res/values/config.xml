@@ -9,7 +9,7 @@
     <integer name="config_dragAppsCustomizeIconFadeInDuration">150</integer>
     <integer name="config_dragAppsCustomizeIconFadeOutDuration">200</integer>
     <integer name="config_dragAppsCustomizeIconFadeAlpha">100</integer>
-    <integer name="config_workspaceUnshrinkTime">650</integer>
+    <integer name="config_workspaceUnshrinkTime">300</integer>
     <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
     <integer name="config_workspaceSpringLoadShrinkPercentage">80</integer>
     <!-- When items are dropped on the mini screens in customize mode, we have a bounce animation
