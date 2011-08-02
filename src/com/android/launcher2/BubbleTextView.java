@@ -200,6 +200,7 @@ public class BubbleTextView extends TextView implements VisibilityChangedBroadca
         canvas.setBitmap(b);
         drawWithPadding(canvas, padding);
         mOutlineHelper.applyExtraThickExpensiveOutlineWithBlur(b, canvas, glowColor, outlineColor);
+        canvas.setBitmap(null);
 
         return b;
     }
