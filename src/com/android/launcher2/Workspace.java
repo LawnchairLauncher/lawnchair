@@ -1137,16 +1137,18 @@ public class Workspace extends SmoothPagedView
                 scrollProgress = Math.min(scrollProgress, 1.0f);
                 scrollProgress = Math.max(scrollProgress, -1.0f);
 
-                // If the current page (i) is being overscrolled, we use a different
-                // set of rules for setting the background alpha multiplier.
-                if ((mScrollX < 0 && i == 0) || (mScrollX > mMaxScrollX &&
-                        i == getChildCount() -1 )) {
-                    cl.setBackgroundAlphaMultiplier(
-                            overScrollBackgroundAlphaInterpolator(Math.abs(scrollProgress)));
-                    mOverScrollPageIndex = i;
-                } else if (mOverScrollPageIndex != i) {
-                    cl.setBackgroundAlphaMultiplier(
-                            backgroundAlphaInterpolator(Math.abs(scrollProgress)));
+                if (mState != State.SPRING_LOADED) {
+                    // If the current page (i) is being overscrolled, we use a different
+                    // set of rules for setting the background alpha multiplier.
+                    if ((mScrollX < 0 && i == 0) || (mScrollX > mMaxScrollX &&
+                            i == getChildCount() -1 )) {
+                        cl.setBackgroundAlphaMultiplier(
+                                overScrollBackgroundAlphaInterpolator(Math.abs(scrollProgress)));
+                        mOverScrollPageIndex = i;
+                    } else if (mOverScrollPageIndex != i) {
+                        cl.setBackgroundAlphaMultiplier(
+                                backgroundAlphaInterpolator(Math.abs(scrollProgress)));
+                    }
                 }
 
                 float rotation = WORKSPACE_ROTATION * scrollProgress;
@@ -1758,7 +1760,7 @@ public class Workspace extends SmoothPagedView
                 // Set the final alpha depending on whether we are fading side pages.  On phone ui,
                 // we don't do any of the rotation, or the fading alpha in portrait.  See the
                 // ctor and screenScrolled().
-                if (mFadeInAdjacentScreens) {
+                if (mFadeInAdjacentScreens && !springLoaded) {
                     finalAlphaValue = (i == mCurrentPage) ? 1f : 0f;
                 } else {
                     finalAlphaValue = 1f;
@@ -2279,15 +2281,6 @@ public class Workspace extends SmoothPagedView
             }
         }
 
-        // When you are in customization mode and drag to a particular screen, make that the
-        // new current/default screen, so any subsequent taps add items to that screen
-        if (!mLauncher.isAllAppsVisible()) {
-            int dragTargetIndex = indexOfChild(mDragTargetLayout);
-            if (dragTargetIndex > -1 && mCurrentPage != dragTargetIndex &&
-                    (isSmall() || mIsSwitchingState)) {
-                scrollToNewPageWithoutMovingPages(dragTargetIndex);
-            }
-        }
         CellLayout dropTargetLayout = mDragTargetLayout;
 
         int snapScreen = -1;
@@ -2340,7 +2333,7 @@ public class Workspace extends SmoothPagedView
                         (int) mDragViewVisualCenter[1], mDragInfo.spanX, mDragInfo.spanY, cell,
                         dropTargetLayout, mTargetCell);
 
-                if (mInScrollArea && !hasMovedIntoHotseat && mState != State.SPRING_LOADED) {
+                if (mCurrentPage != screen && !hasMovedIntoHotseat) {
                     snapScreen = screen;
                     snapToPage(screen);
                 }

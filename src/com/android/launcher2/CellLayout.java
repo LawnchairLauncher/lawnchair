@@ -661,8 +661,10 @@ public class CellLayout extends ViewGroup {
 
     @Override
     public void removeAllViewsInLayout() {
-        clearOccupiedCells();
-        mChildren.removeAllViewsInLayout();
+        if (mChildren.getChildCount() > 0) {
+            clearOccupiedCells();
+            mChildren.removeAllViewsInLayout();
+        }
     }
 
     public void removeViewWithoutMarkingCells(View view) {
