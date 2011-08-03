@@ -94,7 +94,7 @@
     </style>
     <style name="DropTargetButton">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:drawablePadding">7.5dp</item>

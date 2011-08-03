@@ -228,6 +228,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // (top + bottom)
         mWidgetPreviewIconPaddedDimension =
             (int) (mAppIconSize * (1 + (2 * sWidgetPreviewIconPaddingPercentage)));
+        mFadeInAdjacentScreens = LauncherApplication.isScreenLarge();
     }
 
     @Override
@@ -567,7 +568,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         layout.allowHardwareLayerCreation();
         layout.createHardwareLayers();
 
-        prepareGenerateHoloOutlinesTask(page, items, images);
+        if (mFadeInAdjacentScreens) {
+            prepareGenerateHoloOutlinesTask(page, items, images);
+        }
     }
 
     /**
@@ -929,7 +932,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         invalidate();
         forceUpdateAdjacentPagesAlpha();
-        prepareGenerateHoloOutlinesTask(data.page, data.items, data.generatedImages);
+
+        if (mFadeInAdjacentScreens) {
+            prepareGenerateHoloOutlinesTask(data.page, data.items, data.generatedImages);
+        }
     }
     private void onHolographicPageItemsLoaded(AsyncTaskPageData data) {
         // Invalidate early to short-circuit children invalidates
