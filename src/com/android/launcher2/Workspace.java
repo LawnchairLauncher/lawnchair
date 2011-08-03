@@ -1985,7 +1985,6 @@ public class Workspace extends SmoothPagedView
         canvas.setBitmap(b);
         drawDragView(v, canvas, padding, true);
         mOutlineHelper.applyOuterBlur(b, canvas, outlineColor);
-        canvas.setBitmap(null);
 
         return b;
     }
@@ -2002,7 +2001,6 @@ public class Workspace extends SmoothPagedView
         canvas.setBitmap(b);
         drawDragView(v, canvas, padding, false);
         mOutlineHelper.applyMediumExpensiveOutlineWithBlur(b, canvas, outlineColor, outlineColor);
-        canvas.setBitmap(null);
         return b;
     }
 
@@ -2029,7 +2027,6 @@ public class Workspace extends SmoothPagedView
         p.setFilterBitmap(true);
         canvas.drawBitmap(orig, src, dst, p);
         mOutlineHelper.applyMediumExpensiveOutlineWithBlur(b, canvas, outlineColor, outlineColor);
-        canvas.setBitmap(null);
 
         return b;
     }
@@ -2053,7 +2050,6 @@ public class Workspace extends SmoothPagedView
         canvas.drawRoundRect(new RectF(inset, inset, iconWidth - inset, iconHeight - inset),
                 rectRadius, rectRadius, mExternalDragOutlinePaint);
         mOutlineHelper.applyMediumExpensiveOutlineWithBlur(b, canvas, outlineColor, outlineColor);
-        canvas.setBitmap(null);
         return b;
     }
 

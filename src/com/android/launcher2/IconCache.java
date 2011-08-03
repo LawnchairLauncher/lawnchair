@@ -104,7 +104,6 @@ public class IconCache {
         Canvas c = new Canvas(b);
         d.setBounds(0, 0, b.getWidth(), b.getHeight());
         d.draw(c);
-        c.setBitmap(null);
         return b;
     }
 
