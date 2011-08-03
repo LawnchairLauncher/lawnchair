@@ -15,7 +15,8 @@
 -->
 <com.android.launcher2.AppsCustomizeTabHost
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher">
+    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
+    android:background="#FF000000">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"

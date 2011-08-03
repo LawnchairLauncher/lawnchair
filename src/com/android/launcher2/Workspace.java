@@ -1000,37 +1000,7 @@ public class Workspace extends SmoothPagedView
         mDrawBackground = true;
     }
 
-    private void showBackgroundGradientForAllApps(boolean animated) {
-        showBackgroundGradient(animated);
-    }
-
-    private void showBackgroundGradient(boolean animated) {
-        if (mBackground == null) return;
-        if (mBackgroundFadeOutAnimation != null) {
-            mBackgroundFadeOutAnimation.cancel();
-            mBackgroundFadeOutAnimation = null;
-        }
-        if (mBackgroundFadeInAnimation != null) {
-            mBackgroundFadeInAnimation.cancel();
-            mBackgroundFadeInAnimation = null;
-        }
-        final float finalAlpha = 1f;
-        if (animated) {
-            mBackgroundFadeInAnimation = ValueAnimator.ofFloat(getBackgroundAlpha(), finalAlpha);
-            mBackgroundFadeInAnimation.addUpdateListener(new AnimatorUpdateListener() {
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    setBackgroundAlpha(((Float) animation.getAnimatedValue()).floatValue());
-                }
-            });
-            mBackgroundFadeInAnimation.setInterpolator(new DecelerateInterpolator(1.5f));
-            mBackgroundFadeInAnimation.setDuration(BACKGROUND_FADE_IN_DURATION);
-            mBackgroundFadeInAnimation.start();
-        } else {
-            setBackgroundAlpha(finalAlpha);
-        }
-    }
-
-    private void hideBackgroundGradient(float finalAlpha, boolean animated) {
+    private void animateBackgroundGradient(float finalAlpha, boolean animated) {
         if (mBackground == null) return;
         if (mBackgroundFadeInAnimation != null) {
             mBackgroundFadeInAnimation.cancel();
@@ -1040,18 +1010,21 @@ public class Workspace extends SmoothPagedView
             mBackgroundFadeOutAnimation.cancel();
             mBackgroundFadeOutAnimation = null;
         }
-        if (animated) {
-            mBackgroundFadeOutAnimation = ValueAnimator.ofFloat(getBackgroundAlpha(), finalAlpha);
-            mBackgroundFadeOutAnimation.addUpdateListener(new AnimatorUpdateListener() {
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    setBackgroundAlpha(((Float) animation.getAnimatedValue()).floatValue());
-                }
-            });
-            mBackgroundFadeOutAnimation.setInterpolator(new DecelerateInterpolator(1.5f));
-            mBackgroundFadeOutAnimation.setDuration(BACKGROUND_FADE_OUT_DURATION);
-            mBackgroundFadeOutAnimation.start();
-        } else {
-            setBackgroundAlpha(finalAlpha);
+        float startAlpha = getBackgroundAlpha();
+        if (finalAlpha != startAlpha) {
+            if (animated) {
+                mBackgroundFadeOutAnimation = ValueAnimator.ofFloat(startAlpha, finalAlpha);
+                mBackgroundFadeOutAnimation.addUpdateListener(new AnimatorUpdateListener() {
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        setBackgroundAlpha(((Float) animation.getAnimatedValue()).floatValue());
+                    }
+                });
+                mBackgroundFadeOutAnimation.setInterpolator(new DecelerateInterpolator(1.5f));
+                mBackgroundFadeOutAnimation.setDuration(BACKGROUND_FADE_OUT_DURATION);
+                mBackgroundFadeOutAnimation.start();
+            } else {
+                setBackgroundAlpha(finalAlpha);
+            }
         }
     }
 
@@ -1552,8 +1525,6 @@ public class Workspace extends SmoothPagedView
             updateWallpaperOffsetImmediately();
         }
         setChildrenDrawnWithCacheEnabled(true);
-
-        showBackgroundGradientForAllApps(animated);
     }
 
     @Override
@@ -1925,8 +1896,16 @@ public class Workspace extends SmoothPagedView
             }
         }
 
-        hideBackgroundGradient(springLoaded ? getResources().getInteger(
-                R.integer.config_appsCustomizeSpringLoadedBgAlpha) / 100f : 0f, animated);
+        if (springLoaded) {
+            // Right now we're covered by Apps Customize
+            // Show the background gradient immediately, so the gradient will
+            // be showing once AppsCustomize disappears
+            animateBackgroundGradient(getResources().getInteger(
+                    R.integer.config_appsCustomizeSpringLoadedBgAlpha) / 100f, false);
+        } else {
+            // Fade the background gradient away
+            animateBackgroundGradient(0f, true);
+        }
     }
 
     /**

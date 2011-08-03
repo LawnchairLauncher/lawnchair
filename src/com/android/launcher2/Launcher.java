@@ -2173,7 +2173,12 @@ public final class Launcher extends Activity
             @Override
             public void run() {
                 exitSpringLoadedDragMode();
+
                 if (successfulDrop) {
+                    // Before we show workspace, hide all apps again because
+                    // exitSpringLoadedDragMode made it visible. This is a bit hacky; we should
+                    // clean up our state transition functions
+                    mAppsCustomizeTabHost.setVisibility(View.GONE);
                     showWorkspace(true);
                 }
             }
