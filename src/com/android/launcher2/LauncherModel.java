@@ -506,7 +506,7 @@ public class LauncherModel extends BroadcastReceiver {
                     sFolders.remove(info.id);
                     sWorkspaceItems.remove(info);
 
-                    cr.delete(LauncherSettings.Favorites.CONTENT_URI,
+                    cr.delete(LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION,
                             LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
                     for (ItemInfo childInfo : info.contents) {
                         sItemsIdMap.remove(childInfo.id);

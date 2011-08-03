@@ -1533,8 +1533,15 @@ public final class Launcher extends Activity
      * @param v The view representing the clicked shortcut.
      */
     public void onClick(View v) {
-        // Make sure that rogue clicks don't get through while allapps is launching
-        if (mWorkspace.isSwitchingState()) return;
+        // Make sure that rogue clicks don't get through while allapps is launching, or after the
+        // view has detached (it's possible for this to happen if the view is removed mid touch).
+        if (v.getWindowToken() == null) {
+            return;
+        }
+
+        if (mWorkspace.isSwitchingState()) {
+            return;
+        }
 
         Object tag = v.getTag();
         if (tag instanceof ShortcutInfo) {
@@ -1692,6 +1699,7 @@ public final class Launcher extends Activity
     }
 
     private void growAndFadeOutFolderIcon(FolderIcon fi) {
+        if (fi == null) return;
         PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 0);
         PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.5f);
         PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.5f);
@@ -1708,6 +1716,7 @@ public final class Launcher extends Activity
     }
 
     private void shrinkAndFadeInFolderIcon(FolderIcon fi) {
+        if (fi == null) return;
         PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 1.0f);
         PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.0f);
         PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.0f);
