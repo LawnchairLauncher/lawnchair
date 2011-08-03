@@ -199,7 +199,6 @@ public class HolographicOutlineHelper {
                 mHolographicPaint);
 
         // cleanup
-        srcDstCanvas.setBitmap(null);
         brightOutline.recycle();
         thickOuterBlur.recycle();
         thickInnerBlur.recycle();

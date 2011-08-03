@@ -130,7 +130,6 @@ public class CachedTextView extends TextView {
             setAlpha(prevAlpha);
             mIsBuildingCache = false;
             mCacheCanvas.restore();
-            mCacheCanvas.setBitmap(null);
 
             // A hack-- we set the text to be one space (we don't make it empty just to avoid any
             // potential issues with text measurement, like line height, etc.) so that the text view

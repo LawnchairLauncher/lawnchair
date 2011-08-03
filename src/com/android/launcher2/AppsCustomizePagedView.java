@@ -419,7 +419,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             mCanvas.save();
             preview.draw(mCanvas);
             mCanvas.restore();
-            mCanvas.setBitmap(null);
             createItemInfo.spanX = createItemInfo.spanY = 1;
         }
 
@@ -700,7 +699,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                         c.save();
                         c.drawBitmap(b, 0, 0, null);
                         c.restore();
-                        c.setBitmap(null);
 
                         images.add(outline);
                     }
@@ -749,7 +747,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             d.setBounds(x, y, x + w, y + h);
             d.draw(c);
             d.setBounds(oldBounds); // Restore the bounds
-            c.setBitmap(null);
         }
     }
     private Bitmap getShortcutPreview(ResolveInfo info, int cellWidth, int cellHeight) {
