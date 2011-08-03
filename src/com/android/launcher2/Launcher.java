@@ -1491,25 +1491,6 @@ public final class Launcher extends Activity
         }
     }
 
-    public void closeFolder() {
-        Folder folder = mWorkspace.getOpenFolder();
-        if (folder != null) {
-            closeFolder(folder);
-        }
-    }
-
-    void closeFolder(Folder folder) {
-        folder.getInfo().opened = false;
-
-        ViewGroup parent = (ViewGroup) folder.getParent().getParent();
-        if (parent != null) {
-            FolderIcon fi = (FolderIcon) mWorkspace.getViewForTag(folder.mInfo);
-            shrinkAndFadeInFolderIcon(fi);
-            mDragController.removeDropTarget((DropTarget)folder);
-        }
-        folder.animateClosed();
-    }
-
     /**
      * Re-listen when widgets are reset.
      */
@@ -1755,11 +1736,34 @@ public final class Launcher extends Activity
         growAndFadeOutFolderIcon(folderIcon);
         info.opened = true;
 
-        mDragLayer.addView(folder);
-        mDragController.addDropTarget((DropTarget) folder);
-
+        // Just verify that the folder hasn't already been added to the DragLayer.
+        // There was a one-off crash where the folder had a parent already.
+        if (folder.getParent() == null) {
+            mDragLayer.addView(folder);
+            mDragController.addDropTarget((DropTarget) folder);
+        } else {
+            Log.w(TAG, "Opening folder (" + folder + ") which already has a parent (" +
+                    folder.getParent() + ").");
+        }
         folder.animateOpen();
-        folder.onOpen();
+    }
+
+    public void closeFolder() {
+        Folder folder = mWorkspace.getOpenFolder();
+        if (folder != null) {
+            closeFolder(folder);
+        }
+    }
+
+    void closeFolder(Folder folder) {
+        folder.getInfo().opened = false;
+
+        ViewGroup parent = (ViewGroup) folder.getParent().getParent();
+        if (parent != null) {
+            FolderIcon fi = (FolderIcon) mWorkspace.getViewForTag(folder.mInfo);
+            shrinkAndFadeInFolderIcon(fi);
+        }
+        folder.animateClosed();
     }
 
     public boolean onLongClick(View v) {
