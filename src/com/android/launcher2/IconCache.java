@@ -69,11 +69,14 @@ public class IconCache {
     }
 
     public Drawable getFullResIcon(Resources resources, int iconId) {
+        Drawable d;
         try {
-            return resources.getDrawableForDensity(iconId, mIconDpi);
+            d = resources.getDrawableForDensity(iconId, mIconDpi);
         } catch (Resources.NotFoundException e) {
-            return getFullResDefaultActivityIcon();
+            d = null;
         }
+
+        return (d != null) ? d : getFullResDefaultActivityIcon();
     }
 
     public Drawable getFullResIcon(ResolveInfo info, PackageManager packageManager) {
