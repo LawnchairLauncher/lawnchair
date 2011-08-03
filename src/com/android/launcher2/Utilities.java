@@ -145,6 +145,7 @@ final class Utilities {
             icon.setBounds(left, top, left+width, top+height);
             icon.draw(canvas);
             icon.setBounds(sOldBounds);
+            canvas.setBitmap(null);
 
             return bitmap;
         }
@@ -210,6 +211,8 @@ final class Utilities {
             canvas.setBitmap(disabled);
             
             canvas.drawBitmap(bitmap, 0.0f, 0.0f, sDisabledPaint);
+
+            canvas.setBitmap(null);
 
             return disabled;
         }
@@ -327,6 +330,7 @@ final class Utilities {
                 c.drawText(lineText, x, y, mTextPaint);
             }
 
+            c.setBitmap(null);
             return b;
         }
 
