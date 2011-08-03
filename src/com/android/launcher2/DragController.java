@@ -31,6 +31,7 @@ import android.view.ViewConfiguration;
 import android.view.inputmethod.InputMethodManager;
 
 import com.android.launcher.R;
+import com.android.launcher2.DropTarget.DragObject;
 
 import java.util.ArrayList;
 
@@ -81,7 +82,7 @@ public class DragController {
      */
     private int mScrollZone;
 
-    private DropTarget.DragObject mDragObject = new DropTarget.DragObject();
+    private DropTarget.DragObject mDragObject;
 
     /** Who can receive drop events */
     private ArrayList<DropTarget> mDropTargets = new ArrayList<DropTarget>();
@@ -274,6 +275,8 @@ public class DragController {
         final int dragRegionTop = dragRegion == null ? 0 : dragRegion.top;
 
         mDragging = true;
+
+        mDragObject = new DropTarget.DragObject();
 
         mDragObject.dragComplete = false;
         mDragObject.xOffset = mMotionDownX - (dragLayerX + dragRegionLeft);
