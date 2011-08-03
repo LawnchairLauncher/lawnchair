@@ -382,8 +382,7 @@ public class LauncherModel extends BroadcastReceiver {
         final ContentResolver cr = context.getContentResolver();
         item.onAddToDatabase(values);
 
-        Launcher l = (Launcher) context;
-        LauncherApplication app = (LauncherApplication) l.getApplication();
+        LauncherApplication app = (LauncherApplication) context.getApplicationContext();
         item.id = app.getLauncherProvider().generateNewId();
         values.put(LauncherSettings.Favorites._ID, item.id);
         item.updateValuesWithCoordinates(values, item.cellX, item.cellY);
