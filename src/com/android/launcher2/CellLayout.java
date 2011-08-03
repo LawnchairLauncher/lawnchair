@@ -1528,8 +1528,8 @@ public class CellLayout extends ViewGroup {
         int smallerSize = Math.min(actualWidth, actualHeight);
 
         // Always round up to next largest cell
-        int spanX = (width + smallerSize) / smallerSize;
-        int spanY = (height + smallerSize) / smallerSize;
+        int spanX = (int) Math.ceil(width / (float) smallerSize);
+        int spanY = (int) Math.ceil(height / (float) smallerSize);
 
         if (result == null) {
             return new int[] { spanX, spanY };
