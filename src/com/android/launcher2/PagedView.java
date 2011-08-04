@@ -432,6 +432,7 @@ public abstract class PagedView extends ViewGroup {
         int maxChildHeight = 0;
 
         final int verticalPadding = mPaddingTop + mPaddingBottom;
+        final int horizontalPadding = mPaddingLeft + mPaddingRight;
 
 
         // The children are given the same width and height as the workspace
@@ -458,7 +459,7 @@ public abstract class PagedView extends ViewGroup {
             }
 
             final int childWidthMeasureSpec =
-                MeasureSpec.makeMeasureSpec(widthSize, childWidthMode);
+                MeasureSpec.makeMeasureSpec(widthSize - horizontalPadding, childWidthMode);
             final int childHeightMeasureSpec =
                 MeasureSpec.makeMeasureSpec(heightSize - verticalPadding, childHeightMode);
 

@@ -71,7 +71,7 @@
         android:paddingRight="@dimen/toolbar_button_horizontal_padding"
         android:paddingTop="@dimen/all_apps_button_vertical_padding"
         android:paddingBottom="@dimen/all_apps_button_vertical_padding"
-        android:background="@drawable/button_bg"
+        android:background="?android:attr/selectableItemBackground"
 
         android:gravity="center"
         android:textColor="#CCFFFFFF"

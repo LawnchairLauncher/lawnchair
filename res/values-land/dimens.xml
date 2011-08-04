@@ -17,12 +17,16 @@
 <resources>
 <!-- QSB -->
     <dimen name="toolbar_button_vertical_padding">12dip</dimen>
-    <dimen name="toolbar_button_horizontal_padding">10dip</dimen>
+    <dimen name="toolbar_button_horizontal_padding">4dip</dimen>
 
 <!-- Workspace -->
+    <dimen name="workspace_cell_width">106dp</dimen>
+    <dimen name="workspace_cell_height">74dp</dimen>
+    <dimen name="hotseat_cell_width">68dp</dimen>
+    <dimen name="hotseat_cell_height">74dp</dimen>
     <!-- Block spacing on each side of the screen -->
-    <dimen name="workspace_left_padding">12dp</dimen>
-    <dimen name="workspace_right_padding">12dp</dimen>
+    <dimen name="workspace_left_padding">0dp</dimen>
+    <dimen name="workspace_right_padding">0dp</dimen>
     <!-- We need top/bottom padding for portals to look right, but
          really only in spring loaded mode... -->
     <dimen name="workspace_top_padding">0dp</dimen>
@@ -32,6 +36,13 @@
     <dimen name="workspace_divider_padding_right">0dp</dimen>
     <dimen name="workspace_divider_padding_top">12dp</dimen>
     <dimen name="workspace_divider_padding_bottom">12dp</dimen>
+
+    <!-- height of the bottom row of controls -->
+    <dimen name="button_bar_height">68dip</dimen>
+    <!-- Because portal animations go beyond the bounds of an icon, we need
+         to make the dock layout slightly larger than the button_bar_height -->
+    <dimen name="button_bar_height_padding">8dp</dimen>
+    <dimen name="button_bar_height_plus_padding">76dp</dimen>
 
 <!-- AppsCustomize -->
     <dimen name="apps_customize_cell_width">80dp</dimen>

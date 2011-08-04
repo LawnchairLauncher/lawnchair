@@ -375,6 +375,11 @@ public class DragLayer extends FrameLayout {
             toY -= (dragView.getHeight() - (int) Math.round(scale * d.getIntrinsicHeight())) / 2;
             // Center in the x coordinate about the target's drawable
             toX -= (dragView.getMeasuredWidth() - Math.round(scale * child.getMeasuredWidth())) / 2;
+        } else if (child instanceof FolderIcon) {
+            // Account for holographic blur padding on the drag view
+            toY -= HolographicOutlineHelper.MAX_OUTER_BLUR_RADIUS / 2;
+            // Center in the x coordinate about the target's drawable
+            toX -= (dragView.getMeasuredWidth() - Math.round(scale * child.getMeasuredWidth())) / 2;
         } else {
             toY -= (Math.round(scale * (dragView.getHeight() - child.getMeasuredHeight()))) / 2;
             toX -= (Math.round(scale * (dragView.getMeasuredWidth()

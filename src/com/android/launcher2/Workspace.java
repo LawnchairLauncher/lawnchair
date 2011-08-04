@@ -1970,7 +1970,7 @@ public class Workspace extends SmoothPagedView
      * Responsibility for the bitmap is transferred to the caller.
      */
     public Bitmap createDragBitmap(View v, Canvas canvas, int padding) {
-        final int outlineColor = getResources().getColor(R.color.drag_outline_color);
+        final int outlineColor = getResources().getColor(android.R.color.holo_blue_light);
         Bitmap b;
 
         if (v instanceof TextView) {
@@ -1995,7 +1995,7 @@ public class Workspace extends SmoothPagedView
      * Responsibility for the bitmap is transferred to the caller.
      */
     private Bitmap createDragOutline(View v, Canvas canvas, int padding) {
-        final int outlineColor = getResources().getColor(R.color.drag_outline_color);
+        final int outlineColor = getResources().getColor(android.R.color.holo_blue_light);
         final Bitmap b = Bitmap.createBitmap(
                 v.getWidth() + padding, v.getHeight() + padding, Bitmap.Config.ARGB_8888);
 
@@ -2011,7 +2011,7 @@ public class Workspace extends SmoothPagedView
      * Responsibility for the bitmap is transferred to the caller.
      */
     private Bitmap createDragOutline(Bitmap orig, Canvas canvas, int padding, int w, int h) {
-        final int outlineColor = getResources().getColor(R.color.drag_outline_color);
+        final int outlineColor = getResources().getColor(android.R.color.holo_blue_light);
         final Bitmap b = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         canvas.setBitmap(b);
 
@@ -2041,7 +2041,7 @@ public class Workspace extends SmoothPagedView
      */
     private Bitmap createExternalDragOutline(Canvas canvas, int padding) {
         Resources r = getResources();
-        final int outlineColor = r.getColor(R.color.drag_outline_color);
+        final int outlineColor = r.getColor(android.R.color.holo_blue_light);
         final int iconWidth = r.getDimensionPixelSize(R.dimen.workspace_cell_width);
         final int iconHeight = r.getDimensionPixelSize(R.dimen.workspace_cell_height);
         final int rectRadius = r.getDimensionPixelSize(R.dimen.external_drop_icon_rect_radius);
@@ -2295,17 +2295,7 @@ public class Workspace extends SmoothPagedView
         } else if (mDragInfo != null) {
             final View cell = mDragInfo.cell;
 
-            boolean continueDrop = true;
-            if (mLauncher.isHotseatLayout(mDragTargetLayout) && d.dragInfo instanceof ItemInfo) {
-                ItemInfo info = (ItemInfo) d.dragInfo;
-                if (info.spanX > 1 || info.spanY > 1) {
-                    continueDrop = false;
-                    Toast.makeText(getContext(), R.string.invalid_hotseat_item,
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            if (continueDrop && dropTargetLayout != null) {
+            if (dropTargetLayout != null) {
                 // Move internally
                 boolean hasMovedLayouts = (getParentCellLayoutForView(cell) != dropTargetLayout);
                 boolean hasMovedIntoHotseat = mLauncher.isHotseatLayout(dropTargetLayout);
@@ -2809,6 +2799,14 @@ public class Workspace extends SmoothPagedView
         return res;
     }
 
+    private boolean isDragWidget(DragObject d) {
+        return (d.dragInfo instanceof LauncherAppWidgetInfo ||
+                d.dragInfo instanceof PendingAddWidgetInfo);
+    }
+    private boolean isExternalDragWidget(DragObject d) {
+        return d.dragSource != this && isDragWidget(d);
+    }
+
     public void onDragOver(DragObject d) {
         // Skip drag over events while we are dragging over side pages
         if (mInScrollArea) return;
@@ -2825,7 +2823,7 @@ public class Workspace extends SmoothPagedView
 
         // Identify whether we have dragged over a side page
         if (isSmall()) {
-            if (mLauncher.getHotseat() != null) {
+            if (mLauncher.getHotseat() != null && !isExternalDragWidget(d)) {
                 mLauncher.getHotseat().getHitRect(r);
                 if (r.contains(d.x, d.y)) {
                     layout = mLauncher.getHotseat().getLayout();
@@ -2862,7 +2860,7 @@ public class Workspace extends SmoothPagedView
             }
         } else {
             // Test to see if we are over the hotseat otherwise just use the current page
-            if (mLauncher.getHotseat() != null) {
+            if (mLauncher.getHotseat() != null && !isDragWidget(d)) {
                 mLauncher.getHotseat().getHitRect(r);
                 if (r.contains(d.x, d.y)) {
                     layout = mLauncher.getHotseat().getLayout();

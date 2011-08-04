@@ -25,8 +25,8 @@
         android:layout_height="match_parent"
         android:paddingTop="@dimen/workspace_top_padding"
         android:paddingBottom="@dimen/workspace_bottom_padding"
-        launcher:cellWidth="@dimen/workspace_cell_width"
-        launcher:cellHeight="@dimen/workspace_cell_height"
+        launcher:cellWidth="@dimen/hotseat_cell_width"
+        launcher:cellHeight="@dimen/hotseat_cell_height"
         launcher:widthGap="-1dp"
         launcher:heightGap="-1dp"
         launcher:maxGap="@dimen/workspace_max_gap" />
