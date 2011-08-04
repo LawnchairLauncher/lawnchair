@@ -27,13 +27,6 @@
 
     <color name="appwidget_error_color">#FCCC</color>
 
-    <color name="drag_outline_color">#6595f9</color>
-
-    <color name="workspace_item_pressed_outline_color">#6595f9</color>
-    <color name="workspace_item_pressed_glow_color">#0997ff</color>
-    <color name="workspace_item_focused_outline_color">#6595f9</color>
-    <color name="workspace_item_focused_glow_color">#0997ff</color>
-
     <color name="workspace_all_apps_and_delete_zone_text_color">#CCFFFFFF</color>
     <color name="workspace_all_apps_and_delete_zone_text_shadow_color">#A0000000</color>
 </resources>

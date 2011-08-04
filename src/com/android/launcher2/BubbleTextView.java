@@ -93,10 +93,10 @@ public class BubbleTextView extends TextView implements VisibilityChangedBroadca
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setColor(bubbleColor);
         mBubbleColorAlpha = Color.alpha(bubbleColor) / 255.0f;
-        mFocusedOutlineColor = res.getColor(R.color.workspace_item_focused_outline_color);
-        mFocusedGlowColor = res.getColor(R.color.workspace_item_focused_glow_color);
-        mPressedOutlineColor = res.getColor(R.color.workspace_item_pressed_outline_color);
-        mPressedGlowColor = res.getColor(R.color.workspace_item_pressed_glow_color);
+        mFocusedOutlineColor = res.getColor(android.R.color.holo_blue_light);
+        mFocusedGlowColor = res.getColor(android.R.color.holo_blue_light);
+        mPressedOutlineColor = res.getColor(android.R.color.holo_blue_light);
+        mPressedGlowColor = res.getColor(android.R.color.holo_blue_light);
 
         setShadowLayer(SHADOW_LARGE_RADIUS, 0.0f, SHADOW_Y_OFFSET, SHADOW_LARGE_COLOUR);
     }
