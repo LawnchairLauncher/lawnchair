@@ -1195,43 +1195,6 @@ public final class Launcher extends Activity
             appSearchData, globalSearch);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-
-        startWallpaper();
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case MENU_ADD:
-                addItems();
-                return true;
-            case MENU_MANAGE_APPS:
-                manageApps();
-                return true;
-            case MENU_WALLPAPER_SETTINGS:
-                startWallpaper();
-                return true;
-            case MENU_SEARCH:
-                onSearchRequested();
-                return true;
-            case MENU_NOTIFICATIONS:
-                showNotifications();
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     /**
      * Indicates that we want global search for this activity by setting the globalSearch
      * argument for {@link #startSearch} to true.
