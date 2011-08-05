@@ -26,16 +26,50 @@
         launcher:screen="2"
         launcher:x="0"
         launcher:y="3" />
+    <folder
+        launcher:screen="2"
+        launcher:x="3"
+        launcher:y="3"
+        launcher:title="Google Apps">
+        <favorite
+            launcher:packageName="com.google.android.apps.plus"
+            launcher:className="com.google.android.apps.plus.phone.HomeActivity" />
+        <favorite
+            launcher:packageName="com.google.android.gm"
+            launcher:className="com.google.android.gm.ConversationListActivityGmail" />
+        <favorite
+            launcher:packageName="com.google.android.talk"
+            launcher:className="com.google.android.talk.SigningInActivity" />
+        <favorite
+            launcher:packageName="com.google.android.apps.maps"
+            launcher:className="com.google.android.maps.MapsActivity" />
+        <favorite
+            launcher:packageName="com.google.android.youtube"
+            launcher:className="com.google.android.youtube.app.honeycomb.Shell$HomeActivity" />
+        <favorite
+            launcher:packageName="com.google.android.music"
+            launcher:className="com.android.music.activitymanagement.TopLevelActivity" />
+        <favorite
+            launcher:packageName="com.google.android.videos"
+            launcher:className="com.google.android.youtube.videos.honeycomb.VideosActivity" />
+        <favorite
+            launcher:packageName="com.google.android.apps.books"
+            launcher:className="com.google.android.apps.books.app.BooksActivity" />
+        <favorite
+            launcher:packageName="com.android.vending"
+            launcher:className="com.android.vending.AssetBrowserActivity" />
+        <favorite
+            launcher:packageName="com.google.android.calendar"
+            launcher:className="com.android.calendar.AllInOneActivity" />
+        <favorite
+            launcher:packageName="com.google.android.gallery3d"
+            launcher:className="com.android.gallery3d.app.Gallery" />
+        <favorite
+            launcher:packageName="com.android.settings"
+            launcher:className="com.android.settings.Settings" />
+    </folder>
 
     <!-- Right screen [3] -->
-    <appwidget
-        launcher:packageName="com.android.music"
-        launcher:className="com.android.music.MediaAppWidgetProvider"
-        launcher:screen="3"
-        launcher:x="0"
-        launcher:y="0"
-        launcher:spanX="4"
-        launcher:spanY="1" />
 
     <!-- Far-right screen [4] -->
 
