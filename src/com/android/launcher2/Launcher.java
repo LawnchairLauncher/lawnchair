@@ -1139,6 +1139,10 @@ public final class Launcher extends Activity
     public void onDestroy() {
         super.onDestroy();
 
+        // Remove all pending runnables
+        mHandler.removeMessages(ADVANCE_MSG);
+        mHandler.removeMessages(0);
+
         // Stop callbacks from LauncherModel
         LauncherApplication app = ((LauncherApplication) getApplication());
         mModel.stopLoader();
@@ -2179,7 +2183,7 @@ public final class Launcher extends Activity
         // Otherwise, we are not in spring loaded mode, so don't do anything.
     }
     void exitSpringLoadedDragModeDelayed(final boolean successfulDrop, boolean extendedDelay) {
-        mWorkspace.postDelayed(new Runnable() {
+        mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 exitSpringLoadedDragMode();
