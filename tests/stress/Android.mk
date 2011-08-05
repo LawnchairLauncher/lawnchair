@@ -28,6 +28,4 @@ LOCAL_CERTIFICATE := shared
 
 LOCAL_INSTRUMENTATION_FOR := Launcher2
 
-LOCAL_SDK_VERSION := current
-
 include $(BUILD_PACKAGE)

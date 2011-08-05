@@ -17,8 +17,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.launcher.stress.launcherrotation">
 
-    <uses-sdk android:minSdkVersion="8" />
-
     <application>
         <uses-library android:name="android.test.runner" />
     </application>
