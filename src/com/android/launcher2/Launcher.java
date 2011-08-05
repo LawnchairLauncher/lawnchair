@@ -436,6 +436,7 @@ public final class Launcher extends Activity
      * a configuration step, this allows the proper animations to run after other transitions.
      */
     private boolean completeAdd(PendingAddArguments args) {
+        boolean result = false;
         switch (args.requestCode) {
             case REQUEST_PICK_APPLICATION:
                 completeAddApplication(args.intent, args.container, args.screen, args.cellX,
@@ -447,19 +448,24 @@ public final class Launcher extends Activity
             case REQUEST_CREATE_SHORTCUT:
                 completeAddShortcut(args.intent, args.container, args.screen, args.cellX,
                         args.cellY);
-                return true;
+                result = true;
+                break;
             case REQUEST_PICK_APPWIDGET:
                 addAppWidgetFromPick(args.intent);
                 break;
             case REQUEST_CREATE_APPWIDGET:
                 int appWidgetId = args.intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
                 completeAddAppWidget(appWidgetId, args.container, args.screen);
-                return true;
+                result = true;
+                break;
             case REQUEST_PICK_WALLPAPER:
                 // We just wanted the activity result here so we can clear mWaitingForResult
                 break;
         }
-        return false;
+        // In any situation where we have a multi-step drop, we should reset the add info only after
+        // we complete the drop
+        resetAddInfo();
+        return result;
     }
 
     @Override
@@ -629,7 +635,6 @@ public final class Launcher extends Activity
         }
 
         State state = intToState(savedState.getInt(RUNTIME_STATE, State.WORKSPACE.ordinal()));
-
         if (state == State.APPS_CUSTOMIZE) {
             showAllApps(false);
         }
@@ -910,8 +915,9 @@ public final class Launcher extends Activity
                 mDragLayer.clearAllResizeFrames();
                 updateRunning();
 
-                // Reset AllApps to it's initial state
-                if (mAppsCustomizeContent != null) {
+                // Reset AllApps to it's initial state only if we are not in the middle of
+                // processing a multi-step drop
+                if (mAppsCustomizeContent != null && mPendingAddInfo.container == ItemInfo.NO_ID) {
                     mAppsCustomizeContent.reset();
                 }
             } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
@@ -2545,20 +2551,12 @@ public final class Launcher extends Activity
     }
 
     /**
-     * Receives notifications when applications are added/removed.
+     * Receives notifications when system dialogs are to be closed.
      */
     private class CloseSystemDialogsIntentReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             closeSystemDialogs();
-            String reason = intent.getStringExtra("reason");
-            if (!"homekey".equals(reason)) {
-                boolean animate = true;
-                if (mPaused || "lock".equals(reason)) {
-                    animate = false;
-                }
-                showWorkspace(animate);
-            }
         }
     }
 
