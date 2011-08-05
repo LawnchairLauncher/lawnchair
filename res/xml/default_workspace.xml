@@ -30,7 +30,7 @@
         launcher:screen="2"
         launcher:x="3"
         launcher:y="3"
-        launcher:title="Google Apps">
+        launcher:title="@string/google_apps_folder_name">
         <favorite
             launcher:packageName="com.google.android.apps.plus"
             launcher:className="com.google.android.apps.plus.phone.HomeActivity" />
