@@ -292,13 +292,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         return mInfo;
     }
 
-    void onOpen() {
-        // When the folder opens, we need to refresh the GridView's selection by
-        // forcing a layout
-        // TODO: find out if this is still necessary
-        mContent.requestLayout();
-    }
-
     void bind(FolderInfo info) {
         mInfo = info;
         ArrayList<ShortcutInfo> children = info.contents;
@@ -849,7 +842,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     private void onCloseComplete() {
         DragLayer parent = (DragLayer) getParent();
-        parent.removeView(Folder.this);
+        parent.removeView(this);
+        mDragController.removeDropTarget((DropTarget) this);
         clearFocus();
 
         if (mRearrangeOnClose) {
