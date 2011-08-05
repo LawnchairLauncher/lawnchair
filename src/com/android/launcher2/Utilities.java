@@ -76,8 +76,32 @@ final class Utilities {
     }
 
     /**
-     * Returns a bitmap suitable for the all apps view.  The bitmap will be a power
-     * of two sized ARGB_8888 bitmap that can be used as a gl texture.
+     * Returns a bitmap suitable for the all apps view. Used to convert pre-ICS
+     * icon bitmaps that are stored in the database (which were 74x74 pixels at hdpi size)
+     * to the proper size (48dp)
+     */
+    static Bitmap createIconBitmap(Bitmap icon, Context context) {
+        int textureWidth = sIconTextureWidth;
+        int textureHeight = sIconTextureHeight;
+        int sourceWidth = icon.getWidth();
+        int sourceHeight = icon.getHeight();
+        if (sourceWidth > textureWidth && sourceHeight > textureHeight) {
+            // Icon is bigger than it should be; clip it (solves the GB->ICS migration case)
+            return Bitmap.createBitmap(icon,
+                    (sourceWidth - textureWidth) / 2,
+                    (sourceHeight - textureHeight) / 2,
+                    textureWidth, textureHeight);
+        } else if (sourceWidth == textureWidth && sourceHeight == textureHeight) {
+            // Icon is the right size, no need to change it
+            return icon;
+        } else {
+            // Icon is too small, render to a larger bitmap
+            return createIconBitmap(new BitmapDrawable(icon), context);
+        }
+    }
+
+    /**
+     * Returns a bitmap suitable for the all apps view.
      */
     static Bitmap createIconBitmap(Drawable icon, Context context) {
         synchronized (sCanvas) { // we share the statics :-(
@@ -103,7 +127,7 @@ final class Utilities {
             int sourceWidth = icon.getIntrinsicWidth();
             int sourceHeight = icon.getIntrinsicHeight();
 
-            if (sourceWidth > 0 && sourceWidth > 0) {
+            if (sourceWidth > 0 && sourceHeight > 0) {
                 // There are intrinsic sizes.
                 if (width < sourceWidth || height < sourceHeight) {
                     // It's too big, scale it down.
