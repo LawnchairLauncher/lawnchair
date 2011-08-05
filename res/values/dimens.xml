@@ -37,7 +37,7 @@
 
 <!-- AllApps/Customize/AppsCustomize -->
     <dimen name="apps_customize_tab_bar_height">56dp</dimen>
-    <dimen name="app_icon_size">56dp</dimen>
+    <dimen name="app_icon_size">48dp</dimen>
     <!-- The width can be 72dp because we don't have L/R padding -->
     <dimen name="apps_customize_cell_width">72dp</dimen>
     <dimen name="apps_customize_cell_height">80dp</dimen>

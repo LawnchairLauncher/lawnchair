@@ -1511,7 +1511,7 @@ public class LauncherModel extends BroadcastReceiver {
         // the db
         if (icon == null) {
             if (c != null) {
-                icon = getIconFromCursor(c, iconIndex);
+                icon = getIconFromCursor(c, iconIndex, context);
             }
         }
         // the fallback icon
@@ -1581,7 +1581,7 @@ public class LauncherModel extends BroadcastReceiver {
             }
             // the db
             if (icon == null) {
-                icon = getIconFromCursor(c, iconIndex);
+                icon = getIconFromCursor(c, iconIndex, context);
             }
             // the fallback icon
             if (icon == null) {
@@ -1590,7 +1590,7 @@ public class LauncherModel extends BroadcastReceiver {
             }
             break;
         case LauncherSettings.Favorites.ICON_TYPE_BITMAP:
-            icon = getIconFromCursor(c, iconIndex);
+            icon = getIconFromCursor(c, iconIndex, context);
             if (icon == null) {
                 icon = getFallbackIcon();
                 info.customIcon = false;
@@ -1609,14 +1609,15 @@ public class LauncherModel extends BroadcastReceiver {
         return info;
     }
 
-    Bitmap getIconFromCursor(Cursor c, int iconIndex) {
+    Bitmap getIconFromCursor(Cursor c, int iconIndex, Context context) {
         if (false) {
             Log.d(TAG, "getIconFromCursor app="
                     + c.getString(c.getColumnIndexOrThrow(LauncherSettings.Favorites.TITLE)));
         }
         byte[] data = c.getBlob(iconIndex);
         try {
-            return BitmapFactory.decodeByteArray(data, 0, data.length);
+            return Utilities.createIconBitmap(
+                    BitmapFactory.decodeByteArray(data, 0, data.length), context);
         } catch (Exception e) {
             return null;
         }
