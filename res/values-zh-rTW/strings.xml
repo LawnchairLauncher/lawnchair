@@ -41,8 +41,7 @@
     <string name="group_widgets" msgid="6704978494073105844">"小工具"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"桌布"</string>
     <string name="out_of_space" msgid="8365249326091984698">"主螢幕已無空間"</string>
-    <!-- no translation found for invalid_hotseat_item (6545340627805449250) -->
-    <skip />
+    <string name="invalid_hotseat_item" msgid="6545340627805449250">"這個小工具太大，超出可用的空間。"</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"已建立「<xliff:g id="NAME">%s</xliff:g>」捷徑。"</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"已移除「<xliff:g id="NAME">%s</xliff:g>」捷徑。"</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"「<xliff:g id="NAME">%s</xliff:g>」捷徑已經存在。"</string>

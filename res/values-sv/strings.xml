@@ -41,8 +41,7 @@
     <string name="group_widgets" msgid="6704978494073105844">"Widgetar"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Bakgrundsbilder"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Det finns inte plats för mer på den här startsidan."</string>
-    <!-- no translation found for invalid_hotseat_item (6545340627805449250) -->
-    <skip />
+    <string name="invalid_hotseat_item" msgid="6545340627805449250">"Denna widget är för stor för Hotseat."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"Genvägen \"<xliff:g id="NAME">%s</xliff:g>\" har skapats."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Genvägen \"<xliff:g id="NAME">%s</xliff:g>\" har tagits bort."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Genvägen \"<xliff:g id="NAME">%s</xliff:g>\" finns redan."</string>

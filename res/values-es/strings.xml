@@ -41,8 +41,7 @@
     <string name="group_widgets" msgid="6704978494073105844">"Widgets"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Fondos de pantalla"</string>
     <string name="out_of_space" msgid="8365249326091984698">"No queda espacio en el escritorio."</string>
-    <!-- no translation found for invalid_hotseat_item (6545340627805449250) -->
-    <skip />
+    <string name="invalid_hotseat_item" msgid="6545340627805449250">"Este widget es demasiado grande para la barra de accesos directos."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"Se ha creado el acceso directo \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Se ha eliminado el acceso directo \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"El acceso directo \"<xliff:g id="NAME">%s</xliff:g>\" ya existe."</string>
