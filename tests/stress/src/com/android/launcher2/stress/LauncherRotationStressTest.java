@@ -22,7 +22,7 @@ import com.android.launcher2.Launcher;
 import android.content.pm.ActivityInfo;
 import android.os.SystemClock;
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.TimedTest;
+import android.test.RepetitiveTest;
 import android.util.Log;
 
 /**
@@ -31,6 +31,7 @@ import android.util.Log;
 public class LauncherRotationStressTest extends ActivityInstrumentationTestCase2<Launcher> {
 
     private static final int NUM_ITERATIONS = 50;
+    private static final int WAIT_TIME_MS = 500;
     private static final String LOG_TAG = "LauncherRotationStressTest";
 
     public LauncherRotationStressTest() {
@@ -47,22 +48,16 @@ public class LauncherRotationStressTest extends ActivityInstrumentationTestCase2
         super.tearDown();
     }
 
-    @TimedTest(includeDetailedStats=true)
+    @RepetitiveTest(numIterations=NUM_ITERATIONS)
     public void testLauncherRotationStress() throws Exception {
         Launcher launcher = getActivity();
-        for (int i = 0; i < NUM_ITERATIONS; i++) {
-            Log.i(LOG_TAG, "Starting LauncherRotationStressTest " + (i + 1) + " of " +
-                  NUM_ITERATIONS);
-            getInstrumentation().waitForIdleSync();
-            SystemClock.sleep(500);
-            launcher.setRequestedOrientation(
-                    ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            getInstrumentation().waitForIdleSync();
-            SystemClock.sleep(500);
-            launcher.setRequestedOrientation(
-                    ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            Log.i(LOG_TAG, "Finished LauncherRotationStressTest " + (i + 1) + " of " +
-                  NUM_ITERATIONS);
-        }
+        getInstrumentation().waitForIdleSync();
+        SystemClock.sleep(WAIT_TIME_MS);
+        launcher.setRequestedOrientation(
+                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        getInstrumentation().waitForIdleSync();
+        SystemClock.sleep(WAIT_TIME_MS);
+        launcher.setRequestedOrientation(
+                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 }
