@@ -44,7 +44,6 @@ public class IconCache {
     private final Bitmap mDefaultIcon;
     private final LauncherApplication mContext;
     private final PackageManager mPackageManager;
-    private final Utilities.BubbleText mBubble;
     private final HashMap<ComponentName, CacheEntry> mCache =
             new HashMap<ComponentName, CacheEntry>(INITIAL_ICON_CACHE_CAPACITY);
     private int mIconDpi;
@@ -52,7 +51,6 @@ public class IconCache {
     public IconCache(LauncherApplication context) {
         mContext = context;
         mPackageManager = context.getPackageManager();
-        mBubble = new Utilities.BubbleText(context);
         int density = context.getResources().getDisplayMetrics().densityDpi;
         if (LauncherApplication.isScreenLarge()) {
             if (density == DisplayMetrics.DENSITY_LOW) {

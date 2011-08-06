@@ -131,7 +131,7 @@ public abstract class PagedView extends ViewGroup {
     private PageSwitchListener mPageSwitchListener;
 
     private ArrayList<Boolean> mDirtyPageContent;
-    private boolean mDirtyPageAlpha;
+    private boolean mDirtyPageAlpha = true;
 
     // choice modes
     protected static final int CHOICE_MODE_NONE = 0;
