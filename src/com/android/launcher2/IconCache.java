@@ -24,7 +24,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.util.Pair;
 import android.util.DisplayMetrics;
 
 import java.util.HashMap;
@@ -54,8 +53,18 @@ public class IconCache {
         mContext = context;
         mPackageManager = context.getPackageManager();
         mBubble = new Utilities.BubbleText(context);
+        int density = context.getResources().getDisplayMetrics().densityDpi;
         if (LauncherApplication.isScreenLarge()) {
-            mIconDpi = DisplayMetrics.DENSITY_HIGH;
+            if (density == DisplayMetrics.DENSITY_LOW) {
+                mIconDpi = DisplayMetrics.DENSITY_MEDIUM;
+            } else if (density == DisplayMetrics.DENSITY_MEDIUM) {
+                mIconDpi = DisplayMetrics.DENSITY_HIGH;
+            } else if (density == DisplayMetrics.DENSITY_HIGH) {
+                mIconDpi = DisplayMetrics.DENSITY_XHIGH;
+            } else if (density == DisplayMetrics.DENSITY_XHIGH) {
+                // We'll need to use a denser icon, or some sort of a mipmap
+                mIconDpi = DisplayMetrics.DENSITY_XHIGH;
+            }
         } else {
             mIconDpi = context.getResources().getDisplayMetrics().densityDpi;
         }
