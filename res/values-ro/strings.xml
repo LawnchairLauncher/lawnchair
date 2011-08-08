@@ -41,8 +41,7 @@
     <string name="group_widgets" msgid="6704978494073105844">"Obiecte widget"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Imagini de fundal"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Niciun spaţiu rămas pe acest Ecran de pornire."</string>
-    <!-- no translation found for invalid_hotseat_item (6545340627805449250) -->
-    <skip />
+    <string name="invalid_hotseat_item" msgid="6545340627805449250">"Acest widget este prea mare pentru hotseat."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"Comanda rapidă „<xliff:g id="NAME">%s</xliff:g>”·a fost creată."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Comanda rapidă „<xliff:g id="NAME">%s</xliff:g>” a fost eliminată."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Comanda rapidă „<xliff:g id="NAME">%s</xliff:g>” deja există."</string>

@@ -41,8 +41,7 @@
     <string name="group_widgets" msgid="6704978494073105844">"Widgets"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Fonds d\'écran"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Plus d\'espace libre sur l\'écran d\'accueil."</string>
-    <!-- no translation found for invalid_hotseat_item (6545340627805449250) -->
-    <skip />
+    <string name="invalid_hotseat_item" msgid="6545340627805449250">"Ce widget est trop volumineux pour la barre d\'accès rapide."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"Le raccourci \"<xliff:g id="NAME">%s</xliff:g>\" a été créé."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Le raccourci \"<xliff:g id="NAME">%s</xliff:g>\" a été supprimé."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Le raccourci \"<xliff:g id="NAME">%s</xliff:g>\" existe déjà."</string>
