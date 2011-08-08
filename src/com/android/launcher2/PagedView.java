@@ -323,7 +323,7 @@ public abstract class PagedView extends ViewGroup {
 
     // a method that subclasses can override to add behavior
     protected void onPageBeginMoving() {
-        showScrollingIndicator();
+        showScrollingIndicator(false);
     }
 
     // a method that subclasses can override to add behavior
@@ -477,6 +477,8 @@ public abstract class PagedView extends ViewGroup {
         } else {
             mMaxScrollX = 0;
         }
+
+        updateScrollingIndicatorPosition();
 
         setMeasuredDimension(widthSize, heightSize);
     }
@@ -1685,11 +1687,11 @@ public abstract class PagedView extends ViewGroup {
     };
     protected void flashScrollingIndicator() {
         removeCallbacks(hideScrollingIndicatorRunnable);
-        showScrollingIndicator();
+        showScrollingIndicator(false);
         postDelayed(hideScrollingIndicatorRunnable, sScrollIndicatorFlashDuration);
     }
 
-    protected void showScrollingIndicator() {
+    protected void showScrollingIndicator(boolean immediately) {
         if (getChildCount() <= 1) return;
         if (!isScrollingIndicatorEnabled()) return;
 
@@ -1701,9 +1703,13 @@ public abstract class PagedView extends ViewGroup {
             if (mScrollIndicatorAnimator != null) {
                 mScrollIndicatorAnimator.cancel();
             }
-            mScrollIndicatorAnimator = ObjectAnimator.ofFloat(mScrollIndicator, "alpha", 1f);
-            mScrollIndicatorAnimator.setDuration(sScrollIndicatorFadeInDuration);
-            mScrollIndicatorAnimator.start();
+            if (immediately) {
+                mScrollIndicator.setAlpha(1f);
+            } else {
+                mScrollIndicatorAnimator = ObjectAnimator.ofFloat(mScrollIndicator, "alpha", 1f);
+                mScrollIndicatorAnimator.setDuration(sScrollIndicatorFadeInDuration);
+                mScrollIndicatorAnimator.start();
+            }
         }
     }
 
@@ -1762,7 +1768,7 @@ public abstract class PagedView extends ViewGroup {
 
     private void updateScrollingIndicatorPosition() {
         if (!isScrollingIndicatorEnabled()) return;
-
+        if (mScrollIndicator == null) return;
         int numPages = getChildCount();
         int pageWidth = getMeasuredWidth();
         int maxPageWidth = (numPages * getChildWidth(0)) + ((numPages - 1) * mPageSpacing);
