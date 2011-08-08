@@ -38,9 +38,6 @@
             launcher:packageName="com.google.android.gm"
             launcher:className="com.google.android.gm.ConversationListActivityGmail" />
         <favorite
-            launcher:packageName="com.google.android.talk"
-            launcher:className="com.google.android.talk.SigningInActivity" />
-        <favorite
             launcher:packageName="com.google.android.apps.maps"
             launcher:className="com.google.android.maps.MapsActivity" />
         <favorite
@@ -78,21 +75,28 @@
         launcher:packageName="com.android.contacts"
         launcher:className="com.android.contacts.activities.DialtactsActivity"
         launcher:container="-101"
-        launcher:screen="1"
-        launcher:x="1"
+        launcher:screen="0"
+        launcher:x="0"
         launcher:y="0" />
     <favorite
         launcher:packageName="com.android.contacts"
         launcher:className="com.android.contacts.activities.PeopleActivity"
         launcher:container="-101"
-        launcher:screen="2"
-        launcher:x="2"
+        launcher:screen="1"
+        launcher:x="1"
+        launcher:y="0" />
+    <favorite
+        launcher:packageName="com.google.android.talk"
+        launcher:className="com.google.android.talk.SigningInActivity"
+        launcher:container="-101"
+        launcher:screen="3"
+        launcher:x="3"
         launcher:y="0" />
     <favorite
         launcher:packageName="com.android.browser"
         launcher:className="com.android.browser.BrowserActivity"
         launcher:container="-101"
-        launcher:screen="3"
-        launcher:x="3"
+        launcher:screen="4"
+        launcher:x="4"
         launcher:y="0" />
 </favorites>

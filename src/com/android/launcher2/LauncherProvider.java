@@ -737,7 +737,7 @@ public class LauncherProvider extends ContentProvider {
                         // hotset. This screen can't be at position 0 because AllApps is in the
                         // zeroth position.
                         if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
-                                Integer.valueOf(screen) <= 0) {
+                                Hotseat.isAllAppsButtonRank(Integer.valueOf(screen))) {
                             throw new RuntimeException("Invalid screen position for hotseat item");
                         }
 

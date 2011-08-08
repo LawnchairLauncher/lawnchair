@@ -18,7 +18,7 @@
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
     android:background="@drawable/hotseat_bg_panel"
     launcher:cellCountX="1"
-    launcher:cellCountY="-1">
+    launcher:cellCountY="5">
     <com.android.launcher2.CellLayout
         android:id="@+id/layout"
         android:layout_width="match_parent"

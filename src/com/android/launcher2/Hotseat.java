@@ -27,7 +27,8 @@ import android.widget.FrameLayout;
 import com.android.launcher.R;
 
 public class Hotseat extends FrameLayout {
-    static final String TAG = "Hotseat";
+    private static final String TAG = "Hotseat";
+    private static final int sAllAppsButtonRank = 2; // In the middle of the dock
 
     private Launcher mLauncher;
     private CellLayout mContent;
@@ -75,6 +76,9 @@ public class Hotseat extends FrameLayout {
     int getCellYFromOrder(int rank) {
         return mIsLandscape ? (mContent.getCountY() - (rank + 1)) : 0;
     }
+    public static boolean isAllAppsButtonRank(int rank) {
+        return rank == sAllAppsButtonRank;
+    }
 
     @Override
     protected void onFinishInflate() {
@@ -110,8 +114,8 @@ public class Hotseat extends FrameLayout {
 
         // Note: We do this to ensure that the hotseat is always laid out in the orientation of
         // the hotseat in order regardless of which orientation they were added
-        int x = getCellXFromOrder(0);
-        int y = getCellYFromOrder(0);
+        int x = getCellXFromOrder(sAllAppsButtonRank);
+        int y = getCellYFromOrder(sAllAppsButtonRank);
         mContent.addViewToCellLayout(allAppsButton, -1, 0, new CellLayout.LayoutParams(x,y,1,1),
                 true);
     }

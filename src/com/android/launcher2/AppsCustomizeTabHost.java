@@ -39,7 +39,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
 
     private static final String APPS_TAB_TAG = "APPS";
     private static final String WIDGETS_TAB_TAG = "WIDGETS";
-    private static final int sTabBarFadeInDuration = 150;
 
     private final LayoutInflater mLayoutInflater;
     private ViewGroup mTabs;
@@ -130,7 +129,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
                 // Set the width and show the tab bar (if we have a loading graphic, we can switch
                 // it off here)
                 mTabs.getLayoutParams().width = contentWidth;
-                mTabsContainer.animate().alpha(1f).setDuration(sTabBarFadeInDuration);
+                mTabsContainer.setAlpha(1f);
             }
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);

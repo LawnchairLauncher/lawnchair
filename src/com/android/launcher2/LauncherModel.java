@@ -816,26 +816,37 @@ public class LauncherModel extends BroadcastReceiver {
 
         // check & update map of what's occupied; used to discard overlapping/invalid items
         private boolean checkItemPlacement(ItemInfo occupied[][][], ItemInfo item) {
-            if (item.container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+            int containerIndex = item.screen;
+            if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+                // We use the last index to refer to the hotseat
+                containerIndex = Launcher.SCREEN_COUNT;
+                // Return early if we detect that an item is under the hotseat button
+                if (Hotseat.isAllAppsButtonRank(item.screen)) {
+                    return false;
+                }
+            } else if (item.container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                // Skip further checking if it is not the hotseat or workspace container
                 return true;
             }
+
             for (int x = item.cellX; x < (item.cellX+item.spanX); x++) {
                 for (int y = item.cellY; y < (item.cellY+item.spanY); y++) {
-                    if (occupied[item.screen][x][y] != null) {
+                    if (occupied[containerIndex][x][y] != null) {
                         Log.e(TAG, "Error loading shortcut " + item
-                            + " into cell (" + item.screen + ":"
+                            + " into cell (" + containerIndex + "-" + item.screen + ":"
                             + x + "," + y
                             + ") occupied by "
-                            + occupied[item.screen][x][y]);
+                            + occupied[containerIndex][x][y]);
                         return false;
                     }
                 }
             }
             for (int x = item.cellX; x < (item.cellX+item.spanX); x++) {
                 for (int y = item.cellY; y < (item.cellY+item.spanY); y++) {
-                    occupied[item.screen][x][y] = item;
+                    occupied[containerIndex][x][y] = item;
                 }
             }
+
             return true;
         }
 
@@ -858,8 +869,9 @@ public class LauncherModel extends BroadcastReceiver {
             final Cursor c = contentResolver.query(
                     LauncherSettings.Favorites.CONTENT_URI, null, null, null, null);
 
+            // +1 for the hotseat (it can be larger than the workspace)
             final ItemInfo occupied[][][] =
-                    new ItemInfo[Launcher.SCREEN_COUNT][mCellCountX][mCellCountY];
+                    new ItemInfo[Launcher.SCREEN_COUNT + 1][mCellCountX + 1][mCellCountY + 1];
 
             try {
                 final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
