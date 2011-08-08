@@ -238,6 +238,9 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             // blip early in the animation
             buildLayer();
         }
+        if (!toWorkspace && !LauncherApplication.isScreenLarge()) {
+            mAppsCustomizePane.showScrollingIndicator(false);
+        }
     }
 
     @Override
@@ -247,7 +250,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         }
 
         if (!toWorkspace && !LauncherApplication.isScreenLarge()) {
-            mAppsCustomizePane.flashScrollingIndicator();
+            mAppsCustomizePane.hideScrollingIndicator(false);
         }
     }
 }

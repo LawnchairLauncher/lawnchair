@@ -2119,6 +2119,7 @@ public final class Launcher extends Activity
                     if (!springLoaded) {
                         mWorkspace.showDockDivider(false);
                     }
+                    mWorkspace.showScrollingIndicator(false);
                 }
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -2126,7 +2127,7 @@ public final class Launcher extends Activity
                     if (fromView instanceof LauncherTransitionable) {
                         ((LauncherTransitionable) fromView).onLauncherTransitionEnd(alphaAnim,true);
                     }
-                    mWorkspace.flashScrollingIndicator();
+                    mWorkspace.hideScrollingIndicator(false);
                 }
             });
 
