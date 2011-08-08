@@ -33,6 +33,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -172,6 +173,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private Canvas mCanvas;
     private Drawable mDefaultWidgetBackground;
     private IconCache mIconCache;
+    private int mDragViewMultiplyColor;
 
     // Dimens
     private int mContentWidth;
@@ -202,7 +204,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // Save the default widget preview background
         Resources resources = context.getResources();
         mDefaultWidgetBackground = resources.getDrawable(R.drawable.default_widget_preview_holo);
-        mAppIconSize = getResources().getDimensionPixelSize(R.dimen.app_icon_size);
+        mAppIconSize = resources.getDimensionPixelSize(R.dimen.app_icon_size);
+        mDragViewMultiplyColor = resources.getColor(R.color.drag_view_multiply_color);
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PagedView, 0, 0);
         // TODO-APPS_CUSTOMIZE: remove these unnecessary attrs after
@@ -409,7 +412,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             createItemInfo.spanY = spanXY[1];
 
             b = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-            renderDrawableToBitmap(preview, b, 0, 0, w, h, 1, 1);
+            renderDrawableToBitmap(preview, b, 0, 0, w, h, 1, 1, mDragViewMultiplyColor);
         } else {
             // Workaround for the fact that we don't keep the original ResolveInfo associated with
             // the shortcut around.  To get the icon, we just render the preview image (which has
@@ -420,6 +423,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             mCanvas.save();
             preview.draw(mCanvas);
             mCanvas.restore();
+            mCanvas.drawColor(mDragViewMultiplyColor, PorterDuff.Mode.MULTIPLY);
             mCanvas.setBitmap(null);
             createItemInfo.spanX = createItemInfo.spanY = 1;
         }
@@ -745,6 +749,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
     private void renderDrawableToBitmap(Drawable d, Bitmap bitmap, int x, int y, int w, int h,
             float scaleX, float scaleY) {
+        renderDrawableToBitmap(d, bitmap, x, y, w, h, scaleX, scaleY, 0xFFFFFFFF);
+    }
+    private void renderDrawableToBitmap(Drawable d, Bitmap bitmap, int x, int y, int w, int h,
+            float scaleX, float scaleY, int multiplyColor) {
         if (bitmap != null) {
             Canvas c = new Canvas(bitmap);
             c.scale(scaleX, scaleY);
@@ -752,6 +760,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             d.setBounds(x, y, x + w, y + h);
             d.draw(c);
             d.setBounds(oldBounds); // Restore the bounds
+            if (multiplyColor != 0xFFFFFFFF) {
+                c.drawColor(mDragViewMultiplyColor, PorterDuff.Mode.MULTIPLY);
+            }
             c.setBitmap(null);
         }
     }
@@ -828,7 +839,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
             preview = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Config.ARGB_8888);
             renderDrawableToBitmap(mDefaultWidgetBackground, preview, 0, 0, expectedWidth,
-                    expectedHeight, 1f,1f);
+                    expectedHeight, 1f, 1f);
 
             // Draw the icon in the top left corner
             try {
