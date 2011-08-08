@@ -22,8 +22,8 @@
 <!-- Workspace -->
     <dimen name="workspace_cell_width">106dp</dimen>
     <dimen name="workspace_cell_height">74dp</dimen>
-    <dimen name="hotseat_cell_width">68dp</dimen>
-    <dimen name="hotseat_cell_height">74dp</dimen>
+    <dimen name="hotseat_cell_width">64dp</dimen>
+    <dimen name="hotseat_cell_height">58dp</dimen>
     <!-- Block spacing on each side of the screen -->
     <dimen name="workspace_left_padding">0dp</dimen>
     <dimen name="workspace_right_padding">0dp</dimen>

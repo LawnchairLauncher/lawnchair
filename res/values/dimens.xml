@@ -19,7 +19,7 @@
     <dimen name="qsb_bar_height">40dp</dimen>
     <dimen name="workspace_cell_width">80dp</dimen>
     <dimen name="workspace_cell_height">100dp</dimen>
-    <dimen name="hotseat_cell_width">80dp</dimen>
+    <dimen name="hotseat_cell_width">64dp</dimen>
     <dimen name="hotseat_cell_height">64dp</dimen>
     <dimen name="workspace_width_gap">-1dp</dimen>
     <dimen name="workspace_height_gap">-1dp</dimen>
