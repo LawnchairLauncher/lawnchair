@@ -15,11 +15,6 @@
 -->
 
 <resources>
-    <!-- The amount of space to account for the next/prev pages when
-         calculating the number of columns to fit a page.
-         In portrait/xlarge we use apps_customize_cell_width / 4. -->
-    <dimen name="apps_customize_peek_width">48dp</dimen>
-
     <!-- We can also afford to have a slightly wider portrait layout in
          xlarge -->
     <dimen name="apps_customize_pageLayoutWidthGap">36dp</dimen>

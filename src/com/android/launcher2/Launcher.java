@@ -915,10 +915,11 @@ public final class Launcher extends Activity
                 mDragLayer.clearAllResizeFrames();
                 updateRunning();
 
-                // Reset AllApps to it's initial state only if we are not in the middle of
+                // Reset AllApps to its initial state only if we are not in the middle of
                 // processing a multi-step drop
-                if (mAppsCustomizeContent != null && mPendingAddInfo.container == ItemInfo.NO_ID) {
-                    mAppsCustomizeContent.reset();
+                if (mAppsCustomizeTabHost != null && mPendingAddInfo.container == ItemInfo.NO_ID) {
+                    mAppsCustomizeTabHost.reset();
+                    showWorkspace(false);
                 }
             } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
                 mUserPresent = true;
@@ -1091,8 +1092,8 @@ public final class Launcher extends Activity
             }
 
             // Reset AllApps to its initial state
-            if (mAppsCustomizeContent != null) {
-                mAppsCustomizeContent.reset();
+            if (mAppsCustomizeTabHost != null) {
+                mAppsCustomizeTabHost.reset();
             }
         }
     }
@@ -2465,11 +2466,6 @@ public final class Launcher extends Activity
             sAppMarketIcon = updateTextButtonWithIconFromExternalActivity(
                     R.id.market_button, activityName, R.drawable.ic_launcher_market_holo);
             marketButton.setVisibility(View.VISIBLE);
-            
-            // Remove the shop icon text in the Phone UI
-            if (!LauncherApplication.isScreenLarge()) {
-                ((TextView) marketButton).setText("");
-            }
         } else {
             // We should hide and disable the view so that we don't try and restore the visibility
             // of it when we swap between drag & normal states from IconDropTarget subclasses.
