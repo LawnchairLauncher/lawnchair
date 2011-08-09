@@ -15,6 +15,9 @@
 -->
 
 <resources>
+<!-- Cling -->
+    <dimen name="clingPunchThroughGraphicCenterRadius">94dp</dimen>
+
 <!-- Workspace -->
     <dimen name="qsb_bar_height">40dp</dimen>
     <dimen name="workspace_cell_width">80dp</dimen>

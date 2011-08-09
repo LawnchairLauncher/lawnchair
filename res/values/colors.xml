@@ -32,4 +32,7 @@
 
     <color name="workspace_all_apps_and_delete_zone_text_color">#CCFFFFFF</color>
     <color name="workspace_all_apps_and_delete_zone_text_shadow_color">#A0000000</color>
+
+    <color name="cling_button">#BA49C0EC</color>
+    <color name="cling_button_pressed">#FF49C0EC</color>
 </resources>

@@ -27,6 +27,13 @@
 
     <skip />
 
+    <!-- Cling specific attributes. These attributes are used to customize
+         the cling in XML files. -->
+    <declare-styleable name="Cling">
+        <!-- Used to identify how to draw the cling bg -->
+        <attr name="drawIdentifier" format="string"  />
+    </declare-styleable>
+
     <!-- Workspace specific attributes. These attributes are used to customize
          the workspace in XML files. -->
     <declare-styleable name="Workspace">

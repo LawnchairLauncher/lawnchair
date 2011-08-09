@@ -40,6 +40,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -72,8 +73,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnLongClickListener;
+import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
@@ -155,6 +156,7 @@ public final class Launcher extends Activity
     static final int APPWIDGET_HOST_ID = 1024;
     private static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT = 300;
     private static final int EXIT_SPRINGLOADED_MODE_LONG_TIMEOUT = 600;
+    private static final int DISMISS_CLING_DURATION = 300;
 
     private static final Object sLock = new Object();
     private static int sScreen = DEFAULT_SCREEN;
@@ -264,6 +266,7 @@ public final class Launcher extends Activity
         checkForLocaleChange();
         setContentView(R.layout.launcher);
         setupViews();
+        enableClingsIfNecessary();
 
         registerContentObservers();
 
@@ -2958,6 +2961,54 @@ public final class Launcher extends Activity
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             }
         }, mRestoreScreenOrientationDelay);
+    }
+
+    /* Cling related */
+    private static final String WORKSPACE_CLING_DISMISSED_KEY = "cling.workspace.dismissed";
+    private static final String ALLAPPS_CLING_DISMISSED_KEY = "cling.allapps.dismissed";
+    private void enableClingsIfNecessary() {
+        // TEMPORARY: DISABLE CLINGS ON LARGE UI
+        if (LauncherApplication.isScreenLarge()) return;
+
+        // Enable the clings only if they have not been dismissed before
+        SharedPreferences prefs =
+            getSharedPreferences("com.android.launcher2.prefs", Context.MODE_PRIVATE);
+        if (!prefs.getBoolean(WORKSPACE_CLING_DISMISSED_KEY, false)) {
+            Cling cling = (Cling) findViewById(R.id.workspace_cling);
+            cling.init(this);
+            cling.setVisibility(View.VISIBLE);
+        }
+        if (!prefs.getBoolean(ALLAPPS_CLING_DISMISSED_KEY, false)) {
+            Cling cling = (Cling) findViewById(R.id.all_apps_cling);
+            cling.init(this);
+            cling.setVisibility(View.VISIBLE);
+        }
+    }
+    private void dismissCling(final Cling cling, final String flag) {
+        if (cling != null) {
+            ObjectAnimator anim = ObjectAnimator.ofFloat(cling, "alpha", 0f);
+            anim.setDuration(DISMISS_CLING_DURATION);
+            anim.addListener(new AnimatorListenerAdapter() {
+                public void onAnimationEnd(Animator animation) {
+                    cling.setVisibility(View.GONE);
+                    cling.cleanup();
+                    SharedPreferences prefs =
+                        getSharedPreferences("com.android.launcher2.prefs", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putBoolean(flag, true);
+                    editor.commit();
+                };
+            });
+            anim.start();
+        }
+    }
+    public void dismissWorkspaceCling(View v) {
+        Cling cling = (Cling) findViewById(R.id.workspace_cling);
+        dismissCling(cling, WORKSPACE_CLING_DISMISSED_KEY);
+    }
+    public void dismissAllAppsCling(View v) {
+        Cling cling = (Cling) findViewById(R.id.all_apps_cling);
+        dismissCling(cling, ALLAPPS_CLING_DISMISSED_KEY);
     }
 
     /**
