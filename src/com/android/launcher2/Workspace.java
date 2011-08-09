@@ -17,12 +17,12 @@
 package com.android.launcher2;
 
 import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
-import android.animation.Animator.AnimatorListener;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.AlertDialog;
 import android.app.WallpaperManager;
@@ -33,15 +33,14 @@ import android.content.ClipDescription;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Camera;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region.Op;
@@ -183,6 +182,7 @@ public class Workspace extends SmoothPagedView
     private Bitmap mDragOutline = null;
     private final Rect mTempRect = new Rect();
     private final int[] mTempXY = new int[2];
+    private int mDragViewMultiplyColor;
 
     // Paint used to draw external drop outline
     private final Paint mExternalDragOutlinePaint = new Paint();
@@ -306,6 +306,7 @@ public class Workspace extends SmoothPagedView
 
         mSpringLoadedShrinkFactor =
             res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
+        mDragViewMultiplyColor = res.getColor(R.color.drag_view_multiply_color);
 
         // if the value is manually specified, use that instead
         cellCountX = a.getInt(R.styleable.Workspace_cellCountX, cellCountX);
@@ -1964,6 +1965,7 @@ public class Workspace extends SmoothPagedView
         canvas.setBitmap(b);
         drawDragView(v, canvas, padding, true);
         mOutlineHelper.applyOuterBlur(b, canvas, outlineColor);
+        canvas.drawColor(mDragViewMultiplyColor, PorterDuff.Mode.MULTIPLY);
         canvas.setBitmap(null);
 
         return b;
