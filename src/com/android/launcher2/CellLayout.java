@@ -81,6 +81,7 @@ public class CellLayout extends ViewGroup {
     int[] mTempLocation = new int[2];
 
     boolean[][] mOccupied;
+    private boolean mLastDownOnOccupiedCell = false;
 
     private OnTouchListener mInterceptTouchListener;
 
@@ -751,6 +752,8 @@ public class CellLayout extends ViewGroup {
                 }
             }
         }
+
+        mLastDownOnOccupiedCell = found;
 
         if (!found) {
             final int cellXY[] = mTmpXY;
@@ -1876,5 +1879,9 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
             return "Cell[view=" + (cell == null ? "null" : cell.getClass())
                     + ", x=" + cellX + ", y=" + cellY + "]";
         }
+    }
+
+    public boolean lastDownOnOccupiedCell() {
+        return mLastDownOnOccupiedCell;
     }
 }

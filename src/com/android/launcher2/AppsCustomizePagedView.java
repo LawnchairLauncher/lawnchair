@@ -245,9 +245,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     @Override
-    protected void onWallpaperTap(MotionEvent ev) {
-        int action = ev.getAction();
-        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_DOWN) {
+    protected void onUnhandledTap(MotionEvent ev) {
+        if (LauncherApplication.isScreenLarge()) {
             // Dismiss AppsCustomize if we tap
             mLauncher.showWorkspace(true);
         }

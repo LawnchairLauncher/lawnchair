@@ -1138,7 +1138,7 @@ public abstract class PagedView extends ViewGroup {
                     snapToDestination();
                 }
             } else {
-                onWallpaperTap(ev);
+                onUnhandledTap(ev);
             }
             mTouchState = TOUCH_STATE_REST;
             mActivePointerId = INVALID_POINTER;
@@ -1222,12 +1222,9 @@ public abstract class PagedView extends ViewGroup {
                 mVelocityTracker.clear();
             }
         }
-        if (mTouchState == TOUCH_STATE_REST) {
-            onWallpaperTap(ev);
-        }
     }
 
-    protected void onWallpaperTap(MotionEvent ev) {}
+    protected void onUnhandledTap(MotionEvent ev) {}
 
     @Override
     public void requestChildFocus(View child, View focused) {
