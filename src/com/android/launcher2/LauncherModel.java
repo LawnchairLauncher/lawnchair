@@ -644,6 +644,10 @@ public class LauncherModel extends BroadcastReceiver {
         }
     }
 
+    public boolean isAllAppsLoaded() {
+        return mAllAppsLoaded;
+    }
+
     /**
      * Runnable for the thread that loads the contents of the launcher:
      *   - workspace icons

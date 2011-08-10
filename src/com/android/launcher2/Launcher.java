@@ -291,6 +291,11 @@ public final class Launcher extends Activity
             mModel.startLoader(this, true);
         }
 
+        if (!mModel.isAllAppsLoaded()) {
+            ViewGroup appsCustomizeContentParent = (ViewGroup) mAppsCustomizeContent.getParent();
+            mInflater.inflate(R.layout.apps_customize_progressbar, appsCustomizeContentParent);
+        }
+
         // For handling default keys
         mDefaultKeySsb = new SpannableStringBuilder();
         Selection.setSelection(mDefaultKeySsb, 0);
@@ -2771,10 +2776,25 @@ public final class Launcher extends Activity
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindAllApplications(ArrayList<ApplicationInfo> apps) {
-        if (mAppsCustomizeContent != null) {
-            mAppsCustomizeContent.setApps(apps);
+    public void bindAllApplications(final ArrayList<ApplicationInfo> apps) {
+        // Remove the progress bar entirely; we could also make it GONE
+        // but better to remove it since we know it's not going to be used
+        View progressBar = mAppsCustomizeTabHost.
+            findViewById(R.id.apps_customize_progress_bar);
+        if (progressBar != null) {
+            ((ViewGroup)progressBar.getParent()).removeView(progressBar);
         }
+        // We just post the call to setApps so the user sees the progress bar
+        // disappear-- otherwise, it just looks like the progress bar froze
+        // which doesn't look great
+        mAppsCustomizeTabHost.post(new Runnable() {
+            public void run() {
+                if (mAppsCustomizeContent != null) {
+                    mAppsCustomizeContent.setApps(apps);
+                }
+            }
+        });
+
         updateIconsAffectedByPackageManagerChanges();
         updateGlobalSearchIcon();
     }

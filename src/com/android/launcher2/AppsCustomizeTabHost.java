@@ -133,6 +133,11 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
                 // it off here)
                 mTabs.getLayoutParams().width = contentWidth;
                 mTabsContainer.setAlpha(1f);
+                post(new Runnable() {
+                    public void run() {
+                        mTabs.requestLayout();
+                    }
+                });
             }
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);

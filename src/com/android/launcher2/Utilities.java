@@ -29,17 +29,11 @@ import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.graphics.TableMaskFilter;
-import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
-import android.text.StaticLayout;
-import android.text.TextPaint;
-import android.text.Layout.Alignment;
 import android.util.DisplayMetrics;
-import android.util.Log;
 
 import com.android.launcher.R;
 

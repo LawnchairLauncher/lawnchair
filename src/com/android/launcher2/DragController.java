@@ -31,7 +31,6 @@ import android.view.ViewConfiguration;
 import android.view.inputmethod.InputMethodManager;
 
 import com.android.launcher.R;
-import com.android.launcher2.DropTarget.DragObject;
 
 import java.util.ArrayList;
 
