@@ -2809,8 +2809,7 @@ public class Workspace extends SmoothPagedView
                 }
             }
             if (layout == null) {
-                layout = findMatchingPageForDragOver(d.dragView, mDragViewVisualCenter[0],
-                    mDragViewVisualCenter[1], true);
+                layout = findMatchingPageForDragOver(d.dragView, d.x, d.y, true);
             }
             if (layout != mDragTargetLayout) {
                 // Cancel all intermediate folder states
