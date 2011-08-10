@@ -1214,6 +1214,8 @@ public final class Launcher extends Activity
     @Override
     public boolean onSearchRequested() {
         startSearch(null, false, null, true);
+        // Use a custom animation for launching search
+        overridePendingTransition(R.anim.fade_in_fast, R.anim.fade_out_fast);
         return true;
     }
 
@@ -1539,9 +1541,7 @@ public final class Launcher extends Activity
      * @param v The view that was clicked.
      */
     public void onClickSearchButton(View v) {
-        startSearch(null, false, null, true);
-        // Use a custom animation for launching search
-        overridePendingTransition(R.anim.fade_in_fast, R.anim.fade_out_fast);
+        onSearchRequested();
     }
 
     /**
