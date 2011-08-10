@@ -35,27 +35,12 @@
                 android:layout_gravity="left"
                 android:background="@drawable/tab_unselected_holo"
                 android:tabStripEnabled="false" />
-            <TextView
-                style="@style/MarketButton"
+            <include
                 android:id="@+id/market_button"
-                android:onClick="onClickAppMarketButton"
+                layout="@layout/market_button"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_gravity="right"
-                android:gravity="center"
-                android:paddingLeft="@dimen/toolbar_button_horizontal_padding"
-                android:paddingRight="@dimen/toolbar_button_horizontal_padding"
-                android:text="@string/market"
-                android:contentDescription="@string/market"
-                android:textColor="@color/workspace_all_apps_and_delete_zone_text_color"
-                android:textSize="18sp"
-                android:shadowColor="@color/workspace_all_apps_and_delete_zone_text_shadow_color"
-                android:shadowDx="0.0"
-                android:shadowDy="0.0"
-                android:shadowRadius="2.0"
-                android:background="@drawable/tab_widget_indicator_selector"
-                android:focusable="true"
-                android:clickable="true" />
+                android:layout_gravity="right" />
         </FrameLayout>
         <FrameLayout
             android:id="@android:id/tabcontent"

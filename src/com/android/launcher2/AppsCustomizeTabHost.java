@@ -45,6 +45,9 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     private ViewGroup mTabsContainer;
     private AppsCustomizePagedView mAppsCustomizePane;
 
+    private boolean mInTransition;
+    private boolean mResetAfterTransition;
+
     public AppsCustomizeTabHost(Context context, AttributeSet attrs) {
         super(context, attrs);
         mLayoutInflater = LayoutInflater.from(context);
@@ -223,9 +226,20 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         return super.getDescendantFocusability();
     }
 
+    void reset() {
+        if (mInTransition) {
+            // Defer to after the transition to reset
+            mResetAfterTransition = true;
+        } else {
+            // Reset immediately
+            mAppsCustomizePane.reset();
+        }
+    }
+
     /* LauncherTransitionable overrides */
     @Override
     public void onLauncherTransitionStart(Animator animation, boolean toWorkspace) {
+        mInTransition = true;
         // isHardwareAccelerated() checks if we're attached to a window and if that
         // window is HW accelerated-- we were sometimes not attached to a window
         // and buildLayer was throwing an IllegalStateException
@@ -240,10 +254,15 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         if (!toWorkspace && !LauncherApplication.isScreenLarge()) {
             mAppsCustomizePane.showScrollingIndicator(false);
         }
+        if (mResetAfterTransition) {
+            mAppsCustomizePane.reset();
+            mResetAfterTransition = false;
+        }
     }
 
     @Override
     public void onLauncherTransitionEnd(Animator animation, boolean toWorkspace) {
+        mInTransition = false;
         if (animation != null) {
             setLayerType(LAYER_TYPE_NONE, null);
         }

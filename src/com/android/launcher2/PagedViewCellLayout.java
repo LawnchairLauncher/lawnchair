@@ -46,7 +46,6 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
     private int mWidthGap;
     private int mHeightGap;
     private int mMaxGap;
-    private float mPeekWidth;
     protected PagedViewCellLayoutChildren mChildren;
     private PagedViewCellLayoutChildren mHolographicChildren;
     private boolean mAllowHardwareLayerCreation = false;
@@ -71,7 +70,6 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
             resources.getDimensionPixelSize(R.dimen.apps_customize_cell_width);
         mOriginalCellHeight = mCellHeight =
             resources.getDimensionPixelSize(R.dimen.apps_customize_cell_height);
-        mPeekWidth = resources.getDimensionPixelSize(R.dimen.apps_customize_peek_width);
         mCellCountX = LauncherModel.getCellCountX();
         mCellCountY = LauncherModel.getCellCountY();
         mOriginalHeightGap = mOriginalHeightGap = mWidthGap = mHeightGap = -1;
@@ -366,7 +364,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         // The space for a page assuming that we want to show half of a column of the previous and
         // next pages is the width - left padding (current & next page) - right padding (previous &
         // current page) - half cell width (for previous and next pages)
-        int availWidth = (int) (width - (2 * mPaddingLeft + 2 * mPaddingRight) - (2 * mPeekWidth));
+        int availWidth = (int) (width - (2 * mPaddingLeft + 2 * mPaddingRight));
 
         // We know that we have to fit N cells with N-1 width gaps, so we just juggle to solve for N
         int n = Math.max(1, (availWidth + mWidthGap) / (mCellWidth + mWidthGap));
