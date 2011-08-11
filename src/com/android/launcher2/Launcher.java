@@ -1666,7 +1666,8 @@ public final class Launcher extends Activity
         FolderInfo info = (FolderInfo) fi.getTag();
         if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             CellLayout cl = (CellLayout) fi.getParent().getParent();
-            cl.setFolderLeaveBehindCell(info.cellX, info.cellY);
+            CellLayout.LayoutParams lp = (CellLayout.LayoutParams) fi.getLayoutParams();
+            cl.setFolderLeaveBehindCell(lp.cellX, lp.cellY);
         }
 
         ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(fi, alpha, scaleX, scaleY);
