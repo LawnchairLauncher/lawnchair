@@ -29,18 +29,18 @@
     android:focusable="true">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:background="@drawable/widget_info_bg">
         <!-- The name of the widget. -->
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/widget_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="left"
+            android:layout_weight="0"
+            android:gravity="left|bottom"
             android:singleLine="true"
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
@@ -58,12 +58,10 @@
             android:id="@+id/widget_dims"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginLeft="5dp"
             android:layout_weight="0"
-            android:gravity="left"
+            android:gravity="left|bottom"
 
-            android:textColor="#FF666666"
+            android:textColor="#FF999999"
             android:textSize="12sp"
             android:shadowColor="#99000000"
             android:shadowDx="0.0"

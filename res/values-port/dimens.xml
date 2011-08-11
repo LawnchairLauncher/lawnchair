@@ -36,5 +36,5 @@
     <dimen name="apps_customize_widget_cell_width_gap">20dp</dimen>
     <dimen name="apps_customize_widget_cell_height_gap">10dp</dimen>
     <integer name="apps_customize_widget_cell_count_x">2</integer>
-    <integer name="apps_customize_widget_cell_count_y">2</integer>
+    <integer name="apps_customize_widget_cell_count_y">3</integer>
 </resources>
