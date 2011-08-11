@@ -38,7 +38,7 @@ import android.widget.TextView;
  * because we want to make the bubble taller than the text and TextView's clip is
  * too aggressive.
  */
-public class BubbleTextView extends TextView implements VisibilityChangedBroadcaster {
+public class BubbleTextView extends TextView {
     static final float CORNER_RADIUS = 4.0f;
     static final float SHADOW_LARGE_RADIUS = 4.0f;
     static final float SHADOW_SMALL_RADIUS = 1.75f;
@@ -66,8 +66,6 @@ public class BubbleTextView extends TextView implements VisibilityChangedBroadca
     private Drawable mBackground;
 
     private boolean mStayPressed;
-
-    private VisibilityChangedListener mOnVisibilityChangedListener;
 
     public BubbleTextView(Context context) {
         super(context);
@@ -238,18 +236,6 @@ public class BubbleTextView extends TextView implements VisibilityChangedBroadca
                 break;
         }
         return result;
-    }
-
-    public void setVisibilityChangedListener(VisibilityChangedListener listener) {
-        mOnVisibilityChangedListener = listener;
-    }
-
-    @Override
-    protected void onVisibilityChanged(View changedView, int visibility) {
-        if (mOnVisibilityChangedListener != null) {
-            mOnVisibilityChangedListener.receiveVisibilityChangedMessage(this);
-        }
-        super.onVisibilityChanged(changedView, visibility);
     }
 
     void setStayPressed(boolean stayPressed) {
