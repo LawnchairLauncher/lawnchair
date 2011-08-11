@@ -30,12 +30,10 @@ import com.android.launcher.R;
 /**
  * {@inheritDoc}
  */
-public class LauncherAppWidgetHostView extends AppWidgetHostView
-    implements VisibilityChangedBroadcaster {
+public class LauncherAppWidgetHostView extends AppWidgetHostView {
     private boolean mHasPerformedLongPress;
     private CheckForLongPress mPendingCheckForLongPress;
     private LayoutInflater mInflater;
-    private VisibilityChangedListener mOnVisibilityChangedListener;
 
     public LauncherAppWidgetHostView(Context context) {
         super(context);
@@ -118,18 +116,6 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
         if (mPendingCheckForLongPress != null) {
             removeCallbacks(mPendingCheckForLongPress);
         }
-    }
-
-    public void setVisibilityChangedListener(VisibilityChangedListener listener) {
-        mOnVisibilityChangedListener = listener;
-    }
-
-    @Override
-    protected void onVisibilityChanged(View changedView, int visibility) {
-        if (mOnVisibilityChangedListener != null) {
-            mOnVisibilityChangedListener.receiveVisibilityChangedMessage(this);
-        }
-        super.onVisibilityChanged(changedView, visibility);
     }
 
     @Override

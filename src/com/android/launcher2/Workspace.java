@@ -390,7 +390,9 @@ public class Workspace extends SmoothPagedView
         return SmoothPagedView.X_LARGE_MODE;
     }
 
-    private void onAddView(View child) {
+    @Override
+    protected void onViewAdded(View child) {
+        super.onViewAdded(child);
         if (!(child instanceof CellLayout)) {
             throw new IllegalArgumentException("A Workspace can only have CellLayout children.");
         }
@@ -398,36 +400,6 @@ public class Workspace extends SmoothPagedView
         cl.setOnInterceptTouchListener(this);
         cl.setClickable(true);
         cl.enableHardwareLayers();
-    }
-
-    @Override
-    public void addView(View child, int index, LayoutParams params) {
-        onAddView(child);
-        super.addView(child, index, params);
-    }
-
-    @Override
-    public void addView(View child) {
-        onAddView(child);
-        super.addView(child);
-    }
-
-    @Override
-    public void addView(View child, int index) {
-        onAddView(child);
-        super.addView(child, index);
-    }
-
-    @Override
-    public void addView(View child, int width, int height) {
-        onAddView(child);
-        super.addView(child, width, height);
-    }
-
-    @Override
-    public void addView(View child, LayoutParams params) {
-        onAddView(child);
-        super.addView(child, params);
     }
 
     /**
