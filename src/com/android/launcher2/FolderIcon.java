@@ -516,8 +516,8 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         final PreviewItemDrawingParams finalParams = computePreviewItemDrawingParams(0, null);
 
         final float scale0 = 1.0f;
-        final float transX0 = 0;
-        final float transY0 = 0;
+        final float transX0 = (mAvailableSpaceInPreview - d.getIntrinsicWidth()) / 2;
+        final float transY0 = (mAvailableSpaceInPreview - d.getIntrinsicHeight()) / 2;
         mAnimParams.drawable = d;
 
         ValueAnimator va = ValueAnimator.ofFloat(0f, 1.0f);
