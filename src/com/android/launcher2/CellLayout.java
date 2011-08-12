@@ -292,8 +292,20 @@ public class CellLayout extends ViewGroup {
         return minGap * (numCells - 1) + cellHeight * numCells;
     }
 
+    @Override
+    public void setChildrenLayersEnabled(boolean enabled) {
+        // see "Hardware Layer Note" lower in the code
+        if (LauncherApplication.isScreenLarge()) {
+            super.setChildrenLayersEnabled(enabled);
+        } else {
+            mChildren.setChildrenLayersEnabled(enabled);
+        }
+    }
     public void enableHardwareLayers() {
-        mChildren.enableHardwareLayers();
+        // see "Hardware Layer Note" lower in the code
+        if (LauncherApplication.isScreenLarge()) {
+            mChildren.enableHardwareLayers();
+        }
     }
 
     public void setGridSize(int x, int y) {
@@ -638,6 +650,16 @@ public class CellLayout extends ViewGroup {
 
             child.setId(childId);
 
+            if (!LauncherApplication.isScreenLarge()) {
+                // Hardware Layer Note:
+                // On phones, we set hardware layers on individual items
+                // On tablets, we set hardware layers on the entire mChildren view
+                // Setting the hardware layers on individual items only uses
+                // less memory but on tablet-size devices it has worse performance
+                // (a drop of ~6fps) whereas on phones the performance is the same
+                // with both approaches
+                child.setLayerType(LAYER_TYPE_HARDWARE, null);
+            }
             mChildren.addView(child, index, lp);
 
             if (markCells) markCellsAsOccupiedForView(child);
