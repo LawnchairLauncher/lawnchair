@@ -276,4 +276,8 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             mAppsCustomizePane.hideScrollingIndicator(false);
         }
     }
+
+    boolean isTransitioning() {
+        return mInTransition;
+    }
 }

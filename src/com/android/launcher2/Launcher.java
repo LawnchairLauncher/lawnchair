@@ -107,15 +107,10 @@ public final class Launcher extends Activity
     static final boolean PROFILE_STARTUP = false;
     static final boolean DEBUG_WIDGETS = false;
 
-    private static final int MENU_GROUP_ADD = 1;
-    private static final int MENU_GROUP_WALLPAPER = MENU_GROUP_ADD + 1;
-
-    private static final int MENU_ADD = Menu.FIRST + 1;
-    private static final int MENU_MANAGE_APPS = MENU_ADD + 1;
-    private static final int MENU_WALLPAPER_SETTINGS = MENU_MANAGE_APPS + 1;
-    private static final int MENU_SEARCH = MENU_WALLPAPER_SETTINGS + 1;
-    private static final int MENU_NOTIFICATIONS = MENU_SEARCH + 1;
-    private static final int MENU_SETTINGS = MENU_NOTIFICATIONS + 1;
+    private static final int MENU_GROUP_WALLPAPER = 1;
+    private static final int MENU_WALLPAPER_SETTINGS = Menu.FIRST + 1;
+    private static final int MENU_MANAGE_APPS = MENU_WALLPAPER_SETTINGS + 1;
+    private static final int MENU_HELP = MENU_MANAGE_APPS + 1;
 
     private static final int REQUEST_CREATE_SHORTCUT = 1;
     private static final int REQUEST_CREATE_APPWIDGET = 5;
@@ -1188,6 +1183,10 @@ public final class Launcher extends Activity
         super.startActivityForResult(intent, requestCode);
     }
 
+    /**
+     * Indicates that we want global search for this activity by setting the globalSearch
+     * argument for {@link #startSearch} to true.
+     */
     @Override
     public void startSearch(String initialQuery, boolean selectInitialQuery,
             Bundle appSearchData, boolean globalSearch) {
@@ -1210,10 +1209,54 @@ public final class Launcher extends Activity
             appSearchData, globalSearch);
     }
 
-    /**
-     * Indicates that we want global search for this activity by setting the globalSearch
-     * argument for {@link #startSearch} to true.
-     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (isWorkspaceLocked()) {
+            return false;
+        }
+
+        super.onCreateOptionsMenu(menu);
+        menu.add(MENU_GROUP_WALLPAPER, MENU_WALLPAPER_SETTINGS, 0, R.string.menu_wallpaper)
+            .setIcon(android.R.drawable.ic_menu_gallery)
+            .setAlphabeticShortcut('W');
+        menu.add(0, MENU_MANAGE_APPS, 0, R.string.menu_manage_apps)
+            .setIcon(android.R.drawable.ic_menu_manage)
+            .setAlphabeticShortcut('M');
+        menu.add(0, MENU_HELP, 0, R.string.menu_help)
+            .setIcon(android.R.drawable.ic_menu_help)
+            .setAlphabeticShortcut('H');
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        if (mAppsCustomizeTabHost.isTransitioning()) {
+            return false;
+        }
+        boolean allAppsVisible = (mAppsCustomizeTabHost.getVisibility() == View.VISIBLE);
+        menu.setGroupVisible(MENU_GROUP_WALLPAPER, !allAppsVisible);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case MENU_WALLPAPER_SETTINGS:
+            startWallpaper();
+            return true;
+        case MENU_MANAGE_APPS:
+            manageApps();
+            return true;
+        case MENU_HELP:
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.help_url))));
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public boolean onSearchRequested() {
