@@ -27,7 +27,7 @@
     <string name="pick_wallpaper" msgid="5630222540525626723">"Bakgrundsbilder"</string>
     <string name="activity_not_found" msgid="5591731020063337696">"Appen är inte installerad."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widgetar"</string>
-    <string name="long_press_widget_to_add" msgid="4307462194057715796">"Tryck länge om du vill plocka upp en widget"</string>
+    <!-- outdated translation 4307462194057715796 -->     <string name="long_press_widget_to_add" msgid="8915177487173521501">"Tryck länge om du vill plocka upp en widget"</string>
     <string name="market" msgid="2652226429823445833">"Butik"</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Objektet kunde inte släppas på den här startsidan"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Välj en widget att skapa"</string>
@@ -65,6 +65,8 @@
     <string name="menu_search" msgid="4826514464423239041">"Sök"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"Aviseringar"</string>
     <string name="menu_settings" msgid="6233960148378443661">"Inställningar"</string>
+    <!-- no translation found for menu_help (4901160661634590633) -->
+    <skip />
     <string name="cab_menu_delete_app" msgid="1242619904941293871">"Avinstallera app"</string>
     <string name="cab_menu_app_info" msgid="5180426909324882018">"Programinformation"</string>
     <string name="cab_app_selection_text" msgid="606113924828167756">"1 app har valts"</string>
@@ -79,6 +81,8 @@
     <string name="permdesc_read_settings" msgid="8377434937176025492">"Tillåter att ett program läser inställningar och genvägar på startsidan."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"skriva inställningar och genvägar för startsidan"</string>
     <string name="permdesc_write_settings" msgid="1098648778383349818">"Tillåter att ett program ändrar inställningar och genvägar på startsidan."</string>
+    <!-- no translation found for google_apps_folder_name (6379401240457905079) -->
+    <skip />
     <string name="gadget_error_text" msgid="8359351016167075858">"Det gick inte att läsa in widgeten"</string>
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"Det här är ett systemprogram och kan inte avinstalleras."</string>
     <string name="dream_name" msgid="2847171357608437154">"Raketavfyringsramp"</string>

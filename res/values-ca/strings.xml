@@ -27,7 +27,7 @@
     <string name="pick_wallpaper" msgid="5630222540525626723">"Empaperats"</string>
     <string name="activity_not_found" msgid="5591731020063337696">"L\'aplicació no està instal·lada."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widgets"</string>
-    <string name="long_press_widget_to_add" msgid="4307462194057715796">"Mantén premut un widget per triar-lo"</string>
+    <string name="long_press_widget_to_add" msgid="8915177487173521501">"Mantén premut un widget per triar-lo"</string>
     <string name="market" msgid="2652226429823445833">"Botiga"</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"No s\'ha pogut trasll. l\'element a la pant. d\'inici"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Selecciona un widget per crear-lo"</string>
@@ -65,6 +65,8 @@
     <string name="menu_search" msgid="4826514464423239041">"Cerca"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"Notificacions"</string>
     <string name="menu_settings" msgid="6233960148378443661">"Configuració"</string>
+    <!-- no translation found for menu_help (4901160661634590633) -->
+    <skip />
     <string name="cab_menu_delete_app" msgid="1242619904941293871">"Desinstal·la l\'aplicació"</string>
     <string name="cab_menu_app_info" msgid="5180426909324882018">"Detalls de l\'aplicació"</string>
     <string name="cab_app_selection_text" msgid="606113924828167756">"1 aplicació seleccionada"</string>
@@ -79,6 +81,7 @@
     <string name="permdesc_read_settings" msgid="8377434937176025492">"Permet a una aplicació llegir la configuració i les dreceres de la pantalla Inici."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"escriure la configuració i les dreceres de la pantalla Inici"</string>
     <string name="permdesc_write_settings" msgid="1098648778383349818">"Permet que una aplicació canviï la configuració i les dreceres de la pantalla Inici."</string>
+    <string name="google_apps_folder_name" msgid="6379401240457905079">"Google Apps"</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"S\'ha produït un problema en carregar el widget"</string>
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"Això és una aplicació del sistema i no es pot desinstal·lar."</string>
     <string name="dream_name" msgid="2847171357608437154">"Llançamíssils"</string>
