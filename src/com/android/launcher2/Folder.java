@@ -297,12 +297,18 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         ArrayList<ShortcutInfo> children = info.contents;
         ArrayList<ShortcutInfo> overflow = new ArrayList<ShortcutInfo>();
         setupContentForNumItems(children.size());
+        int count = 0;
         for (int i = 0; i < children.size(); i++) {
             ShortcutInfo child = (ShortcutInfo) children.get(i);
             if (!createAndAddShortcut(child)) {
                 overflow.add(child);
+            } else {
+                count++;
             }
         }
+
+        // We rearrange the items in case there are any empty gaps
+        setupContentForNumItems(count);
 
         // If our folder has too many items we prune them from the list. This is an issue 
         // when upgrading from the old Folders implementation which could contain an unlimited
@@ -507,8 +513,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // by another item. If it is, we need to find the next available slot and assign
         // it that position. This is an issue when upgrading from the old Folders implementation
         // which could contain an unlimited number of items.
-        if (mContent.getChildAt(item.cellX, item.cellY) != null ||
-                item.cellX < 0 || item.cellY < 0) {
+        if (mContent.getChildAt(item.cellX, item.cellY) != null || item.cellX < 0 || item.cellY < 0
+                || item.cellX >= mContent.getCountX() || item.cellY >= mContent.getCountY()) {
             if (!findAndSetEmptyCells(item)) {
                 return false;
             }
