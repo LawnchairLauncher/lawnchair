@@ -321,44 +321,53 @@ public class FolderIcon extends LinearLayout implements FolderListener {
             float scaleRelativeToDragLayer, int index, Runnable postAnimationRunnable) {
         item.cellX = -1;
         item.cellY = -1;
-        DragLayer dragLayer = mLauncher.getDragLayer();
-        Rect from = new Rect();
-        dragLayer.getViewRectRelativeToSelf(animateView, from);
-        Rect to = finalRect;
-        if (to == null) {
-            to = new Rect();
-            Workspace workspace = mLauncher.getWorkspace();
-            // Set cellLayout and this to it's final state to compute final animation locations
-            workspace.setFinalTransitionTransform((CellLayout) getParent().getParent());
-            float scaleX = getScaleX();
-            float scaleY = getScaleY();
-            setScaleX(1.0f);
-            setScaleY(1.0f);
-            scaleRelativeToDragLayer = dragLayer.getDescendantRectRelativeToSelf(this, to);
-            // Finished computing final animation locations, restore current state
-            setScaleX(scaleX);
-            setScaleY(scaleY);
-            workspace.resetTransitionTransform((CellLayout) getParent().getParent());
-        }
 
-        int[] center = new int[2];
-        float scale = getLocalCenterForIndex(index, center);
-        center[0] = (int) Math.round(scaleRelativeToDragLayer * center[0]);
-        center[1] = (int) Math.round(scaleRelativeToDragLayer * center[1]);
-
-        to.offset(center[0] - animateView.getMeasuredWidth() / 2,
-                center[1] - animateView.getMeasuredHeight() / 2);
-
-        float finalAlpha = index < NUM_ITEMS_IN_PREVIEW ? 0.5f : 0f;
-
-        dragLayer.animateView(animateView, from, to, finalAlpha, scale * scaleRelativeToDragLayer,
-                DROP_IN_ANIMATION_DURATION, new DecelerateInterpolator(2),
-                new AccelerateInterpolator(2), postAnimationRunnable, false);
-        postDelayed(new Runnable() {
-            public void run() {
-                addItem(item);
+        // Typically, the animateView corresponds to the DragView; however, if this is being done
+        // after a configuration activity (ie. for a Shortcut being dragged from AllApps) we
+        // will not have a view to animate
+        if (animateView != null) {
+            DragLayer dragLayer = mLauncher.getDragLayer();
+            Rect from = new Rect();
+            dragLayer.getViewRectRelativeToSelf(animateView, from);
+            Rect to = finalRect;
+            if (to == null) {
+                to = new Rect();
+                Workspace workspace = mLauncher.getWorkspace();
+                // Set cellLayout and this to it's final state to compute final animation locations
+                workspace.setFinalTransitionTransform((CellLayout) getParent().getParent());
+                float scaleX = getScaleX();
+                float scaleY = getScaleY();
+                setScaleX(1.0f);
+                setScaleY(1.0f);
+                scaleRelativeToDragLayer = dragLayer.getDescendantRectRelativeToSelf(this, to);
+                // Finished computing final animation locations, restore current state
+                setScaleX(scaleX);
+                setScaleY(scaleY);
+                workspace.resetTransitionTransform((CellLayout) getParent().getParent());
             }
-        }, DROP_IN_ANIMATION_DURATION);
+
+            int[] center = new int[2];
+            float scale = getLocalCenterForIndex(index, center);
+            center[0] = (int) Math.round(scaleRelativeToDragLayer * center[0]);
+            center[1] = (int) Math.round(scaleRelativeToDragLayer * center[1]);
+
+            to.offset(center[0] - animateView.getMeasuredWidth() / 2,
+                    center[1] - animateView.getMeasuredHeight() / 2);
+
+            float finalAlpha = index < NUM_ITEMS_IN_PREVIEW ? 0.5f : 0f;
+
+            dragLayer.animateView(animateView, from, to, finalAlpha,
+                    scale * scaleRelativeToDragLayer, DROP_IN_ANIMATION_DURATION,
+                    new DecelerateInterpolator(2), new AccelerateInterpolator(2),
+                    postAnimationRunnable, false);
+            postDelayed(new Runnable() {
+                public void run() {
+                    addItem(item);
+                }
+            }, DROP_IN_ANIMATION_DURATION);
+        } else {
+            addItem(item);
+        }
     }
 
     public void onDrop(DragObject d) {

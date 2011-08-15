@@ -2208,8 +2208,15 @@ public class Workspace extends SmoothPagedView
             sourceInfo.cellX = -1;
             sourceInfo.cellY = -1;
 
-            fi.performCreateAnimation(destInfo, v, sourceInfo, dragView, folderLocation, scale,
-                    postAnimationRunnable);
+            // If the dragView is null, we can't animate
+            boolean animate = dragView != null;
+            if (animate) {
+                fi.performCreateAnimation(destInfo, v, sourceInfo, dragView, folderLocation, scale,
+                        postAnimationRunnable);
+            } else {
+                fi.addItem(destInfo);
+                fi.addItem(sourceInfo);
+            }
             return true;
         }
         return false;
@@ -2996,8 +3003,21 @@ public class Workspace extends SmoothPagedView
         if (info instanceof PendingAddItemInfo) {
             final PendingAddItemInfo pendingInfo = (PendingAddItemInfo) dragInfo;
 
-            mTargetCell = findNearestVacantArea(touchXY[0], touchXY[1], spanX, spanY, null,
-                    cellLayout, mTargetCell);
+            boolean findNearestVacantCell = true;
+            if (pendingInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
+                mTargetCell = findNearestArea((int) touchXY[0], (int) touchXY[1], spanX, spanY,
+                        cellLayout, mTargetCell);
+                if (willCreateUserFolder((ItemInfo) d.dragInfo, mDragTargetLayout, mTargetCell,
+                        true) || willAddToExistingUserFolder((ItemInfo) d.dragInfo,
+                                mDragTargetLayout, mTargetCell)) {
+                    findNearestVacantCell = false;
+                }
+            }
+            if (findNearestVacantCell) {
+                    mTargetCell = findNearestVacantArea(touchXY[0], touchXY[1], spanX, spanY, null,
+                        cellLayout, mTargetCell);
+            }
+
             Runnable onAnimationCompleteRunnable = new Runnable() {
                 @Override
                 public void run() {

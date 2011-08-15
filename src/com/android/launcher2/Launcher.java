@@ -40,7 +40,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.Intent.ShortcutIconResource;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -51,7 +50,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -87,6 +85,7 @@ import android.widget.Toast;
 
 import com.android.common.Search;
 import com.android.launcher.R;
+import com.android.launcher2.DropTarget.DragObject;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -799,11 +798,25 @@ public final class Launcher extends Activity
 
         boolean foundCellSpan = false;
 
+        ShortcutInfo info = mModel.infoFromShortcutIntent(this, data, null);
+        final View view = createShortcut(info);
+
         // First we check if we already know the exact location where we want to add this item.
         if (cellX >= 0 && cellY >= 0) {
             cellXY[0] = cellX;
             cellXY[1] = cellY;
             foundCellSpan = true;
+
+            // If appropriate, either create a folder or add to an existing folder
+            if (mWorkspace.createUserFolderIfNecessary(view, container, layout, cellXY,
+                    true, null,null)) {
+                return;
+            }
+            DragObject dragObject = new DragObject();
+            dragObject.dragInfo = info;
+            if (mWorkspace.addToExistingFolderIfNecessary(view, layout, cellXY, dragObject, true)) {
+                return;
+            }
         } else if (touchXY != null) {
             // when dragging and dropping, just find the closest free spot
             int[] result = layout.findNearestVacantArea(touchXY[0], touchXY[1], 1, 1, cellXY);
@@ -817,11 +830,9 @@ public final class Launcher extends Activity
             return;
         }
 
-        final ShortcutInfo info = mModel.addShortcut(
-                this, data, container, screen, cellXY[0], cellXY[1], false);
+        LauncherModel.addItemToDatabase(this, info, container, screen, cellXY[0], cellXY[1], false);
 
         if (!mRestoring) {
-            final View view = createShortcut(info);
             mWorkspace.addInScreen(view, container, screen, cellXY[0], cellXY[1], 1, 1,
                     isWorkspaceLocked());
         }
