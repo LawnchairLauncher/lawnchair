@@ -27,7 +27,7 @@
     <string name="pick_wallpaper" msgid="5630222540525626723">"Imagini de fundal"</string>
     <string name="activity_not_found" msgid="5591731020063337696">"Aplicaţia nu este instalată."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Obiecte widget"</string>
-    <string name="long_press_widget_to_add" msgid="4307462194057715796">"Apăsaţi lung pentru a alege un widget"</string>
+    <!-- outdated translation 4307462194057715796 -->     <string name="long_press_widget_to_add" msgid="8915177487173521501">"Apăsaţi lung pentru a alege un widget"</string>
     <string name="market" msgid="2652226429823445833">"Cumpăraţi"</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Impos. de plasat elem. pe acest ecran de pornire"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Selectaţi obiectul widget"</string>
@@ -65,6 +65,8 @@
     <string name="menu_search" msgid="4826514464423239041">"Căutaţi"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"Notificări"</string>
     <string name="menu_settings" msgid="6233960148378443661">"Setări"</string>
+    <!-- no translation found for menu_help (4901160661634590633) -->
+    <skip />
     <string name="cab_menu_delete_app" msgid="1242619904941293871">"Dezinstalaţi aplicaţia"</string>
     <string name="cab_menu_app_info" msgid="5180426909324882018">"Detalii aplicaţie"</string>
     <string name="cab_app_selection_text" msgid="606113924828167756">"1 aplicaţie selectată"</string>
@@ -79,6 +81,8 @@
     <string name="permdesc_read_settings" msgid="8377434937176025492">"Permite unei aplicaţii să citească setările şi comenzile rapide în Ecranul de pornire."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"scrieţi setări şi comenzi rapide pentru Ecranul de pornire"</string>
     <string name="permdesc_write_settings" msgid="1098648778383349818">"Permite unei aplicaţii să modifice setările şi comenzile rapide pentru Ecranul de pornire."</string>
+    <!-- no translation found for google_apps_folder_name (6379401240457905079) -->
+    <skip />
     <string name="gadget_error_text" msgid="8359351016167075858">"Probleme la încărcarea obiectului widget"</string>
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"Aceasta este o aplicaţie a sistemului şi nu se poate dezinstala."</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>

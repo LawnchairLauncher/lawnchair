@@ -27,7 +27,7 @@
     <string name="pick_wallpaper" msgid="5630222540525626723">"Hintergrundbilder"</string>
     <string name="activity_not_found" msgid="5591731020063337696">"Anwendung ist nicht installiert."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widgets"</string>
-    <string name="long_press_widget_to_add" msgid="4307462194057715796">"Zum Hinzufügen eines Widgets lange drücken"</string>
+    <!-- outdated translation 4307462194057715796 -->     <string name="long_press_widget_to_add" msgid="8915177487173521501">"Zum Hinzufügen eines Widgets lange drücken"</string>
     <string name="market" msgid="2652226429823445833">"Shop"</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Element wurde nicht auf Startbildschirm abgelegt."</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Widget für Erstellung auswählen"</string>
@@ -65,6 +65,8 @@
     <string name="menu_search" msgid="4826514464423239041">"Suchen"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"Benachrichtigungen"</string>
     <string name="menu_settings" msgid="6233960148378443661">"Einstellungen"</string>
+    <!-- no translation found for menu_help (4901160661634590633) -->
+    <skip />
     <string name="cab_menu_delete_app" msgid="1242619904941293871">"Anwendung deinstallieren"</string>
     <string name="cab_menu_app_info" msgid="5180426909324882018">"Anwendungsdetails"</string>
     <string name="cab_app_selection_text" msgid="606113924828167756">"1 Anwendung ausgewählt"</string>
@@ -79,6 +81,8 @@
     <string name="permdesc_read_settings" msgid="8377434937176025492">"Ermöglicht einer App, die Einstellungen und Shortcuts auf der Startseite zu lesen."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"Einstellungen und Shortcuts für Startseite schreiben"</string>
     <string name="permdesc_write_settings" msgid="1098648778383349818">"Ermöglicht einer App, die Einstellungen und Shortcuts auf der Startseite zu ändern."</string>
+    <!-- no translation found for google_apps_folder_name (6379401240457905079) -->
+    <skip />
     <string name="gadget_error_text" msgid="8359351016167075858">"Problem beim Laden des Widgets"</string>
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"Dies ist eine Systemanwendung, die nicht deinstalliert werden kann."</string>
     <string name="dream_name" msgid="2847171357608437154">"Raketenstartgerät"</string>

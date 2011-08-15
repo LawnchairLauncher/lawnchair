@@ -27,7 +27,7 @@
     <string name="pick_wallpaper" msgid="5630222540525626723">"Hình nền"</string>
     <string name="activity_not_found" msgid="5591731020063337696">"Ứng dụng chưa được cài đặt."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Tiện ích"</string>
-    <string name="long_press_widget_to_add" msgid="4307462194057715796">"Nhấn và giữ để chọn tiện ích con"</string>
+    <string name="long_press_widget_to_add" msgid="8915177487173521501">"Chạm &amp; giữ để chọn tiện ích con"</string>
     <string name="market" msgid="2652226429823445833">"Mua hàng"</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Không thể thả mục vào màn hình chính này"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Chọn tiện ích để tạo"</string>
@@ -65,6 +65,8 @@
     <string name="menu_search" msgid="4826514464423239041">"Tìm kiếm"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"Thông báo"</string>
     <string name="menu_settings" msgid="6233960148378443661">"Cài đặt"</string>
+    <!-- no translation found for menu_help (4901160661634590633) -->
+    <skip />
     <string name="cab_menu_delete_app" msgid="1242619904941293871">"Gỡ cài đặt ứng dụng"</string>
     <string name="cab_menu_app_info" msgid="5180426909324882018">"Chi tiết ứng dụng"</string>
     <string name="cab_app_selection_text" msgid="606113924828167756">"Đã chọn 1 ứng dụng"</string>
@@ -79,6 +81,7 @@
     <string name="permdesc_read_settings" msgid="8377434937176025492">"Cho phép ứng dụng đọc cài đặt và lối tắt trên Màn hình trang chủ."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"ghi cài đặt Màn hình trang chủ và lối tắt"</string>
     <string name="permdesc_write_settings" msgid="1098648778383349818">"Cho phép ứng dụng thay đổi cài đặt và lối tắt trên Màn hình trang chủ."</string>
+    <string name="google_apps_folder_name" msgid="6379401240457905079">"Google Apps"</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Sự cố khi tải tiện ích"</string>
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"Đây là ứng dụng hệ thống và không thể gỡ cài đặt."</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
