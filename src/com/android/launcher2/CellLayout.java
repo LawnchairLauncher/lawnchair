@@ -792,27 +792,35 @@ public class CellLayout extends ViewGroup {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        // First we clear the tag to ensure that on every touch down we start with a fresh slate,
+        // even in the case where we return early. Not clearing here was causing bugs whereby on
+        // long-press we'd end up picking up an item from a previous drag operation.
+        final int action = ev.getAction();
+
+        if (action == MotionEvent.ACTION_DOWN) {
+            clearTagCellInfo();
+        }
+
         if (mInterceptTouchListener != null && mInterceptTouchListener.onTouch(this, ev)) {
             return true;
         }
-        final int action = ev.getAction();
-        final CellInfo cellInfo = mCellInfo;
 
         if (action == MotionEvent.ACTION_DOWN) {
             setTagToCellInfoForPoint((int) ev.getX(), (int) ev.getY());
-        } else if (action == MotionEvent.ACTION_UP) {
-            cellInfo.cell = null;
-            cellInfo.cellX = -1;
-            cellInfo.cellY = -1;
-            cellInfo.spanX = 0;
-            cellInfo.spanY = 0;
-            setTag(cellInfo);
         }
-
         return false;
     }
 
-    @Override
+    private void clearTagCellInfo() {
+        final CellInfo cellInfo = mCellInfo;
+        cellInfo.cell = null;
+        cellInfo.cellX = -1;
+        cellInfo.cellY = -1;
+        cellInfo.spanX = 0;
+        cellInfo.spanY = 0;
+        setTag(cellInfo);
+    }
+
     public CellInfo getTag() {
         return (CellInfo) super.getTag();
     }
