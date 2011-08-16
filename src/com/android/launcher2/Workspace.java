@@ -3564,7 +3564,7 @@ public class Workspace extends SmoothPagedView
     }
 
     @Override
-    public void syncPageItems(int page) {
+    public void syncPageItems(int page, boolean immediate) {
     }
 
     @Override

@@ -18,15 +18,19 @@ package com.android.launcher2;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewPropertyAnimator;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
@@ -44,6 +48,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     private ViewGroup mTabs;
     private ViewGroup mTabsContainer;
     private AppsCustomizePagedView mAppsCustomizePane;
+    private ImageView mAnimationBuffer;
 
     private boolean mInTransition;
     private boolean mResetAfterTransition;
@@ -89,6 +94,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         mTabs = tabs;
         mTabsContainer = tabsContainer;
         mAppsCustomizePane = appsCustomizePane;
+        mAnimationBuffer = (ImageView) findViewById(R.id.animation_buffer);
         if (tabs == null || mAppsCustomizePane == null) throw new Resources.NotFoundException();
 
         // Configure the tabs content factory to return the same paged view (that we change the
@@ -168,31 +174,53 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             final Resources res = getResources();
             final int duration = res.getInteger(R.integer.config_tabTransitionDuration);
 
-            ObjectAnimator anim = ObjectAnimator.ofFloat(mAppsCustomizePane, "alpha", 0f);
-            anim.setDuration(duration);
-            anim.addListener(new AnimatorListenerAdapter() {
+            // We post a runnable here because there is a delay while the first page is loading and
+            // the feedback from having changed the tab almost feels better than having it stick
+            post(new Runnable() {
                 @Override
-                public void onAnimationStart(android.animation.Animator animation) {
+                public void run() {
+                    // Setup the animation buffer
+                    Bitmap b = Bitmap.createBitmap(mAppsCustomizePane.getMeasuredWidth(),
+                            mAppsCustomizePane.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+                    Canvas c = new Canvas(b);
+                    mAppsCustomizePane.draw(c);
+                    mAppsCustomizePane.setAlpha(0f);
+                    mAnimationBuffer.setImageBitmap(b);
+                    mAnimationBuffer.setAlpha(1f);
+                    mAnimationBuffer.setVisibility(View.VISIBLE);
+                    c.setBitmap(null);
+                    b = null;
+
+                    // Toggle the new content
                     onTabChangedStart();
-                }
-                @Override
-                public void onAnimationEnd(android.animation.Animator animation) {
                     onTabChangedEnd(type);
 
-                    ObjectAnimator anim = ObjectAnimator.ofFloat(mAppsCustomizePane, "alpha", 1f);
-                    anim.setDuration(duration);
-                    anim.addListener(new AnimatorListenerAdapter() {
+                    // Animate the transition
+                    ObjectAnimator outAnim = ObjectAnimator.ofFloat(mAnimationBuffer, "alpha", 0f);
+                    outAnim.addListener(new AnimatorListenerAdapter() {
                         @Override
-                        public void onAnimationEnd(android.animation.Animator animation) {
+                        public void onAnimationEnd(Animator animation) {
+                            mAnimationBuffer.setVisibility(View.GONE);
+                            mAnimationBuffer.setImageBitmap(null);
+                        }
+                    });
+                    ObjectAnimator inAnim = ObjectAnimator.ofFloat(mAppsCustomizePane, "alpha", 1f);
+                    inAnim.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
                             if (!LauncherApplication.isScreenLarge()) {
                                 mAppsCustomizePane.flashScrollingIndicator();
                             }
+                            mAppsCustomizePane.loadAssociatedPages(
+                                    mAppsCustomizePane.getCurrentPage());
                         }
                     });
-                    anim.start();
+                    AnimatorSet animSet = new AnimatorSet();
+                    animSet.playTogether(outAnim, inAnim);
+                    animSet.setDuration(duration);
+                    animSet.start();
                 }
             });
-            anim.start();
         }
     }
 

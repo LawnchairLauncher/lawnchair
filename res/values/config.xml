@@ -31,7 +31,7 @@
     <integer name="config_appsCustomizeWorkspaceShrinkTime">1000</integer>
 
     <!-- Tab transition animation duration -->
-    <integer name="config_tabTransitionDuration">100</integer>
+    <integer name="config_tabTransitionDuration">200</integer>
 
     <!-- The slope, in percent, of the drag movement needed to drag an item out of
          AppsCustomize (y / x * 100%)  -->

@@ -63,6 +63,11 @@
                 launcher:widgetCountX="@integer/apps_customize_widget_cell_count_x"
                 launcher:widgetCountY="@integer/apps_customize_widget_cell_count_y"
                 launcher:maxGap="@dimen/workspace_max_gap" />
+            <ImageView
+                android:id="@+id/animation_buffer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
 
             <include
                 android:id="@+id/paged_view_indicator"

@@ -669,6 +669,8 @@ public final class Launcher extends Activity
                 mAppsCustomizeContent.setContentType(
                         mAppsCustomizeTabHost.getContentTypeForTabTag(curTab));
                 mAppsCustomizeTabHost.setCurrentTabByTag(curTab);
+                mAppsCustomizeContent.loadAssociatedPages(
+                        mAppsCustomizeContent.getCurrentPage());
             }
 
             // Note: currently we do not restore the page for the AppsCustomize pane because the

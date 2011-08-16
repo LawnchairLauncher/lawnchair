@@ -188,6 +188,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     // Previews & outlines
     ArrayList<AppsCustomizeAsyncTask> mRunningTasks;
     private HolographicOutlineHelper mHolographicOutlineHelper;
+    private static final int sPageSleepDelay = 200;
 
     public AppsCustomizePagedView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -489,7 +490,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     public void setContentType(ContentType type) {
         mContentType = type;
-        invalidatePageData(0);
+        invalidatePageData(0, true);
     }
 
     public boolean isContentType(ContentType type) {
@@ -536,7 +537,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             addView(layout);
         }
     }
-    public void syncAppsPageItems(int page) {
+    public void syncAppsPageItems(int page, boolean immediate) {
         // ensure that we have the right number of items on the pages
         int numPages = getPageCount();
         int numCells = mCellCountX * mCellCountY;
@@ -592,6 +593,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             return Process.THREAD_PRIORITY_DEFAULT;
         }
     }
+    private int getSleepForPage(int page) {
+        int pageDiff = Math.abs(page - mCurrentPage) - 1;
+        return Math.max(0, pageDiff * sPageSleepDelay);
+    }
     /**
      * Creates and executes a new AsyncTask to load a page of widget previews.
      */
@@ -612,37 +617,16 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             }
         }
 
+        // We introduce a slight delay to order the loading of side pages so that we don't thrash
+        final int sleepMs = getSleepForPage(page);
         AsyncTaskPageData pageData = new AsyncTaskPageData(page, widgets, cellWidth, cellHeight,
             cellCountX, new AsyncTaskCallback() {
                 @Override
                 public void run(AppsCustomizeAsyncTask task, AsyncTaskPageData data) {
-                    // Ensure that this task starts running at the correct priority
-                    task.syncThreadPriority();
-
-                    // Load each of the widget/shortcut previews
-                    ArrayList<Object> items = data.items;
-                    ArrayList<Bitmap> images = data.generatedImages;
-                    int count = items.size();
-                    int cellWidth = data.cellWidth;
-                    int cellHeight = data.cellHeight;
-                    for (int i = 0; i < count && !task.isCancelled(); ++i) {
-                        // Before work on each item, ensure that this task is running at the correct
-                        // priority
-                        task.syncThreadPriority();
-
-                        Object rawInfo = items.get(i);
-                        if (rawInfo instanceof AppWidgetProviderInfo) {
-                            AppWidgetProviderInfo info = (AppWidgetProviderInfo) rawInfo;
-                            int[] cellSpans = CellLayout.rectToCell(getResources(),
-                                    info.minWidth, info.minHeight, null);
-                            images.add(getWidgetPreview(info, cellSpans[0],cellSpans[1],
-                                    cellWidth, cellHeight));
-                        } else if (rawInfo instanceof ResolveInfo) {
-                            // Fill in the shortcuts information
-                            ResolveInfo info = (ResolveInfo) rawInfo;
-                            images.add(getShortcutPreview(info, cellWidth, cellHeight));
-                        }
-                    }
+                    try {
+                        Thread.sleep(sleepMs);
+                    } catch (Exception e) {}
+                    loadWidgetPreviewsInBackground(task, data);
                 }
             },
             new AsyncTaskCallback() {
@@ -863,7 +847,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             addView(layout);
         }
     }
-    public void syncWidgetPageItems(int page) {
+    public void syncWidgetPageItems(int page, boolean immediate) {
         int numItemsPerPage = mWidgetCountX * mWidgetCountY;
         int contentWidth = mWidgetSpacingLayout.getContentWidth();
         int contentHeight = mWidgetSpacingLayout.getContentHeight();
@@ -880,7 +864,50 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             items.add(mWidgets.get(i));
         }
 
-        prepareLoadWidgetPreviewsTask(page, items, cellWidth, cellHeight, mWidgetCountX);
+        if (immediate) {
+            AsyncTaskPageData data = new AsyncTaskPageData(page, items, cellWidth, cellHeight,
+                    mWidgetCountX, null, null);
+            loadWidgetPreviewsInBackground(null, data);
+            onSyncWidgetPageItems(data);
+        } else {
+            prepareLoadWidgetPreviewsTask(page, items, cellWidth, cellHeight, mWidgetCountX);
+        }
+    }
+    private void loadWidgetPreviewsInBackground(AppsCustomizeAsyncTask task,
+            AsyncTaskPageData data) {
+        if (task != null) {
+            // Ensure that this task starts running at the correct priority
+            task.syncThreadPriority();
+        }
+
+        // Load each of the widget/shortcut previews
+        ArrayList<Object> items = data.items;
+        ArrayList<Bitmap> images = data.generatedImages;
+        int count = items.size();
+        int cellWidth = data.cellWidth;
+        int cellHeight = data.cellHeight;
+        for (int i = 0; i < count; ++i) {
+            if (task != null) {
+                // Ensure we haven't been cancelled yet
+                if (task.isCancelled()) break;
+                // Before work on each item, ensure that this task is running at the correct
+                // priority
+                task.syncThreadPriority();
+            }
+
+            Object rawInfo = items.get(i);
+            if (rawInfo instanceof AppWidgetProviderInfo) {
+                AppWidgetProviderInfo info = (AppWidgetProviderInfo) rawInfo;
+                int[] cellSpans = CellLayout.rectToCell(getResources(),
+                        info.minWidth, info.minHeight, null);
+                images.add(getWidgetPreview(info, cellSpans[0],cellSpans[1],
+                        cellWidth, cellHeight));
+            } else if (rawInfo instanceof ResolveInfo) {
+                // Fill in the shortcuts information
+                ResolveInfo info = (ResolveInfo) rawInfo;
+                images.add(getShortcutPreview(info, cellWidth, cellHeight));
+            }
+        }
     }
     private void onSyncWidgetPageItems(AsyncTaskPageData data) {
         int page = data.page;
@@ -991,13 +1018,13 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
     }
     @Override
-    public void syncPageItems(int page) {
+    public void syncPageItems(int page, boolean immediate) {
         switch (mContentType) {
         case Applications:
-            syncAppsPageItems(page);
+            syncAppsPageItems(page, immediate);
             break;
         case Widgets:
-            syncWidgetPageItems(page);
+            syncWidgetPageItems(page, immediate);
             break;
         }
     }
