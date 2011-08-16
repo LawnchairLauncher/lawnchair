@@ -1494,7 +1494,10 @@ public abstract class PagedView extends ViewGroup {
         };
     }
 
-    public void loadAssociatedPages(int page) {
+    protected void loadAssociatedPages(int page) {
+        loadAssociatedPages(page, false);
+    }
+    protected void loadAssociatedPages(int page, boolean immediateAndOnly) {
         if (mContentIsRefreshable) {
             final int count = getChildCount();
             if (page < count) {
@@ -1503,11 +1506,14 @@ public abstract class PagedView extends ViewGroup {
                 if (DEBUG) Log.d(TAG, "loadAssociatedPages: " + lowerPageBound + "/"
                         + upperPageBound);
                 for (int i = 0; i < count; ++i) {
+                    if ((i != page) && immediateAndOnly) {
+                        continue;
+                    }
                     Page layout = (Page) getChildAt(i);
                     final int childCount = layout.getPageChildCount();
                     if (lowerPageBound <= i && i <= upperPageBound) {
                         if (mDirtyPageContent.get(i)) {
-                            syncPageItems(i);
+                            syncPageItems(i, (i == page) && immediateAndOnly);
                             mDirtyPageContent.set(i, false);
                         }
                     } else {
@@ -1607,7 +1613,7 @@ public abstract class PagedView extends ViewGroup {
      * This method is called to synchronize the items that are on a particular page.  If views on
      * the page can be reused, then they should be updated within this method.
      */
-    public abstract void syncPageItems(int page);
+    public abstract void syncPageItems(int page, boolean immediate);
 
     protected void postInvalidatePageData(final boolean clearViews) {
         post(new Runnable() {
@@ -1622,9 +1628,12 @@ public abstract class PagedView extends ViewGroup {
     }
 
     protected void invalidatePageData() {
-        invalidatePageData(-1);
+        invalidatePageData(-1, false);
     }
     protected void invalidatePageData(int currentPage) {
+        invalidatePageData(currentPage, false);
+    }
+    protected void invalidatePageData(int currentPage, boolean immediateAndOnly) {
         if (!mIsDataReady) {
             return;
         }
@@ -1651,7 +1660,7 @@ public abstract class PagedView extends ViewGroup {
             }
 
             // Load any pages that are necessary for the current window of views
-            loadAssociatedPages(mCurrentPage);
+            loadAssociatedPages(mCurrentPage, immediateAndOnly);
             mDirtyPageAlpha = true;
             updateAdjacentPagesAlpha();
             requestLayout();
