@@ -324,6 +324,19 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     public void onPackagesUpdated() {
+        // TODO: this isn't ideal, but we actually need to delay here. This call is triggered
+        // by a broadcast receiver, and in order for it to work correctly, we need to know that
+        // the AppWidgetService has already received and processed the same broadcast. Since there
+        // is no guarantee about ordering of broadcast receipt, we just delay here. Ideally,
+        // we should have a more precise way of ensuring the AppWidgetService is up to date.
+        postDelayed(new Runnable() {
+           public void run() {
+               updatePackages();
+           }
+        }, 500);
+    }
+
+    public void updatePackages() {
         // Get the list of widgets and shortcuts
         boolean wasEmpty = mWidgets.isEmpty();
         mWidgets.clear();
