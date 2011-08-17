@@ -661,11 +661,13 @@ public class LauncherModel extends BroadcastReceiver {
         private boolean mStopped;
         private boolean mLoadAndBindStepFinished;
         private HashMap<Object, CharSequence> mLabelCache;
+        private HashMap<Object, byte[]> mDbIconCache;
 
         LoaderTask(Context context, boolean isLaunching) {
             mContext = context;
             mIsLaunching = isLaunching;
             mLabelCache = new HashMap<Object, CharSequence>();
+            mDbIconCache = new HashMap<Object, byte[]>();
         }
 
         boolean isLaunching() {
@@ -731,10 +733,15 @@ public class LauncherModel extends BroadcastReceiver {
             final Callbacks cbk = mCallbacks.get();
             final boolean loadWorkspaceFirst = cbk != null ? (!cbk.isAllAppsVisible()) : true;
 
+            // We update the icons in the database afterwards in case they have changed
+            mDbIconCache.clear();
+
             keep_running: {
                 // Elevate priority when Home launches for the first time to avoid
                 // starving at boot time. Staring at a blank home is not cool.
                 synchronized (mLock) {
+                    if (DEBUG_LOADERS) Log.d(TAG, "Setting thread priority to " +
+                            (mIsLaunching ? "DEFAULT" : "BACKGROUND"));
                     android.os.Process.setThreadPriority(mIsLaunching
                             ? Process.THREAD_PRIORITY_DEFAULT : Process.THREAD_PRIORITY_BACKGROUND);
                 }
@@ -754,6 +761,7 @@ public class LauncherModel extends BroadcastReceiver {
                 // settled down.
                 synchronized (mLock) {
                     if (mIsLaunching) {
+                        if (DEBUG_LOADERS) Log.d(TAG, "Setting thread priority to BACKGROUND");
                         android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
                     }
                 }
@@ -768,6 +776,14 @@ public class LauncherModel extends BroadcastReceiver {
                     loadAndBindWorkspace();
                 }
             }
+
+
+            // Update the saved icons if necessary
+            if (DEBUG_LOADERS) Log.d(TAG, "Comparing loaded icons to database icons");
+            for (Object key : mDbIconCache.keySet()) {
+                updateSavedIcon(mContext, (ShortcutInfo) key, mDbIconCache.get(key));
+            }
+            mDbIconCache.clear();
 
             // Clear out this reference, otherwise we end up holding it until all of the
             // callback runnables are done.
@@ -970,7 +986,7 @@ public class LauncherModel extends BroadcastReceiver {
 
                                 // now that we've loaded everthing re-save it with the
                                 // icon in case it disappears somehow.
-                                updateSavedIcon(context, info, c, iconIndex);
+                                queueIconToBeChecked(mDbIconCache, info, c, iconIndex);
                             } else {
                                 // Failed to load the shortcut, probably because the
                                 // activity manager couldn't resolve it (maybe the app
@@ -1522,7 +1538,7 @@ public class LauncherModel extends BroadcastReceiver {
         // have icons anyway.
         final ResolveInfo resolveInfo = manager.resolveActivity(intent, 0);
         if (resolveInfo != null) {
-            icon = mIconCache.getIcon(componentName, resolveInfo);
+            icon = mIconCache.getIcon(componentName, resolveInfo, labelCache);
         }
         // the db
         if (icon == null) {
@@ -1749,10 +1765,11 @@ public class LauncherModel extends BroadcastReceiver {
         return info;
     }
 
-    void updateSavedIcon(Context context, ShortcutInfo info, Cursor c, int iconIndex) {
+    boolean queueIconToBeChecked(HashMap<Object, byte[]> cache, ShortcutInfo info, Cursor c,
+            int iconIndex) {
         // If apps can't be on SD, don't even bother.
         if (!mAppsCanBeOnExternalStorage) {
-            return;
+            return false;
         }
         // If this icon doesn't have a custom icon, check to see
         // what's stored in the DB, and if it doesn't match what
@@ -1761,25 +1778,29 @@ public class LauncherModel extends BroadcastReceiver {
         // package manager can't find an icon (for example because
         // the app is on SD) then we can use that instead.
         if (!info.customIcon && !info.usingFallbackIcon) {
-            boolean needSave;
-            byte[] data = c.getBlob(iconIndex);
-            try {
-                if (data != null) {
-                    Bitmap saved = BitmapFactory.decodeByteArray(data, 0, data.length);
-                    Bitmap loaded = info.getIcon(mIconCache);
-                    needSave = !saved.sameAs(loaded);
-                } else {
-                    needSave = true;
-                }
-            } catch (Exception e) {
+            cache.put(info, c.getBlob(iconIndex));
+            return true;
+        }
+        return false;
+    }
+    void updateSavedIcon(Context context, ShortcutInfo info, byte[] data) {
+        boolean needSave = false;
+        try {
+            if (data != null) {
+                Bitmap saved = BitmapFactory.decodeByteArray(data, 0, data.length);
+                Bitmap loaded = info.getIcon(mIconCache);
+                needSave = !saved.sameAs(loaded);
+            } else {
                 needSave = true;
             }
-            if (needSave) {
-                Log.d(TAG, "going to save icon bitmap for info=" + info);
-                // This is slower than is ideal, but this only happens once
-                // or when the app is updated with a new icon.
-                updateItemInDatabase(context, info);
-            }
+        } catch (Exception e) {
+            needSave = true;
+        }
+        if (needSave) {
+            Log.d(TAG, "going to save icon bitmap for info=" + info);
+            // This is slower than is ideal, but this only happens once
+            // or when the app is updated with a new icon.
+            updateItemInDatabase(context, info);
         }
     }
 
