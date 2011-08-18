@@ -160,13 +160,14 @@ public class IconCache {
         }
     }
 
-    public Bitmap getIcon(ComponentName component, ResolveInfo resolveInfo) {
+    public Bitmap getIcon(ComponentName component, ResolveInfo resolveInfo,
+            HashMap<Object, CharSequence> labelCache) {
         synchronized (mCache) {
             if (resolveInfo == null || component == null) {
                 return null;
             }
 
-            CacheEntry entry = cacheLocked(component, resolveInfo, null);
+            CacheEntry entry = cacheLocked(component, resolveInfo, labelCache);
             return entry.icon;
         }
     }
