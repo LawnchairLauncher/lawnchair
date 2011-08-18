@@ -1539,12 +1539,13 @@ public class LauncherModel extends BroadcastReceiver {
 
         // from the resource
         if (resolveInfo != null) {
-            if (labelCache != null && labelCache.containsKey(resolveInfo)) {
-                info.title = labelCache.get(resolveInfo);
+            ComponentName key = LauncherModel.getComponentNameFromResolveInfo(resolveInfo);
+            if (labelCache != null && labelCache.containsKey(key)) {
+                info.title = labelCache.get(key);
             } else {
                 info.title = resolveInfo.activityInfo.loadLabel(manager);
                 if (labelCache != null) {
-                    labelCache.put(resolveInfo, info.title);
+                    labelCache.put(key, info.title);
                 }
             }
         }
@@ -1823,6 +1824,13 @@ public class LauncherModel extends BroadcastReceiver {
             return sCollator.compare(a.label.toString(), b.label.toString());
         }
     };
+    static ComponentName getComponentNameFromResolveInfo(ResolveInfo info) {
+        if (info.activityInfo != null) {
+            return new ComponentName(info.activityInfo.packageName, info.activityInfo.name);
+        } else {
+            return new ComponentName(info.serviceInfo.packageName, info.serviceInfo.name);
+        }
+    }
     public static class ShortcutNameComparator implements Comparator<ResolveInfo> {
         private PackageManager mPackageManager;
         private HashMap<Object, CharSequence> mLabelCache;
@@ -1836,19 +1844,21 @@ public class LauncherModel extends BroadcastReceiver {
         }
         public final int compare(ResolveInfo a, ResolveInfo b) {
             CharSequence labelA, labelB;
-            if (mLabelCache.containsKey(a)) {
-                labelA = mLabelCache.get(a);
+            ComponentName keyA = LauncherModel.getComponentNameFromResolveInfo(a);
+            ComponentName keyB = LauncherModel.getComponentNameFromResolveInfo(b);
+            if (mLabelCache.containsKey(keyA)) {
+                labelA = mLabelCache.get(keyA);
             } else {
                 labelA = a.loadLabel(mPackageManager).toString();
 
-                mLabelCache.put(a, labelA);
+                mLabelCache.put(keyA, labelA);
             }
-            if (mLabelCache.containsKey(b)) {
-                labelB = mLabelCache.get(b);
+            if (mLabelCache.containsKey(keyB)) {
+                labelB = mLabelCache.get(keyB);
             } else {
                 labelB = b.loadLabel(mPackageManager).toString();
 
-                mLabelCache.put(b, labelB);
+                mLabelCache.put(keyB, labelB);
             }
             return sCollator.compare(labelA, labelB);
         }
