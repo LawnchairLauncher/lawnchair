@@ -673,8 +673,8 @@ public final class Launcher extends Activity
                         mAppsCustomizeContent.getCurrentPage());
             }
 
-            // Note: currently we do not restore the page for the AppsCustomize pane because the
-            // change in layout can drastically affect the saved page index
+            int currentIndex = savedState.getInt("apps_customize_currentIndex");
+            mAppsCustomizeContent.restorePageForIndex(currentIndex);
         }
     }
 
@@ -1145,6 +1145,8 @@ public final class Launcher extends Activity
             if (currentTabTag != null) {
                 outState.putString("apps_customize_currentTab", currentTabTag);
             }
+            int currentIndex = mAppsCustomizeContent.getSaveInstanceStateIndex();
+            outState.putInt("apps_customize_currentIndex", currentIndex);
         }
     }
 

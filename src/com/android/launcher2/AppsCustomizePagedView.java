@@ -164,6 +164,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private final LayoutInflater mLayoutInflater;
     private final PackageManager mPackageManager;
 
+    // Save and Restore
+    private int mSaveInstanceStateItemIndex = -1;
+    private int mRestorePage = -1;
+
     // Content
     private ContentType mContentType;
     private ArrayList<ApplicationInfo> mApps;
@@ -253,6 +257,58 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
     }
 
+    /** Returns the item index of the center item on this page so that we can restore to this
+     *  item index when we rotate. */
+    private int getMiddleComponentIndexOnCurrentPage() {
+        int i = -1;
+        if (getPageCount() > 0) {
+            int currentPage = getCurrentPage();
+            switch (mContentType) {
+            case Applications: {
+                PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(currentPage);
+                PagedViewCellLayoutChildren childrenLayout = layout.getChildrenLayout();
+                int numItemsPerPage = mCellCountX * mCellCountY;
+                int childCount = childrenLayout.getChildCount();
+                if (childCount > 0) {
+                    i = (currentPage * numItemsPerPage) + (childCount / 2);
+                }}
+                break;
+            case Widgets: {
+                PagedViewGridLayout layout = (PagedViewGridLayout) getChildAt(currentPage);
+                int numItemsPerPage = mWidgetCountX * mWidgetCountY;
+                int childCount = layout.getChildCount();
+                if (childCount > 0) {
+                    i = (currentPage * numItemsPerPage) + (childCount / 2);
+                }}
+                break;
+            }
+        }
+        return i;
+    }
+
+    /** Get the index of the item to restore to if we need to restore the current page. */
+    int getSaveInstanceStateIndex() {
+        if (mSaveInstanceStateItemIndex == -1) {
+            mSaveInstanceStateItemIndex = getMiddleComponentIndexOnCurrentPage();
+        }
+        return mSaveInstanceStateItemIndex;
+    }
+
+    /** Returns the page in the current orientation which is expected to contain the specified
+     *  item index. */
+    int getPageForComponent(int index) {
+        switch (mContentType) {
+        case Applications: {
+            int numItemsPerPage = mCellCountX * mCellCountY;
+            return (index / numItemsPerPage);
+        }
+        case Widgets: {
+            int numItemsPerPage = mWidgetCountX * mWidgetCountY;
+            return (index / numItemsPerPage);
+        }}
+        return -1;
+    }
+
     /**
      * This differs from isDataReady as this is the test done if isDataReady is not set.
      */
@@ -260,6 +316,20 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // We only do this test once, and we default to the Applications page, so we only really
         // have to wait for there to be apps.
         return !mApps.isEmpty();
+    }
+
+    /** Restores the page for an item at the specified index */
+    void restorePageForIndex(int index) {
+        if (index < 0) return;
+
+        int page = getPageForComponent(index);
+        if (page > -1) {
+            if (getChildCount() > 0) {
+                invalidatePageData(page);
+            } else {
+                mRestorePage = page;
+            }
+        }
     }
 
     protected void onDataReady(int width, int height) {
@@ -289,7 +359,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         int heightSpec = MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.AT_MOST);
         mWidgetSpacingLayout.measure(widthSpec, heightSpec);
         mContentWidth = mWidgetSpacingLayout.getContentWidth();
-        invalidatePageData();
+        invalidatePageData(Math.max(0, mRestorePage));
+        mRestorePage = -1;
     }
 
     @Override
@@ -1076,6 +1147,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         setChildrenDrawnWithCacheEnabled(false);
         */
         super.onPageEndMoving();
+
+        // We reset the save index when we change pages so that it will be recalculated on next
+        // rotation
+        mSaveInstanceStateItemIndex = -1;
     }
 
     /*

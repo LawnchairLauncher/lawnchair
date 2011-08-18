@@ -192,6 +192,10 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         return mChildren.getChildCount();
     }
 
+    public PagedViewCellLayoutChildren getChildrenLayout() {
+        return mChildren;
+    }
+
     @Override
     public View getChildOnPageAt(int i) {
         return mChildren.getChildAt(i);

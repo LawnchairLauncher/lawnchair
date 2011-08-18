@@ -1649,7 +1649,7 @@ public abstract class PagedView extends ViewGroup {
 
             // Set a new page as the current page if necessary
             if (currentPage > -1) {
-                setCurrentPage(currentPage);
+                setCurrentPage(Math.min(getPageCount() - 1, currentPage));
             }
 
             // Mark each of the pages as dirty
