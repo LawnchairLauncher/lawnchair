@@ -83,10 +83,10 @@
     <dimen name="dragViewOffsetY">-8dp</dimen>
 
     <!-- Padding applied to AppWidgets -->
-    <dimen name="app_widget_padding_left">0dp</dimen>
-    <dimen name="app_widget_padding_right">0dp</dimen>
-    <dimen name="app_widget_padding_top">0dp</dimen>
-    <dimen name="app_widget_padding_bottom">0dp</dimen>
+    <dimen name="app_widget_padding_left">3dp</dimen>
+    <dimen name="app_widget_padding_right">3dp</dimen>
+    <dimen name="app_widget_padding_top">1dp</dimen>
+    <dimen name="app_widget_padding_bottom">1dp</dimen>
 
 <!-- Folders -->
     <!-- The size of the image which sits behind the preview of the folder contents -->
