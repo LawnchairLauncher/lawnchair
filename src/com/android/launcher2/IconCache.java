@@ -184,12 +184,13 @@ public class IconCache {
 
             mCache.put(componentName, entry);
 
-            if (labelCache != null && labelCache.containsKey(info)) {
-                entry.title = labelCache.get(info).toString();
+            ComponentName key = LauncherModel.getComponentNameFromResolveInfo(info);
+            if (labelCache != null && labelCache.containsKey(key)) {
+                entry.title = labelCache.get(key).toString();
             } else {
                 entry.title = info.loadLabel(mPackageManager).toString();
                 if (labelCache != null) {
-                    labelCache.put(info, entry.title);
+                    labelCache.put(key, entry.title);
                 }
             }
             if (entry.title == null) {
