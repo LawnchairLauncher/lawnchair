@@ -157,19 +157,14 @@ public class Workspace extends SmoothPagedView
     // in all apps or customize mode)
 
     enum State { NORMAL, SPRING_LOADED, SMALL };
-    private State mState;
+    private State mState = State.NORMAL;
     private boolean mIsSwitchingState = false;
-
+    boolean mEnableSyncWallpaper = false;
     private boolean mSwitchStateAfterFirstLayout = false;
     private State mStateAfterFirstLayout;
 
     private AnimatorSet mAnimator;
-    private AnimatorListener mShrinkAnimationListener;
-    private AnimatorListener mUnshrinkAnimationListener;
-    // Working around the face that cancelled animations may not actually be cancelled if they
-    // are cancelled before starting
-    private boolean mShrinkAnimationEnabled;
-    private boolean mUnshrinkAnimationEnabled;
+    private AnimatorListener mChangeStateAnimationListener;
 
     boolean mAnimatingViewIntoPlace = false;
     boolean mIsDragOccuring = false;
@@ -341,6 +336,7 @@ public class Workspace extends SmoothPagedView
         mIconCache = app.getIconCache();
         mExternalDragOutlinePaint.setAntiAlias(true);
         setWillNotDraw(false);
+        setChildrenDrawnWithCacheEnabled(true);
 
         try {
             final Resources res = getResources();
@@ -349,7 +345,7 @@ public class Workspace extends SmoothPagedView
             // In this case, we will skip drawing background protection
         }
 
-        mUnshrinkAnimationListener = new AnimatorListenerAdapter() {
+        mChangeStateAnimationListener = new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
                 mIsSwitchingState = true;
@@ -358,24 +354,12 @@ public class Workspace extends SmoothPagedView
             @Override
             public void onAnimationEnd(Animator animation) {
                 mIsSwitchingState = false;
-                mSyncWallpaperOffsetWithScroll = true;
                 mWallpaperOffset.setOverrideHorizontalCatchupConstant(false);
                 mAnimator = null;
                 updateChildrenLayersEnabled();
             }
         };
-        mShrinkAnimationListener = new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                mIsSwitchingState = true;
-            }
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mIsSwitchingState = false;
-                mWallpaperOffset.setOverrideHorizontalCatchupConstant(false);
-                mAnimator = null;
-            }
-        };
+
         mSnapVelocity = 600;
         mWallpaperOffset = new WallpaperOffsetInterpolator();
     }
@@ -1097,7 +1081,7 @@ public class Workspace extends SmoothPagedView
                 scrollProgress = Math.min(scrollProgress, 1.0f);
                 scrollProgress = Math.max(scrollProgress, -1.0f);
 
-                if (mState != State.SPRING_LOADED) {
+                if (!isSmall()) {
                     // If the current page (i) is being overscrolled, we use a different
                     // set of rules for setting the background alpha multiplier.
                     if ((mScrollX < 0 && i == 0) || (mScrollX > mMaxScrollX &&
@@ -1146,7 +1130,7 @@ public class Workspace extends SmoothPagedView
             // post this to avoid a stack overflow / tangled onLayout calls
             post(new Runnable() {
                 public void run() {
-                    shrink(mStateAfterFirstLayout, false);
+                    changeState(mStateAfterFirstLayout, false);
                 }
             });
         }
@@ -1264,8 +1248,7 @@ public class Workspace extends SmoothPagedView
     }
 
     private void updateChildrenLayersEnabled() {
-        boolean small =
-            isSmall() || mIsSwitchingState || mState == State.SPRING_LOADED;
+        boolean small = isSmall() || mIsSwitchingState;
         boolean dragging = mAnimatingViewIntoPlace || mIsDragOccuring;
         boolean enableChildrenLayers = small || dragging || isPageMoving();
 
@@ -1289,228 +1272,6 @@ public class Workspace extends SmoothPagedView
                 ev.getAction() == MotionEvent.ACTION_UP
                         ? WallpaperManager.COMMAND_TAP : WallpaperManager.COMMAND_SECONDARY_TAP,
                 position[0], position[1], 0, null);
-    }
-
-    private float getYScaleForScreen(int screen) {
-        int x = Math.abs(screen - 2);
-
-        // TODO: This should be generalized for use with arbitrary rotation angles.
-        switch(x) {
-            case 0: return EXTRA_SCALE_FACTOR_0;
-            case 1: return EXTRA_SCALE_FACTOR_1;
-            case 2: return EXTRA_SCALE_FACTOR_2;
-        }
-        return 1.0f;
-    }
-
-    public void shrink(State shrinkState) {
-        shrink(shrinkState, true);
-    }
-
-    // we use this to shrink the workspace for the all apps view and the customize view
-    public void shrink(final State shrinkState, boolean animated) {
-        if (mFirstLayout) {
-            // (mFirstLayout == "first layout has not happened yet")
-            // if we get a call to shrink() as part of our initialization (for example, if
-            // Launcher is started in All Apps mode) then we need to wait for a layout call
-            // to get our width so we can layout the mini-screen views correctly
-            mSwitchStateAfterFirstLayout = true;
-            mStateAfterFirstLayout = shrinkState;
-            return;
-        }
-
-        // Stop any scrolling, move to the current page right away
-        setCurrentPage((mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage);
-
-        CellLayout currentPage = (CellLayout) getChildAt(mCurrentPage);
-        if (currentPage == null) {
-            Log.w(TAG, "currentPage is NULL! mCurrentPage " + mCurrentPage
-                    + " mNextPage " + mNextPage);
-            return;
-        }
-        if (currentPage.getBackgroundAlphaMultiplier() < 1.0f) {
-            currentPage.setBackgroundAlpha(0.0f);
-        }
-        currentPage.setBackgroundAlphaMultiplier(1.0f);
-
-        mState = shrinkState;
-        updateChildrenLayersEnabled();
-
-        // we intercept and reject all touch events when we're small, so be sure to reset the state
-        mTouchState = TOUCH_STATE_REST;
-        mActivePointerId = INVALID_POINTER;
-
-        final Resources res = getResources();
-        final int screenWidth = getWidth();
-        final int screenHeight = getHeight();
-
-        // How much the workspace shrinks when we enter all apps or customization mode
-        final float shrinkFactor = res.getInteger(R.integer.config_workspaceShrinkPercent) / 100.0f;
-
-        // Making the assumption that all pages have the same width as the 0th
-        final int pageWidth = getChildAt(0).getMeasuredWidth();
-        final int pageHeight = getChildAt(0).getMeasuredHeight();
-
-        final int scaledPageWidth = (int) (shrinkFactor * pageWidth);
-        final int scaledPageHeight = (int) (shrinkFactor * pageHeight);
-        final float extraScaledSpacing = res.getDimension(R.dimen.smallScreenExtraSpacing);
-
-        final int screenCount = getChildCount();
-        float totalWidth = screenCount * scaledPageWidth + (screenCount - 1) * extraScaledSpacing;
-
-        // We shrink and disappear to nothing
-        boolean isPortrait = getMeasuredHeight() > getMeasuredWidth();
-        float y = screenHeight - scaledPageHeight - (isPortrait ?
-                getResources().getDimension(R.dimen.allAppsSmallScreenVerticalMarginPortrait) :
-                getResources().getDimension(R.dimen.allAppsSmallScreenVerticalMarginLandscape));
-        float finalAlpha = 0.0f;
-
-        int duration = res.getInteger(R.integer.config_appsCustomizeWorkspaceShrinkTime);
-
-        // We animate all the screens to the centered position in workspace
-        // At the same time, the screens become greyed/dimmed
-
-        // newX is initialized to the left-most position of the centered screens
-        float x = mScroller.getFinalX() + screenWidth / 2 - totalWidth / 2;
-
-        // We are going to scale about the center of the view, so we need to adjust the positions
-        // of the views accordingly
-        x -= (pageWidth - scaledPageWidth) / 2.0f;
-        y -= (pageHeight - scaledPageHeight) / 2.0f;
-
-        if (mAnimator != null) {
-            mAnimator.cancel();
-        }
-
-        mAnimator = new AnimatorSet();
-        // Workaround the AnimatorSet cancel bug...
-        mUnshrinkAnimationEnabled = false;
-        mShrinkAnimationEnabled = true;
-
-        initAnimationArrays();
-
-        for (int i = 0; i < screenCount; i++) {
-            final CellLayout cl = (CellLayout) getChildAt(i);
-
-            float rotation = (-i + 2) * WORKSPACE_ROTATION;
-            float rotationScaleX = (float) (1.0f / Math.cos(Math.PI * rotation / 180.0f));
-            float rotationScaleY = getYScaleForScreen(i);
-
-            mOldAlphas[i] = cl.getAlpha();
-            mNewAlphas[i] = finalAlpha;
-            if (animated && (mOldAlphas[i] != 0f || mNewAlphas[i] != 0f)) {
-                // if the CellLayout will be visible during the animation, force building its
-                // hardware layer immediately so we don't see a blip later in the animation
-                cl.buildChildrenLayer();
-            }
-            if (animated) {
-                mOldTranslationXs[i] = cl.getX();
-                mOldTranslationYs[i] = cl.getY();
-                mOldScaleXs[i] = cl.getScaleX();
-                mOldScaleYs[i] = cl.getScaleY();
-                mOldBackgroundAlphas[i] = cl.getBackgroundAlpha();
-                mOldRotationYs[i] = cl.getRotationY();
-                mNewTranslationXs[i] = x;
-                mNewTranslationYs[i] = y;
-                mNewScaleXs[i] = shrinkFactor * rotationScaleX;
-                mNewScaleYs[i] = shrinkFactor * rotationScaleY;
-                mNewBackgroundAlphas[i] = finalAlpha;
-                mNewRotationYs[i] = rotation;
-            } else {
-                cl.setX((int)x);
-                cl.setY((int)y);
-                cl.setScaleX(shrinkFactor * rotationScaleX);
-                cl.setScaleY(shrinkFactor * rotationScaleY);
-                cl.setBackgroundAlpha(finalAlpha);
-                cl.setFastAlpha(finalAlpha);
-                cl.setRotationY(rotation);
-                mShrinkAnimationListener.onAnimationEnd(null);
-            }
-            // increment newX for the next screen
-            x += scaledPageWidth + extraScaledSpacing;
-        }
-
-        float wallpaperOffset = 0.5f;
-        Display display = mLauncher.getWindowManager().getDefaultDisplay();
-        int wallpaperTravelHeight = (int) (display.getHeight() *
-                wallpaperTravelToScreenHeightRatio(display.getWidth(), display.getHeight()));
-        float offsetFromCenter = (wallpaperTravelHeight / (float) mWallpaperHeight) / 2f;
-        boolean isLandscape = display.getWidth() > display.getHeight();
-
-        // on phones, don't scroll the wallpaper horizontally or vertically when switching
-        // to/from all apps
-        final boolean enableWallpaperEffects =
-            isHardwareAccelerated() && LauncherApplication.isScreenLarge();
-        if (enableWallpaperEffects) {
-            switch (shrinkState) {
-                // animating in
-                case SPRING_LOADED:
-                    wallpaperOffset = 0.5f;
-                    mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.34f : 0.32f);
-                    break;
-                case SMALL:
-                    // allapps
-                    wallpaperOffset = 0.5f - offsetFromCenter;
-                    mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.34f : 0.32f);
-                    break;
-            }
-        }
-
-        setLayoutScale(1.0f);
-        if (animated) {
-            if (enableWallpaperEffects) {
-                mWallpaperOffset.setHorizontalCatchupConstant(0.46f);
-                mWallpaperOffset.setOverrideHorizontalCatchupConstant(true);
-            }
-
-            mSyncWallpaperOffsetWithScroll = false;
-
-            ValueAnimator animWithInterpolator =
-                ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
-            animWithInterpolator.setInterpolator(mZoomOutInterpolator);
-
-            final float oldHorizontalWallpaperOffset = getHorizontalWallpaperOffset();
-            final float oldVerticalWallpaperOffset = getVerticalWallpaperOffset();
-            final float newHorizontalWallpaperOffset = 0.5f;
-            final float newVerticalWallpaperOffset = wallpaperOffset;
-            animWithInterpolator.addUpdateListener(new LauncherAnimatorUpdateListener() {
-                public void onAnimationUpdate(float a, float b) {
-                    if (!mShrinkAnimationEnabled) return;
-                    mTransitionProgress = b;
-                    if (b == 0f) {
-                        // an optimization, and required for correct behavior.
-                        return;
-                    }
-                    invalidate();
-                    if (enableWallpaperEffects) {
-                        setHorizontalWallpaperOffset(
-                            a * oldHorizontalWallpaperOffset + b * newHorizontalWallpaperOffset);
-                        setVerticalWallpaperOffset(
-                            a * oldVerticalWallpaperOffset + b * newVerticalWallpaperOffset);
-                    }
-                    for (int i = 0; i < screenCount; i++) {
-                        final CellLayout cl = (CellLayout) getChildAt(i);
-                        cl.fastInvalidate();
-                        cl.setFastX(a * mOldTranslationXs[i] + b * mNewTranslationXs[i]);
-                        cl.setFastY(a * mOldTranslationYs[i] + b * mNewTranslationYs[i]);
-                        cl.setFastScaleX(a * mOldScaleXs[i] + b * mNewScaleXs[i]);
-                        cl.setFastScaleY(a * mOldScaleYs[i] + b * mNewScaleYs[i]);
-                        cl.setFastBackgroundAlpha(
-                                a * mOldBackgroundAlphas[i] + b * mNewBackgroundAlphas[i]);
-                        cl.setFastAlpha(a * mOldAlphas[i] + b * mNewAlphas[i]);
-                        cl.setFastRotationY(a * mOldRotationYs[i] + b * mNewRotationYs[i]);
-                    }
-                }
-            });
-            mAnimator.playTogether(animWithInterpolator);
-            mAnimator.addListener(mShrinkAnimationListener);
-            mAnimator.start();
-        } else if (enableWallpaperEffects) {
-            setVerticalWallpaperOffset(wallpaperOffset);
-            setHorizontalWallpaperOffset(0.5f);
-            updateWallpaperOffsetImmediately();
-        }
-        setChildrenDrawnWithCacheEnabled(true);
     }
 
     @Override
@@ -1576,7 +1337,6 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    private final ZoomOutInterpolator mZoomOutInterpolator = new ZoomOutInterpolator();
     private final ZoomInInterpolator mZoomInInterpolator = new ZoomInInterpolator();
 
     /*
@@ -1621,38 +1381,9 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    // We call this when we trigger an unshrink by clicking on the CellLayout cl
-    public void unshrink(CellLayout clThatWasClicked) {
-        unshrink(clThatWasClicked, false);
-    }
-
-    public void unshrink(CellLayout clThatWasClicked, boolean springLoaded) {
-        int newCurrentPage = indexOfChild(clThatWasClicked);
-        if (isSmall()) {
-            if (springLoaded) {
-                setLayoutScale(mSpringLoadedShrinkFactor);
-            }
-            scrollToNewPageWithoutMovingPages(newCurrentPage);
-            unshrink(true, springLoaded);
-        }
-    }
-
-
-    public void enterSpringLoadedDragMode(CellLayout clThatWasClicked) {
-        unshrink(clThatWasClicked, true);
-    }
-
-    public void exitSpringLoadedDragMode(State shrinkState) {
-        shrink(shrinkState);
-    }
-
     public void exitWidgetResizeMode() {
         DragLayer dragLayer = mLauncher.getDragLayer();
         dragLayer.clearAllResizeFrames();
-    }
-
-    void unshrink(boolean animated) {
-        unshrink(animated, false);
     }
 
     private void initAnimationArrays() {
@@ -1676,213 +1407,187 @@ public class Workspace extends SmoothPagedView
         mNewRotationYs = new float[childCount];
     }
 
-    void unshrink(boolean animated, final boolean springLoaded) {
+    public void changeState(State shrinkState) {
+        changeState(shrinkState, true);
+    }
+
+    void showAllAppsAnimationComplete() {
+        if (mEnableSyncWallpaper) {
+            mSyncWallpaperOffsetWithScroll = true;
+            mEnableSyncWallpaper = true;
+        }
+    }
+
+    void changeState(final State state, boolean animated) {
         if (mFirstLayout) {
             // (mFirstLayout == "first layout has not happened yet")
             // cancel any pending shrinks that were set earlier
             mSwitchStateAfterFirstLayout = false;
-            mStateAfterFirstLayout = State.NORMAL;
+            mStateAfterFirstLayout = state;
             return;
         }
 
-        if (isSmall()) {
-            float finalScaleFactor = 1.0f;
-            float finalBackgroundAlpha = 0.0f;
-            if (springLoaded) {
-                finalScaleFactor = mSpringLoadedShrinkFactor;
-                finalBackgroundAlpha = 1.0f;
-                mState = State.SPRING_LOADED;
-            } else {
-                mState = State.NORMAL;
-            }
-            if (mAnimator != null) {
-                mAnimator.cancel();
-            }
+        if (mAnimator != null) {
+            mAnimator.cancel();
+        }
 
-            mAnimator = new AnimatorSet();
+        // Stop any scrolling, move to the current page right away
+        setCurrentPage((mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage);
 
-            // Workaround the AnimatorSet cancel bug...
-            mShrinkAnimationEnabled = false;
-            mUnshrinkAnimationEnabled = true;
-
-            final int screenCount = getChildCount();
-            initAnimationArrays();
-
-            final int duration = getResources().getInteger(R.integer.config_workspaceUnshrinkTime);
-            for (int i = 0; i < screenCount; i++) {
-                final CellLayout cl = (CellLayout)getChildAt(i);
-                float finalAlphaValue = 0f;
-                float rotation = 0f;
-
-                // Set the final alpha depending on whether we are fading side pages.  On phone ui,
-                // we don't do any of the rotation, or the fading alpha in portrait.  See the
-                // ctor and screenScrolled().
-                if (mFadeInAdjacentScreens && !springLoaded) {
-                    finalAlphaValue = (i == mCurrentPage) ? 1f : 0f;
-                } else {
-                    finalAlphaValue = 1f;
-                }
-
-                if (LauncherApplication.isScreenLarge()) {
-                    if (i < mCurrentPage) {
-                        rotation = WORKSPACE_ROTATION;
-                    } else if (i > mCurrentPage) {
-                        rotation = -WORKSPACE_ROTATION;
-                    }
-                }
-                float finalAlphaMultiplierValue = 1f;
-
-                float translation = 0f;
-
-                // If the screen is not xlarge, then don't rotate the CellLayouts
-                // NOTE: If we don't update the side pages alpha, then we should not hide the side
-                //       pages. see unshrink().
-                if (LauncherApplication.isScreenLarge()) {
-                    translation = getOffsetXForRotation(rotation, cl.getWidth(), cl.getHeight());
-                }
-
-                mOldAlphas[i] = cl.getAlpha();
-                mNewAlphas[i] = finalAlphaValue;
+        float finalScaleFactor = 1.0f;
+        float finalBackgroundAlpha = 0.0f;
+        boolean normalState = false;
+        State oldState = mState;
+        mState = state;
+        boolean zoomIn = true;
+        if (state != State.NORMAL) {
+            finalScaleFactor = mSpringLoadedShrinkFactor - (state == State.SMALL ? 0.1f : 0);
+            finalBackgroundAlpha = 1.0f;
+            if (oldState == State.NORMAL && state == State.SMALL) {
+                zoomIn = false;
                 if (animated) {
-                    mOldTranslationXs[i] = cl.getTranslationX();
-                    mOldTranslationYs[i] = cl.getTranslationY();
-                    mOldScaleXs[i] = cl.getScaleX();
-                    mOldScaleYs[i] = cl.getScaleY();
-                    mOldBackgroundAlphas[i] = cl.getBackgroundAlpha();
-                    mOldBackgroundAlphaMultipliers[i] = cl.getBackgroundAlphaMultiplier();
-                    mOldRotationYs[i] = cl.getRotationY();
-
-                    mNewTranslationXs[i] = translation;
-                    mNewTranslationYs[i] = 0f;
-                    mNewScaleXs[i] = finalScaleFactor;
-                    mNewScaleYs[i] = finalScaleFactor;
-                    mNewBackgroundAlphas[i] = finalBackgroundAlpha;
-                    mNewBackgroundAlphaMultipliers[i] = finalAlphaMultiplierValue;
-                    mNewRotationYs[i] = rotation;
-                } else {
-                    cl.setTranslationX(translation);
-                    cl.setTranslationY(0.0f);
-                    cl.setScaleX(finalScaleFactor);
-                    cl.setScaleY(finalScaleFactor);
-                    cl.setBackgroundAlpha(0.0f);
-                    cl.setBackgroundAlphaMultiplier(finalAlphaMultiplierValue);
-                    cl.setAlpha(finalAlphaValue);
-                    cl.setRotationY(rotation);
-                    mUnshrinkAnimationListener.onAnimationEnd(null);
+                    mEnableSyncWallpaper = true;
+                    mSyncWallpaperOffsetWithScroll = false;
+                    hideScrollingIndicator(true);
                 }
-            }
-
-            // Unshrink the hotset the same amount we are unshrinking the screens
-            if (mLauncher.getHotseat() != null) {
-                View hotseat = mLauncher.getHotseat().getLayout();
-                hotseat.setScaleX(finalScaleFactor);
-                hotseat.setScaleY(finalScaleFactor);
-            }
-
-            Display display = mLauncher.getWindowManager().getDefaultDisplay();
-            boolean isLandscape = display.getWidth() > display.getHeight();
-            // on phones, don't scroll the wallpaper horizontally or vertically when switching
-            // to/from all apps
-            final boolean enableWallpaperEffects =
-                isHardwareAccelerated() && LauncherApplication.isScreenLarge();
-            if (enableWallpaperEffects) {
-                switch (mState) {
-                    // animating out
-                    case SPRING_LOADED:
-                        if (animated) {
-                            mWallpaperOffset.setHorizontalCatchupConstant(isLandscape ? 0.49f : 0.46f);
-                            mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.49f : 0.46f);
-                            mWallpaperOffset.setOverrideHorizontalCatchupConstant(true);
-                        }
-                        break;
-                    case SMALL:
-                        // all apps
-                        if (animated) {
-                            mWallpaperOffset.setHorizontalCatchupConstant(isLandscape ? 0.65f : 0.65f);
-                            mWallpaperOffset.setVerticalCatchupConstant(isLandscape ? 0.65f : 0.65f);
-                            mWallpaperOffset.setOverrideHorizontalCatchupConstant(true);
-                        }
-                        break;
-                }
-            }
-            if (animated) {
-                ValueAnimator animWithInterpolator =
-                    ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
-                animWithInterpolator.setInterpolator(mZoomInInterpolator);
-
-                final float oldHorizontalWallpaperOffset = enableWallpaperEffects ?
-                        getHorizontalWallpaperOffset() : 0;
-                final float oldVerticalWallpaperOffset = enableWallpaperEffects ?
-                        getVerticalWallpaperOffset() : 0;
-                final float newHorizontalWallpaperOffset = enableWallpaperEffects ?
-                        wallpaperOffsetForCurrentScroll() : 0;
-                final float newVerticalWallpaperOffset = enableWallpaperEffects ? 0.5f : 0;
-                animWithInterpolator.addUpdateListener(new LauncherAnimatorUpdateListener() {
-                    public void onAnimationUpdate(float a, float b) {
-                        if (!mUnshrinkAnimationEnabled) return;
-                        mTransitionProgress = b;
-                        if (b == 0f) {
-                            // an optimization, but not required
-                            return;
-                        }
-                        invalidate();
-                        if (enableWallpaperEffects) {
-                            setHorizontalWallpaperOffset(a * oldHorizontalWallpaperOffset
-                                    + b * newHorizontalWallpaperOffset);
-                            setVerticalWallpaperOffset(a * oldVerticalWallpaperOffset
-                                    + b * newVerticalWallpaperOffset);
-                        }
-                        for (int i = 0; i < screenCount; i++) {
-                            final CellLayout cl = (CellLayout) getChildAt(i);
-                            cl.fastInvalidate();
-                            cl.setFastTranslationX(
-                                    a * mOldTranslationXs[i] + b * mNewTranslationXs[i]);
-                            cl.setFastTranslationY(
-                                    a * mOldTranslationYs[i] + b * mNewTranslationYs[i]);
-                            cl.setFastScaleX(a * mOldScaleXs[i] + b * mNewScaleXs[i]);
-                            cl.setFastScaleY(a * mOldScaleYs[i] + b * mNewScaleYs[i]);
-                            cl.setFastBackgroundAlpha(
-                                    a * mOldBackgroundAlphas[i] + b * mNewBackgroundAlphas[i]);
-                            cl.setBackgroundAlphaMultiplier(a * mOldBackgroundAlphaMultipliers[i] +
-                                    b * mNewBackgroundAlphaMultipliers[i]);
-                            cl.setFastAlpha(a * mOldAlphas[i] + b * mNewAlphas[i]);
-                        }
-                    }
-                });
-
-                ValueAnimator rotationAnim =
-                    ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
-                rotationAnim.setInterpolator(new DecelerateInterpolator(2.0f));
-                rotationAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
-                    public void onAnimationUpdate(float a, float b) {
-                        if (!mUnshrinkAnimationEnabled) return;
-                        // don't invalidate workspace because we did it above
-                        if (b == 0f) {
-                            // an optimization, but not required
-                            return;
-                        }
-                        for (int i = 0; i < screenCount; i++) {
-                            final CellLayout cl = (CellLayout) getChildAt(i);
-                            cl.setFastRotationY(a * mOldRotationYs[i] + b * mNewRotationYs[i]);
-                        }
-                    }
-                });
-
-                mAnimator.playTogether(animWithInterpolator, rotationAnim);
-                // If we call this when we're not animated, onAnimationEnd is never called on
-                // the listener; make sure we only use the listener when we're actually animating
-                mAnimator.addListener(mUnshrinkAnimationListener);
-                mAnimator.start();
+                setLayoutScale(finalScaleFactor);
+                updateChildrenLayersEnabled();
             } else {
-                if (enableWallpaperEffects) {
-                    setHorizontalWallpaperOffset(wallpaperOffsetForCurrentScroll());
-                    setVerticalWallpaperOffset(0.5f);
-                    updateWallpaperOffsetImmediately();
+                setLayoutScale(finalScaleFactor);
+            }
+        } else {
+            setLayoutScale(1.0f);
+            normalState = true;
+        }
+
+        float translationX = 0;
+        float translationY = 0;
+
+        mAnimator = new AnimatorSet();
+
+        final int screenCount = getChildCount();
+        initAnimationArrays();
+
+        final int duration = zoomIn ? 
+                getResources().getInteger(R.integer.config_workspaceUnshrinkTime) :
+                getResources().getInteger(R.integer.config_appsCustomizeWorkspaceShrinkTime);
+        for (int i = 0; i < screenCount; i++) {
+            final CellLayout cl = (CellLayout)getChildAt(i);
+            float finalAlphaValue = 0f;
+            float rotation = 0f;
+
+            // Set the final alpha depending on whether we are fading side pages.  On phone ui,
+            // we don't do any of the rotation, or the fading alpha in portrait.  See the
+            // ctor and screenScrolled().
+            if (mFadeInAdjacentScreens && normalState) {
+                finalAlphaValue = (i == mCurrentPage) ? 1f : 0f;
+            } else {
+                finalAlphaValue = 1f;
+            }
+
+            if (LauncherApplication.isScreenLarge()) {
+                if (i < mCurrentPage) {
+                    rotation = WORKSPACE_ROTATION;
+                } else if (i > mCurrentPage) {
+                    rotation = -WORKSPACE_ROTATION;
                 }
+            }
+
+            float finalAlphaMultiplierValue = 1f;
+            // If the screen is not xlarge, then don't rotate the CellLayouts
+            // NOTE: If we don't update the side pages alpha, then we should not hide the side
+            //       pages. see unshrink().
+            if (LauncherApplication.isScreenLarge()) {
+                translationX = getOffsetXForRotation(rotation, cl.getWidth(), cl.getHeight());
+            }
+
+            mOldAlphas[i] = cl.getAlpha();
+            mNewAlphas[i] = finalAlphaValue;
+            if (animated) {
+                mOldTranslationXs[i] = cl.getTranslationX();
+                mOldTranslationYs[i] = cl.getTranslationY();
+                mOldScaleXs[i] = cl.getScaleX();
+                mOldScaleYs[i] = cl.getScaleY();
+                mOldBackgroundAlphas[i] = cl.getBackgroundAlpha();
+                mOldBackgroundAlphaMultipliers[i] = cl.getBackgroundAlphaMultiplier();
+                mOldRotationYs[i] = cl.getRotationY();
+
+                mNewTranslationXs[i] = translationX;
+                mNewTranslationYs[i] = translationY;
+                mNewScaleXs[i] = finalScaleFactor;
+                mNewScaleYs[i] = finalScaleFactor;
+                mNewBackgroundAlphas[i] = finalBackgroundAlpha;
+                mNewBackgroundAlphaMultipliers[i] = finalAlphaMultiplierValue;
+                mNewRotationYs[i] = rotation;
+            } else {
+                cl.setTranslationX(translationX);
+                cl.setTranslationY(translationY);
+                cl.setScaleX(finalScaleFactor);
+                cl.setScaleY(finalScaleFactor);
+                cl.setBackgroundAlpha(0.0f);
+                cl.setBackgroundAlphaMultiplier(finalAlphaMultiplierValue);
+                cl.setAlpha(finalAlphaValue);
+                cl.setRotationY(rotation);
+                mChangeStateAnimationListener.onAnimationEnd(null);
             }
         }
 
-        if (springLoaded) {
+        if (animated) {
+            ValueAnimator animWithInterpolator =
+                ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
+
+            if (zoomIn) {
+                animWithInterpolator.setInterpolator(mZoomInInterpolator);
+            }
+
+            animWithInterpolator.addUpdateListener(new LauncherAnimatorUpdateListener() {
+                public void onAnimationUpdate(float a, float b) {
+                    mTransitionProgress = b;
+                    if (b == 0f) {
+                        // an optimization, but not required
+                        return;
+                    }
+                    invalidate();
+                    for (int i = 0; i < screenCount; i++) {
+                        final CellLayout cl = (CellLayout) getChildAt(i);
+                        cl.fastInvalidate();
+                        cl.setFastTranslationX(a * mOldTranslationXs[i] + b * mNewTranslationXs[i]);
+                        cl.setFastTranslationY(a * mOldTranslationYs[i] + b * mNewTranslationYs[i]);
+                        cl.setFastScaleX(a * mOldScaleXs[i] + b * mNewScaleXs[i]);
+                        cl.setFastScaleY(a * mOldScaleYs[i] + b * mNewScaleYs[i]);
+                        cl.setFastBackgroundAlpha(
+                                a * mOldBackgroundAlphas[i] + b * mNewBackgroundAlphas[i]);
+                        cl.setBackgroundAlphaMultiplier(a * mOldBackgroundAlphaMultipliers[i] +
+                                b * mNewBackgroundAlphaMultipliers[i]);
+                        cl.setFastAlpha(a * mOldAlphas[i] + b * mNewAlphas[i]);
+                    }
+                }
+            });
+
+            ValueAnimator rotationAnim =
+                ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
+            rotationAnim.setInterpolator(new DecelerateInterpolator(2.0f));
+            rotationAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
+                public void onAnimationUpdate(float a, float b) {
+                    if (b == 0f) {
+                        // an optimization, but not required
+                        return;
+                    }
+                    for (int i = 0; i < screenCount; i++) {
+                        final CellLayout cl = (CellLayout) getChildAt(i);
+                        cl.setFastRotationY(a * mOldRotationYs[i] + b * mNewRotationYs[i]);
+                    }
+                }
+            });
+
+            mAnimator.playTogether(animWithInterpolator, rotationAnim);
+            // If we call this when we're not animated, onAnimationEnd is never called on
+            // the listener; make sure we only use the listener when we're actually animating
+            mAnimator.addListener(mChangeStateAnimationListener);
+            mAnimator.start();
+        }
+
+        if (state == State.SPRING_LOADED) {
             // Right now we're covered by Apps Customize
             // Show the background gradient immediately, so the gradient will
             // be showing once AppsCustomize disappears

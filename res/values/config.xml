@@ -23,12 +23,12 @@
 
     <!-- Fade/zoom in/out duration & scale in the AllApps transition.
          Note: This should be less than the workspaceShrinkTime as they happen together. -->
-    <integer name="config_appsCustomizeZoomInTime">1000</integer>
-    <integer name="config_appsCustomizeZoomOutTime">1200</integer>
+    <integer name="config_appsCustomizeZoomInTime">800</integer>
+    <integer name="config_appsCustomizeZoomOutTime">800</integer>
     <integer name="config_appsCustomizeZoomScaleFactor">20</integer>
-    <integer name="config_appsCustomizeFadeInTime">250</integer>
+    <integer name="config_appsCustomizeFadeInTime">280</integer>
     <integer name="config_appsCustomizeFadeOutTime">500</integer>
-    <integer name="config_appsCustomizeWorkspaceShrinkTime">1000</integer>
+    <integer name="config_appsCustomizeWorkspaceShrinkTime">300</integer>
 
     <!-- Tab transition animation duration -->
     <integer name="config_tabTransitionDuration">250</integer>
