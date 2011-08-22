@@ -27,7 +27,7 @@
     <string name="pick_wallpaper" msgid="5630222540525626723">"Darbalaukio fonai"</string>
     <string name="activity_not_found" msgid="5591731020063337696">"Programa neįdiegta."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Valdikliai"</string>
-    <!-- outdated translation 4307462194057715796 -->     <string name="long_press_widget_to_add" msgid="8915177487173521501">"Kad pasirinkt. valdiklį, ilgai laikykite nuspaudę"</string>
+    <string name="long_press_widget_to_add" msgid="8915177487173521501">"Kad pasirinkt. valdiklį, palieskite ir laikykite"</string>
     <string name="market" msgid="2652226429823445833">"Parduotuvė"</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Nepavyko pašalinti elemento šiame pagr. ekrane"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Pasirinkti norimą sukurti valdiklį"</string>
@@ -81,8 +81,7 @@
     <string name="permdesc_read_settings" msgid="8377434937176025492">"Leidžia programai skaityti pagrindinio puslapio nustatymus ir sparčiuosius klavišus."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"rašyti pagrindinio puslapio nustatymus ir sparčiuosius klavišus"</string>
     <string name="permdesc_write_settings" msgid="1098648778383349818">"Leidžia programai keisti pagrindinio puslapio nustatymus ir sparčiuosius klavišus."</string>
-    <!-- no translation found for google_apps_folder_name (6379401240457905079) -->
-    <skip />
+    <string name="google_apps_folder_name" msgid="6379401240457905079">"Google Apps"</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Problema įkeliant valdiklį"</string>
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"Tai sistemos programa ir jos negalima pašalinti."</string>
     <string name="dream_name" msgid="2847171357608437154">"Raketinis prieštankinis šautuvas"</string>

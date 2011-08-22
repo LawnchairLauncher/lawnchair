@@ -27,7 +27,7 @@
     <string name="pick_wallpaper" msgid="5630222540525626723">"Fonds d\'écran"</string>
     <string name="activity_not_found" msgid="5591731020063337696">"L\'application n\'est pas installée."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widgets"</string>
-    <!-- outdated translation 4307462194057715796 -->     <string name="long_press_widget_to_add" msgid="8915177487173521501">"Appuyer de manière prolongée pour ajouter un widget"</string>
+    <string name="long_press_widget_to_add" msgid="8915177487173521501">"Appuyez de manière prolongée pour ajouter widget"</string>
     <string name="market" msgid="2652226429823445833">"Acheter"</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"Impossible de déposer l\'élément sur l\'écran d\'accueil."</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Sélectionner le widget à créer"</string>
@@ -81,8 +81,7 @@
     <string name="permdesc_read_settings" msgid="8377434937176025492">"Permet à une application de lire les paramètres et raccourcis de la page d\'accueil."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"Enregistrer les paramètres de la page d\'accueil et des raccourcis"</string>
     <string name="permdesc_write_settings" msgid="1098648778383349818">"Permet à une application de modifier les paramètres et les raccourcis de la page d\'accueil."</string>
-    <!-- no translation found for google_apps_folder_name (6379401240457905079) -->
-    <skip />
+    <string name="google_apps_folder_name" msgid="6379401240457905079">"Google Apps"</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Problème lors du chargement du widget"</string>
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"Il s\'agit d\'une application système que vous ne pouvez pas désinstaller."</string>
     <string name="dream_name" msgid="2847171357608437154">"Lance-missile"</string>

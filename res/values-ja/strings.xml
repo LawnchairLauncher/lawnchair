@@ -27,7 +27,7 @@
     <string name="pick_wallpaper" msgid="5630222540525626723">"壁紙"</string>
     <string name="activity_not_found" msgid="5591731020063337696">"インストールされていません。"</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"ウィジェット"</string>
-    <!-- outdated translation 4307462194057715796 -->     <string name="long_press_widget_to_add" msgid="8915177487173521501">"ウィジェットを追加するには押し続けます"</string>
+    <string name="long_press_widget_to_add" msgid="8915177487173521501">"ウィジェットを追加するには長押しします"</string>
     <string name="market" msgid="2652226429823445833">"ショップ"</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"このホーム画面にアイテムをドロップできませんでした"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"作成するウィジェットを選択"</string>
@@ -81,8 +81,7 @@
     <string name="permdesc_read_settings" msgid="8377434937176025492">"ホームの設定とショートカットの読み取りをアプリケーションに許可します。"</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"ホームの設定とショートカットの書き込み"</string>
     <string name="permdesc_write_settings" msgid="1098648778383349818">"ホームの設定とショートカットの変更をアプリケーションに許可します。"</string>
-    <!-- no translation found for google_apps_folder_name (6379401240457905079) -->
-    <skip />
+    <string name="google_apps_folder_name" msgid="6379401240457905079">"Google Apps"</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"ウィジェットを表示できません"</string>
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"このシステムアプリケーションはアンインストールできません。"</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
