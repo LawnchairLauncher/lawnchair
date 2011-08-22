@@ -307,9 +307,15 @@ public class WallpaperChooserDialogFragment extends DialogFragment implements
                     mBitmap.recycle();
                 }
 
-                mBitmap = b;
-                mWallpaperDrawable.setBitmap(b);
-                getView().postInvalidate();
+                View v = getView();
+                if (v != null) {
+                    mBitmap = b;
+                    mWallpaperDrawable.setBitmap(b);
+                    v.postInvalidate();
+                } else {
+                    mBitmap = null;
+                    mWallpaperDrawable.setBitmap(null);
+                }
                 mLoader = null;
             } else {
                b.recycle();
