@@ -24,6 +24,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.SearchManager;
@@ -2977,6 +2978,9 @@ public final class Launcher extends Activity
     private void enableClingsIfNecessary() {
         // TEMPORARY: DISABLE CLINGS ON LARGE UI
         if (LauncherApplication.isScreenLarge()) return;
+
+        // disable clings when running in a test harness
+        if(ActivityManager.isRunningInTestHarness()) return;
 
         // Enable the clings only if they have not been dismissed before
         SharedPreferences prefs =
