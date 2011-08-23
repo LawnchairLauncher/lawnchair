@@ -7,6 +7,8 @@
   public void onClickConfigureButton(android.view.View);
   public void onClickAllAppsButton(android.view.View);
   public void onClickAppMarketButton(android.view.View);
+  public void dismissWorkspaceCling(android.view.View);
+  public void dismissAllAppsCling(android.view.View);
 }
 
 -keep class com.android.launcher2.CellLayout {
