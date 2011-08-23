@@ -83,4 +83,10 @@
         android:layout_width="@dimen/button_bar_height"
         android:layout_height="match_parent"
         android:layout_gravity="right" />
+
+    <include layout="@layout/workspace_cling"
+        android:id="@+id/workspace_cling"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 </com.android.launcher2.DragLayer>

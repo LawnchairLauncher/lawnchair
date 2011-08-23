@@ -231,4 +231,20 @@ s -->
     <string name="apps_customize_apps_scroll_format" translatable="false">Apps page %1$d of %2$d</string>
     <!-- The format string for AppsCustomize Apps page scroll text [CHAR_LIMIT=none] -->
     <string name="apps_customize_widgets_scroll_format" translatable="false">Widgets page %1$d of %2$d</string>
+
+    <!-- Clings -->
+    <!-- The title text for the workspace cling [CHAR_LIMIT=none] -->
+    <string name="workspace_cling_title">Welcome Home!</string>
+    <!-- The description of how to pick up and move an item on the workspace [CHAR_LIMIT=none] -->
+    <string name="workspace_cling_move_item">To move an app or widget, touch &amp; hold, then reposition it.</string>
+    <!-- The description of how to open all apps from the workspace [CHAR_LIMIT=none] -->
+    <string name="workspace_cling_open_all_apps">To see all your apps, touch the All Apps button.</string>
+    <!-- The title text for the All Apps cling [CHAR_LIMIT=none] -->
+    <string name="all_apps_cling_title">Here are all your apps</string>
+    <!-- The description of how to pick up and add an item to the workspace [CHAR_LIMIT=none] -->
+    <string name="all_apps_cling_add_item">To add an app or widget to your home screen, touch &amp; hold, then position it.</string>
+
+    <!-- The text on the button to dismiss a cling [CHAR_LIMIT=none] -->
+    <string name="cling_dismiss">OK</string>
+
 </resources>
