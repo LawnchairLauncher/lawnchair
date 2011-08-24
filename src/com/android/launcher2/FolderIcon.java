@@ -27,6 +27,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,6 +51,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
     private Launcher mLauncher;
     Folder mFolder;
     FolderInfo mInfo;
+    private static boolean sStaticValuesDirty = true;
 
     // The number of icons to display in the
     private static final int NUM_ITEMS_IN_PREVIEW = 3;
@@ -132,16 +134,24 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         folder.setFolderIcon(icon);
         folder.bind(folderInfo);
         icon.mFolder = folder;
-        icon.mFolderRingAnimator = new FolderRingAnimator(launcher, icon);
-
-        folderInfo.addListener(icon);
-
         Resources res = launcher.getResources();
-        if (sSharedFolderLeaveBehind == null) {
+
+        // We need to reload the static values when configuration changes in case they are
+        // different in another configuration
+        if (sStaticValuesDirty) {
             sSharedFolderLeaveBehind = res.getDrawable(R.drawable.portal_ring_rest);
         }
 
+        icon.mFolderRingAnimator = new FolderRingAnimator(launcher, icon);
+        folderInfo.addListener(icon);
+
         return icon;
+    }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        sStaticValuesDirty = true;
+        return super.onSaveInstanceState();
     }
 
     public static class FolderRingAnimator {
@@ -167,15 +177,14 @@ public class FolderIcon extends LinearLayout implements FolderListener {
             mOuterRingDrawable = res.getDrawable(R.drawable.portal_ring_outer_holo);
             mInnerRingDrawable = res.getDrawable(R.drawable.portal_ring_inner_holo);
 
-            if (sPreviewSize < 0 || sPreviewPadding < 0) {
+            // We need to reload the static values when configuration changes in case they are
+            // different in another configuration
+            if (sStaticValuesDirty) {
                 sPreviewSize = res.getDimensionPixelSize(R.dimen.folder_preview_size);
                 sPreviewPadding = res.getDimensionPixelSize(R.dimen.folder_preview_padding);
-            }
-            if (sSharedOuterRingDrawable == null) {
                 sSharedOuterRingDrawable = res.getDrawable(R.drawable.portal_ring_outer_holo);
-            }
-            if (sSharedInnerRingDrawable == null) {
                 sSharedInnerRingDrawable = res.getDrawable(R.drawable.portal_ring_inner_holo);
+                sStaticValuesDirty = false;
             }
         }
 
@@ -552,6 +561,18 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         });
         va.setDuration(duration);
         va.start();
+    }
+
+    public void setTextVisible(boolean visible) {
+        if (visible) {
+            mFolderName.setVisibility(VISIBLE);
+        } else {
+            mFolderName.setVisibility(INVISIBLE);
+        }
+    }
+
+    public boolean getTextVisible() {
+        return mFolderName.getVisibility() == VISIBLE;
     }
 
     public void onItemsChanged() {
