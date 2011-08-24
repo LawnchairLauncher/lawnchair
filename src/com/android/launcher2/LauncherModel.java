@@ -108,6 +108,10 @@ public class LauncherModel extends BroadcastReceiver {
 
     // sFolders is all FolderInfos created by LauncherModel. Passed to bindFolders()
     static final HashMap<Long, FolderInfo> sFolders = new HashMap<Long, FolderInfo>();
+
+    // sDbIconCache is the set of ItemInfos that need to have their icons updated in the database
+    static final HashMap<Object, byte[]> sDbIconCache = new HashMap<Object, byte[]>();
+
     // </ only access in worker thread >
 
     private IconCache mIconCache;
@@ -205,6 +209,9 @@ public class LauncherModel extends BroadcastReceiver {
                     if (item != modelItem) {
                         // the modelItem needs to match up perfectly with item if our model is to be
                         // consistent with the database-- for now, just require modelItem == item
+                        Log.e(TAG, "item: " + ((item != null) ? item.toString() : "null"));
+                        Log.e(TAG, "modelItem: " + ((modelItem != null) ? modelItem.toString() :
+                            "null"));
                         throw new RuntimeException("Error: ItemInfo passed to moveItemInDatabase " +
                                 "doesn't match original");
                     }
@@ -251,6 +258,9 @@ public class LauncherModel extends BroadcastReceiver {
                     if (item != modelItem) {
                         // the modelItem needs to match up perfectly with item if our model is to be
                         // consistent with the database-- for now, just require modelItem == item
+                        Log.e(TAG, "item: " + ((item != null) ? item.toString() : "null"));
+                        Log.e(TAG, "modelItem: " + ((modelItem != null) ? modelItem.toString() :
+                            "null"));
                         throw new RuntimeException("Error: ItemInfo passed to moveItemInDatabase " +
                             "doesn't match original");
                     }
@@ -392,6 +402,11 @@ public class LauncherModel extends BroadcastReceiver {
                 cr.insert(notify ? LauncherSettings.Favorites.CONTENT_URI :
                         LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION, values);
 
+                if (sItemsIdMap.containsKey(item.id)) {
+                    // we should not be adding new items in the db with the same id
+                    throw new RuntimeException("Error: ItemInfo id (" + item.id + ") passed to " +
+                        "addItemToDatabase already exists." + item.toString());
+                }
                 sItemsIdMap.put(item.id, item);
                 switch (item.itemType) {
                     case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
@@ -456,7 +471,10 @@ public class LauncherModel extends BroadcastReceiver {
                 if (item != modelItem) {
                     // the modelItem needs to match up perfectly with item if our model is to be
                     // consistent with the database-- for now, just require modelItem == item
-                    throw new RuntimeException("Error: ItemInfo passed to moveItemInDatabase " +
+                    Log.e(TAG, "item: " + ((item != null) ? item.toString() : "null"));
+                    Log.e(TAG, "modelItem: " + ((modelItem != null) ? modelItem.toString() :
+                        "null"));
+                    throw new RuntimeException("Error: ItemInfo passed to updateItemInDatabase " +
                         "doesn't match original");
                 }
             }
@@ -488,6 +506,7 @@ public class LauncherModel extends BroadcastReceiver {
                             break;
                     }
                     sItemsIdMap.remove(item.id);
+                    sDbIconCache.remove(item);
                 }
             });
     }
@@ -662,13 +681,11 @@ public class LauncherModel extends BroadcastReceiver {
         private boolean mStopped;
         private boolean mLoadAndBindStepFinished;
         private HashMap<Object, CharSequence> mLabelCache;
-        private HashMap<Object, byte[]> mDbIconCache;
 
         LoaderTask(Context context, boolean isLaunching) {
             mContext = context;
             mIsLaunching = isLaunching;
             mLabelCache = new HashMap<Object, CharSequence>();
-            mDbIconCache = new HashMap<Object, byte[]>();
         }
 
         boolean isLaunching() {
@@ -734,9 +751,6 @@ public class LauncherModel extends BroadcastReceiver {
             final Callbacks cbk = mCallbacks.get();
             final boolean loadWorkspaceFirst = cbk != null ? (!cbk.isAllAppsVisible()) : true;
 
-            // We update the icons in the database afterwards in case they have changed
-            mDbIconCache.clear();
-
             keep_running: {
                 // Elevate priority when Home launches for the first time to avoid
                 // starving at boot time. Staring at a blank home is not cool.
@@ -781,10 +795,10 @@ public class LauncherModel extends BroadcastReceiver {
 
             // Update the saved icons if necessary
             if (DEBUG_LOADERS) Log.d(TAG, "Comparing loaded icons to database icons");
-            for (Object key : mDbIconCache.keySet()) {
-                updateSavedIcon(mContext, (ShortcutInfo) key, mDbIconCache.get(key));
+            for (Object key : sDbIconCache.keySet()) {
+                updateSavedIcon(mContext, (ShortcutInfo) key, sDbIconCache.get(key));
             }
-            mDbIconCache.clear();
+            sDbIconCache.clear();
 
             // Clear out this reference, otherwise we end up holding it until all of the
             // callback runnables are done.
@@ -884,6 +898,7 @@ public class LauncherModel extends BroadcastReceiver {
             sAppWidgets.clear();
             sFolders.clear();
             sItemsIdMap.clear();
+            sDbIconCache.clear();
 
             final ArrayList<Long> itemsToRemove = new ArrayList<Long>();
 
@@ -987,7 +1002,7 @@ public class LauncherModel extends BroadcastReceiver {
 
                                 // now that we've loaded everthing re-save it with the
                                 // icon in case it disappears somehow.
-                                queueIconToBeChecked(mDbIconCache, info, c, iconIndex);
+                                queueIconToBeChecked(sDbIconCache, info, c, iconIndex);
                             } else {
                                 // Failed to load the shortcut, probably because the
                                 // activity manager couldn't resolve it (maybe the app
