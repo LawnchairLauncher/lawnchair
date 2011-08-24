@@ -315,7 +315,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private boolean testDataReady() {
         // We only do this test once, and we default to the Applications page, so we only really
         // have to wait for there to be apps.
-        return !mApps.isEmpty();
+        if (mContentType == AppsCustomizePagedView.ContentType.Widgets) {
+            return !mApps.isEmpty() && !mWidgets.isEmpty();
+        } else {
+            return !mApps.isEmpty();
+        }
     }
 
     /** Restores the page for an item at the specified index */
@@ -574,7 +578,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     public void setContentType(ContentType type) {
         mContentType = type;
-        invalidatePageData(0, true);
+        invalidatePageData(0, (type != ContentType.Applications));
     }
 
     public boolean isContentType(ContentType type) {
