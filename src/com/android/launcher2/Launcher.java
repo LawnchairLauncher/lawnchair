@@ -2490,6 +2490,7 @@ public final class Launcher extends Activity
     private void updateGlobalSearchIcon() {
         final ImageView searchButton = (ImageView) findViewById(R.id.search_button);
         final View searchDivider = findViewById(R.id.search_divider);
+        final View voiceButton = findViewById(R.id.voice_button);
 
         final SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -2500,8 +2501,10 @@ public final class Launcher extends Activity
             searchButton.setVisibility(View.VISIBLE);
             if (searchDivider != null) searchDivider.setVisibility(View.VISIBLE);
         } else {
+            // We disable both search and voice search when there is no global search provider
             searchButton.setVisibility(View.GONE);
             if (searchDivider != null) searchDivider.setVisibility(View.GONE);
+            voiceButton.setVisibility(View.GONE);
         }
     }
 
