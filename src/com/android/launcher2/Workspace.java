@@ -465,6 +465,11 @@ public class Workspace extends SmoothPagedView
             layout = mLauncher.getHotseat().getLayout();
             child.setOnKeyListener(null);
 
+            // Hide folder title in the hotseat
+            if (child instanceof FolderIcon) {
+                ((FolderIcon) child).setTextVisible(false);
+            }
+
             if (screen < 0) {
                 screen = mLauncher.getHotseat().getOrderInHotseat(x, y);
             } else {
@@ -474,6 +479,11 @@ public class Workspace extends SmoothPagedView
                 y = mLauncher.getHotseat().getCellYFromOrder(screen);
             }
         } else {
+            // Show folder title if not in the hotseat
+            if (child instanceof FolderIcon) {
+                ((FolderIcon) child).setTextVisible(true);
+            }
+
             layout = (CellLayout) getChildAt(screen);
             child.setOnKeyListener(new BubbleTextViewKeyEventListener());
         }
@@ -1900,6 +1910,8 @@ public class Workspace extends SmoothPagedView
         final Rect clipRect = mTempRect;
         v.getDrawingRect(clipRect);
 
+        boolean textVisible = false;
+
         destCanvas.save();
         if (v instanceof TextView && pruneToDrawable) {
             Drawable d = ((TextView) v).getCompoundDrawables()[1];
@@ -1908,7 +1920,12 @@ public class Workspace extends SmoothPagedView
             d.draw(destCanvas);
         } else {
             if (v instanceof FolderIcon) {
-                clipRect.bottom = getResources().getDimensionPixelSize(R.dimen.folder_preview_size);
+                // For FolderIcons the text can bleed into the icon area, and so we need to
+                // hide the text completely (which can't be achieved by clipping).
+                if (((FolderIcon) v).getTextVisible()) {
+                    ((FolderIcon) v).setTextVisible(false);
+                    textVisible = true;
+                }
             } else if (v instanceof BubbleTextView) {
                 final BubbleTextView tv = (BubbleTextView) v;
                 clipRect.bottom = tv.getExtendedPaddingTop() - (int) BubbleTextView.PADDING_V +
@@ -1921,6 +1938,11 @@ public class Workspace extends SmoothPagedView
             destCanvas.translate(-v.getScrollX() + padding / 2, -v.getScrollY() + padding / 2);
             destCanvas.clipRect(clipRect, Op.REPLACE);
             v.draw(destCanvas);
+
+            // Restore text visibility of FolderIcon if necessary
+            if (textVisible) {
+                ((FolderIcon) v).setTextVisible(true);
+            }
         }
         destCanvas.restore();
     }

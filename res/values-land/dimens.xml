@@ -61,4 +61,8 @@
     <dimen name="apps_customize_widget_cell_height_gap">5dp</dimen>
     <integer name="apps_customize_widget_cell_count_x">3</integer>
     <integer name="apps_customize_widget_cell_count_y">2</integer>
+
+<!-- Folders -->
+    <!-- The size of the image which sits behind the preview of the folder contents -->
+    <dimen name="folder_preview_size">58dp</dimen>
 </resources>
