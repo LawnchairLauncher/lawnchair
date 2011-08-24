@@ -1061,6 +1061,8 @@ public final class Launcher extends Activity
     void closeSystemDialogs() {
         getWindow().closeAllPanels();
 
+        /**
+         * We should remove this code when we remove all the dialog code.
         try {
             dismissDialog(DIALOG_CREATE_SHORTCUT);
             // Unlock the workspace if the dialog was showing
@@ -1074,6 +1076,7 @@ public final class Launcher extends Activity
         } catch (Exception e) {
             // An exception is thrown if the dialog is not visible, which is fine
         }
+         */
 
         // Whatever we were doing is hereby canceled.
         mWaitingForResult = false;
