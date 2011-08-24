@@ -9,6 +9,7 @@ import sqlite3
 SCREENS = 5
 COLUMNS = 4
 ROWS = 4
+HOTSEAT_SIZE = 5
 CELL_SIZE = 110
 
 DIR = "db_files"
@@ -70,6 +71,52 @@ FUNCTIONS = {
   "icon": print_icon
 }
 
+def render_cell_info(out, cell, occupied):
+  if cell is None:
+    out.write("    <td width=%d height=%d></td>\n" %
+        (CELL_SIZE, CELL_SIZE))
+  elif cell == occupied:
+    pass
+  else:
+    cellX = cell["cellX"]
+    cellY = cell["cellY"]
+    spanX = cell["spanX"]
+    spanY = cell["spanY"]
+    intent = cell["intent"]
+    if intent:
+      title = "title=\"%s\"" % cgi.escape(cell["intent"], True)
+    else:
+      title = ""
+    out.write(("    <td colspan=%d rowspan=%d width=%d height=%d"
+        + " bgcolor=#dddddd align=center valign=middle %s>") % (
+          spanX, spanY,
+          (CELL_SIZE*spanX), (CELL_SIZE*spanY),
+          title))
+    itemType = cell["itemType"]
+    if itemType == 0:
+      out.write("""<img src="icon_%d.png">\n""" % ( cell["_id"] ))
+      out.write("<br/>\n")
+      out.write(cgi.escape(cell["title"]) + " <br/><i>(app)</i>")
+    elif itemType == 1:
+      out.write("""<img src="icon_%d.png">\n""" % ( cell["_id"] ))
+      out.write("<br/>\n")
+      out.write(cgi.escape(cell["title"]) + " <br/><i>(shortcut)</i>")
+    elif itemType == 2:
+      out.write("""<i>folder</i>""")
+    elif itemType == 3:
+      out.write("""<i>live folder</i>""")
+    elif itemType == 4:
+      out.write("<i>widget %d</i><br/>\n" % cell["appWidgetId"])
+    elif itemType == 1000:
+      out.write("""<i>clock</i>""")
+    elif itemType == 1001:
+      out.write("""<i>search</i>""")
+    elif itemType == 1002:
+      out.write("""<i>photo frame</i>""")
+    else:
+      out.write("<b>unknown type: %d</b>" % itemType)
+    out.write("</td>\n")
+
 def process_file(fn):
   print "process_file: " + fn
   conn = sqlite3.connect(fn)
@@ -119,6 +166,21 @@ def process_file(fn):
   out.write("""</table>
 """)
 
+  # Hotseat
+  hotseat = []
+  for i in range(0, HOTSEAT_SIZE):
+    hotseat.append(None)
+  for row in data:
+    if row["container"] != -101:
+      continue
+    screen = row["screen"]
+    hotseat[screen] = row
+  out.write("<br/><b>Hotseat</b><br/>\n")
+  out.write("<table class=layout border=1 cellspacing=0 cellpadding=4>\n")
+  for cell in hotseat:
+    render_cell_info(out, cell, None)
+  out.write("</table>\n")
+
   # Pages
   screens = []
   for i in range(0,SCREENS):
@@ -150,50 +212,7 @@ def process_file(fn):
     for m in screen:
       out.write("  <tr>\n")
       for cell in m:
-        if cell is None:
-          out.write("    <td width=%d height=%d></td>\n" %
-              (CELL_SIZE, CELL_SIZE))
-        elif cell == occupied:
-          pass
-        else:
-          cellX = cell["cellX"]
-          cellY = cell["cellY"]
-          spanX = cell["spanX"]
-          spanY = cell["spanY"]
-          intent = cell["intent"]
-          if intent:
-            title = "title=\"%s\"" % cgi.escape(cell["intent"], True)
-          else:
-            title = ""
-          out.write(("    <td colspan=%d rowspan=%d width=%d height=%d"
-              + " bgcolor=#dddddd align=center valign=middle %s>") % (
-                spanX, spanY,
-                (CELL_SIZE*spanX), (CELL_SIZE*spanY),
-                title))
-          itemType = cell["itemType"]
-          if itemType == 0:
-            out.write("""<img src="icon_%d.png">\n""" % ( cell["_id"] ))
-            out.write("<br/>\n")
-            out.write(cgi.escape(cell["title"]) + " <br/><i>(app)</i>")
-          elif itemType == 1:
-            out.write("""<img src="icon_%d.png">\n""" % ( cell["_id"] ))
-            out.write("<br/>\n")
-            out.write(cgi.escape(cell["title"]) + " <br/><i>(shortcut)</i>")
-          elif itemType == 2:
-            out.write("""<i>folder</i>""")
-          elif itemType == 3:
-            out.write("""<i>live folder</i>""")
-          elif itemType == 4:
-            out.write("<i>widget %d</i><br/>\n" % cell["appWidgetId"])
-          elif itemType == 1000:
-            out.write("""<i>clock</i>""")
-          elif itemType == 1001:
-            out.write("""<i>search</i>""")
-          elif itemType == 1002:
-            out.write("""<i>photo frame</i>""")
-          else:
-            out.write("<b>unknown type: %d</b>" % itemType)
-          out.write("</td>\n")
+        render_cell_info(out, cell, occupied)
       out.write("</tr>\n")
     out.write("</table>\n")
     i=i+1
