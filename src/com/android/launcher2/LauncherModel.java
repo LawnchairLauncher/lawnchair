@@ -209,11 +209,10 @@ public class LauncherModel extends BroadcastReceiver {
                     if (item != modelItem) {
                         // the modelItem needs to match up perfectly with item if our model is to be
                         // consistent with the database-- for now, just require modelItem == item
-                        Log.e(TAG, "item: " + ((item != null) ? item.toString() : "null"));
-                        Log.e(TAG, "modelItem: " + ((modelItem != null) ? modelItem.toString() :
-                            "null"));
-                        throw new RuntimeException("Error: ItemInfo passed to moveItemInDatabase " +
-                                "doesn't match original");
+                        String msg = "item: " + ((item != null) ? item.toString() : "null") +
+                            "modelItem: " + ((modelItem != null) ? modelItem.toString() : "null") +
+                            "Error: ItemInfo passed to moveItemInDatabase doesn't match original";
+                        throw new RuntimeException(msg);
                     }
 
                     // Items are added/removed from the corresponding FolderInfo elsewhere, such
@@ -258,11 +257,10 @@ public class LauncherModel extends BroadcastReceiver {
                     if (item != modelItem) {
                         // the modelItem needs to match up perfectly with item if our model is to be
                         // consistent with the database-- for now, just require modelItem == item
-                        Log.e(TAG, "item: " + ((item != null) ? item.toString() : "null"));
-                        Log.e(TAG, "modelItem: " + ((modelItem != null) ? modelItem.toString() :
-                            "null"));
-                        throw new RuntimeException("Error: ItemInfo passed to moveItemInDatabase " +
-                            "doesn't match original");
+                        String msg = "item: " + ((item != null) ? item.toString() : "null") +
+                            "modelItem: " + ((modelItem != null) ? modelItem.toString() : "null") +
+                            "Error: ItemInfo passed to resizeItemInDatabase doesn't match original";
+                        throw new RuntimeException(msg);
                     }
                 }
             });
@@ -471,11 +469,10 @@ public class LauncherModel extends BroadcastReceiver {
                 if (item != modelItem) {
                     // the modelItem needs to match up perfectly with item if our model is to be
                     // consistent with the database-- for now, just require modelItem == item
-                    Log.e(TAG, "item: " + ((item != null) ? item.toString() : "null"));
-                    Log.e(TAG, "modelItem: " + ((modelItem != null) ? modelItem.toString() :
-                        "null"));
-                    throw new RuntimeException("Error: ItemInfo passed to updateItemInDatabase " +
-                        "doesn't match original");
+                    String msg = "item: " + ((item != null) ? item.toString() : "null") +
+                        "modelItem: " + ((modelItem != null) ? modelItem.toString() : "null") +
+                        "Error: ItemInfo passed to updateItemInDatabase doesn't match original";
+                    throw new RuntimeException(msg);
                 }
             }
         });
@@ -522,12 +519,14 @@ public class LauncherModel extends BroadcastReceiver {
                     cr.delete(LauncherSettings.Favorites.getContentUri(info.id, false), null, null);
                     sItemsIdMap.remove(info.id);
                     sFolders.remove(info.id);
+                    sDbIconCache.remove(info);
                     sWorkspaceItems.remove(info);
 
                     cr.delete(LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION,
                             LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
                     for (ItemInfo childInfo : info.contents) {
                         sItemsIdMap.remove(childInfo.id);
+                        sDbIconCache.remove(childInfo);
                     }
                 }
             });
