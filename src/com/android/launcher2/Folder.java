@@ -97,7 +97,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private int mFolderNameHeight;
     private Rect mHitRect = new Rect();
     private Rect mTempRect = new Rect();
-    private boolean mFirstOpen = true;
     private boolean mDragInProgress = false;
     private boolean mDeleteFolderOnDropCompleted = false;
     private boolean mSuppressFolderDeletion = false;
@@ -364,12 +363,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     public void animateOpen() {
-        if (mFirstOpen) {
-            setLayerType(LAYER_TYPE_HARDWARE, null);
-            buildLayer();
-            mFirstOpen = false;
-        }
-
         positionAndSizeAsIcon();
 
         if (!(getParent() instanceof DragLayer)) return;
@@ -410,25 +403,14 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             @Override
             public void onAnimationEnd(Animator animation) {
                 mState = STATE_OPEN;
-                setLayerType(LAYER_TYPE_NONE, null);
-                enableHardwareLayersForChildren();
             }
         });
         oa.setDuration(mExpandDuration);
         oa.start();
     }
 
-    void enableHardwareLayersForChildren() {
-        ArrayList<View> children = getItemsInReadingOrder();
-        for (View child: children) {
-            child.setLayerType(LAYER_TYPE_HARDWARE, null);
-        }
-    }
-
     public void animateClosed() {
         if (!(getParent() instanceof DragLayer)) return;
-        setLayerType(LAYER_TYPE_HARDWARE, null);
-        buildLayer();
 
         ObjectAnimator oa;
         if (mMode == PARTIAL_GROW) {
