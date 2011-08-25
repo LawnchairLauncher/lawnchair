@@ -1175,6 +1175,7 @@ public class CellLayout extends ViewGroup {
             int left = topLeft[0];
             int top = topLeft[1];
 
+
             if (v != null) {
                 // When drawing the drag outline, it did not account for margin offsets
                 // added by the view's parent.
@@ -1185,8 +1186,10 @@ public class CellLayout extends ViewGroup {
                 // Offsets due to the size difference between the View and the dragOutline.
                 // There is a size difference to account for the outer blur, which may lie
                 // outside the bounds of the view.
-                left += (v.getWidth() - dragOutline.getWidth()) / 2;
                 top += (v.getHeight() - dragOutline.getHeight()) / 2;
+                // We center about the x axis
+                left += ((mCellWidth * spanX) + ((spanX - 1) * mWidthGap)
+                        - dragOutline.getWidth()) / 2;
             } else {
                 // Center the drag outline in the cell
                 left += ((mCellWidth * spanX) + ((spanX - 1) * mWidthGap)
