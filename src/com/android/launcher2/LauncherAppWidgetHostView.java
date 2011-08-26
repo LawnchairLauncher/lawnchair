@@ -17,6 +17,7 @@
 package com.android.launcher2;
 
 import android.appwidget.AppWidgetHostView;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.res.Resources;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 
 import com.android.launcher.R;
+import com.android.launcher2.Launcher.Padding;
 
 /**
  * {@inheritDoc}
@@ -34,17 +36,12 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView {
     private boolean mHasPerformedLongPress;
     private CheckForLongPress mPendingCheckForLongPress;
     private LayoutInflater mInflater;
+    private Launcher mLauncher;
 
     public LauncherAppWidgetHostView(Context context) {
         super(context);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        Resources r = context.getResources();
-        // We add necessary padding to the AppWidgetHostView
-        setPadding(r.getDimensionPixelSize(R.dimen.app_widget_padding_left),
-                r.getDimensionPixelSize(R.dimen.app_widget_padding_top),
-                r.getDimensionPixelSize(R.dimen.app_widget_padding_right),
-                r.getDimensionPixelSize(R.dimen.app_widget_padding_bottom));
+        mLauncher = (Launcher) context;
     }
 
     @Override
@@ -116,6 +113,14 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView {
         if (mPendingCheckForLongPress != null) {
             removeCallbacks(mPendingCheckForLongPress);
         }
+    }
+
+    @Override
+    public void setAppWidget(int appWidgetId, AppWidgetProviderInfo info) {
+        super.setAppWidget(appWidgetId, info);
+        // We add necessary padding to the AppWidgetHostView
+        Launcher.Padding padding = mLauncher.getPaddingForWidget(info);
+        setPadding(padding.left, padding.top, padding.right, padding.bottom);
     }
 
     @Override
