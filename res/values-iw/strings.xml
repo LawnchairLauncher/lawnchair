@@ -25,12 +25,12 @@
     <string name="chooser_wallpaper" msgid="5988031014201479733">"בחר טפט מתוך"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"הגדר טפט"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"טפטים"</string>
-    <string name="activity_not_found" msgid="5591731020063337696">"היישום לא מותקן."</string>
+    <string name="activity_not_found" msgid="5591731020063337696">"היישום אינו מותקן."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"רכיבי Widget"</string>
     <string name="long_press_widget_to_add" msgid="8915177487173521501">"גע והחזק את המקש לחוץ כדי לבחור widget"</string>
     <string name="market" msgid="2652226429823445833">"קנה"</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"אין אפשרות להניח פריט במסך בית זה"</string>
-    <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"בחר widget כדי ליצור"</string>
+    <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"בחר Widget ליצירה"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"שם תיקיה"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"שנה את שם התיקיה"</string>
     <string name="rename_action" msgid="6016003384693240896">"אישור"</string>
@@ -64,9 +64,8 @@
     <string name="menu_wallpaper" msgid="5837429080911269832">"טפט"</string>
     <string name="menu_search" msgid="4826514464423239041">"חפש"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"התראות"</string>
-    <string name="menu_settings" msgid="6233960148378443661">"הגדרות"</string>
-    <!-- no translation found for menu_help (4901160661634590633) -->
-    <skip />
+    <!-- outdated translation 6233960148378443661 -->     <string name="menu_settings" msgid="8590123354578910028">"הגדרות"</string>
+    <string name="menu_help" msgid="4901160661634590633">"עזרה"</string>
     <string name="cab_menu_delete_app" msgid="1242619904941293871">"הסר התקנה של יישום"</string>
     <string name="cab_menu_app_info" msgid="5180426909324882018">"פרטי יישום"</string>
     <string name="cab_app_selection_text" msgid="606113924828167756">"נבחר יישום אחד"</string>
@@ -86,4 +85,16 @@
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"זהו יישום מערכת ואין אפשרות להסיר את התקנתו."</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"תיקיה ללא שם"</string>
+    <!-- no translation found for workspace_cling_title (6772061635561632299) -->
+    <skip />
+    <!-- no translation found for workspace_cling_move_item (897064551822359347) -->
+    <skip />
+    <!-- no translation found for workspace_cling_open_all_apps (5287802320356364228) -->
+    <skip />
+    <!-- no translation found for all_apps_cling_title (3057036297077247772) -->
+    <skip />
+    <!-- no translation found for all_apps_cling_add_item (4635717397976102935) -->
+    <skip />
+    <!-- no translation found for cling_dismiss (2780907108735868381) -->
+    <skip />
 </resources>

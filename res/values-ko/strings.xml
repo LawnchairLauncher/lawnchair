@@ -64,9 +64,8 @@
     <string name="menu_wallpaper" msgid="5837429080911269832">"배경화면"</string>
     <string name="menu_search" msgid="4826514464423239041">"검색"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"알림"</string>
-    <string name="menu_settings" msgid="6233960148378443661">"설정"</string>
-    <!-- no translation found for menu_help (4901160661634590633) -->
-    <skip />
+    <!-- outdated translation 6233960148378443661 -->     <string name="menu_settings" msgid="8590123354578910028">"설정"</string>
+    <string name="menu_help" msgid="4901160661634590633">"도움말"</string>
     <string name="cab_menu_delete_app" msgid="1242619904941293871">"애플리케이션 제거"</string>
     <string name="cab_menu_app_info" msgid="5180426909324882018">"애플리케이션 세부정보"</string>
     <string name="cab_app_selection_text" msgid="606113924828167756">"1개 애플리케이션 선택"</string>
@@ -86,4 +85,16 @@
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"시스템 애플리케이션은 제거할 수 없습니다."</string>
     <string name="dream_name" msgid="2847171357608437154">"로켓 실행기"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"이름이 없는 폴더"</string>
+    <!-- no translation found for workspace_cling_title (6772061635561632299) -->
+    <skip />
+    <!-- no translation found for workspace_cling_move_item (897064551822359347) -->
+    <skip />
+    <!-- no translation found for workspace_cling_open_all_apps (5287802320356364228) -->
+    <skip />
+    <!-- no translation found for all_apps_cling_title (3057036297077247772) -->
+    <skip />
+    <!-- no translation found for all_apps_cling_add_item (4635717397976102935) -->
+    <skip />
+    <!-- no translation found for cling_dismiss (2780907108735868381) -->
+    <skip />
 </resources>

@@ -41,7 +41,7 @@
     <string name="group_widgets" msgid="6704978494073105844">"Tiện ích"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Hình nền"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Không còn khoảng trống trên Màn hình chính này."</string>
-    <string name="invalid_hotseat_item" msgid="6545340627805449250">"Tiện ích con này quá lớn cho điểm giới hạn."</string>
+    <string name="invalid_hotseat_item" msgid="6545340627805449250">"Tiện ích này quá lớn cho điểm giới hạn."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"Lối tắt \"<xliff:g id="NAME">%s</xliff:g>\" đã được tạo."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Lối tắt \"<xliff:g id="NAME">%s</xliff:g>\" đã bị xoá."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Lối tắt \"<xliff:g id="NAME">%s</xliff:g>\" đã tồn tại."</string>
@@ -64,9 +64,8 @@
     <string name="menu_wallpaper" msgid="5837429080911269832">"Hình nền"</string>
     <string name="menu_search" msgid="4826514464423239041">"Tìm kiếm"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"Thông báo"</string>
-    <string name="menu_settings" msgid="6233960148378443661">"Cài đặt"</string>
-    <!-- no translation found for menu_help (4901160661634590633) -->
-    <skip />
+    <!-- outdated translation 6233960148378443661 -->     <string name="menu_settings" msgid="8590123354578910028">"Cài đặt"</string>
+    <string name="menu_help" msgid="4901160661634590633">"Trợ giúp"</string>
     <string name="cab_menu_delete_app" msgid="1242619904941293871">"Gỡ cài đặt ứng dụng"</string>
     <string name="cab_menu_app_info" msgid="5180426909324882018">"Chi tiết ứng dụng"</string>
     <string name="cab_app_selection_text" msgid="606113924828167756">"Đã chọn 1 ứng dụng"</string>
@@ -86,4 +85,16 @@
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"Đây là ứng dụng hệ thống và không thể gỡ cài đặt."</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Thư mục chưa đặt tên"</string>
+    <!-- no translation found for workspace_cling_title (6772061635561632299) -->
+    <skip />
+    <!-- no translation found for workspace_cling_move_item (897064551822359347) -->
+    <skip />
+    <!-- no translation found for workspace_cling_open_all_apps (5287802320356364228) -->
+    <skip />
+    <!-- no translation found for all_apps_cling_title (3057036297077247772) -->
+    <skip />
+    <!-- no translation found for all_apps_cling_add_item (4635717397976102935) -->
+    <skip />
+    <!-- no translation found for cling_dismiss (2780907108735868381) -->
+    <skip />
 </resources>

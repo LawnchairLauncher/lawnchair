@@ -64,7 +64,7 @@
     <string name="menu_wallpaper" msgid="5837429080911269832">"Wallpaper"</string>
     <string name="menu_search" msgid="4826514464423239041">"Search"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"Notifications"</string>
-    <string name="menu_settings" msgid="6233960148378443661">"Settings"</string>
+    <string name="menu_settings" msgid="8590123354578910028">"System Settings"</string>
     <string name="menu_help" msgid="4901160661634590633">"Help"</string>
     <string name="cab_menu_delete_app" msgid="1242619904941293871">"Uninstall application"</string>
     <string name="cab_menu_app_info" msgid="5180426909324882018">"Application details"</string>
@@ -85,4 +85,10 @@
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"This is a system application and cannot be uninstalled."</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Unnamed Folder"</string>
+    <string name="workspace_cling_title" msgid="6772061635561632299">"Welcome Home!"</string>
+    <string name="workspace_cling_move_item" msgid="897064551822359347">"To move an app or widget, touch &amp; hold, then reposition it."</string>
+    <string name="workspace_cling_open_all_apps" msgid="5287802320356364228">"To see all your apps, touch the All Apps button."</string>
+    <string name="all_apps_cling_title" msgid="3057036297077247772">"Here are all your apps"</string>
+    <string name="all_apps_cling_add_item" msgid="4635717397976102935">"To add an app or widget to your home screen, touch &amp; hold, then position it."</string>
+    <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
 </resources>

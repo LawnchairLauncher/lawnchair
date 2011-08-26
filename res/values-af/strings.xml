@@ -84,10 +84,9 @@
     <skip />
     <!-- no translation found for menu_notifications (6424587053194766192) -->
     <skip />
-    <!-- no translation found for menu_settings (6233960148378443661) -->
+    <!-- no translation found for menu_settings (8590123354578910028) -->
     <skip />
-    <!-- no translation found for menu_help (4901160661634590633) -->
-    <skip />
+    <string name="menu_help" msgid="4901160661634590633">"Hulp"</string>
     <string name="cab_menu_delete_app" msgid="1242619904941293871">"Deïnstalleer program"</string>
     <string name="cab_menu_app_info" msgid="5180426909324882018">"Programdetails"</string>
     <string name="cab_app_selection_text" msgid="606113924828167756">"1 program gekies"</string>
@@ -110,5 +109,17 @@
     <!-- no translation found for dream_name (2847171357608437154) -->
     <skip />
     <!-- no translation found for folder_hint_text (8633351560105748141) -->
+    <skip />
+    <!-- no translation found for workspace_cling_title (6772061635561632299) -->
+    <skip />
+    <!-- no translation found for workspace_cling_move_item (897064551822359347) -->
+    <skip />
+    <!-- no translation found for workspace_cling_open_all_apps (5287802320356364228) -->
+    <skip />
+    <!-- no translation found for all_apps_cling_title (3057036297077247772) -->
+    <skip />
+    <!-- no translation found for all_apps_cling_add_item (4635717397976102935) -->
+    <skip />
+    <!-- no translation found for cling_dismiss (2780907108735868381) -->
     <skip />
 </resources>
