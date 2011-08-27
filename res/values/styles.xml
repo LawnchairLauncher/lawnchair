@@ -108,6 +108,12 @@
         <item name="android:drawablePadding">6dp</item>
     </style>
 
+    <style name="QSBBar">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/qsb_bar_height</item>
+        <item name="android:layout_gravity">top|center_horizontal</item>
+    </style>
     <style name="SearchDropTargetBar">
         <item name="android:orientation">horizontal</item>
         <item name="android:layout_width">match_parent</item>

@@ -21,9 +21,15 @@
 <!-- Workspace -->
     <style name="WorkspaceScreen">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 <!-- Search Bar -->
+    <style name="QSBBar">
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_width">@dimen/qsb_bar_height</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">left</item>
+    </style>
     <style name="SearchDropTargetBar">
         <item name="android:orientation">vertical</item>
         <item name="android:layout_width">match_parent</item>

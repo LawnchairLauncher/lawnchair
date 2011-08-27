@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 201 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<resources>
+<!-- Workspace -->
+    <dimen name="workspace_width_gap">0dp</dimen>
+    <dimen name="workspace_height_gap">0dp</dimen>
+    <dimen name="workspace_top_padding">-1dp</dimen>
+    <dimen name="workspace_bottom_padding">-1dp</dimen>
+    <dimen name="workspace_left_padding">-1dp</dimen>
+    <dimen name="workspace_right_padding">-1dp</dimen>
+    <dimen name="workspace_divider_padding_top">20dp</dimen>
+    <dimen name="workspace_divider_padding_bottom">20dp</dimen>
+
+    <dimen name="hotseat_width_gap">0dp</dimen>
+    <dimen name="hotseat_height_gap">0dp</dimen>
+    <dimen name="hotseat_top_padding">-1dp</dimen>
+    <dimen name="hotseat_bottom_padding">-1dp</dimen>
+    <dimen name="hotseat_left_padding">-1dp</dimen>
+    <dimen name="hotseat_right_padding">-1dp</dimen>
+
+    <dimen name="qsb_bar_height">48dp</dimen>
+    <!-- height of the bottom row of controls -->
+    <dimen name="button_bar_height">80dip</dimen>
+    <!-- Because portal animations go beyond the bounds of an icon, we need
+         to make the dock layout slightly larger than the button_bar_height -->
+    <dimen name="button_bar_height_top_padding">8dp</dimen>
+    <dimen name="button_bar_height_bottom_padding">8dp</dimen>
+    <dimen name="button_bar_width_left_padding">8dp</dimen>
+    <dimen name="button_bar_width_right_padding">8dp</dimen>
+    <dimen name="button_bar_height_plus_padding">80dp</dimen>
+</resources>
