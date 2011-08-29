@@ -52,6 +52,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -74,8 +75,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.view.View.OnLongClickListener;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
@@ -729,8 +730,6 @@ public final class Launcher extends Activity
         }
     }
 
-
-
     /**
      * Creates a view representing a shortcut.
      *
@@ -845,6 +844,39 @@ public final class Launcher extends Activity
         }
     }
 
+    class Padding {
+        int left = 0;
+        int right = 0;
+        int top = 0;
+        int bottom = 0;
+    }
+
+    Padding getPaddingForWidget(AppWidgetProviderInfo widgetInfo) {
+        PackageManager packageManager = getPackageManager();
+        Padding p = new Padding();
+        android.content.pm.ApplicationInfo appInfo;
+
+        try {
+            appInfo = packageManager.getApplicationInfo(
+                    widgetInfo.provider.getPackageName(), 0);
+        } catch (Exception e) {
+            // if we can't find the package, return 0 padding
+            return p;
+        }
+
+        // TODO: This should be ICE_CREAM_SANDWICH, but since the unbundled apps
+        // may not have updated their targetSdkVersion yet, we've bumped it down for now.
+        if (appInfo.targetSdkVersion >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            Resources r = getResources();
+            p.left = r.getDimensionPixelSize(R.dimen.app_widget_padding_left);
+            p.right = r.getDimensionPixelSize(R.dimen.app_widget_padding_right);
+            p.top = r.getDimensionPixelSize(R.dimen.app_widget_padding_top);
+            p.bottom = r.getDimensionPixelSize(R.dimen.app_widget_padding_bottom);
+        }
+
+        return p;
+    }
+
     /**
      * Add a widget to the workspace.
      *
@@ -857,15 +889,11 @@ public final class Launcher extends Activity
         // Calculate the grid spans needed to fit this widget
         CellLayout layout = getCellLayout(container, screen);
 
+        Padding padding = getPaddingForWidget(appWidgetInfo);
         // We want to account for the extra amount of padding that we are adding to the widget
         // to ensure that it gets the full amount of space that it has requested
-        Resources r = getResources();
-        int requiredWidth = appWidgetInfo.minWidth +
-                r.getDimensionPixelSize(R.dimen.app_widget_padding_left) +
-                r.getDimensionPixelSize(R.dimen.app_widget_padding_right);
-        int requiredHeight = appWidgetInfo.minHeight + 
-                r.getDimensionPixelSize(R.dimen.app_widget_padding_top) +
-                r.getDimensionPixelSize(R.dimen.app_widget_padding_bottom);
+        int requiredWidth = appWidgetInfo.minWidth + padding.left + padding.right;
+        int requiredHeight = appWidgetInfo.minHeight + padding.top + padding.bottom;
         int[] spanXY = layout.rectToCell(requiredWidth, requiredHeight, null);
 
         // Try finding open space on Launcher screen
