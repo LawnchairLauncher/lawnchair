@@ -18,6 +18,14 @@
     <!-- Far-left screen [0] -->
 
     <!-- Left screen [1] -->
+    <appwidget
+        launcher:packageName="com.android.settings"
+        launcher:className="com.android.settings.widget.SettingsAppWidgetProvider"
+        launcher:screen="1"
+        launcher:x="0"
+        launcher:y="1"
+        launcher:spanX="4"
+        launcher:spanY="1" />
 
     <!-- Middle screen [2] -->
     <favorite
@@ -29,14 +37,16 @@
     <folder
         launcher:screen="2"
         launcher:x="3"
-        launcher:y="3"
-        launcher:title="@string/google_apps_folder_name">
+        launcher:y="3">
         <favorite
             launcher:packageName="com.google.android.apps.plus"
             launcher:className="com.google.android.apps.plus.phone.HomeActivity" />
         <favorite
             launcher:packageName="com.google.android.gm"
             launcher:className="com.google.android.gm.ConversationListActivityGmail" />
+        <favorite
+            launcher:packageName="com.google.android.talk"
+            launcher:className="com.google.android.talk.SigningInActivity" />
         <favorite
             launcher:packageName="com.google.android.apps.maps"
             launcher:className="com.google.android.maps.MapsActivity" />
@@ -67,6 +77,14 @@
     </folder>
 
     <!-- Right screen [3] -->
+    <appwidget
+        launcher:packageName="com.android.vending"
+        launcher:className="com.android.vending.MarketWidgetProvider"
+        launcher:screen="3"
+        launcher:x="1"
+        launcher:y="1"
+        launcher:spanX="2"
+        launcher:spanY="2" />
 
     <!-- Far-right screen [4] -->
 
@@ -86,8 +104,8 @@
         launcher:x="1"
         launcher:y="0" />
     <favorite
-        launcher:packageName="com.google.android.talk"
-        launcher:className="com.google.android.talk.SigningInActivity"
+        launcher:packageName="com.android.mms"
+        launcher:className="com.android.mms.ui.ConversationList"
         launcher:container="-101"
         launcher:screen="3"
         launcher:x="3"
