@@ -605,9 +605,11 @@ public class LauncherModel extends BroadcastReceiver {
             startLoaderFromBackground();
         } else if (SearchManager.INTENT_GLOBAL_SEARCH_ACTIVITY_CHANGED.equals(action) ||
                    SearchManager.INTENT_ACTION_SEARCHABLES_CHANGED.equals(action)) {
-            Callbacks callbacks = mCallbacks.get();
-            if (callbacks != null) {
-                callbacks.bindSearchablesChanged();
+            if (mCallbacks != null) {
+                Callbacks callbacks = mCallbacks.get();
+                if (callbacks != null) {
+                    callbacks.bindSearchablesChanged();
+                }
             }
         }
     }
