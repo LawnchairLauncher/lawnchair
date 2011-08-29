@@ -210,8 +210,10 @@ public class LauncherModel extends BroadcastReceiver {
                         // the modelItem needs to match up perfectly with item if our model is to be
                         // consistent with the database-- for now, just require modelItem == item
                         String msg = "item: " + ((item != null) ? item.toString() : "null") +
-                            "modelItem: " + ((modelItem != null) ? modelItem.toString() : "null") +
-                            "Error: ItemInfo passed to moveItemInDatabase doesn't match original";
+                            " modelItem: " + ((modelItem != null) ? modelItem.toString() : "null") +
+                            " creation tag of item: " + ((item != null) ? item.whereCreated : "null") +
+                            " creation tag of modelItem: " + ((modelItem != null) ? modelItem.whereCreated : "null") +
+                            " Error: ItemInfo passed to moveItemInDatabase doesn't match original";
                         throw new RuntimeException(msg);
                     }
 
@@ -258,8 +260,10 @@ public class LauncherModel extends BroadcastReceiver {
                         // the modelItem needs to match up perfectly with item if our model is to be
                         // consistent with the database-- for now, just require modelItem == item
                         String msg = "item: " + ((item != null) ? item.toString() : "null") +
-                            "modelItem: " + ((modelItem != null) ? modelItem.toString() : "null") +
-                            "Error: ItemInfo passed to resizeItemInDatabase doesn't match original";
+                            " modelItem: " + ((modelItem != null) ? modelItem.toString() : "null") +
+                            " creation tag of item: " + ((item != null) ? item.whereCreated : "null") +
+                            " creation tag of modelItem: " + ((modelItem != null) ? modelItem.whereCreated : "null") +
+                            " Error: ItemInfo passed to resizeItemInDatabase doesn't match original";
                         throw new RuntimeException(msg);
                     }
                 }
@@ -306,7 +310,7 @@ public class LauncherModel extends BroadcastReceiver {
 
         try {
             while (c.moveToNext()) {
-                ItemInfo item = new ItemInfo();
+                ItemInfo item = new ItemInfo("17");
                 item.cellX = c.getInt(cellXIndex);
                 item.cellY = c.getInt(cellYIndex);
                 item.spanX = c.getInt(spanXIndex);
@@ -470,8 +474,10 @@ public class LauncherModel extends BroadcastReceiver {
                     // the modelItem needs to match up perfectly with item if our model is to be
                     // consistent with the database-- for now, just require modelItem == item
                     String msg = "item: " + ((item != null) ? item.toString() : "null") +
-                        "modelItem: " + ((modelItem != null) ? modelItem.toString() : "null") +
-                        "Error: ItemInfo passed to updateItemInDatabase doesn't match original";
+                        " modelItem: " + ((modelItem != null) ? modelItem.toString() : "null") +
+                        " creation tag of item: " + ((item != null) ? item.whereCreated : "null") +
+                        " creation tag of modelItem: " + ((modelItem != null) ? modelItem.whereCreated : "null") +
+                        " Error: ItemInfo passed to updateItemInDatabase doesn't match original";
                     throw new RuntimeException(msg);
                 }
             }
@@ -1059,7 +1065,7 @@ public class LauncherModel extends BroadcastReceiver {
                                         + id + " appWidgetId=" + appWidgetId);
                                 itemsToRemove.add(id);
                             } else {
-                                appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId);
+                                appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId, "5");
                                 appWidgetInfo.id = id;
                                 appWidgetInfo.screen = c.getInt(screenIndex);
                                 appWidgetInfo.cellX = c.getInt(cellXIndex);
@@ -1345,7 +1351,7 @@ public class LauncherModel extends BroadcastReceiver {
                 for (int j=0; i<N && j<batchSize; j++) {
                     // This builds the icon bitmaps.
                     mAllAppsList.add(new ApplicationInfo(packageManager, apps.get(i),
-                            mIconCache, mLabelCache));
+                            mIconCache, mLabelCache, "6"));
                     i++;
                 }
 
@@ -1541,7 +1547,7 @@ public class LauncherModel extends BroadcastReceiver {
     public ShortcutInfo getShortcutInfo(PackageManager manager, Intent intent, Context context,
             Cursor c, int iconIndex, int titleIndex, HashMap<Object, CharSequence> labelCache) {
         Bitmap icon = null;
-        final ShortcutInfo info = new ShortcutInfo();
+        final ShortcutInfo info = new ShortcutInfo("7");
 
         ComponentName componentName = intent.getComponent();
         if (componentName == null) {
@@ -1606,7 +1612,7 @@ public class LauncherModel extends BroadcastReceiver {
             int titleIndex) {
 
         Bitmap icon = null;
-        final ShortcutInfo info = new ShortcutInfo();
+        final ShortcutInfo info = new ShortcutInfo("8");
         info.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
 
         // TODO: If there's an explicit component and we can't install that, delete it.
@@ -1765,7 +1771,7 @@ public class LauncherModel extends BroadcastReceiver {
             }
         }
 
-        final ShortcutInfo info = new ShortcutInfo();
+        final ShortcutInfo info = new ShortcutInfo("9");
 
         if (icon == null) {
             if (fallbackIcon != null) {
@@ -1833,7 +1839,7 @@ public class LauncherModel extends BroadcastReceiver {
         FolderInfo folderInfo = folders.get(id);
         if (folderInfo == null) {
             // No placeholder -- create a new instance
-            folderInfo = new FolderInfo();
+            folderInfo = new FolderInfo("10");
             folders.put(id, folderInfo);
         }
         return folderInfo;

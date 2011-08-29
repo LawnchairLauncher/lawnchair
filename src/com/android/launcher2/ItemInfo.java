@@ -86,10 +86,16 @@ class ItemInfo {
      */
     int[] dropPos = null;
 
-    ItemInfo() {
+    /*
+     *  A tag to know where this item was created
+     */
+    String whereCreated;
+
+    ItemInfo(String whereCreated) {
+        this.whereCreated = whereCreated;
     }
 
-    ItemInfo(ItemInfo info) {
+    ItemInfo(ItemInfo info, String whereCreated) {
         id = info.id;
         cellX = info.cellX;
         cellY = info.cellY;
@@ -98,6 +104,7 @@ class ItemInfo {
         screen = info.screen;
         itemType = info.itemType;
         container = info.container;
+        this.whereCreated = whereCreated;
     }
 
     /**

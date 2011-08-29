@@ -2575,7 +2575,7 @@ public class Workspace extends SmoothPagedView
                         // that widget
                         final AppWidgetProviderInfo widgetInfo = widgets.get(0).widgetInfo;
                         final PendingAddWidgetInfo createInfo =
-                                new PendingAddWidgetInfo(widgetInfo, mimeType, data);
+                                new PendingAddWidgetInfo(widgetInfo, mimeType, data, "11");
                         mLauncher.addAppWidgetFromDrop(createInfo,
                             LauncherSettings.Favorites.CONTAINER_DESKTOP, mCurrentPage, null, pos);
                     } else {
@@ -3091,7 +3091,7 @@ public class Workspace extends SmoothPagedView
             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                 if (info.container == NO_ID && info instanceof ApplicationInfo) {
                     // Came from all apps -- make a copy
-                    info = new ShortcutInfo((ApplicationInfo) info);
+                    info = new ShortcutInfo((ApplicationInfo) info, "12");
                 }
                 view = mLauncher.createShortcut(R.layout.application, cellLayout,
                         (ShortcutInfo) info);

@@ -175,7 +175,7 @@ public final class Launcher extends Activity
     private AppWidgetManager mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
 
-    private ItemInfo mPendingAddInfo = new ItemInfo();
+    private ItemInfo mPendingAddInfo = new ItemInfo("1");
     private int[] mTmpAddItemCellCoordinates = new int[2];
 
     private FolderInfo mFolderInfo;
@@ -902,7 +902,7 @@ public final class Launcher extends Activity
         }
 
         // Build Launcher-specific widget info and save to database
-        LauncherAppWidgetInfo launcherInfo = new LauncherAppWidgetInfo(appWidgetId);
+        LauncherAppWidgetInfo launcherInfo = new LauncherAppWidgetInfo(appWidgetId, "2");
         launcherInfo.spanX = spanXY[0];
         launcherInfo.spanY = spanXY[1];
 
@@ -1446,7 +1446,7 @@ public final class Launcher extends Activity
 
     FolderIcon addFolder(CellLayout layout, long container, final int screen, int cellX,
             int cellY) {
-        final FolderInfo folderInfo = new FolderInfo();
+        final FolderInfo folderInfo = new FolderInfo("3");
         folderInfo.title = getText(R.string.folder_name);
 
         // Update the model
