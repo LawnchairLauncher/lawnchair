@@ -62,14 +62,12 @@ class ShortcutInfo extends ItemInfo {
      */
     private Bitmap mIcon;
 
-    ShortcutInfo(String whereCreated) {
-        super(whereCreated);
+    ShortcutInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
-        this.whereCreated = whereCreated;
     }
     
-    public ShortcutInfo(ShortcutInfo info, String whereCreated) {
-        super(info, whereCreated);
+    public ShortcutInfo(ShortcutInfo info) {
+        super(info);
         title = info.title.toString();
         intent = new Intent(info.intent);
         if (info.iconResource != null) {
@@ -82,8 +80,8 @@ class ShortcutInfo extends ItemInfo {
     }
 
     /** TODO: Remove this.  It's only called by ApplicationInfo.makeShortcut. */
-    public ShortcutInfo(ApplicationInfo info, String whereCreated) {
-        super(info, whereCreated);
+    public ShortcutInfo(ApplicationInfo info) {
+        super(info);
         title = info.title.toString();
         intent = new Intent(info.intent);
         customIcon = false;

@@ -60,8 +60,7 @@ class ApplicationInfo extends ItemInfo {
 
     int flags = 0;
 
-    ApplicationInfo(String whereCreated) {
-        super(whereCreated);
+    ApplicationInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
     }
 
@@ -69,8 +68,7 @@ class ApplicationInfo extends ItemInfo {
      * Must not hold the Context.
      */
     public ApplicationInfo(PackageManager pm, ResolveInfo info, IconCache iconCache,
-            HashMap<Object, CharSequence> labelCache, String whereCreated) {
-        super(whereCreated);
+            HashMap<Object, CharSequence> labelCache) {
         final String packageName = info.activityInfo.applicationInfo.packageName;
 
         this.componentName = new ComponentName(packageName, info.activityInfo.name);
@@ -95,8 +93,8 @@ class ApplicationInfo extends ItemInfo {
         iconCache.getTitleAndIcon(this, info, labelCache);
     }
 
-    public ApplicationInfo(ApplicationInfo info, String whereCreated) {
-        super(info, whereCreated);
+    public ApplicationInfo(ApplicationInfo info) {
+        super(info);
         componentName = info.componentName;
         title = info.title.toString();
         intent = new Intent(info.intent);
@@ -135,6 +133,6 @@ class ApplicationInfo extends ItemInfo {
     }
 
     public ShortcutInfo makeShortcut() {
-        return new ShortcutInfo(this, "18");
+        return new ShortcutInfo(this);
     }
 }

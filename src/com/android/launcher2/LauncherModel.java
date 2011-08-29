@@ -171,7 +171,7 @@ public class LauncherModel extends BroadcastReceiver {
         // by making a copy of workspace items first.
         final ArrayList<ItemInfo> workspaceItems = new ArrayList<ItemInfo>(sWorkspaceItems);
         mHandler.post(new Runnable() {
-           @Override
+            @Override
             public void run() {
                for (ItemInfo item : workspaceItems) {
                    item.unbind();
@@ -197,6 +197,46 @@ public class LauncherModel extends BroadcastReceiver {
         }
     }
 
+    static void updateItemInDatabaseHelper(Context context, final ContentValues values,
+            final ItemInfo item, final String callingFunction) {
+        final long itemId = item.id;
+        final Uri uri = LauncherSettings.Favorites.getContentUri(itemId, false);
+        final ContentResolver cr = context.getContentResolver();
+
+        Runnable r = new Runnable() {
+            public void run() {
+                cr.update(uri, values, null, null);
+
+                ItemInfo modelItem = sItemsIdMap.get(itemId);
+                if (item != modelItem) {
+                    // the modelItem needs to match up perfectly with item if our model is to be
+                    // consistent with the database-- for now, just require modelItem == item
+                    String msg = "item: " + ((item != null) ? item.toString() : "null") +
+                        "modelItem: " + ((modelItem != null) ? modelItem.toString() : "null") +
+                        "Error: ItemInfo passed to " + callingFunction + " doesn't match original";
+                    throw new RuntimeException(msg);
+                }
+
+                // Items are added/removed from the corresponding FolderInfo elsewhere, such
+                // as in Workspace.onDrop. Here, we just add/remove them from the list of items
+                // that are on the desktop, as appropriate
+                if (modelItem.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
+                        modelItem.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+                    if (!sWorkspaceItems.contains(modelItem)) {
+                        sWorkspaceItems.add(modelItem);
+                    }
+                } else {
+                    sWorkspaceItems.remove(modelItem);
+                }
+            }
+        };
+
+        if (sWorkerThread.getThreadId() == Process.myTid()) {
+            r.run();
+        } else {
+            sWorker.post(r);
+        }
+    }
     /**
      * Move an item in the DB to a new <container, screen, cellX, cellY>
      */
@@ -205,6 +245,7 @@ public class LauncherModel extends BroadcastReceiver {
         item.container = container;
         item.cellX = cellX;
         item.cellY = cellY;
+
         // We store hotseat items in canonical form which is this orientation invariant position
         // in the hotseat
         if (context instanceof Launcher && screen < 0 &&
@@ -214,43 +255,13 @@ public class LauncherModel extends BroadcastReceiver {
             item.screen = screen;
         }
 
-        final Uri uri = LauncherSettings.Favorites.getContentUri(item.id, false);
         final ContentValues values = new ContentValues();
-        final ContentResolver cr = context.getContentResolver();
-
         values.put(LauncherSettings.Favorites.CONTAINER, item.container);
         values.put(LauncherSettings.Favorites.CELLX, item.cellX);
         values.put(LauncherSettings.Favorites.CELLY, item.cellY);
         values.put(LauncherSettings.Favorites.SCREEN, item.screen);
 
-        sWorker.post(new Runnable() {
-                public void run() {
-                    cr.update(uri, values, null, null);
-                    ItemInfo modelItem = sItemsIdMap.get(item.id);
-                    if (item != modelItem) {
-                        // the modelItem needs to match up perfectly with item if our model is to be
-                        // consistent with the database-- for now, just require modelItem == item
-                        String msg = "item: " + ((item != null) ? item.toString() : "null") +
-                            " modelItem: " + ((modelItem != null) ? modelItem.toString() : "null") +
-                            " creation tag of item: " + ((item != null) ? item.whereCreated : "null") +
-                            " creation tag of modelItem: " + ((modelItem != null) ? modelItem.whereCreated : "null") +
-                            " Error: ItemInfo passed to moveItemInDatabase doesn't match original";
-                        throw new RuntimeException(msg);
-                    }
-
-                    // Items are added/removed from the corresponding FolderInfo elsewhere, such
-                    // as in Workspace.onDrop. Here, we just add/remove them from the list of items
-                    // that are on the desktop, as appropriate
-                    if (modelItem.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
-                            modelItem.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                        if (!sWorkspaceItems.contains(modelItem)) {
-                            sWorkspaceItems.add(modelItem);
-                        }
-                    } else {
-                        sWorkspaceItems.remove(modelItem);
-                    }
-                }
-            });
+        updateItemInDatabaseHelper(context, values, item, "moveItemInDatabase");
     }
 
     /**
@@ -263,32 +274,24 @@ public class LauncherModel extends BroadcastReceiver {
         item.cellX = cellX;
         item.cellY = cellY;
 
-        final Uri uri = LauncherSettings.Favorites.getContentUri(item.id, false);
         final ContentValues values = new ContentValues();
-        final ContentResolver cr = context.getContentResolver();
-
         values.put(LauncherSettings.Favorites.CONTAINER, item.container);
         values.put(LauncherSettings.Favorites.SPANX, spanX);
         values.put(LauncherSettings.Favorites.SPANY, spanY);
         values.put(LauncherSettings.Favorites.CELLX, cellX);
         values.put(LauncherSettings.Favorites.CELLY, cellY);
+        updateItemInDatabaseHelper(context, values, item, "resizeItemInDatabase");
+    }
 
-        sWorker.post(new Runnable() {
-                public void run() {
-                    cr.update(uri, values, null, null);
-                    ItemInfo modelItem = sItemsIdMap.get(item.id);
-                    if (item != modelItem) {
-                        // the modelItem needs to match up perfectly with item if our model is to be
-                        // consistent with the database-- for now, just require modelItem == item
-                        String msg = "item: " + ((item != null) ? item.toString() : "null") +
-                            " modelItem: " + ((modelItem != null) ? modelItem.toString() : "null") +
-                            " creation tag of item: " + ((item != null) ? item.whereCreated : "null") +
-                            " creation tag of modelItem: " + ((modelItem != null) ? modelItem.whereCreated : "null") +
-                            " Error: ItemInfo passed to resizeItemInDatabase doesn't match original";
-                        throw new RuntimeException(msg);
-                    }
-                }
-            });
+
+    /**
+     * Update an item to the database in a specified container.
+     */
+    static void updateItemInDatabase(Context context, final ItemInfo item) {
+        final ContentValues values = new ContentValues();
+        item.onAddToDatabase(values);
+        item.updateValuesWithCoordinates(values, item.cellX, item.cellY);
+        updateItemInDatabaseHelper(context, values, item, "updateItemInDatabase");
     }
 
     /**
@@ -331,7 +334,7 @@ public class LauncherModel extends BroadcastReceiver {
 
         try {
             while (c.moveToNext()) {
-                ItemInfo item = new ItemInfo("17");
+                ItemInfo item = new ItemInfo();
                 item.cellX = c.getInt(cellXIndex);
                 item.cellY = c.getInt(cellYIndex);
                 item.spanX = c.getInt(spanXIndex);
@@ -420,7 +423,7 @@ public class LauncherModel extends BroadcastReceiver {
         values.put(LauncherSettings.Favorites._ID, item.id);
         item.updateValuesWithCoordinates(values, item.cellX, item.cellY);
 
-        sWorker.post(new Runnable() {
+        Runnable r = new Runnable() {
             public void run() {
                 cr.insert(notify ? LauncherSettings.Favorites.CONTENT_URI :
                         LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION, values);
@@ -447,7 +450,13 @@ public class LauncherModel extends BroadcastReceiver {
                         break;
                 }
             }
-        });
+        };
+
+        if (sWorkerThread.getThreadId() == Process.myTid()) {
+            r.run();
+        } else {
+            sWorker.post(r);
+        }
     }
 
     /**
@@ -477,30 +486,31 @@ public class LauncherModel extends BroadcastReceiver {
     }
 
     /**
-     * Update an item to the database in a specified container.
+     * Removes the specified item from the database
+     * @param context
+     * @param item
      */
-    static void updateItemInDatabase(Context context, final ItemInfo item) {
-        final ContentValues values = new ContentValues();
+    static void deleteItemFromDatabase(Context context, final ItemInfo item) {
         final ContentResolver cr = context.getContentResolver();
-
-        item.onAddToDatabase(values);
-        item.updateValuesWithCoordinates(values, item.cellX, item.cellY);
-
+        final Uri uriToDelete = LauncherSettings.Favorites.getContentUri(item.id, false);
         Runnable r = new Runnable() {
             public void run() {
-                cr.update(LauncherSettings.Favorites.getContentUri(item.id, false),
-                        values, null, null);
-                final ItemInfo modelItem = sItemsIdMap.get(item.id);
-                if (item != modelItem) {
-                    // the modelItem needs to match up perfectly with item if our model is to be
-                    // consistent with the database-- for now, just require modelItem == item
-                    String msg = "item: " + ((item != null) ? item.toString() : "null") +
-                        " modelItem: " + ((modelItem != null) ? modelItem.toString() : "null") +
-                        " creation tag of item: " + ((item != null) ? item.whereCreated : "null") +
-                        " creation tag of modelItem: " + ((modelItem != null) ? modelItem.whereCreated : "null") +
-                        " Error: ItemInfo passed to updateItemInDatabase doesn't match original";
-                    throw new RuntimeException(msg);
+                cr.delete(uriToDelete, null, null);
+                switch (item.itemType) {
+                    case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
+                        sFolders.remove(item.id);
+                        sWorkspaceItems.remove(item);
+                        break;
+                    case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+                    case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                        sWorkspaceItems.remove(item);
+                        break;
+                    case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+                        sAppWidgets.remove((LauncherAppWidgetInfo) item);
+                        break;
                 }
+                sItemsIdMap.remove(item.id);
+                sDbIconCache.remove(item);
             }
         };
         if (sWorkerThread.getThreadId() == Process.myTid()) {
@@ -511,57 +521,32 @@ public class LauncherModel extends BroadcastReceiver {
     }
 
     /**
-     * Removes the specified item from the database
-     * @param context
-     * @param item
-     */
-    static void deleteItemFromDatabase(Context context, final ItemInfo item) {
-        final ContentResolver cr = context.getContentResolver();
-        final Uri uriToDelete = LauncherSettings.Favorites.getContentUri(item.id, false);
-        sWorker.post(new Runnable() {
-                public void run() {
-                    cr.delete(uriToDelete, null, null);
-                    switch (item.itemType) {
-                        case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
-                            sFolders.remove(item.id);
-                            sWorkspaceItems.remove(item);
-                            break;
-                        case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
-                        case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                            sWorkspaceItems.remove(item);
-                            break;
-                        case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
-                            sAppWidgets.remove((LauncherAppWidgetInfo) item);
-                            break;
-                    }
-                    sItemsIdMap.remove(item.id);
-                    sDbIconCache.remove(item);
-                }
-            });
-    }
-
-    /**
      * Remove the contents of the specified folder from the database
      */
     static void deleteFolderContentsFromDatabase(Context context, final FolderInfo info) {
         final ContentResolver cr = context.getContentResolver();
 
-        sWorker.post(new Runnable() {
-                public void run() {
-                    cr.delete(LauncherSettings.Favorites.getContentUri(info.id, false), null, null);
-                    sItemsIdMap.remove(info.id);
-                    sFolders.remove(info.id);
-                    sDbIconCache.remove(info);
-                    sWorkspaceItems.remove(info);
+        Runnable r = new Runnable() {
+            public void run() {
+                cr.delete(LauncherSettings.Favorites.getContentUri(info.id, false), null, null);
+                sItemsIdMap.remove(info.id);
+                sFolders.remove(info.id);
+                sDbIconCache.remove(info);
+                sWorkspaceItems.remove(info);
 
-                    cr.delete(LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION,
-                            LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
-                    for (ItemInfo childInfo : info.contents) {
-                        sItemsIdMap.remove(childInfo.id);
-                        sDbIconCache.remove(childInfo);
-                    }
+                cr.delete(LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION,
+                        LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
+                for (ItemInfo childInfo : info.contents) {
+                    sItemsIdMap.remove(childInfo.id);
+                    sDbIconCache.remove(childInfo);
                 }
-            });
+            }
+        };
+        if (sWorkerThread.getThreadId() == Process.myTid()) {
+            r.run();
+        } else {
+            sWorker.post(r);
+        }
     }
 
     /**
@@ -1102,7 +1087,7 @@ public class LauncherModel extends BroadcastReceiver {
                                         + id + " appWidgetId=" + appWidgetId);
                                 itemsToRemove.add(id);
                             } else {
-                                appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId, "5");
+                                appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId);
                                 appWidgetInfo.id = id;
                                 appWidgetInfo.screen = c.getInt(screenIndex);
                                 appWidgetInfo.cellX = c.getInt(cellXIndex);
@@ -1394,7 +1379,7 @@ public class LauncherModel extends BroadcastReceiver {
                 for (int j=0; i<N && j<batchSize; j++) {
                     // This builds the icon bitmaps.
                     mAllAppsList.add(new ApplicationInfo(packageManager, apps.get(i),
-                            mIconCache, mLabelCache, "6"));
+                            mIconCache, mLabelCache));
                     i++;
                 }
 
@@ -1590,7 +1575,7 @@ public class LauncherModel extends BroadcastReceiver {
     public ShortcutInfo getShortcutInfo(PackageManager manager, Intent intent, Context context,
             Cursor c, int iconIndex, int titleIndex, HashMap<Object, CharSequence> labelCache) {
         Bitmap icon = null;
-        final ShortcutInfo info = new ShortcutInfo("7");
+        final ShortcutInfo info = new ShortcutInfo();
 
         ComponentName componentName = intent.getComponent();
         if (componentName == null) {
@@ -1655,7 +1640,7 @@ public class LauncherModel extends BroadcastReceiver {
             int titleIndex) {
 
         Bitmap icon = null;
-        final ShortcutInfo info = new ShortcutInfo("8");
+        final ShortcutInfo info = new ShortcutInfo();
         info.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
 
         // TODO: If there's an explicit component and we can't install that, delete it.
@@ -1814,7 +1799,7 @@ public class LauncherModel extends BroadcastReceiver {
             }
         }
 
-        final ShortcutInfo info = new ShortcutInfo("9");
+        final ShortcutInfo info = new ShortcutInfo();
 
         if (icon == null) {
             if (fallbackIcon != null) {
@@ -1882,7 +1867,7 @@ public class LauncherModel extends BroadcastReceiver {
         FolderInfo folderInfo = folders.get(id);
         if (folderInfo == null) {
             // No placeholder -- create a new instance
-            folderInfo = new FolderInfo("10");
+            folderInfo = new FolderInfo();
             folders.put(id, folderInfo);
         }
         return folderInfo;
