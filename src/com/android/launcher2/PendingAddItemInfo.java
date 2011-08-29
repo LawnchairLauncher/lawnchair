@@ -28,6 +28,10 @@ class PendingAddItemInfo extends ItemInfo {
      * The component that will be created.
      */
     ComponentName componentName;
+
+    public PendingAddItemInfo(String whereCreated) {
+        super(whereCreated);
+    }
 }
 
 class PendingAddWidgetInfo extends PendingAddItemInfo {
@@ -39,7 +43,9 @@ class PendingAddWidgetInfo extends PendingAddItemInfo {
     String mimeType;
     Parcelable configurationData;
 
-    public PendingAddWidgetInfo(AppWidgetProviderInfo i, String dataMimeType, Parcelable data) {
+    public PendingAddWidgetInfo(
+            AppWidgetProviderInfo i, String dataMimeType, Parcelable data, String whereCreated) {
+        super(whereCreated);
         itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
         componentName = i.provider;
         minWidth = i.minWidth;

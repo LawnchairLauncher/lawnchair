@@ -1016,7 +1016,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             if (rawInfo instanceof AppWidgetProviderInfo) {
                 // Fill in the widget information
                 AppWidgetProviderInfo info = (AppWidgetProviderInfo) rawInfo;
-                createItemInfo = new PendingAddWidgetInfo(info, null, null);
+                createItemInfo = new PendingAddWidgetInfo(info, null, null, "13");
                 int[] cellSpans = CellLayout.rectToCell(getResources(),
                         info.minWidth, info.minHeight, null);
                 FastBitmapDrawable preview = new FastBitmapDrawable(data.generatedImages.get(i));
@@ -1026,7 +1026,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             } else if (rawInfo instanceof ResolveInfo) {
                 // Fill in the shortcuts information
                 ResolveInfo info = (ResolveInfo) rawInfo;
-                createItemInfo = new PendingAddItemInfo();
+                createItemInfo = new PendingAddItemInfo("14");
                 createItemInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
                 createItemInfo.componentName = new ComponentName(info.activityInfo.packageName,
                         info.activityInfo.name);

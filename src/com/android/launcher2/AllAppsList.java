@@ -91,7 +91,7 @@ class AllAppsList {
 
         if (matches.size() > 0) {
             for (ResolveInfo info : matches) {
-                add(new ApplicationInfo(context.getPackageManager(), info, mIconCache, null));
+                add(new ApplicationInfo(context.getPackageManager(), info, mIconCache, null, "15"));
             }
         }
     }
@@ -142,7 +142,7 @@ class AllAppsList {
                         info.activityInfo.applicationInfo.packageName,
                         info.activityInfo.name);
                 if (applicationInfo == null) {
-                    add(new ApplicationInfo(context.getPackageManager(), info, mIconCache, null));
+                    add(new ApplicationInfo(context.getPackageManager(), info, mIconCache, null, "16"));
                 } else {
                     mIconCache.remove(applicationInfo.componentName);
                     mIconCache.getTitleAndIcon(applicationInfo, info, null);
