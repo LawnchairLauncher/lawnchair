@@ -1848,4 +1848,9 @@ public abstract class PagedView extends ViewGroup {
         return String.format(mContext.getString(R.string.default_scroll_format),
                 page + 1, getChildCount());
     }
+
+    @Override
+    public boolean onHoverEvent(android.view.MotionEvent event) {
+        return true;
+    }
 }
