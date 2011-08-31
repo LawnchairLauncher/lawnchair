@@ -529,7 +529,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // Go into spring loaded mode (must happen before we startDrag())
         int currentPageIndex = mLauncher.getWorkspace().getCurrentPage();
         CellLayout currentPage = (CellLayout) mLauncher.getWorkspace().getChildAt(currentPageIndex);
-        mLauncher.enterSpringLoadedDragMode(currentPage);
+        mLauncher.enterSpringLoadedDragMode();
 
         if (v instanceof PagedViewIcon) {
             beginDraggingApplication(v);

@@ -90,6 +90,7 @@ import android.widget.Toast;
 import com.android.common.Search;
 import com.android.launcher.R;
 import com.android.launcher2.DropTarget.DragObject;
+import com.android.launcher2.Workspace.State;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -2058,18 +2059,8 @@ public final class Launcher extends Activity
      */
     private void setPivotsForZoom(View view, State state, float scaleFactor) {
         final int height = view.getHeight();
-
         view.setPivotX(view.getWidth() / 2.0f);
-        // Set pivotY so that at the starting zoom factor, the view is partially
-        // visible. Modifying initialHeightFactor changes how much of the view is
-        // initially showing, and hence the perceived angle from which the view enters.
-        if (state == State.APPS_CUSTOMIZE) {
-            final float initialHeightFactor = 0.175f;
-            view.setPivotY((1 - initialHeightFactor) * height);
-        } else {
-            final float initialHeightFactor = 0.2f;
-            view.setPivotY(-initialHeightFactor * height);
-        }
+        view.setPivotY(view.getHeight() / 2.0f);
     }
 
     void updateWallpaperVisibility(boolean visible) {
@@ -2098,7 +2089,7 @@ public final class Launcher extends Activity
         setPivotsForZoom(toView, toState, scale);
 
         // Shrink workspaces away if going to AppsCustomize from workspace
-        mWorkspace.shrink(Workspace.State.SMALL, animated);
+        mWorkspace.changeState(Workspace.State.SMALL, animated);
         hideHotseat(animated);
 
         if (animated) {
@@ -2106,7 +2097,8 @@ public final class Launcher extends Activity
             scaleAnim.setInterpolator(new Workspace.ZoomOutInterpolator());
             scaleAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
                 public void onAnimationUpdate(float a, float b) {
-                    ((View) toView.getParent()).fastInvalidate();
+                    ((View) toView.getParent()).invalidate();
+                    toView.fastInvalidate();
                     toView.setFastScaleX(a * scale + b * 1f);
                     toView.setFastScaleY(a * scale + b * 1f);
                 }
@@ -2152,6 +2144,7 @@ public final class Launcher extends Activity
                         // Hide the workspace scrollbar
                         mWorkspace.hideScrollingIndicator(true);
                         mWorkspace.hideDockDivider(true);
+                        mWorkspace.showAllAppsAnimationComplete();
                     }
                     updateWallpaperVisibility(false);
                 }
@@ -2200,12 +2193,7 @@ public final class Launcher extends Activity
         final View fromView = mAppsCustomizeTabHost;
 
         setPivotsForZoom(fromView, fromState, scaleFactor);
-
         updateWallpaperVisibility(true);
-
-        if (!springLoaded) {
-            mWorkspace.unshrink(animated);
-        }
         showHotseat(animated);
         if (animated) {
             if (mStateAnimation != null) mStateAnimation.cancel();
@@ -2237,13 +2225,6 @@ public final class Launcher extends Activity
             }
             alphaAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
-                public void onAnimationStart(android.animation.Animator animation) {
-                    if (!springLoaded) {
-                        mWorkspace.showDockDivider(false);
-                    }
-                    mWorkspace.showScrollingIndicator(false);
-                }
-                @Override
                 public void onAnimationEnd(Animator animation) {
                     updateWallpaperVisibility(true);
                     fromView.setVisibility(View.GONE);
@@ -2261,31 +2242,18 @@ public final class Launcher extends Activity
             if (fromView instanceof LauncherTransitionable) {
                 ((LauncherTransitionable) fromView).onLauncherTransitionStart(null, true);
                 ((LauncherTransitionable) fromView).onLauncherTransitionEnd(null, true);
-
-                if (!springLoaded && !LauncherApplication.isScreenLarge()) {
-                    // Flash the workspace scrollbar
-                    mWorkspace.showDockDivider(true);
-                    mWorkspace.flashScrollingIndicator();
-                }
             }
         }
     }
 
     void showWorkspace(boolean animated) {
-        showWorkspace(animated, null);
-    }
-
-    void showWorkspace(boolean animated, CellLayout layout) {
-        if (layout != null) {
-            // always animated, but that's ok since we never specify a layout and
-            // want no animation
-            mWorkspace.unshrink(layout);
-        } else {
-            mWorkspace.unshrink(animated);
-        }
+        mWorkspace.changeState(Workspace.State.NORMAL, animated);
         if (mState == State.APPS_CUSTOMIZE) {
             closeAllApps(animated);
         }
+
+        mWorkspace.showDockDivider(!animated);
+        mWorkspace.flashScrollingIndicator();
 
         // Change the state *after* we've called all the transition code
         mState = State.WORKSPACE;
@@ -2298,26 +2266,27 @@ public final class Launcher extends Activity
         getWindow().getDecorView().sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
     }
 
-    void enterSpringLoadedDragMode(CellLayout layout) {
+    void enterSpringLoadedDragMode() {
         if (mState == State.APPS_CUSTOMIZE) {
-            mWorkspace.enterSpringLoadedDragMode(layout);
+            mWorkspace.changeState(Workspace.State.SPRING_LOADED);
             cameraZoomIn(State.APPS_CUSTOMIZE, true, true);
             mState = State.APPS_CUSTOMIZE_SPRING_LOADED;
         }
-        // Otherwise, we are not in spring loaded mode, so don't do anything.
     }
+
     void exitSpringLoadedDragModeDelayed(final boolean successfulDrop, boolean extendedDelay) {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                exitSpringLoadedDragMode();
-
                 if (successfulDrop) {
                     // Before we show workspace, hide all apps again because
                     // exitSpringLoadedDragMode made it visible. This is a bit hacky; we should
                     // clean up our state transition functions
                     mAppsCustomizeTabHost.setVisibility(View.GONE);
+                    mSearchDeleteBar.showSearchBar(true);
                     showWorkspace(true);
+                } else {
+                    exitSpringLoadedDragMode();
                 }
             }
         }, (extendedDelay ?
@@ -2326,7 +2295,6 @@ public final class Launcher extends Activity
     }
     void exitSpringLoadedDragMode() {
         if (mState == State.APPS_CUSTOMIZE_SPRING_LOADED) {
-            mWorkspace.exitSpringLoadedDragMode(Workspace.State.SMALL);
             cameraZoomOut(State.APPS_CUSTOMIZE, true, true);
             mState = State.APPS_CUSTOMIZE;
         }
