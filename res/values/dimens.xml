@@ -39,8 +39,13 @@
 <!-- QSB -->
     <dimen name="toolbar_button_vertical_padding">0dip</dimen>
     <dimen name="toolbar_button_horizontal_padding">12dip</dimen>
+    <!-- External toolbar icon size (for bounds) -->
+    <dimen name="toolbar_external_icon_width">36dp</dimen>
+    <dimen name="toolbar_external_icon_height">36dp</dimen>
 
 <!-- AllApps/Customize/AppsCustomize -->
+    <!-- The height of the tab bar -- if this changes, we should update the
+         external icon width/height above to compensate -->
     <dimen name="apps_customize_tab_bar_height">56dp</dimen>
     <dimen name="app_icon_size">48dp</dimen>
     <!-- The width can be 72dp because we don't have L/R padding -->

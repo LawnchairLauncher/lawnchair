@@ -2458,13 +2458,19 @@ public final class Launcher extends Activity
             int buttonId, ComponentName activityName, int fallbackDrawableId) {
         TextView button = (TextView) findViewById(buttonId);
         Drawable toolbarIcon = getExternalPackageToolbarIcon(activityName);
+        Resources r = getResources();
+        int w = r.getDimensionPixelSize(R.dimen.toolbar_external_icon_width);
+        int h = r.getDimensionPixelSize(R.dimen.toolbar_external_icon_height);
 
         // If we were unable to find the icon via the meta-data, use a generic one
         if (toolbarIcon == null) {
-            button.setCompoundDrawablesWithIntrinsicBounds(fallbackDrawableId, 0, 0, 0);
+            toolbarIcon = r.getDrawable(fallbackDrawableId);
+            toolbarIcon.setBounds(0, 0, w, h);
+            button.setCompoundDrawables(toolbarIcon, null, null, null);
             return null;
         } else {
-            button.setCompoundDrawablesWithIntrinsicBounds(toolbarIcon, null, null, null);
+            toolbarIcon.setBounds(0, 0, w, h);
+            button.setCompoundDrawables(toolbarIcon, null, null, null);
             return toolbarIcon.getConstantState();
         }
     }
