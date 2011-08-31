@@ -76,6 +76,7 @@ import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.View.OnLongClickListener;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
@@ -2071,6 +2072,15 @@ public final class Launcher extends Activity
         }
     }
 
+    void updateWallpaperVisibility(boolean visible) {
+        int wpflags = visible ? WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER : 0;
+        int curflags = getWindow().getAttributes().flags
+                & WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
+        if (wpflags != curflags) {
+            getWindow().setFlags(wpflags, WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER);
+        }
+    }
+
     /**
      * Zoom the camera out from the workspace to reveal 'toView'.
      * Assumes that the view to show is anchored at either the very top or very bottom
@@ -2120,6 +2130,7 @@ public final class Launcher extends Activity
             scaleAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
+                    updateWallpaperVisibility(true);
                     // Prepare the position
                     toView.setTranslationX(0.0f);
                     toView.setTranslationY(0.0f);
@@ -2142,6 +2153,7 @@ public final class Launcher extends Activity
                         mWorkspace.hideScrollingIndicator(true);
                         mWorkspace.hideDockDivider(true);
                     }
+                    updateWallpaperVisibility(false);
                 }
             });
 
@@ -2169,6 +2181,7 @@ public final class Launcher extends Activity
                     mWorkspace.hideDockDivider(true);
                 }
             }
+            updateWallpaperVisibility(false);
         }
     }
 
@@ -2187,6 +2200,8 @@ public final class Launcher extends Activity
         final View fromView = mAppsCustomizeTabHost;
 
         setPivotsForZoom(fromView, fromState, scaleFactor);
+
+        updateWallpaperVisibility(true);
 
         if (!springLoaded) {
             mWorkspace.unshrink(animated);
@@ -2230,6 +2245,7 @@ public final class Launcher extends Activity
                 }
                 @Override
                 public void onAnimationEnd(Animator animation) {
+                    updateWallpaperVisibility(true);
                     fromView.setVisibility(View.GONE);
                     if (fromView instanceof LauncherTransitionable) {
                         ((LauncherTransitionable) fromView).onLauncherTransitionEnd(alphaAnim,true);
