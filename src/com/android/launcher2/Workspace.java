@@ -2121,6 +2121,13 @@ public class Workspace extends SmoothPagedView
             mDragViewVisualCenter = getDragViewVisualCenter(d.x, d.y, d.xOffset, d.yOffset,
                     d.dragView, mDragViewVisualCenter);
 
+            // We want the point to be mapped to the dragTarget.
+            if (mLauncher.isHotseatLayout(mDragTargetLayout)) {
+                mapPointFromSelfToSibling(mLauncher.getHotseat(), mDragViewVisualCenter);
+            } else {
+                mapPointFromSelfToChild(mDragTargetLayout, mDragViewVisualCenter, null);
+            }
+
             int spanX = 1;
             int spanY = 1;
             View ignoreView = null;
