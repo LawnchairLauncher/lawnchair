@@ -265,13 +265,8 @@ public class Workspace extends SmoothPagedView
         // With workspace, data is available straight from the get-go
         setDataIsReady();
 
-        if (!LauncherApplication.isScreenLarge()) {
-            mCenterPagesVertically = false;
-            if (!LauncherApplication.isScreenLandscape(context)) {
-                mFadeInAdjacentScreens = false;
-            }
-        }
-
+        mFadeInAdjacentScreens =
+            getResources().getBoolean(R.bool.config_workspaceFadeAdjacentScreens);
         mWallpaperManager = WallpaperManager.getInstance(context);
 
         int cellCountX = DEFAULT_CELL_COUNT_X;

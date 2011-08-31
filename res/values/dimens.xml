@@ -22,8 +22,6 @@
     <dimen name="qsb_bar_height">40dp</dimen>
     <dimen name="workspace_cell_width">80dp</dimen>
     <dimen name="workspace_cell_height">100dp</dimen>
-    <dimen name="hotseat_cell_width">64dp</dimen>
-    <dimen name="hotseat_cell_height">64dp</dimen>
     <dimen name="workspace_width_gap">-1dp</dimen>
     <dimen name="workspace_height_gap">-1dp</dimen>
     <dimen name="workspace_max_gap">16dp</dimen>
@@ -33,6 +31,10 @@
     <dimen name="workspace_divider_padding_right">12dp</dimen>
     <dimen name="workspace_divider_padding_top">0dp</dimen>
     <dimen name="workspace_divider_padding_bottom">0dp</dimen>
+    <dimen name="hotseat_cell_width">64dp</dimen>
+    <dimen name="hotseat_cell_height">64dp</dimen>
+    <dimen name="hotseat_width_gap">-1dp</dimen>
+    <dimen name="hotseat_height_gap">-1dp</dimen>
 
 <!-- QSB -->
     <dimen name="toolbar_button_vertical_padding">0dip</dimen>
@@ -53,7 +55,10 @@
     <dimen name="button_bar_height">64dip</dimen>
     <!-- Because portal animations go beyond the bounds of an icon, we need
          to make the dock layout slightly larger than the button_bar_height -->
-    <dimen name="button_bar_height_padding">8dp</dimen>
+    <dimen name="button_bar_height_top_padding">8dp</dimen>
+    <dimen name="button_bar_height_bottom_padding">0dp</dimen>
+    <dimen name="button_bar_width_left_padding">0dp</dimen>
+    <dimen name="button_bar_width_right_padding">0dp</dimen>
     <dimen name="button_bar_height_plus_padding">72dp</dimen>
 
     <!-- Drag padding to add to the drop targets -->

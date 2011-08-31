@@ -66,11 +66,9 @@
         <include android:id="@+id/cell5" layout="@layout/workspace_screen" />
     </com.android.launcher2.Workspace>
 
-    <include layout="@layout/qsb_bar"
+    <include
         android:id="@+id/qsb_bar"
-        android:layout_width="@dimen/qsb_bar_height"
-        android:layout_height="match_parent"
-        android:layout_gravity="left" />
+        layout="@layout/qsb_bar" />
 
     <include layout="@layout/apps_customize_pane"
         android:id="@+id/apps_customize_pane"
@@ -80,7 +78,7 @@
 
     <include layout="@layout/hotseat"
         android:id="@+id/hotseat"
-        android:layout_width="@dimen/button_bar_height"
+        android:layout_width="@dimen/button_bar_height_plus_padding"
         android:layout_height="match_parent"
         android:layout_gravity="right" />
 
