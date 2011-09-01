@@ -852,14 +852,13 @@ public final class Launcher extends Activity
         int bottom = 0;
     }
 
-    Padding getPaddingForWidget(AppWidgetProviderInfo widgetInfo) {
+    Padding getPaddingForWidget(ComponentName component) {
         PackageManager packageManager = getPackageManager();
         Padding p = new Padding();
         android.content.pm.ApplicationInfo appInfo;
 
         try {
-            appInfo = packageManager.getApplicationInfo(
-                    widgetInfo.provider.getPackageName(), 0);
+            appInfo = packageManager.getApplicationInfo(component.getPackageName(), 0);
         } catch (Exception e) {
             // if we can't find the package, return 0 padding
             return p;
@@ -878,6 +877,27 @@ public final class Launcher extends Activity
         return p;
     }
 
+    int[] getSpanForWidget(ComponentName component, int minWidth, int minHeight, int[] spanXY) {
+        if (spanXY == null) {
+            spanXY = new int[2];
+        }
+
+        Padding padding = getPaddingForWidget(component);
+        // We want to account for the extra amount of padding that we are adding to the widget
+        // to ensure that it gets the full amount of space that it has requested
+        int requiredWidth = minWidth + padding.left + padding.right;
+        int requiredHeight = minHeight + padding.top + padding.bottom;
+        return CellLayout.rectToCell(getResources(), requiredWidth, requiredHeight, null);
+    }
+
+    int[] getSpanForWidget(AppWidgetProviderInfo info, int[] spanXY) {
+        return getSpanForWidget(info.provider, info.minWidth, info.minHeight, spanXY);
+    }
+
+    int[] getSpanForWidget(PendingAddWidgetInfo info, int[] spanXY) {
+        return getSpanForWidget(info.componentName, info.minWidth, info.minHeight, spanXY);
+    }
+
     /**
      * Add a widget to the workspace.
      *
@@ -890,12 +910,7 @@ public final class Launcher extends Activity
         // Calculate the grid spans needed to fit this widget
         CellLayout layout = getCellLayout(container, screen);
 
-        Padding padding = getPaddingForWidget(appWidgetInfo);
-        // We want to account for the extra amount of padding that we are adding to the widget
-        // to ensure that it gets the full amount of space that it has requested
-        int requiredWidth = appWidgetInfo.minWidth + padding.left + padding.right;
-        int requiredHeight = appWidgetInfo.minHeight + padding.top + padding.bottom;
-        int[] spanXY = layout.rectToCell(requiredWidth, requiredHeight, null);
+        int[] spanXY = getSpanForWidget(appWidgetInfo, null);
 
         // Try finding open space on Launcher screen
         // We have saved the position to which the widget was dragged-- this really only matters

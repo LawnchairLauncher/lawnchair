@@ -119,7 +119,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView {
     public void setAppWidget(int appWidgetId, AppWidgetProviderInfo info) {
         super.setAppWidget(appWidgetId, info);
         // We add necessary padding to the AppWidgetHostView
-        Launcher.Padding padding = mLauncher.getPaddingForWidget(info);
+        Launcher.Padding padding = mLauncher.getPaddingForWidget(info.provider);
         setPadding(padding.left, padding.top, padding.right, padding.bottom);
     }
 

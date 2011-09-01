@@ -492,8 +492,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         int h = preview.getIntrinsicHeight();
         if (createItemInfo instanceof PendingAddWidgetInfo) {
             PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo) createItemInfo;
-            int[] spanXY = CellLayout.rectToCell(getResources(),
-                    createWidgetInfo.minWidth, createWidgetInfo.minHeight, null);
+            int[] spanXY = mLauncher.getSpanForWidget(createWidgetInfo, null);
             createItemInfo.spanX = spanXY[0];
             createItemInfo.spanY = spanXY[1];
 
@@ -986,8 +985,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             Object rawInfo = items.get(i);
             if (rawInfo instanceof AppWidgetProviderInfo) {
                 AppWidgetProviderInfo info = (AppWidgetProviderInfo) rawInfo;
-                int[] cellSpans = CellLayout.rectToCell(getResources(),
-                        info.minWidth, info.minHeight, null);
+                int[] cellSpans = mLauncher.getSpanForWidget(info, null);
                 images.add(getWidgetPreview(info, cellSpans[0],cellSpans[1],
                         cellWidth, cellHeight));
             } else if (rawInfo instanceof ResolveInfo) {
@@ -1017,8 +1015,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 // Fill in the widget information
                 AppWidgetProviderInfo info = (AppWidgetProviderInfo) rawInfo;
                 createItemInfo = new PendingAddWidgetInfo(info, null, null, "13");
-                int[] cellSpans = CellLayout.rectToCell(getResources(),
-                        info.minWidth, info.minHeight, null);
+                int[] cellSpans = mLauncher.getSpanForWidget(info, null);
                 FastBitmapDrawable preview = new FastBitmapDrawable(data.generatedImages.get(i));
                 widget.applyFromAppWidgetProviderInfo(info, preview, -1, cellSpans, 
                         mHolographicOutlineHelper);
