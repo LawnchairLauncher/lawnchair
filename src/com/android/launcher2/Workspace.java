@@ -819,23 +819,23 @@ public class Workspace extends SmoothPagedView
     @Override
     protected void updateCurrentPageScroll() {
         super.updateCurrentPageScroll();
-        computeWallpaperScrollRatio();
+        computeWallpaperScrollRatio(mCurrentPage);
     }
 
     @Override
     protected void snapToPage(int whichPage) {
         super.snapToPage(whichPage);
-        computeWallpaperScrollRatio();
+        computeWallpaperScrollRatio(whichPage);
     }
 
-    private void computeWallpaperScrollRatio() {
+    private void computeWallpaperScrollRatio(int page) {
         // Here, we determine what the desired scroll would be with and without a layout scale,
         // and compute a ratio between the two. This allows us to adjust the wallpaper offset
         // as though there is no layout scale.
         float layoutScale = mLayoutScale;
-        int scaled = getChildOffset(mCurrentPage) - getRelativeChildOffset(mCurrentPage);
+        int scaled = getChildOffset(page) - getRelativeChildOffset(page);
         mLayoutScale = 1.0f;
-        float unscaled = getChildOffset(mCurrentPage) - getRelativeChildOffset(mCurrentPage);
+        float unscaled = getChildOffset(page) - getRelativeChildOffset(page);
         mLayoutScale = layoutScale;
         if (scaled > 0) {
             mWallpaperScrollRatio = (1.0f * unscaled) / scaled;
