@@ -113,6 +113,8 @@ public class Workspace extends SmoothPagedView
     private int mOverScrollPageIndex = -1;
     private AnimatorSet mDividerAnimator;
 
+    private float mWallpaperScrollRatio = 1.0f;
+
     private final WallpaperManager mWallpaperManager;
     private IBinder mWindowToken;
 
@@ -159,7 +161,6 @@ public class Workspace extends SmoothPagedView
     enum State { NORMAL, SPRING_LOADED, SMALL };
     private State mState = State.NORMAL;
     private boolean mIsSwitchingState = false;
-    boolean mEnableSyncWallpaper = false;
     private boolean mSwitchStateAfterFirstLayout = false;
     private State mStateAfterFirstLayout;
 
@@ -192,7 +193,6 @@ public class Workspace extends SmoothPagedView
     int mWallpaperHeight;
     WallpaperOffsetInterpolator mWallpaperOffset;
     boolean mUpdateWallpaperOffsetImmediately = false;
-    boolean mSyncWallpaperOffsetWithScroll = true;
     private Runnable mDelayedResizeRunnable;
 
     // Variables relating to the creation of user folders by hovering shortcuts over shortcuts
@@ -754,6 +754,11 @@ public class Workspace extends SmoothPagedView
         // for all apps/customize)
         mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 1.0f / (3 - 1));
 
+        // For the purposes of computing the scrollRange and overScrollOffset, we ignore
+        // assume that mLayoutScale is 1. This means that when we're in spring-loaded mode,
+        // there's no discrepancy between the wallpaper offset for a given page.
+        float layoutScale = mLayoutScale;
+        mLayoutScale = 1f;
         int scrollRange = getScrollRange();
         float scrollProgressOffset = 0;
 
@@ -767,8 +772,12 @@ public class Workspace extends SmoothPagedView
             scrollRange += 2 * overscrollOffset;
         }
 
+        // Again, we adjust the wallpaper offset to be consistent between values of mLayoutScale
+        float adjustedScrollX = mWallpaperScrollRatio * mScrollX;
+        mLayoutScale = layoutScale;
+
         float scrollProgress =
-            mScrollX / (float) scrollRange + scrollProgressOffset;
+            adjustedScrollX / (float) scrollRange + scrollProgressOffset;
         float offsetInDips = wallpaperTravelWidth * scrollProgress +
             (mWallpaperWidth - wallpaperTravelWidth) / 2; // center it
         float offset = offsetInDips / (float) mWallpaperWidth;
@@ -804,6 +813,34 @@ public class Workspace extends SmoothPagedView
         }
         if (keepUpdating) {
             fastInvalidate();
+        }
+    }
+
+    @Override
+    protected void updateCurrentPageScroll() {
+        super.updateCurrentPageScroll();
+        computeWallpaperScrollRatio();
+    }
+
+    @Override
+    protected void snapToPage(int whichPage) {
+        super.snapToPage(whichPage);
+        computeWallpaperScrollRatio();
+    }
+
+    private void computeWallpaperScrollRatio() {
+        // Here, we determine what the desired scroll would be with and without a layout scale,
+        // and compute a ratio between the two. This allows us to adjust the wallpaper offset
+        // as though there is no layout scale.
+        float layoutScale = mLayoutScale;
+        int scaled = getChildOffset(mCurrentPage) - getRelativeChildOffset(mCurrentPage);
+        mLayoutScale = 1.0f;
+        float unscaled = getChildOffset(mCurrentPage) - getRelativeChildOffset(mCurrentPage);
+        mLayoutScale = layoutScale;
+        if (scaled > 0) {
+            mWallpaperScrollRatio = (1.0f * unscaled) / scaled;
+        } else {
+            mWallpaperScrollRatio = 1f;
         }
     }
 
@@ -920,9 +957,7 @@ public class Workspace extends SmoothPagedView
     @Override
     public void computeScroll() {
         super.computeScroll();
-        if (mSyncWallpaperOffsetWithScroll) {
-            syncWallpaperOffsetWithScroll();
-        }
+        syncWallpaperOffsetWithScroll();
     }
 
     void showOutlines() {
@@ -1411,13 +1446,6 @@ public class Workspace extends SmoothPagedView
         changeState(shrinkState, true);
     }
 
-    void showAllAppsAnimationComplete() {
-        if (mEnableSyncWallpaper) {
-            mSyncWallpaperOffsetWithScroll = true;
-            mEnableSyncWallpaper = true;
-        }
-    }
-
     void changeState(final State state, boolean animated) {
         if (mFirstLayout) {
             // (mFirstLayout == "first layout has not happened yet")
@@ -1440,14 +1468,13 @@ public class Workspace extends SmoothPagedView
         State oldState = mState;
         mState = state;
         boolean zoomIn = true;
+
         if (state != State.NORMAL) {
             finalScaleFactor = mSpringLoadedShrinkFactor - (state == State.SMALL ? 0.1f : 0);
             finalBackgroundAlpha = 1.0f;
             if (oldState == State.NORMAL && state == State.SMALL) {
                 zoomIn = false;
                 if (animated) {
-                    mEnableSyncWallpaper = true;
-                    mSyncWallpaperOffsetWithScroll = false;
                     hideScrollingIndicator(true);
                 }
                 setLayoutScale(finalScaleFactor);

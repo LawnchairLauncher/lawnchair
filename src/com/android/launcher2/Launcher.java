@@ -2144,7 +2144,6 @@ public final class Launcher extends Activity
                         // Hide the workspace scrollbar
                         mWorkspace.hideScrollingIndicator(true);
                         mWorkspace.hideDockDivider(true);
-                        mWorkspace.showAllAppsAnimationComplete();
                     }
                     updateWallpaperVisibility(false);
                 }
