@@ -20,4 +20,8 @@
     <bool name="config_useDropTargetDownTransition">false</bool>
     <!-- Whether or not to fade the side pages -->
     <bool name="config_workspaceFadeAdjacentScreens">true</bool>
+
+    <!-- Padding applied to AppWidgets -->
+    <dimen name="app_widget_padding_top">8dp</dimen>
+    <dimen name="app_widget_padding_bottom">8dp</dimen>
 </resources>
