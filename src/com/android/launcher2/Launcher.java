@@ -90,7 +90,6 @@ import android.widget.Toast;
 import com.android.common.Search;
 import com.android.launcher.R;
 import com.android.launcher2.DropTarget.DragObject;
-import com.android.launcher2.Workspace.State;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -1737,6 +1736,16 @@ public final class Launcher extends Activity
 
     private void handleFolderClick(FolderIcon folderIcon) {
         final FolderInfo info = folderIcon.mInfo;
+        Folder openFolder = mWorkspace.getFolderForTag(info);
+
+        // If the folder info reports that the associated folder is open, then verify that
+        // it is actually opened. There have been a few instances where this gets out of sync.
+        if (info.opened && openFolder == null) {
+            Log.d(TAG, "Folder info marked as open, but associated folder is not open. Screen: "
+                    + info.screen + " (" + info.cellX + ", " + info.cellY + ")");
+            info.opened = false;
+        }
+
         if (!info.opened) {
             // Close any open folder
             closeFolder();
@@ -1744,7 +1753,6 @@ public final class Launcher extends Activity
             openFolder(folderIcon);
         } else {
             // Find the open folder...
-            Folder openFolder = mWorkspace.getFolderForTag(info);
             int folderScreen;
             if (openFolder != null) {
                 folderScreen = mWorkspace.getPageForView(openFolder);
