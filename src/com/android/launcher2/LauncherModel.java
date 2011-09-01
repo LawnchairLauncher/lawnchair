@@ -465,7 +465,7 @@ public class LauncherModel extends BroadcastReceiver {
         item.onAddToDatabase(values);
         item.updateValuesWithCoordinates(values, item.cellX, item.cellY);
 
-        sWorker.post(new Runnable() {
+        Runnable r = new Runnable() {
             public void run() {
                 cr.update(LauncherSettings.Favorites.getContentUri(item.id, false),
                         values, null, null);
@@ -481,7 +481,12 @@ public class LauncherModel extends BroadcastReceiver {
                     throw new RuntimeException(msg);
                 }
             }
-        });
+        };
+        if (sWorkerThread.getThreadId() == Process.myTid()) {
+            r.run();
+        } else {
+            sWorker.post(r);
+        }
     }
 
     /**
