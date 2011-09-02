@@ -189,6 +189,14 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private final float sWidgetPreviewIconPaddingPercentage = 0.25f;
     private PagedViewCellLayout mWidgetSpacingLayout;
 
+    // Relating to the scroll and overscroll effects
+    Workspace.ZInterpolator mZInterpolator = new Workspace.ZInterpolator(0.5f);
+    private float mDensity;
+    private static float CAMERA_DISTANCE = 3500;
+    private static float TRANSITION_SCALE_FACTOR = 0.6f;
+    private static float TRANSITION_PIVOT = 0.75f;
+    private static float TRANSITION_MAX_ROTATION = 26f;
+
     // Previews & outlines
     ArrayList<AppsCustomizeAsyncTask> mRunningTasks;
     private HolographicOutlineHelper mHolographicOutlineHelper;
@@ -211,6 +219,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mDefaultWidgetBackground = resources.getDrawable(R.drawable.default_widget_preview_holo);
         mAppIconSize = resources.getDimensionPixelSize(R.dimen.app_icon_size);
         mDragViewMultiplyColor = resources.getColor(R.color.drag_view_multiply_color);
+        mDensity = resources.getDisplayMetrics().density;
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PagedView, 0, 0);
         // TODO-APPS_CUSTOMIZE: remove these unnecessary attrs after
@@ -265,7 +274,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             int currentPage = getCurrentPage();
             switch (mContentType) {
             case Applications: {
-                PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(currentPage);
+                PagedViewCellLayout layout = (PagedViewCellLayout) getPageAt(currentPage);
                 PagedViewCellLayoutChildren childrenLayout = layout.getChildrenLayout();
                 int numItemsPerPage = mCellCountX * mCellCountY;
                 int childCount = childrenLayout.getChildCount();
@@ -274,7 +283,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 }}
                 break;
             case Widgets: {
-                PagedViewGridLayout layout = (PagedViewGridLayout) getChildAt(currentPage);
+                PagedViewGridLayout layout = (PagedViewGridLayout) getPageAt(currentPage);
                 int numItemsPerPage = mWidgetCountX * mWidgetCountY;
                 int childCount = layout.getChildCount();
                 if (childCount > 0) {
@@ -526,8 +535,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         if (!super.beginDragging(v)) return false;
 
         // Go into spring loaded mode (must happen before we startDrag())
-        int currentPageIndex = mLauncher.getWorkspace().getCurrentPage();
-        CellLayout currentPage = (CellLayout) mLauncher.getWorkspace().getChildAt(currentPageIndex);
         mLauncher.enterSpringLoadedDragMode();
 
         if (v instanceof PagedViewIcon) {
@@ -626,11 +633,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
     public void syncAppsPageItems(int page, boolean immediate) {
         // ensure that we have the right number of items on the pages
-        int numPages = getPageCount();
         int numCells = mCellCountX * mCellCountY;
         int startIndex = page * numCells;
         int endIndex = Math.min(startIndex + numCells, mApps.size());
-        PagedViewCellLayout layout = (PagedViewCellLayout) getChildAt(page);
+        PagedViewCellLayout layout = (PagedViewCellLayout) getPageAt(page);
 
         layout.removeAllViewsOnPage();
         ArrayList<Object> items = new ArrayList<Object>();
@@ -653,8 +659,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             images.add(info.iconBitmap);
         }
 
-        // Create the hardware layers
-        layout.allowHardwareLayerCreation();
         layout.createHardwareLayers();
 
         if (mFadeInAdjacentScreens) {
@@ -959,6 +963,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         } else {
             prepareLoadWidgetPreviewsTask(page, items, cellWidth, cellHeight, mWidgetCountX);
         }
+        PagedViewGridLayout layout = (PagedViewGridLayout) getPageAt(page);
+        layout.createHardwareLayer();
     }
     private void loadWidgetPreviewsInBackground(AppsCustomizeAsyncTask task,
             AsyncTaskPageData data) {
@@ -997,7 +1003,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
     private void onSyncWidgetPageItems(AsyncTaskPageData data) {
         int page = data.page;
-        PagedViewGridLayout layout = (PagedViewGridLayout) getChildAt(page);
+        PagedViewGridLayout layout = (PagedViewGridLayout) getPageAt(page);
         // Only set the column count once we have items
         layout.setColumnCount(layout.getCellCountX());
 
@@ -1062,7 +1068,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         invalidate();
 
         int page = data.page;
-        ViewGroup layout = (ViewGroup) getChildAt(page);
+        ViewGroup layout = (ViewGroup) getPageAt(page);
         if (layout instanceof PagedViewCellLayout) {
             PagedViewCellLayout cl = (PagedViewCellLayout) layout;
             int count = cl.getPageChildCount();
@@ -1112,6 +1118,92 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             syncWidgetPageItems(page, immediate);
             break;
         }
+    }
+
+    // We want our pages to be z-ordered such that the further a page is to the left, the higher
+    // it is in the z-order. This is important to insure touch events are handled correctly.
+    View getPageAt(int index) {
+        return getChildAt(getChildCount() - index - 1);
+    }
+
+    // In apps customize, we have a scrolling effect which emulates pulling cards off of a stack.
+    @Override
+    protected void screenScrolled(int screenCenter) {
+        super.screenScrolled(screenCenter);
+        final int halfScreenSize = getMeasuredWidth() / 2;
+
+        for (int i = 0; i < getChildCount(); i++) {
+            View v = getPageAt(i);
+            if (v != null) {
+                int totalDistance = getScaledMeasuredWidth(v) + mPageSpacing;
+                int delta = screenCenter - (getChildOffset(i) -
+                        getRelativeChildOffset(i) + halfScreenSize);
+
+                float scrollProgress = delta / (totalDistance * 1.0f);
+                scrollProgress = Math.min(scrollProgress, 1.0f);
+                scrollProgress = Math.max(scrollProgress, -1.0f);
+
+                float interpolatedProgress =
+                        mZInterpolator.getInterpolation(Math.abs(Math.min(scrollProgress, 0)));
+                float scale = (1 - interpolatedProgress) +
+                        interpolatedProgress * TRANSITION_SCALE_FACTOR;
+                float translationX = Math.min(0, scrollProgress) * v.getMeasuredWidth();
+                float alpha = scrollProgress < 0 ? 1 - Math.abs(scrollProgress) : 1.0f;
+
+                v.setCameraDistance(mDensity * CAMERA_DISTANCE);
+                int pageWidth = v.getMeasuredWidth();
+                int pageHeight = v.getMeasuredHeight();
+                if (i == 0 && scrollProgress < 0) {
+                    // Overscroll to the left
+                    v.setPivotX(TRANSITION_PIVOT * pageWidth);
+                    v.setRotationY(-TRANSITION_MAX_ROTATION * scrollProgress);
+                    scale = 1.0f;
+                    alpha = 1.0f;
+                    // On the first page, we don't want the page to have any lateral motion
+                    translationX = getScrollX();
+                } else if (i == getChildCount() - 1 && scrollProgress > 0) {
+                    // Overscroll to the right
+                    v.setPivotX((1 - TRANSITION_PIVOT) * pageWidth);
+                    v.setRotationY(-TRANSITION_MAX_ROTATION * scrollProgress);
+                    scale = 1.0f;
+                    alpha = 1.0f;
+                    // On the last page, we don't want the page to have any lateral motion.
+                    translationX =  getScrollX() - mMaxScrollX;
+                } else {
+                    v.setPivotY(pageHeight / 2.0f);
+                    v.setPivotX(pageWidth / 2.0f);
+                    v.setRotationY(0f);
+                }
+
+                v.setTranslationX(translationX);
+                v.setScaleX(scale);
+                v.setScaleY(scale);
+                v.setAlpha(alpha);
+            }
+        }
+    }
+
+    protected void overScroll(float amount) {
+        int screenSize = getMeasuredWidth();
+
+        // We want to reach the max overscroll effect when the user has
+        // overscrolled half the size of the screen
+        float f = 2 * (amount / screenSize);
+
+        if (f == 0) return;
+
+        // Clamp this factor, f, to -1 < f < 1
+        if (Math.abs(f) >= 1) {
+            f /= Math.abs(f);
+        }
+
+        int overScrollAmount = (int) Math.round(f * screenSize);
+        if (amount < 0) {
+            mScrollX = overScrollAmount;
+        } else {
+            mScrollX = mMaxScrollX + overScrollAmount;
+        }
+        invalidate();
     }
 
     /**
