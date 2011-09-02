@@ -84,8 +84,7 @@
     <skip />
     <!-- no translation found for menu_notifications (6424587053194766192) -->
     <skip />
-    <!-- no translation found for menu_settings (8590123354578910028) -->
-    <skip />
+    <!-- outdated translation 8590123354578910028 -->     <string name="menu_settings" msgid="3946232973327980394">"Izilungiselelo Zendlela Yokusebenza"</string>
     <string name="menu_help" msgid="4901160661634590633">"Usizo"</string>
     <string name="cab_menu_delete_app" msgid="1242619904941293871">"Khipha uhlelo lokusebenza"</string>
     <string name="cab_menu_app_info" msgid="5180426909324882018">"Imininingwane yohlelo lokusebenza"</string>
@@ -110,16 +109,10 @@
     <skip />
     <!-- no translation found for folder_hint_text (8633351560105748141) -->
     <skip />
-    <!-- no translation found for workspace_cling_title (6772061635561632299) -->
-    <skip />
-    <!-- no translation found for workspace_cling_move_item (897064551822359347) -->
-    <skip />
-    <!-- no translation found for workspace_cling_open_all_apps (5287802320356364228) -->
-    <skip />
-    <!-- no translation found for all_apps_cling_title (3057036297077247772) -->
-    <skip />
-    <!-- no translation found for all_apps_cling_add_item (4635717397976102935) -->
-    <skip />
-    <!-- no translation found for cling_dismiss (2780907108735868381) -->
-    <skip />
+    <string name="workspace_cling_title" msgid="6772061635561632299">"Wamukelekile Ekhaya!"</string>
+    <string name="workspace_cling_move_item" msgid="897064551822359347">"Ukuze ususe uhlelo lokusebenza noma izinqunjwana, cindezela  &amp; bamba, besa ukubeka endaweni ethile."</string>
+    <string name="workspace_cling_open_all_apps" msgid="5287802320356364228">"Ukuze ubone zonke Izinhlelo zakho Ezihlelelwe Ukusebenza, cindezela zonke izinkinobho Zokuhlelwe Ukusebenza."</string>
+    <string name="all_apps_cling_title" msgid="3057036297077247772">"Nakhu konke okulungiselwe uhlelo lwakho lokusebenza"</string>
+    <string name="all_apps_cling_add_item" msgid="4635717397976102935">"Yengeza uhlelo lokusebenza noma izinqunjwana kwisikrini sakho sasekhaya, cindezela &amp; bamba, bese usibeka endaweni ethile."</string>
+    <string name="cling_dismiss" msgid="2780907108735868381">"KULUNGILE"</string>
 </resources>

@@ -64,7 +64,7 @@
     <string name="menu_wallpaper" msgid="5837429080911269832">"Tapet"</string>
     <string name="menu_search" msgid="4826514464423239041">"Søg"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"Meddelelser"</string>
-    <!-- outdated translation 6233960148378443661 -->     <string name="menu_settings" msgid="8590123354578910028">"Indstillinger"</string>
+    <!-- outdated translation 8590123354578910028 -->     <string name="menu_settings" msgid="3946232973327980394">"Systemindstillinger"</string>
     <string name="menu_help" msgid="4901160661634590633">"Hjælp"</string>
     <string name="cab_menu_delete_app" msgid="1242619904941293871">"Afinstaller applikation"</string>
     <string name="cab_menu_app_info" msgid="5180426909324882018">"Programoplysninger"</string>
@@ -85,16 +85,10 @@
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"Dette er et systemprogram, som ikke kan afinstalleres."</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Unavngiven mappe"</string>
-    <!-- no translation found for workspace_cling_title (6772061635561632299) -->
-    <skip />
-    <!-- no translation found for workspace_cling_move_item (897064551822359347) -->
-    <skip />
-    <!-- no translation found for workspace_cling_open_all_apps (5287802320356364228) -->
-    <skip />
-    <!-- no translation found for all_apps_cling_title (3057036297077247772) -->
-    <skip />
-    <!-- no translation found for all_apps_cling_add_item (4635717397976102935) -->
-    <skip />
-    <!-- no translation found for cling_dismiss (2780907108735868381) -->
-    <skip />
+    <string name="workspace_cling_title" msgid="6772061635561632299">"Velkommen hjem!"</string>
+    <string name="workspace_cling_move_item" msgid="897064551822359347">"Du kan flytte en app eller widget ved at trykke på den, holde den inde og derefter placere den."</string>
+    <string name="workspace_cling_open_all_apps" msgid="5287802320356364228">"Få vist alle dine apps ved at trykke på knappen Alle apps."</string>
+    <string name="all_apps_cling_title" msgid="3057036297077247772">"Her er alle dine apps"</string>
+    <string name="all_apps_cling_add_item" msgid="4635717397976102935">"Du kan tilføje en app eller widget på startskærmen ved at trykke på den, holde den nede og derefter placere den."</string>
+    <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
 </resources>
