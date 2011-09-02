@@ -155,10 +155,31 @@ public class LauncherModel extends BroadcastReceiver {
         return Bitmap.createBitmap(mDefaultIcon);
     }
 
-    public static void unbindWorkspaceItems() {
-        for (ItemInfo item: sWorkspaceItems) {
-            item.unbind();
-        }
+    public void unbindWorkspaceItems() {
+        sWorker.post(new Runnable() {
+            @Override
+            public void run() {
+                unbindWorkspaceItemsOnMainThread();
+            }
+        });
+    }
+
+    /** Unbinds all the sWorkspaceItems on the main thread, and return a copy of sWorkspaceItems
+     * that is save to reference from the main thread. */
+    private ArrayList<ItemInfo> unbindWorkspaceItemsOnMainThread() {
+        // Ensure that we don't use the same workspace items data structure on the main thread
+        // by making a copy of workspace items first.
+        final ArrayList<ItemInfo> workspaceItems = new ArrayList<ItemInfo>(sWorkspaceItems);
+        mHandler.post(new Runnable() {
+           @Override
+            public void run() {
+               for (ItemInfo item : workspaceItems) {
+                   item.unbind();
+               }
+            }
+        });
+
+        return workspaceItems;
     }
 
     /**
@@ -1165,8 +1186,12 @@ public class LauncherModel extends BroadcastReceiver {
                     }
                 }
             });
+
+            // Unbind previously bound workspace items to prevent a leak of AppWidgetHostViews.
+            final ArrayList<ItemInfo> workspaceItems = unbindWorkspaceItemsOnMainThread();
+
             // Add the items to the workspace.
-            N = sWorkspaceItems.size();
+            N = workspaceItems.size();
             for (int i=0; i<N; i+=ITEMS_CHUNK) {
                 final int start = i;
                 final int chunkSize = (i+ITEMS_CHUNK <= N) ? ITEMS_CHUNK : (N-i);
@@ -1174,16 +1199,18 @@ public class LauncherModel extends BroadcastReceiver {
                     public void run() {
                         Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                         if (callbacks != null) {
-                            callbacks.bindItems(sWorkspaceItems, start, start+chunkSize);
+                            callbacks.bindItems(workspaceItems, start, start+chunkSize);
                         }
                     }
                 });
             }
+            // Ensure that we don't use the same folders data structure on the main thread
+            final HashMap<Long, FolderInfo> folders = new HashMap<Long, FolderInfo>(sFolders);
             mHandler.post(new Runnable() {
                 public void run() {
                     Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                     if (callbacks != null) {
-                        callbacks.bindFolders(sFolders);
+                        callbacks.bindFolders(folders);
                     }
                 }
             });
