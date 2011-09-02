@@ -867,17 +867,28 @@ public class LauncherModel extends BroadcastReceiver {
         private boolean checkItemPlacement(ItemInfo occupied[][][], ItemInfo item) {
             int containerIndex = item.screen;
             if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                // We use the last index to refer to the hotseat
-                containerIndex = Launcher.SCREEN_COUNT;
                 // Return early if we detect that an item is under the hotseat button
                 if (Hotseat.isAllAppsButtonRank(item.screen)) {
                     return false;
+                }
+
+                // We use the last index to refer to the hotseat and the screen as the rank, so
+                // test and update the occupied state accordingly
+                if (occupied[Launcher.SCREEN_COUNT][item.screen][0] != null) {
+                    Log.e(TAG, "Error loading shortcut into hotseat " + item
+                        + " into position (" + item.screen + ":" + item.cellX + "," + item.cellY
+                        + ") occupied by " + occupied[Launcher.SCREEN_COUNT][item.screen][0]);
+                    return false;
+                } else {
+                    occupied[Launcher.SCREEN_COUNT][item.screen][0] = item;
+                    return true;
                 }
             } else if (item.container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
                 // Skip further checking if it is not the hotseat or workspace container
                 return true;
             }
 
+            // Check if any workspace icons overlap with each other
             for (int x = item.cellX; x < (item.cellX+item.spanX); x++) {
                 for (int y = item.cellY; y < (item.cellY+item.spanY); y++) {
                     if (occupied[containerIndex][x][y] != null) {
