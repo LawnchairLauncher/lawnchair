@@ -1602,7 +1602,9 @@ public final class Launcher extends Activity
      * leak the previous Home screen on orientation change.
      */
     private void unbindWorkspaceAndHotseatItems() {
-        LauncherModel.unbindWorkspaceItems();
+        if (mModel != null) {
+            mModel.unbindWorkspaceItems();
+        }
     }
 
     /**
@@ -2754,9 +2756,6 @@ public final class Launcher extends Activity
         if (mHotseat != null) {
             mHotseat.resetLayout();
         }
-
-        // This wasn't being called before which resulted in a leak of AppWidgetHostViews
-        unbindWorkspaceAndHotseatItems();
     }
 
     /**
