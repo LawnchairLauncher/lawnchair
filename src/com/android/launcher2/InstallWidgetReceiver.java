@@ -187,7 +187,7 @@ public class InstallWidgetReceiver {
             final AppWidgetProviderInfo widgetInfo = mActivities.get(which).widgetInfo;
 
             final PendingAddWidgetInfo createInfo = new PendingAddWidgetInfo(widgetInfo, mMimeType,
-                    mClipData, "4");
+                    mClipData);
             mLauncher.addAppWidgetFromDrop(createInfo, LauncherSettings.Favorites.CONTAINER_DESKTOP,
                     mTargetLayoutScreen, null, mTargetLayoutPos);
         }

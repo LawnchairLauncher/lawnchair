@@ -42,8 +42,7 @@ class FolderInfo extends ItemInfo {
 
     ArrayList<FolderListener> listeners = new ArrayList<FolderListener>();
 
-    FolderInfo(String whereCreated) {
-        super(whereCreated);
+    FolderInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
     }
 

@@ -51,8 +51,7 @@ class LauncherAppWidgetInfo extends ItemInfo {
     /**
      * Constructor for use with AppWidgets that haven't been instantiated yet.
      */
-    LauncherAppWidgetInfo(ComponentName providerName, String whereCreated) {
-        super(whereCreated);
+    LauncherAppWidgetInfo(ComponentName providerName) {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
         this.providerName = providerName;
 
@@ -62,8 +61,7 @@ class LauncherAppWidgetInfo extends ItemInfo {
         spanY = -1;
     }
 
-    LauncherAppWidgetInfo(int appWidgetId, String whereCreated) {
-        super(whereCreated);
+    LauncherAppWidgetInfo(int appWidgetId) {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
         this.appWidgetId = appWidgetId;
     }
