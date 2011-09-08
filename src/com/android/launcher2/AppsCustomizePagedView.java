@@ -31,10 +31,10 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.Bitmap.Config;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Process;
@@ -46,6 +46,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -191,11 +192,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     // Relating to the scroll and overscroll effects
     Workspace.ZInterpolator mZInterpolator = new Workspace.ZInterpolator(0.5f);
-    private float mDensity;
     private static float CAMERA_DISTANCE = 3500;
-    private static float TRANSITION_SCALE_FACTOR = 0.6f;
+    private static float TRANSITION_SCALE_FACTOR = 0.74f;
     private static float TRANSITION_PIVOT = 0.75f;
     private static float TRANSITION_MAX_ROTATION = 26f;
+    private static final boolean PERFORM_OVERSCROLL_ROTATION = false;
+    private AccelerateInterpolator mAlphaInterpolator = new AccelerateInterpolator(0.9f);
 
     // Previews & outlines
     ArrayList<AppsCustomizeAsyncTask> mRunningTasks;
@@ -219,7 +221,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mDefaultWidgetBackground = resources.getDrawable(R.drawable.default_widget_preview_holo);
         mAppIconSize = resources.getDimensionPixelSize(R.dimen.app_icon_size);
         mDragViewMultiplyColor = resources.getColor(R.color.drag_view_multiply_color);
-        mDensity = resources.getDisplayMetrics().density;
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PagedView, 0, 0);
         // TODO-APPS_CUSTOMIZE: remove these unnecessary attrs after
@@ -1131,49 +1132,47 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     @Override
     protected void screenScrolled(int screenCenter) {
         super.screenScrolled(screenCenter);
-        final int halfScreenSize = getMeasuredWidth() / 2;
 
         for (int i = 0; i < getChildCount(); i++) {
             View v = getPageAt(i);
             if (v != null) {
-                int totalDistance = getScaledMeasuredWidth(v) + mPageSpacing;
-                int delta = screenCenter - (getChildOffset(i) -
-                        getRelativeChildOffset(i) + halfScreenSize);
-
-                float scrollProgress = delta / (totalDistance * 1.0f);
-                scrollProgress = Math.min(scrollProgress, 1.0f);
-                scrollProgress = Math.max(scrollProgress, -1.0f);
+                float scrollProgress = getScrollProgress(screenCenter, v, i);
 
                 float interpolatedProgress =
                         mZInterpolator.getInterpolation(Math.abs(Math.min(scrollProgress, 0)));
                 float scale = (1 - interpolatedProgress) +
                         interpolatedProgress * TRANSITION_SCALE_FACTOR;
                 float translationX = Math.min(0, scrollProgress) * v.getMeasuredWidth();
-                float alpha = scrollProgress < 0 ? 1 - Math.abs(scrollProgress) : 1.0f;
+
+                float alpha = scrollProgress < 0 ? mAlphaInterpolator.getInterpolation(
+                        1 - Math.abs(scrollProgress)) : 1.0f;
 
                 v.setCameraDistance(mDensity * CAMERA_DISTANCE);
                 int pageWidth = v.getMeasuredWidth();
                 int pageHeight = v.getMeasuredHeight();
-                if (i == 0 && scrollProgress < 0) {
-                    // Overscroll to the left
-                    v.setPivotX(TRANSITION_PIVOT * pageWidth);
-                    v.setRotationY(-TRANSITION_MAX_ROTATION * scrollProgress);
-                    scale = 1.0f;
-                    alpha = 1.0f;
-                    // On the first page, we don't want the page to have any lateral motion
-                    translationX = getScrollX();
-                } else if (i == getChildCount() - 1 && scrollProgress > 0) {
-                    // Overscroll to the right
-                    v.setPivotX((1 - TRANSITION_PIVOT) * pageWidth);
-                    v.setRotationY(-TRANSITION_MAX_ROTATION * scrollProgress);
-                    scale = 1.0f;
-                    alpha = 1.0f;
-                    // On the last page, we don't want the page to have any lateral motion.
-                    translationX =  getScrollX() - mMaxScrollX;
-                } else {
-                    v.setPivotY(pageHeight / 2.0f);
-                    v.setPivotX(pageWidth / 2.0f);
-                    v.setRotationY(0f);
+
+                if (PERFORM_OVERSCROLL_ROTATION) {
+                    if (i == 0 && scrollProgress < 0) {
+                        // Overscroll to the left
+                        v.setPivotX(TRANSITION_PIVOT * pageWidth);
+                        v.setRotationY(-TRANSITION_MAX_ROTATION * scrollProgress);
+                        scale = 1.0f;
+                        alpha = 1.0f;
+                        // On the first page, we don't want the page to have any lateral motion
+                        translationX = getScrollX();
+                    } else if (i == getChildCount() - 1 && scrollProgress > 0) {
+                        // Overscroll to the right
+                        v.setPivotX((1 - TRANSITION_PIVOT) * pageWidth);
+                        v.setRotationY(-TRANSITION_MAX_ROTATION * scrollProgress);
+                        scale = 1.0f;
+                        alpha = 1.0f;
+                        // On the last page, we don't want the page to have any lateral motion.
+                        translationX =  getScrollX() - mMaxScrollX;
+                    } else {
+                        v.setPivotY(pageHeight / 2.0f);
+                        v.setPivotX(pageWidth / 2.0f);
+                        v.setRotationY(0f);
+                    }
                 }
 
                 v.setTranslationX(translationX);
@@ -1185,26 +1184,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     protected void overScroll(float amount) {
-        int screenSize = getMeasuredWidth();
-
-        // We want to reach the max overscroll effect when the user has
-        // overscrolled half the size of the screen
-        float f = 2 * (amount / screenSize);
-
-        if (f == 0) return;
-
-        // Clamp this factor, f, to -1 < f < 1
-        if (Math.abs(f) >= 1) {
-            f /= Math.abs(f);
-        }
-
-        int overScrollAmount = (int) Math.round(f * screenSize);
-        if (amount < 0) {
-            mScrollX = overScrollAmount;
-        } else {
-            mScrollX = mMaxScrollX + overScrollAmount;
-        }
-        invalidate();
+        dampedOverScroll(amount);
     }
 
     /**

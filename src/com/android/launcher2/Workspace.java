@@ -82,20 +82,13 @@ public class Workspace extends SmoothPagedView
 
     // Y rotation to apply to the workspace screens
     private static final float WORKSPACE_ROTATION = 12.5f;
-
-    // These are extra scale factors to apply to the mini home screens
-    // so as to achieve the desired transform
-    private static final float EXTRA_SCALE_FACTOR_0 = 0.972f;
-    private static final float EXTRA_SCALE_FACTOR_1 = 1.0f;
-    private static final float EXTRA_SCALE_FACTOR_2 = 1.10f;
+    private static final float WORKSPACE_OVERSCROLL_ROTATION = 24f;
 
     private static final int CHILDREN_OUTLINE_FADE_OUT_DELAY = 0;
     private static final int CHILDREN_OUTLINE_FADE_OUT_DURATION = 375;
     private static final int CHILDREN_OUTLINE_FADE_IN_DURATION = 100;
 
     private static final int BACKGROUND_FADE_OUT_DURATION = 350;
-    private static final int BACKGROUND_FADE_IN_DURATION = 350;
-
     private static final int ADJACENT_SCREEN_DROP_DURATION = 300;
 
     // These animators are used to fade the children's outlines
@@ -762,18 +755,21 @@ public class Workspace extends SmoothPagedView
         int scrollRange = getScrollRange();
         float scrollProgressOffset = 0;
 
-        // Account for overscroll: you only see the absolute edge of the wallpaper if
-        // you overscroll as far as you can in landscape mode. Only do this for static wallpapers
+        // Account for over scroll: you only see the absolute edge of the wallpaper if
+        // you over scroll as far as you can in landscape mode. Only do this for static wallpapers
         // because live wallpapers (and probably 3rd party wallpaper providers) rely on the offset
         // being even intervals from 0 to 1 (eg [0, 0.25, 0.5, 0.75, 1])
         if (isStaticWallpaper) {
-            int overscrollOffset = (int) (maxOverScroll() * display.getWidth());
-            scrollProgressOffset += overscrollOffset / (float) getScrollRange();
-            scrollRange += 2 * overscrollOffset;
+            int overScrollOffset = (int) (maxOverScroll() * display.getWidth());
+            scrollProgressOffset += overScrollOffset / (float) getScrollRange();
+            scrollRange += 2 * overScrollOffset;
         }
 
         // Again, we adjust the wallpaper offset to be consistent between values of mLayoutScale
-        float adjustedScrollX = mWallpaperScrollRatio * mScrollX;
+        boolean overScrollWallpaper = LauncherApplication.isScreenLarge();
+        float adjustedScrollX = overScrollWallpaper ?
+                mScrollX : Math.max(0, Math.min(mScrollX, mMaxScrollX));
+        adjustedScrollX *= mWallpaperScrollRatio;
         mLayoutScale = layoutScale;
 
         float scrollProgress =
@@ -1094,48 +1090,74 @@ public class Workspace extends SmoothPagedView
         return Math.min(r / threshold, 1.0f);
     }
 
-    @Override
-    protected void screenScrolled(int screenCenter) {
-        super.screenScrolled(screenCenter);
-
-        // If the screen is not xlarge, then don't rotate the CellLayouts
-        // NOTE: If we don't update the side pages alpha, then we should not hide the side pages.
-        //       see unshrink().
-        if (!LauncherApplication.isScreenLarge()) return;
-
-        final int halfScreenSize = getMeasuredWidth() / 2;
-
+    private void screenScrolledLargeUI(int screenCenter) {
         for (int i = 0; i < getChildCount(); i++) {
             CellLayout cl = (CellLayout) getChildAt(i);
             if (cl != null) {
-                int totalDistance = getScaledMeasuredWidth(cl) + mPageSpacing;
-                int delta = screenCenter - (getChildOffset(i) -
-                        getRelativeChildOffset(i) + halfScreenSize);
-
-                float scrollProgress = delta / (totalDistance * 1.0f);
-                scrollProgress = Math.min(scrollProgress, 1.0f);
-                scrollProgress = Math.max(scrollProgress, -1.0f);
-
-                if (!isSmall()) {
-                    // If the current page (i) is being overscrolled, we use a different
-                    // set of rules for setting the background alpha multiplier.
-                    if ((mScrollX < 0 && i == 0) || (mScrollX > mMaxScrollX &&
-                            i == getChildCount() -1 )) {
-                        cl.setBackgroundAlphaMultiplier(
-                                overScrollBackgroundAlphaInterpolator(Math.abs(scrollProgress)));
-                        mOverScrollPageIndex = i;
-                    } else if (mOverScrollPageIndex != i) {
-                        cl.setBackgroundAlphaMultiplier(
-                                backgroundAlphaInterpolator(Math.abs(scrollProgress)));
-                    }
-                }
-
+                float scrollProgress = getScrollProgress(screenCenter, cl, i);
                 float rotation = WORKSPACE_ROTATION * scrollProgress;
                 float translationX = getOffsetXForRotation(rotation, cl.getWidth(), cl.getHeight());
-                cl.setTranslationX(translationX);
 
+                // If the current page (i) is being over scrolled, we use a different
+                // set of rules for setting the background alpha multiplier.
+                if ((mScrollX < 0 && i == 0) || (mScrollX > mMaxScrollX &&
+                        i == getChildCount() -1 )) {
+                    cl.setBackgroundAlphaMultiplier(
+                            overScrollBackgroundAlphaInterpolator(Math.abs(scrollProgress)));
+                    mOverScrollPageIndex = i;
+                } else if (mOverScrollPageIndex != i) {
+                    cl.setBackgroundAlphaMultiplier(
+                            backgroundAlphaInterpolator(Math.abs(scrollProgress)));
+                }
+
+                cl.setTranslationX(translationX);
                 cl.setRotationY(rotation);
             }
+        }
+    }
+
+    private void resetCellLayoutTransforms(CellLayout cl, boolean left) {
+        cl.setTranslationX(0);
+        cl.setRotationY(0);
+        cl.setOverScrollAmount(0, left);
+        cl.setPivotX(cl.getMeasuredWidth() / 2);
+        cl.setPivotY(cl.getMeasuredHeight() / 2);
+    }
+
+    private void screenScrolledStandardUI(int screenCenter) {
+        if (mScrollX < 0 || mScrollX > mMaxScrollX) {
+            int index = mScrollX < 0 ? 0 : getChildCount() - 1;
+            CellLayout cl = (CellLayout) getChildAt(index);
+            float scrollProgress = getScrollProgress(screenCenter, cl, index);
+            cl.setOverScrollAmount(Math.abs(scrollProgress), index == 0);
+            float translationX = index == 0 ? mScrollX : - (mMaxScrollX - mScrollX);
+            float rotation = - WORKSPACE_OVERSCROLL_ROTATION * scrollProgress;
+            cl.setCameraDistance(mDensity * 6500);
+            cl.setPivotX(cl.getMeasuredWidth() * (index == 0 ? 0.75f : 0.25f));
+            cl.setTranslationX(translationX);
+            cl.setRotationY(rotation);
+        } else {
+            resetCellLayoutTransforms((CellLayout) getChildAt(0), true);
+            resetCellLayoutTransforms((CellLayout) getChildAt(getChildCount() - 1), false);
+        }
+    }
+
+    @Override
+    protected void screenScrolled(int screenCenter) {
+        super.screenScrolled(screenCenter);
+        if (LauncherApplication.isScreenLarge()) {
+            screenScrolledLargeUI(screenCenter);
+        } else {
+            screenScrolledStandardUI(screenCenter);
+        }
+    }
+
+    @Override
+    protected void overScroll(float amount) {
+        if (LauncherApplication.isScreenLarge()) {
+            dampedOverScroll(amount);
+        } else {
+            acceleratedOverScroll(amount);
         }
     }
 

@@ -66,6 +66,7 @@ public abstract class PagedView extends ViewGroup {
     private static final int PAGE_SNAP_ANIMATION_DURATION = 550;
     protected static final float NANOTIME_DIV = 1000000000.0f;
 
+    private static final float OVERSCROLL_ACCELERATE_FACTOR = 2;
     private static final float OVERSCROLL_DAMP_FACTOR = 0.14f;
     private static final int MINIMUM_SNAP_VELOCITY = 2200;
     private static final int MIN_FLING_VELOCITY = 250;
@@ -74,6 +75,7 @@ public abstract class PagedView extends ViewGroup {
     // the velocity at which a fling gesture will cause us to snap to the next page
     protected int mSnapVelocity = 500;
 
+    protected float mDensity;
     protected float mSmoothingTime;
     protected float mTouchX;
 
@@ -229,6 +231,7 @@ public abstract class PagedView extends ViewGroup {
         mTouchSlop = configuration.getScaledTouchSlop();
         mPagingTouchSlop = configuration.getScaledPagingTouchSlop();
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
+        mDensity = getResources().getDisplayMetrics().density;
     }
 
     public void setPageSwitchListener(PageSwitchListener pageSwitchListener) {
@@ -975,6 +978,19 @@ public abstract class PagedView extends ViewGroup {
         }
     }
 
+    protected float getScrollProgress(int screenCenter, View v, int page) {
+        final int halfScreenSize = getMeasuredWidth() / 2;
+
+        int totalDistance = getScaledMeasuredWidth(v) + mPageSpacing;
+        int delta = screenCenter - (getChildOffset(page) -
+                getRelativeChildOffset(page) + halfScreenSize);
+
+        float scrollProgress = delta / (totalDistance * 1.0f);
+        scrollProgress = Math.min(scrollProgress, 1.0f);
+        scrollProgress = Math.max(scrollProgress, -1.0f);
+        return scrollProgress;
+    }
+
     // This curve determines how the effect of scrolling over the limits of the page dimishes
     // as the user pulls further and further from the bounds
     private float overScrollInfluenceCurve(float f) {
@@ -982,7 +998,30 @@ public abstract class PagedView extends ViewGroup {
         return f * f * f + 1.0f;
     }
 
-    protected void overScroll(float amount) {
+    protected void acceleratedOverScroll(float amount) {
+        int screenSize = getMeasuredWidth();
+
+        // We want to reach the max over scroll effect when the user has
+        // over scrolled half the size of the screen
+        float f = OVERSCROLL_ACCELERATE_FACTOR * (amount / screenSize);
+
+        if (f == 0) return;
+
+        // Clamp this factor, f, to -1 < f < 1
+        if (Math.abs(f) >= 1) {
+            f /= Math.abs(f);
+        }
+
+        int overScrollAmount = (int) Math.round(f * screenSize);
+        if (amount < 0) {
+            mScrollX = overScrollAmount;
+        } else {
+            mScrollX = mMaxScrollX + overScrollAmount;
+        }
+        invalidate();
+    }
+
+    protected void dampedOverScroll(float amount) {
         int screenSize = getMeasuredWidth();
 
         float f = (amount / screenSize);
@@ -1004,9 +1043,13 @@ public abstract class PagedView extends ViewGroup {
         invalidate();
     }
 
+    protected void overScroll(float amount) {
+        dampedOverScroll(amount);
+    }
+
     protected float maxOverScroll() {
         // Using the formula in overScroll, assuming that f = 1.0 (which it should generally not
-        // exceed). Used to find out how much extra wallpaper we need for the overscroll effect
+        // exceed). Used to find out how much extra wallpaper we need for the over scroll effect
         float f = 1.0f;
         f = f / (Math.abs(f)) * (overScrollInfluenceCurve(Math.abs(f)));
         return OVERSCROLL_DAMP_FACTOR * f;

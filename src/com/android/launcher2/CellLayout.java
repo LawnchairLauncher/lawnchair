@@ -32,10 +32,13 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.NinePatchDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -88,6 +91,7 @@ public class CellLayout extends ViewGroup {
     private ArrayList<FolderRingAnimator> mFolderOuterRings = new ArrayList<FolderRingAnimator>();
     private int[] mFolderLeaveBehindCell = {-1, -1};
 
+    private int mForegroundAlpha = 0;
     private float mBackgroundAlpha;
     private float mBackgroundAlphaMultiplier = 1.0f;
 
@@ -98,10 +102,15 @@ public class CellLayout extends ViewGroup {
     private Drawable mNormalGlowBackgroundMini;
     private Drawable mActiveBackgroundMini;
     private Drawable mActiveGlowBackgroundMini;
+    private Drawable mOverScrollForegroundDrawable;
+    private Drawable mOverScrollLeft;
+    private Drawable mOverScrollRight;
     private Rect mBackgroundRect;
+    private Rect mForegroundRect;
     private Rect mGlowBackgroundRect;
     private float mGlowBackgroundScale;
     private float mGlowBackgroundAlpha;
+    private int mForegroundPadding;
 
     private boolean mAcceptsDrops = true;
     // If we're actively dragging something over this screen, mIsDragOverlapping is true
@@ -180,6 +189,10 @@ public class CellLayout extends ViewGroup {
         mNormalGlowBackgroundMini = res.getDrawable(R.drawable.homescreen_small_blue_strong);
         mActiveBackgroundMini = res.getDrawable(R.drawable.homescreen_small_green);
         mActiveGlowBackgroundMini = res.getDrawable(R.drawable.homescreen_small_green_strong);
+        mOverScrollLeft = res.getDrawable(R.drawable.overscroll_glow_left);
+        mOverScrollRight = res.getDrawable(R.drawable.overscroll_glow_right);
+        mForegroundPadding =
+                res.getDimensionPixelSize(R.dimen.workspace_overscroll_drawable_padding);
 
         mNormalBackground.setFilterBitmap(true);
         mActiveBackground.setFilterBitmap(true);
@@ -261,6 +274,7 @@ public class CellLayout extends ViewGroup {
         }
 
         mBackgroundRect = new Rect();
+        mForegroundRect = new Rect();
         mGlowBackgroundRect = new Rect();
         setHoverScale(1.0f);
         setHoverAlpha(1.0f);
@@ -309,6 +323,18 @@ public class CellLayout extends ViewGroup {
                 icon.getTop() + getPaddingTop() - padding,
                 icon.getRight() + getPaddingLeft() + padding,
                 icon.getBottom() + getPaddingTop() + padding);
+    }
+
+    void setOverScrollAmount(float r, boolean left) {
+        if (left && mOverScrollForegroundDrawable != mOverScrollLeft) {
+            mOverScrollForegroundDrawable = mOverScrollLeft;
+        } else if (!left && mOverScrollForegroundDrawable != mOverScrollRight) {
+            mOverScrollForegroundDrawable = mOverScrollRight;
+        }
+
+        mForegroundAlpha = (int) Math.round((r * 255));
+        mOverScrollForegroundDrawable.setAlpha(mForegroundAlpha);
+        invalidate();
     }
 
     void setPressedOrFocusedIcon(BubbleTextView icon) {
@@ -574,6 +600,18 @@ public class CellLayout extends ViewGroup {
             d.setBounds(0, 0, width, height);
             d.draw(canvas);
             canvas.restore();
+        }
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        super.dispatchDraw(canvas);
+        if (mForegroundAlpha > 0) {
+            mOverScrollForegroundDrawable.setBounds(mForegroundRect);
+            Paint p = ((NinePatchDrawable) mOverScrollForegroundDrawable).getPaint();
+            p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.ADD));
+            mOverScrollForegroundDrawable.draw(canvas);
+            p.setXfermode(null);
         }
     }
 
@@ -962,6 +1000,8 @@ public class CellLayout extends ViewGroup {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         mBackgroundRect.set(0, 0, w, h);
+        mForegroundRect.set(mForegroundPadding, mForegroundPadding,
+                w - 2 * mForegroundPadding, h - 2 * mForegroundPadding);
         updateGlowRect();
     }
 

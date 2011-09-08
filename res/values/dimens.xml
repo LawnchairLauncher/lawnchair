@@ -35,6 +35,7 @@
     <dimen name="hotseat_cell_height">64dp</dimen>
     <dimen name="hotseat_width_gap">-1dp</dimen>
     <dimen name="hotseat_height_gap">-1dp</dimen>
+    <dimen name="workspace_overscroll_drawable_padding">0dp</dimen>
 
 <!-- QSB -->
     <dimen name="toolbar_button_vertical_padding">0dip</dimen>
