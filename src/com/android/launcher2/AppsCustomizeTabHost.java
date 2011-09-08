@@ -138,10 +138,10 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
                 // Set the width and show the tab bar (if we have a loading graphic, we can switch
                 // it off here)
                 mTabs.getLayoutParams().width = contentWidth;
-                mTabsContainer.setAlpha(1f);
                 post(new Runnable() {
                     public void run() {
                         mTabs.requestLayout();
+                        mTabsContainer.setAlpha(1f);
                     }
                 });
             }

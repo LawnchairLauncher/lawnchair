@@ -686,6 +686,7 @@ public class LauncherModel extends BroadcastReceiver {
                     oldTask.stopLocked();
                 }
                 mLoaderTask = new LoaderTask(context, isLaunching);
+                sWorkerThread.setPriority(Thread.NORM_PRIORITY);
                 sWorker.post(mLoaderTask);
             }
         }
@@ -824,6 +825,11 @@ public class LauncherModel extends BroadcastReceiver {
                 } else {
                     if (DEBUG_LOADERS) Log.d(TAG, "step 2: special: loading workspace");
                     loadAndBindWorkspace();
+                }
+
+                // Restore the default thread priority after we are done loading items
+                synchronized (mLock) {
+                    android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
                 }
             }
 
