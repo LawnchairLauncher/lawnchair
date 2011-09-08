@@ -40,6 +40,7 @@ public class PagedViewGridLayout extends GridLayout implements Page {
     int getCellCountX() {
         return mCellCountX;
     }
+
     int getCellCountY() {
         return mCellCountY;
     }
@@ -69,27 +70,18 @@ public class PagedViewGridLayout extends GridLayout implements Page {
         return result;
     }
 
-    @Override
-    protected boolean onSetAlpha(int alpha) {
-        return true;
+    void destroyHardwareLayer() {
+        setLayerType(LAYER_TYPE_NONE, null);
     }
 
-    @Override
-    public void setAlpha(float alpha) {
-        setChildrenAlpha(alpha);
-        super.setAlpha(alpha);
-    }
-
-    private void setChildrenAlpha(float alpha) {
-        final int childCount = getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            getChildAt(i).setAlpha(alpha);
-        }
+    void createHardwareLayer() {
+        setLayerType(LAYER_TYPE_HARDWARE, null);
     }
 
     @Override
     public void removeAllViewsOnPage() {
         removeAllViews();
+        destroyHardwareLayer();
     }
 
     @Override

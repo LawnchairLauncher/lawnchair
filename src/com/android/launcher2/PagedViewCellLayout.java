@@ -47,9 +47,6 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
     private int mHeightGap;
     private int mMaxGap;
     protected PagedViewCellLayoutChildren mChildren;
-    private PagedViewCellLayoutChildren mHolographicChildren;
-    private boolean mAllowHardwareLayerCreation = false;
-    private boolean mCreateHardwareLayersIfAllowed = false;
 
     public PagedViewCellLayout(Context context) {
         this(context, null);
@@ -80,12 +77,6 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         mChildren.setGap(mWidthGap, mHeightGap);
 
         addView(mChildren);
-        mHolographicChildren = new PagedViewCellLayoutChildren(context);
-        mHolographicChildren.setAlpha(0f);
-        mHolographicChildren.setCellDimensions(mCellWidth, mCellHeight);
-        mHolographicChildren.setGap(mWidthGap, mHeightGap);
-
-        addView(mHolographicChildren);
     }
 
     public int getCellWidth() {
@@ -96,41 +87,20 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         return mCellHeight;
     }
 
-    public void allowHardwareLayerCreation() {
-        // This is called after the first time we launch into All Apps. Before that point,
-        // there's no need for hardware layers here since there's a hardware layer set on the
-        // parent, AllAppsTabbed, during the AllApps transition -- creating hardware layers here
-        // before the animation is done slows down the animation
-        if (!mAllowHardwareLayerCreation) {
-            mAllowHardwareLayerCreation = true;
-            if (mCreateHardwareLayersIfAllowed) {
-                createHardwareLayers();
-            }
-        }
-    }
-
     @Override
     public void setAlpha(float alpha) {
-        mChildren.setAlpha(HolographicOutlineHelper.viewAlphaInterpolator(alpha));
-        mHolographicChildren.setAlpha(HolographicOutlineHelper.highlightAlphaInterpolator(alpha));
+        mChildren.setAlpha(alpha);
     }
 
     void destroyHardwareLayers() {
         // called when a page is no longer visible (triggered by loadAssociatedPages ->
         // removeAllViewsOnPage)
-        mCreateHardwareLayersIfAllowed = false;
-        if (mAllowHardwareLayerCreation) {
-            mChildren.destroyHardwareLayer();
-            mHolographicChildren.destroyHardwareLayer();
-        }
+        mChildren.destroyHardwareLayer();
     }
+
     void createHardwareLayers() {
         // called when a page is visible (triggered by loadAssociatedPages -> syncPageItems)
-        mCreateHardwareLayersIfAllowed = true;
-        if (mAllowHardwareLayerCreation) {
-            mChildren.createHardwareLayer();
-            mHolographicChildren.createHardwareLayer();
-        }
+        mChildren.createHardwareLayer();
     }
 
     @Override
@@ -163,11 +133,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
 
             if (child instanceof PagedViewIcon) {
                 PagedViewIcon pagedViewIcon = (PagedViewIcon) child;
-                if (mAllowHardwareLayerCreation) {
-                    pagedViewIcon.disableCache();
-                }
-                mHolographicChildren.addView(pagedViewIcon.getHolographicOutlineView(),
-                        index, lp);
+                pagedViewIcon.disableCache();
             }
             return true;
         }
@@ -177,14 +143,12 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
     @Override
     public void removeAllViewsOnPage() {
         mChildren.removeAllViews();
-        mHolographicChildren.removeAllViews();
         destroyHardwareLayers();
     }
 
     @Override
     public void removeViewOnPageAt(int index) {
         mChildren.removeViewAt(index);
-        mHolographicChildren.removeViewAt(index);
     }
 
     @Override
@@ -237,7 +201,6 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
             mHeightGap = Math.min(mMaxGap,numHeightGaps > 0 ? (vFreeSpace / numHeightGaps) : 0);
 
             mChildren.setGap(mWidthGap, mHeightGap);
-            mHolographicChildren.setGap(mWidthGap, mHeightGap);
         } else {
             mWidthGap = mOriginalWidthGap;
             mHeightGap = mOriginalHeightGap;
@@ -317,13 +280,11 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
 
     public void enableCenteredContent(boolean enabled) {
         mChildren.enableCenteredContent(enabled);
-        mHolographicChildren.enableCenteredContent(enabled);
     }
 
     @Override
     protected void setChildrenDrawingCacheEnabled(boolean enabled) {
         mChildren.setChildrenDrawingCacheEnabled(enabled);
-        mHolographicChildren.setChildrenDrawingCacheEnabled(enabled);
     }
 
     public void setCellCount(int xCount, int yCount) {
@@ -336,7 +297,6 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         mWidthGap = widthGap;
         mHeightGap = heightGap;
         mChildren.setGap(widthGap, heightGap);
-        mHolographicChildren.setGap(widthGap, heightGap);
     }
 
     public int[] getCellCountForDimensions(int width, int height) {
