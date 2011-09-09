@@ -75,9 +75,9 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.View.OnLongClickListener;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
@@ -229,9 +229,9 @@ public final class Launcher extends Activity
     private final int mRestoreScreenOrientationDelay = 500;
 
     // External icons saved in case of resource changes, orientation, etc.
-    private static Drawable.ConstantState sGlobalSearchIcon;
-    private static Drawable.ConstantState sVoiceSearchIcon;
-    private static Drawable.ConstantState sAppMarketIcon;
+    private static Drawable.ConstantState[] sGlobalSearchIcon = new Drawable.ConstantState[2];
+    private static Drawable.ConstantState[] sVoiceSearchIcon = new Drawable.ConstantState[2];
+    private static Drawable.ConstantState[] sAppMarketIcon = new Drawable.ConstantState[2];
 
     private DragLayer mDragLayer;
 
@@ -305,18 +305,20 @@ public final class Launcher extends Activity
         registerReceiver(mCloseSystemDialogsReceiver, filter);
 
         // If we have a saved version of these external icons, we load them up immediately
-        if (sGlobalSearchIcon == null || sVoiceSearchIcon == null || sAppMarketIcon == null) {
+        int coi = getCurrentOrientationIndexForGlobalIcons();
+        if (sGlobalSearchIcon[coi] == null || sVoiceSearchIcon[coi] == null ||
+                sAppMarketIcon[coi] == null) {
             updateIconsAffectedByPackageManagerChanges();
             updateGlobalSearchIcon();
         }
-        if (sGlobalSearchIcon != null) {
-             updateGlobalSearchIcon(sGlobalSearchIcon);
+        if (sGlobalSearchIcon[coi] != null) {
+             updateGlobalSearchIcon(sGlobalSearchIcon[coi]);
         }
-        if (sVoiceSearchIcon != null) {
-            updateVoiceSearchIcon(sVoiceSearchIcon);
+        if (sVoiceSearchIcon[coi] != null) {
+            updateVoiceSearchIcon(sVoiceSearchIcon[coi]);
         }
-        if (sAppMarketIcon != null) {
-            updateAppMarketIcon(sAppMarketIcon);
+        if (sAppMarketIcon[coi] != null) {
+            updateAppMarketIcon(sAppMarketIcon[coi]);
         }
     }
 
@@ -1283,14 +1285,23 @@ public final class Launcher extends Activity
         }
 
         super.onCreateOptionsMenu(menu);
+
+        Intent manageApps = new Intent(Settings.ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS);
+        manageApps.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         Intent settings = new Intent(android.provider.Settings.ACTION_SETTINGS);
         settings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        Intent help = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.help_url)));
+        help.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+
         menu.add(MENU_GROUP_WALLPAPER, MENU_WALLPAPER_SETTINGS, 0, R.string.menu_wallpaper)
             .setIcon(android.R.drawable.ic_menu_gallery)
             .setAlphabeticShortcut('W');
         menu.add(0, MENU_MANAGE_APPS, 0, R.string.menu_manage_apps)
             .setIcon(android.R.drawable.ic_menu_manage)
+            .setIntent(manageApps)
             .setAlphabeticShortcut('M');
         menu.add(0, MENU_SYSTEM_SETTINGS, 0, R.string.menu_settings)
             .setIcon(android.R.drawable.ic_menu_preferences)
@@ -1298,6 +1309,7 @@ public final class Launcher extends Activity
             .setAlphabeticShortcut('P');
         menu.add(0, MENU_HELP, 0, R.string.menu_help)
             .setIcon(android.R.drawable.ic_menu_help)
+            .setIntent(help)
             .setAlphabeticShortcut('H');
         return true;
     }
@@ -1320,12 +1332,6 @@ public final class Launcher extends Activity
         switch (item.getItemId()) {
         case MENU_WALLPAPER_SETTINGS:
             startWallpaper();
-            return true;
-        case MENU_MANAGE_APPS:
-            manageApps();
-            return true;
-        case MENU_HELP:
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.help_url))));
             return true;
         }
 
@@ -1355,10 +1361,6 @@ public final class Launcher extends Activity
         mPendingAddInfo.cellX = mPendingAddInfo.cellY = -1;
         mPendingAddInfo.spanX = mPendingAddInfo.spanY = -1;
         mPendingAddInfo.dropPos = null;
-    }
-
-    private void manageApps() {
-        startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS));
     }
 
     void addAppWidgetFromPick(Intent data) {
@@ -1678,7 +1680,7 @@ public final class Launcher extends Activity
 
     private void startVoiceSearch() {
         Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
     }
 
@@ -1702,6 +1704,7 @@ public final class Launcher extends Activity
         String packageName = componentName.getPackageName();
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 Uri.fromParts("package", packageName, null));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
     }
 
@@ -1716,6 +1719,8 @@ public final class Launcher extends Activity
             String className = appInfo.componentName.getClassName();
             Intent intent = new Intent(
                     Intent.ACTION_DELETE, Uri.fromParts("package", packageName, className));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                    Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
             startActivity(intent);
         }
     }
@@ -2452,6 +2457,17 @@ public final class Launcher extends Activity
         }
     }
 
+    /** Maps the current orientation to an index for referencing orientation correct global icons */
+    private int getCurrentOrientationIndexForGlobalIcons() {
+        // default - 0, landscape - 1
+        switch (getResources().getConfiguration().orientation) {
+        case Configuration.ORIENTATION_LANDSCAPE:
+            return 1;
+        default:
+            return 0;
+        }
+    }
+
     private Drawable getExternalPackageToolbarIcon(ComponentName activityName) {
         try {
             PackageManager packageManager = getPackageManager();
@@ -2538,7 +2554,8 @@ public final class Launcher extends Activity
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         ComponentName activityName = searchManager.getGlobalSearchActivity();
         if (activityName != null) {
-            sGlobalSearchIcon = updateButtonWithIconFromExternalActivity(
+            int coi = getCurrentOrientationIndexForGlobalIcons();
+            sGlobalSearchIcon[coi] = updateButtonWithIconFromExternalActivity(
                     R.id.search_button, activityName, R.drawable.ic_search_normal_holo);
             searchButton.setVisibility(View.VISIBLE);
             if (searchDivider != null) searchDivider.setVisibility(View.VISIBLE);
@@ -2561,7 +2578,8 @@ public final class Launcher extends Activity
         Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
         ComponentName activityName = intent.resolveActivity(getPackageManager());
         if (activityName != null) {
-            sVoiceSearchIcon = updateButtonWithIconFromExternalActivity(
+            int coi = getCurrentOrientationIndexForGlobalIcons();
+            sVoiceSearchIcon[coi] = updateButtonWithIconFromExternalActivity(
                     R.id.voice_button, activityName, R.drawable.ic_voice_search_holo);
             if (searchDivider != null) searchDivider.setVisibility(View.VISIBLE);
             voiceButton.setVisibility(View.VISIBLE);
@@ -2585,8 +2603,9 @@ public final class Launcher extends Activity
         // (If multiple app markets are installed, it will return the ResolverActivity.)
         ComponentName activityName = intent.resolveActivity(getPackageManager());
         if (activityName != null) {
+            int coi = getCurrentOrientationIndexForGlobalIcons();
             mAppMarketIntent = intent;
-            sAppMarketIcon = updateTextButtonWithIconFromExternalActivity(
+            sAppMarketIcon[coi] = updateTextButtonWithIconFromExternalActivity(
                     R.id.market_button, activityName, R.drawable.ic_launcher_market_holo);
             marketButton.setVisibility(View.VISIBLE);
         } else {
