@@ -1776,11 +1776,13 @@ public abstract class PagedView extends ViewGroup {
         int numPages = getChildCount();
         int pageWidth = getMeasuredWidth();
         int maxPageWidth = (numPages * getChildWidth(0)) + ((numPages - 1) * mPageSpacing);
+        int maxScrollPosition = maxPageWidth - pageWidth; // n-1 * pageWidth
         int trackWidth = pageWidth - mScrollIndicatorPaddingLeft - mScrollIndicatorPaddingRight;
         int indicatorWidth = mScrollIndicator.getMeasuredWidth() -
                 mScrollIndicator.getPaddingLeft() - mScrollIndicator.getPaddingRight();
 
-        float offset = (float) getScrollX() / maxPageWidth;
+        float offset = (float) Math.max(0f, Math.min(maxScrollPosition, getScrollX()))
+                / maxPageWidth;
         int indicatorSpace = trackWidth / numPages;
         int indicatorPos = (int) (offset * trackWidth) + mScrollIndicatorPaddingLeft;
         if (hasElasticScrollIndicator()) {
