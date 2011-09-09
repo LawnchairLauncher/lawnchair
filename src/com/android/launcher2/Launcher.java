@@ -2304,6 +2304,8 @@ public final class Launcher extends Activity
     }
 
     void exitSpringLoadedDragModeDelayed(final boolean successfulDrop, boolean extendedDelay) {
+        if (mState != State.APPS_CUSTOMIZE_SPRING_LOADED) return;
+
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
