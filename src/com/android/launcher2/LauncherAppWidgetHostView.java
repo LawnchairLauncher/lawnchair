@@ -118,9 +118,13 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView {
     @Override
     public void setAppWidget(int appWidgetId, AppWidgetProviderInfo info) {
         super.setAppWidget(appWidgetId, info);
-        // We add necessary padding to the AppWidgetHostView
-        Launcher.Padding padding = mLauncher.getPaddingForWidget(info.provider);
-        setPadding(padding.left, padding.top, padding.right, padding.bottom);
+        // Sometimes the AppWidgetManager returns a null AppWidgetProviderInfo object for
+        // a widget, eg. for some widgets in safe mode.
+        if (info != null) {
+            // We add necessary padding to the AppWidgetHostView
+            Launcher.Padding padding = mLauncher.getPaddingForWidget(info.provider);
+            setPadding(padding.left, padding.top, padding.right, padding.bottom);
+        }
     }
 
     @Override
