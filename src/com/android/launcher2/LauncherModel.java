@@ -940,8 +940,7 @@ public class LauncherModel extends BroadcastReceiver {
             final ArrayList<Long> itemsToRemove = new ArrayList<Long>();
 
             final Cursor c = contentResolver.query(
-                    LauncherSettings.Favorites.CONTENT_URI, null, null, null,
-                    LauncherSettings.Favorites._ID + " DESC");
+                    LauncherSettings.Favorites.CONTENT_URI, null, null, null, null);
 
             // +1 for the hotseat (it can be larger than the workspace)
             // Load workspace in reverse order to ensure that latest items are loaded first (and
