@@ -46,7 +46,7 @@
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Fjernet snarveien «<xliff:g id="NAME">%s</xliff:g>»."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Snarveien «<xliff:g id="NAME">%s</xliff:g>» fins allerede."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Velg snarvei"</string>
-    <string name="title_select_application" msgid="8031072293115454221">"Velg program"</string>
+    <string name="title_select_application" msgid="8031072293115454221">"Velg applikasjon"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Programmer"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Startsiden"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"Fjern"</string>
@@ -64,11 +64,11 @@
     <string name="menu_wallpaper" msgid="5837429080911269832">"Bakgrunnsbilde"</string>
     <string name="menu_search" msgid="4826514464423239041">"Søk"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"Varslinger"</string>
-    <!-- outdated translation 8590123354578910028 -->     <string name="menu_settings" msgid="3946232973327980394">"Systeminnstillinger"</string>
+    <string name="menu_settings" msgid="3946232973327980394">"Systeminnstillinger"</string>
     <string name="menu_help" msgid="4901160661634590633">"Hjelp"</string>
-    <string name="cab_menu_delete_app" msgid="1242619904941293871">"Avinstaller program"</string>
+    <string name="cab_menu_delete_app" msgid="1242619904941293871">"Avinstaller applikasjon"</string>
     <string name="cab_menu_app_info" msgid="5180426909324882018">"Søknadsopplysninger"</string>
-    <string name="cab_app_selection_text" msgid="606113924828167756">"1 program valgt"</string>
+    <string name="cab_app_selection_text" msgid="606113924828167756">"1 applikasjon valgt"</string>
     <string name="cab_widget_selection_text" msgid="962527270506951955">"1 modul valgt"</string>
     <string name="cab_folder_selection_text" msgid="8916111874189565067">"1 mappe valgt"</string>
     <string name="cab_shortcut_selection_text" msgid="8115847384500412878">"1 snarvei valgt"</string>
@@ -80,12 +80,12 @@
     <string name="permdesc_read_settings" msgid="8377434937176025492">"Lar applikasjonen lese innstillinger og snarveier fra skrivebordet."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"skrive skrivebordsinnstillinger og -snarveier"</string>
     <string name="permdesc_write_settings" msgid="1098648778383349818">"Lar applikasjonen endre innstillinger og snarveier på skrivebordet."</string>
-    <string name="google_apps_folder_name" msgid="6379401240457905079">"Google Apps"</string>
+    <!-- outdated translation 6379401240457905079 -->     <string name="google_apps_folder_name" msgid="2873137836817266807">"Google Apps"</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Problem under lasting av gadget"</string>
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"Dette er et systemprogram og kan ikke avinstalleres."</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Mappe uten navn"</string>
-    <string name="workspace_cling_title" msgid="6772061635561632299">"Velkommen hjem!"</string>
+    <string name="workspace_cling_title" msgid="6772061635561632299">"Velkommen til startsiden!"</string>
     <string name="workspace_cling_move_item" msgid="897064551822359347">"Du kan flytte en app eller modul ved å berøre og holde nede på den, og deretter flytte den."</string>
     <string name="workspace_cling_open_all_apps" msgid="5287802320356364228">"Du kan se alle appene dine ved å berøre knappen Alle apper."</string>
     <string name="all_apps_cling_title" msgid="3057036297077247772">"Her er alle appene dine"</string>
