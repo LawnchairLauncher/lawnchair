@@ -64,7 +64,7 @@
     <string name="menu_wallpaper" msgid="5837429080911269832">"壁紙"</string>
     <string name="menu_search" msgid="4826514464423239041">"検索"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"通知"</string>
-    <!-- outdated translation 8590123354578910028 -->     <string name="menu_settings" msgid="3946232973327980394">"システム設定"</string>
+    <string name="menu_settings" msgid="3946232973327980394">"システム設定"</string>
     <string name="menu_help" msgid="4901160661634590633">"ヘルプ"</string>
     <string name="cab_menu_delete_app" msgid="1242619904941293871">"アプリケーションのアンインストール"</string>
     <string name="cab_menu_app_info" msgid="5180426909324882018">"アプリケーションの詳細"</string>
@@ -80,7 +80,7 @@
     <string name="permdesc_read_settings" msgid="8377434937176025492">"ホームの設定とショートカットの読み取りをアプリケーションに許可します。"</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"ホームの設定とショートカットの書き込み"</string>
     <string name="permdesc_write_settings" msgid="1098648778383349818">"ホームの設定とショートカットの変更をアプリケーションに許可します。"</string>
-    <string name="google_apps_folder_name" msgid="6379401240457905079">"Google Apps"</string>
+    <!-- outdated translation 6379401240457905079 -->     <string name="google_apps_folder_name" msgid="2873137836817266807">"Google Apps"</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"ウィジェットを表示できません"</string>
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"このシステムアプリケーションはアンインストールできません。"</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
@@ -88,7 +88,7 @@
     <string name="workspace_cling_title" msgid="6772061635561632299">"ホーム画面へようこそ。"</string>
     <string name="workspace_cling_move_item" msgid="897064551822359347">"アプリまたはウィジェットを移動するには、アプリまたはウィジェットを押し続けた後、新しい場所に配置します。"</string>
     <string name="workspace_cling_open_all_apps" msgid="5287802320356364228">"すべてのアプリを見るには、[すべてのアプリ]をタップします。"</string>
-    <string name="all_apps_cling_title" msgid="3057036297077247772">"すべてのアプリを表示しています"</string>
+    <string name="all_apps_cling_title" msgid="3057036297077247772">"全アプリを表示しています"</string>
     <string name="all_apps_cling_add_item" msgid="4635717397976102935">"ホーム画面にアプリまたはウィジェットを追加するには、アプリまたはウィジェットを押し続けた後、希望の場所に配置します。"</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
 </resources>
