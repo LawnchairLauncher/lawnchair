@@ -46,10 +46,6 @@
         android:layout_gravity="bottom"
         android:layout_marginBottom="@dimen/button_bar_height" />
 
-    <include
-        android:id="@+id/qsb_bar"
-        layout="@layout/qsb_bar" />
-
     <!-- The workspace contains 5 screens of cells -->
     <com.android.launcher2.Workspace
         android:id="@+id/workspace"
@@ -70,6 +66,10 @@
         <include android:id="@+id/cell4" layout="@layout/workspace_screen" />
         <include android:id="@+id/cell5" layout="@layout/workspace_screen" />
     </com.android.launcher2.Workspace>
+
+    <include
+        android:id="@+id/qsb_bar"
+        layout="@layout/qsb_bar" />
 
     <include layout="@layout/apps_customize_pane"
         android:id="@+id/apps_customize_pane"
