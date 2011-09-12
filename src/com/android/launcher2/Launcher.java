@@ -2150,6 +2150,8 @@ public final class Launcher extends Activity
                 ((LauncherTransitionable) toView).onLauncherTransitionStart(scaleAnim, false);
             }
             scaleAnim.addListener(new AnimatorListenerAdapter() {
+                boolean animationCancelled = false;
+
                 @Override
                 public void onAnimationStart(Animator animation) {
                     updateWallpaperVisibility(true);
@@ -2175,7 +2177,13 @@ public final class Launcher extends Activity
                         mWorkspace.hideScrollingIndicator(true);
                         mWorkspace.hideDockDivider(true);
                     }
-                    updateWallpaperVisibility(false);
+                    if (!animationCancelled) {
+                        updateWallpaperVisibility(false);
+                    }
+                }
+
+                public void onAnimationCancel(Animator animation) {
+                    animationCancelled = true;
                 }
             });
 
