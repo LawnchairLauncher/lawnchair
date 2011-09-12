@@ -1137,8 +1137,11 @@ public class Workspace extends SmoothPagedView
             cl.setTranslationX(translationX);
             cl.setRotationY(rotation);
         } else {
-            resetCellLayoutTransforms((CellLayout) getChildAt(0), true);
-            resetCellLayoutTransforms((CellLayout) getChildAt(getChildCount() - 1), false);
+            // We don't want to mess with the translations during transitions
+            if (!isSwitchingState()) {
+                resetCellLayoutTransforms((CellLayout) getChildAt(0), true);
+                resetCellLayoutTransforms((CellLayout) getChildAt(getChildCount() - 1), false);
+            }
         }
     }
 
