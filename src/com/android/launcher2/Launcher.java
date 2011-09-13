@@ -75,10 +75,11 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.View.OnLongClickListener;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Advanceable;
@@ -708,7 +709,7 @@ public final class Launcher extends Activity
         // Setup the workspace
         mWorkspace.setHapticFeedbackEnabled(false);
         mWorkspace.setOnLongClickListener(this);
-        mWorkspace.setup(this, dragController);
+        mWorkspace.setup(dragController);
         dragController.addDragListener(mWorkspace);
 
         // Get the search/delete bar
@@ -2088,7 +2089,6 @@ public final class Launcher extends Activity
      * @param scaleFactor The scale factor used for the zoom
      */
     private void setPivotsForZoom(View view, State state, float scaleFactor) {
-        final int height = view.getHeight();
         view.setPivotX(view.getWidth() / 2.0f);
         view.setPivotY(view.getHeight() / 2.0f);
     }
@@ -2115,12 +2115,14 @@ public final class Launcher extends Activity
         final int fadeDuration = res.getInteger(R.integer.config_appsCustomizeFadeInTime);
         final float scale = (float) res.getInteger(R.integer.config_appsCustomizeZoomScaleFactor);
         final View toView = mAppsCustomizeTabHost;
+        final int startDelay =
+                res.getInteger(R.integer.config_workspaceAppsCustomizeAnimationStagger);
 
         setPivotsForZoom(toView, toState, scale);
 
         // Shrink workspaces away if going to AppsCustomize from workspace
         mWorkspace.changeState(Workspace.State.SMALL, animated);
-        hideHotseat(animated);
+        //hideHotseat(animated);
 
         if (animated) {
             final ValueAnimator scaleAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
@@ -2144,6 +2146,7 @@ public final class Launcher extends Activity
                     toView.setFastAlpha(a * 0f + b * 1f);
                 }
             });
+            alphaAnim.setStartDelay(startDelay);
             alphaAnim.start();
 
             if (toView instanceof LauncherTransitionable) {
@@ -2182,13 +2185,13 @@ public final class Launcher extends Activity
                     }
                 }
 
+                @Override
                 public void onAnimationCancel(Animator animation) {
                     animationCancelled = true;
                 }
             });
 
             // toView should appear right at the end of the workspace shrink animation
-            final int startDelay = 0;
 
             if (mStateAnimation != null) mStateAnimation.cancel();
             mStateAnimation = new AnimatorSet();
@@ -2250,7 +2253,7 @@ public final class Launcher extends Activity
             });
             final ValueAnimator alphaAnim = ValueAnimator.ofFloat(0f, 1f);
             alphaAnim.setDuration(res.getInteger(R.integer.config_appsCustomizeFadeOutTime));
-            alphaAnim.setInterpolator(new DecelerateInterpolator(1.5f));
+            alphaAnim.setInterpolator(new AccelerateDecelerateInterpolator());
             alphaAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
                 public void onAnimationUpdate(float a, float b) {
                     // don't need to invalidate because we do so above
@@ -2284,7 +2287,10 @@ public final class Launcher extends Activity
     }
 
     void showWorkspace(boolean animated) {
-        mWorkspace.changeState(Workspace.State.NORMAL, animated);
+        Resources res = getResources();
+        int stagger = res.getInteger(R.integer.config_appsCustomizeWorkspaceAnimationStagger);
+
+        mWorkspace.changeState(Workspace.State.NORMAL, animated, stagger);
         if (mState == State.APPS_CUSTOMIZE) {
             closeAllApps(animated);
         }

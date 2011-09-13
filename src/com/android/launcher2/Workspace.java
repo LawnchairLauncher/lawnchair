@@ -17,12 +17,12 @@
 package com.android.launcher2;
 
 import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
+import android.animation.Animator.AnimatorListener;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.AlertDialog;
 import android.app.WallpaperManager;
@@ -83,6 +83,7 @@ public class Workspace extends SmoothPagedView
     // Y rotation to apply to the workspace screens
     private static final float WORKSPACE_ROTATION = 12.5f;
     private static final float WORKSPACE_OVERSCROLL_ROTATION = 24f;
+    private static float CAMERA_DISTANCE = 6500;
 
     private static final int CHILDREN_OUTLINE_FADE_OUT_DELAY = 0;
     private static final int CHILDREN_OUTLINE_FADE_OUT_DURATION = 375;
@@ -187,6 +188,10 @@ public class Workspace extends SmoothPagedView
     WallpaperOffsetInterpolator mWallpaperOffset;
     boolean mUpdateWallpaperOffsetImmediately = false;
     private Runnable mDelayedResizeRunnable;
+    private int mDisplayWidth;
+    private int mDisplayHeight;
+    private boolean mIsStaticWallpaper;
+    private int mWallpaperTravelWidth;
 
     // Variables relating to the creation of user folders by hovering shortcuts over shortcuts
     private static final int FOLDER_CREATION_TIMEOUT = 250;
@@ -300,6 +305,7 @@ public class Workspace extends SmoothPagedView
         LauncherModel.updateWorkspaceLayoutCells(cellCountX, cellCountY);
         setHapticFeedbackEnabled(false);
 
+        mLauncher = (Launcher) context;
         initWorkspace();
 
         // Disable multitouch across the workspace/all apps/customize tray
@@ -355,6 +361,11 @@ public class Workspace extends SmoothPagedView
 
         mSnapVelocity = 600;
         mWallpaperOffset = new WallpaperOffsetInterpolator();
+        Display display = mLauncher.getWindowManager().getDefaultDisplay();
+        mDisplayWidth = display.getWidth();
+        mDisplayHeight = display.getHeight();
+        mWallpaperTravelWidth = (int) (mDisplayWidth *
+                wallpaperTravelToScreenWidthRatio(mDisplayWidth, mDisplayHeight));
     }
 
     @Override
@@ -610,6 +621,7 @@ public class Workspace extends SmoothPagedView
 
     protected void onPageBeginMoving() {
         super.onPageBeginMoving();
+        mIsStaticWallpaper = mWallpaperManager.getWallpaperInfo() == null;
 
         if (isHardwareAccelerated()) {
             updateChildrenLayersEnabled();
@@ -700,9 +712,8 @@ public class Workspace extends SmoothPagedView
     }
 
     protected void setWallpaperDimension() {
-        Display display = mLauncher.getWindowManager().getDefaultDisplay();
         DisplayMetrics displayMetrics = new DisplayMetrics();
-        display.getRealMetrics(displayMetrics);
+        mLauncher.getWindowManager().getDefaultDisplay().getRealMetrics(displayMetrics);
         final int maxDim = Math.max(displayMetrics.widthPixels, displayMetrics.heightPixels);
         final int minDim = Math.min(displayMetrics.widthPixels, displayMetrics.heightPixels);
 
@@ -731,13 +742,11 @@ public class Workspace extends SmoothPagedView
     }
 
     private float wallpaperOffsetForCurrentScroll() {
-        Display display = mLauncher.getWindowManager().getDefaultDisplay();
-        final boolean isStaticWallpaper = (mWallpaperManager.getWallpaperInfo() == null);
+        final boolean isStaticWallpaper = mIsStaticWallpaper;
         // The wallpaper travel width is how far, from left to right, the wallpaper will move
         // at this orientation (for example, in portrait mode we don't move all the way to the
         // edges of the wallpaper, or otherwise the parallax effect would be too strong)
-        int wallpaperTravelWidth = (int) (display.getWidth() *
-                wallpaperTravelToScreenWidthRatio(display.getWidth(), display.getHeight()));
+        int wallpaperTravelWidth = mWallpaperTravelWidth;
         if (!isStaticWallpaper) {
             wallpaperTravelWidth = mWallpaperWidth;
         }
@@ -760,7 +769,7 @@ public class Workspace extends SmoothPagedView
         // because live wallpapers (and probably 3rd party wallpaper providers) rely on the offset
         // being even intervals from 0 to 1 (eg [0, 0.25, 0.5, 0.75, 1])
         if (isStaticWallpaper) {
-            int overScrollOffset = (int) (maxOverScroll() * display.getWidth());
+            int overScrollOffset = (int) (maxOverScroll() * mDisplayWidth);
             scrollProgressOffset += overScrollOffset / (float) getScrollRange();
             scrollRange += 2 * overScrollOffset;
         }
@@ -872,8 +881,7 @@ public class Workspace extends SmoothPagedView
                 mIsMovingFast = false;
                 return false;
             }
-            Display display = mLauncher.getWindowManager().getDefaultDisplay();
-            boolean isLandscape = display.getWidth() > display.getHeight();
+            boolean isLandscape = mDisplayWidth > mDisplayHeight;
 
             long currentTime = System.currentTimeMillis();
             long timeSinceLastUpdate = currentTime - mLastWallpaperOffsetUpdateTime;
@@ -1100,16 +1108,17 @@ public class Workspace extends SmoothPagedView
 
                 // If the current page (i) is being over scrolled, we use a different
                 // set of rules for setting the background alpha multiplier.
-                if ((mScrollX < 0 && i == 0) || (mScrollX > mMaxScrollX &&
-                        i == getChildCount() -1 )) {
-                    cl.setBackgroundAlphaMultiplier(
-                            overScrollBackgroundAlphaInterpolator(Math.abs(scrollProgress)));
-                    mOverScrollPageIndex = i;
-                } else if (mOverScrollPageIndex != i) {
-                    cl.setBackgroundAlphaMultiplier(
-                            backgroundAlphaInterpolator(Math.abs(scrollProgress)));
+                if (!isSmall()) {
+                    if ((mScrollX < 0 && i == 0) || (mScrollX > mMaxScrollX &&
+                            i == getChildCount() -1 )) {
+                        cl.setBackgroundAlphaMultiplier(
+                                overScrollBackgroundAlphaInterpolator(Math.abs(scrollProgress)));
+                        mOverScrollPageIndex = i;
+                    } else if (mOverScrollPageIndex != i) {
+                        cl.setBackgroundAlphaMultiplier(
+                                backgroundAlphaInterpolator(Math.abs(scrollProgress)));
+                    }
                 }
-
                 cl.setTranslationX(translationX);
                 cl.setRotationY(rotation);
             }
@@ -1132,7 +1141,7 @@ public class Workspace extends SmoothPagedView
             cl.setOverScrollAmount(Math.abs(scrollProgress), index == 0);
             float translationX = index == 0 ? mScrollX : - (mMaxScrollX - mScrollX);
             float rotation = - WORKSPACE_OVERSCROLL_ROTATION * scrollProgress;
-            cl.setCameraDistance(mDensity * 6500);
+            cl.setCameraDistance(mDensity * CAMERA_DISTANCE);
             cl.setPivotX(cl.getMeasuredWidth() * (index == 0 ? 0.75f : 0.25f));
             cl.setTranslationX(translationX);
             cl.setRotationY(rotation);
@@ -1476,6 +1485,10 @@ public class Workspace extends SmoothPagedView
     }
 
     void changeState(final State state, boolean animated) {
+        changeState(state, animated, 0);
+    }
+
+    void changeState(final State state, boolean animated, int delay) {
         if (mFirstLayout) {
             // (mFirstLayout == "first layout has not happened yet")
             // cancel any pending shrinks that were set earlier
@@ -1492,7 +1505,7 @@ public class Workspace extends SmoothPagedView
         setCurrentPage((mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage);
 
         float finalScaleFactor = 1.0f;
-        float finalBackgroundAlpha = 0.0f;
+        float finalBackgroundAlpha = (state == State.SPRING_LOADED) ? 1.0f : 0f;
         boolean normalState = false;
         State oldState = mState;
         mState = state;
@@ -1500,7 +1513,6 @@ public class Workspace extends SmoothPagedView
 
         if (state != State.NORMAL) {
             finalScaleFactor = mSpringLoadedShrinkFactor - (state == State.SMALL ? 0.1f : 0);
-            finalBackgroundAlpha = 1.0f;
             if (oldState == State.NORMAL && state == State.SMALL) {
                 zoomIn = false;
                 if (animated) {
@@ -1509,6 +1521,7 @@ public class Workspace extends SmoothPagedView
                 setLayoutScale(finalScaleFactor);
                 updateChildrenLayersEnabled();
             } else {
+                finalBackgroundAlpha = 1.0f;
                 setLayoutScale(finalScaleFactor);
             }
         } else {
@@ -1637,6 +1650,7 @@ public class Workspace extends SmoothPagedView
             });
 
             mAnimator.playTogether(animWithInterpolator, rotationAnim);
+            mAnimator.setStartDelay(delay);
             // If we call this when we're not animated, onAnimationEnd is never called on
             // the listener; make sure we only use the listener when we're actually animating
             mAnimator.addListener(mChangeStateAnimationListener);
@@ -2729,8 +2743,7 @@ public class Workspace extends SmoothPagedView
     public void getHitRect(Rect outRect) {
         // We want the workspace to have the whole area of the display (it will find the correct
         // cell layout to drop to in the existing drag/drop logic.
-        final Display d = mLauncher.getWindowManager().getDefaultDisplay();
-        outRect.set(0, 0, d.getWidth(), d.getHeight());
+        outRect.set(0, 0, mDisplayWidth, mDisplayHeight);
     }
 
     /**
@@ -2981,8 +2994,7 @@ public class Workspace extends SmoothPagedView
                 pixelX, pixelY, spanX, spanY, recycle);
     }
 
-    void setup(Launcher launcher, DragController dragController) {
-        mLauncher = launcher;
+    void setup(DragController dragController) {
         mSpringLoadedDragController = new SpringLoadedDragController(mLauncher);
         mDragController = dragController;
 

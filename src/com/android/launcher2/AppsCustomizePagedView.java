@@ -192,11 +192,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     // Relating to the scroll and overscroll effects
     Workspace.ZInterpolator mZInterpolator = new Workspace.ZInterpolator(0.5f);
-    private static float CAMERA_DISTANCE = 3500;
+    private static float CAMERA_DISTANCE = 6500;
     private static float TRANSITION_SCALE_FACTOR = 0.74f;
-    private static float TRANSITION_PIVOT = 0.75f;
-    private static float TRANSITION_MAX_ROTATION = 26f;
-    private static final boolean PERFORM_OVERSCROLL_ROTATION = false;
+    private static float TRANSITION_PIVOT = 0.65f;
+    private static float TRANSITION_MAX_ROTATION = 22;
+    private static final boolean PERFORM_OVERSCROLL_ROTATION = true;
     private AccelerateInterpolator mAlphaInterpolator = new AccelerateInterpolator(0.9f);
 
     // Previews & outlines
@@ -1183,7 +1183,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     protected void overScroll(float amount) {
-        dampedOverScroll(amount);
+        acceleratedOverScroll(amount);
     }
 
     /**
