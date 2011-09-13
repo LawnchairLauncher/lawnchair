@@ -1022,8 +1022,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 // Fill in the widget information
                 AppWidgetProviderInfo info = (AppWidgetProviderInfo) rawInfo;
                 createItemInfo = new PendingAddWidgetInfo(info, null, null);
-                int[] cellSpans = CellLayout.rectToCell(getResources(),
-                        info.minWidth, info.minHeight, null);
+                int[] cellSpans = mLauncher.getSpanForWidget(info, null);
                 FastBitmapDrawable preview = new FastBitmapDrawable(data.generatedImages.get(i));
                 widget.applyFromAppWidgetProviderInfo(info, preview, -1, cellSpans, 
                         mHolographicOutlineHelper);
