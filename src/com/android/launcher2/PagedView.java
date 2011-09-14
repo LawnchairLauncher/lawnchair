@@ -1807,7 +1807,7 @@ public abstract class PagedView extends ViewGroup {
      * fill its space on the track or not.
      */
     protected boolean hasElasticScrollIndicator() {
-        return false;
+        return true;
     }
 
     private void updateScrollingIndicator() {

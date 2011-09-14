@@ -1221,19 +1221,23 @@ public class Workspace extends SmoothPagedView
             final int height = getHeight();
             final int pageHeight = getChildAt(0).getHeight();
 
-            // This determines the height of the glowing edge: 90% of the page height
-            final int padding = (int) ((height - pageHeight) * 0.5f + pageHeight * 0.1f);
+            // Set the height of the outline to be the height of the page
+            final int offset = (height - pageHeight - mPaddingTop - mPaddingBottom) / 2;
+            final int paddingTop = mPaddingTop + offset;
+            final int paddingBottom = mPaddingBottom + offset;
 
             final CellLayout leftPage = (CellLayout) getChildAt(mCurrentPage - 1);
             final CellLayout rightPage = (CellLayout) getChildAt(mCurrentPage + 1);
 
             if (leftPage != null && leftPage.getIsDragOverlapping()) {
                 final Drawable d = getResources().getDrawable(R.drawable.page_hover_left_holo);
-                d.setBounds(mScrollX, padding, mScrollX + d.getIntrinsicWidth(), height - padding);
+                d.setBounds(mScrollX, paddingTop, mScrollX + d.getIntrinsicWidth(),
+                        height - paddingBottom);
                 d.draw(canvas);
             } else if (rightPage != null && rightPage.getIsDragOverlapping()) {
                 final Drawable d = getResources().getDrawable(R.drawable.page_hover_right_holo);
-                d.setBounds(mScrollX + width - d.getIntrinsicWidth(), padding, mScrollX + width, height - padding);
+                d.setBounds(mScrollX + width - d.getIntrinsicWidth(), paddingTop, mScrollX + width,
+                        height - paddingBottom);
                 d.draw(canvas);
             }
         }
@@ -3357,13 +3361,6 @@ public class Workspace extends SmoothPagedView
 
     public void getLocationInDragLayer(int[] loc) {
         mLauncher.getDragLayer().getLocationInDragLayer(this, loc);
-    }
-
-    /**
-     * Return true because we want the scrolling indicator to stretch to fit the space.
-     */
-    protected boolean hasElasticScrollIndicator() {
-        return true;
     }
 
     void showDockDivider(boolean immediately) {
