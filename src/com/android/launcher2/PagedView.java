@@ -475,15 +475,17 @@ public abstract class PagedView extends ViewGroup {
         if (heightMode == MeasureSpec.AT_MOST) {
             heightSize = maxChildHeight + verticalPadding;
         }
+
+        updateScrollingIndicatorPosition();
+
+        setMeasuredDimension(widthSize, heightSize);
+
+        // We can't call getChildOffset/getRelativeChildOffset until we set the measured dimensions
         if (childCount > 0) {
             mMaxScrollX = getChildOffset(childCount - 1) - getRelativeChildOffset(childCount - 1);
         } else {
             mMaxScrollX = 0;
         }
-
-        updateScrollingIndicatorPosition();
-
-        setMeasuredDimension(widthSize, heightSize);
     }
 
     protected void scrollToNewPageWithoutMovingPages(int newCurrentPage) {
@@ -553,6 +555,11 @@ public abstract class PagedView extends ViewGroup {
             if (DEBUG) Log.d(TAG, "getRelativeChildOffset(): " + getMeasuredWidth() + ", "
                     + getChildWidth(0));
             childLeft = getRelativeChildOffset(0);
+
+            // Calculate the variable page spacing if necessary
+            if (mPageSpacing < 0) {
+                mPageSpacing = ((right - left) - getChildAt(0).getMeasuredWidth()) / 2;
+            }
         }
 
         for (int i = 0; i < childCount; i++) {
@@ -1818,16 +1825,15 @@ public abstract class PagedView extends ViewGroup {
         if (mScrollIndicator == null) return;
         int numPages = getChildCount();
         int pageWidth = getMeasuredWidth();
-        int maxPageWidth = (numPages * getChildWidth(0)) + ((numPages - 1) * mPageSpacing);
-        int maxScrollPosition = maxPageWidth - pageWidth; // n-1 * pageWidth
+        int lastChildIndex = Math.max(0, getChildCount() - 1);
+        int maxScrollX = getChildOffset(lastChildIndex) - getRelativeChildOffset(lastChildIndex);
         int trackWidth = pageWidth - mScrollIndicatorPaddingLeft - mScrollIndicatorPaddingRight;
         int indicatorWidth = mScrollIndicator.getMeasuredWidth() -
                 mScrollIndicator.getPaddingLeft() - mScrollIndicator.getPaddingRight();
 
-        float offset = (float) Math.max(0f, Math.min(maxScrollPosition, getScrollX()))
-                / maxPageWidth;
+        float offset = Math.max(0f, Math.min(1f, (float) getScrollX() / maxScrollX));
         int indicatorSpace = trackWidth / numPages;
-        int indicatorPos = (int) (offset * trackWidth) + mScrollIndicatorPaddingLeft;
+        int indicatorPos = (int) (offset * (trackWidth - indicatorSpace)) + mScrollIndicatorPaddingLeft;
         if (hasElasticScrollIndicator()) {
             if (mScrollIndicator.getMeasuredWidth() != indicatorSpace) {
                 mScrollIndicator.getLayoutParams().width = indicatorSpace;
