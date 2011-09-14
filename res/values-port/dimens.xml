@@ -22,7 +22,7 @@
          for the portals to look right. -->
     <dimen name="workspace_top_padding">2dp</dimen>
     <dimen name="workspace_bottom_padding">2dp</dimen>
-    <dimen name="workspace_page_spacing">8dp</dimen>
+    <dimen name="workspace_page_spacing">-1dp</dimen>
 
     <integer name="apps_customize_cellCountX">4</integer>
     <integer name="apps_customize_cellCountY">5</integer>
