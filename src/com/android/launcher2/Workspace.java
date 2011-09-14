@@ -512,7 +512,10 @@ public class Workspace extends SmoothPagedView
         // mNextPage is set to INVALID_PAGE whenever we are stationary.
         // Calculating "next page" this way ensures that you scroll to whatever page you tap on
         final int current = (mNextPage == INVALID_PAGE) ? mCurrentPage : mNextPage;
-        return hitsPage(current - 1, x, y);
+
+        // Only allow tap to next page on large devices, where there's significant margin outside
+        // the active workspace
+        return LauncherApplication.isScreenLarge() && hitsPage(current - 1, x, y);
     }
 
     @Override
@@ -520,7 +523,10 @@ public class Workspace extends SmoothPagedView
         // mNextPage is set to INVALID_PAGE whenever we are stationary.
         // Calculating "next page" this way ensures that you scroll to whatever page you tap on
         final int current = (mNextPage == INVALID_PAGE) ? mCurrentPage : mNextPage;
-        return hitsPage(current + 1, x, y);
+
+        // Only allow tap to next page on large devices, where there's significant margin outside
+        // the active workspace
+        return LauncherApplication.isScreenLarge() && hitsPage(current + 1, x, y);
     }
 
     /**
