@@ -539,15 +539,6 @@ public abstract class PagedView extends ViewGroup {
         }
 
         if (DEBUG) Log.d(TAG, "PagedView.onLayout()");
-        if (mFirstLayout && mCurrentPage >= 0 && mCurrentPage < getChildCount()) {
-            setHorizontalScrollBarEnabled(false);
-            int newX = getChildOffset(mCurrentPage) - getRelativeChildOffset(mCurrentPage);
-            scrollTo(newX, 0);
-            mScroller.setFinalX(newX);
-            setHorizontalScrollBarEnabled(true);
-            mFirstLayout = false;
-        }
-
         final int verticalPadding = mPaddingTop + mPaddingBottom;
         final int childCount = getChildCount();
         int childLeft = 0;
@@ -578,6 +569,16 @@ public abstract class PagedView extends ViewGroup {
                 childLeft += childWidth + mPageSpacing;
             }
         }
+
+        if (mFirstLayout && mCurrentPage >= 0 && mCurrentPage < getChildCount()) {
+            setHorizontalScrollBarEnabled(false);
+            int newX = getChildOffset(mCurrentPage) - getRelativeChildOffset(mCurrentPage);
+            scrollTo(newX, 0);
+            mScroller.setFinalX(newX);
+            setHorizontalScrollBarEnabled(true);
+            mFirstLayout = false;
+        }
+
         if (mFirstLayout && mCurrentPage >= 0 && mCurrentPage < getChildCount()) {
             mFirstLayout = false;
         }
