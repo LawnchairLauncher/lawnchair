@@ -21,8 +21,15 @@
 <!-- Workspace -->
     <style name="QSBBar">
         <item name="android:orientation">horizontal</item>
-        <item name="android:layout_width">320dp</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/qsb_bar_height</item>
         <item name="android:layout_gravity">top|center_horizontal</item>
+        <item name="android:layout_marginLeft">@dimen/workspace_divider_padding_left</item>
+        <item name="android:layout_marginRight">@dimen/workspace_divider_padding_right</item>
+    </style>
+    <style name="SearchButton">
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:paddingTop">@dimen/toolbar_button_vertical_padding</item>
+        <item name="android:paddingBottom">@dimen/toolbar_button_vertical_padding</item>
     </style>
 </resources>

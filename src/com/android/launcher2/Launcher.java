@@ -2572,7 +2572,7 @@ public final class Launcher extends Activity
         if (activityName != null) {
             int coi = getCurrentOrientationIndexForGlobalIcons();
             sGlobalSearchIcon[coi] = updateButtonWithIconFromExternalActivity(
-                    R.id.search_button, activityName, R.drawable.ic_search_normal_holo);
+                    R.id.search_button, activityName, R.drawable.ic_home_search_normal_holo);
             searchButton.setVisibility(View.VISIBLE);
             if (searchDivider != null) searchDivider.setVisibility(View.VISIBLE);
         } else {
@@ -2596,7 +2596,7 @@ public final class Launcher extends Activity
         if (activityName != null) {
             int coi = getCurrentOrientationIndexForGlobalIcons();
             sVoiceSearchIcon[coi] = updateButtonWithIconFromExternalActivity(
-                    R.id.voice_button, activityName, R.drawable.ic_voice_search_holo);
+                    R.id.voice_button, activityName, R.drawable.ic_home_voice_search_holo);
             if (searchDivider != null) searchDivider.setVisibility(View.VISIBLE);
             voiceButton.setVisibility(View.VISIBLE);
         } else {
