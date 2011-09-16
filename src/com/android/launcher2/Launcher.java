@@ -321,6 +321,11 @@ public final class Launcher extends Activity
         if (sAppMarketIcon[coi] != null) {
             updateAppMarketIcon(sAppMarketIcon[coi]);
         }
+
+        // On large interfaces, we want the screen to auto-rotate based on the current orientation
+        if (LauncherApplication.isScreenLarge()) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        }
     }
 
     private void checkForLocaleChange() {
@@ -3040,16 +3045,21 @@ public final class Launcher extends Activity
         }
         return oriMap[(d.getRotation() + indexOffset) % 4];
     }
-    public void lockScreenOrientation() {
-        setRequestedOrientation(mapConfigurationOriActivityInfoOri(getResources()
-                .getConfiguration().orientation));
+
+    public void lockScreenOrientationOnLargeUI() {
+        if (LauncherApplication.isScreenLarge()) {
+            setRequestedOrientation(mapConfigurationOriActivityInfoOri(getResources()
+                    .getConfiguration().orientation));
+        }
     }
-    public void unlockScreenOrientation() {
-        mHandler.postDelayed(new Runnable() {
-            public void run() {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-            }
-        }, mRestoreScreenOrientationDelay);
+    public void unlockScreenOrientationOnLargeUI() {
+        if (LauncherApplication.isScreenLarge()) {
+            mHandler.postDelayed(new Runnable() {
+                public void run() {
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                }
+            }, mRestoreScreenOrientationDelay);
+        }
     }
 
     /* Cling related */
