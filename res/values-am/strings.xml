@@ -22,34 +22,26 @@
     <string name="application_name" msgid="8424725141379931883">"አስነሺ"</string>
     <string name="uid_name" msgid="3371120195364560632">"የAndroid ኮር ትግበራዎች"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>
-    <!-- no translation found for chooser_wallpaper (5988031014201479733) -->
-    <skip />
-    <!-- no translation found for wallpaper_instructions (4215640646180727542) -->
-    <skip />
+    <string name="chooser_wallpaper" msgid="5988031014201479733">"ከ ልጣፍ ምረጥ"</string>
+    <string name="wallpaper_instructions" msgid="4215640646180727542">"ልጣፍ አዘጋጅ"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"ልጥፎች"</string>
     <string name="activity_not_found" msgid="5591731020063337696">"ትግበራ አልተጫነም።"</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">" ፍርግሞች"</string>
     <string name="long_press_widget_to_add" msgid="8915177487173521501">"ፍርግም ለማንሳት ንካ &amp; በመጫን ያዝ"</string>
-    <!-- no translation found for market (2652226429823445833) -->
-    <skip />
+    <string name="market" msgid="2652226429823445833">"ሸምት"</string>
     <string name="external_drop_widget_error" msgid="4976816434597126575">"እዚህ የመነሻማያ ላይ አይነት ማኖር አልተቻለም።"</string>
     <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"ለመፍጠር ፍርግም ምረጥ"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"አቃፊ ስም"</string>
-    <!-- no translation found for rename_folder_title (4544573104191526550) -->
-    <skip />
-    <!-- no translation found for rename_action (6016003384693240896) -->
-    <skip />
-    <!-- no translation found for cancel_action (3811860427489435048) -->
-    <skip />
+    <string name="rename_folder_title" msgid="4544573104191526550">"አቃፊእንደገና ሰይም"</string>
+    <string name="rename_action" msgid="6016003384693240896">"እሺ"</string>
+    <string name="cancel_action" msgid="3811860427489435048">"ይቅር"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"ወደ መነሻ ማያ አክል"</string>
     <string name="group_applications" msgid="4118484163419674240">"መተግበሪያዎች"</string>
     <string name="group_shortcuts" msgid="9133529424900391877">"አቋራጮች"</string>
     <string name="group_widgets" msgid="6704978494073105844">"ፍርግሞች"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"ልጣፍ"</string>
-    <!-- no translation found for out_of_space (8365249326091984698) -->
-    <skip />
-    <!-- no translation found for invalid_hotseat_item (6545340627805449250) -->
-    <skip />
+    <string name="out_of_space" msgid="8365249326091984698">"በዚህ መነሻ ማያ ላይ ምንም ቦታ የለም።"</string>
+    <string name="invalid_hotseat_item" msgid="6545340627805449250">"ይህ ፍርግም ለማስቀመጫው በጣም ትልቅ ነው።"</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"አቋራጭ\"<xliff:g id="NAME">%s</xliff:g> \"ተፈጥሯል።"</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"አቋራጭ \"<xliff:g id="NAME">%s</xliff:g>\" ተወግዶ ነበር።"</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"አቋራጭ \"<xliff:g id="NAME">%s</xliff:g>\" አስቀድሞ አለ።"</string>
@@ -59,31 +51,19 @@
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"መነሻ"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"አስወግድ"</string>
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"አራግፍ"</string>
-    <!-- no translation found for delete_target_label (665300185123139530) -->
-    <skip />
-    <!-- no translation found for delete_target_uninstall_label (748894921183769150) -->
-    <skip />
-    <!-- no translation found for info_target_label (4019495079517426980) -->
-    <skip />
-    <!-- no translation found for accessibility_search_button (816822994629942611) -->
-    <skip />
-    <!-- no translation found for accessibility_voice_search_button (3938249215065842475) -->
-    <skip />
-    <!-- no translation found for accessibility_all_apps_button (1595097919145716305) -->
-    <skip />
-    <!-- no translation found for accessibility_delete_button (3628162007991023603) -->
-    <skip />
-    <!-- no translation found for delete_zone_label_all_apps_system_app (3683920959591819044) -->
-    <skip />
-    <!-- no translation found for menu_add (3065046628354640854) -->
-    <skip />
+    <string name="delete_target_label" msgid="665300185123139530">"አስወግድ"</string>
+    <string name="delete_target_uninstall_label" msgid="748894921183769150">"አራግፍ"</string>
+    <string name="info_target_label" msgid="4019495079517426980">"የትግበራ መረጃ"</string>
+    <string name="accessibility_search_button" msgid="816822994629942611">"ፈልግ"</string>
+    <string name="accessibility_voice_search_button" msgid="3938249215065842475">"የድምፅ ፍለጋ"</string>
+    <string name="accessibility_all_apps_button" msgid="1595097919145716305">"መተግበሪያዎች"</string>
+    <string name="accessibility_delete_button" msgid="3628162007991023603">"አስወግድ"</string>
+    <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"ማዘመን አትጫን"</string>
+    <string name="menu_add" msgid="3065046628354640854">"አክል"</string>
     <string name="menu_manage_apps" msgid="2308685199463588895">"ትግበራዎች አደራጅ"</string>
-    <!-- no translation found for menu_wallpaper (5837429080911269832) -->
-    <skip />
-    <!-- no translation found for menu_search (4826514464423239041) -->
-    <skip />
-    <!-- no translation found for menu_notifications (6424587053194766192) -->
-    <skip />
+    <string name="menu_wallpaper" msgid="5837429080911269832">"ልጣፍ"</string>
+    <string name="menu_search" msgid="4826514464423239041">" ፈልግ"</string>
+    <string name="menu_notifications" msgid="6424587053194766192">"ማሳወቂያዎች"</string>
     <string name="menu_settings" msgid="3946232973327980394">"የስርዓት ቅንጅቶች"</string>
     <string name="menu_help" msgid="4901160661634590633">"እገዛ"</string>
     <string name="cab_menu_delete_app" msgid="1242619904941293871">"ትግበራ አራግፍ"</string>
@@ -92,23 +72,19 @@
     <string name="cab_widget_selection_text" msgid="962527270506951955">"1 ዊድጌት ተመርጧል"</string>
     <string name="cab_folder_selection_text" msgid="8916111874189565067">"1 አቃፊ ተመርጧል"</string>
     <string name="cab_shortcut_selection_text" msgid="8115847384500412878">"1 አቋራጭ ተመርጧል"</string>
-    <!-- no translation found for permlab_install_shortcut (1201690825493376489) -->
-    <skip />
+    <string name="permlab_install_shortcut" msgid="1201690825493376489">"አቋራጮችን ጫን።"</string>
     <string name="permdesc_install_shortcut" msgid="7429365847558984148">"ያለተጠቃሚ ጣልቃገብነት ትግበራአቋራጭ ለማከል ይፈቅዳል።"</string>
-    <!-- no translation found for permlab_uninstall_shortcut (7696645932555926449) -->
-    <skip />
+    <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"አቋራጮችን አራግፍ"</string>
     <string name="permdesc_uninstall_shortcut" msgid="959972195916090900">"ያለተጠቃሚ ጣልቃገብነት ትግበራአቋራጭ ለማስወገድ ይፈቅዳል።"</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"የመነሻቅንብሮች እና አቋራጮችን አንብብ"</string>
     <string name="permdesc_read_settings" msgid="8377434937176025492">"ቅንብሮችን እና አቋራጮችን በመነሻለማንበብ ትግበራ ይፈቅዳል።"</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"መነሻ ቅንብሮች እና አቋራጮች ፃፍ"</string>
     <string name="permdesc_write_settings" msgid="1098648778383349818">"ቅንብሮችን እና አቋራጮችን በመነሻለመለወጥ ትግበራ ይፈቅዳል።"</string>
-    <!-- outdated translation 6379401240457905079 -->     <string name="google_apps_folder_name" msgid="2873137836817266807">"የGoogle ትግበራዎች"</string>
+    <string name="google_apps_folder_name" msgid="2873137836817266807">"Google"</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"ፍርግም የመጫን ችግር"</string>
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"ይህ የስርዓት ትግበራ ነው እና አለማራገፍ አይቻልም።"</string>
-    <!-- no translation found for dream_name (2847171357608437154) -->
-    <skip />
-    <!-- no translation found for folder_hint_text (8633351560105748141) -->
-    <skip />
+    <string name="dream_name" msgid="2847171357608437154">"የሮኬት ማስነሻ"</string>
+    <string name="folder_hint_text" msgid="8633351560105748141">"ስም አልባ አቃፊ"</string>
     <string name="workspace_cling_title" msgid="6772061635561632299">"እንኳን ወደ መነሻ ገጽ መጣህ!"</string>
     <string name="workspace_cling_move_item" msgid="897064551822359347">"መተግበሪያ ወይም አነስተኛ ምርት ለማንቀሳቀስ፣ ንካ &amp; ያዝ፣ ከዛ ዳግም ቦታውን አመጣጥነው፡፡"</string>
     <string name="workspace_cling_open_all_apps" msgid="5287802320356364228">"ሁሉንም ያንተ መተግበሪያዎች ለማየት፣ ሁሉንም መተግበሪያዎች አዝራር ንካ::"</string>
