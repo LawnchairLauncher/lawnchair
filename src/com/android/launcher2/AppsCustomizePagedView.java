@@ -524,7 +524,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
 
         // Start the drag
-        mLauncher.lockScreenOrientation();
+        mLauncher.lockScreenOrientationOnLargeUI();
         mLauncher.getWorkspace().onDragStartedWithItemSpans(createItemInfo.spanX,
                 createItemInfo.spanY, b);
         mDragController.startDrag(image, b, this, createItemInfo,
@@ -553,7 +553,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             // drop in Workspace
             mLauncher.exitSpringLoadedDragMode();
         }
-        mLauncher.unlockScreenOrientation();
+        mLauncher.unlockScreenOrientationOnLargeUI();
 
     }
 
