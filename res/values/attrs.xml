@@ -131,6 +131,10 @@
         <attr name="widgetCountX" format="integer" />
         <!-- Number of widgets vertically -->
         <attr name="widgetCountY" format="integer" />
+        <!-- The x index of the item to be focused in the cling -->
+        <attr name="clingFocusedX" format="integer" />
+        <!-- The y index of the item to be focused in the cling -->
+        <attr name="clingFocusedY" format="integer" />
     </declare-styleable>
 
     <!-- HandleView specific attributes. These attributes are used to customize
