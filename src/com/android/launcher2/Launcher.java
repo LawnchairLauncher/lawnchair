@@ -902,6 +902,10 @@ public final class Launcher extends Activity
         return getSpanForWidget(info.provider, info.minWidth, info.minHeight, spanXY);
     }
 
+    int[] getMinResizeSpanForWidget(AppWidgetProviderInfo info, int[] spanXY) {
+        return getSpanForWidget(info.provider, info.minResizeWidth, info.minResizeHeight, spanXY);
+    }
+
     int[] getSpanForWidget(PendingAddWidgetInfo info, int[] spanXY) {
         return getSpanForWidget(info.componentName, info.minWidth, info.minHeight, spanXY);
     }

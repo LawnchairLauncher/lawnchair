@@ -64,11 +64,13 @@ public class AppWidgetResizeFrame extends FrameLayout {
     public static final int RIGHT = 2;
     public static final int BOTTOM = 3;
 
+    private Launcher mLauncher;
+
     public AppWidgetResizeFrame(Context context, ItemInfo itemInfo, 
             LauncherAppWidgetHostView widgetView, CellLayout cellLayout, DragLayer dragLayer) {
 
         super(context);
-        mContext = context;
+        mLauncher = (Launcher) context;
         mItemInfo = itemInfo;
         mCellLayout = cellLayout;
         mWidgetView = widgetView;
@@ -77,7 +79,7 @@ public class AppWidgetResizeFrame extends FrameLayout {
         mWorkspace = (Workspace) dragLayer.findViewById(R.id.workspace);
 
         final AppWidgetProviderInfo info = widgetView.getAppWidgetInfo();
-        int[] result = mCellLayout.rectToCell(info.minResizeWidth, info.minResizeHeight, null);
+        int[] result = mLauncher.getMinResizeSpanForWidget(info, null);
         mMinHSpan = result[0];
         mMinVSpan = result[1];
 
@@ -123,7 +125,7 @@ public class AppWidgetResizeFrame extends FrameLayout {
             mRightHandle.setVisibility(GONE);
         }
 
-        final float density = mContext.getResources().getDisplayMetrics().density;
+        final float density = mLauncher.getResources().getDisplayMetrics().density;
         mBackgroundPadding = (int) Math.ceil(density * BACKGROUND_PADDING);
         mTouchTargetWidth = 2 * mBackgroundPadding;
     }
