@@ -22,8 +22,8 @@
     <dimen name="workspace_bottom_padding">-1dp</dimen>
     <dimen name="workspace_left_padding">-1dp</dimen>
     <dimen name="workspace_right_padding">-1dp</dimen>
-    <dimen name="workspace_divider_padding_left">8dp</dimen>
-    <dimen name="workspace_divider_padding_right">8dp</dimen>
+    <dimen name="workspace_divider_padding_left">4dp</dimen>
+    <dimen name="workspace_divider_padding_right">4dp</dimen>
 
     <dimen name="hotseat_width_gap">0dp</dimen>
     <dimen name="hotseat_height_gap">0dp</dimen>
