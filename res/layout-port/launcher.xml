@@ -25,13 +25,6 @@
     <!-- Keep these behind the workspace so that they are not visible when
          we go into AllApps -->
     <include
-        android:id="@+id/qsb_divider"
-        layout="@layout/workspace_divider"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/qsb_bar_height"
-        android:layout_gravity="top" />
-    <include
         android:id="@+id/dock_divider"
         layout="@layout/workspace_divider"
         android:layout_width="match_parent"
