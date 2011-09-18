@@ -18,7 +18,9 @@
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
     style="@style/SearchDropTargetBar"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/qsb_bar_height">
+    android:layout_height="@dimen/search_bar_height"
+    android:layout_gravity="bottom|center_horizontal"
+    android:background="@drawable/search_frame">
    <!-- Global search icon -->
    <LinearLayout
         style="@style/SearchButton"
@@ -36,19 +38,19 @@
             android:id="@+id/search_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_search_normal_holo"
+            android:src="@drawable/ic_home_search_normal_holo"
             android:adjustViewBounds="true" />
     </LinearLayout>
 
     <!-- Voice search icon -->
     <ImageView
-        style="@style/SearchButton"
+        style="@style/SearchButton.Voice"
         android:id="@+id/voice_button"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/ic_voice_search_holo"
+        android:src="@drawable/ic_home_voice_search_holo"
         android:adjustViewBounds="true"
         android:background="?android:attr/selectableItemBackground"
         android:onClick="onClickVoiceButton"
