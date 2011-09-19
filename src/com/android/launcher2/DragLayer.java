@@ -108,7 +108,7 @@ public class DragLayer extends FrameLayout {
         }
 
         Folder currentFolder = mLauncher.getWorkspace().getOpenFolder();
-        if (currentFolder != null && intercept) {
+        if (currentFolder != null && !mLauncher.isFolderClingVisible() && intercept) {
             if (currentFolder.isEditingName()) {
                 getDescendantRectRelativeToSelf(currentFolder.getEditTextRegion(), hitRect);
                 if (!hitRect.contains(x, y)) {

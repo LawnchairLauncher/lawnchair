@@ -204,9 +204,9 @@ public abstract class PagedView extends ViewGroup {
         mPageLayoutPaddingRight = a.getDimensionPixelSize(
                 R.styleable.PagedView_pageLayoutPaddingRight, 0);
         mPageLayoutWidthGap = a.getDimensionPixelSize(
-                R.styleable.PagedView_pageLayoutWidthGap, -1);
+                R.styleable.PagedView_pageLayoutWidthGap, 0);
         mPageLayoutHeightGap = a.getDimensionPixelSize(
-                R.styleable.PagedView_pageLayoutHeightGap, -1);
+                R.styleable.PagedView_pageLayoutHeightGap, 0);
         mScrollIndicatorPaddingLeft =
             a.getDimensionPixelSize(R.styleable.PagedView_scrollIndicatorPaddingLeft, 0);
         mScrollIndicatorPaddingRight =
