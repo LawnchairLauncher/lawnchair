@@ -77,10 +77,10 @@ import android.view.Surface;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Advanceable;
@@ -3130,41 +3130,56 @@ public final class Launcher extends Activity
             anim.start();
         }
     }
+    private void removeCling(int id) {
+        final View cling = findViewById(id);
+        if (cling != null) {
+            final ViewGroup parent = (ViewGroup) cling.getParent();
+            parent.post(new Runnable() {
+                @Override
+                public void run() {
+                    parent.removeView(cling);
+                }
+            });
+        }
+    }
     public void showFirstRunWorkspaceCling() {
-        if (!isClingsEnabled()) return;
-
         // Enable the clings only if they have not been dismissed before
         SharedPreferences prefs =
             getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
-        if (!prefs.getBoolean(Cling.WORKSPACE_CLING_DISMISSED_KEY, false)) {
+        if (isClingsEnabled() && !prefs.getBoolean(Cling.WORKSPACE_CLING_DISMISSED_KEY, false)) {
             initCling(R.id.workspace_cling, null, false, 0);
+        } else {
+            removeCling(R.id.workspace_cling);
         }
     }
     public void showFirstRunAllAppsCling(int[] position) {
-        if (!isClingsEnabled()) return;
-
         // Enable the clings only if they have not been dismissed before
         SharedPreferences prefs =
             getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
-        if (!prefs.getBoolean(Cling.ALLAPPS_CLING_DISMISSED_KEY, false)) {
+        if (isClingsEnabled() && !prefs.getBoolean(Cling.ALLAPPS_CLING_DISMISSED_KEY, false)) {
             initCling(R.id.all_apps_cling, position, true, 0);
+        } else {
+            removeCling(R.id.all_apps_cling);
         }
     }
     public Cling showFirstRunFoldersCling() {
-        if (!isClingsEnabled()) return null;
-
         // Enable the clings only if they have not been dismissed before
         SharedPreferences prefs =
             getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
         Cling cling = null;
-        if (!prefs.getBoolean(Cling.FOLDER_CLING_DISMISSED_KEY, false)) {
+        if (isClingsEnabled() && !prefs.getBoolean(Cling.FOLDER_CLING_DISMISSED_KEY, false)) {
             cling = initCling(R.id.folder_cling, null, true, 0);
+        } else {
+            removeCling(R.id.folder_cling);
         }
         return cling;
     }
     public boolean isFolderClingVisible() {
         Cling cling = (Cling) findViewById(R.id.folder_cling);
-        return cling.getVisibility() == View.VISIBLE;
+        if (cling != null) {
+            return cling.getVisibility() == View.VISIBLE;
+        }
+        return false;
     }
     public void dismissWorkspaceCling(View v) {
         Cling cling = (Cling) findViewById(R.id.workspace_cling);
