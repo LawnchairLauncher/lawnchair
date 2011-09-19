@@ -208,6 +208,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 return false;
             }
 
+            mLauncher.dismissFolderCling(null);
+
             mLauncher.getWorkspace().onDragStartedWithItem(v);
             mLauncher.getWorkspace().beginDragShared(v, this);
             mIconDrawable = ((TextView) v).getCompoundDrawables()[1];

@@ -28,10 +28,10 @@
     <style name="ClingButton">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingTop">14dp</item>
-        <item name="android:paddingBottom">14dp</item>
-        <item name="android:paddingLeft">58dp</item>
-        <item name="android:paddingRight">58dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">15dp</item>
+        <item name="android:paddingLeft">35dp</item>
+        <item name="android:paddingRight">35dp</item>
         <item name="android:text">@string/cling_dismiss</item>
         <item name="android:textStyle">bold</item>
         <item name="android:background">@drawable/cling_button_bg</item>
@@ -39,7 +39,8 @@
     <style name="ClingTitleText">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">28sp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:textSize">23sp</item>
         <item name="android:textColor">#49C0EC</item>
         <item name="android:shadowColor">#000000</item>
         <item name="android:shadowDy">2</item>
@@ -145,7 +146,7 @@
         <item name="android:paddingRight">25dp</item>
         <item name="android:textColor">#FFFFFFFF</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:shadowColor">#DD000000</item>
+        <item name="android:shadowColor">#FF000000</item>
         <item name="android:shadowDx">0.0</item>
         <item name="android:shadowDy">1.0</item>
         <item name="android:shadowRadius">4.0</item>

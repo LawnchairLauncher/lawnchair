@@ -352,6 +352,14 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         return n;
     }
 
+    /** Returns an estimated center position of the cell at the specified index */
+    public int[] estimateCellPosition(int x, int y) {
+        return new int[] {
+                mPaddingLeft + (x * mCellWidth) + (x * mWidthGap) + (mCellWidth / 2),
+                mPaddingTop + (y * mCellHeight) + (y * mHeightGap) + (mCellHeight / 2)
+        };
+    }
+
     public void calculateCellCount(int width, int height, int maxCellCountX, int maxCellCountY) {
         mCellCountX = Math.min(maxCellCountX, estimateCellHSpan(width));
         mCellCountY = Math.min(maxCellCountY, estimateCellVSpan(height));
