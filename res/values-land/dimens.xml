@@ -67,6 +67,10 @@
     <integer name="apps_customize_cling_focused_x">2</integer>
     <integer name="apps_customize_cling_focused_y">1</integer>
 
+    <!-- Padding applied to AppWidgets -->
+    <dimen name="app_widget_padding_top">8dp</dimen>
+    <dimen name="app_widget_padding_bottom">8dp</dimen>
+
 <!-- Folders -->
     <!-- The size of the image which sits behind the preview of the folder contents -->
     <dimen name="folder_preview_size">58dp</dimen>

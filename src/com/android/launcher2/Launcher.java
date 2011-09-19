@@ -874,9 +874,7 @@ public final class Launcher extends Activity
             return p;
         }
 
-        // TODO: This should be ICE_CREAM_SANDWICH, but since the unbundled apps
-        // may not have updated their targetSdkVersion yet, we've bumped it down for now.
-        if (appInfo.targetSdkVersion >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+        if (appInfo.targetSdkVersion >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             Resources r = getResources();
             p.left = r.getDimensionPixelSize(R.dimen.app_widget_padding_left);
             p.right = r.getDimensionPixelSize(R.dimen.app_widget_padding_right);
