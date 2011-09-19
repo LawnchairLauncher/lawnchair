@@ -271,7 +271,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
 
     /* LauncherTransitionable overrides */
     @Override
-    public void onLauncherTransitionStart(Animator animation, boolean toWorkspace) {
+    public void onLauncherTransitionStart(Launcher l, Animator animation, boolean toWorkspace) {
         mInTransition = true;
         // isHardwareAccelerated() checks if we're attached to a window and if that
         // window is HW accelerated-- we were sometimes not attached to a window
@@ -294,14 +294,19 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     }
 
     @Override
-    public void onLauncherTransitionEnd(Animator animation, boolean toWorkspace) {
+    public void onLauncherTransitionEnd(Launcher l, Animator animation, boolean toWorkspace) {
         mInTransition = false;
         if (animation != null) {
             setLayerType(LAYER_TYPE_NONE, null);
         }
 
-        if (!toWorkspace && !LauncherApplication.isScreenLarge()) {
-            mAppsCustomizePane.hideScrollingIndicator(false);
+        if (!toWorkspace) {
+            // Dismiss the cling if necessary
+            l.dismissWorkspaceCling(null);
+
+            if (!LauncherApplication.isScreenLarge()) {
+                mAppsCustomizePane.hideScrollingIndicator(false);
+            }
         }
     }
 

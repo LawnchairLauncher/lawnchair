@@ -174,6 +174,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private ArrayList<ApplicationInfo> mApps;
     private ArrayList<Object> mWidgets;
 
+    // Cling
+    private int mClingFocusedX;
+    private int mClingFocusedY;
+
     // Caching
     private Canvas mCanvas;
     private Drawable mDefaultWidgetBackground;
@@ -234,6 +238,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             a.getDimensionPixelSize(R.styleable.AppsCustomizePagedView_widgetCellHeightGap, 0);
         mWidgetCountX = a.getInt(R.styleable.AppsCustomizePagedView_widgetCountX, 2);
         mWidgetCountY = a.getInt(R.styleable.AppsCustomizePagedView_widgetCountY, 2);
+        mClingFocusedX = a.getInt(R.styleable.AppsCustomizePagedView_clingFocusedX, 0);
+        mClingFocusedY = a.getInt(R.styleable.AppsCustomizePagedView_clingFocusedY, 0);
         a.recycle();
         mWidgetSpacingLayout = new PagedViewCellLayout(getContext());
 
@@ -375,6 +381,14 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mContentWidth = mWidgetSpacingLayout.getContentWidth();
         invalidatePageData(Math.max(0, mRestorePage));
         mRestorePage = -1;
+
+        int[] offset = new int[2];
+        int[] pos = mWidgetSpacingLayout.estimateCellPosition(mClingFocusedX, mClingFocusedY);
+        mLauncher.getDragLayer().getLocationInDragLayer(this, offset);
+        pos[0] += (getMeasuredWidth() - mWidgetSpacingLayout.getMeasuredWidth()) / 2 + offset[0];
+        pos[1] += (getMeasuredHeight() - mWidgetSpacingLayout.getMeasuredHeight()) / 2 + offset[1];
+        mLauncher.showFirstRunAllAppsCling(pos);
+
     }
 
     @Override
@@ -533,6 +547,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
     @Override
     protected boolean beginDragging(View v) {
+        // Dismiss the cling
+        mLauncher.dismissAllAppsCling(null);
+
         if (!super.beginDragging(v)) return false;
 
         // Go into spring loaded mode (must happen before we startDrag())

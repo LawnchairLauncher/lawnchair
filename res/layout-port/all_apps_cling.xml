@@ -16,30 +16,33 @@
 <com.android.launcher2.Cling
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
-    launcher:drawIdentifier="all_apps_portrait"
-    android:background="#CA000000">
+    launcher:drawIdentifier="all_apps_portrait">
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="50dp">
-        <TextView
-            style="@style/ClingTitleText"
-            android:id="@+id/all_apps_cling_title"
-            android:layout_marginTop="0dp"
-            android:text="@string/all_apps_cling_title" />
-        <TextView
-            style="@style/ClingText"
-            android:id="@+id/all_apps_cling_add_item"
-            android:layout_width="280dp"
+        android:layout_marginTop="90dp">
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="45dp"
-            android:text="@string/all_apps_cling_add_item" />
+            android:orientation="vertical">
+            <TextView
+                style="@style/ClingTitleText"
+                android:id="@+id/all_apps_cling_title"
+                android:text="@string/all_apps_cling_title" />
+            <TextView
+                style="@style/ClingText"
+                android:id="@+id/all_apps_cling_add_item"
+                android:layout_width="285dp"
+                android:layout_height="wrap_content"
+                android:text="@string/all_apps_cling_add_item" />
+        </LinearLayout>
     </FrameLayout>
     <Button
         style="@style/ClingButton"
         android:id="@+id/cling_dismiss"
-        android:layout_marginBottom="40dp"
-        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="15dp"
+        android:layout_marginRight="10dp"
+        android:layout_gravity="bottom|right"
         android:onClick="dismissAllAppsCling" />
 </com.android.launcher2.Cling>

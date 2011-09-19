@@ -234,16 +234,21 @@ s -->
 
     <!-- Clings -->
     <!-- The title text for the workspace cling [CHAR_LIMIT=none] -->
-    <string name="workspace_cling_title">Welcome Home!</string>
-    <!-- The description of how to pick up and move an item on the workspace [CHAR_LIMIT=none] -->
-    <string name="workspace_cling_move_item">To move an app or widget, touch &amp; hold, then reposition it.</string>
+    <string name="workspace_cling_title">Make yourself at home</string>
+    <!-- The description of how to use the workspace [CHAR_LIMIT=none] -->
+    <string name="workspace_cling_move_item">You can put your favourite apps here.</string>
     <!-- The description of how to open all apps from the workspace [CHAR_LIMIT=none] -->
-    <string name="workspace_cling_open_all_apps">To see all your apps, touch the All Apps button.</string>
+    <string name="workspace_cling_open_all_apps">To see all your apps, touch the circle.</string>
     <!-- The title text for the All Apps cling [CHAR_LIMIT=none] -->
-    <string name="all_apps_cling_title">Here are all your apps</string>
+    <string name="all_apps_cling_title">Choose some apps</string>
     <!-- The description of how to pick up and add an item to the workspace [CHAR_LIMIT=none] -->
-    <string name="all_apps_cling_add_item">To add an app or widget to your home screen, touch &amp; hold, then position it.</string>
-
+    <string name="all_apps_cling_add_item">To add an app to your home screen, touch &amp; hold it.</string>
+    <!-- The title text for the Folder cling [CHAR_LIMIT=none] -->
+    <string name="folder_cling_title">Organize your apps with folders</string>
+    <!-- The description of how to move an app [CHAR_LIMIT=none] -->
+    <string name="folder_cling_move_item">To move an app, touch &amp; hold it.</string>
+    <!-- The description of how to create a folder [CHAR_LIMIT=none] -->
+    <string name="folder_cling_create_folder">To make a new folder on your home screen, stack one app on top of another.</string>
     <!-- The text on the button to dismiss a cling [CHAR_LIMIT=none] -->
     <string name="cling_dismiss">OK</string>
 

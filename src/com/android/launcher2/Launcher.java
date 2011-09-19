@@ -75,11 +75,12 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.View.OnLongClickListener;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Advanceable;
@@ -161,7 +162,8 @@ public final class Launcher extends Activity
     static final int APPWIDGET_HOST_ID = 1024;
     private static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT = 300;
     private static final int EXIT_SPRINGLOADED_MODE_LONG_TIMEOUT = 600;
-    private static final int DISMISS_CLING_DURATION = 300;
+    private static final int SHOW_CLING_DURATION = 250;
+    private static final int DISMISS_CLING_DURATION = 250;
 
     private static final Object sLock = new Object();
     private static int sScreen = DEFAULT_SCREEN;
@@ -271,7 +273,7 @@ public final class Launcher extends Activity
         checkForLocaleChange();
         setContentView(R.layout.launcher);
         setupViews();
-        enableClingsIfNecessary();
+        showFirstRunWorkspaceCling();
 
         registerContentObservers();
 
@@ -1770,6 +1772,8 @@ public final class Launcher extends Activity
         final FolderInfo info = folderIcon.mInfo;
         Folder openFolder = mWorkspace.getFolderForTag(info);
 
+        Cling cling = showFirstRunFoldersCling();
+
         // If the folder info reports that the associated folder is open, then verify that
         // it is actually opened. There have been a few instances where this gets out of sync.
         if (info.opened && openFolder == null) {
@@ -1797,6 +1801,10 @@ public final class Launcher extends Activity
                     openFolder(folderIcon);
                 }
             }
+        }
+
+        if (cling != null) {
+            cling.bringToFront();
         }
     }
 
@@ -1874,6 +1882,9 @@ public final class Launcher extends Activity
         Folder folder = mWorkspace.getOpenFolder();
         if (folder != null) {
             closeFolder(folder);
+
+            // Dismiss the folder cling
+            dismissFolderCling(null);
         }
     }
 
@@ -2119,6 +2130,7 @@ public final class Launcher extends Activity
      */
     private void cameraZoomOut(State toState, boolean animated, final boolean springLoaded) {
         final Resources res = getResources();
+        final Launcher instance = this;
 
         final int duration = res.getInteger(R.integer.config_appsCustomizeZoomInTime);
         final int fadeDuration = res.getInteger(R.integer.config_appsCustomizeFadeInTime);
@@ -2159,7 +2171,8 @@ public final class Launcher extends Activity
             alphaAnim.start();
 
             if (toView instanceof LauncherTransitionable) {
-                ((LauncherTransitionable) toView).onLauncherTransitionStart(scaleAnim, false);
+                ((LauncherTransitionable) toView).onLauncherTransitionStart(instance, scaleAnim,
+                        false);
             }
             scaleAnim.addListener(new AnimatorListenerAdapter() {
                 boolean animationCancelled = false;
@@ -2181,7 +2194,8 @@ public final class Launcher extends Activity
                     toView.setScaleX(1.0f);
                     toView.setScaleY(1.0f);
                     if (toView instanceof LauncherTransitionable) {
-                        ((LauncherTransitionable) toView).onLauncherTransitionEnd(scaleAnim, false);
+                        ((LauncherTransitionable) toView).onLauncherTransitionEnd(instance,
+                                scaleAnim, false);
                     }
 
                     if (!springLoaded && !LauncherApplication.isScreenLarge()) {
@@ -2214,8 +2228,8 @@ public final class Launcher extends Activity
             toView.setVisibility(View.VISIBLE);
             toView.bringToFront();
             if (toView instanceof LauncherTransitionable) {
-                ((LauncherTransitionable) toView).onLauncherTransitionStart(null, false);
-                ((LauncherTransitionable) toView).onLauncherTransitionEnd(null, false);
+                ((LauncherTransitionable) toView).onLauncherTransitionStart(instance, null, false);
+                ((LauncherTransitionable) toView).onLauncherTransitionEnd(instance, null, false);
 
                 if (!springLoaded && !LauncherApplication.isScreenLarge()) {
                     // Hide the workspace scrollbar
@@ -2235,6 +2249,7 @@ public final class Launcher extends Activity
      */
     private void cameraZoomIn(State fromState, boolean animated, final boolean springLoaded) {
         Resources res = getResources();
+        final Launcher instance = this;
 
         final int duration = res.getInteger(R.integer.config_appsCustomizeZoomOutTime);
         final float scaleFactor = (float)
@@ -2270,7 +2285,8 @@ public final class Launcher extends Activity
                 }
             });
             if (fromView instanceof LauncherTransitionable) {
-                ((LauncherTransitionable) fromView).onLauncherTransitionStart(alphaAnim, true);
+                ((LauncherTransitionable) fromView).onLauncherTransitionStart(instance, alphaAnim,
+                        true);
             }
             alphaAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -2278,7 +2294,8 @@ public final class Launcher extends Activity
                     updateWallpaperVisibility(true);
                     fromView.setVisibility(View.GONE);
                     if (fromView instanceof LauncherTransitionable) {
-                        ((LauncherTransitionable) fromView).onLauncherTransitionEnd(alphaAnim,true);
+                        ((LauncherTransitionable) fromView).onLauncherTransitionEnd(instance,
+                                alphaAnim, true);
                     }
                     mWorkspace.hideScrollingIndicator(false);
                 }
@@ -2289,8 +2306,8 @@ public final class Launcher extends Activity
         } else {
             fromView.setVisibility(View.GONE);
             if (fromView instanceof LauncherTransitionable) {
-                ((LauncherTransitionable) fromView).onLauncherTransitionStart(null, true);
-                ((LauncherTransitionable) fromView).onLauncherTransitionEnd(null, true);
+                ((LauncherTransitionable) fromView).onLauncherTransitionStart(instance, null, true);
+                ((LauncherTransitionable) fromView).onLauncherTransitionEnd(instance, null, true);
             }
         }
     }
@@ -3067,33 +3084,40 @@ public final class Launcher extends Activity
     }
 
     /* Cling related */
-    private static final String WORKSPACE_CLING_DISMISSED_KEY = "cling.workspace.dismissed";
-    private static final String ALLAPPS_CLING_DISMISSED_KEY = "cling.allapps.dismissed";
-    private void enableClingsIfNecessary() {
+    private static final String PREFS_KEY = "com.android.launcher2.prefs";
+    private boolean isClingsEnabled() {
         // TEMPORARY: DISABLE CLINGS ON LARGE UI
-        if (LauncherApplication.isScreenLarge()) return;
-
+        if (LauncherApplication.isScreenLarge()) return false;
         // disable clings when running in a test harness
-        if(ActivityManager.isRunningInTestHarness()) return;
+        if(ActivityManager.isRunningInTestHarness()) return false;
 
-        // Enable the clings only if they have not been dismissed before
-        SharedPreferences prefs =
-            getSharedPreferences("com.android.launcher2.prefs", Context.MODE_PRIVATE);
-        if (!prefs.getBoolean(WORKSPACE_CLING_DISMISSED_KEY, false)) {
-            Cling cling = (Cling) findViewById(R.id.workspace_cling);
-            cling.init(this);
-            cling.setVisibility(View.VISIBLE);
-        }
-        if (!prefs.getBoolean(ALLAPPS_CLING_DISMISSED_KEY, false)) {
-            Cling cling = (Cling) findViewById(R.id.all_apps_cling);
-            cling.init(this);
-            cling.setVisibility(View.VISIBLE);
-        }
+        return true;
     }
-    private void dismissCling(final Cling cling, final String flag) {
+    private Cling initCling(int clingId, int[] positionData, boolean animate, int delay) {
+        Cling cling = (Cling) findViewById(clingId);
+        if (cling != null) {
+            cling.init(this, positionData);
+            cling.setVisibility(View.VISIBLE);
+            cling.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            if (animate) {
+                cling.buildLayer();
+                cling.setAlpha(0f);
+                cling.animate()
+                    .alpha(1f)
+                    .setInterpolator(new DecelerateInterpolator())
+                    .setDuration(SHOW_CLING_DURATION)
+                    .setStartDelay(delay)
+                    .start();
+            } else {
+                cling.setAlpha(1f);
+            }
+        }
+        return cling;
+    }
+    private void dismissCling(final Cling cling, final String flag, int duration) {
         if (cling != null) {
             ObjectAnimator anim = ObjectAnimator.ofFloat(cling, "alpha", 0f);
-            anim.setDuration(DISMISS_CLING_DURATION);
+            anim.setDuration(duration);
             anim.addListener(new AnimatorListenerAdapter() {
                 public void onAnimationEnd(Animator animation) {
                     cling.setVisibility(View.GONE);
@@ -3108,13 +3132,53 @@ public final class Launcher extends Activity
             anim.start();
         }
     }
+    public void showFirstRunWorkspaceCling() {
+        if (!isClingsEnabled()) return;
+
+        // Enable the clings only if they have not been dismissed before
+        SharedPreferences prefs =
+            getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+        if (!prefs.getBoolean(Cling.WORKSPACE_CLING_DISMISSED_KEY, false)) {
+            initCling(R.id.workspace_cling, null, false, 0);
+        }
+    }
+    public void showFirstRunAllAppsCling(int[] position) {
+        if (!isClingsEnabled()) return;
+
+        // Enable the clings only if they have not been dismissed before
+        SharedPreferences prefs =
+            getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+        if (!prefs.getBoolean(Cling.ALLAPPS_CLING_DISMISSED_KEY, false)) {
+            initCling(R.id.all_apps_cling, position, true, 0);
+        }
+    }
+    public Cling showFirstRunFoldersCling() {
+        if (!isClingsEnabled()) return null;
+
+        // Enable the clings only if they have not been dismissed before
+        SharedPreferences prefs =
+            getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+        Cling cling = null;
+        if (!prefs.getBoolean(Cling.FOLDER_CLING_DISMISSED_KEY, false)) {
+            cling = initCling(R.id.folder_cling, null, true, 0);
+        }
+        return cling;
+    }
+    public boolean isFolderClingVisible() {
+        Cling cling = (Cling) findViewById(R.id.folder_cling);
+        return cling.getVisibility() == View.VISIBLE;
+    }
     public void dismissWorkspaceCling(View v) {
         Cling cling = (Cling) findViewById(R.id.workspace_cling);
-        dismissCling(cling, WORKSPACE_CLING_DISMISSED_KEY);
+        dismissCling(cling, Cling.WORKSPACE_CLING_DISMISSED_KEY, DISMISS_CLING_DURATION);
     }
     public void dismissAllAppsCling(View v) {
         Cling cling = (Cling) findViewById(R.id.all_apps_cling);
-        dismissCling(cling, ALLAPPS_CLING_DISMISSED_KEY);
+        dismissCling(cling, Cling.ALLAPPS_CLING_DISMISSED_KEY, DISMISS_CLING_DURATION);
+    }
+    public void dismissFolderCling(View v) {
+        Cling cling = (Cling) findViewById(R.id.folder_cling);
+        dismissCling(cling, Cling.FOLDER_CLING_DISMISSED_KEY, DISMISS_CLING_DURATION);
     }
 
     /**
@@ -3138,6 +3202,6 @@ public final class Launcher extends Activity
 }
 
 interface LauncherTransitionable {
-    void onLauncherTransitionStart(Animator animation, boolean toWorkspace);
-    void onLauncherTransitionEnd(Animator animation, boolean toWorkspace);
+    void onLauncherTransitionStart(Launcher l, Animator animation, boolean toWorkspace);
+    void onLauncherTransitionEnd(Launcher l, Animator animation, boolean toWorkspace);
 }
