@@ -600,6 +600,19 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        // Clean up all the async tasks
+        Iterator<AppsCustomizeAsyncTask> iter = mRunningTasks.iterator();
+        while (iter.hasNext()) {
+            AppsCustomizeAsyncTask task = (AppsCustomizeAsyncTask) iter.next();
+            task.cancel(false);
+            iter.remove();
+        }
+    }
+
     public void setContentType(ContentType type) {
         mContentType = type;
         invalidatePageData(0, (type != ContentType.Applications));
@@ -982,7 +995,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             prepareLoadWidgetPreviewsTask(page, items, cellWidth, cellHeight, mWidgetCountX);
         }
         PagedViewGridLayout layout = (PagedViewGridLayout) getPageAt(page);
-        layout.createHardwareLayer();
     }
     private void loadWidgetPreviewsInBackground(AppsCustomizeAsyncTask task,
             AsyncTaskPageData data) {
@@ -1073,6 +1085,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             if (iy > 0) lp.topMargin = mWidgetHeightGap;
             layout.addView(widget, lp);
         }
+        layout.createHardwareLayer();
 
         invalidate();
         forceUpdateAdjacentPagesAlpha();
