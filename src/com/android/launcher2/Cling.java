@@ -62,10 +62,6 @@ public class Cling extends FrameLayout {
 
     private Paint mErasePaint;
 
-    private View mWorkspaceDesc1;
-    private View mWorkspaceDesc2;
-    private View mAllAppsDesc;
-
     public Cling(Context context) {
         this(context, null, 0);
     }
@@ -97,10 +93,6 @@ public class Cling extends FrameLayout {
             mTabBarHorizontalPadding =
                 r.getDimensionPixelSize(R.dimen.toolbar_button_horizontal_padding);
             mButtonBarHeight = r.getDimensionPixelSize(R.dimen.button_bar_height);
-
-            mWorkspaceDesc1 = findViewById(R.id.workspace_cling_move_item);
-            mWorkspaceDesc2 = findViewById(R.id.workspace_cling_open_all_apps);
-            mAllAppsDesc = findViewById(R.id.all_apps_cling_add_item);
 
             mErasePaint = new Paint();
             mErasePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.MULTIPLY));
@@ -140,11 +132,6 @@ public class Cling extends FrameLayout {
             double diff = Math.sqrt(Math.pow(event.getX() - pos[0], 2) +
                     Math.pow(event.getY() - pos[1], 2));
             if (diff < mRevealRadius) {
-                if (mDrawIdentifier.equals(WORKSPACE_PORTRAIT)) {
-                    // Do nothing
-                } else if (mDrawIdentifier.equals(ALLAPPS_PORTRAIT)) {
-                    // Do nothing
-                }
                 return false;
             }
         } else if (mDrawIdentifier.equals(FOLDER_PORTRAIT) ||
@@ -167,7 +154,7 @@ public class Cling extends FrameLayout {
             DisplayMetrics metrics = new DisplayMetrics();
             mLauncher.getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-            // Draw the background
+            // Initialize the draw buffer (to allow punching through)
             Bitmap b = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(),
                     Bitmap.Config.ARGB_8888);
             Canvas c = new Canvas(b);
