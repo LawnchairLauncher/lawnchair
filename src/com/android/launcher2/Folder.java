@@ -405,6 +405,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             @Override
             public void onAnimationEnd(Animator animation) {
                 mState = STATE_OPEN;
+
+                Cling cling = mLauncher.showFirstRunFoldersCling();
+                if (cling != null) {
+                    cling.bringToFront();
+                }
             }
         });
         oa.setDuration(mExpandDuration);
