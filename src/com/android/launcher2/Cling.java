@@ -198,7 +198,7 @@ public class Cling extends FrameLayout {
                 if (mHandTouchGraphic == null) {
                     mHandTouchGraphic = getResources().getDrawable(R.drawable.hand);
                 }
-                int offset = -mAppIconSize / 4;
+                int offset = mAppIconSize / 4;
                 mHandTouchGraphic.setBounds(cx + offset, cy + offset,
                         cx + mHandTouchGraphic.getIntrinsicWidth() + offset,
                         cy + mHandTouchGraphic.getIntrinsicHeight() + offset);
