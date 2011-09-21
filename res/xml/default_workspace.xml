@@ -40,17 +40,17 @@
         launcher:y="3"
         launcher:title="@string/google_apps_folder_name">
         <favorite
-            launcher:packageName="com.google.android.apps.plus"
-            launcher:className="com.google.android.apps.plus.phone.HomeActivity" />
+            launcher:packageName="com.google.android.apps.maps"
+            launcher:className="com.google.android.maps.MapsActivity" />
         <favorite
             launcher:packageName="com.google.android.gm"
             launcher:className="com.google.android.gm.ConversationListActivityGmail" />
         <favorite
+            launcher:packageName="com.google.android.apps.plus"
+            launcher:className="com.google.android.apps.plus.phone.HomeActivity" />
+        <favorite
             launcher:packageName="com.google.android.talk"
             launcher:className="com.google.android.talk.SigningInActivity" />
-        <favorite
-            launcher:packageName="com.google.android.apps.maps"
-            launcher:className="com.google.android.maps.MapsActivity" />
         <favorite
             launcher:packageName="com.google.android.youtube"
             launcher:className="com.google.android.youtube.app.honeycomb.Shell$HomeActivity" />
