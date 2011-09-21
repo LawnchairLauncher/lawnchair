@@ -236,7 +236,7 @@ s -->
     <!-- The title text for the workspace cling [CHAR_LIMIT=none] -->
     <string name="workspace_cling_title">Make yourself at home</string>
     <!-- The description of how to use the workspace [CHAR_LIMIT=none] -->
-    <string name="workspace_cling_move_item">You can put your favourite apps here.</string>
+    <string name="workspace_cling_move_item">You can put your favorite apps here.</string>
     <!-- The description of how to open all apps from the workspace [CHAR_LIMIT=none] -->
     <string name="workspace_cling_open_all_apps">To see all your apps, touch the circle.</string>
     <!-- The title text for the All Apps cling [CHAR_LIMIT=none] -->
