@@ -21,7 +21,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="100dp">
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="70dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -32,22 +33,12 @@
                 android:text="@string/folder_cling_title" />
             <TextView
                 style="@style/ClingText"
-                android:id="@+id/folder_cling_move_item"
-                android:layout_width="285dp"
+                android:id="@+id/folder_cling_create_folder"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/folder_cling_move_item" />
+                android:text="@string/folder_cling_create_folder" />
         </LinearLayout>
     </FrameLayout>
-    <TextView
-        style="@style/ClingText"
-        android:id="@+id/folder_cling_create_folder"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="65dp"
-        android:layout_gravity="bottom"
-        android:text="@string/folder_cling_create_folder" />
     <Button
         style="@style/ClingButton"
         android:id="@+id/cling_dismiss"

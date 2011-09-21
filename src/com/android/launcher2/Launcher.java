@@ -77,10 +77,10 @@ import android.view.Surface;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Advanceable;
@@ -162,7 +162,7 @@ public final class Launcher extends Activity
     static final int APPWIDGET_HOST_ID = 1024;
     private static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT = 300;
     private static final int EXIT_SPRINGLOADED_MODE_LONG_TIMEOUT = 600;
-    private static final int SHOW_CLING_DURATION = 250;
+    private static final int SHOW_CLING_DURATION = 550;
     private static final int DISMISS_CLING_DURATION = 250;
 
     private static final Object sLock = new Object();
@@ -1770,8 +1770,6 @@ public final class Launcher extends Activity
         final FolderInfo info = folderIcon.mInfo;
         Folder openFolder = mWorkspace.getFolderForTag(info);
 
-        Cling cling = showFirstRunFoldersCling();
-
         // If the folder info reports that the associated folder is open, then verify that
         // it is actually opened. There have been a few instances where this gets out of sync.
         if (info.opened && openFolder == null) {
@@ -1799,10 +1797,6 @@ public final class Launcher extends Activity
                     openFolder(folderIcon);
                 }
             }
-        }
-
-        if (cling != null) {
-            cling.bringToFront();
         }
     }
 
@@ -3102,7 +3096,7 @@ public final class Launcher extends Activity
                 cling.setAlpha(0f);
                 cling.animate()
                     .alpha(1f)
-                    .setInterpolator(new DecelerateInterpolator())
+                    .setInterpolator(new AccelerateInterpolator())
                     .setDuration(SHOW_CLING_DURATION)
                     .setStartDelay(delay)
                     .start();
