@@ -19,15 +19,31 @@
 
     <!-- Left screen [1] -->
     <appwidget
-        launcher:packageName="com.android.settings"
-        launcher:className="com.android.settings.widget.SettingsAppWidgetProvider"
+        launcher:packageName="com.google.android.apps.genie.geniewidget"
+        launcher:className="com.google.android.apps.genie.geniewidget.miniwidget.MiniWidgetProvider"
         launcher:screen="1"
         launcher:x="0"
         launcher:y="1"
         launcher:spanX="4"
         launcher:spanY="1" />
+    <appwidget
+        launcher:packageName="com.android.settings"
+        launcher:className="com.android.settings.widget.SettingsAppWidgetProvider"
+        launcher:screen="1"
+        launcher:x="0"
+        launcher:y="2"
+        launcher:spanX="4"
+        launcher:spanY="1" />
 
     <!-- Middle screen [2] -->
+    <appwidget
+        launcher:packageName="com.google.android.deskclock"
+        launcher:className="com.android.alarmclock.AnalogAppWidgetProvider"
+        launcher:screen="2"
+        launcher:x="1"
+        launcher:y="0"
+        launcher:spanX="2"
+        launcher:spanY="2" />
     <favorite
         launcher:packageName="com.google.android.camera"
         launcher:className="com.android.camera.Camera"
@@ -46,35 +62,29 @@
             launcher:packageName="com.google.android.gm"
             launcher:className="com.google.android.gm.ConversationListActivityGmail" />
         <favorite
+            launcher:packageName="com.google.android.calendar"
+            launcher:className="com.android.calendar.AllInOneActivity" />
+        <favorite
             launcher:packageName="com.google.android.apps.plus"
             launcher:className="com.google.android.apps.plus.phone.HomeActivity" />
+        <favorite
+            launcher:packageName="com.google.android.music"
+            launcher:className="com.android.music.activitymanagement.TopLevelActivity" />
+        <favorite
+            launcher:packageName="com.google.android.apps.books"
+            launcher:className="com.google.android.apps.books.app.BooksActivity" />
+        <favorite
+            launcher:packageName="com.google.android.videos"
+            launcher:className="com.google.android.youtube.videos.honeycomb.VideosActivity" />
+        <favorite
+            launcher:packageName="com.android.vending"
+            launcher:className="com.android.vending.AssetBrowserActivity" />
         <favorite
             launcher:packageName="com.google.android.talk"
             launcher:className="com.google.android.talk.SigningInActivity" />
         <favorite
             launcher:packageName="com.google.android.youtube"
             launcher:className="com.google.android.youtube.app.honeycomb.Shell$HomeActivity" />
-        <favorite
-            launcher:packageName="com.google.android.music"
-            launcher:className="com.android.music.activitymanagement.TopLevelActivity" />
-        <favorite
-            launcher:packageName="com.google.android.videos"
-            launcher:className="com.google.android.youtube.videos.honeycomb.VideosActivity" />
-        <favorite
-            launcher:packageName="com.google.android.apps.books"
-            launcher:className="com.google.android.apps.books.app.BooksActivity" />
-        <favorite
-            launcher:packageName="com.android.vending"
-            launcher:className="com.android.vending.AssetBrowserActivity" />
-        <favorite
-            launcher:packageName="com.google.android.calendar"
-            launcher:className="com.android.calendar.AllInOneActivity" />
-        <favorite
-            launcher:packageName="com.google.android.gallery3d"
-            launcher:className="com.android.gallery3d.app.Gallery" />
-        <favorite
-            launcher:packageName="com.android.settings"
-            launcher:className="com.android.settings.Settings" />
     </folder>
 
     <!-- Right screen [3] -->
@@ -86,6 +96,18 @@
         launcher:y="1"
         launcher:spanX="2"
         launcher:spanY="2" />
+    <favorite
+        launcher:packageName="com.google.android.gallery3d"
+        launcher:className="com.android.gallery3d.app.Gallery"
+        launcher:screen="3"
+        launcher:x="1"
+        launcher:y="3" />
+    <favorite
+        launcher:packageName="com.android.settings"
+        launcher:className="com.android.settings.Settings"
+        launcher:screen="3"
+        launcher:x="2"
+        launcher:y="3" />
 
     <!-- Far-right screen [4] -->
 
@@ -112,7 +134,7 @@
         launcher:x="3"
         launcher:y="0" />
     <favorite
-        launcher:packageName="com.android.browser"
+        launcher:packageName="com.google.android.browser"
         launcher:className="com.android.browser.BrowserActivity"
         launcher:container="-101"
         launcher:screen="4"
