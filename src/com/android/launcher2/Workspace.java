@@ -111,6 +111,7 @@ public class Workspace extends SmoothPagedView
 
     private final WallpaperManager mWallpaperManager;
     private IBinder mWindowToken;
+    private static final float WALLPAPER_SCREENS_SPAN = 1.5f;
 
     private int mDefaultPage;
 
@@ -725,8 +726,13 @@ public class Workspace extends SmoothPagedView
 
         // We need to ensure that there is enough extra space in the wallpaper for the intended
         // parallax effects
-        mWallpaperWidth = (int) (maxDim * wallpaperTravelToScreenWidthRatio(maxDim, minDim));
-        mWallpaperHeight = (int)(maxDim * wallpaperTravelToScreenHeightRatio(maxDim, minDim));
+        if (LauncherApplication.isScreenLarge()) {
+            mWallpaperWidth = (int) (maxDim * wallpaperTravelToScreenWidthRatio(maxDim, minDim));
+            mWallpaperHeight = (int)(maxDim * wallpaperTravelToScreenHeightRatio(maxDim, minDim));
+        } else {
+            mWallpaperWidth = (int) (minDim * WALLPAPER_SCREENS_SPAN);
+            mWallpaperHeight = maxDim;
+        }
         new Thread("setWallpaperDimension") {
             public void run() {
                 mWallpaperManager.suggestDesiredDimensions(mWallpaperWidth, mWallpaperHeight);
@@ -748,19 +754,24 @@ public class Workspace extends SmoothPagedView
     }
 
     private float wallpaperOffsetForCurrentScroll() {
+        final boolean overScrollWallpaper = LauncherApplication.isScreenLarge();
         final boolean isStaticWallpaper = mIsStaticWallpaper;
         // The wallpaper travel width is how far, from left to right, the wallpaper will move
         // at this orientation (for example, in portrait mode we don't move all the way to the
         // edges of the wallpaper, or otherwise the parallax effect would be too strong)
         int wallpaperTravelWidth = mWallpaperTravelWidth;
-        if (!isStaticWallpaper) {
+        if (!overScrollWallpaper || !isStaticWallpaper) {
             wallpaperTravelWidth = mWallpaperWidth;
         }
 
         // Set wallpaper offset steps (1 / (number of screens - 1))
         // We have 3 vertical offset states (centered, and then top/bottom aligned
         // for all apps/customize)
-        mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 1.0f / (3 - 1));
+        if (LauncherApplication.isScreenLarge()) {
+            mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 1.0f / (3 - 1));
+        } else {
+            mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 1.0f);
+        }
 
         // For the purposes of computing the scrollRange and overScrollOffset, we ignore
         // assume that mLayoutScale is 1. This means that when we're in spring-loaded mode,
@@ -774,14 +785,14 @@ public class Workspace extends SmoothPagedView
         // you over scroll as far as you can in landscape mode. Only do this for static wallpapers
         // because live wallpapers (and probably 3rd party wallpaper providers) rely on the offset
         // being even intervals from 0 to 1 (eg [0, 0.25, 0.5, 0.75, 1])
-        if (isStaticWallpaper) {
+        if (isStaticWallpaper && overScrollWallpaper) {
             int overScrollOffset = (int) (maxOverScroll() * mDisplayWidth);
             scrollProgressOffset += overScrollOffset / (float) getScrollRange();
             scrollRange += 2 * overScrollOffset;
         }
 
         // Again, we adjust the wallpaper offset to be consistent between values of mLayoutScale
-        boolean overScrollWallpaper = LauncherApplication.isScreenLarge();
+
         float adjustedScrollX = overScrollWallpaper ?
                 mScrollX : Math.max(0, Math.min(mScrollX, mMaxScrollX));
         adjustedScrollX *= mWallpaperScrollRatio;
@@ -867,6 +878,8 @@ public class Workspace extends SmoothPagedView
         float mVerticalCatchupConstant = 0.35f;
 
         public WallpaperOffsetInterpolator() {
+            mVerticalWallpaperOffset = LauncherApplication.isScreenLarge() ? 0.5f : 0f;
+            mFinalVerticalWallpaperOffset = LauncherApplication.isScreenLarge() ? 0.5f : 0f;
         }
 
         public void setOverrideHorizontalCatchupConstant(boolean override) {
@@ -918,7 +931,9 @@ public class Workspace extends SmoothPagedView
             float vOffsetDelta = mFinalVerticalWallpaperOffset - mVerticalWallpaperOffset;
             boolean jumpToFinalValue = Math.abs(hOffsetDelta) < UPDATE_THRESHOLD &&
                 Math.abs(vOffsetDelta) < UPDATE_THRESHOLD;
-            if (jumpToFinalValue) {
+
+            // Don't have any lag between workspace and wallpaper on non-large devices
+            if (!LauncherApplication.isScreenLarge() || jumpToFinalValue) {
                 mHorizontalWallpaperOffset = mFinalHorizontalWallpaperOffset;
                 mVerticalWallpaperOffset = mFinalVerticalWallpaperOffset;
             } else {
