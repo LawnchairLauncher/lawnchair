@@ -2937,6 +2937,7 @@ public final class Launcher extends Activity
     @Override
     public void bindSearchablesChanged() {
         updateGlobalSearchIcon();
+        updateVoiceSearchIcon();
     }
 
     /**
