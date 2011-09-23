@@ -85,16 +85,13 @@
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"Això és una aplicació del sistema i no es pot desinstal·lar."</string>
     <string name="dream_name" msgid="2847171357608437154">"Llançamíssils"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Carpeta sense nom"</string>
-    <!-- outdated translation 6772061635561632299 -->     <string name="workspace_cling_title" msgid="738396473989890567">"Benvingut a la pàgina d\'inici."</string>
-    <!-- outdated translation 897064551822359347 -->     <string name="workspace_cling_move_item" msgid="4270697827183569326">"Per moure una aplicació o un widget, mantén-lo premut i col·loca\'l on vulguis."</string>
-    <!-- outdated translation 5287802320356364228 -->     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Per veure totes les aplicacions, toca el botó \"Totes les aplicacions\"."</string>
-    <!-- outdated translation 3057036297077247772 -->     <string name="all_apps_cling_title" msgid="2559734712581447107">"Aquí hi ha totes les aplicacions"</string>
-    <!-- outdated translation 4635717397976102935 -->     <string name="all_apps_cling_add_item" msgid="7404588523183860170">"Per afegir una aplicació o un widget a la pantalla d\'inici, mantén-lo premut i col·loca\'l on vulguis."</string>
-    <!-- no translation found for folder_cling_title (4308949882377840953) -->
-    <skip />
-    <!-- no translation found for folder_cling_move_item (270598675060435169) -->
-    <skip />
-    <!-- no translation found for folder_cling_create_folder (289412698047625601) -->
-    <skip />
+    <string name="workspace_cling_title" msgid="738396473989890567">"Posa\'t còmode"</string>
+    <!-- outdated translation 897064551822359347 -->     <string name="workspace_cling_move_item" msgid="791013895761065070">"Per moure una aplicació o un widget, mantén-lo premut i col·loca\'l on vulguis."</string>
+    <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Per veure totes les aplicacions, toca el cercle."</string>
+    <string name="all_apps_cling_title" msgid="2559734712581447107">"Tria algunes aplicacions"</string>
+    <string name="all_apps_cling_add_item" msgid="7404588523183860170">"Per afegir una aplicació a la pantalla d\'inici, mantén-la premuda."</string>
+    <string name="folder_cling_title" msgid="4308949882377840953">"Organitza les teves aplicacions amb carpetes"</string>
+    <string name="folder_cling_move_item" msgid="270598675060435169">"Per moure una aplicació, mantén-la premuda."</string>
+    <string name="folder_cling_create_folder" msgid="289412698047625601">"Per fer una carpeta nova a la pantalla d\'inici, apila una aplicació sobre una altra."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"D\'acord"</string>
 </resources>
