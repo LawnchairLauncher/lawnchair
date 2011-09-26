@@ -19,7 +19,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="wallpaper_dialog_title" msgid="6395005465873616423">"Wybierz tapetę"</string>
-    <string name="wallpaper_chooser_empty" msgid="5909737215399452696">"Brak tapet"</string>
-    <string name="wallpaper_cancel" msgid="1110492200533814461">"Anuluj"</string>
+    <string name="wallpaper_dialog_title" msgid="6395005465873616423">"Избор на тапет"</string>
+    <string name="wallpaper_chooser_empty" msgid="5909737215399452696">"Няма налични тапети"</string>
+    <string name="wallpaper_cancel" msgid="1110492200533814461">"Отказ"</string>
 </resources>
