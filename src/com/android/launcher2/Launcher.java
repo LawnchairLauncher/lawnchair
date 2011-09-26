@@ -325,7 +325,7 @@ public final class Launcher extends Activity
         }
 
         // On large interfaces, we want the screen to auto-rotate based on the current orientation
-        if (LauncherApplication.isScreenLarge()) {
+        if (LauncherApplication.isScreenLarge() || Build.TYPE.contentEquals("eng")) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         }
     }
