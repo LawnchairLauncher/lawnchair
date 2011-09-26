@@ -111,7 +111,7 @@ public class Workspace extends SmoothPagedView
 
     private final WallpaperManager mWallpaperManager;
     private IBinder mWindowToken;
-    private static final float WALLPAPER_SCREENS_SPAN = 1.5f;
+    private static final float WALLPAPER_SCREENS_SPAN = 2f;
 
     private int mDefaultPage;
 
@@ -730,7 +730,7 @@ public class Workspace extends SmoothPagedView
             mWallpaperWidth = (int) (maxDim * wallpaperTravelToScreenWidthRatio(maxDim, minDim));
             mWallpaperHeight = (int)(maxDim * wallpaperTravelToScreenHeightRatio(maxDim, minDim));
         } else {
-            mWallpaperWidth = (int) (minDim * WALLPAPER_SCREENS_SPAN);
+            mWallpaperWidth = Math.max((int) (minDim * WALLPAPER_SCREENS_SPAN), maxDim);
             mWallpaperHeight = maxDim;
         }
         new Thread("setWallpaperDimension") {
