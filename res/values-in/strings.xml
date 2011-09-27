@@ -91,7 +91,7 @@
     <string name="all_apps_cling_title" msgid="2559734712581447107">"Pilih beberapa apl"</string>
     <string name="all_apps_cling_add_item" msgid="7404588523183860170">"Untuk menambah apl ke layar utama Anda, sentuh &amp; tahan apl tersebut."</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"Atur apl Anda dengan map"</string>
-    <string name="folder_cling_move_item" msgid="270598675060435169">"Untuk memindah apl, sentuh &amp; tahan apl tersebut."</string>
+    <string name="folder_cling_move_item" msgid="270598675060435169">"Untuk memindahkan apl, sentuh &amp; tahan apl tersebut."</string>
     <string name="folder_cling_create_folder" msgid="289412698047625601">"Untuk membuat map baru di layar utama Anda, tumpuk satu apl di atas apl yang lain."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
 </resources>

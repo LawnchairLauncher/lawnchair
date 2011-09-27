@@ -92,6 +92,6 @@
     <string name="all_apps_cling_add_item" msgid="7404588523183860170">"Ha egy alkalmazást el szeretne helyezni a kezdőképernyőn, érintse meg, és tartsa lenyomva."</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"Rendezze alkalmazásait mappákba"</string>
     <string name="folder_cling_move_item" msgid="270598675060435169">"Ha egy alkalmazást át szeretne helyezni, érintse meg, és tartsa lenyomva."</string>
-    <string name="folder_cling_create_folder" msgid="289412698047625601">"Ahhoz, hogy egy új mappát hozzon létre a kezdőképernyőn, helyezzen egymásra két alkalmazást."</string>
+    <string name="folder_cling_create_folder" msgid="289412698047625601">"Ha egy új mappát szeretne létrehozni a kezdőképernyőn, helyezzen egymásra két alkalmazást."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
 </resources>
