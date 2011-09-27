@@ -817,12 +817,14 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             lp.cellX = vacant[0];
             lp.cellY = vacant[1];
             ItemInfo info = (ItemInfo) v.getTag();
-            info.cellX = vacant[0];
-            info.cellY = vacant[1];
+            if (info.cellX != vacant[0] || info.cellY != vacant[1]) {
+                info.cellX = vacant[0];
+                info.cellY = vacant[1];
+                LauncherModel.addOrMoveItemInDatabase(mLauncher, info, mInfo.id, 0,
+                        info.cellX, info.cellY);
+            }
             boolean insert = false;
             mContent.addViewToCellLayout(v, insert ? 0 : -1, (int)info.id, lp, true);
-            LauncherModel.addOrMoveItemInDatabase(mLauncher, info, mInfo.id, 0,
-                    info.cellX, info.cellY);
         }
         mItemsInvalidated = true;
     }
