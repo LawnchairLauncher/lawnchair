@@ -88,7 +88,7 @@
     <string name="workspace_cling_title" msgid="738396473989890567">"Føl dig hjemme"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"Du kan sætte dine yndlingsapps her."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Tryk på cirklen for at få vist alle dine apps."</string>
-    <string name="all_apps_cling_title" msgid="2559734712581447107">"Vælge nogle apps"</string>
+    <string name="all_apps_cling_title" msgid="2559734712581447107">"Vælg nogle apps"</string>
     <string name="all_apps_cling_add_item" msgid="7404588523183860170">"Hvis du vil tilføje en app til startskærmen, skal du trykke på den og holde den nede."</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"Organiser dine apps med mapper"</string>
     <string name="folder_cling_move_item" msgid="270598675060435169">"Tryk på en app, og hold den nede for at flytte den."</string>

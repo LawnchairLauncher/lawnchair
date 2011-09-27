@@ -86,10 +86,10 @@
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Dosar fără nume"</string>
     <string name="workspace_cling_title" msgid="738396473989890567">"Simţiţi-vă ca acasă"</string>
-    <!-- outdated translation 4270697827183569326 -->     <string name="workspace_cling_move_item" msgid="791013895761065070">"Puteţi plasa aici aplicaţiile preferate."</string>
+    <string name="workspace_cling_move_item" msgid="791013895761065070">"Puteţi plasa aici aplicaţiile preferate."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Pentru a vedea toate aplicaţiile, atingeţi cercul."</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"Alegeţi unele aplicaţii"</string>
-    <string name="all_apps_cling_add_item" msgid="7404588523183860170">"Pentru a adăuga o aplicaţie la ecranul de pornire, atingeţi şi ţineţi apăsat."</string>
+    <string name="all_apps_cling_add_item" msgid="7404588523183860170">"Pentru a adăuga o aplicaţie pe ecranul de pornire, atingeţi şi ţineţi apăsat."</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"Organizaţi aplicaţiile în dosare"</string>
     <string name="folder_cling_move_item" msgid="270598675060435169">"Pentru a muta o aplicaţie, atingeţi şi ţineţi apăsat."</string>
     <string name="folder_cling_create_folder" msgid="289412698047625601">"Pentru a crea un dosar nou pe ecranul de pornire, plasaţi o aplicaţie deasupra alteia."</string>
