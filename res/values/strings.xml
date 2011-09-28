@@ -153,8 +153,8 @@ s -->
     <!-- Noun, menu item used to show help. [CHAR_LIMIT=none] -->
     <string name="menu_help">Help</string>
 
-    <!-- URL pointing to help text. [DO NOT TRANSLATE] -->
-    <string name="help_url" translatable="false">http://www.google.com/support/mobile/?p=help_home</string>
+    <!-- URL pointing to help text. If empty, no link to help will be created [DO NOT TRANSLATE] -->
+    <string name="help_url" translatable="false"></string>
 
     <!--  Strings for the contextual action bar (CAB) in All Apps -->
     <skip />
@@ -199,17 +199,8 @@ s -->
     <!-- Widgets: -->
     <skip />    
 
-    <!-- The Google Apps folder name -->
-    <string name="google_apps_folder_name">Google</string>
-
     <!-- Text to show user in place of a gadget when we can't display it properly -->
     <string name="gadget_error_text">Problem loading widget</string>
-
-    <!-- URL to use when detecting the current default browser. 
-         Attempts to mimic homepage_base in Browser; {CID} should be replaced
-         by the client-id, e.g. "android-google". -->
-    <string name="default_browser_url" translatable="false">
-        http://www.google.com/m?client=ms-{CID}&amp;source=android-home-hotseat</string>
 
     <!-- Text to inform the user that they can't uninstall a system application -->
     <string name="uninstall_system_app_text">This is a system application and cannot be uninstalled.</string>
