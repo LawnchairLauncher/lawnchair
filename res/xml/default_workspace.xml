@@ -23,7 +23,7 @@
         launcher:className="com.android.settings.widget.SettingsAppWidgetProvider"
         launcher:screen="1"
         launcher:x="0"
-        launcher:y="2"
+        launcher:y="3"
         launcher:spanX="4"
         launcher:spanY="1" />
 
