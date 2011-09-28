@@ -100,7 +100,7 @@ public class Hotseat extends FrameLayout {
         BubbleTextView allAppsButton = (BubbleTextView)
                 inflater.inflate(R.layout.application, mContent, false);
         allAppsButton.setCompoundDrawablesWithIntrinsicBounds(null,
-                context.getResources().getDrawable(R.drawable.ic_allapps), null, null);
+                context.getResources().getDrawable(R.drawable.all_apps_button_icon), null, null);
         // allAppsButton.setText(context.getString(R.string.all_apps_button_label));
         allAppsButton.setContentDescription(context.getString(R.string.all_apps_button_label));
         allAppsButton.setOnClickListener(new View.OnClickListener() {
