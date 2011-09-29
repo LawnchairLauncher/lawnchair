@@ -161,11 +161,14 @@ public class Cling extends FrameLayout {
 
             // Draw the background
             if (mBackground == null) {
-                if (mDrawIdentifier.equals(WORKSPACE_PORTRAIT)) {
+                if (mDrawIdentifier.equals(WORKSPACE_PORTRAIT) ||
+                    mDrawIdentifier.equals(WORKSPACE_LANDSCAPE)) {
                     mBackground = getResources().getDrawable(R.drawable.bg_cling1);
-                } else if (mDrawIdentifier.equals(ALLAPPS_PORTRAIT)) {
+                } else if (mDrawIdentifier.equals(ALLAPPS_PORTRAIT) ||
+                        mDrawIdentifier.equals(ALLAPPS_LANDSCAPE)) {
                     mBackground = getResources().getDrawable(R.drawable.bg_cling2);
-                } else if (mDrawIdentifier.equals(FOLDER_PORTRAIT)) {
+                } else if (mDrawIdentifier.equals(FOLDER_PORTRAIT) ||
+                        mDrawIdentifier.equals(FOLDER_LANDSCAPE)) {
                     mBackground = getResources().getDrawable(R.drawable.bg_cling3);
                 }
             }
