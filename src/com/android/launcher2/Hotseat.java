@@ -58,7 +58,7 @@ public class Hotseat extends FrameLayout {
 
     public void setup(Launcher launcher) {
         mLauncher = launcher;
-        setOnKeyListener(new HotseatBubbleTextViewKeyEventListener());
+        setOnKeyListener(new HotseatIconKeyEventListener());
     }
 
     CellLayout getLayout() {

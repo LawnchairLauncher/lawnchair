@@ -93,7 +93,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private int[] mEmptyCell = new int[2];
     private Alarm mReorderAlarm = new Alarm();
     private Alarm mOnExitAlarm = new Alarm();
-    private TextView mFolderName;
     private int mFolderNameHeight;
     private Rect mHitRect = new Rect();
     private Rect mTempRect = new Rect();
@@ -101,6 +100,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private boolean mDeleteFolderOnDropCompleted = false;
     private boolean mSuppressFolderDeletion = false;
     private boolean mItemAddedBackToSelfViaIcon = false;
+    FolderEditText mFolderName;
 
     private boolean mIsEditingName = false;
     private InputMethodManager mInputMethodManager;
@@ -134,8 +134,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         if (sHintText == null) {
             sHintText = res.getString(R.string.folder_hint_text);
         }
-
         mLauncher = (Launcher) context;
+        // We need this view to be focusable in touch mode so that when text editing of the folder
+        // name is complete, we have something to focus on, thus hiding the cursor and giving
+        // reliable behvior when clicking the text field (since it will always gain focus on click).
+        setFocusableInTouchMode(true);
     }
 
     @Override
@@ -143,7 +146,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         super.onFinishInflate();
         mContent = (CellLayout) findViewById(R.id.folder_content);
         mContent.setGridSize(0, 0);
-        mFolderName = (TextView) findViewById(R.id.folder_name);
+        mFolderName = (FolderEditText) findViewById(R.id.folder_name);
+        mFolderName.setFolder(this);
 
         // We find out how tall the text view wants to be (it is set to wrap_content), so that
         // we can allocate the appropriate amount of space for it.
@@ -153,7 +157,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
         // We disable action mode for now since it messes up the view on phones
         mFolderName.setCustomSelectionActionModeCallback(mActionModeCallback);
-        mFolderName.setCursorVisible(false);
         mFolderName.setOnEditorActionListener(this);
         mFolderName.setSelectAllOnFocus(true);
         mFolderName.setInputType(mFolderName.getInputType() |
@@ -233,7 +236,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     public void startEditingFolderName() {
         mFolderName.setHint("");
-        mFolderName.setCursorVisible(true);
         mIsEditingName = true;
     }
 
@@ -248,8 +250,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // gets saved.
         mInfo.setTitle(mFolderName.getText().toString());
         LauncherModel.updateItemInDatabase(mLauncher, mInfo);
-        mFolderName.setCursorVisible(false);
-        mFolderName.clearFocus();
+
+        // In order to clear the focus from the text field, we set the focus on ourself. This
+        // ensures that every time the field is clicked, focus is gained, giving reliable behavior.
+        requestFocus();
+
         Selection.setSelection((Spannable) mFolderName.getText(), 0, 0);
         mIsEditingName = false;
     }
@@ -320,6 +325,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         }
 
         mItemsInvalidated = true;
+        updateTextViewFocus();
         mInfo.addListener(this);
 
         if (!sDefaultFolderName.contentEquals(mInfo.title)) {
@@ -410,10 +416,18 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 if (cling != null) {
                     cling.bringToFront();
                 }
+                setFocusOnFirstChild();
             }
         });
         oa.setDuration(mExpandDuration);
         oa.start();
+    }
+
+    private void setFocusOnFirstChild() {
+        View firstChild = mContent.getChildAt(0, 0);
+        if (firstChild != null) {
+            firstChild.requestFocus();
+        }
     }
 
     public void animateClosed() {
@@ -512,6 +526,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         CellLayout.LayoutParams lp =
             new CellLayout.LayoutParams(item.cellX, item.cellY, item.spanX, item.spanY);
         boolean insert = false;
+        textView.setOnKeyListener(new FolderKeyEventListener());
         mContent.addViewToCellLayout(textView, insert ? 0 : -1, (int)item.id, lp, true);
         return true;
     }
@@ -842,6 +857,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         parent.removeView(this);
         mDragController.removeDropTarget((DropTarget) this);
         clearFocus();
+        mFolderIcon.requestFocus();
 
         if (mRearrangeOnClose) {
             setupContentForNumItems(getItemCount());
@@ -885,6 +901,19 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
             mLauncher.getWorkspace().addInScreen(child, mInfo.container, mInfo.screen, mInfo.cellX,
                     mInfo.cellY, mInfo.spanX, mInfo.spanY);
+        }
+    }
+
+    // This method keeps track of the last item in the folder for the purposes
+    // of keyboard focus
+    private void updateTextViewFocus() {
+        View lastChild = getItemAt(getItemCount() - 1);
+        getItemAt(getItemCount() - 1);
+        if (lastChild != null) {
+            mFolderName.setNextFocusDownId(lastChild.getId());
+            mFolderName.setNextFocusRightId(lastChild.getId());
+            mFolderName.setNextFocusLeftId(lastChild.getId());
+            mFolderName.setNextFocusUpId(lastChild.getId());
         }
     }
 
@@ -963,7 +992,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     public void onItemsChanged() {
+        updateTextViewFocus();
     }
+
     public void onTitleChanged(CharSequence title) {
     }
 

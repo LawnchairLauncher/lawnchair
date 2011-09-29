@@ -1147,16 +1147,18 @@ public final class Launcher extends Activity
             // also will cancel mWaitingForResult.
             closeSystemDialogs();
 
-            closeFolder();
-
             boolean alreadyOnHome = ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
                         != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 
+            Folder openFolder = mWorkspace.getOpenFolder();
             // In all these cases, only animate if we're already on home
             mWorkspace.exitWidgetResizeMode();
-            if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive()) {
+            if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive() &&
+                    openFolder == null) {
                 mWorkspace.moveToDefaultScreen(true);
             }
+
+            closeFolder();
             exitSpringLoadedDragMode();
             showWorkspace(alreadyOnHome);
 
@@ -1876,6 +1878,9 @@ public final class Launcher extends Activity
     public void closeFolder() {
         Folder folder = mWorkspace.getOpenFolder();
         if (folder != null) {
+            if (folder.isEditingName()) {
+                folder.dismissEditingName();
+            }
             closeFolder(folder);
 
             // Dismiss the folder cling
