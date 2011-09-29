@@ -32,7 +32,8 @@
     <dimen name="hotseat_left_padding">-1dp</dimen>
     <dimen name="hotseat_right_padding">-1dp</dimen>
 
-    <dimen name="qsb_bar_height">50dp</dimen>
+    <dimen name="qsb_bar_height">54dp</dimen>
+    <dimen name="search_bar_height">48dp</dimen>
     <!-- height of the bottom row of controls -->
     <dimen name="button_bar_height">80dip</dimen>
     <!-- Because portal animations go beyond the bounds of an icon, we need

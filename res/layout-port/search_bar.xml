@@ -28,7 +28,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/voice_button"
+        android:layout_toLeftOf="@+id/voice_button_container"
         android:background="?android:attr/selectableItemBackground"
         android:onClick="onClickSearchButton"
         android:focusable="true"
@@ -43,18 +43,24 @@
     </LinearLayout>
 
     <!-- Voice search icon -->
-    <ImageView
+    <LinearLayout
         style="@style/SearchButton.Voice"
-        android:id="@+id/voice_button"
-        android:layout_width="wrap_content"
+        android:id="@+id/voice_button_container"
+        android:layout_width="@dimen/search_bar_height"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/ic_home_voice_search_holo"
-        android:adjustViewBounds="true"
+        android:gravity="right"
         android:background="?android:attr/selectableItemBackground"
         android:onClick="onClickVoiceButton"
         android:focusable="true"
         android:clickable="true"
-        android:contentDescription="@string/accessibility_voice_search_button" />
+        android:contentDescription="@string/accessibility_voice_search_button">
+        <ImageView
+            android:id="@+id/voice_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_home_voice_search_holo"
+            android:adjustViewBounds="true" />
+    </LinearLayout>
 </RelativeLayout>
