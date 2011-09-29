@@ -37,7 +37,7 @@
         launcher:cellWidth="@dimen/folder_cell_width"
         launcher:cellHeight="@dimen/folder_cell_height" />
 
-    <EditText
+    <com.android.launcher2.FolderEditText
         android:id="@+id/folder_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

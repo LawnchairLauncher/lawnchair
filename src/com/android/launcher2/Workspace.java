@@ -469,7 +469,7 @@ public class Workspace extends SmoothPagedView
             }
 
             layout = (CellLayout) getChildAt(screen);
-            child.setOnKeyListener(new BubbleTextViewKeyEventListener());
+            child.setOnKeyListener(new IconKeyEventListener());
         }
 
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();

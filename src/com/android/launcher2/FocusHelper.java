@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.TabHost;
 import android.widget.TabWidget;
+import android.widget.TextView;
 
 import com.android.launcher.R;
 
@@ -33,18 +34,25 @@ import java.util.Comparator;
 /**
  * A keyboard listener we set on all the workspace icons.
  */
-class BubbleTextViewKeyEventListener implements View.OnKeyListener {
-    @Override
+class IconKeyEventListener implements View.OnKeyListener {
     public boolean onKey(View v, int keyCode, KeyEvent event) {
-        return FocusHelper.handleBubbleTextViewKeyEvent((BubbleTextView) v, keyCode, event);
+        return FocusHelper.handleIconKeyEvent(v, keyCode, event);
+    }
+}
+
+/**
+ * A keyboard listener we set on all the workspace icons.
+ */
+class FolderKeyEventListener implements View.OnKeyListener {
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        return FocusHelper.handleFolderKeyEvent(v, keyCode, event);
     }
 }
 
 /**
  * A keyboard listener we set on all the hotseat buttons.
  */
-class HotseatBubbleTextViewKeyEventListener implements View.OnKeyListener {
-    @Override
+class HotseatIconKeyEventListener implements View.OnKeyListener {
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         final Configuration configuration = v.getResources().getConfiguration();
         return FocusHelper.handleHotseatButtonKeyEvent(v, keyCode, event, configuration.orientation);
@@ -56,7 +64,6 @@ class HotseatBubbleTextViewKeyEventListener implements View.OnKeyListener {
  * market icon and vice versa.
  */
 class AppsCustomizeTabKeyEventListener implements View.OnKeyListener {
-    @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         return FocusHelper.handleAppsCustomizeTabKeyEvent(v, keyCode, event);
     }
@@ -480,7 +487,6 @@ public class FocusHelper {
         final int buttonIndex = parent.indexOfChild(v);
         final int buttonCount = parent.getChildCount();
         final int pageIndex = workspace.getCurrentPage();
-        final int pageCount = workspace.getChildCount();
 
         // NOTE: currently we don't special case for the phone UI in different
         // orientations, even though the hotseat is on the side in landscape mode.  This
@@ -517,7 +523,7 @@ public class FocusHelper {
                     // Select the first bubble text view in the current page of the workspace
                     final CellLayout layout = (CellLayout) workspace.getChildAt(pageIndex);
                     final CellLayoutChildren children = layout.getChildrenLayout();
-                    final View newIcon = getBubbleTextViewInDirection(layout, children, -1, 1);
+                    final View newIcon = getIconInDirection(layout, children, -1, 1);
                     if (newIcon != null) {
                         newIcon.requestFocus();
                     } else {
@@ -569,38 +575,41 @@ public class FocusHelper {
         return views;
     }
     /**
-     * Private helper method to find the index of the next BubbleTextView in the delta direction.
+     * Private helper method to find the index of the next BubbleTextView or FolderIcon in the 
+     * direction delta.
+     * 
      * @param delta either -1 or 1 depending on the direction we want to search
      */
-    private static View findIndexOfBubbleTextView(ArrayList<View> views, int i, int delta) {
+    private static View findIndexOfIcon(ArrayList<View> views, int i, int delta) {
         // Then we find the next BubbleTextView offset by delta from i
         final int count = views.size();
         int newI = i + delta;
         while (0 <= newI && newI < count) {
             View newV = views.get(newI);
-            if (newV instanceof BubbleTextView) {
+            if (newV instanceof BubbleTextView || newV instanceof FolderIcon) {
                 return newV;
             }
             newI += delta;
         }
         return null;
     }
-    private static View getBubbleTextViewInDirection(CellLayout layout, ViewGroup parent, int i,
+    private static View getIconInDirection(CellLayout layout, ViewGroup parent, int i,
             int delta) {
         final ArrayList<View> views = getCellLayoutChildrenSortedSpatially(layout, parent);
-        return findIndexOfBubbleTextView(views, i, delta);
+        return findIndexOfIcon(views, i, delta);
     }
-    private static View getBubbleTextViewInDirection(CellLayout layout, ViewGroup parent, View v,
+    private static View getIconInDirection(CellLayout layout, ViewGroup parent, View v,
             int delta) {
         final ArrayList<View> views = getCellLayoutChildrenSortedSpatially(layout, parent);
-        return findIndexOfBubbleTextView(views, views.indexOf(v), delta);
+        return findIndexOfIcon(views, views.indexOf(v), delta);
     }
     /**
-     * Private helper method to find the next closest BubbleTextView in the delta direction on the
-     * next line.
+     * Private helper method to find the next closest BubbleTextView or FolderIcon in the direction 
+     * delta on the next line.
+     * 
      * @param delta either -1 or 1 depending on the line and direction we want to search
      */
-    private static View getClosestBubbleTextViewOnLine(CellLayout layout, ViewGroup parent, View v,
+    private static View getClosestIconOnLine(CellLayout layout, ViewGroup parent, View v,
             int lineDelta) {
         final ArrayList<View> views = getCellLayoutChildrenSortedSpatially(layout, parent);
         final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) v.getLayoutParams();
@@ -617,7 +626,8 @@ public class FocusHelper {
                 View newV = views.get(index);
                 CellLayout.LayoutParams tmpLp = (CellLayout.LayoutParams) newV.getLayoutParams();
                 boolean satisfiesRow = (lineDelta < 0) ? (tmpLp.cellY < row) : (tmpLp.cellY > row);
-                if (satisfiesRow && newV instanceof BubbleTextView) {
+                if (satisfiesRow &&
+                        (newV instanceof BubbleTextView || newV instanceof FolderIcon)) {
                     float tmpDistance = (float) Math.sqrt(Math.pow(tmpLp.cellX - lp.cellX, 2) +
                             Math.pow(tmpLp.cellY - lp.cellY, 2));
                     if (tmpDistance < closestDistance) {
@@ -639,17 +649,15 @@ public class FocusHelper {
     }
 
     /**
-     * Handles key events in a Workspace containing BubbleTextView.
+     * Handles key events in a Workspace containing.
      */
-    static boolean handleBubbleTextViewKeyEvent(BubbleTextView v, int keyCode, KeyEvent e) {
+    static boolean handleIconKeyEvent(View v, int keyCode, KeyEvent e) {
         CellLayoutChildren parent = (CellLayoutChildren) v.getParent();
         final CellLayout layout = (CellLayout) parent.getParent();
         final Workspace workspace = (Workspace) layout.getParent();
         final ViewGroup launcher = (ViewGroup) workspace.getParent();
         final ViewGroup tabs = (ViewGroup) launcher.findViewById(R.id.qsb_bar);
         final ViewGroup hotseat = (ViewGroup) launcher.findViewById(R.id.hotseat);
-        int iconIndex = parent.indexOfChild(v);
-        int iconCount = parent.getChildCount();
         int pageIndex = workspace.indexOfChild(layout);
         int pageCount = workspace.getChildCount();
 
@@ -660,13 +668,13 @@ public class FocusHelper {
             case KeyEvent.KEYCODE_DPAD_LEFT:
                 if (handleKeyEvent) {
                     // Select the previous icon or the last icon on the previous page if possible
-                    View newIcon = getBubbleTextViewInDirection(layout, parent, v, -1);
+                    View newIcon = getIconInDirection(layout, parent, v, -1);
                     if (newIcon != null) {
                         newIcon.requestFocus();
                     } else {
                         if (pageIndex > 0) {
                             parent = getCellLayoutChildrenForIndex(workspace, pageIndex - 1);
-                            newIcon = getBubbleTextViewInDirection(layout, parent,
+                            newIcon = getIconInDirection(layout, parent,
                                     parent.getChildCount(), -1);
                             if (newIcon != null) {
                                 newIcon.requestFocus();
@@ -682,13 +690,13 @@ public class FocusHelper {
             case KeyEvent.KEYCODE_DPAD_RIGHT:
                 if (handleKeyEvent) {
                     // Select the next icon or the first icon on the next page if possible
-                    View newIcon = getBubbleTextViewInDirection(layout, parent, v, 1);
+                    View newIcon = getIconInDirection(layout, parent, v, 1);
                     if (newIcon != null) {
                         newIcon.requestFocus();
                     } else {
                         if (pageIndex < (pageCount - 1)) {
                             parent = getCellLayoutChildrenForIndex(workspace, pageIndex + 1);
-                            newIcon = getBubbleTextViewInDirection(layout, parent, -1, 1);
+                            newIcon = getIconInDirection(layout, parent, -1, 1);
                             if (newIcon != null) {
                                 newIcon.requestFocus();
                             } else {
@@ -703,7 +711,7 @@ public class FocusHelper {
             case KeyEvent.KEYCODE_DPAD_UP:
                 if (handleKeyEvent) {
                     // Select the closest icon in the previous line, otherwise select the tab bar
-                    View newIcon = getClosestBubbleTextViewOnLine(layout, parent, v, -1);
+                    View newIcon = getClosestIconOnLine(layout, parent, v, -1);
                     if (newIcon != null) {
                         newIcon.requestFocus();
                         wasHandled = true;
@@ -715,7 +723,7 @@ public class FocusHelper {
             case KeyEvent.KEYCODE_DPAD_DOWN:
                 if (handleKeyEvent) {
                     // Select the closest icon in the next line, otherwise select the button bar
-                    View newIcon = getClosestBubbleTextViewOnLine(layout, parent, v, 1);
+                    View newIcon = getClosestIconOnLine(layout, parent, v, 1);
                     if (newIcon != null) {
                         newIcon.requestFocus();
                         wasHandled = true;
@@ -730,7 +738,7 @@ public class FocusHelper {
                     // if there is no previous page
                     if (pageIndex > 0) {
                         parent = getCellLayoutChildrenForIndex(workspace, pageIndex - 1);
-                        View newIcon = getBubbleTextViewInDirection(layout, parent, -1, 1);
+                        View newIcon = getIconInDirection(layout, parent, -1, 1);
                         if (newIcon != null) {
                             newIcon.requestFocus();
                         } else {
@@ -738,7 +746,7 @@ public class FocusHelper {
                             workspace.snapToPage(pageIndex - 1);
                         }
                     } else {
-                        View newIcon = getBubbleTextViewInDirection(layout, parent, -1, 1);
+                        View newIcon = getIconInDirection(layout, parent, -1, 1);
                         if (newIcon != null) {
                             newIcon.requestFocus();
                         }
@@ -752,7 +760,7 @@ public class FocusHelper {
                     // if there is no previous page
                     if (pageIndex < (pageCount - 1)) {
                         parent = getCellLayoutChildrenForIndex(workspace, pageIndex + 1);
-                        View newIcon = getBubbleTextViewInDirection(layout, parent, -1, 1);
+                        View newIcon = getIconInDirection(layout, parent, -1, 1);
                         if (newIcon != null) {
                             newIcon.requestFocus();
                         } else {
@@ -760,7 +768,7 @@ public class FocusHelper {
                             workspace.snapToPage(pageIndex + 1);
                         }
                     } else {
-                        View newIcon = getBubbleTextViewInDirection(layout, parent,
+                        View newIcon = getIconInDirection(layout, parent,
                                 parent.getChildCount(), -1);
                         if (newIcon != null) {
                             newIcon.requestFocus();
@@ -772,7 +780,7 @@ public class FocusHelper {
             case KeyEvent.KEYCODE_MOVE_HOME:
                 if (handleKeyEvent) {
                     // Select the first icon on this page
-                    View newIcon = getBubbleTextViewInDirection(layout, parent, -1, 1);
+                    View newIcon = getIconInDirection(layout, parent, -1, 1);
                     if (newIcon != null) {
                         newIcon.requestFocus();
                     }
@@ -782,7 +790,90 @@ public class FocusHelper {
             case KeyEvent.KEYCODE_MOVE_END:
                 if (handleKeyEvent) {
                     // Select the last icon on this page
-                    View newIcon = getBubbleTextViewInDirection(layout, parent,
+                    View newIcon = getIconInDirection(layout, parent,
+                            parent.getChildCount(), -1);
+                    if (newIcon != null) {
+                        newIcon.requestFocus();
+                    }
+                }
+                wasHandled = true;
+                break;
+            default: break;
+        }
+        return wasHandled;
+    }
+
+    /**
+     * Handles key events for items in a Folder.
+     */
+    static boolean handleFolderKeyEvent(View v, int keyCode, KeyEvent e) {
+        CellLayoutChildren parent = (CellLayoutChildren) v.getParent();
+        final CellLayout layout = (CellLayout) parent.getParent();
+        final Folder folder = (Folder) layout.getParent();
+        View title = folder.mFolderName;
+
+        final int action = e.getAction();
+        final boolean handleKeyEvent = (action != KeyEvent.ACTION_UP);
+        boolean wasHandled = false;
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+                if (handleKeyEvent) {
+                    // Select the previous icon
+                    View newIcon = getIconInDirection(layout, parent, v, -1);
+                    if (newIcon != null) {
+                        newIcon.requestFocus();
+                    }
+                }
+                wasHandled = true;
+                break;
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                if (handleKeyEvent) {
+                    // Select the next icon
+                    View newIcon = getIconInDirection(layout, parent, v, 1);
+                    if (newIcon != null) {
+                        newIcon.requestFocus();
+                    } else {
+                        title.requestFocus();
+                    }
+                }
+                wasHandled = true;
+                break;
+            case KeyEvent.KEYCODE_DPAD_UP:
+                if (handleKeyEvent) {
+                    // Select the closest icon in the previous line
+                    View newIcon = getClosestIconOnLine(layout, parent, v, -1);
+                    if (newIcon != null) {
+                        newIcon.requestFocus();
+                    }
+                }
+                wasHandled = true;
+                break;
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+                if (handleKeyEvent) {
+                    // Select the closest icon in the next line
+                    View newIcon = getClosestIconOnLine(layout, parent, v, 1);
+                    if (newIcon != null) {
+                        newIcon.requestFocus();
+                    } else {
+                        title.requestFocus();
+                    }
+                }
+                wasHandled = true;
+                break;
+            case KeyEvent.KEYCODE_MOVE_HOME:
+                if (handleKeyEvent) {
+                    // Select the first icon on this page
+                    View newIcon = getIconInDirection(layout, parent, -1, 1);
+                    if (newIcon != null) {
+                        newIcon.requestFocus();
+                    }
+                }
+                wasHandled = true;
+                break;
+            case KeyEvent.KEYCODE_MOVE_END:
+                if (handleKeyEvent) {
+                    // Select the last icon on this page
+                    View newIcon = getIconInDirection(layout, parent,
                             parent.getChildCount(), -1);
                     if (newIcon != null) {
                         newIcon.requestFocus();
