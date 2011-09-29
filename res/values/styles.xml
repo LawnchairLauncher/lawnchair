@@ -77,7 +77,7 @@
     </style>
 
     <style name="WorkspaceIcon.Landscape">
-        <item name="android:drawablePadding">4dp</item>
+        <item name="android:drawablePadding">2dp</item>
         <item name="android:paddingLeft">4dp</item>
         <item name="android:paddingRight">4dp</item>
         <item name="android:paddingTop">6dp</item>
@@ -91,7 +91,7 @@
     <style name="WorkspaceIcon.Landscape.Folder">
         <item name="android:drawablePadding">0dp</item>
         <item name="android:paddingTop">0dp</item>
-        <item name="android:layout_marginTop">-6dp</item>
+        <item name="android:layout_marginTop">-2dp</item>
     </style>
 
     <style name="WorkspaceIcon.Portrait.AppsCustomize">
