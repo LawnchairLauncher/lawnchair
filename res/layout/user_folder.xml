@@ -50,5 +50,6 @@
         android:textColor="#ff33b5e5"
         android:textColorHighlight="#ff333333"
         android:gravity="center_horizontal"
-        android:singleLine="true"/>
+        android:singleLine="true"
+        android:imeOptions="flagNoExtractUi"/>
 </com.android.launcher2.Folder>

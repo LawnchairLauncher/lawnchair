@@ -27,7 +27,7 @@
     <dimen name="workspace_height_gap">-1dp</dimen>
     <dimen name="workspace_max_gap">16dp</dimen>
     <dimen name="folder_cell_width">74dp</dimen>
-    <dimen name="folder_cell_height">80dp</dimen>
+    <dimen name="folder_cell_height">82dp</dimen>
     <dimen name="workspace_divider_padding_left">12dp</dimen>
     <dimen name="workspace_divider_padding_right">12dp</dimen>
     <dimen name="workspace_divider_padding_top">0dp</dimen>
