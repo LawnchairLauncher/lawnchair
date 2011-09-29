@@ -96,6 +96,20 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         setClipToPadding(false);
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        final ImageView image = (ImageView) findViewById(R.id.widget_preview);
+        if (image != null) {
+            FastBitmapDrawable preview = (FastBitmapDrawable) image.getDrawable();
+            if (preview != null && preview.getBitmap() != null) {
+                preview.getBitmap().recycle();
+            }
+            image.setImageDrawable(null);
+        }
+    }
+
     public void applyFromAppWidgetProviderInfo(AppWidgetProviderInfo info,
             FastBitmapDrawable preview, int maxWidth, int[] cellSpan,
             HolographicOutlineHelper holoOutlineHelper) {
@@ -109,11 +123,9 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         mPreviewImageView = image;
         final TextView name = (TextView) findViewById(R.id.widget_name);
         name.setText(info.label);
-        name.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         final TextView dims = (TextView) findViewById(R.id.widget_dims);
         if (dims != null) {
             dims.setText(String.format(mDimensionsFormatString, cellSpan[0], cellSpan[1]));
-            dims.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
     }
 
@@ -127,11 +139,9 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         mPreviewImageView = image;
         final TextView name = (TextView) findViewById(R.id.widget_name);
         name.setText(label);
-        name.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         final TextView dims = (TextView) findViewById(R.id.widget_dims);
         if (dims != null) {
             dims.setText(String.format(mDimensionsFormatString, 1, 1));
-            dims.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
     }
 

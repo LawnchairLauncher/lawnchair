@@ -96,6 +96,25 @@ class AsyncTaskPageData {
         doInBackgroundCallback = bgR;
         postExecuteCallback = postR;
     }
+    void cleanup(boolean cancelled) {
+        // Clean up any references to source/generated bitmaps
+        if (sourceImages != null) {
+            if (cancelled) {
+                for (Bitmap b : sourceImages) {
+                    b.recycle();
+                }
+            }
+            sourceImages.clear();
+        }
+        if (generatedImages != null) {
+            if (cancelled) {
+                for (Bitmap b : generatedImages) {
+                    b.recycle();
+                }
+            }
+            generatedImages.clear();
+        }
+    }
     int page;
     ArrayList<Object> items;
     ArrayList<Bitmap> sourceImages;
@@ -746,21 +765,31 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 @Override
                 public void run(AppsCustomizeAsyncTask task, AsyncTaskPageData data) {
                     try {
-                        Thread.sleep(sleepMs);
-                    } catch (Exception e) {}
-                    loadWidgetPreviewsInBackground(task, data);
+                        try {
+                            Thread.sleep(sleepMs);
+                        } catch (Exception e) {}
+                        loadWidgetPreviewsInBackground(task, data);
+                    } finally {
+                        if (task.isCancelled()) {
+                            data.cleanup(true);
+                        }
+                    }
                 }
             },
             new AsyncTaskCallback() {
                 @Override
                 public void run(AppsCustomizeAsyncTask task, AsyncTaskPageData data) {
-                    mRunningTasks.remove(task);
-                    if (task.isCancelled()) return;
-                    if (task.page > getPageCount()) return;
-                    if (task.pageContentType != mContentType) return;
-                    onSyncWidgetPageItems(data);
+                    try {
+                        mRunningTasks.remove(task);
+                        if (task.isCancelled()) return;
+                        if (task.page > getPageCount()) return;
+                        if (task.pageContentType != mContentType) return;
+                        onSyncWidgetPageItems(data);
+                    } finally {
+                        data.cleanup(task.isCancelled());
+                    }
                 }
-        });
+            });
 
         // Ensure that the task is appropriately prioritized and runs in parallel
         AppsCustomizeAsyncTask t = new AppsCustomizeAsyncTask(page, mContentType,
@@ -790,40 +819,50 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             new AsyncTaskCallback() {
                 @Override
                 public void run(AppsCustomizeAsyncTask task, AsyncTaskPageData data) {
-                    // Ensure that this task starts running at the correct priority
-                    task.syncThreadPriority();
-
-                    ArrayList<Bitmap> images = data.generatedImages;
-                    ArrayList<Bitmap> srcImages = data.sourceImages;
-                    int count = srcImages.size();
-                    Canvas c = new Canvas();
-                    for (int i = 0; i < count && !task.isCancelled(); ++i) {
-                        // Before work on each item, ensure that this task is running at the correct
-                        // priority
+                    try {
+                        // Ensure that this task starts running at the correct priority
                         task.syncThreadPriority();
 
-                        Bitmap b = srcImages.get(i);
-                        Bitmap outline = Bitmap.createBitmap(b.getWidth(), b.getHeight(),
-                                Bitmap.Config.ARGB_8888);
+                        ArrayList<Bitmap> images = data.generatedImages;
+                        ArrayList<Bitmap> srcImages = data.sourceImages;
+                        int count = srcImages.size();
+                        Canvas c = new Canvas();
+                        for (int i = 0; i < count && !task.isCancelled(); ++i) {
+                            // Before work on each item, ensure that this task is running at the correct
+                            // priority
+                            task.syncThreadPriority();
 
-                        c.setBitmap(outline);
-                        c.save();
-                        c.drawBitmap(b, 0, 0, null);
-                        c.restore();
-                        c.setBitmap(null);
+                            Bitmap b = srcImages.get(i);
+                            Bitmap outline = Bitmap.createBitmap(b.getWidth(), b.getHeight(),
+                                    Bitmap.Config.ARGB_8888);
 
-                        images.add(outline);
+                            c.setBitmap(outline);
+                            c.save();
+                            c.drawBitmap(b, 0, 0, null);
+                            c.restore();
+                            c.setBitmap(null);
+
+                            images.add(outline);
+                        }
+                    } finally {
+                        if (task.isCancelled()) {
+                            data.cleanup(true);
+                        }
                     }
                 }
             },
             new AsyncTaskCallback() {
                 @Override
                 public void run(AppsCustomizeAsyncTask task, AsyncTaskPageData data) {
-                    mRunningTasks.remove(task);
-                    if (task.isCancelled()) return;
-                    if (task.page > getPageCount()) return;
-                    if (task.pageContentType != mContentType) return;
-                    onHolographicPageItemsLoaded(data);
+                    try {
+                        mRunningTasks.remove(task);
+                        if (task.isCancelled()) return;
+                        if (task.page > getPageCount()) return;
+                        if (task.pageContentType != mContentType) return;
+                        onHolographicPageItemsLoaded(data);
+                    } finally {
+                        data.cleanup(task.isCancelled());
+                    }
                 }
             });
 
