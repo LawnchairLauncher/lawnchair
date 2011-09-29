@@ -39,6 +39,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.Interpolator;
 import android.widget.Checkable;
@@ -401,6 +402,14 @@ public abstract class PagedView extends ViewGroup {
             // and the user has stopped scrolling
             if (mTouchState == TOUCH_STATE_REST) {
                 pageEndMoving();
+            }
+
+            // Notify the user when the page changes
+            if (AccessibilityManager.getInstance(getContext()).isEnabled()) {
+                AccessibilityEvent ev =
+                    AccessibilityEvent.obtain(AccessibilityEvent.TYPE_VIEW_SCROLLED);
+                ev.getText().add(getCurrentPageDescription());
+                sendAccessibilityEventUnchecked(ev);
             }
             return true;
         }
@@ -1857,27 +1866,6 @@ public abstract class PagedView extends ViewGroup {
             event.setFromIndex(mCurrentPage);
             event.setToIndex(mCurrentPage);
             event.setItemCount(getChildCount());
-        }
-    }
-
-    @Override
-    public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
-        // Do not append text content to scroll events they are fired frequently
-        // and the client has already received another event type with the text.
-        if (event.getEventType() != AccessibilityEvent.TYPE_VIEW_SCROLLED) {
-            super.dispatchPopulateAccessibilityEvent(event);
-        }
-
-        onPopulateAccessibilityEvent(event);
-        return false;
-    }
-
-    @Override
-    public void onPopulateAccessibilityEvent(AccessibilityEvent event) {
-        super.onPopulateAccessibilityEvent(event);
-
-        if (event.getEventType() == AccessibilityEvent.TYPE_VIEW_SCROLLED) {
-            event.getText().add(getCurrentPageDescription());
         }
     }
 
