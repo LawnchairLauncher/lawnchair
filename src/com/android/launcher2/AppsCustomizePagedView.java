@@ -1020,11 +1020,57 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         int cellHeight = ((contentHeight - mPageLayoutPaddingTop - mPageLayoutPaddingBottom
                 - ((mWidgetCountY - 1) * mWidgetHeightGap)) / mWidgetCountY);
 
+        // Prepare the set of widgets to load previews for in the background
         int offset = page * numItemsPerPage;
         for (int i = offset; i < Math.min(offset + numItemsPerPage, mWidgets.size()); ++i) {
             items.add(mWidgets.get(i));
         }
 
+        // Prepopulate the pages with the other widget info, and fill in the previews later
+        PagedViewGridLayout layout = (PagedViewGridLayout) getPageAt(page);
+        layout.setColumnCount(layout.getCellCountX());
+        for (int i = 0; i < items.size(); ++i) {
+            Object rawInfo = items.get(i);
+            PendingAddItemInfo createItemInfo = null;
+            PagedViewWidget widget = (PagedViewWidget) mLayoutInflater.inflate(
+                    R.layout.apps_customize_widget, layout, false);
+            if (rawInfo instanceof AppWidgetProviderInfo) {
+                // Fill in the widget information
+                AppWidgetProviderInfo info = (AppWidgetProviderInfo) rawInfo;
+                createItemInfo = new PendingAddWidgetInfo(info, null, null);
+                int[] cellSpans = mLauncher.getSpanForWidget(info, null);
+                widget.applyFromAppWidgetProviderInfo(info, -1, cellSpans,
+                        mHolographicOutlineHelper);
+                widget.setTag(createItemInfo);
+            } else if (rawInfo instanceof ResolveInfo) {
+                // Fill in the shortcuts information
+                ResolveInfo info = (ResolveInfo) rawInfo;
+                createItemInfo = new PendingAddItemInfo();
+                createItemInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+                createItemInfo.componentName = new ComponentName(info.activityInfo.packageName,
+                        info.activityInfo.name);
+                widget.applyFromResolveInfo(mPackageManager, info, mHolographicOutlineHelper);
+                widget.setTag(createItemInfo);
+            }
+            widget.setOnClickListener(this);
+            widget.setOnLongClickListener(this);
+            widget.setOnTouchListener(this);
+
+            // Layout each widget
+            int ix = i % mWidgetCountX;
+            int iy = i / mWidgetCountX;
+            GridLayout.LayoutParams lp = new GridLayout.LayoutParams(
+                    GridLayout.spec(iy, GridLayout.LEFT),
+                    GridLayout.spec(ix, GridLayout.TOP));
+            lp.width = cellWidth;
+            lp.height = cellHeight;
+            lp.setGravity(Gravity.TOP | Gravity.LEFT);
+            if (ix > 0) lp.leftMargin = mWidgetWidthGap;
+            if (iy > 0) lp.topMargin = mWidgetHeightGap;
+            layout.addView(widget, lp);
+        }
+
+        // Load the widget previews
         if (immediate) {
             AsyncTaskPageData data = new AsyncTaskPageData(page, items, cellWidth, cellHeight,
                     mWidgetCountX, null, null);
@@ -1033,7 +1079,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         } else {
             prepareLoadWidgetPreviewsTask(page, items, cellWidth, cellHeight, mWidgetCountX);
         }
-        PagedViewGridLayout layout = (PagedViewGridLayout) getPageAt(page);
     }
     private void loadWidgetPreviewsInBackground(AppsCustomizeAsyncTask task,
             AsyncTaskPageData data) {
@@ -1073,56 +1118,14 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private void onSyncWidgetPageItems(AsyncTaskPageData data) {
         int page = data.page;
         PagedViewGridLayout layout = (PagedViewGridLayout) getPageAt(page);
-        // Only set the column count once we have items
-        layout.setColumnCount(layout.getCellCountX());
 
         ArrayList<Object> items = data.items;
         int count = items.size();
-        int cellWidth = data.cellWidth;
-        int cellHeight = data.cellHeight;
-        int cellCountX = data.cellCountX;
         for (int i = 0; i < count; ++i) {
-            Object rawInfo = items.get(i);
-            PendingAddItemInfo createItemInfo = null;
-            PagedViewWidget widget = (PagedViewWidget) mLayoutInflater.inflate(
-                    R.layout.apps_customize_widget, layout, false);
-            if (rawInfo instanceof AppWidgetProviderInfo) {
-                // Fill in the widget information
-                AppWidgetProviderInfo info = (AppWidgetProviderInfo) rawInfo;
-                createItemInfo = new PendingAddWidgetInfo(info, null, null);
-                int[] cellSpans = mLauncher.getSpanForWidget(info, null);
-                FastBitmapDrawable preview = new FastBitmapDrawable(data.generatedImages.get(i));
-                widget.applyFromAppWidgetProviderInfo(info, preview, -1, cellSpans, 
-                        mHolographicOutlineHelper);
-                widget.setTag(createItemInfo);
-            } else if (rawInfo instanceof ResolveInfo) {
-                // Fill in the shortcuts information
-                ResolveInfo info = (ResolveInfo) rawInfo;
-                createItemInfo = new PendingAddItemInfo();
-                createItemInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
-                createItemInfo.componentName = new ComponentName(info.activityInfo.packageName,
-                        info.activityInfo.name);
-                FastBitmapDrawable preview = new FastBitmapDrawable(data.generatedImages.get(i));
-                widget.applyFromResolveInfo(mPackageManager, info, preview,
-                        mHolographicOutlineHelper);
-                widget.setTag(createItemInfo);
+            PagedViewWidget widget = (PagedViewWidget) layout.getChildAt(i);
+            if (widget != null) {
+                widget.applyPreview(new FastBitmapDrawable(data.generatedImages.get(i)), i);
             }
-            widget.setOnClickListener(this);
-            widget.setOnLongClickListener(this);
-            widget.setOnTouchListener(this);
-
-            // Layout each widget
-            int ix = i % cellCountX;
-            int iy = i / cellCountX;
-            GridLayout.LayoutParams lp = new GridLayout.LayoutParams(
-                    GridLayout.spec(iy, GridLayout.LEFT),
-                    GridLayout.spec(ix, GridLayout.TOP));
-            lp.width = cellWidth;
-            lp.height = cellHeight;
-            lp.setGravity(Gravity.TOP | Gravity.LEFT);
-            if (ix > 0) lp.leftMargin = mWidgetWidthGap;
-            if (iy > 0) lp.topMargin = mWidgetHeightGap;
-            layout.addView(widget, lp);
         }
         layout.createHardwareLayer();
 
