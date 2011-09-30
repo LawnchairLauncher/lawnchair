@@ -52,6 +52,9 @@ public interface DropTarget {
         /** Post drag animation runnable */
         public Runnable postAnimationRunnable = null;
 
+        /** Indicates that the drag operation was cancelled */
+        public boolean cancelled = false;
+
         public DragObject() {
         }
     }
