@@ -52,6 +52,9 @@ import com.android.launcher.R;
 public class PagedViewWidget extends LinearLayout implements Checkable {
     static final String TAG = "PagedViewWidgetLayout";
 
+    private static final int sPreviewFadeInDuration = 80;
+    private static final int sPreviewFadeInStaggerDuration = 20;
+
     private final Paint mPaint = new Paint();
     private Bitmap mHolographicOutline;
     private HolographicOutlineHelper mHolographicOutlineHelper;
@@ -111,14 +114,12 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
     }
 
     public void applyFromAppWidgetProviderInfo(AppWidgetProviderInfo info,
-            FastBitmapDrawable preview, int maxWidth, int[] cellSpan,
-            HolographicOutlineHelper holoOutlineHelper) {
+            int maxWidth, int[] cellSpan, HolographicOutlineHelper holoOutlineHelper) {
         mHolographicOutlineHelper = holoOutlineHelper;
         final ImageView image = (ImageView) findViewById(R.id.widget_preview);
         if (maxWidth > -1) {
             image.setMaxWidth(maxWidth);
         }
-        image.setImageDrawable(preview);
         image.setContentDescription(info.label);
         mPreviewImageView = image;
         final TextView name = (TextView) findViewById(R.id.widget_name);
@@ -130,11 +131,10 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
     }
 
     public void applyFromResolveInfo(PackageManager pm, ResolveInfo info,
-            FastBitmapDrawable preview, HolographicOutlineHelper holoOutlineHelper) {
+            HolographicOutlineHelper holoOutlineHelper) {
         mHolographicOutlineHelper = holoOutlineHelper;
         CharSequence label = info.loadLabel(pm);
         final ImageView image = (ImageView) findViewById(R.id.widget_preview);
-        image.setImageDrawable(preview);
         image.setContentDescription(label);
         mPreviewImageView = image;
         final TextView name = (TextView) findViewById(R.id.widget_name);
@@ -142,6 +142,18 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         final TextView dims = (TextView) findViewById(R.id.widget_dims);
         if (dims != null) {
             dims.setText(String.format(mDimensionsFormatString, 1, 1));
+        }
+    }
+
+    void applyPreview(FastBitmapDrawable preview, int index) {
+        final ImageView image = (ImageView) findViewById(R.id.widget_preview);
+        if (preview != null) {
+            image.setImageDrawable(preview);
+            image.setAlpha(0f);
+            image.animate()
+                 .alpha(1f)
+                 .setDuration(sPreviewFadeInDuration + (index * sPreviewFadeInStaggerDuration))
+                 .start();
         }
     }
 
