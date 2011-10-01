@@ -244,6 +244,12 @@ public final class Launcher extends Activity
 
     private BubbleTextView mWaitingForResume;
 
+    private Runnable mBuildLayersRunnable = new Runnable() {
+        public void run() {
+            mWorkspace.buildPageHardwareLayers();
+        }
+    };
+
     private static ArrayList<PendingAddArguments> sPendingAddList
             = new ArrayList<PendingAddArguments>();
 
@@ -550,6 +556,9 @@ public final class Launcher extends Activity
         // When we resume Launcher, a different Activity might be responsible for the app
         // market intent, so refresh the icon
         updateAppMarketIcon();
+        if (!mWorkspaceLoading) {
+            mWorkspace.post(mBuildLayersRunnable);
+        }
     }
 
     @Override
@@ -2964,6 +2973,8 @@ public final class Launcher extends Activity
         // Update the market app icon as necessary (the other icons will be managed in response to
         // package changes in bindSearchablesChanged()
         updateAppMarketIcon();
+
+        mWorkspace.post(mBuildLayersRunnable);
     }
 
     @Override
