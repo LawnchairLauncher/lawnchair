@@ -1882,6 +1882,12 @@ public class Workspace extends SmoothPagedView
             dragRect = new Rect(0, 0, child.getWidth(), previewSize);
         }
 
+        // Clear the pressed state if necessary
+        if (child instanceof BubbleTextView) {
+            BubbleTextView icon = (BubbleTextView) child;
+            icon.clearPressedOrFocusedBackground();
+        }
+
         mDragController.startDrag(b, dragLayerX, dragLayerY, source, child.getTag(),
                 DragController.DRAG_ACTION_MOVE, dragRect);
         b.recycle();

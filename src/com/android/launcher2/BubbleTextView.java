@@ -256,6 +256,11 @@ public class BubbleTextView extends TextView {
         }
     }
 
+    void clearPressedOrFocusedBackground() {
+        mPressedOrFocusedBackground = null;
+        setCellLayoutPressedOrFocusedIcon();
+    }
+
     Bitmap getPressedOrFocusedBackground() {
         return mPressedOrFocusedBackground;
     }
