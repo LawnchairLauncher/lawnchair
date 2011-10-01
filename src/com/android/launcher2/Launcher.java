@@ -75,9 +75,9 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.View.OnLongClickListener;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
@@ -876,10 +876,16 @@ public final class Launcher extends Activity
 
         if (appInfo.targetSdkVersion >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             Resources r = getResources();
-            p.left = r.getDimensionPixelSize(R.dimen.app_widget_padding_left);
-            p.right = r.getDimensionPixelSize(R.dimen.app_widget_padding_right);
-            p.top = r.getDimensionPixelSize(R.dimen.app_widget_padding_top);
-            p.bottom = r.getDimensionPixelSize(R.dimen.app_widget_padding_bottom);
+            // The default padding values are private API currently, but will be added in
+            // API level 15. The current values are (8, 8, 8, 8).
+            p.left = r.getDimensionPixelSize(com.android.internal.
+                    R.dimen.default_app_widget_padding_left);
+            p.right = r.getDimensionPixelSize(com.android.internal.
+                    R.dimen.default_app_widget_padding_right);
+            p.top = r.getDimensionPixelSize(com.android.internal.
+                    R.dimen.default_app_widget_padding_top);
+            p.bottom = r.getDimensionPixelSize(com.android.internal.
+                    R.dimen.default_app_widget_padding_bottom);
         }
 
         return p;
