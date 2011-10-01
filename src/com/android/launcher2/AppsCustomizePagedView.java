@@ -711,9 +711,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         layout.createHardwareLayers();
 
+        /* TEMPORARILY DISABLE HOLOGRAPHIC ICONS
         if (mFadeInAdjacentScreens) {
             prepareGenerateHoloOutlinesTask(page, items, images);
         }
+        */
     }
 
     /**
@@ -1132,9 +1134,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         invalidate();
         forceUpdateAdjacentPagesAlpha();
 
+        /* TEMPORARILY DISABLE HOLOGRAPHIC ICONS
         if (mFadeInAdjacentScreens) {
             prepareGenerateHoloOutlinesTask(data.page, data.items, data.generatedImages);
         }
+        */
     }
     private void onHolographicPageItemsLoaded(AsyncTaskPageData data) {
         // Invalidate early to short-circuit children invalidates
