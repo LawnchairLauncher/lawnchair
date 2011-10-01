@@ -111,11 +111,11 @@ public class AppWidgetResizeFrame extends FrameLayout {
                 Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
         addView(mBottomHandle, lp);
 
-        Resources r = context.getResources();
-        mWidgetPaddingLeft = r.getDimensionPixelSize(R.dimen.app_widget_padding_left);
-        mWidgetPaddingTop = r.getDimensionPixelSize(R.dimen.app_widget_padding_top);
-        mWidgetPaddingRight = r.getDimensionPixelSize(R.dimen.app_widget_padding_right);
-        mWidgetPaddingBottom = r.getDimensionPixelSize(R.dimen.app_widget_padding_bottom);
+        Launcher.Padding p = mLauncher.getPaddingForWidget(widgetView.getAppWidgetInfo().provider);
+        mWidgetPaddingLeft = p.left;
+        mWidgetPaddingTop = p.top;
+        mWidgetPaddingRight = p.right;
+        mWidgetPaddingBottom = p.bottom;
 
         if (mResizeMode == AppWidgetProviderInfo.RESIZE_HORIZONTAL) {
             mTopHandle.setVisibility(GONE);
