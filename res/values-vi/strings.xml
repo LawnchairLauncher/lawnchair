@@ -80,22 +80,17 @@
     <string name="permdesc_read_settings" msgid="8377434937176025492">"Cho phép ứng dụng đọc cài đặt và lối tắt trên Màn hình trang chủ."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"ghi cài đặt Màn hình trang chủ và lối tắt"</string>
     <string name="permdesc_write_settings" msgid="1098648778383349818">"Cho phép ứng dụng thay đổi cài đặt và lối tắt trên Màn hình trang chủ."</string>
-    <string name="google_apps_folder_name" msgid="2873137836817266807">"Google"</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Sự cố khi tải tiện ích"</string>
     <string name="uninstall_system_app_text" msgid="7488523163288397451">"Đây là ứng dụng hệ thống và không thể gỡ cài đặt."</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Thư mục chưa đặt tên"</string>
-    <!-- outdated translation 6772061635561632299 -->     <string name="workspace_cling_title" msgid="738396473989890567">"Chào mừng bạn đến với Trang chủ!"</string>
-    <!-- unknown quoting pattern: original -1, translation 1 -->
-    <!-- outdated translation 897064551822359347 -->     <string name="workspace_cling_move_item" msgid="4270697827183569326">"Để di chuyển ứng dụng hoặc tiện ích con, chạm &amp;amp; giữ, sau đó định vị lại ứng dụng hoặc tiện ích con đó."</string>
-    <!-- outdated translation 5287802320356364228 -->     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Để xem tất cả ứng dụng của bạn, chạm vào nút Tất cả ứng dụng."</string>
-    <!-- outdated translation 3057036297077247772 -->     <string name="all_apps_cling_title" msgid="2559734712581447107">"Đây là tất cả ứng dụng của bạn"</string>
-    <!-- outdated translation 4635717397976102935 -->     <string name="all_apps_cling_add_item" msgid="7404588523183860170">"Để thêm ứng dụng hoặc tiện ích con vào màn hình chính của bạn, chạm &amp; giữ, sau đó định vị ứng dụng hoặc tiện ích con đó."</string>
-    <!-- no translation found for folder_cling_title (4308949882377840953) -->
-    <skip />
-    <!-- no translation found for folder_cling_move_item (270598675060435169) -->
-    <skip />
-    <!-- no translation found for folder_cling_create_folder (289412698047625601) -->
-    <skip />
+    <string name="workspace_cling_title" msgid="738396473989890567">"Tự nhiên như ở nhà"</string>
+    <string name="workspace_cling_move_item" msgid="791013895761065070">"Bạn có thể đặt ứng dụng yêu thích của mình tại đây."</string>
+    <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Để xem tất cả ứng dụng của bạn, chạm vào vòng kết nối."</string>
+    <string name="all_apps_cling_title" msgid="2559734712581447107">"Chọn một số ứng dụng"</string>
+    <string name="all_apps_cling_add_item" msgid="7404588523183860170">"Để thêm ứng dụng vào màn hình chính của bạn, chạm &amp; giữ ứng dụng đó."</string>
+    <string name="folder_cling_title" msgid="4308949882377840953">"Tổ chức ứng dụng của bạn bằng các thư mục"</string>
+    <string name="folder_cling_move_item" msgid="270598675060435169">"Để di chuyển ứng dụng, chạm &amp; giữ ứng dụng đó."</string>
+    <string name="folder_cling_create_folder" msgid="289412698047625601">"Để tạo thư mục mới trên màn hình chính của bạn, xếp ứng dụng này lên trên ứng dụng khác."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
 </resources>
