@@ -3030,13 +3030,15 @@ public final class Launcher extends Activity
             mAppsCustomizeContent.removeApps(apps);
         }
         updateIconsAffectedByPackageManagerChanges();
+
+        // Notify the drag controller
+        mDragController.onAppsRemoved(apps, this);
     }
 
     /**
      * A number of packages were updated.
      */
     public void bindPackagesUpdated() {
-
         if (mAppsCustomizeContent != null) {
             mAppsCustomizeContent.onPackagesUpdated();
         }
