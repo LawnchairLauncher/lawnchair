@@ -30,11 +30,11 @@ public interface DragScroller {
      *
      * @param direction The scroll direction
      */
-    void onEnterScrollArea(int x, int y, int direction);
+    boolean onEnterScrollArea(int x, int y, int direction);
 
     /**
      * The touch point has left the scroll area.
      * NOTE: This may not be called, if a drop occurs inside the scroll area.
      */
-    void onExitScrollArea();
+    boolean onExitScrollArea();
 }
