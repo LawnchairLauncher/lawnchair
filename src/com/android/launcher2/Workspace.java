@@ -3097,16 +3097,17 @@ public class Workspace extends SmoothPagedView
     }
 
     @Override
-    public void onEnterScrollArea(int x, int y, int direction) {
+    public boolean onEnterScrollArea(int x, int y, int direction) {
         // Ignore the scroll area if we are dragging over the hot seat
         if (mLauncher.getHotseat() != null) {
             Rect r = new Rect();
             mLauncher.getHotseat().getHitRect(r);
             if (r.contains(x, y)) {
-                return;
+                return false;
             }
         }
 
+        boolean result = false;
         if (!isSmall() && !mIsSwitchingState) {
             mInScrollArea = true;
 
@@ -3126,12 +3127,15 @@ public class Workspace extends SmoothPagedView
                 // Workspace is responsible for drawing the edge glow on adjacent pages,
                 // so we need to redraw the workspace when this may have changed.
                 invalidate();
+                result = true;
             }
         }
+        return result;
     }
 
     @Override
-    public void onExitScrollArea() {
+    public boolean onExitScrollArea() {
+        boolean result = false;
         if (mInScrollArea) {
             if (mDragTargetLayout != null) {
                 // Unmark the overlapping layout and re-enter the current layout
@@ -3142,9 +3146,11 @@ public class Workspace extends SmoothPagedView
                 // Workspace is responsible for drawing the edge glow on adjacent pages,
                 // so we need to redraw the workspace when this may have changed.
                 invalidate();
+                result = true;
             }
             mInScrollArea = false;
         }
+        return result;
     }
 
     private void onResetScrollArea() {
