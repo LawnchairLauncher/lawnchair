@@ -639,6 +639,11 @@ public class CellLayout extends ViewGroup {
     }
 
     @Override
+    public boolean shouldDelayChildPressedState() {
+        return false;
+    }
+
+    @Override
     public void cancelLongPress() {
         super.cancelLongPress();
 
