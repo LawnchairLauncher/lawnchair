@@ -221,7 +221,7 @@ public class BubbleTextView extends TextView {
                 // have to call invalidate as soon as the state is "pressed"
                 if (isPressed()) {
                     mDidInvalidateForPressedState = true;
-                    invalidate();
+                    setCellLayoutPressedOrFocusedIcon();
                 } else {
                     mDidInvalidateForPressedState = false;
                 }
