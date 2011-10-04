@@ -47,7 +47,6 @@ final class Utilities {
 
     private static int sIconWidth = -1;
     private static int sIconHeight = -1;
-    private static int sIconContentSize = -1;
     private static int sIconTextureWidth = -1;
     private static int sIconTextureHeight = -1;
 
@@ -64,10 +63,6 @@ final class Utilities {
     }
     static int sColors[] = { 0xffff0000, 0xff00ff00, 0xff0000ff };
     static int sColorIndex = 0;
-
-    static int getIconContentSize() {
-        return sIconContentSize;
-    }
 
     /**
      * Returns a bitmap suitable for the all apps view. Used to convert pre-ICS
@@ -242,9 +237,6 @@ final class Utilities {
         final float density = metrics.density;
 
         sIconWidth = sIconHeight = (int) resources.getDimension(R.dimen.app_icon_size);
-        if (LauncherApplication.isScreenLarge()) {
-            sIconContentSize = (int) resources.getDimension(R.dimen.app_icon_content_size);
-        }
         sIconTextureWidth = sIconTextureHeight = sIconWidth;
 
         sBlurPaint.setMaskFilter(new BlurMaskFilter(5 * density, BlurMaskFilter.Blur.NORMAL));

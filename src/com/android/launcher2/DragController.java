@@ -16,6 +16,8 @@
 
 package com.android.launcher2;
 
+import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
@@ -366,6 +368,21 @@ public class DragController {
             mDragObject.dragSource.onDropCompleted(null, mDragObject, false);
         }
         endDrag();
+    }
+    public void onAppsRemoved(ArrayList<ApplicationInfo> apps, Context context) {
+        // Cancel the current drag if we are removing an app that we are dragging
+        if (mDragObject != null) {
+            Object rawDragInfo = mDragObject.dragInfo;
+            if (rawDragInfo instanceof ShortcutInfo) {
+                ShortcutInfo dragInfo = (ShortcutInfo) rawDragInfo;
+                for (ApplicationInfo info : apps) {
+                    if (dragInfo.intent.getComponent().equals(info.intent.getComponent())) {
+                        cancelDrag();
+                        return;
+                    }
+                }
+            }
+        }
     }
 
     private void endDrag() {
