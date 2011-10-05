@@ -24,6 +24,7 @@
    <!-- Global search icon -->
    <LinearLayout
         style="@style/SearchButton"
+        android:id="@+id/search_button_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
