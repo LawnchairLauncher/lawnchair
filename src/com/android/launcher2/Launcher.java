@@ -188,7 +188,7 @@ public final class Launcher extends Activity
     private Hotseat mHotseat;
     private View mAllAppsButton;
 
-    private SearchDropTargetBar mSearchDeleteBar;
+    private SearchDropTargetBar mSearchDropTargetBar;
     private AppsCustomizeTabHost mAppsCustomizeTabHost;
     private AppsCustomizePagedView mAppsCustomizeContent;
     private boolean mAutoAdvanceRunning = false;
@@ -307,22 +307,28 @@ public final class Launcher extends Activity
         IntentFilter filter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         registerReceiver(mCloseSystemDialogsReceiver, filter);
 
+        boolean searchVisible = false;
+        boolean voiceVisible = false;
         // If we have a saved version of these external icons, we load them up immediately
         int coi = getCurrentOrientationIndexForGlobalIcons();
         if (sGlobalSearchIcon[coi] == null || sVoiceSearchIcon[coi] == null ||
                 sAppMarketIcon[coi] == null) {
-            updateIconsAffectedByPackageManagerChanges();
-            updateGlobalSearchIcon();
+            updateAppMarketIcon();
+            searchVisible = updateGlobalSearchIcon();
+            voiceVisible = updateVoiceSearchIcon(searchVisible);
         }
         if (sGlobalSearchIcon[coi] != null) {
              updateGlobalSearchIcon(sGlobalSearchIcon[coi]);
+             searchVisible = true;
         }
         if (sVoiceSearchIcon[coi] != null) {
             updateVoiceSearchIcon(sVoiceSearchIcon[coi]);
+            voiceVisible = true;
         }
         if (sAppMarketIcon[coi] != null) {
             updateAppMarketIcon(sAppMarketIcon[coi]);
         }
+        mSearchDropTargetBar.onSearchPackagesChanged(searchVisible, voiceVisible);
 
         // On large interfaces, we want the screen to auto-rotate based on the current orientation
         if (LauncherApplication.isScreenLarge() || Build.TYPE.contentEquals("eng")) {
@@ -720,7 +726,7 @@ public final class Launcher extends Activity
         dragController.addDragListener(mWorkspace);
 
         // Get the search/delete bar
-        mSearchDeleteBar = (SearchDropTargetBar) mDragLayer.findViewById(R.id.qsb_bar);
+        mSearchDropTargetBar = (SearchDropTargetBar) mDragLayer.findViewById(R.id.qsb_bar);
 
         // Setup AppsCustomize
         mAppsCustomizeTabHost = (AppsCustomizeTabHost)
@@ -736,8 +742,8 @@ public final class Launcher extends Activity
         dragController.setScrollView(mDragLayer);
         dragController.setMoveTarget(mWorkspace);
         dragController.addDropTarget(mWorkspace);
-        if (mSearchDeleteBar != null) {
-            mSearchDeleteBar.setup(this, dragController);
+        if (mSearchDropTargetBar != null) {
+            mSearchDropTargetBar.setup(this, dragController);
         }
     }
 
@@ -2360,7 +2366,7 @@ public final class Launcher extends Activity
                     // exitSpringLoadedDragMode made it visible. This is a bit hacky; we should
                     // clean up our state transition functions
                     mAppsCustomizeTabHost.setVisibility(View.GONE);
-                    mSearchDeleteBar.showSearchBar(true);
+                    mSearchDropTargetBar.showSearchBar(true);
                     showWorkspace(true);
                 } else {
                     exitSpringLoadedDragMode();
@@ -2388,7 +2394,7 @@ public final class Launcher extends Activity
     void showHotseat(boolean animated) {
         if (!LauncherApplication.isScreenLarge()) {
             if (animated) {
-                int duration = mSearchDeleteBar.getTransitionInDuration();
+                int duration = mSearchDropTargetBar.getTransitionInDuration();
                 mHotseat.animate().alpha(1f).setDuration(duration);
             } else {
                 mHotseat.setAlpha(1f);
@@ -2402,7 +2408,7 @@ public final class Launcher extends Activity
     void hideHotseat(boolean animated) {
         if (!LauncherApplication.isScreenLarge()) {
             if (animated) {
-                int duration = mSearchDeleteBar.getTransitionOutDuration();
+                int duration = mSearchDropTargetBar.getTransitionOutDuration();
                 mHotseat.animate().alpha(0f).setDuration(duration);
             } else {
                 mHotseat.setAlpha(0f);
@@ -2417,7 +2423,7 @@ public final class Launcher extends Activity
         mAppsCustomizeTabHost.requestFocus();
 
         // Hide the search bar and hotseat
-        mSearchDeleteBar.hideSearchBar(animated);
+        mSearchDropTargetBar.hideSearchBar(animated);
 
         // Change the state *after* we've called all the transition code
         mState = State.APPS_CUSTOMIZE;
@@ -2476,7 +2482,7 @@ public final class Launcher extends Activity
             cameraZoomIn(State.APPS_CUSTOMIZE, animated, false);
 
             // Show the search bar and hotseat
-            mSearchDeleteBar.showSearchBar(animated);
+            mSearchDropTargetBar.showSearchBar(animated);
 
             // Set focus to the AppsCustomize button
             if (mAllAppsButton != null) {
@@ -2593,9 +2599,11 @@ public final class Launcher extends Activity
         button.setImageDrawable(d.newDrawable(getResources()));
     }
 
-    private void updateGlobalSearchIcon() {
+    private boolean updateGlobalSearchIcon() {
+        final View searchButtonContainer = findViewById(R.id.search_button_container);
         final ImageView searchButton = (ImageView) findViewById(R.id.search_button);
         final View searchDivider = findViewById(R.id.search_divider);
+        final View voiceButtonContainer = findViewById(R.id.voice_button_container);
         final View voiceButton = findViewById(R.id.voice_button);
 
         final SearchManager searchManager =
@@ -2605,13 +2613,18 @@ public final class Launcher extends Activity
             int coi = getCurrentOrientationIndexForGlobalIcons();
             sGlobalSearchIcon[coi] = updateButtonWithIconFromExternalActivity(
                     R.id.search_button, activityName, R.drawable.ic_home_search_normal_holo);
-            searchButton.setVisibility(View.VISIBLE);
             if (searchDivider != null) searchDivider.setVisibility(View.VISIBLE);
+            if (searchButtonContainer != null) searchButtonContainer.setVisibility(View.VISIBLE);
+            searchButton.setVisibility(View.VISIBLE);
+            return true;
         } else {
             // We disable both search and voice search when there is no global search provider
-            searchButton.setVisibility(View.GONE);
             if (searchDivider != null) searchDivider.setVisibility(View.GONE);
+            if (searchButtonContainer != null) searchButtonContainer.setVisibility(View.GONE);
+            if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.GONE);
+            searchButton.setVisibility(View.GONE);
             voiceButton.setVisibility(View.GONE);
+            return false;
         }
     }
 
@@ -2619,21 +2632,27 @@ public final class Launcher extends Activity
         updateButtonWithDrawable(R.id.search_button, d);
     }
 
-    private void updateVoiceSearchIcon() {
+    private boolean updateVoiceSearchIcon(boolean searchVisible) {
         final View searchDivider = findViewById(R.id.search_divider);
+        final View voiceButtonContainer = findViewById(R.id.voice_button_container);
         final View voiceButton = findViewById(R.id.voice_button);
 
+        // We only show/update the voice search icon if the search icon is enabled as well
         Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
         ComponentName activityName = intent.resolveActivity(getPackageManager());
-        if (activityName != null) {
+        if (searchVisible && activityName != null) {
             int coi = getCurrentOrientationIndexForGlobalIcons();
             sVoiceSearchIcon[coi] = updateButtonWithIconFromExternalActivity(
                     R.id.voice_button, activityName, R.drawable.ic_home_voice_search_holo);
             if (searchDivider != null) searchDivider.setVisibility(View.VISIBLE);
+            if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.VISIBLE);
             voiceButton.setVisibility(View.VISIBLE);
+            return true;
         } else {
             if (searchDivider != null) searchDivider.setVisibility(View.GONE);
+            if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.GONE);
             voiceButton.setVisibility(View.GONE);
+            return false;
         }
     }
 
@@ -2937,21 +2956,17 @@ public final class Launcher extends Activity
             completeAdd(sPendingAddList.get(i));
         }
         sPendingAddList.clear();
-    }
 
-    /**
-     * Updates the icons on the launcher that are affected by changes to the package list
-     * on the device.
-     */
-    private void updateIconsAffectedByPackageManagerChanges() {
+        // Update the market app icon as necessary (the other icons will be managed in response to
+        // package changes in bindSearchablesChanged()
         updateAppMarketIcon();
-        updateVoiceSearchIcon();
     }
 
     @Override
     public void bindSearchablesChanged() {
-        updateGlobalSearchIcon();
-        updateVoiceSearchIcon();
+        boolean searchVisible = updateGlobalSearchIcon();
+        boolean voiceVisible = updateVoiceSearchIcon(searchVisible);
+        mSearchDropTargetBar.onSearchPackagesChanged(searchVisible, voiceVisible);
     }
 
     /**
@@ -2977,9 +2992,6 @@ public final class Launcher extends Activity
                 }
             }
         });
-
-        updateIconsAffectedByPackageManagerChanges();
-        updateGlobalSearchIcon();
     }
 
     /**
@@ -2994,7 +3006,6 @@ public final class Launcher extends Activity
         if (mAppsCustomizeContent != null) {
             mAppsCustomizeContent.addApps(apps);
         }
-        updateIconsAffectedByPackageManagerChanges();
     }
 
     /**
@@ -3012,7 +3023,6 @@ public final class Launcher extends Activity
         if (mAppsCustomizeContent != null) {
             mAppsCustomizeContent.updateApps(apps);
         }
-        updateIconsAffectedByPackageManagerChanges();
     }
 
     /**
@@ -3029,7 +3039,6 @@ public final class Launcher extends Activity
         if (mAppsCustomizeContent != null) {
             mAppsCustomizeContent.removeApps(apps);
         }
-        updateIconsAffectedByPackageManagerChanges();
 
         // Notify the drag controller
         mDragController.onAppsRemoved(apps, this);

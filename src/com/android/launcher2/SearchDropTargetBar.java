@@ -21,7 +21,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -51,6 +51,8 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
     private ButtonDropTarget mDeleteDropTarget;
     private int mBarHeight;
     private boolean mDeferOnDragEnd = false;
+
+    private Drawable mPreviousBackground;
 
     public SearchDropTargetBar(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -211,6 +213,20 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
             }
         } else {
             mDeferOnDragEnd = false;
+        }
+    }
+
+    public void onSearchPackagesChanged(boolean searchVisible, boolean voiceVisible) {
+        if (mQSBSearchBar != null) {
+            Drawable bg = mQSBSearchBar.getBackground();
+            if (bg != null && (!searchVisible && !voiceVisible)) {
+                // Save the background and disable it
+                mPreviousBackground = bg;
+                mQSBSearchBar.setBackgroundResource(0);
+            } else if (mPreviousBackground != null && (searchVisible || voiceVisible)) {
+                // Restore the background
+                mQSBSearchBar.setBackgroundDrawable(mPreviousBackground);
+            }
         }
     }
 }
