@@ -1091,8 +1091,10 @@ public class LauncherModel extends BroadcastReceiver {
 
                             if (!isSafeMode && (provider == null || provider.provider == null ||
                                     provider.provider.getPackageName() == null)) {
-                                Log.e(TAG, "Deleting widget that isn't installed anymore: id="
-                                        + id + " appWidgetId=" + appWidgetId);
+                                String log = "Deleting widget that isn't installed anymore: id="
+                                    + id + " appWidgetId=" + appWidgetId;
+                                Log.e(TAG, log); 
+                                Launcher.sDumpLogs.add(log);
                                 itemsToRemove.add(id);
                             } else {
                                 appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId);
