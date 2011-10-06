@@ -678,6 +678,20 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mCurrentDragInfo = null;
         mCurrentDragView = null;
         mSuppressOnAdd = false;
+
+        // Reordering may have occured, and we need to save the new item locations. We do this once
+        // at the end to prevent unnecessary database operations.
+        updateItemLocationsInDatabase();
+    }
+
+    private void updateItemLocationsInDatabase() {
+        ArrayList<View> list = getItemsInReadingOrder();
+        for (int i = 0; i < list.size(); i++) {
+            View v = list.get(i);
+            ItemInfo info = (ItemInfo) v.getTag();
+            LauncherModel.moveItemInDatabase(mLauncher, info, mInfo.id, 0,
+                        info.cellX, info.cellY);
+        }
     }
 
     public void notifyDrop() {
@@ -694,7 +708,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         return null;
     }
 
-    private void setupContentDimension(int count) {
+    private void setupContentDimensions(int count) {
         ArrayList<View> list = getItemsInReadingOrder();
 
         int countX = mContent.getCountX();
@@ -783,7 +797,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     private void setupContentForNumItems(int count) {
-        setupContentDimension(count);
+        setupContentDimensions(count);
 
         DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
         if (lp == null) {
@@ -933,7 +947,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 mCurrentDragView.setVisibility(VISIBLE);
             }
             mItemsInvalidated = true;
-            setupContentDimension(getItemCount());
+            setupContentDimensions(getItemCount());
             mSuppressOnAdd = true;
         }
         mInfo.add(item);
