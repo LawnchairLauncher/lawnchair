@@ -17,6 +17,7 @@
 <resources>
 <!-- Cling -->
     <dimen name="clingPunchThroughGraphicCenterRadius">94dp</dimen>
+    <dimen name="folderClingMarginTop">20dp</dimen>
 
 <!-- Workspace -->
     <dimen name="qsb_bar_height">40dp</dimen>
