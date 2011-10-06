@@ -95,8 +95,10 @@ import com.android.launcher2.DropTarget.DragObject;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -235,6 +237,8 @@ public final class Launcher extends Activity
     private static Drawable.ConstantState[] sGlobalSearchIcon = new Drawable.ConstantState[2];
     private static Drawable.ConstantState[] sVoiceSearchIcon = new Drawable.ConstantState[2];
     private static Drawable.ConstantState[] sAppMarketIcon = new Drawable.ConstantState[2];
+
+    static final ArrayList<String> sDumpLogs = new ArrayList<String>();
 
     private DragLayer mDragLayer;
 
@@ -3231,6 +3235,16 @@ public final class Launcher extends Activity
             mAppsCustomizeContent.dumpState();
         }
         Log.d(TAG, "END launcher2 dump state");
+    }
+
+    @Override
+    public void dump(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
+        super.dump(prefix, fd, writer, args);
+        writer.println(" ");
+        writer.println("Debug logs: ");
+        for (int i = 0; i < sDumpLogs.size(); i++) {
+            writer.println("  " + sDumpLogs.get(i));
+        }
     }
 }
 
