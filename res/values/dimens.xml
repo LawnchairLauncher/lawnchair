@@ -20,6 +20,9 @@
     <dimen name="folderClingMarginTop">20dp</dimen>
 
 <!-- Workspace -->
+    <!-- qsb_bar_height_inset represents qsb_bar_height minus the padding
+         that we put on each page for allowing folders to draw out of bounds -->
+    <dimen name="qsb_bar_height_inset">34dp</dimen>
     <dimen name="qsb_bar_height">40dp</dimen>
     <dimen name="search_bar_height">40dp</dimen>
     <dimen name="workspace_cell_width">80dp</dimen>
