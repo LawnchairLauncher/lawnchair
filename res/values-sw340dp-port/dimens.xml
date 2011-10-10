@@ -21,10 +21,10 @@
 <!-- Workspace -->
     <dimen name="workspace_width_gap">0dp</dimen>
     <dimen name="workspace_height_gap">0dp</dimen>
-    <dimen name="workspace_top_padding">-1dp</dimen>
-    <dimen name="workspace_bottom_padding">-1dp</dimen>
-    <dimen name="workspace_left_padding">-1dp</dimen>
-    <dimen name="workspace_right_padding">-1dp</dimen>
+    <dimen name="workspace_top_padding">8dp</dimen>
+    <dimen name="workspace_bottom_padding">8dp</dimen>
+    <dimen name="workspace_left_padding">8dp</dimen>
+    <dimen name="workspace_right_padding">8dp</dimen>
     <dimen name="workspace_divider_padding_left">6dp</dimen>
     <dimen name="workspace_divider_padding_right">6dp</dimen>
 
@@ -35,6 +35,9 @@
     <dimen name="hotseat_left_padding">-1dp</dimen>
     <dimen name="hotseat_right_padding">-1dp</dimen>
 
+    <!-- qsb_bar_height_inset represents qsb_bar_height minus the padding
+         that we put on each page for allowing folders to draw out of bounds -->
+    <dimen name="qsb_bar_height_inset">48dp</dimen>
     <dimen name="qsb_bar_height">54dp</dimen>
     <dimen name="search_bar_height">48dp</dimen>
     <!-- height of the bottom row of controls -->
