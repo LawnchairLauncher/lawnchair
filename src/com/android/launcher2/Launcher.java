@@ -1679,7 +1679,7 @@ public final class Launcher extends Activity
             if (mState == State.APPS_CUSTOMIZE) {
                 showWorkspace(true);
             } else {
-                showAllApps(true);
+                onClickAllAppsButton(v);
             }
         }
     }
@@ -1722,6 +1722,8 @@ public final class Launcher extends Activity
      * @param v The view that was clicked.
      */
     public void onClickAllAppsButton(View v) {
+        // Provide the same haptic feedback that the system offers for virtual keys.
+        v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
         showAllApps(true);
     }
 
