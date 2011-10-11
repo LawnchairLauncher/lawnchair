@@ -107,7 +107,7 @@ public class Hotseat extends FrameLayout {
             @Override
             public void onClick(android.view.View v) {
                 if (mLauncher != null) {
-                    mLauncher.showAllApps(true);
+                    mLauncher.onClickAllAppsButton(v);
                 }
             }
         });
