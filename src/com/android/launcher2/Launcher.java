@@ -559,6 +559,7 @@ public final class Launcher extends Activity
         if (!mWorkspaceLoading) {
             mWorkspace.post(mBuildLayersRunnable);
         }
+        clearTypedText();
     }
 
     @Override
@@ -1302,7 +1303,6 @@ public final class Launcher extends Activity
         if (initialQuery == null) {
             // Use any text typed in the launcher as the initial query
             initialQuery = getTypedText();
-            clearTypedText();
         }
         if (appSearchData == null) {
             appSearchData = new Bundle();
