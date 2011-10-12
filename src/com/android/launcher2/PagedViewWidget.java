@@ -22,23 +22,13 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuff.Mode;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 import android.graphics.RectF;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Message;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -145,10 +135,11 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         }
     }
 
-    void applyPreview(FastBitmapDrawable preview, int index) {
+    void applyPreview(FastBitmapDrawable preview, int index, boolean scale) {
         final ImageView image = (ImageView) findViewById(R.id.widget_preview);
         if (preview != null) {
             image.setImageDrawable(preview);
+            image.setScaleType(scale ? ImageView.ScaleType.FIT_START : ImageView.ScaleType.MATRIX);
             image.setAlpha(0f);
             image.animate()
                  .alpha(1f)

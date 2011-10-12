@@ -45,12 +45,8 @@
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
 
-            android:textColor="#FFBBBBBB"
-            android:textSize="14sp"
-            android:shadowColor="#FF000000"
-            android:shadowDx="0.0"
-            android:shadowDy="1.0"
-            android:shadowRadius="1.0" />
+            android:textColor="#FFFFFFFF"
+            android:textSize="13sp" />
 
         <!-- The original dimensions of the widget (can't be the same text as above due to different
              style. -->
@@ -58,17 +54,13 @@
             android:id="@+id/widget_dims"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
+            android:layout_gravity="center"
             android:layout_marginLeft="5dp"
             android:layout_weight="0"
             android:gravity="left"
 
-            android:textColor="#FF666666"
-            android:textSize="12sp"
-            android:shadowColor="#99000000"
-            android:shadowDx="0.0"
-            android:shadowDy="1.0"
-            android:shadowRadius="1.0" />
+            android:textColor="#FF555555"
+            android:textSize="12sp" />
     </LinearLayout>
 
     <!-- The icon of the widget. -->
@@ -77,6 +69,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:adjustViewBounds="true"
-        android:scaleType="fitStart" />
+        android:padding="8dp"
+        android:scaleType="matrix" />
 </com.android.launcher2.PagedViewWidget>
