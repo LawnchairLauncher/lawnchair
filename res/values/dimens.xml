@@ -57,11 +57,11 @@
     <!-- Size of content of icons in workspace, as specified by the android icon guidelines -->
     <dimen name="app_icon_content_size">60dp</dimen>
     <!-- The width can be 72dp because we don't have L/R padding -->
-    <dimen name="apps_customize_cell_width">72dp</dimen>
-    <dimen name="apps_customize_cell_height">80dp</dimen>
+    <dimen name="apps_customize_cell_width">74dp</dimen>
+    <dimen name="apps_customize_cell_height">82dp</dimen>
     <dimen name="apps_customize_max_gap">18dp</dimen>
     <dimen name="apps_customize_widget_cell_width_gap">10dp</dimen>
-    <dimen name="apps_customize_widget_cell_height_gap">10dp</dimen>
+    <dimen name="apps_customize_widget_cell_height_gap">8dp</dimen>
     <dimen name="title_texture_width">120px</dimen>
 
 

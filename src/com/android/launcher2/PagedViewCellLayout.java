@@ -367,7 +367,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
     }
 
     /**
-     * Estimates the width that the number of vSpan cells will take up.
+     * Estimates the width that the number of hSpan cells will take up.
      */
     public int estimateCellWidth(int hSpan) {
         // TODO: we need to take widthGap into effect

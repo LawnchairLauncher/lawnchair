@@ -31,10 +31,11 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
-import android.graphics.Bitmap.Config;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Process;
@@ -46,7 +47,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -277,7 +277,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     @Override
     protected void init() {
         super.init();
-        mCenterPagesVertically = false;
+        mCenterPagesVertically = true;
 
         Context context = getContext();
         Resources r = context.getResources();
@@ -531,8 +531,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // Compose the drag image
         Bitmap b;
         Drawable preview = image.getDrawable();
-        int w = preview.getIntrinsicWidth();
-        int h = preview.getIntrinsicHeight();
+        RectF mTmpScaleRect = new RectF(0f,0f,1f,1f);
+        image.getImageMatrix().mapRect(mTmpScaleRect);
+        float scale = mTmpScaleRect.right;
+        int w = (int) (preview.getIntrinsicWidth() * scale);
+        int h = (int) (preview.getIntrinsicHeight() * scale);
         if (createItemInfo instanceof PendingAddWidgetInfo) {
             PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo) createItemInfo;
             int[] spanXY = mLauncher.getSpanForWidget(createWidgetInfo, null);
@@ -540,7 +543,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             createItemInfo.spanY = spanXY[1];
 
             b = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-            renderDrawableToBitmap(preview, b, 0, 0, w, h, 1, 1, mDragViewMultiplyColor);
+            renderDrawableToBitmap(preview, b, 0, 0, w, h, scale, mDragViewMultiplyColor);
         } else {
             // Workaround for the fact that we don't keep the original ResolveInfo associated with
             // the shortcut around.  To get the icon, we just render the preview image (which has
@@ -891,15 +894,18 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         layout.setMinimumWidth(getPageContentWidth());
         layout.measure(widthSpec, heightSpec);
     }
-    private void renderDrawableToBitmap(Drawable d, Bitmap bitmap, int x, int y, int w, int h,
-            float scaleX, float scaleY) {
-        renderDrawableToBitmap(d, bitmap, x, y, w, h, scaleX, scaleY, 0xFFFFFFFF);
+    private void renderDrawableToBitmap(Drawable d, Bitmap bitmap, int x, int y, int w, int h) {
+        renderDrawableToBitmap(d, bitmap, x, y, w, h, 1f, 0xFFFFFFFF);
     }
     private void renderDrawableToBitmap(Drawable d, Bitmap bitmap, int x, int y, int w, int h,
-            float scaleX, float scaleY, int multiplyColor) {
+            float scale) {
+        renderDrawableToBitmap(d, bitmap, x, y, w, h, scale, 0xFFFFFFFF);
+    }
+    private void renderDrawableToBitmap(Drawable d, Bitmap bitmap, int x, int y, int w, int h,
+            float scale, int multiplyColor) {
         if (bitmap != null) {
             Canvas c = new Canvas(bitmap);
-            c.scale(scaleX, scaleY);
+            c.scale(scale, scale);
             Rect oldBounds = d.copyBounds();
             d.setBounds(x, y, x + w, y + h);
             d.draw(c);
@@ -911,25 +917,19 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
     }
     private Bitmap getShortcutPreview(ResolveInfo info, int cellWidth, int cellHeight) {
+        // Render the background
+        int offset = (int) (mAppIconSize * sWidgetPreviewIconPaddingPercentage);
+        int bitmapSize = mAppIconSize + 2 * offset;
+        Bitmap preview = Bitmap.createBitmap(bitmapSize, bitmapSize, Config.ARGB_8888);
+        renderDrawableToBitmap(mDefaultWidgetBackground, preview, 0, 0, bitmapSize, bitmapSize);
+
         // Render the icon
-        Bitmap preview = Bitmap.createBitmap(cellWidth, mAppIconSize, Config.ARGB_8888);
         Drawable icon = mIconCache.getFullResIcon(info, mPackageManager);
-        renderDrawableToBitmap(icon, preview, 0, 0, mAppIconSize, mAppIconSize, 1f, 1f);
+        renderDrawableToBitmap(icon, preview, offset, offset, mAppIconSize, mAppIconSize);
         return preview;
     }
     private Bitmap getWidgetPreview(AppWidgetProviderInfo info,
             int cellHSpan, int cellVSpan, int cellWidth, int cellHeight) {
-
-        // Calculate the size of the drawable
-        cellHSpan = Math.max(mMinWidgetSpan, Math.min(mMaxWidgetSpan, cellHSpan));
-        cellVSpan = Math.max(mMinWidgetSpan, Math.min(mMaxWidgetSpan, cellVSpan));
-        int expectedWidth = mWidgetSpacingLayout.estimateCellWidth(cellHSpan);
-        int expectedHeight = mWidgetSpacingLayout.estimateCellHeight(cellVSpan);
-
-        // Scale down the bitmap to fit the space
-        float widgetPreviewScale = (float) cellWidth / expectedWidth;
-        expectedWidth = (int) (widgetPreviewScale * expectedWidth);
-        expectedHeight = (int) (widgetPreviewScale * expectedHeight);
 
         // Load the preview image if possible
         String packageName = info.provider.getPackageName();
@@ -941,49 +941,59 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 Log.w(LOG_TAG, "Can't load icon drawable 0x" + Integer.toHexString(info.icon)
                         + " for provider: " + info.provider);
             } else {
-                // Scale down the preview to the dimensions we want
+                // Scale down the preview to something that is closer to the cellWidth/Height
                 int imageWidth = drawable.getIntrinsicWidth();
                 int imageHeight = drawable.getIntrinsicHeight();
-                float aspect = (float) imageWidth / imageHeight;
-                int newWidth = imageWidth;
-                int newHeight = imageHeight;
-                if (aspect > 1f) {
-                    newWidth = expectedWidth;
-                    newHeight = (int) (imageHeight * ((float) expectedWidth / imageWidth));
+                int bitmapWidth = imageWidth;
+                int bitmapHeight = imageHeight;
+                if (imageWidth > imageHeight) {
+                    bitmapWidth = cellWidth;
+                    bitmapHeight = (int) (imageHeight * ((float) bitmapWidth / imageWidth));
                 } else {
-                    newHeight = expectedHeight;
-                    newWidth = (int) (imageWidth * ((float) expectedHeight / imageHeight));
+                    bitmapHeight = cellHeight;
+                    bitmapWidth = (int) (imageWidth * ((float) bitmapHeight / imageHeight));
                 }
 
-                preview = Bitmap.createBitmap(newWidth, newHeight, Config.ARGB_8888);
-                renderDrawableToBitmap(drawable, preview, 0, 0, newWidth, newHeight, 1f, 1f);
+                preview = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Config.ARGB_8888);
+                renderDrawableToBitmap(drawable, preview, 0, 0, bitmapWidth, bitmapHeight);
             }
         }
 
         // Generate a preview image if we couldn't load one
         if (drawable == null) {
             Resources resources = mLauncher.getResources();
-            int bitmapWidth;
-            int bitmapHeight;
+            // TODO: This actually uses the apps customize cell layout params, where as we make want
+            // the Workspace params for more accuracy.
+            int targetWidth = mWidgetSpacingLayout.estimateCellWidth(cellHSpan);
+            int targetHeight = mWidgetSpacingLayout.estimateCellHeight(cellVSpan);
+            int bitmapWidth = targetWidth;
+            int bitmapHeight = targetHeight;
+            int offset = (int) (mAppIconSize * sWidgetPreviewIconPaddingPercentage);
+            float iconScale = 1f;
 
-            // Specify the dimensions of the bitmap (since we are using a default preview bg with 
-            // the full icon, we only imply the aspect ratio of the widget)
+            // Determine the size of the bitmap we want to draw
             if (cellHSpan == cellVSpan) {
-                bitmapWidth = bitmapHeight = cellWidth;
-                expectedWidth = expectedHeight = mWidgetPreviewIconPaddedDimension;
-            } else if (cellHSpan >= cellVSpan) {
-                bitmapWidth = expectedWidth = cellWidth;
-                bitmapHeight = expectedHeight = mWidgetPreviewIconPaddedDimension;
+                // For square widgets, we just have a fixed size for 1x1 and larger-than-1x1
+                if (cellHSpan <= 1) {
+                    bitmapWidth = bitmapHeight = mAppIconSize + 2 * offset;
+                } else {
+                    bitmapWidth = bitmapHeight = mAppIconSize + 4 * offset;
+                }
             } else {
-                // Note that in vertical widgets, we might not have enough space due to the text
-                // label, so be conservative and use the width as a height bound
-                bitmapWidth = expectedWidth = mWidgetPreviewIconPaddedDimension;
-                bitmapHeight = expectedHeight = cellWidth;
+                // Otherwise, ensure that we are properly sized within the cellWidth/Height
+                if (targetWidth > targetHeight) {
+                    bitmapWidth = Math.min(targetWidth, cellWidth);
+                    bitmapHeight = (int) (targetHeight * ((float) bitmapWidth / targetWidth));
+                    iconScale = Math.min((float) bitmapHeight / (mAppIconSize + 2 * offset), 1f);
+                } else {
+                    bitmapHeight = Math.min(targetHeight, cellHeight);
+                    bitmapWidth = (int) (targetWidth * ((float) bitmapHeight / targetHeight));
+                    iconScale = Math.min((float) bitmapWidth / (mAppIconSize + 2 * offset), 1f);
+                }
             }
-
             preview = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Config.ARGB_8888);
-            renderDrawableToBitmap(mDefaultWidgetBackground, preview, 0, 0, expectedWidth,
-                    expectedHeight, 1f, 1f);
+            renderDrawableToBitmap(mDefaultWidgetBackground, preview, 0, 0, bitmapWidth,
+                    bitmapWidth);
 
             // Draw the icon in the top left corner
             try {
@@ -991,9 +1001,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 if (info.icon > 0) icon = mPackageManager.getDrawable(packageName, info.icon, null);
                 if (icon == null) icon = resources.getDrawable(R.drawable.ic_launcher_application);
 
-                int offset = (int) (mAppIconSize * sWidgetPreviewIconPaddingPercentage);
-                renderDrawableToBitmap(icon, preview, offset, offset,
-                        mAppIconSize, mAppIconSize, 1f, 1f);
+                renderDrawableToBitmap(icon, preview, (int) (offset * iconScale),
+                        (int) (offset * iconScale), (int) (mAppIconSize * iconScale),
+                        (int) (mAppIconSize * iconScale));
             } catch (Resources.NotFoundException e) {}
         }
         return preview;
@@ -1007,7 +1017,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             PagedViewGridLayout layout = new PagedViewGridLayout(context, mWidgetCountX,
                     mWidgetCountY);
             setupPage(layout);
-            addView(layout);
+            addView(layout, new PagedViewGridLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+                    LayoutParams.MATCH_PARENT));
         }
     }
     public void syncWidgetPageItems(int page, boolean immediate) {
@@ -1126,7 +1137,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         for (int i = 0; i < count; ++i) {
             PagedViewWidget widget = (PagedViewWidget) layout.getChildAt(i);
             if (widget != null) {
-                widget.applyPreview(new FastBitmapDrawable(data.generatedImages.get(i)), i);
+                Bitmap preview = data.generatedImages.get(i);
+                boolean scale =
+                    (preview.getWidth() >= data.cellWidth ||
+                     preview.getHeight() >= data.cellHeight);
+
+                widget.applyPreview(new FastBitmapDrawable(preview), i, scale);
             }
         }
         layout.createHardwareLayer();
