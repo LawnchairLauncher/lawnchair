@@ -602,6 +602,9 @@ public class LauncherProvider extends ContentProvider {
             if (c != null && c.moveToNext()) {
                 id = c.getLong(maxIdIndex);
             }
+            if (c != null) {
+                c.close();
+            }
 
             if (id == -1) {
                 throw new RuntimeException("Error: could not query max id");

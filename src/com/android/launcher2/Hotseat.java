@@ -21,6 +21,7 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -103,6 +104,17 @@ public class Hotseat extends FrameLayout {
                 context.getResources().getDrawable(R.drawable.all_apps_button_icon), null, null);
         // allAppsButton.setText(context.getString(R.string.all_apps_button_label));
         allAppsButton.setContentDescription(context.getString(R.string.all_apps_button_label));
+        allAppsButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (mLauncher != null &&
+                    (event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_DOWN) {
+                    mLauncher.onTouchDownAllAppsButton(v);
+                }
+                return false;
+            }
+        });
+
         allAppsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(android.view.View v) {
