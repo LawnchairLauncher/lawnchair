@@ -749,8 +749,19 @@ public final class Launcher extends Activity
                 mAppsCustomizeTabHost.findViewById(R.id.apps_customize_pane_content);
         mAppsCustomizeContent.setup(this, dragController);
 
-
-
+        // Get the all apps button
+        mAllAppsButton = findViewById(R.id.all_apps_button);
+        if (mAllAppsButton != null) {
+            mAllAppsButton.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_DOWN) {
+                        onTouchDownAllAppsButton(v);
+                    }
+                    return false;
+                }
+            });
+        }
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         dragController.setDragScoller(mWorkspace);
         dragController.setScrollView(mDragLayer);
@@ -1731,9 +1742,12 @@ public final class Launcher extends Activity
      * @param v The view that was clicked.
      */
     public void onClickAllAppsButton(View v) {
+        showAllApps(true);
+    }
+
+    public void onTouchDownAllAppsButton(View v) {
         // Provide the same haptic feedback that the system offers for virtual keys.
         v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
-        showAllApps(true);
     }
 
     public void onClickAppMarketButton(View v) {
