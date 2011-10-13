@@ -20,14 +20,13 @@
     android:layout_width="@dimen/qsb_bar_height"
     android:layout_height="match_parent">
    <!-- Global search icon -->
-   <ImageView
+   <com.android.launcher2.HolographicImageView
         style="@style/SearchButton"
         android:id="@+id/search_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_home_search_normal_holo"
         android:adjustViewBounds="true"
-        android:background="?android:attr/selectableItemBackground"
         android:onClick="onClickSearchButton"
         android:focusable="true"
         android:clickable="true"
@@ -42,14 +41,13 @@
         android:clickable="true" />
 
     <!-- Voice search icon -->
-    <ImageView
+    <com.android.launcher2.HolographicImageView
         style="@style/SearchButton"
         android:id="@+id/voice_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_home_voice_search_holo"
         android:adjustViewBounds="true"
-        android:background="?android:attr/selectableItemBackground"
         android:onClick="onClickVoiceButton"
         android:focusable="true"
         android:clickable="true"
