@@ -21,6 +21,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -227,6 +228,24 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
                 // Restore the background
                 mQSBSearchBar.setBackgroundDrawable(mPreviousBackground);
             }
+        }
+    }
+
+    public Rect getSearchBarBounds() {
+        if (mQSBSearchBar != null) {
+            final float appScale = mQSBSearchBar.getContext().getResources()
+                    .getCompatibilityInfo().applicationScale;
+            final int[] pos = new int[2];
+            mQSBSearchBar.getLocationOnScreen(pos);
+
+            final Rect rect = new Rect();
+            rect.left = (int) (pos[0] * appScale + 0.5f);
+            rect.top = (int) (pos[1] * appScale + 0.5f);
+            rect.right = (int) ((pos[0] + mQSBSearchBar.getWidth()) * appScale + 0.5f);
+            rect.bottom = (int) ((pos[1] + mQSBSearchBar.getHeight()) * appScale + 0.5f);
+            return rect;
+        } else {
+            return null;
         }
     }
 }
