@@ -52,7 +52,7 @@
 <!-- AllApps/Customize/AppsCustomize -->
     <!-- The height of the tab bar - if this changes, we should update the
          external icon width/height above to compensate -->
-    <dimen name="apps_customize_tab_bar_height">56dp</dimen>
+    <dimen name="apps_customize_tab_bar_height">52dp</dimen>
     <dimen name="app_icon_size">48dp</dimen>
     <!-- The width can be 72dp because we don't have L/R padding -->
     <dimen name="apps_customize_cell_width">74dp</dimen>
