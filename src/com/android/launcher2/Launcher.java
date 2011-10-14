@@ -246,7 +246,9 @@ public final class Launcher extends Activity
 
     private Runnable mBuildLayersRunnable = new Runnable() {
         public void run() {
-            mWorkspace.buildPageHardwareLayers();
+            if (mWorkspace != null) {
+                mWorkspace.buildPageHardwareLayers();
+            }
         }
     };
 
@@ -1259,6 +1261,7 @@ public final class Launcher extends Activity
         // Remove all pending runnables
         mHandler.removeMessages(ADVANCE_MSG);
         mHandler.removeMessages(0);
+        mWorkspace.removeCallbacks(mBuildLayersRunnable);
 
         // Stop callbacks from LauncherModel
         LauncherApplication app = ((LauncherApplication) getApplication());
