@@ -158,17 +158,13 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:gravity">center</item>
-        <item name="android:paddingLeft">15dp</item>
-        <item name="android:paddingRight">15dp</item>
-        <item name="android:paddingTop">10dp</item>
-        <item name="android:paddingBottom">15dp</item>
+        <item name="android:paddingLeft">35dp</item>
+        <item name="android:paddingRight">35dp</item>
         <item name="android:background">@drawable/tab_widget_indicator_selector</item>
-        <item name="android:textColor">@color/tab_widget_indicator_color</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:shadowColor">#393939</item>
-        <item name="android:shadowDx">0.0</item>
-        <item name="android:shadowDy">1.0</item>
-        <item name="android:shadowRadius">1.0</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
     </style>
     <style name="TabIndicator.AppsCustomize">
         <!-- Overridden in values-land -->
