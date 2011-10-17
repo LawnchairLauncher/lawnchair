@@ -1685,6 +1685,10 @@ public abstract class PagedView extends ViewGroup {
         }
 
         if (mContentIsRefreshable) {
+            // Force all scrolling-related behavior to end
+            mScroller.forceFinished(true);
+            mNextPage = INVALID_PAGE;
+
             // Update all the pages
             syncPages();
 
