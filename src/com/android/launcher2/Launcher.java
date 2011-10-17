@@ -1319,11 +1319,12 @@ public final class Launcher extends Activity
             appSearchData = new Bundle();
             appSearchData.putString(Search.SOURCE, "launcher-search");
         }
+        Rect sourceBounds = mSearchDropTargetBar.getSearchBarBounds();
 
         final SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchManager.startSearch(initialQuery, selectInitialQuery, getComponentName(),
-            appSearchData, globalSearch);
+            appSearchData, globalSearch, sourceBounds);
     }
 
     @Override
