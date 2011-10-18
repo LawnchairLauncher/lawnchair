@@ -61,7 +61,7 @@
     <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"Desinstal·la l\'actualització"</string>
     <string name="menu_add" msgid="3065046628354640854">"Afegeix"</string>
     <string name="menu_manage_apps" msgid="2308685199463588895">"Gestiona les aplicacions"</string>
-    <string name="menu_wallpaper" msgid="5837429080911269832">"Empaperat"</string>
+    <string name="menu_wallpaper" msgid="5837429080911269832">"Fons de pantalla"</string>
     <string name="menu_search" msgid="4826514464423239041">"Cerca"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"Notificacions"</string>
     <string name="menu_settings" msgid="3946232973327980394">"Configuració del sistema"</string>

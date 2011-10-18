@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+* Copyright (C) 2008 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name" msgid="8424725141379931883">"लॉन्चर"</string>
+    <string name="uid_name" msgid="3371120195364560632">"Android मुख्य एप्लिकेशन"</string>
+    <string name="folder_name" msgid="8551881338202938211"></string>
+    <string name="chooser_wallpaper" msgid="5988031014201479733">"इनमें से वॉलपेपर का चयन करें"</string>
+    <string name="wallpaper_instructions" msgid="4215640646180727542">"वॉलपेपर सेट करें"</string>
+    <string name="pick_wallpaper" msgid="5630222540525626723">"वॉलपेपर"</string>
+    <string name="activity_not_found" msgid="5591731020063337696">"एप्‍लिकेशन इंस्‍टॉल नहीं किया गया है."</string>
+    <string name="widgets_tab_label" msgid="9145860100000983599">"विजेट"</string>
+    <string name="long_press_widget_to_add" msgid="8915177487173521501">"किसी विजेट को चुनने के लिए स्‍पर्श करके रखें"</string>
+    <string name="market" msgid="2652226429823445833">"दुकान"</string>
+    <string name="external_drop_widget_error" msgid="4976816434597126575">"इस होमस्‍क्रीन पर आइटम को नहीं छोड़ सका"</string>
+    <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"बनाने के लिए विजेट का चयन करें"</string>
+    <string name="rename_folder_label" msgid="5646236631298452787">"फ़ोल्‍डर का नाम"</string>
+    <string name="rename_folder_title" msgid="4544573104191526550">"फ़ोल्‍डर का नाम बदलें"</string>
+    <string name="rename_action" msgid="6016003384693240896">"ठीक"</string>
+    <string name="cancel_action" msgid="3811860427489435048">"रद्द करें"</string>
+    <string name="menu_item_add_item" msgid="6233177331075781114">"होम स्‍क्रीन में जोड़ें"</string>
+    <string name="group_applications" msgid="4118484163419674240">"एप्लिकेशन"</string>
+    <string name="group_shortcuts" msgid="9133529424900391877">"शॉर्टकट"</string>
+    <string name="group_widgets" msgid="6704978494073105844">"विजेट"</string>
+    <string name="group_wallpapers" msgid="1568191644272224858">"वॉलपेपर"</string>
+    <string name="out_of_space" msgid="8365249326091984698">"इस होम स्‍क्रीन पर और स्थान नहीं है."</string>
+    <string name="invalid_hotseat_item" msgid="6545340627805449250">"हॉटसीट के लि‍ए यह वि‍जेट बहुत बड़ा है."</string>
+    <string name="shortcut_installed" msgid="7071557296331322355">"\"<xliff:g id="NAME">%s</xliff:g>\" शार्टकट बना दिया गया."</string>
+    <string name="shortcut_uninstalled" msgid="2129499669449749995">"\"<xliff:g id="NAME">%s</xliff:g>\" शॉर्टकट हटाया गया."</string>
+    <string name="shortcut_duplicate" msgid="4757756326465060694">"शार्टकट \"<xliff:g id="NAME">%s</xliff:g>\" पहले से मौजूद है."</string>
+    <string name="title_select_shortcut" msgid="2858897527672831763">"शॉर्टकट का चयन करें"</string>
+    <string name="title_select_application" msgid="8031072293115454221">"एप्लिकेशन का चयन करें"</string>
+    <string name="all_apps_button_label" msgid="2578400570124163469">"Apps"</string>
+    <string name="all_apps_home_button_label" msgid="1022222300329398558">"होम"</string>
+    <string name="delete_zone_label_workspace" msgid="7153615831493049150">"निकालें"</string>
+    <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"अनइंस्टॉल करें"</string>
+    <string name="delete_target_label" msgid="665300185123139530">"निकालें"</string>
+    <string name="delete_target_uninstall_label" msgid="748894921183769150">"अनइंस्टॉल करें"</string>
+    <string name="info_target_label" msgid="4019495079517426980">"एप्‍लिकेशन जानकारी"</string>
+    <string name="accessibility_search_button" msgid="816822994629942611">"खोजें"</string>
+    <string name="accessibility_voice_search_button" msgid="3938249215065842475">"ध्वनि खोज"</string>
+    <string name="accessibility_all_apps_button" msgid="1595097919145716305">"एप्लिकेशन"</string>
+    <string name="accessibility_delete_button" msgid="3628162007991023603">"निकालें"</string>
+    <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"अपडेट अनइंस्‍टॉल करें"</string>
+    <string name="menu_add" msgid="3065046628354640854">"जोड़ें"</string>
+    <string name="menu_manage_apps" msgid="2308685199463588895">"एप्लिकेशन प्रबंधित करें"</string>
+    <string name="menu_wallpaper" msgid="5837429080911269832">"वॉलपेपर"</string>
+    <string name="menu_search" msgid="4826514464423239041">"खोज"</string>
+    <string name="menu_notifications" msgid="6424587053194766192">"सूचनाएं"</string>
+    <string name="menu_settings" msgid="3946232973327980394">"सिस्टम सेटिंग"</string>
+    <string name="menu_help" msgid="4901160661634590633">"सहायता"</string>
+    <string name="cab_menu_delete_app" msgid="1242619904941293871">"एप्‍लिकेशन अनइंस्टॉल करें"</string>
+    <string name="cab_menu_app_info" msgid="5180426909324882018">"एप्लिकेशन विवरण"</string>
+    <string name="cab_app_selection_text" msgid="606113924828167756">"1 एप्लिकेशन चयनित"</string>
+    <string name="cab_widget_selection_text" msgid="962527270506951955">"1 विज़ेट चयनित"</string>
+    <string name="cab_folder_selection_text" msgid="8916111874189565067">"1 फ़ोल्‍डर का चयन किया"</string>
+    <string name="cab_shortcut_selection_text" msgid="8115847384500412878">"1 शार्टकट चयनित"</string>
+    <string name="permlab_install_shortcut" msgid="1201690825493376489">"शॉर्टकट स्‍थापित करें"</string>
+    <string name="permdesc_install_shortcut" msgid="7429365847558984148">"एप्लिकेशन को उपयोगकर्ता के हस्‍तक्षेप के बिना शॉर्टकट हटाने की अनुमति देता है"</string>
+    <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"शॉर्टकट अनइंस्टॉल करें"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="959972195916090900">"एप्लिकेशन को उपयोगकर्ता के हस्‍तक्षेप के बिना शॉर्टकट हटाने की अनुमति देता है."</string>
+    <string name="permlab_read_settings" msgid="3452408290738106747">"होम सेटिंग और शॉर्टकट पढ़ें"</string>
+    <string name="permdesc_read_settings" msgid="8377434937176025492">"एप्लिकेशन को होम में सेटिंग और शॉर्टकट पढ़ने की अनुमति देता है."</string>
+    <string name="permlab_write_settings" msgid="1360567537236705628">"होम सेटिंग और शॉर्टकट लिखें"</string>
+    <string name="permdesc_write_settings" msgid="1098648778383349818">"एप्लिकेशन को होम में सेटिंग और शॉर्टकट बदलने की अनुमति प्रदान करता है."</string>
+    <string name="gadget_error_text" msgid="8359351016167075858">"विजेट लोड करने में समस्‍या"</string>
+    <string name="uninstall_system_app_text" msgid="7488523163288397451">"यह सिस्‍टम एप्लिकेशन है और इसे अनइंस्‍टॉल नहीं किया जा सकता."</string>
+    <string name="dream_name" msgid="2847171357608437154">"रॉकेट लॉन्‍चर"</string>
+    <string name="folder_hint_text" msgid="8633351560105748141">"अनामित फ़ोल्डर"</string>
+    <string name="workspace_cling_title" msgid="738396473989890567">"जैसा चाहें वैसा उपयोग करें"</string>
+    <string name="workspace_cling_move_item" msgid="791013895761065070">"आप अपने पसंदीदा एप्लिकेशन यहां रख सकते हैं."</string>
+    <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"अपने सभी एप्लिकेशन देखने के लिए, मंडली को स्‍पर्श करें."</string>
+    <string name="all_apps_cling_title" msgid="2559734712581447107">"कुछ एप्लिकेशन चुनें"</string>
+    <string name="all_apps_cling_add_item" msgid="7404588523183860170">"किसी एप्लिकेशन को अपनी होमस्‍क्रीन से जोड़ने के लिए, उसे स्‍पर्श करके रखें."</string>
+    <string name="folder_cling_title" msgid="4308949882377840953">"अपने एप्लिकेशन को फ़ोल्डर के साथ व्‍यवस्थित करें"</string>
+    <string name="folder_cling_move_item" msgid="270598675060435169">"किसी एप्लिकेशन को ले जाने के लिए, उसे स्‍पर्श करके रखें."</string>
+    <string name="folder_cling_create_folder" msgid="289412698047625601">"अपनी होम स्‍क्रीन पर कोई नया फ़ोल्डर बनाने के लिए, एक एप्लिकेशन को दूसरे के शीर्ष पर स्‍टैक करें."</string>
+    <string name="cling_dismiss" msgid="2780907108735868381">"ठीक"</string>
+</resources>
