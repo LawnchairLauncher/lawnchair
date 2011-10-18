@@ -1421,8 +1421,8 @@ public class Workspace extends SmoothPagedView
      * ZInterpolator compounded with an ease-out.
      */
     static class ZoomOutInterpolator implements TimeInterpolator {
-        private final ZInterpolator zInterpolator = new ZInterpolator(0.2f);
-        private final DecelerateInterpolator decelerate = new DecelerateInterpolator(1.8f);
+        private final DecelerateInterpolator decelerate = new DecelerateInterpolator(0.75f);
+        private final ZInterpolator zInterpolator = new ZInterpolator(0.13f);
 
         public float getInterpolation(float input) {
             return decelerate.getInterpolation(zInterpolator.getInterpolation(input));
