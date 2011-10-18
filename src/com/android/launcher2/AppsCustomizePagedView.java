@@ -1360,8 +1360,14 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     @Override
     public void reset() {
-        updateCurrentTab(0);
-        invalidatePageData(0);
+        AppsCustomizeTabHost tabHost = getTabHost();
+        String tag = tabHost.getCurrentTabTag();
+        if (!tag.equals(tabHost.getTabTagForContentType(ContentType.Applications))) {
+            tabHost.setCurrentTabFromContent(ContentType.Applications);
+        }
+        if (mCurrentPage != 0) {
+            invalidatePageData(0);
+        }
     }
 
     private AppsCustomizeTabHost getTabHost() {
