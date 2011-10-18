@@ -1209,7 +1209,7 @@ public final class Launcher extends Activity
             }
 
             // Reset AllApps to its initial state
-            if (mAppsCustomizeTabHost != null) {
+            if (!alreadyOnHome && mAppsCustomizeTabHost != null) {
                 mAppsCustomizeTabHost.reset();
             }
         }
@@ -2187,7 +2187,6 @@ public final class Launcher extends Activity
 
         // Shrink workspaces away if going to AppsCustomize from workspace
         mWorkspace.changeState(Workspace.State.SMALL, animated);
-        //hideHotseat(animated);
 
         if (animated) {
             final ValueAnimator scaleAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
