@@ -30,6 +30,7 @@ import android.content.Intent.ShortcutIconResource;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -120,6 +121,8 @@ public class LauncherModel extends BroadcastReceiver {
     private static int mCellCountX;
     private static int mCellCountY;
 
+    protected Configuration mPreviousConfig;
+
     public interface Callbacks {
         public boolean setLoadOnResume();
         public int getCurrentWorkspaceScreen();
@@ -146,9 +149,10 @@ public class LauncherModel extends BroadcastReceiver {
         mDefaultIcon = Utilities.createIconBitmap(
                 mIconCache.getFullResDefaultActivityIcon(), app);
 
-        mAllAppsLoadDelay = app.getResources().getInteger(R.integer.config_allAppsBatchLoadDelay);
-
-        mBatchSize = app.getResources().getInteger(R.integer.config_allAppsBatchSize);
+        final Resources res = app.getResources();
+        mAllAppsLoadDelay = res.getInteger(R.integer.config_allAppsBatchLoadDelay);
+        mBatchSize = res.getInteger(R.integer.config_allAppsBatchSize);
+        mPreviousConfig = res.getConfiguration();
     }
 
     public Bitmap getFallbackIcon() {
@@ -612,14 +616,20 @@ public class LauncherModel extends BroadcastReceiver {
             enqueuePackageUpdated(new PackageUpdatedTask(
                         PackageUpdatedTask.OP_UNAVAILABLE, packages));
         } else if (Intent.ACTION_LOCALE_CHANGED.equals(action)) {
-            // If we have changed locale we need to clear out the labels in all apps.
-            // Do this here because if the launcher activity is running it will be restarted.
-            // If it's not running startLoaderFromBackground will merely tell it that it needs
-            // to reload.  Either way, mAllAppsLoaded will be cleared so it re-reads everything
-            // next time.
-            mAllAppsLoaded = false;
-            mWorkspaceLoaded = false;
-            startLoaderFromBackground();
+            // If we have changed locale we need to clear out the labels in all apps/workspace.
+            forceReload();
+        } else if (Intent.ACTION_CONFIGURATION_CHANGED.equals(action)) {
+             // Check if configuration change was an mcc/mnc change which would affect app resources
+             // and we would need to clear out the labels in all apps/workspace. Same handling as
+             // above for ACTION_LOCALE_CHANGED
+             Configuration currentConfig = context.getResources().getConfiguration();
+             if((mPreviousConfig.diff(currentConfig) & ActivityInfo.CONFIG_MCC) != 0){
+                   Log.d(TAG, "Reload apps on config change. curr_mcc:"
+                       + currentConfig.mcc + " prevmcc:" + mPreviousConfig.mcc);
+                   forceReload();
+             }
+             // Update previousConfig
+             mPreviousConfig = currentConfig;
         } else if (SearchManager.INTENT_GLOBAL_SEARCH_ACTIVITY_CHANGED.equals(action) ||
                    SearchManager.INTENT_ACTION_SEARCHABLES_CHANGED.equals(action)) {
             if (mCallbacks != null) {
@@ -629,6 +639,20 @@ public class LauncherModel extends BroadcastReceiver {
                 }
             }
         }
+    }
+
+    private void forceReload() {
+        synchronized (mLock) {
+            // Stop any existing loaders first, so they don't set mAllAppsLoaded or
+            // mWorkspaceLoaded to true later
+            stopLoaderLocked();
+            mAllAppsLoaded = false;
+            mWorkspaceLoaded = false;
+        }
+        // Do this here because if the launcher activity is running it will be restarted.
+        // If it's not running startLoaderFromBackground will merely tell it that it needs
+        // to reload.
+        startLoaderFromBackground();
     }
 
     /**
@@ -653,6 +677,20 @@ public class LauncherModel extends BroadcastReceiver {
         }
     }
 
+    // If there is already a loader task running, tell it to stop.
+    // returns true if isLaunching() was true on the old task
+    private boolean stopLoaderLocked() {
+        boolean isLaunching = false;
+        LoaderTask oldTask = mLoaderTask;
+        if (oldTask != null) {
+            if (oldTask.isLaunching()) {
+                isLaunching = true;
+            }
+            oldTask.stopLocked();
+        }
+        return isLaunching;
+    }
+
     public void startLoader(Context context, boolean isLaunching) {
         synchronized (mLock) {
             if (DEBUG_LOADERS) {
@@ -662,14 +700,8 @@ public class LauncherModel extends BroadcastReceiver {
             // Don't bother to start the thread if we know it's not going to do anything
             if (mCallbacks != null && mCallbacks.get() != null) {
                 // If there is already one running, tell it to stop.
-                LoaderTask oldTask = mLoaderTask;
-                if (oldTask != null) {
-                    if (oldTask.isLaunching()) {
-                        // don't downgrade isLaunching if we're already running
-                        isLaunching = true;
-                    }
-                    oldTask.stopLocked();
-                }
+                // also, don't downgrade isLaunching if we're already running
+                isLaunching = isLaunching || stopLoaderLocked();
                 mLoaderTask = new LoaderTask(context, isLaunching);
                 sWorkerThread.setPriority(Thread.NORM_PRIORITY);
                 sWorker.post(mLoaderTask);
@@ -721,10 +753,12 @@ public class LauncherModel extends BroadcastReceiver {
 
             if (!mWorkspaceLoaded) {
                 loadWorkspace();
-                if (mStopped) {
-                    return;
+                synchronized (LoaderTask.this) {
+                    if (mStopped) {
+                        return;
+                    }
+                    mWorkspaceLoaded = true;
                 }
-                mWorkspaceLoaded = true;
             }
 
             // Bind the workspace
@@ -1289,10 +1323,12 @@ public class LauncherModel extends BroadcastReceiver {
             }
             if (!mAllAppsLoaded) {
                 loadAllAppsByBatch();
-                if (mStopped) {
-                    return;
+                synchronized (LoaderTask.this) {
+                    if (mStopped) {
+                        return;
+                    }
+                    mAllAppsLoaded = true;
                 }
-                mAllAppsLoaded = true;
             } else {
                 onlyBindAllApps();
             }
