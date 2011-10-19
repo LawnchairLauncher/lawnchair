@@ -75,8 +75,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     }
     void selectWidgetsTab() {
         setContentTypeImmediate(AppsCustomizePagedView.ContentType.Widgets);
-        mAppsCustomizePane.setCurrentPageToWidgets();
-
         setCurrentTabByTag(WIDGETS_TAB_TAG);
     }
 

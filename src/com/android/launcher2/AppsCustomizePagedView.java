@@ -202,7 +202,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     // Dimens
     private int mContentWidth;
     private int mAppIconSize;
-    private int mMaxWidgetSpan, mMinWidgetSpan;
     private int mWidgetCountX, mWidgetCountY;
     private int mWidgetWidthGap, mWidgetHeightGap;
     private final int mWidgetPreviewIconPaddedDimension;
@@ -223,7 +222,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     // Previews & outlines
     ArrayList<AppsCustomizeAsyncTask> mRunningTasks;
     private HolographicOutlineHelper mHolographicOutlineHelper;
-    private static final int sPageSleepDelay = 200;
+    private static final int sPageSleepDelay = 150;
 
     public AppsCustomizePagedView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -258,11 +257,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mClingFocusedY = a.getInt(R.styleable.AppsCustomizePagedView_clingFocusedY, 0);
         a.recycle();
         mWidgetSpacingLayout = new PagedViewCellLayout(getContext());
-
-        // The max widget span is the length N, such that NxN is the largest bounds that the widget
-        // preview can be before applying the widget scaling
-        mMinWidgetSpan = 1;
-        mMaxWidgetSpan = 3;
 
         // The padding on the non-matched dimension for the default widget preview icons
         // (top + bottom)
@@ -355,6 +349,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mSaveInstanceStateItemIndex = index;
     }
 
+    private void updatePageCounts() {
+        mNumWidgetPages = (int) Math.ceil(mWidgets.size() /
+                (float) (mWidgetCountX * mWidgetCountY));
+        mNumAppsPages = (int) Math.ceil((float) mApps.size() / (mCellCountX * mCellCountY));
+    }
+
     protected void onDataReady(int width, int height) {
         // Note that we transpose the counts in portrait so that we get a similar layout
         boolean isLandscape = getResources().getConfiguration().orientation ==
@@ -376,9 +376,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mWidgetSpacingLayout.calculateCellCount(width, height, maxCellCountX, maxCellCountY);
         mCellCountX = mWidgetSpacingLayout.getCellCountX();
         mCellCountY = mWidgetSpacingLayout.getCellCountY();
-        mNumWidgetPages = (int) Math.ceil(mWidgets.size() /
-                (float) (mWidgetCountX * mWidgetCountY));
-        mNumAppsPages = (int) Math.ceil((float) mApps.size() / (mCellCountX * mCellCountY));
+        updatePageCounts();
 
         // Force a measure to update recalculate the gaps
         int widthSpec = MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.AT_MOST);
@@ -390,6 +388,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         int page = getPageForComponent(mSaveInstanceStateItemIndex);
         invalidatePageData(Math.max(0, page));
 
+        // Calculate the position for the cling punch through
         int[] offset = new int[2];
         int[] pos = mWidgetSpacingLayout.estimateCellPosition(mClingFocusedX, mClingFocusedY);
         mLauncher.getDragLayer().getLocationInDragLayer(this, offset);
@@ -455,6 +454,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mWidgets.addAll(shortcuts);
         Collections.sort(mWidgets,
                 new LauncherModel.WidgetAndShortcutNameComparator(mPackageManager));
+        updatePageCounts();
 
         if (wasEmpty) {
             // The next layout pass will trigger data-ready if both widgets and apps are set, so request
@@ -605,7 +605,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                             !layout.findCellForSpan(null, itemInfo.spanX, itemInfo.spanY);
                 }
             }
-            // TODO-APPS_CUSTOMIZE: We need to handle this for folders as well later.
             if (showOutOfSpaceMessage) {
                 mLauncher.showOutOfSpaceMessage();
             }
@@ -634,10 +633,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         } else if (type == ContentType.Applications) {
             invalidatePageData(0, true);
         }
-    }
-
-    public void setCurrentPageToWidgets() {
-        invalidatePageData(0);
     }
 
     protected void snapToPage(int whichPage, int delta, int duration) {
@@ -1300,6 +1295,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     public void setApps(ArrayList<ApplicationInfo> list) {
         mApps = list;
         Collections.sort(mApps, LauncherModel.APP_NAME_COMPARATOR);
+        updatePageCounts();
 
         // The next layout pass will trigger data-ready if both widgets and apps are set, so 
         // request a layout to do this test and invalidate the page data when ready.
@@ -1319,6 +1315,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     @Override
     public void addApps(ArrayList<ApplicationInfo> list) {
         addAppsWithoutInvalidate(list);
+        updatePageCounts();
         invalidatePageData();
     }
     private int findAppByComponent(List<ApplicationInfo> list, ApplicationInfo item) {
@@ -1346,6 +1343,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     @Override
     public void removeApps(ArrayList<ApplicationInfo> list) {
         removeAppsWithoutInvalidate(list);
+        updatePageCounts();
         invalidatePageData();
     }
     @Override
@@ -1355,6 +1353,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // place in the list.
         removeAppsWithoutInvalidate(list);
         addAppsWithoutInvalidate(list);
+        updatePageCounts();
+
         invalidatePageData();
     }
 
@@ -1401,6 +1401,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     public void surrender() {
         // TODO: If we are in the middle of any process (ie. for holographic outlines, etc) we
         // should stop this now.
+
+        // Stop all background tasks
+        cancelAllTasks();
     }
 
     /*
