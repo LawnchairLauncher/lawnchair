@@ -136,12 +136,6 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         icon.mFolder = folder;
         Resources res = launcher.getResources();
 
-        // We need to reload the static values when configuration changes in case they are
-        // different in another configuration
-        if (sStaticValuesDirty) {
-            sSharedFolderLeaveBehind = res.getDrawable(R.drawable.portal_ring_rest);
-        }
-
         icon.mFolderRingAnimator = new FolderRingAnimator(launcher, icon);
         folderInfo.addListener(icon);
 
@@ -184,6 +178,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
                 sPreviewPadding = res.getDimensionPixelSize(R.dimen.folder_preview_padding);
                 sSharedOuterRingDrawable = res.getDrawable(R.drawable.portal_ring_outer_holo);
                 sSharedInnerRingDrawable = res.getDrawable(R.drawable.portal_ring_inner_holo);
+                sSharedFolderLeaveBehind = res.getDrawable(R.drawable.portal_ring_rest);
                 sStaticValuesDirty = false;
             }
         }
