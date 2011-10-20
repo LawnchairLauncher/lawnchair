@@ -16,10 +16,9 @@
 
 package com.android.launcher2;
 
-import android.appwidget.AppWidgetManager;
-import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
@@ -187,7 +186,7 @@ public class DragController {
         int dragLayerX = loc[0];
         int dragLayerY = loc[1];
 
-        startDrag(b, dragLayerX, dragLayerY, source, dragInfo, dragAction, dragRegion);
+        startDrag(b, dragLayerX, dragLayerY, source, dragInfo, dragAction, null, dragRegion);
         b.recycle();
 
         if (dragAction == DRAG_ACTION_MOVE) {
@@ -214,7 +213,7 @@ public class DragController {
         int dragLayerX = loc[0];
         int dragLayerY = loc[1];
 
-        startDrag(bmp, dragLayerX, dragLayerY, source, dragInfo, dragAction, dragRegion);
+        startDrag(bmp, dragLayerX, dragLayerY, source, dragInfo, dragAction, null, dragRegion);
 
         if (dragAction == DRAG_ACTION_MOVE) {
             v.setVisibility(View.GONE);
@@ -235,7 +234,7 @@ public class DragController {
      */
     public void startDrag(Bitmap b, int dragLayerX, int dragLayerY,
             DragSource source, Object dragInfo, int dragAction) {
-        startDrag(b, dragLayerX, dragLayerY, source, dragInfo, dragAction, null);
+        startDrag(b, dragLayerX, dragLayerY, source, dragInfo, dragAction, null, null);
     }
 
     /**
@@ -253,7 +252,7 @@ public class DragController {
      *          Makes dragging feel more precise, e.g. you can clip out a transparent border
      */
     public void startDrag(Bitmap b, int dragLayerX, int dragLayerY,
-            DragSource source, Object dragInfo, int dragAction, Rect dragRegion) {
+            DragSource source, Object dragInfo, int dragAction, Point dragOffset, Rect dragRegion) {
         if (PROFILE_DRAWING_DURING_DRAG) {
             android.os.Debug.startMethodTracing("Launcher");
         }
@@ -290,6 +289,9 @@ public class DragController {
         final DragView dragView = mDragObject.dragView = new DragView(mLauncher, b, registrationX,
                 registrationY, 0, 0, b.getWidth(), b.getHeight());
 
+        if (dragOffset != null) {
+            dragView.setDragVisualizeOffset(new Point(dragOffset));
+        }
         if (dragRegion != null) {
             dragView.setDragRegion(new Rect(dragRegion));
         }

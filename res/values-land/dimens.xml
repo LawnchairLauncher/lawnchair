@@ -37,6 +37,8 @@
     <dimen name="workspace_divider_padding_top">12dp</dimen>
     <dimen name="workspace_divider_padding_bottom">12dp</dimen>
 
+    <dimen name="app_icon_padding_top">6dp</dimen>
+
     <!-- height of the bottom row of controls -->
     <dimen name="button_bar_height">68dip</dimen>
     <!-- Because portal animations go beyond the bounds of an icon, we need
