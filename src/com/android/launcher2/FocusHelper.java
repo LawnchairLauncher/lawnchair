@@ -125,18 +125,30 @@ public class FocusHelper {
     }
 
     /**
+     * Returns the Viewgroup containing page contents for the page at the index specified.
+     */
+    private static ViewGroup getAppsCustomizePage(ViewGroup container, int index) {
+        ViewGroup page = (ViewGroup) ((PagedView) container).getPageAt(index);
+        if (page instanceof PagedViewCellLayout) {
+            // There are two layers, a PagedViewCellLayout and PagedViewCellLayoutChildren
+            page = (ViewGroup) page.getChildAt(0);
+        }
+        return page;
+    }
+
+    /**
      * Handles key events in a PageViewExtendedLayout containing PagedViewWidgets.
      */
     static boolean handlePagedViewGridLayoutWidgetKeyEvent(PagedViewWidget w, int keyCode,
             KeyEvent e) {
 
         final PagedViewGridLayout parent = (PagedViewGridLayout) w.getParent();
-        final ViewGroup container = (ViewGroup) parent.getParent();
+        final PagedView container = (PagedView) parent.getParent();
         final TabHost tabHost = findTabHostParent(container);
         final TabWidget tabs = (TabWidget) tabHost.findViewById(com.android.internal.R.id.tabs);
         final int widgetIndex = parent.indexOfChild(w);
         final int widgetCount = parent.getChildCount();
-        final int pageIndex = container.indexOfChild(parent);
+        final int pageIndex = ((PagedView) container).indexToPage(container.indexOfChild(parent));
         final int pageCount = container.getChildCount();
         final int cellCountX = parent.getCellCountX();
         final int cellCountY = parent.getCellCountY();
@@ -145,7 +157,7 @@ public class FocusHelper {
 
         final int action = e.getAction();
         final boolean handleKeyEvent = (action != KeyEvent.ACTION_UP);
-        PagedViewGridLayout newParent = null;
+        ViewGroup newParent = null;
         // Now that we load items in the bg asynchronously, we can't just focus
         // child siblings willy-nilly
         View child = null;
@@ -158,10 +170,11 @@ public class FocusHelper {
                         parent.getChildAt(widgetIndex - 1).requestFocus();
                     } else {
                         if (pageIndex > 0) {
-                            newParent = (PagedViewGridLayout)
-                                    container.getChildAt(pageIndex - 1);
-                            child = newParent.getChildAt(newParent.getChildCount() - 1);
-                            if (child != null) child.requestFocus();
+                            newParent = getAppsCustomizePage(container, pageIndex - 1);
+                            if (newParent != null) {
+                                child = newParent.getChildAt(newParent.getChildCount() - 1);
+                                if (child != null) child.requestFocus();
+                            }
                         }
                     }
                 }
@@ -174,10 +187,11 @@ public class FocusHelper {
                         parent.getChildAt(widgetIndex + 1).requestFocus();
                     } else {
                         if (pageIndex < (pageCount - 1)) {
-                            newParent = (PagedViewGridLayout)
-                                    container.getChildAt(pageIndex + 1);
-                            child = newParent.getChildAt(0);
-                            if (child != null) child.requestFocus();
+                            newParent = getAppsCustomizePage(container, pageIndex + 1);
+                            if (newParent != null) {
+                                child = newParent.getChildAt(0);
+                                if (child != null) child.requestFocus();
+                            }
                         }
                     }
                 }
@@ -221,8 +235,10 @@ public class FocusHelper {
                     // Select the first item on the previous page, or the first item on this page
                     // if there is no previous page
                     if (pageIndex > 0) {
-                        newParent = (PagedViewGridLayout) container.getChildAt(pageIndex - 1);
-                        child = newParent.getChildAt(0);
+                        newParent = getAppsCustomizePage(container, pageIndex - 1);
+                        if (newParent != null) {
+                            child = newParent.getChildAt(0);
+                        }
                     } else {
                         child = parent.getChildAt(0);
                     }
@@ -235,8 +251,10 @@ public class FocusHelper {
                     // Select the first item on the next page, or the last item on this page
                     // if there is no next page
                     if (pageIndex < (pageCount - 1)) {
-                        newParent = (PagedViewGridLayout) container.getChildAt(pageIndex + 1);
-                        child = newParent.getChildAt(0);
+                        newParent = getAppsCustomizePage(container, pageIndex + 1);
+                        if (newParent != null) {
+                            child = newParent.getChildAt(0);
+                        }
                     } else {
                         child = parent.getChildAt(widgetCount - 1);
                     }
@@ -265,38 +283,40 @@ public class FocusHelper {
     }
 
     /**
-     * Private helper method to get the PagedViewCellLayoutChildren given a PagedViewCellLayout
-     * index.
-     */
-    private static PagedViewCellLayoutChildren getPagedViewCellLayoutChildrenForIndex(
-            ViewGroup container, int i) {
-        ViewGroup parent = (ViewGroup) container.getChildAt(i);
-        return (PagedViewCellLayoutChildren) parent.getChildAt(0);
-    }
-
-    /**
      * Handles key events in a PageViewCellLayout containing PagedViewIcons.
      */
-    static boolean handlePagedViewIconKeyEvent(PagedViewIcon v, int keyCode, KeyEvent e) {
-        final PagedViewCellLayoutChildren parent = (PagedViewCellLayoutChildren) v.getParent();
-        final PagedViewCellLayout parentLayout = (PagedViewCellLayout) parent.getParent();
+    static boolean handleAppsCustomizeKeyEvent(View v, int keyCode, KeyEvent e) {
+        ViewGroup parentLayout;
+        ViewGroup itemContainer;
+        int countX;
+        int countY;
+        if (v.getParent() instanceof PagedViewCellLayoutChildren) {
+            itemContainer = (ViewGroup) v.getParent();
+            parentLayout = (ViewGroup) itemContainer.getParent();
+            countX = ((PagedViewCellLayout) parentLayout).getCellCountX();
+            countY = ((PagedViewCellLayout) parentLayout).getCellCountY();
+        } else {
+            itemContainer = parentLayout = (ViewGroup) v.getParent();
+            countX = ((PagedViewGridLayout) parentLayout).getCellCountX();
+            countY = ((PagedViewGridLayout) parentLayout).getCellCountY();
+        }
+
         // Note we have an extra parent because of the
         // PagedViewCellLayout/PagedViewCellLayoutChildren relationship
-        final ViewGroup container = (ViewGroup) parentLayout.getParent();
+        final PagedView container = (PagedView) parentLayout.getParent();
         final TabHost tabHost = findTabHostParent(container);
         final TabWidget tabs = (TabWidget) tabHost.findViewById(com.android.internal.R.id.tabs);
-        final int iconIndex = parent.indexOfChild(v);
-        final int widgetCount = parent.getChildCount();
-        final int pageIndex = container.indexOfChild(parentLayout);
+        final int iconIndex = itemContainer.indexOfChild(v);
+        final int itemCount = itemContainer.getChildCount();
+        final int pageIndex = ((PagedView) container).indexToPage(container.indexOfChild(parentLayout));
         final int pageCount = container.getChildCount();
-        final int cellCountX = parentLayout.getCellCountX();
-        final int cellCountY = parentLayout.getCellCountY();
-        final int x = iconIndex % cellCountX;
-        final int y = iconIndex / cellCountX;
+
+        final int x = iconIndex % countX;
+        final int y = iconIndex / countX;
 
         final int action = e.getAction();
         final boolean handleKeyEvent = (action != KeyEvent.ACTION_UP);
-        PagedViewCellLayoutChildren newParent = null;
+        ViewGroup newParent = null;
         // Side pages do not always load synchronously, so check before focusing child siblings
         // willy-nilly
         View child = null;
@@ -306,12 +326,12 @@ public class FocusHelper {
                 if (handleKeyEvent) {
                     // Select the previous icon or the last icon on the previous page
                     if (iconIndex > 0) {
-                        parent.getChildAt(iconIndex - 1).requestFocus();
+                        itemContainer.getChildAt(iconIndex - 1).requestFocus();
                     } else {
                         if (pageIndex > 0) {
-                            newParent = getPagedViewCellLayoutChildrenForIndex(container,
-                                    pageIndex - 1);
+                            newParent = getAppsCustomizePage(container, pageIndex - 1);
                             if (newParent != null) {
+                                container.snapToPage(pageIndex - 1);
                                 child = newParent.getChildAt(newParent.getChildCount() - 1);
                                 if (child != null) child.requestFocus();
                             }
@@ -323,13 +343,13 @@ public class FocusHelper {
             case KeyEvent.KEYCODE_DPAD_RIGHT:
                 if (handleKeyEvent) {
                     // Select the next icon or the first icon on the next page
-                    if (iconIndex < (widgetCount - 1)) {
-                        parent.getChildAt(iconIndex + 1).requestFocus();
+                    if (iconIndex < (itemCount - 1)) {
+                        itemContainer.getChildAt(iconIndex + 1).requestFocus();
                     } else {
                         if (pageIndex < (pageCount - 1)) {
-                            newParent = getPagedViewCellLayoutChildrenForIndex(container,
-                                    pageIndex + 1);
+                            newParent = getAppsCustomizePage(container, pageIndex + 1);
                             if (newParent != null) {
+                                container.snapToPage(pageIndex + 1);
                                 child = newParent.getChildAt(0);
                                 if (child != null) child.requestFocus();
                             }
@@ -342,8 +362,8 @@ public class FocusHelper {
                 if (handleKeyEvent) {
                     // Select the closest icon in the previous row, otherwise select the tab bar
                     if (y > 0) {
-                        int newiconIndex = ((y - 1) * cellCountX) + x;
-                        parent.getChildAt(newiconIndex).requestFocus();
+                        int newiconIndex = ((y - 1) * countX) + x;
+                        itemContainer.getChildAt(newiconIndex).requestFocus();
                     } else {
                         tabs.requestFocus();
                     }
@@ -353,9 +373,9 @@ public class FocusHelper {
             case KeyEvent.KEYCODE_DPAD_DOWN:
                 if (handleKeyEvent) {
                     // Select the closest icon in the previous row, otherwise do nothing
-                    if (y < (cellCountY - 1)) {
-                        int newiconIndex = Math.min(widgetCount - 1, ((y + 1) * cellCountX) + x);
-                        parent.getChildAt(newiconIndex).requestFocus();
+                    if (y < (countY - 1)) {
+                        int newiconIndex = Math.min(itemCount - 1, ((y + 1) * countX) + x);
+                        itemContainer.getChildAt(newiconIndex).requestFocus();
                     }
                 }
                 wasHandled = true;
@@ -374,14 +394,14 @@ public class FocusHelper {
                     // Select the first icon on the previous page, or the first icon on this page
                     // if there is no previous page
                     if (pageIndex > 0) {
-                        newParent = getPagedViewCellLayoutChildrenForIndex(container,
-                                pageIndex - 1);
+                        newParent = getAppsCustomizePage(container, pageIndex - 1);
                         if (newParent != null) {
+                            container.snapToPage(pageIndex - 1);
                             child = newParent.getChildAt(0);
                             if (child != null) child.requestFocus();
                         }
                     } else {
-                        parent.getChildAt(0).requestFocus();
+                        itemContainer.getChildAt(0).requestFocus();
                     }
                 }
                 wasHandled = true;
@@ -391,14 +411,14 @@ public class FocusHelper {
                     // Select the first icon on the next page, or the last icon on this page
                     // if there is no next page
                     if (pageIndex < (pageCount - 1)) {
-                        newParent = getPagedViewCellLayoutChildrenForIndex(container,
-                                pageIndex + 1);
+                        newParent = getAppsCustomizePage(container, pageIndex + 1);
                         if (newParent != null) {
+                            container.snapToPage(pageIndex + 1);
                             child = newParent.getChildAt(0);
                             if (child != null) child.requestFocus();
                         }
                     } else {
-                        parent.getChildAt(widgetCount - 1).requestFocus();
+                        itemContainer.getChildAt(itemCount - 1).requestFocus();
                     }
                 }
                 wasHandled = true;
@@ -406,14 +426,14 @@ public class FocusHelper {
             case KeyEvent.KEYCODE_MOVE_HOME:
                 if (handleKeyEvent) {
                     // Select the first icon on this page
-                    parent.getChildAt(0).requestFocus();
+                    itemContainer.getChildAt(0).requestFocus();
                 }
                 wasHandled = true;
                 break;
             case KeyEvent.KEYCODE_MOVE_END:
                 if (handleKeyEvent) {
                     // Select the last icon on this page
-                    parent.getChildAt(widgetCount - 1).requestFocus();
+                    itemContainer.getChildAt(itemCount - 1).requestFocus();
                 }
                 wasHandled = true;
                 break;

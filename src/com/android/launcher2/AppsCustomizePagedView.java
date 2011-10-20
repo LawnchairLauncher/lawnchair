@@ -1200,6 +1200,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         return getChildAt(getChildCount() - index - 1);
     }
 
+    @Override
+    protected int indexToPage(int index) {
+        return getChildCount() - index - 1;
+    }
+
     // In apps customize, we have a scrolling effect which emulates pulling cards off of a stack.
     @Override
     protected void screenScrolled(int screenCenter) {
