@@ -42,6 +42,8 @@
     <dimen name="hotseat_height_gap">-1dp</dimen>
     <dimen name="workspace_overscroll_drawable_padding">0dp</dimen>
 
+    <dimen name="app_icon_padding_top">8dp</dimen>
+
 <!-- QSB -->
     <dimen name="toolbar_button_vertical_padding">0dip</dimen>
     <dimen name="toolbar_button_horizontal_padding">12dip</dimen>

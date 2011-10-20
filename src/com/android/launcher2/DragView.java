@@ -24,11 +24,9 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
-import android.os.IBinder;
 import android.view.View;
-import android.view.WindowManager;
-import android.view.WindowManagerImpl;
 import android.view.animation.DecelerateInterpolator;
 
 import com.android.launcher.R;
@@ -39,6 +37,7 @@ public class DragView extends View {
     private int mRegistrationX;
     private int mRegistrationY;
 
+    private Point mDragVisualizeOffset = null;
     private Rect mDragRegion = null;
     private DragLayer mDragLayer = null;
     private boolean mHasDrawn = false;
@@ -133,6 +132,14 @@ public class DragView extends View {
 
     public int getDragRegionHeight() {
         return mDragRegion.height();
+    }
+
+    public void setDragVisualizeOffset(Point p) {
+        mDragVisualizeOffset = p;
+    }
+
+    public Point getDragVisualizeOffset() {
+        return mDragVisualizeOffset;
     }
 
     public void setDragRegion(Rect r) {
