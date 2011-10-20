@@ -222,6 +222,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
                         }
                         mAppsCustomizePane.loadAssociatedPages(
                                 mAppsCustomizePane.getCurrentPage());
+                        mAppsCustomizePane.requestFocus();
                     }
                 });
                 AnimatorSet animSet = new AnimatorSet();
