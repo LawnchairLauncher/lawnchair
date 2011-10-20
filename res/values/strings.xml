@@ -27,19 +27,19 @@
     <!-- Default folder name -->
     <string name="folder_name"></string>
     <!-- Title of dialog that appears after user selects Wallpaper from menu -->
-    <string name="chooser_wallpaper">Select wallpaper from</string>
+    <string name="chooser_wallpaper">Choose wallpaper from</string>
     <!-- Button label on Wallpaper Gallery screen; user selects this button to set a specific wallpaper -->
     <string name="wallpaper_instructions">Set wallpaper</string>
     <!-- Option in "Select wallpaper from" dialog box -->
     <string name="pick_wallpaper">Wallpapers</string>
     <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
-    <string name="activity_not_found">Application is not installed.</string>
+    <string name="activity_not_found">App isn\'t installed.</string>
     <!--  Labels for the tabs in the customize drawer -->
     <string name="widgets_tab_label">Widgets</string>
 
     <!-- AppsCustomize pane -->
     <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
-    <string name="long_press_widget_to_add">Touch &amp; hold to pick up a widget</string>
+    <string name="long_press_widget_to_add">Touch &amp; hold to pick up a widget.</string>
     <!-- Market button text.  The market button text is removed in Launcher.java 
          in the Phone UI. [CHAR LIMIT=32] -->
     <string name="market">Shop</string>
@@ -51,11 +51,11 @@
     <!-- External-drop widget error string.  This is the error that is shown
          when you drag and item into the homescreen and it is unable to fit,
          or an error is encountered. [CHAR_LIMIT=50] -->
-    <string name="external_drop_widget_error">Could not drop item onto this homescreen</string>
+    <string name="external_drop_widget_error">Couldn\'t drop item onto this Home screen.</string>
     <!-- External-drop widget pick title.  This is shown as the title of the
          dialog which allows you to pick which widgets to handle a particular
          drop if there are multiple choices. [CHAR_LIMIT=35] -->
-    <string name="external_drop_widget_pick_title">Select widget to create</string>
+    <string name="external_drop_widget_pick_title">Choose widget to create</string>
 
     <!-- Folders -->
     <skip />
@@ -73,7 +73,7 @@
     <!-- Title of dialog box -->
     <string name="menu_item_add_item">Add to Home screen</string>
     <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all apps -->
-    <string name="group_applications">Applications</string>
+    <string name="group_applications">Apps</string>
     <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all shortcut
 s -->
     <string name="group_shortcuts">Shortcuts</string>
@@ -95,7 +95,7 @@ s -->
     <!-- Title of dialog when user is selecting shortcut to add to homescreen -->
     <string name="title_select_shortcut">Select shortcut</string>
     <!-- Title of dialog when user is selecting an application to add to homescreen -->
-    <string name="title_select_application">Select application</string>
+    <string name="title_select_application">Choose app</string>
 
     <!-- All applications label -->
     <string name="all_apps_button_label">Apps</string>
@@ -121,7 +121,7 @@ s -->
     <!-- Accessibility: Voice Search button -->
     <string name="accessibility_voice_search_button">Voice Search</string>
     <!-- Accessibility: AllApps button -->
-    <string name="accessibility_all_apps_button">Applications</string>
+    <string name="accessibility_all_apps_button">Apps</string>
     <!-- Accessibility: Delete button -->
     <string name="accessibility_delete_button">Remove</string>
 
@@ -153,12 +153,12 @@ s -->
     <skip />
     <!-- Describes the button for uninstalling the currently selected application.
          Text is not displayed, but provided for accessibility. [CHAR_LIMIT=none] -->
-    <string name="cab_menu_delete_app">Uninstall application</string>
+    <string name="cab_menu_delete_app">Uninstall app</string>
     <!-- Describes the button for getting details/info about currently selected application.
          Text is not displayed, but provided for accessibility. [CHAR_LIMIT=none] -->
-    <string name="cab_menu_app_info">Application details</string>
+    <string name="cab_menu_app_info">App details</string>
     <!-- Appears in the CAB when an app is selected in All Apps or Customize mode. [CHAR_LIMIT=50] -->
-    <string name="cab_app_selection_text">1 application selected</string>
+    <string name="cab_app_selection_text">1 app selected</string>
     <!-- Appears in the CAB when a widget is selected in Customize mode. [CHAR_LIMIT=50] -->
     <string name="cab_widget_selection_text">1 widget selected</string>
     <!-- Appears in the CAB when a folder is selected in Customize mode. [CHAR_LIMIT=50] -->
@@ -171,22 +171,22 @@ s -->
     <!-- Permission short label -->
     <string name="permlab_install_shortcut">install shortcuts</string>
     <!-- Permission description -->
-    <string name="permdesc_install_shortcut">Allows an application to add
+    <string name="permdesc_install_shortcut">Allows an app to add
         shortcuts without user intervention.</string>
     <!-- Permission short label -->
     <string name="permlab_uninstall_shortcut">uninstall shortcuts</string>
     <!-- Permission description -->
-    <string name="permdesc_uninstall_shortcut">Allows an application to remove
+    <string name="permdesc_uninstall_shortcut">Allows an app to remove
         shortcuts without user intervention.</string>
     <!-- Permission short label -->
     <string name="permlab_read_settings">read Home settings and shortcuts</string>
     <!-- Permission description -->
-    <string name="permdesc_read_settings">Allows an application to read the settings and
+    <string name="permdesc_read_settings">Allows an app to read the settings and
         shortcuts in Home.</string>
     <!-- Permission short label -->
     <string name="permlab_write_settings">write Home settings and shortcuts</string>
     <!-- Permission description -->
-    <string name="permdesc_write_settings">Allows an application to change the settings and
+    <string name="permdesc_write_settings">Allows an app to change the settings and
         shortcuts in Home.</string>
 
     <!-- Widgets: -->
@@ -196,7 +196,7 @@ s -->
     <string name="gadget_error_text">Problem loading widget</string>
 
     <!-- Text to inform the user that they can't uninstall a system application -->
-    <string name="uninstall_system_app_text">This is a system application and cannot be uninstalled.</string>
+    <string name="uninstall_system_app_text">This is a system app and can\'t be uninstalled.</string>
 
     <!-- Title of the Android Dreams (screensaver) module -->
     <string name="dream_name">Rocket Launcher</string>
@@ -226,13 +226,13 @@ s -->
     <!-- The title text for the All Apps cling [CHAR_LIMIT=none] -->
     <string name="all_apps_cling_title">Choose some apps</string>
     <!-- The description of how to pick up and add an item to the workspace [CHAR_LIMIT=none] -->
-    <string name="all_apps_cling_add_item">To add an app to your home screen, touch &amp; hold it.</string>
+    <string name="all_apps_cling_add_item">To add an app to your Home screen, touch &amp; hold it.</string>
     <!-- The title text for the Folder cling [CHAR_LIMIT=none] -->
     <string name="folder_cling_title">Organize your apps with folders</string>
     <!-- The description of how to move an app [CHAR_LIMIT=none] -->
     <string name="folder_cling_move_item">To move an app, touch &amp; hold it.</string>
     <!-- The description of how to create a folder [CHAR_LIMIT=none] -->
-    <string name="folder_cling_create_folder">To make a new folder on your home screen, stack one app on top of another.</string>
+    <string name="folder_cling_create_folder">To make a new folder on your Home screen, stack one app on top of another.</string>
     <!-- The text on the button to dismiss a cling [CHAR_LIMIT=none] -->
     <string name="cling_dismiss">OK</string>
     <add-resource type="string" name="default_folder_name" />
