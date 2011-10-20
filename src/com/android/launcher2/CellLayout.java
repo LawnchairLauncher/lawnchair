@@ -218,6 +218,7 @@ public class CellLayout extends ViewGroup {
         });
         mCrosshairsAnimator.getAnimator().setInterpolator(mEaseOutInterpolator);
 
+        mDragCell[0] = mDragCell[1] = -1;
         for (int i = 0; i < mDragOutlines.length; i++) {
             mDragOutlines[i] = new Point(-1, -1);
         }
@@ -1171,13 +1172,13 @@ public class CellLayout extends ViewGroup {
         result[1] = Math.max(0, result[1]); // Snap to top
     }
 
-    void visualizeDropLocation(
-            View v, Bitmap dragOutline, int originX, int originY, int spanX, int spanY) {
+    void visualizeDropLocation(View v, Bitmap dragOutline, int originX, int originY,
+            int spanX, int spanY, Point dragOffset, Rect dragRegion) {
 
         final int oldDragCellX = mDragCell[0];
         final int oldDragCellY = mDragCell[1];
         final int[] nearest = findNearestVacantArea(originX, originY, spanX, spanY, v, mDragCell);
-        if (v != null) {
+        if (v != null && dragOffset == null) {
             mDragCenter.set(originX + (v.getWidth() / 2), originY + (v.getHeight() / 2));
         } else {
             mDragCenter.set(originX, originY);
@@ -1198,7 +1199,7 @@ public class CellLayout extends ViewGroup {
             int left = topLeft[0];
             int top = topLeft[1];
 
-            if (v != null) {
+            if (v != null && dragOffset == null) {
                 // When drawing the drag outline, it did not account for margin offsets
                 // added by the view's parent.
                 MarginLayoutParams lp = (MarginLayoutParams) v.getLayoutParams();
@@ -1213,11 +1214,19 @@ public class CellLayout extends ViewGroup {
                 left += ((mCellWidth * spanX) + ((spanX - 1) * mWidthGap)
                         - dragOutline.getWidth()) / 2;
             } else {
-                // Center the drag outline in the cell
-                left += ((mCellWidth * spanX) + ((spanX - 1) * mWidthGap)
-                        - dragOutline.getWidth()) / 2;
-                top += ((mCellHeight * spanY) + ((spanY - 1) * mHeightGap)
-                        - dragOutline.getHeight()) / 2;
+                if (dragOffset != null && dragRegion != null) {
+                    // Center the drag region *horizontally* in the cell and apply a drag
+                    // outline offset
+                    left += dragOffset.x + ((mCellWidth * spanX) + ((spanX - 1) * mWidthGap)
+                             - dragRegion.width()) / 2;
+                    top += dragOffset.y;
+                } else {
+                    // Center the drag outline in the cell
+                    left += ((mCellWidth * spanX) + ((spanX - 1) * mWidthGap)
+                            - dragOutline.getWidth()) / 2;
+                    top += ((mCellHeight * spanY) + ((spanY - 1) * mHeightGap)
+                            - dragOutline.getHeight()) / 2;
+                }
             }
 
             final int oldIndex = mDragOutlineCurrent;

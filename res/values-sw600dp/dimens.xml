@@ -29,6 +29,8 @@
     <dimen name="folder_cell_width">96dp</dimen>
     <dimen name="folder_cell_height">96dp</dimen>
 
+    <dimen name="app_icon_padding_top">4dp</dimen>
+
 <!-- AppsCustomize -->
     <dimen name="apps_customize_tab_bar_height">56dp</dimen>
     <dimen name="apps_customize_cell_width">96dp</dimen>

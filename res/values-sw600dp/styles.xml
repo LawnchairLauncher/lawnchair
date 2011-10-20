@@ -23,7 +23,7 @@
         <item name="android:drawablePadding">0dp</item>
         <item name="android:paddingLeft">4dp</item>
         <item name="android:paddingRight">4dp</item>
-        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingTop">@dimen/app_icon_padding_top</item>
         <item name="android:paddingBottom">4dp</item>
         <item name="android:textSize">13sp</item>
     </style>
@@ -38,7 +38,7 @@
         <item name="android:drawablePadding">0dp</item>
         <item name="android:paddingLeft">4dp</item>
         <item name="android:paddingRight">4dp</item>
-        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingTop">@dimen/app_icon_padding_top</item>
         <item name="android:paddingBottom">4dp</item>
         <item name="android:textSize">13sp</item>
     </style>

@@ -17,12 +17,12 @@
 package com.android.launcher2;
 
 import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
-import android.animation.Animator.AnimatorListener;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.AlertDialog;
 import android.app.WallpaperManager;
@@ -40,6 +40,7 @@ import android.graphics.Camera;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -1784,7 +1785,7 @@ public class Workspace extends SmoothPagedView
                 v.getWidth() + padding, v.getHeight() + padding, Bitmap.Config.ARGB_8888);
 
         canvas.setBitmap(b);
-        drawDragView(v, canvas, padding, false);
+        drawDragView(v, canvas, padding, true);
         mOutlineHelper.applyMediumExpensiveOutlineWithBlur(b, canvas, outlineColor, outlineColor);
         canvas.setBitmap(null);
         return b;
@@ -1866,6 +1867,8 @@ public class Workspace extends SmoothPagedView
     }
 
     public void beginDragShared(View child, DragSource source) {
+        Resources r = getResources();
+
         // We need to add extra padding to the bitmap to make room for the glow effect
         final int bitmapPadding = HolographicOutlineHelper.MAX_OUTER_BLUR_RADIUS;
 
@@ -1878,17 +1881,22 @@ public class Workspace extends SmoothPagedView
         final int dragLayerX = (int) mTempXY[0] + (child.getWidth() - bmpWidth) / 2;
         int dragLayerY = mTempXY[1] - bitmapPadding / 2;
 
+        Point dragVisualizeOffset = null;
         Rect dragRect = null;
-        if (child instanceof BubbleTextView) {
-            int iconSize = getResources().getDimensionPixelSize(R.dimen.app_icon_size);
+        if (child instanceof BubbleTextView || child instanceof PagedViewIcon) {
+            int iconSize = r.getDimensionPixelSize(R.dimen.app_icon_size);
+            int iconPaddingTop = r.getDimensionPixelSize(R.dimen.app_icon_padding_top);
             int top = child.getPaddingTop();
             int left = (bmpWidth - iconSize) / 2;
             int right = left + iconSize;
             int bottom = top + iconSize;
             dragLayerY += top;
+            // Note: The drag region is used to calculate drag layer offsets, but the
+            // dragVisualizeOffset in addition to the dragRect (the size) to position the outline.
+            dragVisualizeOffset = new Point(-bitmapPadding / 2, iconPaddingTop - bitmapPadding / 2);
             dragRect = new Rect(left, top, right, bottom);
         } else if (child instanceof FolderIcon) {
-            int previewSize = getResources().getDimensionPixelSize(R.dimen.folder_preview_size);
+            int previewSize = r.getDimensionPixelSize(R.dimen.folder_preview_size);
             dragRect = new Rect(0, 0, child.getWidth(), previewSize);
         }
 
@@ -1899,7 +1907,7 @@ public class Workspace extends SmoothPagedView
         }
 
         mDragController.startDrag(b, dragLayerX, dragLayerY, source, child.getTag(),
-                DragController.DRAG_ACTION_MOVE, dragRect);
+                DragController.DRAG_ACTION_MOVE, dragVisualizeOffset, dragRect);
         b.recycle();
     }
 
@@ -2354,13 +2362,13 @@ public class Workspace extends SmoothPagedView
             showOutlines();
             layout.setIsDragOccuring(true);
             layout.onDragEnter();
-            layout.visualizeDropLocation(null, mDragOutline, x, y, 1, 1);
+            layout.visualizeDropLocation(null, mDragOutline, x, y, 1, 1, null, null);
 
             return true;
         }
         case DragEvent.ACTION_DRAG_LOCATION:
             // Visualize the drop location
-            layout.visualizeDropLocation(null, mDragOutline, x, y, 1, 1);
+            layout.visualizeDropLocation(null, mDragOutline, x, y, 1, 1, null, null);
             return true;
         case DragEvent.ACTION_DROP: {
             // Try and add any shortcuts
@@ -2727,7 +2735,8 @@ public class Workspace extends SmoothPagedView
             if (!mCreateUserFolderOnDrop && !isOverFolder) {
                 mDragTargetLayout.visualizeDropLocation(child, mDragOutline,
                         (int) mDragViewVisualCenter[0], (int) mDragViewVisualCenter[1],
-                        item.spanX, item.spanY);
+                        item.spanX, item.spanY, d.dragView.getDragVisualizeOffset(),
+                        d.dragView.getDragRegion());
             }
         }
     }
