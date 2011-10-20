@@ -36,7 +36,7 @@
     <string name="rename_action" msgid="6016003384693240896">"OK"</string>
     <string name="cancel_action" msgid="3811860427489435048">"Annuller"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"Føj til Startskærm"</string>
-    <string name="group_applications" msgid="4118484163419674240">"Programmer"</string>
+    <string name="group_applications" msgid="4118484163419674240">"Applikationer"</string>
     <string name="group_shortcuts" msgid="9133529424900391877">"Genveje"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Widgets"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Tapeter"</string>
@@ -47,7 +47,7 @@
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Genvejen \"<xliff:g id="NAME">%s</xliff:g>\" findes allerede."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Vælg genvej"</string>
     <string name="title_select_application" msgid="8031072293115454221">"Vælg applikation"</string>
-    <string name="all_apps_button_label" msgid="2578400570124163469">"Programmer"</string>
+    <string name="all_apps_button_label" msgid="2578400570124163469">"Applikationer"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Start"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"Fjern"</string>
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"Afinstaller"</string>
@@ -56,7 +56,7 @@
     <string name="info_target_label" msgid="4019495079517426980">"Oplysninger om appen"</string>
     <string name="accessibility_search_button" msgid="816822994629942611">"Søg"</string>
     <string name="accessibility_voice_search_button" msgid="3938249215065842475">"Stemmesøgning"</string>
-    <string name="accessibility_all_apps_button" msgid="1595097919145716305">"Programmer"</string>
+    <string name="accessibility_all_apps_button" msgid="1595097919145716305">"Applikationer"</string>
     <string name="accessibility_delete_button" msgid="3628162007991023603">"Fjern"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"Afinstaller opdatering"</string>
     <string name="menu_add" msgid="3065046628354640854">"Tilføj"</string>
