@@ -270,6 +270,10 @@ public abstract class PagedView extends ViewGroup {
         return getChildAt(index);
     }
 
+    protected int indexToPage(int index) {
+        return index;
+    }
+
     /**
      * Updates the scroll of the current page immediately to its final scroll position.  We use this
      * in CustomizePagedView to allow tabs to share the same PagedView while resetting the scroll of
@@ -714,7 +718,7 @@ public abstract class PagedView extends ViewGroup {
 
     @Override
     public boolean requestChildRectangleOnScreen(View child, Rect rectangle, boolean immediate) {
-        int page = indexOfChild(child);
+        int page = indexToPage(indexOfChild(child));
         if (page != mCurrentPage || !mScroller.isFinished()) {
             snapToPage(page);
             return true;
@@ -1287,7 +1291,7 @@ public abstract class PagedView extends ViewGroup {
     @Override
     public void requestChildFocus(View child, View focused) {
         super.requestChildFocus(child, focused);
-        int page = indexOfChild(child);
+        int page = indexToPage(indexOfChild(child));
         if (page >= 0 && page != getCurrentPage() && !isInTouchMode()) {
             snapToPage(page);
         }

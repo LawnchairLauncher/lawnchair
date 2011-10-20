@@ -156,13 +156,13 @@ public class PagedViewIcon extends CachedTextView implements Checkable {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return FocusHelper.handlePagedViewIconKeyEvent(this, keyCode, event)
+        return FocusHelper.handleAppsCustomizeKeyEvent(this, keyCode, event)
                 || super.onKeyDown(keyCode, event);
     }
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        return FocusHelper.handlePagedViewIconKeyEvent(this, keyCode, event)
+        return FocusHelper.handleAppsCustomizeKeyEvent(this, keyCode, event)
                 || super.onKeyUp(keyCode, event);
     }
 
