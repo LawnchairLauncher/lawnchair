@@ -167,6 +167,14 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         mAppsCustomizePane.hideScrollingIndicator(false);
     }
 
+    private void reloadCurrentPage() {
+        if (!LauncherApplication.isScreenLarge()) {
+            mAppsCustomizePane.flashScrollingIndicator();
+        }
+        mAppsCustomizePane.loadAssociatedPages(mAppsCustomizePane.getCurrentPage());
+        mAppsCustomizePane.requestFocus();
+    }
+
     private void onTabChangedEnd(AppsCustomizePagedView.ContentType type) {
         mAppsCustomizePane.setContentType(type);
     }
@@ -188,6 +196,12 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         post(new Runnable() {
             @Override
             public void run() {
+                if (mAppsCustomizePane.getMeasuredWidth() <= 0 ||
+                        mAppsCustomizePane.getMeasuredHeight() <= 0) {
+                    reloadCurrentPage();
+                    return;
+                }
+
                 // Setup the animation buffer
                 Bitmap b = Bitmap.createBitmap(mAppsCustomizePane.getMeasuredWidth(),
                         mAppsCustomizePane.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
@@ -217,12 +231,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
                 inAnim.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        if (!LauncherApplication.isScreenLarge()) {
-                            mAppsCustomizePane.flashScrollingIndicator();
-                        }
-                        mAppsCustomizePane.loadAssociatedPages(
-                                mAppsCustomizePane.getCurrentPage());
-                        mAppsCustomizePane.requestFocus();
+                        reloadCurrentPage();
                     }
                 });
                 AnimatorSet animSet = new AnimatorSet();
