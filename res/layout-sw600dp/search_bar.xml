@@ -44,7 +44,7 @@
 
     <!-- Voice search icon -->
     <com.android.launcher2.HolographicImageView
-        style="@style/SearchButton"
+        style="@style/SearchButton.Voice"
         android:id="@+id/voice_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
