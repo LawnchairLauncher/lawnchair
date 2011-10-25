@@ -121,7 +121,7 @@ public class LauncherModel extends BroadcastReceiver {
     private static int mCellCountX;
     private static int mCellCountY;
 
-    protected Configuration mPreviousConfig;
+    protected int mPreviousConfigMcc;
 
     public interface Callbacks {
         public boolean setLoadOnResume();
@@ -152,7 +152,8 @@ public class LauncherModel extends BroadcastReceiver {
         final Resources res = app.getResources();
         mAllAppsLoadDelay = res.getInteger(R.integer.config_allAppsBatchLoadDelay);
         mBatchSize = res.getInteger(R.integer.config_allAppsBatchSize);
-        mPreviousConfig = res.getConfiguration();
+        Configuration config = res.getConfiguration();
+        mPreviousConfigMcc = config.mcc;
     }
 
     public Bitmap getFallbackIcon() {
@@ -623,13 +624,13 @@ public class LauncherModel extends BroadcastReceiver {
              // and we would need to clear out the labels in all apps/workspace. Same handling as
              // above for ACTION_LOCALE_CHANGED
              Configuration currentConfig = context.getResources().getConfiguration();
-             if((mPreviousConfig.diff(currentConfig) & ActivityInfo.CONFIG_MCC) != 0){
+             if (mPreviousConfigMcc != currentConfig.mcc) {
                    Log.d(TAG, "Reload apps on config change. curr_mcc:"
-                       + currentConfig.mcc + " prevmcc:" + mPreviousConfig.mcc);
+                       + currentConfig.mcc + " prevmcc:" + mPreviousConfigMcc);
                    forceReload();
              }
              // Update previousConfig
-             mPreviousConfig = currentConfig;
+             mPreviousConfigMcc = currentConfig.mcc;
         } else if (SearchManager.INTENT_GLOBAL_SEARCH_ACTIVITY_CHANGED.equals(action) ||
                    SearchManager.INTENT_ACTION_SEARCHABLES_CHANGED.equals(action)) {
             if (mCallbacks != null) {
