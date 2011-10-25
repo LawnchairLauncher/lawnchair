@@ -1464,6 +1464,10 @@ public class Workspace extends SmoothPagedView
     }
 
     public void onDragStartedWithItemSpans(int spanX, int spanY, Bitmap b) {
+        onDragStartedWithItemSpans(spanX, spanY, b, null);
+    }
+
+    public void onDragStartedWithItemSpans(int spanX, int spanY, Bitmap b, Paint alphaClipPaint) {
         final Canvas canvas = new Canvas();
 
         // We need to add extra padding to the bitmap to make room for the glow effect
@@ -1474,7 +1478,7 @@ public class Workspace extends SmoothPagedView
         int[] size = cl.cellSpansToSize(spanX, spanY);
 
         // The outline is used to visualize where the item will land if dropped
-        mDragOutline = createDragOutline(b, canvas, bitmapPadding, size[0], size[1]);
+        mDragOutline = createDragOutline(b, canvas, bitmapPadding, size[0], size[1], alphaClipPaint);
     }
 
     // we call this method whenever a drag and drop in Launcher finishes, even if Workspace was
@@ -1817,6 +1821,10 @@ public class Workspace extends SmoothPagedView
      * Responsibility for the bitmap is transferred to the caller.
      */
     private Bitmap createDragOutline(Bitmap orig, Canvas canvas, int padding, int w, int h) {
+        return createDragOutline(orig, canvas, padding, w, h, null);
+    }
+    private Bitmap createDragOutline(Bitmap orig, Canvas canvas, int padding, int w, int h,
+            Paint alphaClipPaint) {
         final int outlineColor = getResources().getColor(android.R.color.holo_blue_light);
         final Bitmap b = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         canvas.setBitmap(b);
@@ -1834,7 +1842,8 @@ public class Workspace extends SmoothPagedView
         Paint p = new Paint();
         p.setFilterBitmap(true);
         canvas.drawBitmap(orig, src, dst, p);
-        mOutlineHelper.applyMediumExpensiveOutlineWithBlur(b, canvas, outlineColor, outlineColor);
+        mOutlineHelper.applyMediumExpensiveOutlineWithBlur(b, canvas, outlineColor, outlineColor,
+                alphaClipPaint);
         canvas.setBitmap(null);
 
         return b;

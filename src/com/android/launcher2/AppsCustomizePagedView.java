@@ -32,10 +32,13 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.MaskFilter;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Bitmap.Config;
+import android.graphics.TableMaskFilter;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Process;
@@ -552,10 +555,20 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             createItemInfo.spanX = createItemInfo.spanY = 1;
         }
 
+        // We use a custom alpha clip table for the default widget previews
+        Paint alphaClipPaint = null;
+        if (createItemInfo instanceof PendingAddWidgetInfo) {
+            if (((PendingAddWidgetInfo) createItemInfo).hasDefaultPreview) {
+                MaskFilter alphaClipTable = TableMaskFilter.CreateClipTable(0, 255);
+                alphaClipPaint = new Paint();
+                alphaClipPaint.setMaskFilter(alphaClipTable);
+            }
+        }
+
         // Start the drag
         mLauncher.lockScreenOrientationOnLargeUI();
         mLauncher.getWorkspace().onDragStartedWithItemSpans(createItemInfo.spanX,
-                createItemInfo.spanY, b);
+                createItemInfo.spanY, b, alphaClipPaint);
         mDragController.startDrag(image, b, this, createItemInfo,
                 DragController.DRAG_ACTION_COPY, null);
         b.recycle();
@@ -914,10 +927,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
     private Bitmap getShortcutPreview(ResolveInfo info, int cellWidth, int cellHeight) {
         // Render the background
-        int offset = (int) (mAppIconSize * sWidgetPreviewIconPaddingPercentage);
-        int bitmapSize = mAppIconSize + 2 * offset;
+        int offset = 0;
+        int bitmapSize = mAppIconSize;
         Bitmap preview = Bitmap.createBitmap(bitmapSize, bitmapSize, Config.ARGB_8888);
-        renderDrawableToBitmap(mDefaultWidgetBackground, preview, 0, 0, bitmapSize, bitmapSize);
 
         // Render the icon
         Drawable icon = mIconCache.getFullResIcon(info, mPackageManager);
@@ -964,41 +976,45 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             int targetHeight = mWidgetSpacingLayout.estimateCellHeight(cellVSpan);
             int bitmapWidth = targetWidth;
             int bitmapHeight = targetHeight;
-            int offset = (int) (mAppIconSize * sWidgetPreviewIconPaddingPercentage);
+            int minOffset = (int) (mAppIconSize * sWidgetPreviewIconPaddingPercentage);
             float iconScale = 1f;
 
             // Determine the size of the bitmap we want to draw
             if (cellHSpan == cellVSpan) {
                 // For square widgets, we just have a fixed size for 1x1 and larger-than-1x1
                 if (cellHSpan <= 1) {
-                    bitmapWidth = bitmapHeight = mAppIconSize + 2 * offset;
+                    bitmapWidth = bitmapHeight = mAppIconSize + 2 * minOffset;
                 } else {
-                    bitmapWidth = bitmapHeight = mAppIconSize + 4 * offset;
+                    bitmapWidth = bitmapHeight = mAppIconSize + 4 * minOffset;
                 }
             } else {
                 // Otherwise, ensure that we are properly sized within the cellWidth/Height
                 if (targetWidth > targetHeight) {
                     bitmapWidth = Math.min(targetWidth, cellWidth);
                     bitmapHeight = (int) (targetHeight * ((float) bitmapWidth / targetWidth));
-                    iconScale = Math.min((float) bitmapHeight / (mAppIconSize + 2 * offset), 1f);
+                    iconScale = Math.min((float) bitmapHeight / (mAppIconSize + 2 * minOffset), 1f);
                 } else {
                     bitmapHeight = Math.min(targetHeight, cellHeight);
                     bitmapWidth = (int) (targetWidth * ((float) bitmapHeight / targetHeight));
-                    iconScale = Math.min((float) bitmapWidth / (mAppIconSize + 2 * offset), 1f);
+                    iconScale = Math.min((float) bitmapWidth / (mAppIconSize + 2 * minOffset), 1f);
                 }
             }
             preview = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Config.ARGB_8888);
-            renderDrawableToBitmap(mDefaultWidgetBackground, preview, 0, 0, bitmapWidth,
-                    bitmapWidth);
+            if (cellHSpan != 1 || cellVSpan != 1) {
+                renderDrawableToBitmap(mDefaultWidgetBackground, preview, 0, 0, bitmapWidth,
+                        bitmapHeight);
+            }
 
             // Draw the icon in the top left corner
             try {
                 Drawable icon = null;
+                int hoffset = (int) (bitmapWidth / 2 - mAppIconSize * iconScale / 2);
+                int yoffset = (int) (bitmapHeight / 2 - mAppIconSize * iconScale / 2);
                 if (info.icon > 0) icon = mPackageManager.getDrawable(packageName, info.icon, null);
                 if (icon == null) icon = resources.getDrawable(R.drawable.ic_launcher_application);
 
-                renderDrawableToBitmap(icon, preview, (int) (offset * iconScale),
-                        (int) (offset * iconScale), (int) (mAppIconSize * iconScale),
+                renderDrawableToBitmap(icon, preview, hoffset, yoffset,
+                        (int) (mAppIconSize * iconScale),
                         (int) (mAppIconSize * iconScale));
             } catch (Resources.NotFoundException e) {}
         }
