@@ -116,6 +116,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/qsb_bar_height</item>
         <item name="android:layout_gravity">top|center_horizontal</item>
+        <item name="android:background">@drawable/search_bg_panel</item>
     </style>
     <style name="SearchDropTargetBar">
         <item name="android:orientation">horizontal</item>
@@ -158,8 +159,8 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:gravity">center</item>
-        <item name="android:paddingLeft">35dp</item>
-        <item name="android:paddingRight">35dp</item>
+        <item name="android:paddingLeft">30dp</item>
+        <item name="android:paddingRight">30dp</item>
         <item name="android:background">@drawable/tab_widget_indicator_selector</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:textSize">12sp</item>
