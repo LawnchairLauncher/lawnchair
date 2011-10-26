@@ -74,7 +74,7 @@
     <string name="cab_shortcut_selection_text" msgid="8115847384500412878">"Vybrán 1 zástupce"</string>
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"instalovat zástupce"</string>
     <string name="permdesc_install_shortcut" msgid="7429365847558984148">"Povoluje aplikaci přidat zástupce bez zásahu uživatele."</string>
-    <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"odinstalovat zástupce"</string>
+    <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"odinstalace zástupců"</string>
     <string name="permdesc_uninstall_shortcut" msgid="959972195916090900">"Povoluje aplikaci odstranit zástupce bez zásahu uživatele."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"čtení nastavení a odkazů plochy"</string>
     <string name="permdesc_read_settings" msgid="8377434937176025492">"Povoluje aplikaci číst nastavení a odkazy plochy."</string>

@@ -25,7 +25,7 @@
     <string name="chooser_wallpaper" msgid="5988031014201479733">"Velg bakgrunnsbilde fra"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Velg bakgrunnsbilde"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"Bakgrunner"</string>
-    <string name="activity_not_found" msgid="5591731020063337696">"Programmet er ikke installert."</string>
+    <string name="activity_not_found" msgid="5591731020063337696">"Appen er ikke installert."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Moduler"</string>
     <string name="long_press_widget_to_add" msgid="8915177487173521501">"Trykk og hold for å plukke opp en modul"</string>
     <string name="market" msgid="2652226429823445833">"Butikk"</string>
@@ -47,7 +47,7 @@
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Snarveien «<xliff:g id="NAME">%s</xliff:g>» fins allerede."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Velg snarvei"</string>
     <string name="title_select_application" msgid="8031072293115454221">"Velg applikasjon"</string>
-    <string name="all_apps_button_label" msgid="2578400570124163469">"Programmer"</string>
+    <string name="all_apps_button_label" msgid="2578400570124163469">"Apper"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Startsiden"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"Fjern"</string>
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"Avinstaller"</string>
