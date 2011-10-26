@@ -1529,27 +1529,34 @@ public class Workspace extends SmoothPagedView
             return;
         }
 
-        if (mAnimator != null) {
-            mAnimator.cancel();
-        }
+        // Initialize animation arrays for the first time if necessary
+        initAnimationArrays();
+
+        // Cancel any running transition animations
+        if (mAnimator != null) mAnimator.cancel();
+        mAnimator = new AnimatorSet();
 
         // Stop any scrolling, move to the current page right away
         setCurrentPage((mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage);
 
-        float finalScaleFactor = 1.0f;
-        float finalBackgroundAlpha = (state == State.SPRING_LOADED) ? 1.0f : 0f;
-        boolean normalState = false;
-        State oldState = mState;
+        final State oldState = mState;
+        final boolean oldStateIsNormal = (oldState == State.NORMAL);
+        final boolean oldStateIsSpringLoaded = (oldState == State.SPRING_LOADED);
+        final boolean oldStateIsSmall = (oldState == State.SMALL);
         mState = state;
+        final boolean stateIsNormal = (state == State.NORMAL);
+        final boolean stateIsSpringLoaded = (state == State.SPRING_LOADED);
+        final boolean stateIsSmall = (state == State.SMALL);
+        float finalScaleFactor = 1.0f;
+        float finalBackgroundAlpha = stateIsSpringLoaded ? 1.0f : 0f;
+        float translationX = 0;
+        float translationY = 0;
         boolean zoomIn = true;
 
         if (state != State.NORMAL) {
-            finalScaleFactor = mSpringLoadedShrinkFactor - (state == State.SMALL ? 0.1f : 0);
-            if (oldState == State.NORMAL && state == State.SMALL) {
+            finalScaleFactor = mSpringLoadedShrinkFactor - (stateIsSmall ? 0.1f : 0);
+            if (oldStateIsNormal && stateIsSmall) {
                 zoomIn = false;
-                if (animated) {
-                    hideScrollingIndicator(true);
-                }
                 setLayoutScale(finalScaleFactor);
                 updateChildrenLayersEnabled();
             } else {
@@ -1558,34 +1565,34 @@ public class Workspace extends SmoothPagedView
             }
         } else {
             setLayoutScale(1.0f);
-            normalState = true;
         }
-
-        float translationX = 0;
-        float translationY = 0;
-
-        mAnimator = new AnimatorSet();
-
-        final int screenCount = getChildCount();
-        initAnimationArrays();
 
         final int duration = zoomIn ? 
                 getResources().getInteger(R.integer.config_workspaceUnshrinkTime) :
                 getResources().getInteger(R.integer.config_appsCustomizeWorkspaceShrinkTime);
-        for (int i = 0; i < screenCount; i++) {
-            final CellLayout cl = (CellLayout)getChildAt(i);
-            float finalAlphaValue = 0f;
+        for (int i = 0; i < getChildCount(); i++) {
+            final CellLayout cl = (CellLayout) getChildAt(i);
             float rotation = 0f;
+            float initialAlpha = cl.getAlpha();
+            float finalAlphaMultiplierValue = 1f;
+            float finalAlpha = (!mFadeInAdjacentScreens || stateIsSpringLoaded ||
+                    (i == mCurrentPage)) ? 1f : 0f;
 
-            // Set the final alpha depending on whether we are fading side pages.  On phone ui,
-            // we don't do any of the rotation, or the fading alpha in portrait.  See the
-            // ctor and screenScrolled().
-            if (mFadeInAdjacentScreens && normalState) {
-                finalAlphaValue = (i == mCurrentPage) ? 1f : 0f;
-            } else {
-                finalAlphaValue = 1f;
+            // Determine the pages alpha during the state transition
+            if ((oldStateIsSmall && stateIsNormal) ||
+                (oldStateIsNormal && stateIsSmall)) {
+                // To/from workspace - only show the current page unless the transition is not
+                //                     animated and the animation end callback below doesn't run
+                if (i == mCurrentPage || !animated) {
+                    finalAlpha = 1f;
+                    finalAlphaMultiplierValue = 0f;
+                } else {
+                    initialAlpha = 0f;
+                    finalAlpha = 0f;
+                }
             }
 
+            // Update the rotation of the screen (don't apply rotation on Phone UI)
             if (LauncherApplication.isScreenLarge()) {
                 if (i < mCurrentPage) {
                     rotation = WORKSPACE_ROTATION;
@@ -1594,7 +1601,6 @@ public class Workspace extends SmoothPagedView
                 }
             }
 
-            float finalAlphaMultiplierValue = 1f;
             // If the screen is not xlarge, then don't rotate the CellLayouts
             // NOTE: If we don't update the side pages alpha, then we should not hide the side
             //       pages. see unshrink().
@@ -1602,8 +1608,8 @@ public class Workspace extends SmoothPagedView
                 translationX = getOffsetXForRotation(rotation, cl.getWidth(), cl.getHeight());
             }
 
-            mOldAlphas[i] = cl.getAlpha();
-            mNewAlphas[i] = finalAlphaValue;
+            mOldAlphas[i] = initialAlpha;
+            mNewAlphas[i] = finalAlpha;
             if (animated) {
                 mOldTranslationXs[i] = cl.getTranslationX();
                 mOldTranslationYs[i] = cl.getTranslationY();
@@ -1625,9 +1631,9 @@ public class Workspace extends SmoothPagedView
                 cl.setTranslationY(translationY);
                 cl.setScaleX(finalScaleFactor);
                 cl.setScaleY(finalScaleFactor);
-                cl.setBackgroundAlpha(0.0f);
+                cl.setBackgroundAlpha(finalBackgroundAlpha);
                 cl.setBackgroundAlphaMultiplier(finalAlphaMultiplierValue);
-                cl.setAlpha(finalAlphaValue);
+                cl.setAlpha(finalAlpha);
                 cl.setRotationY(rotation);
                 mChangeStateAnimationListener.onAnimationEnd(null);
             }
@@ -1641,6 +1647,21 @@ public class Workspace extends SmoothPagedView
                 animWithInterpolator.setInterpolator(mZoomInInterpolator);
             }
 
+            animWithInterpolator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(android.animation.Animator animation) {
+                    // The above code to determine initialAlpha and finalAlpha will ensure that only
+                    // the current page is visible during (and subsequently, after) the transition
+                    // animation.  If fade adjacent pages is disabled, then re-enable the page
+                    // visibility after the transition animation.
+                    if (!mFadeInAdjacentScreens && stateIsNormal && oldStateIsSmall) {
+                        for (int i = 0; i < getChildCount(); i++) {
+                            final CellLayout cl = (CellLayout) getChildAt(i);
+                            cl.setAlpha(1f);
+                        }
+                    }
+                }
+            });
             animWithInterpolator.addUpdateListener(new LauncherAnimatorUpdateListener() {
                 public void onAnimationUpdate(float a, float b) {
                     mTransitionProgress = b;
@@ -1649,7 +1670,7 @@ public class Workspace extends SmoothPagedView
                         return;
                     }
                     invalidate();
-                    for (int i = 0; i < screenCount; i++) {
+                    for (int i = 0; i < getChildCount(); i++) {
                         final CellLayout cl = (CellLayout) getChildAt(i);
                         cl.fastInvalidate();
                         cl.setFastTranslationX(a * mOldTranslationXs[i] + b * mNewTranslationXs[i]);
@@ -1674,7 +1695,7 @@ public class Workspace extends SmoothPagedView
                         // an optimization, but not required
                         return;
                     }
-                    for (int i = 0; i < screenCount; i++) {
+                    for (int i = 0; i < getChildCount(); i++) {
                         final CellLayout cl = (CellLayout) getChildAt(i);
                         cl.setFastRotationY(a * mOldRotationYs[i] + b * mNewRotationYs[i]);
                     }
@@ -1689,7 +1710,7 @@ public class Workspace extends SmoothPagedView
             mAnimator.start();
         }
 
-        if (state == State.SPRING_LOADED) {
+        if (stateIsSpringLoaded) {
             // Right now we're covered by Apps Customize
             // Show the background gradient immediately, so the gradient will
             // be showing once AppsCustomize disappears
