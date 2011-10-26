@@ -31,11 +31,11 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Bitmap.Config;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Process;
@@ -47,6 +47,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -218,6 +220,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private static float TRANSITION_MAX_ROTATION = 22;
     private static final boolean PERFORM_OVERSCROLL_ROTATION = true;
     private AccelerateInterpolator mAlphaInterpolator = new AccelerateInterpolator(0.9f);
+    private DecelerateInterpolator mLeftScreenAlphaInterpolator = new DecelerateInterpolator(4);
 
     // Previews & outlines
     ArrayList<AppsCustomizeAsyncTask> mRunningTasks;
@@ -262,7 +265,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // (top + bottom)
         mWidgetPreviewIconPaddedDimension =
             (int) (mAppIconSize * (1 + (2 * sWidgetPreviewIconPaddingPercentage)));
-        mFadeInAdjacentScreens = LauncherApplication.isScreenLarge();
+        mFadeInAdjacentScreens = false;
     }
 
     @Override
@@ -1218,8 +1221,15 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                         interpolatedProgress * TRANSITION_SCALE_FACTOR;
                 float translationX = Math.min(0, scrollProgress) * v.getMeasuredWidth();
 
-                float alpha = scrollProgress < 0 ? mAlphaInterpolator.getInterpolation(
+                float alpha;
+
+                if (!LauncherApplication.isScreenLarge() || scrollProgress < 0) {
+                    alpha = scrollProgress < 0 ? mAlphaInterpolator.getInterpolation(
                         1 - Math.abs(scrollProgress)) : 1.0f;
+                } else {
+                    // On large screens we need to fade the page as it nears its leftmost position
+                    alpha = mLeftScreenAlphaInterpolator.getInterpolation(1 - scrollProgress);
+                }
 
                 v.setCameraDistance(mDensity * CAMERA_DISTANCE);
                 int pageWidth = v.getMeasuredWidth();
