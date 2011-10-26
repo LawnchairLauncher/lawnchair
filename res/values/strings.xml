@@ -208,13 +208,13 @@ s -->
     <skip />
 
     <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
-    <string name="default_scroll_format" translatable="false">Page %1$d of %2$d</string>
+    <string name="default_scroll_format">Page %1$d of %2$d</string>
     <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
-    <string name="workspace_scroll_format" translatable="false">Workspace %1$d of %2$d</string>
+    <string name="workspace_scroll_format">Workspace %1$d of %2$d</string>
     <!-- The format string for AppsCustomize Apps page scroll text [CHAR_LIMIT=none] -->
-    <string name="apps_customize_apps_scroll_format" translatable="false">Apps page %1$d of %2$d</string>
+    <string name="apps_customize_apps_scroll_format">Apps page %1$d of %2$d</string>
     <!-- The format string for AppsCustomize Apps page scroll text [CHAR_LIMIT=none] -->
-    <string name="apps_customize_widgets_scroll_format" translatable="false">Widgets page %1$d of %2$d</string>
+    <string name="apps_customize_widgets_scroll_format">Widgets page %1$d of %2$d</string>
 
     <!-- Clings -->
     <!-- The title text for the workspace cling [CHAR_LIMIT=none] -->
@@ -236,5 +236,19 @@ s -->
     <!-- The text on the button to dismiss a cling [CHAR_LIMIT=none] -->
     <string name="cling_dismiss">OK</string>
     <add-resource type="string" name="default_folder_name" />
+
+    <!-- Folder accessibility -->
+    <!-- The format string for when a folder is opened, speaks the dimensions -->
+    <string name="folder_opened">Folder opened, %1$d by %2$d</string>
+    <!-- Instruction that clicking outside will close folder -->
+    <string name="folder_tap_to_close">Tap to close folder</string>
+    <!-- Instruction that clicking outside will commit folder rename -->
+    <string name="folder_tap_to_rename">Tap to commit rename</string>
+    <!-- Indication that folder closed -->
+    <string name="folder_closed">Folder closed</string>
+    <!-- Folder renamed format -->
+    <string name="folder_renamed">Folder renamed to %1$s</string>
+    <!-- Folder name format -->
+    <string name="folder_name_format">Folder: %1$s</string>
 
 </resources>

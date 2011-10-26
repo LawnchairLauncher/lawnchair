@@ -25,6 +25,8 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.os.Handler;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
 
 import java.lang.ref.WeakReference;
 
@@ -40,7 +42,8 @@ public class LauncherApplication extends Application {
         super.onCreate();
 
         // set sIsScreenXLarge and sScreenDensity *before* creating icon cache
-        final int screenSize = getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK;
+        final int screenSize = getResources().getConfiguration().screenLayout &
+                Configuration.SCREENLAYOUT_SIZE_MASK;
         sIsScreenLarge = screenSize == Configuration.SCREENLAYOUT_SIZE_LARGE ||
             screenSize == Configuration.SCREENLAYOUT_SIZE_XLARGE;
         sScreenDensity = getResources().getDisplayMetrics().density;
