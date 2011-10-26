@@ -32,6 +32,8 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
@@ -65,6 +67,8 @@ public class DragLayer extends FrameLayout {
     private int[] mDropViewPos = new int[2];
     private float mDropViewScale;
     private float mDropViewAlpha;
+    private boolean mHoverPointClosesFolder = false;
+    private Rect mHitRect = new Rect();
 
     /**
      * Used to create a new DragLayer from XML.
@@ -89,6 +93,22 @@ public class DragLayer extends FrameLayout {
         return mDragController.dispatchKeyEvent(event) || super.dispatchKeyEvent(event);
     }
 
+    private boolean isEventOverFolderTextRegion(Folder folder, MotionEvent ev) {
+        getDescendantRectRelativeToSelf(folder.getEditTextRegion(), mHitRect);
+        if (mHitRect.contains((int) ev.getX(), (int) ev.getY())) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isEventOverFolder(Folder folder, MotionEvent ev) {
+        getDescendantRectRelativeToSelf(folder, mHitRect);
+        if (mHitRect.contains((int) ev.getX(), (int) ev.getY())) {
+            return true;
+        }
+        return false;
+    }
+
     private boolean handleTouchDown(MotionEvent ev, boolean intercept) {
         Rect hitRect = new Rect();
         int x = (int) ev.getX();
@@ -110,15 +130,14 @@ public class DragLayer extends FrameLayout {
         Folder currentFolder = mLauncher.getWorkspace().getOpenFolder();
         if (currentFolder != null && !mLauncher.isFolderClingVisible() && intercept) {
             if (currentFolder.isEditingName()) {
-                getDescendantRectRelativeToSelf(currentFolder.getEditTextRegion(), hitRect);
-                if (!hitRect.contains(x, y)) {
+                if (!isEventOverFolderTextRegion(currentFolder, ev)) {
                     currentFolder.dismissEditingName();
                     return true;
                 }
             }
 
             getDescendantRectRelativeToSelf(currentFolder, hitRect);
-            if (!hitRect.contains(x, y)) {
+            if (!isEventOverFolder(currentFolder, ev)) {
                 mLauncher.closeFolder();
                 return true;
             }
@@ -135,6 +154,63 @@ public class DragLayer extends FrameLayout {
         }
         clearAllResizeFrames();
         return mDragController.onInterceptTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onInterceptHoverEvent(MotionEvent ev) {
+        Folder currentFolder = mLauncher.getWorkspace().getOpenFolder();
+        if (currentFolder == null) {
+            return false;
+        } else {
+            if (AccessibilityManager.getInstance(mContext).isTouchExplorationEnabled()) {
+                final int action = ev.getAction();
+                boolean isOverFolder;
+                switch (action) {
+                    case MotionEvent.ACTION_HOVER_ENTER:
+                        isOverFolder = isEventOverFolder(currentFolder, ev);
+                        if (!isOverFolder) {
+                            sendTapOutsideFolderAccessibilityEvent(currentFolder.isEditingName());
+                            mHoverPointClosesFolder = true;
+                            return true;
+                        } else if (isOverFolder) {
+                            mHoverPointClosesFolder = false;
+                        } else {
+                            return true;
+                        }
+                    case MotionEvent.ACTION_HOVER_MOVE:
+                        isOverFolder = isEventOverFolder(currentFolder, ev);
+                        if (!isOverFolder && !mHoverPointClosesFolder) {
+                            sendTapOutsideFolderAccessibilityEvent(currentFolder.isEditingName());
+                            mHoverPointClosesFolder = true;
+                            return true;
+                        } else if (isOverFolder) {
+                            mHoverPointClosesFolder = false;
+                        } else {
+                            return true;
+                        }
+                }
+            }
+        }
+        return false;
+    }
+
+    private void sendTapOutsideFolderAccessibilityEvent(boolean isEditingName) {
+        if (AccessibilityManager.getInstance(mContext).isEnabled()) {
+            Folder currentFolder = mLauncher.getWorkspace().getOpenFolder();
+            int stringId = isEditingName ? R.string.folder_tap_to_rename : R.string.folder_tap_to_close;
+            AccessibilityEvent event = AccessibilityEvent.obtain(
+                    AccessibilityEvent.TYPE_VIEW_FOCUSED);
+            onInitializeAccessibilityEvent(event);
+            event.getText().add(mContext.getString(stringId));
+            AccessibilityManager.getInstance(mContext).sendAccessibilityEvent(event);
+        }
+    }
+
+    @Override
+    public boolean onHoverEvent(MotionEvent ev) {
+        // If we've received this, we've already done the necessary handling
+        // in onInterceptHoverEvent. Return true to consume the event.
+        return false;
     }
 
     @Override
