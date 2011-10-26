@@ -102,6 +102,7 @@ public abstract class PagedView extends ViewGroup {
     protected final static float ALPHA_QUANTIZE_LEVEL = 0.0001f;
 
     protected int mTouchState = TOUCH_STATE_REST;
+    protected boolean mForceScreenScrolled = false;
 
     protected OnLongClickListener mLongClickListener;
 
@@ -672,14 +673,25 @@ public abstract class PagedView extends ViewGroup {
     }
 
     @Override
+    protected void onViewAdded(View child) {
+        super.onViewAdded(child);
+
+        // This ensures that when children are added, they get the correct transforms / alphas
+        // in accordance with any scroll effects.
+        mForceScreenScrolled = true;
+        invalidate();
+    }
+
+    @Override
     protected void dispatchDraw(Canvas canvas) {
         int halfScreenSize = getMeasuredWidth() / 2;
         int screenCenter = mScrollX + halfScreenSize;
 
-        if (screenCenter != mLastScreenCenter) {
+        if (screenCenter != mLastScreenCenter || mForceScreenScrolled) {
             screenScrolled(screenCenter);
             updateAdjacentPagesAlpha();
             mLastScreenCenter = screenCenter;
+            mForceScreenScrolled = false;
         }
 
         // Find out which screens are visible; as an optimization we only call draw on them
