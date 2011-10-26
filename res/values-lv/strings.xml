@@ -22,21 +22,21 @@
     <string name="application_name" msgid="8424725141379931883">"Palaidējs"</string>
     <string name="uid_name" msgid="3371120195364560632">"Android kodola lietojumprogrammas"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>
-    <string name="chooser_wallpaper" msgid="5988031014201479733">"Atlasīt tapeti no"</string>
+    <string name="chooser_wallpaper" msgid="6063168087625352235">"Fona tapetes izvēle:"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Iestatīt tapeti"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"Tapetes"</string>
-    <string name="activity_not_found" msgid="5591731020063337696">"Lietojumprogramma nav instalēta."</string>
+    <string name="activity_not_found" msgid="217823393239365967">"Lietotne nav instalēta."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Logrīki"</string>
-    <string name="long_press_widget_to_add" msgid="8915177487173521501">"Lai izvēlētos logrīku, pieskarieties un turiet"</string>
+    <string name="long_press_widget_to_add" msgid="7395697462851217506">"Lai izvēlētos logrīku, pieskarieties tam un turiet to."</string>
     <string name="market" msgid="2652226429823445833">"Iepirkties"</string>
-    <string name="external_drop_widget_error" msgid="4976816434597126575">"Nevarēja nomest vienumu šajā sākumekrānā."</string>
-    <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Atlasīt izveidojamo logrīku"</string>
+    <string name="external_drop_widget_error" msgid="127440783198670829">"Nevarēja nomest vienumu šajā sākuma ekrānā."</string>
+    <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Izveidojamā logrīka izvēlēšanās"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Mapes nosaukums"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Mapes pārdēvēšana"</string>
     <string name="rename_action" msgid="6016003384693240896">"Labi"</string>
     <string name="cancel_action" msgid="3811860427489435048">"Atcelt"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"Pievienot sākuma ekrānam"</string>
-    <string name="group_applications" msgid="4118484163419674240">"Lietojumprogrammas"</string>
+    <string name="group_applications" msgid="2103752818818161976">"Lietotnes"</string>
     <string name="group_shortcuts" msgid="9133529424900391877">"Saīsnes"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Logrīki"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Tapetes"</string>
@@ -46,7 +46,7 @@
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Saīsne “<xliff:g id="NAME">%s</xliff:g>” tika noņemta."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Saīsne “<xliff:g id="NAME">%s</xliff:g>” jau pastāv."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Saīsnes atlase"</string>
-    <string name="title_select_application" msgid="8031072293115454221">"Lietojumprogrammas atlase"</string>
+    <string name="title_select_application" msgid="1793455815754848652">"Lietotnes izvēlēšanās"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Lietotnes"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Sākums"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"Noņemt"</string>
@@ -56,7 +56,7 @@
     <string name="info_target_label" msgid="4019495079517426980">"Lietotnes informācija"</string>
     <string name="accessibility_search_button" msgid="816822994629942611">"Meklēt"</string>
     <string name="accessibility_voice_search_button" msgid="3938249215065842475">"Balss meklēšana"</string>
-    <string name="accessibility_all_apps_button" msgid="1595097919145716305">"Lietojumprogrammas"</string>
+    <string name="accessibility_all_apps_button" msgid="8803738611398979849">"Lietotnes"</string>
     <string name="accessibility_delete_button" msgid="3628162007991023603">"Noņemt"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"Atinstalēt atjauninājumu"</string>
     <string name="menu_add" msgid="3065046628354640854">"Pievienot"</string>
@@ -66,31 +66,31 @@
     <string name="menu_notifications" msgid="6424587053194766192">"Paziņojumi"</string>
     <string name="menu_settings" msgid="3946232973327980394">"Sistēmas iestatījumi"</string>
     <string name="menu_help" msgid="4901160661634590633">"Palīdzība"</string>
-    <string name="cab_menu_delete_app" msgid="1242619904941293871">"Atinstalēt lietojumprogrammu"</string>
-    <string name="cab_menu_app_info" msgid="5180426909324882018">"Lietojumprogrammas dati"</string>
-    <string name="cab_app_selection_text" msgid="606113924828167756">"Atlasīta 1 lietojumprogramma"</string>
+    <string name="cab_menu_delete_app" msgid="4089398025537640349">"Atinstalēt lietotni"</string>
+    <string name="cab_menu_app_info" msgid="914548323652698884">"Lietotnes informācija"</string>
+    <string name="cab_app_selection_text" msgid="6378522164293415735">"Atlasīta 1 lietotne"</string>
     <string name="cab_widget_selection_text" msgid="962527270506951955">"Atlasīts 1 logrīks"</string>
     <string name="cab_folder_selection_text" msgid="8916111874189565067">"Atlasīta 1 mape"</string>
     <string name="cab_shortcut_selection_text" msgid="8115847384500412878">"Atlasīta 1 saīsne"</string>
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"ievietot saīsnes"</string>
-    <string name="permdesc_install_shortcut" msgid="7429365847558984148">"Ļauj lietojumprogrammai pievienot saīsnes, nejautājot lietotājam."</string>
+    <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Ļauj lietotnei pievienot saīsnes, nejautājot lietotājam."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"atinstalēt saīsnes"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="959972195916090900">"Ļauj lietojumprogrammai noņemt saīsnes, nejautājot lietotājam."</string>
+    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Ļauj lietotnei noņemt saīsnes, nejautājot lietotājam."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"lasīt sākuma ekrāna iestatījumus un saīsnes"</string>
-    <string name="permdesc_read_settings" msgid="8377434937176025492">"Ļauj lietojumprogrammai lasīt iestatījumus un saīsnes sākuma ekrānā."</string>
+    <string name="permdesc_read_settings" msgid="1836104524215167383">"Ļauj lietotnei lasīt iestatījumus un saīsnes sākuma ekrānā."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"rakstīt sākuma ekrāna iestatījumus un saīsnes"</string>
-    <string name="permdesc_write_settings" msgid="1098648778383349818">"Ļauj lietojumprogrammai mainīt iestatījumus un saīsnes sākuma ekrānā."</string>
+    <string name="permdesc_write_settings" msgid="6763846563231494591">"Ļauj lietotnei mainīt iestatījumus un saīsnes sākuma ekrānā."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Radās problēma, ielādējot logrīku"</string>
-    <string name="uninstall_system_app_text" msgid="7488523163288397451">"Šī ir sistēmas lietojumprogramma un to nevar atinstalēt."</string>
+    <string name="uninstall_system_app_text" msgid="6429814133777046491">"Šī ir sistēmas lietotne, un to nevar atinstalēt."</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Mape bez nosaukuma"</string>
     <string name="workspace_cling_title" msgid="738396473989890567">"Jūtieties kā mājās"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"Šeit varat ievietot savas iecienītākās lietotnes."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Lai skatītu visas lietotnes, pieskarieties aplim."</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"Izvēlieties dažas lietotnes"</string>
-    <string name="all_apps_cling_add_item" msgid="7404588523183860170">"Lai sākuma ekrānam pievienotu lietotni, pieskarieties tai un turiet to nospiestu."</string>
+    <string name="all_apps_cling_add_item" msgid="5665035103260318891">"Lai sākuma ekrānam pievienotu lietotni, pieskarieties tai un turiet to nospiestu."</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"Kārtojiet lietotnes mapēs"</string>
     <string name="folder_cling_move_item" msgid="270598675060435169">"Lai pārvietotu lietotni, pieskarieties tai un turiet to nospiestu."</string>
-    <string name="folder_cling_create_folder" msgid="289412698047625601">"Lai sākuma ekrānā izveidotu jaunu mapi, novietojiet vienu lietotni virs citas lietotnes."</string>
+    <string name="folder_cling_create_folder" msgid="8352867485656129478">"Lai sākuma ekrānā izveidotu jaunu mapi, novietojiet vienu lietotni virs citas lietotnes."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"Labi"</string>
 </resources>

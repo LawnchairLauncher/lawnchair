@@ -22,21 +22,21 @@
     <string name="application_name" msgid="8424725141379931883">"Trình khởi chạy"</string>
     <string name="uid_name" msgid="3371120195364560632">"Ứng dụng Lõi Android"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>
-    <string name="chooser_wallpaper" msgid="5988031014201479733">"Chọn hình nền từ"</string>
+    <string name="chooser_wallpaper" msgid="6063168087625352235">"Chọn hình nền từ"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Đặt hình nền"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"Hình nền"</string>
-    <string name="activity_not_found" msgid="5591731020063337696">"Ứng dụng chưa được cài đặt."</string>
+    <string name="activity_not_found" msgid="217823393239365967">"Ứng dụng chưa được cài đặt."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Tiện ích"</string>
-    <string name="long_press_widget_to_add" msgid="8915177487173521501">"Chạm &amp; giữ để chọn tiện ích con"</string>
+    <string name="long_press_widget_to_add" msgid="7395697462851217506">"Chạm &amp; giữ để chọn tiện ích con."</string>
     <string name="market" msgid="2652226429823445833">"Mua hàng"</string>
-    <string name="external_drop_widget_error" msgid="4976816434597126575">"Không thể thả mục vào màn hình chính này"</string>
-    <string name="external_drop_widget_pick_title" msgid="4481311720134376218">"Chọn tiện ích để tạo"</string>
+    <string name="external_drop_widget_error" msgid="127440783198670829">"Không thể thả mục vào Màn hình chính này."</string>
+    <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Chọn tiện ích con để tạo"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Tên thư mục"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Đổi tên thư mục"</string>
     <string name="rename_action" msgid="6016003384693240896">"OK"</string>
     <string name="cancel_action" msgid="3811860427489435048">"Hủy"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"Thêm vào Màn hình chính"</string>
-    <string name="group_applications" msgid="4118484163419674240">"Ứng dụng"</string>
+    <string name="group_applications" msgid="2103752818818161976">"Ứng dụng"</string>
     <string name="group_shortcuts" msgid="9133529424900391877">"Lối tắt"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Tiện ích"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Hình nền"</string>
@@ -46,7 +46,7 @@
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Lối tắt \"<xliff:g id="NAME">%s</xliff:g>\" đã bị xoá."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Lối tắt \"<xliff:g id="NAME">%s</xliff:g>\" đã tồn tại."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Chọn lối tắt"</string>
-    <string name="title_select_application" msgid="8031072293115454221">"Chọn ứng dụng"</string>
+    <string name="title_select_application" msgid="1793455815754848652">"Chọn ứng dụng"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Ứng dụng"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Màn hình trang chủ"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"Xóa"</string>
@@ -56,7 +56,7 @@
     <string name="info_target_label" msgid="4019495079517426980">"Thông tin ứng dụng"</string>
     <string name="accessibility_search_button" msgid="816822994629942611">"Tìm kiếm"</string>
     <string name="accessibility_voice_search_button" msgid="3938249215065842475">"Tìm kiếm bằng giọng nói"</string>
-    <string name="accessibility_all_apps_button" msgid="1595097919145716305">"Ứng dụng"</string>
+    <string name="accessibility_all_apps_button" msgid="8803738611398979849">"Ứng dụng"</string>
     <string name="accessibility_delete_button" msgid="3628162007991023603">"Xóa"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"Gỡ cài đặt cập nhật"</string>
     <string name="menu_add" msgid="3065046628354640854">"Thêm"</string>
@@ -66,31 +66,31 @@
     <string name="menu_notifications" msgid="6424587053194766192">"Thông báo"</string>
     <string name="menu_settings" msgid="3946232973327980394">"Cài đặt hệ thống"</string>
     <string name="menu_help" msgid="4901160661634590633">"Trợ giúp"</string>
-    <string name="cab_menu_delete_app" msgid="1242619904941293871">"Gỡ cài đặt ứng dụng"</string>
-    <string name="cab_menu_app_info" msgid="5180426909324882018">"Chi tiết ứng dụng"</string>
-    <string name="cab_app_selection_text" msgid="606113924828167756">"Đã chọn 1 ứng dụng"</string>
+    <string name="cab_menu_delete_app" msgid="4089398025537640349">"Gỡ cài đặt ứng dụng"</string>
+    <string name="cab_menu_app_info" msgid="914548323652698884">"Chi tiết ứng dụng"</string>
+    <string name="cab_app_selection_text" msgid="6378522164293415735">"Đã chọn 1 ứng dụng"</string>
     <string name="cab_widget_selection_text" msgid="962527270506951955">"Đã chọn 1 tiện ích"</string>
     <string name="cab_folder_selection_text" msgid="8916111874189565067">"Đã chọn 1 thư mục"</string>
     <string name="cab_shortcut_selection_text" msgid="8115847384500412878">"Đã chọn 1 lối tắt"</string>
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"cài đặt lối tắt"</string>
-    <string name="permdesc_install_shortcut" msgid="7429365847558984148">"Cho phép ứng dụng thêm lối tắt mà không cần sự can thiệp của người dùng."</string>
+    <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Cho phép ứng dụng thêm lối tắt mà không cần sự can thiệp của người dùng."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"gỡ cài đặt lối tắt"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="959972195916090900">"Cho phép ứng dụng xoá lối tắt mà không cần sự can thiệp của người dùng."</string>
+    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Cho phép ứng dụng xóa lối tắt mà không cần sự can thiệp của người dùng."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"đọc cài đặt Màn hình trang chủ và lối tắt"</string>
-    <string name="permdesc_read_settings" msgid="8377434937176025492">"Cho phép ứng dụng đọc cài đặt và lối tắt trên Màn hình trang chủ."</string>
+    <string name="permdesc_read_settings" msgid="1836104524215167383">"Cho phép ứng dụng đọc cài đặt và lối tắt trên Màn hình chính."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"ghi cài đặt Màn hình trang chủ và lối tắt"</string>
-    <string name="permdesc_write_settings" msgid="1098648778383349818">"Cho phép ứng dụng thay đổi cài đặt và lối tắt trên Màn hình trang chủ."</string>
+    <string name="permdesc_write_settings" msgid="6763846563231494591">"Cho phép ứng dụng thay đổi cài đặt và lối tắt trên Màn hình chính."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Sự cố khi tải tiện ích"</string>
-    <string name="uninstall_system_app_text" msgid="7488523163288397451">"Đây là ứng dụng hệ thống và không thể gỡ cài đặt."</string>
+    <string name="uninstall_system_app_text" msgid="6429814133777046491">"Đây là ứng dụng hệ thống và không thể gỡ cài đặt."</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Thư mục chưa đặt tên"</string>
     <string name="workspace_cling_title" msgid="738396473989890567">"Tự nhiên như ở nhà"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"Bạn có thể đặt ứng dụng yêu thích của mình tại đây."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Để xem tất cả ứng dụng của bạn, chạm vào vòng kết nối."</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"Chọn một số ứng dụng"</string>
-    <string name="all_apps_cling_add_item" msgid="7404588523183860170">"Để thêm ứng dụng vào màn hình chính của bạn, chạm &amp; giữ ứng dụng đó."</string>
+    <string name="all_apps_cling_add_item" msgid="5665035103260318891">"Để thêm ứng dụng vào Màn hình chính của bạn, chạm &amp; giữ ứng dụng đó."</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"Tổ chức ứng dụng của bạn bằng các thư mục"</string>
     <string name="folder_cling_move_item" msgid="270598675060435169">"Để di chuyển ứng dụng, chạm &amp; giữ ứng dụng đó."</string>
-    <string name="folder_cling_create_folder" msgid="289412698047625601">"Để tạo thư mục mới trên màn hình chính của bạn, xếp ứng dụng này lên trên ứng dụng khác."</string>
+    <string name="folder_cling_create_folder" msgid="8352867485656129478">"Để tạo thư mục mới trên Màn hình chính của bạn, xếp ứng dụng này lên trên ứng dụng khác."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
 </resources>
