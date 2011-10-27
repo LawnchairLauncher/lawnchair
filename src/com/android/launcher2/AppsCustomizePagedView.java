@@ -271,7 +271,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     @Override
     protected void init() {
         super.init();
-        mCenterPagesVertically = true;
+        mCenterPagesVertically = false;
 
         Context context = getContext();
         Resources r = context.getResources();
