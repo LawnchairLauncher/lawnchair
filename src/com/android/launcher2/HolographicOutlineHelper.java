@@ -122,10 +122,18 @@ public class HolographicOutlineHelper {
      */
     void applyExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas, int color,
             int outlineColor, int thickness) {
+        applyExpensiveOutlineWithBlur(srcDst, srcDstCanvas, color, outlineColor, mAlphaClipPaint,
+                thickness);
+    }
+    void applyExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas, int color,
+            int outlineColor, Paint alphaClipPaint, int thickness) {
 
         // We start by removing most of the alpha channel so as to ignore shadows, and
         // other types of partial transparency when defining the shape of the object
-        Bitmap glowShape = srcDst.extractAlpha(mAlphaClipPaint, mTempOffset);
+        if (alphaClipPaint == null) {
+            alphaClipPaint = mAlphaClipPaint;
+        }
+        Bitmap glowShape = srcDst.extractAlpha(alphaClipPaint, mTempOffset);
 
         // calculate the outer blur first
         BlurMaskFilter outerBlurMaskFilter;
@@ -214,6 +222,12 @@ public class HolographicOutlineHelper {
     void applyThickExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas, int color,
             int outlineColor) {
         applyExpensiveOutlineWithBlur(srcDst, srcDstCanvas, color, outlineColor, THICK);
+    }
+
+    void applyMediumExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas, int color,
+            int outlineColor, Paint alphaClipPaint) {
+        applyExpensiveOutlineWithBlur(srcDst, srcDstCanvas, color, outlineColor, alphaClipPaint,
+                MEDIUM);
     }
 
     void applyMediumExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas, int color,
