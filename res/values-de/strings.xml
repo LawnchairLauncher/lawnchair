@@ -25,7 +25,7 @@
     <string name="chooser_wallpaper" msgid="5988031014201479733">"Hintergrund auswählen"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Hintergrund festlegen"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"Hintergrundbilder"</string>
-    <string name="activity_not_found" msgid="5591731020063337696">"Anwendung ist nicht installiert."</string>
+    <string name="activity_not_found" msgid="5591731020063337696">"App ist nicht installiert."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widgets"</string>
     <string name="long_press_widget_to_add" msgid="8915177487173521501">"Zum Hinzufügen berühren und gedrückt halten"</string>
     <string name="market" msgid="2652226429823445833">"Shop"</string>

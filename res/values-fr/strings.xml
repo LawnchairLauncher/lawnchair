@@ -89,7 +89,7 @@
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Pour voir toutes vos applications, appuyez sur le cercle."</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"Sélectionner des applications"</string>
     <string name="all_apps_cling_add_item" msgid="7404588523183860170">"Pour ajouter une application à votre écran d\'accueil, appuyez dessus de manière prolongée."</string>
-    <string name="folder_cling_title" msgid="4308949882377840953">"Organiser vos applications dans des dossiers"</string>
+    <string name="folder_cling_title" msgid="4308949882377840953">"Organisez vos applications en dossiers"</string>
     <string name="folder_cling_move_item" msgid="270598675060435169">"Pour déplacer une application, appuyez dessus de manière prolongée."</string>
     <string name="folder_cling_create_folder" msgid="289412698047625601">"Pour créer un dossier sur votre écran d\'accueil, superposez les applications les unes sur les autres."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
