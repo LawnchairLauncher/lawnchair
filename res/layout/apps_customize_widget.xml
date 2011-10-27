@@ -32,8 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
-        android:orientation="horizontal"
-        android:background="@drawable/widget_info_bg">
+        android:orientation="horizontal">
         <!-- The name of the widget. -->
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/widget_name"
