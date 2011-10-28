@@ -713,7 +713,6 @@ public abstract class PagedView extends ViewGroup {
                 rightScreen++;
                 x += getScaledMeasuredWidth(getPageAt(rightScreen)) + mPageSpacing;
             }
-            rightScreen = Math.min(getChildCount() - 1, rightScreen);
 
             final long drawingTime = getDrawingTime();
             // Clip to the bounds
