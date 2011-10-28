@@ -84,6 +84,14 @@
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"این یک برنامه سیستمی است و حذف نصب نمی‌شود."</string>
     <string name="dream_name" msgid="2847171357608437154">"پرتاب کننده موشک"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"پوشه بی‌نام"</string>
+    <!-- no translation found for default_scroll_format (4057140866420001240) -->
+    <skip />
+    <!-- no translation found for workspace_scroll_format (7911126267695001437) -->
+    <skip />
+    <!-- no translation found for apps_customize_apps_scroll_format (5494241912377704885) -->
+    <skip />
+    <!-- no translation found for apps_customize_widgets_scroll_format (5383009742241717437) -->
+    <skip />
     <string name="workspace_cling_title" msgid="738396473989890567">"احساس کنید در خانه هستید"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"برنامه‌های مورد دلخواه خود را می‌توانید در اینجا قرار دهید."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"برای مشاهده تمام برنامه‌های خود، حلقه را لمس کنید."</string>
@@ -93,4 +101,16 @@
     <string name="folder_cling_move_item" msgid="270598675060435169">"برای جابجا کردن یک برنامه، آن را لمس کرده و نگهدارید."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"برای ایجاد یک پوشه جدید در صفحه اصلی خود، یک برنامه را در بالای دیگری قرار دهید."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"تأیید"</string>
+    <!-- no translation found for folder_opened (4129072635480822768) -->
+    <skip />
+    <!-- no translation found for folder_tap_to_close (4076794242530255812) -->
+    <skip />
+    <!-- no translation found for folder_tap_to_rename (2125528923948315223) -->
+    <skip />
+    <!-- no translation found for folder_closed (3130534551370511932) -->
+    <skip />
+    <!-- no translation found for folder_renamed (781234745487414781) -->
+    <skip />
+    <!-- no translation found for folder_name_format (4513766553514769310) -->
+    <skip />
 </resources>

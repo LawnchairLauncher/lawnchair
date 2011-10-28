@@ -27,9 +27,9 @@
     <string name="pick_wallpaper" msgid="5630222540525626723">"Muurpapiere"</string>
     <string name="activity_not_found" msgid="217823393239365967">"Program is nie geïnstalleer nie."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Legstukke"</string>
-    <string name="long_press_widget_to_add" msgid="7395697462851217506">"Raak &amp; hou in om \'n legstuk op te tel"</string>
+    <string name="long_press_widget_to_add" msgid="7395697462851217506">"Raak en hou in om \'n legstuk op te tel."</string>
     <string name="market" msgid="2652226429823445833">"Winkel"</string>
-    <string name="external_drop_widget_error" msgid="127440783198670829">"Kon nie item op hierdie tuisskerm plaas nie."</string>
+    <string name="external_drop_widget_error" msgid="127440783198670829">"Kon nie item op hierdie Tuisskerm plaas nie."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Kies legstuk om te skep"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Vouernaam"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Hernoem vouer"</string>
@@ -81,16 +81,36 @@
     <string name="permlab_write_settings" msgid="1360567537236705628">"skryf Tuis-instellings en -kortpaaie"</string>
     <string name="permdesc_write_settings" msgid="6763846563231494591">"Stel program in staat om die instellings en kortpaaie in Tuis te verander."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Kon nie legstuk laai nie"</string>
-    <string name="uninstall_system_app_text" msgid="6429814133777046491">"Dit is \'n stelselprogram en kan nie gedeïnstalleer word nie."</string>
+    <string name="uninstall_system_app_text" msgid="6429814133777046491">"Hierdie is \'n stelselprogram en kan nie gedeïnstalleer word nie."</string>
     <string name="dream_name" msgid="2847171357608437154">"Vuurpyllanseerder"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Naamlose vouer"</string>
+    <!-- no translation found for default_scroll_format (4057140866420001240) -->
+    <skip />
+    <!-- no translation found for workspace_scroll_format (7911126267695001437) -->
+    <skip />
+    <!-- no translation found for apps_customize_apps_scroll_format (5494241912377704885) -->
+    <skip />
+    <!-- no translation found for apps_customize_widgets_scroll_format (5383009742241717437) -->
+    <skip />
     <string name="workspace_cling_title" msgid="738396473989890567">"Maak jouself tuis"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"Jy kan jou gunsteling-apps hier berg."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Om al jou programme te sien, raak die sirkel."</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"Kies \'n paar programme"</string>
-    <string name="all_apps_cling_add_item" msgid="5665035103260318891">"Om \'n program by jou tuisskerm te voeg, raak en hou dit."</string>
+    <string name="all_apps_cling_add_item" msgid="5665035103260318891">"Om \'n program by jou Tuisskerm te voeg, raak en hou dit."</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"Organiseer jou programme met vouers"</string>
     <string name="folder_cling_move_item" msgid="270598675060435169">"Om \'n program te skuif, raak en hou dit."</string>
-    <string name="folder_cling_create_folder" msgid="8352867485656129478">"Om \'n nuwe vouer op jou tuisskerm te maak, stapel een program bo-op \'n ander."</string>
+    <string name="folder_cling_create_folder" msgid="8352867485656129478">"Om \'n nuwe vouer op jou Tuisskerm te maak, stapel een program bo-op \'n ander."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
+    <!-- no translation found for folder_opened (4129072635480822768) -->
+    <skip />
+    <!-- no translation found for folder_tap_to_close (4076794242530255812) -->
+    <skip />
+    <!-- no translation found for folder_tap_to_rename (2125528923948315223) -->
+    <skip />
+    <!-- no translation found for folder_closed (3130534551370511932) -->
+    <skip />
+    <!-- no translation found for folder_renamed (781234745487414781) -->
+    <skip />
+    <!-- no translation found for folder_name_format (4513766553514769310) -->
+    <skip />
 </resources>
