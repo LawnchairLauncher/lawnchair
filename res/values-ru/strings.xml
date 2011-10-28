@@ -27,9 +27,9 @@
     <string name="pick_wallpaper" msgid="5630222540525626723">"Обои"</string>
     <string name="activity_not_found" msgid="217823393239365967">"Приложение удалено."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Виджеты"</string>
-    <string name="long_press_widget_to_add" msgid="7395697462851217506">"Нажмите и удерживайте, чтобы выбрать виджет."</string>
+    <string name="long_press_widget_to_add" msgid="7395697462851217506">"Чтобы выбрать виджет, нажмите на значок и удерживайте его."</string>
     <string name="market" msgid="2652226429823445833">"Маркет"</string>
-    <string name="external_drop_widget_error" msgid="127440783198670829">"Не удается скопировать элемент на главный экран."</string>
+    <string name="external_drop_widget_error" msgid="127440783198670829">"Не удалось добавить элемент на главный экран."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Выберите виджет"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Название папки"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Переименовать папку"</string>
@@ -66,24 +66,32 @@
     <string name="menu_notifications" msgid="6424587053194766192">"Уведомления"</string>
     <string name="menu_settings" msgid="3946232973327980394">"Настройки"</string>
     <string name="menu_help" msgid="4901160661634590633">"Справка"</string>
-    <string name="cab_menu_delete_app" msgid="4089398025537640349">"Удалить приложение"</string>
+    <string name="cab_menu_delete_app" msgid="4089398025537640349">"Удалить"</string>
     <string name="cab_menu_app_info" msgid="914548323652698884">"О приложении"</string>
     <string name="cab_app_selection_text" msgid="6378522164293415735">"Выбрано 1 приложение"</string>
     <string name="cab_widget_selection_text" msgid="962527270506951955">"Выбран 1 виджет"</string>
     <string name="cab_folder_selection_text" msgid="8916111874189565067">"Выбрана 1 папка"</string>
     <string name="cab_shortcut_selection_text" msgid="8115847384500412878">"Выбран 1 ярлык"</string>
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"устанавливать ярлыки"</string>
-    <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Приложение будет добавлять ярлыки без вмешательства пользователя."</string>
+    <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Приложение сможет самостоятельно добавлять ярлыки."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"удалять ярлыки"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Приложение будет удалять ярлыки без вмешательства пользователя."</string>
+    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Приложение сможет самостоятельно удалять ярлыки."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"считывать настройки и ярлыки главного экрана"</string>
-    <string name="permdesc_read_settings" msgid="1836104524215167383">"Приложение будет считывать настройки и ярлыки на главном экране."</string>
+    <string name="permdesc_read_settings" msgid="1836104524215167383">"Приложение получит доступ к данным о настройках и ярлыках на главном экране."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"изменять настройки и ярлыки главного экрана"</string>
-    <string name="permdesc_write_settings" msgid="6763846563231494591">"Приложение будет изменять настройки и ярлыки на главном экране."</string>
+    <string name="permdesc_write_settings" msgid="6763846563231494591">"Приложение сможет изменять настройки и ярлыки на главном экране."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Не удалось загрузить виджет"</string>
-    <string name="uninstall_system_app_text" msgid="6429814133777046491">"Это системное приложение, его невозможно удалить."</string>
+    <string name="uninstall_system_app_text" msgid="6429814133777046491">"Это системное приложение, его нельзя удалить."</string>
     <string name="dream_name" msgid="2847171357608437154">"Фейерверк"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Без названия"</string>
+    <!-- no translation found for default_scroll_format (4057140866420001240) -->
+    <skip />
+    <!-- no translation found for workspace_scroll_format (7911126267695001437) -->
+    <skip />
+    <!-- no translation found for apps_customize_apps_scroll_format (5494241912377704885) -->
+    <skip />
+    <!-- no translation found for apps_customize_widgets_scroll_format (5383009742241717437) -->
+    <skip />
     <string name="workspace_cling_title" msgid="738396473989890567">"Чувствуйте себя как дома"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"Добавляйте сюда любимые приложения."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Чтобы открыть список приложений, нажмите на круг."</string>
@@ -91,6 +99,18 @@
     <string name="all_apps_cling_add_item" msgid="5665035103260318891">"Чтобы добавить приложение на главный экран, нажмите на значок и удерживайте его."</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"Разложите все по папкам"</string>
     <string name="folder_cling_move_item" msgid="270598675060435169">"Чтобы переместить значок приложения, нажмите на него и удерживайте."</string>
-    <string name="folder_cling_create_folder" msgid="8352867485656129478">"Чтобы создать папку на главном экране, перенесите значок одного приложения на значок другого."</string>
+    <string name="folder_cling_create_folder" msgid="8352867485656129478">"Чтобы создать папку на главном экране, перенесите одно приложение на другое."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"ОК"</string>
+    <!-- no translation found for folder_opened (4129072635480822768) -->
+    <skip />
+    <!-- no translation found for folder_tap_to_close (4076794242530255812) -->
+    <skip />
+    <!-- no translation found for folder_tap_to_rename (2125528923948315223) -->
+    <skip />
+    <!-- no translation found for folder_closed (3130534551370511932) -->
+    <skip />
+    <!-- no translation found for folder_renamed (781234745487414781) -->
+    <skip />
+    <!-- no translation found for folder_name_format (4513766553514769310) -->
+    <skip />
 </resources>

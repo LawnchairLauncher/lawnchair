@@ -73,17 +73,25 @@
     <string name="cab_folder_selection_text" msgid="8916111874189565067">"Избрана е 1 папка"</string>
     <string name="cab_shortcut_selection_text" msgid="8115847384500412878">"Избран е 1 пряк път"</string>
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"инсталиране на преки пътища"</string>
-    <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Разрешава на приложението да добави преки пътища без намеса на потребителя."</string>
+    <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Разрешава на приложението да добавя преки пътища без намеса на потребителя."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"деинсталиране на преките пътища"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Разрешава на приложението да премахне преките пътища без намеса на потребителя."</string>
+    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Разрешава на приложението да премахва преките пътища без намеса на потребителя."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"прочетете настройките за „Начало“ и преки пътища"</string>
-    <string name="permdesc_read_settings" msgid="1836104524215167383">"Разрешава на приложението да прочете настройките и преките пътища към Начало."</string>
+    <string name="permdesc_read_settings" msgid="1836104524215167383">"Разрешава на приложението да прочете настройките и преките пътища в Начало."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"въведете настройките за „Начало“ и преки пътища"</string>
     <string name="permdesc_write_settings" msgid="6763846563231494591">"Разрешава на приложението да променя настройките и преките пътища в Начало."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Проблем при зареждане на приспособление"</string>
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Това е системно приложение и не може да се деинсталира."</string>
     <string name="dream_name" msgid="2847171357608437154">"Ракетна площадка"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Папка без име"</string>
+    <!-- no translation found for default_scroll_format (4057140866420001240) -->
+    <skip />
+    <!-- no translation found for workspace_scroll_format (7911126267695001437) -->
+    <skip />
+    <!-- no translation found for apps_customize_apps_scroll_format (5494241912377704885) -->
+    <skip />
+    <!-- no translation found for apps_customize_widgets_scroll_format (5383009742241717437) -->
+    <skip />
     <string name="workspace_cling_title" msgid="738396473989890567">"Настанете се като у дома си"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"Тук можете да поставите любимите си приложения."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"За да видите всичките си приложения, докоснете кръга."</string>
@@ -93,4 +101,16 @@
     <string name="folder_cling_move_item" msgid="270598675060435169">"За да преместите приложение, го докоснете и задръжте."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"За да създадете нова папка на началния си екран, поставете едно приложение върху друго."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
+    <!-- no translation found for folder_opened (4129072635480822768) -->
+    <skip />
+    <!-- no translation found for folder_tap_to_close (4076794242530255812) -->
+    <skip />
+    <!-- no translation found for folder_tap_to_rename (2125528923948315223) -->
+    <skip />
+    <!-- no translation found for folder_closed (3130534551370511932) -->
+    <skip />
+    <!-- no translation found for folder_renamed (781234745487414781) -->
+    <skip />
+    <!-- no translation found for folder_name_format (4513766553514769310) -->
+    <skip />
 </resources>
