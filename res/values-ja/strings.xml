@@ -22,21 +22,21 @@
     <string name="application_name" msgid="8424725141379931883">"ランチャー"</string>
     <string name="uid_name" msgid="3371120195364560632">"Android Core Apps"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>
-    <!-- outdated translation 5988031014201479733 -->     <string name="chooser_wallpaper" msgid="6063168087625352235">"壁紙を選択"</string>
+    <string name="chooser_wallpaper" msgid="6063168087625352235">"壁紙の選択"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"壁紙に設定"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"壁紙"</string>
-    <!-- outdated translation 5591731020063337696 -->     <string name="activity_not_found" msgid="217823393239365967">"インストールされていません。"</string>
+    <string name="activity_not_found" msgid="217823393239365967">"このアプリはインストールされていません。"</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"ウィジェット"</string>
-    <!-- outdated translation 8915177487173521501 -->     <string name="long_press_widget_to_add" msgid="7395697462851217506">"ウィジェットを追加するには長押しします"</string>
+    <string name="long_press_widget_to_add" msgid="7395697462851217506">"ウィジェットを追加するには押し続けます。"</string>
     <string name="market" msgid="2652226429823445833">"ショップ"</string>
-    <!-- outdated translation 4976816434597126575 -->     <string name="external_drop_widget_error" msgid="127440783198670829">"このホーム画面にアイテムをドロップできませんでした"</string>
-    <!-- outdated translation 4481311720134376218 -->     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"作成するウィジェットを選択"</string>
+    <string name="external_drop_widget_error" msgid="127440783198670829">"このホーム画面にアイテムをドロップできませんでした"</string>
+    <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"作成するウィジェットの選択"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"フォルダ名"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"フォルダ名を変更"</string>
     <string name="rename_action" msgid="6016003384693240896">"OK"</string>
     <string name="cancel_action" msgid="3811860427489435048">"キャンセル"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"ホーム画面に追加"</string>
-    <!-- outdated translation 4118484163419674240 -->     <string name="group_applications" msgid="2103752818818161976">"アプリケーション"</string>
+    <string name="group_applications" msgid="2103752818818161976">"アプリ"</string>
     <string name="group_shortcuts" msgid="9133529424900391877">"ショートカット"</string>
     <string name="group_widgets" msgid="6704978494073105844">"ウィジェット"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"壁紙"</string>
@@ -46,7 +46,7 @@
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"ショートカット「<xliff:g id="NAME">%s</xliff:g>」を削除しました。"</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"ショートカット「<xliff:g id="NAME">%s</xliff:g>」は既に存在します。"</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"ショートカットを選択"</string>
-    <!-- outdated translation 8031072293115454221 -->     <string name="title_select_application" msgid="1793455815754848652">"アプリを選択"</string>
+    <string name="title_select_application" msgid="1793455815754848652">"アプリの選択"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"アプリ"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"ホーム"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"削除"</string>
@@ -56,7 +56,7 @@
     <string name="info_target_label" msgid="4019495079517426980">"アプリケーション情報"</string>
     <string name="accessibility_search_button" msgid="816822994629942611">"検索"</string>
     <string name="accessibility_voice_search_button" msgid="3938249215065842475">"音声検索"</string>
-    <!-- outdated translation 1595097919145716305 -->     <string name="accessibility_all_apps_button" msgid="8803738611398979849">"アプリケーション"</string>
+    <string name="accessibility_all_apps_button" msgid="8803738611398979849">"アプリ"</string>
     <string name="accessibility_delete_button" msgid="3628162007991023603">"削除"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"アップデートをアンインストール"</string>
     <string name="menu_add" msgid="3065046628354640854">"追加"</string>
@@ -66,31 +66,51 @@
     <string name="menu_notifications" msgid="6424587053194766192">"通知"</string>
     <string name="menu_settings" msgid="3946232973327980394">"システム設定"</string>
     <string name="menu_help" msgid="4901160661634590633">"ヘルプ"</string>
-    <!-- outdated translation 1242619904941293871 -->     <string name="cab_menu_delete_app" msgid="4089398025537640349">"アプリケーションのアンインストール"</string>
-    <!-- outdated translation 5180426909324882018 -->     <string name="cab_menu_app_info" msgid="914548323652698884">"アプリケーションの詳細"</string>
-    <!-- outdated translation 606113924828167756 -->     <string name="cab_app_selection_text" msgid="6378522164293415735">"1つのアプリケーションが選択されています"</string>
+    <string name="cab_menu_delete_app" msgid="4089398025537640349">"アプリをアンインストール"</string>
+    <string name="cab_menu_app_info" msgid="914548323652698884">"アプリの詳細"</string>
+    <string name="cab_app_selection_text" msgid="6378522164293415735">"1つのアプリが選択されています"</string>
     <string name="cab_widget_selection_text" msgid="962527270506951955">"1つのウィジェットが選択されています"</string>
     <string name="cab_folder_selection_text" msgid="8916111874189565067">"1つのフォルダが選択されています"</string>
     <string name="cab_shortcut_selection_text" msgid="8115847384500412878">"1つのショートカットが選択されています"</string>
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"ショートカットのインストール"</string>
-    <!-- outdated translation 7429365847558984148 -->     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"ユーザー操作なしでショートカットの追加をアプリケーションに許可します。"</string>
+    <string name="permdesc_install_shortcut" msgid="8634424803272077038">"ユーザー操作なしでショートカットを追加することをアプリに許可します。"</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"ショートカットのアンインストール"</string>
-    <!-- outdated translation 959972195916090900 -->     <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"ユーザー操作なしでショートカットの削除をアプリケーションに許可します。"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"ユーザー操作なしでショートカットを削除することをアプリに許可します。"</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"ホーム設定とショートカットの読み取り"</string>
-    <!-- outdated translation 8377434937176025492 -->     <string name="permdesc_read_settings" msgid="1836104524215167383">"ホームの設定とショートカットの読み取りをアプリケーションに許可します。"</string>
+    <string name="permdesc_read_settings" msgid="1836104524215167383">"ホームの設定とショートカットの読み取りをアプリに許可します。"</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"ホームの設定とショートカットの書き込み"</string>
-    <!-- outdated translation 1098648778383349818 -->     <string name="permdesc_write_settings" msgid="6763846563231494591">"ホームの設定とショートカットの変更をアプリケーションに許可します。"</string>
+    <string name="permdesc_write_settings" msgid="6763846563231494591">"ホームの設定とショートカットの変更をアプリに許可します。"</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"ウィジェットを表示できません"</string>
-    <!-- outdated translation 7488523163288397451 -->     <string name="uninstall_system_app_text" msgid="6429814133777046491">"このシステムアプリケーションはアンインストールできません。"</string>
+    <string name="uninstall_system_app_text" msgid="6429814133777046491">"このシステムアプリはアンインストールできません。"</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"名前のないフォルダ"</string>
+    <!-- no translation found for default_scroll_format (4057140866420001240) -->
+    <skip />
+    <!-- no translation found for workspace_scroll_format (7911126267695001437) -->
+    <skip />
+    <!-- no translation found for apps_customize_apps_scroll_format (5494241912377704885) -->
+    <skip />
+    <!-- no translation found for apps_customize_widgets_scroll_format (5383009742241717437) -->
+    <skip />
     <string name="workspace_cling_title" msgid="738396473989890567">"ここがあなたのホームです"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"お気に入りのアプリをここに置くことができます。"</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"すべてのアプリを見るにはサークルをタップします。"</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"アプリの選択"</string>
-    <!-- outdated translation 7404588523183860170 -->     <string name="all_apps_cling_add_item" msgid="5665035103260318891">"ホーム画面にアプリを追加するにはアプリを押し続けます。"</string>
+    <string name="all_apps_cling_add_item" msgid="5665035103260318891">"アプリをホーム画面に追加するにはアプリを押し続けます。"</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"フォルダでアプリを整理"</string>
     <string name="folder_cling_move_item" msgid="270598675060435169">"アプリを移動するにはアプリを押し続けます。"</string>
-    <!-- outdated translation 289412698047625601 -->     <string name="folder_cling_create_folder" msgid="8352867485656129478">"ホーム画面に新しいフォルダを作成するには、アプリを他のアプリの上に重ねます。"</string>
+    <string name="folder_cling_create_folder" msgid="8352867485656129478">"ホーム画面に新しいフォルダを作成するには、アプリを他のアプリの上に重ねます。"</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
+    <!-- no translation found for folder_opened (4129072635480822768) -->
+    <skip />
+    <!-- no translation found for folder_tap_to_close (4076794242530255812) -->
+    <skip />
+    <!-- no translation found for folder_tap_to_rename (2125528923948315223) -->
+    <skip />
+    <!-- no translation found for folder_closed (3130534551370511932) -->
+    <skip />
+    <!-- no translation found for folder_renamed (781234745487414781) -->
+    <skip />
+    <!-- no translation found for folder_name_format (4513766553514769310) -->
+    <skip />
 </resources>

@@ -22,21 +22,21 @@
     <string name="application_name" msgid="8424725141379931883">"啟動器"</string>
     <string name="uid_name" msgid="3371120195364560632">"Android 核心應用程式"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>
-    <!-- outdated translation 5988031014201479733 -->     <string name="chooser_wallpaper" msgid="6063168087625352235">"從…選取桌布"</string>
+    <string name="chooser_wallpaper" msgid="6063168087625352235">"選擇桌布來源"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"設定桌布"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"桌布"</string>
-    <!-- outdated translation 5591731020063337696 -->     <string name="activity_not_found" msgid="217823393239365967">"尚未安裝應用程式。"</string>
+    <string name="activity_not_found" msgid="217823393239365967">"應用程式未安裝。"</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"小工具"</string>
-    <!-- outdated translation 8915177487173521501 -->     <string name="long_press_widget_to_add" msgid="7395697462851217506">"持續按住小工具即可選取"</string>
+    <string name="long_press_widget_to_add" msgid="7395697462851217506">"輕觸並按住小工具即可選取。"</string>
     <string name="market" msgid="2652226429823445833">"商店"</string>
-    <!-- outdated translation 4976816434597126575 -->     <string name="external_drop_widget_error" msgid="127440783198670829">"無法將項目拖放至主螢幕上"</string>
-    <!-- outdated translation 4481311720134376218 -->     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"選取要建立的小工具"</string>
+    <string name="external_drop_widget_error" msgid="127440783198670829">"無法將項目拖放至主螢幕上。"</string>
+    <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"選擇要建立的小工具"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"資料夾名稱"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"重新命名資料夾"</string>
     <string name="rename_action" msgid="6016003384693240896">"確定"</string>
     <string name="cancel_action" msgid="3811860427489435048">"取消"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"新增至主螢幕"</string>
-    <!-- outdated translation 4118484163419674240 -->     <string name="group_applications" msgid="2103752818818161976">"應用程式"</string>
+    <string name="group_applications" msgid="2103752818818161976">"應用程式"</string>
     <string name="group_shortcuts" msgid="9133529424900391877">"捷徑"</string>
     <string name="group_widgets" msgid="6704978494073105844">"小工具"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"桌布"</string>
@@ -46,7 +46,7 @@
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"已移除「<xliff:g id="NAME">%s</xliff:g>」捷徑。"</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"「<xliff:g id="NAME">%s</xliff:g>」捷徑已經存在。"</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"選取捷徑"</string>
-    <!-- outdated translation 8031072293115454221 -->     <string name="title_select_application" msgid="1793455815754848652">"選取應用程式"</string>
+    <string name="title_select_application" msgid="1793455815754848652">"選擇應用程式"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"應用程式"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"主螢幕"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"移除"</string>
@@ -56,7 +56,7 @@
     <string name="info_target_label" msgid="4019495079517426980">"應用程式資訊"</string>
     <string name="accessibility_search_button" msgid="816822994629942611">"搜尋"</string>
     <string name="accessibility_voice_search_button" msgid="3938249215065842475">"語音搜尋"</string>
-    <!-- outdated translation 1595097919145716305 -->     <string name="accessibility_all_apps_button" msgid="8803738611398979849">"應用程式"</string>
+    <string name="accessibility_all_apps_button" msgid="8803738611398979849">"應用程式"</string>
     <string name="accessibility_delete_button" msgid="3628162007991023603">"移除"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"解除安裝更新"</string>
     <string name="menu_add" msgid="3065046628354640854">"新增"</string>
@@ -66,31 +66,51 @@
     <string name="menu_notifications" msgid="6424587053194766192">"通知"</string>
     <string name="menu_settings" msgid="3946232973327980394">"系統設定"</string>
     <string name="menu_help" msgid="4901160661634590633">"說明"</string>
-    <!-- outdated translation 1242619904941293871 -->     <string name="cab_menu_delete_app" msgid="4089398025537640349">"解除安裝應用程式"</string>
-    <!-- outdated translation 5180426909324882018 -->     <string name="cab_menu_app_info" msgid="914548323652698884">"應用程式詳細資料"</string>
-    <!-- outdated translation 606113924828167756 -->     <string name="cab_app_selection_text" msgid="6378522164293415735">"已選取 1 個應用程式"</string>
+    <string name="cab_menu_delete_app" msgid="4089398025537640349">"解除安裝應用程式"</string>
+    <string name="cab_menu_app_info" msgid="914548323652698884">"應用程式詳細資料"</string>
+    <string name="cab_app_selection_text" msgid="6378522164293415735">"已選取 1 個應用程式"</string>
     <string name="cab_widget_selection_text" msgid="962527270506951955">"已選取 1 個小工具"</string>
     <string name="cab_folder_selection_text" msgid="8916111874189565067">"已選取 1 個資料夾"</string>
     <string name="cab_shortcut_selection_text" msgid="8115847384500412878">"已選取 1 個捷徑"</string>
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"安裝捷徑"</string>
-    <!-- outdated translation 7429365847558984148 -->     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"允許應用程式自動新增快速鍵。"</string>
+    <string name="permdesc_install_shortcut" msgid="8634424803272077038">"允許應用程式自動新增捷徑。"</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"解除安裝捷徑"</string>
-    <!-- outdated translation 959972195916090900 -->     <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"允許應用程式自動移除捷徑。"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"允許應用程式自動移除捷徑。"</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"讀取主螢幕設定和捷徑"</string>
-    <!-- outdated translation 8377434937176025492 -->     <string name="permdesc_read_settings" msgid="1836104524215167383">"允許應用程式讀取主螢幕中的設定和捷徑。"</string>
+    <string name="permdesc_read_settings" msgid="1836104524215167383">"允許應用程式讀取主螢幕的設定與捷徑。"</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"寫入主螢幕設定和捷徑"</string>
-    <!-- outdated translation 1098648778383349818 -->     <string name="permdesc_write_settings" msgid="6763846563231494591">"允許應用程式變更主螢幕中的設定和捷徑。"</string>
+    <string name="permdesc_write_settings" msgid="6763846563231494591">"允許應用程式變更主螢幕中的設定與捷徑。"</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"載入小工具時發生問題"</string>
-    <!-- outdated translation 7488523163288397451 -->     <string name="uninstall_system_app_text" msgid="6429814133777046491">"這是系統應用程式，無法將其解除安裝。"</string>
+    <string name="uninstall_system_app_text" msgid="6429814133777046491">"這是系統應用程式，不可解除安裝。"</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"未命名的資料夾"</string>
+    <!-- no translation found for default_scroll_format (4057140866420001240) -->
+    <skip />
+    <!-- no translation found for workspace_scroll_format (7911126267695001437) -->
+    <skip />
+    <!-- no translation found for apps_customize_apps_scroll_format (5494241912377704885) -->
+    <skip />
+    <!-- no translation found for apps_customize_widgets_scroll_format (5383009742241717437) -->
+    <skip />
     <string name="workspace_cling_title" msgid="738396473989890567">"當作自己家"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"您可以將最愛的應用程式放在這裡。"</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"如要查看您所有的應用程式，請輕觸圓圈。"</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"選擇一些應用程式"</string>
-    <!-- outdated translation 7404588523183860170 -->     <string name="all_apps_cling_add_item" msgid="5665035103260318891">"如要將應用程式新增至主螢幕，請輕觸並按住目標。"</string>
+    <string name="all_apps_cling_add_item" msgid="5665035103260318891">"如要將應用程式新增至主螢幕，請輕觸並按住目標項目。"</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"使用資料夾整理應用程式"</string>
     <string name="folder_cling_move_item" msgid="270598675060435169">"如要移動應用程式，請輕觸並按住目標。"</string>
-    <!-- outdated translation 289412698047625601 -->     <string name="folder_cling_create_folder" msgid="8352867485656129478">"如要在主螢幕建立新資料夾，請將應用程式一個個堆疊起來。"</string>
+    <string name="folder_cling_create_folder" msgid="8352867485656129478">"如要在主螢幕建立新資料夾，請將應用程式一個個堆疊起來。"</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"確定"</string>
+    <!-- no translation found for folder_opened (4129072635480822768) -->
+    <skip />
+    <!-- no translation found for folder_tap_to_close (4076794242530255812) -->
+    <skip />
+    <!-- no translation found for folder_tap_to_rename (2125528923948315223) -->
+    <skip />
+    <!-- no translation found for folder_closed (3130534551370511932) -->
+    <skip />
+    <!-- no translation found for folder_renamed (781234745487414781) -->
+    <skip />
+    <!-- no translation found for folder_name_format (4513766553514769310) -->
+    <skip />
 </resources>

@@ -22,21 +22,21 @@
     <string name="application_name" msgid="8424725141379931883">"Paleidimo priemonė"</string>
     <string name="uid_name" msgid="3371120195364560632">"Pagrindinės „Android“ programos"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>
-    <!-- outdated translation 5988031014201479733 -->     <string name="chooser_wallpaper" msgid="6063168087625352235">"Pasirinkti darbalaukio foną iš"</string>
+    <string name="chooser_wallpaper" msgid="6063168087625352235">"Pasirinkti darbalaukio foną iš"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Nustatyti darbalaukio foną"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"Darbalaukio fonai"</string>
-    <!-- outdated translation 5591731020063337696 -->     <string name="activity_not_found" msgid="217823393239365967">"Programa neįdiegta."</string>
+    <string name="activity_not_found" msgid="217823393239365967">"Programa neįdiegta."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Valdikliai"</string>
-    <!-- outdated translation 8915177487173521501 -->     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Kad pasirinkt. valdiklį, palieskite ir laikykite"</string>
+    <string name="long_press_widget_to_add" msgid="7395697462851217506">"Kad pasirinkt. valdiklį, palieskite ir laikykite."</string>
     <string name="market" msgid="2652226429823445833">"Parduotuvė"</string>
-    <!-- outdated translation 4976816434597126575 -->     <string name="external_drop_widget_error" msgid="127440783198670829">"Nepavyko pašalinti elemento šiame pagr. ekrane"</string>
-    <!-- outdated translation 4481311720134376218 -->     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Pasirinkti norimą sukurti valdiklį"</string>
+    <string name="external_drop_widget_error" msgid="127440783198670829">"Nepavyko palikti elemento šiame pagrind. ekrane."</string>
+    <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Pasirinkite norimą kurti valdiklį"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Aplanko pavadinimas"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Sukurti aplankui naują pavadinimą"</string>
     <string name="rename_action" msgid="6016003384693240896">"Gerai"</string>
     <string name="cancel_action" msgid="3811860427489435048">"Atšaukti"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"Pridėti prie pagrindinio ekrano"</string>
-    <!-- outdated translation 4118484163419674240 -->     <string name="group_applications" msgid="2103752818818161976">"Programos"</string>
+    <string name="group_applications" msgid="2103752818818161976">"Programos"</string>
     <string name="group_shortcuts" msgid="9133529424900391877">"Spartieji klavišai"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Valdikliai"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Darbalaukio fonai"</string>
@@ -46,7 +46,7 @@
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Spartusis klavišas „<xliff:g id="NAME">%s</xliff:g>“ pašalintas."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Spartusis klavišas „<xliff:g id="NAME">%s</xliff:g>“ jau yra."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Pasirinkti spartųjį klavišą"</string>
-    <!-- outdated translation 8031072293115454221 -->     <string name="title_select_application" msgid="1793455815754848652">"Pasirinkti programą"</string>
+    <string name="title_select_application" msgid="1793455815754848652">"Pasirinkite programą"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Apps"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Pagrindinis"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"Pašalinti"</string>
@@ -56,7 +56,7 @@
     <string name="info_target_label" msgid="4019495079517426980">"Programos informacija"</string>
     <string name="accessibility_search_button" msgid="816822994629942611">"Ieškoti"</string>
     <string name="accessibility_voice_search_button" msgid="3938249215065842475">"Balso paieška"</string>
-    <!-- outdated translation 1595097919145716305 -->     <string name="accessibility_all_apps_button" msgid="8803738611398979849">"Programos"</string>
+    <string name="accessibility_all_apps_button" msgid="8803738611398979849">"Programos"</string>
     <string name="accessibility_delete_button" msgid="3628162007991023603">"Pašalinti"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"Pašalinti naujinį"</string>
     <string name="menu_add" msgid="3065046628354640854">"Pridėti"</string>
@@ -66,31 +66,51 @@
     <string name="menu_notifications" msgid="6424587053194766192">"Įspėjimai"</string>
     <string name="menu_settings" msgid="3946232973327980394">"Sistemos nustatymai"</string>
     <string name="menu_help" msgid="4901160661634590633">"Pagalba"</string>
-    <!-- outdated translation 1242619904941293871 -->     <string name="cab_menu_delete_app" msgid="4089398025537640349">"Pašalinti programą"</string>
-    <!-- outdated translation 5180426909324882018 -->     <string name="cab_menu_app_info" msgid="914548323652698884">"Išsami programos informacija"</string>
-    <!-- outdated translation 606113924828167756 -->     <string name="cab_app_selection_text" msgid="6378522164293415735">"Pasirinkta 1 programa"</string>
+    <string name="cab_menu_delete_app" msgid="4089398025537640349">"Pašalinti programą"</string>
+    <string name="cab_menu_app_info" msgid="914548323652698884">"Išsami programos informacija"</string>
+    <string name="cab_app_selection_text" msgid="6378522164293415735">"Pasirinkta programų: 1"</string>
     <string name="cab_widget_selection_text" msgid="962527270506951955">"Pasirinktas 1 valdiklis"</string>
     <string name="cab_folder_selection_text" msgid="8916111874189565067">"Pasirinktas 1 aplankas"</string>
     <string name="cab_shortcut_selection_text" msgid="8115847384500412878">"Pasirinktas 1 spartusis klavišas"</string>
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"įdiegti sparčiuosius klavišus"</string>
-    <!-- outdated translation 7429365847558984148 -->     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Leidžia programai pridėti sparčiuosius klavišus be naudotojo įsikišimo."</string>
+    <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Leidžiama programai pridėti sparčiuosius klavišus be naudotojo įsikišimo."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"pašalinti sparčiuosius klavišus"</string>
-    <!-- outdated translation 959972195916090900 -->     <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Leidžia programai pašalinti sparčiuosius klavišus be naudotojo įsikišimo."</string>
+    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Leidžiama programai pašalinti sparčiuosius klavišus be naudotojo įsikišimo."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"skaityti pagrindinio puslapio nustatymus ir sparčiuosius klavišus"</string>
-    <!-- outdated translation 8377434937176025492 -->     <string name="permdesc_read_settings" msgid="1836104524215167383">"Leidžia programai skaityti pagrindinio puslapio nustatymus ir sparčiuosius klavišus."</string>
+    <string name="permdesc_read_settings" msgid="1836104524215167383">"Leidžiama programai skaityti pagrindinio puslapio nustatymus ir sparčiuosius klavišus."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"rašyti pagrindinio puslapio nustatymus ir sparčiuosius klavišus"</string>
-    <!-- outdated translation 1098648778383349818 -->     <string name="permdesc_write_settings" msgid="6763846563231494591">"Leidžia programai keisti pagrindinio puslapio nustatymus ir sparčiuosius klavišus."</string>
+    <string name="permdesc_write_settings" msgid="6763846563231494591">"Leidžiama programai keisti pagrindinio puslapio nustatymus ir sparčiuosius klavišus."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Problema įkeliant valdiklį"</string>
-    <!-- outdated translation 7488523163288397451 -->     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Tai sistemos programa ir jos negalima pašalinti."</string>
+    <string name="uninstall_system_app_text" msgid="6429814133777046491">"Tai sistemos programa ir jos negalima pašalinti."</string>
     <string name="dream_name" msgid="2847171357608437154">"Raketinis prieštankinis šautuvas"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Aplankas be pavadinimo"</string>
+    <!-- no translation found for default_scroll_format (4057140866420001240) -->
+    <skip />
+    <!-- no translation found for workspace_scroll_format (7911126267695001437) -->
+    <skip />
+    <!-- no translation found for apps_customize_apps_scroll_format (5494241912377704885) -->
+    <skip />
+    <!-- no translation found for apps_customize_widgets_scroll_format (5383009742241717437) -->
+    <skip />
     <string name="workspace_cling_title" msgid="738396473989890567">"Jauskitės kaip namie"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"Čia galite dėti mėgstamiausias savo programas."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Jei norite matyti visas programas, palieskite apskritimą."</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"Pasirinkite kelias programas"</string>
-    <!-- outdated translation 7404588523183860170 -->     <string name="all_apps_cling_add_item" msgid="5665035103260318891">"Jei norite prie pagrindinio ekrano pridėti programą, palieskite ją ir laikykite."</string>
+    <string name="all_apps_cling_add_item" msgid="5665035103260318891">"Jei norite prie pagrindinio ekrano pridėti programą, palieskite ją ir laikykite."</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"Tvarkykite programas kurdami aplankus"</string>
     <string name="folder_cling_move_item" msgid="270598675060435169">"Jei norite perkelti programą, palieskite ją ir laikykite."</string>
-    <!-- outdated translation 289412698047625601 -->     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Jei pagrindiniame ekrane norite sukurti naują aplanką, uždėkite vieną programą ant kitos"</string>
+    <string name="folder_cling_create_folder" msgid="8352867485656129478">"Jei pagrindiniame ekrane norite sukurti naują aplanką, uždėkite vieną programą ant kitos."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"Gerai"</string>
+    <!-- no translation found for folder_opened (4129072635480822768) -->
+    <skip />
+    <!-- no translation found for folder_tap_to_close (4076794242530255812) -->
+    <skip />
+    <!-- no translation found for folder_tap_to_rename (2125528923948315223) -->
+    <skip />
+    <!-- no translation found for folder_closed (3130534551370511932) -->
+    <skip />
+    <!-- no translation found for folder_renamed (781234745487414781) -->
+    <skip />
+    <!-- no translation found for folder_name_format (4513766553514769310) -->
+    <skip />
 </resources>
