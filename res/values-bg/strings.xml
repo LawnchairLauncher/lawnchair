@@ -22,21 +22,21 @@
     <string name="application_name" msgid="8424725141379931883">"Стартов панел"</string>
     <string name="uid_name" msgid="3371120195364560632">"Основни приложения на Android"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>
-    <!-- outdated translation 5988031014201479733 -->     <string name="chooser_wallpaper" msgid="6063168087625352235">"Избор на тапет от"</string>
+    <string name="chooser_wallpaper" msgid="6063168087625352235">"Избор на тапет от"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Задаване на тапет"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"Тапети"</string>
-    <!-- outdated translation 5591731020063337696 -->     <string name="activity_not_found" msgid="217823393239365967">"Приложението не е инсталирано."</string>
+    <string name="activity_not_found" msgid="217823393239365967">"Приложението не е инсталирано."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Приспособления"</string>
-    <!-- outdated translation 8915177487173521501 -->     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Докоснете и задръжте за избор на приспособление"</string>
+    <string name="long_press_widget_to_add" msgid="7395697462851217506">"Докоснете и задръжте за избор на приспособление"</string>
     <string name="market" msgid="2652226429823445833">"Магазин"</string>
-    <!-- outdated translation 4976816434597126575 -->     <string name="external_drop_widget_error" msgid="127440783198670829">"Елементът не можа да се премести на началния екран"</string>
-    <!-- outdated translation 4481311720134376218 -->     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Избор на създаващо приспособление"</string>
+    <string name="external_drop_widget_error" msgid="127440783198670829">"Не можа да се премести на началния екран."</string>
+    <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Избор на приспособл. за създаване"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Име на папка"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Преименуване на папка"</string>
     <string name="rename_action" msgid="6016003384693240896">"OK"</string>
     <string name="cancel_action" msgid="3811860427489435048">"Отказ"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"Добавяне към началния екран"</string>
-    <!-- outdated translation 4118484163419674240 -->     <string name="group_applications" msgid="2103752818818161976">"Приложения"</string>
+    <string name="group_applications" msgid="2103752818818161976">"Приложения"</string>
     <string name="group_shortcuts" msgid="9133529424900391877">"Преки пътища"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Приспособления"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Тапети"</string>
@@ -46,7 +46,7 @@
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Прекият път към „<xliff:g id="NAME">%s</xliff:g>“ бе премахнат."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Прекият път за „<xliff:g id="NAME">%s</xliff:g>“ вече съществува."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Избор на пряк път"</string>
-    <!-- outdated translation 8031072293115454221 -->     <string name="title_select_application" msgid="1793455815754848652">"Избиране на приложение"</string>
+    <string name="title_select_application" msgid="1793455815754848652">"Избор на приложение"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Приложения"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Начало"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"Премахване"</string>
@@ -56,7 +56,7 @@
     <string name="info_target_label" msgid="4019495079517426980">"Информация за приложението"</string>
     <string name="accessibility_search_button" msgid="816822994629942611">"Търсене"</string>
     <string name="accessibility_voice_search_button" msgid="3938249215065842475">"Гласово търсене"</string>
-    <!-- outdated translation 1595097919145716305 -->     <string name="accessibility_all_apps_button" msgid="8803738611398979849">"Приложения"</string>
+    <string name="accessibility_all_apps_button" msgid="8803738611398979849">"Приложения"</string>
     <string name="accessibility_delete_button" msgid="3628162007991023603">"Премахване"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"Деинстал. на актуализацията"</string>
     <string name="menu_add" msgid="3065046628354640854">"Добавяне"</string>
@@ -66,31 +66,51 @@
     <string name="menu_notifications" msgid="6424587053194766192">"Известия"</string>
     <string name="menu_settings" msgid="3946232973327980394">"Системни настройки"</string>
     <string name="menu_help" msgid="4901160661634590633">"Помощ"</string>
-    <!-- outdated translation 1242619904941293871 -->     <string name="cab_menu_delete_app" msgid="4089398025537640349">"Деинсталиране на приложението"</string>
-    <!-- outdated translation 5180426909324882018 -->     <string name="cab_menu_app_info" msgid="914548323652698884">"Подробности за приложението"</string>
-    <!-- outdated translation 606113924828167756 -->     <string name="cab_app_selection_text" msgid="6378522164293415735">"Избрано е 1 приложение"</string>
+    <string name="cab_menu_delete_app" msgid="4089398025537640349">"Деинсталиране на приложението"</string>
+    <string name="cab_menu_app_info" msgid="914548323652698884">"Подробности за приложението"</string>
+    <string name="cab_app_selection_text" msgid="6378522164293415735">"Избрано е 1 приложение"</string>
     <string name="cab_widget_selection_text" msgid="962527270506951955">"Избрано е 1 приспособление"</string>
     <string name="cab_folder_selection_text" msgid="8916111874189565067">"Избрана е 1 папка"</string>
     <string name="cab_shortcut_selection_text" msgid="8115847384500412878">"Избран е 1 пряк път"</string>
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"инсталиране на преки пътища"</string>
-    <!-- outdated translation 7429365847558984148 -->     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Разрешава на приложение да добави преки пътища без намеса на потребителя."</string>
+    <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Разрешава на приложението да добавя преки пътища без намеса на потребителя."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"деинсталиране на преките пътища"</string>
-    <!-- outdated translation 959972195916090900 -->     <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Разрешава на приложение да премахне преките пътища без намеса на потребителя."</string>
+    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Разрешава на приложението да премахва преките пътища без намеса на потребителя."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"прочетете настройките за „Начало“ и преки пътища"</string>
-    <!-- outdated translation 8377434937176025492 -->     <string name="permdesc_read_settings" msgid="1836104524215167383">"Разрешава на приложение да прочете настройките и преките пътища към „Начало“."</string>
+    <string name="permdesc_read_settings" msgid="1836104524215167383">"Разрешава на приложението да прочете настройките и преките пътища в Начало."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"въведете настройките за „Начало“ и преки пътища"</string>
-    <!-- outdated translation 1098648778383349818 -->     <string name="permdesc_write_settings" msgid="6763846563231494591">"Разрешава на приложение да промени настройките и преките пътища в „Начало“."</string>
+    <string name="permdesc_write_settings" msgid="6763846563231494591">"Разрешава на приложението да променя настройките и преките пътища в Начало."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Проблем при зареждане на приспособление"</string>
-    <!-- outdated translation 7488523163288397451 -->     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Това е системно приложение и не може да се деинсталира."</string>
+    <string name="uninstall_system_app_text" msgid="6429814133777046491">"Това е системно приложение и не може да се деинсталира."</string>
     <string name="dream_name" msgid="2847171357608437154">"Ракетна площадка"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Папка без име"</string>
+    <!-- no translation found for default_scroll_format (4057140866420001240) -->
+    <skip />
+    <!-- no translation found for workspace_scroll_format (7911126267695001437) -->
+    <skip />
+    <!-- no translation found for apps_customize_apps_scroll_format (5494241912377704885) -->
+    <skip />
+    <!-- no translation found for apps_customize_widgets_scroll_format (5383009742241717437) -->
+    <skip />
     <string name="workspace_cling_title" msgid="738396473989890567">"Настанете се като у дома си"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"Тук можете да поставите любимите си приложения."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"За да видите всичките си приложения, докоснете кръга."</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"Изберете някои приложения"</string>
-    <!-- outdated translation 7404588523183860170 -->     <string name="all_apps_cling_add_item" msgid="5665035103260318891">"За да добавите приложение към началния си екран, го докоснете и задръжте."</string>
+    <string name="all_apps_cling_add_item" msgid="5665035103260318891">"За да добавите приложение към началния си екран, го докоснете и задръжте."</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"Организирайте приложенията си с папки"</string>
     <string name="folder_cling_move_item" msgid="270598675060435169">"За да преместите приложение, го докоснете и задръжте."</string>
-    <!-- outdated translation 289412698047625601 -->     <string name="folder_cling_create_folder" msgid="8352867485656129478">"За да създадете нова папка на началния си екран, поставете едно приложение върху друго."</string>
+    <string name="folder_cling_create_folder" msgid="8352867485656129478">"За да създадете нова папка на началния си екран, поставете едно приложение върху друго."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
+    <!-- no translation found for folder_opened (4129072635480822768) -->
+    <skip />
+    <!-- no translation found for folder_tap_to_close (4076794242530255812) -->
+    <skip />
+    <!-- no translation found for folder_tap_to_rename (2125528923948315223) -->
+    <skip />
+    <!-- no translation found for folder_closed (3130534551370511932) -->
+    <skip />
+    <!-- no translation found for folder_renamed (781234745487414781) -->
+    <skip />
+    <!-- no translation found for folder_name_format (4513766553514769310) -->
+    <skip />
 </resources>
