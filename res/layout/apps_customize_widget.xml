@@ -68,6 +68,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:padding="8dp"
+        android:paddingTop="@dimen/app_widget_preview_padding_top"
+        android:paddingLeft="@dimen/app_widget_preview_padding_left"
         android:scaleType="matrix" />
 </com.android.launcher2.PagedViewWidget>
