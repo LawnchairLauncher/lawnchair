@@ -30,7 +30,7 @@
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Mantén presionado el widget que deseas elegir."</string>
     <string name="market" msgid="2652226429823445833">"Comprar"</string>
     <string name="external_drop_widget_error" msgid="127440783198670829">"El elemento no se soltó en la pantalla principal."</string>
-    <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Elegir los widgets a crear"</string>
+    <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Elegir los widgets para crear"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nombre de carpeta"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Cambiar nombre de carpeta"</string>
     <string name="rename_action" msgid="6016003384693240896">"Aceptar"</string>
@@ -75,7 +75,7 @@
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"instalar accesos directos"</string>
     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Permite que una aplicación agregue accesos directos sin que el usuario intervenga."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"desinstalar papel tapiz"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Permite que la aplicación elimine accesos directos sin que el usuario intervenga."</string>
+    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Permite que una aplicación elimine accesos directos sin que el usuario intervenga."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"leer configuración y accesos directos de la página principal"</string>
     <string name="permdesc_read_settings" msgid="1836104524215167383">"Permite que una aplicación lea la configuración y los accesos directos de la página principal."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"escribir configuración y accesos directos de la página principal"</string>
@@ -84,6 +84,14 @@
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Esta es una aplicación del sistema y no se puede desinstalar."</string>
     <string name="dream_name" msgid="2847171357608437154">"Lanzacohetes"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Carpeta sin nombre"</string>
+    <!-- no translation found for default_scroll_format (4057140866420001240) -->
+    <skip />
+    <!-- no translation found for workspace_scroll_format (7911126267695001437) -->
+    <skip />
+    <!-- no translation found for apps_customize_apps_scroll_format (5494241912377704885) -->
+    <skip />
+    <!-- no translation found for apps_customize_widgets_scroll_format (5383009742241717437) -->
+    <skip />
     <string name="workspace_cling_title" msgid="738396473989890567">"Ponte cómodo."</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"Puedes colocar tus aplicaciones favoritas aquí."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Para ver todas las aplicaciones, toca el círculo."</string>
@@ -93,4 +101,16 @@
     <string name="folder_cling_move_item" msgid="270598675060435169">"Para mover una aplicación, tócala &amp; mantenla presionada."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Para crear una carpeta nueva en tu pantalla principal, coloca una aplicación encima de la otra."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"Aceptar"</string>
+    <!-- no translation found for folder_opened (4129072635480822768) -->
+    <skip />
+    <!-- no translation found for folder_tap_to_close (4076794242530255812) -->
+    <skip />
+    <!-- no translation found for folder_tap_to_rename (2125528923948315223) -->
+    <skip />
+    <!-- no translation found for folder_closed (3130534551370511932) -->
+    <skip />
+    <!-- no translation found for folder_renamed (781234745487414781) -->
+    <skip />
+    <!-- no translation found for folder_name_format (4513766553514769310) -->
+    <skip />
 </resources>

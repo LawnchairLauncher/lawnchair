@@ -112,6 +112,14 @@
     <skip />
     <!-- no translation found for folder_hint_text (8633351560105748141) -->
     <skip />
+    <!-- no translation found for default_scroll_format (4057140866420001240) -->
+    <skip />
+    <!-- no translation found for workspace_scroll_format (7911126267695001437) -->
+    <skip />
+    <!-- no translation found for apps_customize_apps_scroll_format (5494241912377704885) -->
+    <skip />
+    <!-- no translation found for apps_customize_widgets_scroll_format (5383009742241717437) -->
+    <skip />
     <!-- no translation found for workspace_cling_title (738396473989890567) -->
     <skip />
     <!-- no translation found for workspace_cling_move_item (791013895761065070) -->
@@ -129,5 +137,17 @@
     <!-- no translation found for folder_cling_create_folder (8352867485656129478) -->
     <skip />
     <!-- no translation found for cling_dismiss (2780907108735868381) -->
+    <skip />
+    <!-- no translation found for folder_opened (4129072635480822768) -->
+    <skip />
+    <!-- no translation found for folder_tap_to_close (4076794242530255812) -->
+    <skip />
+    <!-- no translation found for folder_tap_to_rename (2125528923948315223) -->
+    <skip />
+    <!-- no translation found for folder_closed (3130534551370511932) -->
+    <skip />
+    <!-- no translation found for folder_renamed (781234745487414781) -->
+    <skip />
+    <!-- no translation found for folder_name_format (4513766553514769310) -->
     <skip />
 </resources>

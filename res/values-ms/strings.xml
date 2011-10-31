@@ -27,7 +27,7 @@
     <string name="pick_wallpaper" msgid="5630222540525626723">"Kertas dinding"</string>
     <string name="activity_not_found" msgid="217823393239365967">"Aplikasi tidak dipasang."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widget"</string>
-    <string name="long_press_widget_to_add" msgid="7395697462851217506">"Sentuh &amp; pegang untuk mengambil widget."</string>
+    <string name="long_press_widget_to_add" msgid="7395697462851217506">"Sentuh &amp; tahan untuk mengambil widget."</string>
     <string name="market" msgid="2652226429823445833">"Kedai"</string>
     <string name="external_drop_widget_error" msgid="127440783198670829">"Tidak dapat melepaskan item pada skrin Utama ini."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Pilih widget untuk dibuat"</string>
@@ -84,6 +84,14 @@
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Ini adalah aplikasi sistem dan tidak boleh dinyahpasang."</string>
     <string name="dream_name" msgid="2847171357608437154">"Pelancar Roket"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Folder Tanpa Nama"</string>
+    <!-- no translation found for default_scroll_format (4057140866420001240) -->
+    <skip />
+    <!-- no translation found for workspace_scroll_format (7911126267695001437) -->
+    <skip />
+    <!-- no translation found for apps_customize_apps_scroll_format (5494241912377704885) -->
+    <skip />
+    <!-- no translation found for apps_customize_widgets_scroll_format (5383009742241717437) -->
+    <skip />
     <string name="workspace_cling_title" msgid="738396473989890567">"Buat diri anda seperti di rumah"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"Anda boleh meletakkan aplikasi kegemaran anda di sini."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Untuk melihat semua aplikasi anda, sentuh bulatan."</string>
@@ -93,4 +101,16 @@
     <string name="folder_cling_move_item" msgid="270598675060435169">"Untuk memindahkan aplikasi, sentuh &amp; tahankannya."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Untuk membuat folder baharu pada skrin Utama anda, tindihkan satu aplikasi di atas yang lain."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
+    <!-- no translation found for folder_opened (4129072635480822768) -->
+    <skip />
+    <!-- no translation found for folder_tap_to_close (4076794242530255812) -->
+    <skip />
+    <!-- no translation found for folder_tap_to_rename (2125528923948315223) -->
+    <skip />
+    <!-- no translation found for folder_closed (3130534551370511932) -->
+    <skip />
+    <!-- no translation found for folder_renamed (781234745487414781) -->
+    <skip />
+    <!-- no translation found for folder_name_format (4513766553514769310) -->
+    <skip />
 </resources>
