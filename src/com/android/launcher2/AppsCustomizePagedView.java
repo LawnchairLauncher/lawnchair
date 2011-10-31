@@ -949,18 +949,22 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 Log.w(LOG_TAG, "Can't load icon drawable 0x" + Integer.toHexString(info.icon)
                         + " for provider: " + info.provider);
             } else {
-                // Scale down the preview to something that is closer to the cellWidth/Height
-                int imageWidth = drawable.getIntrinsicWidth();
-                int imageHeight = drawable.getIntrinsicHeight();
-                int bitmapWidth = imageWidth;
-                int bitmapHeight = imageHeight;
-                if (imageWidth > imageHeight) {
-                    bitmapWidth = cellWidth;
-                    bitmapHeight = (int) (imageHeight * ((float) bitmapWidth / imageWidth));
+                // Map the target width/height to the cell dimensions
+                int targetWidth = mWidgetSpacingLayout.estimateCellWidth(cellHSpan);
+                int targetHeight = mWidgetSpacingLayout.estimateCellHeight(cellVSpan);
+                int targetCellWidth;
+                int targetCellHeight;
+                if (targetWidth >= targetHeight) {
+                    targetCellWidth = Math.min(targetWidth, cellWidth);
+                    targetCellHeight = (int) (cellHeight * ((float) targetCellWidth / cellWidth));
                 } else {
-                    bitmapHeight = cellHeight;
-                    bitmapWidth = (int) (imageWidth * ((float) bitmapHeight / imageHeight));
+                    targetCellHeight = Math.min(targetHeight, cellHeight);
+                    targetCellWidth = (int) (cellWidth * ((float) targetCellHeight / cellHeight));
                 }
+                // Map the preview to the target cell dimensions
+                int bitmapWidth = Math.min(targetCellWidth, drawable.getIntrinsicWidth());
+                int bitmapHeight = (int) (drawable.getIntrinsicHeight() *
+                        ((float) bitmapWidth / drawable.getIntrinsicWidth()));
 
                 preview = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Config.ARGB_8888);
                 renderDrawableToBitmap(drawable, preview, 0, 0, bitmapWidth, bitmapHeight);
@@ -989,7 +993,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 }
             } else {
                 // Otherwise, ensure that we are properly sized within the cellWidth/Height
-                if (targetWidth > targetHeight) {
+                if (targetWidth >= targetHeight) {
                     bitmapWidth = Math.min(targetWidth, cellWidth);
                     bitmapHeight = (int) (targetHeight * ((float) bitmapWidth / targetWidth));
                     iconScale = Math.min((float) bitmapHeight / (mAppIconSize + 2 * minOffset), 1f);
