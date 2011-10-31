@@ -2152,7 +2152,7 @@ public final class Launcher extends Activity
      * @param state The state that we are moving in or out of (eg. APPS_CUSTOMIZE)
      * @param scaleFactor The scale factor used for the zoom
      */
-    private void setPivotsForZoom(View view, State state, float scaleFactor) {
+    private void setPivotsForZoom(View view, float scaleFactor) {
         view.setPivotX(view.getWidth() / 2.0f);
         view.setPivotY(view.getHeight() / 2.0f);
     }
@@ -2167,12 +2167,55 @@ public final class Launcher extends Activity
     }
 
     /**
+     * Things to test when changing the following seven functions.
+     *   - Home from workspace
+     *          - from center screen
+     *          - from other screens
+     *   - Home from all apps
+     *          - from center screen
+     *          - from other screens
+     *   - Back from all apps
+     *          - from center screen
+     *          - from other screens
+     *   - Launch app from workspace and quit
+     *          - with back
+     *          - with home
+     *   - Launch app from all apps and quit
+     *          - with back
+     *          - with home
+     *   - Go to a screen that's not the default, then all
+     *     apps, and launch and app, and go back
+     *          - with back
+     *          -with home
+     *   - On workspace, long press power and go back
+     *          - with back
+     *          - with home
+     *   - On all apps, long press power and go back
+     *          - with back
+     *          - with home
+     *   - On workspace, power off
+     *   - On all apps, power off
+     *   - Launch an app and turn off the screen while in that app
+     *          - Go back with home key
+     *          - Go back with back key  TODO: make this not go to workspace
+     *          - From all apps
+     *          - From workspace
+     *   - Enter and exit car mode (becuase it causes an extra configuration changed)
+     *          - From all apps
+     *          - From the center workspace
+     *          - From another workspace
+     */
+
+    /**
      * Zoom the camera out from the workspace to reveal 'toView'.
      * Assumes that the view to show is anchored at either the very top or very bottom
      * of the screen.
-     * @param toState The state to zoom out to. Must be APPS_CUSTOMIZE.
      */
-    private void cameraZoomOut(State toState, boolean animated, final boolean springLoaded) {
+    private void showAppsCustomizeHelper(boolean animated, final boolean springLoaded) {
+        if (mStateAnimation != null) {
+            mStateAnimation.cancel();
+            mStateAnimation = null;
+        }
         final Resources res = getResources();
         final Launcher instance = this;
 
@@ -2183,7 +2226,7 @@ public final class Launcher extends Activity
         final int startDelay =
                 res.getInteger(R.integer.config_workspaceAppsCustomizeAnimationStagger);
 
-        setPivotsForZoom(toView, toState, scale);
+        setPivotsForZoom(toView, scale);
 
         // Shrink workspaces away if going to AppsCustomize from workspace
         mWorkspace.changeState(Workspace.State.SMALL, animated);
@@ -2258,8 +2301,6 @@ public final class Launcher extends Activity
             });
 
             // toView should appear right at the end of the workspace shrink animation
-
-            if (mStateAnimation != null) mStateAnimation.cancel();
             mStateAnimation = new AnimatorSet();
             mStateAnimation.play(scaleAnim).after(startDelay);
             mStateAnimation.start();
@@ -2286,11 +2327,14 @@ public final class Launcher extends Activity
 
     /**
      * Zoom the camera back into the workspace, hiding 'fromView'.
-     * This is the opposite of cameraZoomOut.
-     * @param fromState The current state (must be APPS_CUSTOMIZE).
+     * This is the opposite of showAppsCustomizeHelper.
      * @param animated If true, the transition will be animated.
      */
-    private void cameraZoomIn(State fromState, boolean animated, final boolean springLoaded) {
+    private void hideAppsCustomizeHelper(boolean animated) {
+        if (mStateAnimation != null) {
+            mStateAnimation.cancel();
+            mStateAnimation = null;
+        }
         Resources res = getResources();
         final Launcher instance = this;
 
@@ -2299,13 +2343,10 @@ public final class Launcher extends Activity
                 res.getInteger(R.integer.config_appsCustomizeZoomScaleFactor);
         final View fromView = mAppsCustomizeTabHost;
 
-        setPivotsForZoom(fromView, fromState, scaleFactor);
+        setPivotsForZoom(fromView, scaleFactor);
         updateWallpaperVisibility(true);
         showHotseat(animated);
         if (animated) {
-            if (mStateAnimation != null) mStateAnimation.cancel();
-            mStateAnimation = new AnimatorSet();
-
             final float oldScaleX = fromView.getScaleX();
             final float oldScaleY = fromView.getScaleY();
 
@@ -2344,6 +2385,7 @@ public final class Launcher extends Activity
                 }
             });
 
+            mStateAnimation = new AnimatorSet();
             mStateAnimation.playTogether(scaleAnim, alphaAnim);
             mStateAnimation.start();
         } else {
@@ -2360,8 +2402,17 @@ public final class Launcher extends Activity
         int stagger = res.getInteger(R.integer.config_appsCustomizeWorkspaceAnimationStagger);
 
         mWorkspace.changeState(Workspace.State.NORMAL, animated, stagger);
-        if (mState == State.APPS_CUSTOMIZE) {
-            closeAllApps(animated);
+        if (mState != State.WORKSPACE) {
+            mWorkspace.setVisibility(View.VISIBLE);
+            hideAppsCustomizeHelper(animated);
+
+            // Show the search bar and hotseat
+            mSearchDropTargetBar.showSearchBar(animated);
+
+            // Set focus to the AppsCustomize button
+            if (mAllAppsButton != null) {
+                mAllAppsButton.requestFocus();
+            }
         }
 
         mWorkspace.showDockDivider(!animated);
@@ -2378,10 +2429,31 @@ public final class Launcher extends Activity
         getWindow().getDecorView().sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
     }
 
+    void showAllApps(boolean animated) {
+        if (mState != State.WORKSPACE) return;
+
+        showAppsCustomizeHelper(animated, false);
+        mAppsCustomizeTabHost.requestFocus();
+
+        // Hide the search bar and hotseat
+        mSearchDropTargetBar.hideSearchBar(animated);
+
+        // Change the state *after* we've called all the transition code
+        mState = State.APPS_CUSTOMIZE;
+
+        // Pause the auto-advance of widgets until we are out of AllApps
+        mUserPresent = false;
+        updateRunning();
+        closeFolder();
+
+        // Send an accessibility event to announce the context change
+        getWindow().getDecorView().sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
+    }
+
     void enterSpringLoadedDragMode() {
         if (mState == State.APPS_CUSTOMIZE) {
             mWorkspace.changeState(Workspace.State.SPRING_LOADED);
-            cameraZoomIn(State.APPS_CUSTOMIZE, true, true);
+            hideAppsCustomizeHelper(true);
             mState = State.APPS_CUSTOMIZE_SPRING_LOADED;
         }
     }
@@ -2407,12 +2479,23 @@ public final class Launcher extends Activity
                 EXIT_SPRINGLOADED_MODE_LONG_TIMEOUT :
                 EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT));
     }
+
     void exitSpringLoadedDragMode() {
         if (mState == State.APPS_CUSTOMIZE_SPRING_LOADED) {
-            cameraZoomOut(State.APPS_CUSTOMIZE, true, true);
+            final boolean animated = true;
+            final boolean springLoaded = true;
+            showAppsCustomizeHelper(animated, springLoaded);
             mState = State.APPS_CUSTOMIZE;
         }
         // Otherwise, we are not in spring loaded mode, so don't do anything.
+    }
+
+    void lockAllApps() {
+        // TODO
+    }
+
+    void unlockAllApps() {
+        // TODO
     }
 
     public boolean isAllAppsCustomizeOpen() {
@@ -2445,89 +2528,6 @@ public final class Launcher extends Activity
                 mHotseat.setAlpha(0f);
             }
         }
-    }
-
-    void showAllApps(boolean animated) {
-        if (mState != State.WORKSPACE) return;
-
-        cameraZoomOut(State.APPS_CUSTOMIZE, animated, false);
-        mAppsCustomizeTabHost.requestFocus();
-
-        // Hide the search bar and hotseat
-        mSearchDropTargetBar.hideSearchBar(animated);
-
-        // Change the state *after* we've called all the transition code
-        mState = State.APPS_CUSTOMIZE;
-
-        // Pause the auto-advance of widgets until we are out of AllApps
-        mUserPresent = false;
-        updateRunning();
-        closeFolder();
-
-        // Send an accessibility event to announce the context change
-        getWindow().getDecorView().sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
-    }
-
-    /**
-     * Things to test when changing this code.
-     *   - Home from workspace
-     *          - from center screen
-     *          - from other screens
-     *   - Home from all apps
-     *          - from center screen
-     *          - from other screens
-     *   - Back from all apps
-     *          - from center screen
-     *          - from other screens
-     *   - Launch app from workspace and quit
-     *          - with back
-     *          - with home
-     *   - Launch app from all apps and quit
-     *          - with back
-     *          - with home
-     *   - Go to a screen that's not the default, then all
-     *     apps, and launch and app, and go back
-     *          - with back
-     *          -with home
-     *   - On workspace, long press power and go back
-     *          - with back
-     *          - with home
-     *   - On all apps, long press power and go back
-     *          - with back
-     *          - with home
-     *   - On workspace, power off
-     *   - On all apps, power off
-     *   - Launch an app and turn off the screen while in that app
-     *          - Go back with home key
-     *          - Go back with back key  TODO: make this not go to workspace
-     *          - From all apps
-     *          - From workspace
-     *   - Enter and exit car mode (becuase it causes an extra configuration changed)
-     *          - From all apps
-     *          - From the center workspace
-     *          - From another workspace
-     */
-    void closeAllApps(boolean animated) {
-        if (mState == State.APPS_CUSTOMIZE || mState == State.APPS_CUSTOMIZE_SPRING_LOADED) {
-            mWorkspace.setVisibility(View.VISIBLE);
-            cameraZoomIn(State.APPS_CUSTOMIZE, animated, false);
-
-            // Show the search bar and hotseat
-            mSearchDropTargetBar.showSearchBar(animated);
-
-            // Set focus to the AppsCustomize button
-            if (mAllAppsButton != null) {
-                mAllAppsButton.requestFocus();
-            }
-        }
-    }
-
-    void lockAllApps() {
-        // TODO
-    }
-
-    void unlockAllApps() {
-        // TODO
     }
 
     /**
