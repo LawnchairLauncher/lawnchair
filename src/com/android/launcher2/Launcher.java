@@ -2582,21 +2582,25 @@ public final class Launcher extends Activity
     // if successful in getting icon, return it; otherwise, set button to use default drawable
     private Drawable.ConstantState updateTextButtonWithIconFromExternalActivity(
             int buttonId, ComponentName activityName, int fallbackDrawableId) {
-        TextView button = (TextView) findViewById(buttonId);
         Drawable toolbarIcon = getExternalPackageToolbarIcon(activityName);
         Resources r = getResources();
         int w = r.getDimensionPixelSize(R.dimen.toolbar_external_icon_width);
         int h = r.getDimensionPixelSize(R.dimen.toolbar_external_icon_height);
 
+        TextView button = (TextView) findViewById(buttonId);
         // If we were unable to find the icon via the meta-data, use a generic one
         if (toolbarIcon == null) {
             toolbarIcon = r.getDrawable(fallbackDrawableId);
             toolbarIcon.setBounds(0, 0, w, h);
-            button.setCompoundDrawables(toolbarIcon, null, null, null);
+            if (button != null) {
+                button.setCompoundDrawables(toolbarIcon, null, null, null);
+            }
             return null;
         } else {
             toolbarIcon.setBounds(0, 0, w, h);
-            button.setCompoundDrawables(toolbarIcon, null, null, null);
+            if (button != null) {
+                button.setCompoundDrawables(toolbarIcon, null, null, null);
+            }
             return toolbarIcon.getConstantState();
         }
     }
