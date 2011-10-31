@@ -1151,10 +1151,16 @@ public class Workspace extends SmoothPagedView
                                 backgroundAlphaInterpolator(Math.abs(scrollProgress)));
                     }
                 }
-                cl.setTranslationX(translationX);
-                cl.setRotationY(rotation);
+                cl.setFastTranslationX(translationX);
+                cl.setFastRotationY(rotation);
+                if (mFadeInAdjacentScreens && !isSmall()) {
+                    float alpha = 1 - Math.abs(scrollProgress);
+                    cl.setFastAlpha(alpha);
+                }
+                cl.fastInvalidate();
             }
         }
+        invalidate();
     }
 
     private void resetCellLayoutTransforms(CellLayout cl, boolean left) {
@@ -1188,10 +1194,12 @@ public class Workspace extends SmoothPagedView
 
     @Override
     protected void screenScrolled(int screenCenter) {
-        super.screenScrolled(screenCenter);
         if (LauncherApplication.isScreenLarge()) {
+            // We don't call super.screenScrolled() here because we handle the adjacent pages alpha
+            // ourselves (for efficiency), and there are no scrolling indicators to update.
             screenScrolledLargeUI(screenCenter);
         } else {
+            super.screenScrolled(screenCenter);
             screenScrolledStandardUI(screenCenter);
         }
     }
@@ -1379,13 +1387,6 @@ public class Workspace extends SmoothPagedView
                 position[0], position[1], 0, null);
     }
 
-    @Override
-    protected void updateAdjacentPagesAlpha() {
-        if (!isSmall()) {
-            super.updateAdjacentPagesAlpha();
-        }
-    }
-
     /*
      * This interpolator emulates the rate at which the perceived scale of an object changes
      * as its distance from a camera increases. When this interpolator is applied to a scale
@@ -1545,7 +1546,6 @@ public class Workspace extends SmoothPagedView
 
         final State oldState = mState;
         final boolean oldStateIsNormal = (oldState == State.NORMAL);
-        final boolean oldStateIsSpringLoaded = (oldState == State.SPRING_LOADED);
         final boolean oldStateIsSmall = (oldState == State.SMALL);
         mState = state;
         final boolean stateIsNormal = (state == State.NORMAL);

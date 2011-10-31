@@ -1152,8 +1152,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         layout.createHardwareLayer();
 
         invalidate();
-        forceUpdateAdjacentPagesAlpha();
-
         /* TEMPORARILY DISABLE HOLOGRAPHIC ICONS
         if (mFadeInAdjacentScreens) {
             prepareGenerateHoloOutlinesTask(data.page, data.items, data.generatedImages);
