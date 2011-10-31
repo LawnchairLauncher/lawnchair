@@ -932,7 +932,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         Bitmap preview = Bitmap.createBitmap(bitmapSize, bitmapSize, Config.ARGB_8888);
 
         // Render the icon
-        Drawable icon = mIconCache.getFullResIcon(info, mPackageManager);
+        Drawable icon = mIconCache.getFullResIcon(info);
         renderDrawableToBitmap(icon, preview, offset, offset, mAppIconSize, mAppIconSize);
         return preview;
     }
@@ -1014,7 +1014,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 Drawable icon = null;
                 int hoffset = (int) (bitmapWidth / 2 - mAppIconSize * iconScale / 2);
                 int yoffset = (int) (bitmapHeight / 2 - mAppIconSize * iconScale / 2);
-                if (info.icon > 0) icon = mPackageManager.getDrawable(packageName, info.icon, null);
+                if (info.icon > 0) icon = mIconCache.getFullResIcon(packageName, info.icon);
                 if (icon == null) icon = resources.getDrawable(R.drawable.ic_launcher_application);
 
                 renderDrawableToBitmap(icon, preview, hoffset, yoffset,
