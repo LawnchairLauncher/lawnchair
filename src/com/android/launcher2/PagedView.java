@@ -94,6 +94,9 @@ public abstract class PagedView extends ViewGroup {
     protected float mLastMotionY;
     protected float mTotalMotionX;
     private int mLastScreenCenter = -1;
+    private int[] mChildOffsets;
+    private int[] mChildRelativeOffsets;
+    private int[] mChildOffsetsWithLayoutScale;
 
     protected final static int TOUCH_STATE_REST = 0;
     protected final static int TOUCH_STATE_SCROLLING = 1;
@@ -135,7 +138,6 @@ public abstract class PagedView extends ViewGroup {
     private PageSwitchListener mPageSwitchListener;
 
     private ArrayList<Boolean> mDirtyPageContent;
-    private boolean mDirtyPageAlpha = true;
 
     // choice modes
     protected static final int CHOICE_MODE_NONE = 0;
@@ -386,13 +388,11 @@ public abstract class PagedView extends ViewGroup {
         if (mScroller.computeScrollOffset()) {
             // Don't bother scrolling if the page does not need to be moved
             if (mScrollX != mScroller.getCurrX() || mScrollY != mScroller.getCurrY()) {
-                mDirtyPageAlpha = true;
                 scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
             }
             invalidate();
             return true;
         } else if (mNextPage != INVALID_PAGE) {
-            mDirtyPageAlpha = true;
             mCurrentPage = Math.max(0, Math.min(mNextPage, getPageCount() - 1));
             mNextPage = INVALID_PAGE;
             notifyPageSwitchListener();
@@ -519,6 +519,7 @@ public abstract class PagedView extends ViewGroup {
     // tightens the layout accordingly
     public void setLayoutScale(float childrenScale) {
         mLayoutScale = childrenScale;
+        invalidateCachedOffsets();
 
         // Now we need to do a re-layout, but preserving absolute X and Y coordinates
         int childCount = getChildCount();
@@ -596,80 +597,25 @@ public abstract class PagedView extends ViewGroup {
         if (mFirstLayout && mCurrentPage >= 0 && mCurrentPage < getChildCount()) {
             mFirstLayout = false;
         }
-    }
-
-    protected void forceUpdateAdjacentPagesAlpha() {
-        mDirtyPageAlpha = true;
-        updateAdjacentPagesAlpha();
-    }
-
-    protected void updateAdjacentPagesAlpha() {
-        if (mFadeInAdjacentScreens) {
-            if (mDirtyPageAlpha || (mTouchState == TOUCH_STATE_SCROLLING) || !mScroller.isFinished()) {
-                int screenWidth = getMeasuredWidth() - mPaddingLeft - mPaddingRight;
-                int halfScreenSize = screenWidth / 2;
-                int screenCenter = mScrollX + halfScreenSize + mPaddingLeft;
-                final int childCount = getChildCount();
-                for (int i = 0; i < childCount; ++i) {
-                    View layout = (View) getPageAt(i);
-                    int childWidth = getScaledMeasuredWidth(layout);
-                    int halfChildWidth = (childWidth / 2);
-                    int childCenter = getChildOffset(i) + halfChildWidth;
-
-                    // On the first layout, we may not have a width nor a proper offset, so for now
-                    // we should just assume full page width (and calculate the offset according to
-                    // that).
-                    if (childWidth <= 0) {
-                        childWidth = screenWidth;
-                        childCenter = (i * childWidth) + (childWidth / 2);
-                    }
-
-                    int d = halfChildWidth;
-                    int distanceFromScreenCenter = childCenter - screenCenter;
-                    if (distanceFromScreenCenter > 0) {
-                        if (i > 0) {
-                            d += getScaledMeasuredWidth(getPageAt(i - 1)) / 2;
-                        } else {
-                            continue;
-                        }
-                    } else {
-                        if (i < childCount - 1) {
-                            d += getScaledMeasuredWidth(getPageAt(i + 1)) / 2;
-                        } else {
-                            continue;
-                        }
-                    }
-                    d += mPageSpacing;
-
-                    // Preventing potential divide-by-zero
-                    d = Math.max(1, d);
-
-                    float dimAlpha = (float) (Math.abs(distanceFromScreenCenter)) / d;
-                    dimAlpha = Math.max(0.0f, Math.min(1.0f, (dimAlpha * dimAlpha)));
-                    float alpha = 1.0f - dimAlpha;
-
-                    if (alpha < ALPHA_QUANTIZE_LEVEL) {
-                        alpha = 0.0f;
-                    } else if (alpha > 1.0f - ALPHA_QUANTIZE_LEVEL) {
-                        alpha = 1.0f;
-                    }
-
-                    // Due to the way we're setting alpha on our children in PagedViewCellLayout,
-                    // this optimization causes alpha to not be properly updated sometimes (repro
-                    // case: in xlarge mode, swipe to second page in All Apps, then click on "My
-                    // Apps" tab. the page will have alpha 0 until you swipe it). Removing
-                    // optimization fixes the issue, but we should fix this in a better manner
-                    //if (Float.compare(alpha, layout.getAlpha()) != 0) {
-                        layout.setAlpha(alpha);
-                    //}
-                }
-                mDirtyPageAlpha = false;
-            }
-        }
+        invalidateCachedOffsets();
     }
 
     protected void screenScrolled(int screenCenter) {
-        updateScrollingIndicator();
+        if (isScrollingIndicatorEnabled()) {
+            updateScrollingIndicator();
+        }
+        if (mFadeInAdjacentScreens) {
+            for (int i = 0; i < getChildCount(); i++) {
+                View child = getChildAt(i);
+                if (child != null) {
+                    float scrollProgress = getScrollProgress(screenCenter, child, i);
+                    float alpha = 1 - Math.abs(scrollProgress);
+                    child.setFastAlpha(alpha);
+                    child.fastInvalidate();
+                }
+            }
+            invalidate();
+        }
     }
 
     @Override
@@ -682,6 +628,71 @@ public abstract class PagedView extends ViewGroup {
         invalidate();
     }
 
+    protected void invalidateCachedOffsets() {
+        int count = getChildCount();
+        if (count == 0) return;
+
+        mChildOffsets = new int[count];
+        mChildRelativeOffsets = new int[count];
+        mChildOffsetsWithLayoutScale = new int[count];
+        for (int i = 0; i < count; i++) {
+            mChildOffsets[i] = -1;
+            mChildRelativeOffsets[i] = -1;
+            mChildOffsetsWithLayoutScale[i] = -1;
+        }
+    }
+
+    protected int getChildOffset(int index) {
+        int[] childOffsets = Float.compare(mLayoutScale, 1f) == 0 ?
+                mChildOffsets : mChildOffsetsWithLayoutScale;
+
+        if (childOffsets != null && childOffsets[index] != -1) {
+            return childOffsets[index];
+        } else {
+            if (getChildCount() == 0)
+                return 0;
+
+            int offset = getRelativeChildOffset(0);
+            for (int i = 0; i < index; ++i) {
+                offset += getScaledMeasuredWidth(getPageAt(i)) + mPageSpacing;
+            }
+            if (childOffsets != null) {
+                childOffsets[index] = offset;
+            }
+            return offset;
+        }
+    }
+
+    protected int getRelativeChildOffset(int index) {
+        if (mChildRelativeOffsets != null && mChildRelativeOffsets[index] != -1) {
+            return mChildRelativeOffsets[index];
+        } else {
+            final int padding = mPaddingLeft + mPaddingRight;
+            final int offset = mPaddingLeft +
+                    (getMeasuredWidth() - padding - getChildWidth(index)) / 2;
+            if (mChildRelativeOffsets != null) {
+                mChildRelativeOffsets[index] = offset;
+            }
+            return offset;
+        }
+    }
+
+    protected int getScaledRelativeChildOffset(int index) {
+        final int padding = mPaddingLeft + mPaddingRight;
+        final int offset = mPaddingLeft + (getMeasuredWidth() - padding -
+                getScaledMeasuredWidth(getPageAt(index))) / 2;
+        return offset;
+    }
+
+    protected int getScaledMeasuredWidth(View child) {
+        // This functions are called enough times that it actually makes a difference in the
+        // profiler -- so just inline the max() here
+        final int measuredWidth = child.getMeasuredWidth();
+        final int minWidth = mMinimumWidth;
+        final int maxWidth = (minWidth > measuredWidth) ? minWidth : measuredWidth;
+        return (int) (maxWidth * mLayoutScale + 0.5f);
+    }
+
     @Override
     protected void dispatchDraw(Canvas canvas) {
         int halfScreenSize = getMeasuredWidth() / 2;
@@ -689,7 +700,6 @@ public abstract class PagedView extends ViewGroup {
 
         if (screenCenter != mLastScreenCenter || mForceScreenScrolled) {
             screenScrolled(screenCenter);
-            updateAdjacentPagesAlpha();
             mLastScreenCenter = screenCenter;
             mForceScreenScrolled = false;
         }
@@ -1322,49 +1332,12 @@ public abstract class PagedView extends ViewGroup {
         return -1;
     }
 
-    protected void setMinimumWidthOverride(int minimumWidth) {
-        mMinimumWidth = minimumWidth;
-    }
-    protected void resetMinimumWidthOverride() {
-        mMinimumWidth = 0;
-    }
-
     protected int getChildWidth(int index) {
         // This functions are called enough times that it actually makes a difference in the
         // profiler -- so just inline the max() here
         final int measuredWidth = getPageAt(index).getMeasuredWidth();
         final int minWidth = mMinimumWidth;
         return (minWidth > measuredWidth) ? minWidth : measuredWidth;
-    }
-
-    protected int getRelativeChildOffset(int index) {
-        int padding = mPaddingLeft + mPaddingRight;
-        return mPaddingLeft + (getMeasuredWidth() - padding - getChildWidth(index)) / 2;
-    }
-    protected int getScaledRelativeChildOffset(int index) {
-        int padding = mPaddingLeft + mPaddingRight;
-        return mPaddingLeft + (getMeasuredWidth() - padding -
-                getScaledMeasuredWidth(getPageAt(index))) / 2;
-    }
-
-    protected int getChildOffset(int index) {
-        if (getChildCount() == 0)
-            return 0;
-
-        int offset = getRelativeChildOffset(0);
-        for (int i = 0; i < index; ++i) {
-            offset += getScaledMeasuredWidth(getPageAt(i)) + mPageSpacing;
-        }
-        return offset;
-    }
-
-    protected int getScaledMeasuredWidth(View child) {
-        // This functions are called enough times that it actually makes a difference in the
-        // profiler -- so just inline the max() here
-        final int measuredWidth = child.getMeasuredWidth();
-        final int minWidth = mMinimumWidth;
-        final int maxWidth = (minWidth > measuredWidth) ? minWidth : measuredWidth;
-        return (int) (maxWidth * mLayoutScale + 0.5f);
     }
 
     int getPageNearestToCenterOfScreen() {
@@ -1726,8 +1699,6 @@ public abstract class PagedView extends ViewGroup {
 
             // Load any pages that are necessary for the current window of views
             loadAssociatedPages(mCurrentPage, immediateAndOnly);
-            mDirtyPageAlpha = true;
-            updateAdjacentPagesAlpha();
             requestLayout();
         }
     }
