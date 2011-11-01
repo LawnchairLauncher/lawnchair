@@ -1494,6 +1494,9 @@ public class Workspace extends SmoothPagedView
     }
 
     void changeState(final State state, boolean animated, int delay) {
+        if (mState == state) {
+            return;
+        }
         if (mFirstLayout) {
             // (mFirstLayout == "first layout has not happened yet")
             // cancel any pending shrinks that were set earlier
@@ -2359,7 +2362,6 @@ public class Workspace extends SmoothPagedView
 
             // Show the current page outlines to indicate that we can accept this drop
             showOutlines();
-            layout.setIsDragOccuring(true);
             layout.onDragEnter();
             layout.visualizeDropLocation(null, mDragOutline, x, y, 1, 1, null, null);
 
@@ -2420,7 +2422,6 @@ public class Workspace extends SmoothPagedView
         }
         case DragEvent.ACTION_DRAG_ENDED:
             // Hide the page outlines after the drop
-            layout.setIsDragOccuring(false);
             layout.onDragExit();
             hideOutlines();
             return true;
