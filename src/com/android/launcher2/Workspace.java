@@ -192,7 +192,6 @@ public class Workspace extends SmoothPagedView
     private Runnable mDelayedResizeRunnable;
     private int mDisplayWidth;
     private int mDisplayHeight;
-    private boolean mIsStaticWallpaper;
     private int mWallpaperTravelWidth;
 
     // Variables relating to the creation of user folders by hovering shortcuts over shortcuts
@@ -639,7 +638,6 @@ public class Workspace extends SmoothPagedView
 
     protected void onPageBeginMoving() {
         super.onPageBeginMoving();
-        mIsStaticWallpaper = mWallpaperManager.getWallpaperInfo() == null;
 
         if (isHardwareAccelerated()) {
             updateChildrenLayersEnabled();
@@ -692,12 +690,6 @@ public class Workspace extends SmoothPagedView
     };
 
     // As a ratio of screen height, the total distance we want the parallax effect to span
-    // vertically
-    private float wallpaperTravelToScreenHeightRatio(int width, int height) {
-        return 1.1f;
-    }
-
-    // As a ratio of screen height, the total distance we want the parallax effect to span
     // horizontally
     private float wallpaperTravelToScreenWidthRatio(int width, int height) {
         float aspectRatio = width / (float) height;
@@ -739,7 +731,7 @@ public class Workspace extends SmoothPagedView
         // parallax effects
         if (LauncherApplication.isScreenLarge()) {
             mWallpaperWidth = (int) (maxDim * wallpaperTravelToScreenWidthRatio(maxDim, minDim));
-            mWallpaperHeight = (int)(maxDim * wallpaperTravelToScreenHeightRatio(maxDim, minDim));
+            mWallpaperHeight = maxDim;
         } else {
             mWallpaperWidth = Math.max((int) (minDim * WALLPAPER_SCREENS_SPAN), maxDim);
             mWallpaperHeight = maxDim;
@@ -765,52 +757,31 @@ public class Workspace extends SmoothPagedView
     }
 
     private float wallpaperOffsetForCurrentScroll() {
-        final boolean overScrollWallpaper = LauncherApplication.isScreenLarge();
-        final boolean isStaticWallpaper = mIsStaticWallpaper;
         // The wallpaper travel width is how far, from left to right, the wallpaper will move
-        // at this orientation (for example, in portrait mode we don't move all the way to the
-        // edges of the wallpaper, or otherwise the parallax effect would be too strong)
-        int wallpaperTravelWidth = mWallpaperTravelWidth;
-        if (!overScrollWallpaper || !isStaticWallpaper) {
-            wallpaperTravelWidth = mWallpaperWidth;
+        // at this orientation. On tablets in portrait mode we don't move all the way to the
+        // edges of the wallpaper, or otherwise the parallax effect would be too strong.
+        int wallpaperTravelWidth = mWallpaperWidth;
+        if (LauncherApplication.isScreenLarge()) {
+            wallpaperTravelWidth = mWallpaperTravelWidth;
         }
 
         // Set wallpaper offset steps (1 / (number of screens - 1))
-        // We have 3 vertical offset states (centered, and then top/bottom aligned
-        // for all apps/customize)
-        if (LauncherApplication.isScreenLarge()) {
-            mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 1.0f / (3 - 1));
-        } else {
-            mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 1.0f);
-        }
+        mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 1.0f);
 
-        // For the purposes of computing the scrollRange and overScrollOffset, we ignore
-        // assume that mLayoutScale is 1. This means that when we're in spring-loaded mode,
+        // For the purposes of computing the scrollRange and overScrollOffset, we assume
+        // that mLayoutScale is 1. This means that when we're in spring-loaded mode,
         // there's no discrepancy between the wallpaper offset for a given page.
         float layoutScale = mLayoutScale;
         mLayoutScale = 1f;
         int scrollRange = getScrollRange();
-        float scrollProgressOffset = 0;
-
-        // Account for over scroll: you only see the absolute edge of the wallpaper if
-        // you over scroll as far as you can in landscape mode. Only do this for static wallpapers
-        // because live wallpapers (and probably 3rd party wallpaper providers) rely on the offset
-        // being even intervals from 0 to 1 (eg [0, 0.25, 0.5, 0.75, 1])
-        if (isStaticWallpaper && overScrollWallpaper) {
-            int overScrollOffset = (int) (maxOverScroll() * mDisplayWidth);
-            scrollProgressOffset += overScrollOffset / (float) getScrollRange();
-            scrollRange += 2 * overScrollOffset;
-        }
 
         // Again, we adjust the wallpaper offset to be consistent between values of mLayoutScale
-
-        float adjustedScrollX = overScrollWallpaper ?
-                mScrollX : Math.max(0, Math.min(mScrollX, mMaxScrollX));
+        float adjustedScrollX = Math.max(0, Math.min(mScrollX, mMaxScrollX));
         adjustedScrollX *= mWallpaperScrollRatio;
         mLayoutScale = layoutScale;
 
         float scrollProgress =
-            adjustedScrollX / (float) scrollRange + scrollProgressOffset;
+            adjustedScrollX / (float) scrollRange;
         float offsetInDips = wallpaperTravelWidth * scrollProgress +
             (mWallpaperWidth - wallpaperTravelWidth) / 2; // center it
         float offset = offsetInDips / (float) mWallpaperWidth;
@@ -889,8 +860,6 @@ public class Workspace extends SmoothPagedView
         float mVerticalCatchupConstant = 0.35f;
 
         public WallpaperOffsetInterpolator() {
-            mVerticalWallpaperOffset = LauncherApplication.isScreenLarge() ? 0.5f : 0f;
-            mFinalVerticalWallpaperOffset = LauncherApplication.isScreenLarge() ? 0.5f : 0f;
         }
 
         public void setOverrideHorizontalCatchupConstant(boolean override) {
