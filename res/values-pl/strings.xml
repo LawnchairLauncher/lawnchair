@@ -30,7 +30,7 @@
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Aby dodać widżet, dotknij go i przytrzymaj."</string>
     <string name="market" msgid="2652226429823445833">"Sklep"</string>
     <string name="external_drop_widget_error" msgid="127440783198670829">"Nie można upuścić elementu na tym ekranie głównym."</string>
-    <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Wybierz widżet do utworzenia"</string>
+    <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Wybierz widżet, który chcesz dodać"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nazwa folderu"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Zmień nazwę folderu"</string>
     <string name="rename_action" msgid="6016003384693240896">"OK"</string>
@@ -41,7 +41,7 @@
     <string name="group_widgets" msgid="6704978494073105844">"Widżety"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Tapety"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Brak miejsca na tej stronie głównej"</string>
-    <string name="invalid_hotseat_item" msgid="6545340627805449250">"Ten widżet jest za duży, aby umieścić go w obszarze dokowania."</string>
+    <string name="invalid_hotseat_item" msgid="6545340627805449250">"Ten widżet jest za duży, aby umieścić go w kieszonce."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"Skrót „<xliff:g id="NAME">%s</xliff:g>” został utworzony."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Skrót „<xliff:g id="NAME">%s</xliff:g>” został usunięty."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Skrót „<xliff:g id="NAME">%s</xliff:g>” już istnieje."</string>
@@ -84,14 +84,10 @@
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"To jest aplikacja systemowa, której nie możesz odinstalować."</string>
     <string name="dream_name" msgid="2847171357608437154">"Wyrzutnia rakiet"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Folder bez nazwy"</string>
-    <!-- no translation found for default_scroll_format (4057140866420001240) -->
-    <skip />
-    <!-- no translation found for workspace_scroll_format (7911126267695001437) -->
-    <skip />
-    <!-- no translation found for apps_customize_apps_scroll_format (5494241912377704885) -->
-    <skip />
-    <!-- no translation found for apps_customize_widgets_scroll_format (5383009742241717437) -->
-    <skip />
+    <string name="default_scroll_format" msgid="4057140866420001240">"Strona %1$d z %2$d"</string>
+    <string name="workspace_scroll_format" msgid="7911126267695001437">"Obszar roboczy: %1$d z %2$d"</string>
+    <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"Strona aplikacji: %1$d z %2$d"</string>
+    <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"Strona widżetów: %1$d z %2$d"</string>
     <string name="workspace_cling_title" msgid="738396473989890567">"Rozgość się"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"Dodaj tu swoje ulubione aplikacje."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Aby zobaczyć wszystkie aplikacje, dotknij okręgu."</string>
@@ -101,16 +97,10 @@
     <string name="folder_cling_move_item" msgid="270598675060435169">"Dotknij i przytrzymaj, aby przenieść aplikację."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Aby utworzyć nowy folder na ekranie głównym, ułóż aplikacje jedna na drugiej."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
-    <!-- no translation found for folder_opened (4129072635480822768) -->
-    <skip />
-    <!-- no translation found for folder_tap_to_close (4076794242530255812) -->
-    <skip />
-    <!-- no translation found for folder_tap_to_rename (2125528923948315223) -->
-    <skip />
-    <!-- no translation found for folder_closed (3130534551370511932) -->
-    <skip />
-    <!-- no translation found for folder_renamed (781234745487414781) -->
-    <skip />
-    <!-- no translation found for folder_name_format (4513766553514769310) -->
-    <skip />
+    <string name="folder_opened" msgid="4129072635480822768">"Folder otwarty, %1$d na %2$d"</string>
+    <string name="folder_tap_to_close" msgid="4076794242530255812">"Dotknij, aby zamknąć folder."</string>
+    <string name="folder_tap_to_rename" msgid="2125528923948315223">"Dotknij, aby zmienić nazwę."</string>
+    <string name="folder_closed" msgid="3130534551370511932">"Folder zamknięty"</string>
+    <string name="folder_renamed" msgid="781234745487414781">"Nazwa folderu zmieniona na %1$s"</string>
+    <string name="folder_name_format" msgid="4513766553514769310">"Folder: %1$s"</string>
 </resources>
