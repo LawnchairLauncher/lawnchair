@@ -91,6 +91,6 @@
     <string name="all_apps_cling_add_item" msgid="7404588523183860170">"Чтобы добавить приложение на главный экран, нажмите на значок и удерживайте его."</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"Разложите все по папкам"</string>
     <string name="folder_cling_move_item" msgid="270598675060435169">"Чтобы переместить значок приложения, нажмите на него и удерживайте."</string>
-    <string name="folder_cling_create_folder" msgid="289412698047625601">"Чтобы создать папку на главном экране, перенесите значок одного приложения на значок другого."</string>
+    <string name="folder_cling_create_folder" msgid="289412698047625601">"Чтобы создать папку на главном экране, перенесите одно приложение на другое."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"ОК"</string>
 </resources>

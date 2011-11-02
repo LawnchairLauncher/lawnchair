@@ -41,7 +41,7 @@
     <string name="group_widgets" msgid="6704978494073105844">"Widżety"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Tapety"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Brak miejsca na tej stronie głównej"</string>
-    <string name="invalid_hotseat_item" msgid="6545340627805449250">"Ten widżet jest za duży, aby umieścić go w obszarze dokowania."</string>
+    <string name="invalid_hotseat_item" msgid="6545340627805449250">"Ten widżet jest za duży, aby umieścić go w kieszonce."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"Skrót „<xliff:g id="NAME">%s</xliff:g>” został utworzony."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Skrót „<xliff:g id="NAME">%s</xliff:g>” został usunięty."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Skrót „<xliff:g id="NAME">%s</xliff:g>” już istnieje."</string>
@@ -85,8 +85,8 @@
     <string name="dream_name" msgid="2847171357608437154">"Wyrzutnia rakiet"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Folder bez nazwy"</string>
     <string name="workspace_cling_title" msgid="738396473989890567">"Rozgość się"</string>
-    <string name="workspace_cling_move_item" msgid="791013895761065070">"Tutaj możesz umieścić swoje ulubione aplikacje."</string>
-    <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Aby zobaczyć wszystkie aplikacje, dotknij kręgu."</string>
+    <string name="workspace_cling_move_item" msgid="791013895761065070">"Dodaj tu swoje ulubione aplikacje."</string>
+    <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Aby zobaczyć wszystkie aplikacje, dotknij okręgu."</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"Wybierz kilka aplikacji"</string>
     <string name="all_apps_cling_add_item" msgid="7404588523183860170">"Aby dodać aplikację na ekran główny, dotknij ją i przytrzymaj."</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"Uporządkuj swoje aplikacje za pomocą folderów"</string>
