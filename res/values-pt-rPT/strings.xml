@@ -84,14 +84,10 @@
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"É uma aplicação de sistema e não pode ser desinstalada."</string>
     <string name="dream_name" msgid="2847171357608437154">"Lança-mísseis"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Pasta sem nome"</string>
-    <!-- no translation found for default_scroll_format (4057140866420001240) -->
-    <skip />
-    <!-- no translation found for workspace_scroll_format (7911126267695001437) -->
-    <skip />
-    <!-- no translation found for apps_customize_apps_scroll_format (5494241912377704885) -->
-    <skip />
-    <!-- no translation found for apps_customize_widgets_scroll_format (5383009742241717437) -->
-    <skip />
+    <string name="default_scroll_format" msgid="4057140866420001240">"Página %1$d de %2$d"</string>
+    <string name="workspace_scroll_format" msgid="7911126267695001437">"Espaço de trabalho %1$d de %2$d"</string>
+    <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"Página de aplicações %1$d de %2$d"</string>
+    <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"Página de widgets %1$d de %2$d"</string>
     <string name="workspace_cling_title" msgid="738396473989890567">"Sinta-se em casa"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"Pode colocar as suas aplicações favoritas aqui."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Para ver todas as aplicações, toque no círculo."</string>
@@ -101,16 +97,10 @@
     <string name="folder_cling_move_item" msgid="270598675060435169">"Para mover uma aplicação, toque na mesma sem largar."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Para criar uma nova pasta no Ecrã principal, empilhe uma aplicação por cima de outra."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
-    <!-- no translation found for folder_opened (4129072635480822768) -->
-    <skip />
-    <!-- no translation found for folder_tap_to_close (4076794242530255812) -->
-    <skip />
-    <!-- no translation found for folder_tap_to_rename (2125528923948315223) -->
-    <skip />
-    <!-- no translation found for folder_closed (3130534551370511932) -->
-    <skip />
-    <!-- no translation found for folder_renamed (781234745487414781) -->
-    <skip />
-    <!-- no translation found for folder_name_format (4513766553514769310) -->
-    <skip />
+    <string name="folder_opened" msgid="4129072635480822768">"Pasta aberta, %1$d por %2$d"</string>
+    <string name="folder_tap_to_close" msgid="4076794242530255812">"Toque para fechar a pasta"</string>
+    <string name="folder_tap_to_rename" msgid="2125528923948315223">"Toque para mudar o nome"</string>
+    <string name="folder_closed" msgid="3130534551370511932">"Pasta fechada"</string>
+    <string name="folder_renamed" msgid="781234745487414781">"Nome da pasta alterado para %1$s"</string>
+    <string name="folder_name_format" msgid="4513766553514769310">"Pasta: %1$s"</string>
 </resources>
