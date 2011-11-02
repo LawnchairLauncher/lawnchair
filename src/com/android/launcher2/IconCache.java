@@ -86,10 +86,25 @@ public class IconCache {
         return (d != null) ? d : getFullResDefaultActivityIcon();
     }
 
-    public Drawable getFullResIcon(ResolveInfo info, PackageManager packageManager) {
+    public Drawable getFullResIcon(String packageName, int iconId) {
         Resources resources;
         try {
-            resources = packageManager.getResourcesForApplication(
+            resources = mPackageManager.getResourcesForApplication(packageName);
+        } catch (PackageManager.NameNotFoundException e) {
+            resources = null;
+        }
+        if (resources != null) {
+            if (iconId != 0) {
+                return getFullResIcon(resources, iconId);
+            }
+        }
+        return getFullResDefaultActivityIcon();
+    }
+
+    public Drawable getFullResIcon(ResolveInfo info) {
+        Resources resources;
+        try {
+            resources = mPackageManager.getResourcesForApplication(
                     info.activityInfo.applicationInfo);
         } catch (PackageManager.NameNotFoundException e) {
             resources = null;
@@ -198,7 +213,7 @@ public class IconCache {
             }
 
             entry.icon = Utilities.createIconBitmap(
-                    getFullResIcon(info, mPackageManager), mContext);
+                    getFullResIcon(info), mContext);
         }
         return entry;
     }
