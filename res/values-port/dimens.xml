@@ -15,6 +15,12 @@
 -->
 
 <resources>
+<!-- QSB -->
+    <dimen name="qsb_bar_height_inset">37dp</dimen>
+    <dimen name="qsb_bar_height">43dp</dimen>
+    <dimen name="qsb_padding_left">3dp</dimen>
+    <dimen name="qsb_padding_right">3dp</dimen>
+
 <!-- Workspace -->
     <dimen name="workspace_left_padding">0dp</dimen>
     <dimen name="workspace_right_padding">0dp</dimen>
