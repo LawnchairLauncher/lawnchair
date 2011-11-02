@@ -39,6 +39,8 @@
          that we put on each page for allowing folders to draw out of bounds -->
     <dimen name="qsb_bar_height_inset">48dp</dimen>
     <dimen name="qsb_bar_height">54dp</dimen>
+    <dimen name="qsb_padding_left">6dp</dimen>
+    <dimen name="qsb_padding_right">6dp</dimen>
     <dimen name="search_bar_height">48dp</dimen>
     <!-- height of the bottom row of controls -->
     <dimen name="button_bar_height">80dip</dimen>
@@ -57,4 +59,7 @@
     <dimen name="apps_customize_pageLayoutPaddingRight">8dp</dimen>
     <dimen name="apps_customize_cell_height">92dp</dimen>
     <dimen name="apps_customize_widget_cell_height_gap">16dp</dimen>
+
+<!-- Folders -->
+    <dimen name="folder_preview_size">64dp</dimen>
 </resources>
