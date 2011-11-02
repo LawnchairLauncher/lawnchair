@@ -84,14 +84,10 @@
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Impossible de désinstaller cette application, car il s\'agit d\'une application système."</string>
     <string name="dream_name" msgid="2847171357608437154">"Lance-missile"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Dossier sans nom"</string>
-    <!-- no translation found for default_scroll_format (4057140866420001240) -->
-    <skip />
-    <!-- no translation found for workspace_scroll_format (7911126267695001437) -->
-    <skip />
-    <!-- no translation found for apps_customize_apps_scroll_format (5494241912377704885) -->
-    <skip />
-    <!-- no translation found for apps_customize_widgets_scroll_format (5383009742241717437) -->
-    <skip />
+    <string name="default_scroll_format" msgid="4057140866420001240">"Page %1$d sur %2$d"</string>
+    <string name="workspace_scroll_format" msgid="7911126267695001437">"Espace de travail : %1$d sur %2$d"</string>
+    <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"Page des applications : %1$d sur %2$d"</string>
+    <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"Page des widgets : %1$d sur %2$d"</string>
     <string name="workspace_cling_title" msgid="738396473989890567">"Faites comme chez vous"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"Vous pouvez placer vos applications préférées ici."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Pour voir toutes vos applications, appuyez sur le cercle."</string>
@@ -101,16 +97,10 @@
     <string name="folder_cling_move_item" msgid="270598675060435169">"Pour déplacer une application, appuyez dessus de manière prolongée."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Pour créer un dossier sur votre écran d\'accueil, superposez les applications les unes sur les autres."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
-    <!-- no translation found for folder_opened (4129072635480822768) -->
-    <skip />
-    <!-- no translation found for folder_tap_to_close (4076794242530255812) -->
-    <skip />
-    <!-- no translation found for folder_tap_to_rename (2125528923948315223) -->
-    <skip />
-    <!-- no translation found for folder_closed (3130534551370511932) -->
-    <skip />
-    <!-- no translation found for folder_renamed (781234745487414781) -->
-    <skip />
-    <!-- no translation found for folder_name_format (4513766553514769310) -->
-    <skip />
+    <string name="folder_opened" msgid="4129072635480822768">"Dossier ouvert, %1$d par %2$d"</string>
+    <string name="folder_tap_to_close" msgid="4076794242530255812">"Appuyez pour fermer le dossier."</string>
+    <string name="folder_tap_to_rename" msgid="2125528923948315223">"Appuyez pour confirmer le nouveau nom."</string>
+    <string name="folder_closed" msgid="3130534551370511932">"Dossier fermé"</string>
+    <string name="folder_renamed" msgid="781234745487414781">"Nouveau nom du dossier : %1$s"</string>
+    <string name="folder_name_format" msgid="4513766553514769310">"Dossier : %1$s"</string>
 </resources>

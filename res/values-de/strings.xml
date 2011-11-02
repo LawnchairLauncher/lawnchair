@@ -27,9 +27,9 @@
     <string name="pick_wallpaper" msgid="5630222540525626723">"Hintergrundbilder"</string>
     <string name="activity_not_found" msgid="217823393239365967">"App ist nicht installiert."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widgets"</string>
-    <string name="long_press_widget_to_add" msgid="7395697462851217506">"Zum Hinzufügen tippen und gedrückt halten"</string>
+    <string name="long_press_widget_to_add" msgid="7395697462851217506">"Zum Hinzufügen Widget berühren und halten"</string>
     <string name="market" msgid="2652226429823445833">"Shop"</string>
-    <string name="external_drop_widget_error" msgid="127440783198670829">"Element wurde nicht auf Startbildschirm abgelegt."</string>
+    <string name="external_drop_widget_error" msgid="127440783198670829">"Symbol wurde nicht auf Startbildschirm abgelegt."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Widget zum Erstellen auswählen"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Ordnername"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Ordner umbenennen"</string>
@@ -41,7 +41,7 @@
     <string name="group_widgets" msgid="6704978494073105844">"Widgets"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Hintergründe"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Auf dem Startbildschirm ist kein Platz mehr vorhanden."</string>
-    <string name="invalid_hotseat_item" msgid="6545340627805449250">"Dieses Widget ist zu groß für den Hotseat."</string>
+    <string name="invalid_hotseat_item" msgid="6545340627805449250">"Dieses Widget ist zu groß für die App-Leiste."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"\"<xliff:g id="NAME">%s</xliff:g>\"-Verknüpfung wurde erstellt."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"\"<xliff:g id="NAME">%s</xliff:g>\"-Verknüpfung wurde entfernt."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"\"<xliff:g id="NAME">%s</xliff:g>\"-Verknüpfung ist bereits vorhanden."</string>
@@ -84,33 +84,23 @@
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Dies ist eine Systemanwendung, die nicht deinstalliert werden kann."</string>
     <string name="dream_name" msgid="2847171357608437154">"Raketenstartgerät"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Unbenannter Ordner"</string>
-    <!-- no translation found for default_scroll_format (4057140866420001240) -->
-    <skip />
-    <!-- no translation found for workspace_scroll_format (7911126267695001437) -->
-    <skip />
-    <!-- no translation found for apps_customize_apps_scroll_format (5494241912377704885) -->
-    <skip />
-    <!-- no translation found for apps_customize_widgets_scroll_format (5383009742241717437) -->
-    <skip />
+    <string name="default_scroll_format" msgid="4057140866420001240">"Seite %1$d von %2$d"</string>
+    <string name="workspace_scroll_format" msgid="7911126267695001437">"Arbeitsbereich %1$d von %2$d"</string>
+    <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"Apps-Seite %1$d von %2$d"</string>
+    <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"Widgets-Seite %1$d von %2$d"</string>
     <string name="workspace_cling_title" msgid="738396473989890567">"Fühlen Sie sich wie zu Hause"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"Hier können Sie Ihre Lieblings-Apps ablegen."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Berühren Sie den Kreis für eine Übersicht aller Apps."</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"Einige Apps auswählen"</string>
-    <string name="all_apps_cling_add_item" msgid="5665035103260318891">"Tippen Sie auf eine App und halten Sie sie gedrückt, um sie zum Startbildschirm hinzuzufügen."</string>
+    <string name="all_apps_cling_add_item" msgid="5665035103260318891">"Berühren und halten Sie eine App, um sie zum Startbildschirm hinzuzufügen."</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"Apps mit Ordnern organisieren"</string>
     <string name="folder_cling_move_item" msgid="270598675060435169">"Berühren und halten Sie eine App, um sie zu verschieben."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Stapeln Sie Apps übereinander, um einen neuen Ordner auf Ihrem Startbildschirm zu erstellen."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
-    <!-- no translation found for folder_opened (4129072635480822768) -->
-    <skip />
-    <!-- no translation found for folder_tap_to_close (4076794242530255812) -->
-    <skip />
-    <!-- no translation found for folder_tap_to_rename (2125528923948315223) -->
-    <skip />
-    <!-- no translation found for folder_closed (3130534551370511932) -->
-    <skip />
-    <!-- no translation found for folder_renamed (781234745487414781) -->
-    <skip />
-    <!-- no translation found for folder_name_format (4513766553514769310) -->
-    <skip />
+    <string name="folder_opened" msgid="4129072635480822768">"Ordner geöffnet, %1$d von %2$d"</string>
+    <string name="folder_tap_to_close" msgid="4076794242530255812">"Ordner durch Berühren schließen"</string>
+    <string name="folder_tap_to_rename" msgid="2125528923948315223">"Umbenennen durch Berühren bestätigen"</string>
+    <string name="folder_closed" msgid="3130534551370511932">"Ordner wurde geschlossen"</string>
+    <string name="folder_renamed" msgid="781234745487414781">"Ordner umbenannt in %1$s"</string>
+    <string name="folder_name_format" msgid="4513766553514769310">"Ordner: %1$s"</string>
 </resources>
