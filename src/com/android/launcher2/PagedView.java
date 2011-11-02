@@ -490,11 +490,14 @@ public abstract class PagedView extends ViewGroup {
             heightSize = maxChildHeight + verticalPadding;
         }
 
-        updateScrollingIndicatorPosition();
-
         setMeasuredDimension(widthSize, heightSize);
 
-        // We can't call getChildOffset/getRelativeChildOffset until we set the measured dimensions
+        // We can't call getChildOffset/getRelativeChildOffset until we set the measured dimensions.
+        // We also wait until we set the measured dimensions before flushing the cache as well, to
+        // ensure that the cache is filled with good values.
+        invalidateCachedOffsets();
+        updateScrollingIndicatorPosition();
+
         if (childCount > 0) {
             mMaxScrollX = getChildOffset(childCount - 1) - getRelativeChildOffset(childCount - 1);
         } else {
@@ -597,7 +600,6 @@ public abstract class PagedView extends ViewGroup {
         if (mFirstLayout && mCurrentPage >= 0 && mCurrentPage < getChildCount()) {
             mFirstLayout = false;
         }
-        invalidateCachedOffsets();
     }
 
     protected void screenScrolled(int screenCenter) {
@@ -626,11 +628,17 @@ public abstract class PagedView extends ViewGroup {
         // in accordance with any scroll effects.
         mForceScreenScrolled = true;
         invalidate();
+        invalidateCachedOffsets();
     }
 
     protected void invalidateCachedOffsets() {
         int count = getChildCount();
-        if (count == 0) return;
+        if (count == 0) {
+            mChildOffsets = null;
+            mChildRelativeOffsets = null;
+            mChildOffsetsWithLayoutScale = null;
+            return;
+        }
 
         mChildOffsets = new int[count];
         mChildRelativeOffsets = new int[count];
