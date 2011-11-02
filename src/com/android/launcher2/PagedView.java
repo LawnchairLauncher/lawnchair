@@ -1703,7 +1703,7 @@ public abstract class PagedView extends ViewGroup {
         }
     }
 
-    private ImageView getScrollingIndicator() {
+    protected ImageView getScrollingIndicator() {
         // We use mHasScrollIndicator to prevent future lookups if there is no sibling indicator
         // found
         if (mHasScrollIndicator && mScrollIndicator == null) {
@@ -1742,9 +1742,7 @@ public abstract class PagedView extends ViewGroup {
             // Fade the indicator in
             updateScrollingIndicatorPosition();
             mScrollIndicator.setVisibility(View.VISIBLE);
-            if (mScrollIndicatorAnimator != null) {
-                mScrollIndicatorAnimator.cancel();
-            }
+            cancelScrollingIndicatorAnimations();
             if (immediately) {
                 mScrollIndicator.setAlpha(1f);
             } else {
@@ -1752,6 +1750,12 @@ public abstract class PagedView extends ViewGroup {
                 mScrollIndicatorAnimator.setDuration(sScrollIndicatorFadeInDuration);
                 mScrollIndicatorAnimator.start();
             }
+        }
+    }
+
+    protected void cancelScrollingIndicatorAnimations() {
+        if (mScrollIndicatorAnimator != null) {
+            mScrollIndicatorAnimator.cancel();
         }
     }
 
@@ -1763,9 +1767,7 @@ public abstract class PagedView extends ViewGroup {
         if (mScrollIndicator != null) {
             // Fade the indicator out
             updateScrollingIndicatorPosition();
-            if (mScrollIndicatorAnimator != null) {
-                mScrollIndicatorAnimator.cancel();
-            }
+            cancelScrollingIndicatorAnimations();
             if (immediately) {
                 mScrollIndicator.setVisibility(View.GONE);
                 mScrollIndicator.setAlpha(0f);
