@@ -30,6 +30,7 @@ public class PagedViewGridLayout extends GridLayout implements Page {
 
     private int mCellCountX;
     private int mCellCountY;
+    private Runnable mOnLayoutListener;
 
     public PagedViewGridLayout(Context context, int cellCountX, int cellCountY) {
         super(context, null, 0);
@@ -55,6 +56,17 @@ public class PagedViewGridLayout extends GridLayout implements Page {
         int widthSpecMode = MeasureSpec.EXACTLY;
         super.onMeasure(MeasureSpec.makeMeasureSpec(widthSpecSize, widthSpecMode),
                 heightMeasureSpec);
+    }
+
+    public void setOnLayoutListener(Runnable r) {
+        mOnLayoutListener = r;
+    }
+
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        if (mOnLayoutListener != null) {
+            mOnLayoutListener.run();
+        }
     }
 
     @Override
