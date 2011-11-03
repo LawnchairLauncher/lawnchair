@@ -80,6 +80,12 @@
         <attr name="strokeWidth" format="float" />
     </declare-styleable>
 
+    <!-- HolographicLinearLayout specific attributes. -->
+    <declare-styleable name="HolographicLinearLayout">
+        <!-- The source view to generate and apply the drawable states to/from -->
+        <attr name="sourceImageViewId" format="integer" />
+    </declare-styleable>
+
     <!-- PagedViewIcon specific attributes. These attributes are used to customize
          a PagedViewIcon view in XML files. -->
     <declare-styleable name="PagedViewIcon">
