@@ -21,6 +21,7 @@
 <!-- QSB -->
     <style name="SearchButton.Voice">
         <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
     </style>
 
 <!-- Workspace -->
