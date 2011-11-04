@@ -175,6 +175,7 @@ public class Workspace extends SmoothPagedView
     private final Rect mTempRect = new Rect();
     private final int[] mTempXY = new int[2];
     private int mDragViewMultiplyColor;
+    private float mOverscrollFade = 0;
 
     // Paint used to draw external drop outline
     private final Paint mExternalDragOutlinePaint = new Paint();
@@ -1152,7 +1153,11 @@ public class Workspace extends SmoothPagedView
             cl.setPivotX(cl.getMeasuredWidth() * (index == 0 ? 0.75f : 0.25f));
             cl.setTranslationX(translationX);
             cl.setRotationY(rotation);
+            setFadeForOverScroll(Math.abs(scrollProgress));
         } else {
+            if (mOverscrollFade != 0) {
+                setFadeForOverScroll(0);
+            }
             // We don't want to mess with the translations during transitions
             if (!isSwitchingState()) {
                 resetCellLayoutTransforms((CellLayout) getChildAt(0), true);
@@ -1228,6 +1233,10 @@ public class Workspace extends SmoothPagedView
         }
 
         super.onDraw(canvas);
+    }
+
+    boolean isDrawingBackgroundGradient() {
+        return (mBackground != null && mBackgroundAlpha > 0.0f && mDrawBackground);
     }
 
     @Override
@@ -3452,6 +3461,20 @@ public class Workspace extends SmoothPagedView
                 mDividerAnimator.start();
             }
         }
+    }
+
+    void setFadeForOverScroll(float fade) {
+        if (!isScrollingIndicatorEnabled()) return;
+
+        mOverscrollFade = fade;
+        float reducedFade = 0.5f + 0.5f * (1 - fade);
+        final ViewGroup parent = (ViewGroup) getParent();
+        final ImageView dockDivider = (ImageView) (parent.findViewById(R.id.dock_divider));
+        final ImageView scrollIndicator = getScrollingIndicator();
+
+        cancelScrollingIndicatorAnimations();
+        dockDivider.setAlpha(reducedFade);
+        scrollIndicator.setAlpha(1 - fade);
     }
 
     void hideDockDivider(boolean immediately) {

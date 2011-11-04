@@ -69,6 +69,8 @@ public class DragLayer extends FrameLayout {
     private float mDropViewAlpha;
     private boolean mHoverPointClosesFolder = false;
     private Rect mHitRect = new Rect();
+    private int mWorkspaceIndex = -1;
+    private int mHotseatIndex = -1;
 
     /**
      * Used to create a new DragLayer from XML.
@@ -81,6 +83,7 @@ public class DragLayer extends FrameLayout {
 
         // Disable multitouch across the workspace/all apps/customize tray
         setMotionEventSplittingEnabled(false);
+        setChildrenDrawingOrderEnabled(true);
     }
 
     public void setup(Launcher launcher, DragController controller) {
@@ -607,6 +610,44 @@ public class DragLayer extends FrameLayout {
             }
         });
         mFadeOutAnim.start();
+    }
+
+    @Override
+    protected void onViewAdded(View child) {
+        super.onViewAdded(child);
+        updateChildIndices();
+    }
+
+    @Override
+    protected void onViewRemoved(View child) {
+        super.onViewRemoved(child);
+        updateChildIndices();
+    }
+
+    private void updateChildIndices() {
+        if (mLauncher != null) {
+            mWorkspaceIndex = indexOfChild(mLauncher.getWorkspace());
+            mHotseatIndex = indexOfChild(mLauncher.getHotseat());
+        }
+    }
+
+    @Override
+    protected int getChildDrawingOrder(int childCount, int i) {
+        if (mWorkspaceIndex == -1 || mHotseatIndex == -1 || 
+                mLauncher.getWorkspace().isDrawingBackgroundGradient()) {
+            return i;
+        }
+
+        // This ensures that the workspace is drawn above the hotseat and qsb,
+        // except when the workspace is drawing a background gradient, in which
+        // case we want the workspace to stay behind these elements.
+        if (i == mHotseatIndex) {
+            return mWorkspaceIndex;
+        } else if (i == mWorkspaceIndex) {
+            return mHotseatIndex;
+        } else {
+            return i;
+        }
     }
 
     @Override
