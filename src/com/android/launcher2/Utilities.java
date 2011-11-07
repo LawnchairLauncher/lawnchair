@@ -43,8 +43,6 @@ import com.android.launcher.R;
 final class Utilities {
     private static final String TAG = "Launcher.Utilities";
 
-    private static final boolean TEXT_BURN = false;
-
     private static int sIconWidth = -1;
     private static int sIconHeight = -1;
     private static int sIconTextureWidth = -1;
