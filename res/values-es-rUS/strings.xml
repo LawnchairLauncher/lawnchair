@@ -97,7 +97,7 @@
     <string name="folder_cling_move_item" msgid="270598675060435169">"Para mover una aplicación, tócala &amp; mantenla presionada."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Para crear una carpeta nueva en tu pantalla principal, coloca una aplicación encima de la otra."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"Aceptar"</string>
-    <string name="folder_opened" msgid="4129072635480822768">"Se abrió la carpeta, %1$d de %2$d."</string>
+    <string name="folder_opened" msgid="4129072635480822768">"Se abrió la carpeta, %1$d por %2$d."</string>
     <string name="folder_tap_to_close" msgid="4076794242530255812">"Toca para cerrar la carpeta."</string>
     <string name="folder_tap_to_rename" msgid="2125528923948315223">"Toca para cambiar el nombre de la carpeta."</string>
     <string name="folder_closed" msgid="3130534551370511932">"Se cerró la carpeta."</string>
