@@ -28,7 +28,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.view.View;
 import android.widget.FrameLayout;
 
 import com.android.launcher.R;
@@ -54,8 +53,6 @@ public class Cling extends FrameLayout {
     private Drawable mHandTouchGraphic;
     private int mPunchThroughGraphicCenterRadius;
     private int mAppIconSize;
-    private int mTabBarHeight;
-    private int mTabBarHorizontalPadding;
     private int mButtonBarHeight;
     private float mRevealRadius;
     private int[] mPositionData;
@@ -89,9 +86,6 @@ public class Cling extends FrameLayout {
                 r.getDimensionPixelSize(R.dimen.clingPunchThroughGraphicCenterRadius);
             mAppIconSize = r.getDimensionPixelSize(R.dimen.app_icon_size);
             mRevealRadius = mAppIconSize * 1f;
-            mTabBarHeight = r.getDimensionPixelSize(R.dimen.apps_customize_tab_bar_height);
-            mTabBarHorizontalPadding =
-                r.getDimensionPixelSize(R.dimen.toolbar_button_horizontal_padding);
             mButtonBarHeight = r.getDimensionPixelSize(R.dimen.button_bar_height);
 
             mErasePaint = new Paint();

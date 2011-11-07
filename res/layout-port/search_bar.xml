@@ -24,6 +24,7 @@
    <!-- Global search icon -->
    <com.android.launcher2.HolographicLinearLayout
         style="@style/SearchButton"
+        launcher:sourceImageViewId="@+id/search_button"
         android:id="@+id/search_button_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -45,6 +46,7 @@
     <!-- Voice search icon -->
     <com.android.launcher2.HolographicLinearLayout
         style="@style/SearchButton.Voice"
+        launcher:sourceImageViewId="@+id/voice_button"
         android:id="@+id/voice_button_container"
         android:layout_width="@dimen/search_bar_height"
         android:layout_height="match_parent"
