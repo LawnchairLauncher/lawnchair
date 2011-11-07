@@ -97,7 +97,7 @@
     <string name="folder_cling_move_item" msgid="270598675060435169">"Untuk memindahkan apl, sentuh &amp; tahan apl tersebut."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Untuk membuat map baru di layar Utama Anda, tumpuk satu apl di atas apl yang lain."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
-    <string name="folder_opened" msgid="4129072635480822768">"Map dibuka, %1$d dari %2$d"</string>
+    <string name="folder_opened" msgid="4129072635480822768">"Map dibuka, %1$d kali %2$d"</string>
     <string name="folder_tap_to_close" msgid="4076794242530255812">"Ketuk untuk menutup map"</string>
     <string name="folder_tap_to_rename" msgid="2125528923948315223">"Ketuk untuk mengubah nama"</string>
     <string name="folder_closed" msgid="3130534551370511932">"Map ditutup"</string>
