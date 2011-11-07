@@ -86,8 +86,8 @@
     <string name="folder_hint_text" msgid="8633351560105748141">"Unbenannter Ordner"</string>
     <string name="default_scroll_format" msgid="4057140866420001240">"Seite %1$d von %2$d"</string>
     <string name="workspace_scroll_format" msgid="7911126267695001437">"Arbeitsbereich %1$d von %2$d"</string>
-    <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"Apps-Seite %1$d von %2$d"</string>
-    <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"Widgets-Seite %1$d von %2$d"</string>
+    <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"App-Seite %1$d von %2$d"</string>
+    <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"Widget-Seite %1$d von %2$d"</string>
     <string name="workspace_cling_title" msgid="738396473989890567">"Fühlen Sie sich wie zu Hause"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"Hier können Sie Ihre Lieblings-Apps ablegen."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Berühren Sie den Kreis für eine Übersicht aller Apps."</string>
@@ -99,7 +99,7 @@
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
     <string name="folder_opened" msgid="4129072635480822768">"Ordner geöffnet, %1$d von %2$d"</string>
     <string name="folder_tap_to_close" msgid="4076794242530255812">"Ordner durch Berühren schließen"</string>
-    <string name="folder_tap_to_rename" msgid="2125528923948315223">"Umbenennen durch Berühren bestätigen"</string>
+    <string name="folder_tap_to_rename" msgid="2125528923948315223">"Umbenennung durch Berühren bestätigen"</string>
     <string name="folder_closed" msgid="3130534551370511932">"Ordner wurde geschlossen"</string>
     <string name="folder_renamed" msgid="781234745487414781">"Ordner umbenannt in %1$s"</string>
     <string name="folder_name_format" msgid="4513766553514769310">"Ordner: %1$s"</string>
