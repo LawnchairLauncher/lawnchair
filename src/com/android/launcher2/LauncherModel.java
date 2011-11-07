@@ -28,7 +28,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -1627,6 +1629,17 @@ public class LauncherModel extends BroadcastReceiver {
         ComponentName componentName = intent.getComponent();
         if (componentName == null) {
             return null;
+        }
+
+        try {
+            PackageInfo pi = manager.getPackageInfo(componentName.getPackageName(), 0);
+            if (!pi.applicationInfo.enabled) {
+                // If we return null here, the corresponding item will be removed from the launcher
+                // db and will not appear in the workspace.
+                return null;
+            }
+        } catch (NameNotFoundException e) {
+            Log.d(TAG, "getPackInfo failed for package " + componentName.getPackageName());
         }
 
         // TODO: See if the PackageManager knows about this case.  If it doesn't
