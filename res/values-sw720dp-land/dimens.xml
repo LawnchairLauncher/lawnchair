@@ -17,4 +17,10 @@
 <resources>
     <integer name="apps_customize_widget_cell_count_x">4</integer>
     <integer name="apps_customize_widget_cell_count_y">2</integer>
+
+<!-- AppsCustomize -->
+    <dimen name="apps_customize_pageLayoutWidthGap">28dp</dimen>
+    <dimen name="apps_customize_pageLayoutHeightGap">16dp</dimen>
+    <dimen name="apps_customize_pageLayoutPaddingLeft">16dp</dimen>
+    <dimen name="apps_customize_pageLayoutPaddingRight">16dp</dimen>
 </resources>

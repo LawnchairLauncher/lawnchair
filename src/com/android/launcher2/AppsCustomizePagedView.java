@@ -207,6 +207,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     // Dimens
     private int mContentWidth;
     private int mAppIconSize;
+    private int mMaxAppCellCountX, mMaxAppCellCountY;
     private int mWidgetCountX, mWidgetCountY;
     private int mWidgetWidthGap, mWidgetHeightGap;
     private final int mWidgetPreviewIconPaddedDimension;
@@ -247,12 +248,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mAppIconSize = resources.getDimensionPixelSize(R.dimen.app_icon_size);
         mDragViewMultiplyColor = resources.getColor(R.color.drag_view_multiply_color);
 
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PagedView, 0, 0);
-        // TODO-APPS_CUSTOMIZE: remove these unnecessary attrs after
-        mCellCountX = a.getInt(R.styleable.PagedView_cellCountX, 6);
-        mCellCountY = a.getInt(R.styleable.PagedView_cellCountY, 4);
-        a.recycle();
-        a = context.obtainStyledAttributes(attrs, R.styleable.AppsCustomizePagedView, 0, 0);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AppsCustomizePagedView, 0, 0);
+        mMaxAppCellCountX = a.getInt(R.styleable.AppsCustomizePagedView_maxAppCellCountX, -1);
+        mMaxAppCellCountY = a.getInt(R.styleable.AppsCustomizePagedView_maxAppCellCountY, -1);
         mWidgetWidthGap =
             a.getDimensionPixelSize(R.styleable.AppsCustomizePagedView_widgetCellWidthGap, 0);
         mWidgetHeightGap =
@@ -372,6 +370,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 LauncherModel.getCellCountY());
             maxCellCountY = (isLandscape ? LauncherModel.getCellCountY() :
                 LauncherModel.getCellCountX());
+        }
+        if (mMaxAppCellCountX > -1) {
+            maxCellCountX = Math.min(maxCellCountX, mMaxAppCellCountX);
+        }
+        if (mMaxAppCellCountY > -1) {
+            maxCellCountY = Math.min(maxCellCountY, mMaxAppCellCountY);
         }
 
         // Now that the data is ready, we can calculate the content width, the number of cells to
