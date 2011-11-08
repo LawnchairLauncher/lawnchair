@@ -20,12 +20,12 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.StateListDrawable;
-import android.view.View;
+import android.widget.ImageView;
 
 public class HolographicViewHelper {
 
-    private final HolographicOutlineHelper mOutlineHelper = new HolographicOutlineHelper();
     private final Canvas mTempCanvas = new Canvas();
 
     private boolean mStatesUpdated;
@@ -39,16 +39,17 @@ public class HolographicViewHelper {
     /**
      * Generate the pressed/focused states if necessary.
      */
-    void generatePressedFocusedStates(View v) {
-        if (!mStatesUpdated) {
+    void generatePressedFocusedStates(ImageView v) {
+        if (!mStatesUpdated && v != null) {
             mStatesUpdated = true;
-            Bitmap outline = createGlowingOutline(v, mTempCanvas, mHighlightColor, mHighlightColor);
+            Bitmap outline = createGlowingOutline(v, mTempCanvas);
             FastBitmapDrawable d = new FastBitmapDrawable(outline);
 
             StateListDrawable states = new StateListDrawable();
             states.addState(new int[] {android.R.attr.state_pressed}, d);
             states.addState(new int[] {android.R.attr.state_focused}, d);
-            v.setBackgroundDrawable(states);
+            states.addState(new int[] {}, v.getDrawable());
+            v.setImageDrawable(states);
         }
     }
 
@@ -56,16 +57,16 @@ public class HolographicViewHelper {
      * Returns a new bitmap to be used as the object outline, e.g. to visualize the drop location.
      * Responsibility for the bitmap is transferred to the caller.
      */
-    private Bitmap createGlowingOutline(View v, Canvas canvas, int outlineColor, int glowColor) {
+    private Bitmap createGlowingOutline(ImageView v, Canvas canvas) {
         final int padding = HolographicOutlineHelper.MAX_OUTER_BLUR_RADIUS;
         final Bitmap b = Bitmap.createBitmap(
                 v.getWidth() + padding, v.getHeight() + padding, Bitmap.Config.ARGB_8888);
 
         canvas.setBitmap(b);
         canvas.save();
-            v.draw(canvas);
+            v.getDrawable().draw(canvas);
         canvas.restore();
-        mOutlineHelper.applyOuterBlur(b, canvas, outlineColor);
+        canvas.drawColor(mHighlightColor, PorterDuff.Mode.SRC_IN);
         canvas.setBitmap(null);
 
         return b;
