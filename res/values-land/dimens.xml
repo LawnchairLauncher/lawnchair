@@ -53,8 +53,6 @@
     <dimen name="apps_customize_cell_width">80dp</dimen>
     <!-- The width can be 76dp because we don't have B padding -->
     <dimen name="apps_customize_cell_height">76dp</dimen>
-    <integer name="apps_customize_cellCountX">6</integer>
-    <integer name="apps_customize_cellCountY">3</integer>
     <dimen name="apps_customize_pageLayoutWidthGap">-1dp</dimen>
     <dimen name="apps_customize_pageLayoutHeightGap">-1dp</dimen>
     <dimen name="apps_customize_pageLayoutPaddingTop">5dp</dimen>
