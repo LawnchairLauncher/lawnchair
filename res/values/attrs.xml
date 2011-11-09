@@ -107,10 +107,6 @@
     <!-- PagedView specific attributes. These attributes are used to customize
          a PagedView view in XML files. -->
     <declare-styleable name="PagedView">
-        <!-- The number of horizontal cells in a page -->
-        <attr name="cellCountX" />
-        <!-- The number of vertical cells in a page -->
-        <attr name="cellCountY" />
         <!-- A spacing override for the icons within a page -->
         <attr name="pageLayoutWidthGap" format="dimension" />
         <attr name="pageLayoutHeightGap" format="dimension" />
@@ -129,6 +125,10 @@
     <!-- AppsCustomizePagedView specific attributes.  These attributes are used to
          customize an AppsCustomizePagedView in xml files. -->
     <declare-styleable name="AppsCustomizePagedView">
+        <!-- Max number of cells of applications horizontally -->
+        <attr name="maxAppCellCountX" format="integer" />
+        <!-- Max number of cells of applications vertically -->
+        <attr name="maxAppCellCountY" format="integer" />
         <!-- Horizontal spacing between widgets and wallpapers -->
         <attr name="widgetCellWidthGap" format="dimension" />
         <!-- Vertical spacing between widgets -->
