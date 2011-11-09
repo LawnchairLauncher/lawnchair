@@ -5,9 +5,10 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
-import android.content.res.Resources;
+import android.graphics.Rect;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -111,7 +112,8 @@ public class AppWidgetResizeFrame extends FrameLayout {
                 Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
         addView(mBottomHandle, lp);
 
-        Launcher.Padding p = mLauncher.getPaddingForWidget(widgetView.getAppWidgetInfo().provider);
+        Rect p = AppWidgetHostView.getDefaultPaddingForWidget(context,
+                widgetView.getAppWidgetInfo().provider, null);
         mWidgetPaddingLeft = p.left;
         mWidgetPaddingTop = p.top;
         mWidgetPaddingRight = p.right;

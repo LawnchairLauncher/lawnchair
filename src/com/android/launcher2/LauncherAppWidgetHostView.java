@@ -27,7 +27,6 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 
 import com.android.launcher.R;
-import com.android.launcher2.Launcher.Padding;
 
 /**
  * {@inheritDoc}
