@@ -31,13 +31,13 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.MaskFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Bitmap.Config;
 import android.graphics.TableMaskFilter;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -48,10 +48,10 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.Interpolator;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -1281,6 +1281,14 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 v.setScaleX(scale);
                 v.setScaleY(scale);
                 v.setAlpha(alpha);
+
+                // If the view has 0 alpha, we set it to be invisible so as to prevent
+                // it from accepting touches
+                if (alpha < ViewConfiguration.ALPHA_THRESHOLD) {
+                    v.setVisibility(INVISIBLE);
+                } else if (v.getVisibility() != VISIBLE) {
+                    v.setVisibility(VISIBLE);
+                }
             }
         }
     }
@@ -1417,6 +1425,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         ApplicationInfo.dumpApplicationInfoList(LOG_TAG, "mApps", mApps);
         dumpAppWidgetProviderInfoList(LOG_TAG, "mWidgets", mWidgets);
     }
+
     private void dumpAppWidgetProviderInfoList(String tag, String label,
             ArrayList<Object> list) {
         Log.d(tag, label + " size=" + list.size());
@@ -1434,6 +1443,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             }
         }
     }
+
     @Override
     public void surrender() {
         // TODO: If we are in the middle of any process (ie. for holographic outlines, etc) we
