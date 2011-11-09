@@ -29,6 +29,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.SearchManager;
 import android.app.StatusBarManager;
+import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ActivityNotFoundException;
@@ -75,9 +76,9 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.View.OnLongClickListener;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
@@ -888,48 +889,12 @@ public final class Launcher extends Activity
         }
     }
 
-    class Padding {
-        int left = 0;
-        int right = 0;
-        int top = 0;
-        int bottom = 0;
-    }
-
-    Padding getPaddingForWidget(ComponentName component) {
-        PackageManager packageManager = getPackageManager();
-        Padding p = new Padding();
-        android.content.pm.ApplicationInfo appInfo;
-
-        try {
-            appInfo = packageManager.getApplicationInfo(component.getPackageName(), 0);
-        } catch (Exception e) {
-            // if we can't find the package, return 0 padding
-            return p;
-        }
-
-        if (appInfo.targetSdkVersion >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            Resources r = getResources();
-            // The default padding values are private API currently, but will be added in
-            // API level 15. The current values are (8, 8, 8, 8).
-            p.left = r.getDimensionPixelSize(com.android.internal.
-                    R.dimen.default_app_widget_padding_left);
-            p.right = r.getDimensionPixelSize(com.android.internal.
-                    R.dimen.default_app_widget_padding_right);
-            p.top = r.getDimensionPixelSize(com.android.internal.
-                    R.dimen.default_app_widget_padding_top);
-            p.bottom = r.getDimensionPixelSize(com.android.internal.
-                    R.dimen.default_app_widget_padding_bottom);
-        }
-
-        return p;
-    }
-
     int[] getSpanForWidget(ComponentName component, int minWidth, int minHeight, int[] spanXY) {
         if (spanXY == null) {
             spanXY = new int[2];
         }
 
-        Padding padding = getPaddingForWidget(component);
+        Rect padding = AppWidgetHostView.getDefaultPaddingForWidget(this, component, null);
         // We want to account for the extra amount of padding that we are adding to the widget
         // to ensure that it gets the full amount of space that it has requested
         int requiredWidth = minWidth + padding.left + padding.right;
