@@ -127,6 +127,7 @@ public abstract class PagedView extends ViewGroup {
     protected boolean mCenterPagesVertically;
     protected boolean mAllowOverScroll = true;
     protected int mUnboundedScrollX;
+    protected int[] mTempVisiblePagesRange = new int[2];
 
     // parameter that adjusts the layout to be optimized for pages with that scale factor
     protected float mLayoutScale = 1.0f;
@@ -701,20 +702,7 @@ public abstract class PagedView extends ViewGroup {
         return (int) (maxWidth * mLayoutScale + 0.5f);
     }
 
-    @Override
-    protected void dispatchDraw(Canvas canvas) {
-        int halfScreenSize = getMeasuredWidth() / 2;
-        int screenCenter = mScrollX + halfScreenSize;
-
-        if (screenCenter != mLastScreenCenter || mForceScreenScrolled) {
-            screenScrolled(screenCenter);
-            mLastScreenCenter = screenCenter;
-            mForceScreenScrolled = false;
-        }
-
-        // Find out which screens are visible; as an optimization we only call draw on them
-        // As an optimization, this code assumes that all pages have the same width as the 0th
-        // page.
+    protected void getVisiblePages(int[] range) {
         final int pageCount = getChildCount();
         if (pageCount > 0) {
             final int pageWidth = getScaledMeasuredWidth(getPageAt(0));
@@ -731,6 +719,31 @@ public abstract class PagedView extends ViewGroup {
                 rightScreen++;
                 x += getScaledMeasuredWidth(getPageAt(rightScreen)) + mPageSpacing;
             }
+            range[0] = leftScreen;
+            range[1] = rightScreen;
+        } else {
+            range[0] = -1;
+            range[1] = -1;
+        }
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        int halfScreenSize = getMeasuredWidth() / 2;
+        int screenCenter = mScrollX + halfScreenSize;
+
+        if (screenCenter != mLastScreenCenter || mForceScreenScrolled) {
+            screenScrolled(screenCenter);
+            mLastScreenCenter = screenCenter;
+            mForceScreenScrolled = false;
+        }
+
+        // Find out which screens are visible; as an optimization we only call draw on them
+        final int pageCount = getChildCount();
+        if (pageCount > 0) {
+            getVisiblePages(mTempVisiblePagesRange);
+            final int leftScreen = mTempVisiblePagesRange[0];
+            final int rightScreen = mTempVisiblePagesRange[1];
 
             final long drawingTime = getDrawingTime();
             // Clip to the bounds
