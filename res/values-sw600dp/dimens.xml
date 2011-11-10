@@ -72,13 +72,6 @@
     <dimen name="dragViewOffsetX">0dp</dimen>
     <dimen name="dragViewOffsetY">-12dp</dimen>
 
-<!-- Workspace grid -->
-    <!-- Padding applied to AppWidgets -->
-    <dimen name="app_widget_padding_left">12dp</dimen>
-    <dimen name="app_widget_padding_right">12dp</dimen>
-    <dimen name="app_widget_padding_top">4dp</dimen>
-    <dimen name="app_widget_padding_bottom">20dp</dimen>
-
 <!-- Folders -->
     <!-- The size of the image which sits behind the preview of the folder contents -->
     <dimen name="folder_preview_size">80dp</dimen>
