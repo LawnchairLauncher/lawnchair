@@ -227,7 +227,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     // Previews & outlines
     ArrayList<AppsCustomizeAsyncTask> mRunningTasks;
     private HolographicOutlineHelper mHolographicOutlineHelper;
-    private static final int sPageSleepDelay = 150;
+    private static final int sPageSleepDelay = 200;
 
     public AppsCustomizePagedView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -663,6 +663,19 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     protected void snapToPage(int whichPage, int delta, int duration) {
         super.snapToPage(whichPage, delta, duration);
         updateCurrentTab(whichPage);
+
+        // Update the thread priorities given the direction lookahead
+        Iterator<AppsCustomizeAsyncTask> iter = mRunningTasks.iterator();
+        while (iter.hasNext()) {
+            AppsCustomizeAsyncTask task = (AppsCustomizeAsyncTask) iter.next();
+            int pageIndex = task.page + mNumAppsPages;
+            if ((mNextPage > mCurrentPage && pageIndex >= mCurrentPage) ||
+                (mNextPage < mCurrentPage && pageIndex <= mCurrentPage)) {
+                task.setThreadPriority(getThreadPriorityForPage(pageIndex));
+            } else {
+                task.setThreadPriority(Process.THREAD_PRIORITY_LOWEST);
+            }
+        }
     }
 
     private void updateCurrentTab(int currentPage) {
@@ -747,25 +760,45 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     /**
+     * A helper to return the priority for loading of the specified widget page.
+     */
+    private int getWidgetPageLoadPriority(int page) {
+        // If we are snapping to another page, use that index as the target page index
+        int toPage = mCurrentPage;
+        if (mNextPage > -1) {
+            toPage = mNextPage;
+        }
+
+        // We use the distance from the target page as an initial guess of priority, but if there
+        // are no pages of higher priority than the page specified, then bump up the priority of
+        // the specified page.
+        Iterator<AppsCustomizeAsyncTask> iter = mRunningTasks.iterator();
+        int minPageDiff = Integer.MAX_VALUE;
+        while (iter.hasNext()) {
+            AppsCustomizeAsyncTask task = (AppsCustomizeAsyncTask) iter.next();
+            minPageDiff = Math.abs(task.page + mNumAppsPages - toPage);
+        }
+
+        int rawPageDiff = Math.abs(page - toPage);
+        return rawPageDiff - Math.min(rawPageDiff, minPageDiff);
+    }
+    /**
      * Return the appropriate thread priority for loading for a given page (we give the current
      * page much higher priority)
      */
     private int getThreadPriorityForPage(int page) {
         // TODO-APPS_CUSTOMIZE: detect number of cores and set thread priorities accordingly below
-        int pageDiff = Math.abs(page - mCurrentPage);
+        int pageDiff = getWidgetPageLoadPriority(page);
         if (pageDiff <= 0) {
-            // return Process.THREAD_PRIORITY_DEFAULT;
-            return Process.THREAD_PRIORITY_MORE_FAVORABLE;
+            return Process.THREAD_PRIORITY_LESS_FAVORABLE;
         } else if (pageDiff <= 1) {
-            // return Process.THREAD_PRIORITY_BACKGROUND;
-            return Process.THREAD_PRIORITY_DEFAULT;
+            return Process.THREAD_PRIORITY_LOWEST;
         } else {
-            // return Process.THREAD_PRIORITY_LOWEST;
-            return Process.THREAD_PRIORITY_DEFAULT;
+            return Process.THREAD_PRIORITY_LOWEST;
         }
     }
     private int getSleepForPage(int page) {
-        int pageDiff = Math.abs(page - mCurrentPage) - 1;
+        int pageDiff = getWidgetPageLoadPriority(page);
         return Math.max(0, pageDiff * sPageSleepDelay);
     }
     /**
@@ -773,18 +806,18 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
      */
     private void prepareLoadWidgetPreviewsTask(int page, ArrayList<Object> widgets,
             int cellWidth, int cellHeight, int cellCountX) {
+
         // Prune all tasks that are no longer needed
         Iterator<AppsCustomizeAsyncTask> iter = mRunningTasks.iterator();
         while (iter.hasNext()) {
             AppsCustomizeAsyncTask task = (AppsCustomizeAsyncTask) iter.next();
-            int taskPage = task.page;
-            if ((taskPage == page) ||
-                    taskPage < getAssociatedLowerPageBound(mCurrentPage - mNumAppsPages) ||
-                    taskPage > getAssociatedUpperPageBound(mCurrentPage - mNumAppsPages)) {
+            int taskPage = task.page + mNumAppsPages;
+            if (taskPage < getAssociatedLowerPageBound(mCurrentPage) ||
+                    taskPage > getAssociatedUpperPageBound(mCurrentPage)) {
                 task.cancel(false);
                 iter.remove();
             } else {
-                task.setThreadPriority(getThreadPriorityForPage(taskPage + mNumAppsPages));
+                task.setThreadPriority(getThreadPriorityForPage(taskPage));
             }
         }
 
@@ -822,7 +855,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // Ensure that the task is appropriately prioritized and runs in parallel
         AppsCustomizeAsyncTask t = new AppsCustomizeAsyncTask(page,
                 AsyncTaskPageData.Type.LoadWidgetPreviewData);
-        t.setThreadPriority(getThreadPriorityForPage(page));
+        t.setThreadPriority(getThreadPriorityForPage(page + mNumAppsPages));
         t.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, pageData);
         mRunningTasks.add(t);
     }
@@ -1126,6 +1159,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
     private void loadWidgetPreviewsInBackground(AppsCustomizeAsyncTask task,
             AsyncTaskPageData data) {
+        // loadWidgetPreviewsInBackground can be called without a task to load a set of widget
+        // previews synchronously
         if (task != null) {
             // Ensure that this task starts running at the correct priority
             task.syncThreadPriority();
@@ -1171,14 +1206,23 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 widget.applyPreview(new FastBitmapDrawable(preview), i);
             }
         }
-        layout.createHardwareLayer();
 
+        layout.createHardwareLayer();
         invalidate();
+
         /* TEMPORARILY DISABLE HOLOGRAPHIC ICONS
         if (mFadeInAdjacentScreens) {
             prepareGenerateHoloOutlinesTask(data.page, data.items, data.generatedImages);
         }
         */
+
+        // Update all thread priorities
+        Iterator<AppsCustomizeAsyncTask> iter = mRunningTasks.iterator();
+        while (iter.hasNext()) {
+            AppsCustomizeAsyncTask task = (AppsCustomizeAsyncTask) iter.next();
+            int pageIndex = task.page + mNumAppsPages;
+            task.setThreadPriority(getThreadPriorityForPage(pageIndex));
+        }
     }
     private void onHolographicPageItemsLoaded(AsyncTaskPageData data) {
         // Invalidate early to short-circuit children invalidates
@@ -1475,16 +1519,25 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         cancelAllTasks();
     }
 
+
     /*
      * We load an extra page on each side to prevent flashes from scrolling and loading of the
      * widget previews in the background with the AsyncTasks.
      */
+    final static int sLookBehindPageCount = 2;
+    final static int sLookAheadPageCount = 2;
     protected int getAssociatedLowerPageBound(int page) {
-        return Math.max(0, page - 2);
+        final int count = getChildCount();
+        int windowSize = Math.min(count, sLookBehindPageCount + sLookAheadPageCount + 1);
+        int windowMinIndex = Math.max(Math.min(page - sLookBehindPageCount, count - windowSize), 0);
+        return windowMinIndex;
     }
     protected int getAssociatedUpperPageBound(int page) {
         final int count = getChildCount();
-        return Math.min(page + 2, count - 1);
+        int windowSize = Math.min(count, sLookBehindPageCount + sLookAheadPageCount + 1);
+        int windowMaxIndex = Math.min(Math.max(page + sLookAheadPageCount, windowSize - 1),
+                count - 1);
+        return windowMaxIndex;
     }
 
     @Override
