@@ -1101,6 +1101,7 @@ public class Workspace extends SmoothPagedView
     }
 
     private void screenScrolledLargeUI(int screenCenter) {
+        boolean isInOverscroll = false;
         for (int i = 0; i < getChildCount(); i++) {
             CellLayout cl = (CellLayout) getChildAt(i);
             if (cl != null) {
@@ -1111,11 +1112,17 @@ public class Workspace extends SmoothPagedView
                 // If the current page (i) is being over scrolled, we use a different
                 // set of rules for setting the background alpha multiplier.
                 if (!isSmall()) {
-                    if ((mScrollX < 0 && i == 0) || (mScrollX > mMaxScrollX &&
-                            i == getChildCount() -1 )) {
+                    if ((mOverScrollX < 0 && i == 0) || (mOverScrollX > mMaxScrollX &&
+                            i == getChildCount() -1)) {
+                        isInOverscroll = true;
+                        rotation *= -1;
                         cl.setBackgroundAlphaMultiplier(
                                 overScrollBackgroundAlphaInterpolator(Math.abs(scrollProgress)));
                         mOverScrollPageIndex = i;
+                        cl.setOverScrollAmount(Math.abs(scrollProgress), i == 0);
+                        cl.setPivotX(cl.getMeasuredWidth() * (i == 0 ? 0.75f : 0.25f));
+                        cl.setPivotY(cl.getMeasuredHeight() * 0.5f);
+                        cl.setOverscrollTransformsDirty(true);
                     } else if (mOverScrollPageIndex != i) {
                         cl.setBackgroundAlphaMultiplier(
                                 backgroundAlphaInterpolator(Math.abs(scrollProgress)));
@@ -1130,29 +1137,25 @@ public class Workspace extends SmoothPagedView
                 cl.fastInvalidate();
             }
         }
+        if (!isSwitchingState() && !isInOverscroll) {
+            ((CellLayout) getChildAt(0)).resetOverscrollTransforms();
+            ((CellLayout) getChildAt(getChildCount() - 1)).resetOverscrollTransforms();
+        }
         invalidate();
     }
 
-    private void resetCellLayoutTransforms(CellLayout cl, boolean left) {
-        cl.setTranslationX(0);
-        cl.setRotationY(0);
-        cl.setOverScrollAmount(0, left);
-        cl.setPivotX(cl.getMeasuredWidth() / 2);
-        cl.setPivotY(cl.getMeasuredHeight() / 2);
-    }
-
     private void screenScrolledStandardUI(int screenCenter) {
-        if (mScrollX < 0 || mScrollX > mMaxScrollX) {
-            int index = mScrollX < 0 ? 0 : getChildCount() - 1;
+        if (mOverScrollX < 0 || mOverScrollX > mMaxScrollX) {
+            int index = mOverScrollX < 0 ? 0 : getChildCount() - 1;
             CellLayout cl = (CellLayout) getChildAt(index);
             float scrollProgress = getScrollProgress(screenCenter, cl, index);
             cl.setOverScrollAmount(Math.abs(scrollProgress), index == 0);
-            float translationX = index == 0 ? mScrollX : - (mMaxScrollX - mScrollX);
             float rotation = - WORKSPACE_OVERSCROLL_ROTATION * scrollProgress;
             cl.setCameraDistance(mDensity * CAMERA_DISTANCE);
             cl.setPivotX(cl.getMeasuredWidth() * (index == 0 ? 0.75f : 0.25f));
-            cl.setTranslationX(translationX);
+            cl.setPivotY(cl.getMeasuredHeight() * 0.5f);
             cl.setRotationY(rotation);
+            cl.setOverscrollTransformsDirty(true);
             setFadeForOverScroll(Math.abs(scrollProgress));
         } else {
             if (mOverscrollFade != 0) {
@@ -1160,8 +1163,8 @@ public class Workspace extends SmoothPagedView
             }
             // We don't want to mess with the translations during transitions
             if (!isSwitchingState()) {
-                resetCellLayoutTransforms((CellLayout) getChildAt(0), true);
-                resetCellLayoutTransforms((CellLayout) getChildAt(getChildCount() - 1), false);
+                ((CellLayout) getChildAt(0)).resetOverscrollTransforms();
+                ((CellLayout) getChildAt(getChildCount() - 1)).resetOverscrollTransforms();
             }
         }
     }
