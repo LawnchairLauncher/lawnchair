@@ -1018,6 +1018,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 int hoffset = (int) (bitmapWidth / 2 - mAppIconSize * iconScale / 2);
                 int yoffset = (int) (bitmapHeight / 2 - mAppIconSize * iconScale / 2);
                 if (info.icon > 0) icon = mIconCache.getFullResIcon(packageName, info.icon);
+                Resources resources = mLauncher.getResources();
                 if (icon == null) icon = resources.getDrawable(R.drawable.ic_launcher_application);
 
                 renderDrawableToBitmap(icon, preview, hoffset, yoffset,
