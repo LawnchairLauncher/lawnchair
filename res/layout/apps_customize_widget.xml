@@ -63,7 +63,7 @@
     </LinearLayout>
 
     <!-- The icon of the widget. -->
-    <ImageView
+    <com.android.launcher2.PagedViewWidgetImageView
         android:id="@+id/widget_preview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
