@@ -22,7 +22,7 @@
     <string name="application_name" msgid="8424725141379931883">"Utskytingsrampe"</string>
     <string name="uid_name" msgid="3371120195364560632">"Android-kjerneapplikasjoner"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>
-    <string name="chooser_wallpaper" msgid="6063168087625352235">"Valg av bakgrunnsbilde fra"</string>
+    <string name="chooser_wallpaper" msgid="6063168087625352235">"Velg bakgrunnsbilde fra"</string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Velg bakgrunnsbilde"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"Bakgrunner"</string>
     <string name="activity_not_found" msgid="217823393239365967">"Appen er ikke installert."</string>
@@ -46,7 +46,7 @@
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Fjernet snarveien «<xliff:g id="NAME">%s</xliff:g>»."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Snarveien «<xliff:g id="NAME">%s</xliff:g>» fins allerede."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Velg snarvei"</string>
-    <string name="title_select_application" msgid="1793455815754848652">"Valg av app"</string>
+    <string name="title_select_application" msgid="1793455815754848652">"Velg app"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Apper"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Startsiden"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"Fjern"</string>
@@ -66,8 +66,8 @@
     <string name="menu_notifications" msgid="6424587053194766192">"Varslinger"</string>
     <string name="menu_settings" msgid="3946232973327980394">"Systeminnstillinger"</string>
     <string name="menu_help" msgid="4901160661634590633">"Hjelp"</string>
-    <string name="cab_menu_delete_app" msgid="4089398025537640349">"Avinstaller app"</string>
-    <string name="cab_menu_app_info" msgid="914548323652698884">"Informasjon om app"</string>
+    <string name="cab_menu_delete_app" msgid="4089398025537640349">"Avinstaller appen"</string>
+    <string name="cab_menu_app_info" msgid="914548323652698884">"Informasjon om appen"</string>
     <string name="cab_app_selection_text" msgid="6378522164293415735">"Én app er valgt"</string>
     <string name="cab_widget_selection_text" msgid="962527270506951955">"1 modul valgt"</string>
     <string name="cab_folder_selection_text" msgid="8916111874189565067">"1 mappe valgt"</string>
