@@ -1255,6 +1255,19 @@ public class Workspace extends SmoothPagedView
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
+        if (mChildrenLayersEnabled) {
+            getVisiblePages(mTempVisiblePagesRange);
+            final int leftScreen = mTempVisiblePagesRange[0];
+            final int rightScreen = mTempVisiblePagesRange[1];
+            if (leftScreen != -1 && rightScreen != -1) {
+                // calling setChildrenLayersEnabled on a view that's not visible/rendered
+                // causes slowdowns on some graphics cards, so we set it here to be sure
+                // it's only called when it's safe (ie when the view will be rendered)
+                for (int i = leftScreen; i <= rightScreen; i++) {
+                    ((ViewGroup)getPageAt(i)).setChildrenLayersEnabled(true);
+                }
+            }
+        }
         super.dispatchDraw(canvas);
 
         if (mInScrollArea && !LauncherApplication.isScreenLarge()) {
@@ -1359,8 +1372,13 @@ public class Workspace extends SmoothPagedView
 
         if (enableChildrenLayers != mChildrenLayersEnabled) {
             mChildrenLayersEnabled = enableChildrenLayers;
-            for (int i = 0; i < getPageCount(); i++) {
-                ((ViewGroup)getChildAt(i)).setChildrenLayersEnabled(enableChildrenLayers);
+            // calling setChildrenLayersEnabled on a view that's not visible/rendered
+            // causes slowdowns on some graphics cards, so we only disable it here and leave
+            // the enabling to dispatchDraw
+            if (!enableChildrenLayers) {
+                for (int i = 0; i < getPageCount(); i++) {
+                    ((ViewGroup)getChildAt(i)).setChildrenLayersEnabled(false);
+                }
             }
         }
     }
