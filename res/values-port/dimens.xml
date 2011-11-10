@@ -31,8 +31,6 @@
     <dimen name="workspace_page_spacing">-1dp</dimen>
 
 <!-- AppsCustomize -->
-    <integer name="apps_customize_cellCountX">4</integer>
-    <integer name="apps_customize_cellCountY">5</integer>
     <dimen name="apps_customize_pageLayoutWidthGap">-1dp</dimen>
     <dimen name="apps_customize_pageLayoutHeightGap">-1dp</dimen>
     <dimen name="apps_customize_pageLayoutPaddingTop">10dp</dimen>

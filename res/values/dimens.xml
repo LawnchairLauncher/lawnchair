@@ -54,6 +54,8 @@
     <dimen name="toolbar_external_icon_height">36dp</dimen>
 
 <!-- AllApps/Customize/AppsCustomize -->
+    <integer name="apps_customize_maxCellCountX">-1</integer>
+    <integer name="apps_customize_maxCellCountY">-1</integer>
     <!-- The height of the tab bar - if this changes, we should update the
          external icon width/height above to compensate -->
     <dimen name="apps_customize_tab_bar_height">52dp</dimen>
