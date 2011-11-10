@@ -2978,7 +2978,6 @@ public class Workspace extends SmoothPagedView
             addInScreen(view, container, screen, mTargetCell[0], mTargetCell[1], info.spanX,
                     info.spanY, insertAtFirst);
             cellLayout.onDropChild(view);
-            cellLayout.animateDrop();
             CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
             cellLayout.getChildrenLayout().measureChild(view);
 
