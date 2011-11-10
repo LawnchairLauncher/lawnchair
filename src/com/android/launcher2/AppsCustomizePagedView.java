@@ -977,7 +977,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         // Generate a preview image if we couldn't load one
         if (drawable == null) {
-            Resources resources = mLauncher.getResources();
             // TODO: This actually uses the apps customize cell layout params, where as we make want
             // the Workspace params for more accuracy.
             int targetWidth = mWidgetSpacingLayout.estimateCellWidth(cellHSpan);

@@ -1790,7 +1790,7 @@ public abstract class PagedView extends ViewGroup {
             updateScrollingIndicatorPosition();
             cancelScrollingIndicatorAnimations();
             if (immediately) {
-                mScrollIndicator.setVisibility(View.GONE);
+                mScrollIndicator.setVisibility(View.INVISIBLE);
                 mScrollIndicator.setAlpha(0f);
             } else {
                 mScrollIndicatorAnimator = ObjectAnimator.ofFloat(mScrollIndicator, "alpha", 0f);
@@ -1804,7 +1804,7 @@ public abstract class PagedView extends ViewGroup {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         if (!cancelled) {
-                            mScrollIndicator.setVisibility(View.GONE);
+                            mScrollIndicator.setVisibility(View.INVISIBLE);
                         }
                     }
                 });

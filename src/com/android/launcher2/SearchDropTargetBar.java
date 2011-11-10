@@ -119,7 +119,7 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         mDropTargetBarFadeOutAnim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                mDropTargetBar.setVisibility(View.GONE);
+                mDropTargetBar.setVisibility(View.INVISIBLE);
                 mDropTargetBar.setLayerType(View.LAYER_TYPE_NONE, null);
             }
         });
@@ -136,7 +136,7 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         mQSBSearchBarFadeOutAnim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                mQSBSearchBar.setVisibility(View.GONE);
+                mQSBSearchBar.setVisibility(View.INVISIBLE);
             }
         });
     }
@@ -166,7 +166,7 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         if (animated) {
             mQSBSearchBarFadeOutAnim.start();
         } else {
-            mQSBSearchBar.setVisibility(View.GONE);
+            mQSBSearchBar.setVisibility(View.INVISIBLE);
             mQSBSearchBar.setAlpha(0f);
         }
         mIsSearchBarHidden = true;
