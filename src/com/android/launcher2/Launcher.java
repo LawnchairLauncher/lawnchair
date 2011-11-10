@@ -2503,8 +2503,6 @@ public final class Launcher extends Activity
     void addExternalItemToScreen(ItemInfo itemInfo, final CellLayout layout) {
         if (!mWorkspace.addExternalItemToScreen(itemInfo, layout)) {
             showOutOfSpaceMessage();
-        } else {
-            layout.animateDrop();
         }
     }
 

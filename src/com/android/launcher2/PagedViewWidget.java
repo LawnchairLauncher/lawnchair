@@ -136,10 +136,13 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
     }
 
     void applyPreview(FastBitmapDrawable preview, int index, boolean scale) {
-        final ImageView image = (ImageView) findViewById(R.id.widget_preview);
+        final PagedViewWidgetImageView image =
+                (PagedViewWidgetImageView) findViewById(R.id.widget_preview);
         if (preview != null) {
+            image.mAllowRequestLayout = false;
             image.setImageDrawable(preview);
             image.setScaleType(scale ? ImageView.ScaleType.FIT_START : ImageView.ScaleType.MATRIX);
+            image.mAllowRequestLayout = true;
             image.setAlpha(0f);
             image.animate()
                  .alpha(1f)
