@@ -70,7 +70,7 @@ public class DragLayer extends FrameLayout {
     private boolean mHoverPointClosesFolder = false;
     private Rect mHitRect = new Rect();
     private int mWorkspaceIndex = -1;
-    private int mHotseatIndex = -1;
+    private int mQsbIndex = -1;
 
     /**
      * Used to create a new DragLayer from XML.
@@ -627,13 +627,13 @@ public class DragLayer extends FrameLayout {
     private void updateChildIndices() {
         if (mLauncher != null) {
             mWorkspaceIndex = indexOfChild(mLauncher.getWorkspace());
-            mHotseatIndex = indexOfChild(mLauncher.getHotseat());
+            mQsbIndex = indexOfChild(mLauncher.getSearchBar());
         }
     }
 
     @Override
     protected int getChildDrawingOrder(int childCount, int i) {
-        if (mWorkspaceIndex == -1 || mHotseatIndex == -1 || 
+        if (mWorkspaceIndex == -1 || mQsbIndex == -1 || 
                 mLauncher.getWorkspace().isDrawingBackgroundGradient()) {
             return i;
         }
@@ -641,10 +641,10 @@ public class DragLayer extends FrameLayout {
         // This ensures that the workspace is drawn above the hotseat and qsb,
         // except when the workspace is drawing a background gradient, in which
         // case we want the workspace to stay behind these elements.
-        if (i == mHotseatIndex) {
+        if (i == mQsbIndex) {
             return mWorkspaceIndex;
         } else if (i == mWorkspaceIndex) {
-            return mHotseatIndex;
+            return mQsbIndex;
         } else {
             return i;
         }
