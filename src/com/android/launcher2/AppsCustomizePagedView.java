@@ -1265,7 +1265,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                         scale = 1.0f;
                         alpha = 1.0f;
                         // On the first page, we don't want the page to have any lateral motion
-                        translationX = getScrollX();
+                        translationX = 0;
                     } else if (i == getChildCount() - 1 && scrollProgress > 0) {
                         // Overscroll to the right
                         v.setPivotX((1 - TRANSITION_PIVOT) * pageWidth);
@@ -1273,7 +1273,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                         scale = 1.0f;
                         alpha = 1.0f;
                         // On the last page, we don't want the page to have any lateral motion.
-                        translationX =  getScrollX() - mMaxScrollX;
+                        translationX = 0;
                     } else {
                         v.setPivotY(pageHeight / 2.0f);
                         v.setPivotX(pageWidth / 2.0f);
