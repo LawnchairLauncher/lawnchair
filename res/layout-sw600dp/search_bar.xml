@@ -56,10 +56,9 @@
         android:contentDescription="@string/accessibility_voice_search_button" />
 
     <!-- AppsCustomize icon -->
-    <com.android.launcher2.StrokedTextView
+    <com.android.launcher2.HolographicImageView
         android:id="@+id/all_apps_button"
         android:onClick="onClickAllAppsButton"
-        android:drawableLeft="@drawable/ic_home_all_apps_holo_dark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -69,20 +68,7 @@
         android:paddingRight="@dimen/toolbar_button_horizontal_padding"
         android:paddingTop="@dimen/all_apps_button_vertical_padding"
         android:paddingBottom="@dimen/all_apps_button_vertical_padding"
-        android:background="?android:attr/selectableItemBackground"
-
-        android:gravity="center"
-        android:textColor="#CCFFFFFF"
-        android:textSize="18sp"
-
-        launcher:strokeColor="#991e3157"
-        launcher:strokeTextColor="#DDFFFFFF"
-        launcher:strokeWidth="2.5"
-
-        android:shadowColor="#DA000000"
-        android:shadowDx="0.0"
-        android:shadowDy="0.0"
-        android:shadowRadius="2.5"
+        android:src="@drawable/ic_home_all_apps_holo_dark"
 
         android:focusable="true"
         android:clickable="true"
