@@ -453,7 +453,14 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             AppWidgetManager.getInstance(mLauncher).getInstalledProviders();
         Intent shortcutsIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
         List<ResolveInfo> shortcuts = mPackageManager.queryIntentActivities(shortcutsIntent, 0);
-        mWidgets.addAll(widgets);
+        for (AppWidgetProviderInfo widget : widgets) {
+            if (widget.minWidth > 0 && widget.minHeight > 0) {
+                mWidgets.add(widget);
+            } else {
+                Log.e(LOG_TAG, "Widget " + widget.provider + " has invalid dimensions (" +
+                        widget.minWidth + ", " + widget.minHeight + ")");
+            }
+        }
         mWidgets.addAll(shortcuts);
         Collections.sort(mWidgets,
                 new LauncherModel.WidgetAndShortcutNameComparator(mPackageManager));
