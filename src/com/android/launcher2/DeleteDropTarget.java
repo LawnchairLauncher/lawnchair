@@ -23,6 +23,7 @@ import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -35,8 +36,10 @@ public class DeleteDropTarget extends ButtonDropTarget {
 
     private static int DELETE_ANIMATION_DURATION = 250;
     private ColorStateList mOriginalTextColor;
-    private TransitionDrawable mDrawable;
     private int mHoverColor = 0xFFFF0000;
+    private TransitionDrawable mUninstallDrawable;
+    private TransitionDrawable mRemoveDrawable;
+    private TransitionDrawable mCurrentDrawable;
 
     public DeleteDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -58,8 +61,16 @@ public class DeleteDropTarget extends ButtonDropTarget {
         mHoverColor = r.getColor(R.color.delete_target_hover_tint);
         mHoverPaint.setColorFilter(new PorterDuffColorFilter(
                 mHoverColor, PorterDuff.Mode.SRC_ATOP));
-        mDrawable = (TransitionDrawable) getCompoundDrawables()[0];
-        mDrawable.setCrossFadeEnabled(true);
+        mUninstallDrawable = (TransitionDrawable) 
+                r.getDrawable(R.drawable.uninstall_target_selector);
+        mRemoveDrawable = (TransitionDrawable) r.getDrawable(R.drawable.remove_target_selector);
+
+        mRemoveDrawable.setCrossFadeEnabled(true);
+        mUninstallDrawable.setCrossFadeEnabled(true);
+
+        // The current drawable is set to either the remove drawable or the uninstall drawable 
+        // and is initially set to the remove drawable, as set in the layout xml.
+        mCurrentDrawable = (TransitionDrawable) getCompoundDrawables()[0];
 
         // Remove the text in the Phone UI in landscape
         int orientation = getResources().getConfiguration().orientation;
@@ -116,8 +127,15 @@ public class DeleteDropTarget extends ButtonDropTarget {
             }
         }
 
+        if (isUninstall) {
+            setCompoundDrawablesWithIntrinsicBounds(mUninstallDrawable, null, null, null);
+        } else {
+            setCompoundDrawablesWithIntrinsicBounds(mRemoveDrawable, null, null, null);
+        }
+        mCurrentDrawable = (TransitionDrawable) getCompoundDrawables()[0];
+
         mActive = isVisible;
-        mDrawable.resetTransition();
+        mCurrentDrawable.resetTransition();
         setTextColor(mOriginalTextColor);
         ((ViewGroup) getParent()).setVisibility(isVisible ? View.VISIBLE : View.GONE);
         if (getText().length() > 0) {
@@ -135,7 +153,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
     public void onDragEnter(DragObject d) {
         super.onDragEnter(d);
 
-        mDrawable.startTransition(mTransitionDuration);
+        mCurrentDrawable.startTransition(mTransitionDuration);
         setTextColor(mHoverColor);
     }
 
@@ -143,7 +161,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         super.onDragExit(d);
 
         if (!d.dragComplete) {
-            mDrawable.resetTransition();
+            mCurrentDrawable.resetTransition();
             setTextColor(mOriginalTextColor);
         }
     }
@@ -155,8 +173,8 @@ public class DeleteDropTarget extends ButtonDropTarget {
         dragLayer.getViewRectRelativeToSelf(d.dragView, from);
         dragLayer.getViewRectRelativeToSelf(this, to);
 
-        int width = mDrawable.getIntrinsicWidth();
-        int height = mDrawable.getIntrinsicHeight();
+        int width = mCurrentDrawable.getIntrinsicWidth();
+        int height = mCurrentDrawable.getIntrinsicHeight();
         to.set(to.left + getPaddingLeft(), to.top + getPaddingTop(),
                 to.left + getPaddingLeft() + width, to.bottom);
 

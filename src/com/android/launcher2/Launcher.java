@@ -1956,6 +1956,9 @@ public final class Launcher extends Activity
     Hotseat getHotseat() {
         return mHotseat;
     }
+    SearchDropTargetBar getSearchBar() {
+        return mSearchDropTargetBar;
+    }
 
     /**
      * Returns the CellLayout of the specified container at the specified screen.

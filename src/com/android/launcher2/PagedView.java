@@ -129,6 +129,11 @@ public abstract class PagedView extends ViewGroup {
     protected int mUnboundedScrollX;
     protected int[] mTempVisiblePagesRange = new int[2];
 
+    // mOverScrollX is equal to mScrollX when we're within the normal scroll range. Otherwise
+    // it is equal to the scaled overscroll position. We use a separate value so as to prevent
+    // the screens from continuing to translate beyond the normal bounds.
+    protected int mOverScrollX;
+
     // parameter that adjusts the layout to be optimized for pages with that scale factor
     protected float mLayoutScale = 1.0f;
 
@@ -377,6 +382,7 @@ public abstract class PagedView extends ViewGroup {
                 overScroll(x - mMaxScrollX);
             }
         } else {
+            mOverScrollX = x;
             super.scrollTo(x, y);
         }
 
@@ -730,7 +736,9 @@ public abstract class PagedView extends ViewGroup {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         int halfScreenSize = getMeasuredWidth() / 2;
-        int screenCenter = mScrollX + halfScreenSize;
+        // mOverScrollX is equal to mScrollX when we're within the normal scroll range. Otherwise
+        // it is equal to the scaled overscroll position.
+        int screenCenter = mOverScrollX + halfScreenSize;
 
         if (screenCenter != mLastScreenCenter || mForceScreenScrolled) {
             screenScrolled(screenCenter);
@@ -1077,9 +1085,11 @@ public abstract class PagedView extends ViewGroup {
 
         int overScrollAmount = (int) Math.round(f * screenSize);
         if (amount < 0) {
-            mScrollX = overScrollAmount;
+            mOverScrollX = overScrollAmount;
+            mScrollX = 0;
         } else {
-            mScrollX = mMaxScrollX + overScrollAmount;
+            mOverScrollX = mMaxScrollX + overScrollAmount;
+            mScrollX = mMaxScrollX;
         }
         invalidate();
     }
@@ -1099,9 +1109,11 @@ public abstract class PagedView extends ViewGroup {
 
         int overScrollAmount = (int) Math.round(OVERSCROLL_DAMP_FACTOR * f * screenSize);
         if (amount < 0) {
-            mScrollX = overScrollAmount;
+            mOverScrollX = overScrollAmount;
+            mScrollX = 0;
         } else {
-            mScrollX = mMaxScrollX + overScrollAmount;
+            mOverScrollX = mMaxScrollX + overScrollAmount;
+            mScrollX = mMaxScrollX;
         }
         invalidate();
     }
