@@ -26,6 +26,7 @@ import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.AlertDialog;
 import android.app.WallpaperManager;
+import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ClipData;
@@ -312,6 +313,43 @@ public class Workspace extends SmoothPagedView
 
         // Disable multitouch across the workspace/all apps/customize tray
         setMotionEventSplittingEnabled(true);
+    }
+
+    // estimate the size of a widget with spans hSpan, vSpan. return MAX_VALUE for each
+    // dimension if unsuccessful
+    public int[] estimateItemSize(int hSpan, int vSpan,
+            PendingAddItemInfo pendingItemInfo, boolean springLoaded) {
+        int[] size = new int[2];
+        if (getChildCount() > 0) {
+            CellLayout cl = (CellLayout) mLauncher.getWorkspace().getChildAt(0);
+            RectF r = estimateItemPosition(cl, pendingItemInfo, 0, 0, hSpan, vSpan);
+            size[0] = (int) r.width();
+            size[1] = (int) r.height();
+            if (springLoaded) {
+                size[0] *= mSpringLoadedShrinkFactor;
+                size[1] *= mSpringLoadedShrinkFactor;
+            }
+            return size;
+        } else {
+            size[0] = Integer.MAX_VALUE;
+            size[1] = Integer.MAX_VALUE;
+            return size;
+        }
+    }
+    public RectF estimateItemPosition(CellLayout cl, ItemInfo pendingInfo,
+            int hCell, int vCell, int hSpan, int vSpan) {
+        RectF r = new RectF();
+        cl.cellToRect(hCell, vCell, hSpan, vSpan, r);
+        if (pendingInfo instanceof PendingAddWidgetInfo) {
+            PendingAddWidgetInfo widgetInfo = (PendingAddWidgetInfo) pendingInfo;
+            Rect p = AppWidgetHostView.getDefaultPaddingForWidget(mContext,
+                    widgetInfo.componentName, null);
+            r.top += p.top;
+            r.left += p.left;
+            r.right -= p.right;
+            r.bottom -= p.bottom;
+        }
+        return r;
     }
 
     public void buildPageHardwareLayers() {
@@ -1463,11 +1501,7 @@ public class Workspace extends SmoothPagedView
         mDragOutline = createDragOutline(v, canvas, bitmapPadding);
     }
 
-    public void onDragStartedWithItemSpans(int spanX, int spanY, Bitmap b) {
-        onDragStartedWithItemSpans(spanX, spanY, b, null);
-    }
-
-    public void onDragStartedWithItemSpans(int spanX, int spanY, Bitmap b, Paint alphaClipPaint) {
+    public void onDragStartedWithItem(PendingAddItemInfo info, Bitmap b, Paint alphaClipPaint) {
         final Canvas canvas = new Canvas();
 
         // We need to add extra padding to the bitmap to make room for the glow effect
@@ -1475,7 +1509,7 @@ public class Workspace extends SmoothPagedView
 
         CellLayout cl = (CellLayout) getChildAt(0);
 
-        int[] size = cl.cellSpansToSize(spanX, spanY);
+        int[] size = estimateItemSize(info.spanX, info.spanY, info, false);
 
         // The outline is used to visualize where the item will land if dropped
         mDragOutline = createDragOutline(b, canvas, bitmapPadding, size[0], size[1], alphaClipPaint);
@@ -2916,11 +2950,11 @@ public class Workspace extends SmoothPagedView
 
             // Now we animate the dragView, (ie. the widget or shortcut preview) into its final
             // location and size on the home screen.
+            RectF r = estimateItemPosition(cellLayout, pendingInfo,
+                    mTargetCell[0], mTargetCell[1], spanX, spanY);
             int loc[] = new int[2];
-            cellLayout.cellToPoint(mTargetCell[0], mTargetCell[1], loc);
-
-            RectF r = new RectF();
-            cellLayout.cellToRect(mTargetCell[0], mTargetCell[1], spanX, spanY, r);
+            loc[0] = (int) r.left;
+            loc[1] = (int) r.top;
             setFinalTransitionTransform(cellLayout);
             float cellLayoutScale =
                     mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(cellLayout, loc);
