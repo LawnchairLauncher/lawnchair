@@ -86,18 +86,17 @@ class AsyncTaskPageData {
         items = l;
         sourceImages = si;
         generatedImages = new ArrayList<Bitmap>();
-        cellWidth = cellHeight = -1;
+        maxImageWidth = maxImageHeight = -1;
         doInBackgroundCallback = bgR;
         postExecuteCallback = postR;
     }
-    AsyncTaskPageData(int p, ArrayList<Object> l, int cw, int ch, int ccx, AsyncTaskCallback bgR,
+    AsyncTaskPageData(int p, ArrayList<Object> l, int cw, int ch, AsyncTaskCallback bgR,
             AsyncTaskCallback postR) {
         page = p;
         items = l;
         generatedImages = new ArrayList<Bitmap>();
-        cellWidth = cw;
-        cellHeight = ch;
-        cellCountX = ccx;
+        maxImageWidth = cw;
+        maxImageHeight = ch;
         doInBackgroundCallback = bgR;
         postExecuteCallback = postR;
     }
@@ -124,9 +123,8 @@ class AsyncTaskPageData {
     ArrayList<Object> items;
     ArrayList<Bitmap> sourceImages;
     ArrayList<Bitmap> generatedImages;
-    int cellWidth;
-    int cellHeight;
-    int cellCountX;
+    int maxImageWidth;
+    int maxImageHeight;
     AsyncTaskCallback doInBackgroundCallback;
     AsyncTaskCallback postExecuteCallback;
 }
@@ -537,26 +535,23 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         // Compose the drag image
         Bitmap b;
-        Drawable preview = image.getDrawable();
-        RectF mTmpScaleRect = new RectF(0f,0f,1f,1f);
-        image.getImageMatrix().mapRect(mTmpScaleRect);
-        float scale = mTmpScaleRect.right;
-        int w = (int) (preview.getIntrinsicWidth() * scale);
-        int h = (int) (preview.getIntrinsicHeight() * scale);
         if (createItemInfo instanceof PendingAddWidgetInfo) {
             PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo) createItemInfo;
             int[] spanXY = mLauncher.getSpanForWidget(createWidgetInfo, null);
             createItemInfo.spanX = spanXY[0];
             createItemInfo.spanY = spanXY[1];
 
-            b = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-            renderDrawableToBitmap(preview, b, 0, 0, w, h, scale, mDragViewMultiplyColor);
+            int[] maxSize = mLauncher.getWorkspace().estimateItemSize(spanXY[0], spanXY[1],
+                    createWidgetInfo, true);
+            b = getWidgetPreview(createWidgetInfo.componentName, createWidgetInfo.previewImage,
+                    createWidgetInfo.icon, spanXY[0], spanXY[1], maxSize[0], maxSize[1]);
         } else {
             // Workaround for the fact that we don't keep the original ResolveInfo associated with
             // the shortcut around.  To get the icon, we just render the preview image (which has
             // the shortcut icon) to a new drag bitmap that clips the non-icon space.
             b = Bitmap.createBitmap(mWidgetPreviewIconPaddedDimension,
                     mWidgetPreviewIconPaddedDimension, Bitmap.Config.ARGB_8888);
+            Drawable preview = image.getDrawable();
             mCanvas.setBitmap(b);
             mCanvas.save();
             preview.draw(mCanvas);
@@ -569,7 +564,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // We use a custom alpha clip table for the default widget previews
         Paint alphaClipPaint = null;
         if (createItemInfo instanceof PendingAddWidgetInfo) {
-            if (((PendingAddWidgetInfo) createItemInfo).hasDefaultPreview) {
+            if (((PendingAddWidgetInfo) createItemInfo).previewImage != 0) {
                 MaskFilter alphaClipTable = TableMaskFilter.CreateClipTable(0, 255);
                 alphaClipPaint = new Paint();
                 alphaClipPaint.setMaskFilter(alphaClipTable);
@@ -578,8 +573,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         // Start the drag
         mLauncher.lockScreenOrientationOnLargeUI();
-        mLauncher.getWorkspace().onDragStartedWithItemSpans(createItemInfo.spanX,
-                createItemInfo.spanY, b, alphaClipPaint);
+        mLauncher.getWorkspace().onDragStartedWithItem(createItemInfo, b, alphaClipPaint);
         mDragController.startDrag(image, b, this, createItemInfo,
                 DragController.DRAG_ACTION_COPY, null);
         b.recycle();
@@ -790,7 +784,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // We introduce a slight delay to order the loading of side pages so that we don't thrash
         final int sleepMs = getSleepForPage(page + mNumAppsPages);
         AsyncTaskPageData pageData = new AsyncTaskPageData(page, widgets, cellWidth, cellHeight,
-            cellCountX, new AsyncTaskCallback() {
+            new AsyncTaskCallback() {
                 @Override
                 public void run(AppsCustomizeAsyncTask task, AsyncTaskPageData data) {
                     try {
@@ -936,7 +930,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             c.setBitmap(null);
         }
     }
-    private Bitmap getShortcutPreview(ResolveInfo info, int cellWidth, int cellHeight) {
+    private Bitmap getShortcutPreview(ResolveInfo info) {
         // Render the background
         int offset = 0;
         int bitmapSize = mAppIconSize;
@@ -947,73 +941,71 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         renderDrawableToBitmap(icon, preview, offset, offset, mAppIconSize, mAppIconSize);
         return preview;
     }
-    private Bitmap getWidgetPreview(AppWidgetProviderInfo info,
-            int cellHSpan, int cellVSpan, int cellWidth, int cellHeight) {
 
+    private Bitmap getWidgetPreview(ComponentName provider, int previewImage, int iconId,
+            int cellHSpan, int cellVSpan, int maxWidth, int maxHeight) {
         // Load the preview image if possible
-        String packageName = info.provider.getPackageName();
-        Drawable drawable = null;
-        Bitmap preview = null;
-        if (info.previewImage != 0) {
-            drawable = mPackageManager.getDrawable(packageName, info.previewImage, null);
-            if (drawable == null) {
-                Log.w(LOG_TAG, "Can't load icon drawable 0x" + Integer.toHexString(info.icon)
-                        + " for provider: " + info.provider);
-            } else {
-                // Map the target width/height to the cell dimensions
-                int targetWidth = mWidgetSpacingLayout.estimateCellWidth(cellHSpan);
-                int targetHeight = mWidgetSpacingLayout.estimateCellHeight(cellVSpan);
-                int targetCellWidth;
-                int targetCellHeight;
-                if (targetWidth >= targetHeight) {
-                    targetCellWidth = Math.min(targetWidth, cellWidth);
-                    targetCellHeight = (int) (cellHeight * ((float) targetCellWidth / cellWidth));
-                } else {
-                    targetCellHeight = Math.min(targetHeight, cellHeight);
-                    targetCellWidth = (int) (cellWidth * ((float) targetCellHeight / cellHeight));
-                }
-                // Map the preview to the target cell dimensions
-                int bitmapWidth = Math.min(targetCellWidth, drawable.getIntrinsicWidth());
-                int bitmapHeight = (int) (drawable.getIntrinsicHeight() *
-                        ((float) bitmapWidth / drawable.getIntrinsicWidth()));
+        String packageName = provider.getPackageName();
+        if (maxWidth < 0) maxWidth = Integer.MAX_VALUE;
+        if (maxHeight < 0) maxHeight = Integer.MAX_VALUE;
 
-                preview = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Config.ARGB_8888);
-                renderDrawableToBitmap(drawable, preview, 0, 0, bitmapWidth, bitmapHeight);
+        Drawable drawable = null;
+        if (previewImage != 0) {
+            drawable = mPackageManager.getDrawable(packageName, previewImage, null);
+            if (drawable == null) {
+                Log.w(LOG_TAG, "Can't load widget preview drawable 0x" +
+                        Integer.toHexString(previewImage) + " for provider: " + provider);
             }
         }
 
-        // Generate a preview image if we couldn't load one
-        if (drawable == null) {
+        int bitmapWidth;
+        int bitmapHeight;
+        boolean widgetPreviewExists = (drawable != null);
+        if (widgetPreviewExists) {
+            bitmapWidth = drawable.getIntrinsicWidth();
+            bitmapHeight = drawable.getIntrinsicHeight();
+
+            // Cap the size so widget previews don't appear larger than the actual widget
+            maxWidth = Math.min(maxWidth, mWidgetSpacingLayout.estimateCellWidth(cellHSpan));
+            maxHeight = Math.min(maxHeight, mWidgetSpacingLayout.estimateCellHeight(cellVSpan));
+        } else {
+            // Determine the size of the bitmap for the preview image we will generate
             // TODO: This actually uses the apps customize cell layout params, where as we make want
             // the Workspace params for more accuracy.
-            int targetWidth = mWidgetSpacingLayout.estimateCellWidth(cellHSpan);
-            int targetHeight = mWidgetSpacingLayout.estimateCellHeight(cellVSpan);
-            int bitmapWidth = targetWidth;
-            int bitmapHeight = targetHeight;
-            int minOffset = (int) (mAppIconSize * sWidgetPreviewIconPaddingPercentage);
-            float iconScale = 1f;
-
-            // Determine the size of the bitmap we want to draw
+            bitmapWidth = mWidgetSpacingLayout.estimateCellWidth(cellHSpan);
+            bitmapHeight = mWidgetSpacingLayout.estimateCellHeight(cellVSpan);
             if (cellHSpan == cellVSpan) {
                 // For square widgets, we just have a fixed size for 1x1 and larger-than-1x1
+                int minOffset = (int) (mAppIconSize * sWidgetPreviewIconPaddingPercentage);
                 if (cellHSpan <= 1) {
                     bitmapWidth = bitmapHeight = mAppIconSize + 2 * minOffset;
                 } else {
                     bitmapWidth = bitmapHeight = mAppIconSize + 4 * minOffset;
                 }
-            } else {
-                // Otherwise, ensure that we are properly sized within the cellWidth/Height
-                if (targetWidth >= targetHeight) {
-                    bitmapWidth = Math.min(targetWidth, cellWidth);
-                    bitmapHeight = (int) (targetHeight * ((float) bitmapWidth / targetWidth));
-                    iconScale = Math.min((float) bitmapHeight / (mAppIconSize + 2 * minOffset), 1f);
-                } else {
-                    bitmapHeight = Math.min(targetHeight, cellHeight);
-                    bitmapWidth = (int) (targetWidth * ((float) bitmapHeight / targetHeight));
-                    iconScale = Math.min((float) bitmapWidth / (mAppIconSize + 2 * minOffset), 1f);
-                }
             }
-            preview = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Config.ARGB_8888);
+        }
+
+        float scale = 1f;
+        if (bitmapWidth > maxWidth) {
+            scale = maxWidth / (float) bitmapWidth;
+        }
+        if (bitmapHeight * scale > maxHeight) {
+            scale = maxHeight / (float) bitmapHeight;
+        }
+        if (scale != 1f) {
+            bitmapWidth = (int) (scale * bitmapWidth);
+            bitmapHeight = (int) (scale * bitmapHeight);
+        }
+
+        Bitmap preview = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Config.ARGB_8888);
+
+        if (widgetPreviewExists) {
+            renderDrawableToBitmap(drawable, preview, 0, 0, bitmapWidth, bitmapHeight);
+        } else {
+            // Generate a preview image if we couldn't load one
+            int minOffset = (int) (mAppIconSize * sWidgetPreviewIconPaddingPercentage);
+            int smallestSide = Math.min(bitmapWidth, bitmapHeight);
+            float iconScale = Math.min((float) smallestSide / (mAppIconSize + 2 * minOffset), 1f);
             if (cellHSpan != 1 || cellVSpan != 1) {
                 renderDrawableToBitmap(mDefaultWidgetBackground, preview, 0, 0, bitmapWidth,
                         bitmapHeight);
@@ -1024,7 +1016,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 Drawable icon = null;
                 int hoffset = (int) (bitmapWidth / 2 - mAppIconSize * iconScale / 2);
                 int yoffset = (int) (bitmapHeight / 2 - mAppIconSize * iconScale / 2);
-                if (info.icon > 0) icon = mIconCache.getFullResIcon(packageName, info.icon);
+                if (iconId > 0) icon = mIconCache.getFullResIcon(packageName, iconId);
                 Resources resources = mLauncher.getResources();
                 if (icon == null) icon = resources.getDrawable(R.drawable.ic_launcher_application);
 
@@ -1036,16 +1028,16 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         return preview;
     }
 
-    public void syncWidgetPageItems(int page, boolean immediate) {
+    public void syncWidgetPageItems(final int page, final boolean immediate) {
         int numItemsPerPage = mWidgetCountX * mWidgetCountY;
-        int contentWidth = mWidgetSpacingLayout.getContentWidth();
-        int contentHeight = mWidgetSpacingLayout.getContentHeight();
 
         // Calculate the dimensions of each cell we are giving to each widget
-        ArrayList<Object> items = new ArrayList<Object>();
-        int cellWidth = ((contentWidth - mPageLayoutPaddingLeft - mPageLayoutPaddingRight
+        final ArrayList<Object> items = new ArrayList<Object>();
+        int contentWidth = mWidgetSpacingLayout.getContentWidth();
+        final int cellWidth = ((contentWidth - mPageLayoutPaddingLeft - mPageLayoutPaddingRight
                 - ((mWidgetCountX - 1) * mWidgetWidthGap)) / mWidgetCountX);
-        int cellHeight = ((contentHeight - mPageLayoutPaddingTop - mPageLayoutPaddingBottom
+        int contentHeight = mWidgetSpacingLayout.getContentHeight();
+        final int cellHeight = ((contentHeight - mPageLayoutPaddingTop - mPageLayoutPaddingBottom
                 - ((mWidgetCountY - 1) * mWidgetHeightGap)) / mWidgetCountY);
 
         // Prepare the set of widgets to load previews for in the background
@@ -1055,7 +1047,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
 
         // Prepopulate the pages with the other widget info, and fill in the previews later
-        PagedViewGridLayout layout = (PagedViewGridLayout) getPageAt(page + mNumAppsPages);
+        final PagedViewGridLayout layout = (PagedViewGridLayout) getPageAt(page + mNumAppsPages);
         layout.setColumnCount(layout.getCellCountX());
         for (int i = 0; i < items.size(); ++i) {
             Object rawInfo = items.get(i);
@@ -1098,15 +1090,31 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             layout.addView(widget, lp);
         }
 
-        // Load the widget previews
-        if (immediate) {
-            AsyncTaskPageData data = new AsyncTaskPageData(page, items, cellWidth, cellHeight,
-                    mWidgetCountX, null, null);
-            loadWidgetPreviewsInBackground(null, data);
-            onSyncWidgetPageItems(data);
-        } else {
-            prepareLoadWidgetPreviewsTask(page, items, cellWidth, cellHeight, mWidgetCountX);
-        }
+        // wait until a call on onLayout to start loading, because
+        // PagedViewWidget.getPreviewSize() will return 0 if it hasn't been laid out
+        // TODO: can we do a measure/layout immediately?
+        layout.setOnLayoutListener(new Runnable() {
+            public void run() {
+                // Load the widget previews
+                int maxPreviewWidth = cellWidth;
+                int maxPreviewHeight = cellHeight;
+                if (layout.getChildCount() > 0) {
+                    PagedViewWidget w = (PagedViewWidget) layout.getChildAt(0);
+                    int[] maxSize = w.getPreviewSize();
+                    maxPreviewWidth = maxSize[0];
+                    maxPreviewHeight = maxSize[1];
+                }
+                if (immediate) {
+                    AsyncTaskPageData data = new AsyncTaskPageData(page, items,
+                            maxPreviewWidth, maxPreviewHeight, null, null);
+                    loadWidgetPreviewsInBackground(null, data);
+                    onSyncWidgetPageItems(data);
+                } else {
+                    prepareLoadWidgetPreviewsTask(page, items,
+                            maxPreviewWidth, maxPreviewHeight, mWidgetCountX);
+                }
+            }
+        });
     }
     private void loadWidgetPreviewsInBackground(AppsCustomizeAsyncTask task,
             AsyncTaskPageData data) {
@@ -1119,8 +1127,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         ArrayList<Object> items = data.items;
         ArrayList<Bitmap> images = data.generatedImages;
         int count = items.size();
-        int cellWidth = data.cellWidth;
-        int cellHeight = data.cellHeight;
         for (int i = 0; i < count; ++i) {
             if (task != null) {
                 // Ensure we haven't been cancelled yet
@@ -1134,12 +1140,13 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             if (rawInfo instanceof AppWidgetProviderInfo) {
                 AppWidgetProviderInfo info = (AppWidgetProviderInfo) rawInfo;
                 int[] cellSpans = mLauncher.getSpanForWidget(info, null);
-                images.add(getWidgetPreview(info, cellSpans[0],cellSpans[1],
-                        cellWidth, cellHeight));
+                Bitmap b = getWidgetPreview(info.provider, info.previewImage, info.icon,
+                        cellSpans[0], cellSpans[1], data.maxImageWidth, data.maxImageHeight);
+                images.add(b);
             } else if (rawInfo instanceof ResolveInfo) {
                 // Fill in the shortcuts information
                 ResolveInfo info = (ResolveInfo) rawInfo;
-                images.add(getShortcutPreview(info, cellWidth, cellHeight));
+                images.add(getShortcutPreview(info));
             }
         }
     }
@@ -1153,11 +1160,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             PagedViewWidget widget = (PagedViewWidget) layout.getChildAt(i);
             if (widget != null) {
                 Bitmap preview = data.generatedImages.get(i);
-                boolean scale =
-                    (preview.getWidth() >= data.cellWidth ||
-                     preview.getHeight() >= data.cellHeight);
-
-                widget.applyPreview(new FastBitmapDrawable(preview), i, scale);
+                widget.applyPreview(new FastBitmapDrawable(preview), i);
             }
         }
         layout.createHardwareLayer();

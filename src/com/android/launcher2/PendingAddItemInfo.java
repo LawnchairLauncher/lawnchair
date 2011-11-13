@@ -33,7 +33,8 @@ class PendingAddItemInfo extends ItemInfo {
 class PendingAddWidgetInfo extends PendingAddItemInfo {
     int minWidth;
     int minHeight;
-    boolean hasDefaultPreview;
+    int previewImage;
+    int icon;
 
     // Any configuration data that we want to pass to a configuration activity when
     // starting up a widget
@@ -45,7 +46,8 @@ class PendingAddWidgetInfo extends PendingAddItemInfo {
         componentName = i.provider;
         minWidth = i.minWidth;
         minHeight = i.minHeight;
-        hasDefaultPreview = i.previewImage <= 0;
+        previewImage = i.previewImage;
+        icon = i.icon;
         if (dataMimeType != null && data != null) {
             mimeType = dataMimeType;
             configurationData = data;
