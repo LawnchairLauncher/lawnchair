@@ -65,10 +65,11 @@
                 launcher:clingFocusedX="@integer/apps_customize_cling_focused_x"
                 launcher:clingFocusedY="@integer/apps_customize_cling_focused_y"
                 launcher:maxGap="@dimen/workspace_max_gap" />
-            <ImageView
+            <FrameLayout
                 android:id="@+id/animation_buffer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="#FF000000"
                 android:visibility="gone" />
 
             <include
