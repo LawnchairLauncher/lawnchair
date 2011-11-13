@@ -22,20 +22,19 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
 import com.android.launcher.R;
+
+import java.util.ArrayList;
 
 public class AppsCustomizeTabHost extends TabHost implements LauncherTransitionable,
         TabHost.OnTabChangeListener  {
@@ -49,7 +48,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     private ViewGroup mTabsContainer;
     private AppsCustomizePagedView mAppsCustomizePane;
     private boolean mSuppressContentCallback = false;
-    private ImageView mAnimationBuffer;
+    private FrameLayout mAnimationBuffer;
 
     private boolean mInTransition;
     private boolean mResetAfterTransition;
@@ -93,7 +92,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         mTabs = tabs;
         mTabsContainer = tabsContainer;
         mAppsCustomizePane = appsCustomizePane;
-        mAnimationBuffer = (ImageView) findViewById(R.id.animation_buffer);
+        mAnimationBuffer = (FrameLayout) findViewById(R.id.animation_buffer);
         if (tabs == null || mAppsCustomizePane == null) throw new Resources.NotFoundException();
 
         // Configure the tabs content factory to return the same paged view (that we change the
@@ -138,9 +137,8 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         // Set the width of the tab list to the content width
         if (remeasureTabWidth) {
             int contentWidth = mAppsCustomizePane.getPageContentWidth();
-            if (contentWidth > 0) {
-                // Set the width and show the tab bar (if we have a loading graphic, we can switch
-                // it off here)
+            if (contentWidth > 0 && mTabs.getLayoutParams().width != contentWidth) {
+                // Set the width and show the tab bar
                 mTabs.getLayoutParams().width = contentWidth;
                 post(new Runnable() {
                     public void run() {
@@ -202,17 +200,35 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
                     return;
                 }
 
-                // Setup the animation buffer
-                Bitmap b = Bitmap.createBitmap(mAppsCustomizePane.getMeasuredWidth(),
-                        mAppsCustomizePane.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
-                Canvas c = new Canvas(b);
-                mAppsCustomizePane.draw(c);
-                mAppsCustomizePane.setAlpha(0f);
-                mAnimationBuffer.setImageBitmap(b);
-                mAnimationBuffer.setAlpha(1f);
-                mAnimationBuffer.setVisibility(View.VISIBLE);
-                c.setBitmap(null);
-                b = null;
+                // Take the visible pages and re-parent them temporarily to mAnimatorBuffer
+                // and then cross fade to the new pages
+
+                // We want the pages to be rendered in exactly the same way as they were when
+                // their parent was mAppsCustomizePane -- so set the scroll on mAnimationBuffer
+                // to be exactly the same as mAppsCustomizePane, and below, set the left/top
+                // parameters to be correct for each of the pages
+                mAnimationBuffer.scrollTo(mAppsCustomizePane.getScrollX(), 0);
+
+                int[] visiblePageRange = new int[2];
+                mAppsCustomizePane.getVisiblePages(visiblePageRange);
+                ArrayList<View> visiblePages = new ArrayList<View>();
+                for (int i = visiblePageRange[0]; i <= visiblePageRange[1]; i++) {
+                    visiblePages.add(mAppsCustomizePane.getPageAt(i));
+                }
+                // mAppsCustomizePane renders its children in reverse order, so
+                // add the pages to mAnimationBuffer in reverse order to match that behavior
+                for (int i = visiblePages.size() - 1; i >= 0; i--) {
+                    View child = visiblePages.get(i);
+                    PagedViewWidget.setDeletePreviewsWhenDetachedFromWindow(false);
+                    mAppsCustomizePane.removeView(child);
+                    PagedViewWidget.setDeletePreviewsWhenDetachedFromWindow(true);
+                    mAnimationBuffer.setAlpha(1f);
+                    mAnimationBuffer.setVisibility(View.VISIBLE);
+                    LayoutParams p = new FrameLayout.LayoutParams(child.getWidth(),
+                            child.getHeight());
+                    p.setMargins((int) child.getLeft(), (int) child.getTop(), 0, 0);
+                    mAnimationBuffer.addView(child, p);
+                }
 
                 // Toggle the new content
                 onTabChangedStart();
@@ -224,7 +240,12 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         mAnimationBuffer.setVisibility(View.GONE);
-                        mAnimationBuffer.setImageBitmap(null);
+                        mAnimationBuffer.removeAllViews();
+                    }
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                        mAnimationBuffer.setVisibility(View.GONE);
+                        mAnimationBuffer.removeAllViews();
                     }
                 });
                 ObjectAnimator inAnim = ObjectAnimator.ofFloat(mAppsCustomizePane, "alpha", 1f);
