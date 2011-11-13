@@ -44,6 +44,7 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
 
     private static final int sPreviewFadeInDuration = 80;
     private static final int sPreviewFadeInStaggerDuration = 20;
+    private static boolean sDeletePreviewsWhenDetachedFromWindow = true;
 
     private final Paint mPaint = new Paint();
     private Bitmap mHolographicOutline;
@@ -89,17 +90,23 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         setClipToPadding(false);
     }
 
+    public static void setDeletePreviewsWhenDetachedFromWindow(boolean value) {
+        sDeletePreviewsWhenDetachedFromWindow = value;
+    }
+
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
 
-        final ImageView image = (ImageView) findViewById(R.id.widget_preview);
-        if (image != null) {
-            FastBitmapDrawable preview = (FastBitmapDrawable) image.getDrawable();
-            if (preview != null && preview.getBitmap() != null) {
-                preview.getBitmap().recycle();
-            }
-            image.setImageDrawable(null);
+        if (sDeletePreviewsWhenDetachedFromWindow) {
+            final ImageView image = (ImageView) findViewById(R.id.widget_preview);
+            if (image != null) {
+                FastBitmapDrawable preview = (FastBitmapDrawable) image.getDrawable();
+                if (preview != null && preview.getBitmap() != null) {
+                    preview.getBitmap().recycle();
+                }
+                image.setImageDrawable(null);
+                }
         }
     }
 
