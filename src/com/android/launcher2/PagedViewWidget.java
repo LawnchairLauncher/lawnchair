@@ -183,18 +183,6 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return FocusHelper.handleAppsCustomizeKeyEvent(this, keyCode, event)
-                || super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        return FocusHelper.handleAppsCustomizeKeyEvent(this, keyCode, event)
-                || super.onKeyUp(keyCode, event);
-    }
-
-    @Override
     protected void onDraw(Canvas canvas) {
         if (mAlpha > 0) {
             super.onDraw(canvas);

@@ -202,6 +202,17 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
 
                 // Take the visible pages and re-parent them temporarily to mAnimatorBuffer
                 // and then cross fade to the new pages
+                int[] visiblePageRange = new int[2];
+                mAppsCustomizePane.getVisiblePages(visiblePageRange);
+                if (visiblePageRange[0] == -1 && visiblePageRange[1] == -1) {
+                    // If we can't get the visible page ranges, then just skip the animation
+                    reloadCurrentPage();
+                    return;
+                }
+                ArrayList<View> visiblePages = new ArrayList<View>();
+                for (int i = visiblePageRange[0]; i <= visiblePageRange[1]; i++) {
+                    visiblePages.add(mAppsCustomizePane.getPageAt(i));
+                }
 
                 // We want the pages to be rendered in exactly the same way as they were when
                 // their parent was mAppsCustomizePane -- so set the scroll on mAnimationBuffer
@@ -209,16 +220,15 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
                 // parameters to be correct for each of the pages
                 mAnimationBuffer.scrollTo(mAppsCustomizePane.getScrollX(), 0);
 
-                int[] visiblePageRange = new int[2];
-                mAppsCustomizePane.getVisiblePages(visiblePageRange);
-                ArrayList<View> visiblePages = new ArrayList<View>();
-                for (int i = visiblePageRange[0]; i <= visiblePageRange[1]; i++) {
-                    visiblePages.add(mAppsCustomizePane.getPageAt(i));
-                }
                 // mAppsCustomizePane renders its children in reverse order, so
                 // add the pages to mAnimationBuffer in reverse order to match that behavior
                 for (int i = visiblePages.size() - 1; i >= 0; i--) {
                     View child = visiblePages.get(i);
+                    if (child instanceof PagedViewCellLayout) {
+                        ((PagedViewCellLayout) child).resetChildrenOnKeyListeners();
+                    } else if (child instanceof PagedViewGridLayout) {
+                        ((PagedViewGridLayout) child).resetChildrenOnKeyListeners();
+                    }
                     PagedViewWidget.setDeletePreviewsWhenDetachedFromWindow(false);
                     mAppsCustomizePane.removeView(child);
                     PagedViewWidget.setDeletePreviewsWhenDetachedFromWindow(true);
