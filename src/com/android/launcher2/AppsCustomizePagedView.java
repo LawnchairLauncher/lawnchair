@@ -37,7 +37,6 @@ import android.graphics.MaskFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.graphics.TableMaskFilter;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -45,6 +44,7 @@ import android.os.Process;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -168,7 +168,7 @@ class AppsCustomizeAsyncTask extends AsyncTask<AsyncTaskPageData, Void, AsyncTas
  * The Apps/Customize page that displays all the applications, widgets, and shortcuts.
  */
 public class AppsCustomizePagedView extends PagedViewWithDraggableItems implements
-        AllAppsView, View.OnClickListener, DragSource {
+        AllAppsView, View.OnClickListener, View.OnKeyListener, DragSource {
     static final String LOG_TAG = "AppsCustomizePagedView";
 
     /**
@@ -515,6 +515,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
     }
 
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        return FocusHelper.handleAppsCustomizeKeyEvent(v,  keyCode, event);
+    }
+
     /*
      * PagedViewWithDraggableItems implementation
      */
@@ -663,14 +667,16 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     private void updateCurrentTab(int currentPage) {
         AppsCustomizeTabHost tabHost = getTabHost();
-        String tag = tabHost.getCurrentTabTag();
-        if (tag != null) {
-            if (currentPage >= mNumAppsPages &&
-                    !tag.equals(tabHost.getTabTagForContentType(ContentType.Widgets))) {
-                tabHost.setCurrentTabFromContent(ContentType.Widgets);
-            } else if (currentPage < mNumAppsPages &&
-                    !tag.equals(tabHost.getTabTagForContentType(ContentType.Applications))) {
-                tabHost.setCurrentTabFromContent(ContentType.Applications);
+        if (tabHost != null) {
+            String tag = tabHost.getCurrentTabTag();
+            if (tag != null) {
+                if (currentPage >= mNumAppsPages &&
+                        !tag.equals(tabHost.getTabTagForContentType(ContentType.Widgets))) {
+                    tabHost.setCurrentTabFromContent(ContentType.Widgets);
+                } else if (currentPage < mNumAppsPages &&
+                        !tag.equals(tabHost.getTabTagForContentType(ContentType.Applications))) {
+                    tabHost.setCurrentTabFromContent(ContentType.Applications);
+                }
             }
         }
     }
@@ -720,6 +726,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             icon.setOnClickListener(this);
             icon.setOnLongClickListener(this);
             icon.setOnTouchListener(this);
+            icon.setOnKeyListener(this);
 
             int index = i - startIndex;
             int x = index % mCellCountX;
@@ -1075,6 +1082,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             widget.setOnClickListener(this);
             widget.setOnLongClickListener(this);
             widget.setOnTouchListener(this);
+            widget.setOnKeyListener(this);
 
             // Layout each widget
             int ix = i % mWidgetCountX;
