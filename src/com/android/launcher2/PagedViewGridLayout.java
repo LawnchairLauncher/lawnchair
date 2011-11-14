@@ -46,6 +46,16 @@ public class PagedViewGridLayout extends GridLayout implements Page {
         return mCellCountY;
     }
 
+    /**
+     * Clears all the key listeners for the individual widgets.
+     */
+    public void resetChildrenOnKeyListeners() {
+        int childCount = getChildCount();
+        for (int j = 0; j < childCount; ++j) {
+            getChildAt(j).setOnKeyListener(null);
+        }
+    }
+
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // PagedView currently has issues with different-sized pages since it calculates the
         // offset of each page to scroll to before it updates the actual size of each page
