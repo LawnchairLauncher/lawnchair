@@ -156,12 +156,8 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         if (preview != null) {
             image.mAllowRequestLayout = false;
             image.setImageDrawable(preview);
+            image.setAlpha(1f);
             image.mAllowRequestLayout = true;
-            image.setAlpha(0f);
-            image.animate()
-                 .alpha(1f)
-                 .setDuration(sPreviewFadeInDuration + (index * sPreviewFadeInStaggerDuration))
-                 .start();
         }
     }
 
