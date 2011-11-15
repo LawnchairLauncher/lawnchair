@@ -28,6 +28,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
@@ -49,9 +50,11 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     private AppsCustomizePagedView mAppsCustomizePane;
     private boolean mSuppressContentCallback = false;
     private FrameLayout mAnimationBuffer;
+    private LinearLayout mContent;
 
     private boolean mInTransition;
     private boolean mResetAfterTransition;
+    private Animator mLauncherTransition;
 
     public AppsCustomizeTabHost(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -93,6 +96,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         mTabsContainer = tabsContainer;
         mAppsCustomizePane = appsCustomizePane;
         mAnimationBuffer = (FrameLayout) findViewById(R.id.animation_buffer);
+        mContent = (LinearLayout) findViewById(R.id.apps_customize_content);
         if (tabs == null || mAppsCustomizePane == null) throw new Resources.NotFoundException();
 
         // Configure the tabs content factory to return the same paged view (that we change the
@@ -323,21 +327,49 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         }
     }
 
-    /* LauncherTransitionable overrides */
-    @Override
-    public void onLauncherTransitionStart(Launcher l, Animator animation, boolean toWorkspace) {
-        mInTransition = true;
+    private void enableAndBuildHardwareLayer() {
         // isHardwareAccelerated() checks if we're attached to a window and if that
         // window is HW accelerated-- we were sometimes not attached to a window
         // and buildLayer was throwing an IllegalStateException
-        if (animation != null && isHardwareAccelerated()) {
+        if (isHardwareAccelerated()) {
             // Turn on hardware layers for performance
             setLayerType(LAYER_TYPE_HARDWARE, null);
 
-            // force building the layer at the beginning of the animation, so you don't get a
-            // blip early in the animation
+            // force building the layer, so you don't get a blip early in an animation
+            // when the layer is created layer
             buildLayer();
         }
+    }
+
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        if (mLauncherTransition != null) {
+            enableAndBuildHardwareLayer();
+            mLauncherTransition.start();
+            mLauncherTransition = null;
+        }
+    }
+
+    /* LauncherTransitionable overrides */
+    @Override
+    public boolean onLauncherTransitionStart(Launcher l, Animator animation, boolean toWorkspace) {
+        mInTransition = true;
+        boolean delayLauncherTransitionUntilLayout = false;
+        mLauncherTransition = null;
+
+        // if the content wasn't visible before, delay the launcher animation until after a cal
+        // to layout -- this prevents a blip
+        if (animation != null) {
+            if (mContent.getVisibility() == GONE) {
+                mLauncherTransition = animation;
+                delayLauncherTransitionUntilLayout = true;
+            }
+            mContent.setVisibility(VISIBLE);
+            if (!delayLauncherTransitionUntilLayout) {
+                enableAndBuildHardwareLayer();
+            }
+        }
+
         if (!toWorkspace && !LauncherApplication.isScreenLarge()) {
             mAppsCustomizePane.showScrollingIndicator(false);
         }
@@ -345,6 +377,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             mAppsCustomizePane.reset();
             mResetAfterTransition = false;
         }
+        return delayLauncherTransitionUntilLayout;
     }
 
     @Override
