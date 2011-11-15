@@ -151,6 +151,16 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         mChildren.removeViewAt(index);
     }
 
+    /**
+     * Clears all the key listeners for the individual icons.
+     */
+    public void resetChildrenOnKeyListeners() {
+        int childCount = mChildren.getChildCount();
+        for (int j = 0; j < childCount; ++j) {
+            mChildren.getChildAt(j).setOnKeyListener(null);
+        }
+    }
+
     @Override
     public int getPageChildCount() {
         return mChildren.getChildCount();
