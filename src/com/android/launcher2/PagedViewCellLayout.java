@@ -131,10 +131,6 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
             child.setId(childId);
             mChildren.addView(child, index, lp);
 
-            if (child instanceof PagedViewIcon) {
-                PagedViewIcon pagedViewIcon = (PagedViewIcon) child;
-                pagedViewIcon.disableCache();
-            }
             return true;
         }
         return false;
