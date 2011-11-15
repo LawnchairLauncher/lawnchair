@@ -199,7 +199,7 @@ public abstract class PagedView extends ViewGroup {
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.PagedView, defStyle, 0);
-        mPageSpacing = a.getDimensionPixelSize(R.styleable.PagedView_pageSpacing, 0);
+        setPageSpacing(a.getDimensionPixelSize(R.styleable.PagedView_pageSpacing, 0));
         mPageLayoutPaddingTop = a.getDimensionPixelSize(
                 R.styleable.PagedView_pageLayoutPaddingTop, 0);
         mPageLayoutPaddingBottom = a.getDimensionPixelSize(
@@ -551,6 +551,11 @@ public abstract class PagedView extends ViewGroup {
         scrollToNewPageWithoutMovingPages(mCurrentPage);
     }
 
+    public void setPageSpacing(int pageSpacing) {
+        mPageSpacing = pageSpacing;
+        invalidateCachedOffsets();
+    }
+
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         if (!mIsDataReady) {
@@ -568,7 +573,7 @@ public abstract class PagedView extends ViewGroup {
 
             // Calculate the variable page spacing if necessary
             if (mPageSpacing < 0) {
-                mPageSpacing = ((right - left) - getChildAt(0).getMeasuredWidth()) / 2;
+                setPageSpacing(((right - left) - getChildAt(0).getMeasuredWidth()) / 2);
             }
         }
 
