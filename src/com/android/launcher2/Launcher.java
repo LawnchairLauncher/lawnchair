@@ -2225,10 +2225,6 @@ public final class Launcher extends Activity
             alphaAnim.setStartDelay(startDelay);
             alphaAnim.start();
 
-            if (toView instanceof LauncherTransitionable) {
-                ((LauncherTransitionable) toView).onLauncherTransitionStart(instance, scaleAnim,
-                        false);
-            }
             scaleAnim.addListener(new AnimatorListenerAdapter() {
                 boolean animationCancelled = false;
 
@@ -2272,7 +2268,18 @@ public final class Launcher extends Activity
             // toView should appear right at the end of the workspace shrink animation
             mStateAnimation = new AnimatorSet();
             mStateAnimation.play(scaleAnim).after(startDelay);
-            mStateAnimation.start();
+
+            boolean delayAnim = false;
+            if (toView instanceof LauncherTransitionable) {
+                LauncherTransitionable lt = (LauncherTransitionable) toView;
+                delayAnim = lt.onLauncherTransitionStart(instance, mStateAnimation, false);
+            }
+            // if the anim is delayed, the LauncherTransitionable is responsible for starting it
+            if (!delayAnim) {
+                // TODO: q-- what if this anim is cancelled before being started? or started after
+                // being cancelled?
+                mStateAnimation.start();
+            }
         } else {
             toView.setTranslationX(0.0f);
             toView.setTranslationY(0.0f);
@@ -3249,6 +3256,7 @@ public final class Launcher extends Activity
 }
 
 interface LauncherTransitionable {
-    void onLauncherTransitionStart(Launcher l, Animator animation, boolean toWorkspace);
+    // return true if the callee will take care of start the animation by itself
+    boolean onLauncherTransitionStart(Launcher l, Animator animation, boolean toWorkspace);
     void onLauncherTransitionEnd(Launcher l, Animator animation, boolean toWorkspace);
 }
