@@ -48,8 +48,8 @@
         android:id="@+id/workspace_cling_open_all_apps"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginRight="150dp"
+        android:layout_marginTop="90dp"
+        android:layout_marginRight="130dp"
         android:layout_gravity="right"
         android:gravity="right"
         android:text="@string/workspace_cling_open_all_apps" />
