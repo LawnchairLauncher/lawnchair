@@ -17,21 +17,14 @@
 package com.android.launcher2;
 
 import android.animation.ObjectAnimator;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Message;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
 import android.widget.Checkable;
+import android.widget.TextView;
 
 import com.android.launcher.R;
 
@@ -40,7 +33,7 @@ import com.android.launcher.R;
  * An icon on a PagedView, specifically for items in the launcher's paged view (with compound
  * drawables on the top).
  */
-public class PagedViewIcon extends CachedTextView implements Checkable {
+public class PagedViewIcon extends TextView implements Checkable {
     private static final String TAG = "PagedViewIcon";
 
     // holographic outline
