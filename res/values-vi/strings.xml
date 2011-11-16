@@ -32,7 +32,7 @@
     <string name="external_drop_widget_error" msgid="127440783198670829">"Không thể thả mục vào Màn hình chính này."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Chọn tiện ích con để tạo"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Tên thư mục"</string>
-    <string name="rename_folder_title" msgid="4544573104191526550">"Đổi tên thư mục"</string>
+    <string name="rename_folder_title" msgid="4544573104191526550">"Đổi tên thư mục"</string>
     <string name="rename_action" msgid="6016003384693240896">"OK"</string>
     <string name="cancel_action" msgid="3811860427489435048">"Hủy"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"Thêm vào Màn hình chính"</string>
