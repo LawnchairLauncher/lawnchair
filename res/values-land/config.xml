@@ -20,4 +20,9 @@
     <bool name="config_useDropTargetDownTransition">false</bool>
     <!-- Whether or not to fade the side pages -->
     <bool name="config_workspaceFadeAdjacentScreens">false</bool>
+
+    <!-- Folder max bounds and max number of items.
+         Note: folder_max_count_x * folder_max_count_y >= folder_max_num_items. -->
+    <integer name="folder_max_count_x">6</integer>
+    <integer name="folder_max_count_y">3</integer>
 </resources>
