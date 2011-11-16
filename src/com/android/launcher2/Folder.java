@@ -83,6 +83,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private FolderIcon mFolderIcon;
     private int mMaxCountX;
     private int mMaxCountY;
+    private int mMaxNumItems;
     private Rect mNewSize = new Rect();
     private Rect mIconRect = new Rect();
     private ArrayList<View> mItemsInReadingOrder = new ArrayList<View>();
@@ -121,13 +122,20 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         setAlwaysDrawnWithCacheEnabled(false);
         mInflater = LayoutInflater.from(context);
         mIconCache = ((LauncherApplication)context.getApplicationContext()).getIconCache();
-        mMaxCountX = LauncherModel.getCellCountX();
-        mMaxCountY = LauncherModel.getCellCountY();
+
+        Resources res = getResources();
+        mMaxCountX = res.getInteger(R.integer.folder_max_count_x);
+        mMaxCountY = res.getInteger(R.integer.folder_max_count_y);
+        mMaxNumItems = res.getInteger(R.integer.folder_max_num_items);
+        if (mMaxCountX < 0 || mMaxCountY < 0 || mMaxNumItems < 0) {
+            mMaxCountX = LauncherModel.getCellCountX();
+            mMaxCountY = LauncherModel.getCellCountY();
+            mMaxNumItems = mMaxCountX * mMaxCountY;
+        }
 
         mInputMethodManager = (InputMethodManager)
                 mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        Resources res = getResources();
         mExpandDuration = res.getInteger(R.integer.config_folderAnimDuration);
 
         if (sDefaultFolderName == null) {
@@ -746,7 +754,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             int oldCountY = countY;
             if (countX * countY < count) {
                 // Current grid is too small, expand it
-                if (countX <= countY && countX < mMaxCountX) {
+                if ((countX <= countY || countY == mMaxCountY) && countX < mMaxCountX) {
                     countX++;
                 } else if (countY < mMaxCountY) {
                     countY++;
@@ -764,7 +772,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     public boolean isFull() {
-        return getItemCount() >= mMaxCountX * mMaxCountY;
+        return getItemCount() >= mMaxNumItems;
     }
 
     private void centerAboutIcon() {
