@@ -1766,9 +1766,9 @@ public abstract class PagedView extends ViewGroup {
             hideScrollingIndicator(false);
         }
     };
-    protected void flashScrollingIndicator() {
+    protected void flashScrollingIndicator(boolean animated) {
         removeCallbacks(hideScrollingIndicatorRunnable);
-        showScrollingIndicator(false);
+        showScrollingIndicator(!animated);
         postDelayed(hideScrollingIndicatorRunnable, sScrollIndicatorFlashDuration);
     }
 
