@@ -171,7 +171,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
 
     private void reloadCurrentPage() {
         if (!LauncherApplication.isScreenLarge()) {
-            mAppsCustomizePane.flashScrollingIndicator();
+            mAppsCustomizePane.flashScrollingIndicator(true);
         }
         mAppsCustomizePane.loadAssociatedPages(mAppsCustomizePane.getCurrentPage());
         mAppsCustomizePane.requestFocus();
