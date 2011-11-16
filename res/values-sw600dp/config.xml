@@ -19,4 +19,9 @@
     <!-- When shrinking the workspace, this is the percentage of its original size. -->
     <integer name="config_workspaceShrinkPercent">17</integer>
 
+    <!-- Folder max bounds and max number of items. Note: folder_max_count_x * folder_max_count_y
+         >= folder_max_num_items. When these are set to -1, they are automatically determined. -->
+    <integer name="folder_max_count_x">-1</integer>
+    <integer name="folder_max_count_y">-1</integer>
+    <integer name="folder_max_num_items">-1</integer>
 </resources>
