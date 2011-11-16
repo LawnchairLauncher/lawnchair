@@ -78,6 +78,7 @@ import android.view.Surface;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -161,6 +162,7 @@ public final class Launcher extends Activity
     private enum State { WORKSPACE, APPS_CUSTOMIZE, APPS_CUSTOMIZE_SPRING_LOADED };
     private State mState = State.WORKSPACE;
     private AnimatorSet mStateAnimation;
+    private AnimatorSet mDividerAnimator;
 
     static final int APPWIDGET_HOST_ID = 1024;
     private static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT = 300;
@@ -177,8 +179,11 @@ public final class Launcher extends Activity
 
     private LayoutInflater mInflater;
 
-    private DragController mDragController;
     private Workspace mWorkspace;
+    private View mQsbDivider;
+    private View mDockDivider;
+    private DragLayer mDragLayer;
+    private DragController mDragController;
 
     private AppWidgetManager mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
@@ -241,7 +246,6 @@ public final class Launcher extends Activity
 
     static final ArrayList<String> sDumpLogs = new ArrayList<String>();
 
-    private DragLayer mDragLayer;
 
     private BubbleTextView mWaitingForResume;
 
@@ -560,7 +564,24 @@ public final class Launcher extends Activity
         // market intent, so refresh the icon
         updateAppMarketIcon();
         if (!mWorkspaceLoading) {
-            mWorkspace.post(mBuildLayersRunnable);
+            final ViewTreeObserver observer = mWorkspace.getViewTreeObserver();
+            final Workspace workspace = mWorkspace;
+            // We want to let Launcher draw itself at least once before we force it to build
+            // layers on all the workspace pages, so that transitioning to Launcher from other
+            // apps is nice and speedy. Usually the first call to preDraw doesn't correspond to
+            // a true draw so we wait until the second preDraw call to be safe
+            observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                boolean mFirstTime = true;
+                public boolean onPreDraw() {
+                    if (mFirstTime) {
+                        mFirstTime = false;
+                    } else {
+                        workspace.post(mBuildLayersRunnable);
+                        observer.removeOnPreDrawListener(this);
+                    }
+                    return true;
+                }
+            });
         }
         clearTypedText();
     }
@@ -726,6 +747,8 @@ public final class Launcher extends Activity
 
         mDragLayer = (DragLayer) findViewById(R.id.drag_layer);
         mWorkspace = (Workspace) mDragLayer.findViewById(R.id.workspace);
+        mQsbDivider = (ImageView) findViewById(R.id.qsb_divider);
+        mDockDivider = (ImageView) findViewById(R.id.dock_divider);
 
         // Setup the drag layer
         mDragLayer.setup(this, dragController);
@@ -2252,7 +2275,7 @@ public final class Launcher extends Activity
                     if (!springLoaded && !LauncherApplication.isScreenLarge()) {
                         // Hide the workspace scrollbar
                         mWorkspace.hideScrollingIndicator(true);
-                        mWorkspace.hideDockDivider(true);
+                        hideDockDivider();
                     }
                     if (!animationCancelled) {
                         updateWallpaperVisibility(false);
@@ -2294,7 +2317,7 @@ public final class Launcher extends Activity
                 if (!springLoaded && !LauncherApplication.isScreenLarge()) {
                     // Hide the workspace scrollbar
                     mWorkspace.hideScrollingIndicator(true);
-                    mWorkspace.hideDockDivider(true);
+                    hideDockDivider();
                 }
             }
             updateWallpaperVisibility(false);
@@ -2306,7 +2329,7 @@ public final class Launcher extends Activity
      * This is the opposite of showAppsCustomizeHelper.
      * @param animated If true, the transition will be animated.
      */
-    private void hideAppsCustomizeHelper(boolean animated) {
+    private void hideAppsCustomizeHelper(boolean animated, final boolean springLoaded) {
         if (mStateAnimation != null) {
             mStateAnimation.cancel();
             mStateAnimation = null;
@@ -2370,6 +2393,7 @@ public final class Launcher extends Activity
                 ((LauncherTransitionable) fromView).onLauncherTransitionStart(instance, null, true);
                 ((LauncherTransitionable) fromView).onLauncherTransitionEnd(instance, null, true);
             }
+            mWorkspace.hideScrollingIndicator(false);
         }
     }
 
@@ -2380,10 +2404,12 @@ public final class Launcher extends Activity
         mWorkspace.changeState(Workspace.State.NORMAL, animated, stagger);
         if (mState != State.WORKSPACE) {
             mWorkspace.setVisibility(View.VISIBLE);
-            hideAppsCustomizeHelper(animated);
+            hideAppsCustomizeHelper(animated, false);
 
             // Show the search bar and hotseat
             mSearchDropTargetBar.showSearchBar(animated);
+            // We only need to animate in the dock divider if we're going from spring loaded mode
+            showDockDivider(animated && mState == State.APPS_CUSTOMIZE_SPRING_LOADED);
 
             // Set focus to the AppsCustomize button
             if (mAllAppsButton != null) {
@@ -2391,8 +2417,7 @@ public final class Launcher extends Activity
             }
         }
 
-        mWorkspace.showDockDivider(!animated);
-        mWorkspace.flashScrollingIndicator();
+        mWorkspace.flashScrollingIndicator(animated);
 
         // Change the state *after* we've called all the transition code
         mState = State.WORKSPACE;
@@ -2429,7 +2454,8 @@ public final class Launcher extends Activity
     void enterSpringLoadedDragMode() {
         if (mState == State.APPS_CUSTOMIZE) {
             mWorkspace.changeState(Workspace.State.SPRING_LOADED);
-            hideAppsCustomizeHelper(true);
+            hideAppsCustomizeHelper(true, true);
+            hideDockDivider();
             mState = State.APPS_CUSTOMIZE_SPRING_LOADED;
         }
     }
@@ -2464,6 +2490,33 @@ public final class Launcher extends Activity
             mState = State.APPS_CUSTOMIZE;
         }
         // Otherwise, we are not in spring loaded mode, so don't do anything.
+    }
+
+    void hideDockDivider() {
+        if (mQsbDivider != null && mDockDivider != null) {
+            mQsbDivider.setVisibility(View.INVISIBLE);
+            mDockDivider.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    void showDockDivider(boolean animated) {
+        if (mQsbDivider != null && mDockDivider != null) {
+            mQsbDivider.setVisibility(View.VISIBLE);
+            mDockDivider.setVisibility(View.VISIBLE);
+            if (mDividerAnimator != null) {
+                mDividerAnimator.cancel();
+                mQsbDivider.setAlpha(1f);
+                mDockDivider.setAlpha(1f);
+                mDividerAnimator = null;
+            }
+            if (animated) {
+                mDividerAnimator = new AnimatorSet();
+                mDividerAnimator.playTogether(ObjectAnimator.ofFloat(mQsbDivider, "alpha", 1f),
+                        ObjectAnimator.ofFloat(mDockDivider, "alpha", 1f));
+                mDividerAnimator.setDuration(mSearchDropTargetBar.getTransitionInDuration());
+                mDividerAnimator.start();
+            }
+        }
     }
 
     void lockAllApps() {
