@@ -1138,6 +1138,7 @@ public class Workspace extends SmoothPagedView
     }
 
     private void screenScrolledLargeUI(int screenCenter) {
+        if (isSwitchingState()) return;
         boolean isInOverscroll = false;
         for (int i = 0; i < getChildCount(); i++) {
             CellLayout cl = (CellLayout) getChildAt(i);
