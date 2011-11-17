@@ -355,19 +355,19 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     public boolean onLauncherTransitionStart(Launcher l, Animator animation, boolean toWorkspace) {
         mInTransition = true;
         boolean delayLauncherTransitionUntilLayout = false;
+        boolean animated = (animation != null);
         mLauncherTransition = null;
 
-        // if the content wasn't visible before, delay the launcher animation until after a cal
+        // if the content wasn't visible before, delay the launcher animation until after a call
         // to layout -- this prevents a blip
-        if (animation != null) {
-            if (mContent.getVisibility() == GONE) {
-                mLauncherTransition = animation;
-                delayLauncherTransitionUntilLayout = true;
-            }
-            mContent.setVisibility(VISIBLE);
-            if (!delayLauncherTransitionUntilLayout) {
-                enableAndBuildHardwareLayer();
-            }
+        if (animated && mContent.getVisibility() == GONE) {
+            mLauncherTransition = animation;
+            delayLauncherTransitionUntilLayout = true;
+        }
+        mContent.setVisibility(VISIBLE);
+
+        if (animated && !delayLauncherTransitionUntilLayout) {
+            enableAndBuildHardwareLayer();
         }
 
         if (!toWorkspace && !LauncherApplication.isScreenLarge()) {
