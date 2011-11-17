@@ -268,7 +268,7 @@ public class LauncherProvider extends ContentProvider {
 
             if (!convertDatabase(db)) {
                 // Populate favorites table with initial favorites
-                loadFavorites(db, ItemInfo.NO_ID);
+                loadFavorites(db, R.xml.default_workspace);
             }
         }
 
@@ -446,7 +446,7 @@ public class LauncherProvider extends ContentProvider {
                 }
 
                 // Add default hotseat icons
-                loadFavorites(db, LauncherSettings.Favorites.CONTAINER_HOTSEAT);
+                loadFavorites(db, R.xml.update_workspace);
                 version = 9;
             }
 
@@ -700,7 +700,7 @@ public class LauncherProvider extends ContentProvider {
          * @param db The database to write the values into
          * @param filterContainerId The specific container id of items to load
          */
-        private int loadFavorites(SQLiteDatabase db, long filterContainerId) {
+        private int loadFavorites(SQLiteDatabase db, int workspaceResourceId) {
             Intent intent = new Intent(Intent.ACTION_MAIN, null);
             intent.addCategory(Intent.CATEGORY_LAUNCHER);
             ContentValues values = new ContentValues();
@@ -708,7 +708,7 @@ public class LauncherProvider extends ContentProvider {
             PackageManager packageManager = mContext.getPackageManager();
             int i = 0;
             try {
-                XmlResourceParser parser = mContext.getResources().getXml(R.xml.default_workspace);
+                XmlResourceParser parser = mContext.getResources().getXml(workspaceResourceId);
                 AttributeSet attrs = Xml.asAttributeSet(parser);
                 XmlUtils.beginDocument(parser, TAG_FAVORITES);
 
@@ -731,92 +731,91 @@ public class LauncherProvider extends ContentProvider {
                     if (a.hasValue(R.styleable.Favorite_container)) {
                         container = Long.valueOf(a.getString(R.styleable.Favorite_container));
                     }
-                    if (filterContainerId == ItemInfo.NO_ID || filterContainerId == container) {
-                        String screen = a.getString(R.styleable.Favorite_screen);
-                        String x = a.getString(R.styleable.Favorite_x);
-                        String y = a.getString(R.styleable.Favorite_y);
 
-                        // If we are adding to the hotset, the screen is used as the position in the
-                        // hotset. This screen can't be at position 0 because AllApps is in the
-                        // zeroth position.
-                        if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
-                                Hotseat.isAllAppsButtonRank(Integer.valueOf(screen))) {
-                            throw new RuntimeException("Invalid screen position for hotseat item");
+                    String screen = a.getString(R.styleable.Favorite_screen);
+                    String x = a.getString(R.styleable.Favorite_x);
+                    String y = a.getString(R.styleable.Favorite_y);
+
+                    // If we are adding to the hotseat, the screen is used as the position in the
+                    // hotseat. This screen can't be at position 0 because AllApps is in the
+                    // zeroth position.
+                    if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
+                            Hotseat.isAllAppsButtonRank(Integer.valueOf(screen))) {
+                        throw new RuntimeException("Invalid screen position for hotseat item");
+                    }
+
+                    values.clear();
+                    values.put(LauncherSettings.Favorites.CONTAINER, container);
+                    values.put(LauncherSettings.Favorites.SCREEN, screen);
+                    values.put(LauncherSettings.Favorites.CELLX, x);
+                    values.put(LauncherSettings.Favorites.CELLY, y);
+
+                    if (TAG_FAVORITE.equals(name)) {
+                        long id = addAppShortcut(db, values, a, packageManager, intent);
+                        added = id >= 0;
+                    } else if (TAG_SEARCH.equals(name)) {
+                        added = addSearchWidget(db, values);
+                    } else if (TAG_CLOCK.equals(name)) {
+                        added = addClockWidget(db, values);
+                    } else if (TAG_APPWIDGET.equals(name)) {
+                        added = addAppWidget(db, values, a, packageManager);
+                    } else if (TAG_SHORTCUT.equals(name)) {
+                        long id = addUriShortcut(db, values, a);
+                        added = id >= 0;
+                    } else if (TAG_FOLDER.equals(name)) {
+                        String title;
+                        int titleResId =  a.getResourceId(R.styleable.Favorite_title, -1);
+                        if (titleResId != -1) {
+                            title = mContext.getResources().getString(titleResId);
+                        } else {
+                            title = mContext.getResources().getString(R.string.folder_name);
                         }
+                        values.put(LauncherSettings.Favorites.TITLE, title);
+                        long folderId = addFolder(db, values);
+                        added = folderId >= 0;
 
-                        values.clear();
-                        values.put(LauncherSettings.Favorites.CONTAINER, container);
-                        values.put(LauncherSettings.Favorites.SCREEN, screen);
-                        values.put(LauncherSettings.Favorites.CELLX, x);
-                        values.put(LauncherSettings.Favorites.CELLY, y);
+                        ArrayList<Long> folderItems = new ArrayList<Long>();
 
-                        if (TAG_FAVORITE.equals(name)) {
-                            long id = addAppShortcut(db, values, a, packageManager, intent);
-                            added = id >= 0;
-                        } else if (TAG_SEARCH.equals(name)) {
-                            added = addSearchWidget(db, values);
-                        } else if (TAG_CLOCK.equals(name)) {
-                            added = addClockWidget(db, values);
-                        } else if (TAG_APPWIDGET.equals(name)) {
-                            added = addAppWidget(db, values, a, packageManager);
-                        } else if (TAG_SHORTCUT.equals(name)) {
-                            long id = addUriShortcut(db, values, a);
-                            added = id >= 0;
-                        } else if (TAG_FOLDER.equals(name)) {
-                            String title;
-                            int titleResId =  a.getResourceId(R.styleable.Favorite_title, -1);
-                            if (titleResId != -1) {
-                                title = mContext.getResources().getString(titleResId);
+                        int folderDepth = parser.getDepth();
+                        while ((type = parser.next()) != XmlPullParser.END_TAG ||
+                                parser.getDepth() > folderDepth) {
+                            if (type != XmlPullParser.START_TAG) {
+                                continue;
+                            }
+                            final String folder_item_name = parser.getName();
+
+                            TypedArray ar = mContext.obtainStyledAttributes(attrs,
+                                    R.styleable.Favorite);
+                            values.clear();
+                            values.put(LauncherSettings.Favorites.CONTAINER, folderId);
+
+                            if (TAG_FAVORITE.equals(folder_item_name) && folderId >= 0) {
+                                long id =
+                                    addAppShortcut(db, values, ar, packageManager, intent);
+                                if (id >= 0) {
+                                    folderItems.add(id);
+                                }
+                            } else if (TAG_SHORTCUT.equals(folder_item_name) && folderId >= 0) {
+                                long id = addUriShortcut(db, values, ar);
+                                if (id >= 0) {
+                                    folderItems.add(id);
+                                }
                             } else {
-                                title = mContext.getResources().getString(R.string.folder_name);
+                                throw new RuntimeException("Folders can " +
+                                        "contain only shortcuts");
                             }
-                            values.put(LauncherSettings.Favorites.TITLE, title);
-                            long folderId = addFolder(db, values);
-                            added = folderId >= 0;
-
-                            ArrayList<Long> folderItems = new ArrayList<Long>();
-
-                            int folderDepth = parser.getDepth();
-                            while ((type = parser.next()) != XmlPullParser.END_TAG ||
-                                    parser.getDepth() > folderDepth) {
-                                if (type != XmlPullParser.START_TAG) {
-                                    continue;
-                                }
-                                final String folder_item_name = parser.getName();
-
-                                TypedArray ar = mContext.obtainStyledAttributes(attrs,
-                                        R.styleable.Favorite);
-                                values.clear();
-                                values.put(LauncherSettings.Favorites.CONTAINER, folderId);
-
-                                if (TAG_FAVORITE.equals(folder_item_name) && folderId >= 0) {
-                                    long id =
-                                        addAppShortcut(db, values, ar, packageManager, intent);
-                                    if (id >= 0) {
-                                        folderItems.add(id);
-                                    }
-                                } else if (TAG_SHORTCUT.equals(folder_item_name) && folderId >= 0) {
-                                    long id = addUriShortcut(db, values, ar);
-                                    if (id >= 0) {
-                                        folderItems.add(id);
-                                    }
-                                } else {
-                                    throw new RuntimeException("Folders can " +
-                                            "contain only shortcuts");
-                                }
-                                ar.recycle();
+                            ar.recycle();
+                        }
+                        // We can only have folders with >= 2 items, so we need to remove the
+                        // folder and clean up if less than 2 items were included, or some
+                        // failed to add, and less than 2 were actually added
+                        if (folderItems.size() < 2 && folderId >= 0) {
+                            // We just delete the folder and any items that made it
+                            deleteId(db, folderId);
+                            if (folderItems.size() > 0) {
+                                deleteId(db, folderItems.get(0));
                             }
-                            // We can only have folders with >= 2 items, so we need to remove the
-                            // folder and clean up if less than 2 items were included, or some
-                            // failed to add, and less than 2 were actually added
-                            if (folderItems.size() < 2 && folderId >= 0) {
-                                // We just delete the folder and any items that made it
-                                deleteId(db, folderId);
-                                if (folderItems.size() > 0) {
-                                    deleteId(db, folderItems.get(0));
-                                }
-                                added = false;
-                            }
+                            added = false;
                         }
                     }
                     if (added) i++;
