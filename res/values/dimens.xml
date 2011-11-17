@@ -79,9 +79,6 @@
     <dimen name="button_bar_width_right_padding">0dp</dimen>
     <dimen name="button_bar_height_plus_padding">70dp</dimen>
 
-    <!-- Drag padding to add to the drop targets -->
-    <dimen name="drop_target_drag_padding">40dp</dimen>
-
     <!-- extra horizontal spacing between mini screen thumbnails ie. in all
          apps and in customization mode -->
     <dimen name="smallScreenExtraSpacing">0dip</dimen>
@@ -90,6 +87,9 @@
          are minimized to the bottom in all apps -->
     <dimen name="allAppsSmallScreenVerticalMarginLandscape">30dip</dimen>
     <dimen name="allAppsSmallScreenVerticalMarginPortrait">60dip</dimen>
+
+    <!-- Drag padding to add to the bottom of drop targets -->
+    <dimen name="drop_target_drag_padding">14dp</dimen>
 
     <!-- padding between the delete zone drawable and text -->
     <dimen name="delete_zone_drawable_padding">8dip</dimen>
