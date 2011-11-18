@@ -13,18 +13,8 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<TextView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
-    style="@style/MarketButton"
-    android:onClick="onClickAppMarketButton"
-    android:gravity="center"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:contentDescription="@string/market"
-    android:shadowColor="@color/workspace_all_apps_and_delete_zone_text_shadow_color"
-    android:shadowDx="0.0"
-    android:shadowDy="0.0"
-    android:shadowRadius="2.0"
-    android:focusable="true"
-    android:clickable="true" />
+
+<resources>
+    <!-- Drag padding to add to the bottom of drop targets -->
+    <dimen name="drop_target_drag_padding">20dp</dimen>
+</resources>
