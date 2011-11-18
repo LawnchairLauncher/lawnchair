@@ -44,6 +44,9 @@ public class Cling extends FrameLayout {
     private static String ALLAPPS_LANDSCAPE = "all_apps_landscape";
     private static String FOLDER_PORTRAIT = "folder_portrait";
     private static String FOLDER_LANDSCAPE = "folder_landscape";
+    private static String WORKSPACE_LARGE = "workspace_large";
+    private static String FOLDER_LARGE = "folder_large";
+    private static String ALLAPPS_LARGE = "all_apps_large";
 
     private Launcher mLauncher;
     private boolean mIsInitialized;
@@ -109,8 +112,14 @@ public class Cling extends FrameLayout {
             return new int[]{getMeasuredWidth() / 2, getMeasuredHeight() - (mButtonBarHeight / 2)};
         } else if (mDrawIdentifier.equals(WORKSPACE_LANDSCAPE)) {
             return new int[]{getMeasuredWidth() - (mButtonBarHeight / 2), getMeasuredHeight() / 2};
+        } else if (mDrawIdentifier.equals(WORKSPACE_LARGE)) {
+            final float scale = LauncherApplication.getScreenDensity();
+            final int cornerXOffset = (int) (scale * 15);
+            final int cornerYOffset = (int) (scale * 10);
+            return new int[]{getMeasuredWidth() - cornerXOffset, cornerYOffset};
         } else if (mDrawIdentifier.equals(ALLAPPS_PORTRAIT) ||
-                   mDrawIdentifier.equals(ALLAPPS_LANDSCAPE)) {
+                   mDrawIdentifier.equals(ALLAPPS_LANDSCAPE) ||
+                   mDrawIdentifier.equals(ALLAPPS_LARGE)) {
             return mPositionData;
         }
         return new int[]{-1, -1};
@@ -120,8 +129,10 @@ public class Cling extends FrameLayout {
     public boolean onTouchEvent(android.view.MotionEvent event) {
         if (mDrawIdentifier.equals(WORKSPACE_PORTRAIT) ||
             mDrawIdentifier.equals(WORKSPACE_LANDSCAPE) ||
+            mDrawIdentifier.equals(WORKSPACE_LARGE) ||
             mDrawIdentifier.equals(ALLAPPS_PORTRAIT) ||
-            mDrawIdentifier.equals(ALLAPPS_LANDSCAPE)) {
+            mDrawIdentifier.equals(ALLAPPS_LANDSCAPE) ||
+            mDrawIdentifier.equals(ALLAPPS_LARGE)) {
             int[] pos = getPunchThroughPosition();
             double diff = Math.sqrt(Math.pow(event.getX() - pos[0], 2) +
                     Math.pow(event.getY() - pos[1], 2));
@@ -129,7 +140,8 @@ public class Cling extends FrameLayout {
                 return false;
             }
         } else if (mDrawIdentifier.equals(FOLDER_PORTRAIT) ||
-                   mDrawIdentifier.equals(FOLDER_LANDSCAPE)) {
+                   mDrawIdentifier.equals(FOLDER_LANDSCAPE) ||
+                   mDrawIdentifier.equals(FOLDER_LARGE)) {
             Folder f = mLauncher.getWorkspace().getOpenFolder();
             if (f != null) {
                 Rect r = new Rect();
@@ -156,14 +168,18 @@ public class Cling extends FrameLayout {
             // Draw the background
             if (mBackground == null) {
                 if (mDrawIdentifier.equals(WORKSPACE_PORTRAIT) ||
-                    mDrawIdentifier.equals(WORKSPACE_LANDSCAPE)) {
+                    mDrawIdentifier.equals(WORKSPACE_LANDSCAPE) ||
+                    mDrawIdentifier.equals(WORKSPACE_LARGE)) {
                     mBackground = getResources().getDrawable(R.drawable.bg_cling1);
                 } else if (mDrawIdentifier.equals(ALLAPPS_PORTRAIT) ||
-                        mDrawIdentifier.equals(ALLAPPS_LANDSCAPE)) {
+                        mDrawIdentifier.equals(ALLAPPS_LANDSCAPE) ||
+                        mDrawIdentifier.equals(ALLAPPS_LARGE)) {
                     mBackground = getResources().getDrawable(R.drawable.bg_cling2);
                 } else if (mDrawIdentifier.equals(FOLDER_PORTRAIT) ||
                         mDrawIdentifier.equals(FOLDER_LANDSCAPE)) {
                     mBackground = getResources().getDrawable(R.drawable.bg_cling3);
+                } else if (mDrawIdentifier.equals(FOLDER_LARGE)) {
+                    mBackground = getResources().getDrawable(R.drawable.bg_cling4);
                 }
             }
             if (mBackground != null) {
@@ -191,7 +207,8 @@ public class Cling extends FrameLayout {
 
             // Draw the hand graphic in All Apps
             if (mDrawIdentifier.equals(ALLAPPS_PORTRAIT) ||
-                mDrawIdentifier.equals(ALLAPPS_LANDSCAPE)) {
+                mDrawIdentifier.equals(ALLAPPS_LANDSCAPE) ||
+                mDrawIdentifier.equals(ALLAPPS_LARGE)) {
                 if (mHandTouchGraphic == null) {
                     mHandTouchGraphic = getResources().getDrawable(R.drawable.hand);
                 }
