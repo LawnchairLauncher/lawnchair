@@ -57,6 +57,7 @@ import android.view.Display;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
@@ -1280,21 +1281,34 @@ public class Workspace extends SmoothPagedView
         return (mBackground != null && mBackgroundAlpha > 0.0f && mDrawBackground);
     }
 
-    @Override
-    protected void dispatchDraw(Canvas canvas) {
+    public void scrollTo (int x, int y) {
+        super.scrollTo(x, y);
+        syncChildrenLayersEnabledOnVisiblePages();
+    }
+
+    // This method just applies the value mChildrenLayersEnabled to all the pages that
+    // will be rendered on the next frame.
+    // We do this because calling setChildrenLayersEnabled on a view that's not
+    // visible/rendered causes slowdowns on some graphics cards
+    private void syncChildrenLayersEnabledOnVisiblePages() {
         if (mChildrenLayersEnabled) {
             getVisiblePages(mTempVisiblePagesRange);
             final int leftScreen = mTempVisiblePagesRange[0];
             final int rightScreen = mTempVisiblePagesRange[1];
             if (leftScreen != -1 && rightScreen != -1) {
-                // calling setChildrenLayersEnabled on a view that's not visible/rendered
-                // causes slowdowns on some graphics cards, so we set it here to be sure
-                // it's only called when it's safe (ie when the view will be rendered)
                 for (int i = leftScreen; i <= rightScreen; i++) {
-                    ((ViewGroup)getPageAt(i)).setChildrenLayersEnabled(true);
+                    ViewGroup page = (ViewGroup) getPageAt(i);
+                    if (page.getVisibility() == VISIBLE &&
+                            page.getAlpha() > ViewConfiguration.ALPHA_THRESHOLD) {
+                        ((ViewGroup)getPageAt(i)).setChildrenLayersEnabled(true);
+                    }
                 }
             }
         }
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
 
         if (mInScrollArea && !LauncherApplication.isScreenLarge()) {
@@ -1723,6 +1737,7 @@ public class Workspace extends SmoothPagedView
                                 b * mNewBackgroundAlphaMultipliers[i]);
                         cl.setFastAlpha(a * mOldAlphas[i] + b * mNewAlphas[i]);
                     }
+                    syncChildrenLayersEnabledOnVisiblePages();
                 }
             });
 
@@ -1760,6 +1775,7 @@ public class Workspace extends SmoothPagedView
             // Fade the background gradient away
             animateBackgroundGradient(0f, true);
         }
+        syncChildrenLayersEnabledOnVisiblePages();
     }
 
     /**
