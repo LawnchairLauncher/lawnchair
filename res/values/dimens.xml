@@ -18,6 +18,9 @@
 <!-- Cling -->
     <dimen name="clingPunchThroughGraphicCenterRadius">94dp</dimen>
     <dimen name="folderClingMarginTop">20dp</dimen>
+    <!-- The offset for the text in the cling -->
+    <dimen name="cling_text_block_offset_x">0dp</dimen>
+    <dimen name="cling_text_block_offset_y">0dp</dimen>
 
 <!-- Workspace -->
     <!-- qsb_bar_height_inset represents qsb_bar_height minus the padding

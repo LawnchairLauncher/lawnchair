@@ -3168,8 +3168,6 @@ public final class Launcher extends Activity
     /* Cling related */
     private static final String PREFS_KEY = "com.android.launcher2.prefs";
     private boolean isClingsEnabled() {
-        // TEMPORARY: DISABLE CLINGS ON LARGE UI
-        if (LauncherApplication.isScreenLarge()) return false;
         // disable clings when running in a test harness
         if(ActivityManager.isRunningInTestHarness()) return false;
 

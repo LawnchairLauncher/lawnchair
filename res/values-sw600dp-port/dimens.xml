@@ -40,4 +40,11 @@
     <dimen name="apps_customize_pageLayoutPaddingRight">30dp</dimen>
     <integer name="apps_customize_widget_cell_count_x">2</integer>
     <integer name="apps_customize_widget_cell_count_y">3</integer>
+    <integer name="apps_customize_cling_focused_x">2</integer>
+    <integer name="apps_customize_cling_focused_y">2</integer>
+
+<!-- Cling -->
+    <!-- The offset for the text in the cling -->
+    <dimen name="cling_text_block_offset_x">80dp</dimen>
+    <dimen name="cling_text_block_offset_y">160dp</dimen>
 </resources>
