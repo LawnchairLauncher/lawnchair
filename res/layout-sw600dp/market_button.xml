@@ -19,8 +19,8 @@
     style="@style/MarketButton"
     android:onClick="onClickAppMarketButton"
     android:gravity="center"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
+    android:paddingLeft="32dp"
+    android:paddingRight="32dp"
     android:drawablePadding="10dp"
     android:text="@string/market"
     android:contentDescription="@string/market"
@@ -32,6 +32,5 @@
     android:shadowDx="0.0"
     android:shadowDy="0.0"
     android:shadowRadius="2.0"
-    android:background="@drawable/tab_widget_indicator_selector"
     android:focusable="true"
     android:clickable="true" />
