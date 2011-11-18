@@ -65,10 +65,5 @@
         <item name="android:shadowDy">1.0</item>
         <item name="android:shadowRadius">4.0</item>
     </style>
-
-    <style name="TabIndicator.AppsCustomize">
-        <item name="android:paddingTop">5dp</item>
-        <item name="android:paddingBottom">10dp</item>
-    </style>
 </resources>
 

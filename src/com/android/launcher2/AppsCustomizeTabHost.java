@@ -388,8 +388,9 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         }
 
         if (!toWorkspace) {
-            // Dismiss the cling if necessary
+            // Dismiss the workspace cling and show the all apps cling (if not already shown)
             l.dismissWorkspaceCling(null);
+            mAppsCustomizePane.showAllAppsCling();
 
             if (!LauncherApplication.isScreenLarge()) {
                 mAppsCustomizePane.hideScrollingIndicator(false);
