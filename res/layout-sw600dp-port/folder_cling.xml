@@ -16,7 +16,7 @@
 <com.android.launcher2.Cling
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
-    launcher:drawIdentifier="workspace_large">
+    launcher:drawIdentifier="folder_large">
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -28,29 +28,19 @@
             android:orientation="vertical">
             <TextView
                 style="@style/ClingTitleText"
-                android:id="@+id/workspace_cling_title"
-                android:text="@string/workspace_cling_title" />
+                android:id="@+id/folder_cling_title"
+                android:text="@string/folder_cling_title" />
             <TextView
                 style="@style/ClingText"
-                android:id="@+id/workspace_cling_move_item"
-                android:layout_width="match_parent"
+                android:id="@+id/folder_cling_create_folder"
+                android:layout_width="480dp"
                 android:layout_height="wrap_content"
-                android:text="@string/workspace_cling_move_item" />
+                android:text="@string/folder_cling_create_folder" />
             <Button
                 style="@style/ClingButton"
                 android:id="@+id/cling_dismiss"
                 android:layout_marginTop="15dp"
-                android:onClick="dismissWorkspaceCling" />
+                android:onClick="dismissFolderCling" />
         </LinearLayout>
     </FrameLayout>
-    <TextView
-        style="@style/ClingText"
-        android:id="@+id/workspace_cling_open_all_apps"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginRight="150dp"
-        android:layout_gravity="right"
-        android:gravity="right"
-        android:text="@string/workspace_cling_open_all_apps" />
 </com.android.launcher2.Cling>
