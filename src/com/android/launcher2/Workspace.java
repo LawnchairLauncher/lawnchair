@@ -2347,6 +2347,7 @@ public class Workspace extends SmoothPagedView
             mDragTargetLayout.onDragExit();
         }
         mLastDragOverView = null;
+        mSpringLoadedDragController.cancel();
 
         if (!mIsPageMoving) {
             hideOutlines();
