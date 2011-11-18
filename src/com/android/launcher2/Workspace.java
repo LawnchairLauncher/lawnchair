@@ -2960,7 +2960,8 @@ public class Workspace extends SmoothPagedView
                     mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(cellLayout, loc);
             resetTransitionTransform(cellLayout);
 
-            float dragViewScale =  r.width() / d.dragView.getMeasuredWidth();
+            float dragViewScale =  Math.min(r.width() / d.dragView.getMeasuredWidth(),
+                    r.height() / d.dragView.getMeasuredHeight());
             // The animation will scale the dragView about its center, so we need to center about
             // the final location.
             loc[0] -= (d.dragView.getMeasuredWidth() - cellLayoutScale * r.width()) / 2;
