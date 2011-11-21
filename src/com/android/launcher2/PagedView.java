@@ -61,8 +61,6 @@ public abstract class PagedView extends ViewGroup {
 
     // the min drag distance for a fling to register, to prevent random page shifts
     private static final int MIN_LENGTH_FOR_FLING = 25;
-    // The min drag distance to trigger a page shift (regardless of velocity)
-    private static final int MIN_LENGTH_FOR_MOVE = 200;
 
     private static final int PAGE_SNAP_ANIMATION_DURATION = 550;
     protected static final float NANOTIME_DIV = 1000000000.0f;
@@ -72,6 +70,8 @@ public abstract class PagedView extends ViewGroup {
     private static final int MINIMUM_SNAP_VELOCITY = 2200;
     private static final int MIN_FLING_VELOCITY = 250;
     private static final float RETURN_TO_ORIGINAL_PAGE_THRESHOLD = 0.33f;
+    // The page is moved more than halfway, automatically move to the next page on touch up.
+    private static final float SIGNIFICANT_MOVE_THRESHOLD = 0.4f;
 
     // the velocity at which a fling gesture will cause us to snap to the next page
     protected int mSnapVelocity = 500;
@@ -1205,23 +1205,24 @@ public abstract class PagedView extends ViewGroup {
                 velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
                 int velocityX = (int) velocityTracker.getXVelocity(activePointerId);
                 final int deltaX = (int) (x - mDownMotionX);
-                boolean isSignificantMove = Math.abs(deltaX) > MIN_LENGTH_FOR_MOVE;
+                final int pageWidth = getScaledMeasuredWidth(getPageAt(mCurrentPage));
+                boolean isSignificantMove = Math.abs(deltaX) > pageWidth *
+                        SIGNIFICANT_MOVE_THRESHOLD;
                 final int snapVelocity = mSnapVelocity;
 
                 mTotalMotionX += Math.abs(mLastMotionX + mLastMotionXRemainder - x);
+
+                boolean isFling = mTotalMotionX > MIN_LENGTH_FOR_FLING &&
+                        Math.abs(velocityX) > snapVelocity;
 
                 // In the case that the page is moved far to one direction and then is flung
                 // in the opposite direction, we use a threshold to determine whether we should
                 // just return to the starting page, or if we should skip one further.
                 boolean returnToOriginalPage = false;
-                final int pageWidth = getScaledMeasuredWidth(getPageAt(mCurrentPage));
                 if (Math.abs(deltaX) > pageWidth * RETURN_TO_ORIGINAL_PAGE_THRESHOLD &&
-                        Math.signum(velocityX) != Math.signum(deltaX)) {
+                        Math.signum(velocityX) != Math.signum(deltaX) && isFling) {
                     returnToOriginalPage = true;
                 }
-
-                boolean isFling = mTotalMotionX > MIN_LENGTH_FOR_FLING &&
-                        Math.abs(velocityX) > snapVelocity;
 
                 int finalPage;
                 // We give flings precedence over large moves, which is why we short-circuit our
