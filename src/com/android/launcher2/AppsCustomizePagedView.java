@@ -393,15 +393,17 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mWidgetSpacingLayout.measure(widthSpec, heightSpec);
         mContentWidth = mWidgetSpacingLayout.getContentWidth();
 
+        AppsCustomizeTabHost host = (AppsCustomizeTabHost) getTabHost();
+        final boolean hostIsTransitioning = host.isTransitioning();
+
         // Restore the page
         int page = getPageForComponent(mSaveInstanceStateItemIndex);
-        invalidatePageData(Math.max(0, page));
+        invalidatePageData(Math.max(0, page), hostIsTransitioning);
 
         // Show All Apps cling if we are finished transitioning, otherwise, we will try again when
         // the transition completes in AppsCustomizeTabHost (otherwise the wrong offsets will be
         // returned while animating)
-        AppsCustomizeTabHost host = (AppsCustomizeTabHost) getTabHost();
-        if (!host.isTransitioning()) {
+        if (!hostIsTransitioning) {
             post(new Runnable() {
                 @Override
                 public void run() {
@@ -660,6 +662,18 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         cancelAllTasks();
+    }
+
+    public void clearAllWidgetPages() {
+        cancelAllTasks();
+        int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            View v = getPageAt(i);
+            if (v instanceof PagedViewGridLayout) {
+                ((PagedViewGridLayout) v).removeAllViewsOnPage();
+                mDirtyPageContent.set(i, true);
+            }
+        }
     }
 
     private void cancelAllTasks() {
