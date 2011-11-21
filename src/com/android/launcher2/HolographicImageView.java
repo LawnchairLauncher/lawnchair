@@ -39,6 +39,10 @@ public class HolographicImageView extends ImageView {
         mHolographicHelper = new HolographicViewHelper(context);
     }
 
+    void invalidatePressedFocusedStates() {
+        mHolographicHelper.invalidatePressedFocusedStates(this);
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
