@@ -2054,9 +2054,18 @@ public class Workspace extends SmoothPagedView
                 return true;
             }
 
-
             // Don't accept the drop if there's no room for the item
             if (!mDragTargetLayout.findCellForSpanIgnoring(null, spanX, spanY, ignoreView)) {
+                // Don't show the message if we are dropping on the AllApps button and the hotseat
+                // is full
+                if (mTargetCell != null && mLauncher.isHotseatLayout(mDragTargetLayout)) {
+                    Hotseat hotseat = mLauncher.getHotseat();
+                    if (Hotseat.isAllAppsButtonRank(
+                            hotseat.getOrderInHotseat(mTargetCell[0], mTargetCell[1]))) {
+                        return false;
+                    }
+                }
+
                 mLauncher.showOutOfSpaceMessage();
                 return false;
             }
@@ -2637,7 +2646,7 @@ public class Workspace extends SmoothPagedView
                 return cl;
             }
 
-            if (!exact && overlaps(cl, dragView, (int) originX, (int) originY, mTempInverseMatrix)) {
+            if (!exact) {
                 // Get the center of the cell layout in screen coordinates
                 final float[] cellLayoutCenter = mTempCellLayoutCenterCoordinates;
                 cellLayoutCenter[0] = cl.getWidth()/2;
@@ -2723,7 +2732,7 @@ public class Workspace extends SmoothPagedView
                 }
             }
             if (layout == null) {
-                layout = findMatchingPageForDragOver(d.dragView, d.x, d.y, true);
+                layout = findMatchingPageForDragOver(d.dragView, d.x, d.y, false);
             }
             if (layout != mDragTargetLayout) {
                 // Cancel all intermediate folder states
