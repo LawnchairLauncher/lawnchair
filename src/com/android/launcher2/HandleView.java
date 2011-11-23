@@ -71,11 +71,6 @@ public class HandleView extends ImageView {
         return super.onTouchEvent(ev);
     }
 
-    private static boolean isDirectionKey(int keyCode) {
-        return keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_LEFT ||
-                keyCode == KeyEvent.KEYCODE_DPAD_RIGHT || keyCode == KeyEvent.KEYCODE_DPAD_UP;
-    }
-
     void setLauncher(Launcher launcher) {
         mLauncher = launcher;
     }

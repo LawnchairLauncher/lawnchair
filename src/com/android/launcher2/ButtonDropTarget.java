@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.launcher.R;

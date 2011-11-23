@@ -23,7 +23,6 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.TabHost;
 import android.widget.TabWidget;
-import android.widget.TextView;
 
 import com.android.launcher.R;
 
@@ -115,13 +114,6 @@ public class FocusHelper {
             default: break;
         }
         return wasHandled;
-    }
-
-    /**
-     * Private helper to determine whether a view is visible.
-     */
-    private static boolean isVisible(View v) {
-        return v.getVisibility() == View.VISIBLE;
     }
 
     /**
