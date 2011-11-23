@@ -66,6 +66,10 @@ public class HolographicLinearLayout extends LinearLayout {
         }
     }
 
+    void invalidatePressedFocusedStates() {
+        mHolographicHelper.invalidatePressedFocusedStates(mImageView);
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
