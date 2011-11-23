@@ -1714,6 +1714,8 @@ public final class Launcher extends Activity
      * @param v The view that was clicked.
      */
     public void onClickSearchButton(View v) {
+        v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+
         onSearchRequested();
     }
 
@@ -1723,10 +1725,8 @@ public final class Launcher extends Activity
      * @param v The view that was clicked.
      */
     public void onClickVoiceButton(View v) {
-        startVoiceSearch();
-    }
+        v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
 
-    private void startVoiceSearch() {
         Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
@@ -2674,6 +2674,16 @@ public final class Launcher extends Activity
         button.setImageDrawable(d.newDrawable(getResources()));
     }
 
+    private void invalidatePressedFocusedStates(View container, View button) {
+        if (container instanceof HolographicLinearLayout) {
+            HolographicLinearLayout layout = (HolographicLinearLayout) container;
+            layout.invalidatePressedFocusedStates();
+        } else if (button instanceof HolographicImageView) {
+            HolographicImageView view = (HolographicImageView) button;
+            view.invalidatePressedFocusedStates();
+        }
+    }
+
     private boolean updateGlobalSearchIcon() {
         final View searchButtonContainer = findViewById(R.id.search_button_container);
         final ImageView searchButton = (ImageView) findViewById(R.id.search_button);
@@ -2691,6 +2701,7 @@ public final class Launcher extends Activity
             if (searchDivider != null) searchDivider.setVisibility(View.VISIBLE);
             if (searchButtonContainer != null) searchButtonContainer.setVisibility(View.VISIBLE);
             searchButton.setVisibility(View.VISIBLE);
+            invalidatePressedFocusedStates(searchButtonContainer, searchButton);
             return true;
         } else {
             // We disable both search and voice search when there is no global search provider
@@ -2704,7 +2715,10 @@ public final class Launcher extends Activity
     }
 
     private void updateGlobalSearchIcon(Drawable.ConstantState d) {
+        final View searchButtonContainer = findViewById(R.id.search_button_container);
+        final View searchButton = (ImageView) findViewById(R.id.search_button);
         updateButtonWithDrawable(R.id.search_button, d);
+        invalidatePressedFocusedStates(searchButtonContainer, searchButton);
     }
 
     private boolean updateVoiceSearchIcon(boolean searchVisible) {
@@ -2722,6 +2736,7 @@ public final class Launcher extends Activity
             if (searchDivider != null) searchDivider.setVisibility(View.VISIBLE);
             if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.VISIBLE);
             voiceButton.setVisibility(View.VISIBLE);
+            invalidatePressedFocusedStates(voiceButtonContainer, voiceButton);
             return true;
         } else {
             if (searchDivider != null) searchDivider.setVisibility(View.GONE);
@@ -2732,7 +2747,10 @@ public final class Launcher extends Activity
     }
 
     private void updateVoiceSearchIcon(Drawable.ConstantState d) {
+        final View voiceButtonContainer = findViewById(R.id.voice_button_container);
+        final View voiceButton = findViewById(R.id.voice_button);
         updateButtonWithDrawable(R.id.voice_button, d);
+        invalidatePressedFocusedStates(voiceButtonContainer, voiceButton);
     }
 
     /**

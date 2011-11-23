@@ -42,7 +42,7 @@ public class HolographicViewHelper {
     void generatePressedFocusedStates(ImageView v) {
         if (!mStatesUpdated && v != null) {
             mStatesUpdated = true;
-            Bitmap outline = createGlowingOutline(v, mTempCanvas);
+            Bitmap outline = createPressImage(v, mTempCanvas);
             FastBitmapDrawable d = new FastBitmapDrawable(outline);
 
             StateListDrawable states = new StateListDrawable();
@@ -54,10 +54,20 @@ public class HolographicViewHelper {
     }
 
     /**
-     * Returns a new bitmap to be used as the object outline, e.g. to visualize the drop location.
+     * Invalidates the pressed/focused states.
+     */
+    void invalidatePressedFocusedStates(ImageView v) {
+        mStatesUpdated = false;
+        if (v != null) {
+            v.invalidate();
+        }
+    }
+
+    /**
+     * Creates a new press state image which is the old image with a blue overlay.
      * Responsibility for the bitmap is transferred to the caller.
      */
-    private Bitmap createGlowingOutline(ImageView v, Canvas canvas) {
+    private Bitmap createPressImage(ImageView v, Canvas canvas) {
         final int padding = HolographicOutlineHelper.MAX_OUTER_BLUR_RADIUS;
         final Bitmap b = Bitmap.createBitmap(
                 v.getWidth() + padding, v.getHeight() + padding, Bitmap.Config.ARGB_8888);
