@@ -36,6 +36,7 @@ import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipDescription;
+import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -563,6 +564,7 @@ public final class Launcher extends Activity
         // When we resume Launcher, a different Activity might be responsible for the app
         // market intent, so refresh the icon
         updateAppMarketIcon();
+        mAppsCustomizeTabHost.onResume();
         if (!mWorkspaceLoading) {
             final ViewTreeObserver observer = mWorkspace.getViewTreeObserver();
             final Workspace workspace = mWorkspace;
@@ -2394,6 +2396,14 @@ public final class Launcher extends Activity
                 ((LauncherTransitionable) fromView).onLauncherTransitionEnd(instance, null, true);
             }
             mWorkspace.hideScrollingIndicator(false);
+        }
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        if (level == ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN) {
+            mAppsCustomizeTabHost.onTrimMemory();
         }
     }
 
