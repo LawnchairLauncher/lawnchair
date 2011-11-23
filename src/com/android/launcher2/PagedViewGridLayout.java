@@ -68,6 +68,12 @@ public class PagedViewGridLayout extends GridLayout implements Page {
                 heightMeasureSpec);
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mOnLayoutListener = null;
+    }
+
     public void setOnLayoutListener(Runnable r) {
         mOnLayoutListener = r;
     }
