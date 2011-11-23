@@ -875,6 +875,9 @@ public final class Launcher extends Activity
         boolean foundCellSpan = false;
 
         ShortcutInfo info = mModel.infoFromShortcutIntent(this, data, null);
+        if (info == null) {
+            return;
+        }
         final View view = createShortcut(info);
 
         // First we check if we already know the exact location where we want to add this item.

@@ -1772,6 +1772,9 @@ public class LauncherModel extends BroadcastReceiver {
     ShortcutInfo addShortcut(Context context, Intent data, long container, int screen,
             int cellX, int cellY, boolean notify) {
         final ShortcutInfo info = infoFromShortcutIntent(context, data, null);
+        if (info == null) {
+            return null;
+        }
         addItemToDatabase(context, info, container, screen, cellX, cellY, notify);
 
         return info;
@@ -1834,6 +1837,12 @@ public class LauncherModel extends BroadcastReceiver {
         Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
         String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
         Parcelable bitmap = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
+
+        if (intent == null) {
+            // If the intent is null, we can't construct a valid ShortcutInfo, so we return null
+            Log.e(TAG, "Can't construct ShorcutInfo with null intent");
+            return null;
+        }
 
         Bitmap icon = null;
         boolean customIcon = false;
