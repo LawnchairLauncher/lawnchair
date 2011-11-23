@@ -366,6 +366,11 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         }
         mContent.setVisibility(VISIBLE);
 
+        if (!toWorkspace) {
+            // Make sure the current page is loaded (we start loading the side pages after the
+            // transition to prevent slowing down the animation)
+            mAppsCustomizePane.loadAssociatedPages(mAppsCustomizePane.getCurrentPage(), true);
+        }
         if (animated && !delayLauncherTransitionUntilLayout) {
             enableAndBuildHardwareLayer();
         }
@@ -391,11 +396,31 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             // Dismiss the workspace cling and show the all apps cling (if not already shown)
             l.dismissWorkspaceCling(null);
             mAppsCustomizePane.showAllAppsCling();
+            // Make sure adjacent pages are loaded (we wait until after the transition to
+            // prevent slowing down the animation)
+            mAppsCustomizePane.loadAssociatedPages(mAppsCustomizePane.getCurrentPage());
 
             if (!LauncherApplication.isScreenLarge()) {
                 mAppsCustomizePane.hideScrollingIndicator(false);
             }
         }
+    }
+
+    public void onResume() {
+        if (getVisibility() == VISIBLE) {
+            mContent.setVisibility(VISIBLE);
+            // We unload the widget previews when the UI is hidden, so need to reload pages
+            // Load the current page synchronously, and the neighboring pages asynchronously
+            mAppsCustomizePane.loadAssociatedPages(mAppsCustomizePane.getCurrentPage(), true);
+            mAppsCustomizePane.loadAssociatedPages(mAppsCustomizePane.getCurrentPage());
+        }
+    }
+
+    public void onTrimMemory() {
+        mContent.setVisibility(GONE);
+        // Clear the widget pages of all their subviews - this will trigger the widget previews
+        // to delete their bitmaps
+        mAppsCustomizePane.clearAllWidgetPages();
     }
 
     boolean isTransitioning() {
