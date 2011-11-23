@@ -2472,7 +2472,9 @@ public class Workspace extends SmoothPagedView
                 if (isShortcut) {
                     final Intent intent = data.getItemAt(index).getIntent();
                     Object info = model.infoFromShortcutIntent(mContext, intent, data.getIcon());
-                    onDropExternal(new int[] { x, y }, info, layout, false);
+                    if (info != null) {
+                        onDropExternal(new int[] { x, y }, info, layout, false);
+                    }
                 } else {
                     if (widgets.size() == 1) {
                         // If there is only one item, then go ahead and add and configure
