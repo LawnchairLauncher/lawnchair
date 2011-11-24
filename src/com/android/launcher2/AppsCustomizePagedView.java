@@ -560,7 +560,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         PendingAddItemInfo createItemInfo = (PendingAddItemInfo) v.getTag();
 
         // Compose the drag image
-        Bitmap b;
+        Bitmap preview;
+        Bitmap outline;
         if (createItemInfo instanceof PendingAddWidgetInfo) {
             PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo) createItemInfo;
             int[] spanXY = mLauncher.getSpanForWidget(createWidgetInfo, null);
@@ -569,20 +570,17 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
             int[] maxSize = mLauncher.getWorkspace().estimateItemSize(spanXY[0], spanXY[1],
                     createWidgetInfo, true);
-            b = getWidgetPreview(createWidgetInfo.componentName, createWidgetInfo.previewImage,
+            preview = getWidgetPreview(createWidgetInfo.componentName, createWidgetInfo.previewImage,
                     createWidgetInfo.icon, spanXY[0], spanXY[1], maxSize[0], maxSize[1]);
         } else {
             // Workaround for the fact that we don't keep the original ResolveInfo associated with
             // the shortcut around.  To get the icon, we just render the preview image (which has
             // the shortcut icon) to a new drag bitmap that clips the non-icon space.
-            b = Bitmap.createBitmap(mWidgetPreviewIconPaddedDimension,
+            preview = Bitmap.createBitmap(mWidgetPreviewIconPaddedDimension,
                     mWidgetPreviewIconPaddedDimension, Bitmap.Config.ARGB_8888);
-            Drawable preview = image.getDrawable();
-            mCanvas.setBitmap(b);
-            mCanvas.save();
-            preview.draw(mCanvas);
-            mCanvas.restore();
-            mCanvas.drawColor(mDragViewMultiplyColor, PorterDuff.Mode.MULTIPLY);
+            Drawable d = image.getDrawable();
+            mCanvas.setBitmap(preview);
+            d.draw(mCanvas);
             mCanvas.setBitmap(null);
             createItemInfo.spanX = createItemInfo.spanY = 1;
         }
@@ -597,12 +595,21 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             }
         }
 
+        // Save the preview for the outline generation, then dim the preview
+        outline = Bitmap.createScaledBitmap(preview, preview.getWidth(), preview.getHeight(),
+                false);
+        mCanvas.setBitmap(preview);
+        mCanvas.drawColor(mDragViewMultiplyColor, PorterDuff.Mode.MULTIPLY);
+        mCanvas.setBitmap(null);
+
         // Start the drag
+        alphaClipPaint = null;
         mLauncher.lockScreenOrientationOnLargeUI();
-        mLauncher.getWorkspace().onDragStartedWithItem(createItemInfo, b, alphaClipPaint);
-        mDragController.startDrag(image, b, this, createItemInfo,
+        mLauncher.getWorkspace().onDragStartedWithItem(createItemInfo, outline, alphaClipPaint);
+        mDragController.startDrag(image, preview, this, createItemInfo,
                 DragController.DRAG_ACTION_COPY, null);
-        b.recycle();
+        outline.recycle();
+        preview.recycle();
     }
     @Override
     protected boolean beginDragging(View v) {
