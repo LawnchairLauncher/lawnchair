@@ -1891,9 +1891,7 @@ public class Workspace extends SmoothPagedView
         // center the image
         dst.offset((w - scaledWidth) / 2, (h - scaledHeight) / 2);
 
-        Paint p = new Paint();
-        p.setFilterBitmap(true);
-        canvas.drawBitmap(orig, src, dst, p);
+        canvas.drawBitmap(orig, src, dst, null);
         mOutlineHelper.applyMediumExpensiveOutlineWithBlur(b, canvas, outlineColor, outlineColor,
                 alphaClipPaint);
         canvas.setBitmap(null);
