@@ -109,6 +109,9 @@
             </intent-filter>
         </receiver>
 
+        <activity android:name="com.cyanogenmod.trebuchet.preference.Preferences"
+            android:label="@string/preferences_title" />
+
         <!-- Intent received used to install shortcuts from other applications -->
         <receiver
             android:name="com.cyanogenmod.trebuchet.InstallShortcutReceiver"
