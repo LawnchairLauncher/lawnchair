@@ -88,7 +88,7 @@
     <string name="workspace_scroll_format" msgid="7911126267695001437">"Area di lavoro %1$d di %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"Pagina di applicazioni %1$d di %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"Pagina di widget %1$d di %2$d"</string>
-    <string name="workspace_cling_title" msgid="738396473989890567">"Mettiti comodo"</string>
+    <string name="workspace_cling_title" msgid="738396473989890567">"Personalizza la schermata home"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"Puoi posizionare le tue applicazioni preferite qui."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Per visualizzare tutte le tue applicazioni, tocca il cerchio."</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"Scegli alcune applicazioni"</string>
