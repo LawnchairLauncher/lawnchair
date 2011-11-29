@@ -3526,11 +3526,13 @@ public class Workspace extends SmoothPagedView
         mOverscrollFade = fade;
         float reducedFade = 0.5f + 0.5f * (1 - fade);
         final ViewGroup parent = (ViewGroup) getParent();
+        final ImageView qsbDivider = (ImageView) (parent.findViewById(R.id.qsb_divider));
         final ImageView dockDivider = (ImageView) (parent.findViewById(R.id.dock_divider));
         final ImageView scrollIndicator = getScrollingIndicator();
 
         cancelScrollingIndicatorAnimations();
-        dockDivider.setAlpha(reducedFade);
+        if (qsbDivider != null) qsbDivider.setAlpha(reducedFade);
+        if (dockDivider != null) dockDivider.setAlpha(reducedFade);
         scrollIndicator.setAlpha(1 - fade);
     }
 }

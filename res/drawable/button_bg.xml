@@ -15,7 +15,7 @@
 -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_focused="true" android:drawable="@drawable/focused_bg" />
-    <item android:state_pressed="true" android:drawable="@drawable/home_press" />
+    <item android:state_focused="true" android:drawable="@drawable/tab_unselected_focused_holo" />
+    <item android:state_pressed="true" android:drawable="@drawable/tab_unselected_focused_holo" />
     <item android:drawable="@android:color/transparent" />
 </selector>
