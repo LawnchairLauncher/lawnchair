@@ -1398,11 +1398,6 @@ public final class Launcher extends Activity
         return mWorkspaceLoading || mWaitingForResult;
     }
 
-    private void addItems() {
-        showWorkspace(true);
-        showAddDialog();
-    }
-
     private void resetAddInfo() {
         mPendingAddInfo.container = ItemInfo.NO_ID;
         mPendingAddInfo.screen = -1;
@@ -1558,13 +1553,6 @@ public final class Launcher extends Activity
 
     void removeFolder(FolderInfo folder) {
         sFolders.remove(folder.id);
-    }
-
-    private void showNotifications() {
-        final StatusBarManager statusBar = (StatusBarManager) getSystemService(STATUS_BAR_SERVICE);
-        if (statusBar != null) {
-            statusBar.expand();
-        }
     }
 
     private void startWallpaper() {

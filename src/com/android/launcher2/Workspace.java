@@ -1521,8 +1521,6 @@ public class Workspace extends SmoothPagedView
         // We need to add extra padding to the bitmap to make room for the glow effect
         final int bitmapPadding = HolographicOutlineHelper.MAX_OUTER_BLUR_RADIUS;
 
-        CellLayout cl = (CellLayout) getChildAt(0);
-
         int[] size = estimateItemSize(info.spanX, info.spanY, info, false);
 
         // The outline is used to visualize where the item will land if dropped
@@ -1872,9 +1870,6 @@ public class Workspace extends SmoothPagedView
      * Returns a new bitmap to be used as the object outline, e.g. to visualize the drop location.
      * Responsibility for the bitmap is transferred to the caller.
      */
-    private Bitmap createDragOutline(Bitmap orig, Canvas canvas, int padding, int w, int h) {
-        return createDragOutline(orig, canvas, padding, w, h, null);
-    }
     private Bitmap createDragOutline(Bitmap orig, Canvas canvas, int padding, int w, int h,
             Paint alphaClipPaint) {
         final int outlineColor = getResources().getColor(android.R.color.holo_blue_light);
