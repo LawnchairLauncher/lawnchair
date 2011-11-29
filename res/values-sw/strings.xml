@@ -36,7 +36,7 @@
     <string name="rename_action" msgid="6016003384693240896">"Sawa"</string>
     <string name="cancel_action" msgid="3811860427489435048">"Ghairi"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"Ongeza kwa skrini ya Nyumbani"</string>
-    <string name="group_applications" msgid="2103752818818161976">"Prog"</string>
+    <string name="group_applications" msgid="2103752818818161976">"Programu"</string>
     <string name="group_shortcuts" msgid="9133529424900391877">"Njia za mkato"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Wijeti"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Mandhari"</string>
@@ -56,7 +56,7 @@
     <string name="info_target_label" msgid="4019495079517426980">"Maelezo ya programu"</string>
     <string name="accessibility_search_button" msgid="816822994629942611">"Tafuta"</string>
     <string name="accessibility_voice_search_button" msgid="3938249215065842475">"Utafutaji wa Sauti"</string>
-    <string name="accessibility_all_apps_button" msgid="8803738611398979849">"Prog"</string>
+    <string name="accessibility_all_apps_button" msgid="8803738611398979849">"Programu"</string>
     <string name="accessibility_delete_button" msgid="3628162007991023603">"Ondoa"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"Sanidua sasisho"</string>
     <string name="menu_add" msgid="3065046628354640854">"Ongeza"</string>
@@ -99,7 +99,7 @@
     <string name="cling_dismiss" msgid="2780907108735868381">"Sawa"</string>
     <string name="folder_opened" msgid="4129072635480822768">"Folda imefunguliwa,%1$d na %2$d"</string>
     <string name="folder_tap_to_close" msgid="4076794242530255812">"Gonga ili kufunga folda"</string>
-    <string name="folder_tap_to_rename" msgid="2125528923948315223">"Gonga kukubali jina"</string>
+    <string name="folder_tap_to_rename" msgid="2125528923948315223">"Gonga ili kukubali jina"</string>
     <string name="folder_closed" msgid="3130534551370511932">"Folda imefungwa"</string>
     <string name="folder_renamed" msgid="781234745487414781">"Folda imebadilishwa jina hadi %1$s"</string>
     <string name="folder_name_format" msgid="4513766553514769310">"Folda: %1$s"</string>
