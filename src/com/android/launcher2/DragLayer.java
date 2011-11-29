@@ -633,6 +633,12 @@ public class DragLayer extends FrameLayout {
 
     @Override
     protected int getChildDrawingOrder(int childCount, int i) {
+        // We don't want to prioritize the workspace drawing on top of the other children in
+        // landscape for the overscroll event.
+        if (LauncherApplication.isScreenLandscape(getContext())) {
+            return super.getChildDrawingOrder(childCount, i);
+        }
+
         if (mWorkspaceIndex == -1 || mQsbIndex == -1 || 
                 mLauncher.getWorkspace().isDrawingBackgroundGradient()) {
             return i;
