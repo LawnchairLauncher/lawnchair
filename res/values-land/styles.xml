@@ -23,6 +23,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
+
 <!-- Search Bar -->
     <style name="QSBBar">
         <item name="android:orientation">vertical</item>
@@ -64,6 +65,11 @@
         <item name="android:shadowDx">0.0</item>
         <item name="android:shadowDy">1.0</item>
         <item name="android:shadowRadius">4.0</item>
+    </style>
+
+<!-- AppsCustomize -->
+    <style name="TabIndicator.AppsCustomize">
+        <item name="android:maxWidth">200dp</item>
     </style>
 </resources>
 
