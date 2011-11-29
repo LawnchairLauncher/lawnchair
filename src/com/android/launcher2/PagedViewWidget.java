@@ -42,8 +42,6 @@ import com.android.launcher.R;
 public class PagedViewWidget extends LinearLayout implements Checkable {
     static final String TAG = "PagedViewWidgetLayout";
 
-    private static final int sPreviewFadeInDuration = 80;
-    private static final int sPreviewFadeInStaggerDuration = 20;
     private static boolean sDeletePreviewsWhenDetachedFromWindow = true;
 
     private final Paint mPaint = new Paint();
