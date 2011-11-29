@@ -199,7 +199,6 @@ public class DragLayer extends FrameLayout {
 
     private void sendTapOutsideFolderAccessibilityEvent(boolean isEditingName) {
         if (AccessibilityManager.getInstance(mContext).isEnabled()) {
-            Folder currentFolder = mLauncher.getWorkspace().getOpenFolder();
             int stringId = isEditingName ? R.string.folder_tap_to_rename : R.string.folder_tap_to_close;
             AccessibilityEvent event = AccessibilityEvent.obtain(
                     AccessibilityEvent.TYPE_VIEW_FOCUSED);
