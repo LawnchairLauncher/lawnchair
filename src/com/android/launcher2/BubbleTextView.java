@@ -134,7 +134,7 @@ public class BubbleTextView extends TextView {
                 mPressedOrFocusedBackground = null;
             }
             if (isFocused()) {
-                if (mLayout == null) {
+                if (getLayout() == null) {
                     // In some cases, we get focus before we have been layed out. Set the
                     // background to null so that it will get created when the view is drawn.
                     mPressedOrFocusedBackground = null;
