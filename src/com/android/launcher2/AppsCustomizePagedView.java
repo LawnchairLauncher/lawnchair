@@ -24,7 +24,6 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
@@ -441,22 +440,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
 
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-
-    /** Removes and returns the ResolveInfo with the specified ComponentName */
-    private ResolveInfo removeResolveInfoWithComponentName(List<ResolveInfo> list,
-            ComponentName cn) {
-        Iterator<ResolveInfo> iter = list.iterator();
-        while (iter.hasNext()) {
-            ResolveInfo rinfo = iter.next();
-            ActivityInfo info = rinfo.activityInfo;
-            ComponentName c = new ComponentName(info.packageName, info.name);
-            if (c.equals(cn)) {
-                iter.remove();
-                return rinfo;
-            }
-        }
-        return null;
     }
 
     public void onPackagesUpdated() {
@@ -992,10 +975,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private void renderDrawableToBitmap(Drawable d, Bitmap bitmap, int x, int y, int w, int h) {
         renderDrawableToBitmap(d, bitmap, x, y, w, h, 1f, 0xFFFFFFFF);
     }
-    private void renderDrawableToBitmap(Drawable d, Bitmap bitmap, int x, int y, int w, int h,
-            float scale) {
-        renderDrawableToBitmap(d, bitmap, x, y, w, h, scale, 0xFFFFFFFF);
-    }
+
     private void renderDrawableToBitmap(Drawable d, Bitmap bitmap, int x, int y, int w, int h,
             float scale, int multiplyColor) {
         if (bitmap != null) {
