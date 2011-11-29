@@ -221,7 +221,6 @@ public class IconCache {
     public HashMap<ComponentName,Bitmap> getAllIcons() {
         synchronized (mCache) {
             HashMap<ComponentName,Bitmap> set = new HashMap<ComponentName,Bitmap>();
-            int i = 0;
             for (ComponentName cn : mCache.keySet()) {
                 final CacheEntry e = mCache.get(cn);
                 set.put(cn, e.icon);
