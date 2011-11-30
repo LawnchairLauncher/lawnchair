@@ -293,6 +293,9 @@ s -->
     <!-- UI -->
     <!-- Homescreen -->
     <string name="preferences_interface_homescreen_title">Homescreen</string>
+    <string name="preferences_interface_homescreen_general_category">General</string>
+    <string name="preferences_interface_homescreen_general_search_title">Search Bar</string>
+    <string name="preferences_interface_homescreen_general_search_summary">Enable persistent search bar</string>
 
     <!-- Drawer -->
     <string name="preferences_interface_drawer_title">Drawer</string>

@@ -20,7 +20,12 @@
         <!-- Homescreen -->
         <PreferenceScreen android:key="ui_homescreen"
             android:title="@string/preferences_interface_homescreen_title">
-
+            <PreferenceCategory android:title="@string/preferences_interface_homescreen_general_category">
+                <CheckBoxPreference android:key="ui_homescreen_general_search"
+                    android:title="@string/preferences_interface_homescreen_general_search_title"
+                    android:summary="@string/preferences_interface_homescreen_general_search_summary"
+                    android:defaultValue="true" />
+            </PreferenceCategory>
         </PreferenceScreen>
 
         <!-- Drawer -->
