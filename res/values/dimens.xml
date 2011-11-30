@@ -27,6 +27,7 @@
     <!-- qsb_bar_height_inset represents qsb_bar_height minus the padding
          that we put on each page for allowing folders to draw out of bounds -->
     <dimen name="qsb_bar_height_inset">34dp</dimen>
+    <dimen name="qsb_bar_hidden_inset">14dp</dimen>
     <dimen name="qsb_bar_height">40dp</dimen>
     <dimen name="qsb_padding_left">0dp</dimen>
     <dimen name="qsb_padding_right">0dp</dimen>
