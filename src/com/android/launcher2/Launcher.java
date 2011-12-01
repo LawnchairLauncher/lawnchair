@@ -2920,6 +2920,7 @@ public final class Launcher extends Activity
             final CellLayout layoutParent = (CellLayout) workspace.getChildAt(i);
             layoutParent.removeAllViewsInLayout();
         }
+        mWidgetsToAdvance.clear();
         if (mHotseat != null) {
             mHotseat.resetLayout();
         }
