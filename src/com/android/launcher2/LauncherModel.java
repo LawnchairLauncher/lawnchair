@@ -176,10 +176,14 @@ public class LauncherModel extends BroadcastReceiver {
         // Ensure that we don't use the same workspace items data structure on the main thread
         // by making a copy of workspace items first.
         final ArrayList<ItemInfo> workspaceItems = new ArrayList<ItemInfo>(sWorkspaceItems);
+        final ArrayList<ItemInfo> appWidgets = new ArrayList<ItemInfo>(sAppWidgets);
         mHandler.post(new Runnable() {
             @Override
             public void run() {
                for (ItemInfo item : workspaceItems) {
+                   item.unbind();
+               }
+               for (ItemInfo item : appWidgets) {
                    item.unbind();
                }
             }
@@ -1229,7 +1233,6 @@ public class LauncherModel extends BroadcastReceiver {
                 }
             });
 
-            // Unbind previously bound workspace items to prevent a leak of AppWidgetHostViews.
             final ArrayList<ItemInfo> workspaceItems = unbindWorkspaceItemsOnMainThread();
 
             // Add the items to the workspace.
