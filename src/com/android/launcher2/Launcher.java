@@ -139,6 +139,7 @@ public final class Launcher extends Activity
     static final int DIALOG_RENAME_FOLDER = 2;
 
     private static final String PREFERENCES = "launcher.preferences";
+    static final String FORCE_ENABLE_ROTATION_PROPERTY = "launcher.force_enable_rotation";
 
     // Type: int
     private static final String RUNTIME_STATE_CURRENT_SCREEN = "launcher.current_screen";
@@ -348,8 +349,11 @@ public final class Launcher extends Activity
         }
         mSearchDropTargetBar.onSearchPackagesChanged(searchVisible, voiceVisible);
 
+        final String forceEnableRotation = 
+                SystemProperties.get(FORCE_ENABLE_ROTATION_PROPERTY, "false");
+
         // On large interfaces, we want the screen to auto-rotate based on the current orientation
-        if (LauncherApplication.isScreenLarge() || Build.TYPE.contentEquals("eng")) {
+        if (LauncherApplication.isScreenLarge() || "true".equalsIgnoreCase(forceEnableRotation)) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         }
     }
