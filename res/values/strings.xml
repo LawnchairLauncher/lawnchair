@@ -296,6 +296,8 @@ s -->
     <string name="preferences_interface_homescreen_general_category">General</string>
     <string name="preferences_interface_homescreen_general_search_title">Search Bar</string>
     <string name="preferences_interface_homescreen_general_search_summary">Enable persistent search bar</string>
+    <string name="preferences_interface_homescreen_general_resize_any_widget_title">Resize any widget</string>
+    <string name="preferences_interface_homescreen_general_resize_any_widget_summary">Allow resizing of widgets that normally aren\'t resizeable</string>
 
     <!-- Drawer -->
     <string name="preferences_interface_drawer_title">Drawer</string>
