@@ -260,6 +260,7 @@ public class Workspace extends SmoothPagedView
 
     // Preferences
     private boolean mShowSearchBar;
+    private boolean mResizeAnyWidget;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -341,6 +342,7 @@ public class Workspace extends SmoothPagedView
 
         // Preferences
         mShowSearchBar = PreferencesProvider.Interface.Homescreen.getShowSearchBar(context);
+        mResizeAnyWidget = PreferencesProvider.Interface.Homescreen.getResizeAnyWidget(context);
 
         mLauncher = (Launcher) context;
         initWorkspace();
@@ -2272,7 +2274,7 @@ public class Workspace extends SmoothPagedView
                         final LauncherAppWidgetHostView hostView = (LauncherAppWidgetHostView) cell;
                         AppWidgetProviderInfo pinfo = hostView.getAppWidgetInfo();
                         if (pinfo != null &&
-                                pinfo.resizeMode != AppWidgetProviderInfo.RESIZE_NONE) {
+                                pinfo.resizeMode != AppWidgetProviderInfo.RESIZE_NONE || mResizeAnyWidget) {
                             final Runnable addResizeFrame = new Runnable() {
                                 public void run() {
                                     DragLayer dragLayer = mLauncher.getDragLayer();
