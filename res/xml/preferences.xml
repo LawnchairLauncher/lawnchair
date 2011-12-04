@@ -71,7 +71,12 @@
         <!-- Drawer -->
         <PreferenceScreen android:key="ui_drawer"
             android:title="@string/preferences_interface_drawer_title">
-
+            <PreferenceCategory android:title="@string/preferences_interface_drawer_widgets_category">
+                <CheckBoxPreference android:key="ui_drawer_widgets_join_apps"
+                    android:title="@string/preferences_interface_drawer_widgets_join_apps_title"
+                    android:summary="@string/preferences_interface_drawer_widgets_join_apps_summary"
+                    android:defaultValue="true" />
+            </PreferenceCategory>
         </PreferenceScreen>
 
         <!-- Dock -->
