@@ -285,8 +285,8 @@ s -->
     <string name="preferences_title">Preferences</string>
     <!-- UI -->
     <string name="preferences_interface_title">Interface</string>
-    <!-- General -->
-    <string name="preferences_general_title">General</string>
+    <!-- Application -->
+    <string name="preferences_application_title">Application</string>
 
     <!-- UI -->
     <!-- Homescreen -->
@@ -306,4 +306,7 @@ s -->
     <!-- Icons -->
     <string name="preferences_interface_icons_title">Icons</string>
 
+    <!-- General -->
+    <string name="preferences_interface_general_title">General</string>
+    <string name="preferences_interface_general_orientation_title">Auto-rotate screen</string>
 </resources>

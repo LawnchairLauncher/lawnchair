@@ -292,6 +292,7 @@ public final class Launcher extends Activity
 
     // Preferences
     private boolean mShowSearchBar;
+    private boolean mAutoRotate;
 
     private Runnable mBuildLayersRunnable = new Runnable() {
         public void run() {
@@ -345,6 +346,7 @@ public final class Launcher extends Activity
 
         // Preferences
         mShowSearchBar = PreferencesProvider.Interface.Homescreen.getShowSearchBar(this);
+	mAutoRotate = PreferencesProvider.Interface.General.getAutoRotate(this, getResources().getBoolean(R.bool.allow_rotation));
 
         if (PROFILE_STARTUP) {
             android.os.Debug.startMethodTracing(
@@ -3555,7 +3557,7 @@ public final class Launcher extends Activity
         boolean forceEnableRotation = "true".equalsIgnoreCase(SystemProperties.get(
                 FORCE_ENABLE_ROTATION_PROPERTY, "false"));
         boolean enableRotation = forceEnableRotation ||
-                getResources().getBoolean(R.bool.allow_rotation);
+                getResources().getBoolean(R.bool.allow_rotation) || mAutoRotate;
         return enableRotation;
     }
     public void lockScreenOrientation() {
@@ -3575,6 +3577,8 @@ public final class Launcher extends Activity
                     }
                 }, mRestoreScreenOrientationDelay);
             }
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
         }
     }
 

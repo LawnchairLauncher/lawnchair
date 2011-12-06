@@ -48,9 +48,17 @@
             android:title="@string/preferences_interface_icons_title">
 
         </PreferenceScreen>
+
+        <!-- General -->
+        <PreferenceScreen android:key="ui_general"
+            android:title="@string/preferences_interface_general_title">
+            <CheckBoxPreference android:key="ui_general_orientation"
+                android:title="@string/preferences_interface_general_orientation_title" />
+        </PreferenceScreen>
+
     </PreferenceCategory>
 
-    <!-- General -->
-    <PreferenceCategory android:title="@string/preferences_general_title">
+    <!-- Application -->
+    <PreferenceCategory android:title="@string/preferences_application_title">
     </PreferenceCategory>
 </PreferenceScreen>
