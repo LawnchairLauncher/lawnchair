@@ -1813,6 +1813,22 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         }
     }
 
+    protected void enableScrollingIndicator() {
+        mHasScrollIndicator = true;
+        getScrollingIndicator();
+        if (mScrollIndicator != null) {
+            mScrollIndicator.setVisibility(View.VISIBLE);
+        }
+    }
+
+    protected void disableScrollingIndicator() {
+        if (mScrollIndicator != null) {
+            mScrollIndicator.setVisibility(View.GONE);
+        }
+        mHasScrollIndicator = false;
+        mScrollIndicator = null;
+    }
+
     /**
      * To be overridden by subclasses to determine whether the scroll indicator should stretch to
      * fill its space on the track or not.

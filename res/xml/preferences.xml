@@ -54,6 +54,12 @@
                     android:title="@string/preferences_interface_homescreen_general_resize_any_widget_title"
                     android:summary="@string/preferences_interface_homescreen_general_resize_any_widget_summary" />
             </PreferenceCategory>
+            <PreferenceCategory android:title="@string/preferences_interface_homescreen_indicator_category">
+                <CheckBoxPreference android:key="ui_homescreen_indicator_enable"
+                    android:title="@string/preferences_interface_homescreen_indicator_enable_title"
+                    android:summary="@string/preferences_interface_homescreen_indicator_enable_summary"
+                    android:defaultValue="true" />
+            </PreferenceCategory>
         </PreferenceScreen>
 
         <!-- Drawer -->
