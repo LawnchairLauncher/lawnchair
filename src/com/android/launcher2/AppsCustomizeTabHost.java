@@ -54,7 +54,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
 
     private boolean mInTransition;
     private boolean mResetAfterTransition;
-    private Animator mLauncherTransition;
 
     public AppsCustomizeTabHost(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -341,29 +340,17 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         }
     }
 
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-        if (mLauncherTransition != null) {
-            enableAndBuildHardwareLayer();
-            mLauncherTransition.start();
-            mLauncherTransition = null;
-        }
+    @Override
+    public View getContent() {
+        return mContent;
     }
 
     /* LauncherTransitionable overrides */
     @Override
-    public boolean onLauncherTransitionStart(Launcher l, Animator animation, boolean toWorkspace) {
+    public void onLauncherTransitionStart(Launcher l, Animator animation, boolean toWorkspace) {
         mInTransition = true;
-        boolean delayLauncherTransitionUntilLayout = false;
         boolean animated = (animation != null);
-        mLauncherTransition = null;
 
-        // if the content wasn't visible before, delay the launcher animation until after a call
-        // to layout -- this prevents a blip
-        if (animated && mContent.getVisibility() == GONE) {
-            mLauncherTransition = animation;
-            delayLauncherTransitionUntilLayout = true;
-        }
         mContent.setVisibility(VISIBLE);
 
         if (!toWorkspace) {
@@ -371,7 +358,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             // transition to prevent slowing down the animation)
             mAppsCustomizePane.loadAssociatedPages(mAppsCustomizePane.getCurrentPage(), true);
         }
-        if (animated && !delayLauncherTransitionUntilLayout) {
+        if (animated) {
             enableAndBuildHardwareLayer();
         }
 
@@ -382,7 +369,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             mAppsCustomizePane.reset();
             mResetAfterTransition = false;
         }
-        return delayLauncherTransitionUntilLayout;
     }
 
     @Override
@@ -406,7 +392,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         }
     }
 
-    public void onResume() {
+    public void onWindowVisible() {
         if (getVisibility() == VISIBLE) {
             mContent.setVisibility(VISIBLE);
             // We unload the widget previews when the UI is hidden, so need to reload pages
