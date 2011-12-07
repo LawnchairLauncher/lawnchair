@@ -94,6 +94,7 @@ public class Workspace extends SmoothPagedView
 
     private static final int BACKGROUND_FADE_OUT_DURATION = 350;
     private static final int ADJACENT_SCREEN_DROP_DURATION = 300;
+    private static final int FLING_THRESHOLD_VELOCITY = 500;
 
     // These animators are used to fade the children's outlines
     private ObjectAnimator mChildrenOutlineFadeInAnimation;
@@ -409,13 +410,15 @@ public class Workspace extends SmoothPagedView
             }
         };
 
-        mSnapVelocity = 600;
         mWallpaperOffset = new WallpaperOffsetInterpolator();
         Display display = mLauncher.getWindowManager().getDefaultDisplay();
         mDisplayWidth = display.getWidth();
         mDisplayHeight = display.getHeight();
         mWallpaperTravelWidth = (int) (mDisplayWidth *
                 wallpaperTravelToScreenWidthRatio(mDisplayWidth, mDisplayHeight));
+
+        mFlingThresholdVelocity = (int) (FLING_THRESHOLD_VELOCITY * mDensity);
+
     }
 
     @Override
