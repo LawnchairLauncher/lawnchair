@@ -2221,21 +2221,19 @@ public final class Launcher extends Activity
             scaleAnim.setInterpolator(new Workspace.ZoomOutInterpolator());
             scaleAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
                 public void onAnimationUpdate(float a, float b) {
-                    ((View) toView.getParent()).invalidate();
-                    toView.fastInvalidate();
-                    toView.setFastScaleX(a * scale + b * 1f);
-                    toView.setFastScaleY(a * scale + b * 1f);
+                    toView.setScaleX(a * scale + b * 1f);
+                    toView.setScaleY(a * scale + b * 1f);
                 }
             });
 
             toView.setVisibility(View.VISIBLE);
-            toView.setFastAlpha(0f);
+            toView.setAlpha(0f);
             ValueAnimator alphaAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(fadeDuration);
             alphaAnim.setInterpolator(new DecelerateInterpolator(1.5f));
             alphaAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
                 public void onAnimationUpdate(float a, float b) {
                     // don't need to invalidate because we do so above
-                    toView.setFastAlpha(a * 0f + b * 1f);
+                    toView.setAlpha(a * 0f + b * 1f);
                 }
             });
             alphaAnim.setStartDelay(startDelay);
@@ -2346,9 +2344,8 @@ public final class Launcher extends Activity
             scaleAnim.setInterpolator(new Workspace.ZoomInInterpolator());
             scaleAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
                 public void onAnimationUpdate(float a, float b) {
-                    ((View)fromView.getParent()).fastInvalidate();
-                    fromView.setFastScaleX(a * oldScaleX + b * scaleFactor);
-                    fromView.setFastScaleY(a * oldScaleY + b * scaleFactor);
+                    fromView.setScaleX(a * oldScaleX + b * scaleFactor);
+                    fromView.setScaleY(a * oldScaleY + b * scaleFactor);
                 }
             });
             final ValueAnimator alphaAnim = ValueAnimator.ofFloat(0f, 1f);
@@ -2356,8 +2353,7 @@ public final class Launcher extends Activity
             alphaAnim.setInterpolator(new AccelerateDecelerateInterpolator());
             alphaAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
                 public void onAnimationUpdate(float a, float b) {
-                    // don't need to invalidate because we do so above
-                    fromView.setFastAlpha(a * 1f + b * 0f);
+                    fromView.setAlpha(a * 1f + b * 0f);
                 }
             });
             if (fromView instanceof LauncherTransitionable) {
