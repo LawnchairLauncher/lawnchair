@@ -181,6 +181,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private boolean mShouldShowScrollIndicatorImmediately = false;
     protected static final int sScrollIndicatorFadeInDuration = 150;
     protected static final int sScrollIndicatorFadeOutDuration = 650;
+    protected static final int sScrollIndicatorFadeOutShortDuration = 150;
     protected static final int sScrollIndicatorFlashDuration = 650;
     private boolean mScrollingPaused = false;
 
@@ -1752,6 +1753,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     protected void showScrollingIndicator(boolean immediately) {
+        showScrollingIndicator(immediately, sScrollIndicatorFadeInDuration);
+    }
+
+    protected void showScrollingIndicator(boolean immediately, int duration) {
         mShouldShowScrollIndicator = true;
         mShouldShowScrollIndicatorImmediately = true;
         if (getChildCount() <= 1) return;
@@ -1768,7 +1773,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 mScrollIndicator.setAlpha(1f);
             } else {
                 mScrollIndicatorAnimator = LauncherAnimUtils.ofFloat(mScrollIndicator, "alpha", 1f);
-                mScrollIndicatorAnimator.setDuration(sScrollIndicatorFadeInDuration);
+                mScrollIndicatorAnimator.setDuration(duration);
                 mScrollIndicatorAnimator.start();
             }
         }
@@ -1781,6 +1786,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     protected void hideScrollingIndicator(boolean immediately) {
+        hideScrollingIndicator(immediately, sScrollIndicatorFadeOutDuration);
+    }
+
+    protected void hideScrollingIndicator(boolean immediately, int duration) {
         if (getChildCount() <= 1) return;
         if (!isScrollingIndicatorEnabled()) return;
 
@@ -1794,7 +1803,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 mScrollIndicator.setAlpha(0f);
             } else {
                 mScrollIndicatorAnimator = LauncherAnimUtils.ofFloat(mScrollIndicator, "alpha", 0f);
-                mScrollIndicatorAnimator.setDuration(sScrollIndicatorFadeOutDuration);
+                mScrollIndicatorAnimator.setDuration(duration);
                 mScrollIndicatorAnimator.addListener(new AnimatorListenerAdapter() {
                     private boolean cancelled = false;
                     @Override

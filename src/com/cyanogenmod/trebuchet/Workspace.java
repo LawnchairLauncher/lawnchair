@@ -269,6 +269,7 @@ public class Workspace extends SmoothPagedView
     private boolean mResizeAnyWidget;
     private boolean mScrollWallpaper;
     private boolean mShowScrollingIndicator;
+    private boolean mFadeScrollingIndicator;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -347,6 +348,7 @@ public class Workspace extends SmoothPagedView
         mResizeAnyWidget = PreferencesProvider.Interface.Homescreen.getResizeAnyWidget(context);
         mScrollWallpaper = PreferencesProvider.Interface.Homescreen.getScrollWallpaper(context);
         mShowScrollingIndicator = PreferencesProvider.Interface.Homescreen.getShowScrollingIndicator(context);
+        mFadeScrollingIndicator = PreferencesProvider.Interface.Homescreen.getFadeScrollingIndicator(context);
 
         initWorkspace();
 
@@ -816,7 +818,9 @@ public class Workspace extends SmoothPagedView
     }
 
     protected void onPageEndMoving() {
-        super.onPageEndMoving();
+        if (mFadeScrollingIndicator) {
+            hideScrollingIndicator(false);
+        }
 
         if (isHardwareAccelerated()) {
             updateChildrenLayersEnabled(false);
@@ -838,7 +842,7 @@ public class Workspace extends SmoothPagedView
             }
 
             // Hide the scroll indicator as you pan the page
-            if (!mDragController.isDragging()) {
+            if (mFadeScrollingIndicator && !mDragController.isDragging()) {
                 hideScrollingIndicator(false);
             }
         }
@@ -860,6 +864,15 @@ public class Workspace extends SmoothPagedView
         super.notifyPageSwitchListener();
         Launcher.setScreen(mCurrentPage);
     };
+
+    @Override
+    protected void flashScrollingIndicator(boolean animated) {
+        if (mFadeScrollingIndicator) {
+            super.flashScrollingIndicator(animated);
+        } else {
+            showScrollingIndicator(true);
+        }
+    }
 
     // As a ratio of screen height, the total distance we want the parallax effect to span
     // horizontally
