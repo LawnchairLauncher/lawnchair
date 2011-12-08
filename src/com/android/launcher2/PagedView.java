@@ -67,14 +67,20 @@ public abstract class PagedView extends ViewGroup {
 
     private static final float OVERSCROLL_ACCELERATE_FACTOR = 2;
     private static final float OVERSCROLL_DAMP_FACTOR = 0.14f;
-    private static final int MINIMUM_SNAP_VELOCITY = 2200;
-    private static final int MIN_FLING_VELOCITY = 250;
+   
     private static final float RETURN_TO_ORIGINAL_PAGE_THRESHOLD = 0.33f;
     // The page is moved more than halfway, automatically move to the next page on touch up.
     private static final float SIGNIFICANT_MOVE_THRESHOLD = 0.4f;
 
-    // the velocity at which a fling gesture will cause us to snap to the next page
-    protected int mSnapVelocity = 500;
+    // The following constants need to be scaled based on density. The scaled versions will be
+    // assigned to the corresponding member variables below.
+    private static final int FLING_THRESHOLD_VELOCITY = 500;
+    private static final int MIN_SNAP_VELOCITY = 1500;
+    private static final int MIN_FLING_VELOCITY = 250;
+
+    protected int mFlingThresholdVelocity;
+    protected int mMinFlingVelocity;
+    protected int mMinSnapVelocity;
 
     protected float mDensity;
     protected float mSmoothingTime;
@@ -242,6 +248,10 @@ public abstract class PagedView extends ViewGroup {
         mPagingTouchSlop = configuration.getScaledPagingTouchSlop();
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
         mDensity = getResources().getDisplayMetrics().density;
+
+        mFlingThresholdVelocity = (int) (FLING_THRESHOLD_VELOCITY * mDensity);
+        mMinFlingVelocity = (int) (MIN_FLING_VELOCITY * mDensity);
+        mMinSnapVelocity = (int) (MIN_SNAP_VELOCITY * mDensity);
     }
 
     public void setPageSwitchListener(PageSwitchListener pageSwitchListener) {
@@ -1208,12 +1218,11 @@ public abstract class PagedView extends ViewGroup {
                 final int pageWidth = getScaledMeasuredWidth(getPageAt(mCurrentPage));
                 boolean isSignificantMove = Math.abs(deltaX) > pageWidth *
                         SIGNIFICANT_MOVE_THRESHOLD;
-                final int snapVelocity = mSnapVelocity;
 
                 mTotalMotionX += Math.abs(mLastMotionX + mLastMotionXRemainder - x);
 
                 boolean isFling = mTotalMotionX > MIN_LENGTH_FOR_FLING &&
-                        Math.abs(velocityX) > snapVelocity;
+                        Math.abs(velocityX) > mFlingThresholdVelocity;
 
                 // In the case that the page is moved far to one direction and then is flung
                 // in the opposite direction, we use a threshold to determine whether we should
@@ -1434,7 +1443,7 @@ public abstract class PagedView extends ViewGroup {
         int delta = newX - mUnboundedScrollX;
         int duration = 0;
 
-        if (Math.abs(velocity) < MIN_FLING_VELOCITY) {
+        if (Math.abs(velocity) < mMinFlingVelocity) {
             // If the velocity is low enough, then treat this more as an automatic page advance
             // as opposed to an apparent physical response to flinging
             snapToPage(whichPage, PAGE_SNAP_ANIMATION_DURATION);
@@ -1450,7 +1459,7 @@ public abstract class PagedView extends ViewGroup {
                 distanceInfluenceForSnapDuration(distanceRatio);
 
         velocity = Math.abs(velocity);
-        velocity = Math.max(MINIMUM_SNAP_VELOCITY, velocity);
+        velocity = Math.max(mMinSnapVelocity, velocity);
 
         // we want the page's snap velocity to approximately match the velocity at which the
         // user flings, so we scale the duration by a value near to the derivative of the scroll
