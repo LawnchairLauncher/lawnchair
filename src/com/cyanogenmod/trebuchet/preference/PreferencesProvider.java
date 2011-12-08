@@ -67,6 +67,10 @@ public final class PreferencesProvider {
                 final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
                 return preferences.getBoolean("ui_homescreen_indicator_enable", true);
             }
+            public static boolean getFadeScrollingIndicator(Context context) {
+                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                return preferences.getBoolean("ui_homescreen_indicator_fade", true);
+            }
         }
 
         public static class Drawer {
