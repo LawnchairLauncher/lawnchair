@@ -17,14 +17,16 @@
 
 <resources>
     <string-array name="wallpapers" translatable="false">
-	<item>bluecrystal</item>
-	<item>bluelinebots</item>
-	<item>glowy_hex</item>
-	<item>bots</item>
-	<item>flowerbot</item>
-	<item>bucky</item>
-	<item>lotus</item>
-	<item>city</item>
-	<item>village</item>
+        <item>wallpaper_architecture</item>
+        <item>wallpaper_bubblegum</item>
+        <item>wallpaper_canyon</item>
+        <item>wallpaper_chroma</item>
+        <item>wallpaper_escape</item>
+        <item>wallpaper_fidelity</item>
+        <item>wallpaper_flora</item>
+        <item>wallpaper_kepler</item>
+        <item>wallpaper_leaf</item>
+        <item>wallpaper_noir</item>
+        <item>wallpaper_outofthebox</item>
     </string-array>
 </resources>
