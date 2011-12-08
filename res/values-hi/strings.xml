@@ -47,7 +47,7 @@
     <string name="shortcut_duplicate" msgid="4757756326465060694">"शार्टकट \"<xliff:g id="NAME">%s</xliff:g>\" पहले से मौजूद है."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"शॉर्टकट का चयन करें"</string>
     <string name="title_select_application" msgid="1793455815754848652">"एप्‍लिकेशन चुनें"</string>
-    <string name="all_apps_button_label" msgid="2578400570124163469">"Apps"</string>
+    <string name="all_apps_button_label" msgid="2578400570124163469">"एप्लिकेशन"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"होम"</string>
     <string name="delete_zone_label_workspace" msgid="7153615831493049150">"निकालें"</string>
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"अनइंस्टॉल करें"</string>
