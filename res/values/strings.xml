@@ -51,7 +51,7 @@
     <!-- External-drop widget error string.  This is the error that is shown
          when you drag and item into the homescreen and it is unable to fit,
          or an error is encountered. [CHAR_LIMIT=50] -->
-    <string name="external_drop_widget_error">Couldn\'t drop item onto this Home screen.</string>
+    <string name="external_drop_widget_error">Couldn\'t drop item on this Home screen.</string>
     <!-- External-drop widget pick title.  This is shown as the title of the
          dialog which allows you to pick which widgets to handle a particular
          drop if there are multiple choices. [CHAR_LIMIT=35] -->
@@ -93,7 +93,7 @@ s -->
     <string name="shortcut_duplicate">Shortcut \"<xliff:g id="name" example="Browser">%s</xliff:g>\" already exists.</string>
 
     <!-- Title of dialog when user is selecting shortcut to add to homescreen -->
-    <string name="title_select_shortcut">Select shortcut</string>
+    <string name="title_select_shortcut">Choose shortcut</string>
     <!-- Title of dialog when user is selecting an application to add to homescreen -->
     <string name="title_select_application">Choose app</string>
 
@@ -176,17 +176,17 @@ s -->
     <!-- Permission short label -->
     <string name="permlab_uninstall_shortcut">uninstall shortcuts</string>
     <!-- Permission description -->
-    <string name="permdesc_uninstall_shortcut">Allows an app to remove
+    <string name="permdesc_uninstall_shortcut">Allows the app to remove
         shortcuts without user intervention.</string>
     <!-- Permission short label -->
     <string name="permlab_read_settings">read Home settings and shortcuts</string>
     <!-- Permission description -->
-    <string name="permdesc_read_settings">Allows an app to read the settings and
+    <string name="permdesc_read_settings">Allows the app to read the settings and
         shortcuts in Home.</string>
     <!-- Permission short label -->
     <string name="permlab_write_settings">write Home settings and shortcuts</string>
     <!-- Permission description -->
-    <string name="permdesc_write_settings">Allows an app to change the settings and
+    <string name="permdesc_write_settings">Allows the app to change the settings and
         shortcuts in Home.</string>
 
     <!-- Widgets: -->
@@ -241,9 +241,9 @@ s -->
     <!-- The format string for when a folder is opened, speaks the dimensions -->
     <string name="folder_opened">Folder opened, %1$d by %2$d</string>
     <!-- Instruction that clicking outside will close folder -->
-    <string name="folder_tap_to_close">Tap to close folder</string>
+    <string name="folder_tap_to_close">Touch to close folder</string>
     <!-- Instruction that clicking outside will commit folder rename -->
-    <string name="folder_tap_to_rename">Tap to commit rename</string>
+    <string name="folder_tap_to_rename">Touch to save rename</string>
     <!-- Indication that folder closed -->
     <string name="folder_closed">Folder closed</string>
     <!-- Folder renamed format -->
