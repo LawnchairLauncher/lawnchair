@@ -318,6 +318,11 @@ s -->
     <string name="preferences_interface_drawer_widgets_category">Widgets</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Join with Apps</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">Swipe from apps drawer to widgets drawer without changing tabs</string>
+    <string name="preferences_interface_drawer_indicator_category">Indicator</string>
+    <string name="preferences_interface_drawer_indicator_enable_title">Show Page Indicator</string>
+    <string name="preferences_interface_drawer_indicator_enable_summary">Show current page indicator at the bottom of the screen</string>
+    <string name="preferences_interface_drawer_indicator_fade_title">Fade Indicator</string>
+    <string name="preferences_interface_drawer_indicator_fade_summary">Fade the indicator after the page has changed</string>
 
     <!-- Dock -->
     <string name="preferences_interface_dock_title">Dock</string>

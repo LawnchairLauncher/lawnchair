@@ -77,6 +77,17 @@
                     android:summary="@string/preferences_interface_drawer_widgets_join_apps_summary"
                     android:defaultValue="true" />
             </PreferenceCategory>
+            <PreferenceCategory android:title="@string/preferences_interface_drawer_indicator_category">
+                <CheckBoxPreference android:key="ui_drawer_indicator_enable"
+                    android:title="@string/preferences_interface_drawer_indicator_enable_title"
+                    android:summary="@string/preferences_interface_drawer_indicator_enable_summary"
+                    android:defaultValue="true" />
+                <CheckBoxPreference android:key="ui_drawer_indicator_fade"
+                    android:title="@string/preferences_interface_drawer_indicator_fade_title"
+                    android:summary="@string/preferences_interface_drawer_indicator_fade_summary"
+                    android:defaultValue="true"
+                    android:dependency="ui_drawer_indicator_enable" />
+            </PreferenceCategory>
         </PreferenceScreen>
 
         <!-- Dock -->
