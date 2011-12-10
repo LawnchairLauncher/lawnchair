@@ -1600,22 +1600,29 @@ public abstract class PagedView extends ViewGroup {
                 int upperPageBound = getAssociatedUpperPageBound(page);
                 if (DEBUG) Log.d(TAG, "loadAssociatedPages: " + lowerPageBound + "/"
                         + upperPageBound);
+                // First, clear any pages that should no longer be loaded
+                for (int i = 0; i < count; ++i) {
+                    Page layout = (Page) getPageAt(i);
+                    if ((immediateAndOnly && i != page) ||
+                            (i < lowerPageBound) ||
+                            (i > upperPageBound)) {
+                        if (layout.getPageChildCount() > 0) {
+                            layout.removeAllViewsOnPage();
+                        }
+                        mDirtyPageContent.set(i, true);
+                    }
+                }
+                // Next, load any new pages
                 for (int i = 0; i < count; ++i) {
                     if ((i != page) && immediateAndOnly) {
                         continue;
                     }
                     Page layout = (Page) getPageAt(i);
-                    final int childCount = layout.getPageChildCount();
                     if (lowerPageBound <= i && i <= upperPageBound) {
                         if (mDirtyPageContent.get(i)) {
                             syncPageItems(i, (i == page) && immediateAndOnly);
                             mDirtyPageContent.set(i, false);
                         }
-                    } else {
-                        if (childCount > 0) {
-                            layout.removeAllViewsOnPage();
-                        }
-                        mDirtyPageContent.set(i, true);
                     }
                 }
             }
