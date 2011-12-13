@@ -109,6 +109,7 @@ public class PagedViewGridLayout extends GridLayout implements Page {
     @Override
     public void removeAllViewsOnPage() {
         removeAllViews();
+        mOnLayoutListener = null;
         destroyHardwareLayer();
     }
 

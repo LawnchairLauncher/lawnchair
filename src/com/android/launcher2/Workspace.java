@@ -159,10 +159,7 @@ public class Workspace extends SmoothPagedView
     enum State { NORMAL, SPRING_LOADED, SMALL };
     private State mState = State.NORMAL;
     private boolean mIsSwitchingState = false;
-    private boolean mSwitchStateAfterFirstLayout = false;
-    private State mStateAfterFirstLayout;
 
-    private AnimatorSet mAnimator;
     private AnimatorListener mChangeStateAnimationListener;
 
     boolean mAnimatingViewIntoPlace = false;
@@ -405,7 +402,6 @@ public class Workspace extends SmoothPagedView
             public void onAnimationEnd(Animator animation) {
                 mIsSwitchingState = false;
                 mWallpaperOffset.setOverrideHorizontalCatchupConstant(false);
-                mAnimator = null;
                 updateChildrenLayersEnabled();
             }
         };
@@ -1249,19 +1245,6 @@ public class Workspace extends SmoothPagedView
             mUpdateWallpaperOffsetImmediately = true;
         }
         super.onLayout(changed, left, top, right, bottom);
-
-        // if shrinkToBottom() is called on initialization, it has to be deferred
-        // until after the first call to onLayout so that it has the correct width
-        if (mSwitchStateAfterFirstLayout) {
-            mSwitchStateAfterFirstLayout = false;
-            // shrink can trigger a synchronous onLayout call, so we
-            // post this to avoid a stack overflow / tangled onLayout calls
-            post(new Runnable() {
-                public void run() {
-                    changeState(mStateAfterFirstLayout, false);
-                }
-            });
-        }
     }
 
     @Override
@@ -1565,32 +1548,19 @@ public class Workspace extends SmoothPagedView
         mNewRotationYs = new float[childCount];
     }
 
-    public void changeState(State shrinkState) {
-        changeState(shrinkState, true);
+    Animator getChangeStateAnimation(final State state, boolean animated) {
+        return getChangeStateAnimation(state, animated, 0);
     }
 
-    void changeState(final State state, boolean animated) {
-        changeState(state, animated, 0);
-    }
-
-    void changeState(final State state, boolean animated, int delay) {
+    Animator getChangeStateAnimation(final State state, boolean animated, int delay) {
         if (mState == state) {
-            return;
-        }
-        if (mFirstLayout) {
-            // (mFirstLayout == "first layout has not happened yet")
-            // cancel any pending shrinks that were set earlier
-            mSwitchStateAfterFirstLayout = false;
-            mStateAfterFirstLayout = state;
-            return;
+            return null;
         }
 
         // Initialize animation arrays for the first time if necessary
         initAnimationArrays();
 
-        // Cancel any running transition animations
-        if (mAnimator != null) mAnimator.cancel();
-        mAnimator = new AnimatorSet();
+        AnimatorSet anim = animated ? new AnimatorSet() : null;
 
         // Stop any scrolling, move to the current page right away
         setCurrentPage((mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage);
@@ -1717,6 +1687,21 @@ public class Workspace extends SmoothPagedView
                     }
                 }
             });
+            for (int i = 0; i < getChildCount(); i++) {
+                invalidate();
+                if (mOldAlphas[i] == 0 && mNewAlphas[i] == 0) {
+                    final CellLayout cl = (CellLayout) getChildAt(i);
+                    cl.fastInvalidate();
+                    cl.setFastTranslationX(mNewTranslationXs[i]);
+                    cl.setFastTranslationY(mNewTranslationYs[i]);
+                    cl.setFastScaleX(mNewScaleXs[i]);
+                    cl.setFastScaleY(mNewScaleYs[i]);
+                    cl.setFastBackgroundAlpha(mNewBackgroundAlphas[i]);
+                    cl.setBackgroundAlphaMultiplier(mNewBackgroundAlphaMultipliers[i]);
+                    cl.setFastAlpha(mNewAlphas[i]);
+                }
+            }
+
             animWithInterpolator.addUpdateListener(new LauncherAnimatorUpdateListener() {
                 public void onAnimationUpdate(float a, float b) {
                     mTransitionProgress = b;
@@ -1726,17 +1711,21 @@ public class Workspace extends SmoothPagedView
                     }
                     invalidate();
                     for (int i = 0; i < getChildCount(); i++) {
-                        final CellLayout cl = (CellLayout) getChildAt(i);
-                        cl.fastInvalidate();
-                        cl.setFastTranslationX(a * mOldTranslationXs[i] + b * mNewTranslationXs[i]);
-                        cl.setFastTranslationY(a * mOldTranslationYs[i] + b * mNewTranslationYs[i]);
-                        cl.setFastScaleX(a * mOldScaleXs[i] + b * mNewScaleXs[i]);
-                        cl.setFastScaleY(a * mOldScaleYs[i] + b * mNewScaleYs[i]);
-                        cl.setFastBackgroundAlpha(
-                                a * mOldBackgroundAlphas[i] + b * mNewBackgroundAlphas[i]);
-                        cl.setBackgroundAlphaMultiplier(a * mOldBackgroundAlphaMultipliers[i] +
-                                b * mNewBackgroundAlphaMultipliers[i]);
-                        cl.setFastAlpha(a * mOldAlphas[i] + b * mNewAlphas[i]);
+                        if (mOldAlphas[i] != 0 || mNewAlphas[i] != 0) {
+                            final CellLayout cl = (CellLayout) getChildAt(i);
+                            cl.fastInvalidate();
+                            cl.setFastTranslationX(
+                                    a * mOldTranslationXs[i] + b * mNewTranslationXs[i]);
+                            cl.setFastTranslationY(
+                                    a * mOldTranslationYs[i] + b * mNewTranslationYs[i]);
+                            cl.setFastScaleX(a * mOldScaleXs[i] + b * mNewScaleXs[i]);
+                            cl.setFastScaleY(a * mOldScaleYs[i] + b * mNewScaleYs[i]);
+                            cl.setFastBackgroundAlpha(
+                                    a * mOldBackgroundAlphas[i] + b * mNewBackgroundAlphas[i]);
+                            cl.setBackgroundAlphaMultiplier(a * mOldBackgroundAlphaMultipliers[i] +
+                                    b * mNewBackgroundAlphaMultipliers[i]);
+                            cl.setFastAlpha(a * mOldAlphas[i] + b * mNewAlphas[i]);
+                        }
                     }
                     syncChildrenLayersEnabledOnVisiblePages();
                 }
@@ -1752,18 +1741,20 @@ public class Workspace extends SmoothPagedView
                         return;
                     }
                     for (int i = 0; i < getChildCount(); i++) {
-                        final CellLayout cl = (CellLayout) getChildAt(i);
-                        cl.setFastRotationY(a * mOldRotationYs[i] + b * mNewRotationYs[i]);
+                        if (mOldAlphas[i] != 0 || mNewAlphas[i] != 0 ||
+                                mOldRotationYs[i] != 0 || mNewRotationYs[i] != 0) {
+                            final CellLayout cl = (CellLayout) getChildAt(i);
+                            cl.setFastRotationY(a * mOldRotationYs[i] + b * mNewRotationYs[i]);
+                        }
                     }
                 }
             });
 
-            mAnimator.playTogether(animWithInterpolator, rotationAnim);
-            mAnimator.setStartDelay(delay);
+            anim.playTogether(animWithInterpolator, rotationAnim);
+            anim.setStartDelay(delay);
             // If we call this when we're not animated, onAnimationEnd is never called on
             // the listener; make sure we only use the listener when we're actually animating
-            mAnimator.addListener(mChangeStateAnimationListener);
-            mAnimator.start();
+            anim.addListener(mChangeStateAnimationListener);
         }
 
         if (stateIsSpringLoaded) {
@@ -1777,6 +1768,7 @@ public class Workspace extends SmoothPagedView
             animateBackgroundGradient(0f, true);
         }
         syncChildrenLayersEnabledOnVisiblePages();
+        return anim;
     }
 
     /**

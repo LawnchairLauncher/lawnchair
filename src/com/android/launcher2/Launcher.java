@@ -28,7 +28,6 @@ import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.SearchManager;
-import android.app.StatusBarManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -54,7 +53,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -80,6 +78,7 @@ import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -568,28 +567,6 @@ public final class Launcher extends Activity
         // When we resume Launcher, a different Activity might be responsible for the app
         // market intent, so refresh the icon
         updateAppMarketIcon();
-        mAppsCustomizeTabHost.onResume();
-        if (!mWorkspaceLoading) {
-            final ViewTreeObserver observer = mWorkspace.getViewTreeObserver();
-            final Workspace workspace = mWorkspace;
-            // We want to let Launcher draw itself at least once before we force it to build
-            // layers on all the workspace pages, so that transitioning to Launcher from other
-            // apps is nice and speedy. Usually the first call to preDraw doesn't correspond to
-            // a true draw so we wait until the second preDraw call to be safe
-            observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                boolean mFirstTime = true;
-                public boolean onPreDraw() {
-                    if (mFirstTime) {
-                        mFirstTime = false;
-                    } else {
-                        workspace.post(mBuildLayersRunnable);
-                        observer.removeOnPreDrawListener(this);
-                    }
-                    return true;
-                }
-            });
-        }
-        clearTypedText();
     }
 
     @Override
@@ -1067,6 +1044,33 @@ public final class Launcher extends Activity
     public void onWindowVisibilityChanged(int visibility) {
         mVisible = visibility == View.VISIBLE;
         updateRunning();
+        // The following code used to be in onResume, but it turns out onResume is called when
+        // you're in All Apps and click home to go to the workspace. onWindowVisibilityChanged
+        // is a more appropriate event to handle
+        if (mVisible) {
+            mAppsCustomizeTabHost.onWindowVisible();
+            if (!mWorkspaceLoading) {
+                final ViewTreeObserver observer = mWorkspace.getViewTreeObserver();
+                final Workspace workspace = mWorkspace;
+                // We want to let Launcher draw itself at least once before we force it to build
+                // layers on all the workspace pages, so that transitioning to Launcher from other
+                // apps is nice and speedy. Usually the first call to preDraw doesn't correspond to
+                // a true draw so we wait until the second preDraw call to be safe
+                observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                    boolean mFirstTime = true;
+                    public boolean onPreDraw() {
+                        if (mFirstTime) {
+                            mFirstTime = false;
+                        } else {
+                            //workspace.post(mBuildLayersRunnable);
+                            observer.removeOnPreDrawListener(this);
+                        }
+                        return true;
+                    }
+                });
+            }
+            clearTypedText();
+        }
     }
 
     private void sendAdvanceMessage(long delay) {
@@ -2218,7 +2222,8 @@ public final class Launcher extends Activity
         setPivotsForZoom(toView, scale);
 
         // Shrink workspaces away if going to AppsCustomize from workspace
-        mWorkspace.changeState(Workspace.State.SMALL, animated);
+        Animator workspaceAnim =
+                mWorkspace.getChangeStateAnimation(Workspace.State.SMALL, animated);
 
         if (animated) {
             final ValueAnimator scaleAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
@@ -2236,14 +2241,17 @@ public final class Launcher extends Activity
             alphaAnim.setInterpolator(new DecelerateInterpolator(1.5f));
             alphaAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
                 public void onAnimationUpdate(float a, float b) {
-                    // don't need to invalidate because we do so above
                     toView.setAlpha(a * 0f + b * 1f);
                 }
             });
-            alphaAnim.setStartDelay(startDelay);
-            alphaAnim.start();
 
-            scaleAnim.addListener(new AnimatorListenerAdapter() {
+            // toView should appear right at the end of the workspace shrink
+            // animation
+            mStateAnimation = new AnimatorSet();
+            mStateAnimation.play(alphaAnim).after(startDelay);
+            mStateAnimation.play(scaleAnim).after(startDelay);
+
+            mStateAnimation.addListener(new AnimatorListenerAdapter() {
                 boolean animationCancelled = false;
 
                 @Override
@@ -2283,19 +2291,43 @@ public final class Launcher extends Activity
                 }
             });
 
-            // toView should appear right at the end of the workspace shrink animation
-            mStateAnimation = new AnimatorSet();
-            mStateAnimation.play(scaleAnim).after(startDelay);
+            if (workspaceAnim != null) {
+                mStateAnimation.play(workspaceAnim);
+            }
 
             boolean delayAnim = false;
-            if (toView instanceof LauncherTransitionable) {
-                LauncherTransitionable lt = (LauncherTransitionable) toView;
-                delayAnim = lt.onLauncherTransitionStart(instance, mStateAnimation, false);
+            LauncherTransitionable lt = (LauncherTransitionable) toView;
+            final ViewTreeObserver observer;
+
+            lt.onLauncherTransitionStart(instance, mStateAnimation, false);
+
+            // If any of the objects being animated haven't been measured/laid out
+            // yet, delay the animation until we get a layout pass
+            if ((lt.getContent().getMeasuredWidth() == 0) ||
+                    (mWorkspace.getMeasuredWidth() == 0) ||
+                    (toView.getMeasuredWidth() == 0)) {
+                observer = mWorkspace.getViewTreeObserver();
+                delayAnim = true;
+            } else {
+                observer = null;
             }
-            // if the anim is delayed, the LauncherTransitionable is responsible for starting it
-            if (!delayAnim) {
-                // TODO: q-- what if this anim is cancelled before being started? or started after
-                // being cancelled?
+
+            if (delayAnim) {
+                final OnGlobalLayoutListener delayedStart = new OnGlobalLayoutListener() {
+                    public void onGlobalLayout() {
+                        mWorkspace.post(new Runnable() {
+                            public void run() {
+                                // Need to update pivots for zoom if layout changed
+                                setPivotsForZoom(toView, scale);
+                                mStateAnimation.start();
+                            }
+                        });
+                        observer.removeGlobalOnLayoutListener(this);
+                    }
+                };
+                observer.addOnGlobalLayoutListener(delayedStart);
+            } else {
+                setPivotsForZoom(toView, scale);
                 mStateAnimation.start();
             }
         } else {
@@ -2324,7 +2356,8 @@ public final class Launcher extends Activity
      * This is the opposite of showAppsCustomizeHelper.
      * @param animated If true, the transition will be animated.
      */
-    private void hideAppsCustomizeHelper(boolean animated, final boolean springLoaded) {
+    private void hideAppsCustomizeHelper(
+            State toState, boolean animated, final boolean springLoaded) {
         if (mStateAnimation != null) {
             mStateAnimation.cancel();
             mStateAnimation = null;
@@ -2336,6 +2369,16 @@ public final class Launcher extends Activity
         final float scaleFactor = (float)
                 res.getInteger(R.integer.config_appsCustomizeZoomScaleFactor);
         final View fromView = mAppsCustomizeTabHost;
+        Animator workspaceAnim = null;
+
+        if (toState == State.WORKSPACE) {
+            int stagger = res.getInteger(R.integer.config_appsCustomizeWorkspaceAnimationStagger);
+            workspaceAnim = mWorkspace.getChangeStateAnimation(
+                    Workspace.State.NORMAL, animated, stagger);
+        } else if (toState == State.APPS_CUSTOMIZE_SPRING_LOADED) {
+            workspaceAnim = mWorkspace.getChangeStateAnimation(
+                    Workspace.State.SPRING_LOADED, animated);
+        }
 
         setPivotsForZoom(fromView, scaleFactor);
         updateWallpaperVisibility(true);
@@ -2379,6 +2422,9 @@ public final class Launcher extends Activity
 
             mStateAnimation = new AnimatorSet();
             mStateAnimation.playTogether(scaleAnim, alphaAnim);
+            if (workspaceAnim != null) {
+                mStateAnimation.play(workspaceAnim);
+            }
             mStateAnimation.start();
         } else {
             fromView.setVisibility(View.GONE);
@@ -2399,13 +2445,9 @@ public final class Launcher extends Activity
     }
 
     void showWorkspace(boolean animated) {
-        Resources res = getResources();
-        int stagger = res.getInteger(R.integer.config_appsCustomizeWorkspaceAnimationStagger);
-
-        mWorkspace.changeState(Workspace.State.NORMAL, animated, stagger);
         if (mState != State.WORKSPACE) {
             mWorkspace.setVisibility(View.VISIBLE);
-            hideAppsCustomizeHelper(animated, false);
+            hideAppsCustomizeHelper(State.WORKSPACE, animated, false);
 
             // Show the search bar and hotseat
             mSearchDropTargetBar.showSearchBar(animated);
@@ -2454,8 +2496,7 @@ public final class Launcher extends Activity
 
     void enterSpringLoadedDragMode() {
         if (mState == State.APPS_CUSTOMIZE) {
-            mWorkspace.changeState(Workspace.State.SPRING_LOADED);
-            hideAppsCustomizeHelper(true, true);
+            hideAppsCustomizeHelper(State.APPS_CUSTOMIZE_SPRING_LOADED, true, true);
             hideDockDivider();
             mState = State.APPS_CUSTOMIZE_SPRING_LOADED;
         }
@@ -3327,7 +3368,7 @@ public final class Launcher extends Activity
 }
 
 interface LauncherTransitionable {
-    // return true if the callee will take care of start the animation by itself
-    boolean onLauncherTransitionStart(Launcher l, Animator animation, boolean toWorkspace);
+    View getContent();
+    void onLauncherTransitionStart(Launcher l, Animator animation, boolean toWorkspace);
     void onLauncherTransitionEnd(Launcher l, Animator animation, boolean toWorkspace);
 }
