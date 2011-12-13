@@ -2226,14 +2226,13 @@ public final class Launcher extends Activity
                 mWorkspace.getChangeStateAnimation(Workspace.State.SMALL, animated);
 
         if (animated) {
-            final ValueAnimator scaleAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
-            scaleAnim.setInterpolator(new Workspace.ZoomOutInterpolator());
-            scaleAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
-                public void onAnimationUpdate(float a, float b) {
-                    toView.setScaleX(a * scale + b * 1f);
-                    toView.setScaleY(a * scale + b * 1f);
-                }
-            });
+            toView.setScaleX(scale);
+            toView.setScaleY(scale);
+            final LauncherViewPropertyAnimator scaleAnim = new LauncherViewPropertyAnimator(toView);
+            scaleAnim.
+                scaleX(1f).scaleY(1f).
+                setDuration(duration).
+                setInterpolator(new Workspace.ZoomOutInterpolator());
 
             toView.setVisibility(View.VISIBLE);
             toView.setAlpha(0f);
@@ -2248,8 +2247,8 @@ public final class Launcher extends Activity
             // toView should appear right at the end of the workspace shrink
             // animation
             mStateAnimation = new AnimatorSet();
-            mStateAnimation.play(alphaAnim).after(startDelay);
             mStateAnimation.play(scaleAnim).after(startDelay);
+            mStateAnimation.play(alphaAnim).after(startDelay);
 
             mStateAnimation.addListener(new AnimatorListenerAdapter() {
                 boolean animationCancelled = false;
@@ -2579,8 +2578,10 @@ public final class Launcher extends Activity
     void showHotseat(boolean animated) {
         if (!LauncherApplication.isScreenLarge()) {
             if (animated) {
-                int duration = mSearchDropTargetBar.getTransitionInDuration();
-                mHotseat.animate().alpha(1f).setDuration(duration);
+                if (mHotseat.getAlpha() != 1f) {
+                    int duration = mSearchDropTargetBar.getTransitionInDuration();
+                    mHotseat.animate().alpha(1f).setDuration(duration);
+                }
             } else {
                 mHotseat.setAlpha(1f);
             }
@@ -2593,8 +2594,10 @@ public final class Launcher extends Activity
     void hideHotseat(boolean animated) {
         if (!LauncherApplication.isScreenLarge()) {
             if (animated) {
-                int duration = mSearchDropTargetBar.getTransitionOutDuration();
-                mHotseat.animate().alpha(0f).setDuration(duration);
+                if (mHotseat.getAlpha() != 0f) {
+                    int duration = mSearchDropTargetBar.getTransitionOutDuration();
+                    mHotseat.animate().alpha(0f).setDuration(duration);
+                }
             } else {
                 mHotseat.setAlpha(0f);
             }

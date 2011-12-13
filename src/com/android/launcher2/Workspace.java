@@ -57,7 +57,6 @@ import android.view.Display;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
@@ -1635,14 +1634,7 @@ public class Workspace extends SmoothPagedView
         }
 
         if (animated) {
-            ValueAnimator animWithInterpolator =
-                ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
-
-            if (zoomIn) {
-                animWithInterpolator.setInterpolator(mZoomInInterpolator);
-            }
-
-            animWithInterpolator.addListener(new AnimatorListenerAdapter() {
+            anim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(android.animation.Animator animation) {
                     // The above code to determine initialAlpha and finalAlpha will ensure that only
@@ -1657,10 +1649,11 @@ public class Workspace extends SmoothPagedView
                     }
                 }
             });
-            for (int i = 0; i < getChildCount(); i++) {
+            for (int index = 0; index < getChildCount(); index++) {
+                final int i = index;
+                final CellLayout cl = (CellLayout) getChildAt(i);
                 invalidate();
                 if (mOldAlphas[i] == 0 && mNewAlphas[i] == 0) {
-                    final CellLayout cl = (CellLayout) getChildAt(i);
                     cl.fastInvalidate();
                     cl.setFastTranslationX(mNewTranslationXs[i]);
                     cl.setFastTranslationY(mNewTranslationYs[i]);
@@ -1669,60 +1662,48 @@ public class Workspace extends SmoothPagedView
                     cl.setFastBackgroundAlpha(mNewBackgroundAlphas[i]);
                     cl.setBackgroundAlphaMultiplier(mNewBackgroundAlphaMultipliers[i]);
                     cl.setFastAlpha(mNewAlphas[i]);
+                } else {
+                    LauncherViewPropertyAnimator a = new LauncherViewPropertyAnimator(cl);
+                    a.translationX(mNewTranslationXs[i])
+                        .translationY(mNewTranslationYs[i])
+                        .scaleX(mNewScaleXs[i])
+                        .scaleY(mNewScaleYs[i])
+                        .setDuration(duration)
+                        .setInterpolator(mZoomInInterpolator);
+                    if (mOldAlphas[i] != mNewAlphas[i]) {
+                        a.alpha(mNewAlphas[i]);
+                    }
+                    anim.play(a);
+                    if (mOldRotationYs[i] != 0 || mNewRotationYs[i] != 0) {
+                        ValueAnimator rotate = ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
+                        rotate.setInterpolator(new DecelerateInterpolator(2.0f));
+                        rotate.addUpdateListener(new LauncherAnimatorUpdateListener() {
+                                public void onAnimationUpdate(float a, float b) {
+                                    cl.setRotationY(a * 0f + b * 1f);
+                                }
+                            });
+                        anim.play(rotate);
+                    }
+                    if (mOldBackgroundAlphas[i] != 0 ||
+                        mNewBackgroundAlphas[i] != 0 ||
+                        mOldBackgroundAlphaMultipliers[i] != 0 ||
+                        mNewBackgroundAlphaMultipliers[i] != 0) {
+                        ValueAnimator bgAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
+                        bgAnim.setInterpolator(mZoomInInterpolator);
+                        bgAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
+                                public void onAnimationUpdate(float a, float b) {
+                                    cl.setFastBackgroundAlpha(
+                                            a * mOldBackgroundAlphas[i] +
+                                            b * mNewBackgroundAlphas[i]);
+                                    cl.setBackgroundAlphaMultiplier(
+                                            a * mOldBackgroundAlphaMultipliers[i] +
+                                            b * mNewBackgroundAlphaMultipliers[i]);
+                                }
+                            });
+                        anim.play(bgAnim);
+                    }
                 }
             }
-
-            animWithInterpolator.addUpdateListener(new LauncherAnimatorUpdateListener() {
-                public void onAnimationUpdate(float a, float b) {
-                    mTransitionProgress = b;
-                    if (b == 0f) {
-                        // an optimization, but not required
-                        return;
-                    }
-                    invalidate();
-                    for (int i = 0; i < getChildCount(); i++) {
-                        if (mOldAlphas[i] != 0 || mNewAlphas[i] != 0) {
-                            final CellLayout cl = (CellLayout) getChildAt(i);
-                            cl.fastInvalidate();
-                            cl.setFastTranslationX(
-                                    a * mOldTranslationXs[i] + b * mNewTranslationXs[i]);
-                            cl.setFastTranslationY(
-                                    a * mOldTranslationYs[i] + b * mNewTranslationYs[i]);
-                            cl.setFastScaleX(a * mOldScaleXs[i] + b * mNewScaleXs[i]);
-                            cl.setFastScaleY(a * mOldScaleYs[i] + b * mNewScaleYs[i]);
-                            cl.setFastBackgroundAlpha(
-                                    a * mOldBackgroundAlphas[i] + b * mNewBackgroundAlphas[i]);
-                            cl.setBackgroundAlphaMultiplier(a * mOldBackgroundAlphaMultipliers[i] +
-                                    b * mNewBackgroundAlphaMultipliers[i]);
-                            cl.setFastAlpha(a * mOldAlphas[i] + b * mNewAlphas[i]);
-                            if (mOldAlphas[i] != mNewAlphas[i]) {
-                                cl.setAlpha(a * mOldAlphas[i] + b * mNewAlphas[i]);
-                            }
-                        }
-                    }
-                }
-            });
-
-            ValueAnimator rotationAnim =
-                ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
-            rotationAnim.setInterpolator(new DecelerateInterpolator(2.0f));
-            rotationAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
-                public void onAnimationUpdate(float a, float b) {
-                    if (b == 0f) {
-                        // an optimization, but not required
-                        return;
-                    }
-                    for (int i = 0; i < getChildCount(); i++) {
-                        if (mOldAlphas[i] != 0 || mNewAlphas[i] != 0 ||
-                                mOldRotationYs[i] != 0 || mNewRotationYs[i] != 0) {
-                            final CellLayout cl = (CellLayout) getChildAt(i);
-                            cl.setFastRotationY(a * mOldRotationYs[i] + b * mNewRotationYs[i]);
-                        }
-                    }
-                }
-            });
-
-            anim.playTogether(animWithInterpolator, rotationAnim);
             anim.setStartDelay(delay);
             // If we call this when we're not animated, onAnimationEnd is never called on
             // the listener; make sure we only use the listener when we're actually animating
