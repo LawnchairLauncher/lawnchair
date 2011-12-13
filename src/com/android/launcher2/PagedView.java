@@ -1603,9 +1603,7 @@ public abstract class PagedView extends ViewGroup {
                 // First, clear any pages that should no longer be loaded
                 for (int i = 0; i < count; ++i) {
                     Page layout = (Page) getPageAt(i);
-                    if ((immediateAndOnly && i != page) ||
-                            (i < lowerPageBound) ||
-                            (i > upperPageBound)) {
+                    if ((i < lowerPageBound) || (i > upperPageBound)) {
                         if (layout.getPageChildCount() > 0) {
                             layout.removeAllViewsOnPage();
                         }
@@ -1617,7 +1615,6 @@ public abstract class PagedView extends ViewGroup {
                     if ((i != page) && immediateAndOnly) {
                         continue;
                     }
-                    Page layout = (Page) getPageAt(i);
                     if (lowerPageBound <= i && i <= upperPageBound) {
                         if (mDirtyPageContent.get(i)) {
                             syncPageItems(i, (i == page) && immediateAndOnly);
