@@ -63,6 +63,8 @@ public class DragLayer extends FrameLayout {
     private ValueAnimator mFadeOutAnim = null;
     private TimeInterpolator mCubicEaseOutInterpolator = new DecelerateInterpolator(1.5f);
     private View mDropView = null;
+    private int mAnchorViewInitialScrollX = 0;
+    private View mAnchorView = null;
 
     private int[] mDropViewPos = new int[2];
     private float mDropViewScale;
@@ -420,16 +422,16 @@ public class DragLayer extends FrameLayout {
         final int fromY = r.top;
 
         animateViewIntoPosition(dragView, fromX, fromY, pos[0], pos[1], scale,
-                onFinishRunnable, true, -1);
+                onFinishRunnable, true, -1, null);
     }
 
     public void animateViewIntoPosition(DragView dragView, final View child,
             final Runnable onFinishAnimationRunnable) {
-        animateViewIntoPosition(dragView, child, -1, onFinishAnimationRunnable);
+        animateViewIntoPosition(dragView, child, -1, onFinishAnimationRunnable, null);
     }
 
     public void animateViewIntoPosition(DragView dragView, final View child, int duration,
-            final Runnable onFinishAnimationRunnable) {
+            final Runnable onFinishAnimationRunnable, View anchorView) {
         ((CellLayoutChildren) child.getParent()).measureChild(child);
         CellLayout.LayoutParams lp =  (CellLayout.LayoutParams) child.getLayoutParams();
 
@@ -485,16 +487,17 @@ public class DragLayer extends FrameLayout {
             }
         };
         animateViewIntoPosition(dragView, fromX, fromY, toX, toY, scale,
-                onCompleteRunnable, true, duration);
+                onCompleteRunnable, true, duration, anchorView);
     }
 
     private void animateViewIntoPosition(final View view, final int fromX, final int fromY,
             final int toX, final int toY, float finalScale, Runnable onCompleteRunnable,
-            boolean fadeOut, int duration) {
+            boolean fadeOut, int duration, View anchorView) {
         Rect from = new Rect(fromX, fromY, fromX +
                 view.getMeasuredWidth(), fromY + view.getMeasuredHeight());
         Rect to = new Rect(toX, toY, toX + view.getMeasuredWidth(), toY + view.getMeasuredHeight());
-        animateView(view, from, to, 1f, finalScale, duration, null, null, onCompleteRunnable, true);
+        animateView(view, from, to, 1f, finalScale, duration, null, null,
+                onCompleteRunnable, true, anchorView);
     }
 
     /**
@@ -514,11 +517,14 @@ public class DragLayer extends FrameLayout {
      * @param onCompleteRunnable Optional runnable to run on animation completion.
      * @param fadeOut Whether or not to fade out the view once the animation completes. If true,
      *        the runnable will execute after the view is faded out.
+     * @param anchorView If not null, this represents the view which the animated view stays
+     *        anchored to in case scrolling is currently taking place. Note: currently this is
+     *        only used for the X dimension for the case of the workspace.
      */
     public void animateView(final View view, final Rect from, final Rect to, final float finalAlpha,
             final float finalScale, int duration, final Interpolator motionInterpolator,
             final Interpolator alphaInterpolator, final Runnable onCompleteRunnable,
-            final boolean fadeOut) {
+            final boolean fadeOut, View anchorView) {
         // Calculate the duration of the animation based on the object's distance
         final float dist = (float) Math.sqrt(Math.pow(to.left - from.left, 2) +
                 Math.pow(to.top - from.top, 2));
@@ -547,6 +553,11 @@ public class DragLayer extends FrameLayout {
         if (alphaInterpolator == null || motionInterpolator == null) {
             mDropAnim.setInterpolator(mCubicEaseOutInterpolator);
         }
+
+        if (anchorView != null) {
+            mAnchorViewInitialScrollX = anchorView.getScrollX();
+        }
+        mAnchorView = anchorView;
 
         mDropAnim.setDuration(duration);
         mDropAnim.setFloatValues(0.0f, 1.0f);
@@ -662,7 +673,8 @@ public class DragLayer extends FrameLayout {
             // We are animating an item that was just dropped on the home screen.
             // Render its View in the current animation position.
             canvas.save(Canvas.MATRIX_SAVE_FLAG);
-            final int xPos = mDropViewPos[0] - mDropView.getScrollX();
+            final int xPos = mDropViewPos[0] - mDropView.getScrollX() + (mAnchorView != null
+                    ? (mAnchorViewInitialScrollX - mAnchorView.getScrollX()) : 0);
             final int yPos = mDropViewPos[1] - mDropView.getScrollY();
             int width = mDropView.getMeasuredWidth();
             int height = mDropView.getMeasuredHeight();

@@ -362,7 +362,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
             dragLayer.animateView(animateView, from, to, finalAlpha,
                     scale * scaleRelativeToDragLayer, DROP_IN_ANIMATION_DURATION,
                     new DecelerateInterpolator(2), new AccelerateInterpolator(2),
-                    postAnimationRunnable, false);
+                    postAnimationRunnable, false, null);
             postDelayed(new Runnable() {
                 public void run() {
                     addItem(item);

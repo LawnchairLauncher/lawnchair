@@ -193,7 +193,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         };
         dragLayer.animateView(d.dragView, from, to, 0.1f, 0.1f,
                 DELETE_ANIMATION_DURATION, new DecelerateInterpolator(2),
-                new DecelerateInterpolator(1.5f), onAnimationEndRunnable, false);
+                new DecelerateInterpolator(1.5f), onAnimationEndRunnable, false, null);
     }
 
     private void completeDrop(DragObject d) {
