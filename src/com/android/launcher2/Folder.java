@@ -728,11 +728,17 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         int centeredLeft = centerX - width / 2;
         int centeredTop = centerY - height / 2;
 
+        int currentPage = mLauncher.getWorkspace().getCurrentPage();
+        // In case the workspace is scrolling, we need to use the final scroll to compute
+        // the folders bounds.
+        mLauncher.getWorkspace().setFinalScrollForPageChange(currentPage);
         // We first fetch the currently visible CellLayoutChildren
-        CellLayout currentPage = mLauncher.getWorkspace().getCurrentDropLayout();
-        CellLayoutChildren boundingLayout = currentPage.getChildrenLayout();
+        CellLayout currentLayout = (CellLayout) mLauncher.getWorkspace().getChildAt(currentPage);
+        CellLayoutChildren boundingLayout = currentLayout.getChildrenLayout();
         Rect bounds = new Rect();
         parent.getDescendantRectRelativeToSelf(boundingLayout, bounds);
+        // We reset the workspaces scroll
+        mLauncher.getWorkspace().resetFinalScrollForPageChange(currentPage);
 
         // We need to bound the folder to the currently visible CellLayoutChildren
         int left = Math.min(Math.max(bounds.left, centeredLeft),
