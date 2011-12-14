@@ -281,7 +281,8 @@ public class FolderIcon extends LinearLayout implements FolderListener {
     private boolean willAcceptItem(ItemInfo item) {
         final int itemType = item.itemType;
         return ((itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
-                itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) &&
+                itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT ||
+                itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) &&
                 !mFolder.isFull() && item != mInfo && !mInfo.opened);
     }
 
@@ -392,6 +393,15 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         if (d.dragInfo instanceof ApplicationInfo) {
             // Came from all apps -- make a copy
             item = ((ApplicationInfo) d.dragInfo).makeShortcut();
+        } else if (d.dragInfo instanceof FolderInfo) {
+            FolderInfo folder = (FolderInfo) d.dragInfo;
+            mFolder.notifyDrop();
+            for (ShortcutInfo fItem : folder.contents) {
+                onDrop(fItem, d.dragView, null, 1.0f, mInfo.contents.size(), d.postAnimationRunnable, d);
+            }
+            mLauncher.removeFolder(folder);
+            LauncherModel.deleteItemFromDatabase(mLauncher, folder);
+            return;
         } else {
             item = (ShortcutInfo) d.dragInfo;
         }
