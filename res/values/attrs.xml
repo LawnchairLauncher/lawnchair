@@ -163,4 +163,11 @@
     </declare-styleable>
     <declare-styleable name="CustomClingText">
     </declare-styleable>
+
+    <declare-styleable name="NumberPickerPreference">
+        <attr name="max" format="integer" />
+        <attr name="min" format="integer" />
+        <attr name="maxExternal" format="string" />
+        <attr name="minExternal" format="string" />
+    </declare-styleable>
 </resources>
