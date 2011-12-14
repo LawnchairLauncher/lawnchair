@@ -1725,6 +1725,9 @@ public class Workspace extends SmoothPagedView
                             cl.setBackgroundAlphaMultiplier(a * mOldBackgroundAlphaMultipliers[i] +
                                     b * mNewBackgroundAlphaMultipliers[i]);
                             cl.setFastAlpha(a * mOldAlphas[i] + b * mNewAlphas[i]);
+                            if (mOldAlphas[i] != mNewAlphas[i]) {
+                                cl.setAlpha(a * mOldAlphas[i] + b * mNewAlphas[i]);
+                            }
                         }
                     }
                     syncChildrenLayersEnabledOnVisiblePages();
@@ -3518,7 +3521,7 @@ public class Workspace extends SmoothPagedView
         final ViewGroup parent = (ViewGroup) getParent();
         final ImageView qsbDivider = (ImageView) (parent.findViewById(R.id.qsb_divider));
         final ImageView dockDivider = (ImageView) (parent.findViewById(R.id.dock_divider));
-        final ImageView scrollIndicator = getScrollingIndicator();
+        final View scrollIndicator = getScrollingIndicator();
 
         cancelScrollingIndicatorAnimations();
         if (qsbDivider != null) qsbDivider.setAlpha(reducedFade);

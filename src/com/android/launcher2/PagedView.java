@@ -181,7 +181,7 @@ public abstract class PagedView extends ViewGroup {
 
     // Scrolling indicator
     private ValueAnimator mScrollIndicatorAnimator;
-    private ImageView mScrollIndicator;
+    private View mScrollIndicator;
     private int mScrollIndicatorPaddingLeft;
     private int mScrollIndicatorPaddingRight;
     private boolean mHasScrollIndicator = true;
@@ -726,19 +726,18 @@ public abstract class PagedView extends ViewGroup {
     protected void getVisiblePages(int[] range) {
         final int pageCount = getChildCount();
         if (pageCount > 0) {
-            final int pageWidth = getScaledMeasuredWidth(getPageAt(0));
             final int screenWidth = getMeasuredWidth();
-            int x = getScaledRelativeChildOffset(0) + pageWidth;
+            int x = (int) getPageAt(0).getRight();
             int leftScreen = 0;
             int rightScreen = 0;
             while (x <= mScrollX && leftScreen < pageCount - 1) {
                 leftScreen++;
-                x += getScaledMeasuredWidth(getPageAt(leftScreen)) + mPageSpacing;
+                x = getPageAt(leftScreen).getRight();
             }
             rightScreen = leftScreen;
             while (x < mScrollX + screenWidth && rightScreen < pageCount - 1) {
                 rightScreen++;
-                x += getScaledMeasuredWidth(getPageAt(rightScreen)) + mPageSpacing;
+                x = (int) getPageAt(rightScreen).getRight();
             }
             range[0] = leftScreen;
             range[1] = rightScreen;
@@ -1756,12 +1755,12 @@ public abstract class PagedView extends ViewGroup {
         }
     }
 
-    protected ImageView getScrollingIndicator() {
+    protected View getScrollingIndicator() {
         // We use mHasScrollIndicator to prevent future lookups if there is no sibling indicator
         // found
         if (mHasScrollIndicator && mScrollIndicator == null) {
             ViewGroup parent = (ViewGroup) getParent();
-            mScrollIndicator = (ImageView) (parent.findViewById(R.id.paged_view_indicator));
+            mScrollIndicator = (View) (parent.findViewById(R.id.paged_view_indicator));
             mHasScrollIndicator = mScrollIndicator != null;
             if (mHasScrollIndicator) {
                 mScrollIndicator.setVisibility(View.VISIBLE);
