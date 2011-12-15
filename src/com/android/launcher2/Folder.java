@@ -74,18 +74,13 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private final LayoutInflater mInflater;
     private final IconCache mIconCache;
     private int mState = STATE_NONE;
-    private static final int FULL_GROW = 0;
-    private static final int PARTIAL_GROW = 1;
     private static final int REORDER_ANIMATION_DURATION = 230;
     private static final int ON_EXIT_CLOSE_DELAY = 800;
-    private int mMode = PARTIAL_GROW;
     private boolean mRearrangeOnClose = false;
     private FolderIcon mFolderIcon;
     private int mMaxCountX;
     private int mMaxCountY;
     private int mMaxNumItems;
-    private Rect mNewSize = new Rect();
-    private Rect mIconRect = new Rect();
     private ArrayList<View> mItemsInReadingOrder = new ArrayList<View>();
     private Drawable mIconDrawable;
     boolean mItemsInvalidated = false;
@@ -365,21 +360,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
      */
     private void positionAndSizeAsIcon() {
         if (!(getParent() instanceof DragLayer)) return;
-
-        DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
-
-        if (mMode == PARTIAL_GROW) {
-            setScaleX(0.8f);
-            setScaleY(0.8f);
-            setAlpha(0f);
-        } else {
-            mLauncher.getDragLayer().getDescendantRectRelativeToSelf(mFolderIcon, mIconRect);
-            lp.width = mIconRect.width();
-            lp.height = mIconRect.height();
-            lp.x = mIconRect.left;
-            lp.y = mIconRect.top;
-            mContent.setAlpha(0);
-        }
+        setScaleX(0.8f);
+        setScaleY(0.8f);
+        setAlpha(0f);
         mState = STATE_SMALL;
     }
 
@@ -387,35 +370,12 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         positionAndSizeAsIcon();
 
         if (!(getParent() instanceof DragLayer)) return;
-
-        ObjectAnimator oa;
-        DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
-
         centerAboutIcon();
-        if (mMode == PARTIAL_GROW) {
-            PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 1);
-            PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.0f);
-            PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.0f);
-            oa = ObjectAnimator.ofPropertyValuesHolder(this, alpha, scaleX, scaleY);
-        } else {
-            PropertyValuesHolder width = PropertyValuesHolder.ofInt("width", mNewSize.width());
-            PropertyValuesHolder height = PropertyValuesHolder.ofInt("height", mNewSize.height());
-            PropertyValuesHolder x = PropertyValuesHolder.ofInt("x", mNewSize.left);
-            PropertyValuesHolder y = PropertyValuesHolder.ofInt("y", mNewSize.top);
-            oa = ObjectAnimator.ofPropertyValuesHolder(lp, width, height, x, y);
-            oa.addUpdateListener(new AnimatorUpdateListener() {
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    requestLayout();
-                }
-            });
-
-            PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 1.0f);
-            ObjectAnimator alphaOa = ObjectAnimator.ofPropertyValuesHolder(mContent, alpha);
-            alphaOa.setDuration(mExpandDuration);
-            alphaOa.setInterpolator(new AccelerateInterpolator(2.0f));
-            alphaOa.start();
-        }
-
+        PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 1);
+        PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.0f);
+        PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.0f);
+        ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(this, alpha, scaleX, scaleY);
+        
         oa.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -457,33 +417,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     public void animateClosed() {
         if (!(getParent() instanceof DragLayer)) return;
-
-        ObjectAnimator oa;
-        if (mMode == PARTIAL_GROW) {
-            PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 0);
-            PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 0.9f);
-            PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 0.9f);
-            oa = ObjectAnimator.ofPropertyValuesHolder(this, alpha, scaleX, scaleY);
-        } else {
-            DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
-
-            PropertyValuesHolder width = PropertyValuesHolder.ofInt("width", mIconRect.width());
-            PropertyValuesHolder height = PropertyValuesHolder.ofInt("height", mIconRect.height());
-            PropertyValuesHolder x = PropertyValuesHolder.ofInt("x", mIconRect.left);
-            PropertyValuesHolder y = PropertyValuesHolder.ofInt("y", mIconRect.top);
-            oa = ObjectAnimator.ofPropertyValuesHolder(lp, width, height, x, y);
-            oa.addUpdateListener(new AnimatorUpdateListener() {
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    requestLayout();
-                }
-            });
-
-            PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 0f);
-            ObjectAnimator alphaOa = ObjectAnimator.ofPropertyValuesHolder(mContent, alpha);
-            alphaOa.setDuration(mExpandDuration);
-            alphaOa.setInterpolator(new DecelerateInterpolator(2.0f));
-            alphaOa.start();
-        }
+        PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 0);
+        PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 0.9f);
+        PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 0.9f);
+        ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(this, alpha, scaleX, scaleY);
 
         oa.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -821,14 +758,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mFolderIcon.setPivotX(folderIconPivotX);
         mFolderIcon.setPivotY(folderIconPivotY);
 
-        if (mMode == PARTIAL_GROW) {
-            lp.width = width;
-            lp.height = height;
-            lp.x = left;
-            lp.y = top;
-        } else {
-            mNewSize.set(left, top, left + width, top + height);
-        }
+        lp.width = width;
+        lp.height = height;
+        lp.x = left;
+        lp.y = top;
     }
 
     private void setupContentForNumItems(int count) {
