@@ -132,6 +132,7 @@ public class Workspace extends SmoothPagedView
      * The CellLayout that is currently being dragged over
      */
     private CellLayout mDragTargetLayout = null;
+    private boolean mDragHasEnteredWorkspace = false;
 
     private Launcher mLauncher;
     private IconCache mIconCache;
@@ -2333,6 +2334,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public void onDragEnter(DragObject d) {
+        mDragHasEnteredWorkspace = true;
         if (mDragTargetLayout != null) {
             mDragTargetLayout.setIsDragOverlapping(false);
             mDragTargetLayout.onDragExit();
@@ -2368,6 +2370,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public void onDragExit(DragObject d) {
+        mDragHasEnteredWorkspace = false;
         doDragExit(d);
     }
 
@@ -3237,16 +3240,17 @@ public class Workspace extends SmoothPagedView
         boolean result = false;
         if (mInScrollArea) {
             if (mDragTargetLayout != null) {
-                // Unmark the overlapping layout and re-enter the current layout
                 mDragTargetLayout.setIsDragOverlapping(false);
-                mDragTargetLayout = getCurrentDropLayout();
-                mDragTargetLayout.onDragEnter();
-
                 // Workspace is responsible for drawing the edge glow on adjacent pages,
                 // so we need to redraw the workspace when this may have changed.
                 invalidate();
-                result = true;
             }
+            if (mDragTargetLayout != null && mDragHasEnteredWorkspace) {
+                // Unmark the overlapping layout and re-enter the current layout
+                mDragTargetLayout = getCurrentDropLayout();
+                mDragTargetLayout.onDragEnter();
+            }
+            result = true;
             mInScrollArea = false;
         }
         return result;
