@@ -2287,10 +2287,8 @@ public class Workspace extends SmoothPagedView
             mAnimatingViewIntoPlace = true;
             if (d.dragView.hasDrawn()) {
                 int duration = snapScreen < 0 ? -1 : ADJACENT_SCREEN_DROP_DURATION;
-                setFinalScrollForPageChange(snapScreen);
                 mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, cell, duration,
-                        disableHardwareLayersRunnable);
-                resetFinalScrollForPageChange(snapScreen);
+                        disableHardwareLayersRunnable, this);
             } else {
                 cell.setVisibility(VISIBLE);
             }

@@ -375,7 +375,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.0f);
         PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.0f);
         ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(this, alpha, scaleX, scaleY);
-        
+
         oa.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
