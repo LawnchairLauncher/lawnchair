@@ -916,8 +916,10 @@ public class CellLayout extends ViewGroup {
     }
 
     public void setBackgroundAlpha(float alpha) {
-        mBackgroundAlpha = alpha;
-        invalidate();
+        if (mBackgroundAlpha != alpha) {
+            mBackgroundAlpha = alpha;
+            invalidate();
+        }
     }
 
     // Need to return true to let the view system know we know how to handle alpha-- this is
@@ -928,6 +930,7 @@ public class CellLayout extends ViewGroup {
         return true;
     }
 
+    @Override
     public void setAlpha(float alpha) {
         setChildrenAlpha(alpha);
         super.setAlpha(alpha);
