@@ -727,17 +727,16 @@ public abstract class PagedView extends ViewGroup {
         final int pageCount = getChildCount();
         if (pageCount > 0) {
             final int screenWidth = getMeasuredWidth();
-            int x = (int) getPageAt(0).getRight();
             int leftScreen = 0;
             int rightScreen = 0;
-            while (x <= mScrollX && leftScreen < pageCount - 1) {
+            while (leftScreen < pageCount - 1 &&
+                    getPageAt(leftScreen).getRight() <= mScrollX) {
                 leftScreen++;
-                x = getPageAt(leftScreen).getRight();
             }
             rightScreen = leftScreen;
-            while (x < mScrollX + screenWidth && rightScreen < pageCount - 1) {
+            while (rightScreen < pageCount - 1 &&
+                    getPageAt(rightScreen + 1).getLeft() < mScrollX + screenWidth) {
                 rightScreen++;
-                x = (int) getPageAt(rightScreen).getRight();
             }
             range[0] = leftScreen;
             range[1] = rightScreen;
@@ -773,8 +772,21 @@ public abstract class PagedView extends ViewGroup {
                 canvas.clipRect(mScrollX, mScrollY, mScrollX + mRight - mLeft,
                         mScrollY + mBottom - mTop);
 
-                for (int i = rightScreen; i >= leftScreen; i--) {
-                    drawChild(canvas, getPageAt(i), drawingTime);
+                // On certain graphics drivers, if you draw to a off-screen buffer that's not
+                // used, it can lead to poor performance. We were running into this when
+                // setChildrenLayersEnabled was called on a CellLayout; that triggered a re-draw
+                // of that CellLayout's hardware layer, even if that CellLayout wasn't visible.
+                // As a fix, below we set pages that aren't going to be rendered are to be
+                // View.INVISIBLE, preventing re-drawing of their hardware layer
+                for (int i = getChildCount() - 1; i >= 0; i--) {
+                    final View v = getPageAt(i);
+                    if (leftScreen <= i && i <= rightScreen &&
+                            v.getAlpha() > ViewConfiguration.ALPHA_THRESHOLD) {
+                        v.setVisibility(VISIBLE);
+                        drawChild(canvas, v, drawingTime);
+                    } else {
+                        v.setVisibility(INVISIBLE);
+                    }
                 }
                 canvas.restore();
             }
