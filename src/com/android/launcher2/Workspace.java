@@ -1268,32 +1268,6 @@ public class Workspace extends SmoothPagedView
         return (mBackground != null && mBackgroundAlpha > 0.0f && mDrawBackground);
     }
 
-    public void scrollTo (int x, int y) {
-        super.scrollTo(x, y);
-        syncChildrenLayersEnabledOnVisiblePages();
-    }
-
-    // This method just applies the value mChildrenLayersEnabled to all the pages that
-    // will be rendered on the next frame.
-    // We do this because calling setChildrenLayersEnabled on a view that's not
-    // visible/rendered causes slowdowns on some graphics cards
-    private void syncChildrenLayersEnabledOnVisiblePages() {
-        if (mChildrenLayersEnabled) {
-            getVisiblePages(mTempVisiblePagesRange);
-            final int leftScreen = mTempVisiblePagesRange[0];
-            final int rightScreen = mTempVisiblePagesRange[1];
-            if (leftScreen != -1 && rightScreen != -1) {
-                for (int i = leftScreen; i <= rightScreen; i++) {
-                    ViewGroup page = (ViewGroup) getPageAt(i);
-                    if (page.getVisibility() == VISIBLE &&
-                            page.getAlpha() > ViewConfiguration.ALPHA_THRESHOLD) {
-                        ((ViewGroup)getPageAt(i)).setChildrenLayersEnabled(true);
-                    }
-                }
-            }
-        }
-    }
-
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
@@ -1400,13 +1374,8 @@ public class Workspace extends SmoothPagedView
 
         if (enableChildrenLayers != mChildrenLayersEnabled) {
             mChildrenLayersEnabled = enableChildrenLayers;
-            // calling setChildrenLayersEnabled on a view that's not visible/rendered
-            // causes slowdowns on some graphics cards, so we only disable it here and leave
-            // the enabling to dispatchDraw
-            if (!enableChildrenLayers) {
-                for (int i = 0; i < getPageCount(); i++) {
-                    ((ViewGroup)getChildAt(i)).setChildrenLayersEnabled(false);
-                }
+            for (int i = 0; i < getPageCount(); i++) {
+                ((ViewGroup)getChildAt(i)).setChildrenLayersEnabled(mChildrenLayersEnabled);
             }
         }
     }
@@ -1731,7 +1700,6 @@ public class Workspace extends SmoothPagedView
                             }
                         }
                     }
-                    syncChildrenLayersEnabledOnVisiblePages();
                 }
             });
 
@@ -1771,7 +1739,6 @@ public class Workspace extends SmoothPagedView
             // Fade the background gradient away
             animateBackgroundGradient(0f, true);
         }
-        syncChildrenLayersEnabledOnVisiblePages();
         return anim;
     }
 
