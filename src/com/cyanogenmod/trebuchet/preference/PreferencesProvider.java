@@ -25,6 +25,14 @@ public final class PreferencesProvider {
     public static final String PREFERENCES_CHANGED = "preferences_changed";
     public static class Interface {
         public static class Homescreen {
+            public static int getNumberHomescreens(Context context) {
+                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                return preferences.getInt("ui_homescreen_screens", 5);
+            }
+            public static int getDefaultHomescreen(Context context, int def) {
+                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                return preferences.getInt("ui_homescreen_default_screen", def + 1) - 1;
+            }
             public static int getCellCountX(Context context, int def) {
                 final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
                 String[] values = preferences.getString("ui_homescreen_grid", "0|" + def).split("\\|");

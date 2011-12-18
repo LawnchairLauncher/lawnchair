@@ -143,7 +143,7 @@ public final class Launcher extends Activity
 
     static final String EXTRA_SHORTCUT_DUPLICATE = "duplicate";
 
-    static final int SCREEN_COUNT = 5;
+    static final int MAX_SCREEN_COUNT = 7;
     static final int DEFAULT_SCREEN = 2;
 
     private static final String PREFERENCES = "launcher.preferences";
@@ -3172,7 +3172,7 @@ public final class Launcher extends Activity
         if (mWorkspace != null) {
             return mWorkspace.getCurrentPage();
         } else {
-            return SCREEN_COUNT / 2;
+            return DEFAULT_SCREEN;
         }
     }
 
