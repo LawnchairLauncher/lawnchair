@@ -294,6 +294,10 @@ s -->
     <!-- Homescreen -->
     <string name="preferences_interface_homescreen_title">Homescreen</string>
     <string name="preferences_interface_homescreen_general_category">General</string>
+    <string name="preferences_interface_homescreen_general_screens_title">Homescreens</string>
+    <string name="preferences_interface_homescreen_general_screens_summary">Number of screens on the homescreen</string>
+    <string name="preferences_interface_homescreen_general_default_screen_title">Default Screen</string>
+    <string name="preferences_interface_homescreen_general_default_screen_summary">Choose the default homescreen</string>
     <string name="preferences_interface_homescreen_general_search_title">Search Bar</string>
     <string name="preferences_interface_homescreen_general_grid_title">Grid Size</string>
     <string name="preferences_interface_homescreen_general_grid_summary">Choose the number of rows/columns on the homescreen</string>
