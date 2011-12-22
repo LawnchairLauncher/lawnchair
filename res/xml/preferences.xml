@@ -54,6 +54,12 @@
                     android:title="@string/preferences_interface_homescreen_general_resize_any_widget_title"
                     android:summary="@string/preferences_interface_homescreen_general_resize_any_widget_summary" />
             </PreferenceCategory>
+            <PreferenceCategory android:title="@string/preferences_interface_homescreen_scrolling_category">
+                <CheckBoxPreference android:key="ui_homescreen_scrolling_scroll_wallpaper"
+                    android:title="@string/preferences_interface_homescreen_scrolling_scroll_wallpaper_title"
+                    android:summary="@string/preferences_interface_homescreen_scrolling_scroll_wallpaper_summary"
+                    android:defaultValue="true" />
+            </PreferenceCategory>
             <PreferenceCategory android:title="@string/preferences_interface_homescreen_indicator_category">
                 <CheckBoxPreference android:key="ui_homescreen_indicator_enable"
                     android:title="@string/preferences_interface_homescreen_indicator_enable_title"
