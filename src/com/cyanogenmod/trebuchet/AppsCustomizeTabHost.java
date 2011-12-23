@@ -72,7 +72,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             };
         // Preferences
         mJoinWidgetsApps = PreferencesProvider.Interface.Drawer.getJoinWidgetsApps(context);
-        mFadeScrollingIndicator = PreferencesProvider.Interface.Drawer.getFadeScrollingIndicator(context);
+        mFadeScrollingIndicator = PreferencesProvider.Interface.Drawer.Indicator.getFadeScrollingIndicator(context);
     }
 
     /**

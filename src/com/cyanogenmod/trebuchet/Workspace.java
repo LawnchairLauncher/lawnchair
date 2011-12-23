@@ -346,9 +346,9 @@ public class Workspace extends SmoothPagedView
         }
         mShowSearchBar = PreferencesProvider.Interface.Homescreen.getShowSearchBar(context);
         mResizeAnyWidget = PreferencesProvider.Interface.Homescreen.getResizeAnyWidget(context);
-        mScrollWallpaper = PreferencesProvider.Interface.Homescreen.getScrollWallpaper(context);
-        mShowScrollingIndicator = PreferencesProvider.Interface.Homescreen.getShowScrollingIndicator(context);
-        mFadeScrollingIndicator = PreferencesProvider.Interface.Homescreen.getFadeScrollingIndicator(context);
+        mScrollWallpaper = PreferencesProvider.Interface.Homescreen.Scrolling.getScrollWallpaper(context);
+        mShowScrollingIndicator = PreferencesProvider.Interface.Homescreen.Indicator.getShowScrollingIndicator(context);
+        mFadeScrollingIndicator = PreferencesProvider.Interface.Homescreen.Indicator.getFadeScrollingIndicator(context);
 
         initWorkspace();
 
