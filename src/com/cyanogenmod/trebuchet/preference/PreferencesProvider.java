@@ -59,17 +59,21 @@ public final class PreferencesProvider {
                 final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
                 return preferences.getBoolean("ui_homescreen_general_resize_any_widget", false);
             }
-            public static boolean getScrollWallpaper(Context context) {
-                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                return preferences.getBoolean("ui_homescreen_scrolling_scroll_wallpaper", true);
+            public static class Scrolling {
+                public static boolean getScrollWallpaper(Context context) {
+                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                    return preferences.getBoolean("ui_homescreen_scrolling_scroll_wallpaper", true);
+                }
             }
-            public static boolean getShowScrollingIndicator(Context context) {
-                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                return preferences.getBoolean("ui_homescreen_indicator_enable", true);
-            }
-            public static boolean getFadeScrollingIndicator(Context context) {
-                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                return preferences.getBoolean("ui_homescreen_indicator_fade", true);
+            public static class Indicator {
+                public static boolean getShowScrollingIndicator(Context context) {
+                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                    return preferences.getBoolean("ui_homescreen_indicator_enable", true);
+                }
+                public static boolean getFadeScrollingIndicator(Context context) {
+                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                    return preferences.getBoolean("ui_homescreen_indicator_fade", true);
+                }
             }
         }
 
@@ -78,13 +82,15 @@ public final class PreferencesProvider {
                 final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
                 return preferences.getBoolean("ui_drawer_widgets_join_apps", true);
             }
-            public static boolean getShowScrollingIndicator(Context context) {
-                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                return preferences.getBoolean("ui_drawer_indicator_enable", true);
-            }
-            public static boolean getFadeScrollingIndicator(Context context) {
-                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                return preferences.getBoolean("ui_drawer_indicator_fade", true);
+            public static class Indicator {
+                public static boolean getShowScrollingIndicator(Context context) {
+                   final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                    return preferences.getBoolean("ui_drawer_indicator_enable", true);
+                }
+                public static boolean getFadeScrollingIndicator(Context context) {
+                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                    return preferences.getBoolean("ui_drawer_indicator_fade", true);
+                }
             }
         }
 

@@ -348,8 +348,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         // Preferences
         mJoinWidgetsApps = PreferencesProvider.Interface.Drawer.getJoinWidgetsApps(context);
-        mShowScrollingIndicator = PreferencesProvider.Interface.Drawer.getShowScrollingIndicator(context);
-        mFadeScrollingIndicator = PreferencesProvider.Interface.Drawer.getFadeScrollingIndicator(context);
+        mShowScrollingIndicator = PreferencesProvider.Interface.Drawer.Indicator.getShowScrollingIndicator(context);
+        mFadeScrollingIndicator = PreferencesProvider.Interface.Drawer.Indicator.getFadeScrollingIndicator(context);
 
         if (!mShowScrollingIndicator) {
             disableScrollingIndicator();
