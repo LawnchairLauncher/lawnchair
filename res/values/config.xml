@@ -7,6 +7,8 @@
 <!-- DragController -->
     <integer name="config_flingToDeleteMinVelocity">-1500</integer>
 
+    <bool name="config_cyanogenmod">false</bool>
+
 <!-- AllApps/Customize/AppsCustomize -->
     <!-- The alpha of the AppsCustomize bg in spring loaded mode -->
     <integer name="config_appsCustomizeSpringLoadedBgAlpha">45</integer>
