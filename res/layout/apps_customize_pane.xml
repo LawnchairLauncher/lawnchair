@@ -41,6 +41,12 @@
                 android:tabStripEnabled="false"
                 android:divider="@null" />
             <include
+                android:id="@+id/overflow_menu_button"
+                layout="@layout/overflow_menu_button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="right" />
+            <include
                 android:id="@+id/market_button"
                 layout="@layout/market_button"
                 android:layout_width="wrap_content"

@@ -81,12 +81,13 @@ public class FocusHelper {
     }
 
     /**
-     * Handles key events in a AppsCustomize tab between the last tab view and the shop button.
+     * Handles key events in a AppsCustomize tab between the last tab view and the shop/menu button.
      */
     static boolean handleAppsCustomizeTabKeyEvent(View v, int keyCode, KeyEvent e) {
         final TabHost tabHost = findTabHostParent(v);
         final ViewGroup contents = tabHost.getTabContentView();
         final View shop = tabHost.findViewById(R.id.market_button);
+        final View overflowMenu = tabHost.findViewById(R.id.overflow_menu_button);
 
         final int action = e.getAction();
         final boolean handleKeyEvent = (action != KeyEvent.ACTION_UP);
@@ -95,8 +96,12 @@ public class FocusHelper {
             case KeyEvent.KEYCODE_DPAD_RIGHT:
                 if (handleKeyEvent) {
                     // Select the shop button if we aren't on it
-                    if (v != shop) {
-                        shop.requestFocus();
+                    if (v != shop || v != overflowMenu) {
+                        if (shop.getVisibility() == View.VISIBLE){
+                            shop.requestFocus();
+                        } else if (overflowMenu.getVisibility() == View.VISIBLE) {
+                            overflowMenu.requestFocus();
+                        }
                     }
                 }
                 wasHandled = true;
@@ -104,7 +109,7 @@ public class FocusHelper {
             case KeyEvent.KEYCODE_DPAD_DOWN:
                 if (handleKeyEvent) {
                     // Select the content view (down is handled by the tab key handler otherwise)
-                    if (v == shop) {
+                    if (v == shop || v == overflowMenu) {
                         contents.requestFocus();
                         wasHandled = true;
                     }
