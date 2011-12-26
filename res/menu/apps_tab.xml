@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/apps_sort_title"
+            android:title="@string/menu_apps_sort_title"
+            android:checked="true" />
+        <item android:id="@+id/apps_sort_install_date"
+            android:title="@string/menu_apps_sort_install_date" />
+    </group>
+</menu>

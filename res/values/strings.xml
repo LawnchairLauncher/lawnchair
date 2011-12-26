@@ -158,6 +158,11 @@ s -->
     <!-- Noun, menu item used to show help. [CHAR_LIMIT=none] -->
     <string name="menu_help">Help</string>
 
+    <!-- Noun, menu item used to sort apps by name -->
+    <string name="menu_apps_sort_title">Name</string>
+    <!-- Noun, menu item used to sort apps by install date -->
+    <string name="menu_apps_sort_install_date">Install Date</string>
+
     <!-- URL pointing to help text. If empty, no link to help will be created [DO NOT TRANSLATE] -->
     <string name="help_url" translatable="false"></string>
 
