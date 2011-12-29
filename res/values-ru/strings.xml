@@ -29,7 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"Виджеты"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Чтобы выбрать виджет, нажмите на значок и удерживайте его."</string>
     <string name="market" msgid="2652226429823445833">"Маркет"</string>
-    <string name="external_drop_widget_error" msgid="127440783198670829">"Не удалось добавить элемент на главный экран."</string>
+    <string name="external_drop_widget_error" msgid="2285187188524172774">"Не удалось добавить элемент на главный экран."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Выберите виджет"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Название папки"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Переименовать папку"</string>
@@ -45,7 +45,7 @@
     <string name="shortcut_installed" msgid="7071557296331322355">"Ярлык \"<xliff:g id="NAME">%s</xliff:g>\" создан"</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Ярлык \"<xliff:g id="NAME">%s</xliff:g>\" удален."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Ярлык \"<xliff:g id="NAME">%s</xliff:g>\" уже существует."</string>
-    <string name="title_select_shortcut" msgid="2858897527672831763">"Выберите ярлык"</string>
+    <string name="title_select_shortcut" msgid="1873670208166882222">"Выбор ярлыка"</string>
     <string name="title_select_application" msgid="1793455815754848652">"Выберите приложение"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Приложения"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Главная"</string>
@@ -75,11 +75,11 @@
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"устанавливать ярлыки"</string>
     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Приложение сможет самостоятельно добавлять ярлыки."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"удалять ярлыки"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Приложение сможет самостоятельно удалять ярлыки."</string>
+    <string name="permdesc_uninstall_shortcut" msgid="274355570620220977">"Приложение сможет самостоятельно удалять ярлыки."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"считывать настройки и ярлыки главного экрана"</string>
-    <string name="permdesc_read_settings" msgid="1836104524215167383">"Приложение получит доступ к данным о настройках и ярлыках на главном экране."</string>
+    <string name="permdesc_read_settings" msgid="5788109303585403679">"Приложение получит доступ к данным о настройках и ярлыках на главном экране."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"изменять настройки и ярлыки главного экрана"</string>
-    <string name="permdesc_write_settings" msgid="6763846563231494591">"Приложение сможет изменять настройки и ярлыки на главном экране."</string>
+    <string name="permdesc_write_settings" msgid="8530105489115785531">"Приложение сможет изменять настройки и ярлыки на главном экране."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Не удалось загрузить виджет"</string>
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Это системное приложение, его нельзя удалить."</string>
     <string name="dream_name" msgid="2847171357608437154">"Фейерверк"</string>
@@ -88,7 +88,7 @@
     <string name="workspace_scroll_format" msgid="7911126267695001437">"Рабочая область %1$d из %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"Приложения: стр. %1$d из %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"Виджеты: стр. %1$d из %2$d"</string>
-    <string name="workspace_cling_title" msgid="738396473989890567">"Чувствуйте себя как дома"</string>
+    <string name="workspace_cling_title" msgid="738396473989890567">"Будьте как дома"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"Добавляйте сюда любимые приложения."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Чтобы открыть список приложений, нажмите на круг."</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"Выберите приложения"</string>
@@ -98,8 +98,8 @@
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Чтобы создать папку на главном экране, перенесите одно приложение на другое."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"ОК"</string>
     <string name="folder_opened" msgid="4129072635480822768">"Папка открыта, %1$d x %2$d"</string>
-    <string name="folder_tap_to_close" msgid="4076794242530255812">"Нажмите, чтобы закрыть папку."</string>
-    <string name="folder_tap_to_rename" msgid="2125528923948315223">"Нажмите, чтобы переименовать."</string>
+    <string name="folder_tap_to_close" msgid="1335478160661137579">"Нажмите, чтобы закрыть папку"</string>
+    <string name="folder_tap_to_rename" msgid="5201612989905472442">"Нажмите, чтобы подтвердить переименование"</string>
     <string name="folder_closed" msgid="3130534551370511932">"Папка закрыта"</string>
     <string name="folder_renamed" msgid="781234745487414781">"Новое название папки: %1$s"</string>
     <string name="folder_name_format" msgid="4513766553514769310">"Папка: %1$s"</string>

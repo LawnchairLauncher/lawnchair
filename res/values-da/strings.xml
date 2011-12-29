@@ -29,7 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widgets"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Tryk og hold nede for at vælge en widget."</string>
     <string name="market" msgid="2652226429823445833">"Butik"</string>
-    <string name="external_drop_widget_error" msgid="127440783198670829">"Elementet kunne ikke trækkes til startskærmen."</string>
+    <string name="external_drop_widget_error" msgid="2285187188524172774">"Elementet kunne ikke trækkes til startskærmen."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Vælg en widget for at oprette"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Mappenavn"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Omdøb mappe"</string>
@@ -45,7 +45,7 @@
     <string name="shortcut_installed" msgid="7071557296331322355">"Genvejen \"<xliff:g id="NAME">%s</xliff:g>\" blev oprettet."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Genvejen \"<xliff:g id="NAME">%s</xliff:g>\" blev fjernet."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Genvejen \"<xliff:g id="NAME">%s</xliff:g>\" findes allerede."</string>
-    <string name="title_select_shortcut" msgid="2858897527672831763">"Vælg genvej"</string>
+    <string name="title_select_shortcut" msgid="1873670208166882222">"Vælg genvej"</string>
     <string name="title_select_application" msgid="1793455815754848652">"Vælg app"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Applikationer"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Start"</string>
@@ -75,11 +75,11 @@
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"installer genveje"</string>
     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Tillader, at en app tilføjer genveje uden brugerens indgriben."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"afinstaller genveje"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Tillader, at en app fjerner genveje uden brugerens indgriben."</string>
+    <string name="permdesc_uninstall_shortcut" msgid="274355570620220977">"Tillader, at appen fjerner genveje uden brugerens indgriben."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"læs indstillinger og genveje for Start"</string>
-    <string name="permdesc_read_settings" msgid="1836104524215167383">"Tillader, at en app læser indstillingerne og genvejene på startskærmen."</string>
+    <string name="permdesc_read_settings" msgid="5788109303585403679">"Tillader, at appen læser indstillingerne og genvejene på startskærmen."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"skriv indstillinger og genveje for Start"</string>
-    <string name="permdesc_write_settings" msgid="6763846563231494591">"Tillader, at en app ændrer indstillingerne og genvejene på startskærmen."</string>
+    <string name="permdesc_write_settings" msgid="8530105489115785531">"Tillader, at appen ændrer indstillingerne og genvejene på startskærmen."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Der er problemer med indlæsning af widget"</string>
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Dette er en systemapp, som ikke kan afinstalleres."</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
@@ -98,8 +98,8 @@
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Du kan oprette en ny mappe på din startskærm ved at stable apps oven på hinanden."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
     <string name="folder_opened" msgid="4129072635480822768">"Mappen blev åbnet, %1$d af %2$d"</string>
-    <string name="folder_tap_to_close" msgid="4076794242530255812">"Tryk for at lukke mappen"</string>
-    <string name="folder_tap_to_rename" msgid="2125528923948315223">"Tryk for at omdøbe"</string>
+    <string name="folder_tap_to_close" msgid="1335478160661137579">"Tryk for at lukke mappen"</string>
+    <string name="folder_tap_to_rename" msgid="5201612989905472442">"Tryk for at gemme det nye navn"</string>
     <string name="folder_closed" msgid="3130534551370511932">"Mappen er lukket"</string>
     <string name="folder_renamed" msgid="781234745487414781">"Mappen blev omdøbt til %1$s"</string>
     <string name="folder_name_format" msgid="4513766553514769310">"Mappe: %1$s"</string>

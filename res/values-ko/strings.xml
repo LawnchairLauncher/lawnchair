@@ -29,7 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"위젯"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"위젯을 선택하려면 길게 터치하세요."</string>
     <string name="market" msgid="2652226429823445833">"쇼핑"</string>
-    <string name="external_drop_widget_error" msgid="127440783198670829">"홈 화면에 항목을 놓을 수 없습니다."</string>
+    <string name="external_drop_widget_error" msgid="2285187188524172774">"홈 화면에 항목을 놓을 수 없습니다."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"만들 위젯 선택"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"폴더 이름"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"폴더 이름 바꾸기"</string>
@@ -45,7 +45,7 @@
     <string name="shortcut_installed" msgid="7071557296331322355">"바로가기(\'<xliff:g id="NAME">%s</xliff:g>\')가 생성되었습니다."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"바로가기(\'<xliff:g id="NAME">%s</xliff:g>\')가 삭제되었습니다."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"바로가기(\'<xliff:g id="NAME">%s</xliff:g>\')가 이미 있습니다."</string>
-    <string name="title_select_shortcut" msgid="2858897527672831763">"바로가기 선택"</string>
+    <string name="title_select_shortcut" msgid="1873670208166882222">"바로가기 선택"</string>
     <string name="title_select_application" msgid="1793455815754848652">"앱 선택"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"애플리케이션"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"홈"</string>
@@ -75,11 +75,11 @@
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"바로가기 설치"</string>
     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"앱이 사용자의 작업 없이 바로가기를 추가할 수 있도록 합니다."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"바로가기 제거"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"앱이 사용자의 작업 없이 바로가기를 삭제할 수 있도록 합니다."</string>
+    <string name="permdesc_uninstall_shortcut" msgid="274355570620220977">"앱이 사용자의 작업 없이 바로가기를 삭제할 수 있도록 합니다."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"홈 설정 및 바로가기 읽기"</string>
-    <string name="permdesc_read_settings" msgid="1836104524215167383">"앱이 홈에 있는 설정 및 바로가기를 읽을 수 있도록 합니다."</string>
+    <string name="permdesc_read_settings" msgid="5788109303585403679">"앱이 홈에 있는 설정 및 바로가기를 읽을 수 있도록 합니다."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"홈 설정 및 바로가기 쓰기"</string>
-    <string name="permdesc_write_settings" msgid="6763846563231494591">"앱이 홈에 있는 설정 및 바로가기를 변경할 수 있도록 합니다."</string>
+    <string name="permdesc_write_settings" msgid="8530105489115785531">"앱이 홈에 있는 설정 및 바로가기를 변경할 수 있도록 합니다."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"위젯을 로드하는 중 문제가 발생했습니다."</string>
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"시스템 앱은 제거할 수 없습니다."</string>
     <string name="dream_name" msgid="2847171357608437154">"로켓 실행기"</string>
@@ -98,8 +98,8 @@
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"홈 화면에 새로운 폴더를 만들려면 앱 하나를 다른 앱 위에 겹쳐 놓습니다."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"확인"</string>
     <string name="folder_opened" msgid="4129072635480822768">"폴더 열림, %1$d 곱하기 %2$d"</string>
-    <string name="folder_tap_to_close" msgid="4076794242530255812">"탭하여 폴더를 닫음"</string>
-    <string name="folder_tap_to_rename" msgid="2125528923948315223">"탭하여 이름을 바꿈"</string>
+    <string name="folder_tap_to_close" msgid="1335478160661137579">"터치하여 폴더를 닫음"</string>
+    <string name="folder_tap_to_rename" msgid="5201612989905472442">"터치하여 바꾼 이름을 저장"</string>
     <string name="folder_closed" msgid="3130534551370511932">"폴더 닫음"</string>
     <string name="folder_renamed" msgid="781234745487414781">"%1$s(으)로 폴더 이름 바꿈"</string>
     <string name="folder_name_format" msgid="4513766553514769310">"폴더: %1$s"</string>

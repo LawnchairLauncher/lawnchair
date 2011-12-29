@@ -29,7 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"Mga Widget"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Pindutin nang matagal upang kumuha ng widget."</string>
     <string name="market" msgid="2652226429823445833">"Mamili"</string>
-    <string name="external_drop_widget_error" msgid="127440783198670829">"Hindi ma-drop ang item sa Home screen na ito."</string>
+    <string name="external_drop_widget_error" msgid="2285187188524172774">"Hindi ma-drop ang item sa Home screen na ito."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Pumili ng widget na lilikhain"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Pangalan ng folder"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Palitan ng pangalan ang folder"</string>
@@ -45,7 +45,7 @@
     <string name="shortcut_installed" msgid="7071557296331322355">"Nalikha ang shortcut na \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Inalis ang shortcut na \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Umiiral na ang shortcut na \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
-    <string name="title_select_shortcut" msgid="2858897527672831763">"Pumili ng shortcut"</string>
+    <string name="title_select_shortcut" msgid="1873670208166882222">"Pumili ng shortcut"</string>
     <string name="title_select_application" msgid="1793455815754848652">"Pumili ng app"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Apps"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Home"</string>
@@ -75,11 +75,11 @@
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"i-install ang mga shortcut"</string>
     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Binibigyang-daan ang isang app na magdagdag ng mga shortcut nang walang panghihimasok ng user."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"huwag i-install ang mga shortcut"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Bibigyang-daan ang isang app na mag-alis ng mga shortcut nang walang panghihimasok ng user."</string>
+    <string name="permdesc_uninstall_shortcut" msgid="274355570620220977">"Binibigyang-daan ang app na mag-alis ng mga shortcut nang walang panghihimasok ng user."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"basahin ang mga setting ng Home at shortcut"</string>
-    <string name="permdesc_read_settings" msgid="1836104524215167383">"Binibigyang-daan ang isang app na basahin ang mga setting at shortcut sa Home."</string>
+    <string name="permdesc_read_settings" msgid="5788109303585403679">"Binibigyang-daan ang app na basahin ang mga setting at shortcut sa Home."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"magsulat ng mga setting ng Home at mga shortcut"</string>
-    <string name="permdesc_write_settings" msgid="6763846563231494591">"Binibigyang-daan ang isang app na baguhin ang mga setting at shortcut sa Home."</string>
+    <string name="permdesc_write_settings" msgid="8530105489115785531">"Binibigyang-daan ang app na baguhin ang mga setting at shortcut sa Home."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Problema sa pag-load ng widget"</string>
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Isa itong app ng system at hindi maaaring i-uninstall."</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
@@ -98,8 +98,8 @@
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Upang gumawa ng bagong folder sa iyong home screen, magpatong ng isang app sa ibabaw ng isa pa."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
     <string name="folder_opened" msgid="4129072635480822768">"Binuksan ang folder, %1$d by %2$d"</string>
-    <string name="folder_tap_to_close" msgid="4076794242530255812">"Tapikin upang isara ang folder"</string>
-    <string name="folder_tap_to_rename" msgid="2125528923948315223">"Tapikin upang kumpirmahin ang pagpapalit ng pangalan"</string>
+    <string name="folder_tap_to_close" msgid="1335478160661137579">"Pindutin upang isara ang folder"</string>
+    <string name="folder_tap_to_rename" msgid="5201612989905472442">"Pindutin upang i-save ang pagpapalit ng pangalan"</string>
     <string name="folder_closed" msgid="3130534551370511932">"Nakasara ang folder"</string>
     <string name="folder_renamed" msgid="781234745487414781">"Pinangalanan ang folder na %1$s"</string>
     <string name="folder_name_format" msgid="4513766553514769310">"Folder: %1$s"</string>

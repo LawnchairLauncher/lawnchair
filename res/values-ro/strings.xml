@@ -29,7 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"Obiecte widget"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Atingeţi/menţineţi apăsat un widget pt. a-l alege."</string>
     <string name="market" msgid="2652226429823445833">"Cumpăraţi"</string>
-    <string name="external_drop_widget_error" msgid="127440783198670829">"Nu am putut plasa articolul pe ecranul de pornire."</string>
+    <string name="external_drop_widget_error" msgid="2285187188524172774">"Nu am putut plasa articolul pe ecranul de pornire."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Alegeţi widgetul de creare"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nume dosar"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Redenumiţi dosarul"</string>
@@ -45,7 +45,7 @@
     <string name="shortcut_installed" msgid="7071557296331322355">"Comanda rapidă „<xliff:g id="NAME">%s</xliff:g>”·a fost creată."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Comanda rapidă „<xliff:g id="NAME">%s</xliff:g>” a fost eliminată."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Comanda rapidă „<xliff:g id="NAME">%s</xliff:g>” deja există."</string>
-    <string name="title_select_shortcut" msgid="2858897527672831763">"Selectaţi comanda rapidă"</string>
+    <string name="title_select_shortcut" msgid="1873670208166882222">"Alegeţi o comandă rapidă"</string>
     <string name="title_select_application" msgid="1793455815754848652">"Alegeţi aplicaţia"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Aplicaţii"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Domiciliu"</string>
@@ -75,11 +75,11 @@
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"instalaţi comenzi rapide"</string>
     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Permite unei aplicaţii să adauge comenzi rapide, fără intervenţia utilizatorului."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"dezinstalaţi comenzile rapide"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Permite unei aplicaţii să elimine comenzile rapide, fără intervenţia utilizatorului."</string>
+    <string name="permdesc_uninstall_shortcut" msgid="274355570620220977">"Permite aplicaţiei să elimine comenzile rapide, fără intervenţia utilizatorului."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"citiţi setările Paginii de pornire şi comenzile rapide"</string>
-    <string name="permdesc_read_settings" msgid="1836104524215167383">"Permite unei aplicaţii să citească setările şi comenzile rapide din ecranul de pornire."</string>
+    <string name="permdesc_read_settings" msgid="5788109303585403679">"Permite aplicaţiei să citească setările şi comenzile rapide din ecranul de pornire."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"scrieţi setări şi comenzi rapide pentru Ecranul de pornire"</string>
-    <string name="permdesc_write_settings" msgid="6763846563231494591">"Permite unei aplicaţii să modifice setările şi comenzile rapide din ecranul de pornire."</string>
+    <string name="permdesc_write_settings" msgid="8530105489115785531">"Permite aplicaţiei să modifice setările şi comenzile rapide din ecranul de pornire."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Probleme la încărcarea obiectului widget"</string>
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Aceasta este o aplicaţie de sistem şi nu poate fi dezinstalată."</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
@@ -98,8 +98,8 @@
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Pentru a crea un dosar nou pe ecranul de pornire, plasaţi o aplicaţie deasupra alteia."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
     <string name="folder_opened" msgid="4129072635480822768">"Dosar deschis, %1$d - %2$d"</string>
-    <string name="folder_tap_to_close" msgid="4076794242530255812">"Apăsaţi pentru a închide dosarul"</string>
-    <string name="folder_tap_to_rename" msgid="2125528923948315223">"Apăsaţi pentru a finaliza redenumirea"</string>
+    <string name="folder_tap_to_close" msgid="1335478160661137579">"Atingeţi pentru a închide dosarul"</string>
+    <string name="folder_tap_to_rename" msgid="5201612989905472442">"Atingeţi pentru a salva redenumirea"</string>
     <string name="folder_closed" msgid="3130534551370511932">"Dosar închis"</string>
     <string name="folder_renamed" msgid="781234745487414781">"Dosar redenumit „%1$s”"</string>
     <string name="folder_name_format" msgid="4513766553514769310">"Dosar: %1$s"</string>

@@ -29,7 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"Legstukke"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Raak en hou in om \'n legstuk op te tel."</string>
     <string name="market" msgid="2652226429823445833">"Winkel"</string>
-    <string name="external_drop_widget_error" msgid="127440783198670829">"Kon nie item op hierdie Tuisskerm plaas nie."</string>
+    <string name="external_drop_widget_error" msgid="2285187188524172774">"Kan nie item op hierdie Tuis-skerm laat los nie."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Kies legstuk om te skep"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Vouernaam"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Hernoem vouer"</string>
@@ -45,7 +45,7 @@
     <string name="shortcut_installed" msgid="7071557296331322355">"Kortpad \"<xliff:g id="NAME">%s</xliff:g>\" is geskep."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Kortpad \"<xliff:g id="NAME">%s</xliff:g>\" is verwyder."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Kortpad \"<xliff:g id="NAME">%s</xliff:g>\" bestaan reeds."</string>
-    <string name="title_select_shortcut" msgid="2858897527672831763">"Kies kortpad"</string>
+    <string name="title_select_shortcut" msgid="1873670208166882222">"Kies kortpad"</string>
     <string name="title_select_application" msgid="1793455815754848652">"Kies program"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Programme"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Tuis"</string>
@@ -75,11 +75,11 @@
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"installeer kortpaaie"</string>
     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Stel \'n program in staat om kortpaaie by te voeg sonder gebruikerhandeling."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"deïnstalleer kortpaaie"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Stel \'n program in staat om kortpaaie te verwyder sonder gebruikerhandeling."</string>
+    <string name="permdesc_uninstall_shortcut" msgid="274355570620220977">"Laat die program toe om kortpaaie te sonder gebruikerhandeling te verwyder."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"lees Tuis-instellings en -kortpaaie"</string>
-    <string name="permdesc_read_settings" msgid="1836104524215167383">"Stel \'n program in staat om die instellings en kortpaaie in Tuis te lees."</string>
+    <string name="permdesc_read_settings" msgid="5788109303585403679">"Laat die program toe om die instellings en kortpaaie in Tuis te lees."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"skryf Tuis-instellings en -kortpaaie"</string>
-    <string name="permdesc_write_settings" msgid="6763846563231494591">"Stel program in staat om die instellings en kortpaaie in Tuis te verander."</string>
+    <string name="permdesc_write_settings" msgid="8530105489115785531">"Laat die program toe om die instellings en kortpaaie in Tuis te verander."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Kon nie legstuk laai nie"</string>
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Hierdie is \'n stelselprogram en kan nie gedeïnstalleer word nie."</string>
     <string name="dream_name" msgid="2847171357608437154">"Vuurpyllanseerder"</string>
@@ -98,8 +98,8 @@
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Om \'n nuwe vouer op jou Tuisskerm te maak, stapel een program bo-op \'n ander."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
     <string name="folder_opened" msgid="4129072635480822768">"Vouer oopgemaak, %1$d van %2$d"</string>
-    <string name="folder_tap_to_close" msgid="4076794242530255812">"Tik om die vouer toe te maak"</string>
-    <string name="folder_tap_to_rename" msgid="2125528923948315223">"Tik om herbenoeming te bevestig"</string>
+    <string name="folder_tap_to_close" msgid="1335478160661137579">"Raak om vouer toe te maak"</string>
+    <string name="folder_tap_to_rename" msgid="5201612989905472442">"Raak om stoor te hernoem"</string>
     <string name="folder_closed" msgid="3130534551370511932">"Vouer is gesluit"</string>
     <string name="folder_renamed" msgid="781234745487414781">"Vouer hernoem na %1$s"</string>
     <string name="folder_name_format" msgid="4513766553514769310">"Vouer: %1$s"</string>

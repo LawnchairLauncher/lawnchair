@@ -29,7 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widgety"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Widget vyberete dotykem a podržením."</string>
     <string name="market" msgid="2652226429823445833">"Obchod"</string>
-    <string name="external_drop_widget_error" msgid="127440783198670829">"Na tuto plochu položku nelze přesunout."</string>
+    <string name="external_drop_widget_error" msgid="2285187188524172774">"Na tuto plochu položku nelze přesunout."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Vyberte widget k vytvoření"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Název složky"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Přejmenovat složku"</string>
@@ -45,7 +45,7 @@
     <string name="shortcut_installed" msgid="7071557296331322355">"Zástupce <xliff:g id="NAME">%s</xliff:g> byl vytvořen."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Zástupce <xliff:g id="NAME">%s</xliff:g> byl odebrán."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Zástupce <xliff:g id="NAME">%s</xliff:g> již existuje."</string>
-    <string name="title_select_shortcut" msgid="2858897527672831763">"Vyberte zástupce"</string>
+    <string name="title_select_shortcut" msgid="1873670208166882222">"Výběr zástupce"</string>
     <string name="title_select_application" msgid="1793455815754848652">"Vybrat aplikaci"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Aplikace"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Plocha"</string>
@@ -75,11 +75,11 @@
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"instalovat zástupce"</string>
     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Umožňuje aplikaci přidat zástupce bez zásahu uživatele."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"odinstalace zástupců"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Umožňuje aplikaci odstranit zástupce bez zásahu uživatele."</string>
+    <string name="permdesc_uninstall_shortcut" msgid="274355570620220977">"Umožňuje aplikaci odstranit zástupce bez zásahu uživatele."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"čtení nastavení a odkazů plochy"</string>
-    <string name="permdesc_read_settings" msgid="1836104524215167383">"Umožňuje aplikaci číst nastavení a odkazy na ploše."</string>
+    <string name="permdesc_read_settings" msgid="5788109303585403679">"Umožňuje aplikaci číst nastavení a odkazy na ploše."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"zápis nastavení a odkazů plochy"</string>
-    <string name="permdesc_write_settings" msgid="6763846563231494591">"Umožňuje aplikaci změnit nastavení a odkazy na ploše."</string>
+    <string name="permdesc_write_settings" msgid="8530105489115785531">"Umožňuje aplikaci změnit nastavení a odkazy na ploše."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Problém s načtením widgetu"</string>
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Toto je systémová aplikace a nelze ji odinstalovat."</string>
     <string name="dream_name" msgid="2847171357608437154">"Raketomet"</string>
@@ -98,8 +98,8 @@
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Chcete-li na ploše vytvořit novou složku, přesuňte jednu aplikaci na druhou."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
     <string name="folder_opened" msgid="4129072635480822768">"Složka otevřena, %1$d x %2$d"</string>
-    <string name="folder_tap_to_close" msgid="4076794242530255812">"Klepnutím zavřete složku"</string>
-    <string name="folder_tap_to_rename" msgid="2125528923948315223">"Klepnutím přejmenování potvrdíte"</string>
+    <string name="folder_tap_to_close" msgid="1335478160661137579">"Dotykem složku zavřete"</string>
+    <string name="folder_tap_to_rename" msgid="5201612989905472442">"Dotykem uložíte změnu názvu"</string>
     <string name="folder_closed" msgid="3130534551370511932">"Složka je uzavřena"</string>
     <string name="folder_renamed" msgid="781234745487414781">"Složka přejmenována na %1$s"</string>
     <string name="folder_name_format" msgid="4513766553514769310">"Složka: %1$s"</string>

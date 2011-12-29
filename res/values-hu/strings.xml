@@ -23,13 +23,13 @@
     <string name="uid_name" msgid="3371120195364560632">"Alap Android-alkalmazások"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>
     <string name="chooser_wallpaper" msgid="6063168087625352235">"Válasszon tapétát innen:"</string>
-    <string name="wallpaper_instructions" msgid="4215640646180727542">"Háttérkép beállítása"</string>
+    <string name="wallpaper_instructions" msgid="4215640646180727542">"Háttérkép kiválasztása"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"Háttérképek"</string>
     <string name="activity_not_found" msgid="217823393239365967">"Az alkalmazás nincs telepítve."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Modulok"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Modul felvételéhez érintse meg, és tartsa lenyomva"</string>
     <string name="market" msgid="2652226429823445833">"Bolt"</string>
-    <string name="external_drop_widget_error" msgid="127440783198670829">"Nem lehet elemeket dobni erre a Kezdőképernyőre."</string>
+    <string name="external_drop_widget_error" msgid="2285187188524172774">"Nem lehet elemeket dobni erre a Kezdőképernyőre."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"A létrehozáshoz válasszon modult"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Mappa neve"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Mappa átnevezése"</string>
@@ -45,7 +45,7 @@
     <string name="shortcut_installed" msgid="7071557296331322355">"\"<xliff:g id="NAME">%s</xliff:g>\" parancsikon létrehozva."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"A(z) \"<xliff:g id="NAME">%s</xliff:g>\" parancsikon eltávolításra került."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"\"<xliff:g id="NAME">%s</xliff:g>\" parancsikon már létezik."</string>
-    <string name="title_select_shortcut" msgid="2858897527672831763">"Parancsikon kiválasztása"</string>
+    <string name="title_select_shortcut" msgid="1873670208166882222">"Parancsikon választása"</string>
     <string name="title_select_application" msgid="1793455815754848652">"Válasszon alkalmazást"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Alkalmazások"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Főoldal"</string>
@@ -75,11 +75,11 @@
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"parancsikonok telepítése"</string>
     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Lehetővé teszi egy alkalmazás számára, hogy felhasználói beavatkozás nélkül adjon hozzá parancsikonokat."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"parancsikonok eltávolítása"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Lehetővé teszi egy alkalmazás számára, hogy felhasználói beavatkozás nélkül távolítson el parancsikonokat."</string>
+    <string name="permdesc_uninstall_shortcut" msgid="274355570620220977">"Lehetővé teszi egy alkalmazás számára, hogy felhasználói beavatkozás nélkül távolítson el parancsikonokat."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"Főoldal beállításainak és parancsikonjainak beolvasása"</string>
-    <string name="permdesc_read_settings" msgid="1836104524215167383">"Lehetővé teszi egy alkalmazás számára, hogy beolvassa a Kezdőképernyő beállításait és parancsikonjait."</string>
+    <string name="permdesc_read_settings" msgid="5788109303585403679">"Lehetővé teszi az alkalmazás számára, hogy beolvassa a Kezdőképernyő beállításait és parancsikonjait."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"Főoldal beállításainak és parancsikonjainak írása"</string>
-    <string name="permdesc_write_settings" msgid="6763846563231494591">"Lehetővé teszi egy alkalmazás számára, hogy módosítsa a Kezdőképernyő beállításait és parancsikonjait."</string>
+    <string name="permdesc_write_settings" msgid="8530105489115785531">"Lehetővé teszi az alkalmazás számára, hogy módosítsa a Kezdőképernyő beállításait és parancsikonjait."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Probléma történt a modul betöltésekor"</string>
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Ez egy rendszeralkalmazás, és nem lehet eltávolítani."</string>
     <string name="dream_name" msgid="2847171357608437154">"Aknavető"</string>
@@ -98,8 +98,8 @@
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Ha egy új mappát szeretne létrehozni a kezdőképernyőn, helyezzen egymásra két alkalmazást."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
     <string name="folder_opened" msgid="4129072635480822768">"Megnyitott mappa: %1$d x %2$d"</string>
-    <string name="folder_tap_to_close" msgid="4076794242530255812">"Érintse meg a mappa bezárásához"</string>
-    <string name="folder_tap_to_rename" msgid="2125528923948315223">"Átnevezéshez érintse meg"</string>
+    <string name="folder_tap_to_close" msgid="1335478160661137579">"Érintse meg a mappa bezárásához"</string>
+    <string name="folder_tap_to_rename" msgid="5201612989905472442">"Érintse meg az átnevezés mentéséhez"</string>
     <string name="folder_closed" msgid="3130534551370511932">"Mappa lezárva"</string>
     <string name="folder_renamed" msgid="781234745487414781">"Mappa átnevezve a következőre: %1$s"</string>
     <string name="folder_name_format" msgid="4513766553514769310">"Mappa: %1$s"</string>
