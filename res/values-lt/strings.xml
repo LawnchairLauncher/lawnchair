@@ -29,7 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"Valdikliai"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Kad pasirinkt. valdiklį, palieskite ir laikykite."</string>
     <string name="market" msgid="2652226429823445833">"Parduotuvė"</string>
-    <string name="external_drop_widget_error" msgid="127440783198670829">"Nepavyko palikti elemento šiame pagrind. ekrane."</string>
+    <string name="external_drop_widget_error" msgid="2285187188524172774">"Nepavyko nuvilkti elemento į šį pagrind. ekraną."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Pasirinkite norimą kurti valdiklį"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Aplanko pavadinimas"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Sukurti aplankui naują pavadinimą"</string>
@@ -45,7 +45,7 @@
     <string name="shortcut_installed" msgid="7071557296331322355">"Sukurtas „<xliff:g id="NAME">%s</xliff:g>“ spartusis klavišas."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Spartusis klavišas „<xliff:g id="NAME">%s</xliff:g>“ pašalintas."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Spartusis klavišas „<xliff:g id="NAME">%s</xliff:g>“ jau yra."</string>
-    <string name="title_select_shortcut" msgid="2858897527672831763">"Pasirinkti spartųjį klavišą"</string>
+    <string name="title_select_shortcut" msgid="1873670208166882222">"Pasirinkite spartųjį klavišą"</string>
     <string name="title_select_application" msgid="1793455815754848652">"Pasirinkite programą"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Apps"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Pagrindinis"</string>
@@ -75,11 +75,11 @@
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"įdiegti sparčiuosius klavišus"</string>
     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Leidžiama programai pridėti sparčiuosius klavišus be naudotojo įsikišimo."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"pašalinti sparčiuosius klavišus"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Leidžiama programai pašalinti sparčiuosius klavišus be naudotojo įsikišimo."</string>
+    <string name="permdesc_uninstall_shortcut" msgid="274355570620220977">"Programai leidžiama pašalinti sparčiuosius klavišus be naudotojo įsikišimo."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"skaityti pagrindinio puslapio nustatymus ir sparčiuosius klavišus"</string>
-    <string name="permdesc_read_settings" msgid="1836104524215167383">"Leidžiama programai skaityti pagrindinio puslapio nustatymus ir sparčiuosius klavišus."</string>
+    <string name="permdesc_read_settings" msgid="5788109303585403679">"Programai leidžiama skaityti pagrindinio puslapio nustatymus ir sparčiuosius klavišus."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"rašyti pagrindinio puslapio nustatymus ir sparčiuosius klavišus"</string>
-    <string name="permdesc_write_settings" msgid="6763846563231494591">"Leidžiama programai keisti pagrindinio puslapio nustatymus ir sparčiuosius klavišus."</string>
+    <string name="permdesc_write_settings" msgid="8530105489115785531">"Programai leidžiama keisti pagrindinio puslapio nustatymus ir sparčiuosius klavišus."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Problema įkeliant valdiklį"</string>
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Tai sistemos programa ir jos negalima pašalinti."</string>
     <string name="dream_name" msgid="2847171357608437154">"Raketinis prieštankinis šautuvas"</string>
@@ -98,8 +98,8 @@
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Jei pagrindiniame ekrane norite sukurti naują aplanką, uždėkite vieną programą ant kitos."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"Gerai"</string>
     <string name="folder_opened" msgid="4129072635480822768">"Aplankas atidarytas, %1$d ir %2$d"</string>
-    <string name="folder_tap_to_close" msgid="4076794242530255812">"Palieskite, kad uždarytumėte aplanką"</string>
-    <string name="folder_tap_to_rename" msgid="2125528923948315223">"Palieskite, kad pervardytumėte"</string>
+    <string name="folder_tap_to_close" msgid="1335478160661137579">"Palieskite, kad uždarytumėte aplanką"</string>
+    <string name="folder_tap_to_rename" msgid="5201612989905472442">"Palieskite, kad išsaugotumėte naują pavadinimą"</string>
     <string name="folder_closed" msgid="3130534551370511932">"Aplankas uždarytas"</string>
     <string name="folder_renamed" msgid="781234745487414781">"Aplankas pervardytas į %1$s"</string>
     <string name="folder_name_format" msgid="4513766553514769310">"Aplankas: %1$s"</string>

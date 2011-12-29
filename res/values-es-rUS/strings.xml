@@ -29,7 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widgets"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Mantén presionado el widget que deseas elegir."</string>
     <string name="market" msgid="2652226429823445833">"Comprar"</string>
-    <string name="external_drop_widget_error" msgid="127440783198670829">"El elemento no se soltó en la pantalla principal."</string>
+    <string name="external_drop_widget_error" msgid="2285187188524172774">"No se pudo soltar el elemento en este escritorio"</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Elegir los widgets para crear"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nombre de carpeta"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Cambiar nombre de carpeta"</string>
@@ -45,7 +45,7 @@
     <string name="shortcut_installed" msgid="7071557296331322355">"Acceso directo \"<xliff:g id="NAME">%s</xliff:g>\" creado."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"El acceso directo \"<xliff:g id="NAME">%s</xliff:g>\" ha sido eliminado."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"El acceso directo \"<xliff:g id="NAME">%s</xliff:g>\" ya existe."</string>
-    <string name="title_select_shortcut" msgid="2858897527672831763">"Seleccionar acceso directo"</string>
+    <string name="title_select_shortcut" msgid="1873670208166882222">"Elige acceso directo"</string>
     <string name="title_select_application" msgid="1793455815754848652">"Elegir una aplicación"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Aplicaciones"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Página principal"</string>
@@ -75,11 +75,11 @@
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"instalar accesos directos"</string>
     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Permite que una aplicación agregue accesos directos sin que el usuario intervenga."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"desinstalar papel tapiz"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Permite que una aplicación elimine accesos directos sin que el usuario intervenga."</string>
+    <string name="permdesc_uninstall_shortcut" msgid="274355570620220977">"Permite que una aplicación elimine accesos directos sin que el usuario intervenga."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"leer configuración y accesos directos de la página principal"</string>
-    <string name="permdesc_read_settings" msgid="1836104524215167383">"Permite que una aplicación lea la configuración y los accesos directos de la página principal."</string>
+    <string name="permdesc_read_settings" msgid="5788109303585403679">"Permite que una aplicación lea la configuración y los accesos directos de la página principal."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"escribir configuración y accesos directos de la página principal"</string>
-    <string name="permdesc_write_settings" msgid="6763846563231494591">"Permite que una aplicación cambie la configuración y los accesos directos de la página principal."</string>
+    <string name="permdesc_write_settings" msgid="8530105489115785531">"Permite que una aplicación cambie la configuración y los accesos directos de la página principal."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Problema al cargar el widget"</string>
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Esta es una aplicación del sistema y no se puede desinstalar."</string>
     <string name="dream_name" msgid="2847171357608437154">"Lanzacohetes"</string>
@@ -98,8 +98,8 @@
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Para crear una carpeta nueva en tu pantalla principal, coloca una aplicación encima de la otra."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"Aceptar"</string>
     <string name="folder_opened" msgid="4129072635480822768">"Se abrió la carpeta, %1$d por %2$d."</string>
-    <string name="folder_tap_to_close" msgid="4076794242530255812">"Toca para cerrar la carpeta."</string>
-    <string name="folder_tap_to_rename" msgid="2125528923948315223">"Toca para cambiar el nombre de la carpeta."</string>
+    <string name="folder_tap_to_close" msgid="1335478160661137579">"Toca para cerrar la carpeta"</string>
+    <string name="folder_tap_to_rename" msgid="5201612989905472442">"Toca para guardar el nuevo nombre."</string>
     <string name="folder_closed" msgid="3130534551370511932">"Se cerró la carpeta."</string>
     <string name="folder_renamed" msgid="781234745487414781">"Se cambió el nombre de la carpeta a %1$s."</string>
     <string name="folder_name_format" msgid="4513766553514769310">"Carpeta: %1$s"</string>

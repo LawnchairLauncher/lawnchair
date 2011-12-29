@@ -29,7 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"ابزارک ها"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"برای انتخاب یک ابزارک لمس کنید و نگه دارید."</string>
     <string name="market" msgid="2652226429823445833">"فروشگاه"</string>
-    <string name="external_drop_widget_error" msgid="127440783198670829">"این مورد را نمی‌توان در این صفحه اصلی رها کرد."</string>
+    <string name="external_drop_widget_error" msgid="2285187188524172774">"این مورد را نمی‌توان در این صفحه اصلی رها کرد."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"انتخاب ابزارک برای ایجاد"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"نام پوشه"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"تغییر نام پوشه"</string>
@@ -45,7 +45,7 @@
     <string name="shortcut_installed" msgid="7071557296331322355">"میانبر \"<xliff:g id="NAME">%s</xliff:g>\" ایجاد شد."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"میانبر \"<xliff:g id="NAME">%s</xliff:g>\" حذف شد."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"میانبر \"<xliff:g id="NAME">%s</xliff:g>\" در حال حاضر وجود دارد."</string>
-    <string name="title_select_shortcut" msgid="2858897527672831763">"انتخاب میانبر"</string>
+    <string name="title_select_shortcut" msgid="1873670208166882222">"انتخاب میانبر"</string>
     <string name="title_select_application" msgid="1793455815754848652">"انتخاب برنامه"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"برنامه های کاربردی"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"صفحه اصلی"</string>
@@ -75,11 +75,11 @@
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"نصب میانبرها"</string>
     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"به یک برنامه اجازه می‌دهد میانبرها را بدون دخالت کاربر اضافه کند."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"حذف نصب میانبرها"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"به یک برنامه اجازه می‌دهد میانبرها را بدون دخالت کاربر حذف کند."</string>
+    <string name="permdesc_uninstall_shortcut" msgid="274355570620220977">"به یک برنامه اجازه می‌دهد میانبرها را بدون دخالت کاربر حذف کند."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"خواندن تنظیمات صفحه اصلی و میانبرها"</string>
-    <string name="permdesc_read_settings" msgid="1836104524215167383">"به یک برنامه اجازه خواندن تنظیمات و میانبرها را در صفحه اصلی می‌دهد."</string>
+    <string name="permdesc_read_settings" msgid="5788109303585403679">"به برنامه اجازه خواندن تنظیمات و میانبرها را در صفحه اصلی می‌دهد."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"نوشتن تنظیمات صفحه اصلی و میانبرها"</string>
-    <string name="permdesc_write_settings" msgid="6763846563231494591">"به یک برنامه برای تغییر تنظیمات و میانبرها در صفحه اصلی اجازه می‌دهد."</string>
+    <string name="permdesc_write_settings" msgid="8530105489115785531">"به برنامه اجازه تغییر تنظیمات و میانبرها را در صفحه اصلی می‌دهد."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"مشکل در بارگیری ابزارک"</string>
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"این یک برنامه سیستمی است و حذف نصب نمی‌شود."</string>
     <string name="dream_name" msgid="2847171357608437154">"پرتاب کننده موشک"</string>
@@ -98,8 +98,8 @@
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"برای ایجاد یک پوشه جدید در صفحه اصلی خود، یک برنامه را در بالای دیگری قرار دهید."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"تأیید"</string>
     <string name="folder_opened" msgid="4129072635480822768">"پوشه باز شد، %1$d در %2$d"</string>
-    <string name="folder_tap_to_close" msgid="4076794242530255812">"برای بستن پوشه، ضربه بزنید"</string>
-    <string name="folder_tap_to_rename" msgid="2125528923948315223">"برای تأیید تغییرنام، ضربه بزنید"</string>
+    <string name="folder_tap_to_close" msgid="1335478160661137579">"برای بستن پوشه لمس کنید"</string>
+    <string name="folder_tap_to_rename" msgid="5201612989905472442">"برای ذخیره تغییر نام لمس کنید"</string>
     <string name="folder_closed" msgid="3130534551370511932">"پوشه بسته شد"</string>
     <string name="folder_renamed" msgid="781234745487414781">"نام پوشه به %1$s تغییر کرد"</string>
     <string name="folder_name_format" msgid="4513766553514769310">"پوشه: %1$s"</string>

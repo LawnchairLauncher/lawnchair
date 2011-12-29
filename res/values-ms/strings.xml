@@ -29,7 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widget"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Sentuh &amp; tahan untuk mengambil widget."</string>
     <string name="market" msgid="2652226429823445833">"Kedai"</string>
-    <string name="external_drop_widget_error" msgid="127440783198670829">"Tidak dapat melepaskan item pada skrin Utama ini."</string>
+    <string name="external_drop_widget_error" msgid="2285187188524172774">"Tidak dapat melepaskan item pada skrin Utama ini."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Pilih widget untuk dibuat"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nama folder"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Namakan semula folder"</string>
@@ -45,7 +45,7 @@
     <string name="shortcut_installed" msgid="7071557296331322355">"Pintasan \"<xliff:g id="NAME">%s</xliff:g>\" diwujudkan."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Pintasan \"<xliff:g id="NAME">%s</xliff:g>\" telah dialih keluar."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Pintasan \"<xliff:g id="NAME">%s</xliff:g>\" sudah pun wujud."</string>
-    <string name="title_select_shortcut" msgid="2858897527672831763">"Pilih pintasan"</string>
+    <string name="title_select_shortcut" msgid="1873670208166882222">"Pilih pintasan"</string>
     <string name="title_select_application" msgid="1793455815754848652">"Pilih aplikasi"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Apl"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Laman Utama"</string>
@@ -75,11 +75,11 @@
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"pasang pintasan"</string>
     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Membenarkan aplikasi menambah pintasan tanpa campur tangan pengguna."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"nyahpasang pintasan"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Membenarkan aplikasi mengalih keluar pintasan tanpa campur tangan pengguna."</string>
+    <string name="permdesc_uninstall_shortcut" msgid="274355570620220977">"Membenarkan apl mengalih keluar pintasan tanpa campur tangan pengguna."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"membaca tetapan dan pintasan Laman Utama"</string>
-    <string name="permdesc_read_settings" msgid="1836104524215167383">"Membenarkan aplikasi untuk membaca tetapan dan pintasan di Laman Utama."</string>
+    <string name="permdesc_read_settings" msgid="5788109303585403679">"Membenarkan apl membaca tetapan dan pintasan di Laman Utama."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"menulis tetapan dan pintasan Laman Utama"</string>
-    <string name="permdesc_write_settings" msgid="6763846563231494591">"Membenarkan aplikasi untuk menukar tetapan dan pintasan di Laman Utama."</string>
+    <string name="permdesc_write_settings" msgid="8530105489115785531">"Membenarkan apl menukar tetapan dan pintasan di Laman Utama."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Masalah memuatkan widget"</string>
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Ini adalah aplikasi sistem dan tidak boleh dinyahpasang."</string>
     <string name="dream_name" msgid="2847171357608437154">"Pelancar Roket"</string>
@@ -98,8 +98,8 @@
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Untuk membuat folder baharu pada skrin Utama anda, tindihkan satu aplikasi di atas yang lain."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
     <string name="folder_opened" msgid="4129072635480822768">"Folder dibuka, %1$d daripada %2$d"</string>
-    <string name="folder_tap_to_close" msgid="4076794242530255812">"Ketik untuk tutup folder"</string>
-    <string name="folder_tap_to_rename" msgid="2125528923948315223">"Ketik untuk melakukan menamakan semula"</string>
+    <string name="folder_tap_to_close" msgid="1335478160661137579">"Sentuh untuk menutup folder"</string>
+    <string name="folder_tap_to_rename" msgid="5201612989905472442">"Sentuh untuk menyimpan penamaan semula"</string>
     <string name="folder_closed" msgid="3130534551370511932">"Folder ditutup"</string>
     <!-- String.format failed for translation -->
     <!-- no translation found for folder_renamed (781234745487414781) -->

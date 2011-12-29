@@ -32,7 +32,7 @@
     <skip />
     <!-- no translation found for market (2652226429823445833) -->
     <skip />
-    <!-- no translation found for external_drop_widget_error (127440783198670829) -->
+    <!-- no translation found for external_drop_widget_error (2285187188524172774) -->
     <skip />
     <!-- no translation found for external_drop_widget_pick_title (7040647073452295370) -->
     <skip />
@@ -51,7 +51,7 @@
     <string name="shortcut_installed" msgid="7071557296331322355">"\"Creà ina scursanida \"\"<xliff:g id="NAME">%s</xliff:g>\"\".\""</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"\"La scursanida \"\"<xliff:g id="NAME">%s</xliff:g>\"\" è vegnida stizzada.\""</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"\"La scursanida \"\"<xliff:g id="NAME">%s</xliff:g>\"\" exista gia.\""</string>
-    <string name="title_select_shortcut" msgid="2858897527672831763">"Tscherner ina cumbinaziun da tastas"</string>
+    <!-- outdated translation 2858897527672831763 -->     <string name="title_select_shortcut" msgid="1873670208166882222">"Tscherner ina cumbinaziun da tastas"</string>
     <!-- no translation found for title_select_application (1793455815754848652) -->
     <skip />
     <!-- outdated translation 3953036962111614813 -->     <string name="all_apps_button_label" msgid="2578400570124163469">"Tut las applicaziuns"</string>
@@ -100,11 +100,11 @@
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"Installar scursanidas"</string>
     <!-- outdated translation 7429365847558984148 -->     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Pussibilitescha ch\'ina applicaziun agiunta scursanidas senza l\'intervenziun da l\'utilisader."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"deinstallar scursanidas"</string>
-    <!-- outdated translation 959972195916090900 -->     <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Pussibilitescha ch\'ina applicaziun possia stizzar scursanidas senza ina intervenziun da l\'utilisader."</string>
+    <!-- outdated translation 959972195916090900 -->     <string name="permdesc_uninstall_shortcut" msgid="274355570620220977">"Pussibilitescha ch\'ina applicaziun possia stizzar scursanidas senza ina intervenziun da l\'utilisader."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"Leger ils parameters e las scursanidas da la pagina da partenza"</string>
-    <!-- outdated translation 8377434937176025492 -->     <string name="permdesc_read_settings" msgid="1836104524215167383">"Pussibilitescha ch\'ina applicaziun possia leger ils parameters e las scursanidas da la pagina da partenza."</string>
+    <!-- outdated translation 8377434937176025492 -->     <string name="permdesc_read_settings" msgid="5788109303585403679">"Pussibilitescha ch\'ina applicaziun possia leger ils parameters e las scursanidas da la pagina da partenza."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"Definir ils parameters e las scursanidas per la pagina da partenza"</string>
-    <!-- outdated translation 1098648778383349818 -->     <string name="permdesc_write_settings" msgid="6763846563231494591">"Pussibilitescha ch\'ina applicaziun possia midar ils parameters e las scursanidas sin la pagina da partenza."</string>
+    <!-- outdated translation 1098648778383349818 -->     <string name="permdesc_write_settings" msgid="8530105489115785531">"Pussibilitescha ch\'ina applicaziun possia midar ils parameters e las scursanidas sin la pagina da partenza."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Problems cun chargiar il widget"</string>
     <!-- no translation found for uninstall_system_app_text (6429814133777046491) -->
     <skip />
@@ -140,9 +140,9 @@
     <skip />
     <!-- no translation found for folder_opened (4129072635480822768) -->
     <skip />
-    <!-- no translation found for folder_tap_to_close (4076794242530255812) -->
+    <!-- no translation found for folder_tap_to_close (1335478160661137579) -->
     <skip />
-    <!-- no translation found for folder_tap_to_rename (2125528923948315223) -->
+    <!-- no translation found for folder_tap_to_rename (5201612989905472442) -->
     <skip />
     <!-- no translation found for folder_closed (3130534551370511932) -->
     <skip />

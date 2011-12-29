@@ -29,7 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widgetit"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Valitse widget painamalla sitä pitkään."</string>
     <string name="market" msgid="2652226429823445833">"Myymälä"</string>
-    <string name="external_drop_widget_error" msgid="127440783198670829">"Kohdetta ei voi lisätä aloitusruutuun."</string>
+    <string name="external_drop_widget_error" msgid="2285187188524172774">"Kohteen lisääminen tähän aloitusruutuun epäonnistui."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Valitse luotava widget"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Kansion nimi"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Nimeä kansio uudelleen"</string>
@@ -45,7 +45,7 @@
     <string name="shortcut_installed" msgid="7071557296331322355">"Pikakuvake <xliff:g id="NAME">%s</xliff:g> luotu"</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Pikakuvake <xliff:g id="NAME">%s</xliff:g> poistettiin."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"Pikakuvake <xliff:g id="NAME">%s</xliff:g> on jo olemassa."</string>
-    <string name="title_select_shortcut" msgid="2858897527672831763">"Valitse pikakuvake"</string>
+    <string name="title_select_shortcut" msgid="1873670208166882222">"Valitse pikakuvake"</string>
     <string name="title_select_application" msgid="1793455815754848652">"Valitse sovellus"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Sovellukset"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Etusivu"</string>
@@ -75,11 +75,11 @@
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"asentaa pikakuvakkeita"</string>
     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Antaa sovelluksen lisätä pikakuvakkeita itsenäisesti ilman käyttäjän valintaa."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"poistaa pikakuvakkeita"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Antaa sovelluksen poistaa pikakuvakkeita itsenäisesti ilman käyttäjän valintaa."</string>
+    <string name="permdesc_uninstall_shortcut" msgid="274355570620220977">"Antaa sovelluksen poistaa pikakuvakkeita ilman käyttäjän valintaa."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"lukea etusivun asetuksia ja pikakuvakkeita"</string>
-    <string name="permdesc_read_settings" msgid="1836104524215167383">"Antaa sovelluksen lukea aloitusruudun asetuksia ja pikakuvakkeita."</string>
+    <string name="permdesc_read_settings" msgid="5788109303585403679">"Antaa sovelluksen lukea aloitusruudun asetukset ja pikakuvakkeet."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"kirjoittaa etusivun asetuksia ja pikakuvakkeita"</string>
-    <string name="permdesc_write_settings" msgid="6763846563231494591">"Antaa sovelluksen muuttaa aloitusruudun asetuksia ja pikakuvakkeita."</string>
+    <string name="permdesc_write_settings" msgid="8530105489115785531">"Antaa sovelluksen muuttaa aloitusruudun asetuksia ja pikakuvakkeita."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Ongelma ladattaessa widgetiä"</string>
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Tämä on järjestelmäsovellus, eikä sitä voi poistaa."</string>
     <string name="dream_name" msgid="2847171357608437154">"Sinko"</string>
@@ -98,8 +98,8 @@
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Voit luoda uuden kansion aloitusruutuun pinoamalla yhden sovelluksen toisen päälle."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
     <string name="folder_opened" msgid="4129072635480822768">"Kansio avattu, %1$d avaaja: %2$d"</string>
-    <string name="folder_tap_to_close" msgid="4076794242530255812">"Sulje kansio napauttamalla"</string>
-    <string name="folder_tap_to_rename" msgid="2125528923948315223">"Aseta uusi nimi napauttamalla"</string>
+    <string name="folder_tap_to_close" msgid="1335478160661137579">"Sulje kansio koskettamalla"</string>
+    <string name="folder_tap_to_rename" msgid="5201612989905472442">"Tallenna uudella nimellä koskettamalla"</string>
     <string name="folder_closed" msgid="3130534551370511932">"Kansio on suljettu"</string>
     <string name="folder_renamed" msgid="781234745487414781">"Kansio nimetty uudelleen: %1$s"</string>
     <string name="folder_name_format" msgid="4513766553514769310">"Kansio: %1$s"</string>

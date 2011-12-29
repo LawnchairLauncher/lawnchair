@@ -29,7 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"Widget\'lar"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Widget seçmek için dokunun ve basılı tutun."</string>
     <string name="market" msgid="2652226429823445833">"Alışveriş"</string>
-    <string name="external_drop_widget_error" msgid="127440783198670829">"Öğe bu Ana Ekrana bırakılamadı."</string>
+    <string name="external_drop_widget_error" msgid="2285187188524172774">"Öğe bu Ana Ekrana bırakılamadı."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Oluşturmak için widget seçin"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Klasör adı"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Klasörü yeniden adlandır"</string>
@@ -45,7 +45,7 @@
     <string name="shortcut_installed" msgid="7071557296331322355">"\"<xliff:g id="NAME">%s</xliff:g>\" kısayolu oluşturuldu."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"\"<xliff:g id="NAME">%s</xliff:g>\" kısayolu kaldırıldı."</string>
     <string name="shortcut_duplicate" msgid="4757756326465060694">"\"<xliff:g id="NAME">%s</xliff:g>\" kısayolu zaten var."</string>
-    <string name="title_select_shortcut" msgid="2858897527672831763">"Kısayolu seçin"</string>
+    <string name="title_select_shortcut" msgid="1873670208166882222">"Kısayolu seçin"</string>
     <string name="title_select_application" msgid="1793455815754848652">"Uygulama seçin"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Uygulamalar"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Ana Sayfa"</string>
@@ -75,11 +75,11 @@
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"kısayolları yükle"</string>
     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Uygulamaya, kullanıcı müdahalesi olmadan kısayol ekleme izni verir."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"kısayolları kaldır"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Uygulamaya, kullanıcı müdahalesi olmadan kısayolları kaldırma izni verir."</string>
+    <string name="permdesc_uninstall_shortcut" msgid="274355570620220977">"Uygulamaya kullanıcı müdahalesi olmadan kısayolları kaldırma izni verir."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"Ana Sayfa ayarlarını ve kısayollarını oku"</string>
-    <string name="permdesc_read_settings" msgid="1836104524215167383">"Uygulamaya, Ana Ekrandaki ayarları ve kısayolları okuma izni verir."</string>
+    <string name="permdesc_read_settings" msgid="5788109303585403679">"Uygulamaya Ana Ekrandaki ayarları ve kısayolları okuma izni verir."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"Ana Sayfa ayarlarını ve kısayollarını yaz"</string>
-    <string name="permdesc_write_settings" msgid="6763846563231494591">"Uygulamaya, Ana Ekrandaki ayarları ve kısayolları değiştirme izni verir."</string>
+    <string name="permdesc_write_settings" msgid="8530105489115785531">"Uygulamaya Ana Ekrandaki ayarları ve kısayolları değiştirme izni verir."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Widget yüklenirken sorun oluştu"</string>
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Bu bir sistem uygulamasıdır ve kaldırılamaz."</string>
     <string name="dream_name" msgid="2847171357608437154">"Roket Fırlatıcı"</string>
@@ -98,8 +98,8 @@
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Ana Ekranınızda yeni bir klasör oluşturmak için, bir uygulamayı diğerinin üzerine getirin."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"Tamam"</string>
     <string name="folder_opened" msgid="4129072635480822768">"Klasör açıldı, boyutları %1$d ve %2$d"</string>
-    <string name="folder_tap_to_close" msgid="4076794242530255812">"Klasörü kapatmak için hafifçe dokunun"</string>
-    <string name="folder_tap_to_rename" msgid="2125528923948315223">"Yeniden adlandırmayı uygulamak için hafifçe dokunun"</string>
+    <string name="folder_tap_to_close" msgid="1335478160661137579">"Klasörü kapatmak için dokunun"</string>
+    <string name="folder_tap_to_rename" msgid="5201612989905472442">"Yeni adı kaydetmek için dokunun"</string>
     <string name="folder_closed" msgid="3130534551370511932">"Klasör kapatıldı"</string>
     <string name="folder_renamed" msgid="781234745487414781">"Klasör %1$s olarak yeniden adlandırıldı"</string>
     <string name="folder_name_format" msgid="4513766553514769310">"Klasör: %1$s"</string>
