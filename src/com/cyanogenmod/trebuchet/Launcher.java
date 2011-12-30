@@ -2057,6 +2057,7 @@ public final class Launcher extends Activity
     public void onLongClickAppsTab(View v) {
         final PopupMenu popupMenu = new PopupMenu(this, v);
         final Menu menu = popupMenu.getMenu();
+        dismissAllAppsSortCling(null);
         popupMenu.inflate(R.menu.apps_tab);
         AppsCustomizePagedView.SortMode sortMode = mAppsCustomizeContent.getSortMode();
         if (sortMode == AppsCustomizePagedView.SortMode.Title) {
@@ -3799,6 +3800,7 @@ public final class Launcher extends Activity
 
     private void dismissCling(final Cling cling, final String flag, int duration) {
         if (cling != null && cling.getVisibility() == View.VISIBLE) {
+            cling.dismiss();
             ObjectAnimator anim = LauncherAnimUtils.ofFloat(cling, "alpha", 0f);
             anim.setDuration(duration);
             anim.addListener(new AnimatorListenerAdapter() {
@@ -3878,6 +3880,16 @@ public final class Launcher extends Activity
             removeCling(R.id.all_apps_cling);
         }
     }
+    public void showFirstRunAllAppsSortCling() {
+        // Enable the clings only if they have not been dismissed before
+        SharedPreferences prefs =
+            getSharedPreferences(PreferencesProvider.PREFERENCES_KEY, Context.MODE_PRIVATE);
+        if (isClingsEnabled() && !prefs.getBoolean(Cling.ALLAPPS_SORT_CLING_DISMISSED_KEY, false)) {
+            initCling(R.id.all_apps_sort_cling, null, true, 0);
+        } else {
+            removeCling(R.id.all_apps_sort_cling);
+        }
+    }
     public Cling showFirstRunFoldersCling() {
         // Enable the clings only if they have not been dismissed before
         if (isClingsEnabled() &&
@@ -3902,6 +3914,10 @@ public final class Launcher extends Activity
     public void dismissAllAppsCling(View v) {
         Cling cling = (Cling) findViewById(R.id.all_apps_cling);
         dismissCling(cling, Cling.ALLAPPS_CLING_DISMISSED_KEY, DISMISS_CLING_DURATION);
+    }
+    public void dismissAllAppsSortCling(View v) {
+        Cling cling = (Cling) findViewById(R.id.all_apps_sort_cling);
+        dismissCling(cling, Cling.ALLAPPS_SORT_CLING_DISMISSED_KEY, DISMISS_CLING_DURATION);
     }
     public void dismissFolderCling(View v) {
         Cling cling = (Cling) findViewById(R.id.folder_cling);
