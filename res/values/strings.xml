@@ -247,6 +247,10 @@ s -->
     <string name="all_apps_cling_title">Choose some apps</string>
     <!-- The description of how to pick up and add an item to the workspace [CHAR_LIMIT=none] -->
     <string name="all_apps_cling_add_item">To add an app to your Home screen, touch &amp; hold it.</string>
+    <!-- The title text for the All Apps Sort cling [CHAR_LIMIT=none] -->
+    <string name="all_apps_sort_cling_title">Sort your apps</string>
+    <!-- The description of how to pick sort apps in the drawer [CHAR_LIMIT=none] -->
+    <string name="all_apps_sort_cling_add_item">Touch &amp; hold the Apps tab to select your sort mode</string>
     <!-- The title text for the Folder cling [CHAR_LIMIT=none] -->
     <string name="folder_cling_title">Organize your apps with folders</string>
     <!-- The description of how to move an app [CHAR_LIMIT=none] -->
