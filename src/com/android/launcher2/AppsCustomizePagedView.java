@@ -1490,6 +1490,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     @Override
     public void reset() {
+        // If we have reset, then we should not continue to restore the previous state
+        mSaveInstanceStateItemIndex = -1;
+
         AppsCustomizeTabHost tabHost = getTabHost();
         String tag = tabHost.getCurrentTabTag();
         if (tag != null) {
@@ -1497,6 +1500,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 tabHost.setCurrentTabFromContent(ContentType.Applications);
             }
         }
+
         if (mCurrentPage != 0) {
             invalidatePageData(0);
         }
