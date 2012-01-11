@@ -16,14 +16,14 @@
 
 package com.android.launcher2;
 
-import java.util.ArrayList;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
 import com.android.launcher.R;
+
+import java.util.ArrayList;
 
 public class InstallShortcutReceiver extends BroadcastReceiver {
     public static final String ACTION_INSTALL_SHORTCUT =
@@ -41,16 +41,21 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         }
 
         int screen = Launcher.getScreen();
-
-        if (!installShortcut(context, data, screen)) {
+        String[] errorMsgs = {""};
+        if (!installShortcut(context, data, screen, errorMsgs)) {
             // The target screen is full, let's try the other screens
             for (int i = 0; i < Launcher.SCREEN_COUNT; i++) {
-                if (i != screen && installShortcut(context, data, i)) break;
+                if (i != screen && installShortcut(context, data, i, errorMsgs)) break;
             }
+        }
+
+        if (!errorMsgs[0].isEmpty()) {
+            Toast.makeText(context, errorMsgs[0],
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
-    private boolean installShortcut(Context context, Intent data, int screen) {
+    private boolean installShortcut(Context context, Intent data, int screen, String[] errorMsgs) {
         String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
 
         if (findEmptyCell(context, mCoordinates, screen)) {
@@ -69,21 +74,18 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                             LauncherSettings.Favorites.CONTAINER_DESKTOP, screen, mCoordinates[0],
                             mCoordinates[1], true);
                     if (info != null) {
-                        Toast.makeText(context, context.getString(R.string.shortcut_installed, name),
-                                Toast.LENGTH_SHORT).show();
+                        errorMsgs[0] = context.getString(R.string.shortcut_installed, name);
                     } else {
                         return false;
                     }
                 } else {
-                    Toast.makeText(context, context.getString(R.string.shortcut_duplicate, name),
-                            Toast.LENGTH_SHORT).show();
+                    errorMsgs[0] = context.getString(R.string.shortcut_duplicate, name);
                 }
 
                 return true;
             }
         } else {
-            Toast.makeText(context, context.getString(R.string.out_of_space),
-                    Toast.LENGTH_SHORT).show();
+            errorMsgs[0] = context.getString(R.string.out_of_space);
         }
 
         return false;
