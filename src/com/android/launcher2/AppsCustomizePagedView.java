@@ -75,8 +75,7 @@ interface AsyncTaskCallback {
  */
 class AsyncTaskPageData {
     enum Type {
-        LoadWidgetPreviewData,
-        LoadHolographicIconsData
+        LoadWidgetPreviewData
     }
 
     AsyncTaskPageData(int p, ArrayList<Object> l, ArrayList<Bitmap> si, AsyncTaskCallback bgR,
@@ -226,7 +225,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     // Previews & outlines
     ArrayList<AppsCustomizeAsyncTask> mRunningTasks;
-    private HolographicOutlineHelper mHolographicOutlineHelper;
     private static final int sPageSleepDelay = 200;
 
     public AppsCustomizePagedView(Context context, AttributeSet attrs) {
@@ -236,7 +234,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mApps = new ArrayList<ApplicationInfo>();
         mWidgets = new ArrayList<Object>();
         mIconCache = ((LauncherApplication) context.getApplicationContext()).getIconCache();
-        mHolographicOutlineHelper = new HolographicOutlineHelper();
         mCanvas = new Canvas();
         mRunningTasks = new ArrayList<AppsCustomizeAsyncTask>();
 
@@ -759,7 +756,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             ApplicationInfo info = mApps.get(i);
             PagedViewIcon icon = (PagedViewIcon) mLayoutInflater.inflate(
                     R.layout.apps_customize_application, layout, false);
-            icon.applyFromApplicationInfo(info, true, mHolographicOutlineHelper);
+            icon.applyFromApplicationInfo(info, true);
             icon.setOnClickListener(this);
             icon.setOnLongClickListener(this);
             icon.setOnTouchListener(this);
@@ -775,12 +772,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
 
         layout.createHardwareLayers();
-
-        /* TEMPORARILY DISABLE HOLOGRAPHIC ICONS
-        if (mFadeInAdjacentScreens) {
-            prepareGenerateHoloOutlinesTask(page, items, images);
-        }
-        */
     }
 
     /**
@@ -881,79 +872,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 AsyncTaskPageData.Type.LoadWidgetPreviewData);
         t.setThreadPriority(getThreadPriorityForPage(page + mNumAppsPages));
         t.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, pageData);
-        mRunningTasks.add(t);
-    }
-    /**
-     * Creates and executes a new AsyncTask to load the outlines for a page of content.
-     */
-    private void prepareGenerateHoloOutlinesTask(int page, ArrayList<Object> items,
-            ArrayList<Bitmap> images) {
-        // Prune old tasks for this page
-        Iterator<AppsCustomizeAsyncTask> iter = mRunningTasks.iterator();
-        while (iter.hasNext()) {
-            AppsCustomizeAsyncTask task = (AppsCustomizeAsyncTask) iter.next();
-            int taskPage = task.page;
-            if ((taskPage == page) &&
-                    (task.dataType == AsyncTaskPageData.Type.LoadHolographicIconsData)) {
-                task.cancel(false);
-                iter.remove();
-            }
-        }
-
-        AsyncTaskPageData pageData = new AsyncTaskPageData(page, items, images,
-            new AsyncTaskCallback() {
-                @Override
-                public void run(AppsCustomizeAsyncTask task, AsyncTaskPageData data) {
-                    try {
-                        // Ensure that this task starts running at the correct priority
-                        task.syncThreadPriority();
-
-                        ArrayList<Bitmap> images = data.generatedImages;
-                        ArrayList<Bitmap> srcImages = data.sourceImages;
-                        int count = srcImages.size();
-                        Canvas c = new Canvas();
-                        for (int i = 0; i < count && !task.isCancelled(); ++i) {
-                            // Before work on each item, ensure that this task is running at the correct
-                            // priority
-                            task.syncThreadPriority();
-
-                            Bitmap b = srcImages.get(i);
-                            Bitmap outline = Bitmap.createBitmap(b.getWidth(), b.getHeight(),
-                                    Bitmap.Config.ARGB_8888);
-
-                            c.setBitmap(outline);
-                            c.save();
-                            c.drawBitmap(b, 0, 0, null);
-                            c.restore();
-                            c.setBitmap(null);
-
-                            images.add(outline);
-                        }
-                    } finally {
-                        if (task.isCancelled()) {
-                            data.cleanup(true);
-                        }
-                    }
-                }
-            },
-            new AsyncTaskCallback() {
-                @Override
-                public void run(AppsCustomizeAsyncTask task, AsyncTaskPageData data) {
-                    try {
-                        mRunningTasks.remove(task);
-                        if (task.isCancelled()) return;
-                        onHolographicPageItemsLoaded(data);
-                    } finally {
-                        data.cleanup(task.isCancelled());
-                    }
-                }
-            });
-
-        // Ensure that the outline task always runs in the background, serially
-        AppsCustomizeAsyncTask t =
-            new AppsCustomizeAsyncTask(page, AsyncTaskPageData.Type.LoadHolographicIconsData);
-        t.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-        t.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, pageData);
         mRunningTasks.add(t);
     }
 
@@ -1120,8 +1038,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 AppWidgetProviderInfo info = (AppWidgetProviderInfo) rawInfo;
                 createItemInfo = new PendingAddWidgetInfo(info, null, null);
                 int[] cellSpans = mLauncher.getSpanForWidget(info, null);
-                widget.applyFromAppWidgetProviderInfo(info, -1, cellSpans,
-                        mHolographicOutlineHelper);
+                widget.applyFromAppWidgetProviderInfo(info, -1, cellSpans);
                 widget.setTag(createItemInfo);
             } else if (rawInfo instanceof ResolveInfo) {
                 // Fill in the shortcuts information
@@ -1130,7 +1047,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 createItemInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
                 createItemInfo.componentName = new ComponentName(info.activityInfo.packageName,
                         info.activityInfo.name);
-                widget.applyFromResolveInfo(mPackageManager, info, mHolographicOutlineHelper);
+                widget.applyFromResolveInfo(mPackageManager, info);
                 widget.setTag(createItemInfo);
             }
             widget.setOnClickListener(this);
@@ -1231,41 +1148,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         layout.createHardwareLayer();
         invalidate();
 
-        /* TEMPORARILY DISABLE HOLOGRAPHIC ICONS
-        if (mFadeInAdjacentScreens) {
-            prepareGenerateHoloOutlinesTask(data.page, data.items, data.generatedImages);
-        }
-        */
-
         // Update all thread priorities
         Iterator<AppsCustomizeAsyncTask> iter = mRunningTasks.iterator();
         while (iter.hasNext()) {
             AppsCustomizeAsyncTask task = (AppsCustomizeAsyncTask) iter.next();
             int pageIndex = task.page + mNumAppsPages;
             task.setThreadPriority(getThreadPriorityForPage(pageIndex));
-        }
-    }
-    private void onHolographicPageItemsLoaded(AsyncTaskPageData data) {
-        // Invalidate early to short-circuit children invalidates
-        invalidate();
-
-        int page = data.page;
-        ViewGroup layout = (ViewGroup) getPageAt(page);
-        if (layout instanceof PagedViewCellLayout) {
-            PagedViewCellLayout cl = (PagedViewCellLayout) layout;
-            int count = cl.getPageChildCount();
-            if (count != data.generatedImages.size()) return;
-            for (int i = 0; i < count; ++i) {
-                PagedViewIcon icon = (PagedViewIcon) cl.getChildOnPageAt(i);
-                icon.setHolographicOutline(data.generatedImages.get(i));
-            }
-        } else {
-            int count = layout.getChildCount();
-            if (count != data.generatedImages.size()) return;
-            for (int i = 0; i < count; ++i) {
-                View v = layout.getChildAt(i);
-                ((PagedViewWidget) v).setHolographicOutline(data.generatedImages.get(i));
-            }
         }
     }
 
