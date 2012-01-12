@@ -67,7 +67,9 @@ public class LauncherViewPropertyAnimator extends Animator implements AnimatorLi
 
     @Override
     public void cancel() {
-        mViewPropertyAnimator.cancel();
+        if (mViewPropertyAnimator != null) {
+            mViewPropertyAnimator.cancel();
+        }
     }
 
     @Override
@@ -82,7 +84,7 @@ public class LauncherViewPropertyAnimator extends Animator implements AnimatorLi
 
     @Override
     public long getDuration() {
-        return mViewPropertyAnimator.getDuration();
+        return mDuration;
     }
 
     @Override
@@ -92,7 +94,7 @@ public class LauncherViewPropertyAnimator extends Animator implements AnimatorLi
 
     @Override
     public long getStartDelay() {
-        return mViewPropertyAnimator.getStartDelay();
+        return mStartDelay;
     }
 
     @Override
