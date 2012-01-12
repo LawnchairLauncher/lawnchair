@@ -29,7 +29,6 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -39,27 +38,16 @@ import com.android.launcher.R;
 /**
  * The linear layout used strictly for the widget/wallpaper tab of the customization tray
  */
-public class PagedViewWidget extends LinearLayout implements Checkable {
+public class PagedViewWidget extends LinearLayout {
     static final String TAG = "PagedViewWidgetLayout";
 
     private static boolean sDeletePreviewsWhenDetachedFromWindow = true;
 
     private final Paint mPaint = new Paint();
-    private Bitmap mHolographicOutline;
-    private HolographicOutlineHelper mHolographicOutlineHelper;
     private ImageView mPreviewImageView;
     private final RectF mTmpScaleRect = new RectF();
 
     private String mDimensionsFormatString;
-
-    private int mAlpha = 255;
-    private int mHolographicAlpha;
-
-    private boolean mIsChecked;
-    private ObjectAnimator mCheckedAlphaAnimator;
-    private float mCheckedAlpha = 1.0f;
-    private int mCheckedFadeInDuration;
-    private int mCheckedFadeOutDuration;
 
     public PagedViewWidget(Context context) {
         this(context, null);
@@ -72,16 +60,7 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
     public PagedViewWidget(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        // Set up fade in/out constants
         final Resources r = context.getResources();
-        final int alpha = r.getInteger(R.integer.config_dragAppsCustomizeIconFadeAlpha);
-        if (alpha > 0) {
-            mCheckedAlpha = r.getInteger(R.integer.config_dragAppsCustomizeIconFadeAlpha) / 256.0f;
-            mCheckedFadeInDuration =
-                r.getInteger(R.integer.config_dragAppsCustomizeIconFadeInDuration);
-            mCheckedFadeOutDuration =
-                r.getInteger(R.integer.config_dragAppsCustomizeIconFadeOutDuration);
-        }
         mDimensionsFormatString = r.getString(R.string.widget_dims_format);
 
         setWillNotDraw(false);
@@ -109,8 +88,7 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
     }
 
     public void applyFromAppWidgetProviderInfo(AppWidgetProviderInfo info,
-            int maxWidth, int[] cellSpan, HolographicOutlineHelper holoOutlineHelper) {
-        mHolographicOutlineHelper = holoOutlineHelper;
+            int maxWidth, int[] cellSpan) {
         final ImageView image = (ImageView) findViewById(R.id.widget_preview);
         if (maxWidth > -1) {
             image.setMaxWidth(maxWidth);
@@ -125,9 +103,7 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         }
     }
 
-    public void applyFromResolveInfo(PackageManager pm, ResolveInfo info,
-            HolographicOutlineHelper holoOutlineHelper) {
-        mHolographicOutlineHelper = holoOutlineHelper;
+    public void applyFromResolveInfo(PackageManager pm, ResolveInfo info) {
         CharSequence label = info.loadLabel(pm);
         final ImageView image = (ImageView) findViewById(R.id.widget_preview);
         image.setContentDescription(label);
@@ -159,11 +135,6 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         }
     }
 
-    public void setHolographicOutline(Bitmap holoOutline) {
-        mHolographicOutline = holoOutline;
-        invalidate();
-    }
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         // We eat up the touch events here, since the PagedView (which uses the same swiping
@@ -177,27 +148,6 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
-        if (mAlpha > 0) {
-            super.onDraw(canvas);
-        }
-
-        // draw any blended overlays
-        if (mHolographicOutline != null && mHolographicAlpha > 0) {
-            // Calculate how much to scale the holographic preview
-            mTmpScaleRect.set(0,0,1,1);
-            mPreviewImageView.getImageMatrix().mapRect(mTmpScaleRect);
-
-            mPaint.setAlpha(mHolographicAlpha);
-            canvas.save();
-            canvas.scale(mTmpScaleRect.right, mTmpScaleRect.bottom);
-            canvas.drawBitmap(mHolographicOutline, mPreviewImageView.getLeft(),
-                    mPreviewImageView.getTop(), mPaint);
-            canvas.restore();
-        }
-    }
-
-    @Override
     protected boolean onSetAlpha(int alpha) {
         return true;
     }
@@ -207,63 +157,5 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         for (int i = 0; i < childCount; i++) {
             getChildAt(i).setAlpha(alpha);
         }
-    }
-    @Override
-    public void setAlpha(float alpha) {
-        final float viewAlpha = mHolographicOutlineHelper.viewAlphaInterpolator(alpha);
-        final float holographicAlpha = mHolographicOutlineHelper.highlightAlphaInterpolator(alpha);
-        int newViewAlpha = (int) (viewAlpha * 255);
-        int newHolographicAlpha = (int) (holographicAlpha * 255);
-        if ((mAlpha != newViewAlpha) || (mHolographicAlpha != newHolographicAlpha)) {
-            mAlpha = newViewAlpha;
-            mHolographicAlpha = newHolographicAlpha;
-            setChildrenAlpha(viewAlpha);
-            super.setAlpha(viewAlpha);
-        }
-    }
-
-    void setChecked(boolean checked, boolean animate) {
-        if (mIsChecked != checked) {
-            mIsChecked = checked;
-
-            float alpha;
-            int duration;
-            if (mIsChecked) {
-                alpha = mCheckedAlpha;
-                duration = mCheckedFadeInDuration;
-            } else {
-                alpha = 1.0f;
-                duration = mCheckedFadeOutDuration;
-            }
-
-            // Initialize the animator
-            if (mCheckedAlphaAnimator != null) {
-                mCheckedAlphaAnimator.cancel();
-            }
-            if (animate) {
-                mCheckedAlphaAnimator = ObjectAnimator.ofFloat(this, "alpha", getAlpha(), alpha);
-                mCheckedAlphaAnimator.setDuration(duration);
-                mCheckedAlphaAnimator.start();
-            } else {
-                setAlpha(alpha);
-            }
-
-            invalidate();
-        }
-    }
-
-    @Override
-    public void setChecked(boolean checked) {
-        setChecked(checked, true);
-    }
-
-    @Override
-    public boolean isChecked() {
-        return mIsChecked;
-    }
-
-    @Override
-    public void toggle() {
-        setChecked(!mIsChecked);
     }
 }

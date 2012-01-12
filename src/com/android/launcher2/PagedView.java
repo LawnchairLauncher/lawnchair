@@ -151,15 +151,6 @@ public abstract class PagedView extends ViewGroup {
 
     protected ArrayList<Boolean> mDirtyPageContent;
 
-    // choice modes
-    protected static final int CHOICE_MODE_NONE = 0;
-    protected static final int CHOICE_MODE_SINGLE = 1;
-    // Multiple selection mode is not supported by all Launcher actions atm
-    protected static final int CHOICE_MODE_MULTIPLE = 2;
-
-    protected int mChoiceMode;
-    private ActionMode mActionMode;
-
     // If true, syncPages and syncPageItems will be called to refresh pages
     protected boolean mContentIsRefreshable = true;
 
@@ -206,7 +197,6 @@ public abstract class PagedView extends ViewGroup {
 
     public PagedView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mChoiceMode = CHOICE_MODE_NONE;
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.PagedView, defStyle, 0);
@@ -1643,72 +1633,6 @@ public abstract class PagedView extends ViewGroup {
     protected int getAssociatedUpperPageBound(int page) {
         final int count = getChildCount();
         return Math.min(page + 1, count - 1);
-    }
-
-    protected void startChoiceMode(int mode, ActionMode.Callback callback) {
-        if (isChoiceMode(CHOICE_MODE_NONE)) {
-            mChoiceMode = mode;
-            mActionMode = startActionMode(callback);
-        }
-    }
-
-    public void endChoiceMode() {
-        if (!isChoiceMode(CHOICE_MODE_NONE)) {
-            mChoiceMode = CHOICE_MODE_NONE;
-            resetCheckedGrandchildren();
-            if (mActionMode != null) mActionMode.finish();
-            mActionMode = null;
-        }
-    }
-
-    protected boolean isChoiceMode(int mode) {
-        return mChoiceMode == mode;
-    }
-
-    protected ArrayList<Checkable> getCheckedGrandchildren() {
-        ArrayList<Checkable> checked = new ArrayList<Checkable>();
-        final int childCount = getChildCount();
-        for (int i = 0; i < childCount; ++i) {
-            Page layout = (Page) getPageAt(i);
-            final int grandChildCount = layout.getPageChildCount();
-            for (int j = 0; j < grandChildCount; ++j) {
-                final View v = layout.getChildOnPageAt(j);
-                if (v instanceof Checkable && ((Checkable) v).isChecked()) {
-                    checked.add((Checkable) v);
-                }
-            }
-        }
-        return checked;
-    }
-
-    /**
-     * If in CHOICE_MODE_SINGLE and an item is checked, returns that item.
-     * Otherwise, returns null.
-     */
-    protected Checkable getSingleCheckedGrandchild() {
-        if (mChoiceMode != CHOICE_MODE_MULTIPLE) {
-            final int childCount = getChildCount();
-            for (int i = 0; i < childCount; ++i) {
-                Page layout = (Page) getPageAt(i);
-                final int grandChildCount = layout.getPageChildCount();
-                for (int j = 0; j < grandChildCount; ++j) {
-                    final View v = layout.getChildOnPageAt(j);
-                    if (v instanceof Checkable && ((Checkable) v).isChecked()) {
-                        return (Checkable) v;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    protected void resetCheckedGrandchildren() {
-        // loop through children, and set all of their children to _not_ be checked
-        final ArrayList<Checkable> checked = getCheckedGrandchildren();
-        for (int i = 0; i < checked.size(); ++i) {
-            final Checkable c = checked.get(i);
-            c.setChecked(false);
-        }
     }
 
     /**
