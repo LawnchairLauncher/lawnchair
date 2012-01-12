@@ -54,4 +54,17 @@ public class PagedViewIcon extends TextView {
         setText(info.title);
         setTag(info);
     }
+
+    protected void drawableStateChanged() {
+        if (isPressed()) {
+            if (getAlpha() != 0.5f) {
+                setAlpha(0.5f);
+            }
+        } else {
+            if (getAlpha() != 1f) {
+                setAlpha(1f);
+            }
+        }
+        super.drawableStateChanged();
+    }
 }

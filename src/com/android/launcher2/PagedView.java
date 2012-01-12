@@ -997,19 +997,6 @@ public abstract class PagedView extends ViewGroup {
         return mTouchState != TOUCH_STATE_REST;
     }
 
-    protected void animateClickFeedback(View v, final Runnable r) {
-        // animate the view slightly to show click feedback running some logic after it is "pressed"
-        ObjectAnimator anim = (ObjectAnimator) AnimatorInflater.
-                loadAnimator(mContext, R.anim.paged_view_click_feedback);
-        anim.setTarget(v);
-        anim.addListener(new AnimatorListenerAdapter() {
-            public void onAnimationRepeat(Animator animation) {
-                r.run();
-            }
-        });
-        anim.start();
-    }
-
     protected void determineScrollingStart(MotionEvent ev) {
         determineScrollingStart(ev, 1.0f);
     }
