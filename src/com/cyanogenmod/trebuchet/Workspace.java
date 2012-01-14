@@ -270,6 +270,7 @@ public class Workspace extends SmoothPagedView
     private boolean mScrollWallpaper;
     private boolean mShowScrollingIndicator;
     private boolean mFadeScrollingIndicator;
+    private boolean mShowDockDivider;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -349,6 +350,7 @@ public class Workspace extends SmoothPagedView
         mScrollWallpaper = PreferencesProvider.Interface.Homescreen.Scrolling.getScrollWallpaper(context);
         mShowScrollingIndicator = PreferencesProvider.Interface.Homescreen.Indicator.getShowScrollingIndicator(context);
         mFadeScrollingIndicator = PreferencesProvider.Interface.Homescreen.Indicator.getFadeScrollingIndicator(context);
+        mShowDockDivider = PreferencesProvider.Interface.Homescreen.Indicator.getShowDockDivider(context);
 
         initWorkspace();
 
@@ -3918,10 +3920,8 @@ public class Workspace extends SmoothPagedView
         final View scrollIndicator = getScrollingIndicator();
 
         cancelScrollingIndicatorAnimations();
-        if (mShowSearchBar) {
-            if (qsbDivider != null) qsbDivider.setAlpha(reducedFade);
-            if (dockDivider != null) dockDivider.setAlpha(reducedFade);
-        }
-        scrollIndicator.setAlpha(1 - fade);
+        if (qsbDivider != null && mShowSearchBar) qsbDivider.setAlpha(reducedFade);
+        if (dockDivider != null && mShowDockDivider) dockDivider.setAlpha(reducedFade);
+        if (scrollIndicator != null && mShowScrollingIndicator) scrollIndicator.setAlpha(1 - fade);
     }
 }
