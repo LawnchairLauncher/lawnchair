@@ -312,6 +312,8 @@ s -->
     <string name="preferences_interface_homescreen_indicator_enable_summary">Show current page indicator at the bottom of the screen</string>
     <string name="preferences_interface_homescreen_indicator_fade_title">Fade Indicator</string>
     <string name="preferences_interface_homescreen_indicator_fade_summary">Fade the indicator after the homescreen has changed</string>
+    <string name="preferences_interface_homescreen_indicator_background_title">Show Dock Divider</string>
+    <string name="preferences_interface_homescreen_indicator_background_summary">Show the background behind the indicator</string>
 
     <!-- Drawer -->
     <string name="preferences_interface_drawer_title">Drawer</string>

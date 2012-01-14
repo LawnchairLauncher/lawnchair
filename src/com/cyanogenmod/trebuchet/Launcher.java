@@ -292,6 +292,7 @@ public final class Launcher extends Activity
 
     // Preferences
     private boolean mShowSearchBar;
+    private boolean mShowDockDivider;
     private boolean mAutoRotate;
 
     private Runnable mBuildLayersRunnable = new Runnable() {
@@ -346,7 +347,8 @@ public final class Launcher extends Activity
 
         // Preferences
         mShowSearchBar = PreferencesProvider.Interface.Homescreen.getShowSearchBar(this);
-	mAutoRotate = PreferencesProvider.Interface.General.getAutoRotate(this, getResources().getBoolean(R.bool.allow_rotation));
+        mShowDockDivider = PreferencesProvider.Interface.Homescreen.Indicator.getShowDockDivider(this);
+        mAutoRotate = PreferencesProvider.Interface.General.getAutoRotate(this, getResources().getBoolean(R.bool.allow_rotation));
 
         if (PROFILE_STARTUP) {
             android.os.Debug.startMethodTracing(
@@ -913,6 +915,10 @@ public final class Launcher extends Activity
         // Hide the search divider if we are hiding search bar
         if (!mShowSearchBar && getCurrentOrientation() == Configuration.ORIENTATION_LANDSCAPE) {
             ((View) findViewById(R.id.qsb_divider)).setVisibility(View.GONE);
+        }
+
+        if (!mShowDockDivider) {
+            ((View) findViewById(R.id.dock_divider)).setVisibility(View.GONE);
         }
 
         // Setup AppsCustomize
@@ -2777,15 +2783,23 @@ public final class Launcher extends Activity
 
     void hideDockDivider() {
         if (mQsbDivider != null && mDockDivider != null) {
-            mQsbDivider.setVisibility(View.INVISIBLE);
-            mDockDivider.setVisibility(View.INVISIBLE);
+            if (mShowSearchBar) {
+                mQsbDivider.setVisibility(View.INVISIBLE);
+            }
+            if (mShowDockDivider) {
+                mDockDivider.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
     void showDockDivider(boolean animated) {
         if (mQsbDivider != null && mDockDivider != null) {
-            mQsbDivider.setVisibility(View.VISIBLE);
-            mDockDivider.setVisibility(View.VISIBLE);
+            if (mShowSearchBar) {
+                mQsbDivider.setVisibility(View.VISIBLE);
+            }
+            if (mShowDockDivider) {
+                mDockDivider.setVisibility(View.VISIBLE);
+            }
             if (mDividerAnimator != null) {
                 mDividerAnimator.cancel();
                 mQsbDivider.setAlpha(1f);
@@ -2794,8 +2808,10 @@ public final class Launcher extends Activity
             }
             if (animated) {
                 mDividerAnimator = new AnimatorSet();
-                mDividerAnimator.playTogether(ObjectAnimator.ofFloat(mQsbDivider, "alpha", 1f),
-                        ObjectAnimator.ofFloat(mDockDivider, "alpha", 1f));
+                if (mShowSearchBar && mShowDockDivider) {
+                    mDividerAnimator.playTogether(ObjectAnimator.ofFloat(mQsbDivider, "alpha", 1f),
+                            ObjectAnimator.ofFloat(mDockDivider, "alpha", 1f));
+                }
                 mDividerAnimator.setDuration(mSearchDropTargetBar.getTransitionInDuration());
                 mDividerAnimator.start();
             }
