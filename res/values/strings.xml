@@ -25,7 +25,7 @@
     <!-- Application copyright -->
     <string name="application_copyright">Copyright \u00A9 CyanogenMod 2012</string>
     <!-- Application version -->
-    <string name="application_version">0.1</string>
+    <string name="application_version">0.2</string>
     <!-- Accessibility-facing application name -->
     <string name="home">Home</string>
     <!-- Name for all applications running as this uid. -->

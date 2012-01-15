@@ -19,6 +19,7 @@ package com.cyanogenmod.trebuchet.preference;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
 
 import com.cyanogenmod.trebuchet.R;
@@ -37,5 +38,8 @@ public class Preferences extends PreferenceActivity {
         SharedPreferences.Editor editor = prefs.edit();
                 editor.putBoolean(PreferencesProvider.PREFERENCES_CHANGED, true);
                 editor.commit();
+
+        Preference version = findPreference("application_version");
+        version.setTitle(getString(R.string.application_name) + " " + getString(R.string.application_version));
     }
 }
