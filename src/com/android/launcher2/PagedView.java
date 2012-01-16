@@ -292,6 +292,7 @@ public abstract class PagedView extends ViewGroup {
         int newX = getChildOffset(mCurrentPage) - getRelativeChildOffset(mCurrentPage);
         scrollTo(newX, 0);
         mScroller.setFinalX(newX);
+        mScroller.forceFinished(true);
     }
 
     /**
@@ -602,9 +603,7 @@ public abstract class PagedView extends ViewGroup {
 
         if (mFirstLayout && mCurrentPage >= 0 && mCurrentPage < getChildCount()) {
             setHorizontalScrollBarEnabled(false);
-            int newX = getChildOffset(mCurrentPage) - getRelativeChildOffset(mCurrentPage);
-            scrollTo(newX, 0);
-            mScroller.setFinalX(newX);
+            updateCurrentPageScroll();
             setHorizontalScrollBarEnabled(true);
             mFirstLayout = false;
         }
