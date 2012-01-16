@@ -903,10 +903,6 @@ public class CellLayout extends ViewGroup {
         return mBackgroundAlpha;
     }
 
-    public void setFastBackgroundAlpha(float alpha) {
-        mBackgroundAlpha = alpha;
-    }
-
     public void setBackgroundAlphaMultiplier(float multiplier) {
         mBackgroundAlphaMultiplier = multiplier;
     }
@@ -936,22 +932,10 @@ public class CellLayout extends ViewGroup {
         super.setAlpha(alpha);
     }
 
-    public void setFastAlpha(float alpha) {
-        setFastChildrenAlpha(alpha);
-        super.setFastAlpha(alpha);
-    }
-
     private void setChildrenAlpha(float alpha) {
         final int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
             getChildAt(i).setAlpha(alpha);
-        }
-    }
-
-    private void setFastChildrenAlpha(float alpha) {
-        final int childCount = getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            getChildAt(i).setFastAlpha(alpha);
         }
     }
 
