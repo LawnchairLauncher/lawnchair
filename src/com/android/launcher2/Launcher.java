@@ -2312,13 +2312,18 @@ public final class Launcher extends Activity
             }
 
             if (delayAnim) {
+                final AnimatorSet stateAnimation = mStateAnimation;
                 final OnGlobalLayoutListener delayedStart = new OnGlobalLayoutListener() {
                     public void onGlobalLayout() {
                         mWorkspace.post(new Runnable() {
                             public void run() {
-                                // Need to update pivots for zoom if layout changed
-                                setPivotsForZoom(toView, scale);
-                                mStateAnimation.start();
+                                // Check that mStateAnimation hasn't changed while
+                                // we waited for a layout pass
+                                if (mStateAnimation == stateAnimation) {
+                                    // Need to update pivots for zoom if layout changed
+                                    setPivotsForZoom(toView, scale);
+                                    mStateAnimation.start();
+                                }
                             }
                         });
                         observer.removeGlobalOnLayoutListener(this);
