@@ -16,16 +16,10 @@
 
 package com.android.launcher2;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.widget.TextView;
-
-import com.android.launcher.R;
 
 /**
  * An icon on a PagedView, specifically for items in the launcher's paged view (with compound

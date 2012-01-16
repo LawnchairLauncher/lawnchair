@@ -1051,7 +1051,6 @@ public final class Launcher extends Activity
             mAppsCustomizeTabHost.onWindowVisible();
             if (!mWorkspaceLoading) {
                 final ViewTreeObserver observer = mWorkspace.getViewTreeObserver();
-                final Workspace workspace = mWorkspace;
                 // We want to let Launcher draw itself at least once before we force it to build
                 // layers on all the workspace pages, so that transitioning to Launcher from other
                 // apps is nice and speedy. Usually the first call to preDraw doesn't correspond to
