@@ -854,7 +854,7 @@ public class Workspace extends SmoothPagedView
             }
         }
         if (keepUpdating) {
-            fastInvalidate();
+            invalidate();
         }
     }
 
@@ -1166,13 +1166,12 @@ public class Workspace extends SmoothPagedView
                                 backgroundAlphaInterpolator(Math.abs(scrollProgress)));
                     }
                 }
-                cl.setFastTranslationX(translationX);
-                cl.setFastRotationY(rotation);
+                cl.setTranslationX(translationX);
+                cl.setRotationY(rotation);
                 if (mFadeInAdjacentScreens && !isSmall()) {
                     float alpha = 1 - Math.abs(scrollProgress);
-                    cl.setFastAlpha(alpha);
+                    cl.setAlpha(alpha);
                 }
-                cl.fastInvalidate();
             }
         }
         if (!isSwitchingState() && !isInOverscroll) {
@@ -1652,16 +1651,15 @@ public class Workspace extends SmoothPagedView
             for (int index = 0; index < getChildCount(); index++) {
                 final int i = index;
                 final CellLayout cl = (CellLayout) getChildAt(i);
-                invalidate();
                 if (mOldAlphas[i] == 0 && mNewAlphas[i] == 0) {
-                    cl.fastInvalidate();
-                    cl.setFastTranslationX(mNewTranslationXs[i]);
-                    cl.setFastTranslationY(mNewTranslationYs[i]);
-                    cl.setFastScaleX(mNewScaleXs[i]);
-                    cl.setFastScaleY(mNewScaleYs[i]);
-                    cl.setFastBackgroundAlpha(mNewBackgroundAlphas[i]);
+                    cl.setTranslationX(mNewTranslationXs[i]);
+                    cl.setTranslationY(mNewTranslationYs[i]);
+                    cl.setScaleX(mNewScaleXs[i]);
+                    cl.setScaleY(mNewScaleYs[i]);
+                    cl.setBackgroundAlpha(mNewBackgroundAlphas[i]);
                     cl.setBackgroundAlphaMultiplier(mNewBackgroundAlphaMultipliers[i]);
-                    cl.setFastAlpha(mNewAlphas[i]);
+                    cl.setAlpha(mNewAlphas[i]);
+                    cl.setRotationY(mNewRotationYs[i]);
                 } else {
                     LauncherViewPropertyAnimator a = new LauncherViewPropertyAnimator(cl);
                     a.translationX(mNewTranslationXs[i])
@@ -1692,7 +1690,7 @@ public class Workspace extends SmoothPagedView
                         bgAnim.setInterpolator(mZoomInInterpolator);
                         bgAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
                                 public void onAnimationUpdate(float a, float b) {
-                                    cl.setFastBackgroundAlpha(
+                                    cl.setBackgroundAlpha(
                                             a * mOldBackgroundAlphas[i] +
                                             b * mNewBackgroundAlphas[i]);
                                     cl.setBackgroundAlphaMultiplier(
