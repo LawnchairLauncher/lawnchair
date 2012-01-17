@@ -56,15 +56,7 @@ public class PagedViewIcon extends TextView {
     }
 
     protected void drawableStateChanged() {
-        if (isPressed()) {
-            if (getAlpha() != 0.5f) {
-                setAlpha(0.5f);
-            }
-        } else {
-            if (getAlpha() != 1f) {
-                setAlpha(1f);
-            }
-        }
+        setAlpha(isPressed() ? 0.5f : 1f);
         super.drawableStateChanged();
     }
 }
