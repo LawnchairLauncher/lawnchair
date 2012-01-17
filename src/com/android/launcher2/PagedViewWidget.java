@@ -16,18 +16,12 @@
 
 package com.android.launcher2;
 
-import android.animation.ObjectAnimator;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,9 +37,7 @@ public class PagedViewWidget extends LinearLayout {
 
     private static boolean sDeletePreviewsWhenDetachedFromWindow = true;
 
-    private final Paint mPaint = new Paint();
     private ImageView mPreviewImageView;
-    private final RectF mTmpScaleRect = new RectF();
 
     private String mDimensionsFormatString;
 
@@ -145,17 +137,5 @@ public class PagedViewWidget extends LinearLayout {
         // (it's the same view in that case).  This is not ideal, but to prevent more changes,
         // we just always mark the touch event as handled.
         return super.onTouchEvent(event) || true;
-    }
-
-    @Override
-    protected boolean onSetAlpha(int alpha) {
-        return true;
-    }
-
-    private void setChildrenAlpha(float alpha) {
-        final int childCount = getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            getChildAt(i).setAlpha(alpha);
-        }
     }
 }
