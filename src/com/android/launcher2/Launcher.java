@@ -2236,13 +2236,10 @@ public final class Launcher extends Activity
 
             toView.setVisibility(View.VISIBLE);
             toView.setAlpha(0f);
-            ValueAnimator alphaAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(fadeDuration);
+            final ObjectAnimator alphaAnim = ObjectAnimator
+                .ofFloat(toView, "alpha", 0f, 1f)
+                .setDuration(fadeDuration);
             alphaAnim.setInterpolator(new DecelerateInterpolator(1.5f));
-            alphaAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
-                public void onAnimationUpdate(float a, float b) {
-                    toView.setAlpha(a * 0f + b * 1f);
-                }
-            });
 
             // toView should appear right at the end of the workspace shrink
             // animation
@@ -2264,11 +2261,6 @@ public final class Launcher extends Activity
                 }
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    // If we don't set the final scale values here, if this animation is cancelled
-                    // it will have the wrong scale value and subsequent cameraPan animations will
-                    // not fix that
-                    toView.setScaleX(1.0f);
-                    toView.setScaleY(1.0f);
                     if (toView instanceof LauncherTransitionable) {
                         ((LauncherTransitionable) toView).onLauncherTransitionEnd(instance,
                                 scaleAnim, false);
@@ -2365,6 +2357,8 @@ public final class Launcher extends Activity
         final Launcher instance = this;
 
         final int duration = res.getInteger(R.integer.config_appsCustomizeZoomOutTime);
+        final int fadeOutDuration =
+                res.getInteger(R.integer.config_appsCustomizeFadeOutTime);
         final float scaleFactor = (float)
                 res.getInteger(R.integer.config_appsCustomizeZoomScaleFactor);
         final View fromView = mAppsCustomizeTabHost;
@@ -2386,22 +2380,18 @@ public final class Launcher extends Activity
             final float oldScaleX = fromView.getScaleX();
             final float oldScaleY = fromView.getScaleY();
 
-            ValueAnimator scaleAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
-            scaleAnim.setInterpolator(new Workspace.ZoomInInterpolator());
-            scaleAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
-                public void onAnimationUpdate(float a, float b) {
-                    fromView.setScaleX(a * oldScaleX + b * scaleFactor);
-                    fromView.setScaleY(a * oldScaleY + b * scaleFactor);
-                }
-            });
-            final ValueAnimator alphaAnim = ValueAnimator.ofFloat(0f, 1f);
-            alphaAnim.setDuration(res.getInteger(R.integer.config_appsCustomizeFadeOutTime));
+            final LauncherViewPropertyAnimator scaleAnim =
+                    new LauncherViewPropertyAnimator(fromView);
+            scaleAnim.
+                scaleX(scaleFactor).scaleY(scaleFactor).
+                setDuration(duration).
+                setInterpolator(new Workspace.ZoomInInterpolator());
+
+            final ObjectAnimator alphaAnim = ObjectAnimator
+                .ofFloat(fromView, "alpha", 1f, 0f)
+                .setDuration(fadeOutDuration);
             alphaAnim.setInterpolator(new AccelerateDecelerateInterpolator());
-            alphaAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
-                public void onAnimationUpdate(float a, float b) {
-                    fromView.setAlpha(a * 1f + b * 0f);
-                }
-            });
+
             if (fromView instanceof LauncherTransitionable) {
                 ((LauncherTransitionable) fromView).onLauncherTransitionStart(instance, alphaAnim,
                         true);

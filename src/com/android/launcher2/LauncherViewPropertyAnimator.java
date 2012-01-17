@@ -50,19 +50,17 @@ public class LauncherViewPropertyAnimator extends Animator implements AnimatorLi
     long mStartDelay;
     long mDuration;
     TimeInterpolator mInterpolator;
-    Animator.AnimatorListener mListener;
+    ArrayList<Animator.AnimatorListener> mListeners;
     boolean mRunning = false;
 
     public LauncherViewPropertyAnimator(View target) {
         mTarget = target;
+        mListeners = new ArrayList<Animator.AnimatorListener>();
     }
 
     @Override
     public void addListener(Animator.AnimatorListener listener) {
-        if (mListener != null) {
-            throw new RuntimeException("Only one listener supported");
-        }
-        mListener = listener;
+        mListeners.add(listener);
     }
 
     @Override
@@ -89,7 +87,7 @@ public class LauncherViewPropertyAnimator extends Animator implements AnimatorLi
 
     @Override
     public ArrayList<Animator.AnimatorListener> getListeners() {
-        return null;
+        return mListeners;
     }
 
     @Override
@@ -99,31 +97,35 @@ public class LauncherViewPropertyAnimator extends Animator implements AnimatorLi
 
     @Override
     public void onAnimationCancel(Animator animation) {
-        if (mListener != null) {
-            mListener.onAnimationCancel(this);
+        for (int i = 0; i < mListeners.size(); i++) {
+            Animator.AnimatorListener listener = mListeners.get(i);
+            listener.onAnimationCancel(this);
         }
         mRunning = false;
     }
 
     @Override
     public void onAnimationEnd(Animator animation) {
-        if (mListener != null) {
-            mListener.onAnimationEnd(this);
+        for (int i = 0; i < mListeners.size(); i++) {
+            Animator.AnimatorListener listener = mListeners.get(i);
+            listener.onAnimationEnd(this);
         }
         mRunning = false;
     }
 
     @Override
     public void onAnimationRepeat(Animator animation) {
-        if (mListener != null) {
-            mListener.onAnimationRepeat(this);
+        for (int i = 0; i < mListeners.size(); i++) {
+            Animator.AnimatorListener listener = mListeners.get(i);
+            listener.onAnimationRepeat(this);
         }
     }
 
     @Override
     public void onAnimationStart(Animator animation) {
-        if (mListener != null) {
-            mListener.onAnimationStart(this);
+        for (int i = 0; i < mListeners.size(); i++) {
+            Animator.AnimatorListener listener = mListeners.get(i);
+            listener.onAnimationStart(this);
         }
         mRunning = true;
     }
@@ -140,16 +142,12 @@ public class LauncherViewPropertyAnimator extends Animator implements AnimatorLi
 
     @Override
     public void removeAllListeners() {
-        mListener = null;
+        mListeners.clear();
     }
 
     @Override
     public void removeListener(Animator.AnimatorListener listener) {
-        if (mListener == listener) {
-            mListener = null;
-        } else {
-            throw new RuntimeException("Removing listener that wasn't set");
-        }
+        mListeners.remove(listener);
     }
 
     @Override
