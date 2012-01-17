@@ -17,13 +17,12 @@
 
 package com.android.launcher2;
 
-import android.widget.ImageView;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.KeyEvent;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.android.launcher.R;
 
