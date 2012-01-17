@@ -70,6 +70,15 @@
         android:id="@+id/qsb_bar"
         layout="@layout/qsb_bar" />
 
+    <com.android.launcher2.DrawableStateProxyView
+        android:id="@+id/voice_button_proxy"
+        android:layout_width="@dimen/qsb_bar_height"
+        android:layout_height="@dimen/qsb_bar_height"
+        android:layout_gravity="right"
+        android:clickable="true"
+        android:onClick="onClickVoiceButton"
+        launcher:sourceViewId="@+id/voice_button" />
+
     <include layout="@layout/apps_customize_pane"
         android:id="@+id/apps_customize_pane"
         android:layout_width="match_parent"

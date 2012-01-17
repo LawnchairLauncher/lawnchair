@@ -27,6 +27,13 @@
 
     <skip />
 
+    <!-- DrawableStateProxyView specific attributes. These attributes are used to customize
+         a DrawableStateProxyView view in XML files. -->
+    <declare-styleable name="DrawableStateProxyView">
+        <!-- The source view to delegate touch presses events to. -->
+        <attr name="sourceViewId" format="integer" />
+    </declare-styleable>
+
     <!-- Cling specific attributes. These attributes are used to customize
          the cling in XML files. -->
     <declare-styleable name="Cling">
