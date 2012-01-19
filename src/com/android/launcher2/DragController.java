@@ -47,7 +47,8 @@ public class DragController {
     /** Indicates the drag is a copy.  */
     public static int DRAG_ACTION_COPY = 1;
 
-    private static final int SCROLL_DELAY = 600;
+    private static final int SCROLL_DELAY = 500;
+    private static final int RESCROLL_DELAY = 750;
     private static final int VIBRATE_DURATION = 35;
 
     private static final boolean PROFILE_DRAWING_DURING_DRAG = false;
@@ -388,6 +389,7 @@ public class DragController {
     private void endDrag() {
         if (mDragging) {
             mDragging = false;
+            clearScrollRunnable();
             for (DragListener listener : mListeners) {
                 listener.onDragEnd();
             }
@@ -456,6 +458,15 @@ public class DragController {
         return mMoveTarget != null && mMoveTarget.dispatchUnhandledMove(focused, direction);
     }
 
+    private void clearScrollRunnable() {
+        mHandler.removeCallbacks(mScrollRunnable);
+        if (mScrollState == SCROLL_WAITING_IN_ZONE) {
+            mScrollState = SCROLL_OUTSIDE_ZONE;
+            mScrollRunnable.setDirection(SCROLL_RIGHT);
+            mDragScroller.onExitScrollArea();
+        }
+    }
+
     private void handleMoveEvent(int x, int y) {
         mDragObject.dragView.move(x, y);
 
@@ -491,30 +502,26 @@ public class DragController {
             Math.sqrt(Math.pow(mLastTouch[0] - x, 2) + Math.pow(mLastTouch[1] - y, 2));
         mLastTouch[0] = x;
         mLastTouch[1] = y;
+        final int delay = mDistanceSinceScroll < slop ? RESCROLL_DELAY : SCROLL_DELAY;
 
         if (x < mScrollZone) {
-            if (mScrollState == SCROLL_OUTSIDE_ZONE && mDistanceSinceScroll > slop) {
+            if (mScrollState == SCROLL_OUTSIDE_ZONE) {
                 mScrollState = SCROLL_WAITING_IN_ZONE;
                 if (mDragScroller.onEnterScrollArea(x, y, SCROLL_LEFT)) {
                     mScrollRunnable.setDirection(SCROLL_LEFT);
-                    mHandler.postDelayed(mScrollRunnable, SCROLL_DELAY);
+                    mHandler.postDelayed(mScrollRunnable, delay);
                 }
             }
         } else if (x > mScrollView.getWidth() - mScrollZone) {
-            if (mScrollState == SCROLL_OUTSIDE_ZONE && mDistanceSinceScroll > slop) {
+            if (mScrollState == SCROLL_OUTSIDE_ZONE) {
                 mScrollState = SCROLL_WAITING_IN_ZONE;
                 if (mDragScroller.onEnterScrollArea(x, y, SCROLL_RIGHT)) {
                     mScrollRunnable.setDirection(SCROLL_RIGHT);
-                    mHandler.postDelayed(mScrollRunnable, SCROLL_DELAY);
+                    mHandler.postDelayed(mScrollRunnable, delay);
                 }
             }
         } else {
-            if (mScrollState == SCROLL_WAITING_IN_ZONE) {
-                mScrollState = SCROLL_OUTSIDE_ZONE;
-                mScrollRunnable.setDirection(SCROLL_RIGHT);
-                mHandler.removeCallbacks(mScrollRunnable);
-                mDragScroller.onExitScrollArea();
-            }
+            clearScrollRunnable();
         }
     }
 
@@ -551,7 +558,6 @@ public class DragController {
             // Ensure that we've processed a move event at the current pointer location.
             handleMoveEvent(dragLayerX, dragLayerY);
 
-            mHandler.removeCallbacks(mScrollRunnable);
             if (mDragging) {
                 drop(dragLayerX, dragLayerY);
             }
@@ -681,6 +687,11 @@ public class DragController {
                 mScrollState = SCROLL_OUTSIDE_ZONE;
                 mDistanceSinceScroll = 0;
                 mDragScroller.onExitScrollArea();
+
+                if (isDragging()) {
+                    // Force an update so that we can requeue the scroller if necessary
+                    handleMoveEvent(mDragObject.x, mDragObject.y);
+                }
             }
         }
 

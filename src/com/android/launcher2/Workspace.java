@@ -1280,8 +1280,9 @@ public class Workspace extends SmoothPagedView
             final int paddingTop = mPaddingTop + offset;
             final int paddingBottom = mPaddingBottom + offset;
 
-            final CellLayout leftPage = (CellLayout) getChildAt(mCurrentPage - 1);
-            final CellLayout rightPage = (CellLayout) getChildAt(mCurrentPage + 1);
+            final int page = (mNextPage != INVALID_PAGE ? mNextPage : mCurrentPage);
+            final CellLayout leftPage = (CellLayout) getChildAt(page - 1);
+            final CellLayout rightPage = (CellLayout) getChildAt(page + 1);
 
             if (leftPage != null && leftPage.getIsDragOverlapping()) {
                 final Drawable d = getResources().getDrawable(R.drawable.page_hover_left_holo);
@@ -3160,11 +3161,12 @@ public class Workspace extends SmoothPagedView
         if (!isSmall() && !mIsSwitchingState) {
             mInScrollArea = true;
 
-            final int page = mCurrentPage + (direction == DragController.SCROLL_LEFT ? -1 : 1);
-            final CellLayout layout = (CellLayout) getChildAt(page);
+            final int page = (mNextPage != INVALID_PAGE ? mNextPage : mCurrentPage) +
+                       (direction == DragController.SCROLL_LEFT ? -1 : 1);
             cancelFolderCreation();
 
-            if (layout != null) {
+            if (0 <= page && page < getChildCount()) {
+                CellLayout layout = (CellLayout) getChildAt(page);
                 // Exit the current layout and mark the overlapping layout
                 if (mDragTargetLayout != null) {
                     mDragTargetLayout.setIsDragOverlapping(false);
