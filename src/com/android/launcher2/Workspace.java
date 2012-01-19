@@ -78,7 +78,7 @@ import java.util.List;
  */
 public class Workspace extends SmoothPagedView
         implements DropTarget, DragSource, DragScroller, View.OnTouchListener,
-        DragController.DragListener {
+        DragController.DragListener, LauncherTransitionable {
     @SuppressWarnings({"UnusedDeclaration"})
     private static final String TAG = "Launcher.Workspace";
 
@@ -159,8 +159,6 @@ public class Workspace extends SmoothPagedView
     enum State { NORMAL, SPRING_LOADED, SMALL };
     private State mState = State.NORMAL;
     private boolean mIsSwitchingState = false;
-
-    private AnimatorListener mChangeStateAnimationListener;
 
     boolean mAnimatingViewIntoPlace = false;
     boolean mIsDragOccuring = false;
@@ -391,20 +389,6 @@ public class Workspace extends SmoothPagedView
         } catch (Resources.NotFoundException e) {
             // In this case, we will skip drawing background protection
         }
-
-        mChangeStateAnimationListener = new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                mIsSwitchingState = true;
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mIsSwitchingState = false;
-                mWallpaperOffset.setOverrideHorizontalCatchupConstant(false);
-                updateChildrenLayersEnabled();
-            }
-        };
 
         mWallpaperOffset = new WallpaperOffsetInterpolator();
         Display display = mLauncher.getWindowManager().getDefaultDisplay();
@@ -1628,26 +1612,10 @@ public class Workspace extends SmoothPagedView
                 cl.setBackgroundAlphaMultiplier(finalAlphaMultiplierValue);
                 cl.setAlpha(finalAlpha);
                 cl.setRotationY(rotation);
-                mChangeStateAnimationListener.onAnimationEnd(null);
             }
         }
 
         if (animated) {
-            anim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(android.animation.Animator animation) {
-                    // The above code to determine initialAlpha and finalAlpha will ensure that only
-                    // the current page is visible during (and subsequently, after) the transition
-                    // animation.  If fade adjacent pages is disabled, then re-enable the page
-                    // visibility after the transition animation.
-                    if (!mFadeInAdjacentScreens && stateIsNormal && oldStateIsSmall) {
-                        for (int i = 0; i < getChildCount(); i++) {
-                            final CellLayout cl = (CellLayout) getChildAt(i);
-                            cl.setAlpha(1f);
-                        }
-                    }
-                }
-            });
             for (int index = 0; index < getChildCount(); index++) {
                 final int i = index;
                 final CellLayout cl = (CellLayout) getChildAt(i);
@@ -1703,9 +1671,6 @@ public class Workspace extends SmoothPagedView
                 }
             }
             anim.setStartDelay(delay);
-            // If we call this when we're not animated, onAnimationEnd is never called on
-            // the listener; make sure we only use the listener when we're actually animating
-            anim.addListener(mChangeStateAnimationListener);
         }
 
         if (stateIsSpringLoaded) {
@@ -1719,6 +1684,33 @@ public class Workspace extends SmoothPagedView
             animateBackgroundGradient(0f, true);
         }
         return anim;
+    }
+
+    @Override
+    public void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace) {
+        mIsSwitchingState = true;
+    }
+
+    @Override
+    public void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace) {
+        mIsSwitchingState = false;
+        mWallpaperOffset.setOverrideHorizontalCatchupConstant(false);
+        updateChildrenLayersEnabled();
+        // The code in getChangeStateAnimation to determine initialAlpha and finalAlpha will ensure
+        // ensure that only the current page is visible during (and subsequently, after) the
+        // transition animation.  If fade adjacent pages is disabled, then re-enable the page
+        // visibility after the transition animation.
+        if (!mFadeInAdjacentScreens) {
+            for (int i = 0; i < getChildCount(); i++) {
+                final CellLayout cl = (CellLayout) getChildAt(i);
+                cl.setAlpha(1f);
+            }
+        }
+    }
+
+    @Override
+    public View getContent() {
+        return this;
     }
 
     /**
