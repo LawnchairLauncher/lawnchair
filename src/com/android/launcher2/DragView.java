@@ -222,11 +222,7 @@ public class DragView extends View {
     }
 
     void remove() {
-        post(new Runnable() {
-            public void run() {
-                mDragLayer.removeView(DragView.this);
-            }
-        });
+        mDragLayer.removeView(DragView.this);
     }
 
     int[] getPosition(int[] result) {
