@@ -705,9 +705,15 @@ public class Workspace extends SmoothPagedView
             clearChildrenCache();
         }
 
-        // Hide the outlines, as long as we're not dragging
-        if (!mDragController.dragging()) {
-            // Only hide page outlines as we pan if we are on large screen
+
+        if (mDragController.isDragging()) {
+            if (isSmall()) {
+                // If we are in springloaded mode, then force an event to check if the current touch
+                // is under a new page (to scroll to)
+                mDragController.forceMoveEvent();
+            }
+        } else {
+            // If we are not mid-dragging, hide the page outlines if we are on a large screen
             if (LauncherApplication.isScreenLarge()) {
                 hideOutlines();
             }
@@ -2485,7 +2491,11 @@ public class Workspace extends SmoothPagedView
            v.getMatrix().invert(mTempInverseMatrix);
            cachedInverseMatrix = mTempInverseMatrix;
        }
-       xy[0] = xy[0] + mScrollX - v.getLeft();
+       int scrollX = mScrollX;
+       if (mNextPage != INVALID_PAGE) {
+           scrollX = mScroller.getFinalX();
+       }
+       xy[0] = xy[0] + scrollX - v.getLeft();
        xy[1] = xy[1] + mScrollY - v.getTop();
        cachedInverseMatrix.mapPoints(xy);
    }
@@ -2507,7 +2517,11 @@ public class Workspace extends SmoothPagedView
     */
    void mapPointFromChildToSelf(View v, float[] xy) {
        v.getMatrix().mapPoints(xy);
-       xy[0] -= (mScrollX - v.getLeft());
+       int scrollX = mScrollX;
+       if (mNextPage != INVALID_PAGE) {
+           scrollX = mScroller.getFinalX();
+       }
+       xy[0] -= (scrollX - v.getLeft());
        xy[1] -= (mScrollY - v.getTop());
    }
 
