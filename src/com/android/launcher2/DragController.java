@@ -525,6 +525,12 @@ public class DragController {
         }
     }
 
+    public void forceMoveEvent() {
+        if (mDragging) {
+            handleMoveEvent(mDragObject.x, mDragObject.y);
+        }
+    }
+
     /**
      * Call this from a drag source view.
      */
@@ -558,12 +564,14 @@ public class DragController {
             // Ensure that we've processed a move event at the current pointer location.
             handleMoveEvent(dragLayerX, dragLayerY);
 
+            mHandler.removeCallbacks(mScrollRunnable);
             if (mDragging) {
                 drop(dragLayerX, dragLayerY);
             }
             endDrag();
             break;
         case MotionEvent.ACTION_CANCEL:
+            mHandler.removeCallbacks(mScrollRunnable);
             cancelDrag();
             break;
         }
@@ -690,7 +698,7 @@ public class DragController {
 
                 if (isDragging()) {
                     // Force an update so that we can requeue the scroller if necessary
-                    handleMoveEvent(mDragObject.x, mDragObject.y);
+                    forceMoveEvent();
                 }
             }
         }
