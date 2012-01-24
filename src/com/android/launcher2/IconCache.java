@@ -51,7 +51,6 @@ public class IconCache {
     public IconCache(LauncherApplication context) {
         mContext = context;
         mPackageManager = context.getPackageManager();
-        int density = context.getResources().getDisplayMetrics().densityDpi;
         if (LauncherApplication.isScreenLarge()) {
             if (density == DisplayMetrics.DENSITY_LOW) {
                 mIconDpi = DisplayMetrics.DENSITY_MEDIUM;
