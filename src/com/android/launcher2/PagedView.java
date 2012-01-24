@@ -341,12 +341,10 @@ public abstract class PagedView extends ViewGroup {
 
     // a method that subclasses can override to add behavior
     protected void onPageBeginMoving() {
-        showScrollingIndicator(false);
     }
 
     // a method that subclasses can override to add behavior
     protected void onPageEndMoving() {
-        hideScrollingIndicator(false);
     }
 
     /**

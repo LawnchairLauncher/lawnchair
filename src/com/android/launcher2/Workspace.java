@@ -678,6 +678,9 @@ public class Workspace extends SmoothPagedView
         if (LauncherApplication.isScreenLarge()) {
             showOutlines();
         }
+
+        // Show the scroll indicator as you pan the page
+        showScrollingIndicator(false);
     }
 
     protected void onPageEndMoving() {
@@ -700,6 +703,11 @@ public class Workspace extends SmoothPagedView
             // If we are not mid-dragging, hide the page outlines if we are on a large screen
             if (LauncherApplication.isScreenLarge()) {
                 hideOutlines();
+            }
+
+            // Hide the scroll indicator as you pan the page
+            if (!mDragController.isDragging()) {
+                hideScrollingIndicator(false);
             }
         }
         mOverScrollMaxBackgroundAlpha = 0.0f;
@@ -1928,6 +1936,9 @@ public class Workspace extends SmoothPagedView
         mDragController.startDrag(b, dragLayerX, dragLayerY, source, child.getTag(),
                 DragController.DRAG_ACTION_MOVE, dragVisualizeOffset, dragRect);
         b.recycle();
+
+        // Show the scrolling indicator when you pick up an item
+        showScrollingIndicator(false);
     }
 
     void addApplicationShortcut(ShortcutInfo info, CellLayout target, long container, int screen,
@@ -3118,6 +3129,9 @@ public class Workspace extends SmoothPagedView
         }
         mDragOutline = null;
         mDragInfo = null;
+
+        // Hide the scrolling indicator after you pick up an item
+        hideScrollingIndicator(false);
     }
 
     public boolean isDropEnabled() {
