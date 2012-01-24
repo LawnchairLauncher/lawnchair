@@ -52,7 +52,6 @@ public class IconCache {
     public IconCache(LauncherApplication context) {
         mContext = context;
         mPackageManager = context.getPackageManager();
-        int density = context.getResources().getDisplayMetrics().densityDpi;
         if (LauncherApplication.isScreenLarge()) {
             ActivityManager activityManager =
                     (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
