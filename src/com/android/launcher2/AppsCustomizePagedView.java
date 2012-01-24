@@ -166,7 +166,8 @@ class AppsCustomizeAsyncTask extends AsyncTask<AsyncTaskPageData, Void, AsyncTas
  * The Apps/Customize page that displays all the applications, widgets, and shortcuts.
  */
 public class AppsCustomizePagedView extends PagedViewWithDraggableItems implements
-        AllAppsView, View.OnClickListener, View.OnKeyListener, DragSource {
+        AllAppsView, View.OnClickListener, View.OnKeyListener, DragSource,
+        PagedViewIcon.PressedCallback {
     static final String LOG_TAG = "AppsCustomizePagedView";
 
     /**
@@ -185,6 +186,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     // Save and Restore
     private int mSaveInstanceStateItemIndex = -1;
+    private PagedViewIcon mPressedIcon;
 
     // Content
     private ArrayList<ApplicationInfo> mApps;
@@ -593,6 +595,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         if (!super.beginDragging(v)) return false;
 
+        // Reset the alpha on the dragged icon before we drag
+        resetDrawableState();
+
         // Go into spring loaded mode (must happen before we startDrag())
         mLauncher.enterSpringLoadedDragMode();
 
@@ -751,7 +756,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             ApplicationInfo info = mApps.get(i);
             PagedViewIcon icon = (PagedViewIcon) mLayoutInflater.inflate(
                     R.layout.apps_customize_application, layout, false);
-            icon.applyFromApplicationInfo(info, true);
+            icon.applyFromApplicationInfo(info, true, this);
             icon.setOnClickListener(this);
             icon.setOnLongClickListener(this);
             icon.setOnTouchListener(this);
@@ -1427,6 +1432,22 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         cancelAllTasks();
     }
 
+    @Override
+    public void iconPressed(PagedViewIcon icon) {
+        // Reset the previously pressed icon and store a reference to the pressed icon so that
+        // we can reset it on return to Launcher (in Launcher.onResume())
+        if (mPressedIcon != null) {
+            mPressedIcon.resetDrawableState();
+        }
+        mPressedIcon = icon;
+    }
+
+    public void resetDrawableState() {
+        if (mPressedIcon != null) {
+            mPressedIcon.resetDrawableState();
+            mPressedIcon = null;
+        }
+    }
 
     /*
      * We load an extra page on each side to prevent flashes from scrolling and loading of the

@@ -231,7 +231,7 @@ public class Workspace extends SmoothPagedView
     private float[] mNewBackgroundAlphaMultipliers;
     private float[] mNewAlphas;
     private float[] mNewRotationYs;
-    private float mTransitionProgress;
+    private float mTransitionProgress = 1f;
 
     /**
      * Used to inflate the Workspace from XML.

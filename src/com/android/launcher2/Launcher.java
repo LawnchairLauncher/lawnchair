@@ -561,8 +561,16 @@ public final class Launcher extends Activity
             mRestoring = false;
             mOnResumeNeedsLoad = false;
         }
+
+        // Reset the pressed state of icons that were locked in the press state while activities
+        // were launching
         if (mWaitingForResume != null) {
+            // Resets the previous workspace icon press state
             mWaitingForResume.setStayPressed(false);
+        }
+        if (mAppsCustomizeContent != null) {
+            // Resets the previous all apps icon press state
+            mAppsCustomizeContent.resetDrawableState();
         }
         // When we resume Launcher, a different Activity might be responsible for the app
         // market intent, so refresh the icon

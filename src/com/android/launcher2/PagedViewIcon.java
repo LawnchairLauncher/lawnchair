@@ -26,7 +26,16 @@ import android.widget.TextView;
  * drawables on the top).
  */
 public class PagedViewIcon extends TextView {
+    /** A simple callback interface to allow a PagedViewIcon to notify when it has been pressed */
+    public static interface PressedCallback {
+        void iconPressed(PagedViewIcon icon);
+    }
+
     private static final String TAG = "PagedViewIcon";
+    private static final float PRESS_ALPHA = 0.4f;
+
+    private PagedViewIcon.PressedCallback mPressedCallback;
+    private boolean mResetDrawableState = false;
 
     private Bitmap mIcon;
 
@@ -42,15 +51,38 @@ public class PagedViewIcon extends TextView {
         super(context, attrs, defStyle);
     }
 
-    public void applyFromApplicationInfo(ApplicationInfo info, boolean scaleUp) {
+    public void applyFromApplicationInfo(ApplicationInfo info, boolean scaleUp,
+            PagedViewIcon.PressedCallback cb) {
         mIcon = info.iconBitmap;
+        mPressedCallback = cb;
         setCompoundDrawablesWithIntrinsicBounds(null, new FastBitmapDrawable(mIcon), null, null);
         setText(info.title);
         setTag(info);
     }
 
+    public void resetDrawableState() {
+        mResetDrawableState = true;
+        post(new Runnable() {
+            @Override
+            public void run() {
+                refreshDrawableState();
+            }
+        });
+    }
+
     protected void drawableStateChanged() {
-        setAlpha(isPressed() ? 0.5f : 1f);
         super.drawableStateChanged();
+
+        // We keep in the pressed state until resetDrawableState() is called to reset the press
+        // feedback
+        if (isPressed()) {
+            setAlpha(PRESS_ALPHA);
+            if (mPressedCallback != null) {
+                mPressedCallback.iconPressed(this);
+            }
+        } else if (mResetDrawableState) {
+            setAlpha(1f);
+            mResetDrawableState = false;
+        }
     }
 }
