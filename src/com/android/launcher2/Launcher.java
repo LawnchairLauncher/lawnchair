@@ -49,6 +49,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -246,6 +247,7 @@ public final class Launcher extends Activity
     private static Drawable.ConstantState[] sAppMarketIcon = new Drawable.ConstantState[2];
 
     static final ArrayList<String> sDumpLogs = new ArrayList<String>();
+    PendingAddWidgetInfo mWidgetBeingConfigured = null;
 
 
     private BubbleTextView mWaitingForResume;
@@ -498,7 +500,7 @@ public final class Launcher extends Activity
                 break;
             case REQUEST_CREATE_APPWIDGET:
                 int appWidgetId = args.intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-                completeAddAppWidget(appWidgetId, args.container, args.screen);
+                completeAddAppWidget(appWidgetId, args.container, args.screen, null, null);
                 result = true;
                 break;
             case REQUEST_PICK_WALLPAPER:
@@ -509,9 +511,19 @@ public final class Launcher extends Activity
     }
 
     @Override
-    protected void onActivityResult(final int requestCode, int resultCode, final Intent data) {
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         boolean delayExitSpringLoadedMode = false;
+        boolean isWidgetDrop = (requestCode == REQUEST_PICK_APPWIDGET ||
+                requestCode == REQUEST_CREATE_APPWIDGET);
         mWaitingForResult = false;
+
+        // We have special handling for widgets
+        if (isWidgetDrop) {
+            int appWidgetId = data != null ?
+                    data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1) : -1;
+            completeTwoStageWidgetDrop(resultCode, appWidgetId);
+            return;
+        }
 
         // The pattern used here is that a user PICKs a specific application,
         // which, depending on the target, might need to CREATE the actual target.
@@ -526,26 +538,50 @@ public final class Launcher extends Activity
             args.screen = mPendingAddInfo.screen;
             args.cellX = mPendingAddInfo.cellX;
             args.cellY = mPendingAddInfo.cellY;
-
-            // If the loader is still running, defer the add until it is done.
             if (isWorkspaceLocked()) {
                 sPendingAddList.add(args);
             } else {
                 delayExitSpringLoadedMode = completeAdd(args);
             }
-        } else if ((requestCode == REQUEST_PICK_APPWIDGET ||
-                requestCode == REQUEST_CREATE_APPWIDGET) && resultCode == RESULT_CANCELED) {
-            if (data != null) {
-                // Clean up the appWidgetId if we canceled
-                int appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-                if (appWidgetId != -1) {
-                    mAppWidgetHost.deleteAppWidgetId(appWidgetId);
-                }
-            }
         }
-
+        mDragLayer.clearAnimatedView();
         // Exit spring loaded mode if necessary after cancelling the configuration of a widget
-        exitSpringLoadedDragModeDelayed((resultCode != RESULT_CANCELED), delayExitSpringLoadedMode);
+        exitSpringLoadedDragModeDelayed((resultCode != RESULT_CANCELED), delayExitSpringLoadedMode,
+                null);
+    }
+
+    private void completeTwoStageWidgetDrop(final int resultCode, final int appWidgetId) {
+        CellLayout cellLayout = (CellLayout) mWorkspace.getChildAt(mWidgetBeingConfigured.screen);
+        Runnable onCompleteRunnable = null;
+        int animationType = 0;
+
+        if (resultCode == RESULT_OK) {
+            animationType = Workspace.COMPLETE_TWO_STAGE_WIDGET_DROP_ANIMATION;
+            final AppWidgetHostView layout = mAppWidgetHost.createView(this, appWidgetId,
+                    mWidgetBeingConfigured.info);
+            mWidgetBeingConfigured.boundWidget = layout;
+            onCompleteRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    completeAddAppWidget(appWidgetId, mPendingAddInfo.container,
+                            mPendingAddInfo.screen, layout, null);
+                    exitSpringLoadedDragModeDelayed((resultCode != RESULT_CANCELED), false,
+                            null);
+                }
+            };
+        } else if (resultCode == RESULT_CANCELED) {
+            animationType = Workspace.CANCEL_TWO_STAGE_WIDGET_DROP_ANIMATION;
+            onCompleteRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    exitSpringLoadedDragModeDelayed((resultCode != RESULT_CANCELED), false,
+                            null);
+                }
+            };
+        }
+        mWorkspace.animateExternalDrop(mWidgetBeingConfigured, cellLayout,
+                (DragView) mDragLayer.getAnimatedView(), onCompleteRunnable,
+                animationType);
     }
 
     @Override
@@ -934,8 +970,11 @@ public final class Launcher extends Activity
      * @param appWidgetId The app widget id
      * @param cellInfo The position on screen where to create the widget.
      */
-    private void completeAddAppWidget(final int appWidgetId, long container, int screen) {
-        AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
+    private void completeAddAppWidget(final int appWidgetId, long container, int screen,
+            AppWidgetHostView hostView, AppWidgetProviderInfo appWidgetInfo) {
+        if (appWidgetInfo == null) {
+            appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
+        }
 
         // Calculate the grid spans needed to fit this widget
         CellLayout layout = getCellLayout(container, screen);
@@ -984,12 +1023,16 @@ public final class Launcher extends Activity
                 container, screen, cellXY[0], cellXY[1], false);
 
         if (!mRestoring) {
-            // Perform actual inflation because we're live
-            launcherInfo.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
+            if (hostView == null) {
+                // Perform actual inflation because we're live
+                launcherInfo.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
+                launcherInfo.hostView.setAppWidget(appWidgetId, appWidgetInfo);
+            } else {
+                // The AppWidgetHostView has already been inflated and instantiated
+                launcherInfo.hostView = hostView;
+            }
 
-            launcherInfo.hostView.setAppWidget(appWidgetId, appWidgetInfo);
             launcherInfo.hostView.setTag(launcherInfo);
-
             mWorkspace.addInScreen(launcherInfo.hostView, container, screen, cellXY[0], cellXY[1],
                     launcherInfo.spanX, launcherInfo.spanY, isWorkspaceLocked());
 
@@ -1427,9 +1470,9 @@ public final class Launcher extends Activity
         addAppWidgetImpl(appWidgetId, null);
     }
 
-    void addAppWidgetImpl(int appWidgetId, PendingAddWidgetInfo info) {
-        AppWidgetProviderInfo appWidget = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
-
+    void addAppWidgetImpl(final int appWidgetId, final PendingAddWidgetInfo info) {
+        final AppWidgetProviderInfo appWidget = info.info;
+        Runnable configurationActivity = null;
         if (appWidget.configure != null) {
             // Launch over to configure widget, if needed
             Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
@@ -1437,9 +1480,8 @@ public final class Launcher extends Activity
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             if (info != null) {
                 if (info.mimeType != null && !info.mimeType.isEmpty()) {
-                    intent.putExtra(
-                            InstallWidgetReceiver.EXTRA_APPWIDGET_CONFIGURATION_DATA_MIME_TYPE,
-                            info.mimeType);
+                    intent.putExtra(InstallWidgetReceiver.
+                            EXTRA_APPWIDGET_CONFIGURATION_DATA_MIME_TYPE, info.mimeType);
 
                     final String mimeType = info.mimeType;
                     final ClipData clipData = (ClipData) info.configurationData;
@@ -1450,8 +1492,8 @@ public final class Launcher extends Activity
                             final CharSequence stringData = item.getText();
                             final Uri uriData = item.getUri();
                             final Intent intentData = item.getIntent();
-                            final String key =
-                                InstallWidgetReceiver.EXTRA_APPWIDGET_CONFIGURATION_DATA;
+                            final String key = InstallWidgetReceiver.
+                                    EXTRA_APPWIDGET_CONFIGURATION_DATA;
                             if (uriData != null) {
                                 intent.putExtra(key, uriData);
                             } else if (intentData != null) {
@@ -1464,14 +1506,13 @@ public final class Launcher extends Activity
                     }
                 }
             }
-
             startActivityForResultSafely(intent, REQUEST_CREATE_APPWIDGET);
+            mWidgetBeingConfigured = info;
         } else {
             // Otherwise just add it
-            completeAddAppWidget(appWidgetId, info.container, info.screen);
-
+            completeAddAppWidget(appWidgetId, info.container, info.screen, info.boundWidget, appWidget);
             // Exit spring loaded mode if necessary after adding the widget
-            exitSpringLoadedDragModeDelayed(true, false);
+            exitSpringLoadedDragModeDelayed(true, false, null);
         }
     }
 
@@ -1519,9 +1560,16 @@ public final class Launcher extends Activity
             mPendingAddInfo.cellY = cell[1];
         }
 
-        int appWidgetId = getAppWidgetHost().allocateAppWidgetId();
-        AppWidgetManager.getInstance(this).bindAppWidgetId(appWidgetId, info.componentName);
+        AppWidgetHostView hostView = info.boundWidget;
+        int appWidgetId;
+        if (hostView != null) {
+            appWidgetId = hostView.getAppWidgetId();
+        } else {
+            appWidgetId = getAppWidgetHost().allocateAppWidgetId();
+            AppWidgetManager.getInstance(this).bindAppWidgetId(appWidgetId, info.componentName);
+        }
         addAppWidgetImpl(appWidgetId, info);
+
     }
 
     void processShortcut(Intent intent) {
@@ -2368,8 +2416,9 @@ public final class Launcher extends Activity
      * This is the opposite of showAppsCustomizeHelper.
      * @param animated If true, the transition will be animated.
      */
-    private void hideAppsCustomizeHelper(
-            State toState, final boolean animated, final boolean springLoaded) {
+    private void hideAppsCustomizeHelper(State toState, final boolean animated,
+            final boolean springLoaded, final Runnable onCompleteRunnable) {
+
         if (mStateAnimation != null) {
             mStateAnimation.cancel();
             mStateAnimation = null;
@@ -2426,6 +2475,9 @@ public final class Launcher extends Activity
                     dispatchOnLauncherTransitionEnd(fromView, animated, true);
                     dispatchOnLauncherTransitionEnd(toView, animated, true);
                     mWorkspace.hideScrollingIndicator(false);
+                    if (onCompleteRunnable != null) {
+                        onCompleteRunnable.run();
+                    }
                 }
             });
 
@@ -2453,9 +2505,13 @@ public final class Launcher extends Activity
     }
 
     void showWorkspace(boolean animated) {
+        showWorkspace(animated, null);
+    }
+
+    void showWorkspace(boolean animated, Runnable onCompleteRunnable) {
         if (mState != State.WORKSPACE) {
             mWorkspace.setVisibility(View.VISIBLE);
-            hideAppsCustomizeHelper(State.WORKSPACE, animated, false);
+            hideAppsCustomizeHelper(State.WORKSPACE, animated, false, onCompleteRunnable);
 
             // Show the search bar and hotseat
             mSearchDropTargetBar.showSearchBar(animated);
@@ -2504,13 +2560,14 @@ public final class Launcher extends Activity
 
     void enterSpringLoadedDragMode() {
         if (mState == State.APPS_CUSTOMIZE) {
-            hideAppsCustomizeHelper(State.APPS_CUSTOMIZE_SPRING_LOADED, true, true);
+            hideAppsCustomizeHelper(State.APPS_CUSTOMIZE_SPRING_LOADED, true, true, null);
             hideDockDivider();
             mState = State.APPS_CUSTOMIZE_SPRING_LOADED;
         }
     }
 
-    void exitSpringLoadedDragModeDelayed(final boolean successfulDrop, boolean extendedDelay) {
+    void exitSpringLoadedDragModeDelayed(final boolean successfulDrop, boolean extendedDelay,
+            final Runnable onCompleteRunnable) {
         if (mState != State.APPS_CUSTOMIZE_SPRING_LOADED) return;
 
         mHandler.postDelayed(new Runnable() {
@@ -2522,7 +2579,7 @@ public final class Launcher extends Activity
                     // clean up our state transition functions
                     mAppsCustomizeTabHost.setVisibility(View.GONE);
                     mSearchDropTargetBar.showSearchBar(true);
-                    showWorkspace(true);
+                    showWorkspace(true, onCompleteRunnable);
                 } else {
                     exitSpringLoadedDragMode();
                 }

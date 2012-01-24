@@ -359,10 +359,11 @@ public class FolderIcon extends LinearLayout implements FolderListener {
 
             float finalAlpha = index < NUM_ITEMS_IN_PREVIEW ? 0.5f : 0f;
 
+            float finalScale = scale * scaleRelativeToDragLayer;
             dragLayer.animateView(animateView, from, to, finalAlpha,
-                    scale * scaleRelativeToDragLayer, DROP_IN_ANIMATION_DURATION,
+                    1, 1, finalScale, finalScale, DROP_IN_ANIMATION_DURATION,
                     new DecelerateInterpolator(2), new AccelerateInterpolator(2),
-                    postAnimationRunnable, false, null);
+                    postAnimationRunnable, DragLayer.ANIMATION_END_DISAPPEAR, null);
             postDelayed(new Runnable() {
                 public void run() {
                     addItem(item);

@@ -67,12 +67,16 @@ public class DragLayer extends FrameLayout {
     private View mAnchorView = null;
 
     private int[] mDropViewPos = new int[2];
-    private float mDropViewScale;
+    private float mDropViewScaleX;
+    private float mDropViewScaleY;
     private float mDropViewAlpha;
     private boolean mHoverPointClosesFolder = false;
     private Rect mHitRect = new Rect();
     private int mWorkspaceIndex = -1;
     private int mQsbIndex = -1;
+    public static final int ANIMATION_END_DISAPPEAR = 0;
+    public static final int ANIMATION_END_FADE_OUT = 1;
+    public static final int ANIMATION_END_REMAIN_VISIBLE = 2;
 
     /**
      * Used to create a new DragLayer from XML.
@@ -414,15 +418,23 @@ public class DragLayer extends FrameLayout {
         animateViewIntoPosition(dragView, child, null);
     }
 
-    public void animateViewIntoPosition(DragView dragView, final int[] pos, float scale,
-            Runnable onFinishRunnable) {
+    public void animateViewIntoPosition(DragView dragView, final int[] pos, float scaleX, float
+            scaleY, int animationEndStyle, Runnable onFinishRunnable, int duration) {
         Rect r = new Rect();
         getViewRectRelativeToSelf(dragView, r);
         final int fromX = r.left;
         final int fromY = r.top;
 
-        animateViewIntoPosition(dragView, fromX, fromY, pos[0], pos[1], scale,
-                onFinishRunnable, true, -1, null);
+        animateViewIntoPosition(dragView, fromX, fromY, pos[0], pos[1], 1, 1, 1, scaleX, scaleY,
+                onFinishRunnable, animationEndStyle, duration, null);
+    }
+
+    public void scaleViewIntoPosition(DragView dragView, final int[] pos, float finalAlpha,
+            float scaleX, float scaleY, int animationEndStyle, Runnable onFinishRunnable,
+            int duration) {
+        animateViewIntoPosition(dragView, pos[0], pos[1], pos[0], pos[1], finalAlpha,
+                mDropViewScaleX, mDropViewScaleY, scaleX, scaleY, onFinishRunnable,
+                animationEndStyle, duration, null);
     }
 
     public void animateViewIntoPosition(DragView dragView, final View child,
@@ -486,18 +498,19 @@ public class DragLayer extends FrameLayout {
                 oa.start();
             }
         };
-        animateViewIntoPosition(dragView, fromX, fromY, toX, toY, scale,
-                onCompleteRunnable, true, duration, anchorView);
+        animateViewIntoPosition(dragView, fromX, fromY, toX, toY, 1, 1, 1, scale, scale,
+                onCompleteRunnable, ANIMATION_END_FADE_OUT, duration, anchorView);
     }
 
     private void animateViewIntoPosition(final View view, final int fromX, final int fromY,
-            final int toX, final int toY, float finalScale, Runnable onCompleteRunnable,
-            boolean fadeOut, int duration, View anchorView) {
+            final int toX, final int toY, float finalAlpha, float initScaleX, float initScaleY,
+            float finalScaleX, float finalScaleY, Runnable onCompleteRunnable,
+            int animationEndStyle, int duration, View anchorView) {
         Rect from = new Rect(fromX, fromY, fromX +
                 view.getMeasuredWidth(), fromY + view.getMeasuredHeight());
         Rect to = new Rect(toX, toY, toX + view.getMeasuredWidth(), toY + view.getMeasuredHeight());
-        animateView(view, from, to, 1f, finalScale, duration, null, null,
-                onCompleteRunnable, true, anchorView);
+        animateView(view, from, to, finalAlpha, initScaleX, initScaleY, finalScaleX, finalScaleY, duration,
+                null, null, onCompleteRunnable, animationEndStyle, anchorView);
     }
 
     /**
@@ -522,9 +535,10 @@ public class DragLayer extends FrameLayout {
      *        only used for the X dimension for the case of the workspace.
      */
     public void animateView(final View view, final Rect from, final Rect to, final float finalAlpha,
-            final float finalScale, int duration, final Interpolator motionInterpolator,
+            final float initScaleX, final float initScaleY, final float finalScaleX,
+            final float finalScaleY, int duration, final Interpolator motionInterpolator,
             final Interpolator alphaInterpolator, final Runnable onCompleteRunnable,
-            final boolean fadeOut, View anchorView) {
+            final int animationEndStyle, View anchorView) {
         // Calculate the duration of the animation based on the object's distance
         final float dist = (float) Math.sqrt(Math.pow(to.left - from.left, 2) +
                 Math.pow(to.top - from.top, 2));
@@ -578,10 +592,10 @@ public class DragLayer extends FrameLayout {
 
                 mDropViewPos[0] = from.left + (int) Math.round(((to.left - from.left) * motionPercent));
                 mDropViewPos[1] = from.top + (int) Math.round(((to.top - from.top) * motionPercent));
-                mDropViewScale = percent * finalScale + (1 - percent);
+                mDropViewScaleX = percent * finalScaleX + (1 - percent) * initScaleX;
+                mDropViewScaleY = percent * finalScaleY + (1 - percent) * initScaleY;
                 mDropViewAlpha = alphaPercent * finalAlpha + (1 - alphaPercent) * initialAlpha;
-                invalidate(mDropViewPos[0], mDropViewPos[1],
-                        mDropViewPos[0] + width, mDropViewPos[1] + height);
+                invalidate();
             }
         });
         mDropAnim.addListener(new AnimatorListenerAdapter() {
@@ -589,14 +603,30 @@ public class DragLayer extends FrameLayout {
                 if (onCompleteRunnable != null) {
                     onCompleteRunnable.run();
                 }
-                if (fadeOut) {
+                switch (animationEndStyle) {
+                case ANIMATION_END_DISAPPEAR:
+                    clearAnimatedView();
+                    break;
+                case ANIMATION_END_FADE_OUT:
                     fadeOutDragView();
-                } else {
-                    mDropView = null;
+                    break;
+                case ANIMATION_END_REMAIN_VISIBLE:
+                    break;
                 }
             }
         });
         mDropAnim.start();
+    }
+
+    public void clearAnimatedView() {
+        mDropView = null;
+        mDropViewScaleX = 1;
+        mDropViewScaleY = 1;
+        invalidate();
+    }
+
+    public View getAnimatedView() {
+        return mDropView;
     }
 
     private void fadeOutDragView() {
@@ -617,6 +647,7 @@ public class DragLayer extends FrameLayout {
         mFadeOutAnim.addListener(new AnimatorListenerAdapter() {
             public void onAnimationEnd(Animator animation) {
                 mDropView = null;
+                invalidate();
             }
         });
         mFadeOutAnim.start();
@@ -679,8 +710,8 @@ public class DragLayer extends FrameLayout {
             int width = mDropView.getMeasuredWidth();
             int height = mDropView.getMeasuredHeight();
             canvas.translate(xPos, yPos);
-            canvas.translate((1 - mDropViewScale) * width / 2, (1 - mDropViewScale) * height / 2);
-            canvas.scale(mDropViewScale, mDropViewScale);
+            canvas.translate((1 - mDropViewScaleX) * width / 2, (1 - mDropViewScaleY) * height / 2);
+            canvas.scale(mDropViewScaleX, mDropViewScaleY);
             mDropView.setAlpha(mDropViewAlpha);
             mDropView.draw(canvas);
             canvas.restore();

@@ -16,6 +16,7 @@
 
 package com.android.launcher2;
 
+import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.os.Parcelable;
@@ -35,6 +36,8 @@ class PendingAddWidgetInfo extends PendingAddItemInfo {
     int minHeight;
     int previewImage;
     int icon;
+    AppWidgetProviderInfo info;
+    AppWidgetHostView boundWidget;
 
     // Any configuration data that we want to pass to a configuration activity when
     // starting up a widget
@@ -43,6 +46,7 @@ class PendingAddWidgetInfo extends PendingAddItemInfo {
 
     public PendingAddWidgetInfo(AppWidgetProviderInfo i, String dataMimeType, Parcelable data) {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
+        this.info = i;
         componentName = i.provider;
         minWidth = i.minWidth;
         minHeight = i.minHeight;

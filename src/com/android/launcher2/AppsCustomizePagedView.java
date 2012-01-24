@@ -19,6 +19,7 @@ package com.android.launcher2;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
@@ -39,6 +40,8 @@ import android.graphics.Rect;
 import android.graphics.TableMaskFilter;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Process;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -167,7 +170,7 @@ class AppsCustomizeAsyncTask extends AsyncTask<AsyncTaskPageData, Void, AsyncTas
  */
 public class AppsCustomizePagedView extends PagedViewWithDraggableItems implements
         AllAppsView, View.OnClickListener, View.OnKeyListener, DragSource,
-        PagedViewIcon.PressedCallback {
+        PagedViewIcon.PressedCallback, PagedViewWidget.ShortPressListener {
     static final String LOG_TAG = "AppsCustomizePagedView";
 
     /**
@@ -228,6 +231,14 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     // Previews & outlines
     ArrayList<AppsCustomizeAsyncTask> mRunningTasks;
     private static final int sPageSleepDelay = 200;
+
+    private Runnable mInflateWidgetRunnable = null;
+    private Runnable mBindWidgetRunnable = null;
+    static final int WIDGET_NO_CLEANUP_REQUIRED = -1;
+    static final int WIDGET_BOUND = 0;
+    static final int WIDGET_INFLATED = 1;
+    int mWidgetCleanupState = WIDGET_NO_CLEANUP_REQUIRED;
+    int mWidgetLoadingId = -1;
 
     public AppsCustomizePagedView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -536,7 +547,64 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mLauncher.getWorkspace().beginDragShared(v, this);
     }
 
+    private void loadWidgetInBackground(final PendingAddWidgetInfo info) {
+        final AppWidgetProviderInfo pInfo = info.info;
+        if (pInfo.configure != null) {
+            return;
+        }
+
+        mBindWidgetRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mWidgetLoadingId = mLauncher.getAppWidgetHost().allocateAppWidgetId();
+                AppWidgetManager.getInstance(mLauncher).bindAppWidgetId(mWidgetLoadingId,
+                        info.componentName);
+                mWidgetCleanupState = WIDGET_BOUND;
+            }
+        };
+        post(mBindWidgetRunnable);
+
+        mInflateWidgetRunnable = new Runnable() {
+            @Override
+            public void run() {
+                AppWidgetHostView hostView =
+                        mLauncher.getAppWidgetHost().createView(mContext, mWidgetLoadingId, pInfo);
+                info.boundWidget = hostView;
+                mWidgetCleanupState = WIDGET_INFLATED;
+            }
+        };
+        post(mInflateWidgetRunnable);
+    }
+
+    @Override
+    public void onShortPress(View v) {
+        // We are anticipating a long press, and we use this time to load bind and instantiate
+        // the widget. This will need to be cleaned up if it turns out no long press occurs.
+        PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo) v.getTag();
+        loadWidgetInBackground(createWidgetInfo);
+    }
+
+    @Override
+    public void cleanUpShortPress(View v) {
+        PendingAddWidgetInfo info = (PendingAddWidgetInfo) v.getTag();
+        if (mWidgetCleanupState >= 0 && mWidgetLoadingId != -1) {
+            mLauncher.getAppWidgetHost().deleteAppWidgetId(mWidgetLoadingId);
+        }
+        if (mWidgetCleanupState == WIDGET_BOUND) {
+            removeCallbacks(mInflateWidgetRunnable);
+        } else if (mWidgetCleanupState == WIDGET_INFLATED) {
+            AppWidgetHostView widget = info.boundWidget;
+            int widgetId = widget.getAppWidgetId();
+            mLauncher.getAppWidgetHost().deleteAppWidgetId(widgetId);
+        }
+        mWidgetCleanupState = WIDGET_NO_CLEANUP_REQUIRED;
+        mWidgetLoadingId = -1;
+    }
+
     private void beginDraggingWidget(View v) {
+        mWidgetCleanupState = WIDGET_NO_CLEANUP_REQUIRED;
+        mWidgetLoadingId = -1;
+
         // Get the widget preview as the drag representation
         ImageView image = (ImageView) v.findViewById(R.id.widget_preview);
         PendingAddItemInfo createItemInfo = (PendingAddItemInfo) v.getTag();
@@ -547,13 +615,13 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         if (createItemInfo instanceof PendingAddWidgetInfo) {
             PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo) createItemInfo;
             int[] spanXY = mLauncher.getSpanForWidget(createWidgetInfo, null);
+            int[] size = mLauncher.getWorkspace().estimateItemSize(spanXY[0],
+                    spanXY[1], createWidgetInfo, true);
             createItemInfo.spanX = spanXY[0];
             createItemInfo.spanY = spanXY[1];
 
-            int[] maxSize = mLauncher.getWorkspace().estimateItemSize(spanXY[0], spanXY[1],
-                    createWidgetInfo, true);
             preview = getWidgetPreview(createWidgetInfo.componentName, createWidgetInfo.previewImage,
-                    createWidgetInfo.icon, spanXY[0], spanXY[1], maxSize[0], maxSize[1]);
+                    createWidgetInfo.icon, spanXY[0], spanXY[1], size[0], size[1]);
         } else {
             // Workaround for the fact that we don't keep the original ResolveInfo associated with
             // the shortcut around.  To get the icon, we just render the preview image (which has
@@ -593,24 +661,33 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         outline.recycle();
         preview.recycle();
     }
+
     @Override
-    protected boolean beginDragging(View v) {
-        // Dismiss the cling
-        mLauncher.dismissAllAppsCling(null);
-
+    protected boolean beginDragging(final View v) {
         if (!super.beginDragging(v)) return false;
-
-        // Reset the alpha on the dragged icon before we drag
-        resetDrawableState();
-
-        // Go into spring loaded mode (must happen before we startDrag())
-        mLauncher.enterSpringLoadedDragMode();
 
         if (v instanceof PagedViewIcon) {
             beginDraggingApplication(v);
         } else if (v instanceof PagedViewWidget) {
             beginDraggingWidget(v);
         }
+
+        // We delay entering spring-loaded mode slightly to make sure the UI
+        // thready is free of any work.
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Dismiss the cling
+                mLauncher.dismissAllAppsCling(null);
+
+                // Reset the alpha on the dragged icon before we drag
+                resetDrawableState();
+
+                // Go into spring loaded mode (must happen before we startDrag())
+                mLauncher.enterSpringLoadedDragMode();
+            }
+        },150);
+
         return true;
     }
     private void endDragging(View target, boolean success) {
@@ -1045,6 +1122,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 int[] cellSpans = mLauncher.getSpanForWidget(info, null);
                 widget.applyFromAppWidgetProviderInfo(info, -1, cellSpans);
                 widget.setTag(createItemInfo);
+                widget.setShortPressListener(this);
             } else if (rawInfo instanceof ResolveInfo) {
                 // Fill in the shortcuts information
                 ResolveInfo info = (ResolveInfo) rawInfo;
