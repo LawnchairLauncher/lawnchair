@@ -75,7 +75,7 @@
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"አቋራጮችን ጫን።"</string>
     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"መተግበሪያ  ያለተጠቃሚ ጣልቃ ገብነት አቋራጭ ለማከል ይፈቅዳል።"</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"አቋራጮችን አራግፍ"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="274355570620220977">"ያለተጠቃሚ ጣልቃ ገብነት   አቋራጭ ለማስወገድ ለመተግበሪያ ይፈቅዳል።"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="274355570620220977">"ያለተጠቃሚ ጣልቃ ገብነት አቋራጭ ለማስወገድ ለመተግበሪያ ይፈቅዳል።"</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"የመነሻቅንብሮች እና አቋራጮችን አንብብ"</string>
     <string name="permdesc_read_settings" msgid="5788109303585403679">"ቅንጅቶችን እና አቋራጮችን በመነሻ ለማንበብ ለትግበራ ይፈቅዳል።"</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"መነሻ ቅንብሮች እና አቋራጮች ፃፍ"</string>

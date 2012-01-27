@@ -29,7 +29,7 @@
     <string name="widgets_tab_label" msgid="9145860100000983599">"窗口小部件"</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"触摸并按住可选取窗口小部件。"</string>
     <string name="market" msgid="2652226429823445833">"购买"</string>
-    <string name="external_drop_widget_error" msgid="2285187188524172774">"无法将该项拖放到此主屏幕上。"</string>
+    <string name="external_drop_widget_error" msgid="2285187188524172774">"无法将项拖放到此主屏幕上。"</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"选择要处理拖放操作的窗口小部件"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"文件夹名称"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"重命名文件夹"</string>
@@ -75,7 +75,7 @@
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"安装快捷方式"</string>
     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"允许应用程序自行添加快捷方式。"</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"卸载快捷方式"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="274355570620220977">"允许应用程序自行删除快捷方式。"</string>
+    <string name="permdesc_uninstall_shortcut" msgid="274355570620220977">"允许应用程序自行删除快捷方式，而无需用户干预。"</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"读取主屏幕的设置和快捷方式"</string>
     <string name="permdesc_read_settings" msgid="5788109303585403679">"允许应用程序读取主屏幕中的设置和快捷方式。"</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"写入主屏幕的设置和快捷方式"</string>
