@@ -495,6 +495,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             // Animate some feedback to the click
             final ApplicationInfo appInfo = (ApplicationInfo) v.getTag();
             mLauncher.startActivitySafely(appInfo.intent, appInfo);
+
+            // Lock the drawable state to pressed until we return to Launcher
+            if (mPressedIcon != null) {
+                mPressedIcon.lockDrawableState();
+            }
         } else if (v instanceof PagedViewWidget) {
             // Let the user know that they have to long press to add a widget
             Toast.makeText(getContext(), R.string.long_press_widget_to_add,
