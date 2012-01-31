@@ -35,7 +35,7 @@ public class PagedViewIcon extends TextView {
     private static final float PRESS_ALPHA = 0.4f;
 
     private PagedViewIcon.PressedCallback mPressedCallback;
-    private boolean mResetDrawableState = false;
+    private boolean mLockDrawableState = false;
 
     private Bitmap mIcon;
 
@@ -60,8 +60,12 @@ public class PagedViewIcon extends TextView {
         setTag(info);
     }
 
+    public void lockDrawableState() {
+        mLockDrawableState = true;
+    }
+
     public void resetDrawableState() {
-        mResetDrawableState = true;
+        mLockDrawableState = false;
         post(new Runnable() {
             @Override
             public void run() {
@@ -80,9 +84,8 @@ public class PagedViewIcon extends TextView {
             if (mPressedCallback != null) {
                 mPressedCallback.iconPressed(this);
             }
-        } else if (mResetDrawableState) {
+        } else if (!mLockDrawableState) {
             setAlpha(1f);
-            mResetDrawableState = false;
         }
     }
 }
