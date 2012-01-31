@@ -766,8 +766,8 @@ public abstract class PagedView extends ViewGroup {
                 // View.INVISIBLE, preventing re-drawing of their hardware layer
                 for (int i = getChildCount() - 1; i >= 0; i--) {
                     final View v = getPageAt(i);
-                    if (leftScreen <= i && i <= rightScreen &&
-                            v.getAlpha() > ViewConfiguration.ALPHA_THRESHOLD) {
+
+                    if (leftScreen <= i && i <= rightScreen) {
                         v.setVisibility(VISIBLE);
                         drawChild(canvas, v, drawingTime);
                     } else {
