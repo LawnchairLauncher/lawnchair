@@ -1660,7 +1660,7 @@ public class Workspace extends SmoothPagedView
                         rotate.setInterpolator(new DecelerateInterpolator(2.0f));
                         rotate.addUpdateListener(new LauncherAnimatorUpdateListener() {
                                 public void onAnimationUpdate(float a, float b) {
-                                    cl.setRotationY(a * 0f + b * 1f);
+                                    cl.setRotationY(a * mOldRotationYs[i] + b * mNewRotationYs[i]);
                                 }
                             });
                         anim.play(rotate);
