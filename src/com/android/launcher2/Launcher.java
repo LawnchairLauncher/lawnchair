@@ -505,9 +505,6 @@ public final class Launcher extends Activity
                 // We just wanted the activity result here so we can clear mWaitingForResult
                 break;
         }
-        // In any situation where we have a multi-step drop, we should reset the add info only after
-        // we complete the drop
-        resetAddInfo();
         return result;
     }
 
@@ -998,6 +995,7 @@ public final class Launcher extends Activity
 
             addWidgetToAutoAdvanceIfNeeded(launcherInfo.hostView, appWidgetInfo);
         }
+        resetAddInfo();
     }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
