@@ -11,10 +11,9 @@
     <!-- Whether or not to fade the side pages -->
     <bool name="config_workspaceFadeAdjacentScreens">true</bool>
 
-    <!-- When dragging items on the workspace, how much bigger (in pixels) the dragged view
-         should be, as compared to the original view. If 0, it will not be scaled at all.
-         Should be an even number, for pixel alignment. -->
-    <integer name="config_dragViewExtraPixels">0</integer>
+    <!--  When dragging an item on the workspace, how much bigger (scale factor) the dragged view
+          should be, as compared to the original view. If 0, it will not be scaled at all. -->
+    <integer name="config_dragViewScaleFactor">115</integer>
 
     <!-- When shrinking the workspace, this is the percentage of its original size. -->
     <integer name="config_workspaceShrinkPercent">17</integer>
