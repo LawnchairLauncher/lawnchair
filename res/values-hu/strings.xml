@@ -23,7 +23,7 @@
     <string name="uid_name" msgid="3371120195364560632">"Alap Android-alkalmazások"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>
     <string name="chooser_wallpaper" msgid="6063168087625352235">"Válasszon tapétát innen:"</string>
-    <string name="wallpaper_instructions" msgid="4215640646180727542">"Háttérkép beállítása"</string>
+    <string name="wallpaper_instructions" msgid="4215640646180727542">"Háttérkép kiválasztása"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"Háttérképek"</string>
     <string name="activity_not_found" msgid="217823393239365967">"Az alkalmazás nincs telepítve."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Modulok"</string>
