@@ -55,7 +55,7 @@
     <string name="delete_target_uninstall_label" msgid="748894921183769150">"Poista"</string>
     <string name="info_target_label" msgid="4019495079517426980">"Sovelluksen tiedot"</string>
     <string name="accessibility_search_button" msgid="816822994629942611">"Haku"</string>
-    <string name="accessibility_voice_search_button" msgid="3938249215065842475">"Äänihaku"</string>
+    <string name="accessibility_voice_search_button" msgid="3938249215065842475">"Puhehaku"</string>
     <string name="accessibility_all_apps_button" msgid="8803738611398979849">"Sovellukset"</string>
     <string name="accessibility_delete_button" msgid="3628162007991023603">"Poista"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"Poista päivitys"</string>
