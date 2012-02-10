@@ -88,7 +88,7 @@
     <string name="workspace_scroll_format" msgid="7911126267695001437">"Рабочая область %1$d из %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"Приложения: стр. %1$d из %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"Виджеты: стр. %1$d из %2$d"</string>
-    <string name="workspace_cling_title" msgid="738396473989890567">"Чувствуйте себя как дома"</string>
+    <string name="workspace_cling_title" msgid="738396473989890567">"Будьте как дома"</string>
     <string name="workspace_cling_move_item" msgid="791013895761065070">"Добавляйте сюда любимые приложения."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Чтобы открыть список приложений, нажмите на круг."</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"Выберите приложения"</string>

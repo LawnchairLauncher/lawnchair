@@ -23,7 +23,7 @@
     <string name="uid_name" msgid="3371120195364560632">"Android-kjerneapplikasjoner"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>
     <string name="chooser_wallpaper" msgid="6063168087625352235">"Velg bakgrunnsbilde fra"</string>
-    <string name="wallpaper_instructions" msgid="4215640646180727542">"Velg bakgrunnsbilde"</string>
+    <string name="wallpaper_instructions" msgid="4215640646180727542">"Velg som bakgrunnsbilde"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"Bakgrunner"</string>
     <string name="activity_not_found" msgid="217823393239365967">"Appen er ikke installert."</string>
     <string name="widgets_tab_label" msgid="9145860100000983599">"Moduler"</string>
@@ -73,13 +73,13 @@
     <string name="cab_folder_selection_text" msgid="8916111874189565067">"1 mappe valgt"</string>
     <string name="cab_shortcut_selection_text" msgid="8115847384500412878">"1 snarvei valgt"</string>
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"installere snarveier"</string>
-    <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Gir en app tillatelse til å legge til snarveier uten innblanding fra brukeren."</string>
+    <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Gir apper tillatelse til å legge til snarveier uten innblanding fra brukeren."</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"avinstallere snarveier"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Gir en app tillatelse til å fjerne snarveier uten innblanding fra brukeren."</string>
+    <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Gir apper tillatelse til å fjerne snarveier uten innblanding fra brukeren."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"lese skrivebordsinnstillinger og -snarveier"</string>
-    <string name="permdesc_read_settings" msgid="1836104524215167383">"Gir en app tillatelse til å lese innstillingene og snarveiene på startsiden."</string>
+    <string name="permdesc_read_settings" msgid="1836104524215167383">"Gir apper tillatelse til å lese innstillingene og snarveiene på startsiden."</string>
     <string name="permlab_write_settings" msgid="1360567537236705628">"skrive skrivebordsinnstillinger og -snarveier"</string>
-    <string name="permdesc_write_settings" msgid="6763846563231494591">"Gir en app tillatelse til å endre innstillingene og snarveiene på startsiden."</string>
+    <string name="permdesc_write_settings" msgid="6763846563231494591">"Gir apper tillatelse til å endre innstillingene og snarveiene på startsiden."</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Problem under lasting av gadget"</string>
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Dette er en systemapp som ikke kan avinstalleres."</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>

@@ -22,10 +22,12 @@
     <string name="application_name" msgid="8424725141379931883">"Lantschader"</string>
     <string name="uid_name" msgid="3371120195364560632">"Applicaziuns da basa dad Android"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>
-    <!-- outdated translation 5988031014201479733 -->     <string name="chooser_wallpaper" msgid="6063168087625352235">"Tscherner in fund davos"</string>
+    <!-- no translation found for chooser_wallpaper (6063168087625352235) -->
+    <skip />
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Definir in fund davos"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"Maletgs da fund davos"</string>
-    <!-- outdated translation 3571057450431950427 -->     <string name="activity_not_found" msgid="217823393239365967">"L\'applicaziun n\'è betg installada sin quest telefonin."</string>
+    <!-- no translation found for activity_not_found (217823393239365967) -->
+    <skip />
     <!-- no translation found for widgets_tab_label (9145860100000983599) -->
     <skip />
     <!-- no translation found for long_press_widget_to_add (7395697462851217506) -->
@@ -41,7 +43,8 @@
     <string name="rename_action" msgid="6016003384693240896">"OK"</string>
     <string name="cancel_action" msgid="3811860427489435048">"Interrumper"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"Agiuntar al visur da partenza"</string>
-    <!-- outdated translation 4118484163419674240 -->     <string name="group_applications" msgid="2103752818818161976">"Applicaziuns"</string>
+    <!-- no translation found for group_applications (2103752818818161976) -->
+    <skip />
     <string name="group_shortcuts" msgid="9133529424900391877">"Scursanidas"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Widgets"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Funds davos"</string>
@@ -54,7 +57,8 @@
     <string name="title_select_shortcut" msgid="2858897527672831763">"Tscherner ina cumbinaziun da tastas"</string>
     <!-- no translation found for title_select_application (1793455815754848652) -->
     <skip />
-    <!-- outdated translation 3953036962111614813 -->     <string name="all_apps_button_label" msgid="2578400570124163469">"Tut las applicaziuns"</string>
+    <!-- no translation found for all_apps_button_label (2578400570124163469) -->
+    <skip />
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Pagina da partenza"</string>
     <!-- no translation found for delete_zone_label_workspace (7153615831493049150) -->
     <skip />
@@ -82,7 +86,8 @@
     <string name="menu_wallpaper" msgid="5837429080911269832">"Fund davos"</string>
     <string name="menu_search" msgid="4826514464423239041">"Tschertgar"</string>
     <string name="menu_notifications" msgid="6424587053194766192">"Avis"</string>
-    <!-- outdated translation 6233960148378443661 -->     <string name="menu_settings" msgid="3946232973327980394">"Parameters"</string>
+    <!-- no translation found for menu_settings (3946232973327980394) -->
+    <skip />
     <!-- no translation found for menu_help (4901160661634590633) -->
     <skip />
     <!-- no translation found for cab_menu_delete_app (4089398025537640349) -->
@@ -98,13 +103,17 @@
     <!-- no translation found for cab_shortcut_selection_text (8115847384500412878) -->
     <skip />
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"Installar scursanidas"</string>
-    <!-- outdated translation 7429365847558984148 -->     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Pussibilitescha ch\'ina applicaziun agiunta scursanidas senza l\'intervenziun da l\'utilisader."</string>
+    <!-- no translation found for permdesc_install_shortcut (8634424803272077038) -->
+    <skip />
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"deinstallar scursanidas"</string>
-    <!-- outdated translation 959972195916090900 -->     <string name="permdesc_uninstall_shortcut" msgid="7811223557950931994">"Pussibilitescha ch\'ina applicaziun possia stizzar scursanidas senza ina intervenziun da l\'utilisader."</string>
+    <!-- no translation found for permdesc_uninstall_shortcut (7811223557950931994) -->
+    <skip />
     <string name="permlab_read_settings" msgid="3452408290738106747">"Leger ils parameters e las scursanidas da la pagina da partenza"</string>
-    <!-- outdated translation 8377434937176025492 -->     <string name="permdesc_read_settings" msgid="1836104524215167383">"Pussibilitescha ch\'ina applicaziun possia leger ils parameters e las scursanidas da la pagina da partenza."</string>
+    <!-- no translation found for permdesc_read_settings (1836104524215167383) -->
+    <skip />
     <string name="permlab_write_settings" msgid="1360567537236705628">"Definir ils parameters e las scursanidas per la pagina da partenza"</string>
-    <!-- outdated translation 1098648778383349818 -->     <string name="permdesc_write_settings" msgid="6763846563231494591">"Pussibilitescha ch\'ina applicaziun possia midar ils parameters e las scursanidas sin la pagina da partenza."</string>
+    <!-- no translation found for permdesc_write_settings (6763846563231494591) -->
+    <skip />
     <string name="gadget_error_text" msgid="8359351016167075858">"Problems cun chargiar il widget"</string>
     <!-- no translation found for uninstall_system_app_text (6429814133777046491) -->
     <skip />
