@@ -55,6 +55,7 @@ import android.view.Display;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.View.MeasureSpec;
 import android.view.animation.DecelerateInterpolator;
@@ -234,7 +235,7 @@ public class Workspace extends SmoothPagedView
     private float[] mNewBackgroundAlphaMultipliers;
     private float[] mNewAlphas;
     private float[] mNewRotationYs;
-    private float mTransitionProgress = 1f;
+    private float mTransitionProgress;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -577,11 +578,17 @@ public class Workspace extends SmoothPagedView
      */
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        return (isSmall() || mIsSwitchingState);
+        return (isSmall() || !isFinishedSwitchingState());
     }
 
     public boolean isSwitchingState() {
         return mIsSwitchingState;
+    }
+
+    /** This differs from isSwitchingState in that we take into account how far the transition
+     *  has completed. */
+    private boolean isFinishedSwitchingState() {
+        return !mIsSwitchingState || (mTransitionProgress > 0.5f);
     }
 
     protected void onWindowVisibilityChanged (int visibility) {
@@ -590,7 +597,7 @@ public class Workspace extends SmoothPagedView
 
     @Override
     public boolean dispatchUnhandledMove(View focused, int direction) {
-        if (isSmall() || mIsSwitchingState) {
+        if (isSmall() || !isFinishedSwitchingState()) {
             // when the home screens are shrunken, shouldn't allow side-scrolling
             return false;
         }
@@ -618,35 +625,36 @@ public class Workspace extends SmoothPagedView
 
     @Override
     protected void determineScrollingStart(MotionEvent ev) {
-        if (!isSmall() && !mIsSwitchingState) {
-            float deltaX = Math.abs(ev.getX() - mXDown);
-            float deltaY = Math.abs(ev.getY() - mYDown);
+        if (isSmall()) return;
+        if (!isFinishedSwitchingState()) return;
 
-            if (Float.compare(deltaX, 0f) == 0) return;
+        float deltaX = Math.abs(ev.getX() - mXDown);
+        float deltaY = Math.abs(ev.getY() - mYDown);
 
-            float slope = deltaY / deltaX;
-            float theta = (float) Math.atan(slope);
+        if (Float.compare(deltaX, 0f) == 0) return;
 
-            if (deltaX > mTouchSlop || deltaY > mTouchSlop) {
-                cancelCurrentPageLongPress();
-            }
+        float slope = deltaY / deltaX;
+        float theta = (float) Math.atan(slope);
 
-            if (theta > MAX_SWIPE_ANGLE) {
-                // Above MAX_SWIPE_ANGLE, we don't want to ever start scrolling the workspace
-                return;
-            } else if (theta > START_DAMPING_TOUCH_SLOP_ANGLE) {
-                // Above START_DAMPING_TOUCH_SLOP_ANGLE and below MAX_SWIPE_ANGLE, we want to
-                // increase the touch slop to make it harder to begin scrolling the workspace. This 
-                // results in vertically scrolling widgets to more easily. The higher the angle, the
-                // more we increase touch slop.
-                theta -= START_DAMPING_TOUCH_SLOP_ANGLE;
-                float extraRatio = (float)
-                        Math.sqrt((theta / (MAX_SWIPE_ANGLE - START_DAMPING_TOUCH_SLOP_ANGLE)));
-                super.determineScrollingStart(ev, 1 + TOUCH_SLOP_DAMPING_FACTOR * extraRatio);
-            } else {
-                // Below START_DAMPING_TOUCH_SLOP_ANGLE, we don't do anything special
-                super.determineScrollingStart(ev);
-            }
+        if (deltaX > mTouchSlop || deltaY > mTouchSlop) {
+            cancelCurrentPageLongPress();
+        }
+
+        if (theta > MAX_SWIPE_ANGLE) {
+            // Above MAX_SWIPE_ANGLE, we don't want to ever start scrolling the workspace
+            return;
+        } else if (theta > START_DAMPING_TOUCH_SLOP_ANGLE) {
+            // Above START_DAMPING_TOUCH_SLOP_ANGLE and below MAX_SWIPE_ANGLE, we want to
+            // increase the touch slop to make it harder to begin scrolling the workspace. This
+            // results in vertically scrolling widgets to more easily. The higher the angle, the
+            // more we increase touch slop.
+            theta -= START_DAMPING_TOUCH_SLOP_ANGLE;
+            float extraRatio = (float)
+                    Math.sqrt((theta / (MAX_SWIPE_ANGLE - START_DAMPING_TOUCH_SLOP_ANGLE)));
+            super.determineScrollingStart(ev, 1 + TOUCH_SLOP_DAMPING_FACTOR * extraRatio);
+        } else {
+            // Below START_DAMPING_TOUCH_SLOP_ANGLE, we don't do anything special
+            super.determineScrollingStart(ev);
         }
     }
 
@@ -674,6 +682,14 @@ public class Workspace extends SmoothPagedView
         // Only show page outlines as we pan if we are on large screen
         if (LauncherApplication.isScreenLarge()) {
             showOutlines();
+        }
+
+        // If we are not fading in adjacent screens, we still need to restore the alpha in case the
+        // user scrolls while we are transitioning (should not affect dispatchDraw optimizations)
+        if (!mFadeInAdjacentScreens) {
+            for (int i = 0; i < getChildCount(); ++i) {
+                getPageAt(i).setAlpha(1f);
+            }
         }
 
         // Show the scroll indicator as you pan the page
@@ -1701,6 +1717,11 @@ public class Workspace extends SmoothPagedView
     @Override
     public void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace) {
         mIsSwitchingState = true;
+    }
+
+    @Override
+    public void onLauncherTransitionStep(Launcher l, float t) {
+        mTransitionProgress = t;
     }
 
     @Override

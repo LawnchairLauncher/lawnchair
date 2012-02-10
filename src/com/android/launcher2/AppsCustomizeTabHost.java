@@ -53,6 +53,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     private LinearLayout mContent;
 
     private boolean mInTransition;
+    private boolean mTransitioningToWorkspace;
     private boolean mResetAfterTransition;
 
     public AppsCustomizeTabHost(Context context, AttributeSet attrs) {
@@ -154,8 +155,23 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
+     public boolean onInterceptTouchEvent(MotionEvent ev) {
+         // If we are mid transition then intercept touch events here so we can ignore them
+         if (mInTransition) {
+             return true;
+         }
+         return super.onInterceptTouchEvent(ev);
+     };
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        // Allow touch events to fall through if we are transitioning to the workspace
+        if (mInTransition) {
+            if (mTransitioningToWorkspace) {
+                return super.onTouchEvent(event);
+            }
+        }
+
         // Intercept all touch events up to the bottom of the AppsCustomizePane so they do not fall
         // through to the workspace and trigger showWorkspace()
         if (event.getY() < mAppsCustomizePane.getBottom()) {
@@ -349,6 +365,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     @Override
     public void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace) {
         mInTransition = true;
+        mTransitioningToWorkspace = toWorkspace;
 
         if (toWorkspace) {
             // Going from All Apps -> Workspace
@@ -374,6 +391,11 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         if (animated) {
             enableAndBuildHardwareLayer();
         }
+    }
+
+    @Override
+    public void onLauncherTransitionStep(Launcher l, float t) {
+        // Do nothing
     }
 
     @Override

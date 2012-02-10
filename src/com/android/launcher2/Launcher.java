@@ -23,6 +23,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
@@ -2224,12 +2225,24 @@ public final class Launcher extends Activity
         if (v instanceof LauncherTransitionable) {
             ((LauncherTransitionable) v).onLauncherTransitionStart(this, animated, toWorkspace);
         }
+
+        // Update the workspace transition step as well
+        dispatchOnLauncherTransitionStep(v, 0f);
+    }
+
+    private void dispatchOnLauncherTransitionStep(View v, float t) {
+        if (v instanceof LauncherTransitionable) {
+            ((LauncherTransitionable) v).onLauncherTransitionStep(this, t);
+        }
     }
 
     private void dispatchOnLauncherTransitionEnd(View v, boolean animated, boolean toWorkspace) {
         if (v instanceof LauncherTransitionable) {
             ((LauncherTransitionable) v).onLauncherTransitionEnd(this, animated, toWorkspace);
         }
+
+        // Update the workspace transition step as well
+        dispatchOnLauncherTransitionStep(v, 1f);
     }
 
     /**
@@ -2314,6 +2327,14 @@ public final class Launcher extends Activity
                 .ofFloat(toView, "alpha", 0f, 1f)
                 .setDuration(fadeDuration);
             alphaAnim.setInterpolator(new DecelerateInterpolator(1.5f));
+            alphaAnim.addUpdateListener(new AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float t = (Float) animation.getAnimatedValue();
+                    dispatchOnLauncherTransitionStep(fromView, t);
+                    dispatchOnLauncherTransitionStep(toView, t);
+                }
+            });
 
             // toView should appear right at the end of the workspace shrink
             // animation
@@ -2469,6 +2490,14 @@ public final class Launcher extends Activity
                 .ofFloat(fromView, "alpha", 1f, 0f)
                 .setDuration(fadeOutDuration);
             alphaAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+            alphaAnim.addUpdateListener(new AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float t = 1f - (Float) animation.getAnimatedValue();
+                    dispatchOnLauncherTransitionStep(fromView, t);
+                    dispatchOnLauncherTransitionStep(toView, t);
+                }
+            });
 
             mStateAnimation = new AnimatorSet();
 
@@ -3447,5 +3476,6 @@ public final class Launcher extends Activity
 interface LauncherTransitionable {
     View getContent();
     void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace);
+    void onLauncherTransitionStep(Launcher l, float t);
     void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace);
 }
