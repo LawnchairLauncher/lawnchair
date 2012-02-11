@@ -32,6 +32,8 @@ import android.view.animation.DecelerateInterpolator;
 import com.android.launcher.R;
 
 public class DragView extends View {
+    private static float sDragAlpha = 0.8f;
+
     private Bitmap mBitmap;
     private Paint mPaint;
     private int mRegistrationX;
@@ -65,20 +67,13 @@ public class DragView extends View {
         mDragLayer = launcher.getDragLayer();
 
         final Resources res = getResources();
-        final int dragScale = res.getInteger(R.integer.config_dragViewExtraPixels);
-
-        Matrix scale = new Matrix();
-        final float scaleFactor = (width + dragScale) / width;
-        if (scaleFactor != 1.0f) {
-            scale.setScale(scaleFactor, scaleFactor);
-        }
-
-        final int offsetX = res.getDimensionPixelSize(R.dimen.dragViewOffsetX);
-        final int offsetY = res.getDimensionPixelSize(R.dimen.dragViewOffsetY);
+        final float scale = res.getInteger(R.integer.config_dragViewScaleFactor) / 100f;
+        final float offsetX = res.getDimensionPixelSize(R.dimen.dragViewOffsetX);
+        final float offsetY = res.getDimensionPixelSize(R.dimen.dragViewOffsetY);
 
         // Animate the view into the correct position
         mAnim = ValueAnimator.ofFloat(0.0f, 1.0f);
-        mAnim.setDuration(110);
+        mAnim.setDuration(150);
         mAnim.setInterpolator(new DecelerateInterpolator(2.5f));
         mAnim.addUpdateListener(new AnimatorUpdateListener() {
             @Override
@@ -90,6 +85,9 @@ public class DragView extends View {
 
                 mOffsetX += deltaX;
                 mOffsetY += deltaY;
+                setScaleX(1f + (value * (scale - 1f)));
+                setScaleY(1f + (value * (scale - 1f)));
+                setAlpha(sDragAlpha * value + (1f - value));
 
                 if (getParent() == null) {
                     animation.cancel();
@@ -97,12 +95,14 @@ public class DragView extends View {
                     DragLayer.LayoutParams lp = mLayoutParams;
                     lp.x += deltaX;
                     lp.y += deltaY;
+                    lp.width = mBitmap.getWidth();
+                    lp.height = mBitmap.getHeight();
                     mDragLayer.requestLayout();
                 }
             }
         });
 
-        mBitmap = Bitmap.createBitmap(bitmap, left, top, width, height, scale, true);
+        mBitmap = Bitmap.createBitmap(bitmap, left, top, width, height);
         setDragRegion(new Rect(0, 0, width, height));
 
         // The point in our scaled bitmap that the touch events are located
@@ -208,6 +208,18 @@ public class DragView extends View {
         mAnim.start();
     }
 
+    public void cancelAnimation() {
+        if (mAnim != null && mAnim.isRunning()) {
+            mAnim.cancel();
+        }
+    }
+
+    public void resetLayoutParams() {
+        DragLayer.LayoutParams lp = mLayoutParams;
+        lp.x = lp.y = 0;
+        mOffsetX = mOffsetY = 0;
+    }
+
     /**
      * Move the window containing this view.
      *
@@ -222,7 +234,9 @@ public class DragView extends View {
     }
 
     void remove() {
-        mDragLayer.removeView(DragView.this);
+        if (getParent() != null) {
+            mDragLayer.removeView(DragView.this);
+        }
     }
 
     int[] getPosition(int[] result) {

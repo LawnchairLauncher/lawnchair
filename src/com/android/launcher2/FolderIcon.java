@@ -295,14 +295,14 @@ public class FolderIcon extends LinearLayout implements FolderListener {
     }
 
     public void performCreateAnimation(final ShortcutInfo destInfo, final View destView,
-            final ShortcutInfo srcInfo, final View srcView, Rect dstRect,
+            final ShortcutInfo srcInfo, final DragView srcView, Rect dstRect,
             float scaleRelativeToDragLayer, Runnable postAnimationRunnable) {
 
         Drawable animateDrawable = ((TextView) destView).getCompoundDrawables()[1];
         computePreviewDrawingParams(animateDrawable.getIntrinsicWidth(), destView.getMeasuredWidth());
 
         // This will animate the dragView (srcView) into the new folder
-        onDrop(srcInfo, srcView, dstRect, scaleRelativeToDragLayer, 1, postAnimationRunnable);
+        onDrop(srcInfo, srcView, dstRect, scaleRelativeToDragLayer, 1, postAnimationRunnable, null);
 
         // This will animate the first item from it's position as an icon into its
         // position as the first item in the preview
@@ -320,8 +320,9 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         mFolderRingAnimator.animateToNaturalState();
     }
 
-    private void onDrop(final ShortcutInfo item, View animateView, Rect finalRect,
-            float scaleRelativeToDragLayer, int index, Runnable postAnimationRunnable) {
+    private void onDrop(final ShortcutInfo item, DragView animateView, Rect finalRect,
+            float scaleRelativeToDragLayer, int index, Runnable postAnimationRunnable,
+            DragObject d) {
         item.cellX = -1;
         item.cellY = -1;
 
@@ -382,7 +383,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
             item = (ShortcutInfo) d.dragInfo;
         }
         mFolder.notifyDrop();
-        onDrop(item, d.dragView, null, 1.0f, mInfo.contents.size(), d.postAnimationRunnable);
+        onDrop(item, d.dragView, null, 1.0f, mInfo.contents.size(), d.postAnimationRunnable, d);
     }
 
     public DropTarget getDropTargetDelegate(DragObject d) {
