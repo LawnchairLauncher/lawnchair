@@ -33,6 +33,7 @@ import com.android.launcher.R;
 
 public class DragView extends View {
     private Bitmap mBitmap;
+    private Bitmap mCrossFadeBitmap;
     private Paint mPaint;
     private int mRegistrationX;
     private int mRegistrationY;
@@ -41,6 +42,7 @@ public class DragView extends View {
     private Rect mDragRegion = null;
     private DragLayer mDragLayer = null;
     private boolean mHasDrawn = false;
+    private float mCrossFadeProgress = 0f;
 
     ValueAnimator mAnim;
     private float mOffsetX = 0.0f;
@@ -164,9 +166,43 @@ public class DragView extends View {
             p.setColor(0xaaffffff);
             canvas.drawRect(0, 0, getWidth(), getHeight(), p);
         }
+        if (mPaint == null) {
+            mPaint = new Paint();
+        }
 
         mHasDrawn = true;
+        boolean crossFade = mCrossFadeProgress > 0 && mCrossFadeBitmap != null;
+        if (crossFade) {
+            int alpha = crossFade ? (int) (255 * (1 - mCrossFadeProgress)) : 255;
+            mPaint.setAlpha(alpha);
+        }
         canvas.drawBitmap(mBitmap, 0.0f, 0.0f, mPaint);
+        if (crossFade) {
+            mPaint.setAlpha((int) (255 * mCrossFadeProgress));
+            canvas.save();
+            float sX = (mBitmap.getWidth() * 1.0f) / mCrossFadeBitmap.getWidth();
+            float sY = (mBitmap.getHeight() * 1.0f) / mCrossFadeBitmap.getHeight();
+            canvas.scale(sX, sY);
+            canvas.drawBitmap(mCrossFadeBitmap, 0.0f, 0.0f, mPaint);
+            canvas.restore();
+        }
+    }
+
+    public void setCrossFadeBitmap(Bitmap crossFadeBitmap) {
+        mCrossFadeBitmap = crossFadeBitmap;
+    }
+
+    public void crossFade(int duration) {
+        ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
+        va.setDuration(duration);
+        va.setInterpolator(new DecelerateInterpolator(1.5f));
+        va.addUpdateListener(new AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mCrossFadeProgress = animation.getAnimatedFraction();
+            }
+        });
+        va.start();
     }
 
     public void setPaint(Paint paint) {

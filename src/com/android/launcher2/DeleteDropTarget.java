@@ -165,22 +165,29 @@ public class DeleteDropTarget extends ButtonDropTarget {
         }
     }
 
-    private void animateToTrashAndCompleteDrop(final DragObject d) {
+    Rect getDeleteRect(int deleteItemWidth, int deleteItemHeight) {
         DragLayer dragLayer = mLauncher.getDragLayer();
-        Rect from = new Rect();
-        Rect to = new Rect();
-        dragLayer.getViewRectRelativeToSelf(d.dragView, from);
-        dragLayer.getViewRectRelativeToSelf(this, to);
 
+        Rect to = new Rect();
+        dragLayer.getViewRectRelativeToSelf(this, to);
         int width = mCurrentDrawable.getIntrinsicWidth();
         int height = mCurrentDrawable.getIntrinsicHeight();
         to.set(to.left + getPaddingLeft(), to.top + getPaddingTop(),
                 to.left + getPaddingLeft() + width, to.bottom);
 
         // Center the destination rect about the trash icon
-        int xOffset = (int) -(d.dragView.getMeasuredWidth() - width) / 2;
-        int yOffset = (int) -(d.dragView.getMeasuredHeight() - height) / 2;
+        int xOffset = (int) -(deleteItemWidth - width) / 2;
+        int yOffset = (int) -(deleteItemHeight - height) / 2;
         to.offset(xOffset, yOffset);
+
+        return to;
+    }
+
+    private void animateToTrashAndCompleteDrop(final DragObject d) {
+        DragLayer dragLayer = mLauncher.getDragLayer();
+        Rect from = new Rect();
+        dragLayer.getViewRectRelativeToSelf(d.dragView, from);
+        Rect to = getDeleteRect(d.dragView.getMeasuredWidth(), d.dragView.getMeasuredHeight());
 
         mSearchDropTargetBar.deferOnDragEnd();
         Runnable onAnimationEndRunnable = new Runnable() {
@@ -191,9 +198,10 @@ public class DeleteDropTarget extends ButtonDropTarget {
                 completeDrop(d);
             }
         };
-        dragLayer.animateView(d.dragView, from, to, 0.1f, 0.1f,
+        dragLayer.animateView(d.dragView, from, to, 0.1f, 1, 1, 0.1f, 0.1f,
                 DELETE_ANIMATION_DURATION, new DecelerateInterpolator(2),
-                new DecelerateInterpolator(1.5f), onAnimationEndRunnable, false, null);
+                new DecelerateInterpolator(1.5f), onAnimationEndRunnable,
+                DragLayer.ANIMATION_END_DISAPPEAR, null);
     }
 
     private void completeDrop(DragObject d) {

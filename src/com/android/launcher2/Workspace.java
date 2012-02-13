@@ -56,6 +56,7 @@ import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.MeasureSpec;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -204,6 +205,11 @@ public class Workspace extends SmoothPagedView
     final static float MAX_SWIPE_ANGLE = (float) Math.PI / 3;
     final static float TOUCH_SLOP_DAMPING_FACTOR = 4;
 
+    // Relating to the animation of items being dropped externally
+    public static final int ANIMATE_INTO_POSITION = 0;
+    public static final int COMPLETE_TWO_STAGE_WIDGET_DROP_ANIMATION = 1;
+    public static final int CANCEL_TWO_STAGE_WIDGET_DROP_ANIMATION = 2;
+
     // These variables are used for storing the initial and final values during workspace animations
     private int mSavedScrollX;
     private float mSavedRotationY;
@@ -334,15 +340,6 @@ public class Workspace extends SmoothPagedView
             int hCell, int vCell, int hSpan, int vSpan) {
         RectF r = new RectF();
         cl.cellToRect(hCell, vCell, hSpan, vSpan, r);
-        if (pendingInfo instanceof PendingAddWidgetInfo) {
-            PendingAddWidgetInfo widgetInfo = (PendingAddWidgetInfo) pendingInfo;
-            Rect p = AppWidgetHostView.getDefaultPaddingForWidget(mContext,
-                    widgetInfo.componentName, null);
-            r.top += p.top;
-            r.left += p.left;
-            r.right -= p.right;
-            r.bottom -= p.bottom;
-        }
         return r;
     }
 
@@ -502,10 +499,12 @@ public class Workspace extends SmoothPagedView
             child.setOnKeyListener(new IconKeyEventListener());
         }
 
-        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
-        if (lp == null) {
+        LayoutParams genericLp = child.getLayoutParams();
+        CellLayout.LayoutParams lp;
+        if (genericLp == null || !(genericLp instanceof CellLayout.LayoutParams)) {
             lp = new CellLayout.LayoutParams(x, y, spanX, spanY);
         } else {
+            lp = (CellLayout.LayoutParams) genericLp;
             lp.cellX = x;
             lp.cellY = y;
             lp.cellHSpan = spanX;
@@ -2869,7 +2868,7 @@ public class Workspace extends SmoothPagedView
         final Runnable exitSpringLoadedRunnable = new Runnable() {
             @Override
             public void run() {
-                mLauncher.exitSpringLoadedDragModeDelayed(true, false);
+                mLauncher.exitSpringLoadedDragModeDelayed(true, false, null);
             }
         };
 
@@ -2930,27 +2929,8 @@ public class Workspace extends SmoothPagedView
                 }
             };
 
-            // Now we animate the dragView, (ie. the widget or shortcut preview) into its final
-            // location and size on the home screen.
-            RectF r = estimateItemPosition(cellLayout, pendingInfo,
-                    mTargetCell[0], mTargetCell[1], spanX, spanY);
-            int loc[] = new int[2];
-            loc[0] = (int) r.left;
-            loc[1] = (int) r.top;
-            setFinalTransitionTransform(cellLayout);
-            float cellLayoutScale =
-                    mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(cellLayout, loc);
-            resetTransitionTransform(cellLayout);
-
-            float dragViewScale =  Math.min(r.width() / d.dragView.getMeasuredWidth(),
-                    r.height() / d.dragView.getMeasuredHeight());
-            // The animation will scale the dragView about its center, so we need to center about
-            // the final location.
-            loc[0] -= (d.dragView.getMeasuredWidth() - cellLayoutScale * r.width()) / 2;
-            loc[1] -= (d.dragView.getMeasuredHeight() - cellLayoutScale * r.height()) / 2;
-
-            mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, loc,
-                    dragViewScale * cellLayoutScale, onAnimationCompleteRunnable);
+            animateExternalDrop((PendingAddItemInfo) info, cellLayout, d.dragView,
+                    onAnimationCompleteRunnable, ANIMATE_INTO_POSITION);
         } else {
             // This is for other drag/drop cases, like dragging from All Apps
             View view = null;
@@ -3013,6 +2993,92 @@ public class Workspace extends SmoothPagedView
                         exitSpringLoadedRunnable);
                 resetTransitionTransform(cellLayout);
             }
+        }
+    }
+
+    // The following methods deal with animating an item from external drop
+    void onPreDraw(View v) {
+        if (v instanceof ViewGroup) {
+            ViewGroup vg = (ViewGroup) v;
+            for (int i = 0; i < vg.getChildCount(); i++) {
+                View child = vg.getChildAt(i);
+                onPreDraw(child);
+            }
+        } else if (v instanceof TextView) {
+            ((TextView) v).onPreDraw();
+        }
+    }
+
+    public Bitmap createWidgetBitmap(PendingAddWidgetInfo widgetInfo) {
+        int[] unScaledSize = mLauncher.getWorkspace().estimateItemSize(widgetInfo.spanX,
+                widgetInfo.spanY, widgetInfo, false);
+        View layout = widgetInfo.boundWidget;
+        layout.setVisibility(VISIBLE);
+
+        int width = MeasureSpec.makeMeasureSpec(unScaledSize[0], MeasureSpec.EXACTLY);
+        int height = MeasureSpec.makeMeasureSpec(unScaledSize[1], MeasureSpec.EXACTLY);
+        Bitmap b = Bitmap.createBitmap(unScaledSize[0], unScaledSize[1],
+                Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+
+        layout.measure(width, height);
+        layout.layout(0, 0, unScaledSize[0], unScaledSize[1]);
+        onPreDraw(layout);
+        layout.draw(c);
+        c.setBitmap(null);
+        return b;
+    }
+
+    public void animateExternalDrop(PendingAddItemInfo pendingInfo, CellLayout cellLayout,
+            DragView dragView, Runnable onCompleteRunnable, int animationType) {
+        // Now we animate the dragView, (ie. the widget or shortcut preview) into its final
+        // location and size on the home screen.
+        int spanX = pendingInfo.spanX;
+        int spanY = pendingInfo.spanY;
+        RectF r = estimateItemPosition(cellLayout, pendingInfo,
+                mTargetCell[0], mTargetCell[1], spanX, spanY);
+        int loc[] = new int[2];
+        loc[0] = (int) r.left;
+        loc[1] = (int) r.top;
+        setFinalTransitionTransform(cellLayout);
+        float cellLayoutScale =
+                mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(cellLayout, loc);
+        resetTransitionTransform(cellLayout);
+
+        float dragViewScaleX = r.width() / dragView.getMeasuredWidth();
+        float dragViewScaleY = r.height() / dragView.getMeasuredHeight();
+        // The animation will scale the dragView about its center, so we need to center about
+        // the final location.
+        loc[0] -= (dragView.getMeasuredWidth() - cellLayoutScale * r.width()) / 2;
+        loc[1] -= (dragView.getMeasuredHeight() - cellLayoutScale * r.height()) / 2;
+
+        float scaleX = dragViewScaleX * cellLayoutScale;
+        float scaleY = dragViewScaleY * cellLayoutScale;
+
+        Resources res = mLauncher.getResources();
+        int duration = res.getInteger(R.integer.config_dropAnimMaxDuration) - 200;
+
+        int animationEnd = DragLayer.ANIMATION_END_REMAIN_VISIBLE;
+        if (pendingInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET &&
+                (((PendingAddWidgetInfo) pendingInfo).info.configure == null ||
+                animationType == COMPLETE_TWO_STAGE_WIDGET_DROP_ANIMATION)) {
+            Bitmap crossFadeBitmap = createWidgetBitmap((PendingAddWidgetInfo) pendingInfo);
+            dragView.setCrossFadeBitmap(crossFadeBitmap);
+            dragView.crossFade((int) (duration * 0.8f));
+            animationEnd = DragLayer.ANIMATION_END_DISAPPEAR;
+        } else {
+            scaleX = scaleY = Math.min(scaleX,  scaleY);
+        }
+
+        if (animationType == COMPLETE_TWO_STAGE_WIDGET_DROP_ANIMATION) {
+            mLauncher.getDragLayer().scaleViewIntoPosition(dragView, loc, 1, scaleX, scaleY,
+                    animationEnd, onCompleteRunnable, duration);
+        } else if (animationType == CANCEL_TWO_STAGE_WIDGET_DROP_ANIMATION) {
+            mLauncher.getDragLayer().scaleViewIntoPosition(dragView, loc, 0, 0.1f, 0.1f,
+                    DragLayer.ANIMATION_END_DISAPPEAR, onCompleteRunnable, duration);
+        } else {
+            mLauncher.getDragLayer().animateViewIntoPosition(dragView, loc, scaleX, scaleY,
+                animationEnd, onCompleteRunnable, duration);
         }
     }
 

@@ -23,6 +23,7 @@ import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -40,6 +41,9 @@ public class PagedViewWidget extends LinearLayout {
     private ImageView mPreviewImageView;
 
     private String mDimensionsFormatString;
+    CheckForShortPress mPendingCheckForShortPress = null;
+    ShortPressListener mShortPressListener = null;
+    boolean mShortPressTriggered = false;
 
     public PagedViewWidget(Context context) {
         this(context, null);
@@ -127,8 +131,67 @@ public class PagedViewWidget extends LinearLayout {
         }
     }
 
+    void setShortPressListener(ShortPressListener listener) {
+        mShortPressListener = listener;
+    }
+
+    interface ShortPressListener {
+        void onShortPress(View v);
+        void cleanUpShortPress(View v);
+    }
+
+    class CheckForShortPress implements Runnable {
+        public void run() {
+            if (mShortPressListener != null) {
+                mShortPressListener.onShortPress(PagedViewWidget.this);
+            }
+            mShortPressTriggered = true;
+        }
+    }
+
+    private void checkForShortPress() {
+        if (mPendingCheckForShortPress == null) {
+            mPendingCheckForShortPress = new CheckForShortPress();
+        }
+        postDelayed(mPendingCheckForShortPress, 120);
+    }
+
+    /**
+     * Remove the longpress detection timer.
+     */
+    private void removeShortPressCallback() {
+        if (mPendingCheckForShortPress != null) {
+          removeCallbacks(mPendingCheckForShortPress);
+        }
+    }
+
+    private void cleanUpShortPress() {
+        removeShortPressCallback();
+        if (mShortPressTriggered) {
+            if (mShortPressListener != null) {
+                mShortPressListener.cleanUpShortPress(PagedViewWidget.this);
+            }
+            mShortPressTriggered = false;
+        }
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        super.onTouchEvent(event);
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_UP:
+                cleanUpShortPress();
+                break;
+            case MotionEvent.ACTION_DOWN:
+                checkForShortPress();
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                cleanUpShortPress();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                break;
+        }
         // We eat up the touch events here, since the PagedView (which uses the same swiping
         // touch code as Workspace previously) uses onInterceptTouchEvent() to determine when
         // the user is scrolling between pages.  This means that if the pages themselves don't
@@ -136,6 +199,6 @@ public class PagedViewWidget extends LinearLayout {
         // onTouchEvent() handling will prevent further intercept touch events from being called
         // (it's the same view in that case).  This is not ideal, but to prevent more changes,
         // we just always mark the touch event as handled.
-        return super.onTouchEvent(event) || true;
+        return true;
     }
 }
