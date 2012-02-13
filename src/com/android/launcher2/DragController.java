@@ -394,9 +394,7 @@ public class DragController {
                 listener.onDragEnd();
             }
             if (mDragObject.dragView != null) {
-                if (!mDragObject.deferDragViewCleanupPostAnimation) {
-                    mDragObject.dragView.remove();
-                }
+                mDragObject.dragView.remove();
                 mDragObject.dragView = null;
             }
         }
