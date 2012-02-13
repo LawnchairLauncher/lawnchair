@@ -16,9 +16,7 @@
 
 package com.android.launcher2;
 
-import android.app.ActivityManager;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -26,6 +24,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.util.DisplayMetrics;
 
 import java.util.HashMap;
 
@@ -53,9 +52,16 @@ public class IconCache {
         mContext = context;
         mPackageManager = context.getPackageManager();
         if (LauncherApplication.isScreenLarge()) {
-            ActivityManager activityManager =
-                    (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-            mIconDpi = activityManager.getLauncherLargeIconDensity();
+            if (density == DisplayMetrics.DENSITY_LOW) {
+                mIconDpi = DisplayMetrics.DENSITY_MEDIUM;
+            } else if (density == DisplayMetrics.DENSITY_MEDIUM) {
+                mIconDpi = DisplayMetrics.DENSITY_HIGH;
+            } else if (density == DisplayMetrics.DENSITY_HIGH) {
+                mIconDpi = DisplayMetrics.DENSITY_XHIGH;
+            } else if (density == DisplayMetrics.DENSITY_XHIGH) {
+                // We'll need to use a denser icon, or some sort of a mipmap
+                mIconDpi = DisplayMetrics.DENSITY_XHIGH;
+            }
         } else {
             mIconDpi = context.getResources().getDisplayMetrics().densityDpi;
         }
