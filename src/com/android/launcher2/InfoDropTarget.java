@@ -29,7 +29,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.launcher.R;
-import com.android.launcher2.DropTarget.DragObject;
 
 public class InfoDropTarget extends ButtonDropTarget {
 
@@ -86,9 +85,6 @@ public class InfoDropTarget extends ButtonDropTarget {
         if (componentName != null) {
             mLauncher.startApplicationDetailsActivity(componentName);
         }
-
-        // There is no post-drop animation, so clean up the DragView now
-        d.deferDragViewCleanupPostAnimation = false;
         return false;
     }
 

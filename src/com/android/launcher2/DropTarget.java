@@ -55,9 +55,6 @@ public interface DropTarget {
         /** Indicates that the drag operation was cancelled */
         public boolean cancelled = false;
 
-        /** Defers removing the DragView from the DragLayer until after the drop animation. */
-        public boolean deferDragViewCleanupPostAnimation = true;
-
         public DragObject() {
         }
     }
