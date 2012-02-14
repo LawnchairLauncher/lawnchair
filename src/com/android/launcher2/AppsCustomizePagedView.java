@@ -204,7 +204,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     private Canvas mCanvas;
     private Drawable mDefaultWidgetBackground;
     private IconCache mIconCache;
-    private int mDragViewMultiplyColor;
 
     // Dimens
     private int mContentWidth;
@@ -254,7 +253,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         Resources resources = context.getResources();
         mDefaultWidgetBackground = resources.getDrawable(R.drawable.default_widget_preview_holo);
         mAppIconSize = resources.getDimensionPixelSize(R.dimen.app_icon_size);
-        mDragViewMultiplyColor = resources.getColor(R.color.drag_view_multiply_color);
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AppsCustomizePagedView, 0, 0);
         mMaxAppCellCountX = a.getInt(R.styleable.AppsCustomizePagedView_maxAppCellCountX, -1);
@@ -648,9 +646,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // Save the preview for the outline generation, then dim the preview
         outline = Bitmap.createScaledBitmap(preview, preview.getWidth(), preview.getHeight(),
                 false);
-        mCanvas.setBitmap(preview);
-        mCanvas.drawColor(mDragViewMultiplyColor, PorterDuff.Mode.MULTIPLY);
-        mCanvas.setBitmap(null);
 
         // Start the drag
         alphaClipPaint = null;
@@ -724,6 +719,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             if (showOutOfSpaceMessage) {
                 mLauncher.showOutOfSpaceMessage();
             }
+            d.deferDragViewCleanupPostAnimation = false;
         }
     }
 
@@ -985,9 +981,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             d.setBounds(x, y, x + w, y + h);
             d.draw(c);
             d.setBounds(oldBounds); // Restore the bounds
-            if (multiplyColor != 0xFFFFFFFF) {
-                c.drawColor(mDragViewMultiplyColor, PorterDuff.Mode.MULTIPLY);
-            }
             c.setBitmap(null);
         }
     }

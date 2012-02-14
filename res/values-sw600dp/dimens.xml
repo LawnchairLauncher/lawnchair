@@ -72,6 +72,9 @@
      the drag view should be offset from the position of the original view. -->
     <dimen name="dragViewOffsetX">0dp</dimen>
     <dimen name="dragViewOffsetY">-12dp</dimen>
+    <!--  When dragging an item, how much bigger (fixed dps) the dragged view
+          should be. If 0, it will not be scaled at all. -->
+    <dimen name="dragViewScale">12dp</dimen>
 
 <!-- Folders -->
     <!-- The size of the image which sits behind the preview of the folder contents -->
