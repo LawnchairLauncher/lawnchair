@@ -1680,7 +1680,6 @@ public abstract class PagedView extends ViewGroup {
         if (mHasScrollIndicator && mScrollIndicator == null) {
             ViewGroup parent = (ViewGroup) getParent();
             mScrollIndicator = (View) (parent.findViewById(R.id.paged_view_indicator));
-            mScrollIndicator.setLayerType(View.LAYER_TYPE_HARDWARE, null);
             mHasScrollIndicator = mScrollIndicator != null;
             if (mHasScrollIndicator) {
                 mScrollIndicator.setVisibility(View.VISIBLE);
@@ -1806,6 +1805,7 @@ public abstract class PagedView extends ViewGroup {
             indicatorPos += indicatorCenterOffset;
         }
         mScrollIndicator.setTranslationX(indicatorPos);
+        mScrollIndicator.invalidate();
     }
 
     public void showScrollIndicatorTrack() {

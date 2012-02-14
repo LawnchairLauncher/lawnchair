@@ -129,26 +129,14 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
             @Override
             public void onAnimationStart(Animator animation) {
                 mQSBSearchBar.setVisibility(View.VISIBLE);
-                mQSBSearchBar.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mQSBSearchBar.setLayerType(View.LAYER_TYPE_NONE, null);
             }
         });
         mQSBSearchBarFadeOutAnim = ObjectAnimator.ofFloat(mQSBSearchBar, "alpha", 0f);
         mQSBSearchBarFadeOutAnim.setDuration(sTransitionOutDuration);
         mQSBSearchBarFadeOutAnim.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationStart(Animator animation) {
-                mQSBSearchBar.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            }
-
-            @Override
             public void onAnimationEnd(Animator animation) {
                 mQSBSearchBar.setVisibility(View.INVISIBLE);
-                mQSBSearchBar.setLayerType(View.LAYER_TYPE_NONE, null);
             }
         });
     }
