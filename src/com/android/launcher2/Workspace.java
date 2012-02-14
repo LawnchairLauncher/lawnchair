@@ -1950,7 +1950,7 @@ public class Workspace extends SmoothPagedView
     }
 
     public boolean transitionStateShouldAllowDrop() {
-        return (!isSwitchingState() || mTransitionProgress > 0.5f);
+        return ((!isSwitchingState() || mTransitionProgress > 0.5f) && mState != State.SMALL);
     }
 
     /**
