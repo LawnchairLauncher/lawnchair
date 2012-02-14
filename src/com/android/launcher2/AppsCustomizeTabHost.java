@@ -347,8 +347,9 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
 
     /* LauncherTransitionable overrides */
     @Override
-    public void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace) {
+    public void onLauncherTransitionStart(Launcher l, Animator animation, boolean toWorkspace) {
         mInTransition = true;
+        boolean animated = (animation != null);
 
         mContent.setVisibility(VISIBLE);
 
@@ -371,9 +372,9 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     }
 
     @Override
-    public void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace) {
+    public void onLauncherTransitionEnd(Launcher l, Animator animation, boolean toWorkspace) {
         mInTransition = false;
-        if (animated) {
+        if (animation != null) {
             setLayerType(LAYER_TYPE_NONE, null);
         }
 
