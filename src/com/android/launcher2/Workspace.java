@@ -172,7 +172,6 @@ public class Workspace extends SmoothPagedView
     private Bitmap mDragOutline = null;
     private final Rect mTempRect = new Rect();
     private final int[] mTempXY = new int[2];
-    private int mDragViewMultiplyColor;
     private float mOverscrollFade = 0;
 
     // Paint used to draw external drop outline
@@ -301,7 +300,6 @@ public class Workspace extends SmoothPagedView
 
         mSpringLoadedShrinkFactor =
             res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
-        mDragViewMultiplyColor = res.getColor(R.color.drag_view_multiply_color);
 
         // if the value is manually specified, use that instead
         cellCountX = a.getInt(R.styleable.Workspace_cellCountX, cellCountX);
@@ -1803,7 +1801,6 @@ public class Workspace extends SmoothPagedView
         canvas.setBitmap(b);
         drawDragView(v, canvas, padding, true);
         mOutlineHelper.applyOuterBlur(b, canvas, outlineColor);
-        canvas.drawColor(mDragViewMultiplyColor, PorterDuff.Mode.MULTIPLY);
         canvas.setBitmap(null);
 
         return b;
@@ -2256,6 +2253,7 @@ public class Workspace extends SmoothPagedView
                 mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, cell, duration,
                         disableHardwareLayersRunnable, this);
             } else {
+                d.deferDragViewCleanupPostAnimation = false;
                 cell.setVisibility(VISIBLE);
             }
             parent.onDropChild(cell);
@@ -3080,14 +3078,11 @@ public class Workspace extends SmoothPagedView
             scaleX = scaleY = Math.min(scaleX,  scaleY);
         }
 
-        if (animationType == COMPLETE_TWO_STAGE_WIDGET_DROP_ANIMATION) {
-            mLauncher.getDragLayer().scaleViewIntoPosition(dragView, loc, 1, scaleX, scaleY,
-                    animationEnd, onCompleteRunnable, duration);
-        } else if (animationType == CANCEL_TWO_STAGE_WIDGET_DROP_ANIMATION) {
-            mLauncher.getDragLayer().scaleViewIntoPosition(dragView, loc, 0, 0.1f, 0.1f,
+        if (animationType == CANCEL_TWO_STAGE_WIDGET_DROP_ANIMATION) {
+            mLauncher.getDragLayer().animateViewIntoPosition(dragView, loc, 0f, 0.1f, 0.1f,
                     DragLayer.ANIMATION_END_DISAPPEAR, onCompleteRunnable, duration);
         } else {
-            mLauncher.getDragLayer().animateViewIntoPosition(dragView, loc, scaleX, scaleY,
+            mLauncher.getDragLayer().animateViewIntoPosition(dragView, loc, 1f, scaleX, scaleY,
                 animationEnd, onCompleteRunnable, duration);
         }
     }
