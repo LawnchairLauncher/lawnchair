@@ -279,9 +279,11 @@ public class Workspace extends SmoothPagedView
             // landscape
             TypedArray actionBarSizeTypedArray =
                 context.obtainStyledAttributes(new int[] { android.R.attr.actionBarSize });
+            DisplayMetrics displayMetrics = res.getDisplayMetrics();
             final float actionBarHeight = actionBarSizeTypedArray.getDimension(0, 0f);
             final float systemBarHeight = res.getDimension(R.dimen.status_bar_height);
-            final float smallestScreenDim = res.getConfiguration().smallestScreenWidthDp;
+            final float smallestScreenDim = res.getConfiguration().smallestScreenWidthDp *
+                    displayMetrics.density;
 
             cellCountX = 1;
             while (CellLayout.widthInPortrait(res, cellCountX + 1) <= smallestScreenDim) {
