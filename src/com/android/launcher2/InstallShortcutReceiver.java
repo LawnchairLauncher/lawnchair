@@ -40,12 +40,21 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             return;
         }
 
-        int screen = Launcher.getScreen();
-        String[] errorMsgs = {""};
-        if (!installShortcut(context, data, screen, errorMsgs)) {
+        final int screen = Launcher.getScreen();
+        final String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
+        final Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
+
+        final ArrayList<ItemInfo> items = LauncherModel.getItemsInLocalCoordinates(context);
+        final boolean shortcutExists = LauncherModel.shortcutExists(context, name, intent);
+
+        final String[] errorMsgs = {""};
+
+        if (!installShortcut(context, data, items, name, intent, screen, shortcutExists,
+                errorMsgs)) {
             // The target screen is full, let's try the other screens
             for (int i = 0; i < Launcher.SCREEN_COUNT; i++) {
-                if (i != screen && installShortcut(context, data, i, errorMsgs)) break;
+                if (i != screen && installShortcut(context, data, items, name, intent, i,
+                        shortcutExists, errorMsgs)) break;
             }
         }
 
@@ -55,11 +64,9 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         }
     }
 
-    private boolean installShortcut(Context context, Intent data, int screen, String[] errorMsgs) {
-        String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
-
-        if (findEmptyCell(context, mCoordinates, screen)) {
-            Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
+    private boolean installShortcut(Context context, Intent data, ArrayList<ItemInfo> items,
+            String name, Intent intent, int screen, boolean shortcutExists, String[] errorMsgs) {
+        if (findEmptyCell(context, items, mCoordinates, screen)) {
             if (intent != null) {
                 if (intent.getAction() == null) {
                     intent.setAction(Intent.ACTION_VIEW);
@@ -68,7 +75,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 // By default, we allow for duplicate entries (located in
                 // different places)
                 boolean duplicate = data.getBooleanExtra(Launcher.EXTRA_SHORTCUT_DUPLICATE, true);
-                if (duplicate || !LauncherModel.shortcutExists(context, name, intent)) {
+                if (duplicate || !shortcutExists) {
                     LauncherApplication app = (LauncherApplication) context.getApplicationContext();
                     ShortcutInfo info = app.getModel().addShortcut(context, data,
                             LauncherSettings.Favorites.CONTAINER_DESKTOP, screen, mCoordinates[0],
@@ -91,12 +98,12 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         return false;
     }
 
-    private static boolean findEmptyCell(Context context, int[] xy, int screen) {
+    private static boolean findEmptyCell(Context context, ArrayList<ItemInfo> items, int[] xy,
+            int screen) {
         final int xCount = LauncherModel.getCellCountX();
         final int yCount = LauncherModel.getCellCountY();
         boolean[][] occupied = new boolean[xCount][yCount];
 
-        ArrayList<ItemInfo> items = LauncherModel.getItemsInLocalCoordinates(context);
         ItemInfo item = null;
         int cellX, cellY, spanX, spanY;
         for (int i = 0; i < items.size(); ++i) {
