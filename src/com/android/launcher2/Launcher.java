@@ -582,6 +582,7 @@ public final class Launcher extends Activity
         mWorkspace.animateExternalDrop(mWidgetBeingConfigured, cellLayout,
                 (DragView) mDragLayer.getAnimatedView(), onCompleteRunnable,
                 animationType);
+        mWidgetBeingConfigured = null;
     }
 
     @Override

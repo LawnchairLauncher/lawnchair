@@ -239,6 +239,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     static final int WIDGET_INFLATED = 1;
     int mWidgetCleanupState = WIDGET_NO_CLEANUP_REQUIRED;
     int mWidgetLoadingId = -1;
+    PendingAddWidgetInfo mCreateWidgetInfo = null;
 
     public AppsCustomizePagedView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -580,13 +581,14 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     public void onShortPress(View v) {
         // We are anticipating a long press, and we use this time to load bind and instantiate
         // the widget. This will need to be cleaned up if it turns out no long press occurs.
-        PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo) v.getTag();
-        loadWidgetInBackground(createWidgetInfo);
+        mCreateWidgetInfo = new PendingAddWidgetInfo((PendingAddWidgetInfo) v.getTag());
+        loadWidgetInBackground(mCreateWidgetInfo);
     }
 
     @Override
     public void cleanUpShortPress(View v) {
-        PendingAddWidgetInfo info = (PendingAddWidgetInfo) v.getTag();
+        PendingAddWidgetInfo info = mCreateWidgetInfo;
+        mCreateWidgetInfo = null;
         if (mWidgetCleanupState >= 0 && mWidgetLoadingId != -1) {
             mLauncher.getAppWidgetHost().deleteAppWidgetId(mWidgetLoadingId);
         }
@@ -613,7 +615,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         Bitmap preview;
         Bitmap outline;
         if (createItemInfo instanceof PendingAddWidgetInfo) {
-            PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo) createItemInfo;
+            PendingAddWidgetInfo createWidgetInfo = mCreateWidgetInfo;
+            createItemInfo = createWidgetInfo;
+            mCreateWidgetInfo = null;
             int[] spanXY = mLauncher.getSpanForWidget(createWidgetInfo, null);
             int[] size = mLauncher.getWorkspace().estimateItemSize(spanXY[0],
                     spanXY[1], createWidgetInfo, true);
@@ -677,19 +681,23 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                // Dismiss the cling
-                mLauncher.dismissAllAppsCling(null);
+                // We don't enter spring-loaded mode if the drag has been cancelled
+                if (mLauncher.getDragController().isDragging()) {
+                    // Dismiss the cling
+                    mLauncher.dismissAllAppsCling(null);
 
-                // Reset the alpha on the dragged icon before we drag
-                resetDrawableState();
+                    // Reset the alpha on the dragged icon before we drag
+                    resetDrawableState();
 
-                // Go into spring loaded mode (must happen before we startDrag())
-                mLauncher.enterSpringLoadedDragMode();
+                    // Go into spring loaded mode (must happen before we startDrag())
+                    mLauncher.enterSpringLoadedDragMode();
+                }
             }
         },150);
 
         return true;
     }
+
     private void endDragging(View target, boolean success) {
         mLauncher.getWorkspace().onDragStopped(success);
         if (!success || (target != mLauncher.getWorkspace() &&
@@ -699,7 +707,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             mLauncher.exitSpringLoadedDragMode();
         }
         mLauncher.unlockScreenOrientationOnLargeUI();
-
     }
 
     @Override

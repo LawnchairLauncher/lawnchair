@@ -57,4 +57,18 @@ class PendingAddWidgetInfo extends PendingAddItemInfo {
             configurationData = data;
         }
     }
+
+    // Copy constructor
+    public PendingAddWidgetInfo(PendingAddWidgetInfo copy) {
+        minWidth = copy.minWidth;
+        minHeight = copy.minHeight;
+        previewImage = copy.previewImage;
+        icon = copy.icon;
+        info = copy.info;
+        boundWidget = copy.boundWidget;
+        mimeType = copy.mimeType;
+        configurationData = copy.configurationData;
+        componentName = copy.componentName;
+        itemType = copy.itemType;
+    }
 }
