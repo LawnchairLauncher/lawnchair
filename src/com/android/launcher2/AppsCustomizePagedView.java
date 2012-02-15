@@ -570,6 +570,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                         mLauncher.getAppWidgetHost().createView(mContext, mWidgetLoadingId, pInfo);
                 info.boundWidget = hostView;
                 mWidgetCleanupState = WIDGET_INFLATED;
+                hostView.setVisibility(INVISIBLE);
+                mLauncher.getDragLayer().addView(hostView);
             }
         };
         post(mInflateWidgetRunnable);
@@ -596,6 +598,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             AppWidgetHostView widget = info.boundWidget;
             int widgetId = widget.getAppWidgetId();
             mLauncher.getAppWidgetHost().deleteAppWidgetId(widgetId);
+            mLauncher.getDragLayer().removeView(widget);
         }
         mWidgetCleanupState = WIDGET_NO_CLEANUP_REQUIRED;
         mWidgetLoadingId = -1;
