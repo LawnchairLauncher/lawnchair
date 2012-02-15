@@ -2674,8 +2674,7 @@ public class Workspace extends SmoothPagedView
 
     public void onDragOver(DragObject d) {
         // Skip drag over events while we are dragging over side pages
-        if (mInScrollArea) return;
-        if (mIsSwitchingState) return;
+        if (mInScrollArea || mIsSwitchingState || mState == State.SMALL) return;
 
         Rect r = new Rect();
         CellLayout layout = null;
