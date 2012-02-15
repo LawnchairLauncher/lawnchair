@@ -3003,23 +3003,11 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    // The following methods deal with animating an item from external drop
-    void onPreDraw(View v) {
-        if (v instanceof ViewGroup) {
-            ViewGroup vg = (ViewGroup) v;
-            for (int i = 0; i < vg.getChildCount(); i++) {
-                View child = vg.getChildAt(i);
-                onPreDraw(child);
-            }
-        } else if (v instanceof TextView) {
-            ((TextView) v).onPreDraw();
-        }
-    }
-
     public Bitmap createWidgetBitmap(PendingAddWidgetInfo widgetInfo) {
         int[] unScaledSize = mLauncher.getWorkspace().estimateItemSize(widgetInfo.spanX,
                 widgetInfo.spanY, widgetInfo, false);
         View layout = widgetInfo.boundWidget;
+        mLauncher.getDragLayer().removeView(layout);
         layout.setVisibility(VISIBLE);
 
         int width = MeasureSpec.makeMeasureSpec(unScaledSize[0], MeasureSpec.EXACTLY);
@@ -3030,7 +3018,6 @@ public class Workspace extends SmoothPagedView
 
         layout.measure(width, height);
         layout.layout(0, 0, unScaledSize[0], unScaledSize[1]);
-        onPreDraw(layout);
         layout.draw(c);
         c.setBitmap(null);
         return b;
