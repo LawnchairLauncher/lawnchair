@@ -347,38 +347,46 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
 
     /* LauncherTransitionable overrides */
     @Override
-    public void onLauncherTransitionStart(Launcher l, Animator animation, boolean toWorkspace) {
+    public void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace) {
         mInTransition = true;
-        boolean animated = (animation != null);
 
-        mContent.setVisibility(VISIBLE);
+        if (toWorkspace) {
+            // Going from All Apps -> Workspace
+            setVisibilityOfSiblingsWithLowerZOrder(VISIBLE);
+        } else {
+            // Going from Workspace -> All Apps
+            mContent.setVisibility(VISIBLE);
 
-        if (!toWorkspace) {
             // Make sure the current page is loaded (we start loading the side pages after the
             // transition to prevent slowing down the animation)
             mAppsCustomizePane.loadAssociatedPages(mAppsCustomizePane.getCurrentPage(), true);
-        }
-        if (animated) {
-            enableAndBuildHardwareLayer();
+
+            if (!LauncherApplication.isScreenLarge()) {
+                mAppsCustomizePane.showScrollingIndicator(true);
+            }
         }
 
-        if (!toWorkspace && !LauncherApplication.isScreenLarge()) {
-            mAppsCustomizePane.showScrollingIndicator(false);
-        }
         if (mResetAfterTransition) {
             mAppsCustomizePane.reset();
             mResetAfterTransition = false;
         }
+
+        if (animated) {
+            enableAndBuildHardwareLayer();
+        }
     }
 
     @Override
-    public void onLauncherTransitionEnd(Launcher l, Animator animation, boolean toWorkspace) {
+    public void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace) {
         mInTransition = false;
-        if (animation != null) {
+        if (animated) {
             setLayerType(LAYER_TYPE_NONE, null);
         }
 
         if (!toWorkspace) {
+            // Going from Workspace -> All Apps
+            setVisibilityOfSiblingsWithLowerZOrder(INVISIBLE);
+
             // Dismiss the workspace cling and show the all apps cling (if not already shown)
             l.dismissWorkspaceCling(null);
             mAppsCustomizePane.showAllAppsCling();
@@ -389,6 +397,26 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             if (!LauncherApplication.isScreenLarge()) {
                 mAppsCustomizePane.hideScrollingIndicator(false);
             }
+        }
+    }
+
+    private void setVisibilityOfSiblingsWithLowerZOrder(int visibility) {
+        ViewGroup parent = (ViewGroup) getParent();
+        final int count = parent.getChildCount();
+        if (!isChildrenDrawingOrderEnabled()) {
+            for (int i = 0; i < count; i++) {
+                final View child = parent.getChildAt(i);
+                if (child == this) {
+                    break;
+                } else {
+                    if (child.getVisibility() == GONE) {
+                        continue;
+                    }
+                    child.setVisibility(visibility);
+                }
+            }
+        } else {
+            throw new RuntimeException("Failed; can't get z-order of views");
         }
     }
 

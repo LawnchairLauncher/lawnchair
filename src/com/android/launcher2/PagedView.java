@@ -176,6 +176,8 @@ public abstract class PagedView extends ViewGroup {
     private int mScrollIndicatorPaddingLeft;
     private int mScrollIndicatorPaddingRight;
     private boolean mHasScrollIndicator = true;
+    private boolean mShouldShowScrollIndicator = false;
+    private boolean mShouldShowScrollIndicatorImmediately = false;
     protected static final int sScrollIndicatorFadeInDuration = 150;
     protected static final int sScrollIndicatorFadeOutDuration = 650;
     protected static final int sScrollIndicatorFlashDuration = 650;
@@ -767,7 +769,8 @@ public abstract class PagedView extends ViewGroup {
                 for (int i = getChildCount() - 1; i >= 0; i--) {
                     final View v = getPageAt(i);
 
-                    if (leftScreen <= i && i <= rightScreen) {
+                    if (leftScreen <= i && i <= rightScreen &&
+                            v.getAlpha() > ViewConfiguration.ALPHA_THRESHOLD) {
                         v.setVisibility(VISIBLE);
                         drawChild(canvas, v, drawingTime);
                     } else {
@@ -1705,9 +1708,12 @@ public abstract class PagedView extends ViewGroup {
     }
 
     protected void showScrollingIndicator(boolean immediately) {
+        mShouldShowScrollIndicator = true;
+        mShouldShowScrollIndicatorImmediately = true;
         if (getChildCount() <= 1) return;
         if (!isScrollingIndicatorEnabled()) return;
 
+        mShouldShowScrollIndicator = false;
         getScrollingIndicator();
         if (mScrollIndicator != null) {
             // Fade the indicator in
@@ -1779,6 +1785,9 @@ public abstract class PagedView extends ViewGroup {
         if (mScrollIndicator != null) {
             updateScrollingIndicatorPosition();
         }
+        if (mShouldShowScrollIndicator) {
+            showScrollingIndicator(mShouldShowScrollIndicatorImmediately);
+        }
     }
 
     private void updateScrollingIndicatorPosition() {
@@ -1805,7 +1814,6 @@ public abstract class PagedView extends ViewGroup {
             indicatorPos += indicatorCenterOffset;
         }
         mScrollIndicator.setTranslationX(indicatorPos);
-        mScrollIndicator.invalidate();
     }
 
     public void showScrollIndicatorTrack() {
