@@ -49,7 +49,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
-import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -249,6 +248,10 @@ public final class Launcher extends Activity
     static final ArrayList<String> sDumpLogs = new ArrayList<String>();
     PendingAddWidgetInfo mWidgetBeingConfigured = null;
 
+    // We only want to get the SharedPreferences once since it does an FS stat each time we get
+    // it from the context.
+    private SharedPreferences mSharedPrefs;
+
 
     private BubbleTextView mWaitingForResume;
 
@@ -276,6 +279,7 @@ public final class Launcher extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LauncherApplication app = ((LauncherApplication)getApplication());
+        mSharedPrefs = getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
         mModel = app.setLauncher(this);
         mIconCache = app.getIconCache();
         mDragController = new DragController(this);
@@ -3340,11 +3344,14 @@ public final class Launcher extends Activity
                 public void onAnimationEnd(Animator animation) {
                     cling.setVisibility(View.GONE);
                     cling.cleanup();
-                    SharedPreferences prefs =
-                        getSharedPreferences("com.android.launcher2.prefs", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = prefs.edit();
-                    editor.putBoolean(flag, true);
-                    editor.commit();
+                    // We should update the shared preferences on a background thread
+                    new Thread("dismissClingThread") {
+                        public void run() {
+                            SharedPreferences.Editor editor = mSharedPrefs.edit();
+                            editor.putBoolean(flag, true);
+                            editor.commit();
+                        }
+                    }.start();
                 };
             });
             anim.start();
@@ -3364,9 +3371,8 @@ public final class Launcher extends Activity
     }
     public void showFirstRunWorkspaceCling() {
         // Enable the clings only if they have not been dismissed before
-        SharedPreferences prefs =
-            getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
-        if (isClingsEnabled() && !prefs.getBoolean(Cling.WORKSPACE_CLING_DISMISSED_KEY, false)) {
+        if (isClingsEnabled() &&
+                !mSharedPrefs.getBoolean(Cling.WORKSPACE_CLING_DISMISSED_KEY, false)) {
             initCling(R.id.workspace_cling, null, false, 0);
         } else {
             removeCling(R.id.workspace_cling);
@@ -3374,9 +3380,8 @@ public final class Launcher extends Activity
     }
     public void showFirstRunAllAppsCling(int[] position) {
         // Enable the clings only if they have not been dismissed before
-        SharedPreferences prefs =
-            getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
-        if (isClingsEnabled() && !prefs.getBoolean(Cling.ALLAPPS_CLING_DISMISSED_KEY, false)) {
+        if (isClingsEnabled() &&
+                !mSharedPrefs.getBoolean(Cling.ALLAPPS_CLING_DISMISSED_KEY, false)) {
             initCling(R.id.all_apps_cling, position, true, 0);
         } else {
             removeCling(R.id.all_apps_cling);
@@ -3384,15 +3389,13 @@ public final class Launcher extends Activity
     }
     public Cling showFirstRunFoldersCling() {
         // Enable the clings only if they have not been dismissed before
-        SharedPreferences prefs =
-            getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
-        Cling cling = null;
-        if (isClingsEnabled() && !prefs.getBoolean(Cling.FOLDER_CLING_DISMISSED_KEY, false)) {
-            cling = initCling(R.id.folder_cling, null, true, 0);
+        if (isClingsEnabled() &&
+                !mSharedPrefs.getBoolean(Cling.FOLDER_CLING_DISMISSED_KEY, false)) {
+            return initCling(R.id.folder_cling, null, true, 0);
         } else {
             removeCling(R.id.folder_cling);
+            return null;
         }
-        return cling;
     }
     public boolean isFolderClingVisible() {
         Cling cling = (Cling) findViewById(R.id.folder_cling);
