@@ -578,7 +578,12 @@ public final class Launcher extends Activity
                     if (mFirstTime) {
                         mFirstTime = false;
                     } else {
-                        workspace.post(mBuildLayersRunnable);
+                        // We delay the layer building a bit in order to give
+                        // other message processing a time to run.  In particular
+                        // this avoids a delay in hiding the IME if it was
+                        // currently shown, because doing that may involve
+                        // some communication back with the app.
+                        workspace.postDelayed(mBuildLayersRunnable, 500);
                         observer.removeOnPreDrawListener(this);
                     }
                     return true;
