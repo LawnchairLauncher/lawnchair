@@ -77,6 +77,15 @@ class ItemInfo {
     int spanY = 1;
 
     /**
+     * Indicates the minimum X cell span.
+     */
+    int minSpanX = 1;
+
+    /**
+     * Indicates the minimum Y cell span.
+     */
+    int minSpanY = 1;
+    /**
      * Indicates whether the item is a gesture.
      */
     boolean isGesture = false;

@@ -458,7 +458,7 @@ public class DragLayer extends FrameLayout {
             toX -= (dragView.getMeasuredWidth() - Math.round(scale * child.getMeasuredWidth())) / 2;
         } else if (child instanceof FolderIcon) {
             // Account for holographic blur padding on the drag view
-            toY -= HolographicOutlineHelper.MAX_OUTER_BLUR_RADIUS / 2;
+            toY -= Workspace.DRAG_BITMAP_PADDING / 2;
             // Center in the x coordinate about the target's drawable
             toX -= (dragView.getMeasuredWidth() - Math.round(scale * child.getMeasuredWidth())) / 2;
         } else {
@@ -470,28 +470,19 @@ public class DragLayer extends FrameLayout {
         final int fromX = r.left;
         final int fromY = r.top;
         child.setVisibility(INVISIBLE);
-        child.setAlpha(0);
         Runnable onCompleteRunnable = new Runnable() {
             public void run() {
                 child.setVisibility(VISIBLE);
-                ObjectAnimator oa = ObjectAnimator.ofFloat(child, "alpha", 0f, 1f);
-                oa.setDuration(60);
-                oa.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(android.animation.Animator animation) {
-                        if (onFinishAnimationRunnable != null) {
-                            onFinishAnimationRunnable.run();
-                        }
-                    }
-                });
-                oa.start();
+                if (onFinishAnimationRunnable != null) {
+                    onFinishAnimationRunnable.run();
+                }
             }
         };
         animateViewIntoPosition(dragView, fromX, fromY, toX, toY, 1, 1, 1, scale, scale,
-                onCompleteRunnable, ANIMATION_END_FADE_OUT, duration, anchorView);
+                onCompleteRunnable, ANIMATION_END_DISAPPEAR, duration, anchorView);
     }
 
-    private void animateViewIntoPosition(final DragView view, final int fromX, final int fromY,
+    public void animateViewIntoPosition(final DragView view, final int fromX, final int fromY,
             final int toX, final int toY, float finalAlpha, float initScaleX, float initScaleY,
             float finalScaleX, float finalScaleY, Runnable onCompleteRunnable,
             int animationEndStyle, int duration, View anchorView) {
