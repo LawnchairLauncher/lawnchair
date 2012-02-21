@@ -74,7 +74,7 @@
     <dimen name="dragViewOffsetY">-12dp</dimen>
     <!--  When dragging an item, how much bigger (fixed dps) the dragged view
           should be. If 0, it will not be scaled at all. -->
-    <dimen name="dragViewScale">12dp</dimen>
+    <dimen name="dragViewScale">8dp</dimen>
 
 <!-- Folders -->
     <!-- The size of the image which sits behind the preview of the folder contents -->

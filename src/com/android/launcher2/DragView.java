@@ -32,7 +32,7 @@ import android.view.animation.DecelerateInterpolator;
 import com.android.launcher.R;
 
 public class DragView extends View {
-    private static float sDragAlpha = 0.8f;
+    private static float sDragAlpha = 1f;
 
     private Bitmap mBitmap;
     private Bitmap mCrossFadeBitmap;
@@ -75,7 +75,7 @@ public class DragView extends View {
         // Animate the view into the correct position
         mAnim = ValueAnimator.ofFloat(0.0f, 1.0f);
         mAnim.setDuration(150);
-        mAnim.setInterpolator(new DecelerateInterpolator(2.5f));
+        mAnim.setInterpolator(new DecelerateInterpolator(1.5f));
         mAnim.addUpdateListener(new AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -88,7 +88,9 @@ public class DragView extends View {
                 mOffsetY += deltaY;
                 setScaleX(1f + (value * (scale - 1f)));
                 setScaleY(1f + (value * (scale - 1f)));
-                setAlpha(sDragAlpha * value + (1f - value));
+                if (sDragAlpha != 1f) {
+                    setAlpha(sDragAlpha * value + (1f - value));
+                }
 
                 if (getParent() == null) {
                     animation.cancel();

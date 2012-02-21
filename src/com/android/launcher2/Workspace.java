@@ -210,6 +210,10 @@ public class Workspace extends SmoothPagedView
     public static final int COMPLETE_TWO_STAGE_WIDGET_DROP_ANIMATION = 1;
     public static final int CANCEL_TWO_STAGE_WIDGET_DROP_ANIMATION = 2;
 
+    // Relating to workspace drag fade out
+    private float mDragFadeOutAlpha;
+    private int mDragFadeOutDuration;
+
     // These variables are used for storing the initial and final values during workspace animations
     private int mSavedScrollX;
     private float mSavedRotationY;
@@ -261,8 +265,10 @@ public class Workspace extends SmoothPagedView
         // With workspace, data is available straight from the get-go
         setDataIsReady();
 
-        mFadeInAdjacentScreens =
-            getResources().getBoolean(R.bool.config_workspaceFadeAdjacentScreens);
+        final Resources res = getResources();
+        mFadeInAdjacentScreens = res.getBoolean(R.bool.config_workspaceFadeAdjacentScreens);
+        mDragFadeOutAlpha = res.getInteger(R.integer.config_dragFadeOutAlpha) / 100f;
+        mDragFadeOutDuration = res.getInteger(R.integer.config_dragFadeOutDuration);
         mWallpaperManager = WallpaperManager.getInstance(context);
 
         int cellCountX = DEFAULT_CELL_COUNT_X;
@@ -271,7 +277,6 @@ public class Workspace extends SmoothPagedView
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.Workspace, defStyle, 0);
 
-        final Resources res = context.getResources();
         if (LauncherApplication.isScreenLarge()) {
             // Determine number of rows/columns dynamically
             // TODO: This code currently fails on tablets with an aspect ratio < 1.3.
@@ -358,12 +363,18 @@ public class Workspace extends SmoothPagedView
         mIsDragOccuring = true;
         updateChildrenLayersEnabled();
         mLauncher.lockScreenOrientationOnLargeUI();
+
+        // Fade out the workspace slightly to highlight the currently dragging item
+        animate().alpha(mDragFadeOutAlpha).setDuration(mDragFadeOutDuration).start();
     }
 
     public void onDragEnd() {
         mIsDragOccuring = false;
         updateChildrenLayersEnabled();
         mLauncher.unlockScreenOrientationOnLargeUI();
+
+        // Fade the workspace back in after we have completed dragging
+        animate().alpha(1f).setDuration(mDragFadeOutDuration).start();
     }
 
     /**

@@ -71,6 +71,10 @@
     <!-- The distance at which the animation should take the max duration -->
     <integer name="config_dropAnimMaxDist">800</integer>
 
+    <!-- Properties controlling the workspace fade-out during dragging -->
+    <integer name="config_dragFadeOutAlpha">80</integer>
+    <integer name="config_dragFadeOutDuration">250</integer>
+
     <!-- Workspace screens are cached to bitmaps only when they're smaller than a certain size
          (maxScaleForUsingWorkspaceScreenBitmapCache), since the bitmap cache itself is smaller
          than the view itself (workspaceScreenBitmapCacheScale)  -->
