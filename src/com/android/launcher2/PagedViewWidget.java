@@ -38,8 +38,6 @@ public class PagedViewWidget extends LinearLayout {
 
     private static boolean sDeletePreviewsWhenDetachedFromWindow = true;
 
-    private ImageView mPreviewImageView;
-
     private String mDimensionsFormatString;
     CheckForShortPress mPendingCheckForShortPress = null;
     ShortPressListener mShortPressListener = null;
@@ -90,7 +88,6 @@ public class PagedViewWidget extends LinearLayout {
             image.setMaxWidth(maxWidth);
         }
         image.setContentDescription(info.label);
-        mPreviewImageView = image;
         final TextView name = (TextView) findViewById(R.id.widget_name);
         name.setText(info.label);
         final TextView dims = (TextView) findViewById(R.id.widget_dims);
@@ -103,7 +100,6 @@ public class PagedViewWidget extends LinearLayout {
         CharSequence label = info.loadLabel(pm);
         final ImageView image = (ImageView) findViewById(R.id.widget_preview);
         image.setContentDescription(label);
-        mPreviewImageView = image;
         final TextView name = (TextView) findViewById(R.id.widget_name);
         name.setText(label);
         final TextView dims = (TextView) findViewById(R.id.widget_dims);

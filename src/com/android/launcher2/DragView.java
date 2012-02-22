@@ -62,7 +62,7 @@ public class DragView extends View {
      * @param registrationY The y coordinate of the registration point.
      */
     public DragView(Launcher launcher, Bitmap bitmap, int registrationX, int registrationY,
-            int left, int top, int width, int height) {
+            int left, int top, int width, int height, final float initialScale) {
         super(launcher);
         mDragLayer = launcher.getDragLayer();
 
@@ -86,8 +86,8 @@ public class DragView extends View {
 
                 mOffsetX += deltaX;
                 mOffsetY += deltaY;
-                setScaleX(1f + (value * (scale - 1f)));
-                setScaleY(1f + (value * (scale - 1f)));
+                setScaleX(initialScale + (value * (scale - initialScale)));
+                setScaleY(initialScale + (value * (scale - initialScale)));
                 if (sDragAlpha != 1f) {
                     setAlpha(sDragAlpha * value + (1f - value));
                 }

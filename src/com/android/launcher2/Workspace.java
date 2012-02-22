@@ -1962,7 +1962,7 @@ public class Workspace extends SmoothPagedView
         }
 
         mDragController.startDrag(b, dragLayerX, dragLayerY, source, child.getTag(),
-                DragController.DRAG_ACTION_MOVE, dragVisualizeOffset, dragRect);
+                DragController.DRAG_ACTION_MOVE, dragVisualizeOffset, dragRect, 1f);
         b.recycle();
 
         // Show the scrolling indicator when you pick up an item

@@ -32,16 +32,16 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.MaskFilter;
+import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.TableMaskFilter;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.Process;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -620,6 +620,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // Compose the drag image
         Bitmap preview;
         Bitmap outline;
+        float scale = 1f;
         if (createItemInfo instanceof PendingAddWidgetInfo) {
             PendingAddWidgetInfo createWidgetInfo = mCreateWidgetInfo;
             createItemInfo = createWidgetInfo;
@@ -629,8 +630,24 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             createItemInfo.spanX = spanXY[0];
             createItemInfo.spanY = spanXY[1];
 
+            FastBitmapDrawable previewDrawable = (FastBitmapDrawable) image.getDrawable();
+            float minScale = 1.25f;
+            int minWidth, minHeight;
+            minWidth = Math.max((int) (previewDrawable.getIntrinsicWidth() * minScale), size[0]);
+            minHeight = Math.max((int) (previewDrawable.getIntrinsicHeight() * minScale), size[1]);
             preview = getWidgetPreview(createWidgetInfo.componentName, createWidgetInfo.previewImage,
-                    createWidgetInfo.icon, spanXY[0], spanXY[1], size[0], size[1]);
+                    createWidgetInfo.icon, spanXY[0], spanXY[1], minWidth, minHeight);
+
+            // Determine the image view drawable scale relative to the preview
+            float[] mv = new float[9];
+            Matrix m = new Matrix();
+            m.setRectToRect(
+                    new RectF(0f, 0f, (float) preview.getWidth(), (float) preview.getHeight()),
+                    new RectF(0f, 0f, (float) previewDrawable.getIntrinsicWidth(),
+                            (float) previewDrawable.getIntrinsicHeight()),
+                    Matrix.ScaleToFit.START);
+            m.getValues(mv);
+            scale = (float) mv[0];
         } else {
             // Workaround for the fact that we don't keep the original ResolveInfo associated with
             // the shortcut around.  To get the icon, we just render the preview image (which has
@@ -663,7 +680,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mLauncher.lockScreenOrientationOnLargeUI();
         mLauncher.getWorkspace().onDragStartedWithItem(createItemInfo, outline, alphaClipPaint);
         mDragController.startDrag(image, preview, this, createItemInfo,
-                DragController.DRAG_ACTION_COPY, null);
+                DragController.DRAG_ACTION_COPY, null, scale);
         outline.recycle();
         preview.recycle();
     }
@@ -695,7 +712,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                     mLauncher.enterSpringLoadedDragMode();
                 }
             }
-        },150);
+        }, 150);
 
         return true;
     }
@@ -1035,10 +1052,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         if (widgetPreviewExists) {
             bitmapWidth = drawable.getIntrinsicWidth();
             bitmapHeight = drawable.getIntrinsicHeight();
-
-            // Cap the size so widget previews don't appear larger than the actual widget
-            maxWidth = Math.min(maxWidth, mWidgetSpacingLayout.estimateCellWidth(cellHSpan));
-            maxHeight = Math.min(maxHeight, mWidgetSpacingLayout.estimateCellHeight(cellVSpan));
         } else {
             // Determine the size of the bitmap for the preview image we will generate
             // TODO: This actually uses the apps customize cell layout params, where as we make want
@@ -1214,8 +1227,13 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             if (rawInfo instanceof AppWidgetProviderInfo) {
                 AppWidgetProviderInfo info = (AppWidgetProviderInfo) rawInfo;
                 int[] cellSpans = mLauncher.getSpanForWidget(info, null);
+
+                int maxWidth = Math.min(data.maxImageWidth,
+                        mWidgetSpacingLayout.estimateCellWidth(cellSpans[0]));
+                int maxHeight = Math.min(data.maxImageHeight,
+                        mWidgetSpacingLayout.estimateCellHeight(cellSpans[1]));
                 Bitmap b = getWidgetPreview(info.provider, info.previewImage, info.icon,
-                        cellSpans[0], cellSpans[1], data.maxImageWidth, data.maxImageHeight);
+                        cellSpans[0], cellSpans[1], maxWidth, maxHeight);
                 images.add(b);
             } else if (rawInfo instanceof ResolveInfo) {
                 // Fill in the shortcuts information

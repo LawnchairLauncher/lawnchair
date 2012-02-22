@@ -185,7 +185,7 @@ public class DragController {
         int dragLayerX = loc[0];
         int dragLayerY = loc[1];
 
-        startDrag(b, dragLayerX, dragLayerY, source, dragInfo, dragAction, null, dragRegion);
+        startDrag(b, dragLayerX, dragLayerY, source, dragInfo, dragAction, null, dragRegion, 1f);
         b.recycle();
 
         if (dragAction == DRAG_ACTION_MOVE) {
@@ -206,13 +206,16 @@ public class DragController {
      *          Makes dragging feel more precise, e.g. you can clip out a transparent border
      */
     public void startDrag(View v, Bitmap bmp, DragSource source, Object dragInfo, int dragAction,
-            Rect dragRegion) {
+            Rect dragRegion, float initialDragViewScale) {
         int[] loc = mCoordinatesTemp;
         mLauncher.getDragLayer().getLocationInDragLayer(v, loc);
-        int dragLayerX = loc[0];
-        int dragLayerY = loc[1];
+        int dragLayerX = loc[0] + v.getPaddingLeft() +
+                (int) ((initialDragViewScale * bmp.getWidth() - bmp.getWidth()) / 2);
+        int dragLayerY = loc[1] + v.getPaddingTop() +
+                (int) ((initialDragViewScale * bmp.getHeight() - bmp.getHeight()) / 2);
 
-        startDrag(bmp, dragLayerX, dragLayerY, source, dragInfo, dragAction, null, dragRegion);
+        startDrag(bmp, dragLayerX, dragLayerY, source, dragInfo, dragAction, null, dragRegion,
+                initialDragViewScale);
 
         if (dragAction == DRAG_ACTION_MOVE) {
             v.setVisibility(View.GONE);
@@ -230,28 +233,12 @@ public class DragController {
      * @param dragInfo The data associated with the object that is being dragged
      * @param dragAction The drag action: either {@link #DRAG_ACTION_MOVE} or
      *        {@link #DRAG_ACTION_COPY}
-     */
-    public void startDrag(Bitmap b, int dragLayerX, int dragLayerY,
-            DragSource source, Object dragInfo, int dragAction) {
-        startDrag(b, dragLayerX, dragLayerY, source, dragInfo, dragAction, null, null);
-    }
-
-    /**
-     * Starts a drag.
-     *
-     * @param b The bitmap to display as the drag image.  It will be re-scaled to the
-     *          enlarged size.
-     * @param dragLayerX The x position in the DragLayer of the left-top of the bitmap.
-     * @param dragLayerY The y position in the DragLayer of the left-top of the bitmap.
-     * @param source An object representing where the drag originated
-     * @param dragInfo The data associated with the object that is being dragged
-     * @param dragAction The drag action: either {@link #DRAG_ACTION_MOVE} or
-     *        {@link #DRAG_ACTION_COPY}
      * @param dragRegion Coordinates within the bitmap b for the position of item being dragged.
      *          Makes dragging feel more precise, e.g. you can clip out a transparent border
      */
     public void startDrag(Bitmap b, int dragLayerX, int dragLayerY,
-            DragSource source, Object dragInfo, int dragAction, Point dragOffset, Rect dragRegion) {
+            DragSource source, Object dragInfo, int dragAction, Point dragOffset, Rect dragRegion,
+            float initialDragViewScale) {
         if (PROFILE_DRAWING_DURING_DRAG) {
             android.os.Debug.startMethodTracing("Launcher");
         }
@@ -286,7 +273,7 @@ public class DragController {
         mVibrator.vibrate(VIBRATE_DURATION);
 
         final DragView dragView = mDragObject.dragView = new DragView(mLauncher, b, registrationX,
-                registrationY, 0, 0, b.getWidth(), b.getHeight());
+                registrationY, 0, 0, b.getWidth(), b.getHeight(), initialDragViewScale);
 
         if (dragOffset != null) {
             dragView.setDragVisualizeOffset(new Point(dragOffset));
