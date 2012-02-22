@@ -616,16 +616,6 @@ public final class Launcher extends Activity
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        // When Launcher comes back to foreground, a different Activity might be responsible for
-        // the app market intent, so refresh the icon
-        // We don't do this in onResume() because onResume() is triggered every time the home
-        // button is pressed (even if we were already in Launcher)
-        updateAppMarketIcon();
-    }
-
-    @Override
     public Object onRetainNonConfigurationInstance() {
         // Flag the loader to stop early before switching
         mModel.stopLoader();
@@ -1113,18 +1103,21 @@ public final class Launcher extends Activity
                 // apps is nice and speedy. Usually the first call to preDraw doesn't correspond to
                 // a true draw so we wait until the second preDraw call to be safe
                 observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                    boolean mFirstTime = true;
                     public boolean onPreDraw() {
-                        if (mFirstTime) {
-                            mFirstTime = false;
-                        } else {
-                            //workspace.post(mBuildLayersRunnable);
-                            observer.removeOnPreDrawListener(this);
-                        }
+                        // We delay the layer building a bit in order to give
+                        // other message processing a time to run.  In particular
+                        // this avoids a delay in hiding the IME if it was
+                        // currently shown, because doing that may involve
+                        // some communication back with the app.
+                        workspace.postDelayed(mBuildLayersRunnable, 500);
+                        observer.removeOnPreDrawListener(this);
                         return true;
                     }
                 });
             }
+            // When Launcher comes back to foreground, a different Activity might be responsible for
+            // the app market intent, so refresh the icon
+            updateAppMarketIcon();
             clearTypedText();
         }
     }
@@ -3161,7 +3154,7 @@ public final class Launcher extends Activity
         // package changes in bindSearchablesChanged()
         updateAppMarketIcon();
 
-        mWorkspace.post(mBuildLayersRunnable);
+        mWorkspace.postDelayed(mBuildLayersRunnable, 500);
     }
 
     @Override
