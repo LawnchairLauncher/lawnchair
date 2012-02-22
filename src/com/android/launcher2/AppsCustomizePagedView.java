@@ -239,6 +239,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     int mWidgetCleanupState = WIDGET_NO_CLEANUP_REQUIRED;
     int mWidgetLoadingId = -1;
     PendingAddWidgetInfo mCreateWidgetInfo = null;
+    private boolean mDraggingWidget = false;
 
     public AppsCustomizePagedView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -585,8 +586,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         loadWidgetInBackground(mCreateWidgetInfo);
     }
 
-    @Override
-    public void cleanUpShortPress(View v) {
+    private void cleanupWidgetPreloading() {
         PendingAddWidgetInfo info = mCreateWidgetInfo;
         mCreateWidgetInfo = null;
         if (mWidgetCleanupState >= 0 && mWidgetLoadingId != -1) {
@@ -604,10 +604,15 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mWidgetLoadingId = -1;
     }
 
-    private void beginDraggingWidget(View v) {
-        mWidgetCleanupState = WIDGET_NO_CLEANUP_REQUIRED;
-        mWidgetLoadingId = -1;
+    @Override
+    public void cleanUpShortPress(View v) {
+        if (!mDraggingWidget) {
+            cleanupWidgetPreloading();
+        }
+    }
 
+    private void beginDraggingWidget(View v) {
+        mDraggingWidget = true;
         // Get the widget preview as the drag representation
         ImageView image = (ImageView) v.findViewById(R.id.widget_preview);
         PendingAddItemInfo createItemInfo = (PendingAddItemInfo) v.getTag();
@@ -618,7 +623,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         if (createItemInfo instanceof PendingAddWidgetInfo) {
             PendingAddWidgetInfo createWidgetInfo = mCreateWidgetInfo;
             createItemInfo = createWidgetInfo;
-            mCreateWidgetInfo = null;
             int[] spanXY = mLauncher.getSpanForWidget(createWidgetInfo, null);
             int[] size = mLauncher.getWorkspace().estimateItemSize(spanXY[0],
                     spanXY[1], createWidgetInfo, true);
@@ -729,8 +733,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             if (showOutOfSpaceMessage) {
                 mLauncher.showOutOfSpaceMessage();
             }
+
             d.deferDragViewCleanupPostAnimation = false;
+            cleanupWidgetPreloading();
         }
+        mDraggingWidget = false;
     }
 
     @Override
