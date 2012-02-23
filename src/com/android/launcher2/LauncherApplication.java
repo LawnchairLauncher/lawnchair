@@ -25,6 +25,7 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.os.Handler;
+import android.view.MotionEvent;
 
 import java.lang.ref.WeakReference;
 
@@ -33,6 +34,7 @@ public class LauncherApplication extends Application {
     public IconCache mIconCache;
     private static boolean sIsScreenLarge;
     private static float sScreenDensity;
+    private static int sLongPressTimeout = 300;
     WeakReference<LauncherProvider> mLauncherProvider;
 
     @Override
@@ -129,5 +131,9 @@ public class LauncherApplication extends Application {
 
     public static float getScreenDensity() {
         return sScreenDensity;
+    }
+
+    public static int getLongPressTimeout() {
+        return sLongPressTimeout;
     }
 }

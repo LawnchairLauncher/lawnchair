@@ -65,6 +65,7 @@ public class BubbleTextView extends TextView {
     private Drawable mBackground;
 
     private boolean mStayPressed;
+    private CheckLongPressHelper mLongPressHelper;
 
     public BubbleTextView(Context context) {
         super(context);
@@ -82,6 +83,7 @@ public class BubbleTextView extends TextView {
     }
 
     private void init() {
+        mLongPressHelper = new CheckLongPressHelper(this);
         mBackground = getBackground();
 
         final Resources res = getContext().getResources();
@@ -222,6 +224,8 @@ public class BubbleTextView extends TextView {
                 } else {
                     mDidInvalidateForPressedState = false;
                 }
+
+                mLongPressHelper.postCheckForLongPress();
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
@@ -230,6 +234,8 @@ public class BubbleTextView extends TextView {
                 if (!isPressed()) {
                     mPressedOrFocusedBackground = null;
                 }
+
+                mLongPressHelper.cancelLongPress();
                 break;
         }
         return result;
@@ -317,5 +323,12 @@ public class BubbleTextView extends TextView {
             super.onSetAlpha(alpha);
         }
         return true;
+    }
+
+    @Override
+    public void cancelLongPress() {
+        super.cancelLongPress();
+
+        mLongPressHelper.cancelLongPress();
     }
 }

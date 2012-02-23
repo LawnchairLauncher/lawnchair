@@ -30,6 +30,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -52,6 +53,8 @@ public class FolderIcon extends LinearLayout implements FolderListener {
     Folder mFolder;
     FolderInfo mInfo;
     private static boolean sStaticValuesDirty = true;
+
+    private CheckLongPressHelper mLongPressHelper;
 
     // The number of icons to display in the
     private static final int NUM_ITEMS_IN_PREVIEW = 3;
@@ -95,10 +98,16 @@ public class FolderIcon extends LinearLayout implements FolderListener {
 
     public FolderIcon(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     public FolderIcon(Context context) {
         super(context);
+        init();
+    }
+
+    private void init() {
+        mLongPressHelper = new CheckLongPressHelper(this);
     }
 
     public boolean isDropEnabled() {
@@ -590,5 +599,30 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         mFolderName.setText(title.toString());
         setContentDescription(String.format(mContext.getString(R.string.folder_name_format),
                 title));
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        // Call the superclass onTouchEvent first, because sometimes it changes the state to
+        // isPressed() on an ACTION_UP
+        boolean result = super.onTouchEvent(event);
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mLongPressHelper.postCheckForLongPress();
+                break;
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
+                mLongPressHelper.cancelLongPress();
+                break;
+        }
+        return result;
+    }
+
+    @Override
+    public void cancelLongPress() {
+        super.cancelLongPress();
+
+        mLongPressHelper.cancelLongPress();
     }
 }
