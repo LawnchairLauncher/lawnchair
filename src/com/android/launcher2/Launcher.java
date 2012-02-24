@@ -1114,7 +1114,7 @@ public final class Launcher extends Activity
                         // this avoids a delay in hiding the IME if it was
                         // currently shown, because doing that may involve
                         // some communication back with the app.
-                        workspace.postDelayed(mBuildLayersRunnable, 500);
+                        mWorkspace.postDelayed(mBuildLayersRunnable, 500);
                         observer.removeOnPreDrawListener(this);
                         return true;
                     }
