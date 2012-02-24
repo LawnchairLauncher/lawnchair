@@ -58,6 +58,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.View.MeasureSpec;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -365,7 +366,10 @@ public class Workspace extends SmoothPagedView
         mLauncher.lockScreenOrientationOnLargeUI();
 
         // Fade out the workspace slightly to highlight the currently dragging item
-        animate().alpha(mDragFadeOutAlpha).setDuration(mDragFadeOutDuration).start();
+        animate().alpha(mDragFadeOutAlpha)
+                 .setInterpolator(new AccelerateInterpolator())
+                 .setDuration(mDragFadeOutDuration)
+                 .start();
     }
 
     public void onDragEnd() {
@@ -374,7 +378,10 @@ public class Workspace extends SmoothPagedView
         mLauncher.unlockScreenOrientationOnLargeUI();
 
         // Fade the workspace back in after we have completed dragging
-        animate().alpha(1f).setDuration(mDragFadeOutDuration).start();
+        animate().alpha(1f)
+                 .setInterpolator(new AccelerateInterpolator())
+                 .setDuration(mDragFadeOutDuration)
+                 .start();
     }
 
     /**
@@ -1824,7 +1831,6 @@ public class Workspace extends SmoothPagedView
 
         canvas.setBitmap(b);
         drawDragView(v, canvas, padding, true);
-        mOutlineHelper.applyOuterBlur(b, canvas, outlineColor);
         canvas.setBitmap(null);
 
         return b;
