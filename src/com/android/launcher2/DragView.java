@@ -163,7 +163,7 @@ public class DragView extends View {
             canvas.drawRect(0, 0, getWidth(), getHeight(), p);
         }
         if (mPaint == null) {
-            mPaint = new Paint();
+            mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
         }
 
         mHasDrawn = true;
@@ -214,7 +214,7 @@ public class DragView extends View {
     public void setAlpha(float alpha) {
         super.setAlpha(alpha);
         if (mPaint == null) {
-            mPaint = new Paint();
+            mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
         }
         mPaint.setAlpha((int) (255 * alpha));
         invalidate();
