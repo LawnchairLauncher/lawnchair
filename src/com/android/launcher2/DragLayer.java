@@ -541,6 +541,7 @@ public class DragLayer extends FrameLayout {
             if (dist < maxDist) {
                 duration *= mCubicEaseOutInterpolator.getInterpolation(dist / maxDist);
             }
+            duration = Math.max(duration, res.getInteger(R.integer.config_dropAnimMinDuration));
         }
 
         if (mDropAnim != null) {

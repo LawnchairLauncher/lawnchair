@@ -75,7 +75,6 @@ public class DragView extends View {
         // Animate the view into the correct position
         mAnim = ValueAnimator.ofFloat(0.0f, 1.0f);
         mAnim.setDuration(150);
-        mAnim.setInterpolator(new DecelerateInterpolator(1.5f));
         mAnim.addUpdateListener(new AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
