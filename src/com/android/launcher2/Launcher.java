@@ -1731,7 +1731,7 @@ public final class Launcher extends Activity
             return;
         }
 
-        if (mWorkspace.isSwitchingState()) {
+        if (!mWorkspace.isFinishedSwitchingState()) {
             return;
         }
 
