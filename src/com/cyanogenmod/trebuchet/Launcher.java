@@ -45,6 +45,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
@@ -1990,6 +1991,26 @@ public final class Launcher extends Activity
         } else {
             String packageName = appInfo.componentName.getPackageName();
             String className = appInfo.componentName.getClassName();
+            Intent intent = new Intent(
+                    Intent.ACTION_DELETE, Uri.fromParts("package", packageName, className));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                    Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            startActivity(intent);
+        }
+    }
+
+    void startShortcutUninstallActivity(ShortcutInfo shortcutInfo) {
+        PackageManager pm = getPackageManager();
+        ResolveInfo resolveInfo = pm.resolveActivity(shortcutInfo.intent, 0);
+        if ((resolveInfo.activityInfo.applicationInfo.flags &
+                android.content.pm.ApplicationInfo.FLAG_SYSTEM) != 0) {
+            // System applications cannot be installed. For now, show a toast explaining that.
+            // We may give them the option of disabling apps this way.
+            int messageId = R.string.uninstall_system_app_text;
+            Toast.makeText(this, messageId, Toast.LENGTH_SHORT).show();
+        } else {
+            String packageName = shortcutInfo.intent.getComponent().getPackageName();
+            String className = shortcutInfo.intent.getComponent().getClassName();
             Intent intent = new Intent(
                     Intent.ACTION_DELETE, Uri.fromParts("package", packageName, className));
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
