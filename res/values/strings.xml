@@ -239,7 +239,7 @@ s -->
 
     <!-- Folder accessibility -->
     <!-- The format string for when a folder is opened, speaks the dimensions -->
-    <string name="folder_opened">Folder opened, %1$d by %2$d</string>
+    <string name="folder_opened">Folder opened, <xliff:g id="width" example="5">%1$d</xliff:g> by <xliff:g id="height" example="3">%2$d</xliff:g></string>
     <!-- Instruction that clicking outside will close folder -->
     <string name="folder_tap_to_close">Touch to close folder</string>
     <!-- Instruction that clicking outside will commit folder rename -->
@@ -247,8 +247,8 @@ s -->
     <!-- Indication that folder closed -->
     <string name="folder_closed">Folder closed</string>
     <!-- Folder renamed format -->
-    <string name="folder_renamed">Folder renamed to %1$s</string>
+    <string name="folder_renamed">Folder renamed to <xliff:g id="name" example="Games">%1$s</xliff:g></string>
     <!-- Folder name format -->
-    <string name="folder_name_format">Folder: %1$s</string>
+    <string name="folder_name_format">Folder: <xliff:g id="name" example="Games">%1$s</xliff:g></string>
 
 </resources>
