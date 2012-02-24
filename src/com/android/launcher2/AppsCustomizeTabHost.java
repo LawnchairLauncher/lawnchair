@@ -370,6 +370,9 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         if (toWorkspace) {
             // Going from All Apps -> Workspace
             setVisibilityOfSiblingsWithLowerZOrder(VISIBLE);
+            // Stop the scrolling indicator - we don't want All Apps to be invalidating itself
+            // during the transition, especially since it has a hardware layer set on it
+            mAppsCustomizePane.cancelScrollingIndicatorAnimations();
         } else {
             // Going from Workspace -> All Apps
             mContent.setVisibility(VISIBLE);
