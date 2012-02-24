@@ -15,7 +15,7 @@
 -->
 
 <com.android.launcher2.DragLayer
-    xmlns:android="http://schemas.android.com/apk/res/android" >
+    xmlns:android="http://schemas.android.com/apk/res/android"
 
     android:id="@+id/drag_layer"
     android:layout_width="match_parent"
