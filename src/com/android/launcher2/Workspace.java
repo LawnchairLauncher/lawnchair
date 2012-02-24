@@ -367,7 +367,7 @@ public class Workspace extends SmoothPagedView
 
         // Fade out the workspace slightly to highlight the currently dragging item
         animate().alpha(mDragFadeOutAlpha)
-                 .setInterpolator(new AccelerateInterpolator())
+                 .setInterpolator(new AccelerateInterpolator(1.5f))
                  .setDuration(mDragFadeOutDuration)
                  .start();
     }
@@ -379,7 +379,7 @@ public class Workspace extends SmoothPagedView
 
         // Fade the workspace back in after we have completed dragging
         animate().alpha(1f)
-                 .setInterpolator(new AccelerateInterpolator())
+                 .setInterpolator(new DecelerateInterpolator(1.5f))
                  .setDuration(mDragFadeOutDuration)
                  .start();
     }
@@ -605,7 +605,7 @@ public class Workspace extends SmoothPagedView
 
     /** This differs from isSwitchingState in that we take into account how far the transition
      *  has completed. */
-    private boolean isFinishedSwitchingState() {
+    public boolean isFinishedSwitchingState() {
         return !mIsSwitchingState || (mTransitionProgress > 0.5f);
     }
 
