@@ -15,7 +15,6 @@
 -->
 <ImageView
     xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
     android:paddingLeft="@dimen/workspace_divider_padding_left"
     android:paddingRight="@dimen/workspace_divider_padding_right"
     android:paddingTop="@dimen/workspace_divider_padding_top"

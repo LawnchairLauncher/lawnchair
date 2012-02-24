@@ -55,10 +55,17 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     private boolean mInTransition;
     private boolean mTransitioningToWorkspace;
     private boolean mResetAfterTransition;
+    private Runnable mRelayoutAndMakeVisible;
 
     public AppsCustomizeTabHost(Context context, AttributeSet attrs) {
         super(context, attrs);
         mLayoutInflater = LayoutInflater.from(context);
+        mRelayoutAndMakeVisible = new Runnable() {
+                public void run() {
+                    mTabs.requestLayout();
+                    mTabsContainer.setAlpha(1f);
+                }
+            };
     }
 
     /**
@@ -144,12 +151,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             if (contentWidth > 0 && mTabs.getLayoutParams().width != contentWidth) {
                 // Set the width and show the tab bar
                 mTabs.getLayoutParams().width = contentWidth;
-                post(new Runnable() {
-                    public void run() {
-                        mTabs.requestLayout();
-                        mTabsContainer.setAlpha(1f);
-                    }
-                });
+                post(mRelayoutAndMakeVisible);
             }
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);

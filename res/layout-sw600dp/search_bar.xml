@@ -15,7 +15,6 @@
 -->
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
     style="@style/SearchDropTargetBar"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -63,7 +62,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/all_apps_divider"
         android:paddingLeft="@dimen/toolbar_button_horizontal_padding"
         android:paddingRight="@dimen/toolbar_button_horizontal_padding"
         android:paddingTop="@dimen/all_apps_button_vertical_padding"

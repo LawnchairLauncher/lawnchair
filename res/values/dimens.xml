@@ -70,7 +70,6 @@
     <dimen name="apps_customize_max_gap">18dp</dimen>
     <dimen name="apps_customize_widget_cell_width_gap">10dp</dimen>
     <dimen name="apps_customize_widget_cell_height_gap">8dp</dimen>
-    <dimen name="title_texture_width">120px</dimen>
 
     <!-- height of the bottom row of controls -->
     <dimen name="button_bar_height">62dip</dimen>
@@ -82,20 +81,8 @@
     <dimen name="button_bar_width_right_padding">0dp</dimen>
     <dimen name="button_bar_height_plus_padding">70dp</dimen>
 
-    <!-- extra horizontal spacing between mini screen thumbnails ie. in all
-         apps and in customization mode -->
-    <dimen name="smallScreenExtraSpacing">0dip</dimen>
-
-    <!-- Vertical spacing between edge of screen and mini cell layouts when they
-         are minimized to the bottom in all apps -->
-    <dimen name="allAppsSmallScreenVerticalMarginLandscape">30dip</dimen>
-    <dimen name="allAppsSmallScreenVerticalMarginPortrait">60dip</dimen>
-
     <!-- Drag padding to add to the bottom of drop targets -->
     <dimen name="drop_target_drag_padding">14dp</dimen>
-
-    <!-- padding between the delete zone drawable and text -->
-    <dimen name="delete_zone_drawable_padding">8dip</dimen>
 
     <!-- roughly a status bar (for vertically centering the all apps
          home icon in landscape) -->

@@ -30,10 +30,6 @@
 
     <dimen name="hotseat_width_gap">0dp</dimen>
     <dimen name="hotseat_height_gap">0dp</dimen>
-    <dimen name="hotseat_top_padding">-1dp</dimen>
-    <dimen name="hotseat_bottom_padding">-1dp</dimen>
-    <dimen name="hotseat_left_padding">-1dp</dimen>
-    <dimen name="hotseat_right_padding">-1dp</dimen>
 
     <dimen name="qsb_bar_height">48dp</dimen>
     <!-- height of the bottom row of controls -->

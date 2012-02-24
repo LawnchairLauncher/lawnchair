@@ -110,6 +110,7 @@ public class DragView extends View {
         // Force a measure, because Workspace uses getMeasuredHeight() before the layout pass
         int ms = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         measure(ms, ms);
+        mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
     }
 
     public float getOffsetY() {
@@ -162,9 +163,6 @@ public class DragView extends View {
             p.setColor(0xaaffffff);
             canvas.drawRect(0, 0, getWidth(), getHeight(), p);
         }
-        if (mPaint == null) {
-            mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
-        }
 
         mHasDrawn = true;
         boolean crossFade = mCrossFadeProgress > 0 && mCrossFadeBitmap != null;
@@ -203,6 +201,9 @@ public class DragView extends View {
 
     public void setPaint(Paint paint) {
         mPaint = paint;
+        if (mPaint == null) {
+            mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
+        }
         invalidate();
     }
 
@@ -213,9 +214,6 @@ public class DragView extends View {
     @Override
     public void setAlpha(float alpha) {
         super.setAlpha(alpha);
-        if (mPaint == null) {
-            mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
-        }
         mPaint.setAlpha((int) (255 * alpha));
         invalidate();
     }

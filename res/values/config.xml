@@ -5,21 +5,9 @@
 <!-- AllApps/Customize/AppsCustomize -->
     <!-- The alpha of the AppsCustomize bg in spring loaded mode -->
     <integer name="config_appsCustomizeSpringLoadedBgAlpha">45</integer>
-    <!-- Fade in/out duration of icons being dragged from the trays -->
-    <integer name="config_dragAppsCustomizeIconFadeInDuration">150</integer>
-    <integer name="config_dragAppsCustomizeIconFadeOutDuration">200</integer>
-    <integer name="config_dragAppsCustomizeIconFadeAlpha">100</integer>
     <integer name="config_workspaceUnshrinkTime">300</integer>
     <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
     <integer name="config_workspaceSpringLoadShrinkPercentage">80</integer>
-    <!-- When items are dropped on the mini screens in customize mode, we have a bounce animation
-         of the bright green hover outline, and then fade out the outline at the end. These are
-         the values used in that animation -->
-    <integer name="config_screenOnDropScalePercent">120</integer>
-    <integer name="config_screenOnDropScaleUpDuration">200</integer>
-    <integer name="config_screenOnDropScaleDownDuration">200</integer>
-    <integer name="config_screenOnDropAlphaFadeDelay">350</integer>
-    <integer name="config_screenOnDropAlphaFadeDuration">50</integer>
 
     <!-- Fade/zoom in/out duration & scale in the AllApps transition.
          Note: This should be less than the workspaceShrinkTime as they happen together. -->
@@ -75,15 +63,6 @@
     <!-- Properties controlling the workspace fade-out during dragging -->
     <integer name="config_dragFadeOutAlpha">80</integer>
     <integer name="config_dragFadeOutDuration">250</integer>
-
-    <!-- Workspace screens are cached to bitmaps only when they're smaller than a certain size
-         (maxScaleForUsingWorkspaceScreenBitmapCache), since the bitmap cache itself is smaller
-         than the view itself (workspaceScreenBitmapCacheScale)  -->
-    <integer name="config_workspaceScreenBitmapCacheScale">20</integer>
-    <integer name="config_maxScaleForUsingWorkspaceScreenBitmapCache">50</integer>
-
-    <!-- When shrinking the workspace, this is the percentage of its original size. -->
-    <integer name="config_workspaceShrinkPercent">17</integer>
 
     <!-- Folder max bounds and max number of items. Note: folder_max_count_x * folder_max_count_y
          >= folder_max_num_items. When these are set to -1, they are automatically determined. -->
