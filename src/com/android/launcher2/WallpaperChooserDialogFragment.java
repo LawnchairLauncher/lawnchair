@@ -112,26 +112,6 @@ public class WallpaperChooserDialogFragment extends DialogFragment implements
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         findWallpapers();
 
-        // TODO: The following code is not exercised right now and may be removed
-        // if the dialog version is not needed.
-        /*
-        final View v = getActivity().getLayoutInflater().inflate(
-                R.layout.wallpaper_chooser, null, false);
-
-        GridView gridView = (GridView) v.findViewById(R.id.gallery);
-        gridView.setOnItemClickListener(this);
-        gridView.setAdapter(new ImageAdapter(getActivity()));
-
-        final int viewInset =
-                getResources().getDimensionPixelSize(R.dimen.alert_dialog_content_inset);
-        
-        FrameLayout wallPaperList = (FrameLayout) v.findViewById(R.id.wallpaper_list);
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setNegativeButton(R.string.wallpaper_cancel, null);
-        builder.setTitle(R.string.wallpaper_dialog_title);
-        builder.setView(wallPaperList,
-        viewInset, viewInset, viewInset, viewInset); return builder.create();
-        */
         return null;
     }
 
