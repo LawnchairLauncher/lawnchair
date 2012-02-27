@@ -97,10 +97,13 @@
     <string name="folder_cling_move_item" msgid="270598675060435169">"要移动应用程序，请触摸并按住该应用程序。"</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"要在主屏幕上创建新文件夹，请将一个应用程序叠放到另一个上。"</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"确定"</string>
-    <string name="folder_opened" msgid="4129072635480822768">"文件夹已打开，尺寸为 %1$d x %2$d"</string>
+    <!-- no translation found for folder_opened (1262064100943801533) -->
+    <skip />
     <string name="folder_tap_to_close" msgid="1335478160661137579">"触摸可关闭文件夹"</string>
     <string name="folder_tap_to_rename" msgid="5201612989905472442">"触摸可保存重命名"</string>
     <string name="folder_closed" msgid="3130534551370511932">"文件夹已关闭"</string>
-    <string name="folder_renamed" msgid="781234745487414781">"已将文件夹重命名为“%1$s”"</string>
-    <string name="folder_name_format" msgid="4513766553514769310">"文件夹：%1$s"</string>
+    <!-- no translation found for folder_renamed (7951233572858053642) -->
+    <skip />
+    <!-- no translation found for folder_name_format (3051680259794759037) -->
+    <skip />
 </resources>

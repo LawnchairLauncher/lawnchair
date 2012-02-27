@@ -97,10 +97,13 @@
     <string name="folder_cling_move_item" msgid="270598675060435169">"Tryk på en app, og hold den nede for at flytte den."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Du kan oprette en ny mappe på din startskærm ved at stable apps oven på hinanden."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
-    <string name="folder_opened" msgid="4129072635480822768">"Mappen blev åbnet, %1$d af %2$d"</string>
+    <!-- no translation found for folder_opened (1262064100943801533) -->
+    <skip />
     <string name="folder_tap_to_close" msgid="1335478160661137579">"Tryk for at lukke mappen"</string>
     <string name="folder_tap_to_rename" msgid="5201612989905472442">"Tryk for at gemme det nye navn"</string>
     <string name="folder_closed" msgid="3130534551370511932">"Mappen er lukket"</string>
-    <string name="folder_renamed" msgid="781234745487414781">"Mappen blev omdøbt til %1$s"</string>
-    <string name="folder_name_format" msgid="4513766553514769310">"Mappe: %1$s"</string>
+    <!-- no translation found for folder_renamed (7951233572858053642) -->
+    <skip />
+    <!-- no translation found for folder_name_format (3051680259794759037) -->
+    <skip />
 </resources>

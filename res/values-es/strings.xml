@@ -97,10 +97,13 @@
     <string name="folder_cling_move_item" msgid="270598675060435169">"Para mover una aplicación, solo tienes que mantenerla pulsada."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Para crear una carpeta nueva en el escritorio, coloca una aplicación encima de otra."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"Aceptar"</string>
-    <string name="folder_opened" msgid="4129072635480822768">"Carpeta abierta de %1$d por %2$d"</string>
+    <!-- no translation found for folder_opened (1262064100943801533) -->
+    <skip />
     <string name="folder_tap_to_close" msgid="1335478160661137579">"Toca para cerrar la carpeta."</string>
     <string name="folder_tap_to_rename" msgid="5201612989905472442">"Toca para cambiar el nuevo nombre."</string>
     <string name="folder_closed" msgid="3130534551370511932">"Carpeta cerrada"</string>
-    <string name="folder_renamed" msgid="781234745487414781">"Se ha cambiado el nombre de la carpeta a %1$s."</string>
-    <string name="folder_name_format" msgid="4513766553514769310">"Carpeta: %1$s"</string>
+    <!-- no translation found for folder_renamed (7951233572858053642) -->
+    <skip />
+    <!-- no translation found for folder_name_format (3051680259794759037) -->
+    <skip />
 </resources>

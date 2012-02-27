@@ -97,10 +97,13 @@
     <string name="folder_cling_move_item" msgid="270598675060435169">"Pour déplacer une application, appuyez dessus de manière prolongée."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Pour créer un dossier sur votre écran d\'accueil, superposez les applications les unes sur les autres."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
-    <string name="folder_opened" msgid="4129072635480822768">"Dossier ouvert, %1$d par %2$d"</string>
+    <!-- no translation found for folder_opened (1262064100943801533) -->
+    <skip />
     <string name="folder_tap_to_close" msgid="1335478160661137579">"Appuyez pour fermer le dossier."</string>
     <string name="folder_tap_to_rename" msgid="5201612989905472442">"Appuyez pour enregistrer le nouveau nom."</string>
     <string name="folder_closed" msgid="3130534551370511932">"Dossier fermé"</string>
-    <string name="folder_renamed" msgid="781234745487414781">"Nouveau nom du dossier : %1$s"</string>
-    <string name="folder_name_format" msgid="4513766553514769310">"Dossier : %1$s"</string>
+    <!-- no translation found for folder_renamed (7951233572858053642) -->
+    <skip />
+    <!-- no translation found for folder_name_format (3051680259794759037) -->
+    <skip />
 </resources>
