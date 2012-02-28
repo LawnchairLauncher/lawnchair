@@ -80,7 +80,7 @@ public class AppWidgetResizeFrame extends FrameLayout {
         mWorkspace = (Workspace) dragLayer.findViewById(R.id.workspace);
 
         final AppWidgetProviderInfo info = widgetView.getAppWidgetInfo();
-        int[] result = mLauncher.getMinResizeSpanForWidget(info, null);
+        int[] result = mLauncher.getMinSpanForWidget(info, null);
         mMinHSpan = result[0];
         mMinVSpan = result[1];
 

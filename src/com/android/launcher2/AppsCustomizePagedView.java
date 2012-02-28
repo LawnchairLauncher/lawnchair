@@ -629,6 +629,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                     spanXY[1], createWidgetInfo, true);
             createItemInfo.spanX = spanXY[0];
             createItemInfo.spanY = spanXY[1];
+            int[] minSpanXY = mLauncher.getMinSpanForWidget(createWidgetInfo, null);
+            createWidgetInfo.minSpanX = minSpanXY[0];
+            createWidgetInfo.minSpanY = minSpanXY[1];
 
             FastBitmapDrawable previewDrawable = (FastBitmapDrawable) image.getDrawable();
             float minScale = 1.25f;

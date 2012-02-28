@@ -34,6 +34,8 @@ class PendingAddItemInfo extends ItemInfo {
 class PendingAddWidgetInfo extends PendingAddItemInfo {
     int minWidth;
     int minHeight;
+    int minResizeWidth;
+    int minResizeHeight;
     int previewImage;
     int icon;
     AppWidgetProviderInfo info;
@@ -50,6 +52,8 @@ class PendingAddWidgetInfo extends PendingAddItemInfo {
         componentName = i.provider;
         minWidth = i.minWidth;
         minHeight = i.minHeight;
+        minResizeWidth = i.minResizeWidth;
+        minResizeHeight = i.minResizeHeight;
         previewImage = i.previewImage;
         icon = i.icon;
         if (dataMimeType != null && data != null) {
@@ -62,6 +66,8 @@ class PendingAddWidgetInfo extends PendingAddItemInfo {
     public PendingAddWidgetInfo(PendingAddWidgetInfo copy) {
         minWidth = copy.minWidth;
         minHeight = copy.minHeight;
+        minResizeWidth = copy.minResizeWidth;
+        minResizeHeight = copy.minResizeHeight;
         previewImage = copy.previewImage;
         icon = copy.icon;
         info = copy.info;

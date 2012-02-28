@@ -189,7 +189,7 @@ public class InstallWidgetReceiver {
             final PendingAddWidgetInfo createInfo = new PendingAddWidgetInfo(widgetInfo, mMimeType,
                     mClipData);
             mLauncher.addAppWidgetFromDrop(createInfo, LauncherSettings.Favorites.CONTAINER_DESKTOP,
-                    mTargetLayoutScreen, null, mTargetLayoutPos);
+                    mTargetLayoutScreen, null, null, mTargetLayoutPos);
         }
     }
 }

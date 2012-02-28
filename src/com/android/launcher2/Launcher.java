@@ -584,9 +584,9 @@ public final class Launcher extends Activity
                 }
             };
         }
-        mWorkspace.animateExternalDrop(mWidgetBeingConfigured, cellLayout,
+        mWorkspace.animateWidgetDrop(mWidgetBeingConfigured, cellLayout,
                 (DragView) mDragLayer.getAnimatedView(), onCompleteRunnable,
-                animationType);
+                animationType, mWidgetBeingConfigured.boundWidget, true);
         mWidgetBeingConfigured = null;
     }
 
@@ -959,12 +959,17 @@ public final class Launcher extends Activity
         return getSpanForWidget(info.provider, info.minWidth, info.minHeight, spanXY);
     }
 
-    int[] getMinResizeSpanForWidget(AppWidgetProviderInfo info, int[] spanXY) {
+    int[] getMinSpanForWidget(AppWidgetProviderInfo info, int[] spanXY) {
         return getSpanForWidget(info.provider, info.minResizeWidth, info.minResizeHeight, spanXY);
     }
 
     int[] getSpanForWidget(PendingAddWidgetInfo info, int[] spanXY) {
         return getSpanForWidget(info.componentName, info.minWidth, info.minHeight, spanXY);
+    }
+
+    int[] getMinSpanForWidget(PendingAddWidgetInfo info, int[] spanXY) {
+        return getSpanForWidget(info.componentName, info.minResizeWidth,
+                info.minResizeHeight, spanXY);
     }
 
     /**
@@ -982,6 +987,7 @@ public final class Launcher extends Activity
         // Calculate the grid spans needed to fit this widget
         CellLayout layout = getCellLayout(container, screen);
 
+        int[] minSpanXY = getMinSpanForWidget(appWidgetInfo, null);
         int[] spanXY = getSpanForWidget(appWidgetInfo, null);
 
         // Try finding open space on Launcher screen
@@ -989,18 +995,24 @@ public final class Launcher extends Activity
         // if we are placing widgets on a "spring-loaded" screen
         int[] cellXY = mTmpAddItemCellCoordinates;
         int[] touchXY = mPendingAddInfo.dropPos;
+        int[] finalSpan = new int[2];
         boolean foundCellSpan = false;
         if (mPendingAddInfo.cellX >= 0 && mPendingAddInfo.cellY >= 0) {
             cellXY[0] = mPendingAddInfo.cellX;
             cellXY[1] = mPendingAddInfo.cellY;
+            spanXY[0] = mPendingAddInfo.spanX;
+            spanXY[1] = mPendingAddInfo.spanY;
             foundCellSpan = true;
         } else if (touchXY != null) {
             // when dragging and dropping, just find the closest free spot
             int[] result = layout.findNearestVacantArea(
-                    touchXY[0], touchXY[1], spanXY[0], spanXY[1], cellXY);
+                    touchXY[0], touchXY[1], minSpanXY[0], minSpanXY[1], spanXY[0],
+                    spanXY[1], cellXY, finalSpan);
+            spanXY[0] = finalSpan[0];
+            spanXY[1] = finalSpan[1];
             foundCellSpan = (result != null);
         } else {
-            foundCellSpan = layout.findCellForSpan(cellXY, spanXY[0], spanXY[1]);
+            foundCellSpan = layout.findCellForSpan(cellXY, minSpanXY[0], minSpanXY[1]);
         }
 
         if (!foundCellSpan) {
@@ -1021,6 +1033,8 @@ public final class Launcher extends Activity
         LauncherAppWidgetInfo launcherInfo = new LauncherAppWidgetInfo(appWidgetId);
         launcherInfo.spanX = spanXY[0];
         launcherInfo.spanY = spanXY[1];
+        launcherInfo.minSpanX = mPendingAddInfo.minSpanX;
+        launcherInfo.minSpanY = mPendingAddInfo.minSpanY;
 
         LauncherModel.addItemToDatabase(this, launcherInfo,
                 container, screen, cellXY[0], cellXY[1], false);
@@ -1036,6 +1050,7 @@ public final class Launcher extends Activity
             }
 
             launcherInfo.hostView.setTag(launcherInfo);
+            launcherInfo.hostView.setVisibility(View.VISIBLE);
             mWorkspace.addInScreen(launcherInfo.hostView, container, screen, cellXY[0], cellXY[1],
                     launcherInfo.spanX, launcherInfo.spanY, isWorkspaceLocked());
 
@@ -1465,6 +1480,7 @@ public final class Launcher extends Activity
         mPendingAddInfo.screen = -1;
         mPendingAddInfo.cellX = mPendingAddInfo.cellY = -1;
         mPendingAddInfo.spanX = mPendingAddInfo.spanY = -1;
+        mPendingAddInfo.minSpanX = mPendingAddInfo.minSpanY = -1;
         mPendingAddInfo.dropPos = null;
     }
 
@@ -1556,14 +1572,21 @@ public final class Launcher extends Activity
      * @param position The location on the screen where it was dropped, optional
      */
     void addAppWidgetFromDrop(PendingAddWidgetInfo info, long container, int screen,
-            int[] cell, int[] loc) {
+            int[] cell, int[] span, int[] loc) {
         resetAddInfo();
         mPendingAddInfo.container = info.container = container;
         mPendingAddInfo.screen = info.screen = screen;
         mPendingAddInfo.dropPos = loc;
+        mPendingAddInfo.minSpanX = info.minSpanX;
+        mPendingAddInfo.minSpanY = info.minSpanY;
+
         if (cell != null) {
             mPendingAddInfo.cellX = cell[0];
             mPendingAddInfo.cellY = cell[1];
+        }
+        if (span != null) {
+            mPendingAddInfo.spanX = span[0];
+            mPendingAddInfo.spanY = span[1];
         }
 
         AppWidgetHostView hostView = info.boundWidget;
@@ -1575,7 +1598,6 @@ public final class Launcher extends Activity
             AppWidgetManager.getInstance(this).bindAppWidgetId(appWidgetId, info.componentName);
         }
         addAppWidgetImpl(appWidgetId, info);
-
     }
 
     void processShortcut(Intent intent) {
