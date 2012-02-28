@@ -369,10 +369,14 @@ public class Workspace extends SmoothPagedView
         mLauncher.lockScreenOrientationOnLargeUI();
 
         // Fade out the workspace slightly to highlight the currently dragging item
-        animate().alpha(mDragFadeOutAlpha)
-                 .setInterpolator(new AccelerateInterpolator(1.5f))
-                 .setDuration(mDragFadeOutDuration)
-                 .start();
+        int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            CellLayout cl = (CellLayout) getPageAt(i);
+            cl.getChildrenLayout().animate().alpha(mDragFadeOutAlpha)
+                .setInterpolator(new AccelerateInterpolator(1.5f))
+                .setDuration(mDragFadeOutDuration)
+                .start();
+        }
     }
 
     public void onDragEnd() {
@@ -381,10 +385,14 @@ public class Workspace extends SmoothPagedView
         mLauncher.unlockScreenOrientationOnLargeUI();
 
         // Fade the workspace back in after we have completed dragging
-        animate().alpha(1f)
-                 .setInterpolator(new DecelerateInterpolator(1.5f))
-                 .setDuration(mDragFadeOutDuration)
-                 .start();
+        int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            CellLayout cl = (CellLayout) getPageAt(i);
+            cl.getChildrenLayout().animate().alpha(1f)
+                .setInterpolator(new DecelerateInterpolator(1.5f))
+                .setDuration(mDragFadeOutDuration)
+                .start();
+        }
     }
 
     /**
@@ -2026,7 +2034,8 @@ public class Workspace extends SmoothPagedView
                 minSpanY = ((PendingAddWidgetInfo) d.dragInfo).minSpanY;
             }
             mTargetCell = findNearestArea((int) mDragViewVisualCenter[0],
-                    (int) mDragViewVisualCenter[1], minSpanX, minSpanY, mDragTargetLayout, mTargetCell);
+                    (int) mDragViewVisualCenter[1], minSpanX, minSpanY, mDragTargetLayout,
+                    mTargetCell);
             if (willCreateUserFolder((ItemInfo) d.dragInfo, mDragTargetLayout, mTargetCell, true)) {
                 return true;
             }
@@ -2507,7 +2516,8 @@ public class Workspace extends SmoothPagedView
                         final PendingAddWidgetInfo createInfo =
                                 new PendingAddWidgetInfo(widgetInfo, mimeType, data);
                         mLauncher.addAppWidgetFromDrop(createInfo,
-                            LauncherSettings.Favorites.CONTAINER_DESKTOP, mCurrentPage, null, null, pos);
+                                LauncherSettings.Favorites.CONTAINER_DESKTOP, mCurrentPage,
+                                null, null, pos);
                     } else {
                         // Show the widget picker dialog if there is more than one widget
                         // that can handle this data type
