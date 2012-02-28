@@ -53,7 +53,7 @@
     <string name="delete_zone_label_all_apps" msgid="6664588234817475108">"Odinstaluj"</string>
     <string name="delete_target_label" msgid="665300185123139530">"Usuń"</string>
     <string name="delete_target_uninstall_label" msgid="748894921183769150">"Odinstaluj"</string>
-    <string name="info_target_label" msgid="4019495079517426980">"Informacje o aplikacji"</string>
+    <string name="info_target_label" msgid="4019495079517426980">"O aplikacji"</string>
     <string name="accessibility_search_button" msgid="816822994629942611">"Szukaj"</string>
     <string name="accessibility_voice_search_button" msgid="3938249215065842475">"Wyszukiwanie głosowe"</string>
     <string name="accessibility_all_apps_button" msgid="8803738611398979849">"Aplikacje"</string>

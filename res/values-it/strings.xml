@@ -97,13 +97,10 @@
     <string name="folder_cling_move_item" msgid="270598675060435169">"Per spostare un\'applicazione, tocca e tieni premuto."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Per creare una nuova cartella sulla schermata Home, impila un\'applicazione su un\'altra."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
-    <!-- no translation found for folder_opened (1262064100943801533) -->
-    <skip />
+    <string name="folder_opened" msgid="1262064100943801533">"Cartella aperta, <xliff:g id="WIDTH">%1$d</xliff:g> per <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1335478160661137579">"Tocca per chiudere la cartella"</string>
     <string name="folder_tap_to_rename" msgid="5201612989905472442">"Tocca per salvare nuovo nome"</string>
     <string name="folder_closed" msgid="3130534551370511932">"Cartella chiusa"</string>
-    <!-- no translation found for folder_renamed (7951233572858053642) -->
-    <skip />
-    <!-- no translation found for folder_name_format (3051680259794759037) -->
-    <skip />
+    <string name="folder_renamed" msgid="7951233572858053642">"Nome della cartella sostituito con <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format" msgid="3051680259794759037">"Cartella: <xliff:g id="NAME">%1$s</xliff:g>"</string>
 </resources>
