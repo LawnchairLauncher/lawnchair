@@ -97,13 +97,10 @@
     <string name="folder_cling_move_item" msgid="270598675060435169">"Da biste premjestili aplikaciju, dodirnite je i zadržite."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Da biste napravili novu mapu na početnom zaslonu, stavite jednu aplikaciju na drugu."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"U redu"</string>
-    <!-- no translation found for folder_opened (1262064100943801533) -->
-    <skip />
+    <string name="folder_opened" msgid="1262064100943801533">"Mapa je otvorena, <xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1335478160661137579">"Dodirnite za zatvaranje mape"</string>
     <string name="folder_tap_to_rename" msgid="5201612989905472442">"Dodirnite da biste spremili preimenovanje"</string>
     <string name="folder_closed" msgid="3130534551370511932">"Mapa zatvorena"</string>
-    <!-- no translation found for folder_renamed (7951233572858053642) -->
-    <skip />
-    <!-- no translation found for folder_name_format (3051680259794759037) -->
-    <skip />
+    <string name="folder_renamed" msgid="7951233572858053642">"Mapa je preimenovana u <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format" msgid="3051680259794759037">"Mapa: <xliff:g id="NAME">%1$s</xliff:g>"</string>
 </resources>

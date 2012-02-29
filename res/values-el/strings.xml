@@ -97,13 +97,10 @@
     <string name="folder_cling_move_item" msgid="270598675060435169">"Για να μετακινήσετε μια εφαρμογή, αγγίξτε την παρατεταμένα."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Για να δημιουργήσετε ένα νέο φάκελο στην αρχική οθόνη, τοποθετήστε μια εφαρμογή πάνω σε μια άλλη."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
-    <!-- no translation found for folder_opened (1262064100943801533) -->
-    <skip />
+    <string name="folder_opened" msgid="1262064100943801533">"Άνοιγμα φακέλου, <xliff:g id="WIDTH">%1$d</xliff:g> επί <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1335478160661137579">"Αγγίξτε για να κλείσετε τον φάκελο"</string>
     <string name="folder_tap_to_rename" msgid="5201612989905472442">"Αγγίξτε για να αποθηκεύσετε το νέο όνομα"</string>
     <string name="folder_closed" msgid="3130534551370511932">"Ο φάκελος έκλεισε"</string>
-    <!-- no translation found for folder_renamed (7951233572858053642) -->
-    <skip />
-    <!-- no translation found for folder_name_format (3051680259794759037) -->
-    <skip />
+    <string name="folder_renamed" msgid="7951233572858053642">"Ο φάκελος μετονομάστηκε σε <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format" msgid="3051680259794759037">"Φάκελος: <xliff:g id="NAME">%1$s</xliff:g>"</string>
 </resources>

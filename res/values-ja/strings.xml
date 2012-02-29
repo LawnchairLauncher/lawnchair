@@ -97,13 +97,10 @@
     <string name="folder_cling_move_item" msgid="270598675060435169">"アプリを移動するにはアプリを押し続けます。"</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"ホーム画面に新しいフォルダを作成するには、アプリを他のアプリの上に重ねます。"</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
-    <!-- no translation found for folder_opened (1262064100943801533) -->
-    <skip />
+    <string name="folder_opened" msgid="1262064100943801533">"フォルダが開いています。<xliff:g id="WIDTH">%1$d</xliff:g>x<xliff:g id="HEIGHT">%2$d</xliff:g>の大きさです"</string>
     <string name="folder_tap_to_close" msgid="1335478160661137579">"タップしてフォルダを閉じます"</string>
     <string name="folder_tap_to_rename" msgid="5201612989905472442">"タップして名前の変更を保存します"</string>
     <string name="folder_closed" msgid="3130534551370511932">"フォルダは閉じています"</string>
-    <!-- no translation found for folder_renamed (7951233572858053642) -->
-    <skip />
-    <!-- no translation found for folder_name_format (3051680259794759037) -->
-    <skip />
+    <string name="folder_renamed" msgid="7951233572858053642">"フォルダの名前を「<xliff:g id="NAME">%1$s</xliff:g>」に変更しました"</string>
+    <string name="folder_name_format" msgid="3051680259794759037">"フォルダ: <xliff:g id="NAME">%1$s</xliff:g>"</string>
 </resources>

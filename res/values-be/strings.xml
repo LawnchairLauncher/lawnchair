@@ -97,13 +97,10 @@
     <string name="folder_cling_move_item" msgid="270598675060435169">"Каб перамясціць прыкладанне, дакраніцеся дя яго і ўтрымлівайце."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Каб зрабіць новую тэчку на працоўным стале, перасуньце адно прыкладанне на другое."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"ОК"</string>
-    <!-- no translation found for folder_opened (1262064100943801533) -->
-    <skip />
+    <string name="folder_opened" msgid="1262064100943801533">"Тэчка адкрыта, <xliff:g id="WIDTH">%1$d</xliff:g> на <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1335478160661137579">"Нацiснiце, каб закрыць тэчку"</string>
     <string name="folder_tap_to_rename" msgid="5201612989905472442">"Краніце, каб захаваць новую назву"</string>
     <string name="folder_closed" msgid="3130534551370511932">"Тэчка закрыта"</string>
-    <!-- no translation found for folder_renamed (7951233572858053642) -->
-    <skip />
-    <!-- no translation found for folder_name_format (3051680259794759037) -->
-    <skip />
+    <string name="folder_renamed" msgid="7951233572858053642">"Тэчка перайменавана ў <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format" msgid="3051680259794759037">"Тэчка <xliff:g id="NAME">%1$s</xliff:g>"</string>
 </resources>

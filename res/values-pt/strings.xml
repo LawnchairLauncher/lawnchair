@@ -97,13 +97,10 @@
     <string name="folder_cling_move_item" msgid="270598675060435169">"Para mover um aplicativo, toque e mantenha-o pressionado."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Para criar uma nova pasta em sua tela inicial, coloque um aplicativo em cima do outro."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
-    <!-- no translation found for folder_opened (1262064100943801533) -->
-    <skip />
+    <string name="folder_opened" msgid="1262064100943801533">"Pasta aberta, <xliff:g id="WIDTH">%1$d</xliff:g> por <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1335478160661137579">"Toque para fechar a pasta"</string>
     <string name="folder_tap_to_rename" msgid="5201612989905472442">"Toque para salvar o novo nome"</string>
     <string name="folder_closed" msgid="3130534551370511932">"Pasta fechada"</string>
-    <!-- no translation found for folder_renamed (7951233572858053642) -->
-    <skip />
-    <!-- no translation found for folder_name_format (3051680259794759037) -->
-    <skip />
+    <string name="folder_renamed" msgid="7951233572858053642">"Pasta renomeada para <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format" msgid="3051680259794759037">"Pasta: <xliff:g id="NAME">%1$s</xliff:g>"</string>
 </resources>

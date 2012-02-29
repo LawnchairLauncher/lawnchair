@@ -97,13 +97,10 @@
     <string name="folder_cling_move_item" msgid="270598675060435169">"किसी एप्लिकेशन को ले जाने के लिए, उसे स्‍पर्श करके रखें."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"अपनी मुखपृष्ठ स्‍क्रीन पर कोई नया फ़ोल्डर बनाने के लिए, एक एप्लिकेशन को दूसरे के शीर्ष पर स्‍टैक करें."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"ठीक"</string>
-    <!-- no translation found for folder_opened (1262064100943801533) -->
-    <skip />
+    <string name="folder_opened" msgid="1262064100943801533">"फ़ोल्डर खोला गया, <xliff:g id="WIDTH">%1$d</xliff:g> गुणा <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1335478160661137579">"फ़ोल्‍डर बंद करने के लिए स्‍पर्श करें"</string>
     <string name="folder_tap_to_rename" msgid="5201612989905472442">"परिवर्तित नाम सहेजने के लिए स्पर्श करें"</string>
     <string name="folder_closed" msgid="3130534551370511932">"फ़ोल्डर बंद किया गया"</string>
-    <!-- no translation found for folder_renamed (7951233572858053642) -->
-    <skip />
-    <!-- no translation found for folder_name_format (3051680259794759037) -->
-    <skip />
+    <string name="folder_renamed" msgid="7951233572858053642">"फ़ोल्डर का नाम बदलकर <xliff:g id="NAME">%1$s</xliff:g> किया गया"</string>
+    <string name="folder_name_format" msgid="3051680259794759037">"फ़ोल्डर: <xliff:g id="NAME">%1$s</xliff:g>"</string>
 </resources>

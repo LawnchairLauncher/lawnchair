@@ -97,13 +97,10 @@
     <string name="folder_cling_move_item" msgid="270598675060435169">"Om \'n program te skuif, raak en hou dit."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Om \'n nuwe vouer op jou Tuisskerm te maak, stapel een program bo-op \'n ander."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
-    <!-- no translation found for folder_opened (1262064100943801533) -->
-    <skip />
+    <string name="folder_opened" msgid="1262064100943801533">"Vouer oopgemaak, <xliff:g id="WIDTH">%1$d</xliff:g> by <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1335478160661137579">"Raak om vouer toe te maak"</string>
     <string name="folder_tap_to_rename" msgid="5201612989905472442">"Raak om stoor te hernoem"</string>
     <string name="folder_closed" msgid="3130534551370511932">"Vouer is gesluit"</string>
-    <!-- no translation found for folder_renamed (7951233572858053642) -->
-    <skip />
-    <!-- no translation found for folder_name_format (3051680259794759037) -->
-    <skip />
+    <string name="folder_renamed" msgid="7951233572858053642">"Vouer hernoem na <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format" msgid="3051680259794759037">"Vouer: <xliff:g id="NAME">%1$s</xliff:g>"</string>
 </resources>

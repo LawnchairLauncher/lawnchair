@@ -97,13 +97,10 @@
     <string name="folder_cling_move_item" msgid="270598675060435169">"Да бисте преместили апликацију, додирните је и задржите."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Да бисте направили нови директоријум на почетном екрану, поређајте апликације једну на другу."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"Потврди"</string>
-    <!-- no translation found for folder_opened (1262064100943801533) -->
-    <skip />
+    <string name="folder_opened" msgid="1262064100943801533">"Директоријум је отворен, <xliff:g id="WIDTH">%1$d</xliff:g> пута <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1335478160661137579">"Додирните да бисте затворили директоријум"</string>
     <string name="folder_tap_to_rename" msgid="5201612989905472442">"Додирните да бисте сачували промену имена"</string>
     <string name="folder_closed" msgid="3130534551370511932">"Директоријум је затворен"</string>
-    <!-- no translation found for folder_renamed (7951233572858053642) -->
-    <skip />
-    <!-- no translation found for folder_name_format (3051680259794759037) -->
-    <skip />
+    <string name="folder_renamed" msgid="7951233572858053642">"Директоријум је преименован у <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format" msgid="3051680259794759037">"Директоријум: <xliff:g id="NAME">%1$s</xliff:g>"</string>
 </resources>

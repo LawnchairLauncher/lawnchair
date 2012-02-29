@@ -97,13 +97,10 @@
     <string name="folder_cling_move_item" msgid="270598675060435169">"앱을 이동하려면 길게 터치합니다."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"홈 화면에 새로운 폴더를 만들려면 앱 하나를 다른 앱 위에 겹쳐 놓습니다."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"확인"</string>
-    <!-- no translation found for folder_opened (1262064100943801533) -->
-    <skip />
+    <string name="folder_opened" msgid="1262064100943801533">"폴더 열림(<xliff:g id="WIDTH">%1$d</xliff:g>X<xliff:g id="HEIGHT">%2$d</xliff:g>)"</string>
     <string name="folder_tap_to_close" msgid="1335478160661137579">"터치하여 폴더를 닫음"</string>
     <string name="folder_tap_to_rename" msgid="5201612989905472442">"터치하여 바꾼 이름을 저장"</string>
     <string name="folder_closed" msgid="3130534551370511932">"폴더 닫음"</string>
-    <!-- no translation found for folder_renamed (7951233572858053642) -->
-    <skip />
-    <!-- no translation found for folder_name_format (3051680259794759037) -->
-    <skip />
+    <string name="folder_renamed" msgid="7951233572858053642">"<xliff:g id="NAME">%1$s</xliff:g>(으)로 폴더 이름 바꿈"</string>
+    <string name="folder_name_format" msgid="3051680259794759037">"폴더: <xliff:g id="NAME">%1$s</xliff:g>"</string>
 </resources>
