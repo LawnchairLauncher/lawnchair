@@ -3163,6 +3163,11 @@ public final class Launcher extends Activity
         item.hostView.setAppWidget(appWidgetId, appWidgetInfo);
         item.hostView.setTag(item);
 
+        // We need to load the minimum span and embed it into the item info
+        int[] minSpan = getMinSpanForWidget(appWidgetInfo, null);
+        item.minSpanX = minSpan[0];
+        item.minSpanY = minSpan[1];
+
         workspace.addInScreen(item.hostView, item.container, item.screen, item.cellX,
                 item.cellY, item.spanX, item.spanY, false);
 
