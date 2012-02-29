@@ -21,21 +21,17 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.launcher.R;
-import com.android.launcher2.DropTarget.DragObject;
 
 public class InfoDropTarget extends ButtonDropTarget {
 
     private ColorStateList mOriginalTextColor;
     private TransitionDrawable mDrawable;
-    private int mHoverColor = 0xFF0000FF;
 
     public InfoDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -54,8 +50,6 @@ public class InfoDropTarget extends ButtonDropTarget {
         // Get the hover color
         Resources r = getResources();
         mHoverColor = r.getColor(R.color.info_target_hover_tint);
-        mHoverPaint.setColorFilter(new PorterDuffColorFilter(
-                mHoverColor, PorterDuff.Mode.SRC_ATOP));
         mDrawable = (TransitionDrawable) getCompoundDrawables()[0];
         mDrawable.setCrossFadeEnabled(true);
 

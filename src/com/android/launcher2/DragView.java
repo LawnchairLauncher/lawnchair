@@ -25,6 +25,8 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -199,10 +201,14 @@ public class DragView extends View {
         va.start();
     }
 
-    public void setPaint(Paint paint) {
-        mPaint = paint;
+    public void setColor(int color) {
         if (mPaint == null) {
             mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
+        }
+        if (color != 0) {
+            mPaint.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP));
+        } else {
+            mPaint.setColorFilter(null);
         }
         invalidate();
     }
