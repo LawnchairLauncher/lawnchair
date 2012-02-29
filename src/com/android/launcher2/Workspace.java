@@ -190,6 +190,7 @@ public class Workspace extends SmoothPagedView
     private Runnable mDelayedResizeRunnable;
     private int mDisplayWidth;
     private int mDisplayHeight;
+    private boolean mIsStaticWallpaper;
     private int mWallpaperTravelWidth;
 
     // Variables relating to the creation of user folders by hovering shortcuts over shortcuts
@@ -700,6 +701,7 @@ public class Workspace extends SmoothPagedView
         // Only show page outlines as we pan if we are on large screen
         if (LauncherApplication.isScreenLarge()) {
             showOutlines();
+            mIsStaticWallpaper = mWallpaperManager.getWallpaperInfo() == null;
         }
 
         // If we are not fading in adjacent screens, we still need to restore the alpha in case the
@@ -810,28 +812,7 @@ public class Workspace extends SmoothPagedView
         }.start();
     }
 
-    public void setVerticalWallpaperOffset(float offset) {
-        mWallpaperOffset.setFinalY(offset);
-    }
-    public float getVerticalWallpaperOffset() {
-        return mWallpaperOffset.getCurrY();
-    }
-    public void setHorizontalWallpaperOffset(float offset) {
-        mWallpaperOffset.setFinalX(offset);
-    }
-    public float getHorizontalWallpaperOffset() {
-        return mWallpaperOffset.getCurrX();
-    }
-
     private float wallpaperOffsetForCurrentScroll() {
-        // The wallpaper travel width is how far, from left to right, the wallpaper will move
-        // at this orientation. On tablets in portrait mode we don't move all the way to the
-        // edges of the wallpaper, or otherwise the parallax effect would be too strong.
-        int wallpaperTravelWidth = mWallpaperWidth;
-        if (LauncherApplication.isScreenLarge()) {
-            wallpaperTravelWidth = mWallpaperTravelWidth;
-        }
-
         // Set wallpaper offset steps (1 / (number of screens - 1))
         mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 1.0f);
 
@@ -849,11 +830,22 @@ public class Workspace extends SmoothPagedView
 
         float scrollProgress =
             adjustedScrollX / (float) scrollRange;
-        float offsetInDips = wallpaperTravelWidth * scrollProgress +
-            (mWallpaperWidth - wallpaperTravelWidth) / 2; // center it
-        float offset = offsetInDips / (float) mWallpaperWidth;
-        return offset;
+
+        if (LauncherApplication.isScreenLarge() && mIsStaticWallpaper) {
+            // The wallpaper travel width is how far, from left to right, the wallpaper will move
+            // at this orientation. On tablets in portrait mode we don't move all the way to the
+            // edges of the wallpaper, or otherwise the parallax effect would be too strong.
+            int wallpaperTravelWidth = Math.min(mWallpaperTravelWidth, mWallpaperWidth);
+
+            float offsetInDips = wallpaperTravelWidth * scrollProgress +
+                (mWallpaperWidth - wallpaperTravelWidth) / 2; // center it
+            float offset = offsetInDips / (float) mWallpaperWidth;
+            return offset;
+        } else {
+            return scrollProgress;
+        }
     }
+
     private void syncWallpaperOffsetWithScroll() {
         final boolean enableWallpaperEffects = isHardwareAccelerated();
         if (enableWallpaperEffects) {
