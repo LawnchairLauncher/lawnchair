@@ -17,8 +17,11 @@
 package com.android.launcher2;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.widget.Toast;
 
 import com.android.launcher.R;
@@ -41,12 +44,25 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         }
 
         final int screen = Launcher.getScreen();
-        final String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
         final Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
+        if (intent == null) {
+            return;
+        }
+        // This name is only used for comparisons and notifications, so fall back to activity name
+        // if not supplied
+        String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
+        if (name == null) {
+            try {
+                PackageManager pm = context.getPackageManager();
+                ActivityInfo info = pm.getActivityInfo(intent.getComponent(), 0);
+                name = info.loadLabel(pm).toString();
+            } catch (PackageManager.NameNotFoundException nnfe) {
+                return;
+            }
+        }
 
         final ArrayList<ItemInfo> items = LauncherModel.getItemsInLocalCoordinates(context);
         final boolean shortcutExists = LauncherModel.shortcutExists(context, name, intent);
-
         final String[] errorMsgs = {""};
 
         if (!installShortcut(context, data, items, name, intent, screen, shortcutExists,
