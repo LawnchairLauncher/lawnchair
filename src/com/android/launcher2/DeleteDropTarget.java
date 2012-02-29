@@ -20,22 +20,21 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 
 import com.android.launcher.R;
 
 public class DeleteDropTarget extends ButtonDropTarget {
 
-    private static int DELETE_ANIMATION_DURATION = 250;
+    private static int DELETE_ANIMATION_DURATION = 300;
     private ColorStateList mOriginalTextColor;
-    private int mHoverColor = 0xFFFF0000;
     private TransitionDrawable mUninstallDrawable;
     private TransitionDrawable mRemoveDrawable;
     private TransitionDrawable mCurrentDrawable;
@@ -58,8 +57,6 @@ public class DeleteDropTarget extends ButtonDropTarget {
         // Get the hover color
         Resources r = getResources();
         mHoverColor = r.getColor(R.color.delete_target_hover_tint);
-        mHoverPaint.setColorFilter(new PorterDuffColorFilter(
-                mHoverColor, PorterDuff.Mode.SRC_ATOP));
         mUninstallDrawable = (TransitionDrawable) 
                 r.getDrawable(R.drawable.uninstall_target_selector);
         mRemoveDrawable = (TransitionDrawable) r.getDrawable(R.drawable.remove_target_selector);
@@ -162,32 +159,19 @@ public class DeleteDropTarget extends ButtonDropTarget {
         if (!d.dragComplete) {
             mCurrentDrawable.resetTransition();
             setTextColor(mOriginalTextColor);
+        } else {
+            // Restore the hover color if we are deleting
+            d.dragView.setColor(mHoverColor);
         }
-    }
-
-    Rect getDeleteRect(int deleteItemWidth, int deleteItemHeight) {
-        DragLayer dragLayer = mLauncher.getDragLayer();
-
-        Rect to = new Rect();
-        dragLayer.getViewRectRelativeToSelf(this, to);
-        int width = mCurrentDrawable.getIntrinsicWidth();
-        int height = mCurrentDrawable.getIntrinsicHeight();
-        to.set(to.left + getPaddingLeft(), to.top + getPaddingTop(),
-                to.left + getPaddingLeft() + width, to.bottom);
-
-        // Center the destination rect about the trash icon
-        int xOffset = (int) -(deleteItemWidth - width) / 2;
-        int yOffset = (int) -(deleteItemHeight - height) / 2;
-        to.offset(xOffset, yOffset);
-
-        return to;
     }
 
     private void animateToTrashAndCompleteDrop(final DragObject d) {
         DragLayer dragLayer = mLauncher.getDragLayer();
         Rect from = new Rect();
         dragLayer.getViewRectRelativeToSelf(d.dragView, from);
-        Rect to = getDeleteRect(d.dragView.getMeasuredWidth(), d.dragView.getMeasuredHeight());
+        Rect to = getIconRect(d.dragView.getMeasuredWidth(), d.dragView.getMeasuredHeight(),
+                mCurrentDrawable.getIntrinsicWidth(), mCurrentDrawable.getIntrinsicHeight());
+        float scale = (float) to.width() / from.width();
 
         mSearchDropTargetBar.deferOnDragEnd();
         Runnable onAnimationEndRunnable = new Runnable() {
@@ -198,9 +182,9 @@ public class DeleteDropTarget extends ButtonDropTarget {
                 completeDrop(d);
             }
         };
-        dragLayer.animateView(d.dragView, from, to, 0.1f, 1, 1, 0.1f, 0.1f,
+        dragLayer.animateView(d.dragView, from, to, scale, 1f, 1f, 0.1f, 0.1f,
                 DELETE_ANIMATION_DURATION, new DecelerateInterpolator(2),
-                new DecelerateInterpolator(1.5f), onAnimationEndRunnable,
+                new LinearInterpolator(), onAnimationEndRunnable,
                 DragLayer.ANIMATION_END_DISAPPEAR, null);
     }
 
