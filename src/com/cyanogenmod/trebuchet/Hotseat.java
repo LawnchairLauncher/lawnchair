@@ -56,12 +56,15 @@ public class Hotseat extends PagedView {
         mHandleScrollIndicator = true;
 
         int hotseatPages = PreferencesProvider.Interface.Dock.getNumberPages();
+        int defaultPage = PreferencesProvider.Interface.Dock.getDefaultPage(hotseatPages / 2);
 
         LayoutInflater inflater =
                 (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         for (int i = 0; i < hotseatPages; i++) {
             inflater.inflate(R.layout.hotseat_page, this);
         }
+
+        mCurrentPage = defaultPage;
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.Hotseat, defStyle, 0);
