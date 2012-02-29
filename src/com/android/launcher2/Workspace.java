@@ -658,7 +658,7 @@ public class Workspace extends SmoothPagedView
                 return;
             } else if (theta > START_DAMPING_TOUCH_SLOP_ANGLE) {
                 // Above START_DAMPING_TOUCH_SLOP_ANGLE and below MAX_SWIPE_ANGLE, we want to
-                // increase the touch slop to make it harder to begin scrolling the workspace. This 
+                // increase the touch slop to make it harder to begin scrolling the workspace. This
                 // results in vertically scrolling widgets to more easily. The higher the angle, the
                 // more we increase touch slop.
                 theta -= START_DAMPING_TOUCH_SLOP_ANGLE;
@@ -1444,7 +1444,7 @@ public class Workspace extends SmoothPagedView
      * This interpolator emulates the rate at which the perceived scale of an object changes
      * as its distance from a camera increases. When this interpolator is applied to a scale
      * animation on a view, it evokes the sense that the object is shrinking due to moving away
-     * from the camera. 
+     * from the camera.
      */
     static class ZInterpolator implements TimeInterpolator {
         private float focalLength;
@@ -1621,7 +1621,7 @@ public class Workspace extends SmoothPagedView
             setLayoutScale(1.0f);
         }
 
-        final int duration = zoomIn ? 
+        final int duration = zoomIn ?
                 getResources().getInteger(R.integer.config_workspaceUnshrinkTime) :
                 getResources().getInteger(R.integer.config_appsCustomizeWorkspaceShrinkTime);
         for (int i = 0; i < getChildCount(); i++) {
@@ -2056,7 +2056,7 @@ public class Workspace extends SmoothPagedView
                 // is full
                 if (mTargetCell != null && mLauncher.isHotseatLayout(mDragTargetLayout)) {
                     Hotseat hotseat = mLauncher.getHotseat();
-                    if (Hotseat.isAllAppsButtonRank(
+                    if (hotseat.isAllAppsButtonRank(
                             hotseat.getOrderInHotseat(mTargetCell[0], mTargetCell[1]))) {
                         return false;
                     }
@@ -3042,6 +3042,7 @@ public class Workspace extends SmoothPagedView
             cellLayout.onDropChild(view);
             CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
             cellLayout.getChildrenLayout().measureChild(view);
+
 
             LauncherModel.addOrMoveItemInDatabase(mLauncher, info, container, screen,
                     lp.cellX, lp.cellY);

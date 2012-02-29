@@ -2129,6 +2129,10 @@ public final class Launcher extends Activity
         return (mState == State.APPS_CUSTOMIZE);
     }
 
+    public boolean isAllAppsButtonRank(int rank) {
+        return mHotseat.isAllAppsButtonRank(rank);
+    }
+
     // AllAppsView.Watcher
     public void zoomed(float zoom) {
         if (zoom == 1.0f) {

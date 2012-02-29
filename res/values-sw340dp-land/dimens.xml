@@ -19,30 +19,8 @@
     <dimen name="folderClingMarginTop">50dp</dimen>
 
 <!-- Workspace -->
-    <dimen name="workspace_width_gap">0dp</dimen>
-    <dimen name="workspace_height_gap">0dp</dimen>
-    <dimen name="workspace_top_padding">8dp</dimen>
-    <dimen name="workspace_bottom_padding">8dp</dimen>
-    <dimen name="workspace_left_padding">8dp</dimen>
-    <dimen name="workspace_right_padding">8dp</dimen>
     <dimen name="workspace_divider_padding_top">6dp</dimen>
     <dimen name="workspace_divider_padding_bottom">6dp</dimen>
 
-    <dimen name="hotseat_width_gap">0dp</dimen>
-    <dimen name="hotseat_height_gap">0dp</dimen>
-    <dimen name="hotseat_top_padding">-1dp</dimen>
-    <dimen name="hotseat_bottom_padding">-1dp</dimen>
-    <dimen name="hotseat_left_padding">-1dp</dimen>
-    <dimen name="hotseat_right_padding">-1dp</dimen>
-
     <dimen name="qsb_bar_height">48dp</dimen>
-    <!-- height of the bottom row of controls -->
-    <dimen name="button_bar_height">80dip</dimen>
-    <!-- Because portal animations go beyond the bounds of an icon, we need
-         to make the dock layout slightly larger than the button_bar_height -->
-    <dimen name="button_bar_height_top_padding">8dp</dimen>
-    <dimen name="button_bar_height_bottom_padding">8dp</dimen>
-    <dimen name="button_bar_width_left_padding">8dp</dimen>
-    <dimen name="button_bar_width_right_padding">8dp</dimen>
-    <dimen name="button_bar_height_plus_padding">80dp</dimen>
 </resources>

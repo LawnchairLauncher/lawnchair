@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2010 The Android Open Source Project
+<!-- Copyright (C) 2009 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,33 +15,28 @@
 -->
 
 <resources>
+    <dimen name="app_icon_size">65dp</dimen>
+    <dimen name="app_icon_padding_top">2dp</dimen>
+
+<!-- Hotseat -->
+    <dimen name="hotseat_cell_width">75dp</dimen>
+    <dimen name="hotseat_cell_height">85dp</dimen>
+
 <!-- Workspace -->
-    <dimen name="workspace_left_padding">24dip</dimen>
-    <dimen name="workspace_right_padding">24dip</dimen>
-    <!-- We need padding on the screens for portals to look right -->
-    <dimen name="workspace_top_padding">12dip</dimen>
-    <dimen name="workspace_bottom_padding">12dip</dimen>
+    <dimen name="workspace_cell_width">96dp</dimen>
+    <dimen name="workspace_cell_height">86dp</dimen>
     <dimen name="workspace_width_gap">32dp</dimen>
-    <dimen name="workspace_height_gap">2dp</dimen>
-    <dimen name="workspace_page_spacing">50dp</dimen>
+    <dimen name="workspace_height_gap">0dp</dimen>
 
-    <!-- the area at the edge of the screen that makes the workspace go left
-         or right while you're dragging. -->
-    <dimen name="scroll_zone">100dip</dimen>
+<!-- Folders -->
+    <!-- The size of the image which sits behind the preview of the folder contents -->
+    <dimen name="folder_preview_size">70dp</dimen>
+    <dimen name="folder_cell_width">86dp</dimen>
+    <dimen name="folder_cell_height">86dp</dimen>
 
+<!-- AppsCustomize -->
     <dimen name="apps_customize_pageLayoutWidthGap">36dp</dimen>
     <dimen name="apps_customize_pageLayoutHeightGap">8dp</dimen>
     <dimen name="apps_customize_pageLayoutPaddingTop">20dp</dimen>
     <dimen name="apps_customize_pageLayoutPaddingBottom">14dp</dimen>
-    <dimen name="apps_customize_pageLayoutPaddingLeft">30dp</dimen>
-    <dimen name="apps_customize_pageLayoutPaddingRight">30dp</dimen>
-    <integer name="apps_customize_widget_cell_count_x">3</integer>
-    <integer name="apps_customize_widget_cell_count_y">2</integer>
-    <integer name="apps_customize_cling_focused_x">4</integer>
-    <integer name="apps_customize_cling_focused_y">2</integer>
-
-<!-- Cling -->
-    <!-- The offset for the text in the cling -->
-    <dimen name="cling_text_block_offset_x">140dp</dimen>
-    <dimen name="cling_text_block_offset_y">80dp</dimen>
 </resources>
