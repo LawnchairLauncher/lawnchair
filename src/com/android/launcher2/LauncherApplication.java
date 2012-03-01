@@ -26,6 +26,8 @@ import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.os.Handler;
 
+import com.android.launcher.R;
+
 import java.lang.ref.WeakReference;
 
 public class LauncherApplication extends Application {
@@ -40,10 +42,7 @@ public class LauncherApplication extends Application {
         super.onCreate();
 
         // set sIsScreenXLarge and sScreenDensity *before* creating icon cache
-        final int screenSize = getResources().getConfiguration().screenLayout &
-                Configuration.SCREENLAYOUT_SIZE_MASK;
-        sIsScreenLarge = screenSize == Configuration.SCREENLAYOUT_SIZE_LARGE ||
-            screenSize == Configuration.SCREENLAYOUT_SIZE_XLARGE;
+        sIsScreenLarge = getResources().getBoolean(R.bool.is_large_screen);
         sScreenDensity = getResources().getDisplayMetrics().density;
 
         mIconCache = new IconCache(this);

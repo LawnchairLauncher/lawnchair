@@ -176,6 +176,7 @@ public class BubbleTextView extends TextView {
         // The translate of scrollX and scrollY is necessary when drawing TextViews, because
         // they set scrollX and scrollY to large values to achieve centered text
         destCanvas.save();
+        destCanvas.scale(getScaleX(), getScaleY(), getWidth() / 2, getHeight() / 2);
         destCanvas.translate(-getScrollX() + padding / 2, -getScrollY() + padding / 2);
         destCanvas.clipRect(clipRect, Op.REPLACE);
         draw(destCanvas);
@@ -286,6 +287,14 @@ public class BubbleTextView extends TextView {
                 canvas.translate(-scrollX, -scrollY);
             }
         }
+
+        // If text is transparent, don't draw any shadow
+        if (getCurrentTextColor() == android.R.color.transparent) {
+            getPaint().clearShadowLayer();
+            super.draw(canvas);
+            return;
+        }
+
         // We enhance the shadow by drawing the shadow twice
         getPaint().setShadowLayer(SHADOW_LARGE_RADIUS, 0.0f, SHADOW_Y_OFFSET, SHADOW_LARGE_COLOUR);
         super.draw(canvas);

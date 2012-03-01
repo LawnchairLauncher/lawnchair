@@ -138,6 +138,7 @@ public class LauncherModel extends BroadcastReceiver {
         public void bindAppsRemoved(ArrayList<ApplicationInfo> apps, boolean permanent);
         public void bindPackagesUpdated();
         public boolean isAllAppsVisible();
+        public boolean isAllAppsButtonRank(int rank);
         public void bindSearchablesChanged();
     }
 
@@ -920,7 +921,7 @@ public class LauncherModel extends BroadcastReceiver {
             int containerIndex = item.screen;
             if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
                 // Return early if we detect that an item is under the hotseat button
-                if (Hotseat.isAllAppsButtonRank(item.screen)) {
+                if (mCallbacks == null || mCallbacks.get().isAllAppsButtonRank(item.screen)) {
                     return false;
                 }
 
