@@ -706,6 +706,8 @@ public class LauncherProvider extends ContentProvider {
             ContentValues values = new ContentValues();
 
             PackageManager packageManager = mContext.getPackageManager();
+            int allAppsButtonRank =
+                    mContext.getResources().getInteger(R.integer.hotseat_all_apps_index);
             int i = 0;
             try {
                 XmlResourceParser parser = mContext.getResources().getXml(workspaceResourceId);
@@ -739,8 +741,8 @@ public class LauncherProvider extends ContentProvider {
                     // If we are adding to the hotseat, the screen is used as the position in the
                     // hotseat. This screen can't be at position 0 because AllApps is in the
                     // zeroth position.
-                    if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
-                            Hotseat.isAllAppsButtonRank(Integer.valueOf(screen))) {
+                    if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT
+                            && Integer.valueOf(screen) == allAppsButtonRank) {
                         throw new RuntimeException("Invalid screen position for hotseat item");
                     }
 

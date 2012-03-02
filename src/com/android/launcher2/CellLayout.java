@@ -28,6 +28,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -135,6 +136,9 @@ public class CellLayout extends ViewGroup {
     private TimeInterpolator mEaseOutInterpolator;
     private CellLayoutChildren mChildren;
 
+    private boolean mIsHotseat = false;
+    private final int mBubbleScalePercent;
+
     public CellLayout(Context context) {
         this(context, null);
     }
@@ -179,6 +183,8 @@ public class CellLayout extends ViewGroup {
 
         mNormalBackground.setFilterBitmap(true);
         mActiveGlowBackground.setFilterBitmap(true);
+
+        mBubbleScalePercent = res.getInteger(R.integer.app_icon_hotseat_scale_percent);
 
         // Initialize the data structures used for the drag visualization.
 
@@ -489,6 +495,25 @@ public class CellLayout extends ViewGroup {
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
+        // Debug drawing for hit space
+        if (false) {
+            final Rect frame = mRect;
+            for (int i = mChildren.getChildCount() - 1; i >= 0; i--) {
+                final View child = mChildren.getChildAt(i);
+                final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+
+                if ((child.getVisibility() == VISIBLE || child.getAnimation() != null) &&
+                        lp.isLockedToGrid) {
+                    child.getHitRect(frame);
+                    frame.offset(mPaddingLeft, mPaddingTop);
+
+                    Paint p = new Paint();
+                    p.setColor(Color.GREEN);
+                    canvas.drawRect(frame, p);
+                }
+            }
+        }
+
         super.dispatchDraw(canvas);
         if (mForegroundAlpha > 0) {
             mOverScrollForegroundDrawable.setBounds(mForegroundRect);
@@ -551,9 +576,54 @@ public class CellLayout extends ViewGroup {
         return mCountY;
     }
 
+    public void setIsHotseat(boolean isHotseat) {
+        mIsHotseat = isHotseat;
+    }
+
     public boolean addViewToCellLayout(
             View child, int index, int childId, LayoutParams params, boolean markCells) {
+        return addViewToCellLayout(child, index, childId, params, markCells, false);
+    }
+
+    public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params,
+            boolean markCells, boolean allApps) {
         final LayoutParams lp = params;
+
+        // Hotseat icons - scale down and remove text
+        // Don't scale the all apps button
+        // scale percent set to -1 means do not scale
+        // Only scale BubbleTextViews
+        if (child instanceof BubbleTextView) {
+            BubbleTextView bubbleChild = (BubbleTextView) child;
+
+            if (mIsHotseat && !allApps && mBubbleScalePercent >= 0) {
+                // If we haven't measured the child yet, do it now
+                // (this happens if we're being dropped from all-apps
+                if ((bubbleChild.getMeasuredWidth() | bubbleChild.getMeasuredHeight()) == 0) {
+                    getChildrenLayout().measureChild(bubbleChild);
+                }
+                int measuredWidth = bubbleChild.getMeasuredWidth();
+                int measuredHeight = bubbleChild.getMeasuredHeight();
+
+                float bubbleScale = mBubbleScalePercent / 100f;
+                bubbleChild.setPivotX(0);
+                bubbleChild.setPivotY(0);
+                bubbleChild.setScaleX(bubbleScale);
+                bubbleChild.setScaleY(bubbleScale);
+                bubbleChild.setTranslationX(measuredWidth * (1 - bubbleScale) / 2);
+                bubbleChild.setTranslationY(measuredHeight * (1 - bubbleScale) / 2);
+
+                bubbleChild.setTextColor(android.R.color.transparent);
+            } else {
+                bubbleChild.setScaleX(1f);
+                bubbleChild.setScaleY(1f);
+                bubbleChild.setTranslationX(0f);
+                bubbleChild.setTranslationY(0f);
+
+                bubbleChild.setTextColor(
+                        getResources().getColor(R.color.workspace_icon_text_color));
+            }
+        }
 
         // Generate an id for each view, this assumes we have at most 256x256 cells
         // per workspace screen

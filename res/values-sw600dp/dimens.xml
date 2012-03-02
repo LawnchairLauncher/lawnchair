@@ -15,65 +15,39 @@
 -->
 
 <resources>
-<!-- QSB -->
-    <dimen name="toolbar_button_vertical_padding">12dip</dimen>
-    <dimen name="toolbar_button_horizontal_padding">12dip</dimen>
-
-<!-- Workspace -->
-    <dimen name="qsb_bar_height">56dp</dimen>
-    <!-- This should be @dimen/qsb_bar_height - @dimen/workspace_top_padding
-         to fix the extra space given to draw portals -->
-    <dimen name="workspace_content_large_only_top_margin">36dp</dimen>
-    <dimen name="workspace_cell_width">96dip</dimen>
-    <dimen name="workspace_cell_height">96dip</dimen>
-    <dimen name="folder_cell_width">96dp</dimen>
-    <dimen name="folder_cell_height">96dp</dimen>
-
+    <dimen name="app_icon_size">72dp</dimen>
+    <integer name="app_icon_hotseat_scale_percent">78</integer>
+    <dimen name="app_icon_drawable_padding">3dp</dimen>
     <dimen name="app_icon_padding_top">4dp</dimen>
 
-<!-- AppsCustomize -->
-    <dimen name="apps_customize_tab_bar_height">60dp</dimen>
-    <dimen name="apps_customize_tab_bar_margin_top">8dp</dimen>
-    <dimen name="apps_customize_cell_width">96dp</dimen>
-    <dimen name="apps_customize_cell_height">98dp</dimen>
-    <dimen name="apps_customize_widget_cell_width_gap">36dp</dimen>
-    <dimen name="apps_customize_widget_cell_height_gap">36dp</dimen>
+<!-- Workspace -->
+    <dimen name="workspace_cell_width">96dp</dimen>
+    <dimen name="workspace_cell_height">96dp</dimen>
 
-    <!-- The corner radius to draw the external drop icon rounded rect -->
-    <dimen name="external_drop_icon_rect_radius">10dp</dimen>
-    
-    <!-- Size of icons in workspace -->
-    <dimen name="app_icon_size">72dp</dimen>
-
-    <!-- extra horizontal spacing between mini screen thumbnails ie. in all
-         apps and in customization mode -->
-    <dimen name="smallScreenExtraSpacing">0dip</dimen>
-
-    <!-- Vertical spacing between edge of screen and mini cell layouts when they
-         are minimized to the bottom in all apps -->
-    <dimen name="allAppsSmallScreenVerticalMarginLandscape">30dip</dimen>
-    <dimen name="allAppsSmallScreenVerticalMarginPortrait">60dip</dimen>
-
-    <dimen name="all_apps_button_vertical_padding">4dip</dimen>
-
-    <!-- roughly a status bar (for determining how many rows of icons are in home) -->
-    <dimen name="status_bar_height">48dip</dimen>
-
-    <!-- dimensions for the wallpaper picker wallpaper thumbnail width -->
-    <dimen name="wallpaper_chooser_grid_width">196dp</dimen>
-    <dimen name="wallpaper_chooser_grid_height">140dp</dimen>
-
-    <!-- When dragging items on the workspace, the number of dps by which the position of
-     the drag view should be offset from the position of the original view. -->
-    <dimen name="dragViewOffsetX">0dp</dimen>
-    <dimen name="dragViewOffsetY">-12dp</dimen>
-    <!--  When dragging an item, how much bigger (fixed dps) the dragged view
-          should be. If 0, it will not be scaled at all. -->
-    <dimen name="dragViewScale">8dp</dimen>
+<!-- Hotseat -->
+    <dimen name="hotseat_width_gap">-1dp</dimen>
+    <dimen name="hotseat_height_gap">-1dp</dimen>
+    <dimen name="button_bar_height">94dip</dimen>
+    <dimen name="button_bar_height_bottom_padding">9dp</dimen>
+    <dimen name="button_bar_height_top_padding">9dp</dimen>
+    <dimen name="button_bar_width_left_padding">9dp</dimen>
+    <dimen name="button_bar_width_right_padding">9dp</dimen>
+    <dimen name="button_bar_height_plus_padding">94dp</dimen>
 
 <!-- Folders -->
     <!-- The size of the image which sits behind the preview of the folder contents -->
-    <dimen name="folder_preview_size">78dp</dimen>
-    <!-- The amount that the preview contents are inset from the preview background -->
-    <dimen name="folder_preview_padding">4dp</dimen>
+    <dimen name="folder_preview_size">75dp</dimen>
+    <dimen name="folder_cell_width">96dp</dimen>
+    <dimen name="folder_cell_height">96dp</dimen>
+    <dimen name="folder_icon_padding_top">0dp</dimen>
+
+<!-- AppsCustomize -->
+    <dimen name="apps_customize_cell_width">96dp</dimen>
+    <dimen name="apps_customize_cell_height">98dp</dimen>
+    <dimen name="apps_customize_pageLayoutPaddingLeft">10dp</dimen>
+    <dimen name="apps_customize_pageLayoutPaddingRight">10dp</dimen>
+    <dimen name="apps_customize_tab_bar_height">60dp</dimen>
+    <dimen name="apps_customize_tab_bar_margin_top">8dp</dimen>
+    <dimen name="apps_customize_widget_cell_width_gap">36dp</dimen>
+    <dimen name="apps_customize_widget_cell_height_gap">36dp</dimen>
 </resources>
