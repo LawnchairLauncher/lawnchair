@@ -717,14 +717,18 @@ public abstract class PagedView extends ViewGroup {
             final int screenWidth = getMeasuredWidth();
             int leftScreen = 0;
             int rightScreen = 0;
+            View currPage = getPageAt(leftScreen);
             while (leftScreen < pageCount - 1 &&
-                    getPageAt(leftScreen).getRight() <= mScrollX) {
+                    currPage.getRight() - currPage.getPaddingRight() < mScrollX) {
                 leftScreen++;
+                currPage = getPageAt(leftScreen);
             }
             rightScreen = leftScreen;
+            currPage = getPageAt(rightScreen + 1);
             while (rightScreen < pageCount - 1 &&
-                    getPageAt(rightScreen + 1).getLeft() < mScrollX + screenWidth) {
+                    currPage.getLeft() + currPage.getPaddingLeft() < mScrollX + screenWidth) {
                 rightScreen++;
+                currPage = getPageAt(rightScreen + 1);
             }
             range[0] = leftScreen;
             range[1] = rightScreen;
