@@ -69,6 +69,7 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         dragController.addDragListener(mDeleteDropTarget);
         dragController.addDropTarget(mInfoDropTarget);
         dragController.addDropTarget(mDeleteDropTarget);
+        dragController.setFlingToDeleteDropTarget(mDeleteDropTarget);
         mInfoDropTarget.setLauncher(launcher);
         mDeleteDropTarget.setLauncher(launcher);
     }
@@ -151,6 +152,13 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
                 mQSBSearchBar.setLayerType(View.LAYER_TYPE_NONE, null);
             }
         });
+    }
+
+    public void finishAnimations() {
+        mDropTargetBarFadeInAnim.end();
+        mDropTargetBarFadeOutAnim.end();
+        mQSBSearchBarFadeInAnim.end();
+        mQSBSearchBarFadeOutAnim.end();
     }
 
     private void cancelAnimations() {

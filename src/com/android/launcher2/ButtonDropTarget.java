@@ -18,7 +18,7 @@ package com.android.launcher2;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.widget.TextView;
@@ -69,6 +69,10 @@ public class ButtonDropTarget extends TextView implements DropTarget, DragContro
     }
 
     public void onDrop(DragObject d) {
+    }
+
+    public void onFlingToDelete(DragObject d, int x, int y, PointF vec) {
+        // Do nothing
     }
 
     public void onDragEnter(DragObject d) {

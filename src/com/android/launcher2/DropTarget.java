@@ -16,6 +16,7 @@
 
 package com.android.launcher2;
 
+import android.graphics.PointF;
 import android.graphics.Rect;
 
 /**
@@ -90,6 +91,13 @@ public interface DropTarget {
     void onDragOver(DragObject dragObject);
 
     void onDragExit(DragObject dragObject);
+
+    /**
+     * Handle an object being dropped as a result of flinging to delete and will be called in place
+     * of onDrop().  (This is only called on objects that are set as the DragController's
+     * fling-to-delete target.
+     */
+    void onFlingToDelete(DragObject dragObject, int x, int y, PointF vec);
 
     /**
      * Allows a DropTarget to delegate drag and drop events to another object.

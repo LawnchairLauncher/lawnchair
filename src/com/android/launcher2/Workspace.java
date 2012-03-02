@@ -38,6 +38,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
@@ -2333,6 +2334,10 @@ public class Workspace extends SmoothPagedView
         }
     }
 
+    public void onFlingToDelete(DragObject d, int x, int y, PointF vec) {
+        // Do nothing
+    }
+
     public void setFinalScrollForPageChange(int screen) {
         if (screen >= 0) {
             mSavedScrollX = getScrollX();
@@ -3323,6 +3328,10 @@ public class Workspace extends SmoothPagedView
             LauncherModel.moveItemInDatabase(mLauncher, info, Favorites.CONTAINER_DESKTOP, screen,
                         info.cellX, info.cellY);
         }
+    }
+
+    public boolean supportsFlingToDelete() {
+        return true;
     }
 
     public boolean isDropEnabled() {

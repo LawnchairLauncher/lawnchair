@@ -25,5 +25,6 @@ import com.android.launcher2.DropTarget.DragObject;
  *
  */
 public interface DragSource {
+    boolean supportsFlingToDelete();
     void onDropCompleted(View target, DragObject d, boolean success);
 }
