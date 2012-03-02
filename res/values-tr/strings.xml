@@ -97,13 +97,10 @@
     <string name="folder_cling_move_item" msgid="270598675060435169">"Bir uygulamayı taşımak için, uygulamaya dokunun ve basılı tutun."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Ana Ekranınızda yeni bir klasör oluşturmak için, bir uygulamayı diğerinin üzerine getirin."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"Tamam"</string>
-    <!-- no translation found for folder_opened (1262064100943801533) -->
-    <skip />
+    <string name="folder_opened" msgid="1262064100943801533">"Klasör açıldı, <xliff:g id="WIDTH">%1$d</xliff:g> genişlik, <xliff:g id="HEIGHT">%2$d</xliff:g> yükseklik"</string>
     <string name="folder_tap_to_close" msgid="1335478160661137579">"Klasörü kapatmak için dokunun"</string>
     <string name="folder_tap_to_rename" msgid="5201612989905472442">"Yeni adı kaydetmek için dokunun"</string>
     <string name="folder_closed" msgid="3130534551370511932">"Klasör kapatıldı"</string>
-    <!-- no translation found for folder_renamed (7951233572858053642) -->
-    <skip />
-    <!-- no translation found for folder_name_format (3051680259794759037) -->
-    <skip />
+    <string name="folder_renamed" msgid="7951233572858053642">"Klasörün adı <xliff:g id="NAME">%1$s</xliff:g> olarak değiştirildi"</string>
+    <string name="folder_name_format" msgid="3051680259794759037">"Klasör: <xliff:g id="NAME">%1$s</xliff:g>"</string>
 </resources>
