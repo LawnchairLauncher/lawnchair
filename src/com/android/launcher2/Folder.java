@@ -528,7 +528,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 for (int x = startX; x <= endX; x++) {
                     View v = mContent.getChildAt(x,y);
                     if (mContent.animateChildToPosition(v, empty[0], empty[1],
-                            REORDER_ANIMATION_DURATION, delay)) {
+                            REORDER_ANIMATION_DURATION, delay, true, true)) {
                         empty[0] = x;
                         empty[1] = y;
                         delay += delayAmount;
@@ -545,7 +545,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 for (int x = startX; x >= endX; x--) {
                     View v = mContent.getChildAt(x,y);
                     if (mContent.animateChildToPosition(v, empty[0], empty[1],
-                            REORDER_ANIMATION_DURATION, delay)) {
+                            REORDER_ANIMATION_DURATION, delay, true, true)) {
                         empty[0] = x;
                         empty[1] = y;
                         delay += delayAmount;
