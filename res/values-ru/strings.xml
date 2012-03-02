@@ -97,7 +97,7 @@
     <string name="folder_cling_move_item" msgid="270598675060435169">"Чтобы переместить значок приложения, нажмите на него и удерживайте."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Чтобы создать папку на главном экране, перенесите одно приложение на другое."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"ОК"</string>
-    <string name="folder_opened" msgid="1262064100943801533">"Папка открыта, <xliff:g id="WIDTH">%1$d</xliff:g> на <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
+    <string name="folder_opened" msgid="1262064100943801533">"Папка открыта, <xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1335478160661137579">"Нажмите, чтобы закрыть папку"</string>
     <string name="folder_tap_to_rename" msgid="5201612989905472442">"Нажмите, чтобы подтвердить переименование"</string>
     <string name="folder_closed" msgid="3130534551370511932">"Папка закрыта"</string>

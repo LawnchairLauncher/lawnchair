@@ -101,6 +101,6 @@
     <string name="folder_tap_to_close" msgid="1335478160661137579">"Palieskite, kad uždarytumėte aplanką"</string>
     <string name="folder_tap_to_rename" msgid="5201612989905472442">"Palieskite, kad išsaugotumėte naują pavadinimą"</string>
     <string name="folder_closed" msgid="3130534551370511932">"Aplankas uždarytas"</string>
-    <string name="folder_renamed" msgid="7951233572858053642">"Aplankas pervardintas kaip „<xliff:g id="NAME">%1$s</xliff:g>“"</string>
+    <string name="folder_renamed" msgid="7951233572858053642">"Aplankas pervardytas kaip „<xliff:g id="NAME">%1$s</xliff:g>“"</string>
     <string name="folder_name_format" msgid="3051680259794759037">"Aplankas: <xliff:g id="NAME">%1$s</xliff:g>"</string>
 </resources>

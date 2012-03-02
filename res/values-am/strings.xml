@@ -102,5 +102,5 @@
     <string name="folder_tap_to_rename" msgid="5201612989905472442">"ዳግም ሰይምን ለማስቀመጥ ንካ"</string>
     <string name="folder_closed" msgid="3130534551370511932">"አቃፊ ተዘግቷል"</string>
     <string name="folder_renamed" msgid="7951233572858053642">"አቃፊ ዳግም ወደ <xliff:g id="NAME">%1$s</xliff:g> ተሰይሟል"</string>
-    <string name="folder_name_format" msgid="3051680259794759037">"አቃፊ ስም፦<xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format" msgid="3051680259794759037">"አቃፊ ስም፦ <xliff:g id="NAME">%1$s</xliff:g>"</string>
 </resources>

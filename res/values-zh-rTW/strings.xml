@@ -97,13 +97,10 @@
     <string name="folder_cling_move_item" msgid="270598675060435169">"如要移動應用程式，請輕觸並按住目標。"</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"如要在主螢幕建立新資料夾，請將應用程式一個個堆疊起來。"</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"確定"</string>
-    <!-- no translation found for folder_opened (1262064100943801533) -->
-    <skip />
+    <string name="folder_opened" msgid="1262064100943801533">"資料夾已開啟 (<xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>)"</string>
     <string name="folder_tap_to_close" msgid="1335478160661137579">"輕觸即可關閉資料夾"</string>
     <string name="folder_tap_to_rename" msgid="5201612989905472442">"輕觸即可儲存重新命名後的名稱"</string>
     <string name="folder_closed" msgid="3130534551370511932">"已關閉資料夾"</string>
-    <!-- no translation found for folder_renamed (7951233572858053642) -->
-    <skip />
-    <!-- no translation found for folder_name_format (3051680259794759037) -->
-    <skip />
+    <string name="folder_renamed" msgid="7951233572858053642">"已將資料夾重新命名為 <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format" msgid="3051680259794759037">"資料夾：<xliff:g id="NAME">%1$s</xliff:g>"</string>
 </resources>
