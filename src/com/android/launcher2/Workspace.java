@@ -175,9 +175,6 @@ public class Workspace extends SmoothPagedView
     private float mOverscrollFade = 0;
     public static final int DRAG_BITMAP_PADDING = 0;
 
-    // Paint used to draw external drop outline
-    private final Paint mExternalDragOutlinePaint = new Paint();
-
     // Camera and Matrix used to determine the final position of a neighboring CellLayout
     private final Matrix mMatrix = new Matrix();
     private final Camera mCamera = new Camera();
@@ -405,7 +402,6 @@ public class Workspace extends SmoothPagedView
         Launcher.setScreen(mCurrentPage);
         LauncherApplication app = (LauncherApplication)context.getApplicationContext();
         mIconCache = app.getIconCache();
-        mExternalDragOutlinePaint.setAntiAlias(true);
         setWillNotDraw(false);
         setChildrenDrawnWithCacheEnabled(true);
 
@@ -1878,29 +1874,6 @@ public class Workspace extends SmoothPagedView
         return b;
     }
 
-    /**
-     * Creates a drag outline to represent a drop (that we don't have the actual information for
-     * yet).  May be changed in the future to alter the drop outline slightly depending on the
-     * clip description mime data.
-     */
-    private Bitmap createExternalDragOutline(Canvas canvas, int padding) {
-        Resources r = getResources();
-        final int outlineColor = r.getColor(android.R.color.holo_blue_light);
-        final int iconWidth = r.getDimensionPixelSize(R.dimen.workspace_cell_width);
-        final int iconHeight = r.getDimensionPixelSize(R.dimen.workspace_cell_height);
-        final int rectRadius = r.getDimensionPixelSize(R.dimen.external_drop_icon_rect_radius);
-        final int inset = (int) (Math.min(iconWidth, iconHeight) * 0.2f);
-        final Bitmap b = Bitmap.createBitmap(
-                iconWidth + padding, iconHeight + padding, Bitmap.Config.ARGB_8888);
-
-        canvas.setBitmap(b);
-        canvas.drawRoundRect(new RectF(inset, inset, iconWidth - inset, iconHeight - inset),
-                rectRadius, rectRadius, mExternalDragOutlinePaint);
-        mOutlineHelper.applyMediumExpensiveOutlineWithBlur(b, canvas, outlineColor, outlineColor);
-        canvas.setBitmap(null);
-        return b;
-    }
-
     void startDrag(CellLayout.CellInfo cellInfo) {
         View child = cellInfo.cell;
 
@@ -2427,116 +2400,6 @@ public class Workspace extends SmoothPagedView
             }
         }
         return null;
-    }
-
-    /**
-     * Global drag and drop handler
-     */
-    @Override
-    public boolean onDragEvent(DragEvent event) {
-        final ClipDescription desc = event.getClipDescription();
-        final CellLayout layout = (CellLayout) getChildAt(mCurrentPage);
-        final int[] pos = new int[2];
-        layout.getLocationOnScreen(pos);
-        // We need to offset the drag coordinates to layout coordinate space
-        final int x = (int) event.getX() - pos[0];
-        final int y = (int) event.getY() - pos[1];
-
-        switch (event.getAction()) {
-        case DragEvent.ACTION_DRAG_STARTED: {
-            // Validate this drag
-            Pair<Integer, List<WidgetMimeTypeHandlerData>> test = validateDrag(event);
-            if (test != null) {
-                boolean isShortcut = (test.second == null);
-                if (isShortcut) {
-                    // Check if we have enough space on this screen to add a new shortcut
-                    if (!layout.findCellForSpan(pos, 1, 1)) {
-                        mLauncher.showOutOfSpaceMessage();
-                        return false;
-                    }
-                }
-            } else {
-                // Show error message if we couldn't accept any of the items
-                Toast.makeText(mContext, mContext.getString(R.string.external_drop_widget_error),
-                        Toast.LENGTH_SHORT).show();
-                return false;
-            }
-
-            // Create the drag outline
-            // We need to add extra padding to the bitmap to make room for the glow effect
-            final Canvas canvas = new Canvas();
-            mDragOutline = createExternalDragOutline(canvas, DRAG_BITMAP_PADDING);
-
-            // Show the current page outlines to indicate that we can accept this drop
-            showOutlines();
-            layout.onDragEnter();
-            layout.visualizeDropLocation(null, mDragOutline, x, y, 1, 1, 1, 1, null, null);
-
-            return true;
-        }
-        case DragEvent.ACTION_DRAG_LOCATION:
-            // Visualize the drop location
-            layout.visualizeDropLocation(null, mDragOutline, x, y, 1, 1, 1, 1, null, null);
-            return true;
-        case DragEvent.ACTION_DROP: {
-            // Try and add any shortcuts
-            final LauncherModel model = mLauncher.getModel();
-            final ClipData data = event.getClipData();
-
-            // We assume that the mime types are ordered in descending importance of
-            // representation. So we enumerate the list of mime types and alert the
-            // user if any widgets can handle the drop.  Only the most preferred
-            // representation will be handled.
-            pos[0] = x;
-            pos[1] = y;
-            Pair<Integer, List<WidgetMimeTypeHandlerData>> test = validateDrag(event);
-            if (test != null) {
-                final int index = test.first;
-                final List<WidgetMimeTypeHandlerData> widgets = test.second;
-                final boolean isShortcut = (widgets == null);
-                final String mimeType = desc.getMimeType(index);
-                if (isShortcut) {
-                    final Intent intent = data.getItemAt(index).getIntent();
-                    Object info = model.infoFromShortcutIntent(mContext, intent, data.getIcon());
-                    if (info != null) {
-                        onDropExternal(new int[] { x, y }, info, layout, false);
-                    }
-                } else {
-                    if (widgets.size() == 1) {
-                        // If there is only one item, then go ahead and add and configure
-                        // that widget
-                        final AppWidgetProviderInfo widgetInfo = widgets.get(0).widgetInfo;
-                        final PendingAddWidgetInfo createInfo =
-                                new PendingAddWidgetInfo(widgetInfo, mimeType, data);
-                        mLauncher.addAppWidgetFromDrop(createInfo,
-                                LauncherSettings.Favorites.CONTAINER_DESKTOP, mCurrentPage,
-                                null, null, pos);
-                    } else {
-                        // Show the widget picker dialog if there is more than one widget
-                        // that can handle this data type
-                        final InstallWidgetReceiver.WidgetListAdapter adapter =
-                            new InstallWidgetReceiver.WidgetListAdapter(mLauncher, mimeType,
-                                    data, widgets, layout, mCurrentPage, pos);
-                        final AlertDialog.Builder builder =
-                            new AlertDialog.Builder(mContext);
-                        builder.setAdapter(adapter, adapter);
-                        builder.setCancelable(true);
-                        builder.setTitle(mContext.getString(
-                                R.string.external_drop_widget_pick_title));
-                        builder.setIcon(R.drawable.ic_no_applications);
-                        builder.show();
-                    }
-                }
-            }
-            return true;
-        }
-        case DragEvent.ACTION_DRAG_ENDED:
-            // Hide the page outlines after the drop
-            layout.onDragExit();
-            hideOutlines();
-            return true;
-        }
-        return super.onDragEvent(event);
     }
 
     /*
