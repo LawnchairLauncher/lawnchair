@@ -2313,8 +2313,9 @@ public class Workspace extends SmoothPagedView
                     animateWidgetDrop(info, parent, d.dragView,
                             onCompleteRunnable, animationType, cell, false);
                 } else {
-                    mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, cell,
-                            onCompleteRunnable);
+                    int duration = snapScreen < 0 ? -1 : ADJACENT_SCREEN_DROP_DURATION;
+                    mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, cell, duration,
+                            onCompleteRunnable, this);
                 }
             } else {
                 d.deferDragViewCleanupPostAnimation = false;
