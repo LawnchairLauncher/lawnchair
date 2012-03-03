@@ -433,8 +433,10 @@ public class DragLayer extends FrameLayout {
 
     public void animateViewIntoPosition(DragView dragView, final View child, int duration,
             final Runnable onFinishAnimationRunnable, View anchorView) {
-        ((CellLayoutChildren) child.getParent()).measureChild(child);
+        CellLayoutChildren parentChildren = (CellLayoutChildren) child.getParent();
+        CellLayout parent = (CellLayout) (CellLayout) parentChildren.getParent();
         CellLayout.LayoutParams lp =  (CellLayout.LayoutParams) child.getLayoutParams();
+        parentChildren.measureChild(child);
 
         Rect r = new Rect();
         getViewRectRelativeToSelf(dragView, r);
@@ -442,20 +444,25 @@ public class DragLayer extends FrameLayout {
         int coord[] = new int[2];
         coord[0] = lp.x;
         coord[1] = lp.y;
+
         // Since the child hasn't necessarily been laid out, we force the lp to be updated with
         // the correct coordinates (above) and use these to determine the final location
         float scale = getDescendantCoordRelativeToSelf((View) child.getParent(), coord);
         int toX = coord[0];
         int toY = coord[1];
         if (child instanceof TextView) {
+            float childrenScale = parent.getChildrenScale();
             TextView tv = (TextView) child;
-            Drawable d = tv.getCompoundDrawables()[1];
 
-            // Center in the y coordinate about the target's drawable
-            toY += Math.round(scale * tv.getPaddingTop());
-            toY -= (dragView.getHeight() - (int) Math.round(scale * d.getIntrinsicHeight())) / 2;
-            // Center in the x coordinate about the target's drawable
+            // The child may be scaled (always about the center of the view) so to account for it,
+            // we have to offset the position by the scaled size.  Once we do that, we can center
+            // the drag view about the scaled child view.
+            toY += Math.round(((1f - childrenScale) * child.getMeasuredHeight()) / 2 +
+                    scale * childrenScale * tv.getPaddingTop());
+            toY -= dragView.getMeasuredHeight() * (1 - scale * childrenScale) / 2;
             toX -= (dragView.getMeasuredWidth() - Math.round(scale * child.getMeasuredWidth())) / 2;
+
+            scale *= childrenScale;
         } else if (child instanceof FolderIcon) {
             // Account for holographic blur padding on the drag view
             toY -= Workspace.DRAG_BITMAP_PADDING / 2;

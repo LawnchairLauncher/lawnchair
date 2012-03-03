@@ -2015,6 +2015,7 @@ public final class Launcher extends Activity
     }
 
     public boolean onLongClick(View v) {
+
         if (mState != State.WORKSPACE) {
             return false;
         }

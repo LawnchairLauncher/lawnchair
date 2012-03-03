@@ -21,7 +21,7 @@
 
 <!-- Hotseat -->
     <dimen name="hotseat_cell_width">75dp</dimen>
-    <dimen name="hotseat_cell_height">85dp</dimen>
+    <dimen name="hotseat_cell_height">75dp</dimen>
 
 <!-- Workspace -->
     <dimen name="workspace_cell_width">96dp</dimen>

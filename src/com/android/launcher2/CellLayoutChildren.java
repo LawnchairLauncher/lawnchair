@@ -18,9 +18,13 @@ package com.android.launcher2;
 
 import android.app.WallpaperManager;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.android.launcher2.CellLayout.LayoutParams;
 
 public class CellLayoutChildren extends ViewGroup {
     static final String TAG = "CellLayoutChildren";
@@ -65,6 +69,22 @@ public class CellLayoutChildren extends ViewGroup {
             }
         }
         return null;
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        // Debug drawing for hit space
+        if (false) {
+            Paint p = new Paint();
+            p.setColor(0x6600FF00);
+            for (int i = getChildCount() - 1; i >= 0; i--) {
+                final View child = getChildAt(i);
+                final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
+
+                canvas.drawRect(lp.x, lp.y, lp.x + lp.width, lp.y + lp.height, p);
+            }
+        }
+        super.dispatchDraw(canvas);
     }
 
     @Override
