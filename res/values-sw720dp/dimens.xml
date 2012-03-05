@@ -37,15 +37,6 @@
     <dimen name="app_icon_size">72dp</dimen>
     <integer name="app_icon_hotseat_scale_percent">-1</integer>
 
-    <!-- extra horizontal spacing between mini screen thumbnails ie. in all
-         apps and in customization mode -->
-    <dimen name="smallScreenExtraSpacing">0dip</dimen>
-
-    <!-- Vertical spacing between edge of screen and mini cell layouts when they
-         are minimized to the bottom in all apps -->
-    <dimen name="allAppsSmallScreenVerticalMarginLandscape">30dip</dimen>
-    <dimen name="allAppsSmallScreenVerticalMarginPortrait">60dip</dimen>
-
     <dimen name="all_apps_button_vertical_padding">4dip</dimen>
 
     <!-- roughly a status bar (for determining how many rows of icons are in home) -->
@@ -54,11 +45,6 @@
     <!-- dimensions for the wallpaper picker wallpaper thumbnail width -->
     <dimen name="wallpaper_chooser_grid_width">196dp</dimen>
     <dimen name="wallpaper_chooser_grid_height">140dp</dimen>
-    <dimen name="live_wallpaper_grid_item_padding">8dip</dimen>
-
-    <!-- How much the content view of an alert dialog should be inset (currently used
-        for the WallpaperChooser in XLarge mode) -->
-    <dimen name="alert_dialog_content_inset">0dp</dimen>
 
     <!-- When dragging items on the workspace, the number of dps by which the position of
      the drag view should be offset from the position of the original view. -->
