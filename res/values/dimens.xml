@@ -47,8 +47,10 @@
     <dimen name="hotseat_width_gap">-1dp</dimen>
     <dimen name="hotseat_height_gap">-1dp</dimen>
     <dimen name="workspace_overscroll_drawable_padding">0dp</dimen>
+    <dimen name="workspace_icon_text_size">12sp</dimen>
 
     <dimen name="app_icon_drawable_padding">6dp</dimen>
+    <dimen name="app_icon_drawable_padding_land">2dp</dimen>
     <dimen name="app_icon_padding_top">8dp</dimen>
 
 <!-- QSB -->
@@ -66,6 +68,7 @@
     <dimen name="apps_customize_tab_bar_height">52dp</dimen>
     <dimen name="apps_customize_tab_bar_margin_top">0dp</dimen>
     <dimen name="app_icon_size">48dp</dimen>
+    <integer name="app_icon_scale_percent">-1</integer>
     <integer name="app_icon_hotseat_scale_percent">-1</integer>
     <!-- The width can be 72dp because we don't have L/R padding -->
     <dimen name="apps_customize_cell_width">74dp</dimen>

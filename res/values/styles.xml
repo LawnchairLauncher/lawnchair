@@ -62,7 +62,7 @@
         <item name="android:gravity">center_horizontal</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">marquee</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">@dimen/workspace_icon_text_size</item>
         <item name="android:textColor">@color/workspace_icon_text_color</item>
         <item name="android:shadowRadius">2.0</item>
         <item name="android:shadowColor">#B0000000</item>
@@ -77,7 +77,7 @@
     </style>
 
     <style name="WorkspaceIcon.Landscape">
-        <item name="android:drawablePadding">2dp</item>
+        <item name="android:drawablePadding">@dimen/app_icon_drawable_padding_land</item>
         <item name="android:paddingLeft">4dp</item>
         <item name="android:paddingRight">4dp</item>
         <item name="android:paddingTop">@dimen/app_icon_padding_top</item>

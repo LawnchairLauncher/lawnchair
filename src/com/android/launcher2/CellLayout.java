@@ -138,6 +138,7 @@ public class CellLayout extends ViewGroup {
 
     private boolean mIsHotseat = false;
     private final int mBubbleScalePercent;
+    private final int mBubbleHotseatScalePercent;
 
     public CellLayout(Context context) {
         this(context, null);
@@ -184,7 +185,8 @@ public class CellLayout extends ViewGroup {
         mNormalBackground.setFilterBitmap(true);
         mActiveGlowBackground.setFilterBitmap(true);
 
-        mBubbleScalePercent = res.getInteger(R.integer.app_icon_hotseat_scale_percent);
+        mBubbleScalePercent = res.getInteger(R.integer.app_icon_scale_percent);
+        mBubbleHotseatScalePercent = res.getInteger(R.integer.app_icon_hotseat_scale_percent);
 
         // Initialize the data structures used for the drag visualization.
 
@@ -588,6 +590,34 @@ public class CellLayout extends ViewGroup {
         return addViewToCellLayout(child, index, childId, params, markCells, false);
     }
 
+    private void scaleChild(BubbleTextView bubbleChild, float pivot, int scalePercent) {
+        // If we haven't measured the child yet, do it now
+        // (this happens if we're being dropped from all-apps
+        if (bubbleChild.getLayoutParams() instanceof LayoutParams &&
+                (bubbleChild.getMeasuredWidth() | bubbleChild.getMeasuredHeight()) == 0) {
+            getChildrenLayout().measureChild(bubbleChild);
+        }
+        int measuredWidth = bubbleChild.getMeasuredWidth();
+        int measuredHeight = bubbleChild.getMeasuredHeight();
+
+        float scale = scalePercent / 100f;
+        bubbleChild.setPivotX(pivot);
+        bubbleChild.setPivotY(pivot);
+        bubbleChild.setScaleX(scale);
+        bubbleChild.setScaleY(scale);
+        bubbleChild.setTranslationX(measuredWidth * (1 - scale) / 2);
+        bubbleChild.setTranslationY(measuredHeight * (1 - scale) / 2);
+    }
+
+    private void resetChild(BubbleTextView bubbleChild) {
+        bubbleChild.setScaleX(1f);
+        bubbleChild.setScaleY(1f);
+        bubbleChild.setTranslationX(0f);
+        bubbleChild.setTranslationY(0f);
+
+        bubbleChild.setTextColor(getResources().getColor(R.color.workspace_icon_text_color));
+    }
+
     public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params,
             boolean markCells, boolean allApps) {
         final LayoutParams lp = params;
@@ -599,32 +629,17 @@ public class CellLayout extends ViewGroup {
         if (child instanceof BubbleTextView) {
             BubbleTextView bubbleChild = (BubbleTextView) child;
 
-            if (mIsHotseat && !allApps && mBubbleScalePercent >= 0) {
-                // If we haven't measured the child yet, do it now
-                // (this happens if we're being dropped from all-apps
-                if ((bubbleChild.getMeasuredWidth() | bubbleChild.getMeasuredHeight()) == 0) {
-                    getChildrenLayout().measureChild(bubbleChild);
-                }
-                int measuredWidth = bubbleChild.getMeasuredWidth();
-                int measuredHeight = bubbleChild.getMeasuredHeight();
+            // Start the child with 100% scale and visible text
+            resetChild(bubbleChild);
 
-                float bubbleScale = mBubbleScalePercent / 100f;
-                bubbleChild.setPivotX(0);
-                bubbleChild.setPivotY(0);
-                bubbleChild.setScaleX(bubbleScale);
-                bubbleChild.setScaleY(bubbleScale);
-                bubbleChild.setTranslationX(measuredWidth * (1 - bubbleScale) / 2);
-                bubbleChild.setTranslationY(measuredHeight * (1 - bubbleScale) / 2);
+            if (mIsHotseat && !allApps && mBubbleHotseatScalePercent >= 0) {
+                // Scale/make transparent for a hotseat
+                scaleChild(bubbleChild, 0f, mBubbleHotseatScalePercent);
 
-                bubbleChild.setTextColor(android.R.color.transparent);
-            } else {
-                bubbleChild.setScaleX(1f);
-                bubbleChild.setScaleY(1f);
-                bubbleChild.setTranslationX(0f);
-                bubbleChild.setTranslationY(0f);
-
-                bubbleChild.setTextColor(
-                        getResources().getColor(R.color.workspace_icon_text_color));
+                bubbleChild.setTextColor(getResources().getColor(android.R.color.transparent));
+            } else if (mBubbleScalePercent >= 0) {
+                // Else possibly still scale it if we need to for smaller icons
+                scaleChild(bubbleChild, 0f, mBubbleScalePercent);
             }
         }
 
