@@ -37,7 +37,7 @@
     <dimen name="external_drop_icon_rect_radius">10dp</dimen>
 
     <!-- Size of icons in workspace -->
-    <dimen name="app_icon_size">72dp</dimen>
+    <integer name="app_icon_scale_percent">-1</integer>
     <integer name="app_icon_hotseat_scale_percent">-1</integer>
 
     <!-- extra horizontal spacing between mini screen thumbnails ie. in all
