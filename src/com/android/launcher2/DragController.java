@@ -351,6 +351,7 @@ public class DragController {
             if (mLastDropTarget != null) {
                 mLastDropTarget.onDragExit(mDragObject);
             }
+            mDragObject.deferDragViewCleanupPostAnimation = false;
             mDragObject.cancelled = true;
             mDragObject.dragComplete = true;
             mDragObject.dragSource.onDropCompleted(null, mDragObject, false);
