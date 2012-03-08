@@ -295,7 +295,7 @@ public class BubbleTextView extends TextView {
         }
 
         // If text is transparent, don't draw any shadow
-        if (getCurrentTextColor() == android.R.color.transparent) {
+        if (getCurrentTextColor() == getResources().getColor(android.R.color.transparent)) {
             getPaint().clearShadowLayer();
             super.draw(canvas);
             return;
