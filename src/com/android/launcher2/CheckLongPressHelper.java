@@ -28,6 +28,7 @@ public class CheckLongPressHelper {
             if ((mView.getParent() != null) && mView.hasWindowFocus()
                     && !mHasPerformedLongPress) {
                 if (mView.performLongClick()) {
+                    mView.setPressed(false);
                     mHasPerformedLongPress = true;
                 }
             }
