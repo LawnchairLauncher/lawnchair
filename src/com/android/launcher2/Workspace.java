@@ -3483,7 +3483,7 @@ public class Workspace extends SmoothPagedView
                 final View view = layout.getChildAt(j);
                 Object tag = view.getTag();
                 if (tag instanceof ShortcutInfo) {
-                    ShortcutInfo info = (ShortcutInfo)tag;
+                    ShortcutInfo info = (ShortcutInfo) tag;
                     // We need to check for ACTION_MAIN otherwise getComponent() might
                     // return null for some shortcuts (for instance, for shortcuts to
                     // web pages.)
@@ -3495,11 +3495,11 @@ public class Workspace extends SmoothPagedView
                         for (int k = 0; k < appCount; k++) {
                             ApplicationInfo app = apps.get(k);
                             if (app.componentName.equals(name)) {
-                                info.setIcon(mIconCache.getIcon(info.intent));
-                                ((TextView)view).setCompoundDrawablesWithIntrinsicBounds(null,
-                                        new FastBitmapDrawable(info.getIcon(mIconCache)),
-                                        null, null);
-                                }
+                                BubbleTextView shortcut = (BubbleTextView) view;
+                                info.updateIcon(mIconCache);
+                                info.title = app.title.toString();
+                                shortcut.applyFromShortcutInfo(info, mIconCache);
+                            }
                         }
                     }
                 }

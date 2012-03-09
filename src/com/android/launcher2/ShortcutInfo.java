@@ -93,10 +93,14 @@ class ShortcutInfo extends ItemInfo {
 
     public Bitmap getIcon(IconCache iconCache) {
         if (mIcon == null) {
-            mIcon = iconCache.getIcon(this.intent);
-            this.usingFallbackIcon = iconCache.isDefaultIcon(mIcon);
+            updateIcon(iconCache);
         }
         return mIcon;
+    }
+
+    public void updateIcon(IconCache iconCache) {
+        mIcon = iconCache.getIcon(intent);
+        usingFallbackIcon = iconCache.isDefaultIcon(mIcon);
     }
 
     /**
