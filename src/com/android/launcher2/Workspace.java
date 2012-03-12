@@ -1902,10 +1902,14 @@ public class Workspace extends SmoothPagedView
         final Bitmap b = createDragBitmap(child, new Canvas(), DRAG_BITMAP_PADDING);
 
         final int bmpWidth = b.getWidth();
+        final int bmpHeight = b.getHeight();
 
         mLauncher.getDragLayer().getLocationInDragLayer(child, mTempXY);
-        final int dragLayerX = (int) mTempXY[0] + (child.getWidth() - bmpWidth) / 2;
-        int dragLayerY = mTempXY[1] - DRAG_BITMAP_PADDING / 2;
+        int dragLayerX =
+                Math.round(mTempXY[0] - (bmpWidth - child.getScaleX() * child.getWidth()) / 2);
+        int dragLayerY =
+                Math.round(mTempXY[1] - (bmpHeight - child.getScaleY() * bmpHeight) / 2
+                        - DRAG_BITMAP_PADDING / 2);
 
         Point dragVisualizeOffset = null;
         Rect dragRect = null;
@@ -1934,7 +1938,7 @@ public class Workspace extends SmoothPagedView
         }
 
         mDragController.startDrag(b, dragLayerX, dragLayerY, source, child.getTag(),
-                DragController.DRAG_ACTION_MOVE, dragVisualizeOffset, dragRect, 1f);
+                DragController.DRAG_ACTION_MOVE, dragVisualizeOffset, dragRect, child.getScaleX());
         b.recycle();
 
         // Show the scrolling indicator when you pick up an item

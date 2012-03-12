@@ -47,8 +47,6 @@ public class BubbleTextView extends TextView {
     static final float PADDING_H = 8.0f;
     static final float PADDING_V = 3.0f;
 
-    private Paint mPaint;
-    private float mBubbleColorAlpha;
     private int mPrevAlpha = -1;
 
     private final HolographicOutlineHelper mOutlineHelper = new HolographicOutlineHelper();
@@ -88,9 +86,6 @@ public class BubbleTextView extends TextView {
 
         final Resources res = getContext().getResources();
         int bubbleColor = res.getColor(R.color.bubble_dark_background);
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaint.setColor(bubbleColor);
-        mBubbleColorAlpha = Color.alpha(bubbleColor) / 255.0f;
         mFocusedOutlineColor = mFocusedGlowColor = mPressedOutlineColor = mPressedGlowColor =
             res.getColor(android.R.color.holo_blue_light);
 
@@ -178,7 +173,8 @@ public class BubbleTextView extends TextView {
         // The translate of scrollX and scrollY is necessary when drawing TextViews, because
         // they set scrollX and scrollY to large values to achieve centered text
         destCanvas.save();
-        destCanvas.scale(getScaleX(), getScaleY(), getWidth() / 2, getHeight() / 2);
+        destCanvas.scale(getScaleX(), getScaleY(),
+                (getWidth() + padding) / 2, (getHeight() + padding) / 2);
         destCanvas.translate(-getScrollX() + padding / 2, -getScrollY() + padding / 2);
         destCanvas.clipRect(clipRect, Op.REPLACE);
         draw(destCanvas);
@@ -328,7 +324,6 @@ public class BubbleTextView extends TextView {
     protected boolean onSetAlpha(int alpha) {
         if (mPrevAlpha != alpha) {
             mPrevAlpha = alpha;
-            mPaint.setAlpha((int) (alpha * mBubbleColorAlpha));
             super.onSetAlpha(alpha);
         }
         return true;

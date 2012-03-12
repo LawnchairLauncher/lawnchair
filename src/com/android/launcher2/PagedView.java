@@ -580,7 +580,14 @@ public abstract class PagedView extends ViewGroup {
 
             // Calculate the variable page spacing if necessary
             if (mPageSpacing < 0) {
-                setPageSpacing(((right - left) - getChildAt(0).getMeasuredWidth()) / 2);
+                // The gap between pages in the PagedView should be equal to the gap from the page
+                // to the edge of the screen (so it is not visible in the current screen).  To
+                // account for unequal padding on each side of the paged view, we take the maximum
+                // of the left/right gap and use that as the gap between each page.
+                int offset = getRelativeChildOffset(0);
+                int spacing = Math.max(offset, (right - left) - offset -
+                        getChildAt(0).getMeasuredWidth());
+                setPageSpacing(spacing);
             }
         }
 

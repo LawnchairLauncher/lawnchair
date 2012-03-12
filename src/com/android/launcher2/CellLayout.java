@@ -137,8 +137,8 @@ public class CellLayout extends ViewGroup {
     private CellLayoutChildren mChildren;
 
     private boolean mIsHotseat = false;
-    private final int mBubbleScalePercent;
-    private final int mBubbleHotseatScalePercent;
+    private float mChildScale = 1f;
+    private float mHotseatChildScale = 1f;
 
     public CellLayout(Context context) {
         this(context, null);
@@ -185,8 +185,14 @@ public class CellLayout extends ViewGroup {
         mNormalBackground.setFilterBitmap(true);
         mActiveGlowBackground.setFilterBitmap(true);
 
-        mBubbleScalePercent = res.getInteger(R.integer.app_icon_scale_percent);
-        mBubbleHotseatScalePercent = res.getInteger(R.integer.app_icon_hotseat_scale_percent);
+        int iconScale = res.getInteger(R.integer.app_icon_scale_percent);
+        if (iconScale >= 0) {
+            mChildScale = iconScale / 100f;
+        }
+        int hotseatIconScale = res.getInteger(R.integer.app_icon_hotseat_scale_percent);
+        if (hotseatIconScale >= 0) {
+            mHotseatChildScale = hotseatIconScale / 100f;
+        }
 
         // Initialize the data structures used for the drag visualization.
 
@@ -497,25 +503,6 @@ public class CellLayout extends ViewGroup {
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        // Debug drawing for hit space
-        if (false) {
-            final Rect frame = mRect;
-            for (int i = mChildren.getChildCount() - 1; i >= 0; i--) {
-                final View child = mChildren.getChildAt(i);
-                final LayoutParams lp = (LayoutParams) child.getLayoutParams();
-
-                if ((child.getVisibility() == VISIBLE || child.getAnimation() != null) &&
-                        lp.isLockedToGrid) {
-                    child.getHitRect(frame);
-                    frame.offset(mPaddingLeft, mPaddingTop);
-
-                    Paint p = new Paint();
-                    p.setColor(Color.GREEN);
-                    canvas.drawRect(frame, p);
-                }
-            }
-        }
-
         super.dispatchDraw(canvas);
         if (mForegroundAlpha > 0) {
             mOverScrollForegroundDrawable.setBounds(mForegroundRect);
@@ -582,12 +569,16 @@ public class CellLayout extends ViewGroup {
         mIsHotseat = isHotseat;
     }
 
+    public float getChildrenScale() {
+        return mIsHotseat ? mHotseatChildScale : mChildScale;
+    }
+
     public boolean addViewToCellLayout(
             View child, int index, int childId, LayoutParams params, boolean markCells) {
         return addViewToCellLayout(child, index, childId, params, markCells, false);
     }
 
-    private void scaleChild(BubbleTextView bubbleChild, float pivot, int scalePercent) {
+    private void scaleChild(BubbleTextView bubbleChild, float pivot, float scale) {
         // If we haven't measured the child yet, do it now
         // (this happens if we're being dropped from all-apps
         if (bubbleChild.getLayoutParams() instanceof LayoutParams &&
@@ -597,20 +588,13 @@ public class CellLayout extends ViewGroup {
         int measuredWidth = bubbleChild.getMeasuredWidth();
         int measuredHeight = bubbleChild.getMeasuredHeight();
 
-        float scale = scalePercent / 100f;
-        bubbleChild.setPivotX(pivot);
-        bubbleChild.setPivotY(pivot);
         bubbleChild.setScaleX(scale);
         bubbleChild.setScaleY(scale);
-        bubbleChild.setTranslationX(measuredWidth * (1 - scale) / 2);
-        bubbleChild.setTranslationY(measuredHeight * (1 - scale) / 2);
     }
 
     private void resetChild(BubbleTextView bubbleChild) {
         bubbleChild.setScaleX(1f);
         bubbleChild.setScaleY(1f);
-        bubbleChild.setTranslationX(0f);
-        bubbleChild.setTranslationY(0f);
 
         bubbleChild.setTextColor(getResources().getColor(R.color.workspace_icon_text_color));
     }
@@ -629,14 +613,14 @@ public class CellLayout extends ViewGroup {
             // Start the child with 100% scale and visible text
             resetChild(bubbleChild);
 
-            if (mIsHotseat && !allApps && mBubbleHotseatScalePercent >= 0) {
+            if (mIsHotseat && !allApps && mHotseatChildScale >= 0) {
                 // Scale/make transparent for a hotseat
-                scaleChild(bubbleChild, 0f, mBubbleHotseatScalePercent);
+                scaleChild(bubbleChild, 0f, mHotseatChildScale);
 
                 bubbleChild.setTextColor(getResources().getColor(android.R.color.transparent));
-            } else if (mBubbleScalePercent >= 0) {
+            } else if (mChildScale >= 0) {
                 // Else possibly still scale it if we need to for smaller icons
-                scaleChild(bubbleChild, 0f, mBubbleScalePercent);
+                scaleChild(bubbleChild, 0f, mChildScale);
             }
         }
 
@@ -727,7 +711,7 @@ public class CellLayout extends ViewGroup {
 
     public void setTagToCellInfoForPoint(int touchX, int touchY) {
         final CellInfo cellInfo = mCellInfo;
-        final Rect frame = mRect;
+        Rect frame = mRect;
         final int x = touchX + mScrollX;
         final int y = touchY + mScrollY;
         final int count = mChildren.getChildCount();
@@ -741,10 +725,15 @@ public class CellLayout extends ViewGroup {
                     lp.isLockedToGrid) {
                 child.getHitRect(frame);
 
+                float scale = child.getScaleX();
+                frame = new Rect(child.getLeft(), child.getTop(), child.getRight(),
+                        child.getBottom());
                 // The child hit rect is relative to the CellLayoutChildren parent, so we need to
                 // offset that by this CellLayout's padding to test an (x,y) point that is relative
                 // to this view.
                 frame.offset(mPaddingLeft, mPaddingTop);
+                frame.inset((int) (frame.width() * (1f - scale) / 2),
+                        (int) (frame.height() * (1f - scale) / 2));
 
                 if (frame.contains(x, y)) {
                     cellInfo.cell = child;
@@ -791,6 +780,7 @@ public class CellLayout extends ViewGroup {
         if (action == MotionEvent.ACTION_DOWN) {
             setTagToCellInfoForPoint((int) ev.getX(), (int) ev.getY());
         }
+
         return false;
     }
 
@@ -1978,8 +1968,8 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
                         leftMargin - rightMargin;
                 height = myCellVSpan * cellHeight + ((myCellVSpan - 1) * heightGap) -
                         topMargin - bottomMargin;
-                x = myCellX * (cellWidth + widthGap) + leftMargin;
-                y = myCellY * (cellHeight + heightGap) + topMargin;
+                x = (int) (myCellX * (cellWidth + widthGap) + leftMargin);
+                y = (int) (myCellY * (cellHeight + heightGap) + topMargin);
             }
         }
 

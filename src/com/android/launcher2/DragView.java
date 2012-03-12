@@ -162,7 +162,7 @@ public class DragView extends View {
             // for debugging
             Paint p = new Paint();
             p.setStyle(Paint.Style.FILL);
-            p.setColor(0xaaffffff);
+            p.setColor(0x66ffffff);
             canvas.drawRect(0, 0, getWidth(), getHeight(), p);
         }
 
