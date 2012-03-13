@@ -308,6 +308,7 @@ public final class Launcher extends Activity
     // Preferences
     private boolean mShowSearchBar;
     private boolean mShowDockDivider;
+    private boolean mHideIconLabels;
     private boolean mAutoRotate;
 
     private Runnable mBuildLayersRunnable = new Runnable() {
@@ -381,6 +382,7 @@ public final class Launcher extends Activity
         // Preferences
         mShowSearchBar = PreferencesProvider.Interface.Homescreen.getShowSearchBar(this);
         mShowDockDivider = PreferencesProvider.Interface.Homescreen.Indicator.getShowDockDivider(this);
+        mHideIconLabels = PreferencesProvider.Interface.Homescreen.getHideIconLabels(this);
         mAutoRotate = PreferencesProvider.Interface.General.getAutoRotate(this, getResources().getBoolean(R.bool.allow_rotation));
 
         if (PROFILE_STARTUP) {
@@ -1017,6 +1019,9 @@ public final class Launcher extends Activity
     View createShortcut(int layoutResId, ViewGroup parent, ShortcutInfo info) {
         BubbleTextView favorite = (BubbleTextView) mInflater.inflate(layoutResId, parent, false);
         favorite.applyFromShortcutInfo(info, mIconCache);
+        if (mHideIconLabels){
+            favorite.setText(null);
+        }
         favorite.setOnClickListener(this);
         return favorite;
     }
