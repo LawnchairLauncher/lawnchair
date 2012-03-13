@@ -313,26 +313,28 @@ s -->
     <string name="preferences_interface_homescreen_general_search_summary">Enable persistent search bar</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_title">Resize any widget</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_summary">Allow resizing of widgets that normally aren\'t resizeable</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Hide icon labels</string>
+    <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Hide homescreen icon labels</string>
     <string name="preferences_interface_homescreen_scrolling_category">Scrolling</string>
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">Scroll Wallpaper</string>
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Scroll wallpaper when scrolling homescreens</string>
     <string name="preferences_interface_homescreen_indicator_category">Indicator</string>
-    <string name="preferences_interface_homescreen_indicator_enable_title">Show Page Indicator</string>
+    <string name="preferences_interface_homescreen_indicator_enable_title">Show page indicator</string>
     <string name="preferences_interface_homescreen_indicator_enable_summary">Show current page indicator at the bottom of the screen</string>
-    <string name="preferences_interface_homescreen_indicator_fade_title">Fade Indicator</string>
+    <string name="preferences_interface_homescreen_indicator_fade_title">Fade indicator</string>
     <string name="preferences_interface_homescreen_indicator_fade_summary">Fade the indicator after the homescreen has changed</string>
-    <string name="preferences_interface_homescreen_indicator_background_title">Show Dock Divider</string>
+    <string name="preferences_interface_homescreen_indicator_background_title">Show dock divider</string>
     <string name="preferences_interface_homescreen_indicator_background_summary">Show the background behind the indicator</string>
 
     <!-- Drawer -->
     <string name="preferences_interface_drawer_title">Drawer</string>
     <string name="preferences_interface_drawer_widgets_category">Widgets</string>
-    <string name="preferences_interface_drawer_widgets_join_apps_title">Join with Apps</string>
+    <string name="preferences_interface_drawer_widgets_join_apps_title">Join with apps</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">Swipe from apps drawer to widgets drawer without changing tabs</string>
     <string name="preferences_interface_drawer_indicator_category">Indicator</string>
-    <string name="preferences_interface_drawer_indicator_enable_title">Show Page Indicator</string>
+    <string name="preferences_interface_drawer_indicator_enable_title">Show page indicator</string>
     <string name="preferences_interface_drawer_indicator_enable_summary">Show current page indicator at the bottom of the screen</string>
-    <string name="preferences_interface_drawer_indicator_fade_title">Fade Indicator</string>
+    <string name="preferences_interface_drawer_indicator_fade_title">Fade indicator</string>
     <string name="preferences_interface_drawer_indicator_fade_summary">Fade the indicator after the page has changed</string>
 
     <!-- Dock -->

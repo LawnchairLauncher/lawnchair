@@ -46,6 +46,7 @@ import android.widget.TextView;
 
 import com.cyanogenmod.trebuchet.R;
 import com.cyanogenmod.trebuchet.FolderInfo.FolderListener;
+import com.cyanogenmod.trebuchet.preference.PreferencesProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -172,6 +173,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mFolderName.setSelectAllOnFocus(true);
         mFolderName.setInputType(mFolderName.getInputType() |
                 InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+
+        if (PreferencesProvider.Interface.Homescreen.getHideIconLabels(mLauncher)){
+            mFolderName.setVisibility(View.GONE);
+            mFolderNameHeight = getPaddingBottom();
+        }
     }
 
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
@@ -254,7 +260,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // Convert to a string here to ensure that no other state associated with the text field
         // gets saved.
         String newTitle = mFolderName.getText().toString();
-        mInfo.setTitle(newTitle);
+        if (!PreferencesProvider.Interface.Homescreen.getHideIconLabels(mLauncher)) {
+            mInfo.setTitle(newTitle);
+        }
         LauncherModel.updateItemInDatabase(mLauncher, mInfo);
 
         if (commit) {

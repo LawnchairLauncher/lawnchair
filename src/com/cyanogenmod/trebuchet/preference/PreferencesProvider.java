@@ -59,6 +59,10 @@ public final class PreferencesProvider {
                 final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
                 return preferences.getBoolean("ui_homescreen_general_resize_any_widget", false);
             }
+            public static boolean getHideIconLabels(Context context) {
+                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                return preferences.getBoolean("ui_homescreen_general_hide_icon_labels", false);
+            }
             public static class Scrolling {
                 public static boolean getScrollWallpaper(Context context) {
                     final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
