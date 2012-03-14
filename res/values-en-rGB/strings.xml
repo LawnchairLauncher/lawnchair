@@ -42,9 +42,9 @@
     <string name="group_wallpapers" msgid="1568191644272224858">"Wallpaper"</string>
     <string name="out_of_space" msgid="8365249326091984698">"No more room on this Home screen."</string>
     <string name="invalid_hotseat_item" msgid="6545340627805449250">"This widget is too large for the hot-seat."</string>
-    <string name="shortcut_installed" msgid="7071557296331322355">"<xliff:g id="NAME">%s</xliff:g>Shortcut \"\" created."</string>
-    <string name="shortcut_uninstalled" msgid="2129499669449749995">"<xliff:g id="NAME">%s</xliff:g>Shortcut \"\" was removed."</string>
-    <string name="shortcut_duplicate" msgid="4757756326465060694">"<xliff:g id="NAME">%s</xliff:g>Shortcut \"\" already exists."</string>
+    <string name="shortcut_installed" msgid="7071557296331322355">"Shortcut \"<xliff:g id="NAME">%s</xliff:g>\" created."</string>
+    <string name="shortcut_uninstalled" msgid="2129499669449749995">"Shortcut \"<xliff:g id="NAME">%s</xliff:g>\" was removed."</string>
+    <string name="shortcut_duplicate" msgid="4757756326465060694">"Shortcut \"<xliff:g id="NAME">%s</xliff:g>\" already exists."</string>
     <string name="title_select_shortcut" msgid="1873670208166882222">"Choose shortcut"</string>
     <string name="title_select_application" msgid="1793455815754848652">"Choose app"</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Apps"</string>
