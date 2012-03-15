@@ -912,13 +912,14 @@ public final class Launcher extends Activity
             foundCellSpan = true;
 
             // If appropriate, either create a folder or add to an existing folder
-            if (mWorkspace.createUserFolderIfNecessary(view, container, layout, cellXY,
+            if (mWorkspace.createUserFolderIfNecessary(view, container, layout, cellXY, 0,
                     true, null,null)) {
                 return;
             }
             DragObject dragObject = new DragObject();
             dragObject.dragInfo = info;
-            if (mWorkspace.addToExistingFolderIfNecessary(view, layout, cellXY, dragObject, true)) {
+            if (mWorkspace.addToExistingFolderIfNecessary(view, layout, cellXY, 0, dragObject,
+                    true)) {
                 return;
             }
         } else if (touchXY != null) {
