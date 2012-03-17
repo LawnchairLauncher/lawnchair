@@ -121,6 +121,8 @@ s -->
 
     <!-- Label for delete drop target. [CHAR_LIMIT=30] -->
     <string name="delete_target_label">Remove</string>
+    <!-- Label for cancel drop target. [CHAR_LIMIT=30] -->
+    <string name="cancel_target_label">Cancel</string>
     <!-- Label for uninstall drop target. [CHAR_LIMIT=30]-->
     <string name="delete_target_uninstall_label">Uninstall</string>
     <!-- Label for the info icon. [CHAR_LIMIT=30] -->
