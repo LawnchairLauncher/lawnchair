@@ -584,6 +584,8 @@ public class Workspace extends SmoothPagedView
             // Hide folder title in the hotseat
             if (child instanceof FolderIcon) {
                 ((FolderIcon) child).setTextVisible(false);
+            } else if (child instanceof BubbleTextView) {
+                ((BubbleTextView) child).setTextVisible(false);
             }
 
             if (screen < 0) {
@@ -598,6 +600,8 @@ public class Workspace extends SmoothPagedView
             // Show folder title if not in the hotseat
             if (child instanceof FolderIcon) {
                 ((FolderIcon) child).setTextVisible(true);
+            } else if (child instanceof BubbleTextView) {
+                ((BubbleTextView) child).setTextVisible(true);
             }
 
             layout = (CellLayout) getChildAt(screen);
