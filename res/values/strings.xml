@@ -312,6 +312,10 @@ s -->
     <string name="preferences_interface_homescreen_general_grid_summary">Choose the number of rows/columns on the homescreen</string>
     <string name="preferences_interface_homescreen_general_grid_rows_title">Rows</string>
     <string name="preferences_interface_homescreen_general_grid_columns_title">Columns</string>
+    <string name="preferences_interface_homescreen_general_screen_padding_vertical_title">Vertical Padding</string>
+    <string name="preferences_interface_homescreen_general_screen_padding_vertical_summary">Extra vertical spacing on the homescreen</string>
+    <string name="preferences_interface_homescreen_general_screen_padding_horizontal_title">Horizontal Padding</string>
+    <string name="preferences_interface_homescreen_general_screen_padding_horizontal_summary">Extra horizontal spacing on the homescreen</string>
     <string name="preferences_interface_homescreen_general_search_summary">Enable persistent search bar</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_title">Resize any widget</string>
     <string name="preferences_interface_homescreen_general_resize_any_widget_summary">Allow resizing of widgets that normally aren\'t resizeable</string>
