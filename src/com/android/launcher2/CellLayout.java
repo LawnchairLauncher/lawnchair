@@ -888,11 +888,25 @@ public class CellLayout extends ViewGroup {
      * @param result Array of 2 ints to hold the x and y coordinate of the point
      */
     void cellToCenterPoint(int cellX, int cellY, int[] result) {
+        regionToCenterPoint(cellX, cellY, 1, 1, result);
+    }
+
+    /**
+     * Given a cell coordinate and span return the point that represents the center of the regio
+     *
+     * @param cellX X coordinate of the cell
+     * @param cellY Y coordinate of the cell
+     *
+     * @param result Array of 2 ints to hold the x and y coordinate of the point
+     */
+    void regionToCenterPoint(int cellX, int cellY, int spanX, int spanY, int[] result) {
         final int hStartPadding = getPaddingLeft();
         final int vStartPadding = getPaddingTop();
 
-        result[0] = hStartPadding + cellX * (mCellWidth + mWidthGap) + mCellWidth / 2;
-        result[1] = vStartPadding + cellY * (mCellHeight + mHeightGap) + mCellHeight / 2;
+        result[0] = hStartPadding + cellX * (mCellWidth + mWidthGap) +
+                (spanX * mCellWidth + (spanX - 1) * mWidthGap) / 2;
+        result[1] = vStartPadding + cellY * (mCellHeight + mHeightGap) +
+                (spanY * mCellHeight + (spanY - 1) * mHeightGap) / 2;
     }
 
     public float getDistanceFromCell(float x, float y, int[] cell) {
@@ -1472,20 +1486,23 @@ public class CellLayout extends ViewGroup {
      * desired location. This method computers distance based on unit grid distances,
      * not pixel distances.
      *
-     * @param pixelX The X location at which you want to search for a vacant area.
-     * @param pixelY The Y location at which you want to search for a vacant area.
-     * @param minSpanX The minimum horizontal span required
-     * @param minSpanY The minimum vertical span required
+     * @param cellX The X cell nearest to which you want to search for a vacant area.
+     * @param cellY The Y cell nearest which you want to search for a vacant area.
      * @param spanX Horizontal span of the object.
      * @param spanY Vertical span of the object.
-     * @param ignoreOccupied If true, the result can be an occupied cell
+     * @param direction The favored direction in which the views should move from x, y
+     * @param exactDirectionOnly If this parameter is true, then only solutions where the direction
+     *        matches exactly. Otherwise we find the best matching direction.
+     * @param occoupied The array which represents which cells in the CellLayout are occupied
+     * @param blockOccupied The array which represents which cells in the specified block (cellX,
+     *        cellY, spanX, spanY) are occupied. This is used when try to move a group of views. 
      * @param result Array in which to place the result, or null (in which case a new array will
      *        be allocated)
      * @return The X, Y cell of a vacant area that can contain this object,
      *         nearest the requested location.
      */
     private int[] findNearestArea(int cellX, int cellY, int spanX, int spanY, int[] direction,
-            boolean[][] occupied, int[] result) {
+            boolean[][] occupied, boolean blockOccupied[][], int[] result) {
         // Keep track of best-scoring drop area
         final int[] bestXY = result != null ? result : new int[2];
         float bestDistance = Float.MAX_VALUE;
@@ -1500,7 +1517,7 @@ public class CellLayout extends ViewGroup {
                 // First, let's see if this thing fits anywhere
                 for (int i = 0; i < spanX; i++) {
                     for (int j = 0; j < spanY; j++) {
-                        if (occupied[x + i][y + j]) {
+                        if (occupied[x + i][y + j] && (blockOccupied == null || blockOccupied[i][j])) {
                             continue inner;
                         }
                     }
@@ -1509,11 +1526,16 @@ public class CellLayout extends ViewGroup {
                 float distance = (float)
                         Math.sqrt((x - cellX) * (x - cellX) + (y - cellY) * (y - cellY));
                 int[] curDirection = mTmpPoint;
-                computeDirectionVector(cellX, cellY, x, y, curDirection);
+                computeDirectionVector(x - cellX, y - cellY, curDirection);
+                // The direction score is just the dot product of the two candidate direction
+                // and that passed in.
                 int curDirectionScore = direction[0] * curDirection[0] +
                         direction[1] * curDirection[1];
-
-                if (Float.compare(distance,  bestDistance) < 0 || (Float.compare(distance,
+                boolean exactDirectionOnly = false;
+                boolean directionMatches = direction[0] == curDirection[0] &&
+                        direction[0] == curDirection[0];
+                if ((directionMatches || !exactDirectionOnly) &&
+                        Float.compare(distance,  bestDistance) < 0 || (Float.compare(distance,
                         bestDistance) == 0 && curDirectionScore > bestDirectionScore)) {
                     bestDistance = distance;
                     bestDirectionScore = curDirectionScore;
@@ -1531,6 +1553,48 @@ public class CellLayout extends ViewGroup {
         return bestXY;
     }
 
+    private int[] findNearestAreaInDirection(int cellX, int cellY, int spanX, int spanY, 
+            int[] direction,boolean[][] occupied,
+            boolean blockOccupied[][], int[] result) {
+        // Keep track of best-scoring drop area
+        final int[] bestXY = result != null ? result : new int[2];
+        bestXY[0] = -1;
+        bestXY[1] = -1;
+        float bestDistance = Float.MAX_VALUE;
+
+        // We use this to march in a single direction
+        if (direction[0] != 0 && direction[1] != 0) { 
+            return bestXY;
+        }
+
+        // This will only incrememnet one of x or y based on the assertion above
+        int x = cellX + direction[0];
+        int y = cellY + direction[1];
+        while (x >= 0 && x + spanX <= mCountX && y >= 0 && y + spanY <= mCountY) {
+
+            boolean fail = false;
+            for (int i = 0; i < spanX; i++) {
+                for (int j = 0; j < spanY; j++) {
+                    if (occupied[x + i][y + j] && (blockOccupied == null || blockOccupied[i][j])) {
+                        fail = true;                    
+                    }
+                }
+            }
+            if (!fail) {
+                float distance = (float)
+                        Math.sqrt((x - cellX) * (x - cellX) + (y - cellY) * (y - cellY));
+                if (Float.compare(distance,  bestDistance) < 0) {
+                    bestDistance = distance;
+                    bestXY[0] = x;
+                    bestXY[1] = y;
+                }
+            }
+            x += direction[0];
+            y += direction[1];
+        }
+        return bestXY;
+    }
+
     private boolean addViewToTempLocation(View v, Rect rectOccupiedByPotentialDrop,
             int[] direction) {
         LayoutParams lp = (LayoutParams) v.getLayoutParams();
@@ -1540,7 +1604,7 @@ public class CellLayout extends ViewGroup {
         markCellsForRect(rectOccupiedByPotentialDrop, mTmpOccupied, true);
 
         findNearestArea(lp.tmpCellX, lp.tmpCellY, lp.cellHSpan, lp.cellVSpan,
-                direction, mTmpOccupied, mTempLocation);
+                direction, mTmpOccupied, null, mTempLocation);
 
         if (mTempLocation[0] >= 0 && mTempLocation[1] >= 0) {
             lp.tmpCellX = mTempLocation[0];
@@ -1550,6 +1614,124 @@ public class CellLayout extends ViewGroup {
         }
         markCellsForView(lp.tmpCellX, lp.tmpCellY, lp.cellHSpan,
                 lp.cellVSpan, mTmpOccupied, true);
+        return success;
+    }
+
+    // This method looks in the specified direction to see if there is an additional view
+    // immediately adjecent in that direction
+    private boolean addViewInDirection(ArrayList<View> views, Rect boundingRect, int[] direction,
+            boolean[][] occupied) {
+        boolean found = false;
+
+        int childCount = mChildren.getChildCount();
+        Rect r0 = new Rect(boundingRect);
+        Rect r1 = new Rect();
+
+        int deltaX = 0;
+        int deltaY = 0;
+        if (direction[1] < 0) {
+            r0.set(r0.left, r0.top - 1, r0.right, r0.bottom);
+            deltaY = -1;
+        } else if (direction[1] > 0) {
+            r0.set(r0.left, r0.top, r0.right, r0.bottom + 1);
+            deltaY = 1;
+        } else if (direction[0] < 0) {
+            r0.set(r0.left - 1, r0.top, r0.right, r0.bottom);
+            deltaX = -1;
+        } else if (direction[0] > 0) {
+            r0.set(r0.left, r0.top, r0.right + 1, r0.bottom);
+            deltaX = 1;
+        }
+
+        for (int i = 0; i < childCount; i++) {
+            View child = mChildren.getChildAt(i);
+            if (views.contains(child)) continue;
+            LayoutParams lp = (LayoutParams) child.getLayoutParams();
+
+            r1.set(lp.tmpCellX, lp.tmpCellY, lp.tmpCellX + lp.cellHSpan, lp.tmpCellY + lp.cellVSpan);
+            if (Rect.intersects(r0, r1)) {
+                if (!lp.canReorder) {
+                    return false;
+                }
+                boolean pushed = false;
+                for (int x = lp.tmpCellX; x < lp.tmpCellX + lp.cellHSpan; x++) {
+                    for (int y = lp.tmpCellY; y < lp.tmpCellY + lp.cellVSpan; y++) {
+                        boolean inBounds = x - deltaX >= 0 && x -deltaX < mCountX
+                                && y - deltaY >= 0 && y - deltaY < mCountY;
+                        if (inBounds && occupied[x - deltaX][y - deltaY]) {
+                            pushed = true;
+                        }
+                    }
+                }
+                if (pushed) {
+                    views.add(child);
+                    boundingRect.union(lp.tmpCellX, lp.tmpCellY, lp.tmpCellX + lp.cellHSpan,
+                            lp.tmpCellY + lp.cellVSpan);
+                    found = true;
+                }
+            }
+        }
+        return found;
+    }
+
+    private boolean pushViewsToTempLocation(ArrayList<View> views, Rect rectOccupiedByPotentialDrop,
+            int[] direction) {
+        if (views.size() == 0) return true;
+
+
+        boolean success = false;
+
+        // We construct a rect which represents the entire group of views
+        Rect boundingRect = null;
+        for (View v: views) {
+            LayoutParams lp = (LayoutParams) v.getLayoutParams();
+            if (boundingRect == null) {
+                boundingRect = new Rect(lp.tmpCellX, lp.tmpCellY, lp.tmpCellX + lp.cellHSpan,
+                        lp.tmpCellY + lp.cellVSpan);
+            } else {
+                boundingRect.union(lp.tmpCellX, lp.tmpCellY, lp.tmpCellX + lp.cellHSpan,
+                        lp.tmpCellY + lp.cellVSpan);
+            }
+        }
+
+        ArrayList<View> dup = (ArrayList<View>) views.clone();
+        while (addViewInDirection(dup, boundingRect, direction, mTmpOccupied)) {
+        }
+        for (View v: dup) {
+            LayoutParams lp = (LayoutParams) v.getLayoutParams();
+            markCellsForView(lp.tmpCellX, lp.tmpCellY, lp.cellHSpan,
+                    lp.cellVSpan, mTmpOccupied, false); 
+        }
+
+        boolean[][] blockOccupied = new boolean[boundingRect.width()][boundingRect.height()];
+        int top = boundingRect.top;
+        int left = boundingRect.left;
+        for (View v: dup) {
+            LayoutParams lp = (LayoutParams) v.getLayoutParams();
+            markCellsForView(lp.tmpCellX - left, lp.tmpCellY - top, lp.cellHSpan,
+                    lp.cellVSpan, blockOccupied, true); 
+        }
+
+        markCellsForRect(rectOccupiedByPotentialDrop, mTmpOccupied, true);
+
+        findNearestAreaInDirection(boundingRect.left, boundingRect.top, boundingRect.width(),
+                boundingRect.height(), direction, mTmpOccupied, blockOccupied, mTempLocation);
+
+        int deltaX = mTempLocation[0] - boundingRect.left;
+        int deltaY = mTempLocation[1] - boundingRect.top;
+        if (mTempLocation[0] >= 0 && mTempLocation[1] >= 0) {
+            for (View v: dup) {
+                LayoutParams lp = (LayoutParams) v.getLayoutParams();
+                lp.tmpCellX += deltaX;
+                lp.tmpCellY += deltaY;
+            }
+            success = true;
+        }
+        for (View v: dup) {
+            LayoutParams lp = (LayoutParams) v.getLayoutParams();
+            markCellsForView(lp.tmpCellX, lp.tmpCellY, lp.cellHSpan,
+                    lp.cellVSpan, mTmpOccupied, true);
+        }
         return success;
     }
 
@@ -1572,12 +1754,21 @@ public class CellLayout extends ViewGroup {
                         lp.tmpCellY + lp.cellVSpan);
             }
         }
+        boolean[][] blockOccupied = new boolean[boundingRect.width()][boundingRect.height()];
+        int top = boundingRect.top;
+        int left = boundingRect.left;
+        for (View v: views) {
+            LayoutParams lp = (LayoutParams) v.getLayoutParams();
+            markCellsForView(lp.tmpCellX - left, lp.tmpCellY - top, lp.cellHSpan,
+                    lp.cellVSpan, blockOccupied, true); 
+        }
+
         markCellsForRect(rectOccupiedByPotentialDrop, mTmpOccupied, true);
 
         // TODO: this bounding rect may not be completely filled, lets be more precise about this
         // check.
-        findNearestArea(boundingRect.left, boundingRect.top, boundingRect.width(), boundingRect.height(),
-                direction, mTmpOccupied, mTempLocation);
+        findNearestArea(boundingRect.left, boundingRect.top, boundingRect.width(),
+                boundingRect.height(), direction, mTmpOccupied, blockOccupied, mTempLocation);
 
         int deltaX = mTempLocation[0] - boundingRect.left;
         int deltaY = mTempLocation[1] - boundingRect.top;
@@ -1606,7 +1797,6 @@ public class CellLayout extends ViewGroup {
         mIntersectingViews.clear();
 
         mOccupiedRect.set(cellX, cellY, cellX + spanX, cellY + spanY);
-        markCellsForRect(mOccupiedRect, mTmpOccupied, true);
 
         if (ignoreView != null) {
             LayoutParams lp = (LayoutParams) ignoreView.getLayoutParams();
@@ -1629,10 +1819,25 @@ public class CellLayout extends ViewGroup {
                 mIntersectingViews.add(child);
             }
         }
+
+        if (pushViewsToTempLocation(mIntersectingViews, mOccupiedRect, direction)) {
+            return true;
+        }
+        // Try the opposite direction
+        direction[0] *= -1;
+        direction[1] *= -1;
+        if (pushViewsToTempLocation(mIntersectingViews, mOccupiedRect, direction)) {
+            return true;
+        }
+        // Switch the direction back
+        direction[0] *= -1;
+        direction[1] *= -1;
+
         // First we try moving the views as a block
         if (addViewsToTempLocation(mIntersectingViews, mOccupiedRect, direction)) {
             return true;
         }
+
         // Ok, they couldn't move as a block, let's move them individually
         for (View v : mIntersectingViews) {
             if (!addViewToTempLocation(v, mOccupiedRect, direction)) {
@@ -1646,10 +1851,7 @@ public class CellLayout extends ViewGroup {
      * Returns a pair (x, y), where x,y are in {-1, 0, 1} corresponding to vector between
      * the provided point and the provided cell
      */
-    private void computeDirectionVector(int x0, int y0, int x1, int y1, int[] result) {
-        int deltaX = x1 - x0;
-        int deltaY = y1 - y0;
-
+    private void computeDirectionVector(float deltaX, float deltaY, int[] result) {
         double angle = Math.atan(((float) deltaY) / deltaX);
 
         result[0] = 0;
@@ -1827,25 +2029,22 @@ public class CellLayout extends ViewGroup {
 
     public void prepareChildForDrag(View child) {
         markCellsAsUnoccupiedForView(child);
-        LayoutParams lp = (LayoutParams) child.getLayoutParams();
-        lp.cellX = -1;
-        lp.cellY = -1;
-
     }
 
     int[] createArea(int pixelX, int pixelY, int minSpanX, int minSpanY, int spanX, int spanY,
             View dragView, int[] result, int resultSpan[], int mode) {
 
         // First we determine if things have moved enough to cause a different layout
-        result = findNearestArea(pixelX, pixelY, 1, 1, result);
+        result = findNearestArea(pixelX, pixelY, spanX, spanY, result);
 
         if (resultSpan == null) {
             resultSpan = new int[2];
         }
 
         // We attempt the first algorithm
-        cellToCenterPoint(result[0], result[1], mTmpPoint);
-        computeDirectionVector(pixelX, pixelY, mTmpPoint[0], mTmpPoint[1], mDirectionVector);
+        regionToCenterPoint(result[0], result[1], spanX, spanY, mTmpPoint);
+        computeDirectionVector((mTmpPoint[0] - pixelX) / spanX, (mTmpPoint[1] - pixelY) / spanY,
+                mDirectionVector);
         ItemConfiguration swapSolution = simpleSwap(pixelX, pixelY, minSpanX, minSpanY,
                  spanX,  spanY, mDirectionVector, dragView,  true,  new ItemConfiguration());
 
