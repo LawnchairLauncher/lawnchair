@@ -980,8 +980,8 @@ public final class Launcher extends Activity
     View createShortcut(int layoutResId, ViewGroup parent, ShortcutInfo info) {
         BubbleTextView favorite = (BubbleTextView) mInflater.inflate(layoutResId, parent, false);
         favorite.applyFromShortcutInfo(info, mIconCache);
-        if (mHideIconLabels){
-            favorite.setText(null);
+        if (mHideIconLabels) {
+            favorite.setTextVisible(false);
         }
         favorite.setOnClickListener(this);
         return favorite;
@@ -1741,6 +1741,9 @@ public final class Launcher extends Activity
         // Create the view
         FolderIcon newFolder =
             FolderIcon.fromXml(R.layout.folder_icon, this, layout, folderInfo, mIconCache);
+        if (mHideIconLabels) {
+            newFolder.setTextVisible(false);
+        }
         mWorkspace.addInScreen(newFolder, container, screen, cellX, cellY, 1, 1,
                 isWorkspaceLocked());
         return newFolder;
@@ -3320,6 +3323,9 @@ public final class Launcher extends Activity
                     FolderIcon newFolder = FolderIcon.fromXml(R.layout.folder_icon, this,
                             (ViewGroup) workspace.getChildAt(workspace.getCurrentPage()),
                             (FolderInfo) item, mIconCache);
+                    if (!mHideIconLabels) {
+                        newFolder.setTextVisible(false);
+                    }
                     workspace.addInScreen(newFolder, item.container, item.screen, item.cellX,
                             item.cellY, 1, 1, false);
                     break;
