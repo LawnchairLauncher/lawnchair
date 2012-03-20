@@ -534,7 +534,7 @@ public class FocusHelper {
                 if (handleKeyEvent) {
                     // Select the first bubble text view in the current page of the workspace
                     final CellLayout layout = (CellLayout) workspace.getChildAt(pageIndex);
-                    final CellLayoutChildren children = layout.getChildrenLayout();
+                    final ShortcutAndWidgetContainer children = layout.getShortcutsAndWidgets();
                     final View newIcon = getIconInDirection(layout, children, -1, 1);
                     if (newIcon != null) {
                         newIcon.requestFocus();
@@ -556,9 +556,10 @@ public class FocusHelper {
     /**
      * Private helper method to get the CellLayoutChildren given a CellLayout index.
      */
-    private static CellLayoutChildren getCellLayoutChildrenForIndex(ViewGroup container, int i) {
+    private static ShortcutAndWidgetContainer getCellLayoutChildrenForIndex(
+            ViewGroup container, int i) {
         ViewGroup parent = (ViewGroup) container.getChildAt(i);
-        return (CellLayoutChildren) parent.getChildAt(0);
+        return (ShortcutAndWidgetContainer) parent.getChildAt(0);
     }
 
     /**
@@ -664,7 +665,7 @@ public class FocusHelper {
      * Handles key events in a Workspace containing.
      */
     static boolean handleIconKeyEvent(View v, int keyCode, KeyEvent e) {
-        CellLayoutChildren parent = (CellLayoutChildren) v.getParent();
+        ShortcutAndWidgetContainer parent = (ShortcutAndWidgetContainer) v.getParent();
         final CellLayout layout = (CellLayout) parent.getParent();
         final Workspace workspace = (Workspace) layout.getParent();
         final ViewGroup launcher = (ViewGroup) workspace.getParent();
@@ -819,7 +820,7 @@ public class FocusHelper {
      * Handles key events for items in a Folder.
      */
     static boolean handleFolderKeyEvent(View v, int keyCode, KeyEvent e) {
-        CellLayoutChildren parent = (CellLayoutChildren) v.getParent();
+        ShortcutAndWidgetContainer parent = (ShortcutAndWidgetContainer) v.getParent();
         final CellLayout layout = (CellLayout) parent.getParent();
         final Folder folder = (Folder) layout.getParent();
         View title = folder.mFolderName;

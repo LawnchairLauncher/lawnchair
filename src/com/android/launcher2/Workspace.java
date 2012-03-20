@@ -363,7 +363,7 @@ public class Workspace extends SmoothPagedView
             final int childCount = getChildCount();
             for (int i = 0; i < childCount; i++) {
                 CellLayout cl = (CellLayout) getChildAt(i);
-                cl.buildChildrenLayer();
+                cl.getShortcutsAndWidgets().buildLayer();
             }
         }
     }
@@ -377,7 +377,7 @@ public class Workspace extends SmoothPagedView
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             CellLayout cl = (CellLayout) getPageAt(i);
-            cl.getChildrenLayout().animate().alpha(mDragFadeOutAlpha)
+            cl.getShortcutsAndWidgets().animate().alpha(mDragFadeOutAlpha)
                 .setInterpolator(new AccelerateInterpolator(1.5f))
                 .setDuration(mDragFadeOutDuration)
                 .start();
@@ -393,7 +393,7 @@ public class Workspace extends SmoothPagedView
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             CellLayout cl = (CellLayout) getPageAt(i);
-            cl.getChildrenLayout().animate().alpha(1f)
+            cl.getShortcutsAndWidgets().animate().alpha(1f)
                 .setInterpolator(new DecelerateInterpolator(1.5f))
                 .setDuration(mDragFadeOutDuration)
                 .start();
@@ -722,7 +722,7 @@ public class Workspace extends SmoothPagedView
         // user scrolls while we are transitioning (should not affect dispatchDraw optimizations)
         if (!mFadeInAdjacentScreens) {
             for (int i = 0; i < getChildCount(); ++i) {
-                getPageAt(i).setAlpha(1f);
+                ((CellLayout) getPageAt(i)).setShortcutAndWidgetAlpha(1f);
             }
         }
 
@@ -1205,7 +1205,7 @@ public class Workspace extends SmoothPagedView
                 cl.setRotationY(rotation);
                 if (mFadeInAdjacentScreens && !isSmall()) {
                     float alpha = 1 - Math.abs(scrollProgress);
-                    cl.setAlpha(alpha);
+                    cl.setShortcutAndWidgetAlpha(alpha);
                 }
             }
         }
@@ -1657,7 +1657,7 @@ public class Workspace extends SmoothPagedView
                 cl.setScaleY(finalScaleFactor);
                 cl.setBackgroundAlpha(finalBackgroundAlpha);
                 cl.setBackgroundAlphaMultiplier(finalAlphaMultiplierValue);
-                cl.setAlpha(finalAlpha);
+                cl.setShortcutAndWidgetAlpha(finalAlpha);
                 cl.setRotationY(rotation);
             }
         }
@@ -1673,7 +1673,7 @@ public class Workspace extends SmoothPagedView
                     cl.setScaleY(mNewScaleYs[i]);
                     cl.setBackgroundAlpha(mNewBackgroundAlphas[i]);
                     cl.setBackgroundAlphaMultiplier(mNewBackgroundAlphaMultipliers[i]);
-                    cl.setAlpha(mNewAlphas[i]);
+                    cl.setShortcutAndWidgetAlpha(mNewAlphas[i]);
                     cl.setRotationY(mNewRotationYs[i]);
                 } else {
                     LauncherViewPropertyAnimator a = new LauncherViewPropertyAnimator(cl);
@@ -1683,10 +1683,16 @@ public class Workspace extends SmoothPagedView
                         .scaleY(mNewScaleYs[i])
                         .setDuration(duration)
                         .setInterpolator(mZoomInInterpolator);
-                    if (mOldAlphas[i] != mNewAlphas[i]) {
-                        a.alpha(mNewAlphas[i]);
-                    }
                     anim.play(a);
+
+                    LauncherViewPropertyAnimator alphaAnim =
+                        new LauncherViewPropertyAnimator(cl.getShortcutsAndWidgets());
+                    if (mOldAlphas[i] != mNewAlphas[i]) {
+                        alphaAnim.alpha(mNewAlphas[i])
+                            .setDuration(duration)
+                            .setInterpolator(mZoomInInterpolator);
+                        anim.play(alphaAnim);
+                    }
                     if (mOldRotationYs[i] != 0 || mNewRotationYs[i] != 0) {
                         ValueAnimator rotate = ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
                         rotate.setInterpolator(new DecelerateInterpolator(2.0f));
@@ -1755,7 +1761,7 @@ public class Workspace extends SmoothPagedView
         if (!mFadeInAdjacentScreens) {
             for (int i = 0; i < getChildCount(); i++) {
                 final CellLayout cl = (CellLayout) getChildAt(i);
-                cl.setAlpha(1f);
+                cl.setShortcutAndWidgetAlpha(1f);
             }
         }
     }
@@ -3075,7 +3081,7 @@ public class Workspace extends SmoothPagedView
                     info.spanY, insertAtFirst);
             cellLayout.onDropChild(view);
             CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
-            cellLayout.getChildrenLayout().measureChild(view);
+            cellLayout.getShortcutsAndWidgets().measureChild(view);
 
 
             LauncherModel.addOrMoveItemInDatabase(mLauncher, info, container, screen,
@@ -3314,10 +3320,10 @@ public class Workspace extends SmoothPagedView
     }
 
     private void updateItemLocationsInDatabase(CellLayout cl) {
-        int count = cl.getChildrenLayout().getChildCount();
+        int count = cl.getShortcutsAndWidgets().getChildCount();
         int screen = indexOfChild(cl);
         for (int i = 0; i < count; i++) {
-            View v = cl.getChildrenLayout().getChildAt(i);
+            View v = cl.getShortcutsAndWidgets().getChildAt(i);
             ItemInfo info = (ItemInfo) v.getTag();
 
             LauncherModel.moveItemInDatabase(mLauncher, info, Favorites.CONTAINER_DESKTOP, screen,
@@ -3434,7 +3440,7 @@ public class Workspace extends SmoothPagedView
     CellLayout getParentCellLayoutForView(View v) {
         ArrayList<CellLayout> layouts = getWorkspaceAndHotseatCellLayouts();
         for (CellLayout layout : layouts) {
-            if (layout.getChildrenLayout().indexOfChild(v) > -1) {
+            if (layout.getShortcutsAndWidgets().indexOfChild(v) > -1) {
                 return layout;
             }
         }
@@ -3458,23 +3464,26 @@ public class Workspace extends SmoothPagedView
 
     /**
      * We should only use this to search for specific children.  Do not use this method to modify
-     * CellLayoutChildren directly.
+     * ShortcutsAndWidgetsContainer directly. Includes ShortcutAndWidgetContainers from
+     * the hotseat and workspace pages
      */
-    ArrayList<CellLayoutChildren> getWorkspaceAndHotseatCellLayoutChildren() {
-        ArrayList<CellLayoutChildren> childrenLayouts = new ArrayList<CellLayoutChildren>();
+    ArrayList<ShortcutAndWidgetContainer> getAllShortcutAndWidgetContainers() {
+        ArrayList<ShortcutAndWidgetContainer> childrenLayouts =
+                new ArrayList<ShortcutAndWidgetContainer>();
         int screenCount = getChildCount();
         for (int screen = 0; screen < screenCount; screen++) {
-            childrenLayouts.add(((CellLayout) getChildAt(screen)).getChildrenLayout());
+            childrenLayouts.add(((CellLayout) getChildAt(screen)).getShortcutsAndWidgets());
         }
         if (mLauncher.getHotseat() != null) {
-            childrenLayouts.add(mLauncher.getHotseat().getLayout().getChildrenLayout());
+            childrenLayouts.add(mLauncher.getHotseat().getLayout().getShortcutsAndWidgets());
         }
         return childrenLayouts;
     }
 
     public Folder getFolderForTag(Object tag) {
-        ArrayList<CellLayoutChildren> childrenLayouts = getWorkspaceAndHotseatCellLayoutChildren();
-        for (CellLayoutChildren layout: childrenLayouts) {
+        ArrayList<ShortcutAndWidgetContainer> childrenLayouts =
+                getAllShortcutAndWidgetContainers();
+        for (ShortcutAndWidgetContainer layout: childrenLayouts) {
             int count = layout.getChildCount();
             for (int i = 0; i < count; i++) {
                 View child = layout.getChildAt(i);
@@ -3490,8 +3499,9 @@ public class Workspace extends SmoothPagedView
     }
 
     public View getViewForTag(Object tag) {
-        ArrayList<CellLayoutChildren> childrenLayouts = getWorkspaceAndHotseatCellLayoutChildren();
-        for (CellLayoutChildren layout: childrenLayouts) {
+        ArrayList<ShortcutAndWidgetContainer> childrenLayouts =
+                getAllShortcutAndWidgetContainers();
+        for (ShortcutAndWidgetContainer layout: childrenLayouts) {
             int count = layout.getChildCount();
             for (int i = 0; i < count; i++) {
                 View child = layout.getChildAt(i);
@@ -3504,8 +3514,9 @@ public class Workspace extends SmoothPagedView
     }
 
     void clearDropTargets() {
-        ArrayList<CellLayoutChildren> childrenLayouts = getWorkspaceAndHotseatCellLayoutChildren();
-        for (CellLayoutChildren layout: childrenLayouts) {
+        ArrayList<ShortcutAndWidgetContainer> childrenLayouts =
+                getAllShortcutAndWidgetContainers();
+        for (ShortcutAndWidgetContainer layout: childrenLayouts) {
             int childCount = layout.getChildCount();
             for (int j = 0; j < childCount; j++) {
                 View v = layout.getChildAt(j);
@@ -3527,7 +3538,7 @@ public class Workspace extends SmoothPagedView
 
         ArrayList<CellLayout> cellLayouts = getWorkspaceAndHotseatCellLayouts();
         for (final CellLayout layoutParent: cellLayouts) {
-            final ViewGroup layout = layoutParent.getChildrenLayout();
+            final ViewGroup layout = layoutParent.getShortcutsAndWidgets();
 
             // Avoid ANRs by treating each screen separately
             post(new Runnable() {
@@ -3613,8 +3624,8 @@ public class Workspace extends SmoothPagedView
     }
 
     void updateShortcuts(ArrayList<ApplicationInfo> apps) {
-        ArrayList<CellLayoutChildren> childrenLayouts = getWorkspaceAndHotseatCellLayoutChildren();
-        for (CellLayoutChildren layout: childrenLayouts) {
+        ArrayList<ShortcutAndWidgetContainer> childrenLayouts = getAllShortcutAndWidgetContainers();
+        for (ShortcutAndWidgetContainer layout: childrenLayouts) {
             int childCount = layout.getChildCount();
             for (int j = 0; j < childCount; j++) {
                 final View view = layout.getChildAt(j);

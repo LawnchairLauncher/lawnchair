@@ -137,7 +137,7 @@ public class CellLayout extends ViewGroup {
     private boolean mItemLocationsDirty = false;
 
     private TimeInterpolator mEaseOutInterpolator;
-    private CellLayoutChildren mChildren;
+    private ShortcutAndWidgetContainer mShortcutsAndWidgets;
 
     private boolean mIsHotseat = false;
     private float mChildScale = 1f;
@@ -281,9 +281,9 @@ public class CellLayout extends ViewGroup {
         mBackgroundRect = new Rect();
         mForegroundRect = new Rect();
 
-        mChildren = new CellLayoutChildren(context);
-        mChildren.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
-        addView(mChildren);
+        mShortcutsAndWidgets = new ShortcutAndWidgetContainer(context);
+        mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
+        addView(mShortcutsAndWidgets);
     }
 
     static int widthInPortrait(Resources r, int numCells) {
@@ -309,7 +309,7 @@ public class CellLayout extends ViewGroup {
     }
 
     public void enableHardwareLayers() {
-        mChildren.enableHardwareLayers();
+        mShortcutsAndWidgets.enableHardwareLayers();
     }
 
     public void setGridSize(int x, int y) {
@@ -351,13 +351,6 @@ public class CellLayout extends ViewGroup {
         if (mPressedOrFocusedIcon != null) {
             invalidateBubbleTextView(mPressedOrFocusedIcon);
         }
-    }
-
-    public CellLayoutChildren getChildrenLayout() {
-        if (getChildCount() > 0) {
-            return (CellLayoutChildren) getChildAt(0);
-        }
-        return null;
     }
 
     void setIsDragOverlapping(boolean isDragOverlapping) {
@@ -616,7 +609,7 @@ public class CellLayout extends ViewGroup {
         // (this happens if we're being dropped from all-apps
         if (bubbleChild.getLayoutParams() instanceof LayoutParams &&
                 (bubbleChild.getMeasuredWidth() | bubbleChild.getMeasuredHeight()) == 0) {
-            getChildrenLayout().measureChild(bubbleChild);
+            getShortcutsAndWidgets().measureChild(bubbleChild);
         }
         int measuredWidth = bubbleChild.getMeasuredWidth();
         int measuredHeight = bubbleChild.getMeasuredHeight();
@@ -667,7 +660,7 @@ public class CellLayout extends ViewGroup {
 
             child.setId(childId);
 
-            mChildren.addView(child, index, lp);
+            mShortcutsAndWidgets.addView(child, index, lp);
 
             if (markCells) markCellsAsOccupiedForView(child);
 
@@ -679,61 +672,53 @@ public class CellLayout extends ViewGroup {
     @Override
     public void removeAllViews() {
         clearOccupiedCells();
-        mChildren.removeAllViews();
+        mShortcutsAndWidgets.removeAllViews();
     }
 
     @Override
     public void removeAllViewsInLayout() {
-        if (mChildren.getChildCount() > 0) {
+        if (mShortcutsAndWidgets.getChildCount() > 0) {
             clearOccupiedCells();
-            mChildren.removeAllViewsInLayout();
+            mShortcutsAndWidgets.removeAllViewsInLayout();
         }
     }
 
     public void removeViewWithoutMarkingCells(View view) {
-        mChildren.removeView(view);
+        mShortcutsAndWidgets.removeView(view);
     }
 
     @Override
     public void removeView(View view) {
         markCellsAsUnoccupiedForView(view);
-        mChildren.removeView(view);
+        mShortcutsAndWidgets.removeView(view);
     }
 
     @Override
     public void removeViewAt(int index) {
-        markCellsAsUnoccupiedForView(mChildren.getChildAt(index));
-        mChildren.removeViewAt(index);
+        markCellsAsUnoccupiedForView(mShortcutsAndWidgets.getChildAt(index));
+        mShortcutsAndWidgets.removeViewAt(index);
     }
 
     @Override
     public void removeViewInLayout(View view) {
         markCellsAsUnoccupiedForView(view);
-        mChildren.removeViewInLayout(view);
+        mShortcutsAndWidgets.removeViewInLayout(view);
     }
 
     @Override
     public void removeViews(int start, int count) {
         for (int i = start; i < start + count; i++) {
-            markCellsAsUnoccupiedForView(mChildren.getChildAt(i));
+            markCellsAsUnoccupiedForView(mShortcutsAndWidgets.getChildAt(i));
         }
-        mChildren.removeViews(start, count);
+        mShortcutsAndWidgets.removeViews(start, count);
     }
 
     @Override
     public void removeViewsInLayout(int start, int count) {
         for (int i = start; i < start + count; i++) {
-            markCellsAsUnoccupiedForView(mChildren.getChildAt(i));
+            markCellsAsUnoccupiedForView(mShortcutsAndWidgets.getChildAt(i));
         }
-        mChildren.removeViewsInLayout(start, count);
-    }
-
-    public void drawChildren(Canvas canvas) {
-        mChildren.draw(canvas);
-    }
-
-    void buildChildrenLayer() {
-        mChildren.buildLayer();
+        mShortcutsAndWidgets.removeViewsInLayout(start, count);
     }
 
     @Override
@@ -747,11 +732,11 @@ public class CellLayout extends ViewGroup {
         Rect frame = mRect;
         final int x = touchX + mScrollX;
         final int y = touchY + mScrollY;
-        final int count = mChildren.getChildCount();
+        final int count = mShortcutsAndWidgets.getChildCount();
 
         boolean found = false;
         for (int i = count - 1; i >= 0; i--) {
-            final View child = mChildren.getChildAt(i);
+            final View child = mShortcutsAndWidgets.getChildAt(i);
             final LayoutParams lp = (LayoutParams) child.getLayoutParams();
 
             if ((child.getVisibility() == VISIBLE || child.getAnimation() != null) &&
@@ -968,7 +953,7 @@ public class CellLayout extends ViewGroup {
             int vFreeSpace = vSpace - (mCountY * mOriginalCellHeight);
             mWidthGap = Math.min(mMaxGap, numWidthGaps > 0 ? (hFreeSpace / numWidthGaps) : 0);
             mHeightGap = Math.min(mMaxGap,numHeightGaps > 0 ? (vFreeSpace / numHeightGaps) : 0);
-            mChildren.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
+            mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
         } else {
             mWidthGap = mOriginalWidthGap;
             mHeightGap = mOriginalHeightGap;
@@ -1017,12 +1002,12 @@ public class CellLayout extends ViewGroup {
 
     @Override
     protected void setChildrenDrawingCacheEnabled(boolean enabled) {
-        mChildren.setChildrenDrawingCacheEnabled(enabled);
+        mShortcutsAndWidgets.setChildrenDrawingCacheEnabled(enabled);
     }
 
     @Override
     protected void setChildrenDrawnWithCacheEnabled(boolean enabled) {
-        mChildren.setChildrenDrawnWithCacheEnabled(enabled);
+        mShortcutsAndWidgets.setChildrenDrawnWithCacheEnabled(enabled);
     }
 
     public float getBackgroundAlpha() {
@@ -1044,34 +1029,27 @@ public class CellLayout extends ViewGroup {
         }
     }
 
-    // Need to return true to let the view system know we know how to handle alpha-- this is
-    // because when our children have an alpha of 0.0f, they are still rendering their "dimmed"
-    // versions
-    @Override
-    protected boolean onSetAlpha(int alpha) {
-        return true;
-    }
-
-    @Override
-    public void setAlpha(float alpha) {
-        setChildrenAlpha(alpha);
-        super.setAlpha(alpha);
-    }
-
-    private void setChildrenAlpha(float alpha) {
+    public void setShortcutAndWidgetAlpha(float alpha) {
         final int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
             getChildAt(i).setAlpha(alpha);
         }
     }
 
+    public ShortcutAndWidgetContainer getShortcutsAndWidgets() {
+        if (getChildCount() > 0) {
+            return (ShortcutAndWidgetContainer) getChildAt(0);
+        }
+        return null;
+    }
+
     public View getChildAt(int x, int y) {
-        return mChildren.getChildAt(x, y);
+        return mShortcutsAndWidgets.getChildAt(x, y);
     }
 
     public boolean animateChildToPosition(final View child, int cellX, int cellY, int duration,
             int delay, boolean permanent, boolean adjustOccupied) {
-        CellLayoutChildren clc = getChildrenLayout();
+        ShortcutAndWidgetContainer clc = getShortcutsAndWidgets();
         boolean[][] occupied = mOccupied;
         if (!permanent) {
             occupied = mTmpOccupied;
@@ -1623,7 +1601,7 @@ public class CellLayout extends ViewGroup {
             boolean[][] occupied) {
         boolean found = false;
 
-        int childCount = mChildren.getChildCount();
+        int childCount = mShortcutsAndWidgets.getChildCount();
         Rect r0 = new Rect(boundingRect);
         Rect r1 = new Rect();
 
@@ -1644,7 +1622,7 @@ public class CellLayout extends ViewGroup {
         }
 
         for (int i = 0; i < childCount; i++) {
-            View child = mChildren.getChildAt(i);
+            View child = mShortcutsAndWidgets.getChildAt(i);
             if (views.contains(child)) continue;
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
 
@@ -1804,11 +1782,11 @@ public class CellLayout extends ViewGroup {
             lp.tmpCellY = cellY;
         }
 
-        int childCount = mChildren.getChildCount();
+        int childCount = mShortcutsAndWidgets.getChildCount();
         Rect r0 = new Rect(cellX, cellY, cellX + spanX, cellY + spanY);
         Rect r1 = new Rect();
         for (int i = 0; i < childCount; i++) {
-            View child = mChildren.getChildAt(i);
+            View child = mShortcutsAndWidgets.getChildAt(i);
             if (child == ignoreView) continue;
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
             r1.set(lp.cellX, lp.cellY, lp.cellX + lp.cellHSpan, lp.cellY + lp.cellVSpan);
@@ -1903,9 +1881,9 @@ public class CellLayout extends ViewGroup {
     }
 
     private void copyCurrentStateToSolution(ItemConfiguration solution, boolean temp) {
-        int childCount = mChildren.getChildCount();
+        int childCount = mShortcutsAndWidgets.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            View child = mChildren.getChildAt(i);
+            View child = mShortcutsAndWidgets.getChildAt(i);
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
             Point p;
             if (temp) {
@@ -1924,9 +1902,9 @@ public class CellLayout extends ViewGroup {
             }
         }
 
-        int childCount = mChildren.getChildCount();
+        int childCount = mShortcutsAndWidgets.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            View child = mChildren.getChildAt(i);
+            View child = mShortcutsAndWidgets.getChildAt(i);
             if (child == dragView) continue;
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
             Point p = solution.map.get(child);
@@ -1951,9 +1929,9 @@ public class CellLayout extends ViewGroup {
             }
         }
 
-        int childCount = mChildren.getChildCount();
+        int childCount = mShortcutsAndWidgets.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            View child = mChildren.getChildAt(i);
+            View child = mShortcutsAndWidgets.getChildAt(i);
             if (child == dragView) continue;
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
             Point p = solution.map.get(child);
@@ -1976,18 +1954,18 @@ public class CellLayout extends ViewGroup {
                 mOccupied[i][j] = mTmpOccupied[i][j];
             }
         }
-        int childCount = mChildren.getChildCount();
+        int childCount = mShortcutsAndWidgets.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            LayoutParams lp = (LayoutParams) mChildren.getChildAt(i).getLayoutParams();
+            LayoutParams lp = (LayoutParams) mShortcutsAndWidgets.getChildAt(i).getLayoutParams();
             lp.cellX = lp.tmpCellX;
             lp.cellY = lp.tmpCellY;
         }
     }
 
     public void setUseTempCoords(boolean useTempCoords) {
-        int childCount = mChildren.getChildCount();
+        int childCount = mShortcutsAndWidgets.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            LayoutParams lp = (LayoutParams) mChildren.getChildAt(i).getLayoutParams();
+            LayoutParams lp = (LayoutParams) mShortcutsAndWidgets.getChildAt(i).getLayoutParams();
             lp.useTmpCoords = useTempCoords;
         }
     }
@@ -1998,9 +1976,9 @@ public class CellLayout extends ViewGroup {
                 mTmpOccupied[i][j] = mOccupied[i][j];
             }
         }
-        int childCount = mChildren.getChildCount();
+        int childCount = mShortcutsAndWidgets.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            View child = mChildren.getChildAt(i);
+            View child = mShortcutsAndWidgets.getChildAt(i);
             if (child == ignoreView) continue;
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
             lp.tmpCellX = lp.cellX;
@@ -2094,7 +2072,7 @@ public class CellLayout extends ViewGroup {
         }
         boolean[][] occupied = mOccupied;
 
-        mChildren.requestLayout();
+        mShortcutsAndWidgets.requestLayout();
         return result;
     }
 
@@ -2542,7 +2520,7 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         markCellsAsOccupiedForView(view, mOccupied);
     }
     public void markCellsAsOccupiedForView(View view, boolean[][] occupied) {
-        if (view == null || view.getParent() != mChildren) return;
+        if (view == null || view.getParent() != mShortcutsAndWidgets) return;
         LayoutParams lp = (LayoutParams) view.getLayoutParams();
         markCellsForView(lp.cellX, lp.cellY, lp.cellHSpan, lp.cellVSpan, occupied, true);
     }
@@ -2551,7 +2529,7 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         markCellsAsUnoccupiedForView(view, mOccupied);
     }
     public void markCellsAsUnoccupiedForView(View view, boolean occupied[][]) {
-        if (view == null || view.getParent() != mChildren) return;
+        if (view == null || view.getParent() != mShortcutsAndWidgets) return;
         LayoutParams lp = (LayoutParams) view.getLayoutParams();
         markCellsForView(lp.cellX, lp.cellY, lp.cellHSpan, lp.cellVSpan, occupied, false);
     }

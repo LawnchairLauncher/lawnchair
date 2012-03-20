@@ -148,7 +148,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         super.onFinishInflate();
         mContent = (CellLayout) findViewById(R.id.folder_content);
         mContent.setGridSize(0, 0);
-        mContent.getChildrenLayout().setMotionEventSplittingEnabled(false);
+        mContent.getShortcutsAndWidgets().setMotionEventSplittingEnabled(false);
         mFolderName = (FolderEditText) findViewById(R.id.folder_name);
         mFolderName.setFolder(this);
         mFolderName.setOnFocusChangeListener(this);
@@ -731,7 +731,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mLauncher.getWorkspace().setFinalScrollForPageChange(currentPage);
         // We first fetch the currently visible CellLayoutChildren
         CellLayout currentLayout = (CellLayout) mLauncher.getWorkspace().getChildAt(currentPage);
-        CellLayoutChildren boundingLayout = currentLayout.getChildrenLayout();
+        ShortcutAndWidgetContainer boundingLayout = currentLayout.getShortcutsAndWidgets();
         Rect bounds = new Rect();
         parent.getDescendantRectRelativeToSelf(boundingLayout, bounds);
         // We reset the workspaces scroll
@@ -822,11 +822,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     public int getItemCount() {
-        return mContent.getChildrenLayout().getChildCount();
+        return mContent.getShortcutsAndWidgets().getChildCount();
     }
 
     public View getItemAt(int index) {
-        return mContent.getChildrenLayout().getChildAt(index);
+        return mContent.getShortcutsAndWidgets().getChildAt(index);
     }
 
     private void onCloseComplete() {
