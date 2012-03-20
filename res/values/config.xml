@@ -39,7 +39,7 @@
     <bool name="config_workspaceFadeAdjacentScreens">false</bool>
 
     <!-- The transition duration for the background of the drop targets -->
-    <integer name="config_dropTargetBgTransitionDuration">100</integer>
+    <integer name="config_dropTargetBgTransitionDuration">0</integer>
 
     <integer name="config_crosshairsFadeInTime">600</integer>
 

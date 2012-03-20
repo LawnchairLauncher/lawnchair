@@ -51,6 +51,7 @@ public class DragView extends View {
     ValueAnimator mAnim;
     private float mOffsetX = 0.0f;
     private float mOffsetY = 0.0f;
+    private float mInitialScale = 1f;
 
     /**
      * Construct the drag view.
@@ -67,6 +68,7 @@ public class DragView extends View {
             int left, int top, int width, int height, final float initialScale) {
         super(launcher);
         mDragLayer = launcher.getDragLayer();
+        mInitialScale = initialScale;
 
         final Resources res = getResources();
         final float offsetX = res.getDimensionPixelSize(R.dimen.dragViewOffsetX);
@@ -151,6 +153,14 @@ public class DragView extends View {
         return mDragRegion;
     }
 
+    public float getInitialScale() {
+        return mInitialScale;
+    }
+
+    public void updateInitialScaleToCurrentScale() {
+        mInitialScale = getScaleX();
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(mBitmap.getWidth(), mBitmap.getHeight());
@@ -233,6 +243,11 @@ public class DragView extends View {
      */
     public void show(int touchX, int touchY) {
         mDragLayer.addView(this);
+
+        // Enable hw-layers on this view
+        setLayerType(View.LAYER_TYPE_HARDWARE, null);
+
+        // Start the pick-up animation
         DragLayer.LayoutParams lp = new DragLayer.LayoutParams(0, 0);
         lp.width = mBitmap.getWidth();
         lp.height = mBitmap.getHeight();
@@ -267,6 +282,9 @@ public class DragView extends View {
 
     void remove() {
         if (getParent() != null) {
+            // Disable hw-layers on this view
+            setLayerType(View.LAYER_TYPE_NONE, null);
+
             mDragLayer.removeView(DragView.this);
         }
     }

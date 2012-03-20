@@ -18,15 +18,15 @@ package com.android.launcher2;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -34,6 +34,7 @@ import android.view.View;
 import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
+import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
@@ -542,35 +543,17 @@ public class DragLayer extends FrameLayout {
             duration = Math.max(duration, res.getInteger(R.integer.config_dropAnimMinDuration));
         }
 
-        if (mDropAnim != null) {
-            mDropAnim.cancel();
-        }
-
-        if (mFadeOutAnim != null) {
-            mFadeOutAnim.cancel();
-        }
-
-        // Show the drop view if it was previously hidden
-        mDropView = view;
-        mDropView.cancelAnimation();
-        mDropView.resetLayoutParams();
-        mDropAnim = new ValueAnimator();
+        // Fall back to cubic ease out interpolator for the animation if none is specified
+        TimeInterpolator interpolator = null;
         if (alphaInterpolator == null || motionInterpolator == null) {
-            mDropAnim.setInterpolator(mCubicEaseOutInterpolator);
+            interpolator = mCubicEaseOutInterpolator;
         }
 
-        if (anchorView != null) {
-            mAnchorViewInitialScrollX = anchorView.getScrollX();
-        }
-        mAnchorView = anchorView;
-
+        // Animate the view
         final float initAlpha = view.getAlpha();
-        final float dropViewScale = mDropView.getScaleX();
-
-        mDropAnim.setDuration(duration);
-        mDropAnim.setFloatValues(0.0f, 1.0f);
-        mDropAnim.removeAllUpdateListeners();
-        mDropAnim.addUpdateListener(new AnimatorUpdateListener() {
+        final float dropViewScale = view.getScaleX();
+        AnimatorUpdateListener updateCb = new AnimatorUpdateListener() {
+            @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 final float percent = (Float) animation.getAnimatedValue();
                 final int width = view.getMeasuredWidth();
@@ -603,7 +586,35 @@ public class DragLayer extends FrameLayout {
                 mDropView.setScaleY(scaleY);
                 mDropView.setAlpha(alpha);
             }
-        });
+        };
+        animateView(view, updateCb, duration, interpolator, onCompleteRunnable, animationEndStyle,
+                anchorView);
+    }
+
+    public void animateView(final DragView view, AnimatorUpdateListener updateCb, int duration,
+            TimeInterpolator interpolator, final Runnable onCompleteRunnable,
+            final int animationEndStyle, View anchorView) {
+        // Clean up the previous animations
+        if (mDropAnim != null) mDropAnim.cancel();
+        if (mFadeOutAnim != null) mFadeOutAnim.cancel();
+
+        // Show the drop view if it was previously hidden
+        mDropView = view;
+        mDropView.cancelAnimation();
+        mDropView.resetLayoutParams();
+
+        // Set the anchor view if the page is scrolling
+        if (anchorView != null) {
+            mAnchorViewInitialScrollX = anchorView.getScrollX();
+        }
+        mAnchorView = anchorView;
+
+        // Create and start the animation
+        mDropAnim = new ValueAnimator();
+        mDropAnim.setInterpolator(interpolator);
+        mDropAnim.setDuration(duration);
+        mDropAnim.setFloatValues(0f, 1f);
+        mDropAnim.addUpdateListener(updateCb);
         mDropAnim.addListener(new AnimatorListenerAdapter() {
             public void onAnimationEnd(Animator animation) {
                 if (onCompleteRunnable != null) {
@@ -629,7 +640,7 @@ public class DragLayer extends FrameLayout {
             mDropAnim.cancel();
         }
         if (mDropView != null) {
-            mDropView.remove();
+            mDragController.onDeferredEndDrag(mDropView);
         }
         mDropView = null;
         invalidate();
@@ -655,7 +666,7 @@ public class DragLayer extends FrameLayout {
         mFadeOutAnim.addListener(new AnimatorListenerAdapter() {
             public void onAnimationEnd(Animator animation) {
                 if (mDropView != null) {
-                    mDropView.remove();
+                    mDragController.onDeferredEndDrag(mDropView);
                 }
                 mDropView = null;
                 invalidate();

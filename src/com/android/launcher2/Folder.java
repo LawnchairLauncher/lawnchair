@@ -22,6 +22,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.InputType;
@@ -35,7 +36,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.MeasureSpec;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.inputmethod.EditorInfo;
@@ -653,6 +653,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         updateItemLocationsInDatabase();
     }
 
+    public boolean supportsFlingToDelete() {
+        return true;
+    }
+
     private void updateItemLocationsInDatabase() {
         ArrayList<View> list = getItemsInReadingOrder();
         for (int i = 0; i < list.size(); i++) {
@@ -922,6 +926,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mSuppressOnAdd = true;
         }
         mInfo.add(item);
+    }
+
+    public void onFlingToDelete(DragObject d, int x, int y, PointF vec) {
+        // Do nothing
     }
 
     public void onAdd(ShortcutInfo item) {

@@ -19,6 +19,7 @@ package com.android.launcher2;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.IBinder;
@@ -26,6 +27,7 @@ import android.os.Vibrator;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.inputmethod.InputMethodManager;
@@ -60,6 +62,9 @@ public class DragController {
     static final int SCROLL_LEFT = 0;
     static final int SCROLL_RIGHT = 1;
 
+    private static final float MAX_FLING_DEGREES = 35f;
+    private static final int FLING_TO_DELETE_THRESHOLD_Y_VELOCITY = -1400;
+
     private Launcher mLauncher;
     private Handler mHandler;
     private final Vibrator mVibrator = new Vibrator();
@@ -86,8 +91,8 @@ public class DragController {
 
     /** Who can receive drop events */
     private ArrayList<DropTarget> mDropTargets = new ArrayList<DropTarget>();
-
     private ArrayList<DragListener> mListeners = new ArrayList<DragListener>();
+    private DropTarget mFlingToDeleteDropTarget;
 
     /** The window token used as the parent for the DragView. */
     private IBinder mWindowToken;
@@ -110,6 +115,9 @@ public class DragController {
 
     private int mTmpPoint[] = new int[2];
     private Rect mDragLayerRect = new Rect();
+
+    protected int mFlingToDeleteThresholdVelocity;
+    private VelocityTracker mVelocityTracker;
 
     /**
      * Interface to receive notifications when a drag starts or stops
@@ -141,6 +149,10 @@ public class DragController {
         mLauncher = launcher;
         mHandler = new Handler();
         mScrollZone = launcher.getResources().getDimensionPixelSize(R.dimen.scroll_zone);
+        mVelocityTracker = VelocityTracker.obtain();
+
+        float density = launcher.getResources().getDisplayMetrics().density;
+        mFlingToDeleteThresholdVelocity = (int) (FLING_TO_DELETE_THRESHOLD_Y_VELOCITY * density);
     }
 
     public boolean dragging() {
@@ -378,15 +390,35 @@ public class DragController {
         if (mDragging) {
             mDragging = false;
             clearScrollRunnable();
-            for (DragListener listener : mListeners) {
-                listener.onDragEnd();
-            }
+            boolean isDeferred = false;
             if (mDragObject.dragView != null) {
-                if (!mDragObject.deferDragViewCleanupPostAnimation) {
+                isDeferred = mDragObject.deferDragViewCleanupPostAnimation;
+                if (!isDeferred) {
                     mDragObject.dragView.remove();
                 }
                 mDragObject.dragView = null;
             }
+
+            // Only end the drag if we are not deferred
+            if (!isDeferred) {
+                for (DragListener listener : mListeners) {
+                    listener.onDragEnd();
+                }
+            }
+        }
+
+        releaseVelocityTracker();
+    }
+
+    /**
+     * This only gets called as a result of drag view cleanup being deferred in endDrag();
+     */
+    void onDeferredEndDrag(DragView dragView) {
+        dragView.remove();
+
+        // If we skipped calling onDragEnd() before, do it now
+        for (DragListener listener : mListeners) {
+            listener.onDragEnd();
         }
     }
 
@@ -408,8 +440,11 @@ public class DragController {
             Log.d(Launcher.TAG, "DragController.onInterceptTouchEvent " + ev + " mDragging="
                     + mDragging);
         }
-        final int action = ev.getAction();
 
+        // Update the velocity tracker
+        acquireVelocityTrackerAndAddMovement(ev);
+
+        final int action = ev.getAction();
         final int[] dragLayerPos = getClampedDragLayerPos(ev.getX(), ev.getY());
         final int dragLayerX = dragLayerPos[0];
         final int dragLayerY = dragLayerPos[1];
@@ -425,7 +460,12 @@ public class DragController {
                 break;
             case MotionEvent.ACTION_UP:
                 if (mDragging) {
-                    drop(dragLayerX, dragLayerY);
+                    PointF vec = isFlingingToDelete(mDragObject.dragSource);
+                    if (vec != null) {
+                        dropOnFlingToDeleteTarget(dragLayerX, dragLayerY, vec);
+                    } else {
+                        drop(dragLayerX, dragLayerY);
+                    }
                 }
                 endDrag();
                 break;
@@ -529,6 +569,9 @@ public class DragController {
             return false;
         }
 
+        // Update the velocity tracker
+        acquireVelocityTrackerAndAddMovement(ev);
+
         final int action = ev.getAction();
         final int[] dragLayerPos = getClampedDragLayerPos(ev.getX(), ev.getY());
         final int dragLayerX = dragLayerPos[0];
@@ -553,10 +596,15 @@ public class DragController {
         case MotionEvent.ACTION_UP:
             // Ensure that we've processed a move event at the current pointer location.
             handleMoveEvent(dragLayerX, dragLayerY);
-
             mHandler.removeCallbacks(mScrollRunnable);
+
             if (mDragging) {
-                drop(dragLayerX, dragLayerY);
+                PointF vec = isFlingingToDelete(mDragObject.dragSource);
+                if (vec != null) {
+                    dropOnFlingToDeleteTarget(dragLayerX, dragLayerY, vec);
+                } else {
+                    drop(dragLayerX, dragLayerY);
+                }
             }
             endDrag();
             break;
@@ -567,6 +615,58 @@ public class DragController {
         }
 
         return true;
+    }
+
+    /**
+     * Determines whether the user flung the current item to delete it.
+     *
+     * @return the vector at which the item was flung, or null if no fling was detected.
+     */
+    private PointF isFlingingToDelete(DragSource source) {
+        if (mFlingToDeleteDropTarget == null) return null;
+        if (!source.supportsFlingToDelete()) return null;
+
+        ViewConfiguration config = ViewConfiguration.get(mLauncher);
+        mVelocityTracker.computeCurrentVelocity(1000, config.getScaledMaximumFlingVelocity());
+
+        if (mVelocityTracker.getYVelocity() < mFlingToDeleteThresholdVelocity) {
+            // Do a quick dot product test to ensure that we are flinging upwards
+            PointF vel = new PointF(mVelocityTracker.getXVelocity(),
+                    mVelocityTracker.getYVelocity());
+            PointF upVec = new PointF(0f, -1f);
+            float theta = (float) Math.acos(((vel.x * upVec.x) + (vel.y * upVec.y)) /
+                    (vel.length() * upVec.length()));
+            if (theta <= Math.toRadians(MAX_FLING_DEGREES)) {
+                return vel;
+            }
+        }
+        return null;
+    }
+
+    private void dropOnFlingToDeleteTarget(float x, float y, PointF vel) {
+        final int[] coordinates = mCoordinatesTemp;
+
+        mDragObject.x = coordinates[0];
+        mDragObject.y = coordinates[1];
+        mDragObject.dragComplete = true;
+
+        // Clean up dragging on the target if it's not the current fling delete target otherwise,
+        // start dragging to it.
+        if (mLastDropTarget != null && mFlingToDeleteDropTarget != mLastDropTarget) {
+            mLastDropTarget.onDragExit(mDragObject);
+        }
+
+        // Drop onto the fling-to-delete target
+        boolean accepted = false;
+        mFlingToDeleteDropTarget.onDragEnter(mDragObject);
+        mFlingToDeleteDropTarget.onDragExit(mDragObject);
+        if (mFlingToDeleteDropTarget.acceptDrop(mDragObject)) {
+            mFlingToDeleteDropTarget.onFlingToDelete(mDragObject, mDragObject.x, mDragObject.y,
+                    vel);
+            accepted = true;
+        }
+        mDragObject.dragSource.onDropCompleted((View) mFlingToDeleteDropTarget, mDragObject,
+                accepted);
     }
 
     private void drop(float x, float y) {
@@ -656,6 +756,27 @@ public class DragController {
      */
     public void removeDropTarget(DropTarget target) {
         mDropTargets.remove(target);
+    }
+
+    /**
+     * Sets the current fling-to-delete drop target.
+     */
+    public void setFlingToDeleteDropTarget(DropTarget target) {
+        mFlingToDeleteDropTarget = target;
+    }
+
+    private void acquireVelocityTrackerAndAddMovement(MotionEvent ev) {
+        if (mVelocityTracker == null) {
+            mVelocityTracker = VelocityTracker.obtain();
+        }
+        mVelocityTracker.addMovement(ev);
+    }
+
+    private void releaseVelocityTracker() {
+        if (mVelocityTracker != null) {
+            mVelocityTracker.recycle();
+            mVelocityTracker = null;
+        }
     }
 
     /**

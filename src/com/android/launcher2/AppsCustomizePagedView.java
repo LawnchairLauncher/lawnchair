@@ -760,6 +760,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mDraggingWidget = false;
     }
 
+    public boolean supportsFlingToDelete() {
+        return false;
+    }
+
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
