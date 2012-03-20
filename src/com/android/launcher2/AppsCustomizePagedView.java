@@ -725,9 +725,14 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         return true;
     }
 
-    private void endDragging(View target, boolean success) {
+    /**
+     * Clean up after dragging.
+     *
+     * @param target where the item was dragged to (can be null if the item was flung)
+     */
+    private void endDragging(View target, boolean isFlingToDelete, boolean success) {
         mLauncher.getWorkspace().onDragStopped(success);
-        if (!success || (target != mLauncher.getWorkspace() &&
+        if (isFlingToDelete || !success || (target != mLauncher.getWorkspace() &&
                 !(target instanceof DeleteDropTarget))) {
             // Exit spring loaded mode if we have not successfully dropped or have not handled the
             // drop in Workspace
@@ -763,8 +768,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     @Override
-    public void onDropCompleted(View target, DragObject d, boolean success) {
-        endDragging(target, success);
+    public void onDropCompleted(View target, DragObject d, boolean isFlingToDelete,
+            boolean success) {
+        // Return early and wait for onFlingToDeleteCompleted if this was the result of a fling
+        if (isFlingToDelete) return;
+
+        endDragging(target, false, success);
 
         // Display an error message if the drag failed due to there not being enough space on the
         // target layout we were dropping on.
@@ -791,8 +800,17 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mDraggingWidget = false;
     }
 
+    @Override
+    public void onFlingToDeleteCompleted() {
+        // We just dismiss the drag when we fling, so cleanup here
+        endDragging(null, true, true);
+        cleanupWidgetPreloading();
+        mDraggingWidget = false;
+    }
+
+    @Override
     public boolean supportsFlingToDelete() {
-        return false;
+        return true;
     }
 
     @Override

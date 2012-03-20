@@ -366,7 +366,7 @@ public class DragController {
             mDragObject.deferDragViewCleanupPostAnimation = false;
             mDragObject.cancelled = true;
             mDragObject.dragComplete = true;
-            mDragObject.dragSource.onDropCompleted(null, mDragObject, false);
+            mDragObject.dragSource.onDropCompleted(null, mDragObject, false, false);
         }
         endDrag();
     }
@@ -420,6 +420,10 @@ public class DragController {
         for (DragListener listener : mListeners) {
             listener.onDragEnd();
         }
+    }
+
+    void onDeferredEndFling(DropTarget.DragObject d) {
+        d.dragSource.onFlingToDeleteCompleted();
     }
 
     /**
@@ -665,7 +669,7 @@ public class DragController {
                     vel);
             accepted = true;
         }
-        mDragObject.dragSource.onDropCompleted((View) mFlingToDeleteDropTarget, mDragObject,
+        mDragObject.dragSource.onDropCompleted((View) mFlingToDeleteDropTarget, mDragObject, true,
                 accepted);
     }
 
@@ -684,7 +688,7 @@ public class DragController {
                 accepted = true;
             }
         }
-        mDragObject.dragSource.onDropCompleted((View) dropTarget, mDragObject, accepted);
+        mDragObject.dragSource.onDropCompleted((View) dropTarget, mDragObject, false, accepted);
     }
 
     private DropTarget findDropTarget(int x, int y, int[] dropCoordinates) {
