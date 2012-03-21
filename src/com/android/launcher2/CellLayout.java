@@ -1574,31 +1574,28 @@ public class CellLayout extends ViewGroup {
     }
 
     private boolean addViewToTempLocation(View v, Rect rectOccupiedByPotentialDrop,
-            int[] direction) {
-        LayoutParams lp = (LayoutParams) v.getLayoutParams();
+            int[] direction, ItemConfiguration currentState) {
+        CellAndSpan c = currentState.map.get(v);
         boolean success = false;
-        markCellsForView(lp.tmpCellX, lp.tmpCellY, lp.cellHSpan,
-                lp.cellVSpan, mTmpOccupied, false);
+        markCellsForView(c.x, c.y, c.spanX, c.spanY, mTmpOccupied, false);
         markCellsForRect(rectOccupiedByPotentialDrop, mTmpOccupied, true);
 
-        findNearestArea(lp.tmpCellX, lp.tmpCellY, lp.cellHSpan, lp.cellVSpan,
-                direction, mTmpOccupied, null, mTempLocation);
+        findNearestArea(c.x, c.y, c.spanX, c.spanY, direction, mTmpOccupied, null, mTempLocation);
 
         if (mTempLocation[0] >= 0 && mTempLocation[1] >= 0) {
-            lp.tmpCellX = mTempLocation[0];
-            lp.tmpCellY = mTempLocation[1];
+            c.x = mTempLocation[0];
+            c.y = mTempLocation[1];
             success = true;
 
         }
-        markCellsForView(lp.tmpCellX, lp.tmpCellY, lp.cellHSpan,
-                lp.cellVSpan, mTmpOccupied, true);
+        markCellsForView(c.x, c.y, c.spanX, c.spanY, mTmpOccupied, true);
         return success;
     }
 
     // This method looks in the specified direction to see if there is an additional view
     // immediately adjecent in that direction
     private boolean addViewInDirection(ArrayList<View> views, Rect boundingRect, int[] direction,
-            boolean[][] occupied) {
+            boolean[][] occupied, ItemConfiguration currentState) {
         boolean found = false;
 
         int childCount = mShortcutsAndWidgets.getChildCount();
@@ -1624,16 +1621,17 @@ public class CellLayout extends ViewGroup {
         for (int i = 0; i < childCount; i++) {
             View child = mShortcutsAndWidgets.getChildAt(i);
             if (views.contains(child)) continue;
-            LayoutParams lp = (LayoutParams) child.getLayoutParams();
+            CellAndSpan c = currentState.map.get(child);
 
-            r1.set(lp.tmpCellX, lp.tmpCellY, lp.tmpCellX + lp.cellHSpan, lp.tmpCellY + lp.cellVSpan);
+            LayoutParams lp = (LayoutParams) child.getLayoutParams();
+            r1.set(c.x, c.y, c.x + c.spanX, c.y + c.spanY);
             if (Rect.intersects(r0, r1)) {
                 if (!lp.canReorder) {
                     return false;
                 }
                 boolean pushed = false;
-                for (int x = lp.tmpCellX; x < lp.tmpCellX + lp.cellHSpan; x++) {
-                    for (int y = lp.tmpCellY; y < lp.tmpCellY + lp.cellVSpan; y++) {
+                for (int x = c.x; x < c.x + c.spanX; x++) {
+                    for (int y = c.y; y < c.y + c.spanY; y++) {
                         boolean inBounds = x - deltaX >= 0 && x -deltaX < mCountX
                                 && y - deltaY >= 0 && y - deltaY < mCountY;
                         if (inBounds && occupied[x - deltaX][y - deltaY]) {
@@ -1643,8 +1641,7 @@ public class CellLayout extends ViewGroup {
                 }
                 if (pushed) {
                     views.add(child);
-                    boundingRect.union(lp.tmpCellX, lp.tmpCellY, lp.tmpCellX + lp.cellHSpan,
-                            lp.tmpCellY + lp.cellVSpan);
+                    boundingRect.union(c.x, c.y, c.x + c.spanX, c.y + c.spanY);
                     found = true;
                 }
             }
@@ -1652,116 +1649,72 @@ public class CellLayout extends ViewGroup {
         return found;
     }
 
-    private boolean pushViewsToTempLocation(ArrayList<View> views, Rect rectOccupiedByPotentialDrop,
-            int[] direction) {
-        if (views.size() == 0) return true;
-
-
-        boolean success = false;
-
-        // We construct a rect which represents the entire group of views
-        Rect boundingRect = null;
-        for (View v: views) {
-            LayoutParams lp = (LayoutParams) v.getLayoutParams();
-            if (boundingRect == null) {
-                boundingRect = new Rect(lp.tmpCellX, lp.tmpCellY, lp.tmpCellX + lp.cellHSpan,
-                        lp.tmpCellY + lp.cellVSpan);
-            } else {
-                boundingRect.union(lp.tmpCellX, lp.tmpCellY, lp.tmpCellX + lp.cellHSpan,
-                        lp.tmpCellY + lp.cellVSpan);
-            }
-        }
-
-        ArrayList<View> dup = (ArrayList<View>) views.clone();
-        while (addViewInDirection(dup, boundingRect, direction, mTmpOccupied)) {
-        }
-        for (View v: dup) {
-            LayoutParams lp = (LayoutParams) v.getLayoutParams();
-            markCellsForView(lp.tmpCellX, lp.tmpCellY, lp.cellHSpan,
-                    lp.cellVSpan, mTmpOccupied, false); 
-        }
-
-        boolean[][] blockOccupied = new boolean[boundingRect.width()][boundingRect.height()];
-        int top = boundingRect.top;
-        int left = boundingRect.left;
-        for (View v: dup) {
-            LayoutParams lp = (LayoutParams) v.getLayoutParams();
-            markCellsForView(lp.tmpCellX - left, lp.tmpCellY - top, lp.cellHSpan,
-                    lp.cellVSpan, blockOccupied, true); 
-        }
-
-        markCellsForRect(rectOccupiedByPotentialDrop, mTmpOccupied, true);
-
-        findNearestAreaInDirection(boundingRect.left, boundingRect.top, boundingRect.width(),
-                boundingRect.height(), direction, mTmpOccupied, blockOccupied, mTempLocation);
-
-        int deltaX = mTempLocation[0] - boundingRect.left;
-        int deltaY = mTempLocation[1] - boundingRect.top;
-        if (mTempLocation[0] >= 0 && mTempLocation[1] >= 0) {
-            for (View v: dup) {
-                LayoutParams lp = (LayoutParams) v.getLayoutParams();
-                lp.tmpCellX += deltaX;
-                lp.tmpCellY += deltaY;
-            }
-            success = true;
-        }
-        for (View v: dup) {
-            LayoutParams lp = (LayoutParams) v.getLayoutParams();
-            markCellsForView(lp.tmpCellX, lp.tmpCellY, lp.cellHSpan,
-                    lp.cellVSpan, mTmpOccupied, true);
-        }
-        return success;
-    }
-
     private boolean addViewsToTempLocation(ArrayList<View> views, Rect rectOccupiedByPotentialDrop,
-            int[] direction) {
+            int[] direction, boolean push, ItemConfiguration currentState) {
         if (views.size() == 0) return true;
-        boolean success = false;
 
-        // We construct a rect which represents the entire group of views
+        boolean success = false;
         Rect boundingRect = null;
+        // We construct a rect which represents the entire group of views passed in
         for (View v: views) {
-            LayoutParams lp = (LayoutParams) v.getLayoutParams();
-            markCellsForView(lp.tmpCellX, lp.tmpCellY, lp.cellHSpan,
-                    lp.cellVSpan, mTmpOccupied, false);
+            CellAndSpan c = currentState.map.get(v);
             if (boundingRect == null) {
-                boundingRect = new Rect(lp.tmpCellX, lp.tmpCellY, lp.tmpCellX + lp.cellHSpan,
-                        lp.tmpCellY + lp.cellVSpan);
+                boundingRect = new Rect(c.x, c.y, c.x + c.spanX, c.y + c.spanY);
             } else {
-                boundingRect.union(lp.tmpCellX, lp.tmpCellY, lp.tmpCellX + lp.cellHSpan,
-                        lp.tmpCellY + lp.cellVSpan);
+                boundingRect.union(c.x, c.y, c.x + c.spanX, c.y + c.spanY);
             }
         }
+
+        @SuppressWarnings("unchecked")
+        ArrayList<View> dup = (ArrayList<View>) views.clone();
+        // We try and expand the group of views in the direction vector passed, based on
+        // whether they are physically adjacent, ie. based on "push mechanics".
+        while (push && addViewInDirection(dup, boundingRect, direction, mTmpOccupied,
+                currentState)) {
+        }
+
+        // Mark the occupied state as false for the group of views we want to move.
+        for (View v: dup) {
+            CellAndSpan c = currentState.map.get(v);
+            markCellsForView(c.x, c.y, c.spanX, c.spanY, mTmpOccupied, false);
+        }
+
         boolean[][] blockOccupied = new boolean[boundingRect.width()][boundingRect.height()];
         int top = boundingRect.top;
         int left = boundingRect.left;
-        for (View v: views) {
-            LayoutParams lp = (LayoutParams) v.getLayoutParams();
-            markCellsForView(lp.tmpCellX - left, lp.tmpCellY - top, lp.cellHSpan,
-                    lp.cellVSpan, blockOccupied, true); 
+        // We mark more precisely which parts of the bounding rect are truly occupied, allowing
+        // for tetris-style interlocking.
+        for (View v: dup) {
+            CellAndSpan c = currentState.map.get(v);
+            markCellsForView(c.x - left, c.y - top, c.spanX, c.spanY, blockOccupied, true);
         }
 
         markCellsForRect(rectOccupiedByPotentialDrop, mTmpOccupied, true);
 
-        // TODO: this bounding rect may not be completely filled, lets be more precise about this
-        // check.
-        findNearestArea(boundingRect.left, boundingRect.top, boundingRect.width(),
-                boundingRect.height(), direction, mTmpOccupied, blockOccupied, mTempLocation);
+        if (push) {
+            findNearestAreaInDirection(boundingRect.left, boundingRect.top, boundingRect.width(),
+                    boundingRect.height(), direction, mTmpOccupied, blockOccupied, mTempLocation);
+        } else {
+            findNearestArea(boundingRect.left, boundingRect.top, boundingRect.width(),
+                    boundingRect.height(), direction, mTmpOccupied, blockOccupied, mTempLocation);
+        }
 
-        int deltaX = mTempLocation[0] - boundingRect.left;
-        int deltaY = mTempLocation[1] - boundingRect.top;
+        // If we successfuly found a location by pushing the block of views, we commit it
         if (mTempLocation[0] >= 0 && mTempLocation[1] >= 0) {
-            for (View v: views) {
-                LayoutParams lp = (LayoutParams) v.getLayoutParams();
-                lp.tmpCellX += deltaX;
-                lp.tmpCellY += deltaY;
+            int deltaX = mTempLocation[0] - boundingRect.left;
+            int deltaY = mTempLocation[1] - boundingRect.top;
+            for (View v: dup) {
+                CellAndSpan c = currentState.map.get(v);
+                c.x += deltaX;
+                c.y += deltaY;
             }
             success = true;
         }
-        for (View v: views) {
-            LayoutParams lp = (LayoutParams) v.getLayoutParams();
-            markCellsForView(lp.tmpCellX, lp.tmpCellY, lp.cellHSpan,
-                    lp.cellVSpan, mTmpOccupied, true);
+
+        // In either case, we set the occupied array as marked for the location of the views
+        for (View v: dup) {
+            CellAndSpan c = currentState.map.get(v);
+            markCellsForView(c.x, c.y, c.spanX, c.spanY, mTmpOccupied, true);
         }
         return success;
     }
@@ -1771,25 +1724,26 @@ public class CellLayout extends ViewGroup {
     }
 
     private boolean rearrangementExists(int cellX, int cellY, int spanX, int spanY, int[] direction,
-            View ignoreView) {
-        mIntersectingViews.clear();
+            View ignoreView, ItemConfiguration solution) {
 
+        mIntersectingViews.clear();
         mOccupiedRect.set(cellX, cellY, cellX + spanX, cellY + spanY);
 
+        // Mark the desired location of the view currently being dragged.
         if (ignoreView != null) {
-            LayoutParams lp = (LayoutParams) ignoreView.getLayoutParams();
-            lp.tmpCellX = cellX;
-            lp.tmpCellY = cellY;
+            CellAndSpan c = solution.map.get(ignoreView);
+            c.x = cellX;
+            c.y = cellY;
         }
 
-        int childCount = mShortcutsAndWidgets.getChildCount();
+        //int childCount = mChildren.getChildCount();
         Rect r0 = new Rect(cellX, cellY, cellX + spanX, cellY + spanY);
         Rect r1 = new Rect();
-        for (int i = 0; i < childCount; i++) {
-            View child = mShortcutsAndWidgets.getChildAt(i);
+        for (View child: solution.map.keySet()) {
             if (child == ignoreView) continue;
+            CellAndSpan c = solution.map.get(child);
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
-            r1.set(lp.cellX, lp.cellY, lp.cellX + lp.cellHSpan, lp.cellY + lp.cellVSpan);
+            r1.set(c.x, c.y, c.x + c.spanX, c.y + c.spanY);
             if (Rect.intersects(r0, r1)) {
                 if (!lp.canReorder) {
                     return false;
@@ -1798,27 +1752,28 @@ public class CellLayout extends ViewGroup {
             }
         }
 
-        if (pushViewsToTempLocation(mIntersectingViews, mOccupiedRect, direction)) {
+        // We try to move the intersecting views as a block using the push mechanic
+        if (addViewsToTempLocation(mIntersectingViews, mOccupiedRect, direction, true, solution)) {
             return true;
         }
         // Try the opposite direction
         direction[0] *= -1;
         direction[1] *= -1;
-        if (pushViewsToTempLocation(mIntersectingViews, mOccupiedRect, direction)) {
+        if (addViewsToTempLocation(mIntersectingViews, mOccupiedRect, direction, true, solution)) {
             return true;
         }
         // Switch the direction back
         direction[0] *= -1;
         direction[1] *= -1;
 
-        // First we try moving the views as a block
-        if (addViewsToTempLocation(mIntersectingViews, mOccupiedRect, direction)) {
+        // Next we try moving the views as a block , but without requiring the push mechanic
+        if (addViewsToTempLocation(mIntersectingViews, mOccupiedRect, direction, false, solution)) {
             return true;
         }
 
         // Ok, they couldn't move as a block, let's move them individually
         for (View v : mIntersectingViews) {
-            if (!addViewToTempLocation(v, mOccupiedRect, direction)) {
+            if (!addViewToTempLocation(v, mOccupiedRect, direction, solution)) {
                 return false;
             }
         }
@@ -1842,11 +1797,21 @@ public class CellLayout extends ViewGroup {
         }
     }
 
+    private void copyOccupiedArray(boolean[][] occupied) {
+        for (int i = 0; i < mCountX; i++) {
+            for (int j = 0; j < mCountY; j++) {
+                occupied[i][j] = mOccupied[i][j];
+            }
+        }
+    }
+
     ItemConfiguration simpleSwap(int pixelX, int pixelY, int minSpanX, int minSpanY, int spanX,
             int spanY, int[] direction, View dragView, boolean decX, ItemConfiguration solution) {
-        // This creates a copy of the current occupied array, omitting the current view being
-        // dragged
-        resetTempLayoutToCurrent(dragView);
+        // Copy the current state into the solution. This solution will be manipulated as necessary.
+        copyCurrentStateToSolution(solution, false);
+        // Copy the current occupied array into the temporary occupied array. This array will be
+        // manipulated as necessary to find a solution.
+        copyOccupiedArray(mTmpOccupied);
 
         // We find the nearest cell into which we would place the dragged item, assuming there's
         // nothing in its way.
@@ -1856,7 +1821,8 @@ public class CellLayout extends ViewGroup {
         boolean success = false;
         // First we try the exact nearest position of the item being dragged,
         // we will then want to try to move this around to other neighbouring positions
-        success = rearrangementExists(result[0], result[1], spanX, spanY, direction, dragView);
+        success = rearrangementExists(result[0], result[1], spanX, spanY, direction, dragView,
+                solution);
 
         if (!success) {
             // We try shrinking the widget down to size in an alternating pattern, shrink 1 in
@@ -1875,7 +1841,6 @@ public class CellLayout extends ViewGroup {
             solution.dragViewY = result[1];
             solution.dragViewSpanX = spanX;
             solution.dragViewSpanY = spanY;
-            copyCurrentStateToSolution(solution, true);
         }
         return solution;
     }
@@ -1885,13 +1850,13 @@ public class CellLayout extends ViewGroup {
         for (int i = 0; i < childCount; i++) {
             View child = mShortcutsAndWidgets.getChildAt(i);
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
-            Point p;
+            CellAndSpan c;
             if (temp) {
-                p = new Point(lp.tmpCellX, lp.tmpCellY);
+                c = new CellAndSpan(lp.tmpCellX, lp.tmpCellY, lp.cellHSpan, lp.cellVSpan);
             } else {
-                p = new Point(lp.cellX, lp.cellY);
+                c = new CellAndSpan(lp.cellX, lp.cellY, lp.cellHSpan, lp.cellVSpan);
             }
-            solution.map.put(child, p);
+            solution.map.put(child, c);
         }
     }
 
@@ -1907,12 +1872,13 @@ public class CellLayout extends ViewGroup {
             View child = mShortcutsAndWidgets.getChildAt(i);
             if (child == dragView) continue;
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
-            Point p = solution.map.get(child);
-            if (p != null) {
-                lp.tmpCellX = p.x;
-                lp.tmpCellY = p.y;
-                markCellsForView(lp.tmpCellX, lp.tmpCellY, lp.cellHSpan, lp.cellVSpan,
-                        mTmpOccupied, true);
+            CellAndSpan c = solution.map.get(child);
+            if (c != null) {
+                lp.tmpCellX = c.x;
+                lp.tmpCellY = c.y;
+                lp.cellHSpan = c.spanX;
+                lp.cellVSpan = c.spanY;
+                markCellsForView(c.x, c.y, c.spanX, c.spanY, mTmpOccupied, true);
             }
         }
         markCellsForView(solution.dragViewX, solution.dragViewY, solution.dragViewSpanX,
@@ -1934,12 +1900,12 @@ public class CellLayout extends ViewGroup {
             View child = mShortcutsAndWidgets.getChildAt(i);
             if (child == dragView) continue;
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
-            Point p = solution.map.get(child);
-            if (p != null) {
-                if (lp.cellX != p.x || lp.cellY != p.y) {
-                    animateChildToPosition(child, p.x, p.y, 150, 0, DESTRUCTIVE_REORDER, false);
+            CellAndSpan c = solution.map.get(child);
+            if (c != null) {
+                if (lp.cellX != c.x || lp.cellY != c.y) {
+                    animateChildToPosition(child, c.x, c.y, 150, 0, DESTRUCTIVE_REORDER, false);
                 }
-                markCellsForView(p.x, p.y, lp.cellHSpan, lp.cellVSpan, occupied, true);
+                markCellsForView(c.x, c.y, c.spanX, c.spanY, occupied, true);
             }
         }
         if (commitDragView) {
@@ -1967,22 +1933,6 @@ public class CellLayout extends ViewGroup {
         for (int i = 0; i < childCount; i++) {
             LayoutParams lp = (LayoutParams) mShortcutsAndWidgets.getChildAt(i).getLayoutParams();
             lp.useTmpCoords = useTempCoords;
-        }
-    }
-
-    private void resetTempLayoutToCurrent(View ignoreView) {
-        for (int i = 0; i < mCountX; i++) {
-            for (int j = 0; j < mCountY; j++) {
-                mTmpOccupied[i][j] = mOccupied[i][j];
-            }
-        }
-        int childCount = mShortcutsAndWidgets.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            View child = mShortcutsAndWidgets.getChildAt(i);
-            if (child == ignoreView) continue;
-            LayoutParams lp = (LayoutParams) child.getLayoutParams();
-            lp.tmpCellX = lp.cellX;
-            lp.tmpCellY = lp.cellY;
         }
     }
 
@@ -2070,7 +2020,6 @@ public class CellLayout extends ViewGroup {
         if ((mode == MODE_ON_DROP || !foundSolution) && !DESTRUCTIVE_REORDER) {
             setUseTempCoords(false);
         }
-        boolean[][] occupied = mOccupied;
 
         mShortcutsAndWidgets.requestLayout();
         return result;
@@ -2085,16 +2034,24 @@ public class CellLayout extends ViewGroup {
     }
 
     private class ItemConfiguration {
-        HashMap<View, Point> map = new HashMap<View, Point>();
+        HashMap<View, CellAndSpan> map = new HashMap<View, CellAndSpan>();
         boolean isSolution = false;
         int dragViewX, dragViewY, dragViewSpanX, dragViewSpanY;
 
         int area() {
             return dragViewSpanX * dragViewSpanY;
         }
-        void clear() {
-            map.clear();
-            isSolution = false;
+    }
+
+    private class CellAndSpan {
+        int x, y;
+        int spanX, spanY;
+
+        public CellAndSpan(int x, int y, int spanX, int spanY) {
+            this.x = x;
+            this.y = y;
+            this.spanX = spanX;
+            this.spanY = spanY;
         }
     }
 
