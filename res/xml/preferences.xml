@@ -115,16 +115,16 @@
         </PreferenceScreen>
 
         <!-- Dock -->
-        <PreferenceScreen android:key="ui_dock"
+        <!-- <PreferenceScreen android:key="ui_dock"
             android:title="@string/preferences_interface_dock_title">
 
-        </PreferenceScreen>
+        </PreferenceScreen> -->
 
         <!-- Icons -->
-        <PreferenceScreen android:key="ui_icons"
+        <!-- <PreferenceScreen android:key="ui_icons"
             android:title="@string/preferences_interface_icons_title">
 
-        </PreferenceScreen>
+        </PreferenceScreen> -->
 
         <!-- General -->
         <PreferenceScreen android:key="ui_general"
