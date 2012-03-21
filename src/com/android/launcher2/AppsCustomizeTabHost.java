@@ -355,6 +355,11 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             // force building the layer, so you don't get a blip early in an animation
             // when the layer is created layer
             buildLayer();
+
+            // Let the GC system know that now is a good time to do any garbage
+            // collection; makes it less likely we'll get a GC during the all apps
+            // to workspace animation
+            System.gc();
         }
     }
 
@@ -366,6 +371,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     /* LauncherTransitionable overrides */
     @Override
     public void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace) {
+        mAppsCustomizePane.onLauncherTransitionStart(l, animated, toWorkspace);
         mInTransition = true;
         mTransitioningToWorkspace = toWorkspace;
 
@@ -405,6 +411,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
 
     @Override
     public void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace) {
+        mAppsCustomizePane.onLauncherTransitionEnd(l, animated, toWorkspace);
         mInTransition = false;
         if (animated) {
             setLayerType(LAYER_TYPE_NONE, null);

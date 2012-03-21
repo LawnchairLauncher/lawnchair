@@ -32,7 +32,6 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.MaskFilter;
 import android.graphics.Matrix;
@@ -170,7 +169,8 @@ class AppsCustomizeAsyncTask extends AsyncTask<AsyncTaskPageData, Void, AsyncTas
  */
 public class AppsCustomizePagedView extends PagedViewWithDraggableItems implements
         AllAppsView, View.OnClickListener, View.OnKeyListener, DragSource,
-        PagedViewIcon.PressedCallback, PagedViewWidget.ShortPressListener {
+        PagedViewIcon.PressedCallback, PagedViewWidget.ShortPressListener,
+        LauncherTransitionable {
     static final String LOG_TAG = "AppsCustomizePagedView";
 
     /**
@@ -240,6 +240,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     int mWidgetLoadingId = -1;
     PendingAddWidgetInfo mCreateWidgetInfo = null;
     private boolean mDraggingWidget = false;
+
+    // Deferral of loading widget previews during launcher transitions
+    private boolean mInTransition;
+    private ArrayList<AsyncTaskPageData> mDeferredSyncWidgetPageItems =
+        new ArrayList<AsyncTaskPageData>();
 
     public AppsCustomizePagedView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -732,6 +737,32 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     @Override
+    public void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace) {
+        mInTransition = true;
+        if (toWorkspace) {
+            cancelAllTasks();
+        }
+    }
+
+    @Override
+    public View getContent() {
+        return null;
+    }
+
+    @Override
+    public void onLauncherTransitionStep(Launcher l, float t) {
+    }
+
+    @Override
+    public void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace) {
+        mInTransition = false;
+        for (AsyncTaskPageData d : mDeferredSyncWidgetPageItems) {
+            onSyncWidgetPageItems(d);
+        }
+        mDeferredSyncWidgetPageItems.clear();
+    }
+
+    @Override
     public void onDropCompleted(View target, DragObject d, boolean success) {
         endDragging(target, success);
 
@@ -789,6 +820,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             AppsCustomizeAsyncTask task = (AppsCustomizeAsyncTask) iter.next();
             task.cancel(false);
             iter.remove();
+            mDirtyPageContent.set(task.page, true);
         }
     }
 
@@ -808,7 +840,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         Iterator<AppsCustomizeAsyncTask> iter = mRunningTasks.iterator();
         while (iter.hasNext()) {
             AppsCustomizeAsyncTask task = (AppsCustomizeAsyncTask) iter.next();
-            int pageIndex = task.page + mNumAppsPages;
+            int pageIndex = task.page;
             if ((mNextPage > mCurrentPage && pageIndex >= mCurrentPage) ||
                 (mNextPage < mCurrentPage && pageIndex <= mCurrentPage)) {
                 task.setThreadPriority(getThreadPriorityForPage(pageIndex));
@@ -910,7 +942,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         int minPageDiff = Integer.MAX_VALUE;
         while (iter.hasNext()) {
             AppsCustomizeAsyncTask task = (AppsCustomizeAsyncTask) iter.next();
-            minPageDiff = Math.abs(task.page + mNumAppsPages - toPage);
+            minPageDiff = Math.abs(task.page - toPage);
         }
 
         int rawPageDiff = Math.abs(page - toPage);
@@ -945,7 +977,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         Iterator<AppsCustomizeAsyncTask> iter = mRunningTasks.iterator();
         while (iter.hasNext()) {
             AppsCustomizeAsyncTask task = (AppsCustomizeAsyncTask) iter.next();
-            int taskPage = task.page + mNumAppsPages;
+            int taskPage = task.page;
             if (taskPage < getAssociatedLowerPageBound(mCurrentPage) ||
                     taskPage > getAssociatedUpperPageBound(mCurrentPage)) {
                 task.cancel(false);
@@ -956,7 +988,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
 
         // We introduce a slight delay to order the loading of side pages so that we don't thrash
-        final int sleepMs = getSleepForPage(page + mNumAppsPages);
+        final int sleepMs = getSleepForPage(page);
         AsyncTaskPageData pageData = new AsyncTaskPageData(page, widgets, cellWidth, cellHeight,
             new AsyncTaskCallback() {
                 @Override
@@ -976,20 +1008,17 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             new AsyncTaskCallback() {
                 @Override
                 public void run(AppsCustomizeAsyncTask task, AsyncTaskPageData data) {
-                    try {
-                        mRunningTasks.remove(task);
-                        if (task.isCancelled()) return;
-                        onSyncWidgetPageItems(data);
-                    } finally {
-                        data.cleanup(task.isCancelled());
-                    }
+                    mRunningTasks.remove(task);
+                    if (task.isCancelled()) return;
+                    // do cleanup inside onSyncWidgetPageItems
+                    onSyncWidgetPageItems(data);
                 }
             });
 
         // Ensure that the task is appropriately prioritized and runs in parallel
         AppsCustomizeAsyncTask t = new AppsCustomizeAsyncTask(page,
                 AsyncTaskPageData.Type.LoadWidgetPreviewData);
-        t.setThreadPriority(getThreadPriorityForPage(page + mNumAppsPages));
+        t.setThreadPriority(getThreadPriorityForPage(page));
         t.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, pageData);
         mRunningTasks.add(t);
     }
@@ -1132,13 +1161,13 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 - ((mWidgetCountY - 1) * mWidgetHeightGap)) / mWidgetCountY);
 
         // Prepare the set of widgets to load previews for in the background
-        int offset = page * numItemsPerPage;
+        int offset = (page - mNumAppsPages) * numItemsPerPage;
         for (int i = offset; i < Math.min(offset + numItemsPerPage, mWidgets.size()); ++i) {
             items.add(mWidgets.get(i));
         }
 
         // Prepopulate the pages with the other widget info, and fill in the previews later
-        final PagedViewGridLayout layout = (PagedViewGridLayout) getPageAt(page + mNumAppsPages);
+        final PagedViewGridLayout layout = (PagedViewGridLayout) getPageAt(page);
         layout.setColumnCount(layout.getCellCountX());
         for (int i = 0; i < items.size(); ++i) {
             Object rawInfo = items.get(i);
@@ -1249,29 +1278,38 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             }
         }
     }
+
     private void onSyncWidgetPageItems(AsyncTaskPageData data) {
-        int page = data.page;
-        PagedViewGridLayout layout = (PagedViewGridLayout) getPageAt(page + mNumAppsPages);
-
-        ArrayList<Object> items = data.items;
-        int count = items.size();
-        for (int i = 0; i < count; ++i) {
-            PagedViewWidget widget = (PagedViewWidget) layout.getChildAt(i);
-            if (widget != null) {
-                Bitmap preview = data.generatedImages.get(i);
-                widget.applyPreview(new FastBitmapDrawable(preview), i);
-            }
+        if (mInTransition) {
+            mDeferredSyncWidgetPageItems.add(data);
+            return;
         }
+        try {
+            int page = data.page;
+            PagedViewGridLayout layout = (PagedViewGridLayout) getPageAt(page);
 
-        layout.createHardwareLayer();
-        invalidate();
+            ArrayList<Object> items = data.items;
+            int count = items.size();
+            for (int i = 0; i < count; ++i) {
+                PagedViewWidget widget = (PagedViewWidget) layout.getChildAt(i);
+                if (widget != null) {
+                    Bitmap preview = data.generatedImages.get(i);
+                    widget.applyPreview(new FastBitmapDrawable(preview), i);
+                }
+            }
 
-        // Update all thread priorities
-        Iterator<AppsCustomizeAsyncTask> iter = mRunningTasks.iterator();
-        while (iter.hasNext()) {
-            AppsCustomizeAsyncTask task = (AppsCustomizeAsyncTask) iter.next();
-            int pageIndex = task.page + mNumAppsPages;
-            task.setThreadPriority(getThreadPriorityForPage(pageIndex));
+            layout.createHardwareLayer();
+            invalidate();
+
+            // Update all thread priorities
+            Iterator<AppsCustomizeAsyncTask> iter = mRunningTasks.iterator();
+            while (iter.hasNext()) {
+                AppsCustomizeAsyncTask task = (AppsCustomizeAsyncTask) iter.next();
+                int pageIndex = task.page;
+                task.setThreadPriority(getThreadPriorityForPage(pageIndex));
+            }
+        } finally {
+            data.cleanup(false);
         }
     }
 
@@ -1285,7 +1323,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             PagedViewGridLayout layout = new PagedViewGridLayout(context, mWidgetCountX,
                     mWidgetCountY);
             setupPage(layout);
-            addView(layout, new PagedViewGridLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+            addView(layout, new PagedView.LayoutParams(LayoutParams.MATCH_PARENT,
                     LayoutParams.MATCH_PARENT));
         }
 
@@ -1301,14 +1339,14 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         if (page < mNumAppsPages) {
             syncAppsPageItems(page, immediate);
         } else {
-            syncWidgetPageItems(page - mNumAppsPages, immediate);
+            syncWidgetPageItems(page, immediate);
         }
     }
 
     // We want our pages to be z-ordered such that the further a page is to the left, the higher
     // it is in the z-order. This is important to insure touch events are handled correctly.
     View getPageAt(int index) {
-        return getChildAt(getChildCount() - index - 1);
+        return getChildAt(indexToPage(index));
     }
 
     @Override
