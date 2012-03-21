@@ -55,6 +55,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -84,6 +85,7 @@ import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.BounceInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Advanceable;
@@ -103,7 +105,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Default launcher application.
@@ -253,6 +260,10 @@ public final class Launcher extends Activity
     // it from the context.
     private SharedPreferences mSharedPrefs;
 
+    // Holds the page that we need to animate to, and the icon views that we need to animate up
+    // when we scroll to that page on resume.
+    private int mNewShortcutAnimatePage = -1;
+    private ArrayList<View> mNewShortcutAnimateViews = new ArrayList<View>();
 
     private BubbleTextView mWaitingForResume;
 
@@ -280,7 +291,8 @@ public final class Launcher extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LauncherApplication app = ((LauncherApplication)getApplication());
-        mSharedPrefs = getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+        mSharedPrefs = getSharedPreferences(LauncherApplication.getSharedPreferencesKey(),
+                Context.MODE_PRIVATE);
         mModel = app.setLauncher(this);
         mIconCache = app.getIconCache();
         mDragController = new DragController(this);
@@ -317,7 +329,7 @@ public final class Launcher extends Activity
         }
 
         if (!mRestoring) {
-            mModel.startLoader(this, true);
+            mModel.startLoader(true);
         }
 
         if (!mModel.isAllAppsLoaded()) {
@@ -593,10 +605,11 @@ public final class Launcher extends Activity
     @Override
     protected void onResume() {
         super.onResume();
+
         mPaused = false;
         if (mRestoring || mOnResumeNeedsLoad) {
             mWorkspaceLoading = true;
-            mModel.startLoader(this, true);
+            mModel.startLoader(true);
             mRestoring = false;
             mOnResumeNeedsLoad = false;
         }
@@ -725,7 +738,7 @@ public final class Launcher extends Activity
             showAllApps(false);
         }
 
-        final int currentScreen = savedState.getInt(RUNTIME_STATE_CURRENT_SCREEN, -1);
+        int currentScreen = savedState.getInt(RUNTIME_STATE_CURRENT_SCREEN, -1);
         if (currentScreen > -1) {
             mWorkspace.setCurrentPage(currentScreen);
         }
@@ -2184,7 +2197,7 @@ public final class Launcher extends Activity
 
                 if (mWorkspaceLoading) {
                     lockAllApps();
-                    mModel.startLoader(Launcher.this, false);
+                    mModel.startLoader(false);
                 } else {
                     final FolderIcon folderIcon = (FolderIcon)
                             mWorkspace.getViewForTag(mFolderInfo);
@@ -2196,7 +2209,7 @@ public final class Launcher extends Activity
                     } else {
                         lockAllApps();
                         mWorkspaceLoading = true;
-                        mModel.startLoader(Launcher.this, false);
+                        mModel.startLoader(false);
                     }
                 }
             }
@@ -3076,7 +3089,6 @@ public final class Launcher extends Activity
         }
     }
 
-
     /**
      * Refreshes the shortcuts shown on the workspace.
      *
@@ -3085,6 +3097,8 @@ public final class Launcher extends Activity
     public void startBinding() {
         final Workspace workspace = mWorkspace;
 
+        mNewShortcutAnimatePage = -1;
+        mNewShortcutAnimateViews.clear();
         mWorkspace.clearDropTargets();
         int count = workspace.getChildCount();
         for (int i = 0; i < count; i++) {
@@ -3106,8 +3120,12 @@ public final class Launcher extends Activity
     public void bindItems(ArrayList<ItemInfo> shortcuts, int start, int end) {
         setLoadOnResume();
 
-        final Workspace workspace = mWorkspace;
-        for (int i=start; i<end; i++) {
+        // Get the list of added shortcuts and intersect them with the set of shortcuts here
+        Set<String> newApps = new HashSet<String>();
+        newApps = mSharedPrefs.getStringSet(InstallShortcutReceiver.NEW_APPS_LIST_KEY, newApps);
+
+        Workspace workspace = mWorkspace;
+        for (int i = start; i < end; i++) {
             final ItemInfo item = shortcuts.get(i);
 
             // Short circuit if we are loading dock items for a configuration which has no dock
@@ -3119,9 +3137,23 @@ public final class Launcher extends Activity
             switch (item.itemType) {
                 case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                 case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                    View shortcut = createShortcut((ShortcutInfo)item);
+                    ShortcutInfo info = (ShortcutInfo) item;
+                    String uri = info.intent.toUri(0).toString();
+                    View shortcut = createShortcut(info);
                     workspace.addInScreen(shortcut, item.container, item.screen, item.cellX,
                             item.cellY, 1, 1, false);
+                    if (newApps.contains(uri)) {
+                        newApps.remove(uri);
+
+                        // Prepare the view to be animated up
+                        shortcut.setAlpha(0f);
+                        shortcut.setScaleX(0f);
+                        shortcut.setScaleY(0f);
+                        mNewShortcutAnimatePage = item.screen;
+                        if (!mNewShortcutAnimateViews.contains(shortcut)) {
+                            mNewShortcutAnimateViews.add(shortcut);
+                        }
+                    }
                     break;
                 case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                     FolderIcon newFolder = FolderIcon.fromXml(R.layout.folder_icon, this,
@@ -3132,6 +3164,7 @@ public final class Launcher extends Activity
                     break;
             }
         }
+
         workspace.requestLayout();
     }
 
@@ -3169,11 +3202,6 @@ public final class Launcher extends Activity
         item.hostView.setAppWidget(appWidgetId, appWidgetInfo);
         item.hostView.setTag(item);
 
-        // We need to load the minimum span and embed it into the item info
-        int[] minSpan = getMinSpanForWidget(appWidgetInfo, null);
-        item.minSpanX = minSpan[0];
-        item.minSpanY = minSpan[1];
-
         workspace.addInScreen(item.hostView, item.container, item.screen, item.cellX,
                 item.cellY, item.spanX, item.spanY, false);
 
@@ -3207,8 +3235,6 @@ public final class Launcher extends Activity
             mSavedInstanceState = null;
         }
 
-        mWorkspaceLoading = false;
-
         // If we received the result of any pending adds while the loader was running (e.g. the
         // widget configuration forced an orientation change), process them now.
         for (int i = 0; i < sPendingAddList.size(); i++) {
@@ -3220,7 +3246,72 @@ public final class Launcher extends Activity
         // package changes in bindSearchablesChanged()
         updateAppMarketIcon();
 
-        mWorkspace.postDelayed(mBuildLayersRunnable, 500);
+        // Animate up any icons as necessary
+        if (mVisible || mWorkspaceLoading) {
+            Runnable newAppsRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    runNewAppsAnimation();
+                }
+            };
+            if (mNewShortcutAnimatePage > -1 &&
+                    mNewShortcutAnimatePage != mWorkspace.getCurrentPage()) {
+                mWorkspace.snapToPage(mNewShortcutAnimatePage, newAppsRunnable);
+            } else {
+                newAppsRunnable.run();
+            }
+        }
+
+        mWorkspaceLoading = false;
+    }
+
+    /**
+     * Runs a new animation that scales up icons that were added while Launcher was in the
+     * background.
+     */
+    private void runNewAppsAnimation() {
+        AnimatorSet anim = new AnimatorSet();
+        Collection<Animator> bounceAnims = new ArrayList<Animator>();
+        Collections.sort(mNewShortcutAnimateViews, new Comparator<View>() {
+            @Override
+            public int compare(View a, View b) {
+                CellLayout.LayoutParams alp = (CellLayout.LayoutParams) a.getLayoutParams();
+                CellLayout.LayoutParams blp = (CellLayout.LayoutParams) b.getLayoutParams();
+                int cellCountX = LauncherModel.getCellCountX();
+                return (alp.cellY * cellCountX + alp.cellX) - (blp.cellY * cellCountX + blp.cellX);
+            }
+        });
+        for (int i = 0; i < mNewShortcutAnimateViews.size(); ++i) {
+            View v = mNewShortcutAnimateViews.get(i);
+            ValueAnimator bounceAnim = ObjectAnimator.ofPropertyValuesHolder(v,
+                    PropertyValuesHolder.ofFloat("alpha", 1f),
+                    PropertyValuesHolder.ofFloat("scaleX", 1f),
+                    PropertyValuesHolder.ofFloat("scaleY", 1f));
+            bounceAnim.setDuration(InstallShortcutReceiver.NEW_SHORTCUT_BOUNCE_DURATION);
+            bounceAnim.setStartDelay(i * InstallShortcutReceiver.NEW_SHORTCUT_STAGGER_DELAY);
+            bounceAnim.setInterpolator(new SmoothPagedView.OvershootInterpolator());
+            bounceAnims.add(bounceAnim);
+        }
+        anim.playTogether(bounceAnims);
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mWorkspace.postDelayed(mBuildLayersRunnable, 500);
+            }
+        });
+        anim.start();
+
+        // Clean up
+        mNewShortcutAnimatePage = -1;
+        mNewShortcutAnimateViews.clear();
+        new Thread("clearNewAppsThread") {
+            public void run() {
+                mSharedPrefs.edit()
+                            .putInt(InstallShortcutReceiver.NEW_APPS_PAGE_KEY, -1)
+                            .putStringSet(InstallShortcutReceiver.NEW_APPS_LIST_KEY, null)
+                            .commit();
+            }
+        }.start();
     }
 
     @Override
@@ -3363,7 +3454,6 @@ public final class Launcher extends Activity
     }
 
     /* Cling related */
-    private static final String PREFS_KEY = "com.android.launcher2.prefs";
     private boolean isClingsEnabled() {
         // disable clings when running in a test harness
         if(ActivityManager.isRunningInTestHarness()) return false;

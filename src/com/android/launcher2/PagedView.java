@@ -62,7 +62,8 @@ public abstract class PagedView extends ViewGroup {
     // the min drag distance for a fling to register, to prevent random page shifts
     private static final int MIN_LENGTH_FOR_FLING = 25;
 
-    private static final int PAGE_SNAP_ANIMATION_DURATION = 550;
+    protected static final int PAGE_SNAP_ANIMATION_DURATION = 550;
+    protected static final int SLOW_PAGE_SNAP_ANIMATION_DURATION = 950;
     protected static final float NANOTIME_DIV = 1000000000.0f;
 
     private static final float OVERSCROLL_ACCELERATE_FACTOR = 2;

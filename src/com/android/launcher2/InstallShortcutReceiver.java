@@ -17,9 +17,9 @@
 package com.android.launcher2;
 
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.widget.Toast;
@@ -27,10 +27,21 @@ import android.widget.Toast;
 import com.android.launcher.R;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class InstallShortcutReceiver extends BroadcastReceiver {
     public static final String ACTION_INSTALL_SHORTCUT =
             "com.android.launcher.action.INSTALL_SHORTCUT";
+    public static final String NEW_APPS_PAGE_KEY = "apps.new.page";
+    public static final String NEW_APPS_LIST_KEY = "apps.new.list";
+
+    public static final int NEW_SHORTCUT_BOUNCE_DURATION = 450;
+    public static final int NEW_SHORTCUT_STAGGER_DELAY = 75;
+
+    private static final int INSTALL_SHORTCUT_SUCCESSFUL = 0;
+    private static final int INSTALL_SHORTCUT_IS_DUPLICATE = -1;
+    private static final int INSTALL_SHORTCUT_NO_SPACE = -2;
 
     // A mime-type representing shortcut data
     public static final String SHORTCUT_MIMETYPE =
@@ -42,6 +53,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         if (!ACTION_INSTALL_SHORTCUT.equals(data.getAction())) {
             return;
         }
+        String spKey = LauncherApplication.getSharedPreferencesKey();
+        SharedPreferences sp = context.getSharedPreferences(spKey, Context.MODE_PRIVATE);
 
         final int screen = Launcher.getScreen();
         final Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
@@ -62,26 +75,35 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         }
 
         final ArrayList<ItemInfo> items = LauncherModel.getItemsInLocalCoordinates(context);
-        final boolean shortcutExists = LauncherModel.shortcutExists(context, name, intent);
-        final String[] errorMsgs = {""};
+        final boolean exists = LauncherModel.shortcutExists(context, name, intent);
+        final int[] result = {INSTALL_SHORTCUT_SUCCESSFUL};
 
-        if (!installShortcut(context, data, items, name, intent, screen, shortcutExists,
-                errorMsgs)) {
-            // The target screen is full, let's try the other screens
-            for (int i = 0; i < Launcher.SCREEN_COUNT; i++) {
-                if (i != screen && installShortcut(context, data, items, name, intent, i,
-                        shortcutExists, errorMsgs)) break;
+        // Try adding the target to the workspace screens incrementally, starting at the current
+        // screen and alternating between +1, -1, +2, -2, etc. (using ~ ceil(i/2f)*(-1)^(i-1))
+        boolean found = false;
+        for (int i = 0; i < (2 * Launcher.SCREEN_COUNT) + 1 && !found; ++i) {
+            int si = screen + (int) ((i / 2f) + 0.5f) * ((i % 2 == 1) ? 1 : -1);
+            if (0 <= si && si < Launcher.SCREEN_COUNT) {
+                found = installShortcut(context, data, items, name, intent, si, exists, sp, result);
             }
         }
 
-        if (!errorMsgs[0].isEmpty()) {
-            Toast.makeText(context, errorMsgs[0],
-                    Toast.LENGTH_SHORT).show();
+        // We only report error messages (duplicate shortcut or out of space) as the add-animation
+        // will provide feedback otherwise
+        if (!found) {
+            if (result[0] == INSTALL_SHORTCUT_NO_SPACE) {
+                Toast.makeText(context, context.getString(R.string.out_of_space),
+                        Toast.LENGTH_SHORT).show();
+            } else if (result[0] == INSTALL_SHORTCUT_IS_DUPLICATE) {
+                Toast.makeText(context, context.getString(R.string.shortcut_duplicate, name),
+                        Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
     private boolean installShortcut(Context context, Intent data, ArrayList<ItemInfo> items,
-            String name, Intent intent, int screen, boolean shortcutExists, String[] errorMsgs) {
+            String name, Intent intent, int screen, boolean shortcutExists,
+            SharedPreferences sharedPrefs, int[] result) {
         if (findEmptyCell(context, items, mCoordinates, screen)) {
             if (intent != null) {
                 if (intent.getAction() == null) {
@@ -92,23 +114,35 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 // different places)
                 boolean duplicate = data.getBooleanExtra(Launcher.EXTRA_SHORTCUT_DUPLICATE, true);
                 if (duplicate || !shortcutExists) {
+                    // If the new app is going to fall into the same page as before, then just
+                    // continue adding to the current page
+                    int newAppsScreen = sharedPrefs.getInt(NEW_APPS_PAGE_KEY, screen);
+                    Set<String> newApps = new HashSet<String>();
+                    if (newAppsScreen == screen) {
+                        newApps = sharedPrefs.getStringSet(NEW_APPS_LIST_KEY, newApps);
+                    }
+                    newApps.add(intent.toUri(0).toString());
+                    sharedPrefs.edit()
+                               .putInt(NEW_APPS_PAGE_KEY, screen)
+                               .putStringSet(NEW_APPS_LIST_KEY, newApps)
+                               .commit();
+
+                    // Update the Launcher db
                     LauncherApplication app = (LauncherApplication) context.getApplicationContext();
                     ShortcutInfo info = app.getModel().addShortcut(context, data,
-                            LauncherSettings.Favorites.CONTAINER_DESKTOP, screen, mCoordinates[0],
-                            mCoordinates[1], true);
-                    if (info != null) {
-                        errorMsgs[0] = context.getString(R.string.shortcut_installed, name);
-                    } else {
+                            LauncherSettings.Favorites.CONTAINER_DESKTOP, screen,
+                            mCoordinates[0], mCoordinates[1], true);
+                    if (info == null) {
                         return false;
                     }
                 } else {
-                    errorMsgs[0] = context.getString(R.string.shortcut_duplicate, name);
+                    result[0] = INSTALL_SHORTCUT_IS_DUPLICATE;
                 }
 
                 return true;
             }
         } else {
-            errorMsgs[0] = context.getString(R.string.out_of_space);
+            result[0] = INSTALL_SHORTCUT_NO_SPACE;
         }
 
         return false;

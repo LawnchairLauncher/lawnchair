@@ -37,6 +37,7 @@ public class LauncherApplication extends Application {
     private static boolean sIsScreenLarge;
     private static float sScreenDensity;
     private static int sLongPressTimeout = 300;
+    private static final String sSharedPreferencesKey = "com.android.launcher2.prefs";
     WeakReference<LauncherProvider> mLauncherProvider;
 
     @Override
@@ -94,7 +95,10 @@ public class LauncherApplication extends Application {
     private final ContentObserver mFavoritesObserver = new ContentObserver(new Handler()) {
         @Override
         public void onChange(boolean selfChange) {
-            mModel.startLoader(LauncherApplication.this, false);
+            // If the database has ever changed, then we really need to force a reload of the
+            // workspace on the next load
+            mModel.resetLoadedState(false, true);
+            mModel.startLoaderFromBackground();
         }
     };
 
@@ -117,6 +121,10 @@ public class LauncherApplication extends Application {
 
     LauncherProvider getLauncherProvider() {
         return mLauncherProvider.get();
+    }
+
+    public static String getSharedPreferencesKey() {
+        return sSharedPreferencesKey;
     }
 
     public static boolean isScreenLarge() {
