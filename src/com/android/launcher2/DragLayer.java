@@ -434,7 +434,7 @@ public class DragLayer extends FrameLayout {
 
     public void animateViewIntoPosition(DragView dragView, final View child, int duration,
             final Runnable onFinishAnimationRunnable, View anchorView) {
-        CellLayoutChildren parentChildren = (CellLayoutChildren) child.getParent();
+        ShortcutAndWidgetContainer parentChildren = (ShortcutAndWidgetContainer) child.getParent();
         CellLayout parent = (CellLayout) (CellLayout) parentChildren.getParent();
         CellLayout.LayoutParams lp =  (CellLayout.LayoutParams) child.getLayoutParams();
         parentChildren.measureChild(child);

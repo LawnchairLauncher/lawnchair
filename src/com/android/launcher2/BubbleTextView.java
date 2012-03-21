@@ -247,8 +247,8 @@ public class BubbleTextView extends TextView {
     }
 
     void setCellLayoutPressedOrFocusedIcon() {
-        if (getParent() instanceof CellLayoutChildren) {
-            CellLayoutChildren parent = (CellLayoutChildren) getParent();
+        if (getParent() instanceof ShortcutAndWidgetContainer) {
+            ShortcutAndWidgetContainer parent = (ShortcutAndWidgetContainer) getParent();
             if (parent != null) {
                 CellLayout layout = (CellLayout) parent.getParent();
                 layout.setPressedOrFocusedIcon((mPressedOrFocusedBackground != null) ? this : null);

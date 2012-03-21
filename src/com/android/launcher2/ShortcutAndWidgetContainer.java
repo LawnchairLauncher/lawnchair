@@ -26,7 +26,7 @@ import android.view.ViewGroup;
 
 import com.android.launcher2.CellLayout.LayoutParams;
 
-public class CellLayoutChildren extends ViewGroup {
+public class ShortcutAndWidgetContainer extends ViewGroup {
     static final String TAG = "CellLayoutChildren";
 
     // These are temporary variables to prevent having to allocate a new object just to
@@ -41,7 +41,7 @@ public class CellLayoutChildren extends ViewGroup {
     private int mWidthGap;
     private int mHeightGap;
 
-    public CellLayoutChildren(Context context) {
+    public ShortcutAndWidgetContainer(Context context) {
         super(context);
         mWallpaperManager = WallpaperManager.getInstance(context);
     }
