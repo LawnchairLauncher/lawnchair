@@ -38,7 +38,6 @@ public class NumberPickerPreference extends DialogPreference {
     private int mMin, mMax, mDefault;
 
     private String mMaxExternalKey, mMinExternalKey;
-    private Preference mMaxExternalPreference, mMinExternalPreference;
 
     private NumberPicker mNumberPicker;
 
@@ -61,38 +60,17 @@ public class NumberPickerPreference extends DialogPreference {
         numberPickerType.recycle();
     }
 
-
-    protected void onAttachedToActivity() {
-        // External values
-        if (mMaxExternalKey != null) {
-            Preference maxPreference = findPreferenceInHierarchy(mMaxExternalKey);
-            if (maxPreference != null) {
-                if (maxPreference instanceof NumberPickerPreference) {
-                    mMaxExternalPreference = maxPreference;
-                }
-            }
-        }
-        if (mMinExternalKey != null) {
-            Preference minPreference = findPreferenceInHierarchy(mMinExternalKey);
-            if (minPreference != null) {
-                if (minPreference instanceof NumberPickerPreference) {
-                    mMinExternalPreference = minPreference;
-                }
-            }
-        }
-    }
-
     @Override
     protected View onCreateDialogView() {
         int max = mMax;
         int min = mMin;
 
         // External values
-        if (mMaxExternalKey != null && mMaxExternalPreference != null) {
-            max = mMaxExternalPreference.getSharedPreferences().getInt(mMaxExternalKey, mMax);
+        if (mMaxExternalKey != null) {
+            max = getSharedPreferences().getInt(mMaxExternalKey, mMax);
         }
-        if (mMinExternalKey != null && mMinExternalPreference != null) {
-            min = mMinExternalPreference.getSharedPreferences().getInt(mMinExternalKey, mMin);
+        if (mMinExternalKey != null) {
+            min = getSharedPreferences().getInt(mMinExternalKey, mMin);
         }
 
         LayoutInflater inflater =
