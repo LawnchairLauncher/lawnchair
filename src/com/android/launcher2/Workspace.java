@@ -198,6 +198,7 @@ public class Workspace extends SmoothPagedView
     private FolderRingAnimator mDragFolderRingAnimator = null;
     private View mLastDragOverView = null;
     private boolean mCreateUserFolderOnDrop = false;
+    private boolean mWillAddToExistingFolder = false;
 
     // Variables relating to touch disambiguation (scrolling workspace vs. scrolling a widget)
     private float mXDown;
@@ -375,32 +376,12 @@ public class Workspace extends SmoothPagedView
         mIsDragOccuring = true;
         updateChildrenLayersEnabled();
         mLauncher.lockScreenOrientationOnLargeUI();
-
-        // Fade out the workspace slightly to highlight the currently dragging item
-        int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            CellLayout cl = (CellLayout) getPageAt(i);
-            cl.getShortcutsAndWidgets().animate().alpha(mDragFadeOutAlpha)
-                .setInterpolator(new AccelerateInterpolator(1.5f))
-                .setDuration(mDragFadeOutDuration)
-                .start();
-        }
     }
 
     public void onDragEnd() {
         mIsDragOccuring = false;
         updateChildrenLayersEnabled();
         mLauncher.unlockScreenOrientationOnLargeUI();
-
-        // Fade the workspace back in after we have completed dragging
-        int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            CellLayout cl = (CellLayout) getPageAt(i);
-            cl.getShortcutsAndWidgets().animate().alpha(1f)
-                .setInterpolator(new DecelerateInterpolator(1.5f))
-                .setDuration(mDragFadeOutDuration)
-                .start();
-        }
     }
 
     /**
@@ -429,7 +410,7 @@ public class Workspace extends SmoothPagedView
         mWallpaperTravelWidth = (int) (mDisplayWidth *
                 wallpaperTravelToScreenWidthRatio(mDisplayWidth, mDisplayHeight));
 
-        mMaxDistanceForFolderCreation = (0.5f * res.getDimension(R.dimen.app_icon_size));
+        mMaxDistanceForFolderCreation = (0.5f * res.getDimensionPixelSize(R.dimen.app_icon_size));
         mFlingThresholdVelocity = (int) (FLING_THRESHOLD_VELOCITY * mDensity);
     }
 
@@ -1424,9 +1405,8 @@ public class Workspace extends SmoothPagedView
     }
 
     private void updateChildrenLayersEnabled() {
-        boolean small = isSmall() || mIsSwitchingState;
-        boolean dragging = mAnimatingViewIntoPlace || mIsDragOccuring;
-        boolean enableChildrenLayers = small || dragging || isPageMoving();
+        boolean small = mState == State.SMALL || mIsSwitchingState;
+        boolean enableChildrenLayers = small || mAnimatingViewIntoPlace || isPageMoving();
 
         if (enableChildrenLayers != mChildrenLayersEnabled) {
             mChildrenLayersEnabled = enableChildrenLayers;
@@ -2021,12 +2001,10 @@ public class Workspace extends SmoothPagedView
 
             int spanX = 1;
             int spanY = 1;
-            View ignoreView = null;
             if (mDragInfo != null) {
                 final CellLayout.CellInfo dragCellInfo = mDragInfo;
                 spanX = dragCellInfo.spanX;
                 spanY = dragCellInfo.spanY;
-                ignoreView = dragCellInfo.cell;
             } else {
                 final ItemInfo dragInfo = (ItemInfo) d.dragInfo;
                 spanX = dragInfo.spanX;
@@ -2083,8 +2061,14 @@ public class Workspace extends SmoothPagedView
     boolean willCreateUserFolder(ItemInfo info, CellLayout target, int[] targetCell, float
             distance, boolean considerTimeout) {
         if (distance > mMaxDistanceForFolderCreation) return false;
-
         View dropOverView = target.getChildAt(targetCell[0], targetCell[1]);
+
+        if (dropOverView != null) {
+            CellLayout.LayoutParams lp = (CellLayout.LayoutParams) dropOverView.getLayoutParams();
+            if (lp.useTmpCoords && (lp.tmpCellX != lp.cellX || lp.tmpCellY != lp.tmpCellY)) {
+                return false;
+            }
+        }
 
         boolean hasntMoved = false;
         if (mDragInfo != null) {
@@ -2106,8 +2090,15 @@ public class Workspace extends SmoothPagedView
     boolean willAddToExistingUserFolder(Object dragInfo, CellLayout target, int[] targetCell,
             float distance) {
         if (distance > mMaxDistanceForFolderCreation) return false;
-
         View dropOverView = target.getChildAt(targetCell[0], targetCell[1]);
+
+        if (dropOverView != null) {
+            CellLayout.LayoutParams lp = (CellLayout.LayoutParams) dropOverView.getLayoutParams();
+            if (lp.useTmpCoords && (lp.tmpCellX != lp.cellX || lp.tmpCellY != lp.tmpCellY)) {
+                return false;
+            }
+        }
+
         if (dropOverView instanceof FolderIcon) {
             FolderIcon fi = (FolderIcon) dropOverView;
             if (fi.acceptDrop(dragInfo)) {
@@ -2122,6 +2113,7 @@ public class Workspace extends SmoothPagedView
             Runnable postAnimationRunnable) {
         if (distance > mMaxDistanceForFolderCreation) return false;
         View v = target.getChildAt(targetCell[0], targetCell[1]);
+
         boolean hasntMoved = false;
         if (mDragInfo != null) {
             CellLayout cellParent = getParentCellLayoutForView(mDragInfo.cell);
@@ -2174,6 +2166,9 @@ public class Workspace extends SmoothPagedView
         if (distance > mMaxDistanceForFolderCreation) return false;
 
         View dropOverView = target.getChildAt(targetCell[0], targetCell[1]);
+        if (!mWillAddToExistingFolder) return false;
+        mWillAddToExistingFolder = false;
+
         if (dropOverView instanceof FolderIcon) {
             FolderIcon fi = (FolderIcon) dropOverView;
             if (fi.acceptDrop(d.dragInfo)) {
@@ -2283,10 +2278,11 @@ public class Workspace extends SmoothPagedView
 
                     // update the item's position after drop
                     CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell.getLayoutParams();
-                    lp.cellX = mTargetCell[0];
-                    lp.cellY = mTargetCell[1];
+                    lp.cellX = lp.tmpCellX = mTargetCell[0];
+                    lp.cellY = lp.tmpCellY = mTargetCell[1];
                     lp.cellHSpan = item.spanX;
                     lp.cellVSpan = item.spanY;
+                    lp.isLockedToGrid = true;
                     cell.setId(LauncherModel.getCellLayoutChildId(container, mDragInfo.screen,
                             mTargetCell[0], mTargetCell[1], mDragInfo.spanX, mDragInfo.spanY));
 
@@ -2782,8 +2778,31 @@ public class Workspace extends SmoothPagedView
                 minSpanY = item.minSpanY;
             }
 
-            if (!folder && !mReorderAlarm.alarmPending() && (mLastReorderX != mTargetCell[0] ||
-                    mLastReorderY != mTargetCell[1])) {
+            int[] reorderPosition = new int[2];
+            reorderPosition = findNearestArea((int) mDragViewVisualCenter[0],
+                    (int) mDragViewVisualCenter[1], item.spanX, item.spanY, mDragTargetLayout,
+                    reorderPosition);
+
+            if (!mDragTargetLayout.isNearestDropLocationOccupied((int) mDragViewVisualCenter[0],
+                    (int) mDragViewVisualCenter[1], item.spanX, item.spanY, child, mTargetCell)) {
+                // If the current hover area isn't occupied (permanently) by any items, then we
+                // reset all the reordering.
+                mDragTargetLayout.revertTempState();
+                mDragMode = DRAG_MODE_NONE;
+                mLastDragOverView = dragOverView;
+                if (mReorderAlarm != null) {
+                    mReorderAlarm.cancelAlarm();
+                }
+                mLastReorderX = -1;
+                mLastReorderY = -1;
+                mDragTargetLayout.visualizeDropLocation(child, mDragOutline,
+                        (int) mDragViewVisualCenter[0], (int) mDragViewVisualCenter[1],
+                        mTargetCell[0], mTargetCell[1], item.spanX, item.spanY, false,
+                        d.dragView.getDragVisualizeOffset(), d.dragView.getDragRegion());
+            } else if (!folder && !mReorderAlarm.alarmPending() &&
+                    (mLastReorderX != reorderPosition[0] || mLastReorderY != reorderPosition[1])) {
+                // Otherwise, if we aren't adding to or creating a folder and there's no pending
+                // reorder, then we schedule a reorder
                 cancelFolderCreation();
                 ReorderAlarmListener listener = new ReorderAlarmListener(mDragViewVisualCenter,
                         minSpanX, minSpanY, item.spanX, item.spanY, d.dragView, child);
@@ -2793,18 +2812,10 @@ public class Workspace extends SmoothPagedView
                 if (mReorderAlarm != null) {
                     mReorderAlarm.cancelAlarm();
                 }
+                mDragTargetLayout.revertTempState();
+                mLastReorderX = -1;
+                mLastReorderY = -1;
             }
-            // TODO: need to determine what we're going to about visualizing drop locations
-            /*
-            boolean resize = resultSpan[0] != info.spanX || resultSpan[1] != info.spanY;
-            if (!folder) {
-                mDragTargetLayout.visualizeDropLocation(child, mDragOutline,
-                        (int) mDragViewVisualCenter[0], (int) mDragViewVisualCenter[1],
-                        mTargetCell[0], mTargetCell[1], resultSpan[0], resultSpan[1], resize,
-                        d.dragView.getDragVisualizeOffset(), d.dragView.getDragRegion());
-
-            }
-            */
         }
     }
 
@@ -2825,6 +2836,7 @@ public class Workspace extends SmoothPagedView
         if (willAddToFolder && mDragMode == DRAG_MODE_NONE) {
             FolderIcon fi = ((FolderIcon) dragOverView);
             mDragMode = DRAG_MODE_ADD_TO_FOLDER;
+            mWillAddToExistingFolder = true;
             fi.onDragEnter(info);
             if (targetLayout != null) {
                 targetLayout.clearDragOutlines();
@@ -2834,12 +2846,13 @@ public class Workspace extends SmoothPagedView
         if (dragOverView != lastDragOverView || (mCreateUserFolderOnDrop && !userFolderPending)
                 || (!willAddToFolder && mDragMode == DRAG_MODE_ADD_TO_FOLDER)) {
             cancelFolderCreation();
+            mWillAddToExistingFolder = false;
             if (lastDragOverView != null && lastDragOverView instanceof FolderIcon) {
                 ((FolderIcon) lastDragOverView).onDragExit(info);
             }
         }
 
-        return willAddToFolder || userFolderPending;
+        return (willAddToFolder || userFolderPending) && mDragMode != DRAG_MODE_REORDER;
     }
 
     private void cleanupFolderCreation(DragObject d) {
@@ -2906,25 +2919,28 @@ public class Workspace extends SmoothPagedView
 
         public void onAlarm(Alarm alarm) {
             int[] resultSpan = new int[2];
+            mTargetCell = findNearestArea((int) mDragViewVisualCenter[0],
+                    (int) mDragViewVisualCenter[1], spanX, spanY, mDragTargetLayout, mTargetCell);
+            mLastReorderX = mTargetCell[0];
+            mLastReorderY = mTargetCell[1];
+
             mTargetCell = mDragTargetLayout.createArea((int) mDragViewVisualCenter[0],
                 (int) mDragViewVisualCenter[1], minSpanX, minSpanY, spanX, spanY,
                 child, mTargetCell, resultSpan, CellLayout.MODE_DRAG_OVER);
 
-            mLastReorderX = mTargetCell[0];
-            mLastReorderY = mTargetCell[1];
+            if (mTargetCell[0] < 0 || mTargetCell[1] < 0) {
+                mDragTargetLayout.revertTempState();
+            }
 
             if (mDragMode == DRAG_MODE_ADD_TO_FOLDER) {
             }
             mDragMode = DRAG_MODE_REORDER;
 
-            // TODO: need to determine what we're going to about visualizing drop locations
-            /*
             boolean resize = resultSpan[0] != spanX || resultSpan[1] != spanY;
             mDragTargetLayout.visualizeDropLocation(child, mDragOutline,
                 (int) mDragViewVisualCenter[0], (int) mDragViewVisualCenter[1],
                 mTargetCell[0], mTargetCell[1], resultSpan[0], resultSpan[1], resize,
                 dragView.getDragVisualizeOffset(), dragView.getDragRegion());
-            */
         }
     }
 
