@@ -32,7 +32,7 @@
     <string name="external_drop_widget_error" msgid="2285187188524172774">"Tidak dapat melepas item ke layar Utama ini."</string>
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Pilih widget untuk membuat"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nama folder"</string>
-    <string name="rename_folder_title" msgid="4544573104191526550">"Ubah nama folder"</string>
+    <string name="rename_folder_title" msgid="4544573104191526550">"Ganti nama folder"</string>
     <string name="rename_action" msgid="6016003384693240896">"OK"</string>
     <string name="cancel_action" msgid="3811860427489435048">"Batal"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"Tambahkan ke Layar Utama"</string>
