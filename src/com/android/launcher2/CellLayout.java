@@ -1101,8 +1101,9 @@ public class CellLayout extends ViewGroup {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     float r = ((Float) animation.getAnimatedValue()).floatValue();
-                    child.setTranslationX(r * (newX - oldX));
-                    child.setTranslationY(r * (newY - oldY));
+                    lp.x = (int) (r * newX + (1 - r) * oldX);
+                    lp.y = (int) (r * newY + (1 - r) * oldY);
+                    child.requestLayout();
                 }
             });
             va.addListener(new AnimatorListenerAdapter() {
@@ -1112,8 +1113,6 @@ public class CellLayout extends ViewGroup {
                     // has interrupted this one, and we don't want to lock the item into
                     // place just yet.
                     if (!cancelled) {
-                        child.setTranslationX(0);
-                        child.setTranslationY(0);
                         lp.isLockedToGrid = true;
                         child.requestLayout();
                     }
