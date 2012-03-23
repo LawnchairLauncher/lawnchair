@@ -1686,9 +1686,9 @@ public class Workspace extends SmoothPagedView
                         .setInterpolator(mZoomInInterpolator);
                     anim.play(a);
 
-                    LauncherViewPropertyAnimator alphaAnim =
-                        new LauncherViewPropertyAnimator(cl.getShortcutsAndWidgets());
                     if (mOldAlphas[i] != mNewAlphas[i]) {
+                        LauncherViewPropertyAnimator alphaAnim =
+                            new LauncherViewPropertyAnimator(cl.getShortcutsAndWidgets());
                         alphaAnim.alpha(mNewAlphas[i])
                             .setDuration(duration)
                             .setInterpolator(mZoomInInterpolator);
