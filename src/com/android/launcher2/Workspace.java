@@ -1743,6 +1743,7 @@ public class Workspace extends SmoothPagedView
     @Override
     public void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace) {
         mIsSwitchingState = true;
+        cancelScrollingIndicatorAnimations();
     }
 
     @Override
