@@ -649,17 +649,22 @@ public class LauncherModel extends BroadcastReceiver {
     }
 
     private void forceReload() {
-        synchronized (mLock) {
-            // Stop any existing loaders first, so they don't set mAllAppsLoaded or
-            // mWorkspaceLoaded to true later
-            stopLoaderLocked();
-            mAllAppsLoaded = false;
-            mWorkspaceLoaded = false;
-        }
+        resetLoadedState(true, true);
+
         // Do this here because if the launcher activity is running it will be restarted.
         // If it's not running startLoaderFromBackground will merely tell it that it needs
         // to reload.
         startLoaderFromBackground();
+    }
+
+    public void resetLoadedState(boolean resetAllAppsLoaded, boolean resetWorkspaceLoaded) {
+        synchronized (mLock) {
+            // Stop any existing loaders first, so they don't set mAllAppsLoaded or
+            // mWorkspaceLoaded to true later
+            stopLoaderLocked();
+            if (resetAllAppsLoaded) mAllAppsLoaded = false;
+            if (resetWorkspaceLoaded) mWorkspaceLoaded = false;
+        }
     }
 
     /**
@@ -680,7 +685,7 @@ public class LauncherModel extends BroadcastReceiver {
             }
         }
         if (runLoader) {
-            startLoader(mApp, false);
+            startLoader(false);
         }
     }
 
@@ -698,7 +703,7 @@ public class LauncherModel extends BroadcastReceiver {
         return isLaunching;
     }
 
-    public void startLoader(Context context, boolean isLaunching) {
+    public void startLoader(boolean isLaunching) {
         synchronized (mLock) {
             if (DEBUG_LOADERS) {
                 Log.d(TAG, "startLoader isLaunching=" + isLaunching);
@@ -709,7 +714,7 @@ public class LauncherModel extends BroadcastReceiver {
                 // If there is already one running, tell it to stop.
                 // also, don't downgrade isLaunching if we're already running
                 isLaunching = isLaunching || stopLoaderLocked();
-                mLoaderTask = new LoaderTask(context, isLaunching);
+                mLoaderTask = new LoaderTask(mApp, isLaunching);
                 sWorkerThread.setPriority(Thread.NORM_PRIORITY);
                 sWorker.post(mLoaderTask);
             }

@@ -184,6 +184,7 @@ public class Workspace extends SmoothPagedView
     WallpaperOffsetInterpolator mWallpaperOffset;
     boolean mUpdateWallpaperOffsetImmediately = false;
     private Runnable mDelayedResizeRunnable;
+    private Runnable mDelayedSnapToPageRunnable;
     private int mDisplayWidth;
     private int mDisplayHeight;
     private boolean mIsStaticWallpaper;
@@ -766,6 +767,11 @@ public class Workspace extends SmoothPagedView
             mDelayedResizeRunnable.run();
             mDelayedResizeRunnable = null;
         }
+
+        if (mDelayedSnapToPageRunnable != null) {
+            mDelayedSnapToPageRunnable.run();
+            mDelayedSnapToPageRunnable = null;
+        }
     }
 
     @Override
@@ -905,6 +911,20 @@ public class Workspace extends SmoothPagedView
     protected void snapToPage(int whichPage) {
         super.snapToPage(whichPage);
         computeWallpaperScrollRatio(whichPage);
+    }
+
+    @Override
+    protected void snapToPage(int whichPage, int duration) {
+        super.snapToPage(whichPage, duration);
+        computeWallpaperScrollRatio(whichPage);
+    }
+
+    protected void snapToPage(int whichPage, Runnable r) {
+        if (mDelayedSnapToPageRunnable != null) {
+            mDelayedSnapToPageRunnable.run();
+        }
+        mDelayedSnapToPageRunnable = r;
+        snapToPage(whichPage, SLOW_PAGE_SNAP_ANIMATION_DURATION);
     }
 
     private void computeWallpaperScrollRatio(int page) {
