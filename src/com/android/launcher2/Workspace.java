@@ -59,6 +59,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.launcher.R;
+import com.android.launcher2.DropTarget.DragObject;
 import com.android.launcher2.FolderIcon.FolderRingAnimator;
 import com.android.launcher2.InstallWidgetReceiver.WidgetMimeTypeHandlerData;
 import com.android.launcher2.LauncherSettings.Favorites;
@@ -2340,10 +2341,6 @@ public class Workspace extends SmoothPagedView
         }
     }
 
-    public void onFlingToDelete(DragObject d, int x, int y, PointF vec) {
-        // Do nothing
-    }
-
     public void setFinalScrollForPageChange(int screen) {
         if (screen >= 0) {
             mSavedScrollX = getScrollX();
@@ -3279,7 +3276,8 @@ public class Workspace extends SmoothPagedView
     /**
      * Called at the end of a drag which originated on the workspace.
      */
-    public void onDropCompleted(View target, DragObject d, boolean success) {
+    public void onDropCompleted(View target, DragObject d, boolean isFlingToDelete,
+            boolean success) {
         if (success) {
             if (target != this) {
                 if (mDragInfo != null) {
@@ -3336,8 +3334,19 @@ public class Workspace extends SmoothPagedView
         }
     }
 
+    @Override
     public boolean supportsFlingToDelete() {
         return true;
+    }
+
+    @Override
+    public void onFlingToDelete(DragObject d, int x, int y, PointF vec) {
+        // Do nothing
+    }
+
+    @Override
+    public void onFlingToDeleteCompleted() {
+        // Do nothing
     }
 
     public boolean isDropEnabled() {

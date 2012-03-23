@@ -105,6 +105,15 @@ public class DeleteDropTarget extends ButtonDropTarget {
         return (d.dragSource instanceof Workspace) && (d.dragInfo instanceof FolderInfo);
     }
 
+    private void setHoverColor() {
+        mCurrentDrawable.startTransition(mTransitionDuration);
+        setTextColor(mHoverColor);
+    }
+    private void resetHoverColor() {
+        mCurrentDrawable.resetTransition();
+        setTextColor(mOriginalTextColor);
+    }
+
     @Override
     public boolean acceptDrop(DragObject d) {
         // We can remove everything including App shortcuts, folders, widgets, etc.
@@ -140,8 +149,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         mCurrentDrawable = (TransitionDrawable) getCompoundDrawables()[0];
 
         mActive = isVisible;
-        mCurrentDrawable.resetTransition();
-        setTextColor(mOriginalTextColor);
+        resetHoverColor();
         ((ViewGroup) getParent()).setVisibility(isVisible ? View.VISIBLE : View.GONE);
         if (getText().length() > 0) {
             setText(isUninstall ? R.string.delete_target_uninstall_label
@@ -158,16 +166,14 @@ public class DeleteDropTarget extends ButtonDropTarget {
     public void onDragEnter(DragObject d) {
         super.onDragEnter(d);
 
-        mCurrentDrawable.startTransition(mTransitionDuration);
-        setTextColor(mHoverColor);
+        setHoverColor();
     }
 
     public void onDragExit(DragObject d) {
         super.onDragExit(d);
 
         if (!d.dragComplete) {
-            mCurrentDrawable.resetTransition();
-            setTextColor(mOriginalTextColor);
+            resetHoverColor();
         } else {
             // Restore the hover color if we are deleting
             d.dragView.setColor(mHoverColor);
@@ -349,9 +355,15 @@ public class DeleteDropTarget extends ButtonDropTarget {
     }
 
     public void onFlingToDelete(final DragObject d, int x, int y, PointF vel) {
+        final boolean isAllApps = d.dragSource instanceof AppsCustomizePagedView;
+
         // Don't highlight the icon as it's animating
         d.dragView.setColor(0);
         d.dragView.updateInitialScaleToCurrentScale();
+        // Don't highlight the target if we are flinging from AllApps
+        if (isAllApps) {
+            resetHoverColor();
+        }
 
         if (mFlingDeleteMode == MODE_FLING_DELETE_TO_TRASH) {
             // Defer animating out the drop target if we are animating to it
@@ -396,8 +408,14 @@ public class DeleteDropTarget extends ButtonDropTarget {
             @Override
             public void run() {
                 mSearchDropTargetBar.onDragEnd();
-                mLauncher.exitSpringLoadedDragMode();
-                completeDrop(d);
+
+                // If we are dragging from AllApps, then we allow AppsCustomizePagedView to clean up
+                // itself, otherwise, complete the drop to initiate the deletion process
+                if (!isAllApps) {
+                    mLauncher.exitSpringLoadedDragMode();
+                    completeDrop(d);
+                }
+                mLauncher.getDragController().onDeferredEndFling(d);
             }
         };
         dragLayer.animateView(d.dragView, updateCb, duration, tInterpolator, onAnimationEndRunnable,

@@ -44,6 +44,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.launcher.R;
+import com.android.launcher2.DropTarget.DragObject;
 import com.android.launcher2.FolderInfo.FolderListener;
 
 import java.util.ArrayList;
@@ -619,7 +620,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mReorderAlarm.cancelAlarm();
     }
 
-    public void onDropCompleted(View target, DragObject d, boolean success) {
+    public void onDropCompleted(View target, DragObject d, boolean isFlingToDelete,
+            boolean success) {
         if (success) {
             if (mDeleteFolderOnDropCompleted && !mItemAddedBackToSelfViaIcon) {
                 replaceFolderWithFinalItem();
@@ -653,8 +655,18 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         updateItemLocationsInDatabase();
     }
 
+    @Override
     public boolean supportsFlingToDelete() {
         return true;
+    }
+
+    public void onFlingToDelete(DragObject d, int x, int y, PointF vec) {
+        // Do nothing
+    }
+
+    @Override
+    public void onFlingToDeleteCompleted() {
+        // Do nothing
     }
 
     private void updateItemLocationsInDatabase() {
@@ -926,10 +938,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mSuppressOnAdd = true;
         }
         mInfo.add(item);
-    }
-
-    public void onFlingToDelete(DragObject d, int x, int y, PointF vec) {
-        // Do nothing
     }
 
     public void onAdd(ShortcutInfo item) {
