@@ -2064,7 +2064,8 @@ public class Workspace extends SmoothPagedView
             if (!foundCell) {
                 // Don't show the message if we are dropping on the AllApps button and the hotseat
                 // is full
-                if (mTargetCell != null && mLauncher.isHotseatLayout(mDragTargetLayout)) {
+                boolean isHotseat = mLauncher.isHotseatLayout(mDragTargetLayout);
+                if (mTargetCell != null && isHotseat) {
                     Hotseat hotseat = mLauncher.getHotseat();
                     if (hotseat.isAllAppsButtonRank(
                             hotseat.getOrderInHotseat(mTargetCell[0], mTargetCell[1]))) {
@@ -2072,7 +2073,7 @@ public class Workspace extends SmoothPagedView
                     }
                 }
 
-                mLauncher.showOutOfSpaceMessage();
+                mLauncher.showOutOfSpaceMessage(isHotseat);
                 return false;
             }
         }
@@ -2943,7 +2944,7 @@ public class Workspace extends SmoothPagedView
             onDropExternal(dragInfo.dropPos, (ItemInfo) dragInfo, (CellLayout) layout, false);
             return true;
         }
-        mLauncher.showOutOfSpaceMessage();
+        mLauncher.showOutOfSpaceMessage(mLauncher.isHotseatLayout(layout));
         return false;
     }
 

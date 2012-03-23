@@ -881,7 +881,7 @@ public final class Launcher extends Activity
             cellXY[0] = cellX;
             cellXY[1] = cellY;
         } else if (!layout.findCellForSpan(cellXY, 1, 1)) {
-            showOutOfSpaceMessage();
+            showOutOfSpaceMessage(isHotseatLayout(layout));
             return;
         }
 
@@ -944,7 +944,7 @@ public final class Launcher extends Activity
         }
 
         if (!foundCellSpan) {
-            showOutOfSpaceMessage();
+            showOutOfSpaceMessage(isHotseatLayout(layout));
             return;
         }
 
@@ -1039,7 +1039,7 @@ public final class Launcher extends Activity
                     }
                 }.start();
             }
-            showOutOfSpaceMessage();
+            showOutOfSpaceMessage(isHotseatLayout(layout));
             return;
         }
 
@@ -1225,8 +1225,9 @@ public final class Launcher extends Activity
         launcherInfo.hostView = null;
     }
 
-    void showOutOfSpaceMessage() {
-        Toast.makeText(this, getString(R.string.out_of_space), Toast.LENGTH_SHORT).show();
+    void showOutOfSpaceMessage(boolean isHotseatLayout) {
+        int strId = (isHotseatLayout ? R.string.hotseat_out_of_space : R.string.out_of_space);
+        Toast.makeText(this, getString(strId), Toast.LENGTH_SHORT).show();
     }
 
     public LauncherAppWidgetHost getAppWidgetHost() {
@@ -2751,7 +2752,7 @@ public final class Launcher extends Activity
      */
     void addExternalItemToScreen(ItemInfo itemInfo, final CellLayout layout) {
         if (!mWorkspace.addExternalItemToScreen(itemInfo, layout)) {
-            showOutOfSpaceMessage();
+            showOutOfSpaceMessage(isHotseatLayout(layout));
         }
     }
 
