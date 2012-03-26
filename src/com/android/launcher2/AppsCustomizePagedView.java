@@ -1107,6 +1107,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             bitmapWidth = drawable.getIntrinsicWidth();
             bitmapHeight = drawable.getIntrinsicHeight();
         } else {
+            if (cellHSpan < 1) cellHSpan = 1;
+            if (cellVSpan < 1) cellVSpan = 1;
             // Determine the size of the bitmap for the preview image we will generate
             // TODO: This actually uses the apps customize cell layout params, where as we make want
             // the Workspace params for more accuracy.
