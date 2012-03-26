@@ -82,14 +82,25 @@ public class WallpaperChooserDialogFragment extends DialogFragment implements
         outState.putBoolean(EMBEDDED_KEY, mEmbedded);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
+    private void cancelLoader() {
         if (mLoader != null && mLoader.getStatus() != WallpaperLoader.Status.FINISHED) {
             mLoader.cancel(true);
             mLoader = null;
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        cancelLoader();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        cancelLoader();
     }
 
     @Override
