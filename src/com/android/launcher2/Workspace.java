@@ -677,7 +677,7 @@ public class Workspace extends SmoothPagedView
 
     @Override
     protected boolean isScrollingIndicatorEnabled() {
-        return mState != State.SPRING_LOADED;
+        return super.isScrollingIndicatorEnabled() && (mState != State.SPRING_LOADED);
     }
 
     protected void onPageBeginMoving() {
