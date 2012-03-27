@@ -1842,6 +1842,8 @@ public final class Launcher extends Activity
     public void onClickAppMarketButton(View v) {
         if (mAppMarketIntent != null) {
             startActivitySafely(mAppMarketIntent, "app market");
+        } else {
+            Log.e(TAG, "Invalid app market intent.");
         }
     }
 
