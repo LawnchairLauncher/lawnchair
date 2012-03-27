@@ -2067,10 +2067,14 @@ public class CellLayout extends ViewGroup {
         }
         int childCount = mShortcutsAndWidgets.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            LayoutParams lp = (LayoutParams) mShortcutsAndWidgets.getChildAt(i).getLayoutParams();
-            lp.cellX = lp.tmpCellX;
-            lp.cellY = lp.tmpCellY;
+            View child = mShortcutsAndWidgets.getChildAt(i);
+            LayoutParams lp = (LayoutParams) child.getLayoutParams();
+            ItemInfo info = (ItemInfo) child.getTag();
+            info.cellX = lp.cellX = lp.tmpCellX;
+            info.cellY = lp.cellY = lp.tmpCellY;
         }
+        Workspace workspace = (Workspace) getParent();
+        workspace.updateItemLocationsInDatabase(this);
     }
 
     public void setUseTempCoords(boolean useTempCoords) {

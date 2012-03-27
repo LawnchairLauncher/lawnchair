@@ -3112,7 +3112,7 @@ public class Workspace extends SmoothPagedView
                 // when dragging and dropping, just find the closest free spot
                 mTargetCell = mDragTargetLayout.createArea((int) mDragViewVisualCenter[0],
                         (int) mDragViewVisualCenter[1], 1, 1, 1, 1,
-                        null, mTargetCell, null, CellLayout.MODE_ON_DROP);
+                        null, mTargetCell, null, CellLayout.MODE_ON_DROP_EXTERNAL);
             } else {
                 cellLayout.findCellForSpan(mTargetCell, 1, 1);
             }
@@ -3343,23 +3343,11 @@ public class Workspace extends SmoothPagedView
         mDragOutline = null;
         mDragInfo = null;
 
-        saveWorkspaceStateToDb();
         // Hide the scrolling indicator after you pick up an item
         hideScrollingIndicator(false);
     }
 
-    public void saveWorkspaceStateToDb() {
-        int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            CellLayout cl = (CellLayout) getChildAt(i);
-            if (cl.isItemPlacementDirty()) {
-                updateItemLocationsInDatabase(cl);
-                cl.setItemPlacementDirty(false);
-            }
-        }
-    }
-
-    private void updateItemLocationsInDatabase(CellLayout cl) {
+    void updateItemLocationsInDatabase(CellLayout cl) {
         int count = cl.getShortcutsAndWidgets().getChildCount();
         int screen = indexOfChild(cl);
         for (int i = 0; i < count; i++) {
