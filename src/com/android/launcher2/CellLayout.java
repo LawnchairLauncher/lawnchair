@@ -326,6 +326,7 @@ public class CellLayout extends ViewGroup {
         mCountY = y;
         mOccupied = new boolean[mCountX][mCountY];
         mTmpOccupied = new boolean[mCountX][mCountY];
+        mTempRectStack.clear();
         requestLayout();
     }
 
