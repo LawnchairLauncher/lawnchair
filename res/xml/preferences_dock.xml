@@ -31,6 +31,12 @@
         launcher:maxExternal="ui_dock_pages"
         launcher:max="3"
         launcher:min="1" />
+    <com.cyanogenmod.trebuchet.preference.NumberPickerPreference android:key="ui_dock_icons"
+        android:title="@string/preferences_interface_dock_icons_title"
+        android:summary="@string/preferences_interface_dock_icons_summary"
+        android:defaultValue="@integer/hotseat_cell_count"
+        launcher:max="@integer/hotseat_cell_count"
+        launcher:min="3" />
     <CheckBoxPreference android:key="ui_dock_divider"
         android:title="@string/preferences_interface_dock_divider_title"
         android:summary="@string/preferences_interface_dock_divider_summary"
