@@ -42,8 +42,7 @@
     <string name="group_wallpapers" msgid="1568191644272224858">"桌布"</string>
     <!-- no translation found for out_of_space (3056555298801463098) -->
     <skip />
-    <!-- no translation found for hotseat_out_of_space (6304886797358479361) -->
-    <skip />
+    <string name="hotseat_out_of_space" msgid="6304886797358479361">"停駐區已無可用空間。"</string>
     <string name="invalid_hotseat_item" msgid="6545340627805449250">"這個小工具過大，超出可用的空間。"</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"已建立「<xliff:g id="NAME">%s</xliff:g>」捷徑。"</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"已移除「<xliff:g id="NAME">%s</xliff:g>」捷徑。"</string>

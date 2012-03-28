@@ -41,8 +41,7 @@
     <string name="group_widgets" msgid="6704978494073105844">"Widgets"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Papéis de parede"</string>
     <string name="out_of_space" msgid="3056555298801463098">"Não há mais espaço nas telas iniciais."</string>
-    <!-- no translation found for hotseat_out_of_space (6304886797358479361) -->
-    <skip />
+    <string name="hotseat_out_of_space" msgid="6304886797358479361">"Não há mais espaço no hotseat."</string>
     <string name="invalid_hotseat_item" msgid="6545340627805449250">"Este widget é muito grande para o hotseat."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"Atalho \"<xliff:g id="NAME">%s</xliff:g>\" criado."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"O atalho \"<xliff:g id="NAME">%s</xliff:g>\" foi removido."</string>
