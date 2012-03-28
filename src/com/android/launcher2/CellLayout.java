@@ -159,6 +159,7 @@ public class CellLayout extends ViewGroup {
     private Rect mOccupiedRect = new Rect();
     private int[] mDirectionVector = new int[2];
     int[] mPreviousReorderDirection = new int[2];
+    private static final int INVALID_DIRECTION = -100;
 
     public CellLayout(Context context) {
         this(context, null);
@@ -2215,15 +2216,16 @@ public class CellLayout extends ViewGroup {
         // When we are checking drop validity or actually dropping, we don't recompute the
         // direction vector, since we want the solution to match the preview, and it's possible
         // that the exact position of the item has changed to result in a new reordering outcome.
-        if ((mode == MODE_ON_DROP || mode == MODE_ACCEPT_DROP)
-               && mPreviousReorderDirection[0] != -1) {
+        if ((mode == MODE_ON_DROP || mode == MODE_ON_DROP_EXTERNAL || mode == MODE_ACCEPT_DROP)
+               && mPreviousReorderDirection[0] != INVALID_DIRECTION) {
             mDirectionVector[0] = mPreviousReorderDirection[0];
             mDirectionVector[1] = mPreviousReorderDirection[1];
             // We reset this vector after drop
-            if (mode == MODE_ON_DROP) {
-                mPreviousReorderDirection[0] = -1;
-                mPreviousReorderDirection[1] = -1;
+            if (mode == MODE_ON_DROP || mode == MODE_ON_DROP_EXTERNAL) {
+                mPreviousReorderDirection[0] = INVALID_DIRECTION;
+                mPreviousReorderDirection[1] = INVALID_DIRECTION;
             }
+            
         } else {
             getDirectionVectorForDrop(pixelX, pixelY, spanX, spanY, dragView, mDirectionVector);
             mPreviousReorderDirection[0] = mDirectionVector[0];
