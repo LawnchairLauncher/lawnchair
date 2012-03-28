@@ -3409,7 +3409,8 @@ public class Workspace extends SmoothPagedView
     @Override
     public boolean onEnterScrollArea(int x, int y, int direction) {
         // Ignore the scroll area if we are dragging over the hot seat
-        if (mLauncher.getHotseat() != null) {
+        boolean isPortrait = !LauncherApplication.isScreenLandscape(getContext());
+        if (mLauncher.getHotseat() != null && isPortrait) {
             Rect r = new Rect();
             mLauncher.getHotseat().getHitRect(r);
             if (r.contains(x, y)) {
