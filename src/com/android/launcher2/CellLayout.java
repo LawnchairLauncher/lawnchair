@@ -57,6 +57,7 @@ import java.util.Stack;
 public class CellLayout extends ViewGroup {
     static final String TAG = "CellLayout";
 
+    private Launcher mLauncher;
     private int mOriginalCellWidth;
     private int mOriginalCellHeight;
     private int mCellWidth;
@@ -175,6 +176,7 @@ public class CellLayout extends ViewGroup {
         // A ViewGroup usually does not draw, but CellLayout needs to draw a rectangle to show
         // the user where a dragged item will land when dropped.
         setWillNotDraw(false);
+        mLauncher = (Launcher) context;
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CellLayout, defStyle, 0);
 
@@ -2071,11 +2073,14 @@ public class CellLayout extends ViewGroup {
             View child = mShortcutsAndWidgets.getChildAt(i);
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
             ItemInfo info = (ItemInfo) child.getTag();
-            info.cellX = lp.cellX = lp.tmpCellX;
-            info.cellY = lp.cellY = lp.tmpCellY;
+            // We do a null check here because the item info can be null in the case of the
+            // AllApps button in the hotseat.
+            if (info != null) {
+                info.cellX = lp.cellX = lp.tmpCellX;
+                info.cellY = lp.cellY = lp.tmpCellY;
+            }
         }
-        Workspace workspace = (Workspace) getParent();
-        workspace.updateItemLocationsInDatabase(this);
+        mLauncher.getWorkspace().updateItemLocationsInDatabase(this);
     }
 
     public void setUseTempCoords(boolean useTempCoords) {

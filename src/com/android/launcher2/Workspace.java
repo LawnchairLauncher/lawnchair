@@ -3353,9 +3353,11 @@ public class Workspace extends SmoothPagedView
         for (int i = 0; i < count; i++) {
             View v = cl.getShortcutsAndWidgets().getChildAt(i);
             ItemInfo info = (ItemInfo) v.getTag();
-
-            LauncherModel.moveItemInDatabase(mLauncher, info, Favorites.CONTAINER_DESKTOP, screen,
-                        info.cellX, info.cellY);
+            // Null check required as the AllApps button doesn't have an item info
+            if (info != null) {
+                LauncherModel.moveItemInDatabase(mLauncher, info, Favorites.CONTAINER_DESKTOP,
+                        screen, info.cellX, info.cellY);
+            }
         }
     }
 
