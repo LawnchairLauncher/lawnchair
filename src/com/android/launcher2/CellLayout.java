@@ -189,6 +189,8 @@ public class CellLayout extends ViewGroup {
         mCountY = LauncherModel.getCellCountY();
         mOccupied = new boolean[mCountX][mCountY];
         mTmpOccupied = new boolean[mCountX][mCountY];
+        mPreviousReorderDirection[0] = INVALID_DIRECTION;
+        mPreviousReorderDirection[1] = INVALID_DIRECTION;
 
         a.recycle();
 
@@ -1564,7 +1566,8 @@ public class CellLayout extends ViewGroup {
         float bestDistance = Float.MAX_VALUE;
 
         // We use this to march in a single direction
-        if (direction[0] != 0 && direction[1] != 0) { 
+        if ((direction[0] != 0 && direction[1] != 0) ||
+                (direction[0] == 0 && direction[1] == 0)) {
             return bestXY;
         }
 
