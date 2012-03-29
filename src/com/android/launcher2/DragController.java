@@ -652,7 +652,6 @@ public class DragController {
 
         mDragObject.x = coordinates[0];
         mDragObject.y = coordinates[1];
-        mDragObject.dragComplete = true;
 
         // Clean up dragging on the target if it's not the current fling delete target otherwise,
         // start dragging to it.
@@ -663,6 +662,9 @@ public class DragController {
         // Drop onto the fling-to-delete target
         boolean accepted = false;
         mFlingToDeleteDropTarget.onDragEnter(mDragObject);
+        // We must set dragComplete to true _only_ after we "enter" the fling-to-delete target for
+        // "drop"
+        mDragObject.dragComplete = true;
         mFlingToDeleteDropTarget.onDragExit(mDragObject);
         if (mFlingToDeleteDropTarget.acceptDrop(mDragObject)) {
             mFlingToDeleteDropTarget.onFlingToDelete(mDragObject, mDragObject.x, mDragObject.y,
