@@ -59,7 +59,7 @@
     <string name="accessibility_voice_search_button" msgid="3938249215065842475">"Penelusuran Suara"</string>
     <string name="accessibility_all_apps_button" msgid="8803738611398979849">"Apl"</string>
     <string name="accessibility_delete_button" msgid="3628162007991023603">"Hapus"</string>
-    <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"Copot pemasangan pemutakhiran"</string>
+    <string name="delete_zone_label_all_apps_system_app" msgid="3683920959591819044">"Copot pemasangan pembaruan"</string>
     <string name="menu_add" msgid="3065046628354640854">"Tambahkan"</string>
     <string name="menu_manage_apps" msgid="2308685199463588895">"Kelola apl"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"Wallpaper"</string>

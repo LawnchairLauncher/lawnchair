@@ -41,7 +41,7 @@
     <string name="group_widgets" msgid="6704978494073105844">"Legstukke"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Muurpapier"</string>
     <string name="out_of_space" msgid="3056555298801463098">"Geen spasie op tuisskerm oor nie."</string>
-    <string name="hotseat_out_of_space" msgid="6304886797358479361">"Nie meer plek op die warmlaai nie."</string>
+    <string name="hotseat_out_of_space" msgid="6304886797358479361">"Geen plek meer op die warmlaai nie."</string>
     <string name="invalid_hotseat_item" msgid="6545340627805449250">"Hierdie legstuk is te groot vir die hoofposisie."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"Kortpad \"<xliff:g id="NAME">%s</xliff:g>\" is geskep."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"Kortpad \"<xliff:g id="NAME">%s</xliff:g>\" is verwyder."</string>
