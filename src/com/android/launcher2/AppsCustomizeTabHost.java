@@ -255,8 +255,8 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
                     PagedViewWidget.setDeletePreviewsWhenDetachedFromWindow(true);
                     mAnimationBuffer.setAlpha(1f);
                     mAnimationBuffer.setVisibility(View.VISIBLE);
-                    LayoutParams p = new FrameLayout.LayoutParams(child.getWidth(),
-                            child.getHeight());
+                    LayoutParams p = new FrameLayout.LayoutParams(child.getMeasuredWidth(),
+                            child.getMeasuredHeight());
                     p.setMargins((int) child.getLeft(), (int) child.getTop(), 0, 0);
                     mAnimationBuffer.addView(child, p);
                 }
