@@ -3349,14 +3349,22 @@ public class Workspace extends SmoothPagedView
 
     void updateItemLocationsInDatabase(CellLayout cl) {
         int count = cl.getShortcutsAndWidgets().getChildCount();
+
         int screen = indexOfChild(cl);
+        int container = Favorites.CONTAINER_DESKTOP;
+
+        if (mLauncher.isHotseatLayout(cl)) {
+            screen = -1;
+            container = Favorites.CONTAINER_HOTSEAT;
+        }
+
         for (int i = 0; i < count; i++) {
             View v = cl.getShortcutsAndWidgets().getChildAt(i);
             ItemInfo info = (ItemInfo) v.getTag();
             // Null check required as the AllApps button doesn't have an item info
             if (info != null) {
-                LauncherModel.moveItemInDatabase(mLauncher, info, Favorites.CONTAINER_DESKTOP,
-                        screen, info.cellX, info.cellY);
+                LauncherModel.moveItemInDatabase(mLauncher, info, container, screen, info.cellX,
+                        info.cellY);
             }
         }
     }
