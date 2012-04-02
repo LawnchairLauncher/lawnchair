@@ -377,7 +377,11 @@ public class DragController {
             if (rawDragInfo instanceof ShortcutInfo) {
                 ShortcutInfo dragInfo = (ShortcutInfo) rawDragInfo;
                 for (ApplicationInfo info : apps) {
-                    if (dragInfo.intent.getComponent().equals(info.intent.getComponent())) {
+                    // Added null checks to prevent NPE we've seen in the wild
+                    if (dragInfo != null &&
+                        dragInfo.intent != null &&
+                        info.intent != null &&
+                        dragInfo.intent.getComponent().equals(info.intent.getComponent())) {
                         cancelDrag();
                         return;
                     }
