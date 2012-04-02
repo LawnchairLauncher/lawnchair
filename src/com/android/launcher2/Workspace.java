@@ -171,6 +171,7 @@ public class Workspace extends SmoothPagedView
     private final Rect mTempRect = new Rect();
     private final int[] mTempXY = new int[2];
     private float mOverscrollFade = 0;
+    private boolean mOverscrollTransformsSet;
     public static final int DRAG_BITMAP_PADDING = 0;
 
     // Camera and Matrix used to determine the final position of a neighboring CellLayout
@@ -1196,9 +1197,12 @@ public class Workspace extends SmoothPagedView
                                 overScrollBackgroundAlphaInterpolator(Math.abs(scrollProgress)));
                         mOverScrollPageIndex = i;
                         cl.setOverScrollAmount(Math.abs(scrollProgress), i == 0);
-                        cl.setPivotX(cl.getMeasuredWidth() * (i == 0 ? 0.75f : 0.25f));
-                        cl.setPivotY(cl.getMeasuredHeight() * 0.5f);
-                        cl.setOverscrollTransformsDirty(true);
+                        if (!mOverscrollTransformsSet) {
+                            mOverscrollTransformsSet = true;
+                            cl.setPivotX(cl.getMeasuredWidth() * (i == 0 ? 0.75f : 0.25f));
+                            cl.setPivotY(cl.getMeasuredHeight() * 0.5f);
+                            cl.setOverscrollTransformsDirty(true);
+                        }
                     } else if (mOverScrollPageIndex != i) {
                         cl.setBackgroundAlphaMultiplier(
                                 backgroundAlphaInterpolator(Math.abs(scrollProgress)));
@@ -1212,7 +1216,8 @@ public class Workspace extends SmoothPagedView
                 }
             }
         }
-        if (!isSwitchingState() && !isInOverscroll) {
+        if (mOverscrollTransformsSet && !isInOverscroll) {
+            mOverscrollTransformsSet = false;
             ((CellLayout) getChildAt(0)).resetOverscrollTransforms();
             ((CellLayout) getChildAt(getChildCount() - 1)).resetOverscrollTransforms();
         }
@@ -1226,18 +1231,21 @@ public class Workspace extends SmoothPagedView
             float scrollProgress = getScrollProgress(screenCenter, cl, index);
             cl.setOverScrollAmount(Math.abs(scrollProgress), index == 0);
             float rotation = - WORKSPACE_OVERSCROLL_ROTATION * scrollProgress;
-            cl.setCameraDistance(mDensity * CAMERA_DISTANCE);
-            cl.setPivotX(cl.getMeasuredWidth() * (index == 0 ? 0.75f : 0.25f));
-            cl.setPivotY(cl.getMeasuredHeight() * 0.5f);
             cl.setRotationY(rotation);
-            cl.setOverscrollTransformsDirty(true);
             setFadeForOverScroll(Math.abs(scrollProgress));
+            if (!mOverscrollTransformsSet) {
+                mOverscrollTransformsSet = true;
+                cl.setCameraDistance(mDensity * CAMERA_DISTANCE);
+                cl.setPivotX(cl.getMeasuredWidth() * (index == 0 ? 0.75f : 0.25f));
+                cl.setPivotY(cl.getMeasuredHeight() * 0.5f);
+                cl.setOverscrollTransformsDirty(true);
+            }
         } else {
             if (mOverscrollFade != 0) {
                 setFadeForOverScroll(0);
             }
-            // We don't want to mess with the translations during transitions
-            if (!isSwitchingState()) {
+            if (mOverscrollTransformsSet) {
+                mOverscrollTransformsSet = false;
                 ((CellLayout) getChildAt(0)).resetOverscrollTransforms();
                 ((CellLayout) getChildAt(getChildCount() - 1)).resetOverscrollTransforms();
             }
