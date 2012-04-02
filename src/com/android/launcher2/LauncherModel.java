@@ -1354,6 +1354,7 @@ public class LauncherModel extends BroadcastReceiver {
             }
 
             // shallow copy
+            @SuppressWarnings("unchecked")
             final ArrayList<ApplicationInfo> list
                     = (ArrayList<ApplicationInfo>) mAllAppsList.data.clone();
             mHandler.post(new Runnable() {
@@ -1657,7 +1658,26 @@ public class LauncherModel extends BroadcastReceiver {
         // but don't worry about that.  All we're doing with usingFallbackIcon is
         // to avoid saving lots of copies of that in the database, and most apps
         // have icons anyway.
-        final ResolveInfo resolveInfo = manager.resolveActivity(intent, 0);
+
+        // Attempt to use queryIntentActivities to get the ResolveInfo (with IntentFilter info) and
+        // if that fails, or is ambiguious, fallback to the standard way of getting the resolve info
+        // via resolveActivity().
+        ResolveInfo resolveInfo = null;
+        ComponentName oldComponent = intent.getComponent();
+        Intent newIntent = new Intent(intent.getAction(), null);
+        newIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        newIntent.setPackage(oldComponent.getPackageName());
+        List<ResolveInfo> infos = manager.queryIntentActivities(newIntent, 0);
+        for (ResolveInfo i : infos) {
+            ComponentName cn = new ComponentName(i.activityInfo.packageName,
+                    i.activityInfo.name);
+            if (cn.equals(oldComponent)) {
+                resolveInfo = i;
+            }
+        }
+        if (resolveInfo == null) {
+            resolveInfo = manager.resolveActivity(intent, 0);
+        }
         if (resolveInfo != null) {
             icon = mIconCache.getIcon(componentName, resolveInfo, labelCache);
         }
