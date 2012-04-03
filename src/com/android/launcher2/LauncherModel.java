@@ -1228,7 +1228,39 @@ public class LauncherModel extends BroadcastReceiver {
                 return;
             }
 
-            int N;
+            // Get the list of workspace items to load and unbind the existing ShortcutInfos
+            // before we call startBinding() below.
+            final int currentScreen = oldCallbacks.getCurrentWorkspaceScreen();
+            final ArrayList<ItemInfo> tmpWorkspaceItems = unbindWorkspaceItemsOnMainThread();
+            // Order the items for loading as follows: current workspace, hotseat, everything else
+            Collections.sort(tmpWorkspaceItems, new Comparator<ItemInfo>() {
+                @Override
+                public int compare(ItemInfo lhs, ItemInfo rhs) {
+                    int cellCountX = LauncherModel.getCellCountX();
+                    int cellCountY = LauncherModel.getCellCountY();
+                    int screenOffset = cellCountX * cellCountY;
+                    int containerOffset = screenOffset * (Launcher.SCREEN_COUNT + 1); // +1 hotseat
+                    long lr = (lhs.container * containerOffset + lhs.screen * screenOffset +
+                            lhs.cellY * cellCountX + lhs.cellX);
+                    long rr = (rhs.container * containerOffset + rhs.screen * screenOffset +
+                            rhs.cellY * cellCountX + rhs.cellX);
+                    return (int) (lr - rr);
+                }
+            });
+            // Precondition: the items are ordered by page, screen
+            final ArrayList<ItemInfo> workspaceItems = new ArrayList<ItemInfo>();
+            for (ItemInfo ii : tmpWorkspaceItems) {
+                // Prepend the current items, hotseat items, append everything else
+                if (ii.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
+                        ii.screen == currentScreen) {
+                    workspaceItems.add(0, ii);
+                } else if (ii.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+                    workspaceItems.add(0, ii);
+                } else {
+                    workspaceItems.add(ii);
+                }
+            }
+
             // Tell the workspace that we're about to start firing items at it
             mHandler.post(new Runnable() {
                 public void run() {
@@ -1239,10 +1271,8 @@ public class LauncherModel extends BroadcastReceiver {
                 }
             });
 
-            final ArrayList<ItemInfo> workspaceItems = unbindWorkspaceItemsOnMainThread();
-
             // Add the items to the workspace.
-            N = workspaceItems.size();
+            int N = workspaceItems.size();
             for (int i=0; i<N; i+=ITEMS_CHUNK) {
                 final int start = i;
                 final int chunkSize = (i+ITEMS_CHUNK <= N) ? ITEMS_CHUNK : (N-i);
@@ -1278,7 +1308,6 @@ public class LauncherModel extends BroadcastReceiver {
             // but since getCurrentScreen() just returns the int, we should be okay.  This
             // is just a hint for the order, and if it's wrong, we'll be okay.
             // TODO: instead, we should have that push the current screen into here.
-            final int currentScreen = oldCallbacks.getCurrentWorkspaceScreen();
             N = sAppWidgets.size();
             // once for the current screen
             for (int i=0; i<N; i++) {
