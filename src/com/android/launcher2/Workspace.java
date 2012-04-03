@@ -1568,6 +1568,7 @@ public class Workspace extends SmoothPagedView
 
         final State oldState = mState;
         final boolean oldStateIsNormal = (oldState == State.NORMAL);
+        final boolean oldStateIsSpringLoaded = (oldState == State.SPRING_LOADED);
         final boolean oldStateIsSmall = (oldState == State.SMALL);
         mState = state;
         final boolean stateIsNormal = (state == State.NORMAL);
@@ -1608,8 +1609,9 @@ public class Workspace extends SmoothPagedView
             if ((oldStateIsSmall && stateIsNormal) ||
                 (oldStateIsNormal && stateIsSmall)) {
                 // To/from workspace - only show the current page unless the transition is not
-                //                     animated and the animation end callback below doesn't run
-                if (i == mCurrentPage || !animated) {
+                //                     animated and the animation end callback below doesn't run;
+                //                     or, if we're in spring-loaded mode
+                if (i == mCurrentPage || !animated || oldStateIsSpringLoaded) {
                     finalAlpha = 1f;
                     finalAlphaMultiplierValue = 0f;
                 } else {
