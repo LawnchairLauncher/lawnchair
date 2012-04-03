@@ -524,6 +524,10 @@ public final class Launcher extends Activity
                 // We just wanted the activity result here so we can clear mWaitingForResult
                 break;
         }
+        // Before adding this resetAddInfo(), after a shortcut was added to a workspace screen,
+        // if you turned the screen off and then back while in All Apps, Launcher would not
+        // return to the workspace. Clearing mAddInfo.container here fixes this issue
+        resetAddInfo();
         return result;
     }
 
