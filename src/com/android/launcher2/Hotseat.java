@@ -104,7 +104,6 @@ public class Hotseat extends FrameLayout {
                 inflater.inflate(R.layout.application, mContent, false);
         allAppsButton.setCompoundDrawablesWithIntrinsicBounds(null,
                 context.getResources().getDrawable(R.drawable.all_apps_button_icon), null, null);
-        // allAppsButton.setText(context.getString(R.string.all_apps_button_label));
         allAppsButton.setContentDescription(context.getString(R.string.all_apps_button_label));
         allAppsButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
