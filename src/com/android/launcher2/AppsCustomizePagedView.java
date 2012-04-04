@@ -737,7 +737,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
      * @param target where the item was dragged to (can be null if the item was flung)
      */
     private void endDragging(View target, boolean isFlingToDelete, boolean success) {
-        mLauncher.getWorkspace().onDragStopped(success);
         if (isFlingToDelete || !success || (target != mLauncher.getWorkspace() &&
                 !(target instanceof DeleteDropTarget))) {
             // Exit spring loaded mode if we have not successfully dropped or have not handled the

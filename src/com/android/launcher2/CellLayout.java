@@ -161,6 +161,7 @@ public class CellLayout extends ViewGroup {
     private int[] mDirectionVector = new int[2];
     int[] mPreviousReorderDirection = new int[2];
     private static final int INVALID_DIRECTION = -100;
+    private DropTarget.DragEnforcer mDragEnforcer;
 
     public CellLayout(Context context) {
         this(context, null);
@@ -172,6 +173,7 @@ public class CellLayout extends ViewGroup {
 
     public CellLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        mDragEnforcer = new DropTarget.DragEnforcer(mContext);
 
         // A ViewGroup usually does not draw, but CellLayout needs to draw a rectangle to show
         // the user where a dragged item will land when dropped.
@@ -2508,6 +2510,7 @@ public class CellLayout extends ViewGroup {
      * or it may have begun on another layout.
      */
     void onDragEnter() {
+        mDragEnforcer.onDragEnter();
         if (!mDragging) {
             // Fade in the drag indicators
             if (mCrosshairsAnimator != null) {
@@ -2521,6 +2524,7 @@ public class CellLayout extends ViewGroup {
      * Called when drag has left this CellLayout or has been completed (successfully or not)
      */
     void onDragExit() {
+        mDragEnforcer.onDragExit();
         // This can actually be called when we aren't in a drag, e.g. when adding a new
         // item to this layout via the customize drawer.
         // Guard against that case.

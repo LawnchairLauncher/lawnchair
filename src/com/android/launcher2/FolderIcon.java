@@ -325,7 +325,10 @@ public class FolderIcon extends LinearLayout implements FolderListener {
     }
 
     public void onDragExit(Object dragInfo) {
-        if (!willAcceptItem((ItemInfo) dragInfo)) return;
+        onDragExit();
+    }
+
+    public void onDragExit() {
         mFolderRingAnimator.animateToNaturalState();
     }
 

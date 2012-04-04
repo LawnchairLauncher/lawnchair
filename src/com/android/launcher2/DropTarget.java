@@ -16,6 +16,7 @@
 
 package com.android.launcher2;
 
+import android.content.Context;
 import android.graphics.PointF;
 import android.graphics.Rect;
 
@@ -60,6 +61,43 @@ public interface DropTarget {
         public boolean deferDragViewCleanupPostAnimation = true;
 
         public DragObject() {
+        }
+    }
+
+    public static class DragEnforcer implements DragController.DragListener {
+        int dragParity = 0;
+
+        public DragEnforcer(Context context) {
+            Launcher launcher = (Launcher) context;
+            launcher.getDragController().addDragListener(this);
+        }
+
+        void onDragEnter() {
+            dragParity++;
+            if (dragParity != 1) {
+                throw new RuntimeException("onDragEnter: Drag contract violated: " + dragParity);
+            }
+        }
+
+        void onDragExit() {
+            dragParity--;
+            if (dragParity != 0) {
+                throw new RuntimeException("onDragExit: Drag contract violated: " + dragParity);
+            }
+        }
+
+        @Override
+        public void onDragStart(DragSource source, Object info, int dragAction) {
+            if (dragParity != 0) {
+                throw new RuntimeException("onDragEnter: Drag contract violated: " + dragParity);
+            }
+        }
+
+        @Override
+        public void onDragEnd() {
+            if (dragParity != 0) {
+                throw new RuntimeException("onDragExit: Drag contract violated: " + dragParity);
+            }
         }
     }
 
