@@ -396,7 +396,9 @@ public abstract class PagedView extends ViewGroup {
     protected boolean computeScrollHelper() {
         if (mScroller.computeScrollOffset()) {
             // Don't bother scrolling if the page does not need to be moved
-            if (mScrollX != mScroller.getCurrX() || mScrollY != mScroller.getCurrY()) {
+            if (mScrollX != mScroller.getCurrX()
+                || mScrollY != mScroller.getCurrY()
+                || mOverScrollX != mScroller.getCurrX()) {
                 scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
             }
             invalidate();
@@ -755,9 +757,11 @@ public abstract class PagedView extends ViewGroup {
         int screenCenter = mOverScrollX + halfScreenSize;
 
         if (screenCenter != mLastScreenCenter || mForceScreenScrolled) {
+            // set mForceScreenScrolled before calling screenScrolled so that screenScrolled can
+            // set it for the next frame
+            mForceScreenScrolled = false;
             screenScrolled(screenCenter);
             mLastScreenCenter = screenCenter;
-            mForceScreenScrolled = false;
         }
 
         // Find out which screens are visible; as an optimization we only call draw on them
