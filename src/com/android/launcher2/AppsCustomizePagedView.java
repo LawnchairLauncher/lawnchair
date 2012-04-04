@@ -577,6 +577,16 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 info.boundWidget = hostView;
                 mWidgetCleanupState = WIDGET_INFLATED;
                 hostView.setVisibility(INVISIBLE);
+                int[] unScaledSize = mLauncher.getWorkspace().estimateItemSize(info.spanX,
+                        info.spanY, info, false);
+
+                // We want the first widget layout to be the correct size. This will be important
+                // for width size reporting to the AppWidgetManager.
+                DragLayer.LayoutParams lp = new DragLayer.LayoutParams(unScaledSize[0],
+                        unScaledSize[1]);
+                lp.x = lp.y = 0;
+                lp.customPosition = true;
+                hostView.setLayoutParams(lp);
                 mLauncher.getDragLayer().addView(hostView);
             }
         };
@@ -629,14 +639,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         if (createItemInfo instanceof PendingAddWidgetInfo) {
             PendingAddWidgetInfo createWidgetInfo = mCreateWidgetInfo;
             createItemInfo = createWidgetInfo;
-            int[] spanXY = mLauncher.getSpanForWidget(createWidgetInfo, null);
-            int[] size = mLauncher.getWorkspace().estimateItemSize(spanXY[0],
-                    spanXY[1], createWidgetInfo, true);
-            createItemInfo.spanX = spanXY[0];
-            createItemInfo.spanY = spanXY[1];
-            int[] minSpanXY = mLauncher.getMinSpanForWidget(createWidgetInfo, null);
-            createWidgetInfo.minSpanX = minSpanXY[0];
-            createWidgetInfo.minSpanY = minSpanXY[1];
+            int spanX = createItemInfo.spanX;
+            int spanY = createItemInfo.spanY;
+            int[] size = mLauncher.getWorkspace().estimateItemSize(spanX, spanY,
+                    createWidgetInfo, true);
 
             FastBitmapDrawable previewDrawable = (FastBitmapDrawable) image.getDrawable();
             float minScale = 1.25f;
@@ -644,7 +650,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             minWidth = Math.max((int) (previewDrawable.getIntrinsicWidth() * minScale), size[0]);
             minHeight = Math.max((int) (previewDrawable.getIntrinsicHeight() * minScale), size[1]);
             preview = getWidgetPreview(createWidgetInfo.componentName, createWidgetInfo.previewImage,
-                    createWidgetInfo.icon, spanXY[0], spanXY[1], minWidth, minHeight);
+                    createWidgetInfo.icon, spanX, spanY, minWidth, minHeight);
 
             // Determine the image view drawable scale relative to the preview
             float[] mv = new float[9];
@@ -1198,8 +1204,18 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 // Fill in the widget information
                 AppWidgetProviderInfo info = (AppWidgetProviderInfo) rawInfo;
                 createItemInfo = new PendingAddWidgetInfo(info, null, null);
-                int[] cellSpans = mLauncher.getSpanForWidget(info, null);
-                widget.applyFromAppWidgetProviderInfo(info, -1, cellSpans);
+
+                // Determine the widget spans and min resize spans.
+                int[] spanXY = mLauncher.getSpanForWidget(info, null);
+                int[] size = mLauncher.getWorkspace().estimateItemSize(spanXY[0],
+                        spanXY[1], createItemInfo, true);
+                createItemInfo.spanX = spanXY[0];
+                createItemInfo.spanY = spanXY[1];
+                int[] minSpanXY = mLauncher.getMinSpanForWidget(info, null);
+                createItemInfo.minSpanX = minSpanXY[0];
+                createItemInfo.minSpanY = minSpanXY[1];
+
+                widget.applyFromAppWidgetProviderInfo(info, -1, spanXY);
                 widget.setTag(createItemInfo);
                 widget.setShortPressListener(this);
             } else if (rawInfo instanceof ResolveInfo) {

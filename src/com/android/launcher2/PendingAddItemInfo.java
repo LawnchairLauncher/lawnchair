@@ -76,5 +76,9 @@ class PendingAddWidgetInfo extends PendingAddItemInfo {
         configurationData = copy.configurationData;
         componentName = copy.componentName;
         itemType = copy.itemType;
+        spanX = copy.spanX;
+        spanY = copy.spanY;
+        minSpanX = copy.minSpanX;
+        minSpanY = copy.minSpanY;
     }
 }
