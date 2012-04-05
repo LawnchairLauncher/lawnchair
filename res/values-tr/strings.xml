@@ -41,7 +41,7 @@
     <string name="group_widgets" msgid="6704978494073105844">"Widget\'lar"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Duvar Kağıtları"</string>
     <string name="out_of_space" msgid="3056555298801463098">"Ana ekranlarınızda başka yer kalmadı."</string>
-    <string name="hotseat_out_of_space" msgid="6304886797358479361">"Favori kısa yollarda yer yok"</string>
+    <string name="hotseat_out_of_space" msgid="6304886797358479361">"Favori kısayollarda yer yok"</string>
     <string name="invalid_hotseat_item" msgid="6545340627805449250">"Bu widget, hotseat için çok büyük."</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"\"<xliff:g id="NAME">%s</xliff:g>\" kısayolu oluşturuldu."</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"\"<xliff:g id="NAME">%s</xliff:g>\" kısayolu kaldırıldı."</string>
