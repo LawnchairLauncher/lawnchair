@@ -426,7 +426,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     @Override
     protected void init() {
         super.init();
-        mCenterPagesVertically = false;
+        mCenterPages = false;
 
         Context context = getContext();
         Resources r = context.getResources();
@@ -1804,10 +1804,15 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             if (v != null) {
                 float scrollProgress = getScrollProgress(screenScroll, v, i);
                 float rotation = TRANSITION_SCREEN_ROTATION * scrollProgress;
-                float translationX = mLauncher.getWorkspace().getOffsetXForRotation(rotation, v.getWidth(), v.getHeight());
+                float translation = mLauncher.getWorkspace().getOffsetXForRotation(rotation, v.getWidth(), v.getHeight());
 
-                v.setTranslationX(translationX);
-                v.setRotationY(rotation);
+                if (!mVertical) {
+                    v.setTranslationX(translation);
+                    v.setRotationY(rotation);
+                } else {
+                    v.setTranslationY(translation);
+                    v.setRotationX(-rotation);
+                }
                 if (mFadeInAdjacentScreens) {
                     float alpha = 1 - Math.abs(scrollProgress);
                     v.setAlpha(alpha);
@@ -1825,8 +1830,13 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
                 // Extra translation to account for the increase in size
                 if (!in) {
-                    float translationX = v.getMeasuredWidth() * 0.1f * -scrollProgress;
-                    v.setTranslationX(translationX);
+                    if (!mVertical) {
+                        float translationX = v.getMeasuredWidth() * 0.1f * -scrollProgress;
+                        v.setTranslationX(translationX);
+                    } else {
+                        float translationY = v.getMeasuredHeight() * 0.1f * -scrollProgress;
+                        v.setTranslationY(translationY);
+                    }
                 }
 
                 v.setScaleX(scale);
@@ -1846,21 +1856,38 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 float scrollProgress = getScrollProgress(screenScroll, v, i);
                 float rotation =
                         (up ? TRANSITION_SCREEN_ROTATION : -TRANSITION_SCREEN_ROTATION) * scrollProgress;
-                float translationX = v.getMeasuredWidth() * scrollProgress;
 
-                float rotatePoint =
-                        (v.getMeasuredWidth() * 0.5f) /
-                        (float) Math.tan(Math.toRadians((double) (TRANSITION_SCREEN_ROTATION * 0.5f)));
+                if (!mVertical) {
+                    float translationX = v.getMeasuredWidth() * scrollProgress;
 
-                v.setPivotX(v.getMeasuredWidth() * 0.5f);
-                if (up) {
-                    v.setPivotY(-rotatePoint);
+                    float rotatePoint =
+                            (v.getMeasuredWidth() * 0.5f) /
+                            (float) Math.tan(Math.toRadians((double) (TRANSITION_SCREEN_ROTATION * 0.5f)));
+
+                    v.setPivotX(v.getMeasuredWidth() * 0.5f);
+                    if (up) {
+                        v.setPivotY(-rotatePoint);
+                    } else {
+                        v.setPivotY(v.getMeasuredHeight() + rotatePoint);
+                    }
+                    v.setRotation(rotation);
+                    v.setTranslationX(translationX);
                 } else {
-                    v.setPivotY(v.getMeasuredHeight() + rotatePoint);
-                }
+                    float translationY = v.getMeasuredHeight() * scrollProgress;
 
-                v.setRotation(rotation);
-                v.setTranslationX(translationX);
+                    float rotatePoint =
+                            (v.getMeasuredHeight() * 0.5f) /
+                            (float) Math.tan(Math.toRadians((double) (TRANSITION_SCREEN_ROTATION * 0.5f)));
+
+                    v.setPivotY(v.getMeasuredHeight() * 0.5f);
+                    if (up) {
+                        v.setPivotX(-rotatePoint);
+                    } else {
+                        v.setPivotX(v.getMeasuredWidth() + rotatePoint);
+                    }
+                    v.setRotation(-rotation);
+                    v.setTranslationY(translationY);
+                }
                 if (mFadeInAdjacentScreens) {
                     float alpha = 1 - Math.abs(scrollProgress);
                     v.setAlpha(alpha);
@@ -1881,9 +1908,15 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                     v.setCameraDistance(mDensity * CAMERA_DISTANCE);
                 }
 
-                v.setPivotX(scrollProgress < 0 ? 0 : v.getMeasuredWidth());
-                v.setPivotY(v.getMeasuredHeight() * 0.5f);
-                v.setRotationY(rotation);
+                if (!mVertical) {
+                    v.setPivotX(scrollProgress < 0 ? 0 : v.getMeasuredWidth());
+                    v.setPivotY(v.getMeasuredHeight() * 0.5f);
+                    v.setRotationY(rotation);
+                } else {
+                    v.setPivotY(scrollProgress < 0 ? 0 : v.getMeasuredHeight());
+                    v.setPivotX(v.getMeasuredWidth() * 0.5f);
+                    v.setRotationX(rotation);
+                }
                 v.setAlpha(alpha);
             }
         }
@@ -1897,7 +1930,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 float interpolatedProgress =
                         mZInterpolator.getInterpolation(Math.abs(Math.min(scrollProgress, 0)));
                 float scale = (1 - interpolatedProgress) + interpolatedProgress * 0.76f;
-                float translationX = Math.min(0, scrollProgress) * v.getMeasuredWidth();
+                float translation = Math.min(0, scrollProgress) *
+                        (!mVertical ? v.getMeasuredWidth() : v.getMeasuredHeight());
                 float alpha;
 
                 if (!LauncherApplication.isScreenLarge() || scrollProgress < 0) {
@@ -1908,7 +1942,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                     alpha = mLeftScreenAlphaInterpolator.getInterpolation(1 - scrollProgress);
                 }
 
-                v.setTranslationX(translationX);
+                if (!mVertical) {
+                    v.setTranslationX(translation);
+                } else {
+                    v.setTranslationY(translation);
+                }
                 v.setScaleX(scale);
                 v.setScaleY(scale);
                 v.setAlpha(alpha);
@@ -1997,7 +2035,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     protected void screenScrolled(int screenScroll) {
         super.screenScrolled(screenScroll);
 
-        boolean isInOverscroll = mOverScrollX < 0 || mOverScrollX > mMaxScrollX;
+        boolean isInOverscroll = !mVertical ? (mOverScrollX < 0 || mOverScrollX > mMaxScrollX) :
+                (mOverScrollY < 0 || mOverScrollY > mMaxScrollY);
         if (isInOverscroll && !mOverscrollTransformsDirty) {
             mScrollTransformsDirty = true;
         }
@@ -2009,10 +2048,17 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 mOverscrollTransformsDirty = false;
                 View v0 = getPageAt(0);
                 View v1 = getPageAt(getChildCount() - 1);
-                v0.setTranslationX(0);
-                v1.setTranslationX(0);
-                v0.setRotationY(0);
-                v1.setRotationY(0);
+                if (!mVertical) {
+                    v0.setTranslationX(0);
+                    v1.setTranslationX(0);
+                    v0.setRotationY(0);
+                    v1.setRotationY(0);
+                } else {
+                    v0.setTranslationY(0);
+                    v1.setTranslationY(0);
+                    v0.setRotationX(0);
+                    v1.setRotationX(0);
+                }
                 v0.setCameraDistance(mDensity * 1280);
                 v1.setCameraDistance(mDensity * 1280);
                 v0.setPivotX(v0.getMeasuredWidth() / 2);
