@@ -74,4 +74,12 @@
         <item>Stack</item>
         <item>Accordian</item>
     </string-array>
+    <string-array name="preferences_interface_drawer_orientation_entries">
+        <item>Horizontal</item>
+        <item>Vertical</item>
+    </string-array>
+    <string-array name="preferences_interface_drawer_orientation_values">
+        <item>horizontal</item>
+        <item>vertical</item>
+    </string-array>
 </resources>

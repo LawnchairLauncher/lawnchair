@@ -117,6 +117,10 @@ public final class PreferencesProvider {
         }
 
         public static class Drawer {
+            public static boolean getVertical(Context context) {
+                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                return preferences.getString("ui_drawer_orientation", "horizontal").equals("vertical");
+            }
             public static boolean getJoinWidgetsApps(Context context) {
                 final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
                 return preferences.getBoolean("ui_drawer_widgets_join_apps", true);

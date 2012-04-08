@@ -380,6 +380,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         // Preferences
         mJoinWidgetsApps = PreferencesProvider.Interface.Drawer.getJoinWidgetsApps(context);
+        mVertical = PreferencesProvider.Interface.Drawer.getVertical(context);
         mTransitionEffect = PreferencesProvider.Interface.Drawer.Scrolling.getTransitionEffect(context,
                 resources.getString(R.string.config_drawerDefaultTransitionEffect));
         mFadeInAdjacentScreens = PreferencesProvider.Interface.Drawer.Scrolling.getFadeInAdjacentScreens(context);
@@ -412,15 +413,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // preview can be before applying the widget scaling
         mMinWidgetSpan = 1;
         mMaxWidgetSpan = 3;
-
-        // The padding on the non-matched dimension for the default widget preview icons
-        // (top + bottom)
-        mFadeInAdjacentScreens = false;
-
-        // Unless otherwise specified this view is important for accessibility.
-        if (getImportantForAccessibility() == View.IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
-            setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
-        }
     }
 
     @Override
@@ -1915,7 +1907,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 } else {
                     v.setPivotY(scrollProgress < 0 ? 0 : v.getMeasuredHeight());
                     v.setPivotX(v.getMeasuredWidth() * 0.5f);
-                    v.setRotationX(rotation);
+                    v.setRotationX(-rotation);
                 }
                 v.setAlpha(alpha);
             }
@@ -2014,8 +2006,13 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 if (scrollProgress >= -0.5f && scrollProgress <= 0.5f) {
                     v.setPivotX(v.getMeasuredWidth() * 0.5f);
                     v.setPivotY(v.getMeasuredHeight() * 0.5f);
-                    v.setRotationY(rotation);
-                    v.setTranslationX(v.getMeasuredWidth() * scrollProgress);
+                    if (!mVertical) {
+                        v.setTranslationX(v.getMeasuredWidth() * scrollProgress);
+                        v.setRotationY(rotation);
+                    } else {
+                        v.setTranslationY(v.getMeasuredHeight() * scrollProgress);
+                        v.setRotationX(-rotation);
+                    }
                     if (v.getVisibility() != VISIBLE) {
                         v.setVisibility(VISIBLE);
                     }
@@ -2042,7 +2039,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
         if (!isInOverscroll || mScrollTransformsDirty) {
             // Limit the "normal" effects to mScrollX/Y
-            int scroll = mScrollX;
+            int scroll = !mVertical ? mScrollX : mScrollY;
             // Reset transforms when we aren't in overscroll
             if (mOverscrollTransformsDirty) {
                 mOverscrollTransformsDirty = false;
@@ -2108,16 +2105,23 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
 
         if (isInOverscroll) {
-            int index = mOverScrollX < 0 ? 0 : getChildCount() - 1;
+            int index = (!mVertical ? mOverScrollX : mOverScrollY) < 0 ? 0 : getChildCount() - 1;
             View v = getPageAt(index);
             if (v != null) {
                 float scrollProgress = getScrollProgress(screenScroll, v, index);
                 float rotation = - TRANSITION_MAX_ROTATION * scrollProgress;
                 v.setCameraDistance(mDensity * CAMERA_DISTANCE);
-                v.setPivotX(v.getMeasuredWidth() * (index == 0 ? TRANSITION_PIVOT : 1 - TRANSITION_PIVOT));
-                v.setPivotY(v.getMeasuredHeight() * 0.5f);
-                v.setRotationY(rotation);
-                v.setTranslationX(0);
+                if (!mVertical) {
+                    v.setPivotX(v.getMeasuredWidth() * (index == 0 ? TRANSITION_PIVOT : 1 - TRANSITION_PIVOT));
+                    v.setPivotY(v.getMeasuredHeight() * 0.5f);
+                    v.setRotationY(rotation);
+                    v.setTranslationX(0);
+                } else {
+                    v.setPivotX(v.getMeasuredWidth() * 0.5f);
+                    v.setPivotY(v.getMeasuredHeight() * (index == 0 ? TRANSITION_PIVOT : 1 - TRANSITION_PIVOT));
+                    v.setRotationX(-rotation);
+                    v.setTranslationY(0);
+                }
                 mOverscrollTransformsDirty = true;
             }
         }

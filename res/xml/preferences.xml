@@ -113,6 +113,12 @@
         <!-- Drawer -->
         <PreferenceScreen android:key="ui_drawer"
             android:title="@string/preferences_interface_drawer_title">
+            <ListPreference android:key="ui_drawer_orientation"
+                android:title="@string/preferences_interface_drawer_orientation_title"
+                android:summary="@string/preferences_interface_drawer_orientation_summary"
+                android:entries="@array/preferences_interface_drawer_orientation_entries"
+                android:entryValues="@array/preferences_interface_drawer_orientation_values"
+                android:defaultValue="horizontal" />
             <PreferenceCategory android:title="@string/preferences_interface_drawer_widgets_category">
                 <CheckBoxPreference android:key="ui_drawer_widgets_join_apps"
                     android:title="@string/preferences_interface_drawer_widgets_join_apps_title"
