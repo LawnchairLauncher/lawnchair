@@ -102,8 +102,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     }
 
     private boolean installShortcut(Context context, Intent data, ArrayList<ItemInfo> items,
-            String name, Intent intent, final int screen, boolean shortcutExists,
-            final SharedPreferences sharedPrefs, int[] result) {
+            String name, Intent intent, int screen, boolean shortcutExists,
+            SharedPreferences sharedPrefs, int[] result) {
         if (findEmptyCell(context, items, mCoordinates, screen)) {
             if (intent != null) {
                 if (intent.getAction() == null) {
@@ -122,15 +122,10 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                         newApps = sharedPrefs.getStringSet(NEW_APPS_LIST_KEY, newApps);
                     }
                     newApps.add(intent.toUri(0).toString());
-                    final Set<String> savedNewApps = newApps;
-                    new Thread("setNewAppsThread") {
-                        public void run() {
-                            sharedPrefs.edit()
-                                        .putInt(NEW_APPS_PAGE_KEY, screen)
-                                        .putStringSet(NEW_APPS_LIST_KEY, savedNewApps)
-                                        .commit();
-                        }
-                    }.start();
+                    sharedPrefs.edit()
+                               .putInt(NEW_APPS_PAGE_KEY, screen)
+                               .putStringSet(NEW_APPS_LIST_KEY, newApps)
+                               .commit();
 
                     // Update the Launcher db
                     LauncherApplication app = (LauncherApplication) context.getApplicationContext();
