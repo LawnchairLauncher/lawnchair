@@ -63,7 +63,7 @@ public class DragController {
     static final int SCROLL_RIGHT = 1;
 
     private static final float MAX_FLING_DEGREES = 35f;
-    private static final int FLING_TO_DELETE_THRESHOLD_Y_VELOCITY = -1400;
+    private static final int FLING_TO_DELETE_THRESHOLD_Y_VELOCITY = -1500;
 
     private Launcher mLauncher;
     private Handler mHandler;

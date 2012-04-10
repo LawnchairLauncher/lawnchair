@@ -38,6 +38,7 @@ import com.android.launcher.R;
 
 public class DeleteDropTarget extends ButtonDropTarget {
     private static int DELETE_ANIMATION_DURATION = 285;
+    private static int FLIND_DELETE_ANIMATION_DURATION = 350;
     private static int MODE_FLING_DELETE_TO_TRASH = 0;
     private static int MODE_FLING_DELETE_ALONG_VECTOR = 1;
 
@@ -307,7 +308,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         private long mPrevTime;
         private boolean mHasOffsetForScale;
 
-        private final TimeInterpolator mAlphaInterpolator = new DecelerateInterpolator(1.5f);
+        private final TimeInterpolator mAlphaInterpolator = new DecelerateInterpolator(0.75f);
 
         public FlingAlongVectorAnimatorUpdateListener(DragLayer dragLayer, PointF vel, Rect from,
                 long startTime) {
@@ -373,7 +374,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
 
         final ViewConfiguration config = ViewConfiguration.get(mLauncher);
         final DragLayer dragLayer = mLauncher.getDragLayer();
-        final int duration = DELETE_ANIMATION_DURATION;
+        final int duration = FLIND_DELETE_ANIMATION_DURATION;
         final long startTime = AnimationUtils.currentAnimationTimeMillis();
 
         // NOTE: Because it takes time for the first frame of animation to actually be
