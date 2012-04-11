@@ -2341,7 +2341,6 @@ public final class Launcher extends Activity
             mStateAnimation = null;
         }
         final Resources res = getResources();
-        final Launcher instance = this;
 
         final int duration = res.getInteger(R.integer.config_appsCustomizeZoomInTime);
         final int fadeDuration = res.getInteger(R.integer.config_appsCustomizeFadeInTime);
@@ -2521,9 +2520,6 @@ public final class Launcher extends Activity
         updateWallpaperVisibility(true);
         showHotseat(animated);
         if (animated) {
-            final float oldScaleX = fromView.getScaleX();
-            final float oldScaleY = fromView.getScaleY();
-
             final LauncherViewPropertyAnimator scaleAnim =
                     new LauncherViewPropertyAnimator(fromView);
             scaleAnim.

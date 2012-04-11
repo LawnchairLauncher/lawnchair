@@ -89,7 +89,6 @@ public class StrokedTextView extends TextView {
     protected void onDraw(Canvas canvas) {
         if (mCache != null) {
             if (mUpdateCachedBitmap) {
-                final int gap = getCompoundDrawablePadding();
                 final int w = getMeasuredWidth();
                 final int h = getMeasuredHeight();
                 final String text = getText().toString();
