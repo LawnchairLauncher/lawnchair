@@ -436,6 +436,8 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
 
     private void setVisibilityOfSiblingsWithLowerZOrder(int visibility) {
         ViewGroup parent = (ViewGroup) getParent();
+        if (parent == null) return;
+
         final int count = parent.getChildCount();
         if (!isChildrenDrawingOrderEnabled()) {
             for (int i = 0; i < count; i++) {
