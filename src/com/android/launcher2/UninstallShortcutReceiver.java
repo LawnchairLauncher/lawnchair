@@ -20,11 +20,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ContentResolver;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.widget.Toast;
 
 import java.net.URISyntaxException;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.android.launcher.R;
 
@@ -36,7 +39,16 @@ public class UninstallShortcutReceiver extends BroadcastReceiver {
         if (!ACTION_UNINSTALL_SHORTCUT.equals(data.getAction())) {
             return;
         }
+        String spKey = LauncherApplication.getSharedPreferencesKey();
+        SharedPreferences sharedPrefs = context.getSharedPreferences(spKey, Context.MODE_PRIVATE);
 
+        LauncherApplication app = (LauncherApplication) context.getApplicationContext();
+        synchronized (app) {
+            removeShortcut(context, data, sharedPrefs);
+        }
+    }
+
+    private void removeShortcut(Context context, Intent data, final SharedPreferences sharedPrefs) {
         Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
         String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
         boolean duplicate = data.getBooleanExtra(Launcher.EXTRA_SHORTCUT_DUPLICATE, true);
@@ -76,6 +88,29 @@ public class UninstallShortcutReceiver extends BroadcastReceiver {
                 cr.notifyChange(LauncherSettings.Favorites.CONTENT_URI, null);
                 Toast.makeText(context, context.getString(R.string.shortcut_uninstalled, name),
                         Toast.LENGTH_SHORT).show();
+            }
+
+            // Remove any items due to be animated
+            boolean appRemoved;
+            Set<String> newApps = new HashSet<String>();
+            newApps = sharedPrefs.getStringSet(InstallShortcutReceiver.NEW_APPS_LIST_KEY, newApps);
+            do {
+                appRemoved = newApps.remove(intent.toUri(0).toString());
+            } while (appRemoved);
+            if (appRemoved) {
+                final Set<String> savedNewApps = newApps;
+                new Thread("setNewAppsThread-remove") {
+                    public void run() {
+                        SharedPreferences.Editor editor = sharedPrefs.edit();
+                        editor.putStringSet(InstallShortcutReceiver.NEW_APPS_LIST_KEY,
+                                savedNewApps);
+                        if (savedNewApps.isEmpty()) {
+                            // Reset the page index if there are no more items
+                            editor.putInt(InstallShortcutReceiver.NEW_APPS_PAGE_KEY, -1);
+                        }
+                        editor.commit();
+                    }
+                }.start();
             }
         }
     }

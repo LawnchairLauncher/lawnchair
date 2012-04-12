@@ -55,10 +55,10 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Debug;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.StrictMode;
 import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.provider.Settings;
@@ -85,7 +85,6 @@ import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.BounceInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Advanceable;
@@ -123,6 +122,7 @@ public final class Launcher extends Activity
 
     static final boolean PROFILE_STARTUP = false;
     static final boolean DEBUG_WIDGETS = false;
+    static final boolean DEBUG_STRICT_MODE = false;
 
     private static final int MENU_GROUP_WALLPAPER = 1;
     private static final int MENU_WALLPAPER_SETTINGS = Menu.FIRST + 1;
@@ -181,6 +181,9 @@ public final class Launcher extends Activity
 
     private static final Object sLock = new Object();
     private static int sScreen = DEFAULT_SCREEN;
+
+    // How long to wait before the new-shortcut animation automatically pans the workspace
+    private static int NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS = 10;
 
     private final BroadcastReceiver mCloseSystemDialogsReceiver
             = new CloseSystemDialogsIntentReceiver();
@@ -289,6 +292,21 @@ public final class Launcher extends Activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (DEBUG_STRICT_MODE) {
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                    .detectDiskReads()
+                    .detectDiskWrites()
+                    .detectNetwork()   // or .detectAll() for all detectable problems
+                    .penaltyLog()
+                    .build());
+            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                    .detectLeakedSqlLiteObjects()
+                    .detectLeakedClosableObjects()
+                    .penaltyLog()
+                    .penaltyDeath()
+                    .build());
+        }
+
         super.onCreate(savedInstanceState);
         LauncherApplication app = ((LauncherApplication)getApplication());
         mSharedPrefs = getSharedPreferences(LauncherApplication.getSharedPreferencesKey(),
@@ -635,6 +653,7 @@ public final class Launcher extends Activity
         super.onPause();
         mPaused = true;
         mDragController.cancelDrag();
+        mDragController.resetLastGestureUpTime();
     }
 
     @Override
@@ -3254,27 +3273,46 @@ public final class Launcher extends Activity
             Runnable newAppsRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    runNewAppsAnimation();
+                    runNewAppsAnimation(false);
                 }
             };
-            if (mNewShortcutAnimatePage > -1 &&
-                    mNewShortcutAnimatePage != mWorkspace.getCurrentPage()) {
-                mWorkspace.snapToPage(mNewShortcutAnimatePage, newAppsRunnable);
+
+            boolean willSnapPage = mNewShortcutAnimatePage > -1 &&
+                    mNewShortcutAnimatePage != mWorkspace.getCurrentPage();
+            if (canRunNewAppsAnimation()) {
+                // If the user has not interacted recently, then either snap to the new page to show
+                // the new-apps animation or just run them if they are to appear on the current page
+                if (willSnapPage) {
+                    mWorkspace.snapToPage(mNewShortcutAnimatePage, newAppsRunnable);
+                } else {
+                    runNewAppsAnimation(false);
+                }
             } else {
-                newAppsRunnable.run();
+                // If the user has interacted recently, then run the animations immediately if they
+                // are on another page (or just normally if they are added to the current page)
+                runNewAppsAnimation(willSnapPage);
             }
         }
 
         mWorkspaceLoading = false;
     }
 
+    private boolean canRunNewAppsAnimation() {
+        long diff = System.currentTimeMillis() - mDragController.getLastGestureUpTime();
+        return diff > (NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS * 1000);
+    }
+
     /**
      * Runs a new animation that scales up icons that were added while Launcher was in the
      * background.
+     *
+     * @param immediate whether to run the animation or show the results immediately
      */
-    private void runNewAppsAnimation() {
+    private void runNewAppsAnimation(boolean immediate) {
         AnimatorSet anim = new AnimatorSet();
         Collection<Animator> bounceAnims = new ArrayList<Animator>();
+
+        // Order these new views spatially so that they animate in order
         Collections.sort(mNewShortcutAnimateViews, new Comparator<View>() {
             @Override
             public int compare(View a, View b) {
@@ -3284,25 +3322,35 @@ public final class Launcher extends Activity
                 return (alp.cellY * cellCountX + alp.cellX) - (blp.cellY * cellCountX + blp.cellX);
             }
         });
-        for (int i = 0; i < mNewShortcutAnimateViews.size(); ++i) {
-            View v = mNewShortcutAnimateViews.get(i);
-            ValueAnimator bounceAnim = ObjectAnimator.ofPropertyValuesHolder(v,
-                    PropertyValuesHolder.ofFloat("alpha", 1f),
-                    PropertyValuesHolder.ofFloat("scaleX", 1f),
-                    PropertyValuesHolder.ofFloat("scaleY", 1f));
-            bounceAnim.setDuration(InstallShortcutReceiver.NEW_SHORTCUT_BOUNCE_DURATION);
-            bounceAnim.setStartDelay(i * InstallShortcutReceiver.NEW_SHORTCUT_STAGGER_DELAY);
-            bounceAnim.setInterpolator(new SmoothPagedView.OvershootInterpolator());
-            bounceAnims.add(bounceAnim);
-        }
-        anim.playTogether(bounceAnims);
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mWorkspace.postDelayed(mBuildLayersRunnable, 500);
+
+        // Animate each of the views in place (or show them immediately if requested)
+        if (immediate) {
+            for (View v : mNewShortcutAnimateViews) {
+                v.setAlpha(1f);
+                v.setScaleX(1f);
+                v.setScaleY(1f);
             }
-        });
-        anim.start();
+        } else {
+            for (int i = 0; i < mNewShortcutAnimateViews.size(); ++i) {
+                View v = mNewShortcutAnimateViews.get(i);
+                ValueAnimator bounceAnim = ObjectAnimator.ofPropertyValuesHolder(v,
+                        PropertyValuesHolder.ofFloat("alpha", 1f),
+                        PropertyValuesHolder.ofFloat("scaleX", 1f),
+                        PropertyValuesHolder.ofFloat("scaleY", 1f));
+                bounceAnim.setDuration(InstallShortcutReceiver.NEW_SHORTCUT_BOUNCE_DURATION);
+                bounceAnim.setStartDelay(i * InstallShortcutReceiver.NEW_SHORTCUT_STAGGER_DELAY);
+                bounceAnim.setInterpolator(new SmoothPagedView.OvershootInterpolator());
+                bounceAnims.add(bounceAnim);
+            }
+            anim.playTogether(bounceAnims);
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mWorkspace.postDelayed(mBuildLayersRunnable, 500);
+                }
+            });
+            anim.start();
+        }
 
         // Clean up
         mNewShortcutAnimatePage = -1;

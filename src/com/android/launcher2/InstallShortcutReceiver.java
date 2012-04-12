@@ -56,7 +56,6 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         String spKey = LauncherApplication.getSharedPreferencesKey();
         SharedPreferences sp = context.getSharedPreferences(spKey, Context.MODE_PRIVATE);
 
-        final int screen = Launcher.getScreen();
         final Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
         if (intent == null) {
             return;
@@ -74,17 +73,23 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             }
         }
 
-        final ArrayList<ItemInfo> items = LauncherModel.getItemsInLocalCoordinates(context);
-        final boolean exists = LauncherModel.shortcutExists(context, name, intent);
+        // Lock on the app so that we don't try and get the items while apps are being added
+        LauncherApplication app = (LauncherApplication) context.getApplicationContext();
         final int[] result = {INSTALL_SHORTCUT_SUCCESSFUL};
-
-        // Try adding the target to the workspace screens incrementally, starting at the current
-        // screen and alternating between +1, -1, +2, -2, etc. (using ~ ceil(i/2f)*(-1)^(i-1))
         boolean found = false;
-        for (int i = 0; i < (2 * Launcher.SCREEN_COUNT) + 1 && !found; ++i) {
-            int si = screen + (int) ((i / 2f) + 0.5f) * ((i % 2 == 1) ? 1 : -1);
-            if (0 <= si && si < Launcher.SCREEN_COUNT) {
-                found = installShortcut(context, data, items, name, intent, si, exists, sp, result);
+        synchronized (app) {
+            final ArrayList<ItemInfo> items = LauncherModel.getItemsInLocalCoordinates(context);
+            final boolean exists = LauncherModel.shortcutExists(context, name, intent);
+
+            // Try adding to the workspace screens incrementally, starting at the default or center
+            // screen and alternating between +1, -1, +2, -2, etc. (using ~ ceil(i/2f)*(-1)^(i-1))
+            final int screen = Launcher.DEFAULT_SCREEN;
+            for (int i = 0; i < (2 * Launcher.SCREEN_COUNT) + 1 && !found; ++i) {
+                int si = screen + (int) ((i / 2f) + 0.5f) * ((i % 2 == 1) ? 1 : -1);
+                if (0 <= si && si < Launcher.SCREEN_COUNT) {
+                    found = installShortcut(context, data, items, name, intent, si, exists, sp,
+                            result);
+                }
             }
         }
 
@@ -102,8 +107,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     }
 
     private boolean installShortcut(Context context, Intent data, ArrayList<ItemInfo> items,
-            String name, Intent intent, int screen, boolean shortcutExists,
-            SharedPreferences sharedPrefs, int[] result) {
+            String name, Intent intent, final int screen, boolean shortcutExists,
+            final SharedPreferences sharedPrefs, int[] result) {
         if (findEmptyCell(context, items, mCoordinates, screen)) {
             if (intent != null) {
                 if (intent.getAction() == null) {
@@ -122,10 +127,15 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                         newApps = sharedPrefs.getStringSet(NEW_APPS_LIST_KEY, newApps);
                     }
                     newApps.add(intent.toUri(0).toString());
-                    sharedPrefs.edit()
-                               .putInt(NEW_APPS_PAGE_KEY, screen)
-                               .putStringSet(NEW_APPS_LIST_KEY, newApps)
-                               .commit();
+                    final Set<String> savedNewApps = newApps;
+                    new Thread("setNewAppsThread") {
+                        public void run() {
+                            sharedPrefs.edit()
+                                       .putInt(NEW_APPS_PAGE_KEY, screen)
+                                       .putStringSet(NEW_APPS_LIST_KEY, savedNewApps)
+                                       .commit();
+                        }
+                    }.start();
 
                     // Update the Launcher db
                     LauncherApplication app = (LauncherApplication) context.getApplicationContext();

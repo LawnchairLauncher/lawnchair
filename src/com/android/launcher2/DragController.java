@@ -440,6 +440,19 @@ public class DragController {
         return mTmpPoint;
     }
 
+    private long mLastTouchUpTime = -1;
+    long getLastGestureUpTime() {
+        if (mDragging) {
+            return System.currentTimeMillis();
+        } else {
+            return mLastTouchUpTime;
+        }
+    }
+
+    void resetLastGestureUpTime() {
+        mLastTouchUpTime = -1;
+    }
+
     /**
      * Call this from a drag source view.
      */
@@ -467,6 +480,7 @@ public class DragController {
                 mLastDropTarget = null;
                 break;
             case MotionEvent.ACTION_UP:
+                mLastTouchUpTime = System.currentTimeMillis();
                 if (mDragging) {
                     PointF vec = isFlingingToDelete(mDragObject.dragSource);
                     if (vec != null) {
