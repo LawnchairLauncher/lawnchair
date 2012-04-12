@@ -111,6 +111,7 @@ public class DragController {
     private InputMethodManager mInputMethodManager;
 
     private int mLastTouch[] = new int[2];
+    private long mLastTouchUpTime = -1;
     private int mDistanceSinceScroll = 0;
 
     private int mTmpPoint[] = new int[2];
@@ -440,7 +441,6 @@ public class DragController {
         return mTmpPoint;
     }
 
-    private long mLastTouchUpTime = -1;
     long getLastGestureUpTime() {
         if (mDragging) {
             return System.currentTimeMillis();

@@ -3288,7 +3288,7 @@ public final class Launcher extends Activity
                     runNewAppsAnimation(false);
                 }
             } else {
-                // If the user has interacted recently, then run the animations immediately if they
+                // If the user has interacted recently, then just add the items in place if they
                 // are on another page (or just normally if they are added to the current page)
                 runNewAppsAnimation(willSnapPage);
             }
