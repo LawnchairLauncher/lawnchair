@@ -3402,8 +3402,8 @@ public class Workspace extends SmoothPagedView
             ItemInfo info = (ItemInfo) v.getTag();
             // Null check required as the AllApps button doesn't have an item info
             if (info != null) {
-                LauncherModel.moveItemInDatabase(mLauncher, info, container, screen, info.cellX,
-                        info.cellY);
+                LauncherModel.modifyItemInDatabase(mLauncher, info, container, screen, info.cellX,
+                        info.cellY, info.spanX, info.spanY);
             }
         }
     }

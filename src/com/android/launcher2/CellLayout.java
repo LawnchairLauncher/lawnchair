@@ -2083,6 +2083,8 @@ public class CellLayout extends ViewGroup {
             if (info != null) {
                 info.cellX = lp.cellX = lp.tmpCellX;
                 info.cellY = lp.cellY = lp.tmpCellY;
+                info.spanX = lp.cellHSpan;
+                info.spanY = lp.cellVSpan;
             }
         }
         mLauncher.getWorkspace().updateItemLocationsInDatabase(this);
@@ -2214,6 +2216,37 @@ public class CellLayout extends ViewGroup {
         setItemPlacementDirty(false);
     }
 
+    boolean createAreaForResize(int cellX, int cellY, int spanX, int spanY,
+            View dragView, int[] direction, boolean commit) {
+        int[] pixelXY = new int[2];
+        regionToCenterPoint(cellX, cellY, spanX, spanY, pixelXY);
+
+        // First we determine if things have moved enough to cause a different layout
+        ItemConfiguration swapSolution = simpleSwap(pixelXY[0], pixelXY[1], spanX, spanY,
+                 spanX,  spanY, direction, dragView,  true,  new ItemConfiguration());
+
+        setUseTempCoords(true);
+        if (swapSolution != null && swapSolution.isSolution) {
+            // If we're just testing for a possible location (MODE_ACCEPT_DROP), we don't bother
+            // committing anything or animating anything as we just want to determine if a solution
+            // exists
+            copySolutionToTempState(swapSolution, dragView);
+            setItemPlacementDirty(true);
+            animateItemsToSolution(swapSolution, dragView, commit);
+
+            if (commit) {
+                commitTempPlacement();
+                completeAndClearReorderHintAnimations();
+                setItemPlacementDirty(false);
+            } else {
+                beginOrAdjustHintAnimations(swapSolution, dragView,
+                        REORDER_ANIMATION_DURATION);
+            }
+            mShortcutsAndWidgets.requestLayout();
+        }
+        return swapSolution.isSolution;
+    }
+
     int[] createArea(int pixelX, int pixelY, int minSpanX, int minSpanY, int spanX, int spanY,
             View dragView, int[] result, int resultSpan[], int mode) {
         // First we determine if things have moved enough to cause a different layout
@@ -2235,7 +2268,6 @@ public class CellLayout extends ViewGroup {
                 mPreviousReorderDirection[0] = INVALID_DIRECTION;
                 mPreviousReorderDirection[1] = INVALID_DIRECTION;
             }
-            
         } else {
             getDirectionVectorForDrop(pixelX, pixelY, spanX, spanY, dragView, mDirectionVector);
             mPreviousReorderDirection[0] = mDirectionVector[0];
@@ -2691,56 +2723,6 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
             for (int y = 0; y < mCountY; y++) {
                 mOccupied[x][y] = false;
             }
-        }
-    }
-
-    /**
-     * Given a view, determines how much that view can be expanded in all directions, in terms of
-     * whether or not there are other items occupying adjacent cells. Used by the
-     * AppWidgetResizeFrame to determine how the widget can be resized.
-     */
-    public void getExpandabilityArrayForView(View view, int[] expandability) {
-        final LayoutParams lp = (LayoutParams) view.getLayoutParams();
-        boolean flag;
-
-        expandability[AppWidgetResizeFrame.LEFT] = 0;
-        for (int x = lp.cellX - 1; x >= 0; x--) {
-            flag = false;
-            for (int y = lp.cellY; y < lp.cellY + lp.cellVSpan; y++) {
-                if (mOccupied[x][y]) flag = true;
-            }
-            if (flag) break;
-            expandability[AppWidgetResizeFrame.LEFT]++;
-        }
-
-        expandability[AppWidgetResizeFrame.TOP] = 0;
-        for (int y = lp.cellY - 1; y >= 0; y--) {
-            flag = false;
-            for (int x = lp.cellX; x < lp.cellX + lp.cellHSpan; x++) {
-                if (mOccupied[x][y]) flag = true;
-            }
-            if (flag) break;
-            expandability[AppWidgetResizeFrame.TOP]++;
-        }
-
-        expandability[AppWidgetResizeFrame.RIGHT] = 0;
-        for (int x = lp.cellX + lp.cellHSpan; x < mCountX; x++) {
-            flag = false;
-            for (int y = lp.cellY; y < lp.cellY + lp.cellVSpan; y++) {
-                if (mOccupied[x][y]) flag = true;
-            }
-            if (flag) break;
-            expandability[AppWidgetResizeFrame.RIGHT]++;
-        }
-
-        expandability[AppWidgetResizeFrame.BOTTOM] = 0;
-        for (int y = lp.cellY + lp.cellVSpan; y < mCountY; y++) {
-            flag = false;
-            for (int x = lp.cellX; x < lp.cellX + lp.cellHSpan; x++) {
-                if (mOccupied[x][y]) flag = true;
-            }
-            if (flag) break;
-            expandability[AppWidgetResizeFrame.BOTTOM]++;
         }
     }
 
