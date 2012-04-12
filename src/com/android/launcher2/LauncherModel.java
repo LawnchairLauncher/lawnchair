@@ -248,6 +248,7 @@ public class LauncherModel extends BroadcastReceiver {
             sWorker.post(r);
         }
     }
+
     /**
      * Move an item in the DB to a new <container, screen, cellX, cellY>
      */
@@ -276,24 +277,35 @@ public class LauncherModel extends BroadcastReceiver {
     }
 
     /**
-     * Resize an item in the DB to a new <spanX, spanY, cellX, cellY>
+     * Move and/or resize item in the DB to a new <container, screen, cellX, cellY, spanX, spanY>
      */
-    static void resizeItemInDatabase(Context context, final ItemInfo item, final int cellX,
-            final int cellY, final int spanX, final int spanY) {
-        item.spanX = spanX;
-        item.spanY = spanY;
+    static void modifyItemInDatabase(Context context, final ItemInfo item, final long container,
+            final int screen, final int cellX, final int cellY, final int spanX, final int spanY) {
+        item.container = container;
         item.cellX = cellX;
         item.cellY = cellY;
+        item.spanX = spanX;
+        item.spanY = spanY;
+
+        // We store hotseat items in canonical form which is this orientation invariant position
+        // in the hotseat
+        if (context instanceof Launcher && screen < 0 &&
+                container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            item.screen = ((Launcher) context).getHotseat().getOrderInHotseat(cellX, cellY);
+        } else {
+            item.screen = screen;
+        }
 
         final ContentValues values = new ContentValues();
         values.put(LauncherSettings.Favorites.CONTAINER, item.container);
-        values.put(LauncherSettings.Favorites.SPANX, spanX);
-        values.put(LauncherSettings.Favorites.SPANY, spanY);
-        values.put(LauncherSettings.Favorites.CELLX, cellX);
-        values.put(LauncherSettings.Favorites.CELLY, cellY);
-        updateItemInDatabaseHelper(context, values, item, "resizeItemInDatabase");
-    }
+        values.put(LauncherSettings.Favorites.CELLX, item.cellX);
+        values.put(LauncherSettings.Favorites.CELLY, item.cellY);
+        values.put(LauncherSettings.Favorites.SPANX, item.spanX);
+        values.put(LauncherSettings.Favorites.SPANY, item.spanY);
+        values.put(LauncherSettings.Favorites.SCREEN, item.screen);
 
+        updateItemInDatabaseHelper(context, values, item, "moveItemInDatabase");
+    }
 
     /**
      * Update an item to the database in a specified container.

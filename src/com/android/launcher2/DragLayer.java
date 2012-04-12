@@ -242,7 +242,8 @@ public class DragLayer extends FrameLayout {
                     break;
                 case MotionEvent.ACTION_CANCEL:
                 case MotionEvent.ACTION_UP:
-                    mCurrentResizeFrame.commitResizeForDelta(x - mXDown, y - mYDown);
+                    mCurrentResizeFrame.visualizeResizeForDelta(x - mXDown, y - mYDown);
+                    mCurrentResizeFrame.onTouchUp();
                     mCurrentResizeFrame = null;
             }
         }
@@ -383,6 +384,7 @@ public class DragLayer extends FrameLayout {
     public void clearAllResizeFrames() {
         if (mResizeFrames.size() > 0) {
             for (AppWidgetResizeFrame frame: mResizeFrames) {
+                frame.commitResize();
                 removeView(frame);
             }
             mResizeFrames.clear();
