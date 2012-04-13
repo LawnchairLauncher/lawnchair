@@ -24,8 +24,6 @@ import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.launcher2.CellLayout.LayoutParams;
-
 public class ShortcutAndWidgetContainer extends ViewGroup {
     static final String TAG = "CellLayoutChildren";
 
@@ -73,8 +71,10 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        // Debug drawing for hit space
-        if (false) {
+        @SuppressWarnings("all") // suppress dead code warning
+        final boolean debug = false;
+        if (debug) {
+            // Debug drawing for hit space
             Paint p = new Paint();
             p.setColor(0x6600FF00);
             for (int i = getChildCount() - 1; i >= 0; i--) {

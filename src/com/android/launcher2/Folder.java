@@ -44,7 +44,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.launcher.R;
-import com.android.launcher2.DropTarget.DragObject;
 import com.android.launcher2.FolderInfo.FolderListener;
 
 import java.util.ArrayList;
@@ -56,6 +55,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         View.OnLongClickListener, DropTarget, FolderListener, TextView.OnEditorActionListener,
         View.OnFocusChangeListener {
 
+    @SuppressWarnings("unused")
     private static final String TAG = "Launcher.Folder";
 
     protected DragController mDragController;

@@ -332,7 +332,7 @@ public class RocketLauncher extends BasicDream {
         protected void onAttachedToWindow() {
             super.onAttachedToWindow();
             setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            setSystemUiVisibility(View.STATUS_BAR_HIDDEN);
+            setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
 
             reset();
             mAnim.start();

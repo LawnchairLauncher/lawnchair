@@ -1035,9 +1035,9 @@ public class LauncherModel extends BroadcastReceiver {
                         (LauncherSettings.Favorites.SPANX);
                 final int spanYIndex = c.getColumnIndexOrThrow(
                         LauncherSettings.Favorites.SPANY);
-                final int uriIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.URI);
-                final int displayModeIndex = c.getColumnIndexOrThrow(
-                        LauncherSettings.Favorites.DISPLAY_MODE);
+                //final int uriIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.URI);
+                //final int displayModeIndex = c.getColumnIndexOrThrow(
+                //        LauncherSettings.Favorites.DISPLAY_MODE);
 
                 ShortcutInfo info;
                 String intentDescription;
@@ -1825,7 +1825,9 @@ public class LauncherModel extends BroadcastReceiver {
     }
 
     Bitmap getIconFromCursor(Cursor c, int iconIndex, Context context) {
-        if (false) {
+        @SuppressWarnings("all") // suppress dead code warning
+        final boolean debug = false;
+        if (debug) {
             Log.d(TAG, "getIconFromCursor app="
                     + c.getString(c.getColumnIndexOrThrow(LauncherSettings.Favorites.TITLE)));
         }

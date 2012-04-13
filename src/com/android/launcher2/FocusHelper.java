@@ -626,7 +626,6 @@ public class FocusHelper {
             int lineDelta) {
         final ArrayList<View> views = getCellLayoutChildrenSortedSpatially(layout, parent);
         final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) v.getLayoutParams();
-        final int cellCountX = layout.getCountX();
         final int cellCountY = layout.getCountY();
         final int row = lp.cellY;
         final int newRow = row + lineDelta;

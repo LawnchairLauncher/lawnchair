@@ -28,6 +28,7 @@ import android.widget.FrameLayout;
 import com.android.launcher.R;
 
 public class Hotseat extends FrameLayout {
+    @SuppressWarnings("unused")
     private static final String TAG = "Hotseat";
 
     private Launcher mLauncher;

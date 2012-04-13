@@ -40,7 +40,6 @@ import java.util.ArrayList;
  * Class for initiating a drag within a view or across multiple views.
  */
 public class DragController {
-    @SuppressWarnings({"UnusedDeclaration"})
     private static final String TAG = "Launcher.DragController";
 
     /** Indicates the drag is a move.  */
@@ -347,7 +346,6 @@ public class DragController {
      *              || super.dispatchKeyEvent(event);
      * </pre>
      */
-    @SuppressWarnings({"UnusedDeclaration"})
     public boolean dispatchKeyEvent(KeyEvent event) {
         return mDragging;
     }
@@ -457,7 +455,9 @@ public class DragController {
      * Call this from a drag source view.
      */
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (false) {
+        @SuppressWarnings("all") // suppress dead code warning
+        final boolean debug = false;
+        if (debug) {
             Log.d(Launcher.TAG, "DragController.onInterceptTouchEvent " + ev + " mDragging="
                     + mDragging);
         }

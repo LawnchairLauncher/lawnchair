@@ -1214,8 +1214,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
                 // Determine the widget spans and min resize spans.
                 int[] spanXY = mLauncher.getSpanForWidget(info);
-                int[] size = mLauncher.getWorkspace().estimateItemSize(spanXY[0],
-                        spanXY[1], createItemInfo, true);
                 createItemInfo.spanX = spanXY[0];
                 createItemInfo.spanY = spanXY[1];
                 int[] minSpanXY = mLauncher.getMinSpanForWidget(info);

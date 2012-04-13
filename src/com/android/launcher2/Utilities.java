@@ -41,6 +41,7 @@ import com.android.launcher.R;
  * Various utilities shared amongst the Launcher's classes.
  */
 final class Utilities {
+    @SuppressWarnings("unused")
     private static final String TAG = "Launcher.Utilities";
 
     private static int sIconWidth = -1;
@@ -83,7 +84,8 @@ final class Utilities {
             return icon;
         } else {
             // Icon is too small, render to a larger bitmap
-            return createIconBitmap(new BitmapDrawable(icon), context);
+            final Resources resources = context.getResources();
+            return createIconBitmap(new BitmapDrawable(resources, icon), context);
         }
     }
 
@@ -142,7 +144,9 @@ final class Utilities {
             final int left = (textureWidth-width) / 2;
             final int top = (textureHeight-height) / 2;
 
-            if (false) {
+            @SuppressWarnings("all") // suppress dead code warning
+            final boolean debug = false;
+            if (debug) {
                 // draw a big box for the icon for debugging
                 canvas.drawColor(sColors[sColorIndex]);
                 if (++sColorIndex >= sColors.length) sColorIndex = 0;
@@ -205,7 +209,8 @@ final class Utilities {
             if (bitmap.getWidth() == sIconWidth && bitmap.getHeight() == sIconHeight) {
                 return bitmap;
             } else {
-                return createIconBitmap(new BitmapDrawable(bitmap), context);
+                final Resources resources = context.getResources();
+                return createIconBitmap(new BitmapDrawable(resources, bitmap), context);
             }
         }
     }

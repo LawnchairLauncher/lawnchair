@@ -16,8 +16,6 @@ import android.widget.ImageView;
 import com.android.launcher.R;
 
 public class AppWidgetResizeFrame extends FrameLayout {
-
-    private ItemInfo mItemInfo;
     private LauncherAppWidgetHostView mWidgetView;
     private CellLayout mCellLayout;
     private DragLayer mDragLayer;
@@ -69,12 +67,11 @@ public class AppWidgetResizeFrame extends FrameLayout {
 
     private Launcher mLauncher;
 
-    public AppWidgetResizeFrame(Context context, ItemInfo itemInfo, 
+    public AppWidgetResizeFrame(Context context,
             LauncherAppWidgetHostView widgetView, CellLayout cellLayout, DragLayer dragLayer) {
 
         super(context);
         mLauncher = (Launcher) context;
-        mItemInfo = itemInfo;
         mCellLayout = cellLayout;
         mWidgetView = widgetView;
         mResizeMode = widgetView.getAppWidgetInfo().resizeMode;

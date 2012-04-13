@@ -25,7 +25,6 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.os.Handler;
-import android.view.MotionEvent;
 
 import com.android.launcher.R;
 

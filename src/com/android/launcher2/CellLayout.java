@@ -268,7 +268,9 @@ public class CellLayout extends ViewGroup {
                     // If an animation is started and then stopped very quickly, we can still
                     // get spurious updates we've cleared the tag. Guard against this.
                     if (outline == null) {
-                        if (false) {
+                        @SuppressWarnings("all") // suppress dead code warning
+                        final boolean debug = false;
+                        if (debug) {
                             Object val = animation.getAnimatedValue();
                             Log.d(TAG, "anim " + thisIndex + " update: " + val +
                                      ", isStopped " + anim.isStopped());

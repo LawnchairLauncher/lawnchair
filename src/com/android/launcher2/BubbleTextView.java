@@ -20,8 +20,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.Region.Op;
@@ -29,8 +27,6 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.TextView;
-
-import com.android.launcher.R;
 
 /**
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
@@ -85,7 +81,6 @@ public class BubbleTextView extends TextView {
         mBackground = getBackground();
 
         final Resources res = getContext().getResources();
-        int bubbleColor = res.getColor(R.color.bubble_dark_background);
         mFocusedOutlineColor = mFocusedGlowColor = mPressedOutlineColor = mPressedGlowColor =
             res.getColor(android.R.color.holo_blue_light);
 

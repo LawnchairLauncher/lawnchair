@@ -119,8 +119,9 @@ public class FolderIcon extends LinearLayout implements FolderListener {
 
     static FolderIcon fromXml(int resId, Launcher launcher, ViewGroup group,
             FolderInfo folderInfo, IconCache iconCache) {
-
-        if (INITIAL_ITEM_ANIMATION_DURATION >= DROP_IN_ANIMATION_DURATION) {
+        @SuppressWarnings("all") // suppress dead code warning
+        final boolean error = INITIAL_ITEM_ANIMATION_DURATION >= DROP_IN_ANIMATION_DURATION;
+        if (error) {
             throw new IllegalStateException("DROP_IN_ANIMATION_DURATION must be greater than " +
                     "INITIAL_ITEM_ANIMATION_DURATION, as sequencing of adding first two items " +
                     "is dependent on this");

@@ -1528,7 +1528,6 @@ public final class Launcher extends Activity
 
     void addAppWidgetImpl(final int appWidgetId, final PendingAddWidgetInfo info) {
         final AppWidgetProviderInfo appWidget = info.info;
-        Runnable configurationActivity = null;
         if (appWidget.configure != null) {
             // Launch over to configure widget, if needed
             Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
@@ -2155,14 +2154,6 @@ public final class Launcher extends Activity
         showDialog(DIALOG_RENAME_FOLDER);
     }
 
-    private void showAddDialog() {
-        resetAddInfo();
-        mPendingAddInfo.container = LauncherSettings.Favorites.CONTAINER_DESKTOP;
-        mPendingAddInfo.screen = mWorkspace.getCurrentPage();
-        mWaitingForResult = true;
-        showDialog(DIALOG_CREATE_SHORTCUT);
-    }
-
     private class RenameFolder {
         private EditText mInput;
 
@@ -2470,7 +2461,7 @@ public final class Launcher extends Activity
                                 }
                             }
                         });
-                        observer.removeGlobalOnLayoutListener(this);
+                        observer.removeOnGlobalLayoutListener(this);
                     }
                 };
                 observer.addOnGlobalLayoutListener(delayedStart);

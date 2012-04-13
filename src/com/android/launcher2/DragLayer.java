@@ -23,9 +23,6 @@ import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -34,7 +31,6 @@ import android.view.View;
 import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
-import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
@@ -402,7 +398,7 @@ public class DragLayer extends FrameLayout {
     public void addResizeFrame(ItemInfo itemInfo, LauncherAppWidgetHostView widget,
             CellLayout cellLayout) {
         AppWidgetResizeFrame resizeFrame = new AppWidgetResizeFrame(getContext(),
-                itemInfo, widget, cellLayout, this);
+                widget, cellLayout, this);
 
         LayoutParams lp = new LayoutParams(-1, -1);
         lp.customPosition = true;

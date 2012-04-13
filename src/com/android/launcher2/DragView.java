@@ -167,8 +167,9 @@ public class DragView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (false) {
-            // for debugging
+        @SuppressWarnings("all") // suppress dead code warning
+        final boolean debug = false;
+        if (debug) {
             Paint p = new Paint();
             p.setStyle(Paint.Style.FILL);
             p.setColor(0x66ffffff);

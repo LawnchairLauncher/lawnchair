@@ -24,6 +24,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 
 public class WallpaperChooser extends Activity {
+    @SuppressWarnings("unused")
     private static final String TAG = "Launcher.WallpaperChooser";
 
     @Override

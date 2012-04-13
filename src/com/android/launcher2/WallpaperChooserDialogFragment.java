@@ -137,7 +137,7 @@ public class WallpaperChooserDialogFragment extends DialogFragment implements
          */
         if (mEmbedded) {
             View view = inflater.inflate(R.layout.wallpaper_chooser, container, false);
-            view.setBackgroundDrawable(mWallpaperDrawable);
+            view.setBackground(mWallpaperDrawable);
 
             final Gallery gallery = (Gallery) view.findViewById(R.id.gallery);
             gallery.setCallbackDuringFling(false);

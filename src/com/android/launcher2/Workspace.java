@@ -26,7 +26,6 @@ import android.app.WallpaperManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
-import android.content.ClipDescription;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -35,40 +34,32 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Camera;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.Region.Op;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.Pair;
 import android.view.Display;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.launcher.R;
-import com.android.launcher2.DropTarget.DragObject;
 import com.android.launcher2.FolderIcon.FolderRingAnimator;
-import com.android.launcher2.InstallWidgetReceiver.WidgetMimeTypeHandlerData;
 import com.android.launcher2.LauncherSettings.Favorites;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -78,7 +69,6 @@ import java.util.List;
 public class Workspace extends SmoothPagedView
         implements DropTarget, DragSource, DragScroller, View.OnTouchListener,
         DragController.DragListener, LauncherTransitionable {
-    @SuppressWarnings({"UnusedDeclaration"})
     private static final String TAG = "Launcher.Workspace";
 
     // Y rotation to apply to the workspace screens
@@ -143,8 +133,6 @@ public class Workspace extends SmoothPagedView
      * The CellLayout which will be dropped to
      */
     private CellLayout mDropToLayout = null;
-
-    private boolean mDragHasEnteredWorkspace = false;
 
     private Launcher mLauncher;
     private IconCache mIconCache;
@@ -2408,7 +2396,6 @@ public class Workspace extends SmoothPagedView
 
     public void onDragEnter(DragObject d) {
         mDragEnforcer.onDragEnter();
-        mDragHasEnteredWorkspace = true;
         mCreateUserFolderOnDrop = false;
         mAddToExistingFolderOnDrop = false;
 
@@ -2426,7 +2413,6 @@ public class Workspace extends SmoothPagedView
 
     public void onDragExit(DragObject d) {
         mDragEnforcer.onDragExit();
-        mDragHasEnteredWorkspace = false;
 
         // Here we store the final page that will be dropped to, if the workspace in fact
         // receives the drop
@@ -2533,30 +2519,6 @@ public class Workspace extends SmoothPagedView
     }
 
     public DropTarget getDropTargetDelegate(DragObject d) {
-        return null;
-    }
-
-    /**
-     * Tests to see if the drop will be accepted by Launcher, and if so, includes additional data
-     * in the returned structure related to the widgets that match the drop (or a null list if it is
-     * a shortcut drop).  If the drop is not accepted then a null structure is returned.
-     */
-    private Pair<Integer, List<WidgetMimeTypeHandlerData>> validateDrag(DragEvent event) {
-        final LauncherModel model = mLauncher.getModel();
-        final ClipDescription desc = event.getClipDescription();
-        final int mimeTypeCount = desc.getMimeTypeCount();
-        for (int i = 0; i < mimeTypeCount; ++i) {
-            final String mimeType = desc.getMimeType(i);
-            if (mimeType.equals(InstallShortcutReceiver.SHORTCUT_MIMETYPE)) {
-                return new Pair<Integer, List<WidgetMimeTypeHandlerData>>(i, null);
-            } else {
-                final List<WidgetMimeTypeHandlerData> widgets =
-                    model.resolveWidgetsForMimeType(mContext, mimeType);
-                if (widgets.size() > 0) {
-                    return new Pair<Integer, List<WidgetMimeTypeHandlerData>>(i, widgets);
-                }
-            }
-        }
         return null;
     }
 
