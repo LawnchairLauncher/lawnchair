@@ -33,7 +33,7 @@
     <string name="external_drop_widget_pick_title" msgid="7040647073452295370">"Pilih widget untuk membuat"</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nama folder"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Ganti nama folder"</string>
-    <string name="rename_action" msgid="6016003384693240896">"OK"</string>
+    <string name="rename_action" msgid="6016003384693240896">"Oke"</string>
     <string name="cancel_action" msgid="3811860427489435048">"Batal"</string>
     <string name="menu_item_add_item" msgid="6233177331075781114">"Tambahkan ke Layar Utama"</string>
     <string name="group_applications" msgid="2103752818818161976">"Apl"</string>
@@ -97,7 +97,7 @@
     <string name="folder_cling_title" msgid="4308949882377840953">"Atur apl Anda dengan folder"</string>
     <string name="folder_cling_move_item" msgid="270598675060435169">"Untuk memindahkan apl, sentuh &amp; tahan apl tersebut."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Untuk membuat folder baru di layar Utama Anda, tumpuk satu apl di atas apl yang lain."</string>
-    <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
+    <string name="cling_dismiss" msgid="2780907108735868381">"Oke"</string>
     <string name="folder_opened" msgid="1262064100943801533">"Folder dibuka, <xliff:g id="WIDTH">%1$d</xliff:g> kali <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1335478160661137579">"Sentuh untuk menutup folder"</string>
     <string name="folder_tap_to_rename" msgid="5201612989905472442">"Sentuh untuk menyimpan pengubahan nama"</string>
