@@ -26,8 +26,6 @@ import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.SearchManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
@@ -40,7 +38,6 @@ import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -65,7 +62,6 @@ import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
-import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.Log;
 import android.view.Display;
@@ -88,7 +84,6 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Advanceable;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -141,9 +136,6 @@ public final class Launcher extends Activity
 
     static final int SCREEN_COUNT = 5;
     static final int DEFAULT_SCREEN = 2;
-
-    static final int DIALOG_CREATE_SHORTCUT = 1;
-    static final int DIALOG_RENAME_FOLDER = 2;
 
     private static final String PREFERENCES = "launcher.preferences";
     static final String FORCE_ENABLE_ROTATION_PROPERTY = "launcher.force_enable_rotation";
@@ -1260,23 +1252,6 @@ public final class Launcher extends Activity
     void closeSystemDialogs() {
         getWindow().closeAllPanels();
 
-        /**
-         * We should remove this code when we remove all the dialog code.
-        try {
-            dismissDialog(DIALOG_CREATE_SHORTCUT);
-            // Unlock the workspace if the dialog was showing
-        } catch (Exception e) {
-            // An exception is thrown if the dialog is not visible, which is fine
-        }
-
-        try {
-            dismissDialog(DIALOG_RENAME_FOLDER);
-            // Unlock the workspace if the dialog was showing
-        } catch (Exception e) {
-            // An exception is thrown if the dialog is not visible, which is fine
-        }
-         */
-
         // Whatever we were doing is hereby canceled.
         mWaitingForResult = false;
     }
@@ -2120,122 +2095,6 @@ public final class Launcher extends Activity
         return mWorkspace;
     }
 
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        switch (id) {
-            case DIALOG_CREATE_SHORTCUT:
-                return new CreateShortcut().createDialog();
-            case DIALOG_RENAME_FOLDER:
-                return new RenameFolder().createDialog();
-        }
-
-        return super.onCreateDialog(id);
-    }
-
-    @Override
-    protected void onPrepareDialog(int id, Dialog dialog) {
-        switch (id) {
-            case DIALOG_CREATE_SHORTCUT:
-                break;
-            case DIALOG_RENAME_FOLDER:
-                if (mFolderInfo != null) {
-                    EditText input = (EditText) dialog.findViewById(R.id.folder_name);
-                    final CharSequence text = mFolderInfo.title;
-                    input.setText(text);
-                    input.setSelection(0, text.length());
-                }
-                break;
-        }
-    }
-
-    void showRenameDialog(FolderInfo info) {
-        mFolderInfo = info;
-        mWaitingForResult = true;
-        showDialog(DIALOG_RENAME_FOLDER);
-    }
-
-    private class RenameFolder {
-        private EditText mInput;
-
-        Dialog createDialog() {
-            final View layout = View.inflate(Launcher.this, R.layout.rename_folder, null);
-            mInput = (EditText) layout.findViewById(R.id.folder_name);
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(Launcher.this);
-            builder.setIcon(0);
-            builder.setTitle(getString(R.string.rename_folder_title));
-            builder.setCancelable(true);
-            builder.setOnCancelListener(new Dialog.OnCancelListener() {
-                public void onCancel(DialogInterface dialog) {
-                    cleanup();
-                }
-            });
-            builder.setNegativeButton(getString(R.string.cancel_action),
-                new Dialog.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        cleanup();
-                    }
-                }
-            );
-            builder.setPositiveButton(getString(R.string.rename_action),
-                new Dialog.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        changeFolderName();
-                    }
-                }
-            );
-            builder.setView(layout);
-
-            final AlertDialog dialog = builder.create();
-            dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                public void onShow(DialogInterface dialog) {
-                    mWaitingForResult = true;
-                    mInput.requestFocus();
-                    InputMethodManager inputManager = (InputMethodManager)
-                            getSystemService(Context.INPUT_METHOD_SERVICE);
-                    inputManager.showSoftInput(mInput, 0);
-                }
-            });
-
-            return dialog;
-        }
-
-        private void changeFolderName() {
-            final String name = mInput.getText().toString();
-            if (!TextUtils.isEmpty(name)) {
-                // Make sure we have the right folder info
-                mFolderInfo = sFolders.get(mFolderInfo.id);
-                mFolderInfo.title = name;
-                LauncherModel.updateItemInDatabase(Launcher.this, mFolderInfo);
-
-                if (mWorkspaceLoading) {
-                    lockAllApps();
-                    mModel.startLoader(false);
-                } else {
-                    final FolderIcon folderIcon = (FolderIcon)
-                            mWorkspace.getViewForTag(mFolderInfo);
-                    if (folderIcon != null) {
-                        // TODO: At some point we'll probably want some version of setting
-                        // the text for a folder icon.
-                        //folderIcon.setText(name);
-                        getWorkspace().requestLayout();
-                    } else {
-                        lockAllApps();
-                        mWorkspaceLoading = true;
-                        mModel.startLoader(false);
-                    }
-                }
-            }
-            cleanup();
-        }
-
-        private void cleanup() {
-            dismissDialog(DIALOG_RENAME_FOLDER);
-            mWaitingForResult = false;
-            mFolderInfo = null;
-        }
-    }
-
     // Now a part of LauncherModel.Callbacks. Used to reorder loading steps.
     public boolean isAllAppsVisible() {
         return (mState == State.APPS_CUSTOMIZE);
@@ -2963,83 +2822,6 @@ public final class Launcher extends Activity
     }
 
     /**
-     * Displays the shortcut creation dialog and launches, if necessary, the
-     * appropriate activity.
-     */
-    private class CreateShortcut implements DialogInterface.OnClickListener,
-            DialogInterface.OnCancelListener, DialogInterface.OnDismissListener,
-            DialogInterface.OnShowListener {
-
-        private AddAdapter mAdapter;
-
-        Dialog createDialog() {
-            mAdapter = new AddAdapter(Launcher.this);
-
-            final AlertDialog.Builder builder = new AlertDialog.Builder(Launcher.this, 
-                    AlertDialog.THEME_HOLO_DARK);
-            builder.setAdapter(mAdapter, this);
-
-            AlertDialog dialog = builder.create();
-            dialog.setOnCancelListener(this);
-            dialog.setOnDismissListener(this);
-            dialog.setOnShowListener(this);
-
-            return dialog;
-        }
-
-        public void onCancel(DialogInterface dialog) {
-            mWaitingForResult = false;
-            cleanup();
-        }
-
-        public void onDismiss(DialogInterface dialog) {
-            mWaitingForResult = false;
-            cleanup();
-        }
-
-        private void cleanup() {
-            try {
-                dismissDialog(DIALOG_CREATE_SHORTCUT);
-            } catch (Exception e) {
-                // An exception is thrown if the dialog is not visible, which is fine
-            }
-        }
-
-        /**
-         * Handle the action clicked in the "Add to home" dialog.
-         */
-        public void onClick(DialogInterface dialog, int which) {
-            cleanup();
-
-            AddAdapter.ListItem item = (AddAdapter.ListItem) mAdapter.getItem(which);
-            switch (item.actionTag) {
-                case AddAdapter.ITEM_APPLICATION: {
-                    if (mAppsCustomizeTabHost != null) {
-                        mAppsCustomizeTabHost.selectAppsTab();
-                    }
-                    showAllApps(true);
-                    break;
-                }
-                case AddAdapter.ITEM_APPWIDGET: {
-                    if (mAppsCustomizeTabHost != null) {
-                        mAppsCustomizeTabHost.selectWidgetsTab();
-                    }
-                    showAllApps(true);
-                    break;
-                }
-                case AddAdapter.ITEM_WALLPAPER: {
-                    startWallpaper();
-                    break;
-                }
-            }
-        }
-
-        public void onShow(DialogInterface dialog) {
-            mWaitingForResult = true;
-        }
-    }
-
-    /**
      * Receives notifications when system dialogs are to be closed.
      */
     private class CloseSystemDialogsIntentReceiver extends BroadcastReceiver {
@@ -3391,7 +3173,6 @@ public final class Launcher extends Activity
      */
     public void bindAppsAdded(ArrayList<ApplicationInfo> apps) {
         setLoadOnResume();
-        removeDialog(DIALOG_CREATE_SHORTCUT);
 
         if (mAppsCustomizeContent != null) {
             mAppsCustomizeContent.addApps(apps);
@@ -3405,7 +3186,6 @@ public final class Launcher extends Activity
      */
     public void bindAppsUpdated(ArrayList<ApplicationInfo> apps) {
         setLoadOnResume();
-        removeDialog(DIALOG_CREATE_SHORTCUT);
         if (mWorkspace != null) {
             mWorkspace.updateShortcuts(apps);
         }
@@ -3421,7 +3201,6 @@ public final class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void bindAppsRemoved(ArrayList<ApplicationInfo> apps, boolean permanent) {
-        removeDialog(DIALOG_CREATE_SHORTCUT);
         if (permanent) {
             mWorkspace.removeItems(apps);
         }
