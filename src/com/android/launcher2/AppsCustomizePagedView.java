@@ -480,7 +480,15 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         List<ResolveInfo> shortcuts = mPackageManager.queryIntentActivities(shortcutsIntent, 0);
         for (AppWidgetProviderInfo widget : widgets) {
             if (widget.minWidth > 0 && widget.minHeight > 0) {
-                mWidgets.add(widget);
+                // Ensure that all widgets we show can be added on a workspace of this size
+                int[] spanXY = mLauncher.getSpanForWidget(widget);
+                int[] minSpanXY = mLauncher.getMinSpanForWidget(widget);
+                int minSpanX = Math.min(spanXY[0], minSpanXY[0]);
+                int minSpanY = Math.min(spanXY[1], minSpanXY[1]);
+                if (minSpanX < LauncherModel.getCellCountX() &&
+                        minSpanY < LauncherModel.getCellCountY()) {
+                    mWidgets.add(widget);
+                }
             } else {
                 Log.e(LOG_TAG, "Widget " + widget.provider + " has invalid dimensions (" +
                         widget.minWidth + ", " + widget.minHeight + ")");
@@ -1205,12 +1213,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 createItemInfo = new PendingAddWidgetInfo(info, null, null);
 
                 // Determine the widget spans and min resize spans.
-                int[] spanXY = mLauncher.getSpanForWidget(info, null);
+                int[] spanXY = mLauncher.getSpanForWidget(info);
                 int[] size = mLauncher.getWorkspace().estimateItemSize(spanXY[0],
                         spanXY[1], createItemInfo, true);
                 createItemInfo.spanX = spanXY[0];
                 createItemInfo.spanY = spanXY[1];
-                int[] minSpanXY = mLauncher.getMinSpanForWidget(info, null);
+                int[] minSpanXY = mLauncher.getMinSpanForWidget(info);
                 createItemInfo.minSpanX = minSpanXY[0];
                 createItemInfo.minSpanY = minSpanXY[1];
 
@@ -1297,7 +1305,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             Object rawInfo = items.get(i);
             if (rawInfo instanceof AppWidgetProviderInfo) {
                 AppWidgetProviderInfo info = (AppWidgetProviderInfo) rawInfo;
-                int[] cellSpans = mLauncher.getSpanForWidget(info, null);
+                int[] cellSpans = mLauncher.getSpanForWidget(info);
 
                 int maxWidth = Math.min(data.maxImageWidth,
                         mWidgetSpacingLayout.estimateCellWidth(cellSpans[0]));

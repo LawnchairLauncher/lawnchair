@@ -979,11 +979,7 @@ public final class Launcher extends Activity
         }
     }
 
-    int[] getSpanForWidget(ComponentName component, int minWidth, int minHeight, int[] spanXY) {
-        if (spanXY == null) {
-            spanXY = new int[2];
-        }
-
+    int[] getSpanForWidget(ComponentName component, int minWidth, int minHeight) {
         Rect padding = AppWidgetHostView.getDefaultPaddingForWidget(this, component, null);
         // We want to account for the extra amount of padding that we are adding to the widget
         // to ensure that it gets the full amount of space that it has requested
@@ -992,21 +988,21 @@ public final class Launcher extends Activity
         return CellLayout.rectToCell(getResources(), requiredWidth, requiredHeight, null);
     }
 
-    int[] getSpanForWidget(AppWidgetProviderInfo info, int[] spanXY) {
-        return getSpanForWidget(info.provider, info.minWidth, info.minHeight, spanXY);
+    int[] getSpanForWidget(AppWidgetProviderInfo info) {
+        return getSpanForWidget(info.provider, info.minWidth, info.minHeight);
     }
 
-    int[] getMinSpanForWidget(AppWidgetProviderInfo info, int[] spanXY) {
-        return getSpanForWidget(info.provider, info.minResizeWidth, info.minResizeHeight, spanXY);
+    int[] getMinSpanForWidget(AppWidgetProviderInfo info) {
+        return getSpanForWidget(info.provider, info.minResizeWidth, info.minResizeHeight);
     }
 
-    int[] getSpanForWidget(PendingAddWidgetInfo info, int[] spanXY) {
-        return getSpanForWidget(info.componentName, info.minWidth, info.minHeight, spanXY);
+    int[] getSpanForWidget(PendingAddWidgetInfo info) {
+        return getSpanForWidget(info.componentName, info.minWidth, info.minHeight);
     }
 
-    int[] getMinSpanForWidget(PendingAddWidgetInfo info, int[] spanXY) {
+    int[] getMinSpanForWidget(PendingAddWidgetInfo info) {
         return getSpanForWidget(info.componentName, info.minResizeWidth,
-                info.minResizeHeight, spanXY);
+                info.minResizeHeight);
     }
 
     /**
@@ -1024,8 +1020,8 @@ public final class Launcher extends Activity
         // Calculate the grid spans needed to fit this widget
         CellLayout layout = getCellLayout(container, screen);
 
-        int[] minSpanXY = getMinSpanForWidget(appWidgetInfo, null);
-        int[] spanXY = getSpanForWidget(appWidgetInfo, null);
+        int[] minSpanXY = getMinSpanForWidget(appWidgetInfo);
+        int[] spanXY = getSpanForWidget(appWidgetInfo);
 
         // Try finding open space on Launcher screen
         // We have saved the position to which the widget was dragged-- this really only matters
