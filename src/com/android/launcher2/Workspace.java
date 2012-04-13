@@ -188,8 +188,7 @@ public class Workspace extends SmoothPagedView
     boolean mUpdateWallpaperOffsetImmediately = false;
     private Runnable mDelayedResizeRunnable;
     private Runnable mDelayedSnapToPageRunnable;
-    private int mDisplayWidth;
-    private int mDisplayHeight;
+    private Point mDisplaySize = new Point();
     private boolean mIsStaticWallpaper;
     private int mWallpaperTravelWidth;
 
@@ -404,10 +403,9 @@ public class Workspace extends SmoothPagedView
 
         mWallpaperOffset = new WallpaperOffsetInterpolator();
         Display display = mLauncher.getWindowManager().getDefaultDisplay();
-        mDisplayWidth = display.getWidth();
-        mDisplayHeight = display.getHeight();
-        mWallpaperTravelWidth = (int) (mDisplayWidth *
-                wallpaperTravelToScreenWidthRatio(mDisplayWidth, mDisplayHeight));
+        display.getSize(mDisplaySize);
+        mWallpaperTravelWidth = (int) (mDisplaySize.x *
+                wallpaperTravelToScreenWidthRatio(mDisplaySize.x, mDisplaySize.y));
 
         mMaxDistanceForFolderCreation = (0.6f * res.getDimensionPixelSize(R.dimen.app_icon_size));
         mFlingThresholdVelocity = (int) (FLING_THRESHOLD_VELOCITY * mDensity);
@@ -955,7 +953,7 @@ public class Workspace extends SmoothPagedView
                 mIsMovingFast = false;
                 return false;
             }
-            boolean isLandscape = mDisplayWidth > mDisplayHeight;
+            boolean isLandscape = mDisplaySize.x > mDisplaySize.y;
 
             long currentTime = System.currentTimeMillis();
             long timeSinceLastUpdate = currentTime - mLastWallpaperOffsetUpdateTime;
@@ -2954,7 +2952,7 @@ public class Workspace extends SmoothPagedView
     public void getHitRect(Rect outRect) {
         // We want the workspace to have the whole area of the display (it will find the correct
         // cell layout to drop to in the existing drag/drop logic.
-        outRect.set(0, 0, mDisplayWidth, mDisplayHeight);
+        outRect.set(0, 0, mDisplaySize.x, mDisplaySize.y);
     }
 
     /**
