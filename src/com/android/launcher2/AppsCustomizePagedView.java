@@ -485,8 +485,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 int[] minSpanXY = mLauncher.getMinSpanForWidget(widget);
                 int minSpanX = Math.min(spanXY[0], minSpanXY[0]);
                 int minSpanY = Math.min(spanXY[1], minSpanXY[1]);
-                if (minSpanX < LauncherModel.getCellCountX() &&
-                        minSpanY < LauncherModel.getCellCountY()) {
+                if (minSpanX <= LauncherModel.getCellCountX() &&
+                        minSpanY <= LauncherModel.getCellCountY()) {
                     mWidgets.add(widget);
                 }
             } else {
