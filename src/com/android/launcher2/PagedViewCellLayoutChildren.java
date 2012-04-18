@@ -141,13 +141,6 @@ public class PagedViewCellLayoutChildren extends ViewGroup {
         }
     }
 
-    void destroyHardwareLayer() {
-        setLayerType(LAYER_TYPE_NONE, null);
-    }
-    void createHardwareLayer() {
-        setLayerType(LAYER_TYPE_HARDWARE, null);
-    }
-
     public void enableCenteredContent(boolean enabled) {
         mCenterContent = enabled;
     }

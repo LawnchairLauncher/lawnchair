@@ -86,20 +86,15 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         return mCellHeight;
     }
 
-    @Override
-    public void setAlpha(float alpha) {
-        mChildren.setAlpha(alpha);
-    }
-
     void destroyHardwareLayers() {
         // called when a page is no longer visible (triggered by loadAssociatedPages ->
         // removeAllViewsOnPage)
-        mChildren.destroyHardwareLayer();
+        setLayerType(LAYER_TYPE_NONE, null);
     }
 
     void createHardwareLayers() {
         // called when a page is visible (triggered by loadAssociatedPages -> syncPageItems)
-        mChildren.createHardwareLayer();
+        setLayerType(LAYER_TYPE_HARDWARE, null);
     }
 
     @Override
