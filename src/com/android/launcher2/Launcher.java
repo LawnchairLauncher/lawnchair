@@ -26,6 +26,7 @@ import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.ActivityOptions;
 import android.app.SearchManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
@@ -828,6 +829,7 @@ public final class Launcher extends Activity
                 findViewById(R.id.apps_customize_pane);
         mAppsCustomizeContent = (AppsCustomizePagedView)
                 mAppsCustomizeTabHost.findViewById(R.id.apps_customize_pane_content);
+        mAppsCustomizeTabHost.setup(this);
         mAppsCustomizeContent.setup(this, dragController);
 
         // Get the all apps button
@@ -1766,7 +1768,8 @@ public final class Launcher extends Activity
             v.getLocationOnScreen(pos);
             intent.setSourceBounds(new Rect(pos[0], pos[1],
                     pos[0] + v.getWidth(), pos[1] + v.getHeight()));
-            boolean success = startActivitySafely(intent, tag);
+
+            boolean success = startActivitySafely(v, intent, tag);
 
             if (success && v instanceof BubbleTextView) {
                 mWaitingForResume = (BubbleTextView) v;
@@ -1834,7 +1837,7 @@ public final class Launcher extends Activity
 
     public void onClickAppMarketButton(View v) {
         if (mAppMarketIntent != null) {
-            startActivitySafely(mAppMarketIntent, "app market");
+            startActivitySafely(v, mAppMarketIntent, "app market");
         } else {
             Log.e(TAG, "Invalid app market intent.");
         }
@@ -1865,10 +1868,18 @@ public final class Launcher extends Activity
         }
     }
 
-    boolean startActivitySafely(Intent intent, Object tag) {
+    boolean startActivitySafely(View v, Intent intent, Object tag) {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
         try {
-            startActivity(intent);
+            if (v != null) {
+                ActivityOptions opts = ActivityOptions.makeScaleUpAnimation(v, 0, 0,
+                        v.getMeasuredWidth(), v.getMeasuredHeight());
+
+                startActivity(intent, opts.toBundle());
+            } else {
+                startActivity(intent);
+            }
             return true;
         } catch (ActivityNotFoundException e) {
             Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
@@ -2442,7 +2453,7 @@ public final class Launcher extends Activity
     @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
-        if (level >= ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN) {
+        if (level >= ComponentCallbacks2.TRIM_MEMORY_MODERATE) {
             mAppsCustomizeTabHost.onTrimMemory();
         }
     }
