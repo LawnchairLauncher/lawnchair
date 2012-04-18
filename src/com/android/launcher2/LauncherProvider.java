@@ -16,13 +16,6 @@
 
 package com.android.launcher2;
 
-import com.android.internal.util.XmlUtils;
-import com.android.launcher.R;
-import com.android.launcher2.LauncherSettings.Favorites;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import android.app.SearchManager;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
@@ -53,6 +46,12 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Xml;
+
+import com.android.launcher.R;
+import com.android.launcher2.LauncherSettings.Favorites;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -684,15 +683,18 @@ public class LauncherProvider extends ContentProvider {
                         db.update(TABLE_FAVORITES, values, updateWhere, null);
 
                         if (favoriteType == Favorites.ITEM_TYPE_WIDGET_CLOCK) {
-                            appWidgetManager.bindAppWidgetId(appWidgetId,
+                            // TODO: check return value
+                            appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId,
                                     new ComponentName("com.android.alarmclock",
                                     "com.android.alarmclock.AnalogAppWidgetProvider"));
                         } else if (favoriteType == Favorites.ITEM_TYPE_WIDGET_PHOTO_FRAME) {
-                            appWidgetManager.bindAppWidgetId(appWidgetId,
+                            // TODO: check return value
+                            appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId,
                                     new ComponentName("com.android.camera",
                                     "com.android.camera.PhotoAppWidgetProvider"));
                         } else if (favoriteType == Favorites.ITEM_TYPE_WIDGET_SEARCH) {
-                            appWidgetManager.bindAppWidgetId(appWidgetId,
+                            // TODO: check return value
+                            appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId,
                                     getSearchWidgetProvider());
                         }
                     } catch (RuntimeException ex) {
@@ -708,6 +710,24 @@ public class LauncherProvider extends ContentProvider {
                 if (c != null) {
                     c.close();
                 }
+            }
+        }
+
+        private static final void beginDocument(XmlPullParser parser, String firstElementName)
+                throws XmlPullParserException, IOException {
+            int type;
+            while ((type = parser.next()) != parser.START_TAG
+                    && type != parser.END_DOCUMENT) {
+                ;
+            }
+
+            if (type != parser.START_TAG) {
+                throw new XmlPullParserException("No start tag found");
+            }
+
+            if (!parser.getName().equals(firstElementName)) {
+                throw new XmlPullParserException("Unexpected start tag: found " + parser.getName() +
+                        ", expected " + firstElementName);
             }
         }
 
@@ -729,7 +749,7 @@ public class LauncherProvider extends ContentProvider {
             try {
                 XmlResourceParser parser = mContext.getResources().getXml(workspaceResourceId);
                 AttributeSet attrs = Xml.asAttributeSet(parser);
-                XmlUtils.beginDocument(parser, TAG_FAVORITES);
+                beginDocument(parser, TAG_FAVORITES);
 
                 final int depth = parser.getDepth();
 
@@ -989,7 +1009,8 @@ public class LauncherProvider extends ContentProvider {
 
                 allocatedAppWidgets = true;
 
-                appWidgetManager.bindAppWidgetId(appWidgetId, cn);
+                // TODO: need to check return value
+                appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, cn);
             } catch (RuntimeException ex) {
                 Log.e(TAG, "Problem allocating appWidgetId", ex);
             }

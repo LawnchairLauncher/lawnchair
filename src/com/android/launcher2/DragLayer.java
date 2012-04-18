@@ -28,6 +28,7 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
@@ -43,7 +44,7 @@ import java.util.ArrayList;
 /**
  * A ViewGroup that coordinates dragging across its descendants
  */
-public class DragLayer extends FrameLayout {
+public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChangeListener {
     private DragController mDragController;
     private int[] mTmpXY = new int[2];
 
@@ -83,6 +84,7 @@ public class DragLayer extends FrameLayout {
         // Disable multitouch across the workspace/all apps/customize tray
         setMotionEventSplittingEnabled(false);
         setChildrenDrawingOrderEnabled(true);
+        setOnHierarchyChangeListener(this);
     }
 
     public void setup(Launcher launcher, DragController controller) {
@@ -164,7 +166,9 @@ public class DragLayer extends FrameLayout {
         if (currentFolder == null) {
             return false;
         } else {
-            if (AccessibilityManager.getInstance(mContext).isTouchExplorationEnabled()) {
+                AccessibilityManager accessibilityManager = (AccessibilityManager)
+                        getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
+            if (accessibilityManager.isTouchExplorationEnabled()) {
                 final int action = ev.getAction();
                 boolean isOverFolder;
                 switch (action) {
@@ -197,13 +201,15 @@ public class DragLayer extends FrameLayout {
     }
 
     private void sendTapOutsideFolderAccessibilityEvent(boolean isEditingName) {
-        if (AccessibilityManager.getInstance(mContext).isEnabled()) {
+        AccessibilityManager accessibilityManager = (AccessibilityManager)
+                getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
+        if (accessibilityManager.isEnabled()) {
             int stringId = isEditingName ? R.string.folder_tap_to_rename : R.string.folder_tap_to_close;
             AccessibilityEvent event = AccessibilityEvent.obtain(
                     AccessibilityEvent.TYPE_VIEW_FOCUSED);
             onInitializeAccessibilityEvent(event);
-            event.getText().add(mContext.getString(stringId));
-            AccessibilityManager.getInstance(mContext).sendAccessibilityEvent(event);
+            event.getText().add(getContext().getString(stringId));
+            accessibilityManager.sendAccessibilityEvent(event);
         }
     }
 
@@ -674,14 +680,12 @@ public class DragLayer extends FrameLayout {
     }
 
     @Override
-    protected void onViewAdded(View child) {
-        super.onViewAdded(child);
+    public void onChildViewAdded(View parent, View child) {
         updateChildIndices();
     }
 
     @Override
-    protected void onViewRemoved(View child) {
-        super.onViewRemoved(child);
+    public void onChildViewRemoved(View parent, View child) {
         updateChildIndices();
     }
 

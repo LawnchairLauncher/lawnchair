@@ -61,8 +61,6 @@ public class HolographicOutlineHelper {
         sMediumInnerBlurMaskFilter = new BlurMaskFilter(scale * 2.0f, BlurMaskFilter.Blur.NORMAL);
     }
 
-    private static final MaskFilter sCoarseClipTable = TableMaskFilter.CreateClipTable(0, 200);
-
     private int[] mTempOffset = new int[2];
 
     HolographicOutlineHelper() {
@@ -96,24 +94,6 @@ public class HolographicOutlineHelper {
         } else {
             return 1.0f;
         }
-    }
-
-    /**
-     * Apply an outer blur to the given bitmap.
-     * You should use OUTER_BLUR_RADIUS to ensure that the bitmap is big enough to draw
-     * the blur without clipping.
-     */
-    void applyOuterBlur(Bitmap bitmap, Canvas canvas, int color) {
-        mBlurPaint.setMaskFilter(sThickOuterBlurMaskFilter);
-        Bitmap glow = bitmap.extractAlpha(mBlurPaint, mTempOffset);
-
-        // Use the clip table to make the glow heavier closer to the outline
-        mHolographicPaint.setMaskFilter(sCoarseClipTable);
-        mHolographicPaint.setAlpha(150);
-        mHolographicPaint.setColor(color);
-
-        canvas.drawBitmap(glow, mTempOffset[0], mTempOffset[1], mHolographicPaint);
-        glow.recycle();
     }
 
     /**
