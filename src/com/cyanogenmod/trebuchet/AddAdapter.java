@@ -38,10 +38,11 @@ public class AddAdapter extends BaseAdapter {
 
     private final ArrayList<ListItem> mItems = new ArrayList<ListItem>();
 
-    public static final int ITEM_SHORTCUT = 0;
-    public static final int ITEM_APPWIDGET = 1;
-    public static final int ITEM_APPLICATION = 2;
-    public static final int ITEM_WALLPAPER = 3;
+    public static final int ITEM_APPLICATION = 0;
+    public static final int ITEM_SHORTCUT = 1;
+    public static final int ITEM_APPWIDGET = 2;
+    public static final int ITEM_ACTION = 3;
+    public static final int ITEM_WALLPAPER = 4;
 
     /**
      * Specific item in our list.
@@ -61,7 +62,7 @@ public class AddAdapter extends BaseAdapter {
             this.actionTag = actionTag;
         }
     }
-    
+
     public AddAdapter(Launcher launcher) {
         super();
 
@@ -69,6 +70,18 @@ public class AddAdapter extends BaseAdapter {
 
         // Create default actions
         Resources res = launcher.getResources();
+
+        mItems.add(new ListItem(res, R.string.group_applications,
+                R.drawable.ic_launcher_application, ITEM_APPLICATION));
+
+        mItems.add(new ListItem(res, R.string.group_shortcuts,
+                R.drawable.ic_launcher_shortcut, ITEM_SHORTCUT));
+
+        mItems.add(new ListItem(res, R.string.group_widgets,
+                R.drawable.ic_launcher_appwidget, ITEM_APPWIDGET));
+
+        mItems.add(new ListItem(res, R.string.group_actions,
+                R.drawable.ic_launcher_home, ITEM_ACTION));
 
         mItems.add(new ListItem(res, R.string.group_wallpapers,
                 R.drawable.ic_launcher_wallpaper, ITEM_WALLPAPER));
