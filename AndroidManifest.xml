@@ -128,5 +128,7 @@
             android:writePermission="com.android.launcher.permission.WRITE_SETTINGS"
             android:readPermission="com.android.launcher.permission.READ_SETTINGS" />
 
+        <meta-data android:name="android.nfc.disable_beam_default"
+                       android:value="true" />
     </application>
 </manifest>
