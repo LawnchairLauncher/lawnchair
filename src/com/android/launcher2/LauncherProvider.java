@@ -16,6 +16,13 @@
 
 package com.android.launcher2;
 
+import com.android.internal.util.XmlUtils;
+import com.android.launcher.R;
+import com.android.launcher2.LauncherSettings.Favorites;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
 import android.app.SearchManager;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
@@ -47,13 +54,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Xml;
 
-import com.android.internal.util.XmlUtils;
-import com.android.launcher.R;
-import com.android.launcher2.LauncherSettings.Favorites;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -65,7 +65,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "launcher.db";
 
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 10;
 
     static final String AUTHORITY = "com.android.launcher2.settings";
 
@@ -79,7 +79,7 @@ public class LauncherProvider extends ContentProvider {
      */
     static final Uri CONTENT_APPWIDGET_RESET_URI =
             Uri.parse("content://" + AUTHORITY + "/appWidgetReset");
-    
+
     private DatabaseHelper mOpenHelper;
 
     @Override
@@ -299,7 +299,7 @@ public class LauncherProvider extends ContentProvider {
                     resolver.delete(uri, null, null);
                 }
             }
-            
+
             if (converted) {
                 // Convert widgets from this import into widgets
                 if (LOGD) Log.d(TAG, "converted and now triggering widget upgrade");
@@ -369,7 +369,7 @@ public class LauncherProvider extends ContentProvider {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             if (LOGD) Log.d(TAG, "onUpgrade triggered");
-            
+
             int version = oldVersion;
             if (version < 3) {
                 // upgrade 1,2 -> 3 added appWidgetId column
@@ -386,7 +386,7 @@ public class LauncherProvider extends ContentProvider {
                 } finally {
                     db.endTransaction();
                 }
-                
+
                 // Convert existing widgets only if table upgrade was successful
                 if (version == 3) {
                     convertWidgets(db);
@@ -396,7 +396,7 @@ public class LauncherProvider extends ContentProvider {
             if (version < 4) {
                 version = 4;
             }
-            
+
             // Where's version 5?
             // - Donut and sholes on 2.0 shipped with version 4 of launcher1.
             // - Passion shipped on 2.1 with version 6 of launcher2
@@ -417,7 +417,7 @@ public class LauncherProvider extends ContentProvider {
                 } finally {
                     db.endTransaction();
                 }
-            
+
                // We added the fast track.
                 if (updateContactsShortcuts(db)) {
                     version = 6;
@@ -450,6 +450,14 @@ public class LauncherProvider extends ContentProvider {
                 version = 9;
             }
 
+            if (version < 10) {
+                // Contact shortcuts need a different set of flags to be launched now
+                // The updateContactsShortcuts change is idempotent, so we can keep using it like
+                // back in the Donut days
+                updateContactsShortcuts(db);
+                version = 10;
+            }
+
             if (version != DATABASE_VERSION) {
                 Log.w(TAG, "Destroying all old data.");
                 db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVORITES);
@@ -458,58 +466,67 @@ public class LauncherProvider extends ContentProvider {
         }
 
         private boolean updateContactsShortcuts(SQLiteDatabase db) {
-            Cursor c = null;
             final String selectWhere = buildOrWhereString(Favorites.ITEM_TYPE,
                     new int[] { Favorites.ITEM_TYPE_SHORTCUT });
 
+            Cursor c = null;
+            final String actionQuickContact = "com.android.contacts.action.QUICK_CONTACT";
             db.beginTransaction();
             try {
                 // Select and iterate through each matching widget
-                c = db.query(TABLE_FAVORITES, new String[] { Favorites._ID, Favorites.INTENT },
+                c = db.query(TABLE_FAVORITES,
+                        new String[] { Favorites._ID, Favorites.INTENT },
                         selectWhere, null, null, null, null);
-                
+                if (c == null) return false;
+
                 if (LOGD) Log.d(TAG, "found upgrade cursor count=" + c.getCount());
-                
-                final ContentValues values = new ContentValues();
+
                 final int idIndex = c.getColumnIndex(Favorites._ID);
                 final int intentIndex = c.getColumnIndex(Favorites.INTENT);
-                
-                while (c != null && c.moveToNext()) {
+
+                while (c.moveToNext()) {
                     long favoriteId = c.getLong(idIndex);
                     final String intentUri = c.getString(intentIndex);
                     if (intentUri != null) {
                         try {
-                            Intent intent = Intent.parseUri(intentUri, 0);
+                            final Intent intent = Intent.parseUri(intentUri, 0);
                             android.util.Log.d("Home", intent.toString());
                             final Uri uri = intent.getData();
-                            final String data = uri.toString();
-                            if (Intent.ACTION_VIEW.equals(intent.getAction()) &&
-                                    (data.startsWith("content://contacts/people/") ||
-                                    data.startsWith("content://com.android.contacts/contacts/lookup/"))) {
+                            if (uri != null) {
+                                final String data = uri.toString();
+                                if ((Intent.ACTION_VIEW.equals(intent.getAction()) ||
+                                        actionQuickContact.equals(intent.getAction())) &&
+                                        (data.startsWith("content://contacts/people/") ||
+                                        data.startsWith("content://com.android.contacts/" +
+                                                "contacts/lookup/"))) {
 
-                                intent = new Intent("com.android.contacts.action.QUICK_CONTACT");
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                                        Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                                    final Intent newIntent = new Intent(actionQuickContact);
+                                    // When starting from the launcher, start in a new, cleared task
+                                    // CLEAR_WHEN_TASK_RESET cannot reset the root of a task, so we
+                                    // clear the whole thing preemptively here since
+                                    // QuickContactActivity will finish itself when launching other
+                                    // detail activities.
+                                    newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                                            Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-                                intent.setData(uri);
-                                intent.putExtra("mode", 3);
-                                intent.putExtra("exclude_mimes", (String[]) null);
+                                    newIntent.setData(uri);
 
-                                values.clear();
-                                values.put(LauncherSettings.Favorites.INTENT, intent.toUri(0));
-    
-                                String updateWhere = Favorites._ID + "=" + favoriteId;
-                                db.update(TABLE_FAVORITES, values, updateWhere, null);                                
+                                    final ContentValues values = new ContentValues();
+                                    values.put(LauncherSettings.Favorites.INTENT,
+                                            newIntent.toUri(0));
+
+                                    String updateWhere = Favorites._ID + "=" + favoriteId;
+                                    db.update(TABLE_FAVORITES, values, updateWhere, null);
+                                }
                             }
                         } catch (RuntimeException ex) {
                             Log.e(TAG, "Problem upgrading shortcut", ex);
                         } catch (URISyntaxException e) {
-                            Log.e(TAG, "Problem upgrading shortcut", e);                            
+                            Log.e(TAG, "Problem upgrading shortcut", e);
                         }
                     }
                 }
-                
+
                 db.setTransactionSuccessful();
             } catch (SQLException ex) {
                 Log.w(TAG, "Problem while upgrading contacts", ex);
@@ -626,17 +643,17 @@ public class LauncherProvider extends ContentProvider {
             };
 
             final String selectWhere = buildOrWhereString(Favorites.ITEM_TYPE, bindSources);
-            
+
             Cursor c = null;
-            
+
             db.beginTransaction();
             try {
                 // Select and iterate through each matching widget
                 c = db.query(TABLE_FAVORITES, new String[] { Favorites._ID, Favorites.ITEM_TYPE },
                         selectWhere, null, null, null, null);
-                
+
                 if (LOGD) Log.d(TAG, "found upgrade cursor count=" + c.getCount());
-                
+
                 final ContentValues values = new ContentValues();
                 while (c != null && c.moveToNext()) {
                     long favoriteId = c.getLong(0);
@@ -645,7 +662,7 @@ public class LauncherProvider extends ContentProvider {
                     // Allocate and update database with new appWidgetId
                     try {
                         int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
-                        
+
                         if (LOGD) {
                             Log.d(TAG, "allocated appWidgetId=" + appWidgetId
                                     + " for favoriteId=" + favoriteId);
@@ -682,7 +699,7 @@ public class LauncherProvider extends ContentProvider {
                         Log.e(TAG, "Problem allocating appWidgetId", ex);
                     }
                 }
-                
+
                 db.setTransactionSuccessful();
             } catch (SQLException ex) {
                 Log.w(TAG, "Problem while allocating appWidgetIds for existing widgets", ex);
@@ -951,7 +968,7 @@ public class LauncherProvider extends ContentProvider {
                 int spanY = a.getInt(R.styleable.Favorite_spanY, 0);
                 return addAppWidget(db, values, cn, spanX, spanY);
             }
-            
+
             return false;
         }
 
@@ -962,7 +979,7 @@ public class LauncherProvider extends ContentProvider {
 
             try {
                 int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
-                
+
                 values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_APPWIDGET);
                 values.put(Favorites.SPANX, spanX);
                 values.put(Favorites.SPANY, spanY);
@@ -971,12 +988,12 @@ public class LauncherProvider extends ContentProvider {
                 dbInsertAndCheck(this, db, TABLE_FAVORITES, null, values);
 
                 allocatedAppWidgets = true;
-                
+
                 appWidgetManager.bindAppWidgetId(appWidgetId, cn);
             } catch (RuntimeException ex) {
                 Log.e(TAG, "Problem allocating appWidgetId", ex);
             }
-            
+
             return allocatedAppWidgets;
         }
 
@@ -1020,7 +1037,7 @@ public class LauncherProvider extends ContentProvider {
             return id;
         }
     }
-    
+
     /**
      * Build a query string that will match any row where the column matches
      * anything in the values list.
@@ -1052,7 +1069,7 @@ public class LauncherProvider extends ContentProvider {
                 throw new UnsupportedOperationException("WHERE clause not supported: " + url);
             } else {
                 this.table = url.getPathSegments().get(0);
-                this.where = "_id=" + ContentUris.parseId(url);                
+                this.where = "_id=" + ContentUris.parseId(url);
                 this.args = null;
             }
         }
