@@ -174,8 +174,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     cellY = item.cellY;
                     spanX = item.spanX;
                     spanY = item.spanY;
-                    for (int x = cellX; x < cellX + spanX && x < xCount; x++) {
-                        for (int y = cellY; y < cellY + spanY && y < yCount; y++) {
+                    for (int x = cellX; 0 <= x && x < cellX + spanX && x < xCount; x++) {
+                        for (int y = cellY; 0 <= y && y < cellY + spanY && y < yCount; y++) {
                             occupied[x][y] = true;
                         }
                     }
