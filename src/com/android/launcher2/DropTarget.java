@@ -19,12 +19,15 @@ package com.android.launcher2;
 import android.content.Context;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.util.Log;
 
 /**
  * Interface defining an object that can receive a drag.
  *
  */
 public interface DropTarget {
+
+    public static final String TAG = "DropTarget";
 
     class DragObject {
         public int x = -1;
@@ -75,28 +78,28 @@ public interface DropTarget {
         void onDragEnter() {
             dragParity++;
             if (dragParity != 1) {
-                throw new RuntimeException("onDragEnter: Drag contract violated: " + dragParity);
+                Log.e(TAG, "onDragEnter: Drag contract violated: " + dragParity);
             }
         }
 
         void onDragExit() {
             dragParity--;
             if (dragParity != 0) {
-                throw new RuntimeException("onDragExit: Drag contract violated: " + dragParity);
+                Log.e(TAG, "onDragExit: Drag contract violated: " + dragParity);
             }
         }
 
         @Override
         public void onDragStart(DragSource source, Object info, int dragAction) {
             if (dragParity != 0) {
-                throw new RuntimeException("onDragEnter: Drag contract violated: " + dragParity);
+                Log.e(TAG, "onDragEnter: Drag contract violated: " + dragParity);
             }
         }
 
         @Override
         public void onDragEnd() {
             if (dragParity != 0) {
-                throw new RuntimeException("onDragExit: Drag contract violated: " + dragParity);
+                Log.e(TAG, "onDragExit: Drag contract violated: " + dragParity);
             }
         }
     }
