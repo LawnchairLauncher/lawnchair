@@ -97,7 +97,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         // will provide feedback otherwise
         if (!found) {
             if (result[0] == INSTALL_SHORTCUT_NO_SPACE) {
-                Toast.makeText(context, context.getString(R.string.out_of_space),
+                Toast.makeText(context, context.getString(R.string.completely_out_of_space),
                         Toast.LENGTH_SHORT).show();
             } else if (result[0] == INSTALL_SHORTCUT_IS_DUPLICATE) {
                 Toast.makeText(context, context.getString(R.string.shortcut_duplicate, name),
