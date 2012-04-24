@@ -1814,7 +1814,7 @@ public final class Launcher extends Activity
 
         Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        startActivity(intent);
+        startActivitySafely(intent, "onClickVoiceButton");
     }
 
     /**
@@ -1845,7 +1845,7 @@ public final class Launcher extends Activity
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 Uri.fromParts("package", packageName, null));
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        startActivity(intent);
+        startActivitySafely(intent, "startApplicationDetailsActivity");
     }
 
     void startApplicationUninstallActivity(ApplicationInfo appInfo) {
@@ -2731,6 +2731,7 @@ public final class Launcher extends Activity
         final View searchDivider = findViewById(R.id.search_divider);
         final View voiceButtonContainer = findViewById(R.id.voice_button_container);
         final View voiceButton = findViewById(R.id.voice_button);
+        final View voiceButtonProxy = findViewById(R.id.voice_button_proxy);
 
         final SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -2751,6 +2752,7 @@ public final class Launcher extends Activity
             if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.GONE);
             searchButton.setVisibility(View.GONE);
             voiceButton.setVisibility(View.GONE);
+            voiceButtonProxy.setVisibility(View.GONE);
             return false;
         }
     }
@@ -2766,6 +2768,7 @@ public final class Launcher extends Activity
         final View searchDivider = findViewById(R.id.search_divider);
         final View voiceButtonContainer = findViewById(R.id.voice_button_container);
         final View voiceButton = findViewById(R.id.voice_button);
+        final View voiceButtonProxy = findViewById(R.id.voice_button_proxy);
 
         // We only show/update the voice search icon if the search icon is enabled as well
         Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
@@ -2777,12 +2780,14 @@ public final class Launcher extends Activity
             if (searchDivider != null) searchDivider.setVisibility(View.VISIBLE);
             if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.VISIBLE);
             voiceButton.setVisibility(View.VISIBLE);
+            voiceButtonProxy.setVisibility(View.VISIBLE);
             invalidatePressedFocusedStates(voiceButtonContainer, voiceButton);
             return true;
         } else {
             if (searchDivider != null) searchDivider.setVisibility(View.GONE);
             if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.GONE);
             voiceButton.setVisibility(View.GONE);
+            voiceButtonProxy.setVisibility(View.GONE);
             return false;
         }
     }
