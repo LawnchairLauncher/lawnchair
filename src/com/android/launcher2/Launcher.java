@@ -380,8 +380,10 @@ public final class Launcher extends Activity
         final String forceEnableRotation = 
                 SystemProperties.get(FORCE_ENABLE_ROTATION_PROPERTY, "false");
 
+        boolean enableRotation = getResources().getBoolean(R.bool.allow_rotation);
+
         // On large interfaces, we want the screen to auto-rotate based on the current orientation
-        if (LauncherApplication.isScreenLarge() || "true".equalsIgnoreCase(forceEnableRotation)) {
+        if (enableRotation || "true".equalsIgnoreCase(forceEnableRotation)) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         }
     }

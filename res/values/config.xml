@@ -2,6 +2,7 @@
     <bool name="config_hardwareAccelerated">true</bool>
     <bool name="config_largeHeap">false</bool>
     <bool name="is_large_screen">false</bool>
+    <bool name="allow_rotation">false</bool>
 
 <!-- AllApps/Customize/AppsCustomize -->
     <!-- The alpha of the AppsCustomize bg in spring loaded mode -->
