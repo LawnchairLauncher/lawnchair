@@ -989,6 +989,9 @@ public class LauncherModel extends BroadcastReceiver {
             final AppWidgetManager widgets = AppWidgetManager.getInstance(context);
             final boolean isSafeMode = manager.isSafeMode();
 
+            // Make sure the default workspace is loaded, if needed
+            mApp.getLauncherProvider().loadDefaultFavoritesIfNecessary();
+
             sWorkspaceItems.clear();
             sAppWidgets.clear();
             sFolders.clear();
