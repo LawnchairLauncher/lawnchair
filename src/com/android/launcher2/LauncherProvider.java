@@ -203,7 +203,7 @@ public class LauncherProvider extends ContentProvider {
         return mOpenHelper.generateNewId();
     }
 
-    public void loadDefaultFavoritesIfNecessary() {
+    synchronized public void loadDefaultFavoritesIfNecessary() {
         String spKey = LauncherApplication.getSharedPreferencesKey();
         SharedPreferences sp = getContext().getSharedPreferences(spKey, Context.MODE_PRIVATE);
         if (sp.getBoolean(DB_CREATED_BUT_DEFAULT_WORKSPACE_NOT_LOADED, false)) {
