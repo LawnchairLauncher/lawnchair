@@ -27,6 +27,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -70,6 +71,8 @@ public class LauncherProvider extends ContentProvider {
 
     static final String TABLE_FAVORITES = "favorites";
     static final String PARAMETER_NOTIFY = "notify";
+    static final String DB_CREATED_BUT_DEFAULT_WORKSPACE_NOT_LOADED =
+            "DB_CREATED_BUT_DEFAULT_WORKSPACE_NOT_LOADED";
 
     /**
      * {@link Uri} triggered at any registered {@link android.database.ContentObserver} when
@@ -196,6 +199,18 @@ public class LauncherProvider extends ContentProvider {
         return mOpenHelper.generateNewId();
     }
 
+    public void loadDefaultFavoritesIfNecessary() {
+        String spKey = LauncherApplication.getSharedPreferencesKey();
+        SharedPreferences sp = getContext().getSharedPreferences(spKey, Context.MODE_PRIVATE);
+        if (sp.getBoolean(DB_CREATED_BUT_DEFAULT_WORKSPACE_NOT_LOADED, false)) {
+            // Populate favorites table with initial favorites
+            SharedPreferences.Editor editor = sp.edit();
+            editor.remove(DB_CREATED_BUT_DEFAULT_WORKSPACE_NOT_LOADED);
+            mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(), R.xml.default_workspace);
+            editor.commit();
+        }
+    }
+
     private static class DatabaseHelper extends SQLiteOpenHelper {
         private static final String TAG_FAVORITES = "favorites";
         private static final String TAG_FAVORITE = "favorite";
@@ -266,9 +281,17 @@ public class LauncherProvider extends ContentProvider {
             }
 
             if (!convertDatabase(db)) {
-                // Populate favorites table with initial favorites
-                loadFavorites(db, R.xml.default_workspace);
+                // Set a shared pref so that we know we need to load the default workspace later
+                setFlagToLoadDefaultWorkspaceLater();
             }
+        }
+
+        private void setFlagToLoadDefaultWorkspaceLater() {
+            String spKey = LauncherApplication.getSharedPreferencesKey();
+            SharedPreferences sp = mContext.getSharedPreferences(spKey, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putBoolean(DB_CREATED_BUT_DEFAULT_WORKSPACE_NOT_LOADED, true);
+            editor.commit();
         }
 
         private boolean convertDatabase(SQLiteDatabase db) {
