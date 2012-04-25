@@ -57,6 +57,8 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     private boolean mResetAfterTransition;
     private Runnable mRelayoutAndMakeVisible;
 
+    private Launcher mLauncher;
+
     public AppsCustomizeTabHost(Context context, AttributeSet attrs) {
         super(context, attrs);
         mLayoutInflater = LayoutInflater.from(context);
@@ -66,6 +68,10 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
                     mTabsContainer.setAlpha(1f);
                 }
             };
+    }
+
+    public void setup(Launcher launcher) {
+        mLauncher = launcher;
     }
 
     /**
@@ -463,6 +469,17 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             // Load the current page synchronously, and the neighboring pages asynchronously
             mAppsCustomizePane.loadAssociatedPages(mAppsCustomizePane.getCurrentPage(), true);
             mAppsCustomizePane.loadAssociatedPages(mAppsCustomizePane.getCurrentPage());
+
+            // We had to enable the wallpaper visibility when launching apps from all apps (so that
+            // the transitions would be the same as when launching from workspace) so we need to
+            // re-disable the wallpaper visibility to ensure performance.
+            int duration = getResources().getInteger(android.R.integer.config_shortAnimTime);
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mLauncher.updateWallpaperVisibility(false);
+                }
+            }, duration);
         }
     }
 

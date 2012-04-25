@@ -194,7 +194,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             v.getLocationOnScreen(pos);
             item.intent.setSourceBounds(new Rect(pos[0], pos[1],
                     pos[0] + v.getWidth(), pos[1] + v.getHeight()));
-            mLauncher.startActivitySafely(item.intent, item);
+
+            mLauncher.startActivitySafely(v, item.intent, item);
         }
     }
 

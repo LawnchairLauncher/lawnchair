@@ -518,12 +518,18 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         if (v instanceof PagedViewIcon) {
             // Animate some feedback to the click
             final ApplicationInfo appInfo = (ApplicationInfo) v.getTag();
-            mLauncher.startActivitySafely(appInfo.intent, appInfo);
 
             // Lock the drawable state to pressed until we return to Launcher
             if (mPressedIcon != null) {
                 mPressedIcon.lockDrawableState();
             }
+
+            // NOTE: we need to re-enable the wallpaper visibility if we want correct transitions
+            // between items that are launched from the workspace and all apps.  It will be disabled
+            // correctly the next time the window is visible in AppsCustomizeTabHost.
+            mLauncher.updateWallpaperVisibility(true);
+            mLauncher.startActivitySafely(v, appInfo.intent, appInfo);
+
         } else if (v instanceof PagedViewWidget) {
             // Let the user know that they have to long press to add a widget
             Toast.makeText(getContext(), R.string.long_press_widget_to_add,
