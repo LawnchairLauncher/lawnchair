@@ -378,7 +378,7 @@ public final class Launcher extends Activity
         }
         mSearchDropTargetBar.onSearchPackagesChanged(searchVisible, voiceVisible);
 
-        final String forceEnableRotation = 
+        final String forceEnableRotation =
                 SystemProperties.get(FORCE_ENABLE_ROTATION_PROPERTY, "false");
 
         boolean enableRotation = getResources().getBoolean(R.bool.allow_rotation);
@@ -2793,14 +2793,18 @@ public final class Launcher extends Activity
             if (searchDivider != null) searchDivider.setVisibility(View.VISIBLE);
             if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.VISIBLE);
             voiceButton.setVisibility(View.VISIBLE);
-            voiceButtonProxy.setVisibility(View.VISIBLE);
+            if (voiceButtonProxy != null) {
+                voiceButtonProxy.setVisibility(View.VISIBLE);
+            }
             invalidatePressedFocusedStates(voiceButtonContainer, voiceButton);
             return true;
         } else {
             if (searchDivider != null) searchDivider.setVisibility(View.GONE);
             if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.GONE);
             voiceButton.setVisibility(View.GONE);
-            voiceButtonProxy.setVisibility(View.GONE);
+            if (voiceButtonProxy != null) {
+                voiceButtonProxy.setVisibility(View.GONE);
+            }
             return false;
         }
     }
