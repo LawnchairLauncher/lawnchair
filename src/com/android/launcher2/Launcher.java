@@ -1819,7 +1819,7 @@ public final class Launcher extends Activity
 
         Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        startActivitySafely(intent, "onClickVoiceButton");
+        startActivitySafely(null, intent, "onClickVoiceButton");
     }
 
     /**
@@ -1850,7 +1850,7 @@ public final class Launcher extends Activity
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 Uri.fromParts("package", packageName, null));
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        startActivitySafely(intent, "startApplicationDetailsActivity");
+        startActivitySafely(null, intent, "startApplicationDetailsActivity");
     }
 
     void startApplicationUninstallActivity(ApplicationInfo appInfo) {
