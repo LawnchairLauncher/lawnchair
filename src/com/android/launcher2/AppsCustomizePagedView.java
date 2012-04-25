@@ -860,6 +860,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             iter.remove();
             mDirtyPageContent.set(task.page, true);
         }
+        mDeferredSyncWidgetPageItems.clear();
     }
 
     public void setContentType(ContentType type) {
