@@ -122,10 +122,6 @@ public class CellLayout extends ViewGroup {
 
     private BubbleTextView mPressedOrFocusedIcon;
 
-    private Drawable mCrosshairsDrawable = null;
-    private InterruptibleInOutAnimator mCrosshairsAnimator = null;
-    private float mCrosshairsVisibility = 0.0f;
-
     private HashMap<CellLayout.LayoutParams, Animator> mReorderAnimators = new
             HashMap<CellLayout.LayoutParams, Animator>();
     private HashMap<View, ReorderHintAnimation>
@@ -227,19 +223,8 @@ public class CellLayout extends ViewGroup {
 
         // Initialize the data structures used for the drag visualization.
 
-        mCrosshairsDrawable = res.getDrawable(R.drawable.gardening_crosshairs);
         mEaseOutInterpolator = new DecelerateInterpolator(2.5f); // Quint ease out
 
-        // Set up the animation for fading the crosshairs in and out
-        int animDuration = res.getInteger(R.integer.config_crosshairsFadeInTime);
-        mCrosshairsAnimator = new InterruptibleInOutAnimator(animDuration, 0.0f, 1.0f);
-        mCrosshairsAnimator.getAnimator().addUpdateListener(new AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mCrosshairsVisibility = ((Float) animation.getAnimatedValue()).floatValue();
-                invalidate();
-            }
-        });
-        mCrosshairsAnimator.getAnimator().setInterpolator(mEaseOutInterpolator);
 
         mDragCell[0] = mDragCell[1] = -1;
         for (int i = 0; i < mDragOutlines.length; i++) {
@@ -420,38 +405,6 @@ public class CellLayout extends ViewGroup {
             bg.setAlpha((int) (mBackgroundAlpha * mBackgroundAlphaMultiplier * 255));
             bg.setBounds(mBackgroundRect);
             bg.draw(canvas);
-        }
-
-        if (mCrosshairsVisibility > 0.0f) {
-            final int countX = mCountX;
-            final int countY = mCountY;
-
-            final float MAX_ALPHA = 0.4f;
-            final int MAX_VISIBLE_DISTANCE = 600;
-            final float DISTANCE_MULTIPLIER = 0.002f;
-
-            final Drawable d = mCrosshairsDrawable;
-            final int width = d.getIntrinsicWidth();
-            final int height = d.getIntrinsicHeight();
-
-            int x = getPaddingLeft() - (mWidthGap / 2) - (width / 2);
-            for (int col = 0; col <= countX; col++) {
-                int y = getPaddingTop() - (mHeightGap / 2) - (height / 2);
-                for (int row = 0; row <= countY; row++) {
-                    mTmpPointF.set(x - mDragCenter.x, y - mDragCenter.y);
-                    float dist = mTmpPointF.length();
-                    // Crosshairs further from the drag point are more faint
-                    float alpha = Math.min(MAX_ALPHA,
-                            DISTANCE_MULTIPLIER * (MAX_VISIBLE_DISTANCE - dist));
-                    if (alpha > 0.0f) {
-                        d.setBounds(x, y, x + width, y + height);
-                        d.setAlpha((int) (alpha * 255 * mCrosshairsVisibility));
-                        d.draw(canvas);
-                    }
-                    y += mCellHeight + mHeightGap;
-                }
-                x += mCellWidth + mWidthGap;
-            }
         }
 
         final Paint paint = mDragOutlinePaint;
@@ -1205,9 +1158,6 @@ public class CellLayout extends ViewGroup {
         }
 
         if (dragOutline == null && v == null) {
-            if (mCrosshairsDrawable != null) {
-                invalidate();
-            }
             return;
         }
 
@@ -1261,11 +1211,6 @@ public class CellLayout extends ViewGroup {
 
             mDragOutlineAnims[mDragOutlineCurrent].setTag(dragOutline);
             mDragOutlineAnims[mDragOutlineCurrent].animateIn();
-        }
-
-        // If we are drawing crosshairs, the entire CellLayout needs to be invalidated
-        if (mCrosshairsDrawable != null) {
-            invalidate();
         }
     }
 
@@ -2545,12 +2490,6 @@ public class CellLayout extends ViewGroup {
      */
     void onDragEnter() {
         mDragEnforcer.onDragEnter();
-        if (!mDragging) {
-            // Fade in the drag indicators
-            if (mCrosshairsAnimator != null) {
-                mCrosshairsAnimator.animateIn();
-            }
-        }
         mDragging = true;
     }
 
@@ -2564,11 +2503,6 @@ public class CellLayout extends ViewGroup {
         // Guard against that case.
         if (mDragging) {
             mDragging = false;
-
-            // Fade out the drag indicators
-            if (mCrosshairsAnimator != null) {
-                mCrosshairsAnimator.animateOut();
-            }
         }
 
         // Invalidate the drag data
