@@ -762,7 +762,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     @Override
-    public void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace) {
+    public View getContent() {
+        return null;
+    }
+
+    @Override
+    public void onLauncherTransitionPrepare(Launcher l, boolean animated, boolean toWorkspace) {
         mInTransition = true;
         if (toWorkspace) {
             cancelAllTasks();
@@ -770,8 +775,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     @Override
-    public View getContent() {
-        return null;
+    public void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace) {
     }
 
     @Override

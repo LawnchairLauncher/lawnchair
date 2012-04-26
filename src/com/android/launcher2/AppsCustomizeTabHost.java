@@ -376,8 +376,8 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
 
     /* LauncherTransitionable overrides */
     @Override
-    public void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace) {
-        mAppsCustomizePane.onLauncherTransitionStart(l, animated, toWorkspace);
+    public void onLauncherTransitionPrepare(Launcher l, boolean animated, boolean toWorkspace) {
+        mAppsCustomizePane.onLauncherTransitionPrepare(l, animated, toWorkspace);
         mInTransition = true;
         mTransitioningToWorkspace = toWorkspace;
 
@@ -404,7 +404,10 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             mAppsCustomizePane.reset();
             mResetAfterTransition = false;
         }
+    }
 
+    @Override
+    public void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace) {
         if (animated) {
             enableAndBuildHardwareLayer();
         }
