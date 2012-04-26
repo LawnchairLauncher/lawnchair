@@ -2166,6 +2166,12 @@ public final class Launcher extends Activity
         }
     }
 
+    private void dispatchOnLauncherTransitionPrepare(View v, boolean animated, boolean toWorkspace) {
+        if (v instanceof LauncherTransitionable) {
+            ((LauncherTransitionable) v).onLauncherTransitionPrepare(this, animated, toWorkspace);
+        }
+    }
+
     private void dispatchOnLauncherTransitionStart(View v, boolean animated, boolean toWorkspace) {
         if (v instanceof LauncherTransitionable) {
             ((LauncherTransitionable) v).onLauncherTransitionStart(this, animated, toWorkspace);
@@ -2246,7 +2252,7 @@ public final class Launcher extends Activity
         final int fadeDuration = res.getInteger(R.integer.config_appsCustomizeFadeInTime);
         final float scale = (float) res.getInteger(R.integer.config_appsCustomizeZoomScaleFactor);
         final View fromView = mWorkspace;
-        final View toView = mAppsCustomizeTabHost;
+        final AppsCustomizeTabHost toView = mAppsCustomizeTabHost;
         final int startDelay =
                 res.getInteger(R.integer.config_workspaceAppsCustomizeAnimationStagger);
 
@@ -2326,8 +2332,8 @@ public final class Launcher extends Activity
             boolean delayAnim = false;
             final ViewTreeObserver observer;
 
-            dispatchOnLauncherTransitionStart(fromView, animated, false);
-            dispatchOnLauncherTransitionStart(toView, animated, false);
+            dispatchOnLauncherTransitionPrepare(fromView, animated, false);
+            dispatchOnLauncherTransitionPrepare(toView, animated, false);
 
             // If any of the objects being animated haven't been measured/laid out
             // yet, delay the animation until we get a layout pass
@@ -2351,6 +2357,8 @@ public final class Launcher extends Activity
                                 if (mStateAnimation == stateAnimation) {
                                     // Need to update pivots for zoom if layout changed
                                     setPivotsForZoom(toView, scale);
+                                    dispatchOnLauncherTransitionStart(fromView, animated, false);
+                                    dispatchOnLauncherTransitionStart(toView, animated, false);
                                     mStateAnimation.start();
                                 }
                             }
@@ -2361,6 +2369,8 @@ public final class Launcher extends Activity
                 observer.addOnGlobalLayoutListener(delayedStart);
             } else {
                 setPivotsForZoom(toView, scale);
+                dispatchOnLauncherTransitionStart(fromView, animated, false);
+                dispatchOnLauncherTransitionStart(toView, animated, false);
                 mStateAnimation.start();
             }
         } else {
@@ -2376,8 +2386,10 @@ public final class Launcher extends Activity
                 mWorkspace.hideScrollingIndicator(true);
                 hideDockDivider();
             }
+            dispatchOnLauncherTransitionPrepare(fromView, animated, false);
             dispatchOnLauncherTransitionStart(fromView, animated, false);
             dispatchOnLauncherTransitionEnd(fromView, animated, false);
+            dispatchOnLauncherTransitionPrepare(toView, animated, false);
             dispatchOnLauncherTransitionStart(toView, animated, false);
             dispatchOnLauncherTransitionEnd(toView, animated, false);
             updateWallpaperVisibility(false);
@@ -2442,8 +2454,8 @@ public final class Launcher extends Activity
 
             mStateAnimation = new AnimatorSet();
 
-            dispatchOnLauncherTransitionStart(fromView, animated, true);
-            dispatchOnLauncherTransitionStart(toView, animated, true);
+            dispatchOnLauncherTransitionPrepare(fromView, animated, true);
+            dispatchOnLauncherTransitionPrepare(toView, animated, true);
 
             mStateAnimation.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -2465,11 +2477,15 @@ public final class Launcher extends Activity
             if (workspaceAnim != null) {
                 mStateAnimation.play(workspaceAnim);
             }
+            dispatchOnLauncherTransitionStart(fromView, animated, true);
+            dispatchOnLauncherTransitionStart(toView, animated, true);
             mStateAnimation.start();
         } else {
             fromView.setVisibility(View.GONE);
+            dispatchOnLauncherTransitionPrepare(fromView, animated, true);
             dispatchOnLauncherTransitionStart(fromView, animated, true);
             dispatchOnLauncherTransitionEnd(fromView, animated, true);
+            dispatchOnLauncherTransitionPrepare(toView, animated, true);
             dispatchOnLauncherTransitionStart(toView, animated, true);
             dispatchOnLauncherTransitionEnd(toView, animated, true);
             mWorkspace.hideScrollingIndicator(false);
@@ -3457,6 +3473,7 @@ public final class Launcher extends Activity
 
 interface LauncherTransitionable {
     View getContent();
+    void onLauncherTransitionPrepare(Launcher l, boolean animated, boolean toWorkspace);
     void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace);
     void onLauncherTransitionStep(Launcher l, float t);
     void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace);
