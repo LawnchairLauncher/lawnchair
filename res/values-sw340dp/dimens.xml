@@ -21,10 +21,6 @@
 <!-- Workspace -->
     <dimen name="workspace_width_gap">0dp</dimen>
     <dimen name="workspace_height_gap">0dp</dimen>
-    <dimen name="workspace_top_padding">8dp</dimen>
-    <dimen name="workspace_bottom_padding">8dp</dimen>
-    <dimen name="workspace_left_padding">8dp</dimen>
-    <dimen name="workspace_right_padding">8dp</dimen>
 
 <!-- Hotseat -->
     <dimen name="hotseat_width_gap">0dp</dimen>
@@ -37,4 +33,14 @@
     <dimen name="button_bar_width_left_padding">8dp</dimen>
     <dimen name="button_bar_width_right_padding">8dp</dimen>
     <dimen name="button_bar_height_plus_padding">80dp</dimen>
+
+<!-- CellLayout padding land / port-->
+    <dimen name="cell_layout_left_padding_portrait">8dp</dimen>
+    <dimen name="cell_layout_left_padding_landscape">8dp</dimen>
+    <dimen name="cell_layout_right_padding_portrait">8dp</dimen>
+    <dimen name="cell_layout_right_padding_landscape">8dp</dimen>
+    <dimen name="cell_layout_top_padding_portrait">8dp</dimen>
+    <dimen name="cell_layout_top_padding_landscape">8dp</dimen>
+    <dimen name="cell_layout_bottom_padding_portrait">8dp</dimen>
+    <dimen name="cell_layout_bottom_padding_landscape">8dp</dimen>
 </resources>

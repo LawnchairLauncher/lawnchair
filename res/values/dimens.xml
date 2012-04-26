@@ -119,4 +119,25 @@
     <dimen name="folder_name_padding">10dp</dimen>
     <dimen name="folder_width_gap">0dp</dimen>
     <dimen name="folder_height_gap">0dp</dimen>
+
+<!-- CellLayout padding -->
+    <dimen name="cell_layout_left_padding_port">0dp</dimen>
+    <dimen name="cell_layout_left_padding_land">0dp</dimen>
+    <dimen name="cell_layout_right_padding_port">0dp</dimen>
+    <dimen name="cell_layout_right_padding_land">0dp</dimen>
+    <dimen name="cell_layout_top_padding_port">6dp</dimen>
+    <dimen name="cell_layout_top_padding_land">0dp</dimen>
+    <dimen name="cell_layout_bottom_padding_port">0dp</dimen>
+    <dimen name="cell_layout_bottom_padding_land">0dp</dimen>
+
+<!-- Workspace padding -->
+    <dimen name="workspace_left_padding_port">0dp</dimen>
+    <dimen name="workspace_left_padding_land">@dimen/qsb_bar_height</dimen>
+    <dimen name="workspace_right_padding_port">0dp</dimen>
+    <dimen name="workspace_right_padding_land">@dimen/button_bar_height</dimen>
+    <dimen name="workspace_top_padding_port">@dimen/qsb_bar_height_inset</dimen>
+    <dimen name="workspace_top_padding_land">0dp</dimen>
+    <dimen name="workspace_bottom_padding_port">@dimen/button_bar_height</dimen>
+    <dimen name="workspace_bottom_padding_land">0dp</dimen>
+
 </resources>

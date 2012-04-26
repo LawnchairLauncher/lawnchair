@@ -19,7 +19,10 @@
 <com.android.launcher2.Workspace
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
-    android:paddingTop="@dimen/workspace_content_large_only_top_margin"
+    android:paddingLeft="@dimen/workspace_left_padding"
+    android:paddingRight="@dimen/workspace_right_padding"
+    android:paddingTop="@dimen/workspace_top_padding"
+    android:paddingBottom="@dimen/workspace_bottom_padding"
     launcher:defaultScreen="2"
     launcher:pageSpacing="@dimen/workspace_page_spacing">
       <include android:id="@+id/cell1" layout="@layout/workspace_screen" />
