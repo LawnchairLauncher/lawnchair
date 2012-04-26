@@ -27,6 +27,7 @@
 
     <dimen name="folder_cell_width">96dp</dimen>
     <dimen name="folder_cell_height">96dp</dimen>
+    <dimen name="folder_preview_size">75dp</dimen>
 
 <!-- AppsCustomize -->
     <integer name="apps_customize_maxCellCountX">-1</integer>
