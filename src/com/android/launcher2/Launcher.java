@@ -3300,20 +3300,16 @@ public final class Launcher extends Activity
         return oriMap[(d.getRotation() + indexOffset) % 4];
     }
 
-    public void lockScreenOrientationOnLargeUI() {
-        if (LauncherApplication.isScreenLarge()) {
-            setRequestedOrientation(mapConfigurationOriActivityInfoOri(getResources()
-                    .getConfiguration().orientation));
-        }
+    public void lockScreenOrientation() {
+        setRequestedOrientation(mapConfigurationOriActivityInfoOri(getResources()
+                .getConfiguration().orientation));
     }
-    public void unlockScreenOrientationOnLargeUI() {
-        if (LauncherApplication.isScreenLarge()) {
-            mHandler.postDelayed(new Runnable() {
-                public void run() {
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-                }
-            }, mRestoreScreenOrientationDelay);
-        }
+    public void unlockScreenOrientation() {
+        mHandler.postDelayed(new Runnable() {
+            public void run() {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+            }
+        }, mRestoreScreenOrientationDelay);
     }
 
     /* Cling related */
