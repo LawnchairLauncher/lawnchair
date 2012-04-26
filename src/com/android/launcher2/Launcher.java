@@ -2452,7 +2452,9 @@ public final class Launcher extends Activity
                     fromView.setVisibility(View.GONE);
                     dispatchOnLauncherTransitionEnd(fromView, animated, true);
                     dispatchOnLauncherTransitionEnd(toView, animated, true);
-                    mWorkspace.hideScrollingIndicator(false);
+                    if (mWorkspace != null) {
+                        mWorkspace.hideScrollingIndicator(false);
+                    }
                     if (onCompleteRunnable != null) {
                         onCompleteRunnable.run();
                     }
