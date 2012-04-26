@@ -22,12 +22,18 @@
     <dimen name="qsb_padding_right">3dp</dimen>
 
 <!-- Workspace -->
-    <dimen name="workspace_left_padding">0dp</dimen>
-    <dimen name="workspace_right_padding">0dp</dimen>
     <!-- Block spacing on each side of the screen.  And also padding
          for the portals to look right. -->
-    <dimen name="workspace_top_padding">6dp</dimen>
-    <dimen name="workspace_bottom_padding">0dp</dimen>
+    <dimen name="cell_layout_left_padding">@dimen/cell_layout_left_padding_port</dimen>
+    <dimen name="cell_layout_right_padding">@dimen/cell_layout_right_padding_port</dimen>
+    <dimen name="cell_layout_top_padding">@dimen/cell_layout_top_padding_port</dimen>
+    <dimen name="cell_layout_bottom_padding">@dimen/cell_layout_bottom_padding_port</dimen>
+    <!-- Workspace padding -->
+    <dimen name="workspace_left_padding">@dimen/workspace_left_padding_port</dimen>
+    <dimen name="workspace_right_padding">@dimen/workspace_right_padding_port</dimen>
+    <dimen name="workspace_top_padding">@dimen/workspace_top_padding_port</dimen>
+    <dimen name="workspace_bottom_padding">@dimen/workspace_bottom_padding_port</dimen>
+
     <dimen name="workspace_page_spacing">-1dp</dimen>
 
 <!-- AppsCustomize -->

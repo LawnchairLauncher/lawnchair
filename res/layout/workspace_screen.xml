@@ -17,12 +17,13 @@
 <com.android.launcher2.CellLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher"
-    style="@style/WorkspaceScreen"
 
-    android:paddingLeft="@dimen/workspace_left_padding"
-    android:paddingRight="@dimen/workspace_right_padding"
-    android:paddingTop="@dimen/workspace_top_padding"
-    android:paddingBottom="@dimen/workspace_bottom_padding"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/cell_layout_left_padding"
+    android:paddingRight="@dimen/cell_layout_right_padding"
+    android:paddingTop="@dimen/cell_layout_top_padding"
+    android:paddingBottom="@dimen/cell_layout_bottom_padding"
     android:hapticFeedbackEnabled="false"
 
     launcher:cellWidth="@dimen/workspace_cell_width"

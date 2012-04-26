@@ -24,20 +24,25 @@
     <dimen name="workspace_cell_height">74dp</dimen>
     <dimen name="hotseat_cell_width">64dp</dimen>
     <dimen name="hotseat_cell_height">58dp</dimen>
-    <!-- Block spacing on each side of the screen -->
-    <dimen name="workspace_left_padding">0dp</dimen>
-    <dimen name="workspace_right_padding">0dp</dimen>
-    <!-- We need top/bottom padding for portals to look right, but
-         really only in spring loaded mode... -->
-    <dimen name="workspace_top_padding">0dp</dimen>
-    <dimen name="workspace_bottom_padding">0dp</dimen>
     <!-- We really want the page spacing to be the max of either the button bar
-         height or the qsb bar height -->
+     height or the qsb bar height -->
     <dimen name="workspace_page_spacing">-1dp</dimen>
     <dimen name="workspace_divider_padding_left">0dp</dimen>
     <dimen name="workspace_divider_padding_right">0dp</dimen>
     <dimen name="workspace_divider_padding_top">12dp</dimen>
     <dimen name="workspace_divider_padding_bottom">12dp</dimen>
+
+    <!-- Block spacing on each side of the screen.  And also padding
+         for the portals to look right. -->
+    <dimen name="cell_layout_left_padding">@dimen/cell_layout_left_padding_land</dimen>
+    <dimen name="cell_layout_right_padding">@dimen/cell_layout_right_padding_land</dimen>
+    <dimen name="cell_layout_top_padding">@dimen/cell_layout_top_padding_land</dimen>
+    <dimen name="cell_layout_bottom_padding">@dimen/cell_layout_bottom_padding_land</dimen>
+    <!-- Workspace padding -->
+    <dimen name="workspace_left_padding">@dimen/workspace_left_padding_land</dimen>
+    <dimen name="workspace_right_padding">@dimen/workspace_right_padding_land</dimen>
+    <dimen name="workspace_top_padding">@dimen/workspace_top_padding_land</dimen>
+    <dimen name="workspace_bottom_padding">@dimen/workspace_bottom_padding_land</dimen>
 
     <dimen name="app_icon_padding_top">6dp</dimen>
 
