@@ -706,7 +706,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         // Start the drag
         alphaClipPaint = null;
-        mLauncher.lockScreenOrientationOnLargeUI();
+        mLauncher.lockScreenOrientation();
         mLauncher.getWorkspace().onDragStartedWithItem(createItemInfo, outline, alphaClipPaint);
         mDragController.startDrag(image, preview, this, createItemInfo,
                 DragController.DRAG_ACTION_COPY, null, scale);
@@ -758,7 +758,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             // drop in Workspace
             mLauncher.exitSpringLoadedDragMode();
         }
-        mLauncher.unlockScreenOrientationOnLargeUI();
+        mLauncher.unlockScreenOrientation();
     }
 
     @Override

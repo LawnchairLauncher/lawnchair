@@ -375,13 +375,13 @@ public class Workspace extends SmoothPagedView
     public void onDragStart(DragSource source, Object info, int dragAction) {
         mIsDragOccuring = true;
         updateChildrenLayersEnabled();
-        mLauncher.lockScreenOrientationOnLargeUI();
+        mLauncher.lockScreenOrientation();
     }
 
     public void onDragEnd() {
         mIsDragOccuring = false;
         updateChildrenLayersEnabled();
-        mLauncher.unlockScreenOrientationOnLargeUI();
+        mLauncher.unlockScreenOrientation();
     }
 
     /**
