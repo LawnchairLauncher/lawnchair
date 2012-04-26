@@ -95,9 +95,9 @@
     <string name="workspace_cling_move_item" msgid="791013895761065070">"Sem můžete umístit své oblíbené aplikace."</string>
     <string name="workspace_cling_open_all_apps" msgid="2459977609848572588">"Chcete-li zobrazit všechny aplikace, dotkněte se kruhu."</string>
     <string name="all_apps_cling_title" msgid="2559734712581447107">"Vybrat několik aplikací"</string>
-    <string name="all_apps_cling_add_item" msgid="5665035103260318891">"Chcete-li na plochu přidat aplikaci, dotkněte se jí a podržte."</string>
+    <string name="all_apps_cling_add_item" msgid="5665035103260318891">"Chcete-li na plochu přidat aplikaci, dotkněte se jí a přidržte ji."</string>
     <string name="folder_cling_title" msgid="4308949882377840953">"Uspořádat aplikace pomocí složek"</string>
-    <string name="folder_cling_move_item" msgid="270598675060435169">"Chcete-li aplikaci přesunout, dotkněte se jí a podržte ji."</string>
+    <string name="folder_cling_move_item" msgid="270598675060435169">"Chcete-li aplikaci přesunout, dotkněte se jí a přidržte ji."</string>
     <string name="folder_cling_create_folder" msgid="8352867485656129478">"Chcete-li na ploše vytvořit novou složku, přesuňte jednu aplikaci na druhou."</string>
     <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
     <string name="folder_opened" msgid="1262064100943801533">"Složka otevřena, rozměry <xliff:g id="WIDTH">%1$d</xliff:g> × <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
