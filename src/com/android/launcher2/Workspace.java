@@ -1727,6 +1727,7 @@ public class Workspace extends SmoothPagedView
                     }
                 }
             }
+            buildPageHardwareLayers();
             anim.setStartDelay(delay);
         }
 
