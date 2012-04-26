@@ -174,7 +174,7 @@ public class Workspace extends SmoothPagedView
     private final int[] mTempXY = new int[2];
     private float mOverscrollFade = 0;
     private boolean mOverscrollTransformsSet;
-    public static final int DRAG_BITMAP_PADDING = 0;
+    public static final int DRAG_BITMAP_PADDING = 2;
 
     // Camera and Matrix used to determine the final position of a neighboring CellLayout
     private final Matrix mMatrix = new Matrix();
