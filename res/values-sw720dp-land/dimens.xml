@@ -22,11 +22,6 @@
     <dimen name="apps_customize_pageLayoutPaddingRight">16dp</dimen>
 
 <!-- Workspace -->
-    <dimen name="workspace_left_padding">24dip</dimen>
-    <dimen name="workspace_right_padding">24dip</dimen>
-    <!-- We need padding on the screens for portals to look right -->
-    <dimen name="workspace_top_padding">12dip</dimen>
-    <dimen name="workspace_bottom_padding">12dip</dimen>
     <dimen name="workspace_width_gap">32dp</dimen>
     <dimen name="workspace_height_gap">2dp</dimen>
     <dimen name="workspace_page_spacing">50dp</dimen>

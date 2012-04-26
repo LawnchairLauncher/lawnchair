@@ -18,12 +18,6 @@
 -->
 
 <resources>
-<!-- Workspace -->
-    <style name="WorkspaceScreen">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
 <!-- Search Bar -->
     <style name="QSBBar">
         <item name="android:orientation">vertical</item>

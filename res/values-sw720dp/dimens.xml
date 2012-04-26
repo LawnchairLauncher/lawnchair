@@ -53,4 +53,24 @@
      the drag view should be offset from the position of the original view. -->
     <dimen name="dragViewOffsetX">0dp</dimen>
     <dimen name="dragViewOffsetY">0dp</dimen>
+
+<!-- CellLayout padding land / port-->
+    <dimen name="cell_layout_left_padding_portrait">15dp</dimen>
+    <dimen name="cell_layout_left_padding_landscape">24dp</dimen>
+    <dimen name="cell_layout_right_padding_portrait">15dp</dimen>
+    <dimen name="cell_layout_right_padding_landscape">24dp</dimen>
+    <dimen name="cell_layout_top_padding_portrait">25dp</dimen>
+    <dimen name="cell_layout_top_padding_landscape">12dp</dimen>
+    <dimen name="cell_layout_bottom_padding_portrait">25dp</dimen>
+    <dimen name="cell_layout_bottom_padding_landscape">12dp</dimen>
+
+<!-- Workspace padding -->
+    <dimen name="workspace_left_padding_port">0dp</dimen>
+    <dimen name="workspace_left_padding_land">0dp</dimen>
+    <dimen name="workspace_right_padding_port">0dp</dimen>
+    <dimen name="workspace_right_padding_land">0dp</dimen>
+    <dimen name="workspace_top_padding_port">@dimen/workspace_content_large_only_top_margin</dimen>
+    <dimen name="workspace_top_padding_land">@dimen/workspace_content_large_only_top_margin</dimen>
+    <dimen name="workspace_bottom_padding_port">0dp</dimen>
+    <dimen name="workspace_bottom_padding_land">0dp</dimen>
 </resources>
