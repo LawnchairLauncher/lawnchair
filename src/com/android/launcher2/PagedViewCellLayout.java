@@ -193,8 +193,8 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         int numHeightGaps = mCellCountY - 1;
 
         if (mOriginalWidthGap < 0 || mOriginalHeightGap < 0) {
-            int hSpace = widthSpecSize - mPaddingLeft - mPaddingRight;
-            int vSpace = heightSpecSize - mPaddingTop - mPaddingBottom;
+            int hSpace = widthSpecSize - getPaddingLeft() - getPaddingRight();
+            int vSpace = heightSpecSize - getPaddingTop() - getPaddingBottom();
             int hFreeSpace = hSpace - (mCellCountX * mOriginalCellWidth);
             int vFreeSpace = vSpace - (mCellCountY * mOriginalCellHeight);
             mWidthGap = Math.min(mMaxGap, numWidthGaps > 0 ? (hFreeSpace / numWidthGaps) : 0);
@@ -210,9 +210,9 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         int newWidth = widthSpecSize;
         int newHeight = heightSpecSize;
         if (widthSpecMode == MeasureSpec.AT_MOST) {
-            newWidth = mPaddingLeft + mPaddingRight + (mCellCountX * mCellWidth) +
+            newWidth = getPaddingLeft() + getPaddingRight() + (mCellCountX * mCellWidth) +
                 ((mCellCountX - 1) * mWidthGap);
-            newHeight = mPaddingTop + mPaddingBottom + (mCellCountY * mCellHeight) +
+            newHeight = getPaddingTop() + getPaddingBottom() + (mCellCountY * mCellHeight) +
                 ((mCellCountY - 1) * mHeightGap);
             setMeasuredDimension(newWidth, newHeight);
         }
@@ -221,11 +221,11 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
             int childWidthMeasureSpec =
-                MeasureSpec.makeMeasureSpec(newWidth - mPaddingLeft -
-                        mPaddingRight, MeasureSpec.EXACTLY);
+                MeasureSpec.makeMeasureSpec(newWidth - getPaddingLeft() -
+                        getPaddingRight(), MeasureSpec.EXACTLY);
             int childheightMeasureSpec =
-                MeasureSpec.makeMeasureSpec(newHeight - mPaddingTop -
-                        mPaddingBottom, MeasureSpec.EXACTLY);
+                MeasureSpec.makeMeasureSpec(newHeight - getPaddingTop() -
+                        getPaddingBottom(), MeasureSpec.EXACTLY);
             child.measure(childWidthMeasureSpec, childheightMeasureSpec);
         }
 
@@ -233,7 +233,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
     }
 
     int getContentWidth() {
-        return getWidthBeforeFirstLayout() + mPaddingLeft + mPaddingRight;
+        return getWidthBeforeFirstLayout() + getPaddingLeft() + getPaddingRight();
     }
 
     int getContentHeight() {
@@ -255,8 +255,8 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            child.layout(mPaddingLeft, mPaddingTop,
-                r - l - mPaddingRight, b - t - mPaddingBottom);
+            child.layout(getPaddingLeft(), getPaddingTop(),
+                r - l - getPaddingRight(), b - t - getPaddingBottom());
         }
     }
 
@@ -327,7 +327,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
     public int estimateCellHSpan(int width) {
         // We don't show the next/previous pages any more, so we use the full width, minus the
         // padding
-        int availWidth = width - (mPaddingLeft + mPaddingRight);
+        int availWidth = width - (getPaddingLeft() + getPaddingRight());
 
         // We know that we have to fit N cells with N-1 width gaps, so we just juggle to solve for N
         int n = Math.max(1, (availWidth + mWidthGap) / (mCellWidth + mWidthGap));
@@ -342,7 +342,7 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
     public int estimateCellVSpan(int height) {
         // The space for a page is the height - top padding (current page) - bottom padding (current
         // page)
-        int availHeight = height - (mPaddingTop + mPaddingBottom);
+        int availHeight = height - (getPaddingTop() + getPaddingBottom());
 
         // We know that we have to fit N cells with N-1 height gaps, so we juggle to solve for N
         int n = Math.max(1, (availHeight + mHeightGap) / (mCellHeight + mHeightGap));
@@ -354,8 +354,8 @@ public class PagedViewCellLayout extends ViewGroup implements Page {
     /** Returns an estimated center position of the cell at the specified index */
     public int[] estimateCellPosition(int x, int y) {
         return new int[] {
-                mPaddingLeft + (x * mCellWidth) + (x * mWidthGap) + (mCellWidth / 2),
-                mPaddingTop + (y * mCellHeight) + (y * mHeightGap) + (mCellHeight / 2)
+                getPaddingLeft() + (x * mCellWidth) + (x * mWidthGap) + (mCellWidth / 2),
+                getPaddingTop() + (y * mCellHeight) + (y * mHeightGap) + (mCellHeight / 2)
         };
     }
 

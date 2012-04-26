@@ -173,7 +173,7 @@ public class CellLayout extends ViewGroup {
 
     public CellLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mDragEnforcer = new DropTarget.DragEnforcer(mContext);
+        mDragEnforcer = new DropTarget.DragEnforcer(context);
 
         // A ViewGroup usually does not draw, but CellLayout needs to draw a rectangle to show
         // the user where a dragged item will land when dropped.
@@ -747,8 +747,8 @@ public class CellLayout extends ViewGroup {
     public void setTagToCellInfoForPoint(int touchX, int touchY) {
         final CellInfo cellInfo = mCellInfo;
         Rect frame = mRect;
-        final int x = touchX + mScrollX;
-        final int y = touchY + mScrollY;
+        final int x = touchX + getScrollX();
+        final int y = touchY + getScrollY();
         final int count = mShortcutsAndWidgets.getChildCount();
 
         boolean found = false;
@@ -766,7 +766,7 @@ public class CellLayout extends ViewGroup {
                 // The child hit rect is relative to the CellLayoutChildren parent, so we need to
                 // offset that by this CellLayout's padding to test an (x,y) point that is relative
                 // to this view.
-                frame.offset(mPaddingLeft, mPaddingTop);
+                frame.offset(getPaddingLeft(), getPaddingTop());
                 frame.inset((int) (frame.width() * (1f - scale) / 2),
                         (int) (frame.height() * (1f - scale) / 2));
 
@@ -955,8 +955,8 @@ public class CellLayout extends ViewGroup {
         }
         int left = getPaddingLeft();
         int top = getPaddingTop();
-        int right = left + getWidth() - mPaddingLeft - mPaddingRight;
-        int bottom = top + getHeight() - mPaddingTop - mPaddingBottom;
+        int right = left + getWidth() - getPaddingLeft() - getPaddingRight();
+        int bottom = top + getHeight() - getPaddingTop() - getPaddingBottom();
         r.set(left, top, right, bottom);
         return r;
     }
@@ -979,8 +979,8 @@ public class CellLayout extends ViewGroup {
         int numHeightGaps = mCountY - 1;
 
         if (mOriginalWidthGap < 0 || mOriginalHeightGap < 0) {
-            int hSpace = widthSpecSize - mPaddingLeft - mPaddingRight;
-            int vSpace = heightSpecSize - mPaddingTop - mPaddingBottom;
+            int hSpace = widthSpecSize - getPaddingLeft() - getPaddingRight();
+            int vSpace = heightSpecSize - getPaddingTop() - getPaddingBottom();
             int hFreeSpace = hSpace - (mCountX * mOriginalCellWidth);
             int vFreeSpace = vSpace - (mCountY * mOriginalCellHeight);
             mWidthGap = Math.min(mMaxGap, numWidthGaps > 0 ? (hFreeSpace / numWidthGaps) : 0);
@@ -995,9 +995,9 @@ public class CellLayout extends ViewGroup {
         int newWidth = widthSpecSize;
         int newHeight = heightSpecSize;
         if (widthSpecMode == MeasureSpec.AT_MOST) {
-            newWidth = mPaddingLeft + mPaddingRight + (mCountX * mCellWidth) +
+            newWidth = getPaddingLeft() + getPaddingRight() + (mCountX * mCellWidth) +
                 ((mCountX - 1) * mWidthGap);
-            newHeight = mPaddingTop + mPaddingBottom + (mCountY * mCellHeight) +
+            newHeight = getPaddingTop() + getPaddingBottom() + (mCountY * mCellHeight) +
                 ((mCountY - 1) * mHeightGap);
             setMeasuredDimension(newWidth, newHeight);
         }
@@ -1005,10 +1005,10 @@ public class CellLayout extends ViewGroup {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(newWidth - mPaddingLeft -
-                    mPaddingRight, MeasureSpec.EXACTLY);
-            int childheightMeasureSpec = MeasureSpec.makeMeasureSpec(newHeight - mPaddingTop -
-                    mPaddingBottom, MeasureSpec.EXACTLY);
+            int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(newWidth - getPaddingLeft() -
+                    getPaddingRight(), MeasureSpec.EXACTLY);
+            int childheightMeasureSpec = MeasureSpec.makeMeasureSpec(newHeight - getPaddingTop() -
+                    getPaddingBottom(), MeasureSpec.EXACTLY);
             child.measure(childWidthMeasureSpec, childheightMeasureSpec);
         }
         setMeasuredDimension(newWidth, newHeight);
@@ -1019,8 +1019,8 @@ public class CellLayout extends ViewGroup {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            child.layout(mPaddingLeft, mPaddingTop,
-                    r - l - mPaddingRight, b - t - mPaddingBottom);
+            child.layout(getPaddingLeft(), getPaddingTop(),
+                    r - l - getPaddingRight(), b - t - getPaddingBottom());
         }
     }
 
@@ -2762,12 +2762,12 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
     }
 
     public int getDesiredWidth() {
-        return mPaddingLeft + mPaddingRight + (mCountX * mCellWidth) +
+        return getPaddingLeft() + getPaddingRight() + (mCountX * mCellWidth) +
                 (Math.max((mCountX - 1), 0) * mWidthGap);
     }
 
     public int getDesiredHeight()  {
-        return mPaddingTop + mPaddingBottom + (mCountY * mCellHeight) +
+        return getPaddingTop() + getPaddingBottom() + (mCountY * mCellHeight) +
                 (Math.max((mCountY - 1), 0) * mHeightGap);
     }
 

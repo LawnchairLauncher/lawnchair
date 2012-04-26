@@ -133,6 +133,8 @@ public final class Launcher extends Activity
     private static final int REQUEST_PICK_APPWIDGET = 9;
     private static final int REQUEST_PICK_WALLPAPER = 10;
 
+    private static final int REQUEST_BIND_APPWIDGET = 11;
+
     static final String EXTRA_SHORTCUT_DUPLICATE = "duplicate";
 
     static final int SCREEN_COUNT = 5;
@@ -250,7 +252,7 @@ public final class Launcher extends Activity
     private static Drawable.ConstantState[] sAppMarketIcon = new Drawable.ConstantState[2];
 
     static final ArrayList<String> sDumpLogs = new ArrayList<String>();
-    PendingAddWidgetInfo mWidgetBeingConfigured = null;
+    PendingAddWidgetInfo mWidgetBeingBoundOrConfigured = null;
 
     // We only want to get the SharedPreferences once since it does an FS stat each time we get
     // it from the context.
@@ -545,7 +547,18 @@ public final class Launcher extends Activity
     }
 
     @Override
-    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+    protected void onActivityResult(
+            final int requestCode, final int resultCode, final Intent data) {
+        if (requestCode == REQUEST_BIND_APPWIDGET) {
+            int appWidgetId = data != null ?
+                    data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1) : -1;
+            if (resultCode == RESULT_CANCELED) {
+                completeTwoStageWidgetDrop(RESULT_CANCELED, appWidgetId);
+            } else if (resultCode == RESULT_OK) {
+                addAppWidgetImpl(appWidgetId, mWidgetBeingBoundOrConfigured);
+            }
+            return;
+        }
         boolean delayExitSpringLoadedMode = false;
         boolean isWidgetDrop = (requestCode == REQUEST_PICK_APPWIDGET ||
                 requestCode == REQUEST_CREATE_APPWIDGET);
@@ -585,15 +598,16 @@ public final class Launcher extends Activity
     }
 
     private void completeTwoStageWidgetDrop(final int resultCode, final int appWidgetId) {
-        CellLayout cellLayout = (CellLayout) mWorkspace.getChildAt(mWidgetBeingConfigured.screen);
+        CellLayout cellLayout =
+                (CellLayout) mWorkspace.getChildAt(mWidgetBeingBoundOrConfigured.screen);
         Runnable onCompleteRunnable = null;
         int animationType = 0;
 
         if (resultCode == RESULT_OK) {
             animationType = Workspace.COMPLETE_TWO_STAGE_WIDGET_DROP_ANIMATION;
             final AppWidgetHostView layout = mAppWidgetHost.createView(this, appWidgetId,
-                    mWidgetBeingConfigured.info);
-            mWidgetBeingConfigured.boundWidget = layout;
+                    mWidgetBeingBoundOrConfigured.info);
+            mWidgetBeingBoundOrConfigured.boundWidget = layout;
             onCompleteRunnable = new Runnable() {
                 @Override
                 public void run() {
@@ -613,10 +627,10 @@ public final class Launcher extends Activity
                 }
             };
         }
-        mWorkspace.animateWidgetDrop(mWidgetBeingConfigured, cellLayout,
+        mWorkspace.animateWidgetDrop(mWidgetBeingBoundOrConfigured, cellLayout,
                 (DragView) mDragLayer.getAnimatedView(), onCompleteRunnable,
-                animationType, mWidgetBeingConfigured.boundWidget, true);
-        mWidgetBeingConfigured = null;
+                animationType, mWidgetBeingBoundOrConfigured.boundWidget, true);
+        mWidgetBeingBoundOrConfigured = null;
     }
 
     @Override
@@ -1541,7 +1555,7 @@ public final class Launcher extends Activity
                 }
             }
             startActivityForResultSafely(intent, REQUEST_CREATE_APPWIDGET);
-            mWidgetBeingConfigured = info;
+            mWidgetBeingBoundOrConfigured = info;
         } else {
             // Otherwise just add it
             completeAddAppWidget(appWidgetId, info.container, info.screen, info.boundWidget, appWidget);
@@ -1605,11 +1619,19 @@ public final class Launcher extends Activity
         int appWidgetId;
         if (hostView != null) {
             appWidgetId = hostView.getAppWidgetId();
+            addAppWidgetImpl(appWidgetId, info);
         } else {
             appWidgetId = getAppWidgetHost().allocateAppWidgetId();
-            AppWidgetManager.getInstance(this).bindAppWidgetId(appWidgetId, info.componentName);
+            mWidgetBeingBoundOrConfigured = info;
+            if (mAppWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, info.componentName)) {
+                addAppWidgetImpl(appWidgetId, info);
+            } else {
+                Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
+                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, info.componentName);
+                startActivityForResult(intent, REQUEST_BIND_APPWIDGET);
+            }
         }
-        addAppWidgetImpl(appWidgetId, info);
     }
 
     void processShortcut(Intent intent) {

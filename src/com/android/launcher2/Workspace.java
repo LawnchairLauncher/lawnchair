@@ -68,7 +68,7 @@ import java.util.HashSet;
  */
 public class Workspace extends SmoothPagedView
         implements DropTarget, DragSource, DragScroller, View.OnTouchListener,
-        DragController.DragListener, LauncherTransitionable {
+        DragController.DragListener, LauncherTransitionable, ViewGroup.OnHierarchyChangeListener {
     private static final String TAG = "Launcher.Workspace";
 
     // Y rotation to apply to the workspace screens
@@ -322,6 +322,8 @@ public class Workspace extends SmoothPagedView
         mDefaultPage = a.getInt(R.styleable.Workspace_defaultScreen, 1);
         a.recycle();
 
+        setOnHierarchyChangeListener(this);
+
         LauncherModel.updateWorkspaceLayoutCells(cellCountX, cellCountY);
         setHapticFeedbackEnabled(false);
 
@@ -417,8 +419,7 @@ public class Workspace extends SmoothPagedView
     }
 
     @Override
-    protected void onViewAdded(View child) {
-        super.onViewAdded(child);
+    public void onChildViewAdded(View parent, View child) {
         if (!(child instanceof CellLayout)) {
             throw new IllegalArgumentException("A Workspace can only have CellLayout children.");
         }
@@ -426,6 +427,10 @@ public class Workspace extends SmoothPagedView
         cl.setOnInterceptTouchListener(this);
         cl.setClickable(true);
         cl.enableHardwareLayers();
+    }
+
+    @Override
+    public void onChildViewRemoved(View parent, View child) {
     }
 
     /**
@@ -824,7 +829,7 @@ public class Workspace extends SmoothPagedView
         int scrollRange = getScrollRange();
 
         // Again, we adjust the wallpaper offset to be consistent between values of mLayoutScale
-        float adjustedScrollX = Math.max(0, Math.min(mScrollX, mMaxScrollX));
+        float adjustedScrollX = Math.max(0, Math.min(getScrollX(), mMaxScrollX));
         adjustedScrollX *= mWallpaperScrollRatio;
         mLayoutScale = layoutScale;
 
@@ -1296,7 +1301,7 @@ public class Workspace extends SmoothPagedView
         if (mBackground != null && mBackgroundAlpha > 0.0f && mDrawBackground) {
             int alpha = (int) (mBackgroundAlpha * 255);
             mBackground.setAlpha(alpha);
-            mBackground.setBounds(mScrollX, 0, mScrollX + getMeasuredWidth(),
+            mBackground.setBounds(getScrollX(), 0, getScrollX() + getMeasuredWidth(),
                     getMeasuredHeight());
             mBackground.draw(canvas);
         }
@@ -1318,9 +1323,9 @@ public class Workspace extends SmoothPagedView
             final int pageHeight = getChildAt(0).getHeight();
 
             // Set the height of the outline to be the height of the page
-            final int offset = (height - pageHeight - mPaddingTop - mPaddingBottom) / 2;
-            final int paddingTop = mPaddingTop + offset;
-            final int paddingBottom = mPaddingBottom + offset;
+            final int offset = (height - pageHeight - getPaddingTop() - getPaddingBottom()) / 2;
+            final int paddingTop = getPaddingTop() + offset;
+            final int paddingBottom = getPaddingBottom() + offset;
 
             final int page = (mNextPage != INVALID_PAGE ? mNextPage : mCurrentPage);
             final CellLayout leftPage = (CellLayout) getChildAt(page - 1);
@@ -1328,13 +1333,13 @@ public class Workspace extends SmoothPagedView
 
             if (leftPage != null && leftPage.getIsDragOverlapping()) {
                 final Drawable d = getResources().getDrawable(R.drawable.page_hover_left_holo);
-                d.setBounds(mScrollX, paddingTop, mScrollX + d.getIntrinsicWidth(),
+                d.setBounds(getScrollX(), paddingTop, getScrollX() + d.getIntrinsicWidth(),
                         height - paddingBottom);
                 d.draw(canvas);
             } else if (rightPage != null && rightPage.getIsDragOverlapping()) {
                 final Drawable d = getResources().getDrawable(R.drawable.page_hover_right_holo);
-                d.setBounds(mScrollX + width - d.getIntrinsicWidth(), paddingTop, mScrollX + width,
-                        height - paddingBottom);
+                d.setBounds(getScrollX() + width - d.getIntrinsicWidth(), paddingTop,
+                        getScrollX() + width, height - paddingBottom);
                 d.draw(canvas);
             }
         }
@@ -2545,12 +2550,12 @@ public class Workspace extends SmoothPagedView
            v.getMatrix().invert(mTempInverseMatrix);
            cachedInverseMatrix = mTempInverseMatrix;
        }
-       int scrollX = mScrollX;
+       int scrollX = getScrollX();
        if (mNextPage != INVALID_PAGE) {
            scrollX = mScroller.getFinalX();
        }
        xy[0] = xy[0] + scrollX - v.getLeft();
-       xy[1] = xy[1] + mScrollY - v.getTop();
+       xy[1] = xy[1] + getScrollY() - v.getTop();
        cachedInverseMatrix.mapPoints(xy);
    }
 
@@ -2576,12 +2581,12 @@ public class Workspace extends SmoothPagedView
     */
    void mapPointFromChildToSelf(View v, float[] xy) {
        v.getMatrix().mapPoints(xy);
-       int scrollX = mScrollX;
+       int scrollX = getScrollX();
        if (mNextPage != INVALID_PAGE) {
            scrollX = mScroller.getFinalX();
        }
        xy[0] -= (scrollX - v.getLeft());
-       xy[1] -= (mScrollY - v.getTop());
+       xy[1] -= (getScrollY() - v.getTop());
    }
 
    static private float squaredDistance(float[] point1, float[] point2) {
@@ -3713,7 +3718,7 @@ public class Workspace extends SmoothPagedView
     @Override
     protected String getCurrentPageDescription() {
         int page = (mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage;
-        return String.format(mContext.getString(R.string.workspace_scroll_format),
+        return String.format(getContext().getString(R.string.workspace_scroll_format),
                 page + 1, getChildCount());
     }
 

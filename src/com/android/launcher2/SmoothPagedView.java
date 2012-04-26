@@ -175,7 +175,7 @@ public abstract class SmoothPagedView extends PagedView {
                 final float e = (float) Math.exp((now - mSmoothingTime) / SMOOTHING_CONSTANT);
 
                 final float dx = mTouchX - mUnboundedScrollX;
-                scrollTo(Math.round(mUnboundedScrollX + dx * e), mScrollY);
+                scrollTo(Math.round(mUnboundedScrollX + dx * e), getScrollY());
                 mSmoothingTime = now;
 
                 // Keep generating points as long as we're more than 1px away from the target

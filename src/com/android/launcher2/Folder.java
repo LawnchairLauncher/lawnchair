@@ -127,7 +127,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         }
 
         mInputMethodManager = (InputMethodManager)
-                mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
         mExpandDuration = res.getInteger(R.integer.config_folderAnimDuration);
 
@@ -250,7 +250,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
         if (commit) {
             sendCustomAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
-                    String.format(mContext.getString(R.string.folder_renamed), newTitle));
+                    String.format(getContext().getString(R.string.folder_renamed), newTitle));
         }
         // In order to clear the focus from the text field, we set the focus on ourself. This
         // ensures that every time the field is clicked, focus is gained, giving reliable behavior.
@@ -379,7 +379,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             @Override
             public void onAnimationStart(Animator animation) {
                 sendCustomAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
-                        String.format(mContext.getString(R.string.folder_opened),
+                        String.format(getContext().getString(R.string.folder_opened),
                         mContent.getCountX(), mContent.getCountY()));
                 mState = STATE_ANIMATING;
             }
@@ -399,11 +399,13 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     private void sendCustomAccessibilityEvent(int type, String text) {
-        if (AccessibilityManager.getInstance(mContext).isEnabled()) {
+        AccessibilityManager accessibilityManager = (AccessibilityManager)
+                getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
+        if (accessibilityManager.isEnabled()) {
             AccessibilityEvent event = AccessibilityEvent.obtain(type);
             onInitializeAccessibilityEvent(event);
             event.getText().add(text);
-            AccessibilityManager.getInstance(mContext).sendAccessibilityEvent(event);
+            accessibilityManager.sendAccessibilityEvent(event);
         }
     }
 
@@ -430,7 +432,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             @Override
             public void onAnimationStart(Animator animation) {
                 sendCustomAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
-                        mContext.getString(R.string.folder_closed));
+                        getContext().getString(R.string.folder_closed));
                 mState = STATE_ANIMATING;
             }
         });

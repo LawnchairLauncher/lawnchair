@@ -102,7 +102,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         setup();
 
         final ViewGroup tabsContainer = (ViewGroup) findViewById(R.id.tabs_container);
-        final TabWidget tabs = (TabWidget) findViewById(com.android.internal.R.id.tabs);
+        final TabWidget tabs = getTabWidget();
         final AppsCustomizePagedView appsCustomizePane = (AppsCustomizePagedView)
                 findViewById(R.id.apps_customize_pane_content);
         mTabs = tabs;
@@ -123,12 +123,12 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         // Create the tabs
         TextView tabView;
         String label;
-        label = mContext.getString(R.string.all_apps_button_label);
+        label = getContext().getString(R.string.all_apps_button_label);
         tabView = (TextView) mLayoutInflater.inflate(R.layout.tab_widget_indicator, tabs, false);
         tabView.setText(label);
         tabView.setContentDescription(label);
         addTab(newTabSpec(APPS_TAB_TAG).setIndicator(tabView).setContent(contentFactory));
-        label = mContext.getString(R.string.widgets_tab_label);
+        label = getContext().getString(R.string.widgets_tab_label);
         tabView = (TextView) mLayoutInflater.inflate(R.layout.tab_widget_indicator, tabs, false);
         tabView.setText(label);
         tabView.setContentDescription(label);

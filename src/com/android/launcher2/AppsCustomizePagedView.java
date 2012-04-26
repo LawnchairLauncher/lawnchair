@@ -576,9 +576,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             @Override
             public void run() {
                 mWidgetLoadingId = mLauncher.getAppWidgetHost().allocateAppWidgetId();
-                AppWidgetManager.getInstance(mLauncher).bindAppWidgetId(mWidgetLoadingId,
-                        info.componentName);
-                mWidgetCleanupState = WIDGET_BOUND;
+                if (AppWidgetManager.getInstance(mLauncher)
+                            .bindAppWidgetIdIfAllowed(mWidgetLoadingId, info.componentName)) {
+                    mWidgetCleanupState = WIDGET_BOUND;
+                }
             }
         };
         post(mBindWidgetRunnable);
@@ -586,8 +587,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mInflateWidgetRunnable = new Runnable() {
             @Override
             public void run() {
-                AppWidgetHostView hostView =
-                        mLauncher.getAppWidgetHost().createView(mContext, mWidgetLoadingId, pInfo);
+                AppWidgetHostView hostView = mLauncher.
+                        getAppWidgetHost().createView(getContext(), mWidgetLoadingId, pInfo);
                 info.boundWidget = hostView;
                 mWidgetCleanupState = WIDGET_INFLATED;
                 hostView.setVisibility(INVISIBLE);
@@ -1462,7 +1463,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
                 // If the view has 0 alpha, we set it to be invisible so as to prevent
                 // it from accepting touches
-                if (alpha < ViewConfiguration.ALPHA_THRESHOLD) {
+                if (alpha == 0) {
                     v.setVisibility(INVISIBLE);
                 } else if (v.getVisibility() != VISIBLE) {
                     v.setVisibility(VISIBLE);
@@ -1687,6 +1688,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             count = mNumWidgetPages;
         }
 
-        return String.format(mContext.getString(stringId), page + 1, count);
+        return String.format(getContext().getString(stringId), page + 1, count);
     }
 }
