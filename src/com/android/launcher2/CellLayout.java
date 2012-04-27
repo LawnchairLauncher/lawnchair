@@ -58,8 +58,6 @@ public class CellLayout extends ViewGroup {
     static final String TAG = "CellLayout";
 
     private Launcher mLauncher;
-    private int mOriginalCellWidth;
-    private int mOriginalCellHeight;
     private int mCellWidth;
     private int mCellHeight;
 
@@ -178,10 +176,8 @@ public class CellLayout extends ViewGroup {
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CellLayout, defStyle, 0);
 
-        mOriginalCellWidth =
-            mCellWidth = a.getDimensionPixelSize(R.styleable.CellLayout_cellWidth, 10);
-        mOriginalCellHeight =
-            mCellHeight = a.getDimensionPixelSize(R.styleable.CellLayout_cellHeight, 10);
+        mCellWidth = a.getDimensionPixelSize(R.styleable.CellLayout_cellWidth, 10);
+        mCellHeight = a.getDimensionPixelSize(R.styleable.CellLayout_cellHeight, 10);
         mWidthGap = mOriginalWidthGap = a.getDimensionPixelSize(R.styleable.CellLayout_widthGap, 0);
         mHeightGap = mOriginalHeightGap = a.getDimensionPixelSize(R.styleable.CellLayout_heightGap, 0);
         mMaxGap = a.getDimensionPixelSize(R.styleable.CellLayout_maxGap, 0);
@@ -914,6 +910,54 @@ public class CellLayout extends ViewGroup {
         return r;
     }
 
+    final int LANDSCAPE = 0;
+    final int PORTRAIT = 1;
+    void getCellLayoutMetrics(int measureWidth, int measureHeight, int orientation, Rect metrics) {
+        int numWidthGaps = mCountX - 1;
+        int numHeightGaps = mCountY - 1;
+
+        int widthGap;
+        int heightGap;
+        int cellWidth;
+        int cellHeight;
+        int paddingLeft;
+        int paddingRight;
+        int paddingTop;
+        int paddingBottom;
+
+        Resources res = getContext().getResources();
+        if (orientation == LANDSCAPE) {
+            cellWidth = res.getDimensionPixelSize(R.dimen.workspace_cell_width_land);
+            cellHeight = res.getDimensionPixelSize(R.dimen.workspace_cell_height_land);
+            widthGap = res.getDimensionPixelSize(R.dimen.workspace_width_gap_land);
+            heightGap = res.getDimensionPixelSize(R.dimen.workspace_height_gap_land);
+            paddingLeft = res.getDimensionPixelSize(R.dimen.cell_layout_left_padding_land);
+            paddingRight = res.getDimensionPixelSize(R.dimen.cell_layout_right_padding_land);
+            paddingTop = res.getDimensionPixelSize(R.dimen.cell_layout_top_padding_land);
+            paddingBottom = res.getDimensionPixelSize(R.dimen.cell_layout_bottom_padding_land);
+        } else {
+            // PORTRAIT
+            cellWidth = res.getDimensionPixelSize(R.dimen.workspace_cell_width_port);
+            cellHeight = res.getDimensionPixelSize(R.dimen.workspace_cell_height_port);
+            widthGap = res.getDimensionPixelSize(R.dimen.workspace_width_gap_port);
+            heightGap = res.getDimensionPixelSize(R.dimen.workspace_height_gap_port);
+            paddingLeft = res.getDimensionPixelSize(R.dimen.cell_layout_left_padding_port);
+            paddingRight = res.getDimensionPixelSize(R.dimen.cell_layout_right_padding_port);
+            paddingTop = res.getDimensionPixelSize(R.dimen.cell_layout_top_padding_port);
+            paddingBottom = res.getDimensionPixelSize(R.dimen.cell_layout_bottom_padding_port);
+        }
+
+        if (widthGap < 0 || heightGap < 0) {
+            int hSpace = measureWidth - paddingLeft - paddingRight;
+            int vSpace = measureHeight - paddingTop - paddingBottom;
+            int hFreeSpace = hSpace - (mCountX * cellWidth);
+            int vFreeSpace = vSpace - (mCountY * cellHeight);
+            widthGap = Math.min(mMaxGap, numWidthGaps > 0 ? (hFreeSpace / numWidthGaps) : 0);
+            heightGap = Math.min(mMaxGap, numHeightGaps > 0 ? (vFreeSpace / numHeightGaps) : 0);
+        }
+        metrics.set(cellWidth, cellHeight, widthGap, heightGap);
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // TODO: currently ignoring padding
@@ -932,10 +976,10 @@ public class CellLayout extends ViewGroup {
         int numHeightGaps = mCountY - 1;
 
         if (mOriginalWidthGap < 0 || mOriginalHeightGap < 0) {
-            int hSpace = widthSpecSize - getPaddingLeft() - getPaddingRight();
-            int vSpace = heightSpecSize - getPaddingTop() - getPaddingBottom();
-            int hFreeSpace = hSpace - (mCountX * mOriginalCellWidth);
-            int vFreeSpace = vSpace - (mCountY * mOriginalCellHeight);
+            int hSpace = widthSpecSize - mPaddingLeft - mPaddingRight;
+            int vSpace = heightSpecSize - mPaddingTop - mPaddingBottom;
+            int hFreeSpace = hSpace - (mCountX * mCellWidth);
+            int vFreeSpace = vSpace - (mCountY * mCellHeight);
             mWidthGap = Math.min(mMaxGap, numWidthGaps > 0 ? (hFreeSpace / numWidthGaps) : 0);
             mHeightGap = Math.min(mMaxGap,numHeightGaps > 0 ? (vFreeSpace / numHeightGaps) : 0);
             mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap);

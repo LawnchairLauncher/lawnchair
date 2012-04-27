@@ -20,8 +20,6 @@
     <dimen name="toolbar_button_horizontal_padding">4dip</dimen>
 
 <!-- Workspace -->
-    <dimen name="workspace_cell_width">106dp</dimen>
-    <dimen name="workspace_cell_height">74dp</dimen>
     <dimen name="hotseat_cell_width">64dp</dimen>
     <dimen name="hotseat_cell_height">58dp</dimen>
     <!-- We really want the page spacing to be the max of either the button bar
@@ -77,4 +75,10 @@
 <!-- Folders -->
     <!-- The size of the image which sits behind the preview of the folder contents -->
     <dimen name="folder_preview_size">58dp</dimen>
+
+<!-- Workspace cell size -->
+    <dimen name="workspace_cell_width">@dimen/workspace_cell_width_land</dimen>
+    <dimen name="workspace_cell_height">@dimen/workspace_cell_height_land</dimen>
+    <dimen name="workspace_width_gap">@dimen/workspace_width_gap_land</dimen>
+    <dimen name="workspace_height_gap">@dimen/workspace_height_gap_land</dimen>
 </resources>

@@ -30,10 +30,6 @@
     <dimen name="qsb_padding_left">0dp</dimen>
     <dimen name="qsb_padding_right">0dp</dimen>
     <dimen name="search_bar_height">40dp</dimen>
-    <dimen name="workspace_cell_width">80dp</dimen>
-    <dimen name="workspace_cell_height">100dp</dimen>
-    <dimen name="workspace_width_gap">-1dp</dimen>
-    <dimen name="workspace_height_gap">-1dp</dimen>
     <dimen name="workspace_max_gap">16dp</dimen>
     <dimen name="folder_cell_width">74dp</dimen>
     <dimen name="folder_cell_height">82dp</dimen>
@@ -140,4 +136,13 @@
     <dimen name="workspace_bottom_padding_port">@dimen/button_bar_height</dimen>
     <dimen name="workspace_bottom_padding_land">0dp</dimen>
 
+<!-- Workspace cell size -->
+    <dimen name="workspace_cell_width_land">106dp</dimen>
+    <dimen name="workspace_cell_width_port">80dp</dimen>
+    <dimen name="workspace_cell_height_land">74dp</dimen>
+    <dimen name="workspace_cell_height_port">100dp</dimen>
+    <dimen name="workspace_width_gap_land">-1dp</dimen>
+    <dimen name="workspace_width_gap_port">-1dp</dimen>
+    <dimen name="workspace_height_gap_land">-1dp</dimen>
+    <dimen name="workspace_height_gap_port">-1dp</dimen>
 </resources>
