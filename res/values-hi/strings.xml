@@ -40,8 +40,7 @@
     <string name="group_shortcuts" msgid="9133529424900391877">"शॉर्टकट"</string>
     <string name="group_widgets" msgid="6704978494073105844">"विजेट"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"वॉलपेपर"</string>
-    <!-- no translation found for completely_out_of_space (1759078539443491182) -->
-    <skip />
+    <string name="completely_out_of_space" msgid="1759078539443491182">"आपकी मुखपृष्ठ स्‍क्रीन पर अधिक स्थान नहीं है."</string>
     <string name="out_of_space" msgid="8365249326091984698">"इस होम स्‍क्रीन पर और स्थान नहीं है."</string>
     <string name="hotseat_out_of_space" msgid="6304886797358479361">"हॉटसीट पर अधिक स्‍थान नहीं है."</string>
     <string name="invalid_hotseat_item" msgid="6545340627805449250">"हॉटसीट के लि‍ए यह वि‍जेट बहुत बड़ा है."</string>
