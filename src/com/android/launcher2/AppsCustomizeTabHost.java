@@ -176,8 +176,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     public boolean onTouchEvent(MotionEvent event) {
         // Allow touch events to fall through to the workspace if we are transitioning there
         if (mInTransition && mTransitioningToWorkspace) {
-                return super.onTouchEvent(event);
-            }
+            return super.onTouchEvent(event);
         }
 
         // Intercept all touch events up to the bottom of the AppsCustomizePane so they do not fall
