@@ -91,7 +91,17 @@ public class DeleteDropTarget extends ButtonDropTarget {
         return (source instanceof AppsCustomizePagedView) && (info instanceof ApplicationInfo);
     }
     private boolean isAllAppsWidget(DragSource source, Object info) {
-        return (source instanceof AppsCustomizePagedView) && (info instanceof PendingAddWidgetInfo);
+        if (source instanceof AppsCustomizePagedView) {
+            if (info instanceof PendingAddItemInfo) {
+                PendingAddItemInfo addInfo = (PendingAddItemInfo) info;
+                switch (addInfo.itemType) {
+                    case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                    case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+                        return true;
+                }
+            }
+        }
+        return false;
     }
     private boolean isDragSourceWorkspaceOrFolder(DragObject d) {
         return (d.dragSource instanceof Workspace) || (d.dragSource instanceof Folder);

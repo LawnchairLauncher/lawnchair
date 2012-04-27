@@ -3602,7 +3602,7 @@ public class Workspace extends SmoothPagedView
                             final Intent intent = info.intent;
                             final ComponentName name = intent.getComponent();
 
-                            if (Intent.ACTION_MAIN.equals(intent.getAction()) && name != null) {
+                            if (name != null) {
                                 for (String packageName: packageNames) {
                                     if (packageName.equals(name.getPackageName())) {
                                         LauncherModel.deleteItemFromDatabase(mLauncher, info);
@@ -3622,7 +3622,7 @@ public class Workspace extends SmoothPagedView
                                 final Intent intent = appInfo.intent;
                                 final ComponentName name = intent.getComponent();
 
-                                if (Intent.ACTION_MAIN.equals(intent.getAction()) && name != null) {
+                                if (name != null) {
                                     for (String packageName: packageNames) {
                                         if (packageName.equals(name.getPackageName())) {
                                             appsToRemoveFromFolder.add(appInfo);
@@ -3636,11 +3636,10 @@ public class Workspace extends SmoothPagedView
                             }
                         } else if (tag instanceof LauncherAppWidgetInfo) {
                             final LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) tag;
-                            final AppWidgetProviderInfo provider =
-                                    widgets.getAppWidgetInfo(info.appWidgetId);
+                            final ComponentName provider = info.providerName;
                             if (provider != null) {
                                 for (String packageName: packageNames) {
-                                    if (packageName.equals(provider.provider.getPackageName())) {
+                                    if (packageName.equals(provider.getPackageName())) {
                                         LauncherModel.deleteItemFromDatabase(mLauncher, info);
                                         childrenToRemove.add(view);
                                     }
