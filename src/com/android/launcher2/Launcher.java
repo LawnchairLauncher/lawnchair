@@ -105,6 +105,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -2888,6 +2889,15 @@ public final class Launcher extends Activity
 
     private void updateAppMarketIcon(Drawable.ConstantState d) {
         updateTextButtonWithDrawable(R.id.market_button, d);
+    }
+
+    @Override
+    public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
+        boolean result = super.dispatchPopulateAccessibilityEvent(event);
+        final List<CharSequence> text = event.getText();
+        text.clear();
+        text.add(getString(R.string.home));
+        return result;
     }
 
     /**

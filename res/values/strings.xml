@@ -22,6 +22,8 @@
     <skip />
     <!-- Application name -->
     <string name="application_name">Launcher</string>
+    <!-- Accessibility-facing application name -->
+    <string name="home">Home</string>
     <!-- Name for all applications running as this uid. -->
     <string name="uid_name">Android Core Apps</string>
     <!-- Default folder name -->
