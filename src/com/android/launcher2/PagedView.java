@@ -270,6 +270,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     int getCurrentPage() {
         return mCurrentPage;
     }
+    int getNextPage() {
+        return (mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage;
+    }
 
     int getPageCount() {
         return getChildCount();
@@ -1858,9 +1861,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     protected String getCurrentPageDescription() {
-        int page = (mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage;
         return String.format(getContext().getString(R.string.default_scroll_format),
-                page + 1, getChildCount());
+                 getNextPage() + 1, getChildCount());
     }
 
     @Override
