@@ -164,8 +164,9 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     }
 
      public boolean onInterceptTouchEvent(MotionEvent ev) {
-         // If we are mid transition then intercept touch events here so we can ignore them
-         if (mInTransition) {
+         // If we are mid transitioning to the workspace, then intercept touch events here so we
+         // can ignore them, otherwise we just let all apps handle the touch events.
+         if (mInTransition && mTransitioningToWorkspace) {
              return true;
          }
          return super.onInterceptTouchEvent(ev);
@@ -173,9 +174,8 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        // Allow touch events to fall through if we are transitioning to the workspace
-        if (mInTransition) {
-            if (mTransitioningToWorkspace) {
+        // Allow touch events to fall through to the workspace if we are transitioning there
+        if (mInTransition && mTransitioningToWorkspace) {
                 return super.onTouchEvent(event);
             }
         }
