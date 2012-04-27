@@ -17,8 +17,6 @@
 <resources>
 <!-- Workspace -->
     <integer name="app_icon_scale_percent">-1</integer>
-    <dimen name="workspace_width_gap">0dp</dimen>
-    <dimen name="workspace_height_gap">32dp</dimen>
 
 <!-- AppsCustomize -->
     <dimen name="apps_customize_cell_width">96dp</dimen>

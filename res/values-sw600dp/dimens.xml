@@ -20,10 +20,6 @@
     <dimen name="app_icon_drawable_padding">3dp</dimen>
     <dimen name="app_icon_padding_top">4dp</dimen>
 
-<!-- Workspace -->
-    <dimen name="workspace_cell_width">96dp</dimen>
-    <dimen name="workspace_cell_height">96dp</dimen>
-
 <!-- Hotseat -->
     <dimen name="hotseat_width_gap">-1dp</dimen>
     <dimen name="hotseat_height_gap">-1dp</dimen>
@@ -50,4 +46,15 @@
     <dimen name="apps_customize_tab_bar_margin_top">8dp</dimen>
     <dimen name="apps_customize_widget_cell_width_gap">36dp</dimen>
     <dimen name="apps_customize_widget_cell_height_gap">36dp</dimen>
+
+<!-- Workspace cell size -->
+    <dimen name="workspace_cell_width_land">96dp</dimen>
+    <dimen name="workspace_cell_width_port">96dp</dimen>
+    <dimen name="workspace_cell_height_land">86dp</dimen>
+    <dimen name="workspace_cell_height_port">96dp</dimen>
+    <dimen name="workspace_width_gap_land">32dp</dimen>
+    <dimen name="workspace_width_gap_port">0dp</dimen>
+    <dimen name="workspace_height_gap_land">0dp</dimen>
+    <dimen name="workspace_height_gap_port">32dp</dimen>
+
 </resources>

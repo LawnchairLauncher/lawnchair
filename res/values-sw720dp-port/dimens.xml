@@ -31,8 +31,6 @@
     <!-- the area at the edge of the screen that makes the workspace go left
          or right while you're dragging. -->
     <dimen name="scroll_zone">40dp</dimen>
-    <dimen name="workspace_width_gap">0dp</dimen>
-    <dimen name="workspace_height_gap">32dp</dimen>
     <dimen name="workspace_page_spacing">24dp</dimen>
 
     <integer name="apps_customize_cling_focused_x">2</integer>
