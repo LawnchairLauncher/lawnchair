@@ -568,7 +568,13 @@ public final class Launcher extends Activity
         if (isWidgetDrop) {
             int appWidgetId = data != null ?
                     data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1) : -1;
-            completeTwoStageWidgetDrop(resultCode, appWidgetId);
+            if (appWidgetId < 0) {
+                Log.e(TAG, "Error: appWidgetId (EXTRA_APPWIDGET_ID) was not returned from the \\" +
+                        "widget configuration activity.");
+                completeTwoStageWidgetDrop(RESULT_CANCELED, appWidgetId);
+            } else {
+                completeTwoStageWidgetDrop(resultCode, appWidgetId);
+            }
             return;
         }
 
