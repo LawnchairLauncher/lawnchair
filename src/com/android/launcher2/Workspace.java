@@ -38,6 +38,8 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
@@ -1314,38 +1316,6 @@ public class Workspace extends SmoothPagedView
     }
 
     @Override
-    protected void dispatchDraw(Canvas canvas) {
-        super.dispatchDraw(canvas);
-
-        if (mInScrollArea && !LauncherApplication.isScreenLarge()) {
-            final int width = getWidth();
-            final int height = getHeight();
-            final int pageHeight = getChildAt(0).getHeight();
-
-            // Set the height of the outline to be the height of the page
-            final int offset = (height - pageHeight - getPaddingTop() - getPaddingBottom()) / 2;
-            final int paddingTop = getPaddingTop() + offset;
-            final int paddingBottom = getPaddingBottom() + offset;
-
-            final int page = (mNextPage != INVALID_PAGE ? mNextPage : mCurrentPage);
-            final CellLayout leftPage = (CellLayout) getChildAt(page - 1);
-            final CellLayout rightPage = (CellLayout) getChildAt(page + 1);
-
-            if (leftPage != null && leftPage.getIsDragOverlapping()) {
-                final Drawable d = getResources().getDrawable(R.drawable.page_hover_left_holo);
-                d.setBounds(getScrollX(), paddingTop, getScrollX() + d.getIntrinsicWidth(),
-                        height - paddingBottom);
-                d.draw(canvas);
-            } else if (rightPage != null && rightPage.getIsDragOverlapping()) {
-                final Drawable d = getResources().getDrawable(R.drawable.page_hover_right_holo);
-                d.setBounds(getScrollX() + width - d.getIntrinsicWidth(), paddingTop,
-                        getScrollX() + width, height - paddingBottom);
-                d.draw(canvas);
-            }
-        }
-    }
-
-    @Override
     protected boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
         if (!mLauncher.isAllAppsVisible()) {
             final Folder openFolder = getOpenFolder();
@@ -1564,7 +1534,7 @@ public class Workspace extends SmoothPagedView
         AnimatorSet anim = animated ? new AnimatorSet() : null;
 
         // Stop any scrolling, move to the current page right away
-        setCurrentPage((mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage);
+        setCurrentPage(getNextPage());
 
         final State oldState = mState;
         final boolean oldStateIsNormal = (oldState == State.NORMAL);
@@ -3285,7 +3255,7 @@ public class Workspace extends SmoothPagedView
      * screen while a scroll is in progress.
      */
     public CellLayout getCurrentDropLayout() {
-        return (CellLayout) getChildAt(mNextPage == INVALID_PAGE ? mCurrentPage : mNextPage);
+        return (CellLayout) getChildAt(getNextPage());
     }
 
     /**
@@ -3437,7 +3407,7 @@ public class Workspace extends SmoothPagedView
         if (!isSmall() && !mIsSwitchingState) {
             mInScrollArea = true;
 
-            final int page = (mNextPage != INVALID_PAGE ? mNextPage : mCurrentPage) +
+            final int page = getNextPage() +
                        (direction == DragController.SCROLL_LEFT ? -1 : 1);
 
             // We always want to exit the current layout to ensure parity of enter / exit

@@ -517,6 +517,7 @@ public class DragController {
             mScrollState = SCROLL_OUTSIDE_ZONE;
             mScrollRunnable.setDirection(SCROLL_RIGHT);
             mDragScroller.onExitScrollArea();
+            mLauncher.getDragLayer().onExitScrollArea();
         }
     }
 
@@ -561,6 +562,7 @@ public class DragController {
             if (mScrollState == SCROLL_OUTSIDE_ZONE) {
                 mScrollState = SCROLL_WAITING_IN_ZONE;
                 if (mDragScroller.onEnterScrollArea(x, y, SCROLL_LEFT)) {
+                    mLauncher.getDragLayer().onEnterScrollArea(SCROLL_LEFT);
                     mScrollRunnable.setDirection(SCROLL_LEFT);
                     mHandler.postDelayed(mScrollRunnable, delay);
                 }
@@ -569,6 +571,7 @@ public class DragController {
             if (mScrollState == SCROLL_OUTSIDE_ZONE) {
                 mScrollState = SCROLL_WAITING_IN_ZONE;
                 if (mDragScroller.onEnterScrollArea(x, y, SCROLL_RIGHT)) {
+                    mLauncher.getDragLayer().onEnterScrollArea(SCROLL_RIGHT);
                     mScrollRunnable.setDirection(SCROLL_RIGHT);
                     mHandler.postDelayed(mScrollRunnable, delay);
                 }
@@ -831,6 +834,7 @@ public class DragController {
                 mScrollState = SCROLL_OUTSIDE_ZONE;
                 mDistanceSinceScroll = 0;
                 mDragScroller.onExitScrollArea();
+                mLauncher.getDragLayer().onExitScrollArea();
 
                 if (isDragging()) {
                     // Force an update so that we can requeue the scroller if necessary
