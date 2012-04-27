@@ -113,6 +113,10 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             if (intent != null) {
                 if (intent.getAction() == null) {
                     intent.setAction(Intent.ACTION_VIEW);
+                } else if (intent.getAction().equals(Intent.ACTION_MAIN) &&
+                        intent.getCategories().contains(Intent.CATEGORY_LAUNCHER)) {
+                    intent.addFlags(
+                        Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
                 }
 
                 // By default, we allow for duplicate entries (located in
