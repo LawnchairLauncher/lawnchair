@@ -40,8 +40,7 @@
     <string name="group_shortcuts" msgid="9133529424900391877">"바로가기"</string>
     <string name="group_widgets" msgid="6704978494073105844">"위젯"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"배경화면"</string>
-    <!-- no translation found for completely_out_of_space (1759078539443491182) -->
-    <skip />
+    <string name="completely_out_of_space" msgid="1759078539443491182">"홈 화면에 더 이상 공간이 없습니다."</string>
     <string name="out_of_space" msgid="8365249326091984698">"홈 화면에 더 이상 공간이 없습니다."</string>
     <string name="hotseat_out_of_space" msgid="6304886797358479361">"즐겨찾는 앱 모음에 더 이상 빈 공간이 없습니다."</string>
     <string name="invalid_hotseat_item" msgid="6545340627805449250">"이 위젯은 핫시트에 너무 큽니다."</string>
