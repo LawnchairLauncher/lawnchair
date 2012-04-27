@@ -22,8 +22,6 @@
     <dimen name="apps_customize_pageLayoutPaddingRight">16dp</dimen>
 
 <!-- Workspace -->
-    <dimen name="workspace_width_gap">32dp</dimen>
-    <dimen name="workspace_height_gap">2dp</dimen>
     <dimen name="workspace_page_spacing">50dp</dimen>
 
     <!-- the area at the edge of the screen that makes the workspace go left

@@ -22,12 +22,6 @@
 <!-- Hotseat -->
     <dimen name="hotseat_cell_width">75dp</dimen>
     <dimen name="hotseat_cell_height">75dp</dimen>
-
-<!-- Workspace -->
-    <dimen name="workspace_cell_width">96dp</dimen>
-    <dimen name="workspace_cell_height">86dp</dimen>
-    <dimen name="workspace_width_gap">32dp</dimen>
-    <dimen name="workspace_height_gap">0dp</dimen>
     <dimen name="workspace_icon_text_size">11sp</dimen>
 
 <!-- Folders -->

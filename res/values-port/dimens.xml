@@ -50,4 +50,10 @@
     <dimen name="apps_customize_widget_cell_height_gap">10dp</dimen>
     <integer name="apps_customize_widget_cell_count_x">2</integer>
     <integer name="apps_customize_widget_cell_count_y">3</integer>
+
+<!-- Workspace cell size -->
+    <dimen name="workspace_cell_width">@dimen/workspace_cell_width_port</dimen>
+    <dimen name="workspace_cell_height">@dimen/workspace_cell_height_port</dimen>
+    <dimen name="workspace_width_gap">@dimen/workspace_width_gap_port</dimen>
+    <dimen name="workspace_height_gap">@dimen/workspace_height_gap_port</dimen>
 </resources>
