@@ -1100,6 +1100,8 @@ public final class Launcher extends Activity
 
             launcherInfo.hostView.setTag(launcherInfo);
             launcherInfo.hostView.setVisibility(View.VISIBLE);
+            AppWidgetResizeFrame.updateWidgetSizeRanges(launcherInfo.hostView,
+                    this, launcherInfo.spanX, launcherInfo.spanY);
             mWorkspace.addInScreen(launcherInfo.hostView, container, screen, cellXY[0], cellXY[1],
                     launcherInfo.spanX, launcherInfo.spanY, isWorkspaceLocked());
 

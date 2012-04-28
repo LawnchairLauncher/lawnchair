@@ -122,6 +122,9 @@ public class Workspace extends SmoothPagedView
     private int mDragOverX = -1;
     private int mDragOverY = -1;
 
+    static Rect mLandscapeCellLayoutMetrics = null;
+    static Rect mPortraitCellLayoutMetrics = null;
+
     /**
      * The CellLayout that is currently being dragged over
      */
@@ -2387,6 +2390,44 @@ public class Workspace extends SmoothPagedView
         if (LauncherApplication.isScreenLarge()) {
             showOutlines();
         }
+    }
+
+    static Rect getCellLayoutMetrics(Launcher launcher, int orientation) {
+        Resources res = launcher.getResources();
+        Display display = launcher.getWindowManager().getDefaultDisplay();
+        Point smallestSize = new Point();
+        Point largestSize = new Point();
+        display.getCurrentSizeRange(smallestSize, largestSize);
+        if (orientation == CellLayout.LANDSCAPE) {
+            if (mLandscapeCellLayoutMetrics == null) {
+                int paddingLeft = res.getDimensionPixelSize(R.dimen.workspace_left_padding_land);
+                int paddingRight = res.getDimensionPixelSize(R.dimen.workspace_right_padding_land);
+                int paddingTop = res.getDimensionPixelSize(R.dimen.workspace_top_padding_land);
+                int paddingBottom = res.getDimensionPixelSize(R.dimen.workspace_bottom_padding_land);
+                int width = largestSize.x - paddingLeft - paddingRight;
+                int height = smallestSize.y - paddingTop - paddingBottom;
+                mLandscapeCellLayoutMetrics = new Rect();
+                CellLayout.getMetrics(mLandscapeCellLayoutMetrics, res,
+                        width, height, LauncherModel.getCellCountX(), LauncherModel.getCellCountY(),
+                        orientation);
+            }
+            return mLandscapeCellLayoutMetrics;
+        } else if (orientation == CellLayout.PORTRAIT) {
+            if (mPortraitCellLayoutMetrics == null) {
+                int paddingLeft = res.getDimensionPixelSize(R.dimen.workspace_left_padding_land);
+                int paddingRight = res.getDimensionPixelSize(R.dimen.workspace_right_padding_land);
+                int paddingTop = res.getDimensionPixelSize(R.dimen.workspace_top_padding_land);
+                int paddingBottom = res.getDimensionPixelSize(R.dimen.workspace_bottom_padding_land);
+                int width = smallestSize.x - paddingLeft - paddingRight;
+                int height = largestSize.y - paddingTop - paddingBottom;
+                mPortraitCellLayoutMetrics = new Rect();
+                CellLayout.getMetrics(mPortraitCellLayoutMetrics, res,
+                        width, height, LauncherModel.getCellCountX(), LauncherModel.getCellCountY(),
+                        orientation);
+            }
+            return mPortraitCellLayoutMetrics;
+        }
+        return null;
     }
 
     public void onDragExit(DragObject d) {
