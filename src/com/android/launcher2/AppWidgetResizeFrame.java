@@ -307,9 +307,36 @@ public class AppWidgetResizeFrame extends FrameLayout {
             lp.cellVSpan = spanY;
             mRunningVInc += vSpanDelta;
             mRunningHInc += hSpanDelta;
+            if (!onDismiss) {
+                updateWidgetSizeRanges(mWidgetView, mLauncher, spanX, spanY);
+            }
         }
-
         mWidgetView.requestLayout();
+    }
+
+    static void updateWidgetSizeRanges(AppWidgetHostView widgetView, Launcher launcher,
+            int spanX, int spanY) {
+        Rect landMetrics = Workspace.getCellLayoutMetrics(launcher, CellLayout.LANDSCAPE);
+        Rect portMetrics = Workspace.getCellLayoutMetrics(launcher, CellLayout.PORTRAIT);
+        final float density = launcher.getResources().getDisplayMetrics().density;
+
+        // Compute landscape size
+        int cellWidth = landMetrics.left;
+        int cellHeight = landMetrics.top;
+        int widthGap = landMetrics.right;
+        int heightGap = landMetrics.bottom;
+        int landWidth = (int) ((spanX * cellWidth + (spanX - 1) * widthGap) / density);
+        int landHeight = (int) ((spanY * cellHeight + (spanY - 1) * heightGap) / density);
+
+        // Compute portrait size
+        cellWidth = portMetrics.left;
+        cellHeight = portMetrics.top;
+        widthGap = portMetrics.right;
+        heightGap = portMetrics.bottom;
+        int portWidth = (int) ((spanX * cellWidth + (spanX - 1) * widthGap) / density);
+        int portHeight = (int) ((spanY * cellHeight + (spanY - 1) * heightGap) / density);
+
+        widgetView.updateAppWidgetSize(null, portWidth, landHeight, landWidth, portHeight);
     }
 
     /**
