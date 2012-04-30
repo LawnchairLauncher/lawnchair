@@ -162,6 +162,10 @@ public final class Launcher extends Activity
     private static final String RUNTIME_STATE_PENDING_FOLDER_RENAME_ID = "launcher.rename_folder_id";
 
     private static final String TOOLBAR_ICON_METADATA_NAME = "com.android.launcher.toolbar_icon";
+    private static final String TOOLBAR_SEARCH_ICON_METADATA_NAME =
+            "com.android.launcher.toolbar_search_icon";
+    private static final String TOOLBAR_VOICE_SEARCH_ICON_METADATA_NAME =
+            "com.android.launcher.toolbar_voice_search_icon";
 
     /** The different states that Launcher can be in. */
     private enum State { WORKSPACE, APPS_CUSTOMIZE, APPS_CUSTOMIZE_SPRING_LOADED };
@@ -1849,9 +1853,23 @@ public final class Launcher extends Activity
     public void onClickVoiceButton(View v) {
         v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
 
-        Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        startActivitySafely(null, intent, "onClickVoiceButton");
+        try {
+            final SearchManager searchManager =
+                    (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+            ComponentName activityName = searchManager.getGlobalSearchActivity();
+            Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                    | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            if (activityName != null) {
+                intent.setPackage(activityName.getPackageName());
+            }
+            startActivitySafely(null, intent, "onClickVoiceButton");
+        } catch (ActivityNotFoundException e) {
+            Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                    | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            startActivitySafely(null, intent, "onClickVoiceButton");
+        }
     }
 
     /**
@@ -2697,14 +2715,14 @@ public final class Launcher extends Activity
         }
     }
 
-    private Drawable getExternalPackageToolbarIcon(ComponentName activityName) {
+    private Drawable getExternalPackageToolbarIcon(ComponentName activityName, String resourceName) {
         try {
             PackageManager packageManager = getPackageManager();
             // Look for the toolbar icon specified in the activity meta-data
             Bundle metaData = packageManager.getActivityInfo(
                     activityName, PackageManager.GET_META_DATA).metaData;
             if (metaData != null) {
-                int iconResId = metaData.getInt(TOOLBAR_ICON_METADATA_NAME);
+                int iconResId = metaData.getInt(resourceName);
                 if (iconResId != 0) {
                     Resources res = packageManager.getResourcesForActivity(activityName);
                     return res.getDrawable(iconResId);
@@ -2724,8 +2742,9 @@ public final class Launcher extends Activity
 
     // if successful in getting icon, return it; otherwise, set button to use default drawable
     private Drawable.ConstantState updateTextButtonWithIconFromExternalActivity(
-            int buttonId, ComponentName activityName, int fallbackDrawableId) {
-        Drawable toolbarIcon = getExternalPackageToolbarIcon(activityName);
+            int buttonId, ComponentName activityName, int fallbackDrawableId,
+            String toolbarResourceName) {
+        Drawable toolbarIcon = getExternalPackageToolbarIcon(activityName, toolbarResourceName);
         Resources r = getResources();
         int w = r.getDimensionPixelSize(R.dimen.toolbar_external_icon_width);
         int h = r.getDimensionPixelSize(R.dimen.toolbar_external_icon_height);
@@ -2750,9 +2769,10 @@ public final class Launcher extends Activity
 
     // if successful in getting icon, return it; otherwise, set button to use default drawable
     private Drawable.ConstantState updateButtonWithIconFromExternalActivity(
-            int buttonId, ComponentName activityName, int fallbackDrawableId) {
+            int buttonId, ComponentName activityName, int fallbackDrawableId,
+            String toolbarResourceName) {
         ImageView button = (ImageView) findViewById(buttonId);
-        Drawable toolbarIcon = getExternalPackageToolbarIcon(activityName);
+        Drawable toolbarIcon = getExternalPackageToolbarIcon(activityName, toolbarResourceName);
 
         if (button != null) {
             // If we were unable to find the icon via the meta-data, use a
@@ -2802,7 +2822,14 @@ public final class Launcher extends Activity
         if (activityName != null) {
             int coi = getCurrentOrientationIndexForGlobalIcons();
             sGlobalSearchIcon[coi] = updateButtonWithIconFromExternalActivity(
-                    R.id.search_button, activityName, R.drawable.ic_home_search_normal_holo);
+                    R.id.search_button, activityName, R.drawable.ic_home_search_normal_holo,
+                    TOOLBAR_SEARCH_ICON_METADATA_NAME);
+            if (sGlobalSearchIcon[coi] == null) {
+                sGlobalSearchIcon[coi] = updateButtonWithIconFromExternalActivity(
+                        R.id.search_button, activityName, R.drawable.ic_home_search_normal_holo,
+                        TOOLBAR_ICON_METADATA_NAME);
+            }
+
             if (searchDivider != null) searchDivider.setVisibility(View.VISIBLE);
             if (searchButtonContainer != null) searchButtonContainer.setVisibility(View.VISIBLE);
             searchButton.setVisibility(View.VISIBLE);
@@ -2834,12 +2861,34 @@ public final class Launcher extends Activity
         final View voiceButtonProxy = findViewById(R.id.voice_button_proxy);
 
         // We only show/update the voice search icon if the search icon is enabled as well
-        Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
-        ComponentName activityName = intent.resolveActivity(getPackageManager());
+        final SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        ComponentName globalSearchActivity = searchManager.getGlobalSearchActivity();
+
+        ComponentName activityName = null;
+        if (globalSearchActivity != null) {
+            // Check if the global search activity handles voice search
+            Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
+            intent.setPackage(globalSearchActivity.getPackageName());
+            activityName = intent.resolveActivity(getPackageManager());
+        }
+
+        if (activityName == null) {
+            // Fallback: check if an activity other than the global search activity
+            // resolves this
+            Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
+            activityName = intent.resolveActivity(getPackageManager());
+        }
         if (searchVisible && activityName != null) {
             int coi = getCurrentOrientationIndexForGlobalIcons();
             sVoiceSearchIcon[coi] = updateButtonWithIconFromExternalActivity(
-                    R.id.voice_button, activityName, R.drawable.ic_home_voice_search_holo);
+                    R.id.voice_button, activityName, R.drawable.ic_home_voice_search_holo,
+                    TOOLBAR_VOICE_SEARCH_ICON_METADATA_NAME);
+            if (sVoiceSearchIcon[coi] == null) {
+                sVoiceSearchIcon[coi] = updateButtonWithIconFromExternalActivity(
+                        R.id.voice_button, activityName, R.drawable.ic_home_voice_search_holo,
+                        TOOLBAR_ICON_METADATA_NAME);
+            }
             if (searchDivider != null) searchDivider.setVisibility(View.VISIBLE);
             if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.VISIBLE);
             voiceButton.setVisibility(View.VISIBLE);
@@ -2879,7 +2928,8 @@ public final class Launcher extends Activity
             int coi = getCurrentOrientationIndexForGlobalIcons();
             mAppMarketIntent = intent;
             sAppMarketIcon[coi] = updateTextButtonWithIconFromExternalActivity(
-                    R.id.market_button, activityName, R.drawable.ic_launcher_market_holo);
+                    R.id.market_button, activityName, R.drawable.ic_launcher_market_holo,
+                    TOOLBAR_ICON_METADATA_NAME);
             marketButton.setVisibility(View.VISIBLE);
         } else {
             // We should hide and disable the view so that we don't try and restore the visibility
