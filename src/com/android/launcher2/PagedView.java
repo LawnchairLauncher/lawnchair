@@ -292,7 +292,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
      * the previous tab page.
      */
     protected void updateCurrentPageScroll() {
-        int newX = getChildOffset(mCurrentPage) - getRelativeChildOffset(mCurrentPage);
+        int offset = getChildOffset(mCurrentPage);
+        int relOffset = getRelativeChildOffset(mCurrentPage);
+        int newX = offset - relOffset;
         scrollTo(newX, 0);
         mScroller.setFinalX(newX);
         mScroller.forceFinished(true);
@@ -505,6 +507,23 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
         setMeasuredDimension(widthSize, heightSize);
 
+        if (childCount > 0) {
+            if (DEBUG) Log.d(TAG, "getRelativeChildOffset(): " + getMeasuredWidth() + ", "
+                    + getChildWidth(0));
+
+            // Calculate the variable page spacing if necessary
+            if (mPageSpacing < 0) {
+                // The gap between pages in the PagedView should be equal to the gap from the page
+                // to the edge of the screen (so it is not visible in the current screen).  To
+                // account for unequal padding on each side of the paged view, we take the maximum
+                // of the left/right gap and use that as the gap between each page.
+                int offset = getRelativeChildOffset(0);
+                int spacing = Math.max(offset, widthSize - offset -
+                        getChildAt(0).getMeasuredWidth());
+                setPageSpacing(spacing);
+            }
+        }
+
         // We can't call getChildOffset/getRelativeChildOffset until we set the measured dimensions.
         // We also wait until we set the measured dimensions before flushing the cache as well, to
         // ensure that the cache is filled with good values.
@@ -577,24 +596,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         if (DEBUG) Log.d(TAG, "PagedView.onLayout()");
         final int verticalPadding = getPaddingTop() + getPaddingBottom();
         final int childCount = getChildCount();
-        int childLeft = 0;
-        if (childCount > 0) {
-            if (DEBUG) Log.d(TAG, "getRelativeChildOffset(): " + getMeasuredWidth() + ", "
-                    + getChildWidth(0));
-            childLeft = getRelativeChildOffset(0);
-
-            // Calculate the variable page spacing if necessary
-            if (mPageSpacing < 0) {
-                // The gap between pages in the PagedView should be equal to the gap from the page
-                // to the edge of the screen (so it is not visible in the current screen).  To
-                // account for unequal padding on each side of the paged view, we take the maximum
-                // of the left/right gap and use that as the gap between each page.
-                int offset = getRelativeChildOffset(0);
-                int spacing = Math.max(offset, (right - left) - offset -
-                        getChildAt(0).getMeasuredWidth());
-                setPageSpacing(spacing);
-            }
-        }
+        int childLeft = getRelativeChildOffset(0);
 
         for (int i = 0; i < childCount; i++) {
             final View child = getPageAt(i);
@@ -617,10 +619,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             setHorizontalScrollBarEnabled(false);
             updateCurrentPageScroll();
             setHorizontalScrollBarEnabled(true);
-            mFirstLayout = false;
-        }
-
-        if (mFirstLayout && mCurrentPage >= 0 && mCurrentPage < getChildCount()) {
             mFirstLayout = false;
         }
     }
@@ -707,13 +705,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             }
             return offset;
         }
-    }
-
-    protected int getScaledRelativeChildOffset(int index) {
-        final int padding = getPaddingLeft() + getPaddingRight();
-        final int offset = getPaddingLeft() + (getMeasuredWidth() - padding -
-                getScaledMeasuredWidth(getPageAt(index))) / 2;
-        return offset;
     }
 
     protected int getScaledMeasuredWidth(View child) {
@@ -1702,10 +1693,12 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // found
         if (mHasScrollIndicator && mScrollIndicator == null) {
             ViewGroup parent = (ViewGroup) getParent();
-            mScrollIndicator = (View) (parent.findViewById(R.id.paged_view_indicator));
-            mHasScrollIndicator = mScrollIndicator != null;
-            if (mHasScrollIndicator) {
-                mScrollIndicator.setVisibility(View.VISIBLE);
+            if (parent != null) {
+                mScrollIndicator = (View) (parent.findViewById(R.id.paged_view_indicator));
+                mHasScrollIndicator = mScrollIndicator != null;
+                if (mHasScrollIndicator) {
+                    mScrollIndicator.setVisibility(View.VISIBLE);
+                }
             }
         }
         return mScrollIndicator;
