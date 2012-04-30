@@ -1156,7 +1156,6 @@ public final class Launcher extends Activity
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mVisible = false;
-        mDragLayer.clearAllResizeFrames();
 
         if (mAttached) {
             unregisterReceiver(mReceiver);
@@ -1397,6 +1396,7 @@ public final class Launcher extends Activity
         getContentResolver().unregisterContentObserver(mWidgetObserver);
         unregisterReceiver(mCloseSystemDialogsReceiver);
 
+        mDragLayer.clearAllResizeFrames();
         ((ViewGroup) mWorkspace.getParent()).removeAllViews();
         mWorkspace.removeAllViews();
         mWorkspace = null;
