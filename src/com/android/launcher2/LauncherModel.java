@@ -1167,7 +1167,8 @@ public class LauncherModel extends BroadcastReceiver {
                                 Launcher.sDumpLogs.add(log);
                                 itemsToRemove.add(id);
                             } else {
-                                appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId);
+                                appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId,
+                                        provider.provider);
                                 appWidgetInfo.id = id;
                                 appWidgetInfo.screen = c.getInt(screenIndex);
                                 appWidgetInfo.cellX = c.getInt(cellXIndex);

@@ -16,6 +16,7 @@
 
 package com.android.launcher2;
 
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -62,8 +63,8 @@ public class InfoDropTarget extends ButtonDropTarget {
         }
     }
 
-    private boolean isAllAppsApplication(DragSource source, Object info) {
-        return (source instanceof AppsCustomizePagedView) && (info instanceof ApplicationInfo);
+    private boolean isFromAllApps(DragSource source) {
+        return (source instanceof AppsCustomizePagedView);
     }
 
     @Override
@@ -76,6 +77,8 @@ public class InfoDropTarget extends ButtonDropTarget {
             componentName = ((ApplicationInfo) d.dragInfo).componentName;
         } else if (d.dragInfo instanceof ShortcutInfo) {
             componentName = ((ShortcutInfo) d.dragInfo).intent.getComponent();
+        } else if (d.dragInfo instanceof PendingAddItemInfo) {
+            componentName = ((PendingAddItemInfo) d.dragInfo).componentName;
         }
         if (componentName != null) {
             mLauncher.startApplicationDetailsActivity(componentName);
@@ -90,8 +93,8 @@ public class InfoDropTarget extends ButtonDropTarget {
     public void onDragStart(DragSource source, Object info, int dragAction) {
         boolean isVisible = true;
 
-        // If we are dragging a widget or shortcut, hide the info target
-        if (!isAllAppsApplication(source, info)) {
+        // Hide this button unless we are dragging something from AllApps
+        if (!isFromAllApps(source)) {
             isVisible = false;
         }
 
