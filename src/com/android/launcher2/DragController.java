@@ -380,10 +380,13 @@ public class DragController {
                     // Added null checks to prevent NPE we've seen in the wild
                     if (dragInfo != null &&
                         dragInfo.intent != null &&
-                        info.intent != null &&
-                        dragInfo.intent.getComponent().equals(info.intent.getComponent())) {
-                        cancelDrag();
-                        return;
+                        info.intent != null) {
+                        boolean isSamePackage = dragInfo.intent.getPackage().equals(
+                                info.intent.getPackage());
+                        if (isSamePackage) {
+                            cancelDrag();
+                            return;
+                        }
                     }
                 }
             }

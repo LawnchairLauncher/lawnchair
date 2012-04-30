@@ -48,22 +48,15 @@ class LauncherAppWidgetInfo extends ItemInfo {
      */
     AppWidgetHostView hostView = null;
 
-    /**
-     * Constructor for use with AppWidgets that haven't been instantiated yet.
-     */
-    LauncherAppWidgetInfo(ComponentName providerName) {
+    LauncherAppWidgetInfo(int appWidgetId, ComponentName providerName) {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
+        this.appWidgetId = appWidgetId;
         this.providerName = providerName;
 
         // Since the widget isn't instantiated yet, we don't know these values. Set them to -1
         // to indicate that they should be calculated based on the layout and minWidth/minHeight
         spanX = -1;
         spanY = -1;
-    }
-
-    LauncherAppWidgetInfo(int appWidgetId) {
-        itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
-        this.appWidgetId = appWidgetId;
     }
 
     @Override
