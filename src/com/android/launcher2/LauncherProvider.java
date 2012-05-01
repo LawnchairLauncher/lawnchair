@@ -42,6 +42,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -73,6 +74,9 @@ public class LauncherProvider extends ContentProvider {
     static final String PARAMETER_NOTIFY = "notify";
     static final String DB_CREATED_BUT_DEFAULT_WORKSPACE_NOT_LOADED =
             "DB_CREATED_BUT_DEFAULT_WORKSPACE_NOT_LOADED";
+
+    private static final String ACTION_APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE =
+            "com.android.launcher.action.APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE";
 
     /**
      * {@link Uri} triggered at any registered {@link android.database.ContentObserver} when
@@ -219,6 +223,7 @@ public class LauncherProvider extends ContentProvider {
         private static final String TAG_APPWIDGET = "appwidget";
         private static final String TAG_SHORTCUT = "shortcut";
         private static final String TAG_FOLDER = "folder";
+        private static final String TAG_EXTRA = "extra";
 
         private final Context mContext;
         private final AppWidgetHost mAppWidgetHost;
@@ -820,7 +825,7 @@ public class LauncherProvider extends ContentProvider {
                     } else if (TAG_CLOCK.equals(name)) {
                         added = addClockWidget(db, values);
                     } else if (TAG_APPWIDGET.equals(name)) {
-                        added = addAppWidget(db, values, a, packageManager);
+                        added = addAppWidget(parser, attrs, type, db, values, a, packageManager);
                     } else if (TAG_SHORTCUT.equals(name)) {
                         long id = addUriShortcut(db, values, a);
                         added = id >= 0;
@@ -972,17 +977,18 @@ public class LauncherProvider extends ContentProvider {
 
         private boolean addSearchWidget(SQLiteDatabase db, ContentValues values) {
             ComponentName cn = getSearchWidgetProvider();
-            return addAppWidget(db, values, cn, 4, 1);
+            return addAppWidget(db, values, cn, 4, 1, null);
         }
 
         private boolean addClockWidget(SQLiteDatabase db, ContentValues values) {
             ComponentName cn = new ComponentName("com.android.alarmclock",
                     "com.android.alarmclock.AnalogAppWidgetProvider");
-            return addAppWidget(db, values, cn, 2, 2);
+            return addAppWidget(db, values, cn, 2, 2, null);
         }
 
-        private boolean addAppWidget(SQLiteDatabase db, ContentValues values, TypedArray a,
-                PackageManager packageManager) {
+        private boolean addAppWidget(XmlResourceParser parser, AttributeSet attrs, int type,
+                SQLiteDatabase db, ContentValues values, TypedArray a,
+                PackageManager packageManager) throws XmlPullParserException, IOException {
 
             String packageName = a.getString(R.styleable.Favorite_packageName);
             String className = a.getString(R.styleable.Favorite_className);
@@ -1009,14 +1015,39 @@ public class LauncherProvider extends ContentProvider {
             if (hasPackage) {
                 int spanX = a.getInt(R.styleable.Favorite_spanX, 0);
                 int spanY = a.getInt(R.styleable.Favorite_spanY, 0);
-                return addAppWidget(db, values, cn, spanX, spanY);
+
+                // Read the extras
+                Bundle extras = new Bundle();
+                int widgetDepth = parser.getDepth();
+                while ((type = parser.next()) != XmlPullParser.END_TAG ||
+                        parser.getDepth() > widgetDepth) {
+                    if (type != XmlPullParser.START_TAG) {
+                        continue;
+                    }
+
+                    TypedArray ar = mContext.obtainStyledAttributes(attrs, R.styleable.Extra);
+                    if (TAG_EXTRA.equals(parser.getName())) {
+                        String key = ar.getString(R.styleable.Extra_key);
+                        String value = ar.getString(R.styleable.Extra_value);
+                        if (key != null && value != null) {
+                            extras.putString(key, value);
+                        } else {
+                            throw new RuntimeException("Widget extras must have a key and value");
+                        }
+                    } else {
+                        throw new RuntimeException("Widgets can contain only extras");
+                    }
+                    ar.recycle();
+                }
+
+                return addAppWidget(db, values, cn, spanX, spanY, extras);
             }
 
             return false;
         }
 
         private boolean addAppWidget(SQLiteDatabase db, ContentValues values, ComponentName cn,
-                int spanX, int spanY) {
+                int spanX, int spanY, Bundle extras) {
             boolean allocatedAppWidgets = false;
             final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
 
@@ -1034,6 +1065,15 @@ public class LauncherProvider extends ContentProvider {
 
                 // TODO: need to check return value
                 appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, cn);
+
+                // Send a broadcast to configure the widget
+                if (extras != null && !extras.isEmpty()) {
+                    Intent intent = new Intent(ACTION_APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE);
+                    intent.setComponent(cn);
+                    intent.putExtras(extras);
+                    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+                    mContext.sendBroadcast(intent);
+                }
             } catch (RuntimeException ex) {
                 Log.e(TAG, "Problem allocating appWidgetId", ex);
             }
