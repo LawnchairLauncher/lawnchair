@@ -1534,34 +1534,6 @@ public final class Launcher extends Activity
             Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
             intent.setComponent(appWidget.configure);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-            if (info != null) {
-                if (info.mimeType != null && !info.mimeType.isEmpty()) {
-                    intent.putExtra(InstallWidgetReceiver.
-                            EXTRA_APPWIDGET_CONFIGURATION_DATA_MIME_TYPE, info.mimeType);
-
-                    final String mimeType = info.mimeType;
-                    final ClipData clipData = (ClipData) info.configurationData;
-                    final ClipDescription clipDesc = clipData.getDescription();
-                    for (int i = 0; i < clipDesc.getMimeTypeCount(); ++i) {
-                        if (clipDesc.getMimeType(i).equals(mimeType)) {
-                            final ClipData.Item item = clipData.getItemAt(i);
-                            final CharSequence stringData = item.getText();
-                            final Uri uriData = item.getUri();
-                            final Intent intentData = item.getIntent();
-                            final String key = InstallWidgetReceiver.
-                                    EXTRA_APPWIDGET_CONFIGURATION_DATA;
-                            if (uriData != null) {
-                                intent.putExtra(key, uriData);
-                            } else if (intentData != null) {
-                                intent.putExtra(key, intentData);
-                            } else if (stringData != null) {
-                                intent.putExtra(key, stringData);
-                            }
-                            break;
-                        }
-                    }
-                }
-            }
             startActivityForResultSafely(intent, REQUEST_CREATE_APPWIDGET);
             mWidgetBeingBoundOrConfigured = info;
         } else {
