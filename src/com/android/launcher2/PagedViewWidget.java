@@ -92,7 +92,9 @@ public class PagedViewWidget extends LinearLayout {
         name.setText(info.label);
         final TextView dims = (TextView) findViewById(R.id.widget_dims);
         if (dims != null) {
-            dims.setText(String.format(mDimensionsFormatString, cellSpan[0], cellSpan[1]));
+            int hSpan = Math.min(cellSpan[0], LauncherModel.getCellCountX());
+            int vSpan = Math.min(cellSpan[1], LauncherModel.getCellCountY());
+            dims.setText(String.format(mDimensionsFormatString, hSpan, vSpan));
         }
     }
 

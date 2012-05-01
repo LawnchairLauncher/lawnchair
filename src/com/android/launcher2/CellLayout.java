@@ -1746,6 +1746,8 @@ public class CellLayout extends ViewGroup {
 
     private boolean rearrangementExists(int cellX, int cellY, int spanX, int spanY, int[] direction,
             View ignoreView, ItemConfiguration solution) {
+        // Return early if get invalid cell positions
+        if (cellX < 0 || cellY < 0) return false;
 
         mIntersectingViews.clear();
         mOccupiedRect.set(cellX, cellY, cellX + spanX, cellY + spanY);
