@@ -481,8 +481,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         for (AppWidgetProviderInfo widget : widgets) {
             if (widget.minWidth > 0 && widget.minHeight > 0) {
                 // Ensure that all widgets we show can be added on a workspace of this size
-                int[] spanXY = mLauncher.getSpanForWidget(widget);
-                int[] minSpanXY = mLauncher.getMinSpanForWidget(widget);
+                int[] spanXY = Launcher.getSpanForWidget(mLauncher, widget);
+                int[] minSpanXY = Launcher.getMinSpanForWidget(mLauncher, widget);
                 int minSpanX = Math.min(spanXY[0], minSpanXY[0]);
                 int minSpanY = Math.min(spanXY[1], minSpanXY[1]);
                 if (minSpanX <= LauncherModel.getCellCountX() &&
@@ -1225,10 +1225,10 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 createItemInfo = new PendingAddWidgetInfo(info, null, null);
 
                 // Determine the widget spans and min resize spans.
-                int[] spanXY = mLauncher.getSpanForWidget(info);
+                int[] spanXY = Launcher.getSpanForWidget(mLauncher, info);
                 createItemInfo.spanX = spanXY[0];
                 createItemInfo.spanY = spanXY[1];
-                int[] minSpanXY = mLauncher.getMinSpanForWidget(info);
+                int[] minSpanXY = Launcher.getMinSpanForWidget(mLauncher, info);
                 createItemInfo.minSpanX = minSpanXY[0];
                 createItemInfo.minSpanY = minSpanXY[1];
 
@@ -1315,7 +1315,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             Object rawInfo = items.get(i);
             if (rawInfo instanceof AppWidgetProviderInfo) {
                 AppWidgetProviderInfo info = (AppWidgetProviderInfo) rawInfo;
-                int[] cellSpans = mLauncher.getSpanForWidget(info);
+                int[] cellSpans = Launcher.getSpanForWidget(mLauncher, info);
 
                 int maxWidth = Math.min(data.maxImageWidth,
                         mWidgetSpacingLayout.estimateCellWidth(cellSpans[0]));

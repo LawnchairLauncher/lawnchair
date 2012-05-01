@@ -1175,6 +1175,9 @@ public class LauncherModel extends BroadcastReceiver {
                                 appWidgetInfo.cellY = c.getInt(cellYIndex);
                                 appWidgetInfo.spanX = c.getInt(spanXIndex);
                                 appWidgetInfo.spanY = c.getInt(spanYIndex);
+                                int[] minSpan = Launcher.getMinSpanForWidget(context, provider);
+                                appWidgetInfo.minSpanX = minSpan[0];
+                                appWidgetInfo.minSpanY = minSpan[1];
 
                                 container = c.getInt(containerIndex);
                                 if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP &&
