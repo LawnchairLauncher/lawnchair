@@ -381,15 +381,8 @@ public final class Launcher extends Activity
         }
         mSearchDropTargetBar.onSearchPackagesChanged(searchVisible, voiceVisible);
 
-        final String forceEnableRotation =
-                SystemProperties.get(FORCE_ENABLE_ROTATION_PROPERTY, "false");
-
-        boolean enableRotation = getResources().getBoolean(R.bool.allow_rotation);
-
         // On large interfaces, we want the screen to auto-rotate based on the current orientation
-        if (enableRotation || "true".equalsIgnoreCase(forceEnableRotation)) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-        }
+        unlockScreenOrientation(true);
     }
 
     private void checkForLocaleChange() {
@@ -3333,16 +3326,31 @@ public final class Launcher extends Activity
         return oriMap[(d.getRotation() + indexOffset) % 4];
     }
 
-    public void lockScreenOrientation() {
-        setRequestedOrientation(mapConfigurationOriActivityInfoOri(getResources()
-                .getConfiguration().orientation));
+    public boolean isRotationEnabled() {
+        boolean forceEnableRotation = "true".equalsIgnoreCase(SystemProperties.get(
+                FORCE_ENABLE_ROTATION_PROPERTY, "false"));
+        boolean enableRotation = forceEnableRotation ||
+                getResources().getBoolean(R.bool.allow_rotation);
+        return enableRotation;
     }
-    public void unlockScreenOrientation() {
-        mHandler.postDelayed(new Runnable() {
-            public void run() {
+    public void lockScreenOrientation() {
+        if (isRotationEnabled()) {
+            setRequestedOrientation(mapConfigurationOriActivityInfoOri(getResources()
+                    .getConfiguration().orientation));
+        }
+    }
+    public void unlockScreenOrientation(boolean immediate) {
+        if (isRotationEnabled()) {
+            if (immediate) {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+            } else {
+                mHandler.postDelayed(new Runnable() {
+                    public void run() {
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                    }
+                }, mRestoreScreenOrientationDelay);
             }
-        }, mRestoreScreenOrientationDelay);
+        }
     }
 
     /* Cling related */
