@@ -976,8 +976,8 @@ public class CellLayout extends ViewGroup {
         int numHeightGaps = mCountY - 1;
 
         if (mOriginalWidthGap < 0 || mOriginalHeightGap < 0) {
-            int hSpace = widthSpecSize - mPaddingLeft - mPaddingRight;
-            int vSpace = heightSpecSize - mPaddingTop - mPaddingBottom;
+            int hSpace = widthSpecSize - getPaddingLeft() - getPaddingRight();
+            int vSpace = heightSpecSize - getPaddingTop() - getPaddingBottom();
             int hFreeSpace = hSpace - (mCountX * mCellWidth);
             int vFreeSpace = vSpace - (mCountY * mCellHeight);
             mWidthGap = Math.min(mMaxGap, numWidthGaps > 0 ? (hFreeSpace / numWidthGaps) : 0);
