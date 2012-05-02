@@ -198,11 +198,13 @@ public class FolderIcon extends LinearLayout implements FolderListener {
             }
             mAcceptAnimator = ValueAnimator.ofFloat(0f, 1f);
             mAcceptAnimator.setDuration(CONSUMPTION_ANIMATION_DURATION);
+
+            final int previewSize = sPreviewSize;
             mAcceptAnimator.addUpdateListener(new AnimatorUpdateListener() {
                 public void onAnimationUpdate(ValueAnimator animation) {
                     final float percent = (Float) animation.getAnimatedValue();
-                    mOuterRingSize = (1 + percent * OUTER_RING_GROWTH_FACTOR) * sPreviewSize;
-                    mInnerRingSize = (1 + percent * INNER_RING_GROWTH_FACTOR) * sPreviewSize;
+                    mOuterRingSize = (1 + percent * OUTER_RING_GROWTH_FACTOR) * previewSize;
+                    mInnerRingSize = (1 + percent * INNER_RING_GROWTH_FACTOR) * previewSize;
                     if (mCellLayout != null) {
                         mCellLayout.invalidate();
                     }
@@ -225,11 +227,13 @@ public class FolderIcon extends LinearLayout implements FolderListener {
             }
             mNeutralAnimator = ValueAnimator.ofFloat(0f, 1f);
             mNeutralAnimator.setDuration(CONSUMPTION_ANIMATION_DURATION);
+
+            final int previewSize = sPreviewSize;
             mNeutralAnimator.addUpdateListener(new AnimatorUpdateListener() {
                 public void onAnimationUpdate(ValueAnimator animation) {
                     final float percent = (Float) animation.getAnimatedValue();
-                    mOuterRingSize = (1 + (1 - percent) * OUTER_RING_GROWTH_FACTOR) * sPreviewSize;
-                    mInnerRingSize = (1 + (1 - percent) * INNER_RING_GROWTH_FACTOR) * sPreviewSize;
+                    mOuterRingSize = (1 + (1 - percent) * OUTER_RING_GROWTH_FACTOR) * previewSize;
+                    mInnerRingSize = (1 + (1 - percent) * INNER_RING_GROWTH_FACTOR) * previewSize;
                     if (mCellLayout != null) {
                         mCellLayout.invalidate();
                     }
