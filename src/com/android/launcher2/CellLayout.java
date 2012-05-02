@@ -447,6 +447,8 @@ public class CellLayout extends ViewGroup {
             }
         }
 
+        int previewOffset = FolderRingAnimator.sPreviewSize;
+
         // The folder outer / inner ring image(s)
         for (int i = 0; i < mFolderOuterRings.size(); i++) {
             FolderRingAnimator fra = mFolderOuterRings.get(i);
@@ -458,7 +460,7 @@ public class CellLayout extends ViewGroup {
             cellToPoint(fra.mCellX, fra.mCellY, mTempLocation);
 
             int centerX = mTempLocation[0] + mCellWidth / 2;
-            int centerY = mTempLocation[1] + FolderRingAnimator.sPreviewSize / 2;
+            int centerY = mTempLocation[1] + previewOffset / 2;
 
             canvas.save();
             canvas.translate(centerX - width / 2, centerY - height / 2);
@@ -473,7 +475,7 @@ public class CellLayout extends ViewGroup {
             cellToPoint(fra.mCellX, fra.mCellY, mTempLocation);
 
             centerX = mTempLocation[0] + mCellWidth / 2;
-            centerY = mTempLocation[1] + FolderRingAnimator.sPreviewSize / 2;
+            centerY = mTempLocation[1] + previewOffset / 2;
             canvas.save();
             canvas.translate(centerX - width / 2, centerY - width / 2);
             d.setBounds(0, 0, width, height);
@@ -488,7 +490,7 @@ public class CellLayout extends ViewGroup {
 
             cellToPoint(mFolderLeaveBehindCell[0], mFolderLeaveBehindCell[1], mTempLocation);
             int centerX = mTempLocation[0] + mCellWidth / 2;
-            int centerY = mTempLocation[1] + FolderRingAnimator.sPreviewSize / 2;
+            int centerY = mTempLocation[1] + previewOffset / 2;
 
             canvas.save();
             canvas.translate(centerX - width / 2, centerY - width / 2);
@@ -570,12 +572,8 @@ public class CellLayout extends ViewGroup {
         return mIsHotseat ? mHotseatChildScale : mChildScale;
     }
 
-    public boolean addViewToCellLayout(
-            View child, int index, int childId, LayoutParams params, boolean markCells) {
-        return addViewToCellLayout(child, index, childId, params, markCells, false);
-    }
 
-    private void scaleChild(BubbleTextView bubbleChild, float pivot, float scale) {
+    private void scaleChild(BubbleTextView bubbleChild, float scale) {
         // If we haven't measured the child yet, do it now
         // (this happens if we're being dropped from all-apps
         if (bubbleChild.getLayoutParams() instanceof LayoutParams &&
@@ -595,7 +593,7 @@ public class CellLayout extends ViewGroup {
     }
 
     public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params,
-            boolean markCells, boolean allApps) {
+            boolean markCells) {
         final LayoutParams lp = params;
 
         // Hotseat icons - scale down and remove text
@@ -608,14 +606,14 @@ public class CellLayout extends ViewGroup {
             // Start the child with 100% scale and visible text
             resetChild(bubbleChild);
 
-            if (mIsHotseat && !allApps && mHotseatChildScale >= 0) {
+            if (mIsHotseat && mHotseatChildScale >= 0) {
                 // Scale/make transparent for a hotseat
-                scaleChild(bubbleChild, 0f, mHotseatChildScale);
+                scaleChild(bubbleChild, mHotseatChildScale);
 
                 bubbleChild.setTextColor(getResources().getColor(android.R.color.transparent));
             } else if (mChildScale >= 0) {
                 // Else possibly still scale it if we need to for smaller icons
-                scaleChild(bubbleChild, 0f, mChildScale);
+                scaleChild(bubbleChild, mChildScale);
             }
         }
 
