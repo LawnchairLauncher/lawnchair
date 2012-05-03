@@ -3097,6 +3097,9 @@ public final class Launcher extends Activity
 
         workspace.requestLayout();
 
+        AppWidgetResizeFrame.updateWidgetSizeRanges(item.hostView,
+                this, item.spanX, item.spanY);
+
         if (DEBUG_WIDGETS) {
             Log.d(TAG, "bound widget id="+item.appWidgetId+" in "
                     + (SystemClock.uptimeMillis()-start) + "ms");
