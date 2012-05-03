@@ -29,6 +29,7 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -38,8 +39,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
@@ -60,8 +59,11 @@ import com.android.launcher.R;
 import com.android.launcher2.FolderIcon.FolderRingAnimator;
 import com.android.launcher2.LauncherSettings.Favorites;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -3614,11 +3616,9 @@ public class Workspace extends SmoothPagedView
                             final ComponentName name = intent.getComponent();
 
                             if (name != null) {
-                                for (String packageName: packageNames) {
-                                    if (packageName.equals(name.getPackageName())) {
-                                        LauncherModel.deleteItemFromDatabase(mLauncher, info);
-                                        childrenToRemove.add(view);
-                                    }
+                                if (packageNames.contains(name.getPackageName())) {
+                                    LauncherModel.deleteItemFromDatabase(mLauncher, info);
+                                    childrenToRemove.add(view);
                                 }
                             }
                         } else if (tag instanceof FolderInfo) {
@@ -3634,10 +3634,8 @@ public class Workspace extends SmoothPagedView
                                 final ComponentName name = intent.getComponent();
 
                                 if (name != null) {
-                                    for (String packageName: packageNames) {
-                                        if (packageName.equals(name.getPackageName())) {
-                                            appsToRemoveFromFolder.add(appInfo);
-                                        }
+                                    if (packageNames.contains(name.getPackageName())) {
+                                        appsToRemoveFromFolder.add(appInfo);
                                     }
                                 }
                             }
@@ -3649,11 +3647,9 @@ public class Workspace extends SmoothPagedView
                             final LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) tag;
                             final ComponentName provider = info.providerName;
                             if (provider != null) {
-                                for (String packageName: packageNames) {
-                                    if (packageName.equals(provider.getPackageName())) {
-                                        LauncherModel.deleteItemFromDatabase(mLauncher, info);
-                                        childrenToRemove.add(view);
-                                    }
+                                if (packageNames.contains(provider.getPackageName())) {
+                                    LauncherModel.deleteItemFromDatabase(mLauncher, info);
+                                    childrenToRemove.add(view);
                                 }
                             }
                         }
@@ -3677,6 +3673,42 @@ public class Workspace extends SmoothPagedView
                 }
             });
         }
+
+        // It is no longer the case the BubbleTextViews correspond 1:1 with the workspace items in
+        // the database (and LauncherModel) since shortcuts are not added and animated in until
+        // the user returns to launcher.  As a result, we really should be cleaning up the Db
+        // regardless of whether the item was added or not (unlike the logic above).  This is only
+        // relevant for direct workspace items.
+        post(new Runnable() {
+            @Override
+            public void run() {
+                String spKey = LauncherApplication.getSharedPreferencesKey();
+                SharedPreferences sp = getContext().getSharedPreferences(spKey,
+                        Context.MODE_PRIVATE);
+                Set<String> newApps = sp.getStringSet(InstallShortcutReceiver.NEW_APPS_LIST_KEY,
+                        null);
+
+                for (String packageName: packageNames) {
+                    // Remove all items that have the same package, but were not removed above
+                    ArrayList<ShortcutInfo> infos =
+                            mLauncher.getModel().getShortcutInfosForPackage(packageName);
+                    for (ShortcutInfo info : infos) {
+                        LauncherModel.deleteItemFromDatabase(mLauncher, info);
+                    }
+                    // Remove all queued items that match the same package
+                    if (newApps != null) {
+                        for (String intentStr : newApps) {
+                            try {
+                                Intent intent = Intent.parseUri(intentStr, 0);
+                                if (packageNames.contains(intent.getPackage())) {
+                                    newApps.remove(intentStr);
+                                }
+                            } catch (URISyntaxException e) {}
+                        }
+                    }
+                }
+            }
+        });
     }
 
     void updateShortcuts(ArrayList<ApplicationInfo> apps) {
