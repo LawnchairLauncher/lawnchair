@@ -28,6 +28,7 @@ import com.android.launcher.R;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public class InstallShortcutReceiver extends BroadcastReceiver {
@@ -47,16 +48,33 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     public static final String SHORTCUT_MIMETYPE =
             "com.android.launcher/shortcut";
 
-    private final int[] mCoordinates = new int[2];
+    // The set of shortcuts that are pending install
+    private static ArrayList<PendingInstallShortcutInfo> mInstallQueue =
+            new ArrayList<PendingInstallShortcutInfo>();
+
+    // Determines whether to defer installing shortcuts immediately until
+    // processAllPendingInstalls() is called.
+    private static boolean mUseInstallQueue = false;
+
+    private static class PendingInstallShortcutInfo {
+        Intent data;
+        Intent launchIntent;
+        String name;
+
+        public PendingInstallShortcutInfo(Intent rawData, String shortcutName,
+                Intent shortcutIntent) {
+            data = rawData;
+            name = shortcutName;
+            launchIntent = shortcutIntent;
+        }
+    }
 
     public void onReceive(Context context, Intent data) {
         if (!ACTION_INSTALL_SHORTCUT.equals(data.getAction())) {
             return;
         }
-        String spKey = LauncherApplication.getSharedPreferencesKey();
-        SharedPreferences sp = context.getSharedPreferences(spKey, Context.MODE_PRIVATE);
 
-        final Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
+        Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
         if (intent == null) {
             return;
         }
@@ -72,6 +90,36 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 return;
             }
         }
+
+        PendingInstallShortcutInfo info = new PendingInstallShortcutInfo(data, name, intent);
+        if (mUseInstallQueue) {
+            mInstallQueue.add(info);
+        } else {
+            processInstallShortcut(context, info);
+        }
+    }
+
+    static void enableInstallQueue() {
+        mUseInstallQueue = true;
+    }
+
+    static void disableAndFlushInstallQueue(Context context) {
+        mUseInstallQueue = false;
+        Iterator<PendingInstallShortcutInfo> iter = mInstallQueue.iterator();
+        while (iter.hasNext()) {
+            processInstallShortcut(context, iter.next());
+            iter.remove();
+        }
+    }
+
+    private static void processInstallShortcut(Context context,
+            PendingInstallShortcutInfo pendingInfo) {
+        String spKey = LauncherApplication.getSharedPreferencesKey();
+        SharedPreferences sp = context.getSharedPreferences(spKey, Context.MODE_PRIVATE);
+
+        final Intent data = pendingInfo.data;
+        final Intent intent = pendingInfo.launchIntent;
+        final String name = pendingInfo.name;
 
         // Lock on the app so that we don't try and get the items while apps are being added
         LauncherApplication app = (LauncherApplication) context.getApplicationContext();
@@ -106,10 +154,11 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         }
     }
 
-    private boolean installShortcut(Context context, Intent data, ArrayList<ItemInfo> items,
+    private static boolean installShortcut(Context context, Intent data, ArrayList<ItemInfo> items,
             String name, Intent intent, final int screen, boolean shortcutExists,
             final SharedPreferences sharedPrefs, int[] result) {
-        if (findEmptyCell(context, items, mCoordinates, screen)) {
+        int[] tmpCoordinates = new int[2];
+        if (findEmptyCell(context, items, tmpCoordinates, screen)) {
             if (intent != null) {
                 if (intent.getAction() == null) {
                     intent.setAction(Intent.ACTION_VIEW);
@@ -145,7 +194,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     LauncherApplication app = (LauncherApplication) context.getApplicationContext();
                     ShortcutInfo info = app.getModel().addShortcut(context, data,
                             LauncherSettings.Favorites.CONTAINER_DESKTOP, screen,
-                            mCoordinates[0], mCoordinates[1], true);
+                            tmpCoordinates[0], tmpCoordinates[1], true);
                     if (info == null) {
                         return false;
                     }

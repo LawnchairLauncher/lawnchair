@@ -38,8 +38,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
@@ -381,12 +379,20 @@ public class Workspace extends SmoothPagedView
         mIsDragOccuring = true;
         updateChildrenLayersEnabled();
         mLauncher.lockScreenOrientation();
+
+        // Prevent any Un/InstallShortcutReceivers from updating the db while we are dragging
+        InstallShortcutReceiver.enableInstallQueue();
+        UninstallShortcutReceiver.enableUninstallQueue();
     }
 
     public void onDragEnd() {
         mIsDragOccuring = false;
         updateChildrenLayersEnabled();
         mLauncher.unlockScreenOrientation(false);
+
+        // Re-enable any Un/InstallShortcutReceiver and now process any queued items
+        InstallShortcutReceiver.disableAndFlushInstallQueue(getContext());
+        UninstallShortcutReceiver.disableAndFlushUninstallQueue(getContext());
     }
 
     /**
