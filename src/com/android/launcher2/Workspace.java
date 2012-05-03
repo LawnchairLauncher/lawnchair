@@ -432,6 +432,8 @@ public class Workspace extends SmoothPagedView
         cl.setOnInterceptTouchListener(this);
         cl.setClickable(true);
         cl.enableHardwareLayers();
+        cl.setContentDescription(getContext().getString(
+                R.string.workspace_description_format, getChildCount()));
     }
 
     @Override
