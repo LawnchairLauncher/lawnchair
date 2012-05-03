@@ -20,8 +20,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="8424725141379931883">"راه انداز"</string>
-    <!-- no translation found for home (5921706419368316758) -->
-    <skip />
+    <string name="home" msgid="5921706419368316758">"صفحه اصلی"</string>
     <string name="uid_name" msgid="3371120195364560632">"برنامه های Android Core"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>
     <string name="chooser_wallpaper" msgid="6063168087625352235">"انتخاب تصویر زمینه از"</string>
