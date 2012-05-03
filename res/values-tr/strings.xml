@@ -20,8 +20,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="8424725141379931883">"Launcher"</string>
-    <!-- no translation found for home (5921706419368316758) -->
-    <skip />
+    <string name="home" msgid="5921706419368316758">"Ana Ekran"</string>
     <string name="uid_name" msgid="3371120195364560632">"Android Core Apps"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>
     <string name="chooser_wallpaper" msgid="6063168087625352235">"Duvar kağıdı seçin:"</string>
@@ -42,7 +41,7 @@
     <string name="group_shortcuts" msgid="9133529424900391877">"Kısayollar"</string>
     <string name="group_widgets" msgid="6704978494073105844">"Widget\'lar"</string>
     <string name="group_wallpapers" msgid="1568191644272224858">"Duvar Kağıtları"</string>
-    <string name="completely_out_of_space" msgid="1759078539443491182">"Ana ekranlarınızda başka yer kalmadı."</string>
+    <string name="completely_out_of_space" msgid="1759078539443491182">"Ana ekranlarınızda yer kalmadı."</string>
     <string name="out_of_space" msgid="8365249326091984698">"Bu Ana Sayfada yer yok."</string>
     <string name="hotseat_out_of_space" msgid="6304886797358479361">"Favori kısayollarda yer yok"</string>
     <string name="invalid_hotseat_item" msgid="6545340627805449250">"Bu widget, hotseat için çok büyük."</string>
