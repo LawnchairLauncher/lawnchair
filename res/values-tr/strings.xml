@@ -87,8 +87,11 @@
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Bu bir sistem uygulamasıdır ve kaldırılamaz."</string>
     <string name="dream_name" msgid="2847171357608437154">"Roket Fırlatıcı"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Adsız Klasör"</string>
+    <!-- no translation found for workspace_description_format (2968608205939373034) -->
+    <skip />
     <string name="default_scroll_format" msgid="4057140866420001240">"Sayfa %1$d / %2$d"</string>
-    <string name="workspace_scroll_format" msgid="7911126267695001437">"Çalışma alanı %1$d / %2$d"</string>
+    <!-- no translation found for workspace_scroll_format (1704767047951143301) -->
+    <skip />
     <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"Uygulama sayfası %1$d / %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"Widget sayfası %1$d / %2$d"</string>
     <string name="workspace_cling_title" msgid="738396473989890567">"Kendinizi evinizde hissedin"</string>
