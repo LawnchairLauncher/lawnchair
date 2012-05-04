@@ -66,7 +66,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "launcher.db";
 
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
 
     static final String AUTHORITY = "com.android.launcher2.settings";
 
@@ -477,12 +477,14 @@ public class LauncherProvider extends ContentProvider {
                 version = 9;
             }
 
-            if (version < 10) {
+            // We bumped the version twice during JB, once to update the launch flags, and once to
+            // update the override for the default launch animation.
+            if (version < 11) {
                 // Contact shortcuts need a different set of flags to be launched now
                 // The updateContactsShortcuts change is idempotent, so we can keep using it like
                 // back in the Donut days
                 updateContactsShortcuts(db);
-                version = 10;
+                version = 11;
             }
 
             if (version != DATABASE_VERSION) {
@@ -535,7 +537,8 @@ public class LauncherProvider extends ContentProvider {
                                     // detail activities.
                                     newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                                             Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
+                                    newIntent.putExtra(
+                                            Launcher.INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION, true);
                                     newIntent.setData(uri);
 
                                     final ContentValues values = new ContentValues();
