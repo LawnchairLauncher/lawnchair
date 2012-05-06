@@ -1180,6 +1180,23 @@ public final class Launcher extends Activity
                         // currently shown, because doing that may involve
                         // some communication back with the app.
                         mWorkspace.postDelayed(mBuildLayersRunnable, 500);
+
+                        // We had to enable the wallpaper visibility when launching apps from all
+                        // apps (so that the transitions would be the same as when launching from
+                        // workspace) so take this time to see if we need to re-disable the
+                        // wallpaper visibility to ensure performance.
+                        mWorkspace.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mState == State.APPS_CUSTOMIZE) {
+                                    if (mAppsCustomizeTabHost != null &&
+                                            !mAppsCustomizeTabHost.isTransitioning()) {
+                                        updateWallpaperVisibility(false);
+                                    }
+                                }
+                            }
+                        });
+
                         observer.removeOnPreDrawListener(this);
                         return true;
                     }
