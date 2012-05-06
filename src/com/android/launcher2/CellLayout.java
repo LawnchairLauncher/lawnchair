@@ -160,6 +160,9 @@ public class CellLayout extends ViewGroup {
     private static final int INVALID_DIRECTION = -100;
     private DropTarget.DragEnforcer mDragEnforcer;
 
+    private final static PorterDuffXfermode sAddBlendMode =
+            new PorterDuffXfermode(PorterDuff.Mode.ADD);
+
     public CellLayout(Context context) {
         this(context, null);
     }
@@ -506,7 +509,7 @@ public class CellLayout extends ViewGroup {
         if (mForegroundAlpha > 0) {
             mOverScrollForegroundDrawable.setBounds(mForegroundRect);
             Paint p = ((NinePatchDrawable) mOverScrollForegroundDrawable).getPaint();
-            p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.ADD));
+            p.setXfermode(sAddBlendMode);
             mOverScrollForegroundDrawable.draw(canvas);
             p.setXfermode(null);
         }
