@@ -3708,7 +3708,7 @@ public class Workspace extends SmoothPagedView
                         for (String intentStr : newApps) {
                             try {
                                 Intent intent = Intent.parseUri(intentStr, 0);
-                                if (packageNames.contains(intent.getPackage())) {
+                                if (packageNames.contains(intent.getComponent().getPackageName())) {
                                     newApps.remove(intentStr);
                                 }
                             } catch (URISyntaxException e) {}
