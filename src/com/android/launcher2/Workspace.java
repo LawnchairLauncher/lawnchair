@@ -182,6 +182,7 @@ public class Workspace extends SmoothPagedView
     private float mOverscrollFade = 0;
     private boolean mOverscrollTransformsSet;
     public static final int DRAG_BITMAP_PADDING = 2;
+    private boolean mWorkspaceFadeInAdjacentScreens;
 
     // Camera and Matrix used to determine the final position of a neighboring CellLayout
     private final Matrix mMatrix = new Matrix();
@@ -247,7 +248,6 @@ public class Workspace extends SmoothPagedView
     private float[] mOldScaleXs;
     private float[] mOldScaleYs;
     private float[] mOldBackgroundAlphas;
-    private float[] mOldBackgroundAlphaMultipliers;
     private float[] mOldAlphas;
     private float[] mOldRotationYs;
     private float[] mNewTranslationXs;
@@ -255,7 +255,6 @@ public class Workspace extends SmoothPagedView
     private float[] mNewScaleXs;
     private float[] mNewScaleYs;
     private float[] mNewBackgroundAlphas;
-    private float[] mNewBackgroundAlphaMultipliers;
     private float[] mNewAlphas;
     private float[] mNewRotationYs;
     private float mTransitionProgress;
@@ -286,7 +285,8 @@ public class Workspace extends SmoothPagedView
         setDataIsReady();
 
         final Resources res = getResources();
-        mFadeInAdjacentScreens = res.getBoolean(R.bool.config_workspaceFadeAdjacentScreens);
+        mWorkspaceFadeInAdjacentScreens = res.getBoolean(R.bool.config_workspaceFadeAdjacentScreens);
+        mFadeInAdjacentScreens = false;
         mWallpaperManager = WallpaperManager.getInstance(context);
 
         int cellCountX = DEFAULT_CELL_COUNT_X;
@@ -721,7 +721,7 @@ public class Workspace extends SmoothPagedView
 
         // If we are not fading in adjacent screens, we still need to restore the alpha in case the
         // user scrolls while we are transitioning (should not affect dispatchDraw optimizations)
-        if (!mFadeInAdjacentScreens) {
+        if (!mWorkspaceFadeInAdjacentScreens) {
             for (int i = 0; i < getChildCount(); ++i) {
                 ((CellLayout) getPageAt(i)).setShortcutAndWidgetAlpha(1f);
             }
@@ -1192,55 +1192,26 @@ public class Workspace extends SmoothPagedView
         return Math.min(r / threshold, 1.0f);
     }
 
-    private void screenScrolledLargeUI(int screenCenter) {
-        if (isSwitchingState()) return;
-        boolean isInOverscroll = false;
-        for (int i = 0; i < getChildCount(); i++) {
-            CellLayout cl = (CellLayout) getChildAt(i);
-            if (cl != null) {
-                float scrollProgress = getScrollProgress(screenCenter, cl, i);
-                float rotation = WORKSPACE_ROTATION * scrollProgress;
-                float translationX = getOffsetXForRotation(rotation, cl.getWidth(), cl.getHeight());
+    @Override
+    protected void screenScrolled(int screenCenter) {
+        super.screenScrolled(screenCenter);
 
-                // If the current page (i) is being over scrolled, we use a different
-                // set of rules for setting the background alpha multiplier.
-                if (!isSmall()) {
-                    if ((mOverScrollX < 0 && i == 0) || (mOverScrollX > mMaxScrollX &&
-                            i == getChildCount() -1)) {
-                        isInOverscroll = true;
-                        rotation *= -1;
-                        cl.setBackgroundAlphaMultiplier(
-                                overScrollBackgroundAlphaInterpolator(Math.abs(scrollProgress)));
-                        mOverScrollPageIndex = i;
-                        cl.setOverScrollAmount(Math.abs(scrollProgress), i == 0);
-                        if (!mOverscrollTransformsSet) {
-                            mOverscrollTransformsSet = true;
-                            cl.setPivotX(cl.getMeasuredWidth() * (i == 0 ? 0.75f : 0.25f));
-                            cl.setPivotY(cl.getMeasuredHeight() * 0.5f);
-                            cl.setOverscrollTransformsDirty(true);
-                        }
-                    } else if (mOverScrollPageIndex != i) {
-                        cl.setBackgroundAlphaMultiplier(
-                                backgroundAlphaInterpolator(Math.abs(scrollProgress)));
-                    }
-                }
-                cl.setTranslationX(translationX);
-                cl.setRotationY(rotation);
-                if (mFadeInAdjacentScreens && !isSmall()) {
+        boolean isInOverscroll = mOverScrollX < 0 || mOverScrollX > mMaxScrollX;
+        if (mWorkspaceFadeInAdjacentScreens &&
+                mState == State.NORMAL &&
+                !mIsSwitchingState &&
+                !isInOverscroll) {
+            for (int i = 0; i < getChildCount(); i++) {
+                CellLayout child = (CellLayout) getChildAt(i);
+                if (child != null) {
+                    float scrollProgress = getScrollProgress(screenCenter, child, i);
                     float alpha = 1 - Math.abs(scrollProgress);
-                    cl.setShortcutAndWidgetAlpha(alpha);
+                    child.getShortcutsAndWidgets().setAlpha(alpha);
                 }
             }
+            invalidate();
         }
-        if (mOverscrollTransformsSet && !isInOverscroll) {
-            mOverscrollTransformsSet = false;
-            ((CellLayout) getChildAt(0)).resetOverscrollTransforms();
-            ((CellLayout) getChildAt(getChildCount() - 1)).resetOverscrollTransforms();
-        }
-        invalidate();
-    }
 
-    private void screenScrolledStandardUI(int screenCenter) {
         if (mOverScrollX < 0 || mOverScrollX > mMaxScrollX) {
             int index = mOverScrollX < 0 ? 0 : getChildCount() - 1;
             CellLayout cl = (CellLayout) getChildAt(index);
@@ -1269,24 +1240,8 @@ public class Workspace extends SmoothPagedView
     }
 
     @Override
-    protected void screenScrolled(int screenCenter) {
-        if (LauncherApplication.isScreenLarge()) {
-            // We don't call super.screenScrolled() here because we handle the adjacent pages alpha
-            // ourselves (for efficiency), and there are no scrolling indicators to update.
-            screenScrolledLargeUI(screenCenter);
-        } else {
-            super.screenScrolled(screenCenter);
-            screenScrolledStandardUI(screenCenter);
-        }
-    }
-
-    @Override
     protected void overScroll(float amount) {
-        if (LauncherApplication.isScreenLarge()) {
-            dampedOverScroll(amount);
-        } else {
-            acceleratedOverScroll(amount);
-        }
+        acceleratedOverScroll(amount);
     }
 
     protected void onAttachedToWindow() {
@@ -1519,7 +1474,6 @@ public class Workspace extends SmoothPagedView
         mOldScaleXs = new float[childCount];
         mOldScaleYs = new float[childCount];
         mOldBackgroundAlphas = new float[childCount];
-        mOldBackgroundAlphaMultipliers = new float[childCount];
         mOldAlphas = new float[childCount];
         mOldRotationYs = new float[childCount];
         mNewTranslationXs = new float[childCount];
@@ -1527,7 +1481,6 @@ public class Workspace extends SmoothPagedView
         mNewScaleXs = new float[childCount];
         mNewScaleYs = new float[childCount];
         mNewBackgroundAlphas = new float[childCount];
-        mNewBackgroundAlphaMultipliers = new float[childCount];
         mNewAlphas = new float[childCount];
         mNewRotationYs = new float[childCount];
     }
@@ -1582,11 +1535,10 @@ public class Workspace extends SmoothPagedView
                 getResources().getInteger(R.integer.config_appsCustomizeWorkspaceShrinkTime);
         for (int i = 0; i < getChildCount(); i++) {
             final CellLayout cl = (CellLayout) getChildAt(i);
-            float rotation = 0f;
-            float initialAlpha = cl.getAlpha();
-            float finalAlphaMultiplierValue = 1f;
-            float finalAlpha = (!mFadeInAdjacentScreens || stateIsSpringLoaded ||
+            float finalAlpha = (!mWorkspaceFadeInAdjacentScreens || stateIsSpringLoaded ||
                     (i == mCurrentPage)) ? 1f : 0f;
+            float currentAlpha = cl.getShortcutsAndWidgets().getAlpha();
+            float initialAlpha = currentAlpha;
 
             // Determine the pages alpha during the state transition
             if ((oldStateIsSmall && stateIsNormal) ||
@@ -1596,27 +1548,10 @@ public class Workspace extends SmoothPagedView
                 //                     or, if we're in spring-loaded mode
                 if (i == mCurrentPage || !animated || oldStateIsSpringLoaded) {
                     finalAlpha = 1f;
-                    finalAlphaMultiplierValue = 0f;
                 } else {
                     initialAlpha = 0f;
                     finalAlpha = 0f;
                 }
-            }
-
-            // Update the rotation of the screen (don't apply rotation on Phone UI)
-            if (LauncherApplication.isScreenLarge()) {
-                if (i < mCurrentPage) {
-                    rotation = WORKSPACE_ROTATION;
-                } else if (i > mCurrentPage) {
-                    rotation = -WORKSPACE_ROTATION;
-                }
-            }
-
-            // If the screen is not xlarge, then don't rotate the CellLayouts
-            // NOTE: If we don't update the side pages alpha, then we should not hide the side
-            //       pages. see unshrink().
-            if (LauncherApplication.isScreenLarge()) {
-                translationX = getOffsetXForRotation(rotation, cl.getWidth(), cl.getHeight());
             }
 
             mOldAlphas[i] = initialAlpha;
@@ -1627,25 +1562,19 @@ public class Workspace extends SmoothPagedView
                 mOldScaleXs[i] = cl.getScaleX();
                 mOldScaleYs[i] = cl.getScaleY();
                 mOldBackgroundAlphas[i] = cl.getBackgroundAlpha();
-                mOldBackgroundAlphaMultipliers[i] = cl.getBackgroundAlphaMultiplier();
-                mOldRotationYs[i] = cl.getRotationY();
 
                 mNewTranslationXs[i] = translationX;
                 mNewTranslationYs[i] = translationY;
                 mNewScaleXs[i] = finalScaleFactor;
                 mNewScaleYs[i] = finalScaleFactor;
                 mNewBackgroundAlphas[i] = finalBackgroundAlpha;
-                mNewBackgroundAlphaMultipliers[i] = finalAlphaMultiplierValue;
-                mNewRotationYs[i] = rotation;
             } else {
                 cl.setTranslationX(translationX);
                 cl.setTranslationY(translationY);
                 cl.setScaleX(finalScaleFactor);
                 cl.setScaleY(finalScaleFactor);
                 cl.setBackgroundAlpha(finalBackgroundAlpha);
-                cl.setBackgroundAlphaMultiplier(finalAlphaMultiplierValue);
                 cl.setShortcutAndWidgetAlpha(finalAlpha);
-                cl.setRotationY(rotation);
             }
         }
 
@@ -1653,13 +1582,13 @@ public class Workspace extends SmoothPagedView
             for (int index = 0; index < getChildCount(); index++) {
                 final int i = index;
                 final CellLayout cl = (CellLayout) getChildAt(i);
+                float currentAlpha = cl.getShortcutsAndWidgets().getAlpha();
                 if (mOldAlphas[i] == 0 && mNewAlphas[i] == 0) {
                     cl.setTranslationX(mNewTranslationXs[i]);
                     cl.setTranslationY(mNewTranslationYs[i]);
                     cl.setScaleX(mNewScaleXs[i]);
                     cl.setScaleY(mNewScaleYs[i]);
                     cl.setBackgroundAlpha(mNewBackgroundAlphas[i]);
-                    cl.setBackgroundAlphaMultiplier(mNewBackgroundAlphaMultipliers[i]);
                     cl.setShortcutAndWidgetAlpha(mNewAlphas[i]);
                     cl.setRotationY(mNewRotationYs[i]);
                 } else {
@@ -1672,7 +1601,7 @@ public class Workspace extends SmoothPagedView
                         .setInterpolator(mZoomInInterpolator);
                     anim.play(a);
 
-                    if (mOldAlphas[i] != mNewAlphas[i]) {
+                    if (mOldAlphas[i] != mNewAlphas[i] || currentAlpha != mNewAlphas[i]) {
                         LauncherViewPropertyAnimator alphaAnim =
                             new LauncherViewPropertyAnimator(cl.getShortcutsAndWidgets());
                         alphaAnim.alpha(mNewAlphas[i])
@@ -1680,20 +1609,8 @@ public class Workspace extends SmoothPagedView
                             .setInterpolator(mZoomInInterpolator);
                         anim.play(alphaAnim);
                     }
-                    if (mOldRotationYs[i] != 0 || mNewRotationYs[i] != 0) {
-                        ValueAnimator rotate = ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
-                        rotate.setInterpolator(new DecelerateInterpolator(2.0f));
-                        rotate.addUpdateListener(new LauncherAnimatorUpdateListener() {
-                                public void onAnimationUpdate(float a, float b) {
-                                    cl.setRotationY(a * mOldRotationYs[i] + b * mNewRotationYs[i]);
-                                }
-                            });
-                        anim.play(rotate);
-                    }
                     if (mOldBackgroundAlphas[i] != 0 ||
-                        mNewBackgroundAlphas[i] != 0 ||
-                        mOldBackgroundAlphaMultipliers[i] != 0 ||
-                        mNewBackgroundAlphaMultipliers[i] != 0) {
+                        mNewBackgroundAlphas[i] != 0) {
                         ValueAnimator bgAnim = ValueAnimator.ofFloat(0f, 1f).setDuration(duration);
                         bgAnim.setInterpolator(mZoomInInterpolator);
                         bgAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
@@ -1701,9 +1618,6 @@ public class Workspace extends SmoothPagedView
                                     cl.setBackgroundAlpha(
                                             a * mOldBackgroundAlphas[i] +
                                             b * mNewBackgroundAlphas[i]);
-                                    cl.setBackgroundAlphaMultiplier(
-                                            a * mOldBackgroundAlphaMultipliers[i] +
-                                            b * mNewBackgroundAlphaMultipliers[i]);
                                 }
                             });
                         anim.play(bgAnim);
@@ -1751,7 +1665,7 @@ public class Workspace extends SmoothPagedView
         // ensure that only the current page is visible during (and subsequently, after) the
         // transition animation.  If fade adjacent pages is disabled, then re-enable the page
         // visibility after the transition animation.
-        if (!mFadeInAdjacentScreens) {
+        if (!mWorkspaceFadeInAdjacentScreens) {
             for (int i = 0; i < getChildCount(); i++) {
                 final CellLayout cl = (CellLayout) getChildAt(i);
                 cl.setShortcutAndWidgetAlpha(1f);
