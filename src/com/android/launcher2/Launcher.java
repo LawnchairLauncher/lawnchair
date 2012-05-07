@@ -2831,7 +2831,9 @@ public final class Launcher extends Activity
             if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.GONE);
             searchButton.setVisibility(View.GONE);
             voiceButton.setVisibility(View.GONE);
-            voiceButtonProxy.setVisibility(View.GONE);
+            if (voiceButtonProxy != null) {
+                voiceButtonProxy.setVisibility(View.GONE);
+            }
             return false;
         }
     }
