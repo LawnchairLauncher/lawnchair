@@ -627,7 +627,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         if (isScrollingIndicatorEnabled()) {
             updateScrollingIndicator();
         }
-        if (mFadeInAdjacentScreens) {
+        boolean isInOverscroll = mOverScrollX < 0 || mOverScrollX > mMaxScrollX;
+
+        if (mFadeInAdjacentScreens && !isInOverscroll) {
             for (int i = 0; i < getChildCount(); i++) {
                 View child = getChildAt(i);
                 if (child != null) {
