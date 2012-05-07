@@ -1684,7 +1684,7 @@ public class LauncherModel extends BroadcastReceiver {
         for (ItemInfo i : sWorkspaceItems) {
             if (i instanceof ShortcutInfo) {
                 ShortcutInfo info = (ShortcutInfo) i;
-                if (info.intent.getComponent().getPackageName().equals(packageName)) {
+                if (packageName.equals(info.getPackageName())) {
                     infos.add(info);
                 }
             }
