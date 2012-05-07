@@ -496,6 +496,12 @@ public final class Launcher extends Activity
         return mDragLayer;
     }
 
+    boolean isDraggingEnabled() {
+        // We prevent dragging when we are loading the workspace as it is possible to pick up a view
+        // that is subsequently removed from the workspace in startBinding().
+        return !mModel.isLoadingWorkspace();
+    }
+
     static int getScreen() {
         synchronized (sLock) {
             return sScreen;
@@ -2077,14 +2083,9 @@ public final class Launcher extends Activity
     }
 
     public boolean onLongClick(View v) {
-
-        if (mState != State.WORKSPACE) {
-            return false;
-        }
-
-        if (isWorkspaceLocked()) {
-            return false;
-        }
+        if (!isDraggingEnabled()) return false;
+        if (isWorkspaceLocked()) return false;
+        if (mState != State.WORKSPACE) return false;
 
         if (!(v instanceof CellLayout)) {
             v = (View) v.getParent().getParent();
