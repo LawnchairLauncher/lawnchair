@@ -665,6 +665,11 @@ public final class Launcher extends Activity
 
     @Override
     protected void onPause() {
+        // NOTE: We want all transitions from launcher to act as if the wallpaper were enabled
+        // to be consistent.  So re-enable the flag here, and we will re-disable it as necessary
+        // when Launcher resumes and we are still in AllApps.
+        updateWallpaperVisibility(true);
+
         super.onPause();
         mPaused = true;
         mDragController.cancelDrag();
