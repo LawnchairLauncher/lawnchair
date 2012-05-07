@@ -107,6 +107,8 @@ public abstract class PagedViewWithDraggableItems extends PagedView
         // When we have exited all apps or are in transition, disregard long clicks
         if (!mLauncher.isAllAppsCustomizeOpen() ||
                 mLauncher.getWorkspace().isSwitchingState()) return false;
+        // Return if global dragging is not enabled
+        if (!mLauncher.isDraggingEnabled()) return false;
 
         return beginDragging(v);
     }
