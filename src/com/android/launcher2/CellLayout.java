@@ -1045,7 +1045,10 @@ public class CellLayout extends ViewGroup {
     }
 
     public void setBackgroundAlphaMultiplier(float multiplier) {
-        mBackgroundAlphaMultiplier = multiplier;
+        if (mBackgroundAlphaMultiplier != multiplier) {
+            mBackgroundAlphaMultiplier = multiplier;
+            invalidate();
+        }
     }
 
     public float getBackgroundAlphaMultiplier() {

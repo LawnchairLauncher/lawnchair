@@ -383,7 +383,7 @@ public class Workspace extends SmoothPagedView
         mIsDragOccuring = true;
         updateChildrenLayersEnabled();
         mLauncher.lockScreenOrientation();
-
+        setChildrenBackgroundAlphaMultipliers(1f);
         // Prevent any Un/InstallShortcutReceivers from updating the db while we are dragging
         InstallShortcutReceiver.enableInstallQueue();
         UninstallShortcutReceiver.enableUninstallQueue();
@@ -1194,10 +1194,7 @@ public class Workspace extends SmoothPagedView
         return Math.min(r / threshold, 1.0f);
     }
 
-    @Override
-    protected void screenScrolled(int screenCenter) {
-        super.screenScrolled(screenCenter);
-
+    private void updatePageAlphaValues(int screenCenter) {
         boolean isInOverscroll = mOverScrollX < 0 || mOverScrollX > mMaxScrollX;
         if (mWorkspaceFadeInAdjacentScreens &&
                 mState == State.NORMAL &&
@@ -1209,10 +1206,29 @@ public class Workspace extends SmoothPagedView
                     float scrollProgress = getScrollProgress(screenCenter, child, i);
                     float alpha = 1 - Math.abs(scrollProgress);
                     child.getShortcutsAndWidgets().setAlpha(alpha);
+                    if (!mIsDragOccuring) {
+                        child.setBackgroundAlphaMultiplier(
+                                backgroundAlphaInterpolator(Math.abs(scrollProgress)));
+                    } else {
+                        child.setBackgroundAlphaMultiplier(1f);
+                    }
                 }
             }
-            invalidate();
         }
+    }
+
+    private void setChildrenBackgroundAlphaMultipliers(float a) {
+        for (int i = 0; i < getChildCount(); i++) {
+            CellLayout child = (CellLayout) getChildAt(i);
+            child.setBackgroundAlphaMultiplier(a);
+        }
+    }
+
+    @Override
+    protected void screenScrolled(int screenCenter) {
+        super.screenScrolled(screenCenter);
+
+        updatePageAlphaValues(screenCenter);
 
         if (mOverScrollX < 0 || mOverScrollX > mMaxScrollX) {
             int index = mOverScrollX < 0 ? 0 : getChildCount() - 1;
