@@ -115,7 +115,7 @@ class ItemInfo {
     static String getPackageName(Intent intent) {
         if (intent != null) {
             String packageName = intent.getPackage();
-            if (packageName == null) {
+            if (packageName == null && intent.getComponent() != null) {
                 packageName = intent.getComponent().getPackageName();
             }
             if (packageName != null) {
