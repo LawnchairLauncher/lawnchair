@@ -87,11 +87,9 @@
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"To jest aplikacja systemowa, której nie możesz odinstalować."</string>
     <string name="dream_name" msgid="2847171357608437154">"Wyrzutnia rakiet"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Folder bez nazwy"</string>
-    <!-- no translation found for workspace_description_format (2968608205939373034) -->
-    <skip />
+    <string name="workspace_description_format" msgid="2968608205939373034">"Ekran główny %1$d"</string>
     <string name="default_scroll_format" msgid="4057140866420001240">"Strona %1$d z %2$d"</string>
-    <!-- no translation found for workspace_scroll_format (1704767047951143301) -->
-    <skip />
+    <string name="workspace_scroll_format" msgid="1704767047951143301">"Ekran główny %1$d z %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"Strona aplikacji: %1$d z %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"Strona widżetów: %1$d z %2$d"</string>
     <string name="workspace_cling_title" msgid="738396473989890567">"Rozgość się"</string>

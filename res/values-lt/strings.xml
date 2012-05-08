@@ -87,11 +87,9 @@
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Tai sistemos programa ir jos negalima pašalinti."</string>
     <string name="dream_name" msgid="2847171357608437154">"Raketinis prieštankinis šautuvas"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Aplankas be pavadinimo"</string>
-    <!-- no translation found for workspace_description_format (2968608205939373034) -->
-    <skip />
+    <string name="workspace_description_format" msgid="2968608205939373034">"%1$d pagrindinis ekranas"</string>
     <string name="default_scroll_format" msgid="4057140866420001240">"%1$d psl. iš %2$d"</string>
-    <!-- no translation found for workspace_scroll_format (1704767047951143301) -->
-    <skip />
+    <string name="workspace_scroll_format" msgid="1704767047951143301">"%1$d iš %2$d pagrindinis ekranas"</string>
     <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"Programų puslapis: %1$d iš %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"Valdiklių puslapis: %1$d iš %2$d"</string>
     <string name="workspace_cling_title" msgid="738396473989890567">"Jauskitės kaip namie"</string>

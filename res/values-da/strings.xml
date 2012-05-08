@@ -20,7 +20,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="8424725141379931883">"Launcher"</string>
-    <string name="home" msgid="5921706419368316758">"Home"</string>
+    <string name="home" msgid="5921706419368316758">"Startside"</string>
     <string name="uid_name" msgid="3371120195364560632">"Android-kerneprogrammer"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>
     <string name="chooser_wallpaper" msgid="6063168087625352235">"Vælg baggrund fra"</string>
@@ -87,11 +87,9 @@
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Dette er en systemapp, som ikke kan afinstalleres."</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Unavngiven mappe"</string>
-    <!-- no translation found for workspace_description_format (2968608205939373034) -->
-    <skip />
+    <string name="workspace_description_format" msgid="2968608205939373034">"Startskærm %1$d"</string>
     <string name="default_scroll_format" msgid="4057140866420001240">"Side %1$d ud af %2$d"</string>
-    <!-- no translation found for workspace_scroll_format (1704767047951143301) -->
-    <skip />
+    <string name="workspace_scroll_format" msgid="1704767047951143301">"Startskærm %1$d ud af %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"Apps-side %1$d ud af %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"Widgets-side %1$d ud af %2$d"</string>
     <string name="workspace_cling_title" msgid="738396473989890567">"Føl dig hjemme"</string>
