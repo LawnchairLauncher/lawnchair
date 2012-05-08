@@ -136,8 +136,6 @@ public class CellLayout extends ViewGroup {
     private ShortcutAndWidgetContainer mShortcutsAndWidgets;
 
     private boolean mIsHotseat = false;
-    private float mChildScale = 1f;
-    private float mHotseatChildScale = 1f;
 
     public static final int MODE_DRAG_OVER = 0;
     public static final int MODE_ON_DROP = 1;
@@ -213,15 +211,6 @@ public class CellLayout extends ViewGroup {
 
         mNormalBackground.setFilterBitmap(true);
         mActiveGlowBackground.setFilterBitmap(true);
-
-        int iconScale = res.getInteger(R.integer.app_icon_scale_percent);
-        if (iconScale >= 0) {
-            mChildScale = iconScale / 100f;
-        }
-        int hotseatIconScale = res.getInteger(R.integer.app_icon_hotseat_scale_percent);
-        if (hotseatIconScale >= 0) {
-            mHotseatChildScale = hotseatIconScale / 100f;
-        }
 
         // Initialize the data structures used for the drag visualization.
 
@@ -571,52 +560,19 @@ public class CellLayout extends ViewGroup {
         mIsHotseat = isHotseat;
     }
 
-    public float getChildrenScale() {
-        return mIsHotseat ? mHotseatChildScale : mChildScale;
-    }
-
-
-    private void scaleChild(BubbleTextView bubbleChild, float scale) {
-        // If we haven't measured the child yet, do it now
-        // (this happens if we're being dropped from all-apps
-        if (bubbleChild.getLayoutParams() instanceof LayoutParams &&
-                (bubbleChild.getMeasuredWidth() | bubbleChild.getMeasuredHeight()) == 0) {
-            getShortcutsAndWidgets().measureChild(bubbleChild);
-        }
-
-        bubbleChild.setScaleX(scale);
-        bubbleChild.setScaleY(scale);
-    }
-
-    private void resetChild(BubbleTextView bubbleChild) {
-        bubbleChild.setScaleX(1f);
-        bubbleChild.setScaleY(1f);
-
-        bubbleChild.setTextColor(getResources().getColor(R.color.workspace_icon_text_color));
-    }
-
     public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params,
             boolean markCells) {
         final LayoutParams lp = params;
 
-        // Hotseat icons - scale down and remove text
-        // Don't scale the all apps button
-        // scale percent set to -1 means do not scale
-        // Only scale BubbleTextViews
+        // Hotseat icons - remove text
         if (child instanceof BubbleTextView) {
             BubbleTextView bubbleChild = (BubbleTextView) child;
 
-            // Start the child with 100% scale and visible text
-            resetChild(bubbleChild);
-
-            if (mIsHotseat && mHotseatChildScale >= 0) {
-                // Scale/make transparent for a hotseat
-                scaleChild(bubbleChild, mHotseatChildScale);
-
-                bubbleChild.setTextColor(getResources().getColor(android.R.color.transparent));
-            } else if (mChildScale >= 0) {
-                // Else possibly still scale it if we need to for smaller icons
-                scaleChild(bubbleChild, mChildScale);
+            Resources res = getResources();
+            if (mIsHotseat) {
+                bubbleChild.setTextColor(res.getColor(android.R.color.transparent));
+            } else {
+                bubbleChild.setTextColor(res.getColor(R.color.workspace_icon_text_color));
             }
         }
 
