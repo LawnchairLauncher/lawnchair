@@ -87,8 +87,9 @@
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Aceasta este o aplicaţie de sistem şi nu poate fi dezinstalată."</string>
     <string name="dream_name" msgid="2847171357608437154">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Dosar fără nume"</string>
+    <string name="workspace_description_format" msgid="2968608205939373034">"Ecran de pornire %1$d"</string>
     <string name="default_scroll_format" msgid="4057140866420001240">"Pagina %1$d din %2$d"</string>
-    <string name="workspace_scroll_format" msgid="7911126267695001437">"Spaţiul de lucru %1$d din %2$d"</string>
+    <string name="workspace_scroll_format" msgid="1704767047951143301">"Ecranul de pornire %1$d din %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"Pagina de aplicaţii %1$d din %2$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"Pagina de widgeturi %1$d din %2$d"</string>
     <string name="workspace_cling_title" msgid="738396473989890567">"Simţiţi-vă ca acasă"</string>
