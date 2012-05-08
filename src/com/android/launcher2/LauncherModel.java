@@ -745,6 +745,15 @@ public class LauncherModel extends BroadcastReceiver {
         return mAllAppsLoaded;
     }
 
+    boolean isLoadingWorkspace() {
+        synchronized (mLock) {
+            if (mLoaderTask != null) {
+                return mLoaderTask.isLoadingWorkspace();
+            }
+        }
+        return false;
+    }
+
     /**
      * Runnable for the thread that loads the contents of the launcher:
      *   - workspace icons
@@ -755,6 +764,7 @@ public class LauncherModel extends BroadcastReceiver {
         private Context mContext;
         private Thread mWaitThread;
         private boolean mIsLaunching;
+        private boolean mIsLoadingAndBindingWorkspace;
         private boolean mStopped;
         private boolean mLoadAndBindStepFinished;
         private HashMap<Object, CharSequence> mLabelCache;
@@ -769,7 +779,13 @@ public class LauncherModel extends BroadcastReceiver {
             return mIsLaunching;
         }
 
+        boolean isLoadingWorkspace() {
+            return mIsLoadingAndBindingWorkspace;
+        }
+
         private void loadAndBindWorkspace() {
+            mIsLoadingAndBindingWorkspace = true;
+
             // Load the workspace
             if (DEBUG_LOADERS) {
                 Log.d(TAG, "loadAndBindWorkspace mWorkspaceLoaded=" + mWorkspaceLoaded);
@@ -1381,6 +1397,8 @@ public class LauncherModel extends BroadcastReceiver {
                         Log.d(TAG, "bound workspace in "
                             + (SystemClock.uptimeMillis()-t) + "ms");
                     }
+
+                    mIsLoadingAndBindingWorkspace = false;
                 }
             });
         }

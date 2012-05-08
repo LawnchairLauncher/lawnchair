@@ -200,6 +200,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     public boolean onLongClick(View v) {
+        // Return if global dragging is not enabled
+        if (!mLauncher.isDraggingEnabled()) return true;
+
         Object tag = v.getTag();
         if (tag instanceof ShortcutInfo) {
             ShortcutInfo item = (ShortcutInfo) tag;
