@@ -524,10 +524,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 mPressedIcon.lockDrawableState();
             }
 
-            // NOTE: we need to re-enable the wallpaper visibility if we want correct transitions
-            // between items that are launched from the workspace and all apps.  It will be disabled
-            // correctly the next time the window is visible in AppsCustomizeTabHost.
-            mLauncher.updateWallpaperVisibility(true);
             mLauncher.startActivitySafely(v, appInfo.intent, appInfo);
 
         } else if (v instanceof PagedViewWidget) {
