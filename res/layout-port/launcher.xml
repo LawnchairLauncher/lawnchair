@@ -80,6 +80,7 @@
         android:layout_gravity="right"
         android:clickable="true"
         android:onClick="onClickVoiceButton"
+        android:importantForAccessibility="no"
         launcher:sourceViewId="@+id/voice_button" />
 
     <include layout="@layout/apps_customize_pane"
