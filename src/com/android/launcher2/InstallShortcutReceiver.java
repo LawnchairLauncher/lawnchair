@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.os.Debug;
 import android.widget.Toast;
 
 import com.android.launcher.R;
@@ -90,9 +91,12 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 return;
             }
         }
+        // Queue the item up for adding if launcher has not loaded properly yet
+        boolean launcherNotLoaded = LauncherModel.getCellCountX() <= 0 ||
+                LauncherModel.getCellCountY() <= 0;
 
         PendingInstallShortcutInfo info = new PendingInstallShortcutInfo(data, name, intent);
-        if (mUseInstallQueue) {
+        if (mUseInstallQueue || launcherNotLoaded) {
             mInstallQueue.add(info);
         } else {
             processInstallShortcut(context, info);
@@ -102,9 +106,11 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     static void enableInstallQueue() {
         mUseInstallQueue = true;
     }
-
     static void disableAndFlushInstallQueue(Context context) {
         mUseInstallQueue = false;
+        flushInstallQueue(context);
+    }
+    static void flushInstallQueue(Context context) {
         Iterator<PendingInstallShortcutInfo> iter = mInstallQueue.iterator();
         while (iter.hasNext()) {
             processInstallShortcut(context, iter.next());

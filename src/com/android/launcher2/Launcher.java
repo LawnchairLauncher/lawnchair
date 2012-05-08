@@ -649,6 +649,9 @@ public final class Launcher extends Activity
     protected void onResume() {
         super.onResume();
 
+        // Process any items that were added while Launcher was away
+        InstallShortcutReceiver.flushInstallQueue(this);
+
         mPaused = false;
         if (mRestoring || mOnResumeNeedsLoad) {
             mWorkspaceLoading = true;
