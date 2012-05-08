@@ -1390,9 +1390,10 @@ public class LauncherModel extends BroadcastReceiver {
                     }
                 }
             });
-            // If we're profiling, this is the last thing in the queue.
+            // Cleanup
             mHandler.post(new Runnable() {
                 public void run() {
+                    // If we're profiling, ensure this is the last thing in the queue.
                     if (DEBUG_LOADERS) {
                         Log.d(TAG, "bound workspace in "
                             + (SystemClock.uptimeMillis()-t) + "ms");
