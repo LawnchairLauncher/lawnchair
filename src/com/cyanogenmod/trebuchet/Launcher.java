@@ -178,7 +178,7 @@ public final class Launcher extends Activity
     // Type: parcelable
     private static final String RUNTIME_STATE_PENDING_ADD_WIDGET_INFO = "launcher.add_widget_info";
 
-    private static final String TOOLBAR_ICON_METADATA_NAME = "com.cyanogenmod.trebuchet.toolbar_icon";
+    private static final String TOOLBAR_ICON_METADATA_NAME = "com.android.launcher.toolbar_icon";
     private static final String TOOLBAR_SEARCH_ICON_METADATA_NAME =
             "com.cyanogenmod.trebuchet.toolbar_search_icon";
     private static final String TOOLBAR_VOICE_SEARCH_ICON_METADATA_NAME =
