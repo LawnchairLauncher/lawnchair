@@ -35,10 +35,6 @@
     <dimen name="app_widget_preview_padding_left">0dp</dimen>
     <dimen name="app_widget_preview_padding_top">10dp</dimen>
 
-    <!-- Size of icons in workspace -->
-    <integer name="app_icon_scale_percent">-1</integer>
-    <integer name="app_icon_hotseat_scale_percent">-1</integer>
-
     <dimen name="all_apps_button_vertical_padding">4dip</dimen>
 
     <!-- roughly a status bar (for determining how many rows of icons are in home) -->

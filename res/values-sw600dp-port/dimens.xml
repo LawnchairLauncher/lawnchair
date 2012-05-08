@@ -15,9 +15,6 @@
 -->
 
 <resources>
-<!-- Workspace -->
-    <integer name="app_icon_scale_percent">-1</integer>
-
 <!-- AppsCustomize -->
     <dimen name="apps_customize_cell_width">96dp</dimen>
     <dimen name="apps_customize_cell_height">96dp</dimen>
@@ -26,8 +23,6 @@
     <dimen name="apps_customize_pageLayoutPaddingTop">25dp</dimen>
     <dimen name="apps_customize_pageLayoutPaddingBottom">10dp</dimen>
 
-<!-- Hotseat -->
-    <dimen name="hotseat_cell_width">75dp</dimen>
-    <dimen name="hotseat_cell_height">75dp</dimen>
-
+<!-- QSB -->
+    <dimen name="qsb_bar_height">54dp</dimen>
 </resources>
