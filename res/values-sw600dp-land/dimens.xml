@@ -17,22 +17,18 @@
 <resources>
     <dimen name="app_icon_padding_top">0dp</dimen>
     <dimen name="app_icon_drawable_padding_land">0dp</dimen>
-    <integer name="app_icon_scale_percent">90</integer>
-
-<!-- Hotseat -->
-    <dimen name="hotseat_cell_width">75dp</dimen>
-    <dimen name="hotseat_cell_height">75dp</dimen>
     <dimen name="workspace_icon_text_size">11sp</dimen>
 
-<!-- Folders -->
-    <!-- The size of the image which sits behind the preview of the folder contents -->
-    <dimen name="folder_preview_size">70dp</dimen>
-    <dimen name="folder_cell_width">86dp</dimen>
-    <dimen name="folder_cell_height">86dp</dimen>
+<!-- Hotseat -->
+    <dimen name="button_bar_width_left_padding">14dp</dimen>
+    <dimen name="button_bar_width_right_padding">14dp</dimen>
 
 <!-- AppsCustomize -->
     <dimen name="apps_customize_pageLayoutWidthGap">36dp</dimen>
     <dimen name="apps_customize_pageLayoutHeightGap">8dp</dimen>
     <dimen name="apps_customize_pageLayoutPaddingTop">20dp</dimen>
     <dimen name="apps_customize_pageLayoutPaddingBottom">14dp</dimen>
+
+<!-- QSB -->
+    <dimen name="qsb_bar_height">82dp</dimen>
 </resources>
