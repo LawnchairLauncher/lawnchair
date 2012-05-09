@@ -1204,12 +1204,7 @@ public final class Launcher extends Activity
                         mWorkspace.post(new Runnable() {
                             @Override
                             public void run() {
-                                if (mState == State.APPS_CUSTOMIZE) {
-                                    if (mAppsCustomizeTabHost != null &&
-                                            !mAppsCustomizeTabHost.isTransitioning()) {
-                                        updateWallpaperVisibility(false);
-                                    }
-                                }
+                                disableWallpaperIfInAllApps();
                             }
                         });
 
@@ -2191,6 +2186,16 @@ public final class Launcher extends Activity
         view.setPivotY(view.getHeight() / 2.0f);
     }
 
+    void disableWallpaperIfInAllApps() {
+        // Only disable it if we are in all apps
+        if (mState == State.APPS_CUSTOMIZE) {
+            if (mAppsCustomizeTabHost != null &&
+                    !mAppsCustomizeTabHost.isTransitioning()) {
+                updateWallpaperVisibility(false);
+            }
+        }
+    }
+
     void updateWallpaperVisibility(boolean visible) {
         int wpflags = visible ? WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER : 0;
         int curflags = getWindow().getAttributes().flags
@@ -2531,6 +2536,18 @@ public final class Launcher extends Activity
         super.onTrimMemory(level);
         if (level >= ComponentCallbacks2.TRIM_MEMORY_MODERATE) {
             mAppsCustomizeTabHost.onTrimMemory();
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        if (!hasFocus) {
+            // When another window occludes launcher (like the notification shade, or recents),
+            // ensure that we enable the wallpaper flag so that transitions are done correctly.
+            updateWallpaperVisibility(true);
+        } else {
+            // When launcher has focus again, disable the wallpaper if we are in AllApps
+            disableWallpaperIfInAllApps();
         }
     }
 
