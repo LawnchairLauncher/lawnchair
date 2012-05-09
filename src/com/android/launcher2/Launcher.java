@@ -1862,7 +1862,7 @@ public final class Launcher extends Activity
             if (activityName != null) {
                 intent.setPackage(activityName.getPackageName());
             }
-            startActivitySafely(null, intent, "onClickVoiceButton");
+            startActivity(null, intent, "onClickVoiceButton");
         } catch (ActivityNotFoundException e) {
             Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
@@ -1919,7 +1919,7 @@ public final class Launcher extends Activity
         }
     }
 
-    boolean startActivitySafely(View v, Intent intent, Object tag) {
+    boolean startActivity(View v, Intent intent, Object tag) {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         try {
@@ -1936,9 +1936,6 @@ public final class Launcher extends Activity
                 startActivity(intent);
             }
             return true;
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Unable to launch. tag=" + tag + " intent=" + intent, e);
         } catch (SecurityException e) {
             Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Launcher does not have the permission to launch " + intent +
@@ -1947,6 +1944,17 @@ public final class Launcher extends Activity
                     + "tag="+ tag + " intent=" + intent, e);
         }
         return false;
+    }
+
+    boolean startActivitySafely(View v, Intent intent, Object tag) {
+        boolean success = false;
+        try {
+            success = startActivity(v, intent, tag);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Unable to launch. tag=" + tag + " intent=" + intent, e);
+        }
+        return success;
     }
 
     void startActivityForResultSafely(Intent intent, int requestCode) {
