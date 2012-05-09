@@ -978,6 +978,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             if (d.dragView.hasDrawn()) {
                 mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, mCurrentDragView);
             } else {
+                d.deferDragViewCleanupPostAnimation = false;
                 mCurrentDragView.setVisibility(VISIBLE);
             }
             mItemsInvalidated = true;
