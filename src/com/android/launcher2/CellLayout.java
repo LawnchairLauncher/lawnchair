@@ -17,6 +17,8 @@
 package com.android.launcher2;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
@@ -147,7 +149,7 @@ public class CellLayout extends ViewGroup {
     static final int LANDSCAPE = 0;
     static final int PORTRAIT = 1;
 
-    private static final float REORDER_HINT_MAGNITUDE = 0.27f;
+    private static final float REORDER_HINT_MAGNITUDE = 0.10f;
     private static final int REORDER_ANIMATION_DURATION = 150;
     private float mReorderHintAnimationMagnitude;
 
@@ -1921,7 +1923,7 @@ public class CellLayout extends ViewGroup {
         View child;
         float deltaX;
         float deltaY;
-        private static final int DURATION = 140;
+        private static final int DURATION = 300;
         private int repeatCount;
         private boolean cancelOnCycleComplete = false;
         ValueAnimator va;
@@ -1950,6 +1952,8 @@ public class CellLayout extends ViewGroup {
                     deltaY = (int) (Math.sin(angle) * mReorderHintAnimationMagnitude);
                 }
             }
+            child.setPivotY(child.getMeasuredHeight() * 0.5f);
+            child.setPivotX(child.getMeasuredWidth() * 0.5f);
             this.child = child;
         }
 
@@ -1965,7 +1969,7 @@ public class CellLayout extends ViewGroup {
             va = ValueAnimator.ofFloat(0f, 1f);
             va.setRepeatMode(ValueAnimator.REVERSE);
             va.setRepeatCount(ValueAnimator.INFINITE);
-            va.setDuration(DURATION);
+            va.setDuration((int) (DURATION * (1.0f + Math.random()*.08f)));
             va.addUpdateListener(new AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
@@ -1974,6 +1978,10 @@ public class CellLayout extends ViewGroup {
                     float y = r * deltaY;
                     child.setTranslationX(x);
                     child.setTranslationY(y);
+                    float sf = 4.0f / child.getWidth();
+                    float s = 1.0f - r * sf;
+                    child.setScaleX(s);
+                    child.setScaleY(s);
                 }
             });
             va.addListener(new AnimatorListenerAdapter() {
@@ -1994,6 +2002,21 @@ public class CellLayout extends ViewGroup {
         private void completeAnimation() {
             cancelOnCycleComplete = true;
         }
+        private void completeAnimationImmediately() {
+            va.cancel();
+
+            AnimatorSet s = new AnimatorSet();
+            s.playTogether(
+                ObjectAnimator.ofFloat(child, "scaleX", 1f),
+                ObjectAnimator.ofFloat(child, "scaleY", 1f),
+                ObjectAnimator.ofFloat(child, "translationX", 0f),
+                ObjectAnimator.ofFloat(child, "translationX", 0f)
+            );
+            s.setDuration(REORDER_ANIMATION_DURATION);
+            s.setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f));
+            s.start();
+        }
+
 
         // Returns the time required to complete the current oscillating animation
         private int completionTime() {
@@ -2007,7 +2030,7 @@ public class CellLayout extends ViewGroup {
 
     private void completeAndClearReorderHintAnimations() {
         for (ReorderHintAnimation a: mShakeAnimators.values()) {
-            a.completeAnimation();
+            a.completeAnimationImmediately();
         }
         mShakeAnimators.clear();
     }
