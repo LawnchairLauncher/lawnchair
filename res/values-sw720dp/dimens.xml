@@ -21,6 +21,10 @@
 
 <!-- Workspace -->
     <dimen name="qsb_bar_height">56dp</dimen>
+    <dimen name="qsb_bar_height_inset">37dp</dimen>
+    <dimen name="qsb_padding_left">0dp</dimen>
+    <dimen name="qsb_padding_right">0dp</dimen>
+    <dimen name="search_bar_height">40dp</dimen>
     <!-- This should be @dimen/qsb_bar_height - @dimen/workspace_top_padding
          to fix the extra space given to draw portals -->
     <dimen name="workspace_content_large_only_top_margin">36dp</dimen>
