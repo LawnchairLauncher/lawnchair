@@ -164,52 +164,6 @@ public class DragController {
      * Starts a drag.
      *
      * @param v The view that is being dragged
-     * @param source An object representing where the drag originated
-     * @param dragInfo The data associated with the object that is being dragged
-     * @param dragAction The drag action: either {@link #DRAG_ACTION_MOVE} or
-     *        {@link #DRAG_ACTION_COPY}
-     */
-    public void startDrag(View v, DragSource source, Object dragInfo, int dragAction) {
-        startDrag(v, source, dragInfo, dragAction, null);
-    }
-
-    /**
-     * Starts a drag.
-     *
-     * @param v The view that is being dragged
-     * @param source An object representing where the drag originated
-     * @param dragInfo The data associated with the object that is being dragged
-     * @param dragAction The drag action: either {@link #DRAG_ACTION_MOVE} or
-     *        {@link #DRAG_ACTION_COPY}
-     * @param dragRegion Coordinates within the bitmap b for the position of item being dragged.
-     *          Makes dragging feel more precise, e.g. you can clip out a transparent border
-     */
-    public void startDrag(View v, DragSource source, Object dragInfo, int dragAction,
-            Rect dragRegion) {
-        Bitmap b = getViewBitmap(v);
-
-        if (b == null) {
-            // out of memory?
-            return;
-        }
-
-        int[] loc = mCoordinatesTemp;
-        mLauncher.getDragLayer().getLocationInDragLayer(v, loc);
-        int dragLayerX = loc[0];
-        int dragLayerY = loc[1];
-
-        startDrag(b, dragLayerX, dragLayerY, source, dragInfo, dragAction, null, dragRegion, 1f);
-        b.recycle();
-
-        if (dragAction == DRAG_ACTION_MOVE) {
-            v.setVisibility(View.GONE);
-        }
-    }
-
-    /**
-     * Starts a drag.
-     *
-     * @param v The view that is being dragged
      * @param bmp The bitmap that represents the view being dragged
      * @param source An object representing where the drag originated
      * @param dragInfo The data associated with the object that is being dragged
