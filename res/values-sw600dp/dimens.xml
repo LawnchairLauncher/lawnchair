@@ -15,7 +15,7 @@
 -->
 
 <resources>
-    <dimen name="app_icon_size">56dp</dimen>
+    <dimen name="app_icon_size">64dp</dimen>
     <dimen name="app_icon_drawable_padding">3dp</dimen>
     <dimen name="app_icon_padding_top">4dp</dimen>
 
@@ -32,18 +32,18 @@
     <dimen name="hotseat_cell_height">70dp</dimen>
     <dimen name="hotseat_width_gap">-1dp</dimen>
     <dimen name="hotseat_height_gap">-1dp</dimen>
-    <dimen name="button_bar_height">82dip</dimen>
-    <dimen name="button_bar_height_bottom_padding">10dp</dimen>
+    <dimen name="button_bar_height">94dip</dimen>
+    <dimen name="button_bar_height_bottom_padding">14dp</dimen>
     <dimen name="button_bar_height_top_padding">20dp</dimen>
     <dimen name="button_bar_width_left_padding">33dp</dimen>
     <dimen name="button_bar_width_right_padding">33dp</dimen>
-    <dimen name="button_bar_height_plus_padding">92dp</dimen>
+    <dimen name="button_bar_height_plus_padding">104dp</dimen>
 
 <!-- Folders -->
     <!-- The size of the image which sits behind the preview of the folder contents -->
-    <dimen name="folder_preview_size">60dp</dimen>
-    <dimen name="folder_cell_width">84dp</dimen>
-    <dimen name="folder_cell_height">93dp</dimen>
+    <dimen name="folder_preview_size">68dp</dimen>
+    <dimen name="folder_cell_width">86dp</dimen>
+    <dimen name="folder_cell_height">90dp</dimen>
 
 <!-- AppsCustomize -->
     <dimen name="apps_customize_cell_width">96dp</dimen>
@@ -56,10 +56,10 @@
     <dimen name="apps_customize_widget_cell_height_gap">24dp</dimen>
 
 <!-- Workspace cell size -->
-    <dimen name="workspace_cell_width_land">84dp</dimen>
-    <dimen name="workspace_cell_width_port">84dp</dimen>
-    <dimen name="workspace_cell_height_land">84dp</dimen>
-    <dimen name="workspace_cell_height_port">84dp</dimen>
+    <dimen name="workspace_cell_width_land">88dp</dimen>
+    <dimen name="workspace_cell_width_port">88dp</dimen>
+    <dimen name="workspace_cell_height_land">88dp</dimen>
+    <dimen name="workspace_cell_height_port">88dp</dimen>
     <dimen name="workspace_width_gap_land">32dp</dimen>
     <dimen name="workspace_width_gap_port">6dp</dimen>
     <dimen name="workspace_height_gap_land">0dp</dimen>
