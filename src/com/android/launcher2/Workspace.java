@@ -3125,7 +3125,7 @@ public class Workspace extends SmoothPagedView
     }
 
     private void getFinalPositionForDropAnimation(int[] loc, float[] scaleXY,
-            DragView dragView, CellLayout layout, ItemInfo info, int[] targetCell, View finalView,
+            DragView dragView, CellLayout layout, ItemInfo info, int[] targetCell,
             boolean external) {
         // Now we animate the dragView, (ie. the widget or shortcut preview) into its final
         // location and size on the home screen.
@@ -3161,7 +3161,7 @@ public class Workspace extends SmoothPagedView
         int[] finalPos = new int[2];
         float scaleXY[] = new float[2];
         getFinalPositionForDropAnimation(finalPos, scaleXY, dragView, cellLayout, info, mTargetCell,
-                finalView, external);
+                external);
 
         Resources res = mLauncher.getResources();
         int duration = res.getInteger(R.integer.config_dropAnimMaxDuration) - 200;

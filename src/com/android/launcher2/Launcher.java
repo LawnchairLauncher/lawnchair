@@ -162,6 +162,12 @@ public final class Launcher extends Activity
     private static final String RUNTIME_STATE_PENDING_FOLDER_RENAME = "launcher.rename_folder";
     // Type: long
     private static final String RUNTIME_STATE_PENDING_FOLDER_RENAME_ID = "launcher.rename_folder_id";
+    // Type: int
+    private static final String RUNTIME_STATE_PENDING_ADD_SPAN_X = "launcher.add_span_x";
+    // Type: int
+    private static final String RUNTIME_STATE_PENDING_ADD_SPAN_Y = "launcher.add_span_y";
+    // Type: parcelable
+    private static final String RUNTIME_STATE_PENDING_ADD_WIDGET_INFO = "launcher.add_widget_info";
 
     private static final String TOOLBAR_ICON_METADATA_NAME = "com.android.launcher.toolbar_icon";
     private static final String TOOLBAR_SEARCH_ICON_METADATA_NAME =
@@ -203,6 +209,8 @@ public final class Launcher extends Activity
     private LauncherAppWidgetHost mAppWidgetHost;
 
     private ItemInfo mPendingAddInfo = new ItemInfo();
+    private AppWidgetProviderInfo mPendingAddWidgetInfo;
+
     private int[] mTmpAddItemCellCoordinates = new int[2];
 
     private FolderInfo mFolderInfo;
@@ -259,7 +267,6 @@ public final class Launcher extends Activity
     private static Drawable.ConstantState[] sAppMarketIcon = new Drawable.ConstantState[2];
 
     static final ArrayList<String> sDumpLogs = new ArrayList<String>();
-    PendingAddWidgetInfo mWidgetBeingBoundOrConfigured = null;
 
     // We only want to get the SharedPreferences once since it does an FS stat each time we get
     // it from the context.
@@ -533,9 +540,6 @@ public final class Launcher extends Activity
                         args.cellY);
                 result = true;
                 break;
-            case REQUEST_PICK_APPWIDGET:
-                addAppWidgetFromPick(args.intent);
-                break;
             case REQUEST_CREATE_APPWIDGET:
                 int appWidgetId = args.intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
                 completeAddAppWidget(appWidgetId, args.container, args.screen, null, null);
@@ -561,7 +565,7 @@ public final class Launcher extends Activity
             if (resultCode == RESULT_CANCELED) {
                 completeTwoStageWidgetDrop(RESULT_CANCELED, appWidgetId);
             } else if (resultCode == RESULT_OK) {
-                addAppWidgetImpl(appWidgetId, mWidgetBeingBoundOrConfigured);
+                addAppWidgetImpl(appWidgetId, mPendingAddInfo, null, mPendingAddWidgetInfo);
             }
             return;
         }
@@ -611,15 +615,16 @@ public final class Launcher extends Activity
 
     private void completeTwoStageWidgetDrop(final int resultCode, final int appWidgetId) {
         CellLayout cellLayout =
-                (CellLayout) mWorkspace.getChildAt(mWidgetBeingBoundOrConfigured.screen);
+                (CellLayout) mWorkspace.getChildAt(mPendingAddInfo.screen);
         Runnable onCompleteRunnable = null;
         int animationType = 0;
 
+        AppWidgetHostView boundWidget = null;
         if (resultCode == RESULT_OK) {
             animationType = Workspace.COMPLETE_TWO_STAGE_WIDGET_DROP_ANIMATION;
             final AppWidgetHostView layout = mAppWidgetHost.createView(this, appWidgetId,
-                    mWidgetBeingBoundOrConfigured.info);
-            mWidgetBeingBoundOrConfigured.boundWidget = layout;
+                    mPendingAddWidgetInfo);
+            boundWidget = layout;
             onCompleteRunnable = new Runnable() {
                 @Override
                 public void run() {
@@ -639,10 +644,14 @@ public final class Launcher extends Activity
                 }
             };
         }
-        mWorkspace.animateWidgetDrop(mWidgetBeingBoundOrConfigured, cellLayout,
-                (DragView) mDragLayer.getAnimatedView(), onCompleteRunnable,
-                animationType, mWidgetBeingBoundOrConfigured.boundWidget, true);
-        mWidgetBeingBoundOrConfigured = null;
+        if (mDragLayer.getAnimatedView() != null) {
+            mWorkspace.animateWidgetDrop(mPendingAddInfo, cellLayout,
+                    (DragView) mDragLayer.getAnimatedView(), onCompleteRunnable,
+                    animationType, boundWidget, true);
+        } else {
+            // The animated view may be null in the case of a rotation during widget configuration
+            onCompleteRunnable.run();
+        }
     }
 
     @Override
@@ -803,8 +812,12 @@ public final class Launcher extends Activity
             mPendingAddInfo.screen = pendingAddScreen;
             mPendingAddInfo.cellX = savedState.getInt(RUNTIME_STATE_PENDING_ADD_CELL_X);
             mPendingAddInfo.cellY = savedState.getInt(RUNTIME_STATE_PENDING_ADD_CELL_Y);
+            mPendingAddInfo.spanX = savedState.getInt(RUNTIME_STATE_PENDING_ADD_SPAN_X);
+            mPendingAddInfo.spanY = savedState.getInt(RUNTIME_STATE_PENDING_ADD_SPAN_Y);
+            mPendingAddWidgetInfo = savedState.getParcelable(RUNTIME_STATE_PENDING_ADD_WIDGET_INFO);
             mRestoring = true;
         }
+
 
         boolean renameFolder = savedState.getBoolean(RUNTIME_STATE_PENDING_FOLDER_RENAME, false);
         if (renameFolder) {
@@ -1369,6 +1382,9 @@ public final class Launcher extends Activity
             outState.putInt(RUNTIME_STATE_PENDING_ADD_SCREEN, mPendingAddInfo.screen);
             outState.putInt(RUNTIME_STATE_PENDING_ADD_CELL_X, mPendingAddInfo.cellX);
             outState.putInt(RUNTIME_STATE_PENDING_ADD_CELL_Y, mPendingAddInfo.cellY);
+            outState.putInt(RUNTIME_STATE_PENDING_ADD_SPAN_X, mPendingAddInfo.spanX);
+            outState.putInt(RUNTIME_STATE_PENDING_ADD_SPAN_Y, mPendingAddInfo.spanY);
+            outState.putParcelable(RUNTIME_STATE_PENDING_ADD_WIDGET_INFO, mPendingAddWidgetInfo);
         }
 
         if (mFolderInfo != null && mWaitingForResult) {
@@ -1547,26 +1563,20 @@ public final class Launcher extends Activity
         mPendingAddInfo.dropPos = null;
     }
 
-    void addAppWidgetFromPick(Intent data) {
-        // TODO: catch bad widget exception when sent
-        int appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-        // TODO: Is this log message meaningful?
-        if (LOGD) Log.d(TAG, "dumping extras content=" + data.getExtras());
-        addAppWidgetImpl(appWidgetId, null);
-    }
+    void addAppWidgetImpl(final int appWidgetId, ItemInfo info, AppWidgetHostView boundWidget,
+            AppWidgetProviderInfo appWidgetInfo) {
+        if (appWidgetInfo.configure != null) {
+            mPendingAddWidgetInfo = appWidgetInfo;
 
-    void addAppWidgetImpl(final int appWidgetId, final PendingAddWidgetInfo info) {
-        final AppWidgetProviderInfo appWidget = info.info;
-        if (appWidget.configure != null) {
             // Launch over to configure widget, if needed
             Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
-            intent.setComponent(appWidget.configure);
+            intent.setComponent(appWidgetInfo.configure);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             startActivityForResultSafely(intent, REQUEST_CREATE_APPWIDGET);
-            mWidgetBeingBoundOrConfigured = info;
         } else {
             // Otherwise just add it
-            completeAddAppWidget(appWidgetId, info.container, info.screen, info.boundWidget, appWidget);
+            completeAddAppWidget(appWidgetId, info.container, info.screen, boundWidget,
+                    appWidgetInfo);
             // Exit spring loaded mode if necessary after adding the widget
             exitSpringLoadedDragModeDelayed(true, false, null);
         }
@@ -1627,13 +1637,15 @@ public final class Launcher extends Activity
         int appWidgetId;
         if (hostView != null) {
             appWidgetId = hostView.getAppWidgetId();
-            addAppWidgetImpl(appWidgetId, info);
+            addAppWidgetImpl(appWidgetId, info, hostView, info.info);
         } else {
+            // In this case, we either need to start an activity to get permission to bind
+            // the widget, or we need to start an activity to configure the widget, or both.
             appWidgetId = getAppWidgetHost().allocateAppWidgetId();
-            mWidgetBeingBoundOrConfigured = info;
             if (mAppWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, info.componentName)) {
-                addAppWidgetImpl(appWidgetId, info);
+                addAppWidgetImpl(appWidgetId, info, null, info.info);
             } else {
+                mPendingAddWidgetInfo = info.info;
                 Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, info.componentName);
