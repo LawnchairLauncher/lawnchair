@@ -123,6 +123,8 @@
         <item name="android:orientation">horizontal</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
+        <item name="android:paddingLeft">@dimen/search_bar_padding_left</item>
+        <item name="android:paddingRight">@dimen/search_bar_padding_right</item>
     </style>
     <style name="SearchButton">
         <item name="android:layout_gravity">center_vertical</item>
