@@ -641,11 +641,18 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         }
     }
 
-    private void beginDraggingWidget(View v) {
+    private boolean beginDraggingWidget(View v) {
         mDraggingWidget = true;
         // Get the widget preview as the drag representation
         ImageView image = (ImageView) v.findViewById(R.id.widget_preview);
         PendingAddItemInfo createItemInfo = (PendingAddItemInfo) v.getTag();
+
+        // If the ImageView doesn't have a drawable yet, the widget preview hasn't been loaded and
+        // we abort the drag.
+        if (image.getDrawable() == null) {
+            mDraggingWidget = false;
+            return false;
+        }
 
         // Compose the drag image
         Bitmap preview;
@@ -712,6 +719,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 DragController.DRAG_ACTION_COPY, null, scale);
         outline.recycle();
         preview.recycle();
+        return true;
     }
 
     @Override
@@ -721,7 +729,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         if (v instanceof PagedViewIcon) {
             beginDraggingApplication(v);
         } else if (v instanceof PagedViewWidget) {
-            beginDraggingWidget(v);
+            if (!beginDraggingWidget(v)) {
+                return false;
+            }
         }
 
         // We delay entering spring-loaded mode slightly to make sure the UI
