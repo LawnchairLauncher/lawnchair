@@ -15,9 +15,17 @@
 -->
 
 <resources>
-    <dimen name="app_icon_size">54dp</dimen>
+    <dimen name="app_icon_size">56dp</dimen>
     <dimen name="app_icon_drawable_padding">3dp</dimen>
     <dimen name="app_icon_padding_top">4dp</dimen>
+
+<!-- qsb_bar_height_inset represents qsb_bar_height minus the padding
+         that we put on each page for allowing folders to draw out of bounds -->
+    <dimen name="qsb_bar_height_inset">34dp</dimen>
+    <dimen name="qsb_bar_height">48dp</dimen>
+    <dimen name="qsb_padding_left">12dp</dimen>
+    <dimen name="qsb_padding_right">12dp</dimen>
+    <dimen name="search_bar_height">48dp</dimen>
 
 <!-- Hotseat -->
     <dimen name="hotseat_cell_width">70dp</dimen>
@@ -40,21 +48,21 @@
 <!-- AppsCustomize -->
     <dimen name="apps_customize_cell_width">96dp</dimen>
     <dimen name="apps_customize_cell_height">98dp</dimen>
-    <dimen name="apps_customize_pageLayoutPaddingLeft">10dp</dimen>
-    <dimen name="apps_customize_pageLayoutPaddingRight">10dp</dimen>
+    <dimen name="apps_customize_pageLayoutPaddingLeft">12dp</dimen>
+    <dimen name="apps_customize_pageLayoutPaddingRight">12dp</dimen>
     <dimen name="apps_customize_tab_bar_height">60dp</dimen>
     <dimen name="apps_customize_tab_bar_margin_top">8dp</dimen>
-    <dimen name="apps_customize_widget_cell_width_gap">36dp</dimen>
-    <dimen name="apps_customize_widget_cell_height_gap">36dp</dimen>
+    <dimen name="apps_customize_widget_cell_width_gap">0dp</dimen>
+    <dimen name="apps_customize_widget_cell_height_gap">24dp</dimen>
 
 <!-- Workspace cell size -->
-    <dimen name="workspace_cell_width_land">82dp</dimen>
-    <dimen name="workspace_cell_width_port">82dp</dimen>
-    <dimen name="workspace_cell_height_land">82dp</dimen>
-    <dimen name="workspace_cell_height_port">82dp</dimen>
+    <dimen name="workspace_cell_width_land">84dp</dimen>
+    <dimen name="workspace_cell_width_port">84dp</dimen>
+    <dimen name="workspace_cell_height_land">84dp</dimen>
+    <dimen name="workspace_cell_height_port">84dp</dimen>
     <dimen name="workspace_width_gap_land">32dp</dimen>
-    <dimen name="workspace_width_gap_port">0dp</dimen>
+    <dimen name="workspace_width_gap_port">6dp</dimen>
     <dimen name="workspace_height_gap_land">0dp</dimen>
-    <dimen name="workspace_height_gap_port">28dp</dimen>
+    <dimen name="workspace_height_gap_port">24dp</dimen>
 
 </resources>
