@@ -89,7 +89,7 @@
     <string name="folder_hint_text" msgid="8633351560105748141">"이름이 없는 폴더"</string>
     <string name="workspace_description_format" msgid="2968608205939373034">"홈 화면 %1$d"</string>
     <string name="default_scroll_format" msgid="4057140866420001240">"페이지 %2$d 중 %1$d"</string>
-    <string name="workspace_scroll_format" msgid="1704767047951143301">"홈 화면 %2$d 중 %1$d"</string>
+    <string name="workspace_scroll_format" msgid="1704767047951143301">"홈 화면 %1$d/%2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="5494241912377704885">"앱 페이지 %2$d 중 %1$d"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="5383009742241717437">"위젯 페이지 %2$d 중 %1$d"</string>
     <string name="workspace_cling_title" msgid="738396473989890567">"나만의 홈 화면 만들기"</string>
