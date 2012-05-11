@@ -2010,7 +2010,7 @@ public class CellLayout extends ViewGroup {
                 ObjectAnimator.ofFloat(child, "scaleX", 1f),
                 ObjectAnimator.ofFloat(child, "scaleY", 1f),
                 ObjectAnimator.ofFloat(child, "translationX", 0f),
-                ObjectAnimator.ofFloat(child, "translationX", 0f)
+                ObjectAnimator.ofFloat(child, "translationY", 0f)
             );
             s.setDuration(REORDER_ANIMATION_DURATION);
             s.setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f));
