@@ -18,6 +18,8 @@
 <!-- QSB -->
     <dimen name="toolbar_button_vertical_padding">12dip</dimen>
     <dimen name="toolbar_button_horizontal_padding">4dip</dimen>
+    <dimen name="search_bar_padding_left">0dp</dimen>
+    <dimen name="search_bar_padding_right">0dp</dimen>
 
 <!-- Workspace -->
     <dimen name="hotseat_cell_width">64dp</dimen>
