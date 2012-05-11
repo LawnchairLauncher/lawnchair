@@ -52,7 +52,7 @@
     <dimen name="apps_customize_pageLayoutPaddingRight">12dp</dimen>
     <dimen name="apps_customize_tab_bar_height">60dp</dimen>
     <dimen name="apps_customize_tab_bar_margin_top">8dp</dimen>
-    <dimen name="apps_customize_widget_cell_width_gap">0dp</dimen>
+    <dimen name="apps_customize_widget_cell_width_gap">20dp</dimen>
     <dimen name="apps_customize_widget_cell_height_gap">24dp</dimen>
 
 <!-- Workspace cell size -->
