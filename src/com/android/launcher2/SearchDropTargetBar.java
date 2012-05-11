@@ -40,8 +40,8 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
     private static final int sTransitionInDuration = 200;
     private static final int sTransitionOutDuration = 175;
 
-    private AnimatorSet mDropTargetBarFadeInAnim;
-    private AnimatorSet mDropTargetBarFadeOutAnim;
+    private ObjectAnimator mDropTargetBarFadeInAnim;
+    private ObjectAnimator mDropTargetBarFadeOutAnim;
     private ObjectAnimator mQSBSearchBarFadeInAnim;
     private ObjectAnimator mQSBSearchBarFadeOutAnim;
 
@@ -74,6 +74,26 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         mDeleteDropTarget.setLauncher(launcher);
     }
 
+    private void prepareAnimation(ObjectAnimator in, ObjectAnimator out, final View v) {
+        in.setInterpolator(new AccelerateInterpolator());
+        in.setDuration(sTransitionInDuration);
+        in.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                v.setVisibility(View.VISIBLE);
+            }
+        });
+        out.setInterpolator(new DecelerateInterpolator());
+        out.setDuration(sTransitionOutDuration);
+        out.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                v.setVisibility(View.INVISIBLE);
+                v.setLayerType(View.LAYER_TYPE_NONE, null);
+            }
+        });
+    }
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -92,66 +112,23 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
             getResources().getBoolean(R.bool.config_useDropTargetDownTransition);
 
         // Create the various fade animations
-        mDropTargetBar.setAlpha(0f);
-        ObjectAnimator fadeInAlphaAnim = ObjectAnimator.ofFloat(mDropTargetBar, "alpha", 1f);
-        fadeInAlphaAnim.setInterpolator(new DecelerateInterpolator());
-        mDropTargetBarFadeInAnim = new AnimatorSet();
-        AnimatorSet.Builder fadeInAnimators = mDropTargetBarFadeInAnim.play(fadeInAlphaAnim);
         if (enableDropDownDropTargets) {
             mDropTargetBar.setTranslationY(-mBarHeight);
-            fadeInAnimators.with(ObjectAnimator.ofFloat(mDropTargetBar, "translationY", 0f));
+            mDropTargetBarFadeInAnim = ObjectAnimator.ofFloat(mDropTargetBar, "translationY", 0f);
+            mDropTargetBarFadeOutAnim = ObjectAnimator.ofFloat(mDropTargetBar, "translationY",
+                    -mBarHeight);
+            mQSBSearchBarFadeInAnim = ObjectAnimator.ofFloat(mQSBSearchBar, "translationY", 0);
+            mQSBSearchBarFadeOutAnim = ObjectAnimator.ofFloat(mQSBSearchBar, "translationY",
+                    -mBarHeight);
+        } else {
+            mDropTargetBar.setAlpha(0f);
+            mDropTargetBarFadeInAnim = ObjectAnimator.ofFloat(mDropTargetBar, "alpha", 1f);
+            mDropTargetBarFadeOutAnim = ObjectAnimator.ofFloat(mDropTargetBar, "alpha", 0f);
+            mQSBSearchBarFadeInAnim = ObjectAnimator.ofFloat(mQSBSearchBar, "alpha", 1f);
+            mQSBSearchBarFadeOutAnim = ObjectAnimator.ofFloat(mQSBSearchBar, "alpha", 0f);
         }
-        mDropTargetBarFadeInAnim.setDuration(sTransitionInDuration);
-        mDropTargetBarFadeInAnim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                mDropTargetBar.setVisibility(View.VISIBLE);
-            }
-        });
-        ObjectAnimator fadeOutAlphaAnim = ObjectAnimator.ofFloat(mDropTargetBar, "alpha", 0f);
-        fadeOutAlphaAnim.setInterpolator(new AccelerateInterpolator());
-        mDropTargetBarFadeOutAnim = new AnimatorSet();
-        AnimatorSet.Builder fadeOutAnimators = mDropTargetBarFadeOutAnim.play(fadeOutAlphaAnim);
-        if (enableDropDownDropTargets) {
-            fadeOutAnimators.with(ObjectAnimator.ofFloat(mDropTargetBar, "translationY",
-                    -mBarHeight));
-        }
-        mDropTargetBarFadeOutAnim.setDuration(sTransitionOutDuration);
-        mDropTargetBarFadeOutAnim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mDropTargetBar.setVisibility(View.INVISIBLE);
-                mDropTargetBar.setLayerType(View.LAYER_TYPE_NONE, null);
-            }
-        });
-        mQSBSearchBarFadeInAnim = ObjectAnimator.ofFloat(mQSBSearchBar, "alpha", 1f);
-        mQSBSearchBarFadeInAnim.setDuration(sTransitionInDuration);
-        mQSBSearchBarFadeInAnim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                mQSBSearchBar.setVisibility(View.VISIBLE);
-                mQSBSearchBar.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mQSBSearchBar.setLayerType(View.LAYER_TYPE_NONE, null);
-            }
-        });
-        mQSBSearchBarFadeOutAnim = ObjectAnimator.ofFloat(mQSBSearchBar, "alpha", 0f);
-        mQSBSearchBarFadeOutAnim.setDuration(sTransitionOutDuration);
-        mQSBSearchBarFadeOutAnim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                mQSBSearchBar.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mQSBSearchBar.setVisibility(View.INVISIBLE);
-                mQSBSearchBar.setLayerType(View.LAYER_TYPE_NONE, null);
-            }
-        });
+        prepareAnimation(mDropTargetBarFadeInAnim, mDropTargetBarFadeOutAnim, mDropTargetBar);
+        prepareAnimation(mQSBSearchBarFadeInAnim, mQSBSearchBarFadeOutAnim, mQSBSearchBar);
     }
 
     public void finishAnimations() {
