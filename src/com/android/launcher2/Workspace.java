@@ -199,6 +199,7 @@ public class Workspace extends SmoothPagedView
     private Point mDisplaySize = new Point();
     private boolean mIsStaticWallpaper;
     private int mWallpaperTravelWidth;
+    private int mSpringLoadedPageSpacing;
 
     // Variables relating to the creation of user folders by hovering shortcuts over shortcuts
     private static final int FOLDER_CREATION_TIMEOUT = 0;
@@ -322,6 +323,8 @@ public class Workspace extends SmoothPagedView
 
         mSpringLoadedShrinkFactor =
             res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
+        mSpringLoadedPageSpacing =
+                res.getDimensionPixelSize(R.dimen.workspace_spring_loaded_page_spacing);
 
         // if the value is manually specified, use that instead
         cellCountX = a.getInt(R.styleable.Workspace_cellCountX, cellCountX);
@@ -1536,6 +1539,7 @@ public class Workspace extends SmoothPagedView
 
         if (state != State.NORMAL) {
             finalScaleFactor = mSpringLoadedShrinkFactor - (stateIsSmall ? 0.1f : 0);
+            setPageSpacing(mSpringLoadedPageSpacing);
             if (oldStateIsNormal && stateIsSmall) {
                 zoomIn = false;
                 setLayoutScale(finalScaleFactor);
@@ -1545,6 +1549,7 @@ public class Workspace extends SmoothPagedView
                 setLayoutScale(finalScaleFactor);
             }
         } else {
+            setPageSpacing(PagedView.AUTOMATIC_PAGE_SPACING);
             setLayoutScale(1.0f);
         }
 

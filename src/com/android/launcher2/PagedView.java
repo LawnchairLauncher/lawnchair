@@ -75,6 +75,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private static final int MIN_SNAP_VELOCITY = 1500;
     private static final int MIN_FLING_VELOCITY = 250;
 
+    static final int AUTOMATIC_PAGE_SPACING = -1;
+
     protected int mFlingThresholdVelocity;
     protected int mMinFlingVelocity;
     protected int mMinSnapVelocity;
@@ -450,8 +452,16 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
         final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         final int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
         if (widthMode != MeasureSpec.EXACTLY) {
             throw new IllegalStateException("Workspace can only be used in EXACTLY mode.");
+        }
+
+        // Return early if we aren't given a proper dimension
+        if (widthSize <= 0 || heightSize <= 0) {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            return;
         }
 
         /* Allow the height to be set as WRAP_CONTENT. This allows the particular case
@@ -459,8 +469,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
          * is still not allowed to be set as WRAP_CONTENT since many parts of the code expect
          * each page to have the same width.
          */
-        final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
         int maxChildHeight = 0;
 
         final int verticalPadding = getPaddingTop() + getPaddingBottom();
@@ -507,12 +515,17 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
         setMeasuredDimension(widthSize, heightSize);
 
+        // We can't call getChildOffset/getRelativeChildOffset until we set the measured dimensions.
+        // We also wait until we set the measured dimensions before flushing the cache as well, to
+        // ensure that the cache is filled with good values.
+        invalidateCachedOffsets();
+
         if (childCount > 0) {
             if (DEBUG) Log.d(TAG, "getRelativeChildOffset(): " + getMeasuredWidth() + ", "
                     + getChildWidth(0));
 
             // Calculate the variable page spacing if necessary
-            if (mPageSpacing < 0) {
+            if (mPageSpacing == AUTOMATIC_PAGE_SPACING) {
                 // The gap between pages in the PagedView should be equal to the gap from the page
                 // to the edge of the screen (so it is not visible in the current screen).  To
                 // account for unequal padding on each side of the paged view, we take the maximum
@@ -524,10 +537,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             }
         }
 
-        // We can't call getChildOffset/getRelativeChildOffset until we set the measured dimensions.
-        // We also wait until we set the measured dimensions before flushing the cache as well, to
-        // ensure that the cache is filled with good values.
-        invalidateCachedOffsets();
         updateScrollingIndicatorPosition();
 
         if (childCount > 0) {
