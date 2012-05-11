@@ -566,7 +566,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mLauncher.getWorkspace().beginDragShared(v, this);
     }
 
-    private void loadWidgetInBackground(final PendingAddWidgetInfo info) {
+    private void preloadWidget(final PendingAddWidgetInfo info) {
         final AppWidgetProviderInfo pInfo = info.info;
         if (pInfo.configure != null) {
             return;
@@ -613,7 +613,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // We are anticipating a long press, and we use this time to load bind and instantiate
         // the widget. This will need to be cleaned up if it turns out no long press occurs.
         mCreateWidgetInfo = new PendingAddWidgetInfo((PendingAddWidgetInfo) v.getTag());
-        loadWidgetInBackground(mCreateWidgetInfo);
+        preloadWidget(mCreateWidgetInfo);
     }
 
     private void cleanupWidgetPreloading() {

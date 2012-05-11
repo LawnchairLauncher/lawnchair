@@ -2244,6 +2244,8 @@ public class Workspace extends SmoothPagedView
                     CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell.getLayoutParams();
                     mTargetCell[0] = lp.cellX;
                     mTargetCell[1] = lp.cellY;
+                    CellLayout layout = (CellLayout) cell.getParent().getParent();
+                    layout.markCellsAsOccupiedForView(cell);
                 }
             }
 
