@@ -323,7 +323,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             int rhIndex = rhs.cellY * mNumCols + rhs.cellX;
             return (lhIndex - rhIndex);
         }
-
     }
 
     private void placeInReadingOrder(ArrayList<ShortcutInfo> items) {
@@ -335,7 +334,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 maxX = item.cellX;
             }
         }
-        GridComparator gridComparator = new GridComparator(maxX);
+
+        GridComparator gridComparator = new GridComparator(maxX + 1);
         Collections.sort(items, gridComparator);
         final int countX = mContent.getCountX();
         for (int i = 0; i < count; i++) {
@@ -383,6 +383,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         } else {
             mFolderName.setText("");
         }
+        updateItemLocationsInDatabase();
     }
 
     /**
