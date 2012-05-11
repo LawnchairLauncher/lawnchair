@@ -49,7 +49,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -171,7 +170,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         AllAppsView, View.OnClickListener, View.OnKeyListener, DragSource,
         PagedViewIcon.PressedCallback, PagedViewWidget.ShortPressListener,
         LauncherTransitionable {
-    static final String LOG_TAG = "AppsCustomizePagedView";
+    static final String TAG = "AppsCustomizePagedView";
 
     /**
      * The different content types that this paged view can show.
@@ -490,7 +489,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                     mWidgets.add(widget);
                 }
             } else {
-                Log.e(LOG_TAG, "Widget " + widget.provider + " has invalid dimensions (" +
+                Log.e(TAG, "Widget " + widget.provider + " has invalid dimensions (" +
                         widget.minWidth + ", " + widget.minHeight + ")");
             }
         }
@@ -612,32 +611,43 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     public void onShortPress(View v) {
         // We are anticipating a long press, and we use this time to load bind and instantiate
         // the widget. This will need to be cleaned up if it turns out no long press occurs.
+        if (mCreateWidgetInfo != null) {
+            // Just in case the cleanup process wasn't properly executed. This shouldn't happen.
+            cleanupWidgetPreloading(false);
+        }
         mCreateWidgetInfo = new PendingAddWidgetInfo((PendingAddWidgetInfo) v.getTag());
         preloadWidget(mCreateWidgetInfo);
     }
 
-    private void cleanupWidgetPreloading() {
-        PendingAddWidgetInfo info = mCreateWidgetInfo;
-        mCreateWidgetInfo = null;
-        if (mWidgetCleanupState >= 0 && mWidgetLoadingId != -1) {
-            mLauncher.getAppWidgetHost().deleteAppWidgetId(mWidgetLoadingId);
-        }
-        if (mWidgetCleanupState == WIDGET_BOUND) {
-            removeCallbacks(mInflateWidgetRunnable);
-        } else if (mWidgetCleanupState == WIDGET_INFLATED) {
-            AppWidgetHostView widget = info.boundWidget;
-            int widgetId = widget.getAppWidgetId();
-            mLauncher.getAppWidgetHost().deleteAppWidgetId(widgetId);
-            mLauncher.getDragLayer().removeView(widget);
+    private void cleanupWidgetPreloading(boolean widgetWasAdded) {
+        if (!widgetWasAdded) {
+            // If the widget was not added, we may need to do further cleanup.
+            PendingAddWidgetInfo info = mCreateWidgetInfo;
+            mCreateWidgetInfo = null;
+            // First step was to allocate a widget id, revert that.
+            if ((mWidgetCleanupState == WIDGET_BOUND || mWidgetCleanupState == WIDGET_INFLATED) &&
+                    mWidgetLoadingId != -1) {
+                mLauncher.getAppWidgetHost().deleteAppWidgetId(mWidgetLoadingId);
+            }
+            if (mWidgetCleanupState == WIDGET_BOUND) {
+                // We never actually inflated the widget, so remove the callback to do so.
+                removeCallbacks(mInflateWidgetRunnable);
+            } else if (mWidgetCleanupState == WIDGET_INFLATED) {
+                // The widget was inflated and added to the DragLayer -- remove it.
+                AppWidgetHostView widget = info.boundWidget;
+                mLauncher.getDragLayer().removeView(widget);
+            }
         }
         mWidgetCleanupState = WIDGET_NO_CLEANUP_REQUIRED;
         mWidgetLoadingId = -1;
+        mCreateWidgetInfo = null;
+        PagedViewWidget.resetShortPressTarget();
     }
 
     @Override
     public void cleanUpShortPress(View v) {
         if (!mDraggingWidget) {
-            cleanupWidgetPreloading();
+            cleanupWidgetPreloading(false);
         }
     }
 
@@ -829,8 +839,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             }
 
             d.deferDragViewCleanupPostAnimation = false;
-            cleanupWidgetPreloading();
         }
+        cleanupWidgetPreloading(success);
         mDraggingWidget = false;
     }
 
@@ -838,7 +848,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     public void onFlingToDeleteCompleted() {
         // We just dismiss the drag when we fling, so cleanup here
         endDragging(null, true, true);
-        cleanupWidgetPreloading();
+        cleanupWidgetPreloading(false);
         mDraggingWidget = false;
     }
 
@@ -1130,7 +1140,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         if (previewImage != 0) {
             drawable = mPackageManager.getDrawable(packageName, previewImage, null);
             if (drawable == null) {
-                Log.w(LOG_TAG, "Can't load widget preview drawable 0x" +
+                Log.w(TAG, "Can't load widget preview drawable 0x" +
                         Integer.toHexString(previewImage) + " for provider: " + provider);
             }
         }
@@ -1620,8 +1630,8 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     @Override
     public void dumpState() {
         // TODO: Dump information related to current list of Applications, Widgets, etc.
-        ApplicationInfo.dumpApplicationInfoList(LOG_TAG, "mApps", mApps);
-        dumpAppWidgetProviderInfoList(LOG_TAG, "mWidgets", mWidgets);
+        ApplicationInfo.dumpApplicationInfoList(TAG, "mApps", mApps);
+        dumpAppWidgetProviderInfoList(TAG, "mWidgets", mWidgets);
     }
 
     private void dumpAppWidgetProviderInfoList(String tag, String label,
