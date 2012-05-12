@@ -53,10 +53,8 @@
     <!-- Hotseat specific attributes. These attributes are used to customize
          the hotseat in XML files. -->
     <declare-styleable name="Hotseat">
-        <!-- The number of horizontal cells in the CellLayout -->
-        <attr name="cellCountX" />
-        <!-- The number of vertical cells in the CellLayout -->
-        <attr name="cellCountY" />
+        <!-- The number of cells in the CellLayout -->
+        <attr name="cellCount" format="integer"  />
     </declare-styleable>
 
     <!-- CellLayout specific attributes. These attributes are used to customize
