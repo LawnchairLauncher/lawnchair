@@ -16,6 +16,7 @@
 
 <resources>
     <dimen name="app_icon_size">72dp</dimen>
+    <dimen name="reveal_radius">72dp</dimen>
 <!-- QSB -->
     <dimen name="toolbar_button_vertical_padding">12dip</dimen>
     <dimen name="toolbar_button_horizontal_padding">12dip</dimen>

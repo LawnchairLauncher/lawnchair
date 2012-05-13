@@ -28,24 +28,20 @@
             android:orientation="vertical">
             <TextView
                 style="@style/ClingTitleText"
-                android:id="@+id/workspace_cling_title"
                 android:text="@string/workspace_cling_title" />
             <TextView
                 style="@style/ClingText"
-                android:id="@+id/workspace_cling_move_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/workspace_cling_move_item" />
             <Button
                 style="@style/ClingButton"
-                android:id="@+id/cling_dismiss"
                 android:layout_marginTop="15dp"
                 android:onClick="dismissWorkspaceCling" />
         </LinearLayout>
     </FrameLayout>
     <TextView
         style="@style/ClingText"
-        android:id="@+id/workspace_cling_open_all_apps"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="90dp"
