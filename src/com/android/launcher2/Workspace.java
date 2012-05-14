@@ -450,6 +450,13 @@ public class Workspace extends SmoothPagedView
     public void onChildViewRemoved(View parent, View child) {
     }
 
+    protected boolean shouldDrawChild(View child) {
+        final CellLayout cl = (CellLayout) child;
+        return super.shouldDrawChild(child) &&
+            (cl.getShortcutsAndWidgets().getAlpha() > 0 ||
+             cl.getBackgroundAlpha() > 0);
+    }
+
     /**
      * @return The open folder on the current screen, or null if there is none
      */
