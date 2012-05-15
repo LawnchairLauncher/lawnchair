@@ -25,29 +25,9 @@
     <!-- Drag specific targets container -->
     <LinearLayout
         style="@style/SearchDropTargetBar"
-        android:id="@+id/drag_target_bar"
-        android:visibility="gone">
+        android:id="@+id/drag_target_bar">
 
-        <FrameLayout
-            style="@style/DropTargetButtonContainer"
-            android:layout_weight="1">
-            <!-- Delete target -->
-            <com.android.launcher2.DeleteDropTarget
-                style="@style/DropTargetButton"
-                android:id="@+id/delete_target_text"
-                android:text="@string/delete_zone_label_workspace"
-                android:drawableLeft="@drawable/remove_target_selector" />
-        </FrameLayout>
-
-        <FrameLayout
-            style="@style/DropTargetButtonContainer"
-            android:layout_weight="1">
-            <!-- Info target -->
-            <com.android.launcher2.InfoDropTarget
-                style="@style/DropTargetButton"
-                android:id="@+id/info_target_text"
-                android:text="@string/info_target_label"
-                android:drawableLeft="@drawable/info_target_selector" />
-        </FrameLayout>
+        <include
+            layout="@layout/drop_target_bar" />
     </LinearLayout>
 </com.android.launcher2.SearchDropTargetBar>
