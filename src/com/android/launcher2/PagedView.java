@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -1854,7 +1855,13 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     @Override
     public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);
-        info.setScrollable(true);
+        info.setScrollable(getPageCount() > 1);
+        if (getCurrentPage() < getPageCount() - 1) {
+            info.addAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+        }
+        if (getCurrentPage() > 0) {
+            info.addAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
+        }
     }
 
     @Override
@@ -1866,6 +1873,28 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             event.setToIndex(mCurrentPage);
             event.setItemCount(getChildCount());
         }
+    }
+
+    @Override
+    public boolean performAccessibilityAction(int action, Bundle arguments) {
+        if (super.performAccessibilityAction(action, arguments)) {
+            return true;
+        }
+        switch (action) {
+            case AccessibilityNodeInfo.ACTION_SCROLL_FORWARD: {
+                if (getCurrentPage() < getPageCount() - 1) {
+                    scrollRight();
+                    return true;
+                }
+            } break;
+            case AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD: {
+                if (getCurrentPage() > 0) {
+                    scrollLeft();
+                    return true;
+                }
+            } break;
+        }
+        return false;
     }
 
     protected String getCurrentPageDescription() {

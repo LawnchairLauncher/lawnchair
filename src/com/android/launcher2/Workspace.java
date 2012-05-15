@@ -342,6 +342,11 @@ public class Workspace extends SmoothPagedView
 
         // Disable multitouch across the workspace/all apps/customize tray
         setMotionEventSplittingEnabled(true);
+
+        // Unless otherwise specified this view is important for accessibility.
+        if (getImportantForAccessibility() == View.IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
+            setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
+        }
     }
 
     // estimate the size of a widget with spans hSpan, vSpan. return MAX_VALUE for each
