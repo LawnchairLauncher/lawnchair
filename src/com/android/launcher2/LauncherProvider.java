@@ -66,7 +66,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "launcher.db";
 
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 12;
 
     static final String AUTHORITY = "com.android.launcher2.settings";
 
@@ -477,14 +477,15 @@ public class LauncherProvider extends ContentProvider {
                 version = 9;
             }
 
-            // We bumped the version twice during JB, once to update the launch flags, and once to
-            // update the override for the default launch animation.
-            if (version < 11) {
+            // We bumped the version three time during JB, once to update the launch flags, once to
+            // update the override for the default launch animation and once to set the mimetype
+            // to improve startup performance
+            if (version < 12) {
                 // Contact shortcuts need a different set of flags to be launched now
                 // The updateContactsShortcuts change is idempotent, so we can keep using it like
                 // back in the Donut days
                 updateContactsShortcuts(db);
-                version = 11;
+                version = 12;
             }
 
             if (version != DATABASE_VERSION) {
@@ -540,6 +541,9 @@ public class LauncherProvider extends ContentProvider {
                                     newIntent.putExtra(
                                             Launcher.INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION, true);
                                     newIntent.setData(uri);
+                                    // Determine the type and also put that in the shortcut
+                                    // (that can speed up launch a bit)
+                                    newIntent.setDataAndType(uri, newIntent.resolveType(mContext));
 
                                     final ContentValues values = new ContentValues();
                                     values.put(LauncherSettings.Favorites.INTENT,
