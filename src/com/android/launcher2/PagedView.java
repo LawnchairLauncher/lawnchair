@@ -747,6 +747,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         }
     }
 
+    protected boolean shouldDrawChild(View child) {
+        return child.getAlpha() > 0;
+    }
+
     @Override
     protected void dispatchDraw(Canvas canvas) {
         int halfScreenSize = getMeasuredWidth() / 2;
@@ -783,7 +787,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 // View.INVISIBLE, preventing re-drawing of their hardware layer
                 for (int i = getChildCount() - 1; i >= 0; i--) {
                     final View v = getPageAt(i);
-                    if (leftScreen <= i && i <= rightScreen && v.getAlpha() > 0) {
+                    if (leftScreen <= i && i <= rightScreen && shouldDrawChild(v)) {
                         v.setVisibility(VISIBLE);
                         drawChild(canvas, v, drawingTime);
                     } else {
