@@ -279,6 +279,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         mWidgetPreviewIconPaddedDimension =
             (int) (mAppIconSize * (1 + (2 * sWidgetPreviewIconPaddingPercentage)));
         mFadeInAdjacentScreens = false;
+
+        // Unless otherwise specified this view is important for accessibility.
+        if (getImportantForAccessibility() == View.IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
+            setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
+        }
     }
 
     @Override
