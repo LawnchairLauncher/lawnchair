@@ -25,6 +25,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -76,7 +77,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
 
         // The current drawable is set to either the remove drawable or the uninstall drawable 
         // and is initially set to the remove drawable, as set in the layout xml.
-        mCurrentDrawable = (TransitionDrawable) getCompoundDrawables()[0];
+        mCurrentDrawable = (TransitionDrawable) getCurrentDrawable();
 
         // Remove the text in the Phone UI in landscape
         int orientation = getResources().getConfiguration().orientation;
@@ -157,7 +158,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         } else {
             setCompoundDrawablesWithIntrinsicBounds(mRemoveDrawable, null, null, null);
         }
-        mCurrentDrawable = (TransitionDrawable) getCompoundDrawables()[0];
+        mCurrentDrawable = (TransitionDrawable) getCurrentDrawable();
 
         mActive = isVisible;
         resetHoverColor();

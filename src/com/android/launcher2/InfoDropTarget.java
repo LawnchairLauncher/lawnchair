@@ -16,7 +16,6 @@
 
 package com.android.launcher2;
 
-import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -51,7 +50,7 @@ public class InfoDropTarget extends ButtonDropTarget {
         // Get the hover color
         Resources r = getResources();
         mHoverColor = r.getColor(R.color.info_target_hover_tint);
-        mDrawable = (TransitionDrawable) getCompoundDrawables()[0];
+        mDrawable = (TransitionDrawable) getCurrentDrawable();
         mDrawable.setCrossFadeEnabled(true);
 
         // Remove the text in the Phone UI in landscape

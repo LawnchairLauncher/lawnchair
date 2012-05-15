@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -66,6 +67,16 @@ public class ButtonDropTarget extends TextView implements DropTarget, DragContro
 
     public void setSearchDropTargetBar(SearchDropTargetBar searchDropTargetBar) {
         mSearchDropTargetBar = searchDropTargetBar;
+    }
+
+    protected Drawable getCurrentDrawable() {
+        Drawable[] drawables = getCompoundDrawables();
+        for (int i = 0; i < drawables.length; ++i) {
+            if (drawables[i] != null) {
+                return drawables[i];
+            }
+        }
+        return null;
     }
 
     public void onDrop(DragObject d) {
