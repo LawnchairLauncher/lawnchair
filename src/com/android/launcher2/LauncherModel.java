@@ -1089,7 +1089,9 @@ public class LauncherModel extends BroadcastReceiver {
 
                                 // App shortcuts that used to be automatically added to Launcher
                                 // didn't always have the correct intent flags set, so do that here
-                                if (intent.getAction().equals(Intent.ACTION_MAIN) &&
+                                if (intent.getAction() != null &&
+                                        intent.getCategories() != null &&
+                                        intent.getAction().equals(Intent.ACTION_MAIN) &&
                                         intent.getCategories().contains(Intent.CATEGORY_LAUNCHER)) {
                                     intent.addFlags(
                                         Intent.FLAG_ACTIVITY_NEW_TASK |
