@@ -42,6 +42,7 @@ public class PagedViewWidget extends LinearLayout {
     CheckForShortPress mPendingCheckForShortPress = null;
     ShortPressListener mShortPressListener = null;
     boolean mShortPressTriggered = false;
+    static PagedViewWidget sShortpressTarget = null;
 
     public PagedViewWidget(Context context) {
         this(context, null);
@@ -141,13 +142,16 @@ public class PagedViewWidget extends LinearLayout {
     class CheckForShortPress implements Runnable {
         public void run() {
             if (mShortPressListener != null) {
+                if (sShortpressTarget != null) return;
                 mShortPressListener.onShortPress(PagedViewWidget.this);
             }
+            sShortpressTarget = PagedViewWidget.this;
             mShortPressTriggered = true;
         }
     }
 
     private void checkForShortPress() {
+        if (sShortpressTarget != null) return;
         if (mPendingCheckForShortPress == null) {
             mPendingCheckForShortPress = new CheckForShortPress();
         }
@@ -173,6 +177,10 @@ public class PagedViewWidget extends LinearLayout {
         }
     }
 
+    static void resetShortPressTarget() {
+        sShortpressTarget = null;
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         super.onTouchEvent(event);
@@ -190,6 +198,7 @@ public class PagedViewWidget extends LinearLayout {
             case MotionEvent.ACTION_MOVE:
                 break;
         }
+
         // We eat up the touch events here, since the PagedView (which uses the same swiping
         // touch code as Workspace previously) uses onInterceptTouchEvent() to determine when
         // the user is scrolling between pages.  This means that if the pages themselves don't
