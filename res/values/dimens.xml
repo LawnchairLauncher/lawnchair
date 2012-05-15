@@ -21,6 +21,9 @@
     <!-- The offset for the text in the cling -->
     <dimen name="cling_text_block_offset_x">0dp</dimen>
     <dimen name="cling_text_block_offset_y">0dp</dimen>
+    <dimen name="reveal_radius">48dp</dimen>
+    <!-- A list of custom punch through x,y coordinates. x and y alternate. default to empty. -->
+    <array name="punch_through_coords"></array>
 
 <!-- Workspace -->
     <!-- qsb_bar_height_inset represents qsb_bar_height minus the padding
