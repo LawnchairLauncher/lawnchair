@@ -54,6 +54,7 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
     private boolean mDeferOnDragEnd = false;
 
     private Drawable mPreviousBackground;
+    private boolean mEnableDropDownDropTargets;
 
     public SearchDropTargetBar(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -108,11 +109,11 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         mInfoDropTarget.setSearchDropTargetBar(this);
         mDeleteDropTarget.setSearchDropTargetBar(this);
 
-        boolean enableDropDownDropTargets =
+        mEnableDropDownDropTargets =
             getResources().getBoolean(R.bool.config_useDropTargetDownTransition);
 
         // Create the various fade animations
-        if (enableDropDownDropTargets) {
+        if (mEnableDropDownDropTargets) {
             mDropTargetBar.setTranslationY(-mBarHeight);
             mDropTargetBarFadeInAnim = ObjectAnimator.ofFloat(mDropTargetBar, "translationY", 0f);
             mDropTargetBarFadeOutAnim = ObjectAnimator.ofFloat(mDropTargetBar, "translationY",
@@ -154,8 +155,11 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
             mQSBSearchBarFadeInAnim.start();
         } else {
             mQSBSearchBar.setVisibility(View.VISIBLE);
-            mQSBSearchBar.setAlpha(1f);
-            mQSBSearchBar.setTranslationY(0);
+            if (mEnableDropDownDropTargets) {
+                mQSBSearchBar.setTranslationY(0);
+            } else {
+                mQSBSearchBar.setAlpha(1f);
+            }
         }
         mIsSearchBarHidden = false;
     }
@@ -165,8 +169,11 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
             mQSBSearchBarFadeOutAnim.start();
         } else {
             mQSBSearchBar.setVisibility(View.INVISIBLE);
-            mQSBSearchBar.setAlpha(0f);
-            mQSBSearchBar.setTranslationY(0);
+            if (mEnableDropDownDropTargets) {
+                mQSBSearchBar.setTranslationY(0);
+            } else {
+                mQSBSearchBar.setAlpha(0f);
+            }
         }
         mIsSearchBarHidden = true;
     }
