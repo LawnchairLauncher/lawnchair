@@ -82,4 +82,8 @@
     <integer name="cell_count_y">4</integer>
     <integer name="hotseat_cell_count">5</integer>
     <integer name="hotseat_all_apps_index">2</integer>
+
+    <!-- Workspace grid size -->
+    <integer name="config_workspaceRows">4</integer>
+    <integer name="config_workspaceColumns">4</integer>
 </resources>
