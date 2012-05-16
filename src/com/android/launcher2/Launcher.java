@@ -1129,8 +1129,7 @@ public final class Launcher extends Activity
 
             launcherInfo.hostView.setTag(launcherInfo);
             launcherInfo.hostView.setVisibility(View.VISIBLE);
-            AppWidgetResizeFrame.updateWidgetSizeRanges(launcherInfo.hostView,
-                    this, launcherInfo.spanX, launcherInfo.spanY);
+            launcherInfo.notifyWidgetSizeChanged(this);
             mWorkspace.addInScreen(launcherInfo.hostView, container, screen, cellXY[0], cellXY[1],
                     launcherInfo.spanX, launcherInfo.spanY, isWorkspaceLocked());
 
@@ -3160,16 +3159,13 @@ public final class Launcher extends Activity
 
         item.hostView.setAppWidget(appWidgetId, appWidgetInfo);
         item.hostView.setTag(item);
+        item.onBindAppWidget(this);
 
         workspace.addInScreen(item.hostView, item.container, item.screen, item.cellX,
                 item.cellY, item.spanX, item.spanY, false);
-
         addWidgetToAutoAdvanceIfNeeded(item.hostView, appWidgetInfo);
 
         workspace.requestLayout();
-
-        AppWidgetResizeFrame.updateWidgetSizeRanges(item.hostView,
-                this, item.spanX, item.spanY);
 
         if (DEBUG_WIDGETS) {
             Log.d(TAG, "bound widget id="+item.appWidgetId+" in "
