@@ -134,6 +134,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected boolean mAllowOverScroll = true;
     protected int mUnboundedScrollX;
     protected int[] mTempVisiblePagesRange = new int[2];
+    protected boolean mForceDrawAllChildrenNextFrame;
 
     // mOverScrollX is equal to getScrollX() when we're within the normal scroll range. Otherwise
     // it is equal to the scaled overscroll position. We use a separate value so as to prevent
@@ -797,13 +798,15 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 // View.INVISIBLE, preventing re-drawing of their hardware layer
                 for (int i = getChildCount() - 1; i >= 0; i--) {
                     final View v = getPageAt(i);
-                    if (leftScreen <= i && i <= rightScreen && shouldDrawChild(v)) {
+                    if (mForceDrawAllChildrenNextFrame ||
+                               (leftScreen <= i && i <= rightScreen && shouldDrawChild(v))) {
                         v.setVisibility(VISIBLE);
                         drawChild(canvas, v, drawingTime);
                     } else {
                         v.setVisibility(INVISIBLE);
                     }
                 }
+                mForceDrawAllChildrenNextFrame = false;
                 canvas.restore();
             }
         }
