@@ -816,6 +816,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             onSyncWidgetPageItems(d);
         }
         mDeferredSyncWidgetPageItems.clear();
+        mForceDrawAllChildrenNextFrame = !toWorkspace;
     }
 
     @Override
@@ -1519,7 +1520,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     @Override
     protected void onPageEndMoving() {
         super.onPageEndMoving();
-
+        mForceDrawAllChildrenNextFrame = true;
         // We reset the save index when we change pages so that it will be recalculated on next
         // rotation
         mSaveInstanceStateItemIndex = -1;
