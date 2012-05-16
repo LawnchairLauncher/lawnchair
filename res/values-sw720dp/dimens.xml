@@ -36,6 +36,8 @@
     <dimen name="folder_preview_size">75dp</dimen>
 
 <!-- AppsCustomize -->
+    <dimen name="apps_customize_cell_width">96dp</dimen>
+    <dimen name="apps_customize_cell_height">96dp</dimen>
     <integer name="apps_customize_maxCellCountX">-1</integer>
     <integer name="apps_customize_maxCellCountY">-1</integer>
     <dimen name="app_widget_preview_padding_left">0dp</dimen>
