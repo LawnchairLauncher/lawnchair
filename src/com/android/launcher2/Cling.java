@@ -62,7 +62,6 @@ public class Cling extends FrameLayout {
     private int mButtonBarHeight;
     private float mRevealRadius;
     private int[] mPositionData;
-    private int[] mCustomPositionData;
 
     private Paint mErasePaint;
 
@@ -88,17 +87,6 @@ public class Cling extends FrameLayout {
             mPositionData = positionData;
 
             Resources r = getContext().getResources();
-
-            // If we have custom punch through data from resources
-            TypedArray punchThroughCoords = r.obtainTypedArray(R.array.punch_through_coords);
-
-            if (punchThroughCoords != null) {
-                int len = punchThroughCoords.length();
-                mCustomPositionData = new int[len];
-                for (int i = 0; i < len; i++) {
-                    mCustomPositionData[i] = punchThroughCoords.getDimensionPixelSize(i, 0);
-                }
-            }
 
             mPunchThroughGraphic = r.getDrawable(R.drawable.cling);
             mPunchThroughGraphicCenterRadius =
@@ -133,8 +121,6 @@ public class Cling extends FrameLayout {
             final int cornerXOffset = (int) (scale * 15);
             final int cornerYOffset = (int) (scale * 10);
             return new int[]{getMeasuredWidth() - cornerXOffset, cornerYOffset};
-        } else if (mDrawIdentifier.equals(WORKSPACE_CUSTOM)) {
-            return mCustomPositionData;
         } else if (mDrawIdentifier.equals(ALLAPPS_PORTRAIT) ||
                    mDrawIdentifier.equals(ALLAPPS_LANDSCAPE) ||
                    mDrawIdentifier.equals(ALLAPPS_LARGE)) {
@@ -148,7 +134,6 @@ public class Cling extends FrameLayout {
         if (mDrawIdentifier.equals(WORKSPACE_PORTRAIT) ||
             mDrawIdentifier.equals(WORKSPACE_LANDSCAPE) ||
             mDrawIdentifier.equals(WORKSPACE_LARGE) ||
-            mDrawIdentifier.equals(WORKSPACE_CUSTOM) ||
             mDrawIdentifier.equals(ALLAPPS_PORTRAIT) ||
             mDrawIdentifier.equals(ALLAPPS_LANDSCAPE) ||
             mDrawIdentifier.equals(ALLAPPS_LARGE)) {
@@ -172,6 +157,9 @@ public class Cling extends FrameLayout {
                     return false;
                 }
             }
+        } else if (mDrawIdentifier.equals(WORKSPACE_CUSTOM)) {
+            // Let all touch events fall through
+            return false;
         }
         return true;
     };
@@ -191,15 +179,15 @@ public class Cling extends FrameLayout {
             if (mBackground == null) {
                 if (mDrawIdentifier.equals(WORKSPACE_PORTRAIT) ||
                         mDrawIdentifier.equals(WORKSPACE_LANDSCAPE) ||
-                        mDrawIdentifier.equals(WORKSPACE_LARGE) ||
-                        mDrawIdentifier.equals(WORKSPACE_CUSTOM)) {
+                        mDrawIdentifier.equals(WORKSPACE_LARGE)) {
                     mBackground = getResources().getDrawable(R.drawable.bg_cling1);
                 } else if (mDrawIdentifier.equals(ALLAPPS_PORTRAIT) ||
                         mDrawIdentifier.equals(ALLAPPS_LANDSCAPE) ||
                         mDrawIdentifier.equals(ALLAPPS_LARGE)) {
                     mBackground = getResources().getDrawable(R.drawable.bg_cling2);
                 } else if (mDrawIdentifier.equals(FOLDER_PORTRAIT) ||
-                        mDrawIdentifier.equals(FOLDER_LANDSCAPE)) {
+                        mDrawIdentifier.equals(FOLDER_LANDSCAPE) ||
+                        mDrawIdentifier.equals(WORKSPACE_CUSTOM)) {
                     mBackground = getResources().getDrawable(R.drawable.bg_cling3);
                 } else if (mDrawIdentifier.equals(FOLDER_LARGE)) {
                     mBackground = getResources().getDrawable(R.drawable.bg_cling4);
