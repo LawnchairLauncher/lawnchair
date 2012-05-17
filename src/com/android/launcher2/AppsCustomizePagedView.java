@@ -669,6 +669,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             return false;
         }
 
+        // This can happen in some weird cases involving multi-touch. We can't start dragging the
+        // widget if this is null, so we break out.
+        if (mCreateWidgetInfo == null) {
+            return false;
+        }
+
         // Compose the drag image
         Bitmap preview;
         Bitmap outline;

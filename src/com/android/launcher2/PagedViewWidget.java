@@ -141,8 +141,8 @@ public class PagedViewWidget extends LinearLayout {
 
     class CheckForShortPress implements Runnable {
         public void run() {
+            if (sShortpressTarget != null) return;
             if (mShortPressListener != null) {
-                if (sShortpressTarget != null) return;
                 mShortPressListener.onShortPress(PagedViewWidget.this);
             }
             sShortpressTarget = PagedViewWidget.this;
