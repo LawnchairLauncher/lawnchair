@@ -614,18 +614,24 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     @Override
     public void onShortPress(View v) {
+        Log.d(TAG, "onShortPress, view: " + v);
         // We are anticipating a long press, and we use this time to load bind and instantiate
         // the widget. This will need to be cleaned up if it turns out no long press occurs.
         if (mCreateWidgetInfo != null) {
+            Log.d(TAG, "onShortPress --> cleanup previous, view: " + v + ", create info: " + mCreateWidgetInfo);
             // Just in case the cleanup process wasn't properly executed. This shouldn't happen.
             cleanupWidgetPreloading(false);
         }
         mCreateWidgetInfo = new PendingAddWidgetInfo((PendingAddWidgetInfo) v.getTag());
+        Log.d(TAG, "onShortPress --> create widget info: " + mCreateWidgetInfo);
         preloadWidget(mCreateWidgetInfo);
     }
 
     private void cleanupWidgetPreloading(boolean widgetWasAdded) {
+        Log.d(TAG, "cleanup widget preloading");
+
         if (!widgetWasAdded) {
+            Log.d(TAG, "cleanup widget preloading --> widget wasn't added");
             // If the widget was not added, we may need to do further cleanup.
             PendingAddWidgetInfo info = mCreateWidgetInfo;
             mCreateWidgetInfo = null;
@@ -651,12 +657,16 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     @Override
     public void cleanUpShortPress(View v) {
+        Log.d(TAG, "cleanup shortpress, view: " + v);
         if (!mDraggingWidget) {
+            Log.d(TAG, "cleanup shortpress --> cleanup preloading");
             cleanupWidgetPreloading(false);
         }
     }
 
     private boolean beginDraggingWidget(View v) {
+        Log.d(TAG, "begin dragging widget, view: " + v);
+
         mDraggingWidget = true;
         // Get the widget preview as the drag representation
         ImageView image = (ImageView) v.findViewById(R.id.widget_preview);
@@ -665,6 +675,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // If the ImageView doesn't have a drawable yet, the widget preview hasn't been loaded and
         // we abort the drag.
         if (image.getDrawable() == null) {
+            Log.d(TAG, "begin dragging widget, no drawable");
             mDraggingWidget = false;
             return false;
         }
@@ -672,6 +683,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
         // This can happen in some weird cases involving multi-touch. We can't start dragging the
         // widget if this is null, so we break out.
         if (mCreateWidgetInfo == null) {
+            Log.d(TAG, "begin dragging widget, create widget info null");
             return false;
         }
 
