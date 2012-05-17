@@ -144,8 +144,8 @@ public class PagedViewWidget extends LinearLayout {
             if (sShortpressTarget != null) return;
             if (mShortPressListener != null) {
                 mShortPressListener.onShortPress(PagedViewWidget.this);
+                sShortpressTarget = PagedViewWidget.this;
             }
-            sShortpressTarget = PagedViewWidget.this;
             mShortPressTriggered = true;
         }
     }
