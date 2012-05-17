@@ -2367,6 +2367,9 @@ public final class Launcher extends Activity
                     if (!animationCancelled) {
                         updateWallpaperVisibility(false);
                     }
+
+                    // Hide the search bar
+                    mSearchDropTargetBar.hideSearchBar(false);
                 }
 
                 @Override
@@ -2435,6 +2438,9 @@ public final class Launcher extends Activity
                 // Hide the workspace scrollbar
                 mWorkspace.hideScrollingIndicator(true);
                 hideDockDivider();
+
+                // Hide the search bar
+                mSearchDropTargetBar.hideSearchBar(false);
             }
             dispatchOnLauncherTransitionPrepare(fromView, animated, false);
             dispatchOnLauncherTransitionStart(fromView, animated, false);
@@ -2568,13 +2574,16 @@ public final class Launcher extends Activity
 
     void showWorkspace(boolean animated, Runnable onCompleteRunnable) {
         if (mState != State.WORKSPACE) {
+            boolean wasInSpringLoadedMode = (mState == State.APPS_CUSTOMIZE_SPRING_LOADED);
             mWorkspace.setVisibility(View.VISIBLE);
             hideAppsCustomizeHelper(State.WORKSPACE, animated, false, onCompleteRunnable);
 
-            // Show the search bar and hotseat
-            mSearchDropTargetBar.showSearchBar(animated);
+            // Show the search bar (only animate if we were showing the drop target bar in spring
+            // loaded mode)
+            mSearchDropTargetBar.showSearchBar(wasInSpringLoadedMode);
+
             // We only need to animate in the dock divider if we're going from spring loaded mode
-            showDockDivider(animated && mState == State.APPS_CUSTOMIZE_SPRING_LOADED);
+            showDockDivider(animated && wasInSpringLoadedMode);
 
             // Set focus to the AppsCustomize button
             if (mAllAppsButton != null) {
@@ -2600,9 +2609,6 @@ public final class Launcher extends Activity
 
         showAppsCustomizeHelper(animated, false);
         mAppsCustomizeTabHost.requestFocus();
-
-        // Hide the search bar and hotseat
-        mSearchDropTargetBar.hideSearchBar(animated);
 
         // Change the state *after* we've called all the transition code
         mState = State.APPS_CUSTOMIZE;
@@ -2636,7 +2642,6 @@ public final class Launcher extends Activity
                     // exitSpringLoadedDragMode made it visible. This is a bit hacky; we should
                     // clean up our state transition functions
                     mAppsCustomizeTabHost.setVisibility(View.GONE);
-                    mSearchDropTargetBar.showSearchBar(true);
                     showWorkspace(true, onCompleteRunnable);
                 } else {
                     exitSpringLoadedDragMode();
