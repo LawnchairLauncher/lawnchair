@@ -20,6 +20,7 @@ import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
@@ -94,15 +95,20 @@ public class IconCache {
     }
 
     public Drawable getFullResIcon(ResolveInfo info) {
+        return getFullResIcon(info.activityInfo);
+    }
+
+    public Drawable getFullResIcon(ActivityInfo info) {
+
         Resources resources;
         try {
             resources = mPackageManager.getResourcesForApplication(
-                    info.activityInfo.applicationInfo);
+                    info.applicationInfo);
         } catch (PackageManager.NameNotFoundException e) {
             resources = null;
         }
         if (resources != null) {
-            int iconId = info.activityInfo.getIconResource();
+            int iconId = info.getIconResource();
             if (iconId != 0) {
                 return getFullResIcon(resources, iconId);
             }

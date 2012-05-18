@@ -25,8 +25,5 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
 
-    launcher:blurColor="#FF6B8CF0"
-    launcher:outlineColor="#FF8CD2FF"
-
     android:focusable="true"
     android:background="@drawable/focusable_view_bg" />

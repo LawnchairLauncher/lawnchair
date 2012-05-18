@@ -17,6 +17,8 @@
 package com.android.launcher2;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Insets;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
@@ -33,5 +35,23 @@ class PagedViewWidgetImageView extends ImageView {
         if (mAllowRequestLayout) {
             super.requestLayout();
         }
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+
+        Insets insets = Insets.NONE;
+        if (getBackground() != null) {
+            insets = getBackground().getLayoutInsets();
+        }
+        canvas.save();
+        canvas.clipRect(getScrollX() + getPaddingLeft() + insets.left,
+                getScrollY() + getPaddingTop() + insets.top,
+                getScrollX() + getRight() - getLeft() - getPaddingRight() - insets.right,
+                getScrollY() + getBottom() - getTop() - getPaddingBottom() - insets.bottom);
+
+        super.onDraw(canvas);
+        canvas.restore();
+
     }
 }
