@@ -713,9 +713,11 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                     mWidgetPreviewIconPaddedDimension, Bitmap.Config.ARGB_8888);
             Drawable d = image.getDrawable();
             mCanvas.setBitmap(preview);
+            mCanvas.save();
             mCanvas.translate((mWidgetPreviewIconPaddedDimension - d.getIntrinsicWidth()) / 2,
                     (mWidgetPreviewIconPaddedDimension - d.getIntrinsicHeight()) / 2);
             d.draw(mCanvas);
+            mCanvas.restore();
             mCanvas.setBitmap(null);
             createItemInfo.spanX = createItemInfo.spanY = 1;
         }
