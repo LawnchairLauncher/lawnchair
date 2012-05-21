@@ -657,8 +657,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
     }
 
     private boolean beginDraggingWidget(View v) {
-        Log.d(TAG, "begin dragging widget, view: " + v);
-
         mDraggingWidget = true;
         // Get the widget preview as the drag representation
         ImageView image = (ImageView) v.findViewById(R.id.widget_preview);
@@ -671,17 +669,17 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             return false;
         }
 
-        // This can happen in some weird cases involving multi-touch. We can't start dragging the
-        // widget if this is null, so we break out.
-        if (mCreateWidgetInfo == null) {
-            return false;
-        }
-
         // Compose the drag image
         Bitmap preview;
         Bitmap outline;
         float scale = 1f;
         if (createItemInfo instanceof PendingAddWidgetInfo) {
+            // This can happen in some weird cases involving multi-touch. We can't start dragging
+            // the widget if this is null, so we break out.
+            if (mCreateWidgetInfo == null) {
+                return false;
+            }
+
             PendingAddWidgetInfo createWidgetInfo = mCreateWidgetInfo;
             createItemInfo = createWidgetInfo;
             int spanX = createItemInfo.spanX;
