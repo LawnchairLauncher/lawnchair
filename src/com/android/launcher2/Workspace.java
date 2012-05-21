@@ -76,7 +76,6 @@ public class Workspace extends SmoothPagedView
     private static final String TAG = "Launcher.Workspace";
 
     // Y rotation to apply to the workspace screens
-    private static final float WORKSPACE_ROTATION = 12.5f;
     private static final float WORKSPACE_OVERSCROLL_ROTATION = 24f;
     private static float CAMERA_DISTANCE = 6500;
 
@@ -87,8 +86,6 @@ public class Workspace extends SmoothPagedView
     private static final int BACKGROUND_FADE_OUT_DURATION = 350;
     private static final int ADJACENT_SCREEN_DROP_DURATION = 300;
     private static final int FLING_THRESHOLD_VELOCITY = 500;
-
-    private float mMaxDistanceForFolderCreation;
 
     // These animators are used to fade the children's outlines
     private ObjectAnimator mChildrenOutlineFadeInAnimation;
@@ -102,7 +99,6 @@ public class Workspace extends SmoothPagedView
     boolean mDrawBackground = true;
     private float mBackgroundAlpha = 0;
     private float mOverScrollMaxBackgroundAlpha = 0.0f;
-    private int mOverScrollPageIndex = -1;
 
     private float mWallpaperScrollRatio = 1.0f;
 
@@ -211,6 +207,7 @@ public class Workspace extends SmoothPagedView
     private boolean mCreateUserFolderOnDrop = false;
     private boolean mAddToExistingFolderOnDrop = false;
     private DropTarget.DragEnforcer mDragEnforcer;
+    private float mMaxDistanceForFolderCreation;
 
     // Variables relating to touch disambiguation (scrolling workspace vs. scrolling a widget)
     private float mXDown;
@@ -250,7 +247,6 @@ public class Workspace extends SmoothPagedView
     private float[] mOldScaleYs;
     private float[] mOldBackgroundAlphas;
     private float[] mOldAlphas;
-    private float[] mOldRotationYs;
     private float[] mNewTranslationXs;
     private float[] mNewTranslationYs;
     private float[] mNewScaleXs;
@@ -432,7 +428,7 @@ public class Workspace extends SmoothPagedView
         mWallpaperTravelWidth = (int) (mDisplaySize.x *
                 wallpaperTravelToScreenWidthRatio(mDisplaySize.x, mDisplaySize.y));
 
-        mMaxDistanceForFolderCreation = (0.6f * res.getDimensionPixelSize(R.dimen.app_icon_size));
+        mMaxDistanceForFolderCreation = (0.55f * res.getDimensionPixelSize(R.dimen.app_icon_size));
         mFlingThresholdVelocity = (int) (FLING_THRESHOLD_VELOCITY * mDensity);
     }
 
@@ -776,7 +772,6 @@ public class Workspace extends SmoothPagedView
             }
         }
         mOverScrollMaxBackgroundAlpha = 0.0f;
-        mOverScrollPageIndex = -1;
 
         if (mDelayedResizeRunnable != null) {
             mDelayedResizeRunnable.run();
@@ -1508,7 +1503,6 @@ public class Workspace extends SmoothPagedView
         mOldScaleYs = new float[childCount];
         mOldBackgroundAlphas = new float[childCount];
         mOldAlphas = new float[childCount];
-        mOldRotationYs = new float[childCount];
         mNewTranslationXs = new float[childCount];
         mNewTranslationYs = new float[childCount];
         mNewScaleXs = new float[childCount];
