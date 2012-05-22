@@ -3466,6 +3466,7 @@ public final class Launcher extends Activity
             cling.init(this, positionData);
             cling.setVisibility(View.VISIBLE);
             cling.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            cling.requestAccessibilityFocus();
             if (animate) {
                 cling.buildLayer();
                 cling.setAlpha(0f);
