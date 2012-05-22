@@ -57,8 +57,6 @@ import java.util.Comparator;
 public class Folder extends LinearLayout implements DragSource, View.OnClickListener,
         View.OnLongClickListener, DropTarget, FolderListener, TextView.OnEditorActionListener,
         View.OnFocusChangeListener {
-
-    @SuppressWarnings("unused")
     private static final String TAG = "Launcher.Folder";
 
     protected DragController mDragController;

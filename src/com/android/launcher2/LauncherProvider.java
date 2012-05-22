@@ -751,12 +751,12 @@ public class LauncherProvider extends ContentProvider {
         private static final void beginDocument(XmlPullParser parser, String firstElementName)
                 throws XmlPullParserException, IOException {
             int type;
-            while ((type = parser.next()) != parser.START_TAG
-                    && type != parser.END_DOCUMENT) {
+            while ((type = parser.next()) != XmlPullParser.START_TAG
+                    && type != XmlPullParser.END_DOCUMENT) {
                 ;
             }
 
-            if (type != parser.START_TAG) {
+            if (type != XmlPullParser.START_TAG) {
                 throw new XmlPullParserException("No start tag found");
             }
 

@@ -24,7 +24,6 @@ import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetHostView;
-import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
@@ -33,7 +32,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.Camera;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
@@ -62,7 +60,6 @@ import com.android.launcher2.LauncherSettings.Favorites;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -178,11 +175,6 @@ public class Workspace extends SmoothPagedView
     private boolean mOverscrollTransformsSet;
     public static final int DRAG_BITMAP_PADDING = 2;
     private boolean mWorkspaceFadeInAdjacentScreens;
-
-    // Camera and Matrix used to determine the final position of a neighboring CellLayout
-    private final Matrix mMatrix = new Matrix();
-    private final Camera mCamera = new Camera();
-    private final float mTempFloat2[] = new float[2];
 
     enum WallpaperVerticalOffset { TOP, MIDDLE, BOTTOM };
     int mWallpaperWidth;
@@ -1177,31 +1169,6 @@ public class Workspace extends SmoothPagedView
 
     public float getBackgroundAlpha() {
         return mBackgroundAlpha;
-    }
-
-    /**
-     * Due to 3D transformations, if two CellLayouts are theoretically touching each other,
-     * on the xy plane, when one is rotated along the y-axis, the gap between them is perceived
-     * as being larger. This method computes what offset the rotated view should be translated
-     * in order to minimize this perceived gap.
-     * @param degrees Angle of the view
-     * @param width Width of the view
-     * @param height Height of the view
-     * @return Offset to be used in a View.setTranslationX() call
-     */
-    private float getOffsetXForRotation(float degrees, int width, int height) {
-        mMatrix.reset();
-        mCamera.save();
-        mCamera.rotateY(Math.abs(degrees));
-        mCamera.getMatrix(mMatrix);
-        mCamera.restore();
-
-        mMatrix.preTranslate(-width * 0.5f, -height * 0.5f);
-        mMatrix.postTranslate(width * 0.5f, height * 0.5f);
-        mTempFloat2[0] = width;
-        mTempFloat2[1] = height;
-        mMatrix.mapPoints(mTempFloat2);
-        return (width - mTempFloat2[0]) * (degrees > 0.0f ? 1.0f : -1.0f);
     }
 
     float backgroundAlphaInterpolator(float r) {
@@ -3573,8 +3540,6 @@ public class Workspace extends SmoothPagedView
     }
 
     void removeItems(final ArrayList<ApplicationInfo> apps) {
-        final AppWidgetManager widgets = AppWidgetManager.getInstance(getContext());
-
         final HashSet<String> packageNames = new HashSet<String>();
         final int appCount = apps.size();
         for (int i = 0; i < appCount; i++) {

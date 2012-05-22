@@ -18,9 +18,6 @@ package com.android.launcher2;
 
 import android.appwidget.AppWidgetHostView;
 import android.content.Context;
-import android.content.res.Configuration;
-import android.os.Bundle;
-import android.os.Parcel;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;

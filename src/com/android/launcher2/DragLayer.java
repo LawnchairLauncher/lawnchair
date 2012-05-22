@@ -24,8 +24,6 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -446,7 +444,6 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
     public void animateViewIntoPosition(DragView dragView, final View child, int duration,
             final Runnable onFinishAnimationRunnable, View anchorView) {
         ShortcutAndWidgetContainer parentChildren = (ShortcutAndWidgetContainer) child.getParent();
-        CellLayout parent = (CellLayout) (CellLayout) parentChildren.getParent();
         CellLayout.LayoutParams lp =  (CellLayout.LayoutParams) child.getLayoutParams();
         parentChildren.measureChild(child);
 

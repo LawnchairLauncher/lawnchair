@@ -61,7 +61,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.os.SystemClock;
-import android.os.SystemProperties;
 import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.text.Selection;
@@ -99,6 +98,7 @@ import com.android.launcher2.DropTarget.DragObject;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileDescriptor;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -146,6 +146,7 @@ public final class Launcher extends Activity
 
     private static final String PREFERENCES = "launcher.preferences";
     static final String FORCE_ENABLE_ROTATION_PROPERTY = "launcher.force_enable_rotation";
+    static final String DUMP_STATE_PROPERTY = "debug.launcher2.dumpstate";
 
     // The Intent extra that defines whether to ignore the launch animation
     static final String INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION =
@@ -306,6 +307,20 @@ public final class Launcher extends Activity
         int screen;
         int cellX;
         int cellY;
+    }
+
+
+    private boolean doesFileExist(String filename) {
+        FileInputStream fis = null;
+        try {
+            fis = openFileInput(filename);
+            fis.close();
+            return true;
+        } catch (java.io.FileNotFoundException e) {
+            return false;
+        } catch (java.io.IOException e) {
+            return true;
+        }
     }
 
     @Override
@@ -902,7 +917,6 @@ public final class Launcher extends Activity
                 findViewById(R.id.apps_customize_pane);
         mAppsCustomizeContent = (AppsCustomizePagedView)
                 mAppsCustomizeTabHost.findViewById(R.id.apps_customize_pane_content);
-        mAppsCustomizeTabHost.setup(this);
         mAppsCustomizeContent.setup(this, dragController);
 
         // Get the all apps button
@@ -1746,7 +1760,7 @@ public final class Launcher extends Activity
                 case KeyEvent.KEYCODE_HOME:
                     return true;
                 case KeyEvent.KEYCODE_VOLUME_DOWN:
-                    if (SystemProperties.getInt("debug.launcher2.dumpstate", 0) != 0) {
+                    if (doesFileExist(DUMP_STATE_PROPERTY)) {
                         dumpState();
                         return true;
                     }
@@ -3526,8 +3540,7 @@ public final class Launcher extends Activity
     }
 
     public boolean isRotationEnabled() {
-        boolean forceEnableRotation = "true".equalsIgnoreCase(SystemProperties.get(
-                FORCE_ENABLE_ROTATION_PROPERTY, "false"));
+        boolean forceEnableRotation = doesFileExist(FORCE_ENABLE_ROTATION_PROPERTY);
         boolean enableRotation = forceEnableRotation ||
                 getResources().getBoolean(R.bool.allow_rotation);
         return enableRotation;
@@ -3565,7 +3578,6 @@ public final class Launcher extends Activity
             cling.init(this, positionData);
             cling.setVisibility(View.VISIBLE);
             cling.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            cling.requestAccessibilityFocus();
             if (animate) {
                 cling.buildLayer();
                 cling.setAlpha(0f);

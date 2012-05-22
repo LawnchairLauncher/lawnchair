@@ -35,7 +35,6 @@ import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Insets;
 import android.graphics.MaskFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
@@ -60,17 +59,16 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.GridLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.launcher.R;
 import com.android.launcher2.DropTarget.DragObject;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.lang.ref.WeakReference;
 
 /**
  * A simple callback interface which also provides the results of the task.
@@ -267,7 +265,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     // Caching
     private Canvas mCanvas;
-    private Drawable mDefaultWidgetBackground;
     private IconCache mIconCache;
 
     // Dimens
@@ -336,7 +333,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         // Save the default widget preview background
         Resources resources = context.getResources();
-        mDefaultWidgetBackground = resources.getDrawable(R.drawable.default_widget_preview_holo);
         mAppIconSize = resources.getDimensionPixelSize(R.dimen.app_icon_size);
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AppsCustomizePagedView, 0, 0);
@@ -1271,7 +1267,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 getResources().getDimensionPixelOffset(R.dimen.shortcut_preview_padding_right);
 
         int scaledIconWidth = (maxWidth - paddingLeft - paddingRight);
-        float scaleSize = scaledIconWidth / (float) mAppIconSize;
 
         renderDrawableToBitmap(
                 icon, tempBitmap, paddingLeft, paddingTop, scaledIconWidth, scaledIconWidth);
@@ -1359,7 +1354,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                         (int) ((previewDrawableHeight - mAppIconSize * iconScale) / 2);
                 if (iconId > 0)
                     icon = mIconCache.getFullResIcon(packageName, iconId);
-                Resources resources = mLauncher.getResources();
                 if (icon != null) {
                     renderDrawableToBitmap(icon, defaultPreview, hoffset,
                             yoffset, (int) (mAppIconSize * iconScale),
