@@ -17,6 +17,8 @@
 
 package com.android.launcher2;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -3516,10 +3518,23 @@ public final class Launcher extends Activity
             });
         }
     }
+
+    private boolean skipCustomClingIfNoAccounts() {
+        Cling cling = (Cling) findViewById(R.id.workspace_cling);
+        boolean customCling = cling.getDrawIdentifier().equals("workspace_custom");
+        if (customCling) {
+            AccountManager am = AccountManager.get(this);
+            Account[] accounts = am.getAccountsByType("com.google");
+            return accounts.length == 0;
+        }
+        return false;
+    }
+
     public void showFirstRunWorkspaceCling() {
         // Enable the clings only if they have not been dismissed before
         if (isClingsEnabled() &&
-                !mSharedPrefs.getBoolean(Cling.WORKSPACE_CLING_DISMISSED_KEY, false)) {
+                !mSharedPrefs.getBoolean(Cling.WORKSPACE_CLING_DISMISSED_KEY, false) &&
+                !skipCustomClingIfNoAccounts() ) {
             initCling(R.id.workspace_cling, null, false, 0);
         } else {
             removeCling(R.id.workspace_cling);
