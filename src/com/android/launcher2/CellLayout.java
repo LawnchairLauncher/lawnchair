@@ -1942,13 +1942,15 @@ public class CellLayout extends ViewGroup {
             if (dX == dY && dX == 0) {
             } else {
                 if (dY == 0) {
-                    deltaX = mReorderHintAnimationMagnitude;
+                    deltaX = - Math.signum(dX) * mReorderHintAnimationMagnitude;
                 } else if (dX == 0) {
-                    deltaY = mReorderHintAnimationMagnitude;
+                    deltaY = - Math.signum(dY) * mReorderHintAnimationMagnitude;
                 } else {
                     double angle = Math.atan( (float) (dY) / dX);
-                    deltaX = (int) (Math.cos(angle) * mReorderHintAnimationMagnitude);
-                    deltaY = (int) (Math.sin(angle) * mReorderHintAnimationMagnitude);
+                    deltaX = (int) (- Math.signum(dX) * 
+                            Math.abs(Math.cos(angle) * mReorderHintAnimationMagnitude));
+                    deltaY = (int) (- Math.signum(dY) * 
+                            Math.abs(Math.sin(angle) * mReorderHintAnimationMagnitude));
                 }
             }
             child.setPivotY(child.getMeasuredHeight() * 0.5f);
