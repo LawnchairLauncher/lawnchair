@@ -2194,6 +2194,9 @@ public class Workspace extends SmoothPagedView
                     resizeOnDrop = true;
                     item.spanX = resultSpan[0];
                     item.spanY = resultSpan[1];
+                    AppWidgetHostView awhv = (AppWidgetHostView) cell;
+                    AppWidgetResizeFrame.updateWidgetSizeRanges(awhv, mLauncher, resultSpan[0],
+                            resultSpan[1]);
                 }
 
                 if (mCurrentPage != screen && !hasMovedIntoHotseat) {

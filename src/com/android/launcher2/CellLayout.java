@@ -80,7 +80,6 @@ public class CellLayout extends ViewGroup {
     // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
     private final int[] mTmpXY = new int[2];
     private final int[] mTmpPoint = new int[2];
-    private final PointF mTmpPointF = new PointF();
     int[] mTempLocation = new int[2];
 
     boolean[][] mOccupied;
@@ -149,7 +148,7 @@ public class CellLayout extends ViewGroup {
     static final int LANDSCAPE = 0;
     static final int PORTRAIT = 1;
 
-    private static final float REORDER_HINT_MAGNITUDE = 0.10f;
+    private static final float REORDER_HINT_MAGNITUDE = 0.12f;
     private static final int REORDER_ANIMATION_DURATION = 150;
     private float mReorderHintAnimationMagnitude;
 
@@ -1969,7 +1968,9 @@ public class CellLayout extends ViewGroup {
             va = ValueAnimator.ofFloat(0f, 1f);
             va.setRepeatMode(ValueAnimator.REVERSE);
             va.setRepeatCount(ValueAnimator.INFINITE);
-            va.setDuration((int) (DURATION * (1.0f + Math.random()*.08f)));
+            va.setDuration(DURATION);
+            va.setStartDelay((int) ((Math.max(REORDER_ANIMATION_DURATION, delay)
+                    + Math.random() * 60)));
             va.addUpdateListener(new AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
@@ -1993,7 +1994,6 @@ public class CellLayout extends ViewGroup {
                     }
                 }
             });
-            va.setStartDelay(Math.max(REORDER_ANIMATION_DURATION, delay));
             mShakeAnimators.put(child, this);
             va.start();
         }
