@@ -19,6 +19,7 @@ package com.android.launcher2;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
+import android.content.pm.ActivityInfo;
 import android.os.Parcelable;
 
 /**
@@ -29,6 +30,15 @@ class PendingAddItemInfo extends ItemInfo {
      * The component that will be created.
      */
     ComponentName componentName;
+}
+
+class PendingAddShortcutInfo extends PendingAddItemInfo {
+
+    ActivityInfo shortcutActivityInfo;
+
+    public PendingAddShortcutInfo(ActivityInfo activityInfo) {
+        shortcutActivityInfo = activityInfo;
+    }
 }
 
 class PendingAddWidgetInfo extends PendingAddItemInfo {

@@ -43,6 +43,7 @@ public class PagedViewWidget extends LinearLayout {
     ShortPressListener mShortPressListener = null;
     boolean mShortPressTriggered = false;
     static PagedViewWidget sShortpressTarget = null;
+    boolean mIsAppWidget;
 
     public PagedViewWidget(Context context) {
         this(context, null);
@@ -84,6 +85,7 @@ public class PagedViewWidget extends LinearLayout {
 
     public void applyFromAppWidgetProviderInfo(AppWidgetProviderInfo info,
             int maxWidth, int[] cellSpan) {
+        mIsAppWidget = true;
         final ImageView image = (ImageView) findViewById(R.id.widget_preview);
         if (maxWidth > -1) {
             image.setMaxWidth(maxWidth);
@@ -100,6 +102,7 @@ public class PagedViewWidget extends LinearLayout {
     }
 
     public void applyFromResolveInfo(PackageManager pm, ResolveInfo info) {
+        mIsAppWidget = false;
         CharSequence label = info.loadLabel(pm);
         final ImageView image = (ImageView) findViewById(R.id.widget_preview);
         image.setContentDescription(label);
@@ -115,16 +118,25 @@ public class PagedViewWidget extends LinearLayout {
         final ImageView i = (ImageView) findViewById(R.id.widget_preview);
         int[] maxSize = new int[2];
         maxSize[0] = i.getWidth() - i.getPaddingLeft() - i.getPaddingRight();
-        maxSize[1] = i.getHeight() - i.getPaddingBottom() - i.getPaddingTop();
+        maxSize[1] = i.getHeight() - i.getPaddingTop();
         return maxSize;
     }
 
     void applyPreview(FastBitmapDrawable preview, int index) {
         final PagedViewWidgetImageView image =
-                (PagedViewWidgetImageView) findViewById(R.id.widget_preview);
+            (PagedViewWidgetImageView) findViewById(R.id.widget_preview);
         if (preview != null) {
             image.mAllowRequestLayout = false;
             image.setImageDrawable(preview);
+            if (mIsAppWidget) {
+                // center horizontally
+                int[] imageSize = getPreviewSize();
+                int centerAmount = (imageSize[0] - preview.getIntrinsicWidth()) / 2;
+                image.setPadding(image.getPaddingLeft() + centerAmount,
+                        image.getPaddingTop(),
+                        image.getPaddingRight(),
+                        image.getPaddingBottom());
+            }
             image.setAlpha(1f);
             image.mAllowRequestLayout = true;
         }

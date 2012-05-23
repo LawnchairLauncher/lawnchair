@@ -40,9 +40,6 @@
     <dimen name="apps_customize_cell_height">96dp</dimen>
     <integer name="apps_customize_maxCellCountX">-1</integer>
     <integer name="apps_customize_maxCellCountY">-1</integer>
-    <dimen name="app_widget_preview_padding_left">0dp</dimen>
-    <dimen name="app_widget_preview_padding_top">10dp</dimen>
-
     <dimen name="all_apps_button_vertical_padding">4dip</dimen>
 
     <!-- roughly a status bar (for determining how many rows of icons are in home) -->
