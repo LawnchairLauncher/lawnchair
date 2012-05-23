@@ -22,7 +22,7 @@
         <com.android.launcher2.DeleteDropTarget
             style="@style/DropTargetButton"
             android:id="@+id/delete_target_text"
-            android:drawableTop="@drawable/info_target_selector" />
+            android:drawableTop="@drawable/remove_target_selector" />
     </FrameLayout>
     <FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
