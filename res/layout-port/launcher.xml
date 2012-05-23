@@ -75,9 +75,9 @@
 
     <com.android.launcher2.DrawableStateProxyView
         android:id="@+id/voice_button_proxy"
-        android:layout_width="@dimen/qsb_bar_height"
+        android:layout_width="80dp"
         android:layout_height="@dimen/qsb_bar_height"
-        android:layout_gravity="right"
+        android:layout_gravity="top|right"
         android:clickable="true"
         android:onClick="onClickVoiceButton"
         android:importantForAccessibility="no"
