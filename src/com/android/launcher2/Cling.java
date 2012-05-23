@@ -115,6 +115,10 @@ public class Cling extends FrameLayout {
         mIsInitialized = false;
     }
 
+    public String getDrawIdentifier() {
+        return mDrawIdentifier;
+    }
+
     private int[] getPunchThroughPositions() {
         if (mDrawIdentifier.equals(WORKSPACE_PORTRAIT)) {
             return new int[]{getMeasuredWidth() / 2, getMeasuredHeight() - (mButtonBarHeight / 2)};
