@@ -31,4 +31,10 @@
 
 <!-- QSB -->
     <dimen name="qsb_bar_height">82dp</dimen>
+
+<!-- Workspace -->
+    <dimen name="workspace_divider_padding_top">12dp</dimen>
+    <dimen name="workspace_divider_padding_bottom">12dp</dimen>
+    <dimen name="workspace_divider_padding_left">0dp</dimen>
+    <dimen name="workspace_divider_padding_right">0dp</dimen>
 </resources>
