@@ -28,6 +28,10 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.view.FocusFinder;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.FrameLayout;
 
 import com.android.launcher.R;
@@ -127,6 +131,35 @@ public class Cling extends FrameLayout {
             return mPositionData;
         }
         return new int[]{-1, -1};
+    }
+
+    @Override
+    public View findViewToTakeAccessibilityFocusFromHover(View child, View descendant) {
+        if (descendant.includeForAccessibility()) {
+            return descendant;
+        }
+        return null;
+    }
+
+    @Override
+    public View focusSearch(int direction) {
+        return this.focusSearch(null, direction);
+    }
+
+    @Override
+    public View focusSearch(View focused, int direction) {
+        return FocusFinder.getInstance().findNextFocus(this, focused, direction);
+    }
+
+    @Override
+    public boolean onHoverEvent(MotionEvent event) {
+        return (mDrawIdentifier.equals(WORKSPACE_PORTRAIT)
+                || mDrawIdentifier.equals(WORKSPACE_LANDSCAPE)
+                || mDrawIdentifier.equals(WORKSPACE_LARGE)
+                || mDrawIdentifier.equals(ALLAPPS_PORTRAIT)
+                || mDrawIdentifier.equals(ALLAPPS_LANDSCAPE)
+                || mDrawIdentifier.equals(ALLAPPS_LARGE)
+                || mDrawIdentifier.equals(WORKSPACE_CUSTOM));
     }
 
     @Override
