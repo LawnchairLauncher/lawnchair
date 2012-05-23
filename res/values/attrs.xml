@@ -93,24 +93,6 @@
         <attr name="sourceImageViewId" format="integer" />
     </declare-styleable>
 
-    <!-- PagedViewIcon specific attributes. These attributes are used to customize
-         a PagedViewIcon view in XML files. -->
-    <declare-styleable name="PagedViewIcon">
-        <!-- The blur color of the holographic outline -->
-        <attr name="blurColor" format="color" />
-        <!-- The outline color of the holographic outline -->
-        <attr name="outlineColor" format="color" />
-    </declare-styleable>
-
-    <!-- PagedViewWidget specific attributes. These attributes are used to
-         customize a PagedViewWidget view in XML files. -->
-    <declare-styleable name="PagedViewWidget">
-        <!-- The blur color of the holographic outline -->
-        <attr name="blurColor" />
-        <!-- The outline color of the holographic outline -->
-        <attr name="outlineColor" />
-    </declare-styleable>
-
     <!-- PagedView specific attributes. These attributes are used to customize
          a PagedView view in XML files. -->
     <declare-styleable name="PagedView">
