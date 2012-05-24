@@ -1902,7 +1902,6 @@ public class CellLayout extends ViewGroup {
     // This method starts or changes the reorder hint animations
     private void beginOrAdjustHintAnimations(ItemConfiguration solution, View dragView, int delay) {
         int childCount = mShortcutsAndWidgets.getChildCount();
-        int timeForPriorAnimationToComplete = getMaxCompletionTime();
         for (int i = 0; i < childCount; i++) {
             View child = mShortcutsAndWidgets.getChildAt(i);
             if (child == dragView) continue;
@@ -1911,7 +1910,7 @@ public class CellLayout extends ViewGroup {
             if (c != null) {
                 ReorderHintAnimation rha = new ReorderHintAnimation(child, lp.cellX, lp.cellY,
                         c.x, c.y, c.spanX, c.spanY);
-                rha.animate(timeForPriorAnimationToComplete);
+                rha.animate();
             }
         }
     }
@@ -1920,11 +1919,13 @@ public class CellLayout extends ViewGroup {
     // in a temporary state, and hint at where the item will return to.
     class ReorderHintAnimation {
         View child;
-        float deltaX;
-        float deltaY;
+        float finalDeltaX;
+        float finalDeltaY;
+        float initDeltaX;
+        float initDeltaY;
+        float finalScale;
+        float initScale;
         private static final int DURATION = 300;
-        private int repeatCount;
-        private boolean cancelOnCycleComplete = false;
         ValueAnimator va;
 
         public ReorderHintAnimation(View child, int cellX0, int cellY0, int cellX1, int cellY1,
@@ -1937,72 +1938,73 @@ public class CellLayout extends ViewGroup {
             final int y1 = mTmpPoint[1];
             final int dX = x1 - x0;
             final int dY = y1 - y0;
-            deltaX = 0;
-            deltaY = 0;
+            finalDeltaX = 0;
+            finalDeltaY = 0;
             if (dX == dY && dX == 0) {
             } else {
                 if (dY == 0) {
-                    deltaX = - Math.signum(dX) * mReorderHintAnimationMagnitude;
+                    finalDeltaX = - Math.signum(dX) * mReorderHintAnimationMagnitude;
                 } else if (dX == 0) {
-                    deltaY = - Math.signum(dY) * mReorderHintAnimationMagnitude;
+                    finalDeltaY = - Math.signum(dY) * mReorderHintAnimationMagnitude;
                 } else {
                     double angle = Math.atan( (float) (dY) / dX);
-                    deltaX = (int) (- Math.signum(dX) * 
+                    finalDeltaX = (int) (- Math.signum(dX) *
                             Math.abs(Math.cos(angle) * mReorderHintAnimationMagnitude));
-                    deltaY = (int) (- Math.signum(dY) * 
+                    finalDeltaY = (int) (- Math.signum(dY) *
                             Math.abs(Math.sin(angle) * mReorderHintAnimationMagnitude));
                 }
             }
+            initDeltaX = child.getTranslationX();
+            initDeltaY = child.getTranslationY();
+            finalScale = 1.0f - 4.0f / child.getWidth();
+            initScale = child.getScaleX();
+
             child.setPivotY(child.getMeasuredHeight() * 0.5f);
             child.setPivotX(child.getMeasuredWidth() * 0.5f);
             this.child = child;
         }
 
-        void animate(int delay) {
+        void animate() {
             if (mShakeAnimators.containsKey(child)) {
                 ReorderHintAnimation oldAnimation = mShakeAnimators.get(child);
-                oldAnimation.completeAnimation();
+                oldAnimation.cancel();
                 mShakeAnimators.remove(child);
             }
-            if (deltaX == 0 && deltaY == 0) {
+            if (finalDeltaX == 0 && finalDeltaY == 0) {
                 return;
             }
             va = ValueAnimator.ofFloat(0f, 1f);
             va.setRepeatMode(ValueAnimator.REVERSE);
             va.setRepeatCount(ValueAnimator.INFINITE);
             va.setDuration(DURATION);
-            va.setStartDelay((int) ((Math.max(REORDER_ANIMATION_DURATION, delay)
-                    + Math.random() * 60)));
+            va.setStartDelay((int) (Math.random() * 60));
             va.addUpdateListener(new AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     float r = ((Float) animation.getAnimatedValue()).floatValue();
-                    float x = r * deltaX;
-                    float y = r * deltaY;
+                    float x = r * finalDeltaX + (1 - r) * initDeltaX;
+                    float y = r * finalDeltaY + (1 - r) * initDeltaY;
                     child.setTranslationX(x);
                     child.setTranslationY(y);
-                    float sf = 4.0f / child.getWidth();
-                    float s = 1.0f - r * sf;
+                    float s = r * finalScale + (1 - r) * initScale;
                     child.setScaleX(s);
                     child.setScaleY(s);
                 }
             });
             va.addListener(new AnimatorListenerAdapter() {
                 public void onAnimationRepeat(Animator animation) {
-                    repeatCount++;
                     // We make sure to end only after a full period
-                    if (cancelOnCycleComplete && repeatCount % 2 == 0) {
-                        va.cancel();
-                    }
+                    initDeltaX = 0;
+                    initDeltaY = 0;
+                    initScale = 1.0f;
                 }
             });
             mShakeAnimators.put(child, this);
             va.start();
         }
 
-
-        private void completeAnimation() {
-            cancelOnCycleComplete = true;
+        private void cancel() {
+            va.cancel();
         }
         private void completeAnimationImmediately() {
             va.cancel();
@@ -2018,16 +2020,6 @@ public class CellLayout extends ViewGroup {
             s.setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f));
             s.start();
         }
-
-
-        // Returns the time required to complete the current oscillating animation
-        private int completionTime() {
-            if (repeatCount % 2 == 0) {
-                return (int) (va.getDuration() - va.getCurrentPlayTime() + DURATION);
-            } else {
-                return (int) (va.getDuration() - va.getCurrentPlayTime());
-            }
-        }
     }
 
     private void completeAndClearReorderHintAnimations() {
@@ -2035,14 +2027,6 @@ public class CellLayout extends ViewGroup {
             a.completeAnimationImmediately();
         }
         mShakeAnimators.clear();
-    }
-
-    private int getMaxCompletionTime() {
-        int maxTime = 0;
-        for (ReorderHintAnimation a: mShakeAnimators.values()) {
-            maxTime = Math.max(maxTime, a.completionTime());
-        }
-        return maxTime;
     }
 
     private void commitTempPlacement() {
