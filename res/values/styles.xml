@@ -186,4 +186,10 @@
         <item name="android:shadowDy">0.0</item>
         <item name="android:shadowRadius">2.0</item>
     </style>
+
+    <!-- Overridden in device overlays -->
+    <style name="CustomClingTitleText">
+    </style>
+    <style name="CustomClingText">
+    </style>
 </resources>
