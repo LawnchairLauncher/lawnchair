@@ -157,4 +157,10 @@
         <attr name="key" format="string" />
         <attr name="value" format="string" />
     </declare-styleable>
+
+    <!-- Only used in the device overlays -->
+    <declare-styleable name="CustomClingTitleText">
+    </declare-styleable>
+    <declare-styleable name="CustomClingText">
+    </declare-styleable>
 </resources>
