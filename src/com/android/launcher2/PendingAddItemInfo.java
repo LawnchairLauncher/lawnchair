@@ -39,6 +39,11 @@ class PendingAddShortcutInfo extends PendingAddItemInfo {
     public PendingAddShortcutInfo(ActivityInfo activityInfo) {
         shortcutActivityInfo = activityInfo;
     }
+
+    @Override
+    public String toString() {
+        return "Shortcut: " + shortcutActivityInfo.packageName;
+    }
 }
 
 class PendingAddWidgetInfo extends PendingAddItemInfo {
@@ -90,5 +95,10 @@ class PendingAddWidgetInfo extends PendingAddItemInfo {
         spanY = copy.spanY;
         minSpanX = copy.minSpanX;
         minSpanY = copy.minSpanY;
+    }
+
+    @Override
+    public String toString() {
+        return "Widget: " + componentName.toShortString();
     }
 }

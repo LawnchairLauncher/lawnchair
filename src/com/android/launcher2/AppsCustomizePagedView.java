@@ -974,6 +974,12 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             task.cancel(false);
             iter.remove();
             mDirtyPageContent.set(task.page, true);
+
+            // We've already preallocated the views for the data to load into, so clear them as well
+            View v = getPageAt(task.page);
+            if (v instanceof PagedViewGridLayout) {
+                ((PagedViewGridLayout) v).removeAllViewsOnPage();
+            }
         }
         mDeferredSyncWidgetPageItems.clear();
     }
